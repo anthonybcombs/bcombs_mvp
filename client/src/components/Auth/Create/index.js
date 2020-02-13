@@ -21,7 +21,6 @@ const CreateUserStyled = styled.div`
     font-weight: normal;
   }
   @media (min-width: 600px) {
-    height: 420px;
     h1 {
       font-weight: bold;
     }
@@ -29,6 +28,7 @@ const CreateUserStyled = styled.div`
 `;
 export default function index() {
   const [userDetails, setUserDetails] = useState({
+    userType: "user",
     username: "",
     email: "",
     password: "",
@@ -37,17 +37,21 @@ export default function index() {
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
+  const handleChangeUserType = value => {
+    setUserDetails({ ...userDetails, userType: value });
+  };
   const handleFormSubmit = e => {
     e.preventDefault();
     //future backend code
   };
   return (
     <CreateUserStyled data-testid="app-create-user">
-      <h1>Create my account</h1>
+      <h1>Create my account ({userDetails.userType})</h1>
       <Form
         onSubmit={handleFormSubmit}
         handleInputChange={handleInputChange}
         userDetails={userDetails}
+        handleChangeUserType={handleChangeUserType}
       />
     </CreateUserStyled>
   );

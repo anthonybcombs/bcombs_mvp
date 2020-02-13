@@ -10,6 +10,13 @@ const GlobalStyle = createGlobalStyle`
   *:focus {
     outline: none;
   }
+  .error{
+    color:red;
+  }
+  button{
+    padding: 10px;    
+    cursor: pointer;    
+  }
   body{
     margin:0;
     padding:0;

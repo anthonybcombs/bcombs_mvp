@@ -8,9 +8,9 @@ const LoginStyled = styled.div`
   margin: 0 auto;
   background-color: white;
   width: 40%;
-  overflow: auto;
-  height: auto;
   padding: 20px;
+  height: auto;
+  overflow: auto;
   position: relative;
   top: 5vh;
   box-shadow: 0 0 25px #eae9e9;
@@ -23,7 +23,6 @@ const LoginStyled = styled.div`
     font-weight: normal;
   }
   @media (min-width: 600px) {
-    height: 420px;
     h1 {
       font-weight: bold;
     }
@@ -34,8 +33,8 @@ export default function index() {
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
-  const handleFormSubmit = e => {
-    e.preventDefault();
+  const handleFormSubmit = values => {
+    alert("yay");
     //future backend code
   };
   return (

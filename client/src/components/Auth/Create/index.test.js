@@ -20,9 +20,9 @@ describe("renders createUser User", () => {
     });
     test("does contains header", () => {
       const { getByText } = render(component);
-      const header = getByText("Create my account");
+      const header = getByText(/Create my account/);
       expect(header).toBeInTheDocument();
-      expect(header.textContent).toBe("Create my account");
+      expect(header.textContent).toContain("Create my account");
     });
     test("does contains input(username)", () => {
       const { getByTestId } = render(component);
@@ -30,6 +30,18 @@ describe("renders createUser User", () => {
       expect(inputEmail).toBeInTheDocument();
       expect(inputEmail.type).toBe("text");
       expect(inputEmail.placeholder).toBe("Username");
+    });
+    test("does contains userType user button", () => {
+      const { getByTestId } = render(component);
+      const buttonUser = getByTestId("app-create-button-user");
+      expect(buttonUser).toBeInTheDocument();
+      expect(buttonUser.textContent).toBe("User");
+    });
+    test("does contains userType vendor button", () => {
+      const { getByTestId } = render(component);
+      const buttonVendor = getByTestId("app-create-button-vendor");
+      expect(buttonVendor).toBeInTheDocument();
+      expect(buttonVendor.textContent).toBe("Vendor");
     });
     test("does contains input(email)", () => {
       const { getByTestId } = render(component);
@@ -58,6 +70,13 @@ describe("renders createUser User", () => {
       expect(signInButton).toBeInTheDocument();
       expect(signInButton.type).toBe("submit");
       expect(signInButton.innerHTML).toEqual("SIGN UP");
+    });
+  });
+  describe("test behaivor", () => {
+    test("user button is intially selected", () => {
+      const { getByTestId } = render(component);
+      const buttonUser = getByTestId("app-create-button-user");
+      expect(buttonUser.className).toEqual("selected");
     });
   });
 });

@@ -1,47 +1,117 @@
-import React, { StrictMode } from "react";
-import { render, cleanup, fireEvent } from "@testing-library/react";
+import React from "react";
+import { render, cleanup, fireEvent, act } from "@testing-library/react";
 import { ThemeContext } from "styled-components";
 import { defaultTheme } from "../../../helpers/Theme";
 import "@testing-library/jest-dom";
 import Form from "./Form";
 afterEach(cleanup);
 describe("Login Form", () => {
-  const userDetails = { email: "bon@yahoo.com", password: "bontest" };
+  let userDetails = { email: "bon@yahoo.com", password: "bontest" };
   const handleInputChange = jest.fn();
   const onSubmit = jest.fn();
-  const component = (
-    <ThemeContext.Provider value={defaultTheme}>
-      <Form
-        method="POST"
-        userDetails={userDetails}
-        onSubmit={onSubmit}
-        handleInputChange={handleInputChange}
-      />
-    </ThemeContext.Provider>
-  );
-  describe("form behaivor", () => {
+  describe("test behaivor", () => {
     describe("Input Email", () => {
       test("test initial value", () => {
-        const { getByTestId } = render(component);
+        const { getByTestId } = render(
+          <ThemeContext.Provider value={defaultTheme}>
+            <Form
+              method="POST"
+              userDetails={userDetails}
+              onSubmit={onSubmit}
+              handleInputChange={handleInputChange}
+            />
+          </ThemeContext.Provider>
+        );
         const inputEmail = getByTestId("app-login-input-email");
         expect(inputEmail.value).toBe("bon@yahoo.com");
       });
     });
     describe("Input Password", () => {
       test("test initial value", () => {
-        const { getByTestId } = render(component);
+        const { getByTestId } = render(
+          <ThemeContext.Provider value={defaultTheme}>
+            <Form
+              method="POST"
+              userDetails={userDetails}
+              onSubmit={onSubmit}
+              handleInputChange={handleInputChange}
+            />
+          </ThemeContext.Provider>
+        );
         const inputPassword = getByTestId("app-login-input-password");
         expect(inputPassword.value).toBe("bontest");
       });
     });
-    test("call onSubmit function when clicked", () => {
-      const { getByTestId } = render(component);
+    test("call onSubmit function when clicked", async () => {
+      const { getByTestId } = render(
+        <ThemeContext.Provider value={defaultTheme}>
+          <Form
+            method="POST"
+            userDetails={userDetails}
+            onSubmit={onSubmit}
+            handleInputChange={handleInputChange}
+          />
+        </ThemeContext.Provider>
+      );
+
       const loginForm = getByTestId("app-login-form");
-      fireEvent.submit(loginForm);
+      await act(async () => {
+        fireEvent.submit(loginForm);
+      });
       expect(onSubmit).toHaveBeenCalled();
     });
-    test("disable signIn button when there is no data provided", () => {
-      const { getByTestId } = render(component);
+    test("validation for with empty fields", async () => {
+      userDetails = { email: "", password: "" };
+      const { getByTestId, findByText } = render(
+        <ThemeContext.Provider value={defaultTheme}>
+          <Form
+            method="POST"
+            userDetails={userDetails}
+            onSubmit={onSubmit}
+            handleInputChange={handleInputChange}
+          />
+        </ThemeContext.Provider>
+      );
+      const loginForm = getByTestId("app-login-form");
+      fireEvent.submit(loginForm);
+      const errorMessageEmailElement = await findByText(/Email is/);
+      const errorMessagePasswordElement = await findByText(/Password is/);
+      expect(errorMessageEmailElement).toBeInTheDocument();
+      expect(errorMessagePasswordElement).toBeInTheDocument();
+    });
+    test("check email validation with other fields has value", async () => {
+      userDetails = { email: "", password: "testing" };
+      const { getByTestId, findByText } = render(
+        <ThemeContext.Provider value={defaultTheme}>
+          <Form
+            method="POST"
+            userDetails={userDetails}
+            onSubmit={onSubmit}
+            handleInputChange={handleInputChange}
+          />
+        </ThemeContext.Provider>
+      );
+      const loginForm = getByTestId("app-login-form");
+      fireEvent.submit(loginForm);
+      const errorMessageEmailElement = await findByText(/Email is/);
+      expect(errorMessageEmailElement).toBeInTheDocument();
+    });
+    test("check password validation with other fields has value", async () => {
+      userDetails = { email: "bon@yahoo.com", password: "" };
+      const { getByTestId, findByText } = render(
+        <ThemeContext.Provider value={defaultTheme}>
+          <Form
+            method="POST"
+            userDetails={userDetails}
+            onSubmit={onSubmit}
+            handleInputChange={handleInputChange}
+          />
+        </ThemeContext.Provider>
+      );
+      const loginForm = getByTestId("app-login-form");
+      fireEvent.submit(loginForm);
+      const errorMessagePasswordElement = await findByText(/Password is/);
+      expect(errorMessagePasswordElement).toBeInTheDocument();
     });
   });
 });

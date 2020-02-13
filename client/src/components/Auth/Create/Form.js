@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
+import { useForm } from "react-hook-form";
 import styled, { ThemeContext } from "styled-components";
+import ErrorMessage from "../../../helpers/ErrorMessage";
 const CreateUserFormStyled = styled.form`
   input:required {
     box-shadow: none;
@@ -23,29 +25,89 @@ const CreateUserFormStyled = styled.form`
     outline: 0;
   }
   input:focus {
-    border-color: green;
+    border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;
+    background-color: lightgrey;
     border: none;
     box-shadow: 0px 3px 6px #908e8e;
-    cursor: pointer;
   }
   button[type="submit"] {
+    background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     padding: 10px;
     display: block;
     margin: 10px auto;
-    background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     border: none;
     width: 100px !important;
   }
+  select {
+    display: block;
+    width: 100%;
+    font-size: ${({ theme }) => theme.select.fontSize};
+    border: none;
+  }
+  select:focus {
+  }
+  select option {
+    font-weight: normal;
+  }
+  #userTypes {
+    display: grid;
+    grid-gap: 5%;
+  }
+  #userTypes button.selected {
+    background-color: ${({ theme }) => theme.button.backgroundColor.primary};
+    box-shadow: 0px 3px 6px
+      ${({ theme }) => theme.button.backgroundColor.primary};
+  }
+  @media (min-width: 600px) {
+    #userTypes {
+      grid-template-columns: 50% 50%;
+      grid-gap: 0;
+    }
+  }
 `;
-export default function Form({ onSubmit, handleInputChange, userDetails }) {
+export default function Form({
+  onSubmit,
+  handleInputChange,
+  handleChangeUserType,
+  userDetails
+}) {
   const theme = useContext(ThemeContext);
+  const { register, handleSubmit, errors } = useForm();
+  const { userType } = userDetails;
   return (
-    <CreateUserFormStyled theme={theme}>
+    <CreateUserFormStyled
+      theme={theme}
+      onSubmit={handleSubmit(e => {
+        onSubmit(e);
+      })}
+    >
+      <div id="userTypes">
+        <button
+          data-testid="app-create-button-user"
+          className={userType === "user" ? "selected" : ""}
+          type="button"
+          onClick={() => {
+            handleChangeUserType("user");
+          }}
+        >
+          User
+        </button>
+        <button
+          data-testid="app-create-button-vendor"
+          className={userType === "vendor" ? "selected" : ""}
+          type="button"
+          onClick={() => {
+            handleChangeUserType("vendor");
+          }}
+        >
+          Vendor
+        </button>
+      </div>
       <input
         type="text"
         id="username"
@@ -56,6 +118,12 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
         onChange={({ target }) => {
           handleInputChange("username", target.value);
         }}
+        ref={register({ required: true })}
+      />
+      <ErrorMessage
+        field={errors.username}
+        errorType="required"
+        message="Username is required."
       />
       <input
         type="email"
@@ -67,6 +135,12 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
         onChange={({ target }) => {
           handleInputChange("email", target.value);
         }}
+        ref={register({ required: true })}
+      />
+      <ErrorMessage
+        field={errors.email}
+        errorType="required"
+        message="Email is required."
       />
       <input
         type="password"
@@ -78,6 +152,12 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
         onChange={({ target }) => {
           handleInputChange("password", target.value);
         }}
+        ref={register({ required: true })}
+      />
+      <ErrorMessage
+        field={errors.password}
+        errorType="required"
+        message="Email is required."
       />
       <input
         type="password"
@@ -89,6 +169,12 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
         onChange={({ target }) => {
           handleInputChange("confirm_password", target.value);
         }}
+        ref={register({ required: true })}
+      />
+      <ErrorMessage
+        field={errors.password}
+        errorType="required"
+        message="Confirm password is required."
       />
       <button type="submit" data-testid="app-create-button-signup">
         SIGN UP

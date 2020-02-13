@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
+import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGooglePlus, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import ErrorMessage from "../../../helpers/ErrorMessage";
 const LoginFormStyled = styled.form`
   input:required {
     box-shadow: none;
@@ -25,7 +27,7 @@ const LoginFormStyled = styled.form`
     outline: 0;
   }
   input:focus {
-    border-color: green;
+    border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
   button {
@@ -33,7 +35,6 @@ const LoginFormStyled = styled.form`
     font-size: ${({ theme }) => theme.button.fontSize} !important;
     border: none;
     box-shadow: 0px 3px 6px #908e8e;
-    cursor: pointer;
   }
   button[type="submit"] {
     padding: 10px;
@@ -49,7 +50,7 @@ const LoginFormStyled = styled.form`
   #socials,
   #authOptions {
     display: grid;
-    grid-gap: 1%;
+    grid-gap: 2%;
   }
   #socials button {
     padding: 1em;
@@ -76,6 +77,7 @@ const LoginFormStyled = styled.form`
     #socials,
     #authOptions {
       grid-template-columns: 50% 50%;
+      grid-gap: 1%;
     }
     #authOptions p:first-child {
       text-align: left;
@@ -90,12 +92,13 @@ const LoginFormStyled = styled.form`
 `;
 export default function Form({ onSubmit, handleInputChange, userDetails }) {
   const theme = useContext(ThemeContext);
+  const { register, handleSubmit, errors } = useForm();
   return (
     <LoginFormStyled
       theme={theme}
       data-testid="app-login-form"
       method="POST"
-      onSubmit={e => onSubmit(e)}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <input
         type="email"
@@ -107,6 +110,12 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
         onChange={({ target }) => {
           handleInputChange("email", target.value);
         }}
+        ref={register({ required: true })}
+      />
+      <ErrorMessage
+        field={errors.email}
+        errorType="required"
+        message="Email is required."
       />
       <input
         type="password"
@@ -118,6 +127,12 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
         onChange={({ target }) => {
           handleInputChange("password", target.value);
         }}
+        ref={register({ required: true })}
+      />
+      <ErrorMessage
+        field={errors.password}
+        errorType="required"
+        message="Password is required."
       />
       <div id="socials">
         <button id="facebook">
