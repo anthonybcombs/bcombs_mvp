@@ -72,11 +72,4 @@ describe("renders createUser User", () => {
       expect(signInButton.innerHTML).toEqual("SIGN UP");
     });
   });
-  describe("test behaivor", () => {
-    test("user button is intially selected", () => {
-      const { getByTestId } = render(component);
-      const buttonUser = getByTestId("app-create-button-user");
-      expect(buttonUser.className).toEqual("selected");
-    });
-  });
 });
