@@ -158,7 +158,7 @@ export default function Form({
       <ErrorMessage
         field={errors.password}
         errorType="required"
-        message="Email is required."
+        message="Password is required."
       />
       <input
         type="password"

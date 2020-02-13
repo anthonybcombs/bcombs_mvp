@@ -44,9 +44,9 @@ describe("Create User Form", () => {
             handleChangeUserType
           )
         );
-        const loginForm = getByTestId("app-create-form");
+        const createUserForm = getByTestId("app-create-form");
         await act(async () => {
-          fireEvent.submit(loginForm);
+          fireEvent.submit(createUserForm);
         });
         expect(onSubmit).toHaveBeenCalled();
       });
@@ -96,6 +96,35 @@ describe("Create User Form", () => {
         );
         expect(buttonUser.className).toBe("selected");
       });
+    });
+    test("validation form with empty fields", async () => {
+      userDetails = {
+        userType: "",
+        username: "",
+        email: "",
+        password: "",
+        confirm_password: ""
+      };
+      const { findByText, getByTestId } = render(
+        component(
+          userDetails,
+          onSubmit,
+          handleInputChange,
+          handleChangeUserType
+        )
+      );
+      const createUserForm = getByTestId("app-create-form");
+      fireEvent.submit(createUserForm);
+      const errorMessageUser = await findByText(/Username is/);
+      const errorMessageEmail = await findByText(/Email is/);
+      const errorMessagePassword = await findByText(/Password is/);
+      const errorMessageConfirmPassword = await findByText(
+        /Confirm password is/
+      );
+      expect(errorMessageUser).toBeInTheDocument();
+      expect(errorMessageEmail).toBeInTheDocument();
+      expect(errorMessagePassword).toBeInTheDocument();
+      expect(errorMessageConfirmPassword).toBeInTheDocument();
     });
   });
 });
