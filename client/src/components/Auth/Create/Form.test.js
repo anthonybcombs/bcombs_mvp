@@ -231,4 +231,26 @@ describe("Create User Form", () => {
     );
     expect(errorMessageConfirmPassword).toBeInTheDocument();
   });
+  test("display error when password and confirm is less than 5", async () => {
+    userDetails = {
+      userType: "user",
+      username: "bon",
+      email: "bon@yahoo.com",
+      password: "bon",
+      confirm_password: "bon"
+    };
+    const { getByTestId, findByText } = render(
+      component(userDetails, onSubmit, handleInputChange, handleChangeUserType)
+    );
+    const createUserForm = getByTestId("app-create-form");
+    fireEvent.submit(createUserForm);
+    const errorMessagePassword = await findByText(
+      /Password minimum length must be at least 5 characters/
+    );
+    const errorMessageConfirmPassword = await findByText(
+      /Confirm password minimum length must be at least 5 characters/
+    );
+    expect(errorMessagePassword).toBeInTheDocument();
+    expect(errorMessageConfirmPassword).toBeInTheDocument();
+  });
 });
