@@ -253,4 +253,22 @@ describe("Create User Form", () => {
     expect(errorMessagePassword).toBeInTheDocument();
     expect(errorMessageConfirmPassword).toBeInTheDocument();
   });
+  test("display error when username is less than 5 characters", async () => {
+    userDetails = {
+      userType: "user",
+      username: "bon",
+      email: "bon@yahoo.com",
+      password: "bon",
+      confirm_password: "bon"
+    };
+    const { getByTestId, findByText } = render(
+      component(userDetails, onSubmit, handleInputChange, handleChangeUserType)
+    );
+    const createUserForm = getByTestId("app-create-form");
+    fireEvent.submit(createUserForm);
+    const errorMessageUsername = await findByText(
+      /Username minimum length must be at least 5 characters/
+    );
+    expect(errorMessageUsername).toBeInTheDocument();
+  });
 });
