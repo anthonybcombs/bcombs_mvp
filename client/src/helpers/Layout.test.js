@@ -1,17 +1,14 @@
-import React, { StrictMode } from "react";
+import React from "react";
 import { render, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { ThemeContext } from "styled-components";
-import { defaultTheme } from "./Theme";
+import CreateTestComponent from "./CreateTestComponent";
 import Layout from "./Layout";
 afterEach(cleanup);
 describe("renders Layout", () => {
   const component = (
-    <ThemeContext.Provider value={defaultTheme}>
-      <StrictMode>
-        <Layout />
-      </StrictMode>
-    </ThemeContext.Provider>
+    <CreateTestComponent>
+      <Layout />
+    </CreateTestComponent>
   );
   test("renders without issue", () => {
     const { getByTestId } = render(component);

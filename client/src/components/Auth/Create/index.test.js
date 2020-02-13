@@ -1,17 +1,14 @@
 import React, { StrictMode } from "react";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { ThemeContext } from "styled-components";
-import { defaultTheme } from "../../../helpers/Theme";
+import CreateTestComponent from "../../../helpers/CreateTestComponent";
 import CreateUser from ".";
 afterEach(cleanup);
 describe("renders createUser User", () => {
   const component = (
-    <ThemeContext.Provider value={defaultTheme}>
-      <StrictMode>
-        <CreateUser />
-      </StrictMode>
-    </ThemeContext.Provider>
+    <CreateTestComponent>
+      <CreateUser />
+    </CreateTestComponent>
   );
   describe("test render", () => {
     test("renders without issue", () => {

@@ -1,7 +1,6 @@
 import React from "react";
 import { render, cleanup, fireEvent, act } from "@testing-library/react";
-import { ThemeContext } from "styled-components";
-import { defaultTheme } from "../../../helpers/Theme";
+import CreateTestComponent from "../../../helpers/CreateTestComponent";
 import "@testing-library/jest-dom";
 import Form from "./Form";
 afterEach(cleanup);
@@ -18,19 +17,32 @@ describe("Create User Form", () => {
     userDetails = { ...userDetails, userType: value };
   });
   const onSubmit = jest.fn();
+  const component = (
+    userDetails,
+    onSubmit,
+    handleInputChange,
+    handleChangeUserType
+  ) => (
+    <CreateTestComponent>
+      <Form
+        method="POST"
+        userDetails={userDetails}
+        onSubmit={onSubmit}
+        handleInputChange={handleInputChange}
+        handleChangeUserType={handleChangeUserType}
+      />
+    </CreateTestComponent>
+  );
   describe("test behaivor", () => {
     describe("initial value tests", () => {
       test("user button is intially selected", () => {
         const { getByTestId } = render(
-          <ThemeContext.Provider value={defaultTheme}>
-            <Form
-              method="POST"
-              userDetails={userDetails}
-              onSubmit={onSubmit}
-              handleInputChange={handleInputChange}
-              handleChangeUserType={handleChangeUserType}
-            />
-          </ThemeContext.Provider>
+          component(
+            userDetails,
+            onSubmit,
+            handleInputChange,
+            handleChangeUserType
+          )
         );
         const buttonUser = getByTestId("app-create-button-user");
         expect(buttonUser.className).toEqual("selected");
@@ -38,7 +50,7 @@ describe("Create User Form", () => {
       describe("Input Username", () => {
         test("test initial value", () => {
           const { getByTestId } = render(
-            <ThemeContext.Provider value={defaultTheme}>
+            <CreateTestComponent>
               <Form
                 method="POST"
                 userDetails={userDetails}
@@ -46,7 +58,7 @@ describe("Create User Form", () => {
                 handleInputChange={handleInputChange}
                 handleChangeUserType={handleChangeUserType}
               />
-            </ThemeContext.Provider>
+            </CreateTestComponent>
           );
           const inputEmail = getByTestId("app-create-input-username");
           expect(inputEmail.value).toBe("bonhokage06");
@@ -55,7 +67,7 @@ describe("Create User Form", () => {
       describe("Input Password", () => {
         test("test initial value", () => {
           const { getByTestId } = render(
-            <ThemeContext.Provider value={defaultTheme}>
+            <CreateTestComponent>
               <Form
                 method="POST"
                 userDetails={userDetails}
@@ -63,7 +75,7 @@ describe("Create User Form", () => {
                 handleInputChange={handleInputChange}
                 handleChangeUserType={handleChangeUserType}
               />
-            </ThemeContext.Provider>
+            </CreateTestComponent>
           );
           const inputPassword = getByTestId("app-create-input-password");
           expect(inputPassword.value).toBe("bontest");
@@ -72,7 +84,7 @@ describe("Create User Form", () => {
       describe("Input Email", () => {
         test("test initial value", () => {
           const { getByTestId } = render(
-            <ThemeContext.Provider value={defaultTheme}>
+            <CreateTestComponent>
               <Form
                 method="POST"
                 userDetails={userDetails}
@@ -80,7 +92,7 @@ describe("Create User Form", () => {
                 handleInputChange={handleInputChange}
                 handleChangeUserType={handleChangeUserType}
               />
-            </ThemeContext.Provider>
+            </CreateTestComponent>
           );
           const inputEmail = getByTestId("app-create-input-email");
           expect(inputEmail.value).toBe("bon@yahoo.com");
@@ -89,7 +101,7 @@ describe("Create User Form", () => {
       describe("Input Confirm password", () => {
         test("test initial value", () => {
           const { getByTestId } = render(
-            <ThemeContext.Provider value={defaultTheme}>
+            <CreateTestComponent>
               <Form
                 method="POST"
                 userDetails={userDetails}
@@ -97,7 +109,7 @@ describe("Create User Form", () => {
                 handleInputChange={handleInputChange}
                 handleChangeUserType={handleChangeUserType}
               />
-            </ThemeContext.Provider>
+            </CreateTestComponent>
           );
           const inputConfirmPassword = getByTestId(
             "app-create-input-confirm-password"
@@ -109,17 +121,13 @@ describe("Create User Form", () => {
     describe("change values tests", () => {
       test("call onSubmit function when clicked", async () => {
         const { getByTestId } = render(
-          <ThemeContext.Provider value={defaultTheme}>
-            <Form
-              method="POST"
-              userDetails={userDetails}
-              onSubmit={onSubmit}
-              handleInputChange={handleInputChange}
-              handleChangeUserType={handleChangeUserType}
-            />
-          </ThemeContext.Provider>
+          component(
+            userDetails,
+            onSubmit,
+            handleInputChange,
+            handleChangeUserType
+          )
         );
-
         const loginForm = getByTestId("app-create-form");
         await act(async () => {
           fireEvent.submit(loginForm);
@@ -128,47 +136,47 @@ describe("Create User Form", () => {
       });
       test("vendor button is selected when clicked", () => {
         const { getByTestId, rerender } = render(
-          <ThemeContext.Provider value={defaultTheme}>
-            <Form
-              method="POST"
-              userDetails={userDetails}
-              onSubmit={onSubmit}
-              handleInputChange={handleInputChange}
-              handleChangeUserType={handleChangeUserType}
-            />
-          </ThemeContext.Provider>
+          component(
+            userDetails,
+            onSubmit,
+            handleInputChange,
+            handleChangeUserType
+          )
         );
         const buttonVendor = getByTestId("app-create-button-vendor");
         fireEvent.click(buttonVendor);
         expect(handleChangeUserType).toHaveBeenCalled();
         expect(userDetails.userType).toBe("vendor");
         rerender(
-          <ThemeContext.Provider value={defaultTheme}>
-            <Form userDetails={userDetails} />
-          </ThemeContext.Provider>
+          component(
+            userDetails,
+            onSubmit,
+            handleInputChange,
+            handleChangeUserType
+          )
         );
         expect(buttonVendor.className).toBe("selected");
       });
       test("user button is selected when clicked", () => {
         const { getByTestId, rerender } = render(
-          <ThemeContext.Provider value={defaultTheme}>
-            <Form
-              method="POST"
-              userDetails={userDetails}
-              onSubmit={onSubmit}
-              handleInputChange={handleInputChange}
-              handleChangeUserType={handleChangeUserType}
-            />
-          </ThemeContext.Provider>
+          component(
+            userDetails,
+            onSubmit,
+            handleInputChange,
+            handleChangeUserType
+          )
         );
         const buttonUser = getByTestId("app-create-button-user");
         fireEvent.click(buttonUser);
         expect(handleChangeUserType).toHaveBeenCalled();
         expect(userDetails.userType).toBe("user");
         rerender(
-          <ThemeContext.Provider value={defaultTheme}>
-            <Form userDetails={userDetails} />
-          </ThemeContext.Provider>
+          component(
+            userDetails,
+            onSubmit,
+            handleInputChange,
+            handleChangeUserType
+          )
         );
         expect(buttonUser.className).toBe("selected");
       });

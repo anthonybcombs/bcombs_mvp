@@ -1,7 +1,6 @@
 import React from "react";
 import { render, cleanup, fireEvent, act } from "@testing-library/react";
-import { ThemeContext } from "styled-components";
-import { defaultTheme } from "../../../helpers/Theme";
+import CreateTestComponent from "../../../helpers/CreateTestComponent";
 import "@testing-library/jest-dom";
 import Form from "./Form";
 afterEach(cleanup);
@@ -9,19 +8,22 @@ describe("Login Form", () => {
   let userDetails = { email: "bon@yahoo.com", password: "bontest" };
   const handleInputChange = jest.fn();
   const onSubmit = jest.fn();
+  const component = (userDetails, onSubmit, handleInputChange) => (
+    <CreateTestComponent>
+      <Form
+        method="POST"
+        userDetails={userDetails}
+        onSubmit={onSubmit}
+        handleInputChange={handleInputChange}
+      />
+    </CreateTestComponent>
+  );
   describe("test behaivor", () => {
     describe("initial value tests", () => {
       describe("Input Email", () => {
         test("test initial value", () => {
           const { getByTestId } = render(
-            <ThemeContext.Provider value={defaultTheme}>
-              <Form
-                method="POST"
-                userDetails={userDetails}
-                onSubmit={onSubmit}
-                handleInputChange={handleInputChange}
-              />
-            </ThemeContext.Provider>
+            component(userDetails, onSubmit, handleInputChange)
           );
           const inputEmail = getByTestId("app-login-input-email");
           expect(inputEmail.value).toBe("bon@yahoo.com");
@@ -30,14 +32,7 @@ describe("Login Form", () => {
       describe("Input Password", () => {
         test("test initial value", () => {
           const { getByTestId } = render(
-            <ThemeContext.Provider value={defaultTheme}>
-              <Form
-                method="POST"
-                userDetails={userDetails}
-                onSubmit={onSubmit}
-                handleInputChange={handleInputChange}
-              />
-            </ThemeContext.Provider>
+            component(userDetails, onSubmit, handleInputChange)
           );
           const inputPassword = getByTestId("app-login-input-password");
           expect(inputPassword.value).toBe("bontest");
@@ -47,14 +42,7 @@ describe("Login Form", () => {
     describe("change values tests", () => {
       test("call onSubmit function when clicked", async () => {
         const { getByTestId } = render(
-          <ThemeContext.Provider value={defaultTheme}>
-            <Form
-              method="POST"
-              userDetails={userDetails}
-              onSubmit={onSubmit}
-              handleInputChange={handleInputChange}
-            />
-          </ThemeContext.Provider>
+          component(userDetails, onSubmit, handleInputChange)
         );
 
         const loginForm = getByTestId("app-login-form");
@@ -66,14 +54,7 @@ describe("Login Form", () => {
       test("validation for with empty fields", async () => {
         userDetails = { email: "", password: "" };
         const { getByTestId, findByText } = render(
-          <ThemeContext.Provider value={defaultTheme}>
-            <Form
-              method="POST"
-              userDetails={userDetails}
-              onSubmit={onSubmit}
-              handleInputChange={handleInputChange}
-            />
-          </ThemeContext.Provider>
+          component(userDetails, onSubmit, handleInputChange)
         );
         const loginForm = getByTestId("app-login-form");
         fireEvent.submit(loginForm);
@@ -85,14 +66,7 @@ describe("Login Form", () => {
       test("check email validation with other fields has value", async () => {
         userDetails = { email: "", password: "testing" };
         const { getByTestId, findByText } = render(
-          <ThemeContext.Provider value={defaultTheme}>
-            <Form
-              method="POST"
-              userDetails={userDetails}
-              onSubmit={onSubmit}
-              handleInputChange={handleInputChange}
-            />
-          </ThemeContext.Provider>
+          component(userDetails, onSubmit, handleInputChange)
         );
         const loginForm = getByTestId("app-login-form");
         fireEvent.submit(loginForm);
@@ -102,14 +76,7 @@ describe("Login Form", () => {
       test("check password validation with other fields has value", async () => {
         userDetails = { email: "bon@yahoo.com", password: "" };
         const { getByTestId, findByText } = render(
-          <ThemeContext.Provider value={defaultTheme}>
-            <Form
-              method="POST"
-              userDetails={userDetails}
-              onSubmit={onSubmit}
-              handleInputChange={handleInputChange}
-            />
-          </ThemeContext.Provider>
+          component(userDetails, onSubmit, handleInputChange)
         );
         const loginForm = getByTestId("app-login-form");
         fireEvent.submit(loginForm);
