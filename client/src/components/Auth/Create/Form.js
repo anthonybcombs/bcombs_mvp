@@ -153,12 +153,17 @@ export default function Form({
         onChange={({ target }) => {
           handleInputChange("password", target.value);
         }}
-        ref={register({ required: true })}
+        ref={register({ required: true, minLength: 5 })}
       />
       <ErrorMessage
         field={errors.password}
         errorType="required"
         message="Password is required."
+      />
+      <ErrorMessage
+        field={errors.password}
+        errorType="minLength"
+        message="Password minimum length must be at least 5 characters."
       />
       <input
         type="password"
@@ -172,6 +177,7 @@ export default function Form({
         }}
         ref={register({
           required: true,
+          minLength: 5,
           validate: value => value === password.value
         })}
       />
@@ -179,6 +185,11 @@ export default function Form({
         field={errors.confirm_password}
         errorType="required"
         message="Confirm password is required."
+      />
+      <ErrorMessage
+        field={errors.password}
+        errorType="minLength"
+        message="Confirm password minimum length must be at least 5 characters."
       />
       <ErrorMessage
         field={errors.confirm_password}
