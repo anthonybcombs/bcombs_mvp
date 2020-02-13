@@ -119,12 +119,17 @@ export default function Form({
         onChange={({ target }) => {
           handleInputChange("username", target.value);
         }}
-        ref={register({ required: true })}
+        ref={register({ required: true, minLength: 5 })}
       />
       <ErrorMessage
         field={errors.username}
         errorType="required"
         message="Username is required."
+      />
+      <ErrorMessage
+        field={errors.password}
+        errorType="minLength"
+        message="Username minimum length must be at least 5 characters."
       />
       <input
         type="email"
