@@ -162,20 +162,28 @@ export default function Form({
       />
       <input
         type="password"
-        id="password"
-        name="password"
+        id="confirm_password"
+        name="confirm_password"
         data-testid="app-create-input-confirm-password"
         placeholder="Confirm Password"
         value={userDetails.confirm_password}
         onChange={({ target }) => {
           handleInputChange("confirm_password", target.value);
         }}
-        ref={register({ required: true })}
+        ref={register({
+          required: true,
+          validate: value => value === password.value
+        })}
       />
       <ErrorMessage
-        field={errors.password}
+        field={errors.confirm_password}
         errorType="required"
         message="Confirm password is required."
+      />
+      <ErrorMessage
+        field={errors.confirm_password}
+        errorType="validate"
+        message="The passwords do not match."
       />
       <button type="submit" data-testid="app-create-button-signup">
         SIGN UP
