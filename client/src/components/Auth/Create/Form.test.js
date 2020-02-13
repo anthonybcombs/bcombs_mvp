@@ -35,7 +35,7 @@ describe("Create User Form", () => {
   );
   describe("test behaivor", () => {
     describe("change values tests", () => {
-      test("call onSubmit function when clicked", async () => {
+      test("call onSubmit function when submit", async () => {
         const { getByTestId } = render(
           component(
             userDetails,
@@ -126,5 +126,109 @@ describe("Create User Form", () => {
       expect(errorMessagePassword).toBeInTheDocument();
       expect(errorMessageConfirmPassword).toBeInTheDocument();
     });
+    test("check username validation with other fields has value", async () => {
+      userDetails = {
+        userType: "user",
+        username: "",
+        email: "bon@yahoo.com",
+        password: "bontest",
+        confirm_password: "bontest"
+      };
+      const { getByTestId, findByText } = render(
+        component(
+          userDetails,
+          onSubmit,
+          handleInputChange,
+          handleChangeUserType
+        )
+      );
+      const createUserForm = getByTestId("app-create-form");
+      fireEvent.submit(createUserForm);
+      const errorMessageUsername = await findByText(/Username is/);
+      expect(errorMessageUsername).toBeInTheDocument();
+    });
+    test("check email validation with other fields has value", async () => {
+      userDetails = {
+        userType: "user",
+        username: "bon",
+        email: "",
+        password: "bontest",
+        confirm_password: "bontest"
+      };
+      const { getByTestId, findByText } = render(
+        component(
+          userDetails,
+          onSubmit,
+          handleInputChange,
+          handleChangeUserType
+        )
+      );
+      const createUserForm = getByTestId("app-create-form");
+      fireEvent.submit(createUserForm);
+      const errorMessageEmail = await findByText(/Email is/);
+      expect(errorMessageEmail).toBeInTheDocument();
+    });
+    test("check password validation with other fields has value", async () => {
+      userDetails = {
+        userType: "user",
+        username: "bon",
+        email: "bon@yahoo.com",
+        password: "",
+        confirm_password: "bontest"
+      };
+      const { getByTestId, findByText } = render(
+        component(
+          userDetails,
+          onSubmit,
+          handleInputChange,
+          handleChangeUserType
+        )
+      );
+      const createUserForm = getByTestId("app-create-form");
+      fireEvent.submit(createUserForm);
+      const errorMessagePassword = await findByText(/Password is/);
+      expect(errorMessagePassword).toBeInTheDocument();
+    });
+    test("check confirm password validation with other fields has value", async () => {
+      userDetails = {
+        userType: "user",
+        username: "bon",
+        email: "bon@yahoo.com",
+        password: "bontest",
+        confirm_password: ""
+      };
+      const { getByTestId, findByText } = render(
+        component(
+          userDetails,
+          onSubmit,
+          handleInputChange,
+          handleChangeUserType
+        )
+      );
+      const createUserForm = getByTestId("app-create-form");
+      fireEvent.submit(createUserForm);
+      const errorMessageConfirmPassword = await findByText(
+        /Confirm password is/
+      );
+      expect(errorMessageConfirmPassword).toBeInTheDocument();
+    });
+  });
+  test("display error when password and confirm password is not the same", async () => {
+    userDetails = {
+      userType: "user",
+      username: "bon",
+      email: "bon@yahoo.com",
+      password: "bontest",
+      confirm_password: "bontestsso"
+    };
+    const { getByTestId, findByText } = render(
+      component(userDetails, onSubmit, handleInputChange, handleChangeUserType)
+    );
+    const createUserForm = getByTestId("app-create-form");
+    fireEvent.submit(createUserForm);
+    const errorMessageConfirmPassword = await findByText(
+      /The passwords do not match/
+    );
+    expect(errorMessageConfirmPassword).toBeInTheDocument();
   });
 });
