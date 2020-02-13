@@ -15,12 +15,12 @@ describe("Forgot Password component", () => {
       const { getByTestId } = render(component);
       expect(getByTestId("app-forgot-password")).toBeInTheDocument();
     });
-    // test("does contains input(email)", () => {
-    //   const { getByTestId } = render(component);
-    //   const inputEmail = getByTestId("app-login-input-email");
-    //   expect(inputEmail).toBeInTheDocument();
-    //   expect(inputEmail.type).toBe("email");
-    //   expect(inputEmail.placeholder).toBe("Email");
-    // });
+    test("does contains input(email)", () => {
+      const { getByTestId } = render(component);
+      const inputEmail = getByTestId("app-forgot-password-input-email");
+      expect(inputEmail).toBeInTheDocument();
+      expect(inputEmail.type).toBe("email");
+      expect(inputEmail.placeholder).toBe("Email");
+    });
   });
 });
