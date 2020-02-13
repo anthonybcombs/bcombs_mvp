@@ -38,10 +38,10 @@ describe("Login Form", () => {
         );
         const loginForm = getByTestId("app-login-form");
         fireEvent.submit(loginForm);
-        const errorMessageEmailElement = await findByText(/Email is/);
-        const errorMessagePasswordElement = await findByText(/Password is/);
-        expect(errorMessageEmailElement).toBeInTheDocument();
-        expect(errorMessagePasswordElement).toBeInTheDocument();
+        const errorMessageEmail = await findByText(/Email is/);
+        const errorMessagePassword = await findByText(/Password is/);
+        expect(errorMessageEmail).toBeInTheDocument();
+        expect(errorMessagePassword).toBeInTheDocument();
       });
       test("check email validation with other fields has value", async () => {
         userDetails = { email: "", password: "testing" };
@@ -50,8 +50,8 @@ describe("Login Form", () => {
         );
         const loginForm = getByTestId("app-login-form");
         fireEvent.submit(loginForm);
-        const errorMessageEmailElement = await findByText(/Email is/);
-        expect(errorMessageEmailElement).toBeInTheDocument();
+        const errorMessageEmail = await findByText(/Email is/);
+        expect(errorMessageEmail).toBeInTheDocument();
       });
       test("check password validation with other fields has value", async () => {
         userDetails = { email: "bon@yahoo.com", password: "" };
@@ -60,8 +60,8 @@ describe("Login Form", () => {
         );
         const loginForm = getByTestId("app-login-form");
         fireEvent.submit(loginForm);
-        const errorMessagePasswordElement = await findByText(/Password is/);
-        expect(errorMessagePasswordElement).toBeInTheDocument();
+        const errorMessagePassword = await findByText(/Password is/);
+        expect(errorMessagePassword).toBeInTheDocument();
       });
     });
   });
