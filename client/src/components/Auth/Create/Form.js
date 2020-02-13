@@ -81,6 +81,7 @@ export default function Form({
   const { userType } = userDetails;
   return (
     <CreateUserFormStyled
+      data-testid="app-create-form"
       theme={theme}
       onSubmit={handleSubmit(e => {
         onSubmit(e);

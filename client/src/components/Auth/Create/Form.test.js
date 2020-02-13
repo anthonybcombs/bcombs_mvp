@@ -107,6 +107,25 @@ describe("Create User Form", () => {
       });
     });
     describe("change values tests", () => {
+      test("call onSubmit function when clicked", async () => {
+        const { getByTestId } = render(
+          <ThemeContext.Provider value={defaultTheme}>
+            <Form
+              method="POST"
+              userDetails={userDetails}
+              onSubmit={onSubmit}
+              handleInputChange={handleInputChange}
+              handleChangeUserType={handleChangeUserType}
+            />
+          </ThemeContext.Provider>
+        );
+
+        const loginForm = getByTestId("app-create-form");
+        await act(async () => {
+          fireEvent.submit(loginForm);
+        });
+        expect(onSubmit).toHaveBeenCalled();
+      });
       test("vendor button is selected when clicked", () => {
         const { getByTestId, rerender } = render(
           <ThemeContext.Provider value={defaultTheme}>
