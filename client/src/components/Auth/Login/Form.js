@@ -135,11 +135,11 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
         message="Password is required."
       />
       <div id="socials">
-        <button id="facebook">
+        <button id="facebook" type="button">
           <FontAwesomeIcon icon={faFacebook} fixedWidth size="2x" />
           <span> Sign In with Facebook</span>
         </button>
-        <button id="google">
+        <button id="google" type="button">
           <FontAwesomeIcon icon={faGooglePlus} fixedWidth size="2x" />
           <span> Sign In with Google</span>
         </button>
