@@ -19,26 +19,6 @@ describe("Login Form", () => {
     </CreateTestComponent>
   );
   describe("test behaivor", () => {
-    describe("initial value tests", () => {
-      describe("Input Email", () => {
-        test("test initial value", () => {
-          const { getByTestId } = render(
-            component(userDetails, onSubmit, handleInputChange)
-          );
-          const inputEmail = getByTestId("app-login-input-email");
-          expect(inputEmail.value).toBe("bon@yahoo.com");
-        });
-      });
-      describe("Input Password", () => {
-        test("test initial value", () => {
-          const { getByTestId } = render(
-            component(userDetails, onSubmit, handleInputChange)
-          );
-          const inputPassword = getByTestId("app-login-input-password");
-          expect(inputPassword.value).toBe("bontest");
-        });
-      });
-    });
     describe("change values tests", () => {
       test("call onSubmit function when clicked", async () => {
         const { getByTestId } = render(
