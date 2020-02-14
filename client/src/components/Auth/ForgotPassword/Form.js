@@ -41,7 +41,6 @@ const ForgotPasswordFormStyled = styled.form`
     display: block;
     margin: 10px auto;
     border: none;
-    width: 100%;
   }
 `;
 export default function Form({ userDetails, onSubmit, handleInputChange }) {
@@ -72,7 +71,7 @@ export default function Form({ userDetails, onSubmit, handleInputChange }) {
         message="Email is required."
       />
       <button data-testid="app-forgot-password-send-button" type="submit">
-        Send
+        Reset Password
       </button>
     </ForgotPasswordFormStyled>
   );
