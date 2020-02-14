@@ -35,6 +35,7 @@ export const defaultTheme = {
     fontSize: "1em"
   },
   header: {
-    backgroundColor: "white"
+    backgroundColor: "white",
+    fontSize: "1.3em"
   }
 };
