@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { Link } from "@reach/router";
 import { useForm } from "react-hook-form";
 import styled, { ThemeContext } from "styled-components";
 import ErrorMessage from "../../../helpers/ErrorMessage";
@@ -42,7 +43,7 @@ const CreateUserFormStyled = styled.form`
     margin: 10px auto;
     border: none;
     width: 100px !important;
-    margin-top: 1.2em;
+    margin-top: 0.5em;
   }
   select {
     display: block;
@@ -61,6 +62,19 @@ const CreateUserFormStyled = styled.form`
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     box-shadow: 0px 3px 6px
       ${({ theme }) => theme.button.backgroundColor.primary};
+  }
+  p {
+    font-weight: bold;
+    text-align: center;
+    padding: 0;
+    margin-top: 1em;
+    font-size: ${({ theme }) => theme.p.fontSize} !important;
+    text-align: left;
+  }
+  p a {
+    color: ${({ theme }) => theme.anchor.textColor.primary};
+    font-size: ${({ theme }) => theme.anchor.fontSize} !important;
+    text-decoration: none;
   }
   @media (min-width: 600px) {
     #userTypes {
@@ -201,6 +215,9 @@ export default function Form({
       <button type="submit" data-testid="app-create-button-signup">
         SIGN UP
       </button>
+      <p>
+        Already Member! <Link to="/">Sign In</Link>
+      </p>
     </CreateUserFormStyled>
   );
 }
