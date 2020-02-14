@@ -20,12 +20,12 @@ const LoginStyled = styled.div`
     display: block;
     margin: 0 auto;
   }
-  h1 {
+  h2 {
     text-align: center;
     font-weight: normal;
   }
   @media (min-width: 600px) {
-    h1 {
+    h2 {
       font-weight: bold;
     }
   }
@@ -42,7 +42,7 @@ export default function index() {
   return (
     <LoginStyled data-testid="app-login">
       <img data-testid="app-login-logo" src={Logo} alt="Bcombs Logo" />
-      <h1 data-testid="app-login-header">Login To Your Account</h1>
+      <h2 data-testid="app-login-header">Login To Your Account</h2>
       <Form
         onSubmit={handleFormSubmit}
         userDetails={userDetails}

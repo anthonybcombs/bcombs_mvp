@@ -16,12 +16,12 @@ const ForgotPasswordStyled = styled.div`
     display: block;
     margin: 0 auto;
   }
-  h1 {
+  h2 {
     text-align: center;
     font-weight: normal;
   }
   @media (min-width: 600px) {
-    h1 {
+    h2 {
       font-weight: bold;
     }
   }
@@ -39,7 +39,7 @@ export default function index() {
   };
   return (
     <ForgotPasswordStyled data-testid="app-forgot-password">
-      <h1 data-testid="app-forgot-password-header">Forgot Password</h1>
+      <h2 data-testid="app-forgot-password-header">Forgot Password</h2>
       <Form
         userDetails={userDetails}
         onSubmit={handleFormSubmit}

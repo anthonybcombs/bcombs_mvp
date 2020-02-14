@@ -16,12 +16,12 @@ const CreateUserStyled = styled.div`
     display: block;
     margin: 0 auto;
   }
-  h1 {
+  h2 {
     text-align: center;
     font-weight: normal;
   }
   @media (min-width: 600px) {
-    h1 {
+    h2 {
       font-weight: bold;
     }
   }
@@ -45,7 +45,7 @@ export default function index() {
   };
   return (
     <CreateUserStyled data-testid="app-create-user">
-      <h1>Create my account ({userDetails.userType})</h1>
+      <h2>Create my account ({userDetails.userType})</h2>
       <Form
         onSubmit={handleFormSubmit}
         handleInputChange={handleInputChange}
