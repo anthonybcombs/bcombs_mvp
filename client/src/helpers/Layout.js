@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
+import { Link } from "@reach/router";
 import Logo from "../images/logo1.png";
 const HeaderStyled = styled.h1`
   font-size: ${({ theme }) => theme.fontSize};
@@ -18,9 +19,9 @@ export default function Layout({ children }) {
   return (
     <LayoutStyled data-testid="app-layout">
       <HeaderStyled data-testid="app-title" theme={theme.header}>
-        <a href="/">
+        <Link to="/">
           <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
-        </a>
+        </Link>
       </HeaderStyled>
       {children}
       <footer data-testid="app-footer"></footer>

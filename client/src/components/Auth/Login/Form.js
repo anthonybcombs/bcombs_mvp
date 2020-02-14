@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
+import { Link } from "@reach/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGooglePlus, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import ErrorMessage from "../../../helpers/ErrorMessage";
@@ -146,10 +147,10 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
       </div>
       <div id="authOptions">
         <p>
-          New Member! <a href="/auth/create">Sign Up</a>
+          New Member! <Link to="/auth/create">Sign Up</Link>
         </p>
         <p>
-          <a href="/auth/forgot-password">Forgot Password</a>
+          <Link to="/auth/forgot-password">Forgot Password</Link>
         </p>
       </div>
       <button type="submit" data-testid="app-login-button-signin">
