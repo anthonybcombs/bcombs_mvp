@@ -10,7 +10,7 @@ const CreateUserStyled = styled.div`
   height: auto;
   padding: 10px;
   position: relative;
-  top: 3vh;
+  top: 4vh;
   box-shadow: 0 0 25px #eae9e9;
   img {
     display: block;

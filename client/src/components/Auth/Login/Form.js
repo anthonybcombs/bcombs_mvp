@@ -23,11 +23,9 @@ const LoginFormStyled = styled.form`
     border: none;
     outline: 0;
     border-bottom: 2px solid lightgrey;
-    margin-top: 30px;
-    margin-bottom: 30px;
     outline: 0;
-    padding-top: 1em;
-    padding-bottom: 1em;
+    margin-top: 3em;
+    margin-bottom: 3em;
   }
   input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
@@ -44,7 +42,7 @@ const LoginFormStyled = styled.form`
   button[type="submit"] {
     padding: 10px;
     display: block;
-    margin: 10px auto;
+    margin: 1em auto;
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     border: none;
     width: 100px !important;
@@ -70,7 +68,7 @@ const LoginFormStyled = styled.form`
     font-weight: bold;
     text-align: center;
     padding: 0;
-    margin: 5px;
+    margin-top: 1em;
     font-size: ${({ theme }) => theme.p.fontSize} !important;
   }
   #authOptions p a {

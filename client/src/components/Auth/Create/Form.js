@@ -21,8 +21,8 @@ const CreateUserFormStyled = styled.form`
     outline: 0;
     border-bottom: 2px solid lightgrey;
     outline: 0;
-    padding-top: 1.8em;
-    padding-bottom: 1.8em;
+    margin-top: 2.5em;
+    margin-bottom: 2.5em;
   }
   input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
