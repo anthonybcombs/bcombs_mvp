@@ -49,8 +49,6 @@ const CreateUserFormStyled = styled.form`
     font-size: ${({ theme }) => theme.select.fontSize};
     border: none;
   }
-  select:focus {
-  }
   select option {
     font-weight: normal;
   }
