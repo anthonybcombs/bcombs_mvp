@@ -22,5 +22,32 @@ describe("Forgot Password component", () => {
       expect(inputEmail.type).toBe("email");
       expect(inputEmail.placeholder).toBe("Email");
     });
+    test("does contains form", () => {
+      const { getByTestId } = render(component);
+      const forgotPasswordForm = getByTestId("app-forgot-password-form");
+      expect(forgotPasswordForm).toBeInTheDocument();
+    });
+    test("does contains send button", () => {
+      const { getByTestId } = render(component);
+      const sendButton = getByTestId("app-forgot-password-send-button");
+      expect(sendButton).toBeInTheDocument();
+      expect(sendButton.type).toBe("button");
+      expect(sendButton.textContent).toContain("Send");
+    });
+  });
+  describe("test behavior", () => {
+    describe("Input Email", () => {
+      test("test initial value", () => {
+        const { getByTestId } = render(component);
+        const inputEmail = getByTestId("app-forgot-password-input-email");
+        expect(inputEmail.value.length).toBe(0);
+      });
+      test("test value when changed", () => {
+        const { getByTestId } = render(component);
+        const inputEmail = getByTestId("app-forgot-password-input-email");
+        fireEvent.change(inputEmail, { target: { value: "bon@yahoo.com" } });
+        expect(inputEmail.value).toBe("bon@yahoo.com");
+      });
+    });
   });
 });

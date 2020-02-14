@@ -40,8 +40,7 @@ export default function index() {
   const handleChangeUserType = value => {
     setUserDetails({ ...userDetails, userType: value });
   };
-  const handleFormSubmit = e => {
-    e.preventDefault();
+  const handleFormSubmit = values => {
     //future backend code
   };
   return (

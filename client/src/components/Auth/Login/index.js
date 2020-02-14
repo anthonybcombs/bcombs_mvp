@@ -34,7 +34,6 @@ export default function index() {
     setUserDetails({ ...userDetails, [id]: value });
   };
   const handleFormSubmit = values => {
-    alert("yay");
     //future backend code
   };
   return (

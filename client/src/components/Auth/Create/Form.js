@@ -83,9 +83,7 @@ export default function Form({
     <CreateUserFormStyled
       data-testid="app-create-form"
       theme={theme}
-      onSubmit={handleSubmit(e => {
-        onSubmit(e);
-      })}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <div id="userTypes">
         <button
