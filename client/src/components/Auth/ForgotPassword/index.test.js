@@ -15,6 +15,12 @@ describe("Forgot Password component", () => {
       const { getByTestId } = render(component);
       expect(getByTestId("app-forgot-password")).toBeInTheDocument();
     });
+    test("does contains header", () => {
+      const { getByTestId } = render(component);
+      const header = getByTestId("app-forgot-password-header");
+      expect(header).toBeInTheDocument();
+      expect(header.textContent).toBe("Forgot Password");
+    });
     test("does contains input(email)", () => {
       const { getByTestId } = render(component);
       const inputEmail = getByTestId("app-forgot-password-input-email");
@@ -31,7 +37,7 @@ describe("Forgot Password component", () => {
       const { getByTestId } = render(component);
       const sendButton = getByTestId("app-forgot-password-send-button");
       expect(sendButton).toBeInTheDocument();
-      expect(sendButton.type).toBe("button");
+      expect(sendButton.type).toBe("submit");
       expect(sendButton.textContent).toContain("Send");
     });
   });
