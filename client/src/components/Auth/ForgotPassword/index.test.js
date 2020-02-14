@@ -33,12 +33,12 @@ describe("Forgot Password component", () => {
       const forgotPasswordForm = getByTestId("app-forgot-password-form");
       expect(forgotPasswordForm).toBeInTheDocument();
     });
-    test("does contains send button", () => {
+    test("does contains reset password button", () => {
       const { getByTestId } = render(component);
       const sendButton = getByTestId("app-forgot-password-send-button");
       expect(sendButton).toBeInTheDocument();
       expect(sendButton.type).toBe("submit");
-      expect(sendButton.textContent).toContain("Send");
+      expect(sendButton.textContent).toContain("Reset Password");
     });
   });
   describe("test behavior", () => {
