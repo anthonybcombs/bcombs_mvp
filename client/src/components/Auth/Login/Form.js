@@ -149,7 +149,7 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
           New Member! <a href="/auth/create">Sign Up</a>
         </p>
         <p>
-          <a href="#">Forgot Password</a>
+          <a href="/auth/forgot-password">Forgot Password</a>
         </p>
       </div>
       <button type="submit" data-testid="app-login-button-signin">

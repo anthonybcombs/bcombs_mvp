@@ -4,6 +4,7 @@ import Layout from "./helpers/Layout";
 import Auth from "./components/Auth";
 import Login from "./components/Auth/Login";
 import CreateUser from "./components/Auth/Create";
+import ForgotPassword from "./components/Auth//ForgotPassword";
 export default function App() {
   return (
     <Layout>
@@ -12,6 +13,7 @@ export default function App() {
           <Auth path="/">
             <Login path="/" />
             <CreateUser path="auth/create" />
+            <ForgotPassword path="auth/forgot-password" />
           </Auth>
         </Router>
       </div>
