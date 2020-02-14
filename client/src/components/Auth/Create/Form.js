@@ -20,9 +20,9 @@ const CreateUserFormStyled = styled.form`
     border: none;
     outline: 0;
     border-bottom: 2px solid lightgrey;
-    margin-top: 30px;
-    margin-bottom: 30px;
     outline: 0;
+    padding-top: 1.8em;
+    padding-bottom: 1.8em;
   }
   input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
@@ -42,6 +42,7 @@ const CreateUserFormStyled = styled.form`
     margin: 10px auto;
     border: none;
     width: 100px !important;
+    margin-top: 1.2em;
   }
   select {
     display: block;

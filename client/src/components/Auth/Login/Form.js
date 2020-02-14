@@ -26,6 +26,8 @@ const LoginFormStyled = styled.form`
     margin-top: 30px;
     margin-bottom: 30px;
     outline: 0;
+    padding-top: 1em;
+    padding-bottom: 1em;
   }
   input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
@@ -36,6 +38,8 @@ const LoginFormStyled = styled.form`
     font-size: ${({ theme }) => theme.button.fontSize} !important;
     border: none;
     box-shadow: 0px 3px 6px #908e8e;
+    padding-top: 1em;
+    padding-bottom: 1em;
   }
   button[type="submit"] {
     padding: 10px;

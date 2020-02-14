@@ -5,12 +5,12 @@ const CreateUserStyled = styled.div`
   display: block;
   margin: 0 auto;
   background-color: white;
-  width: 40%;
+  width: 50%;
   overflow: auto;
   height: auto;
-  padding: 20px;
+  padding: 10px;
   position: relative;
-  top: 5vh;
+  top: 3vh;
   box-shadow: 0 0 25px #eae9e9;
   img {
     display: block;

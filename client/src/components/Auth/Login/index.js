@@ -1,18 +1,20 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import Logo from "../../../images/logo1.png";
 import Form from "./Form";
+import { requestAuth } from "../../../redux/actions/Auth";
 
 const LoginStyled = styled.div`
   display: block;
   margin: 0 auto;
   background-color: white;
-  width: 40%;
+  width: 50%;
   padding: 20px;
   height: auto;
   overflow: auto;
   position: relative;
-  top: 5vh;
+  top: 3vh;
   box-shadow: 0 0 25px #eae9e9;
   img {
     display: block;
@@ -30,11 +32,12 @@ const LoginStyled = styled.div`
 `;
 export default function index() {
   const [userDetails, setUserDetails] = useState({ email: "", password: "" });
+  const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
   const handleFormSubmit = values => {
-    //future backend code
+    dispatch(requestAuth());
   };
   return (
     <LoginStyled data-testid="app-login">

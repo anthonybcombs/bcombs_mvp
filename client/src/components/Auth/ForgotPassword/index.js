@@ -5,7 +5,7 @@ const ForgotPasswordStyled = styled.div`
   display: block;
   margin: 0 auto;
   background-color: white;
-  width: 40%;
+  width: 50%;
   overflow: auto;
   height: auto;
   padding: 20px;
