@@ -68,5 +68,11 @@ describe("renders createUser User", () => {
       expect(signInButton.type).toBe("submit");
       expect(signInButton.innerHTML).toEqual("SIGN UP");
     });
+    test("does contains already member signin link", () => {
+      const { getByText } = render(component);
+      const button = getByText(/Sign In/);
+      expect(button).toBeInTheDocument();
+      expect(button.textContent).toContain("Sign In");
+    });
   });
 });
