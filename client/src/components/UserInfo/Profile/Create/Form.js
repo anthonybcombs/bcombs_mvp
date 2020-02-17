@@ -37,6 +37,12 @@ export default function Form() {
         <option value="male">Male</option>
         <option value="female">Female</option>
       </select>
+      <input
+        data-testid="app-profile-create-input-zip-code"
+        name="zipcode"
+        type="number"
+        placeholder="Zip code"
+      />
     </form>
   );
 }
