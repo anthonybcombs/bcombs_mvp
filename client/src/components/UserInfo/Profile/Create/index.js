@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Form from "./Form";
 const CreateProfileStyled = styled.div`
@@ -27,10 +27,26 @@ const CreateProfileStyled = styled.div`
   }
 `;
 export default function index() {
+  const [profileDetails, setProfileDetails] = useState({
+    firstname: "",
+    lastname: "",
+    gender: "",
+    familyrelationship: "",
+    zipcode: "",
+    dateofbirth: ""
+  });
+  const handleInputChange = (id, value) => {
+    setProfileDetails({ ...profileDetails, [id]: value });
+  };
+  const handleFormSubmit = values => {};
   return (
     <CreateProfileStyled data-testid="app-profile-create">
       <h2>Let's get started!</h2>
-      <Form />
+      <Form
+        profileDetails={profileDetails}
+        onSubmit={handleFormSubmit}
+        handleInputChange={handleInputChange}
+      />
     </CreateProfileStyled>
   );
 }
