@@ -52,4 +52,18 @@ describe("Family Member", () => {
       expect(subHeader.textContent).toBe("Skip");
     });
   });
+  describe("test behavior", () => {
+    describe("add family button", () => {
+      test("on load modal on click", () => {
+        const { getByTestId } = render(component);
+        const addFamilyButton = getByTestId(
+          "app-profile-create-family-member-add-family-button"
+        );
+        fireEvent.click(addFamilyButton);
+        expect(
+          getByTestId("app-profile-create-family-member-create-modal")
+        ).toBeInTheDocument();
+      });
+    });
+  });
 });

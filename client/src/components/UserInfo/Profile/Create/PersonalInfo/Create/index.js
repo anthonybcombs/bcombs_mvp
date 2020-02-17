@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Form from "./Form";
+import Form from "../../Forms/CreateProfileForm";
 const CreateProfileStyled = styled.div`
   display: block;
   margin: 0 auto;
@@ -45,7 +45,7 @@ export default function index({ setCurrentPage }) {
     <CreateProfileStyled data-testid="app-profile-create">
       <h2>Let's get started!</h2>
       <Form
-        profileDetails={profileDetails}
+        details={profileDetails}
         onSubmit={handleFormSubmit}
         handleInputChange={handleInputChange}
       />

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
-import ErrorMessage from "../../../../../../helpers/ErrorMessage";
+import ErrorMessage from "../../../../../helpers/ErrorMessage";
 const CreateProfileStyled = styled.form`
   input:required {
     box-shadow: none;
@@ -80,7 +80,11 @@ const CreateProfileStyled = styled.form`
     }
   }
 `;
-export default function Form({ profileDetails, onSubmit, handleInputChange }) {
+export default function CreateProfileForm({
+  details,
+  onSubmit,
+  handleInputChange
+}) {
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm();
@@ -99,7 +103,7 @@ export default function Form({ profileDetails, onSubmit, handleInputChange }) {
         data-testid="app-profile-create-input-firstname"
         name="firstname"
         placeholder="First name"
-        value={profileDetails.firstname}
+        value={details.firstname}
         onChange={({ target }) => {
           handleInputChange("firstname", target.value);
         }}
@@ -114,7 +118,7 @@ export default function Form({ profileDetails, onSubmit, handleInputChange }) {
         data-testid="app-profile-create-input-lastname"
         name="lastname"
         placeholder="Last name"
-        value={profileDetails.lastname}
+        value={details.lastname}
         onChange={({ target }) => {
           handleInputChange("lastname", target.value);
         }}
@@ -130,7 +134,7 @@ export default function Form({ profileDetails, onSubmit, handleInputChange }) {
           <select
             data-testid="app-profile-create-select-gender"
             name="gender"
-            value={profileDetails.gender}
+            value={details.gender}
             onChange={({ target }) => {
               handleInputChange("gender", target.value);
             }}
@@ -152,7 +156,7 @@ export default function Form({ profileDetails, onSubmit, handleInputChange }) {
           <select
             data-testid="app-profile-create-select-family-relationship"
             name="familyrelationship"
-            value={profileDetails.familyrelationship}
+            value={details.familyrelationship}
             onChange={({ target }) => {
               handleInputChange("familyrelationship", target.value);
             }}
@@ -179,7 +183,7 @@ export default function Form({ profileDetails, onSubmit, handleInputChange }) {
             name="zipcode"
             type="number"
             placeholder="Zip code"
-            value={profileDetails.zipcode}
+            value={details.zipcode}
             onChange={({ target }) => {
               handleInputChange("zipcode", target.value);
             }}
@@ -203,7 +207,7 @@ export default function Form({ profileDetails, onSubmit, handleInputChange }) {
             onBlur={() => {
               handleDateOfBirthElementTypeChange("text");
             }}
-            value={profileDetails.dateofbirth}
+            value={details.dateofbirth}
             onChange={({ target }) => {
               handleInputChange("dateofbirth", target.value);
             }}
