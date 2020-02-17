@@ -70,7 +70,13 @@ describe("Create Profile", () => {
       expect(options).toEqual(expect.arrayContaining(defaultOptions));
       expect(selectGender.childNodes[0].textContent).toBe("Gender");
     });
-    test("does contains input(zip code)", () => {});
+    test("does contains input(zip code)", () => {
+      const { getByTestId } = render(component);
+      const inputZipCode = getByTestId("app-profile-create-input-zip-code");
+      expect(inputZipCode).toBeInTheDocument();
+      expect(inputZipCode.type).toBe("number");
+      expect(inputZipCode.placeholder).toBe("Zip code");
+    });
     test("does contains input(date of birth)", () => {});
     test("does contains save to continue submit button", () => {});
   });
