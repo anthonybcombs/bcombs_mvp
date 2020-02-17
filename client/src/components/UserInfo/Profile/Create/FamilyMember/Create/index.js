@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import Form from "../../Forms/CreateProfileForm";
-export default function index({ setCurrentPage, visible = true }) {
+export default function index({
+  setCurrentPage,
+  visible = true,
+  toggleCreateFamilyModal
+}) {
   const [familyMemberDetails, setFamilyMemberDetails] = useState({
     firstname: "",
     lastname: "",
@@ -19,15 +23,23 @@ export default function index({ setCurrentPage, visible = true }) {
     return <></>;
   }
   return (
-    <div data-testid="app-profile-create-family-member-create-modal">
-      <h2 data-testid="app-profile-create-family-member-create-modal-header">
-        Add a family member
-      </h2>
-      <Form
-        details={familyMemberDetails}
-        onSubmit={handleFormSubmit}
-        handleInputChange={handleInputChange}
-      />
+    <div
+      data-testid="app-profile-create-family-member-create-modal"
+      className="modal"
+    >
+      <div className="modal-content">
+        <span className="close" onClick={toggleCreateFamilyModal}>
+          &times;
+        </span>
+        <h2 data-testid="app-profile-create-family-member-create-modal-header">
+          Add a family member
+        </h2>
+        <Form
+          details={familyMemberDetails}
+          onSubmit={handleFormSubmit}
+          handleInputChange={handleInputChange}
+        />
+      </div>
     </div>
   );
 }

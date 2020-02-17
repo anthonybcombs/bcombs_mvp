@@ -80,10 +80,10 @@ export default function index() {
     { name: "Molly Mom", type: "Family Manager" },
     { name: "Molly Father", type: "Family Manager" }
   ]);
-  const [createFamilyMemberModal, setcreateFamilyMemberModal] = useState(false);
+  const [createFamilyMemberModal, setCreateFamilyMemberModal] = useState(false);
   const theme = useContext(ThemeContext);
-  const handleAddFamilyButtonClick = () => {
-    setcreateFamilyMemberModal(!createFamilyMemberModal);
+  const toggleCreateFamilyModal = () => {
+    setCreateFamilyMemberModal(!createFamilyMemberModal);
   };
   return (
     <CreateFamilyMemberStyled
@@ -93,7 +93,10 @@ export default function index() {
       <h2 data-testid="app-profile-create-family-member-header">
         Add Family Member
       </h2>
-      <CreateFamilyModal visible={createFamilyMemberModal} />
+      <CreateFamilyModal
+        visible={createFamilyMemberModal}
+        toggleCreateFamilyModal={toggleCreateFamilyModal}
+      />
       <p data-testid="app-profile-create-family-member-sub-header">
         Add family members so you can view their schedules in your calendar
       </p>
@@ -122,7 +125,7 @@ export default function index() {
             <button
               data-testid="app-profile-create-family-member-add-family-button"
               id="add-famly-member-button"
-              onClick={handleAddFamilyButtonClick}
+              onClick={toggleCreateFamilyModal}
             >
               <FontAwesomeIcon icon={faPlus} size="10x" />
             </button>

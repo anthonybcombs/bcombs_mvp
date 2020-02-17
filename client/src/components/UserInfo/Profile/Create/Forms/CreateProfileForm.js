@@ -13,7 +13,7 @@ const CreateProfileStyled = styled.form`
     background: none;
     width: 100%;
     color: black;
-    font-size: ${({ theme }) => theme.input.fontSize};
+    font-size: ${({ theme }) => theme.input.fontSize} !important;
     display: block;
     border: none;
     border-radius: 1;
@@ -21,9 +21,9 @@ const CreateProfileStyled = styled.form`
     outline: 0;
     border-bottom: 2px solid lightgrey;
     margin-top: 2.5em;
-    margin-bottom: 1.5em;
+    margin-bottom: 2.5em;
   }
-  input:focus {
+input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
@@ -41,7 +41,6 @@ const CreateProfileStyled = styled.form`
     display: block;
     margin: 10px auto;
     border: none;
-    width: 200px !important;
     margin-top: 0.5em;
   }
   select {
@@ -49,7 +48,6 @@ const CreateProfileStyled = styled.form`
     display: block;
     width: 100% !important;
     border: none;
-    border-radius: 1;
     margin-top: 2.5em;
     margin-bottom: 1.5em;
   }
@@ -63,13 +61,12 @@ const CreateProfileStyled = styled.form`
   [hidden] {
     display: none;
   }
-  input[type="date"]:after {
-    content: attr(placeholder);
-  }
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 50% 50%;
-      grid-gap: 1%;
+    }
+    button[type="submit"] {
+      width: 200px !important;
     }
   }
 `;
