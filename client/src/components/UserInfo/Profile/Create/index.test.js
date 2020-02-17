@@ -12,6 +12,10 @@ describe("Create Profile", () => {
     </CreateTestComponent>
   );
   describe("test renders", () => {
+    test("renders without issue", () => {
+      const { getByTestId } = render(component);
+      expect(getByTestId("app-profile-create")).toBeInTheDocument();
+    });
     test("does contains header with text of Let's get started", () => {
       const { getByText } = render(component);
       const header = getByText(/Let's get started/);
