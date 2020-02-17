@@ -55,9 +55,8 @@ const CreateUserFormStyled = styled.form`
   select option {
     font-weight: normal;
   }
-  #userTypes {
-    display: grid;
-    grid-gap: 5%;
+  #userTypes button {
+    padding: 10px;
   }
   #userTypes button.selected {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
@@ -78,7 +77,7 @@ const CreateUserFormStyled = styled.form`
     text-decoration: none;
   }
   @media (min-width: 600px) {
-    #userTypes {
+    .grid {
       grid-template-columns: 50% 50%;
       grid-gap: 0.5%;
     }
@@ -99,7 +98,7 @@ export default function Form({
       theme={theme}
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div id="userTypes">
+      <div id="userTypes" className="grid">
         <button
           data-testid="app-create-button-user"
           className={userType === "user" ? "selected" : ""}

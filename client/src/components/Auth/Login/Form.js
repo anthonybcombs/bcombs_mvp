@@ -51,11 +51,6 @@ const LoginFormStyled = styled.form`
   svg {
     vertical-align: middle;
   }
-  #socials,
-  #authOptions {
-    display: grid;
-    grid-gap: 2%;
-  }
   #socials button {
     padding: 1em;
   }
@@ -78,8 +73,7 @@ const LoginFormStyled = styled.form`
     text-decoration: none;
   }
   @media (min-width: 600px) {
-    #socials,
-    #authOptions {
+    .grid {
       grid-template-columns: 50% 50%;
       grid-gap: 1%;
     }
@@ -138,7 +132,7 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
         errorType="required"
         message="Password is required."
       />
-      <div id="socials">
+      <div id="socials" className="grid">
         <button id="facebook" type="button">
           <FontAwesomeIcon icon={faFacebook} fixedWidth size="2x" />
           <span> Sign In with Facebook</span>
@@ -148,7 +142,7 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
           <span> Sign In with Google</span>
         </button>
       </div>
-      <div id="authOptions">
+      <div id="authOptions" className="grid">
         <p>
           New Member! <Link to="/auth/create">Sign Up</Link>
         </p>

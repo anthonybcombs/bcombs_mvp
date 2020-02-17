@@ -59,14 +59,7 @@ const CreateProfileStyled = styled.form`
   h3 {
     text-align: center;
   }
-  .grid {
-    display: grid;
-  }
-  .grid div {
-    display: block;
-    width: 100% !important;
-    padding: 0px;
-  }
+
   [hidden] {
     display: none;
   }
