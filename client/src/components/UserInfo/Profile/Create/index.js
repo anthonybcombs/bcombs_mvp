@@ -5,7 +5,7 @@ const CreateProfileStyled = styled.div`
   display: block;
   margin: 0 auto;
   background-color: white;
-  width: 60%;
+  width: 30%;
   overflow: auto;
   height: auto;
   padding: 5px 30px 5px 30px;
