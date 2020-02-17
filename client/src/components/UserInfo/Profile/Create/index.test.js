@@ -18,7 +18,12 @@ describe("Create Profile", () => {
       expect(header).toBeInTheDocument();
       expect(header.textContent).toContain("Let's get started");
     });
-    test("does contains header with text of Create my profile", () => {});
+    test("does contains header with text of Create my profile", () => {
+      const { getByText } = render(component);
+      const header = getByText(/Create my profile/);
+      expect(header).toBeInTheDocument();
+      expect(header.textContent).toContain("Create my profile");
+    });
     test("does contains input(firsname)", () => {});
     test("does contains input(lastname)", () => {});
     test("does contains select(family realtionships)", () => {});
