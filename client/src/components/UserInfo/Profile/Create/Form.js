@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 const CreateProfileStyled = styled.form`
   input:required {
@@ -7,8 +7,7 @@ const CreateProfileStyled = styled.form`
   input:invalid {
     box-shadow: none;
   }
-  input,
-  select {
+  input {
     background: none;
     width: 100%;
     color: black;
@@ -19,7 +18,6 @@ const CreateProfileStyled = styled.form`
     border: none;
     outline: 0;
     border-bottom: 2px solid lightgrey;
-    outline: 0;
     margin-top: 2.5em;
     margin-bottom: 2.5em;
   }
@@ -44,26 +42,45 @@ const CreateProfileStyled = styled.form`
     margin-top: 0.5em;
   }
   select {
+    font-size: ${({ theme }) => theme.input.fontSize};
     display: block;
-    width: 100%;
-    font-size: ${({ theme }) => theme.select.fontSize};
     border: none;
+    border-radius: 1;
+    margin-top: 2.5em;
+    margin-bottom: 2.5em;
   }
-  select option {
-    font-weight: normal;
+  input:invalid,
+  select:invalid {
+    color: grey !important;
+  }
+  option:not([value=""]) {
+    color: black !important;
   }
   h3 {
     text-align: center;
   }
+  .grid {
+    display: grid;
+  }
+  [hidden] {
+    display: none;
+  }
+  input[type="date"]:after {
+    content: attr(placeholder);
+  }
   @media (min-width: 600px) {
-    #userTypes {
+    .grid {
       grid-template-columns: 50% 50%;
-      grid-gap: 0;
+      grid-gap: 1%;
     }
   }
 `;
 export default function Form() {
+  const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
+  const handleDateOfBirthElementTypeChange = value => {
+    setDateOfBirthElementType(value);
+  };
   return (
     <CreateProfileStyled method="POST" theme={theme}>
       <h3>Create my profile</h3>
@@ -77,41 +94,54 @@ export default function Form() {
         name="lastname"
         placeholder="Last name"
       />
-      <select
-        data-testid="app-profile-create-select-gender"
-        name="gender"
-        defaultValue={""}
-      >
-        <option value="" disabled>
-          Gender
-        </option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-      </select>
-      <select
-        data-testid="app-profile-create-select-family-relationship"
-        name="family-relationship"
-        defaultValue={""}
-      >
-        <option value="" disabled>
-          Family relationship
-        </option>
-        <option value="father">Father</option>
-        <option value="mother">Mother</option>
-        <option value="sibling">Sibling</option>
-      </select>
-      <input
-        data-testid="app-profile-create-input-zip-code"
-        name="zipcode"
-        type="number"
-        placeholder="Zip code"
-      />
-      <input
-        data-testid="app-profile-create-input-date-of-birth"
-        name="zipcode"
-        type="date"
-        placeholder="Date of Birth"
-      />
+      <div className="grid">
+        <select
+          data-testid="app-profile-create-select-gender"
+          name="gender"
+          defaultValue={""}
+          required
+        >
+          <option value="" disabled hidden>
+            Gender
+          </option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+        <select
+          data-testid="app-profile-create-select-family-relationship"
+          name="family-relationship"
+          defaultValue={""}
+          required
+        >
+          <option value="" disabled hidden>
+            Family relationship
+          </option>
+          <option value="father">Father</option>
+          <option value="mother">Mother</option>
+          <option value="sibling">Sibling</option>
+        </select>
+      </div>
+      <div className="grid">
+        <input
+          data-testid="app-profile-create-input-zip-code"
+          name="zipcode"
+          type="number"
+          placeholder="Zip code"
+        />
+        <input
+          data-testid="app-profile-create-input-date-of-birth"
+          name="dateofbirth"
+          type={dateOfBirthElementType}
+          placeholder="Date of Birth"
+          onFocus={() => {
+            handleDateOfBirthElementTypeChange("date");
+          }}
+          onBlur={() => {
+            handleDateOfBirthElementTypeChange("text");
+          }}
+        />
+      </div>
+
       <button data-testid="app-profile-create-submit-button" type="submit">
         Save and Continue
       </button>
