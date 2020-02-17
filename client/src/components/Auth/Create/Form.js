@@ -35,6 +35,7 @@ const CreateUserFormStyled = styled.form`
     background-color: lightgrey;
     border: none;
     box-shadow: 0px 3px 6px #908e8e;
+    border-radius: ${({ theme }) => theme.button.borderRadius};
   }
   button[type="submit"] {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
@@ -79,7 +80,7 @@ const CreateUserFormStyled = styled.form`
   @media (min-width: 600px) {
     #userTypes {
       grid-template-columns: 50% 50%;
-      grid-gap: 0;
+      grid-gap: 0.5%;
     }
   }
 `;

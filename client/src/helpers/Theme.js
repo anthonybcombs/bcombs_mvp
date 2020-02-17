@@ -20,7 +20,8 @@ export const defaultTheme = {
       primary: "white",
       secondary: "#f26e21"
     },
-    fontSize: "0.8em"
+    fontSize: "0.8em",
+    borderRadius: "10px"
   },
   select: {
     fontSize: "1em"

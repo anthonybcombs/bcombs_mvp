@@ -34,6 +34,7 @@ const ForgotPasswordFormStyled = styled.form`
     background-color: lightgrey;
     border: none;
     box-shadow: 0px 3px 6px #908e8e;
+    border-radius: ${({ theme }) => theme.button.borderRadius} !important;
   }
   button[type="submit"] {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};

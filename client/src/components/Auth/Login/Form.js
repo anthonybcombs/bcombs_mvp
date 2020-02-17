@@ -38,6 +38,7 @@ const LoginFormStyled = styled.form`
     box-shadow: 0px 3px 6px #908e8e;
     padding-top: 1em;
     padding-bottom: 1em;
+    border-radius: ${({ theme }) => theme.button.borderRadius} !important;
   }
   button[type="submit"] {
     padding: 10px;
