@@ -58,7 +58,18 @@ describe("Create Profile", () => {
         "Family relationship"
       );
     });
-    test("does contains select(gender)", () => {});
+    test("does contains select(gender)", () => {
+      const defaultOptions = ["male", "female", ""];
+      const { getByTestId } = render(component);
+      const selectGender = getByTestId("app-profile-create-select-gender");
+      const options = Array.from(selectGender.childNodes).map(
+        option => option.value
+      );
+      expect(selectGender).toBeInTheDocument();
+      expect(selectGender.type).toBe("select-one");
+      expect(options).toEqual(expect.arrayContaining(defaultOptions));
+      expect(selectGender.childNodes[0].textContent).toBe("Gender");
+    });
     test("does contains input(zip code)", () => {});
     test("does contains input(date of birth)", () => {});
     test("does contains save to continue submit button", () => {});
