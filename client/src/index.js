@@ -35,7 +35,6 @@ const GlobalStyle = createGlobalStyle`
   .grid > * {
     display: block;
     width: 100% !important;
-    padding: 0px;
   }  
   body{
     margin:0;

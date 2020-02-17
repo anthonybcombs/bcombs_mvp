@@ -36,10 +36,8 @@ describe("Family Member", () => {
       );
     });
     test("contains add family member button", () => {
-      const { getByTestId } = render(component);
-      const subHeader = getByTestId(
-        "app-profile-create-family-member-add-family-button"
-      );
+      const { getByText } = render(component);
+      const subHeader = getByText("Add family member");
       expect(subHeader).toBeInTheDocument();
       expect(subHeader.textContent).toBe("Add family member");
     });

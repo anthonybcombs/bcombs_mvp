@@ -8,7 +8,8 @@ import DashBoard from "./components/Dashboard/";
 import Login from "./components/Auth/Login";
 import CreateUser from "./components/Auth/Create";
 import ForgotPassword from "./components/Auth//ForgotPassword";
-import CreateProfile from "./components/UserInfo/Profile/Create";
+import Profile from "./components/UserInfo/Profile";
+
 export default function App() {
   const authenticated = useSelector(state => state.auth.status === "SIGNED_IN");
   return (
@@ -23,12 +24,12 @@ export default function App() {
         <Layout>
           <div data-testid="app">
             <Router>
-              <CreateProfile path="/profile" />
               <Auth path="/">
                 <Login path="/" />
                 <CreateUser path="auth/create" />
                 <ForgotPassword path="auth/forgot-password" />
               </Auth>
+              <Profile path="profile" />
             </Router>
           </div>
         </Layout>
