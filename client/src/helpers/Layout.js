@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
-import { Link } from "@reach/router";
+import { Link, Location } from "@reach/router";
 import Logo from "../images/logo1.png";
 const HeaderStyled = styled.header`
   display: grid;
@@ -40,6 +40,7 @@ const LayoutStyled = styled.div`
   margin: 0;
   padding: 0;
 `;
+
 export default function Layout({ children }) {
   const theme = useContext(ThemeContext);
   return (
@@ -50,14 +51,23 @@ export default function Layout({ children }) {
             <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
           </Link>
         </div>
-
         <div id="app-header-left">
-          <Link data-testid="app-header-login" to="/">
-            Login
-          </Link>
-          <Link data-testid="app-header-register" to="/auth/create">
-            Register
-          </Link>
+          <Location
+            children={context => {
+              if (context.location.pathname === "/auth/forgot-password") {
+                return (
+                  <>
+                    <Link data-testid="app-header-login" to="/">
+                      Login
+                    </Link>
+                    <Link data-testid="app-header-register" to="/auth/create">
+                      Register
+                    </Link>
+                  </>
+                );
+              }
+            }}
+          />
         </div>
       </HeaderStyled>
       {children}
