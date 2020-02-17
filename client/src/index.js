@@ -1,6 +1,7 @@
 import React, { StrictMode } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import { createHistory, LocationProvider } from "@reach/router";
 import { createGlobalStyle, ThemeContext } from "styled-components";
 import backgroundImg from "./images/loginbg.png";
 import { defaultTheme } from "./helpers/Theme.js";
@@ -26,19 +27,21 @@ const GlobalStyle = createGlobalStyle`
   @media (min-width: 600px) {
     body{
       overflow-x: hidden;
-      font-size: 18px;      
+      font-size: 16px;      
     }
   }  
 `;
-
+let history = createHistory(window);
 ReactDOM.render(
   <Provider store={store}>
-    <GlobalStyle />
-    <ThemeContext.Provider value={defaultTheme}>
-      <StrictMode>
-        <App />
-      </StrictMode>
-    </ThemeContext.Provider>
+    <LocationProvider history={history}>
+      <GlobalStyle />
+      <ThemeContext.Provider value={defaultTheme}>
+        <StrictMode>
+          <App />
+        </StrictMode>
+      </ThemeContext.Provider>
+    </LocationProvider>
   </Provider>,
   document.getElementById("root")
 );
