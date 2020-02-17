@@ -35,7 +35,13 @@ describe("Create Profile", () => {
       expect(inputFirstname.type).toBe("text");
       expect(inputFirstname.placeholder).toBe("First name");
     });
-    test("does contains input(lastname)", () => {});
+    test("does contains input(lastname)", () => {
+      const { getByTestId } = render(component);
+      const inputLastname = getByTestId("app-profile-create-input-lastname");
+      expect(inputLastname).toBeInTheDocument();
+      expect(inputLastname.type).toBe("text");
+      expect(inputLastname.placeholder).toBe("Last name");
+    });
     test("does contains select(family realtionships)", () => {});
     test("does contains select(gender)", () => {});
     test("does contains input(zip code)", () => {});
