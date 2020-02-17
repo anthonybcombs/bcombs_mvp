@@ -77,7 +77,21 @@ describe("Create Profile", () => {
       expect(inputZipCode.type).toBe("number");
       expect(inputZipCode.placeholder).toBe("Zip code");
     });
-    test("does contains input(date of birth)", () => {});
-    test("does contains save to continue submit button", () => {});
+    test("does contains input(date of birth)", () => {
+      const { getByTestId } = render(component);
+      const inputDateOfBirth = getByTestId(
+        "app-profile-create-input-date-of-birth"
+      );
+      expect(inputDateOfBirth).toBeInTheDocument();
+      expect(inputDateOfBirth.type).toBe("date");
+      expect(inputDateOfBirth.placeholder).toBe("Date of Birth");
+    });
+    test("does contains save to continue submit button", () => {
+      const { getByTestId } = render(component);
+      const signInButton = getByTestId("app-profile-create-submit-button");
+      expect(signInButton).toBeInTheDocument();
+      expect(signInButton.type).toBe("submit");
+      expect(signInButton.innerHTML).toEqual("Save and Continue");
+    });
   });
 });
