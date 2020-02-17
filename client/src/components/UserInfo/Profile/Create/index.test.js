@@ -20,7 +20,7 @@ describe("Create Profile", () => {
       const { getByText } = render(component);
       const header = getByText(/Let's get started/);
       expect(header).toBeInTheDocument();
-      expect(header.textContent).toContain("Let's get started");
+      expect(header.textContent).toContain("Let's get started!");
     });
     test("does contains header with text of Create my profile", () => {
       const { getByText } = render(component);
