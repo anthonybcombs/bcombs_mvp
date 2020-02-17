@@ -17,7 +17,6 @@ export default function Form() {
       <select
         data-testid="app-profile-create-select-family-relationship"
         name="family-relationship"
-        placeholder="Family relationship"
         defaultValue={""}
       >
         <option value="" disabled>
@@ -26,6 +25,17 @@ export default function Form() {
         <option value="father">Father</option>
         <option value="mother">Mother</option>
         <option value="sibling">Sibling</option>
+      </select>
+      <select
+        data-testid="app-profile-create-select-gender"
+        name="gender"
+        defaultValue={""}
+      >
+        <option value="" disabled>
+          Gender
+        </option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
       </select>
     </form>
   );
