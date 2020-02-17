@@ -21,7 +21,7 @@ const CreateProfileStyled = styled.form`
     outline: 0;
     border-bottom: 2px solid lightgrey;
     margin-top: 2.5em;
-    margin-bottom: 2.5em;
+    margin-bottom: 1.5em;
   }
   input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
@@ -46,14 +46,11 @@ const CreateProfileStyled = styled.form`
   select {
     font-size: ${({ theme }) => theme.input.fontSize};
     display: block;
+    width: 100% !important;
     border: none;
     border-radius: 1;
     margin-top: 2.5em;
-    margin-bottom: 2.5em;
-  }
-  input:invalid,
-  select:invalid {
-    color: grey !important;
+    margin-bottom: 1.5em;
   }
   option:not([value=""]) {
     color: black !important;
@@ -63,6 +60,11 @@ const CreateProfileStyled = styled.form`
   }
   .grid {
     display: grid;
+  }
+  .grid div {
+    display: block;
+    width: 100% !important;
+    padding: 0px;
   }
   [hidden] {
     display: none;
@@ -123,87 +125,95 @@ export default function Form({ profileDetails, onSubmit, handleInputChange }) {
         message="Lastname is required."
       />
       <div className="grid">
-        <select
-          data-testid="app-profile-create-select-gender"
-          name="gender"
-          value={profileDetails.gender}
-          onChange={({ target }) => {
-            handleInputChange("gender", target.value);
-          }}
-          ref={register({ required: true })}
-        >
-          <option value="" disabled hidden>
-            Gender
-          </option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-        <ErrorMessage
-          field={errors.gender}
-          errorType="required"
-          message="Gender is required."
-        />
-        <select
-          data-testid="app-profile-create-select-family-relationship"
-          name="familyrelationship"
-          value={profileDetails.familyrelationship}
-          onChange={({ target }) => {
-            handleInputChange("familyrelationship", target.value);
-          }}
-          ref={register({ required: true })}
-        >
-          <option value="" disabled hidden>
-            Family relationship
-          </option>
-          <option value="father">Father</option>
-          <option value="mother">Mother</option>
-          <option value="sibling">Sibling</option>
-        </select>
-        <ErrorMessage
-          field={errors.familyrelationship}
-          errorType="required"
-          message="Family relationship is required."
-        />
+        <div>
+          <select
+            data-testid="app-profile-create-select-gender"
+            name="gender"
+            value={profileDetails.gender}
+            onChange={({ target }) => {
+              handleInputChange("gender", target.value);
+            }}
+            ref={register({ required: true })}
+          >
+            <option value="" disabled hidden>
+              Gender
+            </option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+          <ErrorMessage
+            field={errors.gender}
+            errorType="required"
+            message="Gender is required."
+          />
+        </div>
+        <div>
+          <select
+            data-testid="app-profile-create-select-family-relationship"
+            name="familyrelationship"
+            value={profileDetails.familyrelationship}
+            onChange={({ target }) => {
+              handleInputChange("familyrelationship", target.value);
+            }}
+            ref={register({ required: true })}
+          >
+            <option value="" disabled hidden>
+              Family relationship
+            </option>
+            <option value="father">Father</option>
+            <option value="mother">Mother</option>
+            <option value="sibling">Sibling</option>
+          </select>
+          <ErrorMessage
+            field={errors.familyrelationship}
+            errorType="required"
+            message="Family relationship is required."
+          />
+        </div>
       </div>
       <div className="grid">
-        <input
-          data-testid="app-profile-create-input-zip-code"
-          name="zipcode"
-          type="number"
-          placeholder="Zip code"
-          value={profileDetails.zipcode}
-          onChange={({ target }) => {
-            handleInputChange("zipcode", target.value);
-          }}
-          ref={register({ required: true })}
-        />
-        <ErrorMessage
-          field={errors.zipcode}
-          errorType="required"
-          message="Zip code is required."
-        />
-        <input
-          data-testid="app-profile-create-input-date-of-birth"
-          name="dateofbirth"
-          type={dateOfBirthElementType}
-          placeholder="Date of Birth"
-          onFocus={() => {
-            handleDateOfBirthElementTypeChange("date");
-          }}
-          onBlur={() => {
-            handleDateOfBirthElementTypeChange("text");
-          }}
-          value={profileDetails.dateofbirth}
-          onChange={({ target }) => {
-            handleInputChange("dateofbirth", target.value);
-          }}
-          ref={register({ required: true })}
-        />
-        <ErrorMessage
-          field={errors.dateofbirth}
-          errorType="required"
-          message="Date of Birth is required."
-        />
+        <div>
+          <input
+            data-testid="app-profile-create-input-zip-code"
+            name="zipcode"
+            type="number"
+            placeholder="Zip code"
+            value={profileDetails.zipcode}
+            onChange={({ target }) => {
+              handleInputChange("zipcode", target.value);
+            }}
+            ref={register({ required: true })}
+          />
+          <ErrorMessage
+            field={errors.zipcode}
+            errorType="required"
+            message="Zip code is required."
+          />
+        </div>
+        <div>
+          <input
+            data-testid="app-profile-create-input-date-of-birth"
+            name="dateofbirth"
+            type={dateOfBirthElementType}
+            placeholder="Date of Birth"
+            onFocus={() => {
+              handleDateOfBirthElementTypeChange("date");
+            }}
+            onBlur={() => {
+              handleDateOfBirthElementTypeChange("text");
+            }}
+            value={profileDetails.dateofbirth}
+            onChange={({ target }) => {
+              handleInputChange("dateofbirth", target.value);
+            }}
+            ref={register({ required: true })}
+          />
+          <ErrorMessage
+            field={errors.dateofbirth}
+            errorType="required"
+            message="Date of Birth is required."
+          />
+        </div>
       </div>
 
       <button data-testid="app-profile-create-submit-button" type="submit">
