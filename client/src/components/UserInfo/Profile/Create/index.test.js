@@ -1,5 +1,5 @@
-import React, { StrictMode } from "react";
-import { render, cleanup, fireEvent } from "@testing-library/react";
+import React from "react";
+import { render, cleanup, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import CreateTestComponent from "../../../../helpers/CreateTestComponent";
 import CreateProfile from ".";
@@ -197,6 +197,84 @@ describe("Create Profile", () => {
         fireEvent.blur(inputDateOfBirth);
         expect(inputDateOfBirth.type).toBe("text");
         expect(inputDateOfBirth.placeholder).toBe("Date of Birth");
+      });
+    });
+    describe("submit form tests", () => {
+      test("form submit without errors", async () => {
+        const { getByTestId, queryByText } = render(component);
+        const inputFirstname = getByTestId(
+          "app-profile-create-input-firstname"
+        );
+        const inputLastname = getByTestId("app-profile-create-input-lastname");
+        const selectGender = getByTestId("app-profile-create-select-gender");
+        const selectFamilyRelationship = getByTestId(
+          "app-profile-create-select-family-relationship"
+        );
+        const inputZipCode = getByTestId("app-profile-create-input-zip-code");
+        const inputDateOfBirth = getByTestId(
+          "app-profile-create-input-date-of-birth"
+        );
+        const createProfileForm = getByTestId("app-create-profile-form");
+        fireEvent.change(inputFirstname, {
+          target: { value: "bon nicolai" }
+        });
+        fireEvent.change(inputLastname, { target: { value: "mercado" } });
+        fireEvent.change(selectGender, { target: { value: "female" } });
+        fireEvent.change(selectFamilyRelationship, {
+          target: { value: "father" }
+        });
+        fireEvent.change(inputDateOfBirth, {
+          target: { value: "01/29/2020" }
+        });
+        fireEvent.change(inputZipCode, { target: { value: "2020" } });
+        await act(async () => {
+          fireEvent.submit(createProfileForm);
+        });
+        expect(queryByText("Firstname is required.")).not.toBeInTheDocument();
+        expect(queryByText("Lastname is required.")).not.toBeInTheDocument();
+        expect(queryByText("Gender is required.")).not.toBeInTheDocument();
+        expect(
+          queryByText("Family relationship is required.")
+        ).not.toBeInTheDocument();
+        expect(queryByText("Zip code is required.")).not.toBeInTheDocument();
+        expect(
+          queryByText("Date of Birth is required.")
+        ).not.toBeInTheDocument();
+      });
+      test("submit with errors", async () => {
+        const { getByTestId, queryByText } = render(component);
+        const inputFirstname = getByTestId(
+          "app-profile-create-input-firstname"
+        );
+        const inputLastname = getByTestId("app-profile-create-input-lastname");
+        const selectGender = getByTestId("app-profile-create-select-gender");
+        const selectFamilyRelationship = getByTestId(
+          "app-profile-create-select-family-relationship"
+        );
+        const inputZipCode = getByTestId("app-profile-create-input-zip-code");
+        const inputDateOfBirth = getByTestId(
+          "app-profile-create-input-date-of-birth"
+        );
+        const createProfileForm = getByTestId("app-create-profile-form");
+        fireEvent.change(inputFirstname, { target: { value: "" } });
+        fireEvent.change(inputLastname, { target: { value: "" } });
+        fireEvent.change(selectGender, { target: { value: "" } });
+        fireEvent.change(selectFamilyRelationship, {
+          target: { value: "" }
+        });
+        fireEvent.change(inputDateOfBirth, { target: { value: "" } });
+        fireEvent.change(inputZipCode, { target: { value: "" } });
+        await act(async () => {
+          fireEvent.submit(createProfileForm);
+        });
+        expect(queryByText("Firstname is required.")).toBeInTheDocument();
+        expect(queryByText("Lastname is required.")).toBeInTheDocument();
+        expect(queryByText("Gender is required.")).toBeInTheDocument();
+        expect(
+          queryByText("Family relationship is required.")
+        ).toBeInTheDocument();
+        expect(queryByText("Zip code is required.")).toBeInTheDocument();
+        expect(queryByText("Date of Birth is required.")).toBeInTheDocument();
       });
     });
   });
