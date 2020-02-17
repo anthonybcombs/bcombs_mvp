@@ -9,6 +9,11 @@ export default function Form() {
         name="firstname"
         placeholder="First name"
       />
+      <input
+        data-testid="app-profile-create-input-lastname"
+        name="lastname"
+        placeholder="Last name"
+      />
     </form>
   );
 }
