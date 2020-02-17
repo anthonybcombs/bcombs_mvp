@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function index(props) {
-  return <>{props.children}</>;
+export default function index({ children }) {
+  return <>{children}</>;
 }
