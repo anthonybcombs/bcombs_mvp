@@ -30,7 +30,7 @@ describe("Create Profile", () => {
     });
     test("does contains input(firsname)", () => {
       const { getByTestId } = render(component);
-      const inputFirstname = getByTestId("app-profile-create-input-username");
+      const inputFirstname = getByTestId("app-profile-create-input-firstname");
       expect(inputFirstname).toBeInTheDocument();
       expect(inputFirstname.type).toBe("text");
       expect(inputFirstname.placeholder).toBe("First name");

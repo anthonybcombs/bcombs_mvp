@@ -5,7 +5,7 @@ export default function Form() {
     <form>
       <h2>Create my profile</h2>
       <input
-        data-testid="app-profile-create-input-username"
+        data-testid="app-profile-create-input-firstname"
         name="firstname"
         placeholder="First name"
       />
