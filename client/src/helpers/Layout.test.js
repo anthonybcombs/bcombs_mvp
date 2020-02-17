@@ -35,7 +35,7 @@ describe("renders Layout", () => {
     expect(button.textContent).toBe("Register");
   });
   test("contains footer", () => {
-    const { getByTestId, rerender } = render(component());
+    const { getByTestId } = render(component());
     expect(getByTestId("app-footer")).toBeInTheDocument();
   });
 });
