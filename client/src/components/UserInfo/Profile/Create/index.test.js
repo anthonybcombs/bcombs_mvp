@@ -83,7 +83,7 @@ describe("Create Profile", () => {
         "app-profile-create-input-date-of-birth"
       );
       expect(inputDateOfBirth).toBeInTheDocument();
-      expect(inputDateOfBirth.type).toBe("date");
+      expect(inputDateOfBirth.type).toBe("text");
       expect(inputDateOfBirth.placeholder).toBe("Date of Birth");
     });
     test("does contains save to continue submit button", () => {
@@ -92,6 +92,20 @@ describe("Create Profile", () => {
       expect(signInButton).toBeInTheDocument();
       expect(signInButton.type).toBe("submit");
       expect(signInButton.innerHTML).toEqual("Save and Continue");
+    });
+  });
+  describe("test behaivor", () => {
+    test("date type switching from text to date", () => {
+      const { getByTestId } = render(component);
+      const inputDateOfBirth = getByTestId(
+        "app-profile-create-input-date-of-birth"
+      );
+      expect(inputDateOfBirth).toBeInTheDocument();
+      fireEvent.focus(inputDateOfBirth);
+      expect(inputDateOfBirth.type).toBe("date");
+      fireEvent.blur(inputDateOfBirth);
+      expect(inputDateOfBirth.type).toBe("text");
+      expect(inputDateOfBirth.placeholder).toBe("Date of Birth");
     });
   });
 });
