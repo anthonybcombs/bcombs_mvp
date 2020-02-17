@@ -29,7 +29,7 @@ const CreateProfileStyled = styled.div`
 export default function index() {
   return (
     <CreateProfileStyled data-testid="app-profile-create">
-      <h2>Let's get started</h2>
+      <h2>Let's get started!</h2>
       <Form />
     </CreateProfileStyled>
   );
