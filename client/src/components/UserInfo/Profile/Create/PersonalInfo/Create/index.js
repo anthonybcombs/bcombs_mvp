@@ -26,7 +26,7 @@ const CreateProfileStyled = styled.div`
     }
   }
 `;
-export default function index() {
+export default function index({ setCurrentPage }) {
   const [profileDetails, setProfileDetails] = useState({
     firstname: "",
     lastname: "",
@@ -38,7 +38,9 @@ export default function index() {
   const handleInputChange = (id, value) => {
     setProfileDetails({ ...profileDetails, [id]: value });
   };
-  const handleFormSubmit = values => {};
+  const handleFormSubmit = values => {
+    setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
+  };
   return (
     <CreateProfileStyled data-testid="app-profile-create">
       <h2>Let's get started!</h2>

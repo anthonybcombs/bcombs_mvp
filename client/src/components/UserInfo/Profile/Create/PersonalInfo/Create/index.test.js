@@ -1,14 +1,15 @@
 import React from "react";
 import { render, cleanup, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import CreateTestComponent from "../../../../helpers/CreateTestComponent";
+import CreateTestComponent from "../../../../../../helpers/CreateTestComponent";
 import CreateProfile from ".";
 afterEach(cleanup);
 
 describe("Create Profile", () => {
+  const setCurrentPage = jest.fn();
   const component = (
     <CreateTestComponent>
-      <CreateProfile />
+      <CreateProfile setCurrentPage={setCurrentPage} />
     </CreateTestComponent>
   );
   describe("test renders", () => {
@@ -240,6 +241,7 @@ describe("Create Profile", () => {
         expect(
           queryByText("Date of Birth is required.")
         ).not.toBeInTheDocument();
+        expect(setCurrentPage).toHaveBeenCalled();
       });
       test("submit with errors", async () => {
         const { getByTestId, queryByText } = render(component);
