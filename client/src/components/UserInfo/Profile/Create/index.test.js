@@ -42,7 +42,22 @@ describe("Create Profile", () => {
       expect(inputLastname.type).toBe("text");
       expect(inputLastname.placeholder).toBe("Last name");
     });
-    test("does contains select(family realtionships)", () => {});
+    test("does contains select(family realtionship)", () => {
+      const defaultOptions = ["sibling", "father", "mother", ""];
+      const { getByTestId } = render(component);
+      const selectFamilyRelationship = getByTestId(
+        "app-profile-create-select-family-relationship"
+      );
+      const options = Array.from(selectFamilyRelationship.childNodes).map(
+        option => option.value
+      );
+      expect(selectFamilyRelationship).toBeInTheDocument();
+      expect(selectFamilyRelationship.type).toBe("select-one");
+      expect(options).toEqual(expect.arrayContaining(defaultOptions));
+      expect(selectFamilyRelationship.childNodes[0].textContent).toBe(
+        "Family relationship"
+      );
+    });
     test("does contains select(gender)", () => {});
     test("does contains input(zip code)", () => {});
     test("does contains input(date of birth)", () => {});
