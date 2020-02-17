@@ -43,6 +43,15 @@ export default function Form() {
         type="number"
         placeholder="Zip code"
       />
+      <input
+        data-testid="app-profile-create-input-date-of-birth"
+        name="zipcode"
+        type="date"
+        placeholder="Date of Birth"
+      />
+      <button data-testid="app-profile-create-submit-button" type="submit">
+        Save and Continue
+      </button>
     </form>
   );
 }
