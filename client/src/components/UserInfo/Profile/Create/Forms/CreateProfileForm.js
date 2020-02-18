@@ -23,7 +23,7 @@ const CreateProfileStyled = styled.form`
     margin-top: 2.5em;
     margin-bottom: 2.5em;
   }
-input:focus {
+  input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
@@ -64,6 +64,7 @@ input:focus {
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 50% 50%;
+      grid-gap: 2%;
     }
     button[type="submit"] {
       width: 200px !important;
@@ -119,6 +120,27 @@ export default function CreateProfileForm({
         errorType="required"
         message="Lastname is required."
       />
+      <select
+        data-testid="app-profile-create-select-family-relationship"
+        name="familyrelationship"
+        value={details.familyrelationship}
+        onChange={({ target }) => {
+          handleInputChange("familyrelationship", target.value);
+        }}
+        ref={register({ required: true })}
+      >
+        <option value="" disabled hidden>
+          Family relationship
+        </option>
+        <option value="father">Father</option>
+        <option value="mother">Mother</option>
+        <option value="sibling">Sibling</option>
+      </select>
+      <ErrorMessage
+        field={errors.familyrelationship}
+        errorType="required"
+        message="Family relationship is required."
+      />
       <div className="grid">
         <div>
           <select
@@ -143,31 +165,6 @@ export default function CreateProfileForm({
           />
         </div>
         <div>
-          <select
-            data-testid="app-profile-create-select-family-relationship"
-            name="familyrelationship"
-            value={details.familyrelationship}
-            onChange={({ target }) => {
-              handleInputChange("familyrelationship", target.value);
-            }}
-            ref={register({ required: true })}
-          >
-            <option value="" disabled hidden>
-              Family relationship
-            </option>
-            <option value="father">Father</option>
-            <option value="mother">Mother</option>
-            <option value="sibling">Sibling</option>
-          </select>
-          <ErrorMessage
-            field={errors.familyrelationship}
-            errorType="required"
-            message="Family relationship is required."
-          />
-        </div>
-      </div>
-      <div className="grid">
-        <div>
           <input
             data-testid="app-profile-create-input-zip-code"
             name="zipcode"
@@ -184,8 +181,6 @@ export default function CreateProfileForm({
             errorType="required"
             message="Zip code is required."
           />
-        </div>
-        <div>
           <input
             data-testid="app-profile-create-input-date-of-birth"
             name="dateofbirth"
@@ -210,7 +205,6 @@ export default function CreateProfileForm({
           />
         </div>
       </div>
-
       <button data-testid="app-profile-create-submit-button" type="submit">
         Save and Continue
       </button>
