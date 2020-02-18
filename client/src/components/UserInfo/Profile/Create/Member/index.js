@@ -4,8 +4,8 @@ import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled, { ThemeContext } from "styled-components";
-import CreateFamilyModal from "./Create/";
-const CreateFamilyMemberStyled = styled.div`
+import CreateMemberModal from "./Create/";
+const CreateMemberStyled = styled.div`
   display: block;
   margin: 0 auto;
   background-color: white;
@@ -59,15 +59,15 @@ const CreateFamilyMemberStyled = styled.div`
     color: ${({ theme }) => theme.button.textColor.secondary};
     font-weight: bold;
   }
-  .family-member button {
+  .member button {
     background-color: transparent !important;
     box-shadow: none;
   }
-  .family-member p span {
+  .member p span {
     display: block;
     color: grey;
   }
-  .family-member p span:first-child {
+  .member p span:first-child {
     color: black;
   }
   @media (min-width: 600px) {
@@ -78,7 +78,7 @@ const CreateFamilyMemberStyled = styled.div`
       grid-template-columns: repeat(12, minmax(210px, 1fr));
       grid-gap: 1%;
     }
-    #family-members {
+    #members {
       margin: 0 auto;
       width: 55%;
     }
@@ -92,37 +92,32 @@ const CreateFamilyMemberStyled = styled.div`
   }
 `;
 export default function index({ setCurrentPage }) {
-  const [familyMembers, setFamilyMembers] = useState([
+  const [members, setMembers] = useState([
     { name: "Molly Mom", type: "Family Manager" }
   ]);
-  const [createFamilyMemberModal, setCreateFamilyMemberModal] = useState(false);
+  const [createMemberModal, setCreateMemberModal] = useState(false);
   const theme = useContext(ThemeContext);
-  const toggleCreateFamilyModal = () => {
-    setCreateFamilyMemberModal(!createFamilyMemberModal);
+  const toggleMemberModal = () => {
+    setCreateMemberModal(!createMemberModal);
   };
   const handleOncliSkipButton = () => {
     setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
   };
   return (
-    <CreateFamilyMemberStyled
-      data-testid="app-profile-create-family-member"
-      theme={theme}
-    >
-      <CreateFamilyModal
-        visible={createFamilyMemberModal}
-        toggleCreateFamilyModal={toggleCreateFamilyModal}
+    <CreateMemberStyled data-testid="app-profile-create-member" theme={theme}>
+      <h2 data-testid="app-profile-create-member-header">Add Members</h2>
+      <CreateMemberModal
+        visible={createMemberModal}
+        toggleMemberModal={toggleMemberModal}
       />
-      <h2 data-testid="app-profile-create-family-member-header">
-        Add Family Members
-      </h2>
-      <h3 data-testid="app-profile-create-family-member-sub-header">
-        Add family members so you can view their schedules in your calendar
-      </h3>
-      <div id="family-members" className="grid">
-        {familyMembers.map((family, index) => {
+      <p data-testid="app-profile-create-member-sub-header">
+        Add members so you can eas1ly see calendars.
+      </p>
+      <div id="members" className="grid">
+        {members.map((member, index) => {
           return (
             <div key={index}>
-              <div className="family-member button-holder">
+              <div className="member button-holder">
                 <button>
                   <FontAwesomeIcon
                     icon={faSmile}
@@ -131,8 +126,8 @@ export default function index({ setCurrentPage }) {
                   />
                 </button>
                 <p>
-                  <span>{family.name}</span>
-                  <span>{family.type}</span>
+                  <span>{member.name}</span>
+                  <span>{member.type}</span>
                 </p>
               </div>
             </div>
@@ -141,23 +136,23 @@ export default function index({ setCurrentPage }) {
         <div>
           <div className="button-holder">
             <FontAwesomeIcon
-              data-testid="app-profile-create-family-member-add-family-button"
-              onClick={toggleCreateFamilyModal}
+              data-testid="app-profile-create-member-add-button"
+              onClick={toggleMemberModal}
               icon={faPlusCircle}
               size="7x"
               color={theme.button.backgroundColor.primary}
             />
-            <p>Add family member</p>
+            <p>Add a member</p>
           </div>
         </div>
       </div>
       <button
-        data-testid="app-profile-create-family-member-skip-button"
+        data-testid="app-profile-create-member-skip-button"
         id="skip"
         onClick={handleOncliSkipButton}
       >
         Skip
       </button>
-    </CreateFamilyMemberStyled>
+    </CreateMemberStyled>
   );
 }

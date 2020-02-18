@@ -1,79 +1,68 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {
-  render,
-  cleanup,
-  fireEvent,
-  renderIntoDocument
-} from "@testing-library/react";
+import { render, cleanup, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import CreateTestComponent from "../../../../../helpers/CreateTestComponent";
-import FamilyMember from ".";
+import Member from ".";
 afterEach(cleanup);
+
 describe("Family Member", () => {
   beforeAll(() => {
     ReactDOM.createPortal = jest.fn((element, node) => {
       return element;
     });
   });
-
   afterEach(() => {
     ReactDOM.createPortal.mockClear();
   });
   const setCurrentPage = jest.fn();
   const component = (
     <CreateTestComponent>
-      <FamilyMember setCurrentPage={setCurrentPage} />
+      <Member setCurrentPage={setCurrentPage} />
     </CreateTestComponent>
   );
   describe("test renders", () => {
     test("renders without issue", () => {
       const { getByTestId } = render(component);
-      expect(
-        getByTestId("app-profile-create-family-member")
-      ).toBeInTheDocument();
+      expect(getByTestId("app-profile-create-member")).toBeInTheDocument();
     });
-    test("contains header with text of Add Family Member", () => {
+    test("contains header with text of Add Members", () => {
       const { getByTestId } = render(component);
-      const header = getByTestId("app-profile-create-family-member-header");
+      const header = getByTestId("app-profile-create-member-header");
       expect(header).toBeInTheDocument();
-      expect(header.textContent).toBe("Add Family Members");
+      expect(header.textContent).toBe("Add Members");
     });
-    test("contains header with text of Add family members so you can view their schedules in your calendar", () => {
+    test("contains header with text of Add members so you can eas1ly see calendars.", () => {
       const { getByTestId } = render(component);
-      const subHeader = getByTestId(
-        "app-profile-create-family-member-sub-header"
-      );
+      const subHeader = getByTestId("app-profile-create-member-sub-header");
       expect(subHeader).toBeInTheDocument();
       expect(subHeader.textContent).toBe(
-        "Add family members so you can view their schedules in your calendar"
+        "Add members so you can eas1ly see calendars."
       );
     });
-    test("contains add family member button", () => {
+    test("contains add member button", () => {
       const { getByText } = render(component);
-      const subHeader = getByText("Add family member");
+      const subHeader = getByText("Add a member");
       expect(subHeader).toBeInTheDocument();
-      expect(subHeader.textContent).toBe("Add family member");
+      expect(subHeader.textContent).toBe("Add a member");
     });
     test("contains skip button", () => {
       const { getByTestId } = render(component);
-      const subHeader = getByTestId(
-        "app-profile-create-family-member-skip-button"
-      );
+      const subHeader = getByTestId("app-profile-create-member-skip-button");
       expect(subHeader).toBeInTheDocument();
       expect(subHeader.textContent).toBe("Skip");
     });
   });
   describe("test behavior", () => {
-    describe("add family button", () => {
+    describe("add member button", () => {
       test("on load modal on click", () => {
         const { getByTestId } = render(component);
         const addFamilyButton = getByTestId(
-          "app-profile-create-family-member-add-family-button"
+          "app-profile-create-member-add-button"
         );
         fireEvent.click(addFamilyButton);
         expect(
-          getByTestId("app-profile-create-family-member-create-modal")
+          getByTestId("app-profile-create-member-create-modal")
         ).toBeInTheDocument();
       });
     });

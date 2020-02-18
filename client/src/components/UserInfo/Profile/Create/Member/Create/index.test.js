@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { render, cleanup, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import CreateTestComponent from "../../../../../../helpers/CreateTestComponent";
-import AddFamilyMemberModal from "./";
+import AddMember from "./";
 afterEach(cleanup);
 describe("Add Family Member Modal", () => {
   beforeAll(() => {
@@ -17,22 +17,22 @@ describe("Add Family Member Modal", () => {
   const setCurrentPage = jest.fn();
   const component = (
     <CreateTestComponent>
-      <AddFamilyMemberModal setCurrentPage={setCurrentPage} />
+      <AddMember setCurrentPage={setCurrentPage} />
     </CreateTestComponent>
   );
   describe("test render", () => {
     test("render without errors", () => {
       const { getByTestId } = render(component);
-      const div = getByTestId("app-profile-create-family-member-create-modal");
+      const div = getByTestId("app-profile-create-member-create-modal");
       expect(div).toBeInTheDocument();
     });
-    test("contains header with text Add a family member", () => {
+    test("contains header with text Add a member", () => {
       const { getByTestId } = render(component);
       const header = getByTestId(
-        "app-profile-create-family-member-create-modal-header"
+        "app-profile-create-member-create-modal-header"
       );
       expect(header).toBeInTheDocument();
-      expect(header.textContent).toBe("Add a family member");
+      expect(header.textContent).toBe("Add a member");
     });
     test("does contains input(firsname)", () => {
       const { getByTestId } = render(component);
