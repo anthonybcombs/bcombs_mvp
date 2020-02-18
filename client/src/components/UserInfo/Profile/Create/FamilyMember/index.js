@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import randomColor from "randomcolor";
 import { faSmile } from "@fortawesome/free-regular-svg-icons";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled, { ThemeContext } from "styled-components";
 import CreateFamilyModal from "./Create/";
@@ -9,13 +9,14 @@ const CreateFamilyMemberStyled = styled.div`
   display: block;
   margin: 0 auto;
   background-color: white;
-  width: 70%;
+  width: 80%;
   overflow: auto;
   height: auto;
   padding: 5px 30px 5px 30px;
   position: relative;
   top: 3vh;
   box-shadow: 0 0 25px #eae9e9;
+  text-align: center;
   button {
     display: block;
     color: ${({ theme }) => theme.button.textColor.primary};
@@ -27,22 +28,29 @@ const CreateFamilyMemberStyled = styled.div`
     padding-bottom: 1em;
     border-radius: ${({ theme }) => theme.button.borderRadius};
   }
-  h2 {
-    text-align: center;
+  h2,
+  h3 {
     font-weight: normal;
   }
   #skip {
     padding: 10px;
     width: 100%;
-    background-color: grey;
+    background-color: white;
+    color: black;
     margin: 0 auto;
+    border: 1px solid grey;
+    border-radius: 40px;
+    box-shadow: none;
   }
   .grid button {
-    border-radius: 50% !important;
+    border-radius: 52% !important;
     padding: 10px;
   }
   .button-holder {
-    text-align: center;
+    margin-top: 3em;
+  }
+  .button-holder > .fa-plus-circle {
+    cursor: pointer;
   }
   .button-holder button {
     margin: 0 auto;
@@ -63,22 +71,27 @@ const CreateFamilyMemberStyled = styled.div`
     color: black;
   }
   @media (min-width: 600px) {
+    .button-holder {
+      float: left;
+    }
     .grid {
-      grid-template-columns: repeat(12, minmax(200px, 1fr));
+      margin: 0 auto;
+      width: 55%;
+      grid-template-columns: repeat(12, minmax(210px, 1fr));
       grid-gap: 1%;
     }
     h2 {
       font-weight: bold;
     }
     #skip {
-      width: 150px;
+      width: 100px;
+      margin-top: 8em;
     }
   }
 `;
 export default function index() {
   const [familyMembers, setFamilyMembers] = useState([
-    { name: "Molly Mom", type: "Family Manager" },
-    { name: "Molly Father", type: "Family Manager" }
+    { name: "Molly Mom", type: "Family Manager" }
   ]);
   const [createFamilyMemberModal, setCreateFamilyMemberModal] = useState(false);
   const theme = useContext(ThemeContext);
@@ -91,15 +104,15 @@ export default function index() {
       theme={theme}
     >
       <h2 data-testid="app-profile-create-family-member-header">
-        Add Family Member
+        Add Family Members
       </h2>
       <CreateFamilyModal
         visible={createFamilyMemberModal}
         toggleCreateFamilyModal={toggleCreateFamilyModal}
       />
-      <p data-testid="app-profile-create-family-member-sub-header">
+      <h3 data-testid="app-profile-create-family-member-sub-header">
         Add family members so you can view their schedules in your calendar
-      </p>
+      </h3>
       <div className="grid">
         {familyMembers.map((family, index) => {
           return (
@@ -108,7 +121,7 @@ export default function index() {
                 <button>
                   <FontAwesomeIcon
                     icon={faSmile}
-                    size="10x"
+                    size="7x"
                     color={randomColor()}
                   />
                 </button>
@@ -122,13 +135,13 @@ export default function index() {
         })}
         <div>
           <div className="button-holder">
-            <button
+            <FontAwesomeIcon
               data-testid="app-profile-create-family-member-add-family-button"
-              id="add-famly-member-button"
               onClick={toggleCreateFamilyModal}
-            >
-              <FontAwesomeIcon icon={faPlus} size="10x" />
-            </button>
+              icon={faPlusCircle}
+              size="7x"
+              color={theme.button.backgroundColor.primary}
+            />
             <p>Add family member</p>
           </div>
         </div>
