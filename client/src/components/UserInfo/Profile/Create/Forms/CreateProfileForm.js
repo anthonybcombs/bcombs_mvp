@@ -64,7 +64,7 @@ const CreateProfileStyled = styled.form`
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 50% 50%;
-      grid-gap: 2%;
+      grid-gap: 1%;
     }
     button[type="submit"] {
       width: 200px !important;

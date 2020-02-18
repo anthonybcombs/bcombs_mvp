@@ -75,10 +75,12 @@ const CreateFamilyMemberStyled = styled.div`
       float: left;
     }
     .grid {
-      margin: 0 auto;
-      width: 55%;
       grid-template-columns: repeat(12, minmax(210px, 1fr));
       grid-gap: 1%;
+    }
+    #family-members {
+      margin: 0 auto;
+      width: 55%;
     }
     h2 {
       font-weight: bold;
@@ -103,17 +105,17 @@ export default function index() {
       data-testid="app-profile-create-family-member"
       theme={theme}
     >
-      <h2 data-testid="app-profile-create-family-member-header">
-        Add Family Members
-      </h2>
       <CreateFamilyModal
         visible={createFamilyMemberModal}
         toggleCreateFamilyModal={toggleCreateFamilyModal}
       />
+      <h2 data-testid="app-profile-create-family-member-header">
+        Add Family Members
+      </h2>
       <h3 data-testid="app-profile-create-family-member-sub-header">
         Add family members so you can view their schedules in your calendar
       </h3>
-      <div className="grid">
+      <div id="family-members" className="grid">
         {familyMembers.map((family, index) => {
           return (
             <div key={index}>

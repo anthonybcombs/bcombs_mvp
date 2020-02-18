@@ -16,7 +16,6 @@ const GlobalStyle = createGlobalStyle`
   }
   .modal {
     position: fixed; 
-    z-index: 1; 
     left: 0;
     top: 0;
     width: 100%; 
@@ -28,10 +27,10 @@ const GlobalStyle = createGlobalStyle`
   
   .modal-content {
     background-color: white;
-    margin: 10% auto; 
+    margin: 1em auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 35%; 
+    width: 30%; 
   }
   
   /* The Close Button */

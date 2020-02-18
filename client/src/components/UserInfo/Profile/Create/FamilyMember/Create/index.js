@@ -1,5 +1,12 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import styled from "styled-components";
 import Form from "../../Forms/CreateProfileForm";
+const CreateFamilyModalStyled = styled.div`
+  h2 {
+    text-align: center;
+  }
+`;
 export default function index({
   setCurrentPage,
   visible = true,
@@ -22,8 +29,8 @@ export default function index({
   if (!visible) {
     return <></>;
   }
-  return (
-    <div
+  return ReactDOM.createPortal(
+    <CreateFamilyModalStyled
       data-testid="app-profile-create-family-member-create-modal"
       className="modal"
     >
@@ -40,6 +47,7 @@ export default function index({
           handleInputChange={handleInputChange}
         />
       </div>
-    </div>
+    </CreateFamilyModalStyled>,
+    document.querySelector("#modal")
   );
 }
