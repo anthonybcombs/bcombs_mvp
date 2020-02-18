@@ -21,7 +21,7 @@ export const defaultTheme = {
       secondary: "#f26e21"
     },
     fontSize: "0.8em",
-    borderRadius: "10px"
+    borderRadius: "40px"
   },
   select: {
     fontSize: "1em"
