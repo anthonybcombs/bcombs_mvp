@@ -23,7 +23,7 @@ describe("Family Member", () => {
       const { getByTestId } = render(component);
       const header = getByTestId("app-profile-create-family-member-header");
       expect(header).toBeInTheDocument();
-      expect(header.textContent).toBe("Add Family Member");
+      expect(header.textContent).toBe("Add Family Members");
     });
     test("contains header with text of Add family members so you can view their schedules in your calendar", () => {
       const { getByTestId } = render(component);
