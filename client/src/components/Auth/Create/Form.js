@@ -57,6 +57,8 @@ const CreateUserFormStyled = styled.form`
   }
   #userTypes button {
     padding: 10px;
+    border-radius: 0 !important;
+    margin: 5px;
   }
   #userTypes button.selected {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
@@ -79,7 +81,7 @@ const CreateUserFormStyled = styled.form`
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 50% 50%;
-      grid-gap: 0.5%;
+      grid-gap: 1%;
     }
   }
 `;

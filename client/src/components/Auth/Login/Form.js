@@ -53,6 +53,8 @@ const LoginFormStyled = styled.form`
   }
   #socials button {
     padding: 1em;
+    border-radius: 0 !important;
+    margin: 5px;
   }
   #facebook {
     background-color: ${({ theme }) => theme.button.backgroundColor.secondary};
