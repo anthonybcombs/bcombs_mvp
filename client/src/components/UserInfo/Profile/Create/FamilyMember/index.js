@@ -86,7 +86,7 @@ const CreateFamilyMemberStyled = styled.div`
       font-weight: bold;
     }
     #skip {
-      width: 100px;
+      width: ${({ theme }) => theme.button.width.primary};
       margin-top: 8em;
     }
   }
@@ -105,17 +105,15 @@ export default function index({ setCurrentPage }) {
   };
   return (
     <CreateFamilyMemberStyled
-      data-testid="app-profile-create-family-member"
+      data-testid="app-profile-family-member"
       theme={theme}
     >
       <CreateFamilyModal
         visible={createFamilyMemberModal}
         toggleCreateFamilyModal={toggleCreateFamilyModal}
       />
-      <h2 data-testid="app-profile-create-family-member-header">
-        Add Family Members
-      </h2>
-      <h3 data-testid="app-profile-create-family-member-sub-header">
+      <h2 data-testid="app-profile-family-member-header">Add Family Members</h2>
+      <h3 data-testid="app-profile-family-member-sub-header">
         Add family members so you can view their schedules in your calendar
       </h3>
       <div id="family-members" className="grid">
@@ -141,7 +139,7 @@ export default function index({ setCurrentPage }) {
         <div>
           <div className="button-holder">
             <FontAwesomeIcon
-              data-testid="app-profile-create-family-member-add-family-button"
+              data-testid="app-profile-family-member-add-family-button"
               onClick={toggleCreateFamilyModal}
               icon={faPlusCircle}
               size="7x"
@@ -152,7 +150,7 @@ export default function index({ setCurrentPage }) {
         </div>
       </div>
       <button
-        data-testid="app-profile-create-family-member-skip-button"
+        data-testid="app-profile-family-member-skip-button"
         id="skip"
         onClick={handleOncliSkipButton}
       >

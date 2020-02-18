@@ -24,17 +24,17 @@ describe("Family Member", () => {
   describe("test renders", () => {
     test("renders without issue", () => {
       const { getByTestId } = render(component);
-      expect(getByTestId("app-profile-create-member")).toBeInTheDocument();
+      expect(getByTestId("app-profile-member")).toBeInTheDocument();
     });
     test("contains header with text of Add Members", () => {
       const { getByTestId } = render(component);
-      const header = getByTestId("app-profile-create-member-header");
+      const header = getByTestId("app-profile-member-header");
       expect(header).toBeInTheDocument();
       expect(header.textContent).toBe("Add Members");
     });
     test("contains header with text of Add members so you can eas1ly see calendars.", () => {
       const { getByTestId } = render(component);
-      const subHeader = getByTestId("app-profile-create-member-sub-header");
+      const subHeader = getByTestId("app-profile-member-sub-header");
       expect(subHeader).toBeInTheDocument();
       expect(subHeader.textContent).toBe(
         "Add members so you can eas1ly see calendars."
@@ -48,7 +48,7 @@ describe("Family Member", () => {
     });
     test("contains skip button", () => {
       const { getByTestId } = render(component);
-      const subHeader = getByTestId("app-profile-create-member-skip-button");
+      const subHeader = getByTestId("app-profile-member-skip-button");
       expect(subHeader).toBeInTheDocument();
       expect(subHeader.textContent).toBe("Skip");
     });
@@ -57,12 +57,10 @@ describe("Family Member", () => {
     describe("add member button", () => {
       test("on load modal on click", () => {
         const { getByTestId } = render(component);
-        const addFamilyButton = getByTestId(
-          "app-profile-create-member-add-button"
-        );
+        const addFamilyButton = getByTestId("app-profile-member-add-button");
         fireEvent.click(addFamilyButton);
         expect(
-          getByTestId("app-profile-create-member-create-modal")
+          getByTestId("app-profile-member-create-modal")
         ).toBeInTheDocument();
       });
     });

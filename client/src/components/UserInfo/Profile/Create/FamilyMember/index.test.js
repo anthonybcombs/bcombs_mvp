@@ -1,11 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {
-  render,
-  cleanup,
-  fireEvent,
-  renderIntoDocument
-} from "@testing-library/react";
+import { render, cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import CreateTestComponent from "../../../../../helpers/CreateTestComponent";
 import FamilyMember from ".";
@@ -29,21 +24,17 @@ describe("Family Member", () => {
   describe("test renders", () => {
     test("renders without issue", () => {
       const { getByTestId } = render(component);
-      expect(
-        getByTestId("app-profile-create-family-member")
-      ).toBeInTheDocument();
+      expect(getByTestId("app-profile-family-member")).toBeInTheDocument();
     });
     test("contains header with text of Add Family Member", () => {
       const { getByTestId } = render(component);
-      const header = getByTestId("app-profile-create-family-member-header");
+      const header = getByTestId("app-profile-family-member-header");
       expect(header).toBeInTheDocument();
       expect(header.textContent).toBe("Add Family Members");
     });
     test("contains header with text of Add family members so you can view their schedules in your calendar", () => {
       const { getByTestId } = render(component);
-      const subHeader = getByTestId(
-        "app-profile-create-family-member-sub-header"
-      );
+      const subHeader = getByTestId("app-profile-family-member-sub-header");
       expect(subHeader).toBeInTheDocument();
       expect(subHeader.textContent).toBe(
         "Add family members so you can view their schedules in your calendar"
@@ -57,9 +48,7 @@ describe("Family Member", () => {
     });
     test("contains skip button", () => {
       const { getByTestId } = render(component);
-      const subHeader = getByTestId(
-        "app-profile-create-family-member-skip-button"
-      );
+      const subHeader = getByTestId("app-profile-family-member-skip-button");
       expect(subHeader).toBeInTheDocument();
       expect(subHeader.textContent).toBe("Skip");
     });
@@ -69,11 +58,11 @@ describe("Family Member", () => {
       test("on load modal on click", () => {
         const { getByTestId } = render(component);
         const addFamilyButton = getByTestId(
-          "app-profile-create-family-member-add-family-button"
+          "app-profile-family-member-add-family-button"
         );
         fireEvent.click(addFamilyButton);
         expect(
-          getByTestId("app-profile-create-family-member-create-modal")
+          getByTestId("app-profile-family-member-create-modal")
         ).toBeInTheDocument();
       });
     });

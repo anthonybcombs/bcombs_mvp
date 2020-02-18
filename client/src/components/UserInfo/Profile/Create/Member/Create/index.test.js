@@ -23,27 +23,25 @@ describe("Add Family Member Modal", () => {
   describe("test render", () => {
     test("render without errors", () => {
       const { getByTestId } = render(component);
-      const div = getByTestId("app-profile-create-member-create-modal");
+      const div = getByTestId("app-profile-member-create-modal");
       expect(div).toBeInTheDocument();
     });
     test("contains header with text Add a member", () => {
       const { getByTestId } = render(component);
-      const header = getByTestId(
-        "app-profile-create-member-create-modal-header"
-      );
+      const header = getByTestId("app-profile-member-create-modal-header");
       expect(header).toBeInTheDocument();
       expect(header.textContent).toBe("Add a member");
     });
     test("does contains input(firsname)", () => {
       const { getByTestId } = render(component);
-      const inputFirstname = getByTestId("app-profile-create-input-firstname");
+      const inputFirstname = getByTestId("app-profile-input-firstname");
       expect(inputFirstname).toBeInTheDocument();
       expect(inputFirstname.type).toBe("text");
       expect(inputFirstname.placeholder).toBe("First name");
     });
     test("does contains input(lastname)", () => {
       const { getByTestId } = render(component);
-      const inputLastname = getByTestId("app-profile-create-input-lastname");
+      const inputLastname = getByTestId("app-profile-input-lastname");
       expect(inputLastname).toBeInTheDocument();
       expect(inputLastname.type).toBe("text");
       expect(inputLastname.placeholder).toBe("Last name");
@@ -52,7 +50,7 @@ describe("Add Family Member Modal", () => {
       const defaultOptions = ["sibling", "father", "mother", ""];
       const { getByTestId } = render(component);
       const selectFamilyRelationship = getByTestId(
-        "app-profile-create-select-family-relationship"
+        "app-profile-select-family-relationship"
       );
       const options = Array.from(selectFamilyRelationship.childNodes).map(
         option => option.value
@@ -67,7 +65,7 @@ describe("Add Family Member Modal", () => {
     test("does contains select(gender)", () => {
       const defaultOptions = ["male", "female", ""];
       const { getByTestId } = render(component);
-      const selectGender = getByTestId("app-profile-create-select-gender");
+      const selectGender = getByTestId("app-profile-select-gender");
       const options = Array.from(selectGender.childNodes).map(
         option => option.value
       );
@@ -78,23 +76,21 @@ describe("Add Family Member Modal", () => {
     });
     test("does contains input(zip code)", () => {
       const { getByTestId } = render(component);
-      const inputZipCode = getByTestId("app-profile-create-input-zip-code");
+      const inputZipCode = getByTestId("app-profile-input-zip-code");
       expect(inputZipCode).toBeInTheDocument();
       expect(inputZipCode.type).toBe("number");
       expect(inputZipCode.placeholder).toBe("Zip code");
     });
     test("does contains input(date of birth)", () => {
       const { getByTestId } = render(component);
-      const inputDateOfBirth = getByTestId(
-        "app-profile-create-input-date-of-birth"
-      );
+      const inputDateOfBirth = getByTestId("app-profile-input-date-of-birth");
       expect(inputDateOfBirth).toBeInTheDocument();
       expect(inputDateOfBirth.type).toBe("text");
       expect(inputDateOfBirth.placeholder).toBe("Date of Birth");
     });
     test("does contains save to continue submit button", () => {
       const { getByTestId } = render(component);
-      const signInButton = getByTestId("app-profile-create-submit-button");
+      const signInButton = getByTestId("app-profile-submit-button");
       expect(signInButton).toBeInTheDocument();
       expect(signInButton.type).toBe("submit");
       expect(signInButton.innerHTML).toEqual("Save and Continue");
@@ -104,16 +100,12 @@ describe("Add Family Member Modal", () => {
     describe("Input Firstname", () => {
       test("test initial value", () => {
         const { getByTestId } = render(component);
-        const inputFirstname = getByTestId(
-          "app-profile-create-input-firstname"
-        );
+        const inputFirstname = getByTestId("app-profile-input-firstname");
         expect(inputFirstname.value.length).toBe(0);
       });
       test("test value when changed", () => {
         const { getByTestId } = render(component);
-        const inputFirstname = getByTestId(
-          "app-profile-create-input-firstname"
-        );
+        const inputFirstname = getByTestId("app-profile-input-firstname");
         fireEvent.change(inputFirstname, { target: { value: "bon nicolai" } });
         expect(inputFirstname.value).toBe("bon nicolai");
       });
@@ -121,12 +113,12 @@ describe("Add Family Member Modal", () => {
     describe("Input Lastname", () => {
       test("test initial value", () => {
         const { getByTestId } = render(component);
-        const inputlastName = getByTestId("app-profile-create-input-lastname");
+        const inputlastName = getByTestId("app-profile-input-lastname");
         expect(inputlastName.value.length).toBe(0);
       });
       test("test value when changed", () => {
         const { getByTestId } = render(component);
-        const inputLastname = getByTestId("app-profile-create-input-lastname");
+        const inputLastname = getByTestId("app-profile-input-lastname");
         fireEvent.change(inputLastname, { target: { value: "mercado" } });
         expect(inputLastname.value).toBe("mercado");
       });
@@ -134,12 +126,12 @@ describe("Add Family Member Modal", () => {
     describe("Select Gender", () => {
       test("test initial value", () => {
         const { getByTestId } = render(component);
-        const selectGender = getByTestId("app-profile-create-select-gender");
+        const selectGender = getByTestId("app-profile-select-gender");
         expect(selectGender.value.length).toBe(0);
       });
       test("test value when changed", () => {
         const { getByTestId } = render(component);
-        const selectGender = getByTestId("app-profile-create-select-gender");
+        const selectGender = getByTestId("app-profile-select-gender");
         fireEvent.change(selectGender, { target: { value: "male" } });
         expect(selectGender.value).toBe("male");
       });
@@ -148,14 +140,14 @@ describe("Add Family Member Modal", () => {
       test("test initial value", () => {
         const { getByTestId } = render(component);
         const selectFamilyRelationship = getByTestId(
-          "app-profile-create-select-family-relationship"
+          "app-profile-select-family-relationship"
         );
         expect(selectFamilyRelationship.value.length).toBe(0);
       });
       test("test value when changed", () => {
         const { getByTestId } = render(component);
         const selectFamilyRelationship = getByTestId(
-          "app-profile-create-select-family-relationship"
+          "app-profile-select-family-relationship"
         );
         fireEvent.change(selectFamilyRelationship, {
           target: { value: "father" }
@@ -166,12 +158,12 @@ describe("Add Family Member Modal", () => {
     describe("input Zip code", () => {
       test("test initial value", () => {
         const { getByTestId } = render(component);
-        const inputZipCode = getByTestId("app-profile-create-input-zip-code");
+        const inputZipCode = getByTestId("app-profile-input-zip-code");
         expect(inputZipCode.value.length).toBe(0);
       });
       test("test value when changed", () => {
         const { getByTestId } = render(component);
-        const inputZipCode = getByTestId("app-profile-create-input-zip-code");
+        const inputZipCode = getByTestId("app-profile-input-zip-code");
         fireEvent.change(inputZipCode, { target: { value: "2020" } });
         expect(inputZipCode.value).toBe("2020");
       });
@@ -179,24 +171,18 @@ describe("Add Family Member Modal", () => {
     describe("date of birth", () => {
       test("test initial value", () => {
         const { getByTestId } = render(component);
-        const inputdateofbirth = getByTestId(
-          "app-profile-create-input-date-of-birth"
-        );
+        const inputdateofbirth = getByTestId("app-profile-input-date-of-birth");
         expect(inputdateofbirth.value.length).toBe(0);
       });
       test("test value when changed", () => {
         const { getByTestId } = render(component);
-        const inputdateofbirth = getByTestId(
-          "app-profile-create-input-date-of-birth"
-        );
+        const inputdateofbirth = getByTestId("app-profile-input-date-of-birth");
         fireEvent.change(inputdateofbirth, { target: { value: "01/29/2019" } });
         expect(inputdateofbirth.value).toBe("01/29/2019");
       });
       test("date type switching from text to date", () => {
         const { getByTestId } = render(component);
-        const inputDateOfBirth = getByTestId(
-          "app-profile-create-input-date-of-birth"
-        );
+        const inputDateOfBirth = getByTestId("app-profile-input-date-of-birth");
         expect(inputDateOfBirth).toBeInTheDocument();
         fireEvent.focus(inputDateOfBirth);
         expect(inputDateOfBirth.type).toBe("date");
@@ -208,18 +194,14 @@ describe("Add Family Member Modal", () => {
     describe("submit form tests", () => {
       test("form submit without errors", async () => {
         const { getByTestId, queryByText } = render(component);
-        const inputFirstname = getByTestId(
-          "app-profile-create-input-firstname"
-        );
-        const inputLastname = getByTestId("app-profile-create-input-lastname");
-        const selectGender = getByTestId("app-profile-create-select-gender");
+        const inputFirstname = getByTestId("app-profile-input-firstname");
+        const inputLastname = getByTestId("app-profile-input-lastname");
+        const selectGender = getByTestId("app-profile-select-gender");
         const selectFamilyRelationship = getByTestId(
-          "app-profile-create-select-family-relationship"
+          "app-profile-select-family-relationship"
         );
-        const inputZipCode = getByTestId("app-profile-create-input-zip-code");
-        const inputDateOfBirth = getByTestId(
-          "app-profile-create-input-date-of-birth"
-        );
+        const inputZipCode = getByTestId("app-profile-input-zip-code");
+        const inputDateOfBirth = getByTestId("app-profile-input-date-of-birth");
         const createProfileForm = getByTestId("app-create-profile-form");
         fireEvent.change(inputFirstname, {
           target: { value: "bon nicolai" }
@@ -250,18 +232,14 @@ describe("Add Family Member Modal", () => {
       });
       test("submit with errors", async () => {
         const { getByTestId, queryByText } = render(component);
-        const inputFirstname = getByTestId(
-          "app-profile-create-input-firstname"
-        );
-        const inputLastname = getByTestId("app-profile-create-input-lastname");
-        const selectGender = getByTestId("app-profile-create-select-gender");
+        const inputFirstname = getByTestId("app-profile-input-firstname");
+        const inputLastname = getByTestId("app-profile-input-lastname");
+        const selectGender = getByTestId("app-profile-select-gender");
         const selectFamilyRelationship = getByTestId(
-          "app-profile-create-select-family-relationship"
+          "app-profile-select-family-relationship"
         );
-        const inputZipCode = getByTestId("app-profile-create-input-zip-code");
-        const inputDateOfBirth = getByTestId(
-          "app-profile-create-input-date-of-birth"
-        );
+        const inputZipCode = getByTestId("app-profile-input-zip-code");
+        const inputDateOfBirth = getByTestId("app-profile-input-date-of-birth");
         const createProfileForm = getByTestId("app-create-profile-form");
         fireEvent.change(inputFirstname, { target: { value: "" } });
         fireEvent.change(inputLastname, { target: { value: "" } });

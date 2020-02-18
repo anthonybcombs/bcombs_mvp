@@ -86,7 +86,7 @@ const CreateMemberStyled = styled.div`
       font-weight: bold;
     }
     #skip {
-      width: 100px;
+      width: ${({ theme }) => theme.button.width.primary};
       margin-top: 8em;
     }
   }
@@ -104,13 +104,13 @@ export default function index({ setCurrentPage }) {
     setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
   };
   return (
-    <CreateMemberStyled data-testid="app-profile-create-member" theme={theme}>
-      <h2 data-testid="app-profile-create-member-header">Add Members</h2>
+    <CreateMemberStyled data-testid="app-profile-member" theme={theme}>
+      <h2 data-testid="app-profile-member-header">Add Members</h2>
       <CreateMemberModal
         visible={createMemberModal}
         toggleMemberModal={toggleMemberModal}
       />
-      <p data-testid="app-profile-create-member-sub-header">
+      <p data-testid="app-profile-member-sub-header">
         Add members so you can eas1ly see calendars.
       </p>
       <div id="members" className="grid">
@@ -136,7 +136,7 @@ export default function index({ setCurrentPage }) {
         <div>
           <div className="button-holder">
             <FontAwesomeIcon
-              data-testid="app-profile-create-member-add-button"
+              data-testid="app-profile-member-add-button"
               onClick={toggleMemberModal}
               icon={faPlusCircle}
               size="7x"
@@ -147,7 +147,7 @@ export default function index({ setCurrentPage }) {
         </div>
       </div>
       <button
-        data-testid="app-profile-create-member-skip-button"
+        data-testid="app-profile-member-skip-button"
         id="skip"
         onClick={handleOncliSkipButton}
       >

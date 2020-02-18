@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Form from "../../Forms/CreateProfileForm";
+import Form from "../Forms/CreateProfileForm";
 const CreateProfileStyled = styled.div`
   display: block;
   margin: 0 auto;
@@ -42,7 +42,7 @@ export default function index({ setCurrentPage }) {
     setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
   };
   return (
-    <CreateProfileStyled data-testid="app-profile-create">
+    <CreateProfileStyled data-testid="app-profile">
       <h2>Let's get started!</h2>
       <Form
         details={profileDetails}

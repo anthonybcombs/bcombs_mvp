@@ -67,7 +67,7 @@ const CreateProfileStyled = styled.form`
       grid-gap: 1%;
     }
     button[type="submit"] {
-      width: 200px !important;
+      width: ${({ theme }) => theme.button.width.primary};
     }
   }
 `;
@@ -91,7 +91,7 @@ export default function CreateProfileForm({
     >
       <h3>Create my profile</h3>
       <input
-        data-testid="app-profile-create-input-firstname"
+        data-testid="app-profile-input-firstname"
         name="firstname"
         placeholder="First name"
         value={details.firstname}
@@ -106,7 +106,7 @@ export default function CreateProfileForm({
         message="Firstname is required."
       />
       <input
-        data-testid="app-profile-create-input-lastname"
+        data-testid="app-profile-input-lastname"
         name="lastname"
         placeholder="Last name"
         value={details.lastname}
@@ -121,7 +121,7 @@ export default function CreateProfileForm({
         message="Lastname is required."
       />
       <select
-        data-testid="app-profile-create-select-family-relationship"
+        data-testid="app-profile-select-family-relationship"
         name="familyrelationship"
         value={details.familyrelationship}
         onChange={({ target }) => {
@@ -144,7 +144,7 @@ export default function CreateProfileForm({
       <div className="grid">
         <div>
           <select
-            data-testid="app-profile-create-select-gender"
+            data-testid="app-profile-select-gender"
             name="gender"
             value={details.gender}
             onChange={({ target }) => {
@@ -166,7 +166,7 @@ export default function CreateProfileForm({
         </div>
         <div>
           <input
-            data-testid="app-profile-create-input-zip-code"
+            data-testid="app-profile-input-zip-code"
             name="zipcode"
             type="number"
             placeholder="Zip code"
@@ -182,7 +182,7 @@ export default function CreateProfileForm({
             message="Zip code is required."
           />
           <input
-            data-testid="app-profile-create-input-date-of-birth"
+            data-testid="app-profile-input-date-of-birth"
             name="dateofbirth"
             type={dateOfBirthElementType}
             placeholder="Date of Birth"
@@ -205,7 +205,7 @@ export default function CreateProfileForm({
           />
         </div>
       </div>
-      <button data-testid="app-profile-create-submit-button" type="submit">
+      <button data-testid="app-profile-submit-button" type="submit">
         Save and Continue
       </button>
     </CreateProfileStyled>

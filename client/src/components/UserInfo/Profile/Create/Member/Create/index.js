@@ -31,14 +31,14 @@ export default function index({
   }
   return ReactDOM.createPortal(
     <CreateMemberModal
-      data-testid="app-profile-create-member-create-modal"
+      data-testid="app-profile-member-create-modal"
       className="modal"
     >
       <div className="modal-content">
         <span className="close" onClick={toggleMemberModal}>
           &times;
         </span>
-        <h2 data-testid="app-profile-create-member-create-modal-header">
+        <h2 data-testid="app-profile-member-create-modal-header">
           Add a member
         </h2>
         <Form

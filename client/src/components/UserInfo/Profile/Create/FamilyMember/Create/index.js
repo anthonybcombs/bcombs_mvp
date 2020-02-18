@@ -31,14 +31,14 @@ export default function index({
   }
   return ReactDOM.createPortal(
     <CreateFamilyModalStyled
-      data-testid="app-profile-create-family-member-create-modal"
+      data-testid="app-profile-family-member-create-modal"
       className="modal"
     >
       <div className="modal-content">
         <span className="close" onClick={toggleCreateFamilyModal}>
           &times;
         </span>
-        <h2 data-testid="app-profile-create-family-member-create-modal-header">
+        <h2 data-testid="app-profile-family-member-create-modal-header">
           Add a family member
         </h2>
         <Form
