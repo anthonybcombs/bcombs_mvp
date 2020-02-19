@@ -111,7 +111,7 @@ export default function index({ setCurrentPage }) {
         toggleMemberModal={toggleMemberModal}
       />
       <p data-testid="app-profile-member-sub-header">
-        Add members so you can eas1ly see calendars.
+        Add members so you can easily see calendars.
       </p>
       <div id="members" className="grid">
         {members.map((member, index) => {
