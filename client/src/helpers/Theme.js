@@ -37,7 +37,26 @@ export const defaultTheme = {
     fontSize: "1em"
   },
   header: {
-    backgroundColor: "white",
+    backgroundColor: {
+      primary: "#f26e21",
+      secondary: "white"
+    },
+    textColor: { primary: "#f26e21" },
     fontSize: "1.3em"
+  },
+  smallCalendar: {
+    cell: {
+      backgroundColor: { primary: "#f26e21" },
+      textColor: {
+        primary: "white",
+        secondary: "lightgrey",
+        tertiary: "black"
+      },
+      border: {
+        color: {
+          primary: "#f26e21"
+        }
+      }
+    }
   }
 };

@@ -5,7 +5,7 @@ import Logo from "../images/logo1.png";
 const HeaderStyled = styled.h1`
   font-size: ${({ theme }) => theme.fontSize};
   width: 100vw;
-  background-color: ${({ theme }) => theme.backgroundColor};
+  background-color: ${({ theme }) => theme.backgroundColor.secondary};
   margin: 0;
   padding: 10px;
   border-bottom: 1px solid grey;

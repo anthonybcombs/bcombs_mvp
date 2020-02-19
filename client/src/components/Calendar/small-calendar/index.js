@@ -12,16 +12,10 @@ const SmallCalendarStyled = styled.div`
   border-radius: 30px;
   background-color: white;
 `;
-export default function index({
-  events = [
-    { name: "testing event 2", date: addDays(new Date(), 1) },
-    { name: "testing event 2", date: new Date() },
-    { name: "testing event 2", date: new Date() }
-  ]
-}) {
+export default function index({ events = [], selectedDate, setSelectedDate }) {
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
-    selectedDate: new Date()
+    selectedDate
   });
   const handlePrevMonth = () => {
     setCurrentDate({
@@ -37,6 +31,7 @@ export default function index({
   };
   const handleChangeDay = day => {
     setCurrentDate({ ...currentDate, selectedDate: day });
+    setSelectedDate(day);
   };
   return (
     <SmallCalendarStyled data-testid="app-small-calendar">

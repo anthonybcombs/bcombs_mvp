@@ -6,7 +6,7 @@ const HeaderStyled = styled.header`
   display: grid;
   text-align: center;
   font-size: ${({ theme }) => theme.fontSize};
-  background-color: ${({ theme }) => theme.backgroundColor};
+  background-color: ${({ theme }) => theme.backgroundColor.secondary};
   margin: 0;
   padding: 10px;
   border-bottom: 1px solid grey;
