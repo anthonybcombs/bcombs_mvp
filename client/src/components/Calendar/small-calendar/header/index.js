@@ -14,7 +14,7 @@ const HeaderStyled = styled.div`
   svg {
     cursor: pointer;
     position: relative;
-    margin: 15px auto;
+    margin: 20px auto;
   }
 `;
 export default function index({
