@@ -17,11 +17,7 @@ const HeaderStyled = styled.div`
     margin: 20px auto;
   }
 `;
-export default function index({
-  currentMonth,
-  handleNextMonth,
-  handlePrevMonth
-}) {
+export default function index({ currentMonth, handleChangeMonth }) {
   const dateFormat = "MMMM";
   return (
     <HeaderStyled data-testid="app-small-calendar-header">
@@ -29,7 +25,9 @@ export default function index({
         <FontAwesomeIcon
           data-testid="app-small-calendar-prev-month-button"
           icon={faArrowLeft}
-          onClick={handlePrevMonth}
+          onClick={() => {
+            handleChangeMonth();
+          }}
         />
       </div>
 
@@ -40,7 +38,9 @@ export default function index({
         <FontAwesomeIcon
           data-testid="app-small-calendar-next-month-button"
           icon={faArrowRight}
-          onClick={handleNextMonth}
+          onClick={() => {
+            handleChangeMonth("next");
+          }}
         />
       </div>
     </HeaderStyled>

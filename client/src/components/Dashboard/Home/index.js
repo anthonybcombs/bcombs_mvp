@@ -131,6 +131,7 @@ export default function index() {
               events={events}
               selectedDate={selectedDate}
               setSelectedDate={handleSetSelectedDate}
+              setSelectedEvent={setSelectedEvent}
             />
             <div className="accordion">
               <h3>

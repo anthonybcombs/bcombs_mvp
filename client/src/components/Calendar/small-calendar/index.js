@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { subMonths, addMonths, addDays, format } from "date-fns";
+import { subMonths, addMonths, startOfMonth, format } from "date-fns";
 import Header from "./header";
 import Days from "./days";
 import Cells from "./cells";
@@ -12,24 +12,34 @@ const SmallCalendarStyled = styled.div`
   border-radius: 30px;
   background-color: white;
 `;
-export default function index({ events = [], selectedDate, setSelectedDate }) {
+export default function index({
+  events = [],
+  selectedDate,
+  setSelectedDate,
+  setSelectedEvent
+}) {
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
     selectedDate
   });
-  const handlePrevMonth = () => {
+  const handleChangeMonth = operation => {
+    let currentMonth;
+    if (operation === "next") {
+      currentMonth = subMonths(currentDate.currentMonth, 1);
+    } else {
+      currentMonth = addMonths(currentDate.currentMonth, 1);
+    }
+    const firstDayOfTheMonth = startOfMonth(currentMonth);
+    setSelectedEvent();
+    setSelectedDate(startOfMonth(currentMonth));
     setCurrentDate({
       ...currentDate,
-      currentMonth: subMonths(currentDate.currentMonth, 1)
-    });
-  };
-  const handleNextMonth = () => {
-    setCurrentDate({
-      ...currentDate,
-      currentMonth: addMonths(currentDate.currentMonth, 1)
+      currentMonth,
+      selectedDate: firstDayOfTheMonth
     });
   };
   const handleChangeDay = day => {
+    setSelectedEvent();
     setCurrentDate({ ...currentDate, selectedDate: day });
     setSelectedDate(day);
   };
@@ -40,8 +50,7 @@ export default function index({ events = [], selectedDate, setSelectedDate }) {
       </h2>
       <Header
         currentMonth={currentDate.currentMonth}
-        handleNextMonth={handleNextMonth}
-        handlePrevMonth={handlePrevMonth}
+        handleChangeMonth={handleChangeMonth}
       />
       <Days currentMonth={currentDate.currentMonth} />
       <Cells
