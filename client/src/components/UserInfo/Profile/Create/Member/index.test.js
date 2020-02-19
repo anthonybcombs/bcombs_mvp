@@ -32,12 +32,12 @@ describe("Family Member", () => {
       expect(header).toBeInTheDocument();
       expect(header.textContent).toBe("Add Members");
     });
-    test("contains header with text of Add members so you can eas1ly see calendars.", () => {
+    test("contains header with text of Add members so you can easily see calendars.", () => {
       const { getByTestId } = render(component);
       const subHeader = getByTestId("app-profile-member-sub-header");
       expect(subHeader).toBeInTheDocument();
       expect(subHeader.textContent).toBe(
-        "Add members so you can eas1ly see calendars."
+        "Add members so you can easily see calendars."
       );
     });
     test("contains add member button", () => {
