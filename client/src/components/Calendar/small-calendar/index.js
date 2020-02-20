@@ -25,9 +25,9 @@ export default function index({
   const handleChangeMonth = operation => {
     let currentMonth;
     if (operation === "next") {
-      currentMonth = subMonths(currentDate.currentMonth, 1);
-    } else {
       currentMonth = addMonths(currentDate.currentMonth, 1);
+    } else {
+      currentMonth = subMonths(currentDate.currentMonth, 1);
     }
     const firstDayOfTheMonth = startOfMonth(currentMonth);
     setSelectedEvent();

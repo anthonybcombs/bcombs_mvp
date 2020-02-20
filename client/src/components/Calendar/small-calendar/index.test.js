@@ -7,9 +7,20 @@ import SmallCalendar from ".";
 afterEach(cleanup);
 
 describe("Calendar", () => {
+  const events = [];
+  const selectedDate = new Date();
+  const setSelectedDate = jest.fn();
+  const setSelectedEvent = jest.fn();
+  const setCurrentPage = jest.fn();
   const component = (
     <CreateTestComponent>
-      <SmallCalendar />
+      <SmallCalendar
+        events={events}
+        selectedDate={selectedDate}
+        setSelectedEvent={setSelectedEvent}
+        setSelectedDate={setSelectedDate}
+        setCurrentPage={setCurrentPage}
+      />
     </CreateTestComponent>
   );
   const currentDate = {
