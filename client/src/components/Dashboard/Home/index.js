@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
 import { format } from "date-fns";
-import { events, calendars } from "../../../helpers/dummyData";
+import { events } from "../../../helpers/dummyData";
 import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
 const HomeStyled = styled.div`
@@ -23,6 +23,9 @@ const HomeStyled = styled.div`
     height: auto;
     margin: 0.5em 0 0.5em 0;
     box-shadow: 0px 3px 6px #908e8e;
+  }
+  h3 {
+    cursor: pointer;
   }
   h3 > svg {
     margin-right: 0.5em;
@@ -52,7 +55,18 @@ const HomeStyled = styled.div`
     font-weight: bold;
     background-color: white;
   }
-
+  .is-closed h3:after {
+    content: "↓";
+    font-size: 1em;
+    color: black;
+    margin-left: 0.5em;
+  }
+  .is-open h3:after {
+    content: "↑";
+    font-size: 1em;
+    color: black;
+    margin-left: 0.5em;
+  }
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 4fr 6fr;
@@ -73,6 +87,15 @@ export default function index({ location }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
   const theme = useContext(ThemeContext);
+  const calendars = [
+    {
+      id: 1,
+      name:
+        location.state && location.state.calendarName.length > 0
+          ? location.state.calendarName
+          : "test"
+    }
+  ];
   const eventsOnThisDay = events.filter(
     event =>
       format(event.date, "MM dd yyyy") === format(selectedDate, "MM dd yyyy")
@@ -108,6 +131,7 @@ export default function index({ location }) {
                 </h3>
               }
               open
+              lazyRender
             >
               <div className="panel">
                 {calendars.map((calendar, i) => (
@@ -131,6 +155,7 @@ export default function index({ location }) {
                 </h3>
               }
               open
+              lazyRender
             >
               <div className="panel">
                 <div className="panel-body">test notification</div>

@@ -1,10 +1,4 @@
 import { addDays } from "date-fns";
-export const calendars = [
-  {
-    id: 1,
-    name: "test"
-  }
-];
 export const events = [
   {
     id: 1,
