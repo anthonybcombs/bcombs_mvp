@@ -64,8 +64,8 @@ export default function CreateCalendarForm({
   return (
     <CreateCalendarFormStyled
       data-testid="app-profile-calendar-create-form"
-      method="POST"
       theme={theme}
+      method="POST"
       onSubmit={handleSubmit(onSubmit)}
     >
       <input

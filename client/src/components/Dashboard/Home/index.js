@@ -1,22 +1,19 @@
 import React, { useState, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Collapsible from "react-collapsible";
 import {
   faCalendar,
   faBell,
   faPlusCircle
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
+import { events, calendars } from "../../../helpers/dummyData";
+import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
 const HomeStyled = styled.div`
   padding: 1px 1em 1px 1em;
   box-shadow: 0px 3px 6px #908e8e;
-  .accordion button {
-    width: 100%;
-  }
-  .accordion {
-    margin-top: 1em;
-  }
   .pane {
     display: block;
     position: relative;
@@ -44,11 +41,11 @@ const HomeStyled = styled.div`
   }
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
-    font-size: ${({ theme }) => theme.button.fontSize} !important;
+    font-size: ${({ theme }) => theme.button.fontSize};
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     border: none;
     box-shadow: 0px 3px 6px #908e8e;
-    border-radius: ${({ theme }) => theme.button.borderRadius} !important;
+    border-radius: ${({ theme }) => theme.button.borderRadius};
   }
   .selected {
     color: black;
@@ -63,53 +60,19 @@ const HomeStyled = styled.div`
     }
     #add-event-button {
       display: block;
-      position: relative;
+      position: absolute;
+      top: 0;
+      right: 0;
       width: 60px !important;
-      left: 88%;
+      margin-top: 0.5em;
+      margin-right: 0.5em;
     }
   }
 `;
-export default function index() {
+export default function index({ location }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
   const theme = useContext(ThemeContext);
-  const events = [
-    {
-      id: 1,
-      name: "testing event 1",
-      description:
-        "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
-      date: addDays(new Date(), 1)
-    },
-    {
-      id: 2,
-      name: "testing event 2",
-      description:
-        "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
-      date: new Date()
-    },
-    {
-      id: 3,
-      name: "testing event 3",
-      description:
-        "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
-      date: new Date()
-    },
-    {
-      id: 4,
-      name: "testing event 4",
-      description:
-        "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
-      date: new Date()
-    },
-    {
-      id: 5,
-      name: "testing event 5",
-      description:
-        "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
-      date: new Date()
-    }
-  ];
   const eventsOnThisDay = events.filter(
     event =>
       format(event.date, "MM dd yyyy") === format(selectedDate, "MM dd yyyy")
@@ -123,6 +86,10 @@ export default function index() {
   };
   return (
     <HomeStyled data-testid="app-dashboard-home" theme={theme}>
+      {location.state.calendarName &&
+        location.state.calendarName.length > 0 && (
+          <WelcomeMessage calendarName={location.state.calendarName} />
+        )}
       <h2 data-testid="app-dashboard-home-header">My Calendar</h2>
       <div className="grid">
         <div>
@@ -133,61 +100,79 @@ export default function index() {
               setSelectedDate={handleSetSelectedDate}
               setSelectedEvent={setSelectedEvent}
             />
-            <div className="accordion">
-              <h3>
-                <FontAwesomeIcon icon={faCalendar} />
-                <span>Calendars</span>
-              </h3>
+            <Collapsible
+              trigger={
+                <h3>
+                  <FontAwesomeIcon icon={faCalendar} />
+                  <span>Calendars</span>
+                </h3>
+              }
+              open
+            >
               <div className="panel">
-                {eventsOnThisDay.map((event, i) => (
+                {calendars.map((calendar, i) => (
                   <div
-                    className={`panel-body ${
-                      selectedEvent && event.id === selectedEvent.id
-                        ? "selected"
-                        : ""
-                    }`}
+                    className={`panel-body`}
                     key={i}
                     onClick={() => {
-                      handleEventSelection(event.id);
+                      handleEventSelection(calendar.id);
                     }}
                   >
-                    {event.name}
+                    {calendar.name}
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="accordion">
-              <h3>
-                <FontAwesomeIcon icon={faBell} />
-                <span>Notifications</span>
-              </h3>
+            </Collapsible>
+            <Collapsible
+              trigger={
+                <h3>
+                  <FontAwesomeIcon icon={faBell} />
+                  <span>Notifications</span>
+                </h3>
+              }
+              open
+            >
               <div className="panel">
                 <div className="panel-body">test notification</div>
                 <div className="panel-body">test notification</div>
                 <div className="panel-body">test notification</div>
               </div>
-            </div>
+            </Collapsible>
           </div>
         </div>
         <div>
           <div className="pane">
-            <div className="grid">
-              <h3>Test</h3>
-              <button id="add-event-button">
-                <FontAwesomeIcon icon={faPlusCircle} size="3x" />
-              </button>
-            </div>
+            <h3>Test</h3>
+            <button id="add-event-button">
+              <FontAwesomeIcon icon={faPlusCircle} size="3x" />
+            </button>
 
             <h2>Upcoming Events</h2>
+
             <div className="panel">
-              {selectedEvent ? (
+              {eventsOnThisDay.map((event, i) => (
+                <div
+                  className={`panel-body ${
+                    selectedEvent && event.id === selectedEvent.id
+                      ? "selected"
+                      : ""
+                  }`}
+                  key={i}
+                  onClick={() => {
+                    handleEventSelection(event.id);
+                  }}
+                >
+                  {event.name}
+                </div>
+              ))}
+              {/* {selectedEvent ? (
                 <div className="panel-body">
                   <h4>{selectedEvent.name}</h4>
                   {selectedEvent.description}
                 </div>
               ) : (
                 <p>No event for now. Create and enjoy the system.</p>
-              )}
+              )} */}
             </div>
           </div>
           <div className="pane">

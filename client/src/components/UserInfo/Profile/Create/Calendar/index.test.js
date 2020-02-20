@@ -6,10 +6,10 @@ import CreateCalendar from ".";
 afterEach(cleanup);
 
 describe("Create Calendar", () => {
-  const setCurrentPage = jest.fn();
+  const navigate = jest.fn();
   const component = (
     <CreateTestComponent>
-      <CreateCalendar setCurrentPage={setCurrentPage} />
+      <CreateCalendar navigate={navigate} />
     </CreateTestComponent>
   );
   describe("test render", () => {

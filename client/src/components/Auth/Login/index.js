@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Logo from "../../../images/logo1.png";
 import Form from "./Form";
@@ -30,14 +30,19 @@ const LoginStyled = styled.div`
     }
   }
 `;
-export default function index() {
+export default function index({ navigate }) {
   const [userDetails, setUserDetails] = useState({ email: "", password: "" });
   const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
-  const handleFormSubmit = values => {
+  const handleFormSubmit = async values => {
     dispatch(requestAuth());
+    await navigate(
+      "dashboard",
+      { state: { calendarName: "" } },
+      { replace: true }
+    );
   };
   return (
     <LoginStyled data-testid="app-login">

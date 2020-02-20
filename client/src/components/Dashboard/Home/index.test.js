@@ -6,9 +6,10 @@ import DashboardHome from ".";
 afterEach(cleanup);
 
 describe("Dashboard Home", () => {
+  const location = { state: { calendarName: "" } };
   const component = (
     <CreateTestComponent>
-      <DashboardHome />
+      <DashboardHome location={location} />
     </CreateTestComponent>
   );
   describe("test renders", () => {
