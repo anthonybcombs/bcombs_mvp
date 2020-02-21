@@ -33,6 +33,10 @@ const WelcomeMessageStyled = styled.div`
     .grid {
       grid-template-columns: 50% 50%;
     }
+    #jump-to-family-button {
+      margin: 1em auto;
+      width: 50% !important;
+    }
   }
 `;
 export default function index({ calendarName = "test" }) {
@@ -41,7 +45,7 @@ export default function index({ calendarName = "test" }) {
     <>
       {visible && (
         <WelcomeMessageStyled>
-          <h2>Congratulations and time to get organized!</h2>
+          <h1>Congratulations and time to get organized!</h1>
           <span
             className="close"
             onClick={() => {
@@ -52,10 +56,14 @@ export default function index({ calendarName = "test" }) {
           </span>
           <div className="grid">
             <p>{calendarName} has been created!</p>
-            <p>
-              Now you can personalize the whole family profile.Follow family
-              member's school,sports,activities calendars.
-              <button>Jump to My Family and Get Started!</button>
+            <p class="grid">
+              <span>
+                Now you can personalize the whole family profile.Follow family
+                member's school,sports,activities calendars.
+              </span>
+              <button id="jump-to-family-button">
+                Jump to My Family and Get Started!
+              </button>
             </p>
           </div>
         </WelcomeMessageStyled>
