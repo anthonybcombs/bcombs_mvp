@@ -24,6 +24,7 @@ const EventStyled = styled.div`
 `;
 const EventPopOverStyled = styled.div`
   background-color: white;
+  border: 2px solid lightgrey;
   color: black;
   padding: 5px;
   width: 300px;
@@ -67,9 +68,10 @@ export default function index({ event }) {
           position={position}
           targetRect={targetRect}
           popoverRect={popoverRect}
-          arrowColor={"white"}
+          arrowColor="lightgrey"
           arrowSize={10}
           arrowStyle={{ opacity: 1 }}
+          arrow="center"
         >
           <EventPopOverStyled
             theme={theme}
@@ -80,7 +82,7 @@ export default function index({ event }) {
             <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
             <div id="event-details">
               <h4>Entertainment</h4>
-              <h3>ELIJAH BAND</h3>
+              <h3>{event.name}</h3>
               <p>7:00 PM-8:00 PM | Cost $15</p>
               <p>New York,NY,USA</p>
               <div id="event-controls" className="grid">

@@ -19,7 +19,7 @@ const CellsStyled = styled.div`
   .cell {
     position: relative;
     font-size: 1em;
-    height: 250px;
+    height: 200px;
     width: auto;
     cursor: pointer;
     border: 1px solid lightgrey;
