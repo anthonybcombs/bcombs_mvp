@@ -57,6 +57,10 @@ export const defaultTheme = {
           primary: "#f26e21"
         }
       }
+    },
+    event: {
+      backgroundColor: { primary: "#f26e21", secondary: "white" },
+      textColor: { primary: "#f26e21", secondary: "black" }
     }
   }
 };

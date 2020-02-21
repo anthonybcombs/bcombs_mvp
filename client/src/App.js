@@ -9,7 +9,7 @@ import Login from "./components/Auth/Login";
 import CreateUser from "./components/Auth/Create";
 import ForgotPassword from "./components/Auth//ForgotPassword";
 import Profile from "./components/UserInfo/Profile";
-
+import Calendar from "./components/Calendar/big-calendar";
 export default function App() {
   return (
     <>
@@ -21,11 +21,11 @@ export default function App() {
               <CreateUser path="auth/create" />
               <ForgotPassword path="auth/forgot-password" />
             </Auth>
-
             <DashBoard path="dashboard">
               <DashboardHome path="/" />
             </DashBoard>
             <Profile path="profile" />
+            <Calendar path="calendar" />
           </Router>
         </div>
       </Layout>
