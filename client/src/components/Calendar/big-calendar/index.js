@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { subMonths, addMonths, startOfMonth, format } from "date-fns";
-import { events } from "../../../helpers/dummyData";
 import Header from "./header";
 import Days from "./days";
 import Cells from "./cells";
@@ -9,7 +8,7 @@ const SmallCalendarStyled = styled.div`
   background-color: white;
   width: 100%;
 `;
-export default function index() {
+export default function index({ events }) {
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
     selectedDate: new Date()

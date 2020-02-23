@@ -124,8 +124,8 @@ export default function index({
           {formattedDate}
         </span>
         <div id="events-list">
-          {eventsOnThisDay.map(event => {
-            return <Event event={event} />;
+          {eventsOnThisDay.map((event, key) => {
+            return <Event event={event} key={key} />;
           })}
         </div>
       </div>

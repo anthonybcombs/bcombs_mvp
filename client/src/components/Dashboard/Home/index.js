@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Collapsible from "react-collapsible";
 import {
@@ -8,7 +9,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
 import { format } from "date-fns";
-import { events } from "../../../helpers/dummyData";
 import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
 const HomeStyled = styled.div`
@@ -86,6 +86,7 @@ const HomeStyled = styled.div`
 export default function index({ location }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
+  const events = useSelector(({ events }) => events);
   const theme = useContext(ThemeContext);
   const calendars = [
     {
@@ -125,7 +126,7 @@ export default function index({ location }) {
             />
             <Collapsible
               trigger={
-                <h3>
+                <h3 data-testid="app-dashboard-home-sub-header-calendars">
                   <FontAwesomeIcon icon={faCalendar} />
                   <span>Calendars</span>
                 </h3>
@@ -149,7 +150,7 @@ export default function index({ location }) {
             </Collapsible>
             <Collapsible
               trigger={
-                <h3>
+                <h3 data-testid="app-dashboard-home-sub-header-notifications">
                   <FontAwesomeIcon icon={faBell} />
                   <span>Notifications</span>
                 </h3>
@@ -172,12 +173,14 @@ export default function index({ location }) {
               <FontAwesomeIcon icon={faPlusCircle} size="3x" />
             </button>
 
-            <h2>Upcoming Events</h2>
+            <h2 data-testid="app-dashboard-home-sub-header-upcoming-events">
+              Upcoming Events
+            </h2>
 
             <div className="panel">
               {eventsOnThisDay.map((event, i) => (
                 <div
-                  className={`panel-body ${
+                  className={`events panel-body ${
                     selectedEvent && event.id === selectedEvent.id
                       ? "selected"
                       : ""
@@ -201,7 +204,9 @@ export default function index({ location }) {
             </div>
           </div>
           <div className="pane">
-            <h3>Recommendations</h3>
+            <h3 data-testid="app-dashboard-home-sub-header-recommendations">
+              Recommendations
+            </h3>
             <div className="panel">
               <div className="panel-body">Sample recommendations</div>
             </div>

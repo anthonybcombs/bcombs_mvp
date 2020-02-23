@@ -1,4 +1,4 @@
-import React, { StrictMode } from "react";
+import React from "react";
 import { ThemeContext } from "styled-components";
 import { Provider } from "react-redux";
 import {
@@ -13,7 +13,7 @@ export default function({ children, history = "/" }) {
     <Provider store={store}>
       <LocationProvider history={createHistory(createMemorySource(history))}>
         <ThemeContext.Provider value={defaultTheme}>
-          <StrictMode>{children}</StrictMode>
+          {children}
         </ThemeContext.Provider>
       </LocationProvider>
     </Provider>
