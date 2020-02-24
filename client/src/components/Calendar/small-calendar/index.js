@@ -5,7 +5,7 @@ import Header from "./header";
 import Days from "./days";
 import Cells from "./cells";
 const SmallCalendarStyled = styled.div`
-  padding: 0 1em 0 1em;
+  padding: 0 1em 1em 1em;
   border: 1px solid lightgrey;
   border-radius: 30px;
   background-color: white;

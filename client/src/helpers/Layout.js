@@ -33,7 +33,6 @@ const HeaderStyled = styled.header`
   }
   #app-header-left a.selected > span {
     display: inline-block;
-    padding-bottom: 1.3em;
     border-bottom: 5px solid ${({ theme }) => theme.backgroundColor.primary};
   }
   #dashboard-search {
@@ -51,11 +50,14 @@ const HeaderStyled = styled.header`
       grid-template-columns: 30% 70%;
     }
     #dashboard-search {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 15% 20% 15% 15% 15% 10% 10%;
     }
     #app-header-left a {
       position: relative;
       top: 10px;
+    }
+    #app-header-left a.selected > span {
+      padding-bottom: 1.3em;
     }
     .input-icons {
       margin-top: 5px;
@@ -137,7 +139,7 @@ export default function Layout({ children }) {
                       }`}
                       to="/dashboard/mycalendars"
                     >
-                      <span>MyCalendars</span>
+                      <span>Calendars</span>
                     </Link>
                     <Link to="/dashboard/admin">
                       <span>Admin</span>
