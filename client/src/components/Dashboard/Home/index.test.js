@@ -1,5 +1,11 @@
 import React from "react";
-import { render, cleanup, fireEvent, act } from "@testing-library/react";
+import {
+  render,
+  cleanup,
+  fireEvent,
+  act,
+  waitForElement
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import CreateTestComponent from "../../../helpers/CreateTestComponent";
 import DashboardHome from ".";
@@ -49,8 +55,19 @@ describe("Dashboard Home", () => {
         getByTestId("app-dashboard-home-sub-header-recommendations")
       ).toBeInTheDocument();
     });
-    test("renders events list if there is an existing event", () => {
-      const { getByTestId } = render(component);
+    test("renders events list if there is an existing event", async () => {
+      const { findAllByTestId } = render(component);
+      const events = await waitForElement(() =>
+        findAllByTestId("app-dashboard-home-event")
+      );
+      expect(events.length).toBeGreaterThan(0);
     });
+    test("renders events list if there is an existing event", async () => {
+      const { findAllByTestId } = render(component);
+      const events = await waitForElement(() =>
+        findAllByTestId("app-dashboard-home-event")
+      );
+      expect(events.length).toBeGreaterThan(0);
+    });    
   });
 });

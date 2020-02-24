@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCog, faBell, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Link, Location } from "@reach/router";
 import Logo from "../images/logo1.png";
 const HeaderStyled = styled.header`
@@ -18,21 +20,45 @@ const HeaderStyled = styled.header`
     color: grey;
     text-decoration: none;
   }
-
-  #app-header-left {
+  #app-header-left,
+  #app-header-right {
+    display: grid;
+  }
+  #app-header-left img {
+    position: relative;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    top: -10px;
+  }
+  #app-header-left a.selected > span {
+    display: inline-block;
+    padding-bottom: 1.3em;
+    border-bottom: 5px solid ${({ theme }) => theme.backgroundColor.primary};
+  }
+  #dashboard-search {
     display: grid;
   }
   @media (min-width: 600px) {
-    grid-template-columns: 85% 15%;
+    grid-template-columns: 50% 50%;
     text-align: left;
     #app-header-left {
       text-align: center;
-      grid-template-columns: 50% 50%;
+      grid-template-columns: repeat(7, 1fr);
       grid-gap: 1%;
+    }
+    #app-header-right {
+      grid-template-columns: 30% 70%;
+    }
+    #dashboard-search {
+      grid-template-columns: repeat(2, 1fr);
     }
     #app-header-left a {
       position: relative;
       top: 10px;
+    }
+    .input-icons {
+      margin-top: 5px;
     }
   }
 `;
@@ -50,6 +76,24 @@ export default function Layout({ children }) {
           <Link to="/">
             <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
           </Link>
+          <Location
+            children={context => {
+              if (context.location.pathname.includes("dashboard")) {
+                return (
+                  <>
+                    <div className="input-icons">
+                      <FontAwesomeIcon className="icon" icon={faSearch} />
+                      <input
+                        type="text"
+                        placeholder="Find..."
+                        className="input-field"
+                      />
+                    </div>
+                  </>
+                );
+              }
+            }}
+          />
         </div>
         <div id="app-header-left">
           <Location
@@ -62,6 +106,81 @@ export default function Layout({ children }) {
                     </Link>
                     <Link data-testid="app-header-register" to="/auth/create">
                       Register
+                    </Link>
+                  </>
+                );
+              }
+            }}
+          />
+          <Location
+            children={context => {
+              if (context.location.pathname.includes("dashboard")) {
+                console.log(context.location.pathname);
+                return (
+                  <>
+                    <Link
+                      className={`${
+                        context.location.pathname === "/dashboard"
+                          ? "selected"
+                          : ""
+                      }`}
+                      to="/dashboard"
+                      state={{ calendarName: "" }}
+                    >
+                      <span> Dashboard</span>
+                    </Link>
+                    <Link
+                      className={`${
+                        context.location.pathname === "/dashboard/mycalendars"
+                          ? "selected"
+                          : ""
+                      }`}
+                      to="/dashboard/mycalendars"
+                    >
+                      <span>MyCalendars</span>
+                    </Link>
+                    <Link to="/dashboard/admin">
+                      <span>Admin</span>
+                    </Link>
+                    <Link
+                      className={`${
+                        context.location.pathname === "/dashboard/contacts"
+                          ? "selected"
+                          : ""
+                      }`}
+                      to="/dashboard/contacts"
+                    >
+                      <span>Contacts</span>
+                    </Link>
+                    <Link
+                      className={`${
+                        context.location.pathname === "/dashboard/settings"
+                          ? "selected"
+                          : ""
+                      }`}
+                      to="/dashboard/settings"
+                    >
+                      <FontAwesomeIcon icon={faCog} />
+                    </Link>
+                    <Link
+                      className={`${
+                        context.location.pathname === "/dashboard/notifications"
+                          ? "selected"
+                          : ""
+                      }`}
+                      to="/dashboard/notifications"
+                    >
+                      <FontAwesomeIcon icon={faBell} />
+                    </Link>
+                    <Link
+                      className={`${
+                        context.location.pathname === "/dashboard/profile"
+                          ? "selected"
+                          : ""
+                      }`}
+                      to="/dashboard/profile"
+                    >
+                      <img src={"https://i.pravatar.cc/300"} />
                     </Link>
                   </>
                 );

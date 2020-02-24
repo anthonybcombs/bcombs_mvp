@@ -180,7 +180,8 @@ export default function index({ location }) {
             <div className="panel">
               {eventsOnThisDay.map((event, i) => (
                 <div
-                  className={`events panel-body ${
+                  data-testid="app-dashboard-home-event"
+                  className={`panel-body ${
                     selectedEvent && event.id === selectedEvent.id
                       ? "selected"
                       : ""

@@ -1,4 +1,4 @@
-import React, { StrictMode } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createHistory, LocationProvider } from "@reach/router";
@@ -69,6 +69,25 @@ const GlobalStyle = createGlobalStyle`
     display: block;
     width: 100% !important;
   }  
+  .input-icons svg { 
+      position: absolute; 
+  } 
+  .input-icons { 
+      width: 100%; 
+  } 
+    
+  .icon { 
+      padding: 10px; 
+      min-width: 40px; 
+  } 
+    
+  .input-field { 
+      width: 90%; 
+      padding: 10px; 
+      text-align: center; 
+      border:none;
+      border:1px solid #f26e21;
+  }   
   body{
     margin:0;
     padding:0;
@@ -88,9 +107,7 @@ ReactDOM.render(
     <LocationProvider history={history}>
       <GlobalStyle />
       <ThemeContext.Provider value={defaultTheme}>
-        <StrictMode>
-          <App />
-        </StrictMode>
+        <App />
       </ThemeContext.Provider>
     </LocationProvider>
   </Provider>,
