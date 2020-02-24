@@ -10,7 +10,7 @@ import Login from "./components/Auth/Login";
 import CreateUser from "./components/Auth/Create";
 import ForgotPassword from "./components/Auth//ForgotPassword";
 import Profile from "./components/UserInfo/Profile";
-import Calendar from "./components/Calendar/big-calendar";
+import Calendar from "./components/Calendar/big-calendar/";
 export default function App() {
   return (
     <>

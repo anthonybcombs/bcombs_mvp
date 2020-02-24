@@ -1,27 +1,29 @@
 import React from "react";
 import { render, cleanup, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { initialState } from "../../../redux/initialState";
+import { initialState } from "../../../../redux/initialState";
 import { format, addMonths, subMonths, addDays } from "date-fns";
-import CreateTestComponent from "../../../helpers/CreateTestComponent";
+import CreateTestComponent from "../../../../helpers/CreateTestComponent";
 import BigCalendar from ".";
 afterEach(cleanup);
 
 describe("Big Calendar", () => {
   const { events, calendars } = initialState;
   const selectedDate = new Date();
-  const setSelectedDate = jest.fn();
-  const setSelectedEvent = jest.fn();
-  const setCurrentPage = jest.fn();
+  const calendarType = "month";
+  const handleChangeCalendarType = jest.fn();
+  const selectedCalendars = [];
+  const handleCalendarSelection = jest.fn();
   const component = (
     <CreateTestComponent>
       <BigCalendar
         events={events}
         calendars={calendars}
         selectedDate={selectedDate}
-        setSelectedEvent={setSelectedEvent}
-        setSelectedDate={setSelectedDate}
-        setCurrentPage={setCurrentPage}
+        calendarType={calendarType}
+        handleChangeCalendarType={handleChangeCalendarType}
+        selectedCalendars={selectedCalendars}
+        handleCalendarSelection={handleCalendarSelection}
       />
     </CreateTestComponent>
   );

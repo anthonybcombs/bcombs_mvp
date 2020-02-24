@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
-import CreateCalendarModal from "../new-calendar/Create";
+import CreateCalendarModal from "../../new-calendar/Create";
 const HeaderStyled = styled.div`
   display: grid;
   margin-bottom: 2em;

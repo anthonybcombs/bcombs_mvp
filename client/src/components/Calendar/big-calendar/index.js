@@ -1,41 +1,14 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { subMonths, addMonths, startOfMonth, format } from "date-fns";
-import Header from "./header";
-import Days from "./days";
-import Cells from "./cells";
-const BigCalendarStyled = styled.div`
-  background-color: white;
-  width: 100%;
-`;
-export default function index({ events, calendars }) {
+import MonthViewCalendar from "./month-calendar";
+import WeekViewCalendar from "./week-calendar";
+export default function index() {
+  const { calendars, events } = useSelector(({ calendars, events }) => ({
+    calendars,
+    events
+  }));
   const [calendarType, setCalendarType] = useState("month");
   const [selectedCalendars, setSelectedCalendars] = useState([]);
-  const [currentDate, setCurrentDate] = useState({
-    currentMonth: new Date(),
-    selectedDate: new Date()
-  });
-  const handleChangeMonth = operation => {
-    let currentMonth;
-    if (operation === "next") {
-      currentMonth = addMonths(currentDate.currentMonth, 1);
-    } else {
-      currentMonth = subMonths(currentDate.currentMonth, 1);
-    }
-    const firstDayOfTheMonth = startOfMonth(currentMonth);
-    setCurrentDate({
-      ...currentDate,
-      currentMonth,
-      selectedDate: firstDayOfTheMonth
-    });
-  };
-  const handleChangeDay = day => {
-    setCurrentDate({
-      ...currentDate,
-      selectedDate: day
-    });
-  };
   const handleChangeCalendarType = type => {
     setCalendarType(type);
   };
@@ -51,23 +24,27 @@ export default function index({ events, calendars }) {
     setSelectedCalendars([...selectedCalendars, id]);
   };
   return (
-    <BigCalendarStyled data-testid="app-big-calendar">
-      <Header
-        currentMonth={currentDate.currentMonth}
-        handleChangeMonth={handleChangeMonth}
-        calendars={calendars}
-        calendarType={calendarType}
-        handleChangeCalendarType={handleChangeCalendarType}
-        selectedCalendars={selectedCalendars}
-        handleCalendarSelection={handleCalendarSelection}
-      />
-      <Days currentMonth={currentDate.currentMonth} />
-      <Cells
-        events={events}
-        currentMonth={currentDate.currentMonth}
-        selectedDate={currentDate.selectedDate}
-        handleChangeDay={handleChangeDay}
-      />
-    </BigCalendarStyled>
+    <>
+      {calendarType === "month" && (
+        <MonthViewCalendar
+          events={events}
+          calendars={calendars}
+          calendarType={calendarType}
+          selectedCalendars={selectedCalendars}
+          handleChangeCalendarType={handleChangeCalendarType}
+          handleCalendarSelection={handleCalendarSelection}
+        />
+      )}
+      {calendarType === "week" && (
+        <WeekViewCalendar
+          events={events}
+          calendars={calendars}
+          calendarType={calendarType}
+          selectedCalendars={selectedCalendars}
+          handleChangeCalendarType={handleChangeCalendarType}
+          handleCalendarSelection={handleCalendarSelection}
+        />
+      )}
+    </>
   );
 }
