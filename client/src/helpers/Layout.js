@@ -141,7 +141,14 @@ export default function Layout({ children }) {
                     >
                       <span>Calendars</span>
                     </Link>
-                    <Link to="/dashboard/admin">
+                    <Link
+                      className={`${
+                        context.location.pathname === "/dashboard/admin"
+                          ? "selected"
+                          : ""
+                      }`}
+                      to="/dashboard/admin"
+                    >
                       <span>Admin</span>
                     </Link>
                     <Link
