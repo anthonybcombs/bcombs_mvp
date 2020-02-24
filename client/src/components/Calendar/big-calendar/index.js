@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { subMonths, addMonths, startOfMonth, format } from "date-fns";
 import Header from "./header";
 import Days from "./days";
@@ -10,6 +11,7 @@ const BigCalendarStyled = styled.div`
 `;
 export default function index({ events, calendars }) {
   const [calendarType, setCalendarType] = useState("month");
+  const [selectedCalendars, setSelectedCalendars] = useState([]);
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
     selectedDate: new Date()
@@ -37,6 +39,17 @@ export default function index({ events, calendars }) {
   const handleChangeCalendarType = type => {
     setCalendarType(type);
   };
+  const handleCalendarSelection = id => {
+    if (selectedCalendars.includes(id)) {
+      setSelectedCalendars([
+        ...selectedCalendars.filter(calendarId => {
+          calendarId === id;
+        })
+      ]);
+      return;
+    }
+    setSelectedCalendars([...selectedCalendars, id]);
+  };
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
       <Header
@@ -45,6 +58,8 @@ export default function index({ events, calendars }) {
         calendars={calendars}
         calendarType={calendarType}
         handleChangeCalendarType={handleChangeCalendarType}
+        selectedCalendars={selectedCalendars}
+        handleCalendarSelection={handleCalendarSelection}
       />
       <Days currentMonth={currentDate.currentMonth} />
       <Cells
