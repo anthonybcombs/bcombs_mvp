@@ -4,11 +4,12 @@ import { subMonths, addMonths, startOfMonth, format } from "date-fns";
 import Header from "./header";
 import Days from "./days";
 import Cells from "./cells";
-const SmallCalendarStyled = styled.div`
+const BigCalendarStyled = styled.div`
   background-color: white;
   width: 100%;
 `;
-export default function index({ events }) {
+export default function index({ events, calendars }) {
+  const [calendarType, setCalendarType] = useState("month");
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
     selectedDate: new Date()
@@ -33,11 +34,17 @@ export default function index({ events }) {
       selectedDate: day
     });
   };
+  const handleChangeCalendarType = type => {
+    setCalendarType(type);
+  };
   return (
-    <SmallCalendarStyled data-testid="app-big-calendar">
+    <BigCalendarStyled data-testid="app-big-calendar">
       <Header
         currentMonth={currentDate.currentMonth}
         handleChangeMonth={handleChangeMonth}
+        calendars={calendars}
+        calendarType={calendarType}
+        handleChangeCalendarType={handleChangeCalendarType}
       />
       <Days currentMonth={currentDate.currentMonth} />
       <Cells
@@ -46,6 +53,6 @@ export default function index({ events }) {
         selectedDate={currentDate.selectedDate}
         handleChangeDay={handleChangeDay}
       />
-    </SmallCalendarStyled>
+    </BigCalendarStyled>
   );
 }

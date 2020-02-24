@@ -117,7 +117,6 @@ export default function Layout({ children }) {
           <Location
             children={context => {
               if (context.location.pathname.includes("dashboard")) {
-                console.log(context.location.pathname);
                 return (
                   <>
                     <Link

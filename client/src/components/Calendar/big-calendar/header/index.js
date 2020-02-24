@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
+import CreateCalendarModal from "../new-calendar/Create";
 const HeaderStyled = styled.div`
   display: grid;
   text-align: center;
@@ -14,32 +15,84 @@ const HeaderStyled = styled.div`
     padding: 0;
     margin: 0;
   }
+  button {
+    border: none;
+  }
   svg {
     cursor: pointer;
     position: relative;
     margin: 0 1em 0 1em;
+    color: black;
+  }
+  #calendar-controls {
+    margin-top: 1em;
   }
   #calendars-control button {
     width: 100%;
+    color: white;
   }
-  @media (min-width: 800px) {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  .calendar {
+    height: 100px;
+    position: relative;
+    display: inline-block;
+  }
+  .calendar img {
+    width: 100%; // to maintain aspect ratio. You can use 100% if you don't care about that
+    height: 100%;
+  }
+  .calendar p {
+    margin: 0;
+  }
+  .calendar p span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+  #calendar-type button.selected {
+    background-color: white;
+  }
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     #calendar-type {
       grid-template-columns: repeat(2, 50%);
     }
     #calendars-control {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      justify-content: end;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     }
   }
 `;
-export default function index({ currentMonth, handleChangeMonth }) {
+export default function index({
+  currentMonth,
+  handleChangeMonth,
+  calendars,
+  calendarType,
+  handleChangeCalendarType
+}) {
+  const [isVisibleCreateCalendarModal, toggleCreateCalendarModal] = useState(
+    false
+  );
   const dateFormat = "MMMM yyyy";
   return (
     <HeaderStyled data-testid="app-big-calendar-header">
+      <CreateCalendarModal
+        isVisible={isVisibleCreateCalendarModal}
+        toggleCreateCalendarModal={toggleCreateCalendarModal}
+      />
       <div className="grid" id="calendar-type">
-        <button>Week</button>
-        <button>Month</button>
+        <button
+          className={`${calendarType === "week" ? "selected" : ""}`}
+          onClick={() => handleChangeCalendarType("week")}
+        >
+          Week
+        </button>
+        <button
+          className={`${calendarType === "month" ? "selected" : ""}`}
+          onClick={() => handleChangeCalendarType("month")}
+        >
+          Month
+        </button>
       </div>
       <div id="calendar-controls">
         <h2 data-testid="app-big-calendar-header-current-month">
@@ -61,10 +114,22 @@ export default function index({ currentMonth, handleChangeMonth }) {
         </h2>
       </div>
       <div className="grid" id="calendars-control">
-        <button>
+        <button
+          onClick={() => {
+            toggleCreateCalendarModal(true);
+          }}
+        >
           <FontAwesomeIcon icon={faPlus} />
         </button>
-        <button>Calendar 1</button>
+        {calendars.map((calendar, index) => (
+          <div className="calendar selected" key={index}>
+            <img src={calendar.image} />
+            <p>
+              <span style={{ backgroundColor: `${calendar.color}` }}></span>
+              {calendar.name}
+            </p>
+          </div>
+        ))}
       </div>
     </HeaderStyled>
   );
