@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import MonthViewCalendar from "./month-calendar";
 import WeekViewCalendar from "./week-calendar";
-export default function index() {
-  const { calendars, events } = useSelector(({ calendars, events }) => ({
-    calendars,
-    events
-  }));
+export default function index({ events, calendars }) {
   const [calendarType, setCalendarType] = useState("month");
   const [selectedCalendars, setSelectedCalendars] = useState([]);
   const handleChangeCalendarType = type => {
