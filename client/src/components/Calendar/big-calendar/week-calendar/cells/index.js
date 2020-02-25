@@ -2,14 +2,10 @@ import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import {
   format,
-  isSameWeek,
   isSameHour,
   startOfWeek,
   endOfWeek,
-  isSameDay,
-  startOfHour,
-  endOfHour,
-  toDate,
+  parseISO,
   getHours,
   addDays
 } from "date-fns";
@@ -25,6 +21,13 @@ const CellsStyled = styled.div`
     width: auto;
     cursor: pointer;
     border: 1px solid lightgrey;
+    text-align: center;
+  }
+  .cell > p {
+    display: block;
+    position: absolute;
+    top: 4em;
+    left: 2.8em;
   }
   .disabled {
     color: ${({ theme }) => theme.smallCalendar.cell.textColor.secondary};
@@ -73,15 +76,11 @@ const CellsStyled = styled.div`
   }
   #events-list {
     position: relative;
-    top: 50px;
+    top:0
     left: 0;
     width: 100%;
     height: 200px;
     overflow: auto;
-  }
-  .time-cells {
-    display: block;
-    margin: 6em auto;
   }
 `;
 var suffix = hours => (hours >= 12 ? "PM" : "AM");
@@ -101,11 +100,21 @@ export default function index({
   hourList.forEach(hour => {
     const formattedHours = ((hour + 11) % 12) + 1;
     columns.push(
-      <div key="time" className="time-cells">{`${formattedHours}:00 ${suffix(
-        formattedHours
-      )}`}</div>
+      <div key="time" className="cell">
+        <p>{`${formattedHours}:00 ${suffix(hour)}`}</p>
+      </div>
     );
     while (day <= endDate) {
+      const currentDateTime = parseISO(
+        `${format(day, "yyyy-MM-dd")}T${hour < 10 ? `0${hour}` : hour}:00:00Z`
+      );
+      const eventsOnThisDay = events.filter(
+        event =>
+          format(event.date, "MM/dd/yyyy h") ===
+          format(currentDateTime, "MM/dd/yyyy h")
+      );
+      const eventsCount = eventsOnThisDay.length;
+      const hasEvents = eventsCount > 0;
       columns.push(
         <div
           key={hour}
@@ -113,7 +122,13 @@ export default function index({
             isSameHour(getHours(selectedDate), hour) ? "selected" : ""
           }`}
         >
-          {hour}
+          {hasEvents && (
+            <div id="events-list">
+              {eventsOnThisDay.map((event, key) => {
+                return <Event event={event} key={key} />;
+              })}
+            </div>
+          )}
         </div>
       );
       rows.push(columns);

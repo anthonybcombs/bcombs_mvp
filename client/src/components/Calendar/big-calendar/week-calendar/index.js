@@ -52,7 +52,7 @@ export default function index({
         handleCalendarSelection={handleCalendarSelection}
       />
       <Days currentWeek={currentDate.currentWeek} />
-      <Cells currentWeek={currentDate.currentWeek} />
+      <Cells currentWeek={currentDate.currentWeek} events={events} />
     </WeekViewStyled>
   );
 }
