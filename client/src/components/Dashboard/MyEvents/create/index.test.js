@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import {
   render,
   cleanup,
@@ -12,6 +13,14 @@ import CreateEvent from ".";
 afterEach(cleanup);
 
 describe("Create Event", () => {
+  beforeAll(() => {
+    ReactDOM.createPortal = jest.fn((element, node) => {
+      return element;
+    });
+  });
+  afterEach(() => {
+    ReactDOM.createPortal.mockClear();
+  });
   const component = (
     <CreateTestComponent>
       <CreateEvent />
@@ -55,6 +64,24 @@ describe("Create Event", () => {
       expect(buttons[1].textContent).toBe("Forms Reminder");
       expect(buttons[2].textContent).toBe("Task");
     });
+    test("renders selected datetime", () => {
+      const { getByTestId } = render(component);
+      expect(
+        getByTestId("app-dashboard-my-events-new-event-selected-datetime")
+      ).toBeInTheDocument();
+    });
+    test("renders add guests list", () => {
+      const { getByText } = render(component);
+      expect(getByText(/Add guests/)).toBeInTheDocument();
+    });
+    test("renders add location or conferencing", () => {
+      const { getByText } = render(component);
+      expect(getByText(/Add location or conferencing/)).toBeInTheDocument();
+    });
+    test("renders add description", () => {
+      const { getByText } = render(component);
+      expect(getByText(/Add description/)).toBeInTheDocument();
+    });
     test("renders button(Save)", () => {
       const { getByTestId } = render(component);
       const button = getByTestId(
@@ -81,6 +108,19 @@ describe("Create Event", () => {
         );
         fireEvent.change(input, { target: { value: "testing" } });
         expect(input.value).toBe("testing");
+      });
+    });
+    describe("event type buttons", () => {
+      test("initial selected button", () => {
+        const { container } = render(component);
+        const buttons = container.querySelector("#event-type-list").childNodes;
+        expect(buttons[0].classList).toContain("selected");
+      });
+      test("change event type", () => {
+        const { container } = render(component);
+        const buttons = container.querySelector("#event-type-list").childNodes;
+        fireEvent.click(buttons[1]);
+        expect(buttons[1].classList).toContain("selected");
       });
     });
     describe("test submit", () => {

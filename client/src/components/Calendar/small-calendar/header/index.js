@@ -17,7 +17,11 @@ const HeaderStyled = styled.div`
     margin: 20px auto;
   }
 `;
-export default function index({ currentMonth, handleChangeMonth }) {
+export default function index({
+  currentMonth,
+  handleChangeMonth,
+  removeSubHeader
+}) {
   const dateFormat = "MMMM";
   return (
     <HeaderStyled data-testid="app-small-calendar-header">
@@ -30,9 +34,8 @@ export default function index({ currentMonth, handleChangeMonth }) {
           }}
         />
       </div>
-
       <h2 data-testid="app-small-calendar-header-current-month">
-        {format(currentMonth, dateFormat)}
+        {format(currentMonth, !removeSubHeader ? dateFormat : "MMM yyyy")}
       </h2>
       <div>
         <FontAwesomeIcon

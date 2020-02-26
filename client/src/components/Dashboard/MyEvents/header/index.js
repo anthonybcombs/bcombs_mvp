@@ -1,7 +1,11 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-export default function index({ selectedYear, handleSelectedYearChange }) {
+export default function index({
+  selectedYear,
+  handleSelectedYearChange,
+  toggleCreateEventModal
+}) {
   return (
     <div data-testid="app-dashboard-my-events-header" id="header">
       <div>
@@ -37,6 +41,9 @@ export default function index({ selectedYear, handleSelectedYearChange }) {
       <button
         data-testid="app-dashboard-my-events-create-new-event-button"
         type="button"
+        onClick={() => {
+          toggleCreateEventModal(true);
+        }}
       >
         Create a new event +
       </button>

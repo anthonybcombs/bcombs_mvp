@@ -1,6 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+import { format } from "date-fns";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faClock,
+  faUserFriends,
+  faMapMarkerAlt,
+  faAlignLeft
+} from "@fortawesome/free-solid-svg-icons";
+import EditableParagraph from "../../../../helpers/EditableParagraph";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const EventFormStyled = styled.form`
   #event-type-list {
@@ -14,6 +23,18 @@ const EventFormStyled = styled.form`
     box-shadow: none;
   }
   #event-type-list button.selected {
+    background-color: lightblue;
+    font-weight: bold;
+    color: blue;
+  }
+  svg {
+    margin-right: 10px;
+  }
+  p:hover {
+    cursor: pointer;
+  }
+  textarea {
+    width: 100%;
   }
   @media (min-width: 600px) {
     #event-type-list {
@@ -24,10 +45,14 @@ const EventFormStyled = styled.form`
 `;
 export default function createEventForm({
   eventDetails,
-  handleInputChange,
+  handleEventDetailsChange,
   onSubmit
 }) {
   const { register, handleSubmit, errors } = useForm();
+  const schedule = [
+    format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
+    format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")
+  ];
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
@@ -42,7 +67,7 @@ export default function createEventForm({
         placeholder="Add title"
         value={eventDetails.name}
         onChange={e => {
-          handleInputChange("title", e.target.value);
+          handleEventDetailsChange("title", e.target.value);
         }}
         ref={register({ required: true })}
       />
@@ -52,10 +77,100 @@ export default function createEventForm({
         message="Title is required."
       />
       <div id="event-type-list">
-        <button>Event</button>
-        <button>Forms Reminder</button>
-        <button>Task</button>
+        <button
+          type="button"
+          className={`${eventDetails.eventType === "Event" ? "selected" : ""}`}
+          onClick={() => {
+            handleEventDetailsChange("eventType", "Event");
+          }}
+        >
+          Event
+        </button>
+        <button
+          type="button"
+          className={`${
+            eventDetails.eventType === "Forms Reminder" ? "selected" : ""
+          }`}
+          onClick={() => {
+            handleEventDetailsChange("eventType", "Forms Reminder");
+          }}
+        >
+          Forms Reminder
+        </button>
+        <button
+          type="button"
+          className={`${eventDetails.eventType === "Task" ? "selected" : ""}`}
+          onClick={() => {
+            handleEventDetailsChange("eventType", "Task");
+          }}
+        >
+          Task
+        </button>
       </div>
+      <div></div>
+      <EditableParagraph
+        DisplayComp={
+          <p data-testid="app-dashboard-my-events-new-event-selected-datetime">
+            <FontAwesomeIcon icon={faClock} />
+            {`${schedule[0]} - ${schedule[1]}`}
+          </p>
+        }
+        EditableComp={<input />}
+      />
+      <EditableParagraph
+        DisplayComp={
+          <p>
+            <FontAwesomeIcon icon={faUserFriends} />
+            {eventDetails.eventGuests ? eventDetails.eventGuests : "Add guests"}
+          </p>
+        }
+        EditableComp={
+          <input
+            autoFocus
+            value={eventDetails.eventGuests}
+            onChange={({ target }) => {
+              handleEventDetailsChange("eventGuests", target.value);
+            }}
+          />
+        }
+      />
+      <EditableParagraph
+        DisplayComp={
+          <p>
+            <FontAwesomeIcon icon={faMapMarkerAlt} />
+            {eventDetails.eventLocation
+              ? eventDetails.eventLocation
+              : "Add location or conferencing"}
+          </p>
+        }
+        EditableComp={
+          <input
+            autoFocus
+            value={eventDetails.eventLocation}
+            onChange={({ target }) => {
+              handleEventDetailsChange("eventLocation", target.value);
+            }}
+          />
+        }
+      />
+      <EditableParagraph
+        DisplayComp={
+          <p>
+            <FontAwesomeIcon icon={faAlignLeft} />
+            {eventDetails.eventDescription
+              ? eventDetails.eventDescription
+              : "Add description"}
+          </p>
+        }
+        EditableComp={
+          <textarea
+            autoFocus
+            onChange={({ target }) => {
+              handleEventDetailsChange("eventDescription", target.value);
+            }}
+          />
+        }
+      />
       <button
         data-testid="app-dashboard-my-events-new-event-button-save"
         type="submit"

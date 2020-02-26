@@ -16,6 +16,7 @@ describe("Calendar", () => {
     <CreateTestComponent>
       <SmallCalendar
         events={events}
+        removeSubHeader={false}
         selectedDate={selectedDate}
         setSelectedEvent={setSelectedEvent}
         setSelectedDate={setSelectedDate}

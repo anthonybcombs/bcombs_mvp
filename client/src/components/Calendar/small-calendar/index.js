@@ -14,7 +14,8 @@ export default function index({
   events = [],
   selectedDate,
   setSelectedDate,
-  setSelectedEvent
+  setSelectedEvent,
+  removeSubHeader = false
 }) {
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
@@ -43,12 +44,15 @@ export default function index({
   };
   return (
     <SmallCalendarStyled data-testid="app-small-calendar">
-      <h2 data-testid="app-small-calendar-header-current-month-year">
-        {format(currentDate.currentMonth, "MMM yyyy")}
-      </h2>
+      {!removeSubHeader && (
+        <h2 data-testid="app-small-calendar-header-current-month-year">
+          {format(currentDate.currentMonth, "MMM yyyy")}
+        </h2>
+      )}
       <Header
         currentMonth={currentDate.currentMonth}
         handleChangeMonth={handleChangeMonth}
+        removeSubHeader={removeSubHeader}
       />
       <Days currentMonth={currentDate.currentMonth} />
       <Cells

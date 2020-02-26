@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
 import styled, { ThemeContext } from "styled-components";
+import NewEventModal from "./create/";
 import Header from "./header";
 import Body from "./body";
 const MyEventsStyled = styled.div`
@@ -98,6 +99,7 @@ const MyEventsStyled = styled.div`
   }
 `;
 export default function index() {
+  const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const theme = useContext(ThemeContext);
   const { events, familyMembers } = useSelector(
     ({ events, familyMembers }) => ({
@@ -111,9 +113,14 @@ export default function index() {
   };
   return (
     <MyEventsStyled data-testid="app-dashboard-my-events" theme={theme}>
+      <NewEventModal
+        isVisible={isNewEventModalVisible}
+        toggleCreateEventModal={setIsEventModalVisible}
+      />
       <Header
         selectedYear={selectedYear}
         handleSelectedYearChange={handleSelectedYearChange}
+        toggleCreateEventModal={setIsEventModalVisible}
       />
       <Body
         events={events}

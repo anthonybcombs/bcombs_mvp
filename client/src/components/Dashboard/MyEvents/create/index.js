@@ -1,12 +1,9 @@
 import React, { useState, useContext } from "react";
+import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import SmallCalendar from "../../../Calendar/small-calendar";
 import EventForm from "../forms/EventForm";
 const NewEventModal = styled.div`
-  display: grid;
-  background-color: white;
-  margin: 1em;
-  padding: 1em;
   h2 {
     text-align: center;
   }
@@ -51,41 +48,78 @@ const NewEventModal = styled.div`
     margin: 10px auto;
     border: none;
   }
+  #content {
+    display: grid;
+    background-color: white;
+    padding: 1em;
+  }
+  .modal-content {
+    margin: 1em auto;
+    width: 80%;
+  }
   @media (min-width: 600px) {
-    grid-template-columns: 60% 40%;
-    grid-gap: 1%;
+    #content {
+      grid-template-columns: 60% 40%;
+      grid-gap: 1%;
+    }
     button[type="submit"] {
       width: 30%;
     }
   }
 `;
-export default function index() {
+export default function index({ isVisible = true, toggleCreateEventModal }) {
   const [eventDetails, setEventDetails] = useState({
-    title: ""
+    title: "",
+    eventSchedule: [new Date(), new Date()],
+    eventType: "Event",
+    eventLocation: "",
+    eventGuests: "",
+    eventDescription: ""
   });
   const [selectedDate, setSelectedDate] = useState(new Date());
   const theme = useContext(ThemeContext);
   const handleSetSelectedDate = date => {
     setSelectedDate(date);
   };
-  const handleInputChange = (id, value) => {
+  const handleEventDetailsChange = (id, value) => {
     setEventDetails({ ...eventDetails, [id]: value });
   };
   const handleSubmit = value => {};
-  return (
-    <NewEventModal data-testid="app-dashboard-my-events-new-event">
-      <SmallCalendar
-        events={[]}
-        selectedDate={selectedDate}
-        setSelectedDate={handleSetSelectedDate}
-        selectedEvent={null}
-        setSelectedEvent={() => {}}
-      />
-      <EventForm
-        eventDetails={eventDetails}
-        handleInputChange={handleInputChange}
-        onSubmit={handleSubmit}
-      />
-    </NewEventModal>
+  if (!isVisible) {
+    return <></>;
+  }
+  return ReactDOM.createPortal(
+    <NewEventModal
+      data-testid="app-dashboard-my-events-new-event"
+      className="modal"
+      theme={theme}
+    >
+      <div className="modal-content">
+        <span
+          className="close"
+          onClick={() => {
+            toggleCreateEventModal(false);
+          }}
+        >
+          &times;
+        </span>
+        <div id="content">
+          <SmallCalendar
+            removeSubHeader={true}
+            events={[]}
+            selectedDate={selectedDate}
+            setSelectedDate={handleSetSelectedDate}
+            selectedEvent={null}
+            setSelectedEvent={() => {}}
+          />
+          <EventForm
+            eventDetails={eventDetails}
+            handleEventDetailsChange={handleEventDetailsChange}
+            onSubmit={handleSubmit}
+          />
+        </div>
+      </div>
+    </NewEventModal>,
+    document.getElementById("modal")
   );
 }
