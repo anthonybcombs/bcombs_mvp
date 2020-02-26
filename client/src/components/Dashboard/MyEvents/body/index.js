@@ -40,8 +40,7 @@ export default function index({ events, selectedYear, familyMembers }) {
               <h2 data-testid="app-dashboard-my-events-body-table-month">
                 {month}
               </h2>
-              {eventThisMonth.length === 0}
-              {<p>No events scheduled</p>}
+              {eventThisMonth.length === 0 && <p>No events scheduled</p>}
               {eventThisMonth.length > 0 && (
                 <table data-testid="app-dashboard-my-events-body-table">
                   <thead>
