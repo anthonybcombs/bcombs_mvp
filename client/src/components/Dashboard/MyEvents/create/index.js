@@ -84,7 +84,9 @@ export default function index({ isVisible = true, toggleCreateEventModal }) {
   const handleEventDetailsChange = (id, value) => {
     setEventDetails({ ...eventDetails, [id]: value });
   };
-  const handleSubmit = value => {};
+  const handleSubmit = value => {
+    toggleCreateEventModal(false);
+  };
   if (!isVisible) {
     return <></>;
   }

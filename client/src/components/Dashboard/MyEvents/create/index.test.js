@@ -21,9 +21,14 @@ describe("Create Event", () => {
   afterEach(() => {
     ReactDOM.createPortal.mockClear();
   });
+  const isVisible = true;
+  const toggleCreateEventModal = jest.fn();
   const component = (
     <CreateTestComponent>
-      <CreateEvent />
+      <CreateEvent
+        isVisible={isVisible}
+        toggleCreateEventModal={toggleCreateEventModal}
+      />
     </CreateTestComponent>
   );
   describe("test renders", () => {
