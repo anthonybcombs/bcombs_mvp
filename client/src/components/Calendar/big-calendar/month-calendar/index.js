@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import NewEventModal from "../../../Dashboard/MyEvents/create/withOutCalendar";
 import { subMonths, addMonths, startOfMonth, format } from "date-fns";
 import Header from "./header";
 import Days from "./days";
@@ -15,8 +15,10 @@ export default function index({
   calendarType,
   handleChangeCalendarType,
   selectedCalendars,
-  handleCalendarSelection
+  handleCalendarSelection,
+  familyMembers
 }) {
+  const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
     selectedDate: new Date()
@@ -43,6 +45,12 @@ export default function index({
   };
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
+      <NewEventModal
+        familyMembers={familyMembers}
+        isVisible={isNewEventModalVisible}
+        toggleCreateEventModal={setIsEventModalVisible}
+        defaultSelectedDate={currentDate.selectedDate}
+      />
       <Header
         currentMonth={currentDate.currentMonth}
         handleChangeMonth={handleChangeMonth}
@@ -58,6 +66,8 @@ export default function index({
         currentMonth={currentDate.currentMonth}
         selectedDate={currentDate.selectedDate}
         handleChangeDay={handleChangeDay}
+        familyMembers={familyMembers}
+        setIsEventModalVisible={setIsEventModalVisible}
       />
     </BigCalendarStyled>
   );

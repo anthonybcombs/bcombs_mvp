@@ -6,14 +6,21 @@ const MyCalendarStyled = styled.div`
   margin: 1em;
 `;
 export default function index() {
-  const { calendars, events } = useSelector(({ calendars, events }) => ({
-    calendars,
-    events
-  }));
+  const { calendars, events, familyMembers } = useSelector(
+    ({ calendars, events, familyMembers }) => ({
+      calendars,
+      events,
+      familyMembers
+    })
+  );
   return (
     <MyCalendarStyled>
       <h1>My Calendars</h1>
-      <BigCalendar events={events} calendars={calendars} />
+      <BigCalendar
+        events={events}
+        calendars={calendars}
+        familyMembers={familyMembers}
+      />
     </MyCalendarStyled>
   );
 }

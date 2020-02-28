@@ -89,10 +89,9 @@ const initialEventDetails = selectedDate => {
 export default function index({
   isVisible = true,
   toggleCreateEventModal,
-  familyMembers,
-  defaultSelectedDate = new Date()
+  familyMembers
 }) {
-  const [selectedDate, setSelectedDate] = useState(defaultSelectedDate);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [eventDetails, setEventDetails] = useState(
     initialEventDetails(selectedDate)
   );

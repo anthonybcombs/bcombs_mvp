@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
 import styled, { ThemeContext } from "styled-components";
-import NewEventModal from "./create/";
+import NewEventModal from "./create/withCalendar";
 import Header from "./header";
 import Body from "./body";
 const MyEventsStyled = styled.div`

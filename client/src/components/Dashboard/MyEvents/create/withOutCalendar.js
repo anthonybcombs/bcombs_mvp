@@ -1,14 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch } from "react-redux";
 import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
 import { addEvent } from "../../../../redux/actions/Events";
-import MicroCalendar from "../../../Calendar/micro-calendar";
 import EventForm from "../forms/EventForm";
 const NewEventModal = styled.div`
   h2 {
-    font-size: 2em;
+    text-align: center;
   }
   input:required {
     box-shadow: none;
@@ -54,7 +53,6 @@ const NewEventModal = styled.div`
   #content {
     display: grid;
     background-color: white;
-    padding: 7em;
   }
   #content > div:first-child {
     margin-top: 5em;
@@ -64,63 +62,55 @@ const NewEventModal = styled.div`
     width: 80%;
   }
   @media (min-width: 600px) {
-    #content {
-      grid-template-columns: 50% 50%;
-      grid-gap: 1%;
-    }
     button[type="submit"] {
       width: 30%;
     }
   }
 `;
-const initialEventDetails = selectedDate => {
-  return {
+export default function index({
+  isVisible = true,
+  toggleCreateEventModal,
+  familyMembers,
+  defaultSelectedDate
+}) {
+  const [eventDetails, setEventDetails] = useState({
     name: "",
-    date: new Date(),
-    time: format(selectedDate, "hh:mm a"),
-    eventSchedule: [selectedDate, selectedDate],
+    date: defaultSelectedDate,
+    time: format(defaultSelectedDate, "hh:mm a"),
+    eventSchedule: [defaultSelectedDate, defaultSelectedDate],
     familyMembers: [],
     eventType: "Event",
     location: "",
     eventDescription: "",
     status: "Scheduled"
-  };
-};
-export default function index({
-  isVisible = true,
-  toggleCreateEventModal,
-  familyMembers,
-  defaultSelectedDate = new Date()
-}) {
-  const [selectedDate, setSelectedDate] = useState(defaultSelectedDate);
-  const [eventDetails, setEventDetails] = useState(
-    initialEventDetails(selectedDate)
-  );
-  const theme = useContext(ThemeContext);
-  const dispatch = useDispatch();
-  const handleSetSelectedDate = date => {
-    const currentDateTime = addSeconds(
-      addMinutes(
-        addHours(date, new Date().getHours()),
-        new Date().getMinutes()
-      ),
-      new Date().getSeconds()
-    );
-    setSelectedDate(date);
+  });
+  useEffect(() => {
     setEventDetails({
       ...eventDetails,
-      date: currentDateTime,
-      time: format(currentDateTime, "hh:mm a"),
-      eventSchedule: [currentDateTime, currentDateTime]
+      date: defaultSelectedDate,
+      time: format(defaultSelectedDate, "hh:mm a"),
+      eventSchedule: [defaultSelectedDate, defaultSelectedDate]
     });
-  };
+  }, [defaultSelectedDate]);
+  const theme = useContext(ThemeContext);
+  const dispatch = useDispatch();
   const handleEventDetailsChange = (id, value) => {
     setEventDetails({ ...eventDetails, [id]: value });
   };
   const handleSubmit = value => {
     toggleCreateEventModal(false);
     dispatch(addEvent(eventDetails));
-    setEventDetails(initialEventDetails(selectedDate));
+    setEventDetails({
+      name: "",
+      date: defaultSelectedDate,
+      time: format(defaultSelectedDate, "hh:mm a"),
+      eventSchedule: [defaultSelectedDate, defaultSelectedDate],
+      familyMembers: [],
+      eventType: "Event",
+      location: "",
+      eventDescription: "",
+      status: "Scheduled"
+    });
   };
   if (!isVisible) {
     return <></>;
@@ -141,14 +131,6 @@ export default function index({
           &times;
         </span>
         <div id="content">
-          <MicroCalendar
-            removeSubHeader={true}
-            events={[]}
-            selectedDate={selectedDate}
-            setSelectedDate={handleSetSelectedDate}
-            selectedEvent={null}
-            setSelectedEvent={() => {}}
-          />
           <EventForm
             familyMembers={familyMembers}
             eventDetails={eventDetails}

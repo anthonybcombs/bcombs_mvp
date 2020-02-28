@@ -130,13 +130,16 @@ export default function index({ event }) {
               setVisibility(!isVisible);
               dispatch(updateEvent(eventDetails));
             }}
+            onDoubleClick={e => {
+              e.stopPropagation();
+            }}
           >
             <div id="top-event-controls">
               <button>
                 <FontAwesomeIcon icon={faShareAltSquare} />
               </button>
               <button
-                onClick={() => {
+                onClick={e => {
                   setVisibility(false);
                   dispatch(deleteEvent(eventDetails));
                 }}

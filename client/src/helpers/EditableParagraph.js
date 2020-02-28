@@ -3,8 +3,12 @@ import React, { useState } from "react";
 export default function EditableParagraph({ DisplayComp, EditableComp }) {
   const [isEditing, setIsEditing] = useState(false);
   const cloneDisplayComp = React.cloneElement(DisplayComp, {
-    onClick: () => {
+    onClick: e => {
+      e.stopPropagation();
       setIsEditing(true);
+    },
+    onDoubleClick: e => {
+      e.stopPropagation();
     }
   });
   const cloneEditableComp = React.cloneElement(EditableComp, {

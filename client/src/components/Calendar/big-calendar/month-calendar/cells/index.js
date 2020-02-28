@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import {
   format,
@@ -82,7 +82,8 @@ export default function index({
   currentMonth,
   selectedDate,
   events,
-  handleChangeDay
+  handleChangeDay,
+  setIsEventModalVisible
 }) {
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
@@ -114,6 +115,10 @@ export default function index({
         }`}
         onClick={() => {
           handleChangeDay(toDate(cloneDay));
+        }}
+        onDoubleClick={async e => {
+          await handleChangeDay(toDate(cloneDay));
+          setIsEventModalVisible(true);
         }}
       >
         <span
