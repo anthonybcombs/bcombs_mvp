@@ -19,6 +19,9 @@ const MyEventsStyled = styled.div`
     font-size: 2em;
     text-align: center;
   }
+  #header-calendar-controls {
+    margin-top: 1em;
+  }
   #header select {
     display: inline-block;
     border: none;
@@ -114,6 +117,7 @@ export default function index() {
   return (
     <MyEventsStyled data-testid="app-dashboard-my-events" theme={theme}>
       <NewEventModal
+        familyMembers={familyMembers}
         isVisible={isNewEventModalVisible}
         toggleCreateEventModal={setIsEventModalVisible}
       />

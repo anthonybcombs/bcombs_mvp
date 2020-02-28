@@ -4,10 +4,8 @@ import { subMonths, addMonths, startOfMonth, format } from "date-fns";
 import Header from "./header";
 import Days from "./days";
 import Cells from "./cells";
-const SmallCalendarStyled = styled.div`
-  padding: 1em 1em 1em 1em;
-  border: 1px solid lightgrey;
-  border-radius: 30px;
+const MicroCalendarStyled = styled.div`
+  padding: 0 1em 1em 1em;
   background-color: white;
 `;
 export default function index({
@@ -43,9 +41,9 @@ export default function index({
     setSelectedDate(day);
   };
   return (
-    <SmallCalendarStyled data-testid="app-small-calendar" id="small-calendar">
+    <MicroCalendarStyled data-testid="app-micro-calendar">
       {!removeSubHeader && (
-        <h2 data-testid="app-small-calendar-header-current-month-year">
+        <h2 data-testid="app-micro-calendar-header-current-month-year">
           {format(currentDate.currentMonth, "MMM yyyy")}
         </h2>
       )}
@@ -61,6 +59,6 @@ export default function index({
         selectedDate={currentDate.selectedDate}
         handleChangeDay={handleChangeDay}
       />
-    </SmallCalendarStyled>
+    </MicroCalendarStyled>
   );
 }

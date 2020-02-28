@@ -14,7 +14,9 @@ export const initialState = {
       image: "https://picsum.photos/200",
       location: "PH",
       time: "1pm-5pm",
-      familyMembers: ["1", "2"]
+      familyMembers: ["1", "2"],
+      eventCategory: "Entertainment",
+      eventSchedule: [new Date(), new Date()]
     },
     {
       id: 2,
@@ -26,7 +28,9 @@ export const initialState = {
       location: "PH",
       time: "1pm-5pm",
       status: "Canceled",
-      familyMembers: ["1", "2"]
+      familyMembers: ["1", "2"],
+      eventCategory: "Entertainment",
+      eventSchedule: [new Date(), new Date()]
     },
     {
       id: 3,
@@ -38,7 +42,9 @@ export const initialState = {
       location: "PH",
       time: "1pm-5pm",
       status: "Scheduled",
-      familyMembers: ["1", "2"]
+      familyMembers: ["1", "2"],
+      eventCategory: "Entertainment",
+      eventSchedule: [new Date(), new Date()]
     },
     {
       id: 4,
@@ -50,7 +56,9 @@ export const initialState = {
       location: "PH",
       time: "1pm-5pm",
       status: "Scheduled",
-      familyMembers: ["1", "2"]
+      familyMembers: ["1", "2"],
+      eventCategory: "Entertainment",
+      eventSchedule: [new Date(), new Date()]
     },
     {
       id: 5,
@@ -62,7 +70,9 @@ export const initialState = {
       location: "PH",
       time: "1pm-5pm",
       status: "Scheduled",
-      familyMembers: ["1", "2"]
+      familyMembers: ["1", "2"],
+      eventCategory: "Entertainment",
+      eventSchedule: [new Date(), new Date()]
     }
   ],
   calendars: [
@@ -91,7 +101,7 @@ export const initialState = {
     {
       id: 3,
       userId: 1,
-    name: "Test Name 2",
+      name: "Test Name 2",
       color: randomColor()
     }
   ]

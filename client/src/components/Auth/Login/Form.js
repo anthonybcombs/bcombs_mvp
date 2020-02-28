@@ -74,6 +74,9 @@ const LoginFormStyled = styled.form`
     font-size: ${({ theme }) => theme.anchor.fontSize} !important;
     text-decoration: none;
   }
+  #socials > * {
+    width: initial;
+  }
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 50% 50%;

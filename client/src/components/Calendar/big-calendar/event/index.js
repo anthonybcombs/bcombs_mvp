@@ -1,12 +1,19 @@
 import React, { useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
+import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faStar,
   faCommentDots,
   faShare,
-  faCheckCircle
+  faTrashAlt,
+  faCheckCircle,
+  faShareAltSquare,
+  faPenSquare
 } from "@fortawesome/free-solid-svg-icons";
+import { format } from "date-fns";
+import { deleteEvent, updateEvent } from "../../../../redux/actions/Events";
+import EditableParagraph from "../../../../helpers/EditableParagraph";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 const EventStyled = styled.div`
   z-index: 1;
@@ -29,9 +36,33 @@ const EventPopOverStyled = styled.div`
   padding: 5px;
   width: 300px;
   overflow: auto;
+  input:required {
+    box-shadow: none;
+  }
+  input:invalid {
+    box-shadow: none;
+  }
+  input {
+    background: none;
+    width: 100%;
+    color: black;
+    font-size: ${({ theme }) => theme.input.fontSize};
+    display: block;
+    border: none;
+    border-radius: 1;
+    border: none;
+    outline: 0;
+    border-bottom: 2px solid lightgrey;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    outline: 0;
+  }
+  input:focus {
+    border-color: ${({ theme }) => theme.input.focus.border.color};
+    transition: 3s;
+  }
   h4,
   h3 {
-    line-height: 0.5em;
   }
   h4 {
     color: ${({ theme }) => theme.smallCalendar.event.textColor.primary};
@@ -43,7 +74,6 @@ const EventPopOverStyled = styled.div`
   p {
     display: block;
     font-size: 0.9em;
-    line-height: 3px;
   }
   #event-details {
     padding: 0 0.5em 0 0.5em;
@@ -52,6 +82,18 @@ const EventPopOverStyled = styled.div`
     grid-template-columns: 24% 24% 24% 29%;
     margin-bottom: 0.5em;
   }
+  #top-event-controls {
+    text-align: right;
+    display: block;
+  }
+  #top-event-controls button {
+    display: inline-block;
+    padding: 0;
+    margin: 0 0.3em 0.3em 0.3em;
+    box-shadow: none;
+    border: none;
+    background-color: transparent;
+  }
   #event-controls > div > svg {
     color: ${({ theme }) => theme.smallCalendar.event.backgroundColor.primary};
   }
@@ -59,6 +101,15 @@ const EventPopOverStyled = styled.div`
 export default function index({ event }) {
   const [isVisible, setVisibility] = useState(false);
   const theme = useContext(ThemeContext);
+  const dispatch = useDispatch();
+  const [eventDetails, setEventDetails] = useState({ ...event });
+  const handleEventDetailsChange = (id, value) => {
+    setEventDetails({ ...eventDetails, [id]: value });
+  };
+  const schedule = [
+    format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
+    format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")
+  ];
   return (
     <Popover
       isOpen={isVisible}
@@ -75,16 +126,85 @@ export default function index({ event }) {
         >
           <EventPopOverStyled
             theme={theme}
-            onClick={() => {
+            onMouseLeave={() => {
               setVisibility(!isVisible);
+              dispatch(updateEvent(eventDetails));
             }}
           >
+            <div id="top-event-controls">
+              <button>
+                <FontAwesomeIcon icon={faShareAltSquare} />
+              </button>
+              <button
+                onClick={() => {
+                  setVisibility(false);
+                  dispatch(deleteEvent(eventDetails));
+                }}
+              >
+                <FontAwesomeIcon icon={faTrashAlt} />
+              </button>
+            </div>
             <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
             <div id="event-details">
-              <h4>Entertainment</h4>
-              <h3>{event.name}</h3>
-              <p>7:00 PM-8:00 PM | Cost $15</p>
-              <p>New York,NY,USA</p>
+              <EditableParagraph
+                DisplayComp={<h4>{eventDetails.eventCategory}</h4>}
+                EditableComp={
+                  <input
+                    autoFocus
+                    value={eventDetails.eventCategory}
+                    onChange={({ target }) => {
+                      handleEventDetailsChange("eventCategory", target.value);
+                    }}
+                  />
+                }
+              />
+              <EditableParagraph
+                DisplayComp={<h3>{eventDetails.name}</h3>}
+                EditableComp={
+                  <input
+                    autoFocus
+                    value={eventDetails.name}
+                    onChange={({ target }) => {
+                      handleEventDetailsChange("name", target.value);
+                    }}
+                    onKeyPress={e => {
+                      if (e.key === "Enter") {
+                        dispatch(updateEvent(eventDetails));
+                      }
+                    }}
+                  />
+                }
+              />
+              <EditableParagraph
+                DisplayComp={<p>{`${schedule[0]} - ${schedule[1]}`}</p>}
+                EditableComp={
+                  <input
+                    autoFocus
+                    onKeyPress={e => {
+                      if (e.key === "Enter") {
+                        dispatch(updateEvent(eventDetails));
+                      }
+                    }}
+                  />
+                }
+              />
+              <EditableParagraph
+                DisplayComp={<p>{eventDetails.location}</p>}
+                EditableComp={
+                  <input
+                    autoFocus
+                    value={eventDetails.location}
+                    onChange={({ target }) => {
+                      handleEventDetailsChange("location", target.value);
+                    }}
+                    onKeyPress={e => {
+                      if (e.key === "Enter") {
+                        dispatch(updateEvent(eventDetails));
+                      }
+                    }}
+                  />
+                }
+              />
               <div id="event-controls" className="grid">
                 <div>
                   <FontAwesomeIcon
@@ -110,7 +230,6 @@ export default function index({ event }) {
           </EventPopOverStyled>
         </ArrowContainer>
       )}
-      onClickOutside={() => setVisibility(false)}
     >
       <EventStyled
         theme={theme}

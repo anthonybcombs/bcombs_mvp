@@ -8,6 +8,9 @@ import { defaultTheme } from "./helpers/Theme.js";
 import { store } from "./redux/saga";
 import App from "./App";
 const GlobalStyle = createGlobalStyle`
+*, ::after, ::before{
+  box-sizing:initial;
+}
   *:focus {
     outline: none;
   }
@@ -67,7 +70,7 @@ const GlobalStyle = createGlobalStyle`
   }
   .grid > * {
     display: block;
-    width: 100% !important;
+    width: 100%;
   }  
   .input-icons svg { 
       position: absolute; 
@@ -94,7 +97,9 @@ const GlobalStyle = createGlobalStyle`
     padding:0;
     background-image: url(${backgroundImg});    
     min-width:400px;
+    line-height:initial;
   }  
+
   @media (min-width: 600px) {
     body{
       overflow-x: hidden;

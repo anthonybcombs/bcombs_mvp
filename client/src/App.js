@@ -1,7 +1,6 @@
 import React from "react";
 import { Router } from "@reach/router";
 import Layout from "./helpers/Layout";
-//import DashboardLayout from "./helpers/DashboardLayout";
 import Auth from "./components/Auth";
 import DashBoard from "./components/Dashboard/";
 import DashboardHome from "./components/Dashboard/Home";

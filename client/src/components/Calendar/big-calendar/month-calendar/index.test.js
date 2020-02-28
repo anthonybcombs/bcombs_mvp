@@ -2,7 +2,7 @@ import React from "react";
 import { render, cleanup, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { initialState } from "../../../../redux/initialState";
-import { format, addMonths, subMonths, addDays } from "date-fns";
+import { format, addMonths, subMonths } from "date-fns";
 import CreateTestComponent from "../../../../helpers/CreateTestComponent";
 import BigCalendar from ".";
 afterEach(cleanup);

@@ -1,11 +1,14 @@
 import React, { useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
-import SmallCalendar from "../../../Calendar/small-calendar";
+import { useDispatch } from "react-redux";
+import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
+import { addEvent } from "../../../../redux/actions/Events";
+import MicroCalendar from "../../../Calendar/micro-calendar";
 import EventForm from "../forms/EventForm";
 const NewEventModal = styled.div`
   h2 {
-    text-align: center;
+    font-size: 2em;
   }
   input:required {
     box-shadow: none;
@@ -45,21 +48,24 @@ const NewEventModal = styled.div`
     padding: 10px;
     width: 100%;
     display: block;
-    margin: 10px auto;
+    margin: 20px auto;
     border: none;
   }
   #content {
     display: grid;
     background-color: white;
-    padding: 1em;
+    padding: 7em;
+  }
+  #content > div:first-child {
+    margin-top: 5em;
   }
   .modal-content {
-    margin: 1em auto;
+    margin: 1.5em auto;
     width: 80%;
   }
   @media (min-width: 600px) {
     #content {
-      grid-template-columns: 60% 40%;
+      grid-template-columns: 50% 50%;
       grid-gap: 1%;
     }
     button[type="submit"] {
@@ -67,25 +73,49 @@ const NewEventModal = styled.div`
     }
   }
 `;
-export default function index({ isVisible = true, toggleCreateEventModal }) {
-  const [eventDetails, setEventDetails] = useState({
-    title: "",
-    eventSchedule: [new Date(), new Date()],
-    eventType: "Event",
-    eventLocation: "",
-    eventGuests: "",
-    eventDescription: ""
-  });
+const initialEventDetails = {
+  name: "",
+  date: new Date(),
+  time: format(new Date(), "hh:mm a"),
+  eventSchedule: [new Date(), new Date()],
+  familyMembers: [],
+  eventType: "Event",
+  location: "",
+  eventDescription: "",
+  status: "Scheduled"
+};
+export default function index({
+  isVisible = true,
+  toggleCreateEventModal,
+  familyMembers
+}) {
+  const [eventDetails, setEventDetails] = useState(initialEventDetails);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const theme = useContext(ThemeContext);
+  const dispatch = useDispatch();
   const handleSetSelectedDate = date => {
+    const currentDateTime = addSeconds(
+      addMinutes(
+        addHours(date, new Date().getHours()),
+        new Date().getMinutes()
+      ),
+      new Date().getSeconds()
+    );
     setSelectedDate(date);
+    setEventDetails({
+      ...eventDetails,
+      date: currentDateTime,
+      time: format(currentDateTime, "hh:mm a"),
+      eventSchedule: [currentDateTime, currentDateTime]
+    });
   };
   const handleEventDetailsChange = (id, value) => {
     setEventDetails({ ...eventDetails, [id]: value });
   };
   const handleSubmit = value => {
     toggleCreateEventModal(false);
+    dispatch(addEvent(eventDetails));
+    setEventDetails(initialEventDetails);
   };
   if (!isVisible) {
     return <></>;
@@ -106,7 +136,7 @@ export default function index({ isVisible = true, toggleCreateEventModal }) {
           &times;
         </span>
         <div id="content">
-          <SmallCalendar
+          <MicroCalendar
             removeSubHeader={true}
             events={[]}
             selectedDate={selectedDate}
@@ -115,6 +145,7 @@ export default function index({ isVisible = true, toggleCreateEventModal }) {
             setSelectedEvent={() => {}}
           />
           <EventForm
+            familyMembers={familyMembers}
             eventDetails={eventDetails}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}

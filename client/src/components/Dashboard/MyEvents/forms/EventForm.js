@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
+import { Dropdown } from "semantic-ui-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClock,
@@ -9,6 +10,7 @@ import {
   faMapMarkerAlt,
   faAlignLeft
 } from "@fortawesome/free-solid-svg-icons";
+
 import EditableParagraph from "../../../../helpers/EditableParagraph";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const EventFormStyled = styled.form`
@@ -36,6 +38,28 @@ const EventFormStyled = styled.form`
   textarea {
     width: 100%;
   }
+  .dropdown {
+    padding: 0;
+  }
+  .ui.selection.active.dropdown,
+  .ui.selection.active.dropdown:hover {
+    border-color: none !important;
+  }
+  .ui.selection.dropdown {
+    height: initial !important;
+  }
+  .dropdown > .ui.label {
+    background-color: #f26e21;
+    color: white;
+    font-size: 0.8em;
+    font-weight: normal;
+    padding: 0.5em;
+    margin: 0.5em;
+  }
+  .icon {
+    padding: 0 !important;
+    width: initial !important;
+  }
   @media (min-width: 600px) {
     #event-type-list {
       grid-template-columns: repeat(3, 1fr);
@@ -46,13 +70,22 @@ const EventFormStyled = styled.form`
 export default function createEventForm({
   eventDetails,
   handleEventDetailsChange,
-  onSubmit
+  onSubmit,
+  familyMembers
 }) {
   const { register, handleSubmit, errors } = useForm();
   const schedule = [
     format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
     format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")
   ];
+  const options = [];
+  familyMembers.forEach(familyMember => {
+    options.push({
+      key: familyMembers.id,
+      text: familyMember.name,
+      value: familyMember.id
+    });
+  });
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
@@ -67,7 +100,7 @@ export default function createEventForm({
         placeholder="Add title"
         value={eventDetails.name}
         onChange={e => {
-          handleEventDetailsChange("title", e.target.value);
+          handleEventDetailsChange("name", e.target.value);
         }}
         ref={register({ required: true })}
       />
@@ -107,7 +140,6 @@ export default function createEventForm({
           Task
         </button>
       </div>
-      <div></div>
       <EditableParagraph
         DisplayComp={
           <p data-testid="app-dashboard-my-events-new-event-selected-datetime">
@@ -121,15 +153,28 @@ export default function createEventForm({
         DisplayComp={
           <p>
             <FontAwesomeIcon icon={faUserFriends} />
-            {eventDetails.eventGuests ? eventDetails.eventGuests : "Add guests"}
+            {eventDetails.familyMembers.length > 0
+              ? eventDetails.familyMembers
+                  .map(
+                    key =>
+                      familyMembers.find(
+                        familyMember => familyMember.id === key
+                      ).name
+                  )
+                  .join()
+              : "Add guests"}
           </p>
         }
         EditableComp={
-          <input
-            autoFocus
-            value={eventDetails.eventGuests}
-            onChange={({ target }) => {
-              handleEventDetailsChange("eventGuests", target.value);
+          <Dropdown
+            placeholder="Add guests"
+            fluid
+            multiple
+            selection
+            value={eventDetails.familyMembers}
+            options={options}
+            onChange={(e, { value }) => {
+              handleEventDetailsChange("familyMembers", value);
             }}
           />
         }
@@ -138,18 +183,20 @@ export default function createEventForm({
         DisplayComp={
           <p>
             <FontAwesomeIcon icon={faMapMarkerAlt} />
-            {eventDetails.eventLocation
-              ? eventDetails.eventLocation
+            {eventDetails.location
+              ? eventDetails.location
               : "Add location or conferencing"}
           </p>
         }
         EditableComp={
           <input
             autoFocus
-            value={eventDetails.eventLocation}
+            name="location"
+            value={eventDetails.location}
             onChange={({ target }) => {
-              handleEventDetailsChange("eventLocation", target.value);
+              handleEventDetailsChange("location", target.value);
             }}
+            ref={register({ required: true })}
           />
         }
       />
