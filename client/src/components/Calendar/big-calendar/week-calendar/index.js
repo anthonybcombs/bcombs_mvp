@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { subWeeks, addWeeks, startOfWeek } from "date-fns";
+import NewEventModal from "../../../Dashboard/MyEvents/create/withOutCalendar";
 import Header from "./header";
 import Days from "./days";
 import Cells from "./cells";
@@ -14,12 +15,14 @@ export default function index({
   calendarType,
   handleChangeCalendarType,
   selectedCalendars,
-  handleCalendarSelection
+  handleCalendarSelection,
+  familyMembers
 }) {
   const [currentDate, setCurrentDate] = useState({
     currentWeek: new Date(),
     selectedDate: new Date()
   });
+  const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const handleWeekChange = operation => {
     let currentWeek;
     if (operation === "next") {
@@ -42,6 +45,12 @@ export default function index({
   };
   return (
     <WeekViewStyled data-testid="app-big-calendar">
+      <NewEventModal
+        familyMembers={familyMembers}
+        isVisible={isNewEventModalVisible}
+        toggleCreateEventModal={setIsEventModalVisible}
+        defaultSelectedDate={currentDate.selectedDate}
+      />
       <Header
         currentWeek={currentDate.currentWeek}
         handleWeekChange={handleWeekChange}
@@ -52,7 +61,13 @@ export default function index({
         handleCalendarSelection={handleCalendarSelection}
       />
       <Days currentWeek={currentDate.currentWeek} />
-      <Cells currentWeek={currentDate.currentWeek} events={events} />
+      <Cells
+        currentWeek={currentDate.currentWeek}
+        events={events}
+        familyMembers={familyMembers}
+        handleChangeDay={handleChangeDay}
+        setIsEventModalVisible={setIsEventModalVisible}
+      />
     </WeekViewStyled>
   );
 }

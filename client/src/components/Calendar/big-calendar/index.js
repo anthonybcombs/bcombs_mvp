@@ -40,6 +40,7 @@ export default function index({ events, calendars, familyMembers }) {
           selectedCalendars={selectedCalendars}
           handleChangeCalendarType={handleChangeCalendarType}
           handleCalendarSelection={handleCalendarSelection}
+          familyMembers={familyMembers}
         />
       )}
     </>

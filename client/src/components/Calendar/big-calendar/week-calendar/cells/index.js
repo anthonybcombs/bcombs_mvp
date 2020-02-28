@@ -7,7 +7,8 @@ import {
   endOfWeek,
   parseISO,
   getHours,
-  addDays
+  addDays,
+  toDate
 } from "date-fns";
 import Event from "../../event";
 const CellsStyled = styled.div`
@@ -88,7 +89,8 @@ export default function index({
   currentWeek,
   selectedDate,
   events,
-  handleChangeDay
+  handleChangeDay,
+  setIsEventModalVisible
 }) {
   const theme = useContext(ThemeContext);
   const startDate = startOfWeek(currentWeek);
@@ -106,7 +108,7 @@ export default function index({
     );
     while (day <= endDate) {
       const currentDateTime = parseISO(
-        `${format(day, "yyyy-MM-dd")}T${hour < 10 ? `0${hour}` : hour}:00:00Z`
+        `${format(day, "yyyy-MM-dd")}T${hour < 10 ? `0${hour}` : hour}:00:00`
       );
       const eventsOnThisDay = events.filter(
         event =>
@@ -121,6 +123,10 @@ export default function index({
           className={`cell ${
             isSameHour(getHours(selectedDate), hour) ? "selected" : ""
           }`}
+          onDoubleClick={e => {
+            handleChangeDay(currentDateTime);
+            setIsEventModalVisible(true);
+          }}
         >
           {hasEvents && (
             <div id="events-list">

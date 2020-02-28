@@ -39,7 +39,8 @@ const EventFormStyled = styled.form`
     width: 100%;
   }
   .dropdown {
-    padding: 0;
+    padding: 0 !important;
+    width: 100%;
   }
   .ui.selection.active.dropdown,
   .ui.selection.active.dropdown:hover {
@@ -59,6 +60,9 @@ const EventFormStyled = styled.form`
   .icon {
     padding: 0 !important;
     width: initial !important;
+  }
+  .dropdown .icon {
+    top: 2em !important;
   }
   @media (min-width: 600px) {
     #event-type-list {

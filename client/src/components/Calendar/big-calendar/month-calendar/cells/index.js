@@ -116,8 +116,8 @@ export default function index({
         onClick={() => {
           handleChangeDay(toDate(cloneDay));
         }}
-        onDoubleClick={async e => {
-          await handleChangeDay(toDate(cloneDay));
+        onDoubleClick={e => {
+          handleChangeDay(toDate(cloneDay));
           setIsEventModalVisible(true);
         }}
       >

@@ -59,7 +59,7 @@ const NewEventModal = styled.div`
   }
   .modal-content {
     margin: 1.5em auto;
-    width: 80%;
+    width: 60%;
   }
   @media (min-width: 600px) {
     button[type="submit"] {
