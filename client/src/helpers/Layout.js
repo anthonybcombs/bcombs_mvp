@@ -35,22 +35,21 @@ const HeaderStyled = styled.header`
     display: inline-block;
     border-bottom: 5px solid ${({ theme }) => theme.backgroundColor.primary};
   }
-  #dashboard-search {
-    display: grid;
+  #dashboard-setting {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1em;
   }
   @media (min-width: 600px) {
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 30% 70%;
     text-align: left;
     #app-header-left {
       text-align: center;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       grid-gap: 1%;
     }
     #app-header-right {
-      grid-template-columns: 30% 70%;
-    }
-    #dashboard-search {
-      grid-template-columns: 15% 20% 15% 15% 15% 10% 10%;
+      grid-template-columns: 50% 50%;
     }
     #app-header-left a {
       position: relative;
@@ -61,6 +60,13 @@ const HeaderStyled = styled.header`
     }
     .input-icons {
       margin-top: 5px;
+    }
+    #dashboard-setting {
+      margin-top: 0;
+      justify-content: end !important;
+    }
+    #dashboard-setting a {
+      margin: 0 auto;
     }
   }
 `;
@@ -160,36 +166,39 @@ export default function Layout({ children }) {
                     >
                       <span>Contacts</span>
                     </Link>
-                    <Link
-                      className={`${
-                        context.location.pathname === "/dashboard/settings"
-                          ? "selected"
-                          : ""
-                      }`}
-                      to="/dashboard/settings"
-                    >
-                      <FontAwesomeIcon icon={faCog} />
-                    </Link>
-                    <Link
-                      className={`${
-                        context.location.pathname === "/dashboard/notifications"
-                          ? "selected"
-                          : ""
-                      }`}
-                      to="/dashboard/notifications"
-                    >
-                      <FontAwesomeIcon icon={faBell} />
-                    </Link>
-                    <Link
-                      className={`${
-                        context.location.pathname === "/dashboard/profile"
-                          ? "selected"
-                          : ""
-                      }`}
-                      to="/dashboard/myprofile"
-                    >
-                      <img src={"https://i.pravatar.cc/300"} />
-                    </Link>
+                    <div id="dashboard-setting">
+                      <Link
+                        className={`${
+                          context.location.pathname ===
+                          "/dashboard/notifications"
+                            ? "selected"
+                            : ""
+                        }`}
+                        to="/dashboard/notifications"
+                      >
+                        <FontAwesomeIcon icon={faBell} />
+                      </Link>
+                      <Link
+                        className={`${
+                          context.location.pathname === "/dashboard/settings"
+                            ? "selected"
+                            : ""
+                        }`}
+                        to="/dashboard/settings"
+                      >
+                        <FontAwesomeIcon icon={faCog} />
+                      </Link>
+                      <Link
+                        className={`${
+                          context.location.pathname === "/dashboard/profile"
+                            ? "selected"
+                            : ""
+                        }`}
+                        to="/dashboard/myprofile"
+                      >
+                        <img src={"https://i.pravatar.cc/300"} />
+                      </Link>
+                    </div>
                   </>
                 );
               }
