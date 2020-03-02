@@ -5,7 +5,7 @@ import Auth from "./components/Auth";
 import DashBoard from "./components/Dashboard/";
 import DashboardHome from "./components/Dashboard/Home";
 import DashboardMyCalendars from "./components/Dashboard/MyCalendars";
-import MyProfile from "./components/Dashboard/Profile";
+import MyProfile from "./components/Dashboard/MyProfile";
 import Login from "./components/Auth/Login";
 import CreateUser from "./components/Auth/Create";
 import ForgotPassword from "./components/Auth//ForgotPassword";
@@ -29,6 +29,7 @@ export default function App() {
               <MyProfile path="myprofile" />
             </DashBoard>
             <Profile path="profile" />
+            <MyProfile path="myprofile" />
           </Router>
         </div>
       </Layout>

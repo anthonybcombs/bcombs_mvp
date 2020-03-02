@@ -3,9 +3,10 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
 import Toggle from "react-toggle";
 import "react-toggle/style.css"; // for ES6 modules
+import backgroundImg from "../../../images/loginbg.png";
 const ProfileSyled = styled.div`
   padding: 1em;
   #profile,
@@ -20,8 +21,8 @@ const ProfileSyled = styled.div`
     position: relative;
     width: 100%;
     height: 250px;
-    background-color: #f26e21;
-    opacity: 1;
+    background: url(${backgroundImg}), rgba(242, 110, 33, 0.8);
+    background-blend-mode: multiply;
   }
   #personal-info div:nth-of-type(1) div:nth-of-type(1) {
     position: absolute;
@@ -31,18 +32,27 @@ const ProfileSyled = styled.div`
     top: 25%;
     left: 38%;
   }
-  #personal-info div:nth-of-type(1) div:nth-of-type(1) h3 {
+  #personal-info div:nth-of-type(1) div:nth-of-type(1) h3,
+  #personal-info div:nth-of-type(1) div:nth-of-type(1) h4 {
     color: white;
     text-shadow: 0 0 25px #eae9e9;
     padding: 0em;
-    margin: 0em;
+    margin: 3px;
     text-align: center;
+  }
+  #personal-info div:nth-of-type(1) div:nth-of-type(1) h4 span {
+    background-color: white;
+    color: #f26e21;
+    border-radius: 10px;
+    margin-left: 0.3em;
+    padding: 0.2em 1em 0.2em 1em;
+    font-weight: normal;
   }
   #personal-info div:nth-of-type(1) div:nth-of-type(1) img {
     border-radius: 50%;
     height: 100px;
     width: 100px;
-    box-shadow: 0 0 25px #eae9e9;
+    box-shadow: 0 0 5px black;
   }
   #personal-info div:nth-of-type(2) {
     position: relative;
@@ -122,6 +132,10 @@ export default function index() {
               <div>
                 <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
                 <h3>Chris Paul</h3>
+                <h4>
+                  <FontAwesomeIcon icon={faUsers} />
+                  <span>22</span>
+                </h4>
               </div>
             </div>
             <div>
