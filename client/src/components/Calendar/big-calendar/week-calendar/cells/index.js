@@ -8,7 +8,8 @@ import {
   parseISO,
   getHours,
   addDays,
-  toDate
+  subHours,
+  isWithinInterval
 } from "date-fns";
 import Event from "../../event";
 const CellsStyled = styled.div`
@@ -110,11 +111,13 @@ export default function index({
       const currentDateTime = parseISO(
         `${format(day, "yyyy-MM-dd")}T${hour < 10 ? `0${hour}` : hour}:00:00`
       );
-      const eventsOnThisDay = events.filter(
-        event =>
-          format(event.date, "MM/dd/yyyy h") ===
-          format(currentDateTime, "MM/dd/yyyy h")
+      const eventsOnThisDay = events.filter(event =>
+        isWithinInterval(currentDateTime, {
+          start: subHours(event.eventSchedule[0], 1),
+          end: event.eventSchedule[1]
+        })
       );
+      console.log(eventsOnThisDay);
       const eventsCount = eventsOnThisDay.length;
       const hasEvents = eventsCount > 0;
       columns.push(

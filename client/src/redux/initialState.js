@@ -1,4 +1,4 @@
-import { addDays } from "date-fns";
+import { addDays, addHours } from "date-fns";
 import randomColor from "randomcolor";
 export const initialState = {
   auth: {
@@ -10,14 +10,14 @@ export const initialState = {
       name: "testing event 1",
       description:
         "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
-      date: addDays(new Date(), 1),
+      date: new Date(),
       image: "https://picsum.photos/200",
       location: "PH",
       time: "1pm-5pm",
       familyMembers: ["1", "2"],
       eventGuests: [],
       eventCategory: "Entertainment",
-      eventSchedule: [new Date(), new Date()],
+      eventSchedule: [new Date(), addDays(new Date(), 10)],
       eventType: "Event"
     },
     {
@@ -33,7 +33,7 @@ export const initialState = {
       familyMembers: ["1", "2"],
       eventGuests: [],
       eventCategory: "Entertainment",
-      eventSchedule: [new Date(), new Date()],
+      eventSchedule: [new Date(), addHours(new Date(), 1)],
       eventType: "Event"
     },
     {
@@ -49,7 +49,7 @@ export const initialState = {
       familyMembers: ["1", "2"],
       eventGuests: [],
       eventCategory: "Entertainment",
-      eventSchedule: [new Date(), new Date()],
+      eventSchedule: [new Date(), addHours(new Date(), 2)],
       eventType: "Event"
     },
     {
@@ -65,7 +65,7 @@ export const initialState = {
       familyMembers: ["1", "2"],
       eventGuests: [],
       eventCategory: "Entertainment",
-      eventSchedule: [new Date(), new Date()],
+      eventSchedule: [new Date(), addHours(new Date(), 2)],
       eventType: "Event"
     },
     {
@@ -81,7 +81,7 @@ export const initialState = {
       familyMembers: ["1", "2"],
       eventGuests: [],
       eventCategory: "Entertainment",
-      eventSchedule: [new Date(), new Date()],
+      eventSchedule: [new Date(), addHours(new Date(), 2)],
       eventType: "Event"
     }
   ],

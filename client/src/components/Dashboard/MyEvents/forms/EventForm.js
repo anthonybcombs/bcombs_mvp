@@ -43,19 +43,18 @@ const EventFormStyled = styled.form`
     position: relative;
     background-color: #f26e21;
     color: white;
-    padding: 0 1em 0 0em;
+    padding: 0.6em;
+    margin: 0.3em;
   }
-  .guest span:nth-of-type(2) {
-    display: inline-block;
-    position: absolute;
-    right: 0;
-    margin-right: 2px;
+  .react-datetimerange-picker {
+    width: 100%;
   }
   .react-datetimerange-picker button {
     width: inherit;
     color: initial;
     background-color: initial;
     box-shadow: initial;
+    border-radius: initial;
   }
   .react-datetimerange-picker {
     border: none;
@@ -70,14 +69,27 @@ const EventFormStyled = styled.form`
   .react-datetimerange-picker__wrapper {
     border: none;
   }
+  .react-calendar .react-calendar__tile--active,
+  .react-calendar .react-calendar__tile--hover,
+  .react-calendar__tile--rangeStart {
+    background-color: #f26e21 !important;
+    color: white !important;
+  }
   .react-calendar .react-calendar__tile:hover {
     background-color: #f26e21;
     color: white;
+  }
+  .react-datetimerange-picker__inputGroup__input--hasLeadingZero {
+    padding: 0;
   }
   .react-calendar__tile--active:enabled:hover,
   .react-calendar__tile--active:enabled:focus {
     background-color: #f26e21;
     color: white;
+  }
+  input[placeholder="Add guests"] {
+    display: inline-block;
+    width: initial;
   }
   svg[class="react-datetimerange-picker__clear-button__icon react-datetimerange-picker__button__icon"] {
     display: none;
@@ -165,7 +177,6 @@ export default function createEventForm({
           <DateTimeRangePicker
             value={eventDetails.eventSchedule}
             disableClock={true}
-            disableCalendar={true}
             onChange={date => {
               if (date == null) {
                 return;
@@ -182,25 +193,47 @@ export default function createEventForm({
             {eventDetails.eventGuests.length > 0
               ? eventDetails.eventGuests.map((guest, index) => (
                   <span className="guest" key={index}>
-                    <span> {guest}</span>
-                    <span
-                      onClick={e => {
-                        e.stopPropagation();
-                        handleEventDetailsChange(
-                          "eventGuests",
-                          index,
-                          "remove"
-                        );
-                      }}
-                    >
-                      &times;
+                    <span>
+                      {guest}
+                      <span
+                        onClick={e => {
+                          e.stopPropagation();
+                          handleEventDetailsChange(
+                            "eventGuests",
+                            index,
+                            "remove"
+                          );
+                        }}
+                      >
+                        &times;
+                      </span>
                     </span>
                   </span>
                 ))
               : "Add guests"}
           </p>
         }
-        EditableComp={<input type="text" placeholder="Add guests" />}
+        EditableComp={
+          <div>
+            <FontAwesomeIcon icon={faUserFriends} />
+            {eventDetails.eventGuests.map((guest, index) => (
+              <span className="guest" key={index}>
+                <span>
+                  {guest}
+                  <span
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleEventDetailsChange("eventGuests", index, "remove");
+                    }}
+                  >
+                    &times;
+                  </span>
+                </span>
+              </span>
+            ))}
+            <input type="text" placeholder="Add guests" />
+          </div>
+        }
         handleOnEnter={value => {
           handleEventDetailsChange("eventGuests", value);
         }}

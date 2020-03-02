@@ -9,7 +9,8 @@ import {
   startOfWeek,
   endOfWeek,
   addDays,
-  toDate
+  toDate,
+  eachDayOfInterval
 } from "date-fns";
 import Event from "../../event";
 const CellsStyled = styled.div`
@@ -98,9 +99,18 @@ export default function index({
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
-    const eventsOnThisDay = events.filter(
-      event => format(event.date, "MM dd yyyy") === format(day, "MM dd yyyy")
-    );
+    const eventsOnThisDay = events.filter(event => {
+      const dateRange = eachDayOfInterval({
+        start: event.eventSchedule[0],
+        end: event.eventSchedule[1]
+      });
+      if (dateRange != undefined) {
+        return (
+          dateRange.filter(intervalDate => isSameDay(intervalDate, cloneDay))
+            .length > 0
+        );
+      }
+    });
     const eventsCount = eventsOnThisDay.length;
     const hasEvents = eventsCount > 0;
     days.push(

@@ -60,7 +60,7 @@ const NewEventModal = styled.div`
   }
   .modal-content {
     margin: 1.5em auto;
-    width: 80%;
+    width: 60%;
   }
   @media (min-width: 600px) {
     button[type="submit"] {
@@ -77,10 +77,7 @@ export default function index({
     name: "",
     date: defaultSelectedDate,
     time: format(defaultSelectedDate, "hh:mm a"),
-    eventSchedule: [
-      format(defaultSelectedDate, "MM/dd/yyyy hh:mm:ss a"),
-      format(defaultSelectedDate, "MM/dd/yyyy hh:mm:ss a")
-    ],
+    eventSchedule: [defaultSelectedDate, defaultSelectedDate],
     eventGuests: [],
     familyMembers: [],
     eventType: "Event",
