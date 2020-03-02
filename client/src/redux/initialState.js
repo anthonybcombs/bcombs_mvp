@@ -17,7 +17,8 @@ export const initialState = {
       familyMembers: ["1", "2"],
       eventGuests: [],
       eventCategory: "Entertainment",
-      eventSchedule: [new Date(), new Date()]
+      eventSchedule: [new Date(), new Date()],
+      eventType: "Event"
     },
     {
       id: 2,
@@ -32,7 +33,8 @@ export const initialState = {
       familyMembers: ["1", "2"],
       eventGuests: [],
       eventCategory: "Entertainment",
-      eventSchedule: [new Date(), new Date()]
+      eventSchedule: [new Date(), new Date()],
+      eventType: "Event"
     },
     {
       id: 3,
@@ -47,7 +49,8 @@ export const initialState = {
       familyMembers: ["1", "2"],
       eventGuests: [],
       eventCategory: "Entertainment",
-      eventSchedule: [new Date(), new Date()]
+      eventSchedule: [new Date(), new Date()],
+      eventType: "Event"
     },
     {
       id: 4,
@@ -62,7 +65,8 @@ export const initialState = {
       familyMembers: ["1", "2"],
       eventGuests: [],
       eventCategory: "Entertainment",
-      eventSchedule: [new Date(), new Date()]
+      eventSchedule: [new Date(), new Date()],
+      eventType: "Event"
     },
     {
       id: 5,
@@ -77,7 +81,8 @@ export const initialState = {
       familyMembers: ["1", "2"],
       eventGuests: [],
       eventCategory: "Entertainment",
-      eventSchedule: [new Date(), new Date()]
+      eventSchedule: [new Date(), new Date()],
+      eventType: "Event"
     }
   ],
   calendars: [

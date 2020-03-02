@@ -1,14 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch } from "react-redux";
-import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
-import { addEvent } from "../../../../redux/actions/Events";
-import MicroCalendar from "../../../Calendar/micro-calendar";
+import { format } from "date-fns";
+import { updateEvent } from "../../../../redux/actions/Events";
 import EventForm from "../forms/EventForm";
-const NewEventModal = styled.div`
+const EditEventModal = styled.div`
   h2 {
-    font-size: 2em;
+    text-align: center;
   }
   input:required {
     box-shadow: none;
@@ -54,7 +53,7 @@ const NewEventModal = styled.div`
   #content {
     display: grid;
     background-color: white;
-    padding: 7em;
+    padding: 4em;
   }
   #content > div:first-child {
     margin-top: 5em;
@@ -64,52 +63,19 @@ const NewEventModal = styled.div`
     width: 80%;
   }
   @media (min-width: 600px) {
-    #content {
-      grid-template-columns: 50% 50%;
-      grid-gap: 1%;
-    }
     button[type="submit"] {
       width: 30%;
     }
   }
 `;
-const initialEventDetails = selectedDate => {
-  return {
-    name: "",
-    date: new Date(),
-    time: format(selectedDate, "hh:mm a"),
-    eventSchedule: [selectedDate, selectedDate],
-    eventGuests: [],
-    familyMembers: [],
-    eventType: "Event",
-    location: "",
-    eventDescription: "",
-    status: "Scheduled"
-  };
-};
-export default function index({ isVisible = true, toggleCreateEventModal }) {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [eventDetails, setEventDetails] = useState(
-    initialEventDetails(selectedDate)
-  );
+export default function index({
+  isVisible = true,
+  toggleEditEventModal,
+  defaultEventDetails
+}) {
+  const [eventDetails, setEventDetails] = useState(defaultEventDetails);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const handleSetSelectedDate = date => {
-    const currentDateTime = addSeconds(
-      addMinutes(
-        addHours(date, new Date().getHours()),
-        new Date().getMinutes()
-      ),
-      new Date().getSeconds()
-    );
-    setSelectedDate(date);
-    setEventDetails({
-      ...eventDetails,
-      date: currentDateTime,
-      time: format(currentDateTime, "hh:mm a"),
-      eventSchedule: [currentDateTime, currentDateTime]
-    });
-  };
   const handleEventDetailsChange = (id, value, action = "") => {
     let newEventGuests;
     newEventGuests = eventDetails.eventGuests;
@@ -127,15 +93,14 @@ export default function index({ isVisible = true, toggleCreateEventModal }) {
     setEventDetails({ ...eventDetails, [id]: value });
   };
   const handleSubmit = value => {
-    toggleCreateEventModal(false);
-    dispatch(addEvent(eventDetails));
-    setEventDetails(initialEventDetails(selectedDate));
+    toggleEditEventModal();
+    dispatch(updateEvent(eventDetails));
   };
   if (!isVisible) {
     return <></>;
   }
   return ReactDOM.createPortal(
-    <NewEventModal
+    <EditEventModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
       theme={theme}
@@ -144,28 +109,21 @@ export default function index({ isVisible = true, toggleCreateEventModal }) {
         <span
           className="close"
           onClick={() => {
-            toggleCreateEventModal(false);
+            toggleEditEventModal();
           }}
         >
           &times;
         </span>
         <div id="content">
-          <MicroCalendar
-            removeSubHeader={true}
-            events={[]}
-            selectedDate={selectedDate}
-            setSelectedDate={handleSetSelectedDate}
-            selectedEvent={null}
-            setSelectedEvent={() => {}}
-          />
           <EventForm
             eventDetails={eventDetails}
+            header={"Edit Event"}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}
           />
         </div>
       </div>
-    </NewEventModal>,
+    </EditEventModal>,
     document.getElementById("modal")
   );
 }

@@ -46,7 +46,6 @@ export default function index({
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
       <NewEventModal
-        familyMembers={familyMembers}
         isVisible={isNewEventModalVisible}
         toggleCreateEventModal={setIsEventModalVisible}
         defaultSelectedDate={currentDate.selectedDate}

@@ -71,7 +71,6 @@ const NewEventModal = styled.div`
 export default function index({
   isVisible = true,
   toggleCreateEventModal,
-  familyMembers,
   defaultSelectedDate
 }) {
   const [eventDetails, setEventDetails] = useState({
@@ -86,7 +85,7 @@ export default function index({
     familyMembers: [],
     eventType: "Event",
     location: "",
-    eventDescription: "",
+    description: "",
     status: "Scheduled"
   });
   useEffect(() => {
@@ -127,7 +126,7 @@ export default function index({
       eventGuests: [],
       eventType: "Event",
       location: "",
-      eventDescription: "",
+      description: "",
       status: "Scheduled"
     });
   };
@@ -151,7 +150,6 @@ export default function index({
         </span>
         <div id="content">
           <EventForm
-            familyMembers={familyMembers}
             eventDetails={eventDetails}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}

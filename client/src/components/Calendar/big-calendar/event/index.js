@@ -13,7 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import { deleteEvent, updateEvent } from "../../../../redux/actions/Events";
-import EditableParagraph from "../../../../helpers/EditableParagraph";
+import EditEvent from "../../../Dashboard/MyEvents/edit/withOutCalendar";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 const EventStyled = styled.div`
   z-index: 1;
@@ -100,15 +100,15 @@ const EventPopOverStyled = styled.div`
 `;
 export default function index({ event }) {
   const [isVisible, setVisibility] = useState(false);
+  const [isEditEventVisible, setEditEventVisible] = useState(false);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const [eventDetails, setEventDetails] = useState({ ...event });
-  const handleEventDetailsChange = (id, value) => {
-    setEventDetails({ ...eventDetails, [id]: value });
+  const toggleEditEventModal = () => {
+    setEditEventVisible(!isEditEventVisible);
   };
   const schedule = [
-    format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
-    format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")
+    format(event.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
+    format(event.eventSchedule[1], "MMM dd,yyyy hh:mm a")
   ];
   return (
     <Popover
@@ -128,7 +128,6 @@ export default function index({ event }) {
             theme={theme}
             onMouseLeave={() => {
               setVisibility(!isVisible);
-              dispatch(updateEvent(eventDetails));
             }}
             onDoubleClick={e => {
               e.stopPropagation();
@@ -137,6 +136,12 @@ export default function index({ event }) {
             <div id="top-event-controls">
               <button>
                 <FontAwesomeIcon icon={faShareAltSquare} />
+              </button>
+              <button>
+                <FontAwesomeIcon
+                  icon={faPenSquare}
+                  onClick={toggleEditEventModal}
+                />
               </button>
               <button
                 onClick={e => {
@@ -149,65 +154,10 @@ export default function index({ event }) {
             </div>
             <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
             <div id="event-details">
-              <EditableParagraph
-                DisplayComp={<h4>{eventDetails.eventCategory}</h4>}
-                EditableComp={
-                  <input
-                    autoFocus
-                    value={eventDetails.eventCategory}
-                    onChange={({ target }) => {
-                      handleEventDetailsChange("eventCategory", target.value);
-                    }}
-                  />
-                }
-              />
-              <EditableParagraph
-                DisplayComp={<h3>{eventDetails.name}</h3>}
-                EditableComp={
-                  <input
-                    autoFocus
-                    value={eventDetails.name}
-                    onChange={({ target }) => {
-                      handleEventDetailsChange("name", target.value);
-                    }}
-                    onKeyPress={e => {
-                      if (e.key === "Enter") {
-                        dispatch(updateEvent(eventDetails));
-                      }
-                    }}
-                  />
-                }
-              />
-              <EditableParagraph
-                DisplayComp={<p>{`${schedule[0]} - ${schedule[1]}`}</p>}
-                EditableComp={
-                  <input
-                    autoFocus
-                    onKeyPress={e => {
-                      if (e.key === "Enter") {
-                        dispatch(updateEvent(eventDetails));
-                      }
-                    }}
-                  />
-                }
-              />
-              <EditableParagraph
-                DisplayComp={<p>{eventDetails.location}</p>}
-                EditableComp={
-                  <input
-                    autoFocus
-                    value={eventDetails.location}
-                    onChange={({ target }) => {
-                      handleEventDetailsChange("location", target.value);
-                    }}
-                    onKeyPress={e => {
-                      if (e.key === "Enter") {
-                        dispatch(updateEvent(eventDetails));
-                      }
-                    }}
-                  />
-                }
-              />
+              <h4>{event.eventCategory}</h4>
+              <h3>{event.name}</h3>
+              <p>{`${schedule[0]} - ${schedule[1]}`}</p>
+              <p>{event.location}</p>
               <div id="event-controls" className="grid">
                 <div>
                   <FontAwesomeIcon
@@ -240,6 +190,11 @@ export default function index({ event }) {
           setVisibility(!isVisible);
         }}
       >
+        <EditEvent
+          isVisible={isEditEventVisible}
+          toggleEditEventModal={toggleEditEventModal}
+          defaultEventDetails={event}
+        />
         <div className={`${isVisible ? "selected" : ""}`} id="event-name">
           {event.name}
         </div>

@@ -117,7 +117,6 @@ export default function index() {
   return (
     <MyEventsStyled data-testid="app-dashboard-my-events" theme={theme}>
       <NewEventModal
-        familyMembers={familyMembers}
         isVisible={isNewEventModalVisible}
         toggleCreateEventModal={setIsEventModalVisible}
       />

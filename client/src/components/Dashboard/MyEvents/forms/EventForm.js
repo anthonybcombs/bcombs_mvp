@@ -93,28 +93,20 @@ export default function createEventForm({
   eventDetails,
   handleEventDetailsChange,
   onSubmit,
-  familyMembers
+  header = "Create a new Event"
 }) {
   const { register, handleSubmit, errors } = useForm();
   const schedule = [
     format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
     format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")
   ];
-  const options = [];
-  familyMembers.forEach(familyMember => {
-    options.push({
-      key: familyMembers.id,
-      text: familyMember.name,
-      value: familyMember.id
-    });
-  });
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <h2>Create a new Event</h2>
+      <h2>{header}</h2>
       <input
         data-testid="app-dashboard-my-events-new-event-input-title"
         type="text"
@@ -238,16 +230,17 @@ export default function createEventForm({
         DisplayComp={
           <p>
             <FontAwesomeIcon icon={faAlignLeft} />
-            {eventDetails.eventDescription
-              ? eventDetails.eventDescription
+            {eventDetails.description
+              ? eventDetails.description
               : "Add description"}
           </p>
         }
         EditableComp={
           <textarea
             autoFocus
+            value={eventDetails.description}
             onChange={({ target }) => {
-              handleEventDetailsChange("eventDescription", target.value);
+              handleEventDetailsChange("description", target.value);
             }}
           />
         }
