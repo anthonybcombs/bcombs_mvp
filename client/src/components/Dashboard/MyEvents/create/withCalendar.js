@@ -79,6 +79,7 @@ const initialEventDetails = selectedDate => {
     date: new Date(),
     time: format(selectedDate, "hh:mm a"),
     eventSchedule: [selectedDate, selectedDate],
+    eventGuests: [],
     familyMembers: [],
     eventType: "Event",
     location: "",
@@ -113,7 +114,20 @@ export default function index({
       eventSchedule: [currentDateTime, currentDateTime]
     });
   };
-  const handleEventDetailsChange = (id, value) => {
+  const handleEventDetailsChange = (id, value, action = "") => {
+    let newEventGuests;
+    newEventGuests = eventDetails.eventGuests;
+    if (id === "eventGuests") {
+      if (action !== "remove") {
+        newEventGuests.push(value);
+      } else {
+        newEventGuests = newEventGuests.filter(
+          (guest, index) => index !== value
+        );
+      }
+      setEventDetails({ ...eventDetails, eventGuests: newEventGuests });
+      return;
+    }
     setEventDetails({ ...eventDetails, [id]: value });
   };
   const handleSubmit = value => {

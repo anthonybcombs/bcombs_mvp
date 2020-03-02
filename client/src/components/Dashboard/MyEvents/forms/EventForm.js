@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
-import { Dropdown } from "semantic-ui-react";
+import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClock,
@@ -38,31 +38,49 @@ const EventFormStyled = styled.form`
   textarea {
     width: 100%;
   }
-  .dropdown {
-    padding: 0 !important;
-    width: 100%;
-  }
-  .ui.selection.active.dropdown,
-  .ui.selection.active.dropdown:hover {
-    border-color: none !important;
-  }
-  .ui.selection.dropdown {
-    height: initial !important;
-  }
-  .dropdown > .ui.label {
+  .guest {
+    display: inline-block;
+    position: relative;
     background-color: #f26e21;
     color: white;
-    font-size: 0.8em;
-    font-weight: normal;
-    padding: 0.5em;
-    margin: 0.5em;
+    padding: 0 1em 0 0em;
   }
-  .icon {
-    padding: 0 !important;
-    width: initial !important;
+  .guest span:nth-of-type(2) {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    margin-right: 2px;
   }
-  .dropdown .icon {
-    top: 2em !important;
+  .react-datetimerange-picker button {
+    width: inherit;
+    color: initial;
+    background-color: initial;
+    box-shadow: initial;
+  }
+  .react-datetimerange-picker {
+    border: none;
+    width: 100%;
+    margin: 1em 0 1em 0;
+  }
+  .react-datetimerange-picker input {
+    margin: 0;
+    width: initial;
+    border-bottom: none;
+  }
+  .react-datetimerange-picker__wrapper {
+    border: none;
+  }
+  .react-calendar .react-calendar__tile:hover {
+    background-color: #f26e21;
+    color: white;
+  }
+  .react-calendar__tile--active:enabled:hover,
+  .react-calendar__tile--active:enabled:focus {
+    background-color: #f26e21;
+    color: white;
+  }
+  svg[class="react-datetimerange-picker__clear-button__icon react-datetimerange-picker__button__icon"] {
+    display: none;
   }
   @media (min-width: 600px) {
     #event-type-list {
@@ -151,37 +169,49 @@ export default function createEventForm({
             {`${schedule[0]} - ${schedule[1]}`}
           </p>
         }
-        EditableComp={<input />}
+        EditableComp={
+          <DateTimeRangePicker
+            value={eventDetails.eventSchedule}
+            disableClock={true}
+            disableCalendar={true}
+            onChange={date => {
+              if (date == null) {
+                return;
+              }
+              handleEventDetailsChange("eventSchedule", date);
+            }}
+          />
+        }
       />
       <EditableParagraph
         DisplayComp={
           <p>
             <FontAwesomeIcon icon={faUserFriends} />
-            {eventDetails.familyMembers.length > 0
-              ? eventDetails.familyMembers
-                  .map(
-                    key =>
-                      familyMembers.find(
-                        familyMember => familyMember.id === key
-                      ).name
-                  )
-                  .join()
+            {eventDetails.eventGuests.length > 0
+              ? eventDetails.eventGuests.map((guest, index) => (
+                  <span className="guest" key={index}>
+                    <span> {guest}</span>
+                    <span
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleEventDetailsChange(
+                          "eventGuests",
+                          index,
+                          "remove"
+                        );
+                      }}
+                    >
+                      &times;
+                    </span>
+                  </span>
+                ))
               : "Add guests"}
           </p>
         }
-        EditableComp={
-          <Dropdown
-            placeholder="Add guests"
-            fluid
-            multiple
-            selection
-            value={eventDetails.familyMembers}
-            options={options}
-            onChange={(e, { value }) => {
-              handleEventDetailsChange("familyMembers", value);
-            }}
-          />
-        }
+        EditableComp={<input type="text" placeholder="Add guests" />}
+        handleOnEnter={value => {
+          handleEventDetailsChange("eventGuests", value);
+        }}
       />
       <EditableParagraph
         DisplayComp={

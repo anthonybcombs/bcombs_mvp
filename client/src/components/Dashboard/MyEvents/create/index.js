@@ -54,7 +54,7 @@ const NewEventModal = styled.div`
   #content {
     display: grid;
     background-color: white;
-    padding: 7em;
+    padding: 10em;
   }
   #content > div:first-child {
     margin-top: 5em;
@@ -80,6 +80,7 @@ const initialEventDetails = selectedDate => {
     time: format(selectedDate, "hh:mm a"),
     eventSchedule: [selectedDate, selectedDate],
     familyMembers: [],
+    eventGuests: [],
     eventType: "Event",
     location: "",
     eventDescription: "",
@@ -115,6 +116,12 @@ export default function index({
     });
   };
   const handleEventDetailsChange = (id, value) => {
+    if (id === "eventGuests") {
+      const newEventGuests = eventDetails.eventGuests;
+      newEventGuests.push(value);
+      setEventDetails({ ...eventDetails, eventGuests: newEventGuests });
+      return;
+    }
     setEventDetails({ ...eventDetails, [id]: value });
   };
   const handleSubmit = value => {

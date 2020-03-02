@@ -58,7 +58,10 @@ export default function index({ events, selectedYear, familyMembers }) {
                       <tr key={event.id}>
                         <td>{event.name}</td>
                         <td>{format(event.date, "MM/dd/yyyy")}</td>
-                        <td>{event.time}</td>
+                        <td>
+                          {format(event.eventSchedule[0], "hh:mm a")}-
+                          {format(event.eventSchedule[1], "hh:mm a")}
+                        </td>
                         <td>{event.location}</td>
                         <td>
                           {event.familyMembers.map(eventFamilyMemberId => (

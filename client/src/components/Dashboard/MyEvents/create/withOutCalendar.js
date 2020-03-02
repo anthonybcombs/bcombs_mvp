@@ -53,13 +53,14 @@ const NewEventModal = styled.div`
   #content {
     display: grid;
     background-color: white;
+    padding: 4em;
   }
   #content > div:first-child {
     margin-top: 5em;
   }
   .modal-content {
     margin: 1.5em auto;
-    width: 60%;
+    width: 80%;
   }
   @media (min-width: 600px) {
     button[type="submit"] {
@@ -77,7 +78,11 @@ export default function index({
     name: "",
     date: defaultSelectedDate,
     time: format(defaultSelectedDate, "hh:mm a"),
-    eventSchedule: [defaultSelectedDate, defaultSelectedDate],
+    eventSchedule: [
+      format(defaultSelectedDate, "MM/dd/yyyy hh:mm:ss a"),
+      format(defaultSelectedDate, "MM/dd/yyyy hh:mm:ss a")
+    ],
+    eventGuests: [],
     familyMembers: [],
     eventType: "Event",
     location: "",
@@ -94,7 +99,20 @@ export default function index({
   }, [defaultSelectedDate]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const handleEventDetailsChange = (id, value) => {
+  const handleEventDetailsChange = (id, value, action = "") => {
+    let newEventGuests;
+    newEventGuests = eventDetails.eventGuests;
+    if (id === "eventGuests") {
+      if (action !== "remove") {
+        newEventGuests.push(value);
+      } else {
+        newEventGuests = newEventGuests.filter(
+          (guest, index) => index !== value
+        );
+      }
+      setEventDetails({ ...eventDetails, eventGuests: newEventGuests });
+      return;
+    }
     setEventDetails({ ...eventDetails, [id]: value });
   };
   const handleSubmit = value => {
@@ -106,6 +124,7 @@ export default function index({
       time: format(defaultSelectedDate, "hh:mm a"),
       eventSchedule: [defaultSelectedDate, defaultSelectedDate],
       familyMembers: [],
+      eventGuests: [],
       eventType: "Event",
       location: "",
       eventDescription: "",

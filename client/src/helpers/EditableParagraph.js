@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-export default function EditableParagraph({ DisplayComp, EditableComp }) {
+export default function EditableParagraph({
+  DisplayComp,
+  EditableComp,
+  handleOnEnter = value => {}
+}) {
   const [isEditing, setIsEditing] = useState(false);
   const cloneDisplayComp = React.cloneElement(DisplayComp, {
     onClick: e => {
@@ -13,8 +17,9 @@ export default function EditableParagraph({ DisplayComp, EditableComp }) {
   });
   const cloneEditableComp = React.cloneElement(EditableComp, {
     onKeyPress: e => {
-      if (e.key === "Enter" || e.keyCode === "Esc") {
+      if (e.key === "Enter" || e.key === "Esc") {
         setIsEditing(false);
+        handleOnEnter(e.target.value);
       }
     },
     onMouseLeave: e => {

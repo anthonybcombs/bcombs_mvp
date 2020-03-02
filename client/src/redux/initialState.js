@@ -15,6 +15,7 @@ export const initialState = {
       location: "PH",
       time: "1pm-5pm",
       familyMembers: ["1", "2"],
+      eventGuests: [],
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), new Date()]
     },
@@ -29,6 +30,7 @@ export const initialState = {
       time: "1pm-5pm",
       status: "Canceled",
       familyMembers: ["1", "2"],
+      eventGuests: [],
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), new Date()]
     },
@@ -43,6 +45,7 @@ export const initialState = {
       time: "1pm-5pm",
       status: "Scheduled",
       familyMembers: ["1", "2"],
+      eventGuests: [],
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), new Date()]
     },
@@ -57,6 +60,7 @@ export const initialState = {
       time: "1pm-5pm",
       status: "Scheduled",
       familyMembers: ["1", "2"],
+      eventGuests: [],
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), new Date()]
     },
@@ -71,6 +75,7 @@ export const initialState = {
       time: "1pm-5pm",
       status: "Scheduled",
       familyMembers: ["1", "2"],
+      eventGuests: [],
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), new Date()]
     }
