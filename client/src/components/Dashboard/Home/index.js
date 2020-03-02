@@ -77,9 +77,9 @@ const HomeStyled = styled.div`
       position: absolute;
       top: 0;
       right: 0;
-      width: 60px !important;
       margin-top: 0.5em;
       margin-right: 0.5em;
+      line-height: 1em;
     }
   }
 `;

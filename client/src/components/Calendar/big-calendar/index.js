@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import MonthViewCalendar from "./month-calendar";
 import WeekViewCalendar from "./week-calendar";
 export default function index({ events, calendars, familyMembers }) {

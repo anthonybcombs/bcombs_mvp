@@ -114,5 +114,16 @@ export const initialState = {
       name: "Test Name 2",
       color: randomColor()
     }
-  ]
+  ],
+  settings: {
+    lifeEvents: [
+      "Passing love",
+      "Challenge in school",
+      "Bullying",
+      "Challenges with love ones",
+      "Behavioral issues",
+      "Encouragement",
+      "Stretching"
+    ]
+  }
 };

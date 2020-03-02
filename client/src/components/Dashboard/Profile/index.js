@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import Toggle from "react-toggle";
+import "react-toggle/style.css"; // for ES6 modules
 const ProfileSyled = styled.div`
-  #profile {
+  padding: 1em;
+  #profile,
+  #dashboard-select {
     display: grid;
   }
   #profile > div {
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
-    margin: 1em;
   }
   #personal-info div:nth-of-type(1) {
     position: relative;
@@ -49,14 +54,64 @@ const ProfileSyled = styled.div`
     top: 0;
     right: 0;
   }
+  #settings {
+    padding: 1em;
+  }
+  #settings > div {
+    position: relative;
+    margin: 1em 1em 1em 0;
+  }
+  #settings > div > .react-toggle {
+    position: absolute;
+    right: 0;
+  }
+  #family {
+    background-color: white;
+    box-shadow: 0 0 25px #eae9e9;
+  }
+  #family > div {
+    display: block;
+    margin: 1em;
+    padding: 1em;
+  }
+  #family > div > div > button {
+    background-color: #f26e21;
+    border-radius: 50%;
+    box-shadow: 0 0 25px #eae9e9;
+    border: none;
+    color: white;
+    margin-right: 10px;
+    line-height: 1em;
+  }
+  #dashboard-select > div {
+    cursor: pointer;
+  }
+  #dashboard-select > div.selected {
+    border-bottom: 8px solid #f26e21;
+  }
   @media (min-width: 600px) {
-    #profile {
+    #profile,
+    #dashboard-select {
       grid-template-columns: repeat(3, 1fr);
       grid-gap: 1%;
+    }
+    #dashboard-select > div {
+      display: block;
+      margin: 1em;
+    }
+    #dashboard-select > div > p {
+      text-align: center;
+      line-height: 0;
+      font-weight: bold;
+    }
+    #dashboard-select > div > p:nth-of-type(1) {
+      font-size: 2em;
     }
   }
 `;
 export default function index() {
+  const [dashboard, setDashboard] = useState("Events");
+  const settings = useSelector(({ settings }) => settings);
   return (
     <ProfileSyled>
       <h2>Profile</h2>
@@ -75,9 +130,66 @@ export default function index() {
             </div>
           </div>
         </div>
-        <div></div>
         <div>
+          <div id="dashboard-select">
+            <div
+              className={`${dashboard === "Events" ? "selected" : ""}`}
+              onClick={() => {
+                setDashboard("Events");
+              }}
+            >
+              <p>0</p>
+              <p>Events</p>
+            </div>
+            <div
+              className={`${dashboard === "Calendars" ? "selected" : ""}`}
+              onClick={() => {
+                setDashboard("Calendars");
+              }}
+            >
+              <p>0</p>
+              <p>Calendars</p>
+            </div>
+            <div
+              className={`${dashboard === "Comments" ? "selected" : ""}`}
+              onClick={() => {
+                setDashboard("Comments");
+              }}
+            >
+              <p>0</p>
+              <p>Comments</p>
+            </div>
+          </div>
+        </div>
+        <div id="settings">
           <h3>Settings</h3>
+          <h4>Life Events</h4>
+          <hr></hr>
+          {settings.lifeEvents.map((lifeEvent, index) => (
+            <div key={index}>
+              <span>{lifeEvent}</span>
+              <Toggle defaultChecked={false} icons={false} />
+            </div>
+          ))}
+          <h4>Recommended Services</h4>
+          <hr></hr>
+          {settings.lifeEvents.map((lifeEvent, index) => (
+            <div key={index}>
+              <span>{lifeEvent}</span>
+              <Toggle defaultChecked={false} icons={false} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div id="family">
+        <div>
+          <h2>Family</h2>
+          <div>
+            <button>
+              <FontAwesomeIcon icon={faPlus} />
+            </button>
+            <span>Add A relative</span>
+          </div>
         </div>
       </div>
     </ProfileSyled>

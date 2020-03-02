@@ -26,9 +26,9 @@ export default function App() {
               <DashboardHome path="/" />
               <DashboardMyCalendars path="mycalendars" />
               <MyEvents path="myevents" />
+              <MyProfile path="myprofile" />
             </DashBoard>
             <Profile path="profile" />
-            <MyProfile path="myprofile" />
           </Router>
         </div>
       </Layout>

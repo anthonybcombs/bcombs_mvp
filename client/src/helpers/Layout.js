@@ -186,7 +186,7 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                       }`}
-                      to="/dashboard/profile"
+                      to="/dashboard/myprofile"
                     >
                       <img src={"https://i.pravatar.cc/300"} />
                     </Link>
