@@ -40,12 +40,13 @@ const HeaderStyled = styled.header`
     justify-content: space-around;
     margin-top: 1em;
   }
+
   @media (min-width: 600px) {
     grid-template-columns: 30% 70%;
     text-align: left;
     #app-header-left {
       text-align: center;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: 15% 15% 15% 15% 40%;
       grid-gap: 1%;
     }
     #app-header-right {
@@ -66,7 +67,10 @@ const HeaderStyled = styled.header`
       justify-content: end !important;
     }
     #dashboard-setting a {
-      margin: 0 auto;
+      margin: 0 5px 0 5px;
+    }
+    #dashboard-setting a:last-child {
+      margin-right: 1.5em;
     }
   }
 `;
