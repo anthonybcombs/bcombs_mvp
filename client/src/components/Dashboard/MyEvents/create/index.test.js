@@ -38,9 +38,9 @@ describe("Create Event", () => {
         getByTestId("app-dashboard-my-events-new-event")
       ).toBeInTheDocument();
     });
-    test("renders small calendar", () => {
+    test("renders micro calendar", () => {
       const { getByTestId } = render(component);
-      const smallCalendar = getByTestId("app-small-calendar");
+      const smallCalendar = getByTestId("app-micro-calendar");
       expect(smallCalendar).toBeInTheDocument();
     });
     test("renders form", () => {
@@ -139,7 +139,7 @@ describe("Create Event", () => {
         await act(async () => {
           fireEvent.submit(form);
         });
-        expect(inputTitle.value).toBe("testing");
+        expect(inputTitle.value).toBe("");
         expect(queryByText("Title is required.")).not.toBeInTheDocument();
       });
       test("submit with errors", async () => {

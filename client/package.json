@@ -12,7 +12,7 @@
   "jest": {
     "moduleNameMapper": {
       "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/mocks/fileMock.js"
+      "\\.(css|less)$": "identity-obj-proxy"
     }
   },
   "author": "",
@@ -27,6 +27,7 @@
     "@wojtekmaj/react-datetimerange-picker": "^2.4.0",
     "antd": "^4.0.0",
     "date-fns": "^2.9.0",
+    "identity-obj-proxy": "^3.0.0",
     "randomcolor": "^0.5.4",
     "react": "^16.13.0",
     "react-collapsible": "^2.6.3",
