@@ -12,7 +12,7 @@ import {
   faPenSquare
 } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
-import { deleteEvent, updateEvent } from "../../../../redux/actions/Events";
+import { deleteEvent } from "../../../../redux/actions/Events";
 import EditEvent from "../../../Dashboard/MyEvents/edit/withOutCalendar";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 const EventStyled = styled.div`

@@ -11,6 +11,7 @@ import CreateUser from "./components/Auth/Create";
 import ForgotPassword from "./components/Auth//ForgotPassword";
 import Profile from "./components/UserInfo/Profile";
 import MyEvents from "./components/Dashboard/MyEvents/";
+import MyContacts from "./components/Dashboard/MyContact";
 export default function App() {
   return (
     <>
@@ -27,9 +28,9 @@ export default function App() {
               <DashboardMyCalendars path="mycalendars" />
               <MyEvents path="myevents" />
               <MyProfile path="myprofile" />
+              <MyContacts path="mycontacts" />
             </DashBoard>
             <Profile path="profile" />
-            <MyProfile path="myprofile" />
           </Router>
         </div>
       </Layout>
