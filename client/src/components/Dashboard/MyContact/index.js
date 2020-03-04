@@ -6,11 +6,12 @@ import {
   faUserTie,
   faHistory,
   faUserFriends,
-  faUsers,
-  faPlus
+  faUsers
 } from "@fortawesome/free-solid-svg-icons";
+import ContactList from "./contactList";
+import DuplicatesList from "./duplicatesList";
+import FrequentlyContactedList from "./frequentlyContactedList";
 import NewContactModal from "./create";
-import Contact from "./contact";
 const MyContactsStyled = styled.div`
   .selected {
     background-color: #cdcdcd;
@@ -53,22 +54,6 @@ const MyContactsStyled = styled.div`
   }
   #groups > div > div > div > div > span {
     margin-left: 1em;
-  }
-  #contact-list {
-    padding: 1em;
-  }
-  #contact-list-header {
-    position: relative;
-  }
-  #contact-list-header button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    border-radius: 50%;
-    background-color: #f26e21;
-    color: white;
-    border: none;
-    box-shadow: 0px 3px 6px #908e8e;
   }
   .Collapsible__trigger {
     cursor: pointer;
@@ -158,34 +143,11 @@ export default function index() {
           </div>
         </div>
         <div>
-          <div id="contact-list">
-            <div id="contact-list-header">
-              <h3>Contact List</h3>
-              <button onClick={() => setNewContactModalVisible(true)}>
-                <FontAwesomeIcon icon={faPlus} />
-              </button>
-            </div>
-          </div>
-          <div id="contact-list-details">
-            <Contact
-              isSelected={true}
-              contactDetails={{
-                name: "Bon Mercado",
-                phoneNumber: "92900912",
-                email: "test@yahoo.com",
-                relation: "Parent"
-              }}
-            />
-            <Contact
-              isSelected={false}
-              contactDetails={{
-                name: "Black hat",
-                phoneNumber: "0200202",
-                email: "test2@yahoo.com",
-                relation: "Sibling"
-              }}
-            />
-          </div>
+          {selectedLabel === "Contacts" && <ContactList />}
+          {selectedLabel === "Fequently Contacted" && (
+            <FrequentlyContactedList />
+          )}
+          {selectedLabel === "Duplicates" && <DuplicatesList />}
         </div>
       </div>
     </MyContactsStyled>

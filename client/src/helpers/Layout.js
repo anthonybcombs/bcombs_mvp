@@ -45,7 +45,7 @@ const HeaderStyled = styled.header`
   }
 
   @media (min-width: 600px) {
-    grid-template-columns: 20% 80%;
+    grid-template-columns: 30% 70%;
     text-align: left;
     #app-header-left {
       text-align: center;
@@ -71,6 +71,9 @@ const HeaderStyled = styled.header`
     #dashboard-setting a {
       margin: 0 5px 0 5px;
     }
+  }
+  @media (min-width: 1500px) {
+    grid-template-columns: 20% 80%;
   }
 `;
 const LayoutStyled = styled.div`
