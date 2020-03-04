@@ -20,12 +20,9 @@ const HeaderStyled = styled.header`
     color: grey;
     text-decoration: none;
   }
-  #app-header-right {
-    display: grid;
-  }
+  #app-header-right,
   #app-header-left {
-    display: flex;
-    justify-content: end;
+    display: grid;
   }
   #app-header-left img {
     position: relative;
@@ -48,7 +45,9 @@ const HeaderStyled = styled.header`
     grid-template-columns: 30% 70%;
     text-align: left;
     #app-header-left {
+      display: flex;
       text-align: center;
+      justify-content: end;
     }
     #app-header-right {
       grid-template-columns: 50% 50%;
@@ -66,7 +65,7 @@ const HeaderStyled = styled.header`
     }
     #dashboard-setting {
       margin-top: 0;
-      justify-content: space-evently;
+      justify-content: space-around;
     }
     #dashboard-setting a {
       margin: 0 5px 0 5px;
