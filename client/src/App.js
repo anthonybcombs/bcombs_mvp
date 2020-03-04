@@ -2,16 +2,44 @@ import React from "react";
 import { Router } from "@reach/router";
 import Layout from "./helpers/Layout";
 import Auth from "./components/Auth";
-import DashBoard from "./components/Dashboard/";
-import DashboardHome from "./components/Dashboard/Home";
-import DashboardMyCalendars from "./components/Dashboard/MyCalendars";
-import MyProfile from "./components/Dashboard/MyProfile";
 import Login from "./components/Auth/Login";
-import CreateUser from "./components/Auth/Create";
-import ForgotPassword from "./components/Auth//ForgotPassword";
 import Profile from "./components/UserInfo/Profile";
-import MyEvents from "./components/Dashboard/MyEvents/";
-import MyContacts from "./components/Dashboard/MyContact";
+
+import Loadable from "react-loadable";
+import Loading from "./helpers/Loading.js";
+
+const AsycDashboard = Loadable({
+  loader: () => import("./components/Dashboard/"),
+  loading: Loading
+});
+const AsyncDashBoardHome = Loadable({
+  loader: () => import("./components/Dashboard/Home"),
+  loading: Loading
+});
+const AsyncDashboardMyCalendars = Loadable({
+  loader: () => import("./components/Dashboard/MyCalendars"),
+  loading: Loading
+});
+const AsyncDashboardMyEvents = Loadable({
+  loader: () => import("./components/Dashboard/MyEvents"),
+  loading: Loading
+});
+const AsyncDashboardMyProfle = Loadable({
+  loader: () => import("./components/Dashboard/MyProfile"),
+  loading: Loading
+});
+const AyncDashboardMyContacts = Loadable({
+  loader: () => import("./components/Dashboard/MyContact"),
+  loading: Loading
+});
+const AsyncCreateUser = Loadable({
+  loader: () => import("./components/Auth/Create"),
+  loading: Loading
+});
+const AsyncForgotPassword = Loadable({
+  loader: () => import("./components/Auth/ForgotPassword"),
+  loading: Loading
+});
 export default function App() {
   return (
     <>
@@ -20,18 +48,17 @@ export default function App() {
           <Router>
             <Auth path="/">
               <Login default />
-              <CreateUser path="auth/create" />
-              <ForgotPassword path="auth/forgot-password" />
+              <AsyncCreateUser path="auth/create" />
+              <AsyncForgotPassword path="auth/forgot-password" />
             </Auth>
-            <DashBoard path="dashboard">
-              <DashboardHome path="/" />
-              <DashboardMyCalendars path="mycalendars" />
-              <MyEvents path="myevents" />
-              <MyProfile path="myprofile" />
-              <MyContacts path="mycontacts" />
-            </DashBoard>
+            <AsycDashboard path="dashboard">
+              <AsyncDashBoardHome path="/" />
+              <AsyncDashboardMyCalendars path="mycalendars" />
+              <AsyncDashboardMyEvents path="myevents" />
+              <AsyncDashboardMyProfle path="myprofile" />
+              <AyncDashboardMyContacts path="mycontacts" />
+            </AsycDashboard>
             <Profile path="profile" />
-            <MyContacts path="mycontacts" />
           </Router>
         </div>
       </Layout>
