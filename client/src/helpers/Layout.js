@@ -72,7 +72,7 @@ const HeaderStyled = styled.header`
       margin: 0 5px 0 5px;
     }
   }
-  @media (min-width: 1500px) {
+  @media (min-width: 601px) {
     grid-template-columns: 20% 80%;
   }
 `;
