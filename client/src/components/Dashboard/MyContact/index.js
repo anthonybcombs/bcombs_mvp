@@ -31,7 +31,6 @@ const MyContactsStyled = styled.div`
   }
   #labels > div {
     padding: 1em;
-    margin: 1em 0 1em 0;
     font-size: 1.2em;
     cursor: pointer;
   }
@@ -45,6 +44,9 @@ const MyContactsStyled = styled.div`
   #contacts > div {
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
+  }
+  #contacts > div:nth-of-type(2) {
+    margin-right: 0.5em;
   }
   #groups > div > div {
     font-size: 1.2em;
@@ -74,6 +76,11 @@ const MyContactsStyled = styled.div`
     #contacts {
       grid-template-columns: 25% 75%;
       grid-gap: 1%;
+    }
+  }
+  @media (min-width: 1500px) {
+    #contacts > div:nth-of-type(2) {
+      margin-right: 1em;
     }
   }
 `;
