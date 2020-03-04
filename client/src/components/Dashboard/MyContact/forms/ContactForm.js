@@ -152,17 +152,11 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("selectedGroups", target.value);
               }}
-              ref={register({ required: true })}
             />
             {group.name}
           </label>
         ))}
       </div>
-      <ErrorMessage
-        field={errors.group}
-        errorType="required"
-        message="Group is required."
-      />
       <button type="submit">Save</button>
     </ContactFormStyled>
   );

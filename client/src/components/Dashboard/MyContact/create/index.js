@@ -8,8 +8,7 @@ const NewContactModal = styled.div`
     text-align: center;
   }
   .modal-content {
-    margin: 1.5em auto;
-    width: 80%;
+    width: 40%;
   }
   @media (min-width: 600px) {
   }
