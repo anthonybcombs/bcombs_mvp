@@ -71,7 +71,7 @@ export default function index({ isSelected, contactDetails }) {
         <p>{contactDetails.email}</p>
       </div>
       <div>
-        <p>{contactDetails.number}</p>
+        <p>{contactDetails.phoneNumber}</p>
       </div>
       <div>
         <button>

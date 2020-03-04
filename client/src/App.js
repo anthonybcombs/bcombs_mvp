@@ -31,6 +31,7 @@ export default function App() {
               <MyContacts path="mycontacts" />
             </DashBoard>
             <Profile path="profile" />
+            <MyContacts path="mycontacts" />
           </Router>
         </div>
       </Layout>

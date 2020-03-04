@@ -115,6 +115,16 @@ export const initialState = {
       color: randomColor()
     }
   ],
+  groups: [
+    {
+      id: 1,
+      name: "testing groups 1"
+    },
+    {
+      id: 2,
+      name: "testing groups 2"
+    }
+  ],
   settings: {
     lifeEvents: [
       "Passing love",

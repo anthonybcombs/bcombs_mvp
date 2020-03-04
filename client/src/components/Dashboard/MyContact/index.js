@@ -9,6 +9,7 @@ import {
   faUsers,
   faPlus
 } from "@fortawesome/free-solid-svg-icons";
+import NewContactModal from "./create";
 import Contact from "./contact";
 const MyContactsStyled = styled.div`
   .selected {
@@ -93,11 +94,16 @@ const MyContactsStyled = styled.div`
 `;
 export default function index() {
   const [selectedLabel, setSelectedLabel] = useState("Contacts");
+  const [isNewContactModalVisible, setNewContactModalVisible] = useState(false);
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
   };
   return (
     <MyContactsStyled>
+      <NewContactModal
+        isVisible={isNewContactModalVisible}
+        toggleCreateContactModal={setNewContactModalVisible}
+      />
       <h2>Contacts</h2>
       <div id="contacts">
         <div>
@@ -155,7 +161,7 @@ export default function index() {
           <div id="contact-list">
             <div id="contact-list-header">
               <h3>Contact List</h3>
-              <button>
+              <button onClick={() => setNewContactModalVisible(true)}>
                 <FontAwesomeIcon icon={faPlus} />
               </button>
             </div>
@@ -165,7 +171,7 @@ export default function index() {
               isSelected={true}
               contactDetails={{
                 name: "Bon Mercado",
-                number: "92900912",
+                phoneNumber: "92900912",
                 email: "test@yahoo.com",
                 relation: "Parent"
               }}
@@ -174,7 +180,7 @@ export default function index() {
               isSelected={false}
               contactDetails={{
                 name: "Black hat",
-                number: "0200202",
+                phoneNumber: "0200202",
                 email: "test2@yahoo.com",
                 relation: "Sibling"
               }}
