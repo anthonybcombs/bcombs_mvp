@@ -117,7 +117,6 @@ export default function index({
           end: event.eventSchedule[1]
         })
       );
-      console.log(eventsOnThisDay);
       const eventsCount = eventsOnThisDay.length;
       const hasEvents = eventsCount > 0;
       columns.push(

@@ -69,8 +69,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                               {
                                 familyMembers.find(
                                   familyMember =>
-                                    familyMember.id ===
-                                    parseInt(eventFamilyMemberId)
+                                    familyMember.id === eventFamilyMemberId
                                 )["name"]
                               }
                             </p>

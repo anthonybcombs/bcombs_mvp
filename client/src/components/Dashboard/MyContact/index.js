@@ -14,6 +14,7 @@ import ContactList from "./contactList";
 import DuplicatesList from "./duplicatesList";
 import FrequentlyContactedList from "./frequentlyContactedList";
 import NewContactModal from "./create";
+import EditContactModal from "./edit";
 import NewGroupModal from "../MyGroups/create";
 const MyContactsStyled = styled.div`
   .selected {
@@ -113,7 +114,6 @@ export default function index() {
     }
   );
   const selectedGroup = groups.find(group => group.id === selectedGroupId);
-  console.log(selectedGroup);
   const filteredContacts = contacts.filter(contact => {
     if (selectedGroupId === 0) {
       return true;
@@ -148,6 +148,7 @@ export default function index() {
             <div
               className={`${selectedLabel === "Contacts" ? "selected" : ""}`}
               onClick={() => {
+                handleSelectedGroupid(0);
                 handleSelectedLabel("Contacts");
               }}
             >
@@ -159,6 +160,7 @@ export default function index() {
                 selectedLabel === "Fequently Contacted" ? "selected" : ""
               }`}
               onClick={() => {
+                handleSelectedGroupid(0);
                 handleSelectedLabel("Fequently Contacted");
               }}
             >
@@ -168,6 +170,7 @@ export default function index() {
             <div
               className={`${selectedLabel === "Duplicates" ? "selected" : ""}`}
               onClick={() => {
+                handleSelectedGroupid(0);
                 handleSelectedLabel("Duplicates");
               }}
             >
@@ -208,18 +211,24 @@ export default function index() {
           {selectedLabel === "Contacts" && (
             <ContactList
               contacts={filteredContacts}
+              groups={groups}
+              EditContactModal={EditContactModal}
               setNewContactModalVisible={setNewContactModalVisible}
             />
           )}
           {selectedLabel === "Fequently Contacted" && (
             <FrequentlyContactedList
               contacts={filteredContacts}
+              groups={groups}
+              EditContactModal={EditContactModal}
               setNewContactModalVisible={setNewContactModalVisible}
             />
           )}
           {selectedLabel === "Duplicates" && (
             <DuplicatesList
               contacts={filteredContacts}
+              groups={groups}
+              EditContactModal={EditContactModal}
               setNewContactModalVisible={setNewContactModalVisible}
             />
           )}

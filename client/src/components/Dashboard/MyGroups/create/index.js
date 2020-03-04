@@ -24,28 +24,32 @@ export default function index({
   const [groupDetails, setGroupDetails] = useState({
     id: uuid(),
     name: "",
-    userIds: []
+    userIds: [auth.id],
+    contacts: []
   });
   const dispatch = useDispatch();
   const handleGroupDetailsChange = (id, value) => {
-    let newUserIds = groupDetails.userIds;
-    if (id === "userIds") {
-      let selectedUserId = parseInt(value);
-      if (newUserIds.includes(selectedUserId)) {
-        newUserIds = newUserIds.filter(userId => userId !== selectedUserId);
+    let newContacts = groupDetails.contacts;
+    if (id === "contacts") {
+      let selectedContactId = value;
+      if (newContacts.includes(selectedContactId)) {
+        newContacts = newContacts.filter(
+          contactId => contactId !== selectedContactId
+        );
       } else {
-        newUserIds.push(selectedUserId);
+        newContacts.push(selectedContactId);
       }
     }
     setGroupDetails({
       ...groupDetails,
-      [id]: id == "userIds" ? newUserIds : value
+      [id]: id == "contacts" ? newContacts : value
     });
   };
   const handleSubmit = value => {
     toggleCreateGroupModal(false);
     dispatch(addGroup(groupDetails));
     setGroupDetails({
+      id: uuid(),
       name: "",
       userIds: [auth.id],
       contacts: []

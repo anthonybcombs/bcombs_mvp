@@ -86,7 +86,7 @@ export default function ContactForm({
       <input
         placeholder="First name"
         name="firstName"
-        value={contactDetails.name}
+        value={contactDetails.firstName}
         onChange={({ target }) => {
           handleContactDetailsChange("firstName", target.value);
         }}
@@ -100,7 +100,7 @@ export default function ContactForm({
       <input
         placeholder="Last name"
         name="lastName"
-        value={contactDetails.name}
+        value={contactDetails.lastName}
         onChange={({ target }) => {
           handleContactDetailsChange("lastName", target.value);
         }}
@@ -114,7 +114,7 @@ export default function ContactForm({
       <input
         placeholder="Phone number"
         name="phoneNumber"
-        value={contactDetails.name}
+        value={contactDetails.phoneNumber}
         onChange={({ target }) => {
           handleContactDetailsChange("phoneNumber", target.value);
         }}
@@ -129,7 +129,7 @@ export default function ContactForm({
         type="email"
         placeholder="Email"
         name="email"
-        value={contactDetails.name}
+        value={contactDetails.email}
         onChange={({ target }) => {
           handleContactDetailsChange("email", target.value);
         }}

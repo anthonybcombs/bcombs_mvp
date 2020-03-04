@@ -2,7 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch } from "react-redux";
-import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
+import { uuid } from "uuidv4";
+import { format } from "date-fns";
 import { addEvent } from "../../../../redux/actions/Events";
 import EventForm from "../forms/EventForm";
 const NewEventModal = styled.div`
@@ -74,6 +75,7 @@ export default function index({
   defaultSelectedDate
 }) {
   const [eventDetails, setEventDetails] = useState({
+    id: uuid(),
     name: "",
     date: defaultSelectedDate,
     time: format(defaultSelectedDate, "hh:mm a"),
@@ -115,6 +117,7 @@ export default function index({
     toggleCreateEventModal(false);
     dispatch(addEvent(eventDetails));
     setEventDetails({
+      id: uuid(),
       name: "",
       date: defaultSelectedDate,
       time: format(defaultSelectedDate, "hh:mm a"),

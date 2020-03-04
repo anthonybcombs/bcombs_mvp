@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import ReactDOM from "react-dom";
+import { uuid } from "uuidv4";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch } from "react-redux";
 import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
@@ -75,6 +76,7 @@ const NewEventModal = styled.div`
 `;
 const initialEventDetails = selectedDate => {
   return {
+    id: uuid(),
     name: "",
     date: new Date(),
     time: format(selectedDate, "hh:mm a"),

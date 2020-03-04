@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import Popover, { ArrowContainer } from "react-tiny-popover";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
+import { removeContact } from "../../../../redux/actions/Contacts";
 const ContactStyled = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -55,20 +57,22 @@ const ContactSettingPopOverStyled = styled.div`
 export default function index({
   isSelected,
   contactDetails,
-  setSelectedContact
+  setSelectedContactId,
+  setisEditContactModalVisible
 }) {
   const [isContactSettingVisible, setIsContactSettingVisible] = useState(false);
+  const dispatch = useDispatch();
   const handleContactSettingVisible = () => {
     setIsContactSettingVisible(!isContactSettingVisible);
+  };
+  const handleRemoveContact = () => {
+    dispatch(removeContact(contactDetails));
   };
   return (
     <ContactStyled
       className={`${isSelected ? "selected" : ""}`}
       onMouseEnter={() => {
-        setSelectedContact(contactDetails.id);
-      }}
-      onMouseLeave={() => {
-        setSelectedContact(0);
+        setSelectedContactId(contactDetails.id);
       }}
     >
       <div>
@@ -88,7 +92,11 @@ export default function index({
         <p>{contactDetails.phoneNumber}</p>
       </div>
       <div>
-        <button>
+        <button
+          onClick={() => {
+            setisEditContactModalVisible(true);
+          }}
+        >
           <FontAwesomeIcon icon={faPen} />
         </button>
         <Popover
@@ -110,7 +118,7 @@ export default function index({
               >
                 <button>View profile</button>
                 <button>Send message</button>
-                <button>Remove Contact</button>
+                <button onClick={handleRemoveContact}>Remove Contact</button>
                 <button>Add to Group</button>
               </ContactSettingPopOverStyled>
             </ArrowContainer>

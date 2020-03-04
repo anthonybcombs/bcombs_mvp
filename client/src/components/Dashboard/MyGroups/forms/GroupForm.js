@@ -104,7 +104,7 @@ export default function GroupForm({
             <input
               type="checkbox"
               name="contact"
-              checked={groupDetails.userIds.includes(contact.id)}
+              checked={groupDetails.contacts.includes(contact.id)}
               value={contact.id}
               onChange={({ target }) => {
                 handleGroupDetailsChange("contacts", target.value);

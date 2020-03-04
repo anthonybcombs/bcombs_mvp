@@ -1,37 +1,35 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
-import { uuid } from "uuidv4";
 import { useDispatch } from "react-redux";
-import { addContact } from "../../../../redux/actions/Contacts";
+import { updateContact } from "../../../../redux/actions/Contacts";
 import { updateGroup } from "../../../../redux/actions/Groups";
-import ContactForm from "../forms/ContactForm";
-const NewContactModal = styled.div`
+import EditContactForm from "../forms/EditContactForm";
+const EditContactModal = styled.div`
   h2 {
     text-align: center;
   }
   .modal-content {
-    width: 40%;
+    width: 60%;
   }
   @media (min-width: 600px) {
   }
 `;
 export default function index({
   isVisible = true,
-  toggleCreateContactModal,
+  toggleEditContactModal,
   groups,
-  auth
+  contact
 }) {
-  const [contactDetails, setContactDetails] = useState({
-    id: uuid(),
-    firstName: "",
-    lastName: "",
-    phonNumber: "",
-    email: "",
-    selectedGroups: [],
-    userIds: [auth.id],
-    relation: ""
-  });
+  const [contactDetails, setContactDetails] = useState({});
+  useEffect(() => {
+    setContactDetails({
+      ...contact,
+      selectedGroups: groups
+        .filter(group => group.contacts.includes(contact.id))
+        .map(group => group.id)
+    });
+  }, [contact, isVisible]);
   const dispatch = useDispatch();
   const handleContactDetailsChange = (id, value) => {
     let newSelectedGroups = contactDetails.selectedGroups;
@@ -51,31 +49,38 @@ export default function index({
     });
   };
   const handleSubmit = value => {
-    contactDetails.selectedGroups.forEach(selectedGroupId => {
-      const selectedGroup = groups.find(group => group.id === selectedGroupId);
-      selectedGroup.contacts.push(contactDetails.id);
-      dispatch(updateGroup(selectedGroup));
+    groups.forEach(group => {
+      if (contactDetails.selectedGroups.includes(group.id)) {
+        if (!group.contacts.includes(contactDetails.id)) {
+          group.contacts.push(contactDetails.id);
+        }
+      } else {
+        group.contacts = group.contacts.filter(
+          contactId => contactId !== contactDetails.id
+        );
+      }
+      dispatch(updateGroup(group));
     });
-    dispatch(addContact(contactDetails));
-    toggleCreateContactModal(false);
+    dispatch(updateContact(contactDetails));
+    toggleEditContactModal(false);
   };
   if (!isVisible) {
     return <></>;
   }
   return ReactDOM.createPortal(
-    <NewContactModal className="modal">
+    <EditContactModal className="modal">
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
-            toggleCreateContactModal(false);
+            toggleEditContactModal(false);
           }}
         >
           &times;
         </span>
         <div>
-          <h2>Create a Contact</h2>
-          <ContactForm
+          <h2>Edit Contact</h2>
+          <EditContactForm
             groups={groups}
             contactDetails={contactDetails}
             onSubmit={handleSubmit}
@@ -83,7 +88,7 @@ export default function index({
           />
         </div>
       </div>
-    </NewContactModal>,
+    </EditContactModal>,
     document.getElementById("modal")
   );
 }
