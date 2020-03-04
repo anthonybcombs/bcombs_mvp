@@ -68,6 +68,13 @@ const MyContactsStyled = styled.div`
   #groups > div > div > div > div > span {
     margin-left: 1em;
   }
+  #groups > div {
+    cursor: pointer;
+  }
+  #groups .selected {
+    background: #f26e21 !important;
+    color: white !important;
+  }
   .Collapsible__trigger {
     cursor: pointer;
   }
@@ -97,6 +104,7 @@ const MyContactsStyled = styled.div`
 `;
 export default function index() {
   const [selectedLabel, setSelectedLabel] = useState("Contacts");
+  const [selectedGroupId, setSelectedGroupId] = useState(0);
   const [isNewContactModalVisible, setNewContactModalVisible] = useState(false);
   const [iseNewGroupModalVisible, setIsNewGroupModalVisible] = useState(false);
   const { auth, groups, contacts } = useSelector(
@@ -104,8 +112,19 @@ export default function index() {
       return { auth, groups, contacts };
     }
   );
+  const selectedGroup = groups.find(group => group.id === selectedGroupId);
+  console.log(selectedGroup);
+  const filteredContacts = contacts.filter(contact => {
+    if (selectedGroupId === 0) {
+      return true;
+    }
+    return selectedGroup.contacts.includes(contact.id);
+  });
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
+  };
+  const handleSelectedGroupid = value => {
+    setSelectedGroupId(value);
   };
   return (
     <MyContactsStyled>
@@ -133,7 +152,7 @@ export default function index() {
               }}
             >
               <FontAwesomeIcon icon={faUserTie} />
-              <span>Contacts({contacts.length})</span>
+              <span>Contacts({filteredContacts.length})</span>
             </div>
             <div
               className={`${
@@ -160,7 +179,15 @@ export default function index() {
             <Collapsible trigger={<h3>Groups</h3>} open lazyRender>
               <hr />
               {groups.map(group => (
-                <div key={group.id}>
+                <div
+                  className={`${
+                    group.id === selectedGroupId ? "selected" : ""
+                  }`}
+                  key={group.id}
+                  onClick={() => {
+                    handleSelectedGroupid(group.id);
+                  }}
+                >
                   <FontAwesomeIcon icon={faUsers} />
                   <span>{group.name}</span>
                 </div>
@@ -180,19 +207,19 @@ export default function index() {
         <div>
           {selectedLabel === "Contacts" && (
             <ContactList
-              contacts={contacts}
+              contacts={filteredContacts}
               setNewContactModalVisible={setNewContactModalVisible}
             />
           )}
           {selectedLabel === "Fequently Contacted" && (
             <FrequentlyContactedList
-              contacts={contacts}
+              contacts={filteredContacts}
               setNewContactModalVisible={setNewContactModalVisible}
             />
           )}
           {selectedLabel === "Duplicates" && (
             <DuplicatesList
-              contacts={contacts}
+              contacts={filteredContacts}
               setNewContactModalVisible={setNewContactModalVisible}
             />
           )}
