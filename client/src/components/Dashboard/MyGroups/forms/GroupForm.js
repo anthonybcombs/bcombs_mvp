@@ -69,11 +69,11 @@ const ContactFormStyled = styled.form`
     }
   }
 `;
-export default function ContactForm({
-  contactDetails,
-  groups,
+export default function GroupForm({
+  groupDetails,
+  contacts,
   onSubmit,
-  handleContactDetailsChange
+  handleGroupDetailsChange
 }) {
   const { register, handleSubmit, errors } = useForm();
   const theme = useContext(ThemeContext);
@@ -84,90 +84,33 @@ export default function ContactForm({
       theme={theme}
     >
       <input
-        placeholder="First name"
-        name="firstName"
-        value={contactDetails.name}
+        placeholder="Group name"
+        name="name"
+        value={groupDetails.name}
         onChange={({ target }) => {
-          handleContactDetailsChange("firstName", target.value);
+          handleGroupDetailsChange("name", target.value);
         }}
         ref={register({ required: true })}
       />
       <ErrorMessage
-        field={errors.firstName}
+        field={errors.name}
         errorType="required"
-        message="First  name is required."
-      />
-      <input
-        placeholder="Last name"
-        name="lastName"
-        value={contactDetails.name}
-        onChange={({ target }) => {
-          handleContactDetailsChange("lastName", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.lastName}
-        errorType="required"
-        message="Last  name is required."
-      />
-      <input
-        placeholder="Phone number"
-        name="phoneNumber"
-        value={contactDetails.name}
-        onChange={({ target }) => {
-          handleContactDetailsChange("phoneNumber", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.phoneNumber}
-        errorType="required"
-        message="Phone number is required."
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        name="email"
-        value={contactDetails.name}
-        onChange={({ target }) => {
-          handleContactDetailsChange("email", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.email}
-        errorType="required"
-        message="Email is required."
-      />
-      <input
-        placeholder="Relation"
-        name="relation"
-        value={contactDetails.relation}
-        onChange={({ target }) => {
-          handleContactDetailsChange("relation", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.relation}
-        errorType="required"
-        message="Relation is required."
+        message="Group name  is required."
       />
       <div>
-        <p>Assign to existing group</p>
-        {groups.map(group => (
-          <label htmlFor="group" key={group.id}>
+        <p>Assign to existing contact</p>
+        {contacts.map(contact => (
+          <label htmlFor="contact" key={contact.id}>
             <input
               type="checkbox"
-              name="group"
-              checked={contactDetails.selectedGroups.includes(group.id)}
-              value={group.id}
+              name="contact"
+              checked={groupDetails.userIds.includes(contact.id)}
+              value={contact.id}
               onChange={({ target }) => {
-                handleContactDetailsChange("selectedGroups", target.value);
+                handleGroupDetailsChange("contacts", target.value);
               }}
             />
-            {group.name}
+            {contact.firstName} {contact.lastName}
           </label>
         ))}
       </div>

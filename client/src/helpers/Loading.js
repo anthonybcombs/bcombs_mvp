@@ -13,7 +13,7 @@ export default function Loading() {
       <ReactLoading
         type={"balls"}
         color={"#f26e21"}
-        height={"20%"}
+        height={"15%"}
         width={"20%"}
       />
     </LoadingStyled>

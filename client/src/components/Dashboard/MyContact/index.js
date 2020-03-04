@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSelector } from "react-redux";
 import Collapsible from "react-collapsible";
 import {
   faUserTie,
   faHistory,
   faUserFriends,
-  faUsers
+  faUsers,
+  faPlus
 } from "@fortawesome/free-solid-svg-icons";
 import ContactList from "./contactList";
 import DuplicatesList from "./duplicatesList";
 import FrequentlyContactedList from "./frequentlyContactedList";
 import NewContactModal from "./create";
+import NewGroupModal from "../MyGroups/create";
 const MyContactsStyled = styled.div`
   .selected {
     background-color: #cdcdcd;
@@ -47,6 +50,14 @@ const MyContactsStyled = styled.div`
   }
   #contacts > div:nth-of-type(2) {
     margin-right: 0.5em;
+  }
+  #groups > button {
+    display: block;
+    margin-left: 1em;
+  }
+  #groups > button > span {
+    padding: 1em;
+    font-size: 1.2em !important;
   }
   #groups > div > div {
     font-size: 1.2em;
@@ -87,6 +98,12 @@ const MyContactsStyled = styled.div`
 export default function index() {
   const [selectedLabel, setSelectedLabel] = useState("Contacts");
   const [isNewContactModalVisible, setNewContactModalVisible] = useState(false);
+  const [iseNewGroupModalVisible, setIsNewGroupModalVisible] = useState(false);
+  const { auth, groups, contacts } = useSelector(
+    ({ auth, groups, contacts }) => {
+      return { auth, groups, contacts };
+    }
+  );
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
   };
@@ -95,6 +112,14 @@ export default function index() {
       <NewContactModal
         isVisible={isNewContactModalVisible}
         toggleCreateContactModal={setNewContactModalVisible}
+        groups={groups}
+        auth={auth}
+      />
+      <NewGroupModal
+        isVisible={iseNewGroupModalVisible}
+        toggleCreateGroupModal={setIsNewGroupModalVisible}
+        contacts={contacts}
+        auth={auth}
       />
       <h2>Contacts</h2>
       <div id="contacts">
@@ -108,7 +133,7 @@ export default function index() {
               }}
             >
               <FontAwesomeIcon icon={faUserTie} />
-              <span>Contacts(510)</span>
+              <span>Contacts({contacts.length})</span>
             </div>
             <div
               className={`${
@@ -134,27 +159,43 @@ export default function index() {
           <div id="groups">
             <Collapsible trigger={<h3>Groups</h3>} open lazyRender>
               <hr />
-              <div>
-                <FontAwesomeIcon icon={faUsers} />
-                <span>Testing Group1</span>
-              </div>
-              <div>
-                <FontAwesomeIcon icon={faUsers} />
-                <span>Testing Group2</span>
-              </div>
-              <div>
-                <FontAwesomeIcon icon={faUsers} />
-                <span>Testing Group3</span>
-              </div>
+              {groups.map(group => (
+                <div key={group.id}>
+                  <FontAwesomeIcon icon={faUsers} />
+                  <span>{group.name}</span>
+                </div>
+              ))}
             </Collapsible>
+            <hr />
+            <button
+              onClick={() => {
+                setIsNewGroupModalVisible(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faPlus} />
+              <span> ADD NEW GROUP</span>
+            </button>
           </div>
         </div>
         <div>
-          {selectedLabel === "Contacts" && <ContactList />}
-          {selectedLabel === "Fequently Contacted" && (
-            <FrequentlyContactedList />
+          {selectedLabel === "Contacts" && (
+            <ContactList
+              contacts={contacts}
+              setNewContactModalVisible={setNewContactModalVisible}
+            />
           )}
-          {selectedLabel === "Duplicates" && <DuplicatesList />}
+          {selectedLabel === "Fequently Contacted" && (
+            <FrequentlyContactedList
+              contacts={contacts}
+              setNewContactModalVisible={setNewContactModalVisible}
+            />
+          )}
+          {selectedLabel === "Duplicates" && (
+            <DuplicatesList
+              contacts={contacts}
+              setNewContactModalVisible={setNewContactModalVisible}
+            />
+          )}
         </div>
       </div>
     </MyContactsStyled>

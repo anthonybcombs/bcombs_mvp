@@ -1,7 +1,10 @@
 import React, { useState, useContext } from "react";
 import ReactDOM from "react-dom";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { uuid } from "uuidv4";
+import { useDispatch } from "react-redux";
+import { addContact } from "../../../../redux/actions/Contacts";
+import { updateGroup } from "../../../../redux/actions/Groups";
 import ContactForm from "../forms/ContactForm";
 const NewContactModal = styled.div`
   h2 {
@@ -13,15 +16,23 @@ const NewContactModal = styled.div`
   @media (min-width: 600px) {
   }
 `;
-export default function index({ isVisible = true, toggleCreateContactModal }) {
+export default function index({
+  isVisible = true,
+  toggleCreateContactModal,
+  groups,
+  auth
+}) {
   const [contactDetails, setContactDetails] = useState({
+    id: uuid(),
     firstName: "",
     lastName: "",
     phonNumber: "",
     email: "",
-    selectedGroups: []
+    selectedGroups: [],
+    userIds: [auth.id],
+    relation: ""
   });
-  const groups = useSelector(({ groups }) => groups);
+  const dispatch = useDispatch();
   const handleContactDetailsChange = (id, value) => {
     let newSelectedGroups = contactDetails.selectedGroups;
     if (id === "selectedGroups") {
@@ -40,6 +51,13 @@ export default function index({ isVisible = true, toggleCreateContactModal }) {
     });
   };
   const handleSubmit = value => {
+    contactDetails.selectedGroups.forEach(selectedGroupId => {
+      const selectedGroup = groups.find(group => group.id === selectedGroupId);
+      console.log(selectedGroup);
+      selectedGroup.contacts.push(contactDetails.id);
+      dispatch(updateGroup(selectedGroup));
+    });
+    dispatch(addContact(contactDetails));
     toggleCreateContactModal(false);
   };
   if (!isVisible) {

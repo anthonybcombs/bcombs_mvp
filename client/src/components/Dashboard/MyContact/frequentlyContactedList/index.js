@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -21,7 +21,8 @@ const FrequentlyContactedStyled = styled.div`
     box-shadow: 0px 3px 6px #908e8e;
   }
 `;
-export default function index() {
+export default function index({ contacts, setNewContactModalVisible }) {
+  const [selectedContact, setSelectedContact] = useState(0);
   return (
     <FrequentlyContactedStyled>
       <div id="contact-list">
@@ -33,24 +34,14 @@ export default function index() {
         </div>
       </div>
       <div id="contact-list-details">
-        <Contact
-          isSelected={true}
-          contactDetails={{
-            name: "Bon Mercado",
-            phoneNumber: "92900912",
-            email: "test@yahoo.com",
-            relation: "Parent"
-          }}
-        />
-        <Contact
-          isSelected={false}
-          contactDetails={{
-            name: "Black hat",
-            phoneNumber: "0200202",
-            email: "test2@yahoo.com",
-            relation: "Sibling"
-          }}
-        />
+        {contacts.map(contact => (
+          <Contact
+            isSelected={selectedContact === contact.id}
+            contactDetails={contact}
+            setSelectedContact={setSelectedContact}
+            key={contact.id}
+          />
+        ))}
       </div>
     </FrequentlyContactedStyled>
   );

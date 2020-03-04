@@ -52,17 +52,31 @@ const ContactSettingPopOverStyled = styled.div`
     margin:1em;
   }
 `;
-export default function index({ isSelected, contactDetails }) {
+export default function index({
+  isSelected,
+  contactDetails,
+  setSelectedContact
+}) {
   const [isContactSettingVisible, setIsContactSettingVisible] = useState(false);
   const handleContactSettingVisible = () => {
     setIsContactSettingVisible(!isContactSettingVisible);
   };
   return (
-    <ContactStyled className={`${isSelected ? "selected" : ""}`}>
+    <ContactStyled
+      className={`${isSelected ? "selected" : ""}`}
+      onMouseEnter={() => {
+        setSelectedContact(contactDetails.id);
+      }}
+      onMouseLeave={() => {
+        setSelectedContact(0);
+      }}
+    >
       <div>
         <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
         <p>
-          <span>{contactDetails.name}</span>
+          <span>
+            {contactDetails.firstName} {contactDetails.lastName}
+          </span>
           <br />
           <span>{contactDetails.relation}</span>
         </p>

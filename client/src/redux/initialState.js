@@ -2,7 +2,8 @@ import { addDays, addHours } from "date-fns";
 import randomColor from "randomcolor";
 export const initialState = {
   auth: {
-    status: "ANONYMOUS"
+    status: "ANONYMOUS",
+    id: 1
   },
   events: [
     {
@@ -115,13 +116,37 @@ export const initialState = {
       color: randomColor()
     }
   ],
+  contacts: [
+    {
+      id: 1,
+      userIds: [1],
+      firstName: "Black",
+      lastName: "Hat",
+      phoneNumber: "0200202",
+      email: "test2@yahoo.com",
+      relation: "Sibling"
+    },
+    {
+      id: 2,
+      userIds: [1],
+      firstName: "Bon",
+      lastName: "Mercado",
+      phoneNumber: "92900912",
+      email: "test@yahoo.com",
+      relation: "Parent"
+    }
+  ],
   groups: [
     {
       id: 1,
+      userIds: [1],
+      contacts: [],
       name: "testing groups 1"
     },
     {
       id: 2,
+      userIds: [1],
+      contacts: [],
       name: "testing groups 2"
     }
   ],

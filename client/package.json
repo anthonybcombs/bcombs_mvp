@@ -45,7 +45,8 @@
     "sema": "^2.0.3",
     "style": "0.0.3",
     "styled": "^1.0.0",
-    "styled-components": "^5.0.1"
+    "styled-components": "^5.0.1",
+    "uuidv4": "^6.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

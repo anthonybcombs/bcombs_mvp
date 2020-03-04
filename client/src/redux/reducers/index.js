@@ -5,12 +5,14 @@ import familyMembers from "./FamilyMembers";
 import calendars from "./Calendars";
 import settings from "./Settings";
 import groups from "./Groups";
+import contacts from "./Contacts";
 const reducer = combineReducers({
   auth,
   events,
   familyMembers,
   calendars,
   groups,
-  settings
+  settings,
+  contacts
 });
 export default reducer;
