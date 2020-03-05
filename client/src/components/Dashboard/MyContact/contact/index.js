@@ -34,7 +34,7 @@ const ContactStyled = styled.div`
   }
   div:nth-of-type(4) {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
   }
   div:nth-of-type(4) button {
     display: block;

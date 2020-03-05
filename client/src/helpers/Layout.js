@@ -47,7 +47,7 @@ const HeaderStyled = styled.header`
     #app-header-left {
       display: flex;
       text-align: center;
-      justify-content: end;
+      justify-content: flex-end;
     }
     #app-header-right {
       grid-template-columns: 50% 50%;
@@ -111,7 +111,10 @@ export default function Layout({ children }) {
         <div id="app-header-left">
           <Location
             children={context => {
-              if (context.location.pathname === "/auth/forgot-password") {
+              if (
+                context.location.pathname === "/auth/forgot-password" ||
+                context.location.pathname === "/auth/create"
+              ) {
                 return (
                   <>
                     <Link data-testid="app-header-login" to="/">

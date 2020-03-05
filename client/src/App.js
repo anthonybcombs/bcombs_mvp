@@ -51,8 +51,8 @@ export default function App() {
               <AsyncCreateUser path="auth/create" />
               <AsyncForgotPassword path="auth/forgot-password" />
             </Auth>
-            <AsycDashboard path="dashboard">
-              <AsyncDashBoardHome path="/" />
+            <AsycDashboard path="/dashboard">
+              <AsyncDashBoardHome default />
               <AsyncDashboardMyCalendars path="mycalendars" />
               <AsyncDashboardMyEvents path="myevents" />
               <AsyncDashboardMyProfle path="myprofile" />

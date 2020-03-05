@@ -8,9 +8,6 @@ import { defaultTheme } from "./helpers/Theme.js";
 import { store } from "./redux/saga";
 import App from "./App";
 const GlobalStyle = createGlobalStyle`
-*, ::after, ::before{
-  box-sizing:initial;
-}
   *:focus {
     outline: none;
   }
