@@ -11,11 +11,11 @@ import {
   faPlus
 } from "@fortawesome/free-solid-svg-icons";
 import ContactList from "./contactList";
-import DuplicatesList from "./duplicatesList";
-import FrequentlyContactedList from "./frequentlyContactedList";
 import NewContactModal from "./create";
-import EditContactModal from "./edit";
+import EditContactModal from "./edit/contact";
+import SendMessageModal from "./message";
 import NewGroupModal from "../MyGroups/create";
+import ProfileModal from "./profile/";
 const MyContactsStyled = styled.div`
   .selected {
     background-color: #cdcdcd;
@@ -208,30 +208,15 @@ export default function index() {
           </div>
         </div>
         <div>
-          {selectedLabel === "Contacts" && (
-            <ContactList
-              contacts={filteredContacts}
-              groups={groups}
-              EditContactModal={EditContactModal}
-              setNewContactModalVisible={setNewContactModalVisible}
-            />
-          )}
-          {selectedLabel === "Fequently Contacted" && (
-            <FrequentlyContactedList
-              contacts={filteredContacts}
-              groups={groups}
-              EditContactModal={EditContactModal}
-              setNewContactModalVisible={setNewContactModalVisible}
-            />
-          )}
-          {selectedLabel === "Duplicates" && (
-            <DuplicatesList
-              contacts={filteredContacts}
-              groups={groups}
-              EditContactModal={EditContactModal}
-              setNewContactModalVisible={setNewContactModalVisible}
-            />
-          )}
+          <ContactList
+            headerText={selectedLabel}
+            contacts={filteredContacts}
+            groups={groups}
+            EditContactModal={EditContactModal}
+            setNewContactModalVisible={setNewContactModalVisible}
+            ProfileModal={ProfileModal}
+            SendMessageModal={SendMessageModal}
+          />
         </div>
       </div>
     </MyContactsStyled>

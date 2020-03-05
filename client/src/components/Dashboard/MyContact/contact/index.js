@@ -58,7 +58,10 @@ export default function index({
   isSelected,
   contactDetails,
   setSelectedContactId,
-  setisEditContactModalVisible
+  setisEditContactModalVisible,
+  setIsProfleModalVisible,
+  setSendMessageModalVisible,
+  setTypeOfFormUsedInEditContact
 }) {
   const [isContactSettingVisible, setIsContactSettingVisible] = useState(false);
   const dispatch = useDispatch();
@@ -116,10 +119,29 @@ export default function index({
               <ContactSettingPopOverStyled
                 onMouseLeave={() => handleContactSettingVisible()}
               >
-                <button>View profile</button>
-                <button>Send message</button>
+                <button
+                  onClick={() => {
+                    setIsProfleModalVisible(true);
+                  }}
+                >
+                  View profile
+                </button>
+                <button
+                  onClick={() => {
+                    setSendMessageModalVisible(true);
+                  }}
+                >
+                  Send message
+                </button>
                 <button onClick={handleRemoveContact}>Remove Contact</button>
-                <button>Add to Group</button>
+                <button
+                  onClick={() => {
+                    setTypeOfFormUsedInEditContact("Add To Group");
+                    setisEditContactModalVisible(true);
+                  }}
+                >
+                  Add to Group
+                </button>
               </ContactSettingPopOverStyled>
             </ArrowContainer>
           )}

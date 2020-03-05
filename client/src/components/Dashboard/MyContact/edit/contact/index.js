@@ -2,15 +2,17 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { updateContact } from "../../../../redux/actions/Contacts";
-import { updateGroup } from "../../../../redux/actions/Groups";
-import EditContactForm from "../forms/EditContactForm";
+import { updateContact } from "../../../../../redux/actions/Contacts";
+import { updateGroup } from "../../../../../redux/actions/Groups";
+import EditContactForm from "../../forms/EditContactForm";
+import AddToGroupForm from "../../forms/AddToGroupForm";
 const EditContactModal = styled.div`
   h2 {
     text-align: center;
   }
   .modal-content {
-    width: 60%;
+    width: ${({ theme }) => theme.modalWidth};
+    margin-top: ${({ theme }) => theme.modalMarginTop};
   }
   @media (min-width: 600px) {
   }
@@ -19,7 +21,8 @@ export default function index({
   isVisible = true,
   toggleEditContactModal,
   groups,
-  contact
+  contact,
+  typeOfForm = "Edit Contact"
 }) {
   const [contactDetails, setContactDetails] = useState({});
   useEffect(() => {
@@ -68,7 +71,13 @@ export default function index({
     return <></>;
   }
   return ReactDOM.createPortal(
-    <EditContactModal className="modal">
+    <EditContactModal
+      className="modal"
+      theme={{
+        modalWidth: typeOfForm === "Edit Contact" ? "60%" : "30%",
+        modalMarginTop: typeOfForm === "Edit Contact" ? "initial" : "20vh"
+      }}
+    >
       <div className="modal-content">
         <span
           className="close"
@@ -79,13 +88,24 @@ export default function index({
           &times;
         </span>
         <div>
-          <h2>Edit Contact</h2>
-          <EditContactForm
-            groups={groups}
-            contactDetails={contactDetails}
-            onSubmit={handleSubmit}
-            handleContactDetailsChange={handleContactDetailsChange}
-          />
+          <h2>
+            {typeOfForm === "Edit Contact" ? "Edit Contact" : "Add to group"}
+          </h2>
+          {typeOfForm === "Edit Contact" ? (
+            <EditContactForm
+              groups={groups}
+              contactDetails={contactDetails}
+              onSubmit={handleSubmit}
+              handleContactDetailsChange={handleContactDetailsChange}
+            />
+          ) : (
+            <AddToGroupForm
+              groups={groups}
+              contactDetails={contactDetails}
+              onSubmit={handleSubmit}
+              handleContactDetailsChange={handleContactDetailsChange}
+            />
+          )}
         </div>
       </div>
     </EditContactModal>,

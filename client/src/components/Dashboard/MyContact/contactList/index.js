@@ -25,12 +25,23 @@ export default function index({
   contacts,
   groups,
   setNewContactModalVisible,
-  EditContactModal
+  EditContactModal,
+  ProfileModal,
+  SendMessageModal,
+  headerText
 }) {
   const [selectedContactId, setSelectedContactId] = useState(0);
   const [isEditContactModalVisible, setisEditContactModalVisible] = useState(
     false
   );
+  const [isProfleModalVisible, setIsProfleModalVisible] = useState(false);
+  const [isSendMessageModalVisible, setSendMessageModalVisible] = useState(
+    false
+  );
+  const [
+    typeOfFormUsedInEditContact,
+    setTypeOfFormUsedInEditContact
+  ] = useState("Edit Contact");
   const contact = contacts.find(contact => contact.id === selectedContactId);
   return (
     <ContactListStyled>
@@ -39,10 +50,22 @@ export default function index({
         toggleEditContactModal={setisEditContactModalVisible}
         contact={contact || {}}
         groups={groups}
+        typeOfForm={typeOfFormUsedInEditContact}
+      />
+      <ProfileModal
+        isVisible={isProfleModalVisible}
+        toggleProfileModal={setIsProfleModalVisible}
+        contact={contact || {}}
+        groups={groups}
+      />
+      <SendMessageModal
+        contact={contact || {}}
+        isVisible={isSendMessageModalVisible}
+        toggleSendMessageModal={setSendMessageModalVisible}
       />
       <div id="contact-list">
         <div id="contact-list-header">
-          <h3>Contact List</h3>
+          <h3>{headerText}</h3>
           <button onClick={() => setNewContactModalVisible(true)}>
             <FontAwesomeIcon icon={faPlus} />
           </button>
@@ -54,7 +77,10 @@ export default function index({
             isSelected={selectedContactId === contact.id}
             contactDetails={contact}
             setisEditContactModalVisible={setisEditContactModalVisible}
+            setIsProfleModalVisible={setIsProfleModalVisible}
             setSelectedContactId={setSelectedContactId}
+            setSendMessageModalVisible={setSendMessageModalVisible}
+            setTypeOfFormUsedInEditContact={setTypeOfFormUsedInEditContact}
             key={contact.id}
           />
         ))}
