@@ -1,8 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCog, faBell, faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCog,
+  faBell,
+  faSearch,
+  faSignOutAlt
+} from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link, Location } from "@reach/router";
+import Popover, { ArrowContainer } from "react-tiny-popover";
 import Logo from "../images/logo1.png";
 const HeaderStyled = styled.header`
   display: grid;
@@ -19,6 +26,7 @@ const HeaderStyled = styled.header`
     display: block;
     color: grey;
     text-decoration: none;
+    cursor: pointer;
   }
   #app-header-right,
   #app-header-left {
@@ -80,7 +88,22 @@ const LayoutStyled = styled.div`
   padding: 0;
 `;
 
+const PopoverStyled = styled.div`
+  background: white;
+  border: 1px solid lightgrey;
+  a {
+    display: block;
+    color: grey;
+    text-decoration: none;
+    cursor: pointer;
+    margin: 1em;
+  }
+  svg {
+    margin-right: 1em;
+  }
+`;
 export default function Layout({ children }) {
+  const [isPopOverVisible, setIsPopOverVisible] = useState(false);
   const theme = useContext(ThemeContext);
   return (
     <LayoutStyled data-testid="app-layout" theme={theme}>
@@ -196,16 +219,48 @@ export default function Layout({ children }) {
                       >
                         <FontAwesomeIcon icon={faCog} />
                       </Link>
-                      <Link
-                        className={`${
-                          context.location.pathname === "/dashboard/profile"
-                            ? "selected"
-                            : ""
-                        }`}
-                        to="/dashboard/myprofile"
+                      <Popover
+                        isOpen={isPopOverVisible}
+                        position={"left"}
+                        content={({ position, targetRect, popoverRect }) => (
+                          <ArrowContainer
+                            position={position}
+                            targetRect={targetRect}
+                            popoverRect={popoverRect}
+                            arrowColor="lightgrey"
+                            arrowSize={7}
+                            arrowStyle={{ opacity: 1 }}
+                            arrow="center"
+                          >
+                            <PopoverStyled>
+                              <Link
+                                to="/dashboard/myprofile"
+                                onClick={() => {
+                                  setIsPopOverVisible(false);
+                                }}
+                              >
+                                <FontAwesomeIcon icon={faUser} />
+                                <span>Profile</span>
+                              </Link>
+                              <Link to="/">
+                                <FontAwesomeIcon icon={faSignOutAlt} />
+                                <span>Logout</span>
+                              </Link>
+                            </PopoverStyled>
+                          </ArrowContainer>
+                        )}
+                        onClickOutside={() => {
+                          setIsPopOverVisible(false);
+                        }}
                       >
-                        <img src={"https://i.pravatar.cc/300"} />
-                      </Link>
+                        <a
+                          onClick={() => {
+                            setIsPopOverVisible(true);
+                          }}
+                        >
+                          <img src={"https://i.pravatar.cc/300"} />
+                        </a>
+                      </Popover>
                     </div>
                   </>
                 );
