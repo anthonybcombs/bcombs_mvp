@@ -11,6 +11,7 @@ import styled, { ThemeContext } from "styled-components";
 import { format } from "date-fns";
 import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
+import NewEventModal from "../MyEvents/create/withCalendar";
 const HomeStyled = styled.div`
   padding: 1px 1em 1px 1em;
   box-shadow: 0px 3px 6px #908e8e;
@@ -84,6 +85,7 @@ const HomeStyled = styled.div`
   }
 `;
 export default function index({ location }) {
+  const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
   const events = useSelector(({ events }) => events);
@@ -114,6 +116,11 @@ export default function index({ location }) {
         location.state.calendarName.length > 0 && (
           <WelcomeMessage calendarName={location.state.calendarName} />
         )}
+      <NewEventModal
+        isVisible={isNewEventModalVisible}
+        toggleCreateEventModal={setIsEventModalVisible}
+        defaultSelectedDate={selectedDate}
+      />
       <h2 data-testid="app-dashboard-home-header">My Calendar</h2>
       <div className="grid">
         <div>
@@ -169,7 +176,12 @@ export default function index({ location }) {
         <div>
           <div className="pane">
             <h3>Test</h3>
-            <button id="add-event-button">
+            <button
+              id="add-event-button"
+              onClick={() => {
+                setIsEventModalVisible(true);
+              }}
+            >
               <FontAwesomeIcon icon={faPlusCircle} size="3x" />
             </button>
 

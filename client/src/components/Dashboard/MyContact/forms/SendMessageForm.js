@@ -78,7 +78,7 @@ export default function SendMessageForm({
         errorType="required"
         message="Message is required."
       />
-      <button type="submit">Save</button>
+      <button type="submit">Send</button>
     </SendMessageFormStyled>
   );
 }
