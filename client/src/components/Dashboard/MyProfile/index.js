@@ -5,8 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { faPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
 import Toggle from "react-toggle";
-import "react-toggle/style.css"; // for ES6 modules
+import "react-toggle/style.css";
 import backgroundImg from "../../../images/loginbg.png";
+import CreateRelative from "./create/";
 const ProfileSyled = styled.div`
   padding: 1em;
   #profile,
@@ -99,6 +100,20 @@ const ProfileSyled = styled.div`
   #dashboard-select > div.selected {
     border-bottom: 8px solid #f26e21;
   }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    margin: 1em 0 0 0;
+  }
+  table thead th {
+    border-bottom: 1px solid black;
+    margin: none;
+  }
+  table tbody td {
+    border-bottom: 1px solid lightgrey;
+    margin: none;
+  }
   @media (min-width: 600px) {
     #profile,
     #dashboard-select {
@@ -120,10 +135,23 @@ const ProfileSyled = styled.div`
   }
 `;
 export default function index() {
+  const [
+    isCreateRelativeModaVisibile,
+    setIsCreateRelativeModaVisibile
+  ] = useState(false);
   const [dashboard, setDashboard] = useState("Events");
-  const settings = useSelector(({ settings }) => settings);
+  const { auth, settings, relatives } = useSelector(
+    ({ auth, settings, relatives }) => {
+      return { auth, settings, relatives };
+    }
+  );
   return (
     <ProfileSyled>
+      <CreateRelative
+        isVisible={isCreateRelativeModaVisibile}
+        toggleCreateRelativeModal={setIsCreateRelativeModaVisibile}
+        auth={auth}
+      />
       <h2>Profile</h2>
       <div id="profile">
         <div>
@@ -199,11 +227,37 @@ export default function index() {
         <div>
           <h2>Family</h2>
           <div>
-            <button>
+            <button
+              onClick={() => {
+                setIsCreateRelativeModaVisibile(true);
+              }}
+            >
               <FontAwesomeIcon icon={faPlus} />
             </button>
             <span>Add A relative</span>
           </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Relation</th>
+              </tr>
+            </thead>
+            <tbody>
+              {relatives.map(relative => {
+                return (
+                  <tr>
+                    <td>{`${relative.firstName} ${relative.lastName}`}</td>
+                    <td>{relative.email}</td>
+                    <td>{relative.phoneNumber}</td>
+                    <td>{relative.relation}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </ProfileSyled>

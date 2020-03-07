@@ -137,6 +137,7 @@ export const initialState = {
       relation: "Parent"
     }
   ],
+  relatives: [],
   groups: [
     {
       id: uuid(),

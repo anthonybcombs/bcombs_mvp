@@ -11,6 +11,7 @@ import {
   updatedContact
 } from "../actions/Contacts";
 import { addedGroup, updatedGroup } from "../actions/Groups";
+import { addedRelative } from "../actions//Relatives";
 import reducer from "../reducers";
 function* rootSaga() {
   //AUTH
@@ -27,6 +28,8 @@ function* rootSaga() {
   //GROUPS
   yield takeLatest(actionType.REQUEST_ADD_GROUP, addedGroup);
   yield takeEvery(actionType.REQUEST_UPDATE_GROUP, updatedGroup);
+  //RELATIVES
+  yield takeLatest(actionType.REQUEST_ADD_RELATIVE, addedRelative);
 }
 const sagaMiddleware = createSagaMiddleware();
 

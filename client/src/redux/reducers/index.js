@@ -6,6 +6,7 @@ import calendars from "./Calendars";
 import settings from "./Settings";
 import groups from "./Groups";
 import contacts from "./Contacts";
+import relatives from "./Relatives";
 const reducer = combineReducers({
   auth,
   events,
@@ -13,6 +14,7 @@ const reducer = combineReducers({
   calendars,
   groups,
   settings,
-  contacts
+  contacts,
+  relatives
 });
 export default reducer;
