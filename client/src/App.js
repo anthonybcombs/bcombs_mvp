@@ -2,10 +2,6 @@ import React, { useEffect } from "react";
 import { Router } from "@reach/router";
 import { useDispatch } from "react-redux";
 import Layout from "./helpers/Layout";
-import Auth from "./components/Auth";
-import Login from "./components/Auth/Login";
-import Profile from "./components/UserInfo/Profile";
-
 import Loadable from "react-loadable";
 import Loading from "./helpers/Loading.js";
 import { requestUserTypes } from "./redux/actions/UserTypes";
@@ -34,12 +30,24 @@ const AyncDashboardMyContacts = Loadable({
   loader: () => import("./components/Dashboard/MyContact"),
   loading: Loading
 });
+const AsyncAuth = Loadable({
+  loader: () => import("./components/Auth"),
+  loading: Loading
+});
+const AsyncLogin = Loadable({
+  loader: () => import("./components/Auth/Login"),
+  loading: Loading
+});
 const AsyncCreateUser = Loadable({
   loader: () => import("./components/Auth/Create"),
   loading: Loading
 });
 const AsyncForgotPassword = Loadable({
   loader: () => import("./components/Auth/ForgotPassword"),
+  loading: Loading
+});
+const AsyncProfile = Loadable({
+  loader: () => import("./components/UserInfo/Profile"),
   loading: Loading
 });
 export default function App() {
@@ -52,11 +60,11 @@ export default function App() {
       <Layout>
         <div data-testid="app">
           <Router>
-            <Auth path="/">
-              <Login default />
+            <AsyncAuth path="/">
+              <AsyncLogin default />
               <AsyncCreateUser path="auth/create" />
               <AsyncForgotPassword path="auth/forgot-password" />
-            </Auth>
+            </AsyncAuth>
             <AsycDashboard path="/dashboard">
               <AsyncDashBoardHome default />
               <AsyncDashboardMyCalendars path="mycalendars" />
@@ -64,7 +72,7 @@ export default function App() {
               <AsyncDashboardMyProfle path="myprofile" />
               <AyncDashboardMyContacts path="mycontacts" />
             </AsycDashboard>
-            <Profile path="profile" />
+            <AsyncProfile path="profile" />
           </Router>
         </div>
       </Layout>
