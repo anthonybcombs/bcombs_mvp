@@ -7,7 +7,7 @@ import settings from "./Settings";
 import groups from "./Groups";
 import contacts from "./Contacts";
 import relatives from "./Relatives";
-import userTypes from "./userTypes";
+import userTypes from "./UserTypes";
 const reducer = combineReducers({
   auth,
   events,
