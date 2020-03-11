@@ -80,7 +80,7 @@ const CreateUserFormStyled = styled.form`
   }
   @media (min-width: 600px) {
     .grid {
-      grid-template-columns: 50% 50%;
+      grid-template-columns: repeat(3, 1fr);
       grid-gap: 1%;
     }
   }
@@ -115,7 +115,7 @@ export default function Form({
               handleChangeUserType(userType);
             }}
           >
-            {userType.name}
+            {userType.name.toUpperCase()}
           </button>
         ))}
       </div>

@@ -55,7 +55,7 @@ export default function index({ navigate }) {
   };
   return (
     <CreateUserStyled data-testid="app-create-user">
-      <h2>Create my account ({userDetails.type.name})</h2>
+      <h2>Create my account ({userDetails.type.name.toUpperCase()})</h2>
       <Form
         onSubmit={handleFormSubmit}
         handleInputChange={handleInputChange}
