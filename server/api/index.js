@@ -19,10 +19,61 @@ router.get("/userTypes", async (req, res) => {
     await db.close();
   }
 });
-router.post("/users/add", async (req, res) => {
-  const user = req.body;
-  const db = makeDb();
+router.post("/auth/userInfo", async (req, res) => {
   try {
+    const creds = req.body;
+    const userInfoResponse = await fetch("https://bcombs.auth0.com/userinfo", {
+      method: "POST",
+      headers: {
+        Authorization: `${creds.token_type} ${creds.access_token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    const userInfo = await userInfoResponse.json();
+    res.send(userInfo);
+  } catch (error) {
+    res.send(error);
+  }
+});
+router.post("/auth/authorize", async (req, res) => {
+  try {
+    const user = req.body;
+    const params = new URLSearchParams();
+    params.append("grant_type", "password");
+    params.append("client_id", process.env.AUTH_CLIENT_ID);
+    params.append("client_secret", process.env.AUTH_CLIENT_SECRET);
+    params.append("username", user.email);
+    params.append("password", user.password);
+    const AuthResponse = await fetch("https://bcombs.auth0.com/oauth/token", {
+      method: "POST",
+      body: params
+    });
+    const authData = await AuthResponse.json();
+    if (authData.hasOwnProperty("access_token")) {
+      const userInfoResponse = await fetch(
+        "https://bcombs.auth0.com/userinfo",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `${authData.token_type} ${authData.access_token}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      const userInfo = await userInfoResponse.json();
+      res.send(JSON.stringify({ ...authData, ...userInfo }));
+      return;
+    }
+
+    res.send(JSON.stringify(authData));
+  } catch (error) {
+    res.send("error");
+  }
+});
+router.post("/users/add", async (req, res) => {
+  try {
+    const user = req.body;
+    const db = makeDb();
     const params = new URLSearchParams();
     params.append("client_id", process.env.AUTH_CLIENT_ID);
     params.append("username", user.username);

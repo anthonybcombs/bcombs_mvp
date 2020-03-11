@@ -3,8 +3,7 @@ import { uuid } from "uuidv4";
 import randomColor from "randomcolor";
 export const initialState = {
   auth: {
-    status: "ANONYMOUS",
-    id: 1
+    status: "ANONYMOUS"
   },
   events: [
     {

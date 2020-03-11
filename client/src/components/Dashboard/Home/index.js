@@ -94,7 +94,9 @@ export default function index({ location }) {
     {
       id: 1,
       name:
-        location.state && location.state.calendarName.length > 0
+        location.state !== null &&
+        location.state &&
+        location.state.calendarName.length > 0
           ? location.state.calendarName
           : "test"
     }
@@ -112,7 +114,8 @@ export default function index({ location }) {
   };
   return (
     <HomeStyled data-testid="app-dashboard-home" theme={theme}>
-      {location.state.calendarName &&
+      {location.state != null &&
+        location.state.calendarName &&
         location.state.calendarName.length > 0 && (
           <WelcomeMessage calendarName={location.state.calendarName} />
         )}

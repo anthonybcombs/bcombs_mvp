@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Logo from "../../../images/logo1.png";
 import Form from "./Form";
 import { requestAuth } from "../../../redux/actions/Auth";
-
 const LoginStyled = styled.div`
   display: block;
   margin: 0 auto;
@@ -24,30 +23,34 @@ const LoginStyled = styled.div`
     text-align: center;
     font-weight: normal;
   }
+  p.error {
+    color: red;
+    text-align: center;
+    font-size: 1.3em;
+  }
   @media (min-width: 600px) {
     h2 {
       font-weight: bold;
     }
   }
 `;
-export default function index({ navigate }) {
+export default function index() {
   const [userDetails, setUserDetails] = useState({ email: "", password: "" });
+  const { auth } = useSelector(({ auth }) => {
+    return { auth };
+  });
   const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
   const handleFormSubmit = async values => {
-    dispatch(requestAuth());
-    await navigate(
-      "dashboard",
-      { state: { calendarName: "" } },
-      { replace: true }
-    );
+    await dispatch(requestAuth(userDetails));
   };
   return (
     <LoginStyled data-testid="app-login">
       <img data-testid="app-login-logo" src={Logo} alt="Bcombs Logo" />
       <h2 data-testid="app-login-header">Login To Your Account</h2>
+      {auth && auth.message && <p className="error">{auth.message}</p>}
       <Form
         onSubmit={handleFormSubmit}
         userDetails={userDetails}

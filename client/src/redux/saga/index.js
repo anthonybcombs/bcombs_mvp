@@ -2,7 +2,7 @@ import createSagaMiddleware from "redux-saga";
 import { createStore, compose, applyMiddleware } from "redux";
 import { takeLatest, takeEvery } from "redux-saga/effects";
 import * as actionType from "../actions/Constant";
-import { authenticated } from "../actions/Auth";
+import { authenticated, gotUserInfo, loggedOut } from "../actions/Auth";
 import { addCalendar } from "../actions/Calendars";
 import { deletedEvent, updatedEvent, addedEvent } from "../actions/Events";
 import {
@@ -18,6 +18,9 @@ import reducer from "../reducers";
 function* rootSaga() {
   //AUTH
   yield takeLatest(actionType.REQUEST_AUTH, authenticated);
+  yield takeLatest(actionType.REQUEST_AUTH_USER_INFO, gotUserInfo);
+  yield takeLatest(actionType.REQUEST_AUTH_LOGOUT, loggedOut);
+  //CALENDAR
   yield takeLatest(actionType.REQUEST_ADD_CALENDAR, addCalendar);
   //EVENTS
   yield takeLatest(actionType.REQUEST_ADD_EVENT, addedEvent);

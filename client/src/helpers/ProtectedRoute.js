@@ -1,15 +1,25 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { Redirect } from "@reach/router";
+import { useSelector, useDispatch } from "react-redux";
+import { requestUserInfo } from "../redux/actions/Auth";
+import Loading from "../helpers/Loading";
 export default function protectedRoutes({ children }) {
-  const authenticated = useSelector(state => {
-    return state.auth.status === "SIGNED_IN";
+  const { auth } = useSelector(({ auth }) => {
+    return {
+      auth
+    };
   });
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(requestUserInfo());
+  }, []);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [children]);
-  if (!authenticated) {
-    return <Redirect to="/" />;
+  if (auth.status === "SIGNED_IN" && auth.hasOwnProperty("sub")) {
+    return <>{children}</>;
+  } else if (auth.status === "ANONYMOUS") {
+    return <Loading />;
   }
-  return <>{children}</>;
+  return <Loading />;
 }

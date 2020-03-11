@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCog,
@@ -11,6 +12,7 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link, Location } from "@reach/router";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 import Logo from "../images/logo1.png";
+import { requestLogout } from "../redux/actions/AUth";
 const HeaderStyled = styled.header`
   display: grid;
   text-align: center;
@@ -104,7 +106,11 @@ const PopoverStyled = styled.div`
 `;
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
+  const { auth } = useSelector(({ auth }) => {
+    return { auth };
+  });
   const theme = useContext(ThemeContext);
+  const dispatch = useDispatch();
   return (
     <LayoutStyled data-testid="app-layout" theme={theme}>
       <HeaderStyled data-testid="app-title" theme={theme.header}>
@@ -242,10 +248,14 @@ export default function Layout({ children }) {
                                 <FontAwesomeIcon icon={faUser} />
                                 <span>Profile</span>
                               </Link>
-                              <Link to="/">
+                              <a
+                                onClick={() => {
+                                  dispatch(requestLogout());
+                                }}
+                              >
                                 <FontAwesomeIcon icon={faSignOutAlt} />
                                 <span>Logout</span>
-                              </Link>
+                              </a>
                             </PopoverStyled>
                           </ArrowContainer>
                         )}
@@ -258,7 +268,7 @@ export default function Layout({ children }) {
                             setIsPopOverVisible(true);
                           }}
                         >
-                          <img src={"https://i.pravatar.cc/300"} />
+                          <img src={auth.picture} />
                         </a>
                       </Popover>
                     </div>
