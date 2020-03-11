@@ -1,7 +1,7 @@
 import { call, take, put } from "redux-saga/effects";
 import * as actionType from "./Constant";
 const getUserTypesFromDatabase = async () => {
-  const response = await fetch("http://localhost:3001/api/userTypes/");
+  const response = await fetch(`${process.env.API_HOST}/api/userTypes/`);
   const userTypes = response.json();
   return userTypes;
 };

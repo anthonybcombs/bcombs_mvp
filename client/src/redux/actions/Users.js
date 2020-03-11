@@ -3,7 +3,7 @@ import * as actionType from "./Constant";
 const addUserToDatabase = user => {
   return new Promise(async (resolve, reject) => {
     try {
-      await fetch("http://localhost:3001/api/users/add", {
+      await fetch(`${process.env.API_HOST}/api/users/add`, {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json"
