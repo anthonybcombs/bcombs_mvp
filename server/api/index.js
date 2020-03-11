@@ -30,14 +30,14 @@ router.post("/users/add", async (req, res) => {
     params.append("password", user.password);
     params.append("connection", "Username-Password-Authentication");
 
-    const response = await fetch(
+    const signUpResponse = await fetch(
       "https://bcombs.auth0.com/dbconnections/signup",
       {
         method: "POST",
         body: params
       }
     );
-    const authData = await response.json();
+    const authData = await signUpResponse.json();
     await db.query(
       `INSERT INTO users(id,auth_id,type,email,verified,username) values(UUID_TO_BIN(UUID()),?,UUID_TO_BIN(?),?,?,?)`,
       [
@@ -48,10 +48,24 @@ router.post("/users/add", async (req, res) => {
         user.username
       ]
     );
-    res.send("success");
+    if (authData.hasOwnPropert("_id")) {
+      //send email
+      await fetch(
+        "https://bcombs.auth0.com/api/management/v2/jobs/post_verification_email",
+        {
+          method: "POST",
+          body: {
+            user_id: authData.user_id,
+            client_id: process.env.AUTH_CLIENT_ID
+          }
+        }
+      );
+      res.send("success");
+      return;
+    }
+    res.send("error");
   } catch (error) {
-    console.log(error);
-    res.send(error);
+    res.send("error");
   } finally {
     await db.close();
   }
