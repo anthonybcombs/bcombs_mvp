@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Router } from "@reach/router";
+import { useDispatch } from "react-redux";
 import Layout from "./helpers/Layout";
 import Auth from "./components/Auth";
 import Login from "./components/Auth/Login";
@@ -7,6 +8,7 @@ import Profile from "./components/UserInfo/Profile";
 
 import Loadable from "react-loadable";
 import Loading from "./helpers/Loading.js";
+import { requestUserTypes } from "./redux/actions/UserTypes";
 
 const AsycDashboard = Loadable({
   loader: () => import("./components/Dashboard/"),
@@ -41,6 +43,10 @@ const AsyncForgotPassword = Loadable({
   loading: Loading
 });
 export default function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(requestUserTypes());
+  }, []);
   return (
     <>
       <Layout>

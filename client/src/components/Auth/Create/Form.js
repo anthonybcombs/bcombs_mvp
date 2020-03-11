@@ -89,11 +89,12 @@ export default function Form({
   onSubmit,
   handleInputChange,
   handleChangeUserType,
-  userDetails
+  userDetails,
+  userTypes
 }) {
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm();
-  const { userType } = userDetails;
+  const { type } = userDetails;
   return (
     <CreateUserFormStyled
       data-testid="app-create-form"
@@ -101,26 +102,19 @@ export default function Form({
       onSubmit={handleSubmit(onSubmit)}
     >
       <div id="userTypes" className="grid">
-        <button
-          data-testid="app-create-button-user"
-          className={userType === "user" ? "selected" : ""}
-          type="button"
-          onClick={() => {
-            handleChangeUserType("user");
-          }}
-        >
-          User
-        </button>
-        <button
-          data-testid="app-create-button-vendor"
-          className={userType === "vendor" ? "selected" : ""}
-          type="button"
-          onClick={() => {
-            handleChangeUserType("vendor");
-          }}
-        >
-          Vendor
-        </button>
+        {userTypes.map(userType => (
+          <button
+            key={userType.id}
+            data-testid="app-create-button-user"
+            className={type.name === userType.name ? "selected" : ""}
+            type="button"
+            onClick={() => {
+              handleChangeUserType(userType);
+            }}
+          >
+            {userType.name}
+          </button>
+        ))}
       </div>
       <input
         type="text"
@@ -132,7 +126,16 @@ export default function Form({
         onChange={({ target }) => {
           handleInputChange("username", target.value);
         }}
-        ref={register({ required: true, minLength: 5 })}
+        ref={register({
+          required: true,
+          minLength: 5,
+          validate: {
+            alphanumeric: value => {
+              var alphaExp = /^[a-zA-Z0-9_]{5,}[a-zA-Z]+[0-9]*$/;
+              return alphaExp.test(value);
+            }
+          }
+        })}
       />
       <ErrorMessage
         field={errors.username}
@@ -140,9 +143,14 @@ export default function Form({
         message="Username is required."
       />
       <ErrorMessage
-        field={errors.password}
+        field={errors.username}
         errorType="minLength"
         message="Username minimum length must be at least 5 characters."
+      />
+      <ErrorMessage
+        field={errors.username}
+        errorType="alphanumeric"
+        message="Username must be alphanumeric."
       />
       <input
         type="email"
@@ -205,7 +213,7 @@ export default function Form({
         message="Confirm password is required."
       />
       <ErrorMessage
-        field={errors.password}
+        field={errors.confirm_password}
         errorType="minLength"
         message="Confirm password minimum length must be at least 5 characters."
       />

@@ -162,5 +162,6 @@ export const initialState = {
       "Encouragement",
       "Stretching"
     ]
-  }
+  },
+  userTypes: []
 };

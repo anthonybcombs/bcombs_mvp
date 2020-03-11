@@ -7,6 +7,7 @@ import settings from "./Settings";
 import groups from "./Groups";
 import contacts from "./Contacts";
 import relatives from "./Relatives";
+import userTypes from "./userTypes";
 const reducer = combineReducers({
   auth,
   events,
@@ -15,6 +16,7 @@ const reducer = combineReducers({
   groups,
   settings,
   contacts,
-  relatives
+  relatives,
+  userTypes
 });
 export default reducer;

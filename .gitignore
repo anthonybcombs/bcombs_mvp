@@ -3,6 +3,8 @@ coverage
 dist
 .cache
 .env
+.env.development
+.env.production
 # Logs
 logs
 *.log
