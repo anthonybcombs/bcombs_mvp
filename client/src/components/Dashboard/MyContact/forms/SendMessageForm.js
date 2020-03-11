@@ -56,7 +56,10 @@ export default function SendMessageForm({
   onSubmit,
   handleMessageDetailsChange
 }) {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onBlur"
+  });
   const theme = useContext(ThemeContext);
   return (
     <SendMessageFormStyled

@@ -102,7 +102,10 @@ export default function CreateCalendarForm({
   handleCheckBoxChange,
   toggleCreateCalendarModal
 }) {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onBlur"
+  });
   const theme = useContext(ThemeContext);
   return (
     <CreateCalendarFormStyled

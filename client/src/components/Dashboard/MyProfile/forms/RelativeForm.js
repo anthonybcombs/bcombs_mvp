@@ -70,7 +70,10 @@ export default function RelativeForm({
   onSubmit,
   handleRelativeDetailsChange
 }) {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onBlur"
+  });
   const theme = useContext(ThemeContext);
   return (
     <RelativeFormStyled

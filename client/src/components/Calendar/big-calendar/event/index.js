@@ -146,7 +146,7 @@ export default function index({ event }) {
               <button
                 onClick={e => {
                   setVisibility(false);
-                  dispatch(deleteEvent(eventDetails));
+                  dispatch(deleteEvent(event));
                 }}
               >
                 <FontAwesomeIcon icon={faTrashAlt} />

@@ -78,7 +78,10 @@ export default function CreateProfileForm({
 }) {
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onBlur"
+  });
   const handleDateOfBirthElementTypeChange = value => {
     setDateOfBirthElementType(value);
   };

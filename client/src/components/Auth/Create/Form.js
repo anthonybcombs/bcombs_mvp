@@ -93,7 +93,10 @@ export default function Form({
   userTypes
 }) {
   const theme = useContext(ThemeContext);
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onBlur"
+  });
   const { type } = userDetails;
   return (
     <CreateUserFormStyled
@@ -204,7 +207,9 @@ export default function Form({
         ref={register({
           required: true,
           minLength: 5,
-          validate: value => value === password.value
+          validate: {
+            sameConfirmPassword: value => value === password.value
+          }
         })}
       />
       <ErrorMessage
@@ -219,7 +224,7 @@ export default function Form({
       />
       <ErrorMessage
         field={errors.confirm_password}
-        errorType="validate"
+        errorType="sameConfirmPassword"
         message="The passwords do not match."
       />
       <button type="submit" data-testid="app-create-button-signup">

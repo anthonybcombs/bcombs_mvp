@@ -107,7 +107,10 @@ export default function createEventForm({
   onSubmit,
   header = "Create a new Event"
 }) {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onBlur"
+  });
   const schedule = [
     format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
     format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")

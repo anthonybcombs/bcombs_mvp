@@ -37,7 +37,10 @@ export default function AddToGroupForm({
   onSubmit,
   handleContactDetailsChange
 }) {
-  const { handleSubmit } = useForm();
+  const { handleSubmit } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onBlur"
+  });
   const theme = useContext(ThemeContext);
   return (
     <AddToGroupFormStyled
