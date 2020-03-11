@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel ./src/index.html",
-    "build": "parcel NODE_ENV=production build  ./src/index.html && cp src/_redirects dist/_redirects",
+    "build": "parcel build  ./src/index.html && cp src/_redirects dist/_redirects",
     "test": "jest --watchAll",
     "coverage": "jest --coverage"
   },
