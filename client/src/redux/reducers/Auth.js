@@ -8,7 +8,6 @@ export default function Auth(state = initialState.auth, action) {
       };
     case actionType.REQUEST_AUTH_USER_INFO:
       return {
-        ...state,
         status: "AWAITING_AUTH_RESPONSE"
       };
     case actionType.REQUEST_AUTH_COMPLETED:

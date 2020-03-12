@@ -70,8 +70,8 @@ export function* authenticated({ auth }) {
         authData.error = "email_not_verified";
         authData.error_description = "Email is not verified.";
       }
-      yield put({ type: actionType.REQUEST_AUTH_COMPLETED, payload: authData });
     }
+    yield put({ type: actionType.REQUEST_AUTH_COMPLETED, payload: authData });
   } catch (error) {}
 }
 

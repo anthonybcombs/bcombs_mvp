@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "@reach/router";
 import styled from "styled-components";
 import Logo from "../../../images/logo1.png";
 import Form from "./Form";
@@ -40,12 +41,16 @@ export default function index() {
     return { auth };
   });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
   const handleFormSubmit = async values => {
     await dispatch(requestAuth(userDetails));
   };
+  if (auth.hasOwnProperty("sub") && auth.email_verified) {
+    navigate("/dashboard", { state: { calendarName: "" } }, { replace: true });
+  }
   return (
     <LoginStyled data-testid="app-login">
       <img data-testid="app-login-logo" src={Logo} alt="Bcombs Logo" />

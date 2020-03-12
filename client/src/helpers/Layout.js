@@ -9,7 +9,7 @@ import {
   faSignOutAlt
 } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { Link, Location } from "@reach/router";
+import { Link, Location, useNavigate } from "@reach/router";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 import Logo from "../images/logo1.png";
 import { requestLogout } from "../redux/actions/Auth";
@@ -111,6 +111,7 @@ export default function Layout({ children }) {
   });
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
     <LayoutStyled data-testid="app-layout" theme={theme}>
       <HeaderStyled data-testid="app-title" theme={theme.header}>
@@ -251,6 +252,8 @@ export default function Layout({ children }) {
                               <a
                                 onClick={() => {
                                   dispatch(requestLogout());
+                                  setIsPopOverVisible(false);
+                                  navigate("/", { replace: true });
                                 }}
                               >
                                 <FontAwesomeIcon icon={faSignOutAlt} />

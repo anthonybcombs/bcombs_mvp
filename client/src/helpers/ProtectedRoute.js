@@ -18,8 +18,12 @@ export default function protectedRoutes({ children }) {
   }, [children]);
   if (auth.status === "SIGNED_IN" && auth.hasOwnProperty("sub")) {
     return <>{children}</>;
-  } else if (auth.status === "ANONYMOUS") {
-    return <Loading />;
+  } else if (
+    (auth.status === "ANONYMOUS" &&
+      sessionStorage.getItem("access_token") === null) ||
+    !auth.email_verified
+  ) {
+    return <Redirect to="/" nothrow />;
   }
   return <Loading />;
 }

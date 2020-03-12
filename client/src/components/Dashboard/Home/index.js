@@ -90,12 +90,13 @@ export default function index({ location }) {
   const [selectedEvent, setSelectedEvent] = useState();
   const events = useSelector(({ events }) => events);
   const theme = useContext(ThemeContext);
+  if (location.state.calendarName === undefined) {
+    location.state.calendarName = "";
+  }
   const calendars = [
     {
       id: 1,
       name:
-        location.state !== null &&
-        location.state &&
         location.state.calendarName.length > 0
           ? location.state.calendarName
           : "test"
@@ -114,11 +115,9 @@ export default function index({ location }) {
   };
   return (
     <HomeStyled data-testid="app-dashboard-home" theme={theme}>
-      {location.state != null &&
-        location.state.calendarName &&
-        location.state.calendarName.length > 0 && (
-          <WelcomeMessage calendarName={location.state.calendarName} />
-        )}
+      {location.state.calendarName.length > 0 && (
+        <WelcomeMessage calendarName={location.state.calendarName} />
+      )}
       <NewEventModal
         isVisible={isNewEventModalVisible}
         toggleCreateEventModal={setIsEventModalVisible}
