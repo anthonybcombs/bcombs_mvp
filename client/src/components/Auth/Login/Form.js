@@ -112,7 +112,6 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
         name="email"
         data-testid="app-login-input-email"
         placeholder="Email"
-        value={userDetails.email}
         onChange={({ target }) => {
           handleInputChange("email", target.value);
         }}
@@ -129,7 +128,6 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
         name="password"
         data-testid="app-login-input-password"
         placeholder="Password"
-        value={userDetails.password}
         onChange={({ target }) => {
           handleInputChange("password", target.value);
         }}
