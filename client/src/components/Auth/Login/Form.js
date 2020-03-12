@@ -77,6 +77,9 @@ const LoginFormStyled = styled.form`
   #socials > * {
     width: initial;
   }
+  p.error {
+    text-align: left !important;
+  }
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 50% 50%;
