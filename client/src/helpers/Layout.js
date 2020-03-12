@@ -12,7 +12,7 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link, Location } from "@reach/router";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 import Logo from "../images/logo1.png";
-import { requestLogout } from "../redux/actions/AUth";
+import { requestLogout } from "../redux/actions/Auth";
 const HeaderStyled = styled.header`
   display: grid;
   text-align: center;
