@@ -109,7 +109,7 @@ export default function createEventForm({
 }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onBlur"
+    reValidateMode: "onChange"
   });
   const schedule = [
     format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),

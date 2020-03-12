@@ -80,7 +80,7 @@ export default function CreateProfileForm({
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onBlur"
+    reValidateMode: "onChange"
   });
   const handleDateOfBirthElementTypeChange = value => {
     setDateOfBirthElementType(value);

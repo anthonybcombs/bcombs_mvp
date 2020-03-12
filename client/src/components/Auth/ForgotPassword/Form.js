@@ -47,7 +47,7 @@ const ForgotPasswordFormStyled = styled.form`
 export default function Form({ userDetails, onSubmit, handleInputChange }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onBlur"
+    reValidateMode: "onChange"
   });
   return (
     <ForgotPasswordFormStyled

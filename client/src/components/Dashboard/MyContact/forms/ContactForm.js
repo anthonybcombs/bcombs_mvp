@@ -77,7 +77,7 @@ export default function ContactForm({
 }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onBlur"
+    reValidateMode: "onChange"
   });
   const theme = useContext(ThemeContext);
   return (

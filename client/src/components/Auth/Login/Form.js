@@ -97,7 +97,7 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onBlur"
+    reValidateMode: "onChange"
   });
   return (
     <LoginFormStyled

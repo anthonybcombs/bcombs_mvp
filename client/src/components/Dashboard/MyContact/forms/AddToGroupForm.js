@@ -39,7 +39,7 @@ export default function AddToGroupForm({
 }) {
   const { handleSubmit } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onBlur"
+    reValidateMode: "onChange"
   });
   const theme = useContext(ThemeContext);
   return (

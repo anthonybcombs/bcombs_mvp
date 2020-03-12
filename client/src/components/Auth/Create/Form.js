@@ -78,6 +78,11 @@ const CreateUserFormStyled = styled.form`
     font-size: ${({ theme }) => theme.anchor.fontSize} !important;
     text-decoration: none;
   }
+  ul {
+    list-style: none !important;
+    margin: 0;
+    padding: 0;
+  }
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: repeat(3, 1fr);
@@ -95,7 +100,7 @@ export default function Form({
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onBlur"
+    reValidateMode: "onChange"
   });
   const { type } = userDetails;
   return (
@@ -125,7 +130,6 @@ export default function Form({
         name="username"
         data-testid="app-create-input-username"
         placeholder="Username"
-        value={userDetails.username}
         onChange={({ target }) => {
           handleInputChange("username", target.value);
         }}
@@ -134,7 +138,7 @@ export default function Form({
           minLength: 5,
           validate: {
             alphanumeric: value => {
-              var alphaExp = /^[a-zA-Z0-9_]{5,}[a-zA-Z]+[0-9]*$/;
+              const alphaExp = /^[a-zA-Z0-9_]{5,}[a-zA-Z]+[0-9]*$/;
               return alphaExp.test(value);
             }
           }
@@ -161,7 +165,6 @@ export default function Form({
         name="email"
         data-testid="app-create-input-email"
         placeholder="Email"
-        value={userDetails.email}
         onChange={({ target }) => {
           handleInputChange("email", target.value);
         }}
@@ -178,11 +181,35 @@ export default function Form({
         name="password"
         data-testid="app-create-input-password"
         placeholder="Password"
-        value={userDetails.password}
         onChange={({ target }) => {
           handleInputChange("password", target.value);
         }}
-        ref={register({ required: true, minLength: 5 })}
+        ref={register({
+          required: true,
+          minLength: 8,
+          validate: {
+            containsOneUpperCase: value => {
+              const oneUpperCaseRegex = /(?=.*[A-Z])/;
+              return oneUpperCaseRegex.test(value);
+            },
+            containsOneLowerCase: value => {
+              const oneLowerCaseRegex = /(?=.*[a-z])/;
+              return oneLowerCaseRegex.test(value);
+            },
+            containsOneNumber: value => {
+              const oneNumberRegex = /(?=.*\d)/;
+              return oneNumberRegex.test(value);
+            },
+            containsOneSpecialCharacter: value => {
+              const oneSpecialCharacterRegex = /(?=.*[@#$%^&+=])/;
+              return oneSpecialCharacterRegex.test(value);
+            }
+            // passwordRequirement: value => {
+            //   const passworRequirementRegex = /^(?=.{10,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/;
+            //   return passworRequirementRegex.test(value);
+            // }
+          }
+        })}
       />
       <ErrorMessage
         field={errors.password}
@@ -192,7 +219,27 @@ export default function Form({
       <ErrorMessage
         field={errors.password}
         errorType="minLength"
-        message="Password minimum length must be at least 5 characters."
+        message="Password minimum length must be at least 8 characters."
+      />
+      <ErrorMessage
+        field={errors.password}
+        errorType="containsOneUpperCase"
+        message={"Must contain atleast one upper case."}
+      />
+      <ErrorMessage
+        field={errors.password}
+        errorType="containsOneLowerCase"
+        message={"Must contain atleast one lower case."}
+      />
+      <ErrorMessage
+        field={errors.password}
+        errorType="containsOneNumber"
+        message={"Must contain atleast one number."}
+      />
+      <ErrorMessage
+        field={errors.password}
+        errorType="containsOneSpecialCharacter"
+        message={"Must contain atleast one special character."}
       />
       <input
         type="password"
@@ -220,7 +267,7 @@ export default function Form({
       <ErrorMessage
         field={errors.confirm_password}
         errorType="minLength"
-        message="Confirm password minimum length must be at least 5 characters."
+        message="Confirm password minimum length must be at least 8 characters."
       />
       <ErrorMessage
         field={errors.confirm_password}
