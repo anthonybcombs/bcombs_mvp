@@ -90,6 +90,9 @@ export default function index({ location }) {
   const [selectedEvent, setSelectedEvent] = useState();
   const events = useSelector(({ events }) => events);
   const theme = useContext(ThemeContext);
+  if (location.state === null) {
+    location.state = {};
+  }
   if (location.state.calendarName === undefined) {
     location.state.calendarName = "";
   }

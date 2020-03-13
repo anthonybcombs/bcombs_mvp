@@ -16,14 +16,13 @@ export default function protectedRoutes({ children }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [children]);
-  if (auth.status === "SIGNED_IN" && auth.hasOwnProperty("sub")) {
-    return <>{children}</>;
-  } else if (
-    (auth.status === "ANONYMOUS" &&
-      sessionStorage.getItem("access_token") === null) ||
-    !auth.email_verified
+  if (
+    sessionStorage.getItem("access_token") === null ||
+    auth.hasOwnProperty("error")
   ) {
     return <Redirect to="/" nothrow />;
+  } else if (auth.email_verified) {
+    return <>{children}</>;
   }
   return <Loading />;
 }

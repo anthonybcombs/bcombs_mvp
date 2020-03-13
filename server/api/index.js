@@ -64,57 +64,48 @@ router.post("/auth/authorize", async (req, res) => {
       res.send(JSON.stringify({ ...authData, ...userInfo }));
       return;
     }
-
     res.send(JSON.stringify(authData));
   } catch (error) {
     res.send("error");
   }
 });
 router.post("/users/add", async (req, res) => {
+  const db = makeDb();
   try {
     const user = req.body;
-    const db = makeDb();
-    const params = new URLSearchParams();
-    params.append("client_id", process.env.AUTH_CLIENT_ID);
-    params.append("username", user.username);
-    params.append("email", user.email);
-    params.append("password", user.password);
-    params.append("connection", "Username-Password-Authentication");
-
-    const signUpResponse = await fetch(
-      "https://bcombs.auth0.com/dbconnections/signup",
-      {
-        method: "POST",
-        body: params
-      }
-    );
-    const authData = await signUpResponse.json();
-    await db.query(
-      `INSERT INTO users(id,auth_id,type,email,verified,username) values(UUID_TO_BIN(UUID()),?,UUID_TO_BIN(?),?,?,?)`,
-      [
-        authData._id,
-        user.type.id,
-        user.email,
-        authData.email_verified,
-        user.username
-      ]
-    );
-    if (authData.hasOwnPropert("_id")) {
-      //send email
-      await fetch(
-        "https://bcombs.auth0.com/api/management/v2/jobs/post_verification_email",
+    let authData;
+    if (!user.hasOwnProperty("isSocial")) {
+      const params = new URLSearchParams();
+      params.append("client_id", process.env.AUTH_CLIENT_ID);
+      params.append("username", user.username);
+      params.append("email", user.email);
+      params.append("password", user.password);
+      params.append("connection", "Username-Password-Authentication");
+      const signUpResponse = await fetch(
+        "https://bcombs.auth0.com/dbconnections/signup",
         {
           method: "POST",
-          body: {
-            user_id: authData.user_id,
-            client_id: process.env.AUTH_CLIENT_ID
-          }
+          body: params
         }
       );
-      res.send("success");
-      return;
+      authData = await signUpResponse.json();
+    } else {
+      authData = user;
     }
-    res.send("error");
+    const rows = await db.query(
+      "SELECT BIN_TO_UUID(id) AS id FROM user_type WHERE name='USER'"
+    );
+    await db.query(
+      `INSERT IGNORE INTO users(id,auth_id,type,email) values(UUID_TO_BIN(UUID()),?,UUID_TO_BIN(?),?)`,
+      [
+        user.hasOwnProperty("isSocial")
+          ? authData.sub
+          : `auth0|${authData._id}`,
+        user.hasOwnProperty("isSocial") ? rows[0].id : user.type.id,
+        user.email
+      ]
+    );
+    res.send("success");
   } catch (error) {
     res.send("error");
   } finally {

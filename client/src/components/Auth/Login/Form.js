@@ -96,7 +96,11 @@ const LoginFormStyled = styled.form`
     }
   }
 `;
-export default function Form({ onSubmit, handleInputChange, userDetails }) {
+export default function Form({
+  onSubmit,
+  handleInputChange,
+  handleGoogleSignIn
+}) {
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
@@ -146,7 +150,13 @@ export default function Form({ onSubmit, handleInputChange, userDetails }) {
           <FontAwesomeIcon icon={faFacebook} fixedWidth size="2x" />
           <span> Sign In with Facebook</span>
         </button>
-        <button id="google" type="button">
+        <button
+          id="google"
+          type="button"
+          onClick={() => {
+            handleGoogleSignIn();
+          }}
+        >
           <FontAwesomeIcon icon={faGooglePlus} fixedWidth size="2x" />
           <span> Sign In with Google</span>
         </button>

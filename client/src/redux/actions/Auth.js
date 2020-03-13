@@ -77,16 +77,36 @@ export function* authenticated({ auth }) {
 
 export function* gotUserInfo() {
   try {
-    const userInfoData = yield call(getUserInfo);
-    if (!userInfoData.email_verified) {
-      authData.error = "email_not_verified";
-      authData.error_description = "Email is not verified.";
+    if (
+      sessionStorage.getItem("access_token") !== null &&
+      sessionStorage.getItem("token_type") !== null
+    ) {
+      const userInfoData = yield call(getUserInfo);
+      if (!userInfoData.email_verified) {
+        userInfoData.error = "email_not_verified";
+        userInfoData.error_description = "Email is not verified.";
+        sessionStorage.removeItem("access_token");
+        sessionStorage.removeItem("token_type");
+      }
+      yield put({
+        type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
+        payload: userInfoData
+      });
+    } else {
+      sessionStorage.removeItem("access_token");
+      sessionStorage.removeItem("token_type");
+      yield put({
+        type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
+        payload: {
+          error: "no_user",
+          error_description: ""
+        }
+      });
     }
-    yield put({
-      type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
-      payload: userInfoData
-    });
-  } catch (error) {}
+  } catch (error) {
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("token_type");
+  }
 }
 export function* loggedOut() {
   sessionStorage.removeItem("access_token");

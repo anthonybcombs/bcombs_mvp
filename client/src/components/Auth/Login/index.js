@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "@reach/router";
+import { webAuth } from ".././../../helpers/Auth0";
 import styled from "styled-components";
 import Logo from "../../../images/logo1.png";
 import Form from "./Form";
@@ -51,6 +52,13 @@ export default function index() {
   if (auth.hasOwnProperty("sub") && auth.email_verified) {
     navigate("/dashboard", { state: { calendarName: "" } }, { replace: true });
   }
+  const handleGoogleSignIn = () => {
+    webAuth.authorize({
+      connection: "google-oauth2",
+      responseType: "token",
+      redirectUri: "http://localhost:1234/sociallanding"
+    });
+  };
   return (
     <LoginStyled data-testid="app-login">
       <img data-testid="app-login-logo" src={Logo} alt="Bcombs Logo" />
@@ -58,8 +66,8 @@ export default function index() {
       {auth && auth.message && <p className="error">{auth.message}</p>}
       <Form
         onSubmit={handleFormSubmit}
-        userDetails={userDetails}
         handleInputChange={handleInputChange}
+        handleGoogleSignIn={handleGoogleSignIn}
       />
     </LoginStyled>
   );
