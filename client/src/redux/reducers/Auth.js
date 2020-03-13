@@ -10,6 +10,14 @@ export default function Auth(state = initialState.auth, action) {
       return {
         status: "AWAITING_AUTH_RESPONSE"
       };
+    case actionType.REQUEST_AUTH_REMOVE_MESSAGES:
+      return {
+        status: "AWAITING_AUTH_RESPONSE"
+      };
+    case actionType.REQUEST_CHANGE_PASSWORD:
+      return {
+        status: "AWAITING_AUTH_RESPONSE"
+      };
     case actionType.REQUEST_AUTH_COMPLETED:
       return {
         ...state,
@@ -19,7 +27,8 @@ export default function Auth(state = initialState.auth, action) {
           : "SIGNED_IN",
         message: action.payload.hasOwnProperty("error")
           ? action.payload.error_description
-          : ""
+          : "",
+        messageType: action.payload.hasOwnProperty("error") ? "error" : "info"
       };
     case actionType.REQUEST_AUTH_USER_INFO_COMPLETED:
       return {
@@ -30,11 +39,26 @@ export default function Auth(state = initialState.auth, action) {
           : "SIGNED_IN",
         message: action.payload.hasOwnProperty("error")
           ? action.payload.error_description
-          : ""
+          : "",
+        messageType: action.payload.hasOwnProperty("error") ? "error" : "info"
+      };
+    case actionType.REQUEST_CHANGE_PASSWORD_COMPLETED:
+      return {
+        status: "REQUESTED_PASSWORD_CHANGE",
+        messageType: action.payload.messageType,
+        message: action.payload.message
       };
     case actionType.REQUEST_AUTH_LOGOUT_COMPLETED:
       return {
         status: "ANONYMOUS"
+      };
+    case actionType.REQUEST_AUTH_REMOVE_MESSAGES_COMPLETED:
+      return {
+        ...state,
+        status: "ANONYMOUS",
+        messageType: "",
+        message: "",
+        error: ""
       };
     default:
       return state;

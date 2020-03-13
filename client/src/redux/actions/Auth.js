@@ -43,6 +43,27 @@ const getUserInfo = () => {
     }
   });
 };
+const requestPasswordChangeFromServer = user => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await fetch(`${process.env.API_HOST}/api/auth/changepassword`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(...user)
+      });
+      resolve("success");
+    } catch (error) {
+      reject("error");
+    }
+  });
+};
+export const requestRemoveAuthMessages = () => {
+  return {
+    type: actionType.REQUEST_AUTH_REMOVE_MESSAGES
+  };
+};
 export const requestAuth = auth => {
   return {
     type: actionType.REQUEST_AUTH,
@@ -59,6 +80,9 @@ export const requestLogout = () => {
     type: actionType.REQUEST_AUTH_LOGOUT
   };
 };
+export const requestPasswordChange = user => {
+  return { type: actionType.REQUEST_CHANGE_PASSWORD, user };
+};
 export function* authenticated({ auth }) {
   try {
     const authData = yield call(authentecating, [auth]);
@@ -68,6 +92,7 @@ export function* authenticated({ auth }) {
       sessionStorage.setItem("id_token", authData.id_token);
       if (!authData.email_verified) {
         authData.error = "email_not_verified";
+        authData.messageType = "error";
         authData.error_description = "Email is not verified.";
       }
     }
@@ -84,6 +109,7 @@ export function* gotUserInfo() {
       const userInfoData = yield call(getUserInfo);
       if (!userInfoData.email_verified) {
         userInfoData.error = "email_not_verified";
+        userInfoData.messageType = "error";
         userInfoData.error_description = "Email is not verified.";
         sessionStorage.removeItem("access_token");
         sessionStorage.removeItem("token_type");
@@ -99,6 +125,7 @@ export function* gotUserInfo() {
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
         payload: {
           error: "no_user",
+          messageType: "error",
           error_description: ""
         }
       });
@@ -113,4 +140,17 @@ export function* loggedOut() {
   sessionStorage.removeItem("token_type");
   sessionStorage.removeItem("id_token");
   yield put({ type: actionType.REQUEST_AUTH_LOGOUT_COMPLETED });
+}
+
+export function* requestedPasswordChange({ user }) {
+  yield call(requestPasswordChangeFromServer, [user]);
+  yield put({
+    type: actionType.REQUEST_CHANGE_PASSWORD_COMPLETED,
+    payload: { messageType: "info", message: "Email has ben sent!" }
+  });
+}
+export function* removedAuthMessages() {
+  yield put({
+    type: actionType.REQUEST_AUTH_REMOVE_MESSAGES_COMPLETED
+  });
 }

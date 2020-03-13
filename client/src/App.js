@@ -4,9 +4,8 @@ import { useDispatch } from "react-redux";
 import Layout from "./helpers/Layout";
 import Loadable from "react-loadable";
 import Loading from "./helpers/Loading.js";
-import SocialLoginLanding from "./helpers/SocialLogin.js";
 import { requestUserTypes } from "./redux/actions/UserTypes";
-import { requestUserInfo } from "./redux/actions/Auth";
+import SocialLoginLanding from "./helpers/SocialLogin.js";
 
 const AsycDashboard = Loadable({
   loader: () => import("./components/Dashboard/"),

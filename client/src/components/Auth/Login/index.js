@@ -70,7 +70,9 @@ export default function index() {
     <LoginStyled data-testid="app-login">
       <img data-testid="app-login-logo" src={Logo} alt="Bcombs Logo" />
       <h2 data-testid="app-login-header">Login To Your Account</h2>
-      {auth && auth.message && <p className="error">{auth.message}</p>}
+      {auth && auth.message && (
+        <p className={`${auth.messageType}`}>{auth.message}</p>
+      )}
       <Form
         onSubmit={handleFormSubmit}
         handleInputChange={handleInputChange}

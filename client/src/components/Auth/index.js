@@ -1,9 +1,12 @@
 import React, { useEffect } from "react";
 import { Redirect } from "@reach/router";
 import { useSelector, useDispatch } from "react-redux";
-import { requestUserInfo } from "../../redux/actions/Auth";
+import {
+  requestUserInfo,
+  requestRemoveAuthMessages
+} from "../../redux/actions/Auth";
 import Loading from "../../helpers/Loading";
-export default function index({ children }) {
+export default function index({ children, location }) {
   const { auth } = useSelector(({ auth }) => {
     return { auth };
   });
@@ -11,6 +14,9 @@ export default function index({ children }) {
   useEffect(() => {
     dispatch(requestUserInfo());
   }, []);
+  useEffect(() => {
+    dispatch(requestRemoveAuthMessages());
+  }, [location]);
   if (auth.status === "AWAITING_AUTH_RESPONSE") {
     return <Loading />;
   } else if (

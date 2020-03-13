@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { requestPasswordChange } from "../../../redux/actions/Auth";
 import Form from "./Form";
 const ForgotPasswordStyled = styled.div`
   display: block;
@@ -20,6 +22,10 @@ const ForgotPasswordStyled = styled.div`
     text-align: center;
     font-weight: normal;
   }
+  p.info {
+    color: #f26e21;
+    text-align: center;
+  }
   @media (min-width: 600px) {
     h2 {
       font-weight: bold;
@@ -30,21 +36,24 @@ export default function index() {
   const [userDetails, setUserDetails] = useState({
     email: ""
   });
+  const { auth } = useSelector(({ auth }) => {
+    return { auth };
+  });
+  const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
   const handleFormSubmit = values => {
-    console.log(values);
-    //future backend code
+    dispatch(requestPasswordChange(userDetails));
+    setUserDetails({ email: "" });
   };
   return (
     <ForgotPasswordStyled data-testid="app-forgot-password">
+      {auth.message && auth.message.length > 0 && (
+        <p className={`${auth.messageType}`}>{auth.message}</p>
+      )}
       <h2 data-testid="app-forgot-password-header">Forgot Password</h2>
-      <Form
-        userDetails={userDetails}
-        onSubmit={handleFormSubmit}
-        handleInputChange={handleInputChange}
-      />
+      <Form onSubmit={handleFormSubmit} handleInputChange={handleInputChange} />
     </ForgotPasswordStyled>
   );
 }

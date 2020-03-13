@@ -44,7 +44,7 @@ const ForgotPasswordFormStyled = styled.form`
     border: none;
   }
 `;
-export default function Form({ userDetails, onSubmit, handleInputChange }) {
+export default function Form({ onSubmit, handleInputChange }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
@@ -60,7 +60,6 @@ export default function Form({ userDetails, onSubmit, handleInputChange }) {
           data-testid="app-forgot-password-input-email"
           type="email"
           name="email"
-          value={userDetails.email}
           placeholder="Email"
           onChange={({ target }) => {
             handleInputChange("email", target.value);

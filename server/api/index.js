@@ -69,6 +69,26 @@ router.post("/auth/authorize", async (req, res) => {
     res.send("error");
   }
 });
+router.post("/auth/changepassword", async (req, res) => {
+  try {
+    const user = req.body;
+    const params = new URLSearchParams();
+    params.append("client_id", process.env.AUTH_CLIENT_ID);
+    params.append("email", user.email);
+    params.append("connection", "Username-Password-Authentication");
+    const changePasswordResponse = await fetch(
+      "https://bcombs.auth0.com/dbconnections/change_password",
+      {
+        method: "POST",
+        body: params
+      }
+    );
+    res.send("success");
+  } catch (error) {
+    console.log(error);
+    res.send("error");
+  }
+});
 router.post("/users/add", async (req, res) => {
   const db = makeDb();
   try {
