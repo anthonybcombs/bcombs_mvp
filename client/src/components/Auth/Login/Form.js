@@ -99,7 +99,8 @@ const LoginFormStyled = styled.form`
 export default function Form({
   onSubmit,
   handleInputChange,
-  handleGoogleSignIn
+  handleGoogleSignIn,
+  handleFacebookSignIn
 }) {
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm({
@@ -146,7 +147,13 @@ export default function Form({
         message="Password is required."
       />
       <div id="socials" className="grid">
-        <button id="facebook" type="button">
+        <button
+          id="facebook"
+          type="button"
+          onClick={() => {
+            handleFacebookSignIn();
+          }}
+        >
           <FontAwesomeIcon icon={faFacebook} fixedWidth size="2x" />
           <span> Sign In with Facebook</span>
         </button>

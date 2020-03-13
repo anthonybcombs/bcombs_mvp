@@ -52,6 +52,13 @@ export default function index() {
   if (auth.hasOwnProperty("sub") && auth.email_verified) {
     navigate("/dashboard", { state: { calendarName: "" } }, { replace: true });
   }
+  const handleFacebookSignIn = () => {
+    webAuth.authorize({
+      connection: "facebook",
+      responseType: "token",
+      redirectUri: `${process.env.HOST}/sociallanding`
+    });
+  };
   const handleGoogleSignIn = () => {
     webAuth.authorize({
       connection: "google-oauth2",
@@ -68,6 +75,7 @@ export default function index() {
         onSubmit={handleFormSubmit}
         handleInputChange={handleInputChange}
         handleGoogleSignIn={handleGoogleSignIn}
+        handleFacebookSignIn={handleFacebookSignIn}
       />
     </LoginStyled>
   );
