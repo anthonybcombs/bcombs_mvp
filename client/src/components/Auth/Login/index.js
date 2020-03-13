@@ -56,7 +56,7 @@ export default function index() {
     webAuth.authorize({
       connection: "google-oauth2",
       responseType: "token",
-      redirectUri: "http://localhost:1234/sociallanding"
+      redirectUri: `${process.env.API_HOST}/sociallanding`
     });
   };
   return (
