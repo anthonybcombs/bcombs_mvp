@@ -97,7 +97,6 @@ export default function CreateProfileForm({
         data-testid="app-profile-input-firstname"
         name="firstname"
         placeholder="First name"
-        value={details.firstname}
         onChange={({ target }) => {
           handleInputChange("firstname", target.value);
         }}
@@ -112,7 +111,6 @@ export default function CreateProfileForm({
         data-testid="app-profile-input-lastname"
         name="lastname"
         placeholder="Last name"
-        value={details.lastname}
         onChange={({ target }) => {
           handleInputChange("lastname", target.value);
         }}
@@ -126,7 +124,6 @@ export default function CreateProfileForm({
       <select
         data-testid="app-profile-select-family-relationship"
         name="familyrelationship"
-        value={details.familyrelationship}
         onChange={({ target }) => {
           handleInputChange("familyrelationship", target.value);
         }}
@@ -149,7 +146,6 @@ export default function CreateProfileForm({
           <select
             data-testid="app-profile-select-gender"
             name="gender"
-            value={details.gender}
             onChange={({ target }) => {
               handleInputChange("gender", target.value);
             }}
@@ -173,7 +169,6 @@ export default function CreateProfileForm({
             name="zipcode"
             type="number"
             placeholder="Zip code"
-            value={details.zipcode}
             onChange={({ target }) => {
               handleInputChange("zipcode", target.value);
             }}
@@ -195,7 +190,6 @@ export default function CreateProfileForm({
             onBlur={() => {
               handleDateOfBirthElementTypeChange("text");
             }}
-            value={details.dateofbirth}
             onChange={({ target }) => {
               handleInputChange("dateofbirth", target.value);
             }}

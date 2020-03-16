@@ -8,11 +8,10 @@ describe("Login Form", () => {
   let userDetails = { email: "bon@yahoo.com", password: "bontest" };
   const handleInputChange = jest.fn();
   const onSubmit = jest.fn();
-  const component = (userDetails, onSubmit, handleInputChange) => (
+  const component = (onSubmit, handleInputChange) => (
     <CreateTestComponent>
       <Form
         method="POST"
-        userDetails={userDetails}
         onSubmit={onSubmit}
         handleInputChange={handleInputChange}
       />
@@ -24,7 +23,6 @@ describe("Login Form", () => {
         const { getByTestId } = render(
           component(userDetails, onSubmit, handleInputChange)
         );
-
         const loginForm = getByTestId("app-login-form");
         await act(async () => {
           fireEvent.submit(loginForm);
@@ -32,9 +30,8 @@ describe("Login Form", () => {
         expect(onSubmit).toHaveBeenCalled();
       });
       test("validation for with empty fields", async () => {
-        userDetails = { email: "", password: "" };
         const { getByTestId, findByText } = render(
-          component(userDetails, onSubmit, handleInputChange)
+          component(onSubmit, handleInputChange)
         );
         const loginForm = getByTestId("app-login-form");
         fireEvent.submit(loginForm);

@@ -25,10 +25,15 @@ const LoginStyled = styled.div`
     text-align: center;
     font-weight: normal;
   }
-  p.error {
-    color: red;
+  p.info {
     text-align: center;
     font-size: 1.3em;
+    color: #f26e21;
+  }
+  p.error {
+    text-align: center;
+    font-size: 1.3em;
+    color: red;
   }
   @media (min-width: 600px) {
     h2 {
@@ -38,8 +43,8 @@ const LoginStyled = styled.div`
 `;
 export default function index() {
   const [userDetails, setUserDetails] = useState({ email: "", password: "" });
-  const { auth } = useSelector(({ auth }) => {
-    return { auth };
+  const { auth, status } = useSelector(({ auth, status }) => {
+    return { auth, status };
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -69,10 +74,10 @@ export default function index() {
   return (
     <LoginStyled data-testid="app-login">
       <img data-testid="app-login-logo" src={Logo} alt="Bcombs Logo" />
-      <h2 data-testid="app-login-header">Login To Your Account</h2>
-      {auth && auth.message && (
-        <p className={`${auth.messageType}`}>{auth.message}</p>
+      {status && status.message && (
+        <p className={`${status.messageType}`}>{status.message}</p>
       )}
+      <h2 data-testid="app-login-header">Login To Your Account</h2>
       <Form
         onSubmit={handleFormSubmit}
         handleInputChange={handleInputChange}

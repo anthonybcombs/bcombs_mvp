@@ -5,6 +5,6 @@ export const webAuth = new auth0.WebAuth({
 });
 export const managementAUth = token =>
   new auth0.Management({
-    domain: "bcombs.auth0.com/api/v2/",
+    domain: "bcombs.auth0.com",
     token
   });

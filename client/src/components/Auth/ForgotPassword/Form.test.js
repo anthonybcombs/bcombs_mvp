@@ -47,16 +47,8 @@ describe("Forgot Password Form", () => {
         expect(onSubmit).toHaveBeenCalled();
       });
       test("validation form with empty fields", async () => {
-        userDetails = {
-          email: ""
-        };
         const { findByText, getByTestId } = render(
-          component(
-            userDetails,
-            onSubmit,
-            handleInputChange,
-            handleChangeUserType
-          )
+          component(onSubmit, handleInputChange, handleChangeUserType)
         );
         const forgotPasswordForm = getByTestId("app-forgot-password-form");
         fireEvent.submit(forgotPasswordForm);

@@ -20,6 +20,7 @@ import { addedGroup, updatedGroup } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
 import { addedUser } from "../actions//Users";
 import { gotUserTypes } from "../actions/UserTypes";
+import { requestedStatus, removedStatus } from "../actions/Status";
 import reducer from "../reducers";
 function* rootSaga() {
   //AUTH
@@ -27,10 +28,6 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_AUTH_USER_INFO, gotUserInfo);
   yield takeLatest(actionType.REQUEST_AUTH_LOGOUT, loggedOut);
   yield takeLatest(actionType.REQUEST_CHANGE_PASSWORD, requestedPasswordChange);
-  yield takeLatest(
-    actionType.REQUEST_AUTH_REMOVE_MESSAGES,
-    removedAuthMessages
-  );
   //CALENDAR
   yield takeLatest(actionType.REQUEST_ADD_CALENDAR, addCalendar);
   //EVENTS
@@ -50,6 +47,9 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ADD_USER, addedUser);
   //USER TYPES
   yield takeLatest(actionType.REQUEST_USER_TYPES, gotUserTypes);
+  //STATUS
+  yield takeLatest(actionType.REQUEST_STATUS, requestedStatus);
+  yield takeLatest(actionType.REQUEST_REMOVE_STATUS, removedStatus);
 }
 const sagaMiddleware = createSagaMiddleware();
 

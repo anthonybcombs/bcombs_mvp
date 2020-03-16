@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Redirect } from "@reach/router";
 import styled from "styled-components";
 import Form from "./Form";
 import { requestAddUser } from "../../../redux/actions/Users";
@@ -22,6 +23,15 @@ const CreateUserStyled = styled.div`
     text-align: center;
     font-weight: normal;
   }
+  p.error {
+    text-align: center;
+    font-size: 1.3em;
+  }
+  p.info {
+    text-align: center;
+    font-size: 1.3em;
+    color: #f26e21;
+  }
   @media (min-width: 600px) {
     h2 {
       font-weight: bold;
@@ -36,8 +46,8 @@ export default function index({ navigate }) {
     password: "",
     confirm_password: ""
   });
-  const { userTypes } = useSelector(({ userTypes }) => {
-    return { userTypes };
+  const { userTypes, status } = useSelector(({ userTypes, status }) => {
+    return { userTypes, status };
   });
   const dispatch = useDispatch();
   useEffect(() => {
@@ -51,10 +61,19 @@ export default function index({ navigate }) {
   };
   const handleFormSubmit = values => {
     dispatch(requestAddUser(userDetails));
-    navigate("/");
   };
+  // if (status.requestStatus === "COMPLETED" && status.messageType !== "error") {
+  //   return (
+  //     <>
+  //       <Redirect to="/" />;
+  //     </>
+  //   );
+  // }
   return (
     <CreateUserStyled data-testid="app-create-user">
+      {status && status.message && (
+        <p className={`${status.messageType}`}>{status.message}</p>
+      )}
       <h2>Create my account ({userDetails.type.name.toUpperCase()})</h2>
       <Form
         onSubmit={handleFormSubmit}

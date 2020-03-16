@@ -59,11 +59,6 @@ const requestPasswordChangeFromServer = user => {
     }
   });
 };
-export const requestRemoveAuthMessages = () => {
-  return {
-    type: actionType.REQUEST_AUTH_REMOVE_MESSAGES
-  };
-};
 export const requestAuth = auth => {
   return {
     type: actionType.REQUEST_AUTH,
@@ -96,7 +91,17 @@ export function* authenticated({ auth }) {
         authData.error_description = "Email is not verified.";
       }
     }
+
     yield put({ type: actionType.REQUEST_AUTH_COMPLETED, payload: authData });
+    yield put({
+      type: actionType.REQUEST_STATUS_COMPLETED,
+      payload: {
+        message: authData.hasOwnProperty("error")
+          ? authData.error_description
+          : "",
+        messageType: authData.hasOwnProperty("error") ? "error" : "info"
+      }
+    });
   } catch (error) {}
 }
 
@@ -129,6 +134,13 @@ export function* gotUserInfo() {
           error_description: ""
         }
       });
+      yield put({
+        type: actionType.REQUEST_STATUS_COMPLETED,
+        payload: {
+          messageType: "error",
+          error_description: "Email is not verified."
+        }
+      });
     }
   } catch (error) {
     sessionStorage.removeItem("access_token");
@@ -145,12 +157,10 @@ export function* loggedOut() {
 export function* requestedPasswordChange({ user }) {
   yield call(requestPasswordChangeFromServer, [user]);
   yield put({
-    type: actionType.REQUEST_CHANGE_PASSWORD_COMPLETED,
-    payload: { messageType: "info", message: "Email has ben sent!" }
+    type: actionType.REQUEST_CHANGE_PASSWORD_COMPLETED
   });
-}
-export function* removedAuthMessages() {
   yield put({
-    type: actionType.REQUEST_AUTH_REMOVE_MESSAGES_COMPLETED
+    type: actionType.REQUEST_STATUS_COMPLETED,
+    payload: { messageType: "info", message: "Email has ben sent!" }
   });
 }

@@ -75,7 +75,6 @@ export default function CreateCalendarForm({
         data-testid="app-profile-input-calendar-name"
         placeholder="Calendar name"
         name="name"
-        value={details.name}
         onChange={({ target }) => {
           handleInputChange("name", target.value);
         }}

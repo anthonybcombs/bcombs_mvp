@@ -72,8 +72,8 @@ export default function App() {
               <AsyncDashboardMyEvents path="myevents" />
               <AsyncDashboardMyProfle path="myprofile" />
               <AyncDashboardMyContacts path="mycontacts" />
+              <AsyncProfile path="createprofile" />
             </AsycDashboard>
-            <AsyncProfile path="profile" />
             <SocialLoginLanding path="sociallanding" />
           </Router>
         </div>

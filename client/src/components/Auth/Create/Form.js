@@ -85,7 +85,7 @@ const CreateUserFormStyled = styled.form`
   }
   @media (min-width: 600px) {
     .grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       grid-gap: 1%;
     }
   }
@@ -247,13 +247,12 @@ export default function Form({
         name="confirm_password"
         data-testid="app-create-input-confirm-password"
         placeholder="Confirm Password"
-        value={userDetails.confirm_password}
         onChange={({ target }) => {
           handleInputChange("confirm_password", target.value);
         }}
         ref={register({
           required: true,
-          minLength: 5,
+          minLength: 8,
           validate: {
             sameConfirmPassword: value => value === password.value
           }

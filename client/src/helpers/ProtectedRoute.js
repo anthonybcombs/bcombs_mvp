@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { Redirect } from "@reach/router";
+import { Redirect, useLocation } from "@reach/router";
+
 import { useSelector, useDispatch } from "react-redux";
 import { requestUserInfo } from "../redux/actions/Auth";
 import Loading from "../helpers/Loading";
@@ -10,6 +11,7 @@ export default function protectedRoutes({ children }) {
     };
   });
   const dispatch = useDispatch();
+  const location = useLocation();
   useEffect(() => {
     dispatch(requestUserInfo());
   }, []);
@@ -22,6 +24,9 @@ export default function protectedRoutes({ children }) {
   ) {
     return <Redirect to="/" nothrow />;
   } else if (auth.email_verified) {
+    if (!location.pathname.includes("createprofile") && !auth.isProfileFilled) {
+      return <Redirect to="/dashboard/createprofile" />;
+    }
     return <>{children}</>;
   }
   return <Loading />;
