@@ -8,7 +8,7 @@ import groups from "./Groups";
 import contacts from "./Contacts";
 import relatives from "./Relatives";
 import userTypes from "./UserTypes";
-import status from "./status";
+import status from "./Status";
 const reducer = combineReducers({
   auth,
   events,
