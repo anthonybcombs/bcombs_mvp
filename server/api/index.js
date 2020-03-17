@@ -12,8 +12,9 @@ const isUserExist = async user => {
     );
     if (rows[0].emailCount > 0) {
       result = true;
+    } else {
+      result = false;
     }
-    result = false;
   } catch (error) {
     console.log(error);
   } finally {
@@ -184,7 +185,8 @@ router.post("/users/add", async (req, res) => {
       res.send({
         error: "user exist",
         messageType: "error",
-        message: "User already exist."
+        message:
+          "User already registered, please use different username and email address."
       });
       return;
     }
@@ -221,7 +223,11 @@ router.post("/users/add", async (req, res) => {
         user.username
       ]
     );
-    res.send({ error: "", messageType: "info", message: "User Added!" });
+    res.send({
+      error: "",
+      messageType: "info",
+      message: `User created! We sent confirmation email to ${user.email}.`
+    });
   } catch (error) {
     res.send({
       error: "there error in requesting add user endpoint.",
