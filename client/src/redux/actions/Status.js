@@ -1,4 +1,4 @@
-import * as actionType from "./constant";
+import * as actionType from "./Constant";
 import { put } from "redux-saga/effects";
 export const requestStatus = status => {
   return {
