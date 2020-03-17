@@ -25,7 +25,10 @@ const getUserFromDatabase = async email => {
   const db = makeDb();
   let result;
   try {
-    const rows = await db.query(`SELECT * from users where email=?`, [email]);
+    const rows = await db.query(
+      `SELECT BIN_TO_UUID(id) as id,email,is_profile_filled,BIN_TO_UUID(type) from users where email=?`,
+      [email]
+    );
     result = rows[0];
   } catch (error) {
     console.log(error);
@@ -111,18 +114,66 @@ router.post("/auth/authorize", async (req, res) => {
 });
 router.post("/auth/changepassword", async (req, res) => {
   try {
-    const user = req.body;
-    const params = new URLSearchParams();
-    params.append("client_id", process.env.AUTH_CLIENT_ID);
-    params.append("email", user.email);
-    params.append("connection", "Username-Password-Authentication");
-    await fetch("https://bcombs.auth0.com/dbconnections/change_password", {
-      method: "POST",
-      body: params
+    const reqData = req.body;
+    const user = await getUserFromDatabase(reqData.email);
+    if (user.hasOwnProperty("email")) {
+      const params = new URLSearchParams();
+      params.append("client_id", process.env.AUTH_CLIENT_ID);
+      params.append("email", user.email);
+      params.append("connection", "Username-Password-Authentication");
+      await fetch("https://bcombs.auth0.com/dbconnections/change_password", {
+        method: "POST",
+        body: params
+      });
+      res.send({ messageType: "info", message: "Email has been send!" });
+      return;
+    }
+    res.send({
+      messageType: "error",
+      message: "Email address does not exist."
     });
-    res.send("success");
   } catch (error) {
-    res.send("error");
+    res.send({
+      messageType: "error",
+      message: "Email address does not exist."
+    });
+  }
+});
+router.post("/users/update", async (req, res) => {
+  const db = makeDb();
+  try {
+    const {
+      personalInfo,
+      familyMembers,
+      members,
+      calendarInfo,
+      email
+    } = req.body;
+    const { id } = await getUserFromDatabase(email);
+    await db.query(
+      "INSERT INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?)",
+      [
+        id,
+        personalInfo.firstname,
+        personalInfo.lastname,
+        personalInfo.familyrelationship,
+        personalInfo.gender,
+        personalInfo.zipcode,
+        personalInfo.dateofbirth
+      ]
+    );
+    await db.query(
+      "UPDATE users SET is_profile_filled=1 where id=UUID_TO_BIN(?)",
+      [id]
+    );
+    await db.query(
+      "INSERT INTO user_calendars (id,user_id,image,name) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?)",
+      [id, "", calendarInfo.name]
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
   }
 });
 router.post("/users/add", async (req, res) => {

@@ -26,6 +26,11 @@ export default function protectedRoutes({ children }) {
   } else if (auth.email_verified) {
     if (!location.pathname.includes("createprofile") && !auth.isProfileFilled) {
       return <Redirect to="/dashboard/createprofile" />;
+    } else if (
+      location.pathname.includes("createprofile") &&
+      auth.isProfileFilled
+    ) {
+      return <Redirect to="/dashboard" />;
     }
     return <>{children}</>;
   }

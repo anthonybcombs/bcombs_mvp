@@ -22,9 +22,15 @@ const ForgotPasswordStyled = styled.div`
     text-align: center;
     font-weight: normal;
   }
+  p.error {
+    color: red;
+    text-align: center;
+    font-size: 1.3em;
+  }
   p.info {
     color: #f26e21;
     text-align: center;
+    font-size: 1.3em;
   }
   @media (min-width: 600px) {
     h2 {
@@ -36,8 +42,8 @@ export default function index() {
   const [userDetails, setUserDetails] = useState({
     email: ""
   });
-  const { auth } = useSelector(({ auth }) => {
-    return { auth };
+  const { status } = useSelector(({ status }) => {
+    return { status };
   });
   const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
@@ -45,12 +51,11 @@ export default function index() {
   };
   const handleFormSubmit = values => {
     dispatch(requestPasswordChange(userDetails));
-    setUserDetails({ email: "" });
   };
   return (
     <ForgotPasswordStyled data-testid="app-forgot-password">
-      {auth.message && auth.message.length > 0 && (
-        <p className={`${auth.messageType}`}>{auth.message}</p>
+      {status.message && status.message.length > 0 && (
+        <p className={`${status.messageType}`}>{status.message}</p>
       )}
       <h2 data-testid="app-forgot-password-header">Forgot Password</h2>
       <Form onSubmit={handleFormSubmit} handleInputChange={handleInputChange} />

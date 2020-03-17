@@ -8,23 +8,25 @@ const CreateFamilyModalStyled = styled.div`
   }
 `;
 export default function index({
-  setCurrentPage,
   visible = true,
-  toggleCreateFamilyModal
+  toggleCreateFamilyModal,
+  handleOAddFamilyMember
 }) {
   const [familyMemberDetails, setFamilyMemberDetails] = useState({
     firstname: "",
     lastname: "",
-    gender: "",
-    familyrelationship: "",
+    gender: "male",
+    familyrelationship: "father",
     zipcode: "",
-    dateofbirth: ""
+    dateofbirth: "",
+    type: "Family Member"
   });
   const handleInputChange = (id, value) => {
     setFamilyMemberDetails({ ...familyMemberDetails, [id]: value });
   };
   const handleFormSubmit = values => {
-    setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
+    handleOAddFamilyMember(familyMemberDetails);
+    toggleCreateFamilyModal(false);
   };
   if (!visible) {
     return <></>;

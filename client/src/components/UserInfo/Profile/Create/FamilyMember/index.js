@@ -42,6 +42,13 @@ const CreateFamilyMemberStyled = styled.div`
     border-radius: 40px;
     box-shadow: none;
   }
+  #save {
+    margin: 0 auto;
+    padding: 10px;
+    width: 100%;
+    border-radius: 40px;
+    box-shadow: none;
+  }
   .grid button {
     border-radius: 52% !important;
     padding: 10px;
@@ -85,23 +92,28 @@ const CreateFamilyMemberStyled = styled.div`
     h2 {
       font-weight: bold;
     }
-    #skip {
+    #skip,
+    #save {
       width: ${({ theme }) => theme.button.width.primary};
       margin-top: 8em;
     }
   }
 `;
-export default function index({ setCurrentPage }) {
-  const [familyMembers, setFamilyMembers] = useState([
-    { name: "Molly Mom", type: "Family Manager" }
-  ]);
+export default function index({ setCurrentPage, setProfileDetails }) {
+  const [familyMembers, setFamilyMembers] = useState([]);
   const [createFamilyMemberModal, setCreateFamilyMemberModal] = useState(false);
   const theme = useContext(ThemeContext);
   const toggleCreateFamilyModal = () => {
     setCreateFamilyMemberModal(!createFamilyMemberModal);
   };
-  const handleOncliSkipButton = () => {
+  const handleNavButton = () => {
     setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
+    setProfileDetails(prevProfileDetails => {
+      return { ...prevProfileDetails, familyMembers };
+    });
+  };
+  const handleOAddFamilyMember = newFamilyMember => {
+    setFamilyMembers([...familyMembers, newFamilyMember]);
   };
   return (
     <CreateFamilyMemberStyled
@@ -111,6 +123,7 @@ export default function index({ setCurrentPage }) {
       <CreateFamilyModal
         visible={createFamilyMemberModal}
         toggleCreateFamilyModal={toggleCreateFamilyModal}
+        handleOAddFamilyMember={handleOAddFamilyMember}
       />
       <h2 data-testid="app-profile-family-member-header">Add Family Members</h2>
       <h3 data-testid="app-profile-family-member-sub-header">
@@ -129,7 +142,9 @@ export default function index({ setCurrentPage }) {
                   />
                 </button>
                 <p>
-                  <span>{family.name}</span>
+                  <span>
+                    {family.firstname} {family.lastname}
+                  </span>
                   <span>{family.type}</span>
                 </p>
               </div>
@@ -149,13 +164,19 @@ export default function index({ setCurrentPage }) {
           </div>
         </div>
       </div>
-      <button
-        data-testid="app-profile-family-member-skip-button"
-        id="skip"
-        onClick={handleOncliSkipButton}
-      >
-        Skip
-      </button>
+      {familyMembers.length > 0 ? (
+        <button id="save" onClick={handleNavButton}>
+          Continue
+        </button>
+      ) : (
+        <button
+          data-testid="app-profile-family-member-skip-button"
+          id="skip"
+          onClick={handleNavButton}
+        >
+          Skip
+        </button>
+      )}
     </CreateFamilyMemberStyled>
   );
 }

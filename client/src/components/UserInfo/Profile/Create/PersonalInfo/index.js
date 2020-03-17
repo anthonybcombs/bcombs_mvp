@@ -26,29 +26,28 @@ const CreateProfileStyled = styled.div`
     }
   }
 `;
-export default function index({ setCurrentPage }) {
-  const [profileDetails, setProfileDetails] = useState({
+export default function index({ setCurrentPage, setProfileDetails }) {
+  const [personalInfo, setPersonalInfo] = useState({
     firstname: "",
     lastname: "",
-    gender: "",
-    familyrelationship: "",
+    gender: "male",
+    familyrelationship: "father",
     zipcode: "",
     dateofbirth: ""
   });
   const handleInputChange = (id, value) => {
-    setProfileDetails({ ...profileDetails, [id]: value });
+    setPersonalInfo({ ...personalInfo, [id]: value });
   };
   const handleFormSubmit = values => {
     setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
+    setProfileDetails(prevPersonalDetails => {
+      return { ...prevPersonalDetails, personalInfo: personalInfo };
+    });
   };
   return (
     <CreateProfileStyled data-testid="app-profile">
       <h2>Let's get started!</h2>
-      <Form
-        details={profileDetails}
-        onSubmit={handleFormSubmit}
-        handleInputChange={handleInputChange}
-      />
+      <Form onSubmit={handleFormSubmit} handleInputChange={handleInputChange} />
     </CreateProfileStyled>
   );
 }

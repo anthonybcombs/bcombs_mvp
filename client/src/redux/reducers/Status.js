@@ -10,6 +10,10 @@ export default function Auth(state = initialState.auth, action) {
       return {
         requestStatus: "AWAITING_AUTH_RESPONSE"
       };
+    case actionType.REQUEST_CHANGE_PASSWORD:
+      return {
+        requestStatus: "AWAITING_AUTH_RESPONSE"
+      };
     case actionType.REQUEST_ADD_USER:
       return {
         requestStatus: "AWAITING_AUTH_RESPONSE"

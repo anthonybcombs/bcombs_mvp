@@ -32,9 +32,7 @@ export default function Auth(state = initialState.auth, action) {
       };
     case actionType.REQUEST_CHANGE_PASSWORD_COMPLETED:
       return {
-        status: "REQUESTED_PASSWORD_CHANGE",
-        messageType: action.payload.messageType,
-        message: action.payload.message
+        status: "REQUESTED_PASSWORD_CHANGE"
       };
     case actionType.REQUEST_AUTH_LOGOUT_COMPLETED:
       return {

@@ -90,19 +90,15 @@ export default function index({ location }) {
   const [selectedEvent, setSelectedEvent] = useState();
   const events = useSelector(({ events }) => events);
   const theme = useContext(ThemeContext);
-  if (location.state === null) {
-    location.state = {};
-  }
-  if (location.state.calendarName === undefined) {
-    location.state.calendarName = "";
+  let calendarName = "";
+  if (sessionStorage.getItem("calendarName") !== null) {
+    calendarName = sessionStorage.getItem("calendarName");
+    sessionStorage.removeItem("calendarName");
   }
   const calendars = [
     {
       id: 1,
-      name:
-        location.state.calendarName.length > 0
-          ? location.state.calendarName
-          : "test"
+      name: calendarName
     }
   ];
   const eventsOnThisDay = events.filter(
@@ -118,8 +114,8 @@ export default function index({ location }) {
   };
   return (
     <HomeStyled data-testid="app-dashboard-home" theme={theme}>
-      {location.state.calendarName.length > 0 && (
-        <WelcomeMessage calendarName={location.state.calendarName} />
+      {calendarName.length > 0 && (
+        <WelcomeMessage calendarName={calendarName} />
       )}
       <NewEventModal
         isVisible={isNewEventModalVisible}

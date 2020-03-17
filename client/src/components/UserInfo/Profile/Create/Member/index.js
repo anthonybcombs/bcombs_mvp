@@ -42,6 +42,13 @@ const CreateMemberStyled = styled.div`
     border-radius: 40px;
     box-shadow: none;
   }
+  #save {
+    margin: 0 auto;
+    padding: 10px;
+    width: 100%;
+    border-radius: 40px;
+    box-shadow: none;
+  }
   .grid button {
     border-radius: 52% !important;
     padding: 10px;
@@ -85,23 +92,25 @@ const CreateMemberStyled = styled.div`
     h2 {
       font-weight: bold;
     }
-    #skip {
+    #skip,
+    #save {
       width: ${({ theme }) => theme.button.width.primary};
       margin-top: 8em;
     }
   }
 `;
-export default function index({ setCurrentPage }) {
-  const [members, setMembers] = useState([
-    { name: "Molly Mom", type: "Family Manager" }
-  ]);
+export default function index({ setCurrentPage, setProfileDetails }) {
+  const [members, setMembers] = useState([]);
   const [createMemberModal, setCreateMemberModal] = useState(false);
   const theme = useContext(ThemeContext);
   const toggleMemberModal = () => {
     setCreateMemberModal(!createMemberModal);
   };
-  const handleOncliSkipButton = () => {
+  const handleNavButton = () => {
     setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
+  };
+  const handleAddMember = newMember => {
+    setMembers([...members, newMember]);
   };
   return (
     <CreateMemberStyled data-testid="app-profile-member" theme={theme}>
@@ -109,6 +118,7 @@ export default function index({ setCurrentPage }) {
       <CreateMemberModal
         visible={createMemberModal}
         toggleMemberModal={toggleMemberModal}
+        handleAddMember={handleAddMember}
       />
       <p data-testid="app-profile-member-sub-header">
         Add members so you can easily see calendars.
@@ -126,7 +136,9 @@ export default function index({ setCurrentPage }) {
                   />
                 </button>
                 <p>
-                  <span>{member.name}</span>
+                  <span>
+                    {member.firstname} {member.lastname}
+                  </span>
                   <span>{member.type}</span>
                 </p>
               </div>
@@ -146,13 +158,23 @@ export default function index({ setCurrentPage }) {
           </div>
         </div>
       </div>
-      <button
-        data-testid="app-profile-member-skip-button"
-        id="skip"
-        onClick={handleOncliSkipButton}
-      >
-        Skip
-      </button>
+      {members.length > 0 ? (
+        <button
+          data-testid="app-profile-member-save-button"
+          id="save"
+          onClick={handleNavButton}
+        >
+          Save
+        </button>
+      ) : (
+        <button
+          data-testid="app-profile-member-skip-button"
+          id="skip"
+          onClick={handleNavButton}
+        >
+          Skip
+        </button>
+      )}
     </CreateMemberStyled>
   );
 }

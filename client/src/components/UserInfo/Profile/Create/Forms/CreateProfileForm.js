@@ -71,11 +71,7 @@ const CreateProfileStyled = styled.form`
     }
   }
 `;
-export default function CreateProfileForm({
-  details,
-  onSubmit,
-  handleInputChange
-}) {
+export default function CreateProfileForm({ onSubmit, handleInputChange }) {
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm({

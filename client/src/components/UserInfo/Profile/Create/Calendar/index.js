@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { requestAuth } from "../../../../../redux/actions/Auth";
 import CreateCalendarForm from "../Forms/CreateCalendarForm";
 const CalendarProfile = styled.div`
   display: block;
@@ -19,20 +17,13 @@ const CalendarProfile = styled.div`
     margin-top: 3em;
   }
 `;
-export default function index({ navigate }) {
+export default function index({ handleProfileSubmit }) {
   const [calendarDetails, setCalendarDetails] = useState({ name: "" });
-  const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
     setCalendarDetails({ ...calendarDetails, [id]: value });
   };
-  const handleFormSubmit = async ({ name }) => {
-    dispatch(requestAuth());
-    await navigate(
-      `../dashboard`,
-      { state: { calendarName: name } },
-      { replace: true }
-    );
-    //setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
+  const handleFormSubmit = async () => {
+    handleProfileSubmit(calendarDetails.name);
   };
   return (
     <CalendarProfile data-testid="app-profile-calendar">

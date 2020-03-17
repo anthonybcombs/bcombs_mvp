@@ -8,23 +8,25 @@ const CreateMemberModal = styled.div`
   }
 `;
 export default function index({
-  setCurrentPage,
   visible = true,
-  toggleMemberModal
+  toggleMemberModal,
+  handleAddMember
 }) {
   const [memberDetails, setMemberDetails] = useState({
     firstname: "",
     lastname: "",
-    gender: "",
-    familyrelationship: "",
+    gender: "male",
+    familyrelationship: "father",
     zipcode: "",
-    dateofbirth: ""
+    dateofbirth: "",
+    type: "Member"
   });
   const handleInputChange = (id, value) => {
     setMemberDetails({ ...memberDetails, [id]: value });
   };
   const handleFormSubmit = values => {
-    setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
+    handleAddMember(memberDetails);
+    toggleMemberModal(false);
   };
   if (!visible) {
     return <></>;

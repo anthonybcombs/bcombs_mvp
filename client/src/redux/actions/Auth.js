@@ -46,14 +46,21 @@ const getUserInfo = () => {
 const requestPasswordChangeFromServer = user => {
   return new Promise(async (resolve, reject) => {
     try {
-      await fetch(`${process.env.API_HOST}/api/auth/changepassword`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(...user)
+      const changePasswordResponse = await fetch(
+        `${process.env.API_HOST}/api/auth/changepassword`,
+        {
+          method: "POST", // or 'PUT'
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(...user)
+        }
+      );
+      const changePasswordDetail = await changePasswordResponse.json();
+      resolve({
+        messageType: changePasswordDetail.messageType,
+        message: changePasswordDetail.message
       });
-      resolve("success");
     } catch (error) {
       reject("error");
     }
@@ -155,12 +162,17 @@ export function* loggedOut() {
 }
 
 export function* requestedPasswordChange({ user }) {
-  yield call(requestPasswordChangeFromServer, [user]);
+  const changePasswordDetail = yield call(requestPasswordChangeFromServer, [
+    user
+  ]);
   yield put({
     type: actionType.REQUEST_CHANGE_PASSWORD_COMPLETED
   });
   yield put({
     type: actionType.REQUEST_STATUS_COMPLETED,
-    payload: { messageType: "info", message: "Email has ben sent!" }
+    payload: {
+      messageType: changePasswordDetail.messageType,
+      message: changePasswordDetail.message
+    }
   });
 }

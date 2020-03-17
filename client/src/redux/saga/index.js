@@ -6,8 +6,7 @@ import {
   authenticated,
   gotUserInfo,
   loggedOut,
-  requestedPasswordChange,
-  removedAuthMessages
+  requestedPasswordChange
 } from "../actions/Auth";
 import { addCalendar } from "../actions/Calendars";
 import { deletedEvent, updatedEvent, addedEvent } from "../actions/Events";
@@ -18,7 +17,7 @@ import {
 } from "../actions/Contacts";
 import { addedGroup, updatedGroup } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
-import { addedUser } from "../actions//Users";
+import { addedUser, updatedUser } from "../actions//Users";
 import { gotUserTypes } from "../actions/UserTypes";
 import { requestedStatus, removedStatus } from "../actions/Status";
 import reducer from "../reducers";
@@ -45,6 +44,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ADD_RELATIVE, addedRelative);
   //USERS
   yield takeLatest(actionType.REQUEST_ADD_USER, addedUser);
+  yield takeLatest(actionType.REQUEST_UPDATE_USER, updatedUser);
   //USER TYPES
   yield takeLatest(actionType.REQUEST_USER_TYPES, gotUserTypes);
   //STATUS

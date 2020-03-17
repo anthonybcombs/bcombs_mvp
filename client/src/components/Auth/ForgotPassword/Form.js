@@ -45,7 +45,7 @@ const ForgotPasswordFormStyled = styled.form`
   }
 `;
 export default function Form({ onSubmit, handleInputChange }) {
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, reset } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
@@ -53,7 +53,10 @@ export default function Form({ onSubmit, handleInputChange }) {
     <ForgotPasswordFormStyled
       data-testid="app-forgot-password-form"
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(() => {
+        reset();
+        return onSubmit();
+      })}
     >
       <div>
         <input
