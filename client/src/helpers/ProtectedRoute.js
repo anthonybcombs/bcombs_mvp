@@ -29,7 +29,8 @@ export default function protectedRoutes({ children }) {
       return <Redirect to="/dashboard/createprofile" />;
     } else if (
       location.pathname.includes("createprofile") &&
-      auth.isProfileFilled
+      auth.isProfileFilled &&
+      auth.status === "SIGNED_IN"
     ) {
       return <Redirect to="/dashboard" />;
     }

@@ -116,6 +116,10 @@ export function* authenticated({ auth }) {
 }
 
 export function* gotUserInfo() {
+  yield take([
+    actionType.REQUEST_STATUS_COMPLETED,
+    actionType.REQUEST_USER_TYPES_COMPLETED
+  ]);
   try {
     if (
       sessionStorage.getItem("access_token") !== null &&

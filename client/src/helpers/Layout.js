@@ -121,7 +121,10 @@ export default function Layout({ children }) {
           </Link>
           <Location
             children={context => {
-              if (context.location.pathname.includes("dashboard")) {
+              if (
+                context.location.pathname.includes("dashboard") &&
+                auth.status === "SIGNED_ID"
+              ) {
                 return (
                   <>
                     <div className="input-icons">
@@ -160,7 +163,10 @@ export default function Layout({ children }) {
           />
           <Location
             children={context => {
-              if (context.location.pathname.includes("dashboard")) {
+              if (
+                context.location.pathname.includes("dashboard") &&
+                auth.status === "SIGNED_IN"
+              ) {
                 return (
                   <>
                     <Link

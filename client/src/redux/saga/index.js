@@ -1,6 +1,6 @@
 import createSagaMiddleware from "redux-saga";
 import { createStore, compose, applyMiddleware } from "redux";
-import { takeLatest, takeEvery, take } from "redux-saga/effects";
+import { takeLatest, takeEvery } from "redux-saga/effects";
 import * as actionType from "../actions/Constant";
 import {
   authenticated,
@@ -22,8 +22,6 @@ import { gotUserTypes } from "../actions/UserTypes";
 import { requestedStatus, removedStatus } from "../actions/Status";
 import reducer from "../reducers";
 function* rootSaga() {
-  //SYNC REQUEST
-  take([actionType.REQUEST_ADD_USER_COMPLETED]);
   //AUTH
   yield takeLatest(actionType.REQUEST_AUTH, authenticated);
   yield takeLatest(actionType.REQUEST_AUTH_USER_INFO, gotUserInfo);
