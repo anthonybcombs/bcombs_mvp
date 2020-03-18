@@ -14,9 +14,7 @@ export default function protectedRoutes({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
-    if (auth.status !== "SIGNED_IN") {
-      dispatch(requestUserInfo());
-    }
+    dispatch(requestUserInfo());
   }, []);
   useEffect(() => {
     window.scrollTo(0, 0);
