@@ -237,8 +237,7 @@ router.post("/users/add", async (req, res) => {
         user.username
       ]
     );
-    console.log(insertedRows);
-    if (insertedRows.affectedRows > 0) {
+    if (insertedRows.affectedRows > 0 && !user.hasOwnProperty("isSocial")) {
       res.send({
         error: "",
         messageType: "info",
