@@ -14,7 +14,9 @@ export default function protectedRoutes({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
-    dispatch(requestUserInfo());
+    if (!auth.hasOwnProperty("sub")) {
+      dispatch(requestUserInfo());
+    }
   }, []);
   useEffect(() => {
     window.scrollTo(0, 0);
