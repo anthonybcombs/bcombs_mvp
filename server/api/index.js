@@ -7,11 +7,17 @@ const isUserExist = async user => {
   let result;
   try {
     const rows = await db.query(
-      `SELECT count(email) as emailCount from users where email=? or username=?`,
+      `SELECT auth_id from users where email=? or username=?`,
       [user.email, user.username]
     );
-    if (rows[0].emailCount > 0) {
+    if (rows.length > 0) {
       result = true;
+      if (user.hasOwnProperty("isSocial")) {
+        const authType = user.sub.split("|")[0];
+        if (rows[0].auth_id.includes(authType)) {
+          result = false;
+        }
+      }
     } else {
       result = false;
     }
@@ -59,7 +65,7 @@ router.post("/auth/userInfo", async (req, res) => {
   try {
     const creds = req.body;
     const userInfoResponse = await fetch("https://bcombs.auth0.com/userinfo", {
-      method: "POST",
+      method: "GET",
       headers: {
         Authorization: `${creds.token_type} ${creds.access_token}`,
         "Content-Type": "application/json"
@@ -140,6 +146,23 @@ router.post("/auth/changepassword", async (req, res) => {
     });
   }
 });
+router.post("/users/isuserexist", async (req, res) => {
+  try {
+    const user = req.body;
+    if (await isUserExist(user)) {
+      res.send({
+        messageType: "error",
+        message:
+          "User already registered, please use different username and email address."
+      });
+      return;
+    }
+    res.send({
+      messageType: "info",
+      message: "proceed"
+    });
+  } catch (error) {}
+});
 router.post("/users/update", async (req, res) => {
   const db = makeDb();
   try {
@@ -181,15 +204,6 @@ router.post("/users/add", async (req, res) => {
   const db = makeDb();
   try {
     const user = req.body;
-    if (await isUserExist(user)) {
-      res.send({
-        error: "user exist",
-        messageType: "error",
-        message:
-          "User already registered, please use different username and email address."
-      });
-      return;
-    }
     let authData;
     if (!user.hasOwnProperty("isSocial")) {
       const params = new URLSearchParams();
@@ -212,7 +226,7 @@ router.post("/users/add", async (req, res) => {
     const rows = await db.query(
       "SELECT BIN_TO_UUID(id) AS id FROM user_types WHERE name='USER'"
     );
-    await db.query(
+    const insertedRows = await db.query(
       `INSERT IGNORE INTO users(id,auth_id,type,email,username) values(UUID_TO_BIN(UUID()),?,UUID_TO_BIN(?),?,?)`,
       [
         user.hasOwnProperty("isSocial")
@@ -223,12 +237,22 @@ router.post("/users/add", async (req, res) => {
         user.username
       ]
     );
+    console.log(insertedRows);
+    if (insertedRows.affectedRows > 0) {
+      res.send({
+        error: "",
+        messageType: "info",
+        message: `User created! We sent confirmation email to ${user.email}.`
+      });
+      return;
+    }
     res.send({
       error: "",
-      messageType: "info",
-      message: `User created! We sent confirmation email to ${user.email}.`
+      messageType: "",
+      message: ""
     });
   } catch (error) {
+    console.log(error);
     res.send({
       error: "there error in requesting add user endpoint.",
       messageType: "error",

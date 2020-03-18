@@ -36,7 +36,10 @@ const getUserInfo = () => {
           })
         }
       );
-      const userInfo = userInfoResponse.json();
+      const userInfo = await userInfoResponse.json();
+      if (userInfo.type === "invalid-json") {
+        reject("error");
+      }
       return resolve(userInfo);
     } catch (error) {
       reject("error");
@@ -119,12 +122,19 @@ export function* gotUserInfo() {
       sessionStorage.getItem("token_type") !== null
     ) {
       const userInfoData = yield call(getUserInfo);
-      if (!userInfoData.email_verified) {
-        userInfoData.error = "email_not_verified";
-        userInfoData.messageType = "error";
-        userInfoData.error_description = "Email is not verified.";
+      if (
+        !userInfoData.hasOwnProperty("email_verified") &&
+        userInfoData.email_verified
+      ) {
         sessionStorage.removeItem("access_token");
         sessionStorage.removeItem("token_type");
+        yield put({
+          type: actionType.REQUEST_STATUS_COMPLETED,
+          payload: {
+            messageType: "error",
+            message: "Email is not verified."
+          }
+        });
       }
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
@@ -144,15 +154,12 @@ export function* gotUserInfo() {
       yield put({
         type: actionType.REQUEST_STATUS_COMPLETED,
         payload: {
-          messageType: "error",
-          error_description: "Email is not verified."
+          messageType: "",
+          message: ""
         }
       });
     }
-  } catch (error) {
-    sessionStorage.removeItem("access_token");
-    sessionStorage.removeItem("token_type");
-  }
+  } catch (error) {}
 }
 export function* loggedOut() {
   sessionStorage.removeItem("access_token");

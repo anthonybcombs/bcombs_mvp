@@ -20,6 +20,7 @@ export default function Auth(state = initialState.auth, action) {
       };
     case actionType.REQUEST_STATUS_COMPLETED:
       return {
+        ...state,
         requestStatus: "COMPLETED",
         message: action.payload.message,
         messageType: action.payload.messageType

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "@reach/router";
 import styled from "styled-components";
 import Form from "./Form";
-import { requestAddUser } from "../../../redux/actions/Users";
+import { requestCheckuserAndAdd } from "../../../redux/actions/Users";
 const CreateUserStyled = styled.div`
   display: block;
   margin: 0 auto;
@@ -38,7 +38,7 @@ const CreateUserStyled = styled.div`
     }
   }
 `;
-export default function index({ navigate }) {
+export default function index() {
   const [userDetails, setUserDetails] = useState({
     type: { id: "", name: "" },
     username: "",
@@ -60,15 +60,8 @@ export default function index({ navigate }) {
     setUserDetails({ ...userDetails, type: { ...value } });
   };
   const handleFormSubmit = values => {
-    dispatch(requestAddUser(userDetails));
+    dispatch(requestCheckuserAndAdd(userDetails));
   };
-  // if (status.requestStatus === "COMPLETED" && status.messageType !== "error") {
-  //   return (
-  //     <>
-  //       <Redirect to="/" />;
-  //     </>
-  //   );
-  // }
   return (
     <CreateUserStyled data-testid="app-create-user">
       {status && status.message && (

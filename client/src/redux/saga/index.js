@@ -17,7 +17,7 @@ import {
 } from "../actions/Contacts";
 import { addedGroup, updatedGroup } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
-import { addedUser, updatedUser } from "../actions//Users";
+import { addedUser, updatedUser, checkedUserAndAdd } from "../actions//Users";
 import { gotUserTypes } from "../actions/UserTypes";
 import { requestedStatus, removedStatus } from "../actions/Status";
 import reducer from "../reducers";
@@ -45,6 +45,7 @@ function* rootSaga() {
   //USERS
   yield takeLatest(actionType.REQUEST_ADD_USER, addedUser);
   yield takeLatest(actionType.REQUEST_UPDATE_USER, updatedUser);
+  yield takeLatest(actionType.REQUEST_CHECK_USER_AND_ADD, checkedUserAndAdd);
   //USER TYPES
   yield takeLatest(actionType.REQUEST_USER_TYPES, gotUserTypes);
   //STATUS

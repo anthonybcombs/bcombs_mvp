@@ -1,19 +1,24 @@
 import React, { useEffect } from "react";
-import { Redirect } from "@reach/router";
+import { Redirect, useLocation } from "@reach/router";
 import { useSelector, useDispatch } from "react-redux";
 import { requestUserInfo } from "../../redux/actions/Auth";
 import { requestRemoveStatus } from "../../redux/actions/Status";
 import Loading from "../../helpers/Loading";
-export default function index({ children, location }) {
+export default function index({ children }) {
   const { auth, status } = useSelector(({ auth, status }) => {
     return { auth, status };
   });
+  const location = useLocation();
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(requestUserInfo());
+    if (status.messageType !== "error") {
+      dispatch(requestUserInfo());
+    }
   }, []);
   useEffect(() => {
-    dispatch(requestRemoveStatus());
+    if (location.pathname !== "/") {
+      dispatch(requestRemoveStatus());
+    }
   }, [location]);
   if (status.requestStatus === "AWAITING_AUTH_RESPONSE") {
     return <Loading />;
