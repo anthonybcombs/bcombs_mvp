@@ -14,7 +14,7 @@ export default function protectedRoutes({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
-    if (!auth.hasOwnProperty("sub")) {
+    if (auth.status !== "SIGNED_IN") {
       dispatch(requestUserInfo());
     }
   }, []);
