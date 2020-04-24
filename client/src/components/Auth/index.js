@@ -20,7 +20,7 @@ export default function index({ children }) {
       dispatch(requestRemoveStatus());
     }
   }, [location]);
-  if (status.requestStatus === "AWAITING_AUTH_RESPONSE") {
+  if (auth.status === "AWAITING_AUTH_RESPONSE") {
     return <Loading />;
   } else if (
     sessionStorage.getItem("access_token") !== null &&
