@@ -1,20 +1,20 @@
 import { call, take, put } from "redux-saga/effects";
+import graphqlClient from "../../graphql";
+import { SIGN_IN_MUTATION } from "../../graphql/mutation";
 import * as actionType from "./Constant";
-const authentecating = auth => {
+const authentecating = (auth) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const authResponse = await fetch(
-        `${process.env.API_HOST}/api/auth/authorize`,
-        {
-          method: "POST", // or 'PUT'
-          headers: {
-            "Content-Type": "application/json"
+      const { data } = await graphqlClient.mutate({
+        mutation: SIGN_IN_MUTATION,
+        variables: {
+          user: {
+            email: "bonhokage06@gmail.com",
+            password: "Blackh@t06",
           },
-          body: JSON.stringify(...auth)
-        }
-      );
-      const authData = authResponse.json();
-      return resolve(authData);
+        },
+      });
+      return resolve({ ...data.signIn.user });
     } catch (error) {
       reject("error");
     }
@@ -28,12 +28,12 @@ const getUserInfo = () => {
         {
           method: "POST", // or 'PUT'
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             access_token: sessionStorage.getItem("access_token"),
-            token_type: sessionStorage.getItem("token_type")
-          })
+            token_type: sessionStorage.getItem("token_type"),
+          }),
         }
       );
       const userInfo = await userInfoResponse.json();
@@ -46,7 +46,7 @@ const getUserInfo = () => {
     }
   });
 };
-const requestPasswordChangeFromServer = user => {
+const requestPasswordChangeFromServer = (user) => {
   return new Promise(async (resolve, reject) => {
     try {
       const changePasswordResponse = await fetch(
@@ -54,51 +54,52 @@ const requestPasswordChangeFromServer = user => {
         {
           method: "POST", // or 'PUT'
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(...user)
+          body: JSON.stringify(...user),
         }
       );
       const changePasswordDetail = await changePasswordResponse.json();
       resolve({
         messageType: changePasswordDetail.messageType,
-        message: changePasswordDetail.message
+        message: changePasswordDetail.message,
       });
     } catch (error) {
       reject("error");
     }
   });
 };
-export const requestAuth = auth => {
+export const requestAuth = (auth) => {
   return {
     type: actionType.REQUEST_AUTH,
-    auth
+    auth,
   };
 };
 export const requestUserInfo = () => {
   return {
-    type: actionType.REQUEST_AUTH_USER_INFO
+    type: actionType.REQUEST_AUTH_USER_INFO,
   };
 };
 export const requestLogout = () => {
   return {
-    type: actionType.REQUEST_AUTH_LOGOUT
+    type: actionType.REQUEST_AUTH_LOGOUT,
   };
 };
-export const requestPasswordChange = user => {
+export const requestPasswordChange = (user) => {
   return { type: actionType.REQUEST_CHANGE_PASSWORD, user };
 };
 export function* authenticated({ auth }) {
   try {
     const authData = yield call(authentecating, [auth]);
     if (authData.hasOwnProperty("sub")) {
-      sessionStorage.setItem("access_token", authData.access_token);
-      sessionStorage.setItem("token_type", authData.token_type);
-      sessionStorage.setItem("id_token", authData.id_token);
+      if (authData.access_token) {
+        sessionStorage.setItem("access_token", authData.access_token);
+        sessionStorage.setItem("token_type", authData.token_type);
+        sessionStorage.setItem("id_token", authData.id_token);
+      }
       if (!authData.email_verified) {
-        authData.error = "email_not_verified";
-        authData.messageType = "error";
-        authData.error_description = "Email is not verified.";
+        authData.messageType = "email_not_verified";
+        authData.message = "Email is not verified.";
       }
     }
 
@@ -106,11 +107,10 @@ export function* authenticated({ auth }) {
     yield put({
       type: actionType.REQUEST_STATUS_COMPLETED,
       payload: {
-        message: authData.hasOwnProperty("error")
-          ? authData.error_description
-          : "",
-        messageType: authData.hasOwnProperty("error") ? "error" : "info"
-      }
+        message: authData.message,
+        messageType:
+          authData.messageType === "email_not_verified" ? "error" : "info",
+      },
     });
   } catch (error) {}
 }
@@ -118,7 +118,7 @@ export function* authenticated({ auth }) {
 export function* gotUserInfo() {
   yield take([
     actionType.REQUEST_STATUS_COMPLETED,
-    actionType.REQUEST_USER_TYPES_COMPLETED
+    actionType.REQUEST_USER_TYPES_COMPLETED,
   ]);
   try {
     if (
@@ -136,13 +136,13 @@ export function* gotUserInfo() {
           type: actionType.REQUEST_STATUS_COMPLETED,
           payload: {
             messageType: "error",
-            message: "Email is not verified."
-          }
+            message: "Email is not verified.",
+          },
         });
       }
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
-        payload: userInfoData
+        payload: userInfoData,
       });
     } else {
       sessionStorage.removeItem("access_token");
@@ -150,17 +150,16 @@ export function* gotUserInfo() {
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
         payload: {
-          error: "no_user",
           messageType: "error",
-          error_description: ""
-        }
+          error_description: "",
+        },
       });
       yield put({
         type: actionType.REQUEST_STATUS_COMPLETED,
         payload: {
           messageType: "",
-          message: ""
-        }
+          message: "",
+        },
       });
     }
   } catch (error) {}
@@ -174,16 +173,16 @@ export function* loggedOut() {
 
 export function* requestedPasswordChange({ user }) {
   const changePasswordDetail = yield call(requestPasswordChangeFromServer, [
-    user
+    user,
   ]);
   yield put({
-    type: actionType.REQUEST_CHANGE_PASSWORD_COMPLETED
+    type: actionType.REQUEST_CHANGE_PASSWORD_COMPLETED,
   });
   yield put({
     type: actionType.REQUEST_STATUS_COMPLETED,
     payload: {
       messageType: changePasswordDetail.messageType,
-      message: changePasswordDetail.message
-    }
+      message: changePasswordDetail.message,
+    },
   });
 }

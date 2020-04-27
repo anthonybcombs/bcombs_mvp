@@ -41,7 +41,7 @@ const LoginStyled = styled.div`
     }
   }
 `;
-export default function index() {
+export default function index(props) {
   const [userDetails, setUserDetails] = useState({ email: "", password: "" });
   const { auth, status } = useSelector(({ auth, status }) => {
     return { auth, status };
@@ -51,7 +51,7 @@ export default function index() {
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
-  const handleFormSubmit = async values => {
+  const handleFormSubmit = async (values) => {
     await dispatch(requestAuth(userDetails));
   };
   if (auth.hasOwnProperty("sub") && auth.email_verified) {
@@ -61,14 +61,14 @@ export default function index() {
     webAuth.authorize({
       connection: "facebook",
       responseType: "token",
-      redirectUri: `${process.env.HOST}/sociallanding`
+      redirectUri: `${process.env.HOST}/sociallanding`,
     });
   };
   const handleGoogleSignIn = () => {
     webAuth.authorize({
       connection: "google-oauth2",
       responseType: "token",
-      redirectUri: `${process.env.HOST}/sociallanding`
+      redirectUri: `${process.env.HOST}/sociallanding`,
     });
   };
   return (

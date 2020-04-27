@@ -2,7 +2,7 @@ import express from "express";
 import { makeDb } from "../helpers/database";
 import fetch from "node-fetch";
 const router = express.Router();
-const isUserExist = async user => {
+const isUserExist = async (user) => {
   const db = makeDb();
   let result;
   try {
@@ -28,7 +28,7 @@ const isUserExist = async user => {
     return result;
   }
 };
-const getUserFromDatabase = async email => {
+const getUserFromDatabase = async (email) => {
   const db = makeDb();
   let result;
   try {
@@ -51,7 +51,7 @@ router.get("/userTypes", async (req, res) => {
     const userTypes = await db.query(
       "SELECT BIN_TO_UUID(ID) as id,name FROM user_types"
     );
-    userTypes.forEach(userType => {
+    userTypes.forEach((userType) => {
       result.push({ id: userType.id, name: userType.name });
     });
     res.send(JSON.stringify(result));
@@ -68,8 +68,8 @@ router.post("/auth/userInfo", async (req, res) => {
       method: "GET",
       headers: {
         Authorization: `${creds.token_type} ${creds.access_token}`,
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     });
     const userInfo = await userInfoResponse.json();
     const { is_profile_filled } = await getUserFromDatabase(userInfo.email);
@@ -91,7 +91,7 @@ router.post("/auth/authorize", async (req, res) => {
     params.append("password", user.password);
     const AuthResponse = await fetch("https://bcombs.auth0.com/oauth/token", {
       method: "POST",
-      body: params
+      body: params,
     });
     const authData = await AuthResponse.json();
     if (authData.hasOwnProperty("access_token")) {
@@ -101,15 +101,15 @@ router.post("/auth/authorize", async (req, res) => {
           method: "POST",
           headers: {
             Authorization: `${authData.token_type} ${authData.access_token}`,
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
       const userInfo = await userInfoResponse.json();
       res.send(
         JSON.stringify({
           ...authData,
-          ...userInfo
+          ...userInfo,
         })
       );
       return;
@@ -130,19 +130,19 @@ router.post("/auth/changepassword", async (req, res) => {
       params.append("connection", "Username-Password-Authentication");
       await fetch("https://bcombs.auth0.com/dbconnections/change_password", {
         method: "POST",
-        body: params
+        body: params,
       });
       res.send({ messageType: "info", message: "Email has been send!" });
       return;
     }
     res.send({
       messageType: "error",
-      message: "Email address does not exist."
+      message: "Email address does not exist.",
     });
   } catch (error) {
     res.send({
       messageType: "error",
-      message: "Email address does not exist."
+      message: "Email address does not exist.",
     });
   }
 });
@@ -153,13 +153,13 @@ router.post("/users/isuserexist", async (req, res) => {
       res.send({
         messageType: "error",
         message:
-          "User already registered, please use different username and email address."
+          "User already registered, please use different username and email address.",
       });
       return;
     }
     res.send({
       messageType: "info",
-      message: "proceed"
+      message: "proceed",
     });
   } catch (error) {}
 });
@@ -171,7 +171,7 @@ router.post("/users/update", async (req, res) => {
       familyMembers,
       members,
       calendarInfo,
-      email
+      email,
     } = req.body;
     const { id } = await getUserFromDatabase(email);
     await db.query(
@@ -183,7 +183,7 @@ router.post("/users/update", async (req, res) => {
         personalInfo.familyrelationship,
         personalInfo.gender,
         personalInfo.zipcode,
-        personalInfo.dateofbirth
+        personalInfo.dateofbirth,
       ]
     );
     await db.query(
@@ -216,7 +216,7 @@ router.post("/users/add", async (req, res) => {
         "https://bcombs.auth0.com/dbconnections/signup",
         {
           method: "POST",
-          body: params
+          body: params,
         }
       );
       authData = await signUpResponse.json();
@@ -234,28 +234,27 @@ router.post("/users/add", async (req, res) => {
           : `auth0|${authData._id}`,
         user.hasOwnProperty("isSocial") ? rows[0].id : user.type.id,
         user.email,
-        user.username
+        user.username,
       ]
     );
     if (insertedRows.affectedRows > 0 && !user.hasOwnProperty("isSocial")) {
       res.send({
         error: "",
         messageType: "info",
-        message: `User created! We sent confirmation email to ${user.email}.`
+        message: `User created! We sent confirmation email to ${user.email}.`,
       });
       return;
     }
     res.send({
       error: "",
       messageType: "",
-      message: ""
+      message: "",
     });
   } catch (error) {
-    console.log(error);
     res.send({
       error: "there error in requesting add user endpoint.",
       messageType: "error",
-      message: "error"
+      message: "error",
     });
   } finally {
     await db.close();
