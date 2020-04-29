@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { subMonths, addMonths, startOfMonth, format } from "date-fns";
 import Header from "./header";
@@ -15,12 +15,20 @@ export default function index({
   selectedDate,
   setSelectedDate,
   setSelectedEvent,
+  setCurrentMonth,
   removeSubHeader = false
 }) {
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
     selectedDate
   });
+
+  useEffect(() => {
+    if (currentDate.currentMonth && setCurrentMonth) {
+      setCurrentMonth(currentDate.currentMonth);
+    }
+  }, [currentDate]);
+
   const handleChangeMonth = operation => {
     let currentMonth;
     if (operation === "next") {
@@ -37,6 +45,7 @@ export default function index({
       selectedDate: firstDayOfTheMonth
     });
   };
+
   const handleChangeDay = day => {
     setSelectedEvent();
     setCurrentDate({ ...currentDate, selectedDate: day });

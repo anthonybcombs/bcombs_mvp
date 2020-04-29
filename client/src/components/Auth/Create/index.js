@@ -46,12 +46,20 @@ export default function index() {
     password: "",
     confirm_password: ""
   });
+  const urlParams = new URLSearchParams(window.location.search);
+  const vendorCode = urlParams.get("vendor_code");
+  const currentTypeIndex = vendorCode ? 1 : 0;
+
   const { userTypes, status } = useSelector(({ userTypes, status }) => {
     return { userTypes, status };
   });
+
   const dispatch = useDispatch();
   useEffect(() => {
-    setUserDetails({ ...userDetails, type: { ...userTypes[0] } });
+    setUserDetails({
+      ...userDetails,
+      type: { ...(userTypes[currentTypeIndex] || {}) }
+    });
   }, [userTypes]);
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
@@ -62,6 +70,7 @@ export default function index() {
   const handleFormSubmit = values => {
     dispatch(requestCheckuserAndAdd(userDetails));
   };
+  console.log("userTypes", userTypes);
   return (
     <CreateUserStyled data-testid="app-create-user">
       {status && status.message && (

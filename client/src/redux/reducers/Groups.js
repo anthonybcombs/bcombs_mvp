@@ -16,6 +16,8 @@ export default function Groups(
         }
         return group;
       });
+    case actionType.SET_USER_GROUPS:
+      return action.data;
     default:
       return state;
   }

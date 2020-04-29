@@ -8,7 +8,7 @@ import {
   faPlusCircle
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
-import { format } from "date-fns";
+import { format, startOfMonth, endOfMonth } from "date-fns";
 import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
 import NewEventModal from "../MyEvents/create/withCalendar";
@@ -88,6 +88,7 @@ export default function index({ location }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
+  const [selectedMonth, setSelectedMonth] = useState(null);
   const events = useSelector(({ events }) => events);
   const theme = useContext(ThemeContext);
   let calendarName = "";
@@ -101,6 +102,7 @@ export default function index({ location }) {
       name: calendarName
     }
   ];
+
   const eventsOnThisDay = events.filter(
     event =>
       format(event.date, "MM dd yyyy") === format(selectedDate, "MM dd yyyy")
@@ -111,6 +113,9 @@ export default function index({ location }) {
   };
   const handleEventSelection = id => {
     setSelectedEvent(eventsOnThisDay.filter(event => event.id === id)[0]);
+  };
+  const setCurrentMonth = month => {
+    setSelectedMonth(format(month, "MMMM yyyy"));
   };
   return (
     <HomeStyled data-testid="app-dashboard-home" theme={theme}>
@@ -128,6 +133,7 @@ export default function index({ location }) {
           <div className="pane">
             <SmallCalendar
               events={events}
+              setCurrentMonth={setCurrentMonth}
               selectedDate={selectedDate}
               setSelectedDate={handleSetSelectedDate}
               setSelectedEvent={setSelectedEvent}
@@ -140,8 +146,7 @@ export default function index({ location }) {
                 </h3>
               }
               open
-              lazyRender
-            >
+              lazyRender>
               <div className="panel">
                 {calendars.map((calendar, i) => (
                   <div
@@ -149,8 +154,7 @@ export default function index({ location }) {
                     key={i}
                     onClick={() => {
                       handleEventSelection(calendar.id);
-                    }}
-                  >
+                    }}>
                     {calendar.name}
                   </div>
                 ))}
@@ -164,8 +168,7 @@ export default function index({ location }) {
                 </h3>
               }
               open
-              lazyRender
-            >
+              lazyRender>
               <div className="panel">
                 <div className="panel-body">test notification</div>
                 <div className="panel-body">test notification</div>
@@ -176,20 +179,19 @@ export default function index({ location }) {
         </div>
         <div>
           <div className="pane">
-            <h3>Test</h3>
+            <h3>{selectedMonth}</h3>
             <button
               id="add-event-button"
               onClick={() => {
                 setIsEventModalVisible(true);
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faPlusCircle} size="3x" />
             </button>
 
-            <h2 data-testid="app-dashboard-home-sub-header-upcoming-events">
+            {/* <h2 data-testid="app-dashboard-home-sub-header-upcoming-events">
               Upcoming Events
-            </h2>
-
+            </h2> */}
+            <div className="panel"></div>
             <div className="panel">
               {eventsOnThisDay.map((event, i) => (
                 <div
@@ -202,19 +204,10 @@ export default function index({ location }) {
                   key={i}
                   onClick={() => {
                     handleEventSelection(event.id);
-                  }}
-                >
+                  }}>
                   {event.name}
                 </div>
               ))}
-              {/* {selectedEvent ? (
-                <div className="panel-body">
-                  <h4>{selectedEvent.name}</h4>
-                  {selectedEvent.description}
-                </div>
-              ) : (
-                <p>No event for now. Create and enjoy the system.</p>
-              )} */}
             </div>
           </div>
           <div className="pane">
@@ -230,3 +223,13 @@ export default function index({ location }) {
     </HomeStyled>
   );
 }
+
+/*
+   {selectedEvent ? (
+                <div className="panel-body">
+                  <h4>{selectedEvent.name}</h4>
+                  {selectedEvent.description}
+                </div>
+              ) : (
+                <p>No event for now. Create and enjoy the system.</p>
+)} */

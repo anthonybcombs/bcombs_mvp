@@ -29,9 +29,10 @@ export default function index({
     phonNumber: "",
     email: "",
     selectedGroups: [],
-    userIds: [auth.id],
+    userIds: [auth.sub],
     relation: ""
   });
+  console.log("auth", auth);
   const dispatch = useDispatch();
   const handleContactDetailsChange = (id, value) => {
     let newSelectedGroups = contactDetails.selectedGroups;
@@ -51,12 +52,16 @@ export default function index({
     });
   };
   const handleSubmit = value => {
-    contactDetails.selectedGroups.forEach(selectedGroupId => {
-      const selectedGroup = groups.find(group => group.id === selectedGroupId);
-      selectedGroup.contacts.push(contactDetails.id);
-      dispatch(updateGroup(selectedGroup));
-    });
-    dispatch(addContact(contactDetails));
+    // contactDetails.selectedGroups.forEach(selectedGroupId => {
+    //   const selectedGroup = groups.find(group => group.id === selectedGroupId);
+    //   selectedGroup.contacts.push(contactDetails.id);
+    //   dispatch(updateGroup(selectedGroup));
+    // });
+    const payload = {
+      ...contactDetails
+    };
+    console.log("payloadddd", payload);
+    dispatch(addContact(payload));
     toggleCreateContactModal(false);
   };
   if (!isVisible) {
@@ -69,8 +74,7 @@ export default function index({
           className="close"
           onClick={() => {
             toggleCreateContactModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <div>

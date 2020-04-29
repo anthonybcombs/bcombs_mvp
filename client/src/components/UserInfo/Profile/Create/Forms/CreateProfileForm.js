@@ -71,7 +71,11 @@ const CreateProfileStyled = styled.form`
     }
   }
 `;
-export default function CreateProfileForm({ onSubmit, handleInputChange }) {
+export default function CreateProfileForm({
+  data,
+  onSubmit,
+  handleInputChange
+}) {
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm({
@@ -81,13 +85,13 @@ export default function CreateProfileForm({ onSubmit, handleInputChange }) {
   const handleDateOfBirthElementTypeChange = value => {
     setDateOfBirthElementType(value);
   };
+  console.log("dataaaaaaaa", data);
   return (
     <CreateProfileStyled
       data-testid="app-create-profile-form"
       method="POST"
       theme={theme}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <h3>Create my profile</h3>
       <input
         data-testid="app-profile-input-firstname"
@@ -123,8 +127,7 @@ export default function CreateProfileForm({ onSubmit, handleInputChange }) {
         onChange={({ target }) => {
           handleInputChange("familyrelationship", target.value);
         }}
-        ref={register({ required: true })}
-      >
+        ref={register({ required: true })}>
         <option value="" disabled hidden>
           Family relationship
         </option>
@@ -145,8 +148,7 @@ export default function CreateProfileForm({ onSubmit, handleInputChange }) {
             onChange={({ target }) => {
               handleInputChange("gender", target.value);
             }}
-            ref={register({ required: true })}
-          >
+            ref={register({ required: true })}>
             <option value="" disabled hidden>
               Gender
             </option>

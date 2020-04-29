@@ -94,6 +94,7 @@ export default function Form({
   onSubmit,
   handleInputChange,
   handleChangeUserType,
+  hasVendorCode,
   userDetails,
   userTypes
 }) {
@@ -107,8 +108,7 @@ export default function Form({
     <CreateUserFormStyled
       data-testid="app-create-form"
       theme={theme}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <div id="userTypes" className="grid">
         {userTypes.map(userType => (
           <button
@@ -118,8 +118,7 @@ export default function Form({
             type="button"
             onClick={() => {
               handleChangeUserType(userType);
-            }}
-          >
+            }}>
             {userType.name.toUpperCase()}
           </button>
         ))}

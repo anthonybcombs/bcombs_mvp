@@ -140,6 +140,7 @@ export function* gotUserInfo() {
           },
         });
       }
+
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
         payload: userInfoData,

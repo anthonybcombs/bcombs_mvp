@@ -71,13 +71,14 @@ export default function index({
   const handleRemoveContact = () => {
     dispatch(removeContact(contactDetails));
   };
+
+  console.log("contactDetails", contactDetails);
   return (
     <ContactStyled
       className={`${isSelected ? "selected" : ""}`}
       onMouseEnter={() => {
         setSelectedContactId(contactDetails.id);
-      }}
-    >
+      }}>
       <div>
         <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
         <p>
@@ -98,8 +99,7 @@ export default function index({
         <button
           onClick={() => {
             setisEditContactModalVisible(true);
-          }}
-        >
+          }}>
           <FontAwesomeIcon icon={faPen} />
         </button>
         <Popover
@@ -114,23 +114,19 @@ export default function index({
               arrowColor="white"
               arrowSize={10}
               arrowStyle={{ opacity: 1 }}
-              arrow="center"
-            >
+              arrow="center">
               <ContactSettingPopOverStyled
-                onMouseLeave={() => handleContactSettingVisible()}
-              >
+                onMouseLeave={() => handleContactSettingVisible()}>
                 <button
                   onClick={() => {
                     setIsProfleModalVisible(true);
-                  }}
-                >
+                  }}>
                   View profile
                 </button>
                 <button
                   onClick={() => {
                     setSendMessageModalVisible(true);
-                  }}
-                >
+                  }}>
                   Send message
                 </button>
                 <button onClick={handleRemoveContact}>Remove Contact</button>
@@ -138,19 +134,16 @@ export default function index({
                   onClick={() => {
                     setTypeOfFormUsedInEditContact("Add To Group");
                     setisEditContactModalVisible(true);
-                  }}
-                >
+                  }}>
                   Add to Group
                 </button>
               </ContactSettingPopOverStyled>
             </ArrowContainer>
-          )}
-        >
+          )}>
           <button
             onClick={() => {
               handleContactSettingVisible();
-            }}
-          >
+            }}>
             <FontAwesomeIcon icon={faEllipsisH} />
           </button>
         </Popover>

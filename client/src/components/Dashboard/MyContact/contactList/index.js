@@ -42,17 +42,19 @@ export default function index({
     typeOfFormUsedInEditContact,
     setTypeOfFormUsedInEditContact
   ] = useState("Edit Contact");
-  const contact = contacts.find(contact => contact.id === selectedContactId);
+  const contact =
+    contacts.find(contact => contact.id === selectedContactId) || {};
+
   return (
     <ContactListStyled>
-      <EditContactModal
+      {/* <EditContactModal
         isVisible={isEditContactModalVisible}
         toggleEditContactModal={setisEditContactModalVisible}
         contact={contact || {}}
         groups={groups}
         typeOfForm={typeOfFormUsedInEditContact}
-      />
-      <ProfileModal
+      /> */}
+      {/* <ProfileModal
         isVisible={isProfleModalVisible}
         toggleProfileModal={setIsProfleModalVisible}
         contact={contact || {}}
@@ -62,7 +64,7 @@ export default function index({
         contact={contact || {}}
         isVisible={isSendMessageModalVisible}
         toggleSendMessageModal={setSendMessageModalVisible}
-      />
+      /> */}
       <div id="contact-list">
         <div id="contact-list-header">
           <h3>{headerText}</h3>
@@ -72,18 +74,19 @@ export default function index({
         </div>
       </div>
       <div id="contact-list-details">
-        {contacts.map(contact => (
-          <Contact
-            isSelected={selectedContactId === contact.id}
-            contactDetails={contact}
-            setisEditContactModalVisible={setisEditContactModalVisible}
-            setIsProfleModalVisible={setIsProfleModalVisible}
-            setSelectedContactId={setSelectedContactId}
-            setSendMessageModalVisible={setSendMessageModalVisible}
-            setTypeOfFormUsedInEditContact={setTypeOfFormUsedInEditContact}
-            key={contact.id}
-          />
-        ))}
+        {contacts.length > 0 &&
+          contacts.map(contact => (
+            <Contact
+              isSelected={selectedContactId === contact.id}
+              contactDetails={contact}
+              setisEditContactModalVisible={setisEditContactModalVisible}
+              setIsProfleModalVisible={setIsProfleModalVisible}
+              setSelectedContactId={setSelectedContactId}
+              setSendMessageModalVisible={setSendMessageModalVisible}
+              setTypeOfFormUsedInEditContact={setTypeOfFormUsedInEditContact}
+              key={contact ? contact.id : "1"}
+            />
+          ))}
       </div>
     </ContactListStyled>
   );

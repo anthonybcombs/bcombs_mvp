@@ -7,6 +7,7 @@ import settings from "./Settings";
 import groups from "./Groups";
 import contacts from "./Contacts";
 import relatives from "./Relatives";
+import user from "./Users";
 import userTypes from "./UserTypes";
 import status from "./Status";
 const reducer = combineReducers({
@@ -18,6 +19,7 @@ const reducer = combineReducers({
   settings,
   contacts,
   relatives,
+  user,
   userTypes,
   status
 });

@@ -17,6 +17,7 @@ export const requestUserTypes = () => {
 
 export function* gotUserTypes() {
   const userTypes = yield call(getUserTypesFromDatabase);
+  console.log("gotUserTypes", userTypes);
   yield put({
     type: actionType.REQUEST_USER_TYPES_COMPLETED,
     payload: userTypes,

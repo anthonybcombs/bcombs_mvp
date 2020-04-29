@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Collapsible from "react-collapsible";
 import {
   faUserTie,
@@ -16,6 +16,10 @@ import EditContactModal from "./edit/contact";
 import SendMessageModal from "./message";
 import NewGroupModal from "../MyGroups/create";
 import ProfileModal from "./profile/";
+
+// REDUX
+import { requestUserGroup } from "../../../redux/actions/Groups";
+
 const MyContactsStyled = styled.div`
   .selected {
     background-color: #cdcdcd;
@@ -113,6 +117,20 @@ export default function index() {
       return { auth, groups, contacts };
     }
   );
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (auth.email) {
+      const payload = {
+        email: auth.email
+      };
+      console.log("payloadddddddd", payload);
+      dispatch(requestUserGroup(payload));
+    }
+  }, []);
+
+  console.log("groups", groups);
+
   const selectedGroup = groups.find(group => group.id === selectedGroupId);
   const filteredContacts = contacts.filter(contact => {
     if (selectedGroupId === 0) {
@@ -120,12 +138,17 @@ export default function index() {
     }
     return selectedGroup.contacts.includes(contact.id);
   });
+
+  console.log("filteredContacts", filteredContacts);
+  console.log("filteredContacts contacts", contacts);
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
   };
   const handleSelectedGroupid = value => {
     setSelectedGroupId(value);
   };
+
+  console.log("auth", auth);
   return (
     <MyContactsStyled>
       <NewContactModal
@@ -150,8 +173,7 @@ export default function index() {
               onClick={() => {
                 handleSelectedGroupid(0);
                 handleSelectedLabel("Contacts");
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faUserTie} />
               <span>Contacts({filteredContacts.length})</span>
             </div>
@@ -162,8 +184,7 @@ export default function index() {
               onClick={() => {
                 handleSelectedGroupid(0);
                 handleSelectedLabel("Fequently Contacted");
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faHistory} />
               <span>Frequently Contacted</span>
             </div>
@@ -172,8 +193,7 @@ export default function index() {
               onClick={() => {
                 handleSelectedGroupid(0);
                 handleSelectedLabel("Duplicates");
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faUserFriends} />
               <span>Duplicates</span>
             </div>
@@ -189,8 +209,7 @@ export default function index() {
                   key={group.id}
                   onClick={() => {
                     handleSelectedGroupid(group.id);
-                  }}
-                >
+                  }}>
                   <FontAwesomeIcon icon={faUsers} />
                   <span>{group.name}</span>
                 </div>
@@ -200,8 +219,7 @@ export default function index() {
             <button
               onClick={() => {
                 setIsNewGroupModalVisible(true);
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faPlus} />
               <span> ADD NEW GROUP</span>
             </button>
@@ -212,8 +230,8 @@ export default function index() {
             headerText={selectedLabel}
             contacts={filteredContacts}
             groups={groups}
-            EditContactModal={EditContactModal}
             setNewContactModalVisible={setNewContactModalVisible}
+            EditContactModal={EditContactModal}
             ProfileModal={ProfileModal}
             SendMessageModal={SendMessageModal}
           />
