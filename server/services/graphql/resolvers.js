@@ -4,15 +4,17 @@ import {
   executeSignUp,
   executeSignIn,
   executeChangePassword,
-  executeCreateProfile,
+  executeCreateProfile
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
+import { editContact,getContacts, removeContact } from "../../api/contacts";
+
 const resolvers = {
   RootQuery: {
     async userInfo(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type,
+        token_type: args.token_type
       };
       const user = await getUserInfo(creds);
       return user;
@@ -20,10 +22,10 @@ const resolvers = {
     async users(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type,
+        token_type: args.token_type
       };
       const users = await getUsers();
-      return users.filter((user) => {
+      return users.filter(user => {
         if (args.email) {
           return user.email === args.email;
         }
@@ -34,6 +36,11 @@ const resolvers = {
       const userTypes = await getUserTypes();
       return userTypes;
     },
+    // ADDED BY DENNIS
+    async contacts(root, args, context) {
+      const contacts = await getContacts();
+      return contacts;
+    }
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -48,7 +55,14 @@ const resolvers = {
     async createProfile(root, { user }, context) {
       return await executeCreateProfile(user);
     },
-  },
+    async deleteContacts(root, args, context) {
+      return await removeContact(args.id);
+    },
+    async updateContact(root, {contact}, context) {
+      console.log('Update Contact Resolver')
+      return await editContact(contact);
+    }
+  }
 };
 
 export default resolvers;
