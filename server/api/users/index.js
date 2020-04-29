@@ -14,7 +14,27 @@ export const getUsers = async () => {
     return result;
   }
 };
-
+const isProfileExistFromDatabase = async (user) => {
+  const db = makeDb();
+  let result;
+  try {
+    const profileRows = await db.query(
+      `SELECT BIN_TO_UUID(user_id) as id from user_profiles where user_id=(select BIN_TO_UUID(id) from users where email='${user.email}')`
+    );
+    const calendarRows = await db.query(
+      `SELECT BIN_TO_UUID(user_id) as id from user_calendars where user_id=(select BIN_TO_UUID(id) from users where email='${user.email}')`
+    );
+    if (profileRows.length === 0 && calendarRows.length === 0) {
+      result = false;
+    } else {
+      result = true;
+    }
+  } catch (error) {
+  } finally {
+    await db.close();
+    return result;
+  }
+};
 export const getUserInfo = async (creds) => {
   try {
     const userInfoResponse = await fetch("https://bcombs.auth0.com/userinfo", {
@@ -168,38 +188,57 @@ export const executeSignUp = async (user) => {
     await db.close();
   }
 };
-export const executeCreateProfile = async (user) => {
+export const executeUserUpdate = async (user) => {
   const db = makeDb();
   try {
     const { personalInfo, familyMembers, members, calendarInfo, email } = user;
     const users = await getUsers();
     const { id } = users.filter((user) => user.email === email)[0];
-    await db.query(
-      "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?)",
-      [
-        id,
-        personalInfo.firstname,
-        personalInfo.lastname,
-        personalInfo.familyrelationship,
-        personalInfo.gender,
-        personalInfo.zipcode,
-        personalInfo.dateofbirth,
-      ]
-    );
-    await db.query(
-      "UPDATE users SET is_profile_filled=1 where id=UUID_TO_BIN(?)",
-      [id]
-    );
-    await db.query(
-      "INSERT IGNORE INTO user_calendars (id,user_id,image,name) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?)",
-      [id, "", calendarInfo.name]
-    );
+    const isProfileExist = await isProfileExistFromDatabase(user);
+    if (!isProfileExist) {
+      await db.query(
+        "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?)",
+        [
+          id,
+          personalInfo.firstname,
+          personalInfo.lastname,
+          personalInfo.familyrelationship,
+          personalInfo.gender,
+          personalInfo.zipcode,
+          personalInfo.dateofbirth,
+        ]
+      );
+      await db.query(
+        "UPDATE users SET is_profile_filled=1 where id=UUID_TO_BIN(?)",
+        [id]
+      );
+      await db.query(
+        "INSERT IGNORE INTO user_calendars (id,user_id,image,name) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?)",
+        [id, "", calendarInfo.name]
+      );
+    } else {
+      await db.query(
+        "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,zip_code=?,birth_date=? WHERE user_id=UUID_TO_BIN(?)",
+        [
+          personalInfo.firstname,
+          personalInfo.lastname,
+          personalInfo.familyrelationship,
+          personalInfo.gender,
+          personalInfo.zipcode,
+          personalInfo.dateofbirth,
+          id,
+        ]
+      );
+      await db.query(
+        "UPDATE user_calendars set image=?,image=? WHERE user_id=UUID_TO_BIN(?)",
+        ["", calendarInfo.name, id]
+      );
+    }
     return {
       messageType: "info",
       message: "user updated.",
     };
   } catch (error) {
-    console.log(error);
     return {
       messageType: "error",
       message: "there is an error in user update endpoint.",

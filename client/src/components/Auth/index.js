@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Redirect, useLocation } from "@reach/router";
 import { useSelector, useDispatch } from "react-redux";
-import { requestUserInfo } from "../../redux/actions/Auth";
+import { requestUserInfo, requestLogout } from "../../redux/actions/Auth";
 import { requestRemoveStatus } from "../../redux/actions/Status";
 import Loading from "../../helpers/Loading";
 export default function index({ children }) {
@@ -11,8 +11,13 @@ export default function index({ children }) {
   const location = useLocation();
   const dispatch = useDispatch();
   useEffect(() => {
-    if (status.messageType !== "error") {
+    if (
+      status.messageType !== "error" &&
+      sessionStorage.getItem("access_token") !== null
+    ) {
       dispatch(requestUserInfo());
+    } else {
+      dispatch(requestLogout());
     }
   }, []);
   useEffect(() => {

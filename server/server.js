@@ -18,7 +18,6 @@ app.use(bodyParser.json());
 const serviceNames = Object.keys(services);
 for (let i = 0; i < serviceNames.length; i += 1) {
   const name = serviceNames[i];
-  console.log(name);
   if (name === "graphql") {
     services[name].applyMiddleware({ app });
   } else {

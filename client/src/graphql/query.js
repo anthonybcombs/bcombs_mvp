@@ -7,3 +7,11 @@ export const USER_TYPES_QUERY = gql`
     }
   }
 `;
+
+export const IS_USER_EXIST_QUERY = gql`
+  query IsUserExits($email: String!) {
+    users(email: $email) {
+      email
+    }
+  }
+`;

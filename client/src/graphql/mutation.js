@@ -15,3 +15,20 @@ export const SIGN_IN_MUTATION = gql`
     }
   }
 `;
+export const SIGN_UP_MUTATION = gql`
+  mutation SignUp($user: UserSignupInput!) {
+    signUp(user: $user) {
+      message
+      messageType
+    }
+  }
+`;
+
+export const USER_UPDATE_MUTATION = gql`
+  mutation UserUpdate($user: UserUpdateInput!) {
+    userUpdate(user: $user) {
+      messageType
+      message
+    }
+  }
+`;

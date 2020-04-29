@@ -30,6 +30,8 @@
     "@wojtekmaj/react-datetimerange-picker": "^2.4.0",
     "apo": "0.0.0",
     "apollo-boost": "^0.4.7",
+    "apollo-cache-inmemory": "^1.6.5",
+    "apollo-link-http": "^1.5.17",
     "auth0-js": "^9.12.2",
     "date-fns": "^2.9.0",
     "graphql": "^15.0.0",

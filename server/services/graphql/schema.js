@@ -4,15 +4,21 @@ const queries = `
         id: String
         auth_id: String
         email: String
-        sub: String
         type: String
         username: String
-        access_token: String
-        token_type: String
-        id_token: String
-        picture: String
+        sub: String
+        given_name: String
+        family_name: String
+        nickname: String
+        updated_at: String
         is_profile_filled: Boolean
+        access_token: String
+        id_token: String    
+        token_type: String            
+        locale: String
         email_verified: Boolean
+        picture: String
+        name: String        
     }
     type UserType {
         id: String,
@@ -28,7 +34,7 @@ const queries = `
     }   
     type RootQuery{
         userInfo(access_token: String!,token_type: String!):User,
-        users(email: String,access_token: String!,token_type: String!):[User],
+        users(email: String,username: String,access_token: String,token_type: String):[User],
         userTypes:[UserType]
     }
 `;
@@ -39,11 +45,23 @@ const mutations = `
         name: String!
     }
     input UserSignupInput{
-        username: String!
-        password: String!
+        username: String
+        password: String
         email: String!
         isSocial: Boolean
-        type: UserTypeInput!
+        type: UserTypeInput
+        sub: String
+        token_type: String
+        given_name: String
+        family_name: String
+        nickname: String
+        updated_at: String
+        is_profile_filled: Boolean
+        access_token: String
+        locale: String
+        email_verified: Boolean
+        picture: String
+        name: String
     }
     input UserSignInInput{
         email: String!
@@ -57,14 +75,16 @@ const mutations = `
         lastname: String!
         familyrelationship: String!
         gender: String!
-        zipcode: Int!
+        zipcode: String!
         dateofbirth: Date!
     }
     input CalendarInfoInput{
         name: String!
     }
-    input CreateProfileInput{
+    input UserUpdateInput{
         email: String!
+        familyMembers: [PersonalInfoInput]
+        members: [PersonalInfoInput]
         personalInfo: PersonalInfoInput!
         calendarInfo: CalendarInfoInput!
     }
@@ -72,7 +92,7 @@ const mutations = `
         signUp(user: UserSignupInput!):Status
         signIn(user:UserSignInInput!):UserSignInType
         changePassword(user:UserChangePasswordInput!):Status
-        createProfile(user: CreateProfileInput!):Status
+        userUpdate(user: UserUpdateInput!):Status
     }
 `;
 

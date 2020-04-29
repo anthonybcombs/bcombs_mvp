@@ -4,7 +4,7 @@ import {
   executeSignUp,
   executeSignIn,
   executeChangePassword,
-  executeCreateProfile,
+  executeUserUpdate,
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 const resolvers = {
@@ -27,6 +27,9 @@ const resolvers = {
         if (args.email) {
           return user.email === args.email;
         }
+        if (args.username) {
+          return user.username === args.username;
+        }
         return true;
       });
     },
@@ -45,8 +48,8 @@ const resolvers = {
     async changePassword(root, { user, context }) {
       return await executeChangePassword(user);
     },
-    async createProfile(root, { user }, context) {
-      return await executeCreateProfile(user);
+    async userUpdate(root, { user }, context) {
+      return await executeUserUpdate(user);
     },
   },
 };

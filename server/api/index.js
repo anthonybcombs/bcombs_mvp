@@ -22,7 +22,6 @@ const isUserExist = async (user) => {
       result = false;
     }
   } catch (error) {
-    console.log(error);
   } finally {
     await db.close();
     return result;
@@ -38,7 +37,6 @@ const getUserFromDatabase = async (email) => {
     );
     result = rows[0];
   } catch (error) {
-    console.log(error);
   } finally {
     await db.close();
     return result;
@@ -76,7 +74,6 @@ router.post("/auth/userInfo", async (req, res) => {
     userInfo.isProfileFilled = is_profile_filled === 0 ? false : true;
     res.send(userInfo);
   } catch (error) {
-    console.log(error);
     res.send(error);
   }
 });
@@ -195,7 +192,6 @@ router.post("/users/update", async (req, res) => {
       [id, "", calendarInfo.name]
     );
   } catch (error) {
-    console.log(error);
   } finally {
     await db.close();
   }
