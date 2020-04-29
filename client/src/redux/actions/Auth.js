@@ -1,8 +1,11 @@
 import { call, take, put } from "redux-saga/effects";
 import graphqlClient from "../../graphql";
-import { SIGN_IN_MUTATION } from "../../graphql/mutation";
+import {
+  SIGN_IN_MUTATION,
+  CHANGE_PASSWORD_MUTATION,
+} from "../../graphql/mutation";
 import * as actionType from "./Constant";
-const authentecating = auth => {
+const authentecating = (auth) => {
   const { email, password } = auth[0];
   return new Promise(async (resolve, reject) => {
     try {
@@ -11,9 +14,9 @@ const authentecating = auth => {
         variables: {
           user: {
             email,
-            password
-          }
-        }
+            password,
+          },
+        },
       });
       return resolve({ ...data.signIn.user });
     } catch (error) {
@@ -29,12 +32,12 @@ const getUserInfo = () => {
         {
           method: "POST", // or 'PUT'
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             access_token: sessionStorage.getItem("access_token"),
-            token_type: sessionStorage.getItem("token_type")
-          })
+            token_type: sessionStorage.getItem("token_type"),
+          }),
         }
       );
       const userInfo = await userInfoResponse.json();
@@ -47,46 +50,43 @@ const getUserInfo = () => {
     }
   });
 };
-const requestPasswordChangeFromServer = user => {
+const requestPasswordChangeFromServer = (user) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const changePasswordResponse = await fetch(
-        `${process.env.API_HOST}/api/auth/changepassword`,
-        {
-          method: "POST", // or 'PUT'
-          headers: {
-            "Content-Type": "application/json"
+      const { data } = await graphqlClient.mutate({
+        mutation: CHANGE_PASSWORD_MUTATION,
+        variables: {
+          user: {
+            email: user.email,
           },
-          body: JSON.stringify(...user)
-        }
-      );
-      const changePasswordDetail = await changePasswordResponse.json();
+        },
+      });
       resolve({
-        messageType: changePasswordDetail.messageType,
-        message: changePasswordDetail.message
+        messageType: data.changePassword.messageType,
+        message: data.changePassword.message,
       });
     } catch (error) {
       reject("error");
     }
   });
 };
-export const requestAuth = auth => {
+export const requestAuth = (auth) => {
   return {
     type: actionType.REQUEST_AUTH,
-    auth
+    auth,
   };
 };
 export const requestUserInfo = () => {
   return {
-    type: actionType.REQUEST_AUTH_USER_INFO
+    type: actionType.REQUEST_AUTH_USER_INFO,
   };
 };
 export const requestLogout = () => {
   return {
-    type: actionType.REQUEST_AUTH_LOGOUT
+    type: actionType.REQUEST_AUTH_LOGOUT,
   };
 };
-export const requestPasswordChange = user => {
+export const requestPasswordChange = (user) => {
   return { type: actionType.REQUEST_CHANGE_PASSWORD, user };
 };
 export function* authenticated({ auth }) {
@@ -110,8 +110,8 @@ export function* authenticated({ auth }) {
       payload: {
         message: authData.message,
         messageType:
-          authData.messageType === "email_not_verified" ? "error" : "info"
-      }
+          authData.messageType === "email_not_verified" ? "error" : "info",
+      },
     });
   } catch (error) {}
 }
@@ -119,7 +119,7 @@ export function* authenticated({ auth }) {
 export function* gotUserInfo() {
   yield take([
     actionType.REQUEST_STATUS_COMPLETED,
-    actionType.REQUEST_USER_TYPES_COMPLETED
+    actionType.REQUEST_USER_TYPES_COMPLETED,
   ]);
   try {
     if (
@@ -137,14 +137,14 @@ export function* gotUserInfo() {
           type: actionType.REQUEST_STATUS_COMPLETED,
           payload: {
             messageType: "error",
-            message: "Email is not verified."
-          }
+            message: "Email is not verified.",
+          },
         });
       }
 
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
-        payload: userInfoData
+        payload: userInfoData,
       });
     } else {
       sessionStorage.removeItem("access_token");
@@ -153,15 +153,15 @@ export function* gotUserInfo() {
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
         payload: {
           messageType: "error",
-          error_description: ""
-        }
+          error_description: "",
+        },
       });
       yield put({
         type: actionType.REQUEST_STATUS_COMPLETED,
         payload: {
           messageType: "",
-          message: ""
-        }
+          message: "",
+        },
       });
     }
   } catch (error) {}
@@ -174,17 +174,18 @@ export function* loggedOut() {
 }
 
 export function* requestedPasswordChange({ user }) {
-  const changePasswordDetail = yield call(requestPasswordChangeFromServer, [
+  const changePasswordDetail = yield call(
+    requestPasswordChangeFromServer,
     user
-  ]);
+  );
   yield put({
-    type: actionType.REQUEST_CHANGE_PASSWORD_COMPLETED
+    type: actionType.REQUEST_CHANGE_PASSWORD_COMPLETED,
   });
   yield put({
     type: actionType.REQUEST_STATUS_COMPLETED,
     payload: {
       messageType: changePasswordDetail.messageType,
-      message: changePasswordDetail.message
-    }
+      message: changePasswordDetail.message,
+    },
   });
 }
