@@ -32,7 +32,7 @@ export default function index({
     userIds: [auth.sub],
     relation: ""
   });
-  console.log("auth", auth);
+
   const dispatch = useDispatch();
   const handleContactDetailsChange = (id, value) => {
     let newSelectedGroups = contactDetails.selectedGroups;
@@ -60,7 +60,7 @@ export default function index({
     const payload = {
       ...contactDetails
     };
-    console.log("payloadddd", payload);
+
     dispatch(addContact(payload));
     toggleCreateContactModal(false);
   };

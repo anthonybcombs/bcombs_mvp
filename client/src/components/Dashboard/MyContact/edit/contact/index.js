@@ -68,12 +68,14 @@ export default function index({
       }
       dispatch(updateGroup(group));
     });
+    console.log('ContactDetails Submit', contactDetails)
     dispatch(updateContact(contactDetails));
     toggleEditContactModal(false);
   };
   if (!isVisible) {
     return <></>;
   }
+
   return ReactDOM.createPortal(
     <EditContactModal
       className="modal"

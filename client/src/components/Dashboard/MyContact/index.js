@@ -18,6 +18,7 @@ import NewGroupModal from "../MyGroups/create";
 import ProfileModal from "./profile/";
 
 // REDUX
+import { getContact } from "../../../redux/actions/Contacts";
 import { requestUserGroup } from "../../../redux/actions/Groups";
 
 const MyContactsStyled = styled.div`
@@ -124,12 +125,14 @@ export default function index() {
       const payload = {
         email: auth.email
       };
-      console.log("payloadddddddd", payload);
+
       dispatch(requestUserGroup(payload));
     }
   }, []);
+  useEffect(() => {
+    dispatch(getContact("1"));
+  }, []);
 
-  console.log("groups", groups);
 
   const selectedGroup = groups.find(group => group.id === selectedGroupId);
   const filteredContacts = contacts.filter(contact => {
@@ -139,8 +142,6 @@ export default function index() {
     return selectedGroup.contacts.includes(contact.id);
   });
 
-  console.log("filteredContacts", filteredContacts);
-  console.log("filteredContacts contacts", contacts);
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
   };
@@ -148,7 +149,7 @@ export default function index() {
     setSelectedGroupId(value);
   };
 
-  console.log("auth", auth);
+
   return (
     <MyContactsStyled>
       <NewContactModal

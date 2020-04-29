@@ -188,7 +188,7 @@ export default function index() {
   }, [user]);
 
   const handleFormSubmit = e => {
-    console.log("personalInfo", personalInfo);
+  
     dispatch(
       requestUpdateUserProfile({
         personalInfo: {

@@ -72,7 +72,6 @@ export default function index({
     dispatch(removeContact(contactDetails));
   };
 
-  console.log("contactDetails", contactDetails);
   return (
     <ContactStyled
       className={`${isSelected ? "selected" : ""}`}
@@ -83,7 +82,7 @@ export default function index({
         <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
         <p>
           <span>
-            {contactDetails.firstName} {contactDetails.lastName}
+            {contactDetails.first_name} {contactDetails.last_name}
           </span>
           <br />
           <span>{contactDetails.relation}</span>
@@ -93,7 +92,7 @@ export default function index({
         <p>{contactDetails.email}</p>
       </div>
       <div>
-        <p>{contactDetails.phoneNumber}</p>
+        <p>{contactDetails.phone_number}</p>
       </div>
       <div>
         <button

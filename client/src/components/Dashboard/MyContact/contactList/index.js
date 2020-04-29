@@ -47,13 +47,13 @@ export default function index({
 
   return (
     <ContactListStyled>
-      {/* <EditContactModal
+       <EditContactModal
         isVisible={isEditContactModalVisible}
         toggleEditContactModal={setisEditContactModalVisible}
         contact={contact || {}}
         groups={groups}
         typeOfForm={typeOfFormUsedInEditContact}
-      /> */}
+      />
       {/* <ProfileModal
         isVisible={isProfleModalVisible}
         toggleProfileModal={setIsProfleModalVisible}
