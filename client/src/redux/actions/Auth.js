@@ -4,6 +4,7 @@ import {
   SIGN_IN_MUTATION,
   CHANGE_PASSWORD_MUTATION,
 } from "../../graphql/mutation";
+import { USER_INFO_QUERY } from "../../graphql/query";
 import * as actionType from "./Constant";
 const authentecating = (auth) => {
   const { email, password } = auth[0];
@@ -27,24 +28,31 @@ const authentecating = (auth) => {
 const getUserInfo = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const userInfoResponse = await fetch(
-        `${process.env.API_HOST}/api/auth/userinfo`,
-        {
-          method: "POST", // or 'PUT'
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            access_token: sessionStorage.getItem("access_token"),
-            token_type: sessionStorage.getItem("token_type"),
-          }),
-        }
-      );
-      const userInfo = await userInfoResponse.json();
-      if (userInfo.type === "invalid-json") {
+      // const userInfoResponse = await fetch(
+      //   `${process.env.API_HOST}/api/auth/userinfo`,
+      //   {
+      //     method: "POST", // or 'PUT'
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       access_token: sessionStorage.getItem("access_token"),
+      //       token_type: sessionStorage.getItem("token_type"),
+      //     }),
+      //   }
+      // );
+      // const userInfo = await userInfoResponse.json();
+      const { data } = await graphqlClient.query({
+        query: USER_INFO_QUERY,
+        variables: {
+          access_token: sessionStorage.getItem("access_token"),
+          token_type: sessionStorage.getItem("token_type"),
+        },
+      });
+      if (data.userInfo.type === "invalid-json") {
         reject("error");
       }
-      return resolve(userInfo);
+      return resolve(data.userInfo);
     } catch (error) {
       reject("error");
     }

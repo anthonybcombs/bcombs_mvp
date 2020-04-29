@@ -1,58 +1,4 @@
-const queries = `
-    scalar Date
-
-    type Contact{
-        id: String
-        user_id: String
-        first_name: String
-        last_name: String
-        email: String
-        phone_number: String
-        relation: String
-    }
-
-    type User{
-        id: String
-        auth_id: String
-        email: String
-        type: String
-        username: String
-        sub: String
-        given_name: String
-        family_name: String
-        nickname: String
-        updated_at: String
-        is_profile_filled: Boolean
-        access_token: String
-        id_token: String    
-        token_type: String            
-        locale: String
-        email_verified: Boolean
-        picture: String
-        name: String        
-    }
-    type UserType {
-        id: String,
-        name: String
-    }
-    type Status{
-        messageType: String
-        message: String
-    }
-    type UserSignInType{
-        user:User,
-        status:Status
-    }   
-    type RootQuery{
-        contacts:[Contact]
-        userInfo(access_token: String!,token_type: String!):User,
-        users(email: String,username: String,access_token: String,token_type: String):[User],
-        userTypes:[UserType]
-    }
-
-`;
-
-const mutations = `
+const inputs = `
     input UserTypeInput {
         id: String!
         name: String!
@@ -109,7 +55,64 @@ const mutations = `
         phone_number: String
         relation: String
     }
-    
+`;
+const queryTypes = `
+    scalar Date
+
+    type Contact{
+        id: String
+        user_id: String
+        first_name: String
+        last_name: String
+        email: String
+        phone_number: String
+        relation: String
+    }
+
+    type User{
+        id: String
+        auth_id: String
+        email: String
+        type: String
+        username: String
+        sub: String
+        given_name: String
+        family_name: String
+        nickname: String
+        updated_at: String
+        is_profile_filled: Boolean
+        access_token: String
+        id_token: String    
+        token_type: String            
+        locale: String
+        email_verified: Boolean
+        picture: String
+        name: String        
+    }
+    type UserType {
+        id: String,
+        name: String
+    }
+    type Status{
+        messageType: String
+        message: String
+    }
+    type UserSignInType{
+        user:User,
+        status:Status
+    }   
+`;
+const queries = `
+    type RootQuery{
+        contacts:[Contact]
+        userInfo(access_token: String!,token_type: String!):User,
+        users(email: String,username: String,access_token: String,token_type: String):[User],
+        userTypes:[UserType]
+    }
+
+`;
+
+const mutations = `
     type RootMutation{
         signUp(user: UserSignupInput!):Status
         signIn(user:UserSignInInput!):UserSignInType
@@ -128,6 +131,8 @@ const schema = `
 `;
 
 const typeDefinitions = `
+    ${inputs}
+    ${queryTypes}
     ${queries}
     ${mutations}
     ${schema}

@@ -15,3 +15,25 @@ export const IS_USER_EXIST_QUERY = gql`
     }
   }
 `;
+export const USER_INFO_QUERY = gql`
+  query UserInfo($access_token: String!, $token_type: String!) {
+    userInfo(access_token: $access_token, token_type: $token_type) {
+      email
+      type
+      username
+      sub
+      given_name
+      family_name
+      nickname
+      updated_at
+      is_profile_filled
+      access_token
+      id_token
+      token_type
+      locale
+      email_verified
+      picture
+      name
+    }
+  }
+`;

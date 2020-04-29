@@ -12,11 +12,7 @@ import { editContact, getContacts, removeContact } from "../../api/contacts";
 const resolvers = {
   RootQuery: {
     async userInfo(root, args, context) {
-      const creds = {
-        access_token: args.access_token,
-        token_type: args.token_type,
-      };
-      const user = await getUserInfo(creds);
+      const user = await getUserInfo(args);
       return user;
     },
     async users(root, args, context) {

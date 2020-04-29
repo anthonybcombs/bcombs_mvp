@@ -25,8 +25,11 @@ export const getUserInfo = async (creds) => {
       },
     });
     const userInfo = await userInfoResponse.json();
-    const { is_profile_filled } = await getUser(userInfo.email);
-    userInfo.isProfileFilled = is_profile_filled === 0 ? false : true;
+    const users = await getUsers();
+    const { is_profile_filled } = users.filter(
+      (user) => user.email === userInfo.email
+    )[0];
+    userInfo.is_profile_filled = is_profile_filled === 0 ? false : true;
     return userInfo;
   } catch (error) {
     return error;
