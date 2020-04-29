@@ -1,5 +1,13 @@
 import { call, take, put } from "redux-saga/effects";
 import * as actionType from "./Constant";
+import graphqlClient from "../../graphql";
+
+import { GET_CONTACT_QUERY } from "../../graphql/contactQuery";
+import {
+  DELETE_CONTACT_MUTATION,
+  UPDATE_CONTACT_MUTATION
+} from "../../graphql/contactMutation";
+
 const addContactToDatabase = contact => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -22,16 +30,53 @@ const addContactToDatabase = contact => {
     }
   });
 };
-const updateContactToDatabase = ({ group }) => {
-  return new Promise((resolve, reject) => {
-    return resolve("success");
+const updateContactToDatabase = contact => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: UPDATE_CONTACT_MUTATION,
+        variables: {
+          contact: {
+            ...contact[0]
+          }
+        }
+      });
+
+      return resolve(data.updateContact);
+    } catch (error) {
+      reject("error");
+    }
   });
 };
-const removeContactToDatabase = ({ group }) => {
-  return new Promise((resolve, reject) => {
-    return resolve("success");
+const removeContactToDatabase = contact => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: DELETE_CONTACT_MUTATION,
+        variables: {
+          id: contact[0].id
+        }
+      });
+      return resolve(data.deleteContacts);
+    } catch (error) {
+      reject("error");
+    }
   });
 };
+
+const getContactToDatabase = userId => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: GET_CONTACT_QUERY
+      });
+      return resolve(data.contacts);
+    } catch (error) {
+      reject("error");
+    }
+  });
+};
+
 export const addContact = contact => {
   return {
     type: actionType.REQUEST_ADD_CONTACT,
@@ -54,9 +99,9 @@ export const updateContact = contact => {
     contact: {
       id: contact.id,
       userIds: contact.userIds,
-      firstName: contact.firstName,
-      lastName: contact.lastName,
-      phoneNumber: contact.phoneNumber,
+      first_name: contact.first_name,
+      last_name: contact.last_name,
+      phone_number: contact.phone_number,
       email: contact.email,
       relation: contact.relation
     }
@@ -68,8 +113,22 @@ export const removeContact = contact => {
     contact: { id: contact.id }
   };
 };
+
+export const getContact = userId => {
+  return {
+    type: actionType.REQUEST_USER_CONTACT,
+    userId
+  };
+};
+
+export const setContact = data => {
+  return {
+    type: actionType.SET_USER_CONTACT_LIST,
+    data
+  };
+};
+
 export function* addedContact({ contact }) {
-  console.log("addedContact", contact);
   yield call(addContactToDatabase, contact);
   yield put({
     type: actionType.REQUEST_ADD_CONTACT_COMPLETED,
@@ -77,16 +136,45 @@ export function* addedContact({ contact }) {
   });
 }
 export function* updatedContact({ contact }) {
-  yield call(updateContactToDatabase, [contact]);
-  yield put({
-    type: actionType.REQUEST_UPDATE_CONTACT_COMPLETED,
-    payload: contact
-  });
+  try {
+    const response = yield call(updateContactToDatabase, [contact]);
+    console.log("Update Contact", response);
+    yield put({
+      type: actionType.SET_USER_CONTACT_LIST,
+      payload: response
+    });
+  } catch (err) {}
 }
 export function* removedContact({ contact }) {
-  yield call(removeContactToDatabase, [contact]);
-  yield put({
-    type: actionType.REQUEST_REMOVE_CONTACT_COMPLETED,
-    payload: contact
-  });
+  try {
+    const response = yield call(removeContactToDatabase, [contact]);
+    yield put({
+      type: actionType.SET_USER_CONTACT_LIST,
+      payload: response
+    });
+  } catch (err) {
+    console.log("Error", err);
+  }
+
+  // yield put({
+  //   type: actionType.REQUEST_REMOVE_CONTACT_COMPLETED,
+  //   payload: contact
+  // });
+}
+
+export function* getUserContact(action) {
+  try {
+    const response = yield call(getContactToDatabase, action.userId);
+    if (response) {
+      yield put({
+        type: actionType.SET_USER_CONTACT_LIST,
+        payload: response
+      });
+    }
+  } catch (err) {
+    yield put({
+      type: actionType.SET_USER_CONTACT_LIST,
+      payload: []
+    });
+  }
 }

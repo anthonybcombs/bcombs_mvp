@@ -15,14 +15,14 @@ export const getUsers = async () => {
   }
 };
 
-export const getUserInfo = async (creds) => {
+export const getUserInfo = async creds => {
   try {
     const userInfoResponse = await fetch("https://bcombs.auth0.com/userinfo", {
       method: "GET",
       headers: {
         Authorization: `${creds.token_type} ${creds.access_token}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     });
     const userInfo = await userInfoResponse.json();
     const { is_profile_filled } = await getUser(userInfo.email);
@@ -32,9 +32,10 @@ export const getUserInfo = async (creds) => {
     return error;
   }
 };
-export const executeSignIn = async (user) => {
+export const executeSignIn = async user => {
   try {
     const params = new URLSearchParams();
+    console.log("userrr", user);
     params.append("grant_type", "password");
     params.append("client_id", process.env.AUTH_CLIENT_ID);
     params.append("client_secret", process.env.AUTH_CLIENT_SECRET);
@@ -42,7 +43,7 @@ export const executeSignIn = async (user) => {
     params.append("password", user.password);
     const AuthResponse = await fetch("https://bcombs.auth0.com/oauth/token", {
       method: "POST",
-      body: params,
+      body: params
     });
     const authData = await AuthResponse.json();
     if (authData.hasOwnProperty("access_token")) {
@@ -52,42 +53,42 @@ export const executeSignIn = async (user) => {
           method: "POST",
           headers: {
             Authorization: `${authData.token_type} ${authData.access_token}`,
-            "Content-Type": "application/json",
-          },
+            "Content-Type": "application/json"
+          }
         }
       );
       const userInfo = await userInfoResponse.json();
       return {
         user: {
           ...authData,
-          ...userInfo,
+          ...userInfo
         },
         status: {
           messageType: "Info",
-          message: "User signed in.",
-        },
+          message: "User signed in."
+        }
       };
     }
     return {
       user: authData,
       status: {
         messageType: "Info",
-        message: "User signed in.",
-      },
+        message: "User signed in."
+      }
     };
   } catch (error) {
     return {
       status: {
         messageType: "error",
-        message: "there error in requesting sign in endpoint.",
-      },
+        message: "there error in requesting sign in endpoint."
+      }
     };
   }
 };
-export const executeChangePassword = async (reqData) => {
+export const executeChangePassword = async reqData => {
   try {
     const users = await getUsers();
-    const user = users.filter((user) => user.email === reqData.email)[0];
+    const user = users.filter(user => user.email === reqData.email)[0];
     if (user.hasOwnProperty("email")) {
       const params = new URLSearchParams();
       params.append("client_id", process.env.AUTH_CLIENT_ID);
@@ -95,25 +96,25 @@ export const executeChangePassword = async (reqData) => {
       params.append("connection", "Username-Password-Authentication");
       await fetch("https://bcombs.auth0.com/dbconnections/change_password", {
         method: "POST",
-        body: params,
+        body: params
       });
       return {
         messageType: "info",
-        message: "Email has been send!",
+        message: "Email has been send!"
       };
     }
     return {
       messageType: "error",
-      message: "Email address does not exist.",
+      message: "Email address does not exist."
     };
   } catch (error) {
     return {
       messageType: "error",
-      message: "Email address does not exist.",
+      message: "Email address does not exist."
     };
   }
 };
-export const executeSignUp = async (user) => {
+export const executeSignUp = async user => {
   const db = makeDb();
   try {
     let authData;
@@ -128,7 +129,7 @@ export const executeSignUp = async (user) => {
         "https://bcombs.auth0.com/dbconnections/signup",
         {
           method: "POST",
-          body: params,
+          body: params
         }
       );
       authData = await signUpResponse.json();
@@ -146,34 +147,34 @@ export const executeSignUp = async (user) => {
           : `auth0|${authData._id}`,
         user.hasOwnProperty("isSocial") ? rows[0].id : user.type.id,
         user.email,
-        user.username,
+        user.username
       ]
     );
     if (insertedRows.affectedRows > 0 && !user.hasOwnProperty("isSocial")) {
       return {
         messageType: "info",
-        message: `User created! We sent confirmation email to ${user.email}.`,
+        message: `User created! We sent confirmation email to ${user.email}.`
       };
     }
     return {
       messageType: "",
-      message: "",
+      message: ""
     };
   } catch (error) {
     return {
       messageType: "error",
-      message: "there error in requesting sign up endpoint.",
+      message: "there error in requesting sign up endpoint."
     };
   } finally {
     await db.close();
   }
 };
-export const executeCreateProfile = async (user) => {
+export const executeCreateProfile = async user => {
   const db = makeDb();
   try {
     const { personalInfo, familyMembers, members, calendarInfo, email } = user;
     const users = await getUsers();
-    const { id } = users.filter((user) => user.email === email)[0];
+    const { id } = users.filter(user => user.email === email)[0];
     await db.query(
       "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?)",
       [
@@ -183,7 +184,7 @@ export const executeCreateProfile = async (user) => {
         personalInfo.familyrelationship,
         personalInfo.gender,
         personalInfo.zipcode,
-        personalInfo.dateofbirth,
+        personalInfo.dateofbirth
       ]
     );
     await db.query(
@@ -196,13 +197,13 @@ export const executeCreateProfile = async (user) => {
     );
     return {
       messageType: "info",
-      message: "user updated.",
+      message: "user updated."
     };
   } catch (error) {
     console.log(error);
     return {
       messageType: "error",
-      message: "there is an error in user update endpoint.",
+      message: "there is an error in user update endpoint."
     };
   } finally {
     await db.close();
