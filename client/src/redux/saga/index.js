@@ -13,7 +13,8 @@ import { deletedEvent, updatedEvent, addedEvent } from "../actions/Events";
 import {
   addedContact,
   removedContact,
-  updatedContact
+  updatedContact,
+  getUserContact
 } from "../actions/Contacts";
 import { addedGroup, updatedGroup, getUserGroup } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
@@ -44,6 +45,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ADD_CONTACT, addedContact);
   yield takeEvery(actionType.REQUEST_UPDATE_CONTACT, updatedContact);
   yield takeLatest(actionType.REQUEST_REMOVE_CONTACT, removedContact);
+  yield takeLatest(actionType.REQUEST_USER_CONTACT, getUserContact);
   //GROUPS
   yield takeLatest(actionType.REQUEST_ADD_GROUP, addedGroup);
   yield takeEvery(actionType.REQUEST_UPDATE_GROUP, updatedGroup);

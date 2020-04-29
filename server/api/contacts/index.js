@@ -5,7 +5,7 @@ export const getContacts = async () => {
   let result;
   try {
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number  from contacts`
+      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number, relation  from contacts`
     );
 
     result = rows;
@@ -46,9 +46,10 @@ export const editContact = async (data) => {
     );
 
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number  from contacts`
+      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number,relation  from contacts`
     );
-    result = rows;
+    result = JSON.parse(JSON.stringify(rows));
+    console.log("RESULTTTTTTTTTTTTTT", result);
   } catch (error) {
   } finally {
     await db.close();

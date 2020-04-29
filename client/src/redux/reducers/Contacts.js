@@ -18,6 +18,8 @@ export default function Contacts(
       });
     case actionType.REQUEST_REMOVE_CONTACT_COMPLETED:
       return state.filter(contact => contact.id !== action.payload.id);
+    case actionType.SET_USER_CONTACT_LIST:
+      return action.payload;
     default:
       return state;
   }

@@ -5,11 +5,11 @@ import * as actionType from "./Constant";
 //     return resolve("success");
 //   });
 // };
-// const updateGroupToDatabase = ({ group }) => {
-//   return new Promise((resolve, reject) => {
-//     return resolve("success");
-//   });
-// };
+const updateGroupToDatabase = ({ group }) => {
+  return new Promise((resolve, reject) => {
+    return resolve("success");
+  });
+};
 export const addGroup = group => {
   return {
     type: actionType.REQUEST_ADD_GROUP,
@@ -75,7 +75,7 @@ const addGroupToDatabase = data => {
 const getUserGroupToDatabase = data => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("GET USER GROUP TO DATABASEEEE", data);
+   
       const response = await fetch(`${process.env.API_HOST}/api/usergroups`, {
         method: "POST",
         headers: {
@@ -85,7 +85,7 @@ const getUserGroupToDatabase = data => {
         body: JSON.stringify(data)
       });
       const responseData = await response.json();
-      console.log("RESPONSEEE", response);
+   
       return resolve(responseData);
     } catch (error) {
       reject("error");

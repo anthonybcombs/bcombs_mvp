@@ -8,7 +8,7 @@ import {
   executeCreateProfile
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
-import { editContact,getContacts, removeContact } from "../../api/contacts";
+import { editContact, getContacts, removeContact } from "../../api/contacts";
 
 const resolvers = {
   RootQuery: {
@@ -62,8 +62,7 @@ const resolvers = {
     async deleteContacts(root, args, context) {
       return await removeContact(args.id);
     },
-    async updateContact(root, {contact}, context) {
-      console.log('Update Contact Resolver')
+    async updateContact(root, { contact }, context) {
       return await editContact(contact);
     }
   }
