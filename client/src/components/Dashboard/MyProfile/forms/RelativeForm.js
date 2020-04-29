@@ -79,8 +79,7 @@ export default function RelativeForm({
     <RelativeFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      theme={theme}
-    >
+      theme={theme}>
       <input
         placeholder="First name"
         name="firstName"

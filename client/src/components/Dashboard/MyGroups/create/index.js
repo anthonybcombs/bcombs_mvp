@@ -25,7 +25,8 @@ export default function index({
     id: uuid(),
     name: "",
     userIds: [auth.id],
-    contacts: []
+    contacts: [],
+    visibility: 0
   });
   const dispatch = useDispatch();
   const handleGroupDetailsChange = (id, value) => {
@@ -47,10 +48,15 @@ export default function index({
   };
   const handleSubmit = value => {
     toggleCreateGroupModal(false);
-    dispatch(addGroup(groupDetails));
+    const payload = {
+      ...groupDetails,
+      email: auth.email
+    };
+    dispatch(addGroup(payload));
     setGroupDetails({
       id: uuid(),
       name: "",
+      visibility: 0,
       userIds: [auth.id],
       contacts: []
     });
@@ -65,8 +71,7 @@ export default function index({
           className="close"
           onClick={() => {
             toggleCreateGroupModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <div>

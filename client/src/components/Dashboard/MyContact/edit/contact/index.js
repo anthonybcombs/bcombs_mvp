@@ -25,15 +25,19 @@ export default function index({
   typeOfForm = "Edit Contact"
 }) {
   const [contactDetails, setContactDetails] = useState({});
-  useEffect(() => {
-    setContactDetails({
-      ...contact,
-      selectedGroups: groups
-        .filter(group => group.contacts.includes(contact.id))
-        .map(group => group.id)
-    });
-  }, [contact, isVisible]);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (contact.id) {
+      setContactDetails({
+        ...contact,
+        selectedGroups: groups
+          .filter(group => group.contacts.includes(contact.id))
+          .map(group => group.id)
+      });
+    }
+  }, [contact, isVisible]);
+
   const handleContactDetailsChange = (id, value) => {
     let newSelectedGroups = contactDetails.selectedGroups;
     if (id === "selectedGroups") {
@@ -64,27 +68,27 @@ export default function index({
       }
       dispatch(updateGroup(group));
     });
+    console.log('ContactDetails Submit', contactDetails)
     dispatch(updateContact(contactDetails));
     toggleEditContactModal(false);
   };
   if (!isVisible) {
     return <></>;
   }
+
   return ReactDOM.createPortal(
     <EditContactModal
       className="modal"
       theme={{
         modalWidth: typeOfForm === "Edit Contact" ? "60%" : "30%",
         modalMarginTop: typeOfForm === "Edit Contact" ? "initial" : "20vh"
-      }}
-    >
+      }}>
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleEditContactModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <div>

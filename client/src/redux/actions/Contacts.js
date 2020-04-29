@@ -1,8 +1,25 @@
 import { call, take, put } from "redux-saga/effects";
 import * as actionType from "./Constant";
-const addContactToDatabase = ({ group }) => {
-  return new Promise((resolve, reject) => {
-    return resolve("success");
+const addContactToDatabase = contact => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const addContactRequest = await fetch(
+        `${process.env.API_HOST}/api/contact`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(contact)
+        }
+      );
+      const addContactResponse = await addContactRequest.json();
+
+      return resolve(addContactResponse);
+    } catch (error) {
+      reject("error");
+    }
   });
 };
 const updateContactToDatabase = ({ group }) => {
@@ -25,7 +42,9 @@ export const addContact = contact => {
       lastName: contact.lastName,
       phoneNumber: contact.phoneNumber,
       email: contact.email,
-      relation: contact.relation
+      relation: contact.relation,
+      userEmail: contact.userEmail,
+      selectedGroups: contact.selectedGroups
     }
   };
 };
@@ -50,7 +69,8 @@ export const removeContact = contact => {
   };
 };
 export function* addedContact({ contact }) {
-  yield call(addContactToDatabase, [contact]);
+  console.log("addedContact", contact);
+  yield call(addContactToDatabase, contact);
   yield put({
     type: actionType.REQUEST_ADD_CONTACT_COMPLETED,
     payload: contact

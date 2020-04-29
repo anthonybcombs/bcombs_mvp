@@ -15,9 +15,16 @@ import {
   removedContact,
   updatedContact
 } from "../actions/Contacts";
-import { addedGroup, updatedGroup } from "../actions/Groups";
+import { addedGroup, updatedGroup, getUserGroup } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
-import { addedUser, updatedUser, checkedUserAndAdd } from "../actions//Users";
+import {
+  addedUser,
+  updatedUser,
+  checkedUserAndAdd,
+  getUserInfo,
+  updateUserProfile,
+  updateUserProfilePhoto
+} from "../actions/Users";
 import { gotUserTypes } from "../actions/UserTypes";
 import { requestedStatus, removedStatus } from "../actions/Status";
 import reducer from "../reducers";
@@ -51,6 +58,15 @@ function* rootSaga() {
   //STATUS
   yield takeLatest(actionType.REQUEST_STATUS, requestedStatus);
   yield takeLatest(actionType.REQUEST_REMOVE_STATUS, removedStatus);
+
+  // ADDED BY DENNIS
+  yield takeLatest(actionType.REQUEST_UPDATE_USER_PROFILE, updateUserProfile);
+  yield takeLatest(actionType.REQUEST_USER_PROFILE, getUserInfo);
+  yield takeLatest(
+    actionType.REQUEST_UPDATE_USER_PHOTO,
+    updateUserProfilePhoto
+  );
+  yield takeLatest(actionType.REQUEST_USER_GROUPS, getUserGroup);
 }
 const sagaMiddleware = createSagaMiddleware();
 

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { faPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,16 @@ import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import backgroundImg from "../../../images/loginbg.png";
 import CreateRelative from "./create/";
+import ProfileForm from "./forms/ProfileForm";
+import EditProfileForm from "./forms/EditProfileForm";
+
+// REDUX
+import {
+  requestUpdateUserProfile,
+  requestUpdateUserPhoto,
+  requestUserProfile
+} from "../../../redux/actions/Users";
+
 const ProfileSyled = styled.div`
   padding: 1em;
   #profile,
@@ -21,17 +31,18 @@ const ProfileSyled = styled.div`
   #personal-info div:nth-of-type(1) {
     position: relative;
     width: 100%;
-    height: 250px;
+    height: 300px;
     background: url(${backgroundImg}), rgba(242, 110, 33, 0.8);
     background-blend-mode: multiply;
   }
   #personal-info div:nth-of-type(1) div:nth-of-type(1) {
     position: absolute;
     display: block;
-    width: 100px;
+    width: 250px;
     height: auto;
     top: 25%;
-    left: 38%;
+    left: 32%;
+    text-align: center;
   }
   #personal-info div:nth-of-type(1) div:nth-of-type(1) h3,
   #personal-info div:nth-of-type(1) div:nth-of-type(1) h4 {
@@ -135,16 +146,77 @@ const ProfileSyled = styled.div`
   }
 `;
 export default function index() {
+  const [personalInfo, setPersonalInfo] = useState({
+    firstname: "",
+    lastname: "",
+    gender: "",
+    familyrelationship: "",
+    zipcode: "",
+    dateofbirth: ""
+  });
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isEditProfileVisible, setEditProfileVisible] = useState(false);
   const [
     isCreateRelativeModaVisibile,
     setIsCreateRelativeModaVisibile
   ] = useState(false);
   const [dashboard, setDashboard] = useState("Events");
-  const { auth, settings, relatives } = useSelector(
-    ({ auth, settings, relatives }) => {
-      return { auth, settings, relatives };
+  const { auth, settings, relatives, user } = useSelector(
+    ({ auth, settings, relatives, user }) => {
+      return { auth, settings, relatives, user };
     }
   );
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (auth.email) {
+      dispatch(requestUserProfile(auth.email));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user.profile) {
+      setPersonalInfo({
+        firstname: user.profile.first_name,
+        lastname: user.profile.last_name,
+        gender: user.profile.gender,
+        familyrelationship: user.profile.family_relationship,
+        zipcode: user.profile.zip_code,
+        dateofbirth: user.profile.birth_date
+      });
+    }
+  }, [user]);
+
+  const handleFormSubmit = e => {
+  
+    dispatch(
+      requestUpdateUserProfile({
+        personalInfo: {
+          ...personalInfo,
+          id: user.profile.id
+        },
+        email: auth.email
+      })
+    );
+
+    if (selectedFile) {
+      let data = new FormData();
+      data.append("file", selectedFile);
+      data.append("email", auth.email);
+      dispatch(requestUpdateUserPhoto(data));
+    }
+
+    setEditProfileVisible(false);
+  };
+
+  const handleInputChange = (id, value) => {
+    setPersonalInfo({ ...personalInfo, [id]: value });
+  };
+
+  const handleFileChange = event => {
+    setSelectedFile(event.target.files[0]);
+  };
+
   return (
     <ProfileSyled>
       <CreateRelative
@@ -153,22 +225,48 @@ export default function index() {
         auth={auth}
       />
       <h2>Profile</h2>
+
       <div id="profile">
         <div>
           <div id="personal-info">
             <div>
               <div>
-                <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
-                <h3>Chris Paul</h3>
+                <img
+                  src={`${
+                    auth.profileImg ? auth.profileImg : auth.picture
+                  }?t=${new Date().getTime()}`}
+                />
+
+                <input type="file" name="file" onChange={handleFileChange} />
+
+                <h3>
+                  {user.profile && user.profile.first_name}{" "}
+                  {user.profile && user.profile.last_name}
+                </h3>
                 <h4>
                   <FontAwesomeIcon icon={faUsers} />
+
                   <span>22</span>
                 </h4>
               </div>
             </div>
             <div>
               <h3>Personal</h3>
-              <FontAwesomeIcon icon={faEdit} />
+
+              <FontAwesomeIcon
+                onClick={() => {
+                  setEditProfileVisible(true);
+                }}
+                icon={faEdit}
+              />
+
+              {personalInfo.lastname && (
+                <ProfileForm
+                  data={personalInfo}
+                  handleInputChange={handleInputChange}
+                  onSubmit={handleFormSubmit}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -178,8 +276,7 @@ export default function index() {
               className={`${dashboard === "Events" ? "selected" : ""}`}
               onClick={() => {
                 setDashboard("Events");
-              }}
-            >
+              }}>
               <p>0</p>
               <p>Events</p>
             </div>
@@ -187,8 +284,7 @@ export default function index() {
               className={`${dashboard === "Calendars" ? "selected" : ""}`}
               onClick={() => {
                 setDashboard("Calendars");
-              }}
-            >
+              }}>
               <p>0</p>
               <p>Calendars</p>
             </div>
@@ -196,8 +292,7 @@ export default function index() {
               className={`${dashboard === "Comments" ? "selected" : ""}`}
               onClick={() => {
                 setDashboard("Comments");
-              }}
-            >
+              }}>
               <p>0</p>
               <p>Comments</p>
             </div>
@@ -230,8 +325,7 @@ export default function index() {
             <button
               onClick={() => {
                 setIsCreateRelativeModaVisibile(true);
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
             <span>Add A relative</span>
@@ -260,6 +354,14 @@ export default function index() {
           </table>
         </div>
       </div>
+
+      <EditProfileForm
+        isVisible={isEditProfileVisible}
+        toggleProfileVisible={setEditProfileVisible}
+        data={personalInfo}
+        handleInputChange={handleInputChange}
+        onSubmit={handleFormSubmit}
+      />
     </ProfileSyled>
   );
 }

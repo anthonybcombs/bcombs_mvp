@@ -33,6 +33,13 @@ const ContactFormStyled = styled.form`
     border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
+  select {
+    font-size: ${({ theme }) => theme.input.fontSize};
+    display: block;
+    width: 50% !important;
+    border: none;
+    margin: 2.5em auto 2.5em auto;
+  }
   label {
     display: block;
     word-wrap: break-word;
@@ -69,6 +76,11 @@ const ContactFormStyled = styled.form`
     }
   }
 `;
+
+const VISIBILITY_OPTIONS = [
+  { value: "public", name: "Public" },
+  { value: "private", name: "Private" }
+];
 export default function GroupForm({
   groupDetails,
   contacts,
@@ -84,8 +96,7 @@ export default function GroupForm({
     <ContactFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      theme={theme}
-    >
+      theme={theme}>
       <input
         placeholder="Group name"
         name="name"
@@ -100,6 +111,20 @@ export default function GroupForm({
         errorType="required"
         message="Group name  is required."
       />
+
+      <select
+        data-testid="app-profile-select-gender"
+        name="visibility"
+        onChange={({ target }) => {
+          handleGroupDetailsChange("visibility", target.value);
+        }}
+        ref={register}>
+        {VISIBILITY_OPTIONS.map(opt => (
+          <option key={opt.id} value={opt.id}>
+            {opt.name}
+          </option>
+        ))}
+      </select>
       <div>
         <p>Assign to existing contact</p>
         {contacts.map(contact => (

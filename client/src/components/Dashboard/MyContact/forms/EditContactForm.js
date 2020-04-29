@@ -126,12 +126,12 @@ export default function ContactForm({
     reValidateMode: "onChange"
   });
   const theme = useContext(ThemeContext);
+
   return (
     <ContactFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      theme={theme}
-    >
+      theme={theme}>
       <div id="contact-header">
         <div>
           <div>
@@ -141,10 +141,10 @@ export default function ContactForm({
         </div>
         <div>
           <h3>
-            {contactDetails.firstName} {contactDetails.lastName}
+            {contactDetails.first_name} {contactDetails.last_name}
           </h3>
           <p>{contactDetails.email}</p>
-          <p>{contactDetails.phoneNumber}</p>
+          <p>{contactDetails.phone_number}</p>
           <p>{contactDetails.relation}</p>
         </div>
       </div>
@@ -153,42 +153,42 @@ export default function ContactForm({
           <input
             placeholder="First name"
             name="firstName"
-            value={contactDetails.firstName}
+            value={contactDetails.first_name}
             onChange={({ target }) => {
-              handleContactDetailsChange("firstName", target.value);
+              handleContactDetailsChange("first_name", target.value);
             }}
             ref={register({ required: true })}
           />
           <ErrorMessage
-            field={errors.firstName}
+            field={errors.first_name}
             errorType="required"
             message="First  name is required."
           />
           <input
             placeholder="Last name"
-            name="lastName"
-            value={contactDetails.lastName}
+            name="last_name"
+            value={contactDetails.last_name}
             onChange={({ target }) => {
-              handleContactDetailsChange("lastName", target.value);
+              handleContactDetailsChange("last_name", target.value);
             }}
             ref={register({ required: true })}
           />
           <ErrorMessage
-            field={errors.lastName}
+            field={errors.last_name}
             errorType="required"
             message="Last  name is required."
           />
           <input
             placeholder="Phone number"
-            name="phoneNumber"
-            value={contactDetails.phoneNumber}
+            name="phone_number"
+            value={contactDetails.phone_number}
             onChange={({ target }) => {
-              handleContactDetailsChange("phoneNumber", target.value);
+              handleContactDetailsChange("phone_number", target.value);
             }}
             ref={register({ required: true })}
           />
           <ErrorMessage
-            field={errors.phoneNumber}
+            field={errors.phone_number}
             errorType="required"
             message="Phone number is required."
           />
@@ -229,7 +229,8 @@ export default function ContactForm({
               <input
                 type="checkbox"
                 name="group"
-                checked={contactDetails.selectedGroups.includes(group.id)}
+                //checked={contactDetails.selectedGroups.includes(group.id)}
+                checked={true}
                 value={group.id}
                 onChange={({ target }) => {
                   handleContactDetailsChange("selectedGroups", target.value);

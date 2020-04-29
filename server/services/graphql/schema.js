@@ -1,5 +1,16 @@
 const queries = `
     scalar Date
+
+    type Contact{
+        id: String
+        user_id: String
+        first_name: String
+        last_name: String
+        email: String
+        phone_number: String
+        relation: String
+    }
+
     type User{
         id: String
         auth_id: String
@@ -33,10 +44,12 @@ const queries = `
         status:Status
     }   
     type RootQuery{
+        contacts:[Contact]
         userInfo(access_token: String!,token_type: String!):User,
         users(email: String,username: String,access_token: String,token_type: String):[User],
         userTypes:[UserType]
     }
+
 `;
 
 const mutations = `
@@ -88,11 +101,22 @@ const mutations = `
         personalInfo: PersonalInfoInput!
         calendarInfo: CalendarInfoInput!
     }
+    input ContactInput{
+        id: String
+        first_name: String
+        last_name: String
+        email: String
+        phone_number: String
+        relation: String
+    }
+    
     type RootMutation{
         signUp(user: UserSignupInput!):Status
         signIn(user:UserSignInInput!):UserSignInType
         changePassword(user:UserChangePasswordInput!):Status
         userUpdate(user: UserUpdateInput!):Status
+        deleteContacts(id: String!): [Contact]
+        updateContact(contact: ContactInput!): [Contact]
     }
 `;
 

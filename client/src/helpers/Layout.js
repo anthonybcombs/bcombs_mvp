@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -106,12 +106,21 @@ const PopoverStyled = styled.div`
 `;
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
+  const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
   const { auth } = useSelector(({ auth }) => {
     return { auth };
   });
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  console.log("authsss", auth);
+
+  useEffect(() => {
+    if (auth) {
+      setCurrentUserProfilePhoto(auth.profileImg || auth.picture);
+    }
+  }, [auth]);
   return (
     <LayoutStyled data-testid="app-layout" theme={theme}>
       <HeaderStyled data-testid="app-title" theme={theme.header}>
@@ -176,8 +185,7 @@ export default function Layout({ children }) {
                           : ""
                       }`}
                       to="/dashboard"
-                      state={{ calendarName: "" }}
-                    >
+                      state={{ calendarName: "" }}>
                       <span> Dashboard</span>
                     </Link>
                     <Link
@@ -186,8 +194,7 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                       }`}
-                      to="/dashboard/mycalendars"
-                    >
+                      to="/dashboard/mycalendars">
                       <span>Calendars</span>
                     </Link>
                     <Link
@@ -196,8 +203,7 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                       }`}
-                      to="/dashboard/myevents"
-                    >
+                      to="/dashboard/myevents">
                       <span>Events</span>
                     </Link>
                     <Link
@@ -206,8 +212,7 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                       }`}
-                      to="/dashboard/mycontacts"
-                    >
+                      to="/dashboard/mycontacts">
                       <span>Contacts</span>
                     </Link>
                     <div id="dashboard-setting">
@@ -218,8 +223,7 @@ export default function Layout({ children }) {
                             ? "selected"
                             : ""
                         }`}
-                        to="/dashboard/notifications"
-                      >
+                        to="/dashboard/notifications">
                         <FontAwesomeIcon icon={faBell} />
                       </Link>
                       <Link
@@ -228,8 +232,7 @@ export default function Layout({ children }) {
                             ? "selected"
                             : ""
                         }`}
-                        to="/dashboard/settings"
-                      >
+                        to="/dashboard/settings">
                         <FontAwesomeIcon icon={faCog} />
                       </Link>
                       <Popover
@@ -243,15 +246,13 @@ export default function Layout({ children }) {
                             arrowColor="lightgrey"
                             arrowSize={7}
                             arrowStyle={{ opacity: 1 }}
-                            arrow="center"
-                          >
+                            arrow="center">
                             <PopoverStyled>
                               <Link
                                 to="/dashboard/myprofile"
                                 onClick={() => {
                                   setIsPopOverVisible(false);
-                                }}
-                              >
+                                }}>
                                 <FontAwesomeIcon icon={faUser} />
                                 <span>Profile</span>
                               </Link>
@@ -260,8 +261,7 @@ export default function Layout({ children }) {
                                   dispatch(requestLogout());
                                   setIsPopOverVisible(false);
                                   navigate("/", { replace: true });
-                                }}
-                              >
+                                }}>
                                 <FontAwesomeIcon icon={faSignOutAlt} />
                                 <span>Logout</span>
                               </a>
@@ -270,14 +270,14 @@ export default function Layout({ children }) {
                         )}
                         onClickOutside={() => {
                           setIsPopOverVisible(false);
-                        }}
-                      >
+                        }}>
                         <a
                           onClick={() => {
                             setIsPopOverVisible(true);
-                          }}
-                        >
-                          <img src={auth.picture} />
+                          }}>
+                          <img
+                            src={`${currentUserProfilePhoto}?t=${new Date().getTime()}`}
+                          />
                         </a>
                       </Popover>
                     </div>
