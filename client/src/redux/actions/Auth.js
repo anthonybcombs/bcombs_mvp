@@ -2,23 +2,25 @@ import { call, take, put } from "redux-saga/effects";
 import graphqlClient from "../../graphql";
 import {
   SIGN_IN_MUTATION,
-  CHANGE_PASSWORD_MUTATION,
+  CHANGE_PASSWORD_MUTATION
 } from "../../graphql/mutation";
 import { USER_INFO_QUERY } from "../../graphql/query";
 import * as actionType from "./Constant";
-const authentecating = (auth) => {
+const authentecating = auth => {
   const { email, password } = auth[0];
   return new Promise(async (resolve, reject) => {
     try {
+      console.log("data[0]", auth[0]);
       const { data } = await graphqlClient.mutate({
         mutation: SIGN_IN_MUTATION,
         variables: {
           user: {
             email,
-            password,
-          },
-        },
+            password
+          }
+        }
       });
+      console.log("data[0] data", data);
       return resolve({ ...data.signIn.user });
     } catch (error) {
       reject("error");
@@ -42,13 +44,15 @@ const getUserInfo = () => {
       //   }
       // );
       // const userInfo = await userInfoResponse.json();
+      console.log("tokennnn", sessionStorage.getItem("access_token"));
       const { data } = await graphqlClient.query({
         query: USER_INFO_QUERY,
         variables: {
           access_token: sessionStorage.getItem("access_token"),
-          token_type: sessionStorage.getItem("token_type"),
-        },
+          token_type: sessionStorage.getItem("token_type")
+        }
       });
+      console.log("dataaaaaaaaa", data);
       if (data.userInfo.type === "invalid-json") {
         reject("error");
       }
@@ -58,43 +62,44 @@ const getUserInfo = () => {
     }
   });
 };
-const requestPasswordChangeFromServer = (user) => {
+const requestPasswordChangeFromServer = user => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.mutate({
         mutation: CHANGE_PASSWORD_MUTATION,
         variables: {
           user: {
-            email: user.email,
-          },
-        },
+            email: user.email
+          }
+        }
       });
       resolve({
         messageType: data.changePassword.messageType,
-        message: data.changePassword.message,
+        message: data.changePassword.message
       });
     } catch (error) {
       reject("error");
     }
   });
 };
-export const requestAuth = (auth) => {
+export const requestAuth = auth => {
+  console.log("authhhhhhhhhhh", auth);
   return {
     type: actionType.REQUEST_AUTH,
-    auth,
+    auth
   };
 };
 export const requestUserInfo = () => {
   return {
-    type: actionType.REQUEST_AUTH_USER_INFO,
+    type: actionType.REQUEST_AUTH_USER_INFO
   };
 };
 export const requestLogout = () => {
   return {
-    type: actionType.REQUEST_AUTH_LOGOUT,
+    type: actionType.REQUEST_AUTH_LOGOUT
   };
 };
-export const requestPasswordChange = (user) => {
+export const requestPasswordChange = user => {
   return { type: actionType.REQUEST_CHANGE_PASSWORD, user };
 };
 export function* authenticated({ auth }) {
@@ -118,8 +123,8 @@ export function* authenticated({ auth }) {
       payload: {
         message: authData.message,
         messageType:
-          authData.messageType === "email_not_verified" ? "error" : "info",
-      },
+          authData.messageType === "email_not_verified" ? "error" : "info"
+      }
     });
   } catch (error) {}
 }
@@ -127,7 +132,7 @@ export function* authenticated({ auth }) {
 export function* gotUserInfo() {
   yield take([
     actionType.REQUEST_STATUS_COMPLETED,
-    actionType.REQUEST_USER_TYPES_COMPLETED,
+    actionType.REQUEST_USER_TYPES_COMPLETED
   ]);
   try {
     if (
@@ -145,14 +150,14 @@ export function* gotUserInfo() {
           type: actionType.REQUEST_STATUS_COMPLETED,
           payload: {
             messageType: "error",
-            message: "Email is not verified.",
-          },
+            message: "Email is not verified."
+          }
         });
       }
 
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
-        payload: userInfoData,
+        payload: userInfoData
       });
     } else {
       sessionStorage.removeItem("access_token");
@@ -161,15 +166,15 @@ export function* gotUserInfo() {
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
         payload: {
           messageType: "error",
-          error_description: "",
-        },
+          error_description: ""
+        }
       });
       yield put({
         type: actionType.REQUEST_STATUS_COMPLETED,
         payload: {
           messageType: "",
-          message: "",
-        },
+          message: ""
+        }
       });
     }
   } catch (error) {}
@@ -187,13 +192,13 @@ export function* requestedPasswordChange({ user }) {
     user
   );
   yield put({
-    type: actionType.REQUEST_CHANGE_PASSWORD_COMPLETED,
+    type: actionType.REQUEST_CHANGE_PASSWORD_COMPLETED
   });
   yield put({
     type: actionType.REQUEST_STATUS_COMPLETED,
     payload: {
       messageType: changePasswordDetail.messageType,
-      message: changePasswordDetail.message,
-    },
+      message: changePasswordDetail.message
+    }
   });
 }
