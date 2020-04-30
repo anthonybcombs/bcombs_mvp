@@ -34,6 +34,7 @@ export const USER_INFO_QUERY = gql`
       email_verified
       picture
       name
+      profile_img
     }
   }
 `;

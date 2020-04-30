@@ -107,7 +107,8 @@ const queryTypes = `
         locale: String
         email_verified: Boolean
         picture: String
-        name: String        
+        name: String   
+        profile_img: String     
     }
     type UserType {
         id: String,

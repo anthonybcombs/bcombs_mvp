@@ -116,9 +116,11 @@ export default function Layout({ children }) {
 
   useEffect(() => {
     if (auth) {
-      setCurrentUserProfilePhoto(auth.profileImg || auth.picture);
+      setCurrentUserProfilePhoto(auth.profile_img || auth.picture);
     }
   }, [auth]);
+
+  console.log("auth", auth);
   return (
     <LayoutStyled data-testid="app-layout" theme={theme}>
       <HeaderStyled data-testid="app-title" theme={theme.header}>

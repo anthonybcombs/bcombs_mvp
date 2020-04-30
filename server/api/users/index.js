@@ -1,11 +1,13 @@
 import { makeDb } from "../../helpers/database";
+import { s3BucketRootPath } from "../../helpers/aws";
 import fetch from "node-fetch";
+
 export const getUsers = async () => {
   const db = makeDb();
   let result;
   try {
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,email,auth_id,is_profile_filled,BIN_TO_UUID(type) as type from users`
+      `SELECT BIN_TO_UUID(id) as id,email,auth_id,is_profile_filled,BIN_TO_UUID(type) as type,profile_img from users`
     );
     result = rows;
   } catch (error) {
@@ -26,10 +28,13 @@ export const getUserInfo = async creds => {
     });
     const userInfo = await userInfoResponse.json();
     const users = await getUsers();
-    const { is_profile_filled } = users.filter(
+    const { is_profile_filled, profile_img } = users.filter(
       user => user.email === userInfo.email
     )[0];
     userInfo.is_profile_filled = is_profile_filled === 0 ? false : true;
+    userInfo.profile_img = profile_img
+      ? `${s3BucketRootPath}${profile_img}`
+      : null;
     console.log("userInfo", userInfo);
     return userInfo;
   } catch (error) {

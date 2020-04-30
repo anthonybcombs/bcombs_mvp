@@ -188,7 +188,6 @@ export default function index() {
   }, [user]);
 
   const handleFormSubmit = e => {
-  
     dispatch(
       requestUpdateUserProfile({
         personalInfo: {
@@ -216,7 +215,7 @@ export default function index() {
   const handleFileChange = event => {
     setSelectedFile(event.target.files[0]);
   };
-
+  console.log("auth", auth);
   return (
     <ProfileSyled>
       <CreateRelative
@@ -233,7 +232,7 @@ export default function index() {
               <div>
                 <img
                   src={`${
-                    auth.profileImg ? auth.profileImg : auth.picture
+                    auth.profile_img ? auth.profile_img : auth.picture
                   }?t=${new Date().getTime()}`}
                 />
 
