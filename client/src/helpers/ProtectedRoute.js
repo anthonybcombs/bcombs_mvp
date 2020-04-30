@@ -19,17 +19,22 @@ export default function protectedRoutes({ children }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [children]);
+
+  console.log("AUTHHHHHHHHHHHHH", auth);
   if (
     sessionStorage.getItem("access_token") === null ||
     status.messageType == "error"
   ) {
     return <Redirect to="/" />;
   } else if (auth.email_verified) {
-    if (!location.pathname.includes("createprofile") && !auth.isProfileFilled) {
+    if (
+      !location.pathname.includes("createprofile") &&
+      !auth.is_profile_filled
+    ) {
       return <Redirect to="/dashboard/createprofile" />;
     } else if (
       location.pathname.includes("createprofile") &&
-      auth.isProfileFilled &&
+      auth.is_profile_filled &&
       auth.status === "SIGNED_IN"
     ) {
       return <Redirect to="/dashboard" />;
