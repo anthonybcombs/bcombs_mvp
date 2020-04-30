@@ -23,7 +23,7 @@ const addContactToDatabase = contact => {
         }
       );
       const addContactResponse = await addContactRequest.json();
-
+      console.log("Contact Response", addContactResponse);
       return resolve(addContactResponse);
     } catch (error) {
       reject("error");
@@ -82,13 +82,13 @@ export const addContact = contact => {
     type: actionType.REQUEST_ADD_CONTACT,
     contact: {
       id: contact.id,
-      userIds: contact.userIds,
-      firstName: contact.firstName,
-      lastName: contact.lastName,
-      phoneNumber: contact.phoneNumber,
+      user_ids: contact.userIds,
+      first_name: contact.first_name,
+      last_name: contact.last_name,
+      phone_number: contact.phone_number,
       email: contact.email,
       relation: contact.relation,
-      userEmail: contact.userEmail,
+      user_email: contact.userEmail,
       selectedGroups: contact.selectedGroups
     }
   };

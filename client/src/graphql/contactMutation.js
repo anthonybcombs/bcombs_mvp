@@ -8,6 +8,7 @@ export const DELETE_CONTACT_MUTATION = gql`
       first_name
       last_name
       phone_number
+      relation
     }
   }
 `;
@@ -16,13 +17,12 @@ export const DELETE_CONTACT_MUTATION = gql`
 export const UPDATE_CONTACT_MUTATION = gql`
   mutation Contact($contact: ContactInput!) {
     updateContact(contact: $contact) {
-
         id
         email
         first_name
         last_name
         phone_number
-   
+        relation
     }
   }
 `;

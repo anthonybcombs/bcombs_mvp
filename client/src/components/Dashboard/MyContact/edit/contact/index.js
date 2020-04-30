@@ -14,8 +14,15 @@ const EditContactModal = styled.div`
     width: ${({ theme }) => theme.modalWidth};
     margin-top: ${({ theme }) => theme.modalMarginTop};
   }
+
   @media (min-width: 600px) {
-  }
+    #content {
+      grid-template-columns: 50% 50%;
+      grid-gap: 1%;
+    }
+    button[type="submit"] {
+      width: 30%;
+    }
 `;
 export default function index({
   isVisible = true,
@@ -26,7 +33,7 @@ export default function index({
 }) {
   const [contactDetails, setContactDetails] = useState({});
   const dispatch = useDispatch();
-
+  console.log("Contactttt", contact);
   useEffect(() => {
     if (contact.id) {
       setContactDetails({
@@ -68,7 +75,7 @@ export default function index({
       }
       dispatch(updateGroup(group));
     });
-    console.log('ContactDetails Submit', contactDetails)
+    console.log("ContactDetails Submit", contactDetails);
     dispatch(updateContact(contactDetails));
     toggleEditContactModal(false);
   };

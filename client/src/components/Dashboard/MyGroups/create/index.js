@@ -64,6 +64,7 @@ export default function index({
   if (!isVisible) {
     return <></>;
   }
+  console.log("CONTACTSSSSSSSSSSSSSSS", contacts);
   return ReactDOM.createPortal(
     <NewContactModal className="modal">
       <div className="modal-content">

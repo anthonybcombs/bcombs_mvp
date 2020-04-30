@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Contact from "../contact";
+
 const ContactListStyled = styled.div`
   #contact-list {
     padding: 1em;
@@ -47,13 +48,14 @@ export default function index({
 
   return (
     <ContactListStyled>
-       <EditContactModal
+      <EditContactModal
         isVisible={isEditContactModalVisible}
         toggleEditContactModal={setisEditContactModalVisible}
         contact={contact || {}}
         groups={groups}
         typeOfForm={typeOfFormUsedInEditContact}
       />
+
       {/* <ProfileModal
         isVisible={isProfleModalVisible}
         toggleProfileModal={setIsProfleModalVisible}

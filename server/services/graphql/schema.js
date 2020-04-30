@@ -37,9 +37,7 @@ const inputs = `
         zipcode: String!
         dateofbirth: Date!
     }
-    input CalendarInfoInput{
-        name: String!
-    }
+ 
     input UserUpdateInput{
         email: String!
         familyMembers: [PersonalInfoInput]
@@ -54,6 +52,28 @@ const inputs = `
         email: String
         phone_number: String
         relation: String
+    }
+
+  
+    input CalendarInfoInput{
+        name: String!
+    }
+    input CreateProfileInput{
+        email: String!
+        personalInfo: PersonalInfoInput!
+        calendarInfo: CalendarInfoInput!
+    }
+
+    
+    input FileInput{
+        filename: String!
+        mimetype: String!
+        encoding: String!
+    }
+    input GroupInput{
+        id: String,
+        member_ids: [String]
+        file: FileInput
     }
 `;
 const queryTypes = `
@@ -101,14 +121,21 @@ const queryTypes = `
         user:User,
         status:Status
     }   
-`;
-const queries = `
-    type RootQuery{
-        contacts:[Contact]
-        userInfo(access_token: String!,token_type: String!):User,
-        users(email: String,username: String,access_token: String,token_type: String):[User],
-        userTypes:[UserType]
+
+    type File {
+        filename: String!
+        mimetype: String!
+        encoding: String!
     }
+
+    type Group {
+        id: String!
+        name: String!
+        visibility: String!
+        user_id: String!
+        group_photo: String!
+    }
+
 
 `;
 
@@ -120,6 +147,16 @@ const mutations = `
         userUpdate(user: UserUpdateInput!):Status
         deleteContacts(id: String!): [Contact]
         updateContact(contact: ContactInput!): [Contact]
+        updateGroup(group: GroupInput): Group
+    }
+`;
+
+const queries = `
+    type RootQuery{
+        contacts:[Contact]
+        userInfo(access_token: String!,token_type: String!):User,
+        users(email: String,username: String,access_token: String,token_type: String):[User],
+        userTypes:[UserType]
     }
 `;
 

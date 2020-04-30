@@ -138,7 +138,7 @@ export default function GroupForm({
                 handleGroupDetailsChange("contacts", target.value);
               }}
             />
-            {contact.firstName} {contact.lastName}
+            {contact.first_name} {contact.last_name}
           </label>
         ))}
       </div>

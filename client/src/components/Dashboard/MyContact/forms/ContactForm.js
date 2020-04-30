@@ -75,6 +75,7 @@ export default function ContactForm({
   onSubmit,
   handleContactDetailsChange
 }) {
+  console.log("groups", groups);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
@@ -84,47 +85,46 @@ export default function ContactForm({
     <ContactFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      theme={theme}
-    >
+      theme={theme}>
       <input
         placeholder="First name"
-        name="firstName"
-        value={contactDetails.firstName}
+        name="first_name"
+        value={contactDetails.first_name}
         onChange={({ target }) => {
-          handleContactDetailsChange("firstName", target.value);
+          handleContactDetailsChange("first_name", target.value);
         }}
         ref={register({ required: true })}
       />
       <ErrorMessage
-        field={errors.firstName}
+        field={errors.first_name}
         errorType="required"
         message="First  name is required."
       />
       <input
         placeholder="Last name"
-        name="lastName"
-        value={contactDetails.lastName}
+        name="last_name"
+        value={contactDetails.last_name}
         onChange={({ target }) => {
-          handleContactDetailsChange("lastName", target.value);
+          handleContactDetailsChange("last_name", target.value);
         }}
         ref={register({ required: true })}
       />
       <ErrorMessage
-        field={errors.lastName}
+        field={errors.last_name}
         errorType="required"
         message="Last  name is required."
       />
       <input
         placeholder="Phone number"
-        name="phoneNumber"
-        value={contactDetails.phoneNumber}
+        name="phone_number"
+        value={contactDetails.phone_number}
         onChange={({ target }) => {
-          handleContactDetailsChange("phoneNumber", target.value);
+          handleContactDetailsChange("phone_number", target.value);
         }}
         ref={register({ required: true })}
       />
       <ErrorMessage
-        field={errors.phoneNumber}
+        field={errors.phone_number}
         errorType="required"
         message="Phone number is required."
       />

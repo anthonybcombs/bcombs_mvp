@@ -4,7 +4,7 @@ import {
   executeSignUp,
   executeSignIn,
   executeChangePassword,
-  executeUserUpdate,
+  executeUserUpdate
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import { editContact, getContacts, removeContact } from "../../api/contacts";
@@ -18,10 +18,10 @@ const resolvers = {
     async users(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type,
+        token_type: args.token_type
       };
       const users = await getUsers();
-      return users.filter((user) => {
+      return users.filter(user => {
         if (args.email) {
           return user.email === args.email;
         }
@@ -39,7 +39,7 @@ const resolvers = {
     async contacts(root, args, context) {
       const contacts = await getContacts();
       return contacts;
-    },
+    }
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -60,7 +60,10 @@ const resolvers = {
     async updateContact(root, { contact }, context) {
       return await editContact(contact);
     },
-  },
+    async updateGroup(root, args, context) {
+      console.log("argsss", args);
+    }
+  }
 };
 
 export default resolvers;

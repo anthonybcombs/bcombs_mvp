@@ -85,7 +85,7 @@ export default function CreateProfileForm({
   const handleDateOfBirthElementTypeChange = value => {
     setDateOfBirthElementType(value);
   };
-  console.log("dataaaaaaaa", data);
+ 
   return (
     <CreateProfileStyled
       data-testid="app-create-profile-form"

@@ -114,8 +114,6 @@ export default function Layout({ children }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log("authsss", auth);
-
   useEffect(() => {
     if (auth) {
       setCurrentUserProfilePhoto(auth.profileImg || auth.picture);
@@ -206,6 +204,7 @@ export default function Layout({ children }) {
                       to="/dashboard/myevents">
                       <span>Events</span>
                     </Link>
+
                     <Link
                       className={`${
                         context.location.pathname === "/dashboard/mycontacts"

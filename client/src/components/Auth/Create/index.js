@@ -70,7 +70,7 @@ export default function index() {
   const handleFormSubmit = values => {
     dispatch(requestCheckuserAndAdd(userDetails));
   };
-  console.log("userTypes", userTypes);
+
   return (
     <CreateUserStyled data-testid="app-create-user">
       {status && status.message && (

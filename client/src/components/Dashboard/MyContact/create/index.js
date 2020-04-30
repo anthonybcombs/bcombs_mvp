@@ -24,9 +24,9 @@ export default function index({
 }) {
   const [contactDetails, setContactDetails] = useState({
     id: uuid(),
-    firstName: "",
-    lastName: "",
-    phonNumber: "",
+    first_name: "",
+    last_name: "",
+    phone_number: "",
     email: "",
     selectedGroups: [],
     userIds: [auth.sub],

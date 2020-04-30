@@ -1,13 +1,32 @@
 import { call, take, put } from "redux-saga/effects";
 import * as actionType from "./Constant";
+
+import graphqlClient from "../../graphql";
+
+import { GROUP_UPDATE_MUTATION } from "../../graphql/groupMutation";
+
 // const addGroupToDatabase = ({ group }) => {
 //   return new Promise((resolve, reject) => {
 //     return resolve("success");
 //   });
 // };
 const updateGroupToDatabase = ({ group }) => {
-  return new Promise((resolve, reject) => {
-    return resolve("success");
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log("groupppppppppppppp", group);
+      const { data } = await graphqlClient.mutate({
+        mutation: GROUP_UPDATE_MUTATION,
+        variables: {
+          group: {
+            ...group[0]
+          }
+        }
+      });
+
+      return resolve(data.updateContact);
+    } catch (error) {
+      reject("error");
+    }
   });
 };
 export const addGroup = group => {
@@ -17,6 +36,7 @@ export const addGroup = group => {
   };
 };
 export const updateGroup = group => {
+  console.log("grouppp action", group);
   return {
     type: actionType.REQUEST_UPDATE_GROUP,
     group
@@ -75,7 +95,6 @@ const addGroupToDatabase = data => {
 const getUserGroupToDatabase = data => {
   return new Promise(async (resolve, reject) => {
     try {
-   
       const response = await fetch(`${process.env.API_HOST}/api/usergroups`, {
         method: "POST",
         headers: {
@@ -85,7 +104,7 @@ const getUserGroupToDatabase = data => {
         body: JSON.stringify(data)
       });
       const responseData = await response.json();
-   
+
       return resolve(responseData);
     } catch (error) {
       reject("error");

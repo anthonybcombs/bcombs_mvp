@@ -15,6 +15,8 @@ import NewContactModal from "./create";
 import EditContactModal from "./edit/contact";
 import SendMessageModal from "./message";
 import NewGroupModal from "../MyGroups/create";
+import EditGroupModal from "../MyGroups/edit";
+
 import ProfileModal from "./profile/";
 
 // REDUX
@@ -111,7 +113,9 @@ const MyContactsStyled = styled.div`
 export default function index() {
   const [selectedLabel, setSelectedLabel] = useState("Contacts");
   const [selectedGroupId, setSelectedGroupId] = useState(0);
+  const [selectedGroup, setSelectedGroup] = useState(0);
   const [isNewContactModalVisible, setNewContactModalVisible] = useState(false);
+  const [isEditGroupModalVisible, setEditGroupModalVisible] = useState(false);
   const [iseNewGroupModalVisible, setIsNewGroupModalVisible] = useState(false);
   const { auth, groups, contacts } = useSelector(
     ({ auth, groups, contacts }) => {
@@ -133,8 +137,7 @@ export default function index() {
     dispatch(getContact("1"));
   }, []);
 
-
-  const selectedGroup = groups.find(group => group.id === selectedGroupId);
+  // const selectedGroup = groups.find(group => group.id === selectedGroupId);
   const filteredContacts = contacts.filter(contact => {
     if (selectedGroupId === 0) {
       return true;
@@ -142,20 +145,27 @@ export default function index() {
     return selectedGroup.contacts.includes(contact.id);
   });
 
+  console.log("contacts", contacts);
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
   };
-  const handleSelectedGroupid = value => {
-    setSelectedGroupId(value);
+  const handleSelectedGroup = group => {
+    //setSelectedGroupId(group.id);
+    setSelectedGroup(group);
+
+    setTimeout(() => {
+      setEditGroupModalVisible(true);
+    }, 500);
   };
 
+  console.log("SelectedGrouppp", contacts);
 
   return (
     <MyContactsStyled>
       <NewContactModal
+        groups={groups}
         isVisible={isNewContactModalVisible}
         toggleCreateContactModal={setNewContactModalVisible}
-        groups={groups}
         auth={auth}
       />
       <NewGroupModal
@@ -164,6 +174,15 @@ export default function index() {
         contacts={contacts}
         auth={auth}
       />
+
+      <EditGroupModal
+        auth={auth}
+        contacts={contacts}
+        group={selectedGroup}
+        isVisible={isEditGroupModalVisible}
+        toggleEditGroupModal={setEditGroupModalVisible}
+      />
+
       <h2>Contacts</h2>
       <div id="contacts">
         <div>
@@ -172,7 +191,7 @@ export default function index() {
             <div
               className={`${selectedLabel === "Contacts" ? "selected" : ""}`}
               onClick={() => {
-                handleSelectedGroupid(0);
+                handleSelectedGroup(null);
                 handleSelectedLabel("Contacts");
               }}>
               <FontAwesomeIcon icon={faUserTie} />
@@ -183,7 +202,7 @@ export default function index() {
                 selectedLabel === "Fequently Contacted" ? "selected" : ""
               }`}
               onClick={() => {
-                handleSelectedGroupid(0);
+                handleSelectedGroup(null);
                 handleSelectedLabel("Fequently Contacted");
               }}>
               <FontAwesomeIcon icon={faHistory} />
@@ -192,7 +211,7 @@ export default function index() {
             <div
               className={`${selectedLabel === "Duplicates" ? "selected" : ""}`}
               onClick={() => {
-                handleSelectedGroupid(0);
+                handleSelectedGroup(null);
                 handleSelectedLabel("Duplicates");
               }}>
               <FontAwesomeIcon icon={faUserFriends} />
@@ -209,7 +228,7 @@ export default function index() {
                   }`}
                   key={group.id}
                   onClick={() => {
-                    handleSelectedGroupid(group.id);
+                    handleSelectedGroup(group);
                   }}>
                   <FontAwesomeIcon icon={faUsers} />
                   <span>{group.name}</span>
