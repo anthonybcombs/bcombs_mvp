@@ -75,7 +75,6 @@ export default function ContactForm({
   onSubmit,
   handleContactDetailsChange
 }) {
-  console.log("groups", groups);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"

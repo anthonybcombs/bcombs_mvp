@@ -6,6 +6,7 @@ import Contact from "../../MyContact/contact";
 const ContactListStyled = styled.div`
   #contact-list {
     padding: 1em;
+    height: 150px;
   }
   #contact-list-header {
     position: relative;
@@ -57,6 +58,10 @@ const ContactStyled = styled.div`
     display: block;
     margin-top: -1em;
   }
+  .no-member {
+    text-align: center !important;
+    min-height: 100px !important;
+  }
 `;
 
 const GroupContacts = ({ contacts }) => {
@@ -65,10 +70,10 @@ const GroupContacts = ({ contacts }) => {
   return (
     <ContactListStyled>
       <div id="contact-list-details">
-        {contacts.length > 0 &&
+        {contacts.length > 0 ? (
           contacts.map(contact => (
             <ContactStyled key={contact.id}>
-              <div >
+              <div>
                 <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
                 <p>
                   <span>
@@ -83,7 +88,12 @@ const GroupContacts = ({ contacts }) => {
                 <p>{contact.phone_number}</p>
               </div>
             </ContactStyled>
-          ))}
+          ))
+        ) : (
+          <div className="no-member" style={{ textAlign: "center" }}>
+            <h3>No member yet</h3>
+          </div>
+        )}
       </div>
     </ContactListStyled>
   );

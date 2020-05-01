@@ -72,9 +72,10 @@ const inputs = `
         encoding: String!
     }
     input GroupInput{
-        id: String,
+        id: String!
         member_ids: [String]
-        file: FileInput
+        name: String
+        email: String!
     }
     input CalendarInput{
         creds:CredsInput!
@@ -139,7 +140,8 @@ const queryTypes = `
         name: String!
         visibility: String!
         user_id: String!
-        group_photo: String!
+        group_photo: String
+        contacts:[String]
     }
     type CalendarInfoType{
         id: String!
@@ -161,6 +163,8 @@ const mutations = `
         updateContact(contact: ContactInput!): [Contact]
         updateGroup(group: GroupInput): Group
         createCalendar(calendar:CalendarInput!):CalendarType
+        updateGroup(group: GroupInput!): [Group]
+        deleteGroup(id: String!, email:String!): [Group]
     }
 `;
 

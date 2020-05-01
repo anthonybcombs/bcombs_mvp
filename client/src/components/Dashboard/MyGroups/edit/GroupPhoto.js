@@ -1,10 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 
-const GroupPhoto = props => {
+const GroupPhoto = ({ data }) => {
   return (
-    <div>
-      <h1>School Parents Group</h1>
+    <div
+      style={{
+        marginBottom: 12,
+        overFlowY: "scroll",
+        minHeight: "60%",
+        maxHeight: "80%"
+      }}>
+      <h1>{data.name}</h1>
     </div>
   );
 };

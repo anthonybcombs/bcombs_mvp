@@ -39,7 +39,7 @@ const isUserExist = async user => {
     return result;
   }
 };
-const getUserFromDatabase = async email => {
+export const getUserFromDatabase = async email => {
   const db = makeDb();
   let result;
   try {
@@ -319,7 +319,6 @@ router.put("/user/profile", async (req, res) => {
   const db = makeDb();
   try {
     const { personalInfo } = req.body;
-    console.log("personalInfo req.body", req.body);
     await db.query(
       "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,zip_code=?,birth_date=? where id=UUID_TO_BIN(?)",
       [
@@ -332,8 +331,19 @@ router.put("/user/profile", async (req, res) => {
         personalInfo.id
       ]
     );
+
+    const payload = {
+      first_name: personalInfo.firstname,
+      last_name: personalInfo.lastname,
+      family_relationship: personalInfo.family_relationship,
+      gender: personalInfo.gender,
+      birth_date: personalInfo.dateofbirth,
+      zip_code: personalInfo.zipcode,
+      id: personalInfo.id
+    };
+    res.status(200).json({ data: payload });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: true, Message: error });
   } finally {
     await db.close();
   }
@@ -358,11 +368,8 @@ router.post("/user/photo", upload.single("file"), async (req, res) => {
 
       s3Bucket.upload(params, async function(err, data) {
         if (err) {
-          console.log("Error", err);
           res.status(500).json({ error: true, Message: err });
         } else {
-          console.log("Data", data);
-
           await db.query(
             "UPDATE users SET profile_img=? where id=UUID_TO_BIN(?)",
             [data.key, currentUser.id]
@@ -378,16 +385,34 @@ router.post("/user/photo", upload.single("file"), async (req, res) => {
 router.post("/groups", async (req, res) => {
   const db = makeDb();
   try {
-    const { name, visibility, email } = req.body;
-    const { id } = await getUserFromDatabase(email);
+    const { id, name, visibility, email, contacts = [] } = req.body;
+    const currentUser = await getUserFromDatabase(email);
 
     const response = await db.query(
-      "INSERT INTO `groups`(`id`, `name`, `visibility`,`user_id`) VALUES (UUID_TO_BIN(UUID()),?,?,UUID_TO_BIN(?))",
-      [name, visibility.toString(), id]
+      "INSERT INTO `groups`( `id`,`name`, `visibility`,`user_id`) VALUES (UUID_TO_BIN(?),?,?,UUID_TO_BIN(?))",
+      [id, name, visibility || "Public", currentUser.id]
     );
+
+    if (contacts.length > 0) {
+      let groupMemberValuesQuery = contacts.reduce((accumulator, memberId) => {
+        accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${memberId}")),`;
+        return accumulator;
+      }, "");
+
+      groupMemberValuesQuery = groupMemberValuesQuery.substring(
+        0,
+        groupMemberValuesQuery.length - 1
+      );
+
+      await db.query(
+        "INSERT IGNORE INTO `group_members`(`group_id`,`user_id`) VALUES " +
+          groupMemberValuesQuery
+      );
+    }
 
     res.status(201).json({ data: response });
   } catch (error) {
+    console.log("error", error);
     res.status(400).json({ error: true, Message: "Something went wrong" });
   } finally {
     await db.close();
@@ -404,8 +429,10 @@ router.post("/usergroups", async (req, res) => {
       "SELECT BIN_TO_UUID(id) as `id`,name,visibility from `groups` WHERE user_id=UUID_TO_BIN(?)",
       [id]
     );
+
     rows = JSON.parse(JSON.stringify(rows));
-    const rowIds = rows.map(item => `UUID_TO_BIN('${item.id}')`);
+
+    const rowIds = rows.map(item => `UUID_TO_BIN("${item.id}")`);
 
     let members = await db.query(
       "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members` WHERE `group_id` IN (" +
@@ -424,14 +451,13 @@ router.post("/usergroups", async (req, res) => {
         contacts: [...(groupMembers || [])]
       };
     });
-    console.log();
+
     res.status(201).json({ data: formattedRows });
   } catch (error) {
-    console.log("error", error);
+    console.log("Error", error);
     res.status(400).json({ error: true, Message: "Something went wrong" });
   } finally {
     await db.close();
-    return result;
   }
 });
 
@@ -500,8 +526,6 @@ router.post("/group/update", upload.single("file"), async (req, res) => {
         if (err) {
           res.status(500).json({ error: true, Message: err });
         } else {
-          console.log("Data", data);
-
           await db.query(
             "UPDATE groups SET profile_img=? where id=UUID_TO_BIN(?)",
             [data.key, id]

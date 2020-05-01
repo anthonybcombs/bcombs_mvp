@@ -10,7 +10,6 @@ const authentecating = auth => {
   const { email, password } = auth[0];
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("data[0]", auth[0]);
       const { data } = await graphqlClient.mutate({
         mutation: SIGN_IN_MUTATION,
         variables: {
@@ -20,7 +19,7 @@ const authentecating = auth => {
           }
         }
       });
-      console.log("data[0] data", data);
+
       return resolve({ ...data.signIn.user });
     } catch (error) {
       reject("error");
@@ -44,7 +43,7 @@ const getUserInfo = () => {
       //   }
       // );
       // const userInfo = await userInfoResponse.json();
-      console.log("tokennnn", sessionStorage.getItem("access_token"));
+
       const { data } = await graphqlClient.query({
         query: USER_INFO_QUERY,
         variables: {
@@ -52,7 +51,7 @@ const getUserInfo = () => {
           token_type: sessionStorage.getItem("token_type")
         }
       });
-      console.log("dataaaaaaaaa", data);
+
       if (data.userInfo.type === "invalid-json") {
         reject("error");
       }
@@ -83,7 +82,6 @@ const requestPasswordChangeFromServer = user => {
   });
 };
 export const requestAuth = auth => {
-  console.log("authhhhhhhhhhh", auth);
   return {
     type: actionType.REQUEST_AUTH,
     auth

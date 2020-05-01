@@ -35,7 +35,7 @@ export const getUserInfo = async creds => {
     userInfo.profile_img = profile_img
       ? `${s3BucketRootPath}${profile_img}`
       : null;
-    console.log("userInfo", userInfo);
+
     return userInfo;
   } catch (error) {
     return error;
@@ -44,7 +44,7 @@ export const getUserInfo = async creds => {
 export const executeSignIn = async user => {
   try {
     const params = new URLSearchParams();
-    console.log("userrr", user);
+
     params.append("grant_type", "password");
     params.append("client_id", process.env.AUTH_CLIENT_ID);
     params.append("client_secret", process.env.AUTH_CLIENT_SECRET);
@@ -67,8 +67,7 @@ export const executeSignIn = async user => {
         }
       );
       const userInfo = await userInfoResponse.json();
-      console.log("authDataaa", authData);
-      console.log("authDataaa userInfo", userInfo);
+
       return {
         user: {
           ...authData,
