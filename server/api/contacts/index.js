@@ -16,13 +16,13 @@ export const getContacts = async () => {
   }
 };
 
-export const removeContact = async (id) => {
+export const removeContact = async id => {
   const db = makeDb();
   let result = [];
   try {
     await db.query(`DELETE FROM contacts WHERE id=UUID_TO_BIN(?)`, [id]);
     await db.query(`DELETE FROM group_members WHERE user_id=UUID_TO_BIN(?)`, [
-      id,
+      id
     ]);
     const rows = await db.query(
       `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number  from contacts`
@@ -35,7 +35,7 @@ export const removeContact = async (id) => {
   }
 };
 
-export const editContact = async (data) => {
+export const editContact = async data => {
   const db = makeDb();
   let result = [];
   try {
@@ -49,7 +49,6 @@ export const editContact = async (data) => {
       `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number,relation  from contacts`
     );
     result = JSON.parse(JSON.stringify(rows));
-    console.log("RESULTTTTTTTTTTTTTT", result);
   } catch (error) {
   } finally {
     await db.close();

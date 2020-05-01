@@ -8,6 +8,8 @@ import {
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import { editContact, getContacts, removeContact } from "../../api/contacts";
+import { editGroups } from "../../api/groups";
+import { removeGroup } from "../../api/groups";
 
 const resolvers = {
   RootQuery: {
@@ -60,8 +62,15 @@ const resolvers = {
     async updateContact(root, { contact }, context) {
       return await editContact(contact);
     },
-    async updateGroup(root, args, context) {
-      console.log("argsss", args);
+    async updateGroup(root, { group }, context) {
+      console.log("updateGroup group", group);
+      const response = await editGroups(group);
+      console.log("updateGroup response", response);
+      return response;
+    },
+    async deleteGroup(root, args, context) {
+      console.log("deleteGrouppp", args);
+      return await removeGroup(args.id, args.email);
     }
   }
 };

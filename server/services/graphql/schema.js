@@ -71,9 +71,10 @@ const inputs = `
         encoding: String!
     }
     input GroupInput{
-        id: String,
+        id: String!
         member_ids: [String]
-        file: FileInput
+        name: String
+        email: String!
     }
 `;
 const queryTypes = `
@@ -134,7 +135,8 @@ const queryTypes = `
         name: String!
         visibility: String!
         user_id: String!
-        group_photo: String!
+        group_photo: String
+        contacts:[String]
     }
 
 
@@ -148,7 +150,8 @@ const mutations = `
         userUpdate(user: UserUpdateInput!):Status
         deleteContacts(id: String!): [Contact]
         updateContact(contact: ContactInput!): [Contact]
-        updateGroup(group: GroupInput): Group
+        updateGroup(group: GroupInput!): [Group]
+        deleteGroup(id: String!, email:String!): [Group]
     }
 `;
 
