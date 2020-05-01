@@ -220,6 +220,16 @@ export default function Layout({ children }) {
                     >
                       <span>Contacts</span>
                     </Link>
+                    <Link
+                      className={`${
+                        context.location.pathname === "/dashboard/application"
+                          ? "selected"
+                          : ""
+                      }`}
+                      to="/dashboard/application"
+                    >
+                      <span>Application</span>
+                    </Link>
                     <div id="dashboard-setting">
                       <Link
                         className={`${
