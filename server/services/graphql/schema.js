@@ -53,18 +53,19 @@ const inputs = `
         phone_number: String
         relation: String
     }
-
-  
     input CalendarInfoInput{
         name: String!
-    }
+        familyMembers:[PersonalInfoInput!]
+    }    
     input CreateProfileInput{
         email: String!
         personalInfo: PersonalInfoInput!
         calendarInfo: CalendarInfoInput!
     }
-
-    
+    input CredsInput{
+        access_token: String!
+        token_type: String!
+    }    
     input FileInput{
         filename: String!
         mimetype: String!
@@ -74,6 +75,10 @@ const inputs = `
         id: String,
         member_ids: [String]
         file: FileInput
+    }
+    input CalendarInput{
+        creds:CredsInput!
+        info:CalendarInfoInput!
     }
 `;
 const queryTypes = `
@@ -136,8 +141,14 @@ const queryTypes = `
         user_id: String!
         group_photo: String!
     }
-
-
+    type CalendarInfoType{
+        id: String!
+        name: String!            
+    }
+    type CalendarType{
+        status: Status!
+        info: CalendarInfoType!
+    }
 `;
 
 const mutations = `
@@ -149,6 +160,7 @@ const mutations = `
         deleteContacts(id: String!): [Contact]
         updateContact(contact: ContactInput!): [Contact]
         updateGroup(group: GroupInput): Group
+        createCalendar(calendar:CalendarInput!):CalendarType
     }
 `;
 

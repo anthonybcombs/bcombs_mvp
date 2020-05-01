@@ -1,16 +1,16 @@
 import { call, take, put } from "redux-saga/effects";
 import randomColor from "randomcolor";
 import * as actionType from "./Constant";
-const addCalendarInDatabase = () => {
+const addCalendarInDatabase = ({ name, familyMembers }) => {
   return new Promise((resolve, reject) => {
     return resolve("success");
   });
 };
-export const requestAddCalendar = details => {
+export const requestAddCalendar = (details) => {
   return {
     type: actionType.REQUEST_ADD_CALENDAR,
     name: details.name,
-    familyMembers: details.selectedFamilyMembers
+    familyMembers: details.selectedFamilyMembers,
   };
 };
 
@@ -24,7 +24,7 @@ export function* addCalendar({ name, familyMembers }) {
       name,
       familyMembers: Array.from(familyMembers.keys()),
       image: "https://picsum.photos/200",
-      color: randomColor()
-    }
+      color: randomColor(),
+    },
   });
 }
