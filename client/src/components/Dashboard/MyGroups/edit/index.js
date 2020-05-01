@@ -3,9 +3,10 @@ import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch } from "react-redux";
 // import { updateContact } from "../../../../../redux/actions/Contacts";
-import { updateGroup } from "../../../../redux/actions/Groups";
-// import EditContactForm from "../../forms/EditContactForm";
-// import AddToGroupForm from "../../forms/AddToGroupForm";
+import {
+  updateGroup,
+  requestDeleteGroup
+} from "../../../../redux/actions/Groups";
 
 import ContactSelections from "./ContactSelections";
 import GroupContacts from "./GroupContacts";
@@ -27,21 +28,51 @@ const EditGroupModal = styled.div`
     background-color: white;
     padding: 4em;
   }
-  #content > div:first-child {
+  #content > div {
+    padding: 1em;
+  }
+  #content > div:nth-child(2) {
+    margin-top: 5em;
+    text-align: center !important;
   }
   .modal-content {
     margin: 1.5em auto;
-    width: 80%;
-    min-height: 80%;
+    width: 70%;
+    min-height: 70%;
   }
-  button[type="submit"] {
+  button {
+    color: ${({ theme }) => theme.button.textColor.primary};
+    font-size: ${({ theme }) => theme.button.fontSize} !important;
+
+    border: none;
+    box-shadow: 0px 3px 6px #908e8e;
+    border-radius: ${({ theme }) => theme.button.borderRadius} !important;
+  }
+  .group-delete {
+    background-color: #e02500 !important;
+  }
+  .group-submit {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     padding: 10px;
+    margin: 10px auto;
     width: 100%;
-    display: block;
-    margin: 20px auto;
     border: none;
-    color: white;
+    margin-top: 5em;
+    bottom: 0px;
+  }
+  .group-name {
+    background: none;
+    width: 100%;
+    color: black;
+    font-size: 32px !important;
+    display: block;
+    border: none;
+    border-radius: 1;
+    border: none;
+    outline: 0;
+    border-bottom: 2px solid lightgrey;
+    margin-top: 2.5em;
+    margin-bottom: 2.5em;
   }
   @media (min-width: 600px) {
     #content {
@@ -63,11 +94,21 @@ export default function index({
   typeOfForm = "Edit Group"
 }) {
   const [currentContacts, setCurrentContacts] = useState([]);
+  const [currentGroupName, setCurrentGroupName] = useState("");
   const [contactSelections, setContactSelections] = useState([]);
   const [selectedContact, setSelectedContact] = useState([]);
-  const [selectedFile, setSelectedFile] = useState([]);
+
+  const resetState = () => {
+    setCurrentContacts([]);
+    setCurrentGroupName("");
+    setContactSelections([]);
+    setSelectedContact([]);
+  };
+
+  //const [selectedFile, setSelectedFile] = useState([]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (contacts && group && group.contacts && isVisible) {
       const list = group.contacts.map(c => {
@@ -78,6 +119,7 @@ export default function index({
       });
 
       const selections = contacts.filter(c => !group.contacts.includes(c.id));
+      setCurrentGroupName(group.name);
       setCurrentContacts(list);
       setContactSelections(selections);
     }
@@ -86,37 +128,44 @@ export default function index({
   const handleContactSelectChange = value => {
     setSelectedContact(value);
   };
-  const handleFileChange = event => {
-    setSelectedFile(event.target.files[0]);
-  };
+  // const handleFileChange = event => {
+  //   setSelectedFile(event.target.files[0]);
+  // };
   const handleSubmit = () => {
-    let data = new FormData();
-    if (selectedFile) {
-      data.append("file", selectedFile);
+    if (currentGroupName !== "") {
+      const payload = {
+        id: group.id,
+        name: currentGroupName,
+        member_ids: selectedContact,
+        email: auth.email
+      };
+
+      dispatch(updateGroup(payload));
+      toggleEditGroupModal(false);
+      resetState();
     }
-    data.append("email", auth.email);
-    data.append("selected_contacts", selectedContact);
-
-    // const payload = {
-    //   id: group.id,
-    //   member_ids: selectedContact,
-    //   file: selectedFile
-    // };
-
-    dispatch(updateGroup(data));
   };
 
-  /*
+  const handleDelete = () => {
+    if (group && auth) {
+      const payload = {
+        id: group.id,
+        email: auth.email
+      };
+      dispatch(requestDeleteGroup(payload));
+      toggleEditGroupModal(false);
+      resetState();
+    }
+  };
 
-    id: String,
-        member_ids: [String]
-        file: File
-        */
+  const handleChangeName = e => {
+    const { value } = e.target;
+    setCurrentGroupName(value);
+  };
+
   if (!isVisible) {
     return <></>;
   }
-
-  console.log("selectedContact", selectedContact);
 
   return ReactDOM.createPortal(
     <EditGroupModal
@@ -136,9 +185,21 @@ export default function index({
         </span>
         <div id="content">
           <div>
-            <GroupPhoto />
-            <input type="file" name="file" />
-            <br />
+            <input
+              className="group-name"
+              placeholder="Group Name"
+              name="name"
+              onChange={handleChangeName}
+              value={currentGroupName}
+            />
+
+            {/* <input type="file" name="file" style={{ marginTop: 24 }} /> */}
+            {/* {contactSelections.length > 0 && (
+              <ContactSelections
+                contacts={contactSelections}
+                handleContactSelectChange={handleContactSelectChange}
+              />
+            )} */}
             <ContactSelections
               contacts={contactSelections}
               handleContactSelectChange={handleContactSelectChange}
@@ -147,9 +208,18 @@ export default function index({
           <div>
             <GroupContacts contacts={currentContacts} />
             <button
+              className="group-submit"
               data-testid="app-dashboard-my-group-new-group-button-save"
-              onClick={handleSubmit}>
+              onClick={handleSubmit}
+              type="submit">
               Save
+            </button>
+            <button
+              className="group-delete"
+              data-testid="app-dashboard-my-group-new-group-button-save"
+              onClick={handleDelete}
+              type="submit">
+              Delete
             </button>
           </div>
         </div>

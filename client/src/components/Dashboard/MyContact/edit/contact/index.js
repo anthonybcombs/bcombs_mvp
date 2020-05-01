@@ -33,7 +33,7 @@ export default function index({
 }) {
   const [contactDetails, setContactDetails] = useState({});
   const dispatch = useDispatch();
-  console.log("Contactttt", contact);
+
   useEffect(() => {
     if (contact.id) {
       setContactDetails({
@@ -75,7 +75,7 @@ export default function index({
       }
       dispatch(updateGroup(group));
     });
-    console.log("ContactDetails Submit", contactDetails);
+
     dispatch(updateContact(contactDetails));
     toggleEditContactModal(false);
   };

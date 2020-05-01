@@ -3,32 +3,57 @@ import * as actionType from "./Constant";
 
 import graphqlClient from "../../graphql";
 
-import { GROUP_UPDATE_MUTATION } from "../../graphql/groupMutation";
+import {
+  GROUP_UPDATE_MUTATION,
+  GROUP_DELETE_MUTATION
+} from "../../graphql/groupMutation";
 
 // const addGroupToDatabase = ({ group }) => {
 //   return new Promise((resolve, reject) => {
 //     return resolve("success");
 //   });
 // };
-const updateGroupToDatabase = ({ group }) => {
+const updateGroupToDatabase = group => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("groupppppppppppppp", group);
       const { data } = await graphqlClient.mutate({
         mutation: GROUP_UPDATE_MUTATION,
         variables: {
           group: {
-            ...group[0]
+            id: group.id,
+            name: group.name,
+            member_ids: group.member_ids,
+            email: group.email
           }
         }
       });
 
-      return resolve(data.updateContact);
+      return resolve(data.updateGroup);
     } catch (error) {
+      console.log("Error", error);
       reject("error");
     }
   });
 };
+
+const removeGroupToDatabase = group => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: GROUP_DELETE_MUTATION,
+        variables: {
+          id: group.id,
+          email: group.email
+        }
+      });
+      return resolve(data.deleteGroup);
+    } catch (error) {
+      console.log("removeGroupToDatabase", error);
+      reject("error");
+    }
+  });
+};
+
 export const addGroup = group => {
   return {
     type: actionType.REQUEST_ADD_GROUP,
@@ -36,7 +61,7 @@ export const addGroup = group => {
   };
 };
 export const updateGroup = group => {
-  console.log("grouppp action", group);
+  console.log("UpdateGroup", group);
   return {
     type: actionType.REQUEST_UPDATE_GROUP,
     group
@@ -49,12 +74,21 @@ export function* addedGroup({ group }) {
     payload: group
   });
 }
+
 export function* updatedGroup({ group }) {
-  yield call(updateGroupToDatabase, [group]);
-  yield put({
-    type: actionType.REQUEST_UPDATE_GROUP_COMPLETED,
-    payload: group
-  });
+  try {
+    console.log("response updatedGroup", group);
+    const response = yield call(updateGroupToDatabase, group);
+    console.log("response", response);
+    yield put(requestUserGroup({ email: group.email }));
+  } catch (err) {
+    console.log("Error", err);
+  }
+
+  // yield put({
+  //   type: actionType.REQUEST_UPDATE_GROUP_COMPLETED,
+  //   payload: group
+  // });
 }
 
 // ADDED BY DENNIS
@@ -69,6 +103,13 @@ export function requestUserGroup(data) {
 export function setUserGroups(data) {
   return {
     type: actionType.SET_USER_GROUPS,
+    data
+  };
+}
+
+export function requestDeleteGroup(data) {
+  return {
+    type: actionType.REQUEST_DELETE_GROUP,
     data
   };
 }
@@ -118,4 +159,14 @@ export function* getUserGroup(action) {
 
     yield put(setUserGroups(response.data));
   } catch (error) {}
+}
+
+export function* removeGroup(action) {
+  try {
+    const response = yield call(removeGroupToDatabase, action.data);
+    console.log("Remove Grpup", response);
+    yield put(setUserGroups(response));
+  } catch (error) {
+    yield put(setUserGroups([]));
+  }
 }

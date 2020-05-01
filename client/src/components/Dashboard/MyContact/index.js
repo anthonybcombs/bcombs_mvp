@@ -132,7 +132,7 @@ export default function index() {
 
       dispatch(requestUserGroup(payload));
     }
-  }, []);
+  }, [contacts]);
   useEffect(() => {
     dispatch(getContact("1"));
   }, []);
@@ -142,10 +142,14 @@ export default function index() {
     if (selectedGroupId === 0) {
       return true;
     }
-    return selectedGroup.contacts.includes(contact.id);
+
+    return (
+      selectedGroup &&
+      selectedGroup.contacts &&
+      selectedGroup.contacts.includes(contact.id)
+    );
   });
 
-  console.log("contacts", contacts);
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
   };
@@ -158,7 +162,7 @@ export default function index() {
     }, 500);
   };
 
-  console.log("SelectedGrouppp", contacts);
+  const editGroupSubmit = data => {};
 
   return (
     <MyContactsStyled>
@@ -180,6 +184,7 @@ export default function index() {
         contacts={contacts}
         group={selectedGroup}
         isVisible={isEditGroupModalVisible}
+        onSubmit={editGroupSubmit}
         toggleEditGroupModal={setEditGroupModalVisible}
       />
 

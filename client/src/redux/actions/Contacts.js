@@ -23,7 +23,7 @@ const addContactToDatabase = contact => {
         }
       );
       const addContactResponse = await addContactRequest.json();
-      console.log("Contact Response", addContactResponse);
+
       return resolve(addContactResponse);
     } catch (error) {
       reject("error");
@@ -138,7 +138,7 @@ export function* addedContact({ contact }) {
 export function* updatedContact({ contact }) {
   try {
     const response = yield call(updateContactToDatabase, [contact]);
-    console.log("Update Contact", response);
+
     yield put({
       type: actionType.SET_USER_CONTACT_LIST,
       payload: response

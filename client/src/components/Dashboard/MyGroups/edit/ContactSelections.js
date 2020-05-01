@@ -83,6 +83,15 @@ const ContactSelections = ({ contacts, handleContactSelectChange }) => {
       );
       setContactDisplay(updatedContactDisplay);
       handleContactSelectChange(ids);
+    } else if (!value) {
+      const options = contacts.map(item => {
+        return {
+          label: `${item.first_name} ${item.last_name}`,
+          value: item.id
+        };
+      });
+
+      setContactDisplay(contacts);
     }
   };
 
