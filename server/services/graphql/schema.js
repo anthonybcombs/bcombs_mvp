@@ -161,9 +161,8 @@ const mutations = `
         userUpdate(user: UserUpdateInput!):Status
         deleteContacts(id: String!): [Contact]
         updateContact(contact: ContactInput!): [Contact]
-        updateGroup(group: GroupInput): Group
-        createCalendar(calendar:CalendarInput!):CalendarType
         updateGroup(group: GroupInput!): [Group]
+        createCalendar(calendar:CalendarInput!):CalendarType
         deleteGroup(id: String!, email:String!): [Group]
     }
 `;
