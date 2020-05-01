@@ -1,8 +1,23 @@
 import React, { useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
-import ErrorMessage from "../../../../helpers/ErrorMessage";
-const CreateProfileStyled = styled.form`
+import { format } from "date-fns";
+
+const ProfileFormStyled = styled.form`
+  #profile-form {
+    background: none !important;
+  }
+  #profile-form > #details {
+    padding: 1em;
+  }
+  #profile-form > #details > div {
+    position: relative;
+    margin: 1em 1em 1em 0;
+  }
+  #profile-form > #details > div > .profile-value {
+    position: absolute;
+    right: 0;
+  }
   input:required {
     box-shadow: none;
   }
@@ -40,7 +55,7 @@ const CreateProfileStyled = styled.form`
     padding: 10px;
     display: block;
     margin: 10px auto;
-    border: none;
+    backgroundborder: none;
     margin-top: 0.5em;
   }
   select {
@@ -74,21 +89,61 @@ const CreateProfileStyled = styled.form`
   .span-value {
     margin-left: 12px;
   }
+  .profile-content {
+    background: none !important;
+    width: 50% !important;
+    float: left !important;
+    text-transform: capitalize;
+  }
+  .main-profile-content {
+    margin-top: 5px !important;
+  }
+  .bold {
+    font-weight: bolder;
+  }
 `;
 export default function ProfileForm({ data, onSubmit, handleInputChange }) {
-  const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
   const { handleSubmit, errors } = useForm();
-  const formattedDateOfBirth = new Date(data.dateofbirth);
-
-  //data.dateofbirth
 
   return (
-    <CreateProfileStyled
+    <ProfileFormStyled
+      id="personal-info-details"
       data-testid="app-create-profile-form"
       method="POST"
       theme={theme}
       onSubmit={handleSubmit(onSubmit)}>
+      <div id="profile-form">
+        <div className="main-profile-content">
+          <div className="profile-content bold">Lastname</div>
+          <div className="profile-content">{data.lastname}</div>
+        </div>
+
+        <br />
+        <div className="main-profile-content">
+          <div className="profile-content bold">Firstname</div>
+          <div className="profile-content">{data.firstname}</div>
+        </div>
+        <br />
+        <div className="main-profile-content">
+          <div className="profile-content bold">Gender</div>
+          <div className="profile-content">{data.gender}</div>
+        </div>
+        <br />
+        <div className="main-profile-content">
+          <div className="profile-content bold">Birthdate</div>
+          <div className="profile-content">
+            {data.dateofbirth
+              ? format(new Date(data.dateofbirth), "MMMM dd yyyy")
+              : null}
+          </div>
+        </div>
+        <br />
+        <div className="main-profile-content">
+          <div className="profile-content bold">Zipcode</div>
+          <div className="profile-content">{data.zipcode}</div>
+        </div>
+      </div>
       {/* <input
         data-testid="app-profile-input-firstname"
         name="firstname"
@@ -170,6 +225,6 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
         ref={register}
       />
        */}
-    </CreateProfileStyled>
+    </ProfileFormStyled>
   );
 }

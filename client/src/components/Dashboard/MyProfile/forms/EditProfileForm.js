@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
+import { format } from "date-fns";
 
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
@@ -41,7 +41,7 @@ const EditProfileModal = styled.form`
   select {
     font-size: ${({ theme }) => theme.input.fontSize};
     display: block;
-    width: 50% !important;
+    width: 70% !important;
     border: none;
     margin: 2.5em auto 2.5em auto;
   }
@@ -63,7 +63,7 @@ const EditProfileModal = styled.form`
     margin-top: 15em;
   }
   .modal-content {
-    width: 30%;
+    width: 25%;
   }
   @media (min-width: 600px) {
     button[type="submit"] {
@@ -71,7 +71,7 @@ const EditProfileModal = styled.form`
     }
     input,
     p.error {
-      width: 50%;
+      width: 70%;
       margin: 2.5em auto 2.5em auto;
     }
     div {
@@ -89,23 +89,22 @@ export default function index({
   handleInputChange
 }) {
   const theme = useContext(ThemeContext);
-  const [currentUserData, setCurrentUserData] = useState(null);
+
   const { handleSubmit, errors } = useForm();
   const { register } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
   const dispatch = useDispatch();
-  const formattedDateOfBirth = new Date(data.dateofbirth);
+
   // let month = "" + (formattedDateOfBirth.getMonth() + 1),
   //   day = "" + formattedDateOfBirth.getDate(),
   //   year = formattedDateOfBirth.getFullYear();
 
-
   if (!isVisible) {
     return <></>;
   }
-
+  console.log("dataaaaaa", data);
   return ReactDOM.createPortal(
     <EditProfileModal
       data-testid="app-dashboard-my-events-new-event"
@@ -218,6 +217,7 @@ export default function index({
             handleInputChange("dateofbirth", target.value);
           }}
           ref={register}
+          value={format(new Date(data.dateofbirth), "yyyy-MM-dd")}
         />
         <ErrorMessage
           field={errors.dateofbirth}

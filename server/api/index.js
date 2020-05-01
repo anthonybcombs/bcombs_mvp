@@ -319,7 +319,6 @@ router.put("/user/profile", async (req, res) => {
   const db = makeDb();
   try {
     const { personalInfo } = req.body;
-
     await db.query(
       "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,zip_code=?,birth_date=? where id=UUID_TO_BIN(?)",
       [
@@ -332,8 +331,19 @@ router.put("/user/profile", async (req, res) => {
         personalInfo.id
       ]
     );
+
+    const payload = {
+      first_name: personalInfo.firstname,
+      last_name: personalInfo.lastname,
+      family_relationship: personalInfo.family_relationship,
+      gender: personalInfo.gender,
+      birth_date: personalInfo.dateofbirth,
+      zip_code: personalInfo.zipcode,
+      id: personalInfo.id
+    };
+    res.status(200).json({ data: payload });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: true, Message: error });
   } finally {
     await db.close();
   }
@@ -377,12 +387,12 @@ router.post("/groups", async (req, res) => {
   try {
     const { id, name, visibility, email, contacts = [] } = req.body;
     const currentUser = await getUserFromDatabase(email);
-    console.log("req.body", req.body);
+
     const response = await db.query(
       "INSERT INTO `groups`( `id`,`name`, `visibility`,`user_id`) VALUES (UUID_TO_BIN(?),?,?,UUID_TO_BIN(?))",
       [id, name, visibility || "Public", currentUser.id]
     );
-    console.log("Responseeee", response);
+
     if (contacts.length > 0) {
       let groupMemberValuesQuery = contacts.reduce((accumulator, memberId) => {
         accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${memberId}")),`;
@@ -423,14 +433,14 @@ router.post("/usergroups", async (req, res) => {
     rows = JSON.parse(JSON.stringify(rows));
 
     const rowIds = rows.map(item => `UUID_TO_BIN("${item.id}")`);
-    console.log("ROWSSS", rowIds);
+
     let members = await db.query(
       "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members` WHERE `group_id` IN (" +
         rowIds.join(",") +
         ")"
     );
     members = JSON.parse(JSON.stringify(members));
-    console.log("memberssssssss", members);
+
     const formattedRows = rows.map(item => {
       const groupMembers = members
         .filter(member => member.group_id === item.id)
@@ -441,7 +451,7 @@ router.post("/usergroups", async (req, res) => {
         contacts: [...(groupMembers || [])]
       };
     });
-    console.log("FormattedRowsss", formattedRows);
+
     res.status(201).json({ data: formattedRows });
   } catch (error) {
     console.log("Error", error);

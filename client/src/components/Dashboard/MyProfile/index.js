@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
+import { differenceInYears, format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { faPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
@@ -18,6 +19,10 @@ import {
   requestUserProfile
 } from "../../../redux/actions/Users";
 
+const getAge = birthDate => {
+  return Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e10);
+};
+
 const ProfileSyled = styled.div`
   padding: 1em;
   #profile,
@@ -28,14 +33,14 @@ const ProfileSyled = styled.div`
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
   }
-  #personal-info div:nth-of-type(1) {
+  #personal-info-header div:first-child {
     position: relative;
     width: 100%;
     height: 300px;
     background: url(${backgroundImg}), rgba(242, 110, 33, 0.8);
     background-blend-mode: multiply;
   }
-  #personal-info div:nth-of-type(1) div:nth-of-type(1) {
+  #personal-info-header div:nth-of-type(1) div:nth-of-type(1) {
     position: absolute;
     display: block;
     width: 250px;
@@ -44,15 +49,15 @@ const ProfileSyled = styled.div`
     left: 32%;
     text-align: center;
   }
-  #personal-info div:nth-of-type(1) div:nth-of-type(1) h3,
-  #personal-info div:nth-of-type(1) div:nth-of-type(1) h4 {
+  #personal-info-header div:nth-of-type(1) div:nth-of-type(1) h3,
+  #personal-info-header div:nth-of-type(1) div:nth-of-type(1) h4 {
     color: white;
     text-shadow: 0 0 25px #eae9e9;
     padding: 0em;
     margin: 3px;
     text-align: center;
   }
-  #personal-info div:nth-of-type(1) div:nth-of-type(1) h4 span {
+  #personal-info-header div:nth-of-type(1) div:nth-of-type(1) h4 span {
     background-color: white;
     color: #f26e21;
     border-radius: 10px;
@@ -60,22 +65,36 @@ const ProfileSyled = styled.div`
     padding: 0.2em 1em 0.2em 1em;
     font-weight: normal;
   }
-  #personal-info div:nth-of-type(1) div:nth-of-type(1) img {
+  #personal-info-header div:nth-of-type(1) div:nth-of-type(1) img {
     border-radius: 50%;
     height: 100px;
     width: 100px;
     box-shadow: 0 0 5px black;
   }
-  #personal-info div:nth-of-type(2) {
+  #personal-info-header div:nth-of-type(2) {
     position: relative;
     margin: 1em;
   }
-  #personal-info div:nth-of-type(2) > svg {
-    position: absolute;
+  #personal-info-details > svg {
+    position: relative;
     display: inline-block;
     top: 0;
     right: 0;
   }
+
+  #personal-info-details {
+    background-color: white !important;
+    padding: 1em;
+  }
+
+  #personal-info-details > .personal-info-details-header {
+    display: inline-block;
+  }
+  #personal-info-details > .personal-info-details-edit {
+    float: right;
+    margin-top: 14px;
+  }
+
   #settings {
     padding: 1em;
   }
@@ -144,6 +163,9 @@ const ProfileSyled = styled.div`
       font-size: 2em;
     }
   }
+  #profile-name {
+    text-transform: capitalize;
+  }
 `;
 export default function index() {
   const [personalInfo, setPersonalInfo] = useState({
@@ -175,7 +197,7 @@ export default function index() {
   }, []);
 
   useEffect(() => {
-    if (user.profile) {
+    if (user.profile || (!isEditProfileVisible && user.profile)) {
       setPersonalInfo({
         firstname: user.profile.first_name,
         lastname: user.profile.last_name,
@@ -185,7 +207,7 @@ export default function index() {
         dateofbirth: user.profile.birth_date
       });
     }
-  }, [user]);
+  }, [user, isEditProfileVisible]);
 
   const handleFormSubmit = e => {
     dispatch(
@@ -198,12 +220,12 @@ export default function index() {
       })
     );
 
-    if (selectedFile) {
-      let data = new FormData();
-      data.append("file", selectedFile);
-      data.append("email", auth.email);
-      dispatch(requestUpdateUserPhoto(data));
-    }
+    // if (selectedFile) {
+    //   let data = new FormData();
+    //   data.append("file", selectedFile);
+    //   data.append("email", auth.email);
+    //   dispatch(requestUpdateUserPhoto(data));
+    // }
 
     setEditProfileVisible(false);
   };
@@ -215,7 +237,9 @@ export default function index() {
   const handleFileChange = event => {
     setSelectedFile(event.target.files[0]);
   };
-  console.log("auth", auth);
+
+  console.log("userrrrrrrrrrr", user);
+
   return (
     <ProfileSyled>
       <CreateRelative
@@ -227,7 +251,7 @@ export default function index() {
 
       <div id="profile">
         <div>
-          <div id="personal-info">
+          <div id="personal-info-header">
             <div>
               <div>
                 <img
@@ -238,35 +262,44 @@ export default function index() {
 
                 <input type="file" name="file" onChange={handleFileChange} />
 
-                <h3>
+                <h3 id="profile-name">
                   {user.profile && user.profile.first_name}{" "}
                   {user.profile && user.profile.last_name}
                 </h3>
                 <h4>
                   <FontAwesomeIcon icon={faUsers} />
 
-                  <span>22</span>
+                  <span>
+                    {personalInfo &&
+                      personalInfo.dateofbirth &&
+                      getAge(new Date(personalInfo.dateofbirth))}
+                  </span>
                 </h4>
               </div>
             </div>
-            <div>
-              <h3>Personal</h3>
+          </div>
 
+          <div id="personal-info-details">
+            <div className="personal-info-details-header">
+              <h3>Personal</h3>
+            </div>
+
+            <div className="personal-info-details-edit">
               <FontAwesomeIcon
                 onClick={() => {
                   setEditProfileVisible(true);
                 }}
                 icon={faEdit}
               />
-
-              {personalInfo.lastname && (
-                <ProfileForm
-                  data={personalInfo}
-                  handleInputChange={handleInputChange}
-                  onSubmit={handleFormSubmit}
-                />
-              )}
             </div>
+
+            {personalInfo.lastname && (
+              <ProfileForm
+                data={personalInfo}
+                handleInputChange={handleInputChange}
+                onSubmit={handleFormSubmit}
+              />
+            )}
           </div>
         </div>
         <div>
