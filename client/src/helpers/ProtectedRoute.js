@@ -20,7 +20,7 @@ export default function protectedRoutes({ children }) {
     window.scrollTo(0, 0);
   }, [children]);
 
-  console.log("AUTHHHHHHHHHHHHH", auth);
+
   if (
     sessionStorage.getItem("access_token") === null ||
     status.messageType == "error"
