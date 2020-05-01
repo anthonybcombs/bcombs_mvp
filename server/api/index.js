@@ -434,11 +434,14 @@ router.post("/usergroups", async (req, res) => {
 
     const rowIds = rows.map(item => `UUID_TO_BIN("${item.id}")`);
 
-    let members = await db.query(
-      "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members` WHERE `group_id` IN (" +
-        rowIds.join(",") +
-        ")"
-    );
+    let members =
+      rowIds && rowIds.length > 0
+        ? await db.query(
+            "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members` WHERE `group_id` IN (" +
+              rowIds.join(",") +
+              ")"
+          )
+        : [];
     members = JSON.parse(JSON.stringify(members));
 
     const formattedRows = rows.map(item => {
@@ -451,7 +454,7 @@ router.post("/usergroups", async (req, res) => {
         contacts: [...(groupMembers || [])]
       };
     });
-
+    console.log("formattedRows", formattedRows);
     res.status(201).json({ data: formattedRows });
   } catch (error) {
     console.log("Error", error);
