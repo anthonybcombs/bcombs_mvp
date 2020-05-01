@@ -8,7 +8,7 @@ export default function protectedRoutes({ children }) {
   const { auth, status } = useSelector(({ auth, status }) => {
     return {
       auth,
-      status
+      status,
     };
   });
   const dispatch = useDispatch();
@@ -19,14 +19,12 @@ export default function protectedRoutes({ children }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [children]);
-
-
   if (
     sessionStorage.getItem("access_token") === null ||
     status.messageType == "error"
   ) {
     return <Redirect to="/" />;
-  } else if (auth.email_verified) {
+  } else if (auth.email_verified && auth.status === "SIGNED_IN") {
     if (
       !location.pathname.includes("createprofile") &&
       !auth.is_profile_filled
@@ -34,8 +32,7 @@ export default function protectedRoutes({ children }) {
       return <Redirect to="/dashboard/createprofile" />;
     } else if (
       location.pathname.includes("createprofile") &&
-      auth.is_profile_filled &&
-      auth.status === "SIGNED_IN"
+      auth.is_profile_filled
     ) {
       return <Redirect to="/dashboard" />;
     }

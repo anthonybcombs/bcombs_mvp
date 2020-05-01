@@ -51,8 +51,8 @@ export default function index(props) {
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
-  const handleFormSubmit = async (values) => {
-    await dispatch(requestAuth(userDetails));
+  const handleFormSubmit = (values) => {
+    dispatch(requestAuth(userDetails));
   };
   if (auth.hasOwnProperty("sub") && auth.email_verified) {
     navigate("/dashboard", { state: { calendarName: "" } }, { replace: true });

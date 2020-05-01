@@ -1,7 +1,7 @@
 import { call, take, put } from "redux-saga/effects";
 import randomColor from "randomcolor";
 import * as actionType from "./Constant";
-const addCalendarInDatabase = ({ name, familyMembers }) => {
+const addCalendarInDatabase = ({ creds, info }) => {
   return new Promise((resolve, reject) => {
     return resolve("success");
   });
@@ -15,7 +15,13 @@ export const requestAddCalendar = (details) => {
 };
 
 export function* addCalendar({ name, familyMembers }) {
-  yield call(addCalendarInDatabase, { name, familyMembers });
+  yield call(addCalendarInDatabase, {
+    creds: {
+      access_token: sessionStorage.getItem("access_token"),
+      token_type: sessionStorage.getItem("token_type"),
+    },
+    info: { name, familyMembers },
+  });
   yield put({
     type: actionType.REQUEST_ADD_CALENDAR_COMPLETED,
     payload: {

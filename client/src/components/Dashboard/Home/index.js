@@ -5,7 +5,7 @@ import Collapsible from "react-collapsible";
 import {
   faCalendar,
   faBell,
-  faPlusCircle
+  faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
 import { format, startOfMonth, endOfMonth } from "date-fns";
@@ -89,32 +89,39 @@ export default function index({ location }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const events = useSelector(({ events }) => events);
+  const { events, auth } = useSelector(({ events, auth }) => {
+    return { events, auth };
+  });
   const theme = useContext(ThemeContext);
   let calendarName = "";
   if (sessionStorage.getItem("calendarName") !== null) {
     calendarName = sessionStorage.getItem("calendarName");
-    sessionStorage.removeItem("calendarName");
+    if (sessionStorage.getItem("welcomeMessageDisplayed") !== null) {
+      sessionStorage.removeItem("calendarName");
+      sessionStorage.removeItem("welcomeMessageDisplayed");
+    } else {
+      sessionStorage.setItem("welcomeMessageDisplayed", "yes");
+    }
   }
   const calendars = [
     {
       id: 1,
-      name: calendarName
-    }
+      name: calendarName,
+    },
   ];
 
   const eventsOnThisDay = events.filter(
-    event =>
+    (event) =>
       format(event.date, "MM dd yyyy") === format(selectedDate, "MM dd yyyy")
   );
-  const handleSetSelectedDate = date => {
+  const handleSetSelectedDate = (date) => {
     setSelectedEvent();
     setSelectedDate(date);
   };
-  const handleEventSelection = id => {
-    setSelectedEvent(eventsOnThisDay.filter(event => event.id === id)[0]);
+  const handleEventSelection = (id) => {
+    setSelectedEvent(eventsOnThisDay.filter((event) => event.id === id)[0]);
   };
-  const setCurrentMonth = month => {
+  const setCurrentMonth = (month) => {
     setSelectedMonth(format(month, "MMMM yyyy"));
   };
   return (
@@ -146,7 +153,8 @@ export default function index({ location }) {
                 </h3>
               }
               open
-              lazyRender>
+              lazyRender
+            >
               <div className="panel">
                 {calendars.map((calendar, i) => (
                   <div
@@ -154,7 +162,8 @@ export default function index({ location }) {
                     key={i}
                     onClick={() => {
                       handleEventSelection(calendar.id);
-                    }}>
+                    }}
+                  >
                     {calendar.name}
                   </div>
                 ))}
@@ -168,7 +177,8 @@ export default function index({ location }) {
                 </h3>
               }
               open
-              lazyRender>
+              lazyRender
+            >
               <div className="panel">
                 <div className="panel-body">test notification</div>
                 <div className="panel-body">test notification</div>
@@ -184,7 +194,8 @@ export default function index({ location }) {
               id="add-event-button"
               onClick={() => {
                 setIsEventModalVisible(true);
-              }}>
+              }}
+            >
               <FontAwesomeIcon icon={faPlusCircle} size="3x" />
             </button>
 
@@ -204,7 +215,8 @@ export default function index({ location }) {
                   key={i}
                   onClick={() => {
                     handleEventSelection(event.id);
-                  }}>
+                  }}
+                >
                   {event.name}
                 </div>
               ))}

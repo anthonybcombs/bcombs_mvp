@@ -12,21 +12,21 @@ export default function index({ navigate }) {
     familyMembers: [],
     members: [],
     calendarInfo: {
-      name: ""
-    }
+      name: "",
+    },
   });
   const auth = useSelector(({ auth }) => auth);
   const dispatch = useDispatch();
-  const handleProfileSubmit = calendarName => {
+  const handleProfileSubmit = (calendarName) => {
     dispatch(
       requestUpdateUser({
         ...profileDetails,
         calendarInfo: { name: calendarName },
-        email: auth.email
+        email: auth.email,
       })
     );
-    navigate(`../dashboard`);
     sessionStorage.setItem("calendarName", calendarName);
+    window.location.reload();
   };
   return (
     <>

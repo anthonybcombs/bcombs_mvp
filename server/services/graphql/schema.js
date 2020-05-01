@@ -97,6 +97,7 @@ const queryTypes = `
 
     type User{
         id: String
+        user_id: String        
         auth_id: String
         email: String
         type: String

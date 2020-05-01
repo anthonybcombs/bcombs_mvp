@@ -6,7 +6,7 @@ import {
   faCog,
   faBell,
   faSearch,
-  faSignOutAlt
+  faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link, Location, useNavigate } from "@reach/router";
@@ -129,7 +129,7 @@ export default function Layout({ children }) {
             <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
           </Link>
           <Location
-            children={context => {
+            children={(context) => {
               if (
                 context.location.pathname.includes("dashboard") &&
                 auth.status === "SIGNED_ID"
@@ -152,7 +152,7 @@ export default function Layout({ children }) {
         </div>
         <div id="app-header-left">
           <Location
-            children={context => {
+            children={(context) => {
               if (
                 context.location.pathname === "/auth/forgot-password" ||
                 context.location.pathname === "/auth/create"
@@ -171,7 +171,7 @@ export default function Layout({ children }) {
             }}
           />
           <Location
-            children={context => {
+            children={(context) => {
               if (
                 context.location.pathname.includes("dashboard") &&
                 auth.status === "SIGNED_IN"
@@ -185,7 +185,8 @@ export default function Layout({ children }) {
                           : ""
                       }`}
                       to="/dashboard"
-                      state={{ calendarName: "" }}>
+                      state={{ calendarName: "" }}
+                    >
                       <span> Dashboard</span>
                     </Link>
                     <Link
@@ -194,7 +195,8 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                       }`}
-                      to="/dashboard/mycalendars">
+                      to="/dashboard/mycalendars"
+                    >
                       <span>Calendars</span>
                     </Link>
                     <Link
@@ -203,7 +205,8 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                       }`}
-                      to="/dashboard/myevents">
+                      to="/dashboard/myevents"
+                    >
                       <span>Events</span>
                     </Link>
 
@@ -213,7 +216,8 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                       }`}
-                      to="/dashboard/mycontacts">
+                      to="/dashboard/mycontacts"
+                    >
                       <span>Contacts</span>
                     </Link>
                     <div id="dashboard-setting">
@@ -224,7 +228,8 @@ export default function Layout({ children }) {
                             ? "selected"
                             : ""
                         }`}
-                        to="/dashboard/notifications">
+                        to="/dashboard/notifications"
+                      >
                         <FontAwesomeIcon icon={faBell} />
                       </Link>
                       <Link
@@ -233,7 +238,8 @@ export default function Layout({ children }) {
                             ? "selected"
                             : ""
                         }`}
-                        to="/dashboard/settings">
+                        to="/dashboard/settings"
+                      >
                         <FontAwesomeIcon icon={faCog} />
                       </Link>
                       <Popover
@@ -247,13 +253,15 @@ export default function Layout({ children }) {
                             arrowColor="lightgrey"
                             arrowSize={7}
                             arrowStyle={{ opacity: 1 }}
-                            arrow="center">
+                            arrow="center"
+                          >
                             <PopoverStyled>
                               <Link
                                 to="/dashboard/myprofile"
                                 onClick={() => {
                                   setIsPopOverVisible(false);
-                                }}>
+                                }}
+                              >
                                 <FontAwesomeIcon icon={faUser} />
                                 <span>Profile</span>
                               </Link>
@@ -262,7 +270,8 @@ export default function Layout({ children }) {
                                   dispatch(requestLogout());
                                   setIsPopOverVisible(false);
                                   navigate("/", { replace: true });
-                                }}>
+                                }}
+                              >
                                 <FontAwesomeIcon icon={faSignOutAlt} />
                                 <span>Logout</span>
                               </a>
@@ -271,11 +280,13 @@ export default function Layout({ children }) {
                         )}
                         onClickOutside={() => {
                           setIsPopOverVisible(false);
-                        }}>
+                        }}
+                      >
                         <a
                           onClick={() => {
                             setIsPopOverVisible(true);
-                          }}>
+                          }}
+                        >
                           <img
                             src={`${currentUserProfilePhoto}?t=${new Date().getTime()}`}
                           />
