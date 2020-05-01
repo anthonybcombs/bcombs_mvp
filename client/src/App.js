@@ -51,6 +51,18 @@ const AsyncProfile = Loadable({
   loader: () => import("./components/UserInfo/Profile"),
   loading: Loading
 });
+const AyncApplicationStatus = Loadable({
+  loader: () => import("./components/Dashboard/Application"),
+  loading: Loading
+});
+const AyncArchivedApplication = Loadable({
+  loader: () => import("./components/Dashboard/ArchivedApplication"),
+  loading: Loading
+});
+const AsyncApplicationForm = Loadable({
+  loader: () => import("./components/Dashboard/ApplicationForm"),
+  loading: Loading
+});
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -73,8 +85,11 @@ export default function App() {
               <AsyncDashboardMyProfle path="myprofile" />
               <AyncDashboardMyContacts path="mycontacts" />
               <AsyncProfile path="createprofile" />
+              <AyncApplicationStatus path="application"/>
+              <AyncArchivedApplication path="archived"/>
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
+            <AsyncApplicationForm path="application/:id" />
           </Router>
         </div>
       </Layout>
