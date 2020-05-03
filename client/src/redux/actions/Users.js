@@ -6,7 +6,7 @@ import { SIGN_UP_MUTATION, USER_UPDATE_MUTATION } from "../../graphql/mutation";
 import { requestUserInfo } from "./Auth";
 
 // **************************************************** //
-const getUserProfileToDatabase = (email) => {
+const getUserProfileToDatabase = email => {
   return new Promise(async (resolve, reject) => {
     try {
       const userProfileRequest = await fetch(
@@ -14,8 +14,8 @@ const getUserProfileToDatabase = (email) => {
         {
           method: "GET", // or 'PUT'
           headers: {
-            "Content-Type": "application/json",
-          },
+            "Content-Type": "application/json"
+          }
         }
       );
       const response = await userProfileRequest.json();
@@ -26,7 +26,7 @@ const getUserProfileToDatabase = (email) => {
   });
 };
 
-const updateUserProfileToDatabase = (user) => {
+const updateUserProfileToDatabase = user => {
   return new Promise(async (resolve, reject) => {
     try {
       const addUserRequest = await fetch(
@@ -35,9 +35,9 @@ const updateUserProfileToDatabase = (user) => {
           method: "PUT", // or 'PUT'
           headers: {
             Accept: "application/json",
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify(user),
+          body: JSON.stringify(user)
         }
       );
       const addUserResponse = await addUserRequest.json();
@@ -48,18 +48,18 @@ const updateUserProfileToDatabase = (user) => {
   });
 };
 
-const updateUserPhotoToDatabase = (user) => {
+const updateUserPhotoToDatabase = user => {
   return new Promise(async (resolve, reject) => {
     try {
-      const addUserRequest = await fetch(
+      const userRequest = await fetch(
         `${process.env.API_HOST}/api/user/photo`,
         {
           method: "POST",
-          body: user,
+          body: user
         }
       );
-      const addUserResponse = await addUserRequest.json();
-      return resolve(addUserResponse);
+      const userResponse = await userRequest.json();
+      return resolve(userResponse);
     } catch (error) {
       console.log("Error", error);
       reject("error");
@@ -69,14 +69,14 @@ const updateUserPhotoToDatabase = (user) => {
 
 // **************************************************** //
 
-const addUserToDatabase = (user) => {
+const addUserToDatabase = user => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.mutate({
         mutation: SIGN_UP_MUTATION,
         variables: {
-          user,
-        },
+          user
+        }
       });
       return resolve(data.signUp);
     } catch (error) {
@@ -84,12 +84,12 @@ const addUserToDatabase = (user) => {
     }
   });
 };
-const updateUserToDatabase = (user) => {
+const updateUserToDatabase = user => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.mutate({
         mutation: USER_UPDATE_MUTATION,
-        variables: { user },
+        variables: { user }
       });
       return resolve(data.userUpdate);
     } catch (error) {
@@ -97,23 +97,23 @@ const updateUserToDatabase = (user) => {
     }
   });
 };
-const isUserExistToDatabase = (user) => {
+const isUserExistToDatabase = user => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.query({
         query: IS_USER_EXIST_QUERY,
-        variables: { email: user.email, username: user.username },
+        variables: { email: user.email, username: user.username }
       });
       if (data.users.length > 0) {
         return resolve({
           messageType: "error",
           message:
-            "User already registered, please use different username and email address.",
+            "User already registered, please use different username and email address."
         });
       } else {
         return resolve({
           messageType: "info",
-          message: "proceed",
+          message: "proceed"
         });
       }
     } catch (error) {
@@ -121,23 +121,23 @@ const isUserExistToDatabase = (user) => {
     }
   });
 };
-export const requestAddUser = (user) => {
+export const requestAddUser = user => {
   delete user.confirm_password;
   return {
     type: actionType.REQUEST_ADD_USER,
-    user,
+    user
   };
 };
-export const requestUpdateUser = (user) => {
+export const requestUpdateUser = user => {
   return {
     type: actionType.REQUEST_UPDATE_USER,
-    user,
+    user
   };
 };
-export const requestCheckuserAndAdd = (user) => {
+export const requestCheckuserAndAdd = user => {
   return {
     type: actionType.REQUEST_CHECK_USER_AND_ADD,
-    user,
+    user
   };
 };
 export function* addedUser({ user }) {
@@ -145,14 +145,14 @@ export function* addedUser({ user }) {
     const addUserResponse = yield call(addUserToDatabase, user);
     yield put({
       type: actionType.REQUEST_ADD_USER_COMPLETED,
-      payload: addUserResponse,
+      payload: addUserResponse
     });
     yield put({
       type: actionType.REQUEST_STATUS_COMPLETED,
       payload: {
         messageType: addUserResponse.messageType,
-        message: addUserResponse.message,
-      },
+        message: addUserResponse.message
+      }
     });
   } catch (error) {}
 }
@@ -163,15 +163,15 @@ export function* updatedUser({ user }) {
     if (updateUserResponse.messageType !== "error") {
       yield put({
         type: actionType.REQUEST_UPDATE_USER_COMPLETED,
-        payload: updateUserResponse,
+        payload: updateUserResponse
       });
     }
     yield put({
       type: actionType.REQUEST_STATUS_COMPLETED,
       payload: {
         messageType: updateUserResponse.messageType,
-        message: updateUserResponse.message,
-      },
+        message: updateUserResponse.message
+      }
     });
   } catch (error) {}
 }
@@ -190,38 +190,38 @@ export function* checkedUserAndAdd({ user }) {
       type: actionType.REQUEST_STATUS_COMPLETED,
       payload: {
         messageType: isUserExistResponse.messageType,
-        message: isUserExistResponse.message,
-      },
+        message: isUserExistResponse.message
+      }
     });
   } catch (error) {}
 }
 
 // ADDED BY DENNIS
-export const setUserProfile = (user) => {
+export const setUserProfile = user => {
   return {
     type: actionType.SET_USER_PROFILE,
-    user,
+    user
   };
 };
 
-export const requestUserProfile = (email) => {
+export const requestUserProfile = email => {
   return {
     type: actionType.REQUEST_USER_PROFILE,
-    email,
+    email
   };
 };
 
-export const requestUpdateUserPhoto = (data) => {
+export const requestUpdateUserPhoto = data => {
   return {
     type: actionType.REQUEST_UPDATE_USER_PHOTO,
-    data,
+    data
   };
 };
 
-export const requestUpdateUserProfile = (data) => {
+export const requestUpdateUserProfile = data => {
   return {
     type: actionType.REQUEST_UPDATE_USER_PROFILE,
-    data,
+    data
   };
 };
 
@@ -245,7 +245,11 @@ export function* updateUserProfile(action) {
 
 export function* updateUserProfilePhoto(action) {
   try {
-    yield call(updateUserPhotoToDatabase, action.data);
-    yield put(requestUserInfo());
+    const response = yield call(updateUserPhotoToDatabase, action.data);
+
+    yield put({
+      type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
+      payload: response.data
+    });
   } catch (error) {}
 }

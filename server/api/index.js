@@ -374,6 +374,13 @@ router.post("/user/photo", upload.single("file"), async (req, res) => {
             "UPDATE users SET profile_img=? where id=UUID_TO_BIN(?)",
             [data.key, currentUser.id]
           );
+
+          let user = await getUserFromDatabase(email);
+          user.profile_img = user.profile_img
+            ? `${s3BucketRootPath}${user.profile_img}?${new Date().getTime()}`
+            : "";
+
+          res.status(200).json({ error: true, data: user });
         }
       });
     } else {

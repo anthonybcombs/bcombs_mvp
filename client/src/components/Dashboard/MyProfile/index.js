@@ -11,6 +11,7 @@ import backgroundImg from "../../../images/loginbg.png";
 import CreateRelative from "./create/";
 import ProfileForm from "./forms/ProfileForm";
 import EditProfileForm from "./forms/EditProfileForm";
+import UploadPhotoForm from "./forms/UploadPhotoForm";
 
 // REDUX
 import {
@@ -178,10 +179,12 @@ export default function index() {
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [isEditProfileVisible, setEditProfileVisible] = useState(false);
+  const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
   const [
     isCreateRelativeModaVisibile,
     setIsCreateRelativeModaVisibile
   ] = useState(false);
+
   const [dashboard, setDashboard] = useState("Events");
   const { auth, settings, relatives, user } = useSelector(
     ({ auth, settings, relatives, user }) => {
@@ -230,6 +233,14 @@ export default function index() {
     setEditProfileVisible(false);
   };
 
+  const handleImageUpload = file => {
+    let data = new FormData();
+    data.append("file", file);
+    data.append("email", auth.email);
+    dispatch(requestUpdateUserPhoto(data));
+    setUploadPhotoVisible(false);
+  };
+
   const handleInputChange = (id, value) => {
     setPersonalInfo({ ...personalInfo, [id]: value });
   };
@@ -237,8 +248,6 @@ export default function index() {
   const handleFileChange = event => {
     setSelectedFile(event.target.files[0]);
   };
-
-  console.log("userrrrrrrrrrr", user);
 
   return (
     <ProfileSyled>
@@ -258,10 +267,10 @@ export default function index() {
                   src={`${
                     auth.profile_img ? auth.profile_img : auth.picture
                   }?t=${new Date().getTime()}`}
+                  onClick={() => {
+                    setUploadPhotoVisible(true);
+                  }}
                 />
-
-                <input type="file" name="file" onChange={handleFileChange} />
-
                 <h3 id="profile-name">
                   {user.profile && user.profile.first_name}{" "}
                   {user.profile && user.profile.last_name}
@@ -393,6 +402,13 @@ export default function index() {
         data={personalInfo}
         handleInputChange={handleInputChange}
         onSubmit={handleFormSubmit}
+      />
+      <UploadPhotoForm
+        auth={auth}
+        isVisible={isUploadPhotoVisible}
+        toggleProfilePhotoVisible={setUploadPhotoVisible}
+        data={personalInfo}
+        onSubmit={handleImageUpload}
       />
     </ProfileSyled>
   );
