@@ -18,30 +18,7 @@ const ProfileFormStyled = styled.form`
     position: absolute;
     right: 0;
   }
-  input:required {
-    box-shadow: none;
-  }
-  input:invalid {
-    box-shadow: none;
-  }
-  input {
-    background: none;
-    width: 100%;
-    color: black;
-    font-size: ${({ theme }) => theme.input.fontSize} !important;
-    display: block;
-    border: none;
-    border-radius: 1;
-    border: none;
-    outline: 0;
-    border-bottom: 2px solid lightgrey;
-    margin-top: 2.5em;
-    margin-bottom: 2.5em;
-  }
-  input:focus {
-    border-color: ${({ theme }) => theme.input.focus.border.color};
-    transition: 3s;
-  }
+
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;
@@ -58,17 +35,7 @@ const ProfileFormStyled = styled.form`
     backgroundborder: none;
     margin-top: 0.5em;
   }
-  select {
-    font-size: ${({ theme }) => theme.input.fontSize};
-    display: block;
-    width: 100% !important;
-    border: none;
-    margin-top: 2.5em;
-    margin-bottom: 1.5em;
-  }
-  option:not([value=""]) {
-    color: black !important;
-  }
+
   h3 {
     text-align: center;
   }
@@ -105,7 +72,7 @@ const ProfileFormStyled = styled.form`
 export default function ProfileForm({ data, onSubmit, handleInputChange }) {
   const theme = useContext(ThemeContext);
   const { handleSubmit, errors } = useForm();
-
+  console.log("dataaaaaaaaaaaaaa", data);
   return (
     <ProfileFormStyled
       id="personal-info-details"
@@ -114,7 +81,7 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
       theme={theme}
       onSubmit={handleSubmit(onSubmit)}>
       <div id="profile-form">
-        <div className="main-profile-content">
+        {/* <div className="main-profile-content">
           <div className="profile-content bold">Lastname</div>
           <div className="profile-content">{data.lastname}</div>
         </div>
@@ -123,6 +90,12 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
         <div className="main-profile-content">
           <div className="profile-content bold">Firstname</div>
           <div className="profile-content">{data.firstname}</div>
+        </div>
+        <br /> */}
+
+        <div className="main-profile-content">
+          <div className="profile-content bold">Ethnicity</div>
+          <div className="profile-content">{data.ethnicity}</div>
         </div>
         <br />
         <div className="main-profile-content">
@@ -139,92 +112,28 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
           </div>
         </div>
         <br />
+
+        <div className="main-profile-content">
+          <div className="profile-content bold">Address</div>
+          <div className="profile-content">{data.address}</div>
+        </div>
+        <br />
         <div className="main-profile-content">
           <div className="profile-content bold">Zipcode</div>
           <div className="profile-content">{data.zipcode}</div>
         </div>
-      </div>
-      {/* <input
-        data-testid="app-profile-input-firstname"
-        name="firstname"
-        placeholder="First name"
-        onChange={({ target }) => {
-          handleInputChange("firstname", target.value);
-        }}
-        ref={register}
-      />
-   
-      <input
-        data-testid="app-profile-input-lastname"
-        name="lastname"
-        placeholder="Last name"
-        onChange={({ target }) => {
-          handleInputChange("lastname", target.value);
-        }}
-        ref={register}
-      />
-   
-      <span>Family Relationship</span>
-      <select
-        data-testid="app-profile-select-family-relationship"
-        name="familyrelationship"
-        onChange={({ target }) => {
-          handleInputChange("familyrelationship", target.value);
-        }}
-        ref={register}>
-        <option value="" disabled hidden>
-          Family relationship
-        </option>
-        <option value="father">Father</option>
-        <option value="mother">Mother</option>
-        <option value="sibling">Sibling</option>
-      </select>
-    
-      <span>Gender</span>
-      <select
-        data-testid="app-profile-select-gender"
-        name="gender"
-        onChange={({ target }) => {
-          handleInputChange("gender", target.value);
-        }}
-        ref={register}>
-        <option value="" disabled hidden>
-          Gender
-        </option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-      </select>
-      
 
-      <input
-        data-testid="app-profile-input-zip-code"
-        name="zipcode"
-        type="number"
-        placeholder="Zip code"
-        onChange={({ target }) => {
-          handleInputChange("zipcode", target.value);
-        }}
-        ref={register}
-      />
- 
-      <input
-        //data-testid="app-profile-input-date-of-birth"
-        name="dateofbirth"
-        type="date"
-        type={dateOfBirthElementType}
-        placeholder="Date of Birth"
-        onFocus={() => {
-          handleDateOfBirthElementTypeChange("date");
-        }}
-        onBlur={() => {
-          handleDateOfBirthElementTypeChange("text");
-        }}
-        onChange={({ target }) => {
-          handleInputChange("dateofbirth", target.value);
-        }}
-        ref={register}
-      />
-       */}
+        <br />
+        <div className="main-profile-content">
+          <div className="profile-content bold">School</div>
+          <div className="profile-content">{data.school}</div>
+        </div>
+        <br />
+        <div className="main-profile-content">
+          <div className="profile-content bold">Grade</div>
+          <div className="profile-content">{data.grade}</div>
+        </div>
+      </div>
     </ProfileFormStyled>
   );
 }

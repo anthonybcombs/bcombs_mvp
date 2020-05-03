@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { differenceInYears, format } from "date-fns";
+import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { faPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
@@ -175,7 +175,11 @@ export default function index() {
     gender: "",
     familyrelationship: "",
     zipcode: "",
-    dateofbirth: ""
+    dateofbirth: "",
+    address: "",
+    school: "",
+    ethnicity: "",
+    grade: ""
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [isEditProfileVisible, setEditProfileVisible] = useState(false);
@@ -191,6 +195,8 @@ export default function index() {
       return { auth, settings, relatives, user };
     }
   );
+
+  console.log("user", user);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -208,11 +214,18 @@ export default function index() {
         familyrelationship: user.profile.family_relationship,
         zipcode: user.profile.zip_code,
         dateofbirth: user.profile.birth_date
+          ? format(new Date(user.profile.birth_date), "yyyy-MM-dd")
+          : "",
+        address: user.profile.address,
+        school: user.profile.school,
+        ethnicity: user.profile.ethnicity,
+        grade: user.profile.grade
       });
     }
   }, [user, isEditProfileVisible]);
 
   const handleFormSubmit = e => {
+    console.log("handleFormSubmit personalInfo", personalInfo);
     dispatch(
       requestUpdateUserProfile({
         personalInfo: {
@@ -242,11 +255,9 @@ export default function index() {
   };
 
   const handleInputChange = (id, value) => {
+    console.log("handleInputChange idddd", id);
+    console.log("handleInputChange value", value);
     setPersonalInfo({ ...personalInfo, [id]: value });
-  };
-
-  const handleFileChange = event => {
-    setSelectedFile(event.target.files[0]);
   };
 
   return (

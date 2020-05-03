@@ -160,6 +160,7 @@ export function* addedUser({ user }) {
 export function* updatedUser({ user }) {
   try {
     const updateUserResponse = yield call(updateUserToDatabase, user);
+    console.log("UpdateUserREsponseee", updateUserResponse);
     if (updateUserResponse.messageType !== "error") {
       yield put({
         type: actionType.REQUEST_UPDATE_USER_COMPLETED,
@@ -235,8 +236,9 @@ export function* getUserInfo({ email }) {
 
 export function* updateUserProfile(action) {
   try {
+    console.log("updateUserProfile action", action.data);
     const response = yield call(updateUserProfileToDatabase, action.data);
-
+    console.log("updateUserProfile response", response);
     if (response) {
       yield put(setUserProfile(response.data));
     }
