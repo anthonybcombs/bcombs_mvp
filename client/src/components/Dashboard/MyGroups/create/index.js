@@ -10,7 +10,7 @@ const NewContactModal = styled.div`
     text-align: center;
   }
   .modal-content {
-    width: 40%;
+    width: 30%;
   }
   @media (min-width: 600px) {
   }
@@ -32,14 +32,15 @@ export default function index({
   const handleGroupDetailsChange = (id, value) => {
     let newContacts = groupDetails.contacts;
     if (id === "contacts") {
-      let selectedContactId = value;
-      if (newContacts.includes(selectedContactId)) {
-        newContacts = newContacts.filter(
-          contactId => contactId !== selectedContactId
-        );
-      } else {
-        newContacts.push(selectedContactId);
-      }
+      // let selectedContactId = value;
+      // if (newContacts.includes(selectedContactId)) {
+      //   newContacts = newContacts.filter(
+      //     contactId => contactId !== selectedContactId
+      //   );
+      // } else {
+      //   newContacts.push(selectedContactId);
+      // }
+      newContacts = value.map(contact => contact.id);
     }
     setGroupDetails({
       ...groupDetails,
@@ -67,7 +68,7 @@ export default function index({
 
   return ReactDOM.createPortal(
     <NewContactModal className="modal">
-      <div className="modal-content">
+      <div id="applicationForm" className="modal-content">
         <span
           className="close"
           onClick={() => {

@@ -226,15 +226,15 @@ export default function index() {
 
   const handleFormSubmit = e => {
     console.log("handleFormSubmit personalInfo", personalInfo);
-    dispatch(
-      requestUpdateUserProfile({
-        personalInfo: {
-          ...personalInfo,
-          id: user.profile.id
-        },
-        email: auth.email
-      })
-    );
+    // dispatch(
+    //   requestUpdateUserProfile({
+    //     personalInfo: {
+    //       ...personalInfo,
+    //       id: user.profile.id
+    //     },
+    //     email: auth.email
+    //   })
+    // );
 
     // if (selectedFile) {
     //   let data = new FormData();
@@ -255,8 +255,6 @@ export default function index() {
   };
 
   const handleInputChange = (id, value) => {
-    console.log("handleInputChange idddd", id);
-    console.log("handleInputChange value", value);
     setPersonalInfo({ ...personalInfo, [id]: value });
   };
 
@@ -313,7 +311,7 @@ export default function index() {
               />
             </div>
 
-            {personalInfo.lastname && (
+            {personalInfo && (
               <ProfileForm
                 data={personalInfo}
                 handleInputChange={handleInputChange}

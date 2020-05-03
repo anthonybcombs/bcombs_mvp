@@ -34,11 +34,6 @@ const EditProfileModal = styled.form`
     button[type="submit"] {
       width: ${({ theme }) => theme.button.width.primary};
     }
-
-    p.error {
-      width: 70%;
-      margin: 2.5em auto 2.5em auto;
-    }
   }
 
   .form-group .form-control {
@@ -154,8 +149,7 @@ export default function index({
 }) {
   const theme = useContext(ThemeContext);
 
-  const { handleSubmit, errors } = useForm();
-  const { register } = useForm({
+  const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
@@ -174,6 +168,7 @@ export default function index({
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
       theme={theme}
+      method="POST"
       onSubmit={handleSubmit(onSubmit)}>
       <div className="modal-content">
         <span
@@ -194,12 +189,11 @@ export default function index({
                 onChange={({ target }) => {
                   handleInputChange("firstname", target.value);
                 }}
-                ref={register}
+                ref={register({ required: true })}
                 value={data.firstname}
               />
               <label className="field-label">First Name</label>
             </div>
-
             <ErrorMessage
               field={errors.firstname}
               errorType="required"
@@ -210,17 +204,22 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                name="firstname"
+                name="lastname"
                 className="field-input"
                 placeholder="Last Name"
                 onChange={({ target }) => {
                   handleInputChange("lastname", target.value);
                 }}
-                ref={register}
+                ref={register({ required: true })}
                 value={data.lastname}
               />
               <label className="field-label">Last Name</label>
             </div>
+            <ErrorMessage
+              field={errors.lastname}
+              errorType="required"
+              message="Lastname is required."
+            />
           </div>
 
           <div className="form-group">
@@ -231,7 +230,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleInputChange("gender", target.value);
                 }}
-                ref={register}
+                ref={register({ required: true })}
                 value={data.gender}>
                 <option value="">Select</option>
                 {GENDER_OPTIONS.map(opt => (
@@ -242,6 +241,11 @@ export default function index({
               </select>
               <label className="field-label">Gender</label>
             </div>
+            <ErrorMessage
+              field={errors.gender}
+              errorType="required"
+              message="Gender is required."
+            />
           </div>
 
           <div className="form-group">
@@ -294,11 +298,16 @@ export default function index({
                 onChange={({ target }) => {
                   handleInputChange("address", target.value);
                 }}
-                ref={register}
+                ref={register({ required: true })}
                 value={data.address}
               />
               <label className="field-label">Address</label>
             </div>
+            <ErrorMessage
+              field={errors.address}
+              errorType="required"
+              message="Address is required."
+            />
           </div>
 
           <div className="form-group">
@@ -310,11 +319,16 @@ export default function index({
                 onChange={({ target }) => {
                   handleInputChange("zipcode", target.value);
                 }}
-                ref={register}
+                ref={register({ required: true })}
                 value={data.zipcode}
               />
               <label className="field-label">Zipcode</label>
             </div>
+            <ErrorMessage
+              field={errors.zipcode}
+              errorType="required"
+              message="Zipcode is required."
+            />
           </div>
 
           <div className="form-group">

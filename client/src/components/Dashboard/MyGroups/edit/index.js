@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch } from "react-redux";
+import { Multiselect } from "multiselect-react-dropdown";
 // import { updateContact } from "../../../../../redux/actions/Contacts";
 import {
   updateGroup,
@@ -23,15 +24,14 @@ const EditGroupModal = styled.div`
     width: ${({ theme }) => theme.modalWidth};
     margin-top: ${({ theme }) => theme.modalMarginTop};
   }
-  #content {
+  .content {
     display: grid;
     background-color: white;
     padding: 4em;
   }
-  #content > div {
-    padding: 1em;
+  .content > div {
   }
-  #content > div:nth-child(2) {
+  .content > div:nth-child(2) {
     margin-top: 5em;
     text-align: center !important;
   }
@@ -75,7 +75,7 @@ const EditGroupModal = styled.div`
     margin-bottom: 2.5em;
   }
   @media (min-width: 600px) {
-    #content {
+    .content {
       grid-template-columns: 50% 50%;
       grid-gap: 1%;
     }
@@ -97,6 +97,7 @@ export default function index({
   const [currentGroupName, setCurrentGroupName] = useState("");
   const [contactSelections, setContactSelections] = useState([]);
   const [selectedContact, setSelectedContact] = useState([]);
+  const hasSelectAll = false;
 
   const resetState = () => {
     setCurrentContacts([]);
@@ -118,7 +119,14 @@ export default function index({
         };
       });
 
-      const selections = contacts.filter(c => !group.contacts.includes(c.id));
+      const selections = contacts
+        .filter(c => !group.contacts.includes(c.id))
+        .map(c => {
+          return {
+            id: c.id,
+            name: `${c.first_name} ${c.last_name}`
+          };
+        });
       setCurrentGroupName(group.name);
       setCurrentContacts(list);
       setContactSelections(selections);
@@ -133,10 +141,11 @@ export default function index({
   // };
   const handleSubmit = () => {
     if (currentGroupName !== "") {
+      const contactIds = selectedContact.map(item => item.id);
       const payload = {
         id: group.id,
         name: currentGroupName,
-        member_ids: selectedContact,
+        member_ids: contactIds,
         email: auth.email
       };
 
@@ -183,15 +192,37 @@ export default function index({
           }}>
           &times;
         </span>
-        <div id="content">
-          <div>
-            <input
-              className="group-name"
-              placeholder="Group Name"
-              name="name"
-              onChange={handleChangeName}
-              value={currentGroupName}
-            />
+        <div className="content" id="applicationForm">
+          <div className="grid">
+            <div className="form-group">
+              <div className="field">
+                <input
+                  name="firstname"
+                  className="field-input"
+                  placeholder="Group Name"
+                  onChange={handleChangeName}
+                  value={currentGroupName}
+                />
+                <label className="field-label">Group Name</label>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <div className="field">
+                <Multiselect
+                  className="field-input"
+                  options={contactSelections}
+                  hasSelectAll={hasSelectAll}
+                  onSelect={handleContactSelectChange}
+                  placeholder="Select from existing contacts"
+                  displayValue="name"
+                  closeIcon="cancel"
+                />
+                <label className="field-label">
+                  Assign to existing contact
+                </label>
+              </div>
+            </div>
 
             {/* <input type="file" name="file" style={{ marginTop: 24 }} /> */}
             {/* {contactSelections.length > 0 && (
@@ -200,10 +231,10 @@ export default function index({
                 handleContactSelectChange={handleContactSelectChange}
               />
             )} */}
-            <ContactSelections
+            {/* <ContactSelections
               contacts={contactSelections}
               handleContactSelectChange={handleContactSelectChange}
-            />
+            /> */}
           </div>
           <div>
             <GroupContacts contacts={currentContacts} />

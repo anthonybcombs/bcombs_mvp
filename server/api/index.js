@@ -477,7 +477,7 @@ router.post("/usergroups", async (req, res) => {
         contacts: [...(groupMembers || [])]
       };
     });
-    console.log("formattedRows", formattedRows);
+
     res.status(201).json({ data: formattedRows });
   } catch (error) {
     console.log("Error", error);
