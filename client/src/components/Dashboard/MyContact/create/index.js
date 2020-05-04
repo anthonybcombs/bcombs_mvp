@@ -34,6 +34,19 @@ export default function index({
   });
 
   const dispatch = useDispatch();
+
+  const resetState = () => {
+    setContactDetails({
+      id: uuid(),
+      first_name: "",
+      last_name: "",
+      phone_number: "",
+      email: "",
+      selectedGroups: [],
+      userIds: [auth.sub],
+      relation: ""
+    });
+  };
   const handleContactDetailsChange = (id, value) => {
     let newSelectedGroups = contactDetails.selectedGroups;
     if (id === "selectedGroups") {
@@ -63,13 +76,14 @@ export default function index({
 
     dispatch(addContact(payload));
     toggleCreateContactModal(false);
+    resetState();
   };
   if (!isVisible) {
     return <></>;
   }
   return ReactDOM.createPortal(
     <NewContactModal className="modal">
-      <div className="modal-content">
+      <div id="applicationForm" className="modal-content">
         <span
           className="close"
           onClick={() => {
