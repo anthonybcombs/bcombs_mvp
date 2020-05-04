@@ -66,7 +66,12 @@ const getUserProfileFromDatabase = async userId => {
         family_relationship,
         gender,
         zip_code,
-        birth_date from user_profiles where user_id=UUID_TO_BIN(?)`,
+        birth_date,
+        address,
+        school,
+        ethnicity,
+        grade
+        from user_profiles where user_id=UUID_TO_BIN(?)`,
       [userId]
     );
     result = rows[0];
@@ -83,6 +88,7 @@ router.get("/userProfile", async (req, res) => {
     const { email } = req.query;
     const user = await getUserFromDatabase(email);
     const userProfile = await getUserProfileFromDatabase(user.id);
+    console.log("userProfileeee", userProfile);
     res.send(JSON.stringify(userProfile || {}));
   } catch (error) {}
 });
@@ -319,8 +325,9 @@ router.put("/user/profile", async (req, res) => {
   const db = makeDb();
   try {
     const { personalInfo } = req.body;
+    console.log("req.bodyyy", req.body);
     await db.query(
-      "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,zip_code=?,birth_date=? where id=UUID_TO_BIN(?)",
+      "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,zip_code=?,birth_date=?,address=?,school=?,ethnicity=?,grade=? where id=UUID_TO_BIN(?)",
       [
         personalInfo.firstname,
         personalInfo.lastname,
@@ -328,6 +335,10 @@ router.put("/user/profile", async (req, res) => {
         personalInfo.gender,
         personalInfo.zipcode,
         personalInfo.dateofbirth,
+        personalInfo.address,
+        personalInfo.school,
+        personalInfo.ethnicity,
+        personalInfo.grade,
         personalInfo.id
       ]
     );
@@ -339,8 +350,13 @@ router.put("/user/profile", async (req, res) => {
       gender: personalInfo.gender,
       birth_date: personalInfo.dateofbirth,
       zip_code: personalInfo.zipcode,
+      address: personalInfo.address,
+      ethnicity: personalInfo.ethnicity,
+      school: personalInfo.school,
+      grade: personalInfo.grade,
       id: personalInfo.id
     };
+
     res.status(200).json({ data: payload });
   } catch (error) {
     res.status(400).json({ error: true, Message: error });
@@ -374,6 +390,13 @@ router.post("/user/photo", upload.single("file"), async (req, res) => {
             "UPDATE users SET profile_img=? where id=UUID_TO_BIN(?)",
             [data.key, currentUser.id]
           );
+
+          let user = await getUserFromDatabase(email);
+          user.profile_img = user.profile_img
+            ? `${s3BucketRootPath}${user.profile_img}?${new Date().getTime()}`
+            : "";
+
+          res.status(200).json({ error: true, data: user });
         }
       });
     } else {
@@ -454,7 +477,7 @@ router.post("/usergroups", async (req, res) => {
         contacts: [...(groupMembers || [])]
       };
     });
-    console.log("formattedRows", formattedRows);
+
     res.status(201).json({ data: formattedRows });
   } catch (error) {
     console.log("Error", error);

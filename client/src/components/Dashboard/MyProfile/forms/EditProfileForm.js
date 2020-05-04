@@ -5,46 +5,11 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { format } from "date-fns";
 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
 const EditProfileModal = styled.form`
-  input:required {
-    box-shadow: none;
-  }
-  input:invalid {
-    box-shadow: none;
-  }
-  input[type="checkbox"] {
-    display: inline-block;
-    width: initial;
-    vertical-align: middle;
-    margin: 0 10px 0 0 !important;
-  }
-  input {
-    background: none;
-    width: 100%;
-    color: black;
-    font-size: ${({ theme }) => theme.input.fontSize} !important;
-    display: block;
-    border: none;
-    border-radius: 1;
-    border: none;
-    outline: 0;
-    border-bottom: 2px solid lightgrey;
-    margin-top: 2.5em;
-    margin-bottom: 2.5em;
-  }
-  input:focus {
-    border-color: ${({ theme }) => theme.input.focus.border.color};
-    transition: 3s;
-  }
-  select {
-    font-size: ${({ theme }) => theme.input.fontSize};
-    display: block;
-    width: 70% !important;
-    border: none;
-    margin: 2.5em auto 2.5em auto;
-  }
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;
@@ -60,7 +25,6 @@ const EditProfileModal = styled.form`
     margin: 10px auto;
     width: 100%;
     border: none;
-    margin-top: 15em;
   }
   .modal-content {
     width: 25%;
@@ -69,17 +33,111 @@ const EditProfileModal = styled.form`
     button[type="submit"] {
       width: ${({ theme }) => theme.button.width.primary};
     }
-    input,
-    p.error {
-      width: 70%;
-      margin: 2.5em auto 2.5em auto;
-    }
-    div {
-      width: 50%;
-      margin: 2.5em auto 2.5em auto;
-    }
+  }
+
+  .form-group .form-control {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 10px;
+  }
+
+  .field {
+    display: flex;
+    flex-flow: column-reverse;
+    margin-bottom: 1em;
+  }
+  .field-label,
+  .field-input {
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+
+  .field-label-simple {
+    font-size: 18px;
+    color: #4b525a;
+    font-weight: 600;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .field-input {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: text;
+    line-height: 1.8;
+
+    padding: 5px 0;
+    width: 100%;
+    display: block;
+    text-indent: 5px;
+  }
+
+  .field-label {
+    font-size: 14px;
+    color: #4b525a;
+  }
+
+  .field-input:placeholder-shown + .field-label {
+    overflow: hidden;
+    transform-origin: left bottom;
+    transform: translate(0, 2.125rem) scale(1.4);
+  }
+
+  .field-input::placeholder {
+    opacity: 0;
+    transition: inherit;
+    font-size: 12px;
+  }
+
+  .field-input:focus::placeholder {
+    opacity: 1;
+  }
+
+  .field-input:focus + .field-label {
+    transform: translate(0, 0) scale(1);
+    cursor: pointer;
+    margin-bottom: 5px;
+    font-weight: bold;
   }
 `;
+
+const GENDER_OPTIONS = [
+  { id: "male", value: "Male", name: "Male" },
+  { id: "female", value: "Female", name: "Female" }
+];
+
+const ETHINICITY_OPTIONS = [
+  { id: 1, name: "Asian", label: "Asian" },
+  {
+    id: 2,
+    name: "Black or African American",
+    label: "Black or African American"
+  },
+  { id: 3, name: "Hispanic or Latino", label: "AsiHispanic or Latinoan" },
+  {
+    id: 4,
+    name: "Native American or American Indian",
+    label: "Native American or American Indian"
+  },
+  {
+    id: 5,
+    name: "Native Hawaiian & Other Pacific Islander",
+    label: "Native Hawaiian & Other Pacific Islander"
+  },
+  { id: 6, name: "White", label: "White" },
+  { id: 7, name: "Other", label: "Other" },
+  { id: 8, name: "Prefer not to answer", label: "Prefer not to answer" }
+];
 
 export default function index({
   isVisible = true,
@@ -90,8 +148,7 @@ export default function index({
 }) {
   const theme = useContext(ThemeContext);
 
-  const { handleSubmit, errors } = useForm();
-  const { register } = useForm({
+  const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
@@ -104,12 +161,13 @@ export default function index({
   if (!isVisible) {
     return <></>;
   }
-  console.log("dataaaaaa", data);
+
   return ReactDOM.createPortal(
     <EditProfileModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
       theme={theme}
+      method="POST"
       onSubmit={handleSubmit(onSubmit)}>
       <div className="modal-content">
         <span
@@ -120,7 +178,192 @@ export default function index({
           &times;
         </span>
 
-        <input
+        <div className="grid">
+          <div className="form-group">
+            <div className="field">
+              <input
+                name="firstname"
+                className="field-input"
+                placeholder="First Name"
+                onChange={({ target }) => {
+                  handleInputChange("firstname", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.firstname}
+              />
+              <label className="field-label">First Name</label>
+            </div>
+            <ErrorMessage
+              field={errors.firstname}
+              errorType="required"
+              message="Firstname is required."
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                name="lastname"
+                className="field-input"
+                placeholder="Last Name"
+                onChange={({ target }) => {
+                  handleInputChange("lastname", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.lastname}
+              />
+              <label className="field-label">Last Name</label>
+            </div>
+            <ErrorMessage
+              field={errors.lastname}
+              errorType="required"
+              message="Lastname is required."
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <select
+                name="gender"
+                className="field-input"
+                onChange={({ target }) => {
+                  handleInputChange("gender", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.gender}>
+                <option value="">Select</option>
+                {GENDER_OPTIONS.map(opt => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.name}
+                  </option>
+                ))}
+              </select>
+              <label className="field-label">Gender</label>
+            </div>
+            <ErrorMessage
+              field={errors.gender}
+              errorType="required"
+              message="Gender is required."
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <DatePicker
+                className="field-input"
+                placeholderText="mm/dd/yyyy"
+                selected={new Date(data.dateofbirth)}
+                onChange={date => {
+                  handleInputChange(
+                    "dateofbirth",
+                    format(new Date(date), "yyyy-MM-dd")
+                  );
+                }}
+                // onChange={date => {
+                //   setChildBirthDate(date)
+                // }}
+              />
+              <label className="field-label">Date of Birth</label>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <select
+                name="ethnicity"
+                className="field-input"
+                onChange={({ target }) => {
+                  handleInputChange("ethnicity", target.value);
+                }}
+                ref={register}
+                value={data.ethnicity}>
+                <option value="">Select</option>
+                {ETHINICITY_OPTIONS.map(opt => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.name}
+                  </option>
+                ))}
+              </select>
+              <label className="field-label">Ethnicity</label>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                name="address"
+                className="field-input"
+                placeholder="Address"
+                onChange={({ target }) => {
+                  handleInputChange("address", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.address}
+              />
+              <label className="field-label">Address</label>
+            </div>
+            <ErrorMessage
+              field={errors.address}
+              errorType="required"
+              message="Address is required."
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                name="zipcode"
+                className="field-input"
+                placeholder="Zipcode"
+                onChange={({ target }) => {
+                  handleInputChange("zipcode", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.zipcode}
+              />
+              <label className="field-label">Zipcode</label>
+            </div>
+            <ErrorMessage
+              field={errors.zipcode}
+              errorType="required"
+              message="Zipcode is required."
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                name="school"
+                className="field-input"
+                placeholder="School"
+                onChange={({ target }) => {
+                  handleInputChange("school", target.value);
+                }}
+                ref={register}
+                value={data.school}
+              />
+              <label className="field-label">School</label>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                type="number"
+                name="grade"
+                className="field-input"
+                placeholder="Grade"
+                onChange={({ target }) => {
+                  handleInputChange("grade", target.value);
+                }}
+                ref={register}
+                value={data.grade}
+              />
+              <label className="field-label">Grade</label>
+            </div>
+          </div>
+        </div>
+        {/* <input
           data-testid="app-profile-input-firstname"
           name="firstname"
           placeholder="First name"
@@ -151,21 +394,7 @@ export default function index({
           errorType="required"
           message="Lastname is required."
         />
-        {/* <span>Family Relationship</span>
-        <select
-          data-testid="app-profile-select-family-relationship"
-          name="familyrelationship"
-          onChange={({ target }) => {
-            handleInputChange("familyrelationship", target.value);
-          }}
-          ref={register}>
-          <option value="" disabled hidden>
-            Family relationship
-          </option>
-          <option value="father">Father</option>
-          <option value="mother">Mother</option>
-          <option value="sibling">Sibling</option>
-        </select> */}
+
         <ErrorMessage
           field={errors.familyrelationship}
           errorType="required"
@@ -193,22 +422,6 @@ export default function index({
         />
 
         <input
-          data-testid="app-profile-input-zip-code"
-          name="zipcode"
-          type="number"
-          placeholder="Zip code"
-          onChange={({ target }) => {
-            handleInputChange("zipcode", target.value);
-          }}
-          ref={register}
-          value={data.zipcode}
-        />
-        <ErrorMessage
-          field={errors.zipcode}
-          errorType="required"
-          message="Zip code is required."
-        />
-        <input
           //data-testid="app-profile-input-date-of-birth"
           name="dateofbirth"
           type="date"
@@ -224,6 +437,89 @@ export default function index({
           errorType="required"
           message="Date of Birth is required."
         />
+
+        <input
+          data-testid="app-profile-input-ethnicity"
+          name="ethnicity"
+          type="text"
+          placeholder="Ethnicity"
+          onChange={({ target }) => {
+            handleInputChange("ethnicity", target.value);
+          }}
+          ref={register}
+          value={data.ethnicity}
+        />
+        <ErrorMessage
+          field={errors.dateofbirth}
+          errorType="required"
+          message="Ethnicity is required."
+        />
+
+        <input
+          data-testid="app-profile-input-address"
+          name="address"
+          placeholder="Address"
+          onChange={({ target }) => {
+            handleInputChange("address", target.value);
+          }}
+          ref={register}
+          value={data.address}
+        />
+        <ErrorMessage
+          field={errors.address}
+          errorType="required"
+          message="Address is required."
+        />
+        <input
+          data-testid="app-profile-input-zip-code"
+          name="zipcode"
+          type="number"
+          placeholder="Zip code"
+          onChange={({ target }) => {
+            handleInputChange("zipcode", target.value);
+          }}
+          ref={register}
+          value={data.zipcode}
+        />
+        <ErrorMessage
+          field={errors.zipcode}
+          errorType="required"
+          message="Zip code is required."
+        />
+
+        <input
+          data-testid="app-profile-input-school"
+          name="school"
+          type="text"
+          placeholder="School"
+          onChange={({ target }) => {
+            handleInputChange("school", target.value);
+          }}
+          ref={register}
+          value={data.school}
+        />
+        <ErrorMessage
+          field={errors.school}
+          errorType="required"
+          message="School is required."
+        />
+
+        <input
+          data-testid="app-profile-input-grade"
+          name="grade"
+          type="number"
+          placeholder="Grade"
+          onChange={({ target }) => {
+            handleInputChange("grade", target.value);
+          }}
+          ref={register}
+          value={data.grade}
+        />
+        <ErrorMessage
+          field={errors.grade}
+          errorType="required"
+          message="Grade is required."
+        /> */}
 
         <button data-testid="app-profile-submit-button" type="submit">
           Save

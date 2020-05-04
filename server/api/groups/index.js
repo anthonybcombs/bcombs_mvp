@@ -80,10 +80,6 @@ export const editGroups = async data => {
           contacts: [...(groupMembers || [])]
         };
       });
-      console.log(
-        "******************************************************************************"
-      );
-      console.log("RESULT", result);
     }
   } catch (error) {
     console.log("Erroro", error);
@@ -135,7 +131,6 @@ export const removeGroup = async (id, email) => {
           contacts: [...(groupMembers || [])]
         };
       });
-      console.log("DELETEEEEEEEEEEEEEEE", result);
     }
   } catch (error) {
     console.log("Error", error);

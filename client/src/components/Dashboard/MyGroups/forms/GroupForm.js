@@ -1,6 +1,8 @@
-import React, { useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
+import { Multiselect } from "multiselect-react-dropdown";
+
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const ContactFormStyled = styled.form`
   input:required {
@@ -15,31 +17,7 @@ const ContactFormStyled = styled.form`
     vertical-align: middle;
     margin: 0 10px 0 0 !important;
   }
-  input {
-    background: none;
-    width: 100%;
-    color: black;
-    font-size: ${({ theme }) => theme.input.fontSize} !important;
-    display: block;
-    border: none;
-    border-radius: 1;
-    border: none;
-    outline: 0;
-    border-bottom: 2px solid lightgrey;
-    margin-top: 2.5em;
-    margin-bottom: 2.5em;
-  }
-  input:focus {
-    border-color: ${({ theme }) => theme.input.focus.border.color};
-    transition: 3s;
-  }
-  select {
-    font-size: ${({ theme }) => theme.input.fontSize};
-    display: block;
-    width: 50% !important;
-    border: none;
-    margin: 2.5em auto 2.5em auto;
-  }
+
   label {
     display: block;
     word-wrap: break-word;
@@ -65,7 +43,37 @@ const ContactFormStyled = styled.form`
     button[type="submit"] {
       width: ${({ theme }) => theme.button.width.primary};
     }
-    input,
+  }
+
+  #multiselectContainerReact .optionContainer li:hover,
+  #multiselectContainerReact .optionContainer li.highlight {
+    background: #f26e21;
+  }
+
+  #multiselectContainerReact div:first-child {
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    border-radius: 0;
+  }
+
+  #multiselectContainerReact .searchBox {
+    font-size: 18px;
+    padding: 5px 0;
+    margin: 0;
+    margin-top: 2px;
+  }
+
+  #multiselectContainerReact .searchBox::placeholder {
+    font-size: 12px;
+  }
+
+  #multiselectContainerReact .chip {
+    background: #f26e21;
+  }
+`;
+/*
+
+ input,
     p.error {
       width: 50%;
       margin: 2.5em auto 2.5em auto;
@@ -73,9 +81,7 @@ const ContactFormStyled = styled.form`
     div {
       width: 50%;
       margin: 2.5em auto 2.5em auto;
-    }
-  }
-`;
+    }*/
 
 const VISIBILITY_OPTIONS = [
   { value: "public", name: "Public" },
@@ -87,32 +93,96 @@ export default function GroupForm({
   onSubmit,
   handleGroupDetailsChange
 }) {
+  const [contactOptions, setContactOptions] = useState([]);
+  const [contactSelected, setContactSelected] = useState([]);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
+  const hasSelectAll = false;
+
+  useEffect(() => {
+    if (contacts) {
+      let formattedContacts = contacts.map(item => {
+        return {
+          name: `${item.first_name} ${item.last_name}`,
+          id: item.id
+        };
+      });
+      setContactOptions(formattedContacts);
+    }
+  }, [contacts]);
   const theme = useContext(ThemeContext);
+  const handleSelectChange = value => {
+    console.log("contacts", value);
+    handleGroupDetailsChange("contacts", [...value]);
+    setContactSelected([...value]);
+  };
   return (
     <ContactFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
       theme={theme}>
-      <input
-        placeholder="Group name"
-        name="name"
-        value={groupDetails.name}
-        onChange={({ target }) => {
-          handleGroupDetailsChange("name", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.name}
-        errorType="required"
-        message="Group name  is required."
-      />
+      <div className="grid">
+        <div className="form-group">
+          <div className="field">
+            <input
+              name="firstname"
+              className="field-input"
+              placeholder="Group Name"
+              onChange={({ target }) => {
+                handleGroupDetailsChange("name", target.value);
+              }}
+              ref={register({ required: true })}
+              value={groupDetails.name}
+            />
+            <label className="field-label">Group Name</label>
+          </div>
+          <ErrorMessage
+            field={errors.name}
+            errorType="required"
+            message="Group Name is required."
+          />
+        </div>
 
-      <select
+        <div className="form-group">
+          <div className="field">
+            <select
+              name="visibility"
+              className="field-input"
+              ref={register({ required: true })}>
+              <option value="">Select</option>
+              {VISIBILITY_OPTIONS.map(opt => (
+                <option key={opt.id} value={opt.id}>
+                  {opt.name}
+                </option>
+              ))}
+            </select>
+            <label className="field-label">Visibility</label>
+          </div>
+          <ErrorMessage
+            field={errors.visibility}
+            errorType="required"
+            message="Visibility is required."
+          />
+        </div>
+        <div className="form-group">
+          <div className="field">
+            <Multiselect
+              className="field-input"
+              options={contactOptions}
+              hasSelectAll={hasSelectAll}
+              onSelect={handleSelectChange}
+              placeholder="Select from existing contacts"
+              displayValue="name"
+              closeIcon="cancel"
+            />
+            <label className="field-label">Assign to existing contact</label>
+          </div>
+        </div>
+      </div>
+
+      {/* <select
         data-testid="app-profile-select-gender"
         name="visibility"
         onChange={({ target }) => {
@@ -141,7 +211,7 @@ export default function GroupForm({
             {contact.first_name} {contact.last_name}
           </label>
         ))}
-      </div>
+      </div> */}
       <button type="submit">Save</button>
     </ContactFormStyled>
   );
