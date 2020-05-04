@@ -3,7 +3,6 @@ import * as actionType from "./Constant";
 import graphqlClient from "../../graphql";
 import { IS_USER_EXIST_QUERY } from "../../graphql/query";
 import { SIGN_UP_MUTATION, USER_UPDATE_MUTATION } from "../../graphql/mutation";
-import { requestUserInfo } from "./Auth";
 
 // **************************************************** //
 const getUserProfileToDatabase = email => {

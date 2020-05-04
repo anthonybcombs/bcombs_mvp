@@ -47,14 +47,14 @@ export const getUserInfo = async (creds) => {
     });
     const userInfo = await userInfoResponse.json();
     const users = await getUsers();
-    const { is_profile_filled, profile_img, user_id } = users.filter(
+    const { is_profile_filled, profile_img, id } = users.filter(
       (user) => user.email === userInfo.email
     )[0];
     userInfo.is_profile_filled = is_profile_filled === 0 ? false : true;
     userInfo.profile_img = profile_img
       ? `${s3BucketRootPath}${profile_img}`
       : null;
-    userInfo.user_id = user_id;
+    userInfo.user_id = id;
     return userInfo;
   } catch (error) {
     return error;

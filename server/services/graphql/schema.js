@@ -37,7 +37,6 @@ const inputs = `
         zipcode: String!
         dateofbirth: Date!
     }
- 
     input UserUpdateInput{
         email: String!
         familyMembers: [PersonalInfoInput]
@@ -55,7 +54,7 @@ const inputs = `
     }
     input CalendarInfoInput{
         name: String!
-        familyMembers:[PersonalInfoInput!]
+        familyMembers:[String]
     }    
     input CreateProfileInput{
         email: String!
@@ -146,6 +145,7 @@ const queryTypes = `
     }
     type CalendarInfoType{
         id: String!
+        user_id: String!
         name: String!            
     }
     type CalendarType{

@@ -40,3 +40,18 @@ export const CHANGE_PASSWORD_MUTATION = gql`
     }
   }
 `;
+export const CREATE_CALENDAR_MUTATION = gql`
+  mutation createCalendar($calendar: CalendarInput!) {
+    createCalendar(calendar: $calendar) {
+      status {
+        messageType
+        message
+      }
+      info {
+        id
+        user_id
+        name
+      }
+    }
+  }
+`;

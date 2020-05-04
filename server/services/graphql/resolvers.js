@@ -4,12 +4,13 @@ import {
   executeSignUp,
   executeSignIn,
   executeChangePassword,
-  executeUserUpdate
+  executeUserUpdate,
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import { editContact, getContacts, removeContact } from "../../api/contacts";
 import { editGroups } from "../../api/groups";
 import { removeGroup } from "../../api/groups";
+import { executeCreateCalendar } from "../../api/calendars";
 
 const resolvers = {
   RootQuery: {
@@ -20,10 +21,10 @@ const resolvers = {
     async users(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type
+        token_type: args.token_type,
       };
       const users = await getUsers();
-      return users.filter(user => {
+      return users.filter((user) => {
         if (args.email) {
           return user.email === args.email;
         }
@@ -41,7 +42,7 @@ const resolvers = {
     async contacts(root, args, context) {
       const contacts = await getContacts();
       return contacts;
-    }
+    },
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -71,8 +72,11 @@ const resolvers = {
     async deleteGroup(root, args, context) {
       console.log("deleteGrouppp", args);
       return await removeGroup(args.id, args.email);
-    }
-  }
+    },
+    async createCalendar(root, { calendar }, context) {
+      return await executeCreateCalendar(calendar);
+    },
+  },
 };
 
 export default resolvers;

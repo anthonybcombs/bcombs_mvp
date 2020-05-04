@@ -3,7 +3,7 @@ import { uuid } from "uuidv4";
 import randomColor from "randomcolor";
 export const initialState = {
   auth: {
-    status: "ANONYMOUS"
+    status: "ANONYMOUS",
   },
   events: [
     {
@@ -19,7 +19,7 @@ export const initialState = {
       eventGuests: [],
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), addDays(new Date(), 10)],
-      eventType: "Event"
+      eventType: "Event",
     },
     {
       id: uuid(),
@@ -35,7 +35,7 @@ export const initialState = {
       eventGuests: [],
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), addHours(new Date(), 1)],
-      eventType: "Event"
+      eventType: "Event",
     },
     {
       id: uuid(),
@@ -51,7 +51,7 @@ export const initialState = {
       eventGuests: [],
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), addHours(new Date(), 2)],
-      eventType: "Event"
+      eventType: "Event",
     },
     {
       id: uuid(),
@@ -67,7 +67,7 @@ export const initialState = {
       eventGuests: [],
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), addHours(new Date(), 2)],
-      eventType: "Event"
+      eventType: "Event",
     },
     {
       id: uuid(),
@@ -83,8 +83,8 @@ export const initialState = {
       eventGuests: [],
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), addHours(new Date(), 2)],
-      eventType: "Event"
-    }
+      eventType: "Event",
+    },
   ],
   calendars: [
     {
@@ -93,28 +93,28 @@ export const initialState = {
       name: "test 1",
       familyMembers: ["1", "2"],
       image: "https://picsum.photos/200",
-      color: randomColor()
-    }
+      color: randomColor(),
+    },
   ],
   familyMembers: [
     {
       id: uuid(),
       userId: uuid(),
       name: "Bon Mercado",
-      color: randomColor()
+      color: randomColor(),
     },
     {
       id: uuid(),
       userId: uuid(),
       name: "Test Name 1",
-      color: randomColor()
+      color: randomColor(),
     },
     {
       id: uuid(),
       userId: uuid(),
       name: "Test Name 2",
-      color: randomColor()
-    }
+      color: randomColor(),
+    },
   ],
   contacts: [
     {
@@ -124,7 +124,7 @@ export const initialState = {
       lastName: "Hat",
       phoneNumber: "0200202",
       email: "test2@yahoo.com",
-      relation: "Sibling"
+      relation: "Sibling",
     },
     {
       id: uuid(),
@@ -133,8 +133,8 @@ export const initialState = {
       lastName: "Mercado",
       phoneNumber: "92900912",
       email: "test@yahoo.com",
-      relation: "Parent"
-    }
+      relation: "Parent",
+    },
   ],
   relatives: [],
   groups: [
@@ -142,14 +142,14 @@ export const initialState = {
       id: uuid(),
       userIds: [1],
       contacts: [],
-      name: "testing groups 1"
+      name: "testing groups 1",
     },
     {
       id: uuid(),
       userIds: [1],
       contacts: [],
-      name: "testing groups 2"
-    }
+      name: "testing groups 2",
+    },
   ],
   settings: {
     lifeEvents: [
@@ -159,18 +159,18 @@ export const initialState = {
       "Challenges with love ones",
       "Behavioral issues",
       "Encouragement",
-      "Stretching"
-    ]
+      "Stretching",
+    ],
   },
   userTypes: [
     {
       id: "1",
-      name: "Vendor"
-    }
+      name: "Vendor",
+    },
   ],
   status: {
     requestStatus: "",
     messageType: "",
-    message: ""
-  }
+    message: "",
+  },
 };
