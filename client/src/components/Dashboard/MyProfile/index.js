@@ -226,15 +226,15 @@ export default function index() {
 
   const handleFormSubmit = e => {
     console.log("handleFormSubmit personalInfo", personalInfo);
-    // dispatch(
-    //   requestUpdateUserProfile({
-    //     personalInfo: {
-    //       ...personalInfo,
-    //       id: user.profile.id
-    //     },
-    //     email: auth.email
-    //   })
-    // );
+    dispatch(
+      requestUpdateUserProfile({
+        personalInfo: {
+          ...personalInfo,
+          id: user.profile.id
+        },
+        email: auth.email
+      })
+    );
 
     // if (selectedFile) {
     //   let data = new FormData();

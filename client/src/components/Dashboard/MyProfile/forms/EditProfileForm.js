@@ -25,7 +25,6 @@ const EditProfileModal = styled.form`
     margin: 10px auto;
     width: 100%;
     border: none;
-    margin-top: 15em;
   }
   .modal-content {
     width: 25%;

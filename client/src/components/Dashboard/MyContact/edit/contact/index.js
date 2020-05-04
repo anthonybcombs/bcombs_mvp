@@ -11,7 +11,7 @@ const EditContactModal = styled.div`
     text-align: center;
   }
   .modal-content {
-    width: ${({ theme }) => theme.modalWidth};
+    width: 40%;
     margin-top: ${({ theme }) => theme.modalMarginTop};
   }
 
@@ -24,6 +24,7 @@ const EditContactModal = styled.div`
       width: 30%;
     }
 `;
+// width: ${({ theme }) => theme.modalWidth};
 export default function index({
   isVisible = true,
   toggleEditContactModal,

@@ -123,21 +123,6 @@ export default function GroupForm({
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
       theme={theme}>
-      {/* <input
-        placeholder="Group name"
-        name="name"
-        value={groupDetails.name}
-        onChange={({ target }) => {
-          handleGroupDetailsChange("name", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.name}
-        errorType="required"
-        message="Group name  is required."
-      /> */}
-
       <div className="grid">
         <div className="form-group">
           <div className="field">
