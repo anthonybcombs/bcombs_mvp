@@ -9,7 +9,7 @@ export const getCalendars = async (creds) => {
   try {
     const UserInfo = await getUserInfo(creds);
     const rows = await db.query(
-      "SELECT BIN_TO_UUID(id) as id,BIN_TO_UUID(user_id) as user_id,name,image,color from user_calendars WHERE BIN_TO_UUID(user_id)=?",
+      "SELECT BIN_TO_UUID(id) as id,BIN_TO_UUID(user_id) as user_id,name,image,color,visibilityType from user_calendars WHERE BIN_TO_UUID(user_id)=?",
       [UserInfo.user_id]
     );
     const calendars = [];
@@ -41,8 +41,14 @@ export const executeCreateCalendar = async (calendar) => {
   try {
     const UserInfo = await getUserInfo(calendar.creds);
     await db.query(
-      "INSERT IGNORE INTO user_calendars (id,user_id,image,name,color) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?)",
-      [UserInfo.user_id, "", calendar.info.name, await randomColor(UserInfo)]
+      "INSERT IGNORE INTO user_calendars (id,user_id,image,name,color,visibilityType) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?)",
+      [
+        UserInfo.user_id,
+        "",
+        calendar.info.name,
+        await randomColor(UserInfo),
+        calendar.info.visibilityType,
+      ]
     );
     calendar.info.familyMembers.forEach(async (familyMemberId) => {
       if (familyMemberId !== "0") {
@@ -66,6 +72,7 @@ export const executeCreateCalendar = async (calendar) => {
         user_id: UserInfo.user_id,
         name: calendar.info.name,
         color: insertedCalendar[0].color,
+        visibilityType: calendar.info.visibilityType,
       },
     };
   } catch (error) {

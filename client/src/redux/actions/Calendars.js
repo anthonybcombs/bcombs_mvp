@@ -35,6 +35,7 @@ export const requestAddCalendar = (details) => {
     type: actionType.REQUEST_ADD_CALENDAR,
     name: details.name,
     familyMembers: details.selectedFamilyMembers,
+    visibilityType: details.visibilityType,
   };
 };
 
@@ -44,15 +45,18 @@ export const requestCalendars = () => {
   };
 };
 
-export function* addCalendar({ name, familyMembers }) {
+export function* addCalendar({ name, familyMembers, visibilityType }) {
   const calendar = yield call(addCalendarInDatabase, {
     creds: {
       access_token: sessionStorage.getItem("access_token"),
       token_type: sessionStorage.getItem("token_type"),
     },
-    info: { name, familyMembers: Array.from(familyMembers.keys()) },
+    info: {
+      name,
+      familyMembers: Array.from(familyMembers.keys()),
+      visibilityType,
+    },
   });
-  console.log(calendar);
   yield put({
     type: actionType.REQUEST_ADD_CALENDAR_COMPLETED,
     payload: {

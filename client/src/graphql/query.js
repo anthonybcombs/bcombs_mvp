@@ -52,6 +52,7 @@ export const CALENDARS_QUERY = gql`
         name
         image
         color
+        visibilityType
       }
     }
   }

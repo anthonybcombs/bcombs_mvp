@@ -53,6 +53,7 @@ export const CREATE_CALENDAR_MUTATION = gql`
         user_id
         name
         color
+        visibilityType
       }
     }
   }

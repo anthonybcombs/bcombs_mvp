@@ -100,11 +100,11 @@ export default function CreateCalendarForm({
   onSubmit,
   handleInputChange,
   handleCheckBoxChange,
-  toggleCreateCalendarModal
+  toggleCreateCalendarModal,
 }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange"
+    reValidateMode: "onChange",
   });
   const theme = useContext(ThemeContext);
   return (
@@ -131,7 +131,7 @@ export default function CreateCalendarForm({
       />
       <p>Calendar Privacy Setting</p>
       <div id="family-list">
-        {familyMembers.map(familyMember => (
+        {familyMembers.map((familyMember) => (
           <div key={familyMember.id}>
             <input
               type="checkbox"
@@ -161,12 +161,23 @@ export default function CreateCalendarForm({
           <input
             type="radio"
             name="family"
-            checked={details.selectedFamilyMembers.get("0") === true}
-            value={0}
+            checked={details.visibilityType === "Private"}
+            value={"Private"}
             onChange={handleCheckBoxChange}
             ref={register({ required: true })}
           />
           Private- only for me
+        </p>
+        <p>
+          <input
+            type="radio"
+            name="family"
+            checked={details.visibilityType === "Public"}
+            value={"Public"}
+            onChange={handleCheckBoxChange}
+            ref={register({ required: true })}
+          />
+          Public- show to all
         </p>
       </div>
       <ErrorMessage

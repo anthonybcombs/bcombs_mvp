@@ -16,8 +16,9 @@ const CreateCalendarModalStyled = styled.div`
 export default function index({ isVisible = true, toggleCreateCalendarModal }) {
   const [calendarDetails, setCalendarDetails] = useState({
     name: "",
-    selectedFamilyMembers: new Map().set("0", true),
+    selectedFamilyMembers: new Map(),
     image: "",
+    visibilityType: "Private",
   });
   const familyMembers = useSelector(({ familyMembers }) => familyMembers);
   const dispatch = useDispatch();
@@ -27,22 +28,17 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
   const handleCheckBoxChange = (element) => {
     const value = element.target.value;
     const isChecked = element.target.checked;
-    if (value == 0) {
+    if (value == "Private" || value === "Public") {
       setCalendarDetails({
         ...calendarDetails,
-        selectedFamilyMembers: new Map().set(value, isChecked),
-      });
-      return;
-    }
-    if (calendarDetails.selectedFamilyMembers.get("0") === true) {
-      setCalendarDetails({
-        ...calendarDetails,
-        selectedFamilyMembers: new Map().set(value, isChecked),
+        visibilityType: value,
+        selectedFamilyMembers: new Map(),
       });
       return;
     }
     setCalendarDetails({
       ...calendarDetails,
+      visibilityType: "Custom",
       selectedfamilyMembers: calendarDetails.selectedFamilyMembers.set(
         value,
         isChecked
@@ -50,18 +46,11 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
     });
   };
   const handleFormSubmit = async () => {
-    if (calendarDetails.selectedFamilyMembers.length === 0) {
-      if (calendarDetails.selectedFamilyMembers.length === 0) {
-        setCalendarDetails({
-          ...calendarDetails,
-          selectedFamilyMembers: new Map().set("0", true),
-        });
-      }
-    }
     dispatch(requestAddCalendar(calendarDetails));
     setCalendarDetails({
       name: "",
-      selectedFamilyMembers: new Map().set("0", true),
+      selectedFamilyMembers: new Map(),
+      visibilityType: "Private",
     });
     toggleCreateCalendarModal(false);
   };

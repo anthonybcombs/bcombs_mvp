@@ -54,7 +54,8 @@ const inputs = `
     }
     input CalendarInfoInput{
         name: String!
-        familyMembers:[String]
+        familyMembers:[String],
+        visibilityType: String!
     }    
     input CreateProfileInput{
         email: String!
@@ -148,7 +149,8 @@ const queryTypes = `
         user_id: String!
         image: String!
         name: String!      
-        color: String!      
+        color: String!   
+        visibilityType: String!   
     }
     type CalendarType{
         status: Status!
