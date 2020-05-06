@@ -38,3 +38,21 @@ export const USER_INFO_QUERY = gql`
     }
   }
 `;
+
+export const CALENDARS_QUERY = gql`
+  query getCalendar($access_token: String!, $token_type: String!) {
+    calendars(access_token: $access_token, token_type: $token_type) {
+      status {
+        messageType
+        message
+      }
+      data {
+        id
+        user_id
+        name
+        image
+        color
+      }
+    }
+  }
+`;

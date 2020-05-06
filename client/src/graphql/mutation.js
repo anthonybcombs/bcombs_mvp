@@ -10,6 +10,7 @@ export const SIGN_IN_MUTATION = gql`
         email_verified
       }
       status {
+        messageType
         message
       }
     }
@@ -47,10 +48,11 @@ export const CREATE_CALENDAR_MUTATION = gql`
         messageType
         message
       }
-      info {
+      calendar {
         id
         user_id
         name
+        color
       }
     }
   }

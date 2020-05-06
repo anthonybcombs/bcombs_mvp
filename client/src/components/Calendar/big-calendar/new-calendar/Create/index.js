@@ -16,27 +16,28 @@ const CreateCalendarModalStyled = styled.div`
 export default function index({ isVisible = true, toggleCreateCalendarModal }) {
   const [calendarDetails, setCalendarDetails] = useState({
     name: "",
-    selectedFamilyMembers: new Map().set("0", true)
+    selectedFamilyMembers: new Map().set("0", true),
+    image: "",
   });
   const familyMembers = useSelector(({ familyMembers }) => familyMembers);
   const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
     setCalendarDetails({ ...calendarDetails, [id]: value });
   };
-  const handleCheckBoxChange = element => {
+  const handleCheckBoxChange = (element) => {
     const value = element.target.value;
     const isChecked = element.target.checked;
     if (value == 0) {
       setCalendarDetails({
         ...calendarDetails,
-        selectedFamilyMembers: new Map().set(value, isChecked)
+        selectedFamilyMembers: new Map().set(value, isChecked),
       });
       return;
     }
     if (calendarDetails.selectedFamilyMembers.get("0") === true) {
       setCalendarDetails({
         ...calendarDetails,
-        selectedFamilyMembers: new Map().set(value, isChecked)
+        selectedFamilyMembers: new Map().set(value, isChecked),
       });
       return;
     }
@@ -45,7 +46,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       selectedfamilyMembers: calendarDetails.selectedFamilyMembers.set(
         value,
         isChecked
-      )
+      ),
     });
   };
   const handleFormSubmit = async () => {
@@ -53,14 +54,14 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       if (calendarDetails.selectedFamilyMembers.length === 0) {
         setCalendarDetails({
           ...calendarDetails,
-          selectedFamilyMembers: new Map().set("0", true)
+          selectedFamilyMembers: new Map().set("0", true),
         });
       }
     }
     dispatch(requestAddCalendar(calendarDetails));
     setCalendarDetails({
       name: "",
-      selectedFamilyMembers: new Map().set("0", true)
+      selectedFamilyMembers: new Map().set("0", true),
     });
     toggleCreateCalendarModal(false);
   };

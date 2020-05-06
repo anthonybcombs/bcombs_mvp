@@ -1,4 +1,5 @@
 import { makeDb } from "../../helpers/database";
+import randomColor from "../../helpers/randomColor";
 import { s3BucketRootPath } from "../../helpers/aws";
 import fetch from "node-fetch";
 
@@ -30,7 +31,6 @@ const isProfileExistFromDatabase = async (id) => {
       result = false;
     }
   } catch (error) {
-    console.log(error);
   } finally {
     await db.close();
     return result;
@@ -86,7 +86,18 @@ export const executeSignIn = async (user) => {
         }
       );
       const userInfo = await userInfoResponse.json();
-
+      if (authData.hasOwnProperty("error")) {
+        return {
+          user: {
+            ...authData,
+            ...userInfo,
+          },
+          status: {
+            messageType: "error",
+            message: authData.error_description,
+          },
+        };
+      }
       return {
         user: {
           ...authData,
@@ -95,6 +106,15 @@ export const executeSignIn = async (user) => {
         status: {
           messageType: "Info",
           message: "User signed in.",
+        },
+      };
+    }
+    if (authData.hasOwnProperty("errror")) {
+      return {
+        user: authData,
+        status: {
+          messageType: "error",
+          message: authData.error_description,
         },
       };
     }
@@ -223,8 +243,8 @@ export const executeUserUpdate = async (user) => {
         ]
       );
       await db.query(
-        "INSERT IGNORE INTO user_calendars (id,user_id,image,name) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?)",
-        [id, "", calendarInfo.name]
+        "INSERT IGNORE INTO user_calendars (id,user_id,image,name,color) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?)",
+        [id, "", calendarInfo.name, await randomColor({ user_id: id })]
       );
     } else {
       await db.query(

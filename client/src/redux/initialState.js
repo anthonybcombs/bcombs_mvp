@@ -86,16 +86,7 @@ export const initialState = {
       eventType: "Event",
     },
   ],
-  calendars: [
-    {
-      id: uuid(),
-      userId: uuid(),
-      name: "test 1",
-      familyMembers: ["1", "2"],
-      image: "https://picsum.photos/200",
-      color: randomColor(),
-    },
-  ],
+  calendars: [],
   familyMembers: [
     {
       id: uuid(),

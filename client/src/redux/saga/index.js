@@ -6,21 +6,21 @@ import {
   authenticated,
   gotUserInfo,
   loggedOut,
-  requestedPasswordChange
+  requestedPasswordChange,
 } from "../actions/Auth";
-import { addCalendar } from "../actions/Calendars";
+import { addCalendar, gotCalendars } from "../actions/Calendars";
 import { deletedEvent, updatedEvent, addedEvent } from "../actions/Events";
 import {
   addedContact,
   removedContact,
   updatedContact,
-  getUserContact
+  getUserContact,
 } from "../actions/Contacts";
 import {
   addedGroup,
   updatedGroup,
   getUserGroup,
-  removeGroup
+  removeGroup,
 } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
 import {
@@ -29,7 +29,7 @@ import {
   checkedUserAndAdd,
   getUserInfo,
   updateUserProfile,
-  updateUserProfilePhoto
+  updateUserProfilePhoto,
 } from "../actions/Users";
 import { gotUserTypes } from "../actions/UserTypes";
 import { requestedStatus, removedStatus } from "../actions/Status";
@@ -42,6 +42,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_CHANGE_PASSWORD, requestedPasswordChange);
   //CALENDAR
   yield takeLatest(actionType.REQUEST_ADD_CALENDAR, addCalendar);
+  yield takeLatest(actionType.REQUEST_GET_CALENDARS, gotCalendars);
   //EVENTS
   yield takeLatest(actionType.REQUEST_ADD_EVENT, addedEvent);
   yield takeLatest(actionType.REQUEST_DELETE_EVENT, deletedEvent);

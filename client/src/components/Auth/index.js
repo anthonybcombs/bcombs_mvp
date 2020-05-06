@@ -29,7 +29,8 @@ export default function index({ children }) {
     return <Loading />;
   } else if (
     sessionStorage.getItem("access_token") !== null &&
-    auth.email_verified
+    auth.hasOwnProperty("user") &&
+    auth.user.email_verified
   ) {
     return <Redirect to="/dashboard" />;
   }

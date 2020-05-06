@@ -10,7 +10,7 @@ import { getUserTypes } from "../../api/userTypes/";
 import { editContact, getContacts, removeContact } from "../../api/contacts";
 import { editGroups } from "../../api/groups";
 import { removeGroup } from "../../api/groups";
-import { executeCreateCalendar } from "../../api/calendars";
+import { executeCreateCalendar, getCalendars } from "../../api/calendars";
 
 const resolvers = {
   RootQuery: {
@@ -37,6 +37,9 @@ const resolvers = {
     async userTypes(root, args, context) {
       const userTypes = await getUserTypes();
       return userTypes;
+    },
+    async calendars(root, { access_token, token_type }, context) {
+      return await getCalendars({ access_token, token_type });
     },
     // ADDED BY DENNIS
     async contacts(root, args, context) {

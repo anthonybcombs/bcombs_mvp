@@ -3,6 +3,7 @@ import { Redirect, useLocation } from "@reach/router";
 
 import { useSelector, useDispatch } from "react-redux";
 import { requestUserInfo } from "../redux/actions/Auth";
+import { requestCalendars } from "../redux/actions/Calendars";
 import Loading from "../helpers/Loading";
 export default function protectedRoutes({ children }) {
   const { auth, status } = useSelector(({ auth, status }) => {
@@ -14,6 +15,7 @@ export default function protectedRoutes({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
+    dispatch(requestCalendars());
     dispatch(requestUserInfo());
   }, []);
   useEffect(() => {

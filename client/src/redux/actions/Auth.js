@@ -20,7 +20,7 @@ const authentecating = (auth) => {
         },
       });
 
-      return resolve({ ...data.signIn.user });
+      return resolve({ ...data.signIn });
     } catch (error) {
       reject("error");
     }
@@ -88,25 +88,31 @@ export const requestPasswordChange = (user) => {
 export function* authenticated({ auth }) {
   try {
     const authData = yield call(authentecating, [auth]);
-    if (authData.hasOwnProperty("sub")) {
-      if (authData.access_token) {
-        sessionStorage.setItem("access_token", authData.access_token);
-        sessionStorage.setItem("token_type", authData.token_type);
-        sessionStorage.setItem("id_token", authData.id_token);
+    console.log("set", authData);
+    if (authData.user.hasOwnProperty("sub")) {
+      if (authData.user.access_token) {
+        sessionStorage.setItem("access_token", authData.user.access_token);
+        sessionStorage.setItem("token_type", authData.user.token_type);
+        sessionStorage.setItem("id_token", authData.user.id_token);
       }
-      if (!authData.email_verified) {
-        authData.messageType = "email_not_verified";
-        authData.message = "Email is not verified.";
+      if (
+        !authData.user.email_verified &&
+        authData.user.email_verified !== null
+      ) {
+        authData.status.messageType = "email_not_verified";
+        authData.status.message = "Email is not verified.";
       }
     }
-
     yield put({ type: actionType.REQUEST_AUTH_COMPLETED, payload: authData });
     yield put({
       type: actionType.REQUEST_STATUS_COMPLETED,
       payload: {
-        message: authData.message,
+        message: authData.status.message,
         messageType:
-          authData.messageType === "email_not_verified" ? "error" : "info",
+          authData.status.messageType === "email_not_verified" ||
+          authData.status.messageType === "error"
+            ? "error"
+            : "info",
       },
     });
   } catch (error) {}
@@ -125,7 +131,7 @@ export function* gotUserInfo() {
       const userInfoData = yield call(getUserInfo);
       if (
         !userInfoData.hasOwnProperty("email_verified") &&
-        userInfoData.email_verified
+        !userInfoData.email_verified
       ) {
         sessionStorage.removeItem("access_token");
         sessionStorage.removeItem("token_type");
@@ -137,7 +143,6 @@ export function* gotUserInfo() {
           },
         });
       }
-
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
         payload: userInfoData,
@@ -148,8 +153,10 @@ export function* gotUserInfo() {
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
         payload: {
-          messageType: "error",
-          error_description: "",
+          status: {
+            messageType: "error",
+            error_description: "",
+          },
         },
       });
       yield put({

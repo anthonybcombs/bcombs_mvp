@@ -146,11 +146,17 @@ const queryTypes = `
     type CalendarInfoType{
         id: String!
         user_id: String!
-        name: String!            
+        image: String!
+        name: String!      
+        color: String!      
     }
     type CalendarType{
         status: Status!
-        info: CalendarInfoType!
+        calendar: CalendarInfoType!
+    }
+    type CalendarsType{
+        status: Status!
+        data:[CalendarInfoType]!       
     }
 `;
 
@@ -173,7 +179,8 @@ const queries = `
         contacts:[Contact]
         userInfo(access_token: String!,token_type: String!):User,
         users(email: String,username: String,access_token: String,token_type: String):[User],
-        userTypes:[UserType]
+        userTypes:[UserType],
+        calendars(access_token: String!,token_type: String!):CalendarsType
     }
 `;
 
