@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { requestAddCalendar } from "../../../../../redux/actions/Calendars";
 import CalendarForm from "../../forms/CalendarForm";
-const CreateCalendarModalStyled = styled.div`
+const EditCalendarModalStyled = styled.div`
   h2 {
     text-align: center;
   }
@@ -13,14 +13,14 @@ const CreateCalendarModalStyled = styled.div`
     width: 50%;
   }
 `;
-export default function index({ isVisible = true, toggleCreateCalendarModal }) {
+export default function index({ isVisible = true, toggleEditCalendarModal }) {
   const [calendarDetails, setCalendarDetails] = useState({
     name: "",
     selectedFamilyMembers: new Map(),
     image: "",
     visibilityType: "Private",
   });
-  console.log(calendarDetails);
+  useEffect(() => {}, []);
   const familyMembers = useSelector(({ familyMembers }) => familyMembers);
   const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
@@ -53,13 +53,13 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
     });
-    toggleCreateCalendarModal(false);
+    toggleEditCalendarModal(false);
   };
   if (!isVisible) {
     return <></>;
   }
   return ReactDOM.createPortal(
-    <CreateCalendarModalStyled
+    <EditCalendarModalStyled
       data-testid="app-big-calendar-create-modal"
       className="modal"
     >
@@ -67,13 +67,13 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
         <span
           className="close"
           onClick={() => {
-            toggleCreateCalendarModal(false);
+            toggleEditCalendarModal(false);
           }}
         >
           &times;
         </span>
         <h2 data-testid="app-big-calendar-create-modal-header">
-          Create new calendar
+          Edit calendar
         </h2>
         <CalendarForm
           details={calendarDetails}
@@ -81,10 +81,10 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
           onSubmit={handleFormSubmit}
           handleInputChange={handleInputChange}
           handleCheckBoxChange={handleCheckBoxChange}
-          toggleCreateCalendarModal={toggleCreateCalendarModal}
+          toggleEditCalendarModal={toggleEditCalendarModal}
         />
       </div>
-    </CreateCalendarModalStyled>,
+    </EditCalendarModalStyled>,
     document.getElementById("modal")
   );
 }

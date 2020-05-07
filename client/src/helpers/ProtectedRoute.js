@@ -2,21 +2,24 @@ import React, { useEffect } from "react";
 import { Redirect, useLocation } from "@reach/router";
 
 import { useSelector, useDispatch } from "react-redux";
-import { requestUserInfo } from "../redux/actions/Auth";
+import { requestUserInfo, requestLogout } from "../redux/actions/Auth";
 import { requestCalendars } from "../redux/actions/Calendars";
 import Loading from "../helpers/Loading";
 export default function protectedRoutes({ children }) {
-  const { auth, status } = useSelector(({ auth, status }) => {
-    return {
-      auth,
-      status,
-    };
-  });
+  const { auth, status, calendars } = useSelector(
+    ({ auth, status, calendars }) => {
+      return {
+        auth,
+        status,
+        calendars,
+      };
+    }
+  );
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
-    dispatch(requestCalendars());
     dispatch(requestUserInfo());
+    dispatch(requestCalendars());
   }, []);
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -26,7 +29,11 @@ export default function protectedRoutes({ children }) {
     status.messageType == "error"
   ) {
     return <Redirect to="/" />;
-  } else if (auth.email_verified && auth.status === "SIGNED_IN") {
+  } else if (
+    auth.email_verified &&
+    auth.status === "SIGNED_IN" &&
+    calendars.length > 0
+  ) {
     if (
       !location.pathname.includes("createprofile") &&
       !auth.is_profile_filled

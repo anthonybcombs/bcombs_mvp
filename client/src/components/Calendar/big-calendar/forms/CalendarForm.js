@@ -1,6 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useCallback } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
+import UploadImage from "../../../../helpers/UploadImage";
 import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
@@ -24,7 +25,6 @@ const CreateCalendarFormStyled = styled.form`
     display: inline-block;
     border: none;
     border-radius: 1;
-    border: none;
     outline: 0;
     border-bottom: 2px solid lightgrey;
     margin-top: 2.5em;
@@ -34,7 +34,7 @@ const CreateCalendarFormStyled = styled.form`
   input[type="checkbox"] {
     width: 15px;
   }
-  input:focus {
+  input[type="text"]:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
@@ -104,7 +104,6 @@ export default function CreateCalendarForm({
 }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange",
   });
   const theme = useContext(ThemeContext);
   return (
@@ -185,6 +184,13 @@ export default function CreateCalendarForm({
         errorType="required"
         message="Calendar Privacy setting is required."
       />
+      <UploadImage
+        handleImageChange={(image) => {
+          handleInputChange("image", image);
+          return false;
+        }}
+      />
+
       <div id="buttons-control">
         <button
           data-testid="app-big-calendar-new-cancel-button"

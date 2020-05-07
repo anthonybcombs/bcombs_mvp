@@ -74,7 +74,7 @@ export default function index({ isVisible = true, auth, onSubmit }) {
     }
   }, [auth, isVisible]);
 
-  const handleFileChange = event => {
+  const handleFileChange = (event) => {
     console.log("event.target.files", event.target.files);
 
     let reader = new FileReader();
@@ -121,7 +121,8 @@ export default function index({ isVisible = true, auth, onSubmit }) {
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
       theme={theme}
-      onSubmit={handleSubmit(onSubmit)}>
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <div className="modal-content">
         <div className="crop-container">
           <Cropper
@@ -137,8 +138,8 @@ export default function index({ isVisible = true, auth, onSubmit }) {
             style={{
               containerStyle: {
                 height: "80%",
-                minHeight: 500
-              }
+                minHeight: 500,
+              },
             }}
           />
           <div
@@ -146,20 +147,23 @@ export default function index({ isVisible = true, auth, onSubmit }) {
               display: "flex",
               bottom: 15,
               left: 200,
-              position: "absolute"
-            }}>
+              position: "absolute",
+            }}
+          >
             <input type="file" name="file" onChange={handleFileChange} />
 
             <button
               className="save-image"
               data-testid="app-profile-submit-button"
-              onClick={showCroppedImage}>
+              onClick={showCroppedImage}
+            >
               Save
             </button>
             <button
               className="save-image"
               data-testid="app-profile-submit-button"
-              onClick={onClose}>
+              onClick={onClose}
+            >
               Close
             </button>
           </div>

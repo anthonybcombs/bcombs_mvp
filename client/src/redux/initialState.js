@@ -8,6 +8,7 @@ export const initialState = {
   events: [
     {
       id: uuid(),
+      calendar_id: "134df24b-8faa-11ea-93dc-0242ac110002",
       name: "testing event 1",
       description:
         "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
@@ -20,9 +21,11 @@ export const initialState = {
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), addDays(new Date(), 10)],
       eventType: "Event",
+      color: "#cce868",
     },
     {
       id: uuid(),
+      calendar_id: "134df24b-8faa-11ea-93dc-0242ac110002",
       name: "testing event 2",
       description:
         "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
@@ -36,9 +39,11 @@ export const initialState = {
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), addHours(new Date(), 1)],
       eventType: "Event",
+      color: "#cce868",
     },
     {
       id: uuid(),
+      calendar_id: "134df24b-8faa-11ea-93dc-0242ac110002",
       name: "testing event 3",
       description:
         "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
@@ -52,9 +57,11 @@ export const initialState = {
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), addHours(new Date(), 2)],
       eventType: "Event",
+      color: "#cce868",
     },
     {
       id: uuid(),
+      calendar_id: "134df24b-8faa-11ea-93dc-0242ac110002",
       name: "testing event 4",
       description:
         "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
@@ -68,9 +75,11 @@ export const initialState = {
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), addHours(new Date(), 2)],
       eventType: "Event",
+      color: "#cce868",
     },
     {
       id: uuid(),
+      calendar_id: "134df24b-8faa-11ea-93dc-0242ac110002",
       name: "testing event 5",
       description:
         "Elit ad nisi veniam qui minim minim. Amet ea aute sint excepteur commodo commodo in ullamco quis. Voluptate labore officia esse ullamco. Officia ad dolor elit est esse ullamco cupidatat sint. Est proident sint laboris dolore nisi magna irure et aliqua eu exercitation eu et.",
@@ -84,6 +93,7 @@ export const initialState = {
       eventCategory: "Entertainment",
       eventSchedule: [new Date(), addHours(new Date(), 2)],
       eventType: "Event",
+      color: "#cce868",
     },
   ],
   calendars: [],

@@ -9,7 +9,7 @@ import {
   faTrashAlt,
   faCheckCircle,
   faShareAltSquare,
-  faPenSquare
+  faPenSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import { deleteEvent } from "../../../../redux/actions/Events";
@@ -20,9 +20,7 @@ const EventStyled = styled.div`
   margin: 2px;
   #event-name {
     display: block;
-    background-color: ${({ theme }) =>
-      theme.smallCalendar.event.backgroundColor.primary};
-    color: white;
+    color: black;
     padding: 5px;
   }
   #event-name.selected {
@@ -108,7 +106,7 @@ export default function index({ event }) {
   };
   const schedule = [
     format(event.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
-    format(event.eventSchedule[1], "MMM dd,yyyy hh:mm a")
+    format(event.eventSchedule[1], "MMM dd,yyyy hh:mm a"),
   ];
   return (
     <Popover
@@ -129,7 +127,7 @@ export default function index({ event }) {
             onMouseLeave={() => {
               setVisibility(!isVisible);
             }}
-            onDoubleClick={e => {
+            onDoubleClick={(e) => {
               e.stopPropagation();
             }}
           >
@@ -144,7 +142,7 @@ export default function index({ event }) {
                 />
               </button>
               <button
-                onClick={e => {
+                onClick={(e) => {
                   setVisibility(false);
                   dispatch(deleteEvent(event));
                 }}
@@ -186,6 +184,7 @@ export default function index({ event }) {
     >
       <EventStyled
         theme={theme}
+        style={{ backgroundColor: event.color }}
         onClick={() => {
           setVisibility(!isVisible);
         }}

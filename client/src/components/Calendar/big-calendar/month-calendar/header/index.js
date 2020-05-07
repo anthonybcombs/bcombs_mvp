@@ -3,11 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faArrowLeft,
-  faPlus
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
 import CreateCalendarModal from "../../new-calendar/Create";
+import EditCalendarModal from "../../new-calendar/Edit";
 const HeaderStyled = styled.div`
   display: grid;
   margin-bottom: 2em;
@@ -80,9 +81,12 @@ export default function index({
   calendarType,
   handleChangeCalendarType,
   selectedCalendars,
-  handleCalendarSelection
+  handleCalendarSelection,
 }) {
   const [isVisibleCreateCalendarModal, toggleCreateCalendarModal] = useState(
+    false
+  );
+  const [isVisibileEditCalendarModal, toggleEditCalendarModal] = useState(
     false
   );
   const dateFormat = "MMMM yyyy";
@@ -91,6 +95,10 @@ export default function index({
       <CreateCalendarModal
         isVisible={isVisibleCreateCalendarModal}
         toggleCreateCalendarModal={toggleCreateCalendarModal}
+      />
+      <EditCalendarModal
+        isVisible={isVisibileEditCalendarModal}
+        toggleEditCalendarModal={toggleEditCalendarModal}
       />
       <div className="grid" id="calendar-type">
         <button
@@ -139,6 +147,10 @@ export default function index({
             key={index}
             onClick={() => {
               handleCalendarSelection(calendar.id);
+            }}
+            onDoubleClick={(e) => {
+              handleCalendarSelection(calendar.id);
+              toggleEditCalendarModal(true);
             }}
           >
             <img src={calendar.image} />
