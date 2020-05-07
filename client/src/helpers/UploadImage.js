@@ -9,7 +9,6 @@ const UploadImageStyled = styled.div`
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;
     background-color: lightgrey;
-    border: none;
     box-shadow: 0px 3px 6px #908e8e;
     padding: 10px;
     margin: 10px auto;
@@ -20,6 +19,7 @@ const UploadImageStyled = styled.div`
 `;
 export default function UploadImage({ handleImageChange }) {
   const [imageView, setImageView] = useState("");
+  const [errors, setErrors] = useState([]);
   const [cropper, setCropper] = useState(false);
   return (
     <UploadImageStyled>
@@ -31,8 +31,10 @@ export default function UploadImage({ handleImageChange }) {
         accept={["application/pdf", "image/jpg", "image/jpeg"]}
         onSuccess={(files) => {
           setImageView(files[0]);
+          setErrors([]);
           setCropper(true);
         }}
+        onError={(errors) => setErrors(errors)}
       >
         {({ browseFiles }) => (
           <>
@@ -61,21 +63,33 @@ export default function UploadImage({ handleImageChange }) {
                   browseFiles();
                 }}
                 style={{
-                  border: "1px dashed grey",
-                  height: 300,
+                  border: `1px dashed grey`,
+                  minHeight: 300,
                   maxHeight: 300,
                   margin: 10,
                   cursor: "pointer",
                 }}
               >
-                {imageView.length > 0 && (
-                  <img
-                    style={{ width: "100%", maxHeight: 300 }}
-                    src={imageView}
-                  />
-                )}
+                <img
+                  style={{
+                    width: "100%",
+                    maxHeight: 300,
+                    backgroundColor: " background-color: lightblue;",
+                  }}
+                  src={imageView.length > 0 && imageView}
+                />
+                {errors.map((error, key) => (
+                  <p className="error" key={key}>
+                    {error.file.name} - {error.type}
+                  </p>
+                ))}
               </div>
             )}
+            {errors.map((error, key) => (
+              <p className="error" key={key}>
+                {error.file.name} - {error.type}
+              </p>
+            ))}
           </>
         )}
       </Files>
@@ -107,7 +121,7 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
         style={{
           containerStyle: {
             zIndex: 150,
-            height: "110",
+            height: "110%",
           },
         }}
         image={image}
@@ -121,7 +135,7 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
       <div
         style={{
           position: "absolute",
-          bottom: 0,
+          bottom: -10,
           right: 0,
           width: 200,
           zIndex: 200,
