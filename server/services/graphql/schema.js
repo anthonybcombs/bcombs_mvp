@@ -51,6 +51,8 @@ const inputs = `
         email: String
         phone_number: String
         relation: String
+        auth_email:String
+        selected_groups:[String]
     }
     input CalendarInfoInput{
         name: String!
@@ -76,6 +78,7 @@ const inputs = `
         member_ids: [String]
         name: String
         email: String!
+        visibility: String
     }
     input CalendarInput{
         creds:CredsInput!
@@ -93,6 +96,7 @@ const queryTypes = `
         email: String
         phone_number: String
         relation: String
+        
     }
 
     type User{
@@ -160,6 +164,11 @@ const queryTypes = `
         status: Status!
         data:[CalendarInfoType]!       
     }
+
+    type AllGroups {
+        joined_groups:[Group]
+        created_groups:[Group]
+    }
 `;
 
 const mutations = `
@@ -168,21 +177,25 @@ const mutations = `
         signIn(user:UserSignInInput!):UserSignInType
         changePassword(user:UserChangePasswordInput!):Status
         userUpdate(user: UserUpdateInput!):Status
+        createContact(contact: ContactInput!): [Contact]
         deleteContacts(id: String!): [Contact]
         updateContact(contact: ContactInput!): [Contact]
-        updateGroup(group: GroupInput!): [Group]
+        createGroup(group: GroupInput!) : AllGroups
+        updateGroup(group: GroupInput!): AllGroups
         createCalendar(calendar:CalendarInput!):CalendarType
-        deleteGroup(id: String!, email:String!): [Group]
+        deleteGroup(id: String!, email:String!): AllGroups
     }
 `;
 
 const queries = `
     type RootQuery{
-        contacts:[Contact]
+        getContact(email: String!):[Contact]
+        getUserGroup(email: String!): AllGroups
         userInfo(access_token: String!,token_type: String!):User,
         users(email: String,username: String,access_token: String,token_type: String):[User],
         userTypes:[UserType],
-        calendars(access_token: String!,token_type: String!):CalendarsType
+        calendars(access_token: String!,token_type: String!):CalendarsType,
+        getGroupMembers(id:String!):[Contact]
     }
 `;
 

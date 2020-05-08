@@ -4,31 +4,51 @@ import graphqlClient from "../../graphql";
 
 import { GET_CONTACT_QUERY } from "../../graphql/contactQuery";
 import {
+  CONTACT_CREATE_MUTATION,
   DELETE_CONTACT_MUTATION,
   UPDATE_CONTACT_MUTATION
 } from "../../graphql/contactMutation";
 
-const addContactToDatabase = contact => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const addContactRequest = await fetch(
-        `${process.env.API_HOST}/api/contact`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(contact)
-        }
-      );
-      const addContactResponse = await addContactRequest.json();
+// REDUX ACTIONS
+import { requestUserGroup } from "./Groups";
 
-      return resolve(addContactResponse);
-    } catch (error) {
-      reject("error");
-    }
-  });
+const addContactToDatabase = async payload => {
+  // return new Promise(async (resolve, reject) => {
+  //   try {
+  //     const addContactRequest = await fetch(
+  //       `${process.env.API_HOST}/api/contact`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json"
+  //         },
+  //         body: JSON.stringify(contact)
+  //       }
+  //     );
+  //     const addContactResponse = await addContactRequest.json();
+
+  //     return resolve(addContactResponse);
+  //   } catch (error) {
+  //     reject("error");
+  //   }
+  // });
+
+  try {
+    console.log("addContactDatabase contact", payload);
+    const { data } = await graphqlClient.mutate({
+      mutation: CONTACT_CREATE_MUTATION,
+      variables: {
+        contact: {
+          ...payload
+        }
+      }
+    });
+    console.log("createContact", data);
+    return data.createContact;
+  } catch (error) {
+    console.log("addContactDatabase error", error);
+  }
 };
 const updateContactToDatabase = contact => {
   return new Promise(async (resolve, reject) => {
@@ -64,13 +84,17 @@ const removeContactToDatabase = contact => {
   });
 };
 
-const getContactToDatabase = userId => {
+const getContactToDatabase = email => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.mutate({
-        mutation: GET_CONTACT_QUERY
+        mutation: GET_CONTACT_QUERY,
+        variables: {
+          email
+        }
       });
-      return resolve(data.contacts);
+      console.log("GetContactDatabase", data);
+      return resolve(data.getContact);
     } catch (error) {
       reject("error");
     }
@@ -82,14 +106,13 @@ export const addContact = contact => {
     type: actionType.REQUEST_ADD_CONTACT,
     contact: {
       id: contact.id,
-      user_ids: contact.userIds,
       first_name: contact.first_name,
       last_name: contact.last_name,
       phone_number: contact.phone_number,
       email: contact.email,
       relation: contact.relation,
-      user_email: contact.userEmail,
-      selectedGroups: contact.selectedGroups
+      selected_groups: contact.selectedGroups,
+      auth_email: contact.authEmail
     }
   };
 };
@@ -114,10 +137,10 @@ export const removeContact = contact => {
   };
 };
 
-export const getContact = userId => {
+export const getContact = email => {
   return {
     type: actionType.REQUEST_USER_CONTACT,
-    userId
+    email
   };
 };
 
@@ -129,11 +152,35 @@ export const setContact = data => {
 };
 
 export function* addedContact({ contact }) {
-  yield call(addContactToDatabase, contact);
-  yield put({
-    type: actionType.REQUEST_ADD_CONTACT_COMPLETED,
-    payload: contact
-  });
+  try {
+    const response = yield call(addContactToDatabase, contact);
+    console.log("responseeee", response);
+    console.log("responseeee contact", contact);
+    if (response) {
+      // yield all([
+      //   put(getContact(contact.auth_email)),
+      //   put({
+      //     type: actionType.SET_USER_CONTACT_LIST,
+      //     payload: response
+      //   })
+      // ]);
+
+      yield put(getContact(contact.auth_email));
+      yield put(requestUserGroup(contact.auth_email));
+
+    
+    }
+  } catch (err) {
+    yield put({
+      type: actionType.SET_USER_CONTACT_LIST,
+      payload: []
+    });
+  }
+
+  // yield put({
+  //   type: actionType.REQUEST_ADD_CONTACT_COMPLETED,
+  //   payload: contact
+  // });
 }
 export function* updatedContact({ contact }) {
   try {
@@ -164,7 +211,8 @@ export function* removedContact({ contact }) {
 
 export function* getUserContact(action) {
   try {
-    const response = yield call(getContactToDatabase, action.userId);
+    const response = yield call(getContactToDatabase, action.email);
+
     if (response) {
       yield put({
         type: actionType.SET_USER_CONTACT_LIST,
@@ -172,6 +220,7 @@ export function* getUserContact(action) {
       });
     }
   } catch (err) {
+    console.log("error", err);
     yield put({
       type: actionType.SET_USER_CONTACT_LIST,
       payload: []

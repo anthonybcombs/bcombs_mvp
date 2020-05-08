@@ -16,6 +16,7 @@ import EditContactModal from "./edit/contact";
 import SendMessageModal from "./message";
 import NewGroupModal from "../MyGroups/create";
 import EditGroupModal from "../MyGroups/edit";
+import JoinedGroupModal from "../MyGroups/view";
 
 import ProfileModal from "./profile/";
 
@@ -37,7 +38,7 @@ const MyContactsStyled = styled.div`
     display: grid;
   }
   #labels,
-  #groups {
+  .groups {
     padding: 1em;
   }
   #labels > div {
@@ -59,27 +60,27 @@ const MyContactsStyled = styled.div`
   #contacts > div:nth-of-type(2) {
     margin-right: 0.5em;
   }
-  #groups > button {
+  .groups > button {
     display: block;
     margin-left: 1em;
   }
-  #groups > button > span {
+  .groups > button > span {
     padding: 1em;
     font-size: 1.2em !important;
   }
-  #groups > div > div {
+  .groups > div > div {
     font-size: 1.2em;
   }
-  #groups > div > div > div > div {
+  .groups > div > div > div > div {
     padding: 1em;
   }
-  #groups > div > div > div > div > span {
+  .groups > div > div > div > div > span {
     margin-left: 1em;
   }
-  #groups > div {
+  .groups > div {
     cursor: pointer;
   }
-  #groups .selected {
+  .groups .selected {
     background: #f26e21 !important;
     color: white !important;
   }
@@ -116,7 +117,10 @@ export default function index() {
   const [selectedGroup, setSelectedGroup] = useState(0);
   const [isNewContactModalVisible, setNewContactModalVisible] = useState(false);
   const [isEditGroupModalVisible, setEditGroupModalVisible] = useState(false);
-  const [iseNewGroupModalVisible, setIsNewGroupModalVisible] = useState(false);
+  const [isNewGroupModalVisible, setIsNewGroupModalVisible] = useState(false);
+  const [isJoinedGroupModalVisible, setJoinedGroupModalVisible] = useState(
+    false
+  );
   const { auth, groups, contacts } = useSelector(
     ({ auth, groups, contacts }) => {
       return { auth, groups, contacts };
@@ -126,16 +130,14 @@ export default function index() {
   const dispatch = useDispatch();
   useEffect(() => {
     if (auth.email) {
-      const payload = {
-        email: auth.email
-      };
-
-      dispatch(requestUserGroup(payload));
+      dispatch(requestUserGroup(auth.email));
     }
   }, [contacts]);
   useEffect(() => {
-    dispatch(getContact("1"));
+    dispatch(getContact(auth.email));
   }, []);
+
+  console.log("groups updateee", groups);
 
   // const selectedGroup = groups.find(group => group.id === selectedGroupId);
   const filteredContacts = contacts.filter(contact => {
@@ -162,21 +164,32 @@ export default function index() {
     }, 500);
   };
 
+  const handleJoinedGroupModal = group => {
+    setSelectedGroup(group);
+    setJoinedGroupModalVisible(true);
+  };
   const editGroupSubmit = data => {};
-
+  console.log("groupszz", groups);
   return (
     <MyContactsStyled>
       <NewContactModal
-        groups={groups}
+        groups={groups.created_groups || []}
         isVisible={isNewContactModalVisible}
         toggleCreateContactModal={setNewContactModalVisible}
         auth={auth}
       />
       <NewGroupModal
-        isVisible={iseNewGroupModalVisible}
+        isVisible={isNewGroupModalVisible}
         toggleCreateGroupModal={setIsNewGroupModalVisible}
         contacts={contacts}
         auth={auth}
+      />
+
+      <JoinedGroupModal
+        auth={auth}
+        group={selectedGroup}
+        isVisible={isJoinedGroupModalVisible}
+        toggleJoinGroupModalVisible={setJoinedGroupModalVisible}
       />
 
       <EditGroupModal
@@ -223,22 +236,23 @@ export default function index() {
               <span>Duplicates</span>
             </div>
           </div>
-          <div id="groups">
+          <div className="groups">
             <Collapsible trigger={<h3>Groups</h3>} open lazyRender>
               <hr />
-              {groups.map(group => (
-                <div
-                  className={`${
-                    group.id === selectedGroupId ? "selected" : ""
-                  }`}
-                  key={group.id}
-                  onClick={() => {
-                    handleSelectedGroup(group);
-                  }}>
-                  <FontAwesomeIcon icon={faUsers} />
-                  <span>{group.name}</span>
-                </div>
-              ))}
+              {groups.created_groups &&
+                groups.created_groups.map(group => (
+                  <div
+                    className={`${
+                      group.id === selectedGroupId ? "selected" : ""
+                    }`}
+                    key={group.id}
+                    onClick={() => {
+                      handleSelectedGroup(group);
+                    }}>
+                    <FontAwesomeIcon icon={faUsers} />
+                    <span>{group.name}</span>
+                  </div>
+                ))}
             </Collapsible>
             <hr />
             <button
@@ -249,12 +263,36 @@ export default function index() {
               <span> ADD NEW GROUP</span>
             </button>
           </div>
+
+          <div className="groups">
+            {groups.joined_groups && groups.joined_groups.length > 0 && (
+              <>
+                <Collapsible trigger={<h3>Joined Groups</h3>} open lazyRender>
+                  <hr />
+                  {groups.joined_groups.map(group => (
+                    <div
+                      className={`${
+                        group.id === selectedGroupId ? "selected" : ""
+                      }`}
+                      key={group.id}
+                      onClick={() => {
+                        handleJoinedGroupModal(group);
+                      }}>
+                      <FontAwesomeIcon icon={faUsers} />
+                      <span>{group.name}</span>
+                    </div>
+                  ))}
+                </Collapsible>
+                <hr />
+              </>
+            )}
+          </div>
         </div>
         <div>
           <ContactList
             headerText={selectedLabel}
             contacts={filteredContacts}
-            groups={groups}
+            groups={groups.created_groups || []}
             setNewContactModalVisible={setNewContactModalVisible}
             EditContactModal={EditContactModal}
             ProfileModal={ProfileModal}

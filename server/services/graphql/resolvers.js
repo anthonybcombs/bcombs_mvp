@@ -4,12 +4,22 @@ import {
   executeSignUp,
   executeSignIn,
   executeChangePassword,
-  executeUserUpdate,
+  executeUserUpdate
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
-import { editContact, getContacts, removeContact } from "../../api/contacts";
-import { editGroups } from "../../api/groups";
-import { removeGroup } from "../../api/groups";
+import {
+  createNewContact,
+  editContact,
+  getContacts,
+  removeContact
+} from "../../api/contacts";
+import {
+  getUserGroups,
+  editGroups,
+  removeGroup,
+  createNewGroup,
+  getMembers
+} from "../../api/groups";
 import { executeCreateCalendar, getCalendars } from "../../api/calendars";
 
 const resolvers = {
@@ -21,10 +31,10 @@ const resolvers = {
     async users(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type,
+        token_type: args.token_type
       };
       const users = await getUsers();
-      return users.filter((user) => {
+      return users.filter(user => {
         if (args.email) {
           return user.email === args.email;
         }
@@ -42,10 +52,18 @@ const resolvers = {
       return await getCalendars({ access_token, token_type });
     },
     // ADDED BY DENNIS
-    async contacts(root, args, context) {
-      const contacts = await getContacts();
+    async getContact(root, { email }, context) {
+      const contacts = await getContacts(email);
       return contacts;
     },
+    async getUserGroup(root, { email }, context) {
+      const response = await getUserGroups(email);
+      return response;
+    },
+    async getGroupMembers(root, { id }, context) {
+      console.log("getGroupMembers id", id);
+      return await getMembers(id);
+    }
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -60,11 +78,21 @@ const resolvers = {
     async userUpdate(root, { user }, context) {
       return await executeUserUpdate(user);
     },
+    async createContact(root, { contact }, context) {
+      const response = await createNewContact(contact);
+      console.log("createContact createNewContact *****************", response);
+      return response;
+    },
     async deleteContacts(root, args, context) {
       return await removeContact(args.id);
     },
     async updateContact(root, { contact }, context) {
       return await editContact(contact);
+    },
+    async createGroup(root, { group }, context) {
+      console.log("createGroup group *****************", group);
+      const response = await createNewGroup(group);
+      return response;
     },
     async updateGroup(root, { group }, context) {
       console.log("updateGroup group", group);
@@ -78,8 +106,8 @@ const resolvers = {
     },
     async createCalendar(root, { calendar }, context) {
       return await executeCreateCalendar(calendar);
-    },
-  },
+    }
+  }
 };
 
 export default resolvers;

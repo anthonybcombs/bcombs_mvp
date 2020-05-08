@@ -10,7 +10,7 @@ const NewContactModal = styled.div`
     text-align: center;
   }
   .modal-content {
-    width: 30%;
+    width: 50%;
   }
   @media (min-width: 600px) {
   }
@@ -53,6 +53,7 @@ export default function index({
       ...groupDetails,
       email: auth.email
     };
+    console.log("PAYLOADDD", payload);
     dispatch(addGroup(payload));
     setGroupDetails({
       id: uuid(),

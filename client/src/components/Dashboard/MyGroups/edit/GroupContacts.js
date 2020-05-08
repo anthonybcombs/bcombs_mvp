@@ -11,6 +11,9 @@ const ContactListStyled = styled.div`
   #contact-list-header {
     position: relative;
   }
+  #contact-list-details {
+    min-height: 300px;
+  }
   #contact-list-header button {
     position: absolute;
     top: 0;

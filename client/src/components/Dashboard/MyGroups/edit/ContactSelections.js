@@ -30,6 +30,7 @@ const ContactStyled = styled.div`
   height: 4em;
   padding: 0.1em;
   margin: 0.5em 0 0.5em 0;
+
   div:nth-of-type(1) {
     display: flex;
   }

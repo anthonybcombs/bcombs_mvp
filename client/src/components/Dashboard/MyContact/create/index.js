@@ -43,7 +43,7 @@ export default function index({
       phone_number: "",
       email: "",
       selectedGroups: [],
-      userIds: [auth.sub],
+      user_id: "",
       relation: ""
     });
   };
@@ -71,7 +71,8 @@ export default function index({
     //   dispatch(updateGroup(selectedGroup));
     // });
     const payload = {
-      ...contactDetails
+      ...contactDetails,
+      authEmail: auth.email
     };
 
     dispatch(addContact(payload));
