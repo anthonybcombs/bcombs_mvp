@@ -16,14 +16,14 @@ export default function index({
   handleChangeCalendarType,
   selectedCalendars,
   handleCalendarSelection,
-  familyMembers
+  familyMembers,
 }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
-    selectedDate: new Date()
+    selectedDate: new Date(),
   });
-  const handleChangeMonth = operation => {
+  const handleChangeMonth = (operation) => {
     let currentMonth;
     if (operation === "next") {
       currentMonth = addMonths(currentDate.currentMonth, 1);
@@ -34,13 +34,13 @@ export default function index({
     setCurrentDate({
       ...currentDate,
       currentMonth,
-      selectedDate: firstDayOfTheMonth
+      selectedDate: firstDayOfTheMonth,
     });
   };
-  const handleChangeDay = day => {
+  const handleChangeDay = (day) => {
     setCurrentDate({
       ...currentDate,
-      selectedDate: day
+      selectedDate: day,
     });
   };
   return (
@@ -61,6 +61,7 @@ export default function index({
       />
       <Days currentMonth={currentDate.currentMonth} />
       <Cells
+        selectedCalendars={selectedCalendars}
         events={events}
         currentMonth={currentDate.currentMonth}
         selectedDate={currentDate.selectedDate}

@@ -4,15 +4,15 @@ import WeekViewCalendar from "./week-calendar";
 export default function index({ events, calendars, familyMembers }) {
   const [calendarType, setCalendarType] = useState("month");
   const [selectedCalendars, setSelectedCalendars] = useState([]);
-  const handleChangeCalendarType = type => {
+  const handleChangeCalendarType = (type) => {
     setCalendarType(type);
   };
-  const handleCalendarSelection = id => {
+  const handleCalendarSelection = (id) => {
     if (selectedCalendars.includes(id)) {
       setSelectedCalendars([
-        ...selectedCalendars.filter(calendarId => {
+        ...selectedCalendars.filter((calendarId) => {
           calendarId === id;
-        })
+        }),
       ]);
       return;
     }

@@ -201,7 +201,15 @@ const GlobalStyle = createGlobalStyle`
   #applicationForm select {
     background-color: white;
   }
-
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .modal::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE and Edge */
+  .modal {
+    -ms-overflow-style: none;
+  }
   @media (min-width: 600px) {
     body{
       overflow-x: hidden;

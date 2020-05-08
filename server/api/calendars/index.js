@@ -1,7 +1,11 @@
 import fetch from "node-fetch";
 import { makeDb } from "../../helpers/database";
 import randomColor from "../../helpers/randomColor";
-import { s3BucketRootPath } from "../../helpers/aws";
+import {
+  currentS3BucketName,
+  s3Bucket,
+  s3BucketRootPath,
+} from "../../helpers/aws";
 import { getUserInfo } from "../users/";
 
 export const getCalendars = async (creds) => {
@@ -38,6 +42,7 @@ export const getCalendars = async (creds) => {
 };
 export const executeCreateCalendar = async (calendar) => {
   const db = makeDb();
+
   try {
     const UserInfo = await getUserInfo(calendar.creds);
     await db.query(
@@ -62,6 +67,22 @@ export const executeCreateCalendar = async (calendar) => {
       "SELECT BIN_TO_UUID(id) as id,color from user_calendars where user_id=UUID_TO_BIN(?) AND name=?",
       [UserInfo.user_id, calendar.info.name]
     );
+    // const params = {
+    //   Bucket: currentS3BucketName,
+    //   Key: `calendars/${currentUser.id}/${currentUser.id}.jpg`,
+    //   Body: file.buffer,
+    //   ContentType: file.mimetype,
+    //   ACL: "public-read",
+    // };
+    // s3Bucket.upload(params, async function (err, data) {
+    //   if (err) {
+    //   } else {
+    //     await db.query(
+    //       "UPDATE user_calendars SET image=? where id=UUID_TO_BIN(?)",
+    //       [data.key, insertedCalendar.id]
+    //     );
+    //   }
+    // });
     return {
       status: {
         messageType: "info",

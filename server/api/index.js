@@ -87,7 +87,6 @@ router.get("/userProfile", async (req, res) => {
     const { email } = req.query;
     const user = await getUserFromDatabase(email);
     const userProfile = await getUserProfileFromDatabase(user.id);
-    console.log("userProfileeee", userProfile);
     res.send(JSON.stringify(userProfile || {}));
   } catch (error) {}
 });

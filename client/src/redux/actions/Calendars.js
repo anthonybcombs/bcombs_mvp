@@ -70,6 +70,7 @@ export function* addCalendar({ name, familyMembers, visibilityType }) {
   });
 }
 export function* gotCalendars() {
+  yield take([actionType.REQUEST_AUTH_USER_INFO_COMPLETED]);
   const calendars = yield call(getCalendarFromDatabase, {
     access_token: sessionStorage.getItem("access_token"),
     token_type: sessionStorage.getItem("token_type"),
