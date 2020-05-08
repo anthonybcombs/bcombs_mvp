@@ -93,7 +93,7 @@ export default function index({
   const theme = useContext(ThemeContext);
 
   useEffect(() => {
-    if (group.id && isVisible) {
+    if (group && group.id && isVisible) {
       const triggerGetMembers = async () => {
         try {
           const { data } = await graphqlClient.query({

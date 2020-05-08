@@ -112,9 +112,7 @@ export default function index({
   const dispatch = useDispatch();
   console.log("currentContacts", currentContacts);
   useEffect(() => {
-    if (contacts && group && group.contacts && isVisible) {
-      console.log("Editgroup group", group);
-      console.log("Editgroup contacts", contacts);
+    if (contacts && isVisible && group && group.contacts) {
       const list = group.contacts.map(c => {
         let contact = contacts.find(con => con.user_id === c);
         return {

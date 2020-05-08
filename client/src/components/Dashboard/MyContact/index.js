@@ -159,9 +159,11 @@ export default function index() {
     //setSelectedGroupId(group.id);
     setSelectedGroup(group);
 
-    setTimeout(() => {
-      setEditGroupModalVisible(true);
-    }, 500);
+    if (group) {
+      setTimeout(() => {
+        setEditGroupModalVisible(true);
+      }, 500);
+    }
   };
 
   const handleJoinedGroupModal = group => {
