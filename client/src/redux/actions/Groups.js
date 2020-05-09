@@ -3,7 +3,10 @@ import * as actionType from "./Constant";
 
 import graphqlClient from "../../graphql";
 
-import { GET_USER_GROUP_QUERY } from "../../graphql/groupQuery";
+import {
+  GET_USER_GROUP_QUERY,
+  GET_GROUP_MEMBERS_QUERY
+} from "../../graphql/groupQuery";
 import {
   GROUP_UPDATE_MUTATION,
   GROUP_DELETE_MUTATION,
@@ -56,6 +59,16 @@ const removeGroupToDatabase = group => {
   });
 };
 
+const getMembersToDatabase = async id => {
+  try {
+    const { data } = await graphqlClient.query({
+      query: GET_GROUP_MEMBERS_QUERY,
+      variables: { id }
+    });
+
+    return data.getGroupMembers;
+  } catch (err) {}
+};
 export const addGroup = group => {
   return {
     type: actionType.REQUEST_ADD_GROUP,
@@ -123,6 +136,19 @@ export function requestDeleteGroup(data) {
   };
 }
 
+export function requestMembers(id) {
+  return {
+    type: actionType.REQUEST_MEMBERS,
+    id
+  };
+}
+export function setMemberList(data) {
+  return {
+    type: actionType.SET_MEMBER_LIST,
+    data
+  };
+}
+
 const addGroupToDatabase = async group => {
   try {
     console.log("Groupppp", group);
@@ -159,9 +185,7 @@ const getUserGroupToDatabase = async email => {
 
 export function* getUserGroup(action) {
   try {
-    console.log("Get User Groupppp", action.data);
     const response = yield call(getUserGroupToDatabase, action.email);
-    console.log("Get User Groupppp", response);
     yield put(setUserGroups(response));
   } catch (error) {}
 }
@@ -174,4 +198,12 @@ export function* removeGroup(action) {
   } catch (error) {
     yield put(setUserGroups([]));
   }
+}
+
+export function* getMembers(action) {
+  try {
+    const response = yield call(getMembersToDatabase, action.id);
+    console.log("Get Members Response", response);
+    yield put(setMemberList(response));
+  } catch (error) {}
 }

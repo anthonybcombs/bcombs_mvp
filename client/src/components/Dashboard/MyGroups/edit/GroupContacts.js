@@ -28,7 +28,7 @@ const ContactListStyled = styled.div`
 
 const ContactStyled = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   grid-gap: 1%;
   height: 4em;
   padding: 0.1em;
@@ -86,8 +86,6 @@ const GroupContacts = ({ contacts }) => {
               </div>
               <div>
                 <p>{contact.email}</p>
-              </div>
-              <div>
                 <p>{contact.phone_number}</p>
               </div>
             </ContactStyled>

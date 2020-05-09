@@ -227,14 +227,17 @@ export const getMembers = async id => {
       userIds && userIds.length > 0 ? JSON.parse(JSON.stringify(userIds)) : [];
 
     userIds = userIds.map(item => `UUID_TO_BIN("${item.user_id}")`);
+
     contacts = await db.query(
-      "SELECT first_name,last_name,BIN_TO_UUID(user_id) as user_id,BIN_TO_UUID(id) as id,email FROM contacts WHERE user_id IN (" +
-        userIds.join(",") +
-        ")"
+      `SELECT user_profiles.first_name,
+      user_profiles.last_name,
+      BIN_TO_UUID(user_profiles.user_id) as user_id,
+      users.email 
+      FROM user_profiles INNER JOIN users
+      ON user_profiles.user_id = users.id  
+      WHERE users.id IN (${userIds.join(",")}) `
     );
     contacts = JSON.parse(JSON.stringify(contacts));
-
-    console.log("contactsssssssssss", contacts);
   } catch (err) {
     console.log("Error", err);
   } finally {
@@ -250,13 +253,30 @@ const formattedGroups = async (rows, db) => {
   let members =
     rowIds && rowIds.length > 0
       ? await db.query(
-          "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members` WHERE `group_id` IN (" +
+          "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members`  WHERE `group_id` IN (" +
             rowIds.join(",") +
             ")"
         )
       : [];
   members = JSON.parse(JSON.stringify(members));
+  //console.log("MEMBERS1 ", members);
+  // let memberIds = members.map(item => `UUID_TO_BIN(${item.user_id})`);
 
+  // let contacts = await db.query(
+  //   `SELECT contacts.firstname as contact_firstname,
+  //   contacts.lastname as contact_lastname,
+  //     BIN_TO_UUID(contacts.user_id) as contact_user_id,
+  //     contacts.email as email,
+  //     user_profiles.last_name as profile_lastname,
+  //     user_profiles.first_name as  profile_first_name
+
+  //     FROM contacts, user_profiles WHERE contacts.user_id IN ( ${memberIds.join(
+  //       ","
+  //     )} OR user_profiles.user_id IN ( ${memberIds.join(",")}
+  //     ) GROUP BY contacts.user_id,user_profiles.user_id`
+  // );
+
+  // console.log("Contactssssssss", contacts);
   const formattedRows = rows.map(item => {
     const groupMembers = members
       .filter(member => member.group_id === item.id)

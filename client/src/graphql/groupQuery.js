@@ -21,6 +21,7 @@ export const GET_GROUP_MEMBERS_QUERY = gql`
   query GetGroupMembers($id: String!) {
     getGroupMembers(id: $id) {
       id
+      user_id
       email
       last_name
       first_name

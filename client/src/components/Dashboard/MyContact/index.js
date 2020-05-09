@@ -22,7 +22,10 @@ import ProfileModal from "./profile/";
 
 // REDUX
 import { getContact } from "../../../redux/actions/Contacts";
-import { requestUserGroup } from "../../../redux/actions/Groups";
+import {
+  requestUserGroup,
+  requestMembers
+} from "../../../redux/actions/Groups";
 
 const MyContactsStyled = styled.div`
   .selected {
@@ -121,12 +124,12 @@ export default function index() {
   const [isJoinedGroupModalVisible, setJoinedGroupModalVisible] = useState(
     false
   );
-  const { auth, groups, contacts } = useSelector(
-    ({ auth, groups, contacts }) => {
-      return { auth, groups, contacts };
+  const { auth, groups, groupMembers, contacts } = useSelector(
+    ({ auth, groups, groupMembers, contacts }) => {
+      return { auth, groups, groupMembers, contacts };
     }
   );
-
+  console.log("groupMemberszzxczxc", groupMembers);
   const dispatch = useDispatch();
   useEffect(() => {
     if (auth.email) {
@@ -160,6 +163,7 @@ export default function index() {
     setSelectedGroup(group);
 
     if (group) {
+      dispatch(requestMembers(group.id));
       setTimeout(() => {
         setEditGroupModalVisible(true);
       }, 500);
@@ -171,7 +175,7 @@ export default function index() {
     setJoinedGroupModalVisible(true);
   };
   const editGroupSubmit = data => {};
-  console.log("groupszz", groups);
+
   return (
     <MyContactsStyled>
       <NewContactModal
@@ -197,6 +201,7 @@ export default function index() {
       <EditGroupModal
         auth={auth}
         contacts={contacts}
+        groupMembers={groupMembers}
         group={selectedGroup}
         isVisible={isEditGroupModalVisible}
         onSubmit={editGroupSubmit}

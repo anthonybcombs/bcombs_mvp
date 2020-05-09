@@ -6,7 +6,7 @@ import {
   authenticated,
   gotUserInfo,
   loggedOut,
-  requestedPasswordChange,
+  requestedPasswordChange
 } from "../actions/Auth";
 import { addCalendar, gotCalendars } from "../actions/Calendars";
 import { deletedEvent, updatedEvent, addedEvent } from "../actions/Events";
@@ -14,13 +14,14 @@ import {
   addedContact,
   removedContact,
   updatedContact,
-  getUserContact,
+  getUserContact
 } from "../actions/Contacts";
 import {
   addedGroup,
   updatedGroup,
   getUserGroup,
   removeGroup,
+  getMembers
 } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
 import {
@@ -29,7 +30,7 @@ import {
   checkedUserAndAdd,
   getUserInfo,
   updateUserProfile,
-  updateUserProfilePhoto,
+  updateUserProfilePhoto
 } from "../actions/Users";
 import { gotUserTypes } from "../actions/UserTypes";
 import { requestedStatus, removedStatus } from "../actions/Status";
@@ -76,6 +77,7 @@ function* rootSaga() {
     updateUserProfilePhoto
   );
   yield takeLatest(actionType.REQUEST_USER_GROUPS, getUserGroup);
+  yield takeLatest(actionType.REQUEST_MEMBERS, getMembers);
 }
 const sagaMiddleware = createSagaMiddleware();
 

@@ -91,6 +91,7 @@ export default function index({
   isVisible = true,
   toggleEditGroupModal,
   contacts,
+  groupMembers,
   group,
   typeOfForm = "Edit Group"
 }) {
@@ -111,16 +112,18 @@ export default function index({
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   console.log("currentContacts", currentContacts);
+  console.log("11111 groupMembers", groupMembers);
+  console.log("11111 contacts", contacts);
   useEffect(() => {
     if (contacts && isVisible && group && group.contacts) {
       const list = group.contacts.map(c => {
-        let contact = contacts.find(con => con.user_id === c);
+        let contact = groupMembers.find(con => con.user_id === c);
         return {
           ...contact
         };
       });
 
-      const selections = contacts
+      const selections = groupMembers
         .filter(c => !group.contacts.includes(c.user_id))
         .map(c => {
           return {
@@ -132,7 +135,7 @@ export default function index({
       setCurrentContacts(list);
       setContactSelections(selections);
     }
-  }, [contacts, group, isVisible]);
+  }, [group, groupMembers, isVisible]);
 
   const handleContactSelectChange = value => {
     setSelectedContact(value);
