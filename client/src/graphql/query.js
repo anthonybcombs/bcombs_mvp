@@ -57,3 +57,14 @@ export const CALENDARS_QUERY = gql`
     }
   }
 `;
+
+export const GET_USER_OPTIONS_QUERY = gql`
+  query getUserList($keyword: String!) {
+    getUserList(keyword: $keyword) {
+      email
+      family_name
+      given_name
+      id
+    }
+  }
+`;

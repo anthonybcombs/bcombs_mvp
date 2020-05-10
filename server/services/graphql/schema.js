@@ -226,8 +226,9 @@ const queries = `
         users(email: String,username: String,access_token: String,token_type: String):[User],
         userTypes:[UserType],
         calendars(access_token: String!,token_type: String!):CalendarsType,
-        getGroupMembers(id:String!):[Contact]
-        getEvents(email:String!):[Event]
+        getGroupMembers(id:String!):[Contact],
+        getEvents(email:String!):[Event],
+        getUserList(keyword:String!): [User]
     }
 `;
 

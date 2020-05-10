@@ -4,7 +4,8 @@ import {
   executeSignUp,
   executeSignIn,
   executeChangePassword,
-  executeUserUpdate
+  executeUserUpdate,
+  executeGetUser
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
@@ -62,12 +63,14 @@ const resolvers = {
       return response;
     },
     async getGroupMembers(root, { id }, context) {
-      console.log("getGroupMembers id", id);
       return await getMembers(id);
     },
     async getEvents(root, { email }, context) {
-      console.log("Get Events Email", email);
       return await getUserEvents(email);
+    },
+    async getUserList(root, { keyword }, context) {
+      console.log("Get User List", keyword);
+      return await executeGetUser(keyword);
     }
   },
   RootMutation: {

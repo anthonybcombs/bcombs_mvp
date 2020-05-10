@@ -277,3 +277,38 @@ export const executeUserUpdate = async user => {
     await db.close();
   }
 };
+
+export const executeGetUser = async keyword => {
+  const db = makeDb();
+  let result = [];
+  try {
+    result = await db.query(
+      `SELECT 
+      BIN_TO_UUID(users.id) as id,
+      users.email,
+      user_profiles.last_name,
+      user_profiles.first_name 
+      FROM users,user_profiles 
+      WHERE (users.email LIKE ? OR 
+        user_profiles.last_name LIKE ? OR 
+        user_profiles.first_name LIKE ? ) AND user_profiles.user_id=users.id`,
+      [keyword, keyword, keyword]
+    );
+
+    console.log("RESULT", result);
+    result = result.map(user => {
+      return {
+        given_name: user.first_name,
+        family_name: user.last_name,
+        email: user.email,
+        id: user.id
+      };
+    });
+    return result;
+  } catch (error) {
+    console.log("executeGetUser Error", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+};
