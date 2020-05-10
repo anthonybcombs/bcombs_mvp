@@ -51,6 +51,8 @@ const inputs = `
         email: String
         phone_number: String
         relation: String
+        auth_email:String
+        selected_groups:[String]
     }
     input CalendarInfoInput{
         name: String!
@@ -81,10 +83,35 @@ const inputs = `
         creds:CredsInput!
         info:CalendarInfoInput!
     }
+
+    input EventInput {
+        id: String
+        name: String
+        description: String
+        status: String
+        type: String
+        start_of_event: String
+        end_of_event: String
+        time: String
+        location: String
+        auth_email: String
+        guests:[String]
+    }
+
 `;
 const queryTypes = `
     scalar Date
 
+    type Event {
+        id: String
+        name: String
+        description: String
+        status: String
+        type: String
+        start_of_event:Date
+        end_of_event:Date
+        location: String
+    }
     type Contact{
         id: String
         user_id: String
@@ -160,6 +187,11 @@ const queryTypes = `
         status: Status!
         data:[CalendarInfoType]!       
     }
+
+    type AllGroups {
+        joined_groups:[Group]
+        created_groups:[Group]
+    }    
 `;
 
 const mutations = `
@@ -168,21 +200,29 @@ const mutations = `
         signIn(user:UserSignInInput!):UserSignInType
         changePassword(user:UserChangePasswordInput!):Status
         userUpdate(user: UserUpdateInput!):Status
+        createContact(contact: ContactInput!): [Contact]
         deleteContacts(id: String!): [Contact]
         updateContact(contact: ContactInput!): [Contact]
-        updateGroup(group: GroupInput!): [Group]
+        createGroup(group: GroupInput!) : AllGroups
+        updateGroup(group: GroupInput!): AllGroups        
         createCalendar(calendar:CalendarInput!):CalendarType
         deleteGroup(id: String!, email:String!): [Group]
+        createEvent(event:EventInput!): Event
     }
 `;
 
 const queries = `
     type RootQuery{
+        getContact(email: String!):[Contact]
+        getUserGroup(email: String!): AllGroups
         contacts:[Contact]
         userInfo(access_token: String!,token_type: String!):User,
         users(email: String,username: String,access_token: String,token_type: String):[User],
         userTypes:[UserType],
         calendars(access_token: String!,token_type: String!):CalendarsType
+        getGroupMembers(id:String!):[Contact],        
+        getEvents(email:String!):[Event],
+        getUserList(keyword:String!): [User]        
     }
 `;
 

@@ -93,7 +93,7 @@ export default function index({ location }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const { events, calendars } = useSelector(({ events, auth }) => {
+  const { events, calendars } = useSelector(({ events, calendars }) => {
     return { events, calendars };
   });
   console.log("TRIGGERED GET EVENTS!", auth);
