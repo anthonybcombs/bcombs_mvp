@@ -5,6 +5,7 @@ import familyMembers from "./FamilyMembers";
 import calendars from "./Calendars";
 import settings from "./Settings";
 import groups from "./Groups";
+import groupMembers from "./Members";
 import contacts from "./Contacts";
 import relatives from "./Relatives";
 import user from "./Users";
@@ -16,6 +17,7 @@ const reducer = combineReducers({
   familyMembers,
   calendars,
   groups,
+  groupMembers,
   settings,
   contacts,
   relatives,

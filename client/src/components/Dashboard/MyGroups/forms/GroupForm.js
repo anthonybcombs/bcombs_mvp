@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
+
 import { Multiselect } from "multiselect-react-dropdown";
+import CreatableSelect from "react-select/creatable";
 
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const ContactFormStyled = styled.form`
@@ -95,6 +97,7 @@ export default function GroupForm({
 }) {
   const [contactOptions, setContactOptions] = useState([]);
   const [contactSelected, setContactSelected] = useState([]);
+  const [otherUserSelected, setOtherUserSelected] = useState([]);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
@@ -106,17 +109,23 @@ export default function GroupForm({
       let formattedContacts = contacts.map(item => {
         return {
           name: `${item.first_name} ${item.last_name}`,
-          id: item.id
+          id: item.user_id
         };
       });
       setContactOptions(formattedContacts);
     }
+   
   }, [contacts]);
+  console.log("contactOptionszzz", contactOptions);
   const theme = useContext(ThemeContext);
   const handleSelectChange = value => {
-    console.log("contacts", value);
     handleGroupDetailsChange("contacts", [...value]);
     setContactSelected([...value]);
+  };
+
+  const handleOtherUserChange = value => {
+    handleGroupDetailsChange("other_users", value);
+    setOtherUserSelected(value);
   };
   return (
     <ContactFormStyled
@@ -173,11 +182,18 @@ export default function GroupForm({
               options={contactOptions}
               hasSelectAll={hasSelectAll}
               onSelect={handleSelectChange}
-              placeholder="Select from existing contacts"
+              placeholder="Add from my contacts"
               displayValue="name"
               closeIcon="cancel"
             />
+
             <label className="field-label">Assign to existing contact</label>
+          </div>
+        </div>
+        <div className="form-group">
+          <div className="field">
+            <CreatableSelect onChange={handleOtherUserChange} isMulti />
+            <label className="field-label">Others</label>
           </div>
         </div>
       </div>

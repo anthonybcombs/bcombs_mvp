@@ -34,7 +34,7 @@ export default function index({
 }) {
   const [contactDetails, setContactDetails] = useState({});
   const dispatch = useDispatch();
-
+  console.log("contactsss", contact);
   useEffect(() => {
     if (contact.id) {
       setContactDetails({

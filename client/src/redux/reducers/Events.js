@@ -1,6 +1,6 @@
 import { initialState } from "../initialState";
 import * as actionType from "../actions/Constant";
-export default function Events(state = initialState.events, action) {
+export default function Events(state = [], action) {
   switch (action.type) {
     case actionType.REQUEST_UPDATE_EVENT_COMPLETED:
       return state.map(event => {
@@ -13,6 +13,8 @@ export default function Events(state = initialState.events, action) {
       return [...state, action.payload];
     case actionType.REQUEST_DELETE_EVENT_COMPLETED:
       return [...state.filter(event => event.id !== action.payload.id)];
+    case actionType.REQUEST_EVENTS_COMPLETED:
+      return [...action.payload];
     default:
       return state;
   }

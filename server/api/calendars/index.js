@@ -4,11 +4,11 @@ import randomColor from "../../helpers/randomColor";
 import {
   currentS3BucketName,
   s3Bucket,
-  s3BucketRootPath,
+  s3BucketRootPath
 } from "../../helpers/aws";
 import { getUserInfo } from "../users/";
 
-export const getCalendars = async (creds) => {
+export const getCalendars = async creds => {
   const db = makeDb();
   try {
     const UserInfo = await getUserInfo(creds);
@@ -17,7 +17,7 @@ export const getCalendars = async (creds) => {
       [UserInfo.user_id]
     );
     const calendars = [];
-    rows.forEach((calendar) => {
+    rows.forEach(calendar => {
       if (calendar.image.length === 0) {
         calendar.image = "https://picsum.photos/200";
       }
@@ -26,21 +26,22 @@ export const getCalendars = async (creds) => {
     return {
       status: {
         messageType: "info",
-        message: "calendars rendered",
+        message: "calendars rendered"
       },
-      data: calendars,
+      data: calendars
     };
   } catch (error) {
+    console.log("error", error);
     return {
       status: {
         messageType: "error",
-        message: "there is an issue in get calendar endpoint",
+        message: "there is an issue in get calendar endpoint"
       },
-      data: [],
+      data: []
     };
   }
 };
-export const executeCreateCalendar = async (calendar) => {
+export const executeCreateCalendar = async calendar => {
   const db = makeDb();
 
   try {
@@ -52,10 +53,10 @@ export const executeCreateCalendar = async (calendar) => {
         "",
         calendar.info.name,
         await randomColor(UserInfo),
-        calendar.info.visibilityType,
+        calendar.info.visibilityType
       ]
     );
-    calendar.info.familyMembers.forEach(async (familyMemberId) => {
+    calendar.info.familyMembers.forEach(async familyMemberId => {
       if (familyMemberId !== "0") {
         await db.query(
           "INSERT IGNORE INTO user_calendars_family_member(calendar_id,family_member_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
@@ -86,24 +87,24 @@ export const executeCreateCalendar = async (calendar) => {
     return {
       status: {
         messageType: "info",
-        message: "calendar Created",
+        message: "calendar Created"
       },
       calendar: {
         id: insertedCalendar[0].id,
         user_id: UserInfo.user_id,
         name: calendar.info.name,
         color: insertedCalendar[0].color,
-        visibilityType: calendar.info.visibilityType,
-      },
+        visibilityType: calendar.info.visibilityType
+      }
     };
   } catch (error) {
     console.log(error);
     return {
       status: {
         messageType: "error",
-        message: "there is an issue in create calendar endpoint",
+        message: "there is an issue in create calendar endpoint"
       },
-      calendar: {},
+      calendar: {}
     };
   }
 };

@@ -6,21 +6,27 @@ import {
   authenticated,
   gotUserInfo,
   loggedOut,
-  requestedPasswordChange,
+  requestedPasswordChange
 } from "../actions/Auth";
 import { addCalendar, gotCalendars } from "../actions/Calendars";
-import { deletedEvent, updatedEvent, addedEvent } from "../actions/Events";
+import {
+  deletedEvent,
+  updatedEvent,
+  addedEvent,
+  getUserEvents
+} from "../actions/Events";
 import {
   addedContact,
   removedContact,
   updatedContact,
-  getUserContact,
+  getUserContact
 } from "../actions/Contacts";
 import {
   addedGroup,
   updatedGroup,
   getUserGroup,
   removeGroup,
+  getMembers
 } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
 import {
@@ -29,7 +35,7 @@ import {
   checkedUserAndAdd,
   getUserInfo,
   updateUserProfile,
-  updateUserProfilePhoto,
+  updateUserProfilePhoto
 } from "../actions/Users";
 import { gotUserTypes } from "../actions/UserTypes";
 import { requestedStatus, removedStatus } from "../actions/Status";
@@ -50,6 +56,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ADD_EVENT, addedEvent);
   yield takeLatest(actionType.REQUEST_DELETE_EVENT, deletedEvent);
   yield takeLatest(actionType.REQUEST_UPDATE_EVENT, updatedEvent);
+  yield takeLatest(actionType.REQUEST_EVENTS, getUserEvents);
   //CONTACTS
   yield takeLatest(actionType.REQUEST_ADD_CONTACT, addedContact);
   yield takeEvery(actionType.REQUEST_UPDATE_CONTACT, updatedContact);
@@ -76,6 +83,7 @@ function* rootSaga() {
     updateUserProfilePhoto
   );
   yield takeLatest(actionType.REQUEST_USER_GROUPS, getUserGroup);
+  yield takeLatest(actionType.REQUEST_MEMBERS, getMembers);
 }
 const sagaMiddleware = createSagaMiddleware();
 

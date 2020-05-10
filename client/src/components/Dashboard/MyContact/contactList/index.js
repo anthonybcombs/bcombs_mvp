@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -22,6 +22,7 @@ const ContactListStyled = styled.div`
     box-shadow: 0px 3px 6px #908e8e;
   }
 `;
+
 export default function index({
   contacts,
   groups,
@@ -31,6 +32,7 @@ export default function index({
   SendMessageModal,
   headerText
 }) {
+  const [contactList, setContactList] = useState([]);
   const [selectedContactId, setSelectedContactId] = useState(0);
   const [isEditContactModalVisible, setisEditContactModalVisible] = useState(
     false
@@ -45,6 +47,28 @@ export default function index({
   ] = useState("Edit Contact");
   const contact =
     contacts.find(contact => contact.id === selectedContactId) || {};
+
+  useEffect(() => {
+    if (contacts) {
+      if (headerText === "Duplicates") {
+        // contacts.map(item => item.phone_number );
+        const duplicateContacts = contacts.filter(item => {
+          const currentItem = contacts.find(
+            subItem =>
+              subItem.phone_number === item.phone_number &&
+              subItem.user_id !== item.user_id
+          );
+          if (currentItem) {
+            return item;
+          }
+        });
+
+        setContactList(duplicateContacts);
+      } else {
+        setContactList(contacts);
+      }
+    }
+  }, [contacts, headerText]);
 
   return (
     <ContactListStyled>
@@ -76,8 +100,8 @@ export default function index({
         </div>
       </div>
       <div id="contact-list-details">
-        {contacts.length > 0 &&
-          contacts.map(contact => (
+        {contactList.length > 0 &&
+          contactList.map(contact => (
             <Contact
               isSelected={selectedContactId === contact.id}
               contactDetails={contact}

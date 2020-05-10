@@ -4,8 +4,13 @@ import * as actionType from "./Constant";
 import graphqlClient from "../../graphql";
 
 import {
+  GET_USER_GROUP_QUERY,
+  GET_GROUP_MEMBERS_QUERY
+} from "../../graphql/groupQuery";
+import {
   GROUP_UPDATE_MUTATION,
-  GROUP_DELETE_MUTATION
+  GROUP_DELETE_MUTATION,
+  GROUP_CREATE_MUTATION
 } from "../../graphql/groupMutation";
 
 // const addGroupToDatabase = ({ group }) => {
@@ -54,6 +59,16 @@ const removeGroupToDatabase = group => {
   });
 };
 
+const getMembersToDatabase = async id => {
+  try {
+    const { data } = await graphqlClient.query({
+      query: GET_GROUP_MEMBERS_QUERY,
+      variables: { id }
+    });
+
+    return data.getGroupMembers;
+  } catch (err) {}
+};
 export const addGroup = group => {
   return {
     type: actionType.REQUEST_ADD_GROUP,
@@ -68,11 +83,10 @@ export const updateGroup = group => {
   };
 };
 export function* addedGroup({ group }) {
-  yield call(addGroupToDatabase, group);
-  yield put({
-    type: actionType.REQUEST_ADD_GROUP_COMPLETED,
-    payload: group
-  });
+  try {
+    const response = yield call(addGroupToDatabase, group);
+    yield put(setUserGroups(response));
+  } catch (err) {}
 }
 
 export function* updatedGroup({ group }) {
@@ -80,7 +94,9 @@ export function* updatedGroup({ group }) {
     console.log("response updatedGroup", group);
     const response = yield call(updateGroupToDatabase, group);
     console.log("response", response);
-    yield put(requestUserGroup({ email: group.email }));
+
+    yield put(setUserGroups(response));
+    //yield put(requestUserGroup({ email: group.email }));
   } catch (err) {
     console.log("Error", err);
   }
@@ -93,10 +109,16 @@ export function* updatedGroup({ group }) {
 
 // ADDED BY DENNIS
 
-export function requestUserGroup(data) {
+export function requestUserGroup(email) {
   return {
     type: actionType.REQUEST_USER_GROUPS,
-    data
+    email
+  };
+}
+export function requestUserMemberGroup(id) {
+  return {
+    type: actionType.REQUEST_USER_GROUPS,
+    email
   };
 }
 
@@ -114,50 +136,57 @@ export function requestDeleteGroup(data) {
   };
 }
 
-const addGroupToDatabase = data => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(`${process.env.API_HOST}/api/groups`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
-      const responseData = await response.json();
-      return resolve(responseData);
-    } catch (error) {
-      reject("error");
-    }
-  });
+export function requestMembers(id) {
+  return {
+    type: actionType.REQUEST_MEMBERS,
+    id
+  };
+}
+export function setMemberList(data) {
+  return {
+    type: actionType.SET_MEMBER_LIST,
+    data
+  };
+}
+
+const addGroupToDatabase = async group => {
+  try {
+    console.log("Groupppp", group);
+    const { data } = await graphqlClient.mutate({
+      mutation: GROUP_CREATE_MUTATION,
+      variables: {
+        group: {
+          id: group.id,
+          name: group.name,
+          visibility: `${group.visibility}`,
+          member_ids: group.contacts,
+          email: group.email
+        }
+      }
+    });
+    return data.createGroup;
+  } catch (error) {
+    console.log("addGroupToDatabase", error);
+    return null;
+  }
 };
 
-const getUserGroupToDatabase = data => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(`${process.env.API_HOST}/api/usergroups`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
-      const responseData = await response.json();
-
-      return resolve(responseData);
-    } catch (error) {
-      reject("error");
-    }
-  });
+const getUserGroupToDatabase = async email => {
+  try {
+    const { data } = await graphqlClient.query({
+      query: GET_USER_GROUP_QUERY,
+      variables: { email }
+    });
+    return data.getUserGroup;
+  } catch (err) {
+    console.log("Error", err);
+  }
 };
 
 export function* getUserGroup(action) {
   try {
-    const response = yield call(getUserGroupToDatabase, action.data);
-
-    yield put(setUserGroups(response.data));
+    const response = yield call(getUserGroupToDatabase, action.email);
+    yield put(setUserGroups(response));
   } catch (error) {}
 }
 
@@ -169,4 +198,12 @@ export function* removeGroup(action) {
   } catch (error) {
     yield put(setUserGroups([]));
   }
+}
+
+export function* getMembers(action) {
+  try {
+    const response = yield call(getMembersToDatabase, action.id);
+    console.log("Get Members Response", response);
+    yield put(setMemberList(response));
+  } catch (error) {}
 }

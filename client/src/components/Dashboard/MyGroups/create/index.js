@@ -10,7 +10,7 @@ const NewContactModal = styled.div`
     text-align: center;
   }
   .modal-content {
-    width: 30%;
+    width: 50%;
   }
   @media (min-width: 600px) {
   }
@@ -24,9 +24,9 @@ export default function index({
   const [groupDetails, setGroupDetails] = useState({
     id: uuid(),
     name: "",
-    userIds: [auth.id],
     contacts: [],
-    visibility: 0
+    visibility: 0,
+    other_users: []
   });
   const dispatch = useDispatch();
   const handleGroupDetailsChange = (id, value) => {
@@ -48,19 +48,20 @@ export default function index({
     });
   };
   const handleSubmit = value => {
-    toggleCreateGroupModal(false);
+    //toggleCreateGroupModal(false);
     const payload = {
       ...groupDetails,
       email: auth.email
     };
-    dispatch(addGroup(payload));
-    setGroupDetails({
-      id: uuid(),
-      name: "",
-      visibility: 0,
-      userIds: [auth.id],
-      contacts: []
-    });
+    console.log("payloadddd", groupDetails);
+    // dispatch(addGroup(payload));
+    // setGroupDetails({
+    //   id: uuid(),
+    //   name: "",
+    //   visibility: 0,
+    //   userIds: [auth.id],
+    //   contacts: []
+    // });
   };
   if (!isVisible) {
     return <></>;

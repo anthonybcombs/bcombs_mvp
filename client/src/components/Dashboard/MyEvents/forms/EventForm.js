@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
+import debounce from "lodash.debounce";
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
+//import { Multiselect } from "multiselect-react-dropdown";
+import Autosuggest from "react-autosuggest";
+
+// GRAPHQL
+import graphqlClient from "../../../../graphql";
+import { GET_USER_OPTIONS_QUERY } from "../../../../graphql/query";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClock,
@@ -100,8 +108,84 @@ const EventFormStyled = styled.form`
       grid-gap: 2%;
     }
   }
+
+  .react-autosuggest__container {
+    position: relative;
+  }
+
+  .react-autosuggest__input {
+    font-family: Helvetica, sans-serif;
+    font-weight: 300;
+  }
+
+  .react-autosuggest__input--focused {
+    outline: none;
+  }
+
+  .react-autosuggest__input--open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .react-autosuggest__suggestions-container {
+    display: none;
+  }
+
+  .react-autosuggest__suggestions-container--open {
+    display: block;
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    font-family: Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    z-index: 2;
+  }
+
+  .react-autosuggest__suggestions-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  .react-autosuggest__suggestion {
+    cursor: pointer;
+    padding: 10px 20px;
+  }
+
+  .react-autosuggest__suggestion--highlighted {
+    background-color: #ddd;
+  }
+
+  .user-tag {
+    display: inline-block;
+    background-color: #f26e21;
+    color: white;
+    padding: 0.5em;
+    margin: 4px;
+  }
 `;
+
+const getSuggestions = (value, arr) => {
+  const inputValue = value.trim().toLowerCase();
+  const inputLength = inputValue.length;
+
+  return inputLength === 0
+    ? []
+    : arr.filter(
+        lang => lang.name.toLowerCase().slice(0, inputLength) === inputValue
+      );
+};
+
+// Use your imagination to render suggestions.
+const renderSuggestion = suggestion => <div>{suggestion.name}</div>;
+
 export default function createEventForm({
+  contactOptions,
   eventDetails,
   handleEventDetailsChange,
   onSubmit,
@@ -111,16 +195,85 @@ export default function createEventForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
+  const [suggestion, setSuggestion] = useState([]);
+  const [selectedGuest, setSelectedGuest] = useState([]);
+  const [autoCompleteValue, setAutoCompleteValue] = useState("");
+  const [isFetching, setFetching] = useState(false);
+  //const [guestOptions, setGuestOptions] = useState([]);
+
   const schedule = [
     format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
     format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")
   ];
+
+  const handleSelectChange = value => {
+    setSelectedGuest([...value]);
+    handleEventDetailsChange("eventGuests", [...(value || [])]);
+  };
+
+  const automCompleteOnChange = (event, { newValue }) => {
+    setAutoCompleteValue(newValue);
+  };
+
+  const inputProps = {
+    placeholder: "Enter Guest Email",
+    value: autoCompleteValue,
+    onChange: automCompleteOnChange
+  };
+
+  const onSuggestionsFetchRequested = async ({ value }) => {
+    try {
+      if (!isFetching && value !== "") {
+        setFetching(true);
+        const { data } = await graphqlClient.query({
+          query: GET_USER_OPTIONS_QUERY,
+          variables: { keyword: value }
+        });
+        const options = data.getUserList.map(item => {
+          return {
+            name: `${item.given_name} ${item.family_name}`,
+            value: item.email,
+            id: item.id
+          };
+        });
+
+        setSuggestion(
+          options.filter(
+            item => item.value.includes(value) || item.name.includes(value)
+          )
+        );
+        setFetching(false);
+      }
+    } catch (err) {
+      console.log("onSuggestionsFetchRequested Error ", err);
+      setFetching(false);
+    }
+  };
+
+  const onSuggestionsClearRequested = () => {
+    setSuggestion([]);
+  };
+
+  const getSuggestionValue = suggestion => {
+    const isExist = selectedGuest.find(item => suggestion.value === item.value);
+    if (!isExist) {
+      setSelectedGuest([...selectedGuest, suggestion]);
+      handleEventDetailsChange("eventGuests", [...selectedGuest, suggestion]);
+    }
+
+    return suggestion.name;
+  };
+
+  const handleRemoveGuest = email => () => {
+    const updatedGuest = selectedGuest.filter(guest => guest.value !== email);
+    setSelectedGuest(updatedGuest);
+    handleEventDetailsChange("eventGuests", updatedGuest);
+  };
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <h2>{header}</h2>
       <input
         data-testid="app-dashboard-my-events-new-event-input-title"
@@ -144,8 +297,7 @@ export default function createEventForm({
           className={`${eventDetails.eventType === "Event" ? "selected" : ""}`}
           onClick={() => {
             handleEventDetailsChange("eventType", "Event");
-          }}
-        >
+          }}>
           Event
         </button>
         <button
@@ -155,8 +307,7 @@ export default function createEventForm({
           }`}
           onClick={() => {
             handleEventDetailsChange("eventType", "Forms Reminder");
-          }}
-        >
+          }}>
           Forms Reminder
         </button>
         <button
@@ -164,127 +315,77 @@ export default function createEventForm({
           className={`${eventDetails.eventType === "Task" ? "selected" : ""}`}
           onClick={() => {
             handleEventDetailsChange("eventType", "Task");
-          }}
-        >
+          }}>
           Task
         </button>
       </div>
-      <EditableParagraph
-        DisplayComp={
-          <p data-testid="app-dashboard-my-events-new-event-selected-datetime">
-            <FontAwesomeIcon icon={faClock} />
-            {`${schedule[0]} - ${schedule[1]}`}
-          </p>
-        }
-        EditableComp={
-          <DateTimeRangePicker
-            value={eventDetails.eventSchedule}
-            disableClock={true}
-            onChange={date => {
-              if (date == null) {
-                return;
-              }
-              handleEventDetailsChange("eventSchedule", date);
-            }}
-          />
-        }
-      />
-      <EditableParagraph
-        DisplayComp={
-          <p>
-            <FontAwesomeIcon icon={faUserFriends} />
-            {eventDetails.eventGuests.length > 0
-              ? eventDetails.eventGuests.map((guest, index) => (
-                  <span className="guest" key={index}>
-                    <span>
-                      {guest}
-                      <span
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleEventDetailsChange(
-                            "eventGuests",
-                            index,
-                            "remove"
-                          );
-                        }}
-                      >
-                        &times;
-                      </span>
-                    </span>
-                  </span>
-                ))
-              : "Add guests"}
-          </p>
-        }
-        EditableComp={
-          <div>
-            <FontAwesomeIcon icon={faUserFriends} />
-            {eventDetails.eventGuests.map((guest, index) => (
-              <span className="guest" key={index}>
-                <span>
-                  {guest}
-                  <span
-                    onClick={e => {
-                      e.stopPropagation();
-                      handleEventDetailsChange("eventGuests", index, "remove");
-                    }}
-                  >
-                    &times;
-                  </span>
-                </span>
-              </span>
-            ))}
-            <input type="text" placeholder="Add guests" />
-          </div>
-        }
-        handleOnEnter={value => {
-          handleEventDetailsChange("eventGuests", value);
+      <DateTimeRangePicker
+        value={eventDetails.eventSchedule}
+        disableClock={true}
+        onChange={date => {
+          if (date == null) {
+            return;
+          }
+          handleEventDetailsChange("eventSchedule", date);
         }}
+      />{" "}
+      <Autosuggest
+        inputProps={inputProps}
+        suggestions={suggestion}
+        onSuggestionsFetchRequested={debounce(
+          onSuggestionsFetchRequested,
+          1000
+        )}
+        onSuggestionsClearRequested={onSuggestionsClearRequested}
+        renderSuggestion={renderSuggestion}
+        getSuggestionValue={getSuggestionValue}
       />
-      <EditableParagraph
-        DisplayComp={
-          <p>
-            <FontAwesomeIcon icon={faMapMarkerAlt} />
-            {eventDetails.location
-              ? eventDetails.location
-              : "Add location or conferencing"}
-          </p>
-        }
-        EditableComp={
-          <input
-            autoFocus
-            name="location"
-            value={eventDetails.location}
-            onChange={({ target }) => {
-              handleEventDetailsChange("location", target.value);
-            }}
-            ref={register({ required: true })}
-          />
-        }
+      <div>
+        {selectedGuest &&
+          selectedGuest.map((guest, index) => (
+            <div
+              key={index}
+              className="user-tag"
+              onClick={handleRemoveGuest(guest.email)}>
+              {guest.name} {guest.email}
+            </div>
+          ))}
+      </div>
+      <input
+        data-testid="app-dashboard-my-events-new-event-input-title"
+        type="text"
+        name="location"
+        placeholder="Location"
+        value={eventDetails.location}
+        onChange={e => {
+          handleEventDetailsChange("location", e.target.value);
+        }}
+        ref={register({ required: true })}
       />
-      <EditableParagraph
-        DisplayComp={
-          <p>
-            <FontAwesomeIcon icon={faAlignLeft} />
-            {eventDetails.description
-              ? eventDetails.description
-              : "Add description"}
-          </p>
-        }
-        EditableComp={
-          <textarea
-            autoFocus
-            value={eventDetails.description}
-            onChange={({ target }) => {
-              handleEventDetailsChange("description", target.value);
-            }}
-          />
-        }
+      <ErrorMessage
+        field={errors.location}
+        errorType="required"
+        message="Location is required."
+      />
+      <input
+        data-testid="app-dashboard-my-events-new-event-input-title"
+        type="text"
+        name="description"
+        placeholder="Description"
+        value={eventDetails.description}
+        onChange={e => {
+          handleEventDetailsChange("description", e.target.value);
+        }}
+        ref={register({ required: true })}
+      />
+      <ErrorMessage
+        field={errors.description}
+        errorType="required"
+        message="Description is required."
       />
       <button
         data-testid="app-dashboard-my-events-new-event-button-save"
-        type="submit"
-      >
+        type="submit">
         Save
       </button>
     </EventFormStyled>

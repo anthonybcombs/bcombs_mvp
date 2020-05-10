@@ -23,6 +23,7 @@ const EditGroupModal = styled.div`
   .modal-content {
     width: ${({ theme }) => theme.modalWidth};
     margin-top: ${({ theme }) => theme.modalMarginTop};
+    height: auto;
   }
   .content {
     display: grid;
@@ -32,8 +33,8 @@ const EditGroupModal = styled.div`
   .content > div {
   }
   .content > div:nth-child(2) {
-    margin-top: 5em;
     text-align: center !important;
+    min-height: 300px;
   }
   .modal-content {
     margin: 1.5em auto;
@@ -90,6 +91,7 @@ export default function index({
   isVisible = true,
   toggleEditGroupModal,
   contacts,
+  groupMembers,
   group,
   typeOfForm = "Edit Group"
 }) {
@@ -109,21 +111,23 @@ export default function index({
   //const [selectedFile, setSelectedFile] = useState([]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-
+  console.log("currentContacts", currentContacts);
+  console.log("11111 groupMembers", groupMembers);
+  console.log("11111 contacts", contacts);
   useEffect(() => {
-    if (contacts && group && group.contacts && isVisible) {
+    if (contacts && isVisible && group && group.contacts) {
       const list = group.contacts.map(c => {
-        let contact = contacts.find(con => con.id === c);
+        let contact = groupMembers.find(con => con.user_id === c);
         return {
           ...contact
         };
       });
 
-      const selections = contacts
-        .filter(c => !group.contacts.includes(c.id))
+      const selections = groupMembers
+        .filter(c => !group.contacts.includes(c.user_id))
         .map(c => {
           return {
-            id: c.id,
+            id: c.user_id,
             name: `${c.first_name} ${c.last_name}`
           };
         });
@@ -131,7 +135,7 @@ export default function index({
       setCurrentContacts(list);
       setContactSelections(selections);
     }
-  }, [contacts, group, isVisible]);
+  }, [group, groupMembers, isVisible]);
 
   const handleContactSelectChange = value => {
     setSelectedContact(value);
@@ -205,9 +209,7 @@ export default function index({
                 />
                 <label className="field-label">Group Name</label>
               </div>
-            </div>
-
-            <div className="form-group">
+              <br />
               <div className="field">
                 <Multiselect
                   className="field-input"
@@ -223,6 +225,8 @@ export default function index({
                 </label>
               </div>
             </div>
+
+            {/* <div className="form-group"></div> */}
 
             {/* <input type="file" name="file" style={{ marginTop: 24 }} /> */}
             {/* {contactSelections.length > 0 && (
