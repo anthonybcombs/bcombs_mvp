@@ -237,13 +237,3 @@ export default function index({ location }) {
     </HomeStyled>
   );
 }
-
-/*
-   {selectedEvent ? (
-                <div className="panel-body">
-                  <h4>{selectedEvent.name}</h4>
-                  {selectedEvent.description}
-                </div>
-              ) : (
-                <p>No event for now. Create and enjoy the system.</p>
-)} */
