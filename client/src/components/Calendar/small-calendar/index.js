@@ -51,6 +51,8 @@ export default function index({
     setCurrentDate({ ...currentDate, selectedDate: day });
     setSelectedDate(day);
   };
+
+  console.log;
   return (
     <SmallCalendarStyled data-testid="app-small-calendar" id="small-calendar">
       {!removeSubHeader && (

@@ -114,7 +114,9 @@ export default function GroupForm({
       });
       setContactOptions(formattedContacts);
     }
+   
   }, [contacts]);
+  console.log("contactOptionszzz", contactOptions);
   const theme = useContext(ThemeContext);
   const handleSelectChange = value => {
     handleGroupDetailsChange("contacts", [...value]);
@@ -122,6 +124,7 @@ export default function GroupForm({
   };
 
   const handleOtherUserChange = value => {
+    handleGroupDetailsChange("other_users", value);
     setOtherUserSelected(value);
   };
   return (

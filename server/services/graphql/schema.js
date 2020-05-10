@@ -84,6 +84,23 @@ const inputs = `
         creds:CredsInput!
         info:CalendarInfoInput!
     }
+
+    input EventInput {
+        id: String
+        name: String
+        description: String
+        status: String
+        type: String
+        start_of_event: String
+        end_of_event: String
+        time: String
+        location: String
+        auth_email: String
+        guests:[String]
+    }
+
+
+
 `;
 const queryTypes = `
     scalar Date
@@ -99,6 +116,17 @@ const queryTypes = `
         
     }
 
+    type Event {
+        id: String
+        name: String
+        description: String
+        status: String
+        type: String
+        start_of_event:Date
+        end_of_event:Date
+        location: String
+    }
+    
     type User{
         id: String
         user_id: String        
@@ -184,6 +212,9 @@ const mutations = `
         updateGroup(group: GroupInput!): AllGroups
         createCalendar(calendar:CalendarInput!):CalendarType
         deleteGroup(id: String!, email:String!): AllGroups
+        createEvent(event:EventInput!): Event
+
+    
     }
 `;
 
@@ -196,6 +227,7 @@ const queries = `
         userTypes:[UserType],
         calendars(access_token: String!,token_type: String!):CalendarsType,
         getGroupMembers(id:String!):[Contact]
+        getEvents(email:String!):[Event]
     }
 `;
 

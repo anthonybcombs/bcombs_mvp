@@ -21,6 +21,7 @@ import {
   getMembers
 } from "../../api/groups";
 import { executeCreateCalendar, getCalendars } from "../../api/calendars";
+import { createNewEvent, getUserEvents } from "../../api/events";
 
 const resolvers = {
   RootQuery: {
@@ -63,6 +64,10 @@ const resolvers = {
     async getGroupMembers(root, { id }, context) {
       console.log("getGroupMembers id", id);
       return await getMembers(id);
+    },
+    async getEvents(root, { email }, context) {
+      console.log("Get Events Email", email);
+      return await getUserEvents(email);
     }
   },
   RootMutation: {
@@ -80,7 +85,6 @@ const resolvers = {
     },
     async createContact(root, { contact }, context) {
       const response = await createNewContact(contact);
-      console.log("createContact createNewContact *****************", response);
       return response;
     },
     async deleteContacts(root, args, context) {
@@ -90,22 +94,20 @@ const resolvers = {
       return await editContact(contact);
     },
     async createGroup(root, { group }, context) {
-      console.log("createGroup group *****************", group);
       const response = await createNewGroup(group);
       return response;
     },
     async updateGroup(root, { group }, context) {
-      console.log("updateGroup group", group);
-      const response = await editGroups(group);
-      console.log("updateGroup response", response);
-      return response;
+      return await editGroups(group);
     },
     async deleteGroup(root, args, context) {
-      console.log("deleteGrouppp", args);
       return await removeGroup(args.id, args.email);
     },
     async createCalendar(root, { calendar }, context) {
       return await executeCreateCalendar(calendar);
+    },
+    async createEvent(root, { event }, context) {
+      return await createNewEvent(event);
     }
   }
 };

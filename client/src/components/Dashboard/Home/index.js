@@ -1,17 +1,21 @@
-import React, { useState, useContext } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState, useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Collapsible from "react-collapsible";
 import {
   faCalendar,
   faBell,
-  faPlusCircle,
+  faPlusCircle
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
 import { format, startOfMonth, endOfMonth } from "date-fns";
 import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
 import NewEventModal from "../MyEvents/create/withCalendar";
+
+// REDUX ACTIONS
+import { getEvents } from "../../../redux/actions/Events";
+
 const HomeStyled = styled.div`
   padding: 1px 1em 1px 1em;
   box-shadow: 0px 3px 6px #908e8e;
@@ -89,9 +93,19 @@ export default function index({ location }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedMonth, setSelectedMonth] = useState(null);
+  const dispatch = useDispatch();
   const { events, auth } = useSelector(({ events, auth }) => {
     return { events, auth };
   });
+  console.log("TRIGGERED GET EVENTS!", auth);
+  console.log("TRIGGERED GET EVENTS!", events);
+  useEffect(() => {
+    console.log("TRIGGERED GET EVENTS!");
+    if (auth) {
+      dispatch(getEvents(auth.email));
+    }
+  }, [auth]);
+
   const theme = useContext(ThemeContext);
   let calendarName = "";
   if (sessionStorage.getItem("calendarName") !== null) {
@@ -106,30 +120,34 @@ export default function index({ location }) {
   const calendars = [
     {
       id: 1,
-      name: calendarName,
-    },
+      name: calendarName
+    }
   ];
 
   const eventsOnThisDay = events.filter(
-    (event) =>
-      format(event.date, "MM dd yyyy") === format(selectedDate, "MM dd yyyy")
+    event =>
+      format(new Date(event.start_of_event), "MM dd yyyy") ===
+      format(selectedDate, "MM dd yyyy")
   );
-  const handleSetSelectedDate = (date) => {
+
+  const handleSetSelectedDate = date => {
     setSelectedEvent();
     setSelectedDate(date);
   };
-  const handleEventSelection = (id) => {
-    setSelectedEvent(eventsOnThisDay.filter((event) => event.id === id)[0]);
+  const handleEventSelection = id => {
+    setSelectedEvent(eventsOnThisDay.filter(event => event.id === id)[0]);
   };
-  const setCurrentMonth = (month) => {
+  const setCurrentMonth = month => {
     setSelectedMonth(format(month, "MMMM yyyy"));
   };
+
   return (
     <HomeStyled data-testid="app-dashboard-home" theme={theme}>
       {calendarName.length > 0 && (
         <WelcomeMessage calendarName={calendarName} />
       )}
       <NewEventModal
+        auth={auth}
         isVisible={isNewEventModalVisible}
         toggleCreateEventModal={setIsEventModalVisible}
         defaultSelectedDate={selectedDate}
@@ -153,8 +171,7 @@ export default function index({ location }) {
                 </h3>
               }
               open
-              lazyRender
-            >
+              lazyRender>
               <div className="panel">
                 {calendars.map((calendar, i) => (
                   <div
@@ -162,8 +179,7 @@ export default function index({ location }) {
                     key={i}
                     onClick={() => {
                       handleEventSelection(calendar.id);
-                    }}
-                  >
+                    }}>
                     {calendar.name}
                   </div>
                 ))}
@@ -177,8 +193,7 @@ export default function index({ location }) {
                 </h3>
               }
               open
-              lazyRender
-            >
+              lazyRender>
               <div className="panel">
                 <div className="panel-body">test notification</div>
                 <div className="panel-body">test notification</div>
@@ -194,14 +209,10 @@ export default function index({ location }) {
               id="add-event-button"
               onClick={() => {
                 setIsEventModalVisible(true);
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faPlusCircle} size="3x" />
             </button>
 
-            {/* <h2 data-testid="app-dashboard-home-sub-header-upcoming-events">
-              Upcoming Events
-            </h2> */}
             <div className="panel"></div>
             <div className="panel">
               {eventsOnThisDay.map((event, i) => (
@@ -215,8 +226,7 @@ export default function index({ location }) {
                   key={i}
                   onClick={() => {
                     handleEventSelection(event.id);
-                  }}
-                >
+                  }}>
                   {event.name}
                 </div>
               ))}

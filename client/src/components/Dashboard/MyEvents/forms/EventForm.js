@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
+import { Multiselect } from "multiselect-react-dropdown";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClock,
@@ -100,8 +102,35 @@ const EventFormStyled = styled.form`
       grid-gap: 2%;
     }
   }
+
+  #multiselectContainerReact .optionContainer li:hover,
+  #multiselectContainerReact .optionContainer li.highlight {
+    background: #f26e21;
+  }
+
+  #multiselectContainerReact div:first-child {
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    border-radius: 0;
+  }
+
+  #multiselectContainerReact .searchBox {
+    font-size: 18px;
+    padding: 5px 0;
+    margin: 0;
+    margin-top: 2px;
+  }
+
+  #multiselectContainerReact .searchBox::placeholder {
+    font-size: 12px;
+  }
+
+  #multiselectContainerReact .chip {
+    background: #f26e21;
+  }
 `;
 export default function createEventForm({
+  contactOptions,
   eventDetails,
   handleEventDetailsChange,
   onSubmit,
@@ -111,16 +140,23 @@ export default function createEventForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
+  const [selectedGuest, setSelectedGuest] = useState([]);
   const schedule = [
     format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
     format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")
   ];
+
+  const handleSelectChange = value => {
+    setSelectedGuest([...value]);
+    handleEventDetailsChange("eventGuests", [...(value || [])]);
+  };
+
+  console.log("contactOption11s", contactOptions);
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <h2>{header}</h2>
       <input
         data-testid="app-dashboard-my-events-new-event-input-title"
@@ -144,8 +180,7 @@ export default function createEventForm({
           className={`${eventDetails.eventType === "Event" ? "selected" : ""}`}
           onClick={() => {
             handleEventDetailsChange("eventType", "Event");
-          }}
-        >
+          }}>
           Event
         </button>
         <button
@@ -155,8 +190,7 @@ export default function createEventForm({
           }`}
           onClick={() => {
             handleEventDetailsChange("eventType", "Forms Reminder");
-          }}
-        >
+          }}>
           Forms Reminder
         </button>
         <button
@@ -164,12 +198,11 @@ export default function createEventForm({
           className={`${eventDetails.eventType === "Task" ? "selected" : ""}`}
           onClick={() => {
             handleEventDetailsChange("eventType", "Task");
-          }}
-        >
+          }}>
           Task
         </button>
       </div>
-      <EditableParagraph
+      {/* <EditableParagraph
         DisplayComp={
           <p data-testid="app-dashboard-my-events-new-event-selected-datetime">
             <FontAwesomeIcon icon={faClock} />
@@ -188,8 +221,59 @@ export default function createEventForm({
             }}
           />
         }
+      /> */}
+      <DateTimeRangePicker
+        value={eventDetails.eventSchedule}
+        disableClock={true}
+        onChange={date => {
+          if (date == null) {
+            return;
+          }
+          handleEventDetailsChange("eventSchedule", date);
+        }}
+      />{" "}
+      <Multiselect
+        className="field-input"
+        options={contactOptions}
+        hasSelectAll={false}
+        onSelect={handleSelectChange}
+        placeholder="Add Guests"
+        displayValue="name"
+        closeIcon="cancel"
       />
-      <EditableParagraph
+      <input
+        data-testid="app-dashboard-my-events-new-event-input-title"
+        type="text"
+        name="location"
+        placeholder="Location"
+        value={eventDetails.location}
+        onChange={e => {
+          handleEventDetailsChange("location", e.target.value);
+        }}
+        ref={register({ required: true })}
+      />
+      <ErrorMessage
+        field={errors.location}
+        errorType="required"
+        message="Location is required."
+      />
+      <input
+        data-testid="app-dashboard-my-events-new-event-input-title"
+        type="text"
+        name="description"
+        placeholder="Description"
+        value={eventDetails.description}
+        onChange={e => {
+          handleEventDetailsChange("description", e.target.value);
+        }}
+        ref={register({ required: true })}
+      />
+      <ErrorMessage
+        field={errors.description}
+        errorType="required"
+        message="Description is required."
+      />
+      {/* <EditableParagraph
         DisplayComp={
           <p>
             <FontAwesomeIcon icon={faUserFriends} />
@@ -280,11 +364,10 @@ export default function createEventForm({
             }}
           />
         }
-      />
+      /> */}
       <button
         data-testid="app-dashboard-my-events-new-event-button-save"
-        type="submit"
-      >
+        type="submit">
         Save
       </button>
     </EventFormStyled>

@@ -9,7 +9,12 @@ import {
   requestedPasswordChange
 } from "../actions/Auth";
 import { addCalendar, gotCalendars } from "../actions/Calendars";
-import { deletedEvent, updatedEvent, addedEvent } from "../actions/Events";
+import {
+  deletedEvent,
+  updatedEvent,
+  addedEvent,
+  getUserEvents
+} from "../actions/Events";
 import {
   addedContact,
   removedContact,
@@ -48,6 +53,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ADD_EVENT, addedEvent);
   yield takeLatest(actionType.REQUEST_DELETE_EVENT, deletedEvent);
   yield takeLatest(actionType.REQUEST_UPDATE_EVENT, updatedEvent);
+  yield takeLatest(actionType.REQUEST_EVENTS, getUserEvents);
   //CONTACTS
   yield takeLatest(actionType.REQUEST_ADD_CONTACT, addedContact);
   yield takeEvery(actionType.REQUEST_UPDATE_CONTACT, updatedContact);

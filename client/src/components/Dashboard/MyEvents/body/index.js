@@ -29,14 +29,13 @@ export default function index({ events, selectedYear, familyMembers }) {
         .map(month => {
           const eventThisMonth = events.filter(
             event =>
-              format(event.date, "MMMM") === month &&
-              format(event.date, "yyyy") === selectedYear
+              format(new Date(event.start_of_event), "MMMM") === month &&
+              format(new Date(event.start_of_event), "yyyy") === selectedYear
           );
           return (
             <div
               data-testid="app-dashboard-my-events-body-events-month"
-              key={month}
-            >
+              key={month}>
               <h2 data-testid="app-dashboard-my-events-body-table-month">
                 {month}
               </h2>
@@ -57,14 +56,18 @@ export default function index({ events, selectedYear, familyMembers }) {
                     {eventThisMonth.map(event => (
                       <tr key={event.id}>
                         <td>{event.name}</td>
-                        <td>{format(event.date, "MM/dd/yyyy")}</td>
                         <td>
-                          {format(event.eventSchedule[0], "hh:mm a")}-
-                          {format(event.eventSchedule[1], "hh:mm a")}
+                          {format(new Date(event.start_of_event), "MM/dd/yyyy")}
+                        </td>
+                        <td>
+                          {/* {format(event.eventSchedule[0], "hh:mm a")}-
+                          {format(event.eventSchedule[1], "hh:mm a")} */}
+                          {format(new Date(event.start_of_event), "hh:mm a")}-
+                          {format(new Date(event.end_of_event), "hh:mm a")}
                         </td>
                         <td>{event.location}</td>
                         <td>
-                          {event.familyMembers.map(eventFamilyMemberId => (
+                          {/* {event.familyMembers.map(eventFamilyMemberId => (
                             <p key={eventFamilyMemberId}>
                               {
                                 familyMembers.find(
@@ -73,7 +76,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                                 )["name"]
                               }
                             </p>
-                          ))}
+                          ))} */}
                         </td>
                         <td>{event.status}</td>
                       </tr>

@@ -13,29 +13,7 @@ import {
 import { requestUserGroup } from "./Groups";
 
 const addContactToDatabase = async payload => {
-  // return new Promise(async (resolve, reject) => {
-  //   try {
-  //     const addContactRequest = await fetch(
-  //       `${process.env.API_HOST}/api/contact`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           Accept: "application/json",
-  //           "Content-Type": "application/json"
-  //         },
-  //         body: JSON.stringify(contact)
-  //       }
-  //     );
-  //     const addContactResponse = await addContactRequest.json();
-
-  //     return resolve(addContactResponse);
-  //   } catch (error) {
-  //     reject("error");
-  //   }
-  // });
-
   try {
-    console.log("addContactDatabase contact", payload);
     const { data } = await graphqlClient.mutate({
       mutation: CONTACT_CREATE_MUTATION,
       variables: {
@@ -44,7 +22,6 @@ const addContactToDatabase = async payload => {
         }
       }
     });
-    console.log("createContact", data);
     return data.createContact;
   } catch (error) {
     console.log("addContactDatabase error", error);
@@ -167,8 +144,6 @@ export function* addedContact({ contact }) {
 
       yield put(getContact(contact.auth_email));
       yield put(requestUserGroup(contact.auth_email));
-
-    
     }
   } catch (err) {
     yield put({

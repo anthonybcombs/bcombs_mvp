@@ -79,37 +79,6 @@ export const editGroups = async data => {
       );
     }
     result = await getUserGroups(email);
-    // if (currentUser) {
-    //   let rows = await db.query(
-    //     "SELECT BIN_TO_UUID(id) as id,name,visibility  from `groups` WHERE user_id=UUID_TO_BIN(?)",
-    //     [currentUser.id]
-    //   );
-
-    //   rows = JSON.parse(JSON.stringify(rows));
-
-    //   const rowIds = rows.map(item => `UUID_TO_BIN('${item.id}')`);
-
-    //   let members =
-    //     rowIds && rowIds.length > 0
-    //       ? await db.query(
-    //           "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members` WHERE `group_id` IN (" +
-    //             rowIds.join(",") +
-    //             ")"
-    //         )
-    //       : [];
-    //   members = JSON.parse(JSON.stringify(members));
-
-    //   result = rows.map(item => {
-    //     const groupMembers = members
-    //       .filter(member => member.group_id === item.id)
-    //       .map(subItem => subItem.user_id);
-
-    //     return {
-    //       ...item,
-    //       contacts: [...(groupMembers || [])]
-    //     };
-    //   });
-    // }
   } catch (error) {
     console.log("Error", error);
   } finally {
@@ -133,34 +102,6 @@ export const removeGroup = async (id, email) => {
         [id]
       );
       result = await getUserGroups(email);
-      // result = await db.query(
-      //   "SELECT BIN_TO_UUID(id) as id,name,visibility  from `groups` WHERE user_id=UUID_TO_BIN(?)",
-      //   [currentUser.id]
-      // );
-      // result = JSON.parse(JSON.stringify(result));
-
-      // const rowIds = result.map(item => `UUID_TO_BIN('${item.id}')`);
-
-      // let members =
-      //   rowIds && rowIds.length > 0
-      //     ? await db.query(
-      //         "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members` WHERE `group_id` IN (" +
-      //           rowIds.join(",") +
-      //           ")"
-      //       )
-      //     : [];
-      // members = JSON.parse(JSON.stringify(members));
-
-      // result = result.map(item => {
-      //   const groupMembers = members
-      //     .filter(member => member.group_id === item.id)
-      //     .map(subItem => subItem.user_id);
-
-      //   return {
-      //     ...item,
-      //     contacts: [...(groupMembers || [])]
-      //   };
-      // });
     }
   } catch (error) {
     console.log("Error", error);
@@ -259,24 +200,6 @@ const formattedGroups = async (rows, db) => {
         )
       : [];
   members = JSON.parse(JSON.stringify(members));
-  //console.log("MEMBERS1 ", members);
-  // let memberIds = members.map(item => `UUID_TO_BIN(${item.user_id})`);
-
-  // let contacts = await db.query(
-  //   `SELECT contacts.firstname as contact_firstname,
-  //   contacts.lastname as contact_lastname,
-  //     BIN_TO_UUID(contacts.user_id) as contact_user_id,
-  //     contacts.email as email,
-  //     user_profiles.last_name as profile_lastname,
-  //     user_profiles.first_name as  profile_first_name
-
-  //     FROM contacts, user_profiles WHERE contacts.user_id IN ( ${memberIds.join(
-  //       ","
-  //     )} OR user_profiles.user_id IN ( ${memberIds.join(",")}
-  //     ) GROUP BY contacts.user_id,user_profiles.user_id`
-  // );
-
-  // console.log("Contactssssssss", contacts);
   const formattedRows = rows.map(item => {
     const groupMembers = members
       .filter(member => member.group_id === item.id)

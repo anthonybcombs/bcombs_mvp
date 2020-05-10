@@ -1,10 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { format } from "date-fns";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled, { ThemeContext } from "styled-components";
 import NewEventModal from "./create/withCalendar";
 import Header from "./header";
 import Body from "./body";
+
+// REDUX
+import { getContact } from "../../../redux/actions/Contacts";
+import { getEvents } from "../../../redux/actions/Events";
 const MyEventsStyled = styled.div`
   background-color: white;
   margin: 1em;
@@ -102,21 +106,37 @@ const MyEventsStyled = styled.div`
   }
 `;
 export default function index() {
+  const [contactOptions, setContactOptions] = useState([]);
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const theme = useContext(ThemeContext);
-  const { events, familyMembers } = useSelector(
-    ({ events, familyMembers }) => ({
+  const dispatch = useDispatch();
+  const { auth, contacts, events, familyMembers } = useSelector(
+    ({ auth, contacts, events, familyMembers }) => ({
+      auth,
+      contacts,
       events,
       familyMembers
     })
   );
+
+  useEffect(() => {
+    if (auth.email) {
+      dispatch(getEvents(auth.email));
+      dispatch(getContact(auth.email));
+    }
+  }, []);
+
   const [selectedYear, setSelectedYear] = useState(format(new Date(), "yyyy"));
   const handleSelectedYearChange = ({ target }) => {
     setSelectedYear(target.value);
   };
+  console.log("contactssssssssss", contacts);
+  console.log("contactssssssssss contactOptions", contactOptions);
   return (
     <MyEventsStyled data-testid="app-dashboard-my-events" theme={theme}>
       <NewEventModal
+        auth={auth}
+        contacts={contacts}
         isVisible={isNewEventModalVisible}
         toggleCreateEventModal={setIsEventModalVisible}
       />

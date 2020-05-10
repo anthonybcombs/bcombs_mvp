@@ -136,15 +136,13 @@ export default function index({
     <NewEventModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
-      theme={theme}
-    >
+      theme={theme}>
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleCreateEventModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <div id="content">

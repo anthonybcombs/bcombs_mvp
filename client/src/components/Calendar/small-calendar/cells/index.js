@@ -80,11 +80,15 @@ export default function index({
   let days = [];
   let day = startDate;
   let formattedDate = "";
+  console.log("event startDate", startDate);
+  console.log("event data", events);
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
     const eventsOnThisDay = events.filter(
-      event => format(event.date, "MM dd yyyy") === format(day, "MM dd yyyy")
+      event =>
+        format(new Date(event.start_of_event), "MM dd yyyy") ===
+        format(day, "MM dd yyyy")
     );
     const eventsCount = eventsOnThisDay.length;
     const hasEvents = eventsCount > 0;
@@ -100,13 +104,11 @@ export default function index({
         }`}
         onClick={() => {
           handleChangeDay(toDate(cloneDay));
-        }}
-      >
+        }}>
         <span
           className={`day ${
             hasEvents && !isSameDay(day, selectedDate) ? "has-events" : ""
-          }`}
-        >
+          }`}>
           {formattedDate}
           {eventsCount > 0 && (
             <span className="events-count">{eventsCount}</span>

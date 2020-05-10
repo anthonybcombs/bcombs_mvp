@@ -1,9 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ReactDOM from "react-dom";
 import { uuid } from "uuidv4";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch } from "react-redux";
 import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
+
 import { addEvent } from "../../../../redux/actions/Events";
 import MicroCalendar from "../../../Calendar/micro-calendar";
 import EventForm from "../forms/EventForm";
@@ -89,13 +90,32 @@ const initialEventDetails = selectedDate => {
     status: "Scheduled"
   };
 };
-export default function index({ isVisible = true, toggleCreateEventModal }) {
+export default function index({
+  auth,
+  contacts,
+  isVisible = true,
+  toggleCreateEventModal
+}) {
+  const [contactOptions, setContactOptions] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [eventDetails, setEventDetails] = useState(
     initialEventDetails(selectedDate)
   );
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (contacts && isVisible) {
+      let formattedContacts = contacts.map(item => {
+        return {
+          name: `${item.first_name} ${item.last_name}`,
+          id: item.user_id
+        };
+      });
+      setContactOptions(formattedContacts);
+    }
+  }, [contacts, isVisible]);
+
   const handleSetSelectedDate = date => {
     const currentDateTime = addSeconds(
       addMinutes(
@@ -116,23 +136,49 @@ export default function index({ isVisible = true, toggleCreateEventModal }) {
     let newEventGuests;
     newEventGuests = eventDetails.eventGuests;
     if (id === "eventGuests") {
-      if (action !== "remove") {
-        newEventGuests.push(value);
-      } else {
-        newEventGuests = newEventGuests.filter(
-          (guest, index) => index !== value
-        );
-      }
-      setEventDetails({ ...eventDetails, eventGuests: newEventGuests });
+      // if (action !== "remove") {
+      //   newEventGuests.push(value);
+      // } else {
+      //   newEventGuests = newEventGuests.filter(
+      //     (guest, index) => index !== value
+      //   );
+      // }
+      setEventDetails({ ...eventDetails, eventGuests: value });
       return;
     }
     setEventDetails({ ...eventDetails, [id]: value });
   };
   const handleSubmit = value => {
     toggleCreateEventModal(false);
-    dispatch(addEvent(eventDetails));
+    const payload = {
+      start_of_event: format(
+        eventDetails.eventSchedule[0],
+        "yyyy-MM-dd hh:mm:ss "
+      ),
+      end_of_event: format(
+        eventDetails.eventSchedule[1],
+        "yyyy-MM-dd hh:mm:ss "
+      ),
+      type: eventDetails.eventType,
+      id: eventDetails.id,
+      location: eventDetails.location,
+      name: eventDetails.name,
+      status: eventDetails.status,
+      time: eventDetails.time,
+      description: eventDetails.description,
+      guests: eventDetails.eventGuests.map(item => item.id),
+      auth_email: auth.email
+    };
+
+    console.log("payloaddddddddd", payload);
+    console.log("payloaddddddddd eventDetails", eventDetails);
+
+    //console.log("eventTimeee", eventDetails);
+    //format(selectedDate, "hh:mm a")
+    dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
   };
+
   if (!isVisible) {
     return <></>;
   }
@@ -140,15 +186,13 @@ export default function index({ isVisible = true, toggleCreateEventModal }) {
     <NewEventModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
-      theme={theme}
-    >
+      theme={theme}>
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleCreateEventModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <div id="content">
@@ -161,6 +205,7 @@ export default function index({ isVisible = true, toggleCreateEventModal }) {
             setSelectedEvent={() => {}}
           />
           <EventForm
+            contactOptions={contactOptions}
             eventDetails={eventDetails}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}
