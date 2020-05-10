@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 const WelcomeMessageStyled = styled.div`
   position: relative;
@@ -41,6 +41,11 @@ const WelcomeMessageStyled = styled.div`
 `;
 export default function index({ calendarName = "test" }) {
   const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      sessionStorage.removeItem("calendarName");
+    }, 5000);
+  }, []);
   return (
     <>
       {visible && (

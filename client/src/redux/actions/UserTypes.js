@@ -22,4 +22,11 @@ export function* gotUserTypes() {
     type: actionType.REQUEST_USER_TYPES_COMPLETED,
     payload: userTypes,
   });
+  yield put({
+    type: actionType.REQUEST_STATUS_COMPLETED,
+    payload: {
+      messageType: "",
+      message: "",
+    },
+  });
 }

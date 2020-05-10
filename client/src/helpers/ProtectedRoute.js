@@ -29,14 +29,11 @@ export default function protectedRoutes({ children }) {
     status.messageType == "error"
   ) {
     return <Redirect to="/" />;
-  } else if (
-    auth.email_verified &&
-    auth.status === "SIGNED_IN" &&
-    calendars.length > 0
-  ) {
+  } else if (auth.email_verified && auth.status === "SIGNED_IN") {
     if (
       !location.pathname.includes("createprofile") &&
-      !auth.is_profile_filled
+      !auth.is_profile_filled &&
+      calendars.length === 0
     ) {
       return <Redirect to="/dashboard/createprofile" />;
     } else if (

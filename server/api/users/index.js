@@ -57,6 +57,7 @@ export const getUserInfo = async (creds) => {
     userInfo.user_id = id;
     return userInfo;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -109,7 +110,7 @@ export const executeSignIn = async (user) => {
         },
       };
     }
-    if (authData.hasOwnProperty("errror")) {
+    if (authData.hasOwnProperty("error")) {
       return {
         user: authData,
         status: {
@@ -126,6 +127,7 @@ export const executeSignIn = async (user) => {
       },
     };
   } catch (error) {
+    console.log(error);
     return {
       status: {
         messageType: "error",
@@ -269,6 +271,7 @@ export const executeUserUpdate = async (user) => {
       message: "user updated.",
     };
   } catch (error) {
+    console.log(error);
     return {
       messageType: "error",
       message: "there is an error in user update endpoint.",

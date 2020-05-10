@@ -19,8 +19,7 @@ const authentecating = (auth) => {
           },
         },
       });
-
-      return resolve({ ...data.signIn });
+      resolve({ ...data.signIn });
     } catch (error) {
       reject("error");
     }
@@ -40,7 +39,7 @@ const getUserInfo = () => {
       if (data.userInfo.type === "invalid-json") {
         reject("error");
       }
-      return resolve(data.userInfo);
+      resolve(data.userInfo);
     } catch (error) {
       reject("error");
     }
@@ -119,10 +118,6 @@ export function* authenticated({ auth }) {
 }
 
 export function* gotUserInfo() {
-  yield take([
-    actionType.REQUEST_STATUS_COMPLETED,
-    actionType.REQUEST_USER_TYPES_COMPLETED,
-  ]);
   try {
     if (
       sessionStorage.getItem("access_token") !== null &&

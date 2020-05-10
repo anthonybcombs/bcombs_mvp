@@ -35,6 +35,9 @@ import { gotUserTypes } from "../actions/UserTypes";
 import { requestedStatus, removedStatus } from "../actions/Status";
 import reducer from "../reducers";
 function* rootSaga() {
+  //STATUS
+  yield takeLatest(actionType.REQUEST_STATUS, requestedStatus);
+  yield takeLatest(actionType.REQUEST_REMOVE_STATUS, removedStatus);
   //AUTH
   yield takeLatest(actionType.REQUEST_AUTH, authenticated);
   yield takeLatest(actionType.REQUEST_AUTH_USER_INFO, gotUserInfo);
@@ -64,9 +67,6 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_CHECK_USER_AND_ADD, checkedUserAndAdd);
   //USER TYPES
   yield takeLatest(actionType.REQUEST_USER_TYPES, gotUserTypes);
-  //STATUS
-  yield takeLatest(actionType.REQUEST_STATUS, requestedStatus);
-  yield takeLatest(actionType.REQUEST_REMOVE_STATUS, removedStatus);
 
   // ADDED BY DENNIS
   yield takeLatest(actionType.REQUEST_UPDATE_USER_PROFILE, updateUserProfile);

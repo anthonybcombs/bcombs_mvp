@@ -89,27 +89,14 @@ export default function index({ location }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const { events, auth } = useSelector(({ events, auth }) => {
-    return { events, auth };
+  const { events, calendars } = useSelector(({ events, auth }) => {
+    return { events, calendars };
   });
   const theme = useContext(ThemeContext);
   let calendarName = "";
   if (sessionStorage.getItem("calendarName") !== null) {
     calendarName = sessionStorage.getItem("calendarName");
-    if (sessionStorage.getItem("welcomeMessageDisplayed") !== null) {
-      sessionStorage.removeItem("calendarName");
-      sessionStorage.removeItem("welcomeMessageDisplayed");
-    } else {
-      sessionStorage.setItem("welcomeMessageDisplayed", "yes");
-    }
   }
-  const calendars = [
-    {
-      id: 1,
-      name: calendarName,
-    },
-  ];
-
   const eventsOnThisDay = events.filter(
     (event) =>
       format(event.date, "MM dd yyyy") === format(selectedDate, "MM dd yyyy")
@@ -156,17 +143,18 @@ export default function index({ location }) {
               lazyRender
             >
               <div className="panel">
-                {calendars.map((calendar, i) => (
-                  <div
-                    className={`panel-body`}
-                    key={i}
-                    onClick={() => {
-                      handleEventSelection(calendar.id);
-                    }}
-                  >
-                    {calendar.name}
-                  </div>
-                ))}
+                {calendars &&
+                  calendars.map((calendar, i) => (
+                    <div
+                      className={`panel-body`}
+                      key={i}
+                      onClick={() => {
+                        handleEventSelection(calendar.id);
+                      }}
+                    >
+                      {calendar.name}
+                    </div>
+                  ))}
               </div>
             </Collapsible>
             <Collapsible

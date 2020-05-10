@@ -21,12 +21,12 @@ export default function index({ navigate }) {
     dispatch(
       requestUpdateUser({
         ...profileDetails,
-        calendarInfo: { name: calendarName },
+        calendarInfo: { name: calendarName, visibilityType: "Private" },
         email: auth.email,
       })
     );
     sessionStorage.setItem("calendarName", calendarName);
-    window.location.reload();
+    navigate("dashboard");
   };
   return (
     <>
