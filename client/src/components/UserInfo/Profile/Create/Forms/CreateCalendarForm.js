@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
+import UploadImage from "../../../../../helpers/UploadImage";
 import ErrorMessage from "../../../../../helpers/ErrorMessage";
 const CreateCalendarFormStyled = styled.form`
   input:required {
@@ -57,11 +58,11 @@ const CreateCalendarFormStyled = styled.form`
 export default function CreateCalendarForm({
   details,
   onSubmit,
-  handleInputChange
+  handleInputChange,
 }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange"
+    reValidateMode: "onChange",
   });
   const theme = useContext(ThemeContext);
   return (
@@ -84,6 +85,12 @@ export default function CreateCalendarForm({
         field={errors.name}
         errorType="required"
         message="Calendar name is required."
+      />
+      <UploadImage
+        handleImageChange={(image) => {
+          handleInputChange("image", image);
+          return false;
+        }}
       />
       <button data-testid="app-profile-save-button" type="submit">
         Save and Done!

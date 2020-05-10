@@ -52,6 +52,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       name: "",
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
+      image: "",
     });
     toggleCreateCalendarModal(false);
   };

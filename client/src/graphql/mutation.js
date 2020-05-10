@@ -54,6 +54,7 @@ export const CREATE_CALENDAR_MUTATION = gql`
         name
         color
         visibilityType
+        image
       }
     }
   }

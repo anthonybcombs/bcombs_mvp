@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Redirect, useLocation } from "@reach/router";
 
 import { useSelector, useDispatch } from "react-redux";
-import { requestUserInfo, requestLogout } from "../redux/actions/Auth";
+import { requestUserInfo } from "../redux/actions/Auth";
 import { requestCalendars } from "../redux/actions/Calendars";
 import Loading from "../helpers/Loading";
 export default function protectedRoutes({ children }) {
@@ -20,7 +20,7 @@ export default function protectedRoutes({ children }) {
   useEffect(() => {
     dispatch(requestUserInfo());
     dispatch(requestCalendars());
-  }, []);
+  }, [location]);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [children]);

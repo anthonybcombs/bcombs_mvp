@@ -13,20 +13,26 @@ export default function index({ navigate }) {
     members: [],
     calendarInfo: {
       name: "",
+      image: "",
+      visibilityType: "Private",
     },
   });
   const auth = useSelector(({ auth }) => auth);
   const dispatch = useDispatch();
-  const handleProfileSubmit = (calendarName) => {
+  const handleProfileSubmit = (calendar) => {
     dispatch(
       requestUpdateUser({
         ...profileDetails,
-        calendarInfo: { name: calendarName, visibilityType: "Private" },
+        calendarInfo: {
+          name: calendar.name,
+          visibilityType: "Private",
+          image: calendar.image,
+        },
         email: auth.email,
       })
     );
-    sessionStorage.setItem("calendarName", calendarName);
-    navigate("dashboard");
+    sessionStorage.setItem("calendarName", calendar.name);
+    window.location.reload();
   };
   return (
     <>

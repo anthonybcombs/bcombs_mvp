@@ -36,6 +36,7 @@ export const requestAddCalendar = (details) => {
     name: details.name,
     familyMembers: details.selectedFamilyMembers,
     visibilityType: details.visibilityType,
+    image: details.image,
   };
 };
 
@@ -45,7 +46,7 @@ export const requestCalendars = () => {
   };
 };
 
-export function* addCalendar({ name, familyMembers, visibilityType }) {
+export function* addCalendar({ name, familyMembers, visibilityType, image }) {
   const calendar = yield call(addCalendarInDatabase, {
     creds: {
       access_token: sessionStorage.getItem("access_token"),
@@ -55,6 +56,7 @@ export function* addCalendar({ name, familyMembers, visibilityType }) {
       name,
       familyMembers: Array.from(familyMembers.keys()),
       visibilityType,
+      image,
     },
   });
   yield put({
@@ -64,7 +66,7 @@ export function* addCalendar({ name, familyMembers, visibilityType }) {
       userid: calendar.user_id,
       name,
       familyMembers: Array.from(familyMembers.keys()),
-      image: "https://picsum.photos/200",
+      image: calendar.image,
       color: calendar.color,
     },
   });

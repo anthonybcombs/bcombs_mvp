@@ -56,6 +56,7 @@ const inputs = `
     }
     input CalendarInfoInput{
         name: String!
+        image: String
         familyMembers:[String],
         visibilityType: String!
     }    

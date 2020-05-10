@@ -8,7 +8,7 @@ import {
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
-import { format, startOfMonth, endOfMonth } from "date-fns";
+import { format } from "date-fns";
 import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
 import NewEventModal from "../MyEvents/create/withCalendar";
@@ -93,9 +93,12 @@ export default function index({ location }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const { events, calendars } = useSelector(({ events, calendars }) => {
-    return { events, calendars };
-  });
+  const { events, auth, calendars } = useSelector(
+    ({ events, auth, calendars }) => {
+      return { events, calendars, auth };
+    }
+  );
+  const dispatch = useDispatch();
   console.log("TRIGGERED GET EVENTS!", auth);
   console.log("TRIGGERED GET EVENTS!", events);
   useEffect(() => {

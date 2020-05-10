@@ -18,12 +18,15 @@ const CalendarProfile = styled.div`
   }
 `;
 export default function index({ handleProfileSubmit }) {
-  const [calendarDetails, setCalendarDetails] = useState({ name: "" });
+  const [calendarDetails, setCalendarDetails] = useState({
+    name: "",
+    image: "",
+  });
   const handleInputChange = (id, value) => {
     setCalendarDetails({ ...calendarDetails, [id]: value });
   };
   const handleFormSubmit = async () => {
-    handleProfileSubmit(calendarDetails.name);
+    handleProfileSubmit(calendarDetails);
   };
   return (
     <CalendarProfile data-testid="app-profile-calendar">

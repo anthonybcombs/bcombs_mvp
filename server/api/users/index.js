@@ -1,8 +1,11 @@
 import { makeDb } from "../../helpers/database";
 import randomColor from "../../helpers/randomColor";
-import { s3BucketRootPath } from "../../helpers/aws";
 import fetch from "node-fetch";
-
+import {
+  currentS3BucketName,
+  s3Bucket,
+  s3BucketRootPath,
+} from "../../helpers/aws";
 export const getUsers = async () => {
   const db = makeDb();
   let result;
@@ -245,9 +248,34 @@ export const executeUserUpdate = async (user) => {
         ]
       );
       await db.query(
-        "INSERT IGNORE INTO user_calendars (id,user_id,image,name,color) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?)",
-        [id, "", calendarInfo.name, await randomColor({ user_id: id })]
+        "INSERT IGNORE INTO user_calendars (id,user_id,name,color) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?)",
+        [id, calendarInfo.name, await randomColor({ user_id: id })]
       );
+      const insertedCalendar = await db.query(
+        "SELECT BIN_TO_UUID(id) as id,color from user_calendars where user_id=UUID_TO_BIN(?) AND name=?",
+        [id, calendarInfo.name]
+      );
+      console.log(insertedCalendar[0]);
+      const buf = Buffer.from(
+        calendarInfo.image.replace(/^data:image\/\w+;base64,/, ""),
+        "base64"
+      );
+      var data = {
+        Bucket: currentS3BucketName,
+        Key: `calendars/${id}/${insertedCalendar[0].id}/calendarBackground.jpg`,
+        Body: buf,
+        ContentEncoding: "base64",
+        ContentType: "image/jpeg",
+        ACL: "public-read",
+      };
+      s3Bucket.putObject(data, function (err, data) {
+        if (err) {
+          console.log(err);
+          console.log("Error uploading data: ", data);
+        } else {
+          console.log("succesfully uploaded the image!");
+        }
+      });
     } else {
       await db.query(
         "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,zip_code=?,birth_date=? WHERE user_id=UUID_TO_BIN(?)",

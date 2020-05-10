@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import ReactDOM from "react-dom";
 import Files from "react-butterfiles";
 import styled, { ThemeContext } from "styled-components";
 import Cropper from "react-easy-crop";
@@ -40,21 +41,24 @@ export default function UploadImage({ handleImageChange }) {
           <>
             {cropper ? (
               <div>
-                <CroppedImage
-                  image={imageView.src.base64}
-                  onCancel={() => {
-                    setCropper(false);
-                  }}
-                  onSave={(image) => {
-                    let reader = new FileReader();
-                    reader.onloadend = () => {
-                      setImageView(reader.result);
-                    };
-                    reader.readAsDataURL(image);
-                    handleImageChange(image);
-                    setCropper(false);
-                  }}
-                />
+                {ReactDOM.createPortal(
+                  <CroppedImage
+                    image={imageView.src.base64}
+                    onCancel={() => {
+                      setCropper(false);
+                    }}
+                    onSave={(image) => {
+                      let reader = new FileReader();
+                      reader.onloadend = () => {
+                        setImageView(reader.result);
+                        handleImageChange(reader.result);
+                      };
+                      reader.readAsDataURL(image);
+                      setCropper(false);
+                    }}
+                  />,
+                  document.getElementById("uploadImage")
+                )}
               </div>
             ) : (
               <div
@@ -70,14 +74,26 @@ export default function UploadImage({ handleImageChange }) {
                   cursor: "pointer",
                 }}
               >
-                <img
-                  style={{
-                    width: "100%",
-                    maxHeight: 300,
-                    backgroundColor: " background-color: lightblue;",
-                  }}
-                  src={imageView.length > 0 && imageView}
-                />
+                {imageView.length > 0 ? (
+                  <img
+                    style={{
+                      width: "100%",
+                      maxHeight: 300,
+                      backgroundColor: "lightblue",
+                    }}
+                    src={imageView}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: "1.5em",
+                      lineHeight: 13,
+                    }}
+                  >
+                    Upload Image
+                  </div>
+                )}
                 {errors.map((error, key) => (
                   <p className="error" key={key}>
                     {error.file.name} - {error.type}
@@ -98,6 +114,18 @@ export default function UploadImage({ handleImageChange }) {
 }
 
 const CropperImageStyled = styled.div`
+  button {
+    display: block;
+    color: ${({ theme }) => theme.button.textColor.primary};
+    font-size: ${({ theme }) => theme.button.fontSize} !important;
+    background-color: lightgrey;
+    box-shadow: 0px 3px 6px #908e8e;
+    padding: 10px;
+    margin: 10px auto;
+    border: none;
+    border-radius: ${({ theme }) => theme.button.borderRadius} !important;
+    width: 100%;
+  }
   .cropper-control {
     display: grid;
     grid-template-columns: 50% 50%;
@@ -120,7 +148,7 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
       <Cropper
         style={{
           containerStyle: {
-            zIndex: 150,
+            zIndex: 2000,
             height: "110%",
           },
         }}
@@ -138,7 +166,7 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
           bottom: -10,
           right: 0,
           width: 200,
-          zIndex: 200,
+          zIndex: 2200,
           margin: 10,
         }}
       >
