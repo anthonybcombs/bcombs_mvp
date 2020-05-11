@@ -81,4 +81,11 @@ export function* gotCalendars() {
     type: actionType.REQUEST_GET_CALENDARS_COMPLETED,
     payload: calendars.data,
   });
+  yield put({
+    type: actionType.REQUEST_STATUS_COMPLETED,
+    payload: {
+      messageType: "GET_CALENDAR_COMPLETED",
+      message: "",
+    },
+  });
 }

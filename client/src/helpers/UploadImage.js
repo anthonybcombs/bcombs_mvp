@@ -149,7 +149,8 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
         style={{
           containerStyle: {
             zIndex: 2000,
-            height: "110%",
+            height: "100vh",
+            position: "fixed",
           },
         }}
         image={image}
@@ -162,7 +163,7 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
       />
       <div
         style={{
-          position: "absolute",
+          position: "fixed",
           bottom: -10,
           right: 0,
           width: 200,

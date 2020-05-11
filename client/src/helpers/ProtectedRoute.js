@@ -23,13 +23,17 @@ export default function protectedRoutes({ children }) {
   }, [location]);
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [auth]);
+  }, [auth, status]);
   if (
     sessionStorage.getItem("access_token") === null ||
     status.messageType == "error"
   ) {
     return <Redirect to="/" />;
-  } else if (auth.email_verified && auth.status === "SIGNED_IN") {
+  } else if (
+    auth.email_verified &&
+    auth.status === "SIGNED_IN" &&
+    status.messageType === "GET_CALENDAR_COMPLETED"
+  ) {
     if (
       !location.pathname.includes("createprofile") &&
       !auth.is_profile_filled &&
