@@ -209,6 +209,7 @@ export default function index({
             eventDetails={eventDetails}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}
+            header={`Create New ${eventDetails.eventType}`}
           />
         </div>
       </div>
