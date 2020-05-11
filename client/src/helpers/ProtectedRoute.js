@@ -23,7 +23,7 @@ export default function protectedRoutes({ children }) {
   }, [location]);
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [children]);
+  }, [auth]);
   if (
     sessionStorage.getItem("access_token") === null ||
     status.messageType == "error"
