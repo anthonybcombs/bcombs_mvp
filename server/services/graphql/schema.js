@@ -79,6 +79,7 @@ const inputs = `
         member_ids: [String]
         name: String
         email: String!
+        visibility: String
     }
     input CalendarInput{
         creds:CredsInput!
@@ -207,7 +208,7 @@ const mutations = `
         createGroup(group: GroupInput!) : AllGroups
         updateGroup(group: GroupInput!): AllGroups        
         createCalendar(calendar:CalendarInput!):CalendarType
-        deleteGroup(id: String!, email:String!): [Group]
+        deleteGroup(id: String!, email:String!): AllGroups
         createEvent(event:EventInput!): Event
     }
 `;

@@ -179,7 +179,7 @@ export default function index() {
   return (
     <MyContactsStyled>
       <NewContactModal
-        groups={groups.created_groups || []}
+        groups={groups && groups.created_groups || []}
         isVisible={isNewContactModalVisible}
         toggleCreateContactModal={setNewContactModalVisible}
         auth={auth}
@@ -246,7 +246,7 @@ export default function index() {
           <div className="groups">
             <Collapsible trigger={<h3>Groups</h3>} open lazyRender>
               <hr />
-              {groups.created_groups &&
+              {groups && groups.created_groups &&
                 groups.created_groups.map(group => (
                   <div
                     className={`${
@@ -272,11 +272,11 @@ export default function index() {
           </div>
 
           <div className="groups">
-            {groups.joined_groups && groups.joined_groups.length > 0 && (
+            {groups && groups.joined_groups && groups.joined_groups.length > 0 && (
               <>
                 <Collapsible trigger={<h3>Joined Groups</h3>} open lazyRender>
                   <hr />
-                  {groups.joined_groups.map(group => (
+                  {groups && groups.joined_groups.map(group => (
                     <div
                       className={`${
                         group.id === selectedGroupId ? "selected" : ""
@@ -299,7 +299,7 @@ export default function index() {
           <ContactList
             headerText={selectedLabel}
             contacts={filteredContacts}
-            groups={groups.created_groups || []}
+            groups={groups && groups.created_groups || []}
             setNewContactModalVisible={setNewContactModalVisible}
             EditContactModal={EditContactModal}
             ProfileModal={ProfileModal}

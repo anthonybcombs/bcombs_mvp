@@ -48,20 +48,20 @@ export default function index({
     });
   };
   const handleSubmit = value => {
-    //toggleCreateGroupModal(false);
+    toggleCreateGroupModal(false);
     const payload = {
       ...groupDetails,
       email: auth.email
     };
     console.log("payloadddd", groupDetails);
-    // dispatch(addGroup(payload));
-    // setGroupDetails({
-    //   id: uuid(),
-    //   name: "",
-    //   visibility: 0,
-    //   userIds: [auth.id],
-    //   contacts: []
-    // });
+    dispatch(addGroup(payload));
+    setGroupDetails({
+      id: uuid(),
+      name: "",
+      visibility: 0,
+      userIds: [auth.id],
+      contacts: []
+    });
   };
   if (!isVisible) {
     return <></>;
