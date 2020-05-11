@@ -54,7 +54,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                   </thead>
                   <tbody>
                     {eventThisMonth.map(event => (
-                      <tr key={event.id}>
+                      <tr className="event-rows" key={event.id}>
                         <td>{event.name}</td>
                         <td>
                           {format(new Date(event.start_of_event), "MM/dd/yyyy")}

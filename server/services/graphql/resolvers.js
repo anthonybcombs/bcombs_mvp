@@ -97,7 +97,9 @@ const resolvers = {
       return await editContact(contact);
     },
     async createGroup(root, { group }, context) {
+      console.log('Grouppp,',group)
       const response = await createNewGroup(group);
+        console.log('Grouppp response,',response)
       return response;
     },
     async updateGroup(root, { group }, context) {

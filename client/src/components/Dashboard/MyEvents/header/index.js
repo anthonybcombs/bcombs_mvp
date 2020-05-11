@@ -11,7 +11,7 @@ export default function index({
       <div>
         <div id="header-calendar-controls">
           <h2>
-            Calendar Year
+            Calendar Year {`  `}
             <select
               data-testid="app-dashboard-my-events-select-year"
               value={selectedYear}

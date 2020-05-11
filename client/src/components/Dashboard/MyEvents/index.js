@@ -104,6 +104,10 @@ const MyEventsStyled = styled.div`
       top: 30%;
     }
   }
+
+  .event-rows {
+    line-height: 120px;
+  }
 `;
 export default function index() {
   const [contactOptions, setContactOptions] = useState([]);

@@ -19,7 +19,7 @@ import {
   faAlignLeft
 } from "@fortawesome/free-solid-svg-icons";
 
-import EditableParagraph from "../../../../helpers/EditableParagraph";
+//import EditableParagraph from "../../../../helpers/EditableParagraph";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const EventFormStyled = styled.form`
   #event-type-list {
@@ -168,6 +168,11 @@ const EventFormStyled = styled.form`
     padding: 0.5em;
     margin: 4px;
   }
+
+  .user-email {
+    font-size: 11px;
+    font-style: italic;
+  }
 `;
 
 const getSuggestions = (value, arr) => {
@@ -182,7 +187,12 @@ const getSuggestions = (value, arr) => {
 };
 
 // Use your imagination to render suggestions.
-const renderSuggestion = suggestion => <div>{suggestion.name}</div>;
+const renderSuggestion = suggestion => (
+  <div>
+    <div>{suggestion.name}</div>
+    <div className="user-email">{suggestion.value}</div>
+  </div>
+);
 
 export default function createEventForm({
   contactOptions,
@@ -201,15 +211,15 @@ export default function createEventForm({
   const [isFetching, setFetching] = useState(false);
   //const [guestOptions, setGuestOptions] = useState([]);
 
-  const schedule = [
-    format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
-    format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")
-  ];
+  // const schedule = [
+  //   format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
+  //   format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")
+  // ];
 
-  const handleSelectChange = value => {
-    setSelectedGuest([...value]);
-    handleEventDetailsChange("eventGuests", [...(value || [])]);
-  };
+  // const handleSelectChange = value => {
+  //   setSelectedGuest([...value]);
+  //   handleEventDetailsChange("eventGuests", [...(value || [])]);
+  // };
 
   const automCompleteOnChange = (event, { newValue }) => {
     setAutoCompleteValue(newValue);
@@ -265,7 +275,9 @@ export default function createEventForm({
   };
 
   const handleRemoveGuest = email => () => {
+    console.log("Emaill", email);
     const updatedGuest = selectedGuest.filter(guest => guest.value !== email);
+    console.log("Emaill updatedGuest", updatedGuest);
     setSelectedGuest(updatedGuest);
     handleEventDetailsChange("eventGuests", updatedGuest);
   };
@@ -275,7 +287,9 @@ export default function createEventForm({
       method="POST"
       onSubmit={handleSubmit(onSubmit)}>
       <h2>{header}</h2>
+      <FontAwesomeIcon icon={faClock} />
       <input
+        autoComplete="off"
         data-testid="app-dashboard-my-events-new-event-input-title"
         type="text"
         name="title"
@@ -330,6 +344,7 @@ export default function createEventForm({
         }}
       />{" "}
       <Autosuggest
+        autoComplete="off"
         inputProps={inputProps}
         suggestions={suggestion}
         onSuggestionsFetchRequested={debounce(
@@ -346,12 +361,14 @@ export default function createEventForm({
             <div
               key={index}
               className="user-tag"
-              onClick={handleRemoveGuest(guest.email)}>
-              {guest.name} {guest.email}
+              onClick={handleRemoveGuest(guest.value)}>
+              <div> {guest.name}</div>
+              <div className="user-email"> {guest.value}</div>
             </div>
           ))}
       </div>
       <input
+        autoComplete="off"
         data-testid="app-dashboard-my-events-new-event-input-title"
         type="text"
         name="location"
@@ -368,6 +385,7 @@ export default function createEventForm({
         message="Location is required."
       />
       <input
+        autoComplete="off"
         data-testid="app-dashboard-my-events-new-event-input-title"
         type="text"
         name="description"
