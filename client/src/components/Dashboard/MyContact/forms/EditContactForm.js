@@ -164,7 +164,6 @@ export default function ContactForm({
         <div>
           <div>
             <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
-            <button>Edit profile picture</button>
           </div>
         </div>
         <div>
