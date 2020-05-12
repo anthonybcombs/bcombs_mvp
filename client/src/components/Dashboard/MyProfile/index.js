@@ -164,6 +164,9 @@ const ProfileSyled = styled.div`
       font-size: 2em;
     }
   }
+  #id-container {
+    word-wrap: break-word;
+  }
   #profile-name {
     text-transform: capitalize;
   }
@@ -258,6 +261,7 @@ export default function index() {
     setPersonalInfo({ ...personalInfo, [id]: value });
   };
 
+  console.log("USERRRRRRRRRRRR", user);
   return (
     <ProfileSyled>
       <CreateRelative
@@ -271,7 +275,7 @@ export default function index() {
         <div>
           <div id="personal-info-header">
             <div>
-              <div>
+              <div id="id-container">
                 <img
                   src={`${
                     auth.profile_img ? auth.profile_img : auth.picture
@@ -311,9 +315,9 @@ export default function index() {
               />
             </div>
 
-            {personalInfo && (
+            {user && user.profile && (
               <ProfileForm
-                data={personalInfo}
+                data={user && user.profile}
                 handleInputChange={handleInputChange}
                 onSubmit={handleFormSubmit}
               />

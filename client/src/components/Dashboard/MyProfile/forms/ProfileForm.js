@@ -59,11 +59,14 @@ const ProfileFormStyled = styled.form`
   .profile-content {
     background: none !important;
     width: 50% !important;
-    float: left !important;
+    display: inline-block;
+    line-height: 1.5;
     text-transform: capitalize;
+    word-wrap: break-word;
   }
   .main-profile-content {
     margin-top: 5px !important;
+    display: block !important;
   }
   .bold {
     font-weight: bolder;
@@ -71,8 +74,7 @@ const ProfileFormStyled = styled.form`
 `;
 export default function ProfileForm({ data, onSubmit, handleInputChange }) {
   const theme = useContext(ThemeContext);
-  const { handleSubmit, errors } = useForm();
-  console.log("dataaaaaaaaaaaaaa", data);
+  const { handleSubmit } = useForm();
   return (
     <ProfileFormStyled
       id="personal-info-details"
@@ -81,28 +83,16 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
       theme={theme}
       onSubmit={handleSubmit(onSubmit)}>
       <div id="profile-form">
-        {/* <div className="main-profile-content">
-          <div className="profile-content bold">Lastname</div>
-          <div className="profile-content">{data.lastname}</div>
-        </div>
-
-        <br />
-        <div className="main-profile-content">
-          <div className="profile-content bold">Firstname</div>
-          <div className="profile-content">{data.firstname}</div>
-        </div>
-        <br /> */}
-
         <div className="main-profile-content">
           <div className="profile-content bold">Ethnicity</div>
-          <div className="profile-content">{data.ethnicity}</div>
+          <div className="profile-content">{}</div>
         </div>
-        <br />
+
         <div className="main-profile-content">
           <div className="profile-content bold">Gender</div>
           <div className="profile-content">{data.gender}</div>
         </div>
-        <br />
+
         <div className="main-profile-content">
           <div className="profile-content bold">Birthdate</div>
           <div className="profile-content">
@@ -111,24 +101,22 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
               : null}
           </div>
         </div>
-        <br />
 
         <div className="main-profile-content">
           <div className="profile-content bold">Address</div>
           <div className="profile-content">{data.address}</div>
         </div>
-        <br />
+
         <div className="main-profile-content">
           <div className="profile-content bold">Zipcode</div>
-          <div className="profile-content">{data.zipcode}</div>
+          <div className="profile-content">{data.zip_code}</div>
         </div>
 
-        <br />
         <div className="main-profile-content">
           <div className="profile-content bold">School</div>
           <div className="profile-content">{data.school}</div>
         </div>
-        <br />
+
         <div className="main-profile-content">
           <div className="profile-content bold">Grade</div>
           <div className="profile-content">{data.grade}</div>

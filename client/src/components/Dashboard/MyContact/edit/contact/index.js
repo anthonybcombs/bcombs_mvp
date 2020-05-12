@@ -34,7 +34,7 @@ export default function index({
 }) {
   const [contactDetails, setContactDetails] = useState({});
   const dispatch = useDispatch();
-  console.log("contactsss", contact);
+
   useEffect(() => {
     if (contact.id) {
       setContactDetails({
@@ -105,6 +105,7 @@ export default function index({
           </h2>
           {typeOfForm === "Edit Contact" ? (
             <EditContactForm
+              contact={contact}
               groups={groups}
               contactDetails={contactDetails}
               onSubmit={handleSubmit}

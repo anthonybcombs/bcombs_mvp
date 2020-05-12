@@ -56,7 +56,7 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("last_name", target.value);
               }}
-              ref={register({ required: true })}
+              ref={register({ required: true, maxLength: 20 })}
               value={contactDetails.last_name}
             />
             <label className="field-label">Lastname</label>
@@ -65,6 +65,11 @@ export default function ContactForm({
             field={errors.last_name}
             errorType="required"
             message="Lastname is required."
+          />
+          <ErrorMessage
+            field={errors.last_name}
+            errorType="maxLength"
+            message="Length should not be greater than 20."
           />
         </div>
 
@@ -77,7 +82,7 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("first_name", target.value);
               }}
-              ref={register({ required: true })}
+              ref={register({ required: true, maxLength: 20 })}
               value={contactDetails.first_name}
             />
             <label className="field-label">Firstname</label>
@@ -86,6 +91,11 @@ export default function ContactForm({
             field={errors.first_name}
             errorType="required"
             message="Firstname is required."
+          />
+          <ErrorMessage
+            field={errors.first_name}
+            errorType="maxLength"
+            message="Length should not be greater than 20."
           />
         </div>
 
@@ -98,7 +108,11 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("phone_number", target.value);
               }}
-              ref={register({ required: true })}
+              ref={register({
+                required: true,
+                maxLength: 15,
+                pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/
+              })}
               value={contactDetails.phone_number}
             />
             <label className="field-label">Phone Number</label>
@@ -107,6 +121,16 @@ export default function ContactForm({
             field={errors.phone_number}
             errorType="required"
             message="Phone Number is required."
+          />
+          <ErrorMessage
+            field={errors.phone_number}
+            errorType="maxLength"
+            message="Length should not be greater than 20."
+          />
+          <ErrorMessage
+            field={errors.phone_number}
+            errorType="pattern"
+            message="Numeric only."
           />
         </div>
 

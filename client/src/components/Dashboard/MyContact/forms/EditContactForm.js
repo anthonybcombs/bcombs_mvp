@@ -66,6 +66,7 @@ const ContactFormStyled = styled.form`
     display: block;
     margin-left: auto;
     margin-right: auto;
+    max-width: 200px;
   }
   > #contact-header > div:first-child > div > button {
     background: none;
@@ -119,6 +120,7 @@ const ContactFormStyled = styled.form`
     }
     */
 export default function ContactForm({
+  contact,
   contactDetails,
   groups,
   onSubmit,
@@ -144,11 +146,11 @@ export default function ContactForm({
         </div>
         <div>
           <h3>
-            {contactDetails.first_name} {contactDetails.last_name}
+            {contact.first_name} {contact.last_name}
           </h3>
-          <p>{contactDetails.email}</p>
-          <p>{contactDetails.phone_number}</p>
-          <p>{contactDetails.relation}</p>
+          <p>{contact.email}</p>
+          <p>{contact.phone_number}</p>
+          <p>{contact.relation}</p>
         </div>
       </div>
       <div id="applicationForm" className="contact-body">
@@ -161,7 +163,7 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("last_name", target.value);
               }}
-              ref={register({ required: true })}
+              ref={register({ required: true, maxLength: 20 })}
               value={contactDetails.last_name}
             />
             <label className="field-label">Lastname</label>
@@ -170,6 +172,11 @@ export default function ContactForm({
             field={errors.last_name}
             errorType="required"
             message="Lastname is required."
+          />
+          <ErrorMessage
+            field={errors.last_name}
+            errorType="maxLength"
+            message="Length should not be greater than 20."
           />
         </div>
 
@@ -183,7 +190,7 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("first_name", target.value);
               }}
-              ref={register({ required: true })}
+              ref={register({ required: true, maxLength: 20 })}
             />
             <label className="field-label">Firstname</label>
           </div>
@@ -191,6 +198,11 @@ export default function ContactForm({
             field={errors.first_name}
             errorType="required"
             message="Firstname is required."
+          />
+          <ErrorMessage
+            field={errors.first_name}
+            errorType="maxLength"
+            message="Length should not be greater than 20."
           />
         </div>
 
@@ -203,7 +215,11 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("phone_number", target.value);
               }}
-              ref={register({ required: true })}
+              ref={register({
+                required: true,
+                maxLength: 15,
+                pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/
+              })}
               value={contactDetails.phone_number}
             />
             <label className="field-label">Phone Number</label>
@@ -212,6 +228,16 @@ export default function ContactForm({
             field={errors.phone_number}
             errorType="required"
             message="Phone Number is required."
+          />
+          <ErrorMessage
+            field={errors.phone_number}
+            errorType="pattern"
+            message="Numeric only."
+          />
+          <ErrorMessage
+            field={errors.first_name}
+            errorType="maxLength"
+            message="Length should not be greater than 15."
           />
         </div>
 
