@@ -4,70 +4,65 @@ import { useDispatch } from "react-redux";
 import Layout from "./helpers/Layout";
 import Loadable from "react-loadable";
 import Loading from "./helpers/Loading.js";
-import { requestUserTypes } from "./redux/actions/UserTypes";
 import SocialLoginLanding from "./helpers/SocialLogin.js";
 
 const AsycDashboard = Loadable({
   loader: () => import("./components/Dashboard/"),
-  loading: Loading
+  loading: Loading,
 });
 const AsyncDashBoardHome = Loadable({
   loader: () => import("./components/Dashboard/Home"),
-  loading: Loading
+  loading: Loading,
 });
 const AsyncDashboardMyCalendars = Loadable({
   loader: () => import("./components/Dashboard/MyCalendars"),
-  loading: Loading
+  loading: Loading,
 });
 const AsyncDashboardMyEvents = Loadable({
   loader: () => import("./components/Dashboard/MyEvents"),
-  loading: Loading
+  loading: Loading,
 });
 const AsyncDashboardMyProfle = Loadable({
   loader: () => import("./components/Dashboard/MyProfile"),
-  loading: Loading
+  loading: Loading,
 });
 const AyncDashboardMyContacts = Loadable({
   loader: () => import("./components/Dashboard/MyContact"),
-  loading: Loading
+  loading: Loading,
 });
 const AsyncAuth = Loadable({
   loader: () => import("./components/Auth"),
-  loading: Loading
+  loading: Loading,
 });
 const AsyncLogin = Loadable({
   loader: () => import("./components/Auth/Login"),
-  loading: Loading
+  loading: Loading,
 });
 const AsyncCreateUser = Loadable({
   loader: () => import("./components/Auth/Create"),
-  loading: Loading
+  loading: Loading,
 });
 const AsyncForgotPassword = Loadable({
   loader: () => import("./components/Auth/ForgotPassword"),
-  loading: Loading
+  loading: Loading,
 });
 const AsyncProfile = Loadable({
   loader: () => import("./components/UserInfo/Profile"),
-  loading: Loading
+  loading: Loading,
 });
 const AyncApplicationStatus = Loadable({
   loader: () => import("./components/Dashboard/Application"),
-  loading: Loading
+  loading: Loading,
 });
 const AyncArchivedApplication = Loadable({
   loader: () => import("./components/Dashboard/ArchivedApplication"),
-  loading: Loading
+  loading: Loading,
 });
 const AsyncApplicationForm = Loadable({
   loader: () => import("./components/Dashboard/ApplicationForm"),
-  loading: Loading
+  loading: Loading,
 });
 export default function App() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(requestUserTypes());
-  }, []);
   return (
     <>
       <Layout>
@@ -85,8 +80,8 @@ export default function App() {
               <AsyncDashboardMyProfle path="myprofile" />
               <AyncDashboardMyContacts path="mycontacts" />
               <AsyncProfile path="createprofile" />
-              <AyncApplicationStatus path="application"/>
-              <AyncArchivedApplication path="archived"/>
+              <AyncApplicationStatus path="application" />
+              <AyncArchivedApplication path="archived" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:id" />

@@ -1,32 +1,32 @@
 import createSagaMiddleware from "redux-saga";
 import { createStore, compose, applyMiddleware } from "redux";
-import { takeLatest, takeEvery } from "redux-saga/effects";
+import { takeLatest, takeEvery, call } from "redux-saga/effects";
 import * as actionType from "../actions/Constant";
 import {
   authenticated,
   gotUserInfo,
   loggedOut,
-  requestedPasswordChange
+  requestedPasswordChange,
 } from "../actions/Auth";
 import { addCalendar, gotCalendars } from "../actions/Calendars";
 import {
   deletedEvent,
   updatedEvent,
   addedEvent,
-  getUserEvents
+  getUserEvents,
 } from "../actions/Events";
 import {
   addedContact,
   removedContact,
   updatedContact,
-  getUserContact
+  getUserContact,
 } from "../actions/Contacts";
 import {
   addedGroup,
   updatedGroup,
   getUserGroup,
   removeGroup,
-  getMembers
+  getMembers,
 } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
 import {
@@ -35,7 +35,7 @@ import {
   checkedUserAndAdd,
   getUserInfo,
   updateUserProfile,
-  updateUserProfilePhoto
+  updateUserProfilePhoto,
 } from "../actions/Users";
 import { gotUserTypes } from "../actions/UserTypes";
 import { requestedStatus, removedStatus } from "../actions/Status";

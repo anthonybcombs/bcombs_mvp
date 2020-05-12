@@ -6,7 +6,7 @@ export function makeDb() {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    port: process.env.DB_PORT
+    port: process.env.DB_PORT,
   });
   return {
     query(sql, args) {
@@ -23,6 +23,6 @@ export function makeDb() {
     },
     rollback() {
       return util.promisify(connection.rollback).call(connection);
-    }
+    },
   };
 }

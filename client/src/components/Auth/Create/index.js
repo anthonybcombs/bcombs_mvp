@@ -44,7 +44,7 @@ export default function index() {
     username: "",
     email: "",
     password: "",
-    confirm_password: ""
+    confirm_password: "",
   });
   const urlParams = new URLSearchParams(window.location.search);
   const vendorCode = urlParams.get("vendor_code");
@@ -53,21 +53,20 @@ export default function index() {
   const { userTypes, status } = useSelector(({ userTypes, status }) => {
     return { userTypes, status };
   });
-
   const dispatch = useDispatch();
   useEffect(() => {
     setUserDetails({
       ...userDetails,
-      type: { ...(userTypes[currentTypeIndex] || {}) }
+      type: { ...(userTypes[currentTypeIndex] || {}) },
     });
   }, [userTypes]);
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
-  const handleChangeUserType = value => {
+  const handleChangeUserType = (value) => {
     setUserDetails({ ...userDetails, type: { ...value } });
   };
-  const handleFormSubmit = values => {
+  const handleFormSubmit = (values) => {
     dispatch(requestCheckuserAndAdd(userDetails));
   };
 

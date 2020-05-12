@@ -25,7 +25,7 @@ export function* gotUserTypes() {
   yield put({
     type: actionType.REQUEST_STATUS_COMPLETED,
     payload: {
-      messageType: "",
+      messageType: "info",
       message: "",
     },
   });

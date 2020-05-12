@@ -18,7 +18,7 @@ const getUserProfileToDatabase = (email) => {
         }
       );
       const response = await userProfileRequest.json();
-      return resolve(response);
+      resolve(response);
     } catch (error) {
       reject("error");
     }
@@ -40,7 +40,7 @@ const updateUserProfileToDatabase = (user) => {
         }
       );
       const addUserResponse = await addUserRequest.json();
-      return resolve(addUserResponse);
+      resolve(addUserResponse);
     } catch (error) {
       reject("error");
     }
@@ -58,7 +58,7 @@ const updateUserPhotoToDatabase = (user) => {
         }
       );
       const userResponse = await userRequest.json();
-      return resolve(userResponse);
+      resolve(userResponse);
     } catch (error) {
       console.log("Error", error);
       reject("error");
@@ -77,7 +77,7 @@ const addUserToDatabase = (user) => {
           user,
         },
       });
-      return resolve(data.signUp);
+      resolve(data.signUp);
     } catch (error) {
       reject("error");
     }
@@ -90,7 +90,7 @@ const updateUserToDatabase = (user) => {
         mutation: USER_UPDATE_MUTATION,
         variables: { user },
       });
-      return resolve(data.userUpdate);
+      resolve(data.userUpdate);
     } catch (error) {
       reject("error");
     }
@@ -104,13 +104,13 @@ const isUserExistToDatabase = (user) => {
         variables: { email: user.email, username: user.username },
       });
       if (data.users.length > 0) {
-        return resolve({
+        resolve({
           messageType: "error",
           message:
             "User already registered, please use different username and email address.",
         });
       } else {
-        return resolve({
+        resolve({
           messageType: "info",
           message: "proceed",
         });
@@ -181,7 +181,6 @@ export function* checkedUserAndAdd({ user }) {
     const isUserExistResponse = yield call(isUserExistToDatabase, user);
     if (isUserExistResponse.messageType !== "error") {
       yield put(requestAddUser(user));
-      return;
     } else {
       sessionStorage.removeItem("access_token");
       sessionStorage.removeItem("token_type");

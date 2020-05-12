@@ -4,32 +4,32 @@ export default function Auth(state = initialState.auth, action) {
   switch (action.type) {
     case actionType.REQUEST_AUTH:
       return {
-        requestStatus: "AWAITING_AUTH_RESPONSE"
+        requestStatus: "AWAITING_AUTH_RESPONSE",
       };
     case actionType.REQUEST_AUTH_USER_INFO:
       return {
-        requestStatus: "AWAITING_AUTH_RESPONSE"
+        requestStatus: "AWAITING_AUTH_RESPONSE",
       };
     case actionType.REQUEST_CHANGE_PASSWORD:
       return {
-        requestStatus: "AWAITING_AUTH_RESPONSE"
+        requestStatus: "AWAITING_AUTH_RESPONSE",
       };
     case actionType.REQUEST_ADD_USER:
       return {
-        requestStatus: "AWAITING_AUTH_RESPONSE"
+        requestStatus: "AWAITING_AUTH_RESPONSE",
       };
     case actionType.REQUEST_STATUS_COMPLETED:
       return {
         ...state,
         requestStatus: "COMPLETED",
         message: action.payload.message,
-        messageType: action.payload.messageType
+        messageType: action.payload.messageType,
       };
     case actionType.REQUEST_REMOVE_STATUS_COMPLETED:
       return {
         requestStatus: "",
         message: "",
-        messageType: ""
+        messageType: "",
       };
     default:
       return state;

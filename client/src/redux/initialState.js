@@ -217,12 +217,7 @@ export const initialState = {
       "Stretching",
     ],
   },
-  userTypes: [
-    {
-      id: "1",
-      name: "Vendor",
-    },
-  ],
+  userTypes: [],
   status: {
     requestStatus: "",
     messageType: "",
