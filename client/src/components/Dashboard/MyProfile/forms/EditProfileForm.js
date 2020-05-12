@@ -147,7 +147,7 @@ export default function index({
   handleInputChange
 }) {
   const theme = useContext(ThemeContext);
-
+  const [defaultEthnicity, setDefaultEthnicity] = useState("");
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
@@ -157,6 +157,14 @@ export default function index({
   // let month = "" + (formattedDateOfBirth.getMonth() + 1),
   //   day = "" + formattedDateOfBirth.getDate(),
   //   year = formattedDateOfBirth.getFullYear();
+  useEffect(() => {
+    if (data) {
+      const userEthnicity = ETHINICITY_OPTIONS.find(
+        item => item.name === data.ethnicity
+      );
+      setDefaultEthnicity((userEthnicity && userEthnicity.name) || "");
+    }
+  }, [data]);
 
   if (!isVisible) {
     return <></>;
@@ -273,13 +281,23 @@ export default function index({
                 name="ethnicity"
                 className="field-input"
                 onChange={({ target }) => {
-                  handleInputChange("ethnicity", target.value);
+                  const currentEthnicity = ETHINICITY_OPTIONS.find(
+                    item => item.name === target.value
+                  );
+
+                  handleInputChange(
+                    "ethnicity",
+                    currentEthnicity ? currentEthnicity.name : ""
+                  );
+                  // setDefaultEthnicity(
+                  //   currentEthnicity ? currentEthnicity.name : ""
+                  // );
                 }}
                 ref={register}
-                value={data.ethnicity}>
+                value={defaultEthnicity}>
                 <option value="">Select</option>
                 {ETHINICITY_OPTIONS.map(opt => (
-                  <option key={opt.id} value={opt.id}>
+                  <option key={opt.id} value={opt.name}>
                     {opt.name}
                   </option>
                 ))}

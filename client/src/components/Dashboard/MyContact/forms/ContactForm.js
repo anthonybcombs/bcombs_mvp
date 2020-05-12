@@ -1,6 +1,8 @@
-import React, { useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
+import { Multiselect } from "multiselect-react-dropdown";
+
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const ContactFormStyled = styled.form`
   label {
@@ -36,10 +38,28 @@ export default function ContactForm({
   onSubmit,
   handleContactDetailsChange
 }) {
+  const [groupOptions, setGroupOptions] = useState([]);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
+
+  useEffect(() => {
+    if (groups) {
+      let formattedGroups = groups.map(item => {
+        return {
+          name: `${item.name} `,
+          id: item.id
+        };
+      });
+      setGroupOptions(formattedGroups);
+    }
+  }, [groups]);
+
+  const handleSelectChange = value => {
+    handleContactDetailsChange("selectedGroups", value);
+  };
+
   const theme = useContext(ThemeContext);
   return (
     <ContactFormStyled
@@ -56,7 +76,7 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("last_name", target.value);
               }}
-              ref={register({ required: true })}
+              ref={register({ required: true, maxLength: 20 })}
               value={contactDetails.last_name}
             />
             <label className="field-label">Lastname</label>
@@ -65,6 +85,11 @@ export default function ContactForm({
             field={errors.last_name}
             errorType="required"
             message="Lastname is required."
+          />
+          <ErrorMessage
+            field={errors.last_name}
+            errorType="maxLength"
+            message="Length should not be greater than 20."
           />
         </div>
 
@@ -77,7 +102,7 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("first_name", target.value);
               }}
-              ref={register({ required: true })}
+              ref={register({ required: true, maxLength: 20 })}
               value={contactDetails.first_name}
             />
             <label className="field-label">Firstname</label>
@@ -86,6 +111,11 @@ export default function ContactForm({
             field={errors.first_name}
             errorType="required"
             message="Firstname is required."
+          />
+          <ErrorMessage
+            field={errors.first_name}
+            errorType="maxLength"
+            message="Length should not be greater than 20."
           />
         </div>
 
@@ -98,7 +128,11 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("phone_number", target.value);
               }}
-              ref={register({ required: true })}
+              ref={register({
+                required: true,
+                maxLength: 15,
+                pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/
+              })}
               value={contactDetails.phone_number}
             />
             <label className="field-label">Phone Number</label>
@@ -107,6 +141,16 @@ export default function ContactForm({
             field={errors.phone_number}
             errorType="required"
             message="Phone Number is required."
+          />
+          <ErrorMessage
+            field={errors.phone_number}
+            errorType="maxLength"
+            message="Length should not be greater than 20."
+          />
+          <ErrorMessage
+            field={errors.phone_number}
+            errorType="pattern"
+            message="Numeric only."
           />
         </div>
 
@@ -227,7 +271,7 @@ export default function ContactForm({
       /> */}
       <div>
         <p>Assign to existing group</p>
-        {groups.map(group => (
+        {/* {groups.map(group => (
           <label htmlFor="group" key={group.id}>
             <input
               type="checkbox"
@@ -240,7 +284,17 @@ export default function ContactForm({
             />
             {group.name}
           </label>
-        ))}
+        ))} */}
+
+        <Multiselect
+          className="field-input"
+          options={groupOptions}
+          hasSelectAll={false}
+          onSelect={handleSelectChange}
+          placeholder="Add from my contacts"
+          displayValue="name"
+          closeIcon="cancel"
+        />
       </div>
       <button type="submit">Save</button>
     </ContactFormStyled>

@@ -21,6 +21,7 @@ import {
 } from "../../../redux/actions/Users";
 
 const getAge = birthDate => {
+  console.log("BirthDateee", birthDate);
   return Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e10);
 };
 
@@ -164,6 +165,9 @@ const ProfileSyled = styled.div`
       font-size: 2em;
     }
   }
+  #id-container {
+    word-wrap: break-word;
+  }
   #profile-name {
     text-transform: capitalize;
   }
@@ -225,7 +229,6 @@ export default function index() {
   }, [user, isEditProfileVisible]);
 
   const handleFormSubmit = e => {
-    console.log("handleFormSubmit personalInfo", personalInfo);
     dispatch(
       requestUpdateUserProfile({
         personalInfo: {
@@ -258,6 +261,7 @@ export default function index() {
     setPersonalInfo({ ...personalInfo, [id]: value });
   };
 
+  console.log("USERRRRRRRRRRRR", user);
   return (
     <ProfileSyled>
       <CreateRelative
@@ -271,7 +275,7 @@ export default function index() {
         <div>
           <div id="personal-info-header">
             <div>
-              <div>
+              <div id="id-container">
                 <img
                   src={`${
                     auth.profile_img ? auth.profile_img : auth.picture
@@ -288,9 +292,7 @@ export default function index() {
                   <FontAwesomeIcon icon={faUsers} />
 
                   <span>
-                    {personalInfo &&
-                      personalInfo.dateofbirth &&
-                      getAge(new Date(personalInfo.dateofbirth))}
+                    {user && user.profile && getAge(user.profile.birth_date)}
                   </span>
                 </h4>
               </div>
@@ -311,9 +313,9 @@ export default function index() {
               />
             </div>
 
-            {personalInfo && (
+            {user && user.profile && (
               <ProfileForm
-                data={personalInfo}
+                data={user && user.profile}
                 handleInputChange={handleInputChange}
                 onSubmit={handleFormSubmit}
               />

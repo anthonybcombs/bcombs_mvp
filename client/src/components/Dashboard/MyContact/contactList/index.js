@@ -50,23 +50,24 @@ export default function index({
 
   useEffect(() => {
     if (contacts) {
-      if (headerText === "Duplicates") {
-        // contacts.map(item => item.phone_number );
-        const duplicateContacts = contacts.filter(item => {
-          const currentItem = contacts.find(
-            subItem =>
-              subItem.phone_number === item.phone_number &&
-              subItem.user_id !== item.user_id
-          );
-          if (currentItem) {
-            return item;
-          }
-        });
+      // if (headerText === "Duplicates") {
+      //   // contacts.map(item => item.phone_number );
+      //   const duplicateContacts = contacts.filter(item => {
+      //     const currentItem = contacts.find(
+      //       subItem =>
+      //         subItem.phone_number === item.phone_number &&
+      //         subItem.id !== item.id
+      //     );
+      //     if (currentItem) {
+      //       return item;
+      //     }
+      //   });
 
-        setContactList(duplicateContacts);
-      } else {
-        setContactList(contacts);
-      }
+      //   setContactList(duplicateContacts);
+      // } else {
+      //   setContactList(contacts);
+      // }
+      setContactList(contacts);
     }
   }, [contacts, headerText]);
 
@@ -80,13 +81,13 @@ export default function index({
         typeOfForm={typeOfFormUsedInEditContact}
       />
 
-      {/* <ProfileModal
+      <ProfileModal
         isVisible={isProfleModalVisible}
         toggleProfileModal={setIsProfleModalVisible}
         contact={contact || {}}
         groups={groups}
       />
-      <SendMessageModal
+      {/* <SendMessageModal
         contact={contact || {}}
         isVisible={isSendMessageModalVisible}
         toggleSendMessageModal={setSendMessageModalVisible}

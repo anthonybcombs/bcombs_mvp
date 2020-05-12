@@ -85,10 +85,6 @@ const ContactFormStyled = styled.form`
       margin: 2.5em auto 2.5em auto;
     }*/
 
-const VISIBILITY_OPTIONS = [
-  { value: "public", name: "Public" },
-  { value: "private", name: "Private" }
-];
 export default function GroupForm({
   groupDetails,
   contacts,
@@ -96,7 +92,6 @@ export default function GroupForm({
   handleGroupDetailsChange
 }) {
   const [contactOptions, setContactOptions] = useState([]);
-  const [contactSelected, setContactSelected] = useState([]);
   const [otherUserSelected, setOtherUserSelected] = useState([]);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
@@ -114,13 +109,11 @@ export default function GroupForm({
       });
       setContactOptions(formattedContacts);
     }
-   
   }, [contacts]);
-  console.log("contactOptionszzz", contactOptions);
+
   const theme = useContext(ThemeContext);
   const handleSelectChange = value => {
     handleGroupDetailsChange("contacts", [...value]);
-    setContactSelected([...value]);
   };
 
   const handleOtherUserChange = value => {
@@ -154,27 +147,6 @@ export default function GroupForm({
           />
         </div>
 
-        <div className="form-group">
-          <div className="field">
-            <select
-              name="visibility"
-              className="field-input"
-              ref={register({ required: true })}>
-              <option value="">Select</option>
-              {VISIBILITY_OPTIONS.map(opt => (
-                <option key={opt.id} value={opt.id}>
-                  {opt.name}
-                </option>
-              ))}
-            </select>
-            <label className="field-label">Visibility</label>
-          </div>
-          <ErrorMessage
-            field={errors.visibility}
-            errorType="required"
-            message="Visibility is required."
-          />
-        </div>
         <div className="form-group">
           <div className="field">
             <Multiselect
