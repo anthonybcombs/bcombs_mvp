@@ -21,6 +21,7 @@ export const USER_INFO_QUERY = gql`
       email
       type
       username
+      user_id
       sub
       given_name
       family_name

@@ -18,21 +18,26 @@ export default function protectedRoutes({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
-    dispatch(requestUserInfo());
-    dispatch(requestCalendars());
-  }, [location]);
-  useEffect(() => {
     window.scrollTo(0, 0);
-  }, [auth, status]);
+    if (
+      location.pathname.includes("dashboard") &&
+      !auth.hasOwnProperty("user_id")
+    ) {
+      dispatch(requestUserInfo());
+      if (auth.is_profile_filled) {
+        dispatch(requestCalendars());
+      }
+    }
+  }, [location]);
   if (
     sessionStorage.getItem("access_token") === null ||
-    status.messageType == "error"
+    (status.messageType == "error" && auth.status === "SIGNED_IN")
   ) {
     return <Redirect to="/" />;
   } else if (
     auth.email_verified &&
     auth.status === "SIGNED_IN" &&
-    status.messageType === "GET_CALENDAR_COMPLETED"
+    status.requestStatus === "COMPLETED"
   ) {
     if (
       !location.pathname.includes("createprofile") &&

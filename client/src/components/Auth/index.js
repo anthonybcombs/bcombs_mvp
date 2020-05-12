@@ -20,16 +20,16 @@ export default function index({ children }) {
       sessionStorage.getItem("access_token") !== null
     ) {
       dispatch(requestUserInfo());
-    } else {
-      dispatch(requestLogout());
     }
   }, []);
   useEffect(() => {
-    if (location.pathname !== "/") {
-      dispatch(requestRemoveStatus());
-    }
+    dispatch(requestRemoveStatus());
   }, [location]);
-  if (auth.status === "AWAITING_AUTH_RESPONSE" || userTypes.length === 0) {
+  if (
+    status.requestStatus === "AWAITING_AUTH_RESPONSE" ||
+    userTypes.length === 0 ||
+    auth.status === "AWAITING_AUTH_RESPONSE"
+  ) {
     return <Loading />;
   } else if (
     sessionStorage.getItem("access_token") !== null &&

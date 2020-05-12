@@ -32,7 +32,6 @@ export default function index({ navigate }) {
       })
     );
     sessionStorage.setItem("calendarName", calendar.name);
-    window.location.reload();
   };
   return (
     <>

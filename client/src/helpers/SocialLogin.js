@@ -7,12 +7,12 @@ import { requestCheckuserAndAdd } from "../redux/actions/Users";
 export default function SocialLogin({ location }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  webAuth.parseHash({ hash: location.hash }, function(error, authResult) {
+  webAuth.parseHash({ hash: location.hash }, function (error, authResult) {
     if (error !== null) {
       navigate("/", { replace: true });
       return;
     }
-    webAuth.client.userInfo(authResult.accessToken, function(error, user) {
+    webAuth.client.userInfo(authResult.accessToken, function (error, user) {
       if (error) return;
       user.isSocial = true;
       user.access_token = authResult.accessToken;

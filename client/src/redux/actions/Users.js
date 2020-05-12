@@ -2,6 +2,7 @@ import { call, take, put } from "redux-saga/effects";
 import * as actionType from "./Constant";
 import graphqlClient from "../../graphql";
 import { IS_USER_EXIST_QUERY } from "../../graphql/query";
+import { requestUserInfo } from "./Auth";
 import { SIGN_UP_MUTATION, USER_UPDATE_MUTATION } from "../../graphql/mutation";
 
 // **************************************************** //
@@ -112,7 +113,7 @@ const isUserExistToDatabase = (user) => {
       } else {
         resolve({
           messageType: "info",
-          message: "proceed",
+          message: "",
         });
       }
     } catch (error) {
@@ -153,7 +154,6 @@ export function* addedUser({ user }) {
         message: addUserResponse.message,
       },
     });
-    yield put(getUserInfo(user.email));
   } catch (error) {}
 }
 
@@ -174,6 +174,7 @@ export function* updatedUser({ user }) {
         message: updateUserResponse.message,
       },
     });
+    yield put(requestUserInfo());
   } catch (error) {}
 }
 export function* checkedUserAndAdd({ user }) {
@@ -182,17 +183,12 @@ export function* checkedUserAndAdd({ user }) {
     if (isUserExistResponse.messageType !== "error") {
       yield put(requestAddUser(user));
     } else {
-      sessionStorage.removeItem("access_token");
-      sessionStorage.removeItem("token_type");
-      sessionStorage.removeItem("id_token");
+      if (!user.isSocial) {
+        sessionStorage.removeItem("access_token");
+        sessionStorage.removeItem("token_type");
+        sessionStorage.removeItem("id_token");
+      }
     }
-    yield put({
-      type: actionType.REQUEST_STATUS_COMPLETED,
-      payload: {
-        messageType: isUserExistResponse.messageType,
-        message: isUserExistResponse.message,
-      },
-    });
   } catch (error) {}
 }
 

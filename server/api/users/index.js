@@ -8,16 +8,15 @@ import {
 } from "../../helpers/aws";
 export const getUsers = async () => {
   const db = makeDb();
-  let result;
   try {
     const rows = await db.query(
       `SELECT BIN_TO_UUID(id) as id,email,auth_id,is_profile_filled,BIN_TO_UUID(type) as type,profile_img from users`
     );
-    result = rows;
+    console.log(rows);
+    return rows;
   } catch (error) {
   } finally {
     await db.close();
-    return result;
   }
 };
 const isProfileExistFromDatabase = async (id) => {
@@ -229,6 +228,7 @@ export const executeSignUp = async (user) => {
   }
 };
 export const executeUserUpdate = async (user) => {
+  console.log(user);
   const db = makeDb();
   try {
     const { personalInfo, familyMembers, members, calendarInfo, email } = user;
@@ -260,27 +260,26 @@ export const executeUserUpdate = async (user) => {
         "SELECT BIN_TO_UUID(id) as id,color from user_calendars where user_id=UUID_TO_BIN(?) AND name=?",
         [id, calendarInfo.name]
       );
-      console.log(insertedCalendar[0]);
-      const buf = Buffer.from(
-        calendarInfo.image.replace(/^data:image\/\w+;base64,/, ""),
-        "base64"
-      );
-      var data = {
-        Bucket: currentS3BucketName,
-        Key: `calendars/${id}/${insertedCalendar[0].id}/calendarBackground.jpg`,
-        Body: buf,
-        ContentEncoding: "base64",
-        ContentType: "image/jpeg",
-        ACL: "public-read",
-      };
-      s3Bucket.putObject(data, function (err, data) {
-        if (err) {
-          console.log(err);
-          console.log("Error uploading data: ", data);
-        } else {
-          console.log("succesfully uploaded the image!");
-        }
-      });
+      // const buf = Buffer.from(
+      //   calendarInfo.image.replace(/^data:image\/\w+;base64,/, ""),
+      //   "base64"
+      // );
+      // var data = {
+      //   Bucket: currentS3BucketName,
+      //   Key: `calendars/${id}/${insertedCalendar[0].id}/calendarBackground.jpg`,
+      //   Body: buf,
+      //   ContentEncoding: "base64",
+      //   ContentType: "image/jpeg",
+      //   ACL: "public-read",
+      // };
+      // s3Bucket.putObject(data, function (err, data) {
+      //   if (err) {
+      //     console.log(err);
+      //     console.log("Error uploading data: ", data);
+      //   } else {
+      //     console.log("succesfully uploaded the image!");
+      //   }
+      // });
     } else {
       await db.query(
         "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,zip_code=?,birth_date=? WHERE user_id=UUID_TO_BIN(?)",

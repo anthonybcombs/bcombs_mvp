@@ -137,10 +137,18 @@ export function* gotUserInfo() {
             message: "Email is not verified.",
           },
         });
+        return;
       }
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
         payload: userInfoData,
+      });
+      yield put({
+        type: actionType.REQUEST_STATUS_COMPLETED,
+        payload: {
+          messageType: "info",
+          message: "got user info",
+        },
       });
     } else {
       sessionStorage.removeItem("access_token");

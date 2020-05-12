@@ -107,8 +107,8 @@ const PopoverStyled = styled.div`
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
-  const { auth } = useSelector(({ auth }) => {
-    return { auth };
+  const { auth, status } = useSelector(({ auth, status }) => {
+    return { auth, status };
   });
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
@@ -120,7 +120,6 @@ export default function Layout({ children }) {
     }
   }, [auth]);
 
-  console.log("auth", auth);
   return (
     <LayoutStyled data-testid="app-layout" theme={theme}>
       <HeaderStyled data-testid="app-title" theme={theme.header}>
@@ -132,7 +131,7 @@ export default function Layout({ children }) {
             children={(context) => {
               if (
                 context.location.pathname.includes("dashboard") &&
-                auth.status === "SIGNED_ID"
+                auth.status === "SIGNED_IN"
               ) {
                 return (
                   <>
