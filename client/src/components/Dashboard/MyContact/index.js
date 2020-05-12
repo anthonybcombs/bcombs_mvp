@@ -116,6 +116,7 @@ const MyContactsStyled = styled.div`
 `;
 export default function index() {
   const [selectedLabel, setSelectedLabel] = useState("Contacts");
+  const [currentContacts, setCurrentContacts] = useState([]);
   const [selectedGroupId, setSelectedGroupId] = useState(0);
   const [selectedGroup, setSelectedGroup] = useState(0);
   const [isNewContactModalVisible, setNewContactModalVisible] = useState(false);
@@ -129,25 +130,23 @@ export default function index() {
       return { auth, groups, groupMembers, contacts };
     }
   );
-  console.log("groupMemberszzxczxc", groupMembers);
   const dispatch = useDispatch();
   useEffect(() => {
     if (auth.email) {
       dispatch(requestUserGroup(auth.email));
     }
+    setCurrentContacts(contacts);
   }, [contacts]);
   useEffect(() => {
     dispatch(getContact(auth.email));
+    setCurrentContacts(contacts);
   }, []);
-
-  console.log("groups updateee", groups);
 
   // const selectedGroup = groups.find(group => group.id === selectedGroupId);
   const filteredContacts = contacts.filter(contact => {
     if (selectedGroupId === 0) {
       return true;
     }
-
     return (
       selectedGroup &&
       selectedGroup.contacts &&
@@ -157,7 +156,30 @@ export default function index() {
 
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
+
+    if (value === "Duplicates") {
+      setCurrentContacts(getDuplicateContacts());
+    } else {
+      setCurrentContacts(filteredContacts);
+    }
   };
+
+  const getDuplicateContacts = () => {
+    console.log("getDuplicateContacts contacts", contacts);
+    return contacts && contacts.length > 0
+      ? contacts.filter(item => {
+          const currentItem = contacts.find(
+            subItem =>
+              subItem.phone_number === item.phone_number &&
+              subItem.id !== item.id
+          );
+          if (currentItem) {
+            return item;
+          }
+        })
+      : [];
+  };
+
   const handleSelectedGroup = group => {
     //setSelectedGroupId(group.id);
     setSelectedGroup(group);
@@ -179,7 +201,7 @@ export default function index() {
   return (
     <MyContactsStyled>
       <NewContactModal
-        groups={groups && groups.created_groups || []}
+        groups={(groups && groups.created_groups) || []}
         isVisible={isNewContactModalVisible}
         toggleCreateContactModal={setNewContactModalVisible}
         auth={auth}
@@ -240,13 +262,14 @@ export default function index() {
                 handleSelectedLabel("Duplicates");
               }}>
               <FontAwesomeIcon icon={faUserFriends} />
-              <span>Duplicates</span>
+              <span>Duplicates {getDuplicateContacts().length || 0}</span>
             </div>
           </div>
           <div className="groups">
             <Collapsible trigger={<h3>Groups</h3>} open lazyRender>
               <hr />
-              {groups && groups.created_groups &&
+              {groups &&
+                groups.created_groups &&
                 groups.created_groups.map(group => (
                   <div
                     className={`${
@@ -276,19 +299,20 @@ export default function index() {
               <>
                 <Collapsible trigger={<h3>Joined Groups</h3>} open lazyRender>
                   <hr />
-                  {groups && groups.joined_groups.map(group => (
-                    <div
-                      className={`${
-                        group.id === selectedGroupId ? "selected" : ""
-                      }`}
-                      key={group.id}
-                      onClick={() => {
-                        handleJoinedGroupModal(group);
-                      }}>
-                      <FontAwesomeIcon icon={faUsers} />
-                      <span>{group.name}</span>
-                    </div>
-                  ))}
+                  {groups &&
+                    groups.joined_groups.map(group => (
+                      <div
+                        className={`${
+                          group.id === selectedGroupId ? "selected" : ""
+                        }`}
+                        key={group.id}
+                        onClick={() => {
+                          handleJoinedGroupModal(group);
+                        }}>
+                        <FontAwesomeIcon icon={faUsers} />
+                        <span>{group.name}</span>
+                      </div>
+                    ))}
                 </Collapsible>
                 <hr />
               </>
@@ -298,8 +322,8 @@ export default function index() {
         <div>
           <ContactList
             headerText={selectedLabel}
-            contacts={filteredContacts}
-            groups={groups && groups.created_groups || []}
+            contacts={currentContacts}
+            groups={(groups && groups.created_groups) || []}
             setNewContactModalVisible={setNewContactModalVisible}
             EditContactModal={EditContactModal}
             ProfileModal={ProfileModal}

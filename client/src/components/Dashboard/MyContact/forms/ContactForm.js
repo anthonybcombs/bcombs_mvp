@@ -1,6 +1,8 @@
-import React, { useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
+import { Multiselect } from "multiselect-react-dropdown";
+
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const ContactFormStyled = styled.form`
   label {
@@ -36,10 +38,28 @@ export default function ContactForm({
   onSubmit,
   handleContactDetailsChange
 }) {
+  const [groupOptions, setGroupOptions] = useState([]);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
+
+  useEffect(() => {
+    if (groups) {
+      let formattedGroups = groups.map(item => {
+        return {
+          name: `${item.name} `,
+          id: item.id
+        };
+      });
+      setGroupOptions(formattedGroups);
+    }
+  }, [groups]);
+
+  const handleSelectChange = value => {
+    handleContactDetailsChange("selectedGroups", value);
+  };
+
   const theme = useContext(ThemeContext);
   return (
     <ContactFormStyled
@@ -251,7 +271,7 @@ export default function ContactForm({
       /> */}
       <div>
         <p>Assign to existing group</p>
-        {groups.map(group => (
+        {/* {groups.map(group => (
           <label htmlFor="group" key={group.id}>
             <input
               type="checkbox"
@@ -264,7 +284,17 @@ export default function ContactForm({
             />
             {group.name}
           </label>
-        ))}
+        ))} */}
+
+        <Multiselect
+          className="field-input"
+          options={groupOptions}
+          hasSelectAll={false}
+          onSelect={handleSelectChange}
+          placeholder="Add from my contacts"
+          displayValue="name"
+          closeIcon="cancel"
+        />
       </div>
       <button type="submit">Save</button>
     </ContactFormStyled>

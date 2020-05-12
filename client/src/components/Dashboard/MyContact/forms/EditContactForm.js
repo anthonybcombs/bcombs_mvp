@@ -1,7 +1,10 @@
-import React, { useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
+import { Multiselect } from "multiselect-react-dropdown";
+
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+
 const ContactFormStyled = styled.form`
   input:required {
     box-shadow: none;
@@ -130,7 +133,27 @@ export default function ContactForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
+  const [groupOptions, setGroupOptions] = useState([]);
+  const [defaultGroups, setDefaultGroups] = useState([]);
   const theme = useContext(ThemeContext);
+
+  useEffect(() => {
+    if (groups) {
+      let formattedGroups = groups.map(item => {
+        return {
+          name: `${item.name} `,
+          id: item.id
+        };
+      });
+      setGroupOptions(formattedGroups);
+      setDefaultGroups(
+        groups.filter(item => contactDetails.selectedGroups.includes(item.id))
+      );
+    }
+  }, [groups]);
+  const handleSelectChange = value => {
+    handleContactDetailsChange("selectedGroups", value);
+  };
 
   return (
     <ContactFormStyled
@@ -287,7 +310,7 @@ export default function ContactForm({
 
         <div>
           <p>Assign to existing group</p>
-          {groups.map(group => (
+          {/* {groups.map(group => (
             <label htmlFor="group" key={group.id} style={{ marginLeft: 12 }}>
               <input
                 type="checkbox"
@@ -301,7 +324,19 @@ export default function ContactForm({
               />
               {group.name}
             </label>
-          ))}
+          ))} */}
+
+          <Multiselect
+            className="field-input"
+            options={groupOptions}
+            selectedValues={defaultGroups}
+            //selectedValues={contactDetails.selectedGroups || []}
+            hasSelectAll={false}
+            onSelect={handleSelectChange}
+            placeholder="Add from my contacts"
+            displayValue="name"
+            closeIcon="cancel"
+          />
         </div>
       </div>
       <button type="submit">Save</button>

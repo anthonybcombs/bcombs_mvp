@@ -34,34 +34,38 @@ export default function index({
 }) {
   const [contactDetails, setContactDetails] = useState({});
   const dispatch = useDispatch();
-
+  console.log("groupzzzs", groups);
   useEffect(() => {
-    if (contact.id) {
+    if (contact.user_id) {
       setContactDetails({
         ...contact,
         selectedGroups: groups
-          .filter(group => group.contacts.includes(contact.id))
+          .filter(group => group.contacts.includes(contact.user_id))
           .map(group => group.id)
       });
     }
   }, [contact, isVisible]);
 
   const handleContactDetailsChange = (id, value) => {
-    let newSelectedGroups = contactDetails.selectedGroups;
     if (id === "selectedGroups") {
-      let selectedGroupId = value;
-      if (newSelectedGroups.includes(selectedGroupId)) {
-        newSelectedGroups = newSelectedGroups.filter(
-          groupId => groupId !== selectedGroupId
-        );
-      } else {
-        newSelectedGroups.push(selectedGroupId);
-      }
+      let selectedGroupIds = value.map(item => item.id);
+      // if (newSelectedGroups.includes(selectedGroupId)) {
+      //   newSelectedGroups = newSelectedGroups.filter(
+      //     groupId => groupId !== selectedGroupId
+      //   );
+      // } else {
+      //   newSelectedGroups.push(selectedGroupId);
+      // }
+      setContactDetails({
+        ...contactDetails,
+        selectedGroups: selectedGroupIds
+      });
+    } else {
+      setContactDetails({
+        ...contactDetails,
+        [id]: value
+      });
     }
-    setContactDetails({
-      ...contactDetails,
-      [id]: id == "selectedGroups" ? newSelectedGroups : value
-    });
   };
   const handleSubmit = value => {
     groups.forEach(group => {
