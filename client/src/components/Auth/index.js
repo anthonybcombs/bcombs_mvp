@@ -21,7 +21,7 @@ export default function index({ children }) {
     ) {
       dispatch(requestUserInfo());
     }
-  }, []);
+  }, [location]);
   useEffect(() => {
     dispatch(requestRemoveStatus());
   }, [location]);

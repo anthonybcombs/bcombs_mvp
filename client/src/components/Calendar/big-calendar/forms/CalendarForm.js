@@ -102,9 +102,12 @@ export default function CreateCalendarForm({
   handleCheckBoxChange,
   toggleCreateCalendarModal,
 }) {
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, setValue } = useForm({
     mode: "onSubmit",
   });
+  React.useEffect(() => {
+    register({ name: "image" }, { required: true });
+  }, []);
   const theme = useContext(ThemeContext);
   return (
     <CreateCalendarFormStyled
@@ -186,11 +189,16 @@ export default function CreateCalendarForm({
       />
       <UploadImage
         handleImageChange={(image) => {
+          setValue("image", image);
           handleInputChange("image", image);
           return false;
         }}
       />
-
+      <ErrorMessage
+        field={errors.image}
+        errorType="required"
+        message="Calendar image is required."
+      />
       <div id="buttons-control">
         <button
           data-testid="app-big-calendar-new-cancel-button"

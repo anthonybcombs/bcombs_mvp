@@ -9,7 +9,7 @@ export default function SocialLogin({ location }) {
   const navigate = useNavigate();
   webAuth.parseHash({ hash: location.hash }, function (error, authResult) {
     if (error !== null) {
-      navigate("/", { replace: true });
+      window.location.href = "/";
       return;
     }
     webAuth.client.userInfo(authResult.accessToken, function (error, user) {

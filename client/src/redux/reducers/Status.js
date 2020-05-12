@@ -26,9 +26,12 @@ export default function Auth(state = initialState.auth, action) {
       return {
         requestStatus: "AWAITING_AUTH_RESPONSE",
       };
+    case actionType.REQUEST_GET_CALENDARS:
+      return {
+        requestStatus: "AWAITING_AUTH_RESPONSE",
+      };
     case actionType.REQUEST_STATUS_COMPLETED:
       return {
-        ...state,
         requestStatus: "COMPLETED",
         message: action.payload.message,
         messageType: action.payload.messageType,

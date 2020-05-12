@@ -101,11 +101,6 @@ export default function UploadImage({ handleImageChange }) {
                 ))}
               </div>
             )}
-            {errors.map((error, key) => (
-              <p className="error" key={key}>
-                {error.file.name} - {error.type}
-              </p>
-            ))}
           </>
         )}
       </Files>

@@ -24,9 +24,7 @@ export default function protectedRoutes({ children }) {
       !auth.hasOwnProperty("user_id")
     ) {
       dispatch(requestUserInfo());
-      if (auth.is_profile_filled) {
-        dispatch(requestCalendars());
-      }
+      dispatch(requestCalendars());
     }
   }, [location]);
   if (

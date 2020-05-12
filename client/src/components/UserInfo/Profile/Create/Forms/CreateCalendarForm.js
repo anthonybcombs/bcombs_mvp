@@ -60,10 +60,13 @@ export default function CreateCalendarForm({
   onSubmit,
   handleInputChange,
 }) {
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, setValue } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
+  React.useEffect(() => {
+    register({ name: "image" }, { required: true });
+  }, []);
   const theme = useContext(ThemeContext);
   return (
     <CreateCalendarFormStyled
@@ -88,9 +91,15 @@ export default function CreateCalendarForm({
       />
       <UploadImage
         handleImageChange={(image) => {
+          setValue("image", image);
           handleInputChange("image", image);
           return false;
         }}
+      />
+      <ErrorMessage
+        field={errors.image}
+        errorType="required"
+        message="Calendar image is required."
       />
       <button data-testid="app-profile-save-button" type="submit">
         Save and Done!

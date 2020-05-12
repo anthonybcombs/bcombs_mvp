@@ -84,8 +84,8 @@ export function* gotCalendars() {
   yield put({
     type: actionType.REQUEST_STATUS_COMPLETED,
     payload: {
-      messageType: "GET_CALENDAR_COMPLETED",
-      message: "",
+      messageType: "info",
+      message: "get calendars",
     },
   });
 }
