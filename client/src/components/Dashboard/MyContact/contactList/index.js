@@ -80,13 +80,13 @@ export default function index({
         typeOfForm={typeOfFormUsedInEditContact}
       />
 
-      {/* <ProfileModal
+      <ProfileModal
         isVisible={isProfleModalVisible}
         toggleProfileModal={setIsProfleModalVisible}
         contact={contact || {}}
         groups={groups}
       />
-      <SendMessageModal
+      {/* <SendMessageModal
         contact={contact || {}}
         isVisible={isSendMessageModalVisible}
         toggleSendMessageModal={setSendMessageModalVisible}

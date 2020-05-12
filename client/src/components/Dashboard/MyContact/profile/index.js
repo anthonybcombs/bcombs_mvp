@@ -48,8 +48,7 @@ export default function index({
           className="close"
           onClick={() => {
             toggleProfileModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <h2>My Profile</h2>
@@ -58,10 +57,10 @@ export default function index({
         </div>
         <div>
           <h3>
-            {contactDetails.firstName} {contactDetails.lastName}
+            {contactDetails.first_name} {contactDetails.first_name}
           </h3>
           <p>Email: {contactDetails.email}</p>
-          <p>Phone Number: {contactDetails.phoneNumber}</p>
+          <p>Phone Number: {contactDetails.phone_number}</p>
           <p>Relation: {contactDetails.relation}</p>
         </div>
       </div>
