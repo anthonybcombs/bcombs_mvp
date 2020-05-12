@@ -85,7 +85,7 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
       <div id="profile-form">
         <div className="main-profile-content">
           <div className="profile-content bold">Ethnicity</div>
-          <div className="profile-content">{}</div>
+          <div className="profile-content">{data.ethnicity}</div>
         </div>
 
         <div className="main-profile-content">
@@ -96,8 +96,8 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
         <div className="main-profile-content">
           <div className="profile-content bold">Birthdate</div>
           <div className="profile-content">
-            {data.dateofbirth
-              ? format(new Date(data.dateofbirth), "MMMM dd yyyy")
+            {data.birth_date
+              ? format(new Date(data.birth_date), "MMMM dd yyyy")
               : null}
           </div>
         </div>

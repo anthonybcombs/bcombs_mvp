@@ -21,6 +21,7 @@ import {
 } from "../../../redux/actions/Users";
 
 const getAge = birthDate => {
+  console.log("BirthDateee", birthDate);
   return Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e10);
 };
 
@@ -228,7 +229,6 @@ export default function index() {
   }, [user, isEditProfileVisible]);
 
   const handleFormSubmit = e => {
-    console.log("handleFormSubmit personalInfo", personalInfo);
     dispatch(
       requestUpdateUserProfile({
         personalInfo: {
@@ -292,9 +292,7 @@ export default function index() {
                   <FontAwesomeIcon icon={faUsers} />
 
                   <span>
-                    {personalInfo &&
-                      personalInfo.dateofbirth &&
-                      getAge(new Date(personalInfo.dateofbirth))}
+                    {user && user.profile && getAge(user.profile.birth_date)}
                   </span>
                 </h4>
               </div>
