@@ -29,7 +29,6 @@ export const getCalendars = async (creds) => {
       data: calendars,
     };
   } catch (error) {
-    console.log("error", error);
     return {
       status: {
         messageType: "error",
@@ -37,14 +36,15 @@ export const getCalendars = async (creds) => {
       },
       data: [],
     };
+  } finally {
+    await db.close();
   }
 };
 export const executeCreateCalendar = async (calendar) => {
   const db = makeDb();
-  console.log(calendar.image);
   try {
     const UserInfo = await getUserInfo(calendar.creds);
-    await db.query(
+    const insertCalendarResult = await db.query(
       "INSERT IGNORE INTO user_calendars (id,user_id,name,color,visibilityType) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?)",
       [
         UserInfo.user_id,
@@ -61,47 +61,47 @@ export const executeCreateCalendar = async (calendar) => {
         );
       }
     });
-    const insertedCalendar = await db.query(
-      "SELECT BIN_TO_UUID(id) as id,color from user_calendars where user_id=UUID_TO_BIN(?) AND name=?",
-      [UserInfo.user_id, calendar.info.name]
-    );
-    const buf = Buffer.from(
-      calendar.info.image.replace(/^data:image\/\w+;base64,/, ""),
-      "base64"
-    );
-    var data = {
-      Bucket: currentS3BucketName,
-      Key: `calendars/${UserInfo.user_id}/${insertedCalendar[0].id}/calendarBackground.jpg`,
-      Body: buf,
-      ContentEncoding: "base64",
-      ContentType: "image/jpeg",
-      ACL: "public-read",
-    };
-    s3Bucket.putObject(data, function (err, data) {
-      if (err) {
-        console.log(err);
-        console.log("Error uploading data: ", data);
-      } else {
-        console.log("succesfully uploaded the image!");
-      }
-    });
-
-    return {
-      status: {
-        messageType: "info",
-        message: "calendar Created",
-      },
-      calendar: {
-        id: insertedCalendar[0].id,
-        user_id: UserInfo.user_id,
-        name: calendar.info.name,
-        color: insertedCalendar[0].color,
-        visibilityType: calendar.info.visibilityType,
-        image: `https://bcombs-dev.s3.amazonaws.com/calendars/${UserInfo.user_id}/${insertedCalendar.id}/calendarBackground.jpg`,
-      },
-    };
+    if (insertCalendarResult.affectedRows > 0) {
+      const insertedCalendar = await db.query(
+        "SELECT BIN_TO_UUID(id) as id,color from user_calendars where user_id=UUID_TO_BIN(?) AND name=?",
+        [UserInfo.user_id, calendar.info.name]
+      );
+      const buf = Buffer.from(
+        calendar.info.image.replace(/^data:image\/\w+;base64,/, ""),
+        "base64"
+      );
+      var data = {
+        Bucket: currentS3BucketName,
+        Key: `calendars/${UserInfo.user_id}/${insertedCalendar[0].id}/calendarBackground.jpg`,
+        Body: buf,
+        ContentEncoding: "base64",
+        ContentType: "image/jpeg",
+        ACL: "public-read",
+      };
+      s3Bucket.putObject(data, function (err, data) {
+        if (err) {
+          console.log(err);
+          console.log("Error uploading data: ", data);
+        } else {
+          console.log("succesfully uploaded the image!");
+        }
+      });
+      return {
+        status: {
+          messageType: "info",
+          message: "calendar Created",
+        },
+        calendar: {
+          id: insertedCalendar[0].id,
+          user_id: UserInfo.user_id,
+          name: calendar.info.name,
+          color: insertedCalendar[0].color,
+          visibilityType: calendar.info.visibilityType,
+          image: `https://bcombs-dev.s3.amazonaws.com/calendars/${UserInfo.user_id}/${insertedCalendar.id}/calendarBackground.jpg`,
+        },
+      };
+    }
   } catch (error) {
-    console.log(error);
     return {
       status: {
         messageType: "error",
@@ -109,5 +109,7 @@ export const executeCreateCalendar = async (calendar) => {
       },
       calendar: {},
     };
+  } finally {
+    await db.close();
   }
 };

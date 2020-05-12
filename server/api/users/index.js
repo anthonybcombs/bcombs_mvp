@@ -12,7 +12,6 @@ export const getUsers = async () => {
     const rows = await db.query(
       `SELECT BIN_TO_UUID(id) as id,email,auth_id,is_profile_filled,BIN_TO_UUID(type) as type,profile_img from users`
     );
-    console.log(rows);
     return rows;
   } catch (error) {
   } finally {
@@ -228,7 +227,6 @@ export const executeSignUp = async (user) => {
   }
 };
 export const executeUserUpdate = async (user) => {
-  console.log(user);
   const db = makeDb();
   try {
     const { personalInfo, familyMembers, members, calendarInfo, email } = user;
@@ -303,7 +301,6 @@ export const executeUserUpdate = async (user) => {
       message: "user updated.",
     };
   } catch (error) {
-    console.log(error);
     return {
       messageType: "error",
       message: "there is an error in user update endpoint.",

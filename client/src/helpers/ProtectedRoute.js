@@ -19,13 +19,8 @@ export default function protectedRoutes({ children }) {
   const location = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (
-      location.pathname.includes("dashboard") &&
-      !auth.hasOwnProperty("user_id")
-    ) {
-      dispatch(requestUserInfo());
-      dispatch(requestCalendars());
-    }
+    dispatch(requestUserInfo());
+    dispatch(requestCalendars());
   }, [location]);
   if (
     sessionStorage.getItem("access_token") === null ||
