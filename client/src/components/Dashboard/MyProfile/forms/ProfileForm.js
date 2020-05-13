@@ -51,7 +51,8 @@ const ProfileFormStyled = styled.form`
     button[type="submit"] {
       width: ${({ theme }) => theme.button.width.primary};
     }
-
+  }
+  @media (max-width: 599px) {
     .profile-content {
       display: block !important;
       width: 100%;
