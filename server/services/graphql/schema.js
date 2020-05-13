@@ -203,7 +203,7 @@ const mutations = `
         signIn(user:UserSignInInput!):UserSignInType
         changePassword(user:UserChangePasswordInput!):Status
         userUpdate(user: UserUpdateInput!):Status
-        createContact(contact: ContactInput!): [Contact]
+        createContact(contact: ContactInput): [Contact]
         deleteContacts(id: String!): [Contact]
         updateContact(contact: ContactInput!): [Contact]
         createGroup(group: GroupInput!) : AllGroups

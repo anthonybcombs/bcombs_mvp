@@ -5,21 +5,21 @@ import {
   executeSignIn,
   executeChangePassword,
   executeUserUpdate,
-  executeGetUser,
+  executeGetUser
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
   createNewContact,
   editContact,
   getContacts,
-  removeContact,
+  removeContact
 } from "../../api/contacts";
 import {
   getUserGroups,
   editGroups,
   removeGroup,
   createNewGroup,
-  getMembers,
+  getMembers
 } from "../../api/groups";
 import { executeCreateCalendar, getCalendars } from "../../api/calendars";
 import { createNewEvent, getUserEvents } from "../../api/events";
@@ -33,10 +33,10 @@ const resolvers = {
     async users(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type,
+        token_type: args.token_type
       };
       const users = await getUsers();
-      return users.filter((user) => {
+      return users.filter(user => {
         if (args.email) {
           return user.email === args.email;
         }
@@ -71,7 +71,7 @@ const resolvers = {
     async getUserList(root, { keyword }, context) {
       console.log("Get User List", keyword);
       return await executeGetUser(keyword);
-    },
+    }
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -87,6 +87,7 @@ const resolvers = {
       return await executeUserUpdate(user);
     },
     async createContact(root, { contact }, context) {
+      console.log("Create Contact", contact);
       const response = await createNewContact(contact);
       return response;
     },
@@ -97,9 +98,9 @@ const resolvers = {
       return await editContact(contact);
     },
     async createGroup(root, { group }, context) {
-      console.log('Grouppp,',group)
+      console.log("Grouppp,", group);
       const response = await createNewGroup(group);
-        console.log('Grouppp response,',response)
+      console.log("Grouppp response,", response);
       return response;
     },
     async updateGroup(root, { group }, context) {
@@ -113,8 +114,8 @@ const resolvers = {
     },
     async createEvent(root, { event }, context) {
       return await createNewEvent(event);
-    },
-  },
+    }
+  }
 };
 
 export default resolvers;

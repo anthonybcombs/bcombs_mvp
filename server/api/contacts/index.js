@@ -101,10 +101,12 @@ export const createNewContact = async ({
   const db = makeDb();
   let results = [];
 
-  console.log("removed_groups", removed_groups);
   try {
     const user = await getUserFromDatabase(email);
     const currentUser = await getUserFromDatabase(auth_email);
+    console.log("Userrr", user);
+    console.log("Userrr currentUser", currentUser);
+    console.log("*****************************************************");
     if (user) {
       await db.query(
         "INSERT IGNORE INTO `contacts`(`id`,`user_id`,`first_name`,`last_name`,`phone_number`,`email`,`relation`,`added_by`) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),?,?,?,?,?,UUID_TO_BIN(?))",

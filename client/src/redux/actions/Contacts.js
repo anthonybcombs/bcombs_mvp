@@ -14,6 +14,7 @@ import { requestUserGroup } from "./Groups";
 
 const addContactToDatabase = async payload => {
   try {
+    console.log("addContactToDatabase payload", payload);
     const { data } = await graphqlClient.mutate({
       mutation: CONTACT_CREATE_MUTATION,
       variables: {
@@ -29,7 +30,7 @@ const addContactToDatabase = async payload => {
 };
 const updateContactToDatabase = async contact => {
   try {
-    console.log('updateContactToDatabase contact',contact)
+    console.log("updateContactToDatabase contact", contact);
     const { data } = await graphqlClient.mutate({
       mutation: UPDATE_CONTACT_MUTATION,
       variables: {
@@ -88,6 +89,7 @@ export const addContact = contact => {
       email: contact.email,
       relation: contact.relation,
       selected_groups: contact.selectedGroups,
+      removed_groups: [],
       auth_email: contact.authEmail
     }
   };
