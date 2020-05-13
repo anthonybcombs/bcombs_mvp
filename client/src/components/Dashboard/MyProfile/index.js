@@ -45,10 +45,10 @@ const ProfileSyled = styled.div`
   #personal-info-header div:nth-of-type(1) div:nth-of-type(1) {
     position: absolute;
     display: block;
-    width: 250px;
+
     height: auto;
     top: 25%;
-    left: 32%;
+
     text-align: center;
   }
   #personal-info-header div:nth-of-type(1) div:nth-of-type(1) h3,

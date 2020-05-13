@@ -196,7 +196,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleInputChange("firstname", target.value);
                 }}
-                ref={register({ required: true })}
+                ref={register({ required: true, maxLength: 20 })}
                 value={data.firstname}
               />
               <label className="field-label">First Name</label>
@@ -205,6 +205,11 @@ export default function index({
               field={errors.firstname}
               errorType="required"
               message="Firstname is required."
+            />
+            <ErrorMessage
+              field={errors.firstname}
+              errorType="maxLength"
+              message="Length should not be greater than 20."
             />
           </div>
 
@@ -217,7 +222,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleInputChange("lastname", target.value);
                 }}
-                ref={register({ required: true })}
+                ref={register({ required: true, maxLength: 30 })}
                 value={data.lastname}
               />
               <label className="field-label">Last Name</label>
@@ -226,6 +231,11 @@ export default function index({
               field={errors.lastname}
               errorType="required"
               message="Lastname is required."
+            />
+            <ErrorMessage
+              field={errors.lastname}
+              errorType="maxLength"
+              message="Length should not be greater than 30."
             />
           </div>
 
@@ -315,7 +325,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleInputChange("address", target.value);
                 }}
-                ref={register({ required: true })}
+                ref={register({ required: true, maxLength: 100 })}
                 value={data.address}
               />
               <label className="field-label">Address</label>
@@ -324,6 +334,11 @@ export default function index({
               field={errors.address}
               errorType="required"
               message="Address is required."
+            />
+            <ErrorMessage
+              field={errors.address}
+              errorType="maxLength"
+              message="Length should not be greater than 100."
             />
           </div>
 
@@ -359,9 +374,16 @@ export default function index({
                 }}
                 ref={register}
                 value={data.school}
+                ref={register({ maxLength: 50 })}
               />
               <label className="field-label">School</label>
             </div>
+
+            <ErrorMessage
+              field={errors.school}
+              errorType="maxLength"
+              message="Length should not be greater than 50."
+            />
           </div>
 
           <div className="form-group">
