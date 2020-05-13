@@ -45,16 +45,43 @@ export const editContact = async data => {
   let result = [];
   try {
     const { first_name, last_name, phone_number, email, relation, id } = data;
+    const currentUser = await getUserFromDatabase(email);
     await db.query(
       `UPDATE contacts SET first_name=?,last_name=?,phone_number=?,email=?,relation=? WHERE id=UUID_TO_BIN(?)`,
       [first_name, last_name, phone_number, email, relation, id]
     );
+    console.log("dataaaaaaaaa", data);
+    if (data.removed_groups.length > 0) {
+      let groupValuesQuery = data.removed_groups.map(currentItem => {
+        return `(UUID_TO_BIN("${currentItem}"),UUID_TO_BIN("${currentUser.id}"))`;
+      });
+      groupValuesQuery = groupValuesQuery.join(",");
+      await db.query(
+        "DELETE FROM `group_members`  WHERE (group_id, user_id) IN (" +
+          groupValuesQuery +
+          ")"
+      );
+    }
+
+    if (data.selected_groups.length > 0) {
+      let groupMemberValuesQuery = data.selected_groups.map(item => {
+        return `(UUID_TO_BIN("${item}"),UUID_TO_BIN("${currentUser.id}"))`;
+      });
+
+      groupMemberValuesQuery = groupMemberValuesQuery.join(",");
+
+      await db.query(
+        "INSERT IGNORE INTO `group_members`(`group_id`,`user_id`) VALUES " +
+          groupMemberValuesQuery
+      );
+    }
 
     const rows = await db.query(
       `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number,relation  from contacts`
     );
     result = JSON.parse(JSON.stringify(rows));
   } catch (error) {
+    console.log("Edit Contact Error", error);
   } finally {
     await db.close();
     return result;
@@ -73,6 +100,8 @@ export const createNewContact = async ({
 }) => {
   const db = makeDb();
   let results = [];
+
+  console.log("removed_groups", removed_groups);
   try {
     const user = await getUserFromDatabase(email);
     const currentUser = await getUserFromDatabase(auth_email);

@@ -41,7 +41,8 @@ export default function index({
         ...contact,
         selectedGroups: groups
           .filter(group => group.contacts.includes(contact.user_id))
-          .map(group => group.id)
+          .map(group => group.id),
+        removedGroups: []
       });
     }
   }, [contact, isVisible]);
@@ -56,9 +57,23 @@ export default function index({
       // } else {
       //   newSelectedGroups.push(selectedGroupId);
       // }
+      let updatedRemovedGroups = contactDetails.removedGroups.filter(
+        item => !removeGroupIds.includes(item)
+      );
       setContactDetails({
         ...contactDetails,
-        selectedGroups: selectedGroupIds
+        selectedGroups: selectedGroupIds,
+        removedGroups: updatedRemovedGroups
+      });
+    } else if (id === "removedGroups") {
+      let removeGroupIds = value.map(item => item.id);
+      let updatedSelectedGroups = contactDetails.selectedGroups.filter(
+        item => !removeGroupIds.includes(item)
+      );
+      setContactDetails({
+        ...contactDetails,
+        removedGroups: removeGroupIds,
+        selectedGroups: updatedSelectedGroups
       });
     } else {
       setContactDetails({
@@ -68,18 +83,19 @@ export default function index({
     }
   };
   const handleSubmit = value => {
-    groups.forEach(group => {
-      if (contactDetails.selectedGroups.includes(group.id)) {
-        if (!group.contacts.includes(contactDetails.id)) {
-          group.contacts.push(contactDetails.id);
-        }
-      } else {
-        group.contacts = group.contacts.filter(
-          contactId => contactId !== contactDetails.id
-        );
-      }
-      dispatch(updateGroup(group));
-    });
+    // groups.forEach(group => {
+    //   if (contactDetails.selectedGroups.includes(group.id)) {
+    //     if (!group.contacts.includes(contactDetails.id)) {
+    //       group.contacts.push(contactDetails.id);
+    //     }
+    //   } else {
+    //     group.contacts = group.contacts.filter(
+    //       contactId => contactId !== contactDetails.id
+    //     );
+    //   }
+    //   console.log("GROUPPPPPPPPPPPP", group);
+    //   //dispatch(updateGroup(group));
+    // });
 
     dispatch(updateContact(contactDetails));
     toggleEditContactModal(false);

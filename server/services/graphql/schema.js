@@ -53,6 +53,7 @@ const inputs = `
         relation: String
         auth_email:String
         selected_groups:[String]
+        removed_groups:[String]
     }
     input CalendarInfoInput{
         name: String!

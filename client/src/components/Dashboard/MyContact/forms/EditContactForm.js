@@ -147,12 +147,24 @@ export default function ContactForm({
       });
       setGroupOptions(formattedGroups);
       setDefaultGroups(
-        groups.filter(item => contactDetails.selectedGroups.includes(item.id))
+        groups
+          .filter(item => contactDetails.selectedGroups.includes(item.id))
+          .map(item => {
+            return { name: item.name, id: item.id };
+          })
       );
     }
   }, [groups]);
   const handleSelectChange = value => {
     handleContactDetailsChange("selectedGroups", value);
+  };
+
+  const handleRemoveChange = value => {
+    const currentGroupIds = value.map(item => item.id);
+    const removedGroups = groupOptions.filter(
+      item => !currentGroupIds.includes(item.id)
+    );
+    handleContactDetailsChange("removedGroups", removedGroups);
   };
 
   return (
@@ -330,8 +342,9 @@ export default function ContactForm({
             options={groupOptions}
             selectedValues={defaultGroups}
             //selectedValues={contactDetails.selectedGroups || []}
-            hasSelectAll={false}
+
             onSelect={handleSelectChange}
+            onRemove={handleRemoveChange}
             placeholder="Add from my contacts"
             displayValue="name"
             closeIcon="cancel"

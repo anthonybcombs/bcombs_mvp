@@ -51,6 +51,11 @@ const ProfileFormStyled = styled.form`
     button[type="submit"] {
       width: ${({ theme }) => theme.button.width.primary};
     }
+
+    .profile-content {
+      display: block !important;
+      width: 100%;
+    }
   }
 
   .span-value {
@@ -58,7 +63,7 @@ const ProfileFormStyled = styled.form`
   }
   .profile-content {
     background: none !important;
-    width: 50% !important;
+    width: 50%;
     display: inline-block;
     line-height: 1.5;
     text-transform: capitalize;

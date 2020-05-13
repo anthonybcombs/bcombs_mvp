@@ -27,23 +27,22 @@ const addContactToDatabase = async payload => {
     console.log("addContactDatabase error", error);
   }
 };
-const updateContactToDatabase = contact => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { data } = await graphqlClient.mutate({
-        mutation: UPDATE_CONTACT_MUTATION,
-        variables: {
-          contact: {
-            ...contact[0]
-          }
+const updateContactToDatabase = async contact => {
+  try {
+    console.log('updateContactToDatabase contact',contact)
+    const { data } = await graphqlClient.mutate({
+      mutation: UPDATE_CONTACT_MUTATION,
+      variables: {
+        contact: {
+          ...contact
         }
-      });
+      }
+    });
 
-      return resolve(data.updateContact);
-    } catch (error) {
-      reject("error");
-    }
-  });
+    return data.updateContact;
+  } catch (error) {
+    console.log("updateContactToDatabase error", error);
+  }
 };
 const removeContactToDatabase = contact => {
   return new Promise(async (resolve, reject) => {
@@ -103,7 +102,9 @@ export const updateContact = contact => {
       last_name: contact.last_name,
       phone_number: contact.phone_number,
       email: contact.email,
-      relation: contact.relation
+      relation: contact.relation,
+      selected_groups: contact.selectedGroups,
+      removed_groups: contact.removedGroups
     }
   };
 };
@@ -159,7 +160,7 @@ export function* addedContact({ contact }) {
 }
 export function* updatedContact({ contact }) {
   try {
-    const response = yield call(updateContactToDatabase, [contact]);
+    const response = yield call(updateContactToDatabase, contact);
 
     yield put({
       type: actionType.SET_USER_CONTACT_LIST,
