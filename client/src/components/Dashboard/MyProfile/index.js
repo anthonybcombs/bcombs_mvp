@@ -194,9 +194,9 @@ export default function index() {
   ] = useState(false);
 
   const [dashboard, setDashboard] = useState("Events");
-  const { auth, settings, relatives, user, familyMembers } = useSelector(
-    ({ auth, settings, relatives, user, familyMembers }) => {
-      return { auth, settings, relatives, user, familyMembers };
+  const { auth, settings, relatives, user, FamilyMembers } = useSelector(
+    ({ auth, settings, relatives, user, FamilyMembers }) => {
+      return { auth, settings, relatives, user, FamilyMembers };
     }
   );
 
@@ -396,16 +396,17 @@ export default function index() {
               </tr>
             </thead>
             <tbody>
-              {familyMembers.map((familymember) => {
-                return (
-                  <tr key={familymember.id}>
-                    <td>{`${familymember.firstname} ${familymember.lastname}`}</td>
-                    <td></td>
-                    <td></td>
-                    <td>{familymember.familyrelationship.toUpperCase()}</td>
-                  </tr>
-                );
-              })}
+              {FamilyMembers &&
+                FamilyMembers.map((FamilyMember) => {
+                  return (
+                    <tr key={FamilyMember.id}>
+                      <td>{`${FamilyMember.firstname} ${FamilyMember.lastname}`}</td>
+                      <td></td>
+                      <td></td>
+                      <td>{FamilyMember.familyrelationship.toUpperCase()}</td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
