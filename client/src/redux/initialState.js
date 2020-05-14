@@ -151,7 +151,26 @@ export const initialState = {
     },
   ],
   calendars: [],
-  familyMembers: [],
+  familyMembers: [
+    {
+      id: uuid(),
+      userId: uuid(),
+      name: "Bon Mercado",
+      color: randomColor(),
+    },
+    {
+      id: uuid(),
+      userId: uuid(),
+      name: "Test Name 1",
+      color: randomColor(),
+    },
+    {
+      id: uuid(),
+      userId: uuid(),
+      name: "Test Name 2",
+      color: randomColor(),
+    },
+  ],
   contacts: [
     {
       id: uuid(),

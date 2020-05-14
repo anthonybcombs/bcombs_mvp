@@ -21,7 +21,7 @@ export const requestFamilyMembers = () => {
 };
 
 export function* gotFamilyMembers() {
-  // yield take([actionType.REQUEST_GET_CALENDARS_COMPLETED]);
+  yield take([actionType.REQUEST_GET_CALENDARS_COMPLETED]);
   const familyMembers = yield call(getFamilyMembersFromDatabase, {
     access_token: sessionStorage.getItem("access_token"),
     token_type: sessionStorage.getItem("token_type"),

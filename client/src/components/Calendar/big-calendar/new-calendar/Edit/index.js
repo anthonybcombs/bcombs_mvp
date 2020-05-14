@@ -13,15 +13,18 @@ const EditCalendarModalStyled = styled.div`
     width: 50%;
   }
 `;
-export default function index({ isVisible = true, toggleEditCalendarModal }) {
-  const [calendarDetails, setCalendarDetails] = useState({
-    name: "",
-    selectedFamilyMembers: new Map(),
-    image: "",
-    visibilityType: "Private",
+export default function index({
+  isVisible = true,
+  toggleEditCalendarModal,
+  calendar,
+}) {
+  const [calendarDetails, setCalendarDetails] = useState(calendar);
+  useEffect(() => {
+    setCalendarDetails(calendar);
+  }, [calendar]);
+  const { familyMembers } = useSelector(({ familyMembers }) => {
+    return { familyMembers };
   });
-  useEffect(() => {}, []);
-  const familyMembers = useSelector(({ familyMembers }) => familyMembers);
   const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
     setCalendarDetails({ ...calendarDetails, [id]: value });
@@ -45,6 +48,15 @@ export default function index({ isVisible = true, toggleEditCalendarModal }) {
         isChecked
       ),
     });
+  };
+  const handleCancel = () => {
+    setCalendarDetails({
+      name: "",
+      selectedFamilyMembers: new Map(),
+      visibilityType: "Private",
+      image: "",
+    });
+    toggleEditCalendarModal(false);
   };
   const handleFormSubmit = async () => {
     dispatch(requestAddCalendar(calendarDetails));
@@ -79,9 +91,9 @@ export default function index({ isVisible = true, toggleEditCalendarModal }) {
           details={calendarDetails}
           familyMembers={familyMembers}
           onSubmit={handleFormSubmit}
+          onCancel={handleCancel}
           handleInputChange={handleInputChange}
           handleCheckBoxChange={handleCheckBoxChange}
-          toggleEditCalendarModal={toggleEditCalendarModal}
         />
       </div>
     </EditCalendarModalStyled>,
