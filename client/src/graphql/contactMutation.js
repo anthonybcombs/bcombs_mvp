@@ -9,6 +9,7 @@ export const DELETE_CONTACT_MUTATION = gql`
       last_name
       phone_number
       relation
+      user_id
     }
   }
 `;
@@ -22,6 +23,7 @@ export const UPDATE_CONTACT_MUTATION = gql`
       last_name
       phone_number
       relation
+      user_id
     }
   }
 `;
@@ -35,6 +37,7 @@ export const CONTACT_CREATE_MUTATION = gql`
       last_name
       phone_number
       relation
+      user_id
     }
   }
 `;

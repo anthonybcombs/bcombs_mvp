@@ -113,7 +113,7 @@ export default function index({
   const dispatch = useDispatch();
   console.log("11111 currentContacts", currentContacts);
   console.log("11111 groupMembers", groupMembers);
-  console.log("11111 contacts", contacts);
+  console.log("11111 groupppppppppppppppp", group);
   useEffect(() => {
     if (contacts && isVisible && group && group.contacts) {
       const list = group.contacts.map(c => {
@@ -122,15 +122,26 @@ export default function index({
           ...contact
         };
       });
+      let selections = [];
 
-      const selections = groupMembers
-        .filter(c => !group.contacts.includes(c.user_id))
-        .map(c => {
+      if (groupMembers.length > 0) {
+        selections = groupMembers
+          .filter(c => !group.contacts.includes(c.user_id))
+          .map(c => {
+            return {
+              id: c.user_id,
+              name: `${c.first_name} ${c.last_name}`
+            };
+          });
+      } else {
+        selections = contacts.map(c => {
           return {
             id: c.user_id,
             name: `${c.first_name} ${c.last_name}`
           };
         });
+      }
+
       setCurrentGroupName(group.name);
       setCurrentContacts(list);
       setContactSelections(selections);

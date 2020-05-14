@@ -35,6 +35,7 @@ const ContactFormStyled = styled.form`
 export default function ContactForm({
   contactDetails,
   groups,
+  isVisible,
   onSubmit,
   handleContactDetailsChange
 }) {
@@ -54,7 +55,7 @@ export default function ContactForm({
       });
       setGroupOptions(formattedGroups);
     }
-  }, [groups]);
+  }, [groups, isVisible]);
 
   const handleSelectChange = value => {
     handleContactDetailsChange("selectedGroups", value);
