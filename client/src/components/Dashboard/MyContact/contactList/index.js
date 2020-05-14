@@ -24,6 +24,7 @@ const ContactListStyled = styled.div`
 `;
 
 export default function index({
+  auth,
   contacts,
   groups,
   setNewContactModalVisible,
@@ -74,6 +75,7 @@ export default function index({
   return (
     <ContactListStyled>
       <EditContactModal
+        auth={auth}
         isVisible={isEditContactModalVisible}
         toggleEditContactModal={setisEditContactModalVisible}
         contact={contact || {}}

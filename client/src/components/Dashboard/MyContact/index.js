@@ -324,6 +324,7 @@ export default function index() {
         </div>
         <div>
           <ContactList
+            auth={auth}
             headerText={selectedLabel}
             contacts={currentContacts}
             groups={(groups && groups.created_groups) || []}

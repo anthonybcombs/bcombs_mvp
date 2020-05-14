@@ -28,6 +28,7 @@ const EditContactModal = styled.div`
 export default function index({
   isVisible = true,
   toggleEditContactModal,
+  auth,
   groups,
   contact,
   typeOfForm = "Edit Contact"
@@ -36,7 +37,6 @@ export default function index({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("INSIDE USE EFFECT CONTACT", contact);
     if (contact.user_id) {
       setContactDetails({
         ...contact,
@@ -94,11 +94,18 @@ export default function index({
     //       contactId => contactId !== contactDetails.id
     //     );
     //   }
-    //   console.log("GROUPPPPPPPPPPPP", group);
+    //
     //   //dispatch(updateGroup(group));
     // });
-    dispatch(updateContact(contactDetails));
-    toggleEditContactModal(false);
+
+    if (contactDetails) {
+      if (contactDetails.email !== auth.email) {
+        dispatch(updateContact(contactDetails));
+        toggleEditContactModal(false);
+      } else {
+        alert(`Email should not match your current email.`);
+      }
+    }
   };
   if (!isVisible) {
     return <></>;
