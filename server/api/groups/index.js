@@ -127,7 +127,8 @@ export const createNewGroup = async ({
       [id, name, visibility || "Public", currentUser.id]
     );
 
-    if (member_ids.length > 0) {
+    if (member_ids.length > 0 && member_ids[0] !== null) {
+      console.log("MEMBER IDS", member_ids);
       let groupMemberValuesQuery = member_ids.reduce(
         (accumulator, memberId) => {
           accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${memberId}")),`;
@@ -160,6 +161,7 @@ export const getMembers = async id => {
   const db = makeDb();
   let contacts = [];
   try {
+    console.log("Get Members ", id);
     let userIds = await db.query(
       "SELECT BIN_TO_UUID(user_id) as user_id FROM group_members WHERE group_id=UUID_TO_BIN(?)",
       [id]
@@ -168,7 +170,7 @@ export const getMembers = async id => {
       userIds && userIds.length > 0 ? JSON.parse(JSON.stringify(userIds)) : [];
 
     userIds = userIds.map(item => `UUID_TO_BIN("${item.user_id}")`);
-
+    console.log("Get Members userIds ", userIds);
     contacts = await db.query(
       `SELECT user_profiles.first_name,
       user_profiles.last_name,
@@ -179,6 +181,7 @@ export const getMembers = async id => {
       WHERE users.id IN (${userIds.join(",")}) `
     );
     contacts = JSON.parse(JSON.stringify(contacts));
+    console.log("Get Members contacts ", contacts);
   } catch (err) {
     console.log("Error", err);
   } finally {

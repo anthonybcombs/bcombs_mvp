@@ -19,6 +19,7 @@ const NewContactModal = styled.div`
 export default function index({
   isVisible = true,
   toggleCreateContactModal,
+  contacts,
   groups,
   auth
 }) {
@@ -75,14 +76,25 @@ export default function index({
     //   selectedGroup.contacts.push(contactDetails.id);
     //   dispatch(updateGroup(selectedGroup));
     // });
-    const payload = {
-      ...contactDetails,
-      authEmail: auth.email
-    };
-    console.log("PAYLOADDDDDDDDD", payload);
-    dispatch(addContact(payload));
-    toggleCreateContactModal(false);
-    resetState();
+    if (contactDetails) {
+      const isEmailExist = contacts.findIndex(
+        item => item.email === contactDetails.email
+      );
+
+      if (isEmailExist === -1) {
+        const payload = {
+          ...contactDetails,
+          authEmail: auth.email
+        };
+        console.log("EMAIL", contacts);
+        console.log("EMAIL payload", payload);
+        dispatch(addContact(payload));
+        toggleCreateContactModal(false);
+        resetState();
+      } else {
+        alert(`Email already exist!`);
+      }
+    }
   };
   if (!isVisible) {
     return <></>;

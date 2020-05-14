@@ -139,20 +139,19 @@ export default function ContactForm({
 
   useEffect(() => {
     if (groups) {
+      let defaultGroups = groups
+        .filter(item => contactDetails.selectedGroups.includes(item.id))
+        .map(item => {
+          return { name: item.name, id: item.id };
+        });
       let formattedGroups = groups.map(item => {
         return {
-          name: `${item.name} `,
+          name: `${item.name}`,
           id: item.id
         };
       });
       setGroupOptions(formattedGroups);
-      setDefaultGroups(
-        groups
-          .filter(item => contactDetails.selectedGroups.includes(item.id))
-          .map(item => {
-            return { name: item.name, id: item.id };
-          })
-      );
+      setDefaultGroups(defaultGroups);
     }
   }, [groups]);
   const handleSelectChange = value => {
@@ -166,7 +165,7 @@ export default function ContactForm({
     );
     handleContactDetailsChange("removedGroups", removedGroups);
   };
-
+  console.log("contactDetailszxxxxxxxxxx", contactDetails);
   return (
     <ContactFormStyled
       method="POST"
@@ -251,7 +250,6 @@ export default function ContactForm({
               }}
               ref={register({
                 required: true,
-                maxLength: 15,
                 pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/
               })}
               value={contactDetails.phone_number}
@@ -266,12 +264,7 @@ export default function ContactForm({
           <ErrorMessage
             field={errors.phone_number}
             errorType="pattern"
-            message="Numeric only."
-          />
-          <ErrorMessage
-            field={errors.first_name}
-            errorType="maxLength"
-            message="Length should not be greater than 15."
+            message="Only accepts numeric and should be a minimum of 6 digits"
           />
         </div>
 

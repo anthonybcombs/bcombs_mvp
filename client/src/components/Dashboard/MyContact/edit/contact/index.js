@@ -34,8 +34,9 @@ export default function index({
 }) {
   const [contactDetails, setContactDetails] = useState({});
   const dispatch = useDispatch();
-  console.log("groupzzzs", groups);
+
   useEffect(() => {
+    console.log("Contacttttttttt2tt", contact);
     if (contact.user_id) {
       setContactDetails({
         ...contact,
@@ -96,14 +97,13 @@ export default function index({
     //   console.log("GROUPPPPPPPPPPPP", group);
     //   //dispatch(updateGroup(group));
     // });
-
     dispatch(updateContact(contactDetails));
     toggleEditContactModal(false);
   };
   if (!isVisible) {
     return <></>;
   }
-
+  console.log("contactDetailszzz", contactDetails);
   return ReactDOM.createPortal(
     <EditContactModal
       className="modal"

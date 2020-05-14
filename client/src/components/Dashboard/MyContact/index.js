@@ -141,7 +141,9 @@ export default function index() {
     dispatch(getContact(auth.email));
     setCurrentContacts(contacts);
   }, []);
-
+  console.log("Get User Group", groups);
+  console.log("Get User Group groupMembers", groupMembers);
+  console.log("CONTACTSSSSSSSSSSSSSSS", contacts);
   // const selectedGroup = groups.find(group => group.id === selectedGroupId);
   const filteredContacts = contacts.filter(contact => {
     if (selectedGroupId === 0) {
@@ -201,6 +203,7 @@ export default function index() {
   return (
     <MyContactsStyled>
       <NewContactModal
+        contacts={contacts}
         groups={(groups && groups.created_groups) || []}
         isVisible={isNewContactModalVisible}
         toggleCreateContactModal={setNewContactModalVisible}

@@ -61,11 +61,13 @@ const removeGroupToDatabase = group => {
 
 const getMembersToDatabase = async id => {
   try {
+    console.log("getMemberToDatabase id", id);
     const { data } = await graphqlClient.query({
       query: GET_GROUP_MEMBERS_QUERY,
       variables: { id }
     });
 
+    console.log("getMemberToDatabase data", data);
     return data.getGroupMembers;
   } catch (err) {}
 };

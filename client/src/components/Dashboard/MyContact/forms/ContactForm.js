@@ -130,7 +130,6 @@ export default function ContactForm({
               }}
               ref={register({
                 required: true,
-                maxLength: 15,
                 pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/
               })}
               value={contactDetails.phone_number}
@@ -142,15 +141,11 @@ export default function ContactForm({
             errorType="required"
             message="Phone Number is required."
           />
-          <ErrorMessage
-            field={errors.phone_number}
-            errorType="maxLength"
-            message="Length should not be greater than 20."
-          />
+
           <ErrorMessage
             field={errors.phone_number}
             errorType="pattern"
-            message="Numeric only."
+            message="Only accepts numeric and should be a minimum of 6 digits"
           />
         </div>
 

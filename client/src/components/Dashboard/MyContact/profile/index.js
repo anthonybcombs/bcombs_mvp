@@ -57,7 +57,7 @@ export default function index({
         </div>
         <div>
           <h3>
-            {contactDetails.first_name} {contactDetails.first_name}
+            {contactDetails.first_name} {contactDetails.last_name}
           </h3>
           <p>Email: {contactDetails.email}</p>
           <p>Phone Number: {contactDetails.phone_number}</p>
