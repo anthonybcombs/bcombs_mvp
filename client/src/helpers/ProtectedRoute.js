@@ -4,7 +4,7 @@ import { Redirect, useLocation } from "@reach/router";
 import { useSelector, useDispatch } from "react-redux";
 import { requestUserInfo } from "../redux/actions/Auth";
 import { requestCalendars } from "../redux/actions/Calendars";
-import { requestFamilyMembers } from "../redux/actions/familyMembers";
+import { requestFamilyMembers } from "../redux/actions/FamilyMembers";
 import Loading from "../helpers/Loading";
 export default function protectedRoutes({ children }) {
   const { auth, status, calendars } = useSelector(
