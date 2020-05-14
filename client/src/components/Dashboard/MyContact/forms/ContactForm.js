@@ -35,6 +35,7 @@ const ContactFormStyled = styled.form`
 export default function ContactForm({
   contactDetails,
   groups,
+  isVisible,
   onSubmit,
   handleContactDetailsChange
 }) {

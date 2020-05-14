@@ -6,7 +6,7 @@ export default function FamilyMembers(
 ) {
   switch (action.type) {
     case actionType.REQUEST_FAMILY_MEMBERS_COMPLETED: {
-      return [...action.payload];
+      return [...(action.payload || [])];
     }
     default:
       return state;
