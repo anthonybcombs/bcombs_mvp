@@ -59,3 +59,21 @@ export const CREATE_CALENDAR_MUTATION = gql`
     }
   }
 `;
+export const EDIT_CALENDAR_MUTATON = gql`
+  mutation editCalendar($calendar: CalendarInput!) {
+    editCalendar(calendar: $calendar) {
+      status {
+        messageType
+        message
+      }
+      calendar {
+        id
+        user_id
+        name
+        color
+        visibilityType
+        image
+      }
+    }
+  }
+`;

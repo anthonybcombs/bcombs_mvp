@@ -19,11 +19,9 @@ export default function protectedRoutes({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
-    if (!auth.hasOwnProperty("user_id")) {
-      dispatch(requestUserInfo());
-      dispatch(requestCalendars());
-      dispatch(requestFamilyMembers());
-    }
+    dispatch(requestUserInfo());
+    dispatch(requestCalendars());
+    dispatch(requestFamilyMembers());
     window.scrollTo(0, 0);
   }, [location]);
   if (

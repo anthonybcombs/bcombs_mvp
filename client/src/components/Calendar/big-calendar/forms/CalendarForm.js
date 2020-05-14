@@ -107,6 +107,9 @@ export default function CreateCalendarForm({
   });
   React.useEffect(() => {
     register({ name: "image" }, { required: true });
+    if (details.image.length > 0) {
+      setValue("image", details.image);
+    }
   }, []);
   const theme = useContext(ThemeContext);
   return (

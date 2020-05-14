@@ -21,7 +21,11 @@ import {
   createNewGroup,
   getMembers,
 } from "../../api/groups";
-import { executeCreateCalendar, getCalendars } from "../../api/calendars";
+import {
+  executeCreateCalendar,
+  executeEditCalendar,
+  getCalendars,
+} from "../../api/calendars";
 import { createNewEvent, getUserEvents } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 
@@ -115,6 +119,9 @@ const resolvers = {
     },
     async createCalendar(root, { calendar }, context) {
       return await executeCreateCalendar(calendar);
+    },
+    async editCalendar(root, { calendar }, context) {
+      return await executeEditCalendar(calendar);
     },
     async createEvent(root, { event }, context) {
       return await createNewEvent(event);

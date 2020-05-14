@@ -316,6 +316,7 @@ export const executeUserUpdate = async (user) => {
       message: "user updated.",
     };
   } catch (error) {
+    console.log(error);
     return {
       messageType: "error",
       message: "there is an error in user update endpoint.",

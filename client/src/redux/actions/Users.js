@@ -160,7 +160,6 @@ export function* addedUser({ user }) {
 export function* updatedUser({ user }) {
   try {
     const updateUserResponse = yield call(updateUserToDatabase, user);
-    console.log("UpdateUserREsponseee", updateUserResponse);
     if (updateUserResponse.messageType !== "error") {
       yield put({
         type: actionType.REQUEST_UPDATE_USER_COMPLETED,

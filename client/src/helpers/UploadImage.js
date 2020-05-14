@@ -18,7 +18,7 @@ const UploadImageStyled = styled.div`
     width: 100%;
   }
 `;
-export default function UploadImage({ displayImage, handleImageChange }) {
+export default function UploadImage({ displayImage = "", handleImageChange }) {
   const [imageView, setImageView] = useState(
     displayImage.length > 0 ? displayImage : ""
   );

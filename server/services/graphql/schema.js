@@ -57,10 +57,12 @@ const inputs = `
         removed_groups:[String]
     }
     input CalendarInfoInput{
+        id: String
         name: String!
         image: String
         familyMembers:[String],
         visibilityType: String!
+        color: String
     }    
     input CreateProfileInput{
         email: String!
@@ -222,6 +224,7 @@ const mutations = `
         createGroup(group: GroupInput!) : AllGroups
         updateGroup(group: GroupInput!): AllGroups        
         createCalendar(calendar:CalendarInput!):CalendarType
+        editCalendar(calendar:CalendarInput!):CalendarType
         deleteGroup(id: String!, email:String!): AllGroups
         createEvent(event:EventInput!): Event
     }

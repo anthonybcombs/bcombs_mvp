@@ -89,8 +89,8 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
           details={calendarDetails}
           familyMembers={familyMembers}
           onSubmit={handleFormSubmit}
+          onCancel={handleCancel}
           handleInputChange={handleInputChange}
-          handleCancel={handleCancel}
           handleCheckBoxChange={handleCheckBoxChange}
         />
       </div>

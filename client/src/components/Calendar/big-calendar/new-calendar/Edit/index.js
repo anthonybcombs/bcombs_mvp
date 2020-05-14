@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
-import { requestAddCalendar } from "../../../../../redux/actions/Calendars";
+import { requestEditCalendar } from "../../../../../redux/actions/Calendars";
 import CalendarForm from "../../forms/CalendarForm";
 const EditCalendarModalStyled = styled.div`
   h2 {
@@ -59,7 +59,8 @@ export default function index({
     toggleEditCalendarModal(false);
   };
   const handleFormSubmit = async () => {
-    dispatch(requestAddCalendar(calendarDetails));
+    console.log(calendarDetails);
+    dispatch(requestEditCalendar(calendarDetails));
     setCalendarDetails({
       name: "",
       selectedFamilyMembers: new Map(),
