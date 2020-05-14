@@ -77,7 +77,7 @@ export const editContact = async data => {
     }
 
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number,relation  from contacts`
+      `SELECT BIN_TO_UUID(id) as id, BIN_TO_UUID(user_id) as user_id,first_name,last_name,email,phone_number,relation  from contacts`
     );
     result = JSON.parse(JSON.stringify(rows));
   } catch (error) {

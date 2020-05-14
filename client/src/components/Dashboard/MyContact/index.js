@@ -144,6 +144,7 @@ export default function index() {
   console.log("Get User Group", groups);
   console.log("Get User Group groupMembers", groupMembers);
   console.log("CONTACTSSSSSSSSSSSSSSS", contacts);
+  console.log("CONTACTSSSSSSSSSSSSSSS currentContacts", currentContacts);
   // const selectedGroup = groups.find(group => group.id === selectedGroupId);
   const filteredContacts = contacts.filter(contact => {
     if (selectedGroupId === 0) {
@@ -167,7 +168,6 @@ export default function index() {
   };
 
   const getDuplicateContacts = () => {
-    console.log("getDuplicateContacts contacts", contacts);
     return contacts && contacts.length > 0
       ? contacts.filter(item => {
           const currentItem = contacts.find(

@@ -54,7 +54,7 @@ export default function ContactForm({
       });
       setGroupOptions(formattedGroups);
     }
-  }, [groups]);
+  }, [groups, isVisible]);
 
   const handleSelectChange = value => {
     handleContactDetailsChange("selectedGroups", value);

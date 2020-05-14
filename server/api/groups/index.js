@@ -170,18 +170,19 @@ export const getMembers = async id => {
       userIds && userIds.length > 0 ? JSON.parse(JSON.stringify(userIds)) : [];
 
     userIds = userIds.map(item => `UUID_TO_BIN("${item.user_id}")`);
-    console.log("Get Members userIds ", userIds);
-    contacts = await db.query(
-      `SELECT user_profiles.first_name,
-      user_profiles.last_name,
-      BIN_TO_UUID(user_profiles.user_id) as user_id,
-      users.email 
-      FROM user_profiles INNER JOIN users
-      ON user_profiles.user_id = users.id  
-      WHERE users.id IN (${userIds.join(",")}) `
-    );
-    contacts = JSON.parse(JSON.stringify(contacts));
-    console.log("Get Members contacts ", contacts);
+    if (userIds.length > 0) {
+      contacts = await db.query(
+        `SELECT user_profiles.first_name,
+        user_profiles.last_name,
+        BIN_TO_UUID(user_profiles.user_id) as user_id,
+        users.email 
+        FROM user_profiles INNER JOIN users
+        ON user_profiles.user_id = users.id  
+        WHERE users.id IN (${userIds.join(",")}) `
+      );
+      contacts = JSON.parse(JSON.stringify(contacts));
+      console.log("Get Members contacts ", contacts);
+    }
   } catch (err) {
     console.log("Error", err);
   } finally {

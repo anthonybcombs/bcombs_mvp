@@ -36,7 +36,7 @@ export default function index({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("Contacttttttttt2tt", contact);
+    console.log("INSIDE USE EFFECT CONTACT", contact);
     if (contact.user_id) {
       setContactDetails({
         ...contact,
@@ -46,7 +46,7 @@ export default function index({
         removedGroups: []
       });
     }
-  }, [contact, isVisible]);
+  }, [contact, groups, isVisible]);
 
   const handleContactDetailsChange = (id, value) => {
     if (id === "selectedGroups") {
@@ -127,6 +127,7 @@ export default function index({
             <EditContactForm
               contact={contact}
               groups={groups}
+              isVisible={isVisible}
               contactDetails={contactDetails}
               onSubmit={handleSubmit}
               handleContactDetailsChange={handleContactDetailsChange}
