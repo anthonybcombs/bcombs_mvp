@@ -1,5 +1,4 @@
 import { call, take, put } from "redux-saga/effects";
-import randomColor from "randomcolor";
 import * as actionType from "./Constant";
 import graphqlClient from "../../graphql";
 import { CALENDARS_QUERY } from "../../graphql/query";
@@ -85,7 +84,7 @@ export function* gotCalendars() {
     type: actionType.REQUEST_STATUS_COMPLETED,
     payload: {
       messageType: "info",
-      message: "get calendars",
+      message: "got calendars",
     },
   });
 }

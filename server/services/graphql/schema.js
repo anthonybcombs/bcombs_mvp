@@ -36,6 +36,7 @@ const inputs = `
         gender: String!
         zipcode: String!
         dateofbirth: Date!
+        type: String
     }
     input UserUpdateInput{
         email: String!
@@ -195,6 +196,18 @@ const queryTypes = `
         joined_groups:[Group]
         created_groups:[Group]
     }    
+    type FammilyMemberType{
+        id: String!
+        user_id: String!
+        firstname: String
+        lastname: String
+        familyrelationship: String
+        gender: String
+        zipcode: String
+        dateofbirth: Date
+        type: String    
+        added_at : Date    
+    }
 `;
 
 const mutations = `
@@ -225,7 +238,8 @@ const queries = `
         calendars(access_token: String!,token_type: String!):CalendarsType
         getGroupMembers(id:String!):[Contact],        
         getEvents(email:String!):[Event],
-        getUserList(keyword:String!): [User]        
+        getUserList(keyword:String!): [User]    
+        familymembers(access_token: String!,token_type: String!):[FammilyMemberType]    
     }
 `;
 

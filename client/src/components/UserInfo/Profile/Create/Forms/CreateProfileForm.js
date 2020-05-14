@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { isFuture, parseISO } from "date-fns";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../../../../../helpers/ErrorMessage";
@@ -74,24 +75,25 @@ const CreateProfileStyled = styled.form`
 export default function CreateProfileForm({
   data,
   onSubmit,
-  handleInputChange
+  handleInputChange,
 }) {
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange"
+    reValidateMode: "onChange",
   });
-  const handleDateOfBirthElementTypeChange = value => {
+  const handleDateOfBirthElementTypeChange = (value) => {
     setDateOfBirthElementType(value);
   };
- 
+
   return (
     <CreateProfileStyled
       data-testid="app-create-profile-form"
       method="POST"
       theme={theme}
-      onSubmit={handleSubmit(onSubmit)}>
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <h3>Create my profile</h3>
       <input
         data-testid="app-profile-input-firstname"
@@ -127,7 +129,8 @@ export default function CreateProfileForm({
         onChange={({ target }) => {
           handleInputChange("familyrelationship", target.value);
         }}
-        ref={register({ required: true })}>
+        ref={register({ required: true })}
+      >
         <option value="" disabled hidden>
           Family relationship
         </option>
@@ -148,7 +151,8 @@ export default function CreateProfileForm({
             onChange={({ target }) => {
               handleInputChange("gender", target.value);
             }}
-            ref={register({ required: true })}>
+            ref={register({ required: true })}
+          >
             <option value="" disabled hidden>
               Gender
             </option>
@@ -191,12 +195,27 @@ export default function CreateProfileForm({
             onChange={({ target }) => {
               handleInputChange("dateofbirth", target.value);
             }}
-            ref={register({ required: true })}
+            ref={register({
+              required: true,
+              validate: {
+                notFutureDate: (value) => {
+                  if (isFuture(parseISO(value))) {
+                    return false;
+                  }
+                  return true;
+                },
+              },
+            })}
           />
           <ErrorMessage
             field={errors.dateofbirth}
             errorType="required"
             message="Date of Birth is required."
+          />
+          <ErrorMessage
+            field={errors.dateofbirth}
+            errorType="notFutureDate"
+            message="Future date is not allowed."
           />
         </div>
       </div>

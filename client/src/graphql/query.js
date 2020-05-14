@@ -69,3 +69,19 @@ export const GET_USER_OPTIONS_QUERY = gql`
     }
   }
 `;
+
+export const FAMILY_MEMBER_QUERY = gql`
+  query getFamilyMembers($access_token: String!, $token_type: String!) {
+    familymembers(access_token: $access_token, token_type: $token_type) {
+      id
+      user_id
+      firstname
+      lastname
+      familyrelationship
+      zipcode
+      type
+      dateofbirth
+      added_at
+    }
+  }
+`;

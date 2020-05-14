@@ -38,6 +38,7 @@ import {
   updateUserProfilePhoto,
 } from "../actions/Users";
 import { gotUserTypes } from "../actions/UserTypes";
+import { gotFamilyMembers } from "../actions/FamilyMembers";
 import { requestedStatus, removedStatus } from "../actions/Status";
 import reducer from "../reducers";
 function* rootSaga() {
@@ -74,7 +75,8 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_CHECK_USER_AND_ADD, checkedUserAndAdd);
   //USER TYPES
   yield takeLatest(actionType.REQUEST_USER_TYPES, gotUserTypes);
-
+  //FAMILY MEMBERS
+  yield takeLatest(actionType.REQUEST_FAMILY_MEMBERS, gotFamilyMembers);
   // ADDED BY DENNIS
   yield takeLatest(actionType.REQUEST_UPDATE_USER_PROFILE, updateUserProfile);
   yield takeLatest(actionType.REQUEST_USER_PROFILE, getUserInfo);

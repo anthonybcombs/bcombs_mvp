@@ -250,6 +250,21 @@ export const executeUserUpdate = async (user) => {
           personalInfo.dateofbirth,
         ]
       );
+      familyMembers.forEach(async (familyMember) => {
+        await db.query(
+          "INSERT IGNORE INTO family_members (id,user_id,first_name,last_name,family_relationship,gender,zip_code,birth_date,type) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?,?)",
+          [
+            id,
+            familyMember.firstname,
+            familyMember.lastname,
+            familyMember.familyrelationship,
+            familyMember.gender,
+            familyMember.zipcode,
+            familyMember.dateofbirth,
+            familyMember.type,
+          ]
+        );
+      });
       await db.query(
         "INSERT IGNORE INTO user_calendars (id,user_id,name,color) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?)",
         [id, calendarInfo.name, await randomColor({ user_id: id })]
