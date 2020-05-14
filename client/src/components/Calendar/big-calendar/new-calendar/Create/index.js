@@ -46,6 +46,15 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       ),
     });
   };
+  const handleCancel = () => {
+    setCalendarDetails({
+      name: "",
+      selectedFamilyMembers: new Map(),
+      visibilityType: "Private",
+      image: "",
+    });
+    toggleCreateCalendarModal(false);
+  };
   const handleFormSubmit = async () => {
     dispatch(requestAddCalendar(calendarDetails));
     setCalendarDetails({
@@ -81,8 +90,8 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
           familyMembers={familyMembers}
           onSubmit={handleFormSubmit}
           handleInputChange={handleInputChange}
+          handleCancel={handleCancel}
           handleCheckBoxChange={handleCheckBoxChange}
-          toggleCreateCalendarModal={toggleCreateCalendarModal}
         />
       </div>
     </CreateCalendarModalStyled>,

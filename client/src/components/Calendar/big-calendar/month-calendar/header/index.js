@@ -4,6 +4,8 @@ import {
   faArrowRight,
   faArrowLeft,
   faPlus,
+  faEdit,
+  faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
@@ -32,6 +34,14 @@ const HeaderStyled = styled.div`
   #calendars-control button {
     width: 100%;
     color: white;
+  }
+  .calendar > #buttons {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .calendar > #buttons > svg {
+    margin: 3px 3px 0 3px;
   }
   .calendar {
     height: 100px;
@@ -89,6 +99,8 @@ export default function index({
   const [isVisibileEditCalendarModal, toggleEditCalendarModal] = useState(
     false
   );
+  const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
+  const [selectedCalendar, setSelectedCalendar] = useState({});
   const dateFormat = "MMMM yyyy";
   return (
     <HeaderStyled data-testid="app-big-calendar-header">
@@ -96,10 +108,13 @@ export default function index({
         isVisible={isVisibleCreateCalendarModal}
         toggleCreateCalendarModal={toggleCreateCalendarModal}
       />
-      <EditCalendarModal
-        isVisible={isVisibileEditCalendarModal}
-        toggleEditCalendarModal={toggleEditCalendarModal}
-      />
+      {selectedCalendar.hasOwnProperty("name") && (
+        <EditCalendarModal
+          isVisible={isVisibileEditCalendarModal}
+          toggleEditCalendarModal={toggleEditCalendarModal}
+          calendar={{ ...selectedCalendar, selectedFamilyMembers: new Map() }}
+        />
+      )}
       <div className="grid" id="calendar-type">
         <button
           className={`${calendarType === "week" ? "selected" : ""}`}
@@ -148,9 +163,11 @@ export default function index({
             onClick={() => {
               handleCalendarSelection(calendar.id);
             }}
-            onDoubleClick={(e) => {
-              handleCalendarSelection(calendar.id);
-              toggleEditCalendarModal(true);
+            onMouseEnter={() => {
+              setCalendarButtonsVisible(true);
+            }}
+            onMouseLeave={() => {
+              setCalendarButtonsVisible(false);
             }}
           >
             <img src={calendar.image} />
@@ -162,6 +179,18 @@ export default function index({
               <span style={{ backgroundColor: `${calendar.color}` }}></span>
               {calendar.name}
             </p>
+            {isCalendarButtonsVisible && (
+              <div id="buttons">
+                <FontAwesomeIcon
+                  icon={faEdit}
+                  onClick={() => {
+                    setSelectedCalendar(calendar);
+                    toggleEditCalendarModal(true);
+                  }}
+                />
+                <FontAwesomeIcon icon={faTrashAlt} />
+              </div>
+            )}
           </div>
         ))}
       </div>

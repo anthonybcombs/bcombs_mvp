@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from "react";
+import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import UploadImage from "../../../../helpers/UploadImage";
@@ -100,7 +100,7 @@ export default function CreateCalendarForm({
   onSubmit,
   handleInputChange,
   handleCheckBoxChange,
-  toggleCreateCalendarModal,
+  onCancel,
 }) {
   const { register, handleSubmit, errors, setValue } = useForm({
     mode: "onSubmit",
@@ -188,6 +188,7 @@ export default function CreateCalendarForm({
         message="Calendar Privacy setting is required."
       />
       <UploadImage
+        displayImage={details.image}
         handleImageChange={(image) => {
           setValue("image", image);
           handleInputChange("image", image);
@@ -203,9 +204,7 @@ export default function CreateCalendarForm({
         <button
           data-testid="app-big-calendar-new-cancel-button"
           type="button"
-          onClick={() => {
-            toggleCreateCalendarModal(false);
-          }}
+          onClick={() => onCancel()}
         >
           Cancel
         </button>
