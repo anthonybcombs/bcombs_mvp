@@ -156,7 +156,9 @@ export default function CreateCalendarForm({
                 size="2x"
                 color={familyMember.color}
               />
-              <span> {familyMember.name}</span>
+              <span>
+                {familyMember.firstname} {familyMember.lastname}
+              </span>
             </p>
           </div>
         ))}
