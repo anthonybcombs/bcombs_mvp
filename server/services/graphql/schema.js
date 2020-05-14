@@ -84,6 +84,7 @@ const inputs = `
         name: String
         email: String!
         visibility: String
+        removed_member_ids:[String]
     }
     input CalendarInput{
         creds:CredsInput!

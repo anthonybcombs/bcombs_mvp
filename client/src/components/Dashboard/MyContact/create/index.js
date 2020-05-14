@@ -86,11 +86,13 @@ export default function index({
           ...contactDetails,
           authEmail: auth.email
         };
-        console.log("EMAIL", contacts);
-        console.log("EMAIL payload", payload);
-        dispatch(addContact(payload));
-        toggleCreateContactModal(false);
-        resetState();
+        if (contactDetails.email !== auth.email) {
+          dispatch(addContact(payload));
+          toggleCreateContactModal(false);
+          resetState();
+        } else {
+          alert(`Email should not match your current email.`);
+        }
       } else {
         alert(`Email already exist!`);
       }

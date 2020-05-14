@@ -50,7 +50,7 @@ export const editGroups = async data => {
   const db = makeDb();
   let result = null;
   try {
-    const { id, name, member_ids, email } = data;
+    const { id, name, member_ids, removed_member_ids, email } = data;
 
     const currentUser = await getUserFromDatabase(email);
 
@@ -76,6 +76,18 @@ export const editGroups = async data => {
       await db.query(
         "INSERT IGNORE INTO `group_members`(`group_id`,`user_id`) VALUES " +
           groupMemberValuesQuery
+      );
+    }
+
+    if (removed_member_ids.length > 0) {
+      let groupValuesQuery = removed_member_ids.map(currentItem => {
+        return `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${currentItem}"))`;
+      });
+      groupValuesQuery = groupValuesQuery.join(",");
+      await db.query(
+        "DELETE FROM `group_members`  WHERE (group_id, user_id) IN (" +
+          groupValuesQuery +
+          ")"
       );
     }
     result = await getUserGroups(email);

@@ -96,6 +96,7 @@ export default function index({
   typeOfForm = "Edit Group"
 }) {
   const [currentContacts, setCurrentContacts] = useState([]);
+  const [removedContacts, setRemovedContacts] = useState([]);
   const [currentGroupName, setCurrentGroupName] = useState("");
   const [contactSelections, setContactSelections] = useState([]);
   const [selectedContact, setSelectedContact] = useState([]);
@@ -106,14 +107,13 @@ export default function index({
     setCurrentGroupName("");
     setContactSelections([]);
     setSelectedContact([]);
+    setRemovedContacts([]);
   };
 
   //const [selectedFile, setSelectedFile] = useState([]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  console.log("11111 currentContacts", currentContacts);
-  console.log("11111 groupMembers", groupMembers);
-  console.log("11111 groupppppppppppppppp", group);
+
   useEffect(() => {
     if (contacts && isVisible && group && group.contacts) {
       const list = group.contacts.map(c => {
@@ -161,7 +161,8 @@ export default function index({
         id: group.id,
         name: currentGroupName,
         member_ids: contactIds,
-        email: auth.email
+        email: auth.email,
+        removed_member_ids: removedContacts
       };
 
       dispatch(updateGroup(payload));
@@ -187,10 +188,17 @@ export default function index({
     setCurrentGroupName(value);
   };
 
+  const handleRemoveMember = id => e => {
+    const updatedContacts = currentContacts.filter(item => id !== item.user_id);
+    if (!removedContacts.includes(id)) {
+      setRemovedContacts([...removedContacts, id]);
+    }
+    setCurrentContacts(updatedContacts);
+  };
   if (!isVisible) {
     return <></>;
   }
-
+  console.log("removedContactsss", removedContacts);
   return ReactDOM.createPortal(
     <EditGroupModal
       theme={{
@@ -252,7 +260,10 @@ export default function index({
             /> */}
           </div>
           <div>
-            <GroupContacts contacts={currentContacts} />
+            <GroupContacts
+              contacts={currentContacts}
+              handleRemoveMember={handleRemoveMember}
+            />
             <button
               className="group-submit"
               data-testid="app-dashboard-my-group-new-group-button-save"
@@ -260,6 +271,7 @@ export default function index({
               type="submit">
               Save
             </button>
+            {`   `}
             <button
               className="group-delete"
               data-testid="app-dashboard-my-group-new-group-button-save"
