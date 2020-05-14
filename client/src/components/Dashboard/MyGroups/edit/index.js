@@ -111,7 +111,7 @@ export default function index({
   //const [selectedFile, setSelectedFile] = useState([]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  console.log("currentContacts", currentContacts);
+  console.log("11111 currentContacts", currentContacts);
   console.log("11111 groupMembers", groupMembers);
   console.log("11111 contacts", contacts);
   useEffect(() => {

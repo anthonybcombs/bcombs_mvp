@@ -39,7 +39,7 @@ const updateContactToDatabase = async contact => {
         }
       }
     });
-
+    console.log("updateContactToDatabase edit contact", data.updateContact);
     return data.updateContact;
   } catch (error) {
     console.log("updateContactToDatabase error", error);

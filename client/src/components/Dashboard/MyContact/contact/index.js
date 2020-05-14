@@ -129,13 +129,13 @@ export default function index({
                   Send message
                 </button>
                 <button onClick={handleRemoveContact}>Remove Contact</button>
-                <button
+                {/* <button
                   onClick={() => {
                     setTypeOfFormUsedInEditContact("Add To Group");
                     setisEditContactModalVisible(true);
                   }}>
                   Add to Group
-                </button>
+                </button> */}
               </ContactSettingPopOverStyled>
             </ArrowContainer>
           )}>

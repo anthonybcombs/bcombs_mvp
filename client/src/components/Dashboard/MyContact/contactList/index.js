@@ -70,7 +70,7 @@ export default function index({
       setContactList(contacts);
     }
   }, [contacts, headerText]);
-
+  console.log("CONTACTTTTTTTTTTT", contact);
   return (
     <ContactListStyled>
       <EditContactModal
