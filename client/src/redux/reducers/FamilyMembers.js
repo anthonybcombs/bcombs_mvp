@@ -5,6 +5,9 @@ export default function FamilyMembers(
   action
 ) {
   switch (action.type) {
+    case actionType.REQUEST_FAMILY_MEMBERS_COMPLETED: {
+      return [...action.payload];
+    }
     default:
       return state;
   }

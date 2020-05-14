@@ -17,10 +17,10 @@ import UploadPhotoForm from "./forms/UploadPhotoForm";
 import {
   requestUpdateUserProfile,
   requestUpdateUserPhoto,
-  requestUserProfile
+  requestUserProfile,
 } from "../../../redux/actions/Users";
 
-const getAge = birthDate => {
+const getAge = (birthDate) => {
   console.log("BirthDateee", birthDate);
   return Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e10);
 };
@@ -183,20 +183,20 @@ export default function index() {
     address: "",
     school: "",
     ethnicity: "",
-    grade: ""
+    grade: "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [isEditProfileVisible, setEditProfileVisible] = useState(false);
   const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
   const [
     isCreateRelativeModaVisibile,
-    setIsCreateRelativeModaVisibile
+    setIsCreateRelativeModaVisibile,
   ] = useState(false);
 
   const [dashboard, setDashboard] = useState("Events");
-  const { auth, settings, relatives, user } = useSelector(
-    ({ auth, settings, relatives, user }) => {
-      return { auth, settings, relatives, user };
+  const { auth, settings, relatives, user, familymembers } = useSelector(
+    ({ auth, settings, relatives, user, familymembers }) => {
+      return { auth, settings, relatives, user, familymembers };
     }
   );
 
@@ -223,19 +223,19 @@ export default function index() {
         address: user.profile.address,
         school: user.profile.school,
         ethnicity: user.profile.ethnicity,
-        grade: user.profile.grade
+        grade: user.profile.grade,
       });
     }
   }, [user, isEditProfileVisible]);
 
-  const handleFormSubmit = e => {
+  const handleFormSubmit = (e) => {
     dispatch(
       requestUpdateUserProfile({
         personalInfo: {
           ...personalInfo,
-          id: user.profile.id
+          id: user.profile.id,
         },
-        email: auth.email
+        email: auth.email,
       })
     );
 
@@ -249,7 +249,7 @@ export default function index() {
     setEditProfileVisible(false);
   };
 
-  const handleImageUpload = file => {
+  const handleImageUpload = (file) => {
     let data = new FormData();
     data.append("file", file);
     data.append("email", auth.email);
@@ -328,7 +328,8 @@ export default function index() {
               className={`${dashboard === "Events" ? "selected" : ""}`}
               onClick={() => {
                 setDashboard("Events");
-              }}>
+              }}
+            >
               <p>0</p>
               <p>Events</p>
             </div>
@@ -336,7 +337,8 @@ export default function index() {
               className={`${dashboard === "Calendars" ? "selected" : ""}`}
               onClick={() => {
                 setDashboard("Calendars");
-              }}>
+              }}
+            >
               <p>0</p>
               <p>Calendars</p>
             </div>
@@ -344,7 +346,8 @@ export default function index() {
               className={`${dashboard === "Comments" ? "selected" : ""}`}
               onClick={() => {
                 setDashboard("Comments");
-              }}>
+              }}
+            >
               <p>0</p>
               <p>Comments</p>
             </div>
@@ -377,7 +380,8 @@ export default function index() {
             <button
               onClick={() => {
                 setIsCreateRelativeModaVisibile(true);
-              }}>
+              }}
+            >
               <FontAwesomeIcon icon={faPlus} />
             </button>
             <span>Add A relative</span>
@@ -392,13 +396,13 @@ export default function index() {
               </tr>
             </thead>
             <tbody>
-              {relatives.map(relative => {
+              {familymembers.map((familymember) => {
                 return (
-                  <tr>
-                    <td>{`${relative.firstName} ${relative.lastName}`}</td>
-                    <td>{relative.email}</td>
-                    <td>{relative.phoneNumber}</td>
-                    <td>{relative.relation}</td>
+                  <tr key={familymember.id}>
+                    <td>{`${familymember.firstname} ${familymember.lastname}`}</td>
+                    <td></td>
+                    <td></td>
+                    <td>{familymember.familyrelationship.toUpperCase()}</td>
                   </tr>
                 );
               })}

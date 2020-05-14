@@ -4,6 +4,7 @@ import { Redirect, useLocation } from "@reach/router";
 import { useSelector, useDispatch } from "react-redux";
 import { requestUserInfo } from "../redux/actions/Auth";
 import { requestCalendars } from "../redux/actions/Calendars";
+import { requestFamilyMembers } from "../redux/actions/familyMembers";
 import Loading from "../helpers/Loading";
 export default function protectedRoutes({ children }) {
   const { auth, status, calendars } = useSelector(
@@ -18,9 +19,12 @@ export default function protectedRoutes({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
+    if (!auth.hasOwnProperty("user_id")) {
+      dispatch(requestUserInfo());
+      dispatch(requestCalendars());
+      dispatch(requestFamilyMembers());
+    }
     window.scrollTo(0, 0);
-    dispatch(requestUserInfo());
-    dispatch(requestCalendars());
   }, [location]);
   if (
     sessionStorage.getItem("access_token") === null ||
