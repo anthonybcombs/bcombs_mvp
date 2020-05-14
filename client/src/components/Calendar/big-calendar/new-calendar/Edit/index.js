@@ -19,8 +19,12 @@ export default function index({
   calendar,
 }) {
   const [calendarDetails, setCalendarDetails] = useState(calendar);
+  console.log(calendarDetails);
   useEffect(() => {
-    setCalendarDetails(calendar);
+    calendar.familyMembers.forEach((familyMemberId) => {
+      calendar.selectedFamilyMembers.set(familyMemberId, true);
+      setCalendarDetails(calendar);
+    });
   }, [calendar]);
   const { familyMembers } = useSelector(({ familyMembers }) => {
     return { familyMembers };

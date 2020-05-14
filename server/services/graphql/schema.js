@@ -184,6 +184,7 @@ const queryTypes = `
         image: String!
         name: String!      
         color: String!   
+        familyMembers:[String]
         visibilityType: String!   
     }
     type CalendarType{

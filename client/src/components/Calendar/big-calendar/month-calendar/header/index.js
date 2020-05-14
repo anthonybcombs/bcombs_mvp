@@ -42,6 +42,7 @@ const HeaderStyled = styled.div`
   }
   .calendar > #buttons > svg {
     margin: 3px 3px 0 3px;
+    color: #f26e21;
   }
   .calendar {
     height: 100px;

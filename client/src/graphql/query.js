@@ -54,6 +54,7 @@ export const CALENDARS_QUERY = gql`
         image
         color
         visibilityType
+        familyMembers
       }
     }
   }

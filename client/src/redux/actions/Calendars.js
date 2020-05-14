@@ -56,6 +56,7 @@ export const requestAddCalendar = (details) => {
 };
 export const requestEditCalendar = (details) => {
   return {
+    id: details.id,
     type: actionType.REQUEST_EDIT_CALENDAR,
     name: details.name,
     familyMembers: details.selectedFamilyMembers,
@@ -114,6 +115,7 @@ export function* gotCalendars() {
   });
 }
 export function* editCalendar({
+  id,
   name,
   familyMembers,
   visibilityType,
@@ -126,6 +128,7 @@ export function* editCalendar({
       token_type: sessionStorage.getItem("token_type"),
     },
     info: {
+      id,
       name,
       familyMembers: Array.from(familyMembers.keys()),
       visibilityType,
