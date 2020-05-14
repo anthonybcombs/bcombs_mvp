@@ -28,7 +28,8 @@ const updateGroupToDatabase = group => {
             id: group.id,
             name: group.name,
             member_ids: group.member_ids,
-            email: group.email
+            email: group.email,
+            removed_member_ids: group.removed_member_ids
           }
         }
       });

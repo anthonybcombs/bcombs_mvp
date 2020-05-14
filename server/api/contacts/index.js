@@ -3,7 +3,6 @@ import { getUserFromDatabase } from "../index";
 
 export const getContacts = async email => {
   const db = makeDb();
-  console.log("GetContactsss", email);
   const currentUser = await getUserFromDatabase(email);
   let result;
   try {
@@ -50,7 +49,7 @@ export const editContact = async data => {
       `UPDATE contacts SET first_name=?,last_name=?,phone_number=?,email=?,relation=? WHERE id=UUID_TO_BIN(?)`,
       [first_name, last_name, phone_number, email, relation, id]
     );
-    console.log("dataaaaaaaaa", data);
+
     if (data.removed_groups.length > 0) {
       let groupValuesQuery = data.removed_groups.map(currentItem => {
         return `(UUID_TO_BIN("${currentItem}"),UUID_TO_BIN("${currentUser.id}"))`;
@@ -104,9 +103,7 @@ export const createNewContact = async ({
   try {
     const user = await getUserFromDatabase(email);
     const currentUser = await getUserFromDatabase(auth_email);
-    console.log("Userrr", user);
-    console.log("Userrr currentUser", currentUser);
-    console.log("*****************************************************");
+
     if (user) {
       await db.query(
         "INSERT IGNORE INTO `contacts`(`id`,`user_id`,`first_name`,`last_name`,`phone_number`,`email`,`relation`,`added_by`) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),?,?,?,?,?,UUID_TO_BIN(?))",

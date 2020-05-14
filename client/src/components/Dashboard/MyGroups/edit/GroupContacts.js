@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
 
 import Contact from "../../MyContact/contact";
 
@@ -65,10 +67,15 @@ const ContactStyled = styled.div`
     text-align: center !important;
     min-height: 100px !important;
   }
+  .group-list-details {
+    display: inline-block;
+    margin-left: 20px;
+  }
 `;
 
-const GroupContacts = ({ contacts }) => {
+const GroupContacts = ({ contacts, handleRemoveMember }) => {
   const [selectedContacts, setSelectedContacts] = useState([]);
+  console.log("Contactsssssss", contacts);
 
   return (
     <ContactListStyled>
@@ -79,14 +86,19 @@ const GroupContacts = ({ contacts }) => {
               <div>
                 <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
                 <p>
-                  <span>
-                    {contact.first_name} {contact.last_name}
-                  </span>
+                  {contact.first_name} {contact.last_name}
                 </p>
               </div>
               <div>
-                <p>{contact.email}</p>
-                <p>{contact.phone_number}</p>
+                <span className="group-list-details">
+                  <p>{contact.email}</p>
+                  <p>{contact.phone_number}</p>
+                </span>
+                <span
+                  className="group-list-details"
+                  onClick={handleRemoveMember(contact.user_id)}>
+                  <FontAwesomeIcon icon={faMinusCircle} />
+                </span>
               </div>
             </ContactStyled>
           ))
