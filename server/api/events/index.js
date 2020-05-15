@@ -12,6 +12,7 @@ export const createNewEvent = async ({
   time,
   location,
   auth_email,
+  calendar_ids = [],
   guests = []
 }) => {
   const db = makeDb();
@@ -29,7 +30,7 @@ export const createNewEvent = async ({
         end_of_event,
         time,
         location,
-        user_id ) VALUES (UUID_TO_BIN(?),?,?,?,?,?,?,?,?,UUID_TO_BIN(?))`,
+        user_id, date_added ) VALUES (UUID_TO_BIN(?),?,?,?,?,?,?,?,?,UUID_TO_BIN(?),NOW())`,
       [
         id,
         name,
@@ -45,19 +46,38 @@ export const createNewEvent = async ({
     );
 
     if (guests.length > 0) {
-      let groupMemberValuesQuery = guests.reduce((accumulator, userId) => {
+      let eventAttendeesValueQuery = guests.reduce((accumulator, userId) => {
         accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${userId}"),"Pending"),`;
         return accumulator;
       }, "");
 
-      groupMemberValuesQuery = groupMemberValuesQuery.substring(
+      eventAttendeesValueQuery = eventAttendeesValueQuery.substring(
         0,
-        groupMemberValuesQuery.length - 1
+        eventAttendeesValueQuery.length - 1
       );
 
       await db.query(
         "INSERT IGNORE INTO `event_attendee`(`event_id`,`user_id`,`status`) VALUES " +
-          groupMemberValuesQuery
+          eventAttendeesValueQuery
+      );
+    }
+    if (calendar_ids.length > 0) {
+      let eventCalendarQuery = calendar_ids.reduce(
+        (accumulator, calendarId) => {
+          accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${calendarId}"),NOW()),`;
+          return accumulator;
+        },
+        ""
+      );
+
+      eventCalendarQuery = eventCalendarQuery.substring(
+        0,
+        eventCalendarQuery.length - 1
+      );
+
+      await db.query(
+        "INSERT IGNORE INTO `event_calendar`(`event_id`,`calendar_id`,`date_added`) VALUES " +
+          eventCalendarQuery
       );
     }
 
@@ -80,15 +100,18 @@ export const getUserEvents = async email => {
     const currentUser = await getUserFromDatabase(email);
     const rows = await db.query(
       `SELECT 
-        BIN_TO_UUID(id) as id,
-        name,
-        description,
-        status,
-        type,
-        start_of_event,
-        end_of_event,
-        location  
-      from events WHERE user_id = UUID_TO_BIN(?)`,
+        BIN_TO_UUID(events.id) as id,
+        BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
+        events.name,
+        events.description,
+        events.status,
+        events.type,
+        events.start_of_event,
+        events.end_of_event,
+        events.location  
+      FROM events INNER JOIN event_calendar
+      ON events.id = event_calendar.event_id   
+      WHERE events.user_id = UUID_TO_BIN(?)`,
       [currentUser.id]
     );
     console.log("Get User Events", rows);

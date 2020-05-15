@@ -10,20 +10,22 @@ const BigCalendarStyled = styled.div`
   width: 100%;
 `;
 export default function index({
+  auth,
+  contacts,
   events,
   calendars,
   calendarType,
   handleChangeCalendarType,
   selectedCalendars,
   handleCalendarSelection,
-  familyMembers,
+  familyMembers
 }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
-    selectedDate: new Date(),
+    selectedDate: new Date()
   });
-  const handleChangeMonth = (operation) => {
+  const handleChangeMonth = operation => {
     let currentMonth;
     if (operation === "next") {
       currentMonth = addMonths(currentDate.currentMonth, 1);
@@ -34,21 +36,25 @@ export default function index({
     setCurrentDate({
       ...currentDate,
       currentMonth,
-      selectedDate: firstDayOfTheMonth,
+      selectedDate: firstDayOfTheMonth
     });
   };
-  const handleChangeDay = (day) => {
+  const handleChangeDay = day => {
     setCurrentDate({
       ...currentDate,
-      selectedDate: day,
+      selectedDate: day
     });
   };
+  console.log("selectedCalendars", selectedCalendars);
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
       <NewEventModal
+        auth={auth}
+        contacts={contacts}
         isVisible={isNewEventModalVisible}
         toggleCreateEventModal={setIsEventModalVisible}
         defaultSelectedDate={currentDate.selectedDate}
+        selectedCalendars={selectedCalendars}
       />
       <Header
         currentMonth={currentDate.currentMonth}

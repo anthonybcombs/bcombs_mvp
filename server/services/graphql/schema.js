@@ -93,6 +93,7 @@ const inputs = `
 
     input EventInput {
         id: String
+        calendar_ids: [String]
         name: String
         description: String
         status: String
@@ -112,6 +113,7 @@ const queryTypes = `
     type Event {
         id: String
         name: String
+        calendar_id: String
         description: String
         status: String
         type: String

@@ -119,7 +119,7 @@ export default function index() {
       auth,
       contacts,
       events,
-      familyMembers,
+      familyMembers
     })
   );
 

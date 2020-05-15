@@ -100,11 +100,14 @@ export default function index({
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
+    console.log("cloneDay", cloneDay);
     const eventsOnThisDay = events.filter(event => {
+      console.log("dateRange EVENTTTTTTTT", event);
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),
         end: new Date(event.end_of_event)
       });
+      console.log("dateRange", dateRange);
       if (dateRange != undefined) {
         return (
           dateRange.filter(intervalDate => isSameDay(intervalDate, cloneDay))
@@ -112,6 +115,7 @@ export default function index({
         );
       }
     });
+    console.log("eventsOnThisDay 111", eventsOnThisDay);
     const eventsCount = eventsOnThisDay.length;
     const hasEvents = eventsCount > 0;
     days.push(

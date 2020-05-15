@@ -26,7 +26,7 @@ export default function index() {
       dispatch(getContact(auth.email));
     }
   }, []);
-
+  console.log("EVENTSSSSSSSSSSZZ", events);
   return (
     <MyCalendarStyled>
       <h1>My Calendars</h1>

@@ -9,7 +9,7 @@ import {
   faTrashAlt,
   faCheckCircle,
   faShareAltSquare,
-  faPenSquare,
+  faPenSquare
 } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import { deleteEvent } from "../../../../redux/actions/Events";
@@ -104,9 +104,10 @@ export default function index({ event }) {
   const toggleEditEventModal = () => {
     setEditEventVisible(!isEditEventVisible);
   };
+
   const schedule = [
-    format(event.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
-    format(event.eventSchedule[1], "MMM dd,yyyy hh:mm a"),
+    format(new Date(event.start_of_event), "MMM dd,yyyy hh:mm a"),
+    format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
   ];
   return (
     <Popover
@@ -120,17 +121,15 @@ export default function index({ event }) {
           arrowColor="lightgrey"
           arrowSize={10}
           arrowStyle={{ opacity: 1 }}
-          arrow="center"
-        >
+          arrow="center">
           <EventPopOverStyled
             theme={theme}
             onMouseLeave={() => {
               setVisibility(!isVisible);
             }}
-            onDoubleClick={(e) => {
+            onDoubleClick={e => {
               e.stopPropagation();
-            }}
-          >
+            }}>
             <div id="top-event-controls">
               <button>
                 <FontAwesomeIcon icon={faShareAltSquare} />
@@ -142,11 +141,10 @@ export default function index({ event }) {
                 />
               </button>
               <button
-                onClick={(e) => {
+                onClick={e => {
                   setVisibility(false);
                   dispatch(deleteEvent(event));
-                }}
-              >
+                }}>
                 <FontAwesomeIcon icon={faTrashAlt} />
               </button>
             </div>
@@ -180,15 +178,13 @@ export default function index({ event }) {
             </div>
           </EventPopOverStyled>
         </ArrowContainer>
-      )}
-    >
+      )}>
       <EventStyled
         theme={theme}
         style={{ backgroundColor: event.color }}
         onClick={() => {
           setVisibility(!isVisible);
-        }}
-      >
+        }}>
         <EditEvent
           isVisible={isEditEventVisible}
           toggleEditEventModal={toggleEditEventModal}

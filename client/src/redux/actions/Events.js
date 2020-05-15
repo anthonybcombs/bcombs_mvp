@@ -23,6 +23,7 @@ const getEventsToDatabase = async email => {
 
 const addEventInDatabase = async event => {
   try {
+    console.log("EVentttttttttt", event);
     const { data } = await graphqlClient.mutate({
       mutation: EVENT_CREATE_MUTATION,
       variables: {
