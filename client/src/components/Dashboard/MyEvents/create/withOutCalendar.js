@@ -70,6 +70,22 @@ const NewEventModal = styled.div`
   }
 `;
 
+const initialEventDetails = selectedDate => {
+  return {
+    id: uuid(),
+    name: "",
+    date: new Date(),
+    time: format(selectedDate, "hh:mm a"),
+    eventSchedule: [selectedDate, selectedDate],
+    eventGuests: [],
+    familyMembers: [],
+    eventType: "Event",
+    location: "",
+    eventDescription: "",
+    status: "Scheduled"
+  };
+};
+
 const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 export default function index({
   isVisible = true,
@@ -132,9 +148,9 @@ export default function index({
     console.log("payloadddd", payload);
     //console.log("eventTimeee", eventDetails);
     //format(selectedDate, "hh:mm a")
+    toggleCreateEventModal(false);
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
-    toggleCreateEventModal(false);
   };
   if (!isVisible) {
     return <></>;
