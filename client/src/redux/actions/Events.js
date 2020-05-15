@@ -3,7 +3,10 @@ import * as actionType from "./Constant";
 
 import graphqlClient from "../../graphql";
 import { GET_EVENT_QUERY } from "../../graphql/eventQuery";
-import { EVENT_CREATE_MUTATION } from "../../graphql/eventMutation";
+import {
+  EVENT_CREATE_MUTATION,
+  EVENT_UPDATE_MUTATION
+} from "../../graphql/eventMutation";
 
 const getEventsToDatabase = async email => {
   try {
@@ -23,7 +26,6 @@ const getEventsToDatabase = async email => {
 
 const addEventInDatabase = async event => {
   try {
-    console.log("EVentttttttttt", event);
     const { data } = await graphqlClient.mutate({
       mutation: EVENT_CREATE_MUTATION,
       variables: {
@@ -40,7 +42,23 @@ const addEventInDatabase = async event => {
   }
 };
 const deleteEventInDatabase = event => {};
-const updateEventInDatabase = event => {};
+const updateEventInDatabase = async event => {
+  try {
+    const { data } = await graphqlClient.mutate({
+      mutation: EVENT_UPDATE_MUTATION,
+      variables: {
+        event: {
+          ...event
+        }
+      }
+    });
+
+    console.log("addEventInDatabase data", data);
+    return data.updateEvent;
+  } catch (error) {
+    console.log("addEventInDatabase error", error);
+  }
+};
 export const addEvent = event => {
   return {
     type: actionType.REQUEST_ADD_EVENT,
@@ -67,6 +85,13 @@ export const getEvents = email => {
   };
 };
 
+export const setEventList = data => {
+  return {
+    typ: actionType.REQUEST_EVENTS_COMPLETED,
+    payload: data
+  };
+};
+
 export function* addedEvent({ event }) {
   yield call(addEventInDatabase, event);
   yield put({
@@ -82,17 +107,20 @@ export function* deletedEvent({ event }) {
   });
 }
 export function* updatedEvent({ event }) {
-  yield call(updateEventInDatabase, [event]);
-  yield put({
-    type: actionType.REQUEST_UPDATE_EVENT_COMPLETED,
-    payload: event
-  });
+  try {
+    const response = yield call(updateEventInDatabase, event);
+
+    // yield put({
+    //   type: actionType.REQUEST_EVENTS_COMPLETED,
+    //   payload: response
+    // });
+  } catch (err) {}
 }
 
 export function* getUserEvents(action) {
   try {
     const response = yield call(getEventsToDatabase, action.email);
-    console.log("getUserEvents response", response);
+
     yield put({
       type: actionType.REQUEST_EVENTS_COMPLETED,
       payload: response

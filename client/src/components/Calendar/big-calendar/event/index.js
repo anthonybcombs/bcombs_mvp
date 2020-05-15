@@ -9,7 +9,8 @@ import {
   faTrashAlt,
   faCheckCircle,
   faShareAltSquare,
-  faPenSquare
+  faPenSquare,
+  faUser
 } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import { deleteEvent } from "../../../../redux/actions/Events";
@@ -95,8 +96,22 @@ const EventPopOverStyled = styled.div`
   #event-controls > div > svg {
     color: ${({ theme }) => theme.smallCalendar.event.backgroundColor.primary};
   }
+  .event-guest {
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  .guest-status {
+    font-size: 13px;
+    color: gray;
+    padding-bottom: 5px;
+  }
 `;
-export default function index({ event }) {
+
+const getStatusCount = (guest, type) => {
+  const guestStatus = guest.filter(item => item.status === type);
+  return guestStatus.length;
+};
+export default function index({ auth, event, selectedCalendars }) {
   const [isVisible, setVisibility] = useState(false);
   const [isEditEventVisible, setEditEventVisible] = useState(false);
   const theme = useContext(ThemeContext);
@@ -154,6 +169,29 @@ export default function index({ event }) {
               <h3>{event.name}</h3>
               <p>{`${schedule[0]} - ${schedule[1]}`}</p>
               <p>{event.location}</p>
+              <div className="event-guest">
+                <div>Guests ({event.guests.length || 0})</div>
+                <div className="guest-status">
+                  Yes {getStatusCount(event.guests, "Yes")} {`  `}
+                  Maybe {getStatusCount(event.guests, "Maybe")}
+                  {`  `}
+                  Awaiting {getStatusCount(event.guests, "Pending")}
+                </div>
+                {event.guests.map(guest => {
+                  return (
+                    <div>
+                      {" "}
+                      <span>
+                        {" "}
+                        <FontAwesomeIcon icon={faUser} />
+                      </span>
+                      {` `}
+                      {guest.email}
+                    </div>
+                  );
+                })}
+              </div>
+
               <div id="event-controls" className="grid">
                 <div>
                   <FontAwesomeIcon
@@ -186,9 +224,11 @@ export default function index({ event }) {
           setVisibility(!isVisible);
         }}>
         <EditEvent
+          auth={auth}
           isVisible={isEditEventVisible}
           toggleEditEventModal={toggleEditEventModal}
           defaultEventDetails={event}
+          selectedCalendars={selectedCalendars}
         />
         <div className={`${isVisible ? "selected" : ""}`} id="event-name">
           {event.name}

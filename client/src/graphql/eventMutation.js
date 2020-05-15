@@ -8,3 +8,12 @@ export const EVENT_CREATE_MUTATION = gql`
     }
   }
 `;
+
+export const EVENT_UPDATE_MUTATION = gql`
+  mutation Event($event: EventInput!) {
+    updateEvent(event: $event) {
+      id
+      name
+    }
+  }
+`;

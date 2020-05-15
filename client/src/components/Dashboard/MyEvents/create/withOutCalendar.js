@@ -74,10 +74,9 @@ const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 export default function index({
   isVisible = true,
   auth,
-  contacts,
   toggleCreateEventModal,
-  defaultSelectedDate,
-  selectedCalendars
+  selectedCalendars,
+  defaultSelectedDate = new Date()
 }) {
   const [eventDetails, setEventDetails] = useState({
     id: uuid(),
@@ -111,23 +110,8 @@ export default function index({
     }
     setEventDetails({ ...eventDetails, [id]: value });
   };
-  const handleSubmit = value => {
-    toggleCreateEventModal(false);
-    // dispatch(addEvent(eventDetails));
-    // setEventDetails({
-    //   id: uuid(),
-    //   name: "",
-    //   date: defaultSelectedDate,
-    //   time: format(defaultSelectedDate, "hh:mm a"),
-    //   eventSchedule: [defaultSelectedDate, defaultSelectedDate],
-    //   familyMembers: [],
-    //   eventGuests: [],
-    //   eventType: "Event",
-    //   location: "",
-    //   description: "",
-    //   status: "Scheduled"
-    // });
 
+  const handleSubmit = value => {
     const payload = {
       start_of_event: format(eventDetails.eventSchedule[0], DATE_TIME_FORMAT),
       end_of_event: format(eventDetails.eventSchedule[1], DATE_TIME_FORMAT),
@@ -150,6 +134,7 @@ export default function index({
     //format(selectedDate, "hh:mm a")
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
+    toggleCreateEventModal(false);
   };
   if (!isVisible) {
     return <></>;

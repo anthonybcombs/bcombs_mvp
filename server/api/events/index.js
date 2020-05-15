@@ -69,7 +69,6 @@ export const createNewEvent = async ({
         },
         ""
       );
-
       eventCalendarQuery = eventCalendarQuery.substring(
         0,
         eventCalendarQuery.length - 1
@@ -96,9 +95,10 @@ export const createNewEvent = async ({
 export const getUserEvents = async email => {
   const db = makeDb();
   let result = [];
+  let guests = [];
   try {
     const currentUser = await getUserFromDatabase(email);
-    const rows = await db.query(
+    const events = await db.query(
       `SELECT 
         BIN_TO_UUID(events.id) as id,
         BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
@@ -114,12 +114,68 @@ export const getUserEvents = async email => {
       WHERE events.user_id = UUID_TO_BIN(?)`,
       [currentUser.id]
     );
-    console.log("Get User Events", rows);
-    result = rows;
+
+    if (events.length > 0) {
+      let eventIds = events.map(item => item.id);
+      eventIds = eventIds.map(eventId => `UUID_TO_BIN("${eventId}")`);
+      guests = await db.query(
+        `SELECT users.email, event_attendee.status,
+          BIN_TO_UUID(event_attendee.event_id) as event_id,
+          BIN_TO_UUID(event_attendee.user_id) as user_id,
+          users.profile_img
+          FROM event_attendee INNER JOIN users
+          ON users.id = event_attendee.user_id
+         WHERE event_attendee.event_id IN (${eventIds.join(",")}) `
+      );
+      guests = JSON.parse(JSON.stringify(guests));
+      result = events.map(event => {
+        const invitedGuest = guests.filter(
+          guest => guest.event_id === event.id
+        );
+        return {
+          ...event,
+          guests: [...(invitedGuest || [])]
+        };
+      });
+    } else {
+      result = events;
+    }
   } catch (err) {
     console.log("getUserEvents error", err);
   } finally {
     db.close();
     return result;
+  }
+};
+
+export const editEvents = async ({
+  id,
+  name,
+  description,
+  status,
+  type,
+  start_of_event,
+  end_of_event,
+  time,
+  location,
+  auth_email,
+  calendar_ids = [],
+  guests = []
+}) => {
+  const db = makeDb();
+  let results = [];
+
+  try {
+    await db.query(
+      "UPDATE `events` SET name=?,description=?,status=?,start_of_event=?,end_of_event=?,location=? WHERE id=UUID_TO_BIN(?)",
+      [name, description, status, start_of_event, end_of_event, location, id]
+    );
+
+    results = await getUserEvents(auth_email);
+  } catch (err) {
+    console.log("editEvents error", err);
+  } finally {
+    db.close();
+    return results;
   }
 };

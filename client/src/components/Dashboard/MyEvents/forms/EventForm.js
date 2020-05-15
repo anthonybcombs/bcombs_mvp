@@ -275,12 +275,11 @@ export default function createEventForm({
   };
 
   const handleRemoveGuest = email => () => {
-    console.log("Emaill", email);
     const updatedGuest = selectedGuest.filter(guest => guest.value !== email);
-    console.log("Emaill updatedGuest", updatedGuest);
     setSelectedGuest(updatedGuest);
     handleEventDetailsChange("eventGuests", updatedGuest);
   };
+  console.log("eventDetails", eventDetails);
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"

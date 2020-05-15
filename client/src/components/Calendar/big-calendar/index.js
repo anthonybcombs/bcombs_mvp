@@ -24,7 +24,7 @@ export default function index({
     }
     setSelectedCalendars([...selectedCalendars, id]);
   };
-  console.log("selectedCalendars", selectedCalendars);
+
   return (
     <>
       {calendarType === "month" && (

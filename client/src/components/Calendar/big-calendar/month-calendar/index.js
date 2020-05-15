@@ -45,7 +45,7 @@ export default function index({
       selectedDate: day
     });
   };
-  console.log("selectedCalendars", selectedCalendars);
+
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
       <NewEventModal
@@ -67,6 +67,7 @@ export default function index({
       />
       <Days currentMonth={currentDate.currentMonth} />
       <Cells
+        auth={auth}
         selectedCalendars={selectedCalendars}
         events={events}
         currentMonth={currentDate.currentMonth}

@@ -120,6 +120,7 @@ const queryTypes = `
         start_of_event:Date
         end_of_event:Date
         location: String
+        guests: [InvitedGuest]
     }
     type Contact{
         id: String
@@ -213,6 +214,14 @@ const queryTypes = `
         type: String    
         added_at : Date    
     }
+
+    type InvitedGuest {
+        email: String
+        status: String
+        event_id: String
+        user_id : String
+        profile_img: String
+    }
 `;
 
 const mutations = `
@@ -230,6 +239,7 @@ const mutations = `
         editCalendar(calendar:CalendarInput!):CalendarType
         deleteGroup(id: String!, email:String!): AllGroups
         createEvent(event:EventInput!): Event
+        updateEvent(event:EventInput!): [Event]
     }
 `;
 

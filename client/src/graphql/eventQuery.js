@@ -12,6 +12,13 @@ export const GET_EVENT_QUERY = gql`
       start_of_event
       end_of_event
       location
+      guests {
+        email
+        status
+        user_id
+        event_id
+        profile_img
+      }
     }
   }
 `;
