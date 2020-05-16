@@ -102,7 +102,7 @@ export default function index({
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
-    console.log("cloneDay", cloneDay);
+
     const eventsOnThisDay = events.filter(event => {
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),

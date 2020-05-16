@@ -87,10 +87,12 @@ const CellsStyled = styled.div`
 `;
 var suffix = hours => (hours >= 12 ? "PM" : "AM");
 export default function index({
+  auth,
   currentWeek,
   selectedDate,
   events,
   handleChangeDay,
+  selectedCalendars,
   setIsEventModalVisible
 }) {
   const theme = useContext(ThemeContext);
@@ -132,7 +134,14 @@ export default function index({
           {hasEvents && (
             <div id="events-list">
               {eventsOnThisDay.map((event, key) => {
-                return <Event event={event} key={key} />;
+                return (
+                  <Event
+                    auth={auth}
+                    event={event}
+                    key={key}
+                    selectedCalendars={selectedCalendars}
+                  />
+                );
               })}
             </div>
           )}

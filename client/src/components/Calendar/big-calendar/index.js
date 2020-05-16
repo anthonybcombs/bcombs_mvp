@@ -42,6 +42,8 @@ export default function index({
       )}
       {calendarType === "week" && (
         <WeekViewCalendar
+        auth={auth}
+        contacts={contacts}
           events={events}
           calendars={calendars}
           calendarType={calendarType}
