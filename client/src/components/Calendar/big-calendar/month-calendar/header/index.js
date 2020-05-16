@@ -100,7 +100,6 @@ export default function index({
   const [isVisibileEditCalendarModal, toggleEditCalendarModal] = useState(
     false
   );
-  const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
   const [selectedCalendar, setSelectedCalendar] = useState({});
   const dateFormat = "MMMM yyyy";
   return (
@@ -158,43 +157,62 @@ export default function index({
           <FontAwesomeIcon icon={faPlus} />
         </button>
         {calendars.map((calendar, index) => (
-          <div
-            className="calendar"
-            key={index}
-            onClick={() => {
-              handleCalendarSelection(calendar.id);
-            }}
-            onMouseEnter={() => {
-              setCalendarButtonsVisible(true);
-            }}
-            onMouseLeave={() => {
-              setCalendarButtonsVisible(false);
-            }}
-          >
-            <img src={calendar.image} />
-            <p
-              className={`${
-                selectedCalendars.includes(calendar.id) ? "selected" : ""
-              }`}
-            >
-              <span style={{ backgroundColor: `${calendar.color}` }}></span>
-              {calendar.name}
-            </p>
-            {isCalendarButtonsVisible && (
-              <div id="buttons">
-                <FontAwesomeIcon
-                  icon={faEdit}
-                  onClick={() => {
-                    setSelectedCalendar(calendar);
-                    toggleEditCalendarModal(true);
-                  }}
-                />
-                <FontAwesomeIcon icon={faTrashAlt} />
-              </div>
-            )}
-          </div>
+          <CalendarCard
+            calendar={calendar}
+            handleCalendarSelection={handleCalendarSelection}
+            setSelectedCalendar={setSelectedCalendar}
+            selectedCalendars={selectedCalendars}
+            toggleEditCalendarModal={toggleEditCalendarModal}
+          />
         ))}
       </div>
     </HeaderStyled>
   );
 }
+
+const CalendarCard = ({
+  calendar,
+  handleCalendarSelection,
+  setSelectedCalendar,
+  selectedCalendars,
+  toggleEditCalendarModal,
+}) => {
+  const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
+  return (
+    <div
+      className="calendar"
+      key={index}
+      onClick={() => {
+        handleCalendarSelection(calendar.id);
+      }}
+      onMouseEnter={() => {
+        setCalendarButtonsVisible(true);
+      }}
+      onMouseLeave={() => {
+        setCalendarButtonsVisible(false);
+      }}
+    >
+      <img src={calendar.image} />
+      <p
+        className={`${
+          selectedCalendars.includes(calendar.id) ? "selected" : ""
+        }`}
+      >
+        <span style={{ backgroundColor: `${calendar.color}` }}></span>
+        {calendar.name}
+      </p>
+      {isCalendarButtonsVisible && (
+        <div id="buttons">
+          <FontAwesomeIcon
+            icon={faEdit}
+            onClick={() => {
+              setSelectedCalendar(calendar);
+              toggleEditCalendarModal(true);
+            }}
+          />
+          <FontAwesomeIcon icon={faTrashAlt} />
+        </div>
+      )}
+    </div>
+  );
+};

@@ -87,9 +87,13 @@ const addUserToDatabase = (user) => {
 const updateUserToDatabase = (user) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const creds = {
+        access_token: sessionStorage.getItem("access_token"),
+        token_type: sessionStorage.getItem("token_type"),
+      };
       const { data } = await graphqlClient.mutate({
         mutation: USER_UPDATE_MUTATION,
-        variables: { user },
+        variables: { user: { creds, info: user } },
       });
       resolve(data.userUpdate);
     } catch (error) {

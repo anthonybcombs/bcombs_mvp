@@ -33,6 +33,7 @@
     "mysql": "^2.18.1",
     "node-fetch": "^2.6.0",
     "randomcolor": "^0.5.4",
+    "redis": "^3.0.2",
     "regenerator-runtime": "^0.13.3",
     "uuid": "^7.0.3"
   },

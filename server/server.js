@@ -27,11 +27,14 @@ app.use(
 const serviceNames = Object.keys(services);
 for (let i = 0; i < serviceNames.length; i += 1) {
   const name = serviceNames[i];
+  console.log(name);
   if (name === "graphql") {
     services[name].applyMiddleware({ app });
-  } else {
-    app.use(`${name}`, services[name]);
   }
+  // if (name === "redis") {
+  // } else {
+  //   // app.use(`${name}`, services[name]);
+  // }
 }
 
 //routes

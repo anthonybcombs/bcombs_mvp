@@ -38,12 +38,16 @@ const inputs = `
         dateofbirth: Date!
         type: String
     }
-    input UserUpdateInput{
+    input UserInfoInput{
         email: String!
         familyMembers: [PersonalInfoInput]
         members: [PersonalInfoInput]
         personalInfo: PersonalInfoInput!
         calendarInfo: CalendarInfoInput!
+    }
+    input UserUpdateInput{
+        creds: CredsInput!
+        info: UserInfoInput!
     }
     input ContactInput{
         id: String
