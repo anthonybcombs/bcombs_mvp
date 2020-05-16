@@ -124,6 +124,8 @@ export default function index({ auth, event, selectedCalendars }) {
     format(new Date(event.start_of_event), "MMM dd,yyyy hh:mm a"),
     format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
   ];
+
+  console.log("Current Event", event);
   return (
     <Popover
       isOpen={isVisible}
@@ -158,7 +160,12 @@ export default function index({ auth, event, selectedCalendars }) {
               <button
                 onClick={e => {
                   setVisibility(false);
-                  dispatch(deleteEvent(event));
+                  dispatch(
+                    deleteEvent({
+                      id: event.id,
+                      email: auth.email
+                    })
+                  );
                 }}>
                 <FontAwesomeIcon icon={faTrashAlt} />
               </button>

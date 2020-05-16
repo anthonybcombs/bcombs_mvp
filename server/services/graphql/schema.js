@@ -104,6 +104,7 @@ const inputs = `
         location: String
         auth_email: String
         guests:[String]
+        removed_guests:[String]
     }
 
 `;
@@ -114,6 +115,7 @@ const queryTypes = `
         id: String
         name: String
         calendar_id: String
+        user_id: String
         description: String
         status: String
         type: String
@@ -238,8 +240,9 @@ const mutations = `
         createCalendar(calendar:CalendarInput!):CalendarType
         editCalendar(calendar:CalendarInput!):CalendarType
         deleteGroup(id: String!, email:String!): AllGroups
-        createEvent(event:EventInput!): Event
+        createEvent(event:EventInput!): [Event]
         updateEvent(event:EventInput!): [Event]
+        deleteEvent(id: String!, email:String!): [Event]
     }
 `;
 

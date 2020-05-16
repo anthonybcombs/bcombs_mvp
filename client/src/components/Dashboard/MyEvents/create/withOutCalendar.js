@@ -119,7 +119,6 @@ export default function index({
   const dispatch = useDispatch();
 
   const handleEventDetailsChange = (id, value, action = "") => {
-    //let newEventGuests = eventDetails.eventGuests;
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
       return;
@@ -146,11 +145,10 @@ export default function index({
       calendar_ids: selectedCalendars
     };
     console.log("payloadddd", payload);
-    //console.log("eventTimeee", eventDetails);
-    //format(selectedDate, "hh:mm a")
+
     toggleCreateEventModal(false);
     dispatch(addEvent(payload));
-    setEventDetails(initialEventDetails(selectedDate));
+    setEventDetails(initialEventDetails(new Date()));
   };
   if (!isVisible) {
     return <></>;

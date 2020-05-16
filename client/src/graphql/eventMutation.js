@@ -4,7 +4,21 @@ export const EVENT_CREATE_MUTATION = gql`
   mutation Event($event: EventInput!) {
     createEvent(event: $event) {
       id
+      calendar_id
       name
+      description
+      status
+      type
+      start_of_event
+      end_of_event
+      location
+      guests {
+        email
+        status
+        user_id
+        event_id
+        profile_img
+      }
     }
   }
 `;
@@ -13,7 +27,46 @@ export const EVENT_UPDATE_MUTATION = gql`
   mutation Event($event: EventInput!) {
     updateEvent(event: $event) {
       id
+      calendar_id
       name
+      description
+      status
+      type
+      start_of_event
+      end_of_event
+      location
+      user_id
+      guests {
+        email
+        status
+        user_id
+        event_id
+        profile_img
+      }
+    }
+  }
+`;
+
+export const EVENT_DELETE_MUTATION = gql`
+  mutation Event($id: String!, $email: String!) {
+    deleteEvent(id: $id, email: $email) {
+      id
+      calendar_id
+      name
+      description
+      status
+      type
+      start_of_event
+      end_of_event
+      location
+      user_id
+      guests {
+        email
+        status
+        user_id
+        event_id
+        profile_img
+      }
     }
   }
 `;

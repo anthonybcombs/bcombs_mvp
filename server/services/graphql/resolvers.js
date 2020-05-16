@@ -26,7 +26,12 @@ import {
   executeEditCalendar,
   getCalendars
 } from "../../api/calendars";
-import { createNewEvent, editEvents, getUserEvents } from "../../api/events";
+import {
+  createNewEvent,
+  editEvents,
+  getUserEvents,
+  removeEvents
+} from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 
 const resolvers = {
@@ -126,6 +131,11 @@ const resolvers = {
     },
     async updateEvent(root, { event }, context) {
       return await editEvents(event);
+    },
+    async deleteEvent(root, { id, email }, context) {
+      console.log("Delete Event ID", id);
+      console.log("Delete Event ID", email);
+      return await removeEvents(id, email);
     }
   }
 };

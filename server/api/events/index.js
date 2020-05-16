@@ -80,10 +80,7 @@ export const createNewEvent = async ({
       );
     }
 
-    result = {
-      id,
-      name
-    };
+    result = await getUserEvents(auth_email);
   } catch (err) {
     console.log("createNewEvent error", err);
   } finally {
@@ -102,6 +99,7 @@ export const getUserEvents = async email => {
       `SELECT 
         BIN_TO_UUID(events.id) as id,
         BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
+        BIN_TO_UUID(events.user_id) as user_id,
         events.name,
         events.description,
         events.status,
@@ -148,28 +146,55 @@ export const getUserEvents = async email => {
   }
 };
 
-export const editEvents = async ({
-  id,
-  name,
-  description,
-  status,
-  type,
-  start_of_event,
-  end_of_event,
-  time,
-  location,
-  auth_email,
-  calendar_ids = [],
-  guests = []
-}) => {
+export const editEvents = async event => {
+  console.log("Edit Event ", event);
+  const {
+    id,
+    name,
+    description,
+    status,
+    type,
+    start_of_event,
+    end_of_event,
+    time,
+    location,
+    auth_email,
+    calendar_ids = [],
+    guests = [],
+    removed_guests = []
+  } = event;
   const db = makeDb();
   let results = [];
-
   try {
     await db.query(
-      "UPDATE `events` SET name=?,description=?,status=?,start_of_event=?,end_of_event=?,location=? WHERE id=UUID_TO_BIN(?)",
-      [name, description, status, start_of_event, end_of_event, location, id]
+      "UPDATE `events` SET name=?,description=?,status=?,start_of_event=?,end_of_event=?,location=?,type=? WHERE id=UUID_TO_BIN(?)",
+      [
+        name,
+        description,
+        status,
+        start_of_event,
+        end_of_event,
+        location,
+        type,
+        id
+      ]
     );
+
+    if (guests.length > 0) {
+      await addEventAttendee(guests, id, db);
+    }
+
+    if (removed_guests.length > 0) {
+      let eventAttendeeQuery = removed_guests.map(currentItem => {
+        return `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${currentItem}"))`;
+      });
+      eventAttendeeQuery = eventAttendeeQuery.join(",");
+      await db.query(
+        "DELETE FROM `event_attendee`  WHERE (event_id, user_id) IN (" +
+          eventAttendeeQuery +
+          ")"
+      );
+    }
 
     results = await getUserEvents(auth_email);
   } catch (err) {
@@ -177,5 +202,56 @@ export const editEvents = async ({
   } finally {
     db.close();
     return results;
+  }
+};
+
+export const removeEvents = async (id, email) => {
+  const db = makeDb();
+  let result = [];
+  try {
+    const currentUser = await getUserFromDatabase(email);
+    if (currentUser) {
+      await db.query(
+        "DELETE FROM `events` WHERE id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?)",
+        [id, currentUser.id]
+      );
+      await db.query(
+        "DELETE FROM event_attendee WHERE event_id=UUID_TO_BIN(?)",
+        [id]
+      );
+      await db.query(
+        "DELETE FROM event_calendar WHERE event_id=UUID_TO_BIN(?)",
+        [id]
+      );
+      result = await getUserEvents(email);
+    }
+  } catch (error) {
+    console.log("removeEvents Error", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+};
+
+const addEventAttendee = async (guestIds, eventId, db) => {
+  try {
+    let eventAttendeesValueQuery = guestIds.reduce((accumulator, userId) => {
+      accumulator += `(UUID_TO_BIN("${eventId}"),UUID_TO_BIN("${userId}"),"Pending"),`;
+      return accumulator;
+    }, "");
+
+    eventAttendeesValueQuery = eventAttendeesValueQuery.substring(
+      0,
+      eventAttendeesValueQuery.length - 1
+    );
+
+    await db.query(
+      "INSERT IGNORE INTO `event_attendee`(`event_id`,`user_id`,`status`) VALUES " +
+        eventAttendeesValueQuery
+    );
+  } catch (err) {
+    console.log("addEventAttendee error", err);
+  } finally {
+    return "success";
   }
 };

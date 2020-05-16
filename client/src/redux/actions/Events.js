@@ -5,7 +5,8 @@ import graphqlClient from "../../graphql";
 import { GET_EVENT_QUERY } from "../../graphql/eventQuery";
 import {
   EVENT_CREATE_MUTATION,
-  EVENT_UPDATE_MUTATION
+  EVENT_UPDATE_MUTATION,
+  EVENT_DELETE_MUTATION
 } from "../../graphql/eventMutation";
 
 const getEventsToDatabase = async email => {
@@ -16,8 +17,6 @@ const getEventsToDatabase = async email => {
         email
       }
     });
-
-    console.log("getEventsToDatabase data", data);
     return data.getEvents;
   } catch (error) {
     console.log("getEventsToDatabase error", error);
@@ -41,9 +40,24 @@ const addEventInDatabase = async event => {
     console.log("addEventInDatabase error", error);
   }
 };
-const deleteEventInDatabase = event => {};
+const deleteEventInDatabase = async event => {
+  try {
+    console.log("Eventtttt", event);
+    const { data } = await graphqlClient.mutate({
+      mutation: EVENT_DELETE_MUTATION,
+      variables: {
+        id: event.id,
+        email: event.email
+      }
+    });
+    return data.deleteEvent;
+  } catch (error) {
+    console.log("deleteEventInDatabase error", error);
+  }
+};
 const updateEventInDatabase = async event => {
   try {
+    console.log("Update Event Database", event);
     const { data } = await graphqlClient.mutate({
       mutation: EVENT_UPDATE_MUTATION,
       variables: {
@@ -93,27 +107,30 @@ export const setEventList = data => {
 };
 
 export function* addedEvent({ event }) {
-  yield call(addEventInDatabase, event);
+  const response = yield call(addEventInDatabase, event);
   yield put({
-    type: actionType.REQUEST_ADD_EVENT_COMPLETED,
-    payload: event
+    type: actionType.REQUEST_EVENTS_COMPLETED,
+    payload: response
   });
 }
 export function* deletedEvent({ event }) {
-  yield call(deleteEventInDatabase, [event]);
-  yield put({
-    type: actionType.REQUEST_DELETE_EVENT_COMPLETED,
-    payload: event
-  });
+  try {
+    const response = yield call(deleteEventInDatabase, event);
+
+    yield put({
+      type: actionType.REQUEST_EVENTS_COMPLETED,
+      payload: response
+    });
+  } catch (err) {}
 }
 export function* updatedEvent({ event }) {
   try {
     const response = yield call(updateEventInDatabase, event);
 
-    // yield put({
-    //   type: actionType.REQUEST_EVENTS_COMPLETED,
-    //   payload: response
-    // });
+    yield put({
+      type: actionType.REQUEST_EVENTS_COMPLETED,
+      payload: response
+    });
   } catch (err) {}
 }
 

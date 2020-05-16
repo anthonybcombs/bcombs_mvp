@@ -77,26 +77,35 @@ export default function index({
   defaultEventDetails,
   selectedCalendars
 }) {
-  const [eventDetails, setEventDetails] = useState({
-    ...defaultEventDetails,
-    eventSchedule: [
-      new Date(defaultEventDetails.start_of_event),
-      new Date(defaultEventDetails.end_of_event)
-    ]
-  });
+  const [eventDetails, setEventDetails] = useState({});
+
+  useEffect(() => {
+    if (defaultEventDetails) {
+      setEventDetails({
+        ...defaultEventDetails,
+        eventSchedule: [
+          new Date(defaultEventDetails.start_of_event),
+          new Date(defaultEventDetails.end_of_event)
+        ]
+      });
+    }
+  }, [defaultEventDetails]);
+
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   const handleEventDetailsChange = (id, value, action = "") => {
-    // let newEventGuests;
-    // newEventGuests = eventDetails.eventGuests;
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
+    } else if (id === "removeGuests") {
+      setEventDetails({
+        ...eventDetails,
+        removedGuests: [...(eventDetails.removeGuests || []), value]
+      });
     } else {
       setEventDetails({ ...eventDetails, [id]: value });
     }
   };
   const handleSubmit = value => {
-    console.log("eventDetailzzs", eventDetails);
     const payload = {
       start_of_event: format(
         new Date(eventDetails.eventSchedule[0]),
@@ -106,7 +115,7 @@ export default function index({
         new Date(eventDetails.eventSchedule[1]),
         DATE_TIME_FORMAT
       ),
-      type: eventDetails.eventType,
+      type: eventDetails.type,
       id: eventDetails.id,
       location: eventDetails.location,
       name: eventDetails.name,
@@ -117,12 +126,16 @@ export default function index({
         eventDetails.eventGuests && eventDetails.eventGuests.length > 0
           ? eventDetails.eventGuests.map(item => item.id)
           : [],
+      removed_guests:
+        eventDetails.removedGuests && eventDetails.removedGuests.length > 0
+          ? eventDetails.removedGuests.map(item => item.id)
+          : [],
       auth_email: auth.email,
       calendar_ids: selectedCalendars
     };
-    console.log("payloadddd", payload);
-    toggleEditEventModal();
+
     dispatch(updateEvent(payload));
+    toggleEditEventModal();
   };
   if (!isVisible) {
     return <></>;

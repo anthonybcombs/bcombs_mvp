@@ -136,13 +136,6 @@ export default function index({
     let newEventGuests;
     newEventGuests = eventDetails.eventGuests;
     if (id === "eventGuests") {
-      // if (action !== "remove") {
-      //   newEventGuests.push(value);
-      // } else {
-      //   newEventGuests = newEventGuests.filter(
-      //     (guest, index) => index !== value
-      //   );
-      // }
       setEventDetails({ ...eventDetails, eventGuests: value });
       return;
     }
@@ -169,9 +162,6 @@ export default function index({
       guests: eventDetails.eventGuests.map(item => item.id),
       auth_email: auth.email
     };
-
-    console.log("payloaddddddddd", payload);
-    console.log("payloaddddddddd eventDetails", eventDetails);
 
     //console.log("eventTimeee", eventDetails);
     //format(selectedDate, "hh:mm a")
