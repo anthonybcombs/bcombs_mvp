@@ -13,8 +13,10 @@ export default function Events(state = [], action) {
       return [...state, action.payload];
     case actionType.REQUEST_DELETE_EVENT_COMPLETED:
       return [...state.filter(event => event.id !== action.payload.id)];
-    case actionType.REQUEST_EVENTS_COMPLETED:
+    case actionType.REQUEST_EVENTS_COMPLETED: {
+      console.log("action.payloaddd", action);
       return [...action.payload];
+    }
     default:
       return state;
   }

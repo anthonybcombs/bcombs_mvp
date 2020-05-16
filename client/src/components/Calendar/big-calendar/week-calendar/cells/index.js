@@ -87,10 +87,12 @@ const CellsStyled = styled.div`
 `;
 var suffix = hours => (hours >= 12 ? "PM" : "AM");
 export default function index({
+  auth,
   currentWeek,
   selectedDate,
   events,
   handleChangeDay,
+  selectedCalendars,
   setIsEventModalVisible
 }) {
   const theme = useContext(ThemeContext);
@@ -113,8 +115,8 @@ export default function index({
       );
       const eventsOnThisDay = events.filter(event =>
         isWithinInterval(currentDateTime, {
-          start: subHours(event.eventSchedule[0], 1),
-          end: event.eventSchedule[1]
+          start: subHours(new Date(event.start_of_event), 1),
+          end: new Date(event.end_of_event)
         })
       );
       const eventsCount = eventsOnThisDay.length;
@@ -128,12 +130,18 @@ export default function index({
           onDoubleClick={e => {
             handleChangeDay(currentDateTime);
             setIsEventModalVisible(true);
-          }}
-        >
+          }}>
           {hasEvents && (
             <div id="events-list">
               {eventsOnThisDay.map((event, key) => {
-                return <Event event={event} key={key} />;
+                return (
+                  <Event
+                    auth={auth}
+                    event={event}
+                    key={key}
+                    selectedCalendars={selectedCalendars}
+                  />
+                );
               })}
             </div>
           )}

@@ -80,6 +80,7 @@ const CellsStyled = styled.div`
   }
 `;
 export default function index({
+  auth,
   currentMonth,
   selectedDate,
   selectedCalendars,
@@ -97,14 +98,17 @@ export default function index({
   let days = [];
   let day = startDate;
   let formattedDate = "";
+
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
+
     const eventsOnThisDay = events.filter(event => {
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),
         end: new Date(event.end_of_event)
       });
+      console.log("dateRange", dateRange);
       if (dateRange != undefined) {
         return (
           dateRange.filter(intervalDate => isSameDay(intervalDate, cloneDay))
@@ -112,6 +116,7 @@ export default function index({
         );
       }
     });
+    console.log("eventsOnThisDay 111", eventsOnThisDay);
     const eventsCount = eventsOnThisDay.length;
     const hasEvents = eventsCount > 0;
     days.push(
@@ -140,7 +145,14 @@ export default function index({
         <div id="events-list">
           {eventsOnThisDay.map((event, key) => {
             if (selectedCalendars.includes(event.calendar_id)) {
-              return <Event event={event} key={key} />;
+              return (
+                <Event
+                  auth={auth}
+                  event={event}
+                  key={key}
+                  selectedCalendars={selectedCalendars}
+                />
+              );
             }
           })}
         </div>

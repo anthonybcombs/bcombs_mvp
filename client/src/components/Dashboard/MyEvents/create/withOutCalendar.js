@@ -69,10 +69,30 @@ const NewEventModal = styled.div`
     }
   }
 `;
+
+const initialEventDetails = selectedDate => {
+  return {
+    id: uuid(),
+    name: "",
+    date: new Date(),
+    time: format(selectedDate, "hh:mm a"),
+    eventSchedule: [selectedDate, selectedDate],
+    eventGuests: [],
+    familyMembers: [],
+    eventType: "Event",
+    location: "",
+    eventDescription: "",
+    status: "Scheduled"
+  };
+};
+
+const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 export default function index({
   isVisible = true,
+  auth,
   toggleCreateEventModal,
-  defaultSelectedDate
+  selectedCalendars,
+  defaultSelectedDate = new Date()
 }) {
   const [eventDetails, setEventDetails] = useState({
     id: uuid(),
@@ -97,55 +117,54 @@ export default function index({
   }, [defaultSelectedDate]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
+
   const handleEventDetailsChange = (id, value, action = "") => {
-    let newEventGuests;
-    newEventGuests = eventDetails.eventGuests;
     if (id === "eventGuests") {
-      if (action !== "remove") {
-        newEventGuests.push(value);
-      } else {
-        newEventGuests = newEventGuests.filter(
-          (guest, index) => index !== value
-        );
-      }
-      setEventDetails({ ...eventDetails, eventGuests: newEventGuests });
+      setEventDetails({ ...eventDetails, eventGuests: value });
       return;
     }
     setEventDetails({ ...eventDetails, [id]: value });
   };
+
   const handleSubmit = value => {
+    const payload = {
+      start_of_event: format(eventDetails.eventSchedule[0], DATE_TIME_FORMAT),
+      end_of_event: format(eventDetails.eventSchedule[1], DATE_TIME_FORMAT),
+      type: eventDetails.eventType,
+      id: eventDetails.id,
+      location: eventDetails.location,
+      name: eventDetails.name,
+      status: eventDetails.status,
+      time: eventDetails.time,
+      description: eventDetails.description,
+      guests:
+        eventDetails.eventGuests.length > 0
+          ? eventDetails.eventGuests.map(item => item.id)
+          : [],
+      auth_email: auth.email,
+      calendar_ids: selectedCalendars
+    };
+    console.log("payloadddd", payload);
+
     toggleCreateEventModal(false);
-    dispatch(addEvent(eventDetails));
-    setEventDetails({
-      id: uuid(),
-      name: "",
-      date: defaultSelectedDate,
-      time: format(defaultSelectedDate, "hh:mm a"),
-      eventSchedule: [defaultSelectedDate, defaultSelectedDate],
-      familyMembers: [],
-      eventGuests: [],
-      eventType: "Event",
-      location: "",
-      description: "",
-      status: "Scheduled"
-    });
+    dispatch(addEvent(payload));
+    setEventDetails(initialEventDetails(new Date()));
   };
   if (!isVisible) {
     return <></>;
   }
+  console.log("Event Calendar", selectedCalendars);
   return ReactDOM.createPortal(
     <NewEventModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
-      theme={theme}
-    >
+      theme={theme}>
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleCreateEventModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <div id="content">

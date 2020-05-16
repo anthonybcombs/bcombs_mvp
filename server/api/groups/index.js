@@ -193,7 +193,6 @@ export const getMembers = async id => {
         WHERE users.id IN (${userIds.join(",")}) `
       );
       contacts = JSON.parse(JSON.stringify(contacts));
-      console.log("Get Members contacts ", contacts);
     }
   } catch (err) {
     console.log("Error", err);

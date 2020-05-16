@@ -68,50 +68,90 @@ const EditEventModal = styled.div`
     }
   }
 `;
+
+const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 export default function index({
+  auth,
   isVisible = true,
   toggleEditEventModal,
-  defaultEventDetails
+  defaultEventDetails,
+  selectedCalendars
 }) {
-  const [eventDetails, setEventDetails] = useState(defaultEventDetails);
+  const [eventDetails, setEventDetails] = useState({});
+
+  useEffect(() => {
+    if (defaultEventDetails) {
+      setEventDetails({
+        ...defaultEventDetails,
+        eventSchedule: [
+          new Date(defaultEventDetails.start_of_event),
+          new Date(defaultEventDetails.end_of_event)
+        ]
+      });
+    }
+  }, [defaultEventDetails]);
+
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   const handleEventDetailsChange = (id, value, action = "") => {
-    let newEventGuests;
-    newEventGuests = eventDetails.eventGuests;
     if (id === "eventGuests") {
-      if (action !== "remove") {
-        newEventGuests.push(value);
-      } else {
-        newEventGuests = newEventGuests.filter(
-          (guest, index) => index !== value
-        );
-      }
-      setEventDetails({ ...eventDetails, eventGuests: newEventGuests });
-      return;
+      setEventDetails({ ...eventDetails, eventGuests: value });
+    } else if (id === "removeGuests") {
+      setEventDetails({
+        ...eventDetails,
+        removedGuests: [...(eventDetails.removeGuests || []), value]
+      });
+    } else {
+      setEventDetails({ ...eventDetails, [id]: value });
     }
-    setEventDetails({ ...eventDetails, [id]: value });
   };
   const handleSubmit = value => {
+    const payload = {
+      start_of_event: format(
+        new Date(eventDetails.eventSchedule[0]),
+        DATE_TIME_FORMAT
+      ),
+      end_of_event: format(
+        new Date(eventDetails.eventSchedule[1]),
+        DATE_TIME_FORMAT
+      ),
+      type: eventDetails.type,
+      id: eventDetails.id,
+      location: eventDetails.location,
+      name: eventDetails.name,
+      status: eventDetails.status,
+      time: eventDetails.time,
+      description: eventDetails.description,
+      guests:
+        eventDetails.eventGuests && eventDetails.eventGuests.length > 0
+          ? eventDetails.eventGuests.map(item => item.id)
+          : [],
+      removed_guests:
+        eventDetails.removedGuests && eventDetails.removedGuests.length > 0
+          ? eventDetails.removedGuests.map(item => item.id)
+          : [],
+      auth_email: auth.email,
+      calendar_ids: selectedCalendars
+    };
+
+    dispatch(updateEvent(payload));
     toggleEditEventModal();
-    dispatch(updateEvent(eventDetails));
   };
   if (!isVisible) {
     return <></>;
   }
+
   return ReactDOM.createPortal(
     <EditEventModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
-      theme={theme}
-    >
+      theme={theme}>
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleEditEventModal();
-          }}
-        >
+          }}>
           &times;
         </span>
         <div id="content">

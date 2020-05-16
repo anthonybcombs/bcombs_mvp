@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
@@ -195,7 +195,6 @@ const renderSuggestion = suggestion => (
 );
 
 export default function createEventForm({
-  contactOptions,
   eventDetails,
   handleEventDetailsChange,
   onSubmit,
@@ -209,17 +208,18 @@ export default function createEventForm({
   const [selectedGuest, setSelectedGuest] = useState([]);
   const [autoCompleteValue, setAutoCompleteValue] = useState("");
   const [isFetching, setFetching] = useState(false);
-  //const [guestOptions, setGuestOptions] = useState([]);
 
-  // const schedule = [
-  //   format(eventDetails.eventSchedule[0], "MMM dd,yyyy hh:mm a"),
-  //   format(eventDetails.eventSchedule[1], "MMM dd,yyyy hh:mm a")
-  // ];
-
-  // const handleSelectChange = value => {
-  //   setSelectedGuest([...value]);
-  //   handleEventDetailsChange("eventGuests", [...(value || [])]);
-  // };
+  useEffect(() => {
+    if (eventDetails && eventDetails.guests) {
+      const defaultGuests = eventDetails.guests.map(item => {
+        return {
+          id: item.user_id,
+          value: item.email
+        };
+      });
+      setSelectedGuest(defaultGuests);
+    }
+  }, [eventDetails.guests]);
 
   const automCompleteOnChange = (event, { newValue }) => {
     setAutoCompleteValue(newValue);
@@ -270,17 +270,16 @@ export default function createEventForm({
       setSelectedGuest([...selectedGuest, suggestion]);
       handleEventDetailsChange("eventGuests", [...selectedGuest, suggestion]);
     }
-
     return suggestion.name;
   };
 
   const handleRemoveGuest = email => () => {
-    console.log("Emaill", email);
+    const removedGuest = selectedGuest.find(guest => guest.value === email);
     const updatedGuest = selectedGuest.filter(guest => guest.value !== email);
-    console.log("Emaill updatedGuest", updatedGuest);
     setSelectedGuest(updatedGuest);
-    handleEventDetailsChange("eventGuests", updatedGuest);
+    handleEventDetailsChange("removeGuests", removedGuest);
   };
+  console.log("eventDetails", eventDetails);
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
@@ -308,27 +307,27 @@ export default function createEventForm({
       <div id="event-type-list">
         <button
           type="button"
-          className={`${eventDetails.eventType === "Event" ? "selected" : ""}`}
+          className={`${eventDetails.type === "Event" ? "selected" : ""}`}
           onClick={() => {
-            handleEventDetailsChange("eventType", "Event");
+            handleEventDetailsChange("type", "Event");
           }}>
           Event
         </button>
         <button
           type="button"
           className={`${
-            eventDetails.eventType === "Forms Reminder" ? "selected" : ""
+            eventDetails.type === "Forms Reminder" ? "selected" : ""
           }`}
           onClick={() => {
-            handleEventDetailsChange("eventType", "Forms Reminder");
+            handleEventDetailsChange("type", "Forms Reminder");
           }}>
           Forms Reminder
         </button>
         <button
           type="button"
-          className={`${eventDetails.eventType === "Task" ? "selected" : ""}`}
+          className={`${eventDetails.type === "Task" ? "selected" : ""}`}
           onClick={() => {
-            handleEventDetailsChange("eventType", "Task");
+            handleEventDetailsChange("type", "Task");
           }}>
           Task
         </button>
@@ -362,8 +361,8 @@ export default function createEventForm({
               key={index}
               className="user-tag"
               onClick={handleRemoveGuest(guest.value)}>
-              <div> {guest.name}</div>
-              <div className="user-email"> {guest.value}</div>
+              <div> {guest.value}</div>
+              {/* <div className="user-email"> {guest.value}</div> */}
             </div>
           ))}
       </div>

@@ -5,28 +5,33 @@ import {
   executeSignIn,
   executeChangePassword,
   executeUserUpdate,
-  executeGetUser,
+  executeGetUser
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
   createNewContact,
   editContact,
   getContacts,
-  removeContact,
+  removeContact
 } from "../../api/contacts";
 import {
   getUserGroups,
   editGroups,
   removeGroup,
   createNewGroup,
-  getMembers,
+  getMembers
 } from "../../api/groups";
 import {
   executeCreateCalendar,
   executeEditCalendar,
-  getCalendars,
+  getCalendars
 } from "../../api/calendars";
-import { createNewEvent, getUserEvents } from "../../api/events";
+import {
+  createNewEvent,
+  editEvents,
+  getUserEvents,
+  removeEvents
+} from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 
 const resolvers = {
@@ -38,10 +43,10 @@ const resolvers = {
     async users(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type,
+        token_type: args.token_type
       };
       const users = await getUsers();
-      return users.filter((user) => {
+      return users.filter(user => {
         if (args.email) {
           return user.email === args.email;
         }
@@ -79,7 +84,7 @@ const resolvers = {
     async getUserList(root, { keyword }, context) {
       console.log("Get User List", keyword);
       return await executeGetUser(keyword);
-    },
+    }
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -106,9 +111,7 @@ const resolvers = {
       return await editContact(contact);
     },
     async createGroup(root, { group }, context) {
-      console.log("Grouppp,", group);
       const response = await createNewGroup(group);
-      console.log("Grouppp response,", response);
       return response;
     },
     async updateGroup(root, { group }, context) {
@@ -126,7 +129,15 @@ const resolvers = {
     async createEvent(root, { event }, context) {
       return await createNewEvent(event);
     },
-  },
+    async updateEvent(root, { event }, context) {
+      return await editEvents(event);
+    },
+    async deleteEvent(root, { id, email }, context) {
+      console.log("Delete Event ID", id);
+      console.log("Delete Event ID", email);
+      return await removeEvents(id, email);
+    }
+  }
 };
 
 export default resolvers;
