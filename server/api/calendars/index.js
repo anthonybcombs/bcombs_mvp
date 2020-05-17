@@ -166,7 +166,9 @@ export const executeEditCalendar = async (calendar) => {
         name: calendar.info.name,
         color: calendar.info.color,
         visibilityType: calendar.info.visibilityType,
-        image: `${s3BucketRootPath}calendars/${UserInfo.user_id}/${calendar.info.id}/calendarBackground.jpg`,
+        image: `${s3BucketRootPath}calendars/${UserInfo.user_id}/${
+          calendar.info.id
+        }/calendarBackground.jpg?${Date.now()}`,
       },
     };
   } catch (error) {
