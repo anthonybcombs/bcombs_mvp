@@ -591,10 +591,9 @@ router.get("/invitation/event/:id", async (req, res) => {
       [id, calendar]
     );
 
-    res.redirect("http://localhost:1234/dashboard");
+    res.redirect("http://192.243.109.224:1234/dashboard");
   } catch (error) {
     console.log("Invitation Error", error);
-  } finally {
   }
 });
 

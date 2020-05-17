@@ -109,7 +109,6 @@ export default function index({
     setSelectedContact([]);
     setRemovedContacts([]);
   };
-
   //const [selectedFile, setSelectedFile] = useState([]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
@@ -198,7 +197,7 @@ export default function index({
   if (!isVisible) {
     return <></>;
   }
-  console.log("removedContactsss", removedContacts);
+  console.log("currentContacts", currentContacts);
   return ReactDOM.createPortal(
     <EditGroupModal
       theme={{
