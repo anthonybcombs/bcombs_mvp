@@ -77,3 +77,22 @@ export const EDIT_CALENDAR_MUTATON = gql`
     }
   }
 `;
+
+export const DELETE_CALENDAR_MUTATION = gql`
+  mutation deleteCalendar($calendar: CalendarInput!) {
+    deleteCalendar(calendar: $calendar) {
+      status {
+        messageType
+        message
+      }
+      calendar {
+        id
+        user_id
+        name
+        color
+        visibilityType
+        image
+      }
+    }
+  }
+`;

@@ -38,12 +38,16 @@ const inputs = `
         dateofbirth: Date!
         type: String
     }
-    input UserUpdateInput{
+    input UserInfoInput{
         email: String!
         familyMembers: [PersonalInfoInput]
         members: [PersonalInfoInput]
         personalInfo: PersonalInfoInput!
         calendarInfo: CalendarInfoInput!
+    }
+    input UserUpdateInput{
+        creds: CredsInput!
+        info: UserInfoInput!
     }
     input ContactInput{
         id: String
@@ -189,6 +193,7 @@ const queryTypes = `
         image: String!
         name: String!      
         color: String!   
+        familyMembers:[String]
         visibilityType: String!   
     }
     type CalendarType{
@@ -246,6 +251,7 @@ const mutations = `
         updateGroup(group: GroupInput!): AllGroups        
         createCalendar(calendar:CalendarInput!):CalendarType
         editCalendar(calendar:CalendarInput!):CalendarType
+        deleteCalendar(calendar:CalendarInput!):CalendarType
         deleteGroup(id: String!, email:String!): AllGroups
         createEvent(event:EventInput!): [Event]
         updateEvent(event:EventInput!): [Event]

@@ -13,14 +13,14 @@ const EditCalendarModalStyled = styled.div`
     width: 50%;
   }
 `;
-export default function index({
-  isVisible = true,
-  toggleEditCalendarModal,
-  calendar,
-}) {
+function index({ isVisible = true, toggleEditCalendarModal, calendar }) {
   const [calendarDetails, setCalendarDetails] = useState(calendar);
+  console.log(calendarDetails);
   useEffect(() => {
-    setCalendarDetails(calendar);
+    calendar.familyMembers.forEach((familyMemberId) => {
+      calendar.selectedFamilyMembers.set(familyMemberId, true);
+    });
+    console.log("selected calendar", calendar);
   }, [calendar]);
   const { familyMembers } = useSelector(({ familyMembers }) => {
     return { familyMembers };
@@ -101,3 +101,5 @@ export default function index({
     document.getElementById("modal")
   );
 }
+
+export default React.memo(index);

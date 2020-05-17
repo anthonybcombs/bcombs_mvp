@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -9,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
+import { requestDeleteCalendar } from "../../../../../redux/actions/Calendars";
 import CreateCalendarModal from "../../new-calendar/Create";
 import EditCalendarModal from "../../new-calendar/Edit";
 const HeaderStyled = styled.div`
@@ -42,6 +44,7 @@ const HeaderStyled = styled.div`
   }
   .calendar > #buttons > svg {
     margin: 3px 3px 0 3px;
+    color: #f26e21;
   }
   .calendar {
     height: 100px;
@@ -99,7 +102,6 @@ export default function index({
   const [isVisibileEditCalendarModal, toggleEditCalendarModal] = useState(
     false
   );
-  const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
   const [selectedCalendar, setSelectedCalendar] = useState({});
   const dateFormat = "MMMM yyyy";
   return (
@@ -157,43 +159,68 @@ export default function index({
           <FontAwesomeIcon icon={faPlus} />
         </button>
         {calendars.map((calendar, index) => (
-          <div
-            className="calendar"
-            key={index}
-            onClick={() => {
-              handleCalendarSelection(calendar.id);
-            }}
-            onMouseEnter={() => {
-              setCalendarButtonsVisible(true);
-            }}
-            onMouseLeave={() => {
-              setCalendarButtonsVisible(false);
-            }}
-          >
-            <img src={calendar.image} />
-            <p
-              className={`${
-                selectedCalendars.includes(calendar.id) ? "selected" : ""
-              }`}
-            >
-              <span style={{ backgroundColor: `${calendar.color}` }}></span>
-              {calendar.name}
-            </p>
-            {isCalendarButtonsVisible && (
-              <div id="buttons">
-                <FontAwesomeIcon
-                  icon={faEdit}
-                  onClick={() => {
-                    setSelectedCalendar(calendar);
-                    toggleEditCalendarModal(true);
-                  }}
-                />
-                <FontAwesomeIcon icon={faTrashAlt} />
-              </div>
-            )}
-          </div>
+          <CalendarCard
+            calendar={calendar}
+            handleCalendarSelection={handleCalendarSelection}
+            setSelectedCalendar={setSelectedCalendar}
+            selectedCalendars={selectedCalendars}
+            toggleEditCalendarModal={toggleEditCalendarModal}
+          />
         ))}
       </div>
     </HeaderStyled>
   );
 }
+
+const CalendarCard = ({
+  calendar,
+  handleCalendarSelection,
+  setSelectedCalendar,
+  selectedCalendars,
+  toggleEditCalendarModal,
+}) => {
+  const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
+  const dispatch = useDispatch();
+  return (
+    <div
+      className="calendar"
+      key={index}
+      onClick={() => {
+        handleCalendarSelection(calendar.id);
+      }}
+      onMouseEnter={() => {
+        setCalendarButtonsVisible(true);
+      }}
+      onMouseLeave={() => {
+        setCalendarButtonsVisible(false);
+      }}
+    >
+      <img src={calendar.image} />
+      <p
+        className={`${
+          selectedCalendars.includes(calendar.id) ? "selected" : ""
+        }`}
+      >
+        <span style={{ backgroundColor: `${calendar.color}` }}></span>
+        {calendar.name}
+      </p>
+      {isCalendarButtonsVisible && (
+        <div id="buttons">
+          <FontAwesomeIcon
+            icon={faEdit}
+            onClick={() => {
+              setSelectedCalendar(calendar);
+              toggleEditCalendarModal(true);
+            }}
+          />
+          <FontAwesomeIcon
+            icon={faTrashAlt}
+            onClick={() => {
+              dispatch(requestDeleteCalendar(calendar));
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+};

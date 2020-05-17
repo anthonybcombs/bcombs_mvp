@@ -5,32 +5,33 @@ import {
   executeSignIn,
   executeChangePassword,
   executeUserUpdate,
-  executeGetUser
+  executeGetUser,
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
   createNewContact,
   editContact,
   getContacts,
-  removeContact
+  removeContact,
 } from "../../api/contacts";
 import {
   getUserGroups,
   editGroups,
   removeGroup,
   createNewGroup,
-  getMembers
+  getMembers,
 } from "../../api/groups";
 import {
   executeCreateCalendar,
   executeEditCalendar,
-  getCalendars
+  getCalendars,
+  executeDeleteCalendar,
 } from "../../api/calendars";
 import {
   createNewEvent,
   editEvents,
   getUserEvents,
-  removeEvents
+  removeEvents,
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 
@@ -43,10 +44,10 @@ const resolvers = {
     async users(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type
+        token_type: args.token_type,
       };
       const users = await getUsers();
-      return users.filter(user => {
+      return users.filter((user) => {
         if (args.email) {
           return user.email === args.email;
         }
@@ -84,7 +85,7 @@ const resolvers = {
     async getUserList(root, { keyword }, context) {
       console.log("Get User List", keyword);
       return await executeGetUser(keyword);
-    }
+    },
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -126,6 +127,9 @@ const resolvers = {
     async editCalendar(root, { calendar }, context) {
       return await executeEditCalendar(calendar);
     },
+    async deleteCalendar(root, { calendar }, context) {
+      return await executeDeleteCalendar(calendar);
+    },
     async createEvent(root, { event }, context) {
       return await createNewEvent(event);
     },
@@ -136,8 +140,8 @@ const resolvers = {
       console.log("Delete Event ID", id);
       console.log("Delete Event ID", email);
       return await removeEvents(id, email);
-    }
-  }
+    },
+  },
 };
 
 export default resolvers;

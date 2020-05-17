@@ -6,6 +6,7 @@ import {
   s3Bucket,
   s3BucketRootPath,
 } from "../../helpers/aws";
+import client, { getRedisKey } from "../../services/redis";
 export const getUsers = async () => {
   const db = makeDb();
   try {
@@ -39,23 +40,34 @@ const isProfileExistFromDatabase = async (id) => {
 };
 export const getUserInfo = async (creds) => {
   try {
-    const userInfoResponse = await fetch("https://bcombs.auth0.com/userinfo", {
-      method: "GET",
-      headers: {
-        Authorization: `${creds.token_type} ${creds.access_token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const userInfo = await userInfoResponse.json();
-    const users = await getUsers();
-    const user = users.filter((user) => user.email === userInfo.email)[0];
-    if (user) {
-      const { is_profile_filled, profile_img, id } = user;
-      userInfo.is_profile_filled = is_profile_filled === 0 ? false : true;
-      userInfo.profile_img = profile_img
-        ? `${s3BucketRootPath}${profile_img}`
-        : null;
-      userInfo.user_id = id;
+    let userInfo;
+    const UserInfoCache = JSON.parse(await getRedisKey(creds.access_token));
+    if (UserInfoCache === null) {
+      const userInfoResponse = await fetch(
+        "https://bcombs.auth0.com/userinfo",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `${creds.token_type} ${creds.access_token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      userInfo = await userInfoResponse.json();
+      const users = await getUsers();
+      const user = users.filter((user) => user.email === userInfo.email)[0];
+      if (user) {
+        const { is_profile_filled, profile_img, id } = user;
+        userInfo.is_profile_filled = is_profile_filled === 0 ? false : true;
+        userInfo.profile_img = profile_img
+          ? `${s3BucketRootPath}${profile_img}`
+          : null;
+        userInfo.user_id = id;
+        client.set(creds.access_token, JSON.stringify(userInfo));
+        client.EXPIRE([creds.access_token, "5"]);
+      }
+    } else {
+      userInfo = UserInfoCache;
     }
     return userInfo;
   } catch (error) {
@@ -229,7 +241,13 @@ export const executeSignUp = async (user) => {
 export const executeUserUpdate = async (user) => {
   const db = makeDb();
   try {
-    const { personalInfo, familyMembers, members, calendarInfo, email } = user;
+    const {
+      personalInfo,
+      familyMembers,
+      members,
+      calendarInfo,
+      email,
+    } = user.info;
     const users = await getUsers();
     const { id } = users.filter((user) => user.email === email)[0];
     const isProfileExist = await isProfileExistFromDatabase(id);
@@ -311,6 +329,7 @@ export const executeUserUpdate = async (user) => {
         ["", calendarInfo.name, id]
       );
     }
+    client.DEL(user.creds.access_token);
     return {
       messageType: "info",
       message: "user updated.",

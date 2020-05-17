@@ -8,7 +8,12 @@ import {
   loggedOut,
   requestedPasswordChange,
 } from "../actions/Auth";
-import { addCalendar, editCalendar, gotCalendars } from "../actions/Calendars";
+import {
+  addCalendar,
+  editCalendar,
+  gotCalendars,
+  deleteCalendar,
+} from "../actions/Calendars";
 import {
   deletedEvent,
   updatedEvent,
@@ -54,6 +59,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ADD_CALENDAR, addCalendar);
   yield takeLatest(actionType.REQUEST_EDIT_CALENDAR, editCalendar);
   yield takeLatest(actionType.REQUEST_GET_CALENDARS, gotCalendars);
+  yield takeLatest(actionType.REQUEST_DELETE_CALENDAR, deleteCalendar);
   //EVENTS
   yield takeLatest(actionType.REQUEST_ADD_EVENT, addedEvent);
   yield takeLatest(actionType.REQUEST_DELETE_EVENT, deletedEvent);
