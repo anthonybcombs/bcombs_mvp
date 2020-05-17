@@ -93,6 +93,7 @@ export default function index({
   contacts,
   groupMembers,
   group,
+  isGroupMemberLoading,
   typeOfForm = "Edit Group"
 }) {
   const [currentContacts, setCurrentContacts] = useState([]);
@@ -259,10 +260,14 @@ export default function index({
             /> */}
           </div>
           <div>
-            <GroupContacts
-              contacts={currentContacts}
-              handleRemoveMember={handleRemoveMember}
-            />
+            {isGroupMemberLoading ? (
+              <h2>Loading... </h2>
+            ) : (
+              <GroupContacts
+                contacts={currentContacts}
+                handleRemoveMember={handleRemoveMember}
+              />
+            )}
             <button
               className="group-submit"
               data-testid="app-dashboard-my-group-new-group-button-save"

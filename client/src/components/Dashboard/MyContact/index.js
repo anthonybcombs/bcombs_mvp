@@ -10,6 +10,7 @@ import {
   faUsers,
   faPlus
 } from "@fortawesome/free-solid-svg-icons";
+
 import ContactList from "./contactList";
 import NewContactModal from "./create";
 import EditContactModal from "./edit/contact";
@@ -125,9 +126,10 @@ export default function index() {
   const [isJoinedGroupModalVisible, setJoinedGroupModalVisible] = useState(
     false
   );
-  const { auth, groups, groupMembers, contacts } = useSelector(
-    ({ auth, groups, groupMembers, contacts }) => {
-      return { auth, groups, groupMembers, contacts };
+
+  const { auth, groups, groupMembers, contacts, loading } = useSelector(
+    ({ auth, groups, groupMembers, contacts, loading }) => {
+      return { auth, groups, groupMembers, contacts, loading };
     }
   );
   const dispatch = useDispatch();
@@ -135,16 +137,16 @@ export default function index() {
     if (auth.email) {
       dispatch(requestUserGroup(auth.email));
     }
-    setCurrentContacts(contacts);
+
+    if (contacts) {
+      setCurrentContacts(contacts);
+    }
   }, [contacts]);
   useEffect(() => {
     dispatch(getContact(auth.email));
     setCurrentContacts(contacts);
   }, []);
-  console.log("Get User Group", groups);
-  console.log("Get User Group groupMembers", groupMembers);
-  console.log("CONTACTSSSSSSSSSSSSSSS", contacts);
-  console.log("CONTACTSSSSSSSSSSSSSSS currentContacts", currentContacts);
+
   // const selectedGroup = groups.find(group => group.id === selectedGroupId);
   const filteredContacts = contacts.filter(contact => {
     if (selectedGroupId === 0) {
@@ -199,7 +201,7 @@ export default function index() {
     setJoinedGroupModalVisible(true);
   };
   const editGroupSubmit = data => {};
-
+  console.log("groupMembers", loading);
   return (
     <MyContactsStyled>
       <NewContactModal
@@ -229,11 +231,12 @@ export default function index() {
         groupMembers={groupMembers}
         group={selectedGroup}
         isVisible={isEditGroupModalVisible}
+        isGroupMemberLoading={loading.groupMembers}
         onSubmit={editGroupSubmit}
         toggleEditGroupModal={setEditGroupModalVisible}
       />
 
-      <h2>Contacts</h2>
+      <h2>Contacts </h2>
       <div id="contacts">
         <div>
           <div id="labels">
@@ -323,16 +326,20 @@ export default function index() {
           </div>
         </div>
         <div>
-          <ContactList
-            auth={auth}
-            headerText={selectedLabel}
-            contacts={currentContacts}
-            groups={(groups && groups.created_groups) || []}
-            setNewContactModalVisible={setNewContactModalVisible}
-            EditContactModal={EditContactModal}
-            ProfileModal={ProfileModal}
-            SendMessageModal={SendMessageModal}
-          />
+          {loading.contacts ? (
+            <h1>Loading...</h1>
+          ) : (
+            <ContactList
+              auth={auth}
+              headerText={selectedLabel}
+              contacts={currentContacts}
+              groups={(groups && groups.created_groups) || []}
+              setNewContactModalVisible={setNewContactModalVisible}
+              EditContactModal={EditContactModal}
+              ProfileModal={ProfileModal}
+              SendMessageModal={SendMessageModal}
+            />
+          )}
         </div>
       </div>
     </MyContactsStyled>
