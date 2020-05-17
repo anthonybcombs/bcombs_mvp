@@ -5,6 +5,7 @@ import UploadImage from "../../../../helpers/UploadImage";
 import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+import ColorPicker from "../../../../helpers/ColorPicker";
 const CreateCalendarFormStyled = styled.form`
   text-align: center;
   padding: 2em;
@@ -95,6 +96,7 @@ const CreateCalendarFormStyled = styled.form`
   }
 `;
 export default function CreateCalendarForm({
+  colors = [],
   details,
   familyMembers,
   onSubmit,
@@ -107,8 +109,20 @@ export default function CreateCalendarForm({
   });
   React.useEffect(() => {
     register({ name: "image" }, { required: true });
+    register(
+      { name: "color" },
+      {
+        required: true,
+        validate: {
+          isColorExist: (value) => !colors.includes(value),
+        },
+      }
+    );
     if (details.image.length > 0) {
       setValue("image", details.image);
+    }
+    if (details.color.length > 0) {
+      setValue("color", details.color);
     }
   }, []);
   const theme = useContext(ThemeContext);
@@ -192,6 +206,27 @@ export default function CreateCalendarForm({
         errorType="required"
         message="Calendar Privacy setting is required."
       />
+      {details.color.length > 0 && (
+        <>
+          <ColorPicker
+            color={details.color}
+            setColor={(color) => {
+              setValue("color", color);
+              handleInputChange("color", color);
+            }}
+          />
+          <ErrorMessage
+            field={errors.color}
+            errorType="required"
+            message="Color is required"
+          />
+          <ErrorMessage
+            field={errors.color}
+            errorType="isColorExist"
+            message="Color is already used in other calendar."
+          />
+        </>
+      )}
       <UploadImage
         displayImage={details.image}
         handleImageChange={(image) => {
