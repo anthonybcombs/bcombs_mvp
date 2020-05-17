@@ -15,12 +15,11 @@ const EditCalendarModalStyled = styled.div`
 `;
 function index({ isVisible = true, toggleEditCalendarModal, calendar }) {
   const [calendarDetails, setCalendarDetails] = useState(calendar);
-  console.log(calendarDetails);
   useEffect(() => {
     calendar.familyMembers.forEach((familyMemberId) => {
       calendar.selectedFamilyMembers.set(familyMemberId, true);
     });
-    console.log("selected calendar", calendar);
+    setCalendarDetails(calendar);
   }, [calendar]);
   const { familyMembers } = useSelector(({ familyMembers }) => {
     return { familyMembers };
