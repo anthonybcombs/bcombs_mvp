@@ -119,6 +119,7 @@ export function* addCalendar({ name, familyMembers, visibilityType, image }) {
       familyMembers: Array.from(familyMembers.keys()),
       image: calendar.image,
       color: calendar.color,
+      visibilityType: calendar.visibilityType,
     },
   });
   yield put({

@@ -112,7 +112,6 @@ export default function CreateCalendarForm({
     register(
       { name: "color" },
       {
-        required: true,
         validate: {
           isColorExist: (value) =>
             !colors.includes(value) || details.color == value,

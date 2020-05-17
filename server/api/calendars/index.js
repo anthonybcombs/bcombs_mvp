@@ -140,7 +140,7 @@ export const executeEditCalendar = async (calendar) => {
         }
       });
     }
-    if (isBase64(calendar.info.image)) {
+    if (isBase64(calendar.info.image, { mimeRequired: true })) {
       const buf = Buffer.from(
         calendar.info.image.replace(/^data:image\/\w+;base64,/, ""),
         "base64"
@@ -166,7 +166,7 @@ export const executeEditCalendar = async (calendar) => {
         name: calendar.info.name,
         color: calendar.info.color,
         visibilityType: calendar.info.visibilityType,
-        image: calendar.info.image,
+        image: `${s3BucketRootPath}calendars/${UserInfo.user_id}/${calendar.info.id}/calendarBackground.jpg`,
       },
     };
   } catch (error) {
