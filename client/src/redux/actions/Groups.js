@@ -13,6 +13,8 @@ import {
   GROUP_CREATE_MUTATION
 } from "../../graphql/groupMutation";
 
+import { setGroupLoading, setGroupMemberLoadingLoading } from "./Loading";
+
 // const addGroupToDatabase = ({ group }) => {
 //   return new Promise((resolve, reject) => {
 //     return resolve("success");
@@ -188,9 +190,14 @@ const getUserGroupToDatabase = async email => {
 
 export function* getUserGroup(action) {
   try {
+    yield put(setGroupLoading(true));
     const response = yield call(getUserGroupToDatabase, action.email);
     yield put(setUserGroups(response));
-  } catch (error) {}
+    yield put(setGroupLoading(false));
+  } catch (error) {
+    yield put(setUserGroups([]));
+    yield put(setGroupLoading(false));
+  }
 }
 
 export function* removeGroup(action) {
@@ -205,8 +212,14 @@ export function* removeGroup(action) {
 
 export function* getMembers(action) {
   try {
+    yield put(setGroupMemberLoadingLoading(true));
     const response = yield call(getMembersToDatabase, action.id);
-    console.log("Get Members Response", response);
+
     yield put(setMemberList(response));
-  } catch (error) {}
+    yield put(setGroupMemberLoadingLoading(false));
+  } catch (error) {
+    console.log("getMembers error", error);
+    yield put(setMemberList([]));
+    setGroupMemberLoadingLoading(false);
+  }
 }

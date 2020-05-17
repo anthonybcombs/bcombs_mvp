@@ -11,6 +11,7 @@ import {
 
 // REDUX ACTIONS
 import { requestUserGroup } from "./Groups";
+import { setContactLoading } from "./Loading";
 
 const addContactToDatabase = async payload => {
   try {
@@ -39,7 +40,6 @@ const updateContactToDatabase = async contact => {
         }
       }
     });
-    console.log("updateContactToDatabase edit contact", data.updateContact);
     return data.updateContact;
   } catch (error) {
     console.log("updateContactToDatabase error", error);
@@ -134,17 +134,7 @@ export const setContact = data => {
 export function* addedContact({ contact }) {
   try {
     const response = yield call(addContactToDatabase, contact);
-    console.log("responseeee", response);
-    console.log("responseeee contact", contact);
     if (response) {
-      // yield all([
-      //   put(getContact(contact.auth_email)),
-      //   put({
-      //     type: actionType.SET_USER_CONTACT_LIST,
-      //     payload: response
-      //   })
-      // ]);
-
       yield put(getContact(contact.auth_email));
       yield put(requestUserGroup(contact.auth_email));
     }
@@ -189,6 +179,7 @@ export function* removedContact({ contact }) {
 
 export function* getUserContact(action) {
   try {
+    yield put(setContactLoading(true));
     const response = yield call(getContactToDatabase, action.email);
 
     if (response) {
@@ -197,11 +188,13 @@ export function* getUserContact(action) {
         payload: response
       });
     }
+    yield put(setContactLoading(false));
   } catch (err) {
     console.log("error", err);
     yield put({
       type: actionType.SET_USER_CONTACT_LIST,
       payload: []
     });
+    yield put(setContactLoading(false));
   }
 }
