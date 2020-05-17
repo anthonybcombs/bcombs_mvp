@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -10,9 +9,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
-import { requestDeleteCalendar } from "../../../../../redux/actions/Calendars";
 import CreateCalendarModal from "../../new-calendar/Create";
 import EditCalendarModal from "../../new-calendar/Edit";
+import CalendarList from "../../calendars/List";
 const HeaderStyled = styled.div`
   display: grid;
   margin-bottom: 2em;
@@ -169,80 +168,3 @@ export default function index({
     </HeaderStyled>
   );
 }
-const CalendarList = ({
-  calendars = [],
-  handleCalendarSelection,
-  toggleEditCalendarModal,
-  setSelectedCalendar,
-  selectedCalendars,
-}) => {
-  return (
-    <>
-      {calendars.length > 0 &&
-        calendars[0].map((calendar) => {
-          return (
-            <CalendarCard
-              key={calendar.id}
-              calendar={calendar}
-              handleCalendarSelection={handleCalendarSelection}
-              setSelectedCalendar={setSelectedCalendar}
-              selectedCalendars={selectedCalendars}
-              toggleEditCalendarModal={toggleEditCalendarModal}
-            />
-          );
-        })}
-    </>
-  );
-};
-const CalendarCard = ({
-  calendar,
-  handleCalendarSelection,
-  setSelectedCalendar,
-  selectedCalendars,
-  toggleEditCalendarModal,
-}) => {
-  const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
-  const dispatch = useDispatch();
-  return (
-    <div
-      className="calendar"
-      key={index}
-      onClick={() => {
-        handleCalendarSelection(calendar.id);
-      }}
-      onMouseEnter={() => {
-        setCalendarButtonsVisible(true);
-      }}
-      onMouseLeave={() => {
-        setCalendarButtonsVisible(false);
-      }}
-    >
-      <img src={calendar.image} />
-      <p
-        className={`${
-          selectedCalendars.includes(calendar.id) ? "selected" : ""
-        }`}
-      >
-        <span style={{ backgroundColor: `${calendar.color}` }}></span>
-        {calendar.name}
-      </p>
-      {isCalendarButtonsVisible && (
-        <div id="buttons">
-          <FontAwesomeIcon
-            icon={faEdit}
-            onClick={() => {
-              setSelectedCalendar(calendar);
-              toggleEditCalendarModal(true);
-            }}
-          />
-          <FontAwesomeIcon
-            icon={faTrashAlt}
-            onClick={() => {
-              dispatch(requestDeleteCalendar(calendar));
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
