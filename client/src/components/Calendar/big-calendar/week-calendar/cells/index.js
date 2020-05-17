@@ -115,7 +115,8 @@ export default function index({
       );
       const eventsOnThisDay = events.filter(event =>
         isWithinInterval(currentDateTime, {
-          start: subHours(new Date(event.start_of_event), 1),
+          // start: subHours(new Date(event.start_of_event), 1),
+          start: new Date(event.start_of_event),
           end: new Date(event.end_of_event)
         })
       );
