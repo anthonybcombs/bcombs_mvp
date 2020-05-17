@@ -25,8 +25,21 @@ export default function Auth(state = initialState.auth, action) {
     case actionType.REQUEST_UPDATE_USER:
       return {
         requestStatus: "AWAITING_AUTH_RESPONSE",
-      };``
+      };
+      ``;
     case actionType.REQUEST_GET_CALENDARS:
+      return {
+        requestStatus: "AWAITING_AUTH_RESPONSE",
+      };
+    case actionType.REQUEST_ADD_CALENDAR:
+      return {
+        requestStatus: "AWAITING_AUTH_RESPONSE",
+      };
+    case actionType.REQUEST_EDIT_CALENDAR:
+      return {
+        requestStatus: "AWAITING_AUTH_RESPONSE",
+      };
+    case actionType.REQUEST_DELETE_CALENDAR:
       return {
         requestStatus: "AWAITING_AUTH_RESPONSE",
       };

@@ -244,6 +244,7 @@ const mutations = `
         updateGroup(group: GroupInput!): AllGroups        
         createCalendar(calendar:CalendarInput!):CalendarType
         editCalendar(calendar:CalendarInput!):CalendarType
+        deleteCalendar(calendar:CalendarInput!):CalendarType
         deleteGroup(id: String!, email:String!): AllGroups
         createEvent(event:EventInput!): [Event]
         updateEvent(event:EventInput!): [Event]

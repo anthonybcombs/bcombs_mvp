@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import isBase64 from "is-base64";
 import { makeDb } from "../../helpers/database";
 import randomColor from "../../helpers/randomColor";
 import {
@@ -13,7 +13,7 @@ export const getCalendars = async (creds) => {
   try {
     const UserInfo = await getUserInfo(creds);
     const calendarRows = await db.query(
-      "SELECT BIN_TO_UUID(id) as id,BIN_TO_UUID(user_id) as user_id,name,color,visibilityType from user_calendars WHERE BIN_TO_UUID(user_id)=?",
+      "SELECT BIN_TO_UUID(id) as id,BIN_TO_UUID(user_id) as user_id,name,color,visibilityType from user_calendars WHERE BIN_TO_UUID(user_id)=? ORDER BY added_at desc",
       [UserInfo.user_id]
     );
     const calendars = [];
@@ -126,14 +126,35 @@ export const executeEditCalendar = async (calendar) => {
         calendar.info.id,
       ]
     );
-    const rows = await db.query(
-      "SELECT family_member_id as family_member where BIN_TO_UUID(calendar_id)=?",
-      [calendar.info.id]
-    );
-    const familyMembers = rows.map((familyMember) => {
-      return familyMember;
-    });
-    console.log(familyMembers);
+    if (calendar.info.familyMembers.length > 0) {
+      await db.query(
+        "DELETE user_calendars_family_member WHERE BIN_TO_UUID(calendar_id)=?",
+        [calendar.info.id]
+      );
+      calendar.info.familyMembers.forEach(async (familyMemberId) => {
+        if (familyMemberId !== "0") {
+          await db.query(
+            "INSERT INTO user_calendars_family_member(calendar_id,family_member_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
+            [calendar.info.id, familyMemberId]
+          );
+        }
+      });
+    }
+    if (isBase64(calendar.info.image)) {
+      const buf = Buffer.from(
+        calendar.info.image.replace(/^data:image\/\w+;base64,/, ""),
+        "base64"
+      );
+      var data = {
+        Bucket: currentS3BucketName,
+        Key: `calendars/${UserInfo.user_id}/${calendar.info.id}/calendarBackground.jpg`,
+        Body: buf,
+        ContentEncoding: "base64",
+        ContentType: "image/jpeg",
+        ACL: "public-read",
+      };
+      await uploadFile(data);
+    }
     return {
       status: {
         messageType: "info",
@@ -150,6 +171,49 @@ export const executeEditCalendar = async (calendar) => {
     };
   } catch (error) {
     console.log(error);
+    return {
+      status: "error",
+      message: "there is an issue in edit calendar endpoint.",
+      calendar: {},
+    };
+  } finally {
+    await db.close();
+  }
+};
+
+export const executeDeleteCalendar = async (calendar) => {
+  const db = makeDb();
+  try {
+    const UserInfo = await getUserInfo(calendar.creds);
+    await db.query(
+      "DELETE FROM user_calendars WHERE id=UUID_TO_BIN(?)",
+      calendar.info.id
+    );
+    await db.query(
+      "DELETE FROM user_calendars_family_member WHERE calendar_id=UUID_TO_BIN(?)",
+      [calendar.info.id]
+    );
+    return {
+      status: {
+        messageType: "info",
+        message: "calendar deleted",
+      },
+      calendar: {
+        id: calendar.info.id,
+        user_id: UserInfo.user_id,
+        name: calendar.info.name,
+        color: calendar.info.color,
+        visibilityType: calendar.info.visibilityType,
+        image: calendar.info.image,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: "error",
+      message: "there is an issue in delete calendar endpoint.",
+      calendar: {},
+    };
   } finally {
     await db.close();
   }

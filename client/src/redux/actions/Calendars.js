@@ -5,6 +5,7 @@ import { CALENDARS_QUERY } from "../../graphql/query";
 import {
   CREATE_CALENDAR_MUTATION,
   EDIT_CALENDAR_MUTATON,
+  DELETE_CALENDAR_MUTATION,
 } from "../../graphql/mutation";
 const addCalendarInDatabase = ({ creds, info }) => {
   return new Promise(async (resolve, reject) => {
@@ -26,8 +27,22 @@ const editCalendarInDatabase = ({ creds, info }) => {
         mutation: EDIT_CALENDAR_MUTATON,
         variables: { calendar: { creds, info } },
       });
-      resolve(data.createCalendar.calendar);
+      resolve(data.editCalendar.calendar);
     } catch (error) {
+      reject("error");
+    }
+  });
+};
+const deleteCalendarInDatabase = ({ creds, info }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: DELETE_CALENDAR_MUTATION,
+        variables: { calendar: { creds, info } },
+      });
+      resolve(data.deleteCalendar.calendar);
+    } catch (error) {
+      console.log(error);
       reject("error");
     }
   });
@@ -65,6 +80,17 @@ export const requestEditCalendar = (details) => {
     color: details.color,
   };
 };
+export const requestDeleteCalendar = (details) => {
+  return {
+    id: details.id,
+    type: actionType.REQUEST_DELETE_CALENDAR,
+    name: details.name,
+    familyMembers: details.familyMembers,
+    visibilityType: details.visibilityType,
+    image: details.image,
+    color: details.color,
+  };
+};
 export const requestCalendars = () => {
   return {
     type: actionType.REQUEST_GET_CALENDARS,
@@ -93,6 +119,13 @@ export function* addCalendar({ name, familyMembers, visibilityType, image }) {
       familyMembers: Array.from(familyMembers.keys()),
       image: calendar.image,
       color: calendar.color,
+    },
+  });
+  yield put({
+    type: actionType.REQUEST_STATUS_COMPLETED,
+    payload: {
+      messageType: "info",
+      message: "added calendar.",
     },
   });
 }
@@ -145,6 +178,52 @@ export function* editCalendar({
       familyMembers: Array.from(familyMembers.keys()),
       image: calendar.image,
       color: calendar.color,
+      visibilityType: calendar.visibilityType,
+    },
+  });
+  yield put({
+    type: actionType.REQUEST_STATUS_COMPLETED,
+    payload: {
+      messageType: "info",
+      message: "updated calendar.",
+    },
+  });
+}
+
+export function* deleteCalendar({
+  id,
+  name,
+  visibilityType,
+  familyMembers,
+  image,
+  color,
+}) {
+  const calendar = yield call(deleteCalendarInDatabase, {
+    creds: {
+      access_token: sessionStorage.getItem("access_token"),
+      token_type: sessionStorage.getItem("token_type"),
+    },
+    info: {
+      id,
+      name,
+      familyMembers,
+      visibilityType,
+      image,
+      color,
+    },
+  });
+
+  yield put({
+    type: actionType.REQUEST_DELETE_CALENDAR_COMPLETED,
+    payload: {
+      id: calendar.id,
+    },
+  });
+  yield put({
+    type: actionType.REQUEST_STATUS_COMPLETED,
+    payload: {
+      messageType: "info",
+      message: "deleted calendar.",
     },
   });
 }

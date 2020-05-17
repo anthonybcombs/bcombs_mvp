@@ -64,7 +64,7 @@ export const getUserInfo = async (creds) => {
           : null;
         userInfo.user_id = id;
         client.set(creds.access_token, JSON.stringify(userInfo));
-        client.EXPIRE([creds.access_token, "1"]);
+        client.EXPIRE([creds.access_token, "5"]);
       }
     } else {
       userInfo = UserInfoCache;
