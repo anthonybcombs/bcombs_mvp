@@ -185,7 +185,7 @@ export const getUserEvents = async email => {
         result = events;
       }
     }
-    console.log("getUserEvents results", results);
+    console.log("getUserEvents results", result);
   } catch (err) {
     console.log("getUserEvents error", err);
   } finally {

@@ -11,6 +11,8 @@ import relatives from "./Relatives";
 import user from "./Users";
 import userTypes from "./UserTypes";
 import status from "./Status";
+
+import loading from "./Loading";
 const reducer = combineReducers({
   auth,
   events,
@@ -24,5 +26,6 @@ const reducer = combineReducers({
   user,
   userTypes,
   status,
+  loading
 });
 export default reducer;
