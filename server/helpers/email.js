@@ -64,7 +64,7 @@ const getTemplateInvitationStrings = ({
           <h4>You have been invited on this event ${eventName}</h4>
           <h5>Created by: ${eventOwnerEmail}</h5>
           <div>
-            <form action="http://http://192.243.109.224:3001/api/invitation/event/${eventId}" method="GET">
+            <form action="http://192.243.109.224:3001/api/invitation/event/${eventId}" method="GET">
               Calendar:
               <select name="calendar">
                 ${data.calendars.map(calendar => {
