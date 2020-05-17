@@ -18,6 +18,20 @@ export const createNewEvent = async ({
 }) => {
   const db = makeDb();
   let result = {};
+
+  const getUserEventSelectFields = `
+  BIN_TO_UUID(events.id) as id,
+  BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
+  BIN_TO_UUID(events.user_id) as user_id,
+  events.name,
+  events.description,
+  events.status,
+  events.type,
+  events.start_of_event,
+  events.end_of_event,
+  events.location  
+  `;
+
   try {
     const currentUser = await getUserFromDatabase(auth_email);
     await db.query(
@@ -90,6 +104,7 @@ export const createNewEvent = async ({
     });
     console.log("formattedRecipients ", formattedRecipients);
     result = await getUserEvents(auth_email);
+    console.log("createNewEvent Result", result);
   } catch (err) {
     console.log("createNewEvent error", err);
   } finally {
@@ -104,49 +119,73 @@ export const getUserEvents = async email => {
   let guests = [];
   try {
     const currentUser = await getUserFromDatabase(email);
-    const events = await db.query(
-      `SELECT 
-        BIN_TO_UUID(events.id) as id,
-        BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
-        BIN_TO_UUID(events.user_id) as user_id,
-        events.name,
-        events.description,
-        events.status,
-        events.type,
-        events.start_of_event,
-        events.end_of_event,
-        events.location  
-      FROM events INNER JOIN event_calendar
-      ON events.id = event_calendar.event_id   
-      WHERE events.user_id = UUID_TO_BIN(?)`,
-      [currentUser.id]
-    );
-
-    if (events.length > 0) {
-      let eventIds = events.map(item => item.id);
-      eventIds = eventIds.map(eventId => `UUID_TO_BIN("${eventId}")`);
-      guests = await db.query(
-        `SELECT users.email, event_attendee.status,
-          BIN_TO_UUID(event_attendee.event_id) as event_id,
-          BIN_TO_UUID(event_attendee.user_id) as user_id,
-          users.profile_img
-          FROM event_attendee INNER JOIN users
-          ON users.id = event_attendee.user_id
-         WHERE event_attendee.event_id IN (${eventIds.join(",")}) `
+    if (currentUser) {
+      const events = await db.query(
+        `SELECT 
+          BIN_TO_UUID(events.id) as id,
+          BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
+          BIN_TO_UUID(events.user_id) as user_id,
+          events.name,
+          events.description,
+          events.status,
+          events.type,
+          events.start_of_event,
+          events.end_of_event,
+          events.location  
+        FROM events , event_calendar, user_calendars 
+        WHERE events.id = event_calendar.event_id AND 
+          user_calendars.id=event_calendar.calendar_id AND 
+          user_calendars.user_id = UUID_TO_BIN(?) AND 
+          events.user_id = UUID_TO_BIN(?)
+        UNION 
+        SELECT 
+          DISTINCT  BIN_TO_UUID(events.id) as id,
+          BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
+          BIN_TO_UUID(events.user_id) as user_id,
+          events.name,
+          events.description,
+          events.status,
+          events.type,
+          events.start_of_event,
+          events.end_of_event,
+          events.location 
+        FROM events ,event_calendar, event_attendee, user_calendars
+        WHERE  events.id=event_calendar.event_id AND 
+          event_attendee.event_id=events.id AND 
+          user_calendars.id=event_calendar.calendar_id AND 
+          user_calendars.user_id = UUID_TO_BIN(?) AND 
+          event_attendee.user_id = UUID_TO_BIN(?) AND 
+          (event_attendee.status = "Yes" OR event_attendee.status = "Maybe");`,
+        [currentUser.id, currentUser.id, currentUser.id, currentUser.id]
       );
-      guests = JSON.parse(JSON.stringify(guests));
-      result = events.map(event => {
-        const invitedGuest = guests.filter(
-          guest => guest.event_id === event.id
+
+      if (events.length > 0) {
+        let eventIds = events.map(item => item.id);
+        eventIds = eventIds.map(eventId => `UUID_TO_BIN("${eventId}")`);
+        guests = await db.query(
+          `SELECT users.email, event_attendee.status,
+            BIN_TO_UUID(event_attendee.event_id) as event_id,
+            BIN_TO_UUID(event_attendee.user_id) as user_id,
+            users.profile_img
+            FROM event_attendee INNER JOIN users
+            ON users.id = event_attendee.user_id
+           WHERE event_attendee.event_id IN (${eventIds.join(",")}) `
         );
-        return {
-          ...event,
-          guests: [...(invitedGuest || [])]
-        };
-      });
-    } else {
-      result = events;
+        guests = JSON.parse(JSON.stringify(guests));
+        result = events.map(event => {
+          const invitedGuest = guests.filter(
+            guest => guest.event_id === event.id
+          );
+          return {
+            ...event,
+            guests: [...(invitedGuest || [])]
+          };
+        });
+      } else {
+        result = events;
+      }
     }
+    console.log("getUserEvents results", results);
   } catch (err) {
     console.log("getUserEvents error", err);
   } finally {

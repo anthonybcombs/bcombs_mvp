@@ -11,6 +11,7 @@ export const getContacts = async email => {
       [currentUser.id]
     );
 
+    console.log("getContacts rows", rows);
     result = rows;
   } catch (error) {
     console.log("Error", error);
@@ -103,10 +104,11 @@ export const createNewContact = async ({
   try {
     const user = await getUserFromDatabase(email);
     const currentUser = await getUserFromDatabase(auth_email);
-
+    console.log("Contacts ID", id);
+    console.log("Contacts currentUser", currentUser);
     if (user) {
       await db.query(
-        "INSERT IGNORE INTO `contacts`(`id`,`user_id`,`first_name`,`last_name`,`phone_number`,`email`,`relation`,`added_by`) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),?,?,?,?,?,UUID_TO_BIN(?))",
+        "INSERT IGNORE INTO `contacts`(`id`,`user_id`,`first_name`,`last_name`,`phone_number`,`email`,`relation`,`added_by`,`date_added`) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),?,?,?,?,?,UUID_TO_BIN(?),NOW())",
         [
           id,
           user.id,
@@ -140,6 +142,7 @@ export const createNewContact = async ({
       results = await getContacts(auth_email);
     } else {
     }
+    console.log("Contacts results", results);
   } catch (error) {
     console.log("Error", error);
   } finally {
