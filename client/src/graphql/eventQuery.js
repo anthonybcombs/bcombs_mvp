@@ -24,6 +24,17 @@ export const GET_EVENT_QUERY = gql`
   }
 `;
 
+export const GET_EVENT_INVITATION_QUERY = gql`
+  query Events($email: String!) {
+    getEventInvitedUser(email: $email) {
+      id
+      name
+      status
+      user_id
+    }
+  }
+`;
+
 /*     description
       status
       type

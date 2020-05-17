@@ -229,6 +229,13 @@ const queryTypes = `
         user_id : String
         profile_img: String
     }
+
+    type EventInvitation {
+        id:String
+        name: String
+        status: String
+        user_id: String
+    }
 `;
 
 const mutations = `
@@ -264,7 +271,8 @@ const queries = `
         getGroupMembers(id:String!):[Contact],        
         getEvents(email:String!):[Event],
         getUserList(keyword:String!): [User]    
-        familymembers(access_token: String!,token_type: String!):[FammilyMemberType]    
+        familymembers(access_token: String!,token_type: String!):[FammilyMemberType]  
+        getEventInvitedUser(email: String):[EventInvitation]  
     }
 `;
 

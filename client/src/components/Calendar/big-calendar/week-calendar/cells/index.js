@@ -134,14 +134,16 @@ export default function index({
           {hasEvents && (
             <div id="events-list">
               {eventsOnThisDay.map((event, key) => {
-                return (
-                  <Event
-                    auth={auth}
-                    event={event}
-                    key={key}
-                    selectedCalendars={selectedCalendars}
-                  />
-                );
+                if (selectedCalendars.includes(event.calendar_id)) {
+                  return (
+                    <Event
+                      auth={auth}
+                      event={event}
+                      key={key}
+                      selectedCalendars={selectedCalendars}
+                    />
+                  );
+                }
               })}
             </div>
           )}

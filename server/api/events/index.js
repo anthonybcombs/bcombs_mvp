@@ -1,4 +1,5 @@
 import { makeDb } from "../../helpers/database";
+import { getTemplateInvitationStrings, sendEmail } from "../../helpers/email";
 import { getUserFromDatabase } from "../index";
 
 export const createNewEvent = async ({
@@ -80,6 +81,14 @@ export const createNewEvent = async ({
       );
     }
 
+    const formattedRecipients = await formatRecipient(guests, db);
+    sendEmail({
+      eventOwnerEmail: auth_email,
+      eventName: name,
+      eventId: id,
+      recipients: formattedRecipients
+    });
+    console.log("formattedRecipients ", formattedRecipients);
     result = await getUserEvents(auth_email);
   } catch (err) {
     console.log("createNewEvent error", err);
@@ -233,6 +242,29 @@ export const removeEvents = async (id, email) => {
   }
 };
 
+export const getInvitedEvents = async email => {
+  const db = makeDb();
+  let result = [];
+  try {
+    const currentUser = await getUserFromDatabase(email);
+    results = await db.query(
+      `SELECT 
+        BIN_TO_UUID(events.id) as id,
+        events.name,
+        event_attendee.status,
+        event_atendee.user_id
+       FROM event_atendee,events WHERE event_attendee.event_id=event.id AND event_attendee.user_id=UUID_TO_BIN(?)
+     `,
+      [currentUser.id]
+    );
+    results = JSON.parse(JSON.stringify(results));
+  } catch (error) {
+  } finally {
+    await db.close();
+    return result;
+  }
+};
+
 const addEventAttendee = async (guestIds, eventId, db) => {
   try {
     let eventAttendeesValueQuery = guestIds.reduce((accumulator, userId) => {
@@ -253,5 +285,49 @@ const addEventAttendee = async (guestIds, eventId, db) => {
     console.log("addEventAttendee error", err);
   } finally {
     return "success";
+  }
+};
+
+//eventOwnerEmail, guests, id, name
+const formatRecipient = async (guests, db) => {
+  let userWithCalendars = [];
+  try {
+    const formatGuestIds = guests.map(guestId => `UUID_TO_BIN("${guestId}")`);
+
+    if (formatGuestIds.length > 0) {
+      const userDetails = await db.query(
+        `SELECT user_profiles.first_name,
+                user_profiles.last_name,
+                BIN_TO_UUID(user_profiles.user_id) as user_id ,
+                users.email
+        FROM user_profiles,users 
+        WHERE users.id IN (${formatGuestIds.join(
+          ","
+        )}) AND users.id = user_profiles.user_id`
+      );
+
+      let userCalendars = await db.query(
+        `SELECT name,BIN_TO_UUID(id) as id ,BIN_TO_UUID(user_id) as user_id FROM user_calendars WHERE user_id IN (${formatGuestIds.join(
+          ","
+        )})`
+      );
+      userCalendars = JSON.parse(JSON.stringify(userCalendars));
+
+      userWithCalendars = userDetails.map(item => {
+        const currentCalendar = userCalendars.filter(
+          calendar => calendar.user_id === item.user_id
+        );
+
+        console.log("Send Invite Emails Current Calendar", currentCalendar);
+        return {
+          ...item,
+          calendars: currentCalendar
+        };
+      });
+    }
+  } catch (err) {
+    console.log("Send Invite Emails err", err);
+  } finally {
+    return userWithCalendars;
   }
 };
