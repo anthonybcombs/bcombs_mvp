@@ -114,7 +114,8 @@ export default function CreateCalendarForm({
       {
         required: true,
         validate: {
-          isColorExist: (value) => !colors.includes(value),
+          isColorExist: (value) =>
+            !colors.includes(value) || details.color == value,
         },
       }
     );
