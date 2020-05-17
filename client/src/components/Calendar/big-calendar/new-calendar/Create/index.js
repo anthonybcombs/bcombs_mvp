@@ -19,8 +19,8 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
     selectedFamilyMembers: new Map(),
     image: "",
     visibilityType: "Private",
+    color: "",
   });
-  console.log(calendarDetails);
   const familyMembers = useSelector(({ familyMembers }) => familyMembers);
   const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
