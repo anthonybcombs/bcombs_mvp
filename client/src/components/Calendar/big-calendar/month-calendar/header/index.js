@@ -158,20 +158,42 @@ export default function index({
         >
           <FontAwesomeIcon icon={faPlus} />
         </button>
-        {calendars.map((calendar, index) => (
-          <CalendarCard
-            calendar={calendar}
-            handleCalendarSelection={handleCalendarSelection}
-            setSelectedCalendar={setSelectedCalendar}
-            selectedCalendars={selectedCalendars}
-            toggleEditCalendarModal={toggleEditCalendarModal}
-          />
-        ))}
+        <CalendarList
+          calendars={calendars}
+          handleCalendarSelection={handleCalendarSelection}
+          setSelectedCalendar={setSelectedCalendar}
+          selectedCalendars={selectedCalendars}
+          toggleEditCalendarModal={toggleEditCalendarModal}
+        />
       </div>
     </HeaderStyled>
   );
 }
-
+const CalendarList = ({
+  calendars = [],
+  handleCalendarSelection,
+  toggleEditCalendarModal,
+  setSelectedCalendar,
+  selectedCalendars,
+}) => {
+  return (
+    <>
+      {calendars.length > 0 &&
+        calendars[0].map((calendar) => {
+          return (
+            <CalendarCard
+              key={calendar.id}
+              calendar={calendar}
+              handleCalendarSelection={handleCalendarSelection}
+              setSelectedCalendar={setSelectedCalendar}
+              selectedCalendars={selectedCalendars}
+              toggleEditCalendarModal={toggleEditCalendarModal}
+            />
+          );
+        })}
+    </>
+  );
+};
 const CalendarCard = ({
   calendar,
   handleCalendarSelection,

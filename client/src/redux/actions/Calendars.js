@@ -7,6 +7,7 @@ import {
   EDIT_CALENDAR_MUTATON,
   DELETE_CALENDAR_MUTATION,
 } from "../../graphql/mutation";
+import { groupBy } from "../../helpers/Arrays";
 const addCalendarInDatabase = ({ creds, info }) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -138,7 +139,7 @@ export function* gotCalendars() {
   });
   yield put({
     type: actionType.REQUEST_GET_CALENDARS_COMPLETED,
-    payload: calendars.data,
+    payload: groupBy(calendars.data, 3),
   });
   yield put({
     type: actionType.REQUEST_STATUS_COMPLETED,
