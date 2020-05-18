@@ -164,17 +164,21 @@ export default function index({ location }) {
             >
               <div className="panel">
                 {calendars &&
-                  calendars.map((calendar, i) => (
-                    <div
-                      className={`panel-body`}
-                      key={i}
-                      onClick={() => {
-                        handleEventSelection(calendar.id);
-                      }}
-                    >
-                      {calendar.name}
-                    </div>
-                  ))}
+                  calendars.map((calendarGroup) => {
+                    return calendarGroup.map((calendar) => {
+                      return (
+                        <div
+                          className={`panel-body`}
+                          key={calendar.id}
+                          onClick={() => {
+                            handleEventSelection(calendar.id);
+                          }}
+                        >
+                          {calendar.name}
+                        </div>
+                      );
+                    });
+                  })}
               </div>
             </Collapsible>
             <Collapsible
