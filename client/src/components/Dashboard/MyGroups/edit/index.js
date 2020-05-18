@@ -13,6 +13,8 @@ import ContactSelections from "./ContactSelections";
 import GroupContacts from "./GroupContacts";
 import GroupPhoto from "./GroupPhoto";
 
+import Loading from "../../../../helpers/Loading.js";
+
 // REDUX
 //import { updateGroup } from "../../../../../redux/actions/Groups";
 
@@ -215,76 +217,63 @@ export default function index({
           }}>
           &times;
         </span>
-        <div className="content" id="applicationForm">
-          <div className="grid">
-            <div className="form-group">
-              <div className="field">
-                <input
-                  name="firstname"
-                  className="field-input"
-                  placeholder="Group Name"
-                  onChange={handleChangeName}
-                  value={currentGroupName}
-                />
-                <label className="field-label">Group Name</label>
-              </div>
-              <br />
-              <div className="field">
-                <Multiselect
-                  className="field-input"
-                  options={contactSelections}
-                  hasSelectAll={hasSelectAll}
-                  onSelect={handleContactSelectChange}
-                  placeholder="Select from existing contacts"
-                  displayValue="name"
-                  closeIcon="cancel"
-                />
-                <label className="field-label">
-                  Assign to existing contact
-                </label>
+        {isGroupMemberLoading ? (
+          <Loading />
+        ) : (
+          <div className="content" id="applicationForm">
+            <div className="grid">
+              <div className="form-group">
+                <div className="field">
+                  <input
+                    name="firstname"
+                    className="field-input"
+                    placeholder="Group Name"
+                    onChange={handleChangeName}
+                    value={currentGroupName}
+                  />
+                  <label className="field-label">Group Name</label>
+                </div>
+                <br />
+                <div className="field">
+                  <Multiselect
+                    className="field-input"
+                    options={contactSelections}
+                    hasSelectAll={hasSelectAll}
+                    onSelect={handleContactSelectChange}
+                    placeholder="Select from existing contacts"
+                    displayValue="name"
+                    closeIcon="cancel"
+                  />
+                  <label className="field-label">
+                    Assign to existing contact
+                  </label>
+                </div>
               </div>
             </div>
-
-            {/* <div className="form-group"></div> */}
-
-            {/* <input type="file" name="file" style={{ marginTop: 24 }} /> */}
-            {/* {contactSelections.length > 0 && (
-              <ContactSelections
-                contacts={contactSelections}
-                handleContactSelectChange={handleContactSelectChange}
-              />
-            )} */}
-            {/* <ContactSelections
-              contacts={contactSelections}
-              handleContactSelectChange={handleContactSelectChange}
-            /> */}
-          </div>
-          <div>
-            {isGroupMemberLoading ? (
-              <h2>Loading... </h2>
-            ) : (
+            <div>
               <GroupContacts
                 contacts={currentContacts}
                 handleRemoveMember={handleRemoveMember}
               />
-            )}
-            <button
-              className="group-submit"
-              data-testid="app-dashboard-my-group-new-group-button-save"
-              onClick={handleSubmit}
-              type="submit">
-              Save
-            </button>
-            {`   `}
-            <button
-              className="group-delete"
-              data-testid="app-dashboard-my-group-new-group-button-save"
-              onClick={handleDelete}
-              type="submit">
-              Delete
-            </button>
+
+              <button
+                className="group-submit"
+                data-testid="app-dashboard-my-group-new-group-button-save"
+                onClick={handleSubmit}
+                type="submit">
+                Save
+              </button>
+              {`   `}
+              <button
+                className="group-delete"
+                data-testid="app-dashboard-my-group-new-group-button-save"
+                onClick={handleDelete}
+                type="submit">
+                Delete
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </EditGroupModal>,
     document.getElementById("modal")

@@ -21,6 +21,8 @@ import JoinedGroupModal from "../MyGroups/view";
 
 import ProfileModal from "./profile/";
 
+import Loading from "../../../helpers/Loading.js";
+
 // REDUX
 import { getContact } from "../../../redux/actions/Contacts";
 import {
@@ -327,7 +329,7 @@ export default function index() {
         </div>
         <div>
           {loading.contacts ? (
-            <h1>Loading...</h1>
+            <Loading />
           ) : (
             <ContactList
               auth={auth}
