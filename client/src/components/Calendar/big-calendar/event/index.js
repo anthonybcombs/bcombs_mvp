@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { deleteEvent } from "../../../../redux/actions/Events";
 import EditEvent from "../../../Dashboard/MyEvents/edit/withOutCalendar";
 import Popover, { ArrowContainer } from "react-tiny-popover";
+
 const EventStyled = styled.div`
   z-index: 1;
   margin: 2px;
@@ -125,7 +126,6 @@ export default function index({ auth, event, selectedCalendars }) {
     format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
   ];
 
-  console.log("Current Event", event);
   return (
     <Popover
       isOpen={isVisible}
