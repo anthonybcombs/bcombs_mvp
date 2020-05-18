@@ -8,7 +8,7 @@ const defaultMailConfig = {
 
 const eventResponse = ["Yes", "No", "Maybe"];
 
-const sendEmail = async ({
+const sendInvitation = async ({
   eventName,
   eventOwnerEmail,
   eventId,
@@ -30,7 +30,8 @@ const sendEmail = async ({
         data: recipients[x],
         eventId,
         eventName,
-        eventOwnerEmail
+        eventOwnerEmail,
+        recipients
       });
       console.log("template", template);
       transporter.sendMail(
@@ -57,13 +58,26 @@ const getTemplateInvitationStrings = ({
   data,
   eventName,
   eventOwnerEmail,
-  eventId
+  eventId,
+  recipients
 }) => {
   return `
           <h4>You have been invited on this event ${eventName}</h4>
           <h5>Created by: ${eventOwnerEmail}</h5>
           <div>
-            <form action="http://192.243.109.224/api/invitation/event/${eventId}" method="GET">
+            <div>
+              <span>Invited Guest</span>
+              <ul>
+                ${recipients.map(rec => {
+                  return `<li>
+                      <i>
+                        ${rec.email} - ${rec.status}
+                      </i>
+                    </li>`;
+                })}
+              </ul>
+            </div>
+            <form action="http://192.243.109.224:3001/api/invitation/event/${eventId}" method="GET">
               Calendar:
               <select name="calendar">
                 ${data.calendars.map(calendar => {
@@ -87,4 +101,4 @@ const getTemplateInvitationStrings = ({
   `;
 };
 
-export { getTemplateInvitationStrings, sendEmail };
+export { getTemplateInvitationStrings, sendInvitation };

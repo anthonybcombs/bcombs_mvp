@@ -12,6 +12,7 @@ import {
   isWithinInterval
 } from "date-fns";
 import Event from "../../event";
+
 const CellsStyled = styled.div`
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -86,6 +87,20 @@ const CellsStyled = styled.div`
   }
 `;
 var suffix = hours => (hours >= 12 ? "PM" : "AM");
+
+const getUTCDate = (dateString = Date.now()) => {
+  const date = new Date(dateString);
+
+  return new Date(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+};
+
 export default function index({
   auth,
   currentWeek,
@@ -113,13 +128,19 @@ export default function index({
       const currentDateTime = parseISO(
         `${format(day, "yyyy-MM-dd")}T${hour < 10 ? `0${hour}` : hour}:00:00`
       );
-      const eventsOnThisDay = events.filter(event =>
-        isWithinInterval(currentDateTime, {
+
+      console.log("currentDateTime isWithinInterval", currentDateTime);
+      const eventsOnThisDay = events.filter(event => {
+        console.log(
+          "currentDateTime start date",
+          getUTCDate(event.start_of_event)
+        );
+        return isWithinInterval(currentDateTime, {
           // start: subHours(new Date(event.start_of_event), 1),
-          start: new Date(event.start_of_event),
-          end: new Date(event.end_of_event)
-        })
-      );
+          start: getUTCDate(event.start_of_event),
+          end: getUTCDate(event.end_of_event)
+        });
+      });
       const eventsCount = eventsOnThisDay.length;
       const hasEvents = eventsCount > 0;
       columns.push(
