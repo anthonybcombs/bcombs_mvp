@@ -146,9 +146,9 @@ export default function index({
     };
     console.log("payloadddd", payload);
 
-    // toggleCreateEventModal(false);
-    // dispatch(addEvent(payload));
-    // setEventDetails(initialEventDetails(new Date()));
+    toggleCreateEventModal(false);
+    dispatch(addEvent(payload));
+    setEventDetails(initialEventDetails(new Date()));
   };
   if (!isVisible) {
     return <></>;
