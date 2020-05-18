@@ -127,6 +127,7 @@ const queryTypes = `
         end_of_event:Date
         location: String
         guests: [InvitedGuest]
+        color: String
     }
     type Contact{
         id: String

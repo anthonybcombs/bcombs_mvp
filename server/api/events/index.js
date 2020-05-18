@@ -96,13 +96,13 @@ export const createNewEvent = async ({
     }
 
     const formattedRecipients = await formatRecipient(guests, db);
-    sendEmail({
-      eventOwnerEmail: auth_email,
-      eventName: name,
-      eventId: id,
-      recipients: formattedRecipients
-    });
-    console.log("formattedRecipients ", formattedRecipients);
+    // sendEmail({
+    //   eventOwnerEmail: auth_email,
+    //   eventName: name,
+    //   eventId: id,
+    //   recipients: formattedRecipients
+    // });
+
     result = await getUserEvents(auth_email);
     console.log("createNewEvent Result", result);
   } catch (err) {
@@ -131,7 +131,8 @@ export const getUserEvents = async email => {
           events.type,
           events.start_of_event,
           events.end_of_event,
-          events.location  
+          events.location,
+          user_calendars.color
         FROM events , event_calendar, user_calendars 
         WHERE events.id = event_calendar.event_id AND 
           user_calendars.id=event_calendar.calendar_id AND 
@@ -148,7 +149,8 @@ export const getUserEvents = async email => {
           events.type,
           events.start_of_event,
           events.end_of_event,
-          events.location 
+          events.location ,
+          user_calendars.color
         FROM events ,event_calendar, event_attendee, user_calendars
         WHERE  events.id=event_calendar.event_id AND 
           event_attendee.event_id=events.id AND 

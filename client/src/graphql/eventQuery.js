@@ -13,6 +13,7 @@ export const GET_EVENT_QUERY = gql`
       end_of_event
       location
       user_id
+      color
       guests {
         email
         status

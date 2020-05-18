@@ -137,7 +137,7 @@ export function* updatedEvent({ event }) {
 export function* getUserEvents(action) {
   try {
     const response = yield call(getEventsToDatabase, action.email);
-
+    console.log("getEventsToDatabase", response);
     yield put({
       type: actionType.REQUEST_EVENTS_COMPLETED,
       payload: response
