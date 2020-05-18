@@ -190,6 +190,7 @@ export function* checkedUserAndAdd({ user }) {
         sessionStorage.removeItem("access_token");
         sessionStorage.removeItem("token_type");
         sessionStorage.removeItem("id_token");
+        sessionStorage.removeItem("bigCalendarViewType");
       }
     }
   } catch (error) {}

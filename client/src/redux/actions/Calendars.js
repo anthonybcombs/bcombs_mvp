@@ -111,28 +111,25 @@ export function* addCalendar({ name, familyMembers, visibilityType, image }) {
       image,
     },
   });
+  yield put(requestCalendars());
   yield put({
     type: actionType.REQUEST_ADD_CALENDAR_COMPLETED,
-    payload: {
-      id: calendar.id,
-      userid: calendar.user_id,
-      name,
-      familyMembers: Array.from(familyMembers.keys()),
-      image: calendar.image,
-      color: calendar.color,
-      visibilityType: calendar.visibilityType,
-    },
   });
-  yield put({
-    type: actionType.REQUEST_STATUS_COMPLETED,
-    payload: {
-      messageType: "info",
-      message: "added calendar.",
-    },
-  });
+  // yield put({
+  //   type: actionType.REQUEST_STATUS_COMPLETED,
+  //   payload: {
+  //     messageType: "info",
+  //     message: "added calendar.",
+  //   },
+  // });
 }
 export function* gotCalendars() {
-  yield take([actionType.REQUEST_AUTH_USER_INFO_COMPLETED]);
+  yield take([
+    actionType.REQUEST_EDIT_CALENDAR_COMPLETED,
+    actionType.REQUEST_ADD_CALENDAR_COMPLETED,
+    actionType.REQUEST_DELETE_CALENDAR_COMPLETED,
+    actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
+  ]);
   const calendars = yield call(getCalendarFromDatabase, {
     access_token: sessionStorage.getItem("access_token"),
     token_type: sessionStorage.getItem("token_type"),
@@ -157,7 +154,7 @@ export function* editCalendar({
   image,
   color,
 }) {
-  const calendar = yield call(editCalendarInDatabase, {
+  yield call(editCalendarInDatabase, {
     creds: {
       access_token: sessionStorage.getItem("access_token"),
       token_type: sessionStorage.getItem("token_type"),
@@ -171,25 +168,17 @@ export function* editCalendar({
       color,
     },
   });
+  yield put(requestCalendars());
   yield put({
     type: actionType.REQUEST_EDIT_CALENDAR_COMPLETED,
-    payload: {
-      id: calendar.id,
-      userid: calendar.user_id,
-      name,
-      familyMembers: Array.from(familyMembers.keys()),
-      image: calendar.image,
-      color: calendar.color,
-      visibilityType: calendar.visibilityType,
-    },
   });
-  yield put({
-    type: actionType.REQUEST_STATUS_COMPLETED,
-    payload: {
-      messageType: "info",
-      message: "updated calendar.",
-    },
-  });
+  // yield put({
+  //   type: actionType.REQUEST_STATUS_COMPLETED,
+  //   payload: {
+  //     messageType: "info",
+  //     message: "updated calendar.",
+  //   },
+  // });
 }
 
 export function* deleteCalendar({
@@ -214,18 +203,18 @@ export function* deleteCalendar({
       color,
     },
   });
-
+  yield put(requestCalendars());
   yield put({
     type: actionType.REQUEST_DELETE_CALENDAR_COMPLETED,
     payload: {
       id: calendar.id,
     },
   });
-  yield put({
-    type: actionType.REQUEST_STATUS_COMPLETED,
-    payload: {
-      messageType: "info",
-      message: "deleted calendar.",
-    },
-  });
+  // yield put({
+  //   type: actionType.REQUEST_STATUS_COMPLETED,
+  //   payload: {
+  //     messageType: "info",
+  //     message: "deleted calendar.",
+  //   },
+  // });
 }
