@@ -94,14 +94,12 @@ export default function index({
       <div className="grid" id="calendar-type">
         <button
           className={`${calendarType === "week" ? "selected" : ""}`}
-          onClick={() => handleChangeCalendarType("week")}
-        >
+          onClick={() => handleChangeCalendarType("week")}>
           Week
         </button>
         <button
           className={`${calendarType === "month" ? "selected" : ""}`}
-          onClick={() => handleChangeCalendarType("month")}
-        >
+          onClick={() => handleChangeCalendarType("month")}>
           Month
         </button>
       </div>
@@ -129,24 +127,21 @@ export default function index({
         <button
           onClick={() => {
             toggleCreateCalendarModal(true);
-          }}
-        >
+          }}>
           <FontAwesomeIcon icon={faPlus} />
         </button>
-        {calendars.map((calendar, index) => (
+        {calendars[0].map((calendar, index) => (
           <div
             className="calendar"
             key={index}
             onClick={() => {
               handleCalendarSelection(calendar.id);
-            }}
-          >
+            }}>
             <img src={calendar.image} />
             <p
               className={`${
                 selectedCalendars.includes(calendar.id) ? "selected" : ""
-              }`}
-            >
+              }`}>
               <span style={{ backgroundColor: `${calendar.color}` }}></span>
               {calendar.name}
             </p>

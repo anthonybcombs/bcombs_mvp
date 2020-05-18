@@ -19,19 +19,6 @@ export const createNewEvent = async ({
   const db = makeDb();
   let result = {};
 
-  const getUserEventSelectFields = `
-  BIN_TO_UUID(events.id) as id,
-  BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
-  BIN_TO_UUID(events.user_id) as user_id,
-  events.name,
-  events.description,
-  events.status,
-  events.type,
-  events.start_of_event,
-  events.end_of_event,
-  events.location  
-  `;
-
   try {
     const currentUser = await getUserFromDatabase(auth_email);
     await db.query(

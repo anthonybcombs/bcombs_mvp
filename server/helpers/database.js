@@ -7,6 +7,7 @@ export function makeDb() {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     port: process.env.DB_PORT,
+    timezone: "+00:00"
   });
   return {
     query(sql, args) {
@@ -23,6 +24,6 @@ export function makeDb() {
     },
     rollback() {
       return util.promisify(connection.rollback).call(connection);
-    },
+    }
   };
 }
