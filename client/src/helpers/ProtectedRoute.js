@@ -19,6 +19,9 @@ export default function protectedRoutes({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  useEffect(() => {
     if (!auth.hasOwnProperty("user_id")) {
       dispatch(requestUserInfo());
       dispatch(requestCalendars());

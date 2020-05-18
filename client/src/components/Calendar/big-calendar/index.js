@@ -29,11 +29,11 @@ export default function index({
   };
   const handleCalendarSelection = (id) => {
     if (selectedCalendars.includes(id)) {
-      setSelectedCalendars([
-        ...selectedCalendars.filter((calendarId) => {
-          calendarId === id;
-        }),
-      ]);
+      setSelectedCalendars(
+        selectedCalendars.filter((calendarId) => {
+          return calendarId !== id;
+        })
+      );
       return;
     }
     setSelectedCalendars([...selectedCalendars, id]);

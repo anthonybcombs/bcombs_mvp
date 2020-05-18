@@ -10,7 +10,7 @@ import {
   endOfWeek,
   addDays,
   toDate,
-  eachDayOfInterval
+  eachDayOfInterval,
 } from "date-fns";
 import Event from "../../event";
 const CellsStyled = styled.div`
@@ -86,7 +86,7 @@ export default function index({
   selectedCalendars,
   events,
   handleChangeDay,
-  setIsEventModalVisible
+  setIsEventModalVisible,
 }) {
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
@@ -103,20 +103,20 @@ export default function index({
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
 
-    const eventsOnThisDay = events.filter(event => {
+    const eventsOnThisDay = events.filter((event) => {
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),
-        end: new Date(event.end_of_event)
+        end: new Date(event.end_of_event),
       });
       console.log("dateRange", dateRange);
       if (dateRange != undefined) {
         return (
-          dateRange.filter(intervalDate => isSameDay(intervalDate, cloneDay))
+          dateRange.filter((intervalDate) => isSameDay(intervalDate, cloneDay))
             .length > 0
         );
       }
     });
-    console.log("eventsOnThisDay 111", eventsOnThisDay);
+    // console.log("eventsOnThisDay 111", eventsOnThisDay);
     const eventsCount = eventsOnThisDay.length;
     const hasEvents = eventsCount > 0;
     days.push(
@@ -132,14 +132,16 @@ export default function index({
         onClick={() => {
           handleChangeDay(toDate(cloneDay));
         }}
-        onDoubleClick={e => {
+        onDoubleClick={(e) => {
           handleChangeDay(toDate(cloneDay));
           setIsEventModalVisible(true);
-        }}>
+        }}
+      >
         <span
           className={`day ${
             hasEvents && !isSameDay(day, selectedDate) ? "has-events" : ""
-          }`}>
+          }`}
+        >
           {formattedDate}
         </span>
         <div id="events-list">
