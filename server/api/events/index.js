@@ -1,5 +1,8 @@
 import { makeDb } from "../../helpers/database";
-import { getTemplateInvitationStrings, sendEmail } from "../../helpers/email";
+import {
+  getTemplateInvitationStrings,
+  sendInvitation
+} from "../../helpers/email";
 import { getUserFromDatabase } from "../index";
 
 export const createNewEvent = async ({
@@ -82,16 +85,17 @@ export const createNewEvent = async ({
       );
     }
 
-    const formattedRecipients = await formatRecipient(guests, db);
-    // sendEmail({
-    //   eventOwnerEmail: auth_email,
-    //   eventName: name,
-    //   eventId: id,
-    //   recipients: formattedRecipients
-    // });
+    const formattedRecipients = await formatRecipient(guests, id, db);
+    console.log("FormattedRecipientss", formattedRecipients);
+    sendInvitation({
+      eventOwnerEmail: auth_email,
+      eventName: name,
+      eventId: id,
+      recipients: formattedRecipients
+    });
 
     result = await getUserEvents(auth_email);
-    console.log("createNewEvent Result", result);
+    // console.log("createNewEvent Result", result);
   } catch (err) {
     console.log("createNewEvent error", err);
   } finally {
@@ -281,7 +285,7 @@ export const getInvitedEvents = async email => {
         events.name,
         event_attendee.status,
         event_atendee.user_id
-       FROM event_atendee,events WHERE event_attendee.event_id=event.id AND event_attendee.user_id=UUID_TO_BIN(?)
+       FROM event_atendee,events WHERE event_attendee.event_id=events.id AND event_attendee.user_id=UUID_TO_BIN(?)
      `,
       [currentUser.id]
     );
@@ -317,7 +321,7 @@ const addEventAttendee = async (guestIds, eventId, db) => {
 };
 
 //eventOwnerEmail, guests, id, name
-const formatRecipient = async (guests, db) => {
+const formatRecipient = async (guests, eventId, db) => {
   let userWithCalendars = [];
   try {
     const formatGuestIds = guests.map(guestId => `UUID_TO_BIN("${guestId}")`);
@@ -327,11 +331,13 @@ const formatRecipient = async (guests, db) => {
         `SELECT user_profiles.first_name,
                 user_profiles.last_name,
                 BIN_TO_UUID(user_profiles.user_id) as user_id ,
-                users.email
-        FROM user_profiles,users 
+                users.email,
+                event_attendee.status
+        FROM user_profiles,users, event_attendee, events
         WHERE users.id IN (${formatGuestIds.join(
           ","
-        )}) AND users.id = user_profiles.user_id`
+        )}) AND users.id = user_profiles.user_id AND users.id = event_attendee.user_id AND events.id = event_attendee.event_id AND events.id = UUID_TO_BIN(?)`,
+        [eventId]
       );
 
       let userCalendars = await db.query(
