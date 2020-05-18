@@ -130,6 +130,7 @@ export function* gotUserInfo() {
       ) {
         sessionStorage.removeItem("access_token");
         sessionStorage.removeItem("token_type");
+        sessionStorage.removeItem("bigCalendarViewType");
         yield put({
           type: actionType.REQUEST_STATUS_COMPLETED,
           payload: {
@@ -153,6 +154,7 @@ export function* gotUserInfo() {
     } else {
       sessionStorage.removeItem("access_token");
       sessionStorage.removeItem("token_type");
+      sessionStorage.removeItem("bigCalendarViewType");
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
         payload: {
@@ -176,6 +178,7 @@ export function* loggedOut() {
   sessionStorage.removeItem("access_token");
   sessionStorage.removeItem("token_type");
   sessionStorage.removeItem("id_token");
+  sessionStorage.removeItem("bigCalendarViewType");
   yield put({ type: actionType.REQUEST_AUTH_LOGOUT_COMPLETED });
 }
 

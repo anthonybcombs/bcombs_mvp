@@ -6,7 +6,7 @@ import {
   faArrowLeft,
   faPlus,
   faEdit,
-  faTrashAlt
+  faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
@@ -94,7 +94,7 @@ export default function index({
   calendarType,
   handleChangeCalendarType,
   selectedCalendars,
-  handleCalendarSelection
+  handleCalendarSelection,
 }) {
   const [isVisibleCreateCalendarModal, toggleCreateCalendarModal] = useState(
     false
@@ -120,12 +120,14 @@ export default function index({
       <div className="grid" id="calendar-type">
         <button
           className={`${calendarType === "week" ? "selected" : ""}`}
-          onClick={() => handleChangeCalendarType("week")}>
+          onClick={() => handleChangeCalendarType("week")}
+        >
           Week
         </button>
         <button
           className={`${calendarType === "month" ? "selected" : ""}`}
-          onClick={() => handleChangeCalendarType("month")}>
+          onClick={() => handleChangeCalendarType("month")}
+        >
           Month
         </button>
       </div>
@@ -152,7 +154,8 @@ export default function index({
         <button
           onClick={() => {
             toggleCreateCalendarModal(true);
-          }}>
+          }}
+        >
           <FontAwesomeIcon icon={faPlus} />
         </button>
         <CalendarList
@@ -171,12 +174,12 @@ const CalendarList = ({
   handleCalendarSelection,
   toggleEditCalendarModal,
   setSelectedCalendar,
-  selectedCalendars
+  selectedCalendars,
 }) => {
   return (
     <>
       {calendars.length > 0 &&
-        calendars[0].map(calendar => {
+        calendars[0].map((calendar) => {
           return (
             <CalendarCard
               key={calendar.id}
@@ -196,7 +199,7 @@ const CalendarCard = ({
   handleCalendarSelection,
   setSelectedCalendar,
   selectedCalendars,
-  toggleEditCalendarModal
+  toggleEditCalendarModal,
 }) => {
   const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
   const dispatch = useDispatch();
@@ -212,12 +215,14 @@ const CalendarCard = ({
       }}
       onMouseLeave={() => {
         setCalendarButtonsVisible(false);
-      }}>
+      }}
+    >
       <img src={calendar.image} />
       <p
         className={`${
           selectedCalendars.includes(calendar.id) ? "selected" : ""
-        }`}>
+        }`}
+      >
         <span style={{ backgroundColor: `${calendar.color}` }}></span>
         {calendar.name}
       </p>

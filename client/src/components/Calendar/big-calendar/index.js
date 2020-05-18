@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MonthViewCalendar from "./month-calendar";
 import WeekViewCalendar from "./week-calendar";
 export default function index({
@@ -6,19 +6,33 @@ export default function index({
   contacts,
   events,
   calendars,
-  familyMembers
+  familyMembers,
 }) {
-  const [calendarType, setCalendarType] = useState("month");
+  const [calendarType, setCalendarType] = useState(
+    sessionStorage.getItem("bigCalendarViewMonth") === null
+      ? "month"
+      : sessionStorage.getItem("bigCalendarViewMonth")
+  );
   const [selectedCalendars, setSelectedCalendars] = useState([]);
-  const handleChangeCalendarType = type => {
+  useEffect(() => {
+    if (sessionStorage.getItem("bigCalendarViewType") === null) {
+      sessionStorage.setItem("bigCalendarViewType", "month");
+      return;
+    }
+    if (calendarType !== sessionStorage.getItem("bigCalendarViewType")) {
+      setCalendarType(sessionStorage.getItem("bigCalendarViewType"));
+    }
+  });
+  const handleChangeCalendarType = (type) => {
+    sessionStorage.setItem("bigCalendarViewType", type);
     setCalendarType(type);
   };
-  const handleCalendarSelection = id => {
+  const handleCalendarSelection = (id) => {
     if (selectedCalendars.includes(id)) {
       setSelectedCalendars([
-        ...selectedCalendars.filter(calendarId => {
+        ...selectedCalendars.filter((calendarId) => {
           calendarId === id;
-        })
+        }),
       ]);
       return;
     }
@@ -42,8 +56,8 @@ export default function index({
       )}
       {calendarType === "week" && (
         <WeekViewCalendar
-        auth={auth}
-        contacts={contacts}
+          auth={auth}
+          contacts={contacts}
           events={events}
           calendars={calendars}
           calendarType={calendarType}
