@@ -137,6 +137,7 @@ const queryTypes = `
         email: String
         phone_number: String
         relation: String
+        added_by:String
     }
 
     type User{
@@ -246,7 +247,7 @@ const mutations = `
         changePassword(user:UserChangePasswordInput!):Status
         userUpdate(user: UserUpdateInput!):Status
         createContact(contact: ContactInput): [Contact]
-        deleteContacts(id: String!): [Contact]
+        deleteContacts(id: String!,user_id:String!,added_by_id:String!): [Contact]
         updateContact(contact: ContactInput!): [Contact]
         createGroup(group: GroupInput!) : AllGroups
         updateGroup(group: GroupInput!): AllGroups        

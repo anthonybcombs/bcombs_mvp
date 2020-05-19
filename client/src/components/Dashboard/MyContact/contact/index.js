@@ -69,6 +69,7 @@ export default function index({
     setIsContactSettingVisible(!isContactSettingVisible);
   };
   const handleRemoveContact = () => {
+    console.log("ContactDetailss", contactDetails);
     dispatch(removeContact(contactDetails));
   };
 

@@ -24,6 +24,7 @@ const addContactToDatabase = async payload => {
         }
       }
     });
+    console.log("addContactToDatabase createContact", data);
     return data.createContact;
   } catch (error) {
     console.log("addContactDatabase error", error);
@@ -45,20 +46,22 @@ const updateContactToDatabase = async contact => {
     console.log("updateContactToDatabase error", error);
   }
 };
-const removeContactToDatabase = contact => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { data } = await graphqlClient.mutate({
-        mutation: DELETE_CONTACT_MUTATION,
-        variables: {
-          id: contact[0].id
-        }
-      });
-      return resolve(data.deleteContacts);
-    } catch (error) {
-      reject("error");
-    }
-  });
+const removeContactToDatabase = async contact => {
+  try {
+    console.log("removedContact removeContactToDatabase", contact);
+    const { data } = await graphqlClient.mutate({
+      mutation: DELETE_CONTACT_MUTATION,
+      variables: {
+        id: contact.id,
+        user_id: contact.user_id,
+        added_by_id: contact.added_by_id
+      }
+    });
+    console.log("removedContact deleteContacts", data.deleteContacts);
+    return data.deleteContacts;
+  } catch (error) {
+    console.log("removedContact error", error);
+  }
 };
 
 const getContactToDatabase = email => {
@@ -104,6 +107,7 @@ export const updateContact = contact => {
       last_name: contact.last_name,
       phone_number: contact.phone_number,
       email: contact.email,
+      auth_email: contact.auth_email,
       relation: contact.relation,
       selected_groups: contact.selectedGroups,
       removed_groups: contact.removedGroups
@@ -113,7 +117,11 @@ export const updateContact = contact => {
 export const removeContact = contact => {
   return {
     type: actionType.REQUEST_REMOVE_CONTACT,
-    contact: { id: contact.id }
+    contact: {
+      id: contact.id,
+      user_id: contact.user_id,
+      added_by_id: contact.added_by
+    }
   };
 };
 
@@ -135,8 +143,11 @@ export function* addedContact({ contact }) {
   try {
     const response = yield call(addContactToDatabase, contact);
     if (response) {
-      yield put(getContact(contact.auth_email));
-      yield put(requestUserGroup(contact.auth_email));
+      yield put({
+        type: actionType.SET_USER_CONTACT_LIST,
+        payload: response
+      });
+      //yield put(requestUserGroup(contact.auth_email));
     }
   } catch (err) {
     yield put({
@@ -162,7 +173,8 @@ export function* updatedContact({ contact }) {
 }
 export function* removedContact({ contact }) {
   try {
-    const response = yield call(removeContactToDatabase, [contact]);
+    console.log("removedContact contact", contact);
+    const response = yield call(removeContactToDatabase, contact);
     yield put({
       type: actionType.SET_USER_CONTACT_LIST,
       payload: response

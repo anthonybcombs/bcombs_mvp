@@ -7,7 +7,7 @@ export const getContacts = async email => {
   let result;
   try {
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number, relation, BIN_TO_UUID(user_id) as user_id  from contacts WHERE added_by = UUID_TO_BIN(?)`,
+      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number, relation, BIN_TO_UUID(user_id) as user_id, BIN_TO_UUID(added_by) as added_by  from contacts WHERE added_by = UUID_TO_BIN(?)`,
       [currentUser.id]
     );
 
@@ -21,16 +21,20 @@ export const getContacts = async email => {
   }
 };
 
-export const removeContact = async id => {
+export const removeContact = async ({ id, user_id, added_by_id }) => {
   const db = makeDb();
   let result = [];
   try {
-    await db.query(`DELETE FROM contacts WHERE id=UUID_TO_BIN(?)`, [id]);
+    await db.query(
+      `DELETE FROM contacts WHERE id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?) AND added_by=UUID_TO_BIN(?)`,
+      [id, user_id, added_by_id]
+    );
     await db.query(`DELETE FROM group_members WHERE user_id=UUID_TO_BIN(?)`, [
-      id
+      user_id
     ]);
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number  from contacts`
+      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number, relation, BIN_TO_UUID(user_id) as user_id,BIN_TO_UUID(added_by) as added_by  from contacts WHERE added_by = UUID_TO_BIN(?)`,
+      [added_by_id]
     );
     result = rows;
   } catch (error) {
@@ -42,9 +46,18 @@ export const removeContact = async id => {
 
 export const editContact = async data => {
   const db = makeDb();
-  let result = [];
+  let results = [];
   try {
-    const { first_name, last_name, phone_number, email, relation, id } = data;
+    const {
+      first_name,
+      last_name,
+      phone_number,
+      email,
+      relation,
+      id,
+      auth_email
+    } = data;
+    console.log("editContact data", data);
     const currentUser = await getUserFromDatabase(email);
     await db.query(
       `UPDATE contacts SET first_name=?,last_name=?,phone_number=?,email=?,relation=? WHERE id=UUID_TO_BIN(?)`,
@@ -76,15 +89,12 @@ export const editContact = async data => {
       );
     }
 
-    const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id, BIN_TO_UUID(user_id) as user_id,first_name,last_name,email,phone_number,relation  from contacts`
-    );
-    result = JSON.parse(JSON.stringify(rows));
+    results = await getContacts(auth_email);
   } catch (error) {
     console.log("Edit Contact Error", error);
   } finally {
     await db.close();
-    return result;
+    return results;
   }
 };
 
