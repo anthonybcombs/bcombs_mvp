@@ -114,9 +114,10 @@ export default function index() {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const { auth, contacts, events, familyMembers } = useSelector(
-    ({ auth, contacts, events, familyMembers }) => ({
+  const { auth, calendars, contacts, events, familyMembers } = useSelector(
+    ({ auth, calendars, contacts, events, familyMembers }) => ({
       auth,
+      calendars,
       contacts,
       events,
       familyMembers
@@ -140,7 +141,9 @@ export default function index() {
     <MyEventsStyled data-testid="app-dashboard-my-events" theme={theme}>
       <NewEventModal
         auth={auth}
+        calendars={calendars}
         contacts={contacts}
+        isEventSection={true}
         isVisible={isNewEventModalVisible}
         toggleCreateEventModal={setIsEventModalVisible}
       />
