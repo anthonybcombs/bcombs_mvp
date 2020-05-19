@@ -5,6 +5,9 @@ import { useDispatch } from "react-redux";
 import { format } from "date-fns";
 import { updateEvent } from "../../../../redux/actions/Events";
 import EventForm from "../forms/EventForm";
+
+import { getUTCDate } from "../../../../helpers/datetime";
+
 const EditEventModal = styled.div`
   h2 {
     text-align: center;
@@ -69,7 +72,6 @@ const EditEventModal = styled.div`
   }
 `;
 
-const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 export default function index({
   auth,
   isVisible = true,
@@ -108,12 +110,12 @@ export default function index({
   const handleSubmit = value => {
     const payload = {
       start_of_event: format(
-        new Date(eventDetails.eventSchedule[0]),
-        DATE_TIME_FORMAT
+        getUTCDate(eventDetails.eventSchedule[0]),
+        "yyyy-MM-dd HH:mm:ss"
       ),
       end_of_event: format(
-        new Date(eventDetails.eventSchedule[1]),
-        DATE_TIME_FORMAT
+        getUTCDate(eventDetails.eventSchedule[1]),
+        "yyyy-MM-dd HH:mm:ss"
       ),
       type: eventDetails.type,
       id: eventDetails.id,

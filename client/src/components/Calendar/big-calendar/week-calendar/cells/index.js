@@ -129,16 +129,11 @@ export default function index({
         `${format(day, "yyyy-MM-dd")}T${hour < 10 ? `0${hour}` : hour}:00:00`
       );
 
-      console.log("currentDateTime isWithinInterval", currentDateTime);
       const eventsOnThisDay = events.filter(event => {
-        console.log(
-          "currentDateTime start date",
-          getUTCDate(event.start_of_event)
-        );
         return isWithinInterval(currentDateTime, {
           // start: subHours(new Date(event.start_of_event), 1),
-          start: getUTCDate(event.start_of_event),
-          end: getUTCDate(event.end_of_event)
+          start: new Date(event.start_of_event),
+          end: new Date(event.end_of_event)
         });
       });
       const eventsCount = eventsOnThisDay.length;

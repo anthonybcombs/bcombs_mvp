@@ -9,6 +9,8 @@ import { addEvent } from "../../../../redux/actions/Events";
 import MicroCalendar from "../../../Calendar/micro-calendar";
 import EventForm from "../forms/EventForm";
 
+import { getUTCDate } from "../../../../helpers/datetime";
+
 const NewEventModal = styled.div`
   h2 {
     font-size: 2em;
@@ -170,13 +172,14 @@ export default function index({
     const calendarIds = selectedCalendar.map(calendar => calendar.id);
     const payload = {
       start_of_event: format(
-        eventDetails.eventSchedule[0],
-        "yyyy-MM-dd hh:mm:ss "
+        getUTCDate(eventDetails.eventSchedule[0]),
+        "yyyy-MM-dd HH:mm:ss"
       ),
       end_of_event: format(
-        eventDetails.eventSchedule[1],
-        "yyyy-MM-dd hh:mm:ss "
+        getUTCDate(eventDetails.eventSchedule[1]),
+        "yyyy-MM-dd HH:mm:ss"
       ),
+
       type: eventDetails.eventType,
       id: eventDetails.id,
       location: eventDetails.location,
@@ -188,7 +191,7 @@ export default function index({
       auth_email: auth.email,
       calendar_ids: calendarIds
     };
-
+    console.log("Payloaddddd", payload);
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
   };
