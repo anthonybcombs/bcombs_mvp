@@ -7,6 +7,10 @@ import {
   faPlus,
   faEdit,
   faTrashAlt,
+  faLongArrowAltRight,
+  faLongArrowAltLeft,
+  faEyeSlash,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
@@ -32,6 +36,9 @@ const HeaderStyled = styled.div`
   }
   #calendar-controls {
     margin-top: 1em;
+  }
+  #calendars-control {
+    position: relative;
   }
   #calendars-control button {
     width: 100%;
@@ -83,7 +90,7 @@ const HeaderStyled = styled.div`
       grid-template-columns: repeat(2, 50%);
     }
     #calendars-control {
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-template-columns: repeat(4, minmax(100px, 1fr));
     }
   }
 `;
@@ -103,6 +110,9 @@ export default function index({
     false
   );
   const [selectedCalendar, setSelectedCalendar] = useState({});
+  const [isPaginationVisible, setPaginationVisibility] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [viewAllCalendar, setViewAllCalendar] = useState(false);
   const dateFormat = "MMMM yyyy";
   return (
     <HeaderStyled data-testid="app-big-calendar-header">
@@ -150,20 +160,74 @@ export default function index({
           />
         </h2>
       </div>
-      <div className="grid" id="calendars-control">
-        <button
-          onClick={() => {
-            toggleCreateCalendarModal(true);
-          }}
-        >
-          <FontAwesomeIcon icon={faPlus} />
+      <div
+        className="grid"
+        id="calendars-control"
+        onMouseEnter={() => {
+          setPaginationVisibility(true);
+        }}
+        onMouseLeave={() => {
+          setPaginationVisibility(false);
+        }}
+      >
+        <button>
+          <FontAwesomeIcon
+            icon={faPlus}
+            onClick={() => {
+              toggleCreateCalendarModal(true);
+            }}
+          />
+          <FontAwesomeIcon
+            icon={viewAllCalendar ? faEyeSlash : faEye}
+            onClick={() => {
+              setViewAllCalendar(!viewAllCalendar);
+            }}
+          />
         </button>
+        {isPaginationVisible && !viewAllCalendar && (
+          <>
+            {currentPage > 0 && (
+              <FontAwesomeIcon
+                style={{
+                  position: "absolute",
+                  top: 30,
+                  left: 100,
+                  zIndex: 100,
+                  color: "#f26e21",
+                }}
+                icon={faLongArrowAltLeft}
+                onClick={() => {
+                  setCurrentPage(currentPage - 1);
+                }}
+                size="2x"
+              />
+            )}
+            {currentPage < calendars.length - 1 && (
+              <FontAwesomeIcon
+                style={{
+                  position: "absolute",
+                  top: 30,
+                  right: 0,
+                  zIndex: 100,
+                  color: "#f26e21",
+                }}
+                icon={faLongArrowAltRight}
+                onClick={() => {
+                  setCurrentPage(currentPage + 1);
+                }}
+                size="2x"
+              />
+            )}
+          </>
+        )}
         <CalendarList
           calendars={calendars}
           handleCalendarSelection={handleCalendarSelection}
           setSelectedCalendar={setSelectedCalendar}
           selectedCalendars={selectedCalendars}
           toggleEditCalendarModal={toggleEditCalendarModal}
+          currentPage={currentPage}
+          viewAllCalendar={viewAllCalendar}
         />
       </div>
     </HeaderStyled>
@@ -175,11 +239,30 @@ const CalendarList = ({
   toggleEditCalendarModal,
   setSelectedCalendar,
   selectedCalendars,
+  currentPage,
+  viewAllCalendar,
 }) => {
   return (
     <>
-      {calendars.length > 0 &&
-        calendars[0].map((calendar) => {
+      {viewAllCalendar &&
+        calendars.map((calendarGroup) => {
+          console.log("?");
+          return calendarGroup.map((calendar) => {
+            return (
+              <CalendarCard
+                key={calendar.id}
+                calendar={calendar}
+                handleCalendarSelection={handleCalendarSelection}
+                setSelectedCalendar={setSelectedCalendar}
+                selectedCalendars={selectedCalendars}
+                toggleEditCalendarModal={toggleEditCalendarModal}
+              />
+            );
+          });
+        })}
+      {!viewAllCalendar &&
+        calendars.length > 0 &&
+        calendars[currentPage].map((calendar) => {
           return (
             <CalendarCard
               key={calendar.id}
