@@ -7,6 +7,8 @@ import {
   faPlus,
   faEdit,
   faTrashAlt,
+  faLongArrowAltRight,
+  faLongArrowAltLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
@@ -32,6 +34,9 @@ const HeaderStyled = styled.div`
   }
   #calendar-controls {
     margin-top: 1em;
+  }
+  #calendars-control {
+    position: relative;
   }
   #calendars-control button {
     width: 100%;
@@ -178,6 +183,32 @@ const CalendarList = ({
 }) => {
   return (
     <>
+      {/* {calendars.length > 0 && (
+        <>
+          <FontAwesomeIcon
+            style={{
+              position: "absolute",
+              top: 30,
+              left: 105,
+              zIndex: 100,
+              color: "#f26e21",
+            }}
+            icon={faLongArrowAltLeft}
+            size="2x"
+          />
+          <FontAwesomeIcon
+            style={{
+              position: "absolute",
+              top: 30,
+              right: 0,
+              zIndex: 100,
+              color: "#f26e21",
+            }}
+            icon={faLongArrowAltRight}
+            size="2x"
+          />
+        </>
+      )} */}
       {calendars.length > 0 &&
         calendars[0].map((calendar) => {
           return (

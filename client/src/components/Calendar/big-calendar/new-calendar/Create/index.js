@@ -77,7 +77,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
         <span
           className="close"
           onClick={() => {
-            toggleCreateCalendarModal(false);
+            handleCancel();
           }}
         >
           &times;

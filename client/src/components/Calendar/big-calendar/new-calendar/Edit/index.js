@@ -13,7 +13,11 @@ const EditCalendarModalStyled = styled.div`
     width: 50%;
   }
 `;
-function index({ isVisible = true, toggleEditCalendarModal, calendar }) {
+export default function index({
+  isVisible = true,
+  toggleEditCalendarModal,
+  calendar,
+}) {
   const [calendarDetails, setCalendarDetails] = useState(calendar);
   useEffect(() => {
     calendar.familyMembers.forEach((familyMemberId) => {
@@ -21,6 +25,7 @@ function index({ isVisible = true, toggleEditCalendarModal, calendar }) {
     });
     setCalendarDetails(calendar);
   }, [calendar]);
+  console.log(calendarDetails);
   const { familyMembers, calendars } = useSelector(
     ({ familyMembers, calendars }) => {
       return { familyMembers, calendars };
@@ -82,7 +87,7 @@ function index({ isVisible = true, toggleEditCalendarModal, calendar }) {
         <span
           className="close"
           onClick={() => {
-            toggleEditCalendarModal(false);
+            handleCancel();
           }}
         >
           &times;
@@ -104,5 +109,3 @@ function index({ isVisible = true, toggleEditCalendarModal, calendar }) {
     document.getElementById("modal")
   );
 }
-
-export default React.memo(index);
