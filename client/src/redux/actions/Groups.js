@@ -20,7 +20,7 @@ import { setGroupLoading, setGroupMemberLoadingLoading } from "./Loading";
 //     return resolve("success");
 //   });
 // };
-const updateGroupToDatabase = async group => {
+const updateGroupToDatabase = async (group) => {
   try {
     const { data } = await graphqlClient.mutate({
       mutation: GROUP_UPDATE_MUTATION,
@@ -30,9 +30,9 @@ const updateGroupToDatabase = async group => {
           name: group.name,
           member_ids: group.member_ids,
           email: group.email,
-          removed_member_ids: group.removed_member_ids
-        }
-      }
+          removed_member_ids: group.removed_member_ids,
+        },
+      },
     });
     console.log("UpdateGroupToDatabase", data);
     return data.updateGroup;

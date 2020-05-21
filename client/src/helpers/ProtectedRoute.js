@@ -45,8 +45,7 @@ export default function protectedRoutes({ children }) {
   } else if (
     auth.email_verified &&
     auth.status === "SIGNED_IN" &&
-    status.requestStatus === "COMPLETED" &&
-    !loading.groups
+    status.requestStatus === "COMPLETED"
   ) {
     if (
       !location.pathname.includes("createprofile") &&
