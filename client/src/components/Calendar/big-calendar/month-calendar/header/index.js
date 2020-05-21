@@ -9,6 +9,8 @@ import {
   faTrashAlt,
   faLongArrowAltRight,
   faLongArrowAltLeft,
+  faEyeSlash,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
@@ -110,6 +112,7 @@ export default function index({
   const [selectedCalendar, setSelectedCalendar] = useState({});
   const [isPaginationVisible, setPaginationVisibility] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [viewAllCalendar, setViewAllCalendar] = useState(false);
   const dateFormat = "MMMM yyyy";
   return (
     <HeaderStyled data-testid="app-big-calendar-header">
@@ -167,14 +170,21 @@ export default function index({
           setPaginationVisibility(false);
         }}
       >
-        <button
-          onClick={() => {
-            toggleCreateCalendarModal(true);
-          }}
-        >
-          <FontAwesomeIcon icon={faPlus} />
+        <button>
+          <FontAwesomeIcon
+            icon={faPlus}
+            onClick={() => {
+              toggleCreateCalendarModal(true);
+            }}
+          />
+          <FontAwesomeIcon
+            icon={viewAllCalendar ? faEyeSlash : faEye}
+            onClick={() => {
+              setViewAllCalendar(!viewAllCalendar);
+            }}
+          />
         </button>
-        {isPaginationVisible && (
+        {isPaginationVisible && !viewAllCalendar && (
           <>
             {currentPage > 0 && (
               <FontAwesomeIcon
@@ -217,6 +227,7 @@ export default function index({
           selectedCalendars={selectedCalendars}
           toggleEditCalendarModal={toggleEditCalendarModal}
           currentPage={currentPage}
+          viewAllCalendar={viewAllCalendar}
         />
       </div>
     </HeaderStyled>
@@ -229,10 +240,28 @@ const CalendarList = ({
   setSelectedCalendar,
   selectedCalendars,
   currentPage,
+  viewAllCalendar,
 }) => {
   return (
     <>
-      {calendars.length > 0 &&
+      {viewAllCalendar &&
+        calendars.map((calendarGroup) => {
+          console.log("?");
+          return calendarGroup.map((calendar) => {
+            return (
+              <CalendarCard
+                key={calendar.id}
+                calendar={calendar}
+                handleCalendarSelection={handleCalendarSelection}
+                setSelectedCalendar={setSelectedCalendar}
+                selectedCalendars={selectedCalendars}
+                toggleEditCalendarModal={toggleEditCalendarModal}
+              />
+            );
+          });
+        })}
+      {!viewAllCalendar &&
+        calendars.length > 0 &&
         calendars[currentPage].map((calendar) => {
           return (
             <CalendarCard
