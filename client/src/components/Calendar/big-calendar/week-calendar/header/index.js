@@ -7,6 +7,8 @@ import {
   faPlus,
   faEdit,
   faTrashAlt,
+  faLongArrowAltRight,
+  faLongArrowAltLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format, startOfWeek, endOfWeek } from "date-fns";
@@ -32,6 +34,9 @@ const HeaderStyled = styled.div`
   }
   #calendar-controls {
     margin-top: 1em;
+  }
+  #calendars-control {
+    position: relative;
   }
   #calendars-control button {
     width: 100%;
@@ -83,7 +88,7 @@ const HeaderStyled = styled.div`
       grid-template-columns: repeat(2, 50%);
     }
     #calendars-control {
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 `;
@@ -103,6 +108,8 @@ export default function index({
     false
   );
   const [selectedCalendar, setSelectedCalendar] = useState({});
+  const [isPaginationVisible, setPaginationVisibility] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
   return (
     <HeaderStyled data-testid="app-big-calendar-header">
       <CreateCalendarModal
@@ -150,7 +157,16 @@ export default function index({
           />
         </h2>
       </div>
-      <div className="grid" id="calendars-control">
+      <div
+        className="grid"
+        id="calendars-control"
+        onMouseEnter={() => {
+          setPaginationVisibility(true);
+        }}
+        onMouseLeave={() => {
+          setPaginationVisibility(false);
+        }}
+      >
         <button
           onClick={() => {
             toggleCreateCalendarModal(true);
@@ -158,12 +174,49 @@ export default function index({
         >
           <FontAwesomeIcon icon={faPlus} />
         </button>
+        {isPaginationVisible && (
+          <>
+            {currentPage > 0 && (
+              <FontAwesomeIcon
+                style={{
+                  position: "absolute",
+                  top: 30,
+                  left: 100,
+                  zIndex: 200,
+                  color: "#f26e21",
+                }}
+                icon={faLongArrowAltLeft}
+                onClick={() => {
+                  setCurrentPage(currentPage - 1);
+                }}
+                size="2x"
+              />
+            )}
+            {currentPage < calendars.length - 1 && (
+              <FontAwesomeIcon
+                style={{
+                  position: "absolute",
+                  top: 30,
+                  right: 0,
+                  zIndex: 200,
+                  color: "#f26e21",
+                }}
+                icon={faLongArrowAltRight}
+                onClick={() => {
+                  setCurrentPage(currentPage + 1);
+                }}
+                size="2x"
+              />
+            )}
+          </>
+        )}
         <CalendarList
           calendars={calendars}
           handleCalendarSelection={handleCalendarSelection}
           setSelectedCalendar={setSelectedCalendar}
           selectedCalendars={selectedCalendars}
           toggleEditCalendarModal={toggleEditCalendarModal}
+          currentPage={currentPage}
         />
       </div>
     </HeaderStyled>
@@ -176,11 +229,12 @@ const CalendarList = ({
   toggleEditCalendarModal,
   setSelectedCalendar,
   selectedCalendars,
+  currentPage,
 }) => {
   return (
     <>
       {calendars.length > 0 &&
-        calendars[0].map((calendar) => {
+        calendars[currentPage].map((calendar) => {
           return (
             <CalendarCard
               key={calendar.id}
