@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import ReactDOM from "react-dom";
 import { uuid } from "uuidv4";
 import styled, { ThemeContext } from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
 
 import { addEvent } from "../../../../redux/actions/Events";
@@ -101,6 +101,11 @@ export default function index({
   isVisible = true,
   toggleCreateEventModal
 }) {
+  const { groups } = useSelector(({ groups }) => ({
+    groups
+  }));
+  const [groupOptions, setGroupOptions] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState([]);
   const [contactOptions, setContactOptions] = useState([]);
   const [selectedCalendar, setSelectedCalendar] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -135,6 +140,19 @@ export default function index({
       setCalendarOptions(formattedCalendars);
     }
   }, [calendars]);
+
+  useEffect(() => {
+    if (groups) {
+      const createdGroups = groups.created_groups;
+      const joinedGroups = groups.joined_groups;
+      const combinedGroups = [
+        ...(createdGroups || []),
+        ...(joinedGroups || [])
+      ];
+
+      setGroupOptions([...combinedGroups]);
+    }
+  }, [groups]);
 
   const handleSetSelectedDate = date => {
     const currentDateTime = addSeconds(
@@ -187,13 +205,25 @@ export default function index({
       status: eventDetails.status,
       time: eventDetails.time,
       description: eventDetails.description,
-      guests: eventDetails.eventGuests.map(item => item.id),
+      visibility: eventDetails.visibility,
       auth_email: auth.email,
-      calendar_ids: calendarIds
+      calendar_ids: calendarIds,
+      guests: eventDetails.eventGuests.map(item => item.id),
+      group_ids:
+        eventDetails.visibility === "custom"
+          ? selectedGroup.map(group => group.id)
+          : []
     };
-    console.log("Payloaddddd", payload);
+
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
+  };
+
+  const handleGroupSelect = value => {
+    setSelectedGroup(value);
+  };
+  const handleGroupRemove = value => {
+    setSelectedGroup(value);
   };
 
   if (!isVisible) {
@@ -225,7 +255,10 @@ export default function index({
             calendars={calendarOptions}
             contactOptions={contactOptions}
             eventDetails={eventDetails}
+            groups={groupOptions}
             isEventSection={isEventSection}
+            handleGroupSelect={handleGroupSelect}
+            handleGroupRemove={handleGroupRemove}
             handleCalendarSelect={handleCalendarSelect}
             handleCalendarRemove={handleCalendarRemove}
             handleEventDetailsChange={handleEventDetailsChange}

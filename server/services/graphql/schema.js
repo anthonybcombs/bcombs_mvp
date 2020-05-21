@@ -106,9 +106,12 @@ const inputs = `
         end_of_event: String
         time: String
         location: String
+        visibility: String
         auth_email: String
+        group_ids:[String]
         guests:[String]
         removed_guests:[String]
+
     }
 
 `;
@@ -128,6 +131,8 @@ const queryTypes = `
         location: String
         guests: [InvitedGuest]
         color: String
+        visibility: String
+        group_ids:[String]
     }
     type Contact{
         id: String

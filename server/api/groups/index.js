@@ -140,7 +140,6 @@ export const createNewGroup = async ({
     );
 
     if (member_ids.length > 0 && member_ids[0] !== null) {
-      console.log("MEMBER IDS", member_ids);
       let groupMemberValuesQuery = member_ids.reduce(
         (accumulator, memberId) => {
           accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${memberId}")),`;
@@ -173,7 +172,6 @@ export const getMembers = async id => {
   const db = makeDb();
   let contacts = [];
   try {
-    console.log("Get Members ", id);
     let userIds = await db.query(
       "SELECT BIN_TO_UUID(user_id) as user_id FROM group_members WHERE group_id=UUID_TO_BIN(?)",
       [id]
@@ -200,6 +198,31 @@ export const getMembers = async id => {
   } finally {
     await db.close();
     return contacts;
+  }
+};
+
+export const getMemberByMultipleGroupId = async ids => {
+  const db = makeDb();
+  let results = [];
+  try {
+    let formattedIds = ids.map(id => `UUID_TO_BIN("${id}")`);
+
+    if (formattedIds.length > 0) {
+      let users = await db.query(
+        `SELECT BIN_TO_UUID(group_members.user_id) as id
+          FROM group_members,users
+          WHERE group_members.group_id IN (${formattedIds.join(
+            ","
+          )}) AND users.id=group_members.user_id`
+      );
+      results = users && users.length > 0 ? users.map(item => item.id) : [];
+      console.log("getMemberByMultipleGroupId results", results);
+    }
+  } catch (err) {
+    console.log("getMemberByMultipleGroupId Error", err);
+  } finally {
+    await db.close();
+    return results;
   }
 };
 

@@ -6,9 +6,12 @@ import NewEventModal from "./create/withCalendar";
 import Header from "./header";
 import Body from "./body";
 
+import Loading from "../../../helpers/Loading.js";
+
 // REDUX
 import { getContact } from "../../../redux/actions/Contacts";
 import { getEvents } from "../../../redux/actions/Events";
+import { requestUserGroup } from "../../../redux/actions/Groups";
 const MyEventsStyled = styled.div`
   background-color: white;
   margin: 1em;
@@ -110,17 +113,36 @@ const MyEventsStyled = styled.div`
   }
 `;
 export default function index() {
-  const [contactOptions, setContactOptions] = useState([]);
+  //const [contactOptions, setContactOptions] = useState([]);
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
+  const [eventLists, setEventLists] = useState([]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const { auth, calendars, contacts, events, familyMembers } = useSelector(
-    ({ auth, calendars, contacts, events, familyMembers }) => ({
+  const {
+    auth,
+    calendars,
+    contacts,
+    events,
+    familyMembers,
+    groups,
+    loading
+  } = useSelector(
+    ({
       auth,
       calendars,
       contacts,
       events,
-      familyMembers
+      familyMembers,
+      groups,
+      loading
+    }) => ({
+      auth,
+      calendars,
+      contacts,
+      events,
+      familyMembers,
+      groups,
+      loading
     })
   );
 
@@ -128,15 +150,24 @@ export default function index() {
     if (auth.email) {
       dispatch(getEvents(auth.email));
       dispatch(getContact(auth.email));
+      dispatch(requestUserGroup(auth.email));
     }
   }, []);
+  useEffect(() => {
+    if (events) {
+      const uniqueEvents = [
+        ...new Map(events.map(item => [item.id, item])).values()
+      ];
+      console.log("unique", uniqueEvents);
+      setEventLists(uniqueEvents);
+    }
+  }, [events]);
 
   const [selectedYear, setSelectedYear] = useState(format(new Date(), "yyyy"));
   const handleSelectedYearChange = ({ target }) => {
     setSelectedYear(target.value);
   };
-  console.log("contactssssssssss", contacts);
-  console.log("contactssssssssss contactOptions", contactOptions);
+
   return (
     <MyEventsStyled data-testid="app-dashboard-my-events" theme={theme}>
       <NewEventModal
@@ -152,11 +183,17 @@ export default function index() {
         handleSelectedYearChange={handleSelectedYearChange}
         toggleCreateEventModal={setIsEventModalVisible}
       />
-      <Body
-        events={events}
-        selectedYear={selectedYear}
-        familyMembers={familyMembers}
-      />
+
+      {loading.events ? (
+        <Loading />
+      ) : (
+        <Body
+          events={eventLists}
+          groups={groups}
+          selectedYear={selectedYear}
+          familyMembers={familyMembers}
+        />
+      )}
     </MyEventsStyled>
   );
 }

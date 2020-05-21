@@ -21,7 +21,7 @@ export default function index({ events, selectedYear, familyMembers }) {
       {monthList
         .filter((month, index) => {
           if (currentYear === selectedYear) {
-            return index <= getMonth(new Date());
+            return index <= 12;
           }
           return true;
         })
@@ -53,34 +53,54 @@ export default function index({ events, selectedYear, familyMembers }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {eventThisMonth.map(event => (
-                      <tr className="event-rows" key={event.id}>
-                        <td>{event.name}</td>
-                        <td>
-                          {format(new Date(event.start_of_event), "MM/dd/yyyy")}
-                        </td>
-                        <td>
-                          {/* {format(event.eventSchedule[0], "hh:mm a")}-
-                          {format(event.eventSchedule[1], "hh:mm a")} */}
-                          {format(new Date(event.start_of_event), "hh:mm a")}-
-                          {format(new Date(event.end_of_event), "hh:mm a")}
-                        </td>
-                        <td>{event.location}</td>
-                        <td>
-                          {/* {event.familyMembers.map(eventFamilyMemberId => (
-                            <p key={eventFamilyMemberId}>
-                              {
-                                familyMembers.find(
-                                  familyMember =>
-                                    familyMember.id === eventFamilyMemberId
-                                )["name"]
-                              }
-                            </p>
-                          ))} */}
-                        </td>
-                        <td>{event.status}</td>
-                      </tr>
-                    ))}
+                    {eventThisMonth.map(event => {
+                      const startDate = format(
+                        new Date(event.start_of_event),
+                        "MM/dd/yyyy"
+                      );
+                      const endDate = format(
+                        new Date(event.end_of_event),
+                        "MM/dd/yyyy"
+                      );
+                      const startTime = format(
+                        new Date(event.start_of_event),
+                        "hh:mm a"
+                      );
+                      const endTime = format(
+                        new Date(event.end_of_event),
+                        "hh:mm a"
+                      );
+                      return (
+                        <tr className="event-rows" key={event.id}>
+                          <td>{event.name}</td>
+                          <td>
+                            {startDate}
+
+                            {startDate !== endDate ? ` - ${endDate}` : ""}
+                          </td>
+                          <td>
+                            {/* {format(event.eventSchedule[0], "hh:mm a")}-
+                            {format(event.eventSchedule[1], "hh:mm a")} */}
+                            {startTime}{" "}
+                            {startTime !== endTime ? ` - ${endTime}` : ""}
+                          </td>
+                          <td>{event.location}</td>
+                          <td>
+                            {/* {event.familyMembers.map(eventFamilyMemberId => (
+                              <p key={eventFamilyMemberId}>
+                                {
+                                  familyMembers.find(
+                                    familyMember =>
+                                      familyMember.id === eventFamilyMemberId
+                                  )["name"]
+                                }
+                              </p>
+                            ))} */}
+                          </td>
+                          <td>{event.status}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               )}

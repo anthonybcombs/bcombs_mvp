@@ -37,6 +37,7 @@ const CustomMultiSelect = ({
   closeIcon = "cancel",
   className = "field-input",
   options = [],
+  selectedValues = [],
   hasSelectAll = false
 }) => {
   return (
@@ -44,6 +45,7 @@ const CustomMultiSelect = ({
       <Multiselect
         className={className}
         options={options}
+        selectedValues={selectedValues}
         hasSelectAll={hasSelectAll}
         onSelect={onSelect}
         onRemove={onRemove}

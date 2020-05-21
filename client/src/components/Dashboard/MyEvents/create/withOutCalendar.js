@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { uuid } from "uuidv4";
 import { format } from "date-fns";
 import { addEvent } from "../../../../redux/actions/Events";
@@ -85,7 +85,8 @@ const initialEventDetails = selectedDate => {
     eventType: "Event",
     location: "",
     eventDescription: "",
-    status: "Scheduled"
+    status: "Scheduled",
+    visibility: "public"
   };
 };
 
@@ -97,6 +98,11 @@ export default function index({
   selectedCalendars,
   defaultSelectedDate = new Date()
 }) {
+  const { groups } = useSelector(({ groups }) => ({
+    groups
+  }));
+  const [groupOptions, setGroupOptions] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState([]);
   const [eventDetails, setEventDetails] = useState({
     id: uuid(),
     name: "",
@@ -118,6 +124,19 @@ export default function index({
       eventSchedule: [defaultSelectedDate, defaultSelectedDate]
     });
   }, [defaultSelectedDate]);
+
+  useEffect(() => {
+    if (groups) {
+      const createdGroups = groups.created_groups;
+      const joinedGroups = groups.joined_groups;
+      const combinedGroups = [
+        ...(createdGroups || []),
+        ...(joinedGroups || [])
+      ];
+
+      setGroupOptions([...combinedGroups]);
+    }
+  }, [groups]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
 
@@ -130,6 +149,7 @@ export default function index({
   };
 
   const handleSubmit = value => {
+  
     const payload = {
       start_of_event: format(
         getUTCDate(eventDetails.eventSchedule[0]),
@@ -146,12 +166,17 @@ export default function index({
       status: eventDetails.status,
       time: eventDetails.time,
       description: eventDetails.description,
+      auth_email: auth.email,
+      calendar_ids: selectedCalendars,
+      visibility: eventDetails.visibility,
       guests:
         eventDetails.eventGuests.length > 0
           ? eventDetails.eventGuests.map(item => item.id)
           : [],
-      auth_email: auth.email,
-      calendar_ids: selectedCalendars
+      group_ids:
+        eventDetails.visibility === "custom"
+          ? selectedGroup.map(group => group.id)
+          : []
     };
     console.log("payloadddd", payload);
 
@@ -159,10 +184,18 @@ export default function index({
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(new Date()));
   };
+
+  const handleGroupSelect = value => {
+    setSelectedGroup(value);
+  };
+  const handleGroupRemove = value => {
+    setSelectedGroup(value);
+  };
+
   if (!isVisible) {
     return <></>;
   }
-  console.log("Event Calendar", selectedCalendars);
+
   return ReactDOM.createPortal(
     <NewEventModal
       data-testid="app-dashboard-my-events-new-event"
@@ -179,6 +212,9 @@ export default function index({
         <div id="content">
           <EventForm
             eventDetails={eventDetails}
+            handleGroupSelect={handleGroupSelect}
+            handleGroupRemove={handleGroupRemove}
+            groups={groupOptions}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}
           />

@@ -20,3 +20,10 @@ export const setGroupMemberLoadingLoading = value => {
     value
   };
 };
+
+export const setEventLoading = value => {
+  return {
+    type: actionType.SET_EVENT_LOADING,
+    value
+  };
+};

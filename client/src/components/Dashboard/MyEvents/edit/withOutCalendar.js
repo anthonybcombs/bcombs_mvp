@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import { updateEvent } from "../../../../redux/actions/Events";
 import EventForm from "../forms/EventForm";
@@ -79,6 +79,11 @@ export default function index({
   defaultEventDetails,
   selectedCalendars
 }) {
+  const { groups } = useSelector(({ groups }) => ({
+    groups
+  }));
+  const [groupOptions, setGroupOptions] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState([]);
   const [eventDetails, setEventDetails] = useState({});
 
   useEffect(() => {
@@ -88,10 +93,25 @@ export default function index({
         eventSchedule: [
           new Date(defaultEventDetails.start_of_event),
           new Date(defaultEventDetails.end_of_event)
-        ]
+        ],
+        defaultGroupIds: groupOptions.filter(item =>
+          defaultEventDetails.group_ids.includes(item.id)
+        )
       });
     }
-  }, [defaultEventDetails]);
+  }, [defaultEventDetails, groupOptions]);
+
+  useEffect(() => {
+    if (groups) {
+      const createdGroups = groups.created_groups;
+      const joinedGroups = groups.joined_groups;
+      const combinedGroups = [
+        ...(createdGroups || []),
+        ...(joinedGroups || [])
+      ];
+      setGroupOptions([...combinedGroups]);
+    }
+  }, [groups]);
 
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
@@ -124,6 +144,8 @@ export default function index({
       status: eventDetails.status,
       time: eventDetails.time,
       description: eventDetails.description,
+      auth_email: auth.email,
+      calendar_ids: selectedCalendars,
       guests:
         eventDetails.eventGuests && eventDetails.eventGuests.length > 0
           ? eventDetails.eventGuests.map(item => item.id)
@@ -132,13 +154,23 @@ export default function index({
         eventDetails.removedGuests && eventDetails.removedGuests.length > 0
           ? eventDetails.removedGuests.map(item => item.id)
           : [],
-      auth_email: auth.email,
-      calendar_ids: selectedCalendars
+      group_ids:
+        eventDetails.visibility === "custom"
+          ? selectedGroup.map(group => group.id)
+          : []
     };
-
-    dispatch(updateEvent(payload));
-    toggleEditEventModal();
+    console.log("payloaddd", payload);
+    // dispatch(updateEvent(payload));
+    // toggleEditEventModal();
   };
+
+  const handleGroupSelect = value => {
+    setSelectedGroup(value);
+  };
+  const handleGroupRemove = value => {
+    setSelectedGroup(value);
+  };
+
   if (!isVisible) {
     return <></>;
   }
@@ -159,6 +191,9 @@ export default function index({
         <div id="content">
           <EventForm
             eventDetails={eventDetails}
+            handleGroupSelect={handleGroupSelect}
+            handleGroupRemove={handleGroupRemove}
+            groups={groupOptions}
             header={"Edit Event"}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}
