@@ -22,6 +22,7 @@ import {
 //import EditableParagraph from "../../../../helpers/EditableParagraph";
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+
 const EventFormStyled = styled.form`
   #event-type-list {
     display: grid;
@@ -174,18 +175,36 @@ const EventFormStyled = styled.form`
     font-size: 11px;
     font-style: italic;
   }
+
+  .field-label,
+  .field-input {
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+
+  .field-input {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: text;
+    line-height: 1.8;
+
+    padding: 5px 0;
+    width: 100%;
+    display: block;
+    text-indent: 5px;
+  }
 `;
 
-const getSuggestions = (value, arr) => {
-  const inputValue = value.trim().toLowerCase();
-  const inputLength = inputValue.length;
-
-  return inputLength === 0
-    ? []
-    : arr.filter(
-        lang => lang.name.toLowerCase().slice(0, inputLength) === inputValue
-      );
-};
+const OPTION_VISIBILITY = [
+  { name: "Public", value: "public" },
+  { name: "Custom", value: "custom" }
+];
 
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
@@ -199,9 +218,12 @@ export default function createEventForm({
   eventDetails,
   handleCalendarSelect,
   handleCalendarRemove,
+  handleGroupSelect,
+  handleGroupRemove,
   handleEventDetailsChange,
   onSubmit,
   calendars = [],
+  groups = [],
   isEventSection = false,
   header = "Create a new Event"
 }) {
@@ -285,7 +307,7 @@ export default function createEventForm({
     handleEventDetailsChange("removeGuests", removedGuest);
   };
 
-  console.log("eventDetails", eventDetails);
+  console.log("eventDetails111", eventDetails);
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
@@ -355,6 +377,34 @@ export default function createEventForm({
           onSelect={handleCalendarSelect}
           onRemove={handleCalendarRemove}
           placeholder="Add Calendar"
+          displayValue="name"
+          closeIcon="cancel"
+        />
+      )}
+      <select
+        name="visibility"
+        className="field-input"
+        placeholder="Select Visibility"
+        ref={register({ required: true })}
+        onChange={e => {
+          handleEventDetailsChange("visibility", e.target.value);
+        }}
+        value={eventDetails.visibility}>
+        <option value="">Select</option>
+        {OPTION_VISIBILITY.map(opt => (
+          <option key={opt.value} value={opt.value}>
+            {opt.name}
+          </option>
+        ))}
+      </select>
+      {eventDetails.visibility === "custom" && (
+        <CustomMultiSelect
+          className="field-input"
+          options={groups}
+          selectedValues={eventDetails.defaultGroupIds}
+          onSelect={handleGroupSelect}
+          onRemove={handleGroupRemove}
+          placeholder="Add Group"
           displayValue="name"
           closeIcon="cancel"
         />

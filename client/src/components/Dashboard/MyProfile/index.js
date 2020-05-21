@@ -13,14 +13,16 @@ import ProfileForm from "./forms/ProfileForm";
 import EditProfileForm from "./forms/EditProfileForm";
 import UploadPhotoForm from "./forms/UploadPhotoForm";
 
+import Loading from "../../../helpers/Loading.js";
+
 // REDUX
 import {
   requestUpdateUserProfile,
   requestUpdateUserPhoto,
-  requestUserProfile,
+  requestUserProfile
 } from "../../../redux/actions/Users";
 
-const getAge = (birthDate) => {
+const getAge = birthDate => {
   console.log("BirthDateee", birthDate);
   return Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e10);
 };
@@ -183,24 +185,29 @@ export default function index() {
     address: "",
     school: "",
     ethnicity: "",
-    grade: "",
+    grade: ""
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [isEditProfileVisible, setEditProfileVisible] = useState(false);
   const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
   const [
     isCreateRelativeModaVisibile,
-    setIsCreateRelativeModaVisibile,
+    setIsCreateRelativeModaVisibile
   ] = useState(false);
 
   const [dashboard, setDashboard] = useState("Events");
-  const { auth, settings, relatives, user, familyMembers } = useSelector(
-    ({ auth, settings, relatives, user, familyMembers }) => {
-      return { auth, settings, relatives, user, familyMembers };
+  const {
+    auth,
+    settings,
+    relatives,
+    user,
+    familyMembers,
+    loading
+  } = useSelector(
+    ({ auth, settings, relatives, user, familyMembers, loading }) => {
+      return { auth, settings, relatives, user, familyMembers, loading };
     }
   );
-
-  console.log("user", user);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -223,19 +230,19 @@ export default function index() {
         address: user.profile.address,
         school: user.profile.school,
         ethnicity: user.profile.ethnicity,
-        grade: user.profile.grade,
+        grade: user.profile.grade
       });
     }
   }, [user, isEditProfileVisible]);
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = e => {
     dispatch(
       requestUpdateUserProfile({
         personalInfo: {
           ...personalInfo,
-          id: user.profile.id,
+          id: user.profile.id
         },
-        email: auth.email,
+        email: auth.email
       })
     );
 
@@ -249,7 +256,7 @@ export default function index() {
     setEditProfileVisible(false);
   };
 
-  const handleImageUpload = (file) => {
+  const handleImageUpload = file => {
     let data = new FormData();
     data.append("file", file);
     data.append("email", auth.email);
@@ -273,54 +280,62 @@ export default function index() {
 
       <div id="profile">
         <div>
-          <div id="personal-info-header">
-            <div>
-              <div id="id-container">
-                <img
-                  src={`${
-                    auth.profile_img ? auth.profile_img : auth.picture
-                  }?t=${new Date().getTime()}`}
-                  onClick={() => {
-                    setUploadPhotoVisible(true);
-                  }}
-                />
-                <h3 id="profile-name">
-                  {user.profile && user.profile.first_name}{" "}
-                  {user.profile && user.profile.last_name}
-                </h3>
-                <h4>
-                  <FontAwesomeIcon icon={faUsers} />
+          {loading.profile ? (
+            <Loading />
+          ) : (
+            <>
+              <div id="personal-info-header">
+                <div>
+                  <div id="id-container">
+                    <img
+                      src={`${
+                        auth.profile_img ? auth.profile_img : auth.picture
+                      }?t=${new Date().getTime()}`}
+                      onClick={() => {
+                        setUploadPhotoVisible(true);
+                      }}
+                    />
+                    <h3 id="profile-name">
+                      {user.profile && user.profile.first_name}{" "}
+                      {user.profile && user.profile.last_name}
+                    </h3>
+                    <h4>
+                      <FontAwesomeIcon icon={faUsers} />
 
-                  <span>
-                    {user && user.profile && getAge(user.profile.birth_date)}
-                  </span>
-                </h4>
+                      <span>
+                        {user &&
+                          user.profile &&
+                          getAge(user.profile.birth_date)}
+                      </span>
+                    </h4>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div id="personal-info-details">
-            <div className="personal-info-details-header">
-              <h3>Personal</h3>
-            </div>
+              <div id="personal-info-details">
+                <div className="personal-info-details-header">
+                  <h3>Personal</h3>
+                </div>
 
-            <div className="personal-info-details-edit">
-              <FontAwesomeIcon
-                onClick={() => {
-                  setEditProfileVisible(true);
-                }}
-                icon={faEdit}
-              />
-            </div>
+                <div className="personal-info-details-edit">
+                  <FontAwesomeIcon
+                    onClick={() => {
+                      setEditProfileVisible(true);
+                    }}
+                    icon={faEdit}
+                  />
+                </div>
 
-            {user && user.profile && (
-              <ProfileForm
-                data={user && user.profile}
-                handleInputChange={handleInputChange}
-                onSubmit={handleFormSubmit}
-              />
-            )}
-          </div>
+                {user && user.profile && (
+                  <ProfileForm
+                    data={user && user.profile}
+                    handleInputChange={handleInputChange}
+                    onSubmit={handleFormSubmit}
+                  />
+                )}
+              </div>
+            </>
+          )}
         </div>
         <div>
           <div id="dashboard-select">
@@ -328,8 +343,7 @@ export default function index() {
               className={`${dashboard === "Events" ? "selected" : ""}`}
               onClick={() => {
                 setDashboard("Events");
-              }}
-            >
+              }}>
               <p>0</p>
               <p>Events</p>
             </div>
@@ -337,8 +351,7 @@ export default function index() {
               className={`${dashboard === "Calendars" ? "selected" : ""}`}
               onClick={() => {
                 setDashboard("Calendars");
-              }}
-            >
+              }}>
               <p>0</p>
               <p>Calendars</p>
             </div>
@@ -346,8 +359,7 @@ export default function index() {
               className={`${dashboard === "Comments" ? "selected" : ""}`}
               onClick={() => {
                 setDashboard("Comments");
-              }}
-            >
+              }}>
               <p>0</p>
               <p>Comments</p>
             </div>
@@ -380,8 +392,7 @@ export default function index() {
             <button
               onClick={() => {
                 setIsCreateRelativeModaVisibile(true);
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
             <span>Add A relative</span>
@@ -397,7 +408,7 @@ export default function index() {
             </thead>
             <tbody>
               {familyMembers &&
-                familyMembers.map((familyMember) => {
+                familyMembers.map(familyMember => {
                   console.log(familyMember);
                   return (
                     <tr key={familyMember.id}>

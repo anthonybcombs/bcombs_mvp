@@ -5,23 +5,28 @@ import {
 } from "../../helpers/email";
 import { getUserFromDatabase } from "../index";
 
-export const createNewEvent = async ({
-  id,
-  name,
-  description,
-  status,
-  type,
-  start_of_event,
-  end_of_event,
-  time,
-  location,
-  auth_email,
-  calendar_ids = [],
-  guests = []
-}) => {
+import { getMemberByMultipleGroupId } from "../groups";
+
+export const createNewEvent = async data => {
+  const {
+    id,
+    name,
+    description,
+    status,
+    type,
+    start_of_event,
+    end_of_event,
+    time,
+    location,
+    visibility,
+    auth_email,
+    calendar_ids = [],
+    guests = [],
+    group_ids: []
+  } = data;
   const db = makeDb();
   let result = {};
-
+  let updatedGuestIds = [];
   try {
     const currentUser = await getUserFromDatabase(auth_email);
     await db.query(
@@ -35,7 +40,8 @@ export const createNewEvent = async ({
         end_of_event,
         time,
         location,
-        user_id, date_added ) VALUES (UUID_TO_BIN(?),?,?,?,?,?,?,?,?,UUID_TO_BIN(?),NOW())`,
+        visibility,
+        user_id, date_added ) VALUES (UUID_TO_BIN(?),?,?,?,?,?,?,?,?,?,UUID_TO_BIN(?),NOW())`,
       [
         id,
         name,
@@ -46,6 +52,7 @@ export const createNewEvent = async ({
         end_of_event,
         time,
         location,
+        visibility,
         currentUser.id
       ]
     );
@@ -84,15 +91,38 @@ export const createNewEvent = async ({
           eventCalendarQuery
       );
     }
+    if (data.group_ids.length > 0) {
+      let groupVisibilityQuery = data.group_ids.reduce(
+        (accumulator, groupId) => {
+          accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${groupId}"),NOW()),`;
+          return accumulator;
+        },
+        ""
+      );
+      groupVisibilityQuery = groupVisibilityQuery.substring(
+        0,
+        groupVisibilityQuery.length - 1
+      );
 
-    const formattedRecipients = await formatRecipient(guests, id, db);
-    console.log("FormattedRecipientss", formattedRecipients);
-    sendInvitation({
-      eventOwnerEmail: auth_email,
-      eventName: name,
-      eventId: id,
-      recipients: formattedRecipients
-    });
+      await db.query(
+        "INSERT IGNORE INTO `event_visibility`(`event_id`,`group_id`,`date_added`) VALUES " +
+          groupVisibilityQuery
+      );
+
+      let members = await getMemberByMultipleGroupId(data.group_ids);
+      updatedGuestIds = [...new Set([...guests, ...members])];
+    }
+
+    const formattedRecipients = await formatRecipient(updatedGuestIds, id, db);
+
+    // sendInvitation({
+    //   eventOwnerEmail: auth_email,
+    //   eventName: name,
+    //   eventId: id,
+    //   eventStartDate: start_of_event,
+    //   eventEndDate: end_of_event,
+    //   recipients: formattedRecipients
+    // });
 
     result = await getUserEvents(auth_email);
     // console.log("createNewEvent Result", result);
@@ -123,6 +153,7 @@ export const getUserEvents = async email => {
           events.start_of_event,
           events.end_of_event,
           events.location,
+          events.visibility,
           user_calendars.color
         FROM events , event_calendar, user_calendars 
         WHERE events.id = event_calendar.event_id AND 
@@ -141,6 +172,7 @@ export const getUserEvents = async email => {
           events.start_of_event,
           events.end_of_event,
           events.location ,
+          events.visibility,
           user_calendars.color
         FROM events ,event_calendar, event_attendee, user_calendars
         WHERE  events.id=event_calendar.event_id AND 
@@ -165,30 +197,41 @@ export const getUserEvents = async email => {
            WHERE event_attendee.event_id IN (${eventIds.join(",")}) `
         );
         guests = JSON.parse(JSON.stringify(guests));
+
+        let groups = await db.query(`
+          SELECT BIN_TO_UUID(event_visibility.event_id) as event_id ,BIN_TO_UUID(event_visibility.group_id) as group_id
+          FROM event_visibility 
+          WHERE event_visibility.event_id IN (${eventIds.join(",")})`);
+        groups = JSON.parse(JSON.stringify(groups));
+
         result = events.map(event => {
           const invitedGuest = guests.filter(
             guest => guest.event_id === event.id
           );
+          const sharedGroups = groups
+            .filter(group => group.event_id === event.id)
+            .map(group => group.group_id);
           return {
             ...event,
-            guests: [...(invitedGuest || [])]
+            guests: [...(invitedGuest || [])],
+            group_ids: [...(sharedGroups || [])]
           };
         });
       } else {
         result = events;
       }
     }
-    console.log("getUserEvents results", result);
   } catch (err) {
     console.log("getUserEvents error", err);
   } finally {
-    db.close();
+    await db.close();
+    console.log("getUserEvents results", result);
     return result;
   }
 };
 
-export const editEvents = async event => {
-  console.log("Edit Event ", event);
+export const editEvents = async data => {
+  console.log("Edit Event ", data);
   const {
     id,
     name,
@@ -198,17 +241,19 @@ export const editEvents = async event => {
     start_of_event,
     end_of_event,
     time,
+    visibility,
     location,
     auth_email,
     calendar_ids = [],
     guests = [],
-    removed_guests = []
-  } = event;
+    removed_guests = [],
+    group_ids: []
+  } = data;
   const db = makeDb();
   let results = [];
   try {
     await db.query(
-      "UPDATE `events` SET name=?,description=?,status=?,start_of_event=?,end_of_event=?,location=?,type=? WHERE id=UUID_TO_BIN(?)",
+      "UPDATE `events` SET name=?,description=?,status=?,start_of_event=?,end_of_event=?,location=?,type=?,visibility=? WHERE id=UUID_TO_BIN(?)",
       [
         name,
         description,
@@ -217,6 +262,7 @@ export const editEvents = async event => {
         end_of_event,
         location,
         type,
+        visibility,
         id
       ]
     );
@@ -237,11 +283,30 @@ export const editEvents = async event => {
       );
     }
 
+    if (data.group_ids.length > 0) {
+      let groupVisibilityQuery = data.group_ids.reduce(
+        (accumulator, groupId) => {
+          accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${groupId}"),NOW()),`;
+          return accumulator;
+        },
+        ""
+      );
+      groupVisibilityQuery = groupVisibilityQuery.substring(
+        0,
+        groupVisibilityQuery.length - 1
+      );
+
+      await db.query(
+        "INSERT IGNORE INTO `event_visibility`(`event_id`,`group_id`,`date_added`) VALUES " +
+          groupVisibilityQuery
+      );
+    }
+
     results = await getUserEvents(auth_email);
   } catch (err) {
     console.log("editEvents error", err);
   } finally {
-    db.close();
+    await db.close();
     return results;
   }
 };
@@ -262,6 +327,11 @@ export const removeEvents = async (id, email) => {
       );
       await db.query(
         "DELETE FROM event_calendar WHERE event_id=UUID_TO_BIN(?)",
+        [id]
+      );
+
+      await db.query(
+        "DELETE FROM event_visibility WHERE event_id=UUID_TO_BIN(?)",
         [id]
       );
       result = await getUserEvents(email);

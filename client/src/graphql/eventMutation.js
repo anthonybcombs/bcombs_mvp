@@ -13,6 +13,8 @@ export const EVENT_CREATE_MUTATION = gql`
       end_of_event
       location
       color
+      visibility
+      group_ids
       guests {
         email
         status
@@ -38,6 +40,8 @@ export const EVENT_UPDATE_MUTATION = gql`
       location
       user_id
       color
+      visibility
+      group_ids
       guests {
         email
         status

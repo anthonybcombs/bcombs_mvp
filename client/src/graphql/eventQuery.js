@@ -14,6 +14,8 @@ export const GET_EVENT_QUERY = gql`
       location
       user_id
       color
+      visibility
+      group_ids
       guests {
         email
         status

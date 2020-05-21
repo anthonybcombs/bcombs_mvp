@@ -20,3 +20,17 @@ export const setGroupMemberLoadingLoading = value => {
     value
   };
 };
+
+export const setEventLoading = value => {
+  return {
+    type: actionType.SET_EVENT_LOADING,
+    value
+  };
+};
+
+export const setProfileLoading = value => {
+  return {
+    type: actionType.SET_PROFILE_LOADING,
+    value
+  };
+};

@@ -95,6 +95,7 @@ export default function index({
   contacts,
   groupMembers,
   group,
+  isGroupLoading,
   isGroupMemberLoading,
   typeOfForm = "Edit Group"
 }) {
@@ -124,25 +125,35 @@ export default function index({
           ...contact
         };
       });
-      let selections = [];
 
-      if (groupMembers.length > 0) {
-        selections = groupMembers
-          .filter(c => !group.contacts.includes(c.user_id))
-          .map(c => {
-            return {
-              id: c.user_id,
-              name: `${c.first_name} ${c.last_name}`
-            };
-          });
-      } else {
-        selections = contacts.map(c => {
+      let selections = contacts
+        .filter(c => {
+          return !group.contacts.includes(c.user_id);
+        })
+        .map(c => {
           return {
             id: c.user_id,
             name: `${c.first_name} ${c.last_name}`
           };
         });
-      }
+
+      // if (groupMembers.length > 0) {
+      //   selections = groupMembers
+      //     .filter(c => !group.contacts.includes(c.user_id))
+      //     .map(c => {
+      //       return {
+      //         id: c.user_id,
+      //         name: `${c.first_name} ${c.last_name}`
+      //       };
+      //     });
+      // } else {
+      //   selections = contacts.map(c => {
+      //     return {
+      //       id: c.user_id,
+      //       name: `${c.first_name} ${c.last_name}`
+      //     };
+      //   });
+      // }
 
       setCurrentGroupName(group.name);
       setCurrentContacts(list);
@@ -200,7 +211,7 @@ export default function index({
   if (!isVisible) {
     return <></>;
   }
-  console.log("currentContacts", currentContacts);
+
   return ReactDOM.createPortal(
     <EditGroupModal
       theme={{
@@ -217,7 +228,7 @@ export default function index({
           }}>
           &times;
         </span>
-        {isGroupMemberLoading ? (
+        {isGroupLoading || isGroupMemberLoading ? (
           <Loading />
         ) : (
           <div className="content" id="applicationForm">
@@ -248,6 +259,18 @@ export default function index({
                     Assign to existing contact
                   </label>
                 </div>
+                {/* <div className="field">
+                  <Multiselect
+                    className="field-input"
+                    options={contactSelections}
+                    hasSelectAll={hasSelectAll}
+                    onSelect={handleContactSelectChange}
+                    placeholder="Select from existing contacts"
+                    displayValue="name"
+                    closeIcon="cancel"
+                  />
+                  <label className="field-label">Add other users</label>
+                </div> */}
               </div>
             </div>
             <div>

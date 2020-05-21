@@ -12,7 +12,8 @@ const sendInvitation = async ({
   eventName,
   eventOwnerEmail,
   eventId,
-
+  eventStartDate,
+  eventEndDate,
   recipients = []
 }) => {
   let numRecipients = recipients.length;
@@ -31,9 +32,11 @@ const sendInvitation = async ({
         eventId,
         eventName,
         eventOwnerEmail,
-        recipients
+        recipients,
+        eventStartDate,
+        eventEndDate
       });
-      console.log("template", template);
+
       transporter.sendMail(
         {
           ...defaultMailConfig,
@@ -59,21 +62,20 @@ const getTemplateInvitationStrings = ({
   eventName,
   eventOwnerEmail,
   eventId,
-  recipients
+  recipients,
+  eventStartDate,
+  eventEndDate
 }) => {
   return `
           <h4>You have been invited on this event ${eventName}</h4>
           <h5>Created by: ${eventOwnerEmail}</h5>
+          <p>${eventStartDate} - ${eventEndDate}</p>
           <div>
             <div>
               <span>Invited Guest</span>
               <ul>
                 ${recipients.map(rec => {
-                  return `<li>
-                      <i>
-                        ${rec.email} - ${rec.status}
-                      </i>
-                    </li>`;
+                  return `<li><i> ${rec.email}</i> </li>`;
                 })}
               </ul>
             </div>

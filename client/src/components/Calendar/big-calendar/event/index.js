@@ -152,9 +152,9 @@ export default function index({ auth, event, selectedCalendars }) {
               e.stopPropagation();
             }}>
             <div id="top-event-controls">
-              <button>
+              {/* <button>
                 <FontAwesomeIcon icon={faShareAltSquare} />
-              </button>
+              </button> */}
               {!isCurrentUserGuest && (
                 <button>
                   <FontAwesomeIcon
@@ -206,7 +206,7 @@ export default function index({ auth, event, selectedCalendars }) {
                 })}
               </div>
 
-              <div id="event-controls" className="grid">
+              {/* <div id="event-controls" className="grid">
                 <div>
                   <FontAwesomeIcon
                     icon={faStar}
@@ -226,7 +226,7 @@ export default function index({ auth, event, selectedCalendars }) {
                   <FontAwesomeIcon icon={faCheckCircle} />
                   I'm going
                 </div>
-              </div>
+              </div> */}
             </div>
           </EventPopOverStyled>
         </ArrowContainer>

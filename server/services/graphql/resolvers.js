@@ -132,6 +132,7 @@ const resolvers = {
       return await executeDeleteCalendar(calendar);
     },
     async createEvent(root, { event }, context) {
+      console.log("Eventtttttt", event);
       return await createNewEvent(event);
     },
     async updateEvent(root, { event }, context) {

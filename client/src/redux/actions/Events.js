@@ -1,6 +1,8 @@
 import { call, take, put } from "redux-saga/effects";
 import * as actionType from "./Constant";
 
+import { setEventLoading } from "./Loading";
+
 import graphqlClient from "../../graphql";
 import { GET_EVENT_QUERY } from "../../graphql/eventQuery";
 import {
@@ -11,12 +13,14 @@ import {
 
 const getEventsToDatabase = async email => {
   try {
+    console.log("getEventsToDatabase email", email);
     const { data } = await graphqlClient.query({
       query: GET_EVENT_QUERY,
       variables: {
         email
       }
     });
+    console.log("getEventsToDatabase data", data);
     return data.getEvents;
   } catch (error) {
     console.log("getEventsToDatabase error", error);
@@ -25,6 +29,7 @@ const getEventsToDatabase = async email => {
 
 const addEventInDatabase = async event => {
   try {
+    console.log("addEventInDatabase event", event);
     const { data } = await graphqlClient.mutate({
       mutation: EVENT_CREATE_MUTATION,
       variables: {
@@ -67,10 +72,10 @@ const updateEventInDatabase = async event => {
       }
     });
 
-    console.log("addEventInDatabase data", data);
+    console.log("updateEventInDatabase data", data);
     return data.updateEvent;
   } catch (error) {
-    console.log("addEventInDatabase error", error);
+    console.log("updateEventInDatabase error", error);
   }
 };
 export const addEvent = event => {
@@ -107,11 +112,22 @@ export const setEventList = data => {
 };
 
 export function* addedEvent({ event }) {
-  const response = yield call(addEventInDatabase, event);
-  yield put({
-    type: actionType.REQUEST_EVENTS_COMPLETED,
-    payload: response
-  });
+  try {
+    yield put(setEventLoading(true));
+    const response = yield call(addEventInDatabase, event);
+    yield put({
+      type: actionType.REQUEST_EVENTS_COMPLETED,
+      payload: response
+    });
+    yield put(setEventLoading(false));
+  } catch (error) {
+    console.log("Error addedEvent", error);
+    yield put({
+      type: actionType.REQUEST_EVENTS_COMPLETED,
+      payload: []
+    });
+    yield put(setEventLoading(false));
+  }
 }
 export function* deletedEvent({ event }) {
   try {
@@ -136,17 +152,19 @@ export function* updatedEvent({ event }) {
 
 export function* getUserEvents(action) {
   try {
+    yield put(setEventLoading(true));
     const response = yield call(getEventsToDatabase, action.email);
-    console.log("getEventsToDatabase", response);
     yield put({
       type: actionType.REQUEST_EVENTS_COMPLETED,
       payload: response
     });
+    yield put(setEventLoading(false));
   } catch (err) {
-    console.log("error1", err);
+    console.log("error getUserEvents", err);
     yield put({
       type: actionType.REQUEST_EVENTS_COMPLETED,
       payload: []
     });
+    yield put(setEventLoading(false));
   }
 }

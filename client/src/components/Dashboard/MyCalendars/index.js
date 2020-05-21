@@ -5,6 +5,7 @@ import BigCalendar from "../../Calendar/big-calendar/";
 
 import { getContact } from "../../../redux/actions/Contacts";
 import { getEvents } from "../../../redux/actions/Events";
+import { requestUserGroup } from "../../../redux/actions/Groups";
 
 const MyCalendarStyled = styled.div`
   margin: 1em;
@@ -24,6 +25,7 @@ export default function index() {
     if (auth.email) {
       dispatch(getEvents(auth.email));
       dispatch(getContact(auth.email));
+      dispatch(requestUserGroup(auth.email));
     }
   }, []);
   return (
