@@ -27,3 +27,10 @@ export const setEventLoading = value => {
     value
   };
 };
+
+export const setProfileLoading = value => {
+  return {
+    type: actionType.SET_PROFILE_LOADING,
+    value
+  };
+};

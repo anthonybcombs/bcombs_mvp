@@ -4,7 +4,8 @@ export default function Loading(
     contacts: true,
     groups: true,
     groupMembers: true,
-    events: true
+    events: true,
+    profile: true
   },
   action
 ) {
@@ -28,6 +29,11 @@ export default function Loading(
       return {
         ...state,
         events: action.value
+      };
+    case actionType.SET_PROFILE_LOADING:
+      return {
+        ...state,
+        profile: action.value
       };
     default:
       return state;
