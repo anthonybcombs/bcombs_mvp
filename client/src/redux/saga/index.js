@@ -32,6 +32,7 @@ import {
   getUserGroup,
   removeGroup,
   getMembers,
+  getUserGroupProtectedRoute,
 } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
 import {
@@ -74,6 +75,10 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ADD_GROUP, addedGroup);
   yield takeLatest(actionType.REQUEST_UPDATE_GROUP, updatedGroup);
   yield takeLatest(actionType.REQUEST_DELETE_GROUP, removeGroup);
+  yield takeLatest(
+    actionType.REQUEST_USER_GROUPS_PROTECTED_ROUTE,
+    getUserGroupProtectedRoute
+  );
   //RELATIVES
   yield takeLatest(actionType.REQUEST_ADD_RELATIVE, addedRelative);
   //USERS

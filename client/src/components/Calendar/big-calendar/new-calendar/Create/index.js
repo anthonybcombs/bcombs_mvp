@@ -20,8 +20,11 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
     image: "",
     visibilityType: "Private",
     color: "",
+    groups: [],
   });
-  const familyMembers = useSelector(({ familyMembers }) => familyMembers);
+  const { familyMembers, groups } = useSelector(({ familyMembers, groups }) => {
+    return { familyMembers, groups };
+  });
   const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
     setCalendarDetails({ ...calendarDetails, [id]: value });
@@ -52,6 +55,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
       image: "",
+      groups: [],
     });
     toggleCreateCalendarModal(false);
   };
@@ -62,6 +66,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
       image: "",
+      groups: [],
     });
     toggleCreateCalendarModal(false);
   };
@@ -88,6 +93,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
         <CalendarForm
           details={calendarDetails}
           familyMembers={familyMembers}
+          groups={groups}
           onSubmit={handleFormSubmit}
           onCancel={handleCancel}
           handleInputChange={handleInputChange}

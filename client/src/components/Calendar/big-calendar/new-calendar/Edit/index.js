@@ -25,10 +25,9 @@ export default function index({
     });
     setCalendarDetails(calendar);
   }, [calendar]);
-  console.log(calendarDetails);
-  const { familyMembers, calendars } = useSelector(
-    ({ familyMembers, calendars }) => {
-      return { familyMembers, calendars };
+  const { familyMembers, calendars, groups } = useSelector(
+    ({ familyMembers, calendars, groups }) => {
+      return { familyMembers, calendars, groups };
     }
   );
   const colors = calendars.map((calendar) => calendar.color);
@@ -62,6 +61,7 @@ export default function index({
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
       image: "",
+      groups: [],
     });
     toggleEditCalendarModal(false);
   };
@@ -72,6 +72,7 @@ export default function index({
       name: "",
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
+      groups: [],
     });
     toggleEditCalendarModal(false);
   };
@@ -98,6 +99,7 @@ export default function index({
         <CalendarForm
           details={calendarDetails}
           colors={colors}
+          groups={groups}
           familyMembers={familyMembers}
           onSubmit={handleFormSubmit}
           onCancel={handleCancel}

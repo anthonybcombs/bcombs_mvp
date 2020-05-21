@@ -1,6 +1,9 @@
-export function groupBy(arr, n) {
+export function groupBy(data, n) {
   var group = [];
-  for (var i = 0, end = arr.length / n; i < end; ++i)
-    group.push(arr.slice(i * n, (i + 1) * n));
+  for (var i = 0, j = 0; i < data.length; i++) {
+    if (i >= n && i % n === 0) j++;
+    group[j] = group[j] || [];
+    group[j].push(data[i]);
+  }
   return group;
 }

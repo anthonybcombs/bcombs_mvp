@@ -6,6 +6,7 @@ import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 import ColorPicker from "../../../../helpers/ColorPicker";
+import Select from "react-select";
 const CreateCalendarFormStyled = styled.form`
   text-align: center;
   padding: 2em;
@@ -99,6 +100,7 @@ export default function CreateCalendarForm({
   colors = [],
   details,
   familyMembers,
+  groups,
   onSubmit,
   handleInputChange,
   handleCheckBoxChange,
@@ -109,6 +111,7 @@ export default function CreateCalendarForm({
   });
   React.useEffect(() => {
     register({ name: "image" }, { required: true });
+    // register({ name: "groups" }, { required: true });
     register(
       { name: "color" },
       {
@@ -125,6 +128,14 @@ export default function CreateCalendarForm({
       setValue("color", details.color);
     }
   }, []);
+  const options = [];
+  Object.keys(groups).forEach((key) => {
+    groups[key].forEach((data) => {
+      console.log(groups);
+      options.push({ value: data.id, label: data.name });
+    });
+  });
+  console.log("options", options);
   const theme = useContext(ThemeContext);
   return (
     <CreateCalendarFormStyled
@@ -170,13 +181,40 @@ export default function CreateCalendarForm({
                 size="2x"
                 color={familyMember.color}
               />
-              <span>
+              <span style={{ marginLeft: "2px" }}>
                 {familyMember.firstname} {familyMember.lastname}
               </span>
             </p>
           </div>
         ))}
       </div>
+      <div>
+        <p>Groups</p>
+        <Select
+          options={options}
+          value={options.map((group) => {
+            if (details.groups.includes(group.value)) {
+              return {
+                label: group.label,
+                value: group.value,
+              };
+            }
+          })}
+          isMulti
+          ref={register({ required: true })}
+          onChange={(option) => {
+            const groupIds = option.map((group) => group.value);
+            handleInputChange("groups", groupIds);
+            setValue("groups", groupIds);
+          }}
+        />
+        {/* <ErrorMessage
+          field={errors.groups}
+          errorType="required"
+          message="Groups is required."
+        /> */}
+      </div>
+
       <div id="family-members-private">
         <p>
           <input
@@ -187,7 +225,7 @@ export default function CreateCalendarForm({
             onChange={handleCheckBoxChange}
             ref={register({ required: true })}
           />
-          Private- only for me
+          Private - only for me
         </p>
         <p>
           <input
@@ -198,7 +236,7 @@ export default function CreateCalendarForm({
             onChange={handleCheckBoxChange}
             ref={register({ required: true })}
           />
-          Public- show to all
+          Public - show to all
         </p>
       </div>
       <ErrorMessage

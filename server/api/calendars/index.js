@@ -13,20 +13,37 @@ export const getCalendars = async (creds) => {
   try {
     const UserInfo = await getUserInfo(creds);
     const calendarRows = await db.query(
-      "SELECT BIN_TO_UUID(id) as id,BIN_TO_UUID(user_id) as user_id,name,color,visibilityType from user_calendars WHERE BIN_TO_UUID(user_id)=? ORDER BY added_at desc",
+      "SELECT BIN_TO_UUID(id) as id,BIN_TO_UUID(user_id) as user_id,name,color,visibilityType,updated_at from user_calendars WHERE BIN_TO_UUID(user_id)=?",
       [UserInfo.user_id]
     );
-    const calendars = [];
-    calendarRows.forEach(async (calendar) => {
-      const calendarFamilyMembers = await db.query(
-        "SELECT BIN_TO_UUID(family_member_id) as family_member_id FROM user_calendars_family_member WHERE calendar_id=UUID_TO_BIN(?)",
-        [calendar.id]
-      );
-      calendar.familyMembers = calendarFamilyMembers.map((familyMember) => {
-        return familyMember.family_member_id;
+    const calendars = await new Promise((resolve, reject) => {
+      const calendars = [];
+      calendarRows.forEach(async (calendar) => {
+        const db1 = makeDb();
+        try {
+          const calendarFamilyMembers = await db1.query(
+            "SELECT BIN_TO_UUID(family_member_id) as family_member_id FROM user_calendars_family_member WHERE calendar_id=UUID_TO_BIN(?)",
+            [calendar.id]
+          );
+          const calendarGroups = await db1.query(
+            "SELECT BIN_TO_UUID(group_id) as group_id FROM user_calendars_groups WHERE calendar_id=UUID_TO_BIN(?)",
+            [calendar.id]
+          );
+          calendar.familyMembers = calendarFamilyMembers.map((familyMember) => {
+            return familyMember.family_member_id;
+          });
+          calendar.groups = calendarGroups.map((group) => {
+            return group.group_id;
+          });
+          calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${calendar.id}/calendarBackground.jpg`;
+          calendars.push(calendar);
+        } catch (error) {
+          reject([]);
+        } finally {
+          resolve(calendars.sort((a, b) => b.updated_at - a.updated_at));
+          await db1.close();
+        }
       });
-      calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${calendar.id}/calendarBackground.jpg`;
-      calendars.push(calendar);
     });
     return {
       status: {
@@ -72,6 +89,12 @@ export const executeCreateCalendar = async (calendar) => {
           [insertedCalendar[0].id, familyMemberId]
         );
       }
+    });
+    calendar.info.groups.forEach(async (groupId) => {
+      await db.query(
+        "INSERT INTO user_calendars_groups(calendar_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
+        [insertedCalendar[0].id, groupId]
+      );
     });
     const buf = Buffer.from(
       calendar.info.image.replace(/^data:image\/\w+;base64,/, ""),
@@ -126,11 +149,15 @@ export const executeEditCalendar = async (calendar) => {
         calendar.info.id,
       ]
     );
+    await db.query(
+      "DELETE FROM user_calendars_family_member WHERE calendar_id=UUID_TO_BIN(?)",
+      [calendar.info.id]
+    );
+    await db.query(
+      "DELETE FROM user_calendars_groups WHERE calendar_id=UUID_TO_BIN(?)",
+      [calendar.info.id]
+    );
     if (calendar.info.familyMembers.length > 0) {
-      await db.query(
-        "DELETE user_calendars_family_member WHERE BIN_TO_UUID(calendar_id)=?",
-        [calendar.info.id]
-      );
       calendar.info.familyMembers.forEach(async (familyMemberId) => {
         if (familyMemberId !== "0") {
           await db.query(
@@ -138,6 +165,14 @@ export const executeEditCalendar = async (calendar) => {
             [calendar.info.id, familyMemberId]
           );
         }
+      });
+    }
+    if (calendar.info.groups.length > 0) {
+      calendar.info.groups.forEach(async (groupId) => {
+        await db.query(
+          "INSERT INTO user_calendars_groups(calendar_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
+          [calendar.info.id, groupId]
+        );
       });
     }
     if (isBase64(calendar.info.image, { mimeRequired: true })) {

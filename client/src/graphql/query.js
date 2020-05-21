@@ -55,6 +55,7 @@ export const CALENDARS_QUERY = gql`
         color
         visibilityType
         familyMembers
+        groups
       }
     }
   }

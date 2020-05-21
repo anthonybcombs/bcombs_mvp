@@ -65,6 +65,7 @@ const inputs = `
         name: String!
         image: String
         familyMembers:[String],
+        groups:[String]
         visibilityType: String!
         color: String
     }    
@@ -196,6 +197,7 @@ const queryTypes = `
         name: String!      
         color: String!   
         familyMembers:[String]
+        groups:[String]
         visibilityType: String!   
     }
     type CalendarType{

@@ -71,7 +71,7 @@ export const getUserInfo = async (creds) => {
     }
     return userInfo;
   } catch (error) {
-    console.log(error);
+    return {};
     return error;
   }
 };

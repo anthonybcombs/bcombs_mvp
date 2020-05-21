@@ -68,6 +68,7 @@ export const requestAddCalendar = (details) => {
     familyMembers: details.selectedFamilyMembers,
     visibilityType: details.visibilityType,
     image: details.image,
+    groups: details.groups,
   };
 };
 export const requestEditCalendar = (details) => {
@@ -79,6 +80,7 @@ export const requestEditCalendar = (details) => {
     visibilityType: details.visibilityType,
     image: details.image,
     color: details.color,
+    groups: details.groups,
   };
 };
 export const requestDeleteCalendar = (details) => {
@@ -98,7 +100,13 @@ export const requestCalendars = () => {
   };
 };
 
-export function* addCalendar({ name, familyMembers, visibilityType, image }) {
+export function* addCalendar({
+  name,
+  familyMembers,
+  visibilityType,
+  image,
+  groups,
+}) {
   const calendar = yield call(addCalendarInDatabase, {
     creds: {
       access_token: sessionStorage.getItem("access_token"),
@@ -109,6 +117,7 @@ export function* addCalendar({ name, familyMembers, visibilityType, image }) {
       familyMembers: Array.from(familyMembers.keys()),
       visibilityType,
       image,
+      groups,
     },
   });
   yield put(requestCalendars());
@@ -153,6 +162,7 @@ export function* editCalendar({
   visibilityType,
   image,
   color,
+  groups,
 }) {
   yield call(editCalendarInDatabase, {
     creds: {
@@ -166,6 +176,7 @@ export function* editCalendar({
       visibilityType,
       image,
       color,
+      groups,
     },
   });
   yield put(requestCalendars());

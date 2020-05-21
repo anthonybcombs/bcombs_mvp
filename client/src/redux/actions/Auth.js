@@ -140,6 +140,27 @@ export function* gotUserInfo() {
         });
         return;
       }
+      if (userInfoData === {}) {
+        sessionStorage.removeItem("access_token");
+        sessionStorage.removeItem("token_type");
+        sessionStorage.removeItem("bigCalendarViewType");
+        yield put({
+          type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
+          payload: {
+            status: {
+              messageType: "error",
+              error_description: "",
+            },
+          },
+        });
+        yield put({
+          type: actionType.REQUEST_STATUS_COMPLETED,
+          payload: {
+            messageType: "",
+            message: "",
+          },
+        });
+      }
       yield put({
         type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
         payload: userInfoData,
