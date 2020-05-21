@@ -20,6 +20,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 //import EditableParagraph from "../../../../helpers/EditableParagraph";
+import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const EventFormStyled = styled.form`
   #event-type-list {
@@ -196,8 +197,12 @@ const renderSuggestion = suggestion => (
 
 export default function createEventForm({
   eventDetails,
+  handleCalendarSelect,
+  handleCalendarRemove,
   handleEventDetailsChange,
   onSubmit,
+  calendars = [],
+  isEventSection = false,
   header = "Create a new Event"
 }) {
   const { register, handleSubmit, errors } = useForm({
@@ -279,6 +284,7 @@ export default function createEventForm({
     setSelectedGuest(updatedGuest);
     handleEventDetailsChange("removeGuests", removedGuest);
   };
+
   console.log("eventDetails", eventDetails);
   return (
     <EventFormStyled
@@ -342,6 +348,17 @@ export default function createEventForm({
           handleEventDetailsChange("eventSchedule", date);
         }}
       />{" "}
+      {isEventSection && (
+        <CustomMultiSelect
+          className="field-input"
+          options={calendars}
+          onSelect={handleCalendarSelect}
+          onRemove={handleCalendarRemove}
+          placeholder="Add Calendar"
+          displayValue="name"
+          closeIcon="cancel"
+        />
+      )}
       <Autosuggest
         autoComplete="off"
         inputProps={inputProps}

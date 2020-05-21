@@ -108,9 +108,13 @@ const EventPopOverStyled = styled.div`
   }
 `;
 
-const getStatusCount = (guest, type) => {
-  const guestStatus = guest.filter(item => item.status === type);
+const getStatusCount = (guests, type) => {
+  const guestStatus = guests.filter(guest => guest.status === type);
   return guestStatus.length;
+};
+const isGuest = (guests, currentEmail) => {
+  let isUserGuest = guests.find(guest => guest.email === currentEmail);
+  return isUserGuest ? true : false;
 };
 export default function index({ auth, event, selectedCalendars }) {
   const [isVisible, setVisibility] = useState(false);
@@ -120,7 +124,7 @@ export default function index({ auth, event, selectedCalendars }) {
   const toggleEditEventModal = () => {
     setEditEventVisible(!isEditEventVisible);
   };
-
+  const isCurrentUserGuest = isGuest(event.guests, auth.email);
   const schedule = [
     format(new Date(event.start_of_event), "MMM dd,yyyy hh:mm a"),
     format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
@@ -151,12 +155,15 @@ export default function index({ auth, event, selectedCalendars }) {
               <button>
                 <FontAwesomeIcon icon={faShareAltSquare} />
               </button>
-              <button>
-                <FontAwesomeIcon
-                  icon={faPenSquare}
-                  onClick={toggleEditEventModal}
-                />
-              </button>
+              {!isCurrentUserGuest && (
+                <button>
+                  <FontAwesomeIcon
+                    icon={faPenSquare}
+                    onClick={toggleEditEventModal}
+                  />
+                </button>
+              )}
+
               <button
                 onClick={e => {
                   setVisibility(false);
@@ -167,7 +174,7 @@ export default function index({ auth, event, selectedCalendars }) {
                     })
                   );
                 }}>
-                <FontAwesomeIcon icon={faTrashAlt} />
+                {!isCurrentUserGuest && <FontAwesomeIcon icon={faTrashAlt} />}
               </button>
             </div>
             <img src="https://i.picsum.photos/id/1043/200/300.jpg" />

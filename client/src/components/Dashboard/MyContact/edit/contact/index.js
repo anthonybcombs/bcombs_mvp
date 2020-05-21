@@ -100,7 +100,12 @@ export default function index({
 
     if (contactDetails) {
       if (contactDetails.email !== auth.email) {
-        dispatch(updateContact(contactDetails));
+        dispatch(
+          updateContact({
+            ...contactDetails,
+            auth_email: auth.email
+          })
+        );
         toggleEditContactModal(false);
       } else {
         alert(`Email should not match your current email.`);

@@ -35,7 +35,7 @@ const updateGroupToDatabase = group => {
           }
         }
       });
-
+      console.log("UpdateGroupToDatabase", data);
       return resolve(data.updateGroup);
     } catch (error) {
       console.log("Error", error);

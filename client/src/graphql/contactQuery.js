@@ -10,6 +10,7 @@ export const GET_CONTACT_QUERY = gql`
       phone_number
       relation
       user_id
+      added_by
     }
   }
 `;

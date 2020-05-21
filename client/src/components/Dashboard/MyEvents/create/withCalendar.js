@@ -8,6 +8,9 @@ import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
 import { addEvent } from "../../../../redux/actions/Events";
 import MicroCalendar from "../../../Calendar/micro-calendar";
 import EventForm from "../forms/EventForm";
+
+import { getUTCDate } from "../../../../helpers/datetime";
+
 const NewEventModal = styled.div`
   h2 {
     font-size: 2em;
@@ -93,14 +96,19 @@ const initialEventDetails = selectedDate => {
 export default function index({
   auth,
   contacts,
+  calendars = [],
+  isEventSection = false,
   isVisible = true,
   toggleCreateEventModal
 }) {
   const [contactOptions, setContactOptions] = useState([]);
+  const [selectedCalendar, setSelectedCalendar] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+
   const [eventDetails, setEventDetails] = useState(
     initialEventDetails(selectedDate)
   );
+  const [calendarOptions, setCalendarOptions] = useState([]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
 
@@ -115,6 +123,18 @@ export default function index({
       setContactOptions(formattedContacts);
     }
   }, [contacts, isVisible]);
+
+  useEffect(() => {
+    if (calendars && calendars[0]) {
+      const formattedCalendars = calendars[0].map(item => {
+        return {
+          id: item.id,
+          name: item.name
+        };
+      });
+      setCalendarOptions(formattedCalendars);
+    }
+  }, [calendars]);
 
   const handleSetSelectedDate = date => {
     const currentDateTime = addSeconds(
@@ -133,25 +153,33 @@ export default function index({
     });
   };
   const handleEventDetailsChange = (id, value, action = "") => {
-    let newEventGuests;
-    newEventGuests = eventDetails.eventGuests;
+    // let newEventGuests = eventDetails.eventGuests;
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
       return;
     }
     setEventDetails({ ...eventDetails, [id]: value });
   };
+
+  const handleCalendarSelect = value => {
+    setSelectedCalendar(value);
+  };
+  const handleCalendarRemove = value => {
+    setSelectedCalendar(value);
+  };
   const handleSubmit = value => {
     toggleCreateEventModal(false);
+    const calendarIds = selectedCalendar.map(calendar => calendar.id);
     const payload = {
       start_of_event: format(
-        eventDetails.eventSchedule[0],
-        "yyyy-MM-dd hh:mm:ss "
+        getUTCDate(eventDetails.eventSchedule[0]),
+        "yyyy-MM-dd HH:mm:ss"
       ),
       end_of_event: format(
-        eventDetails.eventSchedule[1],
-        "yyyy-MM-dd hh:mm:ss "
+        getUTCDate(eventDetails.eventSchedule[1]),
+        "yyyy-MM-dd HH:mm:ss"
       ),
+
       type: eventDetails.eventType,
       id: eventDetails.id,
       location: eventDetails.location,
@@ -160,11 +188,10 @@ export default function index({
       time: eventDetails.time,
       description: eventDetails.description,
       guests: eventDetails.eventGuests.map(item => item.id),
-      auth_email: auth.email
+      auth_email: auth.email,
+      calendar_ids: calendarIds
     };
-
-    //console.log("eventTimeee", eventDetails);
-    //format(selectedDate, "hh:mm a")
+    console.log("Payloaddddd", payload);
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
   };
@@ -195,8 +222,12 @@ export default function index({
             setSelectedEvent={() => {}}
           />
           <EventForm
+            calendars={calendarOptions}
             contactOptions={contactOptions}
             eventDetails={eventDetails}
+            isEventSection={isEventSection}
+            handleCalendarSelect={handleCalendarSelect}
+            handleCalendarRemove={handleCalendarRemove}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}
             header={`Create New ${eventDetails.eventType}`}

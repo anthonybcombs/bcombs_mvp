@@ -9,6 +9,8 @@ import { GET_GROUP_MEMBERS_QUERY } from "../../../../graphql/groupQuery";
 // REDUX
 //import { updateGroup } from "../../../../../redux/actions/Groups";
 
+import Loading from "../../../../helpers/Loading.js";
+
 const JoinedGroupModal = styled.div`
   h2 {
     text-align: center;
@@ -80,6 +82,9 @@ const ContactStyled = styled.div`
     text-align: center !important;
     min-height: 100px !important;
   }
+  .member-name {
+    margin-top: 16px !important;
+  }
 `;
 
 export default function index({
@@ -90,21 +95,25 @@ export default function index({
   typeOfForm = "View Group"
 }) {
   const [currentMembers, setCurrentMembers] = useState([]);
+  const [isLoading, setLoading] = useState(false);
   const theme = useContext(ThemeContext);
 
   useEffect(() => {
     if (group && group.id && isVisible) {
       const triggerGetMembers = async () => {
         try {
+          setLoading(true);
           const { data } = await graphqlClient.query({
             query: GET_GROUP_MEMBERS_QUERY,
             variables: { id: group.id }
           });
 
           setCurrentMembers(data.getGroupMembers);
+          setLoading(false);
         } catch (err) {
           console.log("Error", err);
           setCurrentMembers([]);
+          setLoading(false);
         }
       };
       triggerGetMembers();
@@ -113,8 +122,6 @@ export default function index({
   if (!isVisible) {
     return <></>;
   }
-
-  console.log("currentMembers", currentMembers);
 
   return ReactDOM.createPortal(
     <JoinedGroupModal
@@ -133,25 +140,33 @@ export default function index({
           &times;
         </span>
         <div className="content">
-          <div id="contact-list-details">
-            {currentMembers.length > 0 &&
-              currentMembers.map(member => (
-                <ContactStyled key={member.id}>
-                  <div>
-                    <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
-                    <p>
-                      <span>
-                        {member.first_name} {member.last_name}
-                      </span>
-                      <br />
-                    </p>
-                  </div>
-                  <div>
-                    <p>{member.email}</p>
-                  </div>
-                </ContactStyled>
-              ))}
+          <div>
+            <h2>{group.name} Members</h2>
           </div>
+
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <div id="contact-list-details">
+              {currentMembers.length > 0 &&
+                currentMembers.map(member => (
+                  <ContactStyled key={member.id}>
+                    <div>
+                      <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
+                      <p className="member-name">
+                        <span>
+                          {member.first_name} {member.last_name}
+                        </span>
+                        <br />
+                      </p>
+                    </div>
+                    <div>
+                      <p>{member.email}</p>
+                    </div>
+                  </ContactStyled>
+                ))}
+            </div>
+          )}
         </div>
       </div>
     </JoinedGroupModal>,

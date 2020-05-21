@@ -6,6 +6,9 @@ import { uuid } from "uuidv4";
 import { format } from "date-fns";
 import { addEvent } from "../../../../redux/actions/Events";
 import EventForm from "../forms/EventForm";
+
+import { getUTCDate } from "../../../../helpers/datetime";
+
 const NewEventModal = styled.div`
   h2 {
     text-align: center;
@@ -86,7 +89,7 @@ const initialEventDetails = selectedDate => {
   };
 };
 
-const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+const DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 export default function index({
   isVisible = true,
   auth,
@@ -128,8 +131,14 @@ export default function index({
 
   const handleSubmit = value => {
     const payload = {
-      start_of_event: format(eventDetails.eventSchedule[0], DATE_TIME_FORMAT),
-      end_of_event: format(eventDetails.eventSchedule[1], DATE_TIME_FORMAT),
+      start_of_event: format(
+        getUTCDate(eventDetails.eventSchedule[0]),
+        "yyyy-MM-dd HH:mm:ss"
+      ),
+      end_of_event: format(
+        getUTCDate(eventDetails.eventSchedule[1]),
+        "yyyy-MM-dd HH:mm:ss"
+      ),
       type: eventDetails.eventType,
       id: eventDetails.id,
       location: eventDetails.location,
