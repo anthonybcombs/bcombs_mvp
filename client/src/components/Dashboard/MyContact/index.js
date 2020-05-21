@@ -139,7 +139,6 @@ export default function index() {
     if (auth.email) {
       dispatch(requestUserGroup(auth.email));
     }
-
     if (contacts) {
       setCurrentContacts(contacts);
     }
@@ -203,7 +202,7 @@ export default function index() {
     setJoinedGroupModalVisible(true);
   };
   const editGroupSubmit = data => {};
-  console.log("groupMembers", loading);
+
   return (
     <MyContactsStyled>
       <NewContactModal
@@ -233,6 +232,7 @@ export default function index() {
         groupMembers={groupMembers}
         group={selectedGroup}
         isVisible={isEditGroupModalVisible}
+        isGroupLoading={loading.group}
         isGroupMemberLoading={loading.groupMembers}
         onSubmit={editGroupSubmit}
         toggleEditGroupModal={setEditGroupModalVisible}

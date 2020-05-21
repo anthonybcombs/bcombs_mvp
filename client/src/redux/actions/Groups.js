@@ -20,28 +20,25 @@ import { setGroupLoading, setGroupMemberLoadingLoading } from "./Loading";
 //     return resolve("success");
 //   });
 // };
-const updateGroupToDatabase = group => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { data } = await graphqlClient.mutate({
-        mutation: GROUP_UPDATE_MUTATION,
-        variables: {
-          group: {
-            id: group.id,
-            name: group.name,
-            member_ids: group.member_ids,
-            email: group.email,
-            removed_member_ids: group.removed_member_ids
-          }
+const updateGroupToDatabase = async group => {
+  try {
+    const { data } = await graphqlClient.mutate({
+      mutation: GROUP_UPDATE_MUTATION,
+      variables: {
+        group: {
+          id: group.id,
+          name: group.name,
+          member_ids: group.member_ids,
+          email: group.email,
+          removed_member_ids: group.removed_member_ids
         }
-      });
-      console.log("UpdateGroupToDatabase", data);
-      return resolve(data.updateGroup);
-    } catch (error) {
-      console.log("Error", error);
-      reject("error");
-    }
-  });
+      }
+    });
+    console.log("UpdateGroupToDatabase", data);
+    return data.updateGroup;
+  } catch (error) {
+    console.log("Error updateGroupToDatabase", error);
+  }
 };
 
 const removeGroupToDatabase = group => {
@@ -96,14 +93,14 @@ export function* addedGroup({ group }) {
 
 export function* updatedGroup({ group }) {
   try {
-    console.log("response updatedGroup", group);
+    yield put(setGroupLoading(true));
     const response = yield call(updateGroupToDatabase, group);
-    console.log("response", response);
-
     yield put(setUserGroups(response));
-    //yield put(requestUserGroup({ email: group.email }));
+    yield put(requestUserGroup(group.email));
+    yield put(setGroupLoading(false));
   } catch (err) {
-    console.log("Error", err);
+    console.log("updatedGroup Error", err);
+    yield put(setGroupLoading(false));
   }
 
   // yield put({
