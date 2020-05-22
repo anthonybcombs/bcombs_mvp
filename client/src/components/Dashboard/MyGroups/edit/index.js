@@ -107,7 +107,6 @@ export default function index({
 
   const resetState = () => {
     setCurrentContacts([]);
-    setCurrentGroupName("");
     setContactSelections([]);
     setSelectedContact([]);
     setRemovedContacts([]);
@@ -144,14 +143,19 @@ export default function index({
   }, [group, groupMembers, isVisible]);
 
   const handleGroupDetailsChange = (id, value) => {
-    console.log("handleGroupDetailChange id", id);
-    console.log("c value", value);
     if (id === "contacts" || id === "other_ids") {
       let ids = value.map(contact => contact.id);
-      setGroupDetails({
-        ...groupDetails,
-        [id]: ids
-      });
+      if (id === "contacts") {
+        setGroupDetails({
+          ...groupDetails,
+          contacts: [...(group.contacts || []), ...ids]
+        });
+      } else {
+        setGroupDetails({
+          ...groupDetails,
+          other_ids: ids
+        });
+      }
     } else {
       setGroupDetails({
         ...groupDetails,
@@ -172,7 +176,8 @@ export default function index({
       ],
       removed_member_ids: removedContacts
     };
-    console.log("payloadddd", groupDetails);
+    console.log("payloadddd", payload);
+    console.log("payloadddd groupDetails", groupDetails);
     dispatch(updateGroup(payload));
     toggleEditGroupModal(false);
     resetState();

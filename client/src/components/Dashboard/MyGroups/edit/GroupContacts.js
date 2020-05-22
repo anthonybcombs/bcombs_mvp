@@ -88,7 +88,6 @@ const GroupContacts = ({ contacts, handleRemoveMember }) => {
                 <p>
                   {contact.first_name} {contact.last_name}
                 </p>
-                <p>{contact.email}</p>
               </div>
               <div>
                 <span className="group-list-details">
