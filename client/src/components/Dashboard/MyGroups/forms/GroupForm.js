@@ -233,6 +233,7 @@ export default function GroupForm({
 
   const theme = useContext(ThemeContext);
   const handleSelectChange = value => {
+    console.log("handleSelectChange valueeeeeee", value);
     handleGroupDetailsChange("contacts", [...value]);
   };
 
@@ -292,9 +293,6 @@ export default function GroupForm({
   };
 
   const handleRemoveOtherUser = email => () => {
-    const removedOtherUser = otherUserSelected.find(
-      guest => guest.value === email
-    );
     const updatedOtherUser = otherUserSelected.filter(
       guest => guest.value !== email
     );

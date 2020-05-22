@@ -88,11 +88,12 @@ const GroupContacts = ({ contacts, handleRemoveMember }) => {
                 <p>
                   {contact.first_name} {contact.last_name}
                 </p>
+                <p>{contact.email}</p>
               </div>
               <div>
                 <span className="group-list-details">
                   <p>{contact.email}</p>
-                  <p>{contact.phone_number}</p>
+                  {/* <p>{contact.phone_number}</p> */}
                 </span>
                 <span
                   className="group-list-details"

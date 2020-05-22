@@ -103,10 +103,7 @@ export default function index({
   const [groupDetails, setGroupDetails] = useState({});
   const [currentContacts, setCurrentContacts] = useState([]);
   const [removedContacts, setRemovedContacts] = useState([]);
-  const [currentGroupName, setCurrentGroupName] = useState("");
   const [contactSelections, setContactSelections] = useState([]);
-  const [selectedContact, setSelectedContact] = useState([]);
-  const hasSelectAll = false;
 
   const resetState = () => {
     setCurrentContacts([]);
@@ -134,7 +131,7 @@ export default function index({
         })
         .map(c => {
           return {
-            id: c.user_id,
+            user_id: c.user_id,
             first_name: c.first_name,
             last_name: c.last_name
           };
@@ -146,10 +143,9 @@ export default function index({
     }
   }, [group, groupMembers, isVisible]);
 
-  const handleContactSelectChange = value => {
-    setSelectedContact(value);
-  };
   const handleGroupDetailsChange = (id, value) => {
+    console.log("handleGroupDetailChange id", id);
+    console.log("c value", value);
     if (id === "contacts" || id === "other_ids") {
       let ids = value.map(contact => contact.id);
       setGroupDetails({
@@ -176,7 +172,7 @@ export default function index({
       ],
       removed_member_ids: removedContacts
     };
-
+    console.log("payloadddd", groupDetails);
     dispatch(updateGroup(payload));
     toggleEditGroupModal(false);
     resetState();
