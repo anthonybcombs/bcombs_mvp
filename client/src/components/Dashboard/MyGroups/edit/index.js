@@ -9,9 +9,10 @@ import {
   requestDeleteGroup
 } from "../../../../redux/actions/Groups";
 
-import ContactSelections from "./ContactSelections";
+import GroupForm from "../forms/GroupForm";
+//import ContactSelections from "./ContactSelections";
 import GroupContacts from "./GroupContacts";
-import GroupPhoto from "./GroupPhoto";
+//import GroupPhoto from "./GroupPhoto";
 
 import Loading from "../../../../helpers/Loading.js";
 
@@ -99,6 +100,7 @@ export default function index({
   isGroupMemberLoading,
   typeOfForm = "Edit Group"
 }) {
+  const [groupDetails, setGroupDetails] = useState({});
   const [currentContacts, setCurrentContacts] = useState([]);
   const [removedContacts, setRemovedContacts] = useState([]);
   const [currentGroupName, setCurrentGroupName] = useState("");
@@ -136,52 +138,64 @@ export default function index({
             name: `${c.first_name} ${c.last_name}`
           };
         });
-
-      // if (groupMembers.length > 0) {
-      //   selections = groupMembers
-      //     .filter(c => !group.contacts.includes(c.user_id))
-      //     .map(c => {
-      //       return {
-      //         id: c.user_id,
-      //         name: `${c.first_name} ${c.last_name}`
-      //       };
-      //     });
-      // } else {
-      //   selections = contacts.map(c => {
-      //     return {
-      //       id: c.user_id,
-      //       name: `${c.first_name} ${c.last_name}`
-      //     };
-      //   });
-      // }
-
-      setCurrentGroupName(group.name);
+      console.log("selections", selections);
       setCurrentContacts(list);
       setContactSelections(selections);
+      setGroupDetails(group);
     }
   }, [group, groupMembers, isVisible]);
 
   const handleContactSelectChange = value => {
     setSelectedContact(value);
   };
-  // const handleFileChange = event => {
-  //   setSelectedFile(event.target.files[0]);
-  // };
-  const handleSubmit = () => {
-    if (currentGroupName !== "") {
-      const contactIds = selectedContact.map(item => item.id);
-      const payload = {
-        id: group.id,
-        name: currentGroupName,
-        member_ids: contactIds,
-        email: auth.email,
-        removed_member_ids: removedContacts
-      };
-
-      dispatch(updateGroup(payload));
-      toggleEditGroupModal(false);
-      resetState();
+  const handleGroupDetailsChange = (id, value) => {
+    if (id === "contacts" || id === "other_ids") {
+      let ids = value.map(contact => contact.id);
+      setGroupDetails({
+        ...groupDetails,
+        [id]: ids
+      });
+    } else {
+      setGroupDetails({
+        ...groupDetails,
+        [id]: value
+      });
     }
+  };
+
+  // const handleSubmit = () => {
+  //   if (currentGroupName !== "") {
+  //     const contactIds = selectedContact.map(item => item.id);
+  //     const payload = {
+  //       id: group.id,
+  //       name: currentGroupName,
+  //       member_ids: contactIds,
+  //       email: auth.email,
+  //       removed_member_ids: removedContacts
+  //     };
+
+  // dispatch(updateGroup(payload));
+  // toggleEditGroupModal(false);
+  // resetState();
+  //   }
+  // };
+
+  const handleSubmit = value => {
+    const payload = {
+      ...groupDetails,
+      email: auth.email,
+      member_ids: [
+        ...new Set([
+          ...(groupDetails.contacts || []),
+          ...(groupDetails.other_ids || [])
+        ])
+      ],
+      removed_member_ids: removedContacts
+    };
+
+    dispatch(updateGroup(payload));
+    toggleEditGroupModal(false);
+    resetState();
   };
 
   const handleDelete = () => {
@@ -233,7 +247,7 @@ export default function index({
         ) : (
           <div className="content" id="applicationForm">
             <div className="grid">
-              <div className="form-group">
+              {/* <div className="form-group">
                 <div className="field">
                   <input
                     name="firstname"
@@ -259,27 +273,27 @@ export default function index({
                     Assign to existing contact
                   </label>
                 </div>
-                {/* <div className="field">
-                  <Multiselect
-                    className="field-input"
-                    options={contactSelections}
-                    hasSelectAll={hasSelectAll}
-                    onSelect={handleContactSelectChange}
-                    placeholder="Select from existing contacts"
-                    displayValue="name"
-                    closeIcon="cancel"
-                  />
-                  <label className="field-label">Add other users</label>
-                </div> */}
-              </div>
+              </div> */}
+              <GroupForm
+                contacts={contactSelections}
+                groupDetails={groupDetails}
+                onSubmit={handleSubmit}
+                handleGroupDetailsChange={handleGroupDetailsChange}
+              />
             </div>
             <div>
               <GroupContacts
                 contacts={currentContacts}
                 handleRemoveMember={handleRemoveMember}
               />
-
               <button
+                className="group-delete"
+                data-testid="app-dashboard-my-group-new-group-button-save"
+                onClick={handleDelete}
+                type="submit">
+                Delete
+              </button>
+              {/* <button
                 className="group-submit"
                 data-testid="app-dashboard-my-group-new-group-button-save"
                 onClick={handleSubmit}
@@ -293,7 +307,7 @@ export default function index({
                 onClick={handleDelete}
                 type="submit">
                 Delete
-              </button>
+              </button> */}
             </div>
           </div>
         )}

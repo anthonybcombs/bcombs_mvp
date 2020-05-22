@@ -1,11 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
-
+import Autosuggest from "react-autosuggest";
+import debounce from "lodash.debounce";
 import { Multiselect } from "multiselect-react-dropdown";
 import CreatableSelect from "react-select/creatable";
 
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+
+// GRAPHQL
+import graphqlClient from "../../../../graphql";
+import { GET_USER_OPTIONS_QUERY } from "../../../../graphql/query";
+
 const ContactFormStyled = styled.form`
   input:required {
     box-shadow: none;
@@ -72,6 +78,110 @@ const ContactFormStyled = styled.form`
   #multiselectContainerReact .chip {
     background: #f26e21;
   }
+
+  input {
+    background: none;
+    width: 100%;
+    color: black;
+
+    display: block;
+    border: none;
+    border-radius: 1;
+    border: none;
+    outline: 0;
+    border-bottom: 2px solid lightgrey;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    outline: 0;
+  }
+  .react-autosuggest__container {
+    position: relative;
+  }
+
+  .react-autosuggest__input {
+    font-family: Helvetica, sans-serif;
+    font-weight: 300;
+  }
+
+  .react-autosuggest__input--focused {
+    outline: none;
+  }
+
+  .react-autosuggest__input--open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .react-autosuggest__suggestions-container {
+    display: none;
+  }
+
+  .react-autosuggest__suggestions-container--open {
+    display: block;
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    font-family: Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    z-index: 2;
+  }
+
+  .react-autosuggest__suggestions-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  .react-autosuggest__suggestion {
+    cursor: pointer;
+    padding: 10px 20px;
+  }
+
+  .react-autosuggest__suggestion--highlighted {
+    background-color: #ddd;
+  }
+
+  .user-tag {
+    padding: 4px 10px;
+    background: #f26e21;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .field-label,
+  .field-input {
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+
+  .field-input {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: text;
+    line-height: 1.8;
+
+    padding: 5px 0;
+    width: 100%;
+    display: block;
+    text-indent: 5px;
+  }
 `;
 /*
 
@@ -85,6 +195,13 @@ const ContactFormStyled = styled.form`
       margin: 2.5em auto 2.5em auto;
     }*/
 
+const renderSuggestion = suggestion => (
+  <div>
+    <div>{suggestion.name}</div>
+    <div className="user-email">{suggestion.value}</div>
+  </div>
+);
+
 export default function GroupForm({
   groupDetails,
   contacts,
@@ -93,6 +210,9 @@ export default function GroupForm({
 }) {
   const [contactOptions, setContactOptions] = useState([]);
   const [otherUserSelected, setOtherUserSelected] = useState([]);
+  const [suggestion, setSuggestion] = useState([]);
+  const [autoCompleteValue, setAutoCompleteValue] = useState("");
+  const [isFetching, setFetching] = useState(false);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
@@ -116,9 +236,71 @@ export default function GroupForm({
     handleGroupDetailsChange("contacts", [...value]);
   };
 
-  const handleOtherUserChange = value => {
-    handleGroupDetailsChange("other_users", value);
-    setOtherUserSelected(value);
+  const automCompleteOnChange = (event, { newValue }) => {
+    setAutoCompleteValue(newValue);
+  };
+
+  const inputProps = {
+    placeholder: "Enter Guest Email",
+    value: autoCompleteValue,
+    onChange: automCompleteOnChange
+  };
+
+  const onSuggestionsFetchRequested = async ({ value }) => {
+    try {
+      if (!isFetching && value !== "") {
+        setFetching(true);
+        const { data } = await graphqlClient.query({
+          query: GET_USER_OPTIONS_QUERY,
+          variables: { keyword: value }
+        });
+
+        const options = data.getUserList.map(item => {
+          return {
+            name: `${item.given_name} ${item.family_name}`,
+            value: item.email,
+            id: item.id
+          };
+        });
+
+        setSuggestion(
+          options.filter(
+            item => item.value.includes(value) || item.name.includes(value)
+          )
+        );
+        setFetching(false);
+      }
+    } catch (err) {
+      console.log("onSuggestionsFetchRequested Error ", err);
+      setFetching(false);
+    }
+  };
+
+  const onSuggestionsClearRequested = () => {
+    setSuggestion([]);
+  };
+
+  const getSuggestionValue = suggestion => {
+    const isExist = otherUserSelected.find(
+      item => suggestion.value === item.value
+    );
+    if (!isExist) {
+      setOtherUserSelected([...otherUserSelected, suggestion]);
+      handleGroupDetailsChange("other_ids", [...otherUserSelected, suggestion]);
+    }
+    return suggestion.name;
+  };
+
+  const handleRemoveOtherUser = email => () => {
+    const removedOtherUser = otherUserSelected.find(
+      guest => guest.value === email
+    );
+    const updatedOtherUser = otherUserSelected.filter(
+      guest => guest.value !== email
+    );
+
+    setOtherUserSelected(updatedOtherUser);
+    handleGroupDetailsChange("other_ids", updatedOtherUser);
   };
   return (
     <ContactFormStyled
@@ -162,44 +344,32 @@ export default function GroupForm({
             <label className="field-label">Assign to existing contact</label>
           </div>
         </div>
-        <div className="form-group">
-          <div className="field">
-            <CreatableSelect onChange={handleOtherUserChange} isMulti />
-            <label className="field-label">Others</label>
-          </div>
+
+        <div>
+          {otherUserSelected &&
+            otherUserSelected.map((guest, index) => (
+              <span
+                key={index}
+                className="user-tag"
+                onClick={handleRemoveOtherUser(guest.value)}>
+                <div> {guest.value}</div>
+                {/* <div className="user-email"> {guest.value}</div> */}
+              </span>
+            ))}
         </div>
+
+        <label className="field-label">Assign to other users</label>
+        <Autosuggest
+          autoComplete="off"
+          inputProps={inputProps}
+          suggestions={suggestion}
+          onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+          onSuggestionsClearRequested={onSuggestionsClearRequested}
+          renderSuggestion={renderSuggestion}
+          getSuggestionValue={getSuggestionValue}
+        />
       </div>
 
-      {/* <select
-        data-testid="app-profile-select-gender"
-        name="visibility"
-        onChange={({ target }) => {
-          handleGroupDetailsChange("visibility", target.value);
-        }}
-        ref={register}>
-        {VISIBILITY_OPTIONS.map(opt => (
-          <option key={opt.id} value={opt.id}>
-            {opt.name}
-          </option>
-        ))}
-      </select>
-      <div>
-        <p>Assign to existing contact</p>
-        {contacts.map(contact => (
-          <label htmlFor="contact" key={contact.id}>
-            <input
-              type="checkbox"
-              name="contact"
-              checked={groupDetails.contacts.includes(contact.id)}
-              value={contact.id}
-              onChange={({ target }) => {
-                handleGroupDetailsChange("contacts", target.value);
-              }}
-            />
-            {contact.first_name} {contact.last_name}
-          </label>
-        ))}
-      </div> */}
       <button type="submit">Save</button>
     </ContactFormStyled>
   );

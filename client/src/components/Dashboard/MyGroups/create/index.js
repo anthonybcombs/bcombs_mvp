@@ -26,41 +26,44 @@ export default function index({
     name: "",
     contacts: [],
     visibility: 0,
-    other_users: []
+    other_ids: []
   });
   const dispatch = useDispatch();
   const handleGroupDetailsChange = (id, value) => {
-    let newContacts = groupDetails.contacts;
-    if (id === "contacts") {
-      // let selectedContactId = value;
-      // if (newContacts.includes(selectedContactId)) {
-      //   newContacts = newContacts.filter(
-      //     contactId => contactId !== selectedContactId
-      //   );
-      // } else {
-      //   newContacts.push(selectedContactId);
-      // }
-      newContacts = value.map(contact => contact.id);
+    if (id === "contacts" || id === "other_ids") {
+      let ids = value.map(contact => contact.id);
+      setGroupDetails({
+        ...groupDetails,
+        [id]: ids
+      });
+    } else {
+      setGroupDetails({
+        ...groupDetails,
+        [id]: value
+      });
     }
-    setGroupDetails({
-      ...groupDetails,
-      [id]: id == "contacts" ? newContacts : value
-    });
   };
   const handleSubmit = value => {
     toggleCreateGroupModal(false);
     const payload = {
       ...groupDetails,
-      email: auth.email
+      email: auth.email,
+      contacts: [
+        ...new Set([
+          ...(groupDetails.contacts || []),
+          ...(groupDetails.other_ids || [])
+        ])
+      ]
     };
-    console.log("payloadddd", groupDetails);
+
     dispatch(addGroup(payload));
     setGroupDetails({
       id: uuid(),
       name: "",
       visibility: 0,
       userIds: [auth.id],
-      contacts: []
+      contacts: [],
+      other_ids: []
     });
   };
   if (!isVisible) {

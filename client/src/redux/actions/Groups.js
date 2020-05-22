@@ -5,12 +5,12 @@ import graphqlClient from "../../graphql";
 
 import {
   GET_USER_GROUP_QUERY,
-  GET_GROUP_MEMBERS_QUERY,
+  GET_GROUP_MEMBERS_QUERY
 } from "../../graphql/groupQuery";
 import {
   GROUP_UPDATE_MUTATION,
   GROUP_DELETE_MUTATION,
-  GROUP_CREATE_MUTATION,
+  GROUP_CREATE_MUTATION
 } from "../../graphql/groupMutation";
 
 import { setGroupLoading, setGroupMemberLoadingLoading } from "./Loading";
@@ -20,7 +20,7 @@ import { setGroupLoading, setGroupMemberLoadingLoading } from "./Loading";
 //     return resolve("success");
 //   });
 // };
-const updateGroupToDatabase = async (group) => {
+const updateGroupToDatabase = async group => {
   try {
     const { data } = await graphqlClient.mutate({
       mutation: GROUP_UPDATE_MUTATION,
@@ -30,9 +30,9 @@ const updateGroupToDatabase = async (group) => {
           name: group.name,
           member_ids: group.member_ids,
           email: group.email,
-          removed_member_ids: group.removed_member_ids,
-        },
-      },
+          removed_member_ids: group.removed_member_ids
+        }
+      }
     });
     console.log("UpdateGroupToDatabase", data);
     return data.updateGroup;
@@ -41,15 +41,15 @@ const updateGroupToDatabase = async (group) => {
   }
 };
 
-const removeGroupToDatabase = (group) => {
+const removeGroupToDatabase = group => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.mutate({
         mutation: GROUP_DELETE_MUTATION,
         variables: {
           id: group.id,
-          email: group.email,
-        },
+          email: group.email
+        }
       });
       return resolve(data.deleteGroup);
     } catch (error) {
@@ -59,29 +59,29 @@ const removeGroupToDatabase = (group) => {
   });
 };
 
-const getMembersToDatabase = async (id) => {
+const getMembersToDatabase = async id => {
   try {
     console.log("getMemberToDatabase id", id);
     const { data } = await graphqlClient.query({
       query: GET_GROUP_MEMBERS_QUERY,
-      variables: { id },
+      variables: { id }
     });
 
     console.log("getMemberToDatabase data", data);
     return data.getGroupMembers;
   } catch (err) {}
 };
-export const addGroup = (group) => {
+export const addGroup = group => {
   return {
     type: actionType.REQUEST_ADD_GROUP,
-    group,
+    group
   };
 };
-export const updateGroup = (group) => {
+export const updateGroup = group => {
   console.log("UpdateGroup", group);
   return {
     type: actionType.REQUEST_UPDATE_GROUP,
-    group,
+    group
   };
 };
 export function* addedGroup({ group }) {
@@ -113,50 +113,50 @@ export function* updatedGroup({ group }) {
 export function requestUserGroupForProtectedRoute(email) {
   return {
     type: actionType.REQUEST_USER_GROUPS_PROTECTED_ROUTE,
-    email,
+    email
   };
 }
 export function requestUserGroup(email) {
   return {
     type: actionType.REQUEST_USER_GROUPS,
-    email,
+    email
   };
 }
 export function requestUserMemberGroup(id) {
   return {
     type: actionType.REQUEST_USER_GROUPS,
-    email,
+    email
   };
 }
 
 export function setUserGroups(data) {
   return {
     type: actionType.SET_USER_GROUPS,
-    data,
+    data
   };
 }
 
 export function requestDeleteGroup(data) {
   return {
     type: actionType.REQUEST_DELETE_GROUP,
-    data,
+    data
   };
 }
 
 export function requestMembers(id) {
   return {
     type: actionType.REQUEST_MEMBERS,
-    id,
+    id
   };
 }
 export function setMemberList(data) {
   return {
     type: actionType.SET_MEMBER_LIST,
-    data,
+    data
   };
 }
 
-const addGroupToDatabase = async (group) => {
+const addGroupToDatabase = async group => {
   try {
     console.log("Groupppp", group);
     const { data } = await graphqlClient.mutate({
@@ -167,9 +167,9 @@ const addGroupToDatabase = async (group) => {
           name: group.name,
           visibility: `${group.visibility}`,
           member_ids: group.contacts,
-          email: group.email,
-        },
-      },
+          email: group.email
+        }
+      }
     });
     return data.createGroup;
   } catch (error) {
@@ -178,15 +178,17 @@ const addGroupToDatabase = async (group) => {
   }
 };
 
-const getUserGroupToDatabase = async (email) => {
+const getUserGroupToDatabase = async email => {
   try {
+    console.log("Email getUserGroupToDatabase", email);
     const { data } = await graphqlClient.query({
       query: GET_USER_GROUP_QUERY,
-      variables: { email },
+      variables: { email }
     });
+    console.log("Data getUserGroupToDatabase", data);
     return data.getUserGroup;
   } catch (err) {
-    console.log("Error", err);
+    console.log("Error getUserGroupToDatabase", err);
   }
 };
 export function* getUserGroupProtectedRoute(action) {
@@ -194,7 +196,7 @@ export function* getUserGroupProtectedRoute(action) {
   try {
     yield put(setGroupLoading(true));
     const response = yield call(getUserGroupToDatabase, action.email);
-    yield put(setUserGroups(response));
+    yield put(setUserGroups(response || []));
     yield put(setGroupLoading(false));
   } catch (error) {
     yield put(setUserGroups([]));
@@ -205,7 +207,7 @@ export function* getUserGroup(action) {
   try {
     yield put(setGroupLoading(true));
     const response = yield call(getUserGroupToDatabase, action.email);
-    yield put(setUserGroups(response));
+    yield put(setUserGroups(response || []));
     yield put(setGroupLoading(false));
   } catch (error) {
     yield put(setUserGroups([]));
