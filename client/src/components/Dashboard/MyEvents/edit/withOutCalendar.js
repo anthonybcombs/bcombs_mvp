@@ -94,8 +94,10 @@ export default function index({
           new Date(defaultEventDetails.start_of_event),
           new Date(defaultEventDetails.end_of_event)
         ],
-        defaultGroupIds: groupOptions.filter(item =>
-          defaultEventDetails.group_ids.includes(item.id)
+        defaultGroupIds: groupOptions.filter(
+          item =>
+            defaultEventDetails.group_ids &&
+            defaultEventDetails.group_ids.includes(item.id)
         )
       });
     }
