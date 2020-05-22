@@ -160,8 +160,8 @@ export default function index({
           : []
     };
     console.log("payloaddd", payload);
-    // dispatch(updateEvent(payload));
-    // toggleEditEventModal();
+    dispatch(updateEvent(payload));
+    toggleEditEventModal();
   };
 
   const handleGroupSelect = value => {
