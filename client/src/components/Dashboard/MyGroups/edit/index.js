@@ -135,7 +135,8 @@ export default function index({
         .map(c => {
           return {
             id: c.user_id,
-            name: `${c.first_name} ${c.last_name}`
+            first_name: c.first_name,
+            last_name: c.last_name
           };
         });
       console.log("selections", selections);
@@ -162,23 +163,6 @@ export default function index({
       });
     }
   };
-
-  // const handleSubmit = () => {
-  //   if (currentGroupName !== "") {
-  //     const contactIds = selectedContact.map(item => item.id);
-  //     const payload = {
-  //       id: group.id,
-  //       name: currentGroupName,
-  //       member_ids: contactIds,
-  //       email: auth.email,
-  //       removed_member_ids: removedContacts
-  //     };
-
-  // dispatch(updateGroup(payload));
-  // toggleEditGroupModal(false);
-  // resetState();
-  //   }
-  // };
 
   const handleSubmit = value => {
     const payload = {
@@ -210,11 +194,6 @@ export default function index({
     }
   };
 
-  const handleChangeName = e => {
-    const { value } = e.target;
-    setCurrentGroupName(value);
-  };
-
   const handleRemoveMember = id => e => {
     const updatedContacts = currentContacts.filter(item => id !== item.user_id);
     if (!removedContacts.includes(id)) {
@@ -222,6 +201,8 @@ export default function index({
     }
     setCurrentContacts(updatedContacts);
   };
+
+  console.log("contactSelections", contactSelections);
   if (!isVisible) {
     return <></>;
   }
@@ -247,33 +228,6 @@ export default function index({
         ) : (
           <div className="content" id="applicationForm">
             <div className="grid">
-              {/* <div className="form-group">
-                <div className="field">
-                  <input
-                    name="firstname"
-                    className="field-input"
-                    placeholder="Group Name"
-                    onChange={handleChangeName}
-                    value={currentGroupName}
-                  />
-                  <label className="field-label">Group Name</label>
-                </div>
-                <br />
-                <div className="field">
-                  <Multiselect
-                    className="field-input"
-                    options={contactSelections}
-                    hasSelectAll={hasSelectAll}
-                    onSelect={handleContactSelectChange}
-                    placeholder="Select from existing contacts"
-                    displayValue="name"
-                    closeIcon="cancel"
-                  />
-                  <label className="field-label">
-                    Assign to existing contact
-                  </label>
-                </div>
-              </div> */}
               <GroupForm
                 contacts={contactSelections}
                 groupDetails={groupDetails}
@@ -293,21 +247,6 @@ export default function index({
                 type="submit">
                 Delete
               </button>
-              {/* <button
-                className="group-submit"
-                data-testid="app-dashboard-my-group-new-group-button-save"
-                onClick={handleSubmit}
-                type="submit">
-                Save
-              </button>
-              {`   `}
-              <button
-                className="group-delete"
-                data-testid="app-dashboard-my-group-new-group-button-save"
-                onClick={handleDelete}
-                type="submit">
-                Delete
-              </button> */}
             </div>
           </div>
         )}
