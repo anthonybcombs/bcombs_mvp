@@ -18,6 +18,17 @@ import DuplicateEvent from "../../../Dashboard/MyEvents/duplicate";
 import EditEvent from "../../../Dashboard/MyEvents/edit/withOutCalendar";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 
+const EventColors = styled.div`
+  float: right;
+  margin-top: -5px;
+  margin-right: -5px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 22px 26px 0;
+  border-color: transparent ${props => props.color} transparent transparent;
+`;
+
 const EventStyled = styled.div`
   z-index: 1;
   margin: 2px;
@@ -136,7 +147,7 @@ export default function index({ auth, day, event, selectedCalendars }) {
     format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
   ];
   const isEventOver = compareAsc(day, new Date());
-
+  console.log("event!!!", event);
   return (
     <Popover
       isOpen={isVisible}
@@ -265,9 +276,26 @@ export default function index({ auth, day, event, selectedCalendars }) {
           toggleDuplicateEventModal={toggleDuplicateEventModal}
         />
         <div className={`${isVisible ? "selected" : ""}`} id="event-name">
-          {event.name}
+          <span> {event.name}</span>
+          {event.multi_color &&
+            event.multi_color.map(
+              (color, index) =>
+                color !== event.color && (
+                  <EventColors color={color}></EventColors>
+                )
+            )}
         </div>
       </EventStyled>
     </Popover>
   );
 }
+
+/*
+style={{
+                  width: 12,
+                  height: 17,
+                  backgroundColor: color,
+                  float: "right",
+                  border: "0.7px solid white"
+                }}
+                */

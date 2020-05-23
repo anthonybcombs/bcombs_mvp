@@ -102,7 +102,7 @@ export default function index({
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
-    const eventsOnThisDay = events.filter(event => {
+    let eventsOnThisDay = events.filter(event => {
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),
         end: new Date(event.end_of_event)
@@ -115,6 +115,27 @@ export default function index({
         );
       }
     });
+
+    if (selectedCalendars.length > 1) {
+      eventsOnThisDay = eventsOnThisDay.reduce((accumulator, item, index) => {
+        if (index === 0) return [...accumulator, item];
+        console.log("accumulator[index - 1]", accumulator[index - 1]);
+        if (accumulator[index - 1] && item.id === accumulator[index - 1].id) {
+          accumulator[index - 1] = {
+            ...accumulator[index - 1],
+            multi_color: [
+              ...(accumulator[index - 1].multi_color || []),
+              accumulator[index - 1].color,
+              item.color
+            ]
+          };
+          return [...accumulator];
+        }
+
+        return [...accumulator, item];
+      }, []);
+    }
+
     // console.log("eventsOnThisDay 111", eventsOnThisDay);
     const eventsCount = eventsOnThisDay.length;
     const hasEvents = eventsCount > 0;

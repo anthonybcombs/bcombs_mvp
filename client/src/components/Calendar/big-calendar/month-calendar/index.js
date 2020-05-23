@@ -45,7 +45,8 @@ export default function index({
       selectedDate: day
     });
   };
-
+  console.log("selectedCalendars ", selectedCalendars);
+  console.log("selectedCalendars calendars", calendars);
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
       <NewEventModal
