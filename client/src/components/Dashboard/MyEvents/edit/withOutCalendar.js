@@ -193,6 +193,7 @@ export default function index({
         </span>
         <div id="content">
           <EventForm
+            editMode={true}
             eventDetails={eventDetails}
             handleGroupSelect={handleGroupSelect}
             handleGroupRemove={handleGroupRemove}

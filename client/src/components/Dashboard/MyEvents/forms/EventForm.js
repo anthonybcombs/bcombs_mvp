@@ -206,6 +206,11 @@ const OPTION_VISIBILITY = [
   { name: "Custom", value: "custom" }
 ];
 
+const OPTION_STATUS = [
+  { name: "Scheduled", value: "Scheduled" },
+  { name: "Cancelled", value: "Cancelled" }
+];
+
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
   <div>
@@ -224,6 +229,7 @@ export default function createEventForm({
   onSubmit,
   calendars = [],
   groups = [],
+  editMode = false,
   isEventSection = false,
   header = "Create a new Event"
 }) {
@@ -380,6 +386,24 @@ export default function createEventForm({
           displayValue="name"
           closeIcon="cancel"
         />
+      )}
+      {editMode && (
+        <select
+          name="status"
+          className="field-input"
+          placeholder="Select Status"
+          ref={register({ required: true })}
+          onChange={e => {
+            handleEventDetailsChange("status", e.target.value);
+          }}
+          value={eventDetails.status}>
+          <option value="">Select</option>
+          {OPTION_STATUS.map(opt => (
+            <option key={opt.value} value={opt.value}>
+              {opt.name}
+            </option>
+          ))}
+        </select>
       )}
       <select
         name="visibility"

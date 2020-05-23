@@ -202,6 +202,7 @@ export default function index({ auth, day, event, selectedCalendars }) {
             <div id="event-details">
               <h4>{event.eventCategory}</h4>
               <h3>{event.name}</h3>
+              <p>Status: {event.status}</p>
               <p>{`${schedule[0]} - ${schedule[1]}`}</p>
               <p>{event.location}</p>
               <div className="event-guest">
