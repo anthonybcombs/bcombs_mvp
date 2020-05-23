@@ -12,8 +12,9 @@ import {
   faPenSquare,
   faUser
 } from "@fortawesome/free-solid-svg-icons";
-import { format } from "date-fns";
+import { format, compareAsc } from "date-fns";
 import { deleteEvent } from "../../../../redux/actions/Events";
+import DuplicateEvent from "../../../Dashboard/MyEvents/duplicate";
 import EditEvent from "../../../Dashboard/MyEvents/edit/withOutCalendar";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 
@@ -116,19 +117,25 @@ const isGuest = (guests, currentEmail) => {
   let isUserGuest = guests.find(guest => guest.email === currentEmail);
   return isUserGuest ? true : false;
 };
-export default function index({ auth, event, selectedCalendars }) {
+export default function index({ auth, day, event, selectedCalendars }) {
   const [isVisible, setVisibility] = useState(false);
   const [isEditEventVisible, setEditEventVisible] = useState(false);
+  const [isDuplicateEventVisible, setDuplicateEventVisible] = useState(false);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   const toggleEditEventModal = () => {
     setEditEventVisible(!isEditEventVisible);
+  };
+
+  const toggleDuplicateEventModal = () => {
+    setDuplicateEventVisible(!isDuplicateEventVisible);
   };
   const isCurrentUserGuest = isGuest(event.guests, auth.email);
   const schedule = [
     format(new Date(event.start_of_event), "MMM dd,yyyy hh:mm a"),
     format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
   ];
+  const isEventOver = compareAsc(day, new Date());
 
   return (
     <Popover
@@ -152,9 +159,12 @@ export default function index({ auth, event, selectedCalendars }) {
               e.stopPropagation();
             }}>
             <div id="top-event-controls">
-              {/* <button>
-                <FontAwesomeIcon icon={faShareAltSquare} />
-              </button> */}
+              <button>
+                <FontAwesomeIcon
+                  icon={faShareAltSquare}
+                  onClick={toggleDuplicateEventModal}
+                />
+              </button>
               {!isCurrentUserGuest && (
                 <button>
                   <FontAwesomeIcon
@@ -233,7 +243,10 @@ export default function index({ auth, event, selectedCalendars }) {
       )}>
       <EventStyled
         theme={theme}
-        style={{ backgroundColor: event.color }}
+        style={{
+          backgroundColor: event.color,
+          opacity: isEventOver < 0 ? 0.5 : 1
+        }}
         onClick={() => {
           setVisibility(!isVisible);
         }}>
@@ -243,6 +256,13 @@ export default function index({ auth, event, selectedCalendars }) {
           toggleEditEventModal={toggleEditEventModal}
           defaultEventDetails={event}
           selectedCalendars={selectedCalendars}
+        />
+
+        <DuplicateEvent
+          auth={auth}
+          isVisible={isDuplicateEventVisible}
+          defaultEventDetails={event}
+          toggleDuplicateEventModal={toggleDuplicateEventModal}
         />
         <div className={`${isVisible ? "selected" : ""}`} id="event-name">
           {event.name}

@@ -10,7 +10,7 @@ import {
   endOfWeek,
   addDays,
   toDate,
-  eachDayOfInterval,
+  eachDayOfInterval
 } from "date-fns";
 import Event from "../../event";
 const CellsStyled = styled.div`
@@ -86,7 +86,7 @@ export default function index({
   selectedCalendars,
   events,
   handleChangeDay,
-  setIsEventModalVisible,
+  setIsEventModalVisible
 }) {
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
@@ -98,20 +98,19 @@ export default function index({
   let days = [];
   let day = startDate;
   let formattedDate = "";
-
+  console.log("selectedCalendars", selectedCalendars);
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
-
-    const eventsOnThisDay = events.filter((event) => {
+    const eventsOnThisDay = events.filter(event => {
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),
-        end: new Date(event.end_of_event),
+        end: new Date(event.end_of_event)
       });
       console.log("dateRange", dateRange);
       if (dateRange != undefined) {
         return (
-          dateRange.filter((intervalDate) => isSameDay(intervalDate, cloneDay))
+          dateRange.filter(intervalDate => isSameDay(intervalDate, cloneDay))
             .length > 0
         );
       }
@@ -132,16 +131,14 @@ export default function index({
         onClick={() => {
           handleChangeDay(toDate(cloneDay));
         }}
-        onDoubleClick={(e) => {
+        onDoubleClick={e => {
           handleChangeDay(toDate(cloneDay));
           setIsEventModalVisible(true);
-        }}
-      >
+        }}>
         <span
           className={`day ${
             hasEvents && !isSameDay(day, selectedDate) ? "has-events" : ""
-          }`}
-        >
+          }`}>
           {formattedDate}
         </span>
         <div id="events-list">
@@ -151,6 +148,7 @@ export default function index({
                 <Event
                   auth={auth}
                   event={event}
+                  day={day}
                   key={key}
                   selectedCalendars={selectedCalendars}
                 />
