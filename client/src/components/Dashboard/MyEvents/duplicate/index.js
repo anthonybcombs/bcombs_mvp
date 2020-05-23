@@ -117,20 +117,21 @@ export default function index({
         "yyyy-MM-dd HH:mm:ss"
       ),
 
-      type: defaultEventDetails.eventType,
+      type: defaultEventDetails.type,
       location: defaultEventDetails.location,
       name: defaultEventDetails.name,
       status: defaultEventDetails.status,
-      time: defaultEventDetails.time,
+      time: "8:00PM",
       description: defaultEventDetails.description,
       visibility: defaultEventDetails.visibility,
       auth_email: auth.email,
       calendar_ids: calendarIds,
-      guests: defaultEventDetails.guests,
+      guests: defaultEventDetails.guests.map(guest => guest.user_id),
       group_ids: defaultEventDetails.group_ids
     };
 
     console.log("handleSubmit payload", payload);
+    console.log("handleSubmit defaultEventDetails", defaultEventDetails);
     console.log("handleSubmit selectedCalendar", selectedCalendar);
     dispatch(addEvent(payload));
     toggleDuplicateEventModal();
