@@ -119,39 +119,40 @@ export default function index({
       let eventStartDayWeekOfMonth = getWeekOfMonth(
         new Date(event.start_of_event)
       );
+      console.log(
+        "FORMATTED DATE eventStartDayWeekOfMonth",
+        eventStartDayWeekOfMonth
+      );
 
-      //eventStartDayWeekOfMonth =
-      // eventStartDayWeekOfMonth === 5 ? 1 : eventStartDayWeekOfMonth;
+      console.log("FORMATTED DATE dayWeekOfMonth", dayWeekOfMonth);
 
       if (isDateAfter && event.recurring === "Daily") {
         return true;
       } else if (
         isDateAfter &&
-        new Date(day).getDay() === new Date(event.start_of_event).getDay() &&
+        (new Date(day).getDay() === new Date(event.start_of_event).getDay() ||
+          new Date(day).getDay() === new Date(event.end_of_event).getDay()) &&
         event.recurring === "Weekly"
       ) {
         return true;
+      } else if (
+        isDateAfter &&
+        new Date(day).getDay() === new Date(event.start_of_event).getDay() &&
+        dayWeekOfMonth === eventStartDayWeekOfMonth &&
+        getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event)) &&
+        event.recurring === "Monthly"
+      ) {
+        return true;
+      } else if (
+        isDateAfter &&
+        new Date(day).getDay() === new Date(event.start_of_event).getDay() &&
+        dayWeekOfMonth === eventStartDayWeekOfMonth &&
+        getMonth(new Date(day)) === getMonth(new Date(event.start_of_event)) &&
+        getYear(new Date(day)) !== getYear(new Date(event.start_of_event)) &&
+        event.recurring === "Annually"
+      ) {
+        return true;
       }
-
-      // else if (
-      //   isDateAfter &&
-      //   new Date(day).getDay() === new Date(event.start_of_event).getDay() &&
-      //   dayWeekOfMonth === eventStartDayWeekOfMonth &&
-      //   getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event)) &&
-      //   event.recurring === "Monthly"
-      // ) {
-      //   return true;
-      // } else if (
-      //   isDateAfter &&
-      //   new Date(day).getDay() === new Date(event.start_of_event).getDay() &&
-      //   dayWeekOfMonth === eventStartDayWeekOfMonth &&
-      //   getMonth(new Date(day)) === getMonth(new Date(event.start_of_event)) &&
-      //   getWeek(new Date(day)) === getWeek(new Date(event.start_of_event)) &&
-      //   getYear(new Date(day)) !== getYear(new Date(event.start_of_event)) &&
-      //   event.recurring === "Annually"
-      // ) {
-      //   return true;
-      // }
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),
         end: new Date(event.end_of_event)
