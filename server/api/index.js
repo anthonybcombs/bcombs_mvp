@@ -370,7 +370,6 @@ router.post("/user/photo", upload.single("file"), async (req, res) => {
   if (file) {
     const { email } = req.body;
     const currentUser = await getUserFromDatabase(email);
-
     if (currentUser) {
       const params = {
         Bucket: currentS3BucketName,

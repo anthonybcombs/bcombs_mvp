@@ -1,7 +1,9 @@
 import { makeDb } from "../../helpers/database";
 import {
   getTemplateInvitationStrings,
-  sendInvitation
+  sendInvitation,
+  sendCancelledEvent,
+  sendReScheduledEvent
 } from "../../helpers/email";
 import { getUserFromDatabase } from "../index";
 
@@ -115,14 +117,14 @@ export const createNewEvent = async data => {
 
     const formattedRecipients = await formatRecipient(updatedGuestIds, id, db);
 
-    // sendInvitation({
-    //   eventOwnerEmail: auth_email,
-    //   eventName: name,
-    //   eventId: id,
-    //   eventStartDate: start_of_event,
-    //   eventEndDate: end_of_event,
-    //   recipients: formattedRecipients
-    // });
+    sendInvitation({
+      eventOwnerEmail: auth_email,
+      eventName: name,
+      eventId: id,
+      eventStartDate: start_of_event,
+      eventEndDate: end_of_event,
+      recipients: formattedRecipients
+    });
 
     result = await getUserEvents(auth_email);
     // console.log("createNewEvent Result", result);
@@ -252,6 +254,10 @@ export const editEvents = async data => {
   const db = makeDb();
   let results = [];
   try {
+    const currentEvent = await db.query(
+      `SELECT name,status FROM events where id=UUID_TO_BIN(?)`,
+      [id]
+    );
     await db.query(
       "UPDATE `events` SET name=?,description=?,status=?,start_of_event=?,end_of_event=?,location=?,type=?,visibility=? WHERE id=UUID_TO_BIN(?)",
       [
@@ -300,6 +306,28 @@ export const editEvents = async data => {
         "INSERT IGNORE INTO `event_visibility`(`event_id`,`group_id`,`date_added`) VALUES " +
           groupVisibilityQuery
       );
+    }
+
+    console.log("currentEventStatus ", currentEvent[0].status);
+
+    console.log("currentEventStatus statuss", status);
+
+    if (currentEvent[0].status !== status) {
+      if (status === "Cancelled") {
+        let notifiedMembers = await getMembers(id, db);
+        sendCancelledEvent({
+          eventName: name,
+          recipients: notifiedMembers
+        });
+      } else if (status === "Re-Scheduled") {
+        let notifiedMembers = await getMembers(id, db);
+        sendReScheduledEvent({
+          eventName: name,
+          eventStartDate: start_of_event,
+          eventEndDate: end_of_event,
+          recipients: notifiedMembers
+        });
+      }
     }
 
     results = await getUserEvents(auth_email);
@@ -433,5 +461,37 @@ const formatRecipient = async (guests, eventId, db) => {
     console.log("Send Invite Emails err", err);
   } finally {
     return userWithCalendars;
+  }
+};
+
+const getMembers = async (id, db) => {
+  let results = [];
+  try {
+    results = await db.query(
+      `SELECT users.email 
+      FROM events,users,event_attendee
+      WHERE events.id = UUID_TO_BIN(?)
+      AND event_attendee.event_id = events.id
+      AND event_attendee.user_id = users.id
+      UNION
+      SELECT users.email 
+      FROM events,users, event_visibility, \`groups\` as gr, group_members
+      WHERE 
+      events.id = UUID_TO_BIN(?)
+      AND events.visibility = 'Custom'
+      AND event_visibility.event_id = events.id 
+      AND event_visibility.group_id = gr.id
+      AND gr.id = group_members.group_id 
+      AND group_members.user_id = users.id
+      OR events.id  NOT IN (event_visibility.event_id)
+      GROUP BY users.email;
+        `,
+      [id, id]
+    );
+    results = JSON.parse(JSON.stringify(results));
+  } catch (err) {
+    console.log("Errors GetMembers ", err);
+  } finally {
+    return results;
   }
 };
