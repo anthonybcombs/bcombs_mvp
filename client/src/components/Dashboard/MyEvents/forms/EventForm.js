@@ -208,6 +208,7 @@ const OPTION_VISIBILITY = [
 
 const OPTION_STATUS = [
   { name: "Scheduled", value: "Scheduled" },
+  { name: "Re-Scheduled", value: "Re-Scheduled" },
   { name: "Cancelled", value: "Cancelled" }
 ];
 
