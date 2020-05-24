@@ -114,7 +114,8 @@ export default function index({
     eventType: "Event",
     location: "",
     description: "",
-    status: "Scheduled"
+    status: "Scheduled",
+    recurring: ""
   });
   useEffect(() => {
     setEventDetails({
@@ -149,7 +150,6 @@ export default function index({
   };
 
   const handleSubmit = value => {
-  
     const payload = {
       start_of_event: format(
         getUTCDate(eventDetails.eventSchedule[0]),
@@ -169,6 +169,7 @@ export default function index({
       auth_email: auth.email,
       calendar_ids: selectedCalendars,
       visibility: eventDetails.visibility,
+      recurring: eventDetails.recurring,
       guests:
         eventDetails.eventGuests.length > 0
           ? eventDetails.eventGuests.map(item => item.id)

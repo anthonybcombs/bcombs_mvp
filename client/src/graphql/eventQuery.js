@@ -15,6 +15,7 @@ export const GET_EVENT_QUERY = gql`
       user_id
       color
       visibility
+      recurring
       group_ids
       guests {
         email

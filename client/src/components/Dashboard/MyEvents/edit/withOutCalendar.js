@@ -149,6 +149,7 @@ export default function index({
       auth_email: auth.email,
       calendar_ids: selectedCalendars,
       visibility: eventDetails.visibility,
+      recurring: eventDetails.recurring,
       guests:
         eventDetails.eventGuests && eventDetails.eventGuests.length > 0
           ? eventDetails.eventGuests.map(item => item.id)

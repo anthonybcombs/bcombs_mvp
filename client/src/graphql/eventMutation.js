@@ -14,6 +14,7 @@ export const EVENT_CREATE_MUTATION = gql`
       location
       color
       visibility
+      recurring
       group_ids
       guests {
         email
@@ -41,6 +42,7 @@ export const EVENT_UPDATE_MUTATION = gql`
       user_id
       color
       visibility
+      recurring
       group_ids
       guests {
         email

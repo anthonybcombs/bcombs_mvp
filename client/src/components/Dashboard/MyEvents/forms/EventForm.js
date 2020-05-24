@@ -212,6 +212,13 @@ const OPTION_STATUS = [
   { name: "Cancelled", value: "Cancelled" }
 ];
 
+const OPTION_RECURRING = [
+  { name: "Daily", value: "Daily" },
+  { name: "Weekly", value: "Weekly" }
+  // { name: "Monthly", value: "Monthly" },
+  // { name: "Annually", value: "Annually" }
+];
+
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
   <div>
@@ -220,6 +227,14 @@ const renderSuggestion = suggestion => (
   </div>
 );
 
+/*
+Does not repeat
+Daily
+weekly on thurs
+monthly on the second thurs
+annually on may 14
+every weekday
+*/
 export default function createEventForm({
   eventDetails,
   handleCalendarSelect,
@@ -406,6 +421,21 @@ export default function createEventForm({
           ))}
         </select>
       )}
+      <select
+        name="recurring"
+        className="field-input"
+        placeholder="Recurring"
+        onChange={e => {
+          handleEventDetailsChange("recurring", e.target.value);
+        }}
+        value={eventDetails.recurring}>
+        <option value="">No Repeat</option>
+        {OPTION_RECURRING.map(opt => (
+          <option key={opt.value} value={opt.value}>
+            {opt.name}
+          </option>
+        ))}
+      </select>
       <select
         name="visibility"
         className="field-input"
