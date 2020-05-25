@@ -20,6 +20,9 @@ import {
   isThisWeek
 } from "date-fns";
 import Event from "../../event";
+
+import { getWeekIndex } from "../../../../../helpers/datetime";
+
 const CellsStyled = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -87,22 +90,6 @@ const CellsStyled = styled.div`
   }
 `;
 
-const getWeekIndex = day => {
-  let count = null;
-  if (day <= 7) {
-    count = 1;
-  } else if (day > 7 && day <= 14) {
-    count = 2;
-  } else if (day > 14 && day <= 21) {
-    count = 3;
-  } else if (day > 21 && day <= 28) {
-    count = 4;
-  } else if (day > 28) {
-    count = 5;
-  }
-  return count;
-};
-
 export default function index({
   auth,
   currentMonth,
@@ -125,25 +112,16 @@ export default function index({
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
-
+    let currentDay = new Date(day).getDay();
     let eventsOnThisDay = events.filter(event => {
       let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
 
-      let dayWeekOfMonth = getWeekOfMonth(new Date(day), { weekStartsOn: 1 });
-      dayWeekOfMonth = dayWeekOfMonth === 5 && index === 0 ? 1 : dayWeekOfMonth;
-      //dayWeekOfMonth = dayWeekOfMonth === 5 ? 1 : dayWeekOfMonth;
-      let eventStartDayWeekOfMonth = getWeekOfMonth(
-        new Date(event.start_of_event),
-        { weekStartsOn: 1 }
-      );
-
+      let startEventDay = new Date(event.start_of_event).getDay();
+      let endEventDay = new Date(event.end_of_event).getDay();
       if (isDateAfter && event.recurring === "Daily") {
         return true;
       } else if (isDateAfter && event.recurring === "Weekly") {
-        if (
-          new Date(day).getDay() === new Date(event.start_of_event).getDay() ||
-          new Date(day).getDay() === new Date(event.end_of_event).getDay()
-        ) {
+        if (currentDay === startEventDay || currentDay === endEventDay) {
           return true;
         }
       } else if (isDateAfter && event.recurring === "Monthly") {
@@ -154,7 +132,7 @@ export default function index({
 
         if (
           currentWeekIndex === eventWeekIndex &&
-          new Date(event.start_of_event).getDay() === new Date(day).getDay() &&
+          (currentDay === startEventDay || currentDay === endEventDay) &&
           getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event))
         ) {
           return true;
@@ -165,7 +143,7 @@ export default function index({
           new Date(event.start_of_event).getDate()
         );
         if (
-          new Date(day).getDay() === new Date(event.start_of_event).getDay() &&
+          (currentDay === startEventDay || currentDay === endEventDay) &&
           currentWeekIndex === eventWeekIndex &&
           getMonth(new Date(day)) ===
             getMonth(new Date(event.start_of_event)) &&

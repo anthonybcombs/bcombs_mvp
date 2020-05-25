@@ -8,10 +8,14 @@ import {
   parseISO,
   getHours,
   addDays,
-  subHours,
-  isWithinInterval
+  isWithinInterval,
+  isAfter,
+  getMonth,
+  getYear
 } from "date-fns";
 import Event from "../../event";
+
+import { getWeekIndex } from "../../../../../helpers/datetime";
 
 const CellsStyled = styled.div`
   display: grid;
@@ -128,14 +132,76 @@ export default function index({
       const currentDateTime = parseISO(
         `${format(day, "yyyy-MM-dd")}T${hour < 10 ? `0${hour}` : hour}:00:00`
       );
+      let currentDay = new Date(day).getDay();
+      let eventsOnThisDay = events.filter(event => {
+        let isDateAfter = isAfter(
+          new Date(day),
+          new Date(event.start_of_event)
+        );
 
-      const eventsOnThisDay = events.filter(event => {
+        let startEventDay = new Date(event.start_of_event).getDay();
+        let endEventDay = new Date(event.end_of_event).getDay();
+        if (isDateAfter && event.recurring === "Daily") {
+          return true;
+        } else if (isDateAfter && event.recurring === "Weekly") {
+          if (currentDay === startEventDay || currentDay === endEventDay) {
+            return true;
+          }
+        } else if (isDateAfter && event.recurring === "Monthly") {
+          let currentWeekIndex = getWeekIndex(new Date(day).getDate());
+          let eventWeekIndex = getWeekIndex(
+            new Date(event.start_of_event).getDate()
+          );
+
+          if (
+            currentWeekIndex === eventWeekIndex &&
+            (currentDay === startEventDay || currentDay === endEventDay) &&
+            getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event))
+          ) {
+            return true;
+          }
+        } else if (isDateAfter && event.recurring === "Annually") {
+          let currentWeekIndex = getWeekIndex(new Date(day).getDate());
+          let eventWeekIndex = getWeekIndex(
+            new Date(event.start_of_event).getDate()
+          );
+          if (
+            (currentDay === startEventDay || currentDay === endEventDay) &&
+            currentWeekIndex === eventWeekIndex &&
+            getMonth(new Date(day)) ===
+              getMonth(new Date(event.start_of_event)) &&
+            getYear(new Date(day)) !== getYear(new Date(event.start_of_event))
+          ) {
+            return true;
+          }
+        }
+
         return isWithinInterval(currentDateTime, {
           // start: subHours(new Date(event.start_of_event), 1),
           start: new Date(event.start_of_event),
           end: new Date(event.end_of_event)
         });
       });
+
+      if (selectedCalendars.length > 1) {
+        eventsOnThisDay = eventsOnThisDay.reduce((accumulator, item, index) => {
+          if (index === 0) return [...accumulator, item];
+
+          if (accumulator[index - 1] && item.id === accumulator[index - 1].id) {
+            accumulator[index - 1] = {
+              ...accumulator[index - 1],
+              multi_color: [
+                ...(accumulator[index - 1].multi_color || []),
+                accumulator[index - 1].color,
+                item.color
+              ]
+            };
+            return [...accumulator];
+          }
+
+          return [...accumulator, item];
+        }, []);
+      }
       const eventsCount = eventsOnThisDay.length;
       const hasEvents = eventsCount > 0;
       columns.push(
@@ -156,6 +222,7 @@ export default function index({
                     <Event
                       auth={auth}
                       event={event}
+                      day={day}
                       key={key}
                       selectedCalendars={selectedCalendars}
                     />
