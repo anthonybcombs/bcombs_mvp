@@ -205,7 +205,6 @@ export default function CreateCalendarForm({
             }
           })}
           isMulti
-          ref={register({ required: true })}
           onChange={(option) => {
             if (option !== null) {
               const groupIds = option.map((group) => group.value);
