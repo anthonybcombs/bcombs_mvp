@@ -9,10 +9,12 @@ import {
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { Link, Location, useNavigate } from "@reach/router";
+import { Link, Location, useNavigate, useLocation, useParams } from "@reach/router";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 import Logo from "../images/logo1.png";
 import { requestLogout } from "../redux/actions/Auth";
+import { requestUserTypes } from '../redux/actions/UserTypes';
+
 const HeaderStyled = styled.header`
   display: grid;
   text-align: center;
@@ -33,6 +35,7 @@ const HeaderStyled = styled.header`
   #app-header-right,
   #app-header-left {
     display: grid;
+    position: relative;
   }
   #app-header-left img {
     position: relative;
@@ -49,6 +52,22 @@ const HeaderStyled = styled.header`
     display: flex;
     justify-content: space-around;
     margin-top: 1em;
+  }
+
+  .vendor-welcome-message {
+    width: 100%;
+    position: absolute;
+    display: flex;
+    margin: 0;
+    align-items: center;
+    height: 100%;
+    left: 250px;
+    font-weight: 100;
+  }
+
+  .vendor-welcome-message .name {
+    color: #f47b2c;
+    font-weight: 400;
   }
 
   @media (min-width: 600px) {
@@ -107,18 +126,37 @@ const PopoverStyled = styled.div`
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
-  const { auth, status } = useSelector(({ auth, status }) => {
-    return { auth, status };
+  const [currentUserType, setCurrentUserType] = useState('');
+
+  const { auth, status, userTypes, vendor } = useSelector(({ auth, status,  userTypes, vendor }) => {
+    return { auth, status, userTypes, vendor };
   });
+  
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+ 
   useEffect(() => {
     if (auth) {
       setCurrentUserProfilePhoto(auth.profile_img || auth.picture);
+
+      console.log(Object.keys(userTypes).length);
+
+      if(Object.keys(userTypes).length > 0) {
+
+        console.log(userTypes);
+        const ut = userTypes.filter((type) => {
+          return type.id === auth.type;
+        })[0];
+
+        setCurrentUserType((ut && ut.name) ? ut.name : "");
+      }
     }
-  }, [auth]);
+
+  }, [auth, vendor]);
+
+  const location = useLocation();
 
   return (
     <LayoutStyled data-testid="app-layout" theme={theme}>
@@ -127,6 +165,12 @@ export default function Layout({ children }) {
           <Link to="/">
             <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
           </Link>
+          {
+            location.href.includes(location.origin + "/application/") && vendor && vendor.name &&
+            <p className="vendor-welcome-message">
+              Welcome to &nbsp;<span className="name">{vendor.name}</span>
+            </p>
+          }
           <Location
             children={(context) => {
               if (
@@ -219,16 +263,19 @@ export default function Layout({ children }) {
                     >
                       <span>Contacts</span>
                     </Link>
-                    <Link
-                      className={`${
-                        context.location.pathname === "/dashboard/application"
-                          ? "selected"
-                          : ""
-                      }`}
-                      to="/dashboard/application"
-                    >
-                      <span>Application</span>
-                    </Link>
+                    {
+                      currentUserType === "VENDOR" &&
+                      <Link
+                        className={`${
+                          context.location.pathname === "/dashboard/application"
+                            ? "selected"
+                            : ""
+                        }`}
+                        to="/dashboard/application"
+                      >
+                        <span>Application</span>
+                      </Link>
+                    }
                     <div id="dashboard-setting">
                       <Link
                         className={`${

@@ -72,6 +72,7 @@ export const GET_USER_OPTIONS_QUERY = gql`
   }
 `;
 
+
 export const FAMILY_MEMBER_QUERY = gql`
   query getFamilyMembers($access_token: String!, $token_type: String!) {
     familymembers(access_token: $access_token, token_type: $token_type) {
@@ -84,6 +85,16 @@ export const FAMILY_MEMBER_QUERY = gql`
       type
       dateofbirth
       added_at
+    }
+  }
+`;
+
+//ADDED BY JEROME
+export const GRADES_QUERY = gql`
+  query GradesQuery {
+    grades {
+      id
+      name
     }
   }
 `;

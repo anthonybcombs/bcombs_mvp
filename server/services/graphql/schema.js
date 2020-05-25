@@ -116,6 +116,118 @@ const inputs = `
 
     }
 
+    input VendorInput {
+        id: String
+        user: String!
+        name: String
+        section1_text: String
+        section2_text: String
+        section3_text: String
+        section1_name: String
+        section2_name: String
+        section3_name: String
+        section1_show: Int
+        section2_show: Int
+        section3_show: Int
+    }
+
+    input ScoreInfoInput {
+        child: String
+        type: String
+        result: Float
+        year: String
+        month: String
+    }
+
+    input ChildIInfoInput {
+        firstname: String!
+        lastname: String!
+        age: Int!
+        birthdate: String!
+        gender: String!
+        phone_type: String
+        phone_number: String
+        email_type: String
+        email_address: String
+        address: String!
+        city: String!
+        state: String!
+        zip_code: String!
+        location_site: String!
+        school_name: String!
+        school_phone: String
+        has_suspended: Int
+        reason_suspended: String
+        year_taken: String
+        hobbies: String
+        life_events: String
+        career_goals: String
+        colleges: String
+        affiliations: String
+        awards: String
+        accomplishments: String
+        mentee_gain_program: String
+        grade_number: String!
+        grade_desc: String!
+        class_rank: String
+        gpa_quarter_year: String
+        gpa_quarter_q1: String
+        gpa_quarter_q2: String
+        gpa_quarter_q3: String
+        gpa_quarter_q4: String
+        gpa_cumulative_year: String
+        gpa_cumulative_q1: String
+        gpa_cumulative_q2: String
+        gpa_cumulative_q3: String
+        gpa_cumulative_q4: String
+        programs: String
+        ethnicities: String
+        doctor_name: String
+        doctor_phone: String
+        hospital_preference: String
+        hospital_phone: String
+    }
+
+    input ParentInfoInput {
+        firstname: String!
+        lastname: String!
+        phone_type: String
+        phone_number: String!
+        email_type: String
+        email_address: String!
+        password: String
+        occupation: String
+        employers_name: String
+        parent_goals: String!
+        parent_child_goals: String!
+        live_area: Int
+        level_of_education: String
+        child_hs_grad: String
+        child_col_grad: String
+        address: String
+        city: String
+        state: String
+        zip_code: String
+    }
+
+    input ApplicationInput {
+        vendor: String!
+        child: ChildIInfoInput!
+        parents: [ParentInfoInput]
+        section1_signature: String!
+        section1_date_signed: Date!
+        section2_signature: String!
+        section2_date_signed: Date!
+        section3_signature: String!
+        section3_date_signed: Date!
+        verification: String
+        student_status: Int
+        color_designation: String
+        notes: String
+        emergency_contacts: String
+    }
+
+  
 `;
 const queryTypes = `
     scalar Date
@@ -220,6 +332,7 @@ const queryTypes = `
         joined_groups:[Group]
         created_groups:[Group]
     }    
+
     type FammilyMemberType{
         id: String!
         user_id: String!
@@ -247,6 +360,120 @@ const queryTypes = `
         status: String
         user_id: String
     }
+
+    type Grade {
+        id: String
+        name: String
+    }
+
+    type Vendor {
+        id: String!
+        user: String!
+        name: String!
+        section1_text: String
+        section2_text: String
+        section3_text: String
+        section1_name: String
+        section2_name: String
+        section3_name: String
+        section1_show: Int
+        section2_show: Int
+        section3_show: Int
+    }
+
+    type Score {
+        id: String!
+        type: String
+        result: Float
+        year: String
+        month: String
+    }
+
+    type Child {
+        ch_id: String!
+        firstname: String!
+        lastname: String!
+        age: Int!
+        birthdate: Date!
+        gender: String!
+        phone_type: String
+        phone_number: String
+        email_type: String
+        email_address: String
+        address: String!
+        city: String!
+        state: String!
+        zip_code: String!
+        location_site: String!
+        programs: String
+        school_name: String!
+        school_phone: String
+        has_suspended: Int
+        year_taken: String
+        hobbies: String
+        life_events: String
+        career_goals: String
+        colleges: String
+        affiliations: String
+        awards: String
+        accomplishments: String
+        mentee_gain_program: String
+        grade_number: String!
+        grade_desc: String!
+        class_rank: String
+        gpa_quarter_year: String
+        gpa_quarter_q1: String
+        gpa_quarter_q2: String
+        gpa_quarter_q3: String
+        gpa_quarter_q4: String
+        gpa_cumulative_year: String
+        gpa_cumulative_q1: String
+        gpa_cumulative_q2: String
+        gpa_cumulative_q3: String
+        gpa_cumulative_q4: String
+        doctor_name: String
+        doctor_phone: String
+        hospital_preference: String
+        hospital_phone: String
+    }
+
+    type Parent {
+        parent_id: String!
+        firstname: String!
+        lastname: String!
+        phone_type: String
+        phone_number: String!
+        email_type: String
+        email_address: String!
+        password: String
+        occupation: String
+        employers_name: String
+        parent_goals: String!
+        parent_child_goals: String!
+        live_area: Int
+        level_of_education: String
+        child_hs_grad: String
+        child_col_grad: String
+        emergency_contacts: String
+    }
+
+    type Application {
+        app_id: String
+        vendor: String
+        child: Child
+        parents: [Parent]
+        section1_signature: String
+        section1_date_signed: Date
+        section2_signature: String
+        section2_date_signed: Date
+        section3_signature: String
+        section3_date_signed: Date
+        verification: String
+        student_status: String
+        color_designation: String
+        notes: String
+        application_date: Date
+    }
 `;
 
 const mutations = `
@@ -267,6 +494,10 @@ const mutations = `
         createEvent(event:EventInput!): [Event]
         updateEvent(event:EventInput!): [Event]
         deleteEvent(id: String!, email:String!): [Event]
+        addApplication(applications: [ApplicationInput]): Status
+        updateApplicationStatus(application_id: String!, status: String!): Status
+        archivedApplication(application_id: String!): Status
+        updateVendor(vendor: VendorInput!): Vendor
     }
 `;
 
@@ -281,9 +512,16 @@ const queries = `
         calendars(access_token: String!,token_type: String!):CalendarsType
         getGroupMembers(id:String!):[Contact],        
         getEvents(email:String!):[Event],
-        getUserList(keyword:String!): [User]    
+        getUserList(keyword:String!): [User]  
         familymembers(access_token: String!,token_type: String!):[FammilyMemberType]  
         getEventInvitedUser(email: String):[EventInvitation]  
+        grades: [Grade]
+        vendors: [Vendor]
+        vendor(user: String): Vendor
+        getApplications: [Application]
+        getVendorApplications(vendor_id: String!): [Application]
+        getVendorArchivedApplications(vendor_id: String!): [Application]
+        getApplication(application_id: String!): Application
     }
 `;
 

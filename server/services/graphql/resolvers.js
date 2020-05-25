@@ -21,6 +21,7 @@ import {
   createNewGroup,
   getMembers,
 } from "../../api/groups";
+
 import {
   executeCreateCalendar,
   executeEditCalendar,
@@ -34,6 +35,11 @@ import {
   removeEvents,
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
+import { getGrades } from "../../api/grades";
+import { getVendors, updateVendor } from "../../api/vendor";
+import { createApplication, getApplicationsByVendor } from "../../api/applications";
+import { addChild, getChildInformation } from "../../api/child";
+import { addParent, getParentByApplication } from "../../api/parents";
 
 const resolvers = {
   RootQuery: {
@@ -86,6 +92,38 @@ const resolvers = {
       console.log("Get User List", keyword);
       return await executeGetUser(keyword);
     },
+    // ADDED BY JEROME
+    async grades(root, args, context) {
+      const grades = await getGrades();
+      return grades;
+    },
+    async vendors(root, args, context) {
+      const vendors = await getVendors();
+      return vendors;
+    },
+    async vendor(root, { user }, context) {
+      const vendors = await getVendors();
+      return vendors.filter((vendor) => {
+        return user == vendor.user
+      })[0];
+    },
+    async getVendorApplications(root, {vendor_id} , context) {
+      let applications = await getApplicationsByVendor(vendor_id);
+
+      let resapplications = [];
+
+      for(let application of applications) {
+        let child = await getChildInformation(application.child);
+        console.log("application child ", application.child);
+        console.log("child ", child);
+        application.parents = await getParentByApplication(application.app_id);
+        application.child = child.length > 0 ? child[0] : {};
+        
+        resapplications.push(application);
+      }
+
+      return resapplications;
+    }
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -143,6 +181,32 @@ const resolvers = {
       console.log("Delete Event ID", email);
       return await removeEvents(id, email);
     },
+    //ADDED BY JEROME
+    async updateVendor(root, { vendor }, context) {
+      return await updateVendor(vendor)
+    },
+    async addApplication (root, { applications }, context) {
+
+      for(let application of applications) {
+        const child = await addChild(application.child);
+        const parents = application.parents;
+
+        application.child = child.ch_id;
+
+        application = await createApplication(application);
+
+        for(let parent of parents) {
+          parent.application = application.app_id;
+          parent = await addParent(parent);
+        }
+      }
+
+      return {
+        messageType: "info",
+        message: "application created",
+      };
+      
+    }
   },
 };
 

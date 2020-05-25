@@ -5,16 +5,19 @@ import { useSelector, useDispatch } from "react-redux";
 import { requestUserInfo } from "../redux/actions/Auth";
 import { requestCalendars } from "../redux/actions/Calendars";
 import { requestFamilyMembers } from "../redux/actions/FamilyMembers";
+import { requestVendor } from "../redux/actions/Vendors";
+
 import { requestUserGroupForProtectedRoute } from "../redux/actions/Groups";
 import Loading from "../helpers/Loading";
 export default function protectedRoutes({ children }) {
-  const { auth, status, calendars, loading } = useSelector(
-    ({ auth, status, calendars, loading }) => {
+  const { auth, status, calendars, loading, userTypes } = useSelector(
+    ({ auth, status, calendars, loading, userTypes }) => {
       return {
         auth,
         status,
         calendars,
         loading,
+        userTypes
       };
     }
   );
@@ -23,6 +26,7 @@ export default function protectedRoutes({ children }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  
   useEffect(() => {
     if (!auth.hasOwnProperty("user_id")) {
       dispatch(requestUserInfo());
@@ -31,12 +35,14 @@ export default function protectedRoutes({ children }) {
     }
     window.scrollTo(0, 0);
   }, [location]);
+
   useEffect(() => {
     if (auth.email) {
       dispatch(requestUserGroupForProtectedRoute(auth.email));
     }
     window.scrollTo(0, 0);
   }, [auth.email]);
+
   if (
     sessionStorage.getItem("access_token") === null ||
     (status.messageType == "error" && auth.status === "SIGNED_IN")
@@ -58,6 +64,20 @@ export default function protectedRoutes({ children }) {
       auth.is_profile_filled
     ) {
       return <Redirect to="/dashboard" />;
+    } else if (
+      location.pathname.includes("/dashboard/application") ||
+      location.pathname.includes("/dashboard/archived")
+    ) {
+      if(userTypes.length > 0) {
+
+        const currentUserType = userTypes.filter((type) => {
+          return type.id === auth.type;
+        })[0];
+
+        if(currentUserType.name != "VENDOR") {
+          return <Redirect to="/dashboard" />;
+        }
+      }
     }
     return <>{children}</>;
   }
