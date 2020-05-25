@@ -85,13 +85,13 @@ export default function index() {
 
   const dispatch = useDispatch();
 
-  const { grades, auth, vendor, applications } = useSelector(
-    ({grades, auth, vendor, applications }) => {
-      return { grades, auth, vendor, applications };
+  const { grades, auth, vendor, applications, loading } = useSelector(
+    ({grades, auth, vendor, applications, loading }) => {
+      return { grades, auth, vendor, applications, loading };
     }
   );
 
-  console.log("Application", applications);
+  console.log("LOADING", loading);
 
   useEffect(() => {
     if(auth.user_id) {
@@ -162,7 +162,8 @@ export default function index() {
             selectedLabel === "Form Settings" && 
             !selectNonMenuOption &&
             <ApplicationSettingsStyled 
-              vendor={vendor}  
+              vendor={vendor} 
+              formSettingsLoading={loading.form_settings}
             />
           }
           {
@@ -180,6 +181,7 @@ export default function index() {
         <ApplicationListStyled
           applications={applications.activeapplications}
           handleSelectedApplication={handleSelectedApplication}
+          listApplicationLoading={loading.application}
         />
       }
       {

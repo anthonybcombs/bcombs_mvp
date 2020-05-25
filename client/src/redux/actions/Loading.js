@@ -41,3 +41,10 @@ export const setApplicationLoading = value => {
     value
   };
 }
+
+export const setFormSettingsLoading = value => {
+  return {
+    type: actionType.SET_FORM_SETTINGS_LOADING,
+    value
+  };
+}

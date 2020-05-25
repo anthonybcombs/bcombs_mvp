@@ -5,7 +5,9 @@ export default function Loading(
     groups: true,
     groupMembers: true,
     events: true,
-    profile: true
+    profile: true,
+    application: false,
+    form_settings: false
   },
   action
 ) {
@@ -39,6 +41,11 @@ export default function Loading(
       return  {
         ...state,
         application: action.value
+      }
+    case actionType.SET_FORM_SETTINGS_LOADING:
+      return {
+        ...state,
+        form_settings: action.value
       }
     default:
       return state;

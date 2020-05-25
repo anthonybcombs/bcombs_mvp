@@ -369,7 +369,7 @@ const queryTypes = `
     type Vendor {
         id: String!
         user: String!
-        name: String!
+        name: String
         section1_text: String
         section2_text: String
         section3_text: String

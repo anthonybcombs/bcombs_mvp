@@ -111,7 +111,7 @@ export const createApplication = async ({
   let application;
 
   try {
-    let result = await db.query(
+    result = await db.query(
       `INSERT INTO application(
         app_id,
         vendor,

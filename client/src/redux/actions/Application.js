@@ -77,8 +77,9 @@ export const requestAddApplication = applications => {
 
 export function* getApplication({vendor_id}) {
   try {
+    yield put(setApplicationLoading(true));
     const applications = yield call(getActiveApplicationFromDatabse, vendor_id)
-
+    yield put(setApplicationLoading(false));
     if(applications.length > 0) {
       yield put({
         type: actionType.REQUEST_GET_APPLICATION_COMPLETED,
@@ -92,6 +93,7 @@ export function* getApplication({vendor_id}) {
     }
   } catch (err) {
     console.log("Error", err);
+    yield put(setApplicationLoading(false));
     yield put({
       type: actionType.REQUEST_GET_APPLICATION_COMPLETED,
       payload: []

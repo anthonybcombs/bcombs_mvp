@@ -8,6 +8,7 @@ import {
 import DataTable from 'react-data-table-component';
 import { uuid } from "uuidv4";
 import { format } from "date-fns";
+import Loading from "../../../../helpers/Loading.js";
 
 import "../../ApplicationForm/ApplicationForm.css";
 
@@ -264,7 +265,8 @@ const FilterComponent = ({ filterText, onFilter, onClassChange, onClear, classTe
 
 export default function index({
   applications,
-  handleSelectedApplication
+  handleSelectedApplication,
+  listApplicationLoading = false
 }) {
 
   const getApplicationStatusVal = (student_status, verification, row) => {
@@ -537,20 +539,26 @@ export default function index({
             </div>
           </div>
           <div id="dataTableContainer">
-            <DataTable 
-              columns={columns}
-              data={data}
-              pagination
-              selectableRows
-              noHeader={noHeader}
-              striped={striped}
-              customStyles={customStyles}
-              conditionalRowStyles={conditionalRowStyles}
-              subHeader
-              subHeaderComponent={subHeaderComponentMemo}
-              paginationRowsPerPageOptions={paginationRowsPerPageOptions}
-              paginationComponentOptions={paginationComponentOptions}
-            />
+            {
+              listApplicationLoading ? (
+                <Loading />
+              ) : (
+                <DataTable 
+                  columns={columns}
+                  data={data}
+                  pagination
+                  selectableRows
+                  noHeader={noHeader}
+                  striped={striped}
+                  customStyles={customStyles}
+                  conditionalRowStyles={conditionalRowStyles}
+                  subHeader
+                  subHeaderComponent={subHeaderComponentMemo}
+                  paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+                  paginationComponentOptions={paginationComponentOptions}
+                />
+              )
+            }
           </div>
         </div>
       </div>
