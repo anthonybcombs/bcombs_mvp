@@ -73,8 +73,11 @@ export default function form({ calendars, onSubmit }) {
           },
         })}
         onChange={(option) => {
-          const calendarIds = option.map((calendar) => calendar.value);
-          setValue("calendars", calendarIds);
+          if (option !== null) {
+            const calendarIds = option.map((calendar) => calendar.value);
+            setValue("calendars", calendarIds);
+          }
+          setValue("calendars", "");
         }}
       />
       <input
