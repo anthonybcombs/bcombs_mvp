@@ -57,12 +57,13 @@ export const getUserInfo = async (creds) => {
       const users = await getUsers();
       const user = users.filter((user) => user.email === userInfo.email)[0];
       if (user) {
-        const { is_profile_filled, profile_img, id } = user;
+        const { is_profile_filled, profile_img, id, type } = user;
         userInfo.is_profile_filled = is_profile_filled === 0 ? false : true;
         userInfo.profile_img = profile_img
           ? `${s3BucketRootPath}${profile_img}`
           : null;
         userInfo.user_id = id;
+        userInfo.type = type;
         client.set(creds.access_token, JSON.stringify(userInfo));
         client.EXPIRE([creds.access_token, "5"]);
       }

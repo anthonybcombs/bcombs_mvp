@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import NumberFormat from 'react-number-format';
 
 const MedicalCareInfoStyled = styled.div`
   position: relative;
@@ -17,7 +18,12 @@ const MedicalCareInfoStyled = styled.div`
 
 `;
 
-export default function index() {
+export default function index({
+  childEmergencyCare,
+  handleChildFormDetailsChange,
+  counter,
+  isReadonly = false
+}) {
 
   const data = {};
 
@@ -30,10 +36,14 @@ export default function index() {
           <div className="form-group">
             <div className="field">
               <input
-                name="doctorname"
+                name="ch_doctorname"
                 className="field-input"
-                value={data.doctorName}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange((counter - 1), "emergency_care_information", "doctor_name", target.value)
+                }}
                 placeholder="Doctor Name"
+                defaultValue={childEmergencyCare.doctor_name}
+                readOnly={isReadonly}
               />
               <label className="field-label">Doctor Name</label>
             </div>
@@ -41,12 +51,30 @@ export default function index() {
 
           <div className="form-group">
             <div className="field">
-              <input
-                name="doctophone"
-                className="field-input"
-                value={data.doctorPhone}
-                placeholder="Phone"
-              />
+              {
+                !isReadonly ?
+                <NumberFormat 
+                  name="doctophone"
+                  className="field-input"
+                  placeholder="Phone"
+                  onChange={({ target }) => {
+                    handleChildFormDetailsChange((counter - 1), "emergency_care_information", "doctor_phone", target.value)
+                  }}
+                  defaultValue={childEmergencyCare.doctor_phone}
+                  placeholder="Phone"
+                  format="(###) ###-####" mask="_"
+                />
+                :
+                <input
+                  name="doctophone"
+                  className="field-input"
+                  placeholder="Phone"
+                  defaultValue={childEmergencyCare.doctor_phone}
+                  placeholder="Phone"
+                  readOnly={isReadonly}
+                />
+              }
+
               <label className="field-label">Phone</label>
             </div>
           </div>
@@ -58,21 +86,43 @@ export default function index() {
               <input
                 name="hospitalname"
                 className="field-input"
-                value={data.hospitalName}
-                placeholder="Doctor Name"
+                placeholder="Hospital Preference"
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange((counter - 1), "emergency_care_information", "hospital_preference", target.value)
+                }}
+                defaultValue={childEmergencyCare.hospital_preference}
+                placeholder="Hospital Preference"
+                readOnly={isReadonly}
               />
-              <label className="field-label">Hospital Name</label>
+              <label className="field-label">Hospital Preference</label>
             </div>
           </div>
 
           <div className="form-group">
             <div className="field">
-              <input
-                name="hospitalPhone"
-                className="field-input"
-                value={data.hospitalPhone}
-                placeholder="Phone"
-              />
+              {
+                !isReadonly ?
+                <NumberFormat 
+                  name="hospitalPhone"
+                  className="field-input"
+                  placeholder="Phone"
+                  onChange={({ target }) => {
+                    handleChildFormDetailsChange((counter - 1), "emergency_care_information", "hospital_phone", target.value)
+                  }}
+                  defaultValue={childEmergencyCare.phone}
+                  placeholder="Phone"
+                  format="(###) ###-####" mask="_"
+                />
+                :
+                <input
+                  name="hospitalPhone"
+                  className="field-input"
+                  placeholder="Phone"
+                  defaultValue={childEmergencyCare.hospital_phone}
+                  placeholder="Phone"
+                  readOnly={isReadonly}
+                />
+              }
               <label className="field-label">Phone</label>
             </div>
           </div>

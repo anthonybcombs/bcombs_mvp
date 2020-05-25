@@ -135,7 +135,8 @@ const GlobalStyle = createGlobalStyle`
   #applicationForm .field {
     display: flex;
     flex-flow: column-reverse;
-    margin-bottom: 1em
+    margin-bottom: 1em;
+    position: relative;
   }
 
   #applicationForm .field-label,
@@ -152,6 +153,10 @@ const GlobalStyle = createGlobalStyle`
     margin-bottom: 20px;
   }
 
+  #applicationForm .required {
+    color: red;
+  }
+
   #applicationForm .field-input {
     font-size: 18px;
     border: 0;
@@ -163,7 +168,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 5px;
     cursor: text;
     line-height: 1.8;
-
+    color: #555 !important;
     padding: 5px 0;
     width: 100%;
     display: block;
@@ -173,6 +178,16 @@ const GlobalStyle = createGlobalStyle`
   #applicationForm .field-label {
     font-size: 14px;
     color: #4b525a
+  }
+
+  #applicationForm .field-label .add {
+    color: #f26e21;
+    cursor: pointer;
+  }
+
+  #applicationForm .field-label .remove {
+    color: red;
+    cursor: pointer;
   }
 
   #applicationForm .field-input:placeholder-shown + .field-label {
