@@ -86,6 +86,23 @@ const CellsStyled = styled.div`
     overflow: auto;
   }
 `;
+
+const getWeekIndex = day => {
+  let count = null;
+  if (day <= 7) {
+    count = 1;
+  } else if (day > 7 && day <= 14) {
+    count = 2;
+  } else if (day > 14 && day <= 21) {
+    count = 3;
+  } else if (day > 21 && day <= 28) {
+    count = 4;
+  } else if (day > 28) {
+    count = 5;
+  }
+  return count;
+};
+
 export default function index({
   auth,
   currentMonth,
@@ -105,7 +122,6 @@ export default function index({
   let days = [];
   let day = startDate;
   let formattedDate = "";
-
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
@@ -113,46 +129,52 @@ export default function index({
     let eventsOnThisDay = events.filter(event => {
       let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
 
-      let dayWeekOfMonth = getWeekOfMonth(new Date(day));
+      let dayWeekOfMonth = getWeekOfMonth(new Date(day), { weekStartsOn: 1 });
       dayWeekOfMonth = dayWeekOfMonth === 5 && index === 0 ? 1 : dayWeekOfMonth;
       //dayWeekOfMonth = dayWeekOfMonth === 5 ? 1 : dayWeekOfMonth;
       let eventStartDayWeekOfMonth = getWeekOfMonth(
-        new Date(event.start_of_event)
+        new Date(event.start_of_event),
+        { weekStartsOn: 1 }
       );
-      console.log(
-        "FORMATTED DATE eventStartDayWeekOfMonth",
-        eventStartDayWeekOfMonth
-      );
-
-      console.log("FORMATTED DATE dayWeekOfMonth", dayWeekOfMonth);
 
       if (isDateAfter && event.recurring === "Daily") {
         return true;
-      } else if (
-        isDateAfter &&
-        (new Date(day).getDay() === new Date(event.start_of_event).getDay() ||
-          new Date(day).getDay() === new Date(event.end_of_event).getDay()) &&
-        event.recurring === "Weekly"
-      ) {
-        return true;
-      } else if (
-        isDateAfter &&
-        new Date(day).getDay() === new Date(event.start_of_event).getDay() &&
-        dayWeekOfMonth === eventStartDayWeekOfMonth &&
-        getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event)) &&
-        event.recurring === "Monthly"
-      ) {
-        return true;
-      } else if (
-        isDateAfter &&
-        new Date(day).getDay() === new Date(event.start_of_event).getDay() &&
-        dayWeekOfMonth === eventStartDayWeekOfMonth &&
-        getMonth(new Date(day)) === getMonth(new Date(event.start_of_event)) &&
-        getYear(new Date(day)) !== getYear(new Date(event.start_of_event)) &&
-        event.recurring === "Annually"
-      ) {
-        return true;
+      } else if (isDateAfter && event.recurring === "Weekly") {
+        if (
+          new Date(day).getDay() === new Date(event.start_of_event).getDay() ||
+          new Date(day).getDay() === new Date(event.end_of_event).getDay()
+        ) {
+          return true;
+        }
+      } else if (isDateAfter && event.recurring === "Monthly") {
+        let currentWeekIndex = getWeekIndex(new Date(day).getDate());
+        let eventWeekIndex = getWeekIndex(
+          new Date(event.start_of_event).getDate()
+        );
+
+        if (
+          currentWeekIndex === eventWeekIndex &&
+          new Date(event.start_of_event).getDay() === new Date(day).getDay() &&
+          getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event))
+        ) {
+          return true;
+        }
+      } else if (isDateAfter && event.recurring === "Annually") {
+        let currentWeekIndex = getWeekIndex(new Date(day).getDate());
+        let eventWeekIndex = getWeekIndex(
+          new Date(event.start_of_event).getDate()
+        );
+        if (
+          new Date(day).getDay() === new Date(event.start_of_event).getDay() &&
+          currentWeekIndex === eventWeekIndex &&
+          getMonth(new Date(day)) ===
+            getMonth(new Date(event.start_of_event)) &&
+          getYear(new Date(day)) !== getYear(new Date(event.start_of_event))
+        ) {
+          return true;
+        }
       }
+
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),
         end: new Date(event.end_of_event)

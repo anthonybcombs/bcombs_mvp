@@ -214,9 +214,9 @@ const OPTION_STATUS = [
 
 const OPTION_RECURRING = [
   { name: "Daily", value: "Daily" },
-  { name: "Weekly", value: "Weekly" }
-  // { name: "Monthly", value: "Monthly" },
-  // { name: "Annually", value: "Annually" }
+  { name: "Weekly", value: "Weekly" },
+  { name: "Monthly", value: "Monthly" },
+  { name: "Annually", value: "Annually" }
 ];
 
 // Use your imagination to render suggestions.
