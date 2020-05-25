@@ -73,6 +73,22 @@ const DuplicateEventModal = styled.div`
       width: 30%;
     }
   }
+
+  .react-datetimerange-picker {
+    width: 100%;
+  }
+  .react-datetimerange-picker button {
+    width: inherit;
+    color: initial;
+    background-color: initial;
+    box-shadow: initial;
+    border-radius: initial;
+  }
+  .react-datetimerange-picker {
+    border: none;
+    width: 100%;
+    margin: 1em 0 1em 0;
+  }
   .react-datetimerange-picker input {
     margin: 0;
     width: initial;
@@ -98,6 +114,13 @@ const DuplicateEventModal = styled.div`
   .react-calendar__tile--active:enabled:focus {
     background-color: #f26e21;
     color: white;
+  }
+  input[placeholder="Add guests"] {
+    display: inline-block;
+    width: initial;
+  }
+  svg[class="react-datetimerange-picker__clear-button__icon react-datetimerange-picker__button__icon"] {
+    display: none;
   }
 `;
 
