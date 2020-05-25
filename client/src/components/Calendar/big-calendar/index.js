@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MonthViewCalendar from "./month-calendar";
 import WeekViewCalendar from "./week-calendar";
+import Search from "./search";
 export default function index({
   auth,
   contacts,
@@ -57,6 +58,7 @@ export default function index({
 
   return (
     <>
+      <Search />
       {calendarType === "month" && (
         <MonthViewCalendar
           auth={auth}
