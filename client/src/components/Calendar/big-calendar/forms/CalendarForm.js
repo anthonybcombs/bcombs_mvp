@@ -10,6 +10,9 @@ import Select from "react-select";
 const CreateCalendarFormStyled = styled.form`
   text-align: center;
   padding: 2em;
+  > * {
+    font-size: 13px !important;
+  }
   input:required {
     box-shadow: none;
   }
@@ -131,11 +134,9 @@ export default function CreateCalendarForm({
   const options = [];
   Object.keys(groups).forEach((key) => {
     groups[key].forEach((data) => {
-      console.log(groups);
       options.push({ value: data.id, label: data.name });
     });
   });
-  console.log("options", options);
   const theme = useContext(ThemeContext);
   return (
     <CreateCalendarFormStyled
@@ -207,6 +208,15 @@ export default function CreateCalendarForm({
             handleInputChange("groups", groupIds);
             setValue("groups", groupIds);
           }}
+          theme={(theme) => ({
+            ...theme,
+            borderRadius: 0,
+            colors: {
+              ...theme.colors,
+              primary25: "#f26e21",
+              primary: "#f26e21",
+            },
+          })}
         />
         {/* <ErrorMessage
           field={errors.groups}
