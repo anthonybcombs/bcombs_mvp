@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 
+import NumberFormat from 'react-number-format';
 
 const EmergencyContactFormStyled = styled.div`
   position: relative;
@@ -53,9 +54,13 @@ const EmergencyContactFormStyled = styled.div`
   }
 `;
 
-export default function index() {
+export default function index({
+  handleParentFormDetailsChange,
+  parentEmergencyContacts,
+  isReadonly = false
+}) {
 
-  const data = {};
+  console.log(handleParentFormDetailsChange);
 
   const GENDER_OPTIONS = [
     { id: 1, value: "Male", name: "Male"},
@@ -79,51 +84,133 @@ export default function index() {
         <tr key={i}>
           <td>
             <input
+              name={"ec_firstname_" + i}
               className="input-field"
+              onChange={({target}) => {
+                handleParentFormDetailsChange(i, "emergency_contacts", "first_name", target.value)
+              }}
+              defaultValue={parentEmergencyContacts[i].first_name}
+              readOnly={isReadonly}
             />
           </td>
           <td>
             <input
+              name={"ac_lastname_" + i}
               className="input-field"
+              onChange={({target}) => {
+                handleParentFormDetailsChange(i, "emergency_contacts", "last_name", target.value)
+              }}
+              defaultValue={parentEmergencyContacts[i].last_name}
+              readOnly={isReadonly}
             />
           </td>
           <td>
-            <select
-              className="input-field">
-              <option value="">Select Type</option>
-              {GENDER_OPTIONS.map(opt => (
-                <option key={opt.id} value={opt.id}>
-                  {opt.name}
-                </option>
-              ))}
-            </select>
+            {
+              !isReadonly ?
+              <select
+                name={"ac_gender_" + i}
+                className="input-field"
+                onChange={({target}) => {
+                  handleParentFormDetailsChange(i, "emergency_contacts", "gender", target.value)
+                }}
+              >
+                <option value="">Select Type</option>
+                {GENDER_OPTIONS.map(opt => (
+                  <option key={opt.id} value={opt.name}>
+                    {opt.name}
+                  </option>
+                ))}
+              </select>
+              :
+              <input 
+                type="text"
+                name={"ac_gender_" + i}
+                className="input-field"
+                defaultValue={parentEmergencyContacts[i].gender}
+                readOnly={isReadonly}
+              />
+            }
           </td>
           <td>
-            <input
-              className="input-field"
-            />
+            {
+              !isReadonly ?
+              <NumberFormat 
+                name={"mobile_phone_" + i}
+                className="input-field"
+                onChange={({target}) => {
+                  handleParentFormDetailsChange(i, "emergency_contacts", "mobile_phone", target.value)
+                }}
+                defaultValue={parentEmergencyContacts[i].mobile_phone}
+                format="(###) ###-####" mask="_"
+              />
+              :
+              <input
+                name={"mobile_phone_" + i}
+                className="input-field"
+                onChange={({target}) => {
+                  handleParentFormDetailsChange(i, "emergency_contacts", "mobile_phone", target.value)
+                }}
+                defaultValue={parentEmergencyContacts[i].mobile_phone}
+                readOnly={isReadonly}
+              />
+            }
           </td>
           <td>
-            <input
-              className="input-field"
-            />
+            {
+              !isReadonly ?
+              <NumberFormat 
+                name={"work_phone_" + i}
+                className="input-field"
+                onChange={({target}) => {
+                  handleParentFormDetailsChange(i, "emergency_contacts", "work_phone", target.value)
+                }}
+                defaultValue={parentEmergencyContacts[i].work_phone}
+                format="(###) ###-####" mask="_"
+              />
+              :
+              <input
+                name={"work_phone_" + i}
+                className="input-field"
+                onChange={({target}) => {
+                  handleParentFormDetailsChange(i, "emergency_contacts", "work_phone", target.value)
+                }}
+                defaultValue={parentEmergencyContacts[i].work_phone}
+                readOnly={isReadonly}
+              />
+            }
+
           </td>
           <td>
-            <select
-              className="input-field">
-              <option value="">Select Type</option>
-              {RELATION_TO_CHILD_OPTIONS.map(opt => (
-                <option key={opt.id} value={opt.id}>
-                  {opt.name}
-                </option>
-              ))}
-            </select>
+            {
+              !isReadonly ?
+              <select
+                name={"relationship_to_child_" + i}
+                className="input-field"
+                onChange={({target}) => {
+                  handleParentFormDetailsChange(i, "emergency_contacts", "relationship_to_child", target.value)
+                }}
+                defaultValue={parentEmergencyContacts[i].relationship_to_child}
+              >
+                <option value="">Select Type</option>
+                {RELATION_TO_CHILD_OPTIONS.map(opt => (
+                  <option key={opt.id} value={opt.name}>
+                    {opt.name}
+                  </option>
+                ))}
+              </select>
+              :
+              <input 
+                name={"relationship_to_child_" + i}
+                className="input-field"
+                defaultValue={parentEmergencyContacts[i].relationship_to_child}
+                readOnly={isReadonly}
+              />
+            }
           </td>
         </tr>
 
         rows.push(row);
     }
-
     return rows;
   }
 

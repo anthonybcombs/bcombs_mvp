@@ -34,3 +34,10 @@ export const setProfileLoading = value => {
     value
   };
 };
+
+export const setApplicationLoading = value => {
+  return {
+    type: actionType.SET_APPLICATION_LOADING,
+    value
+  };
+}

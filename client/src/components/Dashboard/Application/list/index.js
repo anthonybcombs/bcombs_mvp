@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
@@ -7,10 +7,36 @@ import {
   faTimes } from "@fortawesome/free-solid-svg-icons";
 import DataTable from 'react-data-table-component';
 import { uuid } from "uuidv4";
+import { format } from "date-fns";
+
+import "../../ApplicationForm/ApplicationForm.css";
 
 const ApplicationListStyled = styled.div`
   
   margin-bottom: 20px;
+
+  #dataTableContainer .gVljTM {
+    position: absolute;
+    top: 22px;
+    left: 120px;
+    font-size: 16px
+  }
+
+  #dataTableContainer .ncoBp {
+    position: absolute;
+    top: 22px;
+    left: 0;
+    font-size: 16px;
+  }
+
+  #dataTableContainer .gVljTM svg {
+    right: -5px;
+  }
+
+  #dataTableContainer .ggvSbr {
+    min-height: 70px;
+    margin-bottom: 20px;
+  }
 
   #tableHeader {
     display: grid;
@@ -84,12 +110,16 @@ const ApplicationListStyled = styled.div`
     margin: 0 10px;
     text-decoration: none;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #dataTableContainer {
     box-shadow: 0px 0px 10px #ccc;
     padding: 1em;
     background-color: #fff;
+    position: relative;
   }
 
   #dataTableContainer a {
@@ -105,6 +135,7 @@ const ApplicationListStyled = styled.div`
 `;
 
 const TextField = styled.input`
+  box-sizing: border-box; 
   height: 32px;
   width: 200px;
   border-radius: 3px;
@@ -144,54 +175,161 @@ const ClearButton = styled.button`
   justify-content: center;
 `;
 
-const FilterComponent = () => (
+const SelectWrapper = styled.div`
+
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20%;
+  grid-gap: 5%;
+  min-width: 85%;
+
+  .form-control {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 6px 12px;
+    font-size: 16px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;  
+  }
+
+  select.form-control {
+    height: 32px;
+    width: auto;
+  }
+`;
+
+const CLASS_OPTIONS = ["Seniors", "Juniors", "Sophomores", "Freshmen", "Middle School"];
+
+const STATUS_OPTIONS = ["In process", "Current Student", "Waiting List", "Accepted", "Rejected", "No longer a Student"];
+
+const COLOR_OPTIONS = ["Blue", "Red", "Green"];
+
+const FilterComponent = ({ filterText, onFilter, onClassChange, onClear, classText }) => (
   <>
-    <TextField id="search" type="text" placeholder="Search" />
-    <ClearButton type="button">X</ClearButton>
+    <SelectWrapper>
+    <TextField id="search" type="text" placeholder="Search Name" value={filterText} onChange={onFilter} />
+      <select 
+        name="class"
+        className="form-control"
+        value={classText}
+        onChange={onClassChange}>
+        <option value="">Select Status</option>
+        {
+          STATUS_OPTIONS.map((opt, i) => (
+            <option key={i} val={opt}>{opt}</option>
+          ))
+        }
+      </select>
+      <select 
+        name="class"
+        className="form-control"
+        value={classText}
+        onChange={onClassChange}>
+        <option value="">Select Class</option>
+        {
+          CLASS_OPTIONS.map((opt, i) => (
+            <option key={i} val={opt}>{opt}</option>
+          ))
+        }
+      </select>
+      <select 
+        name="class"
+        className="form-control"
+        value={classText}
+        onChange={onClassChange}>
+        <option value="">Select Color</option>
+        {
+          COLOR_OPTIONS.map((opt, i) => (
+            <option key={i} val={opt}>{opt}</option>
+          ))
+        }
+      </select>
+      {/* <ClearButton type="button" onClick={onClear}>X</ClearButton> */}
+    </SelectWrapper>
+
   </>
 );
 
-export default function index() {
+export default function index({
+  applications,
+  handleSelectedApplication
+}) {
 
-  const status = ['currentFailed', 'currentPassed', 'inProccess'];
+  const getApplicationStatusVal = (student_status, verification, row) => {
 
-  const name = ['James Ward', 'Terrance Woodyard', 'Cedric Taylor', 'Al Sullivan']
+    let studentStatusVal = "";
+    let verificationVal = ""
 
-  const group = ['Freshmen', 'Juniors', 'Sophomores', 'Seniors', 'Middle School']
+    if(student_status == "new_applicant_in_process") {
+      studentStatusVal = "In process";
+    } else if (student_status == "new_applicant_accepted") {
+      studentStatusVal = "Accepted";
+    } else if (student_status == "new_applicant_rejected") {
+      studentStatusVal = "Rejected";
+    } else if (student_status == "current_student") {
+      studentStatusVal = "Current Student";
+    } else if (student_status == "waiting_list") {
+      studentStatusVal = "Waiting List";
+    } else if (student_status == "no_longer_student") {
+      studentStatusVal = "No longer a Student";
+    } else if (student_status == "missed_oppurtunity") {
+      studentStatusVal = "Missed oppurtunity";
+    }
 
-  const data = [];
+    if(verification == "verified") {
+      verificationVal = faCheck;
+    } else if (verification == "rejected") {
+      verificationVal = faTimes;
+    } else {
+      verificationVal = "";
+    }
 
-  for(let x = 1; x <= 10; x++) {
+    return <a href="" 
+      onClick={(e) => {
+        e.preventDefault();
 
-    let randStatus = Math.floor((Math.random() * 3) + 1) - 1;
-    let randName = Math.floor((Math.random() * 4) + 1) - 1;
-    let randGroup = Math.floor((Math.random() * 5) + 1) - 1;
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
 
-    data.push({
-      id: uuid(),
-      status: status[randStatus],
-      studentName: name[randName],
-      parentName: "Parent A" + x,
-      class: group[randGroup],
-      birthDate: "10.10 (Jun 16, 2009)",
-      applicationDate: "Jun 16, 2018",
-      attachment1: "",
-      attachment2: ""
-    });
+        handleSelectedApplication(row, "application")
+      }}><span>{studentStatusVal}</span>&nbsp;
+      { verificationVal && <FontAwesomeIcon icon={verificationVal} />}
+    </a>
+    
   }
 
+  const getPrimaryParentName = (parents) => {
 
-  console.log(data);
-
-  const getApplicationStatusVal = (status) => {
-
-    if(status == 'currentPassed') {
-      return <a href="#"><span>Current Student</span>&nbsp;<FontAwesomeIcon icon={faCheck} /></a>
-    } else if (status == 'currentFailed') {
-      return <a href="#"><span>Current Student</span>&nbsp;<FontAwesomeIcon icon={faTimes} /></a>
+    if(parents.length > 0) {
+      return <a href="" onClick={(e) => {e.preventDefault();}}><span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span></a>
     } else {
-      return <a href="#"><span>In process</span></a>
+      return "";
     }
+  }
+
+  const DATE_FORMAT = "LLL dd, yyyy";
+
+  const getAgeBdate = (child) => {
+    if(!child.age && child <= -1) return "";
+
+    let birthdate = format(new Date(child.birthdate), DATE_FORMAT);
+    return <div>
+      {child.age}&nbsp; ({birthdate})
+    </div>
   }
 
   const columns = [
@@ -199,35 +337,38 @@ export default function index() {
       name: 'Status',
       selector: 'status',
       sortable: true,
-      cell: row => getApplicationStatusVal(row.status),
+      cell: row => getApplicationStatusVal(row.student_status, row.verification, row),
       
     },
     {
       name: 'Student Name',
       selector: 'studentName',
       sortable: true,
-      cell: row => <a href="#"><span>{row.studentName}</span></a>,
+      cell: row => <a onClick={(e) => {e.preventDefault();}} href="#"><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>,
     },
     {
       name: 'Parent name',
       selector: 'parentName',
       sortable: true,
-      cell: row => <a href="#"><span>{row.parentName}</span></a>
+      cell: row => getPrimaryParentName(row.parents)
     },
     {
       name: 'Class',
       selector: 'class',
-      sortable: true
+      sortable: true,
+      cell: row => row?.child?.grade_desc
     },
     {
       name: 'Age (Bdate)',
       selector: 'birthDate',
-      sortable: true
+      sortable: true,
+      cell: row => getAgeBdate(row.child)
     },
     {
       name: 'Application Date',
       selector: 'applicationDate',
-      sortable: true
+      sortable: true,
+      cell: row => format(new Date(row.application_date), DATE_FORMAT)
     },
     {
       name: 'Attachment 1',
@@ -244,6 +385,11 @@ export default function index() {
   ];
 
   const customStyles = {
+    header: {
+      style: {
+        minHeight: '70px'
+      }
+    },
     subHeader: {
       style: {
         marginBottom: '12px',
@@ -264,7 +410,8 @@ export default function index() {
     },
     cells: {
       style: {
-        fontSize: '16px'
+        fontSize: '16px',
+        padding: '10px'
       }
     },
     rows: {
@@ -302,15 +449,59 @@ export default function index() {
     }
   ]
 
-  const [filterText, setFilterText] = React.useState('');
-  const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
+  const [filterText, setFilterText] = useState('');
+  const [classText, setClassText] = useState('');
+  
+  const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
+
+  let data = applications.length > 0 ? applications : [];
+
+  let getApplications = applications.length > 0 ? applications : [];
+
+  data = getApplications.filter((item) => {
+
+      let name_accepted = true;
+      let class_accepted = true;
+
+      if(filterText) {
+        name_accepted = item.child.firstname && item.child.firstname.toLowerCase().includes(filterText.toLowerCase()) ||
+          item.child.lastname && item.child.lastname.toLowerCase().includes(filterText.toLowerCase()) ||
+          item.parents[0].firstname && item.parents[0].firstname.toLowerCase().includes(filterText.toLowerCase()) ||
+          item.parents[0].lastname && item.parents[0].lastname.toLowerCase().includes(filterText.toLowerCase())
+      }
+
+      if(classText) {
+        class_accepted = item.child.grade_desc == classText
+      }
+
+      return name_accepted && class_accepted;
+    });
+
+  console.log("data", data);
 
   const subHeaderComponentMemo = React.useMemo(() => {
-    return <FilterComponent />;
-  }, [filterText, resetPaginationToggle]);
+
+    const handleClear = () => {
+      if (filterText) {
+        setResetPaginationToggle(!resetPaginationToggle);
+        setFilterText('');
+      }
+    };
+    
+    return <FilterComponent onClassChange={e => setClassText(e.target.value)} classText={classText} onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />;
+  }, [filterText, resetPaginationToggle, classText]);
 
   const noHeader = true;
   const striped = true;
+
+  const paginationRowsPerPageOptions = [10, 25, 50, 100]
+  const paginationComponentOptions = {
+    rowsPerPageText: 'Rows per page:', 
+    rangeSeparatorText: 'of', 
+    noRowsPerPage: false,
+    selectAllRowsItem: true, 
+    selectAllRowsItemText: 'All'
+  }
 
   return (
     <ApplicationListStyled>
@@ -357,6 +548,8 @@ export default function index() {
               conditionalRowStyles={conditionalRowStyles}
               subHeader
               subHeaderComponent={subHeaderComponentMemo}
+              paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+              paginationComponentOptions={paginationComponentOptions}
             />
           </div>
         </div>

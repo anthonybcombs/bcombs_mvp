@@ -223,4 +223,19 @@ export const initialState = {
     messageType: "",
     message: "",
   },
+  grades: [
+    {
+      id: "1",
+      name: "Middle School"
+    }
+  ],
+  vendor: {
+    id: uuid(),
+    user: uuid(),
+    name: "",
+    waiver_text: "",
+    liability_waiver_text: "",
+    terms_and_conditions_text: ""
+  },
+  applications: []
 };

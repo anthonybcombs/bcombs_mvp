@@ -7,7 +7,10 @@ const LoadingStyled = styled.div`
     margin: 30vh auto;
   }
 `;
-export default function Loading() {
+export default function Loading({
+  error
+}) {
+  console.log("error", error);
   return (
     <LoadingStyled>
       <ReactLoading

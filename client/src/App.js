@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import Layout from "./helpers/Layout";
 import Loadable from "react-loadable";
 import Loading from "./helpers/Loading.js";
+import { requestUserTypes } from "./redux/actions/UserTypes";
+import { requestGrades } from "./redux/actions/Grades"
 import SocialLoginLanding from "./helpers/SocialLogin.js";
 
 const AsycDashboard = Loadable({
@@ -50,11 +52,11 @@ const AsyncProfile = Loadable({
   loader: () => import("./components/UserInfo/Profile"),
   loading: Loading,
 });
-const AyncApplicationStatus = Loadable({
+const AsyncApplicationStatus = Loadable({
   loader: () => import("./components/Dashboard/Application"),
   loading: Loading,
 });
-const AyncArchivedApplication = Loadable({
+const AsyncArchivedApplication = Loadable({
   loader: () => import("./components/Dashboard/ArchivedApplication"),
   loading: Loading,
 });
@@ -63,6 +65,11 @@ const AsyncApplicationForm = Loadable({
   loading: Loading,
 });
 export default function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(requestUserTypes());
+    dispatch(requestGrades());
+  }, []);
   return (
     <>
       <Layout>
@@ -80,11 +87,11 @@ export default function App() {
               <AsyncDashboardMyProfle path="myprofile" />
               <AyncDashboardMyContacts path="mycontacts" />
               <AsyncProfile path="createprofile" />
-              <AyncApplicationStatus path="application" />
-              <AyncArchivedApplication path="archived" />
+              <AsyncApplicationStatus path="application" />
+              <AsyncArchivedApplication path="archived" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
-            <AsyncApplicationForm path="application/:id" />
+            <AsyncApplicationForm path="application/:vendor_id" />
           </Router>
         </div>
       </Layout>

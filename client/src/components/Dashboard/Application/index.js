@@ -1,16 +1,24 @@
-import React, { useState }from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faThList,
   faFileSignature,
   faCogs
 } from "@fortawesome/free-solid-svg-icons";
-
 import ApplicationSummaryStyled from "./summary";
 import ApplicationSettingsStyled from "./settings";
-import ApplicationListStyled from "./list"
+import ApplicationListStyled from "./list";
+import EditApplicationStyled from "./edit";
 
+import ChildFormViewStyled from "./view/child";
+import ParentFormViewStyled from "./view/parent";
+
+import { requestVendor } from "../../../redux/actions/Vendors";
+import { requestGetApplications } from "../../../redux/actions/Application";
+
+import ProfileImg from "../../../images/defaultprofile.png";
 const ApplicationStyled = styled.div`
   padding: 1em;
   
@@ -69,9 +77,46 @@ export default function index() {
 
   const [selectedLabel, setSelectedLabel] = useState("Application Status");
 
+  const [selectNonMenuOption, setSelectNonMenuOption] = useState(false);
+
+  const [selectedApplication, setSelectedApplication] = useState({});
+
+  const [view, setView] = useState("");
+
+  const dispatch = useDispatch();
+
+  const { grades, auth, vendor, applications } = useSelector(
+    ({grades, auth, vendor, applications }) => {
+      return { grades, auth, vendor, applications };
+    }
+  );
+
+  console.log("Application", applications);
+
+  useEffect(() => {
+    if(auth.user_id) {
+      dispatch(requestVendor(auth.user_id));
+    }
+  }, []);
+
+  useEffect(() => {
+    if(vendor.id) {
+      dispatch(requestGetApplications(vendor.id));
+    }
+  }, [vendor]);
+
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
+    setSelectNonMenuOption(false);
+    setSelectedApplication({});
+    setView("")
   };
+
+  const handleSelectedApplication = (application, view) => {
+    setSelectedApplication(application);
+    setSelectNonMenuOption(true);
+    setView(view);
+  }
 
   return (
     <ApplicationStyled>
@@ -79,7 +124,7 @@ export default function index() {
       <div id="application">
         <div>
           <div id="labels">
-            <a href="/application/2" target="_blank">
+            <a href={`/application/${vendor.user}`} target="_blank">
               <FontAwesomeIcon icon={faFileSignature} />
               <span>Application</span>
             </a>
@@ -107,18 +152,54 @@ export default function index() {
         </div>
         <div>
           {
-            selectedLabel === "Application Status" &&
-            <ApplicationSummaryStyled/>
+            selectedLabel === "Application Status" && 
+            !selectNonMenuOption &&
+            <ApplicationSummaryStyled
+              grades={grades}
+            />
           }
           {
             selectedLabel === "Form Settings" && 
-            <ApplicationSettingsStyled />
+            !selectNonMenuOption &&
+            <ApplicationSettingsStyled 
+              vendor={vendor}  
+            />
+          }
+          {
+            selectNonMenuOption && view == "application" &&
+            <EditApplicationStyled
+              application={selectedApplication}
+              vendor={vendor}
+            />
           }
         </div>
       </div>
       {
-        selectedLabel === "Application Status" &&
-        <ApplicationListStyled />
+        selectedLabel === "Application Status" && 
+        !selectNonMenuOption &&
+        <ApplicationListStyled
+          applications={applications.activeapplications}
+          handleSelectedApplication={handleSelectedApplication}
+        />
+      }
+      {
+        selectNonMenuOption && view == "application" &&
+        <ChildFormViewStyled
+          application={selectedApplication}
+          vendor={vendor}
+          ProfileImg={ProfileImg}
+        />
+      }
+      {
+        selectNonMenuOption && view == "application" && <hr className="style-eight"></hr>
+      }
+      {
+        selectNonMenuOption && view == "application" &&
+        <ParentFormViewStyled
+          application={selectedApplication}
+          vendor={vendor}
+          ProfileImg={ProfileImg}
+        />
       }
     </ApplicationStyled>
   )

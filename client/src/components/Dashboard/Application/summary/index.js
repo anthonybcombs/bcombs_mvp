@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
+import { uuid } from "uuidv4";
 
 const ApplicationSummaryStyled = styled.div`
   #application-status {
@@ -58,27 +59,51 @@ const ApplicationSummaryStyled = styled.div`
   }
 `;
 
-export default function index() {
-
-  const {groups} = useSelector( ({groups}) => ({groups}) );
+export default function index({grades}) {
   
+  let maxClass = 20;
+
+  let tCount = 0;
+  let tAvailable = 0;
+  let tClassCount = 0;
+
+  // const setTotals = () => {
+    
+  //   grades.map((grades) => {
+  //     let count = maxClass;
+  //     let available = maxClass - group.contacts.length;
+  //     let classCount = group.contacts.length;
+
+  //     tCount = tCount + count;
+  //     tAvailable = tAvailable + available;
+  //     tClassCount = tClassCount + classCount;
+  //   });
+  // }
+
   const renderTableData = () => {
 
-    return groups.map((group, index) => {
+    return grades.map((grade, index) => {
+
+      let count = maxClass;
+      let available = 0;
+      let classCount = 0;
+      
       return (
-        <tr key={group.id}>
+        <tr key={grade.id}>
           <td>
             <a href="#">
-              {group.name}
+              {grade.name}
             </a>
           </td>
-          <td>10</td>
-          <td>2</td>
-          <td>0</td>
+          <td>{count}</td>
+          <td>{available}</td>
+          <td>{classCount}</td>
         </tr>
       )
     })
   }
+
+  // setTotals();
 
   return (
     <ApplicationSummaryStyled>
@@ -99,9 +124,9 @@ export default function index() {
               </tr>
               <tr>
                 <td>Total</td>
-                <td>10</td>
-                <td>2</td>
-                <td>0</td>
+                <td>{tCount}</td>
+                <td>{tAvailable}</td>
+                <td>{tClassCount}</td>
               </tr>
               {renderTableData()}
             </tbody>

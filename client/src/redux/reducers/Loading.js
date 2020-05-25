@@ -35,6 +35,11 @@ export default function Loading(
         ...state,
         profile: action.value
       };
+    case actionType.SET_APPLICATION_LOADING:
+      return  {
+        ...state,
+        application: action.value
+      }
     default:
       return state;
   }

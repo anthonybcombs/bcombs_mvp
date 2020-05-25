@@ -11,8 +11,11 @@ import relatives from "./Relatives";
 import user from "./Users";
 import userTypes from "./UserTypes";
 import status from "./Status";
-
 import loading from "./Loading";
+import grades from "./Grades";
+import vendor from "./Vendors"
+import applications from "./Applications"
+
 const reducer = combineReducers({
   auth,
   events,
@@ -26,6 +29,9 @@ const reducer = combineReducers({
   user,
   userTypes,
   status,
-  loading
+  loading,
+  grades,
+  vendor,
+  applications
 });
 export default reducer;

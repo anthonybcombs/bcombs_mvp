@@ -44,8 +44,16 @@ import {
   updateUserProfilePhoto,
 } from "../actions/Users";
 import { gotUserTypes } from "../actions/UserTypes";
+
 import { gotFamilyMembers } from "../actions/FamilyMembers";
+
+import { getGrades } from "../actions/Grades";
+
 import { requestedStatus, removedStatus } from "../actions/Status";
+
+import { getVendor, updateVendor } from "../actions/Vendors";
+
+import { addApplication, getApplication } from "../actions/Application";
 import reducer from "../reducers";
 function* rootSaga() {
   //STATUS
@@ -98,6 +106,13 @@ function* rootSaga() {
   );
   yield takeLatest(actionType.REQUEST_USER_GROUPS, getUserGroup);
   yield takeLatest(actionType.REQUEST_MEMBERS, getMembers);
+
+  //ADDED BY JEROME
+  yield takeLatest(actionType.REQUEST_GRADES, getGrades);
+  yield takeLatest(actionType.REQUEST_VENDOR, getVendor);
+  yield takeLatest(actionType.REQUEST_UPDATE_VENDOR, updateVendor);
+  yield takeLatest(actionType.REQUEST_ADD_APPLICATION, addApplication);
+  yield takeLatest(actionType.REQUEST_GET_APPLICATION, getApplication);
 }
 const sagaMiddleware = createSagaMiddleware();
 
@@ -108,3 +123,4 @@ export const store = createStore(
 );
 // then run the saga
 sagaMiddleware.run(rootSaga);
+

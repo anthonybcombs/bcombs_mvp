@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-
-import GeneralInformationFormStyled from "../GeneralInformationForm";
-
-import ProfileImg from "../../../../images/profile.png";
+import { useForm } from "react-hook-form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle, faPlusCircle, faMinusCircle } from "@fortawesome/free-solid-svg-icons";
+import ErrorMessage from "../../../../helpers/ErrorMessage";
 import DatePicker from 'react-datepicker';
 import { Multiselect } from 'multiselect-react-dropdown';
-
 import "react-datepicker/dist/react-datepicker.css";
-
+import "../../ArchivedApplication/SearchDate.css";
 import STATES from "../states.json";
+import NumberFormat from 'react-number-format';
 
 const ChildInfomationFormStyled = styled.div`
   position: relative;
@@ -23,6 +23,12 @@ const ChildInfomationFormStyled = styled.div`
     display: grid;
     grid-template-columns: 31% 31% 31%;
     grid-gap: 3.33333333%;
+  }
+
+  #multiselectContainerReact {
+    position: absolute;
+    top: 21px;
+    bottom: 0;
   }
 
   #multiselectContainerReact .optionContainer li:hover,
@@ -52,10 +58,16 @@ const ChildInfomationFormStyled = styled.div`
   }
 `;
 
-export default function index() {
-
-  const data = {};
-
+export default function index({
+  counter,
+  childProfile,
+  handleChildFormDetailsChange,
+  register,
+  errors,
+  isReadonly = false,
+  ProfileImg
+}) {
+  
   const hasSelectAll = false;
 
   const GENDER_OPTIONS = [
@@ -69,7 +81,7 @@ export default function index() {
     { id: 3, value: "Work", name: "Work"}
   ];
 
-  const ETHINICITY_OPTIONS = [
+  const ETHINICITY_OPTIONS = !isReadonly ? [
     { id: 1, name:"Asian", label:"Asian" },
     { id: 2, name:"Black or African American", label:"Black or African American" },
     { id: 3, name:"Hispanic or Latino", label:"AsiHispanic or Latinoan" },
@@ -78,12 +90,12 @@ export default function index() {
     { id: 6, name:"White", label:"White" },
     { id: 7, name:"Other", label:"Other" },
     { id: 8, name:"Prefer not to answer", label:"Prefer not to answer" }
-  ];
+  ] : []; 
 
-  const PROGRAMS_OPTIONS = [
+  const PROGRAMS_OPTIONS = !isReadonly ? [
     { id: 1, name:"Saturday Academy", label: "Satuday Academy" },
     { id: 2, name:"In school", label: "In school" },
-  ];
+  ] : [];
 
   const LOCATION_SITE_OPTIONS = [
     { name: "Raleigh", value: "Raleigh" },
@@ -95,48 +107,109 @@ export default function index() {
     { id: 2, value: "Work", name: "Work"}
   ];
 
-  const [childBirthDate, setChildBirthDate] = useState();
   const [ethinicitySelected, setEthinicitySelected] = useState([]);
   const [schoolProgramSelected, setSchoolProgramSelected] = useState([]);
 
+  const range = (start, end) => {
+    let arr = [];
+
+    for(let i = start; i <= end; i++) {
+      arr.push(i);
+    }
+
+    return arr;
+  }
+
+  const years = range(1990, new Date().getFullYear());
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  const [showPhone, setShowPhone] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
+
+  const handleOtherPhone = () => {
+    setShowPhone(!showPhone);  
+  }
+
+  const handleOtherEmail = () => {
+    setShowEmail(!showEmail);
+  }
+
   return (
     <ChildInfomationFormStyled>
-      <h3 className="heading">Child Information</h3>
+      <h3 className="heading">Child Information {counter > 1 ? `(${counter})` : ``}</h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">
-          <img src={ProfileImg} width="80" height="80" />
-          <input type="file" name="file"/>
-        </div>
+            <img src={ProfileImg} width="80" height="80" />
+            {!isReadonly && <input name={"ch_img" + (counter - 1)} type="file"/> }
+          </div>
         <div className="grid">
           <div className="form-group">
             <div className="field">
               <input
-                name="firstname"
+                readOnly={isReadonly}
+                name={"ch_first_name" + (counter - 1)}
                 className="field-input"
-                value={data.firstname}
                 placeholder="First Name"
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "first_name", target.value);
+                }}
+                ref={register({ required: true })}
+                defaultValue={childProfile.first_name}
               />
-              <label className="field-label">First Name</label>
+              <label className="field-label"><span className="required">*</span> First Name</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_first_name" + (counter - 1)]}
+              errorType="required"
+              message="Firstname is required."
+            />
           </div>
           <div className="form-group">
             <div className="field">
               <input
-                name="lastname"
+                readOnly={isReadonly}
+                name={"ch_last_name" + (counter - 1)}
                 className="field-input"
-                value={data.firstname}
                 placeholder="Last Name"
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "last_name", target.value);
+                }}
+                ref={register({ required: true })}
+                defaultValue={childProfile.last_name}
               />
-              <label className="field-label">Last Name</label>
+              <label className="field-label"><span className="required">*</span> Last Name</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_last_name" + (counter - 1)]}
+              errorType="required"
+              message="Lastname is required."
+            />
           </div>
           <div className="form-group">
             <div className="field">
               <input
-                name="nickname"
+                name="ch_nick_name"
                 className="field-input"
-                value={data.nickname}
                 placeholder="Nick Name"
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "nick_name", target.value);
+                }}
+                readOnly={isReadonly}
+                ref={register()}
+                defaultValue={childProfile.nick_name}
               />
               <label className="field-label">Nick Name</label>
             </div>
@@ -146,34 +219,108 @@ export default function index() {
         <div className="grid">
           <div className="form-group">
             <div className="field">
-              <DatePicker 
-                className="field-input" 
+              <DatePicker
+                readOnly={isReadonly}
+                renderCustomHeader={({
+                  date,
+                  changeYear,
+                  changeMonth,
+                  decreaseMonth,
+                  increaseMonth,
+                  prevMonthButtonDisabled,
+                  nextMonthButtonDisabled
+                }) => (
+                  <div
+                    style={{
+                      margin: 10,
+                      display: "flex",
+                      justifyContent: "center"
+                    }}
+                  >
+                    <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
+                      {"<"}
+                    </button>
+                    <select
+                      value={new Date(date).getFullYear()}
+                      onChange={({ target: { value } }) => changeYear(value)}
+                    >
+                      {years.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+          
+                    <select
+                      value={months[date.getMonth()]}
+                      onChange={({ target: { value } }) =>
+                        changeMonth(months.indexOf(value))
+                      }
+                    >
+                      {months.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+          
+                    <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
+                      {">"}
+                    </button>
+                  </div>
+                )}
+                name={"ch_birthdate" + (counter - 1)}
+                className="field-input birthdate-field" 
                 placeholderText="mm/dd/yyyy"
-                selected={childBirthDate}
-                onChange={date => setChildBirthDate(date)}
+                selected={childProfile.date_of_birth}
+                disabled={isReadonly}
+                onChange={(date) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "date_of_birth", date);
+                }}
+                ref={register({ required: true })}
               />
-              <label className="field-label">Date of Birth</label>
+              <label className="field-label"><span className="required">*</span> Date of Birth</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_birthdate" + (counter - 1)]}
+              errorType="required"
+              message="Date of Birth is required."
+            />
           </div>
           <div className="form-group">
             <div className="field">
               <select
-                name="gender"
+                disabled={isReadonly}
+                readOnly={isReadonly}
+                name={"ch_gender" + (counter - 1)}
                 className="field-input"
-                value={data.selectedGender}>
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "gender", target.value);
+                }}
+                ref={register({ required: true })}
+                defaultValue={childProfile.gender}  
+              >
                   <option value="">Select</option>
                 {GENDER_OPTIONS.map(opt => (
-                  <option key={opt.id} value={opt.id}>
+                  <option key={opt.id} value={opt.value}>
                     {opt.name}
                   </option>
                 ))}
               </select>
-              <label className="field-label">Gender</label>
+              <label className="field-label"><span className="required">*</span> Gender</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_gender" + (counter - 1)]}
+              errorType="required"
+              message="Gender is required"
+            />
           </div>
           <div className="form-group">
             <div className="field">
               <Multiselect
+                readOnly={isReadonly}
+                disabled={isReadonly}
+                id={"ethinicity_" + (counter - 1)}
                 className="field-input"
                 options={ETHINICITY_OPTIONS}
                 hasSelectAll={hasSelectAll}
@@ -181,6 +328,7 @@ export default function index() {
                 placeholder="Select all that apply"
                 displayValue="name"
                 closeIcon="cancel"
+                name={"ethinicity_" + (counter - 1)}
               />
               <label className="field-label">Ethinicity (select all choices that apply)</label>
             </div>
@@ -191,39 +339,136 @@ export default function index() {
           <div className="form-group">
             <div className="field">
               <select
-                name="phonetype1"
+                disabled={isReadonly}
+                name="ch_phone_type"
                 className="field-input"
-                value={data.selectedPhoneType1}>
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "phone_type", target.value);
+                }}
+                readOnly={isReadonly}
+                defaultValue={childProfile.phone_type}
+              >
                   <option value="" >Select Type</option>
                 {PHONE_OPTIONS.map(opt => (
-                  <option key={opt.id} value={opt.id}>
+                  <option key={opt.id} value={opt.value}>
                     {opt.name}
                   </option>
                 ))}
               </select>
-              <label className="field-label">Type</label>
+              <label className="field-label">
+                {
+                  !showPhone ?
+                  <span 
+                    className="add"
+                    onClick={(e) => handleOtherPhone()}
+                  >
+                    <FontAwesomeIcon size="lg" icon={faPlusCircle} />
+                  </span>
+                  :
+                  <span 
+                    className="remove"
+                    onClick={(e) => handleOtherPhone()}
+                  >
+                    <FontAwesomeIcon size="lg" icon={faTimesCircle} />
+                  </span>
+                }
+                &nbsp; Type
+                </label>
             </div>
           </div>
           <div className="form-group">
             <div className="field">
-              <input
-                name="phone1"
-                className="field-input"
-                value={data.phone}
-                placeholder="Phone"
-              />
+              {
+                !isReadonly ?
+                <NumberFormat 
+                  name="ch_phone_number"
+                  className="field-input"
+                  placeholder="Phone"
+                  onChange={({ target }) => {
+                    handleChildFormDetailsChange(counter - 1, "profile", "phone_number", target.value);
+                  }}
+                  defaultValue={childProfile.phone_number}
+                  format="(###) ###-####" mask="_"
+                />
+                :
+                <input 
+                  name="ch_phone_number"
+                  className="field-input"
+                  placeholder="Phone"
+                  readOnly={isReadonly}
+                  defaultValue={childProfile.phone_number}
+                />
+              }
+ 
               <label className="field-label">Phone</label>
             </div>
           </div>
         </div>
-
+        {
+          showPhone && 
+          <div className="grid">
+            <div className="form-group">
+              <div className="field">
+                <select
+                  disabled={isReadonly}
+                  name="ch_phone_type2"
+                  className="field-input"
+                  onChange={({ target }) => {
+                    handleChildFormDetailsChange(counter - 1, "profile", "phone_type2", target.value);
+                  }}
+                  readOnly={isReadonly}
+                  defaultValue={childProfile.phone_type}
+                >
+                    <option value="" >Select Type</option>
+                  {PHONE_OPTIONS.map(opt => (
+                    <option key={opt.id} value={opt.value}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </select>
+                <label className="field-label">Type</label>
+              </div>
+            </div>
+            <div className="form-group">
+              <div className="field">
+                {
+                  !isReadonly ?
+                  <NumberFormat 
+                    name="ch_phone_number2"
+                    className="field-input"
+                    placeholder="Phone"
+                    onChange={({ target }) => {
+                      handleChildFormDetailsChange(counter - 1, "profile", "phone_number2", target.value);
+                    }}
+                    defaultValue={childProfile.phone_number}
+                    format="(###) ###-####" mask="_"
+                  />
+                  :
+                  <input 
+                    name="ch_phone_number2"
+                    className="field-input"
+                    placeholder="Phone"
+                    defaultValue={childProfile.phone_number}
+                  />
+                }
+                <label className="field-label">Phone</label>
+              </div>
+            </div>
+          </div>
+        }
         <div className="grid">
           <div className="form-group">
             <div className="field">
               <select
-                name="childemailtype1"
+                disabled={isReadonly}
+                name="ch_email_type"
                 className="field-input"
-                value={data.selectedChildEmailType1}>
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "email_type", target.value);
+                }}
+                readOnly={isReadonly}
+                defaultValue={childProfile.email_type}
+              >
                   <option value="" >Select Type</option>
                 {EMAIL_OPTIONS.map(opt => (
                   <option key={opt.id} value={opt.id}>
@@ -231,45 +476,134 @@ export default function index() {
                   </option>
                 ))}
               </select>
-              <label className="field-label">Select Type</label>
+              <label className="field-label">
+                {
+                  !showEmail ?
+                  <span 
+                    className="add"
+                    onClick={(e) => handleOtherEmail()}
+                  >
+                    <FontAwesomeIcon size="lg" icon={faPlusCircle} />
+                  </span>
+                  :
+                  <span 
+                    className="remove"
+                    onClick={(e) => handleOtherEmail()}
+                  >
+                    <FontAwesomeIcon size="lg" icon={faTimesCircle} />
+                  </span>
+                }
+                &nbsp;  
+                Type
+              </label>
             </div>
           </div>
 
           <div className="form-group">
             <div className="field">
               <input
-                name="childEmail1"
+                name="ch_email_address"
                 className="field-input"
-                value={data.childEmail1}
                 placeholder="Email Address"
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "email_address", target.value);
+                }}
+                readOnly={isReadonly}
+                defaultValue={childProfile.email_address}
               />
-              <label className="field-label">Email Address</label>
+              <label className="field-label">Email Address (Child only, if applicable)</label>
             </div>
           </div>
         </div>
+
+        {
+          showEmail && 
+          <div className="grid">
+            <div className="form-group">
+              <div className="field">
+                <select
+                  disabled={isReadonly}
+                  name="ch_email_type2"
+                  className="field-input"
+                  onChange={({ target }) => {
+                    handleChildFormDetailsChange(counter - 1, "profile", "email_type2", target.value);
+                  }}
+                  readOnly={isReadonly}
+                  defaultValue={childProfile.email_type}
+                >
+                    <option value="" >Select Type</option>
+                  {EMAIL_OPTIONS.map(opt => (
+                    <option key={opt.id} value={opt.id}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </select>
+                <label className="field-label">
+                  Type
+                </label>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <div className="field">
+                <input
+                  name="ch_email_address2"
+                  className="field-input"
+                  placeholder="Email Address"
+                  onChange={({ target }) => {
+                    handleChildFormDetailsChange(counter - 1, "profile", "email_address2", target.value);
+                  }}
+                  readOnly={isReadonly}
+                  defaultValue={childProfile.email_address}
+                />
+                <label className="field-label">Email Address (Child only, if applicable)</label>
+              </div>
+            </div>
+          </div>
+        }
 
         <div className="grid">
           <div className="form-group">
             <div className="field">
               <input
-                name="address1"
+                name={"ch_address" + (counter - 1)}
                 className="field-input"
-                value={data.address1}
                 placeholder="Address"
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "address", target.value);
+                }}
+                readOnly={isReadonly}
+                ref={register({ required: true })}
+                defaultValue={childProfile.address}
               />
-              <label className="field-label">Address</label>
+              <label className="field-label"><span className="required">*</span> Address</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_address" + (counter - 1)]}
+              errorType="required"
+              message="Address is required"
+            />
           </div>
           <div className="form-group">
             <div className="field">
               <input
-                name="city"
+                name={"ch_city" + (counter - 1)}
                 className="field-input"
-                value={data.city}
                 placeholder="City"
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "city", target.value);
+                }}
+                readOnly={isReadonly}
+                defaultValue={childProfile.city}
+                ref={register({ required: true })}
               />
-              <label className="field-label">City</label>
+              <label className="field-label"><span className="required">*</span> City</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_city" + (counter - 1)]}
+              errorType="required"
+              message="City is required"
+            />
           </div>
         </div>
 
@@ -277,29 +611,56 @@ export default function index() {
           <div className="form-group">
             <div className="field">
               <select
-                name="state"
+                disabled={isReadonly}
+                name={"ch_state" + (counter - 1)}
                 className="field-input"
-                value={data.state}>
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "state", target.value);
+                }}
+                readOnly={isReadonly}
+                defaultValue={childProfile.state}
+                ref={register({ required: true })}>
+                  <option value="">Select</option>
                 {STATES.map((opt, index) => (
                   <option key={index + 1} value={opt.abbreviation}>
                     {opt.name}
                   </option>
                 ))}
                 </select>
-              <label className="field-label">State</label>
+              <label className="field-label"><span className="required">*</span> State</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_state" + (counter - 1)]}
+              errorType="required"
+              message="State is required"
+            />
           </div>
           <div className="form-group">
             <div className="field">
-              <input
-                name="zipCode"
+              <NumberFormat
+                readOnly={isReadonly}
+                name={"ch_zip_code" + (counter - 1)}
                 className="field-input"
-                value={data.city}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "zip_code", target.value);
+                }}
+                defaultValue={childProfile.zip_code}
                 placeholder="Zip Code"
-                maxLength="5"
+                ref={register({ required: true, minLength: 5 })}
+                format="#####"
               />
-              <label className="field-label">Zip Code</label>
+              <label className="field-label"><span className="required">*</span> Zip Code</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_zip_code" + (counter - 1)]}
+              errorType="required"
+              message="Zip Code is required"
+            />
+            <ErrorMessage
+              field={errors["ch_zip_code" + (counter - 1)]}
+              errorType="minLength"
+              message="Zip Code must be of 5 digits"
+            />
           </div>
         </div>
 
@@ -307,9 +668,16 @@ export default function index() {
           <div className="form-group">
             <div className="field">
               <select
-                name="locationSite"
+                readOnly={isReadonly}
+                disabled={isReadonly}
+                name={"ch_location_site" + (counter - 1)}
                 className="field-input"
-                value={data.locationSite}>
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "location_site", target.value);
+                }}
+                ref={register({ required: true, minLength: 5 })}
+                defaultValue={childProfile.location_site}
+              >
                   <option value="">Select</option>
                 {LOCATION_SITE_OPTIONS.map((opt, index) => (
                   <option key={index + 1} value={opt.value}>
@@ -317,20 +685,28 @@ export default function index() {
                   </option>
                 ))}
                 </select>
-              <label className="field-label">Location Site</label>
+              <label className="field-label"><span className="required">*</span> Location Site</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_location_site" + (counter - 1)]}
+              errorType="required"
+              message="Location Site is required"
+            />
           </div>
           <div className="form-group">
             <div className="field">
               <Multiselect
-                  className="field-input"
-                  options={PROGRAMS_OPTIONS}
-                  hasSelectAll={hasSelectAll}
-                  onSelect={setSchoolProgramSelected}
-                  placeholder="Choose Multiple"
-                  displayValue="name"
-                  closeIcon="cancel"
-                  id="programSelectInput"
+                readOnly={isReadonly}
+                disabled={isReadonly}
+                className="field-input"
+                options={PROGRAMS_OPTIONS}
+                hasSelectAll={hasSelectAll}
+                onSelect={setSchoolProgramSelected}
+                placeholder="Choose Multiple"
+                displayValue="name"
+                closeIcon="cancel"
+                id={"program_" + (counter - 1)}
+                name={"program_" + (counter - 1)}
               />
               <label className="field-label">Program (select all choices that apply)</label>
             </div>
