@@ -3,6 +3,8 @@ import graphqlClient from "../../graphql";
 import { VENDOR_UPDATE_MUTATION, VENDOR_BY_USER_QUERY } from "../../graphql/vendorMutation";
 import * as actionType from "./Constant";
 
+import { setFormSettingsLoading } from "./Loading";
+
 const getVendorFromDatabase = user => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -66,11 +68,9 @@ export const requestUpdateVendor = (vendor) => {
 export function* updateVendor({ vendor }) {
 
   try {
-    const response = yield call(updateVendorToDatabase, vendor);
-
-    console.log("vendor 12121");
-    console.log(response);
-    
+    yield put(setFormSettingsLoading(true));
+    const response = yield call(updateVendorToDatabase, vendor);    
+    yield put(setFormSettingsLoading(false));
     if(response) {
       yield put({
         type: actionType.REQUEST_UPDATE_VENDOR_COMPLETED,
@@ -85,6 +85,7 @@ export function* updateVendor({ vendor }) {
 
   } catch(err) {
     console.log(err);
+    yield put(setFormSettingsLoading(false));
     yield put({
       type: actionType.REQUEST_UPDATE_VENDOR_COMPLETED,
       payload: {}

@@ -4,8 +4,11 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
 import { requestUpdateVendor } from "../../../../redux/actions/Vendors";
-
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+import Loading from "../../../../helpers/Loading.js";
+
+import Toggle from "react-toggle";
+import "react-toggle/style.css";
 
 const ApplicationSettingsStyled = styled.div`
   .application-form-settings {
@@ -23,6 +26,20 @@ const ApplicationSettingsStyled = styled.div`
   #applicationForm .form-group textarea.form-control {
     resize: none;
     padding: 0;
+  }
+
+  #applicationForm .form-group {
+    position: relative;
+  }
+
+  #applicationForm .form-group .react-toggle {
+    position: absolute;
+    right: 0;
+    bottom: 12px;
+  }
+
+  #applicationForm .field-input.title {
+    width: 92%;
   }
 
   .textarea-container {
@@ -55,7 +72,8 @@ const ApplicationSettingsStyled = styled.div`
 `;
 
 export default function index({
-  vendor
+  vendor,
+  formSettingsLoading = false
 }) {
 
   const [formSettings, setFormSettings] = useState({
@@ -81,6 +99,8 @@ export default function index({
 
   const handleFormSettingsChange = (id, value) => {
 
+    console.log(id, value);
+
     setFormSettings({...formSettings, [id]: value});
   }
 
@@ -97,9 +117,9 @@ export default function index({
       section1_name: formSettings.section1_name,
       section2_name: formSettings.section2_name,
       section3_name: formSettings.section3_name,
-      section1_show: formSettings.section1_show,
-      section2_show: formSettings.section2_show,
-      section3_show: formSettings.section3_show
+      section1_show: formSettings.section1_show ? 1 : 0,
+      section2_show: formSettings.section2_show ? 1 : 0,
+      section3_show: formSettings.section3_show ? 1 : 0
     };
 
     dispatch(requestUpdateVendor(payload));
@@ -108,118 +128,134 @@ export default function index({
   return (
     <ApplicationSettingsStyled>
       <div id="applicationForm" className="application-form-settings">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div>
-            <div className="form-group">
-              <div className="field">
-                <input 
-                  name="vendor_name" 
-                  className="field-input" 
-                  placeholder="Vendor Name"
-                  onChange={({target}) => handleFormSettingsChange("name", target.value)}
-                  defaultValue={formSettings.name}
-                  ref={register({required: true})}
+        {
+          formSettingsLoading ? (
+            <Loading />
+          ) : (
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div>
+              <div className="form-group">
+                <div className="field">
+                  <input 
+                    name="vendor_name" 
+                    className="field-input" 
+                    placeholder="Vendor Name"
+                    onChange={({target}) => handleFormSettingsChange("name", target.value)}
+                    defaultValue={formSettings.name}
+                  />
+                  <label className="field-label">Vendor Name</label>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="form-group">
+                <div className="field">
+                  <input 
+                    name="section1_title" 
+                    className="field-input title" 
+                    placeholder="Title"
+                    onChange={({target}) => handleFormSettingsChange("section1_name", target.value)}
+                    defaultValue={formSettings.section1_name}
+                  />
+                  <label className="field-label">Title</label>
+                </div>
+                <Toggle 
+                  defaultChecked={!!+formSettings.section1_show} 
+                  icons={false} 
+                  onChange={({target}) => handleFormSettingsChange("section1_show", target.checked)}  
                 />
-                <label className="field-label">Vendor Name</label>
               </div>
-              <ErrorMessage
-                field={errors.vendor_name}
-                errorType="required"
-                message="Vendor name is required"
-              />
             </div>
-          </div>
-          <div>
-            <div className="form-group">
-              <div className="field">
-                <input 
-                  name="section1_title" 
-                  className="field-input" 
-                  placeholder="Title"
-                  onChange={({target}) => handleFormSettingsChange("section1_name", target.value)}
-                  defaultValue={formSettings.section1_name}
+            <div>
+              <div className="form-group">
+                <div className="textarea-container">
+                  <textarea 
+                    name="waiver_text"
+                    className="form-control"
+                    placeholder="Context"
+                    rows="15"
+                    onChange={({target}) => handleFormSettingsChange("section1_text", target.value)}
+                    defaultValue={formSettings.section1_text}
+                  >
+                  </textarea>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="form-group">
+                <div className="field">
+                  <input 
+                    name="section1_title" 
+                    className="field-input title" 
+                    placeholder="Title"
+                    onChange={({target}) => handleFormSettingsChange("section2_name", target.value)}
+                    defaultValue={formSettings.section2_name}
+                  />
+                  <label className="field-label">Title</label>
+                </div>
+                <Toggle 
+                  defaultChecked={!!+formSettings.section2_show} 
+                  icons={false}
+                  onChange={({target}) => handleFormSettingsChange("section2_show", target.checked)}
                 />
-                <label className="field-label">Title</label>
               </div>
             </div>
-          </div>
-          <div>
-            <div className="form-group">
-              <div className="textarea-container">
-                <textarea 
-                  name="waiver_text"
-                  className="form-control"
-                  placeholder="Context"
-                  rows="15"
-                  onChange={({target}) => handleFormSettingsChange("section1_text", target.value)}
-                  defaultValue={formSettings.section1_text}
-                >
-                </textarea>
+            <div>
+              <div className="form-group">
+                <div className="textarea-container">
+                  <textarea 
+                    name="liability_waiver_text"
+                    className="form-control"
+                    rows="15"
+                    onChange={({target}) => handleFormSettingsChange("section2_text", target.value)}
+                    defaultValue={formSettings.section2_text}
+                  >
+                  </textarea>
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            <div className="form-group">
-              <div className="field">
-                <input 
-                  name="section1_title" 
-                  className="field-input" 
-                  placeholder="Title"
-                  onChange={({target}) => handleFormSettingsChange("section2_name", target.value)}
-                  defaultValue={formSettings.section2_name}
+            <div>
+              <div className="form-group">
+                <div className="field">
+                  <input 
+                    name="section1_title" 
+                    className="field-input title" 
+                    placeholder="Title"
+                    onChange={({target}) => handleFormSettingsChange("section3_name", target.value)}
+                    defaultValue={formSettings.section3_name}
+                  />
+                  <label className="field-label">Title</label>
+                </div>
+                <Toggle 
+                  defaultChecked={!!+formSettings.section3_show} 
+                  icons={false} 
+                  onChange={({target}) => handleFormSettingsChange("section3_show", target.checked)}
                 />
-                <label className="field-label">Title</label>
               </div>
             </div>
-          </div>
-          <div>
-            <div className="form-group">
-              <div className="textarea-container">
-                <textarea 
-                  name="liability_waiver_text"
-                  className="form-control"
-                  rows="15"
-                  onChange={({target}) => handleFormSettingsChange("section2_text", target.value)}
-                  defaultValue={formSettings.section2_text}
-                >
-                </textarea>
+            <div>
+              <div className="form-group">
+                <div className="textarea-container">
+                  <textarea 
+                    name="terms_and_conditions_text"
+                    className="form-control"
+                    rows="15"
+                    onChange={({target}) => handleFormSettingsChange("terms_and_conditions_text", target.value)}
+                    defaultValue={formSettings.section3_text}
+                  >
+                  </textarea>
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            <div className="form-group">
-              <div className="field">
-                <input 
-                  name="section1_title" 
-                  className="field-input" 
-                  placeholder="Title"
-                  onChange={({target}) => handleFormSettingsChange("section3_name", target.value)}
-                  defaultValue={formSettings.section3_name}
-                />
-                <label className="field-label">Title</label>
-              </div>
+            <div className="formsettings-btn-container">
+              <button type="submit">Save</button>
             </div>
-          </div>
-          <div>
-            <div className="form-group">
-              <div className="textarea-container">
-                <textarea 
-                  name="terms_and_conditions_text"
-                  className="form-control"
-                  rows="15"
-                  onChange={({target}) => handleFormSettingsChange("terms_and_conditions_text", target.value)}
-                  defaultValue={formSettings.section3_text}
-                >
-                </textarea>
-              </div>
-            </div>
-          </div>
-          <div className="formsettings-btn-container">
-            <button type="submit">Save</button>
-          </div>
-        </form>
+          </form>
+          )
+        }
+       
       </div>
     </ApplicationSettingsStyled>
   )

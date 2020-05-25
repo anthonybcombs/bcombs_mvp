@@ -36,7 +36,7 @@ import {
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
-import { getVendors, updateVendor } from "../../api/vendor";
+import { getVendors, updateVendor, addVendor } from "../../api/vendor";
 import { createApplication, getApplicationsByVendor } from "../../api/applications";
 import { addChild, getChildInformation } from "../../api/child";
 import { addParent, getParentByApplication } from "../../api/parents";
@@ -103,9 +103,17 @@ const resolvers = {
     },
     async vendor(root, { user }, context) {
       const vendors = await getVendors();
-      return vendors.filter((vendor) => {
+      console.log("vendors", vendors);
+      let vendor = vendors.filter((vendor) => {
         return user == vendor.user
       })[0];
+
+      if(vendor) {
+        return vendor
+      } else {
+        vendor = await addVendor({user: user});
+        return vendor;
+      }
     },
     async getVendorApplications(root, {vendor_id} , context) {
       let applications = await getApplicationsByVendor(vendor_id);
