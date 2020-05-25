@@ -57,7 +57,7 @@ export default function form({ calendars, onSubmit }) {
     register({ name: "calendars" }, { required: true });
   }, []);
   return (
-    <FormStyled onSubmit={handleSubmit(onSubmit)}>
+    <FormStyled method="POST" onSubmit={handleSubmit(onSubmit)}>
       <Select
         className="select"
         options={options}
