@@ -13,11 +13,7 @@ import {
   eachDayOfInterval,
   isAfter,
   getMonth,
-  getWeek,
-  getWeekOfMonth,
-  getYear,
-  getDay,
-  isThisWeek
+  getYear
 } from "date-fns";
 import Event from "../../event";
 

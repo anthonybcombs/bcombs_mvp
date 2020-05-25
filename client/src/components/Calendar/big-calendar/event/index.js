@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faStar,
+  faCopy,
   faCommentDots,
   faShare,
   faTrashAlt,
@@ -172,7 +173,7 @@ export default function index({ auth, day, event, selectedCalendars }) {
             <div id="top-event-controls">
               <button>
                 <FontAwesomeIcon
-                  icon={faShareAltSquare}
+                  icon={faCopy}
                   onClick={toggleDuplicateEventModal}
                 />
               </button>

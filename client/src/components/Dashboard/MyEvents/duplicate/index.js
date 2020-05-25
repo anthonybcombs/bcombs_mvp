@@ -4,6 +4,7 @@ import styled, { ThemeContext } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { uuid } from "uuidv4";
 import { format } from "date-fns";
+import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
 
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 
@@ -39,7 +40,7 @@ const DuplicateEventModal = styled.div`
     border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
-  button {
+  .duplicate-submit {
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;
     background-color: lightgrey;
@@ -47,7 +48,7 @@ const DuplicateEventModal = styled.div`
     box-shadow: 0px 3px 6px #908e8e;
     border-radius: ${({ theme }) => theme.button.borderRadius} !important;
   }
-  button {
+  .duplicate-submit {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     padding: 10px;
     width: 100%;
@@ -72,6 +73,32 @@ const DuplicateEventModal = styled.div`
       width: 30%;
     }
   }
+  .react-datetimerange-picker input {
+    margin: 0;
+    width: initial;
+    border-bottom: none;
+  }
+  .react-datetimerange-picker__wrapper {
+    border: none;
+  }
+  .react-calendar .react-calendar__tile--active,
+  .react-calendar .react-calendar__tile--hover,
+  .react-calendar__tile--rangeStart {
+    background-color: #f26e21 !important;
+    color: white !important;
+  }
+  .react-calendar .react-calendar__tile:hover {
+    background-color: #f26e21;
+    color: white;
+  }
+  .react-datetimerange-picker__inputGroup__input--hasLeadingZero {
+    padding: 0;
+  }
+  .react-calendar__tile--active:enabled:hover,
+  .react-calendar__tile--active:enabled:focus {
+    background-color: #f26e21;
+    color: white;
+  }
 `;
 
 export default function index({
@@ -85,6 +112,7 @@ export default function index({
   }));
   const [calendarOptions, setCalendarOptions] = useState([]);
   const [selectedCalendar, setSelectedCalendar] = useState([]);
+  const [eventDetails, setEventDetails] = useState({});
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   //   const { register, errors } = useForm({
@@ -103,20 +131,31 @@ export default function index({
       setCalendarOptions(formattedCalendars);
     }
   }, [calendars, isVisible]);
+
+  useEffect(() => {
+    if (isVisible && defaultEventDetails) {
+      setEventDetails({
+        ...defaultEventDetails,
+        eventSchedule: [
+          new Date(defaultEventDetails.start_of_event),
+          new Date(defaultEventDetails.end_of_event)
+        ]
+      });
+    }
+  }, [defaultEventDetails, isVisible]);
   const handleSubmit = value => {
     const calendarIds = selectedCalendar.map(calendar => calendar.id);
 
     const payload = {
       id: uuid(),
       start_of_event: format(
-        getUTCDate(defaultEventDetails.start_of_event),
+        getUTCDate(eventDetails.eventSchedule[0]),
         "yyyy-MM-dd HH:mm:ss"
       ),
       end_of_event: format(
-        getUTCDate(defaultEventDetails.end_of_event),
+        getUTCDate(eventDetails.eventSchedule[1]),
         "yyyy-MM-dd HH:mm:ss"
       ),
-
       type: defaultEventDetails.type,
       location: defaultEventDetails.location,
       name: defaultEventDetails.name,
@@ -130,9 +169,6 @@ export default function index({
       group_ids: defaultEventDetails.group_ids
     };
 
-    console.log("handleSubmit payload", payload);
-    console.log("handleSubmit defaultEventDetails", defaultEventDetails);
-    console.log("handleSubmit selectedCalendar", selectedCalendar);
     dispatch(addEvent(payload));
     toggleDuplicateEventModal();
   };
@@ -140,6 +176,10 @@ export default function index({
   if (!isVisible) {
     return <></>;
   }
+
+  const handleEventDetailsChange = (id, value, action = "") => {
+    setEventDetails({ ...eventDetails, [id]: value });
+  };
 
   const handleCalendarSelect = value => {
     setSelectedCalendar(value);
@@ -170,7 +210,7 @@ export default function index({
           <p>
             <b>Name:</b> {defaultEventDetails.name}
           </p>
-          <p>
+          {/* <p>
             {format(
               new Date(defaultEventDetails.start_of_event),
               "MMM dd,yyyy hh:mm a"
@@ -179,7 +219,18 @@ export default function index({
               new Date(defaultEventDetails.end_of_event),
               "MMM dd,yyyy hh:mm a"
             )}{" "}
-          </p>
+          </p> */}
+
+          <DateTimeRangePicker
+            value={eventDetails.eventSchedule}
+            disableClock={true}
+            onChange={date => {
+              if (date == null) {
+                return;
+              }
+              handleEventDetailsChange("eventSchedule", date);
+            }}
+          />
           <CustomMultiSelect
             className="field-input"
             options={calendarOptions}
@@ -190,6 +241,7 @@ export default function index({
             closeIcon="cancel"
           />
           <button
+            className="duplicate-submit"
             data-testid="app-dashboard-my-events-duplicate-event-button-save"
             onClick={handleSubmit}>
             Save
