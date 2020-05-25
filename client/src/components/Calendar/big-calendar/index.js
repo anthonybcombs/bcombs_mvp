@@ -13,7 +13,11 @@ export default function index({
       ? "month"
       : sessionStorage.getItem("bigCalendarViewMonth")
   );
-  const [selectedCalendars, setSelectedCalendars] = useState([]);
+  const [selectedCalendars, setSelectedCalendars] = useState(
+    sessionStorage.getItem("selectedCalendars") !== null
+      ? JSON.parse(sessionStorage.getItem("selectedCalendars"))
+      : []
+  );
   useEffect(() => {
     if (sessionStorage.getItem("bigCalendarViewType") === null) {
       sessionStorage.setItem("bigCalendarViewType", "month");
@@ -29,6 +33,14 @@ export default function index({
   };
   const handleCalendarSelection = (id) => {
     if (selectedCalendars.includes(id)) {
+      sessionStorage.setItem(
+        "selectedCalendars",
+        JSON.stringify(
+          selectedCalendars.filter((calendarId) => {
+            return calendarId !== id;
+          })
+        )
+      );
       setSelectedCalendars(
         selectedCalendars.filter((calendarId) => {
           return calendarId !== id;
@@ -36,6 +48,10 @@ export default function index({
       );
       return;
     }
+    sessionStorage.setItem(
+      "selectedCalendars",
+      JSON.stringify([...selectedCalendars, id])
+    );
     setSelectedCalendars([...selectedCalendars, id]);
   };
 
