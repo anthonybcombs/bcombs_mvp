@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import SearchForm from "./form";
@@ -11,7 +11,17 @@ const ModalStyled = styled.div`
     width: 50%;
   }
 `;
-export default function modal({ isVisible = true, toggleSearchModal }) {
+export default function modal({
+  isVisible = true,
+  toggleSearchModal,
+  calendars,
+}) {
+  const handleInputChange = (id, value) => {
+    setDetails({ ...calendarDetails, [id]: value });
+  };
+  const handleSubmmit = (data) => {
+    toggleSearchModal(false);
+  };
   if (!isVisible) {
     return <></>;
   }
@@ -27,7 +37,11 @@ export default function modal({ isVisible = true, toggleSearchModal }) {
           &times;
         </span>
         <h2>Advanced Search</h2>
-        <SearchForm />
+        <SearchForm
+          calendars={calendars}
+          handleInputChange={handleInputChange}
+          onSubmit={handleSubmmit}
+        />
       </div>
     </ModalStyled>,
     document.getElementById("modal")
