@@ -11,4 +11,19 @@ const getUTCDate = (dateString = Date.now()) => {
   );
 };
 
-export { getUTCDate };
+const getWeekIndex = day => {
+  let count = null;
+  if (day <= 7) {
+    count = 1;
+  } else if (day > 7 && day <= 14) {
+    count = 2;
+  } else if (day > 14 && day <= 21) {
+    count = 3;
+  } else if (day > 21 && day <= 28) {
+    count = 4;
+  } else if (day > 28) {
+    count = 5;
+  }
+  return count;
+};
+export { getUTCDate, getWeekIndex };
