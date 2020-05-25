@@ -55,7 +55,7 @@ export const addVendor = async ({
         section1_show,
         section2_show,
         section3_show      
-        FROM vendor WHERE user=?`, [user]);
+        FROM vendor WHERE user=UUID_TO_BIN(?)`, [user]);
     vendor = vendor.length > 0 ? vendor[0]: "";
   } catch(err) {
     console.log(err);
