@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import EllipsisText from "react-ellipsis-text";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -73,7 +74,7 @@ const HeaderStyled = styled.div`
   .calendar p.selected {
     background: #f26e21;
   }
-  .calendar p span {
+  .calendar p span:nth-of-type(1) {
     display: inline-block;
     width: 10px;
     height: 10px;
@@ -307,7 +308,7 @@ const CalendarCard = ({
         }`}
       >
         <span style={{ backgroundColor: `${calendar.color}` }}></span>
-        {calendar.name}
+        <EllipsisText text={calendar.name} length={8} />
       </p>
       {isCalendarButtonsVisible && (
         <div id="buttons">
