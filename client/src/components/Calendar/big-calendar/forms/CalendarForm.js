@@ -72,6 +72,10 @@ const CreateCalendarFormStyled = styled.form`
   #buttons-control {
     margin-top: 10em;
   }
+  div[class$="multiValue"] div {
+    background-color: #f26e21;
+    color: white;
+  }
   @media (min-width: 600px) {
     button {
       width: 30%;
@@ -114,7 +118,6 @@ export default function CreateCalendarForm({
   });
   React.useEffect(() => {
     register({ name: "image" }, { required: true });
-    // register({ name: "groups" }, { required: true });
     register(
       { name: "color" },
       {
@@ -204,9 +207,12 @@ export default function CreateCalendarForm({
           isMulti
           ref={register({ required: true })}
           onChange={(option) => {
-            const groupIds = option.map((group) => group.value);
-            handleInputChange("groups", groupIds);
-            setValue("groups", groupIds);
+            if (option !== null) {
+              const groupIds = option.map((group) => group.value);
+              handleInputChange("groups", groupIds);
+              return;
+            }
+            handleInputChange("groups", []);
           }}
           theme={(theme) => ({
             ...theme,
