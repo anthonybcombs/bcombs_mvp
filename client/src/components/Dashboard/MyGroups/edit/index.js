@@ -135,7 +135,7 @@ export default function index({
             last_name: c.last_name
           };
         });
-      console.log("selections", selections);
+
       setCurrentContacts(list);
       setContactSelections(selections);
       setGroupDetails(group);
@@ -204,6 +204,7 @@ export default function index({
   };
 
   console.log("contactSelections", contactSelections);
+  console.log("contactSelections currentContacts", currentContacts);
   if (!isVisible) {
     return <></>;
   }

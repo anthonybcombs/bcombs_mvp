@@ -5,6 +5,7 @@ import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
 
 import Contact from "../../MyContact/contact";
 
+//  grid-template-columns: repeat(3, 1fr);
 const ContactListStyled = styled.div`
   #contact-list {
     padding: 1em;
@@ -30,11 +31,12 @@ const ContactListStyled = styled.div`
 
 const ContactStyled = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 45% 45% 10%;
   grid-gap: 1%;
   height: 4em;
-  padding: 0.1em;
-  margin: 0.5em 0 0.5em 0;
+  padding: 0.5em;
+  margin: 1em 0 1em 0;
+  border-bottom: 2px solid lightgrey !important;
   div:nth-of-type(1) {
     display: flex;
   }
@@ -71,6 +73,12 @@ const ContactStyled = styled.div`
     display: inline-block;
     margin-left: 20px;
   }
+  .member-action {
+    margin-top: 5px;
+  }
+  .member-email {
+    text-align: left !important;
+  }
 `;
 
 const GroupContacts = ({ contacts, handleRemoveMember }) => {
@@ -80,6 +88,7 @@ const GroupContacts = ({ contacts, handleRemoveMember }) => {
   return (
     <ContactListStyled>
       <div id="contact-list-details">
+        <h4>Members</h4>
         {contacts.length > 0 ? (
           contacts.map(contact => (
             <ContactStyled key={contact.id}>
@@ -90,10 +99,12 @@ const GroupContacts = ({ contacts, handleRemoveMember }) => {
                 </p>
               </div>
               <div>
-                <span className="group-list-details">
+                <span className="group-list-details member-email">
                   <p>{contact.email}</p>
                   {/* <p>{contact.phone_number}</p> */}
                 </span>
+              </div>
+              <div className="member-action">
                 <span
                   className="group-list-details"
                   onClick={handleRemoveMember(contact.user_id)}>

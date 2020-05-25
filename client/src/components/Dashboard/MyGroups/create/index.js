@@ -10,7 +10,7 @@ const NewContactModal = styled.div`
     text-align: center;
   }
   .modal-content {
-    width: 50%;
+    width: 30%;
   }
   @media (min-width: 600px) {
   }
