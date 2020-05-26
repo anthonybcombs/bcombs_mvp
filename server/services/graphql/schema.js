@@ -229,7 +229,14 @@ const inputs = `
         emergency_contacts: String
     }
 
-  
+    input UpdateApplicationInput {
+        app_id: String!
+        verification: String
+        student_status: String
+        color_designation: String
+        notes: String
+        class_teacher: String
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -476,6 +483,8 @@ const queryTypes = `
         color_designation: String
         notes: String
         application_date: Date
+        archived_date: Date
+        class_teacher: String
     }
 
     type ParentUserApplication{
@@ -518,8 +527,8 @@ const mutations = `
         updateEvent(event:EventInput!): [Event]
         deleteEvent(id: String!, email:String!): [Event]
         addApplication(applications: [ApplicationInput]): Status
-        updateApplicationStatus(application_id: String!, status: String!): Status
-        archivedApplication(application_id: String!): Status
+        updateApplication(application: UpdateApplicationInput!): Status
+        archivedApplications(app_ids: [String]): Status
         updateVendor(vendor: VendorInput!): Vendor
     }
 `;

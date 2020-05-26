@@ -54,10 +54,13 @@ import { requestedStatus, removedStatus } from "../actions/Status";
 
 import { getVendor, updateVendor } from "../actions/Vendors";
 
-import {
-  addApplication,
-  getApplication,
-  getUserApplication
+import { 
+  addApplication, 
+  getApplication, 
+  getUserApplication,
+  updateApplication,
+  archivedApplication, 
+  getArchivedApplication
 } from "../actions/Application";
 import reducer from "../reducers";
 function* rootSaga() {
@@ -120,6 +123,9 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ADD_APPLICATION, addApplication);
   yield takeLatest(actionType.REQUEST_GET_APPLICATION, getApplication);
   yield takeLatest(actionType.REQUEST_USER_APPLICATIONS, getUserApplication);
+  yield takeLatest(actionType.REQUEST_UPDATE_APPLICATION, updateApplication);
+  yield takeLatest(actionType.REQUEST_ARCHIVED_APPLICATION, archivedApplication);
+  yield takeLatest(actionType.REQUEST_GET_ARCHIVED_APPLICATION, getArchivedApplication)
 }
 const sagaMiddleware = createSagaMiddleware();
 

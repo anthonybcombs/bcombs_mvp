@@ -16,7 +16,7 @@ import ChildFormViewStyled from "./view/child";
 import ParentFormViewStyled from "./view/parent";
 
 import { requestVendor } from "../../../redux/actions/Vendors";
-import { requestGetApplications } from "../../../redux/actions/Application";
+import { requestGetApplications, requestUpdateApplication } from "../../../redux/actions/Application";
 
 import ProfileImg from "../../../images/defaultprofile.png";
 const ApplicationStyled = styled.div`
@@ -76,6 +76,8 @@ const ApplicationStyled = styled.div`
 export default function index() {
   const [selectedLabel, setSelectedLabel] = useState("Application Status");
 
+  const [updateApplication, setUpdateApplication] = useState({})
+
   const [selectNonMenuOption, setSelectNonMenuOption] = useState(false);
 
   const [selectedApplication, setSelectedApplication] = useState({});
@@ -90,8 +92,15 @@ export default function index() {
     }
   );
 
-  console.log("LOADING", loading);
+  console.log(applications);
 
+  if(applications.updateapplication && applications.updateapplication.message == "application updated") {
+    window.location.reload(false);
+  }
+
+  if(applications.archivedapplication && applications.archivedapplication.message == "application archived") {
+    window.location.reload(false);
+  }
   useEffect(() => {
     if (auth.user_id) {
       dispatch(requestVendor(auth.user_id));
@@ -116,7 +125,28 @@ export default function index() {
     setSelectedApplication(application);
     setSelectNonMenuOption(true);
     setView(view);
-  };
+
+    const temp = {
+      app_id: application.app_id,
+      verification: application.verification,
+      student_status: application.student_status,
+      color_designation: application.color_designation ? application.color_designation : "",
+      notes: application.notes ? application.notes : "",
+      class_teacher: application.class_teacher ? application.class_teacher : application?.child?.grade_desc
+    }
+    setUpdateApplication({...temp});
+  }
+
+  const handleUpdateOnchange = (id, value) => {
+
+    setUpdateApplication({...updateApplication, [id]: value});
+    console.log("UPDATE APPLICATION", updateApplication);
+  }
+
+  const onSubmit = () => {
+    console.log("Submit update application", updateApplication)
+    dispatch(requestUpdateApplication(updateApplication));
+  }
 
   return (
     <ApplicationStyled>
@@ -168,6 +198,9 @@ export default function index() {
             <EditApplicationStyled
               application={selectedApplication}
               vendor={vendor || {}}
+              onSubmit={onSubmit}
+              handleUpdateOnchange={handleUpdateOnchange}
+              updateLoading={loading.application}
             />
           )}
         </div>

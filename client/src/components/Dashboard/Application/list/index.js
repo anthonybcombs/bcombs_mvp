@@ -1,16 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faArchive,
   faCheck,
   faTimes } from "@fortawesome/free-solid-svg-icons";
 import DataTable from 'react-data-table-component';
-import { uuid } from "uuidv4";
 import { format } from "date-fns";
 import Loading from "../../../../helpers/Loading.js";
 
 import "../../ApplicationForm/ApplicationForm.css";
+
+import ConfirmedModal from "../../../../helpers/ConfirmedModal";
+
+import {requestArchivedAppplication} from "../../../../redux/actions/Application";
 
 const ApplicationListStyled = styled.div`
   
@@ -213,23 +217,40 @@ const SelectWrapper = styled.div`
 
 const CLASS_OPTIONS = ["Seniors", "Juniors", "Sophomores", "Freshmen", "Middle School"];
 
-const STATUS_OPTIONS = ["In process", "Current Student", "Waiting List", "Accepted", "Rejected", "No longer a Student"];
+const STUDENT_CLASS_OPTIONS = [
+  { name: "In process", value: "new_applicant_in_process"},
+  { name: "Accepted", value: "new_applicant_accepted" },
+  { name: "Rejected", value: "new_applicant_rejected"},
+  { name: "Current Student", value: "current_student" },
+  { name: "Waiting List", value: "waiting_list"},
+  { name: "No longer a Student", value: "no_longer_student"},
+  { name: "Missed opportunity", value: "missed_opportunity"},
+];
 
 const COLOR_OPTIONS = ["Blue", "Red", "Green"];
 
-const FilterComponent = ({ filterText, onFilter, onClassChange, onClear, classText }) => (
+const FilterComponent = ({ 
+  onFilter, 
+  onClassChange, 
+  onColorChange,
+  onStatusChange, 
+  onClear, 
+  filterText, 
+  classText, 
+  colorText,
+  statusText }) => (
   <>
     <SelectWrapper>
     <TextField id="search" type="text" placeholder="Search Name" value={filterText} onChange={onFilter} />
       <select 
         name="class"
         className="form-control"
-        value={classText}
-        onChange={onClassChange}>
+        value={statusText}
+        onChange={onStatusChange}>
         <option value="">Select Status</option>
         {
-          STATUS_OPTIONS.map((opt, i) => (
-            <option key={i} val={opt}>{opt}</option>
+          STUDENT_CLASS_OPTIONS.map((opt, i) => (
+            <option key={i} value={opt.value}>{opt.name}</option>
           ))
         }
       </select>
@@ -241,19 +262,19 @@ const FilterComponent = ({ filterText, onFilter, onClassChange, onClear, classTe
         <option value="">Select Class</option>
         {
           CLASS_OPTIONS.map((opt, i) => (
-            <option key={i} val={opt}>{opt}</option>
+            <option key={i} value={opt}>{opt}</option>
           ))
         }
       </select>
       <select 
         name="class"
         className="form-control"
-        value={classText}
-        onChange={onClassChange}>
+        value={colorText}
+        onChange={onColorChange}>
         <option value="">Select Color</option>
         {
           COLOR_OPTIONS.map((opt, i) => (
-            <option key={i} val={opt}>{opt}</option>
+            <option key={i} value={opt}>{opt}</option>
           ))
         }
       </select>
@@ -358,7 +379,7 @@ export default function index({
       name: 'Class',
       selector: 'class',
       sortable: true,
-      cell: row => row?.child?.grade_desc
+      cell: row => row.class_teacher ? row.class_teacher : row?.child?.grade_desc
     },
     {
       name: 'Age (Bdate)',
@@ -428,7 +449,7 @@ export default function index({
 
   const conditionalRowStyles = [
     {
-      when: row => row.status === "currentPassed",
+      when: row => row.color_designation === "blue",
       style: {
         backgroundColor: 'SteelBlue !important',
         color: '#fff !important',
@@ -439,9 +460,20 @@ export default function index({
       }
     },
     {
-      when: row => row.status === "currentFailed",
+      when: row => row.color_designation === "red",
       style: {
         backgroundColor: 'red !important',
+        color: '#fff !important',
+        borderBottom: '1px solid #fff !important',
+        a: {
+          color: 'inherit !important'
+        }
+      }
+    },
+    {
+      when: row => row.color_designation === "green",
+      style: {
+        backgroundColor: 'green !important',
         color: '#fff !important',
         borderBottom: '1px solid #fff !important',
         a: {
@@ -453,8 +485,11 @@ export default function index({
 
   const [filterText, setFilterText] = useState('');
   const [classText, setClassText] = useState('');
-  
+  const [statusText, setStatusText] = useState('')
+  const [colorText, setColorText] = useState('');
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
+
+  const dispatch = useDispatch();
 
   let data = applications.length > 0 ? applications : [];
 
@@ -462,26 +497,45 @@ export default function index({
 
   data = getApplications.filter((item) => {
 
-      let name_accepted = true;
-      let class_accepted = true;
+      let name_match = true;
+      let class_match = true;
+      let color_match = true;
+      let status_match = true;
 
       if(filterText) {
-        name_accepted = item.child.firstname && item.child.firstname.toLowerCase().includes(filterText.toLowerCase()) ||
+        name_match = item.child.firstname && item.child.firstname.toLowerCase().includes(filterText.toLowerCase()) ||
           item.child.lastname && item.child.lastname.toLowerCase().includes(filterText.toLowerCase()) ||
           item.parents[0].firstname && item.parents[0].firstname.toLowerCase().includes(filterText.toLowerCase()) ||
           item.parents[0].lastname && item.parents[0].lastname.toLowerCase().includes(filterText.toLowerCase())
       }
 
       if(classText) {
-        class_accepted = item.child.grade_desc == classText
+        if(item.class_teacher) {
+          class_match = item.class_teacher == classText;
+        } else {
+          class_match = item.child.grade_desc == classText;
+        }
       }
 
-      return name_accepted && class_accepted;
+      if(colorText) {
+        if(item.color_designation)
+          color_match = item.color_designation.toLowerCase() == colorText.toLowerCase();
+        else
+          color_match = false;
+      }
+
+      console.log("Status text", statusText);
+      
+      if(statusText) {
+        status_match = item.student_status.toLowerCase() == statusText.toLowerCase();
+      }
+
+      return name_match && class_match && color_match && status_match;
     });
 
   console.log("data", data);
 
-  const subHeaderComponentMemo = React.useMemo(() => {
+  const subHeaderComponentMemo = useMemo(() => {
 
     const handleClear = () => {
       if (filterText) {
@@ -490,8 +544,19 @@ export default function index({
       }
     };
     
-    return <FilterComponent onClassChange={e => setClassText(e.target.value)} classText={classText} onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />;
-  }, [filterText, resetPaginationToggle, classText]);
+    return <FilterComponent 
+    onClassChange={e => setClassText(e.target.value)} 
+    onFilter={e => setFilterText(e.target.value)}
+    onColorChange={e => setColorText(e.target.value)}
+    onStatusChange={e => {
+      setStatusText(e.target.value)
+    }}
+    onClear={handleClear} 
+    filterText={filterText} 
+    classText={classText} 
+    colorText={colorText}
+    statusText={statusText}/>;
+  }, [filterText, resetPaginationToggle, classText, colorText, statusText]);
 
   const noHeader = true;
   const striped = true;
@@ -505,6 +570,33 @@ export default function index({
     selectAllRowsItemText: 'All'
   }
 
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [showConfirmed, setShowConfiremd] = useState(false);
+
+  const handleSelectedRowsChange = (state) => {
+    setSelectedRows(state.selectedRows);
+  }
+
+  const doArchivedApplication = () => {
+    const app_ids = selectedRows.map(a => a.app_id);
+    console.log("APP IDS", app_ids);
+
+    dispatch(requestArchivedAppplication(app_ids));
+  }
+
+  const handleOkClick = () => {
+    doArchivedApplication();
+    setShowConfiremd(false);
+  }
+
+  const handleCancelClick = () => {
+    setShowConfiremd(false);
+  }
+
+  const handleArchivedApplication = () => {
+    setShowConfiremd(true);
+  }
+
   return (
     <ApplicationListStyled>
       <div id="applicationList">
@@ -514,7 +606,7 @@ export default function index({
         <div id="tableSection">
           <div id="tableHeader">
             <div id="archivedBtnContainer">
-              <button id="archivedButton">
+              <button id="archivedButton" onClick={handleArchivedApplication}>
                 <FontAwesomeIcon icon={faArchive} />
               </button>
             </div>
@@ -534,7 +626,7 @@ export default function index({
             <div id="actionButtonContainer">
               <div>
                 <a href="/dashboard/archived" target="_blank">Archived Applications</a>
-                <a href="#">All Applications</a>
+                <a href="" onClick={e => { e.preventDefault(); window.location.reload(false)}}>All Applications</a>
               </div>
             </div>
           </div>
@@ -556,12 +648,22 @@ export default function index({
                   subHeaderComponent={subHeaderComponentMemo}
                   paginationRowsPerPageOptions={paginationRowsPerPageOptions}
                   paginationComponentOptions={paginationComponentOptions}
+                  onSelectedRowsChange={handleSelectedRowsChange}
                 />
               )
             }
           </div>
         </div>
       </div>
+      {
+        showConfirmed && 
+        <ConfirmedModal
+          handleOkClick={handleOkClick}
+          handleCancelClick={handleCancelClick}
+          message={"Archived the applications?"}
+        />
+      }
+
     </ApplicationListStyled>
   )
 }
