@@ -5,7 +5,9 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
-  faMinus
+  faMinus,
+  faPlusCircle,
+  faTimesCircle
 } from "@fortawesome/free-solid-svg-icons";
 
 import ErrorMessage from "../../../../helpers/ErrorMessage";
@@ -160,6 +162,17 @@ export default function index({
     setYearLivedStatus(e.target.value);
   }
 
+  const [showPhone, setShowPhone] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
+
+  const handleOtherPhone = () => {
+    setShowPhone(!showPhone);  
+  }
+
+  const handleOtherEmail = () => {
+    setShowEmail(!showEmail);
+  }
+
   return (
     <ParentInformationStyled>
       <h3 className="heading">Family Information { counter > 1 ? `(${counter})`: "" }</h3>
@@ -243,7 +256,25 @@ export default function index({
                   readOnly={isReadonly}
                 />
               }
-              <label className="field-label">Type</label>
+              <label className="field-label">
+                {
+                  !showPhone ?
+                  <span 
+                    className="add"
+                    onClick={(e) => handleOtherPhone()}
+                  >
+                    <FontAwesomeIcon size="lg" icon={faPlusCircle} />
+                  </span>
+                  :
+                  <span 
+                    className="remove"
+                    onClick={(e) => handleOtherPhone()}
+                  >
+                    <FontAwesomeIcon size="lg" icon={faTimesCircle} />
+                  </span>
+                }
+                &nbsp; Type
+              </label>
             </div>
           </div>
 
@@ -280,6 +311,70 @@ export default function index({
           </div>
         </div>
 
+        {
+          showPhone && 
+          <div className="grid-1">
+            <div className="form-group">
+              <div className="field">
+                {
+                  !isReadonly ?
+                  <select
+                    defaultValue={parentProfile.phone_type}
+                    name="parent_phonetype2"
+                    className="field-input"
+                    onChange={({target}) => {
+                      handleParentFormDetailsChange((counter - 1), "profile", "phone_type2", target.value)
+                    }}
+                  >
+                      <option value="" >Select Type</option>
+                    {PHONE_OPTIONS.map(opt => (
+                      <option key={opt.id} value={opt.name}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                  : 
+                  <input
+                    name="parent_phonetype"
+                    className="field-input"
+                    placeholder="Type"
+                    defaultValue={parentProfile.phone_type2}
+                    readOnly={isReadonly}
+                  />
+                }
+                <label className="field-label">Type</label>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <div className="field">
+                {
+                  !isReadonly ?
+                  <NumberFormat
+                    name={"parent_phonenumber2" + (counter - 1)}
+                    className="field-input"
+                    placeholder="Phone Number"
+                    onChange={({target}) => {
+                      handleParentFormDetailsChange((counter - 1), "profile", "phone_number2", target.value)
+                    }}
+                    defaultValue={parentProfile.phone_number2}
+                    format="(###) ###-####" mask="_"
+                  />
+                  :
+                  <input
+                    defaultValue={parentProfile.phone_number}
+                    readOnly={isReadonly}
+                    name={"parent_phonenumber2" + (counter - 1)}
+                    className="field-input"
+                    placeholder="Phone Number"
+                  />
+                }
+                <label className="field-label">Phone Number</label>
+              </div>
+            </div>
+          </div>
+
+        }
         <div className="grid-1">
           <div className="form-group">
             <div className="field">
@@ -310,7 +405,26 @@ export default function index({
                   type="text"
                 />
               }
-              <label className="field-label">Type</label>
+              <label className="field-label">
+                {
+                  !showEmail ?
+                  <span 
+                    className="add"
+                    onClick={(e) => handleOtherEmail()}
+                  >
+                    <FontAwesomeIcon size="lg" icon={faPlusCircle} />
+                  </span>
+                  :
+                  <span 
+                    className="remove"
+                    onClick={(e) => handleOtherEmail()}
+                  >
+                    <FontAwesomeIcon size="lg" icon={faTimesCircle} />
+                  </span>
+                }
+                &nbsp;  
+                Type
+              </label>
             </div>
           </div>
 
@@ -336,6 +450,61 @@ export default function index({
             />
           </div>
         </div>
+        {
+          showEmail &&
+          <div className="grid-1">
+            <div className="form-group">
+              <div className="field">
+                {
+                  !isReadonly ?
+                  <select
+                    defaultValue={parentProfile.email_type2}
+                    name="parent_emailtype2"
+                    className="field-input"
+                    onChange={({target}) => {
+                      handleParentFormDetailsChange((counter - 1), "profile", "email_type2", target.value)
+                    }}
+                  >
+                      <option value="" >Select Type</option>
+                    {EMAIL_OPTIONS.map(opt => (
+                      <option key={opt.id} value={opt.name}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                  :
+                  <input
+                    defaultValue={parentProfile.email_type2}
+                    readOnly={isReadonly}
+                    name="parent_emailtype"
+                    className="field-input"
+                    placeholder="Type"
+                    type="text"
+                  />
+                }
+                <label className="field-label">
+                  Type
+                </label>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <div className="field">
+                <input
+                  defaultValue={parentProfile.email_address2}
+                  readOnly={isReadonly}
+                  name={"parent_emailaddress2" + (counter - 1)}
+                  className="field-input"
+                  placeholder="Email Address"
+                  onChange={({target}) => {
+                    handleParentFormDetailsChange((counter - 1), "profile", "email_address2", target.value)
+                  }}
+                />
+                <label className="field-label"> Email Address</label>
+              </div>
+            </div>
+          </div>
+        }
 
         {
           !isReadonly && 

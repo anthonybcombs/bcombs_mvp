@@ -42,6 +42,10 @@ export const GET_APPLICATIONS_QUERY = gql`
         phone_number
         email_type
         email_address
+        phone_type2
+        phone_number2
+        email_type2
+        email_address2
         address
         city
         state
@@ -85,6 +89,10 @@ export const GET_APPLICATIONS_QUERY = gql`
         phone_number
         email_type
         email_address
+        phone_type2
+        phone_number2
+        email_type2
+        email_address2
         password
         occupation
         employers_name
@@ -127,6 +135,10 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         phone_number
         email_type
         email_address
+        phone_type2
+        phone_number2
+        email_type2
+        email_address2
         address
         city
         state
@@ -170,6 +182,10 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         phone_number
         email_type
         email_address
+        phone_type2
+        phone_number2
+        email_type2
+        email_address2
         password
         occupation
         employers_name

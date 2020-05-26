@@ -149,6 +149,10 @@ const inputs = `
         phone_number: String
         email_type: String
         email_address: String
+        phone_type2: String
+        phone_number2: String
+        email_type2: String
+        email_address2: String
         address: String!
         city: String!
         state: String!
@@ -208,6 +212,10 @@ const inputs = `
         city: String
         state: String
         zip_code: String
+        phone_type2: String
+        phone_number2: String
+        email_type2: String
+        email_address2: String
     }
 
     input ApplicationInput {
@@ -401,6 +409,10 @@ const queryTypes = `
         phone_number: String
         email_type: String
         email_address: String
+        phone_type2: String
+        phone_number2: String
+        email_type2: String
+        email_address2: String
         address: String!
         city: String!
         state: String!
@@ -456,6 +468,10 @@ const queryTypes = `
         child_hs_grad: String
         child_col_grad: String
         emergency_contacts: String
+        phone_type2: String
+        phone_number2: String
+        email_type2: String
+        email_address2: String
     }
 
     type Application {
