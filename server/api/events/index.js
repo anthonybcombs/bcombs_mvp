@@ -3,13 +3,13 @@ import {
   getTemplateInvitationStrings,
   sendInvitation,
   sendCancelledEvent,
-  sendReScheduledEvent,
+  sendReScheduledEvent
 } from "../../helpers/email";
 import { getUserFromDatabase } from "../index";
 
 import { getMemberByMultipleGroupId } from "../groups";
 
-export const createNewEvent = async (data) => {
+export const createNewEvent = async data => {
   const {
     id,
     name,
@@ -25,7 +25,7 @@ export const createNewEvent = async (data) => {
     auth_email,
     calendar_ids = [],
     guests = [],
-    group_ids: [],
+    group_ids: []
   } = data;
   const db = makeDb();
   let result = {};
@@ -58,7 +58,7 @@ export const createNewEvent = async (data) => {
         location,
         visibility,
         recurring,
-        currentUser.id,
+        currentUser.id
       ]
     );
 
@@ -120,14 +120,14 @@ export const createNewEvent = async (data) => {
 
     const formattedRecipients = await formatRecipient(updatedGuestIds, id, db);
 
-    // sendInvitation({
-    //   eventOwnerEmail: auth_email,
-    //   eventName: name,
-    //   eventId: id,
-    //   eventStartDate: start_of_event,
-    //   eventEndDate: end_of_event,
-    //   recipients: formattedRecipients
-    // });
+    sendInvitation({
+      eventOwnerEmail: auth_email,
+      eventName: name,
+      eventId: id,
+      eventStartDate: start_of_event,
+      eventEndDate: end_of_event,
+      recipients: formattedRecipients
+    });
 
     result = await getUserEvents(auth_email);
     // console.log("createNewEvent Result", result);
@@ -192,8 +192,8 @@ export const getUserEvents = async (email, calendars = []) => {
       );
 
       if (events.length > 0) {
-        let eventIds = events.map((item) => item.id);
-        eventIds = eventIds.map((eventId) => `UUID_TO_BIN("${eventId}")`);
+        let eventIds = events.map(item => item.id);
+        eventIds = eventIds.map(eventId => `UUID_TO_BIN("${eventId}")`);
         guests = await db.query(
           `SELECT users.email, event_attendee.status,
             BIN_TO_UUID(event_attendee.event_id) as event_id,
@@ -211,17 +211,17 @@ export const getUserEvents = async (email, calendars = []) => {
           WHERE event_visibility.event_id IN (${eventIds.join(",")})`);
         groups = JSON.parse(JSON.stringify(groups));
 
-        result = events.map((event) => {
+        result = events.map(event => {
           const invitedGuest = guests.filter(
-            (guest) => guest.event_id === event.id
+            guest => guest.event_id === event.id
           );
           const sharedGroups = groups
-            .filter((group) => group.event_id === event.id)
-            .map((group) => group.group_id);
+            .filter(group => group.event_id === event.id)
+            .map(group => group.group_id);
           return {
             ...event,
             guests: [...(invitedGuest || [])],
-            group_ids: [...(sharedGroups || [])],
+            group_ids: [...(sharedGroups || [])]
           };
         });
       } else {
@@ -240,7 +240,7 @@ export const getUserEvents = async (email, calendars = []) => {
   }
 };
 
-export const editEvents = async (data) => {
+export const editEvents = async data => {
   console.log("Edit Event ", data);
   const {
     id,
@@ -258,7 +258,7 @@ export const editEvents = async (data) => {
     calendar_ids = [],
     guests = [],
     removed_guests = [],
-    group_ids: [],
+    group_ids: []
   } = data;
   const db = makeDb();
   let results = [];
@@ -279,7 +279,7 @@ export const editEvents = async (data) => {
         type,
         visibility,
         recurring,
-        id,
+        id
       ]
     );
 
@@ -288,7 +288,7 @@ export const editEvents = async (data) => {
     }
 
     if (removed_guests.length > 0) {
-      let eventAttendeeQuery = removed_guests.map((currentItem) => {
+      let eventAttendeeQuery = removed_guests.map(currentItem => {
         return `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${currentItem}"))`;
       });
       eventAttendeeQuery = eventAttendeeQuery.join(",");
@@ -327,7 +327,7 @@ export const editEvents = async (data) => {
         let notifiedMembers = await getMembers(id, db);
         sendCancelledEvent({
           eventName: name,
-          recipients: notifiedMembers,
+          recipients: notifiedMembers
         });
       } else if (status === "Re-Scheduled") {
         let notifiedMembers = await getMembers(id, db);
@@ -335,7 +335,7 @@ export const editEvents = async (data) => {
           eventName: name,
           eventStartDate: start_of_event,
           eventEndDate: end_of_event,
-          recipients: notifiedMembers,
+          recipients: notifiedMembers
         });
       }
     }
@@ -382,7 +382,7 @@ export const removeEvents = async (id, email) => {
   }
 };
 
-export const getInvitedEvents = async (email) => {
+export const getInvitedEvents = async email => {
   const db = makeDb();
   let result = [];
   try {
@@ -432,7 +432,7 @@ const addEventAttendee = async (guestIds, eventId, db) => {
 const formatRecipient = async (guests, eventId, db) => {
   let userWithCalendars = [];
   try {
-    const formatGuestIds = guests.map((guestId) => `UUID_TO_BIN("${guestId}")`);
+    const formatGuestIds = guests.map(guestId => `UUID_TO_BIN("${guestId}")`);
 
     if (formatGuestIds.length > 0) {
       const userDetails = await db.query(
@@ -455,15 +455,15 @@ const formatRecipient = async (guests, eventId, db) => {
       );
       userCalendars = JSON.parse(JSON.stringify(userCalendars));
 
-      userWithCalendars = userDetails.map((item) => {
+      userWithCalendars = userDetails.map(item => {
         const currentCalendar = userCalendars.filter(
-          (calendar) => calendar.user_id === item.user_id
+          calendar => calendar.user_id === item.user_id
         );
 
         console.log("Send Invite Emails Current Calendar", currentCalendar);
         return {
           ...item,
-          calendars: currentCalendar,
+          calendars: currentCalendar
         };
       });
     }
