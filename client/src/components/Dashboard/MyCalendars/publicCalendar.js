@@ -21,6 +21,7 @@ export default function index() {
   const { id } = useParams();
   const dispatch = useDispatch();
   useEffect(() => {
+    sessionStorage.setItem("selectedCalendars", JSON.stringify([id]));
     dispatch(requestCalendar(id));
   }, []);
   if (calendars.length === 0) {

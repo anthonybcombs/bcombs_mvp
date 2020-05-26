@@ -52,6 +52,7 @@ export const CALENDAR_QUERY = gql`
         name
         image
         color
+        email
         visibilityType
         familyMembers
         groups
