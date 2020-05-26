@@ -57,7 +57,7 @@ export const editContact = async data => {
       id,
       auth_email
     } = data;
-    console.log("editContact data", data);
+
     const currentUser = await getUserFromDatabase(email);
     await db.query(
       `UPDATE contacts SET first_name=?,last_name=?,phone_number=?,email=?,relation=? WHERE id=UUID_TO_BIN(?)`,
@@ -114,8 +114,6 @@ export const createNewContact = async ({
   try {
     const user = await getUserFromDatabase(email);
     const currentUser = await getUserFromDatabase(auth_email);
-    console.log("Contacts ID", id);
-    console.log("Contacts currentUser", currentUser);
     if (user) {
       await db.query(
         "INSERT IGNORE INTO `contacts`(`id`,`user_id`,`first_name`,`last_name`,`phone_number`,`email`,`relation`,`added_by`,`date_added`) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),?,?,?,?,?,UUID_TO_BIN(?),NOW())",

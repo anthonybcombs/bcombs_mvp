@@ -16,12 +16,12 @@ import ChildFormViewStyled from "./view/child";
 import ParentFormViewStyled from "./view/parent";
 
 import { requestVendor } from "../../../redux/actions/Vendors";
-import { requestGetApplications } from "../../../redux/actions/Application";
+import { requestGetApplications, requestUpdateApplication } from "../../../redux/actions/Application";
 
 import ProfileImg from "../../../images/defaultprofile.png";
 const ApplicationStyled = styled.div`
   padding: 1em;
-  
+
   #application {
     display: grid;
   }
@@ -74,8 +74,9 @@ const ApplicationStyled = styled.div`
 `;
 
 export default function index() {
-
   const [selectedLabel, setSelectedLabel] = useState("Application Status");
+
+  const [updateApplication, setUpdateApplication] = useState({})
 
   const [selectNonMenuOption, setSelectNonMenuOption] = useState(false);
 
@@ -86,21 +87,29 @@ export default function index() {
   const dispatch = useDispatch();
 
   const { grades, auth, vendor, applications, loading } = useSelector(
-    ({grades, auth, vendor, applications, loading }) => {
+    ({ grades = [], auth, vendor, applications, loading }) => {
       return { grades, auth, vendor, applications, loading };
     }
   );
 
-  console.log("LOADING", loading);
+  console.log(applications);
 
+  if(applications.updateapplication && applications.updateapplication.message == "application updated") {
+    window.location.reload(false);
+  }
+
+  if(applications.archivedapplication && applications.archivedapplication.message == "application archived") {
+    window.location.reload(false);
+  }
   useEffect(() => {
-    if(auth.user_id) {
+    if (auth.user_id) {
       dispatch(requestVendor(auth.user_id));
     }
   }, []);
 
   useEffect(() => {
-    if(vendor.id) {
+    console.log("vendor", vendor);
+    if (vendor && vendor.id) {
       dispatch(requestGetApplications(vendor.id));
     }
   }, [vendor]);
@@ -109,13 +118,34 @@ export default function index() {
     setSelectedLabel(value);
     setSelectNonMenuOption(false);
     setSelectedApplication({});
-    setView("")
+    setView("");
   };
 
   const handleSelectedApplication = (application, view) => {
     setSelectedApplication(application);
     setSelectNonMenuOption(true);
     setView(view);
+
+    const temp = {
+      app_id: application.app_id,
+      verification: application.verification,
+      student_status: application.student_status,
+      color_designation: application.color_designation ? application.color_designation : "",
+      notes: application.notes ? application.notes : "",
+      class_teacher: application.class_teacher ? application.class_teacher : application?.child?.grade_desc
+    }
+    setUpdateApplication({...temp});
+  }
+
+  const handleUpdateOnchange = (id, value) => {
+
+    setUpdateApplication({...updateApplication, [id]: value});
+    console.log("UPDATE APPLICATION", updateApplication);
+  }
+
+  const onSubmit = () => {
+    console.log("Submit update application", updateApplication)
+    dispatch(requestUpdateApplication(updateApplication));
   }
 
   return (
@@ -124,85 +154,81 @@ export default function index() {
       <div id="application">
         <div>
           <div id="labels">
-            <a href={`/application/${vendor.user}`} target="_blank">
+            <a
+              href={`/application/${vendor ? vendor.user : ""}`}
+              target="_blank">
               <FontAwesomeIcon icon={faFileSignature} />
               <span>Application</span>
             </a>
 
             <div
-              className={`${selectedLabel === "Application Status" ? "selected" : ""}`}  
+              className={`${
+                selectedLabel === "Application Status" ? "selected" : ""
+              }`}
               onClick={() => {
                 handleSelectedLabel("Application Status");
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faThList} />
               <span>Application Status</span>
             </div>
 
             <div
-              className={`${selectedLabel === "Form Settings" ? "selected" : ""}`}  
+              className={`${
+                selectedLabel === "Form Settings" ? "selected" : ""
+              }`}
               onClick={() => {
                 handleSelectedLabel("Form Settings");
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faCogs} />
               <span>Form Settings</span>
             </div>
           </div>
         </div>
         <div>
-          {
-            selectedLabel === "Application Status" && 
-            !selectNonMenuOption &&
-            <ApplicationSummaryStyled
-              grades={grades}
-            />
-          }
-          {
-            selectedLabel === "Form Settings" && 
-            !selectNonMenuOption &&
-            <ApplicationSettingsStyled 
-              vendor={vendor} 
+          {selectedLabel === "Application Status" && !selectNonMenuOption && (
+            <ApplicationSummaryStyled grades={grades} />
+          )}
+          {selectedLabel === "Form Settings" && !selectNonMenuOption && (
+            <ApplicationSettingsStyled
+              vendor={vendor || {}}
               formSettingsLoading={loading.form_settings}
             />
-          }
-          {
-            selectNonMenuOption && view == "application" &&
+          )}
+          {selectNonMenuOption && view == "application" && (
             <EditApplicationStyled
               application={selectedApplication}
-              vendor={vendor}
+              vendor={vendor || {}}
+              onSubmit={onSubmit}
+              handleUpdateOnchange={handleUpdateOnchange}
+              updateLoading={loading.application}
             />
-          }
+          )}
         </div>
       </div>
-      {
-        selectedLabel === "Application Status" && 
-        !selectNonMenuOption &&
+      {selectedLabel === "Application Status" && !selectNonMenuOption && (
         <ApplicationListStyled
           applications={applications.activeapplications}
           handleSelectedApplication={handleSelectedApplication}
           listApplicationLoading={loading.application}
         />
-      }
-      {
-        selectNonMenuOption && view == "application" &&
+      )}
+      {selectNonMenuOption && view == "application" && (
         <ChildFormViewStyled
           application={selectedApplication}
-          vendor={vendor}
+          vendor={vendor || {}}
           ProfileImg={ProfileImg}
         />
-      }
-      {
-        selectNonMenuOption && view == "application" && <hr className="style-eight"></hr>
-      }
-      {
-        selectNonMenuOption && view == "application" &&
+      )}
+      {selectNonMenuOption && view == "application" && (
+        <hr className="style-eight"></hr>
+      )}
+      {selectNonMenuOption && view == "application" && (
         <ParentFormViewStyled
           application={selectedApplication}
-          vendor={vendor}
+          vendor={vendor || {}}
           ProfileImg={ProfileImg}
         />
-      }
+      )}
     </ApplicationStyled>
-  )
+  );
 }

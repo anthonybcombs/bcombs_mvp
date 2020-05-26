@@ -94,6 +94,7 @@ export function* updateVendor({ vendor }) {
 }
 
 export function* getVendor(action) {
+  console.log("ACTION", action);
   try {
     const vendor = yield call(getVendorFromDatabase, action.user);
 

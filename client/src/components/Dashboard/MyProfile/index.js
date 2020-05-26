@@ -12,6 +12,7 @@ import CreateRelative from "./create/";
 import ProfileForm from "./forms/ProfileForm";
 import EditProfileForm from "./forms/EditProfileForm";
 import UploadPhotoForm from "./forms/UploadPhotoForm";
+import ProfileConfirmation from "./forms/ProfileConfirmation";
 
 import Loading from "../../../helpers/Loading.js";
 
@@ -21,6 +22,7 @@ import {
   requestUpdateUserPhoto,
   requestUserProfile
 } from "../../../redux/actions/Users";
+import { requestUserApplication } from "../../../redux/actions/Application";
 
 const getAge = birthDate => {
   console.log("BirthDateee", birthDate);
@@ -190,13 +192,16 @@ export default function index() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isEditProfileVisible, setEditProfileVisible] = useState(false);
   const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
+  const [isConfirmationVisible, setConfirmationVisible] = useState(false);
   const [
     isCreateRelativeModaVisibile,
     setIsCreateRelativeModaVisibile
   ] = useState(false);
+  const [updatedPayload, setUpdatedPayload] = useState({});
 
   const [dashboard, setDashboard] = useState("Events");
   const {
+    applications,
     auth,
     settings,
     relatives,
@@ -204,8 +209,24 @@ export default function index() {
     familyMembers,
     loading
   } = useSelector(
-    ({ auth, settings, relatives, user, familyMembers, loading }) => {
-      return { auth, settings, relatives, user, familyMembers, loading };
+    ({
+      applications,
+      auth,
+      settings,
+      relatives,
+      user,
+      familyMembers,
+      loading
+    }) => {
+      return {
+        applications,
+        auth,
+        settings,
+        relatives,
+        user,
+        familyMembers,
+        loading
+      };
     }
   );
 
@@ -213,8 +234,11 @@ export default function index() {
   useEffect(() => {
     if (auth.email) {
       dispatch(requestUserProfile(auth.email));
+      dispatch(requestUserApplication(auth.email));
     }
   }, []);
+
+  console.log("applications11", applications);
 
   useEffect(() => {
     if (user.profile || (!isEditProfileVisible && user.profile)) {
@@ -236,17 +260,15 @@ export default function index() {
   }, [user, isEditProfileVisible]);
 
   const handleFormSubmit = e => {
-    dispatch(
-      requestUpdateUserProfile({
-        personalInfo: {
-          ...personalInfo,
-          id: user.profile.id
-        },
-        email: auth.email
-      })
-    );
+    setUpdatedPayload({
+      personalInfo: {
+        ...personalInfo,
+        id: user.profile.id
+      },
+      email: auth.email
+    });
 
-    // if (selectedFile) {
+    // // if (selectedFile) {
     //   let data = new FormData();
     //   data.append("file", selectedFile);
     //   data.append("email", auth.email);
@@ -254,6 +276,20 @@ export default function index() {
     // }
 
     setEditProfileVisible(false);
+    setConfirmationVisible(true);
+  };
+
+  const handleUpdateSelectedVendor = payload => {
+    dispatch(
+      requestUpdateUserProfile({
+        ...updatedPayload,
+        otherInfo: payload
+      })
+    );
+
+    setConfirmationVisible(false);
+    dispatch(requestUserApplication(auth.email));
+    // if (sel
   };
 
   const handleImageUpload = file => {
@@ -437,6 +473,12 @@ export default function index() {
         toggleProfilePhotoVisible={setUploadPhotoVisible}
         data={personalInfo}
         onSubmit={handleImageUpload}
+      />
+      <ProfileConfirmation
+        applications={applications.userApplications}
+        isVisible={isConfirmationVisible}
+        toggleConfirmationVisible={setConfirmationVisible}
+        onSubmit={handleUpdateSelectedVendor}
       />
     </ProfileSyled>
   );

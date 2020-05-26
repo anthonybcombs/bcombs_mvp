@@ -339,7 +339,7 @@ export default function GroupForm({
               closeIcon="cancel"
             />
 
-            <label className="field-label">Assign to existing contact</label>
+            <label className="field-label">Add existing contacts</label>
           </div>
         </div>
 
@@ -356,7 +356,7 @@ export default function GroupForm({
             ))}
         </div>
 
-        <label className="field-label">Assign to other users</label>
+        <label className="field-label">Add other users</label>
         <Autosuggest
           autoComplete="off"
           inputProps={inputProps}

@@ -4,9 +4,11 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import "regenerator-runtime/runtime";
-require("dotenv").config();
+
 import apiRouter from "./api/";
 import services from "./services";
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "/.env") });
 const app = express();
 
 app.use(cors());
@@ -17,7 +19,7 @@ app.use(
     extended: true,
     parameterLimit: 100000,
     limit: "50mb",
-    extended: true,
+    extended: true
   })
 );
 app.use(
@@ -37,6 +39,8 @@ for (let i = 0; i < serviceNames.length; i += 1) {
   // }
 }
 
+console.log(require("dotenv").config());
+console.log("BUCKET", process.env.AWS_BUCKET);
 //routes
 app.use("/api", apiRouter);
 

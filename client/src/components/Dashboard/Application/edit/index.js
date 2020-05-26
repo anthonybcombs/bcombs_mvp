@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-
-
+import Loading from "../../../../helpers/Loading.js";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
 const EditApplicationStyled = styled.div`
@@ -93,14 +92,16 @@ const EditApplicationStyled = styled.div`
 
 export default function index({
   vendor,
-  application
+  application,
+  onSubmit,
+  handleUpdateOnchange,
+  updateLoading = false
 }) {
 
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
-
 
   const dispatch = useDispatch();
 
@@ -131,119 +132,135 @@ export default function index({
   const COLOR_DESIGNATION_OPTIONS = [
     { name: "Leaving in the room (Red)", value: "red" },
     { name: "Coming into the room (Blue)", value: "blue"},
-    { name: "Potentials for leaving the room", value: "Green" }
+    { name: "Potentials for leaving the room (Green)", value: "green" }
   ]
 
-  console.log("Applicatio", application);
-
-  const onSubmit = () => {
-
-  }
-
-  console.log(application);
+  console.log("MY application", application);
 
   return (
     <EditApplicationStyled>
       <div className="edit-application-form">
-        <div className="edit-application-header">
-          <div>              
-            <span>Application Status</span>
-          </div>
-        </div>
-        <form>
-          <div className="edit-application-content">
+        {
+          updateLoading ? (
+            <Loading />
+          ) :
+          (
             <div>
-              <label className="control-label">Verification</label>
-              <div>
-                <select
-                  className="form-control"
-                  defaultValue={application.verification}
-                  onChange={({ target }) => {}}>
-                  <option value="">Select</option>
-                  {VERIFICATION_OPTIONS.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.name}</option>
-                  ))}
-                </select>
+              <div className="edit-application-header">
+              <div>              
+                <span>Application Status</span>
               </div>
             </div>
-            <div>
-              <label className="control-label">Student Class</label>
-              <div>
-                <select
-                  className="form-control"
-                  defaultValue={application.student_status}
-                  onChange={({ target }) => {}}>
-                  <option value="">Select</option>
-                  {STUDENT_CLASS_OPTIONS.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.name}</option>
-                  ))}
-                </select>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <div className="edit-application-content">
+                <div>
+                  <label className="control-label">Verification</label>
+                  <div>
+                    <select
+                      className="form-control"
+                      defaultValue={application.verification}
+                      onChange={({ target }) => {
+                        handleUpdateOnchange("verification", target.value)
+                      }}>
+                      <option value="">Select</option>
+                      {VERIFICATION_OPTIONS.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="control-label">Student Status</label>
+                  <div>
+                    <select
+                      className="form-control"
+                      defaultValue={application.student_status}
+                      onChange={({ target }) => {
+                        handleUpdateOnchange("student_status", target.value)
+                      }}>
+                      <option value="">Select</option>
+                      {STUDENT_CLASS_OPTIONS.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="control-label">Age</label>
+                  <div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      defaultValue={application.child.age}
+                      readOnly
+                      onChange={({ target }) => {
+                      }} 
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="control-label">Class Teacher</label>
+                  <div>
+                    <select
+                      className="form-control"
+                      defaultValue={application.class_teacher ? application.class_teacher : application?.child?.grade_desc}
+                      onChange={({ target }) => {
+                        handleUpdateOnchange("class_teacher", target.value)
+                      }}>
+                      <option value="">Select</option>
+                      {CLASS_TEACHER_OPTIONS.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="control-label">Color Designation</label>
+                  <div>
+                    <select
+                      className="form-control"
+                      defaultValue={application.color_designation}
+                      onChange={({ target }) => {
+                        handleUpdateOnchange("color_designation", target.value)
+                      }}>
+                      <option value="">Select</option>
+                      {COLOR_DESIGNATION_OPTIONS.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="control-label">Recommended Class</label>
+                  <div>
+                  </div>
+                </div>
+                <div>
+                  <label className="control-label">Notes</label>
+                  <div>
+                    <textarea
+                      className="form-control"
+                      rows="3"
+                      placeholder="Notes"
+                      defaultValue={application.notes}
+                      onChange={({ target }) => {
+                        handleUpdateOnchange("notes", target.value)
+                      }}>
+                    </textarea>
+                  </div>
+                </div>
+                <div>
+                </div>
+                <div>
+                  <button className="update-btn" type="submit">Update Status</button>
+                </div>
               </div>
+            </form>
             </div>
-            <div>
-              <label className="control-label">Age</label>
-              <div>
-                <input
-                  type="text"
-                  className="form-control"
-                  defaultValue={application.child.age}
-                  readOnly
-                  onChange={({ target }) => {}} 
-                />
-              </div>
-            </div>
-            <div>
-              <label className="control-label">Class Teacher</label>
-              <div>
-                <select
-                  className="form-control"
-                  defaultValue={application?.child?.grade_desc}
-                  onChange={({ target }) => {}}>
-                  <option value="">Select</option>
-                  {CLASS_TEACHER_OPTIONS.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.name}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div>
-              <label className="control-label">Color Designation</label>
-              <div>
-                <select
-                  className="form-control"
-                  defaultValue={application.color_designation}
-                  onChange={({ target }) => {}}>
-                  <option value="">Select</option>
-                  {COLOR_DESIGNATION_OPTIONS.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.name}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div>
-              <label className="control-label">Recommended Class</label>
-              <div>
-              </div>
-            </div>
-            <div>
-              <label className="control-label">Notes</label>
-              <div>
-                <textarea
-                  className="form-control"
-                  rows="3"
-                  placeholder="Notes"
-                  defaultValue={application.notes}
-                  onChange={({ target }) => {}}>
-                </textarea>
-              </div>
-            </div>
-            <div>
-            </div>
-            <div>
-              <button className="update-btn" type="submit">Update Status</button>
-            </div>
-          </div>
-        </form>
+          )
+        }
       </div>
     </EditApplicationStyled>
   )
