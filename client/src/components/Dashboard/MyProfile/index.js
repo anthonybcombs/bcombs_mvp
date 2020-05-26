@@ -286,8 +286,9 @@ export default function index() {
         otherInfo: payload
       })
     );
-    console.log("handleUpdateSelectedVendorrr", personalInfo);
+
     setConfirmationVisible(false);
+    dispatch(requestUserApplication(auth.email));
     // if (sel
   };
 

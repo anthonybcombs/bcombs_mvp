@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
+import Popover from "react-tiny-popover";
 // import { useForm } from "react-hook-form";
 // import { useDispatch } from "react-redux";
 
@@ -22,7 +23,7 @@ const ProfileConfirmationModal = styled.div`
     height: auto;
   }
   .profile-confirmation {
-    text-align: center;
+    text-align: left;
   }
   @media (min-width: 600px) {
     button {
@@ -33,6 +34,15 @@ const ProfileConfirmationModal = styled.div`
   .vendor-list div {
     margin: 12px;
   }
+`;
+
+const PopOverStyled = styled.div`
+  background-color: white;
+  border: 2px solid lightgrey;
+  color: black;
+  padding: 5px;
+  width: 300px;
+  overflow: auto;
 `;
 const OPTION_VERIFICATION = [
   { name: "Waiting for Verification", value: "waiting_for_verification" },
@@ -46,7 +56,7 @@ export default function index({
   toggleConfirmationVisible,
   onSubmit
 }) {
-  const [selectedVendor, setSelectedVendor] = React.useState([]);
+  const [isPopOverVisible, setPopOverVisible] = useState(false);
   const [selectedChild, setSelectedChild] = useState([]);
   const [selectedParent, setSelectedParent] = useState([]);
   const theme = useContext(ThemeContext);
@@ -112,6 +122,7 @@ export default function index({
                   const currentStatus = OPTION_VERIFICATION.find(
                     opt => opt.value === item.verification
                   );
+                  console.log("currentStatus item", item);
                   return (
                     <div className="vendor-details">
                       <input
@@ -121,7 +132,17 @@ export default function index({
                         value={item.child_id}
                       />{" "}
                       {item.name}{" "}
-                      {currentStatus ? `(${currentStatus.name})` : ""}
+                      {currentStatus ? `(${currentStatus.name})` : ""}{" "}
+                      <i>(Child)</i>
+                      <div>
+                        <div>
+                          <b>Application Details</b>
+                        </div>
+                        <div>
+                          {item.firstname} {item.lastname}, {item.phone_number},{" "}
+                          {item.address}
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
@@ -129,7 +150,7 @@ export default function index({
                   const currentStatus = OPTION_VERIFICATION.find(
                     opt => opt.value === item.verification
                   );
-                  console.log("currentStatus", currentStatus);
+
                   return (
                     <div>
                       {" "}
@@ -140,7 +161,17 @@ export default function index({
                         value={item.parent_id}
                       />{" "}
                       {item.name}{" "}
-                      {currentStatus ? `(${currentStatus.name})` : ""}
+                      {currentStatus ? `(${currentStatus.name})` : ""}{" "}
+                      <i>(Parent)</i>
+                      <div>
+                        <div>
+                          <b>Application Details</b>
+                        </div>{" "}
+                        <div>
+                          {item.firstname} {item.lastname}, {item.phone_number},{" "}
+                          {item.address}
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
