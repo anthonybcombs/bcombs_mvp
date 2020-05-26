@@ -11,7 +11,7 @@ import {
   faCheckCircle,
   faShareAltSquare,
   faPenSquare,
-  faUser
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { format, compareAsc, isToday } from "date-fns";
 import { deleteEvent } from "../../../../redux/actions/Events";
@@ -27,7 +27,7 @@ const EventColors = styled.div`
   height: 0;
   border-style: solid;
   border-width: 0 22px 26px 0;
-  border-color: transparent ${props => props.color} transparent transparent;
+  border-color: transparent ${(props) => props.color} transparent transparent;
 `;
 
 const EventStyled = styled.div`
@@ -122,14 +122,20 @@ const EventPopOverStyled = styled.div`
 `;
 
 const getStatusCount = (guests, type) => {
-  const guestStatus = guests.filter(guest => guest.status === type);
+  const guestStatus = guests.filter((guest) => guest.status === type);
   return guestStatus.length;
 };
 const isGuest = (guests, currentEmail) => {
-  let isUserGuest = guests.find(guest => guest.email === currentEmail);
+  let isUserGuest = guests.find((guest) => guest.email === currentEmail);
   return isUserGuest ? true : false;
 };
-export default function index({ auth, day, event, selectedCalendars }) {
+export default function index({
+  auth,
+  day,
+  event,
+  selectedCalendars,
+  publicView,
+}) {
   const [isVisible, setVisibility] = useState(false);
   const [isEditEventVisible, setEditEventVisible] = useState(false);
   const [isDuplicateEventVisible, setDuplicateEventVisible] = useState(false);
@@ -146,7 +152,7 @@ export default function index({ auth, day, event, selectedCalendars }) {
   console.log("isCurrentUserGuest", isCurrentUserGuest);
   let schedule = [
     format(new Date(event.start_of_event), "MMM dd,yyyy hh:mm a"),
-    format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
+    format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a"),
   ];
   const isEventOver = compareAsc(day, new Date());
   let eventStartTime = "";
@@ -168,43 +174,48 @@ export default function index({ auth, day, event, selectedCalendars }) {
           arrowColor="lightgrey"
           arrowSize={10}
           arrowStyle={{ opacity: 1 }}
-          arrow="center">
+          arrow="center"
+        >
           <EventPopOverStyled
             theme={theme}
             onMouseLeave={() => {
               setVisibility(!isVisible);
             }}
-            onDoubleClick={e => {
+            onDoubleClick={(e) => {
               e.stopPropagation();
-            }}>
-            <div id="top-event-controls">
-              <button>
-                <FontAwesomeIcon
-                  icon={faCopy}
-                  onClick={toggleDuplicateEventModal}
-                />
-              </button>
+            }}
+          >
+            {!publicView && (
+              <div id="top-event-controls">
+                <button>
+                  <FontAwesomeIcon
+                    icon={faCopy}
+                    onClick={toggleDuplicateEventModal}
+                  />
+                </button>
 
-              <button>
-                <FontAwesomeIcon
-                  icon={faPenSquare}
-                  onClick={toggleEditEventModal}
-                />
-              </button>
+                <button>
+                  <FontAwesomeIcon
+                    icon={faPenSquare}
+                    onClick={toggleEditEventModal}
+                  />
+                </button>
 
-              <button
-                onClick={e => {
-                  setVisibility(false);
-                  dispatch(
-                    deleteEvent({
-                      id: event.id,
-                      email: auth.email
-                    })
-                  );
-                }}>
-                <FontAwesomeIcon icon={faTrashAlt} />
-              </button>
-            </div>
+                <button
+                  onClick={(e) => {
+                    setVisibility(false);
+                    dispatch(
+                      deleteEvent({
+                        id: event.id,
+                        email: auth.email,
+                      })
+                    );
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTrashAlt} />
+                </button>
+              </div>
+            )}
             <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
             <div id="event-details">
               <h4>{event.eventCategory}</h4>
@@ -220,7 +231,7 @@ export default function index({ auth, day, event, selectedCalendars }) {
                   {`  `}
                   Awaiting {getStatusCount(event.guests, "Pending")}
                 </div>
-                {event.guests.map(guest => {
+                {event.guests.map((guest) => {
                   return (
                     <div>
                       {" "}
@@ -259,16 +270,18 @@ export default function index({ auth, day, event, selectedCalendars }) {
             </div>
           </EventPopOverStyled>
         </ArrowContainer>
-      )}>
+      )}
+    >
       <EventStyled
         theme={theme}
         style={{
           backgroundColor: event.color,
-          opacity: isEventOver < 0 && !isToday(day) ? 0.5 : 1
+          opacity: isEventOver < 0 && !isToday(day) ? 0.5 : 1,
         }}
         onClick={() => {
           setVisibility(!isVisible);
-        }}>
+        }}
+      >
         <EditEvent
           auth={auth}
           isVisible={isEditEventVisible}

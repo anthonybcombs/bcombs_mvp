@@ -186,7 +186,11 @@ export function* searchedEvents({ searchDetails }) {
     ) {
       yield put({
         type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
-        payload: events,
+        payload: events.filter(
+          (event) =>
+            searchDetails.calendars.length > 0 &&
+            searchDetails.calendars.includes(event.calendar_id)
+        ),
       });
     } else {
       let filteredEvents = events.filter((event) => {

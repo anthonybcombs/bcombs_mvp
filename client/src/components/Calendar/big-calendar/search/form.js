@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Select from "react-select";
-import { differenceInDays, parseISO } from "date-fns";
+import { differenceInDays, parseISO, isPast } from "date-fns";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const FormStyled = styled.form`
@@ -48,6 +48,7 @@ export default function form({ calendars, onSubmit }) {
   const { register, handleSubmit, errors, setValue, getValues } = useForm({
     mode: "onSubmit",
   });
+  const [isMenuOpen, setMenuOpen] = useState(false);
   const [startDateType, setStartDateType] = useState("text");
   const [endDateType, setEndDateType] = useState("text");
   const options = [];
@@ -58,6 +59,19 @@ export default function form({ calendars, onSubmit }) {
   });
   useEffect(() => {
     register({ name: "calendars" }, { required: true });
+    register(
+      { name: "startDate" },
+      {
+        validate: {
+          noPastDate: (value) => {
+            if (isPast(parseISO(value))) {
+              return false;
+            }
+            return true;
+          },
+        },
+      }
+    );
     register(
       { name: "endDate" },
       {
@@ -84,6 +98,7 @@ export default function form({ calendars, onSubmit }) {
         options={options}
         placeholder="Select a calendar"
         isMulti
+        closeMenuOnSelect={false}
         theme={(theme) => ({
           ...theme,
           borderRadius: 0,
@@ -122,6 +137,11 @@ export default function form({ calendars, onSubmit }) {
         }}
         placeholder="Start date"
       />
+      <ErrorMessage
+        field={errors.startDate}
+        errorType="noPastDate"
+        message="Start date must be atleast the current date."
+      />
       <input
         name="endDate"
         type={endDateType}
@@ -138,7 +158,7 @@ export default function form({ calendars, onSubmit }) {
       <ErrorMessage
         field={errors.endDate}
         errorType="noPrevDate"
-        message="End date must be greater than Start date"
+        message="End date must be greater than start date."
       />
       <input
         name="location"

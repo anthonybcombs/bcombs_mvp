@@ -205,6 +205,7 @@ export default function CreateCalendarForm({
             }
           })}
           isMulti
+          closeMenuOnSelect={false}
           onChange={(option) => {
             if (option !== null) {
               const groupIds = option.map((group) => group.value);

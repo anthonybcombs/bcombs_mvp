@@ -226,6 +226,7 @@ export default function index({
                   day={day}
                   key={key}
                   selectedCalendars={selectedCalendars}
+                  publicView={publicView}
                 />
               );
             }
