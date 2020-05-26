@@ -12,6 +12,7 @@ import {
   faLongArrowAltLeft,
   faEyeSlash,
   faEye,
+  faShareAltSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
@@ -49,6 +50,7 @@ const HeaderStyled = styled.div`
     position: absolute;
     top: 0;
     right: 0;
+    background: rgba(255, 255, 255, 0.9);
   }
   .calendar > #buttons > svg {
     margin: 3px 3px 0 3px;
@@ -328,14 +330,34 @@ const CalendarCard = ({
         <div id="buttons">
           <FontAwesomeIcon
             icon={faEdit}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setSelectedCalendar(calendar);
               toggleEditCalendarModal(true);
             }}
           />
+          {calendar.visibilityType === "Public" && (
+            <FontAwesomeIcon
+              icon={faShareAltSquare}
+              onClick={(e) => {
+                e.stopPropagation();
+                const dummy = document.createElement("input");
+                document.body.appendChild(dummy);
+                dummy.setAttribute(
+                  "value",
+                  `${process.env.HOST}/mycalendars/public/${calendar.id}`
+                );
+                dummy.select();
+                document.execCommand("copy");
+                document.body.removeChild(dummy);
+                alert("copied to clipboard");
+              }}
+            />
+          )}
           <FontAwesomeIcon
             icon={faTrashAlt}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               dispatch(requestDeleteCalendar(calendar));
             }}
           />
