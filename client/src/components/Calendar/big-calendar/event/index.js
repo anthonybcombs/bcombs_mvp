@@ -13,7 +13,7 @@ import {
   faPenSquare,
   faUser
 } from "@fortawesome/free-solid-svg-icons";
-import { format, compareAsc } from "date-fns";
+import { format, compareAsc, isToday } from "date-fns";
 import { deleteEvent } from "../../../../redux/actions/Events";
 import DuplicateEvent from "../../../Dashboard/MyEvents/duplicate";
 import EditEvent from "../../../Dashboard/MyEvents/edit/withOutCalendar";
@@ -143,12 +143,19 @@ export default function index({ auth, day, event, selectedCalendars }) {
     setDuplicateEventVisible(!isDuplicateEventVisible);
   };
   const isCurrentUserGuest = isGuest(event.guests, auth.email);
-  const schedule = [
+  console.log("isCurrentUserGuest", isCurrentUserGuest);
+  let schedule = [
     format(new Date(event.start_of_event), "MMM dd,yyyy hh:mm a"),
     format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
   ];
   const isEventOver = compareAsc(day, new Date());
-  console.log("event!!!", event);
+  let eventStartTime = "";
+  let eventEndTime = "";
+  if (event.recurring !== "" && event.recurring !== "no-repeat") {
+    eventStartTime = format(new Date(event.start_of_event), "hh:mm a");
+    eventEndTime = format(new Date(event.end_of_event), "hh:mm a");
+    schedule = [format(day, "MMM dd,yyyy "), format(day, "MMM dd,yyyy ")];
+  }
   return (
     <Popover
       isOpen={isVisible}
@@ -177,14 +184,13 @@ export default function index({ auth, day, event, selectedCalendars }) {
                   onClick={toggleDuplicateEventModal}
                 />
               </button>
-              {!isCurrentUserGuest && (
-                <button>
-                  <FontAwesomeIcon
-                    icon={faPenSquare}
-                    onClick={toggleEditEventModal}
-                  />
-                </button>
-              )}
+
+              <button>
+                <FontAwesomeIcon
+                  icon={faPenSquare}
+                  onClick={toggleEditEventModal}
+                />
+              </button>
 
               <button
                 onClick={e => {
@@ -196,7 +202,7 @@ export default function index({ auth, day, event, selectedCalendars }) {
                     })
                   );
                 }}>
-                {!isCurrentUserGuest && <FontAwesomeIcon icon={faTrashAlt} />}
+                <FontAwesomeIcon icon={faTrashAlt} />
               </button>
             </div>
             <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
@@ -204,7 +210,7 @@ export default function index({ auth, day, event, selectedCalendars }) {
               <h4>{event.eventCategory}</h4>
               <h3>{event.name}</h3>
               <p>Status: {event.status}</p>
-              <p>{`${schedule[0]} - ${schedule[1]}`}</p>
+              <p>{`${schedule[0]} ${eventStartTime} - ${schedule[1]} ${eventEndTime}`}</p>
               <p>{event.location}</p>
               <div className="event-guest">
                 <div>Guests ({event.guests.length || 0})</div>
@@ -258,7 +264,7 @@ export default function index({ auth, day, event, selectedCalendars }) {
         theme={theme}
         style={{
           backgroundColor: event.color,
-          opacity: isEventOver < 0 ? 0.5 : 1
+          opacity: isEventOver < 0 && !isToday(day) ? 0.5 : 1
         }}
         onClick={() => {
           setVisibility(!isVisible);
