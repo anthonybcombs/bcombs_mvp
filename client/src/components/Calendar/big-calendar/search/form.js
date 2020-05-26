@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Select from "react-select";
+import { differenceInDays, parseISO } from "date-fns";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const FormStyled = styled.form`
@@ -44,9 +45,11 @@ const FormStyled = styled.form`
   }
 `;
 export default function form({ calendars, onSubmit }) {
-  const { register, handleSubmit, errors, setValue } = useForm({
+  const { register, handleSubmit, errors, setValue, getValues } = useForm({
     mode: "onSubmit",
   });
+  const [startDateType, setStartDateType] = useState("text");
+  const [endDateType, setEndDateType] = useState("text");
   const options = [];
   calendars.map((calendarsGroup) => {
     return calendarsGroup.map((calendar) => {
@@ -55,6 +58,24 @@ export default function form({ calendars, onSubmit }) {
   });
   useEffect(() => {
     register({ name: "calendars" }, { required: true });
+    register(
+      { name: "endDate" },
+      {
+        validate: {
+          noPrevDate: (value) => {
+            if (
+              differenceInDays(
+                parseISO(getValues()["startDate"]),
+                parseISO(value)
+              ) > 0
+            ) {
+              return false;
+            }
+            return true;
+          },
+        },
+      }
+    );
   }, []);
   return (
     <FormStyled method="POST" onSubmit={handleSubmit(onSubmit)}>
@@ -76,24 +97,55 @@ export default function form({ calendars, onSubmit }) {
           if (option !== null) {
             const calendarIds = option.map((calendar) => calendar.value);
             setValue("calendars", calendarIds);
+            return;
           }
           setValue("calendars", "");
         }}
       />
+      <ErrorMessage
+        field={errors.calendars}
+        errorType="required"
+        message="Calendars is required."
+      />
+      <input name="name" type="text" placeholder="Event" ref={register} />
+      {/* <input name="organizer" type="text" placeholder="Organizer" /> */}
       <input
-        name="event"
-        type="text"
-        placeholder="Event"
-        ref={register({ required: true })}
+        name="startDate"
+        type={startDateType}
+        placeholder="Date"
+        ref={register}
+        onFocus={() => {
+          setStartDateType("date");
+        }}
+        onBlur={() => {
+          setStartDateType("text");
+        }}
+        placeholder="Start date"
+      />
+      <input
+        name="endDate"
+        type={endDateType}
+        placeholder="Date"
+        ref={register}
+        onFocus={() => {
+          setEndDateType("date");
+        }}
+        onBlur={() => {
+          setEndDateType("text");
+        }}
+        placeholder="End date"
       />
       <ErrorMessage
-        field={errors.event}
-        errorType="required"
-        message="Event is required."
+        field={errors.endDate}
+        errorType="noPrevDate"
+        message="End date must be greater than Start date"
       />
-      {/* <input name="organizer" type="text" placeholder="Organizer" /> */}
-      <input name="date" type="date" placeholder="Date" />
-      <input name="location" type="text" placeholder="Location" />
+      <input
+        name="location"
+        type="text"
+        placeholder="Location"
+        ref={register}
+      />
       {/* <input name="school" type="text" placeholder="School" />
       <input name="city" type="text" placeholder="City" />
       <input name="activity" type="text" placeholder="Activity" />

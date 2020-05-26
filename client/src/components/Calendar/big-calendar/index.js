@@ -28,12 +28,17 @@ export default function index({
     if (calendarType !== sessionStorage.getItem("bigCalendarViewType")) {
       setCalendarType(sessionStorage.getItem("bigCalendarViewType"));
     }
-  });
+  }, []);
   const handleChangeCalendarType = (type) => {
     sessionStorage.setItem("bigCalendarViewType", type);
     setCalendarType(type);
   };
   const handleCalendarSelection = (id) => {
+    if (Array.isArray(id)) {
+      sessionStorage.setItem("selectedCalendars", JSON.stringify(id));
+      setSelectedCalendars(id);
+      return;
+    }
     if (selectedCalendars.includes(id)) {
       sessionStorage.setItem(
         "selectedCalendars",
@@ -59,7 +64,9 @@ export default function index({
 
   return (
     <>
-      {!publicView && <Search />}
+      {!publicView && (
+        <Search handleCalendarSelection={handleCalendarSelection} />
+      )}
       {calendarType === "month" && (
         <MonthViewCalendar
           auth={auth}

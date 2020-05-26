@@ -20,6 +20,7 @@ import {
   updatedEvent,
   addedEvent,
   getUserEvents,
+  searchedEvents,
 } from "../actions/Events";
 import {
   addedContact,
@@ -76,6 +77,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_DELETE_EVENT, deletedEvent);
   yield takeLatest(actionType.REQUEST_UPDATE_EVENT, updatedEvent);
   yield takeLatest(actionType.REQUEST_EVENTS, getUserEvents);
+  yield takeLatest(actionType.REQUEST_SEARCH_EVENTS, searchedEvents);
   //CONTACTS
   yield takeLatest(actionType.REQUEST_ADD_CONTACT, addedContact);
   yield takeEvery(actionType.REQUEST_UPDATE_CONTACT, updatedContact);
