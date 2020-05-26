@@ -491,6 +491,26 @@ const queryTypes = `
         notes: String
         application_date: Date
     }
+
+    type ParentUserApplication{
+        name: String
+        email_address:String
+        firstname:String
+        lastname:String 
+        phone_number:String
+        address: String
+        city:String
+        zip_code: String
+        child_id: String
+        parent_id: String
+        application_id: String
+        verification: String
+    }
+    type UserApplication {
+        child: [ParentUserApplication]
+        parent: [ParentUserApplication]
+    }
+
 `;
 
 const mutations = `
@@ -540,6 +560,7 @@ const queries = `
         getVendorApplications(vendor_id: String!): [Application]
         getVendorArchivedApplications(vendor_id: String!): [Application]
         getApplication(application_id: String!): Application
+        getUserApplications(email: String!): UserApplication
     }
 `;
 
