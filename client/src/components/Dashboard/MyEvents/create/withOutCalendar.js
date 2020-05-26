@@ -179,11 +179,14 @@ export default function index({
           ? selectedGroup.map(group => group.id)
           : []
     };
-    console.log("payloadddd", payload);
 
-    toggleCreateEventModal(false);
-    dispatch(addEvent(payload));
-    setEventDetails(initialEventDetails(new Date()));
+    if (selectedCalendars.length > 0) {
+      toggleCreateEventModal(false);
+      dispatch(addEvent(payload));
+      setEventDetails(initialEventDetails(new Date()));
+    } else {
+      alert("Please select a calendar first!");
+    }
   };
 
   const handleGroupSelect = value => {
