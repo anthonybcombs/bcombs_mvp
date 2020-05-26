@@ -39,9 +39,28 @@ export const USER_INFO_QUERY = gql`
     }
   }
 `;
-
+export const CALENDAR_QUERY = gql`
+  query getCalendars($id: String!) {
+    calendar(id: $id) {
+      status {
+        messageType
+        message
+      }
+      data {
+        id
+        user_id
+        name
+        image
+        color
+        visibilityType
+        familyMembers
+        groups
+      }
+    }
+  }
+`;
 export const CALENDARS_QUERY = gql`
-  query getCalendar($access_token: String!, $token_type: String!) {
+  query getCalendars($access_token: String!, $token_type: String!) {
     calendars(access_token: $access_token, token_type: $token_type) {
       status {
         messageType
@@ -71,7 +90,6 @@ export const GET_USER_OPTIONS_QUERY = gql`
     }
   }
 `;
-
 
 export const FAMILY_MEMBER_QUERY = gql`
   query getFamilyMembers($access_token: String!, $token_type: String!) {

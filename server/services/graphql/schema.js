@@ -312,6 +312,7 @@ const queryTypes = `
     type CalendarInfoType{
         id: String!
         user_id: String!
+        email: String
         image: String!
         name: String!      
         color: String!   
@@ -510,6 +511,7 @@ const queries = `
         users(email: String,username: String,access_token: String,token_type: String):[User],
         userTypes:[UserType],
         calendars(access_token: String!,token_type: String!):CalendarsType
+        calendar(id:String!):CalendarsType        
         getGroupMembers(id:String!):[Contact],        
         getEvents(email:String!):[Event],
         getUserList(keyword:String!): [User]  

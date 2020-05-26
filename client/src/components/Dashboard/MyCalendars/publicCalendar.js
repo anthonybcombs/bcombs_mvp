@@ -2,30 +2,30 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import BigCalendar from "../../Calendar/big-calendar";
-import { initialState } from "../../../redux/initialState";
 import { useParams } from "@reach/router";
-import { getContact } from "../../../redux/actions/Contacts";
-import { getEvents } from "../../../redux/actions/Events";
-import { requestUserGroup } from "../../../redux/actions/Groups";
-
+import { requestCalendar } from "../../../redux/actions/Calendars";
+import Loading from "../../../helpers/Loading";
 const MyCalendarStyled = styled.div`
   margin: 1em;
 `;
 export default function index() {
-  const { auth, contacts, events, familyMembers } = useSelector(
-    ({ auth, contacts, events, familyMembers }) => ({
+  const { auth, calendars, contacts, events, familyMembers } = useSelector(
+    ({ auth, calendars, contacts, events, familyMembers }) => ({
       auth,
+      calendars,
       contacts,
       events,
       familyMembers,
     })
   );
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(getEvents(auth.email));
-  //   dispatch(getContact(auth.email));
-  //   dispatch(requestUserGroup(auth.email));
-  // }, []);
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(requestCalendar(id));
+  }, []);
+  if (calendars.length === 0) {
+    return <Loading />;
+  }
   return (
     <MyCalendarStyled>
       <h1>My Calendars</h1>
@@ -33,7 +33,7 @@ export default function index() {
         auth={auth}
         contacts={contacts}
         events={events}
-        calendars={initialState.calendars}
+        calendars={calendars}
         familyMembers={familyMembers}
         publicView={true}
       />

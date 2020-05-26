@@ -150,17 +150,7 @@ export const initialState = {
       color: "#6d49d8",
     },
   ],
-  calendars: [
-    [
-      {
-        id: uuid(),
-        userId: uuid(),
-        name: "Bon Mercado",
-        color: randomColor(),
-        image: "https://i.picsum.photos/id/584/200/200.jpg",
-      },
-    ],
-  ],
+  calendars: [],
   familyMembers: [
     // {
     //   id: uuid(),

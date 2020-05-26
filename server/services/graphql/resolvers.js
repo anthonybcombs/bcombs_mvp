@@ -27,6 +27,7 @@ import {
   executeEditCalendar,
   getCalendars,
   executeDeleteCalendar,
+  getCalendar,
 } from "../../api/calendars";
 import {
   createNewEvent,
@@ -37,7 +38,10 @@ import {
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
 import { getVendors, updateVendor, addVendor } from "../../api/vendor";
-import { createApplication, getApplicationsByVendor } from "../../api/applications";
+import {
+  createApplication,
+  getApplicationsByVendor,
+} from "../../api/applications";
 import { addChild, getChildInformation } from "../../api/child";
 import { addParent, getParentByApplication } from "../../api/parents";
 
@@ -69,6 +73,9 @@ const resolvers = {
     },
     async calendars(root, { access_token, token_type }, context) {
       return await getCalendars({ access_token, token_type });
+    },
+    async calendar(root, { id }, context) {
+      return await getCalendar({ id });
     },
     async familymembers(root, { access_token, token_type }, context) {
       return await getFamilyMembers({ access_token, token_type });
@@ -105,33 +112,33 @@ const resolvers = {
       const vendors = await getVendors();
       console.log("vendors", vendors);
       let vendor = vendors.filter((vendor) => {
-        return user == vendor.user
+        return user == vendor.user;
       })[0];
 
-      if(vendor) {
-        return vendor
+      if (vendor) {
+        return vendor;
       } else {
-        vendor = await addVendor({user: user});
+        vendor = await addVendor({ user: user });
         return vendor;
       }
     },
-    async getVendorApplications(root, {vendor_id} , context) {
+    async getVendorApplications(root, { vendor_id }, context) {
       let applications = await getApplicationsByVendor(vendor_id);
 
       let resapplications = [];
 
-      for(let application of applications) {
+      for (let application of applications) {
         let child = await getChildInformation(application.child);
         console.log("application child ", application.child);
         console.log("child ", child);
         application.parents = await getParentByApplication(application.app_id);
         application.child = child.length > 0 ? child[0] : {};
-        
+
         resapplications.push(application);
       }
 
       return resapplications;
-    }
+    },
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -191,11 +198,10 @@ const resolvers = {
     },
     //ADDED BY JEROME
     async updateVendor(root, { vendor }, context) {
-      return await updateVendor(vendor)
+      return await updateVendor(vendor);
     },
-    async addApplication (root, { applications }, context) {
-
-      for(let application of applications) {
+    async addApplication(root, { applications }, context) {
+      for (let application of applications) {
         const child = await addChild(application.child);
         const parents = application.parents;
 
@@ -203,7 +209,7 @@ const resolvers = {
 
         application = await createApplication(application);
 
-        for(let parent of parents) {
+        for (let parent of parents) {
           parent.application = application.app_id;
           parent = await addParent(parent);
         }
@@ -213,8 +219,7 @@ const resolvers = {
         messageType: "info",
         message: "application created",
       };
-      
-    }
+    },
   },
 };
 

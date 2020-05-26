@@ -12,6 +12,7 @@ import {
   addCalendar,
   editCalendar,
   gotCalendars,
+  gotCalendar,
   deleteCalendar,
 } from "../actions/Calendars";
 import {
@@ -68,6 +69,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ADD_CALENDAR, addCalendar);
   yield takeLatest(actionType.REQUEST_EDIT_CALENDAR, editCalendar);
   yield takeLatest(actionType.REQUEST_GET_CALENDARS, gotCalendars);
+  yield takeLatest(actionType.REQUEST_GET_CALENDAR, gotCalendar);
   yield takeLatest(actionType.REQUEST_DELETE_CALENDAR, deleteCalendar);
   //EVENTS
   yield takeLatest(actionType.REQUEST_ADD_EVENT, addedEvent);
@@ -123,4 +125,3 @@ export const store = createStore(
 );
 // then run the saga
 sagaMiddleware.run(rootSaga);
-

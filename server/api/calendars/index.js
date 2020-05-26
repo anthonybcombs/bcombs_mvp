@@ -7,7 +7,66 @@ import {
   s3BucketRootPath,
 } from "../../helpers/aws";
 import { getUserInfo } from "../users/";
-
+export const getCalendar = async ({ id }) => {
+  const db = makeDb();
+  try {
+    const calendarRows = await db.query(
+      "SELECT BIN_TO_UUID(id) as id,BIN_TO_UUID(user_id) as user_id,name,color,visibilityType,updated_at from user_calendars WHERE BIN_TO_UUID(id)=? AND visibilityType=?",
+      [id, "Public"]
+    );
+    const calendars = await new Promise((resolve, reject) => {
+      const calendars = [];
+      calendarRows.forEach(async (calendar) => {
+        const db1 = makeDb();
+        try {
+          const calendarFamilyMembers = await db1.query(
+            "SELECT BIN_TO_UUID(family_member_id) as family_member_id FROM user_calendars_family_member WHERE calendar_id=UUID_TO_BIN(?)",
+            [calendar.id]
+          );
+          const calendarGroups = await db1.query(
+            "SELECT BIN_TO_UUID(group_id) as group_id FROM user_calendars_groups WHERE calendar_id=UUID_TO_BIN(?)",
+            [calendar.id]
+          );
+          const user = await db1.query(
+            "SELECT email FROM users WHERE id=UUID_TO_BIN(?)",
+            calendar.user_id
+          );
+          calendar.familyMembers = calendarFamilyMembers.map((familyMember) => {
+            return familyMember.family_member_id;
+          });
+          calendar.groups = calendarGroups.map((group) => {
+            return group.group_id;
+          });
+          calendar.email = user[0].email;
+          calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${calendar.id}/calendarBackground.jpg`;
+          calendars.push(calendar);
+        } catch (error) {
+          reject([]);
+        } finally {
+          resolve(calendars.sort((a, b) => b.updated_at - a.updated_at));
+          await db1.close();
+        }
+      });
+    });
+    return {
+      status: {
+        messageType: "info",
+        message: "calendars rendered",
+      },
+      data: calendars,
+    };
+  } catch (error) {
+    return {
+      status: {
+        messageType: "error",
+        message: "there is an issue in get calendar endpoint",
+      },
+      data: [],
+    };
+  } finally {
+    await db.close();
+  }
+};
 export const getCalendars = async (creds) => {
   const db = makeDb();
   try {
@@ -56,7 +115,7 @@ export const getCalendars = async (creds) => {
     return {
       status: {
         messageType: "error",
-        message: "there is an issue in get calendar endpoint",
+        message: "there is an issue in get calendars endpoint",
       },
       data: [],
     };
