@@ -336,7 +336,7 @@ export default function createEventForm({
       method="POST"
       onSubmit={handleSubmit(onSubmit)}>
       <h2>{header}</h2>
-      <FontAwesomeIcon icon={faClock} />
+      {/* <FontAwesomeIcon icon={faClock} /> */}
       <input
         autoComplete="off"
         data-testid="app-dashboard-my-events-new-event-input-title"
@@ -403,6 +403,7 @@ export default function createEventForm({
           closeIcon="cancel"
         />
       )}
+      <br />
       {editMode && (
         <select
           name="status"
@@ -421,6 +422,7 @@ export default function createEventForm({
           ))}
         </select>
       )}
+      <label>Recurring</label>
       <select
         name="recurring"
         className="field-input"
@@ -436,22 +438,58 @@ export default function createEventForm({
           </option>
         ))}
       </select>
-      <select
-        name="visibility"
-        className="field-input"
-        placeholder="Select Visibility"
-        ref={register({ required: true })}
-        onChange={e => {
-          handleEventDetailsChange("visibility", e.target.value);
-        }}
-        value={eventDetails.visibility}>
-        <option value="">Select</option>
-        {OPTION_VISIBILITY.map(opt => (
-          <option key={opt.value} value={opt.value}>
-            {opt.name}
-          </option>
-        ))}
-      </select>
+      {/* <br />
+      <div>
+        <div>Ends</div>
+        <label className="cus-select-container" style={{ fontSize: 12 }}>
+          <input
+            type="radio"
+            name="recurring_end_type"
+            onChange={({ target }) => {
+              handleEventDetailsChange("recurring_end_type", target.value);
+            }}
+            checked={
+              eventDetails && eventDetails.recurring_end_type === "never"
+            }
+            value="never"
+          />{" "}
+          Never
+          <span className="checkmark"></span>
+        </label>
+        <label className="cus-select-container" style={{ fontSize: 12 }}>
+          <input
+            type="radio"
+            name="recurring_end_type"
+            onChange={({ target }) => {
+              handleEventDetailsChange("recurring_end_type", target.value);
+            }}
+            checked={eventDetails && eventDetails.recurring_end_type === "on"}
+            value="on"
+          />{" "}
+          On
+          <span className="checkmark"></span>
+        </label>
+      </div> */}
+      <br />
+      <div>
+        <label>Visibility</label>
+        <select
+          name="visibility"
+          className="field-input"
+          placeholder="Select Visibility"
+          ref={register({ required: true })}
+          onChange={e => {
+            handleEventDetailsChange("visibility", e.target.value);
+          }}
+          value={eventDetails.visibility}>
+          <option value="">Select</option>
+          {OPTION_VISIBILITY.map(opt => (
+            <option key={opt.value} value={opt.value}>
+              {opt.name}
+            </option>
+          ))}
+        </select>
+      </div>
       {eventDetails.visibility === "custom" && (
         <CustomMultiSelect
           className="field-input"

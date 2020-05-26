@@ -90,4 +90,48 @@ export const GET_APPLICATIONS_QUERY = gql`
       application_date
     }
   }
-`
+`;
+
+// ADDED BY DENNIS
+export const USER_APPLICATION_QUERY = gql`
+  query UserApplication($email: String!) {
+    getUserApplications(email: $email) {
+      child {
+        name
+        email_address
+        firstname
+        lastname
+        phone_number
+        address
+        city
+        zip_code
+        child_id
+        application_id
+        verification
+      }
+      parent {
+        name
+        email_address
+        firstname
+        lastname
+        phone_number
+        address
+        city
+        zip_code
+        parent_id
+        application_id
+        verification
+      }
+    }
+  }
+`;
+/*
+    name
+      email_address
+      firstname
+      lastname
+      phone_number
+      address
+      city
+      zip_code
+      */

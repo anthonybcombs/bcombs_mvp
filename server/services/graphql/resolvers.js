@@ -6,20 +6,21 @@ import {
   executeChangePassword,
   executeUserUpdate,
   executeGetUser,
+  getUserApplication
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
   createNewContact,
   editContact,
   getContacts,
-  removeContact,
+  removeContact
 } from "../../api/contacts";
 import {
   getUserGroups,
   editGroups,
   removeGroup,
   createNewGroup,
-  getMembers,
+  getMembers
 } from "../../api/groups";
 
 import {
@@ -27,20 +28,20 @@ import {
   executeEditCalendar,
   getCalendars,
   executeDeleteCalendar,
-  getCalendar,
+  getCalendar
 } from "../../api/calendars";
 import {
   createNewEvent,
   editEvents,
   getUserEvents,
-  removeEvents,
+  removeEvents
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
 import { getVendors, updateVendor, addVendor } from "../../api/vendor";
 import {
   createApplication,
-  getApplicationsByVendor,
+  getApplicationsByVendor
 } from "../../api/applications";
 import { addChild, getChildInformation } from "../../api/child";
 import { addParent, getParentByApplication } from "../../api/parents";
@@ -54,10 +55,10 @@ const resolvers = {
     async users(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type,
+        token_type: args.token_type
       };
       const users = await getUsers();
-      return users.filter((user) => {
+      return users.filter(user => {
         if (args.email) {
           return user.email === args.email;
         }
@@ -111,7 +112,7 @@ const resolvers = {
     async vendor(root, { user }, context) {
       const vendors = await getVendors();
       console.log("vendors", vendors);
-      let vendor = vendors.filter((vendor) => {
+      let vendor = vendors.filter(vendor => {
         return user == vendor.user;
       })[0];
 
@@ -139,6 +140,16 @@ const resolvers = {
 
       return resapplications;
     },
+    async getUserApplications(root, { email }, context) {
+      try {
+        console.log("Get User Applications", email);
+        const response = await getUserApplication(email);
+        console.log("Get User Applications response", response);
+        return response;
+      } catch (err) {
+        console.log("Get User Applications", err);
+      }
+    }
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -217,10 +228,10 @@ const resolvers = {
 
       return {
         messageType: "info",
-        message: "application created",
+        message: "application created"
       };
-    },
-  },
+    }
+  }
 };
 
 export default resolvers;

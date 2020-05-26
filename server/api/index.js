@@ -322,8 +322,8 @@ router.post("/users/add", async (req, res) => {
 router.put("/user/profile", async (req, res) => {
   const db = makeDb();
   try {
-    const { personalInfo } = req.body;
-    console.log("req.bodyyy", req.body);
+    const { personalInfo, otherInfo } = req.body;
+    console.log("req.bodyyy", otherInfo);
     await db.query(
       "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,zip_code=?,birth_date=?,address=?,school=?,ethnicity=?,grade=? where id=UUID_TO_BIN(?)",
       [
@@ -341,6 +341,39 @@ router.put("/user/profile", async (req, res) => {
       ]
     );
 
+    if (otherInfo.child_ids && otherInfo.child_ids.length > 0) {
+      const childIds = otherInfo.child_ids.map(id => `UUID_TO_BIN("${id}")`);
+      console.log("Child Ids", childIds);
+      await db.query(
+        `UPDATE child SET firstname=?,lastname=?,birthdate=?,gender=?,zip_code=? WHERE ch_id IN (${childIds.join(
+          ","
+        )})`,
+        [
+          personalInfo.firstname,
+          personalInfo.lastname,
+          personalInfo.dateofbirth,
+          personalInfo.gender,
+          personalInfo.zipcode
+        ]
+      );
+    }
+
+    if (otherInfo.parent_ids && otherInfo.parent_ids.length > 0) {
+      const parentIds = otherInfo.parent_ids.map(id => `UUID_TO_BIN("${id}")`);
+      console.log("Parent Ids", parentIds);
+      await db.query(
+        `UPDATE parent SET firstname=?,lastname=?,address=?,zip_code=? WHERE parent_id IN (${parentIds.join(
+          ","
+        )})`,
+        [
+          personalInfo.firstname,
+          personalInfo.lastname,
+          personalInfo.address,
+          personalInfo.zipcode
+        ]
+      );
+    }
+
     const payload = {
       first_name: personalInfo.firstname,
       last_name: personalInfo.lastname,
@@ -357,6 +390,7 @@ router.put("/user/profile", async (req, res) => {
 
     res.status(200).json({ data: payload });
   } catch (error) {
+    console.log("Error", error);
     res.status(400).json({ error: true, Message: error });
   } finally {
     await db.close();
