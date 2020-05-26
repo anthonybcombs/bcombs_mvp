@@ -13,7 +13,7 @@ import {
   eachDayOfInterval,
   isAfter,
   getMonth,
-  getYear
+  getYear,
 } from "date-fns";
 import Event from "../../event";
 
@@ -93,7 +93,8 @@ export default function index({
   selectedCalendars,
   events,
   handleChangeDay,
-  setIsEventModalVisible
+  setIsEventModalVisible,
+  publicView,
 }) {
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
@@ -109,7 +110,7 @@ export default function index({
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
     let currentDay = new Date(day).getDay();
-    let eventsOnThisDay = events.filter(event => {
+    let eventsOnThisDay = events.filter((event) => {
       let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
 
       let startEventDay = new Date(event.start_of_event).getDay();
@@ -151,12 +152,12 @@ export default function index({
 
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),
-        end: new Date(event.end_of_event)
+        end: new Date(event.end_of_event),
       });
 
       if (dateRange != undefined) {
         return (
-          dateRange.filter(intervalDate => isSameDay(intervalDate, cloneDay))
+          dateRange.filter((intervalDate) => isSameDay(intervalDate, cloneDay))
             .length > 0
         );
       }
@@ -172,8 +173,8 @@ export default function index({
             multi_color: [
               ...(accumulator[index - 1].multi_color || []),
               accumulator[index - 1].color,
-              item.color
-            ]
+              item.color,
+            ],
           };
           return [...accumulator];
         }
@@ -195,17 +196,24 @@ export default function index({
             ? "selected"
             : ""
         }`}
+        style={{ cursor: `${!publicView ? "pointer" : "default"}` }}
         onClick={() => {
-          handleChangeDay(toDate(cloneDay));
+          if (!publicView) {
+            handleChangeDay(toDate(cloneDay));
+          }
         }}
-        onDoubleClick={e => {
-          handleChangeDay(toDate(cloneDay));
-          setIsEventModalVisible(true);
-        }}>
+        onDoubleClick={(e) => {
+          if (!publicView) {
+            handleChangeDay(toDate(cloneDay));
+            setIsEventModalVisible(true);
+          }
+        }}
+      >
         <span
           className={`day ${
             hasEvents && !isSameDay(day, selectedDate) ? "has-events" : ""
-          }`}>
+          }`}
+        >
           {formattedDate}
         </span>
         <div id="events-list">

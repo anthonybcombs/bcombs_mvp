@@ -8,6 +8,7 @@ export default function index({
   events,
   calendars,
   familyMembers,
+  publicView = false,
 }) {
   const [calendarType, setCalendarType] = useState(
     sessionStorage.getItem("bigCalendarViewMonth") === null
@@ -58,7 +59,7 @@ export default function index({
 
   return (
     <>
-      <Search />
+      {!publicView && <Search />}
       {calendarType === "month" && (
         <MonthViewCalendar
           auth={auth}
@@ -70,6 +71,7 @@ export default function index({
           handleChangeCalendarType={handleChangeCalendarType}
           handleCalendarSelection={handleCalendarSelection}
           familyMembers={familyMembers}
+          publicView={publicView}
         />
       )}
       {calendarType === "week" && (
@@ -83,6 +85,7 @@ export default function index({
           handleChangeCalendarType={handleChangeCalendarType}
           handleCalendarSelection={handleCalendarSelection}
           familyMembers={familyMembers}
+          publicView={publicView}
         />
       )}
     </>

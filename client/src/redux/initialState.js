@@ -150,7 +150,17 @@ export const initialState = {
       color: "#6d49d8",
     },
   ],
-  calendars: [],
+  calendars: [
+    [
+      {
+        id: uuid(),
+        userId: uuid(),
+        name: "Bon Mercado",
+        color: randomColor(),
+        image: "https://i.picsum.photos/id/584/200/200.jpg",
+      },
+    ],
+  ],
   familyMembers: [
     // {
     //   id: uuid(),
@@ -226,8 +236,8 @@ export const initialState = {
   grades: [
     {
       id: "1",
-      name: "Middle School"
-    }
+      name: "Middle School",
+    },
   ],
   vendor: {
     id: uuid(),
@@ -235,7 +245,7 @@ export const initialState = {
     name: "",
     waiver_text: "",
     liability_waiver_text: "",
-    terms_and_conditions_text: ""
+    terms_and_conditions_text: "",
   },
-  applications: []
+  applications: [],
 };

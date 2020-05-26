@@ -17,14 +17,15 @@ export default function index({
   handleChangeCalendarType,
   selectedCalendars,
   handleCalendarSelection,
-  familyMembers
+  familyMembers,
+  publicView,
 }) {
   const [currentDate, setCurrentDate] = useState({
     currentWeek: new Date(),
-    selectedDate: new Date()
+    selectedDate: new Date(),
   });
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
-  const handleWeekChange = operation => {
+  const handleWeekChange = (operation) => {
     let currentWeek;
     if (operation === "next") {
       currentWeek = addWeeks(currentDate.currentWeek, 1);
@@ -35,24 +36,26 @@ export default function index({
     setCurrentDate({
       ...currentDate,
       currentWeek,
-      selectedDate: firstWeekOfTheMonth
+      selectedDate: firstWeekOfTheMonth,
     });
   };
-  const handleChangeDay = day => {
+  const handleChangeDay = (day) => {
     setCurrentDate({
       ...currentDate,
-      selectedDate: day
+      selectedDate: day,
     });
   };
   return (
     <WeekViewStyled data-testid="app-big-calendar">
-      <NewEventModal
-        auth={auth}
-        isVisible={isNewEventModalVisible}
-        toggleCreateEventModal={setIsEventModalVisible}
-        defaultSelectedDate={currentDate.selectedDate}
-        selectedCalendars={selectedCalendars}
-      />
+      {!publicView && (
+        <NewEventModal
+          auth={auth}
+          isVisible={isNewEventModalVisible}
+          toggleCreateEventModal={setIsEventModalVisible}
+          defaultSelectedDate={currentDate.selectedDate}
+          selectedCalendars={selectedCalendars}
+        />
+      )}
       <Header
         currentWeek={currentDate.currentWeek}
         handleWeekChange={handleWeekChange}
@@ -61,6 +64,7 @@ export default function index({
         handleChangeCalendarType={handleChangeCalendarType}
         selectedCalendars={selectedCalendars}
         handleCalendarSelection={handleCalendarSelection}
+        publicView={publicView}
       />
       <Days currentWeek={currentDate.currentWeek} />
       <Cells
@@ -71,6 +75,7 @@ export default function index({
         familyMembers={familyMembers}
         handleChangeDay={handleChangeDay}
         setIsEventModalVisible={setIsEventModalVisible}
+        publicView={publicView}
       />
     </WeekViewStyled>
   );

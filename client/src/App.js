@@ -5,7 +5,7 @@ import Layout from "./helpers/Layout";
 import Loadable from "react-loadable";
 import Loading from "./helpers/Loading.js";
 import { requestUserTypes } from "./redux/actions/UserTypes";
-import { requestGrades } from "./redux/actions/Grades"
+import { requestGrades } from "./redux/actions/Grades";
 import SocialLoginLanding from "./helpers/SocialLogin.js";
 
 const AsycDashboard = Loadable({
@@ -18,6 +18,10 @@ const AsyncDashBoardHome = Loadable({
 });
 const AsyncDashboardMyCalendars = Loadable({
   loader: () => import("./components/Dashboard/MyCalendars"),
+  loading: Loading,
+});
+const AyncDashboardMyContactsPublic = Loadable({
+  loader: () => import("./components/Dashboard/MyCalendars/publicCalendar"),
   loading: Loading,
 });
 const AsyncDashboardMyEvents = Loadable({
@@ -75,6 +79,7 @@ export default function App() {
       <Layout>
         <div data-testid="app">
           <Router>
+            <AyncDashboardMyContactsPublic path="/mycalendars/public/:id" />
             <AsyncAuth path="/">
               <AsyncLogin default />
               <AsyncCreateUser path="auth/create" />

@@ -18,14 +18,15 @@ export default function index({
   handleChangeCalendarType,
   selectedCalendars,
   handleCalendarSelection,
-  familyMembers
+  familyMembers,
+  publicView,
 }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
-    selectedDate: new Date()
+    selectedDate: new Date(),
   });
-  const handleChangeMonth = operation => {
+  const handleChangeMonth = (operation) => {
     let currentMonth;
     if (operation === "next") {
       currentMonth = addMonths(currentDate.currentMonth, 1);
@@ -36,26 +37,28 @@ export default function index({
     setCurrentDate({
       ...currentDate,
       currentMonth,
-      selectedDate: firstDayOfTheMonth
+      selectedDate: firstDayOfTheMonth,
     });
   };
-  const handleChangeDay = day => {
+  const handleChangeDay = (day) => {
     setCurrentDate({
       ...currentDate,
-      selectedDate: day
+      selectedDate: day,
     });
   };
 
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
-      <NewEventModal
-        auth={auth}
-        contacts={contacts}
-        isVisible={isNewEventModalVisible}
-        toggleCreateEventModal={setIsEventModalVisible}
-        defaultSelectedDate={currentDate.selectedDate}
-        selectedCalendars={selectedCalendars}
-      />
+      {!publicView && (
+        <NewEventModal
+          auth={auth}
+          contacts={contacts}
+          isVisible={isNewEventModalVisible}
+          toggleCreateEventModal={setIsEventModalVisible}
+          defaultSelectedDate={currentDate.selectedDate}
+          selectedCalendars={selectedCalendars}
+        />
+      )}
       <Header
         currentMonth={currentDate.currentMonth}
         handleChangeMonth={handleChangeMonth}
@@ -64,6 +67,7 @@ export default function index({
         handleChangeCalendarType={handleChangeCalendarType}
         selectedCalendars={selectedCalendars}
         handleCalendarSelection={handleCalendarSelection}
+        publicView={publicView}
       />
       <Days currentMonth={currentDate.currentMonth} />
       <Cells
@@ -75,6 +79,7 @@ export default function index({
         handleChangeDay={handleChangeDay}
         familyMembers={familyMembers}
         setIsEventModalVisible={setIsEventModalVisible}
+        publicView={publicView}
       />
     </BigCalendarStyled>
   );

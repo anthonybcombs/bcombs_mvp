@@ -103,6 +103,7 @@ export default function index({
   handleChangeCalendarType,
   selectedCalendars,
   handleCalendarSelection,
+  publicView,
 }) {
   const [isVisibleCreateCalendarModal, toggleCreateCalendarModal] = useState(
     false
@@ -171,21 +172,23 @@ export default function index({
           setPaginationVisibility(false);
         }}
       >
-        <button>
-          <FontAwesomeIcon
-            icon={faPlus}
-            onClick={() => {
-              toggleCreateCalendarModal(true);
-            }}
-          />
-          <FontAwesomeIcon
-            icon={viewAllCalendar ? faEyeSlash : faEye}
-            onClick={() => {
-              setViewAllCalendar(!viewAllCalendar);
-            }}
-          />
-        </button>
-        {isPaginationVisible && !viewAllCalendar && (
+        {!publicView && (
+          <button>
+            <FontAwesomeIcon
+              icon={faPlus}
+              onClick={() => {
+                toggleCreateCalendarModal(true);
+              }}
+            />
+            <FontAwesomeIcon
+              icon={viewAllCalendar ? faEyeSlash : faEye}
+              onClick={() => {
+                setViewAllCalendar(!viewAllCalendar);
+              }}
+            />
+          </button>
+        )}
+        {!publicView && isPaginationVisible && !viewAllCalendar && (
           <>
             {currentPage > 0 && (
               <FontAwesomeIcon
@@ -229,6 +232,7 @@ export default function index({
           toggleEditCalendarModal={toggleEditCalendarModal}
           currentPage={currentPage}
           viewAllCalendar={viewAllCalendar}
+          publicView={publicView}
         />
       </div>
     </HeaderStyled>
@@ -242,12 +246,12 @@ const CalendarList = ({
   selectedCalendars,
   currentPage,
   viewAllCalendar,
+  publicView,
 }) => {
   return (
     <>
       {viewAllCalendar &&
         calendars.map((calendarGroup) => {
-          console.log("?");
           return calendarGroup.map((calendar) => {
             return (
               <CalendarCard
@@ -257,6 +261,7 @@ const CalendarList = ({
                 setSelectedCalendar={setSelectedCalendar}
                 selectedCalendars={selectedCalendars}
                 toggleEditCalendarModal={toggleEditCalendarModal}
+                publicView={publicView}
               />
             );
           });
@@ -272,6 +277,7 @@ const CalendarList = ({
               setSelectedCalendar={setSelectedCalendar}
               selectedCalendars={selectedCalendars}
               toggleEditCalendarModal={toggleEditCalendarModal}
+              publicView={publicView}
             />
           );
         })}
@@ -284,21 +290,29 @@ const CalendarCard = ({
   setSelectedCalendar,
   selectedCalendars,
   toggleEditCalendarModal,
+  publicView,
 }) => {
   const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
   const dispatch = useDispatch();
   return (
     <div
       className="calendar"
+      style={{ cursor: `${!publicView ? "pointer" : "default"}` }}
       key={index}
       onClick={() => {
-        handleCalendarSelection(calendar.id);
+        if (!publicView) {
+          handleCalendarSelection(calendar.id);
+        }
       }}
       onMouseEnter={() => {
-        setCalendarButtonsVisible(true);
+        if (!publicView) {
+          setCalendarButtonsVisible(true);
+        }
       }}
       onMouseLeave={() => {
-        setCalendarButtonsVisible(false);
+        if (!publicView) {
+          setCalendarButtonsVisible(false);
+        }
       }}
     >
       <img src={calendar.image} />
@@ -310,7 +324,7 @@ const CalendarCard = ({
         <span style={{ backgroundColor: `${calendar.color}` }}></span>
         <EllipsisText text={calendar.name} length={8} />
       </p>
-      {isCalendarButtonsVisible && (
+      {isCalendarButtonsVisible && !publicView && (
         <div id="buttons">
           <FontAwesomeIcon
             icon={faEdit}
