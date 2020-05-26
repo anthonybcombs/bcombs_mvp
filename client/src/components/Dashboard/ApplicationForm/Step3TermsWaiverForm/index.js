@@ -55,8 +55,8 @@ export default function index({
           pDate={pDate}
           register={register}
           errors={errors}
-          name={vendor.section1_name}
-          text={vendor.section1_text}
+          name={vendor.section2_name}
+          text={vendor.section2_text}
         />
         :
         ""

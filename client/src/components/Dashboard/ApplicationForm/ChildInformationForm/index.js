@@ -400,7 +400,7 @@ export default function index({
                 />
               }
  
-              <label className="field-label">Phone</label>
+              <label className="field-label">Phone Number</label>
             </div>
           </div>
         </div>
