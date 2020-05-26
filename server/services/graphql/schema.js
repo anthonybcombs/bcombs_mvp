@@ -44,8 +44,6 @@ const inputs = `
         members: [PersonalInfoInput]
         personalInfo: PersonalInfoInput!
         calendarInfo: CalendarInfoInput!
-        child_ids:[String]
-        parent_ids:[String]
     }
     input UserUpdateInput{
         creds: CredsInput!
@@ -151,6 +149,10 @@ const inputs = `
         phone_number: String
         email_type: String
         email_address: String
+        phone_type2: String
+        phone_number2: String
+        email_type2: String
+        email_address2: String
         address: String!
         city: String!
         state: String!
@@ -210,6 +212,10 @@ const inputs = `
         city: String
         state: String
         zip_code: String
+        phone_type2: String
+        phone_number2: String
+        email_type2: String
+        email_address2: String
     }
 
     input ApplicationInput {
@@ -229,14 +235,7 @@ const inputs = `
         emergency_contacts: String
     }
 
-    input UpdateApplicationInput {
-        app_id: String!
-        verification: String
-        student_status: String
-        color_designation: String
-        notes: String
-        class_teacher: String
-    }
+  
 `;
 const queryTypes = `
     scalar Date
@@ -410,6 +409,10 @@ const queryTypes = `
         phone_number: String
         email_type: String
         email_address: String
+        phone_type2: String
+        phone_number2: String
+        email_type2: String
+        email_address2: String
         address: String!
         city: String!
         state: String!
@@ -465,6 +468,10 @@ const queryTypes = `
         child_hs_grad: String
         child_col_grad: String
         emergency_contacts: String
+        phone_type2: String
+        phone_number2: String
+        email_type2: String
+        email_address2: String
     }
 
     type Application {
@@ -483,31 +490,9 @@ const queryTypes = `
         color_designation: String
         notes: String
         application_date: Date
-        archived_date: Date
-        class_teacher: String
     }
-
-    type ParentUserApplication{
-        name: String
-        email_address:String
-        firstname:String
-        lastname:String 
-        phone_number:String
-        address: String
-        city:String
-        zip_code: String
-        child_id: String
-        parent_id: String
-        application_id: String
-        verification: String
-    }
-    type UserApplication {
-        child: [ParentUserApplication]
-        parent: [ParentUserApplication]
-    }
-
-  
 `;
+
 const mutations = `
     type RootMutation{
         signUp(user: UserSignupInput!):Status
@@ -527,8 +512,8 @@ const mutations = `
         updateEvent(event:EventInput!): [Event]
         deleteEvent(id: String!, email:String!): [Event]
         addApplication(applications: [ApplicationInput]): Status
-        updateApplication(application: UpdateApplicationInput!): Status
-        archivedApplications(app_ids: [String]): Status
+        updateApplicationStatus(application_id: String!, status: String!): Status
+        archivedApplication(application_id: String!): Status
         updateVendor(vendor: VendorInput!): Vendor
     }
 `;
@@ -555,7 +540,6 @@ const queries = `
         getVendorApplications(vendor_id: String!): [Application]
         getVendorArchivedApplications(vendor_id: String!): [Application]
         getApplication(application_id: String!): Application
-        getUserApplications(email: String!): UserApplication
     }
 `;
 

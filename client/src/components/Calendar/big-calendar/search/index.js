@@ -20,7 +20,7 @@ const SearchStyled = styled.div`
     width: 50px;
   }
 `;
-export default function index() {
+export default function index({ handleCalendarSelection }) {
   const [isModalVisible, setModalVisible] = useState(false);
   const { calendars } = useSelector(({ calendars }) => {
     return { calendars };
@@ -42,6 +42,7 @@ export default function index() {
         calendars={calendars}
         isVisible={isModalVisible}
         toggleSearchModal={handleModalVisibility}
+        handleCalendarSelection={handleCalendarSelection}
       />
     </SearchStyled>
   );

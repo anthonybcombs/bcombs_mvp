@@ -6,21 +6,20 @@ import {
   executeChangePassword,
   executeUserUpdate,
   executeGetUser,
-  getUserApplication
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
   createNewContact,
   editContact,
   getContacts,
-  removeContact
+  removeContact,
 } from "../../api/contacts";
 import {
   getUserGroups,
   editGroups,
   removeGroup,
   createNewGroup,
-  getMembers
+  getMembers,
 } from "../../api/groups";
 
 import {
@@ -28,24 +27,21 @@ import {
   executeEditCalendar,
   getCalendars,
   executeDeleteCalendar,
-  getCalendar
+  getCalendar,
 } from "../../api/calendars";
 import {
   createNewEvent,
   editEvents,
   getUserEvents,
-  removeEvents
+  removeEvents,
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
 import { getVendors, updateVendor, addVendor } from "../../api/vendor";
-import { 
-  createApplication, 
-  getApplicationsByVendor, 
-  updateApplication,
-  archivedApplication,
-  unArchivedApplication,
-  getArchivedApplicationsByVendor } from "../../api/applications";
+import {
+  createApplication,
+  getApplicationsByVendor,
+} from "../../api/applications";
 import { addChild, getChildInformation } from "../../api/child";
 import { addParent, getParentByApplication } from "../../api/parents";
 
@@ -58,10 +54,10 @@ const resolvers = {
     async users(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type
+        token_type: args.token_type,
       };
       const users = await getUsers();
-      return users.filter(user => {
+      return users.filter((user) => {
         if (args.email) {
           return user.email === args.email;
         }
@@ -115,7 +111,7 @@ const resolvers = {
     async vendor(root, { user }, context) {
       const vendors = await getVendors();
       console.log("vendors", vendors);
-      let vendor = vendors.filter(vendor => {
+      let vendor = vendors.filter((vendor) => {
         return user == vendor.user;
       })[0];
 
@@ -143,32 +139,6 @@ const resolvers = {
 
       return resapplications;
     },
-    async getUserApplications(root, { email }, context) {
-      try {
-        console.log("Get User Applications", email);
-        const response = await getUserApplication(email);
-        console.log("Get User Applications response", response);
-        return response;
-      } catch (err) {
-        console.log("Get User Applications", err);
-      }
-    },
-    async getVendorArchivedApplications(root, {vendor_id}, context) {
-      let applications = await getArchivedApplicationsByVendor(vendor_id);
-
-      let resapplications = [];
-
-      for(let application of applications) {
-        let child = await getChildInformation(application.child);
-        console.log("application child ", application.child);
-        console.log("child ", child);
-        application.parents = await getParentByApplication(application.app_id);
-        application.child = child.length > 0 ? child[0] : {};
-        
-        resapplications.push(application);
-      }
-      return resapplications;
-    }
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -247,58 +217,10 @@ const resolvers = {
 
       return {
         messageType: "info",
-        message: "application created"
+        message: "application created",
       };
     },
-    async updateApplication (root, { application }, context) {
-      console.log("APPLICATION ", application);
-      try {
-        const response = await updateApplication(application);
-        if(!response.error) {
-          return {
-            messageType: "info",
-            message: "application updated"
-          }
-        } else {
-          console.log("error", response.error);
-          return {
-            messageType: "error",
-            message: "error application update"
-          }
-        }
-      } catch (err) {
-        console.log("error", err);
-        return {
-          messageType: "error",
-          message: "error application update"
-        }
-      }
-    },
-    async archivedApplications (root, { app_ids }, context) {
-      try {
-        for(let app_id of app_ids) {
-          let response = await archivedApplication(app_id);
-
-          if(response.error) {
-            return {
-              messageType: "error",
-              message: "error application archived"
-            }
-          }
-        }
-
-        return {
-          messageType: "info",
-          message: "application archived"
-        }
-      } catch(err) {
-        return {
-          messageType: "error",
-          message: "error application archived"
-        }
-      }
-    }
-  }
+  },
 };
 
 export default resolvers;

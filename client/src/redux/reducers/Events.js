@@ -18,7 +18,7 @@ export default function Events(state = [], action) {
       return [...action.payload];
     }
     case actionType.REQUEST_SEARCH_EVENTS_COMPLETED: {
-      // return state.filter()
+      return [...action.payload];
     }
     default:
       return state;

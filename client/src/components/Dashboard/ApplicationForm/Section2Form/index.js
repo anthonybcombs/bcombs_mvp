@@ -28,16 +28,17 @@ export default function index({
   pDate,
   register,
   errors,
-  liabilityText
+  name,
+  text
 }) {
 
   return (
     <Section2FormStyled>
-      <h3 className="heading">Liability Waiver</h3>
+      <h3 className="heading">{name}</h3>
       <div className="waiver-wrapper">
 
         <p className="message" key={index}>
-          {liabilityText}
+          {text}
         </p>
 
         <div className="grid">

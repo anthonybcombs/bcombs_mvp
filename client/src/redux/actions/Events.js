@@ -1,6 +1,6 @@
 import { call, take, put } from "redux-saga/effects";
 import * as actionType from "./Constant";
-
+import { format, isWithinInterval, parseISO } from "date-fns";
 import { setEventLoading } from "./Loading";
 
 import graphqlClient from "../../graphql";
@@ -174,18 +174,46 @@ export function* getUserEvents(action) {
     yield put(setEventLoading(false));
   }
 }
-export function* searchEvents(action) {
+export function* searchedEvents({ searchDetails }) {
   try {
     yield put(setEventLoading(true));
-    yield put({
-      type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
-      payload: response,
-    });
+    const events = yield call(getEventsToDatabase, searchDetails.email);
+    if (
+      searchDetails.name.length === 0 &&
+      searchDetails.location.length === 0 &&
+      searchDetails.startDate.length === 0 &&
+      searchDetails.endDate.length === 0
+    ) {
+      yield put({
+        type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
+        payload: events,
+      });
+    } else {
+      let filteredEvents = events.filter((event) => {
+        return (
+          (searchDetails.name.length > 0 &&
+            event.name.includes(searchDetails.name)) ||
+          (searchDetails.location.length > 0 &&
+            event.location.includes(searchDetails.location)) ||
+          (searchDetails.startDate.length > 0 &&
+            searchDetails.endDate.length > 0 &&
+            isWithinInterval(new Date(event.start_of_event), {
+              start: new Date(searchDetails.startDate),
+              end: new Date(searchDetails.endDate),
+            }))
+        );
+      });
+      yield put({
+        type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
+        payload: filteredEvents,
+      });
+    }
+
     yield put(setEventLoading(false));
   } catch (err) {
-    console.log("error getUserEvents", err);
+    console.log(err);
     yield put({
-      type: actionType.REQUEST_EVENTS_COMPLETED,
+      type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
       payload: [],
     });
     yield put(setEventLoading(false));
