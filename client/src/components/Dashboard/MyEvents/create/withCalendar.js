@@ -210,8 +210,11 @@ export default function index({
       visibility: eventDetails.visibility,
       recurring: eventDetails.recurring,
       recurring_end_date:
+        eventDetails.recurring !== "No Repeat" &&
         eventDetails.recurringEndDate &&
-        format(getUTCDate(eventDetails.recurringEndDate), DATE_TIME_FORMAT),
+        eventDetails.recurringEndType === "on"
+          ? format(getUTCDate(eventDetails.recurringEndDate), DATE_TIME_FORMAT)
+          : null,
       auth_email: auth.email,
       calendar_ids: calendarIds,
       guests: eventDetails.eventGuests.map(item => item.id),

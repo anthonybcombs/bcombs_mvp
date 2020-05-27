@@ -320,7 +320,7 @@ export default function createEventForm({
     handleEventDetailsChange("removeGuests", removedGuest);
   };
 
-  console.log("eventDetails111", eventDetails);
+  console.log("eventDetails", eventDetails);
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
@@ -402,6 +402,7 @@ export default function createEventForm({
           placeholder="Select Status"
           ref={register({ required: true })}
           onChange={e => {
+            console.log("e.target.valueee", e.target.value);
             handleEventDetailsChange("status", e.target.value);
           }}
           value={eventDetails.status}>
@@ -413,6 +414,7 @@ export default function createEventForm({
           ))}
         </select>
       )}
+      <br />
       <label>Recurring</label>
       <select
         name="recurring"
@@ -422,7 +424,9 @@ export default function createEventForm({
           handleEventDetailsChange("recurring", e.target.value);
         }}
         value={eventDetails.recurring}>
-        <option value="">No Repeat</option>
+        <option key="0" value="No Repeat">
+          No Repeat
+        </option>
         {OPTION_RECURRING.map(opt => (
           <option key={opt.value} value={opt.value}>
             {opt.name}
@@ -431,8 +435,8 @@ export default function createEventForm({
       </select>
       <br />
       {eventDetails &&
-        (eventDetails.recurring !== "no-repeat" ||
-          eventDetails.recurring !== "") && (
+        eventDetails.recurring !== "No Repeat" &&
+        eventDetails.recurring !== "" && (
           <div>
             <div>Ends</div>
             <label className="cus-select-container" style={{ fontSize: 12 }}>
@@ -465,26 +469,29 @@ export default function createEventForm({
             </label>
           </div>
         )}
-      {eventDetails && eventDetails.recurringEndType === "on" && (
-        <label>
-          Recurring End Date
-          <CustomDatePicker
-            className="custom-date-picker"
-            placeholderText="mm/dd/yyyy"
-            selected={
-              eventDetails.recurringEndDate &&
-              new Date(eventDetails.recurringEndDate)
-            }
-            onChange={date => {
-              console.log("RECURRING END DATE", date);
-              handleEventDetailsChange(
-                "recurringEndDate",
-                format(new Date(date), "yyyy-MM-dd")
-              );
-            }}
-          />
-        </label>
-      )}
+      {eventDetails &&
+        eventDetails.recurringEndType === "on" &&
+        eventDetails.recurring !== "No Repeat" &&
+        eventDetails.recurring !== "" && (
+          <label>
+            Recurring End Date
+            <CustomDatePicker
+              className="custom-date-picker"
+              placeholderText="mm/dd/yyyy"
+              selected={
+                eventDetails.recurringEndDate &&
+                new Date(eventDetails.recurringEndDate)
+              }
+              onChange={date => {
+                console.log("RECURRING END DATE", date);
+                handleEventDetailsChange(
+                  "recurringEndDate",
+                  format(new Date(date), "yyyy-MM-dd")
+                );
+              }}
+            />
+          </label>
+        )}
       <br />
       <div>
         <label>Visibility</label>

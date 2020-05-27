@@ -122,8 +122,7 @@ export default function index({
       ...eventDetails,
       date: defaultSelectedDate,
       time: format(defaultSelectedDate, "hh:mm a"),
-      eventSchedule: [defaultSelectedDate, defaultSelectedDate],
-      
+      eventSchedule: [defaultSelectedDate, defaultSelectedDate]
     });
   }, [defaultSelectedDate]);
 
@@ -172,8 +171,11 @@ export default function index({
       visibility: eventDetails.visibility,
       recurring: eventDetails.recurring,
       recurring_end_date:
+        eventDetails.recurring !== "No Repeat" &&
         eventDetails.recurringEndDate &&
-        format(getUTCDate(eventDetails.recurringEndDate), DATE_TIME_FORMAT),
+        eventDetails.recurringEndType === "on"
+          ? format(getUTCDate(eventDetails.recurringEndDate), DATE_TIME_FORMAT)
+          : null,
       guests:
         eventDetails.eventGuests.length > 0
           ? eventDetails.eventGuests.map(item => item.id)

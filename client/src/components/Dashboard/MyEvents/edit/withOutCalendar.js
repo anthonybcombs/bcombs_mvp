@@ -102,10 +102,12 @@ export default function index({
             defaultEventDetails.group_ids.includes(item.id)
         ),
         recurringEndDate: defaultEventDetails.recurring_end_date,
-        recurringEndType: defaultEventDetails.recurring_end_date ? "on" : ""
+        recurringEndType: defaultEventDetails.recurring_end_date
+          ? "on"
+          : "never"
       });
     }
-  }, [defaultEventDetails, groupOptions]);
+  }, [isVisible]);
 
   useEffect(() => {
     if (groups) {
@@ -121,6 +123,7 @@ export default function index({
 
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
+
   const handleEventDetailsChange = (id, value, action = "") => {
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
@@ -130,9 +133,12 @@ export default function index({
         removedGuests: [...(eventDetails.removeGuests || []), value]
       });
     } else {
+      console.log("handleEventDetails id", id);
+      console.log("handleEventDetails value", value);
       setEventDetails({ ...eventDetails, [id]: value });
     }
   };
+
   const handleSubmit = value => {
     const payload = {
       start_of_event: format(
@@ -155,7 +161,9 @@ export default function index({
       visibility: eventDetails.visibility,
       recurring: eventDetails.recurring,
       recurring_end_date:
-        eventDetails.recurringEndDate && eventDetails.recurringEndType === "on"
+        eventDetails.recurring !== "No Repeat" &&
+        eventDetails.recurringEndDate &&
+        eventDetails.recurringEndType === "on"
           ? format(getUTCDate(eventDetails.recurringEndDate), DATE_TIME_FORMAT)
           : null,
       guests:
@@ -183,6 +191,7 @@ export default function index({
     setSelectedGroup(value);
   };
 
+  console.log("eventDetails111", eventDetails);
   if (!isVisible) {
     return <></>;
   }
