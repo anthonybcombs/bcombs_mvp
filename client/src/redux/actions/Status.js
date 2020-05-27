@@ -18,3 +18,10 @@ export function* requestedStatus({ status }) {
 export function* removedStatus() {
   yield put({ type: actionType.REQUEST_REMOVE_STATUS_COMPLETED });
 }
+
+export const requestSignupFailed = message => {
+  return {
+    type: actionType.REQUEST_SIGNUP_FAILED,
+    message
+  };
+};

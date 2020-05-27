@@ -89,28 +89,31 @@ const CreateUserFormStyled = styled.form`
       grid-gap: 1%;
     }
   }
+  .signup-error {
+    color: red !important;
+  }
 `;
 export default function Form({
   onSubmit,
   handleInputChange,
   handleChangeUserType,
+  status,
   userDetails,
-  userTypes,
+  userTypes
 }) {
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange",
+    reValidateMode: "onChange"
   });
   const { type } = userDetails;
   return (
     <CreateUserFormStyled
       data-testid="app-create-form"
       theme={theme}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <div id="userTypes" className="grid">
-        {userTypes.map((userType) => (
+        {userTypes.map(userType => (
           <button
             key={userType.id}
             data-testid="app-create-button-user"
@@ -118,12 +121,16 @@ export default function Form({
             type="button"
             onClick={() => {
               handleChangeUserType(userType);
-            }}
-          >
+            }}>
             {userType.name.toUpperCase()}
           </button>
         ))}
       </div>
+      {status && status.message && (
+        <p className="signup-error" className={`${status.messageType}`}>
+          {status.message}
+        </p>
+      )}
       <input
         type="text"
         id="username"
@@ -137,11 +144,11 @@ export default function Form({
           required: true,
           minLength: 5,
           validate: {
-            alphanumeric: (value) => {
+            alphanumeric: value => {
               const alphaExp = /^[a-zA-Z0-9_]{5,}[a-zA-Z]+[0-9]*$/;
               return alphaExp.test(value);
-            },
-          },
+            }
+          }
         })}
       />
       <ErrorMessage
@@ -188,27 +195,27 @@ export default function Form({
           required: true,
           minLength: 8,
           validate: {
-            containsOneUpperCase: (value) => {
+            containsOneUpperCase: value => {
               const oneUpperCaseRegex = /(?=.*[A-Z])/;
               return oneUpperCaseRegex.test(value);
             },
-            containsOneLowerCase: (value) => {
+            containsOneLowerCase: value => {
               const oneLowerCaseRegex = /(?=.*[a-z])/;
               return oneLowerCaseRegex.test(value);
             },
-            containsOneNumber: (value) => {
+            containsOneNumber: value => {
               const oneNumberRegex = /(?=.*\d)/;
               return oneNumberRegex.test(value);
             },
-            containsOneSpecialCharacter: (value) => {
+            containsOneSpecialCharacter: value => {
               const oneSpecialCharacterRegex = /(?=.*[@#$%^&+=])/;
               return oneSpecialCharacterRegex.test(value);
-            },
+            }
             // passwordRequirement: value => {
             //   const passworRequirementRegex = /^(?=.{10,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/;
             //   return passworRequirementRegex.test(value);
             // }
-          },
+          }
         })}
       />
       <ErrorMessage
@@ -254,8 +261,8 @@ export default function Form({
           required: true,
           minLength: 8,
           validate: {
-            sameConfirmPassword: (value) => value === password.value,
-          },
+            sameConfirmPassword: value => value === password.value
+          }
         })}
       />
       <ErrorMessage

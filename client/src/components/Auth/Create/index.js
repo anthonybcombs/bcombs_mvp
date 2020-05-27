@@ -44,7 +44,7 @@ export default function index() {
     username: "",
     email: "",
     password: "",
-    confirm_password: "",
+    confirm_password: ""
   });
   const urlParams = new URLSearchParams(window.location.search);
   const vendorCode = urlParams.get("vendor_code");
@@ -57,30 +57,28 @@ export default function index() {
   useEffect(() => {
     setUserDetails({
       ...userDetails,
-      type: { ...(userTypes[currentTypeIndex] || {}) },
+      type: { ...(userTypes[currentTypeIndex] || {}) }
     });
   }, [userTypes]);
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
-  const handleChangeUserType = (value) => {
+  const handleChangeUserType = value => {
     setUserDetails({ ...userDetails, type: { ...value } });
   };
-  const handleFormSubmit = (values) => {
+  const handleFormSubmit = values => {
     dispatch(requestCheckuserAndAdd(userDetails));
   };
 
   return (
     <CreateUserStyled data-testid="app-create-user">
-      {status && status.message && (
-        <p className={`${status.messageType}`}>{status.message}</p>
-      )}
       <h2>Create my account ({userDetails.type.name.toUpperCase()})</h2>
       <Form
         onSubmit={handleFormSubmit}
         handleInputChange={handleInputChange}
         userDetails={userDetails}
         handleChangeUserType={handleChangeUserType}
+        status={status}
         userTypes={userTypes}
       />
     </CreateUserStyled>

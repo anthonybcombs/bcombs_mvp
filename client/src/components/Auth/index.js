@@ -25,6 +25,7 @@ export default function index({ children }) {
   useEffect(() => {
     dispatch(requestRemoveStatus());
   }, [location]);
+
   if (
     status.requestStatus === "AWAITING_AUTH_RESPONSE" ||
     userTypes.length === 0 ||

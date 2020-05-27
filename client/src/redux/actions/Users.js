@@ -3,6 +3,7 @@ import * as actionType from "./Constant";
 import graphqlClient from "../../graphql";
 import { IS_USER_EXIST_QUERY } from "../../graphql/query";
 import { requestUserInfo } from "./Auth";
+import { requestSignupFailed } from "./Status";
 import { SIGN_UP_MUTATION, USER_UPDATE_MUTATION } from "../../graphql/mutation";
 
 import { setProfileLoading } from "./Loading";
@@ -185,8 +186,12 @@ export function* updatedUser({ user }) {
 export function* checkedUserAndAdd({ user }) {
   try {
     const isUserExistResponse = yield call(isUserExistToDatabase, user);
+
     if (isUserExistResponse.messageType !== "error") {
       yield put(requestAddUser(user));
+    } else if (isUserExistResponse.messageType === "error") {
+      console.log("checkedUserAndAdd response", isUserExistResponse);
+      yield put(requestSignupFailed(isUserExistResponse.message));
     } else {
       if (!user.isSocial) {
         sessionStorage.removeItem("access_token");
@@ -196,7 +201,9 @@ export function* checkedUserAndAdd({ user }) {
         sessionStorage.removeItem("selectedCalendars");
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log("checkedUserAndAdd error", error);
+  }
 }
 
 // ADDED BY DENNIS
