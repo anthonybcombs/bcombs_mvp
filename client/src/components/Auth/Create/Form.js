@@ -89,8 +89,10 @@ const CreateUserFormStyled = styled.form`
       grid-gap: 1%;
     }
   }
-  .signup-error {
-    color: red !important;
+  p.error {
+    text-align: center;
+    font-size: 1.3em;
+    color: red;
   }
 `;
 export default function Form({
@@ -126,11 +128,7 @@ export default function Form({
           </button>
         ))}
       </div>
-      {status && status.message && (
-        <p className="signup-error" className={`${status.messageType}`}>
-          {status.message}
-        </p>
-      )}
+      {status && status.message && <p className="error">{status.message}</p>}
       <input
         type="text"
         id="username"
