@@ -1,25 +1,16 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-//import { format } from "date-fns";
+import { format } from "date-fns";
 import debounce from "lodash.debounce";
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
-//import { Multiselect } from "multiselect-react-dropdown";
 import Autosuggest from "react-autosuggest";
 
 // GRAPHQL
 import graphqlClient from "../../../../graphql";
 import { GET_USER_OPTIONS_QUERY } from "../../../../graphql/query";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClock,
-  faUserFriends,
-  faMapMarkerAlt,
-  faAlignLeft
-} from "@fortawesome/free-solid-svg-icons";
-
-//import EditableParagraph from "../../../../helpers/EditableParagraph";
+import CustomDatePicker from "../../../../helpers/CustomDatePicker";
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
@@ -438,38 +429,62 @@ export default function createEventForm({
           </option>
         ))}
       </select>
-      {/* <br />
-      <div>
-        <div>Ends</div>
-        <label className="cus-select-container" style={{ fontSize: 12 }}>
-          <input
-            type="radio"
-            name="recurring_end_type"
-            onChange={({ target }) => {
-              handleEventDetailsChange("recurring_end_type", target.value);
-            }}
-            checked={
-              eventDetails && eventDetails.recurring_end_type === "never"
+      <br />
+      {eventDetails &&
+        (eventDetails.recurring !== "no-repeat" ||
+          eventDetails.recurring !== "") && (
+          <div>
+            <div>Ends</div>
+            <label className="cus-select-container" style={{ fontSize: 12 }}>
+              <input
+                type="radio"
+                onChange={({ target }) => {
+                  handleEventDetailsChange("recurringEndType", target.value);
+                }}
+                checked={
+                  eventDetails && eventDetails.recurringEndType === "never"
+                }
+                value="never"
+              />{" "}
+              Never
+              <span className="checkmark"></span>
+            </label>
+            <label className="cus-select-container" style={{ fontSize: 12 }}>
+              <input
+                type="radio"
+                name="recurringEndType"
+                onChange={({ target }) => {
+                  handleEventDetailsChange("recurringEndType", target.value);
+                }}
+                checked={eventDetails && eventDetails.recurringEndType === "on"}
+                value="on"
+              />{" "}
+              On
+              <span className="checkmark"></span>
+              {`  `}{" "}
+            </label>
+          </div>
+        )}
+      {eventDetails && eventDetails.recurringEndType === "on" && (
+        <label>
+          Recurring End Date
+          <CustomDatePicker
+            className="custom-date-picker"
+            placeholderText="mm/dd/yyyy"
+            selected={
+              eventDetails.recurringEndDate &&
+              new Date(eventDetails.recurringEndDate)
             }
-            value="never"
-          />{" "}
-          Never
-          <span className="checkmark"></span>
-        </label>
-        <label className="cus-select-container" style={{ fontSize: 12 }}>
-          <input
-            type="radio"
-            name="recurring_end_type"
-            onChange={({ target }) => {
-              handleEventDetailsChange("recurring_end_type", target.value);
+            onChange={date => {
+              console.log("RECURRING END DATE", date);
+              handleEventDetailsChange(
+                "recurringEndDate",
+                format(new Date(date), "yyyy-MM-dd")
+              );
             }}
-            checked={eventDetails && eventDetails.recurring_end_type === "on"}
-            value="on"
-          />{" "}
-          On
-          <span className="checkmark"></span>
+          />
         </label>
-      </div> */}
+      )}
       <br />
       <div>
         <label>Visibility</label>

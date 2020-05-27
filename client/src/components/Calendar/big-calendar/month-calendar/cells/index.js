@@ -14,6 +14,7 @@ import {
   isAfter,
   getMonth,
   getYear,
+  isBefore
 } from "date-fns";
 import Event from "../../event";
 
@@ -94,7 +95,7 @@ export default function index({
   events,
   handleChangeDay,
   setIsEventModalVisible,
-  publicView,
+  publicView
 }) {
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
@@ -110,18 +111,36 @@ export default function index({
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
     let currentDay = new Date(day).getDay();
-    let eventsOnThisDay = events.filter((event) => {
+    let eventsOnThisDay = events.filter(event => {
       let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
+      let isBeforeRecurringEndDate = null;
 
       let startEventDay = new Date(event.start_of_event).getDay();
       let endEventDay = new Date(event.end_of_event).getDay();
-      if (isDateAfter && event.recurring === "Daily") {
+      if (event.recurring_end_date) {
+        isBeforeRecurringEndDate = isBefore(
+          new Date(day),
+          new Date(event.recurring_end_date)
+        );
+      }
+      let checkRecurringEndDate =
+        (event.recurring_end_date && isBeforeRecurringEndDate) ||
+        (!event.recurring_end_date && !isBeforeRecurringEndDate);
+      if (isDateAfter && event.recurring === "Daily" && checkRecurringEndDate) {
         return true;
-      } else if (isDateAfter && event.recurring === "Weekly") {
+      } else if (
+        isDateAfter &&
+        event.recurring === "Weekly" &&
+        checkRecurringEndDate
+      ) {
         if (currentDay === startEventDay || currentDay === endEventDay) {
           return true;
         }
-      } else if (isDateAfter && event.recurring === "Monthly") {
+      } else if (
+        isDateAfter &&
+        event.recurring === "Monthly" &&
+        checkRecurringEndDate
+      ) {
         let currentWeekIndex = getWeekIndex(new Date(day).getDate());
         let eventWeekIndex = getWeekIndex(
           new Date(event.start_of_event).getDate()
@@ -134,7 +153,11 @@ export default function index({
         ) {
           return true;
         }
-      } else if (isDateAfter && event.recurring === "Annually") {
+      } else if (
+        isDateAfter &&
+        event.recurring === "Annually" &&
+        checkRecurringEndDate
+      ) {
         let currentWeekIndex = getWeekIndex(new Date(day).getDate());
         let eventWeekIndex = getWeekIndex(
           new Date(event.start_of_event).getDate()
@@ -152,12 +175,12 @@ export default function index({
 
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),
-        end: new Date(event.end_of_event),
+        end: new Date(event.end_of_event)
       });
 
       if (dateRange != undefined) {
         return (
-          dateRange.filter((intervalDate) => isSameDay(intervalDate, cloneDay))
+          dateRange.filter(intervalDate => isSameDay(intervalDate, cloneDay))
             .length > 0
         );
       }
@@ -173,8 +196,8 @@ export default function index({
             multi_color: [
               ...(accumulator[index - 1].multi_color || []),
               accumulator[index - 1].color,
-              item.color,
-            ],
+              item.color
+            ]
           };
           return [...accumulator];
         }
@@ -202,18 +225,16 @@ export default function index({
             handleChangeDay(toDate(cloneDay));
           }
         }}
-        onDoubleClick={(e) => {
+        onDoubleClick={e => {
           if (!publicView) {
             handleChangeDay(toDate(cloneDay));
             setIsEventModalVisible(true);
           }
-        }}
-      >
+        }}>
         <span
           className={`day ${
             hasEvents && !isSameDay(day, selectedDate) ? "has-events" : ""
-          }`}
-        >
+          }`}>
           {formattedDate}
         </span>
         <div id="events-list">

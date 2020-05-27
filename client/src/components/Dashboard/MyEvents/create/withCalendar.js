@@ -93,6 +93,8 @@ const initialEventDetails = selectedDate => {
     status: "Scheduled"
   };
 };
+
+const DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 export default function index({
   auth,
   contacts,
@@ -191,11 +193,11 @@ export default function index({
     const payload = {
       start_of_event: format(
         getUTCDate(eventDetails.eventSchedule[0]),
-        "yyyy-MM-dd HH:mm:ss"
+        DATE_TIME_FORMAT
       ),
       end_of_event: format(
         getUTCDate(eventDetails.eventSchedule[1]),
-        "yyyy-MM-dd HH:mm:ss"
+        DATE_TIME_FORMAT
       ),
 
       type: eventDetails.eventType,
@@ -206,6 +208,10 @@ export default function index({
       time: eventDetails.time,
       description: eventDetails.description,
       visibility: eventDetails.visibility,
+      recurring: eventDetails.recurring,
+      recurring_end_date:
+        eventDetails.recurringEndDate &&
+        format(getUTCDate(eventDetails.recurringEndDate), DATE_TIME_FORMAT),
       auth_email: auth.email,
       calendar_ids: calendarIds,
       guests: eventDetails.eventGuests.map(item => item.id),

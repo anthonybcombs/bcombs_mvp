@@ -72,6 +72,8 @@ const EditEventModal = styled.div`
   }
 `;
 
+const DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
 export default function index({
   auth,
   isVisible = true,
@@ -98,7 +100,9 @@ export default function index({
           item =>
             defaultEventDetails.group_ids &&
             defaultEventDetails.group_ids.includes(item.id)
-        )
+        ),
+        recurringEndDate: defaultEventDetails.recurring_end_date,
+        recurringEndType: defaultEventDetails.recurring_end_date ? "on" : ""
       });
     }
   }, [defaultEventDetails, groupOptions]);
@@ -133,11 +137,11 @@ export default function index({
     const payload = {
       start_of_event: format(
         getUTCDate(eventDetails.eventSchedule[0]),
-        "yyyy-MM-dd HH:mm:ss"
+        DATE_TIME_FORMAT
       ),
       end_of_event: format(
         getUTCDate(eventDetails.eventSchedule[1]),
-        "yyyy-MM-dd HH:mm:ss"
+        DATE_TIME_FORMAT
       ),
       type: eventDetails.type,
       id: eventDetails.id,
@@ -150,6 +154,10 @@ export default function index({
       calendar_ids: selectedCalendars,
       visibility: eventDetails.visibility,
       recurring: eventDetails.recurring,
+      recurring_end_date:
+        eventDetails.recurringEndDate && eventDetails.recurringEndType === "on"
+          ? format(getUTCDate(eventDetails.recurringEndDate), DATE_TIME_FORMAT)
+          : null,
       guests:
         eventDetails.eventGuests && eventDetails.eventGuests.length > 0
           ? eventDetails.eventGuests.map(item => item.id)

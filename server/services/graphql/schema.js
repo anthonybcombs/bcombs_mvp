@@ -113,6 +113,7 @@ const inputs = `
         guests:[String]
         removed_guests:[String]
         recurring: String
+        recurring_end_date: String
 
     }
 
@@ -255,6 +256,7 @@ const queryTypes = `
         color: String
         visibility: String
         recurring: String
+        recurring_end_date: Date
         group_ids:[String]
     }
     type Contact{

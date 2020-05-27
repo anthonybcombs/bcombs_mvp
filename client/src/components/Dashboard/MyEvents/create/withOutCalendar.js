@@ -122,7 +122,8 @@ export default function index({
       ...eventDetails,
       date: defaultSelectedDate,
       time: format(defaultSelectedDate, "hh:mm a"),
-      eventSchedule: [defaultSelectedDate, defaultSelectedDate]
+      eventSchedule: [defaultSelectedDate, defaultSelectedDate],
+      
     });
   }, [defaultSelectedDate]);
 
@@ -153,11 +154,11 @@ export default function index({
     const payload = {
       start_of_event: format(
         getUTCDate(eventDetails.eventSchedule[0]),
-        "yyyy-MM-dd HH:mm:ss"
+        DATE_TIME_FORMAT
       ),
       end_of_event: format(
         getUTCDate(eventDetails.eventSchedule[1]),
-        "yyyy-MM-dd HH:mm:ss"
+        DATE_TIME_FORMAT
       ),
       type: eventDetails.eventType,
       id: eventDetails.id,
@@ -170,6 +171,9 @@ export default function index({
       calendar_ids: selectedCalendars,
       visibility: eventDetails.visibility,
       recurring: eventDetails.recurring,
+      recurring_end_date:
+        eventDetails.recurringEndDate &&
+        format(getUTCDate(eventDetails.recurringEndDate), DATE_TIME_FORMAT),
       guests:
         eventDetails.eventGuests.length > 0
           ? eventDetails.eventGuests.map(item => item.id)

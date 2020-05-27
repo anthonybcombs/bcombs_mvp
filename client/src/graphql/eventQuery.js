@@ -16,6 +16,7 @@ export const GET_EVENT_QUERY = gql`
       color
       visibility
       recurring
+      recurring_end_date
       group_ids
       guests {
         email

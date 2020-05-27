@@ -22,6 +22,7 @@ export const createNewEvent = async data => {
     location,
     visibility,
     recurring,
+    recurring_end_date,
     auth_email,
     calendar_ids = [],
     guests = [],
@@ -45,7 +46,8 @@ export const createNewEvent = async data => {
         location,
         visibility,
         recurring,
-        user_id, date_added ) VALUES (UUID_TO_BIN(?),?,?,?,?,?,?,?,?,?,?,UUID_TO_BIN(?),NOW())`,
+        recurring_end_date,
+        user_id, date_added ) VALUES (UUID_TO_BIN(?),?,?,?,?,?,?,?,?,?,?,?,UUID_TO_BIN(?),NOW())`,
       [
         id,
         name,
@@ -58,6 +60,7 @@ export const createNewEvent = async data => {
         location,
         visibility,
         recurring,
+        recurring_end_date,
         currentUser.id
       ]
     );
@@ -120,14 +123,14 @@ export const createNewEvent = async data => {
 
     const formattedRecipients = await formatRecipient(updatedGuestIds, id, db);
 
-    sendInvitation({
-      eventOwnerEmail: auth_email,
-      eventName: name,
-      eventId: id,
-      eventStartDate: start_of_event,
-      eventEndDate: end_of_event,
-      recipients: formattedRecipients
-    });
+    // sendInvitation({
+    //   eventOwnerEmail: auth_email,
+    //   eventName: name,
+    //   eventId: id,
+    //   eventStartDate: start_of_event,
+    //   eventEndDate: end_of_event,
+    //   recipients: formattedRecipients
+    // });
 
     result = await getUserEvents(auth_email);
     // console.log("createNewEvent Result", result);
@@ -160,6 +163,7 @@ export const getUserEvents = async (email, calendars = []) => {
           events.location,
           events.visibility,
           events.recurring,
+          events.recurring_end_date,
           user_calendars.color
         FROM events , event_calendar, user_calendars 
         WHERE events.id = event_calendar.event_id AND 
@@ -180,6 +184,7 @@ export const getUserEvents = async (email, calendars = []) => {
           events.location ,
           events.visibility,
           events.recurring,
+          events.recurring_end_date,
           user_calendars.color
         FROM events ,event_calendar, event_attendee, user_calendars
         WHERE  events.id=event_calendar.event_id AND 
@@ -253,6 +258,7 @@ export const editEvents = async data => {
     time,
     visibility,
     recurring,
+    recurring_end_date,
     location,
     auth_email,
     calendar_ids = [],
@@ -268,7 +274,7 @@ export const editEvents = async data => {
       [id]
     );
     await db.query(
-      "UPDATE `events` SET name=?,description=?,status=?,start_of_event=?,end_of_event=?,location=?,type=?,visibility=?,recurring=? WHERE id=UUID_TO_BIN(?)",
+      "UPDATE `events` SET name=?,description=?,status=?,start_of_event=?,end_of_event=?,location=?,type=?,visibility=?,recurring=?, recurring_end_date=? WHERE id=UUID_TO_BIN(?)",
       [
         name,
         description,
@@ -279,6 +285,7 @@ export const editEvents = async data => {
         type,
         visibility,
         recurring,
+        recurring_end_date,
         id
       ]
     );
