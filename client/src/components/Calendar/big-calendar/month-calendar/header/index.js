@@ -337,6 +337,7 @@ const CalendarCard = ({
 }) => {
   const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
   const auth = useSelector(({ auth }) => auth);
+  const dispatch = useDispatch();
   return (
     <div
       className="calendar"

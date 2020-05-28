@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EllipsisText from "react-ellipsis-text";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -297,6 +297,7 @@ const CalendarCard = ({
   publicView,
 }) => {
   const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
+  const auth = useSelector(({ auth }) => auth);
   const dispatch = useDispatch();
   return (
     <div
@@ -327,43 +328,45 @@ const CalendarCard = ({
         <span style={{ backgroundColor: `${calendar.color}` }}></span>
         <EllipsisText text={calendar.name} length={8} />
       </p>
-      {isCalendarButtonsVisible && (
-        <div id="buttons">
-          <FontAwesomeIcon
-            icon={faEdit}
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedCalendar(calendar);
-              toggleEditCalendarModal(true);
-            }}
-          />
-          {calendar.visibilityType === "Public" && (
+      {isCalendarButtonsVisible &&
+        !publicView &&
+        auth.user_id === calendar.user_id && (
+          <div id="buttons">
             <FontAwesomeIcon
-              icon={faShareAltSquare}
+              icon={faEdit}
               onClick={(e) => {
                 e.stopPropagation();
-                const dummy = document.createElement("input");
-                document.body.appendChild(dummy);
-                dummy.setAttribute(
-                  "value",
-                  `${process.env.HOST}/mycalendars/public/${calendar.id}`
-                );
-                dummy.select();
-                document.execCommand("copy");
-                document.body.removeChild(dummy);
-                alert("copied to clipboard");
+                setSelectedCalendar(calendar);
+                toggleEditCalendarModal(true);
               }}
             />
-          )}
-          <FontAwesomeIcon
-            icon={faTrashAlt}
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch(requestDeleteCalendar(calendar));
-            }}
-          />
-        </div>
-      )}
+            {calendar.visibilityType === "Public" && (
+              <FontAwesomeIcon
+                icon={faShareAltSquare}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const dummy = document.createElement("input");
+                  document.body.appendChild(dummy);
+                  dummy.setAttribute(
+                    "value",
+                    `${process.env.HOST}/mycalendars/public/${calendar.id}`
+                  );
+                  dummy.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(dummy);
+                  alert("copied to clipboard");
+                }}
+              />
+            )}
+            <FontAwesomeIcon
+              icon={faTrashAlt}
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch(requestDeleteCalendar(calendar));
+              }}
+            />
+          </div>
+        )}
     </div>
   );
 };
