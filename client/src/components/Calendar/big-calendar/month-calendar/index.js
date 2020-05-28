@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import NewEventModal from "../../../Dashboard/MyEvents/create/withOutCalendar";
-import { subMonths, addMonths, startOfMonth, format } from "date-fns";
+import {
+  subMonths,
+  addMonths,
+  startOfMonth,
+  differenceInMonths,
+  parseISO,
+} from "date-fns";
 import Header from "./header";
 import Days from "./days";
 import Cells from "./cells";
@@ -26,6 +32,20 @@ export default function index({
     currentMonth: new Date(),
     selectedDate: new Date(),
   });
+  const handleChangeMonthYear = (month, year) => {
+    let currentMonth;
+    currentMonth = addMonths(
+      currentDate.currentMonth,
+      differenceInMonths(new Date(year, month, 0), currentDate.currentMonth)
+    );
+    console.log(currentMonth);
+    const firstDayOfTheMonth = startOfMonth(currentMonth);
+    setCurrentDate({
+      ...currentDate,
+      currentMonth,
+      selectedDate: firstDayOfTheMonth,
+    });
+  };
   const handleChangeMonth = (operation) => {
     let currentMonth;
     if (operation === "next") {
@@ -62,6 +82,7 @@ export default function index({
       <Header
         currentMonth={currentDate.currentMonth}
         handleChangeMonth={handleChangeMonth}
+        handleChangeMonthYear={handleChangeMonthYear}
         calendars={calendars}
         calendarType={calendarType}
         handleChangeCalendarType={handleChangeCalendarType}

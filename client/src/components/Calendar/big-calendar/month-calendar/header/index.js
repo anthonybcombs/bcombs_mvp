@@ -17,6 +17,7 @@ import {
 import styled from "styled-components";
 import { format } from "date-fns";
 import { requestDeleteCalendar } from "../../../../../redux/actions/Calendars";
+import { yearList } from "../../../../../helpers/Date";
 import CreateCalendarModal from "../../new-calendar/Create";
 import EditCalendarModal from "../../new-calendar/Edit";
 const HeaderStyled = styled.div`
@@ -87,6 +88,17 @@ const HeaderStyled = styled.div`
     background-color: white;
     border-bottom: 10px solid #f26e21;
   }
+  select {
+    display: inline-block;
+    border: none;
+    font-size: 1em;
+    text-align: center;
+    font-weight: bold;
+    appearance: none;
+    text-align-last:center; 
+    right center no-repeat;
+    cursor:pointer;
+  }
   @media (min-width: 600px) {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     #calendar-type {
@@ -100,6 +112,7 @@ const HeaderStyled = styled.div`
 export default function index({
   currentMonth,
   handleChangeMonth,
+  handleChangeMonthYear,
   calendars,
   calendarType,
   handleChangeCalendarType,
@@ -117,7 +130,7 @@ export default function index({
   const [isPaginationVisible, setPaginationVisibility] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [viewAllCalendar, setViewAllCalendar] = useState(false);
-  const dateFormat = "MMMM yyyy";
+  const yearsList = yearList(2031);
   return (
     <HeaderStyled data-testid="app-big-calendar-header">
       <CreateCalendarModal
@@ -154,7 +167,35 @@ export default function index({
               handleChangeMonth();
             }}
           />
-          {format(currentMonth, dateFormat)}
+          <select
+            value={format(currentMonth, "M") - 1}
+            onChange={({ target }) => {
+              handleChangeMonthYear(target.value, format(currentMonth, "yyyy"));
+            }}
+          >
+            <option value={0}>January</option>
+            <option value={1}>February</option>
+            <option value={2}>March</option>
+            <option value={3}>April</option>
+            <option value={4}>May</option>
+            <option value={5}>June</option>
+            <option value={6}>July</option>
+            <option value={7}>August</option>
+            <option value={8}>September</option>
+            <option value={9}>October</option>
+            <option value={10}>November</option>
+            <option value={11}>December</option>
+          </select>
+          <select
+            value={format(currentMonth, "yyyy")}
+            onChange={({ target }) => {
+              handleChangeMonthYear(format(currentMonth, "M"), target.value);
+            }}
+          >
+            {yearsList.map((year) => {
+              return <option value={year}>{year}</option>;
+            })}
+          </select>
           <FontAwesomeIcon
             data-testid="app-big-calendar-next-month-button"
             icon={faArrowRight}
