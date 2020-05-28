@@ -134,10 +134,6 @@ export default function index({
         let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
         let isBeforeRecurringEndDate = null;
   
-        let checkRecurringEndDate =
-          (event.recurring_end_date && isBeforeRecurringEndDate) ||
-          (!event.recurring_end_date && !isBeforeRecurringEndDate);
-  
         let startEventDay = new Date(event.start_of_event).getDay();
         let endEventDay = new Date(event.end_of_event).getDay();
   
@@ -147,6 +143,10 @@ export default function index({
             new Date(event.recurring_end_date)
           );
         }
+
+        let checkRecurringEndDate =
+        (event.recurring_end_date && isBeforeRecurringEndDate) ||
+        (!event.recurring_end_date && !isBeforeRecurringEndDate);
   
         if(format(day, "MM dd yyyy") === format(startDate, "MM dd yyyy")) { 
           pushEvent = true;
