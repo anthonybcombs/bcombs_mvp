@@ -60,6 +60,7 @@ const ApplicationListStyled = styled.div`
     background-color: #f26e21;
     border-radius: 4px;
     padding: 6px 10px;
+    border: 0;
   }
 
   #legendContainer {

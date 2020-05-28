@@ -93,7 +93,7 @@ export default function index({
                   className="field-input"
                   placeholder="Date"
                   readOnly
-                  value={pDate}
+                  defaultValue={pDate}
                   readOnly={isReadonly}
                 />
                 <label className="field-label">Date</label>
