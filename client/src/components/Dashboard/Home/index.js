@@ -57,6 +57,7 @@ const HomeStyled = styled.div`
     padding: 10px;
     margin: 0.5em;
     cursor: pointer;
+    position: relative;
   }
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
@@ -83,6 +84,17 @@ const HomeStyled = styled.div`
     color: black;
     margin-left: 0.5em;
   }
+  .calendar-chbx {
+    position: absolute;
+    right: 15px;
+    width: 20px;
+    height: 30px;
+    margin: 0;
+    top: 5px;
+  }
+  .slider {
+    padding: 0 30px;
+  }
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 4fr 6fr;
@@ -104,6 +116,7 @@ export default function index({ location }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedMonth, setSelectedMonth] = useState(null);
+  const [selectedCalendar, setSelectedCalendar] = useState([]);
   const { events, auth, calendars } = useSelector(
     ({ events, auth, calendars }) => {
       return { events, calendars, auth };
@@ -136,6 +149,7 @@ export default function index({ location }) {
   };
   const handleEventSelection = (id) => {
     setSelectedEvent(eventsOnThisDay.filter((event) => event.id === id)[0]);
+
   };
   const setCurrentMonth = (month) => {
     //setSelectedMonth(format(month, "MMMM yyyy"));
@@ -152,7 +166,13 @@ export default function index({ location }) {
   
   const [sliderLabel, setSliderLabel] = useState('1');
 
+  console.log("MY CALENDARS", calendars);
+
   console.log("current month", selectedMonth);
+
+  const handleSelectCalendar = (calendar_id) => {
+
+  }
 
   return (
     <HomeStyled data-testid="app-dashboard-home" theme={theme}>
@@ -194,11 +214,26 @@ export default function index({ location }) {
                         <div
                           className={`panel-body`}
                           key={calendar.id}
-                          onClick={() => {
-                            handleEventSelection(calendar.id);
-                          }}
+                          // onClick={() => {
+                          //   handleEventSelection(calendar.id);
+                          // }}
                         >
                           {calendar.name}
+                          <input 
+                            className="calendar-chbx" 
+                            type="checkbox"
+                            onChange={({ target }) => {
+                              let newFilter = selectedCalendar.filter(c => c == calendar.id);
+
+                              if(newFilter.length > 0) {
+                                let newFilter = selectedCalendar.filter(c => c != calendar.id);
+                                setSelectedCalendar([...newFilter]);
+                              } else {
+                                setSelectedCalendar([...selectedCalendar, calendar.id]);
+                              }
+                            }}
+                            checked={selectedCalendar.filter(c => c == calendar.id).length <= 0}
+                          />
                         </div>
                       );
                     });
@@ -246,6 +281,7 @@ export default function index({ location }) {
                 selectedDate={selectedDate}
                 scrollValue={horizontal}
                 selectedMonth={selectedMonth}
+                selectedCalendar={selectedCalendar}
               />
               {
                 selectedMonth &&
