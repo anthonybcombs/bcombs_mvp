@@ -131,6 +131,7 @@ const isGuest = (guests, currentEmail) => {
 };
 export default function index({
   auth,
+  calendars,
   day,
   event,
   selectedCalendars,
@@ -275,6 +276,7 @@ export default function index({
           opacity: isEventOver < 0 && !isToday(day) ? 0.5 : 1
         }}
         onClick={() => {
+       
           setVisibility(!isVisible);
         }}>
         <EditEvent

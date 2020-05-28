@@ -89,6 +89,7 @@ const CellsStyled = styled.div`
 
 export default function index({
   auth,
+  calendars,
   currentMonth,
   selectedDate,
   selectedCalendars,
@@ -226,7 +227,15 @@ export default function index({
           }
         }}
         onDoubleClick={e => {
-          if (!publicView) {
+          let isAllCalendarOwned =
+            selectedCalendars.length > 0 &&
+            selectedCalendars.every(id => {
+              return calendars.find(
+                cal => cal.id === id && auth.user_id === cal.user_id
+              );
+            });
+          console.log("isAllCalendarOwned", isAllCalendarOwned);
+          if (!publicView && isAllCalendarOwned) {
             handleChangeDay(toDate(cloneDay));
             setIsEventModalVisible(true);
           }
@@ -243,6 +252,7 @@ export default function index({
               return (
                 <Event
                   auth={auth}
+                  calendars={calendars || []}
                   event={event}
                   day={day}
                   key={key}

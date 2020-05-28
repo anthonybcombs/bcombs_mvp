@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import NewEventModal from "../../../Dashboard/MyEvents/create/withOutCalendar";
 import {
@@ -28,10 +28,17 @@ export default function index({
   publicView
 }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
+  const [formattedCalendars, setFormattedCalendars] = useState([]);
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
     selectedDate: new Date()
   });
+
+  useEffect(() => {
+    if (calendars) {
+      setFormattedCalendars(calendars.flat());
+    }
+  }, [calendars]);
   const handleChangeMonthYear = (month, year) => {
     let currentMonth;
     currentMonth = addMonths(
@@ -66,7 +73,7 @@ export default function index({
       selectedDate: day
     });
   };
-  console.log("eventssssssssssssss", events);
+
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
       {!publicView && (
@@ -93,6 +100,7 @@ export default function index({
       <Days currentMonth={currentDate.currentMonth} />
       <Cells
         auth={auth}
+        calendars={formattedCalendars}
         selectedCalendars={selectedCalendars}
         events={events}
         currentMonth={currentDate.currentMonth}
