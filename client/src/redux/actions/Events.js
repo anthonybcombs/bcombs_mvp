@@ -211,11 +211,12 @@ export function* searchedEvents({ searchDetails }) {
         type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
         payload: filteredEvents,
       });
+      if (filteredEvents.length === 0) {
+        alert("No events found");
+      }
     }
-
     yield put(setEventLoading(false));
   } catch (err) {
-    console.log(err);
     yield put({
       type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
       payload: [],
