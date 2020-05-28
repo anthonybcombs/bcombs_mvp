@@ -206,6 +206,9 @@ export const getShareCalendarTemplate = (calendar, user, groupId) => {
   <input type="hidden" name="userId" value="${user.user_id}"/>
   <input type="hidden" name="groupId" value="${groupId}"/>
   </form>
+  <form action="http://192.243.109.224:1234/dashboard/mycalendars" method="GET">
+  <input type="submit" value="No" style="background-color:grey;color:white;padding:5px;"/>
+  </form>  
 </div>`;
 };
 
