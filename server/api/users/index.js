@@ -443,6 +443,33 @@ export const getUserApplication = async email => {
   }
 };
 
+export const checkUserEmail = async email => {
+  const db = makeDb();
+
+  try {
+    console.log("Check User Email", email);
+    const rows = await db.query(
+      `SELECT BIN_TO_UUID(id) as id FROM users WHERE email=?`,
+      [email]
+    );
+    console.log("Check User Rows", rows);
+    if (rows.length > 0) {
+      return {
+        is_exist: true,
+        status: "Email is available to use"
+      };
+    }
+
+    return {
+      is_exist: false,
+      status: "Email not exist"
+    };
+  } catch (err) {
+    console.log("Check User Email", err);
+  } finally {
+    await db.close();
+  }
+};
 /*
 select vendor.name,parent.email_address,parent.firstname,parent.lastname,parent.phone_number,
 parent.address,

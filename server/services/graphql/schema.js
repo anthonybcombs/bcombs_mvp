@@ -534,6 +534,11 @@ const queryTypes = `
         parent: [ParentUserApplication]
     }
 
+    type CheckUserEmail{
+        status:String
+        is_exist:Boolean
+    }
+
 `;
 
 const mutations = `
@@ -584,6 +589,7 @@ const queries = `
         getVendorArchivedApplications(vendor_id: String!): [Application]
         getApplication(application_id: String!): Application
         getUserApplications(email: String!): UserApplication
+        getUserByEmail(email: String): CheckUserEmail
     }
 `;
 

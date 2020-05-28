@@ -192,11 +192,11 @@ export const getMembers = async id => {
       );
       contacts = JSON.parse(JSON.stringify(contacts));
     }
+    return contacts;
   } catch (err) {
     console.log("Error", err);
   } finally {
     await db.close();
-    return contacts;
   }
 };
 

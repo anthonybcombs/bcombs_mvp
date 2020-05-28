@@ -2,7 +2,7 @@ import express from "express";
 import {
   currentS3BucketName,
   s3Bucket,
-  s3BucketRootPath,
+  s3BucketRootPath
 } from "../helpers/aws";
 import { makeDb } from "../helpers/database";
 import fetch from "node-fetch";
@@ -12,7 +12,7 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const isUserExist = async (user) => {
+const isUserExist = async user => {
   const db = makeDb();
   let result;
   try {
@@ -38,7 +38,7 @@ const isUserExist = async (user) => {
     return result;
   }
 };
-export const getUserFromDatabase = async (email) => {
+export const getUserFromDatabase = async email => {
   const db = makeDb();
   let result;
   try {
@@ -54,7 +54,7 @@ export const getUserFromDatabase = async (email) => {
   }
 };
 
-const getUserProfileFromDatabase = async (userId) => {
+const getUserProfileFromDatabase = async userId => {
   const db = makeDb();
   let result;
   try {
@@ -98,7 +98,7 @@ router.get("/userTypes", async (req, res) => {
     const userTypes = await db.query(
       "SELECT BIN_TO_UUID(ID) as id,name FROM user_types"
     );
-    userTypes.forEach((userType) => {
+    userTypes.forEach(userType => {
       result.push({ id: userType.id, name: userType.name });
     });
     res.send(JSON.stringify(result));
@@ -115,8 +115,8 @@ router.post("/auth/userInfo", async (req, res) => {
       method: "GET",
       headers: {
         Authorization: `${creds.token_type} ${creds.access_token}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     });
     const userInfo = await userInfoResponse.json();
 
@@ -143,7 +143,7 @@ router.post("/auth/authorize", async (req, res) => {
     params.append("password", user.password);
     const AuthResponse = await fetch("https://bcombs.auth0.com/oauth/token", {
       method: "POST",
-      body: params,
+      body: params
     });
     const authData = await AuthResponse.json();
     if (authData.hasOwnProperty("access_token")) {
@@ -153,15 +153,15 @@ router.post("/auth/authorize", async (req, res) => {
           method: "POST",
           headers: {
             Authorization: `${authData.token_type} ${authData.access_token}`,
-            "Content-Type": "application/json",
-          },
+            "Content-Type": "application/json"
+          }
         }
       );
       const userInfo = await userInfoResponse.json();
       res.send(
         JSON.stringify({
           ...authData,
-          ...userInfo,
+          ...userInfo
         })
       );
       return;
@@ -182,19 +182,19 @@ router.post("/auth/changepassword", async (req, res) => {
       params.append("connection", "Username-Password-Authentication");
       await fetch("https://bcombs.auth0.com/dbconnections/change_password", {
         method: "POST",
-        body: params,
+        body: params
       });
       res.send({ messageType: "info", message: "Email has been send!" });
       return;
     }
     res.send({
       messageType: "error",
-      message: "Email address does not exist.",
+      message: "Email address does not exist."
     });
   } catch (error) {
     res.send({
       messageType: "error",
-      message: "Email address does not exist.",
+      message: "Email address does not exist."
     });
   }
 });
@@ -205,13 +205,13 @@ router.post("/users/isuserexist", async (req, res) => {
       res.send({
         messageType: "error",
         message:
-          "User already registered, please use different username and email address.",
+          "User already registered, please use different username and email address."
       });
       return;
     }
     res.send({
       messageType: "info",
-      message: "proced",
+      message: "proced"
     });
   } catch (error) {}
 });
@@ -225,7 +225,7 @@ router.post("/users/update", async (req, res) => {
       familyMembers,
       members,
       calendarInfo,
-      email,
+      email
     } = req.body;
     const { id } = await getUserFromDatabase(email);
     await db.query(
@@ -237,7 +237,7 @@ router.post("/users/update", async (req, res) => {
         personalInfo.familyrelationship,
         personalInfo.gender,
         personalInfo.zipcode,
-        personalInfo.dateofbirth,
+        personalInfo.dateofbirth
       ]
     );
     await db.query(
@@ -272,7 +272,7 @@ router.post("/users/add", async (req, res) => {
         "https://bcombs.auth0.com/dbconnections/signup",
         {
           method: "POST",
-          body: params,
+          body: params
         }
       );
       authData = await signUpResponse.json();
@@ -290,27 +290,27 @@ router.post("/users/add", async (req, res) => {
           : `auth0|${authData._id}`,
         user.hasOwnProperty("isSocial") ? rows[0].id : user.type.id.toString(),
         user.email,
-        user.username,
+        user.username
       ]
     );
     if (insertedRows.affectedRows > 0 && !user.hasOwnProperty("isSocial")) {
       res.send({
         error: "",
         messageType: "info",
-        message: `User created! We sent confirmation email to ${user.email}.`,
+        message: `User created! We sent confirmation email to ${user.email}.`
       });
       return;
     }
     res.send({
       error: "",
       messageType: "",
-      message: "",
+      message: ""
     });
   } catch (error) {
     res.send({
       error: "there error in requesting add user endpoint.",
       messageType: "error",
-      message: "error",
+      message: "error"
     });
   } finally {
     await db.close();
@@ -337,12 +337,12 @@ router.put("/user/profile", async (req, res) => {
         personalInfo.school,
         personalInfo.ethnicity,
         personalInfo.grade,
-        personalInfo.id,
+        personalInfo.id
       ]
     );
 
     if (otherInfo.child_ids && otherInfo.child_ids.length > 0) {
-      const childIds = otherInfo.child_ids.map((id) => `UUID_TO_BIN("${id}")`);
+      const childIds = otherInfo.child_ids.map(id => `UUID_TO_BIN("${id}")`);
       console.log("Child Ids", childIds);
       await db.query(
         `UPDATE child SET firstname=?,lastname=?,birthdate=?,gender=?,zip_code=? WHERE ch_id IN (${childIds.join(
@@ -353,15 +353,13 @@ router.put("/user/profile", async (req, res) => {
           personalInfo.lastname,
           personalInfo.dateofbirth,
           personalInfo.gender,
-          personalInfo.zipcode,
+          personalInfo.zipcode
         ]
       );
     }
 
     if (otherInfo.parent_ids && otherInfo.parent_ids.length > 0) {
-      const parentIds = otherInfo.parent_ids.map(
-        (id) => `UUID_TO_BIN("${id}")`
-      );
+      const parentIds = otherInfo.parent_ids.map(id => `UUID_TO_BIN("${id}")`);
       console.log("Parent Ids", parentIds);
       await db.query(
         `UPDATE parent SET firstname=?,lastname=?,address=?,zip_code=? WHERE parent_id IN (${parentIds.join(
@@ -371,7 +369,7 @@ router.put("/user/profile", async (req, res) => {
           personalInfo.firstname,
           personalInfo.lastname,
           personalInfo.address,
-          personalInfo.zipcode,
+          personalInfo.zipcode
         ]
       );
     }
@@ -387,7 +385,7 @@ router.put("/user/profile", async (req, res) => {
       ethnicity: personalInfo.ethnicity,
       school: personalInfo.school,
       grade: personalInfo.grade,
-      id: personalInfo.id,
+      id: personalInfo.id
     };
 
     res.status(200).json({ data: payload });
@@ -412,10 +410,10 @@ router.post("/user/photo", upload.single("file"), async (req, res) => {
         Key: `user/${currentUser.id}/${currentUser.id}.jpg`,
         Body: file.buffer,
         ContentType: file.mimetype,
-        ACL: "public-read",
+        ACL: "public-read"
       };
 
-      s3Bucket.upload(params, async function (err, data) {
+      s3Bucket.upload(params, async function(err, data) {
         if (err) {
           res.status(500).json({ error: true, Message: err });
         } else {
@@ -488,7 +486,7 @@ router.post("/usergroups", async (req, res) => {
 
     rows = JSON.parse(JSON.stringify(rows));
 
-    const rowIds = rows.map((item) => `UUID_TO_BIN("${item.id}")`);
+    const rowIds = rows.map(item => `UUID_TO_BIN("${item.id}")`);
 
     let members =
       rowIds && rowIds.length > 0
@@ -500,14 +498,14 @@ router.post("/usergroups", async (req, res) => {
         : [];
     members = JSON.parse(JSON.stringify(members));
 
-    const formattedRows = rows.map((item) => {
+    const formattedRows = rows.map(item => {
       const groupMembers = members
-        .filter((member) => member.group_id === item.id)
-        .map((subItem) => subItem.user_id);
+        .filter(member => member.group_id === item.id)
+        .map(subItem => subItem.user_id);
 
       return {
         ...item,
-        contacts: [...(groupMembers || [])],
+        contacts: [...(groupMembers || [])]
       };
     });
 
@@ -531,7 +529,7 @@ router.post("/contact", async (req, res) => {
       email,
       relation,
       authEmail,
-      selectedGroups = [],
+      selectedGroups = []
     } = req.body;
     const user = await getUserFromDatabase(email);
     const currentUser = await getUserFromDatabase(authEmail);
@@ -546,7 +544,7 @@ router.post("/contact", async (req, res) => {
           phone_number,
           email,
           relation,
-          currentUser.id,
+          currentUser.id
         ]
       );
 
@@ -591,10 +589,10 @@ router.post("/group/update", upload.single("file"), async (req, res) => {
         Key: `group/${currentUser.id}/${currentUser.id}.jpg`,
         Body: file.buffer,
         ContentType: file.mimetype,
-        ACL: "public-read",
+        ACL: "public-read"
       };
 
-      s3Bucket.upload(params, async function (err, data) {
+      s3Bucket.upload(params, async function(err, data) {
         if (err) {
           res.status(500).json({ error: true, Message: err });
         } else {

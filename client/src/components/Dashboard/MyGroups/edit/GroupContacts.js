@@ -96,6 +96,8 @@ const GroupContacts = ({ contacts, handleRemoveMember }) => {
                 <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
                 <p>
                   {contact.first_name} {contact.last_name}
+                  <br />
+                  {contact.phone_number}
                 </p>
               </div>
               <div>

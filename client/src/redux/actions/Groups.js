@@ -95,8 +95,10 @@ export function* updatedGroup({ group }) {
   try {
     yield put(setGroupLoading(true));
     const response = yield call(updateGroupToDatabase, group);
-    yield put(setUserGroups(response));
-    yield put(requestUserGroup(group.email));
+    yield all([
+      put(setUserGroups(response)),
+      put(requestUserGroup(group.email))
+    ]);
     yield put(setGroupLoading(false));
   } catch (err) {
     console.log("updatedGroup Error", err);

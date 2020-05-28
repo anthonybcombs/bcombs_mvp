@@ -117,12 +117,17 @@ export default function index({
 
   useEffect(() => {
     if (contacts && isVisible && group && group.contacts) {
-      const list = group.contacts.map(c => {
-        let contact = groupMembers.find(con => con.user_id === c);
-        return {
-          ...contact
-        };
-      });
+      const list = group.contacts
+        .map(c => {
+          let contact = groupMembers.find(con => con.user_id === c);
+          const currentContact = contacts.find(con => con.user_id === c);
+
+          return {
+            ...contact,
+            phone_number: currentContact ? currentContact.phone_number : ""
+          };
+        })
+        .filter(c => c.email);
 
       let selections = contacts
         .filter(c => {
@@ -132,7 +137,8 @@ export default function index({
           return {
             user_id: c.user_id,
             first_name: c.first_name,
-            last_name: c.last_name
+            last_name: c.last_name,
+            phone_number: c.phone_number
           };
         });
 
@@ -176,8 +182,7 @@ export default function index({
       ],
       removed_member_ids: removedContacts
     };
-    console.log("payloadddd", payload);
-    console.log("payloadddd groupDetails", groupDetails);
+
     dispatch(updateGroup(payload));
     toggleEditGroupModal(false);
     resetState();

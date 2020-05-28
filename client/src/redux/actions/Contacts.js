@@ -15,8 +15,7 @@ import { setContactLoading } from "./Loading";
 
 const addContactToDatabase = async payload => {
   try {
-    console.log("addContactToDatabase payload", payload);
-    const { data } = await graphqlClient.mutate({
+    const response = await graphqlClient.mutate({
       mutation: CONTACT_CREATE_MUTATION,
       variables: {
         contact: {
@@ -24,10 +23,10 @@ const addContactToDatabase = async payload => {
         }
       }
     });
-    console.log("addContactToDatabase createContact", data);
-    return data.createContact;
+    console.log("addContactToDatabase createContact", response);
+    return response.data.createContact;
   } catch (error) {
-    console.log("addContactDatabase error", error);
+    console.log("addContactToDatabase error", error);
   }
 };
 const updateContactToDatabase = async contact => {
@@ -141,6 +140,7 @@ export const setContact = data => {
 
 export function* addedContact({ contact }) {
   try {
+    yield put(setContactLoading(true));
     const response = yield call(addContactToDatabase, contact);
     if (response) {
       yield put({
@@ -149,11 +149,13 @@ export function* addedContact({ contact }) {
       });
       //yield put(requestUserGroup(contact.auth_email));
     }
+    yield put(setContactLoading(false));
   } catch (err) {
     yield put({
       type: actionType.SET_USER_CONTACT_LIST,
       payload: []
     });
+    yield put(setContactLoading(false));
   }
 
   // yield put({
@@ -164,7 +166,6 @@ export function* addedContact({ contact }) {
 export function* updatedContact({ contact }) {
   try {
     const response = yield call(updateContactToDatabase, contact);
-
     yield put({
       type: actionType.SET_USER_CONTACT_LIST,
       payload: response
@@ -173,14 +174,17 @@ export function* updatedContact({ contact }) {
 }
 export function* removedContact({ contact }) {
   try {
+    yield put(setContactLoading(true));
     console.log("removedContact contact", contact);
     const response = yield call(removeContactToDatabase, contact);
     yield put({
       type: actionType.SET_USER_CONTACT_LIST,
       payload: response
     });
+    yield put(setContactLoading(false));
   } catch (err) {
     console.log("Error", err);
+    yield put(setContactLoading(false));
   }
 
   // yield put({
