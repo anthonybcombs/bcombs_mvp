@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { uuid } from "uuidv4";
+import { getHours, max } from "date-fns";
 
 const ApplicationSummaryStyled = styled.div`
   #application-status {
@@ -59,35 +60,40 @@ const ApplicationSummaryStyled = styled.div`
   }
 `;
 
-export default function index({grades}) {
+export default function index({
+  grades,
+  applications = []
+}) {
   
-  let maxClass = 20;
+  let maxClass = 50;
 
-  let tCount = 0;
-  let tAvailable = 0;
-  let tClassCount = 0;
+  const [tCount, setTCount] = useState(0);
+  const [tAvailable, setTAvaiable] = useState(0);
+  const [tClassCount, setTClassCount] = useState(0);
 
-  // const setTotals = () => {
-    
-  //   grades.map((grades) => {
-  //     let count = maxClass;
-  //     let available = maxClass - group.contacts.length;
-  //     let classCount = group.contacts.length;
+  console.log("Sumary APPs", applications);
 
-  //     tCount = tCount + count;
-  //     tAvailable = tAvailable + available;
-  //     tClassCount = tClassCount + classCount;
-  //   });
-  // }
+  const getClassCount = ({name}) => {
+
+    const size = applications.filter((app) => {
+      if(app.class_teacher) {
+        return app.class_teacher == name;
+      } else 
+        return app.child.grade_desc == name;
+    });
+
+    return size.length;
+  }
 
   const renderTableData = () => {
 
     return grades.map((grade, index) => {
 
       let count = maxClass;
-      let available = 0;
-      let classCount = 0;
-      
+      let classCount = getClassCount(grade);
+      let availableCount = count - classCount;
+      availableCount = availableCount < 0 ? 0 : availableCount;
+
       return (
         <tr key={grade.id}>
           <td>
@@ -96,14 +102,36 @@ export default function index({grades}) {
             </a>
           </td>
           <td>{count}</td>
-          <td>{available}</td>
+          <td>{availableCount}</td>
           <td>{classCount}</td>
         </tr>
       )
     })
   }
 
-  // setTotals();
+  const getTotalCount = () => {
+    return grades.length * maxClass;
+  }
+
+  const getTotalAvailable = () => {
+    let totalAvailable = 0;
+    for(const grade of grades) {
+      let classCount = getClassCount(grade);
+      totalAvailable += maxClass - classCount;
+    }
+
+    totalAvailable = totalAvailable < 0 ? 0 : totalAvailable;
+    return totalAvailable;
+  }
+
+  const getTotalClassCount = () => {
+    let totalClassCount = 0;
+    for(const grade of grades) {
+      totalClassCount += getClassCount(grade);
+    }
+
+    return totalClassCount;
+  }
 
   return (
     <ApplicationSummaryStyled>
@@ -124,9 +152,9 @@ export default function index({grades}) {
               </tr>
               <tr>
                 <td>Total</td>
-                <td>{tCount}</td>
-                <td>{tAvailable}</td>
-                <td>{tClassCount}</td>
+                <td>{getTotalCount()}</td>
+                <td>{getTotalAvailable()}</td>
+                <td>{getTotalClassCount()}</td>
               </tr>
               {renderTableData()}
             </tbody>
