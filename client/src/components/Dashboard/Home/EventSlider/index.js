@@ -1,46 +1,59 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import {
   format,
   startOfMonth,
   endOfMonth,
+  isSameMonth,
+  isSameDay,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  toDate,
+  eachDayOfInterval,
+  isAfter,
+  getMonth,
+  getYear,
+  isBefore,
   startOfDay,
-  endOfDay,
-  addDays
+  endOfDay
 } from "date-fns";
 
-const EventSliderStyled = styled.div`
+import { getWeekIndex } from "../../../../helpers/datetime";
 
-  white-space: nowrap;
-  width: 100%;
-  max-width: 500px;
-  display: flex;
+const EventSliderStyled = styled.div`
+  overflow-x: hidden;
+
+  .table-container {
+    white-space: nowrap;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+  }
 
   .rows {
     display: inline-block;
     width: 500px;
     padding: 20px;
+    padding-top: 0;
   }
-
-  .rows:first-child {
-    padding-left: 0;
-  }
-
-  .rows:last-child {
-    padding-right: 0;
-  }
-
+  
   .events-container {
     box-shadow: 0px 3px 6px #908e8e;
-    padding: 10px;
+    padding: 5px;
   }
 
   .single-event {
     padding: 5px 30px;
     min-width: 360px;
     color: #fff;
-    margin: 5px 0;
+    margin-bottom: 5px;
   }
+
+  .single-event:last-child {
+    margin-bottom: 0;
+  }
+
   .single-event h3 {
     margin: 0;
     margin: 10px 0;
@@ -56,22 +69,18 @@ export default function index({
   setCurrentMonth,
   events,
   selectedDate,
+  scrollValue,
+  selectedMonth,
   selectedCalendar
 }) {
 
-  const [currentDate, setCurrentDate] = useState({
-    currentMonth: new Date(),
-    selectedDate
-  });
+  console.log("SELECTED CALENDARS ", selectedCalendar);
+  const myRef = useRef(null)
 
-  useEffect(() => {
-    if (currentDate.currentMonth && setCurrentMonth) {
-      setCurrentMonth(currentDate.currentMonth);
-    }
-  }, [currentDate]);
+  const [horizontal, setHorizontal] = useState(1);
 
-  const monthStart =  startOfMonth(currentDate.currentMonth);
-  const monthEnd = endOfMonth(currentDate.currentMonth);
+  const monthStart =  startOfMonth(selectedMonth);
+  const monthEnd = endOfMonth(selectedMonth);
 
   const startDate = startOfDay(monthStart);
   const endDate = endOfDay(monthEnd);
@@ -82,23 +91,78 @@ export default function index({
   let day = startDate;
   let formattedDate = "";
 
-  let width;
-
-  const getEventsByDate = (date) => {
+  const getEventsByDate = (day) => {
 
     const filterevents = [];
-
+    let currentDay = new Date(day).getDay();
     for(const event of events) {
-      const startDate = new Date(event.start_of_event);
-      if(format(date, "MM dd yyyy") === format(startDate, "MM dd yyyy")) {
-        console.log("Time ", startDate);
-        filterevents.push((
-          <div className="single-event" style={{backgroundColor: event.color}}>
-            <h3>{event.name}</h3>
-            <div>{format(startDate, "hh:mm aa")}</div>
-            <div>{event.location}</div>
-          </div>
-        ))
+      let pushEvent = false;
+
+      let isSelected = false;
+
+      if(selectedCalendar.length > 0) {
+        isSelected = selectedCalendar.filter(c => c == event.calendar_id).length > 0;
+      }
+
+      if(!isSelected) {
+        const startDate = new Date(event.start_of_event);
+
+        let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
+        let isBeforeRecurringEndDate = null;
+  
+        let checkRecurringEndDate =
+          (event.recurring_end_date && isBeforeRecurringEndDate) ||
+          (!event.recurring_end_date && !isBeforeRecurringEndDate);
+  
+        let startEventDay = new Date(event.start_of_event).getDay();
+        let endEventDay = new Date(event.end_of_event).getDay();
+  
+        if (event.recurring_end_date) {
+          isBeforeRecurringEndDate = isBefore(
+            new Date(day),
+            new Date(event.recurring_end_date)
+          );
+        }
+  
+        if(format(day, "MM dd yyyy") === format(startDate, "MM dd yyyy")) { 
+          pushEvent = true;
+        } else if(
+          isDateAfter &&
+          event.recurring === "Weekly" && 
+          checkRecurringEndDate) {
+  
+          if (currentDay === startEventDay || currentDay === endEventDay) {
+            pushEvent = true;
+          }
+  
+        } else if (
+          isDateAfter &&
+          event.recurring === "Monthly" &&
+          checkRecurringEndDate
+        ) {
+          let currentWeekIndex = getWeekIndex(new Date(day).getDate());
+          let eventWeekIndex = getWeekIndex(
+            new Date(event.start_of_event).getDate()
+          );
+  
+          if (
+            currentWeekIndex === eventWeekIndex &&
+            (currentDay === startEventDay || currentDay === endEventDay) &&
+            getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event))
+          ) {
+            pushEvent = true;
+          }
+        }
+  
+        if(pushEvent) {
+          filterevents.push((
+            <div className="single-event" style={{backgroundColor: event.color}}>
+              <h3>{event.name}</h3>
+              <div>{format(startDate, "hh:mm aa")}</div>
+              <div>{event.location}</div>
+            </div>
+          ))
+        }
       }
     }
 
@@ -125,16 +189,30 @@ export default function index({
     )
     days = []
   }
+  const scrollToRef = (ref) => { 
+    if(ref && ref.current) {
+      if(scrollValue > 1) {
+        let scrollWidth = ref.current.scrollWidth;
+        console.log("SCROLL VALUE", scrollValue);
+        if(scrollValue == parseInt(format(endDate, "d"))) {
+          ref.current.scrollLeft = ref.current.scrollWidth;
+        } else {
+          ref.current.scrollLeft = (scrollWidth / 38) * scrollValue;
+        }
+      } else {
+        ref.current.scrollLeft = 0;
+      }
+    }
+  }
 
-  width = rows.length * 500;
-
-  console.log("WIDTH ", width);
-
-  console.log("EVENTS", events)
-
+  if(scrollValue > 0) {
+    scrollToRef(myRef);
+  }
   return (
-    <EventSliderStyled className="table-container">
-      {rows}
+    <EventSliderStyled ref={myRef}>
+      <div className="table-container">
+        {rows}
+      </div>
     </EventSliderStyled>
   )
 }

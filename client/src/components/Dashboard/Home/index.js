@@ -8,11 +8,21 @@ import {
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
-import { format } from "date-fns";
 import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
 import NewEventModal from "../MyEvents/create/withCalendar";
 import EventSliderStyled from "./EventSlider";
+import Slider from 'react-rangeslider';
+import 'react-rangeslider/lib/index.css';
+import './override-slider.css';
+import NotificationStyled from "./Notifications";
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfDay,
+  endOfDay
+} from "date-fns";
 
 // REDUX ACTIONS
 import { getEvents } from "../../../redux/actions/Events";
@@ -47,6 +57,7 @@ const HomeStyled = styled.div`
     padding: 10px;
     margin: 0.5em;
     cursor: pointer;
+    position: relative;
   }
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
@@ -73,6 +84,17 @@ const HomeStyled = styled.div`
     color: black;
     margin-left: 0.5em;
   }
+  .calendar-chbx {
+    position: absolute;
+    right: 15px;
+    width: 20px;
+    height: 30px;
+    margin: 0;
+    top: 5px;
+  }
+  .slider {
+    padding: 0 30px;
+  }
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 4fr 6fr;
@@ -88,15 +110,13 @@ const HomeStyled = styled.div`
       line-height: 1em;
     }
   }
-  .panel-eventslider {
-    overflow-x: scroll;
-  }
 `;
 export default function index({ location }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedMonth, setSelectedMonth] = useState(null);
+  const [selectedCalendar, setSelectedCalendar] = useState([]);
   const { events, auth, calendars } = useSelector(
     ({ events, auth, calendars }) => {
       return { events, calendars, auth };
@@ -122,19 +142,37 @@ export default function index({ location }) {
       format(new Date(event.start_of_event), "MM dd yyyy") ===
       format(selectedDate, "MM dd yyyy")
   );
-
+  
   const handleSetSelectedDate = (date) => {
     setSelectedEvent();
     setSelectedDate(date);
   };
   const handleEventSelection = (id) => {
     setSelectedEvent(eventsOnThisDay.filter((event) => event.id === id)[0]);
+
   };
   const setCurrentMonth = (month) => {
-    setSelectedMonth(format(month, "MMMM yyyy"));
+    //setSelectedMonth(format(month, "MMMM yyyy"));
+    setSelectedMonth(month);
   };
 
+  const handleChangeHorizontal = (value) => {
+    setHorizontal(value);
+    // setSliderLabel(`${value} - ${(value + 1)}`);
+    setSliderLabel(`${value}`);
+  }
+
+  const [horizontal, setHorizontal] = useState(1);
+  
+  const [sliderLabel, setSliderLabel] = useState('1');
+
+  console.log("MY CALENDARS", calendars);
+
   console.log("current month", selectedMonth);
+
+  const handleSelectCalendar = (calendar_id) => {
+
+  }
 
   return (
     <HomeStyled data-testid="app-dashboard-home" theme={theme}>
@@ -176,11 +214,26 @@ export default function index({ location }) {
                         <div
                           className={`panel-body`}
                           key={calendar.id}
-                          onClick={() => {
-                            handleEventSelection(calendar.id);
-                          }}
+                          // onClick={() => {
+                          //   handleEventSelection(calendar.id);
+                          // }}
                         >
                           {calendar.name}
+                          <input 
+                            className="calendar-chbx" 
+                            type="checkbox"
+                            onChange={({ target }) => {
+                              let newFilter = selectedCalendar.filter(c => c == calendar.id);
+
+                              if(newFilter.length > 0) {
+                                let newFilter = selectedCalendar.filter(c => c != calendar.id);
+                                setSelectedCalendar([...newFilter]);
+                              } else {
+                                setSelectedCalendar([...selectedCalendar, calendar.id]);
+                              }
+                            }}
+                            checked={selectedCalendar.filter(c => c == calendar.id).length <= 0}
+                          />
                         </div>
                       );
                     });
@@ -198,16 +251,19 @@ export default function index({ location }) {
               lazyRender
             >
               <div className="panel">
-                <div className="panel-body">test notification</div>
-                <div className="panel-body">test notification</div>
-                <div className="panel-body">test notification</div>
+                <NotificationStyled 
+                  events={events}
+                />
               </div>
             </Collapsible>
           </div>
         </div>
         <div>
           <div className="pane">
-            <h3>{selectedMonth}</h3>
+            {
+               selectedMonth &&
+              <h3>{format(selectedMonth, "MMMM yyyy")}</h3>
+            }
             <button
               id="add-event-button"
               onClick={() => {
@@ -219,27 +275,29 @@ export default function index({ location }) {
 
             <div className="panel"></div>
             <div className="panel-eventslider">
-              {/* {events.map((event, i) => (
-                <div
-                  data-testid="app-dashboard-home-event"
-                  className={`panel-body ${
-                    selectedEvent && event.id === selectedEvent.id
-                      ? "selected"
-                      : ""
-                  }`}
-                  key={i}
-                  onClick={() => {
-                    handleEventSelection(event.id);
-                  }}
-                >
-                  {event.name}
-                </div>
-              ))} */}
               <EventSliderStyled
                 setCurrentMonth={setCurrentMonth}
                 events={events}
                 selectedDate={selectedDate}
+                scrollValue={horizontal}
+                selectedMonth={selectedMonth}
+                selectedCalendar={selectedCalendar}
               />
+              {
+                selectedMonth &&
+                (
+                  <div className="slider custom-labels">
+                    <Slider
+                      min={parseInt(format(startOfDay(startOfMonth(selectedMonth)), "d"))}
+                      max={parseInt(format(endOfDay(endOfMonth(selectedMonth)), "d"))}
+                      value={horizontal}
+                      handleLabel={sliderLabel}
+                      onChange={handleChangeHorizontal}
+                      />
+                  </div>
+                )
+              }
+ 
             </div>
           </div>
           <div className="pane">

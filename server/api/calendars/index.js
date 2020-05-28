@@ -6,6 +6,7 @@ import {
   uploadFile,
   s3BucketRootPath,
 } from "../../helpers/aws";
+import { sendToUserShareCalendarConfirmation } from "../../helpers/email";
 import { getUserInfo } from "../users/";
 export const getCalendar = async ({ id }) => {
   const db = makeDb();
@@ -75,9 +76,14 @@ export const getCalendars = async (creds) => {
       "SELECT BIN_TO_UUID(id) as id,BIN_TO_UUID(user_id) as user_id,name,color,visibilityType,updated_at from user_calendars WHERE BIN_TO_UUID(user_id)=?",
       [UserInfo.user_id]
     );
+    const followCalendarRows = await db.query(
+      "SELECT BIN_TO_UUID(uc.id) as id,BIN_TO_UUID(uc.user_id) as user_id,uc.name,uc.color,uc.visibilityType,uc.updated_at from user_calendars uc INNER JOIN user_calendars_follow ucg ON uc.id=ucg.calendar_id WHERE ucg.user_id=UUID_TO_BIN(?) and ucg.is_following=1",
+      [UserInfo.user_id]
+    );
+    const mergedCalendars = [...calendarRows, ...followCalendarRows];
     const calendars = await new Promise((resolve, reject) => {
       const calendars = [];
-      calendarRows.forEach(async (calendar) => {
+      mergedCalendars.forEach(async (calendar) => {
         const db1 = makeDb();
         try {
           const calendarFamilyMembers = await db1.query(
@@ -91,7 +97,7 @@ export const getCalendars = async (creds) => {
           calendar.familyMembers = calendarFamilyMembers.map((familyMember) => {
             return familyMember.family_member_id;
           });
-          calendar.groups = calendarGroups.map((group) => {
+          calendar.groups = calendarGroups.map(async (group) => {
             return group.group_id;
           });
           calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${calendar.id}/calendarBackground.jpg`;
@@ -137,7 +143,7 @@ export const executeCreateCalendar = async (calendar) => {
       ]
     );
     const insertedCalendar = await db.query(
-      "SELECT BIN_TO_UUID(id) as id,color from user_calendars where user_id=UUID_TO_BIN(?) AND name=?",
+      "SELECT BIN_TO_UUID(id) as id,name,color from user_calendars where user_id=UUID_TO_BIN(?) AND name=?",
       [UserInfo.user_id, calendar.info.name]
     );
 
@@ -154,6 +160,28 @@ export const executeCreateCalendar = async (calendar) => {
         "INSERT INTO user_calendars_groups(calendar_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
         [insertedCalendar[0].id, groupId]
       );
+      const contacts = await db.query(
+        "SELECT c.email as email,BIN_TO_UUID(c.user_id) as user_id FROM contacts c INNER JOIN group_members gm ON c.user_id =gm.user_id WHERE gm.group_id =UUID_TO_BIN(?)",
+        [groupId]
+      );
+      contacts.forEach(async (contact) => {
+        const db2 = makeDb();
+        try {
+          await db2.query(
+            "INSERT IGNORE INTO user_calendars_follow(calendar_id,user_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?),UUID_TO_BIN(?))",
+            [insertedCalendar[0].id, contact.user_id, groupId]
+          );
+          await sendToUserShareCalendarConfirmation({
+            calendar: insertedCalendar[0],
+            recipients: contact,
+            groupId,
+          });
+        } catch (error) {
+          console.log(error);
+        } finally {
+          db2.close();
+        }
+      });
     });
     const buf = Buffer.from(
       calendar.info.image.replace(/^data:image\/\w+;base64,/, ""),
@@ -227,12 +255,62 @@ export const executeEditCalendar = async (calendar) => {
       });
     }
     if (calendar.info.groups.length > 0) {
+      await db.query(
+        "DELETE FROM user_calendars_follow WHERE calendar_id=UUID_TO_BIN(?) AND group_id NOT IN (?)",
+        [
+          calendar.info.id,
+          calendar.info.groups.map((groupId) => {
+            return `UUID_TO_BIN(${groupId})`;
+          }),
+        ]
+      );
       calendar.info.groups.forEach(async (groupId) => {
-        await db.query(
-          "INSERT INTO user_calendars_groups(calendar_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
-          [calendar.info.id, groupId]
-        );
+        const db1 = makeDb();
+        try {
+          await db1.query(
+            "INSERT INTO user_calendars_groups(calendar_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
+            [calendar.info.id, groupId]
+          );
+          const contacts = await db1.query(
+            "SELECT c.email as email,BIN_TO_UUID(c.user_id) as user_id FROM contacts c INNER JOIN group_members gm ON c.user_id =gm.user_id WHERE gm.group_id =UUID_TO_BIN(?)",
+            [groupId]
+          );
+          contacts.forEach(async (contact) => {
+            const db2 = makeDb();
+            try {
+              await db2.query(
+                "INSERT IGNORE INTO user_calendars_follow(calendar_id,user_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?),UUID_TO_BIN(?))",
+                [calendar.info.id, contact.user_id, groupId]
+              );
+              const userCalendarFollowRows = await db2.query(
+                "SELECT is_following FROM user_calendars_follow where calendar_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?) AND group_id=UUID_TO_BIN(?)",
+                [calendar.info.id, contact.user_id, groupId]
+              );
+              if (userCalendarFollowRows[0].is_following === 0) {
+                console.log("sending?");
+                await sendToUserShareCalendarConfirmation({
+                  calendar: calendar.info,
+                  recipient: contact,
+                  groupId,
+                });
+              }
+            } catch (error) {
+              console.log(error);
+            } finally {
+              db2.close();
+            }
+          });
+        } catch (error) {
+          console.log(error);
+        } finally {
+          await db1.close();
+        }
       });
+    } else {
+      await db.query(
+        "DELETE FROM user_calendars_follow WHERE calendar_id=UUID_TO_BIN(?)",
+        [calendar.info.id]
+      );
     }
     if (isBase64(calendar.info.image, { mimeRequired: true })) {
       const buf = Buffer.from(
@@ -287,6 +365,10 @@ export const executeDeleteCalendar = async (calendar) => {
     );
     await db.query(
       "DELETE FROM user_calendars_family_member WHERE calendar_id=UUID_TO_BIN(?)",
+      [calendar.info.id]
+    );
+    await db.query(
+      "DELETE FROM user_calendars_follow WHERE calendar_id=UUID_TO_BIN(?)",
       [calendar.info.id]
     );
     return {

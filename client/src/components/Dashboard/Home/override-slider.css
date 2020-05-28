@@ -1,0 +1,35 @@
+.rangeslider-horizontal {
+  border-radius: 0;
+  height: 2px;
+  box-shadow: none;
+}
+
+.rangeslider, .rangeslider .rangeslider__fill {
+  box-shadow: none;
+}
+
+.rangeslider-horizontal .rangeslider__fill {
+  background-color: #e6e6e6;
+}
+
+.rangeslider-horizontal .rangeslider__handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0px;
+  padding: 5px 10px;
+  width: 55px;
+}
+
+.rangeslider-horizontal .rangeslider__handle:after {
+  display: none;
+}
+
+.rangeslider-horizontal .rangeslider__handle-tooltip {
+  display: none !important;
+}
+
+.rangeslider .rangeslider__handle {
+  user-select: none;
+  -moz-user-select: none;
+}
