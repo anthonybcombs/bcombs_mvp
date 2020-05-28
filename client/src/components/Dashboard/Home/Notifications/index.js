@@ -21,7 +21,7 @@ import {
 
 import { getWeekIndex } from "../../../../helpers/datetime";
 
-const EventSliderStyled = styled.div`
+const NotificationStyled = styled.div`
   overflow-x: hidden;
   .table-container {
     white-space: nowrap;
@@ -65,20 +65,14 @@ const EventSliderStyled = styled.div`
 `;
 
 export default function index({
-  setCurrentMonth,
   events,
-  selectedDate,
-  scrollValue,
-  selectedMonth
 }) {
 
-  console.log("SELECTED MONTH ", selectedMonth);
-  const myRef = useRef(null)
+  const currentDate = new Date();
 
-  const [horizontal, setHorizontal] = useState(1);
 
-  const monthStart =  startOfMonth(selectedMonth);
-  const monthEnd = endOfMonth(selectedMonth);
+  const monthStart =  startOfMonth(currentDate);
+  const monthEnd = endOfMonth(currentDate);
 
   const startDate = startOfDay(monthStart);
   const endDate = endOfDay(monthEnd);
@@ -147,11 +141,7 @@ export default function index({
 
       if(pushEvent) {
         filterevents.push((
-          <div className="single-event" style={{backgroundColor: event.color}}>
-            <h3>{event.name}</h3>
-            <div>{format(startDate, "hh:mm aa")}</div>
-            <div>{event.location}</div>
-          </div>
+          <div className="panel-body">{event.name}</div>
         ))
       }
 
@@ -164,46 +154,9 @@ export default function index({
     )
   }
 
-  while(day <= endDate) {
-    formattedDate = format(day, "eee, MMM dd").toUpperCase();
-    days.push(
-      <div className="events-day">
-        <h3>{formattedDate}</h3>
-        {getEventsByDate(day)}
-      </div>
-    )
-    day = addDays(day, 1);
-    rows.push(
-      <div className="rows">
-        {days}
-      </div>
-    )
-    days = []
-  }
-  const scrollToRef = (ref) => { 
-    if(ref && ref.current) {
-      if(scrollValue > 1) {
-        let scrollWidth = ref.current.scrollWidth;
-        console.log("SCROLL VALUE", scrollValue);
-        if(scrollValue == parseInt(format(endDate, "d"))) {
-          ref.current.scrollLeft = ref.current.scrollWidth;
-        } else {
-          ref.current.scrollLeft = (scrollWidth / 38) * scrollValue;
-        }
-      } else {
-        ref.current.scrollLeft = 0;
-      }
-    }
-  }
-
-  if(scrollValue > 0) {
-    scrollToRef(myRef);
-  }
   return (
-    <EventSliderStyled ref={myRef}>
-      <div className="table-container">
-        {rows}
-      </div>
-    </EventSliderStyled>
+    <NotificationStyled>
+      {getEventsByDate(currentDate)}
+    </NotificationStyled>
   )
 }
