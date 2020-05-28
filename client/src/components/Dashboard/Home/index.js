@@ -21,7 +21,8 @@ import {
   startOfMonth,
   endOfMonth,
   startOfDay,
-  endOfDay
+  endOfDay,
+  getDate
 } from "date-fns";
 
 // REDUX ACTIONS
@@ -93,7 +94,7 @@ const HomeStyled = styled.div`
     top: 5px;
   }
   .slider {
-    padding: 0 30px;
+    padding: 0 60px;
   }
   @media (min-width: 600px) {
     .grid {
@@ -158,13 +159,17 @@ export default function index({ location }) {
 
   const handleChangeHorizontal = (value) => {
     setHorizontal(value);
-    // setSliderLabel(`${value} - ${(value + 1)}`);
-    setSliderLabel(`${value}`);
+    setSliderLabel(`${value} - ${(value + 1)}`);
+    //setSliderLabel(`${value}`);
   }
 
-  const [horizontal, setHorizontal] = useState(1);
+  let currDate = getDate(new Date());
+
+  console.log("CURRENT DATE", currDate);
+
+  const [horizontal, setHorizontal] = useState(currDate);
   
-  const [sliderLabel, setSliderLabel] = useState('1');
+  const [sliderLabel, setSliderLabel] = useState(`${currDate} - ${(currDate + 1)}`);
 
   console.log("MY CALENDARS", calendars);
 
@@ -289,7 +294,7 @@ export default function index({ location }) {
                   <div className="slider custom-labels">
                     <Slider
                       min={parseInt(format(startOfDay(startOfMonth(selectedMonth)), "d"))}
-                      max={parseInt(format(endOfDay(endOfMonth(selectedMonth)), "d"))}
+                      max={parseInt(format(endOfDay(endOfMonth(selectedMonth)), "d")) - 1}
                       value={horizontal}
                       handleLabel={sliderLabel}
                       onChange={handleChangeHorizontal}

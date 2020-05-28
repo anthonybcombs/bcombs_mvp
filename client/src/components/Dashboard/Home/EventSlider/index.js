@@ -23,17 +23,19 @@ import { getWeekIndex } from "../../../../helpers/datetime";
 
 const EventSliderStyled = styled.div`
   overflow-x: hidden;
+  max-height: 400px;
 
   .table-container {
     white-space: nowrap;
     width: 100%;
-    max-width: 500px;
+    max-width: 800px;
     display: flex;
+    min-height: 400px;
   }
 
   .rows {
     display: inline-block;
-    width: 500px;
+    width: 800px;
     padding: 20px;
     padding-top: 0;
   }
@@ -45,7 +47,7 @@ const EventSliderStyled = styled.div`
 
   .single-event {
     padding: 5px 30px;
-    min-width: 360px;
+    min-width: 295px;
     color: #fff;
     margin-bottom: 5px;
   }
@@ -58,10 +60,15 @@ const EventSliderStyled = styled.div`
     margin: 0;
     margin: 10px 0;
     font-weight: normal;
+    white-space: normal !important;
   }
 
   .single-event > div {
     margin: 10px 0;
+  }
+
+  .single-event.no-event {
+    color: #444;
   }
 `;
 
@@ -166,6 +173,14 @@ export default function index({
       }
     }
 
+    if(filterevents.length <= 0) {
+      filterevents.push((
+        <div className="single-event no-event">
+          <h3>No events available.</h3>
+        </div>
+      ))
+    }
+
     return (
       <div className={filterevents.length > 0 ? "events-container": ""}>
         {filterevents}
@@ -190,15 +205,18 @@ export default function index({
     days = []
   }
   const scrollToRef = (ref) => { 
-    if(ref && ref.current) {
+    if(ref && ref.current != null && ref.current.childNodes[0].childNodes[0]) {
       if(scrollValue > 1) {
+        console.log("Ref", );
         let scrollWidth = ref.current.scrollWidth;
-        console.log("SCROLL VALUE", scrollValue);
-        if(scrollValue == parseInt(format(endDate, "d"))) {
-          ref.current.scrollLeft = ref.current.scrollWidth;
-        } else {
-          ref.current.scrollLeft = (scrollWidth / 38) * scrollValue;
-        }
+        let childWidth = ref.current.childNodes[0].childNodes[0].offsetWidth
+ 
+        // if(scrollValue == parseInt(format(endDate, "d")) - 1) {
+        //   ref.current.scrollLeft = ref.current.scrollWidth;
+        // } else {
+          
+        // }
+        ref.current.scrollLeft = Math.abs((childWidth) * (scrollValue - 1));
       } else {
         ref.current.scrollLeft = 0;
       }
