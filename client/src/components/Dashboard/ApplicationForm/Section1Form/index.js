@@ -29,7 +29,8 @@ export default function index({
   register,
   errors,
   name,
-  text
+  text,
+  isReadonly = false
 }) {
   return (
     <Section1FormStyled>
@@ -51,6 +52,7 @@ export default function index({
                   handleWaiverFormDetailsChange("section1", "checked", !section1.checked)
                 }}
                 ref={register({required: true})}
+                disabled={isReadonly}
               />
               <span 
                 style={{"borderColor": (errors.section1_checkbox) ? "red": "" }} 
@@ -69,6 +71,8 @@ export default function index({
                     handleWaiverFormDetailsChange("section1", "signature", target.value)
                   }}
                   ref={register({required: true})}
+                  defaultValue={section1.signature}
+                  readOnly={isReadonly}
                 />
                 <label className="field-label"><span className="required">*</span> Electronic Signature</label>
               </div>

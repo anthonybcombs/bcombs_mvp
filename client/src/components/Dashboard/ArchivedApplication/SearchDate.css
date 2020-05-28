@@ -23,6 +23,18 @@
   background: #f26e21;
 }
 
+.react-datepicker__day--selected:hover, 
+.react-datepicker__day--in-selecting-range:hover, 
+.react-datepicker__day--in-range:hover, 
+.react-datepicker__month-text--selected:hover, 
+.react-datepicker__month-text--in-selecting-range:hover, 
+.react-datepicker__month-text--in-range:hover, 
+.react-datepicker__quarter-text--selected:hover, 
+.react-datepicker__quarter-text--in-selecting-range:hover, 
+.react-datepicker__quarter-text--in-range:hover {
+  background: #f26e21;
+}
+
 
 #searchDateWrapper {
   width: 100%;

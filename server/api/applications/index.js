@@ -51,7 +51,13 @@ export const getApplicationsByVendor = async (vendor) => {
         notes,
         class_teacher,
         application_date,
-        archived_date
+        archived_date,
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name
         FROM application
         WHERE vendor=UUID_TO_BIN(?) and is_archived=0
         ORDER BY id DESC`,
@@ -87,7 +93,13 @@ export const getArchivedApplicationsByVendor = async (vendor_id) => {
         notes,
         class_teacher,
         application_date,
-        archived_date
+        archived_date,
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name
         FROM application 
         WHERE vendor=UUID_TO_BIN(?) and is_archived=1
         ORDER BY archived_date DESC`,
@@ -112,7 +124,13 @@ export const createApplication = async ({
   section3_signature,
   section3_date_signed,
   verification = "waiting_for_verification",
-  student_status = "new_applicant_in_process"
+  student_status = "new_applicant_in_process",
+  section1_text,
+  section2_text,
+  section3_text,
+  section1_name,
+  section2_name,
+  section3_name
 }) => {
   const db = makeDb();
   let result = {};
@@ -132,11 +150,20 @@ export const createApplication = async ({
         section3_signature,
         section3_date_signed,
         verification,
-        student_status
+        student_status,
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name
       ) VALUES (
         UUID_TO_BIN(UUID()), 
         UUID_TO_BIN(?), 
-        UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?)`,
+        UUID_TO_BIN(?), 
+        ?, ?, ?, ?, ?, ?, 
+        ?, ?, ?, ?, ?, ?, 
+        ?, ?)`,
       [
         vendor,
         child,
@@ -148,6 +175,12 @@ export const createApplication = async ({
         section3_date_signed,
         verification,
         student_status,
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name
       ]
     )
 

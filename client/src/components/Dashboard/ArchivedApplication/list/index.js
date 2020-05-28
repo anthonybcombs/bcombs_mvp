@@ -9,7 +9,10 @@ import {
   faUndo
 } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
+import moment from "moment";
+
 import "react-datepicker/dist/react-datepicker.css";
+import "../../ApplicationForm/ApplicationForm.css"
 
 const ArchivedApplicationListStyled = styled.div`
   #dataTableContainer {
@@ -50,27 +53,138 @@ const ArchivedApplicationListStyled = styled.div`
   .currentDay {
     background-color: #f26e21;
   }
+
+  .filter-container {
+    width: 100%;
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 35% 20% 20%;
+    grid-gap: 2%;
+    min-width: 85%;
+  }
+
+  .filter-container .go-btn {
+    display: inline-block;
+  }
+
+  .filter-container > div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .form-control {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 6px 12px;
+    font-size: 16px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;  
+  }
+
+  select.form-control {
+    height: 32px;
+  }
+
+  .date-range {
+    display: block !important;
+  }
 `;
 
-const SearchDateComponent = ({handleOnChange, startDate, endDate}) => (
+const TextField = styled.input`
+  box-sizing: border-box; 
+  height: 32px;
+  width: 200px;
+  border-radius: 3px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid #e5e5e5;
+  padding: 0 32px 0 16px;
+  font-size: 16px;
+  m
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const CLASS_OPTIONS = ["Seniors", "Juniors", "Sophomores", "Freshmen", "Middle School"];
+const COLOR_OPTIONS = ["Blue", "Red", "Green"];
+
+const SearchDateComponent = ({
+  handleOnChange, 
+  startDate, 
+  endDate, 
+  classText,
+  colorText,
+  onColorChange,
+  onClassChange
+}) => (
   <>
-    <span className="date-label">Date :</span>
-    <DatePicker
-      placeholderText="mm/dd/yyyy"
-      selected={new Date(startDate)}
-      onChange={(date) => {
-        handleOnChange("start_date", date);
-      }}
-    />
-    <span className="to-label">To</span>
-    <DatePicker
-      placeholderText="mm/dd/yyyy"
-      selected={new Date(endDate)}
-      onChange={(date) => {
-        handleOnChange("end_date", date);
-      }}
-    />
-    <button className="go-btn">Go</button>
+    <div className="filter-container">
+      <div className="date-range">
+        <span className="date-label">Date :</span>
+        <DatePicker
+          placeholderText="mm/dd/yyyy"
+          selected={new Date(startDate)}
+          onChange={(date) => {
+            handleOnChange("start_date", date);
+          }}
+        />
+        <span className="to-label">To</span>
+        <DatePicker
+          placeholderText="mm/dd/yyyy"
+          selected={new Date(endDate)}
+          onChange={(date) => {
+            handleOnChange("end_date", date);
+          }}
+        />
+        <button className="go-btn">Go</button>
+      </div>
+      <div>
+        <select 
+          name="class"
+          className="form-control"
+          value={classText}
+          onChange={onClassChange}>
+          <option value="">Select Class</option>
+          {
+            CLASS_OPTIONS.map((opt, i) => (
+              <option key={i} value={opt}>{opt}</option>
+            ))
+          }
+        </select>
+      </div>
+      <div>
+        <select 
+          name="class"
+          className="form-control"
+          value={colorText}
+          onChange={onColorChange}>
+          <option value="">Select Color</option>
+          {
+            COLOR_OPTIONS.map((opt, i) => (
+              <option key={i} value={opt}>{opt}</option>
+            ))
+          }
+        </select>
+      </div>
+    </div>
+
   </>
 );
 
@@ -85,10 +199,8 @@ export default function index({
     }
   }
 
-  let currDate = new Date().toISOString();
-
-  const [startDate, setStartDate] = useState(currDate);
-  const [endDate, setEndDate] = useState(currDate);
+  const [startDate, setStartDate] = useState(moment());
+  const [endDate, setEndDate] = useState(moment().add(1, 'd'));
 
   const handleOnChange = (date_type, date) => {
     if(date_type == "start_date")

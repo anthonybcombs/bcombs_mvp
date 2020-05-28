@@ -701,7 +701,13 @@ export default function index() {
         section2_signature: termsWaiver.section2.signature,
         section2_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
         section3_signature: termsWaiver.section3.signature,
-        section3_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT)
+        section3_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
+        section1_text: vendor.section1_text,
+        section2_text: vendor.section2_text,
+        section3_text: vendor.section3_text,
+        section1_name: vendor.section1_name,
+        section2_name: vendor.section2_name,
+        section3_name: vendor.section3_name
       }
 
       payload.push(request_params);

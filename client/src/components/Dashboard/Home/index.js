@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
 import NewEventModal from "../MyEvents/create/withCalendar";
+import EventSliderStyled from "./EventSlider";
 
 // REDUX ACTIONS
 import { getEvents } from "../../../redux/actions/Events";
@@ -87,6 +88,9 @@ const HomeStyled = styled.div`
       line-height: 1em;
     }
   }
+  .panel-eventslider {
+    overflow-x: scroll;
+  }
 `;
 export default function index({ location }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
@@ -129,6 +133,8 @@ export default function index({ location }) {
   const setCurrentMonth = (month) => {
     setSelectedMonth(format(month, "MMMM yyyy"));
   };
+
+  console.log("current month", selectedMonth);
 
   return (
     <HomeStyled data-testid="app-dashboard-home" theme={theme}>
@@ -212,8 +218,8 @@ export default function index({ location }) {
             </button>
 
             <div className="panel"></div>
-            <div className="panel">
-              {eventsOnThisDay.map((event, i) => (
+            <div className="panel-eventslider">
+              {/* {events.map((event, i) => (
                 <div
                   data-testid="app-dashboard-home-event"
                   className={`panel-body ${
@@ -228,7 +234,12 @@ export default function index({ location }) {
                 >
                   {event.name}
                 </div>
-              ))}
+              ))} */}
+              <EventSliderStyled
+                setCurrentMonth={setCurrentMonth}
+                events={events}
+                selectedDate={selectedDate}
+              />
             </div>
           </div>
           <div className="pane">

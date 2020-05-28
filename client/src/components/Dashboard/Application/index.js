@@ -14,6 +14,7 @@ import EditApplicationStyled from "./edit";
 
 import ChildFormViewStyled from "./view/child";
 import ParentFormViewStyled from "./view/parent";
+import TermsWaiverFormViewStyled from "./view/waiver";
 
 import { requestVendor } from "../../../redux/actions/Vendors";
 import { requestGetApplications, requestUpdateApplication } from "../../../redux/actions/Application";
@@ -186,7 +187,10 @@ export default function index() {
         </div>
         <div>
           {selectedLabel === "Application Status" && !selectNonMenuOption && (
-            <ApplicationSummaryStyled grades={grades} />
+            <ApplicationSummaryStyled 
+              grades={grades}
+              applications={applications.activeapplications}
+            />
           )}
           {selectedLabel === "Form Settings" && !selectNonMenuOption && (
             <ApplicationSettingsStyled
@@ -227,6 +231,11 @@ export default function index() {
           application={selectedApplication}
           vendor={vendor || {}}
           ProfileImg={ProfileImg}
+        />
+      )}
+      {selectNonMenuOption && view == "application" && (
+          <TermsWaiverFormViewStyled
+          application={selectedApplication}
         />
       )}
     </ApplicationStyled>
