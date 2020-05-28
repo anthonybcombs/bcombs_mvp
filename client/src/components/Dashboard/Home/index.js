@@ -21,7 +21,8 @@ import {
   startOfMonth,
   endOfMonth,
   startOfDay,
-  endOfDay
+  endOfDay,
+  getDate
 } from "date-fns";
 
 // REDUX ACTIONS
@@ -162,9 +163,13 @@ export default function index({ location }) {
     //setSliderLabel(`${value}`);
   }
 
-  const [horizontal, setHorizontal] = useState(1);
+  let currDate = getDate(new Date());
+
+  console.log("CURRENT DATE", currDate);
+
+  const [horizontal, setHorizontal] = useState(currDate);
   
-  const [sliderLabel, setSliderLabel] = useState('1 - 2');
+  const [sliderLabel, setSliderLabel] = useState(`${currDate} - ${(currDate + 1)}`);
 
   console.log("MY CALENDARS", calendars);
 
