@@ -74,17 +74,17 @@ const EventSliderStyled = styled.div`
     color: #444;
   }
 
-  @media screen and (min-width: 992px) {
-    .single-event {
-      min-width: 295px;
-    }
-  }
+  // @media screen and (min-width: 992px) {
+  //   .single-event {
+  //     min-width: 295px;
+  //   }
+  // }
 
-  @media screen and (min-width: 1281px) {
-    .single-event {
-      min-width: 480px;
-    }
-  }
+  // @media screen and (min-width: 1281px) {
+  //   .single-event {
+  //     min-width: 480px;
+  //   }
+  // }
 
 
 `;
