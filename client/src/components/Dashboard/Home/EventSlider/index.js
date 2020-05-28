@@ -47,7 +47,7 @@ const EventSliderStyled = styled.div`
 
   .single-event {
     padding: 5px 30px;
-    min-width: 480px;
+    min-width: 295px;
     color: #fff;
     margin-bottom: 5px;
   }
@@ -205,11 +205,12 @@ export default function index({
     days = []
   }
   const scrollToRef = (ref) => { 
-    if(ref && ref.current) {
+    if(ref && ref.current != null && ref.current.childNodes[0].childNodes[0]) {
       if(scrollValue > 1) {
+        console.log("Ref", );
         let scrollWidth = ref.current.scrollWidth;
         let childWidth = ref.current.childNodes[0].childNodes[0].offsetWidth
-        console.log("Ref", ref);
+ 
         // if(scrollValue == parseInt(format(endDate, "d")) - 1) {
         //   ref.current.scrollLeft = ref.current.scrollWidth;
         // } else {
