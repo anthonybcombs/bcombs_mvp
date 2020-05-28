@@ -234,9 +234,22 @@ const inputs = `
         color_designation: String
         notes: String
         emergency_contacts: String
+        section1_text: String
+        section2_text: String
+        section3_text: String
+        section1_name: String
+        section2_name: String
+        section3_name: String
     }
 
-  
+    input UpdateApplicationInput {
+        app_id: String!
+        verification: String
+        student_status: String
+        color_designation: String
+        notes: String
+        class_teacher: String
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -492,6 +505,14 @@ const queryTypes = `
         color_designation: String
         notes: String
         application_date: Date
+        archived_date: Date
+        class_teacher: String
+        section1_text: String
+        section2_text: String
+        section3_text: String
+        section1_name: String
+        section2_name: String
+        section3_name: String
     }
 
     type ParentUserApplication{
@@ -534,8 +555,8 @@ const mutations = `
         updateEvent(event:EventInput!): [Event]
         deleteEvent(id: String!, email:String!): [Event]
         addApplication(applications: [ApplicationInput]): Status
-        updateApplicationStatus(application_id: String!, status: String!): Status
-        archivedApplication(application_id: String!): Status
+        updateApplication(application: UpdateApplicationInput!): Status
+        archivedApplications(app_ids: [String]): Status
         updateVendor(vendor: VendorInput!): Vendor
     }
 `;

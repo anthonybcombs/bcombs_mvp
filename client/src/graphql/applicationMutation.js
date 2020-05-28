@@ -116,6 +116,12 @@ export const GET_APPLICATIONS_QUERY = gql`
       application_date
       archived_date
       class_teacher
+      section1_text
+      section2_text
+      section3_text
+      section1_name
+      section2_name
+      section3_name
     }
   }
 `
@@ -209,6 +215,12 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
       application_date
       archived_date
       class_teacher
+      section1_text
+      section2_text
+      section3_text
+      section1_name
+      section2_name
+      section3_name
     }
   }
 `;

@@ -10,11 +10,11 @@ import DataTable from 'react-data-table-component';
 import { format } from "date-fns";
 import Loading from "../../../../helpers/Loading.js";
 
-import "../../ApplicationForm/ApplicationForm.css";
-
 import ConfirmedModal from "../../../../helpers/ConfirmedModal";
 
 import {requestArchivedAppplication} from "../../../../redux/actions/Application";
+
+import "../../ApplicationForm/ApplicationForm.css";
 
 const ApplicationListStyled = styled.div`
   
