@@ -23,6 +23,7 @@ import { getWeekIndex } from "../../../../helpers/datetime";
 
 const EventSliderStyled = styled.div`
   overflow-x: hidden;
+
   .table-container {
     white-space: nowrap;
     width: 100%;
@@ -69,10 +70,11 @@ export default function index({
   events,
   selectedDate,
   scrollValue,
-  selectedMonth
+  selectedMonth,
+  selectedCalendar
 }) {
 
-  console.log("SELECTED MONTH ", selectedMonth);
+  console.log("SELECTED CALENDARS ", selectedCalendar);
   const myRef = useRef(null)
 
   const [horizontal, setHorizontal] = useState(1);
@@ -96,65 +98,72 @@ export default function index({
     for(const event of events) {
       let pushEvent = false;
 
-      const startDate = new Date(event.start_of_event);
+      let isSelected = false;
 
-      let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
-      let isBeforeRecurringEndDate = null;
-
-      let checkRecurringEndDate =
-        (event.recurring_end_date && isBeforeRecurringEndDate) ||
-        (!event.recurring_end_date && !isBeforeRecurringEndDate);
-
-      let startEventDay = new Date(event.start_of_event).getDay();
-      let endEventDay = new Date(event.end_of_event).getDay();
-
-      if (event.recurring_end_date) {
-        isBeforeRecurringEndDate = isBefore(
-          new Date(day),
-          new Date(event.recurring_end_date)
-        );
+      if(selectedCalendar.length > 0) {
+        isSelected = selectedCalendar.filter(c => c == event.calendar_id).length > 0;
       }
 
-      if(format(day, "MM dd yyyy") === format(startDate, "MM dd yyyy")) { 
-        pushEvent = true;
-      } else if(
-        isDateAfter &&
-        event.recurring === "Weekly" && 
-        checkRecurringEndDate) {
+      if(!isSelected) {
+        const startDate = new Date(event.start_of_event);
 
-        if (currentDay === startEventDay || currentDay === endEventDay) {
-          pushEvent = true;
+        let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
+        let isBeforeRecurringEndDate = null;
+  
+        let checkRecurringEndDate =
+          (event.recurring_end_date && isBeforeRecurringEndDate) ||
+          (!event.recurring_end_date && !isBeforeRecurringEndDate);
+  
+        let startEventDay = new Date(event.start_of_event).getDay();
+        let endEventDay = new Date(event.end_of_event).getDay();
+  
+        if (event.recurring_end_date) {
+          isBeforeRecurringEndDate = isBefore(
+            new Date(day),
+            new Date(event.recurring_end_date)
+          );
         }
-
-      } else if (
-        isDateAfter &&
-        event.recurring === "Monthly" &&
-        checkRecurringEndDate
-      ) {
-        let currentWeekIndex = getWeekIndex(new Date(day).getDate());
-        let eventWeekIndex = getWeekIndex(
-          new Date(event.start_of_event).getDate()
-        );
-
-        if (
-          currentWeekIndex === eventWeekIndex &&
-          (currentDay === startEventDay || currentDay === endEventDay) &&
-          getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event))
+  
+        if(format(day, "MM dd yyyy") === format(startDate, "MM dd yyyy")) { 
+          pushEvent = true;
+        } else if(
+          isDateAfter &&
+          event.recurring === "Weekly" && 
+          checkRecurringEndDate) {
+  
+          if (currentDay === startEventDay || currentDay === endEventDay) {
+            pushEvent = true;
+          }
+  
+        } else if (
+          isDateAfter &&
+          event.recurring === "Monthly" &&
+          checkRecurringEndDate
         ) {
-          pushEvent = true;
+          let currentWeekIndex = getWeekIndex(new Date(day).getDate());
+          let eventWeekIndex = getWeekIndex(
+            new Date(event.start_of_event).getDate()
+          );
+  
+          if (
+            currentWeekIndex === eventWeekIndex &&
+            (currentDay === startEventDay || currentDay === endEventDay) &&
+            getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event))
+          ) {
+            pushEvent = true;
+          }
+        }
+  
+        if(pushEvent) {
+          filterevents.push((
+            <div className="single-event" style={{backgroundColor: event.color}}>
+              <h3>{event.name}</h3>
+              <div>{format(startDate, "hh:mm aa")}</div>
+              <div>{event.location}</div>
+            </div>
+          ))
         }
       }
-
-      if(pushEvent) {
-        filterevents.push((
-          <div className="single-event" style={{backgroundColor: event.color}}>
-            <h3>{event.name}</h3>
-            <div>{format(startDate, "hh:mm aa")}</div>
-            <div>{event.location}</div>
-          </div>
-        ))
-      }
-
     }
 
     return (
