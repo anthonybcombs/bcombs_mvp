@@ -9,7 +9,14 @@ import {
   startOfWeek,
   endOfWeek,
   addDays,
-  toDate
+  toDate,
+  eachDayOfInterval,
+  isAfter,
+  getMonth,
+  getYear,
+  isBefore,
+  startOfDay,
+  endOfDay
 } from "date-fns";
 const CellsStyled = styled.div`
   display: grid;
@@ -85,12 +92,92 @@ export default function index({
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
-    const eventsOnThisDay = events.filter(
-      event =>
-        format(new Date(event.start_of_event), "MM dd yyyy") ===
-        format(day, "MM dd yyyy")
-    );
-    const eventsCount = eventsOnThisDay.length;
+    // const eventsOnThisDay = events.filter(
+    //   event =>
+    //     format(new Date(event.start_of_event), "MM dd yyyy") ===
+    //     format(day, "MM dd yyyy")
+    // );
+
+    const filterevents = [];
+    let currentDay = new Date(day).getDay();
+    for(const event of events) {
+      let pushEvent = false;
+      const startDate = new Date(event.start_of_event);
+
+      let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
+      let isBeforeRecurringEndDate = null;
+
+      let startEventDay = new Date(event.start_of_event).getDay();
+      let endEventDay = new Date(event.end_of_event).getDay();
+
+      if (event.recurring_end_date) {
+        isBeforeRecurringEndDate = isBefore(
+          new Date(day),
+          new Date(event.recurring_end_date)
+        );
+      }
+
+      let checkRecurringEndDate =
+      (event.recurring_end_date && isBeforeRecurringEndDate) ||
+      (!event.recurring_end_date && !isBeforeRecurringEndDate);
+
+      if(format(day, "MM dd yyyy") === format(startDate, "MM dd yyyy")) { 
+        pushEvent = true;
+      } else if (isDateAfter && event.recurring === "Daily" && checkRecurringEndDate) {
+        pushEvent = true;
+      } else if(
+        isDateAfter &&
+        event.recurring === "Weekly" && 
+        checkRecurringEndDate) {
+
+        if (currentDay === startEventDay || currentDay === endEventDay) {
+          pushEvent = true;
+        }
+
+      } else if (
+        isDateAfter &&
+        event.recurring === "Monthly" &&
+        checkRecurringEndDate
+      ) {
+        let currentWeekIndex = getWeekIndex(new Date(day).getDate());
+        let eventWeekIndex = getWeekIndex(
+          new Date(event.start_of_event).getDate()
+        );
+
+        if (
+          currentWeekIndex === eventWeekIndex &&
+          (currentDay === startEventDay || currentDay === endEventDay) &&
+          getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event))
+        ) {
+          pushEvent = true;
+        }
+      } else if (
+        isDateAfter &&
+        event.recurring === "Annually" &&
+        checkRecurringEndDate
+      ) {
+        let currentWeekIndex = getWeekIndex(new Date(day).getDate());
+        let eventWeekIndex = getWeekIndex(
+          new Date(event.start_of_event).getDate()
+        );
+        if (
+          (currentDay === startEventDay || currentDay === endEventDay) &&
+          currentWeekIndex === eventWeekIndex &&
+          getMonth(new Date(day)) ===
+            getMonth(new Date(event.start_of_event)) &&
+          getYear(new Date(day)) !== getYear(new Date(event.start_of_event))
+        ) {
+          pushEvent = true;
+        }
+      }
+
+      if(pushEvent) {
+        filterevents.push(event);
+      }
+    }
+
+    // const eventsCount = eventsOnThisDay.length;
+    const eventsCount = filterevents.length;
     const hasEvents = eventsCount > 0;
     days.push(
       <div
