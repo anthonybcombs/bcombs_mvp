@@ -219,6 +219,7 @@ export const getUserEvents = async (email, calendars = []) => {
           gr.id = group_members.group_id AND
           group_members.user_id =  user_calendars_follow.user_id AND
           group_members.user_id = users.id  AND
+          events.visibility = 'public' AND
           user_calendars_follow.is_following = 1 AND
           user_calendars.user_id = events.user_id AND
           users.id = UUID_TO_BIN(?)
