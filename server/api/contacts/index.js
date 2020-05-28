@@ -2,8 +2,6 @@ import { ApolloError } from "apollo-server-express";
 import { makeDb } from "../../helpers/database";
 import { getUserFromDatabase } from "../index";
 
-import { checkUserEmail } from "../users";
-
 export const getContacts = async email => {
   const db = makeDb();
   const currentUser = await getUserFromDatabase(email);

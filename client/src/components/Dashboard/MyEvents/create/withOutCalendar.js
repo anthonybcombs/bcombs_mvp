@@ -185,7 +185,7 @@ export default function index({
           ? selectedGroup.map(group => group.id)
           : []
     };
-
+    console.log("selectedCalendarrr", selectedCalendars);
     if (selectedCalendars.length > 0) {
       toggleCreateEventModal(false);
       dispatch(addEvent(payload));

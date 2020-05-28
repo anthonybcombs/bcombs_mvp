@@ -149,7 +149,7 @@ export const getUserEvents = async (email, calendars = []) => {
   try {
     const currentUser = await getUserFromDatabase(email);
     if (currentUser) {
-      const events = await db.query(
+      let events = await db.query(
         `SELECT 
           BIN_TO_UUID(events.id) as id,
           BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
@@ -192,11 +192,54 @@ export const getUserEvents = async (email, calendars = []) => {
           user_calendars.id=event_calendar.calendar_id AND 
           user_calendars.user_id = UUID_TO_BIN(?) AND 
           event_attendee.user_id = UUID_TO_BIN(?) AND 
-          (event_attendee.status = "Yes" OR event_attendee.status = "Maybe");`,
-        [currentUser.id, currentUser.id, currentUser.id, currentUser.id]
+          (event_attendee.status = "Yes" OR event_attendee.status = "Maybe")
+        UNION  
+        SELECT 
+          DISTINCT  BIN_TO_UUID(events.id) as id,
+          BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
+          BIN_TO_UUID(events.user_id) as user_id,
+          events.name,
+          events.description,
+          events.status,
+          events.type,
+          events.start_of_event,
+          events.end_of_event,
+          events.location ,
+          events.visibility,
+          events.recurring,
+          events.recurring_end_date,
+          user_calendars.color
+        FROM events ,event_calendar, user_calendars_follow,\`groups\` as gr, group_members, user_calendars,
+          users
+        WHERE 
+          events.id = event_calendar.event_id AND
+          event_calendar.calendar_id = user_calendars_follow.calendar_id AND
+          user_calendars_follow.calendar_id = user_calendars.id AND
+          user_calendars_follow.group_id = gr.id AND 
+          gr.id = group_members.group_id AND
+          group_members.user_id =  user_calendars_follow.user_id AND
+          group_members.user_id = users.id  AND
+          user_calendars_follow.is_following = 1 AND
+          user_calendars.user_id = events.user_id AND
+          users.id = UUID_TO_BIN(?)
+        ;`,
+        [
+          currentUser.id,
+          currentUser.id,
+          currentUser.id,
+          currentUser.id,
+          currentUser.id
+        ]
       );
 
       if (events.length > 0) {
+        events = events.map(evnt => {
+          return {
+            ...evnt,
+            allowed_edit: evnt.user_id === currentUser.id
+          };
+        });
+
         let eventIds = events.map(item => item.id);
         eventIds = eventIds.map(eventId => `UUID_TO_BIN("${eventId}")`);
         guests = await db.query(

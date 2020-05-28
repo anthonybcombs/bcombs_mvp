@@ -14,6 +14,7 @@ export const EVENT_CREATE_MUTATION = gql`
       location
       color
       visibility
+      allowed_edit
       recurring
       recurring_end_date
       group_ids
@@ -43,6 +44,7 @@ export const EVENT_UPDATE_MUTATION = gql`
       user_id
       color
       visibility
+      allowed_edit
       recurring
       recurring_end_date
       group_ids

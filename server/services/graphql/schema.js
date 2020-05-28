@@ -270,6 +270,7 @@ const queryTypes = `
         visibility: String
         recurring: String
         recurring_end_date: Date
+        allowed_edit: Boolean
         group_ids:[String]
     }
     type Contact{
