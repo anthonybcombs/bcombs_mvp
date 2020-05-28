@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 const defaultMailConfig = {
   from: "sanjosedennis7593@gmail.com", // sender address,
   subject: "",
-  text: "", // plain text body
+  text: "" // plain text body
 };
 
 const eventResponse = ["Yes", "No", "Maybe"];
@@ -12,8 +12,8 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "sanjosedennis7593@gmail.com",
-    pass: "hnkkusrtgmbpwsyf",
-  },
+    pass: "hnkkusrtgmbpwsyf"
+  }
 });
 
 const sendCancelledEvent = async ({ eventName, recipients }) => {
@@ -27,7 +27,7 @@ const sendCancelledEvent = async ({ eventName, recipients }) => {
         ...defaultMailConfig,
         subject: `Bcombs: Event ${eventName} Cancelled`,
         to: recipients[x].email,
-        html: template, // html body
+        html: template // html body
       });
     } catch (error) {
       console.log("Error", error);
@@ -39,7 +39,7 @@ const sendReScheduledEvent = async ({
   eventName,
   eventStartDate,
   eventEndDate,
-  recipients,
+  recipients
 }) => {
   let numRecipients = recipients.length;
 
@@ -55,7 +55,7 @@ const sendReScheduledEvent = async ({
         ...defaultMailConfig,
         subject: `Bcombs: Event ${eventName} Re-Scheduled`,
         to: recipients[x].email,
-        html: template, // html body
+        html: template // html body
       });
     } catch (error) {
       console.log("Error", error);
@@ -68,7 +68,7 @@ const sendInvitation = async ({
   eventId,
   eventStartDate,
   eventEndDate,
-  recipients = [],
+  recipients = []
 }) => {
   let numRecipients = recipients.length;
 
@@ -81,14 +81,14 @@ const sendInvitation = async ({
         eventOwnerEmail,
         recipients,
         eventStartDate,
-        eventEndDate,
+        eventEndDate
       });
 
       sendEmail({
         ...defaultMailConfig,
         subject: "Bcombs: Event Invitation",
         to: recipients[x].email,
-        html: template, // html body
+        html: template // html body
       });
     } catch (error) {
       console.log("Error", error);
@@ -103,7 +103,7 @@ const getTemplateInvitationStrings = ({
   eventId,
   recipients,
   eventStartDate,
-  eventEndDate,
+  eventEndDate
 }) => {
   return `
           <h4>You have been invited on this event ${eventName}</h4>
@@ -120,12 +120,12 @@ const getTemplateInvitationStrings = ({
                 <tr>
                   <th>Invited Guest</th>
                 </tr>
-                ${recipients.map((rec) => {
+                ${recipients.map(rec => {
                   return `<tr><td> ${rec.email}</td> </tr>`;
                 })}
               </table>
               <ul>
-                ${recipients.map((rec) => {
+                ${recipients.map(rec => {
                   return `<li><i> ${rec.email}</i> </li>`;
                 })}
               </ul>
@@ -133,14 +133,14 @@ const getTemplateInvitationStrings = ({
             <form action="http://192.243.109.224:3001/api/invitation/event/${eventId}" method="GET">
               Calendar:
               <select name="calendar">
-                ${data.calendars.map((calendar) => {
+                ${data.calendars.map(calendar => {
                   return `<option value="${calendar.id}">${calendar.name}</option>`;
                 })}
               </select>
               <br/>
               Response:
               <select name="response">
-                ${eventResponse.map((resp) => {
+                ${eventResponse.map(resp => {
                   return `<option value="${resp}">${resp}</option>`;
                 })}
               </select>
@@ -154,7 +154,7 @@ const getTemplateInvitationStrings = ({
   `;
 };
 
-export const getCancelledTemplate = (eventName) => {
+export const getCancelledTemplate = eventName => {
   return `
     <div>
       Hi, 
@@ -179,8 +179,8 @@ export const getReScheduledTemplate = (
     </div>
   `;
 };
-const sendEmail = (config) => {
-  transporter.sendMail(config, function (error, info) {
+const sendEmail = config => {
+  transporter.sendMail(config, function(error, info) {
     if (error) {
       console.log("Error", error);
     } else {
@@ -193,11 +193,12 @@ export {
   getTemplateInvitationStrings,
   sendInvitation,
   sendCancelledEvent,
-  sendReScheduledEvent,
+  sendReScheduledEvent
 };
 
 //added by bon :(
 export const getShareCalendarTemplate = (calendar, user, groupId) => {
+  console.log("getShareCalendarTemplate user", user);
   return `<h4>Calendar ${calendar.name} is shared to you!</h4>
 <p>You want to follow this calendar?</p>
 <div>
@@ -215,7 +216,7 @@ export const getShareCalendarTemplate = (calendar, user, groupId) => {
 export const sendToUserShareCalendarConfirmation = async ({
   calendar,
   recipient,
-  groupId,
+  groupId
 }) => {
   try {
     const template = getShareCalendarTemplate(calendar, recipient, groupId);
@@ -223,7 +224,7 @@ export const sendToUserShareCalendarConfirmation = async ({
       ...defaultMailConfig,
       subject: `Bcombs: Calendar ${calendar.name} is shared to you!`,
       to: recipient.email,
-      html: template, // html body
+      html: template // html body
     });
   } catch (error) {
     console.log("Error", error);
