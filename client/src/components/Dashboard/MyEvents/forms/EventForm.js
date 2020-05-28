@@ -511,6 +511,12 @@ export default function createEventForm({
             </option>
           ))}
         </select>
+
+        <ErrorMessage
+          field={errors.visibility}
+          errorType="required"
+          message="Visibility is required."
+        />
       </div>
       {eventDetails.visibility === "custom" && (
         <CustomMultiSelect

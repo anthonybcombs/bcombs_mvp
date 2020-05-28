@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { uuid } from "uuidv4";
-import { format } from "date-fns";
+import { addMinutes, format } from "date-fns";
 import { addEvent } from "../../../../redux/actions/Events";
 import EventForm from "../forms/EventForm";
 
@@ -74,12 +74,19 @@ const NewEventModal = styled.div`
 `;
 
 const initialEventDetails = selectedDate => {
+  console.log(
+    "new Date(addMinutes(new Date(selectedDate), 30))",
+    new Date(addMinutes(new Date(selectedDate), 30))
+  );
   return {
     id: uuid(),
     name: "",
     date: new Date(),
     time: format(selectedDate, "hh:mm a"),
-    eventSchedule: [selectedDate, selectedDate],
+    eventSchedule: [
+      selectedDate,
+      new Date(addMinutes(new Date(selectedDate), 30))
+    ],
     eventGuests: [],
     familyMembers: [],
     eventType: "Event",
@@ -122,7 +129,10 @@ export default function index({
       ...eventDetails,
       date: defaultSelectedDate,
       time: format(defaultSelectedDate, "hh:mm a"),
-      eventSchedule: [defaultSelectedDate, defaultSelectedDate]
+      eventSchedule: [
+        defaultSelectedDate,
+        new Date(addMinutes(new Date(defaultSelectedDate), 30))
+      ]
     });
   }, [defaultSelectedDate]);
 

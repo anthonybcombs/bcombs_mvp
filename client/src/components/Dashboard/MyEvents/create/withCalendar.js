@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { uuid } from "uuidv4";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
+import { addHours, addMinutes, addSeconds, format } from "date-fns";
 
 import { addEvent } from "../../../../redux/actions/Events";
 import MicroCalendar from "../../../Calendar/micro-calendar";
@@ -84,7 +84,10 @@ const initialEventDetails = selectedDate => {
     name: "",
     date: new Date(),
     time: format(selectedDate, "hh:mm a"),
-    eventSchedule: [selectedDate, selectedDate],
+    eventSchedule: [
+      selectedDate,
+      new Date(addMinutes(new Date(selectedDate), 30))
+    ],
     eventGuests: [],
     familyMembers: [],
     eventType: "Event",
