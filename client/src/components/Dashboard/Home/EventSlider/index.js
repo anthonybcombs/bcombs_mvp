@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import {
   format,
@@ -10,26 +10,21 @@ import {
 } from "date-fns";
 
 const EventSliderStyled = styled.div`
-
-  white-space: nowrap;
-  width: 100%;
-  max-width: 500px;
-  display: flex;
+  overflow-x: hidden;
+  .table-container {
+    white-space: nowrap;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+  }
 
   .rows {
     display: inline-block;
     width: 500px;
     padding: 20px;
+    padding-top: 0;
   }
-
-  .rows:first-child {
-    padding-left: 0;
-  }
-
-  .rows:last-child {
-    padding-right: 0;
-  }
-
+  
   .events-container {
     box-shadow: 0px 3px 6px #908e8e;
     padding: 10px;
@@ -56,13 +51,17 @@ export default function index({
   setCurrentMonth,
   events,
   selectedDate,
-  selectedCalendar
+  scrollValue
 }) {
+
+  const myRef = useRef(null)
 
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
     selectedDate
   });
+
+  const [horizontal, setHorizontal] = useState(1);
 
   useEffect(() => {
     if (currentDate.currentMonth && setCurrentMonth) {
@@ -82,7 +81,7 @@ export default function index({
   let day = startDate;
   let formattedDate = "";
 
-  let width;
+  console.log("scrollValue ", scrollValue);
 
   const getEventsByDate = (date) => {
 
@@ -91,7 +90,6 @@ export default function index({
     for(const event of events) {
       const startDate = new Date(event.start_of_event);
       if(format(date, "MM dd yyyy") === format(startDate, "MM dd yyyy")) {
-        console.log("Time ", startDate);
         filterevents.push((
           <div className="single-event" style={{backgroundColor: event.color}}>
             <h3>{event.name}</h3>
@@ -125,16 +123,26 @@ export default function index({
     )
     days = []
   }
+  const scrollToRef = (ref) => { 
+    if(ref && ref.current) {
+      console.log("REF REF" , ref); 
+      if(scrollValue > 1) {
+        let scrollWidth = ref.current.scrollWidth;
+        ref.current.scrollLeft = (scrollWidth / 35) * scrollValue;
+      } else {
+        ref.current.scrollLeft = 0;
+      }
+    }
+  }
 
-  width = rows.length * 500;
-
-  console.log("WIDTH ", width);
-
-  console.log("EVENTS", events)
-
+  if(scrollValue > 0) {
+    scrollToRef(myRef);
+  }
   return (
-    <EventSliderStyled className="table-container">
-      {rows}
+    <EventSliderStyled ref={myRef}>
+      <div className="table-container">
+        {rows}
+      </div>
     </EventSliderStyled>
   )
 }

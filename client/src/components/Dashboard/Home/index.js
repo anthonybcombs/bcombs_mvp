@@ -8,11 +8,20 @@ import {
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
-import { format } from "date-fns";
 import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
 import NewEventModal from "../MyEvents/create/withCalendar";
 import EventSliderStyled from "./EventSlider";
+import Slider from 'react-rangeslider';
+import 'react-rangeslider/lib/index.css';
+import './override-slider.css';
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfDay,
+  endOfDay
+} from "date-fns";
 
 // REDUX ACTIONS
 import { getEvents } from "../../../redux/actions/Events";
@@ -88,9 +97,6 @@ const HomeStyled = styled.div`
       line-height: 1em;
     }
   }
-  .panel-eventslider {
-    overflow-x: scroll;
-  }
 `;
 export default function index({ location }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
@@ -122,7 +128,7 @@ export default function index({ location }) {
       format(new Date(event.start_of_event), "MM dd yyyy") ===
       format(selectedDate, "MM dd yyyy")
   );
-
+  
   const handleSetSelectedDate = (date) => {
     setSelectedEvent();
     setSelectedDate(date);
@@ -131,8 +137,19 @@ export default function index({ location }) {
     setSelectedEvent(eventsOnThisDay.filter((event) => event.id === id)[0]);
   };
   const setCurrentMonth = (month) => {
-    setSelectedMonth(format(month, "MMMM yyyy"));
+    //setSelectedMonth(format(month, "MMMM yyyy"));
+    setSelectedMonth(month);
   };
+
+  const handleChangeHorizontal = (value) => {
+    setHorizontal(value);
+    // setSliderLabel(`${value} - ${(value + 1)}`);
+    setSliderLabel(`${value}`);
+  }
+
+  const [horizontal, setHorizontal] = useState(1);
+  
+  const [sliderLabel, setSliderLabel] = useState('1');
 
   console.log("current month", selectedMonth);
 
@@ -207,7 +224,10 @@ export default function index({ location }) {
         </div>
         <div>
           <div className="pane">
-            <h3>{selectedMonth}</h3>
+            {
+               selectedMonth &&
+              <h3>{format(selectedMonth, "MMMM yyyy")}</h3>
+            }
             <button
               id="add-event-button"
               onClick={() => {
@@ -219,27 +239,27 @@ export default function index({ location }) {
 
             <div className="panel"></div>
             <div className="panel-eventslider">
-              {/* {events.map((event, i) => (
-                <div
-                  data-testid="app-dashboard-home-event"
-                  className={`panel-body ${
-                    selectedEvent && event.id === selectedEvent.id
-                      ? "selected"
-                      : ""
-                  }`}
-                  key={i}
-                  onClick={() => {
-                    handleEventSelection(event.id);
-                  }}
-                >
-                  {event.name}
-                </div>
-              ))} */}
               <EventSliderStyled
                 setCurrentMonth={setCurrentMonth}
                 events={events}
                 selectedDate={selectedDate}
+                scrollValue={horizontal}
               />
+              {
+                selectedMonth &&
+                (
+                  <div className="slider custom-labels">
+                    <Slider
+                      min={parseInt(format(startOfDay(startOfMonth(selectedMonth)), "d"))}
+                      max={parseInt(format(endOfDay(endOfMonth(selectedMonth)), "d"))}
+                      value={horizontal}
+                      handleLabel={sliderLabel}
+                      onChange={handleChangeHorizontal}
+                      />
+                  </div>
+                )
+              }
+ 
             </div>
           </div>
           <div className="pane">
