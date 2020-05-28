@@ -643,7 +643,7 @@ router.get("/invitation/calendar/:id", async (req, res) => {
       "UPDATE user_calendars_follow SET is_following=1 WHERE calendar_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?) AND group_id=UUID_TO_BIN(?) AND is_following=0",
       [id, userId, groupId]
     );
-    res.redirect("http://localhost:1234/dashboard");
+    res.redirect("http://192.243.109.224:3001/dashboard");
   } catch (error) {
     console.log("Invitation Error", error);
   } finally {

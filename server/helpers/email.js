@@ -201,7 +201,7 @@ export const getShareCalendarTemplate = (calendar, user, groupId) => {
   return `<h4>Calendar ${calendar.name} is shared to you!</h4>
 <p>You want to follow this calendar?</p>
 <div>
-  <form action="http://localhost:3001/api/invitation/calendar/${calendar.id}" method="GET">
+  <form action="http://192.243.109.224:3001/api/invitation/calendar/${calendar.id}" method="GET">
   <input type="submit" value="Yes" style="background-color:#f26e21;color:white;padding:5px;"/>
   <input type="hidden" name="userId" value="${user.user_id}"/>
   <input type="hidden" name="groupId" value="${groupId}"/>
