@@ -73,6 +73,20 @@ const EventSliderStyled = styled.div`
   .single-event.no-event {
     color: #444;
   }
+
+  @media screen and (min-width: 992px) {
+    .single-event {
+      min-width: 295px;
+    }
+  }
+
+  @media screen and (min-width: 1281px) {
+    .single-event {
+      min-width: 480px;
+    }
+  }
+
+
 `;
 
 export default function index({
@@ -84,7 +98,7 @@ export default function index({
   selectedCalendar
 }) {
 
-  console.log("SELECTED CALENDARS ", selectedCalendar);
+  console.log("SELECTED events ", events);
   const myRef = useRef(null)
 
   const [horizontal, setHorizontal] = useState(1);
@@ -136,6 +150,8 @@ export default function index({
   
         if(format(day, "MM dd yyyy") === format(startDate, "MM dd yyyy")) { 
           pushEvent = true;
+        } else if (isDateAfter && event.recurring === "Daily" && checkRecurringEndDate) {
+          pushEvent = true;
         } else if(
           isDateAfter &&
           event.recurring === "Weekly" && 
@@ -159,6 +175,24 @@ export default function index({
             currentWeekIndex === eventWeekIndex &&
             (currentDay === startEventDay || currentDay === endEventDay) &&
             getMonth(new Date(day)) !== getMonth(new Date(event.start_of_event))
+          ) {
+            pushEvent = true;
+          }
+        } else if (
+          isDateAfter &&
+          event.recurring === "Annually" &&
+          checkRecurringEndDate
+        ) {
+          let currentWeekIndex = getWeekIndex(new Date(day).getDate());
+          let eventWeekIndex = getWeekIndex(
+            new Date(event.start_of_event).getDate()
+          );
+          if (
+            (currentDay === startEventDay || currentDay === endEventDay) &&
+            currentWeekIndex === eventWeekIndex &&
+            getMonth(new Date(day)) ===
+              getMonth(new Date(event.start_of_event)) &&
+            getYear(new Date(day)) !== getYear(new Date(event.start_of_event))
           ) {
             pushEvent = true;
           }
