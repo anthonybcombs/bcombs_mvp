@@ -61,10 +61,13 @@ const EventSliderStyled = styled.div`
     margin: 10px 0;
     font-weight: normal;
     white-space: normal !important;
+    word-break: break-all !important;
   }
 
   .single-event > div {
     margin: 10px 0;
+    white-space: normal !important;
+    word-break: break-all !important;
   }
 
   .single-event.no-event {
@@ -207,10 +210,10 @@ export default function index({
   const scrollToRef = (ref) => { 
     if(ref && ref.current != null && ref.current.childNodes[0].childNodes[0]) {
       if(scrollValue > 1) {
-        console.log("Ref", );
         let scrollWidth = ref.current.scrollWidth;
-        let childWidth = ref.current.childNodes[0].childNodes[0].offsetWidth
- 
+        let childWidth = ref.current.childNodes[0].childNodes[0].offsetWidth;
+
+        console.log("childWidth", childWidth);
         // if(scrollValue == parseInt(format(endDate, "d")) - 1) {
         //   ref.current.scrollLeft = ref.current.scrollWidth;
         // } else {
