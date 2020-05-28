@@ -242,7 +242,7 @@ export default function index({
                     name="terms_and_conditions_text"
                     className="form-control"
                     rows="15"
-                    onChange={({target}) => handleFormSettingsChange("terms_and_conditions_text", target.value)}
+                    onChange={({target}) => handleFormSettingsChange("section3_text", target.value)}
                     defaultValue={formSettings.section3_text}
                   >
                   </textarea>

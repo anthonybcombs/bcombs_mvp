@@ -23,6 +23,15 @@ const ApplicationFormStyled = styled.div`
   padding: 20px;
   position: relative;
   display: block;
+
+  .success-message {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 16px;
+    font-weight: 600;
+    font-size: 20px;
+    color: #f26e21;
+  }
 `;
 
 export default function index() {
@@ -48,7 +57,9 @@ export default function index() {
 
   if(applications.addapplication && applications.addapplication.message == "application created") {
     scrollToTop("auto")
-    window.location.reload(false);
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 3000);
   }
 
   console.log("vendor_id ", vendor_id);
@@ -775,6 +786,13 @@ export default function index() {
               </ul>
             </div>
             <div className="container">
+              {
+                applications.addapplication && applications.addapplication.message == "application created" && (
+                  <div className="success-message">
+                    Successfully submitted your application. Thank you!
+                  </div>
+                )
+              }
               <form
                 autoComplete="off"
                 onSubmit={handleSubmit(onSubmit)}

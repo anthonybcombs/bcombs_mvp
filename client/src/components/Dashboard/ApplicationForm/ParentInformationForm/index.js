@@ -431,6 +431,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                type="email"
                 defaultValue={parentProfile.email_address}
                 readOnly={isReadonly}
                 name={"parent_emailaddress" + (counter - 1)}
@@ -491,6 +492,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  type="email"
                   defaultValue={parentProfile.email_address2}
                   readOnly={isReadonly}
                   name={"parent_emailaddress2" + (counter - 1)}

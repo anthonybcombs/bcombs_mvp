@@ -95,6 +95,7 @@ const HomeStyled = styled.div`
   }
   .slider {
     padding: 0 60px;
+    padding-top: 30px;
   }
   @media (min-width: 600px) {
     .grid {
