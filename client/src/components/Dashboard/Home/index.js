@@ -15,6 +15,7 @@ import EventSliderStyled from "./EventSlider";
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import './override-slider.css';
+import NotificationStyled from "./Notifications";
 import {
   format,
   startOfMonth,
@@ -215,9 +216,9 @@ export default function index({ location }) {
               lazyRender
             >
               <div className="panel">
-                <div className="panel-body">test notification</div>
-                <div className="panel-body">test notification</div>
-                <div className="panel-body">test notification</div>
+                <NotificationStyled 
+                  events={events}
+                />
               </div>
             </Collapsible>
           </div>
@@ -244,6 +245,7 @@ export default function index({ location }) {
                 events={events}
                 selectedDate={selectedDate}
                 scrollValue={horizontal}
+                selectedMonth={selectedMonth}
               />
               {
                 selectedMonth &&
