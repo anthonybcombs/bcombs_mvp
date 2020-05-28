@@ -6,7 +6,8 @@ import {
   executeChangePassword,
   executeUserUpdate,
   executeGetUser,
-  getUserApplication
+  getUserApplication,
+  checkUserEmail
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
@@ -39,13 +40,14 @@ import {
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
 import { getVendors, updateVendor, addVendor } from "../../api/vendor";
-import { 
-  createApplication, 
-  getApplicationsByVendor, 
+import {
+  createApplication,
+  getApplicationsByVendor,
   updateApplication,
   archivedApplication,
   unArchivedApplication,
-  getArchivedApplicationsByVendor } from "../../api/applications";
+  getArchivedApplicationsByVendor
+} from "../../api/applications";
 import { addChild, getChildInformation } from "../../api/child";
 import { addParent, getParentByApplication } from "../../api/parents";
 
@@ -153,12 +155,12 @@ const resolvers = {
         console.log("Get User Applications", err);
       }
     },
-    async getVendorArchivedApplications(root, {vendor_id}, context) {
+    async getVendorArchivedApplications(root, { vendor_id }, context) {
       let applications = await getArchivedApplicationsByVendor(vendor_id);
 
       let resapplications = [];
 
-      for(let application of applications) {
+      for (let application of applications) {
         let child = await getChildInformation(application.child);
         console.log("application child ", application.child);
         console.log("child ", child);
@@ -168,6 +170,10 @@ const resolvers = {
         resapplications.push(application);
       }
       return resapplications;
+    },
+    async getUserByEmail(root, { email }, context) {
+      const response = await checkUserEmail(email);
+      return response;
     }
   },
   RootMutation: {
@@ -250,52 +256,52 @@ const resolvers = {
         message: "application created"
       };
     },
-    async updateApplication (root, { application }, context) {
+    async updateApplication(root, { application }, context) {
       console.log("APPLICATION ", application);
       try {
         const response = await updateApplication(application);
-        if(!response.error) {
+        if (!response.error) {
           return {
             messageType: "info",
             message: "application updated"
-          }
+          };
         } else {
           console.log("error", response.error);
           return {
             messageType: "error",
             message: "error application update"
-          }
+          };
         }
       } catch (err) {
         console.log("error", err);
         return {
           messageType: "error",
           message: "error application update"
-        }
+        };
       }
     },
-    async archivedApplications (root, { app_ids }, context) {
+    async archivedApplications(root, { app_ids }, context) {
       try {
-        for(let app_id of app_ids) {
+        for (let app_id of app_ids) {
           let response = await archivedApplication(app_id);
 
-          if(response.error) {
+          if (response.error) {
             return {
               messageType: "error",
               message: "error application archived"
-            }
+            };
           }
         }
 
         return {
           messageType: "info",
           message: "application archived"
-        }
-      } catch(err) {
+        };
+      } catch (err) {
         return {
           messageType: "error",
           message: "error application archived"
-        }
+        };
       }
     }
   }

@@ -1,5 +1,8 @@
+import { ApolloError } from "apollo-server-express";
 import { makeDb } from "../../helpers/database";
 import { getUserFromDatabase } from "../index";
+
+import { checkUserEmail } from "../users";
 
 export const getContacts = async email => {
   const db = makeDb();
@@ -114,6 +117,8 @@ export const createNewContact = async ({
   try {
     const user = await getUserFromDatabase(email);
     const currentUser = await getUserFromDatabase(auth_email);
+
+    console.log("USERRRRRRRRRRR", user);
     if (user) {
       await db.query(
         "INSERT IGNORE INTO `contacts`(`id`,`user_id`,`first_name`,`last_name`,`phone_number`,`email`,`relation`,`added_by`,`date_added`) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),?,?,?,?,?,UUID_TO_BIN(?),NOW())",
@@ -149,6 +154,7 @@ export const createNewContact = async ({
       }
       results = await getContacts(auth_email);
     } else {
+      throw new ApolloError("User not exist!");
     }
     console.log("Contacts results", results);
   } catch (error) {

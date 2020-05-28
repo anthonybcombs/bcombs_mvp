@@ -6,6 +6,10 @@ import { useDispatch } from "react-redux";
 import { addContact } from "../../../../redux/actions/Contacts";
 import { updateGroup } from "../../../../redux/actions/Groups";
 import ContactForm from "../forms/ContactForm";
+
+import graphqlClient from "../../../../graphql";
+import { CHECK_USER_EMAIL_QUERY } from "../../../../graphql/query";
+
 const NewContactModal = styled.div`
   h2 {
     text-align: center;
@@ -23,6 +27,7 @@ export default function index({
   groups,
   auth
 }) {
+  const [isLoading, setLoading] = useState(false);
   const [contactDetails, setContactDetails] = useState({
     id: uuid(),
     first_name: "",
@@ -49,16 +54,9 @@ export default function index({
     });
   };
   const handleContactDetailsChange = (id, value) => {
-    let newSelectedGroups = contactDetails.selectedGroups;
     if (id === "selectedGroups") {
       let selectedGroupIds = value.map(item => item.id);
-      // if (newSelectedGroups.includes(selectedGroupId)) {
-      //   newSelectedGroups = newSelectedGroups.filter(
-      //     groupId => groupId !== selectedGroupId
-      //   );
-      // } else {
-      //   newSelectedGroups.push(selectedGroupId);
-      // }
+
       setContactDetails({
         ...contactDetails,
         selectedGroups: selectedGroupIds
@@ -70,34 +68,52 @@ export default function index({
       });
     }
   };
-  const handleSubmit = value => {
-    // contactDetails.selectedGroups.forEach(selectedGroupId => {
-    //   const selectedGroup = groups.find(group => group.id === selectedGroupId);
-    //   selectedGroup.contacts.push(contactDetails.id);
-    //   dispatch(updateGroup(selectedGroup));
-    // });
+  const handleSubmit = async value => {
+    setLoading(true);
     if (contactDetails) {
       const isEmailExist = contacts.findIndex(
         item => item.email === contactDetails.email
       );
 
       if (isEmailExist === -1) {
-        const payload = {
-          ...contactDetails,
-          authEmail: auth.email
-        };
-        if (contactDetails.email !== auth.email) {
-          dispatch(addContact(payload));
-          toggleCreateContactModal(false);
-          resetState();
+        const response = await checkUserEmail(contactDetails.email);
+
+        if (response.is_exist) {
+          const payload = {
+            ...contactDetails,
+            authEmail: auth.email
+          };
+          if (contactDetails.email !== auth.email) {
+            dispatch(addContact(payload));
+            toggleCreateContactModal(false);
+            resetState();
+          } else {
+            alert(`Email should not match your current email.`);
+          }
+          setLoading(false);
         } else {
-          alert(`Email should not match your current email.`);
+          alert(`Email is not registered!`);
+          setLoading(false);
         }
       } else {
         alert(`Email already exist!`);
+        setLoading(false);
       }
     }
   };
+
+  const checkUserEmail = async email => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: CHECK_USER_EMAIL_QUERY,
+        variables: { email }
+      });
+      return data.getUserByEmail;
+    } catch (err) {
+      console.log("CheckUserEmail Error", err);
+    }
+  };
+
   if (!isVisible) {
     return <></>;
   }
@@ -114,6 +130,7 @@ export default function index({
         <div>
           <h2>Create a Contact</h2>
           <ContactForm
+            isLoading={isLoading}
             groups={groups}
             contactDetails={contactDetails}
             onSubmit={handleSubmit}

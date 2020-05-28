@@ -31,13 +31,17 @@ const ContactFormStyled = styled.form`
       width: ${({ theme }) => theme.button.width.primary};
     }
   }
+  .disabled {
+    background-color: gray !important;
+  }
 `;
 export default function ContactForm({
   contactDetails,
   groups,
   isVisible,
   onSubmit,
-  handleContactDetailsChange
+  handleContactDetailsChange,
+  isLoading = false
 }) {
   const [groupOptions, setGroupOptions] = useState([]);
   const { register, handleSubmit, errors } = useForm({
@@ -194,77 +198,7 @@ export default function ContactForm({
           />
         </div>
       </div>
-      {/* <input
-        placeholder="First name"
-        name="first_name"
-        value={contactDetails.first_name}
-        onChange={({ target }) => {
-          handleContactDetailsChange("first_name", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.first_name}
-        errorType="required"
-        message="First  name is required."
-      />
-      <input
-        placeholder="Last name"
-        name="last_name"
-        value={contactDetails.last_name}
-        onChange={({ target }) => {
-          handleContactDetailsChange("last_name", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.last_name}
-        errorType="required"
-        message="Last  name is required."
-      />
-      <input
-        placeholder="Phone number"
-        name="phone_number"
-        value={contactDetails.phone_number}
-        onChange={({ target }) => {
-          handleContactDetailsChange("phone_number", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.phone_number}
-        errorType="required"
-        message="Phone number is required."
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        name="email"
-        value={contactDetails.email}
-        onChange={({ target }) => {
-          handleContactDetailsChange("email", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.email}
-        errorType="required"
-        message="Email is required."
-      />
-      <input
-        placeholder="Relation"
-        name="relation"
-        value={contactDetails.relation}
-        onChange={({ target }) => {
-          handleContactDetailsChange("relation", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.relation}
-        errorType="required"
-        message="Relation is required."
-      /> */}
+
       <div>
         <p>Assign to existing group</p>
         {/* {groups.map(group => (
@@ -292,7 +226,9 @@ export default function ContactForm({
           closeIcon="cancel"
         />
       </div>
-      <button type="submit">Save</button>
+      <button className={isLoading ? "disabled" : ""} type="submit">
+        {isLoading ? "Saving..." : "Save"}
+      </button>
     </ContactFormStyled>
   );
 }

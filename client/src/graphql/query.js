@@ -117,3 +117,12 @@ export const GRADES_QUERY = gql`
     }
   }
 `;
+
+export const CHECK_USER_EMAIL_QUERY = gql`
+  query getUserByEmail($email: String!) {
+    getUserByEmail(email: $email) {
+      status
+      is_exist
+    }
+  }
+`;
