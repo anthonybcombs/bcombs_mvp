@@ -78,6 +78,25 @@ export const EDIT_CALENDAR_MUTATON = gql`
   }
 `;
 
+export const CLONE_CALENDAR_MUTATION = gql`
+  mutation cloneCalendar($calendar: CalendarInput!) {
+    cloneCalendar(calendar: $calendar) {
+      status {
+        messageType
+        message
+      }
+      calendar {
+        id
+        user_id
+        name
+        color
+        visibilityType
+        image
+      }
+    }
+  }
+`;
+
 export const DELETE_CALENDAR_MUTATION = gql`
   mutation deleteCalendar($calendar: CalendarInput!) {
     deleteCalendar(calendar: $calendar) {

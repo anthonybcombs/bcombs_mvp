@@ -332,14 +332,6 @@ const CalendarCard = ({
         !publicView &&
         auth.user_id === calendar.user_id && (
           <div id="buttons">
-            <FontAwesomeIcon
-              icon={faEdit}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedCalendar(calendar);
-                toggleEditCalendarModal(true);
-              }}
-            />
             {calendar.visibilityType === "Public" && (
               <FontAwesomeIcon
                 icon={faShareAltSquare}
@@ -358,6 +350,14 @@ const CalendarCard = ({
                 }}
               />
             )}
+            <FontAwesomeIcon
+              icon={faEdit}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedCalendar(calendar);
+                toggleEditCalendarModal(true);
+              }}
+            />
             <FontAwesomeIcon
               icon={faTrashAlt}
               onClick={(e) => {

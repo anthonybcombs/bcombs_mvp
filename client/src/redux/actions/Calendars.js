@@ -6,6 +6,7 @@ import {
   CREATE_CALENDAR_MUTATION,
   EDIT_CALENDAR_MUTATON,
   DELETE_CALENDAR_MUTATION,
+  CLONE_CALENDAR_MUTATION,
 } from "../../graphql/mutation";
 import { getEvents } from "./Events";
 import { getContact } from "./Contacts";
@@ -45,6 +46,20 @@ const deleteCalendarInDatabase = ({ creds, info }) => {
         variables: { calendar: { creds, info } },
       });
       resolve(data.deleteCalendar.calendar);
+    } catch (error) {
+      console.log(error);
+      reject("error");
+    }
+  });
+};
+const cloneCalendarInDatabase = ({ creds, info }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: CLONE_CALENDAR_MUTATION,
+        variables: { calendar: { creds, info } },
+      });
+      resolve("success");
     } catch (error) {
       console.log(error);
       reject("error");
@@ -121,7 +136,13 @@ export const requestCalendar = (id) => {
     id,
   };
 };
-
+export const requestCloneCelander = (calendar) => {
+  delete calendar.user_id;
+  return {
+    type: actionType.REQUEST_CLONE_CALENDAR,
+    calendar,
+  };
+};
 export function* addCalendar({
   name,
   familyMembers,
@@ -160,6 +181,7 @@ export function* gotCalendars() {
     actionType.REQUEST_ADD_CALENDAR_COMPLETED,
     actionType.REQUEST_DELETE_CALENDAR_COMPLETED,
     actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
+    actionType.REQUEST_CLONE_CALENDAR_COMPLETED,
   ]);
   const calendars = yield call(getCalendarsFromDatabase, {
     access_token: sessionStorage.getItem("access_token"),
@@ -252,6 +274,28 @@ export function* deleteCalendar({
     payload: {
       id: calendar.id,
     },
+  });
+  // yield put({
+  //   type: actionType.REQUEST_STATUS_COMPLETED,
+  //   payload: {
+  //     messageType: "info",
+  //     message: "deleted calendar.",
+  //   },
+  // });
+}
+export function* clonedCalendar({ calendar }) {
+  yield call(cloneCalendarInDatabase, {
+    creds: {
+      access_token: sessionStorage.getItem("access_token"),
+      token_type: sessionStorage.getItem("token_type"),
+    },
+    info: {
+      ...calendar,
+    },
+  });
+  yield put(requestCalendars());
+  yield put({
+    type: actionType.REQUEST_CLONE_CALENDAR_COMPLETED,
   });
   // yield put({
   //   type: actionType.REQUEST_STATUS_COMPLETED,
