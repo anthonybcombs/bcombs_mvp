@@ -223,8 +223,38 @@ export const getUserEvents = async (email, calendars = []) => {
           user_calendars_follow.is_following = 1 AND
           user_calendars.user_id = events.user_id AND
           users.id = UUID_TO_BIN(?)
+
+        UNION 
+          SELECT		 
+		        DISTINCT BIN_TO_UUID(events.id) as id,
+            BIN_TO_UUID(event_calendar.calendar_id) as calendar_id,
+            BIN_TO_UUID(events.user_id) as user_id,
+            events.name,
+            events.description,
+            events.status,
+            events.type,
+            events.start_of_event,
+            events.end_of_event,
+            events.location ,
+            events.visibility,
+            events.recurring,
+            events.recurring_end_date,
+            user_calendars.color
+          FROM events ,event_calendar, event_visibility,\`groups\` as gr, group_members, user_calendars,users
+          WHERE 
+			      events.id = event_calendar.event_id AND
+            event_visibility.event_id = event_calendar.event_id AND
+			      event_visibility.event_id=events.id AND
+			      event_visibility.group_id = gr.id AND
+			      gr.id = group_members.group_id AND
+			      group_members.user_id = users.id  AND
+            event_calendar.calendar_id = user_calendars.id AND
+            user_calendars.user_id = events.user_id AND
+            events.visibility = 'custom' AND
+			      users.id = UUID_TO_BIN(?)
         ;`,
         [
+          currentUser.id,
           currentUser.id,
           currentUser.id,
           currentUser.id,
