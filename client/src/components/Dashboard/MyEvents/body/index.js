@@ -1,5 +1,13 @@
 import React from "react";
-import { format, getMonth } from "date-fns";
+import {
+  eachDayOfInterval,
+  format,
+  getMonth,
+  isAfter,
+  getDaysInMonth
+} from "date-fns";
+
+import { getWeekIndex } from "../../../../helpers/datetime";
 const monthList = [
   "January",
   "February",
@@ -14,6 +22,21 @@ const monthList = [
   "November",
   "December"
 ];
+
+const hasEventRecurring = recurring => {
+  return (
+    recurring === "Daily" || recurring === "Weekly" || recurring === "Monthly"
+  );
+};
+
+const getDayInterval = (startDate, endDate) => {
+  return eachDayOfInterval({
+    start: startDate,
+    end: endDate
+  }).map(date => new Date(date));
+};
+
+const DATE = "MM/dd/yyyy";
 export default function index({ events, selectedYear, familyMembers }) {
   const currentYear = format(new Date(), "yyyy");
   return (
@@ -25,13 +48,45 @@ export default function index({ events, selectedYear, familyMembers }) {
           }
           return true;
         })
-        .reverse()
-        .map(month => {
-          const eventThisMonth = events.filter(
-            event =>
+
+        .map((month, index) => {
+          const eventThisMonth = events.filter(event => {
+            if (
+              hasEventRecurring(event.recurring) &&
+              event.recurring_end_date === null &&
+              new Date(event.start_of_event).getMonth() <= index &&
+              format(new Date(event.start_of_event), "yyyy") === selectedYear
+            ) {
+              return true;
+            } else if (
+              hasEventRecurring(event.recurring) &&
+              event.recurring_end_date &&
+              new Date(event.start_of_event).getMonth() <= index &&
+              index <= new Date(event.recurring_end_date).getMonth() &&
+              new Date(event.start_of_event).getMonth() <=
+                new Date(event.recurring_end_date).getMonth() &&
+              format(new Date(event.start_of_event), "yyyy") === selectedYear
+            ) {
+              return true;
+            } else if (
+              event.recurring === "Annually" &&
+              new Date(event.start_of_event).getMonth() === index
+            ) {
+              if (
+                !event.recurring_end_date ||
+                (event.recurring_end_date &&
+                  selectedYear <=
+                    new Date(event.recurring_end_date).getFullYear())
+              ) {
+                return true;
+              }
+            }
+
+            return (
               format(new Date(event.start_of_event), "MMMM") === month &&
               format(new Date(event.start_of_event), "yyyy") === selectedYear
-          );
+            );
+          });
           return (
             <div
               data-testid="app-dashboard-my-events-body-events-month"
@@ -47,6 +102,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                       <th>Event name</th>
                       <th>Date</th>
                       <th>Time</th>
+                      <th>Recurring</th>
                       <th>Location</th>
                       <th>Shared with:</th>
                       <th>Status</th>
@@ -54,14 +110,108 @@ export default function index({ events, selectedYear, familyMembers }) {
                   </thead>
                   <tbody>
                     {eventThisMonth.map(event => {
-                      const startDate = format(
-                        new Date(event.start_of_event),
-                        "MM/dd/yyyy"
-                      );
-                      const endDate = format(
-                        new Date(event.end_of_event),
-                        "MM/dd/yyyy"
-                      );
+                      let startDate = null;
+
+                      if (event.recurring !== "") {
+                        let startDateInMonth = new Date(
+                          `${selectedYear}-${month}-01`
+                        );
+                        let lastDateInMonth = new Date(
+                          `${selectedYear}-${month}-${getDaysInMonth(
+                            new Date(selectedYear, index)
+                          )}`
+                        );
+
+                        if (event.recurring === "Daily") {
+                          if (event.recurring_end_date === null) {
+                            startDate = `${format(
+                              startDateInMonth,
+                              DATE
+                            )} - ${format(lastDateInMonth, DATE)}`;
+                          } else {
+                            let isLastDayOfMonthAfter = isAfter(
+                              lastDateInMonth,
+                              new Date(event.recurring_end_date)
+                            );
+                            startDate = `${format(
+                              startDateInMonth,
+                              DATE
+                            )} - ${format(
+                              isLastDayOfMonthAfter
+                                ? new Date(event.recurring_end_date)
+                                : lastDateInMonth,
+                              DATE
+                            )}`;
+                          }
+                        } else if (event.recurring === "Weekly") {
+                          let dateRange = getDayInterval(
+                            startDateInMonth,
+                            lastDateInMonth
+                          );
+
+                          startDate = dateRange.filter(date => {
+                            let isLastDayOfMonthAfter =
+                              event.recurring_end_date &&
+                              isAfter(new Date(event.recurring_end_date), date);
+                            return isLastDayOfMonthAfter
+                              ? format(new Date(date), "EEEE") ===
+                                  format(
+                                    new Date(event.start_of_event),
+                                    "EEEE"
+                                  ) && isLastDayOfMonthAfter
+                              : format(new Date(date), "EEEE") ===
+                                  format(
+                                    new Date(event.start_of_event),
+                                    "EEEE"
+                                  );
+                          });
+
+                          console.log("startDateeee", startDate);
+                        } else if (event.recurring === "Monthly") {
+                          let dateRange = getDayInterval(
+                            startDateInMonth,
+                            lastDateInMonth
+                          );
+
+                          let currentWeekIndex = getWeekIndex(
+                            new Date(event.start_of_event).getDate()
+                          );
+
+                          startDate = `${format(
+                            new Date(dateRange[currentWeekIndex]),
+                            DATE
+                          )}`;
+                        } else if (event.recurring === "Annually") {
+                          let dateRange = getDayInterval(
+                            startDateInMonth,
+                            lastDateInMonth
+                          );
+                          let currentWeekIndex = getWeekIndex(
+                            new Date(event.start_of_event).getDate()
+                          );
+
+                          startDate = `${format(
+                            new Date(
+                              `${selectedYear}-${month}-${new Date(
+                                dateRange[currentWeekIndex]
+                              ).getDate()}`
+                            ),
+                            DATE
+                          )}`;
+                        }
+                      } else {
+                        startDate = format(
+                          new Date(event.start_of_event),
+                          DATE
+                        );
+                      }
+
+                      const endDate =
+                        event.recurring &&
+                        event.recurring !== "No Repeat" &&
+                        event.recurring !== ""
+                          ? ""
+                          : format(new Date(event.end_of_event), DATE);
                       const startTime = format(
                         new Date(event.start_of_event),
                         "hh:mm a"
@@ -74,16 +224,27 @@ export default function index({ events, selectedYear, familyMembers }) {
                         <tr className="event-rows" key={event.id}>
                           <td>{event.name}</td>
                           <td>
-                            {startDate}
-
-                            {startDate !== endDate ? ` - ${endDate}` : ""}
+                            {Array.isArray(startDate)
+                              ? startDate.map(date => (
+                                  <div className="week-list">
+                                    {format(date, DATE)}
+                                  </div>
+                                ))
+                              : startDate}
+                            {/* 
+                            {startDate !== endDate && endDate !== ""
+                              ? ` - ${endDate}`
+                              : ""} */}
                           </td>
                           <td>
                             {/* {format(event.eventSchedule[0], "hh:mm a")}-
                             {format(event.eventSchedule[1], "hh:mm a")} */}
                             {startTime}{" "}
-                            {startTime !== endTime ? ` - ${endTime}` : ""}
+                            {startTime !== endTime && event.recurring_end_date
+                              ? ` - ${endTime}`
+                              : ""}
                           </td>
+                          <td>{event.recurring}</td>
                           <td>{event.location}</td>
                           <td>
                             {/* {event.familyMembers.map(eventFamilyMemberId => (
@@ -106,7 +267,8 @@ export default function index({ events, selectedYear, familyMembers }) {
               )}
             </div>
           );
-        })}
+        })
+        .reverse()}
     </div>
   );
 }

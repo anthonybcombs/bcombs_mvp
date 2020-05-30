@@ -111,6 +111,9 @@ const MyEventsStyled = styled.div`
   .event-rows {
     line-height: 120px;
   }
+  .week-list {
+    line-height: 2;
+  }
 `;
 export default function index() {
   //const [contactOptions, setContactOptions] = useState([]);

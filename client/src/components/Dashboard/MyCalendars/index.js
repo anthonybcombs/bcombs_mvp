@@ -11,13 +11,21 @@ const MyCalendarStyled = styled.div`
   margin: 1em;
 `;
 export default function index() {
-  const { auth, calendars, contacts, events, familyMembers } = useSelector(
-    ({ auth, calendars, contacts, events, familyMembers }) => ({
+  const {
+    auth,
+    calendars,
+    contacts,
+    events,
+    familyMembers,
+    groups
+  } = useSelector(
+    ({ auth, calendars, contacts, events, familyMembers, groups }) => ({
       auth,
       calendars,
       contacts,
       events,
-      familyMembers
+      familyMembers,
+      groups
     })
   );
   const dispatch = useDispatch();
