@@ -148,11 +148,15 @@ export default function index({ location }) {
   const handleSetSelectedDate = (date) => {
     setSelectedEvent();
     setSelectedDate(date);
+
+    const sDate = getDate(new Date(date))
+    setHorizontal(sDate);
+    setSliderLabel(`${sDate} - ${(sDate + 1)}`);
   };
   const handleEventSelection = (id) => {
     setSelectedEvent(eventsOnThisDay.filter((event) => event.id === id)[0]);
-
   };
+
   const setCurrentMonth = (month) => {
     //setSelectedMonth(format(month, "MMMM yyyy"));
     setSelectedMonth(month);
@@ -175,10 +179,6 @@ export default function index({ location }) {
   console.log("MY CALENDARS", calendars);
 
   console.log("current month", selectedMonth);
-
-  const handleSelectCalendar = (calendar_id) => {
-
-  }
 
   return (
     <HomeStyled data-testid="app-dashboard-home" theme={theme}>
@@ -299,7 +299,7 @@ export default function index({ location }) {
                       value={horizontal}
                       handleLabel={sliderLabel}
                       onChange={handleChangeHorizontal}
-                      />
+                    />
                   </div>
                 )
               }
