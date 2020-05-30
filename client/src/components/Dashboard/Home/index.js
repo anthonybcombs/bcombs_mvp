@@ -150,8 +150,13 @@ export default function index({ location }) {
     setSelectedDate(date);
 
     const sDate = getDate(new Date(date))
-    setHorizontal(sDate);
-    setSliderLabel(`${sDate} - ${(sDate + 1)}`);
+
+    const maxDate = parseInt(format(endOfDay(endOfMonth(selectedMonth)), "d")) - 1;
+
+    if(sDate < maxDate) {
+      setHorizontal(sDate);
+      setSliderLabel(`${sDate} - ${(sDate + 1)}`);
+    }
   };
   const handleEventSelection = (id) => {
     setSelectedEvent(eventsOnThisDay.filter((event) => event.id === id)[0]);
