@@ -241,19 +241,26 @@ export default function index({
     )
     days = []
   }
+
+  rows.push((
+    <div className="rows">
+      <div className="single-event filler"></div>
+    </div>
+  ))
   const scrollToRef = (ref) => { 
     if(ref && ref.current != null && ref.current.childNodes[0].childNodes[0]) {
       if(scrollValue > 1) {
         let scrollWidth = ref.current.scrollWidth;
-        let childWidth = ref.current.childNodes[0].childNodes[0].offsetWidth;
+        let childWidth = ref.current.childNodes[0].childNodes[0].offsetWidth ;
 
+        console.log("REF REF", ref);
         console.log("childWidth", childWidth);
         // if(scrollValue == parseInt(format(endDate, "d")) - 1) {
         //   ref.current.scrollLeft = ref.current.scrollWidth;
         // } else {
           
         // }
-        ref.current.scrollLeft = Math.abs((childWidth) * (scrollValue - 1));
+        ref.current.scrollLeft = (childWidth) * (scrollValue - 1);
       } else {
         ref.current.scrollLeft = 0;
       }
