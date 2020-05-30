@@ -98,7 +98,7 @@ export default function index({
   selectedCalendar
 }) {
 
-  console.log("SELECTED events ", events);
+  console.log("SELECTED Date date ", selectedDate);
   const myRef = useRef(null)
 
   const [horizontal, setHorizontal] = useState(1);
