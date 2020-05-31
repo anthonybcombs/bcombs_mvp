@@ -116,6 +116,7 @@ const MyEventsStyled = styled.div`
   }
   .event-name {
     max-width: 200px;
+    line-height: 1;
   }
 `;
 export default function index() {
