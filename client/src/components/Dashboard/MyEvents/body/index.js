@@ -149,22 +149,32 @@ export default function index({ events, selectedYear, familyMembers }) {
                             lastDateInMonth
                           );
 
-                          startDate = dateRange.filter(date => {
-                            let isLastDayOfMonthAfter =
-                              event.recurring_end_date &&
-                              isAfter(new Date(event.recurring_end_date), date);
-                            return isLastDayOfMonthAfter
-                              ? format(new Date(date), "EEEE") ===
-                                  format(
-                                    new Date(event.start_of_event),
-                                    "EEEE"
-                                  ) && isLastDayOfMonthAfter
-                              : format(new Date(date), "EEEE") ===
-                                  format(
-                                    new Date(event.start_of_event),
-                                    "EEEE"
-                                  );
-                          });
+                          if (event.recurring_end_date) {
+                            startDate = dateRange.filter(date => {
+                              let isLastDayOfMonthAfter =
+                                event.recurring_end_date &&
+                                isAfter(
+                                  new Date(event.recurring_end_date),
+                                  date
+                                );
+                              return (
+                                isLastDayOfMonthAfter &&
+                                format(new Date(date), "EEEE") ===
+                                  format(new Date(event.start_of_event), "EEEE")
+                              );
+                            });
+                            console.log(
+                              "startDate event.recurring_end_date",
+                              startDate
+                            );
+                          } else {
+                            startDate = dateRange.filter(date => {
+                              return (
+                                format(new Date(date), "EEEE") ===
+                                format(new Date(event.start_of_event), "EEEE")
+                              );
+                            });
+                          }
 
                           console.log("startDateeee", startDate);
                         } else if (event.recurring === "Monthly") {
