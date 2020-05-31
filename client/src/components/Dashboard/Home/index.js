@@ -100,7 +100,9 @@ const HomeStyled = styled.div`
     padding: 0 60px;
     padding-top: 30px;
   }
-
+  .panel-recommendation {
+    position: relative;
+  }
   .controller {
     z-index: 100;
     position: absolute;
@@ -109,7 +111,6 @@ const HomeStyled = styled.div`
     align-items: center;
     display: flex;
   }
-
   .controller span {
     visibility: hidden;
     cursor: pointer;
@@ -124,19 +125,15 @@ const HomeStyled = styled.div`
     border-radius: 50%;
     justify-content: center;
   }
-
   .controller:hover span {
     visibility: visible;
   }
-
   .left-arrow {
     left: 10px;
   }
-
   .right-arrow {
     right: 10px;
   }
-
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 4fr 6fr;
