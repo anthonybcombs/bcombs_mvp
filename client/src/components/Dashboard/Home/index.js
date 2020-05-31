@@ -6,6 +6,8 @@ import {
   faCalendar,
   faBell,
   faPlusCircle,
+  faChevronLeft,
+  faChevronRight
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
 import WelcomeMessage from "./WelcomeMessage";
@@ -24,6 +26,7 @@ import {
   endOfDay,
   getDate
 } from "date-fns";
+import RecommendationSliderStyled from "./RecommendationSlider";
 
 // REDUX ACTIONS
 import { getEvents } from "../../../redux/actions/Events";
@@ -97,6 +100,43 @@ const HomeStyled = styled.div`
     padding: 0 60px;
     padding-top: 30px;
   }
+
+  .controller {
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    align-items: center;
+    display: flex;
+  }
+
+  .controller span {
+    visibility: hidden;
+    cursor: pointer;
+    background: #1b1b1b;
+    opacity: 0.8;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    border-radius: 50%;
+    justify-content: center;
+  }
+
+  .controller:hover span {
+    visibility: visible;
+  }
+
+  .left-arrow {
+    left: 10px;
+  }
+
+  .right-arrow {
+    right: 10px;
+  }
+
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 4fr 6fr;
@@ -150,8 +190,8 @@ export default function index({ location }) {
     setSelectedDate(date);
 
     const sDate = getDate(new Date(date))
-
-    const maxDate = parseInt(format(endOfDay(endOfMonth(selectedMonth)), "d")) - 1;
+;
+    const maxDate = parseInt(format(endOfDay(endOfMonth(selectedMonth)), "d"));
 
     if(sDate < maxDate) {
       setHorizontal(sDate);
@@ -173,13 +213,15 @@ export default function index({ location }) {
     //setSliderLabel(`${value}`);
   }
 
-  let currDate = getDate(new Date());
+  const [recommendationScroll, setRecommendationScroll] = useState(0);
 
-  console.log("CURRENT DATE", currDate);
+  const currDate = getDate(new Date());
+
+  const maxDate = parseInt(format(endOfDay(endOfMonth(new Date())), "d"));
 
   const [horizontal, setHorizontal] = useState(currDate);
   
-  const [sliderLabel, setSliderLabel] = useState(`${currDate} - ${(currDate + 1)}`);
+  const [sliderLabel, setSliderLabel] = useState((currDate < maxDate) ? `${currDate} - ${(currDate + 1)}` : `${currDate - 1} - ${(currDate)}`);
 
   console.log("MY CALENDARS", calendars);
 
@@ -315,8 +357,28 @@ export default function index({ location }) {
             <h3 data-testid="app-dashboard-home-sub-header-recommendations">
               Recommendations
             </h3>
-            <div className="panel">
-              <div className="panel-body">Sample recommendations</div>
+            <div className="panel-recommendation">
+              <RecommendationSliderStyled 
+                scrollValue={recommendationScroll}
+              />
+              <div className="controller left-arrow">
+                <span onClick={(e) => {
+                  if(recommendationScroll > 0) {
+                    setRecommendationScroll(recommendationScroll - 1);
+                  }
+                }}>
+                  <FontAwesomeIcon icon={faChevronLeft}/>
+                </span>
+              </div>
+              <div className="controller right-arrow">
+                <span onClick={(e) => {
+                  if(recommendationScroll < 10) {
+                    setRecommendationScroll(recommendationScroll + 1);
+                  }
+                }}>
+                  <FontAwesomeIcon icon={faChevronRight}/>
+                </span>
+              </div>
             </div>
           </div>
         </div>
