@@ -163,10 +163,6 @@ export default function index({ events, selectedYear, familyMembers }) {
                                   format(new Date(event.start_of_event), "EEEE")
                               );
                             });
-                            console.log(
-                              "startDate event.recurring_end_date",
-                              startDate
-                            );
                           } else {
                             startDate = dateRange.filter(date => {
                               return (
@@ -232,7 +228,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                       );
                       return (
                         <tr className="event-rows" key={event.id}>
-                          <td>{event.name}</td>
+                          <td className="event-name">{event.name}</td>
                           <td>
                             {Array.isArray(startDate)
                               ? startDate.map(date => (

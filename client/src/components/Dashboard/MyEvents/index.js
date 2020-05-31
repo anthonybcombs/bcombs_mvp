@@ -114,6 +114,9 @@ const MyEventsStyled = styled.div`
   .week-list {
     line-height: 2;
   }
+  .event-name {
+    max-width: 200px;
+  }
 `;
 export default function index() {
   //const [contactOptions, setContactOptions] = useState([]);
