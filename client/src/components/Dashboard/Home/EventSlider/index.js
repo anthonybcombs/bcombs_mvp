@@ -22,6 +22,7 @@ import {
 import { getWeekIndex } from "../../../../helpers/datetime";
 
 const EventSliderStyled = styled.div`
+  scroll-behavior: smooth;
   overflow-x: hidden;
   max-height: 400px;
 
@@ -252,14 +253,7 @@ export default function index({
       if(scrollValue > 1) {
         let scrollWidth = ref.current.scrollWidth;
         let childWidth = ref.current.childNodes[0].childNodes[0].offsetWidth ;
-
-        console.log("REF REF", ref);
-        console.log("childWidth", childWidth);
-        // if(scrollValue == parseInt(format(endDate, "d")) - 1) {
-        //   ref.current.scrollLeft = ref.current.scrollWidth;
-        // } else {
-          
-        // }
+        
         ref.current.scrollLeft = (childWidth) * (scrollValue - 1);
       } else {
         ref.current.scrollLeft = 0;
