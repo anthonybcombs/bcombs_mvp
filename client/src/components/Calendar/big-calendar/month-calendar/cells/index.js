@@ -29,6 +29,7 @@ const CellsStyled = styled.div`
     font-size: 1em;
     height: 200px;
     width: auto;
+    max-width: 266px;
     cursor: pointer;
     border: 1px solid lightgrey;
   }
