@@ -1,8 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "@reach/router";
 import { useForm } from "react-hook-form";
 import styled, { ThemeContext } from "styled-components";
+import Popover, { ArrowContainer } from "react-tiny-popover";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+
 import ErrorMessage from "../../../helpers/ErrorMessage";
+
 const CreateUserFormStyled = styled.form`
   input:required {
     box-shadow: none;
@@ -24,6 +30,10 @@ const CreateUserFormStyled = styled.form`
     outline: 0;
     margin-top: 2.5em;
     margin-bottom: 2.5em;
+  }
+  #password {
+    width: 95% !important;
+    display: inline-block !important;
   }
   input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
@@ -89,10 +99,30 @@ const CreateUserFormStyled = styled.form`
       grid-gap: 1%;
     }
   }
+
+  .info-icon {
+    margin-left: 0px !important;
+  }
   p.error {
     text-align: center;
     font-size: 1.3em;
     color: red;
+  }
+`;
+
+const PopoverStyled = styled.div`
+  background: white;
+  padding: 5px;
+  border: 1px solid lightgrey;
+  a {
+    display: block;
+    color: grey;
+    text-decoration: none;
+    cursor: pointer;
+    margin: 1em;
+  }
+  svg {
+    margin-right: 1em;
   }
 `;
 export default function Form({
@@ -104,6 +134,7 @@ export default function Form({
   userTypes
 }) {
   const theme = useContext(ThemeContext);
+  const [isPopoverOpen, setPopOverOpen] = useState(false);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
@@ -129,6 +160,9 @@ export default function Form({
         ))}
       </div>
       {status && status.message && <p className="error">{status.message}</p>}
+      <br />
+      <br />
+
       <input
         type="text"
         id="username"
@@ -180,42 +214,81 @@ export default function Form({
         errorType="required"
         message="Email is required."
       />
-      <input
-        type="password"
-        id="password"
-        name="password"
-        data-testid="app-create-input-password"
-        placeholder="Password"
-        onChange={({ target }) => {
-          handleInputChange("password", target.value);
-        }}
-        ref={register({
-          required: true,
-          minLength: 8,
-          validate: {
-            containsOneUpperCase: value => {
-              const oneUpperCaseRegex = /(?=.*[A-Z])/;
-              return oneUpperCaseRegex.test(value);
-            },
-            containsOneLowerCase: value => {
-              const oneLowerCaseRegex = /(?=.*[a-z])/;
-              return oneLowerCaseRegex.test(value);
-            },
-            containsOneNumber: value => {
-              const oneNumberRegex = /(?=.*\d)/;
-              return oneNumberRegex.test(value);
-            },
-            containsOneSpecialCharacter: value => {
-              const oneSpecialCharacterRegex = /(?=.*[@#$%^&+=])/;
-              return oneSpecialCharacterRegex.test(value);
+
+      <div>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          data-testid="app-create-input-password"
+          placeholder="Password"
+          onChange={({ target }) => {
+            handleInputChange("password", target.value);
+          }}
+          ref={register({
+            required: true,
+            minLength: 8,
+            validate: {
+              containsOneUpperCase: value => {
+                const oneUpperCaseRegex = /(?=.*[A-Z])/;
+                return oneUpperCaseRegex.test(value);
+              },
+              containsOneLowerCase: value => {
+                const oneLowerCaseRegex = /(?=.*[a-z])/;
+                return oneLowerCaseRegex.test(value);
+              },
+              containsOneNumber: value => {
+                const oneNumberRegex = /(?=.*\d)/;
+                return oneNumberRegex.test(value);
+              },
+              containsOneSpecialCharacter: value => {
+                const oneSpecialCharacterRegex = /(?=.*[@#$%^&+=])/;
+                return oneSpecialCharacterRegex.test(value);
+              }
+              // passwordRequirement: value => {
+              //   const passworRequirementRegex = /^(?=.{10,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/;
+              //   return passworRequirementRegex.test(value);
+              // }
             }
-            // passwordRequirement: value => {
-            //   const passworRequirementRegex = /^(?=.{10,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/;
-            //   return passworRequirementRegex.test(value);
-            // }
-          }
-        })}
-      />
+          })}
+        />
+
+        <Popover
+          isOpen={isPopoverOpen}
+          position={"right"}
+          padding={10}
+          onClickOutside={() => setPopOverOpen(false)}
+          content={({ position, targetRect, popoverRect }) => (
+            <ArrowContainer
+              position={position}
+              targetRect={targetRect}
+              popoverRect={popoverRect}
+              arrowColor="lightgrey"
+              arrowSize={7}
+              arrowStyle={{ opacity: 1 }}
+              arrow="center">
+              <PopoverStyled>
+                * Password minimum length must be at least 8 characters.
+                <br />
+                * Must contain atleast one upper case.
+                <br />
+                * Must contain atleast one lower case.
+                <br />
+                * Must contain atleast one number.
+                <br />* Must contain atleast one special character.
+              </PopoverStyled>
+            </ArrowContainer>
+          )}>
+          <FontAwesomeIcon
+            className="info-icon"
+            onClick={() => {
+              setPopOverOpen(true);
+            }}
+            icon={faInfoCircle}
+          />
+        </Popover>
+      </div>
+
       <ErrorMessage
         field={errors.password}
         errorType="required"
