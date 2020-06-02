@@ -10,7 +10,6 @@ const LoginStyled = styled.div`
   display: block;
   margin: 0 auto;
   background-color: white;
-  width: 50%;
   padding: 20px;
   height: auto;
   overflow: auto;
@@ -40,6 +39,13 @@ const LoginStyled = styled.div`
       font-weight: bold;
     }
   }
+
+  @media (max-width: 768px) {
+    width: 80%;
+  }
+  @media (min-width: 769px) {
+    width: 50%;
+  }
 `;
 export default function index(props) {
   const [userDetails, setUserDetails] = useState({ email: "", password: "" });
@@ -51,7 +57,7 @@ export default function index(props) {
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
-  const handleFormSubmit = (values) => {
+  const handleFormSubmit = values => {
     dispatch(requestAuth(userDetails));
   };
   if (auth.hasOwnProperty("sub") && auth.email_verified) {
@@ -61,14 +67,14 @@ export default function index(props) {
     webAuth.authorize({
       connection: "facebook",
       responseType: "token",
-      redirectUri: `${process.env.HOST}/sociallanding`,
+      redirectUri: `${process.env.HOST}/sociallanding`
     });
   };
   const handleGoogleSignIn = () => {
     webAuth.authorize({
       connection: "google-oauth2",
       responseType: "token",
-      redirectUri: `${process.env.HOST}/sociallanding`,
+      redirectUri: `${process.env.HOST}/sociallanding`
     });
   };
   return (

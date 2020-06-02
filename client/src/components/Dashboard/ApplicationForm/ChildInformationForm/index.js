@@ -19,6 +19,10 @@ const ChildInfomationFormStyled = styled.div`
     margin-bottom: 30px;
   }
 
+  .img-profile-wrapper img {
+    border-radius: 50%;
+  }
+
   .child-info-wrapper .grid {
     display: grid;
     grid-template-columns: 31% 31% 31%;
@@ -120,6 +124,23 @@ export default function index({
     return arr;
   }
 
+  const [imagePreview, setImagePreview] = useState(ProfileImg);
+
+  const handleFileChange = (event) => {
+    console.log("event.target.files", event.target.files);
+
+    let reader = new FileReader();
+
+    reader.onloadend = () => {
+      console.log("setImagePreview", reader.result);
+      setImagePreview(reader.result);
+    };
+
+    reader.readAsDataURL(event.target.files[0]);
+  };
+
+  const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
+
   const years = range(1990, new Date().getFullYear());
   const months = [
     "January",
@@ -152,8 +173,8 @@ export default function index({
       <h3 className="heading">Child Information {counter > 1 ? `(${counter})` : ``}</h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">
-            <img src={ProfileImg} width="80" height="80" />
-            {!isReadonly && <input name={"ch_img" + (counter - 1)} type="file"/> }
+            <img src={imagePreview} width="80" height="80"/>
+            {!isReadonly && <input name={"ch_img" + (counter - 1)} onChange={handleFileChange} type="file"/> }
           </div>
         <div className="grid">
           <div className="form-group">
@@ -502,6 +523,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                type="email"
                 name="ch_email_address"
                 className="field-input"
                 placeholder="Email Address"
@@ -547,6 +569,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  type="email"
                   name="ch_email_address2"
                   className="field-input"
                   placeholder="Email Address"

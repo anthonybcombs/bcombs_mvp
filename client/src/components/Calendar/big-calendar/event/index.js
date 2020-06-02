@@ -42,13 +42,14 @@ const EventStyled = styled.div`
     color: black !important;
   }
 `;
+//  overflow: auto;
 const EventPopOverStyled = styled.div`
   background-color: white;
   border: 2px solid lightgrey;
   color: black;
   padding: 5px;
-  width: 300px;
-  overflow: auto;
+  max-width: 300px;
+
   input:required {
     box-shadow: none;
   }
@@ -90,6 +91,7 @@ const EventPopOverStyled = styled.div`
   }
   #event-details {
     padding: 0 0.5em 0 0.5em;
+    word-break: break-word;
   }
   #event-controls {
     grid-template-columns: 24% 24% 24% 29%;
@@ -276,7 +278,6 @@ export default function index({
           opacity: isEventOver < 0 && !isToday(day) ? 0.5 : 1
         }}
         onClick={() => {
-       
           setVisibility(!isVisible);
         }}>
         <EditEvent
@@ -294,7 +295,15 @@ export default function index({
           toggleDuplicateEventModal={toggleDuplicateEventModal}
         />
         <div className={`${isVisible ? "selected" : ""}`} id="event-name">
-          <span> {event.name}</span>
+          <div
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}>
+            {" "}
+            {event.name}
+          </div>
           {event.multi_color &&
             event.multi_color.map(
               (color, index) =>

@@ -111,6 +111,19 @@ const MyEventsStyled = styled.div`
   .event-rows {
     line-height: 120px;
   }
+  .week-list {
+    display: block;
+    line-height: 2;
+  }
+  .event-name {
+    max-width: 200px;
+    line-height: 1;
+  }
+  #eventTableContainer .exUtkZ div:first-child {
+    white-space: none !important;
+    overflow: none !important;
+    text-overflow: none !important;
+  }
 `;
 export default function index() {
   //const [contactOptions, setContactOptions] = useState([]);

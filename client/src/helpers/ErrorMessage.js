@@ -1,9 +1,19 @@
 import React from "react";
 
-export default function ErrorMessage({ field, errorType, message }) {
+export default function ErrorMessage({
+  className = "",
+  field,
+  errorType,
+  message
+}) {
   return (
     <>
-      {field && field.type === errorType && <p className="error">{message}</p>}
+      {typeof message === "string"
+        ? field &&
+          field.type === errorType && (
+            <p className={`error ${className}`}>{message}</p>
+          )
+        : field && <div className={`error ${className}`}>{message}</div>}
     </>
   );
 }
