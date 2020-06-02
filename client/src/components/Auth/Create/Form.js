@@ -136,10 +136,11 @@ export default function Form({
   const theme = useContext(ThemeContext);
   const [isPopoverOpen, setPopOverOpen] = useState(false);
   const { register, handleSubmit, errors } = useForm({
-    mode: "onSubmit",
+    mode: "onBlur",
     reValidateMode: "onChange"
   });
   const { type } = userDetails;
+  console.log("TESTTTTTTTTTTTTTTTTTTTTTTTTT");
   return (
     <CreateUserFormStyled
       data-testid="app-create-form"
@@ -175,15 +176,16 @@ export default function Form({
         ref={register({
           required: true,
           minLength: 5,
+          //pattern: /^(([0-9][A-z]+)|([A-z]+))$/
           validate: {
             alphanumeric: value => {
-              const alphaExp = /^[a-zA-Z0-9_]{5,}[a-zA-Z]+[0-9]*$/;
+              const alphaExp = /^[0-9]{0,9}(?=.*[a-z])+$|^[a-zA-Z]*$/;
               return alphaExp.test(value);
             }
           }
         })}
       />
-      <ErrorMessage
+      {/* <ErrorMessage
         field={errors.username}
         errorType="required"
         message="Username is required."
@@ -192,11 +194,27 @@ export default function Form({
         field={errors.username}
         errorType="minLength"
         message="Username minimum length must be at least 5 characters."
-      />
+      /> */}
       <ErrorMessage
         field={errors.username}
         errorType="alphanumeric"
-        message="Username must be alphanumeric."
+        message={
+          <>
+            <p className="error">Username is required.</p>
+            <p className="error">
+              Username either must be alphanumeric or alphabet.
+            </p>
+            <p className="error">
+              Alphanumeric format must be NUMBER LETTER format in order.
+            </p>
+            <p className="error">
+              Number in username has a maximum length of 9.
+            </p>
+            <p className="error">
+              Username minimum length must be at least 5 characters
+            </p>
+          </>
+        }
       />
       <input
         type="email"
@@ -242,7 +260,7 @@ export default function Form({
                 return oneNumberRegex.test(value);
               },
               containsOneSpecialCharacter: value => {
-                const oneSpecialCharacterRegex = /(?=.*[@#$%^&+=])/;
+                const oneSpecialCharacterRegex = /(?=.*[!@#$%^&+=])/;
                 return oneSpecialCharacterRegex.test(value);
               }
               // passwordRequirement: value => {
@@ -288,8 +306,24 @@ export default function Form({
           />
         </Popover>
       </div>
-
       <ErrorMessage
+        field={errors.password}
+        errorType="alphanumeric"
+        message={
+          <>
+            <p className="error">Password is required.</p>
+            <p className="error">
+              Password minimum length must be at least 8 characters.
+            </p>
+            <p className="error">Must contain atleast one upper case.</p>
+            <p className="error">Must contain atleast one lower case.</p>
+            <p className="error">Must contain atleast one number.</p>
+
+            <p className="error">Must contain atleast one special character.</p>
+          </>
+        }
+      />
+      {/* <ErrorMessage
         field={errors.password}
         errorType="required"
         message="Password is required."
@@ -318,7 +352,7 @@ export default function Form({
         field={errors.password}
         errorType="containsOneSpecialCharacter"
         message={"Must contain atleast one special character."}
-      />
+      /> */}
       <input
         type="password"
         id="confirm_password"
@@ -336,7 +370,7 @@ export default function Form({
           }
         })}
       />
-      <ErrorMessage
+      {/* <ErrorMessage
         field={errors.confirm_password}
         errorType="required"
         message="Confirm password is required."
@@ -345,7 +379,7 @@ export default function Form({
         field={errors.confirm_password}
         errorType="minLength"
         message="Confirm password minimum length must be at least 8 characters."
-      />
+      /> */}
       <ErrorMessage
         field={errors.confirm_password}
         errorType="sameConfirmPassword"
