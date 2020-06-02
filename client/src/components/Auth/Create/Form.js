@@ -387,6 +387,7 @@ export default function Form({
         message="Confirm password minimum length must be at least 8 characters."
       /> */}
       <ErrorMessage
+        className="error-size"
         field={errors.confirm_password}
         errorType="sameConfirmPassword"
         message="The passwords do not match."
