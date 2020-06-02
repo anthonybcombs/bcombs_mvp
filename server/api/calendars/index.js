@@ -40,7 +40,9 @@ export const getCalendar = async ({ id }) => {
             return group.group_id;
           });
           calendar.email = user[0].email;
-          calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${calendar.id}/calendarBackground.jpg`;
+          calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${
+            calendar.id
+          }/calendarBackground.jpg?${Date.now()}`;
           calendars.push(calendar);
         } catch (error) {
           reject([]);
@@ -101,7 +103,9 @@ export const getCalendars = async (creds) => {
           calendar.groups = calendarGroups.map(async (group) => {
             return group.group_id;
           });
-          calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${calendar.id}/calendarBackground.jpg`;
+          calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${
+            calendar.id
+          }/calendarBackground.jpg?${Date.now()}`;
           calendars.push(calendar);
         } catch (error) {
           reject([]);
@@ -289,7 +293,6 @@ export const executeEditCalendar = async (calendar) => {
                 [calendar.info.id, contact.user_id, groupId]
               );
               if (userCalendarFollowRows[0].is_following === 0) {
-                console.log("sending?");
                 await sendToUserShareCalendarConfirmation({
                   calendar: calendar.info,
                   recipient: contact,
@@ -373,6 +376,11 @@ export const executeDeleteCalendar = async (calendar) => {
       "DELETE FROM user_calendars_follow WHERE calendar_id=UUID_TO_BIN(?)",
       [calendar.info.id]
     );
+
+    // await db.query(
+    //   "DELETE FROM event_attendee where user_id=UUID_TO_BIN(?) AND ",
+    //   UserInfo.user_id
+    // );
     return {
       status: {
         messageType: "info",
@@ -400,14 +408,76 @@ export const executeDeleteCalendar = async (calendar) => {
 };
 
 export const executeCloneCalendar = async (calendar) => {
+  const db = await makeDb();
   try {
-    const options = {
-      uri: calendar.info.image,
-      encoding: "base64",
-    };
-    const body = await rp(options);
-    calendar.info.image = body;
-    return await executeCreateCalendar(calendar);
+    // const options = {
+    //   uri: calendar.info.image,
+    //   encoding: "base64",
+    // };
+    // const body = await rp(options);
+    // calendar.info.image = body;
+    const createdCalendarResponse = await executeCreateCalendar(calendar);
+    const calendarEvents = await db.query(
+      "SELECT BIN_TO_UUID(id) as id,image,name,description,location,category,start_of_event,end_of_event,status,type,BIN_TO_UUID(user_id) as user_id,date_added,`time`,visibility,recurring,recurring_end_date  FROM events ev INNER JOIN event_calendar ec ON ev.id=ec.event_id WHERE ec.calendar_id=UUID_TO_BIN(?)",
+      [calendar.info.id]
+    );
+    calendarEvents.forEach(async (event) => {
+      const dbEvents = await makeDb();
+      try {
+        await dbEvents.query(
+          "INSERT INTO bcombs.events (id, image, name, description, location, category, start_of_event, end_of_event, status, `type`, user_id, `time`, visibility, recurring, recurring_end_date) VALUES(UUID_TO_BIN(UUID()), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UUID_TO_BIN(?), ?, ?, ?)",
+          [
+            event.image,
+            event.name,
+            event.description,
+            event.location,
+            event.category,
+            event.start_of_event,
+            event.end_of_event,
+            event.status,
+            event.type,
+            createdCalendarResponse.calendar.user_id,
+            event.time,
+            event.visibility,
+            event.recurring,
+            event.recurring_end_date,
+          ]
+        );
+        //event attendee
+        // const eventAttendees = await dbEvents.query(
+        //   "SELECT UUID_TO_BIN(event_id) as event_id,status FROM event_attendee WHERE event_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?)",
+        //   [event.id, createdCalendarResponse.calendar.user_id]
+        // );
+        // eventAttendees.forEach(async (eventAttendee) => {
+        //   const dbAventee = await makeDb();
+        //   try {
+        //     console.log(eventAttendee);
+        //     await dbAventee.query(
+        //       "INSERT INTO event_attendee (event_id, user_id, status, date_created) VALUES(UUID_TO_BIN(?), UUID_TO_BIN(?), ?, CURRENT_TIMESTAMP)",
+        //       [
+        //         eventAttendee.event_id,
+        //         createdCalendarResponse.calendar.user_id,
+        //         eventAttendee.status,
+        //       ]
+        //     );
+        //   } catch (error) {
+        //     console.log(error);
+        //   } finally {
+        //     await dbAventee.close();
+        //   }
+        // });
+        //event calendar
+        // const eventCalendar = await db1.query(
+        //   "SELECT * FROM event_calendar WHERE event_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?)",
+        //   [event.id, createdCalendarResponse.info.user_id]
+        // );
+      } catch (error) {
+        console.log(error);
+      } finally {
+        await dbEvents.close();
+      }
+    });
+    return createdCalendarResponse;
   } catch (error) {
     console.log(error);
     return {
@@ -415,5 +485,7 @@ export const executeCloneCalendar = async (calendar) => {
       message: "there is an issue in clone calendar endpoint.",
       calendar: {},
     };
+  } finally {
+    await db.close();
   }
 };
