@@ -108,6 +108,9 @@ const CreateUserFormStyled = styled.form`
     font-size: 1.3em;
     color: red;
   }
+  p.error-size {
+    font-size: 14px !important;
+  }
 `;
 
 const PopoverStyled = styled.div`
@@ -179,7 +182,7 @@ export default function Form({
           //pattern: /^(([0-9][A-z]+)|([A-z]+))$/
           validate: {
             alphanumeric: value => {
-              const alphaExp = /^[0-9]{0,9}[a-zA-Z]+$|^[a-zA-Z]*$/;
+              const alphaExp = /^[a-zA-z0-9]+$|^[a-zA-Z]*$/;
               return alphaExp.test(value);
             }
           }
@@ -200,17 +203,11 @@ export default function Form({
         errorType="alphanumeric"
         message={
           <>
-            <p className="error">Username is required.</p>
-            <p className="error">
+            <p className="error error-size">Username is required.</p>
+            <p className="error error-size">
               Username either must be alphanumeric or alphabet.
             </p>
-            <p className="error">
-              Alphanumeric format must be NUMBER LETTER format in order.
-            </p>
-            <p className="error">
-              Number in username has a maximum length of 9.
-            </p>
-            <p className="error">
+            <p className="error error-size">
               Username minimum length must be at least 5 characters
             </p>
           </>
@@ -228,6 +225,7 @@ export default function Form({
         ref={register({ required: true })}
       />
       <ErrorMessage
+        className="error-size"
         field={errors.email}
         errorType="required"
         message="Email is required."
@@ -307,19 +305,26 @@ export default function Form({
         </Popover>
       </div>
       <ErrorMessage
+        className="error-size"
         field={errors.password}
         errorType="required"
         message={
           <>
-            <p className="error">Password is required.</p>
-            <p className="error">
+            <p className="error error-size">Password is required.</p>
+            <p className="error error-size">
               Password minimum length must be at least 8 characters.
             </p>
-            <p className="error">Must contain atleast one upper case.</p>
-            <p className="error">Must contain atleast one lower case.</p>
-            <p className="error">Must contain atleast one number.</p>
+            <p className="error error-size">
+              Must contain atleast one upper case.
+            </p>
+            <p className="error error-size">
+              Must contain atleast one lower case.
+            </p>
+            <p className="error error-size">Must contain atleast one number.</p>
 
-            <p className="error">Must contain atleast one special character.</p>
+            <p className="error error-size">
+              Must contain atleast one special character.
+            </p>
           </>
         }
       />
@@ -371,6 +376,7 @@ export default function Form({
         })}
       />
       <ErrorMessage
+        className="error-size"
         field={errors.confirm_password}
         errorType="required"
         message="Confirm password is required."
