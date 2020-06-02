@@ -179,7 +179,7 @@ export default function Form({
           //pattern: /^(([0-9][A-z]+)|([A-z]+))$/
           validate: {
             alphanumeric: value => {
-              const alphaExp = /^[0-9]{0,9}(?=.*[a-z])+$|^[a-zA-Z]*$/;
+              const alphaExp = /^[0-9]{0,9}[a-zA-Z]+$|^[a-zA-Z]*$/;
               return alphaExp.test(value);
             }
           }
@@ -308,7 +308,7 @@ export default function Form({
       </div>
       <ErrorMessage
         field={errors.password}
-        errorType="alphanumeric"
+        errorType="required"
         message={
           <>
             <p className="error">Password is required.</p>
@@ -370,12 +370,12 @@ export default function Form({
           }
         })}
       />
-      {/* <ErrorMessage
+      <ErrorMessage
         field={errors.confirm_password}
         errorType="required"
         message="Confirm password is required."
       />
-      <ErrorMessage
+      {/* <ErrorMessage
         field={errors.confirm_password}
         errorType="minLength"
         message="Confirm password minimum length must be at least 8 characters."
