@@ -14,7 +14,7 @@ import {
   isAfter,
   getMonth,
   getYear,
-  isBefore
+  isBefore,
 } from "date-fns";
 import Event from "../../event";
 
@@ -97,7 +97,7 @@ export default function index({
   events,
   handleChangeDay,
   setIsEventModalVisible,
-  publicView
+  publicView,
 }) {
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
@@ -113,7 +113,7 @@ export default function index({
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
     let currentDay = new Date(day).getDay();
-    let eventsOnThisDay = events.filter(event => {
+    let eventsOnThisDay = events.filter((event) => {
       let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
       let isBeforeRecurringEndDate = null;
 
@@ -177,12 +177,12 @@ export default function index({
 
       const dateRange = eachDayOfInterval({
         start: new Date(event.start_of_event),
-        end: new Date(event.end_of_event)
+        end: new Date(event.end_of_event),
       });
 
       if (dateRange != undefined) {
         return (
-          dateRange.filter(intervalDate => isSameDay(intervalDate, cloneDay))
+          dateRange.filter((intervalDate) => isSameDay(intervalDate, cloneDay))
             .length > 0
         );
       }
@@ -198,8 +198,8 @@ export default function index({
             multi_color: [
               ...(accumulator[index - 1].multi_color || []),
               accumulator[index - 1].color,
-              item.color
-            ]
+              item.color,
+            ],
           };
           return [...accumulator];
         }
@@ -227,12 +227,12 @@ export default function index({
             handleChangeDay(toDate(cloneDay));
           }
         }}
-        onDoubleClick={e => {
+        onDoubleClick={(e) => {
           let isAllCalendarOwned =
             selectedCalendars.length > 0 &&
-            selectedCalendars.every(id => {
+            selectedCalendars.every((id) => {
               return calendars.find(
-                cal => cal.id === id && auth.user_id === cal.user_id
+                (cal) => cal.id === id && auth.user_id === cal.user_id
               );
             });
           console.log("isAllCalendarOwned", isAllCalendarOwned);
@@ -240,11 +240,13 @@ export default function index({
             handleChangeDay(toDate(cloneDay));
             setIsEventModalVisible(true);
           }
-        }}>
+        }}
+      >
         <span
           className={`day ${
             hasEvents && !isSameDay(day, selectedDate) ? "has-events" : ""
-          }`}>
+          }`}
+        >
           {formattedDate}
         </span>
         <div id="events-list">

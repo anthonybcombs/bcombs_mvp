@@ -137,7 +137,6 @@ export const requestCalendar = (id) => {
   };
 };
 export const requestCloneCelander = (calendar) => {
-  delete calendar.user_id;
   return {
     type: actionType.REQUEST_CLONE_CALENDAR,
     calendar,
