@@ -21,7 +21,7 @@ import Popover, { ArrowContainer } from "react-tiny-popover";
 
 const EventColors = styled.div`
   float: right;
-  margin-top: -5px;
+  margin-top: -23px;
   margin-right: -5px;
   width: 0;
   height: 0;
@@ -145,6 +145,7 @@ export default function index({
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   const toggleEditEventModal = () => {
+  
     setEditEventVisible(!isEditEventVisible);
   };
 
@@ -165,6 +166,7 @@ export default function index({
     eventEndTime = format(new Date(event.end_of_event), "hh:mm a");
     schedule = [format(day, "MMM dd,yyyy "), format(day, "MMM dd,yyyy ")];
   }
+
   return (
     <Popover
       isOpen={isVisible}

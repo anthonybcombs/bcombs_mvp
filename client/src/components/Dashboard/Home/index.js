@@ -14,9 +14,9 @@ import WelcomeMessage from "./WelcomeMessage";
 import SmallCalendar from "../../Calendar/small-calendar/";
 import NewEventModal from "../MyEvents/create/withCalendar";
 import EventSliderStyled from "./EventSlider";
-import Slider from 'react-rangeslider';
-import 'react-rangeslider/lib/index.css';
-import './override-slider.css';
+import Slider from "react-rangeslider";
+import "react-rangeslider/lib/index.css";
+import "./override-slider.css";
 import NotificationStyled from "./Notifications";
 import {
   format,
@@ -156,6 +156,7 @@ export default function index({ location }) {
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedCalendar, setSelectedCalendar] = useState([]);
+  const [calendarOptions, setCalendarOptions] = useState([]);
   const { events, auth, calendars } = useSelector(
     ({ events, auth, calendars }) => {
       return { events, calendars, auth };
@@ -171,44 +172,53 @@ export default function index({ location }) {
     }
   }, [auth]);
 
+  useEffect(() => {
+    if (calendars) {
+      let calendar = [];
+      calendar[0] = calendars[0]
+        ? calendars[0].filter(cal => cal.user_id === auth.user_id)
+        : [];
+      setCalendarOptions(calendar);
+    }
+  }, [calendars]);
+
   const theme = useContext(ThemeContext);
   let calendarName = "";
   if (sessionStorage.getItem("calendarName") !== null) {
     calendarName = sessionStorage.getItem("calendarName");
   }
   const eventsOnThisDay = events.filter(
-    (event) =>
+    event =>
       format(new Date(event.start_of_event), "MM dd yyyy") ===
       format(selectedDate, "MM dd yyyy")
   );
-  
-  const handleSetSelectedDate = (date) => {
+
+  const handleSetSelectedDate = date => {
     setSelectedEvent();
     setSelectedDate(date);
 
-    const sDate = getDate(new Date(date))
-;
+    const sDate = getDate(new Date(date));
     const maxDate = parseInt(format(endOfDay(endOfMonth(selectedMonth)), "d"));
 
-    if(sDate < maxDate) {
+    if (sDate < maxDate) {
       setHorizontal(sDate);
-      setSliderLabel(`${sDate} - ${(sDate + 1)}`);
+      setSliderLabel(`${sDate} - ${sDate + 1}`);
     }
   };
-  const handleEventSelection = (id) => {
-    setSelectedEvent(eventsOnThisDay.filter((event) => event.id === id)[0]);
+  const handleEventSelection = id => {
+    setSelectedEvent(eventsOnThisDay.filter(event => event.id === id)[0]);
   };
 
-  const setCurrentMonth = (month) => {
+  const setCurrentMonth = month => {
     //setSelectedMonth(format(month, "MMMM yyyy"));
     setSelectedMonth(month);
   };
 
-  const handleChangeHorizontal = (value) => {
+  const handleChangeHorizontal = value => {
     setHorizontal(value);
-    setSliderLabel(`${value} - ${(value + 1)}`);
+    setSliderLabel(`${value} - ${value + 1}`);
     //setSliderLabel(`${value}`);
-  }
+  };
 
   const [recommendationScroll, setRecommendationScroll] = useState(0);
 
@@ -217,8 +227,12 @@ export default function index({ location }) {
   const maxDate = parseInt(format(endOfDay(endOfMonth(new Date())), "d"));
 
   const [horizontal, setHorizontal] = useState(currDate);
-  
-  const [sliderLabel, setSliderLabel] = useState((currDate < maxDate) ? `${currDate} - ${(currDate + 1)}` : `${currDate - 1} - ${(currDate)}`);
+
+  const [sliderLabel, setSliderLabel] = useState(
+    currDate < maxDate
+      ? `${currDate} - ${currDate + 1}`
+      : `${currDate - 1} - ${currDate}`
+  );
 
   console.log("MY CALENDARS", calendars);
 
@@ -231,9 +245,11 @@ export default function index({ location }) {
       )}
       <NewEventModal
         auth={auth}
+        calendars={calendarOptions}
         isVisible={isNewEventModalVisible}
         toggleCreateEventModal={setIsEventModalVisible}
         defaultSelectedDate={selectedDate}
+        isEventSection={true}
       />
       <h2 data-testid="app-dashboard-home-header">My Calendar</h2>
       <div className="grid">
@@ -254,12 +270,11 @@ export default function index({ location }) {
                 </h3>
               }
               open
-              lazyRender
-            >
+              lazyRender>
               <div className="panel">
                 {calendars &&
-                  calendars.map((calendarGroup) => {
-                    return calendarGroup.map((calendar) => {
+                  calendars.map(calendarGroup => {
+                    return calendarGroup.map(calendar => {
                       return (
                         <div
                           className={`panel-body`}
@@ -269,20 +284,30 @@ export default function index({ location }) {
                           // }}
                         >
                           {calendar.name}
-                          <input 
-                            className="calendar-chbx" 
+                          <input
+                            className="calendar-chbx"
                             type="checkbox"
                             onChange={({ target }) => {
-                              let newFilter = selectedCalendar.filter(c => c == calendar.id);
+                              let newFilter = selectedCalendar.filter(
+                                c => c == calendar.id
+                              );
 
-                              if(newFilter.length > 0) {
-                                let newFilter = selectedCalendar.filter(c => c != calendar.id);
+                              if (newFilter.length > 0) {
+                                let newFilter = selectedCalendar.filter(
+                                  c => c != calendar.id
+                                );
                                 setSelectedCalendar([...newFilter]);
                               } else {
-                                setSelectedCalendar([...selectedCalendar, calendar.id]);
+                                setSelectedCalendar([
+                                  ...selectedCalendar,
+                                  calendar.id
+                                ]);
                               }
                             }}
-                            checked={selectedCalendar.filter(c => c == calendar.id).length <= 0}
+                            checked={
+                              selectedCalendar.filter(c => c == calendar.id)
+                                .length <= 0
+                            }
                           />
                         </div>
                       );
@@ -298,28 +323,21 @@ export default function index({ location }) {
                 </h3>
               }
               open
-              lazyRender
-            >
+              lazyRender>
               <div className="panel">
-                <NotificationStyled 
-                  events={events}
-                />
+                <NotificationStyled events={events} />
               </div>
             </Collapsible>
           </div>
         </div>
         <div>
           <div className="pane">
-            {
-               selectedMonth &&
-              <h3>{format(selectedMonth, "MMMM yyyy")}</h3>
-            }
+            {selectedMonth && <h3>{format(selectedMonth, "MMMM yyyy")}</h3>}
             <button
               id="add-event-button"
               onClick={() => {
                 setIsEventModalVisible(true);
-              }}
-            >
+              }}>
               <FontAwesomeIcon icon={faPlusCircle} size="3x" />
             </button>
 
@@ -333,21 +351,23 @@ export default function index({ location }) {
                 selectedMonth={selectedMonth}
                 selectedCalendar={selectedCalendar}
               />
-              {
-                selectedMonth &&
-                (
-                  <div className="slider custom-labels">
-                    <Slider
-                      min={parseInt(format(startOfDay(startOfMonth(selectedMonth)), "d"))}
-                      max={parseInt(format(endOfDay(endOfMonth(selectedMonth)), "d")) - 1}
-                      value={horizontal}
-                      handleLabel={sliderLabel}
-                      onChange={handleChangeHorizontal}
-                    />
-                  </div>
-                )
-              }
- 
+              {selectedMonth && (
+                <div className="slider custom-labels">
+                  <Slider
+                    min={parseInt(
+                      format(startOfDay(startOfMonth(selectedMonth)), "d")
+                    )}
+                    max={
+                      parseInt(
+                        format(endOfDay(endOfMonth(selectedMonth)), "d")
+                      ) - 1
+                    }
+                    value={horizontal}
+                    handleLabel={sliderLabel}
+                    onChange={handleChangeHorizontal}
+                  />
+                </div>
+              )}
             </div>
           </div>
           <div className="pane">
@@ -355,25 +375,25 @@ export default function index({ location }) {
               Recommendations
             </h3>
             <div className="panel-recommendation">
-              <RecommendationSliderStyled 
-                scrollValue={recommendationScroll}
-              />
+              <RecommendationSliderStyled scrollValue={recommendationScroll} />
               <div className="controller left-arrow">
-                <span onClick={(e) => {
-                  if(recommendationScroll > 0) {
-                    setRecommendationScroll(recommendationScroll - 1);
-                  }
-                }}>
-                  <FontAwesomeIcon icon={faChevronLeft}/>
+                <span
+                  onClick={e => {
+                    if (recommendationScroll > 0) {
+                      setRecommendationScroll(recommendationScroll - 1);
+                    }
+                  }}>
+                  <FontAwesomeIcon icon={faChevronLeft} />
                 </span>
               </div>
               <div className="controller right-arrow">
-                <span onClick={(e) => {
-                  if(recommendationScroll < 10) {
-                    setRecommendationScroll(recommendationScroll + 1);
-                  }
-                }}>
-                  <FontAwesomeIcon icon={faChevronRight}/>
+                <span
+                  onClick={e => {
+                    if (recommendationScroll < 10) {
+                      setRecommendationScroll(recommendationScroll + 1);
+                    }
+                  }}>
+                  <FontAwesomeIcon icon={faChevronRight} />
                 </span>
               </div>
             </div>

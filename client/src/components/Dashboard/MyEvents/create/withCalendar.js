@@ -226,7 +226,7 @@ export default function index({
           ? selectedGroup.map(group => group.id)
           : []
     };
-
+    console.log("ADD EVENT PAYLOAD111", payload);
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
   };
