@@ -11,14 +11,14 @@ const s3BucketRootPath = "https://bcombs.s3.amazonaws.com/";
 // };
 
 const s3Bucket = new AWS.S3({
-  accessKeyId: "AKIAUCPS6O5YQCI56DN7",
-  secretAccessKey: "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",
+  accessKeyId: "AKIAUCPS6O5Y7TZZTQNG",
+  secretAccessKey: "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",
   Bucket: "bcombs",
-  region: "us-east-1"
+  region: "us-east-1",
 });
-export const uploadFile = data => {
+export const uploadFile = (data) => {
   return new Promise((resolve, reject) => {
-    s3Bucket.putObject(data, function(err, data) {
+    s3Bucket.putObject(data, function (err, data) {
       if (err) {
         console.log("Error uploading data: ", data);
         reject("Error uploading data: ", data);

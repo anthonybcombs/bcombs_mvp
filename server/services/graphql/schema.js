@@ -62,6 +62,7 @@ const inputs = `
     }
     input CalendarInfoInput{
         id: String
+        user_id: String
         name: String!
         image: String
         familyMembers:[String],
@@ -556,6 +557,7 @@ const mutations = `
         createCalendar(calendar:CalendarInput!):CalendarType
         editCalendar(calendar:CalendarInput!):CalendarType
         deleteCalendar(calendar:CalendarInput!):CalendarType
+        cloneCalendar(calendar:CalendarInput!):CalendarType
         deleteGroup(id: String!, email:String!): AllGroups
         createEvent(event:EventInput!): [Event]
         updateEvent(event:EventInput!): [Event]

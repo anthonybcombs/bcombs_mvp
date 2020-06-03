@@ -7,21 +7,21 @@ import {
   executeUserUpdate,
   executeGetUser,
   getUserApplication,
-  checkUserEmail
+  checkUserEmail,
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
   createNewContact,
   editContact,
   getContacts,
-  removeContact
+  removeContact,
 } from "../../api/contacts";
 import {
   getUserGroups,
   editGroups,
   removeGroup,
   createNewGroup,
-  getMembers
+  getMembers,
 } from "../../api/groups";
 
 import {
@@ -29,13 +29,14 @@ import {
   executeEditCalendar,
   getCalendars,
   executeDeleteCalendar,
-  getCalendar
+  executeCloneCalendar,
+  getCalendar,
 } from "../../api/calendars";
 import {
   createNewEvent,
   editEvents,
   getUserEvents,
-  removeEvents
+  removeEvents,
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
@@ -46,7 +47,7 @@ import {
   updateApplication,
   archivedApplication,
   unArchivedApplication,
-  getArchivedApplicationsByVendor
+  getArchivedApplicationsByVendor,
 } from "../../api/applications";
 import { addChild, getChildInformation } from "../../api/child";
 import { addParent, getParentByApplication } from "../../api/parents";
@@ -60,10 +61,10 @@ const resolvers = {
     async users(root, args, context) {
       const creds = {
         access_token: args.access_token,
-        token_type: args.token_type
+        token_type: args.token_type,
       };
       const users = await getUsers();
-      return users.filter(user => {
+      return users.filter((user) => {
         if (args.email) {
           return user.email === args.email;
         }
@@ -117,7 +118,7 @@ const resolvers = {
     async vendor(root, { user }, context) {
       const vendors = await getVendors();
       console.log("vendors", vendors);
-      let vendor = vendors.filter(vendor => {
+      let vendor = vendors.filter((vendor) => {
         return user == vendor.user;
       })[0];
 
@@ -174,7 +175,7 @@ const resolvers = {
     async getUserByEmail(root, { email }, context) {
       const response = await checkUserEmail(email);
       return response;
-    }
+    },
   },
   RootMutation: {
     async signUp(root, { user }, context) {
@@ -220,6 +221,9 @@ const resolvers = {
     async deleteCalendar(root, { calendar }, context) {
       return await executeDeleteCalendar(calendar);
     },
+    async cloneCalendar(root, { calendar }, context) {
+      return await executeCloneCalendar(calendar);
+    },
     async createEvent(root, { event }, context) {
       console.log("Eventtttttt", event);
       return await createNewEvent(event);
@@ -253,7 +257,7 @@ const resolvers = {
 
       return {
         messageType: "info",
-        message: "application created"
+        message: "application created",
       };
     },
     async updateApplication(root, { application }, context) {
@@ -263,20 +267,20 @@ const resolvers = {
         if (!response.error) {
           return {
             messageType: "info",
-            message: "application updated"
+            message: "application updated",
           };
         } else {
           console.log("error", response.error);
           return {
             messageType: "error",
-            message: "error application update"
+            message: "error application update",
           };
         }
       } catch (err) {
         console.log("error", err);
         return {
           messageType: "error",
-          message: "error application update"
+          message: "error application update",
         };
       }
     },
@@ -288,23 +292,23 @@ const resolvers = {
           if (response.error) {
             return {
               messageType: "error",
-              message: "error application archived"
+              message: "error application archived",
             };
           }
         }
 
         return {
           messageType: "info",
-          message: "application archived"
+          message: "application archived",
         };
       } catch (err) {
         return {
           messageType: "error",
-          message: "error application archived"
+          message: "error application archived",
         };
       }
-    }
-  }
+    },
+  },
 };
 
 export default resolvers;

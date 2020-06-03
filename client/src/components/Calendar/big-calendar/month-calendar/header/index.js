@@ -12,11 +12,15 @@ import {
   faLongArrowAltLeft,
   faEyeSlash,
   faEye,
+  faClone,
   faShareAltSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
-import { requestDeleteCalendar } from "../../../../../redux/actions/Calendars";
+import {
+  requestDeleteCalendar,
+  requestCloneCelander,
+} from "../../../../../redux/actions/Calendars";
 import { yearList } from "../../../../../helpers/Date";
 import CreateCalendarModal from "../../new-calendar/Create";
 import EditCalendarModal from "../../new-calendar/Edit";
@@ -373,11 +377,10 @@ const CalendarCard = ({
         auth.user_id === calendar.user_id && (
           <div id="buttons">
             <FontAwesomeIcon
-              icon={faEdit}
+              icon={faClone}
               onClick={(e) => {
                 e.stopPropagation();
-                setSelectedCalendar(calendar);
-                toggleEditCalendarModal(true);
+                dispatch(requestCloneCelander(calendar));
               }}
             />
             {calendar.visibilityType === "Public" && (
@@ -398,6 +401,14 @@ const CalendarCard = ({
                 }}
               />
             )}
+            <FontAwesomeIcon
+              icon={faEdit}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedCalendar(calendar);
+                toggleEditCalendarModal(true);
+              }}
+            />
             <FontAwesomeIcon
               icon={faTrashAlt}
               onClick={(e) => {

@@ -38,6 +38,8 @@
     "randomcolor": "^0.5.4",
     "redis": "^3.0.2",
     "regenerator-runtime": "^0.13.3",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
     "uuid": "^7.0.3"
   },
   "devDependencies": {
