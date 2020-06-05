@@ -5,7 +5,7 @@ import rp from "request-promise";
 import {
   currentS3BucketName,
   uploadFile,
-  s3BucketRootPath,
+  s3BucketRootPath
 } from "../../helpers/aws";
 import { sendToUserShareCalendarConfirmation } from "../../helpers/email";
 import { getUserInfo } from "../users/";
@@ -18,7 +18,7 @@ export const getCalendar = async ({ id }) => {
     );
     const calendars = await new Promise((resolve, reject) => {
       const calendars = [];
-      calendarRows.forEach(async (calendar) => {
+      calendarRows.forEach(async calendar => {
         const db1 = makeDb();
         try {
           const calendarFamilyMembers = await db1.query(
@@ -33,10 +33,10 @@ export const getCalendar = async ({ id }) => {
             "SELECT email FROM users WHERE id=UUID_TO_BIN(?)",
             calendar.user_id
           );
-          calendar.familyMembers = calendarFamilyMembers.map((familyMember) => {
+          calendar.familyMembers = calendarFamilyMembers.map(familyMember => {
             return familyMember.family_member_id;
           });
-          calendar.groups = calendarGroups.map((group) => {
+          calendar.groups = calendarGroups.map(group => {
             return group.group_id;
           });
           calendar.email = user[0].email;
@@ -55,23 +55,23 @@ export const getCalendar = async ({ id }) => {
     return {
       status: {
         messageType: "info",
-        message: "calendars rendered",
+        message: "calendars rendered"
       },
-      data: calendars,
+      data: calendars
     };
   } catch (error) {
     return {
       status: {
         messageType: "error",
-        message: "there is an issue in get calendar endpoint",
+        message: "there is an issue in get calendar endpoint"
       },
-      data: [],
+      data: []
     };
   } finally {
     await db.close();
   }
 };
-export const getCalendars = async (creds) => {
+export const getCalendars = async creds => {
   const db = makeDb();
   try {
     const UserInfo = await getUserInfo(creds);
@@ -86,7 +86,7 @@ export const getCalendars = async (creds) => {
     const mergedCalendars = [...calendarRows, ...followCalendarRows];
     const calendars = await new Promise((resolve, reject) => {
       const calendars = [];
-      mergedCalendars.forEach(async (calendar) => {
+      mergedCalendars.forEach(async calendar => {
         const db1 = makeDb();
         try {
           const calendarFamilyMembers = await db1.query(
@@ -97,10 +97,10 @@ export const getCalendars = async (creds) => {
             "SELECT BIN_TO_UUID(group_id) as group_id FROM user_calendars_groups WHERE calendar_id=UUID_TO_BIN(?)",
             [calendar.id]
           );
-          calendar.familyMembers = calendarFamilyMembers.map((familyMember) => {
+          calendar.familyMembers = calendarFamilyMembers.map(familyMember => {
             return familyMember.family_member_id;
           });
-          calendar.groups = calendarGroups.map(async (group) => {
+          calendar.groups = calendarGroups.map(async group => {
             return group.group_id;
           });
           calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${
@@ -118,23 +118,23 @@ export const getCalendars = async (creds) => {
     return {
       status: {
         messageType: "info",
-        message: "calendars rendered",
+        message: "calendars rendered"
       },
-      data: calendars,
+      data: calendars
     };
   } catch (error) {
     return {
       status: {
         messageType: "error",
-        message: "there is an issue in get calendars endpoint",
+        message: "there is an issue in get calendars endpoint"
       },
-      data: [],
+      data: []
     };
   } finally {
     await db.close();
   }
 };
-export const executeCreateCalendar = async (calendar) => {
+export const executeCreateCalendar = async calendar => {
   const db = makeDb();
   try {
     const UserInfo = await getUserInfo(calendar.creds);
@@ -144,15 +144,15 @@ export const executeCreateCalendar = async (calendar) => {
         UserInfo.user_id,
         calendar.info.name,
         await randomColor(UserInfo),
-        calendar.info.visibilityType,
+        calendar.info.visibilityType
       ]
     );
     const insertedCalendar = await db.query(
-      "SELECT BIN_TO_UUID(id) as id,name,color from user_calendars where user_id=UUID_TO_BIN(?) AND name=?",
+      "SELECT BIN_TO_UUID(id) as id,name,color from user_calendars where user_id=UUID_TO_BIN(?) AND name=? ORDER BY added_at DESC",
       [UserInfo.user_id, calendar.info.name]
     );
 
-    calendar.info.familyMembers.forEach(async (familyMemberId) => {
+    calendar.info.familyMembers.forEach(async familyMemberId => {
       if (familyMemberId !== "0") {
         await db.query(
           "INSERT INTO user_calendars_family_member(calendar_id,family_member_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
@@ -160,7 +160,7 @@ export const executeCreateCalendar = async (calendar) => {
         );
       }
     });
-    calendar.info.groups.forEach(async (groupId) => {
+    calendar.info.groups.forEach(async groupId => {
       await db.query(
         "INSERT INTO user_calendars_groups(calendar_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
         [insertedCalendar[0].id, groupId]
@@ -169,7 +169,7 @@ export const executeCreateCalendar = async (calendar) => {
         "SELECT c.email as email,BIN_TO_UUID(c.user_id) as user_id FROM contacts c INNER JOIN group_members gm ON c.user_id =gm.user_id WHERE gm.group_id =UUID_TO_BIN(?)",
         [groupId]
       );
-      contacts.forEach(async (contact) => {
+      contacts.forEach(async contact => {
         const db2 = makeDb();
         try {
           console.log("Contactttttttttttt", contact);
@@ -180,7 +180,7 @@ export const executeCreateCalendar = async (calendar) => {
           await sendToUserShareCalendarConfirmation({
             calendar: insertedCalendar[0],
             recipient: contact,
-            groupId,
+            groupId
           });
         } catch (error) {
           console.log(error);
@@ -199,13 +199,13 @@ export const executeCreateCalendar = async (calendar) => {
       Body: buf,
       ContentEncoding: "base64",
       ContentType: "image/jpeg",
-      ACL: "public-read",
+      ACL: "public-read"
     };
     await uploadFile(data);
     return {
       status: {
         messageType: "info",
-        message: "calendar created",
+        message: "calendar created"
       },
       calendar: {
         id: insertedCalendar[0].id,
@@ -213,22 +213,22 @@ export const executeCreateCalendar = async (calendar) => {
         name: calendar.info.name,
         color: insertedCalendar[0].color,
         visibilityType: calendar.info.visibilityType,
-        image: `${s3BucketRootPath}calendars/${UserInfo.user_id}/${insertedCalendar[0].id}/calendarBackground.jpg`,
-      },
+        image: `${s3BucketRootPath}calendars/${UserInfo.user_id}/${insertedCalendar[0].id}/calendarBackground.jpg`
+      }
     };
   } catch (error) {
     return {
       status: {
         messageType: "error",
-        message: "there is an issue in create calendar endpoint",
+        message: "there is an issue in create calendar endpoint"
       },
-      calendar: {},
+      calendar: {}
     };
   } finally {
     await db.close();
   }
 };
-export const executeEditCalendar = async (calendar) => {
+export const executeEditCalendar = async calendar => {
   const db = makeDb();
   try {
     const UserInfo = await getUserInfo(calendar.creds);
@@ -239,7 +239,7 @@ export const executeEditCalendar = async (calendar) => {
         calendar.info.name,
         calendar.info.color,
         calendar.info.visibilityType,
-        calendar.info.id,
+        calendar.info.id
       ]
     );
     await db.query(
@@ -251,7 +251,7 @@ export const executeEditCalendar = async (calendar) => {
       [calendar.info.id]
     );
     if (calendar.info.familyMembers.length > 0) {
-      calendar.info.familyMembers.forEach(async (familyMemberId) => {
+      calendar.info.familyMembers.forEach(async familyMemberId => {
         if (familyMemberId !== "0") {
           await db.query(
             "INSERT INTO user_calendars_family_member(calendar_id,family_member_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
@@ -265,12 +265,12 @@ export const executeEditCalendar = async (calendar) => {
         "DELETE FROM user_calendars_follow WHERE calendar_id=UUID_TO_BIN(?) AND group_id NOT IN (?)",
         [
           calendar.info.id,
-          calendar.info.groups.map((groupId) => {
+          calendar.info.groups.map(groupId => {
             return `UUID_TO_BIN(${groupId})`;
-          }),
+          })
         ]
       );
-      calendar.info.groups.forEach(async (groupId) => {
+      calendar.info.groups.forEach(async groupId => {
         const db1 = makeDb();
         try {
           await db1.query(
@@ -281,7 +281,7 @@ export const executeEditCalendar = async (calendar) => {
             "SELECT c.email as email,BIN_TO_UUID(c.user_id) as user_id FROM contacts c INNER JOIN group_members gm ON c.user_id =gm.user_id WHERE gm.group_id =UUID_TO_BIN(?)",
             [groupId]
           );
-          contacts.forEach(async (contact) => {
+          contacts.forEach(async contact => {
             const db2 = makeDb();
             try {
               await db2.query(
@@ -296,7 +296,7 @@ export const executeEditCalendar = async (calendar) => {
                 await sendToUserShareCalendarConfirmation({
                   calendar: calendar.info,
                   recipient: contact,
-                  groupId,
+                  groupId
                 });
               }
             } catch (error) {
@@ -328,14 +328,14 @@ export const executeEditCalendar = async (calendar) => {
         Body: buf,
         ContentEncoding: "base64",
         ContentType: "image/jpeg",
-        ACL: "public-read",
+        ACL: "public-read"
       };
       await uploadFile(data);
     }
     return {
       status: {
         messageType: "info",
-        message: "calendar updated",
+        message: "calendar updated"
       },
       calendar: {
         id: calendar.info.id,
@@ -343,22 +343,22 @@ export const executeEditCalendar = async (calendar) => {
         name: calendar.info.name,
         color: calendar.info.color,
         visibilityType: calendar.info.visibilityType,
-        image: `${s3BucketRootPath}calendars/${UserInfo.user_id}/${calendar.info.id}/calendarBackground.jpg`,
-      },
+        image: `${s3BucketRootPath}calendars/${UserInfo.user_id}/${calendar.info.id}/calendarBackground.jpg`
+      }
     };
   } catch (error) {
     console.log(error);
     return {
       status: "error",
       message: "there is an issue in edit calendar endpoint.",
-      calendar: {},
+      calendar: {}
     };
   } finally {
     await db.close();
   }
 };
 
-export const executeDeleteCalendar = async (calendar) => {
+export const executeDeleteCalendar = async calendar => {
   const db = makeDb();
   try {
     const UserInfo = await getUserInfo(calendar.creds);
@@ -382,7 +382,7 @@ export const executeDeleteCalendar = async (calendar) => {
     return {
       status: {
         messageType: "info",
-        message: "calendar deleted",
+        message: "calendar deleted"
       },
       calendar: {
         id: calendar.info.id,
@@ -390,36 +390,37 @@ export const executeDeleteCalendar = async (calendar) => {
         name: calendar.info.name,
         color: calendar.info.color,
         visibilityType: calendar.info.visibilityType,
-        image: calendar.info.image,
-      },
+        image: calendar.info.image
+      }
     };
   } catch (error) {
     console.log(error);
     return {
       status: "error",
       message: "there is an issue in delete calendar endpoint.",
-      calendar: {},
+      calendar: {}
     };
   } finally {
     await db.close();
   }
 };
 
-export const executeCloneCalendar = async (calendar) => {
+export const executeCloneCalendar = async calendar => {
   const db = await makeDb();
   try {
     const options = {
       uri: calendar.info.image,
-      encoding: "base64",
+      encoding: "base64"
     };
     const body = await rp(options);
     calendar.info.image = body;
     const createdCalendarResponse = await executeCreateCalendar(calendar);
+
     const calendarEvents = await db.query(
       "SELECT BIN_TO_UUID(id) as id,image,name,description,location,category,start_of_event,end_of_event,status,type,BIN_TO_UUID(user_id) as user_id,time,visibility,recurring,recurring_end_date FROM events ev INNER JOIN event_calendar ec ON ev.id=ec.event_id WHERE ec.calendar_id=UUID_TO_BIN(?)",
       [calendar.info.id]
     );
-    calendarEvents.forEach(async (event) => {
+    calendarEvents.forEach(async event => {
       const dbEvents = await makeDb();
       try {
         const generatedEventId = await dbEvents.query(
@@ -442,7 +443,7 @@ export const executeCloneCalendar = async (calendar) => {
             event.time,
             event.visibility,
             event.recurring,
-            event.recurring_end_date,
+            event.recurring_end_date
           ]
         );
         await dbEvents.query(
@@ -453,7 +454,7 @@ export const executeCloneCalendar = async (calendar) => {
           "SELECT UUID_TO_BIN(event_id) as event_id,status FROM event_attendee WHERE event_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?)",
           [event.id, calendar.info.user_id]
         );
-        eventAttendees.forEach(async (eventAttendee) => {
+        eventAttendees.forEach(async eventAttendee => {
           const dbAventee = await makeDb();
           try {
             const generatedEventAttendeeId = await dbEvents.query(
@@ -464,7 +465,7 @@ export const executeCloneCalendar = async (calendar) => {
               [
                 generatedEventAttendeeId[0].id,
                 createdCalendarResponse.calendar.user_id,
-                eventAttendee.status,
+                eventAttendee.status
               ]
             );
           } catch (error) {
@@ -485,8 +486,30 @@ export const executeCloneCalendar = async (calendar) => {
     return {
       status: "error",
       message: "there is an issue in clone calendar endpoint.",
-      calendar: {},
+      calendar: {}
     };
+  } finally {
+    await db.close();
+  }
+};
+
+const getClonedCalendar = async calendar => {
+  const db = await makeDb();
+  try {
+    const UserInfo = await getUserInfo(calendar.creds);
+    const result = await db.query(
+      "INSERT IGNORE INTO user_calendars (id,user_id,name,color,visibilityType) VALUES(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?)",
+      [
+        UserInfo.user_id,
+        calendar.info.name,
+        await randomColor(UserInfo),
+        calendar.info.visibilityType
+      ]
+    );
+
+    return result.insertId;
+  } catch (err) {
+    console.log("Get Cloned Calendar", err);
   } finally {
     await db.close();
   }
