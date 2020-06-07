@@ -8,7 +8,7 @@ export default function index({
   events,
   calendars,
   familyMembers,
-  publicView = false,
+  publicView = false
 }) {
   const [calendarType, setCalendarType] = useState(
     sessionStorage.getItem("bigCalendarViewMonth") === null
@@ -29,11 +29,11 @@ export default function index({
       setCalendarType(sessionStorage.getItem("bigCalendarViewType"));
     }
   }, []);
-  const handleChangeCalendarType = (type) => {
+  const handleChangeCalendarType = type => {
     sessionStorage.setItem("bigCalendarViewType", type);
     setCalendarType(type);
   };
-  const handleCalendarSelection = (id) => {
+  const handleCalendarSelection = id => {
     if (Array.isArray(id)) {
       sessionStorage.setItem("selectedCalendars", JSON.stringify(id));
       setSelectedCalendars(id);
@@ -43,13 +43,13 @@ export default function index({
       sessionStorage.setItem(
         "selectedCalendars",
         JSON.stringify(
-          selectedCalendars.filter((calendarId) => {
+          selectedCalendars.filter(calendarId => {
             return calendarId !== id;
           })
         )
       );
       setSelectedCalendars(
-        selectedCalendars.filter((calendarId) => {
+        selectedCalendars.filter(calendarId => {
           return calendarId !== id;
         })
       );
@@ -61,7 +61,7 @@ export default function index({
     );
     setSelectedCalendars([...selectedCalendars, id]);
   };
-
+  console.log("calendarsssssssss", calendars);
   return (
     <>
       {!publicView && (
