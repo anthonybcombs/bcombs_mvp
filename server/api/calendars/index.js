@@ -84,36 +84,69 @@ export const getCalendars = async creds => {
       [UserInfo.user_id]
     );
     const mergedCalendars = [...calendarRows, ...followCalendarRows];
-    const calendars = await new Promise((resolve, reject) => {
-      const calendars = [];
-      mergedCalendars.forEach(async calendar => {
+    const calendars = await new Promise(async (resolve, reject) => {
+      const calendarList = [];
+      for (let x = 0; x < mergedCalendars.length; x++) {
         const db1 = makeDb();
         try {
           const calendarFamilyMembers = await db1.query(
             "SELECT BIN_TO_UUID(family_member_id) as family_member_id FROM user_calendars_family_member WHERE calendar_id=UUID_TO_BIN(?)",
-            [calendar.id]
+            [mergedCalendars[x].id]
           );
           const calendarGroups = await db1.query(
             "SELECT BIN_TO_UUID(group_id) as group_id FROM user_calendars_groups WHERE calendar_id=UUID_TO_BIN(?)",
-            [calendar.id]
+            [mergedCalendars[x].id]
           );
-          calendar.familyMembers = calendarFamilyMembers.map(familyMember => {
-            return familyMember.family_member_id;
-          });
-          calendar.groups = calendarGroups.map(async group => {
+          mergedCalendars[x].familyMembers = calendarFamilyMembers.map(
+            familyMember => {
+              return familyMember.family_member_id;
+            }
+          );
+          mergedCalendars[x].groups = calendarGroups.map(async group => {
             return group.group_id;
           });
-          calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${
-            calendar.id
-          }/calendarBackground.jpg?${Date.now()}`;
-          calendars.push(calendar);
+          mergedCalendars[x].image = `${s3BucketRootPath}calendars/${
+            mergedCalendars[x].user_id
+          }/${mergedCalendars[x].id}/calendarBackground.jpg?${Date.now()}`;
+          calendarList.push(mergedCalendars[x]);
         } catch (error) {
           reject([]);
         } finally {
-          resolve(calendars.sort((a, b) => b.updated_at - a.updated_at));
+          console.log("calendarszzz", calendarList);
+          //  resolve(calendarList.sort((a, b) => b.updated_at - a.updated_at));
           await db1.close();
         }
-      });
+      }
+
+      resolve(calendarList.sort((a, b) => b.updated_at - a.updated_at));
+      // mergedCalendars.forEach(async calendar => {
+      //   const db1 = makeDb();
+      //   try {
+      //     const calendarFamilyMembers = await db1.query(
+      //       "SELECT BIN_TO_UUID(family_member_id) as family_member_id FROM user_calendars_family_member WHERE calendar_id=UUID_TO_BIN(?)",
+      //       [calendar.id]
+      //     );
+      //     const calendarGroups = await db1.query(
+      //       "SELECT BIN_TO_UUID(group_id) as group_id FROM user_calendars_groups WHERE calendar_id=UUID_TO_BIN(?)",
+      //       [calendar.id]
+      //     );
+      //     calendar.familyMembers = calendarFamilyMembers.map(familyMember => {
+      //       return familyMember.family_member_id;
+      //     });
+      //     calendar.groups = calendarGroups.map(async group => {
+      //       return group.group_id;
+      //     });
+      //     calendar.image = `${s3BucketRootPath}calendars/${calendar.user_id}/${
+      //       calendar.id
+      //     }/calendarBackground.jpg?${Date.now()}`;
+      //     calendars.push(calendar);
+      //   } catch (error) {
+      //     reject([]);
+      //   } finally {
+      //     resolve(calendars.sort((a, b) => b.updated_at - a.updated_at));
+      //     await db1.close();
+      //   }
+      // });
     });
     return {
       status: {
