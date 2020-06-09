@@ -109,6 +109,7 @@ export default function index({
   let days = [];
   let day = startDate;
   let formattedDate = "";
+
   while (day <= endDate) {
     formattedDate = format(day, dateFormat);
     const cloneDay = day;
@@ -206,6 +207,13 @@ export default function index({
 
         return [...accumulator, item];
       }, []);
+
+      if (eventsOnThisDay.length > 0) {
+        eventsOnThisDay = eventsOnThisDay.sort(
+          (event1, event2) =>
+            new Date(event1.start_of_event) - new Date(event2.start_of_event)
+        );
+      }
     }
 
     // console.log("eventsOnThisDay 111", eventsOnThisDay);
