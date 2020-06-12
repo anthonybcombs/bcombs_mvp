@@ -104,12 +104,15 @@ const CreateUserFormStyled = styled.form`
     margin-left: 0px !important;
   }
   p.error {
-    text-align: center;
+    text-align: left !important;
     font-size: 1.3em;
     color: red;
   }
   p.error-size {
     font-size: 14px !important;
+  }
+  input.error-input {
+    border-color: red;
   }
 `;
 
@@ -143,7 +146,7 @@ export default function Form({
     reValidateMode: "onChange"
   });
   const { type } = userDetails;
-  console.log("TESTTTTTTTTTTTTTTTTTTTTTTTTT");
+
   return (
     <CreateUserFormStyled
       data-testid="app-create-form"
@@ -177,7 +180,6 @@ export default function Form({
           handleInputChange("username", target.value);
         }}
         ref={register({
-          required: true,
           minLength: 5,
           //pattern: /^(([0-9][A-z]+)|([A-z]+))$/
           validate: {
@@ -203,22 +205,21 @@ export default function Form({
         errorType="alphanumeric"
         message={
           <>
-            <p className="error error-size">Username is required.</p>
             <p className="error error-size">
               Username either must be alphanumeric or alphabet.
-            </p>
-            <p className="error error-size">
+              <br />
               Username minimum length must be at least 5 characters
             </p>
           </>
         }
       />
       <input
+        className={errors.email ? `error-input` : ""}
         type="email"
         id="email"
         name="email"
         data-testid="app-create-input-email"
-        placeholder="Email"
+        placeholder="* Email"
         onChange={({ target }) => {
           handleInputChange("email", target.value);
         }}
@@ -233,11 +234,12 @@ export default function Form({
 
       <div>
         <input
+          className={errors.password ? `error-input` : ""}
           type="password"
           id="password"
           name="password"
           data-testid="app-create-input-password"
-          placeholder="Password"
+          placeholder="* Password"
           onChange={({ target }) => {
             handleInputChange("password", target.value);
           }}
@@ -310,20 +312,18 @@ export default function Form({
         errorType="required"
         message={
           <>
-            <p className="error error-size">Password is required.</p>
             <p className="error error-size">
-              Password minimum length must be at least 8 characters.
-            </p>
-            <p className="error error-size">
+              Password is required.
+              <br />
+              Password minimum length must be at least 8 characters. <br />
               Must contain atleast one upper case.
-            </p>
-            <p className="error error-size">
+              <br />
               Must contain atleast one lower case.
-            </p>
-            <p className="error error-size">Must contain atleast one number.</p>
-
-            <p className="error error-size">
+              <br />
+              Must contain atleast one number.
+              <br />
               Must contain atleast one special character.
+              <br />
             </p>
           </>
         }
@@ -359,11 +359,13 @@ export default function Form({
         message={"Must contain atleast one special character."}
       /> */}
       <input
+        disabled={errors.password}
+        className={errors.confirm_password ? `error-input` : ""}
         type="password"
         id="confirm_password"
         name="confirm_password"
         data-testid="app-create-input-confirm-password"
-        placeholder="Confirm Password"
+        placeholder="* Confirm Password"
         onChange={({ target }) => {
           handleInputChange("confirm_password", target.value);
         }}
@@ -392,7 +394,10 @@ export default function Form({
         errorType="sameConfirmPassword"
         message="The passwords do not match."
       />
-      <button type="submit" data-testid="app-create-button-signup">
+      <button
+        disabled={errors.password}
+        type="submit"
+        data-testid="app-create-button-signup">
         SIGN UP
       </button>
       <p>

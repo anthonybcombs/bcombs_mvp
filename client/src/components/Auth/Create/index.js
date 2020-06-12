@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "@reach/router";
+import { redirectTo } from "@reach/router";
 import styled from "styled-components";
 import Form from "./Form";
 import { requestCheckuserAndAdd } from "../../../redux/actions/Users";
@@ -38,6 +38,8 @@ const CreateUserStyled = styled.div`
     }
   }
 `;
+
+const SUCCESS_STATUS = `User created! We sent confirmation email`;
 export default function index() {
   const [userDetails, setUserDetails] = useState({
     type: { id: "", name: "" },
@@ -60,6 +62,13 @@ export default function index() {
       type: { ...(userTypes[currentTypeIndex] || {}) }
     });
   }, [userTypes]);
+
+  useEffect(() => {
+    if (status && status.message && status.message.includes(SUCCESS_STATUS)) {
+      //console.log('statuzzzzs',status)
+      redirectTo(`/?success=${encodeURIComponent(status.message)}`);
+    }
+  }, [status]);
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };

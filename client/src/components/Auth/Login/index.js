@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "@reach/router";
+import { useLocation, useNavigate } from "@reach/router";
 import { webAuth } from ".././../../helpers/Auth0";
+import { parse } from "query-string";
+
 import styled from "styled-components";
 import Logo from "../../../images/logo1.png";
 import Form from "./Form";
@@ -47,16 +49,37 @@ const LoginStyled = styled.div`
     width: 50%;
   }
 `;
+const SUCCESS_STATUS = `User created! We sent confirmation email`;
+
 export default function index(props) {
   const [userDetails, setUserDetails] = useState({ email: "", password: "" });
+  const [registrationSuccess, setRegistrationSuccess] = useState("");
   const { auth, status } = useSelector(({ auth, status }) => {
     return { auth, status };
   });
+
   const dispatch = useDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
+  const queryParams = parse(location.search);
+
+  useEffect(() => {
+    if (queryParams && queryParams.success) {
+      try {
+        let decodedStrings = decodeURIComponent(queryParams.success);
+
+        if (decodedStrings && decodedStrings.includes(SUCCESS_STATUS)) {
+          setRegistrationSuccess(decodedStrings);
+        }
+      } catch (err) {
+        console.log("Error", err);
+      }
+    }
+  }, []);
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };
+
   const handleFormSubmit = values => {
     dispatch(requestAuth(userDetails));
   };
@@ -82,6 +105,9 @@ export default function index(props) {
       <img data-testid="app-login-logo" src={Logo} alt="Bcombs Logo" />
       {status && status.message && (
         <p className={`${status.messageType}`}>{status.message}</p>
+      )}
+      {registrationSuccess !== "" && (
+        <p className={`info`}>{registrationSuccess}</p>
       )}
       <h2 data-testid="app-login-header">Login To Your Account</h2>
       <Form
