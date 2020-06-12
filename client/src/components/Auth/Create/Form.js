@@ -175,6 +175,9 @@ const CreateUserFormStyled = styled.form`
     margin-bottom: 5px;
     font-weight: bold;
   }
+  .required{
+    color:red;
+  }
 `;
 
 const PopoverStyled = styled.div`
@@ -191,6 +194,7 @@ const PopoverStyled = styled.div`
   svg {
     margin-right: 1em;
   }
+
 `;
 export default function Form({
   onSubmit,
@@ -291,7 +295,7 @@ export default function Form({
               }
             })}
           />
-          <label className="field-label">* Email</label>
+          <label className="field-label"><span className="required">*</span> Email</label>
         </div>
   
          <ErrorMessage
@@ -353,7 +357,7 @@ export default function Form({
           />
 
           <label className="field-label">
-            * Password{" "}
+            <span className="required">*</span> Password{" "}
             <Popover
               isOpen={isPopoverOpen}
               position={"right"}
@@ -437,7 +441,7 @@ export default function Form({
               }
             })}
           />
-          <label className="field-label">Confirm Password</label>
+          <label className="field-label"><span className="required">*</span> Confirm Password</label>
         </div>
         <ErrorMessage
           className="error-size"
