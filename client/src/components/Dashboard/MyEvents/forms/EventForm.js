@@ -194,6 +194,7 @@ const EventFormStyled = styled.form`
 
 const OPTION_VISIBILITY = [
   { name: "Public", value: "public" },
+  { name: "Private", value: "private" },
   { name: "Custom", value: "custom" }
 ];
 

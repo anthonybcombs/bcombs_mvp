@@ -32,13 +32,12 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
         multipleMaxSize="10mb"
         convertToBase64
         accept={["application/pdf", "image/jpg", "image/jpeg"]}
-        onSuccess={(files) => {
+        onSuccess={files => {
           setImageView(files[0]);
           setErrors([]);
           setCropper(true);
         }}
-        onError={(errors) => setErrors(errors)}
-      >
+        onError={errors => setErrors(errors)}>
         {({ browseFiles }) => (
           <>
             {cropper ? (
@@ -49,7 +48,7 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                     onCancel={() => {
                       setCropper(false);
                     }}
-                    onSave={(image) => {
+                    onSave={image => {
                       let reader = new FileReader();
                       reader.onloadend = () => {
                         setImageView(reader.result);
@@ -64,7 +63,7 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
               </div>
             ) : (
               <div
-                onClick={(e) => {
+                onClick={e => {
                   e.preventDefault();
                   browseFiles();
                 }}
@@ -73,15 +72,14 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                   minHeight: 300,
                   maxHeight: 300,
                   margin: 10,
-                  cursor: "pointer",
-                }}
-              >
+                  cursor: "pointer"
+                }}>
                 {imageView.length > 0 ? (
                   <img
                     style={{
                       width: "100%",
                       maxHeight: 300,
-                      backgroundColor: "lightblue",
+                      backgroundColor: "lightblue"
                     }}
                     src={imageView}
                   />
@@ -90,10 +88,9 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                     style={{
                       fontWeight: "bold",
                       fontSize: "1.5em",
-                      lineHeight: 13,
-                    }}
-                  >
-                    Upload Image
+                      lineHeight: 13
+                    }}>
+                    Select image on file to upload
                   </div>
                 )}
                 {errors.map((error, key) => (
@@ -147,8 +144,8 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
           containerStyle: {
             zIndex: 2000,
             height: "100vh",
-            position: "fixed",
-          },
+            position: "fixed"
+          }
         }}
         image={image}
         crop={crop}
@@ -165,23 +162,21 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
           right: 0,
           width: 200,
           zIndex: 2200,
-          margin: 10,
-        }}
-      >
+          margin: 10
+        }}>
         <div className="cropper-control">
           <button
             style={{ width: "100%", boxShadow: "none" }}
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault();
               onCancel();
-            }}
-          >
+            }}>
             Cancel
           </button>
           <button
             className="save"
             style={{ width: "100%", boxShadow: "none" }}
-            onClick={async (e) => {
+            onClick={async e => {
               e.preventDefault();
               const croppedImage = await getCroppedImg(
                 image,
@@ -189,8 +184,7 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
                 rotation
               );
               onSave(croppedImage.file);
-            }}
-          >
+            }}>
             Save
           </button>
         </div>
