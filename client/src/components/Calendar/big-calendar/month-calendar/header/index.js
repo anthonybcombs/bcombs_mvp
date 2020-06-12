@@ -13,7 +13,9 @@ import {
   faEyeSlash,
   faEye,
   faClone,
-  faShareAltSquare
+  faShareAltSquare,
+  faChevronDown,
+  faChevronUp
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
@@ -236,7 +238,7 @@ export default function index({
               }}
             />
             <FontAwesomeIcon
-              icon={viewAllCalendar ? faEyeSlash : faEye}
+              icon={viewAllCalendar ? faChevronUp : faChevronDown}
               onClick={() => {
                 setViewAllCalendar(!viewAllCalendar);
               }}
