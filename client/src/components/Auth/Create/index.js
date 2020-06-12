@@ -9,7 +9,7 @@ const CreateUserStyled = styled.div`
   margin: 0 auto;
   background-color: white;
   width: 60%;
-  overflow: auto;
+
   height: auto;
   padding: 5px 30px 5px 30px;
   position: relative;

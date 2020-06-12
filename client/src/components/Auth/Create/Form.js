@@ -16,29 +16,15 @@ const CreateUserFormStyled = styled.form`
   input:invalid {
     box-shadow: none;
   }
-  input {
-    background: none;
-    width: 100%;
-    color: black;
-    font-size: ${({ theme }) => theme.input.fontSize};
-    display: block;
-    border: none;
-    border-radius: 1;
-    border: none;
-    outline: 0;
-    border-bottom: 2px solid lightgrey;
-    outline: 0;
-    margin-top: 2.5em;
-    margin-bottom: 2.5em;
-  }
-  #password {
-    width: 95% !important;
-    display: inline-block !important;
-  }
+
   input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
-    transition: 3s;
   }
+  #password {
+    width: 100% !important;
+    display: inline-block !important;
+  }
+
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;
@@ -114,6 +100,81 @@ const CreateUserFormStyled = styled.form`
   input.error-input {
     border-color: red;
   }
+
+  .form-group .form-control {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 10px;
+  }
+
+  .field {
+    display: flex;
+    flex-flow: column-reverse;
+    margin-bottom: 1em;
+  }
+  .field-label,
+  .field-input {
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+
+  .field-label-simple {
+    font-size: 18px;
+    color: #4b525a;
+    font-weight: 600;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .field-input {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: text;
+    line-height: 1.8;
+
+    padding: 5px 0;
+    width: 100%;
+    display: block;
+    text-indent: 5px;
+  }
+
+  .field-label {
+    font-size: 14px;
+    color: #4b525a;
+  }
+
+  .field-input:placeholder-shown + .field-label {
+    overflow: hidden;
+    transform-origin: left bottom;
+    transform: translate(0, 2.125rem) scale(1.4);
+  }
+
+  .field-input::placeholder {
+    opacity: 0;
+    transition: inherit;
+    font-size: 12px;
+  }
+
+  .field-input:focus::placeholder {
+    opacity: 1;
+  }
+
+  .field-input:focus + .field-label {
+    transform: translate(0, 0) scale(1);
+    cursor: pointer;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
 `;
 
 const PopoverStyled = styled.div`
@@ -170,232 +231,231 @@ export default function Form({
       <br />
       <br />
 
-      <input
-        type="text"
-        id="username"
-        name="username"
-        data-testid="app-create-input-username"
-        placeholder="Username"
-        onChange={({ target }) => {
-          handleInputChange("username", target.value);
-        }}
-        ref={register({
-          minLength: 5,
-          //pattern: /^(([0-9][A-z]+)|([A-z]+))$/
-          validate: {
-            alphanumeric: value => {
-              const alphaExp = /^[a-zA-z0-9]+$|^[a-zA-Z]*$/;
-              return alphaExp.test(value);
-            }
-          }
-        })}
-      />
-      {/* <ErrorMessage
-        field={errors.username}
-        errorType="required"
-        message="Username is required."
-      />
-      <ErrorMessage
-        field={errors.username}
-        errorType="minLength"
-        message="Username minimum length must be at least 5 characters."
-      /> */}
-      <ErrorMessage
-        field={errors.username}
-        errorType="alphanumeric"
-        message={
-          <>
-            <p className="error error-size">
-              Username either must be alphanumeric or alphabet.
-              <br />
-              Username minimum length must be at least 5 characters
-            </p>
-          </>
-        }
-      />
-      <input
-        className={errors.email ? `error-input` : ""}
-        type="email"
-        id="email"
-        name="email"
-        data-testid="app-create-input-email"
-        placeholder="* Email"
-        onChange={({ target }) => {
-          handleInputChange("email", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        className="error-size"
-        field={errors.email}
-        errorType="required"
-        message="Email is required."
-      />
-
-      <div>
-        <input
-          className={errors.password ? `error-input` : ""}
-          type="password"
-          id="password"
-          name="password"
-          data-testid="app-create-input-password"
-          placeholder="* Password"
-          onChange={({ target }) => {
-            handleInputChange("password", target.value);
-          }}
-          ref={register({
-            required: true,
-            minLength: 8,
-            validate: {
-              containsOneUpperCase: value => {
-                const oneUpperCaseRegex = /(?=.*[A-Z])/;
-                return oneUpperCaseRegex.test(value);
-              },
-              containsOneLowerCase: value => {
-                const oneLowerCaseRegex = /(?=.*[a-z])/;
-                return oneLowerCaseRegex.test(value);
-              },
-              containsOneNumber: value => {
-                const oneNumberRegex = /(?=.*\d)/;
-                return oneNumberRegex.test(value);
-              },
-              containsOneSpecialCharacter: value => {
-                const oneSpecialCharacterRegex = /(?=.*[!@#$%^&+=])/;
-                return oneSpecialCharacterRegex.test(value);
+      <div className="form-group">
+        <div className="field">
+          <input
+            className="field-input"
+            type="text"
+            id="username"
+            name="username"
+            data-testid="app-create-input-username"
+            placeholder="Username"
+            onChange={({ target }) => {
+              handleInputChange("username", target.value);
+            }}
+            ref={register({
+              minLength: 5,
+              //pattern: /^(([0-9][A-z]+)|([A-z]+))$/
+              validate: {
+                alphanumeric: value => {
+                  const alphaExp = /^[a-zA-z0-9]+$|^[a-zA-Z]*$/;
+                  return alphaExp.test(value);
+                }
               }
-              // passwordRequirement: value => {
-              //   const passworRequirementRegex = /^(?=.{10,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/;
-              //   return passworRequirementRegex.test(value);
-              // }
-            }
-          })}
+            })}
+          />
+          <label className="field-label">Username</label>
+        </div>
+        <ErrorMessage
+          field={errors.username}
+          errorType="alphanumeric"
+          message={
+            <>
+              <p className="error error-size">
+                Username either must be alphanumeric or alphabet.
+                <br />
+                Username minimum length must be at least 5 characters
+              </p>
+            </>
+          }
+        />
+      </div>
+
+      <div className="form-group">
+        <div className="field">
+          <input
+            className={`${errors.email ? `error-input` : ""} field-input`}
+            type="email"
+            id="email"
+            name="email"
+            data-testid="app-create-input-email"
+            placeholder="Email"
+            onChange={({ target }) => {
+              handleInputChange("email", target.value);
+            }}
+            ref={register({
+              required: true,
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                message: "Invalid email address"
+              }
+            })}
+          />
+          <label className="field-label">* Email</label>
+        </div>
+  
+         <ErrorMessage
+          className="error-size"
+          field={errors.email}
+          errorType="required"
+          message={
+            <>
+              <p className="error error-size">
+                Email is required.
+                <br />
+                Invalid email address <br />
+             
+              </p>
+            </>
+          }
+        />
+      </div>
+
+      <div className="form-group">
+        <div className="field">
+          <input
+            disabled={errors.email}
+            className={`${errors.password ? `error-input` : ""} field-input`}
+            type="password"
+            id="password"
+            name="password"
+            data-testid="app-create-input-password"
+            placeholder="Password"
+            onChange={({ target }) => {
+              handleInputChange("password", target.value);
+            }}
+            ref={register({
+              required: true,
+              minLength: 8,
+              validate: {
+                containsOneUpperCase: value => {
+                  const oneUpperCaseRegex = /(?=.*[A-Z])/;
+                  return oneUpperCaseRegex.test(value);
+                },
+                containsOneLowerCase: value => {
+                  const oneLowerCaseRegex = /(?=.*[a-z])/;
+                  return oneLowerCaseRegex.test(value);
+                },
+                containsOneNumber: value => {
+                  const oneNumberRegex = /(?=.*\d)/;
+                  return oneNumberRegex.test(value);
+                },
+                containsOneSpecialCharacter: value => {
+                  const oneSpecialCharacterRegex = /(?=.*[!@#$%^&+=])/;
+                  return oneSpecialCharacterRegex.test(value);
+                }
+                // passwordRequirement: value => {
+                //   const passworRequirementRegex = /^(?=.{10,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/;
+                //   return passworRequirementRegex.test(value);
+                // }
+              }
+            })}
+          />
+
+          <label className="field-label">
+            * Password{" "}
+            <Popover
+              isOpen={isPopoverOpen}
+              position={"right"}
+              padding={10}
+              onClickOutside={() => setPopOverOpen(false)}
+              content={({ position, targetRect, popoverRect }) => (
+                <ArrowContainer
+                  position={position}
+                  targetRect={targetRect}
+                  popoverRect={popoverRect}
+                  arrowColor="lightgrey"
+                  arrowSize={7}
+                  arrowStyle={{ opacity: 1 }}
+                  arrow="center">
+                  <PopoverStyled>
+                    * Password minimum length must be at least 8 characters.
+                    <br />
+                    * Must contain atleast one upper case.
+                    <br />
+                    * Must contain atleast one lower case.
+                    <br />
+                    * Must contain atleast one number.
+                    <br />* Must contain atleast one special character.
+                  </PopoverStyled>
+                </ArrowContainer>
+              )}>
+              <FontAwesomeIcon
+                className="info-icon"
+                onClick={() => {
+                  setPopOverOpen(true);
+                }}
+                icon={faInfoCircle}
+              />
+            </Popover>
+          </label>
+        </div>
+        <ErrorMessage
+          className="error-size"
+          field={errors.password}
+          errorType="required"
+          message={
+            <>
+              <p className="error error-size">
+                Password is required.
+                <br />
+                Password minimum length must be at least 8 characters. <br />
+                Must contain atleast one upper case.
+                <br />
+                Must contain atleast one lower case.
+                <br />
+                Must contain atleast one number.
+                <br />
+                Must contain atleast one special character.
+                <br />
+              </p>
+            </>
+          }
+        />
+      </div>
+
+      <div className="form-group">
+        <div className="field">
+          <input
+            disabled={errors.password || errors.email}
+            className={`${
+              errors.confirm_password ? `error-input` : ""
+            } field-input`}
+            type="password"
+            id="confirm_password"
+            name="confirm_password"
+            data-testid="app-create-input-confirm-password"
+            placeholder="* Confirm Password"
+            onChange={({ target }) => {
+              handleInputChange("confirm_password", target.value);
+            }}
+            ref={register({
+              required: true,
+              minLength: 8,
+              validate: {
+                sameConfirmPassword: value => value === password.value
+              }
+            })}
+          />
+          <label className="field-label">Confirm Password</label>
+        </div>
+        <ErrorMessage
+          className="error-size"
+          field={errors.confirm_password}
+          errorType="required"
+          message="Confirm password is required."
         />
 
-        <Popover
-          isOpen={isPopoverOpen}
-          position={"right"}
-          padding={10}
-          onClickOutside={() => setPopOverOpen(false)}
-          content={({ position, targetRect, popoverRect }) => (
-            <ArrowContainer
-              position={position}
-              targetRect={targetRect}
-              popoverRect={popoverRect}
-              arrowColor="lightgrey"
-              arrowSize={7}
-              arrowStyle={{ opacity: 1 }}
-              arrow="center">
-              <PopoverStyled>
-                * Password minimum length must be at least 8 characters.
-                <br />
-                * Must contain atleast one upper case.
-                <br />
-                * Must contain atleast one lower case.
-                <br />
-                * Must contain atleast one number.
-                <br />* Must contain atleast one special character.
-              </PopoverStyled>
-            </ArrowContainer>
-          )}>
-          <FontAwesomeIcon
-            className="info-icon"
-            onClick={() => {
-              setPopOverOpen(true);
-            }}
-            icon={faInfoCircle}
-          />
-        </Popover>
+        <ErrorMessage
+          className="error-size"
+          field={errors.confirm_password}
+          errorType="sameConfirmPassword"
+          message="The passwords do not match."
+        />
       </div>
-      <ErrorMessage
-        className="error-size"
-        field={errors.password}
-        errorType="required"
-        message={
-          <>
-            <p className="error error-size">
-              Password is required.
-              <br />
-              Password minimum length must be at least 8 characters. <br />
-              Must contain atleast one upper case.
-              <br />
-              Must contain atleast one lower case.
-              <br />
-              Must contain atleast one number.
-              <br />
-              Must contain atleast one special character.
-              <br />
-            </p>
-          </>
-        }
-      />
-      {/* <ErrorMessage
-        field={errors.password}
-        errorType="required"
-        message="Password is required."
-      />
-      <ErrorMessage
-        field={errors.password}
-        errorType="minLength"
-        message="Password minimum length must be at least 8 characters."
-      />
-      <ErrorMessage
-        field={errors.password}
-        errorType="containsOneUpperCase"
-        message={"Must contain atleast one upper case."}
-      />
-      <ErrorMessage
-        field={errors.password}
-        errorType="containsOneLowerCase"
-        message={"Must contain atleast one lower case."}
-      />
-      <ErrorMessage
-        field={errors.password}
-        errorType="containsOneNumber"
-        message={"Must contain atleast one number."}
-      />
-      <ErrorMessage
-        field={errors.password}
-        errorType="containsOneSpecialCharacter"
-        message={"Must contain atleast one special character."}
-      /> */}
-      <input
-        disabled={errors.password}
-        className={errors.confirm_password ? `error-input` : ""}
-        type="password"
-        id="confirm_password"
-        name="confirm_password"
-        data-testid="app-create-input-confirm-password"
-        placeholder="* Confirm Password"
-        onChange={({ target }) => {
-          handleInputChange("confirm_password", target.value);
-        }}
-        ref={register({
-          required: true,
-          minLength: 8,
-          validate: {
-            sameConfirmPassword: value => value === password.value
-          }
-        })}
-      />
-      <ErrorMessage
-        className="error-size"
-        field={errors.confirm_password}
-        errorType="required"
-        message="Confirm password is required."
-      />
-      {/* <ErrorMessage
-        field={errors.confirm_password}
-        errorType="minLength"
-        message="Confirm password minimum length must be at least 8 characters."
-      /> */}
-      <ErrorMessage
-        className="error-size"
-        field={errors.confirm_password}
-        errorType="sameConfirmPassword"
-        message="The passwords do not match."
-      />
+
       <button
-        disabled={errors.password}
+        disabled={errors.password || errors.email}
         type="submit"
         data-testid="app-create-button-signup">
         SIGN UP
