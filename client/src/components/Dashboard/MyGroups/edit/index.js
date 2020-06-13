@@ -108,7 +108,7 @@ export default function index({
   const resetState = () => {
     setCurrentContacts([]);
     setContactSelections([]);
-    setSelectedContact([]);
+    //setSelectedContact([]);
     setRemovedContacts([]);
   };
   //const [selectedFile, setSelectedFile] = useState([]);
@@ -182,7 +182,7 @@ export default function index({
       ],
       removed_member_ids: removedContacts
     };
-
+    console.log("handleSubmittttt", payload);
     dispatch(updateGroup(payload));
     toggleEditGroupModal(false);
     resetState();

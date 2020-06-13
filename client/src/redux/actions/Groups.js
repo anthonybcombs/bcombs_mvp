@@ -1,4 +1,4 @@
-import { call, take, put } from "redux-saga/effects";
+import { all, call, take, put } from "redux-saga/effects";
 import * as actionType from "./Constant";
 
 import graphqlClient from "../../graphql";
@@ -95,6 +95,8 @@ export function* updatedGroup({ group }) {
   try {
     yield put(setGroupLoading(true));
     const response = yield call(updateGroupToDatabase, group);
+
+    console.log("UpdatedGroup", response);
     yield all([
       put(setUserGroups(response)),
       put(requestUserGroup(group.email))
