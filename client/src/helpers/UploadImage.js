@@ -18,6 +18,10 @@ const UploadImageStyled = styled.div`
     width: 100%;
   }
 `;
+
+const ALLOWED_FILE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
+const ALLOWED_FILE_SIZE = 2000000;
+
 export default function UploadImage({ displayImage = "", handleImageChange }) {
   const [imageView, setImageView] = useState(
     displayImage.length > 0 ? displayImage : ""
@@ -31,77 +35,84 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
         maxSize="2mb"
         multipleMaxSize="10mb"
         convertToBase64
-        accept={["application/pdf", "image/jpg", "image/jpeg"]}
+        accept={["image/jpg", "image/jpeg", "image/png"]}
         onSuccess={files => {
-          setImageView(files[0]);
-          setErrors([]);
-          setCropper(true);
+          if (files[0] && files[0].size < ALLOWED_FILE_SIZE) {
+            setImageView(files[0]);
+            setErrors([]);
+            setCropper(true);
+          }
         }}
         onError={errors => setErrors(errors)}>
-        {({ browseFiles }) => (
-          <>
-            {cropper ? (
-              <div>
-                {ReactDOM.createPortal(
-                  <CroppedImage
-                    image={imageView.src.base64}
-                    onCancel={() => {
-                      setCropper(false);
-                    }}
-                    onSave={image => {
-                      let reader = new FileReader();
-                      reader.onloadend = () => {
-                        setImageView(reader.result);
-                        handleImageChange(reader.result);
-                      };
-                      reader.readAsDataURL(image);
-                      setCropper(false);
-                    }}
-                  />,
-                  document.getElementById("uploadImage")
-                )}
-              </div>
-            ) : (
-              <div
-                onClick={e => {
-                  e.preventDefault();
-                  browseFiles();
-                }}
-                style={{
-                  border: `1px dashed grey`,
-                  minHeight: 300,
-                  maxHeight: 300,
-                  margin: 10,
-                  cursor: "pointer"
-                }}>
-                {imageView.length > 0 ? (
-                  <img
-                    style={{
-                      width: "100%",
-                      maxHeight: 300,
-                      backgroundColor: "lightblue"
-                    }}
-                    src={imageView}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: "1.5em",
-                      lineHeight: 13
-                    }}>
-                    Select image on file to upload
-                  </div>
-                )}
-                {errors.map((error, key) => (
-                  <p className="error" key={key}>
-                    {error.file.name} - {error.type}
-                  </p>
-                ))}
-              </div>
-            )}
-          </>
-        )}
+        {({ browseFiles }) => {
+          return (
+            <>
+              {cropper ? (
+                <div>
+                  {ReactDOM.createPortal(
+                    <CroppedImage
+                      image={imageView.src.base64}
+                      onCancel={() => {
+                        setCropper(false);
+                      }}
+                      onSave={image => {
+                        let reader = new FileReader();
+                        reader.onloadend = () => {
+                          setImageView(reader.result);
+                          handleImageChange(reader.result);
+                        };
+                        reader.readAsDataURL(image);
+                        setCropper(false);
+                      }}
+                    />,
+                    document.getElementById("uploadImage")
+                  )}
+                </div>
+              ) : (
+                <div
+                  onClick={e => {
+                    e.preventDefault();
+                    browseFiles();
+                  }}
+                  style={{
+                    border: `1px dashed grey`,
+                    minHeight: 300,
+                    maxHeight: 300,
+                    margin: 10,
+                    cursor: "pointer"
+                  }}>
+                  {imageView.length > 0 ? (
+                    <img
+                      style={{
+                        width: "100%",
+                        maxHeight: 300,
+                        backgroundColor: "lightblue",
+                        objectFit: "contain"
+                      }}
+                      src={imageView}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1.5em",
+                        lineHeight: 13
+                      }}>
+                      Select image on file to upload
+                    </div>
+                  )}
+                  {errors.map((error, key) => (
+                    <p className="error" key={key}>
+                      {error.file.name} - {error.type}
+                    </p>
+                  ))}
+                  <p>File type supported is jpeg, jpg, png.</p>
+                  <p>File size supported is maximum 2MB</p>
+                </div>
+              )}
+            </>
+          );
+        }}
       </Files>
     </UploadImageStyled>
   );
@@ -137,6 +148,7 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
+
   return (
     <CropperImageStyled>
       <Cropper
@@ -183,7 +195,11 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
                 croppedAreaPixels,
                 rotation
               );
-              onSave(croppedImage.file);
+
+              console.log("croppedImage", croppedImage);
+              if (ALLOWED_FILE_TYPES.includes(croppedImages.file.type)) {
+                onSave(croppedImage.file);
+              }
             }}>
             Save
           </button>
