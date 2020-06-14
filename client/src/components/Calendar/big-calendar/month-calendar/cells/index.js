@@ -92,6 +92,7 @@ export default function index({
   auth,
   calendars,
   currentMonth,
+  isTimedDisplay,
   selectedDate,
   selectedCalendars,
   events,
@@ -268,6 +269,7 @@ export default function index({
                   calendars={calendars || []}
                   event={event}
                   day={day}
+                  isTimedDisplay={isTimedDisplay}
                   key={key}
                   selectedCalendars={selectedCalendars}
                   publicView={publicView}

@@ -15,7 +15,8 @@ import {
   faClone,
   faShareAltSquare,
   faChevronDown,
-  faChevronUp
+  faChevronUp,
+  faClock
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
@@ -123,7 +124,9 @@ export default function index({
   calendars,
   calendarType,
   handleChangeCalendarType,
+  isTimedDisplay,
   selectedCalendars,
+  setTimeDisplayed,
   handleCalendarSelection,
   publicView
 }) {
@@ -138,6 +141,7 @@ export default function index({
   const [currentPage, setCurrentPage] = useState(0);
   const [viewAllCalendar, setViewAllCalendar] = useState(false);
   const [isConfirmationVisible, setConfirmationVisible] = useState(false);
+  const [isTimeDisplayed, setIsTimedDisplayed] = useState(false);
   const [currentAction, setCurrentAction] = useState(null);
   const [currentConfirmationMessage, setCurrentConfirmationMessage] = useState(
     ""
@@ -242,6 +246,12 @@ export default function index({
               onClick={() => {
                 setViewAllCalendar(!viewAllCalendar);
               }}
+            />
+
+            <FontAwesomeIcon
+              icon={faClock}
+              onClick={setTimeDisplayed}
+              style={{ color: isTimedDisplay ? "black" : "gray" }}
             />
           </button>
         )}

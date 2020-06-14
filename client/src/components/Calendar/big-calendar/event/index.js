@@ -136,6 +136,7 @@ export default function index({
   calendars,
   day,
   event,
+  isTimedDisplay,
   selectedCalendars,
   publicView
 }) {
@@ -145,7 +146,6 @@ export default function index({
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   const toggleEditEventModal = () => {
-  
     setEditEventVisible(!isEditEventVisible);
   };
 
@@ -153,7 +153,7 @@ export default function index({
     setDuplicateEventVisible(!isDuplicateEventVisible);
   };
   const isCurrentUserGuest = isGuest(event.guests, auth.email);
-  console.log("isCurrentUserGuest", isCurrentUserGuest);
+
   let schedule = [
     format(new Date(event.start_of_event), "MMM dd,yyyy hh:mm a"),
     format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
@@ -247,28 +247,6 @@ export default function index({
                   );
                 })}
               </div>
-
-              {/* <div id="event-controls" className="grid">
-                <div>
-                  <FontAwesomeIcon
-                    icon={faStar}
-                    color={theme.smallCalendar.event.backgroundColor.primary}
-                  />
-                  (5)
-                </div>
-                <div>
-                  <FontAwesomeIcon icon={faCommentDots} />
-                  (12)
-                </div>
-                <div>
-                  <FontAwesomeIcon icon={faShare} />
-                  (5)
-                </div>
-                <div>
-                  <FontAwesomeIcon icon={faCheckCircle} />
-                  I'm going
-                </div>
-              </div> */}
             </div>
           </EventPopOverStyled>
         </ArrowContainer>
@@ -303,8 +281,9 @@ export default function index({
               textOverflow: "ellipsis",
               whiteSpace: "nowrap"
             }}>
-            {" "}
-            {event.name}
+            {isTimedDisplay &&
+              format(new Date(event.start_of_event), "hh:mm a")}
+            {` `} {event.name}
           </div>
           {event.multi_color &&
             event.multi_color.map(

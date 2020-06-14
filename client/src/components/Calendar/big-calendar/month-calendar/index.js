@@ -15,6 +15,9 @@ const BigCalendarStyled = styled.div`
   background-color: white;
   width: 100%;
 `;
+
+const DEFAULT_TIME_DISPLAY =
+  sessionStorage.getItem("isTimeDisplayed") === "true" ? true : false;
 export default function index({
   auth,
   contacts,
@@ -28,6 +31,7 @@ export default function index({
   publicView
 }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
+  const [isTimedDisplay, setTimeDisplay] = useState(DEFAULT_TIME_DISPLAY);
   const [formattedCalendars, setFormattedCalendars] = useState([]);
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
@@ -45,7 +49,7 @@ export default function index({
       currentDate.currentMonth,
       differenceInMonths(new Date(year, month, 0), currentDate.currentMonth)
     );
-    console.log(currentMonth);
+
     const firstDayOfTheMonth = startOfMonth(currentMonth);
     setCurrentDate({
       ...currentDate,
@@ -74,6 +78,11 @@ export default function index({
     });
   };
 
+  const setTimeDisplayed = () => {
+    setTimeDisplay(!isTimedDisplay);
+    sessionStorage.setItem("isTimeDisplayed", !isTimedDisplay);
+  };
+
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
       {!publicView && (
@@ -93,9 +102,11 @@ export default function index({
         calendars={calendars}
         calendarType={calendarType}
         handleChangeCalendarType={handleChangeCalendarType}
+        isTimedDisplay={isTimedDisplay}
         selectedCalendars={selectedCalendars}
         handleCalendarSelection={handleCalendarSelection}
         publicView={publicView}
+        setTimeDisplayed={setTimeDisplayed}
       />
       <Days currentMonth={currentDate.currentMonth} />
       <Cells
@@ -104,6 +115,7 @@ export default function index({
         selectedCalendars={selectedCalendars}
         events={events}
         currentMonth={currentDate.currentMonth}
+        isTimedDisplay={isTimedDisplay}
         selectedDate={currentDate.selectedDate}
         handleChangeDay={handleChangeDay}
         familyMembers={familyMembers}
