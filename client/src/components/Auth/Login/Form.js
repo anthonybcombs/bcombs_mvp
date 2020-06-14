@@ -51,6 +51,9 @@ const LoginFormStyled = styled.form`
   svg {
     vertical-align: middle;
   }
+  #socials {
+    margin-top: 2em !important;
+  }
   #socials button {
     padding: 1em;
     border-radius: 0 !important;
@@ -146,6 +149,9 @@ export default function Form({
         errorType="required"
         message="Password is required."
       />
+      <button type="submit" data-testid="app-login-button-signin">
+        SIGN IN
+      </button>
       <div id="socials" className="grid">
         <button
           id="facebook"
@@ -176,9 +182,6 @@ export default function Form({
           <Link to="/auth/forgot-password">Forgot Password</Link>
         </p>
       </div>
-      <button type="submit" data-testid="app-login-button-signin">
-        SIGN IN
-      </button>
     </LoginFormStyled>
   );
 }

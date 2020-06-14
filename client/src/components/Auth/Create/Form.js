@@ -465,7 +465,7 @@ export default function Form({
         SIGN UP
       </button>
       <p>
-        Already Member! <Link to="/">Sign In</Link>
+        Already have an account? <Link to="/">Sign In</Link>
       </p>
     </CreateUserFormStyled>
   );

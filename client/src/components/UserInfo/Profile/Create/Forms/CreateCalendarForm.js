@@ -28,6 +28,9 @@ const CreateCalendarFormStyled = styled.form`
     border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
+  input[type="radio"] {
+    width: 15px;
+  }
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;
@@ -43,7 +46,28 @@ const CreateCalendarFormStyled = styled.form`
     margin: 10px auto;
     width: 100%;
     border: none;
+  }
+  #actions {
+    margin: 0 auto;
     margin-top: 20em;
+    input {
+      display: inline-block !important;
+    }
+    button{
+      display: inline-block !important;
+      margin: 1em;
+    }
+    #skip {
+      background-color: white;
+      color: black;
+      border: 1px solid grey;
+      box-shadow: none;
+    }
+  }
+  #calendar-privacy-setting {
+    input {
+      display: inline-block !important;
+    }
   }
   @media (min-width: 600px) {
     button[type="submit"] {
@@ -60,14 +84,23 @@ export default function CreateCalendarForm({
   onSubmit,
   handleInputChange,
 }) {
-  const { register, handleSubmit, errors, setValue } = useForm({
+  const { register, handleSubmit, errors, setValue, unregister } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
   React.useEffect(() => {
+    register({ name: "name" }, { required: true });
+    register({ name: "visibilityType" }, { required: true });
     register({ name: "image" }, { required: true });
   }, []);
   const theme = useContext(ThemeContext);
+  const handleSkip = () => {
+    unregister("name");
+    unregister("visibilityType");
+    unregister("image");
+    handleSubmit(onSubmit)();
+  };
+
   return (
     <CreateCalendarFormStyled
       data-testid="app-profile-calendar-create-form"
@@ -80,14 +113,46 @@ export default function CreateCalendarForm({
         placeholder="Calendar name"
         name="name"
         onChange={({ target }) => {
+          setValue("name", target.value);
           handleInputChange("name", target.value);
         }}
-        ref={register({ required: true })}
       />
       <ErrorMessage
         field={errors.name}
         errorType="required"
         message="Calendar name is required."
+      />
+      <p>Calendar Privacy Setting: </p>
+      <div id="calendar-privacy-setting">
+        <p>
+          <input
+            type="radio"
+            name="visibilityType"
+            value={"Private"}
+            onChange={({ target }) => {
+              setValue("visibilityType", target.value);
+              handleInputChange("visibilityType", target.value);
+            }}
+          />
+          Private - only for me
+        </p>
+        <p>
+          <input
+            type="radio"
+            name="visibilityType"
+            value={"Public"}
+            onChange={({ target }) => {
+              setValue("visibilityType", target.value);
+              handleInputChange("visibilityType", target.value);
+            }}
+          />
+          Public - show to all
+        </p>
+      </div>
+      <ErrorMessage
+        field={errors.visibilityType}
+        errorType="required"
+        message="Calendar Privacy setting is required."
       />
       <UploadImage
         handleImageChange={(image) => {
@@ -101,9 +166,14 @@ export default function CreateCalendarForm({
         errorType="required"
         message="Calendar image is required."
       />
-      <button data-testid="app-profile-save-button" type="submit">
-        Save and Done!
-      </button>
+      <div id="actions">
+        <button data-testid="app-profile-save-button" type="submit">
+          Save and Done!
+        </button>
+        <button data-testid="app-profile-calendar-skip-button" id="skip" onClick={handleSkip}>
+          Skip
+        </button>
+      </div>
     </CreateCalendarFormStyled>
   );
 }

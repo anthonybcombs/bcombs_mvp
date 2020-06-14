@@ -125,7 +125,7 @@ export default function index({ setCurrentPage, setProfileDetails }) {
         toggleCreateFamilyModal={toggleCreateFamilyModal}
         handleOAddFamilyMember={handleOAddFamilyMember}
       />
-      <h2 data-testid="app-profile-family-member-header">Add Family Members</h2>
+      <h2 data-testid="app-profile-family-member-header">Add Family</h2>
       <h3 data-testid="app-profile-family-member-sub-header">
         Add family members so you can view their schedules in your calendar
       </h3>

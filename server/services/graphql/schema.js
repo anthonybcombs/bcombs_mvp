@@ -63,11 +63,11 @@ const inputs = `
     input CalendarInfoInput{
         id: String
         user_id: String
-        name: String!
+        name: String
         image: String
         familyMembers:[String],
         groups:[String]
-        visibilityType: String!
+        visibilityType: String
         color: String
     }    
     input CreateProfileInput{
