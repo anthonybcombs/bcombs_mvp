@@ -56,7 +56,7 @@ export default function index({
     <SmallCalendarStyled data-testid="app-small-calendar" id="small-calendar">
       {!removeSubHeader && (
         <h2 data-testid="app-small-calendar-header-current-month-year">
-          {format(currentDate.currentMonth, "MMM yyyy")}
+          {format(currentDate.currentMonth, "MMMM yyyy")}
         </h2>
       )}
       <Header

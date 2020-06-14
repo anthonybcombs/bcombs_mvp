@@ -61,10 +61,10 @@ export default function index({ calendarName = "test" }) {
           </span>
           <div className="grid">
             <p>{calendarName} has been created!</p>
-            <p class="grid">
+            <p className="grid">
               <span>
-                Now you can personalize the whole family profile.Follow family
-                member's school,sports,activities calendars.
+                Now you can personalize the whole family profile. Follow family
+                member's school, sports, activities calendars.
               </span>
               <button id="jump-to-family-button">
                 Jump to My Family and Get Started!

@@ -17,6 +17,7 @@ import EventSliderStyled from "./EventSlider";
 import Slider from "react-rangeslider";
 import "react-rangeslider/lib/index.css";
 import "./override-slider.css";
+import "font-awesome/css/font-awesome.min.css"
 import NotificationStyled from "./Notifications";
 import {
   format,
@@ -77,14 +78,14 @@ const HomeStyled = styled.div`
     background-color: white;
   }
   .is-closed h3:after {
-    content: "↓";
-    font-size: 1em;
+    font-family: "fontawesome";
+    content: "\f078";
     color: black;
     margin-left: 0.5em;
   }
   .is-open h3:after {
-    content: "↑";
-    font-size: 1em;
+    font-family: "fontawesome";
+    content: "\f077";
     color: black;
     margin-left: 0.5em;
   }
@@ -136,7 +137,7 @@ const HomeStyled = styled.div`
   }
   @media (min-width: 600px) {
     .grid {
-      grid-template-columns: 4fr 6fr;
+      grid-template-columns: 3fr 6fr;
       grid-gap: 2%;
     }
     #add-event-button {

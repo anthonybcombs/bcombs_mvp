@@ -37,7 +37,7 @@ const EventSliderStyled = styled.div`
   .rows {
     display: inline-block;
     width: 800px;
-    padding: 20px;
+    padding: 20px 50px 20px 20px;
     padding-top: 0;
   }
   
@@ -227,7 +227,7 @@ export default function index({
   }
 
   while(day <= endDate) {
-    formattedDate = format(day, "eee, MMM dd").toUpperCase();
+    formattedDate = format(day, "eee, MMMM dd").toUpperCase();
     days.push(
       <div className="events-day">
         <h3>{formattedDate}</h3>

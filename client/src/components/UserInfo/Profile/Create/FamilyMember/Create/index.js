@@ -19,7 +19,8 @@ export default function index({
     familyrelationship: "father",
     zipcode: "",
     dateofbirth: "",
-    type: "Family Member"
+    type: "Family Member",
+    unrequiredFields: ["zipcode", "dateofbirth"]
   });
   const handleInputChange = (id, value) => {
     setFamilyMemberDetails({ ...familyMemberDetails, [id]: value });
@@ -44,7 +45,7 @@ export default function index({
           Add a family member
         </h2>
         <Form
-          details={familyMemberDetails}
+          data={familyMemberDetails}
           onSubmit={handleFormSubmit}
           handleInputChange={handleInputChange}
         />

@@ -38,15 +38,22 @@ const CellsStyled = styled.div`
     display: inline-block;
     position: relative;
   }
+  .selected {
+    display: inline-block;
+  }
   .selected > .day {
     background-color: ${({ theme }) =>
       theme.smallCalendar.cell.backgroundColor.primary};
     color: ${({ theme }) => theme.smallCalendar.cell.textColor.primary};
     border-radius: 50%;
     padding: 0.6em;
-    width: 1em;
-    height: 1em;
-    line-height: 1em;
+    width: 1.1em;
+    height: 1.1em;
+    line-height: 1.1em;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   .has-events {
     border: 1px solid
