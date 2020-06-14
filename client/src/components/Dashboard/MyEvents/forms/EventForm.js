@@ -247,6 +247,11 @@ export default function createEventForm({
   });
   const [suggestion, setSuggestion] = useState([]);
   const [selectedGuest, setSelectedGuest] = useState([]);
+  const [descriptionCount, setDescriptionCount] = useState(
+    eventDetails && eventDetails.description
+      ? eventDetails.description.length
+      : 0
+  );
   const [autoCompleteValue, setAutoCompleteValue] = useState("");
   const [isFetching, setFetching] = useState(false);
 
@@ -572,18 +577,20 @@ export default function createEventForm({
         errorType="required"
         message="Location is required."
       />
-      <input
-        autoComplete="off"
+      <textarea
         data-testid="app-dashboard-my-events-new-event-input-title"
-        type="text"
         name="description"
         placeholder="Description"
-        value={eventDetails.description}
         onChange={e => {
-          handleEventDetailsChange("description", e.target.value);
+          setDescriptionCount(e.target.value.length);
+          if (e.target.value.length <= 500) {
+            handleEventDetailsChange("description", e.target.value);
+          }
         }}
-        ref={register({ required: true })}
-      />
+        ref={register({ required: true })}>
+        {eventDetails.description}
+      </textarea>
+      <p>{descriptionCount}/500</p>
       <ErrorMessage
         field={errors.description}
         errorType="required"

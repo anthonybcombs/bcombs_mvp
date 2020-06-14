@@ -18,7 +18,8 @@ const EditEventModal = styled.div`
   input:invalid {
     box-shadow: none;
   }
-  input {
+  input,
+  textarea {
     background: none;
     width: 100%;
     color: black;
