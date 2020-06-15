@@ -175,8 +175,8 @@ const CreateUserFormStyled = styled.form`
     margin-bottom: 5px;
     font-weight: bold;
   }
-  .required{
-    color:red;
+  .required {
+    color: red;
   }
 `;
 
@@ -194,7 +194,6 @@ const PopoverStyled = styled.div`
   svg {
     margin-right: 1em;
   }
-
 `;
 export default function Form({
   onSubmit,
@@ -243,22 +242,23 @@ export default function Form({
             id="username"
             name="username"
             data-testid="app-create-input-username"
-            placeholder="Username"
+            placeholder="Public Display Name"
             onChange={({ target }) => {
               handleInputChange("username", target.value);
             }}
             ref={register({
-              minLength: 5,
+              minLength: 2,
+              maxLength: 15
               //pattern: /^(([0-9][A-z]+)|([A-z]+))$/
-              validate: {
-                alphanumeric: value => {
-                  const alphaExp = /^[a-zA-z0-9]+$|^[a-zA-Z]*$/;
-                  return alphaExp.test(value);
-                }
-              }
+              // validate: {
+              //   alphanumeric: value => {
+              //     const alphaExp = /^[a-zA-z0-9]+$|^[a-zA-Z]*$/;
+              //     return alphaExp.test(value);
+              //   }
+              // }
             })}
           />
-          <label className="field-label">Username</label>
+          <label className="field-label">Public Display Name</label>
         </div>
         <ErrorMessage
           field={errors.username}
@@ -266,9 +266,7 @@ export default function Form({
           message={
             <>
               <p className="error error-size">
-                Username either must be alphanumeric or alphabet.
-                <br />
-                Username minimum length must be at least 5 characters
+                Username must be 2 to 15 characters long
               </p>
             </>
           }
@@ -295,10 +293,12 @@ export default function Form({
               }
             })}
           />
-          <label className="field-label"><span className="required">*</span> Email</label>
+          <label className="field-label">
+            <span className="required">*</span> Email
+          </label>
         </div>
-  
-         <ErrorMessage
+
+        <ErrorMessage
           className="error-size"
           field={errors.email}
           errorType="required"
@@ -308,7 +308,6 @@ export default function Form({
                 Email is required.
                 <br />
                 Invalid email address <br />
-             
               </p>
             </>
           }
@@ -441,7 +440,9 @@ export default function Form({
               }
             })}
           />
-          <label className="field-label"><span className="required">*</span> Confirm Password</label>
+          <label className="field-label">
+            <span className="required">*</span> Confirm Password
+          </label>
         </div>
         <ErrorMessage
           className="error-size"
