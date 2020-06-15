@@ -329,7 +329,6 @@ export default function index({ events, selectedYear, familyMembers }) {
             })
             .reverse()}
           <div>
-            <h2>Upcoming Events</h2>
             {futureMonths
               .filter((month, index) => {
                 if (currentYear === selectedYear) {
@@ -479,6 +478,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                       />
                     </div>
                   )}
+                  <hr />
                 </div>
               );
             })
