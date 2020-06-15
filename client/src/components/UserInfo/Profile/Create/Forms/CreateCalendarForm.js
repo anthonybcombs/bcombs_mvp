@@ -49,7 +49,7 @@ const CreateCalendarFormStyled = styled.form`
   }
   #actions {
     margin: 0 auto;
-    margin-top: 20em;
+    margin-top: 3em;
     input {
       display: inline-block !important;
     }
@@ -95,6 +95,9 @@ export default function CreateCalendarForm({
   }, []);
   const theme = useContext(ThemeContext);
   const handleSkip = () => {
+    setValue("name", null);
+    setValue("visibilityType", null);
+    setValue("image", null);
     unregister("name");
     unregister("visibilityType");
     unregister("image");

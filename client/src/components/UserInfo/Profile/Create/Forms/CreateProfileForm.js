@@ -22,7 +22,7 @@ const CreateProfileStyled = styled.form`
     outline: 0;
     border-bottom: 2px solid lightgrey;
     margin-top: 2.5em;
-    margin-bottom: 2.5em;
+    margin-bottom: 1em;
   }
   input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
@@ -42,7 +42,7 @@ const CreateProfileStyled = styled.form`
     display: block;
     margin: 10px auto;
     border: none;
-    margin-top: 0.5em;
+    margin-top: 2.5em;
   }
   select {
     font-size: ${({ theme }) => theme.input.fontSize};
@@ -58,9 +58,12 @@ const CreateProfileStyled = styled.form`
   h3 {
     text-align: center;
   }
-
   [hidden] {
     display: none;
+  }
+  p.error {
+    margin: 0 !important;
+    font-size: 14px !important;
   }
   @media (min-width: 600px) {
     .grid {
@@ -78,10 +81,11 @@ export default function CreateProfileForm({
   handleInputChange,
   userType
 }) {
+  const [showWarningFutureDate, setShowWarningFutureDate] = useState(false);
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors, watch, setValue, unregister } = useForm({
-    mode: "onSubmit",
+    mode: "onBlur",
     reValidateMode: "onChange",
   });
   React.useEffect(() => {
@@ -240,6 +244,7 @@ export default function CreateProfileForm({
                   handleDateOfBirthElementTypeChange("text");
                 }}
                 onChange={({ target }) => {
+                  setShowWarningFutureDate(isFuture(parseISO(target.value)));
                   setValue("dateofbirth", target.value);
                   handleInputChange("dateofbirth", target.value);
                 }}
@@ -249,6 +254,10 @@ export default function CreateProfileForm({
                 errorType="required"
                 message="Date of Birth is required."
               />
+              {showWarningFutureDate && <>
+                  <p className="error">Date of Birth is in future.</p>
+                </>
+              }
             </>
           }
         </div>
