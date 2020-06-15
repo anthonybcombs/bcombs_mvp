@@ -240,18 +240,27 @@ export default function index({
               onClick={() => {
                 toggleCreateCalendarModal(true);
               }}
+              style={{
+                margin: "0 5px"
+              }}
             />
             <FontAwesomeIcon
               icon={viewAllCalendar ? faChevronUp : faChevronDown}
               onClick={() => {
                 setViewAllCalendar(!viewAllCalendar);
               }}
+              style={{
+                margin: "0 5px"
+              }}
             />
 
             <FontAwesomeIcon
               icon={faClock}
               onClick={setTimeDisplayed}
-              style={{ color: isTimedDisplay ? "black" : "gray" }}
+              style={{
+                color: isTimedDisplay ? "black" : "gray",
+                margin: "0 5px"
+              }}
             />
           </button>
         )}
