@@ -368,7 +368,7 @@ export default function index({
       name: 'Student Name',
       selector: 'studentName',
       sortable: true,
-      cell: row => <a onClick={(e) => {e.preventDefault();}} href="#"><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>,
+      cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>,
     },
     {
       name: 'Parent name',
@@ -493,7 +493,7 @@ export default function index({
   const dispatch = useDispatch();
 
   let data = applications.length > 0 ? applications : [];
-
+  
   let getApplications = applications.length > 0 ? applications : [];
 
   data = getApplications.filter((item) => {

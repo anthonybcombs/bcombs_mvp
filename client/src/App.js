@@ -68,6 +68,10 @@ const AsyncApplicationForm = Loadable({
   loader: () => import("./components/Dashboard/ApplicationForm"),
   loading: Loading,
 });
+const AsyncChildInformatioView = Loadable({
+  loader: () => import("./components/Dashboard/Application/child"),
+  loading: Loading
+});
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -93,6 +97,7 @@ export default function App() {
               <AyncDashboardMyContacts path="mycontacts" />
               <AsyncProfile path="createprofile" />
               <AsyncApplicationStatus path="application" />
+              <AsyncChildInformatioView path="menteeprofile/:id"/>
               <AsyncArchivedApplication path="archived" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />

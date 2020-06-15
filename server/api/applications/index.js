@@ -1,14 +1,15 @@
 import { makeDb } from "../../helpers/database";
 
-export const getApplications = async () => {
+export const getApplicationById = async (id) => {
   const db = makeDb();
   let result = [];
   try {
     const applications = await db.query (
       `SELECT 
-        BIN_TO_UUID(id) as id, 
+        id,
+        BIN_TO_UUID(app_id) as app_id, 
         BIN_TO_UUID(vendor) as vendor, 
-        BIN_TO_UUID(child) as child, 
+        BIN_TO_UUID(child) as child,
         section1_signature,
         section1_date_signed,
         section2_signature,
@@ -19,11 +20,23 @@ export const getApplications = async () => {
         student_status,
         color_designation,
         notes,
-        class_teacher
-        FROM application`,
+        class_teacher,
+        application_date,
+        archived_date,
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name
+        FROM application
+        WHERE id=?
+        ORDER BY id DESC`,
+        [id]
     )
     result = applications;
   } catch (error) {
+    console.log("error", error);
   } finally {
     await db.close();
     return result;
@@ -36,6 +49,7 @@ export const getApplicationsByVendor = async (vendor) => {
   try {
     const applications = await db.query (
       `SELECT 
+        id,
         BIN_TO_UUID(app_id) as app_id, 
         BIN_TO_UUID(vendor) as vendor, 
         BIN_TO_UUID(child) as child,
@@ -78,6 +92,7 @@ export const getArchivedApplicationsByVendor = async (vendor_id) => {
   try {
     const applications = await db.query (
       `SELECT 
+        id,
         BIN_TO_UUID(app_id) as app_id, 
         BIN_TO_UUID(vendor) as vendor, 
         BIN_TO_UUID(child) as child,
