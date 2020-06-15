@@ -336,10 +336,10 @@ export default function index({
     
   }
 
-  const getPrimaryParentName = (parents) => {
+  const getPrimaryParentName = (parents, id) => {
 
     if(parents.length > 0) {
-      return <a href="" onClick={(e) => {e.preventDefault();}}><span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span></a>
+      return <a target="_blank" href={"parentprofile/" + id}><span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span></a>
     } else {
       return "";
     }
@@ -374,7 +374,7 @@ export default function index({
       name: 'Parent name',
       selector: 'parentName',
       sortable: true,
-      cell: row => getPrimaryParentName(row.parents)
+      cell: row => getPrimaryParentName(row.parents, row.id)
     },
     {
       name: 'Class',

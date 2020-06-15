@@ -72,6 +72,10 @@ const AsyncChildInformatioView = Loadable({
   loader: () => import("./components/Dashboard/Application/child"),
   loading: Loading
 });
+const AsyncParentInformatioView = Loadable({
+  loader: () => import("./components/Dashboard/Application/parent"),
+  loading: Loading
+});
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -98,6 +102,7 @@ export default function App() {
               <AsyncProfile path="createprofile" />
               <AsyncApplicationStatus path="application" />
               <AsyncChildInformatioView path="menteeprofile/:id"/>
+              <AsyncParentInformatioView path="parentprofile/:id"/>
               <AsyncArchivedApplication path="archived" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
