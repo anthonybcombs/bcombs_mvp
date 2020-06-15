@@ -48,6 +48,7 @@ import {
   archivedApplication,
   unArchivedApplication,
   getArchivedApplicationsByVendor,
+  getApplicationById
 } from "../../api/applications";
 import { addChild, getChildInformation } from "../../api/child";
 import { addParent, getParentByApplication } from "../../api/parents";
@@ -171,6 +172,21 @@ const resolvers = {
         resapplications.push(application);
       }
       return resapplications;
+    },
+    async getApplicationById(root, { id }, context) {
+      let applications = await getApplicationById(id);
+      let resapplication;
+
+      if(applications.length > 0) {
+        let child = await getChildInformation(applications[0].child);
+        console.log("application child ", applications[0].child);
+        console.log("child ", child);
+        applications[0].parents = await getParentByApplication(applications[0].app_id);
+        applications[0].child = child.length > 0 ? child[0] : {};
+        resapplication = applications[0];
+      }
+      console.log("resapplication", resapplication);
+      return resapplication;
     },
     async getUserByEmail(root, { email }, context) {
       const response = await checkUserEmail(email);

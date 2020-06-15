@@ -61,8 +61,9 @@ import {
   getApplication,
   getUserApplication,
   updateApplication,
-  archivedApplication,
+  archivedApplication, 
   getArchivedApplication,
+  getApplicationById
 } from "../actions/Application";
 import reducer from "../reducers";
 function* rootSaga() {
@@ -128,14 +129,9 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_GET_APPLICATION, getApplication);
   yield takeLatest(actionType.REQUEST_USER_APPLICATIONS, getUserApplication);
   yield takeLatest(actionType.REQUEST_UPDATE_APPLICATION, updateApplication);
-  yield takeLatest(
-    actionType.REQUEST_ARCHIVED_APPLICATION,
-    archivedApplication
-  );
-  yield takeLatest(
-    actionType.REQUEST_GET_ARCHIVED_APPLICATION,
-    getArchivedApplication
-  );
+  yield takeLatest(actionType.REQUEST_ARCHIVED_APPLICATION, archivedApplication);
+  yield takeLatest(actionType.REQUEST_GET_ARCHIVED_APPLICATION, getArchivedApplication);
+  yield takeLatest(actionType.REQUEST_GET_APPLICATION_ID, getApplicationById);
 }
 const sagaMiddleware = createSagaMiddleware();
 

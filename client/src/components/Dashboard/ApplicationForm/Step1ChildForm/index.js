@@ -53,8 +53,7 @@ export default function index({
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         counter={counter}
         register={register}
-        errors={errors}
-      />
+        errors={errors} />
       <div className="application-btn-container">
         {
           current < maxChild && counter == current &&
