@@ -151,7 +151,7 @@ export default function index({
     <HeaderStyled data-testid="app-big-calendar-header">
       <CreateCalendarModal
         isVisible={isVisibleCreateCalendarModal}
-        toggleCreateCalendarModal={setConfirmationVisible}
+        toggleCreateCalendarModal={toggleCreateCalendarModal}
       />
       <Confirmation
         isVisible={isConfirmationVisible}
