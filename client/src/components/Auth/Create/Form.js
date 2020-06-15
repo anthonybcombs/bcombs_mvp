@@ -289,7 +289,7 @@ export default function Form({
               required: true,
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: "Invalid email address"
+                message: "Valid email should contain '@' and '.'"
               }
             })}
           />
@@ -307,7 +307,7 @@ export default function Form({
               <p className="error error-size">
                 Email is required.
                 <br />
-                Invalid email address <br />
+                Valid email address should contain '@' and '.' <br />
               </p>
             </>
           }
