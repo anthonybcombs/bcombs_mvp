@@ -63,11 +63,11 @@ const inputs = `
     input CalendarInfoInput{
         id: String
         user_id: String
-        name: String!
+        name: String
         image: String
         familyMembers:[String],
         groups:[String]
-        visibilityType: String!
+        visibilityType: String
         color: String
     }    
     input CreateProfileInput{
@@ -492,6 +492,7 @@ const queryTypes = `
     }
 
     type Application {
+        id: Int
         app_id: String
         vendor: String
         child: Child
@@ -590,6 +591,7 @@ const queries = `
         getApplications: [Application]
         getVendorApplications(vendor_id: String!): [Application]
         getVendorArchivedApplications(vendor_id: String!): [Application]
+        getApplicationById(id: String!): Application
         getApplication(application_id: String!): Application
         getUserApplications(email: String!): UserApplication
         getUserByEmail(email: String): CheckUserEmail

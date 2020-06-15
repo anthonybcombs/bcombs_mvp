@@ -76,16 +76,32 @@ export default function CreateProfileForm({
   data,
   onSubmit,
   handleInputChange,
+  userType
 }) {
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, watch, setValue, unregister } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
+  React.useEffect(() => {
+    register({ name: "zipcode" }, { required: true });
+    register({ name: "dateofbirth" }, { required: true });
+  }, []);
   const handleDateOfBirthElementTypeChange = (value) => {
     setDateOfBirthElementType(value);
   };
+  const gender = watch('gender');
+  if (data && data.hasOwnProperty('unrequiredFields')) {
+    let unrequiredFields = data.unrequiredFields;
+    unrequiredFields.forEach(item => unregister(item));
+  }
+  if (userType === "VENDOR") {
+    unregister("dateofbirth");
+  }
+  const isRequiredField = (field) => {
+    return !(data && data.hasOwnProperty('unrequiredFields') && data.unrequiredFields.indexOf(field) > -1);
+  }
 
   return (
     <CreateProfileStyled
@@ -98,7 +114,7 @@ export default function CreateProfileForm({
       <input
         data-testid="app-profile-input-firstname"
         name="firstname"
-        placeholder="First name"
+        placeholder="* First name"
         onChange={({ target }) => {
           handleInputChange("firstname", target.value);
         }}
@@ -112,7 +128,7 @@ export default function CreateProfileForm({
       <input
         data-testid="app-profile-input-lastname"
         name="lastname"
-        placeholder="Last name"
+        placeholder="* Last name"
         onChange={({ target }) => {
           handleInputChange("lastname", target.value);
         }}
@@ -131,9 +147,8 @@ export default function CreateProfileForm({
         }}
         ref={register({ required: true })}
       >
-        <option value="" disabled hidden>
-          Family relationship
-        </option>
+        <option value="" disabled>Select Family Relationship</option>
+        <option value="default">Default</option>
         <option value="father">Father</option>
         <option value="mother">Mother</option>
         <option value="sibling">Sibling</option>
@@ -153,70 +168,89 @@ export default function CreateProfileForm({
             }}
             ref={register({ required: true })}
           >
-            <option value="" disabled hidden>
-              Gender
-            </option>
+            <option value="" disabled>Select Gender</option>
+            <option value="default">Default</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
+            <option value="custom">Custom</option>
           </select>
           <ErrorMessage
             field={errors.gender}
             errorType="required"
             message="Gender is required."
           />
+          {gender === "custom" && <>
+              <select
+                data-testid="app-profile-select-custom-gender"
+                name="customGender"
+                onChange={({ target }) => {
+                  handleInputChange("gender", target.value); // Override gender value
+                  handleInputChange("customGender", target.value);
+                }}
+                ref={register({ required: true })}
+              >
+                <option value="" disabled>Select Customer Gender</option>
+                <option value="she">She</option>
+                <option value="he">He</option>
+                <option value="they">They</option>
+              </select>
+              <ErrorMessage
+                field={errors.customGender}
+                errorType="required"
+                message="Custom Gender is required."
+              />
+            </>
+          }
         </div>
         <div>
           <input
             data-testid="app-profile-input-zip-code"
             name="zipcode"
             type="number"
-            placeholder="Zip code"
+            placeholder={`${isRequiredField("zipcode") ? "* " : ""}Zipcode`}
             onChange={({ target }) => {
+              setValue("zipcode", target.value);
               handleInputChange("zipcode", target.value);
             }}
-            ref={register({ required: true })}
+            ref={register({
+              minLength: 5,
+            })}
           />
           <ErrorMessage
             field={errors.zipcode}
             errorType="required"
             message="Zip code is required."
           />
-          <input
-            data-testid="app-profile-input-date-of-birth"
-            name="dateofbirth"
-            type={dateOfBirthElementType}
-            placeholder="Date of Birth"
-            onFocus={() => {
-              handleDateOfBirthElementTypeChange("date");
-            }}
-            onBlur={() => {
-              handleDateOfBirthElementTypeChange("text");
-            }}
-            onChange={({ target }) => {
-              handleInputChange("dateofbirth", target.value);
-            }}
-            ref={register({
-              required: true,
-              validate: {
-                notFutureDate: (value) => {
-                  if (isFuture(parseISO(value))) {
-                    return false;
-                  }
-                  return true;
-                },
-              },
-            })}
-          />
           <ErrorMessage
-            field={errors.dateofbirth}
-            errorType="required"
-            message="Date of Birth is required."
+            field={errors.zipcode}
+            errorType="minLength"
+            message="Zip code minimum length must be at least 5 characters."
           />
-          <ErrorMessage
-            field={errors.dateofbirth}
-            errorType="notFutureDate"
-            message="Future date is not allowed."
-          />
+          {userType === "USER" && <>
+              <input
+                data-testid="app-profile-input-date-of-birth"
+                name="dateofbirth"
+                type={dateOfBirthElementType}
+                placeholder={`${isRequiredField("dateofbirth") ? "* " : ""}Date of Birth`}
+                min="1900-01-01"
+                onFocus={() => {
+                  handleDateOfBirthElementTypeChange("date");
+                }}
+                onBlur={() => {
+                  handleDateOfBirthElementTypeChange("text");
+                }}
+                onChange={({ target }) => {
+                  setValue("dateofbirth", target.value);
+                  handleInputChange("dateofbirth", target.value);
+                }}
+              />
+              <ErrorMessage
+                field={errors.dateofbirth}
+                errorType="required"
+                message="Date of Birth is required."
+              />
+            </>
+          }
         </div>
       </div>
       <button data-testid="app-profile-submit-button" type="submit">

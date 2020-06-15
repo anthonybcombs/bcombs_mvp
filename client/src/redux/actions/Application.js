@@ -7,10 +7,28 @@ import {
   USER_APPLICATION_QUERY,
   APPLICATION_UPDATE_MUTATION ,
   ARCHIVED_APPLICATION_MUTATION,
-  GET_ARCHIVED_APPLICATIONS_QUERY
+  GET_ARCHIVED_APPLICATIONS_QUERY,
+  GET_APPLICATION_ID_QUERY
 } from "../../graphql/applicationMutation";
 import * as actionType from "./Constant";
 import { setApplicationLoading } from "./Loading";
+
+const getApplicationIdFromDatabase = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: GET_APPLICATION_ID_QUERY,
+        variables: {
+          id: id
+        }
+      });
+
+      return resolve(data.getApplicationById);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 const getActiveApplicationFromDatabase = (vendor_id) => {
   return new Promise(async (resolve, reject) => {
@@ -125,6 +143,13 @@ const addApplicationToDatabase = applications => {
   });
 };
 
+export const requestGetApplicationById = id => {
+  return {
+    type: actionType.REQUEST_GET_APPLICATION_ID,
+    id: id
+  };
+}
+
 export const requestGetApplications = vendor_id => {
   return {
     type: actionType.REQUEST_GET_APPLICATION,
@@ -164,6 +189,30 @@ export const requestGetArchivedApplications = vendor_id => {
   return {
     type: actionType.REQUEST_GET_ARCHIVED_APPLICATION,
     vendor_id: vendor_id
+  }
+}
+
+export function* getApplicationById({id}) {
+  try {
+    const response = yield call(getApplicationIdFromDatabase, id);
+
+    console.log("response", response);
+    if(response) {
+      yield put({
+        type: actionType.REQUEST_GET_APPLICATION_ID_COMPLETED,
+        payload: response
+      })
+    } else {
+      yield put({
+        type: actionType.REQUEST_GET_APPLICATION_ID_COMPLETED,
+        payload: {}
+      })
+    }
+  } catch(err) {
+    yield put({
+      type: actionType.REQUEST_GET_APPLICATION_ID_COMPLETED,
+      payload: {}
+    })
   }
 }
 

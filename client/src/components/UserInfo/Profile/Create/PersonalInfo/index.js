@@ -26,7 +26,7 @@ const CreateProfileStyled = styled.div`
     }
   }
 `;
-export default function index({ setCurrentPage, setProfileDetails }) {
+export default function index({ setCurrentPage, setProfileDetails, userType }) {
   const [personalInfo, setPersonalInfo] = useState({
     firstname: "",
     lastname: "",
@@ -47,7 +47,7 @@ export default function index({ setCurrentPage, setProfileDetails }) {
   return (
     <CreateProfileStyled data-testid="app-profile">
       <h2>Let's get started!</h2>
-      <Form onSubmit={handleFormSubmit} handleInputChange={handleInputChange} />
+      <Form onSubmit={handleFormSubmit} handleInputChange={handleInputChange} userType={userType} />
     </CreateProfileStyled>
   );
 }

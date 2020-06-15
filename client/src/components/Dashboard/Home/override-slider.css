@@ -13,6 +13,8 @@
 }
 
 .rangeslider-horizontal .rangeslider__handle {
+  background-color: #f26e21;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
