@@ -15,12 +15,13 @@ const CreateCalendarModalStyled = styled.div`
 `;
 export default function index({ isVisible = true, toggleCreateCalendarModal }) {
   const [calendarDetails, setCalendarDetails] = useState({
+    color: [],
     name: "",
     selectedFamilyMembers: new Map(),
     image: "",
     visibilityType: "Private",
     color: "",
-    groups: [],
+    groups: []
   });
   const { familyMembers, groups } = useSelector(({ familyMembers, groups }) => {
     return { familyMembers, groups };
@@ -29,14 +30,14 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
   const handleInputChange = (id, value) => {
     setCalendarDetails({ ...calendarDetails, [id]: value });
   };
-  const handleCheckBoxChange = (element) => {
+  const handleCheckBoxChange = element => {
     const value = element.target.value;
     const isChecked = element.target.checked;
     if (value == "Private" || value === "Public") {
       setCalendarDetails({
         ...calendarDetails,
         visibilityType: value,
-        selectedFamilyMembers: new Map(),
+        selectedFamilyMembers: new Map()
       });
       return;
     }
@@ -46,7 +47,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       selectedfamilyMembers: calendarDetails.selectedFamilyMembers.set(
         value,
         isChecked
-      ),
+      )
     });
   };
   const handleCancel = () => {
@@ -55,7 +56,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
       image: "",
-      groups: [],
+      groups: []
     });
     toggleCreateCalendarModal(false);
   };
@@ -66,7 +67,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
       image: "",
-      groups: [],
+      groups: []
     });
     toggleCreateCalendarModal(false);
   };
@@ -76,15 +77,13 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
   return ReactDOM.createPortal(
     <CreateCalendarModalStyled
       data-testid="app-big-calendar-create-modal"
-      className="modal"
-    >
+      className="modal">
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             handleCancel();
-          }}
-        >
+          }}>
           &times;
         </span>
         <h2 data-testid="app-big-calendar-create-modal-header">

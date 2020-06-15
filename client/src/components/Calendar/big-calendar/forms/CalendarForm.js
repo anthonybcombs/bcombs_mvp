@@ -111,10 +111,10 @@ export default function CreateCalendarForm({
   onSubmit,
   handleInputChange,
   handleCheckBoxChange,
-  onCancel,
+  onCancel
 }) {
   const { register, handleSubmit, errors, setValue } = useForm({
-    mode: "onSubmit",
+    mode: "onSubmit"
   });
   React.useEffect(() => {
     register({ name: "image" }, { required: true });
@@ -122,21 +122,21 @@ export default function CreateCalendarForm({
       { name: "color" },
       {
         validate: {
-          isColorExist: (value) =>
-            !colors.includes(value) || details.color == value,
-        },
+          isColorExist: value =>
+            !colors.includes(value) || details.color == value
+        }
       }
     );
-    if (details.image.length > 0) {
+    if (details && details.image && details.image.length > 0) {
       setValue("image", details.image);
     }
-    if (details.color.length > 0) {
+    if (details && details.color && details.color.length > 0) {
       setValue("color", details.color);
     }
   }, []);
   const options = [];
-  Object.keys(groups).forEach((key) => {
-    groups[key].forEach((data) => {
+  Object.keys(groups).forEach(key => {
+    groups[key].forEach(data => {
       options.push({ value: data.id, label: data.name });
     });
   });
@@ -146,8 +146,7 @@ export default function CreateCalendarForm({
       data-testid="app-big-calendar-new-create-form"
       theme={theme}
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <input
         data-testid="app-big-calendar-new-input-calendar-name"
         placeholder="Calendar name"
@@ -165,7 +164,7 @@ export default function CreateCalendarForm({
       />
       <p>Calendar Privacy Setting</p>
       <div id="family-list">
-        {familyMembers.map((familyMember) => (
+        {familyMembers.map(familyMember => (
           <div key={familyMember.id}>
             <input
               type="checkbox"
@@ -196,32 +195,32 @@ export default function CreateCalendarForm({
         <p>Groups</p>
         <Select
           options={options}
-          value={options.map((group) => {
+          value={options.map(group => {
             if (details.groups.includes(group.value)) {
               return {
                 label: group.label,
-                value: group.value,
+                value: group.value
               };
             }
           })}
           isMulti
           closeMenuOnSelect={false}
-          onChange={(option) => {
+          onChange={option => {
             if (option !== null) {
-              const groupIds = option.map((group) => group.value);
+              const groupIds = option.map(group => group.value);
               handleInputChange("groups", groupIds);
               return;
             }
             handleInputChange("groups", []);
           }}
-          theme={(theme) => ({
+          theme={theme => ({
             ...theme,
             borderRadius: 0,
             colors: {
               ...theme.colors,
               primary25: "#f26e21",
-              primary: "#f26e21",
-            },
+              primary: "#f26e21"
+            }
           })}
         />
         {/* <ErrorMessage
@@ -260,11 +259,11 @@ export default function CreateCalendarForm({
         errorType="required"
         message="Calendar Privacy setting is required."
       />
-      {details.color.length > 0 && (
+      {details && details.color && details.color.length > 0 && (
         <>
           <ColorPicker
             color={details.color}
-            setColor={(color) => {
+            setColor={color => {
               setValue("color", color);
               handleInputChange("color", color);
             }}
@@ -283,7 +282,7 @@ export default function CreateCalendarForm({
       )}
       <UploadImage
         displayImage={details.image}
-        handleImageChange={(image) => {
+        handleImageChange={image => {
           setValue("image", image);
           handleInputChange("image", image);
           return false;
@@ -298,8 +297,7 @@ export default function CreateCalendarForm({
         <button
           data-testid="app-big-calendar-new-cancel-button"
           type="button"
-          onClick={() => onCancel()}
-        >
+          onClick={() => onCancel()}>
           Cancel
         </button>
         <button data-testid="app-big-calendar-new-save-button" type="submit">
