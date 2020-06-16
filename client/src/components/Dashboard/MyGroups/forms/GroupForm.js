@@ -365,7 +365,9 @@ export default function GroupForm({
             ))}
         </div>
 
-        <label className="field-label">Add other users</label>
+        <label className="field-label">
+          Add other users (Should be an existing bcombs user)
+        </label>
         <Autosuggest
           autoComplete="off"
           inputProps={inputProps}

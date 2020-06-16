@@ -28,6 +28,7 @@ export default function index({
   auth
 }) {
   const [isLoading, setLoading] = useState(false);
+  const [userNotExist, setUserNotExist] = useState(false);
   const [contactDetails, setContactDetails] = useState({
     id: uuid(),
     first_name: "",
@@ -79,6 +80,7 @@ export default function index({
         const response = await checkUserEmail(contactDetails.email);
 
         if (response.is_exist) {
+          setUserNotExist(false);
           const payload = {
             ...contactDetails,
             authEmail: auth.email
@@ -92,7 +94,7 @@ export default function index({
           }
           setLoading(false);
         } else {
-          alert(`Email is not registered!`);
+          setUserNotExist(true);
           setLoading(false);
         }
       } else {
@@ -135,6 +137,7 @@ export default function index({
             contactDetails={contactDetails}
             onSubmit={handleSubmit}
             handleContactDetailsChange={handleContactDetailsChange}
+            userNotExist={userNotExist}
           />
         </div>
       </div>

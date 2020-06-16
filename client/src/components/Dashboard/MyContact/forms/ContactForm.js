@@ -41,7 +41,8 @@ export default function ContactForm({
   isVisible,
   onSubmit,
   handleContactDetailsChange,
-  isLoading = false
+  isLoading = false,
+  userNotExist = false
 }) {
   const [groupOptions, setGroupOptions] = useState([]);
   const { register, handleSubmit, errors } = useForm({
@@ -66,6 +67,7 @@ export default function ContactForm({
   };
 
   const theme = useContext(ThemeContext);
+
   return (
     <ContactFormStyled
       method="POST"
@@ -169,6 +171,7 @@ export default function ContactForm({
             />
             <label className="field-label">Email</label>
           </div>
+          {userNotExist && <div style={{ color: "red" }}>User not exist!</div>}
           <ErrorMessage
             field={errors.email}
             errorType="required"
