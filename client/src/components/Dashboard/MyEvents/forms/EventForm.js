@@ -97,7 +97,7 @@ const EventFormStyled = styled.form`
   }
   .react-date-picker__inputGroup__input,
   .react-time-picker__inputGroup__input,
-    .react-datetimerange-picker__inputGroup__input {
+  .react-datetimerange-picker__inputGroup__input {
     display: inline !important;
     transition: none !important;
   }
@@ -427,7 +427,7 @@ export default function createEventForm({
           handleEventDetailsChange("eventSchedule", date);
         }}
       />{" "}
-      <div>
+      {/* <div>
         <div style={{ width: "50%", display: "inline-block" }}>
           {" "}
           <DatePicker
@@ -472,7 +472,7 @@ export default function createEventForm({
             value={eventDetails.eventSchedule[1]}
           />
         </div>
-      </div>
+      </div> */}
       {isEventSection && (
         <CustomMultiSelect
           className="field-input"
