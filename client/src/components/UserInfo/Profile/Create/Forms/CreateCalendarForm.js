@@ -53,7 +53,7 @@ const CreateCalendarFormStyled = styled.form`
     input {
       display: inline-block !important;
     }
-    button{
+    button {
       display: inline-block !important;
       margin: 1em;
     }
@@ -82,11 +82,12 @@ const CreateCalendarFormStyled = styled.form`
 export default function CreateCalendarForm({
   details,
   onSubmit,
-  handleInputChange,
+  onSkip,
+  handleInputChange
 }) {
   const { register, handleSubmit, errors, setValue, unregister } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange",
+    reValidateMode: "onChange"
   });
   React.useEffect(() => {
     register({ name: "name" }, { required: true });
@@ -101,7 +102,8 @@ export default function CreateCalendarForm({
     unregister("name");
     unregister("visibilityType");
     unregister("image");
-    handleSubmit(onSubmit)();
+
+    handleSubmit(onSkip)();
   };
 
   return (
@@ -109,8 +111,7 @@ export default function CreateCalendarForm({
       data-testid="app-profile-calendar-create-form"
       theme={theme}
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <input
         data-testid="app-profile-input-calendar-name"
         placeholder="Calendar name"
@@ -158,7 +159,7 @@ export default function CreateCalendarForm({
         message="Calendar Privacy setting is required."
       />
       <UploadImage
-        handleImageChange={(image) => {
+        handleImageChange={image => {
           setValue("image", image);
           handleInputChange("image", image);
           return false;
@@ -173,7 +174,10 @@ export default function CreateCalendarForm({
         <button data-testid="app-profile-save-button" type="submit">
           Save and Done!
         </button>
-        <button data-testid="app-profile-calendar-skip-button" id="skip" onClick={handleSkip}>
+        <button
+          data-testid="app-profile-calendar-skip-button"
+          id="skip"
+          onClick={handleSkip}>
           Skip
         </button>
       </div>

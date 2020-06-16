@@ -17,10 +17,10 @@ const CalendarProfile = styled.div`
     margin-top: 3em;
   }
 `;
-export default function index({ handleProfileSubmit }) {
+export default function index({ handleProfileSubmit, onSkip }) {
   const [calendarDetails, setCalendarDetails] = useState({
     name: "",
-    image: "",
+    image: ""
   });
   const handleInputChange = (id, value) => {
     setCalendarDetails({ ...calendarDetails, [id]: value });
@@ -38,6 +38,7 @@ export default function index({ handleProfileSubmit }) {
         details={calendarDetails}
         onSubmit={handleFormSubmit}
         handleInputChange={handleInputChange}
+        onSkip={onSkip}
       />
     </CalendarProfile>
   );
