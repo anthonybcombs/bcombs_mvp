@@ -81,6 +81,11 @@ const MyEventsStyled = styled.div`
     border-bottom: 1px solid lightgrey;
     margin: none;
   }
+
+  .event-separator {
+    border-bottom: 1px solid;
+    border-bottom-color: #f26e21;
+  }
   @media (min-width: 600px) {
     #header {
       grid-template-columns: 80% 20%;

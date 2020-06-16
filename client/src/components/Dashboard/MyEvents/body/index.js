@@ -297,6 +297,7 @@ export default function index({ events, selectedYear, familyMembers }) {
               );
               return (
                 <div
+                  className="event-separator"
                   data-testid="app-dashboard-my-events-body-events-month"
                   key={month.value}>
                   <h2 data-testid="app-dashboard-my-events-body-table-month">
@@ -326,8 +327,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                   )}
                 </div>
               );
-            })
-            .reverse()}
+            })}
           <div>
             {futureMonths
               .filter((month, index) => {
@@ -345,6 +345,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                 );
                 return (
                   <div
+                    className="event-separator"
                     data-testid="app-dashboard-my-events-body-events-month"
                     key={month.value}>
                     <h2 data-testid="app-dashboard-my-events-body-table-month">
@@ -376,8 +377,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                     )}
                   </div>
                 );
-              })
-              .reverse()}
+              })}
           </div>
 
           <div>
@@ -398,6 +398,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                 );
                 return (
                   <div
+                    className="event-separator"
                     data-testid="app-dashboard-my-events-body-events-month"
                     key={month.value}>
                     <h2 data-testid="app-dashboard-my-events-body-table-month">
@@ -429,8 +430,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                     )}
                   </div>
                 );
-              })
-              .reverse()}
+              })}
           </div>
         </>
       ) : (
