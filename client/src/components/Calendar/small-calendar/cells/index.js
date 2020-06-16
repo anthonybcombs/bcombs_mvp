@@ -30,6 +30,7 @@ const CellsStyled = styled.div`
     height: 1em;
     margin: 1em 0 1em 0;
     cursor: pointer;
+    display: inline-block;
   }
   .disabled {
     color: ${({ theme }) => theme.smallCalendar.cell.textColor.secondary};
@@ -37,9 +38,6 @@ const CellsStyled = styled.div`
   .day {
     display: inline-block;
     position: relative;
-  }
-  .selected {
-    display: inline-block;
   }
   .selected > .day {
     background-color: ${({ theme }) =>
@@ -63,6 +61,10 @@ const CellsStyled = styled.div`
     width: 1em;
     height: 1em;
     padding: 0.6em;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   .events-count {
     display: inline-block;
