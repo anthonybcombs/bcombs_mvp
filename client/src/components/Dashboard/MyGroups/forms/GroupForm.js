@@ -1,11 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useCallback, useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import Autosuggest from "react-autosuggest";
 import debounce from "lodash.debounce";
 import { Multiselect } from "multiselect-react-dropdown";
-import CreatableSelect from "react-select/creatable";
-
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
 // GRAPHQL
@@ -213,6 +211,7 @@ export default function GroupForm({
   const [suggestion, setSuggestion] = useState([]);
   const [autoCompleteValue, setAutoCompleteValue] = useState("");
   const [isFetching, setFetching] = useState(false);
+  const [userNotFound, setUserNotFound] = useState(false);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
@@ -233,7 +232,6 @@ export default function GroupForm({
 
   const theme = useContext(ThemeContext);
   const handleSelectChange = value => {
-    console.log("handleSelectChange valueeeeeee", value);
     handleGroupDetailsChange("contacts", [...value]);
   };
 
@@ -247,34 +245,45 @@ export default function GroupForm({
     onChange: automCompleteOnChange
   };
 
-  const onSuggestionsFetchRequested = async ({ value }) => {
-    try {
-      if (!isFetching && value !== "") {
-        setFetching(true);
-        const { data } = await graphqlClient.query({
-          query: GET_USER_OPTIONS_QUERY,
-          variables: { keyword: value }
-        });
+  const delayedQuery = useCallback(
+    debounce(async value => {
+      try {
+        if (!isFetching && value !== "") {
+          setFetching(true);
+          const { data } = await graphqlClient.query({
+            query: GET_USER_OPTIONS_QUERY,
+            variables: { keyword: value }
+          });
 
-        const options = data.getUserList.map(item => {
-          return {
-            name: `${item.given_name} ${item.family_name}`,
-            value: item.email,
-            id: item.id
-          };
-        });
+          if (data.getUserList.length === 0) {
+            setUserNotFound(true);
+          } else {
+            const options = data.getUserList.map(item => {
+              return {
+                name: `${item.given_name} ${item.family_name}`,
+                value: item.email,
+                id: item.id
+              };
+            });
 
-        setSuggestion(
-          options.filter(
-            item => item.value.includes(value) || item.name.includes(value)
-          )
-        );
+            setSuggestion(
+              options.filter(
+                item => item.value.includes(value) || item.name.includes(value)
+              )
+            );
+          }
+          setFetching(false);
+        }
+      } catch (err) {
+        console.log("onSuggestionsFetchRequested Error ", err);
         setFetching(false);
       }
-    } catch (err) {
-      console.log("onSuggestionsFetchRequested Error ", err);
-      setFetching(false);
-    }
+    }, 500),
+    []
+  );
+
+  const onSuggestionsFetchRequested = ({ value }) => {
+    delayedQuery(value);
   };
 
   const onSuggestionsClearRequested = () => {
@@ -366,6 +375,7 @@ export default function GroupForm({
           renderSuggestion={renderSuggestion}
           getSuggestionValue={getSuggestionValue}
         />
+        {userNotFound && <div style={{ color: "red" }}>User not found!</div>}
       </div>
 
       <button type="submit">Save</button>
