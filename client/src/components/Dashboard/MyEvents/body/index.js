@@ -300,9 +300,6 @@ export default function index({ events, selectedYear, familyMembers }) {
                   className="event-separator"
                   data-testid="app-dashboard-my-events-body-events-month"
                   key={month.value}>
-                  <h2 data-testid="app-dashboard-my-events-body-table-month">
-                    {month.name}
-                  </h2>
                   {eventThisMonth.length === 0 && <p>No events scheduled</p>}
                   {eventThisMonth.length > 0 && (
                     <div id="eventTableContainer">
@@ -314,14 +311,13 @@ export default function index({ events, selectedYear, familyMembers }) {
                         )}
                         data={eventThisMonth}
                         pagination
-                        noHeader={true}
                         striped={true}
                         customStyles={customStyles}
-                        subHeader
                         paginationRowsPerPageOptions={
                           paginationRowsPerPageOptions
                         }
                         paginationComponentOptions={paginationComponentOptions}
+                        title={month.name}
                       />
                     </div>
                   )}
@@ -348,33 +344,25 @@ export default function index({ events, selectedYear, familyMembers }) {
                     className="event-separator"
                     data-testid="app-dashboard-my-events-body-events-month"
                     key={month.value}>
-                    <h2 data-testid="app-dashboard-my-events-body-table-month">
-                      {month.name}
-                    </h2>
-                    {eventThisMonth.length === 0 && <p>No events scheduled</p>}
-                    {eventThisMonth.length > 0 && (
-                      <div id="eventTableContainer">
-                        <DataTable
-                          columns={getColumns(
-                            selectedYear,
-                            month.name,
-                            month.value
-                          )}
-                          data={eventThisMonth}
-                          pagination
-                          noHeader={true}
-                          striped={true}
-                          customStyles={customStyles}
-                          subHeader
-                          paginationRowsPerPageOptions={
-                            paginationRowsPerPageOptions
-                          }
-                          paginationComponentOptions={
-                            paginationComponentOptions
-                          }
-                        />
-                      </div>
-                    )}
+                    <div id="eventTableContainer">
+                      <DataTable
+                        columns={getColumns(
+                          selectedYear,
+                          month.name,
+                          month.value
+                        )}
+                        data={eventThisMonth}
+                        pagination
+                        // noHeader={true}
+                        striped={true}
+                        customStyles={customStyles}
+                        paginationRowsPerPageOptions={
+                          paginationRowsPerPageOptions
+                        }
+                        paginationComponentOptions={paginationComponentOptions}
+                        title={month.name}
+                      />
+                    </div>
                   </div>
                 );
               })}
@@ -401,33 +389,24 @@ export default function index({ events, selectedYear, familyMembers }) {
                     className="event-separator"
                     data-testid="app-dashboard-my-events-body-events-month"
                     key={month.value}>
-                    <h2 data-testid="app-dashboard-my-events-body-table-month">
-                      {month.name}
-                    </h2>
-                    {eventThisMonth.length === 0 && <p>No events scheduled</p>}
-                    {eventThisMonth.length > 0 && (
-                      <div id="eventTableContainer">
-                        <DataTable
-                          columns={getColumns(
-                            selectedYear,
-                            month.name,
-                            month.value
-                          )}
-                          data={eventThisMonth}
-                          pagination
-                          noHeader={true}
-                          striped={true}
-                          customStyles={customStyles}
-                          subHeader
-                          paginationRowsPerPageOptions={
-                            paginationRowsPerPageOptions
-                          }
-                          paginationComponentOptions={
-                            paginationComponentOptions
-                          }
-                        />
-                      </div>
-                    )}
+                    <div id="eventTableContainer">
+                      <DataTable
+                        columns={getColumns(
+                          selectedYear,
+                          month.name,
+                          month.value
+                        )}
+                        data={eventThisMonth}
+                        pagination
+                        striped={true}
+                        customStyles={customStyles}
+                        paginationRowsPerPageOptions={
+                          paginationRowsPerPageOptions
+                        }
+                        paginationComponentOptions={paginationComponentOptions}
+                        title={month.name}
+                      />
+                    </div>
                   </div>
                 );
               })}
@@ -456,28 +435,27 @@ export default function index({ events, selectedYear, familyMembers }) {
                   <h2 data-testid="app-dashboard-my-events-body-table-month">
                     {month.name}
                   </h2>
-                  {eventThisMonth.length === 0 && <p>No events scheduled</p>}
-                  {eventThisMonth.length > 0 && (
-                    <div id="eventTableContainer">
-                      <DataTable
-                        columns={getColumns(
-                          selectedYear,
-                          month.name,
-                          month.value
-                        )}
-                        data={eventThisMonth}
-                        pagination
-                        noHeader={true}
-                        striped={true}
-                        customStyles={customStyles}
-                        subHeader
-                        paginationRowsPerPageOptions={
-                          paginationRowsPerPageOptions
-                        }
-                        paginationComponentOptions={paginationComponentOptions}
-                      />
-                    </div>
-                  )}
+                  {/* {eventThisMonth.length === 0 && <p>No events scheduled</p>} */}
+
+                  <div id="eventTableContainer">
+                    <DataTable
+                      columns={getColumns(
+                        selectedYear,
+                        month.name,
+                        month.value
+                      )}
+                      data={eventThisMonth}
+                      pagination
+                      striped={true}
+                      customStyles={customStyles}
+                      subHeader
+                      paginationRowsPerPageOptions={
+                        paginationRowsPerPageOptions
+                      }
+                      paginationComponentOptions={paginationComponentOptions}
+                    />
+                  </div>
+
                   <hr />
                 </div>
               );

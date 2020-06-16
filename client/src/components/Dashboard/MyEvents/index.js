@@ -81,7 +81,9 @@ const MyEventsStyled = styled.div`
     border-bottom: 1px solid lightgrey;
     margin: none;
   }
-
+  .month-name {
+    font-size: 24px;
+  }
   .event-separator {
     border-bottom: 1px solid;
     border-bottom-color: #f26e21;
