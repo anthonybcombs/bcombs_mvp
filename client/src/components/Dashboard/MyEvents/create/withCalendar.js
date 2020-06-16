@@ -41,6 +41,9 @@ const NewEventModal = styled.div`
     border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
+  .timepicker {
+    transition: none !important;
+  }
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;

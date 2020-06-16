@@ -432,9 +432,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                 <div
                   data-testid="app-dashboard-my-events-body-events-month"
                   key={month.value}>
-                  <h2 data-testid="app-dashboard-my-events-body-table-month">
-                    {month.name}
-                  </h2>
+                
                   {/* {eventThisMonth.length === 0 && <p>No events scheduled</p>} */}
 
                   <div id="eventTableContainer">
@@ -453,14 +451,14 @@ export default function index({ events, selectedYear, familyMembers }) {
                         paginationRowsPerPageOptions
                       }
                       paginationComponentOptions={paginationComponentOptions}
+                       title={month.name}
                     />
                   </div>
 
                   <hr />
                 </div>
               );
-            })
-            .reverse()}
+            })}
         </div>
       )}
     </div>

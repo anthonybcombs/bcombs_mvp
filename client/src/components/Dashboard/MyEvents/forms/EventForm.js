@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import { format } from "date-fns";
+import { format, getTime } from "date-fns";
 import debounce from "lodash.debounce";
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
+import DatePicker from "react-date-picker";
+import TimePicker from "react-time-picker";
 import Autosuggest from "react-autosuggest";
 
 // GRAPHQL
@@ -47,43 +49,59 @@ const EventFormStyled = styled.form`
     padding: 0.6em;
     margin: 0.3em;
   }
-  .react-datetimerange-picker {
+
+  .react-datetimerange-picker,
+  .react-date-picker,
+  .react-time-picker {
     width: 100%;
   }
-  .react-datetimerange-picker button {
+  .react-datetimerange-picker button,
+  .react-date-picker button,
+  .react-time-picker button {
     width: inherit;
     color: initial;
     background-color: initial;
     box-shadow: initial;
     border-radius: initial;
   }
-  .react-datetimerange-picker {
+  .react-datetimerange-picker,
+  .react-date-picker,
+  .react-time-picker {
     border: none;
     width: 100%;
     margin: 1em 0 1em 0;
   }
-  .react-datetimerange-picker input {
+  .react-datetimerange-picker input,
+  .react-date-picker input,
+  .react-time-picker input {
     margin: 0;
     width: initial;
     border-bottom: none;
   }
-  .react-datetimerange-picker__wrapper {
+  .react-datetimerange-picker__wrapper,
+  .react-date-picker__wrapper,
+  .react-time-picker__wrapper {
     border: none;
   }
+
   .react-calendar .react-calendar__tile--active,
-  .react-calendar .react-calendar__tile--hover,
   .react-calendar__tile--rangeStart {
     background-color: #f26e21 !important;
     color: white !important;
   }
-  .react-calendar .react-calendar__tile:hover {
-    background-color: #f26e21;
-    color: white;
-  }
-  .react-datetimerange-picker__inputGroup__input--hasLeadingZero {
+
+  .react-datetimerange-picker__inputGroup__input--hasLeadingZero,
+  .react-date-picker__inputGroup__input--hasLeadingZero,
+  .react-time-picker__inputGroup__input--hasLeadingZero {
     padding: 0;
   }
-  .react-calendar__tile--active:enabled:hover,
+  .react-date-picker__inputGroup__input,
+  .react-time-picker__inputGroup__input,
+    .react-datetimerange-picker__inputGroup__input {
+    display: inline !important;
+    transition: none !important;
+  }
+
   .react-calendar__tile--active:enabled:focus {
     background-color: #f26e21;
     color: white;
@@ -253,6 +271,7 @@ export default function createEventForm({
       : 0
   );
   const [autoCompleteValue, setAutoCompleteValue] = useState("");
+  const [userNotFound, setUserNotFound] = useState(false);
   const [isFetching, setFetching] = useState(false);
 
   useEffect(() => {
@@ -277,33 +296,50 @@ export default function createEventForm({
     onChange: automCompleteOnChange
   };
 
-  const onSuggestionsFetchRequested = async ({ value }) => {
-    try {
-      if (!isFetching && value !== "") {
-        setFetching(true);
-        const { data } = await graphqlClient.query({
-          query: GET_USER_OPTIONS_QUERY,
-          variables: { keyword: value }
-        });
-        const options = data.getUserList.map(item => {
-          return {
-            name: `${item.given_name} ${item.family_name}`,
-            value: item.email,
-            id: item.id
-          };
-        });
+  const delayedQuery = useCallback(
+    debounce(async value => {
+      try {
+        if (!isFetching && value !== "") {
+          setFetching(true);
+          const { data } = await graphqlClient.query({
+            query: GET_USER_OPTIONS_QUERY,
+            variables: { keyword: value }
+          });
 
-        setSuggestion(
-          options.filter(
-            item => item.value.includes(value) || item.name.includes(value)
-          )
-        );
+          if (data.getUserList.length === 0) {
+            setUserNotFound(true);
+          } else {
+            const options = data.getUserList.map(item => {
+              return {
+                name: `${item.given_name} ${item.family_name}`,
+                value: item.email,
+                id: item.id
+              };
+            });
+
+            setSuggestion(
+              options.filter(
+                item => item.value.includes(value) || item.name.includes(value)
+              )
+            );
+            setUserNotFound(false);
+          }
+
+          setFetching(false);
+        }
+      } catch (err) {
+        console.log("onSuggestionsFetchRequested Error ", err);
         setFetching(false);
       }
-    } catch (err) {
-      console.log("onSuggestionsFetchRequested Error ", err);
-      setFetching(false);
+    }, 500),
+    []
+  );
+
+  const onSuggestionsFetchRequested = async ({ value }) => {
+    if (userNotFound) {
+      setUserNotFound(false);
     }
+    delayedQuery(value);
   };
 
   const onSuggestionsClearRequested = () => {
@@ -326,7 +362,7 @@ export default function createEventForm({
     handleEventDetailsChange("removeGuests", removedGuest);
   };
 
-  console.log("eventDetails", eventDetails);
+  console.log("eventDetails", eventDetails.recurring);
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
@@ -382,13 +418,61 @@ export default function createEventForm({
       <DateTimeRangePicker
         value={eventDetails.eventSchedule}
         disableClock={true}
+        rangeDivider={true}
         onChange={date => {
+          console.log("DATEEEEEEEEEEEEEEE", date);
           if (date == null) {
             return;
           }
           handleEventDetailsChange("eventSchedule", date);
         }}
       />{" "}
+      {/* <div>
+        <div style={{ width: "50%", display: "inline-block" }}>
+          {" "}
+          <DatePicker
+            onChange={e => {
+              console.log("DatePicker start", e);
+            }}
+            value={eventDetails.eventSchedule[0]}
+          />
+        </div>
+
+        <div style={{ width: "50%", display: "inline-block" }}>
+          <TimePicker
+            className="timepicker"
+            disableClock={true}
+            onChange={e => {
+
+              
+              console.log("Time Picker", e);
+            }}
+            value={eventDetails.eventSchedule[0]}
+          />
+        </div>
+      </div>
+      <div>
+        <div style={{ width: "50%", display: "inline-block" }}>
+          {" "}
+          <DatePicker
+            onChange={e => {
+              console.log("DatePicker end", e);
+            }}
+            value={eventDetails.eventSchedule[1]}
+          />
+        </div>
+
+        <div style={{ width: "50%", display: "inline-block" }}>
+          <TimePicker
+            className="timepicker"
+            disableClock={true}
+            onChange={e => {
+              console.log("Time Picker end", e);
+            }}
+            value={eventDetails.eventSchedule[1]}
+          />
+        </div>
+      </div> */}
       {isEventSection && (
         <CustomMultiSelect
           className="field-input"
@@ -442,7 +526,8 @@ export default function createEventForm({
       <br />
       {eventDetails &&
         eventDetails.recurring !== "No Repeat" &&
-        eventDetails.recurring !== "" && (
+        eventDetails.recurring !== "" &&
+        eventDetails.recurring !== undefined && (
           <div>
             <div>Ends</div>
             <label className="cus-select-container" style={{ fontSize: 12 }}>
@@ -540,14 +625,12 @@ export default function createEventForm({
         autoComplete="off"
         inputProps={inputProps}
         suggestions={suggestion}
-        onSuggestionsFetchRequested={debounce(
-          onSuggestionsFetchRequested,
-          1000
-        )}
+        onSuggestionsFetchRequested={onSuggestionsFetchRequested}
         onSuggestionsClearRequested={onSuggestionsClearRequested}
         renderSuggestion={renderSuggestion}
         getSuggestionValue={getSuggestionValue}
       />
+      {userNotFound && <div style={{ color: "red" }}>User not found!</div>}
       <div>
         {selectedGuest &&
           selectedGuest.map((guest, index) => (
