@@ -427,7 +427,7 @@ export default function createEventForm({
           handleEventDetailsChange("eventSchedule", date);
         }}
       />{" "}
-      {/* <div>
+      <div>
         <div style={{ width: "50%", display: "inline-block" }}>
           {" "}
           <DatePicker
@@ -472,7 +472,7 @@ export default function createEventForm({
             value={eventDetails.eventSchedule[1]}
           />
         </div>
-      </div> */}
+      </div>
       {isEventSection && (
         <CustomMultiSelect
           className="field-input"

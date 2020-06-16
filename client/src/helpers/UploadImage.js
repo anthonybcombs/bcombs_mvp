@@ -69,6 +69,7 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                   )}
                 </div>
               ) : (
+                <>
                 <div
                   onClick={e => {
                     e.preventDefault();
@@ -101,14 +102,17 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                       Select image on file to upload
                     </div>
                   )}
-                  {errors.map((error, key) => (
+                 
+                </div>
+ {errors.map((error, key) => (
                     <p className="error" key={key}>
                       {error.file.name} - {error.type}
                     </p>
                   ))}
+                  <br/>
                   <p>File type supported is jpeg, jpg, png.</p>
                   <p>File size supported is maximum 2MB</p>
-                </div>
+                </>
               )}
             </>
           );
@@ -197,7 +201,7 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
               );
 
               console.log("croppedImage", croppedImage);
-              if (ALLOWED_FILE_TYPES.includes(croppedImages.file.type)) {
+              if (ALLOWED_FILE_TYPES.includes(croppedImage.file.type)) {
                 onSave(croppedImage.file);
               }
             }}>
