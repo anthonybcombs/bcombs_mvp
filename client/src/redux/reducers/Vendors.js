@@ -5,6 +5,7 @@ export default function Vendor(state = {}, action) {
     case actionType.REQUEST_VENDOR_COMPLETED:
       return action.payload
     case actionType.REQUEST_UPDATE_VENDOR_COMPLETED:
+      window.location.reload(false);
       return action.payload
     default:
       return state;
