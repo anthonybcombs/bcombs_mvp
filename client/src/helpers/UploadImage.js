@@ -70,46 +70,45 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                 </div>
               ) : (
                 <>
-                <div
-                  onClick={e => {
-                    e.preventDefault();
-                    browseFiles();
-                  }}
-                  style={{
-                    border: `1px dashed grey`,
-                    minHeight: 300,
-                    maxHeight: 300,
-                    margin: 10,
-                    cursor: "pointer"
-                  }}>
-                  {imageView.length > 0 ? (
-                    <img
-                      style={{
-                        width: "100%",
-                        maxHeight: 300,
-                        backgroundColor: "lightblue",
-                        objectFit: "contain"
-                      }}
-                      src={imageView}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        fontWeight: "bold",
-                        fontSize: "1.5em",
-                        lineHeight: 13
-                      }}>
-                      Select image on file to upload
-                    </div>
-                  )}
-                 
-                </div>
- {errors.map((error, key) => (
+                  <div
+                    onClick={e => {
+                      e.preventDefault();
+                      browseFiles();
+                    }}
+                    style={{
+                      border: `1px dashed grey`,
+                      minHeight: 300,
+                      maxHeight: 300,
+                      margin: 10,
+                      cursor: "pointer"
+                    }}>
+                    {imageView.length > 0 ? (
+                      <img
+                        style={{
+                          width: "100%",
+                          maxHeight: 300,
+                          backgroundColor: "lightblue",
+                          objectFit: "contain"
+                        }}
+                        src={imageView}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: "1.5em",
+                          lineHeight: 13
+                        }}>
+                        Select image on file to upload
+                      </div>
+                    )}
+                  </div>
+                  {errors.map((error, key) => (
                     <p className="error" key={key}>
                       {error.file.name} - {error.type}
                     </p>
                   ))}
-                  <br/>
+                  <br />
                   <p>File type supported is jpeg, jpg, png.</p>
                   <p>File size supported is maximum 2MB</p>
                 </>

@@ -7,6 +7,7 @@ import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
 import DatePicker from "react-date-picker";
 import TimePicker from "react-time-picker";
 import Autosuggest from "react-autosuggest";
+//import MultiSelect from "react-multi-select-component";
 
 // GRAPHQL
 import graphqlClient from "../../../../graphql";
@@ -14,6 +15,7 @@ import { GET_USER_OPTIONS_QUERY } from "../../../../graphql/query";
 
 import CustomDatePicker from "../../../../helpers/CustomDatePicker";
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
+import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
 const EventFormStyled = styled.form`
@@ -254,6 +256,7 @@ export default function createEventForm({
   handleEventDetailsChange,
   onSubmit,
   calendars = [],
+  selectedCalendar = [],
   groups = [],
   editMode = false,
   isEventSection = false,
@@ -273,6 +276,7 @@ export default function createEventForm({
   const [autoCompleteValue, setAutoCompleteValue] = useState("");
   const [userNotFound, setUserNotFound] = useState(false);
   const [isFetching, setFetching] = useState(false);
+  const [selected, setSelected] = useState([]);
 
   useEffect(() => {
     if (eventDetails && eventDetails.guests) {
@@ -362,7 +366,7 @@ export default function createEventForm({
     handleEventDetailsChange("removeGuests", removedGuest);
   };
 
-  console.log("eventDetails", eventDetails.recurring);
+  console.log("calendarszzzzzzzzzzzzzzz", calendars);
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
@@ -474,14 +478,12 @@ export default function createEventForm({
         </div>
       </div> */}
       {isEventSection && (
-        <CustomMultiSelect
+        <CustomMultiSelectOptions
           className="field-input"
           options={calendars}
-          onSelect={handleCalendarSelect}
-          onRemove={handleCalendarRemove}
-          placeholder="Add Calendar"
-          displayValue="name"
-          closeIcon="cancel"
+          value={selectedCalendar}
+          onChange={handleCalendarSelect}
+          labelledBy={"Select"}
         />
       )}
       <br />

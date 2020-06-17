@@ -142,8 +142,8 @@ export default function index({
     if (calendars && calendars[0]) {
       const formattedCalendars = calendars[0].map(item => {
         return {
-          id: item.id,
-          name: item.name
+          value: item.id,
+          label: item.name
         };
       });
       setCalendarOptions(formattedCalendars);
@@ -189,6 +189,7 @@ export default function index({
   };
 
   const handleCalendarSelect = value => {
+    console.log("HANDLE SELECT CALENDAR", value);
     setSelectedCalendar(value);
   };
   const handleCalendarRemove = value => {
@@ -196,7 +197,7 @@ export default function index({
   };
   const handleSubmit = value => {
     toggleCreateEventModal(false);
-    const calendarIds = selectedCalendar.map(calendar => calendar.id);
+    const calendarIds = selectedCalendar.map(calendar => calendar.value);
     const payload = {
       start_of_event: format(
         getUTCDate(eventDetails.eventSchedule[0]),
@@ -230,7 +231,7 @@ export default function index({
           ? selectedGroup.map(group => group.id)
           : []
     };
-    console.log("ADD EVENT PAYLOAD111", payload);
+
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
   };
@@ -280,6 +281,7 @@ export default function index({
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}
             header={`Create New ${eventDetails.eventType}`}
+            selectedCalendar={selectedCalendar}
           />
         </div>
       </div>

@@ -1,12 +1,13 @@
 import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
+import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 import UploadImage from "../../../../helpers/UploadImage";
 import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 import ColorPicker from "../../../../helpers/ColorPicker";
-import Select from "react-select";
+//import Select from "react-select";
 const CreateCalendarFormStyled = styled.form`
   text-align: center;
   padding: 2em;
@@ -193,7 +194,24 @@ export default function CreateCalendarForm({
       </div>
       <div>
         <p>Groups</p>
-        <Select
+        <CustomMultiSelectOptions
+          className="field-input"
+          options={options}
+          value={options.filter(group => {
+            return details.groups.includes(group.value);
+          })}
+          onChange={option => {
+            if (option !== null) {
+              const groupIds = option.map(group => group.value);
+              handleInputChange("groups", groupIds);
+              return;
+            }
+            handleInputChange("groups", []);
+          }}
+          labelledBy={"Select"}
+        />
+
+        {/* <Select
           options={options}
           value={options.map(group => {
             if (details.groups.includes(group.value)) {
@@ -222,7 +240,7 @@ export default function CreateCalendarForm({
               primary: "#f26e21"
             }
           })}
-        />
+        /> */}
         {/* <ErrorMessage
           field={errors.groups}
           errorType="required"

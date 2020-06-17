@@ -61,6 +61,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
     toggleCreateCalendarModal(false);
   };
   const handleFormSubmit = async () => {
+    console.log("CALENDARSSSSSSSSSSSSSSSS", calendarDetails);
     dispatch(requestAddCalendar(calendarDetails));
     setCalendarDetails({
       name: "",
