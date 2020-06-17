@@ -54,13 +54,25 @@ const RecommendationSliderStyled = styled.div`
   }
 
   .card .header {
-    width: 252px;
+    width: 273px;
     height: 146px;
   }
 
   .card .header img {
     width: 100%;
     height: 100%;
+  }
+  
+  @media (min-width: 768px) {
+    .card .header {
+      width: 136px;
+    }
+  }
+
+  @media (min-width: 992px) {
+    .card .header {
+      width: 273px;
+    }
   }
 `;
 
