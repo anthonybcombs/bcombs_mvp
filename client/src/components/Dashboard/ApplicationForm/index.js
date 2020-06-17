@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -176,7 +176,7 @@ export default function index() {
       first_name: "",
       last_name: "",
       nick_name: "",
-      date_of_birth: new Date(),
+      date_of_birth: "",
       gender: "",
       phone_type: "",
       phone_number: "",
@@ -465,8 +465,8 @@ export default function index() {
     setTermsWaiver({...subTermsWaiver});
   }
 
-  const { register, handleSubmit, errors } = useForm({
-    mode: "onSubmit",
+  const { register, handleSubmit, errors, clearError, setError } = useForm({
+    mode: "onBlur",
     reValidateMode: "onChange"
   });
 
@@ -511,7 +511,7 @@ export default function index() {
       for(let i = 0; i < parentsInformation.length; i++) {
         let parent = parents[i];
         let profile = parent.profile;
-
+        
         if(!profile.first_name ||
           !profile.last_name ||
           !profile.password ||
@@ -730,6 +730,8 @@ export default function index() {
 
   }
 
+  const formRef = useRef(null);
+
   return (
     <ApplicationFormStyled
       id="applicationForm">
@@ -796,6 +798,7 @@ export default function index() {
               <form
                 autoComplete="off"
                 onSubmit={handleSubmit(onSubmit)}
+                ref = {formRef}
               >
                 <div className={(selectedStep == 1 || selectedStep == 4) ? "" : "hide"}>
                   {
@@ -830,13 +833,19 @@ export default function index() {
                 <div className="application-btn-container" style={(selectedStep == 1) ? section1BtnContainerStyle: {}}>
                   {
                     selectedStep < 4 &&
-                    <a
-                      className={`right ${isFormValid(selectedStep) ? "": "disabled-link"}`}
+                    <button
+                      type="button"
+                      // className={`right ${isFormValid(selectedStep) ? "": "disabled-link"}`}
+                      className="right"
                       onClick={(e) => {
+                        console.log(errors);
                         e.preventDefault();
-    
-                        if(!isFormValid(selectedStep)) return;
-    
+
+                        if(!isFormValid(selectedStep)) {
+                          formRef.current.dispatchEvent(new Event("submit"));
+                          return;
+                        };
+                        clearError();
                         if(selectedStep == 1) handleWizardSelection(2);
                         else if(selectedStep == 2) handleWizardSelection(3)
                         else if (selectedStep == 3) handleWizardSelection(4)
@@ -845,7 +854,7 @@ export default function index() {
                       }}
                     >
                       Next
-                    </a>
+                    </button>
                   }
                   {
                     (selectedStep > 1 && selectedStep != 4) &&

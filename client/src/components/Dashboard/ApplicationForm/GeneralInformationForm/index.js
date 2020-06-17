@@ -157,7 +157,7 @@ export default function index({
                   <option value="">Year</option>
                   {createYearTakenSelect()}
               </select>
-              <label className="field-label">Year Taken`</label>
+              <label className="field-label">Year started as Mentee`</label>
             </div>
           </div>
           <div className="form-group">
@@ -227,7 +227,7 @@ export default function index({
                   <option value="">Year</option>
                   {createYearTakenSelect()}
               </select>
-              <label className="field-label">Year Taken`</label>
+              <label className="field-label">Year Started as Mentee`</label>
             </div>
           </div>
           <div className="form-group">
@@ -297,7 +297,7 @@ export default function index({
                   <option value="">Year</option>
                   {createYearTakenSelect()}
               </select>
-              <label className="field-label">Year Taken`</label>
+              <label className="field-label">Year Started as Mentee`</label>
             </div>
           </div>
           <div className="form-group">
@@ -671,12 +671,12 @@ export default function index({
                   <option value="">Select Year</option>
                   { createYearTakenSelect() }
               </select>
-              <label className="field-label"><span className="required">*</span> Year Taken</label>
+              <label className="field-label"><span className="required">*</span> Year Started as Mentee</label>
             </div>
             <ErrorMessage
               field={errors["mentee_start_year" + (counter - 1)]}
               errorType="required"
-              message="Year Taken is required."
+              message="Year Started as Mentee is required."
             />
           </div>
           <div className="form-group">

@@ -123,6 +123,8 @@ export default function index({
     };
 
     dispatch(requestUpdateVendor(payload));
+
+    window.location.reload(false);
   }
 
   return (
