@@ -41,6 +41,7 @@ const WelcomeMessageStyled = styled.div`
 `;
 export default function index({ calendarName = "test" }) {
   const [visible, setVisible] = useState(true);
+  const hasCalendarName = calendarName !== 'undefined' && typeof calendarName !== 'undefined' && calendarName !== null;
   useEffect(() => {
     setTimeout(() => {
       sessionStorage.removeItem("calendarName");
@@ -59,9 +60,11 @@ export default function index({ calendarName = "test" }) {
           >
             &times;
           </span>
-          <div className="grid">
-            <p>{calendarName} has been created!</p>
-            <p className="grid">
+          <div className={hasCalendarName && 'grid'}>
+            {hasCalendarName &&
+              <p>{calendarName} has been created!</p>
+            }
+            <p className={hasCalendarName && 'grid'}>
               <span>
                 Now you can personalize the whole family profile. Follow family
                 member's school, sports, activities calendars.
