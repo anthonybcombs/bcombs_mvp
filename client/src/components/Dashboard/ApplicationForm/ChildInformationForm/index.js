@@ -60,6 +60,10 @@ const ChildInfomationFormStyled = styled.div`
   #multiselectContainerReact .chip {
     background: #f26e21;
   }
+
+  .react-datepicker-wrapper {
+    margin: 0;
+  }
 `;
 
 export default function index({
@@ -167,6 +171,17 @@ export default function index({
   const handleOtherEmail = () => {
     setShowEmail(!showEmail);
   }
+
+  // const ExampleCustomInput = ({ value, onClick, name }) => (
+  //   <>
+  //     <input
+  //       name={name}
+  //       className="field-input birthdate-field" 
+  //       placeholderText="mm/dd/yyyy"
+  //       ref={register({required: true})}
+  //     />
+  //   </>
+  // );
 
   return (
     <ChildInfomationFormStyled>
@@ -290,7 +305,6 @@ export default function index({
                     </button>
                   </div>
                 )}
-                name={"ch_birthdate" + (counter - 1)}
                 className="field-input birthdate-field" 
                 placeholderText="mm/dd/yyyy"
                 selected={childProfile.date_of_birth}
@@ -298,7 +312,7 @@ export default function index({
                 onChange={(date) => {
                   handleChildFormDetailsChange(counter - 1, "profile", "date_of_birth", date);
                 }}
-                ref={register({ required: true })}
+                // customInput={<ExampleCustomInput name={"ch_birthdate" + (counter - 1)} />}
               />
               <label className="field-label"><span className="required">*</span> Date of Birth</label>
             </div>
@@ -660,17 +674,25 @@ export default function index({
           </div>
           <div className="form-group">
             <div className="field">
-              <NumberFormat
+              <input
+                type="text"
                 readOnly={isReadonly}
                 name={"ch_zip_code" + (counter - 1)}
                 className="field-input"
                 onChange={({ target }) => {
-                  handleChildFormDetailsChange(counter - 1, "profile", "zip_code", target.value);
+                  console.log(target.value);
+
+                  if(target.value.match(/^-{0,1}\d+$/)) {
+                    handleChildFormDetailsChange(counter - 1, "profile", "zip_code", target.value);
+                  } else {
+                    target.value = target.value.slice(0, -1);
+                  }
+
                 }}
                 defaultValue={childProfile.zip_code}
                 placeholder="Zip Code"
                 ref={register({ required: true, minLength: 5 })}
-                format="#####"
+                maxLength="5"
               />
               <label className="field-label"><span className="required">*</span> Zip Code</label>
             </div>

@@ -291,6 +291,8 @@ export default function index({
                   }}
                   defaultValue={parentProfile.phone_number}
                   format="(###) ###-####" mask="_"
+                  getInputRef={register({required: true})}
+                  required
                 />
                 :
                 <input
