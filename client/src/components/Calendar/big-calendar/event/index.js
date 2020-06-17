@@ -281,7 +281,8 @@ export default function index({
               textOverflow: "ellipsis",
               whiteSpace: "nowrap"
             }}>
-            {isTimedDisplay && format(new Date(event.start_of_event), "hha")}
+            {isTimedDisplay &&
+              format(new Date(event.start_of_event), "hh:mm a")}
             {` `} {event.name}
           </div>
           {event.multi_color &&

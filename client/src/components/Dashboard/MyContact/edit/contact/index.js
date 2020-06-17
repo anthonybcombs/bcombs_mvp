@@ -59,7 +59,12 @@ export default function index({
       setContactDetails({
         ...contactDetails,
         selectedGroups: selectedGroupIds,
-        removedGroups: removeGroupIds
+        removedGroups: [
+          ...new Set([
+            ...(contactDetails.removedGroups || []),
+            ...(removeGroupIds || [])
+          ])
+        ]
       });
     } else if (id === "removedGroups") {
       let removeGroupIds = value.map(item => item.value);
@@ -95,6 +100,7 @@ export default function index({
 
     if (contactDetails) {
       if (contactDetails.email !== auth.email) {
+        console.log("contactDetails", contactDetails);
         dispatch(
           updateContact({
             ...contactDetails,

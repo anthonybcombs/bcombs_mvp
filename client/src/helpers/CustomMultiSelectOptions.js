@@ -6,6 +6,10 @@ const CustomMultiSelectContainer = styled.div`
   .multi-select .select-item {
     width: 100%;
   }
+  .eLOaoS input {
+    margin-top: 15px !important;
+    margin-bottom: 15px !important;
+  }
 `;
 const CustomMultiSelectOptions = ({
   className,
