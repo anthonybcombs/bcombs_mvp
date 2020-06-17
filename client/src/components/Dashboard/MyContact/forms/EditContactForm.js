@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
-import { Multiselect } from "multiselect-react-dropdown";
+
+import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
@@ -142,12 +143,12 @@ export default function ContactForm({
       let defaultGroups = groups
         .filter(item => contactDetails.selectedGroups.includes(item.id))
         .map(item => {
-          return { name: item.name, id: item.id };
+          return { label: item.name, value: item.id };
         });
       let formattedGroups = groups.map(item => {
         return {
-          name: `${item.name}`,
-          id: item.id
+          label: `${item.name}`,
+          value: item.id
         };
       });
       setGroupOptions(formattedGroups);
@@ -329,7 +330,7 @@ export default function ContactForm({
               {group.name}
             </label>
           ))} */}
-
+          {/* 
           <Multiselect
             className="field-input"
             options={groupOptions}
@@ -341,6 +342,18 @@ export default function ContactForm({
             placeholder="Add from my contacts"
             displayValue="name"
             closeIcon="cancel"
+          /> */}
+
+          <CustomMultiSelectOptions
+            className="field-input"
+            options={groupOptions}
+            value={groupOptions.filter(opt =>
+              contactDetails.selectedGroups.includes(opt.value)
+            )}
+            onChange={value => {
+              handleContactDetailsChange("selectedGroups", value);
+            }}
+            labelledBy={"Select"}
           />
         </div>
       </div>

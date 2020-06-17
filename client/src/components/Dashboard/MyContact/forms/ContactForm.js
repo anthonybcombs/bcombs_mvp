@@ -3,6 +3,7 @@ import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import { Multiselect } from "multiselect-react-dropdown";
 
+import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const ContactFormStyled = styled.form`
   label {
@@ -54,8 +55,8 @@ export default function ContactForm({
     if (groups) {
       let formattedGroups = groups.map(item => {
         return {
-          name: `${item.name} `,
-          id: item.id
+          label: `${item.name} `,
+          value: item.id
         };
       });
       setGroupOptions(formattedGroups);
@@ -218,7 +219,7 @@ export default function ContactForm({
             {group.name}
           </label>
         ))} */}
-
+        {/* 
         <Multiselect
           className="field-input"
           options={groupOptions}
@@ -227,6 +228,18 @@ export default function ContactForm({
           placeholder="Add from my contacts"
           displayValue="name"
           closeIcon="cancel"
+        /> */}
+        <CustomMultiSelectOptions
+          className="field-input"
+          options={groupOptions}
+          value={groupOptions.filter(opt =>
+            contactDetails.selectedGroups.includes(opt.value)
+          )}
+          onChange={value => {
+            console.log("valueeee", value);
+            handleContactDetailsChange("selectedGroups", value);
+          }}
+          labelledBy={"Select"}
         />
       </div>
       <button className={isLoading ? "disabled" : ""} type="submit">

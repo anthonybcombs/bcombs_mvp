@@ -56,7 +56,8 @@ export default function index({
   };
   const handleContactDetailsChange = (id, value) => {
     if (id === "selectedGroups") {
-      let selectedGroupIds = value.map(item => item.id);
+      console.log("handleContactDetailsssssssssssssssss", value);
+      let selectedGroupIds = value.map(item => item.value);
 
       setContactDetails({
         ...contactDetails,

@@ -139,8 +139,9 @@ export default function index({
   }, [contacts, isVisible]);
 
   useEffect(() => {
-    if (calendars && calendars[0]) {
-      const formattedCalendars = calendars[0].map(item => {
+    if (calendars) {
+      const flattenCalendars = calendars.flat();
+      const formattedCalendars = flattenCalendars.map(item => {
         return {
           value: item.id,
           label: item.name

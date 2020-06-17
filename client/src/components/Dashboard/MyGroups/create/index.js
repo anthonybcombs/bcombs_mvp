@@ -31,7 +31,7 @@ export default function index({
   const dispatch = useDispatch();
   const handleGroupDetailsChange = (id, value) => {
     if (id === "contacts" || id === "other_ids") {
-      let ids = value.map(contact => contact.id);
+      let ids = value.map(contact => contact.value);
       setGroupDetails({
         ...groupDetails,
         [id]: ids

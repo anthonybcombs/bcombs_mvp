@@ -5,6 +5,7 @@ import Autosuggest from "react-autosuggest";
 import debounce from "lodash.debounce";
 import { Multiselect } from "multiselect-react-dropdown";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 
 // GRAPHQL
 import graphqlClient from "../../../../graphql";
@@ -222,8 +223,8 @@ export default function GroupForm({
     if (contacts) {
       let formattedContacts = contacts.map(item => {
         return {
-          name: `${item.first_name} ${item.last_name}`,
-          id: item.user_id
+          label: `${item.first_name} ${item.last_name}`,
+          value: item.user_id
         };
       });
       setContactOptions(formattedContacts);
@@ -232,7 +233,7 @@ export default function GroupForm({
 
   const theme = useContext(ThemeContext);
   const handleSelectChange = value => {
-    handleGroupDetailsChange("contacts", [...value]);
+    handleGroupDetailsChange("contacts", value);
   };
 
   const automCompleteOnChange = (event, { newValue }) => {
@@ -309,6 +310,8 @@ export default function GroupForm({
     setOtherUserSelected(updatedOtherUser);
     handleGroupDetailsChange("other_ids", updatedOtherUser);
   };
+
+  console.log("groupDetailsssssssss", groupDetails);
   return (
     <ContactFormStyled
       method="POST"
@@ -338,7 +341,7 @@ export default function GroupForm({
 
         <div className="form-group">
           <div className="field">
-            <Multiselect
+            {/* <Multiselect
               className="field-input"
               options={contactOptions}
               hasSelectAll={hasSelectAll}
@@ -346,8 +349,16 @@ export default function GroupForm({
               placeholder="Add from my contacts"
               displayValue="name"
               closeIcon="cancel"
+            /> */}
+            <CustomMultiSelectOptions
+              className="field-input"
+              options={contactOptions}
+              value={contactOptions.filter(item =>
+                groupDetails.contacts.includes(item.value)
+              )}
+              onChange={handleSelectChange}
+              labelledBy={"Select"}
             />
-
             <label className="field-label">Add existing contacts</label>
           </div>
         </div>

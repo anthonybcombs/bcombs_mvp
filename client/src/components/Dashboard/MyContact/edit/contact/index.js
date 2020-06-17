@@ -50,24 +50,19 @@ export default function index({
 
   const handleContactDetailsChange = (id, value) => {
     if (id === "selectedGroups") {
-      let selectedGroupIds = value.map(item => item.id);
-      // if (newSelectedGroups.includes(selectedGroupId)) {
-      //   newSelectedGroups = newSelectedGroups.filter(
-      //     groupId => groupId !== selectedGroupId
-      //   );
-      // } else {
-      //   newSelectedGroups.push(selectedGroupId);
-      // }
-      let updatedRemovedGroups = contactDetails.removedGroups.filter(
-        item => !removeGroupIds.includes(item)
+      let selectedGroupIds = value.map(item => item.value);
+
+      let removeGroupIds = contactDetails.selectedGroups.filter(
+        item => !selectedGroupIds.includes(item)
       );
+
       setContactDetails({
         ...contactDetails,
         selectedGroups: selectedGroupIds,
-        removedGroups: updatedRemovedGroups
+        removedGroups: removeGroupIds
       });
     } else if (id === "removedGroups") {
-      let removeGroupIds = value.map(item => item.id);
+      let removeGroupIds = value.map(item => item.value);
       let updatedSelectedGroups = contactDetails.selectedGroups.filter(
         item => !removeGroupIds.includes(item)
       );
