@@ -327,6 +327,7 @@
   margin-left: 5px;
 }
 
+.application-btn-container button.right,
 .application-btn-container a.right {
   float: right;
 }
