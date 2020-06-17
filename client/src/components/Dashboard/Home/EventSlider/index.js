@@ -36,8 +36,7 @@ const EventSliderStyled = styled.div`
 
   .rows {
     display: inline-block;
-    width: 800px;
-    padding: 20px 50px 20px 20px;
+    padding: 8px;
     padding-top: 0;
   }
   
@@ -47,8 +46,8 @@ const EventSliderStyled = styled.div`
   }
 
   .single-event {
-    padding: 5px 30px;
-    min-width: 295px;
+    padding: 5px;
+    min-width: 405px;
     color: #fff;
     margin-bottom: 5px;
   }
@@ -74,20 +73,24 @@ const EventSliderStyled = styled.div`
   .single-event.no-event {
     color: #444;
   }
+  
+  @media (min-width: 768px) {
+    .single-event {
+      min-width: 295px;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .single-event {
+      min-width: 405px;
+    }
+  }
 
-  // @media screen and (min-width: 992px) {
-  //   .single-event {
-  //     min-width: 295px;
-  //   }
-  // }
-
-  // @media screen and (min-width: 1281px) {
-  //   .single-event {
-  //     min-width: 480px;
-  //   }
-  // }
-
-
+  @media (min-width: 1200) {
+    .single-event {
+      min-width: 515px;
+    }
+  }
 `;
 
 export default function index({
