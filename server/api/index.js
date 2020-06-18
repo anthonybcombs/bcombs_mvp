@@ -64,6 +64,7 @@ const getUserProfileFromDatabase = async userId => {
         last_name,
         family_relationship,
         gender,
+        custom_gender,
         zip_code,
         birth_date,
         address,
@@ -229,13 +230,14 @@ router.post("/users/update", async (req, res) => {
     } = req.body;
     const { id } = await getUserFromDatabase(email);
     await db.query(
-      "INSERT INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?)",
+      "INSERT INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,custom_gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?,?)",
       [
         id,
         personalInfo.firstname,
         personalInfo.lastname,
         personalInfo.familyrelationship,
         personalInfo.gender,
+        personalInfo.customgender,
         personalInfo.zipcode,
         personalInfo.dateofbirth
       ]
@@ -325,12 +327,13 @@ router.put("/user/profile", async (req, res) => {
     const { personalInfo, otherInfo } = req.body;
     console.log("req.bodyyy", otherInfo);
     await db.query(
-      "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,zip_code=?,birth_date=?,address=?,school=?,ethnicity=?,grade=? where id=UUID_TO_BIN(?)",
+      "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=?,address=?,school=?,ethnicity=?,grade=? where id=UUID_TO_BIN(?)",
       [
         personalInfo.firstname,
         personalInfo.lastname,
         personalInfo.familyrelationship,
         personalInfo.gender,
+        personalInfo.customgender,
         personalInfo.zipcode,
         personalInfo.dateofbirth,
         personalInfo.address,
@@ -379,6 +382,7 @@ router.put("/user/profile", async (req, res) => {
       last_name: personalInfo.lastname,
       family_relationship: personalInfo.family_relationship,
       gender: personalInfo.gender,
+      custom_gender: personalInfo.customgender,
       birth_date: personalInfo.dateofbirth,
       zip_code: personalInfo.zipcode,
       address: personalInfo.address,
