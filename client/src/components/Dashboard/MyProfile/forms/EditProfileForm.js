@@ -255,9 +255,7 @@ export default function index({
                 name="gender"
                 className="field-input"
                 onChange={({ target }) => {
-                  if (target.value !== 'custom') {
-                    handleInputChange("gender", target.value);
-                  }
+                  handleInputChange("gender", target.value);
                 }}
                 ref={register({ required: true })}
                 >
