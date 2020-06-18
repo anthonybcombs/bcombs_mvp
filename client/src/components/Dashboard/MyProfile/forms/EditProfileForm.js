@@ -9,6 +9,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
+import { isValidDate } from "../../../../helpers/Date";
+
 const EditProfileModal = styled.form`
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
@@ -309,7 +311,7 @@ export default function index({
               <DatePicker
                 className="field-input"
                 placeholderText="mm/dd/yyyy"
-                selected={new Date(data.dateofbirth)}
+                selected={isValidDate(data.dateofbirth) && new Date(data.dateofbirth)}
                 onChange={date => {
                   handleInputChange(
                     "dateofbirth",
