@@ -185,7 +185,7 @@ export default function index() {
     customgender: "",
     familyrelationship: "",
     zipcode: "",
-    dateofbirth: "",
+    dateofbirth: null,
     address: "",
     school: "",
     ethnicity: "",
@@ -253,7 +253,7 @@ export default function index() {
         zipcode: user.profile.zip_code,
         dateofbirth: isValidDate(user.profile.birth_date)
           ? format(new Date(user.profile.birth_date), "yyyy-MM-dd")
-          : "",
+          : null,
         address: user.profile.address,
         school: user.profile.school,
         ethnicity: user.profile.ethnicity,
