@@ -74,31 +74,59 @@ const DuplicateEventModal = styled.div`
     }
   }
 
-  .react-datetimerange-picker {
+  .react-datetimerange-picker,
+  .react-date-picker,
+  .react-time-picker {
     width: 100%;
   }
-  .react-datetimerange-picker button {
+  .react-datetimerange-picker button,
+  .react-date-picker button,
+  .react-time-picker button {
     width: inherit;
     color: initial;
     background-color: initial;
     box-shadow: initial;
     border-radius: initial;
   }
-  .react-datetimerange-picker {
+  .react-datetimerange-picker,
+  .react-date-picker,
+  .react-time-picker {
     border: none;
     width: 100%;
     margin: 1em 0 1em 0;
   }
-  .react-datetimerange-picker input {
+  .react-datetimerange-picker input,
+  .react-date-picker input,
+  .react-time-picker input {
     margin: 0;
     width: initial;
     border-bottom: none;
   }
-  .react-datetimerange-picker__wrapper {
+  .react-datetimerange-picker__wrapper,
+  .react-date-picker__wrapper,
+  .react-time-picker__wrapper {
     border: none;
   }
+
   .react-calendar .react-calendar__tile--active,
-  .react-calendar .react-calendar__tile--hover,
+  .react-calendar__tile--rangeStart {
+    background-color: #f26e21 !important;
+    color: white !important;
+  }
+
+  .react-datetimerange-picker__inputGroup__input--hasLeadingZero,
+  .react-date-picker__inputGroup__input--hasLeadingZero,
+  .react-time-picker__inputGroup__input--hasLeadingZero {
+    padding: 0;
+  }
+  .react-date-picker__inputGroup__input,
+  .react-time-picker__inputGroup__input,
+  .react-datetimerange-picker__inputGroup__input {
+    display: inline !important;
+    transition: none !important;
+  }
+
+  .react-calendar .react-calendar__tile--active,
   .react-calendar__tile--rangeStart {
     background-color: #f26e21 !important;
     color: white !important;
