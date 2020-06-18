@@ -15,6 +15,7 @@ import UploadPhotoForm from "./forms/UploadPhotoForm";
 import ProfileConfirmation from "./forms/ProfileConfirmation";
 
 import Loading from "../../../helpers/Loading.js";
+import { isValidDate } from "../../../helpers/Date";
 
 // REDUX
 import {
@@ -250,7 +251,7 @@ export default function index() {
         customgender: user.profile.custom_gender,
         familyrelationship: user.profile.family_relationship,
         zipcode: user.profile.zip_code,
-        dateofbirth: user.profile.birth_date
+        dateofbirth: isValidDate(user.profile.birth_date)
           ? format(new Date(user.profile.birth_date), "yyyy-MM-dd")
           : "",
         address: user.profile.address,
@@ -346,6 +347,7 @@ export default function index() {
                       <span>
                         {user &&
                           user.profile &&
+                          isValidDate(user.profile.birth_date) &&
                           getAge(user.profile.birth_date)}
                       </span>
                     </h4>

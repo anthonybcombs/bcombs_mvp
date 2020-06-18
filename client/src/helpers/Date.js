@@ -6,3 +6,7 @@ export function yearList(endYear) {
   }
   return years.sort((a, b) => b - a);
 }
+
+export function isValidDate(date) {
+  return isNaN(date) && !isNaN(Date.parse(date));
+}

@@ -3,6 +3,8 @@ import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
 
+import { isValidDate } from "../../../../helpers/Date";
+
 const ProfileFormStyled = styled.form`
   #profile-form {
     background: none !important;
@@ -81,6 +83,7 @@ const ProfileFormStyled = styled.form`
 export default function ProfileForm({ data, onSubmit, handleInputChange }) {
   const theme = useContext(ThemeContext);
   const { handleSubmit } = useForm();
+
   return (
     <ProfileFormStyled
       id="personal-info-details"
@@ -110,7 +113,7 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
         <div className="main-profile-content">
           <div className="profile-content bold">Birthdate</div>
           <div className="profile-content">
-            {data.birth_date
+            {isValidDate(data.birth_date)
               ? format(new Date(data.birth_date), "MMMM dd yyyy")
               : null}
           </div>
