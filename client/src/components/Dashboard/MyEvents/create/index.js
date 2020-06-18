@@ -73,7 +73,7 @@ const NewEventModal = styled.div`
     }
   }
 `;
-const initialEventDetails = selectedDate => {
+const initialEventDetails = (selectedDate) => {
   return {
     name: "",
     date: new Date(),
@@ -84,14 +84,14 @@ const initialEventDetails = selectedDate => {
     eventType: "Event",
     location: "",
     eventDescription: "",
-    status: "Scheduled"
+    status: "Scheduled",
   };
 };
 export default function index({
   isVisible = true,
   toggleCreateEventModal,
   familyMembers,
-  defaultSelectedDate = new Date()
+  defaultSelectedDate = new Date(),
 }) {
   const [selectedDate, setSelectedDate] = useState(defaultSelectedDate);
   const [eventDetails, setEventDetails] = useState(
@@ -99,7 +99,7 @@ export default function index({
   );
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const handleSetSelectedDate = date => {
+  const handleSetSelectedDate = (date) => {
     const currentDateTime = addSeconds(
       addMinutes(
         addHours(date, new Date().getHours()),
@@ -112,7 +112,7 @@ export default function index({
       ...eventDetails,
       date: currentDateTime,
       time: format(currentDateTime, "hh:mm a"),
-      eventSchedule: [currentDateTime, currentDateTime]
+      eventSchedule: [currentDateTime, currentDateTime],
     });
   };
   const handleEventDetailsChange = (id, value) => {
@@ -124,7 +124,7 @@ export default function index({
     }
     setEventDetails({ ...eventDetails, [id]: value });
   };
-  const handleSubmit = value => {
+  const handleSubmit = (value) => {
     toggleCreateEventModal(false);
     dispatch(addEvent(eventDetails));
     setEventDetails(initialEventDetails(selectedDate));
@@ -136,13 +136,15 @@ export default function index({
     <NewEventModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
-      theme={theme}>
+      theme={theme}
+    >
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleCreateEventModal(false);
-          }}>
+          }}
+        >
           &times;
         </span>
         <div id="content">
