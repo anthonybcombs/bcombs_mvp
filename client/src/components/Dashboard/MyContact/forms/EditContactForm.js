@@ -128,11 +128,11 @@ export default function ContactForm({
   contactDetails,
   groups,
   onSubmit,
-  handleContactDetailsChange,
+  handleContactDetailsChange
 }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange",
+    reValidateMode: "onChange"
   });
   const [groupOptions, setGroupOptions] = useState([]);
   const [defaultGroups, setDefaultGroups] = useState([]);
@@ -141,28 +141,28 @@ export default function ContactForm({
   useEffect(() => {
     if (groups) {
       let defaultGroups = groups
-        .filter((item) => contactDetails.selectedGroups.includes(item.id))
-        .map((item) => {
+        .filter(item => contactDetails.selectedGroups.includes(item.id))
+        .map(item => {
           return { label: item.name, value: item.id };
         });
-      let formattedGroups = groups.map((item) => {
+      let formattedGroups = groups.map(item => {
         return {
           label: `${item.name}`,
-          value: item.id,
+          value: item.id
         };
       });
       setGroupOptions(formattedGroups);
       setDefaultGroups(defaultGroups);
     }
   }, [groups]);
-  const handleSelectChange = (value) => {
+  const handleSelectChange = value => {
     handleContactDetailsChange("selectedGroups", value);
   };
 
-  const handleRemoveChange = (value) => {
-    const currentGroupIds = value.map((item) => item.id);
+  const handleRemoveChange = value => {
+    const currentGroupIds = value.map(item => item.id);
     const removedGroups = groupOptions.filter(
-      (item) => !currentGroupIds.includes(item.id)
+      item => !currentGroupIds.includes(item.id)
     );
     handleContactDetailsChange("removedGroups", removedGroups);
   };
@@ -171,12 +171,11 @@ export default function ContactForm({
     <ContactFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      theme={theme}
-    >
+      theme={theme}>
       <div id="contact-header">
         <div>
           <div>
-            <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
+            <img src={contact.profile_img} />
           </div>
         </div>
         <div>
@@ -252,7 +251,7 @@ export default function ContactForm({
               }}
               ref={register({
                 required: true,
-                pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/,
+                pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/
               })}
               value={contactDetails.phone_number}
             />
@@ -348,10 +347,10 @@ export default function ContactForm({
           <CustomMultiSelectOptions
             className="field-input"
             options={groupOptions}
-            value={groupOptions.filter((opt) =>
+            value={groupOptions.filter(opt =>
               contactDetails.selectedGroups.includes(opt.value)
             )}
-            onChange={(value) => {
+            onChange={value => {
               handleContactDetailsChange("selectedGroups", value);
             }}
             labelledBy={"Select"}

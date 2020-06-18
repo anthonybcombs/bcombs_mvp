@@ -11,6 +11,7 @@ export const GET_CONTACT_QUERY = gql`
       relation
       user_id
       added_by
+      profile_img
     }
   }
 `;

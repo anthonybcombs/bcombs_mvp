@@ -2,18 +2,34 @@ import { ApolloError } from "apollo-server-express";
 import { makeDb } from "../../helpers/database";
 import { getUserFromDatabase } from "../index";
 
+import {
+  currentS3BucketName,
+  s3Bucket,
+  s3BucketRootPath
+} from "../../helpers/aws";
+
 export const getContacts = async email => {
   const db = makeDb();
   const currentUser = await getUserFromDatabase(email);
   let result;
   try {
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number, relation, BIN_TO_UUID(user_id) as user_id, BIN_TO_UUID(added_by) as added_by  from contacts WHERE added_by = UUID_TO_BIN(?)`,
+      `SELECT BIN_TO_UUID(contacts.id) as id,contacts.first_name,contacts.last_name,contacts.email,contacts.phone_number, contacts.relation, BIN_TO_UUID(contacts.user_id) as user_id, BIN_TO_UUID(contacts.added_by) as added_by,users.profile_img  from contacts,users WHERE contacts.added_by = UUID_TO_BIN(?) AND contacts.email=users.email`,
       [currentUser.id]
     );
 
-    console.log("getContacts rows", rows);
-    result = rows;
+    let formattedContacts = rows.map(contact => {
+      return {
+        ...contact,
+        profile_img: `${s3BucketRootPath}${
+          !contact.profile_img || contact.profile_img === ""
+            ? "user/default_user.png"
+            : contact.profile_img
+        }`
+      };
+    });
+    console.log("getContacts rows", formattedContacts);
+    result = formattedContacts;
   } catch (error) {
     console.log("Error", error);
   } finally {
@@ -60,6 +76,7 @@ export const editContact = async data => {
     } = data;
 
     const currentUser = await getUserFromDatabase(email);
+
     await db.query(
       `UPDATE contacts SET first_name=?,last_name=?,phone_number=?,email=?,relation=? WHERE id=UUID_TO_BIN(?)`,
       [first_name, last_name, phone_number, email, relation, id]

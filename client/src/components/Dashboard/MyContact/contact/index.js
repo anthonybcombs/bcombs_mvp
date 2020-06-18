@@ -80,7 +80,7 @@ export default function index({
         setSelectedContactId(contactDetails.id);
       }}>
       <div>
-        <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
+        <img src={contactDetails.profile_img} />
         <p>
           <span>
             {contactDetails.first_name} {contactDetails.last_name}

@@ -284,6 +284,7 @@ const queryTypes = `
         phone_number: String
         relation: String
         added_by:String
+        profile_img: String
     }
 
     type User{
