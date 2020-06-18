@@ -6,6 +6,9 @@ import Contact from "../contact";
 
 const ContactListStyled = styled.div`
   #contact-list {
+    padding: 2em;
+  }
+  #contact-list-details {
     padding: 1em;
   }
   #contact-list-header {
@@ -31,7 +34,7 @@ export default function index({
   EditContactModal,
   ProfileModal,
   SendMessageModal,
-  headerText
+  headerText,
 }) {
   const [contactList, setContactList] = useState([]);
   const [selectedContactId, setSelectedContactId] = useState(0);
@@ -44,10 +47,10 @@ export default function index({
   );
   const [
     typeOfFormUsedInEditContact,
-    setTypeOfFormUsedInEditContact
+    setTypeOfFormUsedInEditContact,
   ] = useState("Edit Contact");
   const contact =
-    contacts.find(contact => contact.id === selectedContactId) || {};
+    contacts.find((contact) => contact.id === selectedContactId) || {};
 
   useEffect(() => {
     if (contacts) {
@@ -104,7 +107,7 @@ export default function index({
       </div>
       <div id="contact-list-details">
         {contactList.length > 0 &&
-          contactList.map(contact => (
+          contactList.map((contact) => (
             <Contact
               isSelected={selectedContactId === contact.id}
               contactDetails={contact}

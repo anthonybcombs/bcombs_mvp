@@ -6,7 +6,7 @@ import { Multiselect } from "multiselect-react-dropdown";
 // import { updateContact } from "../../../../../redux/actions/Contacts";
 import {
   updateGroup,
-  requestDeleteGroup
+  requestDeleteGroup,
 } from "../../../../redux/actions/Groups";
 
 import GroupForm from "../forms/GroupForm";
@@ -41,7 +41,7 @@ const EditGroupModal = styled.div`
   }
   .modal-content {
     margin: 1.5em auto;
-    width: 70%;
+    width: 45%;
     min-height: 70%;
   }
   button {
@@ -80,7 +80,6 @@ const EditGroupModal = styled.div`
   }
   @media (min-width: 600px) {
     .content {
-      grid-template-columns: 50% 50%;
       grid-gap: 1%;
     }
     button[type="submit"] {
@@ -98,7 +97,7 @@ export default function index({
   group,
   isGroupLoading,
   isGroupMemberLoading,
-  typeOfForm = "Edit Group"
+  typeOfForm = "Edit Group",
 }) {
   const [groupDetails, setGroupDetails] = useState({});
   const [currentContacts, setCurrentContacts] = useState([]);
@@ -118,27 +117,27 @@ export default function index({
   useEffect(() => {
     if (contacts && isVisible && group && group.contacts) {
       const list = group.contacts
-        .map(c => {
-          let contact = groupMembers.find(con => con.user_id === c);
-          const currentContact = contacts.find(con => con.user_id === c);
+        .map((c) => {
+          let contact = groupMembers.find((con) => con.user_id === c);
+          const currentContact = contacts.find((con) => con.user_id === c);
 
           return {
             ...contact,
-            phone_number: currentContact ? currentContact.phone_number : ""
+            phone_number: currentContact ? currentContact.phone_number : "",
           };
         })
-        .filter(c => c.email);
+        .filter((c) => c.email);
 
       let selections = contacts
-        .filter(c => {
+        .filter((c) => {
           return !group.contacts.includes(c.user_id);
         })
-        .map(c => {
+        .map((c) => {
           return {
             user_id: c.user_id,
             first_name: c.first_name,
             last_name: c.last_name,
-            phone_number: c.phone_number
+            phone_number: c.phone_number,
           };
         });
 
@@ -151,41 +150,41 @@ export default function index({
   const handleGroupDetailsChange = (id, value) => {
     if (id === "contacts" || id === "other_ids") {
       console.log("VALUEEEEEEEEEEEEEEE", value);
-      let ids = value.map(contact => contact.value);
+      let ids = value.map((contact) => contact.value);
       if (id === "contacts") {
         console.log(" [...(group.contacts || []), ...ids]", [
           ...(group.contacts || []),
-          ...ids
+          ...ids,
         ]);
         setGroupDetails({
           ...groupDetails,
-          contacts: [...(group.contacts || []), ...ids]
+          contacts: [...(group.contacts || []), ...ids],
         });
       } else {
         setGroupDetails({
           ...groupDetails,
-          other_ids: ids
+          other_ids: ids,
         });
       }
     } else {
       setGroupDetails({
         ...groupDetails,
-        [id]: value
+        [id]: value,
       });
     }
   };
 
-  const handleSubmit = value => {
+  const handleSubmit = (value) => {
     const payload = {
       ...groupDetails,
       email: auth.email,
       member_ids: [
         ...new Set([
           ...(groupDetails.contacts || []),
-          ...(groupDetails.other_ids || [])
-        ])
+          ...(groupDetails.other_ids || []),
+        ]),
       ],
-      removed_member_ids: removedContacts
+      removed_member_ids: removedContacts,
     };
     console.log("handleSubmittttt", payload);
     dispatch(updateGroup(payload));
@@ -197,7 +196,7 @@ export default function index({
     if (group && auth) {
       const payload = {
         id: group.id,
-        email: auth.email
+        email: auth.email,
       };
       dispatch(requestDeleteGroup(payload));
       toggleEditGroupModal(false);
@@ -205,8 +204,10 @@ export default function index({
     }
   };
 
-  const handleRemoveMember = id => e => {
-    const updatedContacts = currentContacts.filter(item => id !== item.user_id);
+  const handleRemoveMember = (id) => (e) => {
+    const updatedContacts = currentContacts.filter(
+      (item) => id !== item.user_id
+    );
     if (!removedContacts.includes(id)) {
       setRemovedContacts([...removedContacts, id]);
     }
@@ -224,15 +225,17 @@ export default function index({
       theme={{
         modalWidth: typeOfForm === "Edit Contact" ? "60%" : "30%",
         modalMarginTop: typeOfForm === "Edit Contact" ? "initial" : "20vh",
-        ...theme
+        ...theme,
       }}
-      className="modal">
+      className="modal"
+    >
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleEditGroupModal(false);
-          }}>
+          }}
+        >
           &times;
         </span>
         {isGroupLoading || isGroupMemberLoading ? (
@@ -247,6 +250,7 @@ export default function index({
                 handleGroupDetailsChange={handleGroupDetailsChange}
               />
             </div>
+
             <div>
               <GroupContacts
                 contacts={currentContacts}
@@ -256,7 +260,8 @@ export default function index({
                 className="group-delete"
                 data-testid="app-dashboard-my-group-new-group-button-save"
                 onClick={handleDelete}
-                type="submit">
+                type="submit"
+              >
                 Delete
               </button>
             </div>

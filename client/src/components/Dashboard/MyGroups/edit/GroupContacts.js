@@ -14,9 +14,6 @@ const ContactListStyled = styled.div`
   #contact-list-header {
     position: relative;
   }
-  #contact-list-details {
-    min-height: 300px;
-  }
   #contact-list-header button {
     position: absolute;
     top: 0;
@@ -90,7 +87,7 @@ const GroupContacts = ({ contacts, handleRemoveMember }) => {
       <div id="contact-list-details">
         <h4>Members</h4>
         {contacts.length > 0 ? (
-          contacts.map(contact => (
+          contacts.map((contact) => (
             <ContactStyled key={contact.id}>
               <div>
                 <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
@@ -109,7 +106,8 @@ const GroupContacts = ({ contacts, handleRemoveMember }) => {
               <div className="member-action">
                 <span
                   className="group-list-details"
-                  onClick={handleRemoveMember(contact.user_id)}>
+                  onClick={handleRemoveMember(contact.user_id)}
+                >
                   <FontAwesomeIcon icon={faMinusCircle} />
                 </span>
               </div>

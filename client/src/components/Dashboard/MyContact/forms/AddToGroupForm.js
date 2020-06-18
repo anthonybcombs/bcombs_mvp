@@ -35,11 +35,11 @@ export default function AddToGroupForm({
   contactDetails,
   groups,
   onSubmit,
-  handleContactDetailsChange
+  handleContactDetailsChange,
 }) {
   const { handleSubmit } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange"
+    reValidateMode: "onChange",
   });
   const theme = useContext(ThemeContext);
   return (
@@ -48,7 +48,7 @@ export default function AddToGroupForm({
       onSubmit={handleSubmit(onSubmit)}
       theme={theme}
     >
-      {groups.map(group => (
+      {groups.map((group) => (
         <label htmlFor="group" key={group.id}>
           <input
             type="checkbox"
