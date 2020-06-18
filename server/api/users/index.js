@@ -258,26 +258,28 @@ export const executeUserUpdate = async user => {
         [id]
       );
       await db.query(
-        "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?)",
+        "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,custom_gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?,?)",
         [
           id,
           personalInfo.firstname,
           personalInfo.lastname,
           personalInfo.familyrelationship,
           personalInfo.gender,
+          personalInfo.customgender,
           personalInfo.zipcode,
           personalInfo.dateofbirth
         ]
       );
       familyMembers.forEach(async familyMember => {
         await db.query(
-          "INSERT IGNORE INTO family_members (id,user_id,first_name,last_name,family_relationship,gender,zip_code,birth_date,type) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?,?)",
+          "INSERT IGNORE INTO family_members (id,user_id,first_name,last_name,family_relationship,gender,custom_gender,zip_code,birth_date,type) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?,?,?)",
           [
             id,
             familyMember.firstname,
             familyMember.lastname,
             familyMember.familyrelationship,
             familyMember.gender,
+            familyMember.customgender,
             familyMember.zipcode,
             familyMember.dateofbirth,
             familyMember.type
@@ -316,12 +318,13 @@ export const executeUserUpdate = async user => {
       }
     } else {
       await db.query(
-        "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,zip_code=?,birth_date=? WHERE user_id=UUID_TO_BIN(?)",
+        "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=? WHERE user_id=UUID_TO_BIN(?)",
         [
           personalInfo.firstname,
           personalInfo.lastname,
           personalInfo.familyrelationship,
           personalInfo.gender,
+          personalInfo.customgender,
           personalInfo.zipcode,
           personalInfo.dateofbirth,
           id

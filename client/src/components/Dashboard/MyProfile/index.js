@@ -181,6 +181,7 @@ export default function index() {
     firstname: "",
     lastname: "",
     gender: "",
+    customgender: "",
     familyrelationship: "",
     zipcode: "",
     dateofbirth: "",
@@ -246,6 +247,7 @@ export default function index() {
         firstname: user.profile.first_name,
         lastname: user.profile.last_name,
         gender: user.profile.gender,
+        customgender: user.profile.custom_gender,
         familyrelationship: user.profile.family_relationship,
         zipcode: user.profile.zip_code,
         dateofbirth: user.profile.birth_date
@@ -260,6 +262,9 @@ export default function index() {
   }, [user, isEditProfileVisible]);
 
   const handleFormSubmit = e => {
+    if (personalInfo.gender !== 'custom') {
+      personalInfo.customgender = "";
+    }
     setUpdatedPayload({
       personalInfo: {
         ...personalInfo,

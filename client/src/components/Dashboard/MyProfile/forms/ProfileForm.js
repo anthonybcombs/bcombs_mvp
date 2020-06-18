@@ -99,6 +99,14 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
           <div className="profile-content">{data.gender}</div>
         </div>
 
+        {data.gender === 'custom' && <>
+            <div className="main-profile-content">
+              <div className="profile-content bold">Custom Gender</div>
+              <div className="profile-content">{data.custom_gender}</div>
+            </div>
+          </>
+        }
+
         <div className="main-profile-content">
           <div className="profile-content bold">Birthdate</div>
           <div className="profile-content">
