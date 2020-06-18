@@ -113,7 +113,14 @@ const EditProfileModal = styled.form`
 
 const GENDER_OPTIONS = [
   { id: "male", value: "Male", name: "Male" },
-  { id: "female", value: "Female", name: "Female" }
+  { id: "female", value: "Female", name: "Female" },
+  { id: "custom", value: "Custom", name: "Custom" },
+];
+
+const CUSTOM_GENDER_OPTIONS = [
+  { id: "she", value: "She", name: "She" },
+  { id: "he", value: "He", name: "He" },
+  { id: "they", value: "They", name: "They" },
 ];
 
 const ETHINICITY_OPTIONS = [
@@ -148,11 +155,12 @@ export default function index({
 }) {
   const theme = useContext(ThemeContext);
   const [defaultEthnicity, setDefaultEthnicity] = useState("");
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, watch } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
   const dispatch = useDispatch();
+  const gender = watch('gender');
 
   // let month = "" + (formattedDateOfBirth.getMonth() + 1),
   //   day = "" + formattedDateOfBirth.getDate(),
@@ -245,13 +253,15 @@ export default function index({
                 name="gender"
                 className="field-input"
                 onChange={({ target }) => {
-                  handleInputChange("gender", target.value);
+                  if (target.value !== 'custom') {
+                    handleInputChange("gender", target.value);
+                  }
                 }}
                 ref={register({ required: true })}
-                value={data.gender}>
+                >
                 <option value="">Select</option>
                 {GENDER_OPTIONS.map(opt => (
-                  <option key={opt.id} value={opt.id}>
+                  <option key={opt.id} value={opt.id} selected={opt.id === data.gender}>
                     {opt.name}
                   </option>
                 ))}
@@ -264,6 +274,35 @@ export default function index({
               message="Gender is required."
             />
           </div>
+
+          {gender === 'custom' && <>
+              <div className="form-group">
+                <div className="field">
+                  <select
+                    name="customgender"
+                    className="field-input"
+                    onChange={({ target }) => {
+                      handleInputChange("customgender", target.value);
+                    }}
+                    ref={register({ required: true })}
+                  >
+                    <option value="">Select</option>
+                    {CUSTOM_GENDER_OPTIONS.map(opt => (
+                      <option key={opt.id} value={opt.id} selected={opt.id === data.customgender}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                  <label className="field-label">Custom Gender</label>
+                </div>
+                <ErrorMessage
+                  field={errors.customgender}
+                  errorType="required"
+                  message="Custom Gender is required."
+                />
+              </div>
+            </>
+          }
 
           <div className="form-group">
             <div className="field">

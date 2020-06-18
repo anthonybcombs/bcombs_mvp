@@ -31,6 +31,7 @@ export default function index({ setCurrentPage, setProfileDetails, userType }) {
     firstname: "",
     lastname: "",
     gender: "male",
+    customgender: "",
     familyrelationship: "father",
     zipcode: "",
     dateofbirth: ""

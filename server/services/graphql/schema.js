@@ -34,6 +34,7 @@ const inputs = `
         lastname: String!
         familyrelationship: String!
         gender: String!
+        customgender: String
         zipcode: String!
         dateofbirth: Date!
         type: String
@@ -366,6 +367,7 @@ const queryTypes = `
         lastname: String
         familyrelationship: String
         gender: String
+        customgender: String
         zipcode: String
         dateofbirth: Date
         type: String    

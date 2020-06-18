@@ -186,10 +186,9 @@ export default function CreateProfileForm({
           {gender === "custom" && <>
               <select
                 data-testid="app-profile-select-custom-gender"
-                name="customGender"
+                name="customgender"
                 onChange={({ target }) => {
-                  handleInputChange("gender", target.value); // Override gender value
-                  handleInputChange("customGender", target.value);
+                  handleInputChange("customgender", target.value);
                 }}
                 ref={register({ required: true })}
               >
@@ -199,7 +198,7 @@ export default function CreateProfileForm({
                 <option value="they">They</option>
               </select>
               <ErrorMessage
-                field={errors.customGender}
+                field={errors.customgender}
                 errorType="required"
                 message="Custom Gender is required."
               />
