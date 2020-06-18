@@ -145,8 +145,15 @@ export default function index({
         ...(createdGroups || []),
         ...(joinedGroups || [])
       ];
+      let groupOpt = combinedGroups.map(item => {
+        return {
+          ...item,
+          value: item.id,
+          label: item.name
+        };
+      });
 
-      setGroupOptions([...combinedGroups]);
+      setGroupOptions([...groupOpt]);
     }
   }, [groups]);
   const theme = useContext(ThemeContext);
@@ -193,7 +200,7 @@ export default function index({
           : [],
       group_ids:
         eventDetails.visibility === "custom"
-          ? selectedGroup.map(group => group.id)
+          ? selectedGroup.map(group => group.value)
           : []
     };
     console.log("selectedCalendarrr", selectedCalendars);
@@ -238,6 +245,7 @@ export default function index({
             groups={groupOptions}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}
+            selectedGroup={selectedGroup}
           />
         </div>
       </div>

@@ -14,6 +14,7 @@ const CustomMultiSelectContainer = styled.div`
 const CustomMultiSelectOptions = ({
   className,
   onChange,
+  name,
   labelledBy = "Select",
   options = [],
   value = []
@@ -21,6 +22,7 @@ const CustomMultiSelectOptions = ({
   return (
     <CustomMultiSelectContainer>
       <MultiSelect
+        name={name}
         className={className}
         options={options}
         value={value}
