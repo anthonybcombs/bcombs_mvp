@@ -218,7 +218,7 @@ export default function index({
                 </button>
               </div>
             )}
-            <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
+            <img src="https://bcombs.s3.amazonaws.com/event_default.jpg" />
             <div id="event-details">
               <h4>{event.eventCategory}</h4>
               <h3>{event.name}</h3>

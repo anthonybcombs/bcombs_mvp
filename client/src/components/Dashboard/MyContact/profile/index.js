@@ -53,7 +53,7 @@ export default function index({
         </span>
         <h2>My Profile</h2>
         <div>
-          <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
+          <img src={contactDetails.profile_img} />
         </div>
         <div>
           <h3>
