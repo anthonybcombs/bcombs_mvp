@@ -33,10 +33,16 @@ const EventColors = styled.div`
 const EventStyled = styled.div`
   z-index: 1;
   margin: 2px;
+
+  max-width: inherit;
+  width: inherit;
+
   #event-name {
     display: block;
     color: black;
     padding: 5px;
+    max-width: inherit;
+    width: inherit;
   }
   #event-name.selected {
     color: black !important;
@@ -279,7 +285,8 @@ export default function index({
             style={{
               overflow: "hidden",
               textOverflow: "ellipsis",
-              whiteSpace: "nowrap"
+              whiteSpace: "nowrap",
+              maxWidth: 212
             }}>
             {isTimedDisplay &&
               format(new Date(event.start_of_event), "hh:mm a")}

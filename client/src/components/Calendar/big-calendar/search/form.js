@@ -3,9 +3,10 @@ import styled from "styled-components";
 import Select from "react-select";
 import { differenceInDays, parseISO, isPast } from "date-fns";
 import { useForm } from "react-hook-form";
+import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const FormStyled = styled.form`
-  input:not([id^="react-select-"]) {
+  input:not([class^="custom-select"]) {
     background: none;
     width: 100%;
     color: black;
@@ -46,14 +47,15 @@ const FormStyled = styled.form`
 `;
 export default function form({ calendars, onSubmit }) {
   const { register, handleSubmit, errors, setValue, getValues } = useForm({
-    mode: "onSubmit",
+    mode: "onSubmit"
   });
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [startDateType, setStartDateType] = useState("text");
   const [endDateType, setEndDateType] = useState("text");
+  const [selectedCalendar, setSelectedCalendar] = useState([]);
   const options = [];
-  calendars.map((calendarsGroup) => {
-    return calendarsGroup.map((calendar) => {
+  calendars.map(calendarsGroup => {
+    return calendarsGroup.map(calendar => {
       options.push({ value: calendar.id, label: calendar.name });
     });
   });
@@ -63,20 +65,20 @@ export default function form({ calendars, onSubmit }) {
       { name: "startDate" },
       {
         validate: {
-          noPastDate: (value) => {
+          noPastDate: value => {
             if (isPast(parseISO(value))) {
               return false;
             }
             return true;
-          },
-        },
+          }
+        }
       }
     );
     register(
       { name: "endDate" },
       {
         validate: {
-          noPrevDate: (value) => {
+          noPrevDate: value => {
             if (
               differenceInDays(
                 parseISO(getValues()["startDate"]),
@@ -86,37 +88,58 @@ export default function form({ calendars, onSubmit }) {
               return false;
             }
             return true;
-          },
-        },
+          }
+        }
       }
     );
   }, []);
+
   return (
     <FormStyled method="POST" onSubmit={handleSubmit(onSubmit)}>
-      <Select
+      {/* <Select
         className="select"
         options={options}
         placeholder="Select a calendar"
         isMulti
         closeMenuOnSelect={false}
-        theme={(theme) => ({
+        theme={theme => ({
           ...theme,
           borderRadius: 0,
           colors: {
             ...theme.colors,
             primary25: "#f26e21",
-            primary: "#f26e21",
-          },
+            primary: "#f26e21"
+          }
         })}
-        onChange={(option) => {
+        onChange={option => {
           if (option !== null) {
-            const calendarIds = option.map((calendar) => calendar.value);
+            const calendarIds = option.map(calendar => calendar.value);
             setValue("calendars", calendarIds);
             return;
           }
           setValue("calendars", "");
         }}
+      /> */}
+
+      <CustomMultiSelectOptions
+        className="custom-select"
+        options={options}
+        value={options.filter(group => {
+          return selectedCalendar.includes(group.value);
+        })}
+        onChange={option => {
+          if (option !== null) {
+            const calendarIds = option.map(calendar => calendar.value);
+            setSelectedCalendar(calendarIds);
+            setValue("calendars", calendarIds);
+            return;
+          }
+          setSelectedCalendar([]);
+          setValue("calendars", "");
+        }}
+        labelledBy={"Select a calendar"}
       />
+
       <ErrorMessage
         field={errors.calendars}
         errorType="required"

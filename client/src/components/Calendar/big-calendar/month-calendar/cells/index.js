@@ -28,8 +28,9 @@ const CellsStyled = styled.div`
     position: relative;
     font-size: 1em;
     height: 200px;
-    width: auto;
-    max-width: 266px;
+    min-width: 203px;
+    width: 100%;
+
     cursor: pointer;
     border: 1px solid lightgrey;
   }
@@ -80,11 +81,12 @@ const CellsStyled = styled.div`
   }
   #events-list {
     position: relative;
+    display: inline-block !important;
     top: 50px;
     left: 0;
     width: 100%;
     height: 200px;
-    overflow: auto;
+    overflow: hidden;
   }
 `;
 
