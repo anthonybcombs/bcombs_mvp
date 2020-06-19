@@ -65,15 +65,17 @@ export default function index(props) {
 
   useEffect(() => {
     if (queryParams && queryParams.success) {
-      try {
-        let decodedStrings = decodeURIComponent(queryParams.success);
+      let decodedStrings = decodeURIComponent(queryParams.success);
 
-        if (decodedStrings && decodedStrings.includes(SUCCESS_STATUS)) {
-          setRegistrationSuccess(decodedStrings);
-        }
-      } catch (err) {
-        console.log("Error", err);
+      if (decodedStrings && decodedStrings.includes(SUCCESS_STATUS)) {
+        setRegistrationSuccess(decodedStrings);
       }
+    } else if (
+      queryParams &&
+      queryParams.verified &&
+      queryParams.verified === "true"
+    ) {
+      setRegistrationSuccess("Account has been verified successfully");
     }
   }, []);
   const handleInputChange = (id, value) => {
