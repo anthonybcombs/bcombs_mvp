@@ -152,7 +152,7 @@ export default function index({
                 currentMembers.map(member => (
                   <ContactStyled key={member.id}>
                     <div>
-                      <img src="https://i.picsum.photos/id/1043/200/300.jpg" />
+                      <img src={member.profile_img} />
                       <p className="member-name">
                         <span>
                           {member.first_name} {member.last_name}
