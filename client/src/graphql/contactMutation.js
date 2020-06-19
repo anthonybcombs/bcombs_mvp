@@ -11,6 +11,7 @@ export const DELETE_CONTACT_MUTATION = gql`
       relation
       user_id
       added_by
+      profile_img
     }
   }
 `;
@@ -26,6 +27,7 @@ export const UPDATE_CONTACT_MUTATION = gql`
       relation
       user_id
       added_by
+      profile_img
     }
   }
 `;
@@ -41,6 +43,7 @@ export const CONTACT_CREATE_MUTATION = gql`
       relation
       user_id
       added_by
+      profile_img
     }
   }
 `;

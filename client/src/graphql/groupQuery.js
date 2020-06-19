@@ -24,6 +24,7 @@ export const GET_GROUP_MEMBERS_QUERY = gql`
       email
       last_name
       first_name
+      profile_img
     }
   }
 `;

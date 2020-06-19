@@ -166,7 +166,7 @@ export default function ContactForm({
     );
     handleContactDetailsChange("removedGroups", removedGroups);
   };
-  console.log("contactDetailszxxxxxxxxxx", contactDetails);
+
   return (
     <ContactFormStyled
       method="POST"

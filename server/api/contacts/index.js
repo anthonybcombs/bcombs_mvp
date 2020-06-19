@@ -2,11 +2,7 @@ import { ApolloError } from "apollo-server-express";
 import { makeDb } from "../../helpers/database";
 import { getUserFromDatabase } from "../index";
 
-import {
-  currentS3BucketName,
-  s3Bucket,
-  s3BucketRootPath
-} from "../../helpers/aws";
+import { s3BucketRootPath } from "../../helpers/aws";
 
 export const getContacts = async email => {
   const db = makeDb();
@@ -28,7 +24,7 @@ export const getContacts = async email => {
         }`
       };
     });
-    console.log("getContacts rows", formattedContacts);
+
     result = formattedContacts;
   } catch (error) {
     console.log("Error", error);
@@ -49,11 +45,24 @@ export const removeContact = async ({ id, user_id, added_by_id }) => {
     await db.query(`DELETE FROM group_members WHERE user_id=UUID_TO_BIN(?)`, [
       user_id
     ]);
+
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,first_name,last_name,email,phone_number, relation, BIN_TO_UUID(user_id) as user_id,BIN_TO_UUID(added_by) as added_by  from contacts WHERE added_by = UUID_TO_BIN(?)`,
+      `SELECT BIN_TO_UUID(contacts.id) as id,contacts.first_name,contacts.last_name,contacts.email,contacts.phone_number, contacts.relation, BIN_TO_UUID(contacts.user_id) as user_id, BIN_TO_UUID(contacts.added_by) as added_by,users.profile_img  from contacts,users WHERE contacts.added_by = UUID_TO_BIN(?) AND contacts.email=users.email`,
       [added_by_id]
     );
-    result = rows;
+
+    let formattedContacts = rows.map(contact => {
+      return {
+        ...contact,
+        profile_img: `${s3BucketRootPath}${
+          !contact.profile_img || contact.profile_img === ""
+            ? "user/default_user.png"
+            : contact.profile_img
+        }`
+      };
+    });
+
+    result = formattedContacts;
   } catch (error) {
   } finally {
     await db.close();
@@ -133,7 +142,6 @@ export const createNewContact = async ({
     const user = await getUserFromDatabase(email);
     const currentUser = await getUserFromDatabase(auth_email);
 
-    console.log("USERRRRRRRRRRR", user);
     if (user) {
       await db.query(
         "INSERT IGNORE INTO `contacts`(`id`,`user_id`,`first_name`,`last_name`,`phone_number`,`email`,`relation`,`added_by`,`date_added`) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),?,?,?,?,?,UUID_TO_BIN(?),NOW())",
@@ -171,7 +179,6 @@ export const createNewContact = async ({
     } else {
       throw new ApolloError("User not exist!");
     }
-    console.log("Contacts results", results);
   } catch (error) {
     console.log("Error", error);
   } finally {

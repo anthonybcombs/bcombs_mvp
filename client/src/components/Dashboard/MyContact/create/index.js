@@ -86,6 +86,7 @@ export default function index({
             ...contactDetails,
             authEmail: auth.email
           };
+          console.log("PAYLOADDDDDDD", payload);
           if (contactDetails.email !== auth.email) {
             dispatch(addContact(payload));
             toggleCreateContactModal(false);

@@ -1,6 +1,8 @@
 import { makeDb } from "../../helpers/database";
 import { getUserFromDatabase } from "../index";
 
+import { s3BucketRootPath } from "../../helpers/aws";
+
 export const getGroup = async () => {
   const db = makeDb();
   let result;
@@ -185,13 +187,27 @@ export const getMembers = async id => {
         `SELECT user_profiles.first_name,
         user_profiles.last_name,
         BIN_TO_UUID(user_profiles.user_id) as user_id,
-        users.email 
+        users.email ,
+        users.profile_img
         FROM user_profiles INNER JOIN users
         ON user_profiles.user_id = users.id  
         WHERE users.id IN (${userIds.join(",")}) `
       );
-      contacts = JSON.parse(JSON.stringify(contacts));
+
+      let formattedContacts = contacts.map(contact => {
+        return {
+          ...contact,
+          profile_img: `${s3BucketRootPath}${
+            !contact.profile_img || contact.profile_img === ""
+              ? "user/default_user.png"
+              : contact.profile_img
+          }`
+        };
+      });
+      contacts = JSON.parse(JSON.stringify(formattedContacts));
     }
+
+    console.log("CONTACTSSSSSSSSSSSSSSS", contacts);
     return contacts;
   } catch (err) {
     console.log("Error", err);
