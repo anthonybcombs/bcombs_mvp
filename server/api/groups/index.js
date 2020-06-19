@@ -178,6 +178,7 @@ export const getMembers = async id => {
       "SELECT BIN_TO_UUID(user_id) as user_id FROM group_members WHERE group_id=UUID_TO_BIN(?)",
       [id]
     );
+
     userIds =
       userIds && userIds.length > 0 ? JSON.parse(JSON.stringify(userIds)) : [];
 
@@ -204,10 +205,10 @@ export const getMembers = async id => {
           }`
         };
       });
+
       contacts = JSON.parse(JSON.stringify(formattedContacts));
     }
 
-    console.log("CONTACTSSSSSSSSSSSSSSS", contacts);
     return contacts;
   } catch (err) {
     console.log("Error", err);

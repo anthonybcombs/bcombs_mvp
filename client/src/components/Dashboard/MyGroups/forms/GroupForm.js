@@ -296,6 +296,7 @@ export default function GroupForm({
       item => suggestion.value === item.value
     );
     if (!isExist) {
+      console.log("SUGGESTION", suggestion);
       setOtherUserSelected([...otherUserSelected, suggestion]);
       handleGroupDetailsChange("other_ids", [...otherUserSelected, suggestion]);
     }
