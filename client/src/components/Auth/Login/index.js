@@ -64,7 +64,8 @@ export default function index(props) {
   const queryParams = parse(location.search);
 
   useEffect(() => {
-    if (queryParams && queryParams.success) {
+    console.log("queryParasssssssms", queryParams);
+    if (queryParams && queryParams.success && !queryParams.verified) {
       let decodedStrings = decodeURIComponent(queryParams.success);
 
       if (decodedStrings && decodedStrings.includes(SUCCESS_STATUS)) {
