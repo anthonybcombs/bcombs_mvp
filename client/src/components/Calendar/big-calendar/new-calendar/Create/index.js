@@ -7,10 +7,38 @@ import CalendarForm from "../../forms/CalendarForm";
 const CreateCalendarModalStyled = styled.div`
   h2 {
     text-align: center;
+    margin-top: 50px;
   }
   .modal-content {
     margin: 1em auto;
-    width: 50%;
+    width: 20%;
+  }
+  @media screen and (max-width: 1920px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 35%;
+    }
+    #content {
+      justify-content: center;
+      display: grid;
+      grid-gap: 1%;
+      margin: 0 50px;
+    }
+    button[type="submit"] {
+      width: 30%;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 50%;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 62%;
+    }
   }
 `;
 export default function index({ isVisible = true, toggleCreateCalendarModal }) {
@@ -89,9 +117,11 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
         >
           &times;
         </span>
+
         <h2 data-testid="app-big-calendar-create-modal-header">
           Create New Calendar
         </h2>
+
         <CalendarForm
           details={calendarDetails}
           familyMembers={familyMembers}
