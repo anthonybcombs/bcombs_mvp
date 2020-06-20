@@ -227,7 +227,7 @@ export default function index({
           </div>
         </div>
 
-        <div className="grid-1">
+        <div className="grid-2">
           <div className="form-group">
             <div className="field">
               {
@@ -315,7 +315,7 @@ export default function index({
 
         {
           showPhone && 
-          <div className="grid-1">
+          <div className="grid-2">
             <div className="form-group">
               <div className="field">
                 {
@@ -377,7 +377,7 @@ export default function index({
           </div>
 
         }
-        <div className="grid-1">
+        <div className="grid-2">
           <div className="form-group">
             <div className="field">
               {
@@ -433,7 +433,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                type="email"
+                type="text"
                 defaultValue={parentProfile.email_address}
                 readOnly={isReadonly}
                 name={"parent_emailaddress" + (counter - 1)}
@@ -442,7 +442,13 @@ export default function index({
                 onChange={({target}) => {
                   handleParentFormDetailsChange((counter - 1), "profile", "email_address", target.value)
                 }}
-                ref={register({required: true})}
+                ref={register({
+                  required: true,
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                    message: "Invalid email address"
+                  }
+                })}
               />
               <label className="field-label"><span className="required">*</span> Email Address</label>
             </div>
@@ -451,11 +457,16 @@ export default function index({
               errorType="required"
               message="Email Address is required."
             />
+            <ErrorMessage
+              field={errors["parent_emailaddress" + (counter - 1)]}
+              errorType="pattern"
+              message="Invalid email address"
+            />
           </div>
         </div>
         {
           showEmail &&
-          <div className="grid-1">
+          <div className="grid-2">
             <div className="form-group">
               <div className="field">
                 {
@@ -494,7 +505,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
-                  type="email"
+                  type="text"
                   defaultValue={parentProfile.email_address2}
                   readOnly={isReadonly}
                   name={"parent_emailaddress2" + (counter - 1)}
@@ -503,9 +514,20 @@ export default function index({
                   onChange={({target}) => {
                     handleParentFormDetailsChange((counter - 1), "profile", "email_address2", target.value)
                   }}
+                  ref={register({
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                      message: "Invalid email address"
+                    }
+                  })}
                 />
                 <label className="field-label"> Email Address</label>
               </div>
+              <ErrorMessage
+                field={errors["parent_emailaddress2" + (counter - 1)]}
+                errorType="pattern"
+                message="Invalid email address"
+              />
             </div>
           </div>
         }
@@ -552,32 +574,23 @@ export default function index({
             <ErrorMessage
               field={errors["parent_password" + (counter - 1)]}
               errorType="required"
-              message="Password is required."
-            />
-            <ErrorMessage
-              field={errors["parent_password" + (counter - 1)]}
-              errorType="minLength"
-              message="Password minimum length must be at least 8 characters."
-            />
-            <ErrorMessage
-              field={errors["parent_password" + (counter - 1)]}
-              errorType="containsOneUpperCase"
-              message={"Must contain atleast one upper case."}
-            />
-            <ErrorMessage
-              field={errors["parent_password" + (counter - 1)]}
-              errorType="containsOneLowerCase"
-              message={"Must contain atleast one lower case."}
-            />
-            <ErrorMessage
-              field={errors["parent_password" + (counter - 1)]}
-              errorType="containsOneNumber"
-              message={"Must contain atleast one number."}
-            />
-            <ErrorMessage
-              field={errors["parent_password" + (counter - 1)]}
-              errorType="containsOneSpecialCharacter"
-              message={"Must contain atleast one special character."}
+              message={
+                <>
+                  <p className="error error-size">
+                    Password is required.
+                    <br />
+                    Password minimum length must be at least 8 characters. <br />
+                    Must contain atleast one upper case.
+                    <br />
+                    Must contain atleast one lower case.
+                    <br />
+                    Must contain atleast one number.
+                    <br />
+                    Must contain atleast one special character.
+                    <br />
+                  </p>
+                </>
+              }
             />
           </div>
 
@@ -772,7 +785,7 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                <span className="required">*</span> What are your goals for our program?
+                <span className="required">*</span> What are your (Parents) goals for our program?
               </label>
               <textarea 
                 name={`parent_goals${(counter - 1)}`}
