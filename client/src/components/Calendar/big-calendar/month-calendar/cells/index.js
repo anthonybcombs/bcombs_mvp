@@ -30,7 +30,7 @@ const CellsStyled = styled.div`
     height: 200px;
     min-width: 203px;
     width: 100%;
-
+    overflow: hidden !important;
     cursor: pointer;
     border: 1px solid lightgrey;
   }
@@ -220,8 +220,17 @@ export default function index({
     }
 
     // console.log("eventsOnThisDay 111", eventsOnThisDay);
+    const test = [...eventsOnThisDay];
     const eventsCount = eventsOnThisDay.length;
     const hasEvents = eventsCount > 0;
+    const showedEvents =
+      eventsCount > 5
+        ? eventsOnThisDay.filter((item, index) => index < 5)
+        : eventsOnThisDay;
+
+    console.log(" showedEvents eventsCount", eventsCount);
+    console.log(" showedEvents showedEvents", showedEvents);
+    console.log(" showedEvents eventsOnThisDay", eventsOnThisDay);
     days.push(
       <div
         key={day}
@@ -263,12 +272,16 @@ export default function index({
           {formattedDate}
         </span>
         <div id="events-list">
+          {/* {eventsOnThisDay.length > 4 && (
+            <div style={{ textAlign: "left" }}>See More...</div>
+          )} */}
           {eventsOnThisDay.map((event, key) => {
             if (selectedCalendars.includes(event.calendar_id)) {
               return (
                 <Event
                   auth={auth}
                   calendars={calendars || []}
+                  eventsCount={eventsCount}
                   event={event}
                   day={day}
                   isTimedDisplay={isTimedDisplay}
