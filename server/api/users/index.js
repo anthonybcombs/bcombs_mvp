@@ -166,7 +166,7 @@ export const executeChangePassword = async reqData => {
       });
       return {
         messageType: "info",
-        message: "Email has been send!"
+        message: "Reset Password email has been sent."
       };
     }
     return {
