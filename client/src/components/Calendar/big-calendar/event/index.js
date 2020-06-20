@@ -11,13 +11,14 @@ import {
   faCheckCircle,
   faShareAltSquare,
   faPenSquare,
-  faUser
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { format, compareAsc, isToday } from "date-fns";
 import { deleteEvent } from "../../../../redux/actions/Events";
 import DuplicateEvent from "../../../Dashboard/MyEvents/duplicate";
 import EditEvent from "../../../Dashboard/MyEvents/edit/withOutCalendar";
 import Popover, { ArrowContainer } from "react-tiny-popover";
+import Confirmation from "../../../../helpers/Confirmation";
 
 const EventColors = styled.div`
   float: right;
@@ -27,7 +28,7 @@ const EventColors = styled.div`
   height: 0;
   border-style: solid;
   border-width: 0 22px 26px 0;
-  border-color: transparent ${props => props.color} transparent transparent;
+  border-color: transparent ${(props) => props.color} transparent transparent;
 `;
 
 const EventStyled = styled.div`
@@ -130,11 +131,11 @@ const EventPopOverStyled = styled.div`
 `;
 
 const getStatusCount = (guests, type) => {
-  const guestStatus = guests.filter(guest => guest.status === type);
+  const guestStatus = guests.filter((guest) => guest.status === type);
   return guestStatus.length;
 };
 const isGuest = (guests, currentEmail) => {
-  let isUserGuest = guests.find(guest => guest.email === currentEmail);
+  let isUserGuest = guests.find((guest) => guest.email === currentEmail);
   return isUserGuest ? true : false;
 };
 export default function index({
@@ -144,13 +145,19 @@ export default function index({
   event,
   isTimedDisplay,
   selectedCalendars,
-  publicView
+  publicView,
 }) {
   const [isVisible, setVisibility] = useState(false);
   const [isEditEventVisible, setEditEventVisible] = useState(false);
   const [isDuplicateEventVisible, setDuplicateEventVisible] = useState(false);
+  const [isConfirmationVisible, setConfirmationVisible] = useState(false);
+  const [currentAction, setCurrentAction] = useState(null);
+  const [currentConfirmationMessage, setCurrentConfirmationMessage] = useState(
+    ""
+  );
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
+
   const toggleEditEventModal = () => {
     setEditEventVisible(!isEditEventVisible);
   };
@@ -162,7 +169,7 @@ export default function index({
 
   let schedule = [
     format(new Date(event.start_of_event), "MMM dd,yyyy hh:mm a"),
-    format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
+    format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a"),
   ];
   const isEventOver = compareAsc(day, new Date());
   let eventStartTime = "";
@@ -174,134 +181,158 @@ export default function index({
   }
 
   return (
-    <Popover
-      isOpen={isVisible}
-      position={"right"}
-      content={({ position, targetRect, popoverRect }) => (
-        <ArrowContainer
-          position={position}
-          targetRect={targetRect}
-          popoverRect={popoverRect}
-          arrowColor="lightgrey"
-          arrowSize={10}
-          arrowStyle={{ opacity: 1 }}
-          arrow="center">
-          <EventPopOverStyled
-            theme={theme}
-            onMouseLeave={() => {
-              setVisibility(!isVisible);
-            }}
-            onDoubleClick={e => {
-              e.stopPropagation();
-            }}>
-            {!publicView && event.allowed_edit && (
-              <div id="top-event-controls">
-                <button>
-                  <FontAwesomeIcon
-                    icon={faCopy}
-                    onClick={toggleDuplicateEventModal}
-                  />
-                </button>
+    <div>
+      <Confirmation
+        isVisible={isConfirmationVisible}
+        message={currentConfirmationMessage}
+        toggleConfirmationVisible={setConfirmationVisible}
+        onSubmit={currentAction}
+        submitButtonLabel="Submit"
+      />
+      <Popover
+        isOpen={isVisible}
+        position={"right"}
+        content={({ position, targetRect, popoverRect }) => (
+          <ArrowContainer
+            position={position}
+            targetRect={targetRect}
+            popoverRect={popoverRect}
+            arrowColor="lightgrey"
+            arrowSize={10}
+            arrowStyle={{ opacity: 1 }}
+            arrow="center"
+          >
+            <EventPopOverStyled
+              theme={theme}
+              onMouseLeave={() => {
+                setVisibility(!isVisible);
+              }}
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              {!publicView && event.allowed_edit && (
+                <div id="top-event-controls">
+                  <button>
+                    <FontAwesomeIcon
+                      icon={faCopy}
+                      onClick={toggleDuplicateEventModal}
+                    />
+                  </button>
 
-                <button>
-                  <FontAwesomeIcon
-                    icon={faPenSquare}
-                    onClick={toggleEditEventModal}
-                  />
-                </button>
+                  <button>
+                    <FontAwesomeIcon
+                      icon={faPenSquare}
+                      onClick={toggleEditEventModal}
+                    />
+                  </button>
 
-                <button
-                  onClick={e => {
-                    setVisibility(false);
-                    dispatch(
-                      deleteEvent({
-                        id: event.id,
-                        email: auth.email
-                      })
-                    );
-                  }}>
-                  <FontAwesomeIcon icon={faTrashAlt} />
-                </button>
-              </div>
-            )}
-            <img src="https://bcombs.s3.amazonaws.com/event_default.jpg" />
-            <div id="event-details">
-              <h4>{event.eventCategory}</h4>
-              <h3>{event.name}</h3>
-              <p>Status: {event.status}</p>
-              <p>{`${schedule[0]} ${eventStartTime} - ${schedule[1]} ${eventEndTime}`}</p>
-              <p>{event.location}</p>
-              <div className="event-guest">
-                <div>Guests ({event.guests.length || 0})</div>
-                <div className="guest-status">
-                  Yes {getStatusCount(event.guests, "Yes")} {`  `}
-                  Maybe {getStatusCount(event.guests, "Maybe")}
-                  {`  `}
-                  Awaiting {getStatusCount(event.guests, "Pending")}
+                  <button
+                    onClick={(e) => {
+                      setVisibility(false);
+                      setCurrentConfirmationMessage(
+                        `Are you sure you want to delete this event?`
+                      );
+                      const triggerAction = () => {
+                        setCurrentAction(
+                          dispatch(
+                            deleteEvent({
+                              id: event.id,
+                              email: auth.email,
+                            })
+                          )
+                        );
+                      };
+                      setCurrentAction(triggerAction);
+                      setConfirmationVisible(true);
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrashAlt} />
+                  </button>
                 </div>
-                {event.guests.map(guest => {
-                  return (
-                    <div>
-                      {" "}
-                      <span>
+              )}
+              <img src="https://bcombs.s3.amazonaws.com/event_default.jpg" />
+              <div id="event-details">
+                <h4>{event.eventCategory}</h4>
+                <h3>{event.name}</h3>
+                <p>Status: {event.status}</p>
+                <p>{`${schedule[0]} ${eventStartTime} - ${schedule[1]} ${eventEndTime}`}</p>
+                <p>{event.location}</p>
+                <div className="event-guest">
+                  <div>Guests ({event.guests.length || 0})</div>
+                  <div className="guest-status">
+                    Yes {getStatusCount(event.guests, "Yes")} {`  `}
+                    Maybe {getStatusCount(event.guests, "Maybe")}
+                    {`  `}
+                    Awaiting {getStatusCount(event.guests, "Pending")}
+                  </div>
+                  {event.guests.map((guest) => {
+                    return (
+                      <div>
                         {" "}
-                        <FontAwesomeIcon icon={faUser} />
-                      </span>
-                      {` `}
-                      {guest.email}
-                    </div>
-                  );
-                })}
+                        <span>
+                          {" "}
+                          <FontAwesomeIcon icon={faUser} />
+                        </span>
+                        {` `}
+                        {guest.email}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </EventPopOverStyled>
-        </ArrowContainer>
-      )}>
-      <EventStyled
-        theme={theme}
-        style={{
-          backgroundColor: event.color,
-          opacity: isEventOver < 0 && !isToday(day) ? 0.5 : 1
-        }}
-        onClick={() => {
-          setVisibility(!isVisible);
-        }}>
-        <EditEvent
-          auth={auth}
-          isVisible={isEditEventVisible}
-          toggleEditEventModal={toggleEditEventModal}
-          defaultEventDetails={event}
-          selectedCalendars={selectedCalendars}
-        />
+            </EventPopOverStyled>
+          </ArrowContainer>
+        )}
+      >
+        <EventStyled
+          theme={theme}
+          style={{
+            backgroundColor: event.color,
+            opacity: isEventOver < 0 && !isToday(day) ? 0.5 : 1,
+          }}
+          onClick={() => {
+            setVisibility(!isVisible);
+          }}
+        >
+          <EditEvent
+            auth={auth}
+            isVisible={isEditEventVisible}
+            toggleEditEventModal={toggleEditEventModal}
+            defaultEventDetails={event}
+            selectedCalendars={selectedCalendars}
+          />
 
-        <DuplicateEvent
-          auth={auth}
-          isVisible={isDuplicateEventVisible}
-          defaultEventDetails={event}
-          toggleDuplicateEventModal={toggleDuplicateEventModal}
-        />
-        <div className={`${isVisible ? "selected" : ""}`} id="event-name">
-          <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              maxWidth: 212
-            }}>
-            {isTimedDisplay &&
-              format(new Date(event.start_of_event), "hh:mm a")}
-            {` `} {event.name}
+          <DuplicateEvent
+            auth={auth}
+            isVisible={isDuplicateEventVisible}
+            defaultEventDetails={event}
+            toggleDuplicateEventModal={toggleDuplicateEventModal}
+          />
+          <div className={`${isVisible ? "selected" : ""}`} id="event-name">
+            <div
+              style={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                maxWidth: 212,
+              }}
+            >
+              {isTimedDisplay &&
+                format(new Date(event.start_of_event), "hh:mm a")}
+              {` `} {event.name}
+            </div>
+            {event.multi_color &&
+              event.multi_color.map(
+                (color, index) =>
+                  color !== event.color && (
+                    <EventColors color={color}></EventColors>
+                  )
+              )}
           </div>
-          {event.multi_color &&
-            event.multi_color.map(
-              (color, index) =>
-                color !== event.color && (
-                  <EventColors color={color}></EventColors>
-                )
-            )}
-        </div>
-      </EventStyled>
-    </Popover>
+        </EventStyled>
+      </Popover>
+    </div>
   );
 }
 

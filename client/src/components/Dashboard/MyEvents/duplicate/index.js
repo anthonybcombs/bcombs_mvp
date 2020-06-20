@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { uuid } from "uuidv4";
 import { format } from "date-fns";
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 
@@ -51,22 +53,92 @@ const DuplicateEventModal = styled.div`
   .duplicate-submit {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     padding: 10px;
-    width: 100%;
+    width: 30%;
     display: block;
     margin: 20px auto;
     border: none;
+    margin-right: 18%;
+  }
+  .cancel-btn {
+    font-size: ${({ theme }) => theme.button.fontSize} !important;
+    background-color: lightgrey;
+    border: none;
+    box-shadow: 0px 3px 6px #908e8e;
+    border-radius: ${({ theme }) => theme.button.borderRadius} !important;
+  }
+  .cancel-btn {
+    padding: 10px;
+    width: 30%%;
+    display: block;
+    margin: 20px auto;
+    border: none;
+    margin-left: 15%;
   }
   #content {
     display: grid;
     background-color: white;
     padding: 4em;
+    justify-content: center;
+    height: 390px;
   }
   #content > div:first-child {
     margin-top: 5em;
   }
   .modal-content {
     margin: 1.5em auto;
-    width: 35%;
+    width: 20%;
+  }
+
+  @media screen and (max-width: 1920px) {
+    .modal-content {
+      width: 30%;
+      border: none !important;
+      height: auto;
+    }
+    .duplicate-submit {
+      width: 30%;
+      margin-bottom: auto;
+      margin-right: 18%;
+    }
+    .cancel-btn {
+      width: 30%;
+      color: white;
+      margin-left: 15%;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    .modal-content {
+      width: 35%;
+      border: none !important;
+      height: auto;
+    }
+    .duplicate-submit {
+      width: 30%;
+      margin-bottom: auto;
+      margin-right: 18%;
+    }
+    .cancel-btn {
+      width: 30%;
+      color: white;
+      margin-left: 15%;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .modal-content {
+      width: 35%;
+      border: none !important;
+      height: auto;
+    }
+    .duplicate-submit {
+      width: 30%;
+      margin-bottom: auto;
+      margin-right: 18%;
+    }
+    .cancel-btn {
+      width: 30%;
+      color: white;
+      margin-left: 15%;
+    }
   }
   @media (min-width: 600px) {
     button {
@@ -259,6 +331,13 @@ export default function index({
           &times;
         </span>
         <div id="content">
+          <center>
+            <FontAwesomeIcon
+              icon={faCopy}
+              size="6x"
+              style={{ marginBottom: 20, color: "#F36F21" }}
+            />
+          </center>
           <h2>Duplicate Event </h2>
           <p>
             <b>Name:</b> {defaultEventDetails.name}
@@ -293,6 +372,15 @@ export default function index({
             displayValue="name"
             closeIcon="cancel"
           />
+        </div>
+        <div style={{ display: "flex", marginTop: -35 }}>
+          <button
+            className="cancel-btn"
+            data-testid="app-dashboard-my-events-duplicate-event-button-save"
+            onClick={handleSubmit}
+          >
+            Cancel
+          </button>
           <button
             className="duplicate-submit"
             data-testid="app-dashboard-my-events-duplicate-event-button-save"
