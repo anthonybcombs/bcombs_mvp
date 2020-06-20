@@ -14,7 +14,6 @@ import graphqlClient from "../../../../graphql";
 import { GET_USER_OPTIONS_QUERY } from "../../../../graphql/query";
 
 import CustomDatePicker from "../../../../helpers/CustomDatePicker";
-import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
@@ -485,7 +484,6 @@ export default function createEventForm({
           options={calendars}
           value={calendars.filter(opt => selectedCalendar.includes(opt.value))}
           onChange={value => {
-            console.log("CustomMultiSelectOptions value");
             handleCalendarSelect(value);
           }}
           labelledBy={"Select"}
@@ -635,7 +633,7 @@ export default function createEventForm({
           value={groups.filter(item => selectedGroup.includes(item.value))}
           onChange={value => {
             console.log("VALUEEEEEEEEEEEEE", value);
-            //handleGroupSelect
+            handleGroupSelect(value);
           }}
           labelledBy={"Select"}
         />

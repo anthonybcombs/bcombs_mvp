@@ -105,6 +105,8 @@ export default function index({
     setSelectedEventList([]);
     setViewEventModalVisible(false);
   };
+
+  console.log("eventsssssssssssssss", events);
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
       {!publicView && (

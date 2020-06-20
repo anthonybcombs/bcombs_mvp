@@ -272,7 +272,7 @@ export default function index({
           }`}>
           {formattedDate}
         </span>
-        {eventsOnThisDay.length > 4 && (
+        {showedEvents.length > 4 && (
           <div
             onClick={() => {
               handleViewEvent(filteredEvents);

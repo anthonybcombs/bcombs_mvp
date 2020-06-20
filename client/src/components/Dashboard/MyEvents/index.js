@@ -188,6 +188,9 @@ export default function index() {
     setSelectedYear(target.value);
   };
 
+  console.log("eventListsttttttttt", eventLists);
+
+  console.log("eventListstttttttt eventst", events);
   return (
     <MyEventsStyled data-testid="app-dashboard-my-events" theme={theme}>
       <NewEventModal

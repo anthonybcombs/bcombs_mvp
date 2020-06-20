@@ -198,10 +198,7 @@ export default function index({
         eventDetails.eventGuests.length > 0
           ? eventDetails.eventGuests.map(item => item.id)
           : [],
-      group_ids:
-        eventDetails.visibility === "custom"
-          ? selectedGroup.map(group => group.value)
-          : []
+      group_ids: eventDetails.visibility === "custom" ? selectedGroup : []
     };
     console.log("selectedCalendarrr", selectedCalendars);
     if (selectedCalendars.length > 0) {
@@ -214,11 +211,17 @@ export default function index({
   };
 
   const handleGroupSelect = value => {
-    setSelectedGroup(value);
+    console.log(
+      "VALUEEEEEEEEE",
+      value.map(item => item.value)
+    );
+    setSelectedGroup(value.map(item => item.value));
   };
   const handleGroupRemove = value => {
     setSelectedGroup(value);
   };
+
+  console.log("selectedGrouppppppp", selectedGroup);
 
   if (!isVisible) {
     return <></>;

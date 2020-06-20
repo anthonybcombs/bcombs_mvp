@@ -183,18 +183,15 @@ export default function index({
         eventDetails.removedGuests && eventDetails.removedGuests.length > 0
           ? eventDetails.removedGuests.map(item => item.id)
           : [],
-      group_ids:
-        eventDetails.visibility === "custom"
-          ? selectedGroup.map(group => group.id)
-          : []
+      group_ids: eventDetails.visibility === "custom" ? selectedGroup : []
     };
-    console.log("payloaddd", payload);
+    console.log("payloaddd111", payload);
     dispatch(updateEvent(payload));
     toggleEditEventModal();
   };
 
   const handleGroupSelect = value => {
-    setSelectedGroup(value);
+    setSelectedGroup(value.map(item => item.value));
   };
   const handleGroupRemove = value => {
     setSelectedGroup(value);

@@ -196,15 +196,14 @@ export default function index({
   };
 
   const handleCalendarSelect = value => {
-    console.log("HANDLE SELECT CALENDAR", value);
-    setSelectedCalendar(value);
+    setSelectedCalendar(value.map(item => item.value));
   };
   const handleCalendarRemove = value => {
     setSelectedCalendar(value);
   };
   const handleSubmit = value => {
     toggleCreateEventModal(false);
-    const calendarIds = selectedCalendar.map(calendar => calendar.value);
+
     const payload = {
       start_of_event: format(
         getUTCDate(eventDetails.eventSchedule[0]),
@@ -231,20 +230,17 @@ export default function index({
           ? format(getUTCDate(eventDetails.recurringEndDate), DATE_TIME_FORMAT)
           : null,
       auth_email: auth.email,
-      calendar_ids: calendarIds,
+      calendar_ids: selectedCalendar,
       guests: eventDetails.eventGuests.map(item => item.id),
-      group_ids:
-        eventDetails.visibility === "custom"
-          ? selectedGroup.map(group => group.id)
-          : []
+      group_ids: eventDetails.visibility === "custom" ? selectedGroup : []
     };
-
+    console.log("payloaddddddddddddddddd", payload);
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
   };
 
   const handleGroupSelect = value => {
-    setSelectedGroup(value);
+    setSelectedGroup(value.map(item => item.value));
   };
   const handleGroupRemove = value => {
     setSelectedGroup(value);
