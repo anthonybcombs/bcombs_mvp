@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { uuid } from "uuidv4";
-import { addMinutes, format } from "date-fns";
+import { addMinutes, format, isAfter } from "date-fns";
 import { addEvent } from "../../../../redux/actions/Events";
 import EventForm from "../forms/EventForm";
 
@@ -159,12 +159,25 @@ export default function index({
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
 
-  const handleEventDetailsChange = (id, value, action = "") => {
+  const handleEventDetailsChange = (id, value) => {
+    console.log("Handle Event Detail Change ", id);
+    console.log("Handle Event Detail Change Value", value);
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
       return;
+    } else if (id === "eventSchedule") {
+      const isStartDateAfterEndDate = isAfter(
+        new Date(value[0]),
+        new Date(value[1])
+      );
+      console.log("isStartDateAfterEndDate", isStartDateAfterEndDate);
+      if (isStartDateAfterEndDate) {
+        value[1] = new Date(addMinutes(new Date(value[0]), 30));
+      }
+      setEventDetails({ ...eventDetails, eventSchedule: value });
+    } else {
+      setEventDetails({ ...eventDetails, [id]: value });
     }
-    setEventDetails({ ...eventDetails, [id]: value });
   };
 
   const handleSubmit = value => {
@@ -200,7 +213,7 @@ export default function index({
           : [],
       group_ids: eventDetails.visibility === "custom" ? selectedGroup : []
     };
-    console.log("selectedCalendarrr", selectedCalendars);
+
     if (selectedCalendars.length > 0) {
       toggleCreateEventModal(false);
       dispatch(addEvent(payload));
@@ -211,17 +224,11 @@ export default function index({
   };
 
   const handleGroupSelect = value => {
-    console.log(
-      "VALUEEEEEEEEE",
-      value.map(item => item.value)
-    );
     setSelectedGroup(value.map(item => item.value));
   };
   const handleGroupRemove = value => {
     setSelectedGroup(value);
   };
-
-  console.log("selectedGrouppppppp", selectedGroup);
 
   if (!isVisible) {
     return <></>;

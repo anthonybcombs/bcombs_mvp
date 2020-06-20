@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { format } from "date-fns";
+import { addMinutes, format, isAfter } from "date-fns";
 import { updateEvent } from "../../../../redux/actions/Events";
 import EventForm from "../forms/EventForm";
 
@@ -143,6 +143,16 @@ export default function index({
         ...eventDetails,
         removedGuests: [...(eventDetails.removeGuests || []), value]
       });
+    } else if (id === "eventSchedule") {
+      const isStartDateAfterEndDate = isAfter(
+        new Date(value[0]),
+        new Date(value[1])
+      );
+
+      if (isStartDateAfterEndDate) {
+        value[1] = new Date(addMinutes(new Date(value[0]), 30));
+      }
+      setEventDetails({ ...eventDetails, eventSchedule: value });
     } else {
       setEventDetails({ ...eventDetails, [id]: value });
     }
