@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  eachDayOfInterval,
-  format,
-  getMonth,
-  isAfter,
-  getDaysInMonth
-} from "date-fns";
+import { eachDayOfInterval, format, isAfter, getDaysInMonth } from "date-fns";
 import DataTable from "react-data-table-component";
 import { getWeekIndex } from "../../../../helpers/datetime";
 const monthList = [
@@ -432,7 +426,6 @@ export default function index({ events, selectedYear, familyMembers }) {
                 <div
                   data-testid="app-dashboard-my-events-body-events-month"
                   key={month.value}>
-                
                   {/* {eventThisMonth.length === 0 && <p>No events scheduled</p>} */}
 
                   <div id="eventTableContainer">
@@ -451,7 +444,7 @@ export default function index({ events, selectedYear, familyMembers }) {
                         paginationRowsPerPageOptions
                       }
                       paginationComponentOptions={paginationComponentOptions}
-                       title={month.name}
+                      title={month.name}
                     />
                   </div>
 

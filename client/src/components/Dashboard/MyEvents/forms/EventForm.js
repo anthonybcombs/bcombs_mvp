@@ -483,8 +483,9 @@ export default function createEventForm({
         <CustomMultiSelectOptions
           className="field-input"
           options={calendars}
-          value={selectedCalendar}
+          value={calendars.filter(opt => selectedCalendar.includes(opt.value))}
           onChange={value => {
+            console.log("CustomMultiSelectOptions value");
             handleCalendarSelect(value);
           }}
           labelledBy={"Select"}
@@ -632,7 +633,10 @@ export default function createEventForm({
           className="field-input"
           options={groups}
           value={groups.filter(item => selectedGroup.includes(item.value))}
-          onChange={handleGroupSelect}
+          onChange={value => {
+            console.log("VALUEEEEEEEEEEEEE", value);
+            //handleGroupSelect
+          }}
           labelledBy={"Select"}
         />
       )}

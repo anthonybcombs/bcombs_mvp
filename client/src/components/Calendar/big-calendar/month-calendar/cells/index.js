@@ -100,7 +100,8 @@ export default function index({
   events,
   handleChangeDay,
   setIsEventModalVisible,
-  publicView
+  publicView,
+  handleViewEvent
 }) {
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
@@ -222,15 +223,15 @@ export default function index({
     // console.log("eventsOnThisDay 111", eventsOnThisDay);
     const test = [...eventsOnThisDay];
     const eventsCount = eventsOnThisDay.length;
+    const filteredEvents = eventsOnThisDay.filter(event =>
+      selectedCalendars.includes(event.calendar_id)
+    );
     const hasEvents = eventsCount > 0;
     const showedEvents =
       eventsCount > 5
-        ? eventsOnThisDay.filter((item, index) => index < 5)
-        : eventsOnThisDay;
+        ? filteredEvents.filter((item, index) => index < 5)
+        : filteredEvents;
 
-    console.log(" showedEvents eventsCount", eventsCount);
-    console.log(" showedEvents showedEvents", showedEvents);
-    console.log(" showedEvents eventsOnThisDay", eventsOnThisDay);
     days.push(
       <div
         key={day}
@@ -271,26 +272,30 @@ export default function index({
           }`}>
           {formattedDate}
         </span>
+        {eventsOnThisDay.length > 4 && (
+          <div
+            onClick={() => {
+              handleViewEvent(filteredEvents);
+            }}
+            style={{ textAlign: "left", position: "absolute", top: 5 }}>
+            Show All
+          </div>
+        )}
         <div id="events-list">
-          {/* {eventsOnThisDay.length > 4 && (
-            <div style={{ textAlign: "left" }}>See More...</div>
-          )} */}
-          {eventsOnThisDay.map((event, key) => {
-            if (selectedCalendars.includes(event.calendar_id)) {
-              return (
-                <Event
-                  auth={auth}
-                  calendars={calendars || []}
-                  eventsCount={eventsCount}
-                  event={event}
-                  day={day}
-                  isTimedDisplay={isTimedDisplay}
-                  key={key}
-                  selectedCalendars={selectedCalendars}
-                  publicView={publicView}
-                />
-              );
-            }
+          {showedEvents.map((event, key) => {
+            return (
+              <Event
+                auth={auth}
+                calendars={calendars || []}
+                eventsCount={eventsCount}
+                event={event}
+                day={day}
+                isTimedDisplay={isTimedDisplay}
+                key={key}
+                selectedCalendars={selectedCalendars}
+                publicView={publicView}
+              />
+            );
           })}
         </div>
       </div>
