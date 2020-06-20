@@ -112,6 +112,8 @@ export default function index({
       <EmergencyContactFormStyled
         handleParentFormDetailsChange={handleParentFormDetailsChange}
         parentEmergencyContacts={emergencyContacts}
+        register={register}
+        errors={errors}
       />
     </ParentFormStyled>
   )

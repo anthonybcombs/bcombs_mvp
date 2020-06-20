@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "@reach/router";
+import { useParams, redirectTo } from "@reach/router";
 
 import ChildFormStyled from "./Step1ChildForm";
 import ParentFormStyled from "./Step2ParentForm";
@@ -53,16 +53,12 @@ export default function index() {
     }
   );
 
-  console.log("addapplication", applications);
-
   if(applications.addapplication && applications.addapplication.message == "application created") {
-    scrollToTop("auto")
+    scrollToTop("auto");
     setTimeout(() => {
-      window.location.reload(false);
+      window.location.replace(window.location.origin);
     }, 3000);
   }
-
-  console.log("vendor_id ", vendor_id);
 
   useEffect(() => {
     if(vendor_id) {
@@ -156,7 +152,6 @@ export default function index() {
       console.log("Invalid Section");
     }
     childs[index].general_information = general_information;
-    console.log(childs);
     setChildsInformation([...childs]);
   }
 
@@ -191,6 +186,8 @@ export default function index() {
       state: "",
       zip_code: "",
       location_site: "",
+      ethinicity: [],
+      program: []
     },
     general_information: {
       grade: "",
@@ -271,11 +268,25 @@ export default function index() {
 
     setChildsInformation([...childs]);
 
-    console.log(childsInformation);
+    console.log("ChildsInformation", childsInformation);
+
   }
 
   const handleAddNumChild = () => {
     if(childsInformation.length < maxChild) {
+      childInfoObject.profile.address = childsInformation[0].profile.address;
+      childInfoObject.profile.city = childsInformation[0].profile.city;
+      childInfoObject.profile.state = childsInformation[0].profile.state;
+      childInfoObject.profile.zip_code = childsInformation[0].profile.zip_code;
+      childInfoObject.profile.location_site = childsInformation[0].profile.location_site;
+
+      childInfoObject.profile.ethinicity = childsInformation[0].profile.ethinicity;
+      childInfoObject.profile.program = childsInformation[0].profile.program;
+      
+      childInfoObject.emergency_care_information.doctor_name = childsInformation[0].emergency_care_information.doctor_name;
+      childInfoObject.emergency_care_information.doctor_phone = childsInformation[0].emergency_care_information.doctor_phone;
+      childInfoObject.emergency_care_information.hospital_preference = childsInformation[0].emergency_care_information.hospital_preference;
+      childInfoObject.emergency_care_information.hospital_phone = childsInformation[0].emergency_care_information.hospital_phone;
       setChildsInformation([...childsInformation, childInfoObject]);
     }
   }
@@ -407,8 +418,10 @@ export default function index() {
     } else if(section === "emergency_contacts") {
       let emergency_contacts = emergencyContacts;
       let x = id.split("-");
-      emergency_contacts[i][id] = value;
-      setEmergencyContacts([...emergencyContacts])
+      emergency_contacts[index][id] = value;
+      setEmergencyContacts([...emergencyContacts]);
+
+      console.log("Emergency Contacts", emergencyContacts);
     }
 
     
@@ -485,7 +498,6 @@ export default function index() {
         let profile = child.profile;
         let gi = child.general_information;
 
-        console.log(child);
 
         if(!profile.first_name ||
           !profile.last_name ||
@@ -521,6 +533,17 @@ export default function index() {
           !profile.email_address ||
           !profile.goals_parent_program ||
           !profile.goals_child_program) {
+            isValid = false;
+            break;
+          }
+      }
+
+      for(let i = 0; i < 2; i++) {
+        if(!emergencyContacts[i].first_name ||
+          !emergencyContacts[i].last_name ||
+          !emergencyContacts[i].gender ||
+          !emergencyContacts[i].mobile_phone ||
+          !emergencyContacts[i].relationship_to_child) {
             isValid = false;
             break;
           }
@@ -640,8 +663,6 @@ export default function index() {
       })
     });
 
-    console.log("Parents Information", parentsInformation);
-
     return parents;
   }
 
@@ -723,8 +744,6 @@ export default function index() {
 
       payload.push(request_params);
     }
-    console.log("APPLICATION OBJ"); console.log(payload);
-
 
     dispatch(requestAddApplication(payload));
 
@@ -757,6 +776,9 @@ export default function index() {
                 >
                   <a href="#" onClick={(e) => {
                     e.preventDefault();
+
+                    if(getNavItemClass(2).includes("disabled")) return;
+
                     handleWizardSelection(2)
                   }}>
                     <span className="round-tab">2</span>
@@ -768,6 +790,8 @@ export default function index() {
                 >
                   <a href="#" onClick={(e) => {
                     e.preventDefault();
+
+                    if(getNavItemClass(3).includes("disabled")) return;
                     handleWizardSelection(3)
                   }}>
                     <span className="round-tab">3</span>
@@ -779,6 +803,8 @@ export default function index() {
                 >
                   <a href="#" onClick={(e) => {
                     e.preventDefault();
+
+                    if(getNavItemClass(4).includes("disabled")) return;
                     handleWizardSelection(4)
                   }}>
                     <span className="round-tab">4</span>
@@ -838,7 +864,6 @@ export default function index() {
                       // className={`right ${isFormValid(selectedStep) ? "": "disabled-link"}`}
                       className="right"
                       onClick={(e) => {
-                        console.log(errors);
                         e.preventDefault();
 
                         if(!isFormValid(selectedStep)) {
