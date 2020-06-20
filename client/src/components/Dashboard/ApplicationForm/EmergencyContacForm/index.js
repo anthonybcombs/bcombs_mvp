@@ -15,6 +15,7 @@ const EmergencyContactFormStyled = styled.div`
     border-collapse: collapse;
     border: 0;
     margin-bottom: 20px;
+    table-layout: fixed;
   }
 
   #contacts th {
@@ -193,7 +194,16 @@ export default function index({
                 defaultValue={parentEmergencyContacts[i].mobile_phone}
                 format="(###) ###-####" mask="_"
                 getInputRef={register({
-                  required: (i <= 1)
+                  required: (i <= 1),
+                  validate: {
+                    completed: value => {
+                      if(value) {
+                        return value.match(/\d/g).length === 10
+                      } else {
+                        return true;
+                      }
+                    }
+                  }
                 })}
               />
               :
@@ -212,6 +222,11 @@ export default function index({
               errorType="required"
               message="Mobile is required."
             />
+            <ErrorMessage
+              field={errors["mobile_phone_" + i]}
+              errorType="completed"
+              message="Phone Number must be consist of 10 digits."
+            />
           </td>
           <td>
             {
@@ -224,6 +239,17 @@ export default function index({
                 }}
                 defaultValue={parentEmergencyContacts[i].work_phone}
                 format="(###) ###-####" mask="_"
+                getInputRef={register({
+                  validate: {
+                    completed: value => {
+                      if(value) {
+                        return value.match(/\d/g).length === 10
+                      } else {
+                        return true;
+                      }
+                    }
+                  }
+                })}
               />
               :
               <input
@@ -236,7 +262,11 @@ export default function index({
                 readOnly={isReadonly}
               />
             }
-
+            <ErrorMessage
+              field={errors["work_phone_" + i]}
+              errorType="completed"
+              message="Phone Number must be consist of 10 digits."
+            />
           </td>
           <td>
             {
