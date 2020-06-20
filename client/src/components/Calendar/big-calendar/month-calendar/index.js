@@ -7,7 +7,7 @@ import {
   addMonths,
   startOfMonth,
   differenceInMonths,
-  parseISO
+  parseISO,
 } from "date-fns";
 import Header from "./header";
 import Days from "./days";
@@ -27,7 +27,7 @@ export default function index({
   selectedCalendars,
   handleCalendarSelection,
   familyMembers,
-  publicView
+  publicView,
 }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isViewEventModalVisible, setViewEventModalVisible] = useState(false);
@@ -38,7 +38,7 @@ export default function index({
   const [formattedCalendars, setFormattedCalendars] = useState([]);
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
-    selectedDate: new Date()
+    selectedDate: new Date(),
   });
 
   useEffect(() => {
@@ -68,10 +68,10 @@ export default function index({
     setCurrentDate({
       ...currentDate,
       currentMonth,
-      selectedDate: firstDayOfTheMonth
+      selectedDate: firstDayOfTheMonth,
     });
   };
-  const handleChangeMonth = operation => {
+  const handleChangeMonth = (operation) => {
     let currentMonth;
     if (operation === "next") {
       currentMonth = addMonths(currentDate.currentMonth, 1);
@@ -82,13 +82,13 @@ export default function index({
     setCurrentDate({
       ...currentDate,
       currentMonth,
-      selectedDate: firstDayOfTheMonth
+      selectedDate: firstDayOfTheMonth,
     });
   };
-  const handleChangeDay = day => {
+  const handleChangeDay = (day) => {
     setCurrentDate({
       ...currentDate,
-      selectedDate: day
+      selectedDate: day,
     });
   };
 

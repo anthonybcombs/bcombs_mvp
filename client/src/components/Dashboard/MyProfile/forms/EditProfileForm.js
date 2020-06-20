@@ -29,7 +29,12 @@ const EditProfileModal = styled.form`
     border: none;
   }
   .modal-content {
-    width: 25%;
+    width: 40%;
+  }
+  @media screen and (max-width: 1024px) {
+    .modal-content {
+      width: 58%;
+    }
   }
   @media (min-width: 600px) {
     button[type="submit"] {
@@ -111,6 +116,11 @@ const EditProfileModal = styled.form`
     margin-bottom: 5px;
     font-weight: bold;
   }
+  .grid {
+    display: grid;
+    margin: 1.5em auto;
+    width: 72%;
+  }
 `;
 
 const GENDER_OPTIONS = [
@@ -130,22 +140,22 @@ const ETHINICITY_OPTIONS = [
   {
     id: 2,
     name: "Black or African American",
-    label: "Black or African American"
+    label: "Black or African American",
   },
   { id: 3, name: "Hispanic or Latino", label: "AsiHispanic or Latinoan" },
   {
     id: 4,
     name: "Native American or American Indian",
-    label: "Native American or American Indian"
+    label: "Native American or American Indian",
   },
   {
     id: 5,
     name: "Native Hawaiian & Other Pacific Islander",
-    label: "Native Hawaiian & Other Pacific Islander"
+    label: "Native Hawaiian & Other Pacific Islander",
   },
   { id: 6, name: "White", label: "White" },
   { id: 7, name: "Other", label: "Other" },
-  { id: 8, name: "Prefer not to answer", label: "Prefer not to answer" }
+  { id: 8, name: "Prefer not to answer", label: "Prefer not to answer" },
 ];
 
 export default function index({
@@ -153,16 +163,16 @@ export default function index({
   toggleProfileVisible,
   data,
   onSubmit,
-  handleInputChange
+  handleInputChange,
 }) {
   const theme = useContext(ThemeContext);
   const [defaultEthnicity, setDefaultEthnicity] = useState("");
   const { register, handleSubmit, errors, watch } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange"
+    reValidateMode: "onChange",
   });
   const dispatch = useDispatch();
-  const gender = watch('gender');
+  const gender = watch("gender");
 
   // let month = "" + (formattedDateOfBirth.getMonth() + 1),
   //   day = "" + formattedDateOfBirth.getDate(),
@@ -170,7 +180,7 @@ export default function index({
   useEffect(() => {
     if (data) {
       const userEthnicity = ETHINICITY_OPTIONS.find(
-        item => item.name === data.ethnicity
+        (item) => item.name === data.ethnicity
       );
       setDefaultEthnicity((userEthnicity && userEthnicity.name) || "");
     }
@@ -186,17 +196,21 @@ export default function index({
       className="modal"
       theme={theme}
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}>
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleProfileVisible(false);
-          }}>
+          }}
+        >
           &times;
         </span>
-
         <div className="grid">
+          <h2 style={{ textAlign: "center", marginBottom: 50, marginTop: 20 }}>
+            Edit Profile
+          </h2>
           <div className="form-group">
             <div className="field">
               <input
@@ -258,10 +272,14 @@ export default function index({
                   handleInputChange("gender", target.value);
                 }}
                 ref={register({ required: true })}
-                >
+              >
                 <option value="">Select</option>
-                {GENDER_OPTIONS.map(opt => (
-                  <option key={opt.id} value={opt.id} selected={opt.id === data.gender}>
+                {GENDER_OPTIONS.map((opt) => (
+                  <option
+                    key={opt.id}
+                    value={opt.id}
+                    selected={opt.id === data.gender}
+                  >
                     {opt.name}
                   </option>
                 ))}
@@ -275,7 +293,8 @@ export default function index({
             />
           </div>
 
-          {gender === 'custom' && <>
+          {gender === "custom" && (
+            <>
               <div className="form-group">
                 <div className="field">
                   <select
@@ -287,8 +306,12 @@ export default function index({
                     ref={register({ required: true })}
                   >
                     <option value="">Select</option>
-                    {CUSTOM_GENDER_OPTIONS.map(opt => (
-                      <option key={opt.id} value={opt.id} selected={opt.id === data.customgender}>
+                    {CUSTOM_GENDER_OPTIONS.map((opt) => (
+                      <option
+                        key={opt.id}
+                        value={opt.id}
+                        selected={opt.id === data.customgender}
+                      >
                         {opt.name}
                       </option>
                     ))}
@@ -302,20 +325,23 @@ export default function index({
                 />
               </div>
             </>
-          }
+          )}
 
           <div className="form-group">
             <div className="field">
               <DatePicker
                 className="field-input"
-                placeholderText="mm/dd/yyyy"
-                selected={isValidDate(data.dateofbirth) && new Date(data.dateofbirth)}
-                onChange={date => {
+                placeholderText="MM/DD/YYYY"
+                selected={
+                  isValidDate(data.dateofbirth) && new Date(data.dateofbirth)
+                }
+                onChange={(date) => {
                   handleInputChange(
                     "dateofbirth",
                     format(new Date(date), "yyyy-MM-dd")
                   );
                 }}
+
                 // onChange={date => {
                 //   setChildBirthDate(date)
                 // }}
@@ -331,7 +357,7 @@ export default function index({
                 className="field-input"
                 onChange={({ target }) => {
                   const currentEthnicity = ETHINICITY_OPTIONS.find(
-                    item => item.name === target.value
+                    (item) => item.name === target.value
                   );
 
                   handleInputChange(
@@ -343,9 +369,10 @@ export default function index({
                   // );
                 }}
                 ref={register}
-                value={defaultEthnicity}>
+                value={defaultEthnicity}
+              >
                 <option value="">Select</option>
-                {ETHINICITY_OPTIONS.map(opt => (
+                {ETHINICITY_OPTIONS.map((opt) => (
                   <option key={opt.id} value={opt.name}>
                     {opt.name}
                   </option>
