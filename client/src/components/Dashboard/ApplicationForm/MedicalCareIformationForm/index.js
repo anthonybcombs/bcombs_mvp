@@ -109,7 +109,7 @@ export default function index({
                   onChange={({ target }) => {
                     handleChildFormDetailsChange((counter - 1), "emergency_care_information", "hospital_phone", target.value)
                   }}
-                  defaultValue={childEmergencyCare.phone}
+                  defaultValue={childEmergencyCare.hospital_phone}
                   placeholder="Phone"
                   format="(###) ###-####" mask="_"
                 />

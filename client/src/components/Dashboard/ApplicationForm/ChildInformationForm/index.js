@@ -64,6 +64,10 @@ const ChildInfomationFormStyled = styled.div`
   .react-datepicker-wrapper {
     margin: 0;
   }
+
+  .react-datepicker__input-container .field {
+    margin: 0 !important;
+  }
 `;
 
 export default function index({
@@ -81,6 +85,12 @@ export default function index({
   const GENDER_OPTIONS = [
     { id: 1, value: "Male", name: "Male" },
     { id: 2, value: "Female", name: "Female" }
+  ];
+
+  const CUSTOM_GENDER_OPTIONS = [
+    { id: 1, value: "He", name: "He" },
+    { id: 2, value: "She", name: "She" },
+    { id: 3, value: "They", name: "They" }
   ];
 
   const PHONE_OPTIONS = [
@@ -118,6 +128,10 @@ export default function index({
   const [ethinicitySelected, setEthinicitySelected] = useState([]);
   const [schoolProgramSelected, setSchoolProgramSelected] = useState([]);
 
+  const handleSetEthinicity = () => {
+
+  }
+
   const range = (start, end) => {
     let arr = [];
 
@@ -131,12 +145,10 @@ export default function index({
   const [imagePreview, setImagePreview] = useState(ProfileImg);
 
   const handleFileChange = (event) => {
-    console.log("event.target.files", event.target.files);
 
     let reader = new FileReader();
 
     reader.onloadend = () => {
-      console.log("setImagePreview", reader.result);
       setImagePreview(reader.result);
     };
 
@@ -172,16 +184,20 @@ export default function index({
     setShowEmail(!showEmail);
   }
 
-  // const ExampleCustomInput = ({ value, onClick, name }) => (
-  //   <>
-  //     <input
-  //       name={name}
-  //       className="field-input birthdate-field" 
-  //       placeholderText="mm/dd/yyyy"
-  //       ref={register({required: true})}
-  //     />
-  //   </>
-  // );
+  const ExampleCustomInput = ({ value, onClick, name, className, placeholder }) => (
+    <div className="field">
+      <input
+        defaultValue={value}
+        onClick={onClick}
+        name={name}
+        className={className} 
+        placeholder="mm/dd/yyyy"
+        readOnly={true}
+        ref={register({required: true})}
+      />
+      <label className="field-label"><span className="required">*</span> Date of Birth</label>
+    </div>
+  );
 
   return (
     <ChildInfomationFormStyled>
@@ -305,16 +321,19 @@ export default function index({
                     </button>
                   </div>
                 )}
-                className="field-input birthdate-field" 
-                placeholderText="mm/dd/yyyy"
                 selected={childProfile.date_of_birth}
                 disabled={isReadonly}
                 onChange={(date) => {
                   handleChildFormDetailsChange(counter - 1, "profile", "date_of_birth", date);
                 }}
-                // customInput={<ExampleCustomInput name={"ch_birthdate" + (counter - 1)} />}
+                name={"ch_birthdate" + (counter - 1)}
+                customInput={
+                  <ExampleCustomInput 
+                    className="field-input birthdate-field"
+                  />
+                }
               />
-              <label className="field-label"><span className="required">*</span> Date of Birth</label>
+             
             </div>
             <ErrorMessage
               field={errors["ch_birthdate" + (counter - 1)]}
@@ -335,12 +354,21 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.gender}  
               >
-                  <option value="">Select</option>
-                {GENDER_OPTIONS.map(opt => (
-                  <option key={opt.id} value={opt.value}>
-                    {opt.name}
-                  </option>
-                ))}
+                <option value="">Select</option>
+                <optgroup label="Gender">
+                  {GENDER_OPTIONS.map(opt => (
+                    <option key={opt.id} value={opt.value}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="Custom">
+                  {CUSTOM_GENDER_OPTIONS.map(opt => (
+                    <option key={opt.id} value={opt.value}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </optgroup>
               </select>
               <label className="field-label"><span className="required">*</span> Gender</label>
             </div>
@@ -359,11 +387,21 @@ export default function index({
                 className="field-input"
                 options={ETHINICITY_OPTIONS}
                 hasSelectAll={hasSelectAll}
-                onSelect={setEthinicitySelected}
+                onSelect={(selectedList) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "ethinicity", selectedList);
+
+                }}
+                onRemove={(selectedList) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "ethinicity", selectedList);
+                }}
                 placeholder="Select all that apply"
                 displayValue="name"
                 closeIcon="cancel"
                 name={"ethinicity_" + (counter - 1)}
+                closeOnSelect={false}
+                showCheckbox={true}
+                autcomplete="false"
+                selectedValues={childProfile.ethinicity}
               />
               <label className="field-label">Ethinicity (select all choices that apply)</label>
             </div>
@@ -416,7 +454,7 @@ export default function index({
               {
                 !isReadonly ?
                 <NumberFormat 
-                  name="ch_phone_number"
+                  name={"ch_phone_number"+(counter - 1)}
                   className="field-input"
                   placeholder="Phone"
                   onChange={({ target }) => {
@@ -424,6 +462,17 @@ export default function index({
                   }}
                   defaultValue={childProfile.phone_number}
                   format="(###) ###-####" mask="_"
+                  getInputRef={register({
+                    validate: {
+                      completed: value => {
+                        if(value) {
+                          return value.match(/\d/g).length === 10
+                        } else {
+                          return true;
+                        }
+                      }
+                    }
+                  })}
                 />
                 :
                 <input 
@@ -437,6 +486,11 @@ export default function index({
  
               <label className="field-label">Phone Number</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_phone_number" + (counter - 1)]}
+              errorType="completed"
+              message="Phone Number must be consist of 10 digits."
+            />
           </div>
         </div>
         {
@@ -469,7 +523,7 @@ export default function index({
                 {
                   !isReadonly ?
                   <NumberFormat 
-                    name="ch_phone_number2"
+                    name={"ch_phone_number2"+(counter - 1)}
                     className="field-input"
                     placeholder="Phone"
                     onChange={({ target }) => {
@@ -477,6 +531,17 @@ export default function index({
                     }}
                     defaultValue={childProfile.phone_number}
                     format="(###) ###-####" mask="_"
+                    getInputRef={register({
+                      validate: {
+                        completed: value => {
+                          if(value) {
+                            return value.match(/\d/g).length === 10
+                          } else {
+                            return true;
+                          }
+                        }
+                      }
+                    })}
                   />
                   :
                   <input 
@@ -486,8 +551,13 @@ export default function index({
                     defaultValue={childProfile.phone_number}
                   />
                 }
-                <label className="field-label">Phone</label>
+                <label className="field-label">Phone Number</label>
               </div>
+              <ErrorMessage
+                field={errors["ch_phone_number2" + (counter - 1)]}
+                errorType="completed"
+                message="Phone Number must be consist of 10 digits."
+              />
             </div>
           </div>
         }
@@ -537,8 +607,8 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                type="email"
-                name="ch_email_address"
+                type="text"
+                name={"ch_email_address" + (counter - 1)}
                 className="field-input"
                 placeholder="Email Address"
                 onChange={({ target }) => {
@@ -546,9 +616,20 @@ export default function index({
                 }}
                 readOnly={isReadonly}
                 defaultValue={childProfile.email_address}
+                ref={register({
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                    message: "Invalid email address"
+                  }
+                })}
               />
               <label className="field-label">Email Address (Child only, if applicable)</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_email_address" + (counter - 1)]}
+              errorType="pattern"
+              message="Invalid email address"
+            />
           </div>
         </div>
 
@@ -583,18 +664,29 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
-                  type="email"
-                  name="ch_email_address2"
+                  type="text"
+                  name={"ch_email_address2" + (counter - 1)}
                   className="field-input"
                   placeholder="Email Address"
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(counter - 1, "profile", "email_address2", target.value);
                   }}
                   readOnly={isReadonly}
-                  defaultValue={childProfile.email_address}
+                  defaultValue={childProfile.email_address2}
+                  ref={register({
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                      message: "Invalid email address"
+                    }
+                  })}
                 />
                 <label className="field-label">Email Address (Child only, if applicable)</label>
               </div>
+              <ErrorMessage
+                field={errors["ch_email_address2" + (counter - 1)]}
+                errorType="pattern"
+                message="Invalid email address"
+              />
             </div>
           </div>
         }
@@ -680,8 +772,6 @@ export default function index({
                 name={"ch_zip_code" + (counter - 1)}
                 className="field-input"
                 onChange={({ target }) => {
-                  console.log(target.value);
-
                   if(target.value.match(/^-{0,1}\d+$/)) {
                     handleChildFormDetailsChange(counter - 1, "profile", "zip_code", target.value);
                   } else {
@@ -741,17 +831,26 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <Multiselect
+                selectedValues={childProfile.program}
                 readOnly={isReadonly}
                 disabled={isReadonly}
                 className="field-input"
                 options={PROGRAMS_OPTIONS}
                 hasSelectAll={hasSelectAll}
-                onSelect={setSchoolProgramSelected}
                 placeholder="Choose Multiple"
                 displayValue="name"
                 closeIcon="cancel"
                 id={"program_" + (counter - 1)}
                 name={"program_" + (counter - 1)}
+                closeOnSelect={false}
+                showCheckbox={true}
+                onSelect={(selectedList) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "program", selectedList);
+
+                }}
+                onRemove={(selectedList) => {
+                  handleChildFormDetailsChange(counter - 1, "profile", "program", selectedList);
+                }}
               />
               <label className="field-label">Program (select all choices that apply)</label>
             </div>
