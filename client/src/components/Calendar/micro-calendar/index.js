@@ -13,13 +13,13 @@ export default function index({
   selectedDate,
   setSelectedDate,
   setSelectedEvent,
-  removeSubHeader = false
+  removeSubHeader = false,
 }) {
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
-    selectedDate
+    selectedDate,
   });
-  const handleChangeMonth = operation => {
+  const handleChangeMonth = (operation) => {
     let currentMonth;
     if (operation === "next") {
       currentMonth = addMonths(currentDate.currentMonth, 1);
@@ -32,10 +32,10 @@ export default function index({
     setCurrentDate({
       ...currentDate,
       currentMonth,
-      selectedDate: firstDayOfTheMonth
+      selectedDate: firstDayOfTheMonth,
     });
   };
-  const handleChangeDay = day => {
+  const handleChangeDay = (day) => {
     setSelectedEvent();
     setCurrentDate({ ...currentDate, selectedDate: day });
     setSelectedDate(day);
