@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { uuid } from "uuidv4";
-import { format } from "date-fns";
+import { addMinutes, format, isAfter } from "date-fns";
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
@@ -227,11 +227,11 @@ const DuplicateEventModal = styled.div`
 export default function index({
   defaultEventDetails,
   isVisible = true,
-  toggleDuplicateEventModal,
+  toggleDuplicateEventModal
 }) {
   const { auth, calendars } = useSelector(({ auth, calendars }) => ({
     auth,
-    calendars,
+    calendars
   }));
   const [calendarOptions, setCalendarOptions] = useState([]);
   const [selectedCalendar, setSelectedCalendar] = useState([]);
@@ -245,10 +245,10 @@ export default function index({
 
   useEffect(() => {
     if (calendars && calendars[0] && isVisible) {
-      const formattedCalendars = calendars[0].map((item) => {
+      const formattedCalendars = calendars[0].map(item => {
         return {
           id: item.id,
-          name: item.name,
+          name: item.name
         };
       });
       setCalendarOptions(formattedCalendars);
@@ -261,13 +261,13 @@ export default function index({
         ...defaultEventDetails,
         eventSchedule: [
           new Date(defaultEventDetails.start_of_event),
-          new Date(defaultEventDetails.end_of_event),
-        ],
+          new Date(defaultEventDetails.end_of_event)
+        ]
       });
     }
   }, [defaultEventDetails, isVisible]);
-  const handleSubmit = (value) => {
-    const calendarIds = selectedCalendar.map((calendar) => calendar.id);
+  const handleSubmit = value => {
+    const calendarIds = selectedCalendar.map(calendar => calendar.id);
 
     const payload = {
       id: uuid(),
@@ -288,8 +288,8 @@ export default function index({
       visibility: defaultEventDetails.visibility,
       auth_email: auth.email,
       calendar_ids: calendarIds,
-      guests: defaultEventDetails.guests.map((guest) => guest.user_id),
-      group_ids: defaultEventDetails.group_ids,
+      guests: defaultEventDetails.guests.map(guest => guest.user_id),
+      group_ids: defaultEventDetails.group_ids
     };
 
     dispatch(addEvent(payload));
@@ -301,13 +301,25 @@ export default function index({
   }
 
   const handleEventDetailsChange = (id, value, action = "") => {
-    setEventDetails({ ...eventDetails, [id]: value });
+    if (id === "eventSchedule") {
+      const isStartDateAfterEndDate = isAfter(
+        new Date(value[0]),
+        new Date(value[1])
+      );
+
+      if (isStartDateAfterEndDate) {
+        value[1] = new Date(addMinutes(new Date(value[0]), 30));
+      }
+      setEventDetails({ ...eventDetails, eventSchedule: value });
+    } else {
+      setEventDetails({ ...eventDetails, [id]: value });
+    }
   };
 
-  const handleCalendarSelect = (value) => {
+  const handleCalendarSelect = value => {
     setSelectedCalendar(value);
   };
-  const handleCalendarRemove = (value) => {
+  const handleCalendarRemove = value => {
     setSelectedCalendar(value);
   };
 
@@ -319,15 +331,13 @@ export default function index({
     <DuplicateEventModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
-      theme={theme}
-    >
+      theme={theme}>
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleDuplicateEventModal();
-          }}
-        >
+          }}>
           &times;
         </span>
         <div id="content">
@@ -356,7 +366,7 @@ export default function index({
           <DateTimeRangePicker
             value={eventDetails.eventSchedule}
             disableClock={true}
-            onChange={(date) => {
+            onChange={date => {
               if (date == null) {
                 return;
               }
@@ -377,15 +387,13 @@ export default function index({
           <button
             className="cancel-btn"
             data-testid="app-dashboard-my-events-duplicate-event-button-save"
-            onClick={handleSubmit}
-          >
+            onClick={handleSubmit}>
             Cancel
           </button>
           <button
             className="duplicate-submit"
             data-testid="app-dashboard-my-events-duplicate-event-button-save"
-            onClick={handleSubmit}
-          >
+            onClick={handleSubmit}>
             Save
           </button>
         </div>
