@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import {
+  compareAsc,
   format,
   startOfMonth,
   endOfMonth,
@@ -214,18 +215,22 @@ export default function index({
 
       if (eventsOnThisDay.length > 0) {
         eventsOnThisDay = eventsOnThisDay.sort(
-          (event1, event2) =>
-            new Date(event1.start_of_event) - new Date(event2.start_of_event)
+          (event1, event2) => event1.start_of_event - event2.start_of_event
         );
+        console.log("eventsOnThisDyyyay", eventsOnThisDay);
       }
     }
 
     // console.log("eventsOnThisDay 111", eventsOnThisDay);
     const test = [...eventsOnThisDay];
     const eventsCount = eventsOnThisDay.length;
-    const filteredEvents = eventsOnThisDay.filter(event =>
-      selectedCalendars.includes(event.calendar_id)
-    );
+    const filteredEvents = eventsOnThisDay
+      .filter(event => selectedCalendars.includes(event.calendar_id))
+      .sort(
+        (event1, event2) =>
+          new Date(event1.start_of_event) - new Date(event2.start_of_event)
+      );
+    console.log("filteredEvents", filteredEvents);
     const hasEvents = eventsCount > 0;
     const showedEvents =
       eventsCount > 5
@@ -272,7 +277,7 @@ export default function index({
           }`}>
           {formattedDate}
         </span>
-        {showedEvents.length > 4 && (
+        {filteredEvents.length > 4 && (
           <div
             onClick={() => {
               handleViewEvent(filteredEvents);
