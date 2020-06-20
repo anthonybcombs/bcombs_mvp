@@ -12,6 +12,9 @@ import {
   faLongArrowAltLeft,
   faEyeSlash,
   faEye,
+  faChevronDown,
+  faChevronUp,
+  faClock,
   faShareAltSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
@@ -106,6 +109,8 @@ export default function index({
   selectedCalendars,
   handleCalendarSelection,
   publicView,
+  isTimedDisplay,
+  setTimeDisplayed,
 }) {
   const [isVisibleCreateCalendarModal, toggleCreateCalendarModal] = useState(
     false
@@ -181,11 +186,28 @@ export default function index({
               onClick={() => {
                 toggleCreateCalendarModal(true);
               }}
+              style={{
+                margin: "0 5px",
+              }}
             />
             <FontAwesomeIcon
-              icon={viewAllCalendar ? faEyeSlash : faEye}
+              icon={viewAllCalendar ? faChevronUp : faChevronDown}
               onClick={() => {
                 setViewAllCalendar(!viewAllCalendar);
+              }}
+              style={{
+                margin: "0 5px",
+              }}
+            />
+
+            <FontAwesomeIcon
+              icon={faClock}
+              onClick={() => {
+                setTimeDisplayed(!isTimedDisplay);
+              }}
+              style={{
+                color: isTimedDisplay ? "black" : "gray",
+                margin: "0 5px",
               }}
             />
           </button>

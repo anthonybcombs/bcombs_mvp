@@ -6,14 +6,18 @@ const CustomDatePicker = ({
   selected,
   onChange,
   className = "",
-  placeholderText = "mm/dd/yyyy"
+  placeholderText = "Pick date.",
 }) => {
+  const handleDateChangeRaw = (e) => {
+    e.preventDefault();
+  };
   return (
     <DatePicker
       className={className}
       placeholderText={placeholderText}
       selected={selected}
       onChange={onChange}
+      onChangeRaw={handleDateChangeRaw}
     />
   );
 };

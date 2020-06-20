@@ -52,6 +52,7 @@ const NewEventModal = styled.div`
     border: none;
   }
   #content {
+    justify-content: center
     display: grid;
     background-color: white;
     padding: 10em;
@@ -64,9 +65,15 @@ const NewEventModal = styled.div`
     width: 80%;
   }
   @media (min-width: 600px) {
+    .modal-content{
+      margin: 1.5em auto;
+      width: 40%;
+    }
     #content {
-      grid-template-columns: 50% 50%;
+      justify-content: center;
+      display: grid;
       grid-gap: 1%;
+      margin: 0 50px
     }
     button[type="submit"] {
       width: 30%;
@@ -148,6 +155,9 @@ export default function index({
           &times;
         </span>
         <div id="content">
+          <h2 style={{ textAlign: "center", marginBottom: 50, marginTop: -50 }}>
+            Create New Event
+          </h2>
           <MicroCalendar
             removeSubHeader={true}
             events={[]}

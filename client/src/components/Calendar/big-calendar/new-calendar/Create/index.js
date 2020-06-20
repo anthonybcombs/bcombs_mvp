@@ -7,10 +7,38 @@ import CalendarForm from "../../forms/CalendarForm";
 const CreateCalendarModalStyled = styled.div`
   h2 {
     text-align: center;
+    margin-top: 50px;
   }
   .modal-content {
     margin: 1em auto;
-    width: 50%;
+    width: 20%;
+  }
+  @media screen and (max-width: 1920px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 35%;
+    }
+    #content {
+      justify-content: center;
+      display: grid;
+      grid-gap: 1%;
+      margin: 0 50px;
+    }
+    button[type="submit"] {
+      width: 30%;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 50%;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 62%;
+    }
   }
 `;
 export default function index({ isVisible = true, toggleCreateCalendarModal }) {
@@ -21,7 +49,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
     image: "",
     visibilityType: "Private",
     color: "",
-    groups: []
+    groups: [],
   });
   const { familyMembers, groups } = useSelector(({ familyMembers, groups }) => {
     return { familyMembers, groups };
@@ -30,14 +58,14 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
   const handleInputChange = (id, value) => {
     setCalendarDetails({ ...calendarDetails, [id]: value });
   };
-  const handleCheckBoxChange = element => {
+  const handleCheckBoxChange = (element) => {
     const value = element.target.value;
     const isChecked = element.target.checked;
     if (value == "Private" || value === "Public") {
       setCalendarDetails({
         ...calendarDetails,
         visibilityType: value,
-        selectedFamilyMembers: new Map()
+        selectedFamilyMembers: new Map(),
       });
       return;
     }
@@ -47,7 +75,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       selectedfamilyMembers: calendarDetails.selectedFamilyMembers.set(
         value,
         isChecked
-      )
+      ),
     });
   };
   const handleCancel = () => {
@@ -56,7 +84,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
       image: "",
-      groups: []
+      groups: [],
     });
     toggleCreateCalendarModal(false);
   };
@@ -68,7 +96,7 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
       image: "",
-      groups: []
+      groups: [],
     });
     toggleCreateCalendarModal(false);
   };
@@ -78,18 +106,22 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
   return ReactDOM.createPortal(
     <CreateCalendarModalStyled
       data-testid="app-big-calendar-create-modal"
-      className="modal">
+      className="modal"
+    >
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             handleCancel();
-          }}>
+          }}
+        >
           &times;
         </span>
+
         <h2 data-testid="app-big-calendar-create-modal-header">
-          Create new calendar
+          Create New Calendar
         </h2>
+
         <CalendarForm
           details={calendarDetails}
           familyMembers={familyMembers}

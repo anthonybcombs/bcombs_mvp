@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { subWeeks, addWeeks, startOfWeek } from "date-fns";
 import NewEventModal from "../../../Dashboard/MyEvents/create/withOutCalendar";
@@ -24,6 +24,9 @@ export default function index({
     currentWeek: new Date(),
     selectedDate: new Date(),
   });
+  const [isTimedDisplay, setTimeDisplay] = useState(
+    sessionStorage.getItem("isTimeDisplayed") === "true" ? true : false
+  );
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const handleWeekChange = (operation) => {
     let currentWeek;
@@ -45,6 +48,29 @@ export default function index({
       selectedDate: day,
     });
   };
+  const setTimeDisplayed = () => {
+    setTimeDisplay(!isTimedDisplay);
+  };
+
+  useEffect(() => {
+    console.log(
+      ' isTimedDisplay === true ? "true" : "false"',
+      isTimedDisplay === true ? "true" : "false"
+    );
+    sessionStorage.setItem(
+      "isTimeDisplayed",
+      isTimedDisplay === true ? "true" : "false"
+    );
+  }, [isTimedDisplay]);
+
+  const handleChangeMonthYear = (month, year) => {
+    let currentMonth;
+    currentMonth = addMonths(
+      currentDate.currentMonth,
+      differenceInMonths(new Date(year, month, 0), currentDate.currentMonth)
+    );
+  };
+
   return (
     <WeekViewStyled data-testid="app-big-calendar">
       {!publicView && (
@@ -65,6 +91,8 @@ export default function index({
         selectedCalendars={selectedCalendars}
         handleCalendarSelection={handleCalendarSelection}
         publicView={publicView}
+        setTimeDisplayed={setTimeDisplayed}
+        isTimedDisplay={isTimedDisplay}
       />
       <Days currentWeek={currentDate.currentWeek} />
       <Cells
@@ -76,6 +104,7 @@ export default function index({
         handleChangeDay={handleChangeDay}
         setIsEventModalVisible={setIsEventModalVisible}
         publicView={publicView}
+        isTimedDisplay={isTimedDisplay}
       />
     </WeekViewStyled>
   );

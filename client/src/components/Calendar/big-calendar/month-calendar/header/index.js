@@ -16,13 +16,13 @@ import {
   faShareAltSquare,
   faChevronDown,
   faChevronUp,
-  faClock
+  faClock,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
 import {
   requestDeleteCalendar,
-  requestCloneCelander
+  requestCloneCelander,
 } from "../../../../../redux/actions/Calendars";
 import Confirmation from "../../../../../helpers/Confirmation";
 import { yearList } from "../../../../../helpers/Date";
@@ -129,7 +129,7 @@ export default function index({
   selectedCalendars,
   setTimeDisplayed,
   handleCalendarSelection,
-  publicView
+  publicView,
 }) {
   const [isVisibleCreateCalendarModal, toggleCreateCalendarModal] = useState(
     false
@@ -171,12 +171,14 @@ export default function index({
       <div className="grid" id="calendar-type">
         <button
           className={`${calendarType === "week" ? "selected" : ""}`}
-          onClick={() => handleChangeCalendarType("week")}>
+          onClick={() => handleChangeCalendarType("week")}
+        >
           Week
         </button>
         <button
           className={`${calendarType === "month" ? "selected" : ""}`}
-          onClick={() => handleChangeCalendarType("month")}>
+          onClick={() => handleChangeCalendarType("month")}
+        >
           Month
         </button>
       </div>
@@ -193,7 +195,8 @@ export default function index({
             value={format(currentMonth, "M") - 1}
             onChange={({ target }) => {
               handleChangeMonthYear(target.value, format(currentMonth, "yyyy"));
-            }}>
+            }}
+          >
             <option value={0}>January</option>
             <option value={1}>February</option>
             <option value={2}>March</option>
@@ -211,8 +214,9 @@ export default function index({
             value={format(currentMonth, "yyyy")}
             onChange={({ target }) => {
               handleChangeMonthYear(format(currentMonth, "M"), target.value);
-            }}>
-            {yearsList.map(year => {
+            }}
+          >
+            {yearsList.map((year) => {
               return <option value={year}>{year}</option>;
             })}
           </select>
@@ -233,7 +237,8 @@ export default function index({
         }}
         onMouseLeave={() => {
           setPaginationVisibility(false);
-        }}>
+        }}
+      >
         {!publicView && (
           <button>
             <FontAwesomeIcon
@@ -242,7 +247,7 @@ export default function index({
                 toggleCreateCalendarModal(true);
               }}
               style={{
-                margin: "0 5px"
+                margin: "0 5px",
               }}
             />
             <FontAwesomeIcon
@@ -251,7 +256,7 @@ export default function index({
                 setViewAllCalendar(!viewAllCalendar);
               }}
               style={{
-                margin: "0 5px"
+                margin: "0 5px",
               }}
             />
 
@@ -262,7 +267,7 @@ export default function index({
               }}
               style={{
                 color: isTimedDisplay ? "black" : "gray",
-                margin: "0 5px"
+                margin: "0 5px",
               }}
             />
           </button>
@@ -276,7 +281,7 @@ export default function index({
                   top: 30,
                   left: 100,
                   zIndex: 100,
-                  color: "#f26e21"
+                  color: "#f26e21",
                 }}
                 icon={faLongArrowAltLeft}
                 onClick={() => {
@@ -292,7 +297,7 @@ export default function index({
                   top: 30,
                   right: 0,
                   zIndex: 100,
-                  color: "#f26e21"
+                  color: "#f26e21",
                 }}
                 icon={faLongArrowAltRight}
                 onClick={() => {
@@ -331,13 +336,13 @@ const CalendarList = ({
   publicView,
   toggleConfirmationVisible,
   setCurrentAction,
-  setCurrentConfirmationMessage
+  setCurrentConfirmationMessage,
 }) => {
   return (
     <>
       {viewAllCalendar &&
-        calendars.map(calendarGroup => {
-          return calendarGroup.map(calendar => {
+        calendars.map((calendarGroup) => {
+          return calendarGroup.map((calendar) => {
             return (
               <CalendarCard
                 key={calendar.id}
@@ -355,7 +360,7 @@ const CalendarList = ({
         })}
       {!viewAllCalendar &&
         calendars.length > 0 &&
-        calendars[currentPage].map(calendar => {
+        calendars[currentPage].map((calendar) => {
           return (
             <CalendarCard
               key={calendar.id}
@@ -383,7 +388,7 @@ const CalendarCard = ({
   toggleConfirmationVisible,
   publicView,
   setCurrentAction,
-  setCurrentConfirmationMessage
+  setCurrentConfirmationMessage,
 }) => {
   const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
   const auth = useSelector(({ auth }) => auth);
@@ -407,12 +412,14 @@ const CalendarCard = ({
         if (!publicView) {
           setCalendarButtonsVisible(false);
         }
-      }}>
+      }}
+    >
       <img src={calendar.image} />
       <p
         className={`${
           selectedCalendars.includes(calendar.id) ? "selected" : ""
-        }`}>
+        }`}
+      >
         <span style={{ backgroundColor: `${calendar.color}` }}></span>
         <EllipsisText text={calendar.name} length={8} />
       </p>
@@ -422,7 +429,7 @@ const CalendarCard = ({
           <div id="buttons">
             <FontAwesomeIcon
               icon={faClone}
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 setCurrentConfirmationMessage(
                   `Are you sure you want to clone this calendar?`
@@ -437,7 +444,7 @@ const CalendarCard = ({
             {calendar.visibilityType === "Public" && (
               <FontAwesomeIcon
                 icon={faShareAltSquare}
-                onClick={e => {
+                onClick={(e) => {
                   e.stopPropagation();
                   const dummy = document.createElement("input");
                   document.body.appendChild(dummy);
@@ -454,7 +461,7 @@ const CalendarCard = ({
             )}
             <FontAwesomeIcon
               icon={faEdit}
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 setSelectedCalendar(calendar);
                 toggleEditCalendarModal(true);
@@ -462,7 +469,7 @@ const CalendarCard = ({
             />
             <FontAwesomeIcon
               icon={faTrashAlt}
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 setCurrentConfirmationMessage(
                   `Are you sure you want to delete this calendar?`
