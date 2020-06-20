@@ -434,6 +434,7 @@ export default function createEventForm({
           if (date == null) {
             return;
           }
+          console.log("DATE TIME PICKER CHANGEEEEEEEEEEEEE", date);
           handleEventDetailsChange("eventSchedule", date);
         }}
       />{" "}

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { uuid } from "uuidv4";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { addHours, addMinutes, addSeconds, format } from "date-fns";
+import { addHours, addMinutes, addSeconds, format, isAfter } from "date-fns";
 
 import { addEvent } from "../../../../redux/actions/Events";
 import MicroCalendar from "../../../Calendar/micro-calendar";
@@ -206,11 +206,21 @@ export default function index({
       eventSchedule: [currentDateTime, currentDateTime],
     });
   };
-  const handleEventDetailsChange = (id, value, action = "") => {
+  const handleEventDetailsChange = (id, value) => {
     // let newEventGuests = eventDetails.eventGuests;
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
       return;
+    } else if (id === "eventSchedule") {
+      const isStartDateAfterEndDate = isAfter(
+        new Date(value[0]),
+        new Date(value[1])
+      );
+      if (isStartDateAfterEndDate) {
+        value[1] = new Date(addMinutes(new Date(value[0]), 30));
+      }
+    } else {
+      setEventDetails({ ...eventDetails, [id]: value });
     }
     setEventDetails({ ...eventDetails, [id]: value });
   };
@@ -253,7 +263,7 @@ export default function index({
       guests: eventDetails.eventGuests.map((item) => item.id),
       group_ids: eventDetails.visibility === "custom" ? selectedGroup : [],
     };
-    console.log("payloaddddddddddddddddd", payload);
+
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
   };
