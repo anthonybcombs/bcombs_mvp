@@ -117,6 +117,7 @@ const HeaderStyled = styled.div`
     }
   }
 `;
+
 export default function index({
   currentMonth,
   handleChangeMonth,
@@ -256,7 +257,9 @@ export default function index({
 
             <FontAwesomeIcon
               icon={faClock}
-              onClick={setTimeDisplayed}
+              onClick={() => {
+                setTimeDisplayed(!isTimedDisplay);
+              }}
               style={{
                 color: isTimedDisplay ? "black" : "gray",
                 margin: "0 5px"

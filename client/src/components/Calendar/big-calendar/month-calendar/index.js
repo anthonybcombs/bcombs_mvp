@@ -16,8 +16,6 @@ const BigCalendarStyled = styled.div`
   width: 100%;
 `;
 
-const DEFAULT_TIME_DISPLAY =
-  sessionStorage.getItem("isTimeDisplayed") === "true" ? true : false;
 export default function index({
   auth,
   contacts,
@@ -31,7 +29,9 @@ export default function index({
   publicView
 }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
-  const [isTimedDisplay, setTimeDisplay] = useState(DEFAULT_TIME_DISPLAY);
+  const [isTimedDisplay, setTimeDisplay] = useState(
+    sessionStorage.getItem("isTimeDisplayed") === "true" ? true : false
+  );
   const [formattedCalendars, setFormattedCalendars] = useState([]);
   const [currentDate, setCurrentDate] = useState({
     currentMonth: new Date(),
@@ -43,6 +43,17 @@ export default function index({
       setFormattedCalendars(calendars.flat());
     }
   }, [calendars]);
+
+  useEffect(() => {
+    console.log(
+      ' isTimedDisplay === true ? "true" : "false"',
+      isTimedDisplay === true ? "true" : "false"
+    );
+    sessionStorage.setItem(
+      "isTimeDisplayed",
+      isTimedDisplay === true ? "true" : "false"
+    );
+  }, [isTimedDisplay]);
   const handleChangeMonthYear = (month, year) => {
     let currentMonth;
     currentMonth = addMonths(
@@ -80,7 +91,6 @@ export default function index({
 
   const setTimeDisplayed = () => {
     setTimeDisplay(!isTimedDisplay);
-    sessionStorage.setItem("isTimeDisplayed", !isTimedDisplay);
   };
 
   return (
