@@ -291,7 +291,18 @@ export default function index({
                   }}
                   defaultValue={parentProfile.phone_number}
                   format="(###) ###-####" mask="_"
-                  getInputRef={register({required: true})}
+                  getInputRef={register({
+                    required: true,
+                    validate: {
+                      completed: value => {
+                        if(value) {
+                          return value.match(/\d/g).length === 10
+                        } else {
+                          return true;
+                        }
+                      }
+                    }
+                  })}
                   required
                 />
                 :
@@ -309,6 +320,11 @@ export default function index({
               field={errors["parent_phonenumber" + (counter - 1)]}
               errorType="required"
               message="Phone Number is required."
+            />
+            <ErrorMessage
+              field={errors["parent_phonenumber" + (counter - 1)]}
+              errorType="completed"
+              message="Phone Number must be consist of 10 digits."
             />
           </div>
         </div>
@@ -361,6 +377,17 @@ export default function index({
                     }}
                     defaultValue={parentProfile.phone_number2}
                     format="(###) ###-####" mask="_"
+                    getInputRef={register({
+                      validate: {
+                        completed: value => {
+                          if(value) {
+                            return value.match(/\d/g).length === 10
+                          } else {
+                            return true;
+                          }
+                        }
+                      }
+                    })}
                   />
                   :
                   <input
@@ -373,6 +400,11 @@ export default function index({
                 }
                 <label className="field-label">Phone Number</label>
               </div>
+              <ErrorMessage
+                field={errors["parent_phonenumber2" + (counter - 1)]}
+                errorType="completed"
+                message="Phone Number must be consist of 10 digits."
+              />
             </div>
           </div>
 
