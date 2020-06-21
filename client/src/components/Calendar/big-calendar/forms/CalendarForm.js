@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
+import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 import UploadImage from "../../../../helpers/UploadImage";
 import { faSmile } from "@fortawesome/free-regular-svg-icons";
@@ -130,10 +131,10 @@ export default function CreateCalendarForm({
   onSubmit,
   handleInputChange,
   handleCheckBoxChange,
-  onCancel,
+  onCancel
 }) {
   const { register, handleSubmit, errors, setValue } = useForm({
-    mode: "onSubmit",
+    mode: "onSubmit"
   });
   React.useEffect(() => {
     register({ name: "image" }, { required: true });
@@ -141,9 +142,9 @@ export default function CreateCalendarForm({
       { name: "color" },
       {
         validate: {
-          isColorExist: (value) =>
-            !colors.includes(value) || details.color == value,
-        },
+          isColorExist: value =>
+            !colors.includes(value) || details.color == value
+        }
       }
     );
     if (details && details.image && details.image.length > 0) {
@@ -154,19 +155,29 @@ export default function CreateCalendarForm({
     }
   }, []);
   const options = [];
-  Object.keys(groups).forEach((key) => {
-    groups[key].forEach((data) => {
-      options.push({ value: data.id, label: data.name });
+  Object.keys(groups).forEach(key => {
+    groups[key].forEach(data => {
+      options.push({ id: data.id, name: data.name });
     });
   });
   const theme = useContext(ThemeContext);
+
+  const handleGroupSelectChange = option => {
+    if (option !== null) {
+      const groupIds = option.map(group => group.id);
+      handleInputChange("groups", groupIds);
+      return;
+    }
+    handleInputChange("groups", []);
+  };
+
+  console.log("selectedCalendar details", details);
   return (
     <CreateCalendarFormStyled
       data-testid="app-big-calendar-new-create-form"
       theme={theme}
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <input
         data-testid="app-big-calendar-new-input-calendar-name"
         placeholder="Calendar name"
@@ -184,7 +195,7 @@ export default function CreateCalendarForm({
       />
       <p style={{ marginTop: 30 }}>Calendar Privacy Setting</p>
       <div id="family-list">
-        {familyMembers.map((familyMember) => (
+        {familyMembers.map(familyMember => (
           <div key={familyMember.id}>
             <input
               type="checkbox"
@@ -213,7 +224,7 @@ export default function CreateCalendarForm({
       </div>
       <div>
         <p>Groups</p>
-        <CustomMultiSelectOptions
+        {/* <CustomMultiSelectOptions
           className="field-input"
           options={options}
           value={options.filter((group) => {
@@ -228,6 +239,19 @@ export default function CreateCalendarForm({
             handleInputChange("groups", []);
           }}
           labelledBy={"Select"}
+        /> */}
+
+        <CustomMultiSelect
+          className="field-input"
+          options={options}
+          onSelect={handleGroupSelectChange}
+          onRemove={handleGroupSelectChange}
+          selectedValues={options.filter(item =>
+            details.groups.includes(item.id)
+          )}
+          placeholder="Select Group"
+          displayValue="name"
+          closeIcon="cancel"
         />
 
         {/* <Select
@@ -300,7 +324,7 @@ export default function CreateCalendarForm({
         <>
           <ColorPicker
             color={details.color}
-            setColor={(color) => {
+            setColor={color => {
               setValue("color", color);
               handleInputChange("color", color);
             }}
@@ -319,7 +343,7 @@ export default function CreateCalendarForm({
       )}
       <UploadImage
         displayImage={details.image}
-        handleImageChange={(image) => {
+        handleImageChange={image => {
           setValue("image", image);
           handleInputChange("image", image);
           return false;
@@ -334,8 +358,7 @@ export default function CreateCalendarForm({
         <button
           data-testid="app-big-calendar-new-cancel-button"
           type="button"
-          onClick={() => onCancel()}
-        >
+          onClick={() => onCancel()}>
           Cancel
         </button>
         <button data-testid="app-big-calendar-new-save-button" type="submit">
