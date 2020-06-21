@@ -97,7 +97,7 @@ const NewEventModal = styled.div`
   }
 `;
 
-const initialEventDetails = (selectedDate) => {
+const initialEventDetails = selectedDate => {
   console.log(
     "new Date(addMinutes(new Date(selectedDate), 30))",
     new Date(addMinutes(new Date(selectedDate), 30))
@@ -109,7 +109,7 @@ const initialEventDetails = (selectedDate) => {
     time: format(selectedDate, "hh:mm a"),
     eventSchedule: [
       selectedDate,
-      new Date(addMinutes(new Date(selectedDate), 30)),
+      new Date(addMinutes(new Date(selectedDate), 30))
     ],
     eventGuests: [],
     familyMembers: [],
@@ -117,7 +117,7 @@ const initialEventDetails = (selectedDate) => {
     location: "",
     eventDescription: "",
     status: "Scheduled",
-    visibility: "public",
+    visibility: "public"
   };
 };
 
@@ -127,10 +127,10 @@ export default function index({
   auth,
   toggleCreateEventModal,
   selectedCalendars,
-  defaultSelectedDate = new Date(),
+  defaultSelectedDate = new Date()
 }) {
   const { groups } = useSelector(({ groups }) => ({
-    groups,
+    groups
   }));
   const [groupOptions, setGroupOptions] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState([]);
@@ -146,7 +146,7 @@ export default function index({
     location: "",
     description: "",
     status: "Scheduled",
-    recurring: "",
+    recurring: ""
   });
   useEffect(() => {
     setEventDetails({
@@ -155,8 +155,8 @@ export default function index({
       time: format(defaultSelectedDate, "hh:mm a"),
       eventSchedule: [
         defaultSelectedDate,
-        new Date(addMinutes(new Date(defaultSelectedDate), 30)),
-      ],
+        new Date(addMinutes(new Date(defaultSelectedDate), 30))
+      ]
     });
   }, [defaultSelectedDate]);
 
@@ -166,25 +166,23 @@ export default function index({
       const joinedGroups = groups.joined_groups;
       const combinedGroups = [
         ...(createdGroups || []),
-        ...(joinedGroups || []),
+        ...(joinedGroups || [])
       ];
-      let groupOpt = combinedGroups.map((item) => {
-        return {
-          ...item,
-          value: item.id,
-          label: item.name,
-        };
-      });
+      // let groupOpt = combinedGroups.map(item => {
+      //   return {
+      //     ...item,
+      //     value: item.id,
+      //     label: item.name
+      //   };
+      // });
 
-      setGroupOptions([...groupOpt]);
+      setGroupOptions([...combinedGroups]);
     }
   }, [groups]);
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
 
   const handleEventDetailsChange = (id, value) => {
-    console.log("Handle Event Detail Change ", id);
-    console.log("Handle Event Detail Change Value", value);
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
       return;
@@ -203,7 +201,7 @@ export default function index({
     }
   };
 
-  const handleSubmit = (value) => {
+  const handleSubmit = value => {
     const payload = {
       start_of_event: format(
         getUTCDate(eventDetails.eventSchedule[0]),
@@ -232,9 +230,12 @@ export default function index({
           : null,
       guests:
         eventDetails.eventGuests.length > 0
-          ? eventDetails.eventGuests.map((item) => item.id)
+          ? eventDetails.eventGuests.map(item => item.id)
           : [],
-      group_ids: eventDetails.visibility === "custom" ? selectedGroup : [],
+      group_ids:
+        eventDetails.visibility === "custom"
+          ? selectedGroup.map(item => item.id)
+          : []
     };
 
     if (selectedCalendars.length > 0) {
@@ -246,14 +247,10 @@ export default function index({
     }
   };
 
-  const handleGroupSelect = (value) => {
-    console.log(
-      "VALUEEEEEEEEE",
-      value.map((item) => item.value)
-    );
-    setSelectedGroup(value.map((item) => item.value));
+  const handleGroupSelect = value => {
+    setSelectedGroup(value);
   };
-  const handleGroupRemove = (value) => {
+  const handleGroupRemove = value => {
     setSelectedGroup(value);
   };
 
@@ -265,15 +262,13 @@ export default function index({
     <NewEventModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
-      theme={theme}
-    >
+      theme={theme}>
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleCreateEventModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <div id="content">
@@ -282,9 +277,8 @@ export default function index({
               textAlign: "center",
               marginBottom: 50,
               marginTop: -10,
-              fontSize: "2em",
-            }}
-          >
+              fontSize: "2em"
+            }}>
             Create New Event
           </h2>
           <EventForm

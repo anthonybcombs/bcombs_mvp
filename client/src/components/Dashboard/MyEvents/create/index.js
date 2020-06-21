@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import styled, { ThemeContext } from "styled-components";
 import { useDispatch } from "react-redux";
-import { addHours, addMinutes, addSeconds, toDate, format } from "date-fns";
+import { addHours, addMinutes, addSeconds, format, isAfter } from "date-fns";
 import { addEvent } from "../../../../redux/actions/Events";
 import MicroCalendar from "../../../Calendar/micro-calendar";
 import EventForm from "../forms/EventForm";
@@ -80,7 +80,7 @@ const NewEventModal = styled.div`
     }
   }
 `;
-const initialEventDetails = (selectedDate) => {
+const initialEventDetails = selectedDate => {
   return {
     name: "",
     date: new Date(),
@@ -91,14 +91,14 @@ const initialEventDetails = (selectedDate) => {
     eventType: "Event",
     location: "",
     eventDescription: "",
-    status: "Scheduled",
+    status: "Scheduled"
   };
 };
 export default function index({
   isVisible = true,
   toggleCreateEventModal,
   familyMembers,
-  defaultSelectedDate = new Date(),
+  defaultSelectedDate = new Date()
 }) {
   const [selectedDate, setSelectedDate] = useState(defaultSelectedDate);
   const [eventDetails, setEventDetails] = useState(
@@ -106,7 +106,7 @@ export default function index({
   );
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const handleSetSelectedDate = (date) => {
+  const handleSetSelectedDate = date => {
     const currentDateTime = addSeconds(
       addMinutes(
         addHours(date, new Date().getHours()),
@@ -119,19 +119,31 @@ export default function index({
       ...eventDetails,
       date: currentDateTime,
       time: format(currentDateTime, "hh:mm a"),
-      eventSchedule: [currentDateTime, currentDateTime],
+      eventSchedule: [currentDateTime, currentDateTime]
     });
   };
   const handleEventDetailsChange = (id, value) => {
+    console.log("HANDLE EVENT DETAIL CHANGE VALUE", value);
+    console.log("HANDLE EVENT DETAIL CHANGE ID", id);
     if (id === "eventGuests") {
       const newEventGuests = eventDetails.eventGuests;
       newEventGuests.push(value);
       setEventDetails({ ...eventDetails, eventGuests: newEventGuests });
       return;
+    } else if (id === "eventSchedule") {
+      const isStartDateAfterEndDate = isAfter(
+        new Date(value[0]),
+        new Date(value[1])
+      );
+      if (isStartDateAfterEndDate) {
+        value[1] = new Date(addMinutes(new Date(value[0]), 30));
+      }
+      setEventDetails({ ...eventDetails, eventSchedule: value });
+    } else {
+      setEventDetails({ ...eventDetails, [id]: value });
     }
-    setEventDetails({ ...eventDetails, [id]: value });
   };
-  const handleSubmit = (value) => {
+  const handleSubmit = value => {
     toggleCreateEventModal(false);
     dispatch(addEvent(eventDetails));
     setEventDetails(initialEventDetails(selectedDate));
@@ -143,15 +155,13 @@ export default function index({
     <NewEventModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
-      theme={theme}
-    >
+      theme={theme}>
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleCreateEventModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <div id="content">

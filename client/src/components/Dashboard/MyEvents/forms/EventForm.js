@@ -4,16 +4,17 @@ import { useForm } from "react-hook-form";
 import { format, getTime } from "date-fns";
 import debounce from "lodash.debounce";
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
-import DatePicker from "react-date-picker";
-import TimePicker from "react-time-picker";
+// import DatePicker from "react-date-picker";
+// import TimePicker from "react-time-picker";
 import Autosuggest from "react-autosuggest";
-//import MultiSelect from "react-multi-select-component";
+import { Multiselect } from "multiselect-react-dropdown";
 
 // GRAPHQL
 import graphqlClient from "../../../../graphql";
 import { GET_USER_OPTIONS_QUERY } from "../../../../graphql/query";
 
 import CustomDatePicker from "../../../../helpers/CustomDatePicker";
+import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
@@ -214,24 +215,24 @@ const EventFormStyled = styled.form`
 const OPTION_VISIBILITY = [
   { name: "Public", value: "public" },
   { name: "Private", value: "private" },
-  { name: "Custom", value: "custom" },
+  { name: "Custom", value: "custom" }
 ];
 
 const OPTION_STATUS = [
   { name: "Scheduled", value: "Scheduled" },
   { name: "Re-Scheduled", value: "Re-Scheduled" },
-  { name: "Cancelled", value: "Cancelled" },
+  { name: "Cancelled", value: "Cancelled" }
 ];
 
 const OPTION_RECURRING = [
   { name: "Daily", value: "Daily" },
   { name: "Weekly", value: "Weekly" },
   { name: "Monthly", value: "Monthly" },
-  { name: "Annually", value: "Annually" },
+  { name: "Annually", value: "Annually" }
 ];
 
 // Use your imagination to render suggestions.
-const renderSuggestion = (suggestion) => (
+const renderSuggestion = suggestion => (
   <div>
     <div>{suggestion.name}</div>
     <div className="user-email">{suggestion.value}</div>
@@ -259,11 +260,11 @@ export default function createEventForm({
   selectedGroup = [],
   groups = [],
   editMode = false,
-  isEventSection = false,
+  isEventSection = false
 }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange",
+    reValidateMode: "onChange"
   });
   const [suggestion, setSuggestion] = useState([]);
   const [selectedGuest, setSelectedGuest] = useState([]);
@@ -279,10 +280,10 @@ export default function createEventForm({
 
   useEffect(() => {
     if (eventDetails && eventDetails.guests) {
-      const defaultGuests = eventDetails.guests.map((item) => {
+      const defaultGuests = eventDetails.guests.map(item => {
         return {
           id: item.user_id,
-          value: item.email,
+          value: item.email
         };
       });
       setSelectedGuest(defaultGuests);
@@ -296,34 +297,33 @@ export default function createEventForm({
   const inputProps = {
     placeholder: "Enter Guest Email",
     value: autoCompleteValue,
-    onChange: automCompleteOnChange,
+    onChange: automCompleteOnChange
   };
 
   const delayedQuery = useCallback(
-    debounce(async (value) => {
+    debounce(async value => {
       try {
         if (!isFetching && value !== "") {
           setFetching(true);
           const { data } = await graphqlClient.query({
             query: GET_USER_OPTIONS_QUERY,
-            variables: { keyword: value },
+            variables: { keyword: value }
           });
 
           if (data.getUserList.length === 0) {
             setUserNotFound(true);
           } else {
-            const options = data.getUserList.map((item) => {
+            const options = data.getUserList.map(item => {
               return {
                 name: `${item.given_name} ${item.family_name}`,
                 value: item.email,
-                id: item.id,
+                id: item.id
               };
             });
 
             setSuggestion(
               options.filter(
-                (item) =>
-                  item.value.includes(value) || item.name.includes(value)
+                item => item.value.includes(value) || item.name.includes(value)
               )
             );
             setUserNotFound(false);
@@ -350,10 +350,8 @@ export default function createEventForm({
     setSuggestion([]);
   };
 
-  const getSuggestionValue = (suggestion) => {
-    const isExist = selectedGuest.find(
-      (item) => suggestion.value === item.value
-    );
+  const getSuggestionValue = suggestion => {
+    const isExist = selectedGuest.find(item => suggestion.value === item.value);
     if (!isExist) {
       setSelectedGuest([...selectedGuest, suggestion]);
       handleEventDetailsChange("eventGuests", [...selectedGuest, suggestion]);
@@ -361,9 +359,9 @@ export default function createEventForm({
     return suggestion.name;
   };
 
-  const handleRemoveGuest = (email) => () => {
-    const removedGuest = selectedGuest.find((guest) => guest.value === email);
-    const updatedGuest = selectedGuest.filter((guest) => guest.value !== email);
+  const handleRemoveGuest = email => () => {
+    const removedGuest = selectedGuest.find(guest => guest.value === email);
+    const updatedGuest = selectedGuest.filter(guest => guest.value !== email);
     setSelectedGuest(updatedGuest);
     handleEventDetailsChange("removeGuests", removedGuest);
   };
@@ -373,8 +371,7 @@ export default function createEventForm({
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       {/* <FontAwesomeIcon icon={faClock} /> */}
       <input
         autoComplete="off"
@@ -383,7 +380,7 @@ export default function createEventForm({
         name="title"
         placeholder="Add title"
         value={eventDetails.name}
-        onChange={(e) => {
+        onChange={e => {
           handleEventDetailsChange("name", e.target.value);
         }}
         ref={register({ required: true })}
@@ -399,8 +396,7 @@ export default function createEventForm({
           className={`${eventDetails.type === "Event" ? "selected" : ""}`}
           onClick={() => {
             handleEventDetailsChange("type", "Event");
-          }}
-        >
+          }}>
           Event
         </button>
         <button
@@ -410,8 +406,7 @@ export default function createEventForm({
           }`}
           onClick={() => {
             handleEventDetailsChange("type", "Forms Reminder");
-          }}
-        >
+          }}>
           Forms Reminder
         </button>
         <button
@@ -419,8 +414,7 @@ export default function createEventForm({
           className={`${eventDetails.type === "Task" ? "selected" : ""}`}
           onClick={() => {
             handleEventDetailsChange("type", "Task");
-          }}
-        >
+          }}>
           Task
         </button>
         <br />
@@ -429,12 +423,11 @@ export default function createEventForm({
         value={eventDetails.eventSchedule}
         disableClock={true}
         rangeDivider={true}
-        onChange={(date) => {
-          console.log("DATEEEEEEEEEEEEEEE", date);
+        onChange={date => {
           if (date == null) {
             return;
           }
-          console.log("DATE TIME PICKER CHANGEEEEEEEEEEEEE", date);
+
           handleEventDetailsChange("eventSchedule", date);
         }}
       />{" "}
@@ -485,17 +478,30 @@ export default function createEventForm({
         </div>
       </div> */}
       {isEventSection && (
-        <CustomMultiSelectOptions
-          className="field-input"
-          options={calendars}
-          value={calendars.filter((opt) =>
-            selectedCalendar.includes(opt.value)
-          )}
-          onChange={(value) => {
-            handleCalendarSelect(value);
-          }}
-          labelledBy={"Select"}
-        />
+        // <CustomMultiSelectOptions
+        //   className="field-input"
+        //   options={calendars}
+        //   value={calendars.filter(opt => selectedCalendar.includes(opt.value))}
+        //   onChange={value => {
+        //     handleCalendarSelect(value);
+        //   }}
+        //   labelledBy={"Select"}
+        // />
+
+        <div className="form-group">
+          <div className="field">
+            <CustomMultiSelect
+              className="field-input"
+              options={calendars}
+              selectedValues={selectedCalendar}
+              onSelect={handleCalendarSelect}
+              onRemove={handleCalendarRemove}
+              placeholder="Add Calendar"
+              displayValue="name"
+              closeIcon="cancel"
+            />
+          </div>
+        </div>
       )}
       <br />
       {editMode && (
@@ -504,14 +510,13 @@ export default function createEventForm({
           className="field-input"
           placeholder="Select Status"
           ref={register({ required: true })}
-          onChange={(e) => {
+          onChange={e => {
             console.log("e.target.valueee", e.target.value);
             handleEventDetailsChange("status", e.target.value);
           }}
-          value={eventDetails.status}
-        >
+          value={eventDetails.status}>
           <option value="">Select</option>
-          {OPTION_STATUS.map((opt) => (
+          {OPTION_STATUS.map(opt => (
             <option key={opt.value} value={opt.value}>
               {opt.name}
             </option>
@@ -524,15 +529,14 @@ export default function createEventForm({
         name="recurring"
         className="field-input"
         placeholder="Recurring"
-        onChange={(e) => {
+        onChange={e => {
           handleEventDetailsChange("recurring", e.target.value);
         }}
-        value={eventDetails.recurring}
-      >
+        value={eventDetails.recurring}>
         <option key="0" value="No Repeat">
           No Repeat
         </option>
-        {OPTION_RECURRING.map((opt) => (
+        {OPTION_RECURRING.map(opt => (
           <option key={opt.value} value={opt.value}>
             {opt.name}
           </option>
@@ -588,7 +592,7 @@ export default function createEventForm({
                 eventDetails.recurringEndDate &&
                 new Date(eventDetails.recurringEndDate)
               }
-              onChange={(date) => {
+              onChange={date => {
                 console.log("RECURRING END DATE", date);
                 handleEventDetailsChange(
                   "recurringEndDate",
@@ -606,13 +610,12 @@ export default function createEventForm({
           className="field-input"
           placeholder="Select Visibility"
           ref={register({ required: true })}
-          onChange={(e) => {
+          onChange={e => {
             handleEventDetailsChange("visibility", e.target.value);
           }}
-          value={eventDetails.visibility}
-        >
+          value={eventDetails.visibility}>
           <option value="">Select</option>
-          {OPTION_VISIBILITY.map((opt) => (
+          {OPTION_VISIBILITY.map(opt => (
             <option key={opt.value} value={opt.value}>
               {opt.name}
             </option>
@@ -627,27 +630,30 @@ export default function createEventForm({
       </div>
       <br />
       {eventDetails.visibility === "custom" && (
-        // <CustomMultiSelect
+        <div className="form-group">
+          <div className="field">
+            <CustomMultiSelect
+              className="field-input"
+              options={groups}
+              selectedValues={eventDetails.defaultGroupIds}
+              onSelect={handleGroupSelect}
+              onRemove={handleGroupRemove}
+              placeholder="Add Group"
+              displayValue="name"
+              closeIcon="cancel"
+            />
+          </div>
+        </div>
+        // <CustomMultiSelectOptions
         //   className="field-input"
         //   options={groups}
-        //   selectedValues={eventDetails.defaultGroupIds}
-        //   onSelect={handleGroupSelect}
-        //   onRemove={handleGroupRemove}
-        //   placeholder="Add Group"
-        //   displayValue="name"
-        //   closeIcon="cancel"
+        //   value={groups.filter((item) => selectedGroup.includes(item.value))}
+        //   onChange={(value) => {
+        //     console.log("VALUEEEEEEEEEEEEE", value);
+        //     handleGroupSelect(value);
+        //   }}
+        //   labelledBy={"Select"}
         // />
-
-        <CustomMultiSelectOptions
-          className="field-input"
-          options={groups}
-          value={groups.filter((item) => selectedGroup.includes(item.value))}
-          onChange={(value) => {
-            console.log("VALUEEEEEEEEEEEEE", value);
-            handleGroupSelect(value);
-          }}
-          labelledBy={"Select"}
-        />
       )}
       <Autosuggest
         autoComplete="off"
@@ -665,8 +671,7 @@ export default function createEventForm({
             <div
               key={index}
               className="user-tag"
-              onClick={handleRemoveGuest(guest.value)}
-            >
+              onClick={handleRemoveGuest(guest.value)}>
               <div> {guest.value}</div>
               {/* <div className="user-email"> {guest.value}</div> */}
             </div>
@@ -679,7 +684,7 @@ export default function createEventForm({
         name="location"
         placeholder="Location"
         value={eventDetails.location}
-        onChange={(e) => {
+        onChange={e => {
           handleEventDetailsChange("location", e.target.value);
         }}
         ref={register({ required: true })}
@@ -693,14 +698,13 @@ export default function createEventForm({
         data-testid="app-dashboard-my-events-new-event-input-title"
         name="description"
         placeholder="Description"
-        onChange={(e) => {
+        onChange={e => {
           setDescriptionCount(e.target.value.length);
           if (e.target.value.length <= 500) {
             handleEventDetailsChange("description", e.target.value);
           }
         }}
-        ref={register({ required: true })}
-      >
+        ref={register({ required: true })}>
         {eventDetails.description}
       </textarea>
       <p>{descriptionCount}/500</p>
@@ -712,8 +716,7 @@ export default function createEventForm({
       <button
         data-testid="app-dashboard-my-events-new-event-button-save"
         type="submit"
-        style={{ marginTop: 50, marginBottom: -50 }}
-      >
+        style={{ marginTop: 50, marginBottom: -50 }}>
         Save
       </button>
     </EventFormStyled>
