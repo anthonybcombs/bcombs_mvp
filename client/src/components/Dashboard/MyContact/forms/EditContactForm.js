@@ -2,7 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 
-import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
+//import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
+import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
@@ -143,12 +144,12 @@ export default function ContactForm({
       let defaultGroups = groups
         .filter(item => contactDetails.selectedGroups.includes(item.id))
         .map(item => {
-          return { label: item.name, value: item.id };
+          return { name: item.name, id: item.id };
         });
       let formattedGroups = groups.map(item => {
         return {
-          label: `${item.name}`,
-          value: item.id
+          name: `${item.name}`,
+          id: item.id
         };
       });
       setGroupOptions(formattedGroups);
@@ -161,9 +162,11 @@ export default function ContactForm({
 
   const handleRemoveChange = value => {
     const currentGroupIds = value.map(item => item.id);
+
     const removedGroups = groupOptions.filter(
       item => !currentGroupIds.includes(item.id)
     );
+
     handleContactDetailsChange("removedGroups", removedGroups);
   };
 
@@ -343,7 +346,21 @@ export default function ContactForm({
             displayValue="name"
             closeIcon="cancel"
           /> */}
-
+          <div className="form-group">
+            <div className="field">
+              <CustomMultiSelect
+                className="field-input"
+                options={groupOptions}
+                selectedValues={defaultGroups}
+                onSelect={handleSelectChange}
+                onRemove={handleRemoveChange}
+                placeholder="Add from my contacts"
+                displayValue="name"
+                closeIcon="cancel"
+              />
+            </div>
+          </div>
+          {/* 
           <CustomMultiSelectOptions
             className="field-input"
             options={groupOptions}
@@ -354,7 +371,7 @@ export default function ContactForm({
               handleContactDetailsChange("selectedGroups", value);
             }}
             labelledBy={"Select"}
-          />
+          /> */}
         </div>
       </div>
       <button type="submit" style={{ marginTop: 50 }}>

@@ -9,13 +9,12 @@ import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
 import Autosuggest from "react-autosuggest";
 import { Multiselect } from "multiselect-react-dropdown";
 
-// GRAPHQL
+// GRAPHQL<CustomMultiSelect
 import graphqlClient from "../../../../graphql";
 import { GET_USER_OPTIONS_QUERY } from "../../../../graphql/query";
 
 import CustomDatePicker from "../../../../helpers/CustomDatePicker";
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
-import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
 const EventFormStyled = styled.form`

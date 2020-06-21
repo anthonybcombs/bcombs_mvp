@@ -50,7 +50,7 @@ export default function index({
 
   const handleContactDetailsChange = (id, value) => {
     if (id === "selectedGroups") {
-      let selectedGroupIds = value.map(item => item.value);
+      let selectedGroupIds = value.map(item => item.id);
 
       let removeGroupIds = contactDetails.selectedGroups.filter(
         item => !selectedGroupIds.includes(item)
@@ -67,10 +67,13 @@ export default function index({
         ]
       });
     } else if (id === "removedGroups") {
-      let removeGroupIds = value.map(item => item.value);
+      console.log("removeGroupIds value", value);
+      let removeGroupIds = value.map(item => item.id);
+      console.log("removeGroupIds", removeGroupIds);
       let updatedSelectedGroups = contactDetails.selectedGroups.filter(
         item => !removeGroupIds.includes(item)
       );
+      console.log("updatedSelectedGroups", updatedSelectedGroups);
       setContactDetails({
         ...contactDetails,
         removedGroups: removeGroupIds,

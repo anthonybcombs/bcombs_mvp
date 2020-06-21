@@ -57,7 +57,7 @@ export default function index({
   const handleContactDetailsChange = (id, value) => {
     if (id === "selectedGroups") {
       console.log("handleContactDetailsssssssssssssssss", value);
-      let selectedGroupIds = value.map(item => item.value);
+      let selectedGroupIds = value.map(item => item.id);
 
       setContactDetails({
         ...contactDetails,
@@ -86,7 +86,7 @@ export default function index({
             ...contactDetails,
             authEmail: auth.email
           };
-          console.log("PAYLOADDDDDDD", payload);
+
           if (contactDetails.email !== auth.email) {
             dispatch(addContact(payload));
             toggleCreateContactModal(false);

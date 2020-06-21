@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import { Multiselect } from "multiselect-react-dropdown";
-import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
+import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const ContactFormStyled = styled.form`
   label {
@@ -42,27 +42,32 @@ export default function ContactForm({
   onSubmit,
   handleContactDetailsChange,
   isLoading = false,
-  userNotExist = false,
+  userNotExist = false
 }) {
   const [groupOptions, setGroupOptions] = useState([]);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange",
+    reValidateMode: "onChange"
   });
 
   useEffect(() => {
     if (groups) {
-      let formattedGroups = groups.map((item) => {
+      let defaultGroups = groups
+        .filter(item => contactDetails.selectedGroups.includes(item.id))
+        .map(item => {
+          return { name: item.name, id: item.id };
+        });
+      let formattedGroups = groups.map(item => {
         return {
-          label: `${item.name} `,
-          value: item.id,
+          name: `${item.name}`,
+          id: item.id
         };
       });
       setGroupOptions(formattedGroups);
     }
   }, [groups, isVisible]);
 
-  const handleSelectChange = (value) => {
+  const handleSelectChange = value => {
     handleContactDetailsChange("selectedGroups", value);
   };
 
@@ -72,8 +77,7 @@ export default function ContactForm({
     <ContactFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      theme={theme}
-    >
+      theme={theme}>
       <div className="grid">
         <div className="form-group">
           <div className="field">
@@ -138,7 +142,7 @@ export default function ContactForm({
               }}
               ref={register({
                 required: true,
-                pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/,
+                pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/
               })}
               value={contactDetails.phone_number}
             />
@@ -229,7 +233,7 @@ export default function ContactForm({
           displayValue="name"
           closeIcon="cancel"
         /> */}
-        <CustomMultiSelectOptions
+        {/* <CustomMultiSelectOptions
           className="field-input"
           options={groupOptions}
           value={groupOptions.filter((opt) =>
@@ -240,13 +244,25 @@ export default function ContactForm({
             handleContactDetailsChange("selectedGroups", value);
           }}
           labelledBy={"Select"}
-        />
+        /> */}
+        <div className="form-group">
+          <div className="field">
+            <CustomMultiSelect
+              className="field-input"
+              options={groupOptions}
+              hasSelectAll={false}
+              onSelect={handleSelectChange}
+              placeholder="Add from my contacts"
+              displayValue="name"
+              closeIcon="cancel"
+            />
+          </div>
+        </div>
       </div>
       <button
         className={isLoading ? "disabled" : ""}
         type="submit"
-        style={{ marginTop: 50 }}
-      >
+        style={{ marginTop: 50 }}>
         {isLoading ? "Saving..." : "Save"}
       </button>
     </ContactFormStyled>
