@@ -3,8 +3,9 @@ import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import Autosuggest from "react-autosuggest";
 import debounce from "lodash.debounce";
-import { Multiselect } from "multiselect-react-dropdown";
+
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 
 // GRAPHQL
@@ -223,8 +224,8 @@ export default function GroupForm({
     if (contacts) {
       let formattedContacts = contacts.map(item => {
         return {
-          label: `${item.first_name} ${item.last_name}`,
-          value: item.user_id
+          name: `${item.first_name} ${item.last_name}`,
+          id: item.user_id
         };
       });
       setContactOptions(formattedContacts);
@@ -296,7 +297,6 @@ export default function GroupForm({
       item => suggestion.value === item.value
     );
     if (!isExist) {
-      console.log("SUGGESTION", suggestion);
       setOtherUserSelected([...otherUserSelected, suggestion]);
       handleGroupDetailsChange("other_ids", [...otherUserSelected, suggestion]);
     }
@@ -339,17 +339,8 @@ export default function GroupForm({
           />
         </div>
 
-        <div className="form-group">
+        {/* <div className="form-group">
           <div className="field">
-            {/* <Multiselect
-              className="field-input"
-              options={contactOptions}
-              hasSelectAll={hasSelectAll}
-              onSelect={handleSelectChange}
-              placeholder="Add from my contacts"
-              displayValue="name"
-              closeIcon="cancel"
-            /> */}
             <CustomMultiSelectOptions
               className="field-input"
               options={contactOptions}
@@ -360,6 +351,20 @@ export default function GroupForm({
               labelledBy={"Select"}
             />
             <label className="field-label">Add existing contacts</label>
+          </div>
+        </div> */}
+
+        <div className="form-group">
+          <div className="field">
+            <CustomMultiSelect
+              className="field-input"
+              options={contactOptions}
+              hasSelectAll={hasSelectAll}
+              onSelect={handleSelectChange}
+              placeholder="Add from my contacts"
+              displayValue="name"
+              closeIcon="cancel"
+            />
           </div>
         </div>
 

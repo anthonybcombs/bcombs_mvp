@@ -151,7 +151,7 @@ export default function index({
   const handleGroupDetailsChange = (id, value) => {
     if (id === "contacts" || id === "other_ids") {
       if (id === "contacts") {
-        let ids = value.map(contact => contact.value);
+        let ids = value.map(contact => contact.id);
 
         setGroupDetails({
           ...groupDetails,

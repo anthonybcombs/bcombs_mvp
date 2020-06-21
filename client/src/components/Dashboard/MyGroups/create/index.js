@@ -31,7 +31,7 @@ export default function index({
   const dispatch = useDispatch();
   const handleGroupDetailsChange = (id, value) => {
     if (id === "contacts") {
-      let ids = value.map(contact => contact.value);
+      let ids = value.map(contact => contact.id);
       setGroupDetails({
         ...groupDetails,
         [id]: ids
@@ -61,6 +61,8 @@ export default function index({
         ])
       ]
     };
+
+    console.log("HANDLE SUBMIT PAYLOADDDDDDDDDDDDDDD", payload);
 
     dispatch(addGroup(payload));
     setGroupDetails({
