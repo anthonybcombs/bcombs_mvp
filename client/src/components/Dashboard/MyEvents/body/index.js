@@ -143,9 +143,7 @@ const getColumns = (selectedYear, month, index) => {
           <div>
             {startTime}
             {` `}
-            {startTime !== endTime && event.recurring_end_date
-              ? ` - ${endTime}`
-              : ""}
+            {startTime !== endTime ? ` - ${endTime}` : ""}
           </div>
         );
       }

@@ -39,7 +39,7 @@ const EventSliderStyled = styled.div`
     padding: 8px;
     padding-top: 0;
   }
-  
+
   .events-container {
     box-shadow: 0px 3px 6px #908e8e;
     padding: 5px;
@@ -73,13 +73,13 @@ const EventSliderStyled = styled.div`
   .single-event.no-event {
     color: #444;
   }
-  
+
   @media (min-width: 768px) {
     .single-event {
       min-width: 295px;
     }
   }
-  
+
   @media (min-width: 992px) {
     .single-event {
       min-width: 405px;
@@ -101,13 +101,12 @@ export default function index({
   selectedMonth,
   selectedCalendar
 }) {
-
   console.log("SELECTED Date date ", selectedDate);
-  const myRef = useRef(null)
+  const myRef = useRef(null);
 
   const [horizontal, setHorizontal] = useState(1);
 
-  const monthStart =  startOfMonth(selectedMonth);
+  const monthStart = startOfMonth(selectedMonth);
   const monthEnd = endOfMonth(selectedMonth);
 
   const startDate = startOfDay(monthStart);
@@ -119,28 +118,31 @@ export default function index({
   let day = startDate;
   let formattedDate = "";
 
-  const getEventsByDate = (day) => {
-
+  const getEventsByDate = day => {
     const filterevents = [];
     let currentDay = new Date(day).getDay();
-    for(const event of events) {
+    for (const event of events) {
       let pushEvent = false;
 
       let isSelected = false;
 
-      if(selectedCalendar.length > 0) {
-        isSelected = selectedCalendar.filter(c => c == event.calendar_id).length > 0;
+      if (selectedCalendar.length > 0) {
+        isSelected =
+          selectedCalendar.filter(c => c == event.calendar_id).length > 0;
       }
 
-      if(!isSelected) {
+      if (!isSelected) {
         const startDate = new Date(event.start_of_event);
 
-        let isDateAfter = isAfter(new Date(day), new Date(event.start_of_event));
+        let isDateAfter = isAfter(
+          new Date(day),
+          new Date(event.start_of_event)
+        );
         let isBeforeRecurringEndDate = null;
-  
+
         let startEventDay = new Date(event.start_of_event).getDay();
         let endEventDay = new Date(event.end_of_event).getDay();
-  
+
         if (event.recurring_end_date) {
           isBeforeRecurringEndDate = isBefore(
             new Date(day),
@@ -149,22 +151,25 @@ export default function index({
         }
 
         let checkRecurringEndDate =
-        (event.recurring_end_date && isBeforeRecurringEndDate) ||
-        (!event.recurring_end_date && !isBeforeRecurringEndDate);
-  
-        if(format(day, "MM dd yyyy") === format(startDate, "MM dd yyyy")) { 
+          (event.recurring_end_date && isBeforeRecurringEndDate) ||
+          (!event.recurring_end_date && !isBeforeRecurringEndDate);
+
+        if (format(day, "MM dd yyyy") === format(startDate, "MM dd yyyy")) {
           pushEvent = true;
-        } else if (isDateAfter && event.recurring === "Daily" && checkRecurringEndDate) {
-          pushEvent = true;
-        } else if(
+        } else if (
           isDateAfter &&
-          event.recurring === "Weekly" && 
-          checkRecurringEndDate) {
-  
+          event.recurring === "Daily" &&
+          checkRecurringEndDate
+        ) {
+          pushEvent = true;
+        } else if (
+          isDateAfter &&
+          event.recurring === "Weekly" &&
+          checkRecurringEndDate
+        ) {
           if (currentDay === startEventDay || currentDay === endEventDay) {
             pushEvent = true;
           }
-  
         } else if (
           isDateAfter &&
           event.recurring === "Monthly" &&
@@ -174,7 +179,7 @@ export default function index({
           let eventWeekIndex = getWeekIndex(
             new Date(event.start_of_event).getDate()
           );
-  
+
           if (
             currentWeekIndex === eventWeekIndex &&
             (currentDay === startEventDay || currentDay === endEventDay) &&
@@ -201,77 +206,79 @@ export default function index({
             pushEvent = true;
           }
         }
-  
-        if(pushEvent) {
-          filterevents.push((
-            <div className="single-event" style={{backgroundColor: event.color}}>
+
+        if (pushEvent) {
+          filterevents.push(
+            <div
+              className="single-event"
+              style={{ backgroundColor: event.color }}>
               <h3>{event.name}</h3>
-              <div>{format(startDate, "hh:mm aa")}</div>
+              <div>
+                {event.start_of_event &&
+                  format(new Date(event.start_of_event), "hh:mm aa")}{" "}
+                -{" "}
+                {event.end_of_event &&
+                  format(new Date(event.end_of_event), "hh:mm aa")}
+              </div>
               <div>{event.location}</div>
             </div>
-          ))
+          );
         }
       }
     }
 
-    if(filterevents.length <= 0) {
-      filterevents.push((
+    if (filterevents.length <= 0) {
+      filterevents.push(
         <div className="single-event no-event">
           <h3>No events available.</h3>
         </div>
-      ))
+      );
     }
 
     return (
-      <div className={filterevents.length > 0 ? "events-container": ""}>
+      <div className={filterevents.length > 0 ? "events-container" : ""}>
         {filterevents}
       </div>
-    )
-  }
+    );
+  };
 
-  while(day <= endDate) {
+  while (day <= endDate) {
     formattedDate = format(day, "eee, MMMM dd").toUpperCase();
     days.push(
       <div className="events-day">
         <h3>{formattedDate}</h3>
         {getEventsByDate(day)}
       </div>
-    )
+    );
     day = addDays(day, 1);
-    rows.push(
-      <div className="rows">
-        {days}
-      </div>
-    )
-    days = []
+    rows.push(<div className="rows">{days}</div>);
+    days = [];
   }
 
-  rows.push((
+  rows.push(
     <div className="rows">
       <div className="single-event filler"></div>
     </div>
-  ))
-  const scrollToRef = (ref) => { 
-    if(ref && ref.current != null && ref.current.childNodes[0].childNodes[0]) {
-      if(scrollValue > 1) {
+  );
+  const scrollToRef = ref => {
+    if (ref && ref.current != null && ref.current.childNodes[0].childNodes[0]) {
+      if (scrollValue > 1) {
         let scrollWidth = ref.current.scrollWidth;
-        let childWidth = ref.current.childNodes[0].childNodes[0].offsetWidth ;
-        
-        ref.current.scrollLeft = (childWidth) * (scrollValue - 1);
+        let childWidth = ref.current.childNodes[0].childNodes[0].offsetWidth;
+
+        ref.current.scrollLeft = childWidth * (scrollValue - 1);
       } else {
         ref.current.scrollLeft = 0;
       }
     }
-  }
+  };
 
-  if(scrollValue > 0) {
+  if (scrollValue > 0) {
     scrollToRef(myRef);
   }
   return (
     <EventSliderStyled ref={myRef}>
-      <div className="table-container">
-        {rows}
-      </div>
+      <div className="table-container">{rows}</div>
     </EventSliderStyled>
-  )
+  );
 }
