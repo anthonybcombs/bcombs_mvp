@@ -316,7 +316,7 @@ export default function index({
                 <span>
                   {" "}
                   {format(new Date(event.start_of_event), "hh:mm a")}
-                  {` `}
+                  {` - `}
                   {format(new Date(event.end_of_event), "hh:mm a")}{" "}
                 </span>
               )}
