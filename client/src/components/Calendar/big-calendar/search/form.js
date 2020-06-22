@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const FormStyled = styled.form`
-  input:not([class^="custom-select"]) {
+  input:not([class^="searchBox"]) {
     background: none;
     width: 100%;
     color: black;
@@ -151,22 +151,19 @@ export default function form({ calendars, onSubmit }) {
         }}
         labelledBy={"Select a calendar"}
       /> */}
-      <div className="form-group">
-        <div className="field">
-          <CustomMultiSelect
-            className="field-input"
-            options={options}
-            onSelect={handleCalendarChange}
-            onRemove={handleCalendarChange}
-            selectedValues={options.filter(item =>
-              selectedCalendar.includes(item.id)
-            )}
-            placeholder="Select Calendar"
-            displayValue="name"
-            closeIcon="cancel"
-          />
-        </div>
-      </div>
+
+      <CustomMultiSelect
+        className="field-input"
+        options={options}
+        onSelect={handleCalendarChange}
+        onRemove={handleCalendarChange}
+        selectedValues={options.filter(item =>
+          selectedCalendar.includes(item.id)
+        )}
+        placeholder="Select Calendar"
+        displayValue="name"
+        closeIcon="cancel"
+      />
 
       <ErrorMessage
         field={errors.calendars}
