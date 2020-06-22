@@ -18,17 +18,17 @@ export default function index({
   selectedCalendars,
   handleCalendarSelection,
   familyMembers,
-  publicView,
+  publicView
 }) {
   const [currentDate, setCurrentDate] = useState({
     currentWeek: new Date(),
-    selectedDate: new Date(),
+    selectedDate: new Date()
   });
   const [isTimedDisplay, setTimeDisplay] = useState(
-    sessionStorage.getItem("isTimeDisplayed") === "true" ? true : false
+    localStorage.getItem("isTimeDisplayed") === "true" ? true : false
   );
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
-  const handleWeekChange = (operation) => {
+  const handleWeekChange = operation => {
     let currentWeek;
     if (operation === "next") {
       currentWeek = addWeeks(currentDate.currentWeek, 1);
@@ -39,13 +39,13 @@ export default function index({
     setCurrentDate({
       ...currentDate,
       currentWeek,
-      selectedDate: firstWeekOfTheMonth,
+      selectedDate: firstWeekOfTheMonth
     });
   };
-  const handleChangeDay = (day) => {
+  const handleChangeDay = day => {
     setCurrentDate({
       ...currentDate,
-      selectedDate: day,
+      selectedDate: day
     });
   };
   const setTimeDisplayed = () => {
@@ -57,7 +57,7 @@ export default function index({
       ' isTimedDisplay === true ? "true" : "false"',
       isTimedDisplay === true ? "true" : "false"
     );
-    sessionStorage.setItem(
+    localStorage.setItem(
       "isTimeDisplayed",
       isTimedDisplay === true ? "true" : "false"
     );
