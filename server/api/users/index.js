@@ -198,7 +198,16 @@ export const executeSignUp = async user => {
           body: params
         }
       );
+      console.log("AUTH DATA signUpResponse", signUpResponse);
       authData = await signUpResponse.json();
+      console.log("AUTH DATA authData", authData);
+
+      if (authData.error) {
+        return {
+          messageType: "error",
+          message: authData.error
+        };
+      }
     } else {
       authData = user;
     }
@@ -230,7 +239,7 @@ export const executeSignUp = async user => {
       }
     }
   } catch (error) {
-    console.log(error);
+    console.log("Signup Error", error);
     return {
       messageType: "error",
       message: "there error in requesting sign up endpoint."
@@ -307,7 +316,7 @@ export const executeUserUpdate = async user => {
           ContentType: "image/jpeg",
           ACL: "public-read"
         };
-        s3Bucket.putObject(data, function (err, data) {
+        s3Bucket.putObject(data, function(err, data) {
           if (err) {
             console.log(err);
             console.log("Error uploading data: ", data);
