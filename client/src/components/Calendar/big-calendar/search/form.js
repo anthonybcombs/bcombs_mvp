@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Select from "react-select";
 import { differenceInDays, parseISO, isPast } from "date-fns";
 import { useForm } from "react-hook-form";
-import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
+import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 const FormStyled = styled.form`
   input:not([class^="custom-select"]) {
@@ -54,9 +54,10 @@ export default function form({ calendars, onSubmit }) {
   const [endDateType, setEndDateType] = useState("text");
   const [selectedCalendar, setSelectedCalendar] = useState([]);
   const options = [];
+
   calendars.map(calendarsGroup => {
     return calendarsGroup.map(calendar => {
-      options.push({ value: calendar.id, label: calendar.name });
+      options.push({ id: calendar.id, name: calendar.name });
     });
   });
   useEffect(() => {
@@ -94,6 +95,17 @@ export default function form({ calendars, onSubmit }) {
     );
   }, []);
 
+  const handleCalendarChange = option => {
+    if (option !== null) {
+      const calendarIds = option.map(calendar => calendar.id);
+      setValue("calendars", calendarIds);
+      setSelectedCalendar(calendarIds);
+      return;
+    }
+    setSelectedCalendar([]);
+    setValue("calendars", "");
+  };
+
   return (
     <FormStyled method="POST" onSubmit={handleSubmit(onSubmit)}>
       {/* <Select
@@ -121,7 +133,7 @@ export default function form({ calendars, onSubmit }) {
         }}
       /> */}
 
-      <CustomMultiSelectOptions
+      {/* <CustomMultiSelectOptions
         className="custom-select"
         options={options}
         value={options.filter(group => {
@@ -138,7 +150,23 @@ export default function form({ calendars, onSubmit }) {
           setValue("calendars", "");
         }}
         labelledBy={"Select a calendar"}
-      />
+      /> */}
+      <div className="form-group">
+        <div className="field">
+          <CustomMultiSelect
+            className="field-input"
+            options={options}
+            onSelect={handleCalendarChange}
+            onRemove={handleCalendarChange}
+            selectedValues={options.filter(item =>
+              selectedCalendar.includes(item.id)
+            )}
+            placeholder="Select Calendar"
+            displayValue="name"
+            closeIcon="cancel"
+          />
+        </div>
+      </div>
 
       <ErrorMessage
         field={errors.calendars}

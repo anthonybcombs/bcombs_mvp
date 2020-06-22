@@ -34,6 +34,8 @@ const CustomMultiSelectContainer = styled.div`
     padding: 5px 0;
     margin: 0;
     margin-top: 2px;
+    display: block !important;
+    width: 100% !important;
   }
 
   #multiselectContainerReact .searchBox::placeholder {

@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
-import CustomMultiSelectOptions from "../../../../helpers/CustomMultiSelectOptions";
 import UploadImage from "../../../../helpers/UploadImage";
 import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
