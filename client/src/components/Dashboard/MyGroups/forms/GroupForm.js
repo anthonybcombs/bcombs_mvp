@@ -42,15 +42,9 @@ const ContactFormStyled = styled.form`
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     padding: 10px;
     display: block;
-    margin: 10px auto;
     width: 100%;
     border: none;
     margin-top: 15em;
-  }
-  @media (min-width: 600px) {
-    button[type="submit"] {
-      width: ${({ theme }) => theme.button.width.primary};
-    }
   }
 
   #multiselectContainerReact .optionContainer li:hover,
@@ -195,7 +189,7 @@ const ContactFormStyled = styled.form`
       margin: 2.5em auto 2.5em auto;
     }*/
 
-const renderSuggestion = suggestion => (
+const renderSuggestion = (suggestion) => (
   <div>
     <div>{suggestion.name}</div>
     <div className="user-email">{suggestion.value}</div>
@@ -206,7 +200,8 @@ export default function GroupForm({
   groupDetails,
   contacts,
   onSubmit,
-  handleGroupDetailsChange
+  handleDelete,
+  handleGroupDetailsChange,
 }) {
   const [contactOptions, setContactOptions] = useState([]);
   const [otherUserSelected, setOtherUserSelected] = useState([]);
@@ -216,16 +211,16 @@ export default function GroupForm({
   const [userNotFound, setUserNotFound] = useState(false);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange"
+    reValidateMode: "onChange",
   });
   const hasSelectAll = false;
 
   useEffect(() => {
     if (contacts) {
-      let formattedContacts = contacts.map(item => {
+      let formattedContacts = contacts.map((item) => {
         return {
           name: `${item.first_name} ${item.last_name}`,
-          id: item.user_id
+          id: item.user_id,
         };
       });
       setContactOptions(formattedContacts);
@@ -233,7 +228,7 @@ export default function GroupForm({
   }, [contacts]);
 
   const theme = useContext(ThemeContext);
-  const handleSelectChange = value => {
+  const handleSelectChange = (value) => {
     handleGroupDetailsChange("contacts", value);
   };
 
@@ -244,33 +239,34 @@ export default function GroupForm({
   const inputProps = {
     placeholder: "Enter Guest Email",
     value: autoCompleteValue,
-    onChange: automCompleteOnChange
+    onChange: automCompleteOnChange,
   };
 
   const delayedQuery = useCallback(
-    debounce(async value => {
+    debounce(async (value) => {
       try {
         if (!isFetching && value !== "") {
           setFetching(true);
           const { data } = await graphqlClient.query({
             query: GET_USER_OPTIONS_QUERY,
-            variables: { keyword: value }
+            variables: { keyword: value },
           });
 
           if (data.getUserList.length === 0) {
             setUserNotFound(true);
           } else {
-            const options = data.getUserList.map(item => {
+            const options = data.getUserList.map((item) => {
               return {
                 name: `${item.given_name} ${item.family_name}`,
                 value: item.email,
-                id: item.id
+                id: item.id,
               };
             });
 
             setSuggestion(
               options.filter(
-                item => item.value.includes(value) || item.name.includes(value)
+                (item) =>
+                  item.value.includes(value) || item.name.includes(value)
               )
             );
           }
@@ -292,9 +288,9 @@ export default function GroupForm({
     setSuggestion([]);
   };
 
-  const getSuggestionValue = suggestion => {
+  const getSuggestionValue = (suggestion) => {
     const isExist = otherUserSelected.find(
-      item => suggestion.value === item.value
+      (item) => suggestion.value === item.value
     );
     if (!isExist) {
       setOtherUserSelected([...otherUserSelected, suggestion]);
@@ -303,9 +299,9 @@ export default function GroupForm({
     return suggestion.name;
   };
 
-  const handleRemoveOtherUser = email => () => {
+  const handleRemoveOtherUser = (email) => () => {
     const updatedOtherUser = otherUserSelected.filter(
-      guest => guest.value !== email
+      (guest) => guest.value !== email
     );
 
     setOtherUserSelected(updatedOtherUser);
@@ -316,7 +312,8 @@ export default function GroupForm({
     <ContactFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      theme={theme}>
+      theme={theme}
+    >
       <div className="grid">
         <div className="form-group">
           <div className="field">
@@ -374,7 +371,8 @@ export default function GroupForm({
               <span
                 key={index}
                 className="user-tag"
-                onClick={handleRemoveOtherUser(guest.value)}>
+                onClick={handleRemoveOtherUser(guest.value)}
+              >
                 <div> {guest.value}</div>
                 {/* <div className="user-email"> {guest.value}</div> */}
               </span>
@@ -395,10 +393,17 @@ export default function GroupForm({
         />
         {userNotFound && <div style={{ color: "red" }}>User not found!</div>}
       </div>
-
-      <button type="submit" style={{ marginTop: "auto", marginBottom: 50 }}>
-        Save
-      </button>
+      <div className="group-btn">
+        <button type="submit">Save</button>
+        <button
+          style={{ backgroundColor: "#e02500", marginLeft: 20 }}
+          data-testid="app-dashboard-my-group-new-group-button-save"
+          onClick={handleDelete}
+          type="submit"
+        >
+          Delete Group
+        </button>
+      </div>
     </ContactFormStyled>
   );
 }

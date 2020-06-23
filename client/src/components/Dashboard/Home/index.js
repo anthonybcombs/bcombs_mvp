@@ -7,7 +7,7 @@ import {
   faBell,
   faPlusCircle,
   faChevronLeft,
-  faChevronRight
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { ThemeContext } from "styled-components";
 import WelcomeMessage from "./WelcomeMessage";
@@ -17,7 +17,7 @@ import EventSliderStyled from "./EventSlider";
 import Slider from "react-rangeslider";
 import "react-rangeslider/lib/index.css";
 import "./override-slider.css";
-import "font-awesome/css/font-awesome.min.css"
+import "font-awesome/css/font-awesome.min.css";
 import NotificationStyled from "./Notifications";
 import {
   format,
@@ -25,7 +25,7 @@ import {
   endOfMonth,
   startOfDay,
   endOfDay,
-  getDate
+  getDate,
 } from "date-fns";
 import RecommendationSliderStyled from "./RecommendationSlider";
 
@@ -150,6 +150,24 @@ const HomeStyled = styled.div`
       line-height: 1em;
     }
   }
+  .Collapsible .is-open h3:after {
+    font-family: "fontawesome";
+    content: "\f077";
+    color: black;
+    margin-left: 0.5em;
+    font-size: 10px;
+    top: -2px;
+    position: relative;
+  }
+  .Collapsible .is-closed h3:after {
+    font-family: "fontawesome";
+    content: "\f078";
+    color: black;
+    margin-left: 0.5em;
+    font-size: 10px;
+    top: -2px;
+    position: relative;
+  }
 `;
 export default function index({ location }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
@@ -177,7 +195,7 @@ export default function index({ location }) {
     if (calendars) {
       let calendar = [];
       calendar[0] = calendars[0]
-        ? calendars[0].filter(cal => cal.user_id === auth.user_id)
+        ? calendars[0].filter((cal) => cal.user_id === auth.user_id)
         : [];
       setCalendarOptions(calendar);
     }
@@ -189,12 +207,12 @@ export default function index({ location }) {
     calendarName = sessionStorage.getItem("calendarName");
   }
   const eventsOnThisDay = events.filter(
-    event =>
+    (event) =>
       format(new Date(event.start_of_event), "MM dd yyyy") ===
       format(selectedDate, "MM dd yyyy")
   );
 
-  const handleSetSelectedDate = date => {
+  const handleSetSelectedDate = (date) => {
     setSelectedEvent();
     setSelectedDate(date);
 
@@ -206,16 +224,16 @@ export default function index({ location }) {
       setSliderLabel(`${sDate} - ${sDate + 1}`);
     }
   };
-  const handleEventSelection = id => {
-    setSelectedEvent(eventsOnThisDay.filter(event => event.id === id)[0]);
+  const handleEventSelection = (id) => {
+    setSelectedEvent(eventsOnThisDay.filter((event) => event.id === id)[0]);
   };
 
-  const setCurrentMonth = month => {
+  const setCurrentMonth = (month) => {
     //setSelectedMonth(format(month, "MMMM yyyy"));
     setSelectedMonth(month);
   };
 
-  const handleChangeHorizontal = value => {
+  const handleChangeHorizontal = (value) => {
     setHorizontal(value);
     setSliderLabel(`${value} - ${value + 1}`);
     //setSliderLabel(`${value}`);
@@ -271,11 +289,12 @@ export default function index({ location }) {
                 </h3>
               }
               open
-              lazyRender>
+              lazyRender
+            >
               <div className="panel">
                 {calendars &&
-                  calendars.map(calendarGroup => {
-                    return calendarGroup.map(calendar => {
+                  calendars.map((calendarGroup) => {
+                    return calendarGroup.map((calendar) => {
                       return (
                         <div
                           className={`panel-body`}
@@ -290,23 +309,23 @@ export default function index({ location }) {
                             type="checkbox"
                             onChange={({ target }) => {
                               let newFilter = selectedCalendar.filter(
-                                c => c == calendar.id
+                                (c) => c == calendar.id
                               );
 
                               if (newFilter.length > 0) {
                                 let newFilter = selectedCalendar.filter(
-                                  c => c != calendar.id
+                                  (c) => c != calendar.id
                                 );
                                 setSelectedCalendar([...newFilter]);
                               } else {
                                 setSelectedCalendar([
                                   ...selectedCalendar,
-                                  calendar.id
+                                  calendar.id,
                                 ]);
                               }
                             }}
                             checked={
-                              selectedCalendar.filter(c => c == calendar.id)
+                              selectedCalendar.filter((c) => c == calendar.id)
                                 .length <= 0
                             }
                           />
@@ -324,7 +343,8 @@ export default function index({ location }) {
                 </h3>
               }
               open
-              lazyRender>
+              lazyRender
+            >
               <div className="panel">
                 <NotificationStyled events={events} />
               </div>
@@ -338,7 +358,8 @@ export default function index({ location }) {
               id="add-event-button"
               onClick={() => {
                 setIsEventModalVisible(true);
-              }}>
+              }}
+            >
               <FontAwesomeIcon icon={faPlusCircle} size="3x" />
             </button>
 
@@ -379,21 +400,23 @@ export default function index({ location }) {
               <RecommendationSliderStyled scrollValue={recommendationScroll} />
               <div className="controller left-arrow">
                 <span
-                  onClick={e => {
+                  onClick={(e) => {
                     if (recommendationScroll > 0) {
                       setRecommendationScroll(recommendationScroll - 1);
                     }
-                  }}>
+                  }}
+                >
                   <FontAwesomeIcon icon={faChevronLeft} />
                 </span>
               </div>
               <div className="controller right-arrow">
                 <span
-                  onClick={e => {
+                  onClick={(e) => {
                     if (recommendationScroll < 10) {
                       setRecommendationScroll(recommendationScroll + 1);
                     }
-                  }}>
+                  }}
+                >
                   <FontAwesomeIcon icon={faChevronRight} />
                 </span>
               </div>

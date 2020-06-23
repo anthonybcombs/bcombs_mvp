@@ -7,15 +7,14 @@ import {
   faPlus,
   faMinus,
   faPlusCircle,
-  faTimesCircle
+  faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 import STATES from "../states.json";
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 
 const ParentInformationStyled = styled.div`
-
   position: relative;
 
   .parent-info-wrapper {
@@ -40,7 +39,7 @@ const ParentInformationStyled = styled.div`
     grid-gap: 3.33333333%;
   }
 
-  .parent-info-wrapper  .grid-4 {
+  .parent-info-wrapper .grid-4 {
     display: grid;
     grid-template-columns: 31% 31% 31%;
     grid-gap: 3.33333333%;
@@ -83,7 +82,7 @@ const ParentInformationStyled = styled.div`
   }
 
   .parent-info-wrapper .add-address span i.minus {
-    background: #D33125 !important;
+    background: #d33125 !important;
   }
 
   .parent-info-wrapper .add-address p {
@@ -117,70 +116,75 @@ export default function index({
   register,
   errors,
   isReadonly = false,
-  ProfileImg
+  ProfileImg,
 }) {
-
   let confirmed_passwords = [];
 
   const PHONE_OPTIONS = [
-    { id: 1, value: "Cell", name: "Cell"},
-    { id: 2, value: "Home", name: "Home"},
-    { id: 3, value: "Work", name: "Work"}
+    { id: 1, value: "Cell", name: "Cell" },
+    { id: 2, value: "Home", name: "Home" },
+    { id: 3, value: "Work", name: "Work" },
   ];
 
   const EDUCATION_LEVEL_OPTIONS = [
-    { id: 1, value: "Some High School", name: "Some High School"},
-    { id: 2, value: "High School Graduate", name: "High School Graduate"},
-    { id: 3, value: "Some College", name: "Some College"},
-    { id: 4, value: "Associates Degree", name: "Associates Degree"},
-    { id: 5, value: "Bachelors Degree", name: "Bachelors Degree"},
-    { id: 6, value: "Masters Degree", name: "Masters Degree"},
-    { id: 7, value: "Doctoral of Professional Degree", name: "Doctoral or Professional Degree"}
+    { id: 1, value: "Some High School", name: "Some High School" },
+    { id: 2, value: "High School Graduate", name: "High School Graduate" },
+    { id: 3, value: "Some College", name: "Some College" },
+    { id: 4, value: "Associates Degree", name: "Associates Degree" },
+    { id: 5, value: "Bachelors Degree", name: "Bachelors Degree" },
+    { id: 6, value: "Masters Degree", name: "Masters Degree" },
+    {
+      id: 7,
+      value: "Doctoral of Professional Degree",
+      name: "Doctoral or Professional Degree",
+    },
   ];
 
   const EMAIL_OPTIONS = [
-    { id: 1, value: "Personal", name: "Personal"},
-    { id: 2, value: "Work", name: "Work"}
-  ]
+    { id: 1, value: "Personal", name: "Personal" },
+    { id: 2, value: "Work", name: "Work" },
+  ];
 
   const IMPORTANCE_OPTIONS = [
-    {id: 1, value: "Not Important", name: "Not Important"},
-    {id: 2, value: "SomeWhat Important", name: "Somewhat Important"},
-    {id: 3, value: "Important", name: "Important"},
-    {id: 4, value: "Very Important", name: "Very Important"},
-  ]
+    { id: 1, value: "Not Important", name: "Not Important" },
+    { id: 2, value: "SomeWhat Important", name: "Somewhat Important" },
+    { id: 3, value: "Important", name: "Important" },
+    { id: 4, value: "Very Important", name: "Very Important" },
+  ];
 
-  const [showAddress, setShowAddress] = useState(isReadonly ? true: false);
+  const [showAddress, setShowAddress] = useState(isReadonly ? true : false);
 
   const [yearLivedStatus, setYearLivedStatus] = useState();
 
   const handleShowAddress = () => {
     setShowAddress(!showAddress);
-  }
+  };
 
   const handleYearLivedStatus = (e) => {
     setYearLivedStatus(e.target.value);
-  }
+  };
 
   const [showPhone, setShowPhone] = useState(false);
   const [showEmail, setShowEmail] = useState(false);
 
   const handleOtherPhone = () => {
-    setShowPhone(!showPhone);  
-  }
+    setShowPhone(!showPhone);
+  };
 
   const handleOtherEmail = () => {
     setShowEmail(!showEmail);
-  }
+  };
 
   return (
     <ParentInformationStyled>
-      <h3 className="heading">Family Information { counter > 1 ? `(${counter})`: "" }</h3>
+      <h3 className="heading">
+        Family Information {counter > 1 ? `(${counter})` : ""}
+      </h3>
       <div className="parent-info-wrapper">
         <div className="img-profile-wrapper">
-            <img src={ProfileImg} width="80" height="80" />
-            {!isReadonly && <input name={"ch_img" + (counter - 1)} type="file"/>}
-          </div>
+          <img src={ProfileImg} width="80" height="80" />
+          {!isReadonly && <input name={"ch_img" + (counter - 1)} type="file" />}
+        </div>
         <div className="grid-2">
           <div className="form-group">
             <div className="field">
@@ -188,14 +192,21 @@ export default function index({
                 name={"parent_firstname" + (counter - 1)}
                 className="field-input"
                 placeholder="First Name"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "first_name", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "first_name",
+                    target.value
+                  );
                 }}
                 ref={register({ required: true })}
                 defaultValue={parentProfile.first_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label"><span className="required">*</span> First Name</label>
+              <label className="field-label">
+                <span className="required">*</span> First Name
+              </label>
             </div>
             <ErrorMessage
               field={errors["parent_firstname" + (counter - 1)]}
@@ -210,14 +221,21 @@ export default function index({
                 name={"parent_lastname" + (counter - 1)}
                 className="field-input"
                 placeholder="Last Name"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "last_name", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "last_name",
+                    target.value
+                  );
                 }}
                 ref={register({ required: true })}
                 defaultValue={parentProfile.last_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label"><span className="required">*</span> Last Name</label>
+              <label className="field-label">
+                <span className="required">*</span> Last Name
+              </label>
             </div>
             <ErrorMessage
               field={errors["parent_lastname" + (counter - 1)]}
@@ -230,24 +248,28 @@ export default function index({
         <div className="grid-2">
           <div className="form-group">
             <div className="field">
-              {
-                !isReadonly ?
+              {!isReadonly ? (
                 <select
                   defaultValue={parentProfile.phone_type}
                   name="parent_phonetype"
                   className="field-input"
-                  onChange={({target}) => {
-                    handleParentFormDetailsChange((counter - 1), "profile", "phone_type", target.value)
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "phone_type",
+                      target.value
+                    );
                   }}
                 >
-                    <option value="" >Select Type</option>
-                  {PHONE_OPTIONS.map(opt => (
+                  <option value="">Select Type</option>
+                  {PHONE_OPTIONS.map((opt) => (
                     <option key={opt.id} value={opt.name}>
                       {opt.name}
                     </option>
                   ))}
                 </select>
-                : 
+              ) : (
                 <input
                   name="parent_phonetype"
                   className="field-input"
@@ -255,24 +277,17 @@ export default function index({
                   defaultValue={parentProfile.phone_type}
                   readOnly={isReadonly}
                 />
-              }
+              )}
               <label className="field-label">
-                {
-                  !showPhone ?
-                  <span 
-                    className="add"
-                    onClick={(e) => handleOtherPhone()}
-                  >
+                {!showPhone ? (
+                  <span className="add" onClick={(e) => handleOtherPhone()}>
                     <FontAwesomeIcon size="lg" icon={faPlusCircle} />
                   </span>
-                  :
-                  <span 
-                    className="remove"
-                    onClick={(e) => handleOtherPhone()}
-                  >
+                ) : (
+                  <span className="remove" onClick={(e) => handleOtherPhone()}>
                     <FontAwesomeIcon size="lg" icon={faTimesCircle} />
                   </span>
-                }
+                )}
                 &nbsp; Type
               </label>
             </div>
@@ -280,32 +295,37 @@ export default function index({
 
           <div className="form-group">
             <div className="field">
-              {
-                !isReadonly ?
+              {!isReadonly ? (
                 <NumberFormat
                   name={"parent_phonenumber" + (counter - 1)}
                   className="field-input"
                   placeholder="Phone Number"
-                  onChange={({target}) => {
-                    handleParentFormDetailsChange((counter - 1), "profile", "phone_number", target.value)
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "phone_number",
+                      target.value
+                    );
                   }}
                   defaultValue={parentProfile.phone_number}
-                  format="(###) ###-####" mask="_"
+                  format="(###) ###-####"
+                  mask="_"
                   getInputRef={register({
                     required: true,
                     validate: {
-                      completed: value => {
-                        if(value) {
-                          return value.match(/\d/g).length === 10
+                      completed: (value) => {
+                        if (value) {
+                          return value.match(/\d/g).length === 10;
                         } else {
                           return true;
                         }
-                      }
-                    }
+                      },
+                    },
                   })}
                   required
                 />
-                :
+              ) : (
                 <input
                   defaultValue={parentProfile.phone_number}
                   readOnly={isReadonly}
@@ -313,8 +333,10 @@ export default function index({
                   className="field-input"
                   placeholder="Phone Number"
                 />
-              }
-              <label className="field-label"><span className="required">*</span> Phone Number</label>
+              )}
+              <label className="field-label">
+                <span className="required">*</span> Phone Number
+              </label>
             </div>
             <ErrorMessage
               field={errors["parent_phonenumber" + (counter - 1)]}
@@ -329,29 +351,32 @@ export default function index({
           </div>
         </div>
 
-        {
-          showPhone && 
+        {showPhone && (
           <div className="grid-2">
             <div className="form-group">
               <div className="field">
-                {
-                  !isReadonly ?
+                {!isReadonly ? (
                   <select
                     defaultValue={parentProfile.phone_type}
                     name="parent_phonetype2"
                     className="field-input"
-                    onChange={({target}) => {
-                      handleParentFormDetailsChange((counter - 1), "profile", "phone_type2", target.value)
+                    onChange={({ target }) => {
+                      handleParentFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "phone_type2",
+                        target.value
+                      );
                     }}
                   >
-                      <option value="" >Select Type</option>
-                    {PHONE_OPTIONS.map(opt => (
+                    <option value="">Select Type</option>
+                    {PHONE_OPTIONS.map((opt) => (
                       <option key={opt.id} value={opt.name}>
                         {opt.name}
                       </option>
                     ))}
                   </select>
-                  : 
+                ) : (
                   <input
                     name="parent_phonetype"
                     className="field-input"
@@ -359,37 +384,42 @@ export default function index({
                     defaultValue={parentProfile.phone_type2}
                     readOnly={isReadonly}
                   />
-                }
+                )}
                 <label className="field-label">Type</label>
               </div>
             </div>
 
             <div className="form-group">
               <div className="field">
-                {
-                  !isReadonly ?
+                {!isReadonly ? (
                   <NumberFormat
                     name={"parent_phonenumber2" + (counter - 1)}
                     className="field-input"
                     placeholder="Phone Number"
-                    onChange={({target}) => {
-                      handleParentFormDetailsChange((counter - 1), "profile", "phone_number2", target.value)
+                    onChange={({ target }) => {
+                      handleParentFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "phone_number2",
+                        target.value
+                      );
                     }}
                     defaultValue={parentProfile.phone_number2}
-                    format="(###) ###-####" mask="_"
+                    format="(###) ###-####"
+                    mask="_"
                     getInputRef={register({
                       validate: {
-                        completed: value => {
-                          if(value) {
-                            return value.match(/\d/g).length === 10
+                        completed: (value) => {
+                          if (value) {
+                            return value.match(/\d/g).length === 10;
                           } else {
                             return true;
                           }
-                        }
-                      }
+                        },
+                      },
                     })}
                   />
-                  :
+                ) : (
                   <input
                     defaultValue={parentProfile.phone_number}
                     readOnly={isReadonly}
@@ -397,7 +427,7 @@ export default function index({
                     className="field-input"
                     placeholder="Phone Number"
                   />
-                }
+                )}
                 <label className="field-label">Phone Number</label>
               </div>
               <ErrorMessage
@@ -407,29 +437,32 @@ export default function index({
               />
             </div>
           </div>
-
-        }
+        )}
         <div className="grid-2">
           <div className="form-group">
             <div className="field">
-              {
-                !isReadonly ?
+              {!isReadonly ? (
                 <select
                   defaultValue={parentProfile.email_type}
                   name="parent_emailtype"
                   className="field-input"
-                  onChange={({target}) => {
-                    handleParentFormDetailsChange((counter - 1), "profile", "email_type", target.value)
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "email_type",
+                      target.value
+                    );
                   }}
                 >
-                    <option value="" >Select Type</option>
-                  {EMAIL_OPTIONS.map(opt => (
+                  <option value="">Select Type</option>
+                  {EMAIL_OPTIONS.map((opt) => (
                     <option key={opt.id} value={opt.name}>
                       {opt.name}
                     </option>
                   ))}
                 </select>
-                :
+              ) : (
                 <input
                   defaultValue={parentProfile.email_type}
                   readOnly={isReadonly}
@@ -438,26 +471,18 @@ export default function index({
                   placeholder="Type"
                   type="text"
                 />
-              }
+              )}
               <label className="field-label">
-                {
-                  !showEmail ?
-                  <span 
-                    className="add"
-                    onClick={(e) => handleOtherEmail()}
-                  >
+                {!showEmail ? (
+                  <span className="add" onClick={(e) => handleOtherEmail()}>
                     <FontAwesomeIcon size="lg" icon={faPlusCircle} />
                   </span>
-                  :
-                  <span 
-                    className="remove"
-                    onClick={(e) => handleOtherEmail()}
-                  >
+                ) : (
+                  <span className="remove" onClick={(e) => handleOtherEmail()}>
                     <FontAwesomeIcon size="lg" icon={faTimesCircle} />
                   </span>
-                }
-                &nbsp;  
-                Type
+                )}
+                &nbsp; Type
               </label>
             </div>
           </div>
@@ -471,18 +496,25 @@ export default function index({
                 name={"parent_emailaddress" + (counter - 1)}
                 className="field-input"
                 placeholder="Email Address"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "email_address", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "email_address",
+                    target.value
+                  );
                 }}
                 ref={register({
                   required: true,
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                    message: "Invalid email address"
-                  }
+                    message: "Invalid email address",
+                  },
                 })}
               />
-              <label className="field-label"><span className="required">*</span> Email Address</label>
+              <label className="field-label">
+                <span className="required">*</span> Email Address
+              </label>
             </div>
             <ErrorMessage
               field={errors["parent_emailaddress" + (counter - 1)]}
@@ -496,29 +528,32 @@ export default function index({
             />
           </div>
         </div>
-        {
-          showEmail &&
+        {showEmail && (
           <div className="grid-2">
             <div className="form-group">
               <div className="field">
-                {
-                  !isReadonly ?
+                {!isReadonly ? (
                   <select
                     defaultValue={parentProfile.email_type2}
                     name="parent_emailtype2"
                     className="field-input"
-                    onChange={({target}) => {
-                      handleParentFormDetailsChange((counter - 1), "profile", "email_type2", target.value)
+                    onChange={({ target }) => {
+                      handleParentFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "email_type2",
+                        target.value
+                      );
                     }}
                   >
-                      <option value="" >Select Type</option>
-                    {EMAIL_OPTIONS.map(opt => (
+                    <option value="">Select Type</option>
+                    {EMAIL_OPTIONS.map((opt) => (
                       <option key={opt.id} value={opt.name}>
                         {opt.name}
                       </option>
                     ))}
                   </select>
-                  :
+                ) : (
                   <input
                     defaultValue={parentProfile.email_type2}
                     readOnly={isReadonly}
@@ -527,10 +562,8 @@ export default function index({
                     placeholder="Type"
                     type="text"
                   />
-                }
-                <label className="field-label">
-                  Type
-                </label>
+                )}
+                <label className="field-label">Type</label>
               </div>
             </div>
 
@@ -543,14 +576,19 @@ export default function index({
                   name={"parent_emailaddress2" + (counter - 1)}
                   className="field-input"
                   placeholder="Email Address"
-                  onChange={({target}) => {
-                    handleParentFormDetailsChange((counter - 1), "profile", "email_address2", target.value)
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "email_address2",
+                      target.value
+                    );
                   }}
                   ref={register({
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                      message: "Invalid email address"
-                    }
+                      message: "Invalid email address",
+                    },
                   })}
                 />
                 <label className="field-label"> Email Address</label>
@@ -562,146 +600,166 @@ export default function index({
               />
             </div>
           </div>
-        }
+        )}
 
-        {
-          !isReadonly && 
+        {!isReadonly && (
           <div className="grid-2">
-          <div className="form-group">
-            <div className="field">
-              <input
-                type="password"
-                name={"parent_password" + (counter - 1)}
-                className="field-input"
-                placeholder="Password"
-                autoComplete="new-password"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "password", target.value)
-                }}
-                ref={register({
-                  required: true,
-                  minLength: 8,
-                  validate: {
-                    containsOneUpperCase: value => {
-                      const oneUpperCaseRegex = /(?=.*[A-Z])/;
-                      return oneUpperCaseRegex.test(value);
+            <div className="form-group">
+              <div className="field">
+                <input
+                  type="password"
+                  name={"parent_password" + (counter - 1)}
+                  className="field-input"
+                  placeholder="Password"
+                  autoComplete="new-password"
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "password",
+                      target.value
+                    );
+                  }}
+                  ref={register({
+                    required: true,
+                    minLength: 8,
+                    validate: {
+                      containsOneUpperCase: (value) => {
+                        const oneUpperCaseRegex = /(?=.*[A-Z])/;
+                        return oneUpperCaseRegex.test(value);
+                      },
+                      containsOneLowerCase: (value) => {
+                        const oneLowerCaseRegex = /(?=.*[a-z])/;
+                        return oneLowerCaseRegex.test(value);
+                      },
+                      containsOneNumber: (value) => {
+                        const oneNumberRegex = /(?=.*\d)/;
+                        return oneNumberRegex.test(value);
+                      },
+                      containsOneSpecialCharacter: (value) => {
+                        const oneSpecialCharacterRegex = /(?=.*[@#$%^&+=!])/;
+                        return oneSpecialCharacterRegex.test(value);
+                      },
                     },
-                    containsOneLowerCase: value => {
-                      const oneLowerCaseRegex = /(?=.*[a-z])/;
-                      return oneLowerCaseRegex.test(value);
-                    },
-                    containsOneNumber: value => {
-                      const oneNumberRegex = /(?=.*\d)/;
-                      return oneNumberRegex.test(value);
-                    },
-                    containsOneSpecialCharacter: value => {
-                      const oneSpecialCharacterRegex = /(?=.*[@#$%^&+=!])/;
-                      return oneSpecialCharacterRegex.test(value);
-                    }
-                  }
-                })}
+                  })}
+                />
+                <label className="field-label">
+                  <span className="required">*</span> Password
+                </label>
+              </div>
+              <ErrorMessage
+                field={errors["parent_password" + (counter - 1)]}
+                errorType="required"
+                message={
+                  <>
+                    <p className="error error-size">
+                      Password is required.
+                      <br />
+                      Password minimum length must be at least 8 characters.{" "}
+                      <br />
+                      Must contain atleast one upper case.
+                      <br />
+                      Must contain atleast one lower case.
+                      <br />
+                      Must contain atleast one number.
+                      <br />
+                      Must contain atleast one special character.
+                      <br />
+                    </p>
+                  </>
+                }
               />
-              <label className="field-label"><span className="required">*</span> Password</label>
             </div>
-            <ErrorMessage
-              field={errors["parent_password" + (counter - 1)]}
-              errorType="required"
-              message={
-                <>
-                  <p className="error error-size">
-                    Password is required.
-                    <br />
-                    Password minimum length must be at least 8 characters. <br />
-                    Must contain atleast one upper case.
-                    <br />
-                    Must contain atleast one lower case.
-                    <br />
-                    Must contain atleast one number.
-                    <br />
-                    Must contain atleast one special character.
-                    <br />
-                  </p>
-                </>
-              }
-            />
-          </div>
 
-          <div className="form-group">
-            <div className="field">
-              <input
-                type="password"
-                name={`parent_confirmed_paswword${(counter - 1)}`} 
-                className="field-input"
-                placeholder="Confirmed Password"
-                autoComplete="new-password"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "confirmed_password", target.value)
-                }}
-                ref={register({
-                  required: true,
-                  minLength: 8,
-                  validate: {
-                    sameConfirmPassword: (value) => {
-                      confirmed_passwords[counter - 1] = parentProfile.password;
-                      return value === confirmed_passwords[counter - 1];
-                    }
-                  },
-                })}
+            <div className="form-group">
+              <div className="field">
+                <input
+                  type="password"
+                  name={`parent_confirmed_paswword${counter - 1}`}
+                  className="field-input"
+                  placeholder="Confirmed Password"
+                  autoComplete="new-password"
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "confirmed_password",
+                      target.value
+                    );
+                  }}
+                  ref={register({
+                    required: true,
+                    minLength: 8,
+                    validate: {
+                      sameConfirmPassword: (value) => {
+                        confirmed_passwords[counter - 1] =
+                          parentProfile.password;
+                        return value === confirmed_passwords[counter - 1];
+                      },
+                    },
+                  })}
+                />
+                <label className="field-label">
+                  <span className="required">*</span> Confirmed Password
+                </label>
+              </div>
+              <ErrorMessage
+                field={errors[`parent_confirmed_paswword${counter - 1}`]}
+                errorType="required"
+                message="Confirm password is required."
               />
-              <label className="field-label"><span className="required">*</span> Confirmed Password</label>
+              <ErrorMessage
+                field={errors[`parent_confirmed_paswword${counter - 1}`]}
+                errorType="minLength"
+                message="Confirm password minimum length must be at least 8 characters."
+              />
+              <ErrorMessage
+                field={errors[`parent_confirmed_paswword${counter - 1}`]}
+                errorType="sameConfirmPassword"
+                message="The passwords do not match."
+              />
             </div>
-            <ErrorMessage
-              field={errors[`parent_confirmed_paswword${(counter - 1)}`]}
-              errorType="required"
-              message="Confirm password is required."
-            />
-            <ErrorMessage
-              field={errors[`parent_confirmed_paswword${(counter - 1)}`]}
-              errorType="minLength"
-              message="Confirm password minimum length must be at least 8 characters."
-            />
-            <ErrorMessage
-              field={errors[`parent_confirmed_paswword${(counter - 1)}`]}
-              errorType="sameConfirmPassword"
-              message="The passwords do not match."
-            />
           </div>
-        </div>
-        }
+        )}
 
-        {
-          !isReadonly &&
+        {!isReadonly && (
           <div className="address-wrapper">
             <div className="add-address">
-              <span onClick={() => { handleShowAddress(); }}>
-                <i className={showAddress ? "minus": "" }>
-                  {
-                    showAddress && 
-                    <FontAwesomeIcon icon={faMinus} />
-                  }
-                  {
-                    !showAddress && 
-                    <FontAwesomeIcon icon={faPlus} />
-                  }
+              <span
+                onClick={() => {
+                  handleShowAddress();
+                }}
+              >
+                <i className={showAddress ? "minus" : ""}>
+                  {showAddress && <FontAwesomeIcon icon={faMinus} />}
+                  {!showAddress && <FontAwesomeIcon icon={faPlus} />}
                 </i>
               </span>
-              <p>
-                Add Address (If different from Child)
-              </p>
+              <p>Add Address (If different from Child)</p>
             </div>
           </div>
-        }
+        )}
 
-
-        <div className={showAddress ? "grid-2 address-field-wrapper show": "grid-2 address-field-wrapper"}>
+        <div
+          className={
+            showAddress
+              ? "grid-2 address-field-wrapper show"
+              : "grid-2 address-field-wrapper"
+          }
+        >
           <div className="form-group">
             <div className="field">
               <input
                 name="parentAddress"
                 className="field-input"
                 placeholder="Address"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "address", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "address",
+                    target.value
+                  );
                 }}
                 readOnly={isReadonly}
                 defaultValue={parentProfile.address}
@@ -716,8 +774,13 @@ export default function index({
                 name="parentCity"
                 className="field-input"
                 placeholder="City"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "city", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "city",
+                    target.value
+                  );
                 }}
                 readOnly={isReadonly}
                 defaultValue={parentProfile.city}
@@ -727,16 +790,26 @@ export default function index({
           </div>
         </div>
 
-        <div className={showAddress ? "grid-2 address-field-wrapper show": "grid-2 address-field-wrapper"}>
+        <div
+          className={
+            showAddress
+              ? "grid-2 address-field-wrapper show"
+              : "grid-2 address-field-wrapper"
+          }
+        >
           <div className="form-group">
             <div className="field">
-              {
-                !isReadonly ?
+              {!isReadonly ? (
                 <select
                   name="parentstate"
                   className="field-input"
-                  onChange={({target}) => {
-                    handleParentFormDetailsChange((counter- 1), "profile", "state", target.value)
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "state",
+                      target.value
+                    );
                   }}
                   defaultValue={parentProfile.state}
                 >
@@ -747,8 +820,8 @@ export default function index({
                     </option>
                   ))}
                 </select>
-                :
-                <input 
+              ) : (
+                <input
                   type="text"
                   className="field-input"
                   defaultValue={parentProfile.state}
@@ -756,7 +829,7 @@ export default function index({
                   placeholder="State"
                   name="parentstate"
                 />
-              }
+              )}
 
               <label className="field-label">State</label>
             </div>
@@ -767,10 +840,15 @@ export default function index({
                 name="parentzipcode"
                 className="field-input"
                 placeholder="Zip Code"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "zip_code", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "zip_code",
+                    target.value
+                  );
                 }}
-                ref={register({maxLength: 5})}
+                ref={register({ maxLength: 5 })}
                 readOnly={isReadonly}
                 defaultValue={parentProfile.zip_code}
               />
@@ -786,8 +864,13 @@ export default function index({
                 name="parentoccupation"
                 className="field-input"
                 placeholder="Occupation"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "occupation", target.value);
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "occupation",
+                    target.value
+                  );
                 }}
                 readOnly={isReadonly}
                 defaultValue={parentProfile.zip_code}
@@ -802,8 +885,13 @@ export default function index({
                 name="parentemployer"
                 className="field-input"
                 placeholder="Employer's Name"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "employer_name", target.value);
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "employer_name",
+                    target.value
+                  );
                 }}
                 readOnly={isReadonly}
                 defaultValue={parentProfile.employer_name}
@@ -817,21 +905,26 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                <span className="required">*</span> What are your (Parents) goals for our program?
+                <span className="required">*</span> What are your (Parents)
+                goals for our program?
               </label>
-              <textarea 
-                name={`parent_goals${(counter - 1)}`}
+              <textarea
+                name={`parent_goals${counter - 1}`}
                 className="form-control"
                 rows="4"
                 placeholder="Explain"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "goals_parent_program", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "goals_parent_program",
+                    target.value
+                  );
                 }}
-                ref={register({required: true})}
+                ref={register({ required: true })}
                 readOnly={isReadonly}
                 defaultValue={parentProfile.goals_parent_program}
-              >
-              </textarea>
+              ></textarea>
             </div>
             <ErrorMessage
               field={errors["parent_goals" + (counter - 1)]}
@@ -845,21 +938,26 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                <span className="required">*</span> What goals do you have for your child in our program?
+                <span className="required">*</span> What goals do you have for
+                your child in our program?
               </label>
-              <textarea 
-                name={`parent_child_goals${(counter - 1)}`}
+              <textarea
+                name={`parent_child_goals${counter - 1}`}
                 className="form-control"
                 rows="4"
                 placeholder="Explain"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange((counter - 1), "profile", "goals_child_program", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "goals_child_program",
+                    target.value
+                  );
                 }}
-                ref={register({required: true})}
+                ref={register({ required: true })}
                 readOnly={isReadonly}
                 defaultValue={parentProfile.goals_child_program}
-              >
-              </textarea>
+              ></textarea>
             </div>
             <ErrorMessage
               field={errors["parent_child_goals" + (counter - 1)]}
@@ -869,18 +967,22 @@ export default function index({
           </div>
         </div>
 
-        <div className="agree-text">
-          How long have you live in this area?
-        </div>
+        <div className="agree-text">How long have you live in this area?</div>
 
         <div className="form-group">
           <label className="cus-select-container">
             1 - 5 Year
-            <input type="radio" 
-              onChange={({target}) => {
-                handleParentFormDetailsChange((counter - 1), "profile", "live_area", target.value)
-              }} 
-              value="1" 
+            <input
+              type="radio"
+              onChange={({ target }) => {
+                handleParentFormDetailsChange(
+                  counter - 1,
+                  "profile",
+                  "live_area",
+                  target.value
+                );
+              }}
+              value="1"
               checked={parentProfile.live_area == 1}
               readOnly={isReadonly}
             />
@@ -888,21 +990,34 @@ export default function index({
           </label>
           <label className="cus-select-container">
             5 - 10 Year
-            <input type="radio" 
-              onChange={({target}) => {
-                handleParentFormDetailsChange((counter - 1), "profile", "live_area", target.value)
-              }} 
-              value="2" 
-              checked={parentProfile.live_area == 2}/>
+            <input
+              type="radio"
+              onChange={({ target }) => {
+                handleParentFormDetailsChange(
+                  counter - 1,
+                  "profile",
+                  "live_area",
+                  target.value
+                );
+              }}
+              value="2"
+              checked={parentProfile.live_area == 2}
+            />
             <span className="checkmark"></span>
           </label>
           <label className="cus-select-container">
             More than 10 Year
-            <input type="radio" 
-              onChange={({target}) => {
-                handleParentFormDetailsChange((counter - 1), "profile", "live_area", target.value)
-              }} 
-              value="3" 
+            <input
+              type="radio"
+              onChange={({ target }) => {
+                handleParentFormDetailsChange(
+                  counter - 1,
+                  "profile",
+                  "live_area",
+                  target.value
+                );
+              }}
+              value="3"
               checked={parentProfile.live_area == 3}
               readOnly={isReadonly}
             />
@@ -917,33 +1032,37 @@ export default function index({
         <div>
           <div className="form-group">
             <div className="field">
-              {
-                !isReadonly ?
+              {!isReadonly ? (
                 <select
                   defaultValue={parentProfile.level_education}
                   name="parent_educationlevel"
                   className="field-input"
-                  onChange={({target}) => {
-                    handleParentFormDetailsChange((counter - 1), "profile", "level_education", target.value)
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "level_education",
+                      target.value
+                    );
                   }}
                 >
-                    <option value="">Select Type</option>
+                  <option value="">Select Type</option>
                   {EDUCATION_LEVEL_OPTIONS.map((opt, index) => (
                     <option key={index + 1} value={opt.name}>
                       {opt.name}
                     </option>
                   ))}
                 </select>
-                :
-                <input 
+              ) : (
+                <input
                   name="parent_educationlevel"
                   className="field-input"
                   defaultValue={parentProfile.level_education}
-                  readOnly={isReadonly}  
+                  readOnly={isReadonly}
                   placeholder="level of education"
                   type="text"
                 />
-              }
+              )}
             </div>
           </div>
         </div>
@@ -955,25 +1074,29 @@ export default function index({
         <div>
           <div className="form-group">
             <div className="field">
-              {
-                !isReadonly ?
+              {!isReadonly ? (
                 <select
                   defaultValue={parentProfile.child_importance_hs}
                   name="child_importance_hs"
                   className="field-input"
-                  onChange={({target}) => {
-                    handleParentFormDetailsChange((counter - 1), "profile", "child_importance_hs", target.value)
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "child_importance_hs",
+                      target.value
+                    );
                   }}
                 >
-                    <option value="">Select Type</option>
+                  <option value="">Select Type</option>
                   {IMPORTANCE_OPTIONS.map((opt, index) => (
                     <option key={index + 1} value={opt.name}>
                       {opt.name}
                     </option>
                   ))}
                 </select>
-                :
-                <input 
+              ) : (
+                <input
                   type="text"
                   name="child_importance_hs"
                   className="field-input"
@@ -981,7 +1104,7 @@ export default function index({
                   readOnly={isReadonly}
                   placeholder="Explain"
                 />
-              }
+              )}
             </div>
           </div>
         </div>
@@ -993,37 +1116,40 @@ export default function index({
         <div>
           <div className="form-group">
             <div className="field">
-              {
-                !isReadonly ?
+              {!isReadonly ? (
                 <select
                   name="childattendscollege"
                   className="field-input"
-                  onChange={({target}) => {
-                    handleParentFormDetailsChange((counter - 1), "profile", "child_importance_col", target.value)
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "child_importance_col",
+                      target.value
+                    );
                   }}
                   defaultValue={parentProfile.child_importance_col}
                 >
-                    <option value="">Select Type</option>
+                  <option value="">Select Type</option>
                   {IMPORTANCE_OPTIONS.map((opt, index) => (
                     <option key={index + 1} value={opt.name}>
                       {opt.name}
                     </option>
                   ))}
                 </select>
-                :
-                <input 
+              ) : (
+                <input
                   type="text"
                   className="field-input"
                   defaultValue={parentProfile.child_importance_col}
                   readOnly={isReadonly}
                   placeholder="Explain"
                 />
-              }
+              )}
             </div>
           </div>
         </div>
-
       </div>
     </ParentInformationStyled>
-  )
+  );
 }
