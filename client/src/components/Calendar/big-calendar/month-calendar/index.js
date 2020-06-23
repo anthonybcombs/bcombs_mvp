@@ -33,6 +33,7 @@ export default function index({
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isViewEventModalVisible, setViewEventModalVisible] = useState(false);
   const [isEditEventVisible, setEditEventModalVisible] = useState(false);
+  const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
   const [selectedEventList, setSelectedEventList] = useState([]);
   const [selectedEventDetails, setSelectedEventDetails] = useState(null);
   const [isTimedDisplay, setTimeDisplay] = useState(

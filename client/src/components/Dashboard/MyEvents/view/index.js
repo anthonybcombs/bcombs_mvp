@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { deleteEvent } from "../../../../redux/actions/Events";
 
+import Confirmation from "../../../../helpers/Confirmation";
+
 const DATE = "MM/dd/yyyy hh:mm a";
 
 const ViewEventModal = styled.div`
@@ -38,8 +40,13 @@ const ViewEventModal = styled.div`
   }
 `;
 
-const getColumns = ({ auth, toggleEditEvent, toggleViewEvent }) => {
-  const dispatch = useDispatch();
+const getColumns = ({
+  auth,
+  toggleEditEvent,
+  toggleViewEvent,
+  setCurrentData,
+  setIsConfirmationVisible
+}) => {
   return [
     {
       name: "Name",
@@ -77,13 +84,11 @@ const getColumns = ({ auth, toggleEditEvent, toggleViewEvent }) => {
             <button
               style={{ cursor: "pointer" }}
               onClick={e => {
-                dispatch(
-                  deleteEvent({
-                    id: event.id,
-                    email: auth.email
-                  })
-                );
-                toggleViewEvent(false);
+                setCurrentData({
+                  id: event.id,
+                  email: auth.email
+                });
+                setIsConfirmationVisible(true);
               }}>
               Delete
             </button>
@@ -100,7 +105,17 @@ export default function index({
   isVisible = true,
   events = []
 }) {
+  const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
+  const [currentData, setCurrentData] = useState(null);
   const theme = useContext(ThemeContext);
+  const dispatch = useDispatch();
+
+  const handleDelete = () => {
+    dispatch(deleteEvent(currentData));
+    setCurrentData(null);
+    setIsConfirmationVisible(false);
+    toggleViewEvent(false);
+  };
 
   console.log("eventszzz auth", auth);
   if (!isVisible) {
@@ -123,13 +138,28 @@ export default function index({
           <h4>Event on this day</h4>
 
           <DataTable
-            columns={getColumns({ auth, toggleEditEvent, toggleViewEvent })}
+            columns={getColumns({
+              auth,
+
+              toggleEditEvent,
+              toggleViewEvent,
+              setCurrentData,
+              setIsConfirmationVisible
+            })}
             data={events}
             pagination
             striped={true}
           />
         </div>
       </div>
+
+      <Confirmation
+        isVisible={isConfirmationVisible}
+        message={`Are you sure you want to delete this event?`}
+        toggleConfirmationVisible={setIsConfirmationVisible}
+        onSubmit={handleDelete}
+        submitButtonLabel="Submit"
+      />
     </ViewEventModal>,
     document.getElementById("modal")
   );
