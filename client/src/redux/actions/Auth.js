@@ -131,7 +131,7 @@ export function* gotUserInfo() {
         sessionStorage.removeItem("access_token");
         sessionStorage.removeItem("token_type");
         sessionStorage.removeItem("bigCalendarViewType");
-        sessionStorage.removeItem("selectedCalendars");
+        //sessionStorage.removeItem("selectedCalendars");
         yield put({
           type: actionType.REQUEST_STATUS_COMPLETED,
           payload: {
@@ -145,7 +145,7 @@ export function* gotUserInfo() {
         sessionStorage.removeItem("access_token");
         sessionStorage.removeItem("token_type");
         sessionStorage.removeItem("bigCalendarViewType");
-        sessionStorage.removeItem("selectedCalendars");
+        // sessionStorage.removeItem("selectedCalendars");
         yield put({
           type: actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
           payload: {

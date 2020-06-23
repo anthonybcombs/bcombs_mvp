@@ -16,8 +16,8 @@ export default function index({
       : sessionStorage.getItem("bigCalendarViewMonth")
   );
   const [selectedCalendars, setSelectedCalendars] = useState(
-    sessionStorage.getItem("selectedCalendars") !== null
-      ? JSON.parse(sessionStorage.getItem("selectedCalendars"))
+    localStorage.getItem("selectedCalendars") !== null
+      ? JSON.parse(localStorage.getItem("selectedCalendars"))
       : []
   );
   useEffect(() => {
