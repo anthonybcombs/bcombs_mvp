@@ -113,6 +113,7 @@ export default function index({
   const handleToggleEditEvent = (event = null) => {
     setSelectedEventDetails(!isEditEventVisible === true ? event : null);
     setEditEventModalVisible(!isEditEventVisible);
+    setViewEventModalVisible(false);
   };
 
   return (
