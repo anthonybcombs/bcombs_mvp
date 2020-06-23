@@ -23,13 +23,13 @@ import { getWeekIndex } from "../../../../../helpers/datetime";
 
 const CellsStyled = styled.div`
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   text-align: center;
   .cell {
     position: relative;
     font-size: 1em;
     height: 200px;
-    min-width: 203px;
+
     width: 100%;
     overflow: hidden !important;
     cursor: pointer;

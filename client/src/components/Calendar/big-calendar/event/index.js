@@ -310,7 +310,7 @@ export default function index({
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
-                maxWidth: 232,
+                //maxWidth: 232,
                 fontSize: 15
               }}>
               {isTimedDisplay && (

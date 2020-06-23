@@ -12,7 +12,7 @@ import {
   isAfter,
   getMonth,
   getYear,
-  isBefore,
+  isBefore
 } from "date-fns";
 import Event from "../../event";
 
@@ -20,7 +20,7 @@ import { getWeekIndex } from "../../../../../helpers/datetime";
 
 const CellsStyled = styled.div`
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   text-align: center;
   .cell {
     position: relative;
@@ -92,7 +92,7 @@ const CellsStyled = styled.div`
     overflow: auto;
   }
 `;
-var suffix = (hours) => (hours >= 12 ? "PM" : "AM");
+var suffix = hours => (hours >= 12 ? "PM" : "AM");
 
 const getUTCDate = (dateString = Date.now()) => {
   const date = new Date(dateString);
@@ -116,7 +116,7 @@ export default function index({
   selectedCalendars,
   setIsEventModalVisible,
   publicView,
-  isTimedDisplay,
+  isTimedDisplay
 }) {
   const theme = useContext(ThemeContext);
   const startDate = startOfWeek(currentWeek);
@@ -125,7 +125,7 @@ export default function index({
   const rows = [];
   let columns = [];
   let day = startDate;
-  hourList.forEach((hour) => {
+  hourList.forEach(hour => {
     const formattedHours = ((hour + 11) % 12) + 1;
     columns.push(
       <div key="time" className="cell">
@@ -137,7 +137,7 @@ export default function index({
         `${format(day, "yyyy-MM-dd")}T${hour < 10 ? `0${hour}` : hour}:00:00`
       );
       let currentDay = new Date(day).getDay();
-      let eventsOnThisDay = events.filter((event) => {
+      let eventsOnThisDay = events.filter(event => {
         let isDateAfter = isAfter(
           new Date(day),
           new Date(event.start_of_event)
@@ -212,7 +212,7 @@ export default function index({
         return isWithinInterval(currentDateTime, {
           // start: subHours(new Date(event.start_of_event), 1),
           start: new Date(event.start_of_event),
-          end: new Date(event.end_of_event),
+          end: new Date(event.end_of_event)
         });
       });
 
@@ -226,8 +226,8 @@ export default function index({
               multi_color: [
                 ...(accumulator[index - 1].multi_color || []),
                 accumulator[index - 1].color,
-                item.color,
-              ],
+                item.color
+              ]
             };
             return [...accumulator];
           }
@@ -244,13 +244,12 @@ export default function index({
             isSameHour(getHours(selectedDate), hour) ? "selected" : ""
           }`}
           style={{ cursor: `${!publicView ? "pointer" : "default"}` }}
-          onDoubleClick={(e) => {
+          onDoubleClick={e => {
             if (!publicView) {
               handleChangeDay(currentDateTime);
               setIsEventModalVisible(true);
             }
-          }}
-        >
+          }}>
           {hasEvents && (
             <div id="events-list">
               {eventsOnThisDay.map((event, key) => {
