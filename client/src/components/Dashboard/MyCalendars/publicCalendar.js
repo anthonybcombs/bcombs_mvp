@@ -15,13 +15,13 @@ export default function index() {
       calendars,
       contacts,
       events,
-      familyMembers,
+      familyMembers
     })
   );
   const { id } = useParams();
   const dispatch = useDispatch();
   useEffect(() => {
-    sessionStorage.setItem("selectedCalendars", JSON.stringify([id]));
+    localStorage.setItem("selectedCalendars", JSON.stringify([id]));
     dispatch(requestCalendar(id));
   }, []);
   if (calendars.length === 0) {

@@ -35,12 +35,12 @@ export default function index({
   };
   const handleCalendarSelection = id => {
     if (Array.isArray(id)) {
-      sessionStorage.setItem("selectedCalendars", JSON.stringify(id));
+      localStorage.setItem("selectedCalendars", JSON.stringify(id));
       setSelectedCalendars(id);
       return;
     }
     if (selectedCalendars.includes(id)) {
-      sessionStorage.setItem(
+      localStorage.setItem(
         "selectedCalendars",
         JSON.stringify(
           selectedCalendars.filter(calendarId => {
@@ -55,7 +55,7 @@ export default function index({
       );
       return;
     }
-    sessionStorage.setItem(
+    localStorage.setItem(
       "selectedCalendars",
       JSON.stringify([...selectedCalendars, id])
     );

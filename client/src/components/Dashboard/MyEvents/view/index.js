@@ -1,8 +1,12 @@
 import React, { useState, useContext } from "react";
 import ReactDOM from "react-dom";
+import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { format } from "date-fns";
 import styled, { ThemeContext } from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { deleteEvent } from "../../../../redux/actions/Events";
 
 const DATE = "MM/dd/yyyy hh:mm a";
 
@@ -34,7 +38,8 @@ const ViewEventModal = styled.div`
   }
 `;
 
-const getColumns = () => {
+const getColumns = ({ auth, toggleEditEvent, toggleViewEvent }) => {
+  const dispatch = useDispatch();
   return [
     {
       name: "Name",
@@ -54,17 +59,50 @@ const getColumns = () => {
       cell: event => {
         return <div>{format(new Date(event.end_of_event), DATE)}</div>;
       }
+    },
+    {
+      name: "Action",
+
+      cell: event => {
+        return (
+          <div>
+            <button
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                toggleEditEvent(event);
+              }}>
+              Edit
+            </button>
+            {`   `}
+            <button
+              style={{ cursor: "pointer" }}
+              onClick={e => {
+                dispatch(
+                  deleteEvent({
+                    id: event.id,
+                    email: auth.email
+                  })
+                );
+                toggleViewEvent(false);
+              }}>
+              Delete
+            </button>
+          </div>
+        );
+      }
     }
   ];
 };
 export default function index({
+  auth,
   toggleViewEvent,
+  toggleEditEvent,
   isVisible = true,
   events = []
 }) {
   const theme = useContext(ThemeContext);
 
-  console.log("eventszzz", events);
+  console.log("eventszzz auth", auth);
   if (!isVisible) {
     return <></>;
   }
@@ -85,7 +123,7 @@ export default function index({
           <h4>Event on this day</h4>
 
           <DataTable
-            columns={getColumns()}
+            columns={getColumns({ auth, toggleEditEvent, toggleViewEvent })}
             data={events}
             pagination
             striped={true}

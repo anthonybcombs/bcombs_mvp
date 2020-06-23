@@ -176,11 +176,7 @@ export default function index({
       if (isStartDateAfterEndDate) {
         value[1] = new Date(addMinutes(new Date(value[0]), 30));
       }
-      console.log(
-        "VALUEEEEEEEEEE isStartDateAfterEndDate",
-        isStartDateAfterEndDate
-      );
-      console.log("VALUEEEEEEEEEE", value);
+
       setEventDetails({ ...eventDetails, eventSchedule: value });
     } else {
       setEventDetails({ ...eventDetails, [id]: value });

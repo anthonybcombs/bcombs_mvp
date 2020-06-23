@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import NewEventModal from "../../../Dashboard/MyEvents/create/withOutCalendar";
+import EditEvent from "../../../Dashboard/MyEvents/edit/withOutCalendar";
 import ViewEventModal from "../../../Dashboard/MyEvents/view";
 import {
   subMonths,
@@ -31,7 +32,9 @@ export default function index({
 }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isViewEventModalVisible, setViewEventModalVisible] = useState(false);
+  const [isEditEventVisible, setEditEventModalVisible] = useState(false);
   const [selectedEventList, setSelectedEventList] = useState([]);
+  const [selectedEventDetails, setSelectedEventDetails] = useState(null);
   const [isTimedDisplay, setTimeDisplay] = useState(
     localStorage.getItem("isTimeDisplayed") === "true" ? true : false
   );
@@ -106,6 +109,11 @@ export default function index({
     setViewEventModalVisible(false);
   };
 
+  const handleToggleEditEvent = (event = null) => {
+    setSelectedEventDetails(!isEditEventVisible === true ? event : null);
+    setEditEventModalVisible(!isEditEventVisible);
+  };
+
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
       {!publicView && (
@@ -119,9 +127,11 @@ export default function index({
         />
       )}
       <ViewEventModal
+        auth={auth}
         events={selectedEventList}
         isVisible={isViewEventModalVisible}
         toggleViewEvent={handleCloseViewEvent}
+        toggleEditEvent={handleToggleEditEvent}
       />
 
       <Header
@@ -151,6 +161,14 @@ export default function index({
         setIsEventModalVisible={setIsEventModalVisible}
         publicView={publicView}
         handleViewEvent={handleViewEvent}
+      />
+
+      <EditEvent
+        auth={auth}
+        isVisible={isEditEventVisible}
+        toggleEditEventModal={handleToggleEditEvent}
+        defaultEventDetails={selectedEventDetails}
+        selectedCalendars={selectedCalendars}
       />
     </BigCalendarStyled>
   );
