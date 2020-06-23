@@ -310,14 +310,15 @@ export default function index({
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
-                maxWidth: 212
+                maxWidth: 232,
+                fontSize: 15
               }}>
               {isTimedDisplay && (
                 <span>
                   {" "}
-                  {format(new Date(event.start_of_event), "hh:mm a")}
-                  {` - `}
-                  {format(new Date(event.end_of_event), "hh:mm a")}{" "}
+                  {format(new Date(event.start_of_event), "hh:mma")}
+                  {`-`}
+                  {format(new Date(event.end_of_event), "hh:mma")}{" "}
                 </span>
               )}
               {event.name}

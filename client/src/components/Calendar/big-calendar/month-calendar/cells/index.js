@@ -222,7 +222,6 @@ export default function index({
     }
 
     // console.log("eventsOnThisDay 111", eventsOnThisDay);
-    const test = [...eventsOnThisDay];
     const eventsCount = eventsOnThisDay.length;
     const filteredEvents = eventsOnThisDay
       .filter(event => selectedCalendars.includes(event.calendar_id))
