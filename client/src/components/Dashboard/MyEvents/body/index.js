@@ -292,27 +292,24 @@ export default function index({ events, selectedYear, familyMembers }) {
                   className="event-separator"
                   data-testid="app-dashboard-my-events-body-events-month"
                   key={month.value}>
-                  {eventThisMonth.length === 0 && <p>No events scheduled</p>}
-                  {eventThisMonth.length > 0 && (
-                    <div id="eventTableContainer">
-                      <DataTable
-                        columns={getColumns(
-                          selectedYear,
-                          month.name,
-                          month.value
-                        )}
-                        data={eventThisMonth}
-                        pagination
-                        striped={true}
-                        customStyles={customStyles}
-                        paginationRowsPerPageOptions={
-                          paginationRowsPerPageOptions
-                        }
-                        paginationComponentOptions={paginationComponentOptions}
-                        title={month.name}
-                      />
-                    </div>
-                  )}
+                  <div id="eventTableContainer">
+                    <DataTable
+                      columns={getColumns(
+                        selectedYear,
+                        month.name,
+                        month.value
+                      )}
+                      data={eventThisMonth}
+                      pagination
+                      striped={true}
+                      customStyles={customStyles}
+                      paginationRowsPerPageOptions={
+                        paginationRowsPerPageOptions
+                      }
+                      paginationComponentOptions={paginationComponentOptions}
+                      title={month.name}
+                    />
+                  </div>
                 </div>
               );
             })}
