@@ -6,7 +6,7 @@ import { Multiselect } from "multiselect-react-dropdown";
 // import { updateContact } from "../../../../../redux/actions/Contacts";
 import {
   updateGroup,
-  requestDeleteGroup,
+  requestDeleteGroup
 } from "../../../../redux/actions/Groups";
 
 import GroupForm from "../forms/GroupForm";
@@ -89,7 +89,7 @@ const EditGroupModal = styled.div`
       margin-top: -165px;
       justify-content: center;
     }
-    button[type="submit"] {
+    button[type="submit"],.delete-group {
       width: 30%;
       margin-bottom: 20px;
     }
@@ -106,7 +106,7 @@ const EditGroupModal = styled.div`
       margin-top: -165px;
       justify-content: center;
     }
-    button[type="submit"] {
+    button[type="submit"],.delete-group {
       width: 30%;
       margin-bottom: 20px;
     }
@@ -122,7 +122,7 @@ const EditGroupModal = styled.div`
       margin-top: -165px;
       justify-content: center;
     }
-    button[type="submit"] {
+    button[type="submit"],.delete-group {
       width: 30%;
       margin-bottom: 20px;
     }
@@ -137,7 +137,7 @@ const EditGroupModal = styled.div`
       display: flex;
       justify-content: center;
     }
-    button[type="submit"] {
+    button[type="submit"],.delete-group {
       width: 30%;
       margin-bottom: 20px;
     }
@@ -152,13 +152,14 @@ export default function index({
   group,
   isGroupLoading,
   isGroupMemberLoading,
-  typeOfForm = "Edit Group",
+  typeOfForm = "Edit Group"
 }) {
   const [groupDetails, setGroupDetails] = useState({});
   const [currentContacts, setCurrentContacts] = useState([]);
   const [removedContacts, setRemovedContacts] = useState([]);
   const [contactSelections, setContactSelections] = useState([]);
   console.log("contactsssssssssssssgroup", group);
+  console.log("contactsssssssssssssgroup contacts", contacts);
   console.log("contactsssssssssssssgroup groupMembers", groupMembers);
   const resetState = () => {
     setCurrentContacts([]);
@@ -173,27 +174,29 @@ export default function index({
   useEffect(() => {
     if (contacts && isVisible && group && group.contacts) {
       const list = group.contacts
-        .map((c) => {
-          let contact = groupMembers.find((con) => con.user_id === c);
-          const currentContact = contacts.find((con) => con.user_id === c);
-
+        .map(c => {
+          let contact = groupMembers.find(con => con.user_id === c);
+          const currentContact = contacts.find(con => con.user_id === c);
+          console.log("currentContact", currentContact);
           return {
             ...contact,
-            phone_number: currentContact ? currentContact.phone_number : "",
+            phone_number: currentContact ? currentContact.phone_number : ""
           };
         })
-        .filter((c) => c.email);
-
+        .filter(c => c.email);
+      console.log("listsssss", list);
+      console.log("listsssss groupMembers", groupMembers);
+      console.log("listsssss group.contacts", group.contacts);
       let selections = contacts
-        .filter((c) => {
+        .filter(c => {
           return !group.contacts.includes(c.user_id);
         })
-        .map((c) => {
+        .map(c => {
           return {
             user_id: c.user_id,
             first_name: c.first_name,
             last_name: c.last_name,
-            phone_number: c.phone_number,
+            phone_number: c.phone_number
           };
         });
 
@@ -206,38 +209,38 @@ export default function index({
   const handleGroupDetailsChange = (id, value) => {
     if (id === "contacts" || id === "other_ids") {
       if (id === "contacts") {
-        let ids = value.map((contact) => contact.id);
+        let ids = value.map(contact => contact.id);
 
         setGroupDetails({
           ...groupDetails,
-          contacts: [...(group.contacts || []), ...ids],
+          contacts: [...(group.contacts || []), ...ids]
         });
       } else {
-        let ids = value.map((contact) => contact.id);
+        let ids = value.map(contact => contact.id);
         setGroupDetails({
           ...groupDetails,
-          other_ids: ids,
+          other_ids: ids
         });
       }
     } else {
       setGroupDetails({
         ...groupDetails,
-        [id]: value,
+        [id]: value
       });
     }
   };
 
-  const handleSubmit = (value) => {
+  const handleSubmit = value => {
     const payload = {
       ...groupDetails,
       email: auth.email,
       member_ids: [
         ...new Set([
           ...(groupDetails.contacts || []),
-          ...(groupDetails.other_ids || []),
-        ]),
+          ...(groupDetails.other_ids || [])
+        ])
       ],
-      removed_member_ids: removedContacts,
+      removed_member_ids: removedContacts
     };
     console.log("PAYLOADDD", payload);
     dispatch(updateGroup(payload));
@@ -249,7 +252,7 @@ export default function index({
     if (group && auth) {
       const payload = {
         id: group.id,
-        email: auth.email,
+        email: auth.email
       };
       dispatch(requestDeleteGroup(payload));
       toggleEditGroupModal(false);
@@ -257,17 +260,15 @@ export default function index({
     }
   };
 
-  const handleRemoveMember = (id) => (e) => {
-    const updatedContacts = currentContacts.filter(
-      (item) => id !== item.user_id
-    );
+  const handleRemoveMember = id => e => {
+    const updatedContacts = currentContacts.filter(item => id !== item.user_id);
     if (!removedContacts.includes(id)) {
       setRemovedContacts([...removedContacts, id]);
     }
     setCurrentContacts(updatedContacts);
   };
 
-  console.log("currentContactssssssss", currentContacts);
+  console.log("contactSelections", contactSelections);
   if (!isVisible) {
     return <></>;
   }
@@ -277,17 +278,15 @@ export default function index({
       theme={{
         modalWidth: typeOfForm === "Edit Contact" ? "60%" : "30%",
         modalMarginTop: typeOfForm === "Edit Contact" ? "initial" : "20vh",
-        ...theme,
+        ...theme
       }}
-      className="modal"
-    >
+      className="modal">
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleEditGroupModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         {isGroupLoading || isGroupMemberLoading ? (
