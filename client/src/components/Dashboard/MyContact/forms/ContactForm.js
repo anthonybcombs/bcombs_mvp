@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Multiselect } from "multiselect-react-dropdown";
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+import NumberFormat from "react-number-format";
 const ContactFormStyled = styled.form`
   label {
     display: block;
@@ -42,32 +43,33 @@ export default function ContactForm({
   onSubmit,
   handleContactDetailsChange,
   isLoading = false,
-  userNotExist = false
+  userNotExist = false,
+  counter = 1,
 }) {
   const [groupOptions, setGroupOptions] = useState([]);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange"
+    reValidateMode: "onChange",
   });
 
   useEffect(() => {
     if (groups) {
       let defaultGroups = groups
-        .filter(item => contactDetails.selectedGroups.includes(item.id))
-        .map(item => {
+        .filter((item) => contactDetails.selectedGroups.includes(item.id))
+        .map((item) => {
           return { name: item.name, id: item.id };
         });
-      let formattedGroups = groups.map(item => {
+      let formattedGroups = groups.map((item) => {
         return {
           name: `${item.name}`,
-          id: item.id
+          id: item.id,
         };
       });
       setGroupOptions(formattedGroups);
     }
   }, [groups, isVisible]);
 
-  const handleSelectChange = value => {
+  const handleSelectChange = (value) => {
     handleContactDetailsChange("selectedGroups", value);
   };
 
@@ -77,7 +79,8 @@ export default function ContactForm({
     <ContactFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      theme={theme}>
+      theme={theme}
+    >
       <div className="grid">
         <div className="form-group">
           <div className="field">
@@ -133,7 +136,7 @@ export default function ContactForm({
 
         <div className="form-group">
           <div className="field">
-            <input
+            {/* <input
               name="phone_number"
               className="field-input"
               placeholder="Phone Number"
@@ -142,9 +145,33 @@ export default function ContactForm({
               }}
               ref={register({
                 required: true,
-                pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/
+                pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/,
               })}
               value={contactDetails.phone_number}
+            /> */}
+            <NumberFormat
+              name="phone_number"
+              className="field-input"
+              placeholder="Phone Number"
+              onChange={({ target }) => {
+                handleContactDetailsChange("phone_number", target.value);
+              }}
+              defaultValue={contactDetails.phone_number}
+              format="(###) ###-####"
+              mask="_"
+              getInputRef={register({
+                required: true,
+                validate: {
+                  completed: (value) => {
+                    if (value) {
+                      return value.match(/\d/g).length === 10;
+                    } else {
+                      return true;
+                    }
+                  },
+                },
+              })}
+              required
             />
             <label className="field-label">Phone Number</label>
           </div>
@@ -262,7 +289,8 @@ export default function ContactForm({
       <button
         className={isLoading ? "disabled" : ""}
         type="submit"
-        style={{ marginTop: 50 }}>
+        style={{ marginTop: 50 }}
+      >
         {isLoading ? "Saving..." : "Save"}
       </button>
     </ContactFormStyled>

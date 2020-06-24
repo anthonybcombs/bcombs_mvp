@@ -84,10 +84,10 @@ const GroupContacts = ({ contacts, handleRemoveMember }) => {
 
   return (
     <ContactListStyled>
-      <div id="contact-list-details">
+      <div id="contact-list-details" style={{ overflow: "auto" }}>
         <h4>Members</h4>
         {contacts.length > 0 ? (
-          contacts.map(contact => (
+          contacts.map((contact) => (
             <ContactStyled key={contact.id}>
               <div>
                 <img src={contact.profile_img} />
@@ -106,7 +106,8 @@ const GroupContacts = ({ contacts, handleRemoveMember }) => {
               <div className="member-action">
                 <span
                   className="group-list-details"
-                  onClick={handleRemoveMember(contact.user_id)}>
+                  onClick={handleRemoveMember(contact.user_id)}
+                >
                   <FontAwesomeIcon icon={faMinusCircle} />
                 </span>
               </div>

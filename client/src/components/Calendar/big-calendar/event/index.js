@@ -11,8 +11,11 @@ import {
   faCheckCircle,
   faShareAltSquare,
   faPenSquare,
-  faUser
+  faUser,
+  faMapMarkerAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import Linkify from "react-linkify";
+
 import { format, compareAsc, isToday } from "date-fns";
 import { deleteEvent } from "../../../../redux/actions/Events";
 import DuplicateEvent from "../../../Dashboard/MyEvents/duplicate";
@@ -28,7 +31,7 @@ const EventColors = styled.div`
   height: 0;
   border-style: solid;
   border-width: 0 22px 26px 0;
-  border-color: transparent ${props => props.color} transparent transparent;
+  border-color: transparent ${(props) => props.color} transparent transparent;
 `;
 
 const EventStyled = styled.div`
@@ -131,11 +134,11 @@ const EventPopOverStyled = styled.div`
 `;
 
 const getStatusCount = (guests, type) => {
-  const guestStatus = guests.filter(guest => guest.status === type);
+  const guestStatus = guests.filter((guest) => guest.status === type);
   return guestStatus.length;
 };
 const isGuest = (guests, currentEmail) => {
-  let isUserGuest = guests.find(guest => guest.email === currentEmail);
+  let isUserGuest = guests.find((guest) => guest.email === currentEmail);
   return isUserGuest ? true : false;
 };
 export default function index({
@@ -145,7 +148,7 @@ export default function index({
   event,
   isTimedDisplay,
   selectedCalendars,
-  publicView
+  publicView,
 }) {
   const [isVisible, setVisibility] = useState(false);
   const [isEditEventVisible, setEditEventVisible] = useState(false);
@@ -169,7 +172,7 @@ export default function index({
 
   let schedule = [
     format(new Date(event.start_of_event), "MMM dd,yyyy hh:mm a"),
-    format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
+    format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a"),
   ];
   const isEventOver = compareAsc(day, new Date());
   let eventStartTime = "";
@@ -200,15 +203,17 @@ export default function index({
             arrowColor="lightgrey"
             arrowSize={10}
             arrowStyle={{ opacity: 1 }}
-            arrow="center">
+            arrow="center"
+          >
             <EventPopOverStyled
               theme={theme}
               onMouseLeave={() => {
                 setVisibility(!isVisible);
               }}
-              onDoubleClick={e => {
+              onDoubleClick={(e) => {
                 e.stopPropagation();
-              }}>
+              }}
+            >
               {!publicView && event.allowed_edit && (
                 <div id="top-event-controls">
                   <button>
@@ -226,7 +231,7 @@ export default function index({
                   </button>
 
                   <button
-                    onClick={e => {
+                    onClick={(e) => {
                       setVisibility(false);
                       setCurrentConfirmationMessage(
                         `Are you sure you want to delete this event?`
@@ -236,25 +241,36 @@ export default function index({
                           dispatch(
                             deleteEvent({
                               id: event.id,
-                              email: auth.email
+                              email: auth.email,
                             })
                           )
                         );
                       };
                       setCurrentAction(triggerAction);
                       setConfirmationVisible(true);
-                    }}>
+                    }}
+                  >
                     <FontAwesomeIcon icon={faTrashAlt} />
                   </button>
                 </div>
               )}
+
               <img src="https://bcombs.s3.amazonaws.com/event_default.jpg" />
               <div id="event-details">
                 <h4>{event.eventCategory}</h4>
                 <h3>{event.name}</h3>
                 <p>Status: {event.status}</p>
                 <p>{`${schedule[0]} ${eventStartTime} - ${schedule[1]} ${eventEndTime}`}</p>
-                <p>{event.location}</p>
+                <Linkify>
+                  <p style={{ display: "flex" }}>
+                    <FontAwesomeIcon
+                      icon={faMapMarkerAlt}
+                      size="s"
+                      style={{ marginRight: 10 }}
+                    />
+                    {event.location}
+                  </p>
+                </Linkify>
                 <div className="event-guest">
                   <div>Guests ({event.guests.length || 0})</div>
                   <div className="guest-status">
@@ -263,7 +279,7 @@ export default function index({
                     {`  `}
                     Awaiting {getStatusCount(event.guests, "Pending")}
                   </div>
-                  {event.guests.map(guest => {
+                  {event.guests.map((guest) => {
                     return (
                       <div>
                         {" "}
@@ -280,16 +296,18 @@ export default function index({
               </div>
             </EventPopOverStyled>
           </ArrowContainer>
-        )}>
+        )}
+      >
         <EventStyled
           theme={theme}
           style={{
             backgroundColor: event.color,
-            opacity: isEventOver < 0 && !isToday(day) ? 0.5 : 1
+            opacity: isEventOver < 0 && !isToday(day) ? 0.5 : 1,
           }}
           onClick={() => {
             setVisibility(!isVisible);
-          }}>
+          }}
+        >
           <EditEvent
             auth={auth}
             isVisible={isEditEventVisible}
@@ -311,8 +329,9 @@ export default function index({
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
                 //maxWidth: 232,
-                fontSize: 15
-              }}>
+                fontSize: 15,
+              }}
+            >
               {isTimedDisplay && (
                 <span>
                   {" "}
