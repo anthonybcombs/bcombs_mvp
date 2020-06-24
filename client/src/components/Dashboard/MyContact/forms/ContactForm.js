@@ -136,19 +136,6 @@ export default function ContactForm({
 
         <div className="form-group">
           <div className="field">
-            {/* <input
-              name="phone_number"
-              className="field-input"
-              placeholder="Phone Number"
-              onChange={({ target }) => {
-                handleContactDetailsChange("phone_number", target.value);
-              }}
-              ref={register({
-                required: true,
-                pattern: /^[\s()+-]*([0-9][\s()+-]*){6,20}$/,
-              })}
-              value={contactDetails.phone_number}
-            /> */}
             <NumberFormat
               name="phone_number"
               className="field-input"
@@ -176,15 +163,9 @@ export default function ContactForm({
             <label className="field-label">Phone Number</label>
           </div>
           <ErrorMessage
-            field={errors.phone_number}
-            errorType="required"
-            message="Phone Number is required."
-          />
-
-          <ErrorMessage
-            field={errors.phone_number}
-            errorType="pattern"
-            message="Only accepts numeric and should be a minimum of 6 digits"
+            field={errors["phone_number"]}
+            errorType="completed"
+            message="Phone Number must be consist of 10 digits."
           />
         </div>
 

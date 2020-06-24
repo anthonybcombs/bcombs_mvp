@@ -95,6 +95,13 @@ const NewEventModal = styled.div`
       width: 62%;
     }
   }
+  @media screen and (max-width: 425px) {
+    .modal-content {
+      margin: 1.5em auto;
+      max-width: 100%;
+      width: auto !important;
+    }
+  }
 `;
 
 const initialEventDetails = (selectedDate) => {

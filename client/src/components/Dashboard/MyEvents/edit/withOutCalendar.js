@@ -90,6 +90,13 @@ const EditEventModal = styled.div`
       margin: 0 50px;
     }
   }
+  @media screen and (max-width: 425px) {
+    .modal-content {
+      margin: 1.5em auto;
+      max-width: 100%;
+      width: auto !important;
+    }
+  }
   @media (min-width: 600px) {
     button[type="submit"] {
       width: 30%;
@@ -104,10 +111,10 @@ export default function index({
   isVisible = true,
   toggleEditEventModal,
   defaultEventDetails,
-  selectedCalendars
+  selectedCalendars,
 }) {
   const { groups } = useSelector(({ groups }) => ({
-    groups
+    groups,
   }));
   const [groupOptions, setGroupOptions] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState([]);
@@ -120,17 +127,17 @@ export default function index({
         ...defaultEventDetails,
         eventSchedule: [
           new Date(defaultEventDetails.start_of_event),
-          new Date(defaultEventDetails.end_of_event)
+          new Date(defaultEventDetails.end_of_event),
         ],
         defaultGroupIds: groupOptions.filter(
-          item =>
+          (item) =>
             defaultEventDetails.group_ids &&
             defaultEventDetails.group_ids.includes(item.id)
         ),
         recurringEndDate: defaultEventDetails.recurring_end_date,
         recurringEndType: defaultEventDetails.recurring_end_date
           ? "on"
-          : "never"
+          : "never",
       });
       setSelectedGroup(defaultEventDetails.group_ids);
     }
@@ -142,7 +149,7 @@ export default function index({
       const joinedGroups = groups.joined_groups;
       const combinedGroups = [
         ...(createdGroups || []),
-        ...(joinedGroups || [])
+        ...(joinedGroups || []),
       ];
       // let groupOpt = combinedGroups.map((item) => {
       //   return {
@@ -165,7 +172,7 @@ export default function index({
     } else if (id === "removeGuests") {
       setEventDetails({
         ...eventDetails,
-        removedGuests: [...(eventDetails.removeGuests || []), value]
+        removedGuests: [...(eventDetails.removeGuests || []), value],
       });
     } else if (id === "eventSchedule") {
       const isStartDateAfterEndDate = isAfter(
@@ -183,7 +190,7 @@ export default function index({
     }
   };
 
-  const handleSubmit = value => {
+  const handleSubmit = (value) => {
     const payload = {
       start_of_event: format(
         getUTCDate(eventDetails.eventSchedule[0]),
@@ -212,26 +219,26 @@ export default function index({
           : null,
       guests:
         eventDetails.eventGuests && eventDetails.eventGuests.length > 0
-          ? eventDetails.eventGuests.map(item => item.id)
+          ? eventDetails.eventGuests.map((item) => item.id)
           : [],
       removed_guests:
         eventDetails.removedGuests && eventDetails.removedGuests.length > 0
-          ? eventDetails.removedGuests.map(item => item.id)
+          ? eventDetails.removedGuests.map((item) => item.id)
           : [],
       group_ids:
         eventDetails.visibility === "custom"
-          ? selectedGroup.map(item => item.id)
-          : []
+          ? selectedGroup.map((item) => item.id)
+          : [],
     };
 
     dispatch(updateEvent(payload));
     toggleEditEventModal();
   };
 
-  const handleGroupSelect = value => {
+  const handleGroupSelect = (value) => {
     setSelectedGroup(value);
   };
-  const handleGroupRemove = value => {
+  const handleGroupRemove = (value) => {
     setSelectedGroup(value);
   };
 
@@ -244,13 +251,15 @@ export default function index({
     <EditEventModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
-      theme={theme}>
+      theme={theme}
+    >
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleEditEventModal();
-          }}>
+          }}
+        >
           &times;
         </span>
         <div id="content">
