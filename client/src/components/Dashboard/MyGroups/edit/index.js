@@ -178,9 +178,14 @@ export default function index({
           let contact = groupMembers.find(con => con.user_id === c);
           const currentContact = contacts.find(con => con.user_id === c);
           console.log("currentContact", currentContact);
+          if (contact) {
+            return {
+              ...contact,
+              phone_number: currentContact ? currentContact.phone_number : ""
+            };
+          }
           return {
-            ...contact,
-            phone_number: currentContact ? currentContact.phone_number : ""
+            ...currentContact
           };
         })
         .filter(c => c.email);
