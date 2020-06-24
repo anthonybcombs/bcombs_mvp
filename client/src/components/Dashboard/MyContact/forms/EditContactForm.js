@@ -276,14 +276,9 @@ export default function ContactForm({
             <label className="field-label">Phone Number</label>
           </div>
           <ErrorMessage
-            field={errors.phone_number}
-            errorType="required"
-            message="Phone Number is required."
-          />
-          <ErrorMessage
-            field={errors.phone_number}
-            errorType="pattern"
-            message="Only accepts numeric and should be a minimum of 6 digits"
+            field={errors["phone_number"]}
+            errorType="completed"
+            message="Phone Number must be consist of 10 digits."
           />
         </div>
 

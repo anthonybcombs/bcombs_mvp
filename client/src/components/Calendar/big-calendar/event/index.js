@@ -261,7 +261,13 @@ export default function index({
                 <h3>{event.name}</h3>
                 <p>Status: {event.status}</p>
                 <p>{`${schedule[0]} ${eventStartTime} - ${schedule[1]} ${eventEndTime}`}</p>
-                <Linkify>
+                <Linkify
+                  componentDecorator={(decoratedHref, decoratedText, key) => (
+                    <a target="blank" href={decoratedHref} key={key}>
+                      {decoratedText}
+                    </a>
+                  )}
+                >
                   <p style={{ display: "flex" }}>
                     <FontAwesomeIcon
                       icon={faMapMarkerAlt}

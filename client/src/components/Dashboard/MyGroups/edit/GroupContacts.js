@@ -84,41 +84,41 @@ const GroupContacts = ({ contacts, handleRemoveMember }) => {
 
   return (
     <ContactListStyled>
-      <div id="contact-list-details" style={{ overflow: "auto" }}>
-        <h4>Members</h4>
-        {contacts.length > 0 ? (
-          contacts.map((contact) => (
-            <ContactStyled key={contact.id}>
-              <div>
-                <img src={contact.profile_img} />
-                <p>
-                  {contact.first_name} {contact.last_name}
-                  <br />
-                  {contact.phone_number}
-                </p>
-              </div>
-              <div>
-                <span className="group-list-details member-email">
-                  <p>{contact.email}</p>
-                  {/* <p>{contact.phone_number}</p> */}
-                </span>
-              </div>
-              <div className="member-action">
-                <span
-                  className="group-list-details"
-                  onClick={handleRemoveMember(contact.user_id)}
-                >
-                  <FontAwesomeIcon icon={faMinusCircle} />
-                </span>
-              </div>
-            </ContactStyled>
-          ))
-        ) : (
-          <div className="no-member" style={{ textAlign: "center" }}>
-            <h3>No member yet</h3>
-          </div>
-        )}
-      </div>
+      {/* <div id="contact-list-details" style={{ overflow: "auto" }}> */}
+      <h4>Members</h4>
+      {contacts.length > 0 ? (
+        contacts.map((contact) => (
+          <ContactStyled key={contact.id}>
+            <div>
+              <img src={contact.profile_img} />
+              <p>
+                {contact.first_name} {contact.last_name}
+                <br />
+                {contact.phone_number}
+              </p>
+            </div>
+            <div>
+              <span className="group-list-details member-email">
+                <p>{contact.email}</p>
+                {/* <p>{contact.phone_number}</p> */}
+              </span>
+            </div>
+            <div className="member-action">
+              <span
+                className="group-list-details"
+                onClick={handleRemoveMember(contact.user_id)}
+              >
+                <FontAwesomeIcon icon={faMinusCircle} />
+              </span>
+            </div>
+          </ContactStyled>
+        ))
+      ) : (
+        <div className="no-member" style={{ textAlign: "center" }}>
+          <h3>No member yet</h3>
+        </div>
+      )}
+      {/* </div> */}
     </ContactListStyled>
   );
 };
