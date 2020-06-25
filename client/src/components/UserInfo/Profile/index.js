@@ -4,6 +4,7 @@ import PersonalInfo from "./Create/PersonalInfo";
 import FamilyMember from "./Create/FamilyMember";
 import Member from "./Create/Member";
 import Calendar from "./Create/Calendar";
+import { requestCalendars } from "../../../redux/actions/Calendars";
 import { requestUpdateUser } from "../../../redux/actions/Users";
 export default function index({ navigate }) {
   const [currentPage, setCurrentPage] = useState(0);
@@ -41,6 +42,11 @@ export default function index({ navigate }) {
         email: auth.email
       })
     );
+    if (calendar) {
+      setTimeout(() => {
+        dispatch(requestCalendars());
+      }, 1500);
+    }
     sessionStorage.setItem("calendarName", calendar.name);
   };
 
