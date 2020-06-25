@@ -97,13 +97,13 @@ const NewEventModal = styled.div`
   @media screen and (max-width: 768px) {
     .modal-content{
       margin: 1.5em auto;
-      width: 62%;
+      width: 58%;
     }
   }
   @media screen and (max-width: 425px) {
     .modal-content {
       margin: 1.5em auto;
-      max-width: 100%;
+      max-width: 90%;
       width: auto !important;
     }
   }

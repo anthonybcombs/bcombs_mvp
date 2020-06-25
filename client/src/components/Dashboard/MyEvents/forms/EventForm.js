@@ -115,12 +115,6 @@ const EventFormStyled = styled.form`
   svg[class="react-datetimerange-picker__clear-button__icon react-datetimerange-picker__button__icon"] {
     display: none;
   }
-  @media (min-width: 600px) {
-    #event-type-list {
-      grid-template-columns: repeat(3, 1fr);
-      grid-gap: 2%;
-    }
-  }
 
   .react-autosuggest__container {
     position: relative;
@@ -373,8 +367,7 @@ export default function createEventForm({
   console.log("selectedCalendarzzzzzzzz", selectedCalendar);
 
   // Editor
-  const onChange = (evt) => {
-    console.log("onChange fired with event info: ", evt);
+  const handleOnChange = (evt) => {
     var newContent = evt.editor.getData();
     if (newContent.length <= 500) {
       handleEventDetailsChange("description", newContent);
@@ -517,6 +510,11 @@ export default function createEventForm({
               placeholder="Add Calendar"
               displayValue="name"
               closeIcon="cancel"
+            />
+            <ErrorMessage
+              field={errors.calendars}
+              errorType="required"
+              message="Please select calendar."
             />
           </div>
         </div>
@@ -731,9 +729,10 @@ export default function createEventForm({
         {eventDetails.description}
       </textarea> */}
       <CKEditor
+        name="description"
         content={eventDetails.description}
         events={{
-          change: onChange,
+          change: handleOnChange,
         }}
         // ref={register({ required: true })}
       />

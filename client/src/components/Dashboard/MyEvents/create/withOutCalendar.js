@@ -101,6 +101,9 @@ const NewEventModal = styled.div`
       max-width: 100%;
       width: auto !important;
     }
+    button[type="submit"] {
+      width: 30%;
+    }
   }
 `;
 
