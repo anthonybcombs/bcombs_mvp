@@ -49,12 +49,13 @@ const EditEventModal = styled.div`
   button[type="submit"] {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     padding: 10px;
-    width: 100%;
+    width: 30%;
     display: block;
     margin: 20px auto;
     border: none;
   }
   #content {
+    justify-content: center
     display: grid;
     background-color: white;
     padding: 4em;
@@ -64,30 +65,33 @@ const EditEventModal = styled.div`
   }
   .modal-content {
     margin: 1.5em auto;
-    width: 40%;
+    width: 30%;
+  }
+  @media screen and (max-width: 1920px) {
+    .modal-content{
+      margin: 1.5em auto;
+      width: 45%;
+    }
+    #content {
+      justify-content: center;
+      display: grid;
+      grid-gap: 1%;
+      margin: 0 50px
+    }
+    button[type="submit"] {
+      width: 30%;
+    }
   }
   @media screen and (max-width: 1024px) {
     .modal-content {
       margin: 1.5em auto;
       width: 50%;
     }
-    #content {
-      justify-content: center;
-      display: grid;
-      grid-gap: 1%;
-      margin: 0 50px;
-    }
   }
   @media screen and (max-width: 768px) {
     .modal-content {
       margin: 1.5em auto;
       width: 62%;
-    }
-    #content {
-      justify-content: center;
-      display: grid;
-      grid-gap: 1%;
-      margin: 0 50px;
     }
   }
   @media screen and (max-width: 425px) {
@@ -96,8 +100,6 @@ const EditEventModal = styled.div`
       max-width: 100%;
       width: auto !important;
     }
-  }
-  @media (min-width: 600px) {
     button[type="submit"] {
       width: 30%;
     }
@@ -263,7 +265,14 @@ export default function index({
           &times;
         </span>
         <div id="content">
-          <h2 style={{ textAlign: "center", marginBottom: 50, marginTop: -50 }}>
+          <h2
+            style={{
+              textAlign: "center",
+              marginBottom: 50,
+              marginTop: -10,
+              fontSize: "2em",
+            }}
+          >
             Edit Event
           </h2>
           <EventForm
