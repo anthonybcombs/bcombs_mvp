@@ -6,7 +6,8 @@ export const getVendors = async () => {
     const result = await db.query(
       `SELECT 
         BIN_TO_UUID(id) as id, 
-        BIN_TO_UUID(user) as user, 
+        BIN_TO_UUID(user) as user,
+        id2,
         name, 
         section1_text,
         section2_text,
@@ -45,7 +46,8 @@ export const addVendor = async ({
     vendor = await db.query(
       `SELECT 
         BIN_TO_UUID(id) as id, 
-        BIN_TO_UUID(user) as user, 
+        BIN_TO_UUID(user) as user,
+        id2,
         name, 
         section1_text,
         section2_text,

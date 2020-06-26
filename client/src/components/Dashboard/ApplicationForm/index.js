@@ -19,6 +19,8 @@ import Loading from "../../../helpers/Loading.js";
 
 import "./ApplicationForm.css";
 
+import { uuid } from "uuidv4";
+
 const ApplicationFormStyled = styled.div`
   padding: 20px;
   position: relative;
@@ -31,6 +33,85 @@ const ApplicationFormStyled = styled.div`
     font-weight: 600;
     font-size: 20px;
     color: #f26e21;
+  }
+  .pc-relationship-wrapper {
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 30px #ccc;
+  }
+  .pc-relationship-wrapper .header {
+    background: #f47b2c;
+    padding: 10px 0px;
+    color: white;
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 15px;
+    text-align: center;
+  }
+
+  .pc-relationship-wrapper .content {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-height: 275px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    margin-bottom: 20px;
+    padding: 0px 10px;
+  }
+
+  .question-box {
+    background: white;
+    display: inline-block;
+    padding: 9px;
+    border-radius: 12px;
+    margin: 30px 5px;
+    border: 1px solid #ccc;
+    width: auto;
+  }
+
+  .question-box p  {
+    font-size: 19px;
+    font-weight: 600;
+    color: #4C5157;
+  }
+
+  .question-box strong {
+    color: #f47b2c;
+  }
+
+  .question-box ul li:before {
+    content: "• ";
+    position: absolute;
+    left: -25px;
+  }
+
+  .question-box ul li {
+    color: #4C5157;
+    font-size: 18px;
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    position: relative;
+  }
+
+  .question-box span {
+    font-weight: 600;
+    color: #4C5157;
+    white-space: normal;
+  }
+
+  .question-box small {
+    margin-left: 5px;
+  }
+
+  .question-box select {
+    width: 100%;
+    padding: 3px;
+    font-size: 15px;
+    border-color: inherit;
+    height: 30px;
   }
 `;
 
@@ -85,6 +166,8 @@ export default function index() {
   const [satCount, setSatCount] = useState(1);
 
   const [psatCount, setPsatCount] = useState(1);
+
+  const [showRelationshipView, setShowRelationshipView ] = useState(false);
 
   const handleWizardSelection = (index) => {
     setSelectedStep(index);
@@ -166,6 +249,7 @@ export default function index() {
 
   // child section
   const childInfoObject = {
+    id: uuid(),
     profile: {
       image: "",
       first_name: "",
@@ -227,6 +311,69 @@ export default function index() {
     }
   };
 
+  // const childInfoObject = {
+  //   id: uuid(),
+  //   profile: {
+  //     address: "qq",
+  //     city: "qqq",
+  //     date_of_birth: "Fri Jun 18 1999 00:00:00 GMT+0800 (Philippine Standard Time)",
+  //     email_address: "",
+  //     email_address2: "",
+  //     email_type: "",
+  //     email_type2: "",
+  //     ethinicity: [],
+  //     first_name: "Jerome Yvan",
+  //     gender: "He",
+  //     image: "",
+  //     last_name: "qqqq",
+  //     location_site: "Durham",
+  //     nick_name: "",
+  //     phone_number: "",
+  //     phone_number2: "",
+  //     phone_type: "",
+  //     phone_type2: "",
+  //     program: [],
+  //     state: "AZ",
+  //     zip_code: "11212"
+  //   },
+  //   general_information: {
+  //     grade: "",
+  //     class_rank: "",
+  //     gpa_quarter_year: "",
+  //     gpa_quarter_q1: "",
+  //     gpa_quarter_q2: "",
+  //     gpa_quarter_q3: "",
+  //     gpa_quarter_q4: "",
+  //     gpa_cumulative_year: "",
+  //     gpa_cumulative_q1: "",
+  //     gpa_cumulative_q2: "",
+  //     gpa_cumulative_q3: "",
+  //     gpa_cumulative_q4: "",
+  //     act_scores: [{...scoreObj}],
+  //     sat_scores: [{...scoreObj}],
+  //     psat_scores: [{...scoreObj}],
+  //     school_name: "",
+  //     school_phone: "",
+  //     was_suspended: null,
+  //     reason_suspended: "",
+  //     mentee_start_year: "",
+  //     hobbies: "",
+  //     life_events: "",
+  //     career_goals: "",
+  //     colleges: "",
+  //     team_affiliations: "",
+  //     awards: "",
+  //     accomplishments: "",
+  //     mentee_gain: ""
+  //   },
+  //   emergency_care_information: {
+  //     doctor_name: "",
+  //     doctor_phone: "",
+  //     hospital_preference: "",
+  //     hospital_phone: ""
+  //   }
+  // };
+
   const [childsInformation, setChildsInformation] = useState([{...childInfoObject}]);
 
   const handleChildFormDetailsChange = (index, section, id, value) => {
@@ -267,9 +414,6 @@ export default function index() {
     }
 
     setChildsInformation([...childs]);
-
-    console.log("ChildsInformation", childsInformation);
-
   }
 
   const handleAddNumChild = () => {
@@ -373,6 +517,7 @@ export default function index() {
   ]
 
   const parentInfoObject = {
+    id: uuid(),
     profile: {
       image: "",
       first_name: "",
@@ -403,6 +548,38 @@ export default function index() {
     }
   };
 
+  // const parentInfoObject = {
+  //   id: uuid(),
+  //   profile: {
+  //     address: "",
+  //     child_importance_col: "",
+  //     child_importance_hs: "",
+  //     city: "",
+  //     confirmed_password: "Secret123!!",
+  //     email_address: "wwwww@gmail.com",
+  //     email_address2: "",
+  //     email_type: "",
+  //     email_type2: "",
+  //     employer_name: "",
+  //     first_name: "Anika Jada Apolonio",
+  //     gender: "",
+  //     goals_child_program: "www",
+  //     goals_parent_program: "www",
+  //     image: "",
+  //     last_name: "wwww",
+  //     level_education: "",
+  //     live_area: 0,
+  //     occupation: "",
+  //     password: "Secret123!!",
+  //     phone_number: "(121) 222-2222",
+  //     phone_number2: "",
+  //     phone_type: "",
+  //     phone_type2: "",
+  //     state: "",
+  //     zip_code: "",
+  //   }
+  // };
+
   const [parentsInformation, setParentsInformation] = useState([{...parentInfoObject}]);
 
   const [emergencyContacts, setEmergencyContacts] = useState([...emergency_contacts]);
@@ -420,8 +597,6 @@ export default function index() {
       let x = id.split("-");
       emergency_contacts[index][id] = value;
       setEmergencyContacts([...emergencyContacts]);
-
-      console.log("Emergency Contacts", emergencyContacts);
     }
 
     
@@ -510,7 +685,6 @@ export default function index() {
           !profile.location_site ||
           !gi.grade ||
           !gi.school_name ||
-          !gi.mentee_start_year || 
           !gi.mentee_gain) {
             isValid = false;
             break;
@@ -746,10 +920,32 @@ export default function index() {
     }
 
     dispatch(requestAddApplication(payload));
-
   }
 
   const formRef = useRef(null);
+
+  const formRef2 = useRef(null);
+
+  const handleRelationshipEvent = (e) => {
+    e.preventDefault();
+
+    setShowRelationshipView(true);
+  }
+
+  const RELATION_TO_CHILD_OPTIONS = [
+    { id: 1, value: "Mother", name: "Mother"},
+    { id: 2, value: "Father", name: "Father"},
+    { id: 3, value: "Grandparent", name: "Grandparent"},
+    { id: 4, value: "Aunt / Uncle", name: "Aunt / Uncle"},
+    { id: 5, value: "Sibling", name: "Sibling"},
+    { id: 6, value: "Other Relative", name: "Other Relative"},
+    { id: 7, value: "Family Friend", name: "Family Friend"},
+    { id: 8, value: "Other", name: "Other"}
+  ];
+
+  const handleParentChildRelationship = () => {
+
+  }
 
   return (
     <ApplicationFormStyled
@@ -757,6 +953,142 @@ export default function index() {
         {
           loading.application ? (
             <Loading />
+          ) : showRelationshipView ? (
+            <div className="container">
+              {
+                applications.addapplication && applications.addapplication.message == "application created" && (
+                  <div className="success-message">
+                    Successfully submitted your application. Thank you!
+                  </div>
+                )
+              }
+              <form
+                autoComplete="off"
+                onSubmit={handleSubmit(onSubmit)}
+                ref = {formRef}
+              >
+                <div className="pc-relationship-wrapper">
+                  <p className="header">
+                    RELATIONSHIP QUESTIONNAIRE
+                  </p>
+                  <div className="content">
+                    {
+                      parentsInformation.map((parent, i) => (
+                        <div key={i} className="question-box">
+                          <p>What is the relation of <strong>{parent.profile.first_name}</strong> to</p>
+                          {
+                            <ul>
+                            {
+                              parentsInformation.map((otherParent, k) => (
+                                parent.id != otherParent.id && (
+                                  <li key={k}>
+                                    <span>
+                                      {otherParent.profile.first_name}
+                                      <small style={{fontSize: "50%"}}>(Parent)</small>
+                                    </span>
+                                    
+                                    <select
+                                      name={"parent_parent" + i + "" + k}
+                                      className="input-field"
+                                      onChange={({target}) => {
+                                        handleParentChildRelationship()
+                                      }}
+                                    >
+                                      <option value="">Select</option>
+                                      {
+                                        RELATION_TO_CHILD_OPTIONS.map(opt => (
+                                          <option key={opt.id} value={opt.name}>
+                                            {opt.name}
+                                          </option>
+                                        ))
+                                      }
+                                    </select>
+                                  </li>
+                                )
+                              ))
+                            }
+                            {
+                              childsInformation.map((child, j) => (
+                                <li key={j}>
+                                  <span>
+                                    {child.profile.first_name}
+                                    <small style={{fontSize: "50%"}}>(Child)</small>  
+                                  </span>
+                                  <select
+                                    name={"ch_parent" + i + "" + j}
+                                    className="input-field"
+                                    onChange={({target}) => {
+                                      handleParentChildRelationship()
+                                    }}
+                                  >
+                                    <option value="">Select</option>
+                                    {
+                                      RELATION_TO_CHILD_OPTIONS.map(opt => (
+                                        <option key={opt.id} value={opt.name}>
+                                          {opt.name}
+                                        </option>
+                                      ))
+                                    }
+                                  </select>
+                                </li>
+                              ))
+                            }
+                            </ul>
+                          }
+                        </div>
+                      ))
+                    }
+                  </div>
+                  <div className="header">
+                    CHILD TO CHILD RELATIONSHIP QUESTIONNAIRE
+                  </div>
+                  <div className="content">
+                    {
+                      childsInformation.map((child, i) => (
+                        <div key={i} className="question-box">
+                          <p>What is the relation of <strong>{child.profile.first_name}</strong> to</p>
+                          {
+                            <ul>
+                            {
+                              childsInformation.map((otherChild, j) => (
+                                child.id != otherChild.id && (
+                                  <li key={j}>
+                                    <span>
+                                      {otherChild.profile.first_name}
+                                      <small style={{fontSize: "50%"}}>(Child)</small>  
+                                    </span>
+                                    <select
+                                      name={"ch_ch" + i + "" + j}
+                                      className="input-field"
+                                      onChange={({target}) => {
+                                        handleParentChildRelationship()
+                                      }}
+                                    >
+                                      <option value="">Select</option>
+                                      {
+                                        RELATION_TO_CHILD_OPTIONS.map(opt => (
+                                          <option key={opt.id} value={opt.name}>
+                                            {opt.name}
+                                          </option>
+                                        ))
+                                      }
+                                    </select>
+                                  </li>
+                                )
+                              ))
+                            }
+                            </ul>
+                          }
+                        </div>
+                      ))
+                    }
+                  </div>
+                  <div className="application-btn-container">
+                    <button type="submit">Submit</button>
+                  </div>
+                </div>
+              </form>
+            </div>
           ) : (
           <div className="wizard-wrapper">
             <div className="wizard-inner">
@@ -814,13 +1146,6 @@ export default function index() {
               </ul>
             </div>
             <div className="container">
-              {
-                applications.addapplication && applications.addapplication.message == "application created" && (
-                  <div className="success-message">
-                    Successfully submitted your application. Thank you!
-                  </div>
-                )
-              }
               <form
                 autoComplete="off"
                 onSubmit={handleSubmit(onSubmit)}
@@ -861,7 +1186,6 @@ export default function index() {
                     selectedStep < 4 &&
                     <button
                       type="button"
-                      // className={`right ${isFormValid(selectedStep) ? "": "disabled-link"}`}
                       className="right"
                       onClick={(e) => {
                         e.preventDefault();
@@ -896,9 +1220,8 @@ export default function index() {
                   }
                   {
                     (selectedStep == 4 ) &&
-                    <button type="submit">Submit</button>
+                    <button onClick={handleRelationshipEvent}>Submit</button>
                   }  
-    
                 </div>
               </form>
             </div>

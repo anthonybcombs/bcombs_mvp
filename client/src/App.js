@@ -68,12 +68,16 @@ const AsyncApplicationForm = Loadable({
   loader: () => import("./components/Dashboard/ApplicationForm"),
   loading: Loading,
 });
-const AsyncChildInformatioView = Loadable({
+const AsyncChildInformationView = Loadable({
   loader: () => import("./components/Dashboard/Application/child"),
   loading: Loading
 });
-const AsyncParentInformatioView = Loadable({
+const AsyncParentInformationView = Loadable({
   loader: () => import("./components/Dashboard/Application/parent"),
+  loading: Loading
+});
+const AsyncClassListInformationView = Loadable({
+  loader: () => import("./components/Dashboard/Application/class"),
   loading: Loading
 });
 export default function App() {
@@ -101,9 +105,10 @@ export default function App() {
               <AyncDashboardMyContacts path="mycontacts" />
               <AsyncProfile path="createprofile" />
               <AsyncApplicationStatus path="application" />
-              <AsyncChildInformatioView path="menteeprofile/:id"/>
-              <AsyncParentInformatioView path="parentprofile/:id"/>
+              <AsyncChildInformationView path="menteeprofile/:id"/>
+              <AsyncParentInformationView path="parentprofile/:id"/>
               <AsyncArchivedApplication path="archived" />
+              <AsyncClassListInformationView path="class/:vendor_id/:name"/>
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />

@@ -262,6 +262,7 @@ const resolvers = {
         const parents = application.parents;
 
         application.child = child.ch_id;
+        application.class_teacher = child.grade_desc;
 
         application = await createApplication(application);
 

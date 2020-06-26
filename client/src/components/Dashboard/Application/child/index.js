@@ -175,7 +175,6 @@ export default function index() {
 
   const { id } = useParams();
   const dispatch = useDispatch();
-  console.log(id);
 
   const {applications } = useSelector(
     ({ applications}) => {

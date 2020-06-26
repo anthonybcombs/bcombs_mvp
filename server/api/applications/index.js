@@ -145,7 +145,8 @@ export const createApplication = async ({
   section3_text,
   section1_name,
   section2_name,
-  section3_name
+  section3_name,
+  class_teacher
 }) => {
   const db = makeDb();
   let result = {};
@@ -171,14 +172,15 @@ export const createApplication = async ({
         section3_text,
         section1_name,
         section2_name,
-        section3_name
+        section3_name,
+        class_teacher
       ) VALUES (
         UUID_TO_BIN(UUID()), 
         UUID_TO_BIN(?), 
         UUID_TO_BIN(?), 
         ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, 
-        ?, ?)`,
+        ?, ?, ?)`,
       [
         vendor,
         child,
@@ -195,7 +197,8 @@ export const createApplication = async ({
         section3_text,
         section1_name,
         section2_name,
-        section3_name
+        section3_name,
+        class_teacher
       ]
     )
 
