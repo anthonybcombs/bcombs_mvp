@@ -79,7 +79,7 @@ export default function index({
   isReadonly = false,
   ProfileImg
 }) {
-  
+
   const hasSelectAll = false;
 
   const GENDER_OPTIONS = [

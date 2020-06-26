@@ -93,7 +93,7 @@ export default function index() {
     }
   );
 
-  console.log(applications);
+
 
   if(applications.updateapplication && applications.updateapplication.message == "application updated") {
     window.location.reload(false);
@@ -114,6 +114,8 @@ export default function index() {
       dispatch(requestGetApplications(vendor.id));
     }
   }, [vendor]);
+
+  console.log("vendor", vendor);
 
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
@@ -190,6 +192,7 @@ export default function index() {
             <ApplicationSummaryStyled 
               grades={grades}
               applications={applications.activeapplications}
+              vendor={vendor}
             />
           )}
           {selectedLabel === "Form Settings" && !selectNonMenuOption && (

@@ -408,6 +408,7 @@ const queryTypes = `
         section1_show: Int
         section2_show: Int
         section3_show: Int
+        id2: Int
     }
 
     type Score {

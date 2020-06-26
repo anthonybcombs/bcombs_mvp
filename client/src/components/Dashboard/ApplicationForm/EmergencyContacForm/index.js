@@ -29,6 +29,7 @@ const EmergencyContactFormStyled = styled.div`
     border: 0;
     padding: 10px;
     text-align: center;
+    position: relative;
   }
 
   #contacts td {
@@ -57,6 +58,12 @@ const EmergencyContactFormStyled = styled.div`
   #contacts select.input-field {
     width: 100%;
   }
+
+  #contacts .required {
+    left: 5px;
+    top: 15px;
+    position: absolute;
+  }
   
   .error {
     margin: 0;
@@ -70,9 +77,6 @@ export default function index({
   register,
   errors
 }) {
-
-  console.log(handleParentFormDetailsChange);
-
   const GENDER_OPTIONS = [
     { id: 1, value: "Male", name: "Male"},
     { id: 2, value: "Female", name: "Female"}
@@ -100,6 +104,7 @@ export default function index({
       let row =
         <tr key={i}>
           <td>
+            {!isReadonly && i <= 1 && <span className="required">*</span>}
             <input
               name={"ec_firstname_" + i}
               className="input-field"
@@ -119,6 +124,7 @@ export default function index({
             />
           </td>
           <td>
+            {!isReadonly && i <= 1 && <span className="required">*</span>}
             <input
               name={"ec_lastname_" + i}
               className="input-field"
@@ -138,35 +144,37 @@ export default function index({
             />
           </td>
           <td>
+            {!isReadonly && i <= 1 && <span className="required">*</span>}
             {
-              !isReadonly ?
-              <select
-                name={"ec_gender_" + i}
-                className="input-field"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange(i, "emergency_contacts", "gender", target.value)
-                }}
-                ref={register({
-                  required: (i <= 1)
-                })}
-              >
-                <option value="">Select Type</option>
-                <optgroup label="Gender">
-                  {GENDER_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.name}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="Custom">
-                  {CUSTOM_GENDER_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.name}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </optgroup>
+              !isReadonly ? (
+                <select
+                  name={"ec_gender_" + i}
+                  className="input-field"
+                  onChange={({target}) => {
+                    handleParentFormDetailsChange(i, "emergency_contacts", "gender", target.value)
+                  }}
+                  ref={register({
+                    required: (i <= 1)
+                  })}
+                >
+                  <option value="">Select Type</option>
+                  <optgroup label="Gender">
+                    {GENDER_OPTIONS.map(opt => (
+                      <option key={opt.id} value={opt.name}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Custom">
+                    {CUSTOM_GENDER_OPTIONS.map(opt => (
+                      <option key={opt.id} value={opt.name}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </optgroup>
 
-              </select>
+                </select>
+              )
               :
               <input 
                 type="text"
@@ -183,6 +191,7 @@ export default function index({
             />
           </td>
           <td>
+            {!isReadonly && i <= 1 && <span className="required">*</span>}
             {
               !isReadonly ?
               <NumberFormat 
@@ -269,6 +278,7 @@ export default function index({
             />
           </td>
           <td>
+            {!isReadonly && i <= 1 && <span className="required">*</span>}
             {
               !isReadonly ?
               <select

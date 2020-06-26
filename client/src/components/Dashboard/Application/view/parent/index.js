@@ -127,6 +127,8 @@ export default function index({
           handleParentFormDetailsChange={handleParentFormDetailsChange}
           parentEmergencyContacts={emergencyContacts}
           isReadonly={true}
+          register={register}
+          errors={errors}
         />
       </div>
     </ParentFormViewStyled>
