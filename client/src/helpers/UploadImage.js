@@ -4,6 +4,8 @@ import Files from "react-butterfiles";
 import styled, { ThemeContext } from "styled-components";
 import Cropper from "react-easy-crop";
 import { getCroppedImg } from "./images";
+import CustomCropper from "./CustomCropper";
+
 const UploadImageStyled = styled.div`
   button {
     display: block;
@@ -28,6 +30,7 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
   );
   const [errors, setErrors] = useState([]);
   const [cropper, setCropper] = useState(false);
+
   return (
     <UploadImageStyled>
       <Files
@@ -49,24 +52,19 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
             <>
               {cropper ? (
                 <div>
-                  {ReactDOM.createPortal(
-                    <CroppedImage
-                      image={imageView.src.base64}
-                      onCancel={() => {
-                        setCropper(false);
-                      }}
-                      onSave={image => {
-                        let reader = new FileReader();
-                        reader.onloadend = () => {
-                          setImageView(reader.result);
-                          handleImageChange(reader.result);
-                        };
-                        reader.readAsDataURL(image);
-                        setCropper(false);
-                      }}
-                    />,
-                    document.getElementById("uploadImage")
-                  )}
+                  <CroppedImage
+                    imageFile={imageView}
+                    imageBase64={imageView.src.base64}
+                    onCancel={() => {
+                      setImageView(displayImage);
+                      setCropper(false);
+                    }}
+                    onSave={image => {
+                      setImageView(image);
+                      setCropper(false);
+                      handleImageChange(image);
+                    }}
+                  />
                 </div>
               ) : (
                 <>
@@ -122,6 +120,7 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
 }
 
 const CropperImageStyled = styled.div`
+  backround-color: white;
   button {
     display: block;
     color: ${({ theme }) => theme.button.textColor.primary};
@@ -143,40 +142,17 @@ const CropperImageStyled = styled.div`
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
   }
 `;
-const CroppedImage = ({ image, onCancel, onSave }) => {
-  const [crop, onCropChange] = React.useState({ x: 0, y: 0 });
-  const [zoom, onZoomChange] = React.useState(1);
-  const [rotation, setRotation] = useState(0);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+const CroppedImage = ({ imageFile, imageBase64, onCancel, onSave }) => {
+  const [cropImage, setCropImage] = useState("");
 
+  const cropend = value => {
+    setCropImage(value);
+  };
   return (
     <CropperImageStyled>
-      <Cropper
-        style={{
-          containerStyle: {
-            zIndex: 2000,
-            height: "100vh",
-            position: "fixed"
-          }
-        }}
-        image={image}
-        crop={crop}
-        zoom={zoom}
-        onRotationChange={setRotation}
-        onCropChange={onCropChange}
-        onZoomChange={onZoomChange}
-        onCropComplete={onCropComplete}
-      />
+      <CustomCropper image={imageBase64} cropend={cropend} />
       <div
         style={{
-          position: "fixed",
-          bottom: -10,
-          right: 0,
-          width: 200,
-          zIndex: 2200,
           margin: 10
         }}>
         <div className="cropper-control">
@@ -193,15 +169,9 @@ const CroppedImage = ({ image, onCancel, onSave }) => {
             style={{ width: "100%", boxShadow: "none" }}
             onClick={async e => {
               e.preventDefault();
-              const croppedImage = await getCroppedImg(
-                image,
-                croppedAreaPixels,
-                rotation
-              );
 
-              console.log("croppedImage", croppedImage);
-              if (ALLOWED_FILE_TYPES.includes(croppedImage.file.type)) {
-                onSave(croppedImage.file);
+              if (ALLOWED_FILE_TYPES.includes(imageFile.type)) {
+                onSave(cropImage);
               }
             }}>
             Save

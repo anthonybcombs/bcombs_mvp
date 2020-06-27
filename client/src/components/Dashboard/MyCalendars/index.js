@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import BigCalendar from "../../Calendar/big-calendar/";
 
+import { requestCalendars } from "../../../redux/actions/Calendars";
 import { getContact } from "../../../redux/actions/Contacts";
 import { getEvents } from "../../../redux/actions/Events";
 import { requestUserGroup } from "../../../redux/actions/Groups";

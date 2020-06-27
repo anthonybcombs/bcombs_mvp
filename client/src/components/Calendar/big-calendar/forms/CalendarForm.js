@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
+//import CustomCropper from "../../../../helpers/CustomCropper";
 import UploadImage from "../../../../helpers/UploadImage";
 import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -170,6 +171,9 @@ export default function CreateCalendarForm({
     handleInputChange("groups", []);
   };
 
+  const cropend = value => {
+    console.log("CROPENDDDDDDD", value);
+  };
   console.log("selectedCalendar details", details);
   return (
     <CreateCalendarFormStyled
@@ -343,11 +347,16 @@ export default function CreateCalendarForm({
       <UploadImage
         displayImage={details.image}
         handleImageChange={image => {
+          console.log("UPLOAD IMAGEEEEEEEEE", image);
           setValue("image", image);
           handleInputChange("image", image);
           return false;
         }}
       />
+      {/* <CustomCropper
+      
+        cropend={cropend}
+      /> */}
       <ErrorMessage
         field={errors.image}
         errorType="required"

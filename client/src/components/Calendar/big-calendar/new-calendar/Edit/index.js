@@ -10,17 +10,44 @@ const EditCalendarModalStyled = styled.div`
   }
   .modal-content {
     margin: 1em auto;
-    width: 50%;
+    width: 20%;
   }
+
+  @media screen and (max-width: 1920px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 35%;
+    }
+    #content {
+      justify-content: center;
+      display: grid;
+      grid-gap: 1%;
+      margin: 0 50px;
+    }
+    button[type="submit"] {
+      width: 30%;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 50%;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 62%;
+    }
 `;
 export default function index({
   isVisible = true,
   toggleEditCalendarModal,
-  calendar,
+  calendar
 }) {
   const [calendarDetails, setCalendarDetails] = useState(calendar);
   useEffect(() => {
-    calendar.familyMembers.forEach((familyMemberId) => {
+    calendar.familyMembers.forEach(familyMemberId => {
       calendar.selectedFamilyMembers.set(familyMemberId, true);
     });
     setCalendarDetails(calendar);
@@ -30,19 +57,19 @@ export default function index({
       return { familyMembers, calendars, groups };
     }
   );
-  const colors = calendars.map((calendar) => calendar.color);
+  const colors = calendars.map(calendar => calendar.color);
   const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
     setCalendarDetails({ ...calendarDetails, [id]: value });
   };
-  const handleCheckBoxChange = (element) => {
+  const handleCheckBoxChange = element => {
     const value = element.target.value;
     const isChecked = element.target.checked;
     if (value == "Private" || value === "Public") {
       setCalendarDetails({
         ...calendarDetails,
         visibilityType: value,
-        selectedFamilyMembers: new Map(),
+        selectedFamilyMembers: new Map()
       });
       return;
     }
@@ -52,7 +79,7 @@ export default function index({
       selectedfamilyMembers: calendarDetails.selectedFamilyMembers.set(
         value,
         isChecked
-      ),
+      )
     });
   };
   const handleCancel = () => {
@@ -61,7 +88,7 @@ export default function index({
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
       image: "",
-      groups: [],
+      groups: []
     });
     toggleEditCalendarModal(false);
   };
@@ -72,7 +99,7 @@ export default function index({
       name: "",
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
-      groups: [],
+      groups: []
     });
     toggleEditCalendarModal(false);
   };
@@ -82,15 +109,13 @@ export default function index({
   return ReactDOM.createPortal(
     <EditCalendarModalStyled
       data-testid="app-big-calendar-create-modal"
-      className="modal"
-    >
+      className="modal">
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             handleCancel();
-          }}
-        >
+          }}>
           &times;
         </span>
         <h2 data-testid="app-big-calendar-create-modal-header">

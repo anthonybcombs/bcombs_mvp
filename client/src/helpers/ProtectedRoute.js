@@ -26,9 +26,11 @@ export default function protectedRoutes({ children }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
+  console.log("AUTHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH", auth);
   useEffect(() => {
     if (!auth.hasOwnProperty("user_id")) {
+   
       dispatch(requestUserInfo());
       dispatch(requestCalendars());
       dispatch(requestFamilyMembers());
@@ -68,13 +70,12 @@ export default function protectedRoutes({ children }) {
       location.pathname.includes("/dashboard/application") ||
       location.pathname.includes("/dashboard/archived")
     ) {
-      if(userTypes.length > 0) {
-
-        const currentUserType = userTypes.filter((type) => {
+      if (userTypes.length > 0) {
+        const currentUserType = userTypes.filter(type => {
           return type.id === auth.type;
         })[0];
 
-        if(currentUserType.name != "VENDOR") {
+        if (currentUserType.name != "VENDOR") {
           return <Redirect to="/dashboard" />;
         }
       }
