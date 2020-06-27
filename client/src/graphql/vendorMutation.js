@@ -5,6 +5,7 @@ export const VENDOR_UPDATE_MUTATION = gql`
     updateVendor(vendor: $vendor) {
       id
       user
+      id2
       name
       section1_text
       section2_text
@@ -24,6 +25,7 @@ export const VENDORS_QUERY = gql`
     vendors {
       id
       user
+      id2
       name
       section1_text
       section2_text
@@ -43,6 +45,7 @@ export const VENDOR_BY_USER_QUERY = gql`
     vendor(user: $user) {
       id
       user
+      id2
       name
       section1_text
       section2_text

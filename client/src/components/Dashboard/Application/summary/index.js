@@ -62,7 +62,8 @@ const ApplicationSummaryStyled = styled.div`
 
 export default function index({
   grades,
-  applications = []
+  applications = [],
+  vendor
 }) {
   
   let maxClass = 50;
@@ -97,7 +98,7 @@ export default function index({
       return (
         <tr key={grade.id}>
           <td>
-            <a href="#">
+            <a href={"class/" + vendor.id2 + "/" + grade.name} target="_blank">
               {grade.name}
             </a>
           </td>

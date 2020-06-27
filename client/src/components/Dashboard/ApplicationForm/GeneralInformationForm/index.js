@@ -595,7 +595,7 @@ export default function index({
                 />
                 :
                 <NumberFormat 
-                  name="ch_school_phone"
+                  name={"ch_school_phone" + (counter - 1)}
                   className="field-input"
                   placeholder="Phone"
                   onChange={({ target }) => {
@@ -603,10 +603,26 @@ export default function index({
                   }}
                   defaultValue={childGeneralInformation.school_phone}
                   format="(###) ###-####" mask="_"
+                  getInputRef={register({
+                    validate: {
+                      completed: value => {
+                        if(value) {
+                          return value.match(/\d/g).length === 10
+                        } else {
+                          return true;
+                        }
+                      }
+                    }
+                  })}
                 />
               }
               <label className="field-label">Phone</label>
             </div>
+            <ErrorMessage
+              field={errors["ch_school_phone" + (counter - 1)]}
+              errorType="completed"
+              message="Phone Number must be consist of 10 digits."
+            />
           </div>
         </div>
         <div className="agree-text">
@@ -664,20 +680,14 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "mentee_start_year", target.value);
                 }}
-                ref={register({ required: true })}
                 defaultValue={childGeneralInformation.mentee_start_year}
                 disabled={isReadonly}
               >
                   <option value="">Select Year</option>
                   { createYearTakenSelect() }
               </select>
-              <label className="field-label"><span className="required">*</span> Year Started as Mentee</label>
+              <label className="field-label">Year Started as Mentee</label>
             </div>
-            <ErrorMessage
-              field={errors["mentee_start_year" + (counter - 1)]}
-              errorType="required"
-              message="Year Started as Mentee is required."
-            />
           </div>
           <div className="form-group">
             <div className="field">
