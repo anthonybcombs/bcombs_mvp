@@ -7,6 +7,7 @@ import { getCroppedImg } from "./images";
 import CustomCropper from "./CustomCropper";
 
 const UploadImageStyled = styled.div`
+  text-align: center;
   button {
     display: block;
     color: ${({ theme }) => theme.button.textColor.primary};

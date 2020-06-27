@@ -171,9 +171,6 @@ export default function CreateCalendarForm({
     handleInputChange("groups", []);
   };
 
-  const cropend = value => {
-    console.log("CROPENDDDDDDD", value);
-  };
   console.log("selectedCalendar details", details);
   return (
     <CreateCalendarFormStyled
@@ -347,7 +344,6 @@ export default function CreateCalendarForm({
       <UploadImage
         displayImage={details.image}
         handleImageChange={image => {
-          console.log("UPLOAD IMAGEEEEEEEEE", image);
           setValue("image", image);
           handleInputChange("image", image);
           return false;

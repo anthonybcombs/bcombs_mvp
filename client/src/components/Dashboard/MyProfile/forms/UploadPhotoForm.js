@@ -57,6 +57,7 @@ const UploadPhotoModal = styled.div`
     }
   }
   #buttons-control {
+    text-align: center;
     margin-top: 2em;
   }
   div[class$="multiValue"] div {
@@ -129,6 +130,12 @@ export default function index({
 }) {
   const theme = useContext(ThemeContext);
   const [imagePreview, setImagePreview] = useState("");
+
+  useEffect(() => {
+    if (auth) {
+      setImagePreview(auth.profile_img || auth.picture);
+    }
+  }, []);
 
   useEffect(() => {
     if (isVisible && auth) {
