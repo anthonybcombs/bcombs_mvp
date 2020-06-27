@@ -54,11 +54,20 @@ const updateUserProfileToDatabase = user => {
 const updateUserPhotoToDatabase = user => {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log("USERRRRRRRRRRRRRRRRRR", user);
+      console.log(
+        "`${process.env.API_HOST}/api/user/photo`",
+        `${process.env.API_HOST}/api/user/photo`
+      );
       const userRequest = await fetch(
         `${process.env.API_HOST}/api/user/photo`,
         {
           method: "POST",
-          body: user
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(user)
         }
       );
       const userResponse = await userRequest.json();

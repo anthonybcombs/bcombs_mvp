@@ -2,7 +2,8 @@ import express from "express";
 import {
   currentS3BucketName,
   s3Bucket,
-  s3BucketRootPath
+  s3BucketRootPath,
+  uploadFile
 } from "../helpers/aws";
 import { makeDb } from "../helpers/database";
 import fetch from "node-fetch";
@@ -401,42 +402,73 @@ router.put("/user/profile", async (req, res) => {
   }
 });
 
-router.post("/user/photo", upload.single("file"), async (req, res) => {
+router.post("/user/photo", async (req, res) => {
   const db = makeDb();
-  const file = req.file;
-
-  if (file) {
-    const { email } = req.body;
+  try {
+    const { email, image } = req.body;
+    console.log("REQ.BODYYYYYYY", req.body);
     const currentUser = await getUserFromDatabase(email);
     if (currentUser) {
-      const params = {
+      const buf = Buffer.from(
+        image.replace(/^data:image\/\w+;base64,/, ""),
+        "base64"
+      );
+      const s3Payload = {
         Bucket: currentS3BucketName,
         Key: `user/${currentUser.id}/${currentUser.id}.jpg`,
-        Body: file.buffer,
-        ContentType: file.mimetype,
+        Body: buf,
+        ContentEncoding: "base64",
+        ContentType: "image/jpeg",
         ACL: "public-read"
       };
+      await uploadFile(s3Payload);
 
-      s3Bucket.upload(params, async function(err, data) {
-        if (err) {
-          res.status(500).json({ error: true, Message: err });
-        } else {
-          await db.query(
-            "UPDATE users SET profile_img=? where id=UUID_TO_BIN(?)",
-            [data.key, currentUser.id]
-          );
+      await db.query("UPDATE users SET profile_img=? where id=UUID_TO_BIN(?)", [
+        s3Payload.Key,
+        currentUser.id
+      ]);
+      let updatedUser = await getUserFromDatabase(email);
 
-          let user = await getUserFromDatabase(email);
-          user.profile_img = user.profile_img
-            ? `${s3BucketRootPath}${user.profile_img}?${new Date().getTime()}`
-            : "";
+      updatedUser.profile_img = updatedUser.profile_img
+        ? `${s3BucketRootPath}${
+            updatedUser.profile_img
+          }?${new Date().getTime()}`
+        : "";
 
-          res.status(200).json({ error: true, data: user });
-        }
-      });
+      res.status(200).json({ error: true, data: updatedUser });
+      // const params = {
+      //   Bucket: currentS3BucketName,
+      //   Key: `user/${currentUser.id}/${currentUser.id}.jpg`,
+      //   Body: file.buffer,
+      //   ContentType: file.mimetype,
+      //   ACL: "public-read"
+      // };
+
+      // s3Bucket.upload(params, async function(err, data) {
+      //   if (err) {
+      //     res.status(500).json({ error: true, Message: err });
+      //   } else {
+      //     await db.query(
+      //       "UPDATE users SET profile_img=? where id=UUID_TO_BIN(?)",
+      //       [data.key, currentUser.id]
+      //     );
+
+      //     let user = await getUserFromDatabase(email);
+      // user.profile_img = user.profile_img
+      //   ? `${s3BucketRootPath}${user.profile_img}?${new Date().getTime()}`
+      //   : "";
+
+      //     res.status(200).json({ error: true, data: user });
+      //   }
+      // });
     } else {
       res.status(401).json({ error: true, Message: "User not found" });
     }
+  } catch (err) {
+    console.log("ERROR", err);
+    res.status(500).json({ error: true, Message: "Something went wrong" });
+  } finally {
+    db.close();
   }
 });
 

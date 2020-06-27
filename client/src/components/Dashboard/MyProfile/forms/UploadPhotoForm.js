@@ -4,12 +4,11 @@ import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { format } from "date-fns";
+import UploadImage from "../../../../helpers/UploadImage";
 
-import Cropper from "react-easy-crop";
-import ErrorMessage from "../../../../helpers/ErrorMessage";
 import { getCroppedImg } from "../../../../helpers/images";
 
-const UploadPhotoModal = styled.form`
+const UploadPhotoModal = styled.div`
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;
@@ -27,90 +26,129 @@ const UploadPhotoModal = styled.form`
     border: none;
   }
   .modal-content {
-    width: 70%;
-    height: 80%;
-    display: flex;
-    flex-direction: column;
-    min-height: 500px !important;
+    margin: 1em auto;
+    width: 20%;
   }
-  .crop-container {
-    position: absolute;
-    top: 24px;
-    left: 0;
-    right: 0;
-    bottom: 80px;
-    display: flex;
-    flex-direction: column;
+  @media screen and (max-width: 1920px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 35%;
+    }
+    #content {
+      justify-content: center;
+      display: grid;
+      grid-gap: 1%;
+      margin: 0 50px;
+    }
+    button[type="submit"] {
+      width: 30%;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 50%;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .modal-content {
+      margin: 1.5em auto;
+      width: 62%;
+    }
+  }
+  #buttons-control {
+    margin-top: 2em;
+  }
+  div[class$="multiValue"] div {
+    background-color: #f26e21;
+    color: white;
+  }
+  @media screen and (max-width: 1920px) {
+    #buttons-control button {
+      width: 20%;
+      display: inline-block;
+      margin: 1em;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    #buttons-control button {
+      width: 20%;
+      display: inline-block;
+      margin: 1em;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    #buttons-control button {
+      width: 20%;
+      display: inline-block;
+      margin: 1em;
+    }
   }
   @media (min-width: 600px) {
-    button[type="submit"] {
-      width: ${({ theme }) => theme.button.width.primary};
+    input {
+      width: 100%;
+      margin: 0 auto;
     }
-    input,
-    p.error {
-      width: 70%;
-      margin: 2.5em auto 2.5em auto;
+    #family-list {
+      grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
     }
-    div {
-      width: 70%;
-      margin: 0 auto 2.5em auto;
+    #family-list div {
+      grid-template-columns: 10% 90%;
+      text-align: left;
+      padding: 1em;
+    }
+    #family-list > div > p > span {
+      position: absolute;
+      display: inline-block;
+      top: 6px;
+    }
+    #buttons-control button {
+      display: inline-block;
+      margin: 1em;
     }
   }
 `;
+const isURL = str => {
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|" + // domain name
+    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // fragment locator
+  return pattern.test(str);
+};
 
-export default function index({ isVisible = true, auth, onSubmit }) {
+export default function index({
+  isVisible = true,
+  auth,
+  onSubmit,
+  toggleProfilePhotoVisible
+}) {
   const theme = useContext(ThemeContext);
-  const { handleSubmit, errors } = useForm();
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [rotation, setRotation] = useState(0);
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  const [croppedImage, setCroppedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
 
   useEffect(() => {
     if (isVisible && auth) {
-      setImagePreview(auth.profile_img);
+      setImagePreview(auth.profile_img || auth.picture);
     }
   }, [auth, isVisible]);
 
-  const handleFileChange = (event) => {
-    console.log("event.target.files", event.target.files);
-
-    let reader = new FileReader();
-
-    reader.onloadend = () => {
-      console.log("setImagePreview", reader.result);
-      setImagePreview(reader.result);
-    };
-
-    reader.readAsDataURL(event.target.files[0]);
+  const handleFileChange = image => {
+    setImagePreview(image);
   };
 
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
-
-  const showCroppedImage = useCallback(async () => {
+  const showCroppedImage = () => {
     try {
-      console.log("croppedArea", croppedAreaPixels);
-      const croppedImage = await getCroppedImg(
-        imagePreview,
-        croppedAreaPixels,
-        rotation
-      );
-
-      onSubmit(croppedImage.file);
+      if (!isURL(imagePreview) && imagePreview) {
+        onSubmit(imagePreview);
+      }
     } catch (e) {
       console.error(e);
     }
-  }, [croppedAreaPixels, rotation]);
-
-  const onClose = useCallback(() => {
-    setCroppedImage(null);
-    setImagePreview("");
-    toggleProfilePhotoVisible(false);
-  }, []);
+  };
 
   if (!isVisible) {
     return <></>;
@@ -120,53 +158,27 @@ export default function index({ isVisible = true, auth, onSubmit }) {
     <UploadPhotoModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
-      theme={theme}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      theme={theme}>
       <div className="modal-content">
-        <div className="crop-container">
-          <Cropper
-            cropShape={"round"}
-            image={imagePreview}
-            crop={crop}
-            zoom={zoom}
-            aspect={4 / 4}
-            onCropChange={setCrop}
-            onRotationChange={setRotation}
-            onCropComplete={onCropComplete}
-            onZoomChange={setZoom}
-            style={{
-              containerStyle: {
-                height: "80%",
-                minHeight: 500,
-              },
-            }}
-          />
-          <div
-            style={{
-              display: "flex",
-              bottom: 15,
-              left: 200,
-              position: "absolute",
-            }}
-          >
-            <input type="file" name="file" onChange={handleFileChange} />
+        <UploadImage
+          displayImage={imagePreview}
+          handleImageChange={handleFileChange}
+        />
 
-            <button
-              className="save-image"
-              data-testid="app-profile-submit-button"
-              onClick={showCroppedImage}
-            >
-              Save
-            </button>
-            <button
-              className="save-image"
-              data-testid="app-profile-submit-button"
-              onClick={onClose}
-            >
-              Close
-            </button>
-          </div>
+        <div id="buttons-control">
+          <button
+            data-testid="app-big-calendar-new-cancel-button"
+            type="button"
+            onClick={() => toggleProfilePhotoVisible(false)}>
+            Cancel
+          </button>
+          <button
+            className="save-image"
+            data-testid="app-big-calendar-new-save-button"
+            onClick={showCroppedImage}
+            type="submit">
+            Save
+          </button>
         </div>
       </div>
     </UploadPhotoModal>,

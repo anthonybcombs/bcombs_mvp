@@ -60,6 +60,7 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                       setCropper(false);
                     }}
                     onSave={image => {
+                      console.log("ON SAVEEEEEE", image);
                       setImageView(image);
                       setCropper(false);
                       handleImageChange(image);
@@ -146,6 +147,7 @@ const CroppedImage = ({ imageFile, imageBase64, onCancel, onSave }) => {
   const [cropImage, setCropImage] = useState("");
 
   const cropend = value => {
+    console.log("Croppeddddddddddddddddd", value);
     setCropImage(value);
   };
   return (
@@ -174,7 +176,7 @@ const CroppedImage = ({ imageFile, imageBase64, onCancel, onSave }) => {
                 onSave(cropImage);
               }
             }}>
-            Save
+            Crop
           </button>
         </div>
       </div>

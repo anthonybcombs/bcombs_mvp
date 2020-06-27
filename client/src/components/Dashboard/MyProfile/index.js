@@ -263,7 +263,7 @@ export default function index() {
   }, [user, isEditProfileVisible]);
 
   const handleFormSubmit = e => {
-    if (personalInfo.gender !== 'custom') {
+    if (personalInfo.gender !== "custom") {
       personalInfo.customgender = "";
     }
     setUpdatedPayload({
@@ -299,10 +299,13 @@ export default function index() {
   };
 
   const handleImageUpload = file => {
-    let data = new FormData();
-    data.append("file", file);
-    data.append("email", auth.email);
-    dispatch(requestUpdateUserPhoto(data));
+    const payload = {
+      email: auth.email,
+      image: file
+    };
+
+    console.log("PAYLOADDDDDDDDDD", payload);
+    dispatch(requestUpdateUserPhoto(payload));
     setUploadPhotoVisible(false);
   };
 
