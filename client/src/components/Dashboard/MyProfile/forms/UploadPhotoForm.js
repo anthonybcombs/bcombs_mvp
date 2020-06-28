@@ -161,6 +161,7 @@ export default function index({
     return <></>;
   }
 
+  console.log("imagePreviewww", imagePreview);
   return ReactDOM.createPortal(
     <UploadPhotoModal
       data-testid="app-dashboard-my-events-new-event"
