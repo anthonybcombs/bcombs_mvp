@@ -113,13 +113,16 @@ router.get("/userTypes", async (req, res) => {
 router.post("/auth/userInfo", async (req, res) => {
   try {
     const creds = req.body;
-    const userInfoResponse = await fetch("https://bcombs.auth0.com/userinfo", {
-      method: "GET",
-      headers: {
-        Authorization: `${creds.token_type} ${creds.access_token}`,
-        "Content-Type": "application/json"
+    const userInfoResponse = await fetch(
+      "https://bcombd.us.auth0.com/userinfo",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `${creds.token_type} ${creds.access_token}`,
+          "Content-Type": "application/json"
+        }
       }
-    });
+    );
     const userInfo = await userInfoResponse.json();
 
     const response = await getUserFromDatabase(userInfo.email);
@@ -143,14 +146,17 @@ router.post("/auth/authorize", async (req, res) => {
     params.append("client_secret", process.env.AUTH_CLIENT_SECRET);
     params.append("username", user.email);
     params.append("password", user.password);
-    const AuthResponse = await fetch("https://bcombs.auth0.com/oauth/token", {
-      method: "POST",
-      body: params
-    });
+    const AuthResponse = await fetch(
+      "https://bcombd.us.auth0.com/oauth/token",
+      {
+        method: "POST",
+        body: params
+      }
+    );
     const authData = await AuthResponse.json();
     if (authData.hasOwnProperty("access_token")) {
       const userInfoResponse = await fetch(
-        "https://bcombs.auth0.com/userinfo",
+        "https://bcombd.us.auth0.com/userinfo",
         {
           method: "POST",
           headers: {
@@ -182,7 +188,7 @@ router.post("/auth/changepassword", async (req, res) => {
       params.append("client_id", process.env.AUTH_CLIENT_ID);
       params.append("email", user.email);
       params.append("connection", "Username-Password-Authentication");
-      await fetch("https://bcombs.auth0.com/dbconnections/change_password", {
+      await fetch("https://bcombd.us.auth0.com/dbconnections/change_password", {
         method: "POST",
         body: params
       });
@@ -272,7 +278,7 @@ router.post("/users/add", async (req, res) => {
       params.append("password", user.password);
       params.append("connection", "Username-Password-Authentication");
       const signUpResponse = await fetch(
-        "https://bcombs.auth0.com/dbconnections/signup",
+        "https://bcombd.us.auth0.com/dbconnections/signup",
         {
           method: "POST",
           body: params
@@ -436,31 +442,6 @@ router.post("/user/photo", async (req, res) => {
         : "";
 
       res.status(200).json({ error: true, data: updatedUser });
-      // const params = {
-      //   Bucket: currentS3BucketName,
-      //   Key: `user/${currentUser.id}/${currentUser.id}.jpg`,
-      //   Body: file.buffer,
-      //   ContentType: file.mimetype,
-      //   ACL: "public-read"
-      // };
-
-      // s3Bucket.upload(params, async function(err, data) {
-      //   if (err) {
-      //     res.status(500).json({ error: true, Message: err });
-      //   } else {
-      //     await db.query(
-      //       "UPDATE users SET profile_img=? where id=UUID_TO_BIN(?)",
-      //       [data.key, currentUser.id]
-      //     );
-
-      //     let user = await getUserFromDatabase(email);
-      // user.profile_img = user.profile_img
-      //   ? `${s3BucketRootPath}${user.profile_img}?${new Date().getTime()}`
-      //   : "";
-
-      //     res.status(200).json({ error: true, data: user });
-      //   }
-      // });
     } else {
       res.status(401).json({ error: true, Message: "User not found" });
     }

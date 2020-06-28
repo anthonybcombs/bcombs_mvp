@@ -44,7 +44,7 @@ export const getUserInfo = async creds => {
     const UserInfoCache = JSON.parse(await getRedisKey(creds.access_token));
     if (UserInfoCache === null) {
       const userInfoResponse = await fetch(
-        "https://bcombs.auth0.com/userinfo",
+        "https://bcombd.us.auth0.com/userinfo",
         {
           method: "GET",
           headers: {
@@ -85,14 +85,18 @@ export const executeSignIn = async user => {
     params.append("client_secret", process.env.AUTH_CLIENT_SECRET);
     params.append("username", user.email);
     params.append("password", user.password);
-    const AuthResponse = await fetch("https://bcombs.auth0.com/oauth/token", {
-      method: "POST",
-      body: params
-    });
+
+    const AuthResponse = await fetch(
+      "https://bcombd.us.auth0.com/oauth/token",
+      {
+        method: "POST",
+        body: params
+      }
+    );
     const authData = await AuthResponse.json();
     if (authData.hasOwnProperty("access_token")) {
       const userInfoResponse = await fetch(
-        "https://bcombs.auth0.com/userinfo",
+        "https://bcombd.us.auth0.com/userinfo",
         {
           method: "POST",
           headers: {
@@ -160,7 +164,7 @@ export const executeChangePassword = async reqData => {
       params.append("client_id", process.env.AUTH_CLIENT_ID);
       params.append("email", user.email);
       params.append("connection", "Username-Password-Authentication");
-      await fetch("https://bcombs.auth0.com/dbconnections/change_password", {
+      await fetch("https://bcombd.us.auth0.com/dbconnections/change_password", {
         method: "POST",
         body: params
       });
@@ -182,8 +186,15 @@ export const executeChangePassword = async reqData => {
 };
 export const executeSignUp = async user => {
   const db = makeDb();
+  console.log(
+    "EXECUTE SIGNUP **************************************************************"
+  );
   try {
     let authData;
+    console.log(
+      "executeSignUp process.env.AUTH_CLIENT_ID",
+      process.env.AUTH_CLIENT_ID
+    );
     if (!user.hasOwnProperty("isSocial")) {
       const params = new URLSearchParams();
       params.append("client_id", process.env.AUTH_CLIENT_ID);
@@ -192,7 +203,7 @@ export const executeSignUp = async user => {
       params.append("password", user.password);
       params.append("connection", "Username-Password-Authentication");
       const signUpResponse = await fetch(
-        "https://bcombs.auth0.com/dbconnections/signup",
+        "https://bcombd.us.auth0.com/dbconnections/signup",
         {
           method: "POST",
           body: params

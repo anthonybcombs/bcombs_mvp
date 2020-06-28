@@ -27,10 +27,8 @@ export default function protectedRoutes({ children }) {
     window.scrollTo(0, 0);
   }, []);
 
-  console.log("AUTHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH", auth);
   useEffect(() => {
     if (!auth.hasOwnProperty("user_id")) {
-   
       dispatch(requestUserInfo());
       dispatch(requestCalendars());
       dispatch(requestFamilyMembers());
