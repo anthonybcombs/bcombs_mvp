@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { isFuture, parseISO } from "date-fns";
+import { format, isFuture, parseISO } from "date-fns";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../../../../../helpers/ErrorMessage";
@@ -84,36 +84,47 @@ export default function CreateProfileForm({
   const [showWarningFutureDate, setShowWarningFutureDate] = useState(false);
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
-  const { register, handleSubmit, errors, watch, setValue, unregister } = useForm({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    watch,
+    setValue,
+    unregister
+  } = useForm({
     mode: "onBlur",
-    reValidateMode: "onChange",
+    reValidateMode: "onChange"
   });
+  const maxDate = format(new Date(), "yyyy-MM-dd");
   React.useEffect(() => {
     register({ name: "zipcode" }, { required: true });
     register({ name: "dateofbirth" }, { required: true });
   }, []);
-  const handleDateOfBirthElementTypeChange = (value) => {
+  const handleDateOfBirthElementTypeChange = value => {
     setDateOfBirthElementType(value);
   };
-  const gender = watch('gender');
-  if (data && data.hasOwnProperty('unrequiredFields')) {
+  const gender = watch("gender");
+  if (data && data.hasOwnProperty("unrequiredFields")) {
     let unrequiredFields = data.unrequiredFields;
     unrequiredFields.forEach(item => unregister(item));
   }
   if (userType === "VENDOR") {
     unregister("dateofbirth");
   }
-  const isRequiredField = (field) => {
-    return !(data && data.hasOwnProperty('unrequiredFields') && data.unrequiredFields.indexOf(field) > -1);
-  }
+  const isRequiredField = field => {
+    return !(
+      data &&
+      data.hasOwnProperty("unrequiredFields") &&
+      data.unrequiredFields.indexOf(field) > -1
+    );
+  };
 
   return (
     <CreateProfileStyled
       data-testid="app-create-profile-form"
       method="POST"
       theme={theme}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <h3>Create my profile</h3>
       <input
         data-testid="app-profile-input-firstname"
@@ -149,9 +160,10 @@ export default function CreateProfileForm({
         onChange={({ target }) => {
           handleInputChange("familyrelationship", target.value);
         }}
-        ref={register({ required: true })}
-      >
-        <option value="" disabled>Select Family Relationship</option>
+        ref={register({ required: true })}>
+        <option value="" disabled>
+          Select Family Relationship
+        </option>
         <option value="default">Default</option>
         <option value="father">Father</option>
         <option value="mother">Mother</option>
@@ -170,9 +182,10 @@ export default function CreateProfileForm({
             onChange={({ target }) => {
               handleInputChange("gender", target.value);
             }}
-            ref={register({ required: true })}
-          >
-            <option value="" disabled>Select Gender</option>
+            ref={register({ required: true })}>
+            <option value="" disabled>
+              Select Gender
+            </option>
             <option value="default">Default</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -183,16 +196,18 @@ export default function CreateProfileForm({
             errorType="required"
             message="Gender is required."
           />
-          {gender === "custom" && <>
+          {gender === "custom" && (
+            <>
               <select
                 data-testid="app-profile-select-custom-gender"
                 name="customgender"
                 onChange={({ target }) => {
                   handleInputChange("customgender", target.value);
                 }}
-                ref={register({ required: true })}
-              >
-                <option value="" disabled>Select Customer Gender</option>
+                ref={register({ required: true })}>
+                <option value="" disabled>
+                  Select Customer Gender
+                </option>
                 <option value="she">She</option>
                 <option value="he">He</option>
                 <option value="they">They</option>
@@ -203,7 +218,7 @@ export default function CreateProfileForm({
                 message="Custom Gender is required."
               />
             </>
-          }
+          )}
         </div>
         <div>
           <input
@@ -216,7 +231,7 @@ export default function CreateProfileForm({
               handleInputChange("zipcode", target.value);
             }}
             ref={register({
-              minLength: 5,
+              minLength: 5
             })}
           />
           <ErrorMessage
@@ -229,13 +244,17 @@ export default function CreateProfileForm({
             errorType="minLength"
             message="Zip code minimum length must be at least 5 characters."
           />
-          {userType === "USER" && <>
+          {userType === "USER" && (
+            <>
               <input
                 data-testid="app-profile-input-date-of-birth"
                 name="dateofbirth"
                 type={dateOfBirthElementType}
-                placeholder={`${isRequiredField("dateofbirth") ? "* " : ""}Date of Birth`}
+                placeholder={`${
+                  isRequiredField("dateofbirth") ? "* " : ""
+                }Date of Birth`}
                 min="1900-01-01"
+                max={maxDate}
                 onFocus={() => {
                   handleDateOfBirthElementTypeChange("date");
                 }}
@@ -243,9 +262,11 @@ export default function CreateProfileForm({
                   handleDateOfBirthElementTypeChange("text");
                 }}
                 onChange={({ target }) => {
-                  setShowWarningFutureDate(isFuture(parseISO(target.value)));
-                  setValue("dateofbirth", target.value);
-                  handleInputChange("dateofbirth", target.value);
+                  //setShowWarningFutureDate(isFuture(parseISO(target.value)));
+                  if (!isFuture(parseISO(target.value))) {
+                    setValue("dateofbirth", target.value);
+                    handleInputChange("dateofbirth", target.value);
+                  }
                 }}
               />
               <ErrorMessage
@@ -253,12 +274,12 @@ export default function CreateProfileForm({
                 errorType="required"
                 message="Date of Birth is required."
               />
-              {showWarningFutureDate && <>
+              {/* {showWarningFutureDate && <>
                   <p className="error">Date of Birth is in future.</p>
                 </>
-              }
+              } */}
             </>
-          }
+          )}
         </div>
       </div>
       <button data-testid="app-profile-submit-button" type="submit">
