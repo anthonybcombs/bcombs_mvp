@@ -272,6 +272,8 @@ export const executeUserUpdate = async user => {
     const users = await getUsers();
     const { id } = users.filter(user => user.email === email)[0];
     const isProfileExist = await isProfileExistFromDatabase(id);
+
+    console.log("familyMembers", familyMembers);
     if (!isProfileExist) {
       await db.query(
         "UPDATE users SET is_profile_filled=1 where id=UUID_TO_BIN(?)",
@@ -285,7 +287,7 @@ export const executeUserUpdate = async user => {
           personalInfo.lastname,
           personalInfo.familyrelationship,
           personalInfo.gender,
-          personalInfo.customgender,
+          personalInfo.customgender || "",
           personalInfo.zipcode,
           personalInfo.dateofbirth
         ]
@@ -299,7 +301,7 @@ export const executeUserUpdate = async user => {
             familyMember.lastname,
             familyMember.familyrelationship,
             familyMember.gender,
-            familyMember.customgender,
+            familyMember.customgender || "",
             familyMember.zipcode,
             familyMember.dateofbirth,
             familyMember.type
@@ -361,7 +363,7 @@ export const executeUserUpdate = async user => {
       message: "user updated."
     };
   } catch (error) {
-    console.log(error);
+    console.log("executeUserUpdate Error", error);
     return {
       messageType: "error",
       message: "there is an error in user update endpoint."

@@ -33,11 +33,21 @@ export default function index({ navigate }) {
       (a, [k, v]) => (v ? ((a[k] = v), a) : a),
       {}
     ); // Empty object if it has null values
-    console.log("Calendar Iinfoooooooo", calendarInfo);
-    console.log("Calendar calendar", calendar);
+
+    let profile = {
+      ...profileDetails,
+      familyMembers: profileDetails.familyMembers.map(item => {
+        return {
+          ...item,
+          unrequiredFields: undefined
+        };
+      })
+    };
+
+    delete profile.unrequiredFields;
     dispatch(
       requestUpdateUser({
-        ...profileDetails,
+        ...profile,
         calendarInfo: calendarInfo,
         email: auth.email
       })

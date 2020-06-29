@@ -33,18 +33,18 @@ const inputs = `
         firstname: String!
         lastname: String!
         familyrelationship: String!
-        gender: String!
+        gender: String
         customgender: String
         zipcode: String!
-        dateofbirth: Date!
+        dateofbirth: Date
         type: String
     }
     input UserInfoInput{
-        email: String!
+        email: String
         familyMembers: [PersonalInfoInput]
         members: [PersonalInfoInput]
-        personalInfo: PersonalInfoInput!
-        calendarInfo: CalendarInfoInput!
+        personalInfo: PersonalInfoInput
+        calendarInfo: CalendarInfoInput
     }
     input UserUpdateInput{
         creds: CredsInput!
