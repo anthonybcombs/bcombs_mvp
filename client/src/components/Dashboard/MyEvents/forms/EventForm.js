@@ -204,6 +204,78 @@ const EventFormStyled = styled.form`
     display: block;
     text-indent: 5px;
   }
+  .form-group .form-control {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 10px;
+  }
+
+  .field {
+    display: flex;
+    flex-flow: column-reverse;
+    margin-bottom: 1em;
+  }
+
+  .field-label,
+  .field-input {
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+
+  .field-input {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: text;
+    line-height: 1.8;
+
+    padding: 5px 0;
+    width: 100%;
+    display: block;
+    text-indent: 5px;
+    margin-top: 8px;
+    margin-bottom: -5px;
+  }
+
+  .field-label {
+    font-size: 14px;
+    color: #4b525a;
+  }
+
+  .field-input:placeholder-shown + .field-label {
+    overflow: hidden;
+    transform-origin: left bottom;
+    transform: translate(0, 2.125rem) scale(1.4);
+  }
+
+  .field-input::placeholder {
+    opacity: 0;
+    transition: inherit;
+    font-size: 12px;
+  }
+
+  .field-input:focus::placeholder {
+    opacity: 1;
+  }
+
+  .field-input:focus + .field-label {
+    transform: translate(0, 0) scale(1);
+    cursor: pointer;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .required {
+    color: red;
+  }
 `;
 
 const OPTION_VISIBILITY = [
@@ -381,23 +453,31 @@ export default function createEventForm({
       onSubmit={handleSubmit(onSubmit)}
     >
       {/* <FontAwesomeIcon icon={faClock} /> */}
-      <input
-        autoComplete="off"
-        data-testid="app-dashboard-my-events-new-event-input-title"
-        type="text"
-        name="title"
-        placeholder="Add title"
-        value={eventDetails.name}
-        onChange={(e) => {
-          handleEventDetailsChange("name", e.target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.title}
-        errorType="required"
-        message="Title is required."
-      />
+      <div className="field-group">
+        <div className="field">
+          <input
+            className="field-input"
+            autoComplete="off"
+            data-testid="app-dashboard-my-events-new-event-input-title"
+            type="text"
+            name="title"
+            placeholder="Add title"
+            value={eventDetails.name}
+            onChange={(e) => {
+              handleEventDetailsChange("name", e.target.value);
+            }}
+            ref={register({ required: true })}
+          />
+          <label className="field-label">
+            <span className="required">*</span> Title
+          </label>
+        </div>
+        <ErrorMessage
+          field={errors.title}
+          errorType="required"
+          message="Title is required."
+        />
+      </div>
       <div id="event-type-list">
         <button
           type="button"
@@ -622,7 +702,9 @@ export default function createEventForm({
         )}
       <br />
       <div>
-        <label>Visibility</label>
+        <label>
+          <span className="required">*</span> Visibility
+        </label>
         <select
           name="visibility"
           className="field-input"
@@ -708,11 +790,6 @@ export default function createEventForm({
           handleEventDetailsChange("location", e.target.value);
         }}
         ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.location}
-        errorType="required"
-        message="Location is required."
       />
       {/* <textarea
         data-testid="app-dashboard-my-events-new-event-input-title"

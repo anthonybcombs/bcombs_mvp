@@ -122,6 +122,79 @@ const CreateCalendarFormStyled = styled.form`
       margin: 1em;
     }
   }
+  .form-group .form-control {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 10px;
+  }
+
+  .field {
+    display: flex;
+    flex-flow: column-reverse;
+    margin-bottom: 1em;
+  }
+
+  .field-label,
+  .field-input {
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+
+  .field-input {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: text;
+    line-height: 1.8;
+
+    padding: 5px 0;
+    width: 100%;
+    display: block;
+    text-indent: 5px;
+    margin-top: 8px;
+    margin-bottom: -5px;
+  }
+
+  .field-label {
+    font-size: 12px;
+    color: #4b525a;
+    margin-right: 80%;
+  }
+
+  .field-input:placeholder-shown + .field-label {
+    overflow: hidden;
+    transform-origin: left bottom;
+    transform: translate(0, 2.125rem) scale(1.4);
+  }
+
+  .field-input::placeholder {
+    opacity: 0;
+    transition: inherit;
+    font-size: 12px;
+  }
+
+  .field-input:focus::placeholder {
+    opacity: 1;
+  }
+
+  .field-input:focus + .field-label {
+    transform: translate(0, 0) scale(1);
+    cursor: pointer;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .required {
+    color: red;
+  }
 `;
 export default function CreateCalendarForm({
   colors = [],
@@ -131,10 +204,10 @@ export default function CreateCalendarForm({
   onSubmit,
   handleInputChange,
   handleCheckBoxChange,
-  onCancel
+  onCancel,
 }) {
   const { register, handleSubmit, errors, setValue } = useForm({
-    mode: "onSubmit"
+    mode: "onSubmit",
   });
   React.useEffect(() => {
     register({ name: "image" }, { required: true });
@@ -142,9 +215,9 @@ export default function CreateCalendarForm({
       { name: "color" },
       {
         validate: {
-          isColorExist: value =>
-            !colors.includes(value) || details.color == value
-        }
+          isColorExist: (value) =>
+            !colors.includes(value) || details.color == value,
+        },
       }
     );
     if (details && details.image && details.image.length > 0) {
@@ -155,16 +228,16 @@ export default function CreateCalendarForm({
     }
   }, []);
   const options = [];
-  Object.keys(groups).forEach(key => {
-    groups[key].forEach(data => {
+  Object.keys(groups).forEach((key) => {
+    groups[key].forEach((data) => {
       options.push({ id: data.id, name: data.name });
     });
   });
   const theme = useContext(ThemeContext);
 
-  const handleGroupSelectChange = option => {
+  const handleGroupSelectChange = (option) => {
     if (option !== null) {
-      const groupIds = option.map(group => group.id);
+      const groupIds = option.map((group) => group.id);
       handleInputChange("groups", groupIds);
       return;
     }
@@ -177,25 +250,35 @@ export default function CreateCalendarForm({
       data-testid="app-big-calendar-new-create-form"
       theme={theme}
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}>
-      <input
-        data-testid="app-big-calendar-new-input-calendar-name"
-        placeholder="Calendar name"
-        name="name"
-        value={details.name}
-        onChange={({ target }) => {
-          handleInputChange("name", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.name}
-        errorType="required"
-        message="Calendar name is required."
-      />
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className="field-group">
+        <div className="field">
+          <input
+            className="field-input"
+            data-testid="app-big-calendar-new-input-calendar-name"
+            placeholder="Calendar name"
+            name="name"
+            value={details.name}
+            onChange={({ target }) => {
+              handleInputChange("name", target.value);
+            }}
+            ref={register({ required: true })}
+          />
+          <label className="field-label">
+            <span className="required">*</span> Calendar Name
+          </label>
+        </div>
+        <ErrorMessage
+          field={errors.name}
+          errorType="required"
+          message="Calendar name is required."
+        />
+      </div>
+
       <p style={{ marginTop: 30 }}>Calendar Privacy Setting</p>
       <div id="family-list">
-        {familyMembers.map(familyMember => (
+        {familyMembers.map((familyMember) => (
           <div key={familyMember.id}>
             <input
               type="checkbox"
@@ -246,7 +329,7 @@ export default function CreateCalendarForm({
           options={options}
           onSelect={handleGroupSelectChange}
           onRemove={handleGroupSelectChange}
-          selectedValues={options.filter(item =>
+          selectedValues={options.filter((item) =>
             details.groups.includes(item.id)
           )}
           placeholder="Select Group"
@@ -293,6 +376,7 @@ export default function CreateCalendarForm({
 
       <div id="family-members-private">
         <p>
+          <span style={{ color: "red", fontSize: 20 }}>*</span>
           <input
             type="radio"
             name="family"
@@ -324,7 +408,7 @@ export default function CreateCalendarForm({
         <>
           <ColorPicker
             color={details.color}
-            setColor={color => {
+            setColor={(color) => {
               setValue("color", color);
               handleInputChange("color", color);
             }}
@@ -341,9 +425,12 @@ export default function CreateCalendarForm({
           />
         </>
       )}
+      <label style={{ float: "left", marginBottom: 20 }}>
+        <span style={{ color: "red", fontSize: 20 }}>*</span>
+      </label>
       <UploadImage
         displayImage={details.image}
-        handleImageChange={image => {
+        handleImageChange={(image) => {
           setValue("image", image);
           handleInputChange("image", image);
           return false;
@@ -362,7 +449,8 @@ export default function CreateCalendarForm({
         <button
           data-testid="app-big-calendar-new-cancel-button"
           type="button"
-          onClick={() => onCancel()}>
+          onClick={() => onCancel()}
+        >
           Cancel
         </button>
         <button data-testid="app-big-calendar-new-save-button" type="submit">

@@ -40,14 +40,15 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
         multipleMaxSize="10mb"
         convertToBase64
         accept={["image/jpg", "image/jpeg", "image/png"]}
-        onSuccess={files => {
+        onSuccess={(files) => {
           if (files[0] && files[0].size < ALLOWED_FILE_SIZE) {
             setImageView(files[0]);
             setErrors([]);
             setCropper(true);
           }
         }}
-        onError={errors => setErrors(errors)}>
+        onError={(errors) => setErrors(errors)}
+      >
         {({ browseFiles }) => {
           return (
             <>
@@ -60,7 +61,7 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                       setImageView(displayImage);
                       setCropper(false);
                     }}
-                    onSave={image => {
+                    onSave={(image) => {
                       console.log("ON SAVEEEEEE", image);
                       setImageView(image);
                       setCropper(false);
@@ -71,7 +72,7 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
               ) : (
                 <>
                   <div
-                    onClick={e => {
+                    onClick={(e) => {
                       e.preventDefault();
                       browseFiles();
                     }}
@@ -80,15 +81,16 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                       minHeight: 300,
                       maxHeight: 300,
                       margin: 10,
-                      cursor: "pointer"
-                    }}>
+                      cursor: "pointer",
+                    }}
+                  >
                     {imageView.length > 0 ? (
                       <img
                         style={{
                           width: "100%",
                           maxHeight: 300,
                           backgroundColor: "lightblue",
-                          objectFit: "contain"
+                          objectFit: "contain",
                         }}
                         src={imageView}
                       />
@@ -97,8 +99,9 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                         style={{
                           fontWeight: "bold",
                           fontSize: "1.5em",
-                          lineHeight: 13
-                        }}>
+                          lineHeight: 13,
+                        }}
+                      >
                         Select image on file to upload
                       </div>
                     )}
@@ -147,7 +150,7 @@ const CropperImageStyled = styled.div`
 const CroppedImage = ({ imageFile, imageBase64, onCancel, onSave }) => {
   const [cropImage, setCropImage] = useState("");
 
-  const cropend = value => {
+  const cropend = (value) => {
     console.log("Croppeddddddddddddddddd", value);
     setCropImage(value);
   };
@@ -156,27 +159,30 @@ const CroppedImage = ({ imageFile, imageBase64, onCancel, onSave }) => {
       <CustomCropper image={imageBase64} cropend={cropend} />
       <div
         style={{
-          margin: 10
-        }}>
+          margin: 10,
+        }}
+      >
         <div className="cropper-control">
           <button
             style={{ width: "100%", boxShadow: "none" }}
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault();
               onCancel();
-            }}>
+            }}
+          >
             Cancel
           </button>
           <button
             className="save"
             style={{ width: "100%", boxShadow: "none" }}
-            onClick={async e => {
+            onClick={async (e) => {
               e.preventDefault();
 
               if (ALLOWED_FILE_TYPES.includes(imageFile.type)) {
                 onSave(cropImage);
               }
-            }}>
+            }}
+          >
             Crop
           </button>
         </div>
