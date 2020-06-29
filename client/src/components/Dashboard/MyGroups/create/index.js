@@ -19,37 +19,38 @@ export default function index({
   isVisible = true,
   toggleCreateGroupModal,
   contacts,
-  auth
+  auth,
 }) {
+  const action = "create";
   const [groupDetails, setGroupDetails] = useState({
     id: uuid(),
     name: "",
     contacts: [],
     visibility: 0,
-    other_ids: []
+    other_ids: [],
   });
   const dispatch = useDispatch();
   const handleGroupDetailsChange = (id, value) => {
     if (id === "contacts") {
-      let ids = value.map(contact => contact.id);
+      let ids = value.map((contact) => contact.id);
       setGroupDetails({
         ...groupDetails,
-        [id]: ids
+        [id]: ids,
       });
     } else if (id === "other_ids") {
-      let ids = value.map(contact => contact.id);
+      let ids = value.map((contact) => contact.id);
       setGroupDetails({
         ...groupDetails,
-        [id]: ids
+        [id]: ids,
       });
     } else {
       setGroupDetails({
         ...groupDetails,
-        [id]: value
+        [id]: value,
       });
     }
   };
-  const handleSubmit = value => {
+  const handleSubmit = (value) => {
     toggleCreateGroupModal(false);
     const payload = {
       ...groupDetails,
@@ -57,9 +58,9 @@ export default function index({
       contacts: [
         ...new Set([
           ...(groupDetails.contacts || []),
-          ...(groupDetails.other_ids || [])
-        ])
-      ]
+          ...(groupDetails.other_ids || []),
+        ]),
+      ],
     };
 
     console.log("HANDLE SUBMIT PAYLOADDDDDDDDDDDDDDD", payload);
@@ -71,7 +72,7 @@ export default function index({
       visibility: 0,
       userIds: [auth.id],
       contacts: [],
-      other_ids: []
+      other_ids: [],
     });
   };
   if (!isVisible) {
@@ -85,7 +86,8 @@ export default function index({
           className="close"
           onClick={() => {
             toggleCreateGroupModal(false);
-          }}>
+          }}
+        >
           &times;
         </span>
         <div>
@@ -95,6 +97,7 @@ export default function index({
             groupDetails={groupDetails}
             onSubmit={handleSubmit}
             handleGroupDetailsChange={handleGroupDetailsChange}
+            action={action}
           />
         </div>
       </div>

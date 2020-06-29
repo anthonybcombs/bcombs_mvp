@@ -74,12 +74,94 @@ const CreateProfileStyled = styled.form`
       width: ${({ theme }) => theme.button.width.primary};
     }
   }
+  input:required {
+    box-shadow: none;
+  }
+  input:invalid {
+    box-shadow: none;
+  }
+
+  input:focus {
+    border-color: ${({ theme }) => theme.input.focus.border.color};
+  }
+
+  .form-group .form-control {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 10px;
+  }
+
+  .field {
+    display: flex;
+    flex-flow: column-reverse;
+    margin-bottom: 1em;
+  }
+
+  .field-label,
+  .field-input {
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .field-input {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: text;
+    line-height: 1.8;
+
+    padding: 5px 0;
+    width: 100%;
+    display: block;
+    text-indent: 5px;
+    margin-top: 8px;
+    margin-bottom: -5px;
+  }
+
+  .field-label {
+    font-size: 14px;
+    color: #4b525a;
+  }
+
+  .field-input:placeholder-shown + .field-label {
+    overflow: hidden;
+    transform-origin: left bottom;
+    transform: translate(0, 2.125rem) scale(1.4);
+  }
+
+  .field-input::placeholder {
+    opacity: 0;
+    transition: inherit;
+    font-size: 12px;
+  }
+
+  .field-input:focus::placeholder {
+    opacity: 1;
+  }
+
+  .field-input:focus + .field-label {
+    transform: translate(0, 0) scale(1);
+    cursor: pointer;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .required {
+    color: red;
+  }
 `;
 export default function CreateProfileForm({
   data,
   onSubmit,
   handleInputChange,
-  userType
+  userType,
 }) {
   const [showWarningFutureDate, setShowWarningFutureDate] = useState(false);
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
@@ -90,28 +172,28 @@ export default function CreateProfileForm({
     errors,
     watch,
     setValue,
-    unregister
+    unregister,
   } = useForm({
     mode: "onBlur",
-    reValidateMode: "onChange"
+    reValidateMode: "onChange",
   });
   const maxDate = format(new Date(), "yyyy-MM-dd");
   React.useEffect(() => {
     register({ name: "zipcode" }, { required: true });
     register({ name: "dateofbirth" }, { required: true });
   }, []);
-  const handleDateOfBirthElementTypeChange = value => {
+  const handleDateOfBirthElementTypeChange = (value) => {
     setDateOfBirthElementType(value);
   };
   const gender = watch("gender");
   if (data && data.hasOwnProperty("unrequiredFields")) {
     let unrequiredFields = data.unrequiredFields;
-    unrequiredFields.forEach(item => unregister(item));
+    unrequiredFields.forEach((item) => unregister(item));
   }
   if (userType === "VENDOR") {
     unregister("dateofbirth");
   }
-  const isRequiredField = field => {
+  const isRequiredField = (field) => {
     return !(
       data &&
       data.hasOwnProperty("unrequiredFields") &&
@@ -119,48 +201,76 @@ export default function CreateProfileForm({
     );
   };
 
+  // Check the length of number
+  const maxLengthCheck = (object) => {
+    if (object.target.value.length > object.target.maxLength) {
+      object.target.value = object.target.value.slice(
+        0,
+        object.target.maxLength
+      );
+    }
+  };
+
   return (
     <CreateProfileStyled
       data-testid="app-create-profile-form"
       method="POST"
       theme={theme}
-      onSubmit={handleSubmit(onSubmit)}>
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <h3>Create my profile</h3>
-      <input
-        data-testid="app-profile-input-firstname"
-        name="firstname"
-        placeholder="* First name"
-        onChange={({ target }) => {
-          handleInputChange("firstname", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.firstname}
-        errorType="required"
-        message="Firstname is required."
-      />
-      <input
-        data-testid="app-profile-input-lastname"
-        name="lastname"
-        placeholder="* Last name"
-        onChange={({ target }) => {
-          handleInputChange("lastname", target.value);
-        }}
-        ref={register({ required: true })}
-      />
-      <ErrorMessage
-        field={errors.lastname}
-        errorType="required"
-        message="Lastname is required."
-      />
+      <div className="form-group">
+        <div className="field">
+          <input
+            className="field-input"
+            data-testid="app-profile-input-firstname"
+            name="firstname"
+            placeholder="First name"
+            onChange={({ target }) => {
+              handleInputChange("firstname", target.value);
+            }}
+            ref={register({ required: true })}
+          />
+          <label className="field-label">
+            <span className="required">*</span> First Name
+          </label>
+        </div>
+        <ErrorMessage
+          field={errors.firstname}
+          errorType="required"
+          message="Firstname is required."
+        />
+      </div>
+      <div className="form-group">
+        <div className="field">
+          <input
+            className="field-input"
+            data-testid="app-profile-input-lastname"
+            name="lastname"
+            placeholder="Last name"
+            onChange={({ target }) => {
+              handleInputChange("lastname", target.value);
+            }}
+            ref={register({ required: true })}
+          />
+          <label className="field-label">
+            <span className="required">*</span> Last Name
+          </label>
+        </div>
+        <ErrorMessage
+          field={errors.lastname}
+          errorType="required"
+          message="Lastname is required."
+        />
+      </div>
       <select
         data-testid="app-profile-select-family-relationship"
         name="familyrelationship"
         onChange={({ target }) => {
           handleInputChange("familyrelationship", target.value);
         }}
-        ref={register({ required: true })}>
+        ref={register({ required: true })}
+      >
         <option value="" disabled>
           Select Family Relationship
         </option>
@@ -182,7 +292,8 @@ export default function CreateProfileForm({
             onChange={({ target }) => {
               handleInputChange("gender", target.value);
             }}
-            ref={register({ required: true })}>
+            ref={register({ required: true })}
+          >
             <option value="" disabled>
               Select Gender
             </option>
@@ -204,7 +315,8 @@ export default function CreateProfileForm({
                 onChange={({ target }) => {
                   handleInputChange("customgender", target.value);
                 }}
-                ref={register({ required: true })}>
+                ref={register({ required: true })}
+              >
                 <option value="" disabled>
                   Select Customer Gender
                 </option>
@@ -221,31 +333,41 @@ export default function CreateProfileForm({
           )}
         </div>
         <div>
-          <input
-            data-testid="app-profile-input-zip-code"
-            name="zipcode"
-            type="number"
-            placeholder={`${isRequiredField("zipcode") ? "* " : ""}Zipcode`}
-            onChange={({ target }) => {
-              setValue("zipcode", target.value);
-              handleInputChange("zipcode", target.value);
-            }}
-            ref={register({
-              minLength: 5
-            })}
-          />
-          <ErrorMessage
-            field={errors.zipcode}
-            errorType="required"
-            message="Zip code is required."
-          />
-          <ErrorMessage
-            field={errors.zipcode}
-            errorType="minLength"
-            message="Zip code minimum length must be at least 5 characters."
-          />
+          <div className="field-group">
+            <div className="field">
+              <input
+                className="field-input"
+                data-testid="app-profile-input-zip-code"
+                name="zipcode"
+                type="number"
+                placeholder="Zip Code"
+                onChange={({ target }) => {
+                  setValue("zipcode", target.value);
+                  handleInputChange("zipcode", target.value);
+                }}
+                ref={register({
+                  minLength: 5,
+                })}
+                maxLength="5"
+                onInput={maxLengthCheck}
+              />
+              <label className="field-label">
+                <span className="required">*</span> Zip Code
+              </label>
+            </div>
+            <ErrorMessage
+              field={errors.zipcode}
+              errorType="required"
+              message="Zip code is required."
+            />
+            <ErrorMessage
+              field={errors.zipcode}
+              errorType="minLength"
+              message="Zip code minimum length must be at least 5 characters."
+            />
+          </div>
           {userType === "USER" && (
-            <>
+            <div>
               <input
                 data-testid="app-profile-input-date-of-birth"
                 name="dateofbirth"
@@ -278,7 +400,7 @@ export default function CreateProfileForm({
                   <p className="error">Date of Birth is in future.</p>
                 </>
               } */}
-            </>
+            </div>
           )}
         </div>
       </div>

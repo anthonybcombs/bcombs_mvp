@@ -35,6 +35,77 @@ const ContactFormStyled = styled.form`
   .disabled {
     background-color: gray !important;
   }
+  .form-group .form-control {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 10px;
+  }
+
+  .field {
+    display: flex;
+    flex-flow: column-reverse;
+    margin-bottom: 1em;
+  }
+
+  .field-label,
+  .field-input {
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .field-input {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: text;
+    line-height: 1.8;
+
+    padding: 5px 0;
+    width: 100%;
+    display: block;
+    text-indent: 5px;
+    margin-top: 8px;
+    margin-bottom: -5px;
+  }
+
+  .field-label {
+    font-size: 14px;
+    color: #4b525a;
+  }
+
+  .field-input:placeholder-shown + .field-label {
+    overflow: hidden;
+    transform-origin: left bottom;
+    transform: translate(0, 2.125rem) scale(1.4);
+  }
+
+  .field-input::placeholder {
+    opacity: 0;
+    transition: inherit;
+    font-size: 12px;
+  }
+
+  .field-input:focus::placeholder {
+    opacity: 1;
+  }
+
+  .field-input:focus + .field-label {
+    transform: translate(0, 0) scale(1);
+    cursor: pointer;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .required {
+    color: red;
+  }
 `;
 export default function ContactForm({
   contactDetails,
@@ -94,7 +165,9 @@ export default function ContactForm({
               ref={register({ required: true, maxLength: 20 })}
               value={contactDetails.last_name}
             />
-            <label className="field-label">Lastname</label>
+            <label className="field-label">
+              <span className="required">*</span> Last Name
+            </label>
           </div>
           <ErrorMessage
             field={errors.last_name}
@@ -120,7 +193,9 @@ export default function ContactForm({
               ref={register({ required: true, maxLength: 20 })}
               value={contactDetails.first_name}
             />
-            <label className="field-label">Firstname</label>
+            <label className="field-label">
+              <span className="required">*</span> First Name
+            </label>
           </div>
           <ErrorMessage
             field={errors.first_name}
@@ -160,7 +235,9 @@ export default function ContactForm({
               })}
               required
             />
-            <label className="field-label">Phone Number</label>
+            <label className="field-label">
+              <span className="required">*</span> Phone Number
+            </label>
           </div>
           <ErrorMessage
             field={errors["phone_number"]}
@@ -182,7 +259,9 @@ export default function ContactForm({
               ref={register({ required: true })}
               value={contactDetails.email}
             />
-            <label className="field-label">Email</label>
+            <label className="field-label">
+              <span className="required">*</span> Email
+            </label>
           </div>
           {userNotExist && <div style={{ color: "red" }}>User not exist!</div>}
           <ErrorMessage
@@ -205,7 +284,9 @@ export default function ContactForm({
               ref={register({ required: true })}
               value={contactDetails.relation}
             />
-            <label className="field-label">Relation</label>
+            <label className="field-label">
+              <span className="required">*</span> Relation
+            </label>
           </div>
           <ErrorMessage
             field={errors.email}
