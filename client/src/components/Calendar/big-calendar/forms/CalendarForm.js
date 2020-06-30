@@ -167,7 +167,7 @@ const CreateCalendarFormStyled = styled.form`
   .field-label {
     font-size: 12px;
     color: #4b525a;
-    margin-right: 80%;
+    margin-right: 79%;
   }
 
   .field-input:placeholder-shown + .field-label {
