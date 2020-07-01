@@ -171,8 +171,11 @@ export function* addCalendar({
         sessionStorage.getItem("selectedCalendars") !== null
           ? JSON.parse(sessionStorage.getItem("selectedCalendars"))
           : [];
- 
-      sessionStorage.setItem('selectedCalendars',JSON.stringify( [...selectedCalendars, response.id]))
+
+      sessionStorage.setItem(
+        "selectedCalendars",
+        JSON.stringify([...selectedCalendars, response.id])
+      );
     }
 
     yield put(requestCalendars());
@@ -196,11 +199,26 @@ export function* gotCalendars() {
     actionType.REQUEST_AUTH_USER_INFO_COMPLETED,
     actionType.REQUEST_CLONE_CALENDAR_COMPLETED
   ]);
+
   const calendars = yield call(getCalendarsFromDatabase, {
     access_token: sessionStorage.getItem("access_token"),
     token_type: sessionStorage.getItem("token_type")
   });
-  console.log("CALENDARZZZZZZZZZZZZZ", calendars);
+  let selectedCalendars =
+    localStorage.getItem("selectedCalendars") !== null
+      ? JSON.parse(sessionStorage.getItem("selectedCalendars"))
+      : [];
+
+  selectedCalendars = selectedCalendars.filter(calendarId => {
+    return calendars.data.find(calendar => calendar.id === calendarId);
+  });
+
+  localStorage.setItem(
+    "selectedCalendars",
+    JSON.stringify([...selectedCalendars])
+  );
+
+  console.log("Calendars Data", calendars.data);
   yield put({
     type: actionType.REQUEST_GET_CALENDARS_COMPLETED,
     payload: groupBy(calendars.data, 3)

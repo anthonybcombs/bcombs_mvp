@@ -103,6 +103,11 @@ export function* authenticated({ auth }) {
       }
     }
     yield put({ type: actionType.REQUEST_AUTH_COMPLETED, payload: authData });
+
+    yield put({
+      type: actionType.REQUEST_GET_CALENDARS_COMPLETED,
+      payload: []
+    });
     yield put({
       type: actionType.REQUEST_STATUS_COMPLETED,
       payload: {

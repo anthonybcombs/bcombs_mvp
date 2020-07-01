@@ -444,7 +444,7 @@ export default function createEventForm({
 
   // Editor
   const handleOnChange = evt => {
-    var newContent = evt.editor.getData();
+    let newContent = evt.editor.getData();
     if (newContent.length <= 500) {
       handleEventDetailsChange("description", newContent);
     }
@@ -730,7 +730,6 @@ export default function createEventForm({
         onChange={e => {
           handleEventDetailsChange("location", e.target.value);
         }}
-        ref={register({ required: true })}
       />
       <CKEditor
         name="description"
