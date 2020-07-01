@@ -314,10 +314,6 @@ annually on may 14
 every weekday
 */
 
-const TICKED_CALENDAR_ID =
-  localStorage.getItem("selectedCalendars") !== null
-    ? JSON.parse(localStorage.getItem("selectedCalendars"))
-    : [];
 export default function createEventForm({
   eventDetails,
   handleCalendarSelect,
@@ -346,6 +342,11 @@ export default function createEventForm({
 
   useEffect(() => {
     if (calendars) {
+      const TICKED_CALENDAR_ID =
+        localStorage.getItem("selectedCalendars") !== null
+          ? JSON.parse(localStorage.getItem("selectedCalendars"))
+          : [];
+
       const defaultCalendarSettings = calendars.find(
         item => TICKED_CALENDAR_ID && TICKED_CALENDAR_ID.includes(item.id)
       );
@@ -448,6 +449,8 @@ export default function createEventForm({
       handleEventDetailsChange("description", newContent);
     }
   };
+
+  console.log("defaultCalendar", defaultCalendar);
 
   return (
     <EventFormStyled
@@ -676,7 +679,10 @@ export default function createEventForm({
         />
       </div>
       <br />
-      {eventDetails.visibility === "custom" && (
+      {(eventDetails.visibility === "custom" ||
+        (defaultCalendar &&
+          defaultCalendar.visibilityType &&
+          defaultCalendar.visibilityType.toLowerCase() === "custom")) && (
         <div className="form-group">
           <div className="field">
             <CustomMultiSelect
