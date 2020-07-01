@@ -209,13 +209,19 @@ export function* gotCalendars() {
       ? JSON.parse(sessionStorage.getItem("selectedCalendars"))
       : [];
 
-  selectedCalendars = selectedCalendars.filter(calendarId => {
-    return calendars.data.find(calendar => calendar.id === calendarId);
-  });
+  selectedCalendars =
+    selectedCalendars &&
+    selectedCalendars.filter(calendarId => {
+      return (
+        calendars &&
+        calendars.data &&
+        calendars.data.find(calendar => calendar.id === calendarId)
+      );
+    });
 
   localStorage.setItem(
     "selectedCalendars",
-    JSON.stringify([...selectedCalendars])
+    JSON.stringify([...(selectedCalendars || [])])
   );
 
   console.log("Calendars Data", calendars.data);
