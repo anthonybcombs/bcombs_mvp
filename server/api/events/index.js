@@ -28,11 +28,14 @@ export const createNewEvent = async data => {
     guests = [],
     group_ids: []
   } = data;
+
+  console.log("CREATE NEW EVENT DATA", data);
   const db = makeDb();
   let result = {};
   let updatedGuestIds = [];
   try {
     const currentUser = await getUserFromDatabase(auth_email);
+
     await db.query(
       `INSERT INTO events(
         id,
@@ -123,16 +126,17 @@ export const createNewEvent = async data => {
 
     const formattedRecipients = await formatRecipient(updatedGuestIds, id, db);
 
-    // sendInvitation({
-    //   eventOwnerEmail: auth_email,
-    //   eventName: name,
-    //   eventId: id,
-    //   eventStartDate: start_of_event,
-    //   eventEndDate: end_of_event,
-    //   recipients: formattedRecipients
-    // });
+    sendInvitation({
+      eventOwnerEmail: auth_email,
+      eventName: name,
+      eventId: id,
+      eventStartDate: start_of_event,
+      eventEndDate: end_of_event,
+      recipients: formattedRecipients
+    });
 
     result = await getUserEvents(auth_email);
+    console.log("CREATE NEW EVENT result", result);
     // console.log("createNewEvent Result", result);
   } catch (err) {
     console.log("createNewEvent error", err);
@@ -311,16 +315,12 @@ export const getUserEvents = async (email, calendars = []) => {
     console.log("getUserEvents error", err);
   } finally {
     await db.close();
-    console.log("getUserEvents results", result);
-    console.log(
-      "getUserEvents ***********************************************"
-    );
+
     return result;
   }
 };
 
 export const editEvents = async data => {
-  console.log("Edit Event ", data);
   const {
     id,
     name,
@@ -342,6 +342,7 @@ export const editEvents = async data => {
   } = data;
   const db = makeDb();
   let results = [];
+  console.log("EDIT EVENTSSSSS", data);
   try {
     const currentEvent = await db.query(
       `SELECT name,status FROM events where id=UUID_TO_BIN(?)`,
@@ -399,10 +400,6 @@ export const editEvents = async data => {
       );
     }
 
-    console.log("currentEventStatus ", currentEvent[0].status);
-
-    console.log("currentEventStatus statuss", status);
-
     if (currentEvent[0].status !== status) {
       if (status === "Cancelled") {
         let notifiedMembers = await getMembers(id, db);
@@ -422,6 +419,8 @@ export const editEvents = async data => {
     }
 
     results = await getUserEvents(auth_email);
+
+    console.log("RESULTSSSSSSSSSSSSSSSSSSSSSSS", results);
   } catch (err) {
     console.log("editEvents error", err);
   } finally {
@@ -541,7 +540,6 @@ const formatRecipient = async (guests, eventId, db) => {
           calendar => calendar.user_id === item.user_id
         );
 
-        console.log("Send Invite Emails Current Calendar", currentCalendar);
         return {
           ...item,
           calendars: currentCalendar
