@@ -208,7 +208,7 @@ export function* gotCalendars() {
   if (calendars && calendars.data && calendars.data.length > 0) {
     let selectedCalendars =
       localStorage.getItem("selectedCalendars") !== null
-        ? JSON.parse(sessionStorage.getItem("selectedCalendars"))
+        ? JSON.parse(locaStorage.getItem("selectedCalendars"))
         : [];
 
     selectedCalendars =
