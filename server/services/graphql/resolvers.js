@@ -276,7 +276,33 @@ const resolvers = {
 
         for (let parent of parents) {
           parent.application = application.app_id;
-          parent = await addParent(parent);
+          await addParent(parent);
+
+          let checkEmail = await checkUserEmail(parent.email_address);
+
+          if(checkEmail && checkEmail.is_exist) {
+            console.log("Parent Status: ", checkEmail.status);
+          } else {
+            let userType = await getUserTypes();
+
+            userType = userType.filter((type) => {
+              return type.name === "USER"
+            })[0];
+
+            console.log("user type: ", userType);
+
+            let user = {
+              username: parent.firstname+""+parent.lastname,
+              email: parent.email_address,
+              password: parent.password,
+              type: userType
+            }
+
+            console.log("user:", user)
+            let addUser = await executeSignUp(user);
+
+            console.log("add user res:", addUser);
+          }
         }
       }
 

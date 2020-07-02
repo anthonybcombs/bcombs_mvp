@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import NumberFormat from 'react-number-format';
+import ErrorMessage from "../../../../helpers/ErrorMessage";
 
 const MedicalCareInfoStyled = styled.div`
   position: relative;
@@ -22,6 +23,8 @@ export default function index({
   childEmergencyCare,
   handleChildFormDetailsChange,
   counter,
+  register,
+  errors,
   isReadonly = false
 }) {
 
@@ -63,6 +66,17 @@ export default function index({
                   defaultValue={childEmergencyCare.doctor_phone}
                   placeholder="Phone"
                   format="(###) ###-####" mask="_"
+                  getInputRef={register({
+                    validate: {
+                      completed: value => {
+                        if(value) {
+                          return value.match(/\d/g).length === 10
+                        } else {
+                          return true;
+                        }
+                      }
+                    }
+                  })}
                 />
                 :
                 <input
@@ -77,6 +91,11 @@ export default function index({
 
               <label className="field-label">Phone</label>
             </div>
+            <ErrorMessage
+              field={errors["doctophone"]}
+              errorType="completed"
+              message="Phone Number must be consist of 10 digits."
+            />
           </div>
         </div>
 
@@ -112,6 +131,17 @@ export default function index({
                   defaultValue={childEmergencyCare.hospital_phone}
                   placeholder="Phone"
                   format="(###) ###-####" mask="_"
+                  getInputRef={register({
+                    validate: {
+                      completed: value => {
+                        if(value) {
+                          return value.match(/\d/g).length === 10
+                        } else {
+                          return true;
+                        }
+                      }
+                    }
+                  })}
                 />
                 :
                 <input
@@ -125,6 +155,11 @@ export default function index({
               }
               <label className="field-label">Phone</label>
             </div>
+            <ErrorMessage
+              field={errors["hospitalPhone"]}
+              errorType="completed"
+              message="Phone Number must be consist of 10 digits."
+            />
           </div>
         </div>
       </div>

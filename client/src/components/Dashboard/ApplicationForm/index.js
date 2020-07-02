@@ -1044,43 +1044,45 @@ export default function index() {
                   </div>
                   <div className="content">
                     {
-                      childsInformation.map((child, i) => (
-                        <div key={i} className="question-box">
-                          <p>What is the relation of <strong>{child.profile.first_name}</strong> to</p>
-                          {
-                            <ul>
+                      childsInformation.length > 1 && (
+                        childsInformation.map((child, i) => (
+                          <div key={i} className="question-box">
+                            <p>What is the relation of <strong>{child.profile.first_name}</strong> to</p>
                             {
-                              childsInformation.map((otherChild, j) => (
-                                child.id != otherChild.id && (
-                                  <li key={j}>
-                                    <span>
-                                      {otherChild.profile.first_name}
-                                      <small style={{fontSize: "50%"}}>(Child)</small>  
-                                    </span>
-                                    <select
-                                      name={"ch_ch" + i + "" + j}
-                                      className="input-field"
-                                      onChange={({target}) => {
-                                        handleParentChildRelationship()
-                                      }}
-                                    >
-                                      <option value="">Select</option>
-                                      {
-                                        RELATION_TO_CHILD_OPTIONS.map(opt => (
-                                          <option key={opt.id} value={opt.name}>
-                                            {opt.name}
-                                          </option>
-                                        ))
-                                      }
-                                    </select>
-                                  </li>
-                                )
-                              ))
+                              <ul>
+                              {
+                                childsInformation.map((otherChild, j) => (
+                                  child.id != otherChild.id && (
+                                    <li key={j}>
+                                      <span>
+                                        {otherChild.profile.first_name}
+                                        <small style={{fontSize: "50%"}}>(Child)</small>  
+                                      </span>
+                                      <select
+                                        name={"ch_ch" + i + "" + j}
+                                        className="input-field"
+                                        onChange={({target}) => {
+                                          handleParentChildRelationship()
+                                        }}
+                                      >
+                                        <option value="">Select</option>
+                                        {
+                                          RELATION_TO_CHILD_OPTIONS.map(opt => (
+                                            <option key={opt.id} value={opt.name}>
+                                              {opt.name}
+                                            </option>
+                                          ))
+                                        }
+                                      </select>
+                                    </li>
+                                  )
+                                ))
+                              }
+                              </ul>
                             }
-                            </ul>
-                          }
-                        </div>
-                      ))
+                          </div>
+                        ))
+                      )
                     }
                   </div>
                   <div className="application-btn-container">
