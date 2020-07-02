@@ -204,25 +204,24 @@ export function* gotCalendars() {
     access_token: sessionStorage.getItem("access_token"),
     token_type: sessionStorage.getItem("token_type")
   });
-  let selectedCalendars =
-    localStorage.getItem("selectedCalendars") !== null
-      ? JSON.parse(sessionStorage.getItem("selectedCalendars"))
-      : [];
 
-  selectedCalendars =
-    selectedCalendars &&
-    selectedCalendars.filter(calendarId => {
-      return (
-        calendars &&
-        calendars.data &&
-        calendars.data.find(calendar => calendar.id === calendarId)
-      );
-    });
+  if (calendars && calendars.data && calendars.data.length > 0) {
+    let selectedCalendars =
+      localStorage.getItem("selectedCalendars") !== null
+        ? JSON.parse(sessionStorage.getItem("selectedCalendars"))
+        : [];
 
-  localStorage.setItem(
-    "selectedCalendars",
-    JSON.stringify([...(selectedCalendars || [])])
-  );
+    selectedCalendars =
+      selectedCalendars &&
+      selectedCalendars.filter(calendarId => {
+        return calendars.data.find(calendar => calendar.id === calendarId);
+      });
+
+    localStorage.setItem(
+      "selectedCalendars",
+      JSON.stringify([...(selectedCalendars || [])])
+    );
+  }
 
   console.log("Calendars Data", calendars.data);
   yield put({

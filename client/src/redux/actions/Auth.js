@@ -105,10 +105,6 @@ export function* authenticated({ auth }) {
     yield put({ type: actionType.REQUEST_AUTH_COMPLETED, payload: authData });
 
     yield put({
-      type: actionType.REQUEST_GET_CALENDARS_COMPLETED,
-      payload: []
-    });
-    yield put({
       type: actionType.REQUEST_STATUS_COMPLETED,
       payload: {
         message: authData.status.message,
@@ -207,6 +203,11 @@ export function* loggedOut() {
   sessionStorage.removeItem("access_token");
   sessionStorage.removeItem("token_type");
   sessionStorage.removeItem("id_token");
+
+  yield put({
+    type: actionType.REQUEST_GET_CALENDARS_COMPLETED,
+    payload: []
+  });
   // sessionStorage.removeItem("bigCalendarViewType");
   // sessionStorage.removeItem("selectedCalendars");
   yield put({ type: actionType.REQUEST_AUTH_LOGOUT_COMPLETED });
