@@ -155,6 +155,8 @@ export default function index({
     status: "Scheduled",
     recurring: ""
   });
+
+  useEffect(() => {}, []);
   useEffect(() => {
     setEventDetails({
       ...eventDetails,

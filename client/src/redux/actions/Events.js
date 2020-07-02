@@ -8,35 +8,34 @@ import { GET_EVENT_QUERY } from "../../graphql/eventQuery";
 import {
   EVENT_CREATE_MUTATION,
   EVENT_UPDATE_MUTATION,
-  EVENT_DELETE_MUTATION,
+  EVENT_DELETE_MUTATION
 } from "../../graphql/eventMutation";
 
-const getEventsToDatabase = async (email) => {
+const getEventsToDatabase = async email => {
   try {
-    console.log("getEventsToDatabase email", email);
     const { data } = await graphqlClient.query({
       query: GET_EVENT_QUERY,
       variables: {
-        email,
-      },
+        email
+      }
     });
-    console.log("getEventsToDatabase data", data);
+
     return data.getEvents;
   } catch (error) {
     console.log("getEventsToDatabase error", error);
   }
 };
 
-const addEventInDatabase = async (event) => {
+const addEventInDatabase = async event => {
   try {
     console.log("addEventInDatabase event", event);
     const { data } = await graphqlClient.mutate({
       mutation: EVENT_CREATE_MUTATION,
       variables: {
         event: {
-          ...event,
-        },
-      },
+          ...event
+        }
+      }
     });
 
     console.log("addEventInDatabase data", data);
@@ -45,31 +44,31 @@ const addEventInDatabase = async (event) => {
     console.log("addEventInDatabase error", error);
   }
 };
-const deleteEventInDatabase = async (event) => {
+const deleteEventInDatabase = async event => {
   try {
     console.log("Eventtttt", event);
     const { data } = await graphqlClient.mutate({
       mutation: EVENT_DELETE_MUTATION,
       variables: {
         id: event.id,
-        email: event.email,
-      },
+        email: event.email
+      }
     });
     return data.deleteEvent;
   } catch (error) {
     console.log("deleteEventInDatabase error", error);
   }
 };
-const updateEventInDatabase = async (event) => {
+const updateEventInDatabase = async event => {
   try {
     console.log("Update Event Database", event);
     const { data } = await graphqlClient.mutate({
       mutation: EVENT_UPDATE_MUTATION,
       variables: {
         event: {
-          ...event,
-        },
-      },
+          ...event
+        }
+      }
     });
 
     console.log("updateEventInDatabase data", data);
@@ -78,42 +77,42 @@ const updateEventInDatabase = async (event) => {
     console.log("updateEventInDatabase error", error);
   }
 };
-export const addEvent = (event) => {
+export const addEvent = event => {
   return {
     type: actionType.REQUEST_ADD_EVENT,
-    event,
+    event
   };
 };
-export const requestSearchEvents = (searchDetails) => {
+export const requestSearchEvents = searchDetails => {
   return {
     type: actionType.REQUEST_SEARCH_EVENTS,
-    searchDetails,
+    searchDetails
   };
 };
-export const deleteEvent = (event) => {
+export const deleteEvent = event => {
   return {
     type: actionType.REQUEST_DELETE_EVENT,
-    event,
+    event
   };
 };
-export const updateEvent = (event) => {
+export const updateEvent = event => {
   return {
     type: actionType.REQUEST_UPDATE_EVENT,
-    event,
+    event
   };
 };
 
-export const getEvents = (email) => {
+export const getEvents = email => {
   return {
     type: actionType.REQUEST_EVENTS,
-    email,
+    email
   };
 };
 
-export const setEventList = (data) => {
+export const setEventList = data => {
   return {
     typ: actionType.REQUEST_EVENTS_COMPLETED,
-    payload: data,
+    payload: data
   };
 };
 
@@ -123,14 +122,14 @@ export function* addedEvent({ event }) {
     const response = yield call(addEventInDatabase, event);
     yield put({
       type: actionType.REQUEST_EVENTS_COMPLETED,
-      payload: response,
+      payload: response
     });
     yield put(setEventLoading(false));
   } catch (error) {
     console.log("Error addedEvent", error);
     yield put({
       type: actionType.REQUEST_EVENTS_COMPLETED,
-      payload: [],
+      payload: []
     });
     yield put(setEventLoading(false));
   }
@@ -141,7 +140,7 @@ export function* deletedEvent({ event }) {
 
     yield put({
       type: actionType.REQUEST_EVENTS_COMPLETED,
-      payload: response,
+      payload: response
     });
   } catch (err) {}
 }
@@ -151,7 +150,7 @@ export function* updatedEvent({ event }) {
 
     yield put({
       type: actionType.REQUEST_EVENTS_COMPLETED,
-      payload: response,
+      payload: response
     });
   } catch (err) {}
 }
@@ -162,14 +161,14 @@ export function* getUserEvents(action) {
     const response = yield call(getEventsToDatabase, action.email);
     yield put({
       type: actionType.REQUEST_EVENTS_COMPLETED,
-      payload: response,
+      payload: response
     });
     yield put(setEventLoading(false));
   } catch (err) {
     console.log("error getUserEvents", err);
     yield put({
       type: actionType.REQUEST_EVENTS_COMPLETED,
-      payload: [],
+      payload: []
     });
     yield put(setEventLoading(false));
   }
@@ -187,13 +186,13 @@ export function* searchedEvents({ searchDetails }) {
       yield put({
         type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
         payload: events.filter(
-          (event) =>
+          event =>
             searchDetails.calendars.length > 0 &&
             searchDetails.calendars.includes(event.calendar_id)
-        ),
+        )
       });
     } else {
-      let filteredEvents = events.filter((event) => {
+      let filteredEvents = events.filter(event => {
         return (
           (searchDetails.name.length > 0 &&
             event.name.includes(searchDetails.name)) ||
@@ -203,13 +202,13 @@ export function* searchedEvents({ searchDetails }) {
             searchDetails.endDate.length > 0 &&
             isWithinInterval(new Date(event.start_of_event), {
               start: new Date(searchDetails.startDate),
-              end: new Date(searchDetails.endDate),
+              end: new Date(searchDetails.endDate)
             }))
         );
       });
       yield put({
         type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
-        payload: filteredEvents,
+        payload: filteredEvents
       });
       if (filteredEvents.length === 0) {
         alert("No events found");
@@ -219,7 +218,7 @@ export function* searchedEvents({ searchDetails }) {
   } catch (err) {
     yield put({
       type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
-      payload: [],
+      payload: []
     });
     yield put(setEventLoading(false));
   }

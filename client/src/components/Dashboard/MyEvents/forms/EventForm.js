@@ -442,16 +442,6 @@ export default function createEventForm({
     handleEventDetailsChange("removeGuests", removedGuest);
   };
 
-  // Editor
-  const handleOnChange = evt => {
-    let newContent = evt.editor.getData();
-    if (newContent.length <= 500) {
-      handleEventDetailsChange("description", newContent);
-    }
-  };
-
-  console.log("defaultCalendar", defaultCalendar);
-
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
@@ -553,7 +543,6 @@ export default function createEventForm({
           placeholder="Select Status"
           ref={register({ required: true })}
           onChange={e => {
-            console.log("e.target.valueee", e.target.value);
             handleEventDetailsChange("status", e.target.value);
           }}
           value={eventDetails.status}>
@@ -635,7 +624,6 @@ export default function createEventForm({
                 new Date(eventDetails.recurringEndDate)
               }
               onChange={date => {
-                console.log("RECURRING END DATE", date);
                 handleEventDetailsChange(
                   "recurringEndDate",
                   format(new Date(date), "yyyy-MM-dd")
@@ -734,10 +722,14 @@ export default function createEventForm({
       <CKEditor
         name="description"
         content={eventDetails.description}
-        events={{
-          change: handleOnChange
+        // events={{
+        //   change: handleOnChange
+        // }}
+        onChange={value => {
+          if (value.length <= 500) {
+            handleEventDetailsChange("description", value);
+          }
         }}
-        // ref={register({ required: true })}
       />
       <ErrorMessage
         field={errors.description}
