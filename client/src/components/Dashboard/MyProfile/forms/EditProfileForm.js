@@ -126,13 +126,13 @@ const EditProfileModal = styled.form`
 const GENDER_OPTIONS = [
   { id: "male", value: "Male", name: "Male" },
   { id: "female", value: "Female", name: "Female" },
-  { id: "custom", value: "Custom", name: "Custom" },
+  { id: "custom", value: "Custom", name: "Custom" }
 ];
 
 const CUSTOM_GENDER_OPTIONS = [
   { id: "she", value: "She", name: "She" },
   { id: "he", value: "He", name: "He" },
-  { id: "they", value: "They", name: "They" },
+  { id: "they", value: "They", name: "They" }
 ];
 
 const ETHINICITY_OPTIONS = [
@@ -140,22 +140,48 @@ const ETHINICITY_OPTIONS = [
   {
     id: 2,
     name: "Black or African American",
-    label: "Black or African American",
+    label: "Black or African American"
   },
   { id: 3, name: "Hispanic or Latino", label: "AsiHispanic or Latinoan" },
   {
     id: 4,
     name: "Native American or American Indian",
-    label: "Native American or American Indian",
+    label: "Native American or American Indian"
   },
   {
     id: 5,
     name: "Native Hawaiian & Other Pacific Islander",
-    label: "Native Hawaiian & Other Pacific Islander",
+    label: "Native Hawaiian & Other Pacific Islander"
   },
   { id: 6, name: "White", label: "White" },
   { id: 7, name: "Other", label: "Other" },
-  { id: 8, name: "Prefer not to answer", label: "Prefer not to answer" },
+  { id: 8, name: "Prefer not to answer", label: "Prefer not to answer" }
+];
+
+const range = (start, end) => {
+  let arr = [];
+
+  for (let i = start; i <= end; i++) {
+    arr.push(i);
+  }
+
+  return arr;
+};
+
+const years = range(1990, new Date().getFullYear());
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
 ];
 
 export default function index({
@@ -163,13 +189,13 @@ export default function index({
   toggleProfileVisible,
   data,
   onSubmit,
-  handleInputChange,
+  handleInputChange
 }) {
   const theme = useContext(ThemeContext);
   const [defaultEthnicity, setDefaultEthnicity] = useState("");
   const { register, handleSubmit, errors, watch } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange",
+    reValidateMode: "onChange"
   });
   const minDate = new Date("1990-01-01");
   const maxDate = new Date(format(new Date(), "yyyy-MM-dd"));
@@ -182,7 +208,7 @@ export default function index({
   useEffect(() => {
     if (data) {
       const userEthnicity = ETHINICITY_OPTIONS.find(
-        (item) => item.name === data.ethnicity
+        item => item.name === data.ethnicity
       );
       setDefaultEthnicity((userEthnicity && userEthnicity.name) || "");
     }
@@ -193,7 +219,7 @@ export default function index({
   }
 
   // Check the length of number
-  const maxLengthCheck = (object) => {
+  const maxLengthCheck = object => {
     if (object.target.value.length > object.target.maxLength) {
       object.target.value = object.target.value.slice(
         0,
@@ -202,21 +228,42 @@ export default function index({
     }
   };
 
+  const CustomDatePicker = ({
+    value,
+    onClick,
+    name,
+    className,
+    placeholder
+  }) => (
+    <div className="field">
+      <input
+        defaultValue={value}
+        onClick={onClick}
+        name={name}
+        className={className}
+        placeholder="mm/dd/yyyy"
+        readOnly={true}
+        ref={register({ required: true })}
+      />
+      <label className="field-label">
+        <span className="required">*</span> Date of Birth
+      </label>
+    </div>
+  );
+
   return ReactDOM.createPortal(
     <EditProfileModal
       data-testid="app-dashboard-my-events-new-event"
       className="modal"
       theme={theme}
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <div className="modal-content">
         <span
           className="close"
           onClick={() => {
             toggleProfileVisible(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <div className="grid">
@@ -283,15 +330,13 @@ export default function index({
                 onChange={({ target }) => {
                   handleInputChange("gender", target.value);
                 }}
-                ref={register({ required: true })}
-              >
+                ref={register({ required: true })}>
                 <option value="">Select</option>
-                {GENDER_OPTIONS.map((opt) => (
+                {GENDER_OPTIONS.map(opt => (
                   <option
                     key={opt.id}
                     value={opt.id}
-                    selected={opt.id === data.gender}
-                  >
+                    selected={opt.id === data.gender}>
                     {opt.name}
                   </option>
                 ))}
@@ -315,15 +360,13 @@ export default function index({
                     onChange={({ target }) => {
                       handleInputChange("customgender", target.value);
                     }}
-                    ref={register({ required: true })}
-                  >
+                    ref={register({ required: true })}>
                     <option value="">Select</option>
-                    {CUSTOM_GENDER_OPTIONS.map((opt) => (
+                    {CUSTOM_GENDER_OPTIONS.map(opt => (
                       <option
                         key={opt.id}
                         value={opt.id}
-                        selected={opt.id === data.customgender}
-                      >
+                        selected={opt.id === data.customgender}>
                         {opt.name}
                       </option>
                     ))}
@@ -339,7 +382,7 @@ export default function index({
             </>
           )}
 
-          <div className="form-group">
+          {/* <div className="form-group">
             <div className="field">
               <DatePicker
                 className="field-input"
@@ -349,7 +392,7 @@ export default function index({
                 selected={
                   isValidDate(data.dateofbirth) && new Date(data.dateofbirth)
                 }
-                onChange={(date) => {
+                onChange={date => {
                   handleInputChange(
                     "dateofbirth",
                     format(new Date(date), "yyyy-MM-dd")
@@ -362,6 +405,74 @@ export default function index({
               />
               <label className="field-label">Date of Birth</label>
             </div>
+          </div> */}
+
+          <div className="form-group">
+            <div className="field">
+              <DatePicker
+                readOnly={false}
+                renderCustomHeader={({
+                  date,
+                  changeYear,
+                  changeMonth,
+                  decreaseMonth,
+                  increaseMonth,
+                  prevMonthButtonDisabled,
+                  nextMonthButtonDisabled
+                }) => (
+                  <div
+                    style={{
+                      margin: 10,
+                      display: "flex",
+                      justifyContent: "center"
+                    }}>
+                    <button
+                      onClick={decreaseMonth}
+                      disabled={prevMonthButtonDisabled}>
+                      {"<"}
+                    </button>
+                    <select
+                      value={new Date(date).getFullYear()}
+                      onChange={({ target: { value } }) => changeYear(value)}>
+                      {years.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={months[date.getMonth()]}
+                      onChange={({ target: { value } }) =>
+                        changeMonth(months.indexOf(value))
+                      }>
+                      {months.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      onClick={increaseMonth}
+                      disabled={nextMonthButtonDisabled}>
+                      {">"}
+                    </button>
+                  </div>
+                )}
+                disabled={false}
+                selected={
+                  isValidDate(data.dateofbirth) && new Date(data.dateofbirth)
+                }
+                onChange={date => {
+                  handleInputChange("dateofbirth", format(date, "yyyy-MM-dd"));
+                }}
+                name={"date_of_birth"}
+                customInput={
+                  <CustomDatePicker className="field-input birthdate-field" />
+                }
+              />
+            </div>
           </div>
 
           <div className="form-group">
@@ -371,7 +482,7 @@ export default function index({
                 className="field-input"
                 onChange={({ target }) => {
                   const currentEthnicity = ETHINICITY_OPTIONS.find(
-                    (item) => item.name === target.value
+                    item => item.name === target.value
                   );
 
                   handleInputChange(
@@ -383,10 +494,9 @@ export default function index({
                   // );
                 }}
                 ref={register}
-                value={defaultEthnicity}
-              >
+                value={defaultEthnicity}>
                 <option value="">Select</option>
-                {ETHINICITY_OPTIONS.map((opt) => (
+                {ETHINICITY_OPTIONS.map(opt => (
                   <option key={opt.id} value={opt.name}>
                     {opt.name}
                   </option>
