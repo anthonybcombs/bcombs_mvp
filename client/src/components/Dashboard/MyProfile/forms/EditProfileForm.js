@@ -228,13 +228,7 @@ export default function index({
     }
   };
 
-  const CustomDatePicker = ({
-    value,
-    onClick,
-    name,
-    className,
-    placeholder
-  }) => (
+  const CustomDatePicker = ({ value, onClick, name, className }) => (
     <div className="field">
       <input
         defaultValue={value}

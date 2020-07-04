@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Form from "../Forms/CreateProfileForm";
+//  overflow: auto;
 const CreateProfileStyled = styled.div`
   display: block;
   margin: 0 auto;
   background-color: white;
   width: 30%;
-  overflow: auto;
+
   height: auto;
   padding: 5px 30px 5px 30px;
   position: relative;
@@ -40,7 +41,9 @@ export default function index({ setCurrentPage, setProfileDetails, userType }) {
     setPersonalInfo({ ...personalInfo, [id]: value });
   };
   const handleFormSubmit = values => {
-    setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
+    setCurrentPage(prevCurrentPage => {
+      return prevCurrentPage + 1;
+    });
     setProfileDetails(prevPersonalDetails => {
       return { ...prevPersonalDetails, personalInfo: personalInfo };
     });
@@ -48,7 +51,12 @@ export default function index({ setCurrentPage, setProfileDetails, userType }) {
   return (
     <CreateProfileStyled data-testid="app-profile">
       <h2>Let's get started!</h2>
-      <Form onSubmit={handleFormSubmit} handleInputChange={handleInputChange} userType={userType} />
+      <Form
+        data={personalInfo}
+        onSubmit={handleFormSubmit}
+        handleInputChange={handleInputChange}
+        userType={userType}
+      />
     </CreateProfileStyled>
   );
 }
