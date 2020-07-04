@@ -67,7 +67,7 @@ export const createNewEvent = async data => {
         currentUser.id
       ]
     );
-
+    console.log("UPDATE GUEST LIST !!!!!!!!!!!!!!", guests);
     if (guests.length > 0) {
       let eventAttendeesValueQuery = guests.reduce((accumulator, userId) => {
         accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${userId}"),"Pending"),`;
@@ -122,6 +122,8 @@ export const createNewEvent = async data => {
 
       let members = await getMemberByMultipleGroupId(data.group_ids);
       updatedGuestIds = [...new Set([...guests, ...members])];
+    } else {
+      updatedGuestIds = [...guests];
     }
 
     const formattedRecipients = await formatRecipient(updatedGuestIds, id, db);
@@ -136,7 +138,7 @@ export const createNewEvent = async data => {
     });
 
     result = await getUserEvents(auth_email);
-    console.log("CREATE NEW EVENT result", result);
+
     // console.log("createNewEvent Result", result);
   } catch (err) {
     console.log("createNewEvent error", err);
@@ -342,7 +344,7 @@ export const editEvents = async data => {
   } = data;
   const db = makeDb();
   let results = [];
-  console.log("EDIT EVENTSSSSS", data);
+
   try {
     const currentEvent = await db.query(
       `SELECT name,status FROM events where id=UUID_TO_BIN(?)`,
@@ -419,8 +421,6 @@ export const editEvents = async data => {
     }
 
     results = await getUserEvents(auth_email);
-
-    console.log("RESULTSSSSSSSSSSSSSSSSSSSSSSS", results);
   } catch (err) {
     console.log("editEvents error", err);
   } finally {
@@ -533,6 +533,7 @@ const formatRecipient = async (guests, eventId, db) => {
           ","
         )})`
       );
+
       userCalendars = JSON.parse(JSON.stringify(userCalendars));
 
       userWithCalendars = userDetails.map(item => {

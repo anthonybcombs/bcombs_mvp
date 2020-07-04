@@ -72,6 +72,8 @@ const sendInvitation = async ({
 }) => {
   let numRecipients = recipients.length;
 
+  console.log("RECIPIENTS", recipients);
+
   for (let x = 0; x < numRecipients; x++) {
     try {
       const template = getTemplateInvitationStrings({
