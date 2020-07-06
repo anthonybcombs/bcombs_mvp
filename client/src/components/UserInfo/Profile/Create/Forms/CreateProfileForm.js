@@ -42,11 +42,14 @@ const CreateProfileStyled = styled.form`
   }
   button[type="submit"] {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
-    padding: 10px;
+
     display: block;
     margin: 10px auto;
     border: none;
-    margin-top: 2.5em;
+  }
+  .datepicker-btn {
+    height: 35px !important;
+    margin-top: 24px !important;
   }
   select {
     font-size: ${({ theme }) => theme.input.fontSize};
@@ -463,6 +466,8 @@ export default function CreateProfileForm({
                         justifyContent: "center"
                       }}>
                       <button
+                        type="button"
+                        className="datepicker-btn"
                         onClick={decreaseMonth}
                         disabled={prevMonthButtonDisabled}>
                         {"<"}
@@ -490,6 +495,8 @@ export default function CreateProfileForm({
                       </select>
 
                       <button
+                        type="button"
+                        className="datepicker-btn"
                         onClick={increaseMonth}
                         disabled={nextMonthButtonDisabled}>
                         {">"}
