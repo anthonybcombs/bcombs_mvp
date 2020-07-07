@@ -43,7 +43,7 @@ const getColumns = (selectedYear, month, index) => {
 
       cell: event => {
         let startDate = null;
-        if (event.recurring !== "") {
+        if (event.recurring !== "" && event.recurring !== null) {
           let startDateInMonth = new Date(`${selectedYear}-${month}-01`);
           let lastDateInMonth = new Date(
             `${selectedYear}-${month}-${getDaysInMonth(
@@ -120,6 +120,9 @@ const getColumns = (selectedYear, month, index) => {
         } else {
           startDate = format(new Date(event.start_of_event), DATE);
         }
+
+
+        console.log('startDateeeeeeee',event)
         return Array.isArray(startDate) ? (
           <ul>
             {startDate.map(date => (
