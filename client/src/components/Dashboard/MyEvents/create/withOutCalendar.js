@@ -192,6 +192,8 @@ export default function index({
   const dispatch = useDispatch();
 
   const handleEventDetailsChange = (id, value) => {
+    console.log('Handle Event Detail Change ID', id)
+     console.log('Handle Event Detail Change Value', value)
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
       return;
