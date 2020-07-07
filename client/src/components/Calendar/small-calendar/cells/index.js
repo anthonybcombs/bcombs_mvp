@@ -92,7 +92,7 @@ export default function index({
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
-  const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
+  const startDate = startOfWeek(monthStart, { weekStartsOn: 0 });
   const endDate = endOfWeek(monthEnd);
   const dateFormat = "d";
   const rows = [];
@@ -112,7 +112,7 @@ export default function index({
 
     const filterevents = [];
     let currentDay = new Date(day).getDay();
-    for(const event of events) {
+    for (const event of events) {
       let pushEvent = false;
       const startDate = new Date(event.start_of_event);
 
@@ -130,22 +130,25 @@ export default function index({
       }
 
       let checkRecurringEndDate =
-      (event.recurring_end_date && isBeforeRecurringEndDate) ||
-      (!event.recurring_end_date && !isBeforeRecurringEndDate);
+        (event.recurring_end_date && isBeforeRecurringEndDate) ||
+        (!event.recurring_end_date && !isBeforeRecurringEndDate);
 
-      if(format(day, "MM dd yyyy") === format(startDate, "MM dd yyyy")) { 
+      if (format(day, "MM dd yyyy") === format(startDate, "MM dd yyyy")) {
         pushEvent = true;
-      } else if (isDateAfter && event.recurring === "Daily" && checkRecurringEndDate) {
-        pushEvent = true;
-      } else if(
+      } else if (
         isDateAfter &&
-        event.recurring === "Weekly" && 
-        checkRecurringEndDate) {
-
+        event.recurring === "Daily" &&
+        checkRecurringEndDate
+      ) {
+        pushEvent = true;
+      } else if (
+        isDateAfter &&
+        event.recurring === "Weekly" &&
+        checkRecurringEndDate
+      ) {
         if (currentDay === startEventDay || currentDay === endEventDay) {
           pushEvent = true;
         }
-
       } else if (
         isDateAfter &&
         event.recurring === "Monthly" &&
@@ -183,7 +186,7 @@ export default function index({
         }
       }
 
-      if(pushEvent) {
+      if (pushEvent) {
         filterevents.push(event);
       }
     }

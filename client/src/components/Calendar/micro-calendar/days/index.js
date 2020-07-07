@@ -11,7 +11,7 @@ const DaysStyled = styled.div`
 export default function index({ currentMonth }) {
   const dateFormat = "E";
   const days = [];
-  let startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
+  let startDate = startOfWeek(currentMonth, { weekStartsOn: 0 });
   for (let i = 0; i < 7; i++) {
     days.push(<div key={i}>{format(addDays(startDate, i), dateFormat)}</div>);
   }

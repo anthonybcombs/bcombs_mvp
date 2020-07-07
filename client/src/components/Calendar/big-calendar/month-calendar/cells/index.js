@@ -107,7 +107,7 @@ export default function index({
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
-  const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
+  const startDate = startOfWeek(monthStart, { weekStartsOn: 0 });
   const endDate = endOfWeek(monthEnd);
   const dateFormat = "d";
   const rows = [];
@@ -236,6 +236,7 @@ export default function index({
         ? filteredEvents.filter((item, index) => index < 5)
         : filteredEvents;
 
+    console.log("formattedDateeeeeeeeeeeeee", formattedDate);
     days.push(
       <div
         key={day}
@@ -305,6 +306,7 @@ export default function index({
       </div>
     );
     day = addDays(day, 1);
+    console.log("DAYYYYYYYYYYYYYYYYYYY", day);
     rows.push(
       <div className="rows" key={day}>
         {days}

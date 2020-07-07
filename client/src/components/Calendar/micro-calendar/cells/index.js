@@ -73,7 +73,7 @@ export default function index({
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
-  const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
+  const startDate = startOfWeek(monthStart, { weekStartsOn: 0 });
   const endDate = endOfWeek(monthEnd);
   const dateFormat = "d";
   const rows = [];
@@ -100,13 +100,11 @@ export default function index({
         }`}
         onClick={() => {
           handleChangeDay(toDate(cloneDay));
-        }}
-      >
+        }}>
         <span
           className={`day ${
             hasEvents && !isSameDay(day, selectedDate) ? "has-events" : ""
-          }`}
-        >
+          }`}>
           {formattedDate}
           {eventsCount > 0 && (
             <span className="events-count">{eventsCount}</span>
