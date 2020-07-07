@@ -215,7 +215,8 @@ export default function index({
   };
   const handleEventDetailsChange = (id, value) => {
     // let newEventGuests = eventDetails.eventGuests;
-
+    console.log('Handle Event Detail Change ID', id)
+     console.log('Handle Event Detail Change Value', value)
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
       return;
@@ -275,8 +276,8 @@ export default function index({
           : []
     };
     console.log("PAYLOADDDDDDDDDDDDD", payload);
-    // dispatch(addEvent(payload));
-    // setEventDetails(initialEventDetails(selectedDate));
+    dispatch(addEvent(payload));
+    setEventDetails(initialEventDetails(selectedDate));
   };
 
   const handleGroupSelect = value => {
