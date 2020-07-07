@@ -90,7 +90,7 @@ const initialEventDetails = selectedDate => {
     eventGuests: [],
     eventType: "Event",
     location: "",
-    eventDescription: "",
+    description: "",
     status: "Scheduled"
   };
 };

@@ -122,7 +122,7 @@ const initialEventDetails = selectedDate => {
     familyMembers: [],
     eventType: "Event",
     location: "",
-    eventDescription: "",
+    description: "",
     status: "Scheduled"
   };
 };
@@ -275,8 +275,8 @@ export default function index({
           : []
     };
     console.log("PAYLOADDDDDDDDDDDDD", payload);
-    dispatch(addEvent(payload));
-    setEventDetails(initialEventDetails(selectedDate));
+    // dispatch(addEvent(payload));
+    // setEventDetails(initialEventDetails(selectedDate));
   };
 
   const handleGroupSelect = value => {
