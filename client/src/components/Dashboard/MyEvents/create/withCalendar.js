@@ -274,7 +274,7 @@ export default function index({
           ? selectedGroup.map(item => item.id)
           : []
     };
-
+    console.log("PAYLOADDDDDDDDDDDDD", payload);
     dispatch(addEvent(payload));
     setEventDetails(initialEventDetails(selectedDate));
   };

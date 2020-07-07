@@ -128,18 +128,20 @@ export const createNewEvent = async data => {
 
     const formattedRecipients = await formatRecipient(updatedGuestIds, id, db);
 
-    sendInvitation({
-      eventOwnerEmail: auth_email,
-      eventName: name,
-      eventId: id,
-      eventStartDate: start_of_event,
-      eventEndDate: end_of_event,
-      recipients: formattedRecipients
-    });
+    if (formattedRecipients && formattedRecipients.length > 0) {
+      sendInvitation({
+        eventOwnerEmail: auth_email,
+        eventName: name,
+        eventId: id,
+        eventStartDate: start_of_event,
+        eventEndDate: end_of_event,
+        recipients: formattedRecipients
+      });
+    }
 
     result = await getUserEvents(auth_email);
 
-    // console.log("createNewEvent Result", result);
+    console.log("createNewEvent Result", result);
   } catch (err) {
     console.log("createNewEvent error", err);
   } finally {
