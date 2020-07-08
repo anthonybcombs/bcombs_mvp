@@ -40,7 +40,7 @@ const getColumns = (selectedYear, month, index) => {
     {
       name: "Date",
       selector: "event_start_date",
-      sortable: true,
+      //sortable: true,
       cell: event => {
         let startDate = null;
         if (event.recurring !== "" && event.recurring !== null) {
@@ -288,11 +288,14 @@ export default function index({ events, selectedYear, familyMembers }) {
             .map((month, index) => {
               let eventThisMonth = getEventOnMonth(events, month, selectedYear);
 
-              eventThisMonth = eventThisMonth.sort(
-                (event1, event2) =>
-                  event1.start_of_event - event2.start_of_event
-              );
-
+              eventThisMonth = eventThisMonth
+                .sort(
+                  (event1, event2) =>
+                    new Date(event1.start_of_event) -
+                    new Date(event2.start_of_event)
+                )
+                .reverse();
+              console.log("EVENT THIS MONTHH", eventThisMonth);
               return (
                 <div
                   className="event-separator"
@@ -329,11 +332,19 @@ export default function index({ events, selectedYear, familyMembers }) {
               })
 
               .map((month, index) => {
-                const eventThisMonth = getEventOnMonth(
+                let eventThisMonth = getEventOnMonth(
                   events,
                   month,
                   selectedYear
                 );
+
+                eventThisMonth = eventThisMonth
+                  .sort(
+                    (event1, event2) =>
+                      new Date(event1.start_of_event) -
+                      new Date(event2.start_of_event)
+                  )
+                  .reverse();
                 return (
                   <div
                     className="event-separator"
@@ -380,11 +391,13 @@ export default function index({ events, selectedYear, familyMembers }) {
                   selectedYear
                 );
 
-                eventThisMonth = eventThisMonth.sort(
-                  (event1, event2) =>
-                    event1.start_of_event - event2.start_of_event
-                );
-
+                eventThisMonth = eventThisMonth
+                  .sort(
+                    (event1, event2) =>
+                      new Date(event1.start_of_event) -
+                      new Date(event2.start_of_event)
+                  )
+                  .reverse();
                 return (
                   <div
                     className="event-separator"
