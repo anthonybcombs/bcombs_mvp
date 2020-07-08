@@ -114,32 +114,32 @@ export default function ContactForm({
   onSubmit,
   handleContactDetailsChange,
   isLoading = false,
-  userNotExist = false,
+  userNotExist = false
 }) {
   const [groupOptions, setGroupOptions] = useState([]);
   const { register, handleSubmit, errors } = useForm({
-    mode: "onSubmit",
-    reValidateMode: "onChange",
+    mode: "onBlur",
+    reValidateMode: "onChange"
   });
 
   useEffect(() => {
     if (groups) {
       let defaultGroups = groups
-        .filter((item) => contactDetails.selectedGroups.includes(item.id))
-        .map((item) => {
+        .filter(item => contactDetails.selectedGroups.includes(item.id))
+        .map(item => {
           return { name: item.name, id: item.id };
         });
-      let formattedGroups = groups.map((item) => {
+      let formattedGroups = groups.map(item => {
         return {
           name: `${item.name}`,
-          id: item.id,
+          id: item.id
         };
       });
       setGroupOptions(formattedGroups);
     }
   }, [groups, isVisible]);
 
-  const handleSelectChange = (value) => {
+  const handleSelectChange = value => {
     handleContactDetailsChange("selectedGroups", value);
   };
 
@@ -149,8 +149,7 @@ export default function ContactForm({
     <ContactFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      theme={theme}
-    >
+      theme={theme}>
       <div className="grid">
         <div className="form-group">
           <div className="field">
@@ -195,7 +194,7 @@ export default function ContactForm({
               <span className="required">*</span> Last Name
             </label>
           </div>
-          <ErrorMessage
+          {/* <ErrorMessage
             field={errors.last_name}
             errorType="required"
             message="Lastname is required."
@@ -204,6 +203,19 @@ export default function ContactForm({
             field={errors.last_name}
             errorType="maxLength"
             message="Length should not be greater than 20."
+          /> */}
+
+          <ErrorMessage
+            field={errors.last_name}
+            errorType="required"
+            message={
+              <>
+                <p className="error error-size">
+                  Lastname is required.
+                  <br />
+                </p>
+              </>
+            }
           />
         </div>
 
@@ -222,14 +234,14 @@ export default function ContactForm({
               getInputRef={register({
                 required: true,
                 validate: {
-                  completed: (value) => {
+                  completed: value => {
                     if (value) {
                       return value.match(/\d/g).length === 10;
                     } else {
                       return true;
                     }
-                  },
-                },
+                  }
+                }
               })}
               required
             />
@@ -254,7 +266,13 @@ export default function ContactForm({
               onChange={({ target }) => {
                 handleContactDetailsChange("email", target.value);
               }}
-              ref={register({ required: true })}
+              ref={register({
+                required: true,
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                  message: "Valid email should contain '@' and '.'"
+                }
+              })}
               value={contactDetails.email}
             />
             <label className="field-label">
@@ -263,9 +281,18 @@ export default function ContactForm({
           </div>
           {userNotExist && <div style={{ color: "red" }}>User not exist!</div>}
           <ErrorMessage
+            className="error-size"
             field={errors.email}
             errorType="required"
-            message="Email is required."
+            message={
+              <>
+                <p className="error error-size">
+                  Email is required.
+                  <br />
+                  Valid email address should contain '@' and '.' <br />
+                </p>
+              </>
+            }
           />
         </div>
 
@@ -276,12 +303,11 @@ export default function ContactForm({
           name="relation"
           className="field-input"
           placeholder="Relation"
-          onChange={(e) => {
+          onChange={e => {
             handleContactDetailsChange("relation", e.target.value);
           }}
           ref={register({ required: true })}
-          value={contactDetails.relation}
-        >
+          value={contactDetails.relation}>
           <option key="0" value="Default" selected>
             Default
           </option>
@@ -357,8 +383,7 @@ export default function ContactForm({
       <button
         className={isLoading ? "disabled" : ""}
         type="submit"
-        style={{ marginTop: 50 }}
-      >
+        style={{ marginTop: 50 }}>
         {isLoading ? "Saving..." : "Save"}
       </button>
     </ContactFormStyled>
