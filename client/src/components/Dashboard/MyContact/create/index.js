@@ -25,7 +25,7 @@ export default function index({
   toggleCreateContactModal,
   contacts,
   groups,
-  auth
+  auth,
 }) {
   const [isLoading, setLoading] = useState(false);
   const [userNotExist, setUserNotExist] = useState(false);
@@ -37,7 +37,7 @@ export default function index({
     email: "",
     selectedGroups: [],
     userIds: [auth.sub],
-    relation: ""
+    relation: "",
   });
 
   const dispatch = useDispatch();
@@ -51,30 +51,30 @@ export default function index({
       email: "",
       selectedGroups: [],
       user_id: "",
-      relation: ""
+      relation: "",
     });
   };
   const handleContactDetailsChange = (id, value) => {
     if (id === "selectedGroups") {
       console.log("handleContactDetailsssssssssssssssss", value);
-      let selectedGroupIds = value.map(item => item.id);
+      let selectedGroupIds = value.map((item) => item.id);
 
       setContactDetails({
         ...contactDetails,
-        selectedGroups: selectedGroupIds
+        selectedGroups: selectedGroupIds,
       });
     } else {
       setContactDetails({
         ...contactDetails,
-        [id]: value
+        [id]: value,
       });
     }
   };
-  const handleSubmit = async value => {
+  const handleSubmit = async (value) => {
     setLoading(true);
     if (contactDetails) {
       const isEmailExist = contacts.findIndex(
-        item => item.email === contactDetails.email
+        (item) => item.email === contactDetails.email
       );
 
       if (isEmailExist === -1) {
@@ -84,7 +84,7 @@ export default function index({
           setUserNotExist(false);
           const payload = {
             ...contactDetails,
-            authEmail: auth.email
+            authEmail: auth.email,
           };
 
           if (contactDetails.email !== auth.email) {
@@ -106,11 +106,11 @@ export default function index({
     }
   };
 
-  const checkUserEmail = async email => {
+  const checkUserEmail = async (email) => {
     try {
       const { data } = await graphqlClient.query({
         query: CHECK_USER_EMAIL_QUERY,
-        variables: { email }
+        variables: { email },
       });
       return data.getUserByEmail;
     } catch (err) {
@@ -128,7 +128,8 @@ export default function index({
           className="close"
           onClick={() => {
             toggleCreateContactModal(false);
-          }}>
+          }}
+        >
           &times;
         </span>
         <div>

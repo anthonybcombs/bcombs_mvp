@@ -115,7 +115,6 @@ export default function ContactForm({
   handleContactDetailsChange,
   isLoading = false,
   userNotExist = false,
-  counter = 1,
 }) {
   const [groupOptions, setGroupOptions] = useState([]);
   const { register, handleSubmit, errors } = useForm({
@@ -156,6 +155,33 @@ export default function ContactForm({
         <div className="form-group">
           <div className="field">
             <input
+              name="first_name"
+              className="field-input"
+              placeholder="First Name"
+              onChange={({ target }) => {
+                handleContactDetailsChange("first_name", target.value);
+              }}
+              ref={register({ required: true, maxLength: 20 })}
+              defaultValue={contactDetails.first_name}
+            />
+            <label className="field-label">
+              <span className="required">*</span> First Name
+            </label>
+          </div>
+          <ErrorMessage
+            field={errors.first_name}
+            errorType="required"
+            message="Firstname is required."
+          />
+          <ErrorMessage
+            field={errors.first_name}
+            errorType="maxLength"
+            message="Length should not be greater than 20."
+          />
+        </div>
+        <div className="form-group">
+          <div className="field">
+            <input
               name="last_name"
               className="field-input"
               placeholder="Last Name"
@@ -176,34 +202,6 @@ export default function ContactForm({
           />
           <ErrorMessage
             field={errors.last_name}
-            errorType="maxLength"
-            message="Length should not be greater than 20."
-          />
-        </div>
-
-        <div className="form-group">
-          <div className="field">
-            <input
-              name="first_name"
-              className="field-input"
-              placeholder="First Name"
-              onChange={({ target }) => {
-                handleContactDetailsChange("first_name", target.value);
-              }}
-              ref={register({ required: true, maxLength: 20 })}
-              value={contactDetails.first_name}
-            />
-            <label className="field-label">
-              <span className="required">*</span> First Name
-            </label>
-          </div>
-          <ErrorMessage
-            field={errors.first_name}
-            errorType="required"
-            message="Firstname is required."
-          />
-          <ErrorMessage
-            field={errors.first_name}
             errorType="maxLength"
             message="Length should not be greater than 20."
           />
@@ -271,30 +269,38 @@ export default function ContactForm({
           />
         </div>
 
-        <div className="form-group">
-          <div className="field">
-            <input
-              type="text"
-              name="relation"
-              className="field-input"
-              placeholder="Relation"
-              onChange={({ target }) => {
-                handleContactDetailsChange("relation", target.value);
-              }}
-              ref={register({ required: true })}
-              value={contactDetails.relation}
-            />
-            <label className="field-label">
-              <span className="required">*</span> Relation
-            </label>
-          </div>
-          <ErrorMessage
-            field={errors.email}
-            errorType="required"
-            message="Relation is required."
-          />
-        </div>
+        <label>
+          <span style={{ color: "red" }}>*</span> Relation
+        </label>
+        <select
+          name="relation"
+          className="field-input"
+          placeholder="Relation"
+          onChange={(e) => {
+            handleContactDetailsChange("relation", e.target.value);
+          }}
+          ref={register({ required: true })}
+          value={contactDetails.relation}
+        >
+          <option key="0" value="Default" selected>
+            Default
+          </option>
+          <option key="1" value="Father">
+            Father
+          </option>
+          <option key="2" value="Mother">
+            Mother
+          </option>
+          <option key="3" value="Sibling">
+            Sibling
+          </option>
+        </select>
       </div>
+      <ErrorMessage
+        field={errors.email}
+        errorType="required"
+        message="Relation is required."
+      />
 
       <div>
         <p>Assign to existing group</p>
