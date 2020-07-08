@@ -210,13 +210,15 @@ export default function index({
       ...eventDetails,
       date: currentDateTime,
       time: format(currentDateTime, "hh:mm a"),
-      eventSchedule: [currentDateTime, currentDateTime]
+      eventSchedule: [
+        currentDateTime,
+        new Date(addMinutes(new Date(currentDateTime), 30))
+      ]
     });
   };
   const handleEventDetailsChange = (id, value) => {
     // let newEventGuests = eventDetails.eventGuests;
-    console.log('Handle Event Detail Change ID', id)
-     console.log('Handle Event Detail Change Value', value)
+
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
       return;
@@ -225,10 +227,11 @@ export default function index({
         new Date(value[0]),
         new Date(value[1])
       );
+
       if (isStartDateAfterEndDate) {
         value[1] = new Date(addMinutes(new Date(value[0]), 30));
       }
-      setEventDetails({ ...eventDetails, [id]: value });
+      setEventDetails({ ...eventDetails, eventSchedule: value });
     } else {
       setEventDetails({ ...eventDetails, [id]: value });
     }

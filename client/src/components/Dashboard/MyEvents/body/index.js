@@ -40,7 +40,7 @@ const getColumns = (selectedYear, month, index) => {
     {
       name: "Date",
       selector: "event_start_date",
-
+      sortable: true,
       cell: event => {
         let startDate = null;
         if (event.recurring !== "" && event.recurring !== null) {
@@ -121,8 +121,7 @@ const getColumns = (selectedYear, month, index) => {
           startDate = format(new Date(event.start_of_event), DATE);
         }
 
-
-        console.log('startDateeeeeeee',event)
+        console.log("startDateeeeeeee", event);
         return Array.isArray(startDate) ? (
           <ul>
             {startDate.map(date => (
@@ -269,9 +268,11 @@ export default function index({ events, selectedYear, familyMembers }) {
     (month, index) => currentMonth < month.value
   );
 
-  const eventOnThisMonth = monthList.filter(
+  let eventOnThisMonth = monthList.filter(
     (month, index) => currentMonth === month.value
   );
+  //  .sort((event1, event2) => event1.start_of_event - event2.start_of_event);
+
   return (
     <div data-testid="app-dashboard-my-events-body" id="events-body">
       {currentYear === selectedYear ? (
@@ -285,11 +286,13 @@ export default function index({ events, selectedYear, familyMembers }) {
             })
 
             .map((month, index) => {
-              const eventThisMonth = getEventOnMonth(
-                events,
-                month,
-                selectedYear
+              let eventThisMonth = getEventOnMonth(events, month, selectedYear);
+
+              eventThisMonth = eventThisMonth.sort(
+                (event1, event2) =>
+                  event1.start_of_event - event2.start_of_event
               );
+
               return (
                 <div
                   className="event-separator"
@@ -371,11 +374,17 @@ export default function index({ events, selectedYear, familyMembers }) {
               })
 
               .map((month, index) => {
-                const eventThisMonth = getEventOnMonth(
+                let eventThisMonth = getEventOnMonth(
                   events,
                   month,
                   selectedYear
                 );
+
+                eventThisMonth = eventThisMonth.sort(
+                  (event1, event2) =>
+                    event1.start_of_event - event2.start_of_event
+                );
+
                 return (
                   <div
                     className="event-separator"
@@ -415,10 +424,11 @@ export default function index({ events, selectedYear, familyMembers }) {
             })
 
             .map((month, index) => {
-              const eventThisMonth = getEventOnMonth(
-                events,
-                month,
-                selectedYear
+              let eventThisMonth = getEventOnMonth(events, month, selectedYear);
+
+              eventThisMonth = eventThisMonth.sort(
+                (event1, event2) =>
+                  event1.start_of_event - event2.start_of_event
               );
               return (
                 <div

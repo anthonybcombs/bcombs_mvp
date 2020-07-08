@@ -192,8 +192,8 @@ export default function index({
   const dispatch = useDispatch();
 
   const handleEventDetailsChange = (id, value) => {
-    console.log('Handle Event Detail Change ID', id)
-     console.log('Handle Event Detail Change Value', value)
+    console.log("Handle Event Detail Change ID", id);
+    console.log("Handle Event Detail Change Value", value);
     if (id === "eventGuests") {
       setEventDetails({ ...eventDetails, eventGuests: value });
       return;
@@ -203,6 +203,7 @@ export default function index({
         new Date(value[1])
       );
 
+      console.log("EVENT SCHEDULE ", isStartDateAfterEndDate);
       if (isStartDateAfterEndDate) {
         value[1] = new Date(addMinutes(new Date(value[0]), 30));
       }
