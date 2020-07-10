@@ -1193,7 +1193,8 @@ export default function index() {
                         e.preventDefault();
 
                         if(!isFormValid(selectedStep)) {
-                          formRef.current.dispatchEvent(new Event("submit"));
+                          formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
+                          e.preventDefault();
                           return;
                         };
                         clearError();
