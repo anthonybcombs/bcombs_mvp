@@ -1202,7 +1202,10 @@ export default function index() {
                         else if(selectedStep == 2) handleWizardSelection(3)
                         else if (selectedStep == 3) handleWizardSelection(4)
           
-                        scrollToTop("smooth");
+                        //scrollToTop("smooth");
+
+                        window.scrollTo(0, 0)
+
                       }}
                     >
                       Next
@@ -1217,6 +1220,7 @@ export default function index() {
                       else if(selectedStep == 2) handleWizardSelection(1)
         
                       scrollToTop("smooth");
+
                     }}>
                       Previous
                     </a>
