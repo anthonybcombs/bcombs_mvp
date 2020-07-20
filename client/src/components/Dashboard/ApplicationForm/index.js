@@ -1193,7 +1193,8 @@ export default function index() {
                         e.preventDefault();
 
                         if(!isFormValid(selectedStep)) {
-                          formRef.current.dispatchEvent(new Event("submit"));
+                          formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
+                          e.preventDefault();
                           return;
                         };
                         clearError();
@@ -1201,7 +1202,10 @@ export default function index() {
                         else if(selectedStep == 2) handleWizardSelection(3)
                         else if (selectedStep == 3) handleWizardSelection(4)
           
-                        scrollToTop("smooth");
+                        //scrollToTop("smooth");
+
+                        window.scrollTo(0, 0)
+
                       }}
                     >
                       Next
@@ -1216,6 +1220,7 @@ export default function index() {
                       else if(selectedStep == 2) handleWizardSelection(1)
         
                       scrollToTop("smooth");
+
                     }}>
                       Previous
                     </a>
