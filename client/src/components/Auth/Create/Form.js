@@ -201,13 +201,13 @@ export default function Form({
   handleChangeUserType,
   status,
   userDetails,
-  userTypes,
+  userTypes
 }) {
   const theme = useContext(ThemeContext);
   const [isPopoverOpen, setPopOverOpen] = useState(false);
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, watch } = useForm({
     mode: "onBlur",
-    reValidateMode: "onChange",
+    reValidateMode: "onChange"
   });
   const { type } = userDetails;
 
@@ -215,10 +215,9 @@ export default function Form({
     <CreateUserFormStyled
       data-testid="app-create-form"
       theme={theme}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <div id="userTypes" className="grid">
-        {userTypes.map((userType) => (
+        {userTypes.map(userType => (
           <button
             key={userType.id}
             data-testid="app-create-button-user"
@@ -226,8 +225,7 @@ export default function Form({
             type="button"
             onClick={() => {
               handleChangeUserType(userType);
-            }}
-          >
+            }}>
             {userType.name.toUpperCase()}
           </button>
         ))}
@@ -250,7 +248,7 @@ export default function Form({
             }}
             ref={register({
               minLength: 2,
-              maxLength: 15,
+              maxLength: 15
               //pattern: /^(([0-9][A-z]+)|([A-z]+))$/
               // validate: {
               //   alphanumeric: value => {
@@ -291,8 +289,8 @@ export default function Form({
               required: true,
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: "Valid email should contain '@' and '.'",
-              },
+                message: "Valid email should contain '@' and '.'"
+              }
             })}
           />
           <label className="field-label">
@@ -333,27 +331,27 @@ export default function Form({
               required: true,
               minLength: 8,
               validate: {
-                containsOneUpperCase: (value) => {
+                containsOneUpperCase: value => {
                   const oneUpperCaseRegex = /(?=.*[A-Z])/;
                   return oneUpperCaseRegex.test(value);
                 },
-                containsOneLowerCase: (value) => {
+                containsOneLowerCase: value => {
                   const oneLowerCaseRegex = /(?=.*[a-z])/;
                   return oneLowerCaseRegex.test(value);
                 },
-                containsOneNumber: (value) => {
+                containsOneNumber: value => {
                   const oneNumberRegex = /(?=.*\d)/;
                   return oneNumberRegex.test(value);
                 },
-                containsOneSpecialCharacter: (value) => {
+                containsOneSpecialCharacter: value => {
                   const oneSpecialCharacterRegex = /(?=.*[!@#$%^&+=])/;
                   return oneSpecialCharacterRegex.test(value);
-                },
+                }
                 // passwordRequirement: value => {
                 //   const passworRequirementRegex = /^(?=.{10,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/;
                 //   return passworRequirementRegex.test(value);
                 // }
-              },
+              }
             })}
           />
 
@@ -372,8 +370,7 @@ export default function Form({
                   arrowColor="lightgrey"
                   arrowSize={7}
                   arrowStyle={{ opacity: 1 }}
-                  arrow="center"
-                >
+                  arrow="center">
                   <PopoverStyled>
                     * Password minimum length must be at least 8 characters.
                     <br />
@@ -385,8 +382,7 @@ export default function Form({
                     <br />* Must contain atleast one special character.
                   </PopoverStyled>
                 </ArrowContainer>
-              )}
-            >
+              )}>
               <FontAwesomeIcon
                 className="info-icon"
                 onClick={() => {
@@ -438,10 +434,12 @@ export default function Form({
             }}
             ref={register({
               required: true,
-              minLength: 8,
+              //minLength: 8,
               validate: {
-                sameConfirmPassword: (value) => value === password.value,
-              },
+                sameConfirmPassword: value => {
+                  return value === watch("password");
+                }
+              }
             })}
           />
           <label className="field-label">
@@ -466,8 +464,7 @@ export default function Form({
       <button
         disabled={errors.password || errors.email}
         type="submit"
-        data-testid="app-create-button-signup"
-      >
+        data-testid="app-create-button-signup">
         SIGN UP
       </button>
       <p>
