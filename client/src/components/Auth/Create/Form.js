@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "@reach/router";
 import { useForm } from "react-hook-form";
 import styled, { ThemeContext } from "styled-components";
 import Popover, { ArrowContainer } from "react-tiny-popover";
+import Recaptcha from "react-recaptcha";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -205,11 +206,21 @@ export default function Form({
 }) {
   const theme = useContext(ThemeContext);
   const [isPopoverOpen, setPopOverOpen] = useState(false);
-  const { register, handleSubmit, errors, watch } = useForm({
+  const { register, handleSubmit, errors, watch, setValue } = useForm({
     mode: "onBlur",
     reValidateMode: "onChange"
   });
   const { type } = userDetails;
+
+  const onVerifyCaptcha = (response) => {
+    if (response) {
+      setValue('not_robot', response);
+    }
+  };
+
+  useEffect(() => {
+    register({ name: 'not_robot'}, { required: true });
+  });
 
   return (
     <CreateUserFormStyled
@@ -458,6 +469,23 @@ export default function Form({
           field={errors.confirm_password}
           errorType="sameConfirmPassword"
           message="The passwords do not match."
+        />
+      </div>
+
+      <div className="form-group">
+        <div className="field">
+          <Recaptcha
+            sitekey='6LcDvbQZAAAAAI5egI5fYzQYk3wCOZULXy_wHFM9'
+            render='explicit'
+            verifyCallback={onVerifyCaptcha}
+          />
+        </div>
+
+        <ErrorMessage
+          className="error-size"
+          field={errors.not_robot}
+          errorType="required"
+          message="Please verify that you are not a robot."
         />
       </div>
 

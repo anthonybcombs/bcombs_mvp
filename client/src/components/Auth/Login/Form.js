@@ -1,10 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import { Link } from "@reach/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGooglePlus, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import ErrorMessage from "../../../helpers/ErrorMessage";
+import Recaptcha from "react-recaptcha";
+
 const LoginFormStyled = styled.form`
   input:required {
     box-shadow: none;
@@ -106,10 +108,21 @@ export default function Form({
   handleFacebookSignIn
 }) {
   const theme = useContext(ThemeContext);
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, setValue } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
+
+  const onVerifyCaptcha = (response) => {
+    if (response) {
+      setValue('not_robot', response);
+    }
+  };
+
+  useEffect(() => {
+    register({ name: 'not_robot'}, { required: true });
+  });
+
   return (
     <LoginFormStyled
       theme={theme}
@@ -148,6 +161,16 @@ export default function Form({
         field={errors.password}
         errorType="required"
         message="Password is required."
+      />
+      <Recaptcha
+        sitekey='6LcDvbQZAAAAAI5egI5fYzQYk3wCOZULXy_wHFM9'
+        render='explicit'
+        verifyCallback={onVerifyCaptcha}
+      />
+      <ErrorMessage
+        field={errors.not_robot}
+        errorType="required"
+        message="Please verify that you are not a robot."
       />
       <button type="submit" data-testid="app-login-button-signin">
         SIGN IN
