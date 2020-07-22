@@ -2,10 +2,15 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 import { registerLocale } from "react-datepicker";
 
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+
+import {
+  OPTION_MALE_RELATIONSHIPS,
+  OPTION_FEMALE_RELATIONSHIPS
+} from "../../../../constants/options";
 
 const EmergencyContactFormStyled = styled.div`
   position: relative;
@@ -25,7 +30,8 @@ const EmergencyContactFormStyled = styled.div`
     font-size: 18px;
   }
 
-  #contacts td, #contacts th {
+  #contacts td,
+  #contacts th {
     border: 0;
     padding: 10px;
     text-align: center;
@@ -64,7 +70,7 @@ const EmergencyContactFormStyled = styled.div`
     top: 15px;
     position: absolute;
   }
-  
+
   .error {
     margin: 0;
   }
@@ -78,8 +84,8 @@ export default function index({
   errors
 }) {
   const GENDER_OPTIONS = [
-    { id: 1, value: "Male", name: "Male"},
-    { id: 2, value: "Female", name: "Female"}
+    { id: 1, value: "Male", name: "Male" },
+    { id: 2, value: "Female", name: "Female" }
   ];
 
   const CUSTOM_GENDER_OPTIONS = [
@@ -89,36 +95,40 @@ export default function index({
   ];
 
   const RELATION_TO_CHILD_OPTIONS = [
-    { id: 1, value: "Mother / Father", name: "Mother / Father"},
-    { id: 2, value: "Grandparent", name: "Grandparent"},
-    { id: 3, value: "Aunt / Uncle", name: "Aunt / Uncle"},
-    { id: 4, value: "Sibling", name: "Sibling"},
-    { id: 5, value: "Other", name: "Other"}
+    { id: 1, value: "Mother / Father", name: "Mother / Father" },
+    { id: 2, value: "Grandparent", name: "Grandparent" },
+    { id: 3, value: "Aunt / Uncle", name: "Aunt / Uncle" },
+    { id: 4, value: "Sibling", name: "Sibling" },
+    { id: 5, value: "Other", name: "Other" }
   ];
 
   const renderTableData = () => {
-
     let rows = [];
 
-    for(let i = 0; i < 4; i++) {
-      let row =
+    for (let i = 0; i < 4; i++) {
+      let row = (
         <tr key={i}>
           <td>
             {!isReadonly && i <= 1 && <span className="required">*</span>}
             <input
               name={"ec_firstname_" + i}
               className="input-field"
-              onChange={({target}) => {
-                handleParentFormDetailsChange(i, "emergency_contacts", "first_name", target.value)
+              onChange={({ target }) => {
+                handleParentFormDetailsChange(
+                  i,
+                  "emergency_contacts",
+                  "first_name",
+                  target.value
+                );
               }}
               defaultValue={parentEmergencyContacts[i].first_name}
               readOnly={isReadonly}
               ref={register({
-                required: (i <= 1)
+                required: i <= 1
               })}
             />
             <ErrorMessage
-              field={errors["ec_firstname_"+ i]}
+              field={errors["ec_firstname_" + i]}
               errorType="required"
               message="Firstname is required."
             />
@@ -128,86 +138,97 @@ export default function index({
             <input
               name={"ec_lastname_" + i}
               className="input-field"
-              onChange={({target}) => {
-                handleParentFormDetailsChange(i, "emergency_contacts", "last_name", target.value)
+              onChange={({ target }) => {
+                handleParentFormDetailsChange(
+                  i,
+                  "emergency_contacts",
+                  "last_name",
+                  target.value
+                );
               }}
               defaultValue={parentEmergencyContacts[i].last_name}
               readOnly={isReadonly}
               ref={register({
-                required: (i <= 1)
+                required: i <= 1
               })}
             />
             <ErrorMessage
-              field={errors["ec_lastname_"+ i]}
+              field={errors["ec_lastname_" + i]}
               errorType="required"
               message="Lastname is required."
             />
           </td>
           <td>
             {!isReadonly && i <= 1 && <span className="required">*</span>}
-            {
-              !isReadonly ? (
-                <select
-                  name={"ec_gender_" + i}
-                  className="input-field"
-                  onChange={({target}) => {
-                    handleParentFormDetailsChange(i, "emergency_contacts", "gender", target.value)
-                  }}
-                  ref={register({
-                    required: (i <= 1)
-                  })}
-                >
-                  <option value="">Select Type</option>
-                  <optgroup label="Gender">
-                    {GENDER_OPTIONS.map(opt => (
-                      <option key={opt.id} value={opt.name}>
-                        {opt.name}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="Custom">
-                    {CUSTOM_GENDER_OPTIONS.map(opt => (
-                      <option key={opt.id} value={opt.name}>
-                        {opt.name}
-                      </option>
-                    ))}
-                  </optgroup>
-
-                </select>
-              )
-              :
-              <input 
+            {!isReadonly ? (
+              <select
+                name={"ec_gender_" + i}
+                className="input-field"
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    i,
+                    "emergency_contacts",
+                    "gender",
+                    target.value
+                  );
+                }}
+                ref={register({
+                  required: i <= 1
+                })}>
+                <option value="">Select Type</option>
+                <optgroup label="Gender">
+                  {GENDER_OPTIONS.map(opt => (
+                    <option key={opt.id} value={opt.name}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="Custom">
+                  {CUSTOM_GENDER_OPTIONS.map(opt => (
+                    <option key={opt.id} value={opt.name}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+            ) : (
+              <input
                 type="text"
                 name={"ec_gender_" + i}
                 className="input-field"
                 defaultValue={parentEmergencyContacts[i].gender}
                 readOnly={isReadonly}
               />
-            }
+            )}
             <ErrorMessage
-              field={errors["ec_gender_"+ i]}
+              field={errors["ec_gender_" + i]}
               errorType="required"
               message="Gender is required."
             />
           </td>
           <td>
             {!isReadonly && i <= 1 && <span className="required">*</span>}
-            {
-              !isReadonly ?
-              <NumberFormat 
+            {!isReadonly ? (
+              <NumberFormat
                 name={"mobile_phone_" + i}
                 className="input-field"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange(i, "emergency_contacts", "mobile_phone", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    i,
+                    "emergency_contacts",
+                    "mobile_phone",
+                    target.value
+                  );
                 }}
                 defaultValue={parentEmergencyContacts[i].mobile_phone}
-                format="(###) ###-####" mask="_"
+                format="(###) ###-####"
+                mask="_"
                 getInputRef={register({
-                  required: (i <= 1),
+                  required: i <= 1,
                   validate: {
                     completed: value => {
-                      if(value) {
-                        return value.match(/\d/g).length === 10
+                      if (value) {
+                        return value.match(/\d/g).length === 10;
                       } else {
                         return true;
                       }
@@ -215,19 +236,24 @@ export default function index({
                   }
                 })}
               />
-              :
+            ) : (
               <input
                 name={"mobile_phone_" + i}
                 className="input-field"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange(i, "emergency_contacts", "mobile_phone", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    i,
+                    "emergency_contacts",
+                    "mobile_phone",
+                    target.value
+                  );
                 }}
                 defaultValue={parentEmergencyContacts[i].mobile_phone}
                 readOnly={isReadonly}
               />
-            }
+            )}
             <ErrorMessage
-              field={errors["mobile_phone_"+ i]}
+              field={errors["mobile_phone_" + i]}
               errorType="required"
               message="Mobile is required."
             />
@@ -238,21 +264,26 @@ export default function index({
             />
           </td>
           <td>
-            {
-              !isReadonly ?
-              <NumberFormat 
+            {!isReadonly ? (
+              <NumberFormat
                 name={"work_phone_" + i}
                 className="input-field"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange(i, "emergency_contacts", "work_phone", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    i,
+                    "emergency_contacts",
+                    "work_phone",
+                    target.value
+                  );
                 }}
                 defaultValue={parentEmergencyContacts[i].work_phone}
-                format="(###) ###-####" mask="_"
+                format="(###) ###-####"
+                mask="_"
                 getInputRef={register({
                   validate: {
                     completed: value => {
-                      if(value) {
-                        return value.match(/\d/g).length === 10
+                      if (value) {
+                        return value.match(/\d/g).length === 10;
                       } else {
                         return true;
                       }
@@ -260,17 +291,22 @@ export default function index({
                   }
                 })}
               />
-              :
+            ) : (
               <input
                 name={"work_phone_" + i}
                 className="input-field"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange(i, "emergency_contacts", "work_phone", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    i,
+                    "emergency_contacts",
+                    "work_phone",
+                    target.value
+                  );
                 }}
                 defaultValue={parentEmergencyContacts[i].work_phone}
                 readOnly={isReadonly}
               />
-            }
+            )}
             <ErrorMessage
               field={errors["work_phone_" + i]}
               errorType="completed"
@@ -279,53 +315,74 @@ export default function index({
           </td>
           <td>
             {!isReadonly && i <= 1 && <span className="required">*</span>}
-            {
-              !isReadonly ?
+            {!isReadonly ? (
               <select
                 name={"relationship_to_child_" + i}
                 className="input-field"
-                onChange={({target}) => {
-                  handleParentFormDetailsChange(i, "emergency_contacts", "relationship_to_child", target.value)
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    i,
+                    "emergency_contacts",
+                    "relationship_to_child",
+                    target.value
+                  );
                 }}
                 defaultValue={parentEmergencyContacts[i].relationship_to_child}
                 ref={register({
-                  required: (i <= 1)
-                })}
-              >
+                  required: i <= 1
+                })}>
                 <option value="">Select Type</option>
-                {RELATION_TO_CHILD_OPTIONS.map(opt => (
+                {/* {RELATION_TO_CHILD_OPTIONS.map(opt => (
                   <option key={opt.id} value={opt.name}>
                     {opt.name}
                   </option>
-                ))}
+                ))} */}
+                {(parentEmergencyContacts[i].gender === "Female" ||
+                  parentEmergencyContacts[i].gender === "She") &&
+                  OPTION_FEMALE_RELATIONSHIPS.map(opt => (
+                    <option key={opt.value} value={opt.value}>
+                      {" "}
+                      {opt.label}
+                    </option>
+                  ))}
+
+                {(parentEmergencyContacts[i].gender === "Male" ||
+                  parentEmergencyContacts[i].gender === "He") &&
+                  OPTION_MALE_RELATIONSHIPS.map(opt => (
+                    <option key={opt.value} value={opt.value}>
+                      {" "}
+                      {opt.label}
+                    </option>
+                  ))}
               </select>
-              :
-              <input 
+            ) : (
+              <input
                 name={"relationship_to_child_" + i}
                 className="input-field"
                 defaultValue={parentEmergencyContacts[i].relationship_to_child}
                 readOnly={isReadonly}
               />
-            }
+            )}
             <ErrorMessage
-              field={errors["relationship_to_child_"+ i]}
+              field={errors["relationship_to_child_" + i]}
               errorType="required"
               message="Relationship to child is required."
             />
           </td>
         </tr>
+      );
 
-        rows.push(row);
+      rows.push(row);
     }
     return rows;
-  }
+  };
 
   return (
     <EmergencyContactFormStyled>
       <h3 className="heading">Emergency Contact</h3>
       <div className="emergency-contact-wrapper">
         <div>
-        <table id="contacts">
+          <table id="contacts">
             <tbody>
               <tr>
                 <th>First Name</th>
@@ -341,5 +398,5 @@ export default function index({
         </div>
       </div>
     </EmergencyContactFormStyled>
-  )
+  );
 }

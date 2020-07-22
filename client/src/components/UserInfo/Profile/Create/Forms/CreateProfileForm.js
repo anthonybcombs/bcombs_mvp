@@ -7,6 +7,12 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import ErrorMessage from "../../../../../helpers/ErrorMessage";
 import { isValidDate } from "../../../../../helpers/Date";
+
+import {
+  OPTION_MALE_RELATIONSHIPS,
+  OPTION_FEMALE_RELATIONSHIPS
+} from "../../../../../constants/options";
+
 const CreateProfileStyled = styled.form`
   input:required {
     box-shadow: none;
@@ -187,13 +193,13 @@ const months = [
   "September",
   "October",
   "November",
-  "December",
+  "December"
 ];
 export default function CreateProfileForm({
   data,
   onSubmit,
   handleInputChange,
-  userType,
+  userType
 }) {
   const [showWarningFutureDate, setShowWarningFutureDate] = useState(false);
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
@@ -204,28 +210,28 @@ export default function CreateProfileForm({
     errors,
     watch,
     setValue,
-    unregister,
+    unregister
   } = useForm({
     mode: "onBlur",
-    reValidateMode: "onChange",
+    reValidateMode: "onChange"
   });
   const maxDate = format(new Date(), "yyyy-MM-dd");
   React.useEffect(() => {
     register({ name: "zipcode" }, { required: true });
     register({ name: "dateofbirth" }, { required: true });
   }, []);
-  const handleDateOfBirthElementTypeChange = (value) => {
+  const handleDateOfBirthElementTypeChange = value => {
     setDateOfBirthElementType(value);
   };
   const gender = watch("gender");
   if (data && data.hasOwnProperty("unrequiredFields")) {
     let unrequiredFields = data.unrequiredFields;
-    unrequiredFields.forEach((item) => unregister(item));
+    unrequiredFields.forEach(item => unregister(item));
   }
   if (userType === "VENDOR") {
     unregister("dateofbirth");
   }
-  const isRequiredField = (field) => {
+  const isRequiredField = field => {
     return !(
       data &&
       data.hasOwnProperty("unrequiredFields") &&
@@ -234,7 +240,7 @@ export default function CreateProfileForm({
   };
 
   // Check the length of number
-  const maxLengthCheck = (object) => {
+  const maxLengthCheck = object => {
     if (object.target.value.length > object.target.maxLength) {
       object.target.value = object.target.value.slice(
         0,
@@ -265,8 +271,7 @@ export default function CreateProfileForm({
       data-testid="app-create-profile-form"
       method="POST"
       theme={theme}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <h3>Create my profile</h3>
       <div className="form-group">
         <div className="field">
@@ -318,15 +323,26 @@ export default function CreateProfileForm({
         onChange={({ target }) => {
           handleInputChange("familyrelationship", target.value);
         }}
-        ref={register({ required: true })}
-      >
+        ref={register({ required: true })}>
         <option value="" disabled>
           Select Family Relationship
         </option>
-        <option value="default">Default</option>
+        {/* <option value="default">Default</option>
         <option value="father">Father</option>
         <option value="mother">Mother</option>
-        <option value="sibling">Sibling</option>
+        <option value="sibling">Sibling</option> */}
+
+        {gender === "female"
+          ? OPTION_FEMALE_RELATIONSHIPS.map(opt => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))
+          : OPTION_MALE_RELATIONSHIPS.map(opt => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
       </select>
       <ErrorMessage
         field={errors.familyrelationship}
@@ -341,8 +357,7 @@ export default function CreateProfileForm({
             onChange={({ target }) => {
               handleInputChange("gender", target.value);
             }}
-            ref={register({ required: true })}
-          >
+            ref={register({ required: true })}>
             <option value="" disabled>
               Select Gender
             </option>
@@ -364,8 +379,7 @@ export default function CreateProfileForm({
                 onChange={({ target }) => {
                   handleInputChange("customgender", target.value);
                 }}
-                ref={register({ required: true })}
-              >
+                ref={register({ required: true })}>
                 <option value="" disabled>
                   Select Customer Gender
                 </option>
@@ -395,7 +409,7 @@ export default function CreateProfileForm({
                   handleInputChange("zipcode", target.value);
                 }}
                 ref={register({
-                  minLength: 5,
+                  minLength: 5
                 })}
                 maxLength="5"
                 onInput={maxLengthCheck}
@@ -461,28 +475,25 @@ export default function CreateProfileForm({
                     decreaseMonth,
                     increaseMonth,
                     prevMonthButtonDisabled,
-                    nextMonthButtonDisabled,
+                    nextMonthButtonDisabled
                   }) => (
                     <div
                       style={{
                         margin: 10,
                         display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
+                        justifyContent: "center"
+                      }}>
                       <button
                         type="button"
                         className="datepicker-btn"
                         onClick={decreaseMonth}
-                        disabled={prevMonthButtonDisabled}
-                      >
+                        disabled={prevMonthButtonDisabled}>
                         {"<"}
                       </button>
                       <select
                         value={new Date(date).getFullYear()}
-                        onChange={({ target: { value } }) => changeYear(value)}
-                      >
-                        {years.map((option) => (
+                        onChange={({ target: { value } }) => changeYear(value)}>
+                        {years.map(option => (
                           <option key={option} value={option}>
                             {option}
                           </option>
@@ -493,9 +504,8 @@ export default function CreateProfileForm({
                         value={months[date.getMonth()]}
                         onChange={({ target: { value } }) =>
                           changeMonth(months.indexOf(value))
-                        }
-                      >
-                        {months.map((option) => (
+                        }>
+                        {months.map(option => (
                           <option key={option} value={option}>
                             {option}
                           </option>
@@ -506,8 +516,7 @@ export default function CreateProfileForm({
                         type="button"
                         className="datepicker-btn"
                         onClick={increaseMonth}
-                        disabled={nextMonthButtonDisabled}
-                      >
+                        disabled={nextMonthButtonDisabled}>
                         {">"}
                       </button>
                     </div>
@@ -516,7 +525,7 @@ export default function CreateProfileForm({
                   selected={
                     isValidDate(data.dateofbirth) && new Date(data.dateofbirth)
                   }
-                  onChange={(date) => {
+                  onChange={date => {
                     handleInputChange(
                       "dateofbirth",
                       format(date, "yyyy-MM-dd")
