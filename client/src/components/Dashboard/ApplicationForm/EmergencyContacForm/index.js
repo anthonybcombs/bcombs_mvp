@@ -8,6 +8,7 @@ import { registerLocale } from "react-datepicker";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
 import {
+  OPTION_CUSTOM_RELATIONSHIPS,
   OPTION_MALE_RELATIONSHIPS,
   OPTION_FEMALE_RELATIONSHIPS
 } from "../../../../constants/options";
@@ -350,6 +351,15 @@ export default function index({
                   parentEmergencyContacts[i].gender === "He") &&
                   OPTION_MALE_RELATIONSHIPS.map(opt => (
                     <option key={opt.value} value={opt.value}>
+                      {" "}
+                      {opt.label}
+                    </option>
+                  ))}
+
+                {(parentEmergencyContacts[i].gender === "Custom" ||
+                  parentEmergencyContacts[i].gender === "They") &&
+                  OPTION_CUSTOM_RELATIONSHIPS.map(opt => (
+                    <option key={opt.key} value={opt.value}>
                       {" "}
                       {opt.label}
                     </option>

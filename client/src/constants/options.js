@@ -34,4 +34,19 @@ const OPTION_FEMALE_RELATIONSHIPS = [
   { label: "Other", value: "other" }
 ];
 
-export { OPTION_FEMALE_RELATIONSHIPS, OPTION_MALE_RELATIONSHIPS };
+const OPTION_CUSTOM_RELATIONSHIPS = [
+  { id: 1, label: "Mother", value: "mother" },
+  { id: 2, label: "Father", value: "father" },
+  { id: 3, label: "Grandparent", value: "grandparent" },
+  { id: 4, label: "Aunt / Uncle", value: "Aunt /Uncle" },
+  { id: 5, label: "Sibling", value: "sibling" },
+  { id: 6, label: "Other Relative", value: "Other Relative" },
+  { id: 7, label: "Family Friend", value: "Family Friend" },
+  { id: 8, label: "Other", value: "Other" }
+];
+
+export {
+  OPTION_FEMALE_RELATIONSHIPS,
+  OPTION_MALE_RELATIONSHIPS,
+  OPTION_CUSTOM_RELATIONSHIPS
+};
