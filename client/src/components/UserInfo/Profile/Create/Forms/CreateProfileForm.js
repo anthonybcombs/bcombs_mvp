@@ -279,6 +279,7 @@ export default function CreateProfileForm({
     </div>
   );
 
+  console.log('gender',gender)
   return (
     <CreateProfileStyled
       data-testid="app-create-profile-form"
