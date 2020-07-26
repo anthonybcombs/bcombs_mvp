@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Form from "../Forms/CreateProfileForm";
 //  overflow: auto;
@@ -27,16 +27,30 @@ const CreateProfileStyled = styled.div`
     }
   }
 `;
-export default function index({ setCurrentPage, setProfileDetails, userType }) {
+export default function index({
+  profileDetails,
+  setCurrentPage,
+  setProfileDetails,
+  userType
+}) {
   const [personalInfo, setPersonalInfo] = useState({
-    firstname: "",
-    lastname: "",
+    firstname: profileDetails.firstname,
+    lastname: profileDetails.lastname,
     gender: "male",
     customgender: "",
     familyrelationship: "father",
     zipcode: "",
     dateofbirth: ""
   });
+  console.log(`profileDetails`, profileDetails);
+  useEffect(() => {
+    if (profileDetails) {
+      setPersonalInfo({
+        ...personalInfo,
+        ...profileDetails
+      });
+    }
+  }, [profileDetails]);
   const handleInputChange = (id, value) => {
     setPersonalInfo({ ...personalInfo, [id]: value });
   };

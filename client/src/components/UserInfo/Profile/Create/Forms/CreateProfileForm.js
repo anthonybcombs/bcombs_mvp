@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { format, isFuture, parseISO } from "date-fns";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
@@ -204,6 +204,8 @@ export default function CreateProfileForm({
   const [showWarningFutureDate, setShowWarningFutureDate] = useState(false);
   const [dateOfBirthElementType, setDateOfBirthElementType] = useState("text");
   const theme = useContext(ThemeContext);
+
+  console.log("Dataaaaa", data);
   const {
     register,
     handleSubmit,
@@ -213,13 +215,23 @@ export default function CreateProfileForm({
     unregister
   } = useForm({
     mode: "onBlur",
-    reValidateMode: "onChange"
+    reValidateMode: "onChange",
+    defaultValues: {
+      firstname: data.firstname,
+      lastname: data.lastname
+    }
   });
   const maxDate = format(new Date(), "yyyy-MM-dd");
-  React.useEffect(() => {
+  useEffect(() => {
     register({ name: "zipcode" }, { required: true });
     register({ name: "dateofbirth" }, { required: true });
   }, []);
+
+  useEffect(() => {
+    register({ name: "lastname" }, { required: true });
+    register({ name: "firstname" }, { required: true });
+  }, [data]);
+
   const handleDateOfBirthElementTypeChange = value => {
     setDateOfBirthElementType(value);
   };
@@ -284,6 +296,7 @@ export default function CreateProfileForm({
               handleInputChange("firstname", target.value);
             }}
             ref={register({ required: true })}
+            defaultValue={data.firstname}
           />
           <label className="field-label">
             <span className="required">*</span> First Name
@@ -306,6 +319,7 @@ export default function CreateProfileForm({
               handleInputChange("lastname", target.value);
             }}
             ref={register({ required: true })}
+            defaultValue={data.lastname}
           />
           <label className="field-label">
             <span className="required">*</span> Last Name

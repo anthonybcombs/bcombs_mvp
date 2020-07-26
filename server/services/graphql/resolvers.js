@@ -7,7 +7,8 @@ import {
   executeUserUpdate,
   executeGetUser,
   getUserApplication,
-  checkUserEmail
+  checkUserEmail,
+  executeAddUserProfile
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
@@ -280,26 +281,33 @@ const resolvers = {
 
           let checkEmail = await checkUserEmail(parent.email_address);
 
-          if(checkEmail && checkEmail.is_exist) {
+          if (checkEmail && checkEmail.is_exist) {
             console.log("Parent Status: ", checkEmail.status);
           } else {
             let userType = await getUserTypes();
 
-            userType = userType.filter((type) => {
-              return type.name === "USER"
+            userType = userType.filter(type => {
+              return type.name === "USER";
             })[0];
 
             console.log("user type: ", userType);
 
             let user = {
-              username: parent.firstname+""+parent.lastname,
+              username: parent.firstname + "" + parent.lastname,
               email: parent.email_address,
               password: parent.password,
               type: userType
-            }
+            };
 
-            console.log("user:", user)
+            console.log("user:", user);
             let addUser = await executeSignUp(user);
+            console.log("addUser:", user);
+            let parentInfo = {
+              ...parent,
+              email: parent.email_address
+            };
+            console.log("Parent Info", parentInfo);
+            await executeAddUserProfile(parentInfo);
 
             console.log("add user res:", addUser);
           }

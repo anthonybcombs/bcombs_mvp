@@ -7,6 +7,8 @@ import {
   s3BucketRootPath
 } from "../../helpers/aws";
 import client, { getRedisKey } from "../../services/redis";
+import { getUserFromDatabase } from "../index";
+
 export const getUsers = async () => {
   const db = makeDb();
   try {
@@ -340,6 +342,10 @@ export const executeUserUpdate = async user => {
       }
     } else {
       await db.query(
+        "UPDATE users SET is_profile_filled=1 where id=UUID_TO_BIN(?)",
+        [id]
+      );
+      await db.query(
         "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=? WHERE user_id=UUID_TO_BIN(?)",
         [
           personalInfo.firstname,
@@ -491,6 +497,31 @@ export const checkUserEmail = async email => {
       is_exist: false,
       status: "Email not exist"
     };
+  } catch (err) {
+    console.log("Check User Email", err);
+  } finally {
+    await db.close();
+  }
+};
+
+export const executeAddUserProfile = async payload => {
+  const db = makeDb();
+
+  try {
+    const currentUser = await getUserFromDatabase(payload.email);
+    console.log("Execute Add User Profile ", currentUser);
+    console.log("Execute Add User Payload", payload);
+    await db.query(
+      "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?)",
+      [
+        currentUser.id,
+        payload.firstname,
+        payload.lastname,
+        payload.gender || "",
+        payload.zip_code || "",
+        payload.dateofbirth || ""
+      ]
+    );
   } catch (err) {
     console.log("Check User Email", err);
   } finally {

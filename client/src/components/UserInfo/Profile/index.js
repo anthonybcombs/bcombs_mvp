@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PersonalInfo from "./Create/PersonalInfo";
 import FamilyMember from "./Create/FamilyMember";
 import Member from "./Create/Member";
 import Calendar from "./Create/Calendar";
 import { requestCalendars } from "../../../redux/actions/Calendars";
-import { requestUpdateUser } from "../../../redux/actions/Users";
+import {
+  requestUpdateUser,
+  requestUserProfile
+} from "../../../redux/actions/Users";
 export default function index({ navigate }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [isCalendarSkip, setCalendarSkip] = useState(false);
@@ -20,9 +23,32 @@ export default function index({ navigate }) {
     }
   });
   const dispatch = useDispatch();
-  const { auth, userTypes } = useSelector(({ auth, userTypes }) => {
-    return { auth, userTypes };
+  const { auth, user, userTypes } = useSelector(({ auth, user, userTypes }) => {
+    return { auth, user, userTypes };
   });
+
+  console.log("Profil Auth", auth);
+  console.log("Profil User", user);
+
+  useEffect(() => {
+    dispatch(requestUserProfile(auth.email));
+  }, []);
+
+  useEffect(() => {
+    if (user.profile) {
+      setProfileDetails({
+        ...profileDetails,
+        personalInfo: {
+          ...profileDetails.personalInfo,
+          firstname: user.profile.first_name,
+          lastname: user.profile.last_name,
+          birth_date: user.profile.birth_date,
+          zipcode: user.profile.zip_code
+        }
+      });
+    }
+  }, [user]);
+
   const handleProfileSubmit = calendar => {
     let calendarInfo = {
       name: calendar.name,
@@ -82,6 +108,7 @@ export default function index({ navigate }) {
       {currentPage === 0 && (
         <PersonalInfo
           setCurrentPage={setCurrentPage}
+          profileDetails={profileDetails.personalInfo}
           setProfileDetails={setProfileDetails}
           userType={userType.name}
         />
