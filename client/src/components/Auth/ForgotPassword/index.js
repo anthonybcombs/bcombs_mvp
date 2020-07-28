@@ -40,7 +40,8 @@ const ForgotPasswordStyled = styled.div`
 `;
 export default function index() {
   const [userDetails, setUserDetails] = useState({
-    email: ""
+    email: "",
+    reset_type: "email",
   });
   const { status } = useSelector(({ status }) => {
     return { status };

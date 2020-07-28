@@ -21,6 +21,20 @@ export const getUsers = async () => {
     await db.close();
   }
 };
+const getUserProfile = async data => {
+  const db = makeDb();
+  try {
+    const row = await db.query(
+      `SELECT BIN_TO_UUID(id) as id FROM user_profiles WHERE BIN_TO_UUID(user_id)=? AND zip_code=? AND birth_date=? AND address=? LIMIT 1`,
+      [data.id, data.zip_code, data.birth_date, data.address]
+    );
+
+    return row;
+  } catch (error) {
+  } finally {
+    await db.close();
+  }
+};
 const isProfileExistFromDatabase = async id => {
   const db = makeDb();
   let result;
@@ -161,19 +175,48 @@ export const executeChangePassword = async reqData => {
   try {
     const users = await getUsers();
     const user = users.filter(user => user.email === reqData.email)[0];
+
     if (user.hasOwnProperty("email")) {
-      const params = new URLSearchParams();
-      params.append("client_id", process.env.AUTH_CLIENT_ID);
-      params.append("email", user.email);
-      params.append("connection", "Username-Password-Authentication");
-      await fetch("https://bcombd.us.auth0.com/dbconnections/change_password", {
-        method: "POST",
-        body: params
-      });
-      return {
-        messageType: "info",
-        message: "Reset Password email has been sent."
-      };
+      if (reqData.reset_type === 'security questions') {
+        if (user.is_profile_filled) {
+          const profile = await getUserProfile({ id: user.id, zip_code: reqData.zip_code, birth_date: reqData.birth_date, address: reqData.address});
+          if (profile) {
+             const params = new URLSearchParams();
+            params.append("password", reqData.password);
+            params.append("connection", "Username-Password-Authentication");
+            await fetch("https://bcombd.us.auth0.com/api/v2/users/" + user.auth_id, {
+              method: "PATCH",
+              body: params
+            });
+            return {
+              messageType: "info",
+              message: "Reset Password was successful."
+            };
+          }
+          return {
+            messageType: "error",
+            message: "Answers to Security Questions didn't match. Please try again."
+          };
+        }
+        return {
+          messageType: "error",
+          message: "Please complete profile first."
+        };
+      }
+      if (reqData.reset_type === 'email') {
+        const params = new URLSearchParams();
+        params.append("client_id", process.env.AUTH_CLIENT_ID);
+        params.append("email", user.email);
+        params.append("connection", "Username-Password-Authentication");
+        await fetch("https://bcombd.us.auth0.com/dbconnections/change_password", {
+          method: "POST",
+          body: params
+        });
+        return {
+          messageType: "info",
+          message: "Reset Password email has been sent."
+        };
+      }
     }
     return {
       messageType: "error",
