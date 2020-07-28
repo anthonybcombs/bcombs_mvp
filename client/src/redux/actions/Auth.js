@@ -51,9 +51,7 @@ const requestPasswordChangeFromServer = user => {
       const { data } = await graphqlClient.mutate({
         mutation: CHANGE_PASSWORD_MUTATION,
         variables: {
-          user: {
-            email: user.email
-          }
+          user
         }
       });
       resolve({

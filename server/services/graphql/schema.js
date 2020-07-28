@@ -27,7 +27,12 @@ const inputs = `
         password: String!
     }
     input UserChangePasswordInput{
-        email: String!
+        email: String!,
+        reset_type: String,
+        zip_code: String,
+        birth_date: String,
+        address: String,
+        password: String
     }
     input PersonalInfoInput{
         firstname: String!

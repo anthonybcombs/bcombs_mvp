@@ -27,7 +27,7 @@ const LoginFormStyled = styled.form`
     border-bottom: 2px solid lightgrey;
     outline: 0;
     margin-top: 3em;
-    margin-bottom: 3em;
+    margin-bottom: 1em;
   }
   input:focus {
     border-color: ${({ theme }) => theme.input.focus.border.color};
@@ -45,7 +45,7 @@ const LoginFormStyled = styled.form`
   button[type="submit"] {
     padding: 10px;
     display: block;
-    margin: 1em auto;
+    margin: 2em auto;
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     border: none;
     width: 100px !important;
@@ -85,6 +85,9 @@ const LoginFormStyled = styled.form`
   p.error {
     text-align: left !important;
   }
+  p.error-size {
+    font-size: 14px !important;
+  }
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 50% 50%;
@@ -99,6 +102,9 @@ const LoginFormStyled = styled.form`
     button[type="submit"] {
       width: 300px;
     }
+  }
+  #g-recaptcha {
+    margin-top: 3em;
   }
 `;
 export default function Form({
@@ -142,6 +148,7 @@ export default function Form({
         ref={register({ required: true })}
       />
       <ErrorMessage
+        className="error-size"
         field={errors.email}
         errorType="required"
         message="Email is required."
@@ -158,6 +165,7 @@ export default function Form({
         ref={register({ required: true })}
       />
       <ErrorMessage
+        className="error-size"
         field={errors.password}
         errorType="required"
         message="Password is required."
@@ -168,6 +176,7 @@ export default function Form({
         verifyCallback={onVerifyCaptcha}
       />
       <ErrorMessage
+        className="error-size"
         field={errors.not_robot}
         errorType="required"
         message="Please verify that you are not a robot."
