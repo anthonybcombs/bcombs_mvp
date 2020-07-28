@@ -392,7 +392,7 @@ export default function index({
                 selected={
                   isValidDate(data.dateofbirth) && new Date(data.dateofbirth)
                 }
-                onChange={date => {
+                onChange={(date) => {
                   handleInputChange(
                     "dateofbirth",
                     format(new Date(date), "yyyy-MM-dd")
@@ -428,6 +428,8 @@ export default function index({
                     }}
                   >
                     <button
+                      type="button"
+                      className="datepicker-btn"
                       onClick={decreaseMonth}
                       disabled={prevMonthButtonDisabled}
                     >
@@ -458,6 +460,8 @@ export default function index({
                     </select>
 
                     <button
+                      type="button"
+                      className="datepicker-btn"
                       onClick={increaseMonth}
                       disabled={nextMonthButtonDisabled}
                     >
@@ -472,12 +476,17 @@ export default function index({
                 onChange={(date) => {
                   handleInputChange("dateofbirth", format(date, "yyyy-MM-dd"));
                 }}
-                name={"date_of_birth"}
+                name={"dateofbirth"}
                 customInput={
                   <CustomDatePicker className="field-input birthdate-field" />
                 }
               />
             </div>
+            <ErrorMessage
+              field={errors["dateofbirth"]}
+              errorType="required"
+              message="Date of Birth is required."
+            />
           </div>
 
           <div className="form-group">
