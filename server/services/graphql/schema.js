@@ -32,7 +32,10 @@ const inputs = `
         zip_code: String,
         birth_date: String,
         address: String,
-        password: String
+        password: String,
+        security_question1: String,
+        security_question2: String,
+        security_question3: String,
     }
     input PersonalInfoInput{
         firstname: String!
@@ -42,7 +45,13 @@ const inputs = `
         customgender: String
         zipcode: String!
         dateofbirth: Date
-        type: String
+        type: String,
+        securityquestion1: String
+        securityquestion1answer: String
+        securityquestion2: String
+        securityquestion2answer: String
+        securityquestion3: String
+        securityquestion3answer: String
     }
     input UserInfoInput{
         email: String

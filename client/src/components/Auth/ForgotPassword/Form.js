@@ -2,6 +2,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import styled, { ThemeContext } from "styled-components";
 import ErrorMessage from "../../../helpers/ErrorMessage";
+import Recaptcha from "react-recaptcha";
+import { useDispatch, useSelector } from 'react-redux'
+import { requestSecurityQuestions } from '../../../redux/actions/Users'
+
 const ForgotPasswordFormStyled = styled.form`
   input:required {
     box-shadow: none;
@@ -66,12 +70,13 @@ const ForgotPasswordFormStyled = styled.form`
     font-size: 14px !important;
   }
 `;
-export default function Form({ onSubmit, handleInputChange }) {
+export default function Form({ onSubmit, handleInputChange, hasStatus }) {
+  const dispatch = useDispatch();
   const resetTypeEmail = 'Email';
   const resetTypeSecQuestions = 'Security Questions'
   const [resetType, setResetType] = useState(resetTypeEmail);
   const [randomQuestions, setRandomQuestions] = useState([]);
-  const { register, handleSubmit, errors, reset } = useForm({
+  const { register, handleSubmit, errors, reset, watch } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
@@ -79,20 +84,43 @@ export default function Form({ onSubmit, handleInputChange }) {
     { name: resetTypeEmail.toLowerCase(), text: resetTypeEmail },
     { name: resetTypeSecQuestions.toLowerCase(), text: resetTypeSecQuestions }
   ];
+  const email = watch("email");
 
-  const questions = [
-    { name: 'zip_code', text: 'Zip Code' },
-    { name: 'birth_date', text: 'Birth Date (YYYY-MM-DD)' },
-    { name: 'address', text: 'Address' }
-  ];
+  const { user } = useSelector(({ user }) => {
+    return {
+      user,
+    };
+  });
 
   useEffect(() => {
-    setRandomQuestions(questions.sort( () => Math.random() - 0.5));
+    register({ name: 'not_robot'}, { required: true });
   }, []);
 
   const handleChangeResetType = (type) => {
     setResetType(type);
   }
+
+  const onVerifyCaptcha = (response) => {
+    if (response) {
+      setValue('not_robot', response);
+    }
+  };
+
+  const generateSecurityQuestions = () => {
+    hasStatus = false;
+    dispatch(requestSecurityQuestions(email));
+  }
+
+  useEffect(() => {
+    if (Object.keys(user.profile).length && !hasStatus) {
+      let questions = [
+        { name: "security_question1", text: user.profile.security_question1 },
+        { name: "security_question2", text: user.profile.security_question2 },
+        { name: "security_question3", text: user.profile.security_question3 },
+      ]
+      setRandomQuestions(questions);
+    }
+  }, [user]);
 
   return (
     <ForgotPasswordFormStyled
@@ -118,100 +146,163 @@ export default function Form({ onSubmit, handleInputChange }) {
         ))}
       </div>
       <div>
-        <input
-          data-testid="app-forgot-password-input-email"
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={({ target }) => {
-            handleInputChange("email", target.value);
-          }}
-          ref={register({ required: true })}
-        />
-        <ErrorMessage
-          className="error-size"
-          field={errors.email}
-          errorType="required"
-          message="Email is required."
-        />
-        {resetType === resetTypeSecQuestions && <>
+        <div className="form-group">
+          <div className="field">
+            <input
+              data-testid="app-forgot-password-input-email"
+              type="email"
+              name="email"
+              placeholder="Email"
+              onChange={({ target }) => {
+                handleInputChange("email", target.value);
+              }}
+              ref={register({ required: true })}
+            />
+            <ErrorMessage
+              className="error-size"
+              field={errors.email}
+              errorType="required"
+              message="Email is required."
+            />
+          </div>
+        </div>
+        {resetType === resetTypeSecQuestions && randomQuestions.length > 0 && <>
           {randomQuestions.map((question, index) => (
-            <div key={index}>
+            <div className="form-group" key={index}>
+              <div className="field">
+                <input
+                  type="text"
+                  placeholder={question.text}
+                  name={question.name}
+                  onChange={({ target }) => {
+                    handleInputChange(question.name, target.value);
+                  }}
+                  ref={register({ required: true })}
+                />
+                <ErrorMessage
+                  className="error-size"
+                  field={errors[question.name]}
+                  errorType="required"
+                  message={`${question.text} is required.`}
+                />
+              </div>
+            </div>
+          ))}
+          <div className="form-group">
+            <div className="field">
               <input
-                type="text"
-                placeholder={question.text}
-                name={question.name}
+                type="password"
+                name="password"
+                placeholder="New Password"
                 onChange={({ target }) => {
-                  handleInputChange(question.name, target.value);
+                  handleInputChange("password", target.value);
                 }}
-                ref={register({ required: true })}
+                ref={register({
+                  required: true,
+                  minLength: 8,
+                  validate: {
+                    containsOneUpperCase: value => {
+                      const oneUpperCaseRegex = /(?=.*[A-Z])/;
+                      return oneUpperCaseRegex.test(value);
+                    },
+                    containsOneLowerCase: value => {
+                      const oneLowerCaseRegex = /(?=.*[a-z])/;
+                      return oneLowerCaseRegex.test(value);
+                    },
+                    containsOneNumber: value => {
+                      const oneNumberRegex = /(?=.*\d)/;
+                      return oneNumberRegex.test(value);
+                    },
+                    containsOneSpecialCharacter: value => {
+                      const oneSpecialCharacterRegex = /(?=.*[!@#$%^&+=])/;
+                      return oneSpecialCharacterRegex.test(value);
+                    }
+                  }
+                })}
               />
               <ErrorMessage
                 className="error-size"
-                field={errors[question.name]}
+                field={errors.password}
                 errorType="required"
-                message={`${question.text} is required.`}
+                message={
+                  <>
+                    <p className="error error-size">
+                      New Password is required.
+                      <br />
+                      New Password minimum length must be at least 8 characters. <br />
+                      Must contain atleast one upper case.
+                      <br />
+                      Must contain atleast one lower case.
+                      <br />
+                      Must contain atleast one number.
+                      <br />
+                      Must contain atleast one special character.
+                      <br />
+                    </p>
+                  </>
+                }
               />
             </div>
-          ))}
-          <input
-            type="password"
-            name="password"
-            placeholder="New Password"
-            onChange={({ target }) => {
-              handleInputChange("password", target.value);
-            }}
-            ref={register({
-              required: true,
-              minLength: 8,
-              validate: {
-                containsOneUpperCase: value => {
-                  const oneUpperCaseRegex = /(?=.*[A-Z])/;
-                  return oneUpperCaseRegex.test(value);
-                },
-                containsOneLowerCase: value => {
-                  const oneLowerCaseRegex = /(?=.*[a-z])/;
-                  return oneLowerCaseRegex.test(value);
-                },
-                containsOneNumber: value => {
-                  const oneNumberRegex = /(?=.*\d)/;
-                  return oneNumberRegex.test(value);
-                },
-                containsOneSpecialCharacter: value => {
-                  const oneSpecialCharacterRegex = /(?=.*[!@#$%^&+=])/;
-                  return oneSpecialCharacterRegex.test(value);
-                }
-              }
-            })}
-          />
-          <ErrorMessage
-            className="error-size"
-            field={errors.password}
-            errorType="required"
-            message={
-              <>
-                <p className="error error-size">
-                  New Password is required.
-                  <br />
-                  New Password minimum length must be at least 8 characters. <br />
-                  Must contain atleast one upper case.
-                  <br />
-                  Must contain atleast one lower case.
-                  <br />
-                  Must contain atleast one number.
-                  <br />
-                  Must contain atleast one special character.
-                  <br />
-                </p>
-              </>
-            }
-          />
+          </div>
+          <div className="form-group">
+            <div className="field">
+              <input
+                disabled={errors.password}
+                type="password"
+                name="confirm_password"
+                placeholder="Confirm New Password"
+                onChange={({ target }) => {
+                  handleInputChange("confirm_password", target.value);
+                }}
+                ref={register({
+                  required: true,
+                  validate: {
+                    sameConfirmPassword: value => {
+                      return value === watch("password");
+                    }
+                  }
+                })}
+              />
+              <ErrorMessage
+                className="error-size"
+                field={errors.confirm_password}
+                errorType="required"
+                message="Confirm New Password is required."
+              />
+
+              <ErrorMessage
+                className="error-size"
+                field={errors.confirm_password}
+                errorType="sameConfirmPassword"
+                message="The passwords do not match."
+              />
+            </div>
+          </div>
           </>
         }
       </div>
-      <button data-testid="app-forgot-password-send-button" type="submit">
-        Reset Password
-      </button>
+      {(resetType === resetTypeEmail || randomQuestions.length > 0) && <>
+          <Recaptcha
+            sitekey='6LcDvbQZAAAAAI5egI5fYzQYk3wCOZULXy_wHFM9'
+            render='explicit'
+            verifyCallback={onVerifyCaptcha}
+          />
+          <ErrorMessage
+            className="error-size"
+            field={errors.not_robot}
+            errorType="required"
+            message="Please verify that you are not a robot."
+          />
+          <button data-testid="app-forgot-password-send-button" type="submit">
+            Reset Password
+          </button>
+        </>
+      }
+      {(resetType === resetTypeSecQuestions && randomQuestions.length === 0) && (
+        <button data-testid="app-forgot-password-send-button" type="button" onClick={generateSecurityQuestions}>
+          Get Security Questions
+        </button>
+      )}
     </ForgotPasswordFormStyled>
   );
 }

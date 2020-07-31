@@ -71,7 +71,13 @@ const getUserProfileFromDatabase = async userId => {
         address,
         school,
         ethnicity,
-        grade
+        grade,
+        security_question1,
+        security_question1_answer,
+        security_question2,
+        security_question2_answer,
+        security_question3,
+        security_question3_answer
         from user_profiles where user_id=UUID_TO_BIN(?)`,
       [userId]
     );
@@ -90,6 +96,23 @@ router.get("/userProfile", async (req, res) => {
     const user = await getUserFromDatabase(email);
     const userProfile = await getUserProfileFromDatabase(user.id);
     res.send(JSON.stringify(userProfile || {}));
+  } catch (error) {}
+});
+
+router.get("/securityQuestions", async (req, res) => {
+  try {
+    const { email } = req.query;
+    const user = await getUserFromDatabase(email);
+    const userProfile = await getUserProfileFromDatabase(user.id);
+    let securityQuestions = {};
+    if (userProfile) {
+      securityQuestions = {
+        security_question1: userProfile.security_question1,
+        security_question2: userProfile.security_question2,
+        security_question3: userProfile.security_question3,
+      };
+    }
+    res.send(JSON.stringify(securityQuestions));
   } catch (error) {}
 });
 
@@ -334,7 +357,7 @@ router.put("/user/profile", async (req, res) => {
     const { personalInfo, otherInfo } = req.body;
     console.log("req.bodyyy", otherInfo);
     await db.query(
-      "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=?,address=?,school=?,ethnicity=?,grade=? where id=UUID_TO_BIN(?)",
+      "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=?,address=?,school=?,ethnicity=?,grade=?,security_question1=?,security_question1_answer=?,security_question2=?,security_question2_answer=?,security_question3=?,security_question3_answer=? where id=UUID_TO_BIN(?)",
       [
         personalInfo.firstname,
         personalInfo.lastname,
@@ -347,7 +370,13 @@ router.put("/user/profile", async (req, res) => {
         personalInfo.school,
         personalInfo.ethnicity,
         personalInfo.grade,
-        personalInfo.id
+        personalInfo.securityquestion1,
+        personalInfo.securityquestion1answer,
+        personalInfo.securityquestion2,
+        personalInfo.securityquestion2answer,
+        personalInfo.securityquestion3,
+        personalInfo.securityquestion3answer,
+        personalInfo.id,
       ]
     );
 
@@ -396,6 +425,12 @@ router.put("/user/profile", async (req, res) => {
       ethnicity: personalInfo.ethnicity,
       school: personalInfo.school,
       grade: personalInfo.grade,
+      security_question1: personalInfo.securityquestion1,
+      security_question1_answer: personalInfo.securityquestion1answer,
+      security_question2: personalInfo.securityquestion2,
+      security_question2_answer: personalInfo.securityquestion2answer,
+      security_question3: personalInfo.securityquestion3,
+      security_question3_answer: personalInfo.securityquestion3answer,
       id: personalInfo.id
     };
 

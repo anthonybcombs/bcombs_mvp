@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PersonalInfo from "./Create/PersonalInfo";
 import FamilyMember from "./Create/FamilyMember";
-import Member from "./Create/Member";
+import SecurityQuestions from "./Create/SecurityQuestions";
+// import Member from "./Create/Member";
 import Calendar from "./Create/Calendar";
 import { requestCalendars } from "../../../redux/actions/Calendars";
 import {
@@ -113,7 +114,14 @@ export default function index({ navigate }) {
           userType={userType.name}
         />
       )}
-      {userType.name === "USER" && currentPage === 1 && (
+      {currentPage === 1 && (
+        <SecurityQuestions
+          setCurrentPage={setCurrentPage}
+          profileDetails={profileDetails.personalInfo}
+          setProfileDetails={setProfileDetails}
+        />
+      )}
+      {userType.name === "USER" && currentPage === 2 && (
         <FamilyMember
           setCurrentPage={setCurrentPage}
           setProfileDetails={setProfileDetails}
@@ -125,14 +133,14 @@ export default function index({ navigate }) {
       {/*setProfileDetails={setProfileDetails}*/}
       {/*/>*/}
       {/*)}*/}
-      {userType.name === "VENDOR" && currentPage === 1 && (
+      {userType.name === "VENDOR" && currentPage === 2 && (
         <Calendar
           navigate={navigate}
           handleProfileSubmit={handleProfileSubmit}
           onSkip={handleSkip}
         />
       )}
-      {userType.name === "USER" && currentPage === 2 && (
+      {userType.name === "USER" && currentPage === 3 && (
         <Calendar
           navigate={navigate}
           handleProfileSubmit={handleProfileSubmit}
