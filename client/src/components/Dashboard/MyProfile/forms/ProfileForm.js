@@ -74,7 +74,8 @@ const ProfileFormStyled = styled.form`
   }
   .main-profile-content {
     margin-top: 5px !important;
-    display: block !important;
+    display: flex !important;
+    justify-content-center: start !important;
   }
   .bold {
     font-weight: bolder;
@@ -137,6 +138,36 @@ export default function ProfileForm({ data, onSubmit, handleInputChange }) {
         <div className="main-profile-content">
           <div className="profile-content bold">Grade</div>
           <div className="profile-content">{data.grade}</div>
+        </div>
+
+        <div className="main-profile-content">
+          <div className="profile-content bold">Security Question 1</div>
+          <div className="profile-content">{data.security_question1}</div>
+        </div>
+
+        <div className="main-profile-content">
+          <div className="profile-content bold">Answer</div>
+          <div className="profile-content">{data.security_question1_answer ? data.security_question1_answer.replace(/./gi, '*') : ''}</div>
+        </div>
+
+        <div className="main-profile-content">
+          <div className="profile-content bold">Security Question 2</div>
+          <div className="profile-content">{data.security_question2}</div>
+        </div>
+
+        <div className="main-profile-content">
+          <div className="profile-content bold">Answer</div>
+          <div className="profile-content">{data.security_question2_answer ? data.security_question2_answer.replace(/./gi, '*') : ''}</div>
+        </div>
+
+        <div className="main-profile-content">
+          <div className="profile-content bold">Security Question 3</div>
+          <div className="profile-content">{data.security_question3}</div>
+        </div>
+
+        <div className="main-profile-content">
+          <div className="profile-content bold">Answer</div>
+          <div className="profile-content">{data.security_question3_answer ? data.security_question3_answer.replace(/./gi, '*') : ''}</div>
         </div>
       </div>
     </ProfileFormStyled>

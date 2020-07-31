@@ -43,6 +43,7 @@ import {
   updatedUser,
   checkedUserAndAdd,
   getUserInfo,
+  getSecurityQuestions,
   updateUserProfile,
   updateUserProfilePhoto,
 } from "../actions/Users";
@@ -114,6 +115,7 @@ function* rootSaga() {
   // ADDED BY DENNIS
   yield takeLatest(actionType.REQUEST_UPDATE_USER_PROFILE, updateUserProfile);
   yield takeLatest(actionType.REQUEST_USER_PROFILE, getUserInfo);
+  yield takeLatest(actionType.REQUEST_SECURITY_QUESTIONS, getSecurityQuestions);
   yield takeLatest(
     actionType.REQUEST_UPDATE_USER_PHOTO,
     updateUserProfilePhoto

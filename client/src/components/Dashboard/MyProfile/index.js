@@ -189,7 +189,13 @@ export default function index() {
     address: "",
     school: "",
     ethnicity: "",
-    grade: ""
+    grade: "",
+    securityquestion1: "",
+    securityquestion1answer: "",
+    securityquestion2: "",
+    securityquestion2answer: "",
+    securityquestion3: "",
+    securityquestion3answer: "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [isEditProfileVisible, setEditProfileVisible] = useState(false);
@@ -257,7 +263,13 @@ export default function index() {
         address: user.profile.address,
         school: user.profile.school,
         ethnicity: user.profile.ethnicity,
-        grade: user.profile.grade
+        grade: user.profile.grade,
+        securityquestion1: user.profile.security_question1,
+        securityquestion1answer: user.profile.security_question1_answer,
+        securityquestion2: user.profile.security_question2,
+        securityquestion2answer: user.profile.security_question2_answer,
+        securityquestion3: user.profile.security_question3,
+        securityquestion3answer: user.profile.security_question3_answer,
       });
     }
   }, [user, isEditProfileVisible]);

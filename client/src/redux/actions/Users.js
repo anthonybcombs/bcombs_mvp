@@ -29,6 +29,26 @@ const getUserProfileToDatabase = email => {
   });
 };
 
+const getSecurityQuestionsToDatabase = email => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const request = await fetch(
+        `${process.env.API_HOST}/api/securityQuestions?email=${email}`,
+        {
+          method: "GET", // or 'PUT'
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      const response = await request.json();
+      resolve(response);
+    } catch (error) {
+      reject("error");
+    }
+  });
+};
+
 const updateUserProfileToDatabase = user => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -230,6 +250,13 @@ export const requestUserProfile = email => {
   };
 };
 
+export const requestSecurityQuestions = email => {
+  return {
+    type: actionType.REQUEST_SECURITY_QUESTIONS,
+    email
+  };
+};
+
 export const requestUpdateUserPhoto = data => {
   return {
     type: actionType.REQUEST_UPDATE_USER_PHOTO,
@@ -252,6 +279,18 @@ export function* getUserInfo({ email }) {
     yield put(setProfileLoading(false));
   } catch (error) {
     console.log("Error getUserInfo", error);
+    yield put(setProfileLoading(false));
+  }
+}
+
+export function* getSecurityQuestions({ email }) {
+  try {
+    yield put(setProfileLoading(true));
+    const response = yield call(getSecurityQuestionsToDatabase, [email]);
+    yield put(setUserProfile(response));
+    yield put(setProfileLoading(false));
+  } catch (error) {
+    console.log("Error getSecurityQuestions", error);
     yield put(setProfileLoading(false));
   }
 }

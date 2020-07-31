@@ -21,15 +21,15 @@ export const getUsers = async () => {
     await db.close();
   }
 };
-const getUserProfile = async data => {
+const getUserProfileBySecurityQuestions = async data => {
   const db = makeDb();
   try {
     const row = await db.query(
-      `SELECT BIN_TO_UUID(id) as id FROM user_profiles WHERE BIN_TO_UUID(user_id)=? AND zip_code=? AND birth_date=? AND address=? LIMIT 1`,
-      [data.id, data.zip_code, data.birth_date, data.address]
+      `SELECT BIN_TO_UUID(id) as id FROM user_profiles WHERE BIN_TO_UUID(user_id)=? AND security_question1_answer=? AND security_question2_answer=? AND security_question3_answer=?`,
+      [data.id, data.security_question1, data.security_question2, data.security_question3]
     );
 
-    return row;
+    return row[0] || {};
   } catch (error) {
   } finally {
     await db.close();
@@ -178,8 +178,9 @@ export const executeChangePassword = async reqData => {
 
     if (user.hasOwnProperty("email")) {
       if (reqData.reset_type === 'security questions') {
+
         if (user.is_profile_filled) {
-          const profile = await getUserProfile({ id: user.id, zip_code: reqData.zip_code, birth_date: reqData.birth_date, address: reqData.address});
+          const profile = await getUserProfileBySecurityQuestions({ id: user.id, security_question1: reqData.security_question1, security_question2: reqData.security_question2, security_question3: reqData.security_question3});
           if (profile) {
              const params = new URLSearchParams();
             params.append("password", reqData.password);
@@ -325,7 +326,7 @@ export const executeUserUpdate = async user => {
         [id]
       );
       await db.query(
-        "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,custom_gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?,?)",
+        "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,custom_gender,zip_code,birth_date,security_question1,security_question1_answer,security_question2,security_question2_answer,security_question3,security_question3_answer) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           id,
           personalInfo.firstname,
@@ -334,7 +335,13 @@ export const executeUserUpdate = async user => {
           personalInfo.gender,
           personalInfo.customgender || "",
           personalInfo.zipcode,
-          personalInfo.dateofbirth
+          personalInfo.dateofbirth,
+          personalInfo.securityquestion1,
+          personalInfo.securityquestion1answer,
+          personalInfo.securityquestion2,
+          personalInfo.securityquestion2answer,
+          personalInfo.securityquestion3,
+          personalInfo.securityquestion3answer,
         ]
       );
       familyMembers.forEach(async familyMember => {
@@ -389,7 +396,7 @@ export const executeUserUpdate = async user => {
         [id]
       );
       await db.query(
-        "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=? WHERE user_id=UUID_TO_BIN(?)",
+        "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=?,security_question1=?,security_question1_answer=?,security_question2=?,security_question2_answer=?,security_question3=?,security_question3_answer=? WHERE user_id=UUID_TO_BIN(?)",
         [
           personalInfo.firstname,
           personalInfo.lastname,
@@ -398,6 +405,12 @@ export const executeUserUpdate = async user => {
           personalInfo.customgender,
           personalInfo.zipcode,
           personalInfo.dateofbirth,
+          personalInfo.securityquestion1,
+          personalInfo.securityquestion1answer,
+          personalInfo.securityquestion2,
+          personalInfo.securityquestion2answer,
+          personalInfo.securityquestion3,
+          personalInfo.securityquestion3answer,
           id
         ]
       );

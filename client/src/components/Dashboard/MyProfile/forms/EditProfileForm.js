@@ -121,6 +121,9 @@ const EditProfileModal = styled.form`
     margin: 1.5em auto;
     width: 72%;
   }
+  .required {
+    color: red;
+  }
 `;
 
 const GENDER_OPTIONS = [
@@ -608,6 +611,156 @@ export default function index({
               />
               <label className="field-label">Grade</label>
             </div>
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                type="text"
+                name="securityquestion1"
+                className="field-input"
+                placeholder="Security Question 1"
+                onChange={({ target }) => {
+                  handleInputChange("securityquestion1", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.securityquestion1 || ''}
+              />
+              <label className="field-label">
+                <span className="required">*</span> Security Question 1
+              </label>
+            </div>
+
+            <ErrorMessage
+              field={errors.securityquestion1}
+              errorType="required"
+              message="Security Question 1 is required."
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                type="text"
+                name="securityquestion1answer"
+                className="field-input"
+                placeholder="Security Question 1 Answer"
+                onChange={({ target }) => {
+                  handleInputChange("securityquestion1answer", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.securityquestion1answer || ''}
+              />
+              <label className="field-label">
+                <span className="required">*</span> Security Question 1 Answer
+              </label>
+            </div>
+
+            <ErrorMessage
+              field={errors.securityquestion1answer}
+              errorType="required"
+              message="Security Question 1 Answer is required."
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                type="text"
+                name="securityquestion2"
+                className="field-input"
+                placeholder="Security Question 2"
+                onChange={({ target }) => {
+                  handleInputChange("securityquestion2", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.securityquestion2 || ''}
+              />
+              <label className="field-label">
+                <span className="required">*</span> Security Question 2
+              </label>
+            </div>
+
+            <ErrorMessage
+              field={errors.securityquestion2}
+              errorType="required"
+              message="Security Question 2 is required."
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                type="text"
+                name="securityquestion2answer"
+                className="field-input"
+                placeholder="Security Question 2 Answer"
+                onChange={({ target }) => {
+                  handleInputChange("securityquestion2answer", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.securityquestion2answer || ''}
+              />
+              <label className="field-label">
+                <span className="required">*</span> Security Question 2 Answer
+              </label>
+            </div>
+
+            <ErrorMessage
+              field={errors.securityquestion2answer}
+              errorType="required"
+              message="Security Question 2 Answer is required."
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                type="text"
+                name="securityquestion3"
+                className="field-input"
+                placeholder="Security Question 3"
+                onChange={({ target }) => {
+                  handleInputChange("securityquestion3", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.securityquestion3 || ''}
+              />
+              <label className="field-label">
+                <span className="required">*</span> Security Question 3
+              </label>
+            </div>
+
+            <ErrorMessage
+              field={errors.securityquestion3}
+              errorType="required"
+              message="Security Question 3 is required."
+            />
+          </div>
+
+          <div className="form-group">
+            <div className="field">
+              <input
+                type="text"
+                name="securityquestion3answer"
+                className="field-input"
+                placeholder="Security Question 3 Answer"
+                onChange={({ target }) => {
+                  handleInputChange("securityquestion3answer", target.value);
+                }}
+                ref={register({ required: true })}
+                value={data.securityquestion3answer || ''}
+              />
+              <label className="field-label">
+                <span className="required">*</span> Security Question 3 Answer
+              </label>
+            </div>
+
+            <ErrorMessage
+              field={errors.securityquestion3answer}
+              errorType="required"
+              message="Security Question 3 Answer is required."
+            />
           </div>
         </div>
         {/* <input
