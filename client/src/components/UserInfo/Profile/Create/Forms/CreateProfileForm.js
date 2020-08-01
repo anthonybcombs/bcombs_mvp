@@ -196,6 +196,12 @@ const months = [
   "November",
   "December"
 ];
+
+const CUSTOM_GENDER_OPTIONS = [
+  { id: 1, value: "He", name: "He" },
+  { id: 2, value: "She", name: "She" },
+  { id: 3, value: "They", name: "They" }
+];
 export default function CreateProfileForm({
   data,
   onSubmit,
@@ -279,7 +285,7 @@ export default function CreateProfileForm({
     </div>
   );
 
-  console.log('gender',gender)
+  console.log("gender", gender);
   return (
     <CreateProfileStyled
       data-testid="app-create-profile-form"
@@ -333,46 +339,102 @@ export default function CreateProfileForm({
           message="Lastname is required."
         />
       </div>
-      <select
-        data-testid="app-profile-select-family-relationship"
-        name="familyrelationship"
-        onChange={({ target }) => {
-          handleInputChange("familyrelationship", target.value);
-        }}
-        ref={register({ required: true })}>
-        <option value="" disabled>
-          Select Family Relationship
-        </option>
-        {/* <option value="default">Default</option>
+
+      <div>
+        <select
+          data-testid="app-profile-select-gender"
+          name="gender"
+          onChange={({ target }) => {
+            handleInputChange("gender", target.value);
+          }}
+          ref={register({ required: true })}>
+          <option value="" disabled>
+            Select Gender
+          </option>
+          <optgroup label="Gender">
+            <option value="default">Default</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </optgroup>
+          <optgroup label="Custom">
+            {CUSTOM_GENDER_OPTIONS.map(opt => (
+              <option key={opt.id} value={opt.value}>
+                {opt.name}
+              </option>
+            ))}
+          </optgroup>
+        </select>
+        <ErrorMessage
+          field={errors.gender}
+          errorType="required"
+          message="Gender is required."
+        />
+        {gender === "custom" && (
+          <>
+            <select
+              data-testid="app-profile-select-custom-gender"
+              name="customgender"
+              onChange={({ target }) => {
+                handleInputChange("customgender", target.value);
+              }}
+              ref={register({ required: true })}>
+              <option value="" disabled>
+                Select Customer Gender
+              </option>
+              <option value="she">She</option>
+              <option value="he">He</option>
+              <option value="they">They</option>
+            </select>
+            <ErrorMessage
+              field={errors.customgender}
+              errorType="required"
+              message="Custom Gender is required."
+            />
+          </>
+        )}
+      </div>
+
+      <div className="grid">
+        <select
+          data-testid="app-profile-select-family-relationship"
+          name="familyrelationship"
+          onChange={({ target }) => {
+            handleInputChange("familyrelationship", target.value);
+          }}
+          ref={register({ required: true })}>
+          <option value="" disabled>
+            Select Family Relationship
+          </option>
+          {/* <option value="default">Default</option>
         <option value="father">Father</option>
         <option value="mother">Mother</option>
         <option value="sibling">Sibling</option> */}
 
-        {gender === "female"
-          ? OPTION_FEMALE_RELATIONSHIPS.map(opt => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))
-          : gender === "male"
-          ? OPTION_MALE_RELATIONSHIPS.map(opt => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))
-          : OPTION_CUSTOM_RELATIONSHIPS.map(opt => (
-              <option key={opt.key} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-      </select>
-      <ErrorMessage
-        field={errors.familyrelationship}
-        errorType="required"
-        message="Family relationship is required."
-      />
-      <div className="grid">
-        <div>
+          {gender === "female"
+            ? OPTION_FEMALE_RELATIONSHIPS.map(opt => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))
+            : gender === "male"
+            ? OPTION_MALE_RELATIONSHIPS.map(opt => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))
+            : OPTION_CUSTOM_RELATIONSHIPS.map(opt => (
+                <option key={opt.key} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+        </select>
+
+        <ErrorMessage
+          field={errors.familyrelationship}
+          errorType="required"
+          message="Family relationship is required."
+        />
+        {/* <div>
           <select
             data-testid="app-profile-select-gender"
             name="gender"
@@ -416,7 +478,7 @@ export default function CreateProfileForm({
               />
             </>
           )}
-        </div>
+        </div> */}
         <div>
           <div className="field-group">
             <div className="field">
