@@ -173,22 +173,28 @@ export const executeSignIn = async user => {
 };
 export const executeChangePassword = async reqData => {
   try {
+    let authData;
     const users = await getUsers();
     const user = users.filter(user => user.email === reqData.email)[0];
-
     if (user.hasOwnProperty("email")) {
       if (reqData.reset_type === 'security questions') {
-
         if (user.is_profile_filled) {
           const profile = await getUserProfileBySecurityQuestions({ id: user.id, security_question1: reqData.security_question1, security_question2: reqData.security_question2, security_question3: reqData.security_question3});
-          if (profile) {
-             const params = new URLSearchParams();
+          if (Object.keys(profile).length) {
+            const params = new URLSearchParams();
             params.append("password", reqData.password);
             params.append("connection", "Username-Password-Authentication");
-            await fetch("https://bcombd.us.auth0.com/api/v2/users/" + user.auth_id, {
+            const res = await fetch("https://bcombd.us.auth0.com/api/v2/users/" + user.auth_id, {
               method: "PATCH",
               body: params
             });
+            authData = await res.json();
+            if (authData.error) {
+              return {
+                messageType: "error",
+                message: authData.error
+              }
+            }
             return {
               messageType: "info",
               message: "Reset Password was successful."

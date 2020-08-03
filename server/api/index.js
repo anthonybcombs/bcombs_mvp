@@ -103,17 +103,29 @@ router.get("/securityQuestions", async (req, res) => {
   try {
     const { email } = req.query;
     const user = await getUserFromDatabase(email);
-    const userProfile = await getUserProfileFromDatabase(user.id);
-    let securityQuestions = {};
-    if (userProfile) {
-      securityQuestions = {
-        security_question1: userProfile.security_question1,
-        security_question2: userProfile.security_question2,
-        security_question3: userProfile.security_question3,
+    let result = {};
+    if (user) {
+      const userProfile = await getUserProfileFromDatabase(user.id);
+      if (userProfile) {
+        result = {
+          security_question1: userProfile.security_question1,
+          security_question2: userProfile.security_question2,
+          security_question3: userProfile.security_question3,
+        };
+      } else {
+        result = {
+          error: "Please complete profile first."
+        };
+      }
+    } else {
+      result = {
+        error: "Email address doesn't exist."
       };
     }
-    res.send(JSON.stringify(securityQuestions));
-  } catch (error) {}
+    res.send(JSON.stringify(result));
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 router.get("/userTypes", async (req, res) => {
