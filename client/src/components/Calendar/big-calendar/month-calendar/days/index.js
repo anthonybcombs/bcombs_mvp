@@ -4,9 +4,15 @@ import { format, addDays, startOfWeek } from "date-fns";
 const DaysStyled = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  font-size: 1.2em;
+  // font-size: 1.2em;
   text-align: center;
   margin-top: 1em;
+
+  color: #A9ACAE;
+  font-size: .85rem;
+  padding: 0 2rem 1rem;
+  text-transform: uppercase;
+  
 `;
 export default function index({ currentMonth }) {
   const dateFormat = "EEE";

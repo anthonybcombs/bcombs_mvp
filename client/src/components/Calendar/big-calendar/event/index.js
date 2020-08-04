@@ -58,7 +58,7 @@ const EventPopOverStyled = styled.div`
   border: 2px solid lightgrey;
   color: black;
   padding: 5px;
-  max-width: 300px;
+  max-width: 350px;
 
   input:required {
     box-shadow: none;

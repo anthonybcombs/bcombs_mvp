@@ -22,21 +22,41 @@ import Event from "../../event";
 import { getWeekIndex } from "../../../../../helpers/datetime";
 
 const CellsStyled = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  text-align: center;
+  padding: .5rem 2rem 4rem;
+
+  .big-calendar-cells-wrapper {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    text-align: center;
+
+    grid-gap: 1px;
+    padding: 1px;
+    // background: lightgrey;
+    background: #EFEFEF;
+  }
+
+  .rows {
+    background: #fff;
+  }
+
   .cell {
     position: relative;
     font-size: 1em;
-    height: 200px;
+    height: 150px;
 
     width: 100%;
     overflow: hidden !important;
     cursor: pointer;
-    border: 1px solid lightgrey;
+    // border: 1px solid lightgrey;
+
+    color: grey;
   }
   .disabled {
     color: ${({ theme }) => theme.smallCalendar.cell.textColor.secondary};
+
+    // background: #F4F4F4;
+    // background: rgba(211, 211, 211, 0.25);
+    background: rgba(239, 239, 239, 0.35);
   }
   .day {
     display: block;
@@ -86,8 +106,17 @@ const CellsStyled = styled.div`
     top: 50px;
     left: 0;
     width: 100%;
-    height: 200px;
+    height: 100px;
     overflow: hidden;
+  }
+  .all-events {
+    position: absolute;
+    font-weight: 500;
+    text-align: left;
+    font-size: 14px;
+    color: black;
+    bottom: 15px;
+    left: 4px;
   }
 `;
 
@@ -223,6 +252,7 @@ export default function index({
 
     // console.log("eventsOnThisDay 111", eventsOnThisDay);
     const eventsCount = eventsOnThisDay.length;
+    console.log('eventsCount: ', eventsCount)
     const filteredEvents = eventsOnThisDay
       .filter(event => selectedCalendars.includes(event.calendar_id))
       .sort(
@@ -232,8 +262,8 @@ export default function index({
     console.log("filteredEvents", filteredEvents);
     const hasEvents = eventsCount > 0;
     const showedEvents =
-      eventsCount > 5
-        ? filteredEvents.filter((item, index) => index < 5)
+      eventsCount > 2
+        ? filteredEvents.filter((item, index) => index < 2)
         : filteredEvents;
 
     console.log("formattedDateeeeeeeeeeeeee", formattedDate);
@@ -277,15 +307,6 @@ export default function index({
           }`}>
           {formattedDate}
         </span>
-        {filteredEvents.length > 4 && (
-          <div
-            onClick={() => {
-              handleViewEvent(filteredEvents);
-            }}
-            style={{ textAlign: "left", position: "absolute", top: 5 }}>
-            Show All
-          </div>
-        )}
         <div id="events-list">
           {showedEvents.map((event, key) => {
             return (
@@ -303,6 +324,15 @@ export default function index({
             );
           })}
         </div>
+        {filteredEvents.length > 2 && (
+          <div
+            onClick={() => {
+              handleViewEvent(filteredEvents);
+            }}
+            className="all-events">
+            {filteredEvents.length - 2} more
+          </div>
+        )}
       </div>
     );
     day = addDays(day, 1);
@@ -316,7 +346,9 @@ export default function index({
   }
   return (
     <CellsStyled theme={theme} data-testid="app-big-calendar-cells">
-      {rows}
+      <div className="big-calendar-cells-wrapper">
+        {rows}
+      </div>
     </CellsStyled>
   );
 }

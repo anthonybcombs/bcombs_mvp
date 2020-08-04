@@ -8,6 +8,7 @@ import Cells from "./cells";
 const WeekViewStyled = styled.div`
   background-color: white;
   width: 100%;
+  box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.05);
 `;
 export default function index({
   auth,

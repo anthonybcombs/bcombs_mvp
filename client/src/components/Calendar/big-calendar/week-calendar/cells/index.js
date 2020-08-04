@@ -19,24 +19,45 @@ import Event from "../../event";
 import { getWeekIndex } from "../../../../../helpers/datetime";
 
 const CellsStyled = styled.div`
-  display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  text-align: center;
+  // display: grid;
+  // grid-template-columns: repeat(8, minmax(0, 1fr));
+  // text-align: center;
+  
+  padding: .5rem 2rem 4rem;
+
+  .big-calendar-cells-wrapper {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    text-align: center;
+
+    grid-gap: 1px;
+    padding: 1px;
+    background: #EFEFEF;
+  }
+
   .cell {
     position: relative;
     font-size: 1em;
-    height: 200px;
+    height: 150px;
     width: auto;
     max-width: 232px;
     cursor: pointer;
-    border: 1px solid lightgrey;
+    // border: 1px solid lightgrey;
     text-align: center;
+
+    color: grey;
+    background: #fff;
   }
   .cell > p {
-    display: block;
-    position: absolute;
-    top: 4em;
-    left: 2.8em;
+    // display: block;
+    // position: absolute;
+    // top: 4em;
+    // left: 2.8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin: 0;
   }
   .disabled {
     color: ${({ theme }) => theme.smallCalendar.cell.textColor.secondary};
@@ -88,7 +109,7 @@ const CellsStyled = styled.div`
     top:0
     left: 0;
     width: 100%;
-    height: 200px;
+    height: 145px;
     overflow: auto;
   }
 `;
@@ -278,7 +299,9 @@ export default function index({
   });
   return (
     <CellsStyled theme={theme} data-testid="app-big-calendar-cells">
-      {rows}
+      <div className="big-calendar-cells-wrapper">
+        {rows}
+      </div>
     </CellsStyled>
   );
 }

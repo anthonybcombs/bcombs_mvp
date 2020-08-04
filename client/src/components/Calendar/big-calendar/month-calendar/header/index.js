@@ -17,6 +17,8 @@ import {
   faChevronDown,
   faChevronUp,
   faClock,
+  faAngleLeft,
+  faAngleRight
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format } from "date-fns";
@@ -32,12 +34,16 @@ const HeaderStyled = styled.div`
   display: grid;
   margin-bottom: 2em;
   text-align: center;
+
+  padding: 1.5rem 2rem 2rem;
+
   h1 {
     padding: 0;
     margin: 0;
   }
   button {
     border: none;
+    height: 52px;
   }
   svg {
     cursor: pointer;
@@ -46,7 +52,27 @@ const HeaderStyled = styled.div`
     color: black;
   }
   #calendar-controls {
-    margin-top: 1em;
+    // margin-top: 1em;
+  }
+  h2 {
+    margin: 0;
+    font-size: 1rem;
+    // padding: 1.02rem 0;
+    padding: .89rem 0;
+    background: #F4F4F5;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  h2 svg {
+    color: #A9ACAE;
+    padding: 0px 5px;
+    font-size: 1.5rem;
+  }
+  h2 svg:hover {
+    color: #f26e21;
+    transition: .15s ease-in-out;
   }
   #calendars-control {
     position: relative;
@@ -54,6 +80,11 @@ const HeaderStyled = styled.div`
   #calendars-control button {
     width: 100%;
     color: white;
+    background: lightgray;
+  }
+  #calendars-control button > svg:hover {
+    color: #f26e21 !important;
+    transition: .15s ease-in-out;
   }
   .calendar > #buttons {
     position: absolute;
@@ -66,10 +97,12 @@ const HeaderStyled = styled.div`
     color: #f26e21;
   }
   .calendar {
-    height: 100px;
+    // height: 100px;
     position: relative;
     display: inline-block;
     cursor: pointer;
+
+    height: 52px;
   }
   .calendar img {
     display: inline-block;
@@ -77,6 +110,9 @@ const HeaderStyled = styled.div`
     height: 100%;
     padding: 0;
     margin: 0;
+
+    max-height: 52px;
+    object-fit: cover;
   }
   .calendar p {
     margin: 0;
@@ -92,20 +128,40 @@ const HeaderStyled = styled.div`
     margin-right: 5px;
     border-radius: 50%;
   }
+  #calendar-type button {
+    color: #A9ACAE;
+    background: #F4F4F5;
+  }
+  #calendar-type button:hover {
+    color: #f26e21;
+    transition: .15s ease-in-out;
+  }
   #calendar-type button.selected {
     background-color: white;
-    border-bottom: 10px solid #f26e21;
+    // border-bottom: 10px solid #f26e21;
+
+    position: relative;
+    color: #000;
+    font-weight: 600;
+    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.25);
   }
   select {
     display: inline-block;
     border: none;
     font-size: 1em;
     text-align: center;
-    font-weight: bold;
+    // font-weight: bold;
     appearance: none;
     text-align-last:center; 
     right center no-repeat;
     cursor:pointer;
+
+    font-weight: normal;
+    background: transparent;
+  }
+  select:hover {
+    color: #f26e21;
+    transition: .15s ease-in-out;
   }
   @media (min-width: 600px) {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -186,7 +242,7 @@ export default function index({
         <h2 data-testid="app-big-calendar-header-current-month">
           <FontAwesomeIcon
             data-testid="app-big-calendar-prev-month-button"
-            icon={faArrowLeft}
+            icon={faAngleLeft}
             onClick={() => {
               handleChangeMonth();
             }}
@@ -222,7 +278,7 @@ export default function index({
           </select>
           <FontAwesomeIcon
             data-testid="app-big-calendar-next-month-button"
-            icon={faArrowRight}
+            icon={faAngleRight}
             onClick={() => {
               handleChangeMonth("next");
             }}
@@ -277,13 +333,23 @@ export default function index({
             {currentPage > 0 && (
               <FontAwesomeIcon
                 style={{
-                  position: "absolute",
-                  top: 30,
-                  left: 100,
-                  zIndex: 100,
-                  color: "#f26e21",
+                  // position: "absolute",
+                  // top: 30,
+                  // left: 100,
+                  // zIndex: 100,
+                  // color: "#f26e21",
+                  position: 'absolute',
+                  top: '0',
+                  left: '69px',
+                  color: '#fff',
+                  width: '30px',
+                  height: '100%',
+                  zIndex: '10',
+                  padding: '0 5px',
+                  background: 'rgba(242, 110, 33, 0.75)',
                 }}
-                icon={faLongArrowAltLeft}
+                // icon={faLongArrowAltLeft}
+                icon={faAngleLeft}
                 onClick={() => {
                   setCurrentPage(currentPage - 1);
                 }}
@@ -292,14 +358,26 @@ export default function index({
             )}
             {currentPage < calendars.length - 1 && (
               <FontAwesomeIcon
+                // style={{
+                //   position: "absolute",
+                //   top: 30,
+                //   right: 0,
+                //   zIndex: 100,
+                //   color: "#f26e21",
+                // }}
                 style={{
-                  position: "absolute",
-                  top: 30,
-                  right: 0,
-                  zIndex: 100,
-                  color: "#f26e21",
+                  position: 'absolute',
+                  top: '0',
+                  right: '-32px',
+                  color: '#fff',
+                  width: '30px',
+                  height: '100%',
+                  zIndex: '10',
+                  padding: '0 5px',
+                  background: 'rgba(242, 110, 33, 0.75)',
                 }}
-                icon={faLongArrowAltRight}
+                // icon={faLongArrowAltRight}
+                icon={faAngleRight}
                 onClick={() => {
                   setCurrentPage(currentPage + 1);
                 }}

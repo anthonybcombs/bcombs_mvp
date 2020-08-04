@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import styled, { ThemeContext } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+
 import { deleteEvent } from "../../../../redux/actions/Events";
 
 import Confirmation from "../../../../helpers/Confirmation";
@@ -28,6 +29,27 @@ const ViewEventModal = styled.div`
   .modal-content {
     margin: 1.5em auto;
     width: 50%;
+  }
+  .modal-content .actions .btn-edit {
+    cursor: pointer;
+    color: #fff;
+    border: 0;
+    border-radius: 3px;
+    padding: 10px 15px;
+    background: #4791db;
+  }
+  .modal-content .actions .btn-delete {
+    cursor: pointer;
+    color: #fff;
+    border: 0;
+    border-radius: 3px;
+    padding: 10px 15px;
+    background: #f44336;
+  }
+  .modal-content .rdt_TableHeadRow {
+    min-height: 39px;
+    margin-bottom: .5rem;
+    border-bottom: 3px solid #f26e21;
   }
   @media (min-width: 600px) {
     #content {
@@ -72,9 +94,9 @@ const getColumns = ({
 
       cell: event => {
         return (
-          <div>
+          <div className="actions">
             <button
-              style={{ cursor: "pointer" }}
+              className="btn-edit"
               onClick={() => {
                 toggleEditEvent(event);
               }}>
@@ -82,7 +104,7 @@ const getColumns = ({
             </button>
             {`   `}
             <button
-              style={{ cursor: "pointer" }}
+              className="btn-delete"
               onClick={e => {
                 setCurrentData({
                   id: event.id,

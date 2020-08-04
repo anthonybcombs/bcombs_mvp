@@ -9,7 +9,14 @@ import { getEvents } from "../../../redux/actions/Events";
 import { requestUserGroup } from "../../../redux/actions/Groups";
 
 const MyCalendarStyled = styled.div`
-  margin: 1em;
+  // margin: 1em;
+
+  margin: 1.5rem 3em 2rem;
+  h2 {
+    font-weight: 400;
+  }
+
+  
 `;
 export default function index() {
   const {
@@ -39,7 +46,7 @@ export default function index() {
   }, []);
   return (
     <MyCalendarStyled>
-      <h1>My Calendars</h1>
+      <h2>My Calendars</h2>
       <BigCalendar
         auth={auth}
         contacts={contacts}

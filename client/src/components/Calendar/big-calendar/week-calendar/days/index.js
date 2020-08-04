@@ -4,9 +4,13 @@ import { format, startOfWeek, endOfWeek, eachDayOfInterval } from "date-fns";
 const DaysStyled = styled.div`
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  font-size: 1.2em;
+  font-size: .85rem;
   text-align: center;
   margin-top: 1em;
+
+  color: #A9ACAE;
+  padding: 0 2rem 1rem;
+  text-transform: uppercase;
 `;
 export default function index({ currentWeek }) {
   const dateFormat = "EE MM/dd";
