@@ -12,6 +12,7 @@ import {
   faLongArrowAltLeft,
   faEyeSlash,
   faEye,
+  faClone,
   faChevronDown,
   faChevronUp,
   faClock,
@@ -21,9 +22,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { format, startOfWeek, endOfWeek } from "date-fns";
-import { requestDeleteCalendar } from "../../../../../redux/actions/Calendars";
+import { requestDeleteCalendar, requestCloneCelander } from "../../../../../redux/actions/Calendars";
 import CreateCalendarModal from "../../new-calendar/Create";
 import EditCalendarModal from "../../new-calendar/Edit";
+import Confirmation from "../../../../../helpers/Confirmation";
 const HeaderStyled = styled.div`
   display: grid;
   margin-bottom: 2em;
@@ -167,11 +169,23 @@ export default function index({
   const [isPaginationVisible, setPaginationVisibility] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [viewAllCalendar, setViewAllCalendar] = useState(false);
+  const [isConfirmationVisible, setConfirmationVisible] = useState(false);
+  const [currentAction, setCurrentAction] = useState(null);
+  const [currentConfirmationMessage, setCurrentConfirmationMessage] = useState(
+    ""
+  );
   return (
     <HeaderStyled data-testid="app-big-calendar-header">
       <CreateCalendarModal
         isVisible={isVisibleCreateCalendarModal}
         toggleCreateCalendarModal={toggleCreateCalendarModal}
+      />
+      <Confirmation
+        isVisible={isConfirmationVisible}
+        message={currentConfirmationMessage}
+        toggleConfirmationVisible={setConfirmationVisible}
+        onSubmit={currentAction}
+        submitButtonLabel="Submit"
       />
       {selectedCalendar.hasOwnProperty("name") && (
         <EditCalendarModal
@@ -310,6 +324,9 @@ export default function index({
           currentPage={currentPage}
           viewAllCalendar={viewAllCalendar}
           publicView={publicView}
+          toggleConfirmationVisible={setConfirmationVisible}
+          setCurrentAction={setCurrentAction}
+          setCurrentConfirmationMessage={setCurrentConfirmationMessage}
         />
       </div>
     </HeaderStyled>
@@ -325,6 +342,9 @@ const CalendarList = ({
   currentPage,
   viewAllCalendar,
   publicView,
+  toggleConfirmationVisible,
+  setCurrentAction,
+  setCurrentConfirmationMessage,
 }) => {
   return (
     <>
@@ -357,6 +377,9 @@ const CalendarList = ({
               selectedCalendars={selectedCalendars}
               toggleEditCalendarModal={toggleEditCalendarModal}
               publicView={publicView}
+              toggleConfirmationVisible={toggleConfirmationVisible}
+              setCurrentAction={setCurrentAction}
+              setCurrentConfirmationMessage={setCurrentConfirmationMessage}
             />
           );
         })}
@@ -370,6 +393,9 @@ const CalendarCard = ({
   selectedCalendars,
   toggleEditCalendarModal,
   publicView,
+  toggleConfirmationVisible,
+  setCurrentAction,
+  setCurrentConfirmationMessage
 }) => {
   const [isCalendarButtonsVisible, setCalendarButtonsVisible] = useState(false);
   const auth = useSelector(({ auth }) => auth);
@@ -407,6 +433,20 @@ const CalendarCard = ({
         !publicView &&
         auth.user_id === calendar.user_id && (
           <div id="buttons">
+            <FontAwesomeIcon
+              icon={faClone}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentConfirmationMessage(
+                  `Are you sure you want to clone this calendar?`
+                );
+                const triggerAction = () => () => {
+                  setCurrentAction(dispatch(requestCloneCelander(calendar)));
+                };
+                setCurrentAction(triggerAction);
+                toggleConfirmationVisible(true);
+              }}
+            />
             {calendar.visibilityType === "Public" && (
               <FontAwesomeIcon
                 icon={faShareAltSquare}
