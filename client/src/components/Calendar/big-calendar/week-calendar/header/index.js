@@ -262,13 +262,17 @@ export default function index({
             {currentPage > 0 && (
               <FontAwesomeIcon
                 style={{
-                  position: "absolute",
-                  top: 30,
-                  left: 100,
-                  zIndex: 200,
-                  color: "#f26e21",
+                  position: 'absolute',
+                  top: '0',
+                  color: '#fff',
+                  width: '30px',
+                  height: '100%',
+                  zIndex: '10',
+                  padding: '0 5px',
+                  left: 'calc(20% - 10px)',
+                  background: 'rgba(242, 110, 33, 0.75)',
                 }}
-                icon={faLongArrowAltLeft}
+                icon={faAngleLeft}
                 onClick={() => {
                   setCurrentPage(currentPage - 1);
                 }}
@@ -278,13 +282,17 @@ export default function index({
             {currentPage < calendars.length - 1 && (
               <FontAwesomeIcon
                 style={{
-                  position: "absolute",
-                  top: 30,
-                  right: 0,
-                  zIndex: 200,
-                  color: "#f26e21",
+                  position: 'absolute',
+                  top: '0',
+                  right: '-32px',
+                  color: '#fff',
+                  width: '30px',
+                  height: '100%',
+                  zIndex: '10',
+                  padding: '0 5px',
+                  background: 'rgba(242, 110, 33, 0.75)',
                 }}
-                icon={faLongArrowAltRight}
+                icon={faAngleRight}
                 onClick={() => {
                   setCurrentPage(currentPage + 1);
                 }}

@@ -40,7 +40,7 @@ const CellsStyled = styled.div`
     font-size: 1em;
     height: 150px;
     width: auto;
-    max-width: 232px;
+    // max-width: 232px;
     cursor: pointer;
     // border: 1px solid lightgrey;
     text-align: center;
