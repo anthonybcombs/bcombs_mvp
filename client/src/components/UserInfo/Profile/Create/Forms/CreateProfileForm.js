@@ -342,6 +342,7 @@ export default function CreateProfileForm({
 
       <div>
         <select
+          className="field-input"
           data-testid="app-profile-select-gender"
           name="gender"
           onChange={({ target }) => {
@@ -372,6 +373,7 @@ export default function CreateProfileForm({
         {gender === "custom" && (
           <>
             <select
+              className="field-input"
               data-testid="app-profile-select-custom-gender"
               name="customgender"
               onChange={({ target }) => {
@@ -394,14 +396,16 @@ export default function CreateProfileForm({
         )}
       </div>
 
-      <div className="grid">
+      <div className="grid" style={{marginTop:12}}>
         <select
+          className="field-input"
           data-testid="app-profile-select-family-relationship"
           name="familyrelationship"
           onChange={({ target }) => {
             handleInputChange("familyrelationship", target.value);
           }}
-          ref={register({ required: true })}>
+          ref={register({ required: true })}
+          style={{ lineHeight: 1, height: 56 }}>
           <option value="" disabled>
             Select Family Relationship
           </option>
@@ -479,151 +483,148 @@ export default function CreateProfileForm({
             </>
           )}
         </div> */}
-        <div>
-          <div className="field-group">
+
+        {userType === "USER" && (
+          // <div>
+          //   <input
+          //     data-testid="app-profile-input-date-of-birth"
+          //     name="dateofbirth"
+          //     type={dateOfBirthElementType}
+          //     placeholder={`${
+          //       isRequiredField("dateofbirth") ? "* " : ""
+          //     }Date of Birth`}
+          //     min="1900-01-01"
+          //     max={maxDate}
+          //     onFocus={() => {
+          //       handleDateOfBirthElementTypeChange("date");
+          //     }}
+          //     onBlur={() => {
+          //       handleDateOfBirthElementTypeChange("text");
+          //     }}
+          //     onChange={({ target }) => {
+          //       //setShowWarningFutureDate(isFuture(parseISO(target.value)));
+          //       if (!isFuture(parseISO(target.value))) {
+          //         setValue("dateofbirth", target.value);
+          //         handleInputChange("dateofbirth", target.value);
+          //       }
+          //     }}
+          //   />
+          //   <ErrorMessage
+          //     field={errors.dateofbirth}
+          //     errorType="required"
+          //     message="Date of Birth is required."
+          //   />
+          //   {/* {showWarningFutureDate && <>
+          //       <p className="error">Date of Birth is in future.</p>
+          //     </>
+          //   } */}
+          // </div>
+          <div className="form-group">
             <div className="field">
-              <input
-                className="field-input"
-                data-testid="app-profile-input-zip-code"
-                name="zipcode"
-                type="number"
-                placeholder="Zip Code"
-                onChange={({ target }) => {
-                  setValue("zipcode", target.value);
-                  handleInputChange("zipcode", target.value);
+              <DatePicker
+                readOnly={false}
+                renderCustomHeader={({
+                  date,
+                  changeYear,
+                  changeMonth,
+                  decreaseMonth,
+                  increaseMonth,
+                  prevMonthButtonDisabled,
+                  nextMonthButtonDisabled
+                }) => (
+                  <div
+                    style={{
+                      margin: 10,
+                      display: "flex",
+                      justifyContent: "center"
+                    }}>
+                    <button
+                      type="button"
+                      className="datepicker-btn"
+                      onClick={decreaseMonth}
+                      disabled={prevMonthButtonDisabled}>
+                      {"<"}
+                    </button>
+                    <select
+                      value={new Date(date).getFullYear()}
+                      onChange={({ target: { value } }) => changeYear(value)}>
+                      {years.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={months[date.getMonth()]}
+                      onChange={({ target: { value } }) =>
+                        changeMonth(months.indexOf(value))
+                      }>
+                      {months.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      type="button"
+                      className="datepicker-btn"
+                      onClick={increaseMonth}
+                      disabled={nextMonthButtonDisabled}>
+                      {">"}
+                    </button>
+                  </div>
+                )}
+                disabled={false}
+                selected={
+                  isValidDate(data.dateofbirth) && new Date(data.dateofbirth)
+                }
+                onChange={date => {
+                  handleInputChange("dateofbirth", format(date, "yyyy-MM-dd"));
                 }}
-                ref={register({
-                  minLength: 5
-                })}
-                maxLength="5"
-                onInput={maxLengthCheck}
+                name={"dateofbirth"}
+                customInput={
+                  <CustomDatePicker className="field-input birthdate-field" />
+                }
               />
-              <label className="field-label">
-                <span className="required">*</span> Zip Code
-              </label>
             </div>
-            <ErrorMessage
-              field={errors.zipcode}
-              errorType="required"
-              message="Zip code is required."
-            />
-            <ErrorMessage
-              field={errors.zipcode}
-              errorType="minLength"
-              message="Zip code minimum length must be at least 5 characters."
-            />
           </div>
-          {userType === "USER" && (
-            // <div>
-            //   <input
-            //     data-testid="app-profile-input-date-of-birth"
-            //     name="dateofbirth"
-            //     type={dateOfBirthElementType}
-            //     placeholder={`${
-            //       isRequiredField("dateofbirth") ? "* " : ""
-            //     }Date of Birth`}
-            //     min="1900-01-01"
-            //     max={maxDate}
-            //     onFocus={() => {
-            //       handleDateOfBirthElementTypeChange("date");
-            //     }}
-            //     onBlur={() => {
-            //       handleDateOfBirthElementTypeChange("text");
-            //     }}
-            //     onChange={({ target }) => {
-            //       //setShowWarningFutureDate(isFuture(parseISO(target.value)));
-            //       if (!isFuture(parseISO(target.value))) {
-            //         setValue("dateofbirth", target.value);
-            //         handleInputChange("dateofbirth", target.value);
-            //       }
-            //     }}
-            //   />
-            //   <ErrorMessage
-            //     field={errors.dateofbirth}
-            //     errorType="required"
-            //     message="Date of Birth is required."
-            //   />
-            //   {/* {showWarningFutureDate && <>
-            //       <p className="error">Date of Birth is in future.</p>
-            //     </>
-            //   } */}
-            // </div>
-            <div className="form-group">
-              <div className="field">
-                <DatePicker
-                  readOnly={false}
-                  renderCustomHeader={({
-                    date,
-                    changeYear,
-                    changeMonth,
-                    decreaseMonth,
-                    increaseMonth,
-                    prevMonthButtonDisabled,
-                    nextMonthButtonDisabled
-                  }) => (
-                    <div
-                      style={{
-                        margin: 10,
-                        display: "flex",
-                        justifyContent: "center"
-                      }}>
-                      <button
-                        type="button"
-                        className="datepicker-btn"
-                        onClick={decreaseMonth}
-                        disabled={prevMonthButtonDisabled}>
-                        {"<"}
-                      </button>
-                      <select
-                        value={new Date(date).getFullYear()}
-                        onChange={({ target: { value } }) => changeYear(value)}>
-                        {years.map(option => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+        )}
+      </div>
 
-                      <select
-                        value={months[date.getMonth()]}
-                        onChange={({ target: { value } }) =>
-                          changeMonth(months.indexOf(value))
-                        }>
-                        {months.map(option => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-
-                      <button
-                        type="button"
-                        className="datepicker-btn"
-                        onClick={increaseMonth}
-                        disabled={nextMonthButtonDisabled}>
-                        {">"}
-                      </button>
-                    </div>
-                  )}
-                  disabled={false}
-                  selected={
-                    isValidDate(data.dateofbirth) && new Date(data.dateofbirth)
-                  }
-                  onChange={date => {
-                    handleInputChange(
-                      "dateofbirth",
-                      format(date, "yyyy-MM-dd")
-                    );
-                  }}
-                  name={"dateofbirth"}
-                  customInput={
-                    <CustomDatePicker className="field-input birthdate-field" />
-                  }
-                />
-              </div>
-            </div>
-          )}
+      <div className="field-group">
+        <div className="field">
+          <input
+            className="field-input"
+            data-testid="app-profile-input-zip-code"
+            name="zipcode"
+            type="number"
+            placeholder="Zip Code"
+            onChange={({ target }) => {
+              setValue("zipcode", target.value);
+              handleInputChange("zipcode", target.value);
+            }}
+            ref={register({
+              minLength: 5
+            })}
+            maxLength="5"
+            onInput={maxLengthCheck}
+          />
+          <label className="field-label">
+            <span className="required">*</span> Zip Code
+          </label>
         </div>
+        <ErrorMessage
+          field={errors.zipcode}
+          errorType="required"
+          message="Zip code is required."
+        />
+        <ErrorMessage
+          field={errors.zipcode}
+          errorType="minLength"
+          message="Zip code minimum length must be at least 5 characters."
+        />
       </div>
       <button data-testid="app-profile-submit-button" type="submit">
         Save and Continue
