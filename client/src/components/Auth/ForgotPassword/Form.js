@@ -70,13 +70,15 @@ const ForgotPasswordFormStyled = styled.form`
     font-size: 14px !important;
   }
 `;
-export default function Form({ onSubmit, handleInputChange, hasStatus }) {
+export default function Form({ onSubmit, handleInputChange, hasStatus}) {
   const dispatch = useDispatch();
   const resetTypeEmail = 'Email';
   const resetTypeSecQuestions = 'Security Questions'
   const [resetType, setResetType] = useState(resetTypeEmail);
   const [randomQuestions, setRandomQuestions] = useState([]);
-  const { register, handleSubmit, errors, reset, watch } = useForm({
+  const [securityQuestionError, setSecurityQuestionError] = useState('');
+  const [hasStatusMsg, setHasStatusMsg] = useState(hasStatus);
+  const { register, handleSubmit, errors, reset, watch, setValue } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
@@ -107,18 +109,23 @@ export default function Form({ onSubmit, handleInputChange, hasStatus }) {
   };
 
   const generateSecurityQuestions = () => {
-    hasStatus = false;
+    setHasStatusMsg(false);
     dispatch(requestSecurityQuestions(email));
   }
 
   useEffect(() => {
-    if (Object.keys(user.profile).length && !hasStatus) {
+    if (Object.keys(user.profile).length && !user.profile.hasOwnProperty('error') && !hasStatusMsg) {
       let questions = [
         { name: "security_question1", text: user.profile.security_question1 },
         { name: "security_question2", text: user.profile.security_question2 },
         { name: "security_question3", text: user.profile.security_question3 },
       ]
       setRandomQuestions(questions);
+    }
+    if (email && Object.keys(user.profile).length && user.profile.hasOwnProperty('error')) {
+      setSecurityQuestionError(user.profile.error);
+    } else {
+      setSecurityQuestionError('');
     }
   }, [user]);
 
@@ -164,6 +171,10 @@ export default function Form({ onSubmit, handleInputChange, hasStatus }) {
               errorType="required"
               message="Email is required."
             />
+            {securityQuestionError && <>
+              <p className="error error-size">{securityQuestionError}</p>
+              </>
+            }
           </div>
         </div>
         {resetType === resetTypeSecQuestions && randomQuestions.length > 0 && <>
@@ -299,7 +310,7 @@ export default function Form({ onSubmit, handleInputChange, hasStatus }) {
         </>
       }
       {(resetType === resetTypeSecQuestions && randomQuestions.length === 0) && (
-        <button data-testid="app-forgot-password-send-button" type="button" onClick={generateSecurityQuestions}>
+        <button data-testid="app-forgot-password-send-button" type="submit" onClick={generateSecurityQuestions}>
           Get Security Questions
         </button>
       )}
