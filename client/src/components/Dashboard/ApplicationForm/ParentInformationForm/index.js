@@ -1172,12 +1172,15 @@ export default function index({
             </div>
           </div>
         </div>
-        <div className="grid-1">
+
+        <div>
           <div className="form-group">
-            <div className="field">
-              <select
+            <div>
+              <label className="field-label-simple">
+                <span className="required">*</span> What are some of your expectations from the Mentoring Program?
+              </label>
+              <input
                 readOnly={isReadonly}
-                disabled={isReadonly}
                 name={"parent_person_recommend" + (counter - 1)}
                 className="field-input"
                 onChange={({ target }) => {
@@ -1191,21 +1194,10 @@ export default function index({
                       target.value
                     );
                   }
-
                 }}
                 ref={register({ required: true })}
                 defaultValue={parentProfile.person_recommend}
-              >
-                <option value="">Select</option>
-                {CHILD_LIVES_OPTION.map((opt, index) => (
-                  <option key={index + 1} value={opt.value}>
-                    {opt.value}
-                  </option>
-                ))}
-              </select>
-              <label className="field-label">
-                <span className="required">*</span> How did you find us?
-              </label>
+              />
             </div>
             <ErrorMessage
               field={errors["parent_person_recommend" + (counter - 1)]}

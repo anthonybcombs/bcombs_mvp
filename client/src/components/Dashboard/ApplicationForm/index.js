@@ -845,6 +845,11 @@ export default function index() {
     return parents;
   }
 
+  const getChildLivesWith = (childLivesWith = []) => {
+
+    return childLivesWith.map(a => a.name).toString();
+  }
+
   const onSubmit = () => {
 
     let payload = []
@@ -873,7 +878,7 @@ export default function index() {
           state: childsInformation[i].profile.state,
           zip_code: childsInformation[i].profile.zip_code,
           location_site: childsInformation[i].profile.location_site,
-          child_lives_with: childsInformation[i].profile.child_lives_with,
+          child_lives_with: getChildLivesWith(childsInformation[i].profile.child_lives_with),
           school_name: childsInformation[i].general_information.school_name,
           school_phone: childsInformation[i].general_information.school_phone,
           has_suspended: parseInt(childsInformation[i].general_information.was_suspended),
