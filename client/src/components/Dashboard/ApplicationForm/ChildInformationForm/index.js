@@ -144,6 +144,31 @@ export default function index({
     { id: 2, value: "Work", name: "Work" },
   ];
 
+  const CHILD_LIVES_OPTION = [
+    {id: 1, value: "Father"},
+    {id: 2, value: "Mother"},
+    {id: 3, value: "Brother"},
+    {id: 4, value: "Sister"},
+    {id: 5, value: "Uncle"},
+    {id: 6, value: "Aunt"},
+    {id: 7, value: "Cousin (Male)"},
+    {id: 8, value: "Grandfather"},
+    {id: 9, value: "Grandmother"},
+    {id: 10, value: "Stepbrother"},
+    {id: 11, value: "Stepsister"},
+    {id: 12, value: "Stepfather"},
+    {id: 13, value: "Stepmother"},
+    {id: 14, value: "Stepson"},
+    {id: 15, value: "Stepdaughter"},
+    {id: 16, value: "Brother-in-law"},
+    {id: 17, value: "Sister-in-law"},
+    {id: 18, value: "Father-in-law"},
+    {id: 19, value: "Mother-in-law"},
+    {id: 20, value: "Family Friend"},
+    {id: 21, value: "Other relatives"},
+    {id: 22, value: "Others"}
+  ];
+
   const [ethinicitySelected, setEthinicitySelected] = useState([]);
   const [schoolProgramSelected, setSchoolProgramSelected] = useState([]);
 
@@ -1002,6 +1027,48 @@ export default function index({
                 Program (select all choices that apply)
               </label>
             </div>
+          </div>
+        </div>
+        <div className="grid">
+          <div className="form-group">
+            <div className="field">
+              <select
+                readOnly={isReadonly}
+                disabled={isReadonly}
+                name={"ch_lives_with" + (counter - 1)}
+                className="field-input"
+                onChange={({ target }) => {
+                  if(target.value === "Others") {
+                    console.log("Show Text box");
+                  } else {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "child_lives_with",
+                      target.value
+                    );
+                  }
+
+                }}
+                ref={register({ required: true })}
+                defaultValue={childProfile.child_lives_with}
+              >
+                <option value="">Select</option>
+                {CHILD_LIVES_OPTION.map((opt, index) => (
+                  <option key={index + 1} value={opt.value}>
+                    {opt.value}
+                  </option>
+                ))}
+              </select>
+              <label className="field-label">
+                <span className="required">*</span> Child lives with
+              </label>
+            </div>
+            <ErrorMessage
+              field={errors["ch_lives_with" + (counter - 1)]}
+              errorType="required"
+              message="Child lives with is required"
+            />
           </div>
         </div>
       </div>

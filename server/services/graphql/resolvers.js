@@ -270,8 +270,12 @@ const resolvers = {
         const child = await addChild(application.child);
         const parents = application.parents;
 
+        const grade_desc = application.child.grade_desc;
+
+        console.log("Grade DESC", grade_desc);
+        
+        application.class_teacher = grade_desc;
         application.child = child.ch_id;
-        application.class_teacher = child.grade_desc;
 
         application = await createApplication(application);
 

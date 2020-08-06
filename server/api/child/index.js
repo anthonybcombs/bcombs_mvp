@@ -56,7 +56,8 @@ export const getChildInformation = async (id) => {
         doctor_name,
         doctor_phone,
         hospital_preference,
-        hospital_phone
+        hospital_phone,
+        child_lives_with
         FROM child 
         WHERE ch_id=UUID_TO_BIN(?)`,
         [id]
@@ -120,7 +121,8 @@ export const addChild = async ({
   doctor_name,
   doctor_phone,
   hospital_preference,
-  hospital_phone
+  hospital_phone,
+  child_lives_with
 }) => {
   const db = makeDb();
   let result = {};
@@ -180,13 +182,14 @@ export const addChild = async ({
         doctor_name,
         doctor_phone,
         hospital_preference,
-        hospital_phone
+        hospital_phone,
+        child_lives_with
       ) VALUES (UUID_TO_BIN(UUID()), 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         firstname,
         lastname,
@@ -237,7 +240,8 @@ export const addChild = async ({
         doctor_name,
         doctor_phone,
         hospital_preference,
-        hospital_phone
+        hospital_phone,
+        child_lives_with
       ]
     )
 

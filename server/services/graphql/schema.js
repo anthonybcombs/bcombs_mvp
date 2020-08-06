@@ -207,6 +207,7 @@ const inputs = `
         doctor_phone: String
         hospital_preference: String
         hospital_phone: String
+        child_lives_with: String!
     }
 
     input ParentInfoInput {
@@ -233,6 +234,7 @@ const inputs = `
         phone_number2: String
         email_type2: String
         email_address2: String
+        person_recommend: String!
     }
 
     input ApplicationInput {
@@ -483,6 +485,7 @@ const queryTypes = `
         doctor_phone: String
         hospital_preference: String
         hospital_phone: String
+        child_lives_with: String!
     }
 
     type Parent {
@@ -507,6 +510,7 @@ const queryTypes = `
         phone_number2: String
         email_type2: String
         email_address2: String
+        person_recommend: String!
     }
 
     type Application {

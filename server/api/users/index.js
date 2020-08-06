@@ -102,6 +102,8 @@ export const executeSignIn = async user => {
     params.append("username", user.email);
     params.append("password", user.password);
 
+    console.log("Process ENV", process.env);
+
     const AuthResponse = await fetch(
       "https://bcombd.us.auth0.com/oauth/token",
       {
@@ -123,6 +125,7 @@ export const executeSignIn = async user => {
       );
       const userInfo = await userInfoResponse.json();
       if (authData.hasOwnProperty("error")) {
+        console.log("auth data", authData);
         return {
           user: {
             ...authData,
@@ -146,6 +149,8 @@ export const executeSignIn = async user => {
       };
     }
     if (authData.hasOwnProperty("error")) {
+
+      console.log("auth data", authData);
       return {
         user: authData,
         status: {

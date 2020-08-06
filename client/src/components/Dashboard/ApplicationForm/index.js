@@ -271,7 +271,8 @@ export default function index() {
       zip_code: "",
       location_site: "",
       ethinicity: [],
-      program: []
+      program: [],
+      child_lives_with: ""
     },
     general_information: {
       grade: "",
@@ -544,7 +545,8 @@ export default function index() {
       live_area: 0, // 1: 1 - 5 year, 2: 5 - 10 year, 3: more than 10 year
       level_education: "",
       child_importance_hs: "",
-      child_importance_col: ""
+      child_importance_col: "",
+      person_recommend: ""
     }
   };
 
@@ -683,6 +685,7 @@ export default function index() {
           !profile.state ||
           !profile.zip_code ||
           !profile.location_site ||
+          !profile.child_lives_with ||
           !gi.grade ||
           !gi.school_name ||
           !gi.mentee_gain) {
@@ -706,7 +709,8 @@ export default function index() {
           !profile.phone_number ||
           !profile.email_address ||
           !profile.goals_parent_program ||
-          !profile.goals_child_program) {
+          !profile.goals_child_program ||
+          !profile.person_recommend) {
             isValid = false;
             break;
           }
@@ -833,7 +837,8 @@ export default function index() {
         address: parent.profile.address,
         city: parent.profile.city,
         state: parent.profile.state,
-        zip_code: parent.profile.zip_code
+        zip_code: parent.profile.zip_code,
+        person_recommend: parent.profile.person_recommend
       })
     });
 
@@ -868,6 +873,7 @@ export default function index() {
           state: childsInformation[i].profile.state,
           zip_code: childsInformation[i].profile.zip_code,
           location_site: childsInformation[i].profile.location_site,
+          child_lives_with: childsInformation[i].profile.child_lives_with,
           school_name: childsInformation[i].general_information.school_name,
           school_phone: childsInformation[i].general_information.school_phone,
           has_suspended: parseInt(childsInformation[i].general_information.was_suspended),
