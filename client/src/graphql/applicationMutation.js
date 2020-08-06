@@ -82,6 +82,7 @@ export const GET_APPLICATIONS_QUERY = gql`
         doctor_phone
         hospital_preference
         hospital_phone
+        child_lives_with
       }
       parents {
         firstname
@@ -103,6 +104,7 @@ export const GET_APPLICATIONS_QUERY = gql`
         level_of_education
         child_hs_grad
         child_col_grad
+        person_recommend
       }
       section1_signature
       section1_date_signed
@@ -182,6 +184,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
         doctor_phone
         hospital_preference
         hospital_phone
+        child_lives_with
       }
       parents {
         firstname
@@ -203,6 +206,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
         level_of_education
         child_hs_grad
         child_col_grad
+        person_recommend
       }
       section1_signature
       section1_date_signed
@@ -282,6 +286,7 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         doctor_phone
         hospital_preference
         hospital_phone
+        child_lives_with
       }
       parents {
         firstname
@@ -303,6 +308,7 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         level_of_education
         child_hs_grad
         child_col_grad
+        person_recommend
       }
       section1_signature
       section1_date_signed

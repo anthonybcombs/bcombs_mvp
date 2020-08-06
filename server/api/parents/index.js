@@ -28,7 +28,8 @@ export const getParentByApplication = async (id) => {
         live_area,
         level_of_education,
         child_hs_grad,
-        child_col_grad
+        child_col_grad,
+        person_recommend
         FROM parent
         WHERE application=UUID_TO_BIN(?)`,
         [id]
@@ -67,7 +68,8 @@ export const addParent = async ({
   level_of_education,
   child_hs_grad,
   child_col_grad,
-  emergency_contacts
+  emergency_contacts,
+  person_recommend
 }) => {
   const db = makeDb();
   let result = {};
@@ -101,11 +103,12 @@ export const addParent = async ({
         level_of_education,
         child_hs_grad,
         child_col_grad,
-        emergency_contacts
+        emergency_contacts,
+        person_recommend
       ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?),
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, ?)`,
+        ?, ?, ?, ?, ?)`,
       [
         application,
         firstname,
@@ -131,7 +134,8 @@ export const addParent = async ({
         level_of_education,
         child_hs_grad,
         child_col_grad,
-        emergency_contacts
+        emergency_contacts,
+        person_recommend
       ]
     )
 

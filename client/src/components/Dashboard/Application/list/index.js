@@ -5,12 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faArchive,
   faCheck,
-  faTimes } from "@fortawesome/free-solid-svg-icons";
+  faTimes,
+  faDownload } from "@fortawesome/free-solid-svg-icons";
 import DataTable from 'react-data-table-component';
 import { format } from "date-fns";
+import { CSVLink, CSVDownload } from "react-csv";
 import Loading from "../../../../helpers/Loading.js";
 
 import ConfirmedModal from "../../../../helpers/ConfirmedModal";
+import ExportFilter from "../../../../helpers/ExportFilter";
 
 import {requestArchivedAppplication} from "../../../../redux/actions/Application";
 
@@ -53,14 +56,24 @@ const ApplicationListStyled = styled.div`
     align-items: center;
   }
 
-  #archivedButton {
+  #archivedButton,
+  #exportButton {
     margin-left: 30px;
     font-size: 1em;
     color: #fff;
     background-color: #f26e21;
     border-radius: 4px;
-    padding: 6px 10px;
+    padding: 10px 15px;
     border: 0;
+  }
+
+  #exportButton {
+    display: flex;
+    margin-left: 20px;
+  }
+
+  #exportButton span {
+    margin-left: 5px;
   }
 
   #legendContainer {
@@ -132,6 +145,14 @@ const ApplicationListStyled = styled.div`
     color: #3e89fe;
     text-decoration: none;
   }
+
+  .loading-container .hCOWuT {
+    height: auto;
+  }
+
+  .loading-container .hCOWuT div:first-child {
+    margin: 1vh auto;
+  } 
 
   @media (min-width: 600px) {
     #tableHeader {
@@ -288,7 +309,8 @@ const FilterComponent = ({
 export default function index({
   applications,
   handleSelectedApplication,
-  listApplicationLoading = false
+  listApplicationLoading = false,
+  vendor
 }) {
 
   const getApplicationStatusVal = (student_status, verification, row) => {
@@ -496,6 +518,8 @@ export default function index({
   
   let getApplications = applications.length > 0 ? applications : [];
 
+  const exportData = applications.length > 0 ? applications : [];
+
   data = getApplications.filter((item) => {
 
       let name_match = true;
@@ -573,6 +597,7 @@ export default function index({
 
   const [selectedRows, setSelectedRows] = useState([]);
   const [showConfirmed, setShowConfiremd] = useState(false);
+  const [showExportFilter, setShowExportFilter] = useState(false);
 
   const handleSelectedRowsChange = (state) => {
     setSelectedRows(state.selectedRows);
@@ -598,6 +623,14 @@ export default function index({
     setShowConfiremd(true);
   }
 
+  const handleExportCSV = (e) => {
+    setShowExportFilter(true);
+  }
+
+  const handleExit = () => {
+    setShowExportFilter(false);
+  }
+
   return (
     <ApplicationListStyled>
       <div id="applicationList">
@@ -610,6 +643,17 @@ export default function index({
               <button id="archivedButton" onClick={handleArchivedApplication}>
                 <FontAwesomeIcon icon={faArchive} />
               </button>
+              <button id="exportButton" onClick={handleExportCSV}>
+                <FontAwesomeIcon icon={faDownload} />
+                <span>Export</span>
+              </button>
+              {/* <CSVLink 
+                id="exportButton" 
+                data={exportData}
+                filename={getVendorFilename()}>
+                <FontAwesomeIcon icon={faDownload} />
+                <span>Export</span>
+              </CSVLink> */}
             </div>
             <div id="legendContainer">
               <ul>
@@ -634,7 +678,9 @@ export default function index({
           <div id="dataTableContainer">
             {
               listApplicationLoading ? (
-                <Loading />
+                <div className="loading-container">
+                  <Loading />
+                </div>
               ) : (
                 <DataTable 
                   columns={columns}
@@ -663,6 +709,15 @@ export default function index({
           handleCancelClick={handleCancelClick}
           message={"Archived the applications?"}
         />
+      }
+      {
+        showExportFilter && (
+          <ExportFilter
+            applications={exportData}
+            handleExit={handleExit}
+            vendor={vendor}
+          />
+        )
       }
 
     </ApplicationListStyled>
