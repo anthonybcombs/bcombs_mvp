@@ -291,7 +291,8 @@ export default function CreateProfileForm({
       data-testid="app-create-profile-form"
       method="POST"
       theme={theme}
-      onSubmit={handleSubmit(onSubmit)}>
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <h3>Create my profile</h3>
       <div className="form-group">
         <div className="field">
@@ -346,14 +347,21 @@ export default function CreateProfileForm({
           data-testid="app-profile-select-gender"
           name="gender"
           onChange={({ target }) => {
+            if (target.value === "female") {
+              setValue("familyrelationship", "mother");
+            } else if (target.value === "male") {
+              setValue("familyrelationship", "father");
+            } else {
+              setValue("familyrelationship", "Other");
+            }
             handleInputChange("gender", target.value);
           }}
-          ref={register({ required: true })}>
+          ref={register({ required: true })}
+        >
           <option value="" disabled>
             Select Gender
           </option>
           <optgroup label="Gender">
-            <option value="default">Default</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
           </optgroup>
@@ -379,7 +387,8 @@ export default function CreateProfileForm({
               onChange={({ target }) => {
                 handleInputChange("customgender", target.value);
               }}
-              ref={register({ required: true })}>
+              ref={register({ required: true })}
+            >
               <option value="" disabled>
                 Select Customer Gender
               </option>
@@ -396,7 +405,7 @@ export default function CreateProfileForm({
         )}
       </div>
 
-      <div className="grid" style={{marginTop:12}}>
+      <div className="grid" style={{ marginTop: 12 }}>
         <select
           className="field-input"
           data-testid="app-profile-select-family-relationship"
@@ -405,7 +414,8 @@ export default function CreateProfileForm({
             handleInputChange("familyrelationship", target.value);
           }}
           ref={register({ required: true })}
-          style={{ lineHeight: 1, height: 56 }}>
+          style={{ lineHeight: 1, height: 56 }}
+        >
           <option value="" disabled>
             Select Family Relationship
           </option>
@@ -537,17 +547,20 @@ export default function CreateProfileForm({
                       margin: 10,
                       display: "flex",
                       justifyContent: "center"
-                    }}>
+                    }}
+                  >
                     <button
                       type="button"
                       className="datepicker-btn"
                       onClick={decreaseMonth}
-                      disabled={prevMonthButtonDisabled}>
+                      disabled={prevMonthButtonDisabled}
+                    >
                       {"<"}
                     </button>
                     <select
                       value={new Date(date).getFullYear()}
-                      onChange={({ target: { value } }) => changeYear(value)}>
+                      onChange={({ target: { value } }) => changeYear(value)}
+                    >
                       {years.map(option => (
                         <option key={option} value={option}>
                           {option}
@@ -559,7 +572,8 @@ export default function CreateProfileForm({
                       value={months[date.getMonth()]}
                       onChange={({ target: { value } }) =>
                         changeMonth(months.indexOf(value))
-                      }>
+                      }
+                    >
                       {months.map(option => (
                         <option key={option} value={option}>
                           {option}
@@ -571,7 +585,8 @@ export default function CreateProfileForm({
                       type="button"
                       className="datepicker-btn"
                       onClick={increaseMonth}
-                      disabled={nextMonthButtonDisabled}>
+                      disabled={nextMonthButtonDisabled}
+                    >
                       {">"}
                     </button>
                   </div>
