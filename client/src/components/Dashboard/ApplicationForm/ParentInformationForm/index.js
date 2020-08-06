@@ -1177,7 +1177,7 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                <span className="required">*</span> What are some of your expectations from the Mentoring Program?
+                <span className="required">*</span> How did you find us?
               </label>
               <input
                 readOnly={isReadonly}
