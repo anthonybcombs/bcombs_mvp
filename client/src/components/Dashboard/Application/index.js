@@ -217,6 +217,7 @@ export default function index() {
           applications={applications.activeapplications}
           handleSelectedApplication={handleSelectedApplication}
           listApplicationLoading={loading.application}
+          vendor={vendor}
         />
       )}
       {selectNonMenuOption && view == "application" && (

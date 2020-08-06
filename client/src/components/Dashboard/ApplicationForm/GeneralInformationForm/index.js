@@ -626,7 +626,7 @@ export default function index({
           </div>
         </div>
         <div className="agree-text">
-          Has the Mentee ever been Suspended from School and/or involved in the Juvenile Justice System?
+          Are there currently any problems with your child either at home or at school? 
         </div>
         <div className="form-group">
           <label className="cus-select-container">
