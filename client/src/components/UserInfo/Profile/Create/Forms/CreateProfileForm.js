@@ -347,9 +347,9 @@ export default function CreateProfileForm({
           data-testid="app-profile-select-gender"
           name="gender"
           onChange={({ target }) => {
-            if (target.value === "female") {
+            if (target.value === "female" || target.value === "She") {
               setValue("familyrelationship", "mother");
-            } else if (target.value === "male") {
+            } else if (target.value === "male" || target.value === "He") {
               setValue("familyrelationship", "father");
             } else {
               setValue("familyrelationship", "Other");
@@ -392,9 +392,9 @@ export default function CreateProfileForm({
               <option value="" disabled>
                 Select Customer Gender
               </option>
-              <option value="she">She</option>
-              <option value="he">He</option>
-              <option value="they">They</option>
+              <option value="She">She</option>
+              <option value="He">He</option>
+              <option value="They">They</option>
             </select>
             <ErrorMessage
               field={errors.customgender}
@@ -424,13 +424,13 @@ export default function CreateProfileForm({
         <option value="mother">Mother</option>
         <option value="sibling">Sibling</option> */}
 
-          {gender === "female"
+          {gender === "female" || gender === "She"
             ? OPTION_FEMALE_RELATIONSHIPS.map(opt => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>
               ))
-            : gender === "male"
+            : gender === "male" || gender === "He"
             ? OPTION_MALE_RELATIONSHIPS.map(opt => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
