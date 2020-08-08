@@ -85,9 +85,10 @@ export const createNewEvent = async data => {
       );
     }
     if (calendar_ids.length > 0) {
+      console.log("CALENDAR ID", calendar_ids);
       let eventCalendarQuery = calendar_ids.reduce(
         (accumulator, calendarId) => {
-          accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${calendarId}"),NOW()),`;
+          accumulator += `(UUID_TO_BIN('${id}'),UUID_TO_BIN('${calendarId}'),NOW()),`;
           return accumulator;
         },
         ""
@@ -96,9 +97,9 @@ export const createNewEvent = async data => {
         0,
         eventCalendarQuery.length - 1
       );
-
+      console.log("eventCalendarQuery", eventCalendarQuery);
       await db.query(
-        "INSERT IGNORE INTO `event_calendar`(`event_id`,`calendar_id`,`date_added`) VALUES " +
+        "INSERT IGNORE INTO `event_calendar` (event_id,calendar_id,date_added) VALUES " +
           eventCalendarQuery
       );
     }
@@ -116,7 +117,7 @@ export const createNewEvent = async data => {
       );
 
       await db.query(
-        "INSERT IGNORE INTO `event_visibility`(`event_id`,`group_id`,`date_added`) VALUES " +
+        "INSERT IGNORE INTO `event_visibility`(event_id,group_id,date_added) VALUES " +
           groupVisibilityQuery
       );
 
@@ -200,7 +201,7 @@ export const getUserEvents = async (email, calendars = []) => {
           user_calendars.id=event_calendar.calendar_id AND 
           user_calendars.user_id = UUID_TO_BIN(?) AND 
           event_attendee.user_id = UUID_TO_BIN(?) AND 
-          (event_attendee.status = "Yes" OR event_attendee.status = "Maybe")
+          (event_attendee.status = 'Yes' OR event_attendee.status = 'Maybe')
         UNION  
         SELECT 
           DISTINCT  BIN_TO_UUID(events.id) as id,
@@ -280,7 +281,7 @@ export const getUserEvents = async (email, calendars = []) => {
         });
 
         let eventIds = events.map(item => item.id);
-        eventIds = eventIds.map(eventId => `UUID_TO_BIN("${eventId}")`);
+        eventIds = eventIds.map(eventId => `UUID_TO_BIN('${eventId}')`);
         guests = await db.query(
           `SELECT users.email, event_attendee.status,
             BIN_TO_UUID(event_attendee.event_id) as event_id,
