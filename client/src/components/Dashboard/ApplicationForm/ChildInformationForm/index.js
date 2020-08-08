@@ -27,6 +27,10 @@ const ChildInfomationFormStyled = styled.div`
     border-radius: 50%;
   }
 
+  .child-info-wrapper {
+    overflow: revert;
+  }
+
   .child-info-wrapper .grid {
     display: grid;
     grid-template-columns: 31% 31% 31%;
@@ -145,28 +149,28 @@ export default function index({
   ];
 
   const CHILD_LIVES_OPTION = [
-    {id: 1, value: "Father"},
-    {id: 2, value: "Mother"},
-    {id: 3, value: "Brother"},
-    {id: 4, value: "Sister"},
-    {id: 5, value: "Uncle"},
-    {id: 6, value: "Aunt"},
-    {id: 7, value: "Cousin (Male)"},
-    {id: 8, value: "Grandfather"},
-    {id: 9, value: "Grandmother"},
-    {id: 10, value: "Stepbrother"},
-    {id: 11, value: "Stepsister"},
-    {id: 12, value: "Stepfather"},
-    {id: 13, value: "Stepmother"},
-    {id: 14, value: "Stepson"},
-    {id: 15, value: "Stepdaughter"},
-    {id: 16, value: "Brother-in-law"},
-    {id: 17, value: "Sister-in-law"},
-    {id: 18, value: "Father-in-law"},
-    {id: 19, value: "Mother-in-law"},
-    {id: 20, value: "Family Friend"},
-    {id: 21, value: "Other relatives"},
-    {id: 22, value: "Others"}
+    {id: 1, name: "Father", label: "Father"},
+    {id: 2, name: "Mother", label: "Mother"},
+    {id: 3, name: "Brother", label: "Brother"},
+    {id: 4, name: "Sister", label: "Sister"},
+    {id: 5, name: "Uncle", label: "Uncle"},
+    {id: 6, name: "Aunt", label: "Aunt"},
+    {id: 7, name: "Cousin (Male)", label: "Cousin (Male)"},
+    {id: 8, name: "Grandfather", label: "Grandfather"},
+    {id: 9, name: "Grandmother", label: "Grandmother"},
+    {id: 10, name: "Stepbrother", label: "Stepbrother"},
+    {id: 11, name: "Stepsister", label: "Stepsister"},
+    {id: 12, name: "Stepfather", label: "Stepfather"},
+    {id: 13, name: "Stepmother", label: "Stepmother"},
+    {id: 14, name: "Stepson", label: "Stepson"},
+    {id: 15, name: "Stepdaughter", label: "Stepdaughter"},
+    {id: 16, name: "Brother-in-law", label: "Brother-in-law"},
+    {id: 17, name: "Sister-in-law", label: "Sister-in-law"},
+    {id: 18, name: "Father-in-law", label: "Father-in-law"},
+    {id: 19, name: "Mother-in-law", label: "Mother-in-law"},
+    {id: 20, name: "Family Friend", label: "Family Friend"},
+    {id: 21, name: "Other relatives", label: "Other relatives"},
+    {id: 22, name: "Others", label: "Others"}
   ];
 
   const [ethinicitySelected, setEthinicitySelected] = useState([]);
@@ -1032,34 +1036,37 @@ export default function index({
         <div className="grid">
           <div className="form-group">
             <div className="field">
-              <select
+              <Multiselect
+                selectedValues={childProfile.child_lives_with}
                 readOnly={isReadonly}
                 disabled={isReadonly}
-                name={"ch_lives_with" + (counter - 1)}
                 className="field-input"
-                onChange={({ target }) => {
-                  if(target.value === "Others") {
-                    console.log("Show Text box");
-                  } else {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "child_lives_with",
-                      target.value
-                    );
-                  }
-
+                options={CHILD_LIVES_OPTION}
+                hasSelectAll={hasSelectAll}
+                placeholder="Choose Multiple"
+                displayValue="name"
+                closeIcon="cancel"
+                name={"ch_lives_with" + (counter - 1)}
+                closeOnSelect={false}
+                showCheckbox={true}
+                onSelect={(selectedList = []) => {
+                  handleChildFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "child_lives_with",
+                    selectedList
+                  );
+                }}
+                onRemove={(selectedList = []) => {
+                  handleChildFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "child_lives_with",
+                    selectedList
+                  );
                 }}
                 ref={register({ required: true })}
-                defaultValue={childProfile.child_lives_with}
-              >
-                <option value="">Select</option>
-                {CHILD_LIVES_OPTION.map((opt, index) => (
-                  <option key={index + 1} value={opt.value}>
-                    {opt.value}
-                  </option>
-                ))}
-              </select>
+              />
               <label className="field-label">
                 <span className="required">*</span> Child lives with
               </label>
