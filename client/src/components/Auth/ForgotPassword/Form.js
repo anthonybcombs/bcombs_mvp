@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import styled, { ThemeContext } from "styled-components";
 import ErrorMessage from "../../../helpers/ErrorMessage";
 import Recaptcha from "react-recaptcha";
-import { useDispatch, useSelector } from 'react-redux'
-import { requestSecurityQuestions } from '../../../redux/actions/Users'
+import { useDispatch, useSelector } from "react-redux";
+import { requestSecurityQuestions } from "../../../redux/actions/Users";
 
 const ForgotPasswordFormStyled = styled.form`
   input:required {
@@ -70,62 +70,71 @@ const ForgotPasswordFormStyled = styled.form`
     font-size: 14px !important;
   }
 `;
-export default function Form({ onSubmit, handleInputChange, hasStatus}) {
+export default function Form({ onSubmit, handleInputChange, hasStatus }) {
   const dispatch = useDispatch();
-  const resetTypeEmail = 'Email';
-  const resetTypeSecQuestions = 'Security Questions'
-  const [resetType, setResetType] = useState(resetTypeEmail);
+  const resetTypeEmail = "Email";
+  const resetTypeSecQuestions = "Security Questions";
+  const [resetType, setResetType] = useState(resetTypeSecQuestions);
   const [randomQuestions, setRandomQuestions] = useState([]);
-  const [securityQuestionError, setSecurityQuestionError] = useState('');
+  const [securityQuestionError, setSecurityQuestionError] = useState("");
   const [hasStatusMsg, setHasStatusMsg] = useState(hasStatus);
   const { register, handleSubmit, errors, reset, watch, setValue } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
   const resetTypes = [
-    { name: resetTypeEmail.toLowerCase(), text: resetTypeEmail },
-    { name: resetTypeSecQuestions.toLowerCase(), text: resetTypeSecQuestions }
+    // { name: resetTypeEmail.toLowerCase(), text: resetTypeEmail },
+    { name: resetTypeSecQuestions.toLowerCase(), text: resetTypeEmail }
   ];
   const email = watch("email");
 
   const { user } = useSelector(({ user }) => {
     return {
-      user,
+      user
     };
   });
 
   useEffect(() => {
-    register({ name: 'not_robot'}, { required: true });
+    register({ name: "not_robot" }, { required: true });
   }, []);
 
-  const handleChangeResetType = (type) => {
+  const handleChangeResetType = type => {
     setResetType(type);
-  }
+  };
 
-  const onVerifyCaptcha = (response) => {
+  const onVerifyCaptcha = response => {
     if (response) {
-      setValue('not_robot', response);
+      setValue("not_robot", response);
     }
   };
 
   const generateSecurityQuestions = () => {
     setHasStatusMsg(false);
+    console.log("Emailll", email);
     dispatch(requestSecurityQuestions(email));
-  }
+  };
 
   useEffect(() => {
-    if (Object.keys(user.profile).length && !user.profile.hasOwnProperty('error') && !hasStatusMsg) {
+    if (
+      Object.keys(user.profile).length &&
+      !user.profile.hasOwnProperty("error") &&
+      !hasStatusMsg
+    ) {
       let questions = [
         { name: "security_question1", text: user.profile.security_question1 },
         { name: "security_question2", text: user.profile.security_question2 },
-        { name: "security_question3", text: user.profile.security_question3 },
-      ]
+        { name: "security_question3", text: user.profile.security_question3 }
+      ];
       setRandomQuestions(questions);
     }
-    if (email && Object.keys(user.profile).length && user.profile.hasOwnProperty('error')) {
+    if (
+      email &&
+      Object.keys(user.profile).length &&
+      user.profile.hasOwnProperty("error")
+    ) {
       setSecurityQuestionError(user.profile.error);
     } else {
-      setSecurityQuestionError('');
+      setSecurityQuestionError("");
     }
   }, [user]);
 
@@ -136,9 +145,8 @@ export default function Form({ onSubmit, handleInputChange, hasStatus}) {
       onSubmit={handleSubmit(() => {
         reset();
         return onSubmit();
-      })}
-    >
-      <div id="resetTypes" className="grid">
+      })}>
+      {/* <div id="resetTypes" className="grid">
         {resetTypes.map(type => (
           <button
             key={type.name}
@@ -148,11 +156,12 @@ export default function Form({ onSubmit, handleInputChange, hasStatus}) {
               handleChangeResetType(type.text);
               handleInputChange("reset_type", type.name);
             }}>
-            Reset via {type.text}
+            Reset via email
           </button>
         ))}
-      </div>
+      </div> */}
       <div>
+        <br />
         <div className="form-group">
           <div className="field">
             <input
@@ -171,35 +180,38 @@ export default function Form({ onSubmit, handleInputChange, hasStatus}) {
               errorType="required"
               message="Email is required."
             />
-            {securityQuestionError && <>
-              <p className="error error-size">{securityQuestionError}</p>
+            {securityQuestionError && (
+              <>
+                <p className="error error-size">{securityQuestionError}</p>
               </>
-            }
+            )}
           </div>
         </div>
-        {resetType === resetTypeSecQuestions && randomQuestions.length > 0 && <>
-          {randomQuestions.map((question, index) => (
-            <div className="form-group" key={index}>
-              <div className="field">
-                <input
-                  type="text"
-                  placeholder={question.text}
-                  name={question.name}
-                  onChange={({ target }) => {
-                    handleInputChange(question.name, target.value);
-                  }}
-                  ref={register({ required: true })}
-                />
-                <ErrorMessage
-                  className="error-size"
-                  field={errors[question.name]}
-                  errorType="required"
-                  message={`${question.text} is required.`}
-                />
+        <br />
+        {resetType === resetTypeSecQuestions && randomQuestions.length > 0 && (
+          <>
+            {randomQuestions.map((question, index) => (
+              <div className="form-group" key={index}>
+                <div className="field">
+                  <input
+                    type="text"
+                    placeholder={question.text}
+                    name={question.name}
+                    onChange={({ target }) => {
+                      handleInputChange(question.name, target.value);
+                    }}
+                    ref={register({ required: true })}
+                  />
+                  <ErrorMessage
+                    className="error-size"
+                    field={errors[question.name]}
+                    errorType="required"
+                    message={`${question.text} is required.`}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
-          <div className="form-group">
+            ))}
+            {/* <div className="form-group">
             <div className="field">
               <input
                 type="password"
@@ -254,8 +266,8 @@ export default function Form({ onSubmit, handleInputChange, hasStatus}) {
                 }
               />
             </div>
-          </div>
-          <div className="form-group">
+          </div> */}
+            {/* <div className="form-group">
             <div className="field">
               <input
                 disabled={errors.password}
@@ -288,14 +300,15 @@ export default function Form({ onSubmit, handleInputChange, hasStatus}) {
                 message="The passwords do not match."
               />
             </div>
-          </div>
+          </div> */}
           </>
-        }
+        )}
       </div>
-      {(resetType === resetTypeEmail || randomQuestions.length > 0) && <>
+      {(resetType === resetTypeEmail || randomQuestions.length > 0) && (
+        <>
           <Recaptcha
-            sitekey='6LcDvbQZAAAAAI5egI5fYzQYk3wCOZULXy_wHFM9'
-            render='explicit'
+            sitekey="6LcDvbQZAAAAAI5egI5fYzQYk3wCOZULXy_wHFM9"
+            render="explicit"
             verifyCallback={onVerifyCaptcha}
           />
           <ErrorMessage
@@ -308,9 +321,12 @@ export default function Form({ onSubmit, handleInputChange, hasStatus}) {
             Reset Password
           </button>
         </>
-      }
-      {(resetType === resetTypeSecQuestions && randomQuestions.length === 0) && (
-        <button data-testid="app-forgot-password-send-button" type="submit" onClick={generateSecurityQuestions}>
+      )}
+      {resetType === resetTypeSecQuestions && randomQuestions.length === 0 && (
+        <button
+          data-testid="app-forgot-password-send-button"
+          type="submit"
+          onClick={generateSecurityQuestions}>
           Get Security Questions
         </button>
       )}

@@ -44,7 +44,7 @@ export default function index() {
     reset_type: "email",
     security_question1: "",
     security_question2: "",
-    security_question3: "",
+    security_question3: ""
   });
   const { status } = useSelector(({ status }) => {
     return { status };
@@ -54,9 +54,11 @@ export default function index() {
     setUserDetails({ ...userDetails, [id]: value });
   };
   const handleFormSubmit = values => {
-    if (userDetails.hasOwnProperty('confirm_password')) {
-      delete userDetails.confirm_password;
-    }
+    // if (userDetails.hasOwnProperty('confirm_password')) {
+    //   delete userDetails.confirm_password;
+    // }
+
+    console.log("user Details");
     dispatch(requestPasswordChange(userDetails));
   };
   return (
@@ -65,7 +67,11 @@ export default function index() {
         <p className={`${status.messageType}`}>{status.message}</p>
       )}
       <h2 data-testid="app-forgot-password-header">Forgot Password</h2>
-      <Form onSubmit={handleFormSubmit} handleInputChange={handleInputChange} hasStatus={status.message && status.message.length}/>
+      <Form
+        onSubmit={handleFormSubmit}
+        handleInputChange={handleInputChange}
+        hasStatus={status.message && status.message.length}
+      />
     </ForgotPasswordStyled>
   );
 }
