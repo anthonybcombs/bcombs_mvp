@@ -76,7 +76,7 @@ export const editGroups = async data => {
       );
 
       await db.query(
-        "INSERT IGNORE INTO `group_members`(`group_id`,`user_id`) VALUES " +
+        "INSERT IGNORE INTO group_members(group_id,user_id) VALUES " +
           groupMemberValuesQuery
       );
     }
@@ -87,7 +87,7 @@ export const editGroups = async data => {
       });
       groupValuesQuery = groupValuesQuery.join(",");
       await db.query(
-        "DELETE FROM `group_members`  WHERE (group_id, user_id) IN (" +
+        "DELETE FROM group_members  WHERE (group_id, user_id) IN (" +
           groupValuesQuery +
           ")"
       );
@@ -137,7 +137,7 @@ export const createNewGroup = async ({
   try {
     const currentUser = await getUserFromDatabase(email);
     await db.query(
-      "INSERT INTO `groups`( `id`,`name`, `visibility`,`user_id`) VALUES (UUID_TO_BIN(?),?,?,UUID_TO_BIN(?))",
+      "INSERT INTO `groups`( id,name, visibility,user_id) VALUES (UUID_TO_BIN(?),?,?,UUID_TO_BIN(?))",
       [id, name, visibility || "Public", currentUser.id]
     );
 
@@ -156,7 +156,7 @@ export const createNewGroup = async ({
       );
 
       await db.query(
-        "INSERT IGNORE INTO `group_members`(`group_id`,`user_id`) VALUES " +
+        "INSERT IGNORE INTO `group_members`(group_id,user_id) VALUES " +
           groupMemberValuesQuery
       );
     }
@@ -249,7 +249,7 @@ const formattedGroups = async (rows, db) => {
   let members =
     rowIds && rowIds.length > 0
       ? await db.query(
-          "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members`  WHERE `group_id` IN (" +
+          "SELECT BIN_TO_UUID(group_id) as group_id,BIN_TO_UUID(user_id) as user_id from group_members  WHERE group_id IN (" +
             rowIds.join(",") +
             ")"
         )
