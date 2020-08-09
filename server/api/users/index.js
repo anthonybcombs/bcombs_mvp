@@ -26,7 +26,12 @@ const getUserProfileBySecurityQuestions = async data => {
   try {
     const row = await db.query(
       `SELECT BIN_TO_UUID(id) as id FROM user_profiles WHERE BIN_TO_UUID(user_id)=? AND security_question1_answer=? AND security_question2_answer=? AND security_question3_answer=?`,
-      [data.id, data.security_question1, data.security_question2, data.security_question3]
+      [
+        data.id,
+        data.security_question1,
+        data.security_question2,
+        data.security_question3
+      ]
     );
 
     return row[0] || {};
@@ -149,7 +154,6 @@ export const executeSignIn = async user => {
       };
     }
     if (authData.hasOwnProperty("error")) {
-
       console.log("auth data", authData);
       return {
         user: authData,
@@ -182,32 +186,68 @@ export const executeChangePassword = async reqData => {
     const users = await getUsers();
     const user = users.filter(user => user.email === reqData.email)[0];
     if (user.hasOwnProperty("email")) {
-      if (reqData.reset_type === 'security questions') {
+      if (reqData.reset_type === "security questions") {
         if (user.is_profile_filled) {
-          const profile = await getUserProfileBySecurityQuestions({ id: user.id, security_question1: reqData.security_question1, security_question2: reqData.security_question2, security_question3: reqData.security_question3});
+          console.log("executeChangePassword user", user);
+          const profile = await getUserProfileBySecurityQuestions({
+            id: user.id,
+            security_question1: reqData.security_question1,
+            security_question2: reqData.security_question2,
+            security_question3: reqData.security_question3
+          });
+          console.log("executeChangePassword profile", profile);
           if (Object.keys(profile).length) {
             const params = new URLSearchParams();
-            params.append("password", reqData.password);
+            params.append("client_id", process.env.AUTH_CLIENT_ID);
+            params.append("email", user.email);
             params.append("connection", "Username-Password-Authentication");
-            const res = await fetch("https://bcombd.us.auth0.com/api/v2/users/" + user.auth_id, {
-              method: "PATCH",
-              body: params
-            });
-            authData = await res.json();
-            if (authData.error) {
-              return {
-                messageType: "error",
-                message: authData.error
+            await fetch(
+              "https://bcombd.us.auth0.com/dbconnections/change_password",
+              {
+                method: "POST",
+                body: params
               }
-            }
+            );
+
             return {
               messageType: "info",
-              message: "Reset Password was successful."
+              message: "Reset Password email has been sent."
             };
+            // const params = new URLSearchParams();
+            // params.append("client_id", process.env.AUTH_CLIENT_ID);
+            //   params.append("client_secret", process.env.AUTH_CLIENT_SECRET);
+            // params.append("password", reqData.password);
+            // params.append("connection", "Username-Password-Authentication");
+            // const res = await fetch(
+            //   "https://bcombd.us.auth0.com/api/v2/users/" + user.auth_id,
+            //   {
+            //     method: "PATCH",
+            //     headers: {
+            //       Authorization: `Bearer lYZAEIjC3W6PndYi74R1J5i8JWN29kqT`,
+            //       "Content-Type": "application/json"
+            //      },
+            //     json: true,
+            //     body: params
+            //   }
+            // );
+            // authData = await res.json();
+            // console.log("executeChangePassword authData", authData);
+
+            // if (authData.error) {
+            //   return {
+            //     messageType: "error",
+            //     message: authData.error
+            //   };
+            // }
+            // return {
+            //   messageType: "info",
+            //   message: "Reset Password was successful."
+            // };
           }
           return {
             messageType: "error",
-            message: "Answers to Security Questions didn't match. Please try again."
+            message:
+              "Answers to Security Questions didn't match. Please try again."
           };
         }
         return {
@@ -215,15 +255,18 @@ export const executeChangePassword = async reqData => {
           message: "Please complete profile first."
         };
       }
-      if (reqData.reset_type === 'email') {
+      if (reqData.reset_type === "email") {
         const params = new URLSearchParams();
         params.append("client_id", process.env.AUTH_CLIENT_ID);
         params.append("email", user.email);
         params.append("connection", "Username-Password-Authentication");
-        await fetch("https://bcombd.us.auth0.com/dbconnections/change_password", {
-          method: "POST",
-          body: params
-        });
+        await fetch(
+          "https://bcombd.us.auth0.com/dbconnections/change_password",
+          {
+            method: "POST",
+            body: params
+          }
+        );
         return {
           messageType: "info",
           message: "Reset Password email has been sent."
@@ -330,7 +373,9 @@ export const executeUserUpdate = async user => {
     const { id } = users.filter(user => user.email === email)[0];
     const isProfileExist = await isProfileExistFromDatabase(id);
 
-    console.log("familyMembers", familyMembers);
+    console.log(" executeUserUpdate user", user);
+    console.log(" executeUserUpdate id", id);
+    console.log(" executeUserUpdate isProfileExist", isProfileExist);
     if (!isProfileExist) {
       await db.query(
         "UPDATE users SET is_profile_filled=1 where id=UUID_TO_BIN(?)",
@@ -352,7 +397,7 @@ export const executeUserUpdate = async user => {
           personalInfo.securityquestion2,
           personalInfo.securityquestion2answer,
           personalInfo.securityquestion3,
-          personalInfo.securityquestion3answer,
+          personalInfo.securityquestion3answer
         ]
       );
       familyMembers.forEach(async familyMember => {
