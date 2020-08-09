@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 
 const defaultMailConfig = {
-  from: "sanjosedennis7593@gmail.com", // sender address,
+  from: "live.bcombs@gmail.com", // sender address,
   subject: "",
   text: "" // plain text body
 };
@@ -11,8 +11,8 @@ const eventResponse = ["Yes", "No", "Maybe"];
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "sanjosedennis7593@gmail.com",
-    pass: "hnkkusrtgmbpwsyf"
+    user: "live.bcombs@gmail.com",
+    pass: "viacrcjcwjnwxvvh"
   }
 });
 
@@ -227,6 +227,34 @@ export const sendToUserShareCalendarConfirmation = async ({
       subject: `Bcombs: Calendar ${calendar.name} is shared to you!`,
       to: recipient.email,
       html: template // html body
+    });
+  } catch (error) {
+    console.log("Error", error);
+  }
+};
+
+export const sendMigratedAccount = async ({ email, password, firstname }) => {
+  try {
+    sendEmail({
+      ...defaultMailConfig,
+      subject: `Bcombs: Credentials for new bcombs site`,
+      to: email,
+      html: `
+        <div>
+          <p>Hi ${firstname}!</p>
+          <p>
+            This is your account for the new bcombs site.
+            <br/>
+            Email: ${email}
+            <br/>
+            Password: ${password}
+            <br/>
+            Please change your password after signing in.
+            <br/>
+            Thanks
+          </p>
+        </div>
+      ` // html body
     });
   } catch (error) {
     console.log("Error", error);
