@@ -268,6 +268,14 @@ const inputs = `
         notes: String
         class_teacher: String
     }
+
+    input AppGroupInput {
+        user_id: String!
+        email: String!
+        vendors: [String!]
+        size: Int!
+        name: String!
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -375,6 +383,7 @@ const queryTypes = `
     type AllGroups {
         joined_groups:[Group]
         created_groups:[Group]
+        application_groups: [VendorAppGroup]
     }    
 
     type FammilyMemberType{
@@ -564,6 +573,22 @@ const queryTypes = `
         is_exist:Boolean
     }
 
+    type VendorAppGroup{
+        id: Int
+        app_grp_id: String!
+        user: String!
+        vendor: String!
+        size: Int
+        name: String!
+        created_at: Date
+    }
+
+    type AppGroupStatus{
+        messageType: String
+        message: String
+        vendor_app_groups: [VendorAppGroup]
+    }
+
 `;
 
 const mutations = `
@@ -589,6 +614,7 @@ const mutations = `
         updateApplication(application: UpdateApplicationInput!): Status
         archivedApplications(app_ids: [String]): Status
         updateVendor(vendor: VendorInput!): Vendor
+        addVendorAppGroup(appGroup: AppGroupInput!): AllGroups
     }
 `;
 
@@ -609,7 +635,7 @@ const queries = `
         getEventInvitedUser(email: String):[EventInvitation]  
         grades: [Grade]
         vendors: [Vendor]
-        vendor(user: String): Vendor
+        vendorsByUser(user: String): [Vendor]
         getApplications: [Application]
         getVendorApplications(vendor_id: String!): [Application]
         getVendorArchivedApplications(vendor_id: String!): [Application]
@@ -617,6 +643,7 @@ const queries = `
         getApplication(application_id: String!): Application
         getUserApplications(email: String!): UserApplication
         getUserByEmail(email: String): CheckUserEmail
+        getVendorAppGroups(vendor: String): AllGroups
     }
 `;
 

@@ -19,6 +19,7 @@ import NewGroupModal from "../MyGroups/create";
 import EditGroupModal from "../MyGroups/edit";
 import JoinedGroupModal from "../MyGroups/view";
 
+import NewAppGroupModal from "../MyGroups/appCreate";
 import ProfileModal from "./profile/";
 
 import Loading from "../../../helpers/Loading.js";
@@ -29,6 +30,9 @@ import {
   requestUserGroup,
   requestMembers
 } from "../../../redux/actions/Groups";
+import {
+ requestVendor 
+} from "../../../redux/actions/Vendors"
 
 const MyContactsStyled = styled.div`
   .selected {
@@ -128,16 +132,18 @@ export default function index() {
   const [isJoinedGroupModalVisible, setJoinedGroupModalVisible] = useState(
     false
   );
+  const [isNewAppGroupModalVisible, setIsNewAppGroupModalVisible] = useState(false);
 
-  const { auth, groups, groupMembers, contacts, loading } = useSelector(
-    ({ auth, groups, groupMembers, contacts, loading }) => {
-      return { auth, groups, groupMembers, contacts, loading };
+  const { auth, groups, groupMembers, contacts, loading, vendors, userTypes } = useSelector(
+    ({ auth, groups, groupMembers, contacts, loading, vendors, userTypes }) => {
+      return { auth, groups, groupMembers, contacts, loading, vendors, userTypes };
     }
   );
   const dispatch = useDispatch();
   useEffect(() => {
     if (auth.email) {
       dispatch(requestUserGroup(auth.email));
+      dispatch(requestVendor(auth.user_id));
     }
     if (contacts) {
       setCurrentContacts(contacts);
@@ -147,6 +153,10 @@ export default function index() {
     dispatch(getContact(auth.email));
     setCurrentContacts(contacts);
   }, []);
+
+
+  console.log("groups", groups);
+  console.log("vendors", vendors);
 
   // const selectedGroup = groups.find(group => group.id === selectedGroupId);
   const filteredContacts = contacts.filter(contact => {
@@ -200,8 +210,24 @@ export default function index() {
   const handleJoinedGroupModal = group => {
     setSelectedGroup(group);
     setJoinedGroupModalVisible(true);
-  };
+  }
   const editGroupSubmit = data => {};
+
+  const handleAppGroupModal = group => {
+
+  }
+
+  const isVendor = () => {
+    const currentUserType = userTypes.filter(type => {
+      return type.id === auth.type;
+    })[0];
+
+    if (currentUserType.name != "VENDOR") {
+      return false;
+    }
+
+    return true;
+  }
 
   return (
     <MyContactsStyled>
@@ -236,6 +262,13 @@ export default function index() {
         isGroupMemberLoading={loading.groupMembers}
         onSubmit={editGroupSubmit}
         toggleEditGroupModal={setEditGroupModalVisible}
+      />
+
+      <NewAppGroupModal 
+        isVisible={isNewAppGroupModalVisible}
+        toggleCreateAppGroupModal={setIsNewAppGroupModalVisible}
+        vendors={vendors}
+        auth={auth}
       />
 
       <h2>Contacts </h2>
@@ -326,6 +359,43 @@ export default function index() {
               </>
             )}
           </div>
+
+          {
+            isVendor() && (
+              <div className="groups">
+                <Collapsible trigger={<h3>Application Groups</h3>} open lazyRender>
+                  <hr />
+                  {
+                    groups &&
+                    groups.application_groups &&
+                    groups.application_groups.map(group => (
+                      <div
+                        className={`${
+                          group.id === selectedGroupId ? "selected" : ""
+                        }`}
+                        key={group.app_grp_id}
+                        onClick={() => {
+                          //handleAppGroupModal(group);
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faUsers} />
+                        <span>{group.name}</span>
+                      </div>
+                    ))
+                  }
+                </Collapsible>
+                <hr />
+                <button
+                  onClick={() => {
+                    setIsNewAppGroupModalVisible(true);
+                  }}>
+                  <FontAwesomeIcon icon={faPlus} />
+                  <span> ADD NEW GROUP</span>
+                </button>
+              </div>
+            )
+          }
+
         </div>
         <div>
           {loading.contacts ? (

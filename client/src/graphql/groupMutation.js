@@ -12,6 +12,14 @@ export const GROUP_UPDATE_MUTATION = gql`
         name
         contacts
       }
+      application_groups {
+        id
+        name
+        size
+        vendor
+        user
+        app_grp_id
+      }
     }
   }
 `;
@@ -29,6 +37,14 @@ export const GROUP_DELETE_MUTATION = gql`
         name
         contacts
       }
+      application_groups {
+        id
+        name
+        size
+        vendor
+        user
+        app_grp_id
+      }
     }
   }
 `;
@@ -45,6 +61,14 @@ export const GROUP_CREATE_MUTATION = gql`
         id
         name
         contacts
+      }
+      application_groups {
+        id
+        name
+        size
+        vendor
+        user
+        app_grp_id
       }
     }
   }

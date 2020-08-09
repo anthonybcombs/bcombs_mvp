@@ -13,7 +13,7 @@ const getVendorFromDatabase = user => {
         variables: {user},
       });
 
-      return resolve(data.vendor);
+      return resolve(data.vendorsByUser);
     } catch (error) {
       reject(error)
     }
@@ -49,6 +49,13 @@ const updateVendorToDatabase = vendor => {
       reject(error);
     }
   })
+}
+
+export const requestVendorById2 = id2 => {
+  return {
+    type: actionType.REQUEST_VENDOR_BY_ID2,
+    id2
+  }
 }
 
 export const requestVendor = user => {
@@ -93,19 +100,29 @@ export function* updateVendor({ vendor }) {
   }
 }
 
+export function* getVendorById2({id2}) {
+  try {
+
+  } catch(err) {
+
+  }
+}
+
 export function* getVendor(action) {
   console.log("ACTION", action);
   try {
-    const vendor = yield call(getVendorFromDatabase, action.user);
+    const vendors = yield call(getVendorFromDatabase, action.user);
 
+    console.log("getvendor", vendors);
     yield put({
       type: actionType.REQUEST_VENDOR_COMPLETED,
-      payload: vendor,
+      payload: vendors,
     });
   } catch(err) {
+    console.log("err", err);
     yield put({
       type: actionType.REQUEST_VENDOR_COMPLETED,
-      payload: {},
+      payload: [],
     });
   }
 }

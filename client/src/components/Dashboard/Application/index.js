@@ -18,6 +18,7 @@ import TermsWaiverFormViewStyled from "./view/waiver";
 
 import { requestVendor } from "../../../redux/actions/Vendors";
 import { requestGetApplications, requestUpdateApplication } from "../../../redux/actions/Application";
+import { requestUserGroup } from "../../../redux/actions/Groups";
 
 import ProfileImg from "../../../images/defaultprofile.png";
 const ApplicationStyled = styled.div`
@@ -60,6 +61,28 @@ const ApplicationStyled = styled.div`
     color: white !important;
   }
 
+  .form-control {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;  
+  }
+
   @media (min-width: 600px) {
     #application {
       grid-template-columns: 25% 75%;
@@ -87,13 +110,11 @@ export default function index() {
 
   const dispatch = useDispatch();
 
-  const { grades, auth, vendor, applications, loading } = useSelector(
-    ({ grades = [], auth, vendor, applications, loading }) => {
-      return { grades, auth, vendor, applications, loading };
+  const { groups, auth, vendors, applications, loading } = useSelector(
+    ({ groups, auth, vendors, applications, loading }) => {
+      return {groups, auth, vendors, applications, loading };
     }
   );
-
-
 
   if(applications.updateapplication && applications.updateapplication.message == "application updated") {
     window.location.reload(false);
@@ -104,18 +125,19 @@ export default function index() {
   }
   useEffect(() => {
     if (auth.user_id) {
+      dispatch(requestUserGroup(auth.email));
       dispatch(requestVendor(auth.user_id));
     }
   }, []);
 
   useEffect(() => {
-    console.log("vendor", vendor);
-    if (vendor && vendor.id) {
-      dispatch(requestGetApplications(vendor.id));
+    console.log("vendor", vendors);
+    if (vendors && vendors.length > 0 && vendors[0].id) {
+      dispatch(requestGetApplications(vendors[0].id));
     }
-  }, [vendor]);
+  }, [vendors]);
 
-  console.log("vendor", vendor);
+  console.log("vendor", vendors);
 
   const handleSelectedLabel = value => {
     setSelectedLabel(value);
@@ -153,12 +175,33 @@ export default function index() {
 
   return (
     <ApplicationStyled>
-      <h2>Application</h2>
+      <div style={{display: "flex", alignItems: "center"}}>
+        <h2>Application
+        </h2>
+        {
+          vendors && 
+          vendors.length > 0 &&
+          (
+            <div>
+              <select className="form-control" style={{marginLeft: "20px"}}>
+                {
+                  vendors.map(vendor => (
+                    <option key={vendor.id} value={vendor.id}>
+                      {vendor.name}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+          )
+        }
+
+      </div>
       <div id="application">
         <div>
           <div id="labels">
             <a
-              href={`/application/${vendor ? vendor.user : ""}`}
+              href={`/application/${vendors && vendors.length > 0 ? vendors[0]?.user : ""}`}
               target="_blank">
               <FontAwesomeIcon icon={faFileSignature} />
               <span>Application</span>
@@ -190,21 +233,22 @@ export default function index() {
         <div>
           {selectedLabel === "Application Status" && !selectNonMenuOption && (
             <ApplicationSummaryStyled 
-              grades={grades}
+              appGroups={groups && groups.application_groups ? groups.application_groups : []}
               applications={applications.activeapplications}
-              vendor={vendor}
+              vendor={vendors && vendors.length > 0 ? vendors[0] : null}
             />
           )}
           {selectedLabel === "Form Settings" && !selectNonMenuOption && (
             <ApplicationSettingsStyled
-              vendor={vendor || {}}
+              vendor={vendors && vendors.length > 0 ? vendors[0] : null}
               formSettingsLoading={loading.form_settings}
             />
           )}
           {selectNonMenuOption && view == "application" && (
             <EditApplicationStyled
               application={selectedApplication}
-              vendor={vendor || {}}
+              vendor={vendors && vendors.length > 0 ? vendors[0] : null}
+              appGroups={groups && groups.application_groups ? groups.application_groups : []}
               onSubmit={onSubmit}
               handleUpdateOnchange={handleUpdateOnchange}
               updateLoading={loading.application}
@@ -217,13 +261,13 @@ export default function index() {
           applications={applications.activeapplications}
           handleSelectedApplication={handleSelectedApplication}
           listApplicationLoading={loading.application}
-          vendor={vendor}
+          vendor={vendors && vendors.length > 0 ? vendors[0] : null}
         />
       )}
       {selectNonMenuOption && view == "application" && (
         <ChildFormViewStyled
           application={selectedApplication}
-          vendor={vendor || {}}
+          vendor={vendors && vendors.length > 0 ? vendors[0] : null}
           ProfileImg={ProfileImg}
         />
       )}
@@ -233,7 +277,7 @@ export default function index() {
       {selectNonMenuOption && view == "application" && (
         <ParentFormViewStyled
           application={selectedApplication}
-          vendor={vendor || {}}
+          vendor={vendors && vendors.length > 0 ? vendors[0] : null}
           ProfileImg={ProfileImg}
         />
       )}

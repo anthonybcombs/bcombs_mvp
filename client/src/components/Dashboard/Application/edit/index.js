@@ -95,7 +95,8 @@ export default function index({
   application,
   onSubmit,
   handleUpdateOnchange,
-  updateLoading = false
+  updateLoading = false,
+  appGroups = []
 }) {
 
   const { register, handleSubmit, errors } = useForm({
@@ -210,8 +211,8 @@ export default function index({
                         handleUpdateOnchange("class_teacher", target.value)
                       }}>
                       <option value="">Select</option>
-                      {CLASS_TEACHER_OPTIONS.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.name}</option>
+                      {appGroups.map(opt => (
+                        <option key={opt.app_grp_id} value={opt.app_grp_id}>{opt.name}</option>
                       ))}
                     </select>
                   </div>

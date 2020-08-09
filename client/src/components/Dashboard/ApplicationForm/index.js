@@ -117,6 +117,8 @@ const ApplicationFormStyled = styled.div`
 
 export default function index() {
 
+  const [vendor, setVendor] = useState({});
+
   const scrollToTop = (behavior) => {
     window.scrollTo({
       top: 0,
@@ -128,9 +130,9 @@ export default function index() {
 
   const dispatch = useDispatch();
 
-  const { vendor, loading, applications } = useSelector(
-    ({ vendor, loading, applications }) => {
-      return { vendor, loading, applications };
+  const { vendors, loading, applications } = useSelector(
+    ({ vendors, loading, applications }) => {
+      return { vendors, loading, applications };
     }
   );
 
@@ -146,6 +148,16 @@ export default function index() {
       dispatch(requestVendor(vendor_id));
     }
   }, []);
+
+  useEffect(() => {
+    console.log("vendor", vendors);
+    if (vendors && vendors.length > 0) {
+      setVendor(vendors[0]);
+    }
+  }, [vendors]);
+
+
+  console.log("vendor", vendor);
 
   const section1BtnContainerStyle = {
     position: "absolute",

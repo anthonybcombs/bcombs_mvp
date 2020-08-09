@@ -402,7 +402,7 @@ export default function index({
       name: 'Class',
       selector: 'class',
       sortable: true,
-      cell: row => row.class_teacher ? row.class_teacher : row?.child?.grade_desc
+      cell: row => row?.child?.grade_desc
     },
     {
       name: 'Age (Bdate)',
@@ -535,11 +535,7 @@ export default function index({
       }
 
       if(classText) {
-        if(item.class_teacher) {
-          class_match = item.class_teacher == classText;
-        } else {
-          class_match = item.child.grade_desc == classText;
-        }
+        class_match = item.child.grade_desc == classText;
       }
 
       if(colorText) {
