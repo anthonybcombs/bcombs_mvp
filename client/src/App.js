@@ -5,7 +5,6 @@ import Layout from "./helpers/Layout";
 import Loadable from "react-loadable";
 import Loading from "./helpers/Loading.js";
 import { requestUserTypes } from "./redux/actions/UserTypes";
-import { requestGrades } from "./redux/actions/Grades";
 import SocialLoginLanding from "./helpers/SocialLogin.js";
 
 const AsycDashboard = Loadable({
@@ -84,7 +83,6 @@ export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(requestUserTypes());
-    dispatch(requestGrades());
   }, []);
   return (
     <>

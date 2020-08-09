@@ -1,6 +1,7 @@
 import { makeDb } from "../../helpers/database";
 import { getUserFromDatabase } from "../index";
 
+import { getVendorAppGroups } from "../vendor/index";
 import { s3BucketRootPath } from "../../helpers/aws";
 
 export const getGroup = async () => {
@@ -23,6 +24,8 @@ export const getUserGroups = async email => {
   const db = makeDb();
   let joinedResult = [];
   let createdResult = [];
+  let applicationGroups = [];
+
   try {
     const currentUser = await getUserFromDatabase(email);
 
@@ -35,6 +38,8 @@ export const getUserGroups = async email => {
       [currentUser.id]
     );
 
+    applicationGroups = await getVendorAppGroups(currentUser.id);
+    
     joinedResult = await formattedGroups(joinedGroups, db);
     createdResult = await formattedGroups(createdGroups, db);
   } catch (error) {
@@ -43,7 +48,8 @@ export const getUserGroups = async email => {
     await db.close();
     return {
       created_groups: createdResult,
-      joined_groups: joinedResult
+      joined_groups: joinedResult,
+      application_groups: applicationGroups
     };
   }
 };

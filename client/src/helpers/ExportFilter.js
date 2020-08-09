@@ -193,7 +193,7 @@ const ExportFilter = ({
       "Status": getApplicationStatus(application.student_status),
       "Student Name": application.child?.firstname + " " + application.child?.lastname,
       "Parent Name": getPrimaryParentName(application.parents),
-      "Class": application.class_teacher ? application.class_teacher : application?.child?.grade_desc,
+      "Class": application?.child?.grade_desc,
       "Age": getAgeBdate(application.child),
       "Application Date": format(new Date(application.application_date), DATE_FORMAT)
     }

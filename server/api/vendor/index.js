@@ -1,5 +1,7 @@
 import { makeDb } from "../../helpers/database";
 
+import { getUserGroups } from "../../api/groups";
+
 export const getVendors = async () => {
   const db = makeDb();
   try {
@@ -59,7 +61,7 @@ export const addVendor = async ({
         section2_show,
         section3_show      
         FROM vendor WHERE user=UUID_TO_BIN(?)`, [user]);
-    vendor = vendor.length > 0 ? vendor[0]: "";
+    vendor = vendor.length > 0 ? vendor: "";
   } catch(err) {
     console.log(err);
   } finally {
@@ -125,5 +127,52 @@ export const updateVendor = async ({
     console.log(err);
   } finally {
     await db.close();
+  }
+}
+
+export const getVendorAppGroups = async (user_id) => {
+
+  const db = makeDb();
+
+  let appGroupsResult = [];
+  try {
+    appGroupsResult = await db.query(
+      "SELECT id, BIN_TO_UUID(app_grp_id) as app_grp_id, BIN_TO_UUID(user) as user, BIN_TO_UUID(vendor) as vendor, size, name, created_at from vendor_app_groups WHERE user=UUID_TO_BIN(?)",
+      [user_id]
+    )
+  } catch(error) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return appGroupsResult;
+  }
+}
+
+export const addAppGroup = async ({
+  user_id,
+  vendor,
+  size,
+  name,
+  email
+}) => {
+  const db = makeDb();
+
+  let result;
+  try {
+    result = await db.query(
+      `INSERT INTO vendor_app_groups(app_grp_id, user, vendor, size, name)
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?)`,
+      [
+        user_id,
+        vendor,
+        size,
+        name
+      ]
+    )
+  } catch(error) {
+    console.log("error", error)
+  } finally {
+    await db.close();
+    return result;
   }
 }

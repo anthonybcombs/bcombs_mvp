@@ -128,8 +128,8 @@ export default function Layout({ children }) {
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
   const [currentUserType, setCurrentUserType] = useState('');
 
-  const { auth, status, userTypes, vendor } = useSelector(({ auth, status,  userTypes, vendor }) => {
-    return { auth, status, userTypes, vendor };
+  const { auth, status, userTypes, vendors } = useSelector(({ auth, status,  userTypes, vendors }) => {
+    return { auth, status, userTypes, vendors };
   });
   
   const theme = useContext(ThemeContext);
@@ -154,7 +154,7 @@ export default function Layout({ children }) {
       }
     }
 
-  }, [auth, vendor]);
+  }, [auth, vendors]);
 
   const location = useLocation();
 
@@ -166,9 +166,9 @@ export default function Layout({ children }) {
             <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
           </Link>
           {
-            location.href.includes(location.origin + "/application/") && vendor && vendor.name &&
+            location.href.includes(location.origin + "/application/") && vendors && vendors.length > 0 &&
             <p className="vendor-welcome-message">
-              Welcome to &nbsp;<span className="name">{vendor.name}</span>
+              Welcome to &nbsp;<span className="name">{vendors[0].name}</span>
             </p>
           }
           <Location

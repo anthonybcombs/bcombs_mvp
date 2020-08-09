@@ -41,7 +41,7 @@ import {
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
-import { getVendors, updateVendor, addVendor } from "../../api/vendor";
+import { getVendors, updateVendor, addVendor, addAppGroup, getVendorAppGroups } from "../../api/vendor";
 import {
   createApplication,
   getApplicationsByVendor,
@@ -118,12 +118,12 @@ const resolvers = {
       const vendors = await getVendors();
       return vendors;
     },
-    async vendor(root, { user }, context) {
+    async vendorsByUser(root, { user }, context) {
       const vendors = await getVendors();
       console.log("vendors", vendors);
       let vendor = vendors.filter(vendor => {
         return user == vendor.user;
-      })[0];
+      });
 
       if (vendor) {
         return vendor;
@@ -194,6 +194,10 @@ const resolvers = {
     },
     async getUserByEmail(root, { email }, context) {
       const response = await checkUserEmail(email);
+      return response;
+    },
+    async getVendorAppGroups(root, { vendor }, context) {
+      const response = await getVendorAppGroups(vendor);
       return response;
     }
   },
@@ -270,11 +274,7 @@ const resolvers = {
         const child = await addChild(application.child);
         const parents = application.parents;
 
-        const grade_desc = application.child.grade_desc;
-
-        console.log("Grade DESC", grade_desc);
-        
-        application.class_teacher = grade_desc;
+        application.class_teacher = "";
         application.child = child.ch_id;
 
         application = await createApplication(application);
@@ -370,6 +370,27 @@ const resolvers = {
           message: "error application archived"
         };
       }
+    },
+    async addVendorAppGroup(root, { appGroup }, context) {
+      const vendors = appGroup.vendors;
+
+      let response = {};
+
+      console.log("appGroup server", appGroup);
+
+      for(const vendor of vendors) {
+        const fields = {
+          user_id: appGroup.user_id,
+          vendor: vendor,
+          size: appGroup.size,
+          name: appGroup.name,
+          email: appGroup.email
+        }
+        await addAppGroup(fields);
+      }
+      response = await getUserGroups(appGroup.email);
+
+      return response;
     }
   }
 };

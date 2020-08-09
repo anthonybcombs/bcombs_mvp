@@ -66,6 +66,11 @@ import {
   getArchivedApplication,
   getApplicationById
 } from "../actions/Application";
+
+import { 
+  addVendorAppGroup
+} from "../actions/VendorAppGroups";
+
 import reducer from "../reducers";
 function* rootSaga() {
   //STATUS
@@ -134,6 +139,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ARCHIVED_APPLICATION, archivedApplication);
   yield takeLatest(actionType.REQUEST_GET_ARCHIVED_APPLICATION, getArchivedApplication);
   yield takeLatest(actionType.REQUEST_GET_APPLICATION_ID, getApplicationById);
+  yield takeLatest(actionType.REQUEST_ADD_VENDOR_APP_GROUP, addVendorAppGroup);
 }
 const sagaMiddleware = createSagaMiddleware();
 

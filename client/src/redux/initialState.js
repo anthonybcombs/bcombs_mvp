@@ -229,13 +229,6 @@ export const initialState = {
       name: "Middle School",
     },
   ],
-  vendor: {
-    id: uuid(),
-    user: uuid(),
-    name: "",
-    waiver_text: "",
-    liability_waiver_text: "",
-    terms_and_conditions_text: "",
-  },
+  vendors: [],
   applications: [],
 };

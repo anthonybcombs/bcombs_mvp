@@ -13,8 +13,8 @@ import userTypes from "./UserTypes";
 import status from "./Status";
 import loading from "./Loading";
 import grades from "./Grades";
-import vendor from "./Vendors"
-import applications from "./Applications"
+import vendors from "./Vendors";
+import applications from "./Applications";
 
 const reducer = combineReducers({
   auth,
@@ -31,7 +31,7 @@ const reducer = combineReducers({
   status,
   loading,
   grades,
-  vendor,
+  vendors,
   applications
 });
 export default reducer;

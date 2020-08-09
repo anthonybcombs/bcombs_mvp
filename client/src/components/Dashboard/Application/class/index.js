@@ -7,9 +7,10 @@ import { format } from "date-fns";
 import DataTable from "react-data-table-component";
 
 import { requestVendor } from "../../../../redux/actions/Vendors";
-import { requestGetApplications } from "../../../../redux/actions/Application"
+import { requestGetApplications } from "../../../../redux/actions/Application";
+import { requestUserGroup } from "../../../../redux/actions/Groups";
 
-import ProfileImg from "../../../../images/defaultprofile.png"
+import ProfileImg from "../../../../images/defaultprofile.png";
 
 const ClassListViewStyled = styled.div`
   padding: 1em;
@@ -40,9 +41,9 @@ export default function index() {
 
   const { name, vendor_id } = useParams();
 
-  const { auth, vendor, applications, loading } = useSelector(
-    ({ auth, vendor, applications, loading }) => {
-      return { auth, vendor, applications, loading };
+  const { auth, vendors, groups, applications, loading } = useSelector(
+    ({ auth, vendors, applications, groups, loading }) => {
+      return { auth, vendors, applications, groups, loading };
     }
   );
 
@@ -53,25 +54,57 @@ export default function index() {
   useEffect(() => {
     if(auth.user_id) {
       dispatch(requestVendor(auth.user_id));
+      dispatch(requestUserGroup(auth.email));
     }
   }, []);
 
   useEffect(() => {
-    console.log("vendor", vendor);
-    if (vendor && vendor.id) {
-      dispatch(requestGetApplications(vendor.id));
+    console.log("vendor", vendors);
+    if (vendors && vendors.length > 0) {
+      let vendorId;
+      for(const vendor of vendors) {
+        if(vendor.id2 == vendor_id) {
+          vendorId = vendor.id
+          break;
+        }
+      }
+      dispatch(requestGetApplications(vendorId));
     }
-  }, [vendor]);
-
-  console.log("vendor", vendor);
+  }, [vendors]);
 
   if(applications && applications.activeapplications.length > 0) {
+
+    let appGroupId = "";
+
+    if(groups && groups.application_groups && groups.application_groups.length > 0) {
+      const applicationGroups = groups.application_groups;
+
+      for(const group of applicationGroups) {
+        if(group.name === name) {
+          appGroupId = group.app_grp_id;
+          break;
+        }
+      }
+    }
+
+    console.log("appGroupId", appGroupId);
+
     filterApplications = applications.activeapplications.filter((application) => {
-      return application && application.class_teacher == name;
+      return application && application.class_teacher == appGroupId;
+    });
+
+    filterApplications = filterApplications.map((item) => {
+      item.class_teacher = name;
+      console.log("application", item);
+
+      return item;
     });
 
     console.log("filterApplications", filterApplications);
   }
+
+
+  console.log("groups", groups);
 
   const getPrimaryParentName = (parents, id) => {
 
@@ -105,13 +138,13 @@ export default function index() {
       name: 'Class',
       selector: 'birthDate',
       sortable: false,
-      cell: row => row.class_teacher
+      cell: row => row?.child?.grade_desc
     },
     {
       name: 'Group(s)',
       selector: 'type',
       sortable: false,
-      cell: ""
+      cell: row => row.class_teacher
     },
     {
       name: 'Days Requested',

@@ -13,6 +13,14 @@ export const GET_USER_GROUP_QUERY = gql`
         name
         contacts
       }
+      application_groups {
+        id
+        name
+        size
+        vendor
+        user
+        app_grp_id
+      }
     }
   }
 `;

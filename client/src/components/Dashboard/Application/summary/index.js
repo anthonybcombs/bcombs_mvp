@@ -61,26 +61,19 @@ const ApplicationSummaryStyled = styled.div`
 `;
 
 export default function index({
-  grades,
+  appGroups = [],
   applications = [],
   vendor
 }) {
   
-  let maxClass = 50;
+  console.log("appGroups...", appGroups);
 
-  const [tCount, setTCount] = useState(0);
-  const [tAvailable, setTAvaiable] = useState(0);
-  const [tClassCount, setTClassCount] = useState(0);
-
-  console.log("Sumary APPs", applications);
-
-  const getClassCount = ({name}) => {
+  const getClassCount = (group) => {
 
     const size = applications.filter((app) => {
       if(app.class_teacher) {
-        return app.class_teacher == name;
-      } else 
-        return app.child.grade_desc == name;
+        return app.class_teacher == group.app_grp_id;
+      }
     });
 
     return size.length;
@@ -88,18 +81,18 @@ export default function index({
 
   const renderTableData = () => {
 
-    return grades.map((grade, index) => {
+    return appGroups.map((group, index) => {
 
-      let count = maxClass;
-      let classCount = getClassCount(grade);
+      let count = group.size;
+      let classCount = getClassCount(group);
       let availableCount = count - classCount;
       availableCount = availableCount < 0 ? 0 : availableCount;
 
       return (
-        <tr key={grade.id}>
+        <tr key={group.id}>
           <td>
-            <a href={"class/" + vendor.id2 + "/" + grade.name} target="_blank">
-              {grade.name}
+            <a href={"class/" + vendor?.id2 + "/" + group.name} target="_blank">
+              {group.name}
             </a>
           </td>
           <td>{count}</td>
@@ -111,14 +104,18 @@ export default function index({
   }
 
   const getTotalCount = () => {
-    return grades.length * maxClass;
+    let totalCount = 0;
+    appGroups.map(group => {
+      totalCount += group.size;
+    });
+    return totalCount;
   }
 
   const getTotalAvailable = () => {
     let totalAvailable = 0;
-    for(const grade of grades) {
-      let classCount = getClassCount(grade);
-      totalAvailable += maxClass - classCount;
+    for(const group of appGroups) {
+      let classCount = getClassCount(group);
+      totalAvailable += group.size - classCount;
     }
 
     totalAvailable = totalAvailable < 0 ? 0 : totalAvailable;
@@ -127,8 +124,8 @@ export default function index({
 
   const getTotalClassCount = () => {
     let totalClassCount = 0;
-    for(const grade of grades) {
-      totalClassCount += getClassCount(grade);
+    for(const group of appGroups) {
+      totalClassCount += getClassCount(group);
     }
 
     return totalClassCount;
