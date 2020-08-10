@@ -125,7 +125,7 @@ const resolvers = {
         return user == vendor.user;
       });
 
-      if (vendor) {
+      if (vendor && vendor.length > 0) {
         return vendor;
       } else {
         vendor = await addVendor({ user: user });
