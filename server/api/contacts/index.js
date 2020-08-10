@@ -93,7 +93,7 @@ export const editContact = async data => {
 
     if (data.removed_groups.length > 0) {
       let groupValuesQuery = data.removed_groups.map(currentItem => {
-        return `(UUID_TO_BIN("${currentItem}"),UUID_TO_BIN("${currentUser.id}"))`;
+        return `(UUID_TO_BIN('${currentItem}'),UUID_TO_BIN('${currentUser.id}'))`;
       });
       groupValuesQuery = groupValuesQuery.join(",");
       await db.query(
@@ -105,13 +105,13 @@ export const editContact = async data => {
 
     if (data.selected_groups.length > 0) {
       let groupMemberValuesQuery = data.selected_groups.map(item => {
-        return `(UUID_TO_BIN("${item}"),UUID_TO_BIN("${currentUser.id}"))`;
+        return `(UUID_TO_BIN('${item}'),UUID_TO_BIN('${currentUser.id}'))`;
       });
 
       groupMemberValuesQuery = groupMemberValuesQuery.join(",");
 
       await db.query(
-        "INSERT IGNORE INTO `group_members`(`group_id`,`user_id`) VALUES " +
+        "INSERT IGNORE INTO group_members(group_id,user_id) VALUES " +
           groupMemberValuesQuery
       );
     }
@@ -144,7 +144,7 @@ export const createNewContact = async ({
 
     if (user) {
       await db.query(
-        "INSERT IGNORE INTO `contacts`(`id`,`user_id`,`first_name`,`last_name`,`phone_number`,`email`,`relation`,`added_by`,`date_added`) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),?,?,?,?,?,UUID_TO_BIN(?),NOW())",
+        "INSERT IGNORE INTO contacts(id,user_id,first_name,last_name,phone_number,email,relation,added_by,date_added) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),?,?,?,?,?,UUID_TO_BIN(?),NOW())",
         [
           id,
           user.id,
@@ -160,7 +160,7 @@ export const createNewContact = async ({
       if (selected_groups.length > 0) {
         let groupValuesQuery = selected_groups.reduce(
           (accumulator, groupId) => {
-            accumulator += `(UUID_TO_BIN("${groupId}"),UUID_TO_BIN("${user.id}")),`;
+            accumulator += `(UUID_TO_BIN('${groupId}'),UUID_TO_BIN('${user.id}')),`;
             return accumulator;
           },
           ""
@@ -171,7 +171,7 @@ export const createNewContact = async ({
         );
 
         await db.query(
-          "INSERT IGNORE INTO `group_members`(`group_id`,`user_id`) VALUES " +
+          "INSERT IGNORE INTO group_members(group_id,user_id) VALUES " +
             groupValuesQuery
         );
       }
