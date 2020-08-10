@@ -34,12 +34,12 @@ export const getUserGroups = async email => {
       [currentUser.id]
     );
     const createdGroups = await db.query(
-      "SELECT BIN_TO_UUID(id) as `id`,name,visibility from `groups` WHERE user_id=UUID_TO_BIN(?)",
+      "SELECT BIN_TO_UUID(id) as id,name,visibility from `groups` WHERE user_id=UUID_TO_BIN(?)",
       [currentUser.id]
     );
 
     applicationGroups = await getVendorAppGroups(currentUser.id);
-    
+
     joinedResult = await formattedGroups(joinedGroups, db);
     createdResult = await formattedGroups(createdGroups, db);
   } catch (error) {
@@ -250,7 +250,7 @@ export const getMemberByMultipleGroupId = async ids => {
 
 const formattedGroups = async (rows, db) => {
   rows = JSON.parse(JSON.stringify(rows));
-  const rowIds = rows.map(item => `UUID_TO_BIN("${item.id}")`);
+  const rowIds = rows.map(item => `UUID_TO_BIN('${item.id}')`);
 
   let members =
     rowIds && rowIds.length > 0
