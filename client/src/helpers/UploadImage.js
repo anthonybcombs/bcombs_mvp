@@ -36,7 +36,7 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
     <UploadImageStyled>
       <Files
         multiple={false}
-        maxSize="2mb"
+        maxSize="5mb"
         multipleMaxSize="10mb"
         convertToBase64
         accept={["image/jpg", "image/jpeg", "image/png"]}
@@ -110,7 +110,7 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                   ))}
                   <br />
                   <p>File type supported is jpeg, jpg, png.</p>
-                  <p>File size supported is maximum 2MB</p>
+                  <p>File size supported is maximum 5MB</p>
                 </>
               )}
             </>

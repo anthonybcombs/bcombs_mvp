@@ -70,7 +70,7 @@ export const editGroups = async data => {
     if (member_ids.length > 0) {
       let groupMemberValuesQuery = member_ids.reduce(
         (accumulator, memberId) => {
-          accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${memberId}")),`;
+          accumulator += `(UUID_TO_BIN('${id}'),UUID_TO_BIN('${memberId}')),`;
           return accumulator;
         },
         ""
@@ -89,7 +89,7 @@ export const editGroups = async data => {
 
     if (removed_member_ids.length > 0) {
       let groupValuesQuery = removed_member_ids.map(currentItem => {
-        return `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${currentItem}"))`;
+        return `(UUID_TO_BIN('${id}'),UUID_TO_BIN('${currentItem}'))`;
       });
       groupValuesQuery = groupValuesQuery.join(",");
       await db.query(
@@ -150,7 +150,7 @@ export const createNewGroup = async ({
     if (member_ids.length > 0 && member_ids[0] !== null) {
       let groupMemberValuesQuery = member_ids.reduce(
         (accumulator, memberId) => {
-          accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${memberId}")),`;
+          accumulator += `(UUID_TO_BIN(${id}),UUID_TO_BIN(${memberId})),`;
           return accumulator;
         },
         ""
@@ -162,7 +162,7 @@ export const createNewGroup = async ({
       );
 
       await db.query(
-        "INSERT IGNORE INTO `group_members`(group_id,user_id) VALUES " +
+        "INSERT IGNORE INTO group_members(group_id,user_id) VALUES " +
           groupMemberValuesQuery
       );
     }
@@ -188,7 +188,7 @@ export const getMembers = async id => {
     userIds =
       userIds && userIds.length > 0 ? JSON.parse(JSON.stringify(userIds)) : [];
 
-    userIds = userIds.map(item => `UUID_TO_BIN("${item.user_id}")`);
+    userIds = userIds.map(item => `UUID_TO_BIN('${item.user_id}')`);
     if (userIds.length > 0) {
       contacts = await db.query(
         `SELECT user_profiles.first_name,
@@ -227,7 +227,7 @@ export const getMemberByMultipleGroupId = async ids => {
   const db = makeDb();
   let results = [];
   try {
-    let formattedIds = ids.map(id => `UUID_TO_BIN("${id}")`);
+    let formattedIds = ids.map(id => `UUID_TO_BIN('${id}')`);
 
     if (formattedIds.length > 0) {
       let users = await db.query(

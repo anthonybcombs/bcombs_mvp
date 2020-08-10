@@ -70,7 +70,7 @@ export const createNewEvent = async data => {
     console.log("UPDATE GUEST LIST !!!!!!!!!!!!!!", guests);
     if (guests.length > 0) {
       let eventAttendeesValueQuery = guests.reduce((accumulator, userId) => {
-        accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${userId}"),"Pending"),`;
+        accumulator += `(UUID_TO_BIN('${id}'),UUID_TO_BIN('${userId}'),'Pending'),`;
         return accumulator;
       }, "");
 
@@ -80,7 +80,7 @@ export const createNewEvent = async data => {
       );
 
       await db.query(
-        "INSERT IGNORE INTO `event_attendee`(`event_id`,`user_id`,`status`) VALUES " +
+        "INSERT IGNORE INTO event_attendee(event_id,user_id,status) VALUES " +
           eventAttendeesValueQuery
       );
     }
@@ -99,14 +99,14 @@ export const createNewEvent = async data => {
       );
       console.log("eventCalendarQuery", eventCalendarQuery);
       await db.query(
-        "INSERT IGNORE INTO `event_calendar` (event_id,calendar_id,date_added) VALUES " +
+        "INSERT IGNORE INTO event_calendar (event_id,calendar_id,date_added) VALUES " +
           eventCalendarQuery
       );
     }
     if (data.group_ids.length > 0) {
       let groupVisibilityQuery = data.group_ids.reduce(
         (accumulator, groupId) => {
-          accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${groupId}"),NOW()),`;
+          accumulator += `(UUID_TO_BIN('${id}'),UUID_TO_BIN('${groupId}'),NOW()),`;
           return accumulator;
         },
         ""
@@ -117,7 +117,7 @@ export const createNewEvent = async data => {
       );
 
       await db.query(
-        "INSERT IGNORE INTO `event_visibility`(event_id,group_id,date_added) VALUES " +
+        "INSERT IGNORE INTO event_visibility(event_id,group_id,date_added) VALUES " +
           groupVisibilityQuery
       );
 
@@ -376,7 +376,7 @@ export const editEvents = async data => {
 
     if (removed_guests.length > 0) {
       let eventAttendeeQuery = removed_guests.map(currentItem => {
-        return `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${currentItem}"))`;
+        return `(UUID_TO_BIN("${id}"),UUID_TO_BIN('${currentItem}'))`;
       });
       eventAttendeeQuery = eventAttendeeQuery.join(",");
       await db.query(
@@ -501,7 +501,7 @@ const addEventAttendee = async (guestIds, eventId, db) => {
     );
 
     await db.query(
-      "INSERT IGNORE INTO `event_attendee`(`event_id`,`user_id`,`status`) VALUES " +
+      "INSERT IGNORE INTO event_attendee(event_id,user_id,status) VALUES " +
         eventAttendeesValueQuery
     );
   } catch (err) {
@@ -515,7 +515,7 @@ const addEventAttendee = async (guestIds, eventId, db) => {
 const formatRecipient = async (guests, eventId, db) => {
   let userWithCalendars = [];
   try {
-    const formatGuestIds = guests.map(guestId => `UUID_TO_BIN("${guestId}")`);
+    const formatGuestIds = guests.map(guestId => `UUID_TO_BIN('${guestId}')`);
 
     if (formatGuestIds.length > 0) {
       const userDetails = await db.query(
