@@ -14,6 +14,8 @@ import {
   OPTION_FEMALE_RELATIONSHIPS
 } from "../../../../../constants/options";
 
+import "./CreateProfileForm.css";
+
 const CreateProfileStyled = styled.form`
   input:required {
     box-shadow: none;
@@ -525,7 +527,7 @@ export default function CreateProfileForm({
         //   } */}
         // </div>
 
-        <div className="form-group">
+        <div className="form-group" style={{ marginTop: 12 }}>
           <div className="field">
             <DatePicker
               readOnly={false}
@@ -540,7 +542,7 @@ export default function CreateProfileForm({
               }) => (
                 <div
                   style={{
-                    margin: 10,
+                    margin: 0,
                     display: "flex",
                     justifyContent: "center"
                   }}>
@@ -598,9 +600,7 @@ export default function CreateProfileForm({
         </div>
       )}
 
-      <br />
-
-      <div className="field-group">
+      <div className="field-group" style={{ marginTop: 5 }}>
         <div className="field">
           <input
             className="field-input"
