@@ -173,7 +173,7 @@ export default function index({
     {id: 22, name: "Others", label: "Others"}
   ];
 
-  if(childProfile.child_lives_with && childProfile.child_lives_with.length > 0) {
+  if(childProfile.child_lives_with && childProfile.child_lives_with.length > 0 && isReadonly) {
 
     const childLivesWith = childProfile.child_lives_with
     childProfile.child_lives_with = CHILD_LIVES_OPTION.filter(opt => {
