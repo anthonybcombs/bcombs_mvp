@@ -310,7 +310,8 @@ export default function index({
   applications,
   handleSelectedApplication,
   listApplicationLoading = false,
-  vendor
+  vendor,
+  appGroups = []
 }) {
 
   const getApplicationStatusVal = (student_status, verification, row) => {
@@ -399,7 +400,7 @@ export default function index({
       cell: row => getPrimaryParentName(row.parents, row.id)
     },
     {
-      name: 'Class',
+      name: 'Grade',
       selector: 'class',
       sortable: true,
       cell: row => row?.child?.grade_desc
@@ -712,6 +713,7 @@ export default function index({
             applications={exportData}
             handleExit={handleExit}
             vendor={vendor}
+            appGroups={appGroups}
           />
         )
       }

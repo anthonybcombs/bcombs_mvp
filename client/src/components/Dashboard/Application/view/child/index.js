@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
 import ChildInformationFormStyled from "../../../ApplicationForm/ChildInformationForm";
 import GeneralInformationFormStyled from "../../../ApplicationForm/GeneralInformationForm";
@@ -17,12 +17,24 @@ const ChildFormViewStyled = styled.div`
     color: #f26e21;
     text-align: center;
   }
+  .edit-button {
+    border: 0;
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 2em;
+    color: #f26e21;
+    background: none;
+    z-index: 1;
+  }
 `;
 
 export default function index({
   application,
   vendor,
-  ProfileImg
+  ProfileImg,
+  isReadonly,
+  handleChangeToEdit
 }) {
 
 
@@ -31,20 +43,21 @@ export default function index({
   const childInformation = {
     profile: {
       image: "",
-      first_name: application.child.firstname ? application.child.firstname: "-",
-      last_name: application.child.lastname ? application.child.lastname: "-",
-      nick_name: application.child?.nickname ? application.child?.nickname: "-",
+      first_name: application.child.firstname ? application.child.firstname: isReadonly ? "-" : "",
+      last_name: application.child.lastname ? application.child.lastname: isReadonly ? "-" : "",
+      nick_name: application.child.nickname ? application.child.nickname: isReadonly ? "-" : "",
       date_of_birth: new Date(application.child.birthdate),
       gender: application.child.gender,
-      phone_type: application.child.phone_type ? application.child.phone_type: "-",
-      phone_number: application.child.phone_number ? application.child.phone_number: "-",
-      email_type: application.child.email_type ? application.child.email_type: "-",
-      email_address: application.child.email_address ? application.child.email_address: "-",
-      address: application.child.address ? application.child.address: "-",
-      city: application.child.city ? application.child.city: "-",
+      phone_type: application.child.phone_type ? application.child.phone_type: isReadonly ? "-" : "",
+      phone_number: application.child.phone_number ? application.child.phone_number: isReadonly ? "-" : "",
+      email_type: application.child.email_type ? application.child.email_type: isReadonly ? "-" : "",
+      email_address: application.child.email_address ? application.child.email_address: isReadonly ? "-" : "",
+      address: application.child.address ? application.child.address: isReadonly ? "-" : "",
+      city: application.child.city ? application.child.city: isReadonly ? "-" : "",
       state: application.child.state ? application.child.state: "",
-      zip_code: application.child.zip_code ? application.child.zip_code: "-",
-      location_site: application.child.location_site ? application.child.location_site: ""
+      zip_code: application.child.zip_code ? application.child.zip_code: isReadonly? "-" : "",
+      location_site: application.child.location_site ? application.child.location_site: "",
+      child_lives_with: application.child.child_lives_with ? application.child.child_lives_with.split(",") : []
     },
     general_information: {
       grade: application.child.grade_number ? application.child.grade_number: "",
@@ -99,13 +112,21 @@ export default function index({
         {vendor.name} Application Form
       </h1>
       <div id="applicationForm">
+        <button
+          className="edit-button"
+          onClick={handleChangeToEdit}>
+          <FontAwesomeIcon 
+            icon={faEdit}
+          />
+        </button>
+
         <ChildInformationFormStyled 
           handleChildFormDetailsChange={handleChildFormDetailsChange}
           childProfile={childInformation.profile}
           counter={1}
           register={register}
           errors={errors}
-          isReadonly={true}
+          isReadonly={isReadonly}
           ProfileImg={ProfileImg}
         />
         <GeneralInformationFormStyled 
@@ -115,7 +136,7 @@ export default function index({
           handleScoresChange={handleScoresChange}
           register={register}
           errors={errors}
-          isReadonly={true}
+          isReadonly={isReadonly}
         />
         <MedicalCareInfoStyled 
           childEmergencyCare={childInformation.emergency_care_information}
@@ -123,7 +144,7 @@ export default function index({
           counter={1}
           register={register}
           errors={errors}
-          isReadonly={true}
+          isReadonly={isReadonly}
         />
       </div>
     </ChildFormViewStyled>

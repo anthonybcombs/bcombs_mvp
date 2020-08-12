@@ -148,7 +148,7 @@ export default function index({
     { id: 2, value: "Work", name: "Work" },
   ];
 
-  const CHILD_LIVES_OPTION = [
+  let CHILD_LIVES_OPTION = [
     {id: 1, name: "Father", label: "Father"},
     {id: 2, name: "Mother", label: "Mother"},
     {id: 3, name: "Brother", label: "Brother"},
@@ -172,6 +172,14 @@ export default function index({
     {id: 21, name: "Other relatives", label: "Other relatives"},
     {id: 22, name: "Others", label: "Others"}
   ];
+
+  if(childProfile.child_lives_with && childProfile.child_lives_with.length > 0 && isReadonly) {
+
+    const childLivesWith = childProfile.child_lives_with
+    childProfile.child_lives_with = CHILD_LIVES_OPTION.filter(opt => {
+      return childLivesWith.includes(opt.name);
+    })
+  }
 
   const [ethinicitySelected, setEthinicitySelected] = useState([]);
   const [schoolProgramSelected, setSchoolProgramSelected] = useState([]);
@@ -1037,9 +1045,9 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <Multiselect
+                disable={isReadonly}
+                disablePreSelectedValues={isReadonly}
                 selectedValues={childProfile.child_lives_with}
-                readOnly={isReadonly}
-                disabled={isReadonly}
                 className="field-input"
                 options={CHILD_LIVES_OPTION}
                 hasSelectAll={hasSelectAll}
