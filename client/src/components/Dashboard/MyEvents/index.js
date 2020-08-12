@@ -36,8 +36,7 @@ const MyEventsStyled = styled.div`
     text-align: center;
     font-weight: bold;
     appearance: none;
-    background: url("http://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/br_down.png")
-      right center no-repeat;
+    background: url("./br_down.webp") right center no-repeat;
     padding-right: 20px;
   }
   #header option {
