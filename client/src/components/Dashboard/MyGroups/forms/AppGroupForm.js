@@ -246,7 +246,7 @@ export default function AppGroupForm({
                 handleGroupDetailsChange("name", target.value);
               }}
               ref={register({ required: true })}
-              value={groupDetails.name}
+              defaultValue={groupDetails.name}
             />
             <label className="field-label">
               <span className="required">*</span> Group Name
@@ -273,7 +273,7 @@ export default function AppGroupForm({
                 }
               }}
               ref={register({ required: true })}
-              value={groupDetails.size}
+              defaultValue={groupDetails.size}
             />
             <label className="field-label">
               <span className="required">*</span> Total No. of Seats

@@ -173,6 +173,12 @@ export default function index() {
     dispatch(requestUpdateApplication(updateApplication));
   }
 
+  const [isReadonly, setIsReadonly] = useState(true);
+
+  const handleChangeToEdit = () => {
+    setIsReadonly(!isReadonly);
+  }
+
   return (
     <ApplicationStyled>
       <div style={{display: "flex", alignItems: "center"}}>
@@ -262,6 +268,7 @@ export default function index() {
           handleSelectedApplication={handleSelectedApplication}
           listApplicationLoading={loading.application}
           vendor={vendors && vendors.length > 0 ? vendors[0] : null}
+          appGroups={groups && groups.application_groups ? groups.application_groups : []}
         />
       )}
       {selectNonMenuOption && view == "application" && (
@@ -269,6 +276,8 @@ export default function index() {
           application={selectedApplication}
           vendor={vendors && vendors.length > 0 ? vendors[0] : null}
           ProfileImg={ProfileImg}
+          isReadonly={isReadonly}
+          handleChangeToEdit={handleChangeToEdit}
         />
       )}
       {selectNonMenuOption && view == "application" && (

@@ -81,7 +81,8 @@ const ExportFilterModal = styled.div`
 const ExportFilter = ({
   applications = [],
   handleExit,
-  vendor
+  vendor,
+  appGroups = []
 }) => {
 
   const CLASS_OPTIONS = ["Seniors", "Juniors", "Sophomores", "Freshmen", "Middle School"];
@@ -112,14 +113,18 @@ const ExportFilter = ({
   const [statusText, setStatusText] = useState("");
   const [classText, setClassText] = useState("");
   const [colorText, setColorText] = useState("");
+  const [appGroupText, setAppGroupText] = useState("");
 
   const filterApplications = applications.filter((item) => {
 
     let class_match = true;
     let color_match = true;
     let status_match = true;
+    let group_match = true;
 
     console.log("CLass text", classText);
+
+    console.log("appGroup", appGroups);
 
     if(classText) {
       if(item.class_teacher) {
@@ -140,7 +145,16 @@ const ExportFilter = ({
       status_match = item.student_status.toLowerCase() == statusText.toLowerCase();
     }
 
-    return class_match && color_match && status_match;
+    if(appGroupText) {
+      group_match = false;
+      for(const group of appGroups) {
+        if(group.app_grp_id == item.class_teacher) {
+          group_match = true; break;
+        }
+      }
+    }
+
+    return class_match && color_match && status_match && group_match;
   });
 
 
@@ -193,7 +207,7 @@ const ExportFilter = ({
       "Status": getApplicationStatus(application.student_status),
       "Student Name": application.child?.firstname + " " + application.child?.lastname,
       "Parent Name": getPrimaryParentName(application.parents),
-      "Class": application?.child?.grade_desc,
+      "Grade": application?.child?.grade_desc,
       "Age": getAgeBdate(application.child),
       "Application Date": format(new Date(application.application_date), DATE_FORMAT)
     }
@@ -215,6 +229,21 @@ const ExportFilter = ({
           <div className="modal-container">
             <p>Filter:</p>
             <div>
+              <select
+                className="form-control"
+                value={appGroupText}
+                onChange={e => {
+                  console.log(e.target.value);
+                  setAppGroupText(e.target.value);
+                }}
+              >
+                <option value="">All Class</option>
+                {
+                  appGroups.map((opt, i) => (
+                    <option key={i} value={opt.id}>{opt.name}</option>
+                  ))
+                }
+              </select>
               <select 
                 className="form-control"
                 value={classText}
@@ -222,7 +251,7 @@ const ExportFilter = ({
                   console.log(e.target.value);
                   setClassText(e.target.value);
                 }}>
-                <option value="">All Class</option>
+                <option value="">All Grade</option>
                 {
                   CLASS_OPTIONS.map((opt, i) => (
                     <option key={i} value={opt}>{opt}</option>
