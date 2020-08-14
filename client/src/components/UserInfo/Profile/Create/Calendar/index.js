@@ -5,7 +5,7 @@ const CalendarProfile = styled.div`
   display: block;
   margin: 0 auto;
   background-color: white;
-  width: 40%;
+  // width: 40%;
   overflow: auto;
   height: auto;
   padding: 5px 30px 5px 30px;
@@ -16,6 +16,10 @@ const CalendarProfile = styled.div`
   h2 {
     margin-top: 3em;
   }
+
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 2rem;
 `;
 export default function index({ handleProfileSubmit, onSkip }) {
   const [calendarDetails, setCalendarDetails] = useState({

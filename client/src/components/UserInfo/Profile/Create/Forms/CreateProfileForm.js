@@ -80,7 +80,6 @@ const CreateProfileStyled = styled.form`
     font-size: ${({ theme }) => theme.input.fontSize};
     display: block;
     border: none;
-    color: #fff;
     margin: 0 5px;
     cursor: pointer;
     width: 100% !important;
@@ -92,6 +91,9 @@ const CreateProfileStyled = styled.form`
   .react-datepicker__header {
     padding-top: 0;
     border-bottom: none;
+  }
+  .react-datepicker__header select {
+    color: #fff;
   }
   .react-datepicker {
     border: 1px solid #ddd;
@@ -433,7 +435,7 @@ export default function CreateProfileForm({
                     ))}
                   </optgroup>
                 </select>
-                <label className="field-label">&nbsp;</label>
+                <label className="field-label">{!data.gender ? '' : 'Select Gender'}</label>
               </div>
               <ErrorMessage
                 field={errors.gender}
@@ -510,7 +512,7 @@ export default function CreateProfileForm({
                         </option>
                       ))}
                 </select>
-                <label className="field-label">&nbsp;</label>
+                <label className="field-label">{!data.familyrelationship ? '' : 'Select Family Relationship'}</label>
               </div>
               <ErrorMessage
                 field={errors.familyrelationship}
