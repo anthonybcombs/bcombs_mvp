@@ -44,9 +44,11 @@ const LoginStyled = styled.div`
 
   @media (max-width: 768px) {
     width: 80%;
+    margin-bottom: 2rem;
   }
   @media (min-width: 769px) {
-    width: 50%;
+    width: 100%;
+    max-width: 600px;
   }
 `;
 const SUCCESS_STATUS = `User created! We sent confirmation email`;

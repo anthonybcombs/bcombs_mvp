@@ -55,7 +55,6 @@ const CreateUserFormStyled = styled.form`
   #userTypes button {
     padding: 10px;
     border-radius: 0 !important;
-    margin: 5px;
   }
   #userTypes button.selected {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
@@ -83,7 +82,7 @@ const CreateUserFormStyled = styled.form`
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: repeat(2, 1fr);
-      grid-gap: 1%;
+      grid-gap: 3%;
     }
   }
 
@@ -269,7 +268,7 @@ export default function Form({
               // }
             })}
           />
-          <label className="field-label">Public Display Name</label>
+          <label className="field-label" for="username">Public Display Name</label>
         </div>
         <ErrorMessage
           field={errors.username}
@@ -304,7 +303,7 @@ export default function Form({
               }
             })}
           />
-          <label className="field-label">
+          <label className="field-label" for="email">
             <span className="required">*</span> Email
           </label>
         </div>
@@ -366,7 +365,7 @@ export default function Form({
             })}
           />
 
-          <label className="field-label">
+          <label className="field-label" for="password">
             <span className="required">*</span> Password{" "}
             <Popover
               isOpen={isPopoverOpen}
@@ -453,7 +452,7 @@ export default function Form({
               }
             })}
           />
-          <label className="field-label">
+          <label className="field-label" for="confirm_password">
             <span className="required">*</span> Confirm Password
           </label>
         </div>
