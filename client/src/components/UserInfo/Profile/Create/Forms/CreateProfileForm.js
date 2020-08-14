@@ -4,6 +4,8 @@ import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 import ErrorMessage from "../../../../../helpers/ErrorMessage";
 import { isValidDate } from "../../../../../helpers/Date";
@@ -57,19 +59,66 @@ const CreateProfileStyled = styled.form`
     border: none;
   }
   .datepicker-btn {
-    height: 35px !important;
-    margin-top: 24px !important;
+    padding: 0;
+    width: 85px;
+    height: 32px;
+    margin: 0 5px;
+    box-shadow: none;
+    background: transparent;
+    font-size: unset !important;
+    border-radius: 100% !important;
+  }
+  .datepicker-btn svg {
+    width: 100%;
+    height: 75%;
+  }
+  .datepicker-btn:hover {
+    background: rgb(255 255 255 / 20%);
+    transition: .15s ease-in-out;
   }
   select {
     font-size: ${({ theme }) => theme.input.fontSize};
     display: block;
-    width: 100% !important;
     border: none;
-    margin-top: 2.5em;
-    margin-bottom: 1.5em;
+    color: #fff;
+    margin: 0 5px;
+    cursor: pointer;
+    width: 100% !important;
+    background: rgb(255 255 255 / 15%);
   }
   option:not([value=""]) {
     color: black !important;
+  }
+  .react-datepicker__header {
+    padding-top: 0;
+    border-bottom: none;
+  }
+  .react-datepicker {
+    border: 1px solid #ddd;
+  }
+  .react-datepicker__triangle {
+    border-bottom-color: #f46d22 !important;
+  }
+  .react-datepicker__day-names,
+  .react-datepicker__week {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .react-datepicker__day-names {
+    padding: 5px 0;
+  }
+  .react-datepicker__day,
+  .react-datepicker__day-name,
+  .react-datepicker__time-name {
+    color: rgb(0 0 0 / 75%);
+  }
+  .react-datepicker__day--selected,
+  .react-datepicker__day--keyboard-selected {
+    color: #fff !important;
+  }
+  .react-datepicker__day--outside-month {
+    color: rgb(0 0 0 / 35%);
   }
   h3 {
     text-align: center;
@@ -571,14 +620,17 @@ export default function CreateProfileForm({
                   style={{
                     margin: 0,
                     display: "flex",
-                    justifyContent: "center"
+                    alignCenter: "center",
+                    justifyContent: "center",
+                    background: "#f36e22",
+                    padding: "5px 3px"
                   }}>
-                  <button
-                    type="button"
-                    className="datepicker-btn"
-                    onClick={decreaseMonth}
-                    disabled={prevMonthButtonDisabled}>
-                    {"<"}
+                  <button className="datepicker-btn">
+                    <FontAwesomeIcon
+                      icon={faAngleLeft}
+                      onClick={decreaseMonth}
+                      disabled={prevMonthButtonDisabled}
+                    />
                   </button>
                   <select
                     value={new Date(date).getFullYear()}
@@ -601,13 +653,12 @@ export default function CreateProfileForm({
                       </option>
                     ))}
                   </select>
-
-                  <button
-                    type="button"
-                    className="datepicker-btn"
-                    onClick={increaseMonth}
-                    disabled={nextMonthButtonDisabled}>
-                    {">"}
+                  <button className="datepicker-btn">
+                    <FontAwesomeIcon
+                      icon={faAngleRight}
+                      onClick={increaseMonth}
+                      disabled={nextMonthButtonDisabled}
+                    />
                   </button>
                 </div>
               )}

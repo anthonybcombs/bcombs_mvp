@@ -6,7 +6,7 @@ const CreateProfileStyled = styled.div`
   display: block;
   margin: 0 auto;
   background-color: white;
-  width: 30%;
+  // width: 30%;
 
   height: auto;
   padding: 5px 30px 5px 30px;
@@ -25,6 +25,16 @@ const CreateProfileStyled = styled.div`
     h2 {
       font-weight: bold;
     }
+  }
+  @media (max-width: 768px) {
+    width: 80%;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+  }
+  @media (min-width: 769px) {
+    width: 100%;
+    max-width: 600px;
+    padding-bottom: 1rem;
   }
 `;
 export default function index({
