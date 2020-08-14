@@ -15,8 +15,8 @@ export default function index({
   const [familyMemberDetails, setFamilyMemberDetails] = useState({
     firstname: "",
     lastname: "",
-    gender: "male",
-    familyrelationship: "father",
+    gender: "",
+    familyrelationship: "",
     zipcode: "",
     dateofbirth: "",
     type: "Family Member",
