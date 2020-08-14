@@ -64,16 +64,13 @@ export const getUserInfo = async creds => {
     let userInfo;
     const UserInfoCache = JSON.parse(await getRedisKey(creds.access_token));
     if (UserInfoCache === null) {
-      const userInfoResponse = await fetch(
-        "https://bcombd.us.auth0.com/userinfo",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `${creds.token_type} ${creds.access_token}`,
-            "Content-Type": "application/json"
-          }
+      const userInfoResponse = await fetch(`${process.env.AUTH_API}/userinfo`, {
+        method: "GET",
+        headers: {
+          Authorization: `${creds.token_type} ${creds.access_token}`,
+          "Content-Type": "application/json"
         }
-      );
+      });
       userInfo = await userInfoResponse.json();
       const users = await getUsers();
       const user = users.filter(user => user.email === userInfo.email)[0];
@@ -109,25 +106,19 @@ export const executeSignIn = async user => {
 
     console.log("Process ENV", process.env);
 
-    const AuthResponse = await fetch(
-      "https://bcombd.us.auth0.com/oauth/token",
-      {
-        method: "POST",
-        body: params
-      }
-    );
+    const AuthResponse = await fetch(`${process.env.AUTH_API}/oauth/token`, {
+      method: "POST",
+      body: params
+    });
     const authData = await AuthResponse.json();
     if (authData.hasOwnProperty("access_token")) {
-      const userInfoResponse = await fetch(
-        "https://bcombd.us.auth0.com/userinfo",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `${authData.token_type} ${authData.access_token}`,
-            "Content-Type": "application/json"
-          }
+      const userInfoResponse = await fetch(`${process.env.AUTH_API}/userinfo`, {
+        method: "POST",
+        headers: {
+          Authorization: `${authData.token_type} ${authData.access_token}`,
+          "Content-Type": "application/json"
         }
-      );
+      });
       const userInfo = await userInfoResponse.json();
       if (authData.hasOwnProperty("error")) {
         console.log("auth data", authData);
@@ -202,7 +193,7 @@ export const executeChangePassword = async reqData => {
             params.append("email", user.email);
             params.append("connection", "Username-Password-Authentication");
             await fetch(
-              "https://bcombd.us.auth0.com/dbconnections/change_password",
+              `${process.env.AUTH_API}/dbconnections/change_password`,
               {
                 method: "POST",
                 body: params
@@ -260,13 +251,10 @@ export const executeChangePassword = async reqData => {
         params.append("client_id", process.env.AUTH_CLIENT_ID);
         params.append("email", user.email);
         params.append("connection", "Username-Password-Authentication");
-        await fetch(
-          "https://bcombd.us.auth0.com/dbconnections/change_password",
-          {
-            method: "POST",
-            body: params
-          }
-        );
+        await fetch(`${process.env.AUTH_API}/dbconnections/change_password`, {
+          method: "POST",
+          body: params
+        });
         return {
           messageType: "info",
           message: "Reset Password email has been sent."
@@ -303,7 +291,7 @@ export const executeSignUp = async user => {
       params.append("password", user.password);
       params.append("connection", "Username-Password-Authentication");
       const signUpResponse = await fetch(
-        "https://bcombd.us.auth0.com/dbconnections/signup",
+        `${process.env.AUTH_API}/dbconnections/signup`,
         {
           method: "POST",
           body: params

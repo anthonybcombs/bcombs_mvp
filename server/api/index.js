@@ -5,8 +5,10 @@ import {
   s3BucketRootPath,
   uploadFile
 } from "../helpers/aws";
-import { makeDb } from "../helpers/database";
+import { customConnection, makeDb } from "../helpers/database";
 import fetch from "node-fetch";
+import { v4 as uuidv4 } from "uuid";
+import { sendMigratedAccount } from "../helpers/email";
 const multer = require("multer");
 const router = express.Router();
 
@@ -102,16 +104,21 @@ router.get("/userProfile", async (req, res) => {
 router.get("/securityQuestions", async (req, res) => {
   try {
     const { email } = req.query;
+
+    console.log("securityQuestions", email);
     const user = await getUserFromDatabase(email);
+    console.log("securityQuestions user", user);
     let result = {};
     if (user) {
       const userProfile = await getUserProfileFromDatabase(user.id);
+
       if (userProfile) {
         result = {
           security_question1: userProfile.security_question1,
           security_question2: userProfile.security_question2,
-          security_question3: userProfile.security_question3,
+          security_question3: userProfile.security_question3
         };
+        console.log("securityQuestions result", result);
       } else {
         result = {
           error: "Please complete profile first."
@@ -148,16 +155,13 @@ router.get("/userTypes", async (req, res) => {
 router.post("/auth/userInfo", async (req, res) => {
   try {
     const creds = req.body;
-    const userInfoResponse = await fetch(
-      "https://bcombd.us.auth0.com/userinfo",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `${creds.token_type} ${creds.access_token}`,
-          "Content-Type": "application/json"
-        }
+    const userInfoResponse = await fetch(`${process.env.AUTH_API}/userinfo`, {
+      method: "GET",
+      headers: {
+        Authorization: `${creds.token_type} ${creds.access_token}`,
+        "Content-Type": "application/json"
       }
-    );
+    });
     const userInfo = await userInfoResponse.json();
 
     const response = await getUserFromDatabase(userInfo.email);
@@ -181,25 +185,19 @@ router.post("/auth/authorize", async (req, res) => {
     params.append("client_secret", process.env.AUTH_CLIENT_SECRET);
     params.append("username", user.email);
     params.append("password", user.password);
-    const AuthResponse = await fetch(
-      "https://bcombd.us.auth0.com/oauth/token",
-      {
-        method: "POST",
-        body: params
-      }
-    );
+    const AuthResponse = await fetch(`${process.env.AUTH_API}/oauth/token`, {
+      method: "POST",
+      body: params
+    });
     const authData = await AuthResponse.json();
     if (authData.hasOwnProperty("access_token")) {
-      const userInfoResponse = await fetch(
-        "https://bcombd.us.auth0.com/userinfo",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `${authData.token_type} ${authData.access_token}`,
-            "Content-Type": "application/json"
-          }
+      const userInfoResponse = await fetch(`${process.env.AUTH_API}/userinfo`, {
+        method: "POST",
+        headers: {
+          Authorization: `${authData.token_type} ${authData.access_token}`,
+          "Content-Type": "application/json"
         }
-      );
+      });
       const userInfo = await userInfoResponse.json();
       res.send(
         JSON.stringify({
@@ -223,7 +221,8 @@ router.post("/auth/changepassword", async (req, res) => {
       params.append("client_id", process.env.AUTH_CLIENT_ID);
       params.append("email", user.email);
       params.append("connection", "Username-Password-Authentication");
-      await fetch("https://bcombd.us.auth0.com/dbconnections/change_password", {
+      await fetch(
+      `${process.env.AUTH_API}/dbconnections/change_password`, {
         method: "POST",
         body: params
       });
@@ -313,7 +312,7 @@ router.post("/users/add", async (req, res) => {
       params.append("password", user.password);
       params.append("connection", "Username-Password-Authentication");
       const signUpResponse = await fetch(
-        "https://bcombd.us.auth0.com/dbconnections/signup",
+        `${process.env.AUTH_API}/dbconnections/signup`,
         {
           method: "POST",
           body: params
@@ -388,7 +387,7 @@ router.put("/user/profile", async (req, res) => {
         personalInfo.securityquestion2answer,
         personalInfo.securityquestion3,
         personalInfo.securityquestion3answer,
-        personalInfo.id,
+        personalInfo.id
       ]
     );
 
@@ -684,11 +683,11 @@ router.get("/invitation/event/:id", async (req, res) => {
     );
 
     await db.query(
-      "INSERT IGNORE INTO `event_calendar`(`event_id`,`calendar_id`,`date_added`) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),NOW())",
+      "INSERT IGNORE INTO event_calendar(event_id,calendar_id,date_added) VALUES (UUID_TO_BIN(?),UUID_TO_BIN(?),NOW())",
       [id, calendar]
     );
 
-    res.redirect("http://192.243.109.224:1234/dashboard");
+    res.redirect("http://prod.bcombs.com/dashboard");
   } catch (error) {
     console.log("Invitation Error", error);
   } finally {
@@ -705,11 +704,1006 @@ router.get("/invitation/calendar/:id", async (req, res) => {
       "UPDATE user_calendars_follow SET is_following=1 WHERE calendar_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?) AND group_id=UUID_TO_BIN(?) AND is_following=0",
       [id, userId, groupId]
     );
-    res.redirect("http://192.243.109.224:1234/dashboard/mycalendars");
+    res.redirect("http://prod.bcombs.com/dashboard/mycalendars");
   } catch (error) {
     console.log("Invitation Error", error);
   } finally {
     await db.close();
+  }
+});
+
+// SCRIPT FOR MIGRATION
+
+const BACKUP_VENDOR = [
+  //"info@100blackmenofcharlotte.org"
+  "rsinger@100blackmen-atlanta.org"
+  // "100blackmentriangleeast@gmail.com",
+  // "jewettwalker@100bmla.net"
+];
+
+function getFormattedDate(date) {
+  date = new Date(date);
+
+  if (date) {
+    let year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString().padStart(2, "0");
+    let day = date
+      .getDate()
+      .toString()
+      .padStart(2, "0");
+
+    return year + "-" + month + "-" + day;
+  }
+  return null;
+}
+
+router.get("/migrate", async (req, res) => {
+  const remoteDb = customConnection(
+    "162.241.217.198",
+    "bcombstc_bcomb",
+    "Bcomb@123",
+    "bcombstc_bcombss"
+  );
+  try {
+    if (!remoteDb) {
+      res.status(401).json({ Message: "Connection not found!" });
+    }
+    const applicationResults = await remoteDb.query(
+      "select * from application;"
+    );
+    const userResults = await remoteDb.query("select * from users;");
+    const schoolResults = await remoteDb.query("select * from schools;");
+    const parentResults = await remoteDb.query("select * from appparent;");
+    // let users = userResults.filter(user => user.user_type === "User");
+    let vendors = userResults.filter(
+      user => user.user_type === "Vendor" && BACKUP_VENDOR.includes(user.email)
+    );
+
+    let allUsers = vendors.map(user => {
+      let name = user.name.split(" ");
+      let username = user.email.split("@");
+      let payload = {
+        user: {
+          id: user.id,
+          email: user.email,
+          type:
+            user.user_type === "User"
+              ? "5de2809e-c2b3-5cc5-a0c2-bf11c3aae280"
+              : "61c3b2e2-8099-c5be-c5a0-c2bf11c3aae2",
+          username: username[0],
+          user_type: user.user_type,
+          is_profile_filled: 0,
+          password: `Bcombs123!`
+        },
+        profile: {
+          firstname: name[0],
+          lastname: name[1],
+          gender: user.gender === 2 ? "Male" : "Female",
+          zip: user.zip_code,
+          birth_date: getFormattedDate(user.dob),
+          address: user.address,
+          city: user.city
+        }
+      };
+
+      if (user.user_type === "Vendor") {
+        const currentSchool = schoolResults.find(
+          school =>
+            BACKUP_VENDOR.includes(school.schoolEmail) &&
+            school.schoolEmail == user.email
+        );
+
+        if (currentSchool) {
+          let applications = applicationResults
+            .filter(
+              application => application.school === currentSchool.schoolName
+            )
+            .map((application, index) => {
+              let currentParent = parentResults.filter(
+                parent => parent.appId === application.appId
+              );
+              currentParent = currentParent.map(parent => {
+                return {
+                  application: parent.appId,
+                  relationchip_to_child: parent.relationshipToChild,
+                  firstname: parent.fnameParent,
+                  lastname: parent.lnameParent,
+                  phone_type: parent.primaryPhoneTypeParent,
+                  phone_number: parent.primaryPhoneNumberParent,
+                  secondary_phone_type: parent.primarySecondPhoneTypeParent,
+                  secondary_phone_number: parent.primarySecondPhoneNumberParent,
+                  email_type: parent.emailTypeParent,
+                  email_address: parent.PrimaryEmailParent,
+                  secondary_email_type: parent.PrimarySecondEmailTypeParent,
+                  secondary_email_address: parent.PrimarySecondEmailParent,
+                  password: `Bcombs123_${index}!!!`,
+                  gender: parent.genderParent,
+                  address: parent.PrimaryAddressTypeParent,
+                  state: parent.PrimaryStateParent,
+                  city: parent.PrimaryCity,
+                  zip_code: parent.PrimaryZipParent,
+
+                  occupation: parent.occupationParent,
+                  employers_name: parent.employeenameParent,
+                  parent_goals: parent.goalProgramParent,
+                  parent_child_goals: parent.goalChildProgramParent,
+                  level_of_education: parent.highLevel_edu_parent,
+                  child_hs_grad: parent.child_grad_parent,
+                  child_col_grad: parent.child_att_col_parent
+                };
+              });
+
+              let studentStatus = application.studentStatus;
+              if (studentStatus === "IP") {
+                studentStatus = "new_applicant_in_process";
+              } else if (studentStatus === "SU") {
+                studentStatus = "current_student";
+              } else if (studentStatus === "A") {
+                studentStatus = "new_applicant_accepted";
+              } else if (studentStatus === "R") {
+                studentStatus = "new_applicant_rejected";
+              } else if (studentStatus === "WL") {
+                studentStatus = "waiting_list";
+              } else if (studentStatus === "NLS") {
+                studentStatus = "no_longer_student";
+              } else if (studentStatus === "MO") {
+                studentStatus = "missed_opportunity";
+              }
+
+              let applicationStatus = "waiting_for_verification";
+              if (application.status === "V") {
+                applicationStatus = "verified";
+              } else if (application.status === "R") {
+                applicationStatus = "rejected";
+              }
+              return {
+                id: application.appId,
+                verification: applicationStatus,
+                application_date: application.created_at,
+                is_archieved: application.archieveStatus,
+                archived_date: application.archieved_date,
+                color_designation: application.color,
+                notes: application.notes,
+                student_status: studentStatus,
+                children: {
+                  phone_type: application.child_phoneType,
+                  phone_number: application.child_phoneNo,
+                  secondary_phone_type: application.child_second_phoneType,
+                  secondary_phone_number: application.child_second_phoneNo,
+                  email_address: application.emailChild,
+                  email_type: application.child_emailType,
+                  secondary_email_address: application.emailSecondChild,
+                  secondary_email_type: application.second_child_emailType,
+                  firstname: application.fnamChild,
+                  lastname: application.lnamChild,
+
+                  birthdate: getFormattedDate(application.dobChild),
+                  gender: application.genderChild,
+                  address: application.addressChild,
+                  city: application.cityChild,
+                  zip_code: application.zipChild,
+                  location_site: application.locationSiteChild || "",
+                  state: application.stateChild,
+                  ethnicities: application.ethnicityChild,
+                  programs: application.programChild,
+                  hobbies: application.child_hobbies,
+                  life_events: application.life_events,
+                  career_goals: application.child_career_goals,
+                  colleges: application.child_list_colleges,
+                  awards: application.child_list_award,
+                  language: application.languageChild,
+                  accomplishments: application.child_list_accomp,
+                  year_taken: application.start_year_as_mentee,
+                  grade: application.grade,
+                  school_name: application.school,
+                  school_phone: application.prevschoolphoneChild,
+                  gpa_quarter_year: application.gpa_child,
+                  gpa_quarter_q1: application.gpa_q1_child,
+                  gpa_quarter_q2: application.gpa_q2_child,
+                  gpa_quarter_q3: application.gpa_q3_child,
+                  gpa_quarter_q4: application.gpa_q4_child,
+                  gpa_cumulative_year: application.gpa_cum_child,
+                  gpa_cumulative_q1: application.gpa_cum_q1_child,
+                  gpa_cumulative_q2: application.gpa_cum_q2_child,
+                  gpa_cumulative_q3: application.gpa_cum_q3_child,
+                  gpa_cumulative_q4: application.gpa_cum_q4_child,
+                  doctor_name: application.underDoctorCareChild,
+                  hospital_preference: application.hospitalnameChild,
+                  hospital_phone: application.hospitalphoneChild,
+                  mentee_gain_program: application.child_mentee_hope,
+                  class_rank: application.class_rank
+                },
+                parents: currentParent
+              };
+            });
+
+          payload = {
+            ...payload,
+            vendor: {
+              ...(currentSchool || {})
+            },
+            applications
+          };
+        }
+      }
+
+      return payload;
+    });
+
+    await remoteDb.close();
+    const db = makeDb();
+
+    console.log("process.env.AUTH_CLIENT_ID", process.env.AUTH_CLIENT_ID);
+    for (const item of allUsers) {
+      const params = new URLSearchParams();
+      //console.log("Create Account: Email", item.user.email);
+
+      params.append("client_id", process.env.AUTH_CLIENT_ID);
+      params.append("username", item.user.username);
+      params.append("email", item.user.email);
+      params.append("password", item.user.password);
+      params.append("connection", "Username-Password-Authentication");
+      const signUpResponse = await fetch(
+        "https://bcombd.us.auth0.com/dbconnections/signup",
+        {
+          method: "POST",
+          body: params
+        }
+      );
+      const authData = await signUpResponse.json();
+
+      console.log("Create Account: authData", authData);
+      console.log("Create Account: item.user.type", item.user.type);
+      console.log("Create Account: item.user.email", item.user.email);
+      console.log("Create Account: item.user.username", item.user.username);
+
+      if (authData && authData.statusCode !== 400) {
+        const insertedRows = await db.query(
+          `INSERT INTO users(id,auth_id,email,type,username)
+          VALUES(UUID_TO_BIN(UUID()),?,?,UUID_TO_BIN(?),?)`,
+          [
+            `auth0|${authData._id}`,
+            item.user.email,
+            item.user.type,
+            item.user.username
+          ]
+        );
+        console.log("Create Account: insertedRows", insertedRows);
+
+        if (insertedRows.affectedRows > 0) {
+          const user = await getUserFromDatabase(item.user.email);
+          console.log("Create Account: User", user);
+          if (user) {
+            await db.query(
+              "INSERT INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender,custom_gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?,?)",
+              [
+                user.id,
+                item.profile.firstname,
+                item.profile.lastname,
+                "",
+                item.profile.gender || "",
+                "",
+                item.profile.zip,
+                getFormattedDate(item.profile.birth_date)
+              ]
+            );
+
+            // await sendMigratedAccount({
+            //   email: item.user.email,
+            //   firstname: item.profile.firstname,
+            //   password: item.user.password
+            // });
+
+            if (item.user.user_type === "Vendor") {
+              await db.query(
+                `INSERT INTO vendor(id, user)
+                VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?))
+                `,
+                [user.id]
+              );
+
+              let currentVendor = await db.query(
+                `SELECT
+                BIN_TO_UUID(id) as id,
+                BIN_TO_UUID(user) as user
+                FROM vendor WHERE user=UUID_TO_BIN(?)`,
+                [user.id]
+              );
+              currentVendor = JSON.parse(JSON.stringify(currentVendor));
+
+              if (currentVendor && currentVendor[0]) {
+                // 51
+                //currentVendor.id
+                for (const application of item.applications) {
+                  const childId = uuidv4();
+                  await db.query(
+                    `INSERT IGNORE INTO child(
+                    ch_id,
+                    firstname,
+                    lastname,
+                    age,
+                    birthdate,
+                    gender,
+                    phone_type,
+                    phone_number,
+                    email_type,
+                    email_address,
+                    phone_type2,
+                    phone_number2,
+                    email_type2,
+                    email_address2,
+                    address,
+                    city,
+                    state,
+                    zip_code,
+                    location_site,
+                    ethnicities,
+                    programs,
+                    school_name,
+                    school_phone,
+                    has_suspended,
+                    reason_suspended,
+                    year_taken,
+                    hobbies,
+                    life_events,
+                    career_goals,
+                    colleges,
+                    affiliations,
+                    awards,
+                    accomplishments,
+                    mentee_gain_program,
+                    grade_number,
+                    grade_desc,
+                    class_rank,
+                    gpa_quarter_year,
+                    gpa_quarter_q1,
+                    gpa_quarter_q2,
+                    gpa_quarter_q3,
+                    gpa_quarter_q4,
+                    gpa_cumulative_year,
+                    gpa_cumulative_q1,
+                    gpa_cumulative_q2,
+                    gpa_cumulative_q3,
+                    gpa_cumulative_q4,
+                    doctor_name,
+                    doctor_phone,
+                    hospital_preference,
+                    hospital_phone
+                  ) VALUES (UUID_TO_BIN(?),
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [
+                      childId,
+                      application.children.firstname, // firstname
+                      application.children.lastname, //lastname
+                      0, // age
+                      getFormattedDate(application.children.birthdate), // dob
+                      application.children.gender, // gender
+                      application.children.phone_type, // phone_type
+                      application.children.phone_number, // phone_number
+                      application.children.email_type, // email_type
+                      application.children.email_address, // email_address
+                      application.children.secondary_phone_type, // phone_type2
+                      application.children.secondary_phone_number, // phone_number2
+                      application.children.secondary_email_type, // email_type2
+                      application.children.secondary_email_address, // email_address2
+                      application.children.address, // address
+                      application.children.city, // city
+                      application.children.state, // state
+                      application.children.zip_code, // zip
+                      application.children.location_site, // loc site
+                      application.children.ethnicities, // ethnicities
+                      application.children.programs, // prgrams
+                      application.children.school_name, // school_name
+                      application.children.school_phone, // school phone
+                      0, //has suspended
+                      "",
+                      application.children.year_taken, // YEAR TAKEN
+                      application.children.hobbies, //hobbies
+                      application.children.life_events, // life events
+                      application.children.career_goals, // career goals
+                      application.children.colleges, // collenges
+                      "", // AFFLIATION,
+                      application.children.awards, // awards
+                      application.children.accomplishments, // accomplishments
+                      application.children.mentee_gain_program, // mentee gain program
+                      application.children.grade || 0, // grade number
+                      "", // GRADE DESC
+                      application.children.class_rank, // classrank
+                      application.children.gpa_quarter_year, //  quarter year gpa
+                      application.children.gpa_quarter_q1,
+                      application.children.gpa_quarter_q2,
+                      application.children.gpa_quarter_q3,
+                      application.children.gpa_quarter_q4,
+                      application.children.gpa_cumulative_year,
+                      application.children.gpa_cumulative_q1,
+                      application.children.gpa_cumulative_q2,
+                      application.children.gpa_cumulative_q3,
+                      application.children.gpa_cumulative_q4,
+                      application.children.doctor_name,
+                      "", // doctor_phone
+                      application.children.hospital_preference,
+                      application.children.hospital_phone
+                    ]
+                  );
+                  const appId = uuidv4();
+                  console.log("Application ID", appId);
+                  console.log("Application Vendor ID", currentVendor[0].id);
+                  console.log("Application Child ID", childId);
+                  await db.query(
+                    `INSERT INTO application(
+                      app_id,
+                      vendor,
+                      child,
+                      verification,
+                      student_status
+                    ) VALUES (
+                      UUID_TO_BIN(?),
+                      UUID_TO_BIN(?),
+                      UUID_TO_BIN(?),
+                      ?, ?)`,
+                    [
+                      appId,
+                      currentVendor[0].id,
+                      childId,
+                      application.verification,
+                      application.student_status
+                    ]
+                  );
+                  for (const parent in item.applications.parents) {
+                    const parentId = uuidv4();
+                    await db.query(
+                      `INSERT IGNORE INTO parent(
+                        parent_id,
+                        application,
+                        firstname,
+                        lastname,
+                        phone_type,
+                        phone_number,
+                        email_type,
+                        email_address,
+                        phone_type2,
+                        phone_number2,
+                        email_type2,
+                        email_address2,
+                        password,
+                        address,
+                        city,
+                        state,
+                        zip_code,
+                        occupation,
+                        employers_name,
+                        parent_goals,
+                        parent_child_goals,
+                        live_area,
+                        level_of_education,
+                        child_hs_grad,
+                        child_col_grad,
+                        emergency_contacts
+                      ) VALUES (UUID_TO_BIN(?), UUID_TO_BIN(?),
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?)`,
+                      [
+                        parentId,
+                        appId,
+                        parent.firstname,
+                        parent.lastname,
+                        parent.phone_type,
+                        parent.phone_number,
+                        parent.email_type,
+                        parent.email_address,
+                        parent.secondary_phone_type,
+                        parent.secondary_phone_number,
+                        parent.secondary_email_type,
+                        parent.secondary_email_address,
+                        parent.password,
+                        parent.address,
+                        parent.city,
+                        parent.state,
+                        parent.zip_code,
+                        parent.occupation,
+                        parent.employers_name,
+                        parent.parent_goals,
+                        parent.parent_child_goals,
+                        "", // LIVE AREA
+                        parent.level_of_education,
+                        parent.child_hs_grad,
+                        parent.child_col_grad,
+                        ""
+                      ]
+                    );
+                    const isParentExist = await db.query(
+                      `SELECT email FROM users WHERE email=?`,
+                      [parent.email_address]
+                    );
+                    // ***************************************** //
+                    if (!isParentExist) {
+                      const parentUsername = parent.email_address.split("@");
+                      // const parentParams = new URLSearchParams();
+                      // parentParams.append(
+                      //   "client_id",
+                      //   process.env.AUTH_CLIENT_ID
+                      // );
+                      // parentParams.append("username", parentUsername[0]);
+                      // parentParams.append("email", parent.email_address);
+                      // parentParams.append("password", parent.password);
+                      // parentParams.append(
+                      //   "connection",
+                      //   "Username-Password-Authentication"
+                      // );
+                      // const parentSignupResponse = await fetch(
+                      //   "https://bcombd.us.auth0.com/dbconnections/signup",
+                      //   {
+                      //     method: "POST",
+                      //     body: params
+                      //   }
+                      // );
+                      //const parentAuthData = await parentSignupResponse.json();
+
+                      // if (parentAuthData) {
+                      //   const insertedRows = await db.query(
+                      //     `INSERT IGNORE INTO users(id,auth_id,type,email,username) values(UUID_TO_BIN(UUID()),?,UUID_TO_BIN(?,true),?,?)`,
+                      //     [
+                      //       `auth0|${parentAuthData._id}`,
+                      //       "5de2809e-c2b3-5cc5-a0c2-bf11c3aae280",
+                      //       parent.email_address,
+                      //       parentUsername
+                      //     ]
+                      //   );
+                      //   if (insertedRows.affectedRows > 0) {
+                      //     await db.query(
+                      //       "INSERT INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?)",
+                      //       [
+                      //         user.id,
+                      //         parent.firstname,
+                      //         parent.lastname,
+                      //         "",
+                      //         parent.gender || ""
+                      //       ]
+                      //     );
+                      //   }
+                      //   // await sendMigratedAccount({
+                      //   //   email: parent.email_address,
+                      //   //   firstname: item.profile.firstname,
+                      //   //   password: item.user.password
+                      //   // });
+                      // }
+                    }
+                    // ***************************************** //
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    res.status(200).json({ allUsers });
+  } catch (error) {
+    console.log("Error", error);
+
+    res.status(401).json({ Message: "Connection Error!" });
+  } finally {
+  }
+});
+
+router.get("/application/migrate", async (req, res) => {
+  const remoteDb = customConnection(
+    "162.241.217.198",
+    "bcombstc_bcomb",
+    "Bcomb@123",
+    "bcombstc_bcombss",
+    3006
+  );
+  try {
+    if (!remoteDb) {
+      res.status(401).json({ Message: "Connection not found!" });
+    }
+    const applicationResults = await remoteDb.query(
+      "select * from application;"
+    );
+    const userResults = await remoteDb.query("select * from users;");
+    //const schoolResults = await remoteDb.query("select * from schools;");
+    const parentResults = await remoteDb.query("select * from appparent;");
+    // let users = userResults.filter(user => user.user_type === "User");
+    let vendor = userResults.find(
+      user =>
+        user.user_type === "Vendor" &&
+        user.email === "rsinger@100blackmen-atlanta.org"
+    );
+
+    let applications = applicationResults
+      .filter(application => application.school === vendor.name)
+      .map((application, index) => {
+        let currentParent = parentResults.filter(
+          parent => parent.appId === application.appId
+        );
+        currentParent = currentParent.map(parent => {
+          return {
+            application: parent.appId,
+            relationchip_to_child: parent.relationshipToChild,
+            firstname: parent.fnameParent,
+            lastname: parent.lnameParent,
+            phone_type: parent.primaryPhoneTypeParent,
+            phone_number: parent.primaryPhoneNumberParent,
+            secondary_phone_type: parent.primarySecondPhoneTypeParent,
+            secondary_phone_number: parent.primarySecondPhoneNumberParent,
+            email_type: parent.emailTypeParent,
+            email_address: parent.PrimaryEmailParent,
+            secondary_email_type: parent.PrimarySecondEmailTypeParent,
+            secondary_email_address: parent.PrimarySecondEmailParent,
+            password: `Bcombs123_${index}!!!`,
+            gender: parent.genderParent,
+            address: parent.PrimaryAddressTypeParent,
+            state: parent.PrimaryStateParent,
+            city: parent.PrimaryCity,
+            zip_code: parent.PrimaryZipParent,
+
+            occupation: parent.occupationParent,
+            employers_name: parent.employeenameParent,
+            parent_goals: parent.goalProgramParent,
+            parent_child_goals: parent.goalChildProgramParent,
+            level_of_education: parent.highLevel_edu_parent,
+            child_hs_grad: parent.child_grad_parent,
+            child_col_grad: parent.child_att_col_parent
+          };
+        });
+
+        let studentStatus = application.studentStatus;
+        if (studentStatus === "IP") {
+          studentStatus = "new_applicant_in_process";
+        } else if (studentStatus === "SU") {
+          studentStatus = "current_student";
+        } else if (studentStatus === "A") {
+          studentStatus = "new_applicant_accepted";
+        } else if (studentStatus === "R") {
+          studentStatus = "new_applicant_rejected";
+        } else if (studentStatus === "WL") {
+          studentStatus = "waiting_list";
+        } else if (studentStatus === "NLS") {
+          studentStatus = "no_longer_student";
+        } else if (studentStatus === "MO") {
+          studentStatus = "missed_opportunity";
+        }
+
+        let applicationStatus = "waiting_for_verification";
+        if (application.status === "V") {
+          applicationStatus = "verified";
+        } else if (application.status === "R") {
+          applicationStatus = "rejected";
+        }
+        return {
+          id: application.appId,
+          verification: applicationStatus,
+          application_date: application.created_at,
+          is_archieved: application.archieveStatus,
+          archived_date: application.archieved_date,
+          color_designation: application.color,
+          notes: application.notes,
+          student_status: studentStatus,
+          children: {
+            phone_type: application.child_phoneType,
+            phone_number: application.child_phoneNo,
+            secondary_phone_type: application.child_second_phoneType,
+            secondary_phone_number: application.child_second_phoneNo,
+            email_address: application.emailChild,
+            email_type: application.child_emailType,
+            secondary_email_address: application.emailSecondChild,
+            secondary_email_type: application.second_child_emailType,
+            firstname: application.fnamChild,
+            lastname: application.lnamChild,
+
+            birthdate: getFormattedDate(application.dobChild),
+            gender: application.genderChild,
+            address: application.addressChild,
+            city: application.cityChild,
+            zip_code: application.zipChild,
+            location_site: application.locationSiteChild || "",
+            state: application.stateChild,
+            ethnicities: application.ethnicityChild,
+            programs: application.programChild,
+            hobbies: application.child_hobbies,
+            life_events: application.life_events,
+            career_goals: application.child_career_goals,
+            colleges: application.child_list_colleges,
+            awards: application.child_list_award,
+            language: application.languageChild,
+            accomplishments: application.child_list_accomp,
+            year_taken: application.start_year_as_mentee,
+            grade: application.grade,
+            school_name: application.school,
+            school_phone: application.prevschoolphoneChild,
+            gpa_quarter_year: application.gpa_child,
+            gpa_quarter_q1: application.gpa_q1_child,
+            gpa_quarter_q2: application.gpa_q2_child,
+            gpa_quarter_q3: application.gpa_q3_child,
+            gpa_quarter_q4: application.gpa_q4_child,
+            gpa_cumulative_year: application.gpa_cum_child,
+            gpa_cumulative_q1: application.gpa_cum_q1_child,
+            gpa_cumulative_q2: application.gpa_cum_q2_child,
+            gpa_cumulative_q3: application.gpa_cum_q3_child,
+            gpa_cumulative_q4: application.gpa_cum_q4_child,
+            doctor_name: application.underDoctorCareChild,
+            hospital_preference: application.hospitalnameChild,
+            hospital_phone: application.hospitalphoneChild,
+            mentee_gain_program: application.child_mentee_hope,
+            class_rank: application.class_rank
+          },
+          parents: currentParent
+        };
+      });
+
+    //for (const application of applications) {
+    //   const childId = uuidv4();
+    //   await db.query(
+    //     `INSERT IGNORE INTO child(
+    //       ch_id,
+    //       firstname,
+    //       lastname,
+    //       age,
+    //       birthdate,
+    //       gender,
+    //       phone_type,
+    //       phone_number,
+    //       email_type,
+    //       email_address,
+    //       phone_type2,
+    //       phone_number2,
+    //       email_type2,
+    //       email_address2,
+    //       address,
+    //       city,
+    //       state,
+    //       zip_code,
+    //       location_site,
+    //       ethnicities,
+    //       programs,
+    //       school_name,
+    //       school_phone,
+    //       has_suspended,
+    //       reason_suspended,
+    //       year_taken,
+    //       hobbies,
+    //       life_events,
+    //       career_goals,
+    //       colleges,
+    //       affiliations,
+    //       awards,
+    //       accomplishments,
+    //       mentee_gain_program,
+    //       grade_number,
+    //       grade_desc,
+    //       class_rank,
+    //       gpa_quarter_year,
+    //       gpa_quarter_q1,
+    //       gpa_quarter_q2,
+    //       gpa_quarter_q3,
+    //       gpa_quarter_q4,
+    //       gpa_cumulative_year,
+    //       gpa_cumulative_q1,
+    //       gpa_cumulative_q2,
+    //       gpa_cumulative_q3,
+    //       gpa_cumulative_q4,
+    //       doctor_name,
+    //       doctor_phone,
+    //       hospital_preference,
+    //       hospital_phone
+    //     ) VALUES (UUID_TO_BIN(?),
+    //       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    //       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    //       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    //       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    //       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    //     [
+    //       childId,
+    //       application.children.firstname, // firstname
+    //       application.children.lastname, //lastname
+    //       0, // age
+    //       getFormattedDate(application.children.birthdate), // dob
+    //       application.children.gender, // gender
+    //       application.children.phone_type, // phone_type
+    //       application.children.phone_number, // phone_number
+    //       application.children.email_type, // email_type
+    //       application.children.email_address, // email_address
+    //       application.children.secondary_phone_type, // phone_type2
+    //       application.children.secondary_phone_number, // phone_number2
+    //       application.children.secondary_email_type, // email_type2
+    //       application.children.secondary_email_address, // email_address2
+    //       application.children.address, // address
+    //       application.children.city, // city
+    //       application.children.state, // state
+    //       application.children.zip_code, // zip
+    //       application.children.location_site, // loc site
+    //       application.children.ethnicities, // ethnicities
+    //       application.children.programs, // prgrams
+    //       application.children.school_name, // school_name
+    //       application.children.school_phone, // school phone
+    //       0, //has suspended
+    //       "",
+    //       application.children.year_taken, // YEAR TAKEN
+    //       application.children.hobbies, //hobbies
+    //       application.children.life_events, // life events
+    //       application.children.career_goals, // career goals
+    //       application.children.colleges, // collenges
+    //       "", // AFFLIATION,
+    //       application.children.awards, // awards
+    //       application.children.accomplishments, // accomplishments
+    //       application.children.mentee_gain_program, // mentee gain program
+    //       application.children.grade || 0, // grade number
+    //       "", // GRADE DESC
+    //       application.children.class_rank, // classrank
+    //       application.children.gpa_quarter_year, //  quarter year gpa
+    //       application.children.gpa_quarter_q1,
+    //       application.children.gpa_quarter_q2,
+    //       application.children.gpa_quarter_q3,
+    //       application.children.gpa_quarter_q4,
+    //       application.children.gpa_cumulative_year,
+    //       application.children.gpa_cumulative_q1,
+    //       application.children.gpa_cumulative_q2,
+    //       application.children.gpa_cumulative_q3,
+    //       application.children.gpa_cumulative_q4,
+    //       application.children.doctor_name,
+    //       "", // doctor_phone
+    //       application.children.hospital_preference,
+    //       application.children.hospital_phone
+    //     ]
+    //   );
+    //   const appId = uuidv4();
+    //   console.log("Application ID", appId);
+    //   console.log("Application Vendor ID", currentVendor[0].id);
+    //   console.log("Application Child ID", childId);
+    //   await db.query(
+    //     `INSERT INTO application(
+    //         app_id,
+    //         vendor,
+    //         child,
+    //         verification,
+    //         student_status
+    //       ) VALUES (
+    //         UUID_TO_BIN(?),
+    //         UUID_TO_BIN(?),
+    //         UUID_TO_BIN(?),
+    //         ?, ?)`,
+    //     [
+    //       appId,
+    //       currentVendor[0].id,
+    //       childId,
+    //       application.verification,
+    //       application.student_status
+    //     ]
+    //   );
+    //   for (const parent in applications.parents) {
+    //     const parentId = uuidv4();
+    //     await db.query(
+    //       `INSERT IGNORE INTO parent(
+    //           parent_id,
+    //           application,
+    //           firstname,
+    //           lastname,
+    //           phone_type,
+    //           phone_number,
+    //           email_type,
+    //           email_address,
+    //           phone_type2,
+    //           phone_number2,
+    //           email_type2,
+    //           email_address2,
+    //           password,
+    //           address,
+    //           city,
+    //           state,
+    //           zip_code,
+    //           occupation,
+    //           employers_name,
+    //           parent_goals,
+    //           parent_child_goals,
+    //           live_area,
+    //           level_of_education,
+    //           child_hs_grad,
+    //           child_col_grad,
+    //           emergency_contacts
+    //         ) VALUES (UUID_TO_BIN(?), UUID_TO_BIN(?),
+    //           ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    //           ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    //           ?, ?, ?, ?)`,
+    //       [
+    //         parentId,
+    //         appId,
+    //         parent.firstname,
+    //         parent.lastname,
+    //         parent.phone_type,
+    //         parent.phone_number,
+    //         parent.email_type,
+    //         parent.email_address,
+    //         parent.secondary_phone_type,
+    //         parent.secondary_phone_number,
+    //         parent.secondary_email_type,
+    //         parent.secondary_email_address,
+    //         parent.password,
+    //         parent.address,
+    //         parent.city,
+    //         parent.state,
+    //         parent.zip_code,
+    //         parent.occupation,
+    //         parent.employers_name,
+    //         parent.parent_goals,
+    //         parent.parent_child_goals,
+    //         "", // LIVE AREA
+    //         parent.level_of_education,
+    //         parent.child_hs_grad,
+    //         parent.child_col_grad,
+    //         ""
+    //       ]
+    //     );
+    //     const isParentExist = await db.query(
+    //       `SELECT email FROM users WHERE email=?`,
+    //       [parent.email_address]
+    //     );
+    //     // ***************************************** //
+    //     if (!isParentExist) {
+    //       const parentUsername = parent.email_address.split("@");
+    //       // const parentParams = new URLSearchParams();
+    //       // parentParams.append(
+    //       //   "client_id",
+    //       //   process.env.AUTH_CLIENT_ID
+    //       // );
+    //       // parentParams.append("username", parentUsername[0]);
+    //       // parentParams.append("email", parent.email_address);
+    //       // parentParams.append("password", parent.password);
+    //       // parentParams.append(
+    //       //   "connection",
+    //       //   "Username-Password-Authentication"
+    //       // );
+    //       // const parentSignupResponse = await fetch(
+    //       //   "https://bcombd.us.auth0.com/dbconnections/signup",
+    //       //   {
+    //       //     method: "POST",
+    //       //     body: params
+    //       //   }
+    //       // );
+    //       //const parentAuthData = await parentSignupResponse.json();
+    //       // const parentAuthData = { _id: "test" };
+    //       // if (parentAuthData) {
+    //       //   const insertedRows = await db.query(
+    //       //     `INSERT IGNORE INTO users(id,auth_id,type,email,username) values(UUID_TO_BIN(UUID()),?,UUID_TO_BIN(?,true),?,?)`,
+    //       //     [
+    //       //       `auth0|${parentAuthData._id}`,
+    //       //       "5de2809e-c2b3-5cc5-a0c2-bf11c3aae280",
+    //       //       parent.email_address,
+    //       //       parentUsername
+    //       //     ]
+    //       //   );
+    //       //   if (insertedRows.affectedRows > 0) {
+    //       //     await db.query(
+    //       //       "INSERT INTO user_profiles (id,user_id,first_name,last_name,family_relationship,gender) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?)",
+    //       //       [
+    //       //         user.id,
+    //       //         parent.firstname,
+    //       //         parent.lastname,
+    //       //         "",
+    //       //         parent.gender || ""
+    //       //       ]
+    //       //     );
+    //       //   }
+    //       //   // await sendMigratedAccount({
+    //       //   //   email: parent.email_address,
+    //       //   //   firstname: item.profile.firstname,
+    //       //   //   password: item.user.password
+    //       //   // });
+    //       // }
+    //     }
+    //     // ***************************************** //
+    //   }
+    // }
+    res.status(200).json({ vendor, applications });
+  } catch (error) {
+    res.status(401).json({ Message: err });
+  } finally {
   }
 });
 
