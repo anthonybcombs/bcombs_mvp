@@ -564,6 +564,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_schoolname"
                 name={"ch_schoolname" + (counter - 1)}
                 className="field-input"
                 onChange={({ target }) => {
@@ -574,7 +575,7 @@ export default function index({
                 defaultValue={childGeneralInformation.school_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label"><span className="required">*</span> School Name</label>
+              <label className="field-label" for="ch_schoolname"><span className="required">*</span> School Name</label>
             </div>
             <ErrorMessage
               field={errors["ch_schoolname" + (counter - 1)]}
@@ -587,6 +588,7 @@ export default function index({
               {
                 isReadonly ?
                 <input
+                  id="ch_school_phone"
                   name="ch_school_phone"
                   className="field-input"
                   placeholder="Phone"
@@ -595,6 +597,7 @@ export default function index({
                 />
                 :
                 <NumberFormat 
+                  id="ch_school_phone"
                   name={"ch_school_phone" + (counter - 1)}
                   className="field-input"
                   placeholder="Phone"
@@ -616,7 +619,7 @@ export default function index({
                   })}
                 />
               }
-              <label className="field-label">Phone</label>
+              <label className="field-label" for="ch_school_phone">Phone</label>
             </div>
             <ErrorMessage
               field={errors["ch_school_phone" + (counter - 1)]}
@@ -692,6 +695,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_hobbies"
                 name="ch_hobbies"
                 className="field-input"
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
@@ -701,12 +705,13 @@ export default function index({
                 defaultValue={childGeneralInformation.hobbies}
                 readOnly={isReadonly}
               />
-              <label className="field-label">Hobbies / Personal Interests</label>
+              <label className="field-label" for="ch_hobbies">Hobbies / Personal Interests</label>
             </div>
           </div>
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_life_events"
                 name="ch_life_events"
                 className="field-input"
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
@@ -716,7 +721,7 @@ export default function index({
                 readOnly={isReadonly}
                 defaultValue={childGeneralInformation.life_events}
               />
-              <label className="field-label">Life events you would like to share</label>
+              <label className="field-label" for="ch_life_events">Life events you would like to share</label>
             </div>
           </div>
         </div>
@@ -725,6 +730,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input 
+                id="ch_career_goals"
                 name="ch_career_goals"
                 className="field-input"
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
@@ -734,13 +740,14 @@ export default function index({
                 defaultValue={childGeneralInformation.career_goals}
                 readOnly={isReadonly}
               />
-              <label className="field-label">Career Goals</label>
+              <label className="field-label" for="ch_career_goals">Career Goals</label>
             </div>
           </div>
 
           <div className="form-group">
             <div className="field">
               <input 
+                id="ch_colleges"
                 name="ch_colleges"
                 className="field-input"
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
@@ -750,7 +757,7 @@ export default function index({
                 defaultValue={childGeneralInformation.colleges}
                 readOnly={isReadonly}
               />
-              <label className="field-label">List of Colleges you are Considering Upon Graduation</label>
+              <label className="field-label" for="ch_colleges">List of Colleges you are Considering Upon Graduation</label>
             </div>
           </div>
         </div>
@@ -759,6 +766,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_team_affiliations"
                 name="ch_team_affiliations"
                 className="field-input"
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
@@ -769,7 +777,7 @@ export default function index({
                 readOnly={isReadonly}
               />
               
-              <label className="field-label">Group and Other Team Affiliations</label>
+              <label className="field-label" for="ch_team_affiliations">Group and Other Team Affiliations</label>
             </div>
           </div>
         </div>
@@ -778,6 +786,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_awards"
                 name="ch_awards"
                 className="field-input"
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
@@ -787,13 +796,14 @@ export default function index({
                 defaultValue={childGeneralInformation.awards}
                 readOnly={isReadonly}
               />
-              <label className="field-label">Please List of Awards</label>
+              <label className="field-label" for="ch_awards">Please List of Awards</label>
             </div>
           </div>
 
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_accomplishments"
                 name="ch_accomplishments"
                 className="field-input"
                 onChange={({ target }) => {
@@ -803,7 +813,7 @@ export default function index({
                 defaultValue={childGeneralInformation.accomplishments}
                 readOnly={isReadonly}
               />
-              <label className="field-label">Please List of Accomplishments</label>
+              <label className="field-label" for="ch_accomplishments">Please List of Accomplishments</label>
             </div>
           </div>
         </div>

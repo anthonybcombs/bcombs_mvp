@@ -367,6 +367,11 @@
   background: gray !important;
 }
 
+#applicationForm select.field-input {
+  -webkit-appearance: menulist !important;
+  -moz-appearance: menulist !important;
+}
+
 /* datepicker */
 .datepicker-btn {
   padding: 0;
