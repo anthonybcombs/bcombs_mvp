@@ -158,6 +158,7 @@ export default function CreateSecurityQuestionsForm({
       <div className="form-group">
         <div className="field">
           <input
+            id="securityquestion1"
             className="field-input"
             name="securityquestion1"
             placeholder="Security Question 1"
@@ -166,7 +167,7 @@ export default function CreateSecurityQuestionsForm({
             }}
             ref={register({ required: true })}
           />
-          <label className="field-label">
+          <label className="field-label" for="securityquestion1">
             <span className="required">*</span> Security Question 1
           </label>
         </div>
@@ -179,6 +180,7 @@ export default function CreateSecurityQuestionsForm({
       <div className="form-group">
         <div className="field">
           <input
+            id="securityquestion1answer"
             className="field-input"
             name="securityquestion1answer"
             placeholder="Security Question 1 Answer"
@@ -187,7 +189,7 @@ export default function CreateSecurityQuestionsForm({
             }}
             ref={register({ required: true })}
           />
-          <label className="field-label">
+          <label className="field-label" for="securityquestion1answer">
             <span className="required">*</span> Security Question 1 Answer
           </label>
         </div>
@@ -200,6 +202,7 @@ export default function CreateSecurityQuestionsForm({
       <div className="form-group">
         <div className="field">
           <input
+            id="securityquestion2"
             className="field-input"
             name="securityquestion2"
             placeholder="Security Question 2"
@@ -208,7 +211,7 @@ export default function CreateSecurityQuestionsForm({
             }}
             ref={register({ required: true })}
           />
-          <label className="field-label">
+          <label className="field-label" for="securityquestion2">
             <span className="required">*</span> Security Question 2
           </label>
         </div>
@@ -221,6 +224,7 @@ export default function CreateSecurityQuestionsForm({
       <div className="form-group">
         <div className="field">
           <input
+            id="securityquestion2answer"
             className="field-input"
             name="securityquestion2answer"
             placeholder="Security Question 2 Answer"
@@ -229,7 +233,7 @@ export default function CreateSecurityQuestionsForm({
             }}
             ref={register({ required: true })}
           />
-          <label className="field-label">
+          <label className="field-label" for="securityquestion2answer">
             <span className="required">*</span> Security Question 2 Answer
           </label>
         </div>
@@ -242,6 +246,7 @@ export default function CreateSecurityQuestionsForm({
       <div className="form-group">
         <div className="field">
           <input
+            id="securityquestion3"
             className="field-input"
             name="securityquestion3"
             placeholder="Security Question 3"
@@ -250,7 +255,7 @@ export default function CreateSecurityQuestionsForm({
             }}
             ref={register({ required: true })}
           />
-          <label className="field-label">
+          <label className="field-label" for="securityquestion3">
             <span className="required">*</span> Security Question 3
           </label>
         </div>
@@ -263,6 +268,7 @@ export default function CreateSecurityQuestionsForm({
       <div className="form-group">
         <div className="field">
           <input
+            id="securityquestion3answer"
             className="field-input"
             name="securityquestion3answer"
             placeholder="Security Question 3 Answer"
@@ -271,7 +277,7 @@ export default function CreateSecurityQuestionsForm({
             }}
             ref={register({ required: true })}
           />
-          <label className="field-label">
+          <label className="field-label" for="securityquestion3answer">
             <span className="required">*</span> Security Question 3 Answer
           </label>
         </div>

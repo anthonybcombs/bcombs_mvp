@@ -36,9 +36,9 @@ export default function index({
   const [personalInfo, setPersonalInfo] = useState({
     firstname: profileDetails.firstname,
     lastname: profileDetails.lastname,
-    gender: "male",
+    gender: "",
     customgender: "",
-    familyrelationship: "father",
+    familyrelationship: "",
     zipcode: "",
     dateofbirth: ""
   });
