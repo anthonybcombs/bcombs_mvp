@@ -65,6 +65,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  id="section2_signature"
                   name="section2_signature"
                   className="field-input"
                   placeholder="Electronic Signature"
@@ -75,7 +76,7 @@ export default function index({
                   readOnly={isReadonly}
                   defaultValue={section2.signature}
                 />
-                <label className="field-label"><span className="required">*</span> Electronic Signature</label>
+                <label className="field-label" for="section2_signature"><span className="required">*</span> Electronic Signature</label>
               </div>
               <ErrorMessage
                 field={errors.section2_signature}

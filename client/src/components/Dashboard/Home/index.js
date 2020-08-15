@@ -33,8 +33,14 @@ import RecommendationSliderStyled from "./RecommendationSlider";
 import { getEvents } from "../../../redux/actions/Events";
 
 const HomeStyled = styled.div`
-  padding: 1px 1em 1px 1em;
-  box-shadow: 0px 3px 6px #908e8e;
+  // padding: 1px 1em 1px 1em;
+  // box-shadow: 0px 3px 6px #908e8e;
+  width: auto;
+  max-width: 1920px;
+  margin: auto;
+  padding: 0rem 3em 2rem;
+
+
   .pane {
     display: block;
     position: relative;
@@ -42,7 +48,7 @@ const HomeStyled = styled.div`
     padding: 1em;
     width: auto;
     height: auto;
-    margin: 0.5em 0 0.5em 0;
+    margin: 0 0 1em 0;
     box-shadow: 0px 3px 6px #908e8e;
   }
   h3 {

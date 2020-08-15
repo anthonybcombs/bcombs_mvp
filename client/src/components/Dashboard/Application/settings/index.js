@@ -139,13 +139,14 @@ export default function index({
               <div className="form-group">
                 <div className="field">
                   <input 
+                    id="vendor_name"
                     name="vendor_name" 
                     className="field-input" 
                     placeholder="Vendor Name"
                     onChange={({target}) => handleFormSettingsChange("name", target.value)}
                     defaultValue={formSettings.name}
                   />
-                  <label className="field-label">Vendor Name</label>
+                  <label className="field-label" for="vendor_name">Vendor Name</label>
                 </div>
               </div>
             </div>
@@ -153,13 +154,14 @@ export default function index({
               <div className="form-group">
                 <div className="field">
                   <input 
+                    id="section1_title"
                     name="section1_title" 
                     className="field-input title" 
                     placeholder="Title"
                     onChange={({target}) => handleFormSettingsChange("section1_name", target.value)}
                     defaultValue={formSettings.section1_name}
                   />
-                  <label className="field-label">Title</label>
+                  <label className="field-label" for="section1_title">Title</label>
                 </div>
                 <Toggle 
                   defaultChecked={!!+formSettings.section1_show} 
@@ -186,14 +188,15 @@ export default function index({
             <div>
               <div className="form-group">
                 <div className="field">
-                  <input 
+                  <input
+                    id="section2_title"
                     name="section1_title" 
                     className="field-input title" 
                     placeholder="Title"
                     onChange={({target}) => handleFormSettingsChange("section2_name", target.value)}
                     defaultValue={formSettings.section2_name}
                   />
-                  <label className="field-label">Title</label>
+                  <label className="field-label" for="section2_title">Title</label>
                 </div>
                 <Toggle 
                   defaultChecked={!!+formSettings.section2_show} 
@@ -220,13 +223,14 @@ export default function index({
               <div className="form-group">
                 <div className="field">
                   <input 
+                    id="section3_title"
                     name="section1_title" 
                     className="field-input title" 
                     placeholder="Title"
                     onChange={({target}) => handleFormSettingsChange("section3_name", target.value)}
                     defaultValue={formSettings.section3_name}
                   />
-                  <label className="field-label">Title</label>
+                  <label className="field-label" for="section3_title">Title</label>
                 </div>
                 <Toggle 
                   defaultChecked={!!+formSettings.section3_show} 

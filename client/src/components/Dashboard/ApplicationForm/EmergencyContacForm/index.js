@@ -64,6 +64,8 @@ const EmergencyContactFormStyled = styled.div`
 
   #contacts select.input-field {
     width: 100%;
+    -webkit-appearance: menulist !important;
+    -moz-appearance: menulist !important;
   }
 
   #contacts .required {
