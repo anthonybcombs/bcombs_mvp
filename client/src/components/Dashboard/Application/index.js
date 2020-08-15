@@ -94,6 +94,10 @@ const ApplicationStyled = styled.div`
     }
   }
 
+  @media (max-width: 840px) {
+    padding: 0rem 1rem 2rem;
+  }
+
   @media (min-width: 1500px) {
     #application > div:nth-of-type(2) {
       margin-right: 1em;

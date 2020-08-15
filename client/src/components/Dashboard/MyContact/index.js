@@ -120,6 +120,9 @@ const MyContactsStyled = styled.div`
       grid-gap: 1%;
     }
   }
+  @media (max-width: 840px) {
+    padding: 0rem 1rem 2rem;
+  }
   @media (min-width: 1500px) {
     #contacts > div:nth-of-type(2) {
       margin-right: 1em;
