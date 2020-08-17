@@ -274,15 +274,10 @@ export const executeChangePassword = async reqData => {
 };
 export const executeSignUp = async user => {
   const db = makeDb();
-  console.log(
-    "EXECUTE SIGNUP **************************************************************"
-  );
+
   try {
     let authData;
-    console.log(
-      "executeSignUp process.env.AUTH_CLIENT_ID",
-      process.env.AUTH_CLIENT_ID
-    );
+    user.email = user.email.toLowerCase();
     if (!user.hasOwnProperty("isSocial")) {
       const params = new URLSearchParams();
       params.append("client_id", process.env.AUTH_CLIENT_ID);
