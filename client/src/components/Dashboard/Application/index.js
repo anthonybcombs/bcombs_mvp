@@ -22,7 +22,11 @@ import { requestUserGroup } from "../../../redux/actions/Groups";
 
 import ProfileImg from "../../../images/defaultprofile.png";
 const ApplicationStyled = styled.div`
-  padding: 1em;
+  // padding: 1em;
+  width: auto;
+  max-width: 1920px;
+  margin: auto;
+  padding: 0rem 3em 2rem;
 
   #application {
     display: grid;

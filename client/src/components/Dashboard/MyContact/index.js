@@ -35,10 +35,15 @@ import {
 } from "../../../redux/actions/Vendors"
 
 const MyContactsStyled = styled.div`
+  // padding: 1em;
+  width: auto;
+  max-width: 1920px;
+  margin: auto;
+  padding: 0rem 3em 2rem;
+
   .selected {
     background-color: #cdcdcd;
   }
-  padding: 1em;
   button {
     background-color: transparent;
     border: none;

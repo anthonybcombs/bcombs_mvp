@@ -39,6 +39,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_doctorname"
                 name="ch_doctorname"
                 className="field-input"
                 onChange={({ target }) => {
@@ -48,7 +49,7 @@ export default function index({
                 defaultValue={childEmergencyCare.doctor_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label">Doctor Name</label>
+              <label className="field-label" for="ch_doctorname">Doctor Name</label>
             </div>
           </div>
 
@@ -57,6 +58,7 @@ export default function index({
               {
                 !isReadonly ?
                 <NumberFormat 
+                  id="doctophone"
                   name="doctophone"
                   className="field-input"
                   placeholder="Phone"
@@ -80,6 +82,7 @@ export default function index({
                 />
                 :
                 <input
+                  id="doctophone"
                   name="doctophone"
                   className="field-input"
                   placeholder="Phone"
@@ -89,7 +92,7 @@ export default function index({
                 />
               }
 
-              <label className="field-label">Phone</label>
+              <label className="field-label" for="doctophone">Phone</label>
             </div>
             <ErrorMessage
               field={errors["doctophone"]}
@@ -103,6 +106,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="hospitalname"
                 name="hospitalname"
                 className="field-input"
                 placeholder="Hospital Preference"
@@ -113,7 +117,7 @@ export default function index({
                 placeholder="Hospital Preference"
                 readOnly={isReadonly}
               />
-              <label className="field-label">Hospital Preference</label>
+              <label className="field-label" for="hospitalname">Hospital Preference</label>
             </div>
           </div>
 
@@ -122,6 +126,7 @@ export default function index({
               {
                 !isReadonly ?
                 <NumberFormat 
+                  id="hospitalPhone"
                   name="hospitalPhone"
                   className="field-input"
                   placeholder="Phone"
@@ -145,6 +150,7 @@ export default function index({
                 />
                 :
                 <input
+                  id="hospitalPhone"
                   name="hospitalPhone"
                   className="field-input"
                   placeholder="Phone"
@@ -153,7 +159,7 @@ export default function index({
                   readOnly={isReadonly}
                 />
               }
-              <label className="field-label">Phone</label>
+              <label className="field-label" for="hospitalPhone">Phone</label>
             </div>
             <ErrorMessage
               field={errors["hospitalPhone"]}

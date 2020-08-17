@@ -6,6 +6,8 @@ import {
   faTimesCircle,
   faPlusCircle,
   faMinusCircle,
+  faAngleLeft,
+  faAngleRight
 } from "@fortawesome/free-solid-svg-icons";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 import DatePicker from "react-datepicker";
@@ -246,6 +248,7 @@ export default function index({
   }) => (
     <div className="field">
       <input
+        id="date_of_birth"
         defaultValue={value}
         onClick={onClick}
         name={name}
@@ -254,7 +257,7 @@ export default function index({
         readOnly={true}
         ref={register({ required: true })}
       />
-      <label className="field-label">
+      <label className="field-label" for="date_of_birth">
         <span className="required">*</span> Date of Birth
       </label>
     </div>
@@ -280,6 +283,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_first_name"
                 readOnly={isReadonly}
                 name={"ch_first_name" + (counter - 1)}
                 className="field-input"
@@ -295,7 +299,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.first_name}
               />
-              <label className="field-label">
+              <label className="field-label" for="ch_first_name">
                 <span className="required">*</span> First Name
               </label>
             </div>
@@ -308,6 +312,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_last_name"
                 readOnly={isReadonly}
                 name={"ch_last_name" + (counter - 1)}
                 className="field-input"
@@ -323,8 +328,8 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.last_name}
               />
-              <label className="field-label">
-                <span className="required">*</span> Last Name
+              <label className="field-label" for="ch_last_name">
+                <span className="required" >*</span> Last Name
               </label>
             </div>
             <ErrorMessage
@@ -336,6 +341,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_nick_name"
                 name="ch_nick_name"
                 className="field-input"
                 placeholder="Nick Name"
@@ -351,7 +357,7 @@ export default function index({
                 ref={register()}
                 defaultValue={childProfile.nick_name}
               />
-              <label className="field-label">Nick Name</label>
+              <label className="field-label" for="ch_nick_name">Nick Name</label>
             </div>
           </div>
         </div>
@@ -372,16 +378,20 @@ export default function index({
                 }) => (
                   <div
                     style={{
-                      margin: 10,
+                      margin: 0,
                       display: "flex",
+                      alignCenter: "center",
                       justifyContent: "center",
+                      background: "#f36e22",
+                      padding: "5px 3px"
                     }}
                   >
-                    <button
-                      onClick={decreaseMonth}
-                      disabled={prevMonthButtonDisabled}
-                    >
-                      {"<"}
+                    <button className="datepicker-btn">
+                      <FontAwesomeIcon
+                        icon={faAngleLeft}
+                        onClick={decreaseMonth}
+                        disabled={prevMonthButtonDisabled}
+                      />
                     </button>
                     <select
                       value={new Date(date).getFullYear()}
@@ -407,11 +417,12 @@ export default function index({
                       ))}
                     </select>
 
-                    <button
-                      onClick={increaseMonth}
-                      disabled={nextMonthButtonDisabled}
-                    >
-                      {">"}
+                    <button className="datepicker-btn">
+                      <FontAwesomeIcon
+                        icon={faAngleRight}
+                        onClick={increaseMonth}
+                        disabled={nextMonthButtonDisabled}
+                      />
                     </button>
                   </div>
                 )}
@@ -565,6 +576,7 @@ export default function index({
             <div className="field">
               {!isReadonly ? (
                 <NumberFormat
+                  id="ch_phone_number"
                   name={"ch_phone_number" + (counter - 1)}
                   className="field-input"
                   placeholder="Phone"
@@ -593,6 +605,7 @@ export default function index({
                 />
               ) : (
                 <input
+                  id="ch_phone_number"
                   name="ch_phone_number"
                   className="field-input"
                   placeholder="Phone"
@@ -601,7 +614,9 @@ export default function index({
                 />
               )}
 
-              <label className="field-label">Phone Number</label>
+              <label className="field-label" for="ch_phone_number">
+                <span>Phone Number</span>
+              </label>
             </div>
             <ErrorMessage
               field={errors["ch_phone_number" + (counter - 1)]}
@@ -643,6 +658,7 @@ export default function index({
               <div className="field">
                 {!isReadonly ? (
                   <NumberFormat
+                    id="ch_phone_number2"
                     name={"ch_phone_number2" + (counter - 1)}
                     className="field-input"
                     placeholder="Phone"
@@ -671,13 +687,14 @@ export default function index({
                   />
                 ) : (
                   <input
+                    id="ch_phone_number2"
                     name="ch_phone_number2"
                     className="field-input"
                     placeholder="Phone"
                     defaultValue={childProfile.phone_number}
                   />
                 )}
-                <label className="field-label">Phone Number</label>
+                <label className="field-label" for="ch_phone_number2">Phone Number</label>
               </div>
               <ErrorMessage
                 field={errors["ch_phone_number2" + (counter - 1)]}
@@ -731,6 +748,7 @@ export default function index({
             <div className="field">
               <input
                 type="text"
+                id="ch_email_address"
                 name={"ch_email_address" + (counter - 1)}
                 className="field-input"
                 placeholder="Email Address"
@@ -751,7 +769,7 @@ export default function index({
                   },
                 })}
               />
-              <label className="field-label">
+              <label className="field-label" for="ch_email_address">
                 Email Address (Child only, if applicable)
               </label>
             </div>
@@ -797,6 +815,7 @@ export default function index({
               <div className="field">
                 <input
                   type="text"
+                  id="ch_email_address2"
                   name={"ch_email_address2" + (counter - 1)}
                   className="field-input"
                   placeholder="Email Address"
@@ -817,7 +836,7 @@ export default function index({
                     },
                   })}
                 />
-                <label className="field-label">
+                <label className="field-label" for="ch_email_address2">
                   Email Address (Child only, if applicable)
                 </label>
               </div>
@@ -834,6 +853,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_address"
                 name={"ch_address" + (counter - 1)}
                 className="field-input"
                 placeholder="Address"
@@ -849,7 +869,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.address}
               />
-              <label className="field-label">
+              <label className="field-label" for="ch_address">
                 <span className="required">*</span> Address
               </label>
             </div>
@@ -862,6 +882,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                id="ch_city"
                 name={"ch_city" + (counter - 1)}
                 className="field-input"
                 placeholder="City"
@@ -877,7 +898,7 @@ export default function index({
                 defaultValue={childProfile.city}
                 ref={register({ required: true })}
               />
-              <label className="field-label">
+              <label className="field-label" for="ch_city">
                 <span className="required">*</span> City
               </label>
             </div>
@@ -929,6 +950,7 @@ export default function index({
             <div className="field">
               <input
                 type="text"
+                id="ch_zip_code"
                 readOnly={isReadonly}
                 name={"ch_zip_code" + (counter - 1)}
                 className="field-input"
@@ -949,7 +971,7 @@ export default function index({
                 ref={register({ required: true, minLength: 5 })}
                 maxLength="5"
               />
-              <label className="field-label">
+              <label className="field-label" for="ch_zip_code">
                 <span className="required">*</span> Zip Code
               </label>
             </div>

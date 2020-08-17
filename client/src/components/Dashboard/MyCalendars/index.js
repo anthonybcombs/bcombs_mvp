@@ -11,9 +11,14 @@ import { requestUserGroup } from "../../../redux/actions/Groups";
 const MyCalendarStyled = styled.div`
   // margin: 1em;
 
-  margin: 1.5rem 3em 2rem;
+  // margin: 1.5rem 3em 2rem;
+  width: auto;
+  max-width: 1920px;
+  margin: auto;
+  padding: 0rem 3em 2rem;
+  
   h2 {
-    font-weight: 400;
+    // font-weight: 400;
   }
 
   
