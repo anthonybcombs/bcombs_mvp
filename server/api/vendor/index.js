@@ -137,8 +137,44 @@ export const getVendorAppGroups = async (user_id) => {
   let appGroupsResult = [];
   try {
     appGroupsResult = await db.query(
-      "SELECT id, BIN_TO_UUID(app_grp_id) as app_grp_id, BIN_TO_UUID(user) as user, BIN_TO_UUID(vendor) as vendor, size, name, created_at from vendor_app_groups WHERE user=UUID_TO_BIN(?)",
+      `SELECT 
+        id, 
+        BIN_TO_UUID(app_grp_id) as app_grp_id, 
+        BIN_TO_UUID(user) as user, 
+        BIN_TO_UUID(vendor) as vendor, 
+        size, 
+        name, 
+        created_at 
+      FROM vendor_app_groups 
+      WHERE user=UUID_TO_BIN(?)`,
       [user_id]
+    )
+  } catch(error) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return appGroupsResult;
+  }
+}
+
+export const getVendorAppGroupsByVendorId = async (vendor) => {
+
+  const db = makeDb();
+
+  let appGroupsResult = [];
+  try {
+    appGroupsResult = await db.query(
+      `SELECT 
+        id, 
+        BIN_TO_UUID(app_grp_id) as app_grp_id, 
+        BIN_TO_UUID(user) as user, 
+        BIN_TO_UUID(vendor) as vendor, 
+        size, 
+        name, 
+        created_at 
+      FROM vendor_app_groups 
+      WHERE vendor=UUID_TO_BIN(?)`,
+      [vendor]
     )
   } catch(error) {
     console.log("error", error);
@@ -171,6 +207,32 @@ export const addAppGroup = async ({
     )
   } catch(error) {
     console.log("error", error)
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const getVendorName = async (vendor) => {
+
+  const db = makeDb();
+
+  let result;
+
+  try {
+    result = await db.query(
+      `SELECT 
+        name
+      FROM vendor
+      WHERE id=UUID_TO_BIN(?)`,
+      [vendor]
+    );
+
+    if(result && result.length > 0) {
+      result = result[0].name;
+    }
+  } catch (error) {
+    console.log(error);
   } finally {
     await db.close();
     return result;

@@ -8,15 +8,16 @@ import EmergencyContactFormStyled from "../../../ApplicationForm/EmergencyContac
 import "../../../ApplicationForm/ApplicationForm.css";
 
 const ParentFormViewStyled = styled.div`
-
+  margin-bottom: 40px;
 `;
 
 export default function index({
-  application,
+  parents,
   vendor,
-  ProfileImg
+  ProfileImg,
+  handleParentFormDetailsChange,
+  isReadonly
 }) {
-  const handleParentFormDetailsChange = () => {}
     
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
@@ -53,36 +54,38 @@ export default function index({
     relationship_to_child: "-"
   }]
 
+
+  console.log("parents", parents);
+
   const renderParentForm = () => {
 
-    const parents = application.parents;
 
     let items = [];
 
     for(let i = 1; i <= parents.length; i++) {
       const parent = parents[i - 1];
-      const profile = {
-        first_name: parent.firstname ? parent.firstname : "-",
-        last_name: parent.lastname ? parent.lastname : "-",
-        phone_type: parent.phont_type ? parent.phone_type : "-",
-        phone_number: parent.phone_number ? parent.phone_number : "-",
-        email_type: parent.email_type ? parent.email_type : "-",
-        email_address: parent.email_address ? parent.email_address : "-",
-        address: parent.address ? parent.address : "-",
-        city: parent.city ? parent.city : "-",
-        state: parent.state ? parent.state : "-",
-        zip_code: parent.zip_code ? parent.zip_code : "-",
-        occupation: parent.zip_code ? parent.zip_code : "-",
-        employer_name: parent.employer_name ? parent.employer_name : "-",
-        goals_parent_program: parent.zip_cgoals_parent_programode ? parent.goals_parent_program : "-",
-        goals_child_program: parent.zip_goals_child_programcode ? parent.goals_child_program : "-",
-        live_area: parent.live_area ? parent.live_area : 0, // 1: 1 - 5 year, 2: 5 - 10 year, 3: more than 10 year
-        level_education: parent.level_education ? parent.level_education : "-",
-        child_importance_hs: parent.child_importance_hs ? parent.child_importance_hs : "-",
-        child_importance_col: parent.child_importance_col ? parent.child_importance_col : "-"
-      }
+      // const profile = {
+      //   first_name: parent.firstname ? parent.firstname : "-",
+      //   last_name: parent.lastname ? parent.lastname : "-",
+      //   phone_type: parent.phont_type ? parent.phone_type : "-",
+      //   phone_number: parent.phone_number ? parent.phone_number : "-",
+      //   email_type: parent.email_type ? parent.email_type : "-",
+      //   email_address: parent.email_address ? parent.email_address : "-",
+      //   address: parent.address ? parent.address : "-",
+      //   city: parent.city ? parent.city : "-",
+      //   state: parent.state ? parent.state : "-",
+      //   zip_code: parent.zip_code ? parent.zip_code : "-",
+      //   occupation: parent.zip_code ? parent.zip_code : "-",
+      //   employer_name: parent.employer_name ? parent.employer_name : "-",
+      //   goals_parent_program: parent.zip_cgoals_parent_programode ? parent.goals_parent_program : "-",
+      //   goals_child_program: parent.zip_goals_child_programcode ? parent.goals_child_program : "-",
+      //   live_area: parent.live_area ? parent.live_area : 0, // 1: 1 - 5 year, 2: 5 - 10 year, 3: more than 10 year
+      //   level_education: parent.level_education ? parent.level_education : "-",
+      //   child_importance_hs: parent.child_importance_hs ? parent.child_importance_hs : "-",
+      //   child_importance_col: parent.child_importance_col ? parent.child_importance_col : "-"
+      // }
 
-      console.log("PROFILE ", profile);
+      // console.log("PROFILE ", profile);
 
       if(i == 1) {
         items.push(
@@ -90,11 +93,12 @@ export default function index({
             <ParentInformationStyled 
               key={i}
               handleParentFormDetailsChange={handleParentFormDetailsChange}
-              parentProfile={profile}
+              parentProfile={parent.profile}
               counter={i}
               register={register}
               errors={errors}
-              isReadonly={true}
+              isReadonly={isReadonly}
+              isUpdate={true}
               ProfileImg={ProfileImg}
             />
           </div>
@@ -106,11 +110,12 @@ export default function index({
             <ParentInformationStyled 
               key={i}
               handleParentFormDetailsChange={handleParentFormDetailsChange}
-              parentProfile={profile}
+              parentProfile={parent.profile}
               counter={i}
               register={register}
               errors={errors}
-              isReadonly={true}
+              isReadonly={isReadonly}
+              isUpdate={true}
               ProfileImg={ProfileImg}
             />
           </div>

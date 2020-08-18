@@ -208,6 +208,7 @@ const inputs = `
         hospital_preference: String
         hospital_phone: String
         child_lives_with: String!
+        ch_id: String
     }
 
     input ParentInfoInput {
@@ -235,6 +236,7 @@ const inputs = `
         email_type2: String
         email_address2: String
         person_recommend: String!
+        parent_id: String
     }
 
     input ApplicationInput {
@@ -275,6 +277,13 @@ const inputs = `
         vendors: [String!]
         size: Int!
         name: String!
+    }
+
+    input SaveApplicationUserInput {
+        app_id: String
+        child: ChildIInfoInput
+        parents: [ParentInfoInput]
+        updated_by: String
     }
 `;
 const queryTypes = `
@@ -526,6 +535,8 @@ const queryTypes = `
         id: Int
         app_id: String
         vendor: String
+        vendorName: String
+        vendorGroup: [VendorAppGroup]
         child: Child
         parents: [Parent]
         section1_signature: String
@@ -547,6 +558,7 @@ const queryTypes = `
         section1_name: String
         section2_name: String
         section3_name: String
+        app_histories: [ApplicationHistory]
     }
 
     type ParentUserApplication{
@@ -589,6 +601,20 @@ const queryTypes = `
         vendor_app_groups: [VendorAppGroup]
     }
 
+    type ApplicationHistory{
+        id: Int
+        app_history_id: String!
+        app_id: String!
+        details: String
+        updated_by: String
+        updated_at: Date
+    }
+
+    type ApplicationUserStatus{
+        application: Application
+        app_histories: [ApplicationHistory]
+    }
+
 `;
 
 const mutations = `
@@ -615,6 +641,7 @@ const mutations = `
         archivedApplications(app_ids: [String]): Status
         updateVendor(vendor: VendorInput!): Vendor
         addVendorAppGroup(appGroup: AppGroupInput!): AllGroups
+        saveApplication(application: SaveApplicationUserInput): Status
     }
 `;
 
@@ -644,6 +671,7 @@ const queries = `
         getUserApplications(email: String!): UserApplication
         getUserByEmail(email: String): CheckUserEmail
         getVendorAppGroups(vendor: String): AllGroups
+        getUserApplicationsByUserId(user_id: String!): [Application]
     }
 `;
 

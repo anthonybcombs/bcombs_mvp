@@ -324,69 +324,6 @@ export default function index() {
     }
   };
 
-  // const childInfoObject = {
-  //   id: uuid(),
-  //   profile: {
-  //     address: "qq",
-  //     city: "qqq",
-  //     date_of_birth: "Fri Jun 18 1999 00:00:00 GMT+0800 (Philippine Standard Time)",
-  //     email_address: "",
-  //     email_address2: "",
-  //     email_type: "",
-  //     email_type2: "",
-  //     ethinicity: [],
-  //     first_name: "Jerome Yvan",
-  //     gender: "He",
-  //     image: "",
-  //     last_name: "qqqq",
-  //     location_site: "Durham",
-  //     nick_name: "",
-  //     phone_number: "",
-  //     phone_number2: "",
-  //     phone_type: "",
-  //     phone_type2: "",
-  //     program: [],
-  //     state: "AZ",
-  //     zip_code: "11212"
-  //   },
-  //   general_information: {
-  //     grade: "",
-  //     class_rank: "",
-  //     gpa_quarter_year: "",
-  //     gpa_quarter_q1: "",
-  //     gpa_quarter_q2: "",
-  //     gpa_quarter_q3: "",
-  //     gpa_quarter_q4: "",
-  //     gpa_cumulative_year: "",
-  //     gpa_cumulative_q1: "",
-  //     gpa_cumulative_q2: "",
-  //     gpa_cumulative_q3: "",
-  //     gpa_cumulative_q4: "",
-  //     act_scores: [{...scoreObj}],
-  //     sat_scores: [{...scoreObj}],
-  //     psat_scores: [{...scoreObj}],
-  //     school_name: "",
-  //     school_phone: "",
-  //     was_suspended: null,
-  //     reason_suspended: "",
-  //     mentee_start_year: "",
-  //     hobbies: "",
-  //     life_events: "",
-  //     career_goals: "",
-  //     colleges: "",
-  //     team_affiliations: "",
-  //     awards: "",
-  //     accomplishments: "",
-  //     mentee_gain: ""
-  //   },
-  //   emergency_care_information: {
-  //     doctor_name: "",
-  //     doctor_phone: "",
-  //     hospital_preference: "",
-  //     hospital_phone: ""
-  //   }
-  // };
-
   const [childsInformation, setChildsInformation] = useState([{...childInfoObject}]);
 
   const handleChildFormDetailsChange = (index, section, id, value) => {
@@ -561,39 +498,7 @@ export default function index() {
       person_recommend: ""
     }
   };
-
-  // const parentInfoObject = {
-  //   id: uuid(),
-  //   profile: {
-  //     address: "",
-  //     child_importance_col: "",
-  //     child_importance_hs: "",
-  //     city: "",
-  //     confirmed_password: "Secret123!!",
-  //     email_address: "wwwww@gmail.com",
-  //     email_address2: "",
-  //     email_type: "",
-  //     email_type2: "",
-  //     employer_name: "",
-  //     first_name: "Anika Jada Apolonio",
-  //     gender: "",
-  //     goals_child_program: "www",
-  //     goals_parent_program: "www",
-  //     image: "",
-  //     last_name: "wwww",
-  //     level_education: "",
-  //     live_area: 0,
-  //     occupation: "",
-  //     password: "Secret123!!",
-  //     phone_number: "(121) 222-2222",
-  //     phone_number2: "",
-  //     phone_type: "",
-  //     phone_type2: "",
-  //     state: "",
-  //     zip_code: "",
-  //   }
-  // };
-
+  
   const [parentsInformation, setParentsInformation] = useState([{...parentInfoObject}]);
 
   const [emergencyContacts, setEmergencyContacts] = useState([...emergency_contacts]);

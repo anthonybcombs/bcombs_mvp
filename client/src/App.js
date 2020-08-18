@@ -79,6 +79,10 @@ const AsyncClassListInformationView = Loadable({
   loader: () => import("./components/Dashboard/Application/class"),
   loading: Loading
 });
+const AsyncMyApplication = Loadable({
+  loader: () => import("./components/Dashboard/MyApplication"),
+  loading: Loading
+});
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -107,6 +111,7 @@ export default function App() {
               <AsyncParentInformationView path="parentprofile/:id"/>
               <AsyncArchivedApplication path="archived" />
               <AsyncClassListInformationView path="class/:vendor_id/:name"/>
+              <AsyncMyApplication path="myapplication" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />
