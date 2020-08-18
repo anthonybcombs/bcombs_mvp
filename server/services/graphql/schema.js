@@ -443,6 +443,26 @@ const queryTypes = `
         section2_show: Int
         section3_show: Int
         id2: Int
+        app_programs: [VendorProgram]
+        location_sites: [LocationSite]
+    }
+
+    type LocationSite {
+        id: String!
+        vendor_location_site_id: String!
+        vendor: String!
+        user: String!
+        name: String
+        created_at: Date
+    }
+
+    type VendorProgram {
+        id: String!
+        vendor_program_id: String!
+        vendor: String!
+        user: String!
+        name: String
+        created_at: Date
     }
 
     type Score {
@@ -473,6 +493,7 @@ const queryTypes = `
         state: String!
         zip_code: String!
         location_site: String!
+        ethnicities: String
         programs: String
         school_name: String!
         school_phone: String
@@ -559,6 +580,9 @@ const queryTypes = `
         section2_name: String
         section3_name: String
         app_histories: [ApplicationHistory]
+        emergency_contacts: String
+        vendorPrograms: [VendorProgram]
+        vendorLocationSites: [LocationSite]
     }
 
     type ParentUserApplication{

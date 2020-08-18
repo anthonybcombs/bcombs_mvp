@@ -632,7 +632,7 @@ export default function index() {
               />
             )}
             {selectNonMenuOption && view == "application" && (
-                <TermsWaiverFormViewStyled
+              <TermsWaiverFormViewStyled
                 application={selectedApplication}
               />
             )}
