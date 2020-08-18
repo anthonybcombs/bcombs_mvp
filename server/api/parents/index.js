@@ -150,3 +150,101 @@ export const addParent = async ({
     return parent;
   }
 }
+
+export const updateParent = async ({
+  firstname,
+  lastname,
+  phone_type,
+  phone_number,
+  email_type,
+  email_address,
+  phone_type2,
+  phone_number2,
+  email_type2,
+  email_address2,
+  address,
+  city,
+  state,
+  zip_code,
+  occupation,
+  employers_name,
+  parent_goals,
+  parent_child_goals,
+  live_area,
+  level_of_education,
+  child_hs_grad,
+  child_col_grad,
+  emergency_contacts,
+  person_recommend,
+  parent_id
+}) => {
+
+  const db = makeDb();
+  let result;
+
+  try {
+
+    result = await db.query(
+      `
+        UPDATE parent SET
+        firstname=?,
+        lastname=?,
+        phone_type=?,
+        phone_number=?,
+        email_type=?,
+        email_address=?,
+        phone_type2=?,
+        phone_number2=?,
+        email_type2=?,
+        email_address2=?,
+        address=?,
+        city=?,
+        state=?,
+        zip_code=?,
+        occupation=?,
+        employers_name=?,
+        parent_goals=?,
+        parent_child_goals=?,
+        live_area=?,
+        level_of_education=?,
+        child_hs_grad=?,
+        child_col_grad=?,
+        emergency_contacts=?,
+        person_recommend=?
+        WHERE parent_id=UUID_TO_BIN(?)
+      `,
+      [
+        firstname,
+        lastname,
+        phone_type,
+        phone_number,
+        email_type,
+        email_address,
+        phone_type2,
+        phone_number2,
+        email_type2,
+        email_address2,
+        address,
+        city,
+        state,
+        zip_code,
+        occupation,
+        employers_name,
+        parent_goals,
+        parent_child_goals,
+        live_area,
+        level_of_education,
+        child_hs_grad,
+        child_col_grad,
+        emergency_contacts,
+        person_recommend,
+        parent_id
+      ]
+    )
+  } catch(error) {
+    console.log("update parent", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}

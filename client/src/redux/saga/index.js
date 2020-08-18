@@ -64,7 +64,9 @@ import {
   updateApplication,
   archivedApplication, 
   getArchivedApplication,
-  getApplicationById
+  getApplicationById,
+  saveApplication,
+  getApplicationByUserId
 } from "../actions/Application";
 
 import { 
@@ -140,6 +142,8 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_GET_ARCHIVED_APPLICATION, getArchivedApplication);
   yield takeLatest(actionType.REQUEST_GET_APPLICATION_ID, getApplicationById);
   yield takeLatest(actionType.REQUEST_ADD_VENDOR_APP_GROUP, addVendorAppGroup);
+  yield takeLatest(actionType.REQUEST_SAVE_APPLICATION, saveApplication);
+  yield takeLatest(actionType.REQUEST_GET_APPLICATION_USER_ID, getApplicationByUserId)
 }
 const sagaMiddleware = createSagaMiddleware();
 

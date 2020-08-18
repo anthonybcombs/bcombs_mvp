@@ -8,7 +8,9 @@ import {
   APPLICATION_UPDATE_MUTATION ,
   ARCHIVED_APPLICATION_MUTATION,
   GET_ARCHIVED_APPLICATIONS_QUERY,
-  GET_APPLICATION_ID_QUERY
+  GET_APPLICATION_ID_QUERY,
+  APPLICATION_SAVE_MUTATION,
+  GET_APPLICATION_USER_ID_QUERY
 } from "../../graphql/applicationMutation";
 import * as actionType from "./Constant";
 import { setApplicationLoading } from "./Loading";
@@ -29,6 +31,23 @@ const getApplicationIdFromDatabase = (id) => {
     }
   });
 };
+
+const getApplicationUserIdFromDatabase = (user_id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: GET_APPLICATION_USER_ID_QUERY,
+        variables: {
+          user_id
+        }
+      });
+
+      return resolve(data.getUserApplicationsByUserId);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
 
 const getActiveApplicationFromDatabase = (vendor_id) => {
   return new Promise(async (resolve, reject) => {
@@ -100,6 +119,24 @@ const updateApplicationToDatabse = application => {
   })
 }
 
+const saveApplicationToDatabase = application => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: APPLICATION_SAVE_MUTATION,
+        variables: {
+          application: application
+        }
+      });
+
+      return resolve(data.saveApplication);
+    } catch(error) {
+      console.log(error)
+      reject(error);
+    }
+  })
+}
+
 const addApplicationToDatabase = applications => {
   return new Promise(async (resolve, reject) => {
     let applications_obj = [];
@@ -142,6 +179,13 @@ const addApplicationToDatabase = applications => {
     }
   });
 };
+
+export const requestGetApplicationByUserId = user_id => {
+  return {
+    type: actionType.REQUEST_GET_APPLICATION_USER_ID,
+    user_id
+  };
+}
 
 export const requestGetApplicationById = id => {
   return {
@@ -192,6 +236,13 @@ export const requestGetArchivedApplications = vendor_id => {
   }
 }
 
+export const requestSaveApplication = application => {
+  return {
+    type: actionType.REQUEST_SAVE_APPLICATION,
+    application
+  }
+}
+
 export function* getApplicationById({id}) {
   try {
     const response = yield call(getApplicationIdFromDatabase, id);
@@ -212,6 +263,31 @@ export function* getApplicationById({id}) {
     yield put({
       type: actionType.REQUEST_GET_APPLICATION_ID_COMPLETED,
       payload: {}
+    })
+  }
+}
+
+export function* getApplicationByUserId({user_id}) {
+  try {
+    
+    const response = yield call(getApplicationUserIdFromDatabase, user_id);
+
+    console.log("response", response);
+    if(response) {
+      yield put({
+        type: actionType.REQUEST_GET_APPLICATION_USER_ID_COMPLETED,
+        payload: response
+      })
+    } else {
+      yield put({
+        type: actionType.REQUEST_GET_APPLICATION_USER_ID_COMPLETED,
+        payload: []
+      })
+    }
+  } catch(err) {
+    yield put({
+      type: actionType.REQUEST_GET_APPLICATION_USER_ID_COMPLETED,
+      payload: []
     })
   }
 }
@@ -238,6 +314,30 @@ export function* archivedApplication({application}) {
     yield put({
       type: actionType.REQUEST_ARCHIVED_APPLICATION_COMPLETED,
       payload: {}
+    })
+  }
+}
+
+export function* saveApplication({application}) {
+  try {
+    yield put(setApplicationLoading(true));
+    const response = yield call(saveApplicationToDatabase, application);
+    yield put(setApplicationLoading(false));
+    if(response) {
+      yield put({
+        type: actionType.REQUEST_SAVE_APPLICATION_COMPLETED,
+        payload: response
+      })
+    } else {
+      yield put({
+        type: actionType.REQUEST_SAVE_APPLICATION_COMPLETED,
+        payload: response
+      })
+    }
+  } catch(err) {
+    yield put({
+      type: actionType.REQUEST_SAVE_APPLICATION_COMPLETED,
+      payload: response
     })
   }
 }

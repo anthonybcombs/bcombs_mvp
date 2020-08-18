@@ -7,6 +7,7 @@ import {
   faBell,
   faSearch,
   faSignOutAlt,
+  faFile
 } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link, Location, useNavigate, useLocation, useParams } from "@reach/router";
@@ -320,6 +321,15 @@ export default function Layout({ children }) {
                               >
                                 <FontAwesomeIcon icon={faUser} />
                                 <span>Profile</span>
+                              </Link>
+                              <Link
+                                to="/dashboard/myapplication"
+                                onClick={() => {
+                                  setIsPopOverVisible(false);
+                                }}
+                              >
+                                <FontAwesomeIcon icon={faFile} />
+                                <span>Application</span>
                               </Link>
                               <a
                                 onClick={() => {
