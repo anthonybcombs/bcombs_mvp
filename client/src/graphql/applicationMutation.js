@@ -63,6 +63,7 @@ export const GET_APPLICATIONS_QUERY = gql`
         zip_code
         location_site
         programs
+        ethnicities
         school_name
         school_phone
         has_suspended
@@ -136,6 +137,23 @@ export const GET_APPLICATIONS_QUERY = gql`
       section1_name
       section2_name
       section3_name
+      emergency_contacts
+      vendorPrograms {
+        id
+        vendor_program_id
+        vendor
+        user
+        name
+        created_at
+      }
+      vendorLocationSites {
+        id
+        vendor_location_site_id
+        vendor
+        user
+        name
+        created_at
+      }
     }
   }
 `
@@ -167,6 +185,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
         zip_code
         location_site
         programs
+        ethnicities
         school_name
         school_phone
         has_suspended
@@ -240,6 +259,23 @@ export const GET_APPLICATION_ID_QUERY = gql`
       section1_name
       section2_name
       section3_name
+      emergency_contacts
+      vendorPrograms {
+        id
+        vendor_program_id
+        vendor
+        user
+        name
+        created_at
+      }
+      vendorLocationSites {
+        id
+        vendor_location_site_id
+        vendor
+        user
+        name
+        created_at
+      }
     }
   }
 `
@@ -280,6 +316,7 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         zip_code
         location_site
         programs
+        ethnicities
         school_name
         school_phone
         has_suspended
@@ -361,6 +398,23 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         updated_by
         updated_at
       }
+      emergency_contacts
+      vendorPrograms {
+        id
+        vendor_program_id
+        vendor
+        user
+        name
+        created_at
+      }
+      vendorLocationSites {
+        id
+        vendor_location_site_id
+        vendor
+        user
+        name
+        created_at
+      }
     }
   }
 `;
@@ -392,6 +446,7 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         zip_code
         location_site
         programs
+        ethnicities
         school_name
         school_phone
         has_suspended
@@ -465,6 +520,23 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
       section1_name
       section2_name
       section3_name
+      emergency_contacts
+      vendorPrograms {
+        id
+        vendor_program_id
+        vendor
+        user
+        name
+        created_at
+      }
+      vendorLocationSites {
+        id
+        vendor_location_site_id
+        vendor
+        user
+        name
+        created_at
+      }
     }
   }
 `;

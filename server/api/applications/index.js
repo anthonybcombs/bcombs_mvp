@@ -3,7 +3,12 @@ import { makeDb } from "../../helpers/database";
 import { updateChild, getChildInformation } from "../child";
 import { updateParent, getParentByApplication } from "../parents";
 
-import { getVendorAppGroupsByVendorId, getVendorName } from "../vendor";
+import { 
+  getVendorAppGroupsByVendorId, 
+  getVendorName, 
+  getVendorAppProgram,
+  getVendorAppLocationSite 
+} from "../vendor";
 
 export const getApplicationById = async (id) => {
   const db = makeDb();
@@ -33,7 +38,8 @@ export const getApplicationById = async (id) => {
         section3_text,
         section1_name,
         section2_name,
-        section3_name
+        section3_name,
+        emergency_contacts
         FROM application
         WHERE id=?
         ORDER BY id DESC`,
@@ -76,7 +82,8 @@ export const getApplicationByAppId = async (app_id) => {
         section3_text,
         section1_name,
         section2_name,
-        section3_name
+        section3_name,
+        emergency_contacts
         FROM application
         WHERE app_id=UUID_TO_BIN(?)
       `,
@@ -91,6 +98,8 @@ export const getApplicationByAppId = async (app_id) => {
       application.vendorName = await getVendorName(application.vendor);
       application.vendorGroup = await getVendorAppGroupsByVendorId(application.vendor);
       application.app_histories = await getApplicationHistoryById(application.app_id); 
+      application.vendorPrograms = await getVendorAppProgram(application.vendor);
+      application.vendorLocationSites = await getVendorAppLocationSite(application.vendor);
     }
 
   } catch (error) {
@@ -129,7 +138,8 @@ export const getApplicationsByVendor = async (vendor) => {
         section3_text,
         section1_name,
         section2_name,
-        section3_name
+        section3_name,
+        emergency_contacts
         FROM application
         WHERE vendor=UUID_TO_BIN(?) and is_archived=0
         ORDER BY id DESC`,
@@ -172,7 +182,8 @@ export const getArchivedApplicationsByVendor = async (vendor_id) => {
         section3_text,
         section1_name,
         section2_name,
-        section3_name
+        section3_name,
+        emergency_contacts
         FROM application 
         WHERE vendor=UUID_TO_BIN(?) and is_archived=1
         ORDER BY archived_date DESC`,
@@ -204,7 +215,8 @@ export const createApplication = async ({
   section1_name,
   section2_name,
   section3_name,
-  class_teacher
+  class_teacher,
+  emergency_contacts
 }) => {
   const db = makeDb();
   let result = {};
@@ -231,14 +243,15 @@ export const createApplication = async ({
         section1_name,
         section2_name,
         section3_name,
-        class_teacher
+        class_teacher,
+        emergency_contacts
       ) VALUES (
         UUID_TO_BIN(UUID()), 
         UUID_TO_BIN(?), 
         UUID_TO_BIN(?), 
         ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, 
-        ?, ?, ?)`,
+        ?, ?, ?, ?)`,
       [
         vendor,
         child,
@@ -256,7 +269,8 @@ export const createApplication = async ({
         section1_name,
         section2_name,
         section3_name,
-        class_teacher
+        class_teacher,
+        emergency_contacts
       ]
     )
 
@@ -492,6 +506,7 @@ export const getUserApplicationsByUserId = async (user_id) => {
           created_at
         FROM application_user
         WHERE user_id=UUID_TO_BIN(?)
+        ORDER BY id DESC
       `,
       [user_id]      
     )

@@ -43,9 +43,9 @@ export default function index() {
 
   const dispatch = useDispatch();
 
-  const { auth, vendor, applications, loading } = useSelector(
-    ({ auth, vendor, applications, loading }) => {
-      return { auth, vendor, applications, loading };
+  const { auth, vendors, applications, loading } = useSelector(
+    ({ auth, vendors, applications, loading }) => {
+      return { auth, vendors, applications, loading };
     }
   );
 
@@ -54,12 +54,12 @@ export default function index() {
       dispatch(requestVendor(auth.user_id));
     }
   }, []);
-
+  
   useEffect(() => {
-    if(vendor.id) {
-      dispatch(requestGetArchivedApplications(vendor.id));
+    if (vendors && vendors.length > 0 && vendors[0].id) {
+      dispatch(requestGetArchivedApplications(vendors[0].id));
     }
-  }, [vendor]);
+  }, [vendors]);
 
   console.log("archived list", applications);
 

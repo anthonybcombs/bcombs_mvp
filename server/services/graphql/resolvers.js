@@ -41,7 +41,14 @@ import {
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
-import { getVendors, updateVendor, addVendor, addAppGroup, getVendorAppGroups } from "../../api/vendor";
+import { 
+  getVendors, 
+  updateVendor, 
+  addVendor, 
+  addAppGroup, 
+  getVendorAppGroups,
+  getVendorsByUserId 
+} from "../../api/vendor";
 import {
   createApplication,
   getApplicationsByVendor,
@@ -127,17 +134,17 @@ const resolvers = {
       return vendors;
     },
     async vendorsByUser(root, { user }, context) {
-      const vendors = await getVendors();
+      const vendors = await getVendorsByUserId(user);
       console.log("vendors", vendors);
-      let vendor = vendors.filter(vendor => {
-        return user == vendor.user;
-      });
+      // let vendor = vendors.filter(vendor => {
+      //   return user == vendor.user;
+      // });
 
-      if (vendor && vendor.length > 0) {
-        return vendor;
+      if (vendors && vendors.length > 0) {
+        return vendors;
       } else {
-        vendor = await addVendor({ user: user });
-        return vendor;
+        vendors = await addVendor({ user: user });
+        return vendors;
       }
     },
     async getVendorApplications(root, { vendor_id }, context) {
