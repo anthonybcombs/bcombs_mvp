@@ -146,7 +146,7 @@ export default function index({
   location_sites = [],
 }) {
 
-  console.log("childProfile", childProfile);
+  console.log("profile child", childProfile);
 
   const hasSelectAll = false;
 
@@ -231,21 +231,35 @@ export default function index({
     {id: 21, name: "Other relatives", label: "Other relatives"},
     {id: 22, name: "Others", label: "Others"}
   ];
+  
+  let readOnlyChildLivesWith = ""
 
   if(childProfile.child_lives_with && childProfile.child_lives_with.length > 0 && isReadonly) {
+    childProfile.child_lives_with.forEach((item) => {
+      readOnlyChildLivesWith += item.name + ", ";
+    });
 
-    const childLivesWith = childProfile.child_lives_with
-    childProfile.child_lives_with = CHILD_LIVES_OPTION.filter(opt => {
-      return childLivesWith.includes(opt.name);
-    })
+    readOnlyChildLivesWith = readOnlyChildLivesWith.slice(0, -2);
   }
 
-  if(childProfile.program && childProfile.program.length > 0 && isReadonly) {
+  let readOnlyProgram = "";
 
-    const program = childProfile.program
-    childProfile.program = PROGRAMS_OPTIONS.filter(opt => {
-      return program.includes(opt.name);
-    })
+  if(childProfile.program && childProfile.program.length > 0 && isReadonly) {
+    childProfile.program.forEach((item) => {
+      readOnlyProgram += item.name + ", ";
+    });
+
+    readOnlyProgram = readOnlyProgram.slice(0, -2);
+  }
+
+  let readOnlyEthinicity = "";
+
+  if(childProfile.ethinicity && childProfile.ethinicity.length > 0 && isReadonly) {
+    childProfile.ethinicity.forEach((item) => {
+      readOnlyEthinicity += item.name + ", ";
+    });
+
+    readOnlyEthinicity = readOnlyEthinicity.slice(0, -2);
   }
 
   const range = (start, end) => {
@@ -292,10 +306,12 @@ export default function index({
   const [showEmail, setShowEmail] = useState(false);
 
   const handleOtherPhone = () => {
+    if(isReadonly) return;
     setShowPhone(!showPhone);
   };
 
   const handleOtherEmail = () => {
+    if(isReadonly) return;
     setShowEmail(!showEmail);
   };
 
@@ -549,38 +565,66 @@ export default function index({
           </div>
           <div className="form-group">
             <div className="field">
-              <Multiselect
-                readOnly={isReadonly}
-                disabled={isReadonly}
-                id={"ethinicity_" + (counter - 1)}
-                className="field-input"
-                options={ETHINICITY_OPTIONS}
-                hasSelectAll={hasSelectAll}
-                onSelect={(selectedList) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "ethinicity",
-                    selectedList
-                  );
-                }}
-                onRemove={(selectedList) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "ethinicity",
-                    selectedList
-                  );
-                }}
-                placeholder="Select all that apply"
-                displayValue="name"
-                closeIcon="cancel"
-                name={"ethinicity_" + (counter - 1)}
-                closeOnSelect={false}
-                showCheckbox={true}
-                autcomplete="false"
-                selectedValues={childProfile.ethinicity}
-              />
+
+              {
+                isReadonly ? (
+                // <input 
+                //   readOnly={isReadonly}
+                //   name={"ethinicity_" + (counter - 1)}
+                //   className="field-input"
+                //   placeholder="First Name"
+                //   onChange={({ target }) => {
+                //   }}
+                //   ref={register({ required: true })}
+                //   defaultValue={readOnlyEthinicity}
+                // />
+                <textarea
+                  className="field-input readonly"
+                  name={"ethinicity_" + (counter - 1)}
+                  readOnly={isReadonly}
+                  defaultValue={readOnlyEthinicity}
+                  style={{
+                    background: "white",
+                    borderBottom: "2px solid rgb(204, 204, 204) !important",
+                    resize: "none"
+                  }}
+                >
+                </textarea>
+                ) : (
+                <Multiselect
+                  readOnly={isReadonly}
+                  disabled={isReadonly}
+                  id={"ethinicity_" + (counter - 1)}
+                  className="field-input"
+                  options={ETHINICITY_OPTIONS}
+                  hasSelectAll={hasSelectAll}
+                  onSelect={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "ethinicity",
+                      selectedList
+                    );
+                  }}
+                  onRemove={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "ethinicity",
+                      selectedList
+                    );
+                  }}
+                  placeholder="Select all that apply"
+                  displayValue="name"
+                  closeIcon="cancel"
+                  name={"ethinicity_" + (counter - 1)}
+                  closeOnSelect={false}
+                  showCheckbox={true}
+                  autcomplete="false"
+                  selectedValues={childProfile.ethinicity}
+                />
+                )
+              }
               <label className="field-label">
                 Ethinicity (select all choices that apply)
               </label>
@@ -1070,39 +1114,62 @@ export default function index({
           </div>
           <div className="form-group">
             <div className="field">
-              <Multiselect
-                disable={isReadonly}
-                disablePreSelectedValues={isReadonly}
-                selectedValues={childProfile.program}
-                readOnly={isReadonly}
-                disabled={isReadonly}
-                className="field-input"
-                options={PROGRAMS_OPTIONS}
-                hasSelectAll={hasSelectAll}
-                placeholder="Choose Multiple"
-                displayValue="name"
-                closeIcon="cancel"
-                id={"program_" + (counter - 1)}
-                name={"program_" + (counter - 1)}
-                closeOnSelect={false}
-                showCheckbox={true}
-                onSelect={(selectedList) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "program",
-                    selectedList
-                  );
-                }}
-                onRemove={(selectedList) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "program",
-                    selectedList
-                  );
-                }}
-              />
+              {
+                isReadonly ? (
+                // <input 
+                //   readOnly={isReadonly}
+                //   name={"program_" + (counter - 1)}
+                //   className="field-input"
+                //   placeholder="First Name"
+                //   onChange={({ target }) => {}}
+                //   ref={register({ required: true })}
+                //   defaultValue={readOnlyProgram}
+                // />
+
+                <textarea
+                  className="field-input readonly"
+                  name={"program_" + (counter - 1)}
+                  readOnly={isReadonly}
+                  defaultValue={readOnlyProgram}
+                  style={{
+                    background: "white",
+                    borderBottom: "2px solid rgb(204, 204, 204) !important",
+                    resize: "none"
+                  }}
+                >
+              </textarea>
+                ) : (
+                <Multiselect
+                  selectedValues={childProfile.program}
+                  className="field-input"
+                  options={PROGRAMS_OPTIONS}
+                  hasSelectAll={hasSelectAll}
+                  placeholder="Choose Multiple"
+                  displayValue="name"
+                  closeIcon="cancel"
+                  id={"program_" + (counter - 1)}
+                  name={"program_" + (counter - 1)}
+                  closeOnSelect={false}
+                  showCheckbox={true}
+                  onSelect={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "program",
+                      selectedList
+                    );
+                  }}
+                  onRemove={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "program",
+                      selectedList
+                    );
+                  }}
+                />
+                )
+              }
               <label className="field-label">
                 Program (select all choices that apply)
               </label>
@@ -1112,40 +1179,58 @@ export default function index({
         <div className="grid">
           <div className="form-group">
             <div className="field">
-              <Multiselect
-                disable={isReadonly}
-                disablePreSelectedValues={isReadonly}
-                selectedValues={childProfile.child_lives_with}
-                className="field-input"
-                options={CHILD_LIVES_OPTION}
-                hasSelectAll={hasSelectAll}
-                placeholder="Choose Multiple"
-                displayValue="name"
-                closeIcon="cancel"
-                name={"ch_lives_with" + (counter - 1)}
-                closeOnSelect={false}
-                showCheckbox={true}
-                onSelect={(selectedList = []) => {
+              {
+                isReadonly ? (
+                  <textarea
+                    className="field-input readonly"
+                    name={"ch_lives_with" + (counter - 1)}
+                    readOnly={isReadonly}
+                    defaultValue={readOnlyChildLivesWith}
+                  >
+                  </textarea>
+                  // <input 
+                  //   readOnly={isReadonly}
+                  //   name={"ch_lives_with" + (counter - 1)}
+                  //   className="field-input"
+                  //   placeholder="First Name"
+                  //   onChange={({ target }) => {
+                  //   }}
+                  //   ref={register({ required: true })}
+                  //   defaultValue={readOnlyChildLivesWith}
+                  // />
+                ) : (
+                <Multiselect
+                  selectedValues={childProfile.child_lives_with}
+                  className="field-input"
+                  options={CHILD_LIVES_OPTION}
+                  hasSelectAll={hasSelectAll}
+                  placeholder="Choose Multiple"
+                  displayValue="name"
+                  closeIcon="cancel"
+                  id={"ch_lives_with" + (counter - 1)}
+                  name={"ch_lives_with" + (counter - 1)}
+                  closeOnSelect={false}
+                  showCheckbox={true}
+                  onSelect={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "child_lives_with",
+                      selectedList
+                    );
+                  }}
+                  onRemove={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "child_lives_with",
+                      selectedList
+                    );
+                  }}
+                />
+                )
+              }
 
-                  console.log("selectedList select", selectedList);
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "child_lives_with",
-                    selectedList
-                  );
-                }}
-                onRemove={(selectedList = []) => {
-                  console.log("selectedList remove", selectedList);
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "child_lives_with",
-                    selectedList
-                  );
-                }}
-                ref={register({ required: true })}
-              />
               <label className="field-label">
                 <span className="required">*</span> Child lives with
               </label>

@@ -194,10 +194,12 @@ export default function index({
   const [showEmail, setShowEmail] = useState(false);
 
   const handleOtherPhone = () => {
+    if(isReadonly) return;
     setShowPhone(!showPhone);
   };
 
   const handleOtherEmail = () => {
+    if(isReadonly) return;
     setShowEmail(!showEmail);
   };
 
