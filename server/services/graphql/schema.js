@@ -284,6 +284,7 @@ const inputs = `
         child: ChildIInfoInput
         parents: [ParentInfoInput]
         updated_by: String
+        emergency_contacts: String!
     }
 `;
 const queryTypes = `
@@ -663,6 +664,7 @@ const mutations = `
         addApplication(applications: [ApplicationInput]): Status
         updateApplication(application: UpdateApplicationInput!): Status
         archivedApplications(app_ids: [String]): Status
+        unarchivedApplications(app_ids: [String]): Status
         updateVendor(vendor: VendorInput!): Vendor
         addVendorAppGroup(appGroup: AppGroupInput!): AllGroups
         saveApplication(application: SaveApplicationUserInput): Status

@@ -400,6 +400,30 @@ const resolvers = {
         };
       }
     },
+    async unarchivedApplications(root, { app_ids }, context) {
+      try {
+        for (let app_id of app_ids) {
+          let response = await unArchivedApplication(app_id);
+
+          if (response.error) {
+            return {
+              messageType: "error",
+              message: "error application unarchived"
+            };
+          }
+        }
+
+        return {
+          messageType: "info",
+          message: "application unarchived"
+        };
+      } catch (err) {
+        return {
+          messageType: "error",
+          message: "error application unarchived"
+        };
+      }
+    },
     async addVendorAppGroup(root, { appGroup }, context) {
       const vendors = appGroup.vendors;
 
@@ -425,7 +449,7 @@ const resolvers = {
 
       const previousApplication = await getApplicationByAppId(application.app_id);
 
-      const isSaved = await saveApplication({ child: application.child, parents: application.parents });
+      const isSaved = await saveApplication({ app_id: application.app_id, emergency_contacts: application.emergency_contacts, child: application.child, parents: application.parents });
 
       // const updatedApplication = await getApplicationByAppId(application.app_id);
 

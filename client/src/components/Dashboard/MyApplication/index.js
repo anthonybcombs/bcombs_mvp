@@ -93,6 +93,22 @@ export default function index() {
 
   const [emergencyContacts, setEmergencyContacts] = useState([]);
 
+  const childEmergencyContact = {
+    first_name: "",
+    last_name: "",
+    gender: "",
+    mobile_phone: "",
+    work_phone: "",
+    relationship_to_child: ""
+  }
+
+  const emergency_contacts = [
+    {...childEmergencyContact},
+    {...childEmergencyContact},
+    {...childEmergencyContact},
+    {...childEmergencyContact}
+  ]
+
   useEffect(() => {
     if(auth.user_id) {
       dispatch(requestGetApplicationByUserId(auth.user_id))
@@ -114,8 +130,6 @@ export default function index() {
     if(!Array.isArray(items)) return [];
 
     items.forEach((item, index) => {
-      console.log(item);
-      console.log(index);
       const newItem = {
         id: index,
         label: item,
@@ -136,8 +150,6 @@ export default function index() {
           e.preventDefault();
 
           const application = JSON.parse(row.details);
-
-          console.log("history application", application);
 
           const childInformationObj = {
             profile: {
@@ -244,6 +256,8 @@ export default function index() {
 
           if(application.emergency_contacts) {
             setEmergencyContacts(JSON.parse(application.emergency_contacts));
+          } else {
+            setEmergencyContacts(emergency_contacts);
           }
           
         }}
@@ -258,9 +272,7 @@ export default function index() {
         href=""
         target="_blank" 
         onClick={(e) => {
-          e.preventDefault();
-
-          console.log("application", application);
+          e.preventDefault()
 
           const childInformationObj = {
             profile: {
@@ -373,6 +385,8 @@ export default function index() {
 
           if(application.emergency_contacts) {
             setEmergencyContacts(JSON.parse(application.emergency_contacts));
+          } else {
+            setEmergencyContacts(emergency_contacts);
           }
 
           setChildInformation(childInformationObj);
@@ -613,7 +627,6 @@ export default function index() {
   const DATE_TIME_FORMAT2 = "yyyy-MM-dd hh:mm:ss";
 
   const onSubmitSaveApplication = () => {
-    console.log("Click Save Application");
 
     const payload = {
       app_id: selectedApplication.app_id,
@@ -674,10 +687,9 @@ export default function index() {
         ch_id: childInformation.ch_id
       },
       parents: setupParentsList(),
+      emergency_contacts: JSON.stringify(emergencyContacts),
       updated_by: auth.name
     }
-
-    console.log("Submit update application", payload)
 
     dispatch(requestSaveApplication(payload));
   }
@@ -690,15 +702,15 @@ export default function index() {
   const handleChangeToEdit = (e) => {
     e.preventDefault();
     setIsReadonly(!isReadonly);
-
-    console.log("childInformation", selectedApplication);
   }
+
+  console.log("loading", loading);
 
   return (
     <MyApplicationStyled>
 
       {
-        applications.userAllApplications && applications.userAllApplications.length > 0 ?
+        !loading.userAllApplications && userApplications.length > 0 ?
         (
           <>
           <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
@@ -771,6 +783,7 @@ export default function index() {
                           isReadonly={isReadonly}
                           isUpdate={true}
                           emergencyContacts={emergencyContacts}
+                          errors={errors}
                         />
                         <TermsWaiverFormViewStyled
                           application={selectedApplication}

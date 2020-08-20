@@ -367,13 +367,47 @@ export const unArchivedApplication = async (app_id) => {
   }
 }
 
+export const updateEmergencyConctacts = async (app_id, emergencyContacts) => {
+  const db = makeDb();
+  let result = {};
+
+  try {
+    result = await db.query(
+      `UPDATE application SET
+        emergency_contacts=?
+        WHERE app_id=UUID_TO_BIN(?)`,
+      [
+        emergencyContacts,
+        app_id
+      ]
+    );
+  } catch(err) {
+    console.log("update emergency contacts", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
 export const saveApplication = async ({
+  app_id,
   child,
-  parents
+  parents,
+  emergency_contacts
 }) => {
   let childResult = await updateChild(child);
   let parentResult;
+  let ecResult;
   let p_updatedRows = false;
+  let ec_updatedRows = false;
+
+  if(emergency_contacts) {
+    ecResult = await updateEmergencyConctacts(app_id, emergency_contacts);
+
+    if(ecResult && ecResult.changedRows > 0) {
+      ec_updatedRows = true;
+    }
+  }
 
   console.log("parents", parents);
 
@@ -387,7 +421,7 @@ export const saveApplication = async ({
     }
   }
 
-  if((childResult && childResult.changedRows > 0) || p_updatedRows) {
+  if((childResult && childResult.changedRows > 0) || p_updatedRows || ec_updatedRows ) {
     return true;
   }
   return false;

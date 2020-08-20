@@ -56,9 +56,7 @@ export default function index({
     work_phone: "-",
     relationship_to_child: "-"
   }]
-
-  console.log("parents", parents);
-
+  
   const renderParentForm = () => {
 
 

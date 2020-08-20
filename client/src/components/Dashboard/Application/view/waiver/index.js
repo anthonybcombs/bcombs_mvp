@@ -17,10 +17,8 @@ const TermsWaiverFormViewStyled = styled.div`
 export default function index({
   application
 }) {
-  console.log("Application", application)
-  const pDate = moment(application.section1_date_signed).format("DD/MM/YYYY");
 
-  console.log("PDATE ", pDate);
+  const pDate = moment(application.section1_date_signed).format("DD/MM/YYYY");
 
   const termsWaiver = {
     section1: {

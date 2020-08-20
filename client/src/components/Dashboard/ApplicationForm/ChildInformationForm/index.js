@@ -145,9 +145,6 @@ export default function index({
   app_programs = [],
   location_sites = [],
 }) {
-
-  console.log("profile child", childProfile);
-
   const hasSelectAll = false;
 
   const GENDER_OPTIONS = [
@@ -458,7 +455,7 @@ export default function index({
                       padding: "5px 3px"
                     }}
                   >
-                    <button className="datepicker-btn">
+                    <button className="datepicker-btn" onClick={(e) => {e.preventDefault()}}>
                       <FontAwesomeIcon
                         icon={faAngleLeft}
                         onClick={decreaseMonth}
@@ -488,7 +485,7 @@ export default function index({
                         </option>
                       ))}
                     </select>
-                    <button className="datepicker-btn">
+                    <button className="datepicker-btn" onClick={(e) => {e.preventDefault()}}>
                       <FontAwesomeIcon
                         icon={faAngleRight}
                         onClick={increaseMonth}
