@@ -175,6 +175,7 @@ export default function index({
                     target.value
                   );
                 }}
+                defaultValue={parentEmergencyContacts[i].gender}
                 ref={register({
                   required: i <= 1
                 })}>
