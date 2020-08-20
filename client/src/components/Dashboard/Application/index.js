@@ -153,7 +153,7 @@ export default function index() {
   }
 
   if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
-    //window.location.reload(false);
+    window.location.reload(false);
   }
   
   useEffect(() => {
@@ -307,9 +307,9 @@ export default function index() {
 
     if(application.emergency_contacts) {
       setEmergencyContacts(JSON.parse(application.emergency_contacts));
+    } else {
+      setEmergencyContacts(emergency_contacts);
     }
-
-    console.log("items", items);
 
     setChildInformation(childInformationObj);
 
@@ -317,6 +317,22 @@ export default function index() {
 
     setUpdateApplication({...temp});
   }
+
+  const childEmergencyContact = {
+    first_name: "",
+    last_name: "",
+    gender: "",
+    mobile_phone: "",
+    work_phone: "",
+    relationship_to_child: ""
+  }
+
+  const emergency_contacts = [
+    {...childEmergencyContact},
+    {...childEmergencyContact},
+    {...childEmergencyContact},
+    {...childEmergencyContact}
+  ]
 
   const handleUpdateOnchange = (id, value) => {
 
@@ -466,6 +482,7 @@ export default function index() {
         ch_id: childInformation.ch_id
       },
       parents: setupParentsList(),
+      emergency_contacts: JSON.stringify(emergencyContacts),
       updated_by: auth.name
     }
 

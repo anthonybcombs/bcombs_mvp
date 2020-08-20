@@ -7,13 +7,14 @@ import {
   USER_APPLICATION_QUERY,
   APPLICATION_UPDATE_MUTATION ,
   ARCHIVED_APPLICATION_MUTATION,
+  UNARCHIVED_APPLICATION_MUTATION,
   GET_ARCHIVED_APPLICATIONS_QUERY,
   GET_APPLICATION_ID_QUERY,
   APPLICATION_SAVE_MUTATION,
   GET_APPLICATION_USER_ID_QUERY
 } from "../../graphql/applicationMutation";
 import * as actionType from "./Constant";
-import { setApplicationLoading } from "./Loading";
+import { setApplicationLoading, setUserApplicationLoading } from "./Loading";
 
 const getApplicationIdFromDatabase = (id) => {
   return new Promise(async (resolve, reject) => {
@@ -94,6 +95,23 @@ const archivedApplicationToDatabase = (applications) => {
       });
 
       return resolve(data.archivedApplications);
+    } catch(error) {
+      reject(error)
+    }
+  });
+}
+
+const unarchivedApplicationToDatabase = (applications) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: UNARCHIVED_APPLICATION_MUTATION,
+        variables: {
+          app_ids: applications
+        }
+      });
+
+      return resolve(data.unarchivedApplications);
     } catch(error) {
       reject(error)
     }
@@ -230,6 +248,13 @@ export const requestArchivedAppplication = application => {
   }
 }
 
+export const requestUnarchivedAppplication = application => {
+  return {
+    type: actionType.REQUEST_UNARCHIVED_APPLICATION,
+    application
+  }
+}
+
 export const requestGetArchivedApplications = vendor_id => {
   return {
     type: actionType.REQUEST_GET_ARCHIVED_APPLICATION,
@@ -270,9 +295,9 @@ export function* getApplicationById({id}) {
 
 export function* getApplicationByUserId({user_id}) {
   try {
-    
+    yield put(setUserApplicationLoading(true));
     const response = yield call(getApplicationUserIdFromDatabase, user_id);
-
+    yield put(setUserApplicationLoading(false));
     console.log("response", response);
     if(response) {
       yield put({
@@ -289,6 +314,33 @@ export function* getApplicationByUserId({user_id}) {
     yield put({
       type: actionType.REQUEST_GET_APPLICATION_USER_ID_COMPLETED,
       payload: []
+    })
+  }
+}
+
+
+export function* unarchivedApplication({application}) {
+  try {
+    yield put(setApplicationLoading(true));
+    const response = yield call(unarchivedApplicationToDatabase, application);
+    yield put(setApplicationLoading(false));
+
+    if(response) {
+      yield put({
+        type: actionType.REQUEST_UNARCHIVED_APPLICATION_COMPLETED,
+        payload: response
+      })
+    } else {
+      yield put({
+        type: actionType.REQUEST_UNARCHIVED_APPLICATION_COMPLETED,
+        payload: {}
+      })
+    }
+  } catch (err) {
+    console.log("Unarchived Error: ", err);
+    yield put({
+      type: actionType.REQUEST_UNARCHIVED_APPLICATION_COMPLETED,
+      payload: {}
     })
   }
 }

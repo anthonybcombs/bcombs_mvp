@@ -27,6 +27,15 @@ export const ARCHIVED_APPLICATION_MUTATION = gql`
   }
 `;
 
+export const UNARCHIVED_APPLICATION_MUTATION = gql`
+  mutation application($app_ids: [String]) {
+    unarchivedApplications(app_ids: $app_ids) {
+      messageType
+      message
+    }
+  }
+`;
+
 export const APPLICATION_SAVE_MUTATION = gql`
   mutation application($application: SaveApplicationUserInput) {
     saveApplication(application: $application) {

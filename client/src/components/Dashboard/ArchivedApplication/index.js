@@ -9,9 +9,10 @@ import DataTable from "react-data-table-component";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./SearchDate.css";
+import Loading from "../../../helpers/Loading.js";
 
 import { requestVendor } from "../../../redux/actions/Vendors";
-import { requestGetArchivedApplications } from "../../../redux/actions/Application"
+import { requestGetArchivedApplications, requestUnarchivedAppplication } from "../../../redux/actions/Application"
 import ArchivedApplicationListStyled from "./list";
 
 const ArchivedApplicationStyled = styled.div`
@@ -49,6 +50,10 @@ export default function index() {
     }
   );
 
+  if(applications.unarchivedapplication && applications.unarchivedapplication.message == "application unarchived") {
+    window.location.reload(false);
+  }
+
   useEffect(() => {
     if(auth.user_id) {
       dispatch(requestVendor(auth.user_id));
@@ -63,14 +68,30 @@ export default function index() {
 
   console.log("archived list", applications);
 
+  const handleUnarchived = (app_id) => {
+
+    let arr_app_id = [];
+    arr_app_id.push(app_id);
+
+    dispatch(requestUnarchivedAppplication(arr_app_id));
+  }
+
   return (
     <ArchivedApplicationStyled>
       <h2>Archived</h2>
       <div id="applicationList">
         <div id="tableSection">
-          <ArchivedApplicationListStyled
-            archivedapplications={applications.archivedlist}
-          />
+          {
+            loading.application ? (
+              <Loading />
+            ) : (
+              <ArchivedApplicationListStyled
+                archivedapplications={applications.archivedlist}
+                handleUnarchived={handleUnarchived}
+              />
+            )
+          }
+
         </div>
       </div>
     </ArchivedApplicationStyled>
