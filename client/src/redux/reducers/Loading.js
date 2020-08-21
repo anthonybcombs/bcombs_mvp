@@ -7,7 +7,8 @@ export default function Loading(
     events: true,
     profile: true,
     application: false,
-    form_settings: false
+    form_settings: false,
+    userAllApplications: false
   },
   action
 ) {
@@ -41,6 +42,11 @@ export default function Loading(
       return  {
         ...state,
         application: action.value
+      }
+    case actionType.SET_USER_APPLICATION_LOADING:
+      return  {
+        ...state,
+        userAllApplications: action.value
       }
     case actionType.SET_FORM_SETTINGS_LOADING:
       return {

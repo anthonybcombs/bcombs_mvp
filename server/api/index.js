@@ -409,7 +409,7 @@ router.put("/user/profile", async (req, res) => {
     }
 
     if (otherInfo.parent_ids && otherInfo.parent_ids.length > 0) {
-      const parentIds = otherInfo.parent_ids.map(id => `UUID_TO_BIN("${id}")`);
+      const parentIds = otherInfo.parent_ids.map(id => `UUID_TO_BIN('${id}')`);
       console.log("Parent Ids", parentIds);
       await db.query(
         `UPDATE parent SET firstname=?,lastname=?,address=?,zip_code=? WHERE parent_id IN (${parentIds.join(

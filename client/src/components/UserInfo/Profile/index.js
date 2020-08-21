@@ -43,7 +43,7 @@ export default function index({ navigate }) {
           ...profileDetails.personalInfo,
           firstname: user.profile.first_name,
           lastname: user.profile.last_name,
-          birth_date: user.profile.birth_date,
+          dateofbirth: user.profile.birth_date,
           zipcode: user.profile.zip_code
         }
       });

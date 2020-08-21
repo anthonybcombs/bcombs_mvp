@@ -41,7 +41,14 @@ import {
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
-import { getVendors, updateVendor, addVendor, addAppGroup, getVendorAppGroups } from "../../api/vendor";
+import { 
+  getVendors, 
+  updateVendor, 
+  addVendor, 
+  addAppGroup, 
+  getVendorAppGroups,
+  getVendorsByUserId 
+} from "../../api/vendor";
 import {
   createApplication,
   getApplicationsByVendor,
@@ -49,10 +56,18 @@ import {
   archivedApplication,
   unArchivedApplication,
   getArchivedApplicationsByVendor,
-  getApplicationById
+  getApplicationById,
+  addApplicationUser,
+  saveApplication,
+  getApplicationHistoryById,
+  addApplicationHistory,
+  getApplicationByAppId,
+  getUserApplicationsByUserId
 } from "../../api/applications";
 import { addChild, getChildInformation } from "../../api/child";
 import { addParent, getParentByApplication } from "../../api/parents";
+
+import { getUserFromDatabase } from "../../api";
 
 const resolvers = {
   RootQuery: {
@@ -119,17 +134,17 @@ const resolvers = {
       return vendors;
     },
     async vendorsByUser(root, { user }, context) {
-      const vendors = await getVendors();
+      const vendors = await getVendorsByUserId(user);
       console.log("vendors", vendors);
-      let vendor = vendors.filter(vendor => {
-        return user == vendor.user;
-      });
+      // let vendor = vendors.filter(vendor => {
+      //   return user == vendor.user;
+      // });
 
-      if (vendor && vendor.length > 0) {
-        return vendor;
+      if (vendors && vendors.length > 0) {
+        return vendors;
       } else {
-        vendor = await addVendor({ user: user });
-        return vendor;
+        vendors = await addVendor({ user: user });
+        return vendors;
       }
     },
     async getVendorApplications(root, { vendor_id }, context) {
@@ -156,6 +171,14 @@ const resolvers = {
         console.log("Get User Applications response", response);
         return response;
       } catch (err) {
+        console.log("Get User Applications", err);
+      }
+    },
+    async getUserApplicationsByUserId(root, { user_id }, context) {
+      try {
+        const response = await getUserApplicationsByUserId( user_id );
+        return response;
+      } catch(err) {
         console.log("Get User Applications", err);
       }
     },
@@ -315,6 +338,12 @@ const resolvers = {
 
             console.log("add user res:", addUser);
           }
+
+          const parentUser = await getUserFromDatabase(parent.email_address);
+
+          console.log("parent user", parentUser);
+
+          await addApplicationUser({user_id: parentUser.id, app_id: application.app_id});
         }
       }
 
@@ -371,6 +400,30 @@ const resolvers = {
         };
       }
     },
+    async unarchivedApplications(root, { app_ids }, context) {
+      try {
+        for (let app_id of app_ids) {
+          let response = await unArchivedApplication(app_id);
+
+          if (response.error) {
+            return {
+              messageType: "error",
+              message: "error application unarchived"
+            };
+          }
+        }
+
+        return {
+          messageType: "info",
+          message: "application unarchived"
+        };
+      } catch (err) {
+        return {
+          messageType: "error",
+          message: "error application unarchived"
+        };
+      }
+    },
     async addVendorAppGroup(root, { appGroup }, context) {
       const vendors = appGroup.vendors;
 
@@ -391,6 +444,34 @@ const resolvers = {
       response = await getUserGroups(appGroup.email);
 
       return response;
+    },
+    async saveApplication(root, { application }, context) {
+
+      const previousApplication = await getApplicationByAppId(application.app_id);
+
+      const isSaved = await saveApplication({ app_id: application.app_id, emergency_contacts: application.emergency_contacts, child: application.child, parents: application.parents });
+
+      // const updatedApplication = await getApplicationByAppId(application.app_id);
+
+      console.log("isSaved", isSaved);
+
+      if(isSaved) {
+        const params = {
+          app_id: application.app_id,
+          details: JSON.stringify(previousApplication),
+          updated_by: application.updated_by
+        }
+        await addApplicationHistory(params)
+      }
+
+      // const appHistories = await getApplicationHistoryById(application.app_id);
+
+      // console.log("updatedApplication", updatedApplication);
+
+      return {
+        messageType: "info",
+        message: "application successfully updated"
+      }
     }
   }
 };

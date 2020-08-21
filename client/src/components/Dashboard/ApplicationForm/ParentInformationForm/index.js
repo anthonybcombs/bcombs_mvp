@@ -116,7 +116,8 @@ export default function index({
   register,
   errors,
   isReadonly = false,
-  ProfileImg,
+  isUpdate = false,
+  ProfileImg
 }) {
   let confirmed_passwords = [];
 
@@ -193,10 +194,12 @@ export default function index({
   const [showEmail, setShowEmail] = useState(false);
 
   const handleOtherPhone = () => {
+    if(isReadonly) return;
     setShowPhone(!showPhone);
   };
 
   const handleOtherEmail = () => {
+    if(isReadonly) return;
     setShowEmail(!showEmail);
   };
 
@@ -206,10 +209,10 @@ export default function index({
         Family Information {counter > 1 ? `(${counter})` : ""}
       </h3>
       <div className="parent-info-wrapper">
-        <div className="img-profile-wrapper">
+        {/* <div className="img-profile-wrapper">
           <img src={ProfileImg} width="80" height="80" />
           {!isReadonly && <input name={"ch_img" + (counter - 1)} type="file" />}
-        </div>
+        </div> */}
         <div className="grid-2">
           <div className="form-group">
             <div className="field">
@@ -227,10 +230,10 @@ export default function index({
                   );
                 }}
                 ref={register({ required: true })}
-                defaultValue={parentProfile.first_name}
+                defaultValue={parentProfile?.first_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for="parent_firstname">
+              <label className="field-label">
                 <span className="required">*</span> First Name
               </label>
             </div>
@@ -257,10 +260,10 @@ export default function index({
                   );
                 }}
                 ref={register({ required: true })}
-                defaultValue={parentProfile.last_name}
+                defaultValue={parentProfile?.last_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for="parent_lastname">
+              <label className="field-label">
                 <span className="required">*</span> Last Name
               </label>
             </div>
@@ -277,7 +280,7 @@ export default function index({
             <div className="field">
               {!isReadonly ? (
                 <select
-                  defaultValue={parentProfile.phone_type}
+                  defaultValue={parentProfile?.phone_type}
                   name="parent_phonetype"
                   className="field-input"
                   onChange={({ target }) => {
@@ -301,7 +304,7 @@ export default function index({
                   name="parent_phonetype"
                   className="field-input"
                   placeholder="Type"
-                  defaultValue={parentProfile.phone_type}
+                  defaultValue={parentProfile?.phone_type}
                   readOnly={isReadonly}
                 />
               )}
@@ -336,7 +339,7 @@ export default function index({
                       target.value
                     );
                   }}
-                  defaultValue={parentProfile.phone_number}
+                  defaultValue={parentProfile?.phone_number}
                   format="(###) ###-####"
                   mask="_"
                   getInputRef={register({
@@ -356,14 +359,14 @@ export default function index({
               ) : (
                 <input
                   id="parent_phonenumber"
-                  defaultValue={parentProfile.phone_number}
+                  defaultValue={parentProfile?.phone_number}
                   readOnly={isReadonly}
                   name={"parent_phonenumber" + (counter - 1)}
                   className="field-input"
                   placeholder="Phone Number"
                 />
               )}
-              <label className="field-label" for="parent_phonenumber">
+              <label className="field-label">
                 <span className="required">*</span> Phone Number
               </label>
             </div>
@@ -386,7 +389,7 @@ export default function index({
               <div className="field">
                 {!isReadonly ? (
                   <select
-                    defaultValue={parentProfile.phone_type}
+                    defaultValue={parentProfile?.phone_type}
                     name="parent_phonetype2"
                     className="field-input"
                     onChange={({ target }) => {
@@ -410,7 +413,7 @@ export default function index({
                     name="parent_phonetype"
                     className="field-input"
                     placeholder="Type"
-                    defaultValue={parentProfile.phone_type2}
+                    defaultValue={parentProfile?.phone_type2}
                     readOnly={isReadonly}
                   />
                 )}
@@ -434,7 +437,7 @@ export default function index({
                         target.value
                       );
                     }}
-                    defaultValue={parentProfile.phone_number2}
+                    defaultValue={parentProfile?.phone_number2}
                     format="(###) ###-####"
                     mask="_"
                     getInputRef={register({
@@ -452,14 +455,14 @@ export default function index({
                 ) : (
                   <input
                     id="parent_phonenumber2"
-                    defaultValue={parentProfile.phone_number}
+                    defaultValue={parentProfile?.phone_number}
                     readOnly={isReadonly}
                     name={"parent_phonenumber2" + (counter - 1)}
                     className="field-input"
                     placeholder="Phone Number"
                   />
                 )}
-                <label className="field-label" for="parent_phonenumber2">Phone Number</label>
+                <label className="field-label">Phone Number</label>
               </div>
               <ErrorMessage
                 field={errors["parent_phonenumber2" + (counter - 1)]}
@@ -474,7 +477,7 @@ export default function index({
             <div className="field">
               {!isReadonly ? (
                 <select
-                  defaultValue={parentProfile.email_type}
+                  defaultValue={parentProfile?.email_type}
                   name="parent_emailtype"
                   className="field-input"
                   onChange={({ target }) => {
@@ -495,7 +498,7 @@ export default function index({
                 </select>
               ) : (
                 <input
-                  defaultValue={parentProfile.email_type}
+                  defaultValue={parentProfile?.email_type}
                   readOnly={isReadonly}
                   name="parent_emailtype"
                   className="field-input"
@@ -524,6 +527,7 @@ export default function index({
                 type="text"
                 id="parent_emailaddress"
                 defaultValue={parentProfile.email_address}
+                defaultValue={parentProfile?.email_address}
                 readOnly={isReadonly}
                 name={"parent_emailaddress" + (counter - 1)}
                 className="field-input"
@@ -544,7 +548,7 @@ export default function index({
                   },
                 })}
               />
-              <label className="field-label" for="parent_emailaddress">
+              <label className="field-label">
                 <span className="required">*</span> Email Address
               </label>
             </div>
@@ -566,7 +570,7 @@ export default function index({
               <div className="field">
                 {!isReadonly ? (
                   <select
-                    defaultValue={parentProfile.email_type2}
+                    defaultValue={parentProfile?.email_type2}
                     name="parent_emailtype2"
                     className="field-input"
                     onChange={({ target }) => {
@@ -587,7 +591,7 @@ export default function index({
                   </select>
                 ) : (
                   <input
-                    defaultValue={parentProfile.email_type2}
+                    defaultValue={parentProfile?.email_type2}
                     readOnly={isReadonly}
                     name="parent_emailtype"
                     className="field-input"
@@ -604,7 +608,7 @@ export default function index({
                 <input
                   type="text"
                   id="parent_emailaddress2"
-                  defaultValue={parentProfile.email_address2}
+                  defaultValue={parentProfile?.email_address2}
                   readOnly={isReadonly}
                   name={"parent_emailaddress2" + (counter - 1)}
                   className="field-input"
@@ -624,7 +628,7 @@ export default function index({
                     },
                   })}
                 />
-                <label className="field-label" for="parent_emailaddress2"> Email Address</label>
+                <label className="field-label"> Email Address</label>
               </div>
               <ErrorMessage
                 field={errors["parent_emailaddress2" + (counter - 1)]}
@@ -635,7 +639,7 @@ export default function index({
           </div>
         )}
 
-        {!isReadonly && (
+        {!isUpdate && (
           <div className="grid-2">
             <div className="form-group">
               <div className="field">
@@ -677,7 +681,7 @@ export default function index({
                     },
                   })}
                 />
-                <label className="field-label" for="password">
+                <label className="field-label">
                   <span className="required">*</span> Password
                 </label>
               </div>
@@ -734,7 +738,7 @@ export default function index({
                     },
                   })}
                 />
-                <label className="field-label" for="parent_confirmed_paswword">
+                <label className="field-label">
                   <span className="required">*</span> Confirmed Password
                 </label>
               </div>
@@ -798,9 +802,9 @@ export default function index({
                   );
                 }}
                 readOnly={isReadonly}
-                defaultValue={parentProfile.address}
+                defaultValue={parentProfile?.address}
               />
-              <label className="field-label" for="parentAddress">Address</label>
+              <label className="field-label">Address</label>
             </div>
           </div>
 
@@ -820,9 +824,9 @@ export default function index({
                   );
                 }}
                 readOnly={isReadonly}
-                defaultValue={parentProfile.city}
+                defaultValue={parentProfile?.city}
               />
-              <label className="field-label" for="parentCity">City</label>
+              <label className="field-label">City</label>
             </div>
           </div>
         </div>
@@ -848,7 +852,7 @@ export default function index({
                       target.value
                     );
                   }}
-                  defaultValue={parentProfile.state}
+                  defaultValue={parentProfile?.state}
                 >
                   <option value="">Select</option>
                   {STATES.map((opt, index) => (
@@ -861,7 +865,7 @@ export default function index({
                 <input
                   type="text"
                   className="field-input"
-                  defaultValue={parentProfile.state}
+                  defaultValue={parentProfile?.state}
                   readOnly={isReadonly}
                   placeholder="State"
                   name="parentstate"
@@ -888,9 +892,9 @@ export default function index({
                 }}
                 ref={register({ maxLength: 5 })}
                 readOnly={isReadonly}
-                defaultValue={parentProfile.zip_code}
+                defaultValue={parentProfile?.zip_code}
               />
-              <label className="field-label" for="parentzipcode">Zip Code</label>
+              <label className="field-label">Zip Code</label>
             </div>
           </div>
         </div>
@@ -912,9 +916,9 @@ export default function index({
                   );
                 }}
                 readOnly={isReadonly}
-                defaultValue={parentProfile.zip_code}
+                defaultValue={parentProfile?.zip_code}
               />
-              <label className="field-label" for="parentoccupation">Occupation</label>
+              <label className="field-label">Occupation</label>
             </div>
           </div>
 
@@ -934,9 +938,9 @@ export default function index({
                   );
                 }}
                 readOnly={isReadonly}
-                defaultValue={parentProfile.employer_name}
+                defaultValue={parentProfile?.employer_name}
               />
-              <label className="field-label" for="parentemployer">Employer's Name</label>
+              <label className="field-label">Employer's Name</label>
             </div>
           </div>
         </div>
@@ -962,7 +966,7 @@ export default function index({
                 }}
                 ref={register({ required: true })}
                 readOnly={isReadonly}
-                defaultValue={parentProfile.goals_parent_program}
+                defaultValue={parentProfile?.goals_parent_program}
               ></textarea>
             </div>
             <ErrorMessage
@@ -994,7 +998,7 @@ export default function index({
                 }}
                 ref={register({ required: true })}
                 readOnly={isReadonly}
-                defaultValue={parentProfile.goals_child_program}
+                defaultValue={parentProfile?.goals_child_program}
               ></textarea>
             </div>
             <ErrorMessage
@@ -1021,7 +1025,7 @@ export default function index({
                 );
               }}
               value="1"
-              checked={parentProfile.live_area == 1}
+              checked={parentProfile?.live_area == 1}
               readOnly={isReadonly}
             />
             <span className="checkmark"></span>
@@ -1039,7 +1043,7 @@ export default function index({
                 );
               }}
               value="2"
-              checked={parentProfile.live_area == 2}
+              checked={parentProfile?.live_area == 2}
             />
             <span className="checkmark"></span>
           </label>
@@ -1056,7 +1060,7 @@ export default function index({
                 );
               }}
               value="3"
-              checked={parentProfile.live_area == 3}
+              checked={parentProfile?.live_area == 3}
               readOnly={isReadonly}
             />
             <span className="checkmark"></span>
@@ -1072,7 +1076,7 @@ export default function index({
             <div className="field">
               {!isReadonly ? (
                 <select
-                  defaultValue={parentProfile.level_education}
+                  defaultValue={parentProfile?.level_education}
                   name="parent_educationlevel"
                   className="field-input"
                   onChange={({ target }) => {
@@ -1095,7 +1099,7 @@ export default function index({
                 <input
                   name="parent_educationlevel"
                   className="field-input"
-                  defaultValue={parentProfile.level_education}
+                  defaultValue={parentProfile?.level_education}
                   readOnly={isReadonly}
                   placeholder="level of education"
                   type="text"
@@ -1114,7 +1118,7 @@ export default function index({
             <div className="field">
               {!isReadonly ? (
                 <select
-                  defaultValue={parentProfile.child_importance_hs}
+                  defaultValue={parentProfile?.child_importance_hs}
                   name="child_importance_hs"
                   className="field-input"
                   onChange={({ target }) => {
@@ -1138,7 +1142,7 @@ export default function index({
                   type="text"
                   name="child_importance_hs"
                   className="field-input"
-                  defaultValue={parentProfile.child_importance_hs}
+                  defaultValue={parentProfile?.child_importance_hs}
                   readOnly={isReadonly}
                   placeholder="Explain"
                 />
@@ -1166,7 +1170,7 @@ export default function index({
                       target.value
                     );
                   }}
-                  defaultValue={parentProfile.child_importance_col}
+                  defaultValue={parentProfile?.child_importance_col}
                 >
                   <option value="">Select Type</option>
                   {IMPORTANCE_OPTIONS.map((opt, index) => (
@@ -1179,7 +1183,7 @@ export default function index({
                 <input
                   type="text"
                   className="field-input"
-                  defaultValue={parentProfile.child_importance_col}
+                  defaultValue={parentProfile?.child_importance_col}
                   readOnly={isReadonly}
                   placeholder="Explain"
                 />
@@ -1191,7 +1195,7 @@ export default function index({
         <div>
           <div className="form-group">
             <div>
-              <label className="field-label-simple" for="parent_person_recommend">
+              <label className="field-label-simple">
                 <span className="required">*</span> How did you find us?
               </label>
               <input
@@ -1212,7 +1216,7 @@ export default function index({
                   }
                 }}
                 ref={register({ required: true })}
-                defaultValue={parentProfile.person_recommend}
+                defaultValue={parentProfile?.person_recommend}
               />
             </div>
             <ErrorMessage

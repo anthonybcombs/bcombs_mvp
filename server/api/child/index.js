@@ -246,7 +246,7 @@ export const addChild = async ({
     )
 
     lastId = result.insertId;
-    child = await db.query("SELECT (BIN_TO_UUID(ch_id)) as ch_id FROM child WHERE id=?", [lastId]);
+    child = await db.query(`SELECT (BIN_TO_UUID(ch_id)) as ch_id FROM child WHERE id=?`, [lastId]);
     child = child.length > 0 ? child[0]: "";
 
   } catch(err) {
@@ -256,5 +256,183 @@ export const addChild = async ({
     console.log("Add child", result);
     console.log("ID ID ID", child);
     return child;
+  }
+}
+
+export const updateChild = async ({
+  firstname,
+  lastname,
+  age,
+  birthdate,
+  gender,
+  phone_type,
+  phone_number,
+  email_type,
+  email_address,
+  phone_type2,
+  phone_number2,
+  email_type2,
+  email_address2,
+  address,
+  city,
+  state,
+  zip_code,
+  location_site,
+  ethnicities,
+  programs,
+  school_name,
+  school_phone,
+  has_suspended,
+  reason_suspended,
+  year_taken,
+  hobbies,
+  life_events, 
+  career_goals,
+  colleges,
+  affiliations,
+  awards,
+  accomplishments,
+  mentee_gain_program,
+  grade_number,
+  grade_desc,
+  class_rank,
+  gpa_quarter_year,
+  gpa_quarter_q1,
+  gpa_quarter_q2,
+  gpa_quarter_q3,
+  gpa_quarter_q4,
+  gpa_cumulative_year,
+  gpa_cumulative_q1,
+  gpa_cumulative_q2,
+  gpa_cumulative_q3,
+  gpa_cumulative_q4,
+  doctor_name,
+  doctor_phone,
+  hospital_preference,
+  hospital_phone,
+  child_lives_with,
+  ch_id
+}) => {
+
+  const db = makeDb();
+  let result;
+
+  try {
+
+    result = await db.query(
+      `UPDATE child SET 
+        firstname=?,
+        lastname=?,
+        age=?,
+        birthdate=?,
+        gender=?,
+        phone_type=?,
+        phone_number=?,
+        email_type=?,
+        email_address=?,
+        phone_type2=?,
+        phone_number2=?,
+        email_type2=?,
+        email_address2=?,
+        address=?,
+        city=?,
+        state=?,
+        zip_code=?,
+        location_site=?,
+        ethnicities=?,
+        programs=?,
+        school_name=?,
+        school_phone=?,
+        has_suspended=?,
+        reason_suspended=?,
+        year_taken=?,
+        hobbies=?,
+        life_events=?, 
+        career_goals=?,
+        colleges=?,
+        affiliations=?,
+        awards=?,
+        accomplishments=?,
+        mentee_gain_program=?,
+        grade_number=?,
+        grade_desc=?,
+        class_rank=?,
+        gpa_quarter_year=?,
+        gpa_quarter_q1=?,
+        gpa_quarter_q2=?,
+        gpa_quarter_q3=?,
+        gpa_quarter_q4=?,
+        gpa_cumulative_year=?,
+        gpa_cumulative_q1=?,
+        gpa_cumulative_q2=?,
+        gpa_cumulative_q3=?,
+        gpa_cumulative_q4=?,
+        doctor_name=?,
+        doctor_phone=?,
+        hospital_preference=?,
+        hospital_phone=?,
+        child_lives_with=?
+        WHERE ch_id=UUID_TO_BIN(?)
+      `,
+      [
+        firstname,
+        lastname,
+        age,
+        birthdate,
+        gender,
+        phone_type,
+        phone_number,
+        email_type,
+        email_address,
+        phone_type2,
+        phone_number2,
+        email_type2,
+        email_address2,
+        address,
+        city,
+        state,
+        zip_code,
+        location_site,
+        ethnicities,
+        programs,
+        school_name,
+        school_phone,
+        has_suspended,
+        reason_suspended,
+        year_taken,
+        hobbies,
+        life_events, 
+        career_goals,
+        colleges,
+        affiliations,
+        awards,
+        accomplishments,
+        mentee_gain_program,
+        grade_number,
+        grade_desc,
+        class_rank,
+        gpa_quarter_year,
+        gpa_quarter_q1,
+        gpa_quarter_q2,
+        gpa_quarter_q3,
+        gpa_quarter_q4,
+        gpa_cumulative_year,
+        gpa_cumulative_q1,
+        gpa_cumulative_q2,
+        gpa_cumulative_q3,
+        gpa_cumulative_q4,
+        doctor_name,
+        doctor_phone,
+        hospital_preference,
+        hospital_phone,
+        child_lives_with,
+        ch_id
+      ]
+    );
+  } catch(error) {
+    console.log(error)
+  } finally {
+    await db.close();
+    return result;
   }
 }

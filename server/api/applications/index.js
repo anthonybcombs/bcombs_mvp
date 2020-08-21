@@ -1,5 +1,15 @@
 import { makeDb } from "../../helpers/database";
 
+import { updateChild, getChildInformation } from "../child";
+import { updateParent, getParentByApplication } from "../parents";
+
+import { 
+  getVendorAppGroupsByVendorId, 
+  getVendorName, 
+  getVendorAppProgram,
+  getVendorAppLocationSite 
+} from "../vendor";
+
 export const getApplicationById = async (id) => {
   const db = makeDb();
   let result = [];
@@ -28,7 +38,8 @@ export const getApplicationById = async (id) => {
         section3_text,
         section1_name,
         section2_name,
-        section3_name
+        section3_name,
+        emergency_contacts
         FROM application
         WHERE id=?
         ORDER BY id DESC`,
@@ -42,6 +53,62 @@ export const getApplicationById = async (id) => {
     return result;
   }
 };
+
+export const getApplicationByAppId = async (app_id) => {
+  const db = makeDb();
+  let application;
+  try {
+    const applications = await db.query (
+      `SELECT 
+        id,
+        BIN_TO_UUID(app_id) as app_id, 
+        BIN_TO_UUID(vendor) as vendor, 
+        BIN_TO_UUID(child) as child,
+        section1_signature,
+        section1_date_signed,
+        section2_signature,
+        section2_date_signed,
+        section3_signature,
+        section3_date_signed,
+        verification,
+        student_status,
+        color_designation,
+        notes,
+        class_teacher,
+        application_date,
+        archived_date,
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name,
+        emergency_contacts
+        FROM application
+        WHERE app_id=UUID_TO_BIN(?)
+      `,
+        [app_id]
+    )
+
+    if(applications.length > 0) {
+      application = applications[0];
+      const child = await getChildInformation(application.child);
+      application.parents = await getParentByApplication(application.app_id);
+      application.child = child.length > 0 ? child[0] : {};
+      application.vendorName = await getVendorName(application.vendor);
+      application.vendorGroup = await getVendorAppGroupsByVendorId(application.vendor);
+      application.app_histories = await getApplicationHistoryById(application.app_id); 
+      application.vendorPrograms = await getVendorAppProgram(application.vendor);
+      application.vendorLocationSites = await getVendorAppLocationSite(application.vendor);
+    }
+
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return application;
+  }
+}
 
 export const getApplicationsByVendor = async (vendor) => {
   const db = makeDb();
@@ -71,7 +138,8 @@ export const getApplicationsByVendor = async (vendor) => {
         section3_text,
         section1_name,
         section2_name,
-        section3_name
+        section3_name,
+        emergency_contacts
         FROM application
         WHERE vendor=UUID_TO_BIN(?) and is_archived=0
         ORDER BY id DESC`,
@@ -114,7 +182,8 @@ export const getArchivedApplicationsByVendor = async (vendor_id) => {
         section3_text,
         section1_name,
         section2_name,
-        section3_name
+        section3_name,
+        emergency_contacts
         FROM application 
         WHERE vendor=UUID_TO_BIN(?) and is_archived=1
         ORDER BY archived_date DESC`,
@@ -146,7 +215,8 @@ export const createApplication = async ({
   section1_name,
   section2_name,
   section3_name,
-  class_teacher
+  class_teacher,
+  emergency_contacts
 }) => {
   const db = makeDb();
   let result = {};
@@ -173,14 +243,15 @@ export const createApplication = async ({
         section1_name,
         section2_name,
         section3_name,
-        class_teacher
+        class_teacher,
+        emergency_contacts
       ) VALUES (
         UUID_TO_BIN(UUID()), 
         UUID_TO_BIN(?), 
         UUID_TO_BIN(?), 
         ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, 
-        ?, ?, ?)`,
+        ?, ?, ?, ?)`,
       [
         vendor,
         child,
@@ -198,7 +269,8 @@ export const createApplication = async ({
         section1_name,
         section2_name,
         section3_name,
-        class_teacher
+        class_teacher,
+        emergency_contacts
       ]
     )
 
@@ -292,5 +364,196 @@ export const unArchivedApplication = async (app_id) => {
   } finally {
     await db.close();
     return result;
+  }
+}
+
+export const updateEmergencyConctacts = async (app_id, emergencyContacts) => {
+  const db = makeDb();
+  let result = {};
+
+  try {
+    result = await db.query(
+      `UPDATE application SET
+        emergency_contacts=?
+        WHERE app_id=UUID_TO_BIN(?)`,
+      [
+        emergencyContacts,
+        app_id
+      ]
+    );
+  } catch(err) {
+    console.log("update emergency contacts", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const saveApplication = async ({
+  app_id,
+  child,
+  parents,
+  emergency_contacts
+}) => {
+  let childResult = await updateChild(child);
+  let parentResult;
+  let ecResult;
+  let p_updatedRows = false;
+  let ec_updatedRows = false;
+
+  if(emergency_contacts) {
+    ecResult = await updateEmergencyConctacts(app_id, emergency_contacts);
+
+    if(ecResult && ecResult.changedRows > 0) {
+      ec_updatedRows = true;
+    }
+  }
+
+  console.log("parents", parents);
+
+  for(let parent of parents) {
+    console.log("parent", parent);
+    parentResult = await updateParent(parent);
+
+    console.log("parentResult", parentResult);
+    if(parentResult && parentResult.changedRows > 0) {
+      p_updatedRows = true;
+    }
+  }
+
+  if((childResult && childResult.changedRows > 0) || p_updatedRows || ec_updatedRows ) {
+    return true;
+  }
+  return false;
+}
+
+export const getApplicationHistoryById = async (app_id) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = db.query(`
+      SELECT 
+        id,
+        BIN_TO_UUID(app_history_id) as app_history_id,
+        BIN_TO_UUID(app_id) as app_id,
+        details,
+        updated_at,
+        updated_by
+      FROM application_history
+      WHERE app_id=UUID_TO_BIN(?)
+      ORDER BY id DESC
+    `,
+    [app_id]
+    )
+  } catch(error) {
+    console.log("get application by id", error)
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const addApplicationHistory = async ({
+  app_id,
+  details,
+  updated_by
+}) => {
+
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(`
+    INSERT INTO application_history(
+      app_history_id,
+      app_id,
+      details,
+      updated_by
+    ) VALUES (
+      UUID_TO_BIN(UUID()),
+      UUID_TO_BIN(?),
+      ?, ?
+    )
+    `,
+    [
+      app_id,
+      details,
+      updated_by
+    ])
+  } catch(error) {
+    console.log("add application history", error)
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const addApplicationUser = async ({
+  user_id,
+  app_id
+}) => {
+
+  const db = makeDb();
+  let result;
+
+  try {
+    await db.query(
+      `
+        INSERT INTO application_user(
+          app_user_id,
+          app_id,
+          user_id
+        ) VALUES (
+          UUID_TO_BIN(UUID()),
+          UUID_TO_BIN(?),
+          UUID_TO_BIN(?)
+        )
+      `,
+      [
+        app_id,
+        user_id
+      ]
+    )
+
+  } catch(error) {
+    console.log("add application user error", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const getUserApplicationsByUserId = async (user_id) => {
+
+  const db = makeDb();
+  let applications = [];
+
+  try {
+    const userApplications = await db.query(
+      `
+        SELECT 
+          id,
+          BIN_TO_UUID(app_user_id) as app_user_id,
+          BIN_TO_UUID(app_id) as app_id,
+          BIN_TO_UUID(user_id) as user_id,
+          created_at
+        FROM application_user
+        WHERE user_id=UUID_TO_BIN(?)
+        ORDER BY id DESC
+      `,
+      [user_id]      
+    )
+
+    for (const ua of userApplications) {
+      const application = await getApplicationByAppId(ua.app_id);
+      applications.push(application);
+    }
+
+  } catch (error) {
+    console.log("get user applications", error);
+  } finally {
+    await db.close();
+    return applications;
   }
 }

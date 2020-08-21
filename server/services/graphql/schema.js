@@ -208,6 +208,7 @@ const inputs = `
         hospital_preference: String
         hospital_phone: String
         child_lives_with: String!
+        ch_id: String
     }
 
     input ParentInfoInput {
@@ -235,6 +236,7 @@ const inputs = `
         email_type2: String
         email_address2: String
         person_recommend: String!
+        parent_id: String
     }
 
     input ApplicationInput {
@@ -275,6 +277,14 @@ const inputs = `
         vendors: [String!]
         size: Int!
         name: String!
+    }
+
+    input SaveApplicationUserInput {
+        app_id: String
+        child: ChildIInfoInput
+        parents: [ParentInfoInput]
+        updated_by: String
+        emergency_contacts: String!
     }
 `;
 const queryTypes = `
@@ -434,6 +444,26 @@ const queryTypes = `
         section2_show: Int
         section3_show: Int
         id2: Int
+        app_programs: [VendorProgram]
+        location_sites: [LocationSite]
+    }
+
+    type LocationSite {
+        id: String!
+        vendor_location_site_id: String!
+        vendor: String!
+        user: String!
+        name: String
+        created_at: Date
+    }
+
+    type VendorProgram {
+        id: String!
+        vendor_program_id: String!
+        vendor: String!
+        user: String!
+        name: String
+        created_at: Date
     }
 
     type Score {
@@ -464,6 +494,7 @@ const queryTypes = `
         state: String!
         zip_code: String!
         location_site: String!
+        ethnicities: String
         programs: String
         school_name: String!
         school_phone: String
@@ -526,6 +557,8 @@ const queryTypes = `
         id: Int
         app_id: String
         vendor: String
+        vendorName: String
+        vendorGroup: [VendorAppGroup]
         child: Child
         parents: [Parent]
         section1_signature: String
@@ -547,6 +580,10 @@ const queryTypes = `
         section1_name: String
         section2_name: String
         section3_name: String
+        app_histories: [ApplicationHistory]
+        emergency_contacts: String
+        vendorPrograms: [VendorProgram]
+        vendorLocationSites: [LocationSite]
     }
 
     type ParentUserApplication{
@@ -589,6 +626,20 @@ const queryTypes = `
         vendor_app_groups: [VendorAppGroup]
     }
 
+    type ApplicationHistory{
+        id: Int
+        app_history_id: String!
+        app_id: String!
+        details: String
+        updated_by: String
+        updated_at: Date
+    }
+
+    type ApplicationUserStatus{
+        application: Application
+        app_histories: [ApplicationHistory]
+    }
+
 `;
 
 const mutations = `
@@ -613,8 +664,10 @@ const mutations = `
         addApplication(applications: [ApplicationInput]): Status
         updateApplication(application: UpdateApplicationInput!): Status
         archivedApplications(app_ids: [String]): Status
+        unarchivedApplications(app_ids: [String]): Status
         updateVendor(vendor: VendorInput!): Vendor
         addVendorAppGroup(appGroup: AppGroupInput!): AllGroups
+        saveApplication(application: SaveApplicationUserInput): Status
     }
 `;
 
@@ -644,6 +697,7 @@ const queries = `
         getUserApplications(email: String!): UserApplication
         getUserByEmail(email: String): CheckUserEmail
         getVendorAppGroups(vendor: String): AllGroups
+        getUserApplicationsByUserId(user_id: String!): [Application]
     }
 `;
 

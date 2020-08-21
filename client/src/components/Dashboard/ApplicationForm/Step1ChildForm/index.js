@@ -26,7 +26,9 @@ export default function index({
   handleRemoveNumChild,
   maxChild,
   current,
-  ProfileImg
+  ProfileImg,
+  app_programs = [],
+  location_sites = []
 }) {
 
   return (
@@ -37,7 +39,9 @@ export default function index({
         counter={counter}
         register={register}
         errors={errors}
-        ProfileImg={ProfileImg} />
+        ProfileImg={ProfileImg}
+        app_programs={app_programs}
+        location_sites={location_sites}/>
       <GeneralInformationFormStyled 
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         childGeneralInformation={childInformation.general_information}

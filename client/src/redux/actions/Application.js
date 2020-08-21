@@ -7,11 +7,14 @@ import {
   USER_APPLICATION_QUERY,
   APPLICATION_UPDATE_MUTATION ,
   ARCHIVED_APPLICATION_MUTATION,
+  UNARCHIVED_APPLICATION_MUTATION,
   GET_ARCHIVED_APPLICATIONS_QUERY,
-  GET_APPLICATION_ID_QUERY
+  GET_APPLICATION_ID_QUERY,
+  APPLICATION_SAVE_MUTATION,
+  GET_APPLICATION_USER_ID_QUERY
 } from "../../graphql/applicationMutation";
 import * as actionType from "./Constant";
-import { setApplicationLoading } from "./Loading";
+import { setApplicationLoading, setUserApplicationLoading } from "./Loading";
 
 const getApplicationIdFromDatabase = (id) => {
   return new Promise(async (resolve, reject) => {
@@ -29,6 +32,23 @@ const getApplicationIdFromDatabase = (id) => {
     }
   });
 };
+
+const getApplicationUserIdFromDatabase = (user_id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: GET_APPLICATION_USER_ID_QUERY,
+        variables: {
+          user_id
+        }
+      });
+
+      return resolve(data.getUserApplicationsByUserId);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
 
 const getActiveApplicationFromDatabase = (vendor_id) => {
   return new Promise(async (resolve, reject) => {
@@ -81,6 +101,23 @@ const archivedApplicationToDatabase = (applications) => {
   });
 }
 
+const unarchivedApplicationToDatabase = (applications) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: UNARCHIVED_APPLICATION_MUTATION,
+        variables: {
+          app_ids: applications
+        }
+      });
+
+      return resolve(data.unarchivedApplications);
+    } catch(error) {
+      reject(error)
+    }
+  });
+}
+
 const updateApplicationToDatabse = application => {
 
   return new Promise(async (resolve, reject) => {
@@ -93,6 +130,24 @@ const updateApplicationToDatabse = application => {
       });
 
       return resolve(data.updateApplication);
+    } catch(error) {
+      console.log(error)
+      reject(error);
+    }
+  })
+}
+
+const saveApplicationToDatabase = application => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: APPLICATION_SAVE_MUTATION,
+        variables: {
+          application: application
+        }
+      });
+
+      return resolve(data.saveApplication);
     } catch(error) {
       console.log(error)
       reject(error);
@@ -120,7 +175,8 @@ const addApplicationToDatabase = applications => {
         section3_text: application.section3_text,
         section1_name: application.section1_name,
         section2_name: application.section2_name,
-        section3_name: application.section3_name
+        section3_name: application.section3_name,
+        emergency_contacts: application.emergency_contacts
       };
 
       applications_obj.push(temp);
@@ -142,6 +198,13 @@ const addApplicationToDatabase = applications => {
     }
   });
 };
+
+export const requestGetApplicationByUserId = user_id => {
+  return {
+    type: actionType.REQUEST_GET_APPLICATION_USER_ID,
+    user_id
+  };
+}
 
 export const requestGetApplicationById = id => {
   return {
@@ -185,10 +248,24 @@ export const requestArchivedAppplication = application => {
   }
 }
 
+export const requestUnarchivedAppplication = application => {
+  return {
+    type: actionType.REQUEST_UNARCHIVED_APPLICATION,
+    application
+  }
+}
+
 export const requestGetArchivedApplications = vendor_id => {
   return {
     type: actionType.REQUEST_GET_ARCHIVED_APPLICATION,
     vendor_id: vendor_id
+  }
+}
+
+export const requestSaveApplication = application => {
+  return {
+    type: actionType.REQUEST_SAVE_APPLICATION,
+    application
   }
 }
 
@@ -216,6 +293,58 @@ export function* getApplicationById({id}) {
   }
 }
 
+export function* getApplicationByUserId({user_id}) {
+  try {
+    yield put(setUserApplicationLoading(true));
+    const response = yield call(getApplicationUserIdFromDatabase, user_id);
+    yield put(setUserApplicationLoading(false));
+    console.log("response", response);
+    if(response) {
+      yield put({
+        type: actionType.REQUEST_GET_APPLICATION_USER_ID_COMPLETED,
+        payload: response
+      })
+    } else {
+      yield put({
+        type: actionType.REQUEST_GET_APPLICATION_USER_ID_COMPLETED,
+        payload: []
+      })
+    }
+  } catch(err) {
+    yield put({
+      type: actionType.REQUEST_GET_APPLICATION_USER_ID_COMPLETED,
+      payload: []
+    })
+  }
+}
+
+
+export function* unarchivedApplication({application}) {
+  try {
+    yield put(setApplicationLoading(true));
+    const response = yield call(unarchivedApplicationToDatabase, application);
+    yield put(setApplicationLoading(false));
+
+    if(response) {
+      yield put({
+        type: actionType.REQUEST_UNARCHIVED_APPLICATION_COMPLETED,
+        payload: response
+      })
+    } else {
+      yield put({
+        type: actionType.REQUEST_UNARCHIVED_APPLICATION_COMPLETED,
+        payload: {}
+      })
+    }
+  } catch (err) {
+    console.log("Unarchived Error: ", err);
+    yield put({
+      type: actionType.REQUEST_UNARCHIVED_APPLICATION_COMPLETED,
+      payload: {}
+    })
+  }
+}
+
 export function* archivedApplication({application}) {
   try {
     yield put(setApplicationLoading(true));
@@ -238,6 +367,30 @@ export function* archivedApplication({application}) {
     yield put({
       type: actionType.REQUEST_ARCHIVED_APPLICATION_COMPLETED,
       payload: {}
+    })
+  }
+}
+
+export function* saveApplication({application}) {
+  try {
+    yield put(setApplicationLoading(true));
+    const response = yield call(saveApplicationToDatabase, application);
+    yield put(setApplicationLoading(false));
+    if(response) {
+      yield put({
+        type: actionType.REQUEST_SAVE_APPLICATION_COMPLETED,
+        payload: response
+      })
+    } else {
+      yield put({
+        type: actionType.REQUEST_SAVE_APPLICATION_COMPLETED,
+        payload: response
+      })
+    }
+  } catch(err) {
+    yield put({
+      type: actionType.REQUEST_SAVE_APPLICATION_COMPLETED,
+      payload: response
     })
   }
 }

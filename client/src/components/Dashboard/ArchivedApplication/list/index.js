@@ -39,9 +39,10 @@ const ArchivedApplicationListStyled = styled.div`
     right: 100px;
   }
 
-  #dataTableContainer a {
+  #dataTableContainer .unarchived {
     color: #3e89fe;
-    text-decoration: none;
+    border: 0;
+    background-color: transparent;
   }
 
   @media (min-width: 600px) {
@@ -159,7 +160,7 @@ const SearchDateComponent = ({
         <select 
           name="class"
           className="form-control"
-          value={classText}
+          defaultValue={classText}
           onChange={onClassChange}>
           <option value="">Select Class</option>
           {
@@ -173,7 +174,7 @@ const SearchDateComponent = ({
         <select 
           name="class"
           className="form-control"
-          value={colorText}
+          defaultValue={colorText}
           onChange={onColorChange}>
           <option value="">Select Color</option>
           {
@@ -189,7 +190,8 @@ const SearchDateComponent = ({
 );
 
 export default function index({
-  archivedapplications
+  archivedapplications,
+  handleUnarchived
 }) {
   const getPrimaryParentName = (parents) => {
     if(parents.length > 0) {
@@ -296,7 +298,7 @@ export default function index({
       name: 'Unarchive',
       selected: 'unarchived',
       sortable: false,
-      cell: row => <a href="#"><FontAwesomeIcon icon={faUndo} /></a>
+      cell: row => <button className="unarchived" onClick={() => {handleUnarchived(row.app_id)}}><FontAwesomeIcon icon={faUndo} /></button>
     }
   ];
 
@@ -377,22 +379,50 @@ export default function index({
 
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
 
-  console.log(archivedapplications);
+  const [classText, setClassText] = useState('');
+  const [colorText, setColorText] = useState('');
 
   const subHeaderComponentMemo = useMemo(() => {
     return <SearchDateComponent 
         handleOnChange={handleOnChange}
         startDate={startDate} 
         endDate={endDate} 
+        onClassChange={e => setClassText(e.target.value)} 
+        onColorChange={e => setColorText(e.target.value)}
+        colorText={colorText}
+        classText={classText} 
       />;
-  }, [startDate, endDate, resetPaginationToggle]);
+  }, [startDate, endDate, resetPaginationToggle, colorText, classText]);
+
+  let data = archivedapplications.length > 0 ? archivedapplications : [];
+
+  let getApplications = archivedapplications.length > 0 ? archivedapplications : [];
+
+  data = getApplications.filter((item) => {
+
+    let class_match = true;
+    let color_match = true;
+
+    if(classText) {
+      class_match = item.child.grade_desc == classText;
+    }
+
+    if(colorText) {
+      if(item.color_designation)
+        color_match = item.color_designation.toLowerCase() == colorText.toLowerCase();
+      else
+        color_match = false;
+    }
+
+    return class_match && color_match
+  });
 
   return (
     <ArchivedApplicationListStyled>
       <div id="dataTableContainer">
         <DataTable 
           columns={columns}
-          data={archivedapplications}
+          data={data}
           pagination
           noHeader={noHeader}
           striped={striped}

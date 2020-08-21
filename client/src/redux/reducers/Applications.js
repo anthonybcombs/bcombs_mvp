@@ -7,8 +7,10 @@ export default function Applications(state = {
   userApplications: {},
   updateapplication: {},
   archivedapplication: {},
+  unarchivedapplication: {},
   archivedlist: [],
-  selectedapplication: {}
+  selectedapplication: {},
+  userAllApplications: []
 }, action) {
   switch (action.type) {
     case actionType.REQUEST_GET_APPLICATION_COMPLETED:
@@ -26,8 +28,15 @@ export default function Applications(state = {
       return {...state, updateapplication: action.payload }
     case actionType.REQUEST_ARCHIVED_APPLICATION_COMPLETED:
       return {...state, archivedapplication: action.payload }
+    case actionType.REQUEST_UNARCHIVED_APPLICATION_COMPLETED: {
+      return {...state, unarchivedapplication: action.payload }
+    }
     case actionType.REQUEST_GET_APPLICATION_ID_COMPLETED:
       return {...state, selectedapplication: action.payload }
+    case actionType.REQUEST_SAVE_APPLICATION_COMPLETED:
+      return {...state, updateapplication: action.payload }
+    case actionType.REQUEST_GET_APPLICATION_USER_ID_COMPLETED :
+      return {...state, userAllApplications: action.payload}
     default:
       return state;
   }
