@@ -50,11 +50,17 @@ const ApplicationStyled = styled.div`
     display: block;
     color: initial;
     text-decoration: none;
+
+    display: flex;
+    align-items: center;
   }
 
   #labels > div > span,
   #labels > a > span {
     margin-left: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   #application > div {
