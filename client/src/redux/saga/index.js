@@ -63,6 +63,7 @@ import {
   getUserApplication,
   updateApplication,
   archivedApplication, 
+  unarchivedApplication,
   getArchivedApplication,
   getApplicationById,
   saveApplication,
@@ -138,7 +139,10 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_GET_APPLICATION, getApplication);
   yield takeLatest(actionType.REQUEST_USER_APPLICATIONS, getUserApplication);
   yield takeLatest(actionType.REQUEST_UPDATE_APPLICATION, updateApplication);
+
   yield takeLatest(actionType.REQUEST_ARCHIVED_APPLICATION, archivedApplication);
+  yield takeLatest(actionType.REQUEST_UNARCHIVED_APPLICATION, unarchivedApplication);
+
   yield takeLatest(actionType.REQUEST_GET_ARCHIVED_APPLICATION, getArchivedApplication);
   yield takeLatest(actionType.REQUEST_GET_APPLICATION_ID, getApplicationById);
   yield takeLatest(actionType.REQUEST_ADD_VENDOR_APP_GROUP, addVendorAppGroup);

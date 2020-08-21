@@ -37,6 +37,22 @@ export const VENDOR_BY_USER_QUERY = gql`
       section1_show
       section2_show
       section3_show
+      app_programs {
+        id
+        vendor_program_id
+        vendor
+        user
+        name
+        created_at
+      }
+      location_sites {
+        id
+        vendor_location_site_id
+        vendor
+        user
+        name
+        created_at
+      }
     }
   }
 `;

@@ -13,6 +13,7 @@ import {
 import ProfileImg from "../../../images/defaultprofile.png";
 import ChildFormViewStyled from "../Application/view/child";
 import ParentFormViewStyled from "../Application/view/parent";
+import TermsWaiverFormViewStyled from "../Application/view/waiver";
 import Loading from "../../../helpers/Loading.js";
 
 const MyApplicationStyled = styled.div`
@@ -90,13 +91,29 @@ export default function index() {
 
   const [isFormHistory, setIsFormHistory] = useState(false)
 
+  const [emergencyContacts, setEmergencyContacts] = useState([]);
+
+  const childEmergencyContact = {
+    first_name: "",
+    last_name: "",
+    gender: "",
+    mobile_phone: "",
+    work_phone: "",
+    relationship_to_child: ""
+  }
+
+  const emergency_contacts = [
+    {...childEmergencyContact},
+    {...childEmergencyContact},
+    {...childEmergencyContact},
+    {...childEmergencyContact}
+  ]
+
   useEffect(() => {
     if(auth.user_id) {
       dispatch(requestGetApplicationByUserId(auth.user_id))
     }
   }, [])
-
-  console.log("applications", applications);
 
   let userApplications = [];
 
@@ -108,6 +125,22 @@ export default function index() {
 
   const DATE_TIME_FORMAT = "LLL dd, yyyy p";
 
+  const parseArrayFormat = (items) => {
+    let newItems = []
+    if(!Array.isArray(items)) return [];
+
+    items.forEach((item, index) => {
+      const newItem = {
+        id: index,
+        label: item,
+        name: item
+      }
+      newItems.push(newItem);
+    });
+
+    return newItems;
+  }
+
   const createHistoryViewButton = (row) => {
     return (
       <a 
@@ -117,8 +150,6 @@ export default function index() {
           e.preventDefault();
 
           const application = JSON.parse(row.details);
-
-          console.log("history application", application);
 
           const childInformationObj = {
             profile: {
@@ -132,12 +163,14 @@ export default function index() {
               phone_number: application.child.phone_number ? application.child.phone_number:"",
               email_type: application.child.email_type ? application.child.email_type:"",
               email_address: application.child.email_address ? application.child.email_address: "",
-              address: application.child.address ? application.child.address: isReadonly ? "-" : "",
+              address: application.child.address ? application.child.address: "",
               city: application.child.city ? application.child.city: "",
               state: application.child.state ? application.child.state: "",
               zip_code: application.child.zip_code ? application.child.zip_code: "",
               location_site: application.child.location_site ? application.child.location_site: "",
-              child_lives_with: application.child.child_lives_with ? application.child.child_lives_with.split(",") : []
+              child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
+              program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
+              ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : []
             },
             general_information: {
               grade: application.child.grade_number ? application.child.grade_number: "",
@@ -202,13 +235,12 @@ export default function index() {
               goals_parent_program: parent.parent_goals ? parent.parent_goals : "",
               goals_child_program: parent.parent_child_goals ? parent.parent_child_goals : "",
               live_area: parent.live_area ? parent.live_area : 0, // 1: 1 - 5 year, 2: 5 - 10 year, 3: more than 10 year
-              level_education: parent.level_education ? parent.level_education : "",
-              child_importance_hs: parent.child_importance_hs ? parent.child_importance_hs : "",
-              child_importance_col: parent.child_importance_col ? parent.child_importance_col : "",
+              level_education: parent.level_of_education ? parent.level_of_education : "",
+              child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
+              child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
               person_recommend: parent.person_recommend ? parent.person_recommend: ""
             }
-            
-      
+
             items.push({profile: profile, parent_id: parent.parent_id});
           }
 
@@ -221,21 +253,26 @@ export default function index() {
           setParentsInformation(items);
           setIsFormHistory(true);
           setIsReadonly(true);
+
+          if(application.emergency_contacts) {
+            setEmergencyContacts(JSON.parse(application.emergency_contacts));
+          } else {
+            setEmergencyContacts(emergency_contacts);
+          }
+          
         }}
       >
         View Application
       </a>
     )
   }
-
-
   const createViewButton = (application) => {
     return (
       <a 
         href=""
         target="_blank" 
         onClick={(e) => {
-          e.preventDefault();
+          e.preventDefault()
 
           const childInformationObj = {
             profile: {
@@ -249,12 +286,14 @@ export default function index() {
               phone_number: application.child.phone_number ? application.child.phone_number:"",
               email_type: application.child.email_type ? application.child.email_type:"",
               email_address: application.child.email_address ? application.child.email_address: "",
-              address: application.child.address ? application.child.address: isReadonly ? "-" : "",
+              address: application.child.address ? application.child.address: "",
               city: application.child.city ? application.child.city: "",
               state: application.child.state ? application.child.state: "",
               zip_code: application.child.zip_code ? application.child.zip_code: "",
               location_site: application.child.location_site ? application.child.location_site: "",
-              child_lives_with: application.child.child_lives_with ? application.child.child_lives_with.split(",") : []
+              child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
+              program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
+              ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : []
             },
             general_information: {
               grade: application.child.grade_number ? application.child.grade_number: "",
@@ -319,16 +358,37 @@ export default function index() {
               goals_parent_program: parent.parent_goals ? parent.parent_goals : "",
               goals_child_program: parent.parent_child_goals ? parent.parent_child_goals : "",
               live_area: parent.live_area ? parent.live_area : 0, // 1: 1 - 5 year, 2: 5 - 10 year, 3: more than 10 year
-              level_education: parent.level_education ? parent.level_education : "",
-              child_importance_hs: parent.child_importance_hs ? parent.child_importance_hs : "",
-              child_importance_col: parent.child_importance_col ? parent.child_importance_col : "",
+              level_education: parent.level_of_education ? parent.level_of_education : "",
+              child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
+              child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
               person_recommend: parent.person_recommend ? parent.person_recommend: ""
             }
           
             items.push({profile: profile, parent_id: parent.parent_id});
           }
 
+          if(application && application.vendorPrograms && application.vendorPrograms.length > 0) {
+            let app_programs = []
+
+            for(const program of application.vendorPrograms) {
+              app_programs.push({
+                id: program.id,
+                name: program.name,
+                label: program.name
+              })
+            }
+
+            application.vendorPrograms = app_programs;
+          }
+
           setSelectedApplication(application);
+
+          if(application.emergency_contacts) {
+            setEmergencyContacts(JSON.parse(application.emergency_contacts));
+          } else {
+            setEmergencyContacts(emergency_contacts);
+          }
+
           setChildInformation(childInformationObj);
           setParentsInformation(items);
 
@@ -343,6 +403,7 @@ export default function index() {
           setTimeout(() => {
             setTempHideForm(false);
           }, 200)
+          
         }}
       >
         View Application
@@ -356,7 +417,6 @@ export default function index() {
     let profile = child.profile;
     let general_information = child.general_information;
     let emergency_care_information = child.emergency_care_information;
-   
 
     if(section === "profile") {
       profile = {...profile, [id]: value}
@@ -398,9 +458,12 @@ export default function index() {
       profile = {...profile, [id]: value};
       parents[index].profile = profile;
       setParentsInformation([...parents]);
+    } else if(section === "emergency_contacts") {
+      let emergency_contacts = emergencyContacts;
+      let x = id.split("-");
+      emergency_contacts[index][id] = value;
+      setEmergencyContacts([...emergencyContacts]);
     }
-
-    console.log("parentsInformation update", parentsInformation);
   }
 
   const columns = [
@@ -540,9 +603,9 @@ export default function index() {
     return age;
   }
 
-  const getChildLivesWith = (childLivesWith = []) => {
+  const getArrayValue = (items = []) => {
 
-    return childLivesWith.map(a => a.name).toString();
+    return items.map(a => a.name).toString();
   }
 
   const getGradeDesc = (grade) => {
@@ -562,9 +625,8 @@ export default function index() {
   }
 
   const DATE_TIME_FORMAT2 = "yyyy-MM-dd hh:mm:ss";
-  
+
   const onSubmitSaveApplication = () => {
-    console.log("Click Save Application");
 
     const payload = {
       app_id: selectedApplication.app_id,
@@ -589,7 +651,7 @@ export default function index() {
         state: childInformation.profile.state,
         zip_code: childInformation.profile.zip_code,
         location_site: childInformation.profile.location_site,
-        child_lives_with: getChildLivesWith(childInformation.profile.child_lives_with),
+        child_lives_with: getArrayValue(childInformation.profile.child_lives_with),
         school_name: childInformation.general_information.school_name,
         school_phone: childInformation.general_information.school_phone,
         has_suspended: parseInt(childInformation.general_information.was_suspended),
@@ -616,8 +678,8 @@ export default function index() {
         gpa_cumulative_q2: childInformation.general_information.gpa_cumulative_q2,
         gpa_cumulative_q3: childInformation.general_information.gpa_cumulative_q3,
         gpa_cumulative_q4: childInformation.general_information.gpa_cumulative_q4,
-        ethnicities: "",
-        programs: "",
+        ethnicities: getArrayValue(childInformation.profile.ethinicity),
+        programs: getArrayValue(childInformation.profile.program),
         doctor_name: childInformation.emergency_care_information.doctor_name,
         doctor_phone: childInformation.emergency_care_information.doctor_phone,
         hospital_preference: childInformation.emergency_care_information.hospital_preference,
@@ -625,10 +687,9 @@ export default function index() {
         ch_id: childInformation.ch_id
       },
       parents: setupParentsList(),
+      emergency_contacts: JSON.stringify(emergencyContacts),
       updated_by: auth.name
     }
-
-    console.log("Submit update application", payload)
 
     dispatch(requestSaveApplication(payload));
   }
@@ -643,93 +704,109 @@ export default function index() {
     setIsReadonly(!isReadonly);
   }
 
+  console.log("loading", loading);
+
   return (
     <MyApplicationStyled>
 
-      <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
-        <div id="dataTableContainer">
-          {
-            (
-              <DataTable 
-                columns={columns}
-                data={userApplications}
-                pagination
-                noHeader={true}
-                striped={true}
-                customStyles={customStyles}
-                paginationRowsPerPageOptions={paginationRowsPerPageOptions}
-                paginationComponentOptions={paginationComponentOptions}
-              />
-            )
-          }
-        </div>
-      </Collapsible>
       {
-        showApplication && (
-          <div>
-            <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
-              <div id="dataTableContainer">
+        !loading.userAllApplications && userApplications.length > 0 ?
+        (
+          <>
+          <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
+            <div id="dataTableContainer">
+              {
+                (
+                  <DataTable 
+                    columns={columns}
+                    data={userApplications}
+                    pagination
+                    noHeader={true}
+                    striped={true}
+                    customStyles={customStyles}
+                    paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+                    paginationComponentOptions={paginationComponentOptions}
+                  />
+                )
+              }
+            </div>
+          </Collapsible>
+          {
+            showApplication && (
+              <div>
+                <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
+                  <div id="dataTableContainer">
+                    {
+                      (
+                        <DataTable 
+                          columns={columnsAppHistory}
+                          data={appHistory}
+                          pagination
+                          noHeader={true}
+                          striped={true}
+                          customStyles={customStyles}
+                          paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+                          paginationComponentOptions={paginationComponentOptions}
+                        />
+                      )
+                    }
+                  </div>
+                </Collapsible>
                 {
-                  (
-                    <DataTable 
-                      columns={columnsAppHistory}
-                      data={appHistory}
-                      pagination
-                      noHeader={true}
-                      striped={true}
-                      customStyles={customStyles}
-                      paginationRowsPerPageOptions={paginationRowsPerPageOptions}
-                      paginationComponentOptions={paginationComponentOptions}
-                    />
+                  loading.application ? (
+                    <Loading />
+                  ) : (
+                    !tempHideForm && (
+                      <form
+                        autoComplete="off"
+                        onSubmit={handleSubmit(onSubmitSaveApplication)}
+                      >
+                        <ChildFormViewStyled
+                          childInformation={childInformation}
+                          vendor={{name: vendorName}}
+                          ProfileImg={ProfileImg}
+                          isReadonly={isReadonly}
+                          handleChangeToEdit={handleChangeToEdit}
+                          errors={errors}
+                          register={register}
+                          handleChildFormDetailsChange={handleChildFormDetailsChange}
+                          isFormHistory={isFormHistory}
+                          app_programs={selectedApplication.vendorPrograms}
+                          location_sites={selectedApplication.vendorLocationSites}
+                        />
+                        <hr className="style-eight"></hr>
+                        <ParentFormViewStyled
+                          parents={parentsInformation}
+                          vendor={{name: vendorName}}
+                          ProfileImg={ProfileImg}
+                          handleParentFormDetailsChange={handleParentFormDetailsChange}
+                          isReadonly={isReadonly}
+                          isUpdate={true}
+                          emergencyContacts={emergencyContacts}
+                          errors={errors}
+                        />
+                        <TermsWaiverFormViewStyled
+                          application={selectedApplication}
+                        />
+                        {
+                          !isReadonly && (
+                            <div style={{textAlign: "center", marginBottom: "20px"}}>
+                              <button className="save-button" type="Submit">Save</button>
+                            </div>
+                          )
+                        }
+                      </form>
+                    )
                   )
                 }
               </div>
-            </Collapsible>
-            {
-              loading.application ? (
-                <Loading />
-              ) : (
-                !tempHideForm && (
-                  <form
-                    autoComplete="off"
-                    onSubmit={handleSubmit(onSubmitSaveApplication)}
-                  >
-                    <ChildFormViewStyled
-                      childInformation={childInformation}
-                      vendor={{name: vendorName}}
-                      ProfileImg={ProfileImg}
-                      isReadonly={isReadonly}
-                      handleChangeToEdit={handleChangeToEdit}
-                      errors={errors}
-                      register={register}
-                      handleChildFormDetailsChange={handleChildFormDetailsChange}
-                      isFormHistory={isFormHistory}
-                    />
-                    <hr className="style-eight"></hr>
-                    <ParentFormViewStyled
-                      parents={parentsInformation}
-                      vendor={{name: vendorName}}
-                      ProfileImg={ProfileImg}
-                      handleParentFormDetailsChange={handleParentFormDetailsChange}
-                      isReadonly={isReadonly}
-                      isUpdate={true}
-                    />
-                    {
-                      !isReadonly && (
-                        <div style={{textAlign: "center", marginBottom: "20px"}}>
-                          <button className="save-button" type="Submit">Save</button>
-                        </div>
-                      )
-                    }
-                  </form>
-                )
-              )
-
-            }
-          </div>
+            )
+          }
+          </>
+        ) : (
+          <Loading />
         )
       }
-
     </MyApplicationStyled>
   );
 }

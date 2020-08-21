@@ -16,7 +16,8 @@ export default function index({
   vendor,
   ProfileImg,
   handleParentFormDetailsChange,
-  isReadonly
+  isReadonly,
+  emergencyContacts = []
 }) {
     
   const { register, handleSubmit, errors } = useForm({
@@ -24,7 +25,9 @@ export default function index({
     reValidateMode: "onChange"
   });
 
-  const emergencyContacts = [{
+  console.log("emergencyContacts", emergencyContacts);
+
+  let tempEC = [{
     first_name: "-",
     last_name: "-",
     gender: "-",
@@ -53,10 +56,7 @@ export default function index({
     work_phone: "-",
     relationship_to_child: "-"
   }]
-
-
-  console.log("parents", parents);
-
+  
   const renderParentForm = () => {
 
 
@@ -130,8 +130,8 @@ export default function index({
         {renderParentForm()}
         <EmergencyContactFormStyled
           handleParentFormDetailsChange={handleParentFormDetailsChange}
-          parentEmergencyContacts={emergencyContacts}
-          isReadonly={true}
+          parentEmergencyContacts={emergencyContacts.length > 0 ? emergencyContacts : tempEC}
+          isReadonly={isReadonly}
           register={register}
           errors={errors}
         />

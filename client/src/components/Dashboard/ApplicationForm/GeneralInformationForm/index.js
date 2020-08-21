@@ -126,7 +126,7 @@ export default function index({
                 onChange={({target}) => handleChildFormDetailsChange((counter - 1), "general_information" ,"act_scores-" + (i - 1) + "-score", target.value)}
                 defaultValue={childGeneralInformation.act_scores[i - 1].score}
               />
-              <label className="field-label" for="act_score">
+              <label className="field-label">
                 {
                   i <= 1 ? 
                   <span 
@@ -197,7 +197,7 @@ export default function index({
                 onChange={({target}) => handleChildFormDetailsChange((counter - 1), "general_information" ,"sat_scores-" + (i - 1) + "-score", target.value)}
                 defaultValue={childGeneralInformation.sat_scores[i - 1].score}
               />
-              <label className="field-label" for="sat_score">
+              <label className="field-label">
                 {
                   i <= 1 ? 
                   <span 
@@ -268,7 +268,7 @@ export default function index({
                 placeholder="PSAT Score"
                 defaultValue={childGeneralInformation.psat_scores[i - 1].score}
               />
-              <label className="field-label" for="psat_score">
+              <label className="field-label">
                 {
                   i <= 1 ? 
                   <span 
@@ -402,7 +402,7 @@ export default function index({
                     readOnly={isReadonly}
                     defaultValue={childGeneralInformation.gpa_quarter_q1}
                   />
-                  <label className="field-label" for="gpa_quarter_q1">Q1</label>
+                  <label className="field-label" >Q1</label>
                 </div>
               </div>
               <div className="form-group">
@@ -418,7 +418,7 @@ export default function index({
                     readOnly={isReadonly}
                     defaultValue={childGeneralInformation.gpa_quarter_q2}
                   />
-                  <label className="field-label" for="gpa_quarter_q2">Q2</label>
+                  <label className="field-label">Q2</label>
                 </div>
               </div>
               <div className="form-group">
@@ -434,7 +434,7 @@ export default function index({
                     readOnly={isReadonly}
                     defaultValue={childGeneralInformation.gpa_quarter_q3}
                   />
-                  <label className="field-label" for="gpa_quarter_q3">Q3</label>
+                  <label className="field-label">Q3</label>
                 </div>
               </div>
               <div className="form-group">
@@ -450,7 +450,7 @@ export default function index({
                     readOnly={isReadonly}
                     defaultValue={childGeneralInformation.gpa_quarter_q4}
                   />
-                  <label className="field-label" for="gpa_quarter_q4">Q4</label>
+                  <label className="field-label">Q4</label>
                 </div>
               </div>
             </div>
@@ -472,7 +472,7 @@ export default function index({
                   readOnly={isReadonly}
                   defaultValue={childGeneralInformation.class_rank}
                 />
-                <label className="field-label" for="ch_class_rank">Class Rank</label>
+                <label className="field-label">Class Rank</label>
               </div>
             </div>
             <div className="form-group">
@@ -506,7 +506,7 @@ export default function index({
                     readOnly={isReadonly}
                     defaultValue={childGeneralInformation.gpa_cumulative_q1}
                   />
-                  <label className="field-label" for="gpa_cumulative_q1">Q1</label>
+                  <label className="field-label">Q1</label>
                 </div>
               </div>
               <div className="form-group">
@@ -522,7 +522,7 @@ export default function index({
                     readOnly={isReadonly}
                     defaultValue={childGeneralInformation.gpa_cumulative_q2}           
                   />
-                  <label className="field-label" for="gpa_cumulative_q2">Q2</label>
+                  <label className="field-label">Q2</label>
                 </div>
               </div>
               <div className="form-group">
@@ -538,7 +538,7 @@ export default function index({
                     readOnly={isReadonly}
                     defaultValue={childGeneralInformation.gpa_cumulative_q3}
                   />
-                  <label className="field-label" for="gpa_cumulative_q3">Q3</label>
+                  <label className="field-label">Q3</label>
                 </div>
               </div>
               <div className="form-group">
@@ -554,7 +554,7 @@ export default function index({
                     readOnly={isReadonly}
                     defaultValue={childGeneralInformation.gpa_cumulative_q4}
                   />
-                  <label className="field-label" for="gpa_cumulative_q4">Q4</label>
+                  <label className="field-label">Q4</label>
                 </div>
               </div>
             </div>
@@ -587,7 +587,7 @@ export default function index({
                 defaultValue={childGeneralInformation.school_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for="ch_schoolname"><span className="required">*</span> School Name</label>
+              <label className="field-label"><span className="required">*</span> School Name</label>
             </div>
             <ErrorMessage
               field={errors["ch_schoolname" + (counter - 1)]}
@@ -631,7 +631,7 @@ export default function index({
                   })}
                 />
               }
-              <label className="field-label" for="ch_school_phone">Phone</label>
+              <label className="field-label">Phone</label>
             </div>
             <ErrorMessage
               field={errors["ch_school_phone" + (counter - 1)]}
@@ -717,7 +717,7 @@ export default function index({
                 defaultValue={childGeneralInformation.hobbies}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for="ch_hobbies">Hobbies / Personal Interests</label>
+              <label className="field-label">Hobbies / Personal Interests</label>
             </div>
           </div>
           <div className="form-group">
@@ -733,7 +733,7 @@ export default function index({
                 readOnly={isReadonly}
                 defaultValue={childGeneralInformation.life_events}
               />
-              <label className="field-label" for="ch_life_events">Life events you would like to share</label>
+              <label className="field-label">Life events you would like to share</label>
             </div>
           </div>
         </div>
@@ -752,7 +752,7 @@ export default function index({
                 defaultValue={childGeneralInformation.career_goals}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for="ch_career_goals">Career Goals</label>
+              <label className="field-label">Career Goals</label>
             </div>
           </div>
 
@@ -769,7 +769,7 @@ export default function index({
                 defaultValue={childGeneralInformation.colleges}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for="ch_colleges">List of Colleges you are Considering Upon Graduation</label>
+              <label className="field-label">List of Colleges you are Considering Upon Graduation</label>
             </div>
           </div>
         </div>
@@ -789,7 +789,7 @@ export default function index({
                 readOnly={isReadonly}
               />
               
-              <label className="field-label" for="ch_team_affiliations">Group and Other Team Affiliations</label>
+              <label className="field-label">Group and Other Team Affiliations</label>
             </div>
           </div>
         </div>
@@ -808,7 +808,7 @@ export default function index({
                 defaultValue={childGeneralInformation.awards}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for="ch_awards">Please List of Awards</label>
+              <label className="field-label">Please List of Awards</label>
             </div>
           </div>
 
@@ -825,7 +825,7 @@ export default function index({
                 defaultValue={childGeneralInformation.accomplishments}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for="ch_accomplishments">Please List of Accomplishments</label>
+              <label className="field-label">Please List of Accomplishments</label>
             </div>
           </div>
         </div>

@@ -132,6 +132,8 @@ export default function index() {
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
+  const [emergencyContacts, setEmergencyContacts] = useState([]);
+
   const [view, setView] = useState("");
 
   const dispatch = useDispatch();
@@ -176,6 +178,24 @@ export default function index() {
     setView("");
   };
 
+  const parseArrayFormat = (items) => {
+    let newItems = []
+    if(!Array.isArray(items)) return [];
+
+    items.forEach((item, index) => {
+      console.log(item);
+      console.log(index);
+      const newItem = {
+        id: index,
+        label: item,
+        name: item
+      }
+      newItems.push(newItem);
+    });
+
+    return newItems;
+  }
+
   const handleSelectedApplication = (application, view) => {
     setSelectedApplication(application);
     setSelectNonMenuOption(true);
@@ -209,7 +229,9 @@ export default function index() {
         state: application.child.state ? application.child.state: "",
         zip_code: application.child.zip_code ? application.child.zip_code: "",
         location_site: application.child.location_site ? application.child.location_site: "",
-        child_lives_with: application.child.child_lives_with ? application.child.child_lives_with.split(",") : []
+        child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
+        program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
+        ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : []
       },
       general_information: {
         grade: application.child.grade_number ? application.child.grade_number: "",
@@ -274,17 +296,20 @@ export default function index() {
         goals_parent_program: parent.parent_goals ? parent.parent_goals : "",
         goals_child_program: parent.parent_child_goals ? parent.parent_child_goals : "",
         live_area: parent.live_area ? parent.live_area : 0, // 1: 1 - 5 year, 2: 5 - 10 year, 3: more than 10 year
-        level_education: parent.level_education ? parent.level_education : "",
-        child_importance_hs: parent.child_importance_hs ? parent.child_importance_hs : "",
-        child_importance_col: parent.child_importance_col ? parent.child_importance_col : "",
+        level_education: parent.level_of_education ? parent.level_of_education : "",
+        child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
+        child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
         person_recommend: parent.person_recommend ? parent.person_recommend: ""
       }
-      
 
       items.push({profile: profile, parent_id: parent.parent_id});
     }
 
-    console.log("items", items);
+    if(application.emergency_contacts) {
+      setEmergencyContacts(JSON.parse(application.emergency_contacts));
+    } else {
+      setEmergencyContacts(emergency_contacts);
+    }
 
     setChildInformation(childInformationObj);
 
@@ -292,6 +317,22 @@ export default function index() {
 
     setUpdateApplication({...temp});
   }
+
+  const childEmergencyContact = {
+    first_name: "",
+    last_name: "",
+    gender: "",
+    mobile_phone: "",
+    work_phone: "",
+    relationship_to_child: ""
+  }
+
+  const emergency_contacts = [
+    {...childEmergencyContact},
+    {...childEmergencyContact},
+    {...childEmergencyContact},
+    {...childEmergencyContact}
+  ]
 
   const handleUpdateOnchange = (id, value) => {
 
@@ -304,9 +345,9 @@ export default function index() {
     return age;
   }
 
-  const getChildLivesWith = (childLivesWith = []) => {
+  const getArrayValue = (items = []) => {
 
-    return childLivesWith.map(a => a.name).toString();
+    return items.map(a => a.name).toString();
   }
 
   const getGradeDesc = (grade) => {
@@ -405,7 +446,7 @@ export default function index() {
         state: childInformation.profile.state,
         zip_code: childInformation.profile.zip_code,
         location_site: childInformation.profile.location_site,
-        child_lives_with: getChildLivesWith(childInformation.profile.child_lives_with),
+        child_lives_with: getArrayValue(childInformation.profile.child_lives_with),
         school_name: childInformation.general_information.school_name,
         school_phone: childInformation.general_information.school_phone,
         has_suspended: parseInt(childInformation.general_information.was_suspended),
@@ -432,8 +473,8 @@ export default function index() {
         gpa_cumulative_q2: childInformation.general_information.gpa_cumulative_q2,
         gpa_cumulative_q3: childInformation.general_information.gpa_cumulative_q3,
         gpa_cumulative_q4: childInformation.general_information.gpa_cumulative_q4,
-        ethnicities: "",
-        programs: "",
+        ethnicities: getArrayValue(childInformation.profile.ethinicity),
+        programs: getArrayValue(childInformation.profile.program),
         doctor_name: childInformation.emergency_care_information.doctor_name,
         doctor_phone: childInformation.emergency_care_information.doctor_phone,
         hospital_preference: childInformation.emergency_care_information.hospital_preference,
@@ -441,6 +482,7 @@ export default function index() {
         ch_id: childInformation.ch_id
       },
       parents: setupParentsList(),
+      emergency_contacts: JSON.stringify(emergencyContacts),
       updated_by: auth.name
     }
 
@@ -459,11 +501,20 @@ export default function index() {
     let profile = child.profile;
     let general_information = child.general_information;
     let emergency_care_information = child.emergency_care_information;
-   
+
+    console.log("profile", profile);
 
     if(section === "profile") {
-      profile = {...profile, [id]: value}
+      if(id == "child_lives_with") {
+        console.log("value", value);
+        console.log("id", id);
+        profile.child_lives_with = value;
+      } else {
+        profile = {...profile, [id]: value}
+      }
+
       child.profile = profile;
+
     } else if (section === "general_information") {
       if(id === "was_suspended") {
         value = (value === "true");
@@ -489,6 +540,8 @@ export default function index() {
       emergency_care_information = {...emergency_care_information, [id]: value};
       child.emergency_care_information = emergency_care_information;
     }
+
+    console.log("Child profile", child.profile);
     setChildInformation({...child})
   }
 
@@ -501,6 +554,11 @@ export default function index() {
       profile = {...profile, [id]: value};
       parents[index].profile = profile;
       setParentsInformation([...parents]);
+    } else if(section === "emergency_contacts") {
+      let emergency_contacts = emergencyContacts;
+      let x = id.split("-");
+      emergency_contacts[index][id] = value;
+      setEmergencyContacts([...emergencyContacts]);
     }
 
     console.log("parentsInformation update", parentsInformation);
@@ -616,6 +674,8 @@ export default function index() {
                 errors={errors}
                 register={register}
                 handleChildFormDetailsChange={handleChildFormDetailsChange}
+                location_sites={vendors && vendors.length > 0 ? vendors[0].location_sites : []}
+                app_programs={vendors && vendors.length > 0 ? vendors[0].app_programs : []}
               />
             )}
             {selectNonMenuOption && view == "application" && (
@@ -629,10 +689,11 @@ export default function index() {
                 handleParentFormDetailsChange={handleParentFormDetailsChange}
                 isReadonly={isReadonly}
                 isUpdate={true}
+                emergencyContacts={emergencyContacts}
               />
             )}
             {selectNonMenuOption && view == "application" && (
-                <TermsWaiverFormViewStyled
+              <TermsWaiverFormViewStyled
                 application={selectedApplication}
               />
             )}

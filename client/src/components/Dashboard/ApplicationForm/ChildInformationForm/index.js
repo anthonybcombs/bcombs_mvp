@@ -6,8 +6,8 @@ import {
   faTimesCircle,
   faPlusCircle,
   faMinusCircle,
-  faAngleLeft,
-  faAngleRight
+  faAngleRight,
+  faAngleLeft
 } from "@fortawesome/free-solid-svg-icons";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 import DatePicker from "react-datepicker";
@@ -71,12 +71,66 @@ const ChildInfomationFormStyled = styled.div`
     background: #f26e21;
   }
 
+  .datepicker-btn {
+    padding: 0;
+    width: 85px;
+    height: 32px;
+    margin: 0 5px;
+    box-shadow: none;
+    background: transparent;
+    font-size: unset !important;
+    border-radius: 100% !important;
+  }
+  .datepicker-btn svg {
+    width: 100%;
+    height: 75%;
+  }
+  .datepicker-btn:hover {
+    background: rgb(255 255 255 / 20%);
+    transition: .15s ease-in-out;
+  }
+
   .react-datepicker-wrapper {
     margin: 0;
   }
 
   .react-datepicker__input-container .field {
     margin: 0 !important;
+  }
+
+  .react-datepicker__header {
+    padding-top: 0;
+    border-bottom: none;
+  }
+  .react-datepicker__header select {
+    color: #fff;
+  }
+  .react-datepicker {
+    border: 1px solid #ddd;
+  }
+  .react-datepicker__triangle {
+    border-bottom-color: #f46d22 !important;
+  }
+  .react-datepicker__day-names,
+  .react-datepicker__week {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .react-datepicker__day-names {
+    padding: 5px 0;
+  }
+  .react-datepicker__day,
+  .react-datepicker__day-name,
+  .react-datepicker__time-name {
+    color: rgb(0 0 0 / 75%);
+  }
+  .react-datepicker__day--selected,
+  .react-datepicker__day--keyboard-selected {
+    color: #fff !important;
+  }
+  .react-datepicker__day--outside-month {
+    color: rgb(0 0 0 / 35%);
   }
 `;
 
@@ -88,6 +142,8 @@ export default function index({
   errors,
   isReadonly = false,
   ProfileImg,
+  app_programs = [],
+  location_sites = [],
 }) {
   const hasSelectAll = false;
 
@@ -133,14 +189,12 @@ export default function index({
       ]
     : [];
 
-  const PROGRAMS_OPTIONS = !isReadonly
-    ? [
-        { id: 1, name: "Saturday Academy", label: "Satuday Academy" },
-        { id: 2, name: "In school", label: "In school" },
-      ]
-    : [];
+  const PROGRAMS_OPTIONS = app_programs.length > 0 ? app_programs : [
+    { id: 1, name: "Saturday Academy", label: "Satuday Academy" },
+    { id: 2, name: "In school", label: "In school" },
+  ]
 
-  const LOCATION_SITE_OPTIONS = [
+  const LOCATION_SITE_OPTIONS = location_sites.length > 0 ? location_sites : [
     { name: "Raleigh", value: "Raleigh" },
     { name: "Durham", value: "Durham" },
   ];
@@ -174,19 +228,36 @@ export default function index({
     {id: 21, name: "Other relatives", label: "Other relatives"},
     {id: 22, name: "Others", label: "Others"}
   ];
+  
+  let readOnlyChildLivesWith = ""
 
   if(childProfile.child_lives_with && childProfile.child_lives_with.length > 0 && isReadonly) {
+    childProfile.child_lives_with.forEach((item) => {
+      readOnlyChildLivesWith += item.name + ", ";
+    });
 
-    const childLivesWith = childProfile.child_lives_with
-    childProfile.child_lives_with = CHILD_LIVES_OPTION.filter(opt => {
-      return childLivesWith.includes(opt.name);
-    })
+    readOnlyChildLivesWith = readOnlyChildLivesWith.slice(0, -2);
   }
 
-  const [ethinicitySelected, setEthinicitySelected] = useState([]);
-  const [schoolProgramSelected, setSchoolProgramSelected] = useState([]);
+  let readOnlyProgram = "";
 
-  const handleSetEthinicity = () => {};
+  if(childProfile.program && childProfile.program.length > 0 && isReadonly) {
+    childProfile.program.forEach((item) => {
+      readOnlyProgram += item.name + ", ";
+    });
+
+    readOnlyProgram = readOnlyProgram.slice(0, -2);
+  }
+
+  let readOnlyEthinicity = "";
+
+  if(childProfile.ethinicity && childProfile.ethinicity.length > 0 && isReadonly) {
+    childProfile.ethinicity.forEach((item) => {
+      readOnlyEthinicity += item.name + ", ";
+    });
+
+    readOnlyEthinicity = readOnlyEthinicity.slice(0, -2);
+  }
 
   const range = (start, end) => {
     let arr = [];
@@ -232,10 +303,12 @@ export default function index({
   const [showEmail, setShowEmail] = useState(false);
 
   const handleOtherPhone = () => {
+    if(isReadonly) return;
     setShowPhone(!showPhone);
   };
 
   const handleOtherEmail = () => {
+    if(isReadonly) return;
     setShowEmail(!showEmail);
   };
 
@@ -248,7 +321,6 @@ export default function index({
   }) => (
     <div className="field">
       <input
-        id="date_of_birth"
         defaultValue={value}
         onClick={onClick}
         name={name}
@@ -257,7 +329,7 @@ export default function index({
         readOnly={true}
         ref={register({ required: true })}
       />
-      <label className="field-label" for="date_of_birth">
+      <label className="field-label">
         <span className="required">*</span> Date of Birth
       </label>
     </div>
@@ -283,7 +355,6 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_first_name"
                 readOnly={isReadonly}
                 name={"ch_first_name" + (counter - 1)}
                 className="field-input"
@@ -299,7 +370,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.first_name}
               />
-              <label className="field-label" for="ch_first_name">
+              <label className="field-label">
                 <span className="required">*</span> First Name
               </label>
             </div>
@@ -312,7 +383,6 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_last_name"
                 readOnly={isReadonly}
                 name={"ch_last_name" + (counter - 1)}
                 className="field-input"
@@ -328,8 +398,8 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.last_name}
               />
-              <label className="field-label" for="ch_last_name">
-                <span className="required" >*</span> Last Name
+              <label className="field-label">
+                <span className="required">*</span> Last Name
               </label>
             </div>
             <ErrorMessage
@@ -341,7 +411,6 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_nick_name"
                 name="ch_nick_name"
                 className="field-input"
                 placeholder="Nick Name"
@@ -357,7 +426,7 @@ export default function index({
                 ref={register()}
                 defaultValue={childProfile.nick_name}
               />
-              <label className="field-label" for="ch_nick_name">Nick Name</label>
+              <label className="field-label">Nick Name</label>
             </div>
           </div>
         </div>
@@ -386,7 +455,7 @@ export default function index({
                       padding: "5px 3px"
                     }}
                   >
-                    <button className="datepicker-btn">
+                    <button className="datepicker-btn" onClick={(e) => {e.preventDefault()}}>
                       <FontAwesomeIcon
                         icon={faAngleLeft}
                         onClick={decreaseMonth}
@@ -416,8 +485,7 @@ export default function index({
                         </option>
                       ))}
                     </select>
-
-                    <button className="datepicker-btn">
+                    <button className="datepicker-btn" onClick={(e) => {e.preventDefault()}}>
                       <FontAwesomeIcon
                         icon={faAngleRight}
                         onClick={increaseMonth}
@@ -494,38 +562,66 @@ export default function index({
           </div>
           <div className="form-group">
             <div className="field">
-              <Multiselect
-                readOnly={isReadonly}
-                disabled={isReadonly}
-                id={"ethinicity_" + (counter - 1)}
-                className="field-input"
-                options={ETHINICITY_OPTIONS}
-                hasSelectAll={hasSelectAll}
-                onSelect={(selectedList) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "ethinicity",
-                    selectedList
-                  );
-                }}
-                onRemove={(selectedList) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "ethinicity",
-                    selectedList
-                  );
-                }}
-                placeholder="Select all that apply"
-                displayValue="name"
-                closeIcon="cancel"
-                name={"ethinicity_" + (counter - 1)}
-                closeOnSelect={false}
-                showCheckbox={true}
-                autcomplete="false"
-                selectedValues={childProfile.ethinicity}
-              />
+
+              {
+                isReadonly ? (
+                // <input 
+                //   readOnly={isReadonly}
+                //   name={"ethinicity_" + (counter - 1)}
+                //   className="field-input"
+                //   placeholder="First Name"
+                //   onChange={({ target }) => {
+                //   }}
+                //   ref={register({ required: true })}
+                //   defaultValue={readOnlyEthinicity}
+                // />
+                <textarea
+                  className="field-input readonly"
+                  name={"ethinicity_" + (counter - 1)}
+                  readOnly={isReadonly}
+                  defaultValue={readOnlyEthinicity}
+                  style={{
+                    background: "white",
+                    borderBottom: "2px solid rgb(204, 204, 204) !important",
+                    resize: "none"
+                  }}
+                >
+                </textarea>
+                ) : (
+                <Multiselect
+                  readOnly={isReadonly}
+                  disabled={isReadonly}
+                  id={"ethinicity_" + (counter - 1)}
+                  className="field-input"
+                  options={ETHINICITY_OPTIONS}
+                  hasSelectAll={hasSelectAll}
+                  onSelect={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "ethinicity",
+                      selectedList
+                    );
+                  }}
+                  onRemove={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "ethinicity",
+                      selectedList
+                    );
+                  }}
+                  placeholder="Select all that apply"
+                  displayValue="name"
+                  closeIcon="cancel"
+                  name={"ethinicity_" + (counter - 1)}
+                  closeOnSelect={false}
+                  showCheckbox={true}
+                  autcomplete="false"
+                  selectedValues={childProfile.ethinicity}
+                />
+                )
+              }
               <label className="field-label">
                 Ethinicity (select all choices that apply)
               </label>
@@ -576,7 +672,6 @@ export default function index({
             <div className="field">
               {!isReadonly ? (
                 <NumberFormat
-                  id="ch_phone_number"
                   name={"ch_phone_number" + (counter - 1)}
                   className="field-input"
                   placeholder="Phone"
@@ -605,7 +700,6 @@ export default function index({
                 />
               ) : (
                 <input
-                  id="ch_phone_number"
                   name="ch_phone_number"
                   className="field-input"
                   placeholder="Phone"
@@ -614,9 +708,7 @@ export default function index({
                 />
               )}
 
-              <label className="field-label" for="ch_phone_number">
-                <span>Phone Number</span>
-              </label>
+              <label className="field-label">Phone Number</label>
             </div>
             <ErrorMessage
               field={errors["ch_phone_number" + (counter - 1)]}
@@ -658,7 +750,6 @@ export default function index({
               <div className="field">
                 {!isReadonly ? (
                   <NumberFormat
-                    id="ch_phone_number2"
                     name={"ch_phone_number2" + (counter - 1)}
                     className="field-input"
                     placeholder="Phone"
@@ -687,14 +778,13 @@ export default function index({
                   />
                 ) : (
                   <input
-                    id="ch_phone_number2"
                     name="ch_phone_number2"
                     className="field-input"
                     placeholder="Phone"
                     defaultValue={childProfile.phone_number}
                   />
                 )}
-                <label className="field-label" for="ch_phone_number2">Phone Number</label>
+                <label className="field-label">Phone Number</label>
               </div>
               <ErrorMessage
                 field={errors["ch_phone_number2" + (counter - 1)]}
@@ -748,7 +838,6 @@ export default function index({
             <div className="field">
               <input
                 type="text"
-                id="ch_email_address"
                 name={"ch_email_address" + (counter - 1)}
                 className="field-input"
                 placeholder="Email Address"
@@ -769,7 +858,7 @@ export default function index({
                   },
                 })}
               />
-              <label className="field-label" for="ch_email_address">
+              <label className="field-label">
                 Email Address (Child only, if applicable)
               </label>
             </div>
@@ -815,7 +904,6 @@ export default function index({
               <div className="field">
                 <input
                   type="text"
-                  id="ch_email_address2"
                   name={"ch_email_address2" + (counter - 1)}
                   className="field-input"
                   placeholder="Email Address"
@@ -836,7 +924,7 @@ export default function index({
                     },
                   })}
                 />
-                <label className="field-label" for="ch_email_address2">
+                <label className="field-label">
                   Email Address (Child only, if applicable)
                 </label>
               </div>
@@ -853,7 +941,6 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_address"
                 name={"ch_address" + (counter - 1)}
                 className="field-input"
                 placeholder="Address"
@@ -869,7 +956,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.address}
               />
-              <label className="field-label" for="ch_address">
+              <label className="field-label">
                 <span className="required">*</span> Address
               </label>
             </div>
@@ -882,7 +969,6 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_city"
                 name={"ch_city" + (counter - 1)}
                 className="field-input"
                 placeholder="City"
@@ -898,7 +984,7 @@ export default function index({
                 defaultValue={childProfile.city}
                 ref={register({ required: true })}
               />
-              <label className="field-label" for="ch_city">
+              <label className="field-label">
                 <span className="required">*</span> City
               </label>
             </div>
@@ -950,7 +1036,6 @@ export default function index({
             <div className="field">
               <input
                 type="text"
-                id="ch_zip_code"
                 readOnly={isReadonly}
                 name={"ch_zip_code" + (counter - 1)}
                 className="field-input"
@@ -971,7 +1056,7 @@ export default function index({
                 ref={register({ required: true, minLength: 5 })}
                 maxLength="5"
               />
-              <label className="field-label" for="ch_zip_code">
+              <label className="field-label">
                 <span className="required">*</span> Zip Code
               </label>
             </div>
@@ -1026,37 +1111,62 @@ export default function index({
           </div>
           <div className="form-group">
             <div className="field">
-              <Multiselect
-                selectedValues={childProfile.program}
-                readOnly={isReadonly}
-                disabled={isReadonly}
-                className="field-input"
-                options={PROGRAMS_OPTIONS}
-                hasSelectAll={hasSelectAll}
-                placeholder="Choose Multiple"
-                displayValue="name"
-                closeIcon="cancel"
-                id={"program_" + (counter - 1)}
-                name={"program_" + (counter - 1)}
-                closeOnSelect={false}
-                showCheckbox={true}
-                onSelect={(selectedList) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "program",
-                    selectedList
-                  );
-                }}
-                onRemove={(selectedList) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "program",
-                    selectedList
-                  );
-                }}
-              />
+              {
+                isReadonly ? (
+                // <input 
+                //   readOnly={isReadonly}
+                //   name={"program_" + (counter - 1)}
+                //   className="field-input"
+                //   placeholder="First Name"
+                //   onChange={({ target }) => {}}
+                //   ref={register({ required: true })}
+                //   defaultValue={readOnlyProgram}
+                // />
+
+                <textarea
+                  className="field-input readonly"
+                  name={"program_" + (counter - 1)}
+                  readOnly={isReadonly}
+                  defaultValue={readOnlyProgram}
+                  style={{
+                    background: "white",
+                    borderBottom: "2px solid rgb(204, 204, 204) !important",
+                    resize: "none"
+                  }}
+                >
+              </textarea>
+                ) : (
+                <Multiselect
+                  selectedValues={childProfile.program}
+                  className="field-input"
+                  options={PROGRAMS_OPTIONS}
+                  hasSelectAll={hasSelectAll}
+                  placeholder="Choose Multiple"
+                  displayValue="name"
+                  closeIcon="cancel"
+                  id={"program_" + (counter - 1)}
+                  name={"program_" + (counter - 1)}
+                  closeOnSelect={false}
+                  showCheckbox={true}
+                  onSelect={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "program",
+                      selectedList
+                    );
+                  }}
+                  onRemove={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "program",
+                      selectedList
+                    );
+                  }}
+                />
+                )
+              }
               <label className="field-label">
                 Program (select all choices that apply)
               </label>
@@ -1066,37 +1176,58 @@ export default function index({
         <div className="grid">
           <div className="form-group">
             <div className="field">
-              <Multiselect
-                disable={isReadonly}
-                disablePreSelectedValues={isReadonly}
-                selectedValues={childProfile.child_lives_with}
-                className="field-input"
-                options={CHILD_LIVES_OPTION}
-                hasSelectAll={hasSelectAll}
-                placeholder="Choose Multiple"
-                displayValue="name"
-                closeIcon="cancel"
-                name={"ch_lives_with" + (counter - 1)}
-                closeOnSelect={false}
-                showCheckbox={true}
-                onSelect={(selectedList = []) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "child_lives_with",
-                    selectedList
-                  );
-                }}
-                onRemove={(selectedList = []) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "child_lives_with",
-                    selectedList
-                  );
-                }}
-                ref={register({ required: true })}
-              />
+              {
+                isReadonly ? (
+                  <textarea
+                    className="field-input readonly"
+                    name={"ch_lives_with" + (counter - 1)}
+                    readOnly={isReadonly}
+                    defaultValue={readOnlyChildLivesWith}
+                  >
+                  </textarea>
+                  // <input 
+                  //   readOnly={isReadonly}
+                  //   name={"ch_lives_with" + (counter - 1)}
+                  //   className="field-input"
+                  //   placeholder="First Name"
+                  //   onChange={({ target }) => {
+                  //   }}
+                  //   ref={register({ required: true })}
+                  //   defaultValue={readOnlyChildLivesWith}
+                  // />
+                ) : (
+                <Multiselect
+                  selectedValues={childProfile.child_lives_with}
+                  className="field-input"
+                  options={CHILD_LIVES_OPTION}
+                  hasSelectAll={hasSelectAll}
+                  placeholder="Choose Multiple"
+                  displayValue="name"
+                  closeIcon="cancel"
+                  id={"ch_lives_with" + (counter - 1)}
+                  name={"ch_lives_with" + (counter - 1)}
+                  closeOnSelect={false}
+                  showCheckbox={true}
+                  onSelect={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "child_lives_with",
+                      selectedList
+                    );
+                  }}
+                  onRemove={(selectedList) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "child_lives_with",
+                      selectedList
+                    );
+                  }}
+                />
+                )
+              }
+
               <label className="field-label">
                 <span className="required">*</span> Child lives with
               </label>

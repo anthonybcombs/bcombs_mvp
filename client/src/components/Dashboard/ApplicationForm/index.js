@@ -156,8 +156,21 @@ export default function index() {
     }
   }, [vendors]);
 
+  if(vendor && vendor.id) {
+    let app_programs = []
 
-  console.log("vendor", vendor);
+    for(const program of vendor.app_programs) {
+      app_programs.push({
+        id: program.id,
+        name: program.name,
+        label: program.name
+      })
+    }
+
+    vendor.app_programs = app_programs;
+
+    console.log("vendor", vendor);
+  }
 
   const section1BtnContainerStyle = {
     position: "absolute",
@@ -396,6 +409,8 @@ export default function index() {
   const renderChildform = () => {
     let items = [];
 
+    console
+
     for(let i = 1; i <= childsInformation.length; i++) {
       if(i == childsInformation.length) {
         items.push(
@@ -414,6 +429,8 @@ export default function index() {
             maxChild={maxChild}
             current={childsInformation.length}
             ProfileImg={ProfileImg}
+            app_programs={vendor.app_programs}
+            location_sites={vendor.location_sites}
           />
         );
       } else {
@@ -434,6 +451,8 @@ export default function index() {
               maxChild={maxChild}
               current={childsInformation.length}
               ProfileImg={ProfileImg}
+              app_programs={vendor.app_programs}
+              location_sites={vendor.location_sites}
             />
             <hr className="style-eight"></hr>
           </div>
@@ -516,6 +535,8 @@ export default function index() {
       let x = id.split("-");
       emergency_contacts[index][id] = value;
       setEmergencyContacts([...emergencyContacts]);
+
+      console.log("emergencyContacts", emergencyContacts);
     }
 
     
@@ -767,6 +788,14 @@ export default function index() {
     return childLivesWith.map(a => a.name).toString();
   }
 
+  const getAppPrograms = (programs = []) => {
+    return programs.map(a => a.name).toString();
+  }
+
+  const getAppEtnicities = (ethnicities = []) => {
+    return ethnicities.map(a => a.name).toString();
+  }
+
   const onSubmit = () => {
 
     let payload = []
@@ -822,8 +851,8 @@ export default function index() {
           gpa_cumulative_q2: childsInformation[i].general_information.gpa_cumulative_q2,
           gpa_cumulative_q3: childsInformation[i].general_information.gpa_cumulative_q3,
           gpa_cumulative_q4: childsInformation[i].general_information.gpa_cumulative_q4,
-          ethnicities: "",
-          programs: "",
+          ethnicities: getAppEtnicities(childsInformation[i].profile.ethinicity),
+          programs: getAppPrograms(childsInformation[i].profile.program),
           doctor_name: childsInformation[i].emergency_care_information.doctor_name,
           doctor_phone: childsInformation[i].emergency_care_information.doctor_phone,
           hospital_preference: childsInformation[i].emergency_care_information.hospital_preference,
@@ -841,7 +870,8 @@ export default function index() {
         section3_text: vendor.section3_text,
         section1_name: vendor.section1_name,
         section2_name: vendor.section2_name,
-        section3_name: vendor.section3_name
+        section3_name: vendor.section3_name,
+        emergency_contacts: JSON.stringify(emergencyContacts)
       }
 
       payload.push(request_params);
@@ -1021,145 +1051,153 @@ export default function index() {
             </div>
           ) : (
           <div className="wizard-wrapper">
-            <div className="wizard-inner">
-              <div className="connecting-line"></div>
-              <ul className="nav-tabs">
-                <li className={selectedStep == 1 ? "active": ""}>
-                  <a href="#" value="1" onClick={(e) => {
-                     e.preventDefault();
-                    handleWizardSelection(1)
-                  }}>
-                    <span className="round-tab">1</span>
-                    <span className="round-tab-title">Child</span>
-                  </a>
-                </li>
-                <li 
-                  className={getNavItemClass(2)}
-                >
-                  <a href="#" onClick={(e) => {
-                    e.preventDefault();
-
-                    if(getNavItemClass(2).includes("disabled")) return;
-
-                    handleWizardSelection(2)
-                  }}>
-                    <span className="round-tab">2</span>
-                    <span className="round-tab-title">Parent</span>
-                  </a>
-                </li>
-                <li
-                  className={getNavItemClass(3)}
-                >
-                  <a href="#" onClick={(e) => {
-                    e.preventDefault();
-
-                    if(getNavItemClass(3).includes("disabled")) return;
-                    handleWizardSelection(3)
-                  }}>
-                    <span className="round-tab">3</span>
-                    <span className="round-tab-title">Terms & Waiver</span>
-                  </a>
-                </li>
-                <li
-                  className={getNavItemClass(4)}
-                >
-                  <a href="#" onClick={(e) => {
-                    e.preventDefault();
-
-                    if(getNavItemClass(4).includes("disabled")) return;
-                    handleWizardSelection(4)
-                  }}>
-                    <span className="round-tab">4</span>
-                    <span className="round-tab-title">Review</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div className="container">
-              <form
-                autoComplete="off"
-                onSubmit={handleSubmit(onSubmit)}
-                ref = {formRef}
-              >
-                <div className={(selectedStep == 1 || selectedStep == 4) ? "" : "hide"}>
-                  {
-                    renderChildform()
-                  }
-                </div>
-                {selectedStep == 4 && <hr className="style-eight"></hr>}
-                <div className={(selectedStep == 2 || selectedStep == 4) ? "" : "hide"}>
-                  <ParentFormStyled
-                    handleParentFormDetailsChange={handleParentFormDetailsChange}
-                    parentsInformation={parentsInformation}
-                    handleAddParent={handleAddParent}
-                    handleRemoveParent={handleRemoveParent}
-                    maxParent={maxParent}
-                    current={parentsInformation.length}
-                    register={register}
-                    errors={errors}
-                    emergencyContacts={emergencyContacts}
-                    ProfileImg={ProfileImg}
-                  />
-                </div>
-                {selectedStep == 4 && <hr className="style-eight"></hr>}
-                <div className={(selectedStep == 3 || selectedStep == 4 ) ? "" : "hide"}>
-                  <TermsWaiverFormStyled
-                    handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
-                    termsWaiver={termsWaiver}
-                    register={register}
-                    errors={errors}
-                    vendor={vendor}
-                  />
-                </div>
-                <div className="application-btn-container" style={(selectedStep == 1) ? section1BtnContainerStyle: {}}>
-                  {
-                    selectedStep < 4 &&
-                    <button
-                      type="button"
-                      className="right"
-                      onClick={(e) => {
-                        e.preventDefault();
-
-                        if(!isFormValid(selectedStep)) {
-                          formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
+            {
+              vendor && vendor.id ? (
+                <>
+                  <div className="wizard-inner">
+                    <div className="connecting-line"></div>
+                    <ul className="nav-tabs">
+                      <li className={selectedStep == 1 ? "active": ""}>
+                        <a href="#" value="1" onClick={(e) => {
                           e.preventDefault();
-                          return;
-                        };
-                        clearError();
-                        if(selectedStep == 1) handleWizardSelection(2);
-                        else if(selectedStep == 2) handleWizardSelection(3)
-                        else if (selectedStep == 3) handleWizardSelection(4)
-          
-                        //scrollToTop("smooth");
-
-                        window.scrollTo(0, 0)
-
-                      }}
+                          handleWizardSelection(1)
+                        }}>
+                          <span className="round-tab">1</span>
+                          <span className="round-tab-title">Child</span>
+                        </a>
+                      </li>
+                      <li 
+                        className={getNavItemClass(2)}
+                      >
+                        <a href="#" onClick={(e) => {
+                          e.preventDefault();
+      
+                          if(getNavItemClass(2).includes("disabled")) return;
+      
+                          handleWizardSelection(2)
+                        }}>
+                          <span className="round-tab">2</span>
+                          <span className="round-tab-title">Parent</span>
+                        </a>
+                      </li>
+                      <li
+                        className={getNavItemClass(3)}
+                      >
+                        <a href="#" onClick={(e) => {
+                          e.preventDefault();
+      
+                          if(getNavItemClass(3).includes("disabled")) return;
+                          handleWizardSelection(3)
+                        }}>
+                          <span className="round-tab">3</span>
+                          <span className="round-tab-title">Terms & Waiver</span>
+                        </a>
+                      </li>
+                      <li
+                        className={getNavItemClass(4)}
+                      >
+                        <a href="#" onClick={(e) => {
+                          e.preventDefault();
+      
+                          if(getNavItemClass(4).includes("disabled")) return;
+                          handleWizardSelection(4)
+                        }}>
+                          <span className="round-tab">4</span>
+                          <span className="round-tab-title">Review</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="container">
+                    <form
+                      autoComplete="off"
+                      onSubmit={handleSubmit(onSubmit)}
+                      ref = {formRef}
                     >
-                      Next
-                    </button>
-                  }
-                  {
-                    (selectedStep > 1 && selectedStep != 4) &&
-                    <a href="#" className="left" onClick={(e) => {
-                      e.preventDefault();
-        
-                      if(selectedStep == 3) handleWizardSelection(2);
-                      else if(selectedStep == 2) handleWizardSelection(1)
-        
-                      scrollToTop("smooth");
-
-                    }}>
-                      Previous
-                    </a>
-                  }
-                  {
-                    (selectedStep == 4 ) &&
-                    <button onClick={handleRelationshipEvent}>Submit</button>
-                  }  
-                </div>
-              </form>
-            </div>
+                      <div className={(selectedStep == 1 || selectedStep == 4) ? "" : "hide"}>
+                        {
+                          renderChildform()
+                        }
+                      </div>
+                      {selectedStep == 4 && <hr className="style-eight"></hr>}
+                      <div className={(selectedStep == 2 || selectedStep == 4) ? "" : "hide"}>
+                        <ParentFormStyled
+                          handleParentFormDetailsChange={handleParentFormDetailsChange}
+                          parentsInformation={parentsInformation}
+                          handleAddParent={handleAddParent}
+                          handleRemoveParent={handleRemoveParent}
+                          maxParent={maxParent}
+                          current={parentsInformation.length}
+                          register={register}
+                          errors={errors}
+                          emergencyContacts={emergencyContacts}
+                          ProfileImg={ProfileImg}
+                        />
+                      </div>
+                      {selectedStep == 4 && <hr className="style-eight"></hr>}
+                      <div className={(selectedStep == 3 || selectedStep == 4 ) ? "" : "hide"}>
+                        <TermsWaiverFormStyled
+                          handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+                          termsWaiver={termsWaiver}
+                          register={register}
+                          errors={errors}
+                          vendor={vendor}
+                        />
+                      </div>
+                      <div className="application-btn-container" style={(selectedStep == 1) ? section1BtnContainerStyle: {}}>
+                        {
+                          selectedStep < 4 &&
+                          <button
+                            type="button"
+                            className="right"
+                            onClick={(e) => {
+                              e.preventDefault();
+      
+                              if(!isFormValid(selectedStep)) {
+                                formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
+                                e.preventDefault();
+                                return;
+                              };
+                              clearError();
+                              if(selectedStep == 1) handleWizardSelection(2);
+                              else if(selectedStep == 2) handleWizardSelection(3)
+                              else if (selectedStep == 3) handleWizardSelection(4)
+                
+                              //scrollToTop("smooth");
+      
+                              window.scrollTo(0, 0)
+      
+                            }}
+                          >
+                            Next
+                          </button>
+                        }
+                        {
+                          (selectedStep > 1 && selectedStep != 4) &&
+                          <a href="#" className="left" onClick={(e) => {
+                            e.preventDefault();
+              
+                            if(selectedStep == 3) handleWizardSelection(2);
+                            else if(selectedStep == 2) handleWizardSelection(1)
+              
+                            scrollToTop("smooth");
+      
+                          }}>
+                            Previous
+                          </a>
+                        }
+                        {
+                          (selectedStep == 4 ) &&
+                          <button onClick={handleRelationshipEvent}>Submit</button>
+                        }  
+                      </div>
+                    </form>
+                  </div>
+                </>
+              ) : (
+                <Loading />
+              )
+            }
           </div>
           )
         } 

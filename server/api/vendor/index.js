@@ -30,6 +30,92 @@ export const getVendors = async () => {
   }
 };
 
+export const getVendorsByUserId = async (user) => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `SELECT 
+        BIN_TO_UUID(id) as id, 
+        BIN_TO_UUID(user) as user,
+        id2,
+        name, 
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name,
+        section1_show,
+        section2_show,
+        section3_show
+      FROM vendor 
+      WHERE user=UUID_TO_BIN(?)`
+      , [user]
+    );
+
+    if(result && result.length > 0) {
+      result[0].app_programs = await getVendorAppProgram(result[0].id);
+      result[0].location_sites = await getVendorAppLocationSite(result[0].id);
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return result;
+  }
+};
+
+export const getVendorAppProgram = async (vendor) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `SELECT 
+          id,
+          BIN_TO_UUID(vendor_program_id) as vendor_program_id,
+          BIN_TO_UUID(vendor) as vendor,
+          BIN_TO_UUID(user) as user,
+          name,
+          created_at
+        FROM vendor_program
+        WHERE vendor=UUID_TO_BIN(?)`,
+      [vendor]
+    )
+  } catch(error) {
+    console.log("get vendor app program", error)
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const getVendorAppLocationSite = async (vendor) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `SELECT 
+        id,
+        BIN_TO_UUID(vendor_location_site_id) as vendor_location_site_id,
+        BIN_TO_UUID(vendor) as vendor,
+        BIN_TO_UUID(user) as user,
+        name,
+        created_at
+      FROM vendor_location_site
+      WHERE vendor=UUID_TO_BIN(?)`,
+      [vendor]
+    )
+  } catch(error) {
+    console.log("get vendor app location site", error)
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
 export const addVendor = async ({
   user
 }) => {

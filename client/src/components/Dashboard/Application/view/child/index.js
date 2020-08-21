@@ -38,7 +38,9 @@ export default function index({
   errors,
   register,
   handleChildFormDetailsChange,
-  isFormHistory = false
+  isFormHistory = false,
+  location_sites = [],
+  app_programs = []
 }) {
     
   const handleScoresChange = () => {}
@@ -71,6 +73,8 @@ export default function index({
           errors={errors}
           isReadonly={isReadonly}
           ProfileImg={ProfileImg}
+          location_sites={location_sites}
+          app_programs={app_programs}
         />
         <GeneralInformationFormStyled 
           handleChildFormDetailsChange={handleChildFormDetailsChange}

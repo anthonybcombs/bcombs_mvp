@@ -41,7 +41,14 @@ import {
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
-import { getVendors, updateVendor, addVendor, addAppGroup, getVendorAppGroups } from "../../api/vendor";
+import { 
+  getVendors, 
+  updateVendor, 
+  addVendor, 
+  addAppGroup, 
+  getVendorAppGroups,
+  getVendorsByUserId 
+} from "../../api/vendor";
 import {
   createApplication,
   getApplicationsByVendor,
@@ -127,17 +134,17 @@ const resolvers = {
       return vendors;
     },
     async vendorsByUser(root, { user }, context) {
-      const vendors = await getVendors();
+      const vendors = await getVendorsByUserId(user);
       console.log("vendors", vendors);
-      let vendor = vendors.filter(vendor => {
-        return user == vendor.user;
-      });
+      // let vendor = vendors.filter(vendor => {
+      //   return user == vendor.user;
+      // });
 
-      if (vendor && vendor.length > 0) {
-        return vendor;
+      if (vendors && vendors.length > 0) {
+        return vendors;
       } else {
-        vendor = await addVendor({ user: user });
-        return vendor;
+        vendors = await addVendor({ user: user });
+        return vendors;
       }
     },
     async getVendorApplications(root, { vendor_id }, context) {
@@ -393,6 +400,30 @@ const resolvers = {
         };
       }
     },
+    async unarchivedApplications(root, { app_ids }, context) {
+      try {
+        for (let app_id of app_ids) {
+          let response = await unArchivedApplication(app_id);
+
+          if (response.error) {
+            return {
+              messageType: "error",
+              message: "error application unarchived"
+            };
+          }
+        }
+
+        return {
+          messageType: "info",
+          message: "application unarchived"
+        };
+      } catch (err) {
+        return {
+          messageType: "error",
+          message: "error application unarchived"
+        };
+      }
+    },
     async addVendorAppGroup(root, { appGroup }, context) {
       const vendors = appGroup.vendors;
 
@@ -418,7 +449,7 @@ const resolvers = {
 
       const previousApplication = await getApplicationByAppId(application.app_id);
 
-      const isSaved = await saveApplication({ child: application.child, parents: application.parents });
+      const isSaved = await saveApplication({ app_id: application.app_id, emergency_contacts: application.emergency_contacts, child: application.child, parents: application.parents });
 
       // const updatedApplication = await getApplicationByAppId(application.app_id);
 

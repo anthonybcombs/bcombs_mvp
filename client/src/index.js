@@ -117,6 +117,12 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
   }
 
+  #applicationForm textarea.readonly {
+    background: white !important;
+    border-bottom: 2px solid rgb(204, 204, 204) !important;
+    resize: none !important;
+  }
+
   #applicationForm .ta-justice {
     background: #f1f1f1;
     border: none;

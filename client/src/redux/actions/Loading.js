@@ -42,6 +42,13 @@ export const setApplicationLoading = value => {
   };
 }
 
+export const setUserApplicationLoading = value => {
+  return {
+    type: actionType.SET_USER_APPLICATION_LOADING,
+    value
+  };
+}
+
 export const setFormSettingsLoading = value => {
   return {
     type: actionType.SET_FORM_SETTINGS_LOADING,
