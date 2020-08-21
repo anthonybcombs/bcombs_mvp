@@ -142,7 +142,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     defaultValue={formSettings.name}
                   />
                   <label className="field-label" for="vendor_name">
-                    Vendor Name
+                    Vendor Name <span style={{ color: "red" }}>{"*"}</span>
                   </label>
                 </div>
               </div>
