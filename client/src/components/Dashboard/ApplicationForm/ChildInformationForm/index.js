@@ -342,14 +342,14 @@ export default function index({
       </h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">
-          <img src={imagePreview} width="80" height="80" />
+          {/* <img src={imagePreview} width="80" height="80" />
           {!isReadonly && (
             <input
               name={"ch_img" + (counter - 1)}
               onChange={handleFileChange}
               type="file"
             />
-          )}
+          )} */}
         </div>
         <div className="grid">
           <div className="form-group">

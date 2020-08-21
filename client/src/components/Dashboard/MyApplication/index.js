@@ -110,6 +110,7 @@ export default function index() {
   ]
 
   useEffect(() => {
+    console.log('AUTHHHH MY APPLCIATION', auth)
     if(auth.user_id) {
       dispatch(requestGetApplicationByUserId(auth.user_id))
     }
@@ -705,12 +706,14 @@ export default function index() {
   }
 
   console.log("loading", loading);
+  console.log("loading userApplications", userApplications);
 
   return (
     <MyApplicationStyled>
 
       {
-        !loading.userAllApplications && userApplications.length > 0 ?
+        /* userApplications.length > 0 */
+        !loading.userAllApplications && userApplications?
         (
           <>
           <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
