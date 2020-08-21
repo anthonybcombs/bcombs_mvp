@@ -151,7 +151,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
               <div className="form-group">
                 <div className="field">
                   <input
-                    required
+                    required={formSettings.section1_show}
                     id="section1_title"
                     name="section1_title"
                     className="field-input title"
@@ -162,7 +162,10 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     defaultValue={formSettings.section1_name}
                   />
                   <label className="field-label" for="section1_title">
-                    Title
+                    Title{" "}
+                    <span style={{ color: "red" }}>
+                      {formSettings.section1_show ? "*" : ""}
+                    </span>
                   </label>
                 </div>
                 <Toggle
@@ -178,9 +181,12 @@ export default function index({ vendor, formSettingsLoading = false }) {
               <div className="form-group">
                 <div className="textarea-container">
                   <textarea
+                    required={formSettings.section1_show}
                     name="waiver_text"
                     className="form-control"
-                    placeholder="Context"
+                    placeholder={`Context ${
+                      formSettings.section1_show ? "*" : ""
+                    }`}
                     rows="15"
                     onChange={({ target }) =>
                       handleFormSettingsChange("section1_text", target.value)
@@ -193,6 +199,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
               <div className="form-group">
                 <div className="field">
                   <input
+                    required={formSettings.section2_show}
                     id="section2_title"
                     name="section1_title"
                     className="field-input title"
@@ -203,7 +210,10 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     defaultValue={formSettings.section2_name}
                   />
                   <label className="field-label" for="section2_title">
-                    Title
+                    Title{" "}
+                    <span style={{ color: "red" }}>
+                      {formSettings.section2_show ? "*" : ""}
+                    </span>
                   </label>
                 </div>
                 <Toggle
@@ -219,8 +229,10 @@ export default function index({ vendor, formSettingsLoading = false }) {
               <div className="form-group">
                 <div className="textarea-container">
                   <textarea
+                    required={formSettings.section2_show}
                     name="liability_waiver_text"
                     className="form-control"
+                    placeholder={`${formSettings.section2_show ? "*" : ""}`}
                     rows="15"
                     onChange={({ target }) =>
                       handleFormSettingsChange("section2_text", target.value)
@@ -233,6 +245,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
               <div className="form-group">
                 <div className="field">
                   <input
+                    required={formSettings.section3_show}
                     id="section3_title"
                     name="section1_title"
                     className="field-input title"
@@ -243,7 +256,10 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     defaultValue={formSettings.section3_name}
                   />
                   <label className="field-label" for="section3_title">
-                    Title
+                    Title{" "}
+                    <span style={{ color: "red" }}>
+                      {formSettings.section3_show ? "*" : ""}
+                    </span>
                   </label>
                 </div>
                 <Toggle
@@ -259,9 +275,10 @@ export default function index({ vendor, formSettingsLoading = false }) {
               <div className="form-group">
                 <div className="textarea-container">
                   <textarea
-                    required
+                    required={formSettings.section3_show}
                     name="terms_and_conditions_text"
                     className="form-control"
+                    placeholder={`${formSettings.section3_show ? "*" : ""}`}
                     rows="15"
                     onChange={({ target }) =>
                       handleFormSettingsChange("section3_text", target.value)
