@@ -10,11 +10,17 @@ import {
   faFile
 } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { Link, Location, useNavigate, useLocation, useParams } from "@reach/router";
+import {
+  Link,
+  Location,
+  useNavigate,
+  useLocation,
+  useParams
+} from "@reach/router";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 import Logo from "../images/logo1.png";
 import { requestLogout } from "../redux/actions/Auth";
-import { requestUserTypes } from '../redux/actions/UserTypes';
+import { requestUserTypes } from "../redux/actions/UserTypes";
 
 const HeaderStyled = styled.header`
   display: grid;
@@ -127,34 +133,33 @@ const PopoverStyled = styled.div`
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
-  const [currentUserType, setCurrentUserType] = useState('');
+  const [currentUserType, setCurrentUserType] = useState("");
 
-  const { auth, status, userTypes, vendors } = useSelector(({ auth, status,  userTypes, vendors }) => {
-    return { auth, status, userTypes, vendors };
-  });
-  
+  const { auth, status, userTypes, vendors } = useSelector(
+    ({ auth, status, userTypes, vendors }) => {
+      return { auth, status, userTypes, vendors };
+    }
+  );
+
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
- 
   useEffect(() => {
     if (auth) {
       setCurrentUserProfilePhoto(auth.profile_img || auth.picture);
 
       console.log(Object.keys(userTypes).length);
 
-      if(Object.keys(userTypes).length > 0) {
-
+      if (Object.keys(userTypes).length > 0) {
         console.log(userTypes);
-        const ut = userTypes.filter((type) => {
+        const ut = userTypes.filter(type => {
           return type.id === auth.type;
         })[0];
 
-        setCurrentUserType((ut && ut.name) ? ut.name : "");
+        setCurrentUserType(ut && ut.name ? ut.name : "");
       }
     }
-
   }, [auth, vendors]);
 
   const location = useLocation();
@@ -166,14 +171,15 @@ export default function Layout({ children }) {
           <Link to="/">
             <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
           </Link>
-          {
-            location.href.includes(location.origin + "/application/") && vendors && vendors.length > 0 &&
-            <p className="vendor-welcome-message">
-              Welcome to &nbsp;<span className="name">{vendors[0].name}</span>
-            </p>
-          }
+          {location.href.includes(location.origin + "/application/") &&
+            vendors &&
+            vendors.length > 0 && (
+              <p className="vendor-welcome-message">
+                Welcome to &nbsp;<span className="name">{vendors[0].name}</span>
+              </p>
+            )}
           <Location
-            children={(context) => {
+            children={context => {
               if (
                 context.location.pathname.includes("dashboard") &&
                 auth.status === "SIGNED_IN"
@@ -196,7 +202,7 @@ export default function Layout({ children }) {
         </div>
         <div id="app-header-left">
           <Location
-            children={(context) => {
+            children={context => {
               if (
                 context.location.pathname === "/auth/forgot-password" ||
                 context.location.pathname === "/auth/create"
@@ -215,7 +221,7 @@ export default function Layout({ children }) {
             }}
           />
           <Location
-            children={(context) => {
+            children={context => {
               if (
                 context.location.pathname.includes("dashboard") &&
                 auth.status === "SIGNED_IN"
@@ -229,8 +235,7 @@ export default function Layout({ children }) {
                           : ""
                       }`}
                       to="/dashboard"
-                      state={{ calendarName: "" }}
-                    >
+                      state={{ calendarName: "" }}>
                       <span> Dashboard</span>
                     </Link>
                     <Link
@@ -239,8 +244,7 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                       }`}
-                      to="/dashboard/mycalendars"
-                    >
+                      to="/dashboard/mycalendars">
                       <span>Calendars</span>
                     </Link>
                     <Link
@@ -249,8 +253,7 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                       }`}
-                      to="/dashboard/myevents"
-                    >
+                      to="/dashboard/myevents">
                       <span>Events</span>
                     </Link>
 
@@ -260,23 +263,32 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                       }`}
-                      to="/dashboard/mycontacts"
-                    >
+                      to="/dashboard/mycontacts">
                       <span>Contacts</span>
                     </Link>
-                    {
-                      currentUserType === "VENDOR" &&
+                    {currentUserType === "USER" && (
+                      <Link
+                        className={`${
+                          context.location.pathname ===
+                          "/dashboard/myapplication"
+                            ? "selected"
+                            : ""
+                        }`}
+                        to="/dashboard/myapplication">
+                        <span>My Application</span>
+                      </Link>
+                    )}
+                    {currentUserType === "VENDOR" && (
                       <Link
                         className={`${
                           context.location.pathname === "/dashboard/application"
                             ? "selected"
                             : ""
                         }`}
-                        to="/dashboard/application"
-                      >
+                        to="/dashboard/application">
                         <span>Application</span>
                       </Link>
-                    }
+                    )}
                     <div id="dashboard-setting">
                       <Link
                         className={`${
@@ -285,8 +297,7 @@ export default function Layout({ children }) {
                             ? "selected"
                             : ""
                         }`}
-                        to="/dashboard/notifications"
-                      >
+                        to="/dashboard/notifications">
                         <FontAwesomeIcon icon={faBell} />
                       </Link>
                       <Link
@@ -295,8 +306,7 @@ export default function Layout({ children }) {
                             ? "selected"
                             : ""
                         }`}
-                        to="/dashboard/settings"
-                      >
+                        to="/dashboard/settings">
                         <FontAwesomeIcon icon={faCog} />
                       </Link>
                       <Popover
@@ -310,34 +320,32 @@ export default function Layout({ children }) {
                             arrowColor="lightgrey"
                             arrowSize={7}
                             arrowStyle={{ opacity: 1 }}
-                            arrow="center"
-                          >
+                            arrow="center">
                             <PopoverStyled>
                               <Link
                                 to="/dashboard/myprofile"
                                 onClick={() => {
                                   setIsPopOverVisible(false);
-                                }}
-                              >
+                                }}>
                                 <FontAwesomeIcon icon={faUser} />
                                 <span>Profile</span>
                               </Link>
-                              <Link
-                                to="/dashboard/myapplication"
-                                onClick={() => {
-                                  setIsPopOverVisible(false);
-                                }}
-                              >
-                                <FontAwesomeIcon icon={faFile} />
-                                <span>Application</span>
-                              </Link>
+                              {currentUserType === "VENDOR" && (
+                                <Link
+                                  to="/dashboard/myapplication"
+                                  onClick={() => {
+                                    setIsPopOverVisible(false);
+                                  }}>
+                                  <FontAwesomeIcon icon={faFile} />
+                                  <span>Application</span>
+                                </Link>
+                              )}
                               <a
                                 onClick={() => {
                                   dispatch(requestLogout());
                                   setIsPopOverVisible(false);
                                   navigate("/", { replace: true });
-                                }}
-                              >
+                                }}>
                                 <FontAwesomeIcon icon={faSignOutAlt} />
                                 <span>Logout</span>
                               </a>
@@ -346,13 +354,11 @@ export default function Layout({ children }) {
                         )}
                         onClickOutside={() => {
                           setIsPopOverVisible(false);
-                        }}
-                      >
+                        }}>
                         <a
                           onClick={() => {
                             setIsPopOverVisible(true);
-                          }}
-                        >
+                          }}>
                           <img
                             src={`${currentUserProfilePhoto}?t=${new Date().getTime()}`}
                           />
