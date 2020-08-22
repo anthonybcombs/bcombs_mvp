@@ -114,6 +114,10 @@ const HeaderStyled = styled.header`
 const LayoutStyled = styled.div`
   margin: 0;
   padding: 0;
+
+  .react-tiny-popover-container {
+    overflow: auto !important;
+  }
 `;
 
 const PopoverStyled = styled.div`
@@ -310,16 +314,24 @@ export default function Layout({ children }) {
                         <FontAwesomeIcon icon={faCog} />
                       </Link>
                       <Popover
+                        containerStyle={{
+                          position: "relative",
+                          right: 25
+                        }}
                         isOpen={isPopOverVisible}
-                        position={"left"}
+                        position={["bottom", "right"]}
                         content={({ position, targetRect, popoverRect }) => (
                           <ArrowContainer
                             position={position}
                             targetRect={targetRect}
+                            align="end"
                             popoverRect={popoverRect}
                             arrowColor="lightgrey"
                             arrowSize={7}
                             arrowStyle={{ opacity: 1 }}
+                            containerStyle={{
+                              right: 12
+                            }}
                             arrow="center">
                             <PopoverStyled>
                               <Link
@@ -327,7 +339,7 @@ export default function Layout({ children }) {
                                 onClick={() => {
                                   setIsPopOverVisible(false);
                                 }}>
-                                <FontAwesomeIcon icon={faUser} />
+                                {/* <FontAwesomeIcon icon={faUser} /> */}
                                 <span>Profile</span>
                               </Link>
                               {currentUserType === "VENDOR" && (
@@ -336,7 +348,7 @@ export default function Layout({ children }) {
                                   onClick={() => {
                                     setIsPopOverVisible(false);
                                   }}>
-                                  <FontAwesomeIcon icon={faFile} />
+                                  {/* <FontAwesomeIcon icon={faFile} /> */}
                                   <span>Application</span>
                                 </Link>
                               )}
@@ -346,7 +358,7 @@ export default function Layout({ children }) {
                                   setIsPopOverVisible(false);
                                   navigate("/", { replace: true });
                                 }}>
-                                <FontAwesomeIcon icon={faSignOutAlt} />
+                                {/* <FontAwesomeIcon icon={faSignOutAlt} /> */}
                                 <span>Logout</span>
                               </a>
                             </PopoverStyled>
