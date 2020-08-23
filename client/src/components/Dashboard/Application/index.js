@@ -50,11 +50,17 @@ const ApplicationStyled = styled.div`
     display: block;
     color: initial;
     text-decoration: none;
+
+    display: flex;
+    align-items: center;
   }
 
   #labels > div > span,
   #labels > a > span {
     margin-left: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   #application > div {
@@ -114,6 +120,10 @@ const ApplicationStyled = styled.div`
       grid-template-columns: 25% 75%;
       grid-gap: 1%;
     }
+  }
+
+  @media (max-width: 840px) {
+    padding: 0rem 1rem 2rem;
   }
 
   @media (min-width: 1500px) {

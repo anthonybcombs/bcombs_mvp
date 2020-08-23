@@ -17,8 +17,8 @@ const MyCalendarStyled = styled.div`
   margin: auto;
   padding: 0rem 3em 2rem;
   
-  h2 {
-    // font-weight: 400;
+  @media (max-width: 840px) {
+    padding: 0rem 1rem 2rem;
   }
 
   

@@ -33,8 +33,6 @@ import RecommendationSliderStyled from "./RecommendationSlider";
 import { getEvents } from "../../../redux/actions/Events";
 
 const HomeStyled = styled.div`
-  // padding: 1px 1em 1px 1em;
-  // box-shadow: 0px 3px 6px #908e8e;
   width: auto;
   max-width: 1920px;
   margin: auto;
@@ -141,6 +139,9 @@ const HomeStyled = styled.div`
   .right-arrow {
     right: 10px;
   }
+  @media (max-width: 840px) {
+    padding: 0rem 1rem 2rem;
+  }
   @media (min-width: 600px) {
     .grid {
       grid-template-columns: 3fr 6fr;
@@ -174,6 +175,7 @@ const HomeStyled = styled.div`
     top: -2px;
     position: relative;
   }
+  
 `;
 export default function index({ location }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);

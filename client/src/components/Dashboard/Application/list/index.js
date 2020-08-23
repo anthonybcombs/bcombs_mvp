@@ -47,8 +47,12 @@ const ApplicationListStyled = styled.div`
   }
 
   #tableHeader {
-    display: grid;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
     margin: 30px 0;
+    padding: 0 1.5rem;
   }
 
   #archivedBtnContainer {
@@ -58,7 +62,7 @@ const ApplicationListStyled = styled.div`
 
   #archivedButton,
   #exportButton {
-    margin-left: 30px;
+    // margin-left: 30px;
     font-size: 1em;
     color: #fff;
     background-color: #f26e21;
@@ -83,17 +87,21 @@ const ApplicationListStyled = styled.div`
 
   #legendContainer ul {
     margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
   #legendContainer ul li {
     list-style-type: none;
-    display: inline;
+    display: flex;
     margin-right: 20px;
+    padding: 1.5px;
   }
-
-  #legendContainer span {
-    padding: 0px 8px;
-    margin-right: 5px;
+  #legendContainer span:not(.label) {
+    height: 0;
+    padding: 10px;
+    margin-right: 8px;
   }
 
   #legendContainer .red {
@@ -110,17 +118,15 @@ const ApplicationListStyled = styled.div`
 
   #actionButtonContainer {
     position: relative;
-  }
 
-  #actionButtonContainer > div {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
-    margin-right: 30px;
   }
 
   #actionButtonContainer a{
     background-color: #f26e21;
-    padding: 10px;
+    padding: 10px 32px;
     width: 100%;
     display: block;
     color: white;
@@ -132,6 +138,8 @@ const ApplicationListStyled = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    white-space: pre;
+
   }
 
   #dataTableContainer {
@@ -154,9 +162,28 @@ const ApplicationListStyled = styled.div`
     margin: 1vh auto;
   } 
 
-  @media (min-width: 600px) {
+  @media (max-width: 1024px) {
     #tableHeader {
-      grid-template-columns: 10% 60% 30%;
+      flex-direction: column;
+    }
+    #legendContainer,
+    #archivedBtnContainer,
+    #actionButtonContainer {
+      padding: .5rem 0;
+    }
+  }
+  @media (max-width: 768px) {
+    #legendContainer ul {
+      justify-content: center;
+    }
+  }
+  @media (max-width: 480px) {
+    #actionButtonContainer {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    #actionButtonContainer a {
+      margin: 4px 0;
     }
   }
 `;
@@ -655,21 +682,22 @@ export default function index({
             <div id="legendContainer">
               <ul>
                 <li>
-                  <span className='red'></span> Leaving the room
+                  <span className='red'></span>
+                  <span className='label'>Leaving the room</span>
                 </li>
                 <li>
-                  <span className='steelBlue'></span> Coming into the room
+                  <span className='steelBlue'></span>
+                  <span className='label'>Coming into the room</span>
                 </li>
                 <li>
-                  <span className='green'></span> Potentials for leaving room
+                  <span className='green'></span>
+                  <span className='label'>Potentials for leaving room</span>
                 </li>
               </ul>
             </div>
             <div id="actionButtonContainer">
-              <div>
                 <a href="/dashboard/archived" target="_blank">Archived Applications</a>
                 <a href="" onClick={e => { e.preventDefault(); window.location.reload(false)}}>All Applications</a>
-              </div>
             </div>
           </div>
           <div id="dataTableContainer">
