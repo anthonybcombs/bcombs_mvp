@@ -23,6 +23,12 @@ const ApplicationListStyled = styled.div`
   
   margin-bottom: 20px;
 
+  #dataTableContainer >div header {
+    padding: 0;
+    display: block;
+    min-height: auto;
+  }
+
   #dataTableContainer .gVljTM {
     position: absolute;
     top: 22px;
@@ -231,10 +237,22 @@ const ClearButton = styled.button`
 
 const SelectWrapper = styled.div`
 
-  display: grid;
-  grid-template-columns: 20% 20% 20% 20%;
-  grid-gap: 5%;
-  min-width: 85%;
+  // display: grid;
+  // grid-template-columns: 20% 20% 20% 20%;
+  // grid-gap: 5%;
+  // min-width: 85%;
+
+  display: flex;
+  flex: 1 1 100%;
+  justify-content: flex-start;
+
+  input {
+    margin-right: auto;
+    width: 100%;
+    max-width: 280px;
+    min-width: 200px;
+  }
+
 
   .form-control {
     display: block;
@@ -257,10 +275,11 @@ const SelectWrapper = styled.div`
     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
     box-sizing: border-box;  
   }
-
+  
   select.form-control {
     height: 32px;
     width: auto;
+    margin-left: 1rem;
   }
 `;
 
@@ -290,7 +309,7 @@ const FilterComponent = ({
   statusText }) => (
   <>
     <SelectWrapper>
-    <TextField id="search" type="text" placeholder="Search Name" value={filterText} onChange={onFilter} />
+      <TextField id="search" type="text" placeholder="Search Name" value={filterText} onChange={onFilter} />
       <select 
         name="class"
         className="form-control"
