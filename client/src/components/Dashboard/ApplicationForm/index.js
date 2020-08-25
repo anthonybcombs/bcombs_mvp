@@ -198,6 +198,10 @@ export default function index() {
     setSelectedStep(index);
   }
 
+  if (showRelationshipView) {
+    scrollToTop("auto");
+  }
+
   const handleScoresChange = (index, section, action) => {
 
     let childs = childsInformation;
