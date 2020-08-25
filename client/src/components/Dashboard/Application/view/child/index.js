@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPrint } from "@fortawesome/free-solid-svg-icons";
 
 import ChildInformationFormStyled from "../../../ApplicationForm/ChildInformationForm";
 import GeneralInformationFormStyled from "../../../ApplicationForm/GeneralInformationForm";
 import MedicalCareInfoStyled from "../../../ApplicationForm/MedicalCareIformationForm";
 
+import ReactToPrint, { useReactToPrint } from "react-to-print";
+
 import "../../../ApplicationForm/ApplicationForm.css";
 
-const ChildFormViewStyled = styled.div`
-  margin-top: 50px;
+const ChildFormHeader = styled.div`
   h1 {
     color: #f26e21;
     text-align: center;
@@ -20,12 +21,33 @@ const ChildFormViewStyled = styled.div`
   .edit-button {
     border: 0;
     position: absolute;
-    right: 10px;
+    right: 80px;
     cursor: pointer;
     font-size: 2em;
     color: #f26e21;
     background: none;
     z-index: 1;
+  }
+
+  .print-button {
+    border: 0;
+    position: absolute;
+    right: 150px;
+    cursor: pointer;
+    font-size: 2em;
+    color: #f26e21;
+    background: none;
+    z-index: 1;
+  }
+`;
+
+const ChildFormViewStyled = styled.div`
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-top: 30px;
+  h1 {
+    color: #f26e21;
+    text-align: center;
   }
 `;
 
@@ -42,58 +64,68 @@ export default function index({
   location_sites = [],
   app_programs = []
 }) {
-    
-  const handleScoresChange = () => {}
-  
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    copyStyles: true
+  });
+
+  const handleScoresChange = () => {};
+
   return (
-    <ChildFormViewStyled>
-      <h1>
-        {vendor.name} Application Form
-      </h1>
-      <div id="applicationForm">
-        {
-          !isFormHistory && (
-            <button
-              className="edit-button"
-              type="button"
-              onClick={handleChangeToEdit}>
-              <FontAwesomeIcon 
-                icon={faEdit}
-              />
-            </button>
-          )
-        }
+    <>
+      <ChildFormHeader>
+        {" "}
+        <h1>{vendor.name} Application Form</h1>
+        {!isFormHistory && (
+          <button
+            className="edit-button"
+            type="button"
+            onClick={handleChangeToEdit}>
+            <FontAwesomeIcon icon={faEdit} />
+          </button>
+        )}
+        <button className="print-button" onClick={handlePrint}>
+          {" "}
+          <FontAwesomeIcon icon={faPrint} />
+        </button>
+      </ChildFormHeader>
 
-
-        <ChildInformationFormStyled 
-          handleChildFormDetailsChange={handleChildFormDetailsChange}
-          childProfile={childInformation.profile}
-          counter={1}
-          register={register}
-          errors={errors}
-          isReadonly={isReadonly}
-          ProfileImg={ProfileImg}
-          location_sites={location_sites}
-          app_programs={app_programs}
-        />
-        <GeneralInformationFormStyled 
-          handleChildFormDetailsChange={handleChildFormDetailsChange}
-          childGeneralInformation={childInformation.general_information}
-          counter={1}
-          handleScoresChange={handleScoresChange}
-          register={register}
-          errors={errors}
-          isReadonly={isReadonly}
-        />
-        <MedicalCareInfoStyled 
-          childEmergencyCare={childInformation.emergency_care_information}
-          handleChildFormDetailsChange={handleChildFormDetailsChange}
-          counter={1}
-          register={register}
-          errors={errors}
-          isReadonly={isReadonly}
-        />
-      </div>
-    </ChildFormViewStyled>
-  )
+      <ChildFormViewStyled ref={componentRef}>
+        <div id="applicationForm">
+          <ChildInformationFormStyled
+            handleChildFormDetailsChange={handleChildFormDetailsChange}
+            childProfile={childInformation.profile}
+            counter={1}
+            register={register}
+            errors={errors}
+            isReadonly={isReadonly}
+            ProfileImg={ProfileImg}
+            location_sites={location_sites}
+            app_programs={app_programs}
+          />
+          <br />
+          <GeneralInformationFormStyled
+            handleChildFormDetailsChange={handleChildFormDetailsChange}
+            childGeneralInformation={childInformation.general_information}
+            counter={1}
+            handleScoresChange={handleScoresChange}
+            register={register}
+            errors={errors}
+            isReadonly={isReadonly}
+          />
+          <br />
+          <br />
+          <MedicalCareInfoStyled
+            childEmergencyCare={childInformation.emergency_care_information}
+            handleChildFormDetailsChange={handleChildFormDetailsChange}
+            counter={1}
+            register={register}
+            errors={errors}
+            isReadonly={isReadonly}
+          />
+        </div>
+      </ChildFormViewStyled>
+    </>
+  );
 }
