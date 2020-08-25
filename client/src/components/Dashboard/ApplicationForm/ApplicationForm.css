@@ -85,13 +85,13 @@
 }
 
 .wizard-wrapper li.active .round-tab {
-  border: 2px solid
+  border: 2px solid;
 }
 
 .wizard-wrapper .nav-tabs > li.active .round-tab {
   border-color: #f26e21;
   background: #f47b2c;
-  color: white
+  color: white;
 }
 
 .wizard-inner .round-tab-title {
@@ -101,7 +101,7 @@
 }
 
 .wizard-inner .nav-tabs > li.active .round-tab-title {
-  color: #f26e21
+  color: #f26e21;
 }
 
 .container {
@@ -146,7 +146,7 @@
 .medical-info-wrapper,
 .parent-info-wrapper,
 .emergency-contact-wrapper,
-.waiver-wrapper  {
+.waiver-wrapper {
   box-shadow: 0px 0px 30px #ccc;
   padding: 30px;
   margin-top: 30px;
@@ -155,6 +155,9 @@
   padding-bottom: 70px;
 }
 
+.child-info-wrapper {
+  padding-bottom: 30px;
+}
 .emergency-contact-wrapper {
   padding-bottom: 30px;
 }
@@ -208,7 +211,7 @@
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: #4b525a
+  background: #4b525a;
 }
 
 .cus-select-container input:checked ~ .checkmark:after {
@@ -358,7 +361,7 @@
   border: none !important;
 }
 
-.wizard-wrapper .nav-tabs > li.disabled .round-tab-title  {
+.wizard-wrapper .nav-tabs > li.disabled .round-tab-title {
   color: #abaaaa !important;
 }
 
@@ -391,7 +394,7 @@
 }
 .datepicker-btn:hover {
   background: rgb(255 255 255 / 20%);
-  transition: .15s ease-in-out;
+  transition: 0.15s ease-in-out;
 }
 
 .react-datepicker__header {
