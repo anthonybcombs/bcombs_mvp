@@ -87,6 +87,26 @@ export default function index({ navigate }) {
     sessionStorage.setItem("calendarName", calendar.name);
   };
 
+  // Temp function for submitting after security questions
+  const handleSubmitAfterSecurityQuestion = securityInfo => {
+    let profile = {
+      ...profileDetails,
+      personalInfo: {
+        ...profileDetails.personalInfo,
+        ...securityInfo
+      }
+    };
+
+    delete profile.unrequiredFields;
+
+    dispatch(
+      requestUpdateUser({
+        ...profile,
+        email: auth.email
+      })
+    );
+  }
+
   const handleSkip = calendar => {
     console.log("SKIPPP", {
       ...profileDetails,
@@ -119,21 +139,28 @@ export default function index({ navigate }) {
           setCurrentPage={setCurrentPage}
           profileDetails={profileDetails.personalInfo}
           setProfileDetails={setProfileDetails}
+
+          //Added this for hiding the adding family member and calendar as of aug 25
+          handleSubmitAfterSecurityQuestion={handleSubmitAfterSecurityQuestion}
         />
       )}
-      {userType.name === "USER" && currentPage === 2 && (
+      {/* START Temporary comment as of august 25 */}
+      {/* {userType.name === "USER" && currentPage === 2 && (
         <FamilyMember
           setCurrentPage={setCurrentPage}
           setProfileDetails={setProfileDetails}
         />
-      )}
+      )} */}
+      {/* END Temporary comment as of august 25 */}
       {/*{currentPage === 2 && (*/}
       {/*<Member*/}
       {/*setCurrentPage={setCurrentPage}*/}
       {/*setProfileDetails={setProfileDetails}*/}
       {/*/>*/}
       {/*)}*/}
-      {userType.name === "VENDOR" && currentPage === 2 && (
+
+      {/* START Temporary comment as of august 25 */}
+      {/* {userType.name === "VENDOR" && currentPage === 2 && (
         <Calendar
           navigate={navigate}
           handleProfileSubmit={handleProfileSubmit}
@@ -146,7 +173,8 @@ export default function index({ navigate }) {
           handleProfileSubmit={handleProfileSubmit}
           onSkip={handleSkip}
         />
-      )}
+      )} */}
+       {/* END Temporary comment as of august 25 */}
     </>
   );
 }

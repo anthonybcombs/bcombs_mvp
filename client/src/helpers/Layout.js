@@ -351,16 +351,16 @@ export default function Layout({ children }) {
                                 {/* <FontAwesomeIcon icon={faUser} /> */}
                                 <span>Profile</span>
                               </Link>
-                              {currentUserType === "VENDOR" && (
+                              {/* {currentUserType === "VENDOR" && (
                                 <Link
                                   to="/dashboard/myapplication"
                                   onClick={() => {
                                     setIsPopOverVisible(false);
                                   }}>
-                                  {/* <FontAwesomeIcon icon={faFile} /> */}
+                                
                                   <span>Application</span>
                                 </Link>
-                              )}
+                              )} */}
                               <a
                                 onClick={() => {
                                   dispatch(requestLogout());
