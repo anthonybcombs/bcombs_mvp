@@ -419,7 +419,7 @@ export default function CreateProfileForm({
                     }
                     handleInputChange("gender", target.value);
                   }}
-                  ref={register({ required: true })}>
+                  ref={register({ required: false })}>
                   <option value="" disabled selected={!data.gender}>
                     Select Gender
                   </option>
@@ -437,11 +437,11 @@ export default function CreateProfileForm({
                 </select>
                 <label className="field-label">{!data.gender ? '' : 'Select Gender'}</label>
               </div>
-              <ErrorMessage
+              {/* <ErrorMessage
                 field={errors.gender}
                 errorType="required"
                 message="Gender is required."
-              />
+              /> */}
             </>
           )
         }
@@ -470,59 +470,58 @@ export default function CreateProfileForm({
           </>
         )}
       </div>
-
-      <div className="form-group">
+      {/* <div className="form-group"> */}
         {
-          userType !== "VENDOR" && (
-            <>
-              <div className="field">
-                <select
-                  className={`field-input${!data.familyrelationship ? " select-empty" : ""}`}
-                  data-testid="app-profile-select-family-relationship"
-                  name="familyrelationship"
-                  onChange={({ target }) => {
-                    handleInputChange("familyrelationship", target.value);
-                  }}
-                  ref={register({ required: true })}
-                  // style={{ lineHeight: 1, height: 56 }}
-                >
-                  <option value="" disabled selected={!data.familyrelationship}>
-                    Select Family Relationship
-                  </option>
-                  {/* <option value="default">Default</option>
-                  <option value="father">Father</option>
-                  <option value="mother">Mother</option>
-                  <option value="sibling">Sibling</option> */}
+          // userType !== "VENDOR" && (
+          //   <>
+          //     <div className="field">
+          //       <select
+          //         className={`field-input${!data.familyrelationship ? " select-empty" : ""}`}
+          //         data-testid="app-profile-select-family-relationship"
+          //         name="familyrelationship"
+          //         onChange={({ target }) => {
+          //           handleInputChange("familyrelationship", target.value);
+          //         }}
+          //         ref={register({ required: true })}
+          //         // style={{ lineHeight: 1, height: 56 }}
+          //       >
+          //         <option value="" disabled selected={!data.familyrelationship}>
+          //           Select Family Relationship
+          //         </option>
+          //         {/* <option value="default">Default</option>
+          //         <option value="father">Father</option>
+          //         <option value="mother">Mother</option>
+          //         <option value="sibling">Sibling</option> */}
 
-                  {gender === "female" || gender === "She"
-                    ? OPTION_FEMALE_RELATIONSHIPS.map(opt => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))
-                    : gender === "male" || gender === "He"
-                    ? OPTION_MALE_RELATIONSHIPS.map(opt => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))
-                    : OPTION_CUSTOM_RELATIONSHIPS.map(opt => (
-                        <option key={opt.key} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                </select>
-                <label className="field-label">{!data.familyrelationship ? '' : 'Select Family Relationship'}</label>
-              </div>
-              <ErrorMessage
-                field={errors.familyrelationship}
-                errorType="required"
-                message="Family relationship is required."
-              />
-            </>
-          )
+          //         {gender === "female" || gender === "She"
+          //           ? OPTION_FEMALE_RELATIONSHIPS.map(opt => (
+          //               <option key={opt.value} value={opt.value}>
+          //                 {opt.label}
+          //               </option>
+          //             ))
+          //           : gender === "male" || gender === "He"
+          //           ? OPTION_MALE_RELATIONSHIPS.map(opt => (
+          //               <option key={opt.value} value={opt.value}>
+          //                 {opt.label}
+          //               </option>
+          //             ))
+          //           : OPTION_CUSTOM_RELATIONSHIPS.map(opt => (
+          //               <option key={opt.key} value={opt.value}>
+          //                 {opt.label}
+          //               </option>
+          //             ))}
+          //       </select>
+          //       <label className="field-label">{!data.familyrelationship ? '' : 'Select Family Relationship'}</label>
+          //     </div>
+          //     <ErrorMessage
+          //       field={errors.familyrelationship}
+          //       errorType="required"
+          //       message="Family relationship is required."
+          //     />
+          //   </>
+          // )
         }
-      </div>
+      {/* </div> */}
       {/* <div>
           <select
             data-testid="app-profile-select-gender"

@@ -39,7 +39,8 @@ const CreateSecurityQuestionsStyled = styled.div`
 export default function index({
   profileDetails,
   setCurrentPage,
-  setProfileDetails
+  setProfileDetails,
+  handleSubmitAfterSecurityQuestion
 }) {
   const [personalInfo, setPersonalInfo] = useState({
     firstname: profileDetails.firstname,
@@ -69,12 +70,13 @@ export default function index({
     setPersonalInfo({ ...personalInfo, [id]: value });
   };
   const handleFormSubmit = values => {
-    setCurrentPage(prevCurrentPage => {
-      return prevCurrentPage + 1;
-    });
-    setProfileDetails(prevPersonalDetails => {
-      return { ...prevPersonalDetails, personalInfo: personalInfo };
-    });
+    // setCurrentPage(prevCurrentPage => {
+    //   return prevCurrentPage + 1;
+    // });
+    // setProfileDetails(prevPersonalDetails => {
+    //   return { ...prevPersonalDetails, personalInfo: personalInfo };
+    // });
+    handleSubmitAfterSecurityQuestion(personalInfo)
   };
   return (
     <CreateSecurityQuestionsStyled>
