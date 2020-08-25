@@ -233,7 +233,7 @@ export default function index({
                 defaultValue={parentProfile?.first_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label">
+              <label className="field-label" for="parent_firstname">
                 <span className="required">*</span> First Name
               </label>
             </div>
@@ -263,7 +263,7 @@ export default function index({
                 defaultValue={parentProfile?.last_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label">
+              <label className="field-label" for="parent_lastname">
                 <span className="required">*</span> Last Name
               </label>
             </div>
@@ -366,7 +366,7 @@ export default function index({
                   placeholder="Phone Number"
                 />
               )}
-              <label className="field-label">
+              <label className="field-label" for="parent_phonenumber">
                 <span className="required">*</span> Phone Number
               </label>
             </div>
@@ -462,7 +462,7 @@ export default function index({
                     placeholder="Phone Number"
                   />
                 )}
-                <label className="field-label">Phone Number</label>
+                <label className="field-label" for="parent_phonenumber2">Phone Number</label>
               </div>
               <ErrorMessage
                 field={errors["parent_phonenumber2" + (counter - 1)]}
@@ -548,7 +548,7 @@ export default function index({
                   },
                 })}
               />
-              <label className="field-label">
+              <label className="field-label" for="parent_emailaddress">
                 <span className="required">*</span> Email Address
               </label>
             </div>
@@ -628,7 +628,7 @@ export default function index({
                     },
                   })}
                 />
-                <label className="field-label"> Email Address</label>
+                <label className="field-label" for="parent_emailaddress2"> Email Address</label>
               </div>
               <ErrorMessage
                 field={errors["parent_emailaddress2" + (counter - 1)]}
@@ -681,7 +681,7 @@ export default function index({
                     },
                   })}
                 />
-                <label className="field-label">
+                <label className="field-label" for="password">
                   <span className="required">*</span> Password
                 </label>
               </div>
@@ -738,7 +738,7 @@ export default function index({
                     },
                   })}
                 />
-                <label className="field-label">
+                <label className="field-label" for="parent_confirmed_paswword">
                   <span className="required">*</span> Confirmed Password
                 </label>
               </div>
@@ -804,7 +804,7 @@ export default function index({
                 readOnly={isReadonly}
                 defaultValue={parentProfile?.address}
               />
-              <label className="field-label">Address</label>
+              <label className="field-label" for="parentAddress">Address</label>
             </div>
           </div>
 
@@ -826,7 +826,7 @@ export default function index({
                 readOnly={isReadonly}
                 defaultValue={parentProfile?.city}
               />
-              <label className="field-label">City</label>
+              <label className="field-label" for="parentCity">City</label>
             </div>
           </div>
         </div>
@@ -894,7 +894,7 @@ export default function index({
                 readOnly={isReadonly}
                 defaultValue={parentProfile?.zip_code}
               />
-              <label className="field-label">Zip Code</label>
+              <label className="field-label" for="parentzipcode">Zip Code</label>
             </div>
           </div>
         </div>
@@ -918,7 +918,7 @@ export default function index({
                 readOnly={isReadonly}
                 defaultValue={parentProfile?.zip_code}
               />
-              <label className="field-label">Occupation</label>
+              <label className="field-label" for="parentoccupation">Occupation</label>
             </div>
           </div>
 
@@ -940,7 +940,7 @@ export default function index({
                 readOnly={isReadonly}
                 defaultValue={parentProfile?.employer_name}
               />
-              <label className="field-label">Employer's Name</label>
+              <label className="field-label" for="parentemployer">Employer's Name</label>
             </div>
           </div>
         </div>
@@ -1195,7 +1195,7 @@ export default function index({
         <div>
           <div className="form-group">
             <div>
-              <label className="field-label-simple">
+              <label className="field-label-simple" for="parent_person_recommend">
                 <span className="required">*</span> How did you find us?
               </label>
               <input

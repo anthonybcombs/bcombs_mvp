@@ -60,7 +60,7 @@ const CreateProfileStyled = styled.form`
   }
   .datepicker-btn {
     padding: 0;
-    width: 85px;
+    width: 32px;
     height: 32px;
     margin: 0 5px;
     box-shadow: none;
