@@ -107,6 +107,29 @@ const ParentInformationStyled = styled.div`
     opacity: 1;
     display: grid;
   }
+
+  @media (max-width: 768px) {
+    .parent-info-wrapper .grid-2 {
+      grid-gap: 0;
+      grid-template-columns: 100%;
+    }
+    #multiselectContainerReact {
+      position: relative;
+      top: 0;
+    }
+   .field-input:placeholder-shown + .field-label {
+      max-width: calc(100% - 30%) !important;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .parent-info-wrapper .grid-2 {
+      padding: 0;
+    }
+    .parent-info-wrapper > div {
+      padding-left: 0 !important;
+    }
+  }
 `;
 
 export default function index({

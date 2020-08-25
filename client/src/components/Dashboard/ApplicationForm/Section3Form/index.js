@@ -20,6 +20,22 @@ const Section3FormStyled = styled.div`
     grid-template-columns: 10% 41.3% 41.3%;
     grid-gap: 3.33333333%;
   }
+
+  @media (max-width: 768px) {
+    .waiver-wrapper .grid-2 {
+      grid-gap: 0;
+      grid-template-columns: 100%;
+    }
+    .cus-checkbox-container .checkmark {
+      top: -32px;
+    }
+    #multiselectContainerReact {
+      position: relative;
+      top: 0;
+    }
+   .field-input:placeholder-shown + .field-label {
+      max-width: calc(100% - 30%) !important;
+    }
 `;
 
 export default function index({

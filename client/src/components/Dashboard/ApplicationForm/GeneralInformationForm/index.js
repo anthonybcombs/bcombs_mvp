@@ -41,6 +41,37 @@ const GeneralInformationFormStyled = styled.div`
     display: grid;
     grid-template-columns: 19.2% 19.2% 19.2% 19.2%;
     grid-gap: 8%;
+  }
+
+  @media (max-width: 940px) {
+    .general-info-wrapper .grid,
+    .general-info-wrapper .grid-5,
+    .general-info-wrapper .grid-4,
+    .general-info-wrapper .grid-3,
+    .general-info-wrapper .grid-2,
+    .general-info-wrapper .grid-1 {
+      grid-gap: 0;
+      grid-template-columns: 100%;
+    }
+    #multiselectContainerReact {
+      position: relative;
+      top: 0;
+    }
+   .field-input:placeholder-shown + .field-label {
+      max-width: calc(100% - 30%) !important;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .general-info-wrapper .grid,
+    .general-info-wrapper .grid-5,
+    .general-info-wrapper .grid-4,
+    .general-info-wrapper .grid-3,
+    .general-info-wrapper .grid-2,
+    .general-info-wrapper .grid-1 {
+      padding: 0;
+    }
+  }
 
 `;
 

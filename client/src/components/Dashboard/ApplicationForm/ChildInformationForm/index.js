@@ -132,6 +132,27 @@ const ChildInfomationFormStyled = styled.div`
   .react-datepicker__day--outside-month {
     color: rgb(0 0 0 / 35%);
   }
+
+  @media (max-width: 768px) {
+    .child-info-wrapper .grid {
+      grid-gap: 0;
+      grid-template-columns: 100%;
+    }
+    #multiselectContainerReact {
+      position: relative;
+      top: 0;
+    }
+   .field-input:placeholder-shown + .field-label {
+      max-width: calc(100% - 30%) !important;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .child-info-wrapper .grid {
+      padding: 0;
+    }
+  }
+
 `;
 
 export default function index({
@@ -321,6 +342,7 @@ export default function index({
   }) => (
     <div className="field">
       <input
+        id="date_of_birth"
         defaultValue={value}
         onClick={onClick}
         name={name}
@@ -329,7 +351,7 @@ export default function index({
         readOnly={true}
         ref={register({ required: true })}
       />
-      <label className="field-label">
+      <label className="field-label" for="date_of_birth">
         <span className="required">*</span> Date of Birth
       </label>
     </div>

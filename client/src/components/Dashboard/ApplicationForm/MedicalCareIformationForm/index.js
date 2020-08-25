@@ -17,6 +17,25 @@ const MedicalCareInfoStyled = styled.div`
     grid-gap: 3.33333333%;
   }
 
+  @media (max-width: 768px) {
+    .medical-info-wrapper .grid-2 {
+      grid-gap: 0;
+      grid-template-columns: 100%;
+    }
+    #multiselectContainerReact {
+      position: relative;
+      top: 0;
+    }
+   .field-input:placeholder-shown + .field-label {
+      max-width: calc(100% - 30%) !important;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .medical-info-wrapper .grid-2 {
+      padding: 0;
+    }
+  }
 `;
 
 export default function index({

@@ -78,10 +78,11 @@ const HeaderStyled = styled.header`
     font-weight: 400;
   }
 
-  @media (max-width: 599px): {
+  @media (max-width: 599px) {
     .vendor-welcome-message {
       justify-content: center;
       position: relative;
+      margin-top: .5rem;
       left: 0;
     } 
   }
