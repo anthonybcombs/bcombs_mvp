@@ -237,11 +237,6 @@ const ClearButton = styled.button`
 
 const SelectWrapper = styled.div`
 
-  // display: grid;
-  // grid-template-columns: 20% 20% 20% 20%;
-  // grid-gap: 5%;
-  // min-width: 85%;
-
   display: flex;
   flex: 1 1 100%;
   justify-content: flex-start;

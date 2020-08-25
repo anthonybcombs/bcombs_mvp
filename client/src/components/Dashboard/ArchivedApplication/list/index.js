@@ -22,6 +22,12 @@ const ArchivedApplicationListStyled = styled.div`
     position: relative;
   }
 
+  #dataTableContainer >div header {
+    padding: 0;
+    display: block;
+    min-height: auto;
+  }
+
   #dataTableContainer .gVljTM {
     position: absolute;
     top: 15px;
@@ -30,7 +36,10 @@ const ArchivedApplicationListStyled = styled.div`
 
   #dataTableContainer .react-datepicker__input-container input {
     font-size: 16px;
-    padding: 0 5px;
+    padding: 5px;
+    line-height: 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
   }
 
   #dataTableContainer .ncoBp {
@@ -56,15 +65,13 @@ const ArchivedApplicationListStyled = styled.div`
   }
 
   .filter-container {
-    width: 100%;
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: 35% 20% 20%;
-    grid-gap: 2%;
-    min-width: 85%;
+    display: flex;
+    flex: 1 1 100%;
+    justify-content: flex-start;
   }
 
   .filter-container .go-btn {
+    border: none;
     display: inline-block;
   }
 
@@ -72,6 +79,9 @@ const ArchivedApplicationListStyled = styled.div`
     width: 100%;
     display: flex;
     align-items: center;
+    max-width: 200px;
+    min-width: 200px;
+    margin-left: 1rem;
   }
 
   .form-control {
@@ -101,7 +111,29 @@ const ArchivedApplicationListStyled = styled.div`
   }
 
   .date-range {
-    display: block !important;
+    margin-right: auto;
+    margin-left: 0 !important;
+    max-width: 580px !important;
+    min-width: 650px !important;
+  }
+  
+  .icdHOq {
+    min-height: 280px;
+  }
+
+  .react-datepicker .react-datepicker__current-month {
+    color: #fff;
+    padding: 12px 3px;
+    background: rgb(243, 110, 34);
+  }
+  .react-datepicker .react-datepicker__navigation {
+    top: 15px;
+  }
+  .react-datepicker .react-datepicker__navigation--previous {
+    border-right-color: #fff;
+  }
+  .react-datepicker .react-datepicker__navigation--next {
+    border-left-color: #fff;
   }
 `;
 

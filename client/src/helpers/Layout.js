@@ -70,11 +70,20 @@ const HeaderStyled = styled.header`
     height: 100%;
     left: 250px;
     font-weight: 100;
+    white-space: pre;
   }
 
   .vendor-welcome-message .name {
     color: #f47b2c;
     font-weight: 400;
+  }
+
+  @media (max-width: 599px): {
+    .vendor-welcome-message {
+      justify-content: center;
+      position: relative;
+      left: 0;
+    } 
   }
 
   @media (min-width: 600px) {

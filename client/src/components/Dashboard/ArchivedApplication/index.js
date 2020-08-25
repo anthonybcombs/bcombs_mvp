@@ -16,10 +16,14 @@ import { requestGetArchivedApplications, requestUnarchivedAppplication } from ".
 import ArchivedApplicationListStyled from "./list";
 
 const ArchivedApplicationStyled = styled.div`
+  width: auto;
+  margin: auto;
+  max-width: 1920px;
+  padding: 0rem 3em 2rem;
 
-  padding: 1em;
-
-
+  @media (max-width: 840px) {
+    padding: 0rem 1rem 2rem;
+  }
 `;
 
 const SearchDateComponent = (startDate) => (
