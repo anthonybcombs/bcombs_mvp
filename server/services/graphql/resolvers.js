@@ -134,7 +134,7 @@ const resolvers = {
       return vendors;
     },
     async vendorsByUser(root, { user }, context) {
-      const vendors = await getVendorsByUserId(user);
+      let vendors = await getVendorsByUserId(user);
       console.log("vendors", vendors);
       // let vendor = vendors.filter(vendor => {
       //   return user == vendor.user;
