@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faThList,
+  faFile,
   faFileSignature,
   faCogs
 } from "@fortawesome/free-solid-svg-icons";
@@ -628,6 +629,14 @@ export default function index() {
               <FontAwesomeIcon icon={faCogs} />
               <span>Form Settings</span>
             </div>
+
+            <a
+              href={`/dashboard/myapplication`}
+            >
+              <FontAwesomeIcon icon={faFile} />
+              <span>My Application</span>
+            </a>
+
           </div>
         </div>
         <div>
