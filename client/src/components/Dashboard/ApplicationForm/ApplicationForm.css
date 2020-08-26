@@ -161,6 +161,9 @@
 .emergency-contact-wrapper {
   padding-bottom: 30px;
 }
+.emergency-contact-wrapper > div {
+  overflow-x: auto;
+}
 
 .child-info-wrapper > div,
 .general-info-wrapper > div,
@@ -373,6 +376,10 @@
 #applicationForm select.field-input {
   -webkit-appearance: menulist !important;
   -moz-appearance: menulist !important;
+}
+
+#applicationForm .form-group .form-control {
+  width: calc(100% - 18px);
 }
 
 /* datepicker */

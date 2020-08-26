@@ -123,11 +123,9 @@ const ParentInformationStyled = styled.div`
   }
   
   @media (max-width: 600px) {
-    .parent-info-wrapper .grid-2 {
-      padding: 0;
-    }
+    .parent-info-wrapper .grid-2,
     .parent-info-wrapper > div {
-      padding-left: 0 !important;
+      padding: 0;
     }
   }
 `;

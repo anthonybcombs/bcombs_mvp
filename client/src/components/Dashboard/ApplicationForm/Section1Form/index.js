@@ -22,19 +22,21 @@ const Section1FormStyled = styled.div`
   }
 
   @media (max-width: 768px) {
-    .waiver-wrapper .grid-2 {
+    .waiver-wrapper .grid {
       grid-gap: 0;
       grid-template-columns: 100%;
     }
     .cus-checkbox-container .checkmark {
       top: -32px;
     }
-    #multiselectContainerReact {
-      position: relative;
-      top: 0;
-    }
    .field-input:placeholder-shown + .field-label {
       max-width: calc(100% - 30%) !important;
+    }
+  }
+  @media (max-width: 600px) {
+    .waiver-wrapper .grid,
+    .waiver-wrapper > div {
+      padding: 0;
     }
   }
 `;

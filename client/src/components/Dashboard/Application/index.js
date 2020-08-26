@@ -37,6 +37,7 @@ const ApplicationStyled = styled.div`
 
   #application {
     display: grid;
+    grid-gap: 3%;
   }
 
   #labels {
@@ -67,10 +68,6 @@ const ApplicationStyled = styled.div`
   #application > div {
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
-  }
-
-  #application > div:nth-of-type(2) {
-    margin-right: 0.5em;
   }
 
   .selected {
@@ -116,21 +113,15 @@ const ApplicationStyled = styled.div`
   }
   
 
-  @media (min-width: 600px) {
+  @media (min-width: 680px) {
     #application {
-      grid-template-columns: 25% 75%;
+      grid-template-columns: 1fr 4fr;
       grid-gap: 1%;
     }
   }
 
   @media (max-width: 840px) {
     padding: 0rem 1rem 2rem;
-  }
-
-  @media (min-width: 1500px) {
-    #application > div:nth-of-type(2) {
-      margin-right: 1em;
-    }
   }
 `;
 

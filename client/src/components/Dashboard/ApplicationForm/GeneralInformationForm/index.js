@@ -71,6 +71,9 @@ const GeneralInformationFormStyled = styled.div`
     .general-info-wrapper .grid-1 {
       padding: 0;
     }
+    .general-info-wrapper>div {
+      padding: 0;
+    }
   }
 
 `;

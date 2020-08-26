@@ -21,7 +21,7 @@ const EmergencyContactFormStyled = styled.div`
     border-collapse: collapse;
     border: 0;
     margin-bottom: 20px;
-    table-layout: fixed;
+    table-layout: auto;
   }
 
   #contacts th {
@@ -64,6 +64,7 @@ const EmergencyContactFormStyled = styled.div`
 
   #contacts select.input-field {
     width: 100%;
+    min-width: 150px;
     -webkit-appearance: menulist !important;
     -moz-appearance: menulist !important;
   }
@@ -76,6 +77,12 @@ const EmergencyContactFormStyled = styled.div`
 
   .error {
     margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    .emergency-contact-wrapper > div {
+      padding: 0;
+    }
   }
 `;
 
