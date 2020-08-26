@@ -70,6 +70,11 @@ export default function index({
       payload.size = parseInt(payload.size);
       console.log("PAYLOADDD EDIT", groupDetails);
       dispatch(requestEditVendorAppGroup(payload));
+      setGroupDetails({
+        name: "",
+        size: "",
+        vendors: []
+      });
       toggleCreateAppGroupModal(false);
     } else {
       if (groupDetails.vendors.length > 0) {
@@ -83,16 +88,15 @@ export default function index({
         dispatch(requestAddVendorAppGroup(payload));
         toggleCreateAppGroupModal(false);
         setVendorError("");
+        setGroupDetails({
+          name: "",
+          size: "",
+          vendors: []
+        });
       } else {
         setVendorError("Vendor is required!");
       }
     }
-
-    setGroupDetails({
-      name: "",
-      size: "",
-      vendors: []
-    });
   };
 
   const handleDelete = () => {
