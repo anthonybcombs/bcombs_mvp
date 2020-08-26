@@ -39,6 +39,11 @@ const ChildInfomationFormStyled = styled.div`
     grid-gap: 3.33333333%;
   }
 
+  .child-info-wrapper .customMultiselect #multiselectContainerReact {
+    position: relative;
+    top: 0;
+  }
+
   #multiselectContainerReact {
     position: absolute;
     top: 21px;
@@ -54,6 +59,8 @@ const ChildInfomationFormStyled = styled.div`
     border: 0;
     border-bottom: 2px solid #ccc;
     border-radius: 0;
+    overflow-y: auto;
+    max-height: 250px;
   }
 
   #multiselectContainerReact .searchBox {
@@ -1210,7 +1217,7 @@ export default function index({
         </div>
         <div className="grid">
           <div className="form-group">
-            <div className="field">
+            <div className="field customMultiselect">
               {
                 isReadonly ? (
                   <textarea

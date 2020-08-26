@@ -9,7 +9,29 @@ import GeneralInformationFormStyled from "../GeneralInformationForm";
 import MedicalCareInfoStyled from '../MedicalCareIformationForm'
 
 const ChildFormStyled = styled.div`
-
+  @media (max-width: 480px) {
+    .application-btn-container a.remove {
+      width: 58px;
+      white-space: pre;
+      overflow: hidden;
+      padding: 12px 37px 12px 18px;
+    }
+    .application-btn-container a.remove span {
+      position: relative;
+    }
+    .application-btn-container a.remove span:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 100%;
+      background: red;
+    }
+    .application-btn-container a.left {
+      margin-right: 5px;
+    }
+  }
 `;
 
 export default function index({
