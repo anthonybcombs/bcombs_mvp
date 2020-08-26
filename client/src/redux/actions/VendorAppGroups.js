@@ -3,11 +3,13 @@ import graphqlClient from "../../graphql";
 
 import * as actionType from "./Constant";
 
-import { ADD_VENDORS_APP_GROUP } from "../../graphql/vendorMutation";
+import {
+  ADD_VENDORS_APP_GROUP,
+  DELETE_VENDORS_APP_GROUP,
+  UPDATE_VENDORS_APP_GROUP
+} from "../../graphql/vendorMutation";
 
-const getVendorApplicationGroupFromDatabase = vendor => {
-
-}
+const getVendorApplicationGroupFromDatabase = vendor => {};
 
 const addVendorApplicationGroupToDatabase = appGroup => {
   console.log("appGroup", appGroup);
@@ -20,18 +22,55 @@ const addVendorApplicationGroupToDatabase = appGroup => {
 
       return resolve(data.addVendorAppGroup);
     } catch (error) {
-      console.log("error", error)
+      console.log("error", error);
       reject(error);
     }
   });
-}
+};
+
+const editVendorApplicationGroupToDatabase = appGroup => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log("editVendorApplicationGroupToDatabase appGroup", appGroup);
+      const { data } = await graphqlClient.mutate({
+        mutation: UPDATE_VENDORS_APP_GROUP,
+        variables: { appGroup }
+      });
+
+      return resolve(data.editVendorAppGroup);
+    } catch (error) {
+      console.log("error", error);
+      reject(error);
+    }
+  });
+};
+
+const deleteVendorApplicationGroupToDatabase = ({ app_grp_id, email }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const appGroup = {
+        id: app_grp_id,
+        email
+      };
+      const { data } = await graphqlClient.mutate({
+        mutation: DELETE_VENDORS_APP_GROUP,
+        variables: { appGroup }
+      });
+      console.log("data.deleteVendorAppGroups", data.deleteVendorAppGroup);
+      return resolve(data.deleteVendorAppGroup);
+    } catch (error) {
+      console.log("error", error);
+      reject(error);
+    }
+  });
+};
 
 export const requestAddVendorAppGroup = appGroup => {
   return {
     type: actionType.REQUEST_ADD_VENDOR_APP_GROUP,
     appGroup: appGroup
-  }
-}
+  };
+};
 
 export function setUserGroups(data) {
   return {
@@ -41,9 +80,45 @@ export function setUserGroups(data) {
 }
 
 export function* addVendorAppGroup({ appGroup }) {
-  console.log("Request App Grouo", appGroup);
   try {
     const response = yield call(addVendorApplicationGroupToDatabase, appGroup);
     yield put(setUserGroups(response));
-  } catch (error) { console.log("error", error)}
+  } catch (error) {
+    console.log("error", error);
+  }
+}
+
+export const requestEditVendorAppGroup = appGroup => {
+  return {
+    type: actionType.REQUEST_EDIT_VENDOR_APP_GROUP,
+    appGroup
+  };
+};
+
+export function* editVendorAppGroup({ appGroup }) {
+  try {
+    const response = yield call(editVendorApplicationGroupToDatabase, appGroup);
+    yield put(setUserGroups(response));
+  } catch (error) {
+    console.log("error", error);
+  }
+}
+
+export const requestDeleteVendorAppGroup = appGroup => {
+  return {
+    type: actionType.REQUEST_DELETE_VENDOR_APP_GROUP,
+    appGroup
+  };
+};
+
+export function* deleteVendorAppGroup({ appGroup }) {
+  try {
+    const response = yield call(
+      deleteVendorApplicationGroupToDatabase,
+      appGroup
+    );
+    yield put(setUserGroups(response));
+  } catch (error) {
+    console.log("error", error);
+  }
 }

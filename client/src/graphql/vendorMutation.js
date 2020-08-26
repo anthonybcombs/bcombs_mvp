@@ -102,3 +102,52 @@ export const ADD_VENDORS_APP_GROUP = gql`
     }
   }
 `;
+
+export const UPDATE_VENDORS_APP_GROUP = gql`
+  mutation editVendorAppGroup($appGroup: AppGroupInput!) {
+    editVendorAppGroup(appGroup: $appGroup) {
+      joined_groups {
+        id
+        name
+        contacts
+      }
+      created_groups {
+        id
+        name
+        contacts
+      }
+      application_groups {
+        id
+        name
+        size
+        vendor
+        user
+        app_grp_id
+      }
+    }
+  }
+`;
+export const DELETE_VENDORS_APP_GROUP = gql`
+  mutation deleteVendorAppGroup($appGroup: DeleteAppGroupInput!) {
+    deleteVendorAppGroup(appGroup: $appGroup) {
+      joined_groups {
+        id
+        name
+        contacts
+      }
+      created_groups {
+        id
+        name
+        contacts
+      }
+      application_groups {
+        id
+        name
+        size
+        vendor
+        user
+        app_grp_id
+      }
+    }
+  }
+`;

@@ -30,9 +30,7 @@ import {
   requestUserGroup,
   requestMembers
 } from "../../../redux/actions/Groups";
-import {
- requestVendor 
-} from "../../../redux/actions/Vendors"
+import { requestVendor } from "../../../redux/actions/Vendors";
 
 const MyContactsStyled = styled.div`
   // padding: 1em;
@@ -140,11 +138,30 @@ export default function index() {
   const [isJoinedGroupModalVisible, setJoinedGroupModalVisible] = useState(
     false
   );
-  const [isNewAppGroupModalVisible, setIsNewAppGroupModalVisible] = useState(false);
-
-  const { auth, groups, groupMembers, contacts, loading, vendors, userTypes } = useSelector(
+  const [isNewAppGroupModalVisible, setIsNewAppGroupModalVisible] = useState(
+    false
+  );
+  const [isAppGroupEditMode, setIsAppGroupEditMode] = useState(false);
+  const [currentAppGroup, setCurrentAppGroup] = useState(null);
+  const {
+    auth,
+    groups,
+    groupMembers,
+    contacts,
+    loading,
+    vendors,
+    userTypes
+  } = useSelector(
     ({ auth, groups, groupMembers, contacts, loading, vendors, userTypes }) => {
-      return { auth, groups, groupMembers, contacts, loading, vendors, userTypes };
+      return {
+        auth,
+        groups,
+        groupMembers,
+        contacts,
+        loading,
+        vendors,
+        userTypes
+      };
     }
   );
   const dispatch = useDispatch();
@@ -161,7 +178,6 @@ export default function index() {
     dispatch(getContact(auth.email));
     setCurrentContacts(contacts);
   }, []);
-
 
   console.log("groups", groups);
   console.log("vendors", vendors);
@@ -209,6 +225,7 @@ export default function index() {
 
     if (group) {
       dispatch(requestMembers(group.id));
+
       setTimeout(() => {
         setEditGroupModalVisible(true);
       }, 500);
@@ -218,12 +235,16 @@ export default function index() {
   const handleJoinedGroupModal = group => {
     setSelectedGroup(group);
     setJoinedGroupModalVisible(true);
-  }
+  };
   const editGroupSubmit = data => {};
 
   const handleAppGroupModal = group => {
-
-  }
+    setCurrentAppGroup(group);
+    setIsAppGroupEditMode(true);
+    setTimeout(() => {
+      setIsNewAppGroupModalVisible(true);
+    }, 1000);
+  };
 
   const isVendor = () => {
     const currentUserType = userTypes.filter(type => {
@@ -235,7 +256,7 @@ export default function index() {
     }
 
     return true;
-  }
+  };
 
   return (
     <MyContactsStyled>
@@ -272,7 +293,9 @@ export default function index() {
         toggleEditGroupModal={setEditGroupModalVisible}
       />
 
-      <NewAppGroupModal 
+      <NewAppGroupModal
+        currentAppGroup={currentAppGroup}
+        isEditMode={isAppGroupEditMode}
         isVisible={isNewAppGroupModalVisible}
         toggleCreateAppGroupModal={setIsNewAppGroupModalVisible}
         vendors={vendors}
@@ -368,42 +391,42 @@ export default function index() {
             )}
           </div>
 
-          {
-            isVendor() && (
-              <div className="groups">
-                <Collapsible trigger={<h3>Application Groups</h3>} open lazyRender>
-                  <hr />
-                  {
-                    groups &&
-                    groups.application_groups &&
-                    groups.application_groups.map(group => (
-                      <div
-                        className={`${
-                          group.id === selectedGroupId ? "selected" : ""
-                        }`}
-                        key={group.app_grp_id}
-                        onClick={() => {
-                          //handleAppGroupModal(group);
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faUsers} />
-                        <span>{group.name}</span>
-                      </div>
-                    ))
-                  }
-                </Collapsible>
+          {isVendor() && (
+            <div className="groups">
+              <Collapsible
+                trigger={<h3>Application Groups</h3>}
+                open
+                lazyRender>
                 <hr />
-                <button
-                  onClick={() => {
+                {groups &&
+                  groups.application_groups &&
+                  groups.application_groups.map(group => (
+                    <div
+                      className={`${
+                        group.id === selectedGroupId ? "selected" : ""
+                      }`}
+                      key={group.app_grp_id}
+                      onClick={() => {
+                        handleAppGroupModal(group);
+                      }}>
+                      <FontAwesomeIcon icon={faUsers} />
+                      <span>{group.name}</span>
+                    </div>
+                  ))}
+              </Collapsible>
+              <hr />
+              <button
+                onClick={() => {
+                  setIsAppGroupEditMode(false);
+                  setTimeout(() => {
                     setIsNewAppGroupModalVisible(true);
-                  }}>
-                  <FontAwesomeIcon icon={faPlus} />
-                  <span> ADD NEW GROUP</span>
-                </button>
-              </div>
-            )
-          }
-
+                  }, 500);
+                }}>
+                <FontAwesomeIcon icon={faPlus} />
+                <span> ADD NEW GROUP</span>
+              </button>
+            </div>
+          )}
         </div>
         <div>
           {loading.contacts ? (

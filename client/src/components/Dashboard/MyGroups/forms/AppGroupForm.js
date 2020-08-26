@@ -84,7 +84,7 @@ const ContactFormStyled = styled.form`
     margin-bottom: 30px;
     outline: 0;
   }
-  
+
   .user-tag {
     padding: 4px 10px;
     background: #f26e21;
@@ -193,6 +193,7 @@ export default function AppGroupForm({
   handleDelete,
   handleGroupDetailsChange,
   action,
+  vendorError,
   vendors = []
 }) {
   const [vendorOptions, setVendorOptions] = useState([]);
@@ -203,38 +204,37 @@ export default function AppGroupForm({
   const [userNotFound, setUserNotFound] = useState(false);
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
-    reValidateMode: "onChange",
+    reValidateMode: "onChange"
   });
   const hasSelectAll = false;
 
   const theme = useContext(ThemeContext);
 
-  const handleSelectChange = (value) => {
+  const handleSelectChange = value => {
     console.log("value", value);
     handleGroupDetailsChange("vendors", value);
   };
-
+  console.log("groupDetails", groupDetails);
   useEffect(() => {
     if (vendors) {
-      let fomattedVendors = vendors.map((item) => {
+      let fomattedVendors = vendors.map(item => {
         return {
           id: item.id,
           name: item.name,
           label: item.name
-        }
+        };
       });
 
       console.log("formatted vendors", fomattedVendors);
       setVendorOptions(fomattedVendors);
     }
-  }, [vendors])
+  }, [vendors]);
 
   return (
     <ContactFormStyled
       method="POST"
       onSubmit={handleSubmit(onSubmit)}
-      theme={theme}
-    >
+      theme={theme}>
       <div className="grid">
         <div className="form-group">
           <div className="field">
@@ -292,14 +292,19 @@ export default function AppGroupForm({
               className="field-input"
               options={vendorOptions}
               hasSelectAll={hasSelectAll}
+              selectedValues={vendorOptions.filter(
+                item => item.id === groupDetails.vendor
+              )}
               onSelect={handleSelectChange}
               placeholder="Choose Application"
               displayValue="name"
               closeIcon="cancel"
             />
           </div>
+          {vendorError !== "" && (
+            <span style={{ color: "red" }}>{vendorError}</span>
+          )}
         </div>
-
       </div>
       <div className="group-btn">
         <button type="submit">Save</button>
@@ -308,8 +313,7 @@ export default function AppGroupForm({
             className="delete-group"
             style={{ backgroundColor: "#e02500", marginLeft: 20 }}
             data-testid="app-dashboard-my-group-new-group-button-save"
-            onClick={handleDelete}
-          >
+            onClick={handleDelete}>
             Delete Group
           </button>
         )}
