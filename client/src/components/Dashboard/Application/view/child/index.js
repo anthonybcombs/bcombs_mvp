@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faPrint } from "@fortawesome/free-solid-svg-icons";
-import { format } from "date-fns";
 
 import ChildInformationFormStyled from "../../../ApplicationForm/ChildInformationForm";
 import GeneralInformationFormStyled from "../../../ApplicationForm/GeneralInformationForm";
@@ -49,6 +48,16 @@ const ChildFormHeader = styled.div`
     width: 100%;
     text-align: center;
     top: 18px;
+    padding-left: 40px;
+  }
+
+  @media (max-width: 768px) {
+    .application-date div {
+      top: unset;
+      bottom: -10px;
+      padding-left: unset;
+      font-size: 1em;
+    }
   }
 `;
 
@@ -101,7 +110,7 @@ export default function index({
           <FontAwesomeIcon icon={faPrint} />
         </button>
         <div className='application-date'>
-          <div>{childInformation.profile.application_date && format(new Date(childInformation.profile.application_date), "LLL dd, yyyy p")}</div>
+          <div>{childInformation.profile.application_date}</div>
         </div>
       </ChildFormHeader>
 
