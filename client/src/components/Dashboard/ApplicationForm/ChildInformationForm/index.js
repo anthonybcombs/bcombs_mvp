@@ -343,16 +343,16 @@ export default function index({
   }) => (
     <div className="field">
       <input
-        id="date_of_birth"
         defaultValue={value}
         onClick={onClick}
         name={name}
         className={className}
         placeholder="mm/dd/yyyy"
         readOnly={true}
+        id={`date_of_birth_${counter - 1}`}
         ref={register({ required: true })}
       />
-      <label className="field-label" for="date_of_birth">
+      <label className="field-label" for={`date_of_birth_${counter - 1}`}>
         <span className="required">*</span> Date of Birth
       </label>
     </div>
@@ -378,8 +378,8 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_first_name"
                 readOnly={isReadonly}
+                id={`ch_first_name_${counter - 1}`}
                 name={"ch_first_name" + (counter - 1)}
                 className="field-input"
                 placeholder="First Name"
@@ -394,7 +394,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.first_name}
               />
-              <label className="field-label" for="ch_first_name">
+              <label className="field-label" for={`ch_first_name_${counter - 1}`}>
                 <span className="required">*</span> First Name
               </label>
             </div>
@@ -407,8 +407,8 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_last_name"
                 readOnly={isReadonly}
+                id={`ch_last_name_${counter - 1}`}
                 name={"ch_last_name" + (counter - 1)}
                 className="field-input"
                 placeholder="Last Name"
@@ -423,7 +423,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.last_name}
               />
-              <label className="field-label" for="ch_last_name">
+              <label className="field-label" for={`ch_last_name_${counter - 1}`}>
                 <span className="required">*</span> Last Name
               </label>
             </div>
@@ -436,7 +436,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_nick_name"
+                id={`ch_nick_name_${counter - 1}`}
                 name="ch_nick_name"
                 className="field-input"
                 placeholder="Nick Name"
@@ -452,7 +452,7 @@ export default function index({
                 ref={register()}
                 defaultValue={childProfile.nick_name}
               />
-              <label className="field-label" for="ch_nick_name">Nick Name</label>
+              <label className="field-label" for={`ch_nick_name_${counter - 1}`}>Nick Name</label>
             </div>
           </div>
         </div>
@@ -532,7 +532,7 @@ export default function index({
                 }}
                 name={"ch_birthdate" + (counter - 1)}
                 customInput={
-                  <ExampleCustomInput className="field-input birthdate-field" />
+                  <ExampleCustomInput className="field-input birthdate-field"/>
                 }
               />
             </div>
@@ -698,7 +698,7 @@ export default function index({
             <div className="field">
               {!isReadonly ? (
                 <NumberFormat
-                  id="ch_phone_number"
+                  id={`ch_phone_number_${counter - 1}`}
                   name={"ch_phone_number" + (counter - 1)}
                   className="field-input"
                   placeholder="Phone"
@@ -727,16 +727,16 @@ export default function index({
                 />
               ) : (
                 <input
-                  id="ch_phone_number"
                   name="ch_phone_number"
                   className="field-input"
                   placeholder="Phone"
                   readOnly={isReadonly}
+                  id={`ch_phone_number_${counter - 1}`}
                   defaultValue={childProfile.phone_number}
                 />
               )}
 
-              <label className="field-label" for="ch_phone_number">Phone Number</label>
+              <label className="field-label" for={`ch_phone_number_${counter - 1}`}>Phone Number</label>
             </div>
             <ErrorMessage
               field={errors["ch_phone_number" + (counter - 1)]}
@@ -778,7 +778,7 @@ export default function index({
               <div className="field">
                 {!isReadonly ? (
                   <NumberFormat
-                    id="ch_phone_number2"
+                    id={`ch_phone_number2_${counter - 1}`}
                     name={"ch_phone_number2" + (counter - 1)}
                     className="field-input"
                     placeholder="Phone"
@@ -810,10 +810,11 @@ export default function index({
                     name="ch_phone_number2"
                     className="field-input"
                     placeholder="Phone"
+                    id={`ch_phone_number2_${counter - 1}`}
                     defaultValue={childProfile.phone_number}
                   />
                 )}
-                <label className="field-label" for="ch_phone_number2">Phone Number</label>
+                <label className="field-label" for={`ch_phone_number2_${counter - 1}`}>Phone Number</label>
               </div>
               <ErrorMessage
                 field={errors["ch_phone_number2" + (counter - 1)]}
@@ -867,7 +868,7 @@ export default function index({
             <div className="field">
               <input
                 type="text"
-                id="ch_email_address"
+                id={`ch_email_address_${counter - 1}`}
                 name={"ch_email_address" + (counter - 1)}
                 className="field-input"
                 placeholder="Email Address"
@@ -888,7 +889,7 @@ export default function index({
                   },
                 })}
               />
-              <label className="field-label" for="ch_email_address">
+              <label className="field-label" for={`ch_email_address_${counter - 1}`}>
                 Email Address (Child only, if applicable)
               </label>
             </div>
@@ -934,7 +935,7 @@ export default function index({
               <div className="field">
                 <input
                   type="text"
-                  id="ch_email_address2"
+                  id={`ch_email_address2_${counter - 1}`}
                   name={"ch_email_address2" + (counter - 1)}
                   className="field-input"
                   placeholder="Email Address"
@@ -955,7 +956,7 @@ export default function index({
                     },
                   })}
                 />
-                <label className="field-label" for="ch_email_address2">
+                <label className="field-label" for={`ch_email_address2_${counter - 1}`}>
                   Email Address (Child only, if applicable)
                 </label>
               </div>
@@ -972,7 +973,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_address"
+                id={`ch_address_${counter - 1}`}
                 name={"ch_address" + (counter - 1)}
                 className="field-input"
                 placeholder="Address"
@@ -988,7 +989,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.address}
               />
-              <label className="field-label" for="ch_address">
+              <label className="field-label" for={`ch_address_${counter - 1}`}>
                 <span className="required">*</span> Address
               </label>
             </div>
@@ -1001,7 +1002,7 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_city"
+                id={`ch_city_${counter - 1}`}
                 name={"ch_city" + (counter - 1)}
                 className="field-input"
                 placeholder="City"
@@ -1017,7 +1018,7 @@ export default function index({
                 defaultValue={childProfile.city}
                 ref={register({ required: true })}
               />
-              <label className="field-label" for="ch_city">
+              <label className="field-label" for={`ch_city_${counter - 1}`}>
                 <span className="required">*</span> City
               </label>
             </div>
@@ -1069,8 +1070,8 @@ export default function index({
             <div className="field">
               <input
                 type="text"
-                id="ch_zip_code"
                 readOnly={isReadonly}
+                id={`ch_zip_code_${counter - 1}`}
                 name={"ch_zip_code" + (counter - 1)}
                 className="field-input"
                 onChange={({ target }) => {
@@ -1090,7 +1091,7 @@ export default function index({
                 ref={register({ required: true, minLength: 5 })}
                 maxLength="5"
               />
-              <label className="field-label" for="ch_zip_code">
+              <label className="field-label" for={`ch_zip_code_${counter - 1}`}>
                 <span className="required">*</span> Zip Code
               </label>
             </div>

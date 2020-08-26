@@ -58,9 +58,9 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="ch_doctorname"
                 name="ch_doctorname"
                 className="field-input"
+                id={`ch_doctorname_${counter - 1}`}
                 onChange={({ target }) => {
                   handleChildFormDetailsChange((counter - 1), "emergency_care_information", "doctor_name", target.value)
                 }}
@@ -68,7 +68,7 @@ export default function index({
                 defaultValue={childEmergencyCare.doctor_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for="ch_doctorname">Doctor Name</label>
+              <label className="field-label" for={`ch_doctorname_${counter - 1}`}>Doctor Name</label>
             </div>
           </div>
 
@@ -77,10 +77,10 @@ export default function index({
               {
                 !isReadonly ?
                 <NumberFormat 
-                  id="doctophone"
                   name="doctophone"
                   className="field-input"
                   placeholder="Phone"
+                  id={`doctophone_${counter - 1}`}
                   onChange={({ target }) => {
                     handleChildFormDetailsChange((counter - 1), "emergency_care_information", "doctor_phone", target.value)
                   }}
@@ -101,17 +101,17 @@ export default function index({
                 />
                 :
                 <input
-                  id="doctophone"
                   name="doctophone"
                   className="field-input"
                   placeholder="Phone"
+                  id={`doctophone_${counter - 1}`}
                   defaultValue={childEmergencyCare.doctor_phone}
                   placeholder="Phone"
                   readOnly={isReadonly}
                 />
               }
 
-              <label className="field-label" for="doctophone">Phone</label>
+              <label className="field-label" for={`doctophone_${counter - 1}`}>Phone</label>
             </div>
             <ErrorMessage
               field={errors["doctophone"]}
@@ -125,9 +125,9 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
-                id="hospitalname"
                 name="hospitalname"
                 className="field-input"
+                id={`hospitalname_${counter - 1}`}
                 placeholder="Hospital Preference"
                 onChange={({ target }) => {
                   handleChildFormDetailsChange((counter - 1), "emergency_care_information", "hospital_preference", target.value)
@@ -136,7 +136,7 @@ export default function index({
                 placeholder="Hospital Preference"
                 readOnly={isReadonly}
               />
-              <label className="field-label" for="hospitalname">Hospital Preference</label>
+              <label className="field-label" for={`hospitalname_${counter - 1}`}>Hospital Preference</label>
             </div>
           </div>
 
@@ -145,10 +145,10 @@ export default function index({
               {
                 !isReadonly ?
                 <NumberFormat 
-                  id="hospitalPhone"
                   name="hospitalPhone"
                   className="field-input"
                   placeholder="Phone"
+                  id={`hospitalPhone_${counter - 1}`}
                   onChange={({ target }) => {
                     handleChildFormDetailsChange((counter - 1), "emergency_care_information", "hospital_phone", target.value)
                   }}
@@ -169,16 +169,16 @@ export default function index({
                 />
                 :
                 <input
-                  id="hospitalPhone"
                   name="hospitalPhone"
                   className="field-input"
                   placeholder="Phone"
+                  id={`hospitalPhone_${counter - 1}`}
                   defaultValue={childEmergencyCare.hospital_phone}
                   placeholder="Phone"
                   readOnly={isReadonly}
                 />
               }
-              <label className="field-label" for="hospitalPhone">Phone</label>
+              <label className="field-label" for={`hospitalPhone_${counter - 1}`}>Phone</label>
             </div>
             <ErrorMessage
               field={errors["hospitalPhone"]}

@@ -59,22 +59,31 @@ const ApplicationFormStyled = styled.div`
     white-space: nowrap;
     margin-bottom: 20px;
     padding: 0px 10px;
+
+    display: flex;
+    flex-wrap: wrap;
+    padding: 2rem 0;
+    justify-content: center
   }
 
   .question-box {
     background: white;
     display: inline-block;
-    padding: 9px;
+    padding: 10px;
     border-radius: 12px;
-    margin: 30px 5px;
+    margin: .5rem;
     border: 1px solid #ccc;
-    width: auto;
+    width: 100%;
+    max-width: 400px;
   }
 
   .question-box p  {
     font-size: 19px;
     font-weight: 600;
     color: #4C5157;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
   }
 
   .question-box strong {
@@ -112,6 +121,15 @@ const ApplicationFormStyled = styled.div`
     font-size: 15px;
     border-color: inherit;
     height: 30px;
+  }
+
+  @media (max-width: 993px) {
+    .content {
+      padding: 0;
+    }
+    .question-box {
+      max-width: unset;
+    }
   }
 `;
 
@@ -1001,9 +1019,9 @@ export default function index() {
                       ))
                     }
                   </div>
-                  <div className="header">
+                  <p className="header">
                     CHILD TO CHILD RELATIONSHIP QUESTIONNAIRE
-                  </div>
+                  </p>
                   <div className="content">
                     {
                       childsInformation.length > 1 && (
