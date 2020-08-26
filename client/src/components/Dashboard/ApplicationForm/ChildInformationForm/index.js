@@ -166,6 +166,7 @@ export default function index({
   app_programs = [],
   location_sites = [],
 }) {
+
   const hasSelectAll = false;
 
   const GENDER_OPTIONS = [

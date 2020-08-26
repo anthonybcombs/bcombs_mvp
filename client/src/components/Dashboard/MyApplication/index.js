@@ -142,6 +142,17 @@ export default function index() {
     return newItems;
   }
 
+  const scrollToApplicationForm = () => {
+    const applicationElem = document.getElementById('userApplicationForm')
+    if (applicationElem) {
+      const y = applicationElem.getBoundingClientRect().top + window.scrollY;
+      window.scroll({
+        top: y,
+        behavior: 'smooth'
+      })
+    }
+  }
+
   const createHistoryViewButton = (row) => {
     return (
       <a 
@@ -151,10 +162,10 @@ export default function index() {
           e.preventDefault();
 
           const application = JSON.parse(row.details);
-
           const childInformationObj = {
             profile: {
               image: "",
+              application_date: row.updated_at ? row.updated_at: "",
               first_name: application.child.firstname ? application.child.firstname: "",
               last_name: application.child.lastname ? application.child.lastname:"",
               nick_name: application.child.nickname ? application.child.nickname: "",
@@ -249,6 +260,7 @@ export default function index() {
 
           setTimeout(() => {
             setTempHideForm(false);
+            scrollToApplicationForm()
           }, 200)
           setChildInformation(childInformationObj);
           setParentsInformation(items);
@@ -278,6 +290,7 @@ export default function index() {
           const childInformationObj = {
             profile: {
               image: "",
+              application_date: application.application_date ? application.application_date: "",
               first_name: application.child.firstname ? application.child.firstname: "",
               last_name: application.child.lastname ? application.child.lastname:"",
               nick_name: application.child.nickname ? application.child.nickname: "",
@@ -403,6 +416,7 @@ export default function index() {
 
           setTimeout(() => {
             setTempHideForm(false);
+            scrollToApplicationForm()
           }, 200)
           
         }}
@@ -472,7 +486,7 @@ export default function index() {
       name: 'Application Date',
       selector: 'status',
       sortable: true,
-      cell: row => format(new Date(row.application_date), DATE_FORMAT)
+      cell: row => format(new Date(row.application_date), DATE_TIME_FORMAT)
     },
     {
       name: 'Student Name',
