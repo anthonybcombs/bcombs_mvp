@@ -41,13 +41,15 @@ import {
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
 import { getGrades } from "../../api/grades";
-import { 
-  getVendors, 
-  updateVendor, 
-  addVendor, 
-  addAppGroup, 
+import {
+  getVendors,
+  updateVendor,
+  addVendor,
+  deleteAppGroup,
+  editAppGroup,
+  addAppGroup,
   getVendorAppGroups,
-  getVendorsByUserId 
+  getVendorsByUserId
 } from "../../api/vendor";
 import {
   createApplication,
@@ -176,9 +178,9 @@ const resolvers = {
     },
     async getUserApplicationsByUserId(root, { user_id }, context) {
       try {
-        const response = await getUserApplicationsByUserId( user_id );
+        const response = await getUserApplicationsByUserId(user_id);
         return response;
-      } catch(err) {
+      } catch (err) {
         console.log("Get User Applications", err);
       }
     },
@@ -343,7 +345,10 @@ const resolvers = {
 
           console.log("parent user", parentUser);
 
-          await addApplicationUser({user_id: parentUser.id, app_id: application.app_id});
+          await addApplicationUser({
+            user_id: parentUser.id,
+            app_id: application.app_id
+          });
         }
       }
 
@@ -431,37 +436,69 @@ const resolvers = {
 
       console.log("appGroup server", appGroup);
 
-      for(const vendor of vendors) {
+      for (const vendor of vendors) {
         const fields = {
           user_id: appGroup.user_id,
           vendor: vendor,
           size: appGroup.size,
           name: appGroup.name,
           email: appGroup.email
-        }
+        };
         await addAppGroup(fields);
       }
       response = await getUserGroups(appGroup.email);
 
       return response;
     },
+
+    async editVendorAppGroup(root, { appGroup }, context) {
+      // const vendors = appGroup.vendors;
+      // let response = {};
+      // console.log("appGroup server", appGroup);
+      // for (const vendor of vendors) {
+      // }
+
+      const fields = {
+        app_grp_id: appGroup.app_grp_id,
+        email: appGroup.email,
+        size: appGroup.size,
+        name: appGroup.name
+      };
+      await editAppGroup(fields);
+      let response = await getUserGroups(appGroup.email);
+
+      return response;
+    },
+    async deleteVendorAppGroup(root, { appGroup }, context) {
+      console.log("Response deleteVendorAppGroup appGroup", appGroup);
+      await deleteAppGroup(appGroup);
+      let response = await getUserGroups(appGroup.email);
+      console.log("Response deleteVendorAppGroup", response);
+      return response;
+    },
     async saveApplication(root, { application }, context) {
+      const previousApplication = await getApplicationByAppId(
+        application.app_id
+      );
 
-      const previousApplication = await getApplicationByAppId(application.app_id);
-
-      const isSaved = await saveApplication({ app_id: application.app_id, emergency_contacts: application.emergency_contacts, child: application.child, parents: application.parents });
+      const isSaved = await saveApplication({
+        app_id: application.app_id,
+        emergency_contacts: application.emergency_contacts,
+        child: application.child,
+        parents: application.parents
+      });
 
       // const updatedApplication = await getApplicationByAppId(application.app_id);
 
       console.log("isSaved", isSaved);
 
-      if(isSaved) {
+      if (isSaved) {
         const params = {
           app_id: application.app_id,
           details: JSON.stringify(previousApplication),
           updated_by: application.updated_by
-        }
-        await addApplicationHistory(params)
+        };
+        await addApplicationHistory(params);
       }
 
       // const appHistories = await getApplicationHistoryById(application.app_id);
@@ -471,7 +508,7 @@ const resolvers = {
       return {
         messageType: "info",
         message: "application successfully updated"
-      }
+      };
     }
   }
 };

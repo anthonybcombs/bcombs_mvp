@@ -272,11 +272,17 @@ const inputs = `
     }
 
     input AppGroupInput {
+        app_grp_id: String
         user_id: String!
         email: String!
         vendors: [String!]
         size: Int!
         name: String!
+    }
+
+    input DeleteAppGroupInput {
+        id: String!
+        email: String!
     }
 
     input SaveApplicationUserInput {
@@ -667,6 +673,8 @@ const mutations = `
         unarchivedApplications(app_ids: [String]): Status
         updateVendor(vendor: VendorInput!): Vendor
         addVendorAppGroup(appGroup: AppGroupInput!): AllGroups
+        editVendorAppGroup(appGroup: AppGroupInput!): AllGroups
+        deleteVendorAppGroup(appGroup: DeleteAppGroupInput!): AllGroups
         saveApplication(application: SaveApplicationUserInput): Status
     }
 `;
