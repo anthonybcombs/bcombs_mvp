@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import AppGroupForm from "../forms/AppGroupForm";
 import { uuid } from "uuidv4";
-import { requestAddVendorAppGroup } from "../../../../redux/actions/VendorAppGroups";
+import {
+  requestAddVendorAppGroup,
+  requestEditVendorAppGroup,
+  requestDeleteVendorAppGroup
+} from "../../../../redux/actions/VendorAppGroups";
 const NewContactModal = styled.div`
   h2 {
     text-align: center;
@@ -16,47 +20,73 @@ const NewContactModal = styled.div`
   }
 `;
 export default function index({
+  currentAppGroup = {
+    name: "",
+    size: null,
+    vendors: []
+  },
+  isEditMode = false,
   isVisible = true,
   toggleCreateAppGroupModal,
   vendors = [],
   auth
 }) {
-  const action = "create";
+  const action = isEditMode ? "edit" : "create";
   const [groupDetails, setGroupDetails] = useState({
-    name: "",
-    size: null,
-    vendors: []
+    ...currentAppGroup
   });
+  const [vendorError, setVendorError] = useState("");
 
   const dispatch = useDispatch();
-  const handleGroupDetailsChange = (id, value) => {
 
-    if(id == "vendors") {
-      let ids = value.map((vendor) => vendor.id);
+  useEffect(() => {
+    if (isVisible && isEditMode) {
+      setGroupDetails(currentAppGroup);
+    }
+  }, [isVisible]);
+  const handleGroupDetailsChange = (id, value) => {
+    if (id == "vendors") {
+      let ids = value.map(vendor => vendor.id);
       setGroupDetails({
         ...groupDetails,
-        [id]: ids,
+        [id]: ids
       });
     } else {
       setGroupDetails({
         ...groupDetails,
-        [id]: value,
+        [id]: value
       });
     }
   };
-  const handleSubmit = (value) => {
-    toggleCreateAppGroupModal(false);
-    const payload = {
-      ...groupDetails,
-      user_id: auth.user_id,
-      email: auth.email
-    };
-
-    payload.size = parseInt(payload.size);
-
-    console.log("HANDLE SUBMIT PAYLOADDDDDDDDDDDDDDD", payload);
-
-    dispatch(requestAddVendorAppGroup(payload));
+  const handleSubmit = value => {
+    if (isEditMode) {
+      let payload = {
+        app_grp_id: groupDetails.app_grp_id,
+        size: groupDetails.size,
+        name: groupDetails.name,
+        email: auth.email,
+        user_id: auth.user_id
+      };
+      payload.size = parseInt(payload.size);
+      console.log("PAYLOADDD EDIT", groupDetails);
+      dispatch(requestEditVendorAppGroup(payload));
+      toggleCreateAppGroupModal(false);
+    } else {
+      if (groupDetails.vendors.length > 0) {
+        let payload = {
+          ...groupDetails,
+          user_id: auth.user_id,
+          email: auth.email
+        };
+        payload.size = parseInt(payload.size);
+        console.log("PAYLOADDD CREATE", payload);
+        dispatch(requestAddVendorAppGroup(payload));
+        toggleCreateAppGroupModal(false);
+        setVendorError("");
+      } else {
+        setVendorError("Vendor is required!");
+      }
+    }
 
     setGroupDetails({
       name: "",
@@ -64,6 +94,22 @@ export default function index({
       vendors: []
     });
   };
+
+  const handleDelete = () => {
+    let payload = {
+      app_grp_id: groupDetails.app_grp_id,
+      email: auth.email
+    };
+    console.log("payloadddd", payload);
+    dispatch(requestDeleteVendorAppGroup(payload));
+    setGroupDetails({
+      name: "",
+      size: "",
+      vendors: []
+    });
+    toggleCreateAppGroupModal(false);
+  };
+
   if (!isVisible) {
     return <></>;
   }
@@ -80,18 +126,19 @@ export default function index({
               vendors: []
             });
             toggleCreateAppGroupModal(false);
-          }}
-        >
+          }}>
           &times;
         </span>
         <div>
-          <h2>Create a Group</h2>
+          <h2>{isEditMode ? "Edit" : "Create"} a Group</h2>
           <AppGroupForm
             vendors={vendors}
             groupDetails={groupDetails}
             onSubmit={handleSubmit}
             handleGroupDetailsChange={handleGroupDetailsChange}
             action={action}
+            handleDelete={handleDelete}
+            vendorError={vendorError}
           />
         </div>
       </div>

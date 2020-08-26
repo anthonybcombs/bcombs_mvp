@@ -6,7 +6,7 @@ import {
   authenticated,
   gotUserInfo,
   loggedOut,
-  requestedPasswordChange,
+  requestedPasswordChange
 } from "../actions/Auth";
 import {
   addCalendar,
@@ -14,20 +14,20 @@ import {
   gotCalendars,
   gotCalendar,
   deleteCalendar,
-  clonedCalendar,
+  clonedCalendar
 } from "../actions/Calendars";
 import {
   deletedEvent,
   updatedEvent,
   addedEvent,
   getUserEvents,
-  searchedEvents,
+  searchedEvents
 } from "../actions/Events";
 import {
   addedContact,
   removedContact,
   updatedContact,
-  getUserContact,
+  getUserContact
 } from "../actions/Contacts";
 import {
   addedGroup,
@@ -35,7 +35,7 @@ import {
   getUserGroup,
   removeGroup,
   getMembers,
-  getUserGroupProtectedRoute,
+  getUserGroupProtectedRoute
 } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
 import {
@@ -45,7 +45,7 @@ import {
   getUserInfo,
   getSecurityQuestions,
   updateUserProfile,
-  updateUserProfilePhoto,
+  updateUserProfilePhoto
 } from "../actions/Users";
 import { gotUserTypes } from "../actions/UserTypes";
 
@@ -62,7 +62,7 @@ import {
   getApplication,
   getUserApplication,
   updateApplication,
-  archivedApplication, 
+  archivedApplication,
   unarchivedApplication,
   getArchivedApplication,
   getApplicationById,
@@ -70,8 +70,10 @@ import {
   getApplicationByUserId
 } from "../actions/Application";
 
-import { 
-  addVendorAppGroup
+import {
+  addVendorAppGroup,
+  editVendorAppGroup,
+  deleteVendorAppGroup
 } from "../actions/VendorAppGroups";
 
 import reducer from "../reducers";
@@ -140,14 +142,36 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_USER_APPLICATIONS, getUserApplication);
   yield takeLatest(actionType.REQUEST_UPDATE_APPLICATION, updateApplication);
 
-  yield takeLatest(actionType.REQUEST_ARCHIVED_APPLICATION, archivedApplication);
-  yield takeLatest(actionType.REQUEST_UNARCHIVED_APPLICATION, unarchivedApplication);
+  yield takeLatest(
+    actionType.REQUEST_ARCHIVED_APPLICATION,
+    archivedApplication
+  );
+  yield takeLatest(
+    actionType.REQUEST_UNARCHIVED_APPLICATION,
+    unarchivedApplication
+  );
 
-  yield takeLatest(actionType.REQUEST_GET_ARCHIVED_APPLICATION, getArchivedApplication);
+  yield takeLatest(
+    actionType.REQUEST_GET_ARCHIVED_APPLICATION,
+    getArchivedApplication
+  );
   yield takeLatest(actionType.REQUEST_GET_APPLICATION_ID, getApplicationById);
   yield takeLatest(actionType.REQUEST_ADD_VENDOR_APP_GROUP, addVendorAppGroup);
   yield takeLatest(actionType.REQUEST_SAVE_APPLICATION, saveApplication);
-  yield takeLatest(actionType.REQUEST_GET_APPLICATION_USER_ID, getApplicationByUserId)
+  yield takeLatest(
+    actionType.REQUEST_GET_APPLICATION_USER_ID,
+    getApplicationByUserId
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_EDIT_VENDOR_APP_GROUP,
+    editVendorAppGroup
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_DELETE_VENDOR_APP_GROUP,
+    deleteVendorAppGroup
+  );
 }
 const sagaMiddleware = createSagaMiddleware();
 
