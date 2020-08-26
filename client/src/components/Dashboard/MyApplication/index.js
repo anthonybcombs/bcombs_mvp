@@ -165,7 +165,7 @@ export default function index() {
           const childInformationObj = {
             profile: {
               image: "",
-              application_date: row.updated_at ? row.updated_at: "",
+              application_date: `History Update: ${format(new Date(row.updated_at ? row.updated_at: ""), "LLL dd, yyyy p")}`,
               first_name: application.child.firstname ? application.child.firstname: "",
               last_name: application.child.lastname ? application.child.lastname:"",
               nick_name: application.child.nickname ? application.child.nickname: "",
@@ -286,11 +286,16 @@ export default function index() {
         target="_blank" 
         onClick={(e) => {
           e.preventDefault()
+          
+          const updatedAt = application.app_histories && application.app_histories.length
+            ? application.app_histories[0]
+              ? application.app_histories[0].updated_at : application.application_date
+            : application.application_date
 
           const childInformationObj = {
             profile: {
               image: "",
-              application_date: application.application_date ? application.application_date: "",
+              application_date: `Latest Update: ${format(new Date(updatedAt || ''), "LLL dd, yyyy p")}`,
               first_name: application.child.firstname ? application.child.firstname: "",
               last_name: application.child.lastname ? application.child.lastname:"",
               nick_name: application.child.nickname ? application.child.nickname: "",
