@@ -565,7 +565,7 @@ export default function index() {
 
     console.log("parentsInformation update", parentsInformation);
   }
-  console.log('jawa', vendors)
+
   return (
     <ApplicationStyled>
       <div style={{display: "flex", alignItems: "center"}}>
