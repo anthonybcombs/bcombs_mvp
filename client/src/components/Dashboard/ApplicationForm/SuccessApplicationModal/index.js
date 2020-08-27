@@ -5,10 +5,22 @@ const SuccessApplicationModalStyled = styled.div`
   h2 {
     color: #F26E21;
   }
+
+  .details {
+    text-align: justify;
+  }
+
+  .close {
+    position: absolute;
+    top: 0.3rem;
+    right: 1rem;
+  }
+
   .modal-content {
     margin: 1em auto;
-    padding: 0 2em;
+    padding: 0 2em 1em 2em;
     width: 20%;
+    position: relative;
   }
   @media screen and (max-width: 1920px) {
     .modal-content {
