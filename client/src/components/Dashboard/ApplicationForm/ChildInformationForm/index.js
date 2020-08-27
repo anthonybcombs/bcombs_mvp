@@ -14,6 +14,7 @@ import DatePicker from "react-datepicker";
 import { Multiselect } from "multiselect-react-dropdown";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../ArchivedApplication/SearchDate.css";
+import "font-awesome/css/font-awesome.min.css";
 import STATES from "../states.json";
 import NumberFormat from "react-number-format";
 
@@ -151,6 +152,23 @@ const ChildInfomationFormStyled = styled.div`
     }
    .field-input:placeholder-shown + .field-label {
       max-width: calc(100% - 30%) !important;
+    }
+    #multiselectContainerReact .optionListContainer {
+      position: relative;
+    }
+    #multiselectContainerReact .optionListContainer:before {
+      content: "\f057";
+      position: absolute;
+      top: -8px;
+      color: red;
+      right: -10px;
+      width: auto;
+      height: 25px;
+      font-size: 28px;
+      cursor: pointer;
+      background: #fff;
+      border-radius: 100%;
+      font-family: "fontawesome";
     }
   }
   
