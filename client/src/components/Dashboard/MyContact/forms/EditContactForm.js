@@ -289,7 +289,7 @@ export default function ContactForm({
             message={
               <>
                 <p className="error error-size">
-                  Lastname is required.
+                  Last Name is required.
                   <br />
                   Length should not be greater than 20.
                 </p>
@@ -317,7 +317,7 @@ export default function ContactForm({
           <ErrorMessage
             field={errors.first_name}
             errorType="required"
-            message="Firstname is required."
+            message="First Name is required."
           />
           <ErrorMessage
             field={errors.first_name}

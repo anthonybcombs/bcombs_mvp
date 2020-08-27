@@ -18,7 +18,7 @@ export default function index({
   application
 }) {
 
-  const pDate = moment(application.section1_date_signed).format("DD/MM/YYYY");
+  const pDate = moment(application.section1_date_signed).format("MM/DD/YYYY");
 
   const termsWaiver = {
     section1: {

@@ -81,7 +81,7 @@ export default function RelativeForm({
       onSubmit={handleSubmit(onSubmit)}
       theme={theme}>
       <input
-        placeholder="First name"
+        placeholder="First Name"
         name="firstName"
         value={relativeDetails.firstName}
         onChange={({ target }) => {
@@ -92,10 +92,10 @@ export default function RelativeForm({
       <ErrorMessage
         field={errors.firstName}
         errorType="required"
-        message="First  name is required."
+        message="First Name is required."
       />
       <input
-        placeholder="Last name"
+        placeholder="Last Name"
         name="lastName"
         value={relativeDetails.lastName}
         onChange={({ target }) => {
@@ -106,7 +106,7 @@ export default function RelativeForm({
       <ErrorMessage
         field={errors.lastName}
         errorType="required"
-        message="Last  name is required."
+        message="Last Name is required."
       />
       <input
         placeholder="Phone number"

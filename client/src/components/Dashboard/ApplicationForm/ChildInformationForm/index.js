@@ -408,7 +408,7 @@ export default function index({
             <ErrorMessage
               field={errors["ch_first_name" + (counter - 1)]}
               errorType="required"
-              message="Firstname is required."
+              message="First Name is required."
             />
           </div>
           <div className="form-group">
@@ -437,7 +437,7 @@ export default function index({
             <ErrorMessage
               field={errors["ch_last_name" + (counter - 1)]}
               errorType="required"
-              message="Lastname is required."
+              message="Last Name is required."
             />
           </div>
           <div className="form-group">

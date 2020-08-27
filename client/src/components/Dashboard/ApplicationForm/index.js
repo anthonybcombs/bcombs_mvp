@@ -16,6 +16,7 @@ import { requestAddApplication } from "../../../redux/actions/Application";
 import ProfileImg from "../../../images/defaultprofile.png";
 
 import Loading from "../../../helpers/Loading.js";
+import SuccessApplicationModal from "./SuccessApplicationModal"
 
 import "./ApplicationForm.css";
 
@@ -154,12 +155,12 @@ export default function index() {
     }
   );
 
-  if(applications.addapplication && applications.addapplication.message == "application created") {
-    scrollToTop("auto");
-    setTimeout(() => {
-      window.location.replace(window.location.origin);
-    }, 3000);
-  }
+  // if(applications.addapplication && applications.addapplication.message == "application created") {
+  //   scrollToTop("auto");
+  //   setTimeout(() => {
+  //     window.location.replace(window.location.origin);
+  //   }, 3000);
+  // }
 
   useEffect(() => {
     if(vendor_id) {
@@ -927,6 +928,10 @@ export default function index() {
 
   }
 
+  const handleRedirectToOrigin = () => {
+    window.location.replace(window.location.origin);
+  }
+
   return (
     <ApplicationFormStyled
       id="applicationForm">
@@ -937,9 +942,9 @@ export default function index() {
             <div className="container">
               {
                 applications.addapplication && applications.addapplication.message == "application created" && (
-                  <div className="success-message">
-                    Successfully submitted your application. Thank you!
-                  </div>
+                  <SuccessApplicationModal
+                    onRedirect={handleRedirectToOrigin}
+                  />
                 )
               }
               <form

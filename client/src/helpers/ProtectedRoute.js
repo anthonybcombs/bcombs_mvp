@@ -53,6 +53,16 @@ export default function protectedRoutes({ children }) {
     auth.status === "SIGNED_IN" &&
     status.requestStatus === "COMPLETED"
   ) {
+    // === START Temporary implementation
+    // Trello card https://trello.com/c/BXEQaXbB/252-for-users-only-can-we-only-show-the-application-page-and-menu-hide-dashboard-calendar-events-and-contacts-pages-and-menu-items
+    const currentUserType = userTypes.filter(type => {
+      return type.id === auth.type;
+    })[0];
+    if (currentUserType.name === "USER" && location.pathname === "/dashboard") {
+      return <Redirect to="/dashboard/myapplication" />;
+    }
+    // === END Temporary implementation
+
     if (
       !location.pathname.includes("createprofile") &&
       !auth.is_profile_filled &&
@@ -69,10 +79,6 @@ export default function protectedRoutes({ children }) {
       location.pathname.includes("/dashboard/archived")
     ) {
       if (userTypes.length > 0) {
-        const currentUserType = userTypes.filter(type => {
-          return type.id === auth.type;
-        })[0];
-
         if (currentUserType.name != "VENDOR") {
           return <Redirect to="/dashboard" />;
         }

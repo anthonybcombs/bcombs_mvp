@@ -140,7 +140,7 @@ export default function index({
             <ErrorMessage
               field={errors["ec_firstname_" + i]}
               errorType="required"
-              message="Firstname is required."
+              message="First Name is required."
             />
           </td>
           <td>
@@ -165,7 +165,7 @@ export default function index({
             <ErrorMessage
               field={errors["ec_lastname_" + i]}
               errorType="required"
-              message="Lastname is required."
+              message="Last Name is required."
             />
           </td>
           <td>
