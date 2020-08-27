@@ -44,6 +44,10 @@ const EmergencyContactFormStyled = styled.div`
     padding: 10px;
   }
 
+  #contacts .select-field-wrapper:after {
+    bottom: 10px;
+  }
+
   #contacts .input-field {
     width: 150px;
     text-align: start;
@@ -65,8 +69,6 @@ const EmergencyContactFormStyled = styled.div`
   #contacts select.input-field {
     width: 100%;
     min-width: 150px;
-    -webkit-appearance: menulist !important;
-    -moz-appearance: menulist !important;
   }
 
   #contacts .required {
@@ -171,37 +173,39 @@ export default function index({
           <td>
             {!isReadonly && i <= 1 && <span className="required">*</span>}
             {!isReadonly ? (
-              <select
-                name={"ec_gender_" + i}
-                className="input-field"
-                onChange={({ target }) => {
-                  handleParentFormDetailsChange(
-                    i,
-                    "emergency_contacts",
-                    "gender",
-                    target.value
-                  );
-                }}
-                defaultValue={parentEmergencyContacts[i].gender}
-                ref={register({
-                  required: i <= 1
-                })}>
-                <option value="">Select Type</option>
-                <optgroup label="Gender">
-                  {GENDER_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.name}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="Custom">
-                  {CUSTOM_GENDER_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.name}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
+              <div className="select-field-wrapper">
+                <select
+                  name={"ec_gender_" + i}
+                  className="input-field"
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      i,
+                      "emergency_contacts",
+                      "gender",
+                      target.value
+                    );
+                  }}
+                  defaultValue={parentEmergencyContacts[i].gender}
+                  ref={register({
+                    required: i <= 1
+                  })}>
+                  <option value="">Select Type</option>
+                  <optgroup label="Gender">
+                    {GENDER_OPTIONS.map(opt => (
+                      <option key={opt.id} value={opt.name}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Custom">
+                    {CUSTOM_GENDER_OPTIONS.map(opt => (
+                      <option key={opt.id} value={opt.name}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                </select>
+              </div>
             ) : (
               <input
                 type="text"
@@ -327,54 +331,56 @@ export default function index({
           <td>
             {!isReadonly && i <= 1 && <span className="required">*</span>}
             {!isReadonly ? (
-              <select
-                name={"relationship_to_child_" + i}
-                className="input-field"
-                onChange={({ target }) => {
-                  handleParentFormDetailsChange(
-                    i,
-                    "emergency_contacts",
-                    "relationship_to_child",
-                    target.value
-                  );
-                }}
-                defaultValue={parentEmergencyContacts[i].relationship_to_child}
-                ref={register({
-                  required: i <= 1
-                })}>
-                <option value="">Select Type</option>
-                {/* {RELATION_TO_CHILD_OPTIONS.map(opt => (
-                  <option key={opt.id} value={opt.name}>
-                    {opt.name}
-                  </option>
-                ))} */}
-                {(parentEmergencyContacts[i].gender === "Female" ||
-                  parentEmergencyContacts[i].gender === "She") &&
-                  OPTION_FEMALE_RELATIONSHIPS.map(opt => (
-                    <option key={opt.value} value={opt.value}>
-                      {" "}
-                      {opt.label}
+              <div className="select-field-wrapper">
+                <select
+                  name={"relationship_to_child_" + i}
+                  className="input-field"
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      i,
+                      "emergency_contacts",
+                      "relationship_to_child",
+                      target.value
+                    );
+                  }}
+                  defaultValue={parentEmergencyContacts[i].relationship_to_child}
+                  ref={register({
+                    required: i <= 1
+                  })}>
+                  <option value="">Select Type</option>
+                  {/* {RELATION_TO_CHILD_OPTIONS.map(opt => (
+                    <option key={opt.id} value={opt.name}>
+                      {opt.name}
                     </option>
-                  ))}
+                  ))} */}
+                  {(parentEmergencyContacts[i].gender === "Female" ||
+                    parentEmergencyContacts[i].gender === "She") &&
+                    OPTION_FEMALE_RELATIONSHIPS.map(opt => (
+                      <option key={opt.value} value={opt.value}>
+                        {" "}
+                        {opt.label}
+                      </option>
+                    ))}
 
-                {(parentEmergencyContacts[i].gender === "Male" ||
-                  parentEmergencyContacts[i].gender === "He") &&
-                  OPTION_MALE_RELATIONSHIPS.map(opt => (
-                    <option key={opt.value} value={opt.value}>
-                      {" "}
-                      {opt.label}
-                    </option>
-                  ))}
+                  {(parentEmergencyContacts[i].gender === "Male" ||
+                    parentEmergencyContacts[i].gender === "He") &&
+                    OPTION_MALE_RELATIONSHIPS.map(opt => (
+                      <option key={opt.value} value={opt.value}>
+                        {" "}
+                        {opt.label}
+                      </option>
+                    ))}
 
-                {(parentEmergencyContacts[i].gender === "Custom" ||
-                  parentEmergencyContacts[i].gender === "They") &&
-                  OPTION_CUSTOM_RELATIONSHIPS.map(opt => (
-                    <option key={opt.key} value={opt.value}>
-                      {" "}
-                      {opt.label}
-                    </option>
-                  ))}
-              </select>
+                  {(parentEmergencyContacts[i].gender === "Custom" ||
+                    parentEmergencyContacts[i].gender === "They") &&
+                    OPTION_CUSTOM_RELATIONSHIPS.map(opt => (
+                      <option key={opt.key} value={opt.value}>
+                        {" "}
+                        {opt.label}
+                      </option>
+                    ))}
+                </select>
+              </div>
             ) : (
               <input
                 name={"relationship_to_child_" + i}

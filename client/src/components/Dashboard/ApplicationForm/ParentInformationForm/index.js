@@ -298,7 +298,7 @@ export default function index({
 
         <div className="grid-2">
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               {!isReadonly ? (
                 <select
                   defaultValue={parentProfile?.phone_type}
@@ -407,7 +407,7 @@ export default function index({
         {showPhone && (
           <div className="grid-2">
             <div className="form-group">
-              <div className="field">
+              <div className="field select-field-wrapper">
                 {!isReadonly ? (
                   <select
                     defaultValue={parentProfile?.phone_type}
@@ -495,7 +495,7 @@ export default function index({
         )}
         <div className="grid-2">
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               {!isReadonly ? (
                 <select
                   defaultValue={parentProfile?.email_type}
@@ -588,7 +588,7 @@ export default function index({
         {showEmail && (
           <div className="grid-2">
             <div className="form-group">
-              <div className="field">
+              <div className="field select-field-wrapper">
                 {!isReadonly ? (
                   <select
                     defaultValue={parentProfile?.email_type2}
@@ -860,7 +860,7 @@ export default function index({
           }
         >
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               {!isReadonly ? (
                 <select
                   name="parentstate"
@@ -1094,7 +1094,7 @@ export default function index({
 
         <div>
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               {!isReadonly ? (
                 <select
                   defaultValue={parentProfile?.level_education}
@@ -1136,7 +1136,7 @@ export default function index({
 
         <div>
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               {!isReadonly ? (
                 <select
                   defaultValue={parentProfile?.child_importance_hs}
@@ -1178,7 +1178,7 @@ export default function index({
 
         <div>
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               {!isReadonly ? (
                 <select
                   name="childattendscollege"

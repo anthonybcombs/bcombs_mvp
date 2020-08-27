@@ -123,6 +123,11 @@ const ApplicationFormStyled = styled.div`
     height: 30px;
   }
 
+  .question-box .select-field-wrapper:after {
+    right: 8px !important;
+    bottom: 8px !important;
+  }
+
   @media (max-width: 993px) {
     .content {
       padding: 0;
@@ -967,8 +972,38 @@ export default function index() {
                                       <small style={{fontSize: "50%"}}>(Parent)</small>
                                     </span>
                                     
+                                    <div className='select-field-wrapper'>
+                                      <select
+                                        name={"parent_parent" + i + "" + k}
+                                        className="input-field"
+                                        onChange={({target}) => {
+                                          handleParentChildRelationship()
+                                        }}
+                                      >
+                                        <option value="">Select</option>
+                                        {
+                                          RELATION_TO_CHILD_OPTIONS.map(opt => (
+                                            <option key={opt.id} value={opt.name}>
+                                              {opt.name}
+                                            </option>
+                                          ))
+                                        }
+                                      </select>
+                                    </div>
+                                  </li>
+                                )
+                              ))
+                            }
+                            {
+                              childsInformation.map((child, j) => (
+                                <li key={j}>
+                                  <span>
+                                    {child.profile.first_name}
+                                    <small style={{fontSize: "50%"}}>(Child)</small>  
+                                  </span>
+                                  <div className='select-field-wrapper'>
                                     <select
-                                      name={"parent_parent" + i + "" + k}
+                                      name={"ch_parent" + i + "" + j}
                                       className="input-field"
                                       onChange={({target}) => {
                                         handleParentChildRelationship()
@@ -983,33 +1018,7 @@ export default function index() {
                                         ))
                                       }
                                     </select>
-                                  </li>
-                                )
-                              ))
-                            }
-                            {
-                              childsInformation.map((child, j) => (
-                                <li key={j}>
-                                  <span>
-                                    {child.profile.first_name}
-                                    <small style={{fontSize: "50%"}}>(Child)</small>  
-                                  </span>
-                                  <select
-                                    name={"ch_parent" + i + "" + j}
-                                    className="input-field"
-                                    onChange={({target}) => {
-                                      handleParentChildRelationship()
-                                    }}
-                                  >
-                                    <option value="">Select</option>
-                                    {
-                                      RELATION_TO_CHILD_OPTIONS.map(opt => (
-                                        <option key={opt.id} value={opt.name}>
-                                          {opt.name}
-                                        </option>
-                                      ))
-                                    }
-                                  </select>
+                                  </div>
                                 </li>
                               ))
                             }
@@ -1038,22 +1047,24 @@ export default function index() {
                                         {otherChild.profile.first_name}
                                         <small style={{fontSize: "50%"}}>(Child)</small>  
                                       </span>
-                                      <select
-                                        name={"ch_ch" + i + "" + j}
-                                        className="input-field"
-                                        onChange={({target}) => {
-                                          handleParentChildRelationship()
-                                        }}
-                                      >
-                                        <option value="">Select</option>
-                                        {
-                                          RELATION_TO_CHILD_OPTIONS.map(opt => (
-                                            <option key={opt.id} value={opt.name}>
-                                              {opt.name}
-                                            </option>
-                                          ))
-                                        }
-                                      </select>
+                                      <div className="select-field-wrapper">
+                                        <select
+                                          name={"ch_ch" + i + "" + j}
+                                          className="input-field"
+                                          onChange={({target}) => {
+                                            handleParentChildRelationship()
+                                          }}
+                                        >
+                                          <option value="">Select</option>
+                                          {
+                                            RELATION_TO_CHILD_OPTIONS.map(opt => (
+                                              <option key={opt.id} value={opt.name}>
+                                                {opt.name}
+                                              </option>
+                                            ))
+                                          }
+                                        </select>
+                                      </div>
                                     </li>
                                   )
                                 ))

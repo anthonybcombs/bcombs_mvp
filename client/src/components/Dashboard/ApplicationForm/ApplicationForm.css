@@ -386,28 +386,26 @@
   background: gray !important;
 }
 
-#applicationForm select.field-input {
+/* #applicationForm select.field-input {
   -webkit-appearance: menulist !important;
   -moz-appearance: menulist !important;
-}
+} */
 
-/* #applicationForm .field {
+#applicationForm .select-field-wrapper {
   position: relative;
 }
-#applicationForm .field:after {
-  font-family: "fontawesome";
+#applicationForm .select-field-wrapper:after {
   content: "\f078";
   position: absolute;
   right: 0;
-} */
-
-#applicationForm .select-wrapper:after {
-  content: '';
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: red;
-
+  bottom: 18px;
+  font-size: 12px;
+  color: #555 !important;
+  font-family: "fontawesome";
+}
+#applicationForm .select-field-wrapper select {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
 }
 
 #applicationForm .form-group .form-control {

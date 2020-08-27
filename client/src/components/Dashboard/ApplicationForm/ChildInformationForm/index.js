@@ -568,7 +568,7 @@ export default function index({
             />
           </div>
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 disabled={isReadonly}
                 readOnly={isReadonly}
@@ -682,7 +682,7 @@ export default function index({
 
         <div className="grid">
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 disabled={isReadonly}
                 name="ch_phone_type"
@@ -773,7 +773,7 @@ export default function index({
         {showPhone && (
           <div className="grid">
             <div className="form-group">
-              <div className="field">
+              <div className="field select-field-wrapper">
                 <select
                   disabled={isReadonly}
                   name="ch_phone_type2"
@@ -851,7 +851,7 @@ export default function index({
         )}
         <div className="grid">
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 disabled={isReadonly}
                 name="ch_email_type"
@@ -929,7 +929,7 @@ export default function index({
         {showEmail && (
           <div className="grid">
             <div className="form-group">
-              <div className="field">
+              <div className="field select-field-wrapper">
                 <select
                   disabled={isReadonly}
                   name="ch_email_type2"
@@ -1057,7 +1057,7 @@ export default function index({
 
         <div className="grid">
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 disabled={isReadonly}
                 name={"ch_state" + (counter - 1)}
@@ -1135,7 +1135,7 @@ export default function index({
 
         <div className="grid">
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 readOnly={isReadonly}
                 disabled={isReadonly}

@@ -182,7 +182,7 @@ export default function index({
             </div>
           </div>
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 name="act_year_taken"
                 className="field-input"
@@ -196,7 +196,7 @@ export default function index({
             </div>
           </div>
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 name="act_month_taken"
                 className="field-input"
@@ -253,7 +253,7 @@ export default function index({
             </div>
           </div>
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 name="act_year_taken"
                 className="field-input"
@@ -267,7 +267,7 @@ export default function index({
             </div>
           </div>
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 name="act_month_taken"
                 className="field-input"
@@ -324,7 +324,7 @@ export default function index({
             </div>
           </div>
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 name="act_year_taken"
                 className="field-input"
@@ -338,7 +338,7 @@ export default function index({
             </div>
           </div>
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 name="act_month_taken"
                 className="field-input"
@@ -363,7 +363,7 @@ export default function index({
       <div className="general-info-wrapper">
         <div className="grid-4">
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
             <select
                 name={"ch_grade" + (counter-1)}
                 className="field-input"
@@ -392,7 +392,7 @@ export default function index({
           {
             childGeneralInformation.grade > 8 &&
             <div className="form-group">
-              <div className="field">
+              <div className="field select-field-wrapper">
                 {
                   !isReadonly ?
                   <select
@@ -510,7 +510,7 @@ export default function index({
               </div>
             </div>
             <div className="form-group">
-              <div className="field">
+              <div className="field select-field-wrapper">
                 <select
                   name="ch_gpa_cumulative"
                   className="field-input"
@@ -724,7 +724,7 @@ export default function index({
         }
         <div className="grid-1">
           <div className="form-group">
-            <div className="field">
+            <div className="field select-field-wrapper">
               <select
                 name={"mentee_start_year" + (counter - 1)}
                 className="field-input"
