@@ -29,6 +29,10 @@ const ChildFormHeader = styled.div`
     z-index: 1;
   }
 
+  .edit-button.activeEdit {
+    color: #599600;
+  }
+
   .print-button {
     border: 0;
     position: absolute;
@@ -99,7 +103,7 @@ export default function index({
         <h1>{vendor.name} Application Form</h1>
         {!isFormHistory && (
           <button
-            className="edit-button"
+            className={`edit-button ${!isReadonly ? "activeEdit" : ""}`}
             type="button"
             onClick={handleChangeToEdit}>
             <FontAwesomeIcon icon={faEdit} />

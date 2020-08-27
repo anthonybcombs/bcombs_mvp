@@ -39,14 +39,14 @@ describe("Add Family Member Modal", () => {
       const inputFirstname = getByTestId("app-profile-input-firstname");
       expect(inputFirstname).toBeInTheDocument();
       expect(inputFirstname.type).toBe("text");
-      expect(inputFirstname.placeholder).toBe("First name");
+      expect(inputFirstname.placeholder).toBe("First Name");
     });
     test("does contains input(lastname)", () => {
       const { getByTestId } = render(component);
       const inputLastname = getByTestId("app-profile-input-lastname");
       expect(inputLastname).toBeInTheDocument();
       expect(inputLastname.type).toBe("text");
-      expect(inputLastname.placeholder).toBe("Last name");
+      expect(inputLastname.placeholder).toBe("Last Name");
     });
     test("does contains select(family realtionship)", () => {
       const defaultOptions = ["sibling", "father", "mother", ""];
@@ -221,7 +221,7 @@ describe("Add Family Member Modal", () => {
           fireEvent.submit(createProfileForm);
         });
         expect(queryByText("Firstname is required.")).not.toBeInTheDocument();
-        expect(queryByText("Lastname is required.")).not.toBeInTheDocument();
+        expect(queryByText("Last Name is required.")).not.toBeInTheDocument();
         expect(queryByText("Gender is required.")).not.toBeInTheDocument();
         expect(
           queryByText("Family relationship is required.")
@@ -255,7 +255,7 @@ describe("Add Family Member Modal", () => {
           fireEvent.submit(createProfileForm);
         });
         expect(queryByText("Firstname is required.")).toBeInTheDocument();
-        expect(queryByText("Lastname is required.")).toBeInTheDocument();
+        expect(queryByText("Last Name is required.")).toBeInTheDocument();
         expect(queryByText("Gender is required.")).toBeInTheDocument();
         expect(
           queryByText("Family relationship is required.")

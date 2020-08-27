@@ -286,7 +286,7 @@ export default function index({
             <ErrorMessage
               field={errors.firstname}
               errorType="required"
-              message="Firstname is required."
+              message="First Name is required."
             />
             <ErrorMessage
               field={errors.firstname}
@@ -312,7 +312,7 @@ export default function index({
             <ErrorMessage
               field={errors.lastname}
               errorType="required"
-              message="Lastname is required."
+              message="Last Name is required."
             />
             <ErrorMessage
               field={errors.lastname}
@@ -766,7 +766,7 @@ export default function index({
         {/* <input
           data-testid="app-profile-input-firstname"
           name="firstname"
-          placeholder="First name"
+          placeholder="First Name"
           onChange={({ target }) => {
             handleInputChange("firstname", target.value);
           }}
@@ -776,13 +776,13 @@ export default function index({
         <ErrorMessage
           field={errors.firstname}
           errorType="required"
-          message="Firstname is required."
+          message="First Name is required."
         />
 
         <input
           data-testid="app-profile-input-lastname"
           name="lastname"
-          placeholder="Last name"
+          placeholder="Last Name"
           onChange={({ target }) => {
             handleInputChange("lastname", target.value);
           }}
@@ -792,7 +792,7 @@ export default function index({
         <ErrorMessage
           field={errors.lastname}
           errorType="required"
-          message="Lastname is required."
+          message="Last Name is required."
         />
 
         <ErrorMessage

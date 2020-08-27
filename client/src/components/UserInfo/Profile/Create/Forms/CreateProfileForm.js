@@ -358,7 +358,7 @@ export default function CreateProfileForm({
             className="field-input"
             data-testid="app-profile-input-firstname"
             name="firstname"
-            placeholder="First name"
+            placeholder="First Name"
             onChange={({ target }) => {
               handleInputChange("firstname", target.value);
             }}
@@ -372,7 +372,7 @@ export default function CreateProfileForm({
         <ErrorMessage
           field={errors.firstname}
           errorType="required"
-          message="Firstname is required."
+          message="First Name is required."
         />
       </div>
       <div className="form-group">
@@ -382,7 +382,7 @@ export default function CreateProfileForm({
             className="field-input"
             data-testid="app-profile-input-lastname"
             name="lastname"
-            placeholder="Last name"
+            placeholder="Last Name"
             onChange={({ target }) => {
               handleInputChange("lastname", target.value);
             }}
@@ -396,7 +396,7 @@ export default function CreateProfileForm({
         <ErrorMessage
           field={errors.lastname}
           errorType="required"
-          message="Lastname is required."
+          message="Last Name is required."
         />
       </div>
 
