@@ -11,6 +11,11 @@ const ParentFormViewStyled = styled.div`
   margin-bottom: 40px;
   padding-left: 15px;
   padding-right: 15px;
+
+  @media print {
+    padding: 10px !important;
+  }
+
 `;
 
 export default function index({
@@ -21,50 +26,51 @@ export default function index({
   isReadonly,
   emergencyContacts = []
 }) {
-    
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
 
   console.log("emergencyContacts", emergencyContacts);
-
-  let tempEC = [{
-    first_name: "-",
-    last_name: "-",
-    gender: "-",
-    mobile_phone: "-",
-    work_phone: "-",
-    relationship_to_child: "-"
-  },{
-    first_name: "-",
-    last_name: "-",
-    gender: "-",
-    mobile_phone: "-",
-    work_phone: "-",
-    relationship_to_child: "-"
-  },{
-    first_name: "-",
-    last_name: "-",
-    gender: "-",
-    mobile_phone: "-",
-    work_phone: "-",
-    relationship_to_child: "-"
-  },{
-    first_name: "-",
-    last_name: "-",
-    gender: "-",
-    mobile_phone: "-",
-    work_phone: "-",
-    relationship_to_child: "-"
-  }]
+  let tempEC = [
+    {
+      first_name: "-",
+      last_name: "-",
+      gender: "-",
+      mobile_phone: "-",
+      work_phone: "-",
+      relationship_to_child: "-"
+    },
+    {
+      first_name: "-",
+      last_name: "-",
+      gender: "-",
+      mobile_phone: "-",
+      work_phone: "-",
+      relationship_to_child: "-"
+    },
+    {
+      first_name: "-",
+      last_name: "-",
+      gender: "-",
+      mobile_phone: "-",
+      work_phone: "-",
+      relationship_to_child: "-"
+    },
+    {
+      first_name: "-",
+      last_name: "-",
+      gender: "-",
+      mobile_phone: "-",
+      work_phone: "-",
+      relationship_to_child: "-"
+    }
+  ];
 
   const renderParentForm = () => {
-
-
     let items = [];
 
-    for(let i = 1; i <= parents.length; i++) {
+    for (let i = 1; i <= parents.length; i++) {
       const parent = parents[i - 1];
       // const profile = {
       //   first_name: parent.firstname ? parent.firstname : "-",
@@ -89,10 +95,10 @@ export default function index({
 
       // console.log("PROFILE ", profile);
 
-      if(i == 1) {
+      if (i == 1) {
         items.push(
           <div key={i}>
-            <ParentInformationStyled 
+            <ParentInformationStyled
               key={i}
               handleParentFormDetailsChange={handleParentFormDetailsChange}
               parentProfile={parent.profile}
@@ -104,12 +110,12 @@ export default function index({
               ProfileImg={ProfileImg}
             />
           </div>
-        )
+        );
       } else {
         items.push(
           <div key={i}>
             <hr className="style-eight"></hr>
-            <ParentInformationStyled 
+            <ParentInformationStyled
               key={i}
               handleParentFormDetailsChange={handleParentFormDetailsChange}
               parentProfile={parent.profile}
@@ -121,25 +127,27 @@ export default function index({
               ProfileImg={ProfileImg}
             />
           </div>
-        )
+        );
       }
     }
     return items;
-  }
+  };
   return (
-    <ParentFormViewStyled>
+    <ParentFormViewStyled className="page-break">
       <div id="applicationForm">
         {renderParentForm()}
         <br/>
         <br/>
         <EmergencyContactFormStyled
           handleParentFormDetailsChange={handleParentFormDetailsChange}
-          parentEmergencyContacts={emergencyContacts.length > 0 ? emergencyContacts : tempEC}
+          parentEmergencyContacts={
+            emergencyContacts.length > 0 ? emergencyContacts : tempEC
+          }
           isReadonly={isReadonly}
           register={register}
           errors={errors}
         />
       </div>
     </ParentFormViewStyled>
-  )
+  );
 }
