@@ -849,6 +849,7 @@ export default function index() {
               app_programs={
                 vendors && vendors.length > 0 ? vendors[0].app_programs : []
               }
+              isVendorView={true}
             />
           )}
 

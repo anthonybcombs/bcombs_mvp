@@ -4,23 +4,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import Collapsible from "react-collapsible";
 import DataTable from 'react-data-table-component';
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-
   faPrint
 } from "@fortawesome/free-solid-svg-icons";
+
 import { format } from "date-fns";
+
 import { useReactToPrint } from "react-to-print";
 import { 
   requestGetApplicationByUserId, 
   requestSaveApplication ,
   requestGetApplicationHistory
 } from "../../../redux/actions/Application";
+import { requestLogout } from "../../../redux/actions/Auth";
+
 import ProfileImg from "../../../images/defaultprofile.png";
 import ChildFormViewStyled from "../Application/view/child";
 import ParentFormViewStyled from "../Application/view/parent";
 import TermsWaiverFormViewStyled from "../Application/view/waiver";
 import Loading from "../../../helpers/Loading.js";
+import SuccessUpdateModal from "./SuccessUpdateModal";
 
 const MyApplicationStyled = styled.div`
   padding: 1em;
@@ -86,9 +91,9 @@ export default function index() {
     }
   );
 
-  if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
-    window.location.reload(false);
-  }
+  // if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
+  //   window.location.reload(false);
+  // }
 
   console.log("applications.appliactionHistory",applications.applicationHistory);
 
@@ -607,6 +612,13 @@ export default function index() {
     }
   }
 
+  const handleRedirectToOrigin = () => {
+    dispatch(requestLogout());
+    setTimeout(() => {
+      window.location.replace(window.location.origin);
+    }, 500);
+  }
+
   const setupParentsList = () => {
     let parents = [];
 
@@ -758,6 +770,14 @@ export default function index() {
         !loading.userAllApplications && userApplications?
         (
           <>
+          {
+            applications.updateapplication && 
+            applications.updateapplication.message == "application successfully updated" && (
+              <SuccessUpdateModal
+                onRedirect={handleRedirectToOrigin}
+              />
+            )
+          }
           <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
             <div id="dataTableContainer">
               {
@@ -803,10 +823,10 @@ export default function index() {
                   ) : (
                     !tempHideForm && (
                       <>
-                            <button className="print-button" onClick={handlePrint}>
-        {" "}
-        <FontAwesomeIcon icon={faPrint} />
-      </button>
+                      <button className="print-button" onClick={handlePrint}>
+                        {" "}
+                        <FontAwesomeIcon icon={faPrint} />
+                      </button>
                       <form
                        ref={componentRef}
                         autoComplete="off"
