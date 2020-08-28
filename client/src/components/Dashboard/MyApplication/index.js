@@ -8,7 +8,8 @@ import { format } from "date-fns";
 
 import { 
   requestGetApplicationByUserId, 
-  requestSaveApplication 
+  requestSaveApplication ,
+  requestGetApplicationHistory
 } from "../../../redux/actions/Application";
 import ProfileImg from "../../../images/defaultprofile.png";
 import ChildFormViewStyled from "../Application/view/child";
@@ -72,6 +73,8 @@ export default function index() {
   if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
     window.location.reload(false);
   }
+
+  console.log("applications.appliactionHistory",applications.applicationHistory);
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
@@ -285,7 +288,9 @@ export default function index() {
         href=""
         target="_blank" 
         onClick={(e) => {
-          e.preventDefault()
+          e.preventDefault();
+
+          dispatch(requestGetApplicationHistory(application.app_id));
           
           const updatedAt = application.app_histories && application.app_histories.length
             ? application.app_histories[0]
@@ -422,8 +427,7 @@ export default function index() {
           setTimeout(() => {
             setTempHideForm(false);
             scrollToApplicationForm()
-          }, 200)
-          
+          }, 200)    
         }}
       >
         View Application
@@ -724,9 +728,6 @@ export default function index() {
     setIsReadonly(!isReadonly);
   }
 
-  console.log("loading", loading);
-  console.log("loading userApplications", userApplications);
-
   return (
     <MyApplicationStyled>
 
@@ -762,7 +763,7 @@ export default function index() {
                       (
                         <DataTable 
                           columns={columnsAppHistory}
-                          data={appHistory}
+                          data={applications.applicationHistory}
                           pagination
                           noHeader={true}
                           striped={true}

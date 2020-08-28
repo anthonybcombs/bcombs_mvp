@@ -9,6 +9,8 @@ import "../../../ApplicationForm/ApplicationForm.css";
 
 const ParentFormViewStyled = styled.div`
   margin-bottom: 40px;
+  padding-left: 15px;
+  padding-right: 15px;
 `;
 
 export default function index({
@@ -56,7 +58,7 @@ export default function index({
     work_phone: "-",
     relationship_to_child: "-"
   }]
-  
+
   const renderParentForm = () => {
 
 
@@ -128,6 +130,8 @@ export default function index({
     <ParentFormViewStyled>
       <div id="applicationForm">
         {renderParentForm()}
+        <br/>
+        <br/>
         <EmergencyContactFormStyled
           handleParentFormDetailsChange={handleParentFormDetailsChange}
           parentEmergencyContacts={emergencyContacts.length > 0 ? emergencyContacts : tempEC}
