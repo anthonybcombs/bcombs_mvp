@@ -819,10 +819,12 @@ export default function index() {
           }
         />
       )}
-      <button className="print-button" onClick={handlePrint}>
-        {" "}
-        <FontAwesomeIcon icon={faPrint} />
-      </button>
+      {!loading.application && selectNonMenuOption && view == "application" && (
+        <button className="print-button" onClick={handlePrint}>
+          {" "}
+          <FontAwesomeIcon icon={faPrint} />
+        </button>
+      )}
       {loading.application ? (
         <Loading />
       ) : (
