@@ -104,14 +104,14 @@ export default function index({
       <ChildFormHeader id="userApplicationForm">
         {" "}
         <h1>{vendor.name} Application Form</h1>
-        {!isFormHistory && (
+        {/* {!isFormHistory && (
           <button
             className={`edit-button ${!isReadonly ? "activeEdit" : ""}`}
             type="button"
             onClick={handleChangeToEdit}>
             <FontAwesomeIcon icon={faEdit} />
           </button>
-        )}
+        )} */}
         <div className="application-date">
           <div>{childInformation.profile.application_date}</div>
         </div>
