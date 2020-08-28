@@ -10,10 +10,18 @@ const SuccessApplicationModalStyled = styled.div`
     text-align: justify;
   }
 
-  .close {
-    position: absolute;
-    top: 0.3rem;
-    right: 1rem;
+  .modal-footer {
+    width: 100%;
+    text-align: center
+  }
+
+  .closeBtn {
+    font-size: 1em;
+    color: #fff;
+    background-color: #f26e21;
+    border-radius: 4px;
+    padding: 10px 15px;
+    border: 0;
   }
 
   .modal-content {
@@ -58,11 +66,11 @@ export default function index({ onRedirect }) {
       <div className="modal-content">
         <h2>
           Application succesfully submitted
-          <span
+          {/* <span
             className="close"
             onClick={() => onRedirect()}>
             &times;
-          </span>
+          </span> */}
         </h2>
 
         <div className="details">
@@ -78,6 +86,14 @@ export default function index({ onRedirect }) {
           <p>
             3. Once confirmed, you will have to access to your personalized BCombs account and have access to view and edit your application.
           </p>
+        </div>
+        <div className="modal-footer">
+          <button
+            className='closeBtn'
+            onClick={() => onRedirect()}
+          >
+            Close
+          </button>
         </div>
       </div>
     </SuccessApplicationModalStyled>,

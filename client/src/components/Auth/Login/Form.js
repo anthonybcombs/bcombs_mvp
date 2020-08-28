@@ -184,7 +184,8 @@ export default function Form({
       <button type="submit" data-testid="app-login-button-signin">
         SIGN IN
       </button>
-      <div id="socials" className="grid">
+      {/* START Temporary comment as of august 28 */}
+      {/* <div id="socials" className="grid">
         <button
           id="facebook"
           type="button"
@@ -205,7 +206,8 @@ export default function Form({
           <FontAwesomeIcon icon={faGooglePlus} fixedWidth size="2x" />
           <span> Sign In with Google</span>
         </button>
-      </div>
+      </div> */}
+      {/* END Temporary comment as of august 28 */}
       <div id="authOptions" className="grid">
         <p>
           New Member! <Link to="/auth/create">Sign Up</Link>
