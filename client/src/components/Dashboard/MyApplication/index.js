@@ -152,6 +152,11 @@ export default function index() {
     userApplications = applications.userAllApplications;
   }
 
+  if( applications.updateapplication 
+    && applications.updateapplication.message == "application successfully updated" ) {
+    window.location.replace(window.location.origin);
+  }
+
   const DATE_FORMAT = "LLL dd, yyyy";
 
   const DATE_TIME_FORMAT = "LLL dd, yyyy p";
@@ -612,12 +617,12 @@ export default function index() {
     }
   }
 
-  const handleRedirectToOrigin = () => {
-    dispatch(requestLogout());
-    setTimeout(() => {
-      window.location.replace(window.location.origin);
-    }, 500);
-  }
+  // const handleRedirectToOrigin = () => {
+  //   dispatch(requestLogout());
+  //   setTimeout(() => {
+  //     window.location.replace(window.location.origin);
+  //   }, 500);
+  // }
 
   const setupParentsList = () => {
     let parents = [];
@@ -770,14 +775,14 @@ export default function index() {
         !loading.userAllApplications && userApplications?
         (
           <>
-          {
+          {/* {
             applications.updateapplication && 
             applications.updateapplication.message == "application successfully updated" && (
               <SuccessUpdateModal
                 onRedirect={handleRedirectToOrigin}
               />
             )
-          }
+          } */}
           <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
             <div id="dataTableContainer">
               {
