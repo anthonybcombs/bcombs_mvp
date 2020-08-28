@@ -492,22 +492,14 @@ const resolvers = {
         parents: application.parents
       });
 
-      // const updatedApplication = await getApplicationByAppId(application.app_id);
-
-      console.log("isSaved", isSaved);
-
       if (isSaved) {
         const params = {
           app_id: application.app_id,
           details: JSON.stringify(previousApplication),
           updated_by: application.updated_by
         };
-        await addApplicationHistory(params);
+        addApplicationHistory(params);
       }
-
-      // const appHistories = await getApplicationHistoryById(application.app_id);
-
-      // console.log("updatedApplication", updatedApplication);
 
       return {
         messageType: "info",

@@ -54,7 +54,7 @@ export const getApplicationById = async (id) => {
   }
 };
 
-export const getApplicationByAppId = async (app_id) => {
+export const getApplicationByAppId = async (app_id, isHistory = false) => {
   const db = makeDb();
   let application;
   try {
@@ -95,14 +95,13 @@ export const getApplicationByAppId = async (app_id) => {
       const child = await getChildInformation(application.child);
       application.parents = await getParentByApplication(application.app_id);
       application.child = child.length > 0 ? child[0] : {};
+
       application.vendorName = await getVendorName(application.vendor);
       application.vendorGroup = await getVendorAppGroupsByVendorId(application.vendor);
-      //application.app_histories = await getApplicationHistoryById(application.app_id); 
-
-      application.app_histories = [];
-
       application.vendorPrograms = await getVendorAppProgram(application.vendor);
       application.vendorLocationSites = await getVendorAppLocationSite(application.vendor);
+
+      application.app_histories = [];
     }
 
   } catch (error) {
@@ -412,13 +411,8 @@ export const saveApplication = async ({
     }
   }
 
-  console.log("parents", parents);
-
   for(let parent of parents) {
-    console.log("parent", parent);
     parentResult = await updateParent(parent);
-
-    console.log("parentResult", parentResult);
     if(parentResult && parentResult.changedRows > 0) {
       p_updatedRows = true;
     }
