@@ -47,6 +47,8 @@ export default function index({
         :
         ""
       }
+      <br/>
+      <br/>
       {
         vendor.section2_show > 0 ?
         <Section2FormStyled
@@ -61,6 +63,8 @@ export default function index({
         :
         ""
       }
+      <br/>
+      <br/>
       {
         vendor.section3_show > 0 ?
         <Section3FormStyled
@@ -75,6 +79,8 @@ export default function index({
         :
         ""
       }
+      <br/>
+      <br/>
     </TermsWaiverFormStyled>
   )
 }

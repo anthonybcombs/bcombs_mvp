@@ -45,6 +45,19 @@ export const APPLICATION_SAVE_MUTATION = gql`
   }
 `;
 
+export const GET_APPLICATION_HISTORY = gql`
+  query getApplicationHistory($app_id: String!) {
+    getApplicationHistory(app_id: $app_id) {
+      id
+      app_history_id
+      app_id
+      details
+      updated_by
+      updated_at
+    }
+  }
+`;
+ 
 export const GET_APPLICATIONS_QUERY = gql`
   query applications($vendor_id: String!) {
     getVendorApplications(vendor_id: $vendor_id) {

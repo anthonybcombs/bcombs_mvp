@@ -97,13 +97,16 @@ export const getApplicationByAppId = async (app_id) => {
       application.child = child.length > 0 ? child[0] : {};
       application.vendorName = await getVendorName(application.vendor);
       application.vendorGroup = await getVendorAppGroupsByVendorId(application.vendor);
-      application.app_histories = await getApplicationHistoryById(application.app_id); 
+      //application.app_histories = await getApplicationHistoryById(application.app_id); 
+
+      application.app_histories = [];
+
       application.vendorPrograms = await getVendorAppProgram(application.vendor);
       application.vendorLocationSites = await getVendorAppLocationSite(application.vendor);
     }
 
   } catch (error) {
-    console.log("error", error);
+    console.log("getApplicationByAppId error", error);
   } finally {
     await db.close();
     return application;
@@ -534,10 +537,7 @@ export const getUserApplicationsByUserId = async (user_id) => {
       `
         SELECT 
           id,
-          BIN_TO_UUID(app_user_id) as app_user_id,
-          BIN_TO_UUID(app_id) as app_id,
-          BIN_TO_UUID(user_id) as user_id,
-          created_at
+          BIN_TO_UUID(app_id) as app_id
         FROM application_user
         WHERE user_id=UUID_TO_BIN(?)
         ORDER BY id DESC

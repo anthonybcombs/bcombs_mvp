@@ -11,10 +11,30 @@ import {
   GET_ARCHIVED_APPLICATIONS_QUERY,
   GET_APPLICATION_ID_QUERY,
   APPLICATION_SAVE_MUTATION,
-  GET_APPLICATION_USER_ID_QUERY
+  GET_APPLICATION_USER_ID_QUERY,
+  GET_APPLICATION_HISTORY
 } from "../../graphql/applicationMutation";
 import * as actionType from "./Constant";
 import { setApplicationLoading, setUserApplicationLoading } from "./Loading";
+
+const getApplicationHistoryFromDatabase = (app_id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: GET_APPLICATION_HISTORY,
+        variables: {
+          app_id
+        }
+      })
+
+      console.log("DATA history", data);
+
+      return resolve(data.getApplicationHistory);
+    } catch(error) {
+      reject(error);
+    }
+  });
+}
 
 const getApplicationIdFromDatabase = (id) => {
   return new Promise(async (resolve, reject) => {
@@ -198,6 +218,13 @@ const addApplicationToDatabase = applications => {
     }
   });
 };
+
+export const requestGetApplicationHistory = app_id => {
+  return {
+    type: actionType.REQUEST_GET_APPLICATION_HISTORY,
+    app_id
+  }
+}
 
 export const requestGetApplicationByUserId = user_id => {
   return {
@@ -390,7 +417,7 @@ export function* saveApplication({application}) {
   } catch(err) {
     yield put({
       type: actionType.REQUEST_SAVE_APPLICATION_COMPLETED,
-      payload: response
+      payload: {}
     })
   }
 }
@@ -415,7 +442,7 @@ export function* updateApplication({application}) {
   } catch(err) {
     yield put({
       type: actionType.REQUEST_UPDATE_APPLICATION_COMPLETED,
-      payload: response
+      payload: {}
     })
   }
 }
@@ -530,6 +557,23 @@ export function* getUserApplication({ email }) {
     yield put(setApplicationLoading(false));
     yield put({
       type: actionType.SET_USER_APPLICATIONS,
+      payload: []
+    });
+  }
+}
+
+export function* getApplicationHistory({ app_id }) {
+  try {
+    const response = yield call(getApplicationHistoryFromDatabase, app_id);
+    console.log("hiostory response", response);
+    yield put({
+      type: actionType.REQUEST_GET_APPLICATION_HISTORY_COMPLETE,
+      payload: response
+    });
+  } catch(err) {
+    console.log("history error", err);
+    yield put({
+      type: actionType.REQUEST_GET_APPLICATION_HISTORY_COMPLETE,
       payload: []
     });
   }

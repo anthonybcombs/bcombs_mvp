@@ -9,11 +9,13 @@ import "../../../ApplicationForm/ApplicationForm.css";
 
 const ParentFormViewStyled = styled.div`
   margin-bottom: 40px;
-  padding: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
 
   @media print {
     padding: 10px !important;
   }
+
 `;
 
 export default function index({
@@ -30,7 +32,6 @@ export default function index({
   });
 
   console.log("emergencyContacts", emergencyContacts);
-
   let tempEC = [
     {
       first_name: "-",
@@ -135,7 +136,8 @@ export default function index({
     <ParentFormViewStyled className="page-break">
       <div id="applicationForm">
         {renderParentForm()}
-
+        <br/>
+        <br/>
         <EmergencyContactFormStyled
           handleParentFormDetailsChange={handleParentFormDetailsChange}
           parentEmergencyContacts={
