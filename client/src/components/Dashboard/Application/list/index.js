@@ -31,14 +31,14 @@ const ApplicationListStyled = styled.div`
 
   #dataTableContainer .gVljTM {
     position: absolute;
-    top: 22px;
+    top: 42px;
     left: 120px;
     font-size: 16px
   }
 
   #dataTableContainer .ncoBp {
     position: absolute;
-    top: 22px;
+    top: 42px;
     left: 0;
     font-size: 16px;
   }

@@ -95,7 +95,8 @@ export default function index({
   handleChildFormDetailsChange,
   isFormHistory = false,
   location_sites = [],
-  app_programs = []
+  app_programs = [],
+  isVendorView = false
 }) {
   const handleScoresChange = () => {};
 
@@ -104,14 +105,14 @@ export default function index({
       <ChildFormHeader id="userApplicationForm">
         {" "}
         <h1>{vendor.name} Application Form</h1>
-        {/* {!isFormHistory && (
+        {!isFormHistory && !isVendorView && (
           <button
             className={`edit-button ${!isReadonly ? "activeEdit" : ""}`}
             type="button"
             onClick={handleChangeToEdit}>
             <FontAwesomeIcon icon={faEdit} />
           </button>
-        )} */}
+        )}
         <div className="application-date">
           <div>{childInformation.profile.application_date}</div>
         </div>
