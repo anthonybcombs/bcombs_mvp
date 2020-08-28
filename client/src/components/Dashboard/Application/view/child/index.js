@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 
@@ -14,6 +14,24 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
 import "../../../ApplicationForm/ApplicationForm.css";
 
 const ChildFormHeader = styled.div`
+  @media print {
+    .edit-button {
+      display: none !important;
+    }
+  }
+
+  @media print {
+    body {
+      transform: scale(0.7);
+    }
+
+    .page-break {
+      margin-top: 1rem;
+      display: block;
+      page-break-before: auto;
+      position: relative;
+    }
+  }
   h1 {
     color: #f26e21;
     text-align: center;
@@ -33,18 +51,9 @@ const ChildFormHeader = styled.div`
     color: #599600;
   }
 
-  .print-button {
-    border: 0;
-    position: absolute;
-    right: 150px;
-    cursor: pointer;
-    font-size: 2em;
-    color: #f26e21;
-    background: none;
-    z-index: 1;
+  .application-date {
+    position: relative;
   }
-
-  .application-date { position: relative; }
   .application-date div {
     position: absolute;
     font-size: 1.5em;
@@ -88,12 +97,6 @@ export default function index({
   location_sites = [],
   app_programs = []
 }) {
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    copyStyles: true
-  });
-
   const handleScoresChange = () => {};
 
   return (
@@ -109,18 +112,15 @@ export default function index({
             <FontAwesomeIcon icon={faEdit} />
           </button>
         )}
-        <button className="print-button" onClick={handlePrint}>
-          {" "}
-          <FontAwesomeIcon icon={faPrint} />
-        </button>
-        <div className='application-date'>
+        <div className="application-date">
           <div>{childInformation.profile.application_date}</div>
         </div>
       </ChildFormHeader>
 
-      <ChildFormViewStyled ref={componentRef}>
+      <ChildFormViewStyled>
         <div id="applicationForm">
           <ChildInformationFormStyled
+            className="page-break"
             handleChildFormDetailsChange={handleChildFormDetailsChange}
             childProfile={childInformation.profile}
             counter={1}
@@ -131,8 +131,9 @@ export default function index({
             location_sites={location_sites}
             app_programs={app_programs}
           />
-          <br />
+
           <GeneralInformationFormStyled
+            className="page-break"
             handleChildFormDetailsChange={handleChildFormDetailsChange}
             childGeneralInformation={childInformation.general_information}
             counter={1}
@@ -141,9 +142,9 @@ export default function index({
             errors={errors}
             isReadonly={isReadonly}
           />
-          <br />
-          <br />
+
           <MedicalCareInfoStyled
+            className="page-break"
             childEmergencyCare={childInformation.emergency_care_information}
             handleChildFormDetailsChange={handleChildFormDetailsChange}
             counter={1}

@@ -49,7 +49,7 @@ const EmergencyContactFormStyled = styled.div`
   }
 
   #contacts .input-field {
-    width: 150px;
+    // width: 150px;
     text-align: start;
     font-size: 18px;
     border: 0;
@@ -85,6 +85,9 @@ const EmergencyContactFormStyled = styled.div`
     .emergency-contact-wrapper > div {
       padding: 0;
     }
+  }
+
+  @media print {
   }
 `;
 
@@ -343,7 +346,9 @@ export default function index({
                       target.value
                     );
                   }}
-                  defaultValue={parentEmergencyContacts[i].relationship_to_child}
+                  defaultValue={
+                    parentEmergencyContacts[i].relationship_to_child
+                  }
                   ref={register({
                     required: i <= 1
                   })}>

@@ -95,7 +95,7 @@ const ChildInfomationFormStyled = styled.div`
   }
   .datepicker-btn:hover {
     background: rgb(255 255 255 / 20%);
-    transition: .15s ease-in-out;
+    transition: 0.15s ease-in-out;
   }
 
   .react-datepicker-wrapper {
@@ -150,7 +150,7 @@ const ChildInfomationFormStyled = styled.div`
       position: relative;
       top: 0;
     }
-   .field-input:placeholder-shown + .field-label {
+    .field-input:placeholder-shown + .field-label {
       max-width: calc(100% - 30%) !important;
     }
     #multiselectContainerReact .optionListContainer {
@@ -171,13 +171,12 @@ const ChildInfomationFormStyled = styled.div`
       font-family: "fontawesome";
     }
   }
-  
+
   @media (max-width: 600px) {
     .child-info-wrapper .grid {
       padding: 0;
     }
   }
-
 `;
 
 export default function index({
@@ -189,26 +188,25 @@ export default function index({
   isReadonly = false,
   ProfileImg,
   app_programs = [],
-  location_sites = [],
+  location_sites = []
 }) {
-
   const hasSelectAll = false;
 
   const GENDER_OPTIONS = [
     { id: 1, value: "Male", name: "Male" },
-    { id: 2, value: "Female", name: "Female" },
+    { id: 2, value: "Female", name: "Female" }
   ];
 
   const CUSTOM_GENDER_OPTIONS = [
     { id: 1, value: "He", name: "He" },
     { id: 2, value: "She", name: "She" },
-    { id: 3, value: "They", name: "They" },
+    { id: 3, value: "They", name: "They" }
   ];
 
   const PHONE_OPTIONS = [
     { id: 1, value: "Cell", name: "Cell" },
     { id: 2, value: "Home", name: "Home" },
-    { id: 3, value: "Work", name: "Work" },
+    { id: 3, value: "Work", name: "Work" }
   ];
 
   const ETHINICITY_OPTIONS = !isReadonly
@@ -217,69 +215,79 @@ export default function index({
         {
           id: 2,
           name: "Black or African American",
-          label: "Black or African American",
+          label: "Black or African American"
         },
         { id: 3, name: "Hispanic or Latino", label: "AsiHispanic or Latinoan" },
         {
           id: 4,
           name: "Native American or American Indian",
-          label: "Native American or American Indian",
+          label: "Native American or American Indian"
         },
         {
           id: 5,
           name: "Native Hawaiian & Other Pacific Islander",
-          label: "Native Hawaiian & Other Pacific Islander",
+          label: "Native Hawaiian & Other Pacific Islander"
         },
         { id: 6, name: "White", label: "White" },
         { id: 7, name: "Other", label: "Other" },
-        { id: 8, name: "Prefer not to answer", label: "Prefer not to answer" },
+        { id: 8, name: "Prefer not to answer", label: "Prefer not to answer" }
       ]
     : [];
 
-  const PROGRAMS_OPTIONS = app_programs.length > 0 ? app_programs : [
-    { id: 1, name: "Saturday Academy", label: "Satuday Academy" },
-    { id: 2, name: "In school", label: "In school" },
-  ]
+  const PROGRAMS_OPTIONS =
+    app_programs.length > 0
+      ? app_programs
+      : [
+          { id: 1, name: "Saturday Academy", label: "Satuday Academy" },
+          { id: 2, name: "In school", label: "In school" }
+        ];
 
-  const LOCATION_SITE_OPTIONS = location_sites.length > 0 ? location_sites : [
-    { name: "Raleigh", value: "Raleigh" },
-    { name: "Durham", value: "Durham" },
-  ];
+  const LOCATION_SITE_OPTIONS =
+    location_sites.length > 0
+      ? location_sites
+      : [
+          { name: "Raleigh", value: "Raleigh" },
+          { name: "Durham", value: "Durham" }
+        ];
 
   const EMAIL_OPTIONS = [
     { id: 1, value: "Personal", name: "Personal" },
-    { id: 2, value: "Work", name: "Work" },
+    { id: 2, value: "Work", name: "Work" }
   ];
 
   let CHILD_LIVES_OPTION = [
-    {id: 1, name: "Father", label: "Father"},
-    {id: 2, name: "Mother", label: "Mother"},
-    {id: 3, name: "Brother", label: "Brother"},
-    {id: 4, name: "Sister", label: "Sister"},
-    {id: 5, name: "Uncle", label: "Uncle"},
-    {id: 6, name: "Aunt", label: "Aunt"},
-    {id: 7, name: "Cousin (Male)", label: "Cousin (Male)"},
-    {id: 8, name: "Grandfather", label: "Grandfather"},
-    {id: 9, name: "Grandmother", label: "Grandmother"},
-    {id: 10, name: "Stepbrother", label: "Stepbrother"},
-    {id: 11, name: "Stepsister", label: "Stepsister"},
-    {id: 12, name: "Stepfather", label: "Stepfather"},
-    {id: 13, name: "Stepmother", label: "Stepmother"},
-    {id: 14, name: "Stepson", label: "Stepson"},
-    {id: 15, name: "Stepdaughter", label: "Stepdaughter"},
-    {id: 16, name: "Brother-in-law", label: "Brother-in-law"},
-    {id: 17, name: "Sister-in-law", label: "Sister-in-law"},
-    {id: 18, name: "Father-in-law", label: "Father-in-law"},
-    {id: 19, name: "Mother-in-law", label: "Mother-in-law"},
-    {id: 20, name: "Family Friend", label: "Family Friend"},
-    {id: 21, name: "Other relatives", label: "Other relatives"},
-    {id: 22, name: "Others", label: "Others"}
+    { id: 1, name: "Father", label: "Father" },
+    { id: 2, name: "Mother", label: "Mother" },
+    { id: 3, name: "Brother", label: "Brother" },
+    { id: 4, name: "Sister", label: "Sister" },
+    { id: 5, name: "Uncle", label: "Uncle" },
+    { id: 6, name: "Aunt", label: "Aunt" },
+    { id: 7, name: "Cousin (Male)", label: "Cousin (Male)" },
+    { id: 8, name: "Grandfather", label: "Grandfather" },
+    { id: 9, name: "Grandmother", label: "Grandmother" },
+    { id: 10, name: "Stepbrother", label: "Stepbrother" },
+    { id: 11, name: "Stepsister", label: "Stepsister" },
+    { id: 12, name: "Stepfather", label: "Stepfather" },
+    { id: 13, name: "Stepmother", label: "Stepmother" },
+    { id: 14, name: "Stepson", label: "Stepson" },
+    { id: 15, name: "Stepdaughter", label: "Stepdaughter" },
+    { id: 16, name: "Brother-in-law", label: "Brother-in-law" },
+    { id: 17, name: "Sister-in-law", label: "Sister-in-law" },
+    { id: 18, name: "Father-in-law", label: "Father-in-law" },
+    { id: 19, name: "Mother-in-law", label: "Mother-in-law" },
+    { id: 20, name: "Family Friend", label: "Family Friend" },
+    { id: 21, name: "Other relatives", label: "Other relatives" },
+    { id: 22, name: "Others", label: "Others" }
   ];
-  
-  let readOnlyChildLivesWith = ""
 
-  if(childProfile.child_lives_with && childProfile.child_lives_with.length > 0 && isReadonly) {
-    childProfile.child_lives_with.forEach((item) => {
+  let readOnlyChildLivesWith = "";
+
+  if (
+    childProfile.child_lives_with &&
+    childProfile.child_lives_with.length > 0 &&
+    isReadonly
+  ) {
+    childProfile.child_lives_with.forEach(item => {
       readOnlyChildLivesWith += item.name + ", ";
     });
 
@@ -288,8 +296,8 @@ export default function index({
 
   let readOnlyProgram = "";
 
-  if(childProfile.program && childProfile.program.length > 0 && isReadonly) {
-    childProfile.program.forEach((item) => {
+  if (childProfile.program && childProfile.program.length > 0 && isReadonly) {
+    childProfile.program.forEach(item => {
       readOnlyProgram += item.name + ", ";
     });
 
@@ -298,8 +306,12 @@ export default function index({
 
   let readOnlyEthinicity = "";
 
-  if(childProfile.ethinicity && childProfile.ethinicity.length > 0 && isReadonly) {
-    childProfile.ethinicity.forEach((item) => {
+  if (
+    childProfile.ethinicity &&
+    childProfile.ethinicity.length > 0 &&
+    isReadonly
+  ) {
+    childProfile.ethinicity.forEach(item => {
       readOnlyEthinicity += item.name + ", ";
     });
 
@@ -318,7 +330,7 @@ export default function index({
 
   const [imagePreview, setImagePreview] = useState(ProfileImg);
 
-  const handleFileChange = (event) => {
+  const handleFileChange = event => {
     let reader = new FileReader();
 
     reader.onloadend = () => {
@@ -343,19 +355,19 @@ export default function index({
     "September",
     "October",
     "November",
-    "December",
+    "December"
   ];
 
   const [showPhone, setShowPhone] = useState(false);
   const [showEmail, setShowEmail] = useState(false);
 
   const handleOtherPhone = () => {
-    if(isReadonly) return;
+    if (isReadonly) return;
     setShowPhone(!showPhone);
   };
 
   const handleOtherEmail = () => {
-    if(isReadonly) return;
+    if (isReadonly) return;
     setShowEmail(!showEmail);
   };
 
@@ -364,7 +376,7 @@ export default function index({
     onClick,
     name,
     className,
-    placeholder,
+    placeholder
   }) => (
     <div className="field">
       <input
@@ -419,7 +431,9 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.first_name}
               />
-              <label className="field-label" for={`ch_first_name_${counter - 1}`}>
+              <label
+                className="field-label"
+                for={`ch_first_name_${counter - 1}`}>
                 <span className="required">*</span> First Name
               </label>
             </div>
@@ -448,7 +462,9 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.last_name}
               />
-              <label className="field-label" for={`ch_last_name_${counter - 1}`}>
+              <label
+                className="field-label"
+                for={`ch_last_name_${counter - 1}`}>
                 <span className="required">*</span> Last Name
               </label>
             </div>
@@ -477,7 +493,11 @@ export default function index({
                 ref={register()}
                 defaultValue={childProfile.nick_name}
               />
-              <label className="field-label" for={`ch_nick_name_${counter - 1}`}>Nick Name</label>
+              <label
+                className="field-label"
+                for={`ch_nick_name_${counter - 1}`}>
+                Nick Name
+              </label>
             </div>
           </div>
         </div>
@@ -494,7 +514,7 @@ export default function index({
                   decreaseMonth,
                   increaseMonth,
                   prevMonthButtonDisabled,
-                  nextMonthButtonDisabled,
+                  nextMonthButtonDisabled
                 }) => (
                   <div
                     style={{
@@ -504,9 +524,12 @@ export default function index({
                       justifyContent: "center",
                       background: "#f36e22",
                       padding: "5px 3px"
-                    }}
-                  >
-                    <button className="datepicker-btn" onClick={(e) => {e.preventDefault()}}>
+                    }}>
+                    <button
+                      className="datepicker-btn"
+                      onClick={e => {
+                        e.preventDefault();
+                      }}>
                       <FontAwesomeIcon
                         icon={faAngleLeft}
                         onClick={decreaseMonth}
@@ -515,9 +538,8 @@ export default function index({
                     </button>
                     <select
                       value={new Date(date).getFullYear()}
-                      onChange={({ target: { value } }) => changeYear(value)}
-                    >
-                      {years.map((option) => (
+                      onChange={({ target: { value } }) => changeYear(value)}>
+                      {years.map(option => (
                         <option key={option} value={option}>
                           {option}
                         </option>
@@ -528,15 +550,18 @@ export default function index({
                       value={months[date.getMonth()]}
                       onChange={({ target: { value } }) =>
                         changeMonth(months.indexOf(value))
-                      }
-                    >
-                      {months.map((option) => (
+                      }>
+                      {months.map(option => (
                         <option key={option} value={option}>
                           {option}
                         </option>
                       ))}
                     </select>
-                    <button className="datepicker-btn" onClick={(e) => {e.preventDefault()}}>
+                    <button
+                      className="datepicker-btn"
+                      onClick={e => {
+                        e.preventDefault();
+                      }}>
                       <FontAwesomeIcon
                         icon={faAngleRight}
                         onClick={increaseMonth}
@@ -547,7 +572,7 @@ export default function index({
                 )}
                 selected={childProfile.date_of_birth}
                 disabled={isReadonly}
-                onChange={(date) => {
+                onChange={date => {
                   handleChildFormDetailsChange(
                     counter - 1,
                     "profile",
@@ -557,7 +582,7 @@ export default function index({
                 }}
                 name={"ch_birthdate" + (counter - 1)}
                 customInput={
-                  <ExampleCustomInput className="field-input birthdate-field"/>
+                  <ExampleCustomInput className="field-input birthdate-field" />
                 }
               />
             </div>
@@ -583,18 +608,17 @@ export default function index({
                   );
                 }}
                 ref={register({ required: true })}
-                defaultValue={childProfile.gender}
-              >
+                defaultValue={childProfile.gender}>
                 <option value="">Select</option>
                 <optgroup label="Gender">
-                  {GENDER_OPTIONS.map((opt) => (
+                  {GENDER_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.value}>
                       {opt.name}
                     </option>
                   ))}
                 </optgroup>
                 <optgroup label="Custom">
-                  {CUSTOM_GENDER_OPTIONS.map((opt) => (
+                  {CUSTOM_GENDER_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.value}>
                       {opt.name}
                     </option>
@@ -611,12 +635,10 @@ export default function index({
               message="Gender is required"
             />
           </div>
-          <div className="form-group">
-            <div className="field">
-
-              {
-                isReadonly ? (
-                // <input 
+          <div className="form-group print-breakpoint">
+            <div className="field print-breakpoint">
+              {isReadonly ? (
+                // <input
                 //   readOnly={isReadonly}
                 //   name={"ethinicity_" + (counter - 1)}
                 //   className="field-input"
@@ -635,10 +657,8 @@ export default function index({
                     background: "white",
                     borderBottom: "2px solid rgb(204, 204, 204) !important",
                     resize: "none"
-                  }}
-                >
-                </textarea>
-                ) : (
+                  }}></textarea>
+              ) : (
                 <Multiselect
                   readOnly={isReadonly}
                   disabled={isReadonly}
@@ -646,7 +666,7 @@ export default function index({
                   className="field-input"
                   options={ETHINICITY_OPTIONS}
                   hasSelectAll={hasSelectAll}
-                  onSelect={(selectedList) => {
+                  onSelect={selectedList => {
                     handleChildFormDetailsChange(
                       counter - 1,
                       "profile",
@@ -654,7 +674,7 @@ export default function index({
                       selectedList
                     );
                   }}
-                  onRemove={(selectedList) => {
+                  onRemove={selectedList => {
                     handleChildFormDetailsChange(
                       counter - 1,
                       "profile",
@@ -671,8 +691,7 @@ export default function index({
                   autcomplete="false"
                   selectedValues={childProfile.ethinicity}
                 />
-                )
-              }
+              )}
               <label className="field-label">
                 Ethinicity (select all choices that apply)
               </label>
@@ -696,10 +715,9 @@ export default function index({
                   );
                 }}
                 readOnly={isReadonly}
-                defaultValue={childProfile.phone_type}
-              >
+                defaultValue={childProfile.phone_type}>
                 <option value="">Select Type</option>
-                {PHONE_OPTIONS.map((opt) => (
+                {PHONE_OPTIONS.map(opt => (
                   <option key={opt.id} value={opt.value}>
                     {opt.name}
                   </option>
@@ -707,11 +725,11 @@ export default function index({
               </select>
               <label className="field-label">
                 {!showPhone ? (
-                  <span className="add" onClick={(e) => handleOtherPhone()}>
+                  <span className="add" onClick={e => handleOtherPhone()}>
                     <FontAwesomeIcon size="lg" icon={faPlusCircle} />
                   </span>
                 ) : (
-                  <span className="remove" onClick={(e) => handleOtherPhone()}>
+                  <span className="remove" onClick={e => handleOtherPhone()}>
                     <FontAwesomeIcon size="lg" icon={faTimesCircle} />
                   </span>
                 )}
@@ -740,14 +758,14 @@ export default function index({
                   mask="_"
                   getInputRef={register({
                     validate: {
-                      completed: (value) => {
+                      completed: value => {
                         if (value) {
                           return value.match(/\d/g).length === 10;
                         } else {
                           return true;
                         }
-                      },
-                    },
+                      }
+                    }
                   })}
                 />
               ) : (
@@ -761,7 +779,11 @@ export default function index({
                 />
               )}
 
-              <label className="field-label" for={`ch_phone_number_${counter - 1}`}>Phone Number</label>
+              <label
+                className="field-label"
+                for={`ch_phone_number_${counter - 1}`}>
+                Phone Number
+              </label>
             </div>
             <ErrorMessage
               field={errors["ch_phone_number" + (counter - 1)]}
@@ -787,10 +809,9 @@ export default function index({
                     );
                   }}
                   readOnly={isReadonly}
-                  defaultValue={childProfile.phone_type}
-                >
+                  defaultValue={childProfile.phone_type}>
                   <option value="">Select Type</option>
-                  {PHONE_OPTIONS.map((opt) => (
+                  {PHONE_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.value}>
                       {opt.name}
                     </option>
@@ -820,14 +841,14 @@ export default function index({
                     mask="_"
                     getInputRef={register({
                       validate: {
-                        completed: (value) => {
+                        completed: value => {
                           if (value) {
                             return value.match(/\d/g).length === 10;
                           } else {
                             return true;
                           }
-                        },
-                      },
+                        }
+                      }
                     })}
                   />
                 ) : (
@@ -839,7 +860,11 @@ export default function index({
                     defaultValue={childProfile.phone_number}
                   />
                 )}
-                <label className="field-label" for={`ch_phone_number2_${counter - 1}`}>Phone Number</label>
+                <label
+                  className="field-label"
+                  for={`ch_phone_number2_${counter - 1}`}>
+                  Phone Number
+                </label>
               </div>
               <ErrorMessage
                 field={errors["ch_phone_number2" + (counter - 1)]}
@@ -865,10 +890,9 @@ export default function index({
                   );
                 }}
                 readOnly={isReadonly}
-                defaultValue={childProfile.email_type}
-              >
+                defaultValue={childProfile.email_type}>
                 <option value="">Select Type</option>
-                {EMAIL_OPTIONS.map((opt) => (
+                {EMAIL_OPTIONS.map(opt => (
                   <option key={opt.id} value={opt.id}>
                     {opt.name}
                   </option>
@@ -876,11 +900,11 @@ export default function index({
               </select>
               <label className="field-label">
                 {!showEmail ? (
-                  <span className="add" onClick={(e) => handleOtherEmail()}>
+                  <span className="add" onClick={e => handleOtherEmail()}>
                     <FontAwesomeIcon size="lg" icon={faPlusCircle} />
                   </span>
                 ) : (
-                  <span className="remove" onClick={(e) => handleOtherEmail()}>
+                  <span className="remove" onClick={e => handleOtherEmail()}>
                     <FontAwesomeIcon size="lg" icon={faTimesCircle} />
                   </span>
                 )}
@@ -910,11 +934,13 @@ export default function index({
                 ref={register({
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                    message: "Invalid email address",
-                  },
+                    message: "Invalid email address"
+                  }
                 })}
               />
-              <label className="field-label" for={`ch_email_address_${counter - 1}`}>
+              <label
+                className="field-label"
+                for={`ch_email_address_${counter - 1}`}>
                 Email Address (Child only, if applicable)
               </label>
             </div>
@@ -943,10 +969,9 @@ export default function index({
                     );
                   }}
                   readOnly={isReadonly}
-                  defaultValue={childProfile.email_type}
-                >
+                  defaultValue={childProfile.email_type}>
                   <option value="">Select Type</option>
-                  {EMAIL_OPTIONS.map((opt) => (
+                  {EMAIL_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.id}>
                       {opt.name}
                     </option>
@@ -977,11 +1002,13 @@ export default function index({
                   ref={register({
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                      message: "Invalid email address",
-                    },
+                      message: "Invalid email address"
+                    }
                   })}
                 />
-                <label className="field-label" for={`ch_email_address2_${counter - 1}`}>
+                <label
+                  className="field-label"
+                  for={`ch_email_address2_${counter - 1}`}>
                   Email Address (Child only, if applicable)
                 </label>
               </div>
@@ -1072,8 +1099,7 @@ export default function index({
                 }}
                 readOnly={isReadonly}
                 defaultValue={childProfile.state}
-                ref={register({ required: true })}
-              >
+                ref={register({ required: true })}>
                 <option value="">Select</option>
                 {STATES.map((opt, index) => (
                   <option key={index + 1} value={opt.abbreviation}>
@@ -1091,7 +1117,7 @@ export default function index({
               message="State is required"
             />
           </div>
-          <div className="form-group">
+          <div className="form-group print-breakpoint">
             <div className="field">
               <input
                 type="text"
@@ -1150,8 +1176,7 @@ export default function index({
                   );
                 }}
                 ref={register({ required: true, minLength: 5 })}
-                defaultValue={childProfile.location_site}
-              >
+                defaultValue={childProfile.location_site}>
                 <option value="">Select</option>
                 {LOCATION_SITE_OPTIONS.map((opt, index) => (
                   <option key={index + 1} value={opt.value}>
@@ -1171,9 +1196,8 @@ export default function index({
           </div>
           <div className="form-group">
             <div className="field">
-              {
-                isReadonly ? (
-                // <input 
+              {isReadonly ? (
+                // <input
                 //   readOnly={isReadonly}
                 //   name={"program_" + (counter - 1)}
                 //   className="field-input"
@@ -1192,10 +1216,8 @@ export default function index({
                     background: "white",
                     borderBottom: "2px solid rgb(204, 204, 204) !important",
                     resize: "none"
-                  }}
-                >
-              </textarea>
-                ) : (
+                  }}></textarea>
+              ) : (
                 <Multiselect
                   selectedValues={childProfile.program}
                   className="field-input"
@@ -1208,7 +1230,7 @@ export default function index({
                   name={"program_" + (counter - 1)}
                   closeOnSelect={false}
                   showCheckbox={true}
-                  onSelect={(selectedList) => {
+                  onSelect={selectedList => {
                     handleChildFormDetailsChange(
                       counter - 1,
                       "profile",
@@ -1216,7 +1238,7 @@ export default function index({
                       selectedList
                     );
                   }}
-                  onRemove={(selectedList) => {
+                  onRemove={selectedList => {
                     handleChildFormDetailsChange(
                       counter - 1,
                       "profile",
@@ -1225,8 +1247,7 @@ export default function index({
                     );
                   }}
                 />
-                )
-              }
+              )}
               <label className="field-label">
                 Program (select all choices that apply)
               </label>
@@ -1236,26 +1257,23 @@ export default function index({
         <div className="grid">
           <div className="form-group">
             <div className="field customMultiselect">
-              {
-                isReadonly ? (
-                  <textarea
-                    className="field-input readonly"
-                    name={"ch_lives_with" + (counter - 1)}
-                    readOnly={isReadonly}
-                    defaultValue={readOnlyChildLivesWith}
-                  >
-                  </textarea>
-                  // <input 
-                  //   readOnly={isReadonly}
-                  //   name={"ch_lives_with" + (counter - 1)}
-                  //   className="field-input"
-                  //   placeholder="First Name"
-                  //   onChange={({ target }) => {
-                  //   }}
-                  //   ref={register({ required: true })}
-                  //   defaultValue={readOnlyChildLivesWith}
-                  // />
-                ) : (
+              {isReadonly ? (
+                <textarea
+                  className="field-input readonly"
+                  name={"ch_lives_with" + (counter - 1)}
+                  readOnly={isReadonly}
+                  defaultValue={readOnlyChildLivesWith}></textarea>
+              ) : (
+                // <input
+                //   readOnly={isReadonly}
+                //   name={"ch_lives_with" + (counter - 1)}
+                //   className="field-input"
+                //   placeholder="First Name"
+                //   onChange={({ target }) => {
+                //   }}
+                //   ref={register({ required: true })}
+                //   defaultValue={readOnlyChildLivesWith}
+                // />
                 <Multiselect
                   selectedValues={childProfile.child_lives_with}
                   className="field-input"
@@ -1268,7 +1286,7 @@ export default function index({
                   name={"ch_lives_with" + (counter - 1)}
                   closeOnSelect={false}
                   showCheckbox={true}
-                  onSelect={(selectedList) => {
+                  onSelect={selectedList => {
                     handleChildFormDetailsChange(
                       counter - 1,
                       "profile",
@@ -1276,7 +1294,7 @@ export default function index({
                       selectedList
                     );
                   }}
-                  onRemove={(selectedList) => {
+                  onRemove={selectedList => {
                     handleChildFormDetailsChange(
                       counter - 1,
                       "profile",
@@ -1285,8 +1303,7 @@ export default function index({
                     );
                   }}
                 />
-                )
-              }
+              )}
 
               <label className="field-label">
                 <span className="required">*</span> Child lives with
