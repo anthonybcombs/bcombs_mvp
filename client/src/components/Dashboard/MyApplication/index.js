@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef,useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import Collapsible from "react-collapsible";
 import DataTable from 'react-data-table-component';
-import { format } from "date-fns";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
 
+  faPrint
+} from "@fortawesome/free-solid-svg-icons";
+import { format } from "date-fns";
+import { useReactToPrint } from "react-to-print";
 import { 
   requestGetApplicationByUserId, 
   requestSaveApplication 
@@ -19,6 +24,17 @@ import Loading from "../../../helpers/Loading.js";
 const MyApplicationStyled = styled.div`
   padding: 1em;
 
+
+  .print-button {
+    border: 0;
+    position: absolute;
+    right: 90px;
+    cursor: pointer;
+    font-size: 2em;
+    color: #f26e21;
+    background: none;
+    z-index: 1;
+  }
   .Collapsible__trigger {
     cursor: pointer;
   }
@@ -92,6 +108,12 @@ export default function index() {
   const [isFormHistory, setIsFormHistory] = useState(false)
 
   const [emergencyContacts, setEmergencyContacts] = useState([]);
+  
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    copyStyles: true
+  });
 
   const childEmergencyContact = {
     first_name: "",
@@ -779,7 +801,13 @@ export default function index() {
                     <Loading />
                   ) : (
                     !tempHideForm && (
+                      <>
+                            <button className="print-button" onClick={handlePrint}>
+        {" "}
+        <FontAwesomeIcon icon={faPrint} />
+      </button>
                       <form
+                       ref={componentRef}
                         autoComplete="off"
                         onSubmit={handleSubmit(onSubmitSaveApplication)}
                       >
@@ -818,6 +846,7 @@ export default function index() {
                           )
                         }
                       </form>
+                      </>
                     )
                   )
                 }
