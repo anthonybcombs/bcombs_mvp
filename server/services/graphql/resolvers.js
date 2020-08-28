@@ -224,6 +224,10 @@ const resolvers = {
     async getVendorAppGroups(root, { vendor }, context) {
       const response = await getVendorAppGroups(vendor);
       return response;
+    },
+    async getApplicationHistory(root, { app_id }, context) {
+      const response = await getApplicationHistoryById(app_id);
+      return response;
     }
   },
   RootMutation: {

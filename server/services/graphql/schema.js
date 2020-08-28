@@ -706,6 +706,7 @@ const queries = `
         getUserByEmail(email: String): CheckUserEmail
         getVendorAppGroups(vendor: String): AllGroups
         getUserApplicationsByUserId(user_id: String!): [Application]
+        getApplicationHistory(app_id: String!): [ApplicationHistory]
     }
 `;
 

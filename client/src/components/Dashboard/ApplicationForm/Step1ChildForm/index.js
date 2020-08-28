@@ -64,6 +64,8 @@ export default function index({
         ProfileImg={ProfileImg}
         app_programs={app_programs}
         location_sites={location_sites}/>
+        <br/>
+        <br/>
       <GeneralInformationFormStyled 
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         childGeneralInformation={childInformation.general_information}
@@ -74,12 +76,16 @@ export default function index({
         psatCount={psatCount}
         register={register}
         errors={errors} />
+        <br/>
+        <br/>
       <MedicalCareInfoStyled 
         childEmergencyCare={childInformation.emergency_care_information}
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         counter={counter}
         register={register}
         errors={errors} />
+        <br/>
+        <br/>
       <div className="application-btn-container">
         {
           current < maxChild && counter == current &&

@@ -67,7 +67,8 @@ import {
   getArchivedApplication,
   getApplicationById,
   saveApplication,
-  getApplicationByUserId
+  getApplicationByUserId,
+  getApplicationHistory
 } from "../actions/Application";
 
 import {
@@ -172,6 +173,8 @@ function* rootSaga() {
     actionType.REQUEST_DELETE_VENDOR_APP_GROUP,
     deleteVendorAppGroup
   );
+
+  yield takeLatest(actionType.REQUEST_GET_APPLICATION_HISTORY, getApplicationHistory);
 }
 const sagaMiddleware = createSagaMiddleware();
 
