@@ -394,6 +394,9 @@
 } */
 
 @media print {
+  body {
+    margin: 100;
+  }
   #applicationForm .form-group {
     margin-bottom: 0px !important;
   }

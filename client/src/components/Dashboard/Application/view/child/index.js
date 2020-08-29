@@ -137,6 +137,7 @@ export default function index({
           />
           <br />
           <br />
+          <br />
           <GeneralInformationFormStyled
             className="page-break"
             handleChildFormDetailsChange={handleChildFormDetailsChange}

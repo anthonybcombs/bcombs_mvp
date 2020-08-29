@@ -15,9 +15,7 @@ import {
 
 const EmergencyContactFormStyled = styled.div`
   position: relative;
-  @media print {
-    margin-top: 220px !important;
-  }
+
   #contacts {
     width: 100%;
     border-collapse: collapse;

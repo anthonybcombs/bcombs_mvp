@@ -30,13 +30,12 @@ import ProfileImg from "../../../images/defaultprofile.png";
 import { format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
 
-const ApplicationStyled = styled.div`
-  // padding: 1em;
-  width: auto;
-  max-width: 1920px;
-  margin: auto;
-  padding: 0rem 3em 2rem;
+/*
 
+
+  */
+
+const ApplicationFormStyled = styled.form`
   @media all {
     .page-break {
       display: none;
@@ -44,20 +43,10 @@ const ApplicationStyled = styled.div`
   }
 
   @media print {
-    html,
-    body {
-      height: initial !important;
-      overflow: initial !important;
-      -webkit-print-color-adjust: exact;
-      padding: 10px !important;
-    }
-  }
-  @media print {
-    body {
-      transform: scale(0.7);
-      font-size: 2% !important;
-    }
-
+    height: initial !important;
+    overflow: initial !important;
+    -webkit-print-color-adjust: exact;
+    padding: 40px !important;
     .page-break {
       margin-top: 1rem;
       display: block;
@@ -67,7 +56,17 @@ const ApplicationStyled = styled.div`
   }
   @page {
     size: auto;
+    margin: 5mm;
   }
+`;
+
+const ApplicationStyled = styled.div`
+  // padding: 1em;
+  width: auto;
+  max-width: 1920px;
+  margin: auto;
+  padding: 0rem 3em 2rem;
+
   .print-button {
     border: 0;
     position: absolute;
@@ -826,7 +825,7 @@ export default function index() {
       {loading.application ? (
         <Loading />
       ) : (
-        <form
+        <ApplicationFormStyled
           className="print-container"
           ref={componentRef}
           autoComplete="off"
@@ -855,9 +854,11 @@ export default function index() {
             <hr className="style-eight"></hr>
           )}
           <br />
+          <br />
+          <br />
+
           {selectNonMenuOption && view == "application" && (
             <ParentFormViewStyled
-              className="page-break"
               parents={parentsInformation}
               vendor={vendors && vendors.length > 0 ? vendors[0] : null}
               ProfileImg={ProfileImg}
@@ -867,7 +868,7 @@ export default function index() {
               emergencyContacts={emergencyContacts}
             />
           )}
-          <br />
+          <div className="page-break" />
           {selectNonMenuOption && view == "application" && (
             <TermsWaiverFormViewStyled
               className="page-break"
@@ -882,7 +883,7 @@ export default function index() {
               </button>
             </div>
           )}
-        </form>
+        </ApplicationFormStyled>
       )}
     </ApplicationStyled>
   );
