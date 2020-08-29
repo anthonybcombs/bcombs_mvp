@@ -7,7 +7,8 @@ import { faTimesCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 import NumberFormat from 'react-number-format';
 const GeneralInformationFormStyled = styled.div`
-  position: relative;
+  position: relative; 
+  margin-top:12px;
 
   .general-info-wrapper {
     padding-bottom: 30px !important;

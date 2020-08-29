@@ -172,7 +172,7 @@
 }
 .emergency-contact-wrapper > div::-webkit-scrollbar-track {
   border-radius: 10px;
-  transition: .5s ease-in-out;
+  transition: 0.5s ease-in-out;
   background: rgb(243 110 34 / 20%);
 }
 .emergency-contact-wrapper > div::-webkit-scrollbar-thumb {
@@ -393,6 +393,14 @@
   -moz-appearance: menulist !important;
 } */
 
+@media print {
+  #applicationForm .form-group {
+    margin-bottom: 0px !important;
+  }
+  #applicationForm {
+    font-size: 1px !important;
+  }
+}
 #applicationForm .select-field-wrapper {
   position: relative;
 }

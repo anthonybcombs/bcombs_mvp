@@ -26,10 +26,13 @@ const ChildFormHeader = styled.div`
     }
 
     .page-break {
-      margin-top: 1rem;
       display: block;
       page-break-before: auto;
       position: relative;
+    }
+    #applicationForm .field,
+    .form-group .field {
+      margin-bottom: 0px !important;
     }
   }
   h1 {
@@ -132,7 +135,8 @@ export default function index({
             location_sites={location_sites}
             app_programs={app_programs}
           />
-
+          <br />
+          <br />
           <GeneralInformationFormStyled
             className="page-break"
             handleChildFormDetailsChange={handleChildFormDetailsChange}
@@ -143,7 +147,7 @@ export default function index({
             errors={errors}
             isReadonly={isReadonly}
           />
-
+          <br />
           <MedicalCareInfoStyled
             className="page-break"
             childEmergencyCare={childInformation.emergency_care_information}

@@ -55,11 +55,9 @@ const ApplicationStyled = styled.div`
   @media print {
     body {
       transform: scale(0.7);
+      font-size: 2% !important;
     }
 
-    .print-breakpoint {
-      margin-top: 25px !important;
-    }
     .page-break {
       margin-top: 1rem;
       display: block;
@@ -856,7 +854,7 @@ export default function index() {
           {selectNonMenuOption && view == "application" && (
             <hr className="style-eight"></hr>
           )}
-
+          <br />
           {selectNonMenuOption && view == "application" && (
             <ParentFormViewStyled
               className="page-break"
@@ -869,7 +867,7 @@ export default function index() {
               emergencyContacts={emergencyContacts}
             />
           )}
-
+          <br />
           {selectNonMenuOption && view == "application" && (
             <TermsWaiverFormViewStyled
               className="page-break"
