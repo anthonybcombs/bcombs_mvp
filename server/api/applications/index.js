@@ -391,23 +391,93 @@ export const updateEmergencyConctacts = async (app_id, emergencyContacts) => {
   }
 }
 
+export const updateApplicationTC = async ({
+  section1_signature,
+  section1_date_signed,
+  section2_signature,
+  section2_date_signed,
+  section3_signature,
+  section3_date_signed,
+  section1_text,
+  section2_text,
+  section3_text,
+  section1_name,
+  section2_name,
+  section3_name,
+  app_id
+}) => {
+  const db = makeDb();
+  let result = {};
+
+  try {
+    result = await db.query(
+      `UPDATE application SET
+        section1_signature=?,
+        section1_date_signed=?,
+        section2_signature=?,
+        section2_date_signed=?,
+        section3_signature=?,
+        section3_date_signed=?,
+        section1_text=?,
+        section2_text=?,
+        section3_text=?,
+        section1_name=?,
+        section2_name=?,
+        section3_name=?
+        WHERE app_id=UUID_TO_BIN(?)`,
+      [
+        section1_signature,
+        section1_date_signed,
+        section2_signature,
+        section2_date_signed,
+        section3_signature,
+        section3_date_signed,
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name,
+        app_id
+      ]
+    );
+  } catch(err) {
+    console.log("update terms and conditions", error);
+  } finally {
+    await db.close();
+    console.log("update tc result", result);
+    return result;
+  }
+}
+
 export const saveApplication = async ({
   app_id,
   child,
   parents,
-  emergency_contacts
+  emergency_contacts,
+  tc_signatures
 }) => {
   let childResult = await updateChild(child);
   let parentResult;
   let ecResult;
+  let tcResult;
   let p_updatedRows = false;
   let ec_updatedRows = false;
+  let tc_updatedRows = false;
 
   if(emergency_contacts) {
     ecResult = await updateEmergencyConctacts(app_id, emergency_contacts);
 
     if(ecResult && ecResult.changedRows > 0) {
       ec_updatedRows = true;
+    }
+  }
+
+  if(tc_signatures) {
+    tc_updatedRows = await updateApplicationTC(tc_signatures);
+
+    if(tcResult && tcResult.changedRows > 0) {
+      tc_updatedRows = true;
     }
   }
 
@@ -418,7 +488,7 @@ export const saveApplication = async ({
     }
   }
 
-  if((childResult && childResult.changedRows > 0) || p_updatedRows || ec_updatedRows ) {
+  if((childResult && childResult.changedRows > 0) || p_updatedRows || ec_updatedRows || tc_updatedRows ) {
     return true;
   }
   return false;

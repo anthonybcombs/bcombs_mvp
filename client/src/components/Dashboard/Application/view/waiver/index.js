@@ -17,34 +17,21 @@ const TermsWaiverFormViewStyled = styled.div`
 `;
 
 export default function index({
-  application
+  application,
+  handleWaiverFormDetailsChange = {},
+  register,
+  errors,
+  isReadonly,
+  termsWaiver
 }) {
 
-  const pDate = moment(application.section1_date_signed).format("MM/DD/YYYY");
 
-  const termsWaiver = {
-    section1: {
-      checked: !!application.section1_signature,
-      signature: application.section1_signature
-    },
-    section2: {
-      checked: !!application.section2_signature,
-      signature: application.section2_signature
-    },
-    section3: {
-      checked: !!application.section3_signature,
-      signature: application.section3_signature
-    }
-  }
+  const pDate = isReadonly ? 
+                moment(application.section1_date_signed).format("MM/DD/YYYY") :
+                moment().format("MM/DD/YYYY")
 
-  const handleWaiverFormDetailsChange = () => {}
-  const { register, handleSubmit, errors } = useForm({
-    mode: "onSubmit",
-    reValidateMode: "onChange"
-  });
-
-  console.log("waiver applciation", application);
-
+  console.log("waiver applciation", termsWaiver);
+  
   return (
     <TermsWaiverFormViewStyled>
       <div id="applicationForm">
@@ -59,7 +46,7 @@ export default function index({
               errors={errors}
               name={application.section1_name}
               text={application.section1_text}
-              isReadonly={true}
+              isReadonly={isReadonly}
             />
             <br/>
             <br/>
@@ -78,7 +65,7 @@ export default function index({
               errors={errors}
               name={application.section2_name}
               text={application.section2_text}
-              isReadonly={true}
+              isReadonly={isReadonly}
             />
             <br/>
             <br/>
@@ -98,7 +85,7 @@ export default function index({
               errors={errors}
               name={application.section3_name}
               text={application.section3_text}
-              isReadonly={true}
+              isReadonly={isReadonly}
             />
             <br/>
             <br/>

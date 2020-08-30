@@ -95,8 +95,6 @@ export default function index() {
   //   window.location.reload(false);
   // }
 
-  console.log("applications.appliactionHistory",applications.applicationHistory);
-
   const [selectedApplication, setSelectedApplication] = useState({});
 
   const [showApplication, setShowApplication] = useState(false);
@@ -307,7 +305,24 @@ export default function index() {
           } else {
             setEmergencyContacts(emergency_contacts);
           }
+
+          const termsWaiver = {
+            date: new Date().toString(),
+            section1: {
+              checked: !!application.section1_signature,
+              signature: application.section1_signature
+            },
+            section2: {
+              checked: !!application.section2_signature,
+              signature: application.section2_signature
+            },
+            section3: {
+              checked: !!application.section3_signature,
+              signature: application.section3_signature
+            }
+          }
           
+          setTermsWaiver(termsWaiver);
         }}
       >
         View Application
@@ -456,6 +471,24 @@ export default function index() {
           setTempHideForm(true);
           setIsFormHistory(false);
 
+          const termsWaiver = {
+            date: new Date().toString(),
+            section1: {
+              checked: !!application.section1_signature,
+              signature: application.section1_signature
+            },
+            section2: {
+              checked: !!application.section2_signature,
+              signature: application.section2_signature
+            },
+            section3: {
+              checked: !!application.section3_signature,
+              signature: application.section3_signature
+            }
+          }
+          
+          setTermsWaiver(termsWaiver);
+
           setTimeout(() => {
             setTempHideForm(false);
             scrollToApplicationForm()
@@ -520,6 +553,41 @@ export default function index() {
       emergency_contacts[index][id] = value;
       setEmergencyContacts([...emergencyContacts]);
     }
+  }
+
+  const termsWaiverObj = {
+    date: new Date().toString(),
+    section1: {
+      checked: false,
+      signature: ""
+    },
+    section2: {
+      checked: false,
+      signature: ""
+    },
+    section3: {
+      checked: false,
+      signature: "",
+    }
+  }
+
+  const [termsWaiver, setTermsWaiver] = useState({...termsWaiverObj});
+
+  const handleWaiverFormDetailsChange = (section, id, value) => {
+
+    let subTermsWaiver = termsWaiver;
+
+    if(section === "section1") {
+      subTermsWaiver.section1[id] = value;
+    } else if (section === "section2") {
+      subTermsWaiver.section2[id] = value;
+    } else if (section === "section3") {
+      subTermsWaiver.section3[id] = value;
+    } else {
+      console.log("Invalid Section");
+    }
+
+    setTermsWaiver({...subTermsWaiver});
   }
 
   const columns = [
@@ -751,6 +819,18 @@ export default function index() {
       },
       parents: setupParentsList(),
       emergency_contacts: JSON.stringify(emergencyContacts),
+      section1_signature: termsWaiver.section1.signature,
+      section1_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT2),
+      section2_signature: termsWaiver.section2.signature,
+      section2_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT2),
+      section3_signature: termsWaiver.section3.signature,
+      section3_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT2),
+      section1_text: selectedApplication.section1_text,
+      section2_text: selectedApplication.section2_text,
+      section3_text: selectedApplication.section3_text,
+      section1_name: selectedApplication.section1_name,
+      section2_name: selectedApplication.section2_name,
+      section3_name: selectedApplication.section3_name,
       updated_by: auth.name
     }
 
@@ -764,12 +844,35 @@ export default function index() {
 
   const handleChangeToEdit = (e) => {
     e.preventDefault();
-    setIsReadonly(!isReadonly);
+
+    let tempTermsWaiver = termsWaiver
+    if(isReadonly) {
+      tempTermsWaiver.section1.signature = "";
+      tempTermsWaiver.section2.signature = "";
+      tempTermsWaiver.section3.signature = "";
+
+      tempTermsWaiver.section1.checked = false;
+      tempTermsWaiver.section2.checked = false;
+      tempTermsWaiver.section3.checked = false;
+    } else {
+      tempTermsWaiver.section1.signature = selectedApplication.section1_signature;
+      tempTermsWaiver.section2.signature = selectedApplication.section2_signature;
+      tempTermsWaiver.section3.signature = selectedApplication.section3_signature;
+
+      tempTermsWaiver.section1.checked = !!selectedApplication.section1_signature;
+      tempTermsWaiver.section2.checked = !!selectedApplication.section2_signature;
+      tempTermsWaiver.section3.checked = !!selectedApplication.section3_signature;
+    }
+
+    setTermsWaiver(tempTermsWaiver);
+
+    setTimeout(() => {
+      setIsReadonly(!isReadonly);
+    }, 100);
   }
 
   return (
     <MyApplicationStyled>
-
       {
         /* userApplications.length > 0 */
         !loading.userAllApplications && userApplications?
@@ -863,6 +966,11 @@ export default function index() {
                         />
                         <TermsWaiverFormViewStyled
                           application={selectedApplication}
+                          isReadonly={isReadonly}
+                          register={register}
+                          errors={errors}
+                          handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+                          termsWaiver={termsWaiver}
                         />
                         {
                           !isReadonly && (

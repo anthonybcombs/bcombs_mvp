@@ -51,6 +51,8 @@ export default function index({
   text,
   isReadonly = false
 }) {
+
+  console.log("termswaiver viiew", section1);
   return (
     <Section1FormStyled>
       <h3 className="heading">{name}</h3>
@@ -91,7 +93,7 @@ export default function index({
                     handleWaiverFormDetailsChange("section1", "signature", target.value)
                   }}
                   ref={register({required: true})}
-                  defaultValue={section1.signature}
+                  value={section1.signature}
                   readOnly={isReadonly}
                 />
                 <label className="field-label" for="section1_signature"><span className="required">*</span> Electronic Signature</label>
