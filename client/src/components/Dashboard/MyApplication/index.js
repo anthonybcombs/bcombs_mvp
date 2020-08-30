@@ -27,6 +27,31 @@ import TermsWaiverFormViewStyled from "../Application/view/waiver";
 import Loading from "../../../helpers/Loading.js";
 import SuccessUpdateModal from "./SuccessUpdateModal";
 
+const ApplicationFormStyled = styled.form`
+  @media all {
+    .page-break {
+      display: none;
+    }
+  }
+
+  @media print {
+    height: initial !important;
+    overflow: initial !important;
+    -webkit-print-color-adjust: exact;
+    padding: 40px !important;
+    .page-break {
+      margin-top: 1rem;
+      display: block;
+      page-break-before: auto;
+      position: relative;
+    }
+  }
+  @page {
+    size: auto;
+    margin: 5mm;
+  }
+`;
+
 const MyApplicationStyled = styled.div`
   padding: 1em;
 
@@ -943,7 +968,7 @@ export default function index() {
                         {" "}
                         <FontAwesomeIcon icon={faPrint} />
                       </button>
-                      <form
+                      <ApplicationFormStyled
                        ref={componentRef}
                         autoComplete="off"
                         onSubmit={handleSubmit(onSubmitSaveApplication)}
@@ -987,7 +1012,7 @@ export default function index() {
                             </div>
                           )
                         }
-                      </form>
+                      </ApplicationFormStyled>
                       </>
                     )
                   )

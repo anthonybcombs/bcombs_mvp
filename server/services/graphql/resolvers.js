@@ -64,7 +64,8 @@ import {
   getApplicationHistoryById,
   addApplicationHistory,
   getApplicationByAppId,
-  getUserApplicationsByUserId
+  getUserApplicationsByUserId,
+  getApplicationHistoryByUser
 } from "../../api/applications";
 import { addChild, getChildInformation } from "../../api/child";
 import { addParent, getParentByApplication } from "../../api/parents";
@@ -228,6 +229,14 @@ const resolvers = {
     async getApplicationHistory(root, { app_id }, context) {
       const response = await getApplicationHistoryById(app_id);
       return response;
+    },
+    async getUserApplicationHistory(root, { id }, context) {
+      try {
+        const response = await getApplicationHistoryByUser(id);
+        return response;
+      } catch (err) {
+        console.log("getUserApplicationHistory error", err);
+      }
     }
   },
   RootMutation: {

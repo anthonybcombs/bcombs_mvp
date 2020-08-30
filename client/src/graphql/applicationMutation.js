@@ -57,7 +57,20 @@ export const GET_APPLICATION_HISTORY = gql`
     }
   }
 `;
- 
+
+export const GET_USER_APPLICATION_HISTORY = gql`
+  query getUserApplicationHistory($id: String!) {
+    getUserApplicationHistory(id: $id) {
+      id
+      app_history_id
+      app_id
+      details
+      updated_by
+      updated_at
+    }
+  }
+`;
+
 export const GET_APPLICATIONS_QUERY = gql`
   query applications($vendor_id: String!) {
     getVendorApplications(vendor_id: $vendor_id) {
@@ -184,7 +197,7 @@ export const GET_APPLICATIONS_QUERY = gql`
       }
     }
   }
-`
+`;
 
 export const GET_APPLICATION_ID_QUERY = gql`
   query applications($id: String!) {
@@ -312,7 +325,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
       }
     }
   }
-`
+`;
 
 export const GET_APPLICATION_USER_ID_QUERY = gql`
   query getUserApplicationsByUserId($user_id: String!) {
