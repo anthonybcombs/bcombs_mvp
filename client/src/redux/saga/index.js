@@ -68,7 +68,8 @@ import {
   getApplicationById,
   saveApplication,
   getApplicationByUserId,
-  getApplicationHistory
+  getApplicationHistory,
+  getUserApplicationHistory
 } from "../actions/Application";
 
 import {
@@ -174,7 +175,15 @@ function* rootSaga() {
     deleteVendorAppGroup
   );
 
-  yield takeLatest(actionType.REQUEST_GET_APPLICATION_HISTORY, getApplicationHistory);
+  yield takeLatest(
+    actionType.REQUEST_GET_APPLICATION_HISTORY,
+    getApplicationHistory
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_GET_USER_APPLICATION_HISTORY,
+    getUserApplicationHistory
+  );
 }
 const sagaMiddleware = createSagaMiddleware();
 

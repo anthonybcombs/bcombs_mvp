@@ -82,9 +82,9 @@ const HeaderStyled = styled.header`
     .vendor-welcome-message {
       justify-content: center;
       position: relative;
-      margin-top: .5rem;
+      margin-top: 0.5rem;
       left: 0;
-    } 
+    }
   }
 
   @media (min-width: 600px) {
@@ -242,52 +242,52 @@ export default function Layout({ children }) {
               ) {
                 return (
                   <>
-                    {
-                      // Temporary Fix
-                      // Trello card https://trello.com/c/BXEQaXbB/252-for-users-only-can-we-only-show-the-application-page-and-menu-hide-dashboard-calendar-events-and-contacts-pages-and-menu-items
-                      currentUserType === 'VENDOR' && (
-                        <>
-                          <Link
-                            className={`${
-                              context.location.pathname === "/dashboard"
-                                ? "selected"
-                                : ""
-                            }`}
-                            to="/dashboard"
-                            state={{ calendarName: "" }}>
-                            <span> Dashboard</span>
-                          </Link>
-                          <Link
-                            className={`${
-                              context.location.pathname === "/dashboard/mycalendars"
-                                ? "selected"
-                                : ""
-                            }`}
-                            to="/dashboard/mycalendars">
-                            <span>Calendars</span>
-                          </Link>
-                          <Link
-                            className={`${
-                              context.location.pathname === "/dashboard/myevents"
-                                ? "selected"
-                                : ""
-                            }`}
-                            to="/dashboard/myevents">
-                            <span>Events</span>
-                          </Link>
+                    {// Temporary Fix
+                    // Trello card https://trello.com/c/BXEQaXbB/252-for-users-only-can-we-only-show-the-application-page-and-menu-hide-dashboard-calendar-events-and-contacts-pages-and-menu-items
+                    currentUserType === "VENDOR" && (
+                      <>
+                        <Link
+                          className={`${
+                            context.location.pathname === "/dashboard"
+                              ? "selected"
+                              : ""
+                          }`}
+                          to="/dashboard"
+                          state={{ calendarName: "" }}>
+                          <span> Dashboard</span>
+                        </Link>
+                        <Link
+                          className={`${
+                            context.location.pathname ===
+                            "/dashboard/mycalendars"
+                              ? "selected"
+                              : ""
+                          }`}
+                          to="/dashboard/mycalendars">
+                          <span>Calendars</span>
+                        </Link>
+                        <Link
+                          className={`${
+                            context.location.pathname === "/dashboard/myevents"
+                              ? "selected"
+                              : ""
+                          }`}
+                          to="/dashboard/myevents">
+                          <span>Events</span>
+                        </Link>
 
-                          <Link
-                            className={`${
-                              context.location.pathname === "/dashboard/mycontacts"
-                                ? "selected"
-                                : ""
-                            }`}
-                            to="/dashboard/mycontacts">
-                            <span>Contacts</span>
-                          </Link>
-                        </>
-                      )
-                    }
+                        <Link
+                          className={`${
+                            context.location.pathname ===
+                            "/dashboard/mycontacts"
+                              ? "selected"
+                              : ""
+                          }`}
+                          to="/dashboard/mycontacts">
+                          <span>Contacts</span>
+                        </Link>
+                      </>
+                    )}
                     {currentUserType === "USER" && (
                       <Link
                         className={`${
@@ -370,6 +370,14 @@ export default function Layout({ children }) {
                                   <span>Application</span>
                                 </Link>
                               )} */}
+
+                              <Link
+                                to="/dashboard/audittrail"
+                                onClick={() => {
+                                  setIsPopOverVisible(false);
+                                }}>
+                                <span>Audit Trail</span>
+                              </Link>
                               <a
                                 onClick={() => {
                                   dispatch(requestLogout());

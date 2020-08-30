@@ -9,63 +9,63 @@ import SocialLoginLanding from "./helpers/SocialLogin.js";
 
 const AsycDashboard = Loadable({
   loader: () => import("./components/Dashboard/"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncDashBoardHome = Loadable({
   loader: () => import("./components/Dashboard/Home"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncDashboardMyCalendars = Loadable({
   loader: () => import("./components/Dashboard/MyCalendars"),
-  loading: Loading,
+  loading: Loading
 });
 const AyncDashboardMyContactsPublic = Loadable({
   loader: () => import("./components/Dashboard/MyCalendars/publicCalendar"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncDashboardMyEvents = Loadable({
   loader: () => import("./components/Dashboard/MyEvents"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncDashboardMyProfle = Loadable({
   loader: () => import("./components/Dashboard/MyProfile"),
-  loading: Loading,
+  loading: Loading
 });
 const AyncDashboardMyContacts = Loadable({
   loader: () => import("./components/Dashboard/MyContact"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncAuth = Loadable({
   loader: () => import("./components/Auth"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncLogin = Loadable({
   loader: () => import("./components/Auth/Login"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncCreateUser = Loadable({
   loader: () => import("./components/Auth/Create"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncForgotPassword = Loadable({
   loader: () => import("./components/Auth/ForgotPassword"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncProfile = Loadable({
   loader: () => import("./components/UserInfo/Profile"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncApplicationStatus = Loadable({
   loader: () => import("./components/Dashboard/Application"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncArchivedApplication = Loadable({
   loader: () => import("./components/Dashboard/ArchivedApplication"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncApplicationForm = Loadable({
   loader: () => import("./components/Dashboard/ApplicationForm"),
-  loading: Loading,
+  loading: Loading
 });
 const AsyncChildInformationView = Loadable({
   loader: () => import("./components/Dashboard/Application/child"),
@@ -81,6 +81,11 @@ const AsyncClassListInformationView = Loadable({
 });
 const AsyncMyApplication = Loadable({
   loader: () => import("./components/Dashboard/MyApplication"),
+  loading: Loading
+});
+
+const AsyncAuditTrail = Loadable({
+  loader: () => import("./components/Dashboard/AuditTrail"),
   loading: Loading
 });
 export default function App() {
@@ -107,11 +112,12 @@ export default function App() {
               <AyncDashboardMyContacts path="mycontacts" />
               <AsyncProfile path="createprofile" />
               <AsyncApplicationStatus path="application" />
-              <AsyncChildInformationView path="menteeprofile/:id"/>
-              <AsyncParentInformationView path="parentprofile/:id"/>
+              <AsyncChildInformationView path="menteeprofile/:id" />
+              <AsyncParentInformationView path="parentprofile/:id" />
               <AsyncArchivedApplication path="archived" />
-              <AsyncClassListInformationView path="class/:vendor_id/:name"/>
+              <AsyncClassListInformationView path="class/:vendor_id/:name" />
               <AsyncMyApplication path="myapplication" />
+              <AsyncAuditTrail path="audittrail" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />

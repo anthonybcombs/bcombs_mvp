@@ -719,6 +719,7 @@ const queries = `
         getVendorAppGroups(vendor: String): AllGroups
         getUserApplicationsByUserId(user_id: String!): [Application]
         getApplicationHistory(app_id: String!): [ApplicationHistory]
+        getUserApplicationHistory(id: String!):[ApplicationHistory]
     }
 `;
 
