@@ -709,7 +709,9 @@ export default function index({
                     resize: "none",
                     margin: "0",
                     textIndent: "0",
-                    whiteSpace: "pre-wrap"
+                    whiteSpace: "pre-wrap",
+                    position: "absolute",
+                    top: "27px"
                   }}>
                     {readOnlyEthinicity}
                   </p>
@@ -1301,35 +1303,54 @@ export default function index({
         <div className="grid">
           <div className="form-group">
             <div className="field select-field-wrapper">
-              <select
-                readOnly={isReadonly}
-                disabled={isReadonly}
-                name={"ch_location_site" + (counter - 1)}
-                className={
-                  isReadonly &&
-                  !isVendorView &&
-                  pastChildInformation && 
-                  (pastChildInformation.location_site || pastChildInformation.location_site == "") &&
-                  pastChildInformation.location_site != childProfile.location_site ?
-                  "field-input highlights" : "field-input"
-                }
-                onChange={({ target }) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "location_site",
-                    target.value
-                  );
-                }}
-                ref={register({ required: true, minLength: 5 })}
-                defaultValue={childProfile.location_site}>
-                <option value="">Select</option>
-                {LOCATION_SITE_OPTIONS.map((opt, index) => (
-                  <option key={index + 1} value={opt.value}>
-                    {opt.name}
-                  </option>
-                ))}
-              </select>
+              {
+                isReadonly ? (
+                  <p
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation && 
+                      (pastChildInformation.location_site || pastChildInformation.location_site == "") &&
+                      pastChildInformation.location_site != childProfile.location_site ?
+                      "field-input highlights" : "field-input"
+                    }
+                    name={"ch_location_site" + (counter - 1)}
+                    style={{
+                      background: "white",
+                      borderBottom: "2px solid rgb(204, 204, 204) !important",
+                      resize: "none",
+                      whiteSpace: "pre-wrap",
+                      textIndent: "0",
+                      margin: "0"
+                    }}>
+                      {childProfile.location_site}
+                  </p>
+                ) : (
+                  <select
+                    readOnly={isReadonly}
+                    disabled={isReadonly}
+                    name={"ch_location_site" + (counter - 1)}
+                    className="field-input"
+                    onChange={({ target }) => {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "location_site",
+                        target.value
+                      );
+                    }}
+                    ref={register({ required: true, minLength: 5 })}
+                    defaultValue={childProfile.location_site}>
+                    <option value="">Select</option>
+                    {LOCATION_SITE_OPTIONS.map((opt, index) => (
+                      <option key={index + 1} value={opt.value}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                )
+              }
+
               <label className="field-label">
                 <span className="required">*</span> Location Site
               </label>
