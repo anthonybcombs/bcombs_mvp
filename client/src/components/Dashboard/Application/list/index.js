@@ -351,7 +351,7 @@ export default function index({
   applications,
   handleSelectedApplication,
   listApplicationLoading = false,
-  vendor,
+  vendor = {},
   appGroups = []
 }) {
 
@@ -756,6 +756,8 @@ export default function index({
             handleExit={handleExit}
             vendor={vendor}
             appGroups={appGroups}
+            app_programs={vendor && vendor.app_programs && vendor.app_programs.length > 0 ? vendor.app_programs : []}
+            location_sites={vendor && vendor.location_sites && vendor.location_sites.length > 0 ? vendor.location_sites : []}
           />
         )
       }

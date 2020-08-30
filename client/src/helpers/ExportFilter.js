@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { CSVLink, CSVDownload } from "react-csv";
 import { format } from "date-fns";
 
+import { Multiselect } from "multiselect-react-dropdown";
+
 const ExportFilterModal = styled.div`
 
   .modal {
@@ -76,13 +78,24 @@ const ExportFilterModal = styled.div`
   select {
     margin-bottom: 25px;
   }
+
+  #multiselectContainerReact div:first-child {
+    border: 1px solid #cccccc !important;
+    border-radius: 4px !important;
+    padding: 5px !important;
+    min-height: 22px !important;
+    position: relative !important;
+    margin-top: 25px !important;
+  }
 `;
 
 const ExportFilter = ({
   applications = [],
   handleExit,
-  vendor,
-  appGroups = []
+  vendor = {},
+  appGroups = [],
+  app_programs = [],
+  location_sites = []
 }) => {
 
   const CLASS_OPTIONS = ["Seniors", "Juniors", "Sophomores", "Freshmen", "Middle School"];
@@ -101,8 +114,6 @@ const ExportFilter = ({
 
   const getVendorFilename = () => {
 
-    console.log("VENDOR EXPORT", vendor);
-
     if(vendor && vendor.name) {
       return vendor.name + " Application List.csv";
     }
@@ -114,6 +125,12 @@ const ExportFilter = ({
   const [classText, setClassText] = useState("");
   const [colorText, setColorText] = useState("");
   const [appGroupText, setAppGroupText] = useState("");
+  const [locationSites, setLocationSites] = useState([]);
+  const [appPrograms, setAppPrograms] = useState([]);
+
+  console.log("applications", applications);
+
+  console.log("appPrograms filter", appPrograms);
 
   const filterApplications = applications.filter((item) => {
 
@@ -121,17 +138,11 @@ const ExportFilter = ({
     let color_match = true;
     let status_match = true;
     let group_match = true;
-
-    console.log("CLass text", classText);
-
-    console.log("appGroup", appGroups);
+    let program_match = true;
+    let location_match = true;
 
     if(classText) {
-      if(item.class_teacher) {
-        class_match = item.class_teacher == classText;
-      } else {
-        class_match = item.child.grade_desc == classText;
-      }
+      class_match = item.child.grade_desc == classText;
     }
 
     if(colorText) {
@@ -154,7 +165,25 @@ const ExportFilter = ({
       }
     }
 
-    return class_match && color_match && status_match && group_match;
+    if(appPrograms.length > 0) {
+      program_match = false;
+      for(const program of appPrograms) {
+        if(item.child.programs.includes(program.name)) {
+          program_match = true; break;
+        }
+      }
+    }
+
+    if(locationSites.length > 0) {
+      location_match = false;
+      for(const locationSite of locationSites) {
+        if(item.child.location_site.includes(locationSite.name)) {
+          location_match = true; break;
+        }
+      }
+    }
+
+    return class_match && color_match && status_match && group_match && program_match && location_match;
   });
 
 
@@ -224,6 +253,8 @@ const ExportFilter = ({
       "Parent Phone": getPrimaryParentPhone(application.parents),
       "Parent Email": getPrimaryParentEmail(application.parents),
       "Grade": application?.child?.grade_desc,
+      "Programs": application?.child?.programs,
+      "Location Sites": application?.child?.location_site,
       "Age": getAgeBdate(application.child),
       "Application Date": format(new Date(application.application_date), DATE_FORMAT)
     }
@@ -231,8 +262,21 @@ const ExportFilter = ({
     exportApplications.push(tempApplication);
   }
 
-  console.log("filterApplications", filterApplications);
-  console.log("exportApplications", exportApplications);
+  const PROGRAMS_OPTIONS =
+    app_programs.length > 0
+      ? app_programs
+      : [
+          { id: 1, name: "Saturday Academy", label: "Satuday Academy" },
+          { id: 2, name: "In school", label: "In school" }
+        ];
+
+  const LOCATION_SITE_OPTIONS =
+    location_sites.length > 0
+      ? location_sites
+      : [
+          { name: "Raleigh", value: "Raleigh" },
+          { name: "Durham", value: "Durham" }
+        ];
 
   return (
     <ExportFilterModal>
@@ -300,9 +344,50 @@ const ExportFilter = ({
                   ))
                 }
               </select>
+              <Multiselect 
+                autcomplete="false"
+                className="field-input"
+                hasSelectAll={false}
+                options={PROGRAMS_OPTIONS}
+                displayValue="name"
+                closeIcon="cancel"
+                closeOnSelect={true}
+                showCheckbox={true}
+                placeholder="Choose Programs"
+                onSelect={selectedList => {
+                  console.log("selectedList add", selectedList);
+                  setAppPrograms([...selectedList]);
+                }}
+                onRemove={selectedList => {
+                  console.log("selectedList Remove", selectedList);
+                  setAppPrograms([...selectedList]);
+                }}
+              />
+              <Multiselect 
+                autcomplete="false"
+                className="field-input"
+                hasSelectAll={false}
+                options={LOCATION_SITE_OPTIONS}
+                displayValue="name"
+                closeIcon="cancel"
+                closeOnSelect={false}
+                showCheckbox={true}
+                placeholder="Choose Location Sites"
+                onSelect={selectedList => {
+                  console.log("selectedList location add", selectedList);
+                  setLocationSites([...selectedList]);
+                }}
+                onRemove={selectedList => {
+                  console.log("selectedList location Remove", selectedList);
+                  setLocationSites([...selectedList]);
+                }}
+              />
             </div>
             <CSVLink 
               id="filterExportButton" 
+              style={{
+                marginTop: "25px"
+              }}
               data={exportApplications}
               filename={getVendorFilename()}>
               <span>Export</span>
