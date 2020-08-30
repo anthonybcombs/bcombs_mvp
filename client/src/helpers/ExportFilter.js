@@ -186,7 +186,21 @@ const ExportFilter = ({
     if(parents.length > 0) {
       return parents[0]?.firstname + " " + parents[0]?.lastname;
     }
+    return ""
+  }
+  
 
+  const getPrimaryParentEmail = (parents) => {
+    if(parents.length > 0) {
+      return parents[0]?.email_address;
+    }
+    return ""
+  }
+
+  const getPrimaryParentPhone = (parents) => {
+    if(parents.length > 0) {
+      return parents[0]?.phone_number;
+    }
     return ""
   }
 
@@ -207,6 +221,8 @@ const ExportFilter = ({
       "Status": getApplicationStatus(application.student_status),
       "Student Name": application.child?.firstname + " " + application.child?.lastname,
       "Parent Name": getPrimaryParentName(application.parents),
+      "Parent Phone": getPrimaryParentPhone(application.parents),
+      "Parent Email": getPrimaryParentEmail(application.parents),
       "Grade": application?.child?.grade_desc,
       "Age": getAgeBdate(application.child),
       "Application Date": format(new Date(application.application_date), DATE_FORMAT)

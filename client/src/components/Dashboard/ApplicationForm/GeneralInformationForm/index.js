@@ -90,7 +90,8 @@ export default function index({
   register,
   errors,
   isReadonly = false,
-  pastChildInformation = {}
+  pastChildInformation = {},
+  isVendorView
 }) {
 
   const createYearTakenSelect = () => {
@@ -370,6 +371,7 @@ export default function index({
                 name={"ch_grade" + (counter-1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.grade_number || pastChildInformation.grade_number == "") &&
                   pastChildInformation.grade_number != childGeneralInformation.grade ?
@@ -622,6 +624,7 @@ export default function index({
                 name={"ch_schoolname" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.school_name || pastChildInformation.school_name == "") &&
                   pastChildInformation.school_name != childGeneralInformation.school_name ?
@@ -653,6 +656,7 @@ export default function index({
                   name="ch_school_phone"
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastChildInformation &&
                     (pastChildInformation.school_phone || pastChildInformation.school_phone == "") &&
                     pastChildInformation.school_phone != childGeneralInformation.school_phone ?
@@ -734,6 +738,7 @@ export default function index({
             name="reasons_suspended"
             className={
               isReadonly &&
+              !isVendorView &&
               pastChildInformation &&
               (pastChildInformation.reason_suspended || pastChildInformation.reason_suspended == "") &&
               pastChildInformation.reason_suspended != childGeneralInformation.reason_suspended ?
@@ -758,6 +763,7 @@ export default function index({
                 name={"mentee_start_year" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.year_taken || pastChildInformation.year_taken == "") &&
                   pastChildInformation.year_taken != childGeneralInformation.mentee_start_year ?
@@ -781,6 +787,7 @@ export default function index({
                 name="ch_hobbies"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.hobbies || pastChildInformation.hobbies == "") &&
                   pastChildInformation.hobbies != childGeneralInformation.hobbies ?
@@ -803,6 +810,7 @@ export default function index({
                 name="ch_life_events"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.life_events || pastChildInformation.life_events == "") &&
                   pastChildInformation.life_events != childGeneralInformation.life_events ?
@@ -851,6 +859,7 @@ export default function index({
                 name="ch_colleges"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.colleges || pastChildInformation.colleges == "") &&
                   pastChildInformation.colleges != childGeneralInformation.colleges ?
@@ -876,6 +885,7 @@ export default function index({
                 name="ch_team_affiliations"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.affiliations || pastChildInformation.affiliations == "") &&
                   pastChildInformation.affiliations != childGeneralInformation.team_affiliations ?
@@ -902,6 +912,7 @@ export default function index({
                 name="ch_awards"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.awards || pastChildInformation.awards == "") &&
                   pastChildInformation.awards != childGeneralInformation.awards ?
@@ -925,6 +936,7 @@ export default function index({
                 name="ch_accomplishments"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.accomplishments || pastChildInformation.accomplishments == "") &&
                   pastChildInformation.accomplishments != childGeneralInformation.accomplishments ?
@@ -954,6 +966,7 @@ export default function index({
                 className="form-control"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.mentee_gain_program || pastChildInformation.mentee_gain_program == "") &&
                   pastChildInformation.mentee_gain_program != childGeneralInformation.mentee_gain ?

@@ -24,7 +24,8 @@ export default function index({
   ProfileImg,
   handleParentFormDetailsChange,
   isReadonly,
-  emergencyContacts = []
+  emergencyContacts = [],
+  isVendorView = false
 }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
@@ -141,6 +142,7 @@ export default function index({
               isUpdate={true}
               ProfileImg={ProfileImg}
               pastParentInformation={pastParentInformation[i - 1]}
+              isVendorView={isVendorView}
             />
           </div>
         );
@@ -159,6 +161,7 @@ export default function index({
               isUpdate={true}
               ProfileImg={ProfileImg}
               pastParentInformation={pastParentInformation[i - 1]}
+              isVendorView={isVendorView}
             />
           </div>
         );
@@ -166,6 +169,8 @@ export default function index({
     }
     return items;
   };
+
+  console.log("parentProfile", parents);
   return (
     <ParentFormViewStyled className="page-break">
       <div id="applicationForm">
@@ -181,6 +186,7 @@ export default function index({
           register={register}
           errors={errors}
           pastEmergencyContacts={pastEmergencyContacts}
+          isVendorView={isVendorView}
         />
       </div>
     </ParentFormViewStyled>

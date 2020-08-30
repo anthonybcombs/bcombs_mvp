@@ -45,7 +45,8 @@ export default function index({
   register,
   errors,
   isReadonly = false,
-  pastChildInformation = {}
+  pastChildInformation = {},
+  isVendorView
 }) {
 
   const data = {};
@@ -62,6 +63,7 @@ export default function index({
                 name="ch_doctorname"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.doctor_name || pastChildInformation.doctor_name == "") &&
                   pastChildInformation.doctor_name != childEmergencyCare.doctor_name ?
@@ -111,6 +113,7 @@ export default function index({
                   name="doctophone"
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastChildInformation &&
                     (pastChildInformation.doctor_phone || pastChildInformation.doctor_phone == "") &&
                     pastChildInformation.doctor_phone != childEmergencyCare.doctor_phone ?
@@ -141,6 +144,7 @@ export default function index({
                 name="hospitalname"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.hospital_preference || pastChildInformation.hospital_preference == "") &&
                   pastChildInformation.hospital_preference != childEmergencyCare.hospital_preference ?
@@ -191,6 +195,7 @@ export default function index({
                   name="hospitalPhone"
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastChildInformation &&
                     (pastChildInformation.hospital_phone || pastChildInformation.hospital_phone == "") &&
                     pastChildInformation.hospital_phone != childEmergencyCare.hospital_phone ?

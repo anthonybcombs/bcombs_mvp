@@ -139,10 +139,11 @@ export default function index({
   isReadonly = false,
   isUpdate = false,
   ProfileImg,
-  pastParentInformation = {}
+  pastParentInformation = {},
+  isVendorView
 }) {
   let confirmed_passwords = [];
-  
+
   const PHONE_OPTIONS = [
     { id: 1, value: "Cell", name: "Cell" },
     { id: 2, value: "Home", name: "Home" },
@@ -243,6 +244,7 @@ export default function index({
                 name={"parent_firstname" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastParentInformation && 
                   (pastParentInformation.firstname || pastParentInformation.firstname == "") &&
                   pastParentInformation.firstname != parentProfile.first_name ?
@@ -282,6 +284,7 @@ export default function index({
                 className={
                   isReadonly &&
                   pastParentInformation && 
+                  !isVendorView &&
                   (pastParentInformation.lastname || pastParentInformation.lastname == "") &&
                   pastParentInformation.lastname != parentProfile.last_name ?
                   "field-input highlights" : "field-input"
@@ -342,6 +345,7 @@ export default function index({
                   className={
                     isReadonly &&
                     pastParentInformation && 
+                    !isVendorView &&
                     (pastParentInformation.phone_type || pastParentInformation.phone_type == "") &&
                     pastParentInformation.phone_type != parentProfile.phone_type ?
                     "field-input highlights" : "field-input"
@@ -408,6 +412,7 @@ export default function index({
                   className={
                     isReadonly &&
                     pastParentInformation && 
+                    !isVendorView &&
                     (pastParentInformation.phone_number || pastParentInformation.phone_number == "") &&
                     pastParentInformation.phone_number != parentProfile.phone_number ?
                     "field-input highlights" : "field-input"
@@ -464,6 +469,7 @@ export default function index({
                     className={
                       isReadonly &&
                       pastParentInformation && 
+                      !isVendorView &&
                       (pastParentInformation.phone_type2 || pastParentInformation.phone_type2 == "") &&
                       pastParentInformation.phone_type2 != parentProfile.phone_type2 ?
                       "field-input highlights" : "field-input"
@@ -517,6 +523,7 @@ export default function index({
                     className={
                       isReadonly &&
                       pastParentInformation && 
+                      !isVendorView &&
                       (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
                       pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
                       "field-input highlights" : "field-input"
@@ -569,6 +576,7 @@ export default function index({
                   className={
                     isReadonly &&
                     pastParentInformation && 
+                    !isVendorView &&
                     (pastParentInformation.email_type || pastParentInformation.email_type == "") &&
                     pastParentInformation.email_type != parentProfile.email_type ?
                     "field-input highlights" : "field-input"
@@ -604,6 +612,7 @@ export default function index({
                 className={
                   isReadonly &&
                   pastParentInformation && 
+                  !isVendorView &&
                   (pastParentInformation.email_address || pastParentInformation.email_address == "") &&
                   pastParentInformation.email_address != parentProfile.email_address ?
                   "field-input highlights" : "field-input"
@@ -675,6 +684,7 @@ export default function index({
                     className={
                       isReadonly &&
                       pastParentInformation && 
+                      !isVendorView &&
                       (pastParentInformation.email_type2 || pastParentInformation.email_type2 == "") &&
                       pastParentInformation.email_type2 != parentProfile.email_type2 ?
                       "field-input highlights" : "field-input"
@@ -698,6 +708,7 @@ export default function index({
                   className={
                     isReadonly &&
                     pastParentInformation && 
+                    !isVendorView &&
                     (pastParentInformation.email_address2 || pastParentInformation.email_address2 == "") &&
                     pastParentInformation.email_address2 != parentProfile.email_address2 ?
                     "field-input highlights" : "field-input"
@@ -888,6 +899,7 @@ export default function index({
                 className={
                   isReadonly &&
                   pastParentInformation && 
+                  !isVendorView &&
                   (pastParentInformation.address || pastParentInformation.address == "") &&
                   pastParentInformation.address != parentProfile.address ?
                   "field-input highlights" : "field-input"
@@ -920,6 +932,7 @@ export default function index({
                 className={
                   isReadonly &&
                   pastParentInformation && 
+                  !isVendorView &&
                   (pastParentInformation.city || pastParentInformation.city == "") &&
                   pastParentInformation.city != parentProfile.city ?
                   "field-input highlights" : "field-input"
@@ -978,6 +991,7 @@ export default function index({
                   className={
                     isReadonly &&
                     pastParentInformation && 
+                    !isVendorView &&
                     (pastParentInformation.state || pastParentInformation.state == "") &&
                     pastParentInformation.state != parentProfile.state ?
                     "field-input highlights" : "field-input"
@@ -998,6 +1012,7 @@ export default function index({
                 name="parentzipcode"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastParentInformation && 
                   (pastParentInformation.zip_code || pastParentInformation.zip_code == "") &&
                   pastParentInformation.zip_code != parentProfile.zip_code ?
@@ -1065,6 +1080,7 @@ export default function index({
                 name="parentemployer"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastParentInformation && 
                   (pastParentInformation.employers_name || pastParentInformation.employers_name == "") &&
                   pastParentInformation.employers_name != parentProfile.employer_name ?
@@ -1103,6 +1119,7 @@ export default function index({
                 name={`parent_goals${counter - 1}`}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastParentInformation && 
                   (pastParentInformation.parent_goals || pastParentInformation.parent_goals == "") &&
                   pastParentInformation.parent_goals != parentProfile.goals_parent_program ?
@@ -1141,6 +1158,7 @@ export default function index({
                 name={`parent_child_goals${counter - 1}`}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastParentInformation && 
                   (pastParentInformation.parent_child_goals || pastParentInformation.parent_child_goals == "") &&
                   pastParentInformation.parent_child_goals != parentProfile.goals_child_program ?
@@ -1239,6 +1257,7 @@ export default function index({
                   name="parent_educationlevel"
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastParentInformation && 
                     (pastParentInformation.level_of_education || pastParentInformation.level_of_education == "") &&
                     pastParentInformation.level_of_education != parentProfile.level_education ?
@@ -1264,6 +1283,7 @@ export default function index({
                   name="parent_educationlevel"
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastParentInformation && 
                     (pastParentInformation.level_of_education || pastParentInformation.level_of_education == "") &&
                     pastParentInformation.level_of_education != parentProfile.level_education ?
@@ -1292,6 +1312,7 @@ export default function index({
                   name="child_importance_hs"
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastParentInformation && 
                     (pastParentInformation.child_hs_grad || pastParentInformation.child_hs_grad == "") &&
                     pastParentInformation.child_hs_grad != parentProfile.child_importance_hs ?
@@ -1318,6 +1339,7 @@ export default function index({
                   name="child_importance_hs"
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastParentInformation && 
                     (pastParentInformation.child_hs_grad || pastParentInformation.child_hs_grad == "") &&
                     pastParentInformation.child_hs_grad != parentProfile.child_importance_hs ?
@@ -1364,6 +1386,7 @@ export default function index({
                   type="text"
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastParentInformation && 
                     (pastParentInformation.child_col_grad || pastParentInformation.child_col_grad == "") &&
                     pastParentInformation.child_col_grad != parentProfile.child_importance_col ?
@@ -1392,6 +1415,7 @@ export default function index({
                 name={"parent_person_recommend" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastParentInformation && 
                   (pastParentInformation.person_recommend || pastParentInformation.person_recommend == "") &&
                   pastParentInformation.person_recommend != parentProfile.person_recommend ?
