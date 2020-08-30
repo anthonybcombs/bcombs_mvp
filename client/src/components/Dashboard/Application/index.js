@@ -38,7 +38,7 @@ import { useReactToPrint } from "react-to-print";
 const ApplicationFormStyled = styled.form`
   @media all {
     .page-break {
-      display: none;
+      // display: none;
     }
   }
 
@@ -891,8 +891,8 @@ export default function index() {
             <hr className="style-eight"></hr>
           )}
           <br />
-          <br />
-          <br />
+          {/* <br />
+          <br /> */}
 
           {selectNonMenuOption && view == "application" && (
             <ParentFormViewStyled
@@ -903,9 +903,13 @@ export default function index() {
               isReadonly={isReadonly}
               isUpdate={true}
               emergencyContacts={emergencyContacts}
+              isVendorView={true}
             />
           )}
-          <div className="page-break" />
+          {/* <div className="page-break" /> */}
+          {selectNonMenuOption && view == "application" && (
+            <hr className="style-eight"></hr>
+          )}
           {selectNonMenuOption && view == "application" && (
             <TermsWaiverFormViewStyled
               className="page-break"
@@ -914,6 +918,7 @@ export default function index() {
               register={register}
               errors={errors}
               termsWaiver={termsWaiver}
+              isVendorView={true}
             />
           )}
 

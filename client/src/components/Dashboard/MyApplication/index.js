@@ -30,7 +30,7 @@ import SuccessUpdateModal from "./SuccessUpdateModal";
 const ApplicationFormStyled = styled.form`
   @media all {
     .page-break {
-      display: none;
+      // display: none;
     }
   }
 
@@ -997,6 +997,7 @@ export default function index() {
                           emergencyContacts={emergencyContacts}
                           errors={errors}
                         />
+                        <hr className="style-eight"></hr>
                         <TermsWaiverFormViewStyled
                           application={selectedApplication}
                           isReadonly={isReadonly}

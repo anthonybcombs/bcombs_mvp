@@ -97,7 +97,8 @@ export default function index({
   isReadonly = false,
   register,
   errors,
-  pastEmergencyContacts = []
+  pastEmergencyContacts = [],
+  isVendorView
 }) {
   const GENDER_OPTIONS = [
     { id: 1, value: "Male", name: "Male" },
@@ -130,6 +131,7 @@ export default function index({
               name={"ec_firstname_" + i}
               className={
                 isReadonly &&
+                !isVendorView &&
                 pastEmergencyContacts &&
                 pastEmergencyContacts.length > 0 &&
                 (pastEmergencyContacts[i].first_name || pastEmergencyContacts[i].first_name == "") &&
@@ -162,6 +164,7 @@ export default function index({
               name={"ec_lastname_" + i}
               className={
                 isReadonly &&
+                !isVendorView &&
                 pastEmergencyContacts &&
                 pastEmergencyContacts.length > 0 &&
                 (pastEmergencyContacts[i].last_name || pastEmergencyContacts[i].last_name == "") &&
@@ -230,6 +233,7 @@ export default function index({
                 name={"ec_gender_" + i}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastEmergencyContacts &&
                   pastEmergencyContacts.length > 0 &&
                   (pastEmergencyContacts[i].gender || pastEmergencyContacts[i].gender == "") &&
@@ -281,6 +285,7 @@ export default function index({
                 name={"mobile_phone_" + i}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastEmergencyContacts &&
                   pastEmergencyContacts.length > 0 &&
                   (pastEmergencyContacts[i].mobile_phone || pastEmergencyContacts[i].mobile_phone == "") &&
@@ -344,6 +349,7 @@ export default function index({
                 name={"mobile_phone_" + i}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastEmergencyContacts &&
                   pastEmergencyContacts.length > 0 &&
                   (pastEmergencyContacts[i].work_phone || pastEmergencyContacts[i].work_phone == "") &&
@@ -428,6 +434,7 @@ export default function index({
                 name={"relationship_to_child_" + i}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastEmergencyContacts &&
                   pastEmergencyContacts.length > 0 &&
                   (pastEmergencyContacts[i].relationship_to_child || pastEmergencyContacts[i].relationship_to_child == "") &&

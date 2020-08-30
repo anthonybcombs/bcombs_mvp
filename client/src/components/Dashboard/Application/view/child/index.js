@@ -156,9 +156,8 @@ export default function index({
             location_sites={location_sites}
             app_programs={app_programs}
             pastChildInformation={pastChildInformation}
+            isVendorView={isVendorView}
           />
-          <br />
-          <br />
           <br />
           <GeneralInformationFormStyled
             className="page-break"
@@ -170,6 +169,7 @@ export default function index({
             errors={errors}
             isReadonly={isReadonly}
             pastChildInformation={pastChildInformation}
+            isVendorView={isVendorView}
           />
           <br />
           <MedicalCareInfoStyled
@@ -181,6 +181,7 @@ export default function index({
             errors={errors}
             isReadonly={isReadonly}
             pastChildInformation={pastChildInformation}
+            isVendorView={isVendorView}
           />
         </div>
       </ChildFormViewStyled>

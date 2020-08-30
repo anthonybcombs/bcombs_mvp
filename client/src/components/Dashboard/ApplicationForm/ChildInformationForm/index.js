@@ -193,7 +193,8 @@ export default function index({
   ProfileImg,
   app_programs = [],
   location_sites = [],
-  pastChildInformation = {}
+  pastChildInformation = {},
+  isVendorView = false
 }) {
   const hasSelectAll = false;
 
@@ -427,6 +428,7 @@ export default function index({
                 name={"ch_first_name" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation && 
                   (pastChildInformation.firstname || pastChildInformation.firstname == "") &&
                   pastChildInformation.firstname != childProfile.first_name ?
@@ -464,6 +466,7 @@ export default function index({
                 name={"ch_last_name" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.lastname || pastChildInformation.lastname == "") &&
                   pastChildInformation.lastname != childProfile.last_name ?
@@ -500,6 +503,7 @@ export default function index({
                 name={`ch_nick_name_${counter - 1}`}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.nickname || pastChildInformation.nickname == "") &&
                   pastChildInformation.nickname != childProfile.nick_name ?
@@ -610,6 +614,7 @@ export default function index({
                   <BirthdateCustomInput
                     className={
                       isReadonly &&
+                      !isVendorView &&
                       pastChildInformation && 
                       (pastChildInformation.birthdate || pastChildInformation.birthdate == "") &&
                       childProfile.date_of_birth.toString() != new Date(pastChildInformation.birthdate).toString()  ?
@@ -633,6 +638,7 @@ export default function index({
                 name={"ch_gender" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation && 
                   (pastChildInformation.gender || pastChildInformation.gender == "") &&
                   pastChildInformation.gender != childProfile.gender ?
@@ -690,6 +696,7 @@ export default function index({
                 <p
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastChildInformation && 
                     (pastChildInformation.ethnicities || pastChildInformation.ethnicities == "") &&
                     pastChildInformation.ethnicities != readOnlyEthinicity.split("\n").join(",") ?
@@ -755,6 +762,7 @@ export default function index({
                 name="ch_phone_type"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation && 
                   (pastChildInformation.phone_type || pastChildInformation.phone_type == "") &&
                   pastChildInformation.phone_type != childProfile.phone_type ?
@@ -799,6 +807,7 @@ export default function index({
                   name={"ch_phone_number" + (counter - 1)}
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastChildInformation && 
                     (pastChildInformation.phone_number || pastChildInformation.phone_number == "") &&
                     pastChildInformation.phone_number != childProfile.phone_number ?
@@ -861,6 +870,7 @@ export default function index({
                   name="ch_phone_type2"
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastChildInformation && 
                     (pastChildInformation.phone_type2 || pastChildInformation.phone_type2 == "") &&
                     pastChildInformation.phone_type2 != childProfile.phone_type2 ?
@@ -894,6 +904,7 @@ export default function index({
                     name={"ch_phone_number2" + (counter - 1)}
                     className={
                       isReadonly &&
+                      !isVendorView &&
                       pastChildInformation && 
                       (pastChildInformation.phone_number2 || pastChildInformation.phone_number2 == "") &&
                       pastChildInformation.phone_number2 != childProfile.phone_number2 ?
@@ -954,6 +965,7 @@ export default function index({
                 name="ch_email_type"
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation && 
                   (pastChildInformation.email_type || pastChildInformation.email_type == "") &&
                   pastChildInformation.email_type != childProfile.email_type ?
@@ -999,6 +1011,7 @@ export default function index({
                 name={"ch_email_address" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation && 
                   (pastChildInformation.email_address || pastChildInformation.email_address == "") &&
                   pastChildInformation.email_address != childProfile.email_address ?
@@ -1045,6 +1058,7 @@ export default function index({
                   name="ch_email_type2"
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastChildInformation && 
                     (pastChildInformation.email_type2 || pastChildInformation.email_type2 == "") &&
                     pastChildInformation.email_type2 != childProfile.email_type2 ?
@@ -1079,6 +1093,7 @@ export default function index({
                   name={"ch_email_address2" + (counter - 1)}
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastChildInformation && 
                     (pastChildInformation.email_address2 || pastChildInformation.email_address2 == "") &&
                     pastChildInformation.email_address2 != childProfile.email_address2 ?
@@ -1125,6 +1140,7 @@ export default function index({
                 name={"ch_address" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation && 
                   (pastChildInformation.address || pastChildInformation.address == "") &&
                   pastChildInformation.address != childProfile.address ?
@@ -1160,6 +1176,7 @@ export default function index({
                 name={"ch_city" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation && 
                   (pastChildInformation.city || pastChildInformation.city == "") &&
                   pastChildInformation.city != childProfile.city ?
@@ -1198,6 +1215,7 @@ export default function index({
                 name={"ch_state" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation && 
                   (pastChildInformation.state || pastChildInformation.state == "") &&
                   pastChildInformation.state != childProfile.state ?
@@ -1240,6 +1258,7 @@ export default function index({
                 name={"ch_zip_code" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation && 
                   (pastChildInformation.zip_code || pastChildInformation.zip_code == "") &&
                   pastChildInformation.zip_code != childProfile.zip_code ?
@@ -1288,6 +1307,7 @@ export default function index({
                 name={"ch_location_site" + (counter - 1)}
                 className={
                   isReadonly &&
+                  !isVendorView &&
                   pastChildInformation && 
                   (pastChildInformation.location_site || pastChildInformation.location_site == "") &&
                   pastChildInformation.location_site != childProfile.location_site ?
@@ -1336,6 +1356,7 @@ export default function index({
                 <p
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastChildInformation && 
                     (pastChildInformation.programs || pastChildInformation.programs == "") &&
                     pastChildInformation.programs != readOnlyProgram.split("\n").join(",") ?
@@ -1396,6 +1417,7 @@ export default function index({
                 <p
                   className={
                     isReadonly &&
+                    !isVendorView &&
                     pastChildInformation && 
                     (pastChildInformation.child_lives_with || pastChildInformation.child_lives_with == "") &&
                     pastChildInformation.child_lives_with != readOnlyChildLivesWith.split("\n").join(",") ?
