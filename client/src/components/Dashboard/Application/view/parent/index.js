@@ -30,8 +30,7 @@ export default function index({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
-
-  console.log("emergencyContacts", emergencyContacts);
+  
   let tempEC = [
     {
       first_name: "-",

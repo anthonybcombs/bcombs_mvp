@@ -454,6 +454,25 @@ export default function index() {
     setParentsInformation(items);
 
     setUpdateApplication({ ...temp });
+
+    const termsWaiver = {
+      date: new Date().toString(),
+      section1: {
+        checked: !!application.section1_signature,
+        signature: application.section1_signature
+      },
+      section2: {
+        checked: !!application.section2_signature,
+        signature: application.section2_signature
+      },
+      section3: {
+        checked: !!application.section3_signature,
+        signature: application.section3_signature
+      }
+    }
+    
+    setTermsWaiver(termsWaiver);
+
   };
 
   const childEmergencyContact = {
@@ -642,6 +661,24 @@ export default function index() {
   const [childInformation, setChildInformation] = useState({});
 
   const [parentsInformation, setParentsInformation] = useState([]);
+
+  const termsWaiverObj = {
+    date: new Date().toString(),
+    section1: {
+      checked: false,
+      signature: ""
+    },
+    section2: {
+      checked: false,
+      signature: ""
+    },
+    section3: {
+      checked: false,
+      signature: "",
+    }
+  }
+
+  const [termsWaiver, setTermsWaiver] = useState({...termsWaiverObj});
 
   const handleChildFormDetailsChange = (index, section, id, value) => {
     let child = childInformation;
@@ -873,6 +910,10 @@ export default function index() {
             <TermsWaiverFormViewStyled
               className="page-break"
               application={selectedApplication}
+              isReadonly={true}
+              register={register}
+              errors={errors}
+              termsWaiver={termsWaiver}
             />
           )}
 

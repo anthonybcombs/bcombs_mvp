@@ -485,9 +485,27 @@ const resolvers = {
         application.app_id
       );
 
+      const tc_signatures = {
+        section1_signature: application.section1_signature,
+        section1_date_signed: application.section1_date_signed,
+        section2_signature: application.section2_signature,
+        section2_date_signed: application.section2_date_signed,
+        section3_signature: application.section3_signature,
+        section3_date_signed: application.section3_date_signed,
+        section1_text: application.section1_text,
+        section2_text: application.section2_text,
+        section3_text: application.section3_text,
+        section1_name: application.section1_name,
+        section2_name: application.section2_name,
+        section3_name: application.section3_name,
+        app_id: application.app_id
+      }
+
+      console.log("tc_signatures", tc_signatures);
       const isSaved = await saveApplication({
         app_id: application.app_id,
         emergency_contacts: application.emergency_contacts,
+        tc_signatures: tc_signatures,
         child: application.child,
         parents: application.parents
       });
