@@ -141,6 +141,10 @@ const ChildInfomationFormStyled = styled.div`
     color: rgb(0 0 0 / 35%);
   }
 
+  .highlights {
+    border-color: #f26e21 !important;
+  }
+
   @media (max-width: 768px) {
     .child-info-wrapper .grid {
       grid-gap: 0;
@@ -188,7 +192,8 @@ export default function index({
   isReadonly = false,
   ProfileImg,
   app_programs = [],
-  location_sites = []
+  location_sites = [],
+  pastChildInformation = {}
 }) {
   const hasSelectAll = false;
 
@@ -288,20 +293,22 @@ export default function index({
     isReadonly
   ) {
     childProfile.child_lives_with.forEach(item => {
-      readOnlyChildLivesWith += item.name + ", ";
+      readOnlyChildLivesWith += item.name + "\n";
     });
 
-    readOnlyChildLivesWith = readOnlyChildLivesWith.slice(0, -2);
+    readOnlyChildLivesWith = readOnlyChildLivesWith.slice(0, -1);
+
+    console.log("childProfile.child_lives_with", readOnlyChildLivesWith);
   }
 
   let readOnlyProgram = "";
 
   if (childProfile.program && childProfile.program.length > 0 && isReadonly) {
     childProfile.program.forEach(item => {
-      readOnlyProgram += item.name + ", ";
+      readOnlyProgram += item.name + "\n";
     });
 
-    readOnlyProgram = readOnlyProgram.slice(0, -2);
+    readOnlyProgram = readOnlyProgram.slice(0, -1);
   }
 
   let readOnlyEthinicity = "";
@@ -312,10 +319,10 @@ export default function index({
     isReadonly
   ) {
     childProfile.ethinicity.forEach(item => {
-      readOnlyEthinicity += item.name + ", ";
+      readOnlyEthinicity += item.name + "\n";
     });
 
-    readOnlyEthinicity = readOnlyEthinicity.slice(0, -2);
+    readOnlyEthinicity = readOnlyEthinicity.slice(0, -1);
   }
 
   const range = (start, end) => {
@@ -371,7 +378,7 @@ export default function index({
     setShowEmail(!showEmail);
   };
 
-  const ExampleCustomInput = ({
+  const BirthdateCustomInput = ({
     value,
     onClick,
     name,
@@ -389,7 +396,7 @@ export default function index({
         id={`date_of_birth_${counter - 1}`}
         ref={register({ required: true })}
       />
-      <label className="field-label" for={`date_of_birth_${counter - 1}`}>
+      <label className="field-label">
         <span className="required">*</span> Date of Birth
       </label>
     </div>
@@ -418,7 +425,13 @@ export default function index({
                 readOnly={isReadonly}
                 id={`ch_first_name_${counter - 1}`}
                 name={"ch_first_name" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation && 
+                  (pastChildInformation.firstname || pastChildInformation.firstname == "") &&
+                  pastChildInformation.firstname != childProfile.first_name ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="First Name"
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -433,7 +446,7 @@ export default function index({
               />
               <label
                 className="field-label"
-                for={`ch_first_name_${counter - 1}`}>
+              >
                 <span className="required">*</span> First Name
               </label>
             </div>
@@ -449,7 +462,13 @@ export default function index({
                 readOnly={isReadonly}
                 id={`ch_last_name_${counter - 1}`}
                 name={"ch_last_name" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.lastname || pastChildInformation.lastname == "") &&
+                  pastChildInformation.lastname != childProfile.last_name ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="Last Name"
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -464,7 +483,7 @@ export default function index({
               />
               <label
                 className="field-label"
-                for={`ch_last_name_${counter - 1}`}>
+              >
                 <span className="required">*</span> Last Name
               </label>
             </div>
@@ -478,8 +497,14 @@ export default function index({
             <div className="field">
               <input
                 id={`ch_nick_name_${counter - 1}`}
-                name="ch_nick_name"
-                className="field-input"
+                name={`ch_nick_name_${counter - 1}`}
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.nickname || pastChildInformation.nickname == "") &&
+                  pastChildInformation.nickname != childProfile.nick_name ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="Nick Name"
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -495,7 +520,7 @@ export default function index({
               />
               <label
                 className="field-label"
-                for={`ch_nick_name_${counter - 1}`}>
+              >
                 Nick Name
               </label>
             </div>
@@ -582,7 +607,15 @@ export default function index({
                 }}
                 name={"ch_birthdate" + (counter - 1)}
                 customInput={
-                  <ExampleCustomInput className="field-input birthdate-field" />
+                  <BirthdateCustomInput
+                    className={
+                      isReadonly &&
+                      pastChildInformation && 
+                      (pastChildInformation.birthdate || pastChildInformation.birthdate == "") &&
+                      childProfile.date_of_birth.toString() != new Date(pastChildInformation.birthdate).toString()  ?
+                      "field-input birthdate-field highlights" : "field-input birthdate-field"
+                    }
+                  />
                 }
               />
             </div>
@@ -598,7 +631,13 @@ export default function index({
                 disabled={isReadonly}
                 readOnly={isReadonly}
                 name={"ch_gender" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation && 
+                  (pastChildInformation.gender || pastChildInformation.gender == "") &&
+                  pastChildInformation.gender != childProfile.gender ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
                     counter - 1,
@@ -648,16 +687,25 @@ export default function index({
                 //   ref={register({ required: true })}
                 //   defaultValue={readOnlyEthinicity}
                 // />
-                <textarea
-                  className="field-input readonly"
+                <p
+                  className={
+                    isReadonly &&
+                    pastChildInformation && 
+                    (pastChildInformation.ethnicities || pastChildInformation.ethnicities == "") &&
+                    pastChildInformation.ethnicities != readOnlyEthinicity.split("\n").join(",") ?
+                    "field-input readonly highlights" : "field-input readonly"
+                  }
                   name={"ethinicity_" + (counter - 1)}
-                  readOnly={isReadonly}
-                  defaultValue={readOnlyEthinicity}
                   style={{
                     background: "white",
                     borderBottom: "2px solid rgb(204, 204, 204) !important",
-                    resize: "none"
-                  }}></textarea>
+                    resize: "none",
+                    margin: "0",
+                    textIndent: "0",
+                    whiteSpace: "pre-wrap"
+                  }}>
+                    {readOnlyEthinicity}
+                  </p>
               ) : (
                 <Multiselect
                   readOnly={isReadonly}
@@ -705,7 +753,13 @@ export default function index({
               <select
                 disabled={isReadonly}
                 name="ch_phone_type"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation && 
+                  (pastChildInformation.phone_type || pastChildInformation.phone_type == "") &&
+                  pastChildInformation.phone_type != childProfile.phone_type ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
                     counter - 1,
@@ -743,7 +797,13 @@ export default function index({
                 <NumberFormat
                   id={`ch_phone_number_${counter - 1}`}
                   name={"ch_phone_number" + (counter - 1)}
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastChildInformation && 
+                    (pastChildInformation.phone_number || pastChildInformation.phone_number == "") &&
+                    pastChildInformation.phone_number != childProfile.phone_number ?
+                    "field-input highlights" : "field-input"
+                  }
                   placeholder="Phone"
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(
@@ -781,7 +841,7 @@ export default function index({
 
               <label
                 className="field-label"
-                for={`ch_phone_number_${counter - 1}`}>
+              >
                 Phone Number
               </label>
             </div>
@@ -799,7 +859,13 @@ export default function index({
                 <select
                   disabled={isReadonly}
                   name="ch_phone_type2"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastChildInformation && 
+                    (pastChildInformation.phone_type2 || pastChildInformation.phone_type2 == "") &&
+                    pastChildInformation.phone_type2 != childProfile.phone_type2 ?
+                    "field-input highlights" : "field-input"
+                  }
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(
                       counter - 1,
@@ -809,7 +875,7 @@ export default function index({
                     );
                   }}
                   readOnly={isReadonly}
-                  defaultValue={childProfile.phone_type}>
+                  defaultValue={childProfile.phone_type2}>
                   <option value="">Select Type</option>
                   {PHONE_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.value}>
@@ -826,7 +892,13 @@ export default function index({
                   <NumberFormat
                     id={`ch_phone_number2_${counter - 1}`}
                     name={"ch_phone_number2" + (counter - 1)}
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      pastChildInformation && 
+                      (pastChildInformation.phone_number2 || pastChildInformation.phone_number2 == "") &&
+                      pastChildInformation.phone_number2 != childProfile.phone_number2 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Phone"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(
@@ -836,7 +908,7 @@ export default function index({
                         target.value
                       );
                     }}
-                    defaultValue={childProfile.phone_number}
+                    defaultValue={childProfile.phone_number2}
                     format="(###) ###-####"
                     mask="_"
                     getInputRef={register({
@@ -862,7 +934,7 @@ export default function index({
                 )}
                 <label
                   className="field-label"
-                  for={`ch_phone_number2_${counter - 1}`}>
+                >
                   Phone Number
                 </label>
               </div>
@@ -880,7 +952,13 @@ export default function index({
               <select
                 disabled={isReadonly}
                 name="ch_email_type"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation && 
+                  (pastChildInformation.email_type || pastChildInformation.email_type == "") &&
+                  pastChildInformation.email_type != childProfile.email_type ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
                     counter - 1,
@@ -919,7 +997,13 @@ export default function index({
                 type="text"
                 id={`ch_email_address_${counter - 1}`}
                 name={"ch_email_address" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation && 
+                  (pastChildInformation.email_address || pastChildInformation.email_address == "") &&
+                  pastChildInformation.email_address != childProfile.email_address ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="Email Address"
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -940,7 +1024,7 @@ export default function index({
               />
               <label
                 className="field-label"
-                for={`ch_email_address_${counter - 1}`}>
+              >
                 Email Address (Child only, if applicable)
               </label>
             </div>
@@ -959,7 +1043,13 @@ export default function index({
                 <select
                   disabled={isReadonly}
                   name="ch_email_type2"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastChildInformation && 
+                    (pastChildInformation.email_type2 || pastChildInformation.email_type2 == "") &&
+                    pastChildInformation.email_type2 != childProfile.email_type2 ?
+                    "field-input highlights" : "field-input"
+                  }
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(
                       counter - 1,
@@ -969,7 +1059,7 @@ export default function index({
                     );
                   }}
                   readOnly={isReadonly}
-                  defaultValue={childProfile.email_type}>
+                  defaultValue={childProfile.email_type2}>
                   <option value="">Select Type</option>
                   {EMAIL_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.id}>
@@ -987,7 +1077,13 @@ export default function index({
                   type="text"
                   id={`ch_email_address2_${counter - 1}`}
                   name={"ch_email_address2" + (counter - 1)}
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastChildInformation && 
+                    (pastChildInformation.email_address2 || pastChildInformation.email_address2 == "") &&
+                    pastChildInformation.email_address2 != childProfile.email_address2 ?
+                    "field-input highlights" : "field-input"
+                  }
                   placeholder="Email Address"
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(
@@ -1008,7 +1104,7 @@ export default function index({
                 />
                 <label
                   className="field-label"
-                  for={`ch_email_address2_${counter - 1}`}>
+                >
                   Email Address (Child only, if applicable)
                 </label>
               </div>
@@ -1027,7 +1123,13 @@ export default function index({
               <input
                 id={`ch_address_${counter - 1}`}
                 name={"ch_address" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation && 
+                  (pastChildInformation.address || pastChildInformation.address == "") &&
+                  pastChildInformation.address != childProfile.address ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="Address"
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -1041,7 +1143,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.address}
               />
-              <label className="field-label" for={`ch_address_${counter - 1}`}>
+              <label className="field-label">
                 <span className="required">*</span> Address
               </label>
             </div>
@@ -1056,7 +1158,13 @@ export default function index({
               <input
                 id={`ch_city_${counter - 1}`}
                 name={"ch_city" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation && 
+                  (pastChildInformation.city || pastChildInformation.city == "") &&
+                  pastChildInformation.city != childProfile.city ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="City"
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -1070,7 +1178,7 @@ export default function index({
                 defaultValue={childProfile.city}
                 ref={register({ required: true })}
               />
-              <label className="field-label" for={`ch_city_${counter - 1}`}>
+              <label className="field-label">
                 <span className="required">*</span> City
               </label>
             </div>
@@ -1088,7 +1196,13 @@ export default function index({
               <select
                 disabled={isReadonly}
                 name={"ch_state" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation && 
+                  (pastChildInformation.state || pastChildInformation.state == "") &&
+                  pastChildInformation.state != childProfile.state ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
                     counter - 1,
@@ -1124,7 +1238,13 @@ export default function index({
                 readOnly={isReadonly}
                 id={`ch_zip_code_${counter - 1}`}
                 name={"ch_zip_code" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation && 
+                  (pastChildInformation.zip_code || pastChildInformation.zip_code == "") &&
+                  pastChildInformation.zip_code != childProfile.zip_code ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   if (target.value.match(/^-{0,1}\d+$/)) {
                     handleChildFormDetailsChange(
@@ -1142,7 +1262,7 @@ export default function index({
                 ref={register({ required: true, minLength: 5 })}
                 maxLength="5"
               />
-              <label className="field-label" for={`ch_zip_code_${counter - 1}`}>
+              <label className="field-label">
                 <span className="required">*</span> Zip Code
               </label>
             </div>
@@ -1166,7 +1286,13 @@ export default function index({
                 readOnly={isReadonly}
                 disabled={isReadonly}
                 name={"ch_location_site" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation && 
+                  (pastChildInformation.location_site || pastChildInformation.location_site == "") &&
+                  pastChildInformation.location_site != childProfile.location_site ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
                     counter - 1,
@@ -1207,16 +1333,25 @@ export default function index({
                 //   defaultValue={readOnlyProgram}
                 // />
 
-                <textarea
-                  className="field-input readonly"
+                <p
+                  className={
+                    isReadonly &&
+                    pastChildInformation && 
+                    (pastChildInformation.programs || pastChildInformation.programs == "") &&
+                    pastChildInformation.programs != readOnlyProgram.split("\n").join(",") ?
+                    "field-input readonly highlights" : "field-input readonly"
+                  }
                   name={"program_" + (counter - 1)}
-                  readOnly={isReadonly}
-                  defaultValue={readOnlyProgram}
                   style={{
                     background: "white",
                     borderBottom: "2px solid rgb(204, 204, 204) !important",
-                    resize: "none"
-                  }}></textarea>
+                    resize: "none",
+                    whiteSpace: "pre-wrap",
+                    textIndent: "0",
+                    margin: "0"
+                  }}>
+                    {readOnlyProgram}
+                  </p>
               ) : (
                 <Multiselect
                   selectedValues={childProfile.program}
@@ -1258,22 +1393,27 @@ export default function index({
           <div className="form-group">
             <div className="field customMultiselect">
               {isReadonly ? (
-                <textarea
-                  className="field-input readonly"
+                <p
+                  className={
+                    isReadonly &&
+                    pastChildInformation && 
+                    (pastChildInformation.child_lives_with || pastChildInformation.child_lives_with == "") &&
+                    pastChildInformation.child_lives_with != readOnlyChildLivesWith.split("\n").join(",") ?
+                    "field-input readonly highlights" : "field-input readonly"
+                  }
+                  style={{
+                    background: "white",
+                    borderBottom: "2px solid rgb(204, 204, 204) !important",
+                    resize: "none",
+                    whiteSpace: "pre-wrap",
+                    textIndent: "0",
+                    margin: "0"
+                  }}
                   name={"ch_lives_with" + (counter - 1)}
-                  readOnly={isReadonly}
-                  defaultValue={readOnlyChildLivesWith}></textarea>
+                >
+                    {readOnlyChildLivesWith}
+                </p>
               ) : (
-                // <input
-                //   readOnly={isReadonly}
-                //   name={"ch_lives_with" + (counter - 1)}
-                //   className="field-input"
-                //   placeholder="First Name"
-                //   onChange={({ target }) => {
-                //   }}
-                //   ref={register({ required: true })}
-                //   defaultValue={readOnlyChildLivesWith}
-                // />
                 <Multiselect
                   selectedValues={childProfile.child_lives_with}
                   className="field-input"

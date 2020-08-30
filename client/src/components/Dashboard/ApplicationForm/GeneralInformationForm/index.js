@@ -89,7 +89,8 @@ export default function index({
   handleScoresChange,
   register,
   errors,
-  isReadonly = false
+  isReadonly = false,
+  pastChildInformation = {}
 }) {
 
   const createYearTakenSelect = () => {
@@ -367,7 +368,13 @@ export default function index({
             <div className="field select-field-wrapper">
             <select
                 name={"ch_grade" + (counter-1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.grade_number || pastChildInformation.grade_number == "") &&
+                  pastChildInformation.grade_number != childGeneralInformation.grade ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "grade", target.value);
                 }}
@@ -613,7 +620,13 @@ export default function index({
               <input
                 id={`ch_schoolname_${counter - 1}`}
                 name={"ch_schoolname" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.school_name || pastChildInformation.school_name == "") &&
+                  pastChildInformation.school_name != childGeneralInformation.school_name ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "school_name", target.value);
                 }}
@@ -638,7 +651,13 @@ export default function index({
                 isReadonly ?
                 <input
                   name="ch_school_phone"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastChildInformation &&
+                    (pastChildInformation.school_phone || pastChildInformation.school_phone == "") &&
+                    pastChildInformation.school_phone != childGeneralInformation.school_phone ?
+                    "field-input highlights" : "field-input"
+                  }
                   placeholder="Phone"
                   readOnly={isReadonly}
                   id={`ch_school_phone_${counter - 1}`}
@@ -687,9 +706,10 @@ export default function index({
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
               }} 
-              value="true"
-              checked={childGeneralInformation.was_suspended + "" === "true"}
+              value={"1"}
+              checked={childGeneralInformation.was_suspended+"" == "1"}
               readOnly={isReadonly}
+              disabled={isReadonly}
             />
             <span className="checkmark"></span>
           </label>
@@ -699,9 +719,10 @@ export default function index({
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
               }} 
-              value="false"
-              checked={childGeneralInformation.was_suspended + "" === "false"}
+              value={"0"}
+              checked={childGeneralInformation.was_suspended+"" == "0"}
               readOnly={isReadonly}
+              disabled={isReadonly}
             />
             <span className="checkmark"></span>
           </label>
@@ -711,13 +732,20 @@ export default function index({
         <div className="form-group">
           <textarea 
             name="reasons_suspended"
-            className="form-control ta-justice"
+            className={
+              isReadonly &&
+              pastChildInformation &&
+              (pastChildInformation.reason_suspended || pastChildInformation.reason_suspended == "") &&
+              pastChildInformation.reason_suspended != childGeneralInformation.reason_suspended ?
+              "form-control ta-justice highlights-textarea" : "form-control ta-justice"
+            }
             rows="4"
             placeholder="Explain"
             onChange={({ target }) => {
               handleChildFormDetailsChange(counter - 1, "general_information", "reason_suspended", target.value);
             }}
-            defaultValue={childGeneralInformation.reason_suspended}
+            //defaultValue={childGeneralInformation.reason_suspended}
+            value={childGeneralInformation.reason_suspended}
             readOnly={isReadonly}
           >
           </textarea>
@@ -728,7 +756,13 @@ export default function index({
             <div className="field select-field-wrapper">
               <select
                 name={"mentee_start_year" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.year_taken || pastChildInformation.year_taken == "") &&
+                  pastChildInformation.year_taken != childGeneralInformation.mentee_start_year ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "mentee_start_year", target.value);
                 }}
@@ -745,7 +779,13 @@ export default function index({
             <div className="field">
               <input
                 name="ch_hobbies"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.hobbies || pastChildInformation.hobbies == "") &&
+                  pastChildInformation.hobbies != childGeneralInformation.hobbies ?
+                  "field-input highlights" : "field-input"
+                }
                 id={`ch_hobbies_${counter - 1}`}
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
                 onChange={({ target }) => {
@@ -761,7 +801,13 @@ export default function index({
             <div className="field">
               <input
                 name="ch_life_events"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.life_events || pastChildInformation.life_events == "") &&
+                  pastChildInformation.life_events != childGeneralInformation.life_events ?
+                  "field-input highlights" : "field-input"
+                }
                 id={`ch_life_events_${counter - 1}`}
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
                 onChange={({ target }) => {
@@ -780,7 +826,13 @@ export default function index({
             <div className="field">
               <input 
                 name="ch_career_goals"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.career_goals || pastChildInformation.career_goals == "") &&
+                  pastChildInformation.career_goals != childGeneralInformation.career_goals ?
+                  "field-input highlights" : "field-input"
+                }
                 id={`ch_career_goals_${counter - 1}`}
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
                 onChange={({ target }) => {
@@ -797,7 +849,13 @@ export default function index({
             <div className="field">
               <input 
                 name="ch_colleges"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.colleges || pastChildInformation.colleges == "") &&
+                  pastChildInformation.colleges != childGeneralInformation.colleges ?
+                  "field-input highlights" : "field-input"
+                }
                 id={`ch_colleges_${counter - 1}`}
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
                 onChange={({ target }) => {
@@ -816,7 +874,13 @@ export default function index({
             <div className="field">
               <input
                 name="ch_team_affiliations"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.affiliations || pastChildInformation.affiliations == "") &&
+                  pastChildInformation.affiliations != childGeneralInformation.team_affiliations ?
+                  "field-input highlights" : "field-input"
+                }
                 id={`ch_team_affiliations_${counter - 1}`}
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
                 onChange={({ target }) => {
@@ -836,7 +900,13 @@ export default function index({
             <div className="field">
               <input
                 name="ch_awards"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.awards || pastChildInformation.awards == "") &&
+                  pastChildInformation.awards != childGeneralInformation.awards ?
+                  "field-input highlights" : "field-input"
+                }
                 id={`ch_awards_${counter - 1}`}
                 placeholder='Please use "," as seperator (Eg: Example1, Example2)'
                 onChange={({ target }) => {
@@ -853,7 +923,13 @@ export default function index({
             <div className="field">
               <input
                 name="ch_accomplishments"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.accomplishments || pastChildInformation.accomplishments == "") &&
+                  pastChildInformation.accomplishments != childGeneralInformation.accomplishments ?
+                  "field-input highlights" : "field-input"
+                }
                 id={`ch_accomplishments_${counter - 1}`}
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "accomplishments", target.value);
@@ -876,6 +952,13 @@ export default function index({
               <textarea 
                 name={"mentee_gain" + (counter - 1)}
                 className="form-control"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.mentee_gain_program || pastChildInformation.mentee_gain_program == "") &&
+                  pastChildInformation.mentee_gain_program != childGeneralInformation.mentee_gain ?
+                  "form-control highlights-textarea" : "form-control"
+                }
                 rows="4"
                 placeholder="Explain"
                 ref={register({ required: true })}

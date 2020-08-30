@@ -102,6 +102,7 @@ export const GET_APPLICATIONS_QUERY = gql`
         school_name
         school_phone
         has_suspended
+        reason_suspended
         year_taken
         hobbies
         life_events
@@ -129,6 +130,7 @@ export const GET_APPLICATIONS_QUERY = gql`
         hospital_preference
         hospital_phone
         child_lives_with
+        nickname
       }
       parents {
         parent_id
@@ -152,6 +154,10 @@ export const GET_APPLICATIONS_QUERY = gql`
         child_hs_grad
         child_col_grad
         person_recommend
+        address
+        city
+        state
+        zip_code
       }
       section1_signature
       section1_date_signed
@@ -224,6 +230,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
         school_name
         school_phone
         has_suspended
+        reason_suspended
         year_taken
         hobbies
         life_events
@@ -251,6 +258,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
         hospital_preference
         hospital_phone
         child_lives_with
+        nickname
       }
       parents {
         parent_id
@@ -274,6 +282,10 @@ export const GET_APPLICATION_ID_QUERY = gql`
         child_hs_grad
         child_col_grad
         person_recommend
+        address
+        city
+        state
+        zip_code
       }
       section1_signature
       section1_date_signed
@@ -355,6 +367,7 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         school_name
         school_phone
         has_suspended
+        reason_suspended
         year_taken
         hobbies
         life_events
@@ -382,6 +395,7 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         hospital_preference
         hospital_phone
         child_lives_with
+        nickname
       }
       parents {
         parent_id
@@ -405,6 +419,10 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         child_hs_grad
         child_col_grad
         person_recommend
+        address
+        city
+        state
+        zip_code
       }
       section1_signature
       section1_date_signed
@@ -485,6 +503,7 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         school_name
         school_phone
         has_suspended
+        reason_suspended
         year_taken
         hobbies
         life_events
@@ -512,6 +531,7 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         hospital_preference
         hospital_phone
         child_lives_with
+        nickname
       }
       parents {
         parent_id
@@ -535,6 +555,10 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         child_hs_grad
         child_col_grad
         person_recommend
+        address
+        city
+        state
+        zip_code
       }
       section1_signature
       section1_date_signed

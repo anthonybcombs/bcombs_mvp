@@ -570,13 +570,11 @@ export function* getUserApplication({ email }) {
 export function* getApplicationHistory({ app_id }) {
   try {
     const response = yield call(getApplicationHistoryFromDatabase, app_id);
-    console.log("hiostory response", response);
     yield put({
       type: actionType.REQUEST_GET_APPLICATION_HISTORY_COMPLETE,
       payload: response
     });
-  } catch (err) {
-    console.log("history error", err);
+  } catch(err) {
     yield put({
       type: actionType.REQUEST_GET_APPLICATION_HISTORY_COMPLETE,
       payload: []
