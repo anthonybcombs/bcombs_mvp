@@ -52,7 +52,6 @@ export default function index({
   isReadonly = false
 }) {
 
-  console.log("termswaiver viiew", section1);
   return (
     <Section1FormStyled>
       <h3 className="heading">{name}</h3>

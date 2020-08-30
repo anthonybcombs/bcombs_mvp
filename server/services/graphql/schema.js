@@ -208,6 +208,7 @@ const inputs = `
         hospital_preference: String
         hospital_phone: String
         child_lives_with: String!
+        nickname: String
         ch_id: String
     }
 
@@ -517,6 +518,7 @@ const queryTypes = `
         school_name: String!
         school_phone: String
         has_suspended: Int
+        reason_suspended: String
         year_taken: String
         hobbies: String
         life_events: String
@@ -544,6 +546,7 @@ const queryTypes = `
         hospital_preference: String
         hospital_phone: String
         child_lives_with: String!
+        nickname: String
     }
 
     type Parent {
@@ -569,6 +572,10 @@ const queryTypes = `
         email_type2: String
         email_address2: String
         person_recommend: String!
+        address: String
+        city: String
+        state: String
+        zip_code: String
     }
 
     type Application {

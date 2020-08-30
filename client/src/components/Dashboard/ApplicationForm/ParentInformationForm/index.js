@@ -138,10 +138,11 @@ export default function index({
   errors,
   isReadonly = false,
   isUpdate = false,
-  ProfileImg
+  ProfileImg,
+  pastParentInformation = {}
 }) {
   let confirmed_passwords = [];
-
+  
   const PHONE_OPTIONS = [
     { id: 1, value: "Cell", name: "Cell" },
     { id: 2, value: "Home", name: "Home" },
@@ -240,7 +241,13 @@ export default function index({
               <input
                 id={`parent_firstname_${counter - 1}`}
                 name={"parent_firstname" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.firstname || pastParentInformation.firstname == "") &&
+                  pastParentInformation.firstname != parentProfile.first_name ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="First Name"
                 onChange={({ target }) => {
                   handleParentFormDetailsChange(
@@ -272,7 +279,13 @@ export default function index({
               <input
                 id={`parent_lastname+${counter - 1}`}
                 name={"parent_lastname" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.lastname || pastParentInformation.lastname == "") &&
+                  pastParentInformation.lastname != parentProfile.last_name ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="Last Name"
                 onChange={({ target }) => {
                   handleParentFormDetailsChange(
@@ -326,7 +339,13 @@ export default function index({
               ) : (
                 <input
                   name="parent_phonetype"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    (pastParentInformation.phone_type || pastParentInformation.phone_type == "") &&
+                    pastParentInformation.phone_type != parentProfile.phone_type ?
+                    "field-input highlights" : "field-input"
+                  }
                   placeholder="Type"
                   defaultValue={parentProfile?.phone_type}
                   readOnly={isReadonly}
@@ -386,7 +405,13 @@ export default function index({
                   defaultValue={parentProfile?.phone_number}
                   readOnly={isReadonly}
                   name={"parent_phonenumber" + (counter - 1)}
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    (pastParentInformation.phone_number || pastParentInformation.phone_number == "") &&
+                    pastParentInformation.phone_number != parentProfile.phone_number ?
+                    "field-input highlights" : "field-input"
+                  }
                   placeholder="Phone Number"
                 />
               )}
@@ -436,7 +461,13 @@ export default function index({
                 ) : (
                   <input
                     name="parent_phonetype"
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      pastParentInformation && 
+                      (pastParentInformation.phone_type2 || pastParentInformation.phone_type2 == "") &&
+                      pastParentInformation.phone_type2 != parentProfile.phone_type2 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Type"
                     defaultValue={parentProfile?.phone_type2}
                     readOnly={isReadonly}
@@ -480,10 +511,16 @@ export default function index({
                 ) : (
                   <input
                     id={`parent_phonenumber2_${counter - 1}`}
-                    defaultValue={parentProfile?.phone_number}
+                    defaultValue={parentProfile?.phone_number2}
                     readOnly={isReadonly}
                     name={"parent_phonenumber2" + (counter - 1)}
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      pastParentInformation && 
+                      (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
+                      pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Phone Number"
                   />
                 )}
@@ -529,7 +566,13 @@ export default function index({
                   defaultValue={parentProfile?.email_type}
                   readOnly={isReadonly}
                   name="parent_emailtype"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    (pastParentInformation.email_type || pastParentInformation.email_type == "") &&
+                    pastParentInformation.email_type != parentProfile.email_type ?
+                    "field-input highlights" : "field-input"
+                  }
                   placeholder="Type"
                   type="text"
                 />
@@ -558,7 +601,13 @@ export default function index({
                 defaultValue={parentProfile?.email_address}
                 readOnly={isReadonly}
                 name={"parent_emailaddress" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.email_address || pastParentInformation.email_address == "") &&
+                  pastParentInformation.email_address != parentProfile.email_address ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="Email Address"
                 onChange={({ target }) => {
                   handleParentFormDetailsChange(
@@ -623,7 +672,13 @@ export default function index({
                     defaultValue={parentProfile?.email_type2}
                     readOnly={isReadonly}
                     name="parent_emailtype"
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      pastParentInformation && 
+                      (pastParentInformation.email_type2 || pastParentInformation.email_type2 == "") &&
+                      pastParentInformation.email_type2 != parentProfile.email_type2 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Type"
                     type="text"
                   />
@@ -640,7 +695,13 @@ export default function index({
                   defaultValue={parentProfile?.email_address2}
                   readOnly={isReadonly}
                   name={"parent_emailaddress2" + (counter - 1)}
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    (pastParentInformation.email_address2 || pastParentInformation.email_address2 == "") &&
+                    pastParentInformation.email_address2 != parentProfile.email_address2 ?
+                    "field-input highlights" : "field-input"
+                  }
                   placeholder="Email Address"
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
@@ -824,7 +885,13 @@ export default function index({
             <div className="field">
               <input
                 name="parentAddress"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.address || pastParentInformation.address == "") &&
+                  pastParentInformation.address != parentProfile.address ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="Address"
                 id={`parentAddress_${counter - 1}`}
                 onChange={({ target }) => {
@@ -850,7 +917,13 @@ export default function index({
             <div className="field">
               <input
                 name="parentCity"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.city || pastParentInformation.city == "") &&
+                  pastParentInformation.city != parentProfile.city ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="City"
                 id={`parentCity_${counter - 1}`}
                 onChange={({ target }) => {
@@ -902,7 +975,13 @@ export default function index({
               ) : (
                 <input
                   type="text"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    (pastParentInformation.state || pastParentInformation.state == "") &&
+                    pastParentInformation.state != parentProfile.state ?
+                    "field-input highlights" : "field-input"
+                  }
                   defaultValue={parentProfile?.state}
                   readOnly={isReadonly}
                   placeholder="State"
@@ -917,7 +996,13 @@ export default function index({
             <div className="field">
               <input
                 name="parentzipcode"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.zip_code || pastParentInformation.zip_code == "") &&
+                  pastParentInformation.zip_code != parentProfile.zip_code ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="Zip Code"
                 id={`parentzipcode_${counter - 1}`}
                 onChange={({ target }) => {
@@ -946,7 +1031,13 @@ export default function index({
             <div className="field">
               <input
                 name="parentoccupation"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.occupation || pastParentInformation.occupation == "") &&
+                  pastParentInformation.occupation != parentProfile.occupation ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="Occupation"
                 id={`parentoccupation_${counter - 1}`}
                 onChange={({ target }) => {
@@ -958,7 +1049,7 @@ export default function index({
                   );
                 }}
                 readOnly={isReadonly}
-                defaultValue={parentProfile?.zip_code}
+                defaultValue={parentProfile?.occupation}
               />
               <label
                 className="field-label"
@@ -972,7 +1063,13 @@ export default function index({
             <div className="field">
               <input
                 name="parentemployer"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.employers_name || pastParentInformation.employers_name == "") &&
+                  pastParentInformation.employers_name != parentProfile.employer_name ?
+                  "field-input highlights" : "field-input"
+                }
                 placeholder="Employer's Name"
                 id={`parentemployer_${counter - 1}`}
                 onChange={({ target }) => {
@@ -1004,7 +1101,13 @@ export default function index({
               </label>
               <textarea
                 name={`parent_goals${counter - 1}`}
-                className="form-control"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.parent_goals || pastParentInformation.parent_goals == "") &&
+                  pastParentInformation.parent_goals != parentProfile.goals_parent_program ?
+                  "form-control highlights-textarea" : "form-control"
+                }
                 rows="4"
                 placeholder="Explain"
                 onChange={({ target }) => {
@@ -1036,7 +1139,13 @@ export default function index({
               </label>
               <textarea
                 name={`parent_child_goals${counter - 1}`}
-                className="form-control"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.parent_child_goals || pastParentInformation.parent_child_goals == "") &&
+                  pastParentInformation.parent_child_goals != parentProfile.goals_child_program ?
+                  "form-control highlights-textarea" : "form-control"
+                }
                 rows="4"
                 placeholder="Explain"
                 onChange={({ target }) => {
@@ -1128,7 +1237,13 @@ export default function index({
                 <select
                   defaultValue={parentProfile?.level_education}
                   name="parent_educationlevel"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    (pastParentInformation.level_of_education || pastParentInformation.level_of_education == "") &&
+                    pastParentInformation.level_of_education != parentProfile.level_education ?
+                    "field-input highlights" : "field-input"
+                  }
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
                       counter - 1,
@@ -1147,7 +1262,13 @@ export default function index({
               ) : (
                 <input
                   name="parent_educationlevel"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    (pastParentInformation.level_of_education || pastParentInformation.level_of_education == "") &&
+                    pastParentInformation.level_of_education != parentProfile.level_education ?
+                    "field-input highlights" : "field-input"
+                  }
                   defaultValue={parentProfile?.level_education}
                   readOnly={isReadonly}
                   placeholder="level of education"
@@ -1169,7 +1290,13 @@ export default function index({
                 <select
                   defaultValue={parentProfile?.child_importance_hs}
                   name="child_importance_hs"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    (pastParentInformation.child_hs_grad || pastParentInformation.child_hs_grad == "") &&
+                    pastParentInformation.child_hs_grad != parentProfile.child_importance_hs ?
+                    "field-input highlights" : "field-input"
+                  }
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
                       counter - 1,
@@ -1189,7 +1316,13 @@ export default function index({
                 <input
                   type="text"
                   name="child_importance_hs"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    (pastParentInformation.child_hs_grad || pastParentInformation.child_hs_grad == "") &&
+                    pastParentInformation.child_hs_grad != parentProfile.child_importance_hs ?
+                    "field-input highlights" : "field-input"
+                  }
                   defaultValue={parentProfile?.child_importance_hs}
                   readOnly={isReadonly}
                   placeholder="Explain"
@@ -1229,7 +1362,13 @@ export default function index({
               ) : (
                 <input
                   type="text"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    (pastParentInformation.child_col_grad || pastParentInformation.child_col_grad == "") &&
+                    pastParentInformation.child_col_grad != parentProfile.child_importance_col ?
+                    "field-input highlights" : "field-input"
+                  }
                   defaultValue={parentProfile?.child_importance_col}
                   readOnly={isReadonly}
                   placeholder="Explain"
@@ -1251,7 +1390,13 @@ export default function index({
                 readOnly={isReadonly}
                 id={`parent_person_recommend_${counter - 1}`}
                 name={"parent_person_recommend" + (counter - 1)}
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastParentInformation && 
+                  (pastParentInformation.person_recommend || pastParentInformation.person_recommend == "") &&
+                  pastParentInformation.person_recommend != parentProfile.person_recommend ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   if (target.value === "Others") {
                     console.log("Show Text box");

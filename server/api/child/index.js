@@ -57,7 +57,8 @@ export const getChildInformation = async (id) => {
         doctor_phone,
         hospital_preference,
         hospital_phone,
-        child_lives_with
+        child_lives_with,
+        nickname
         FROM child 
         WHERE ch_id=UUID_TO_BIN(?)`,
         [id]
@@ -122,7 +123,8 @@ export const addChild = async ({
   doctor_phone,
   hospital_preference,
   hospital_phone,
-  child_lives_with
+  child_lives_with,
+  nickname
 }) => {
   const db = makeDb();
   let result = {};
@@ -183,13 +185,14 @@ export const addChild = async ({
         doctor_phone,
         hospital_preference,
         hospital_phone,
-        child_lives_with
+        child_lives_with,
+        nickname
       ) VALUES (UUID_TO_BIN(UUID()), 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         firstname,
         lastname,
@@ -241,7 +244,8 @@ export const addChild = async ({
         doctor_phone,
         hospital_preference,
         hospital_phone,
-        child_lives_with
+        child_lives_with,
+        nickname
       ]
     )
 
@@ -311,6 +315,7 @@ export const updateChild = async ({
   hospital_preference,
   hospital_phone,
   child_lives_with,
+  nickname,
   ch_id
 }) => {
 
@@ -371,7 +376,8 @@ export const updateChild = async ({
         doctor_phone=?,
         hospital_preference=?,
         hospital_phone=?,
-        child_lives_with=?
+        child_lives_with=?,
+        nickname=?
         WHERE ch_id=UUID_TO_BIN(?)
       `,
       [
@@ -426,6 +432,7 @@ export const updateChild = async ({
         hospital_preference,
         hospital_phone,
         child_lives_with,
+        nickname,
         ch_id
       ]
     );

@@ -219,6 +219,14 @@ const GlobalStyle = createGlobalStyle`
     font-weight:bold;
   }
 
+  #applicationForm .highlights {
+    border-color: #f26e21 !important;
+  }
+
+  #applicationForm .highlights-textarea {
+    border: 2px solid #f26e21 !important;
+  }
+
   #applicationForm select {
     background-color: white;
   }

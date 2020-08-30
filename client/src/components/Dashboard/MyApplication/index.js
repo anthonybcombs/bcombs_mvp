@@ -208,6 +208,10 @@ export default function index() {
               phone_number: application.child.phone_number ? application.child.phone_number:"",
               email_type: application.child.email_type ? application.child.email_type:"",
               email_address: application.child.email_address ? application.child.email_address: "",
+              phone_type2: application.child.phone_type2 ? application.child.phone_type2: "",
+              phone_number2: application.child.phone_number2 ? application.child.phone_number2:"",
+              email_type2: application.child.email_type2 ? application.child.email_type2:"",
+              email_address2: application.child.email_address2 ? application.child.email_address2: "",
               address: application.child.address ? application.child.address: "",
               city: application.child.city ? application.child.city: "",
               state: application.child.state ? application.child.state: "",
@@ -215,7 +219,8 @@ export default function index() {
               location_site: application.child.location_site ? application.child.location_site: "",
               child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
               program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
-              ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : []
+              ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
+              nick_name: applicatiom.child.nickname ? application.child.nickname: ""
             },
             general_information: {
               grade: application.child.grade_number ? application.child.grade_number: "",
@@ -235,7 +240,7 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-              was_suspended: !!application.child.has_suspended,
+              was_suspended: application.child.has_suspended + "",
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -364,7 +369,8 @@ export default function index() {
               location_site: application.child.location_site ? application.child.location_site: "",
               child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
               program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
-              ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : []
+              ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
+              nick_name: application.child.nickname ? application.child.nickname: ""
             },
             general_information: {
               grade: application.child.grade_number ? application.child.grade_number: "",
@@ -384,7 +390,7 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-              was_suspended: !!application.child.has_suspended,
+              was_suspended: application.child.has_suspended + "",
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -424,8 +430,8 @@ export default function index() {
               city: parent.city ? parent.city : "",
               state: parent.state ? parent.state : "",
               zip_code: parent.zip_code ? parent.zip_code : "",
-              occupation: parent.zip_code ? parent.zip_code : "",
-              employer_name: parent.employer_name ? parent.employer_name : "",
+              occupation: parent.occupation ? parent.occupation : "",
+              employer_name: parent.employers_name ? parent.employers_name : "",
               goals_parent_program: parent.parent_goals ? parent.parent_goals : "",
               goals_child_program: parent.parent_child_goals ? parent.parent_child_goals : "",
               live_area: parent.live_area ? parent.live_area : 0, // 1: 1 - 5 year, 2: 5 - 10 year, 3: more than 10 year
@@ -512,10 +518,11 @@ export default function index() {
       child.profile = profile;
     } else if (section === "general_information") {
       if(id === "was_suspended") {
-        value = (value === "true");
-        if (!value)
+        if (value == "0")
           general_information = {...general_information, ["reason_suspended"]: ""};
       }
+
+      console.log("value suspended", value);
 
       if(id.includes("act_scores")) {
         let x = id.split("-");
@@ -815,6 +822,7 @@ export default function index() {
         doctor_phone: childInformation.emergency_care_information.doctor_phone,
         hospital_preference: childInformation.emergency_care_information.hospital_preference,
         hospital_phone: childInformation.emergency_care_information.hospital_phone,
+        nickname: childInformation.profile.nick_name,
         ch_id: childInformation.ch_id
       },
       parents: setupParentsList(),

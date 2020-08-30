@@ -96,7 +96,8 @@ export default function index({
   parentEmergencyContacts,
   isReadonly = false,
   register,
-  errors
+  errors,
+  pastEmergencyContacts = []
 }) {
   const GENDER_OPTIONS = [
     { id: 1, value: "Male", name: "Male" },
@@ -127,7 +128,14 @@ export default function index({
             {!isReadonly && i <= 1 && <span className="required">*</span>}
             <input
               name={"ec_firstname_" + i}
-              className="input-field"
+              className={
+                isReadonly &&
+                pastEmergencyContacts &&
+                pastEmergencyContacts.length > 0 &&
+                (pastEmergencyContacts[i].first_name || pastEmergencyContacts[i].first_name == "") &&
+                pastEmergencyContacts[i].first_name != parentEmergencyContacts[i].first_name ?
+                "field-input highlights" : "field-input"
+              }
               onChange={({ target }) => {
                 handleParentFormDetailsChange(
                   i,
@@ -152,7 +160,14 @@ export default function index({
             {!isReadonly && i <= 1 && <span className="required">*</span>}
             <input
               name={"ec_lastname_" + i}
-              className="input-field"
+              className={
+                isReadonly &&
+                pastEmergencyContacts &&
+                pastEmergencyContacts.length > 0 &&
+                (pastEmergencyContacts[i].last_name || pastEmergencyContacts[i].last_name == "") &&
+                pastEmergencyContacts[i].last_name != parentEmergencyContacts[i].last_name ?
+                "field-input highlights" : "field-input"
+              }
               onChange={({ target }) => {
                 handleParentFormDetailsChange(
                   i,
@@ -213,7 +228,14 @@ export default function index({
               <input
                 type="text"
                 name={"ec_gender_" + i}
-                className="input-field"
+                className={
+                  isReadonly &&
+                  pastEmergencyContacts &&
+                  pastEmergencyContacts.length > 0 &&
+                  (pastEmergencyContacts[i].gender || pastEmergencyContacts[i].gender == "") &&
+                  pastEmergencyContacts[i].gender != parentEmergencyContacts[i].gender ?
+                  "field-input highlights" : "field-input"
+                }
                 defaultValue={parentEmergencyContacts[i].gender}
                 readOnly={isReadonly}
               />
@@ -257,7 +279,14 @@ export default function index({
             ) : (
               <input
                 name={"mobile_phone_" + i}
-                className="input-field"
+                className={
+                  isReadonly &&
+                  pastEmergencyContacts &&
+                  pastEmergencyContacts.length > 0 &&
+                  (pastEmergencyContacts[i].mobile_phone || pastEmergencyContacts[i].mobile_phone == "") &&
+                  pastEmergencyContacts[i].mobile_phone != parentEmergencyContacts[i].mobile_phone ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   handleParentFormDetailsChange(
                     i,
@@ -312,7 +341,15 @@ export default function index({
             ) : (
               <input
                 name={"work_phone_" + i}
-                className="input-field"
+                name={"mobile_phone_" + i}
+                className={
+                  isReadonly &&
+                  pastEmergencyContacts &&
+                  pastEmergencyContacts.length > 0 &&
+                  (pastEmergencyContacts[i].work_phone || pastEmergencyContacts[i].work_phone == "") &&
+                  pastEmergencyContacts[i].work_phone != parentEmergencyContacts[i].work_phone ?
+                  "field-input highlights" : "field-input"
+                }
                 onChange={({ target }) => {
                   handleParentFormDetailsChange(
                     i,
@@ -389,7 +426,14 @@ export default function index({
             ) : (
               <input
                 name={"relationship_to_child_" + i}
-                className="input-field"
+                className={
+                  isReadonly &&
+                  pastEmergencyContacts &&
+                  pastEmergencyContacts.length > 0 &&
+                  (pastEmergencyContacts[i].relationship_to_child || pastEmergencyContacts[i].relationship_to_child == "") &&
+                  pastEmergencyContacts[i].relationship_to_child != parentEmergencyContacts[i].relationship_to_child ?
+                  "field-input highlights" : "field-input"
+                }
                 defaultValue={parentEmergencyContacts[i].relationship_to_child}
                 readOnly={isReadonly}
               />

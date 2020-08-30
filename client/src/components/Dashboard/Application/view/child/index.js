@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faPrint } from "@fortawesome/free-solid-svg-icons";
@@ -101,7 +102,27 @@ export default function index({
   app_programs = [],
   isVendorView = false
 }) {
+
+  const { applications } = useSelector(
+    ({ applications }) => {
+      return {applications}
+    }
+  );
+
   const handleScoresChange = () => {};
+
+  let pastChildInformation = {};
+
+  if(applications && 
+    applications.applicationHistory && 
+    applications.applicationHistory.length > 0) {
+
+    const application = JSON.parse(applications.applicationHistory[0].details); 
+
+    if(application && application.child) {
+      pastChildInformation = application.child;
+    }
+  }
 
   return (
     <>
@@ -134,6 +155,7 @@ export default function index({
             ProfileImg={ProfileImg}
             location_sites={location_sites}
             app_programs={app_programs}
+            pastChildInformation={pastChildInformation}
           />
           <br />
           <br />
@@ -147,6 +169,7 @@ export default function index({
             register={register}
             errors={errors}
             isReadonly={isReadonly}
+            pastChildInformation={pastChildInformation}
           />
           <br />
           <MedicalCareInfoStyled
@@ -157,6 +180,7 @@ export default function index({
             register={register}
             errors={errors}
             isReadonly={isReadonly}
+            pastChildInformation={pastChildInformation}
           />
         </div>
       </ChildFormViewStyled>

@@ -30,6 +30,39 @@ export default function index({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
+
+  const { applications } = useSelector(
+    ({ applications }) => {
+      return {applications}
+    }
+  );
+
+  let pastParentInformation = [];
+
+  let pastEmergencyContacts = []
+
+  if(applications && 
+    applications.applicationHistory && 
+    applications.applicationHistory.length > 0) {
+
+    const application = JSON.parse(applications.applicationHistory[0].details); 
+
+    if(application && application.parents && application.parents.length > 0) {
+      pastParentInformation = application.parents;
+    }
+
+    if(application && application.emergency_contacts) {
+      pastEmergencyContacts = JSON.parse(application.emergency_contacts);
+
+      if(Array.isArray(pastEmergencyContacts) && pastEmergencyContacts.length > 0) {
+        pastEmergencyContacts = pastEmergencyContacts;
+      } else {
+        pastEmergencyContacts = [];
+      }
+
+      console.log("pastEmergencyContacts", pastEmergencyContacts);      
+    }
+  }
   
   let tempEC = [
     {
@@ -107,6 +140,7 @@ export default function index({
               isReadonly={isReadonly}
               isUpdate={true}
               ProfileImg={ProfileImg}
+              pastParentInformation={pastParentInformation[i - 1]}
             />
           </div>
         );
@@ -124,6 +158,7 @@ export default function index({
               isReadonly={isReadonly}
               isUpdate={true}
               ProfileImg={ProfileImg}
+              pastParentInformation={pastParentInformation[i - 1]}
             />
           </div>
         );
@@ -145,6 +180,7 @@ export default function index({
           isReadonly={isReadonly}
           register={register}
           errors={errors}
+          pastEmergencyContacts={pastEmergencyContacts}
         />
       </div>
     </ParentFormViewStyled>

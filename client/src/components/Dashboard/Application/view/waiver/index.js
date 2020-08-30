@@ -29,9 +29,7 @@ export default function index({
   const pDate = isReadonly ? 
                 moment(application.section1_date_signed).format("MM/DD/YYYY") :
                 moment().format("MM/DD/YYYY")
-
-  console.log("waiver applciation", termsWaiver);
-  
+                
   return (
     <TermsWaiverFormViewStyled>
       <div id="applicationForm">

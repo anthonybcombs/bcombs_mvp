@@ -44,7 +44,8 @@ export default function index({
   counter,
   register,
   errors,
-  isReadonly = false
+  isReadonly = false,
+  pastChildInformation = {}
 }) {
 
   const data = {};
@@ -59,7 +60,13 @@ export default function index({
             <div className="field">
               <input
                 name="ch_doctorname"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.doctor_name || pastChildInformation.doctor_name == "") &&
+                  pastChildInformation.doctor_name != childEmergencyCare.doctor_name ?
+                  "field-input highlights" : "field-input"
+                }
                 id={`ch_doctorname_${counter - 1}`}
                 onChange={({ target }) => {
                   handleChildFormDetailsChange((counter - 1), "emergency_care_information", "doctor_name", target.value)
@@ -102,7 +109,13 @@ export default function index({
                 :
                 <input
                   name="doctophone"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastChildInformation &&
+                    (pastChildInformation.doctor_phone || pastChildInformation.doctor_phone == "") &&
+                    pastChildInformation.doctor_phone != childEmergencyCare.doctor_phone ?
+                    "field-input highlights" : "field-input"
+                  }
                   placeholder="Phone"
                   id={`doctophone_${counter - 1}`}
                   defaultValue={childEmergencyCare.doctor_phone}
@@ -126,7 +139,13 @@ export default function index({
             <div className="field">
               <input
                 name="hospitalname"
-                className="field-input"
+                className={
+                  isReadonly &&
+                  pastChildInformation &&
+                  (pastChildInformation.hospital_preference || pastChildInformation.hospital_preference == "") &&
+                  pastChildInformation.hospital_preference != childEmergencyCare.hospital_preference ?
+                  "field-input highlights" : "field-input"
+                }
                 id={`hospitalname_${counter - 1}`}
                 placeholder="Hospital Preference"
                 onChange={({ target }) => {
@@ -170,7 +189,13 @@ export default function index({
                 :
                 <input
                   name="hospitalPhone"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    pastChildInformation &&
+                    (pastChildInformation.hospital_phone || pastChildInformation.hospital_phone == "") &&
+                    pastChildInformation.hospital_phone != childEmergencyCare.hospital_phone ?
+                    "field-input highlights" : "field-input"
+                  }
                   placeholder="Phone"
                   id={`hospitalPhone_${counter - 1}`}
                   defaultValue={childEmergencyCare.hospital_phone}
