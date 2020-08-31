@@ -619,7 +619,7 @@ export const getUserApplicationsByUserId = async user_id => {
 export const getApplicationHistoryByUser = async id => {
   const db = makeDb();
   let auditTrails = [];
-  console.log("Get APplication History By User", id);
+  console.log("Get Application History By User", id);
   try {
     auditTrails = await db.query(
       `SELECT application_history.id,
@@ -628,9 +628,11 @@ export const getApplicationHistoryByUser = async id => {
       application_history.details,
       application_history.updated_at,
       application_history.updated_by 
-      FROM application_history,application,parent,users WHERE
-      application_history.app_id = application.app_id AND application.app_id=parent.application AND
-      parent.email_address=users.email AND users.id=UUID_TO_BIN(?)
+      FROM application_history,application,parent, vendor WHERE
+      application_history.app_id = application.app_id AND 
+      application.app_id=parent.application  AND 
+      application.vendor = vendor.id AND
+      vendor.id=UUID_TO_BIN(?)
       `,
       [id]
     );

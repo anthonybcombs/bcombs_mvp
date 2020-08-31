@@ -242,7 +242,7 @@ const columns = [
       if (application) {
         return application.parents.map(parent => {
           return (
-            <a target="_blank" href={"menteeprofile/" + parent.parent_id}>
+            <a target="_blank" href={"parentprofile/" + parent.parent_id}>
               <span>
                 {parent.firstname} {parent.lastname}
               </span>

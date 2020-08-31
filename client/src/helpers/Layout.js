@@ -370,14 +370,15 @@ export default function Layout({ children }) {
                                   <span>Application</span>
                                 </Link>
                               )} */}
-
-                              <Link
-                                to="/dashboard/audittrail"
-                                onClick={() => {
-                                  setIsPopOverVisible(false);
-                                }}>
-                                <span>Audit Trail</span>
-                              </Link>
+                              {currentUserType === "VENDOR" && (
+                                <Link
+                                  to="/dashboard/audittrail"
+                                  onClick={() => {
+                                    setIsPopOverVisible(false);
+                                  }}>
+                                  <span>Audit Trail</span>
+                                </Link>
+                              )}
                               <a
                                 onClick={() => {
                                   dispatch(requestLogout());
