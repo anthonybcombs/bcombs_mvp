@@ -245,7 +245,7 @@ export default function index() {
               child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
               program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
               ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
-              nick_name: applicatiom.child.nickname ? application.child.nickname: ""
+              nick_name: application.child.nickname ? application.child.nickname: ""
             },
             general_information: {
               grade: application.child.grade_number ? application.child.grade_number: "",
