@@ -732,29 +732,29 @@ export default function index({
           </label>
         </div>
         {
-          childGeneralInformation.was_suspended &&
-        <div className="form-group">
-          <textarea 
-            name="reasons_suspended"
-            className={
-              isReadonly &&
-              !isVendorView &&
-              pastChildInformation &&
-              (pastChildInformation.reason_suspended || pastChildInformation.reason_suspended == "") &&
-              pastChildInformation.reason_suspended != childGeneralInformation.reason_suspended ?
-              "form-control ta-justice highlights-textarea" : "form-control ta-justice"
-            }
-            rows="4"
-            placeholder="Explain"
-            onChange={({ target }) => {
-              handleChildFormDetailsChange(counter - 1, "general_information", "reason_suspended", target.value);
-            }}
-            //defaultValue={childGeneralInformation.reason_suspended}
-            value={childGeneralInformation.reason_suspended}
-            readOnly={isReadonly}
-          >
-          </textarea>
-        </div>
+          childGeneralInformation.was_suspended == "1" &&
+          <div className="form-group">
+            <textarea 
+              name="reasons_suspended"
+              className={
+                isReadonly &&
+                !isVendorView &&
+                pastChildInformation &&
+                (pastChildInformation.reason_suspended || pastChildInformation.reason_suspended == "") &&
+                pastChildInformation.reason_suspended != childGeneralInformation.reason_suspended ?
+                "form-control ta-justice highlights-textarea" : "form-control ta-justice"
+              }
+              rows="4"
+              placeholder="Explain"
+              onChange={({ target }) => {
+                handleChildFormDetailsChange(counter - 1, "general_information", "reason_suspended", target.value);
+              }}
+              //defaultValue={childGeneralInformation.reason_suspended}
+              value={childGeneralInformation.reason_suspended}
+              readOnly={isReadonly}
+            >
+            </textarea>
+          </div>
         }
         <div className="grid-1">
           <div className="form-group">
