@@ -680,8 +680,8 @@ export default function index({
               message="Gender is required"
             />
           </div>
-          <div className="form-group print-breakpoint">
-            <div className="field print-breakpoint">
+          <div className="form-group">
+            <div className="field">
               {isReadonly ? (
                 // <input
                 //   readOnly={isReadonly}
@@ -1251,7 +1251,7 @@ export default function index({
               message="State is required"
             />
           </div>
-          <div className="form-group print-breakpoint">
+          <div className="form-group">
             <div className="field">
               <input
                 type="text"

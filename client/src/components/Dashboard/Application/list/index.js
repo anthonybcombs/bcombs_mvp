@@ -2,12 +2,13 @@ import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
+import {
   faArchive,
   faCheck,
   faTimes,
-  faDownload } from "@fortawesome/free-solid-svg-icons";
-import DataTable from 'react-data-table-component';
+  faDownload
+} from "@fortawesome/free-solid-svg-icons";
+import DataTable from "react-data-table-component";
 import { format } from "date-fns";
 import { CSVLink, CSVDownload } from "react-csv";
 import Loading from "../../../../helpers/Loading.js";
@@ -15,15 +16,14 @@ import Loading from "../../../../helpers/Loading.js";
 import ConfirmedModal from "../../../../helpers/ConfirmedModal";
 import ExportFilter from "../../../../helpers/ExportFilter";
 
-import {requestArchivedAppplication} from "../../../../redux/actions/Application";
+import { requestArchivedAppplication } from "../../../../redux/actions/Application";
 
 import "../../ApplicationForm/ApplicationForm.css";
 
 const ApplicationListStyled = styled.div`
-  
   margin-bottom: 20px;
 
-  #dataTableContainer >div header {
+  #dataTableContainer > div header {
     padding: 0;
     display: block;
     min-height: auto;
@@ -33,7 +33,7 @@ const ApplicationListStyled = styled.div`
     position: absolute;
     top: 42px;
     left: 120px;
-    font-size: 16px
+    font-size: 16px;
   }
 
   #dataTableContainer .ncoBp {
@@ -130,7 +130,7 @@ const ApplicationListStyled = styled.div`
     justify-content: flex-end;
   }
 
-  #actionButtonContainer a{
+  #actionButtonContainer a {
     background-color: #f26e21;
     padding: 10px 32px;
     width: 100%;
@@ -145,7 +145,6 @@ const ApplicationListStyled = styled.div`
     align-items: center;
     justify-content: center;
     white-space: pre;
-
   }
 
   #dataTableContainer {
@@ -166,7 +165,7 @@ const ApplicationListStyled = styled.div`
 
   .loading-container .hCOWuT div:first-child {
     margin: 1vh auto;
-  } 
+  }
 
   @media (max-width: 1024px) {
     #tableHeader {
@@ -175,7 +174,7 @@ const ApplicationListStyled = styled.div`
     #legendContainer,
     #archivedBtnContainer,
     #actionButtonContainer {
-      padding: .5rem 0;
+      padding: 0.5rem 0;
     }
   }
   @media (max-width: 768px) {
@@ -195,7 +194,7 @@ const ApplicationListStyled = styled.div`
 `;
 
 const TextField = styled.input`
-  box-sizing: border-box; 
+  box-sizing: border-box;
   height: 32px;
   width: 200px;
   border-radius: 3px;
@@ -206,12 +205,10 @@ const TextField = styled.input`
   border: 1px solid #e5e5e5;
   padding: 0 32px 0 16px;
   font-size: 16px;
-  m
-  &:hover {
+  m &:hover {
     cursor: pointer;
   }
 `;
-
 
 const ClearButton = styled.button`
   background-color: #f26e21;
@@ -236,7 +233,6 @@ const ClearButton = styled.button`
 `;
 
 const SelectWrapper = styled.div`
-
   display: flex;
   flex: 1 1 100%;
   justify-content: flex-start;
@@ -247,7 +243,6 @@ const SelectWrapper = styled.div`
     max-width: 280px;
     min-width: 200px;
   }
-
 
   .form-control {
     display: block;
@@ -261,16 +256,17 @@ const SelectWrapper = styled.div`
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s,
+      -webkit-box-shadow ease-in-out 0.15s;
+    -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-    box-sizing: border-box;  
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box;
   }
-  
+
   select.form-control {
     height: 32px;
     width: auto;
@@ -278,72 +274,84 @@ const SelectWrapper = styled.div`
   }
 `;
 
-const CLASS_OPTIONS = ["Seniors", "Juniors", "Sophomores", "Freshmen", "Middle School"];
+const CLASS_OPTIONS = [
+  "Seniors",
+  "Juniors",
+  "Sophomores",
+  "Freshmen",
+  "Middle School"
+];
 
 const STUDENT_CLASS_OPTIONS = [
-  { name: "In process", value: "new_applicant_in_process"},
+  { name: "In process", value: "new_applicant_in_process" },
   { name: "Accepted", value: "new_applicant_accepted" },
-  { name: "Rejected", value: "new_applicant_rejected"},
+  { name: "Rejected", value: "new_applicant_rejected" },
   { name: "Current Student", value: "current_student" },
-  { name: "Waiting List", value: "waiting_list"},
-  { name: "No longer a Student", value: "no_longer_student"},
-  { name: "Missed opportunity", value: "missed_opportunity"},
+  { name: "Waiting List", value: "waiting_list" },
+  { name: "No longer a Student", value: "no_longer_student" },
+  { name: "Missed opportunity", value: "missed_opportunity" }
 ];
 
 const COLOR_OPTIONS = ["Blue", "Red", "Green"];
 
-const FilterComponent = ({ 
-  onFilter, 
-  onClassChange, 
+const FilterComponent = ({
+  onFilter,
+  onClassChange,
   onColorChange,
-  onStatusChange, 
-  onClear, 
-  filterText, 
-  classText, 
+  onStatusChange,
+  onClear,
+  filterText,
+  classText,
   colorText,
-  statusText }) => (
+  statusText
+}) => (
   <>
     <SelectWrapper>
-      <TextField id="search" type="text" placeholder="Search Name" value={filterText} onChange={onFilter} />
-      <select 
+      <TextField
+        id="search"
+        type="text"
+        placeholder="Search Name"
+        value={filterText}
+        onChange={onFilter}
+      />
+      <select
         name="class"
         className="form-control"
         value={statusText}
         onChange={onStatusChange}>
         <option value="">Select Status</option>
-        {
-          STUDENT_CLASS_OPTIONS.map((opt, i) => (
-            <option key={i} value={opt.value}>{opt.name}</option>
-          ))
-        }
+        {STUDENT_CLASS_OPTIONS.map((opt, i) => (
+          <option key={i} value={opt.value}>
+            {opt.name}
+          </option>
+        ))}
       </select>
-      <select 
+      <select
         name="class"
         className="form-control"
         value={classText}
         onChange={onClassChange}>
         <option value="">Select Class</option>
-        {
-          CLASS_OPTIONS.map((opt, i) => (
-            <option key={i} value={opt}>{opt}</option>
-          ))
-        }
+        {CLASS_OPTIONS.map((opt, i) => (
+          <option key={i} value={opt}>
+            {opt}
+          </option>
+        ))}
       </select>
-      <select 
+      <select
         name="class"
         className="form-control"
         value={colorText}
         onChange={onColorChange}>
         <option value="">Select Color</option>
-        {
-          COLOR_OPTIONS.map((opt, i) => (
-            <option key={i} value={opt}>{opt}</option>
-          ))
-        }
+        {COLOR_OPTIONS.map((opt, i) => (
+          <option key={i} value={opt}>
+            {opt}
+          </option>
+        ))}
       </select>
       {/* <ClearButton type="button" onClick={onClear}>X</ClearButton> */}
     </SelectWrapper>
-
   </>
 );
 
@@ -354,13 +362,11 @@ export default function index({
   vendor = {},
   appGroups = []
 }) {
-
   const getApplicationStatusVal = (student_status, verification, row) => {
-
     let studentStatusVal = "";
-    let verificationVal = ""
+    let verificationVal = "";
 
-    if(student_status == "new_applicant_in_process") {
+    if (student_status == "new_applicant_in_process") {
       studentStatusVal = "In process";
     } else if (student_status == "new_applicant_accepted") {
       studentStatusVal = "Accepted";
@@ -376,7 +382,7 @@ export default function index({
       studentStatusVal = "Missed oppurtunity";
     }
 
-    if(verification == "verified") {
+    if (verification == "verified") {
       verificationVal = faCheck;
     } else if (verification == "rejected") {
       verificationVal = faTimes;
@@ -384,297 +390,332 @@ export default function index({
       verificationVal = "";
     }
 
-    return <a href="" 
-      onClick={(e) => {
-        e.preventDefault();
+    return (
+      <a
+        href=""
+        onClick={e => {
+          e.preventDefault();
 
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
 
-        handleSelectedApplication(row, "application")
-      }}><span>{studentStatusVal}</span>&nbsp;
-      { verificationVal && <FontAwesomeIcon icon={verificationVal} />}
-    </a>
-    
-  }
+          handleSelectedApplication(row, "application");
+        }}>
+        <span>{studentStatusVal}</span>&nbsp;
+        {verificationVal && <FontAwesomeIcon icon={verificationVal} />}
+      </a>
+    );
+  };
 
   const getPrimaryParentName = (parents, id) => {
-
-    if(parents.length > 0) {
-      return <a target="_blank" href={"parentprofile/" + id}><span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span></a>
+    if (parents.length > 0) {
+      return (
+        <a target="_blank" href={"parentprofile/" + id}>
+          <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
+        </a>
+      );
     } else {
       return "";
     }
-  }
+  };
 
   const DATE_FORMAT = "LLL dd, yyyy";
 
-  const getAgeBdate = (child) => {
-    if(!child.age && child <= -1) return "";
+  const getAgeBdate = child => {
+    if (!child || (!child.age && child <= -1)) return "";
 
     let birthdate = format(new Date(child.birthdate), DATE_FORMAT);
-    return <div>
-      {child.age}&nbsp; ({birthdate})
-    </div>
-  }
+    return (
+      <div>
+        {child.age}&nbsp; ({birthdate})
+      </div>
+    );
+  };
 
   const columns = [
     {
-      name: 'Status',
-      selector: 'status',
+      name: "Status",
+      selector: "status",
       sortable: true,
-      cell: row => getApplicationStatusVal(row.student_status, row.verification, row),
-      
+      cell: row =>
+        getApplicationStatusVal(row.student_status, row.verification, row)
     },
     {
-      name: 'Student Name',
-      selector: 'studentName',
+      name: "Student Name",
+      selector: "studentName",
       sortable: true,
-      cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>,
+      cell: row => (
+        <a target="_blank" href={"menteeprofile/" + row.id}>
+          <span>{row.child?.firstname + " " + row.child?.lastname}</span>
+        </a>
+      )
     },
     {
-      name: 'Parent name',
-      selector: 'parentName',
+      name: "Parent name",
+      selector: "parentName",
       sortable: true,
       cell: row => getPrimaryParentName(row.parents, row.id)
     },
     {
-      name: 'Grade',
-      selector: 'class',
+      name: "Grade",
+      selector: "class",
       sortable: true,
       cell: row => row?.child?.grade_desc
     },
     {
-      name: 'Age (Bdate)',
-      selector: 'birthDate',
+      name: "Age (Bdate)",
+      selector: "birthDate",
       sortable: true,
       cell: row => getAgeBdate(row.child)
     },
     {
-      name: 'Application Date',
-      selector: 'applicationDate',
+      name: "Application Date",
+      selector: "applicationDate",
       sortable: true,
       cell: row => format(new Date(row.application_date), DATE_FORMAT)
     },
     {
-      name: 'Attachment 1',
-      selector: 'attachment1',
+      name: "Attachment 1",
+      selector: "attachment1",
       sortable: false,
-      cell: row => <a href="#"><span>-</span></a>,
+      cell: row => (
+        <a href="#">
+          <span>-</span>
+        </a>
+      )
     },
     {
-      name: 'Attachment 2',
-      selector: 'attachment2',
+      name: "Attachment 2",
+      selector: "attachment2",
       sortable: false,
-      cell: row => <a href="#"><span>-</span></a>,
+      cell: row => (
+        <a href="#">
+          <span>-</span>
+        </a>
+      )
     }
   ];
 
   const customStyles = {
     header: {
       style: {
-        minHeight: '70px'
+        minHeight: "70px"
       }
     },
     subHeader: {
       style: {
-        marginBottom: '12px',
+        marginBottom: "12px"
       }
     },
     headRow: {
       style: {
-        background: '#f26e21',
-        minHeight: '39px',
-        borderColor: '#fff'
+        background: "#f26e21",
+        minHeight: "39px",
+        borderColor: "#fff"
       }
     },
     headCells: {
       style: {
-        fontSize: '16px',
-        color: '#fff'
+        fontSize: "16px",
+        color: "#fff"
       }
     },
     cells: {
       style: {
-        fontSize: '16px',
-        padding: '10px'
+        fontSize: "16px",
+        padding: "10px"
       }
     },
     rows: {
       style: {
-        '&:not(:last-of-type)': {
+        "&:not(:last-of-type)": {
           borderColor: "#eaedf1"
         },
         minHeight: "35px"
       }
     }
-  }
+  };
 
   const conditionalRowStyles = [
     {
       when: row => row.color_designation === "blue",
       style: {
-        backgroundColor: 'SteelBlue !important',
-        color: '#fff !important',
-        borderBottom: '1px solid #fff !important',
+        backgroundColor: "SteelBlue !important",
+        color: "#fff !important",
+        borderBottom: "1px solid #fff !important",
         a: {
-          color: 'inherit !important'
+          color: "inherit !important"
         }
       }
     },
     {
       when: row => row.color_designation === "red",
       style: {
-        backgroundColor: 'red !important',
-        color: '#fff !important',
-        borderBottom: '1px solid #fff !important',
+        backgroundColor: "red !important",
+        color: "#fff !important",
+        borderBottom: "1px solid #fff !important",
         a: {
-          color: 'inherit !important'
+          color: "inherit !important"
         }
       }
     },
     {
       when: row => row.color_designation === "green",
       style: {
-        backgroundColor: 'green !important',
-        color: '#fff !important',
-        borderBottom: '1px solid #fff !important',
+        backgroundColor: "green !important",
+        color: "#fff !important",
+        borderBottom: "1px solid #fff !important",
         a: {
-          color: 'inherit !important'
+          color: "inherit !important"
         }
       }
     }
-  ]
+  ];
 
-  const [filterText, setFilterText] = useState('');
-  const [classText, setClassText] = useState('');
-  const [statusText, setStatusText] = useState('')
-  const [colorText, setColorText] = useState('');
+  const [filterText, setFilterText] = useState("");
+  const [classText, setClassText] = useState("");
+  const [statusText, setStatusText] = useState("");
+  const [colorText, setColorText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
 
   const dispatch = useDispatch();
 
   let data = applications.length > 0 ? applications : [];
-  
+
   let getApplications = applications.length > 0 ? applications : [];
 
   const exportData = applications.length > 0 ? applications : [];
 
-  data = getApplications.filter((item) => {
+  data = getApplications.filter(item => {
+    let name_match = true;
+    let class_match = true;
+    let color_match = true;
+    let status_match = true;
 
-      let name_match = true;
-      let class_match = true;
-      let color_match = true;
-      let status_match = true;
+    if (filterText) {
+      name_match =
+        (item.child.firstname &&
+          item.child.firstname
+            .toLowerCase()
+            .includes(filterText.toLowerCase())) ||
+        (item.child.lastname &&
+          item.child.lastname
+            .toLowerCase()
+            .includes(filterText.toLowerCase())) ||
+        (item.parents[0].firstname &&
+          item.parents[0].firstname
+            .toLowerCase()
+            .includes(filterText.toLowerCase())) ||
+        (item.parents[0].lastname &&
+          item.parents[0].lastname
+            .toLowerCase()
+            .includes(filterText.toLowerCase()));
+    }
 
-      if(filterText) {
-        name_match = item.child.firstname && item.child.firstname.toLowerCase().includes(filterText.toLowerCase()) ||
-          item.child.lastname && item.child.lastname.toLowerCase().includes(filterText.toLowerCase()) ||
-          item.parents[0].firstname && item.parents[0].firstname.toLowerCase().includes(filterText.toLowerCase()) ||
-          item.parents[0].lastname && item.parents[0].lastname.toLowerCase().includes(filterText.toLowerCase())
-      }
+    if (classText) {
+      class_match = item.child.grade_desc == classText;
+    }
 
-      if(classText) {
-        class_match = item.child.grade_desc == classText;
-      }
+    if (colorText) {
+      if (item.color_designation)
+        color_match =
+          item.color_designation.toLowerCase() == colorText.toLowerCase();
+      else color_match = false;
+    }
 
-      if(colorText) {
-        if(item.color_designation)
-          color_match = item.color_designation.toLowerCase() == colorText.toLowerCase();
-        else
-          color_match = false;
-      }
+    console.log("Status text", statusText);
 
-      console.log("Status text", statusText);
-      
-      if(statusText) {
-        status_match = item.student_status.toLowerCase() == statusText.toLowerCase();
-      }
+    if (statusText) {
+      status_match =
+        item.student_status.toLowerCase() == statusText.toLowerCase();
+    }
 
-      return name_match && class_match && color_match && status_match;
-    });
+    return name_match && class_match && color_match && status_match;
+  });
 
   console.log("data", data);
 
   const subHeaderComponentMemo = useMemo(() => {
-
     const handleClear = () => {
       if (filterText) {
         setResetPaginationToggle(!resetPaginationToggle);
-        setFilterText('');
+        setFilterText("");
       }
     };
-    
-    return <FilterComponent 
-    onClassChange={e => setClassText(e.target.value)} 
-    onFilter={e => setFilterText(e.target.value)}
-    onColorChange={e => setColorText(e.target.value)}
-    onStatusChange={e => {
-      setStatusText(e.target.value)
-    }}
-    onClear={handleClear} 
-    filterText={filterText} 
-    classText={classText} 
-    colorText={colorText}
-    statusText={statusText}/>;
+
+    return (
+      <FilterComponent
+        onClassChange={e => setClassText(e.target.value)}
+        onFilter={e => setFilterText(e.target.value)}
+        onColorChange={e => setColorText(e.target.value)}
+        onStatusChange={e => {
+          setStatusText(e.target.value);
+        }}
+        onClear={handleClear}
+        filterText={filterText}
+        classText={classText}
+        colorText={colorText}
+        statusText={statusText}
+      />
+    );
   }, [filterText, resetPaginationToggle, classText, colorText, statusText]);
 
   const noHeader = true;
   const striped = true;
 
-  const paginationRowsPerPageOptions = [10, 25, 50, 100]
+  const paginationRowsPerPageOptions = [10, 25, 50, 100];
   const paginationComponentOptions = {
-    rowsPerPageText: 'Rows per page:', 
-    rangeSeparatorText: 'of', 
+    rowsPerPageText: "Rows per page:",
+    rangeSeparatorText: "of",
     noRowsPerPage: false,
-    selectAllRowsItem: true, 
-    selectAllRowsItemText: 'All'
-  }
+    selectAllRowsItem: true,
+    selectAllRowsItemText: "All"
+  };
 
   const [selectedRows, setSelectedRows] = useState([]);
   const [showConfirmed, setShowConfiremd] = useState(false);
   const [showExportFilter, setShowExportFilter] = useState(false);
 
-  const handleSelectedRowsChange = (state) => {
+  const handleSelectedRowsChange = state => {
     setSelectedRows(state.selectedRows);
-  }
+  };
 
   const doArchivedApplication = () => {
     const app_ids = selectedRows.map(a => a.app_id);
     console.log("APP IDS", app_ids);
 
     dispatch(requestArchivedAppplication(app_ids));
-  }
+  };
 
   const handleOkClick = () => {
     doArchivedApplication();
     setShowConfiremd(false);
-  }
+  };
 
   const handleCancelClick = () => {
     setShowConfiremd(false);
-  }
+  };
 
   const handleArchivedApplication = () => {
     setShowConfiremd(true);
-  }
+  };
 
-  const handleExportCSV = (e) => {
+  const handleExportCSV = e => {
     setShowExportFilter(true);
-  }
+  };
 
   const handleExit = () => {
     setShowExportFilter(false);
-  }
+  };
+
+  console.log("data", data);
 
   return (
     <ApplicationListStyled>
       <div id="applicationList">
-        <div id="listHeader">
-
-        </div>
+        <div id="listHeader"></div>
         <div id="tableSection">
           <div id="tableHeader">
             <div id="archivedBtnContainer">
@@ -696,72 +737,83 @@ export default function index({
             <div id="legendContainer">
               <ul>
                 <li>
-                  <span className='red'></span>
-                  <span className='label'>Leaving the room</span>
+                  <span className="red"></span>
+                  <span className="label">Leaving the room</span>
                 </li>
                 <li>
-                  <span className='steelBlue'></span>
-                  <span className='label'>Coming into the room</span>
+                  <span className="steelBlue"></span>
+                  <span className="label">Coming into the room</span>
                 </li>
                 <li>
-                  <span className='green'></span>
-                  <span className='label'>Potentials for leaving room</span>
+                  <span className="green"></span>
+                  <span className="label">Potentials for leaving room</span>
                 </li>
               </ul>
             </div>
             <div id="actionButtonContainer">
-                <a href="/dashboard/archived" target="_blank">Archived Applications</a>
-                <a href="" onClick={e => { e.preventDefault(); window.location.reload(false)}}>All Applications</a>
+              <a href="/dashboard/archived" target="_blank">
+                Archived Applications
+              </a>
+              <a
+                href=""
+                onClick={e => {
+                  e.preventDefault();
+                  window.location.reload(false);
+                }}>
+                All Applications
+              </a>
             </div>
           </div>
           <div id="dataTableContainer">
-            {
-              listApplicationLoading ? (
-                <div className="loading-container">
-                  <Loading />
-                </div>
-              ) : (
-                <DataTable 
-                  columns={columns}
-                  data={data}
-                  pagination
-                  selectableRows
-                  noHeader={noHeader}
-                  striped={striped}
-                  customStyles={customStyles}
-                  conditionalRowStyles={conditionalRowStyles}
-                  subHeader
-                  subHeaderComponent={subHeaderComponentMemo}
-                  paginationRowsPerPageOptions={paginationRowsPerPageOptions}
-                  paginationComponentOptions={paginationComponentOptions}
-                  onSelectedRowsChange={handleSelectedRowsChange}
-                />
-              )
-            }
+            {listApplicationLoading ? (
+              <div className="loading-container">
+                <Loading />
+              </div>
+            ) : (
+              <DataTable
+                columns={columns}
+                data={data}
+                pagination
+                selectableRows
+                noHeader={noHeader}
+                striped={striped}
+                customStyles={customStyles}
+                conditionalRowStyles={conditionalRowStyles}
+                subHeader
+                subHeaderComponent={subHeaderComponentMemo}
+                paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+                paginationComponentOptions={paginationComponentOptions}
+                onSelectedRowsChange={handleSelectedRowsChange}
+              />
+            )}
           </div>
         </div>
       </div>
-      {
-        showConfirmed && 
+      {showConfirmed && (
         <ConfirmedModal
           handleOkClick={handleOkClick}
           handleCancelClick={handleCancelClick}
           message={"Archived the applications?"}
         />
-      }
-      {
-        showExportFilter && (
-          <ExportFilter
-            applications={exportData}
-            handleExit={handleExit}
-            vendor={vendor}
-            appGroups={appGroups}
-            app_programs={vendor && vendor.app_programs && vendor.app_programs.length > 0 ? vendor.app_programs : []}
-            location_sites={vendor && vendor.location_sites && vendor.location_sites.length > 0 ? vendor.location_sites : []}
-          />
-        )
-      }
-
+      )}
+      {showExportFilter && (
+        <ExportFilter
+          applications={exportData}
+          handleExit={handleExit}
+          vendor={vendor}
+          appGroups={appGroups}
+          app_programs={
+            vendor && vendor.app_programs && vendor.app_programs.length > 0
+              ? vendor.app_programs
+              : []
+          }
+          location_sites={
+            vendor && vendor.location_sites && vendor.location_sites.length > 0
+              ? vendor.location_sites
+              : []
+          }
+        />
+      )}
     </ApplicationListStyled>
-  )
+  );
 }
