@@ -369,6 +369,7 @@ const ExpandedRow = props => {
 
 const AuditTrail = props => {
   const dispatch = useDispatch();
+  const [isLoading, setLoading] = useState(true);
   const { auth, applications, loading } = useSelector(
     ({ auth, applications, loading }) => {
       return { auth, applications, loading };
@@ -380,6 +381,13 @@ const AuditTrail = props => {
     }
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+  }, [applications]);
+
+  console.log("applications", applications);
   return (
     <AuditTrailStyled>
       <div id="dataTableContainer">
@@ -387,9 +395,11 @@ const AuditTrail = props => {
           <DataTable
             columns={columns}
             data={(applications && applications.applicationHistory) || []}
-            pagination
+            pagination={true}
+            paginationPerPage={15}
             noHeader={true}
             striped={true}
+            progressPending={isLoading}
             //expandableRows={true}
             //expandableRowsComponent={<ExpandedRow />}
           />
