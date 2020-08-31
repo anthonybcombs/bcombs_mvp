@@ -380,8 +380,7 @@ export default function index() {
     } else if(section === "general_information") {
 
       if(id === "was_suspended") {
-        value = !!value;
-        if (!value)
+        if (value == "0")
           general_information = {...general_information, ["reason_suspended"]: ""};
       }
 
@@ -834,7 +833,7 @@ export default function index() {
         child: {
           firstname: childsInformation[i].profile.first_name,
           lastname: childsInformation[i].profile.last_name,
-          nickname: childInformation[i].profile.nick_name,
+          nickname: childsInformation[i].profile.nick_name,
           age: getAge(childsInformation[i].profile.date_of_birth),
           birthdate: format(
             new Date(childsInformation[i].profile.date_of_birth),
