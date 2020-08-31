@@ -632,7 +632,7 @@ export const getApplicationHistoryByUser = async id => {
       application_history.app_id = application.app_id AND 
       application.app_id=parent.application  AND 
       application.vendor = vendor.id AND
-      vendor.id=UUID_TO_BIN(?)
+      vendor.user=UUID_TO_BIN(?)
       `,
       [id]
     );
