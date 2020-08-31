@@ -53,6 +53,9 @@ const ApplicationFormStyled = styled.form`
       page-break-before: auto;
       position: relative;
     }
+    #applicationForm .form-group {
+      margin-top: 30px !important;
+    }
   }
   @page {
     size: auto;
@@ -469,10 +472,9 @@ export default function index() {
         checked: !!application.section3_signature,
         signature: application.section3_signature
       }
-    }
-    
-    setTermsWaiver(termsWaiver);
+    };
 
+    setTermsWaiver(termsWaiver);
   };
 
   const childEmergencyContact = {
@@ -674,11 +676,11 @@ export default function index() {
     },
     section3: {
       checked: false,
-      signature: "",
+      signature: ""
     }
-  }
+  };
 
-  const [termsWaiver, setTermsWaiver] = useState({...termsWaiverObj});
+  const [termsWaiver, setTermsWaiver] = useState({ ...termsWaiverObj });
 
   const handleChildFormDetailsChange = (index, section, id, value) => {
     let child = childInformation;
