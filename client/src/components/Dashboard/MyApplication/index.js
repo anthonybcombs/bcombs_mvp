@@ -377,7 +377,7 @@ export default function index() {
           const childInformationObj = {
             profile: {
               image: "",
-              application_date: `Most Up to date Application`,
+              application_date: 'Most Up to date Application',
               first_name: application.child.firstname ? application.child.firstname: "",
               last_name: application.child.lastname ? application.child.lastname:"",
               nick_name: application.child.nickname ? application.child.nickname: "",
