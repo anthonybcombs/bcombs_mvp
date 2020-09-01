@@ -21,6 +21,10 @@ import NumberFormat from "react-number-format";
 const ChildInfomationFormStyled = styled.div`
   position: relative;
 
+  .form-group.ethnicity-form {
+    margin-bottom: 20px !important;
+  }
+
   .img-profile-wrapper {
     width: 17%;
     margin-bottom: 30px;
@@ -140,9 +144,16 @@ const ChildInfomationFormStyled = styled.div`
   .react-datepicker__day--outside-month {
     color: rgb(0 0 0 / 35%);
   }
+  @media print {
+    .highlights {
+      border-color: #f26e21 !important;
+    }
+  }
 
-  .highlights {
-    border-color: #f26e21 !important;
+  .ethnicity-labels {
+    white-space: none !important;
+    font-size: 12px !important;
+    margin-top: -5px !important;
   }
 
   @media (max-width: 768px) {
@@ -429,10 +440,12 @@ export default function index({
                 className={
                   isReadonly &&
                   !isVendorView &&
-                  pastChildInformation && 
-                  (pastChildInformation.firstname || pastChildInformation.firstname == "") &&
-                  pastChildInformation.firstname != childProfile.first_name ?
-                  "field-input highlights" : "field-input"
+                  pastChildInformation &&
+                  (pastChildInformation.firstname ||
+                    pastChildInformation.firstname == "") &&
+                  pastChildInformation.firstname != childProfile.first_name
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 placeholder="First Name"
                 onChange={({ target }) => {
@@ -446,9 +459,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.first_name}
               />
-              <label
-                className="field-label"
-              >
+              <label className="field-label">
                 <span className="required">*</span> First Name
               </label>
             </div>
@@ -468,9 +479,11 @@ export default function index({
                   isReadonly &&
                   !isVendorView &&
                   pastChildInformation &&
-                  (pastChildInformation.lastname || pastChildInformation.lastname == "") &&
-                  pastChildInformation.lastname != childProfile.last_name ?
-                  "field-input highlights" : "field-input"
+                  (pastChildInformation.lastname ||
+                    pastChildInformation.lastname == "") &&
+                  pastChildInformation.lastname != childProfile.last_name
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 placeholder="Last Name"
                 onChange={({ target }) => {
@@ -484,9 +497,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.last_name}
               />
-              <label
-                className="field-label"
-              >
+              <label className="field-label">
                 <span className="required">*</span> Last Name
               </label>
             </div>
@@ -505,9 +516,11 @@ export default function index({
                   isReadonly &&
                   !isVendorView &&
                   pastChildInformation &&
-                  (pastChildInformation.nickname || pastChildInformation.nickname == "") &&
-                  pastChildInformation.nickname != childProfile.nick_name ?
-                  "field-input highlights" : "field-input"
+                  (pastChildInformation.nickname ||
+                    pastChildInformation.nickname == "") &&
+                  pastChildInformation.nickname != childProfile.nick_name
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 placeholder="Nick Name"
                 onChange={({ target }) => {
@@ -522,11 +535,7 @@ export default function index({
                 ref={register()}
                 defaultValue={childProfile.nick_name}
               />
-              <label
-                className="field-label"
-              >
-                Nick Name
-              </label>
+              <label className="field-label">Nick Name</label>
             </div>
           </div>
         </div>
@@ -615,10 +624,13 @@ export default function index({
                     className={
                       isReadonly &&
                       !isVendorView &&
-                      pastChildInformation && 
-                      (pastChildInformation.birthdate || pastChildInformation.birthdate == "") &&
-                      childProfile.date_of_birth.toString() != new Date(pastChildInformation.birthdate).toString()  ?
-                      "field-input birthdate-field highlights" : "field-input birthdate-field"
+                      pastChildInformation &&
+                      (pastChildInformation.birthdate ||
+                        pastChildInformation.birthdate == "") &&
+                      childProfile.date_of_birth.toString() !=
+                        new Date(pastChildInformation.birthdate).toString()
+                        ? "field-input birthdate-field highlights"
+                        : "field-input birthdate-field"
                     }
                   />
                 }
@@ -639,10 +651,12 @@ export default function index({
                 className={
                   isReadonly &&
                   !isVendorView &&
-                  pastChildInformation && 
-                  (pastChildInformation.gender || pastChildInformation.gender == "") &&
-                  pastChildInformation.gender != childProfile.gender ?
-                  "field-input highlights" : "field-input"
+                  pastChildInformation &&
+                  (pastChildInformation.gender ||
+                    pastChildInformation.gender == "") &&
+                  pastChildInformation.gender != childProfile.gender
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -680,7 +694,7 @@ export default function index({
               message="Gender is required"
             />
           </div>
-          <div className="form-group">
+          <div className="form-group  ethnicity-form">
             <div className="field">
               {isReadonly ? (
                 // <input
@@ -693,28 +707,33 @@ export default function index({
                 //   ref={register({ required: true })}
                 //   defaultValue={readOnlyEthinicity}
                 // />
-                <p
-                  className={
-                    isReadonly &&
-                    !isVendorView &&
-                    pastChildInformation && 
-                    (pastChildInformation.ethnicities || pastChildInformation.ethnicities == "") &&
-                    pastChildInformation.ethnicities != readOnlyEthinicity.split("\n").join(",") ?
-                    "field-input readonly highlights" : "field-input readonly"
-                  }
-                  name={"ethinicity_" + (counter - 1)}
-                  style={{
-                    background: "white",
-                    borderBottom: "2px solid rgb(204, 204, 204) !important",
-                    resize: "none",
-                    margin: "0",
-                    textIndent: "0",
-                    whiteSpace: "pre-wrap",
-                    position: "absolute",
-                    top: "27px"
-                  }}>
+                <>
+                  <p
+                    className={`${
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.ethnicities ||
+                        pastChildInformation.ethnicities == "") &&
+                      pastChildInformation.ethnicities !=
+                        readOnlyEthinicity.split("\n").join(",")
+                        ? "field-input readonly ethnicity-labels  highlights"
+                        : "field-input ethnicity-labels readonly"
+                    } `}
+                    name={"ethinicity_" + (counter - 1)}
+                    style={{
+                      background: "white",
+                      borderBottom: "2px solid rgb(204, 204, 204) !important",
+                      resize: "none",
+                      margin: "0px 0px 15px 0px",
+                      textIndent: "0",
+                      // whiteSpace: "pre-wrap",
+                      position: "absolute",
+                      top: "27px"
+                    }}>
                     {readOnlyEthinicity}
                   </p>
+                </>
               ) : (
                 <Multiselect
                   readOnly={isReadonly}
@@ -753,6 +772,7 @@ export default function index({
                 Ethinicity (select all choices that apply)
               </label>
             </div>
+            <br />
           </div>
         </div>
 
@@ -765,10 +785,12 @@ export default function index({
                 className={
                   isReadonly &&
                   !isVendorView &&
-                  pastChildInformation && 
-                  (pastChildInformation.phone_type || pastChildInformation.phone_type == "") &&
-                  pastChildInformation.phone_type != childProfile.phone_type ?
-                  "field-input highlights" : "field-input"
+                  pastChildInformation &&
+                  (pastChildInformation.phone_type ||
+                    pastChildInformation.phone_type == "") &&
+                  pastChildInformation.phone_type != childProfile.phone_type
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -810,10 +832,13 @@ export default function index({
                   className={
                     isReadonly &&
                     !isVendorView &&
-                    pastChildInformation && 
-                    (pastChildInformation.phone_number || pastChildInformation.phone_number == "") &&
-                    pastChildInformation.phone_number != childProfile.phone_number ?
-                    "field-input highlights" : "field-input"
+                    pastChildInformation &&
+                    (pastChildInformation.phone_number ||
+                      pastChildInformation.phone_number == "") &&
+                    pastChildInformation.phone_number !=
+                      childProfile.phone_number
+                      ? "field-input highlights"
+                      : "field-input"
                   }
                   placeholder="Phone"
                   onChange={({ target }) => {
@@ -850,11 +875,7 @@ export default function index({
                 />
               )}
 
-              <label
-                className="field-label"
-              >
-                Phone Number
-              </label>
+              <label className="field-label">Phone Number</label>
             </div>
             <ErrorMessage
               field={errors["ch_phone_number" + (counter - 1)]}
@@ -873,10 +894,12 @@ export default function index({
                   className={
                     isReadonly &&
                     !isVendorView &&
-                    pastChildInformation && 
-                    (pastChildInformation.phone_type2 || pastChildInformation.phone_type2 == "") &&
-                    pastChildInformation.phone_type2 != childProfile.phone_type2 ?
-                    "field-input highlights" : "field-input"
+                    pastChildInformation &&
+                    (pastChildInformation.phone_type2 ||
+                      pastChildInformation.phone_type2 == "") &&
+                    pastChildInformation.phone_type2 != childProfile.phone_type2
+                      ? "field-input highlights"
+                      : "field-input"
                   }
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(
@@ -907,10 +930,13 @@ export default function index({
                     className={
                       isReadonly &&
                       !isVendorView &&
-                      pastChildInformation && 
-                      (pastChildInformation.phone_number2 || pastChildInformation.phone_number2 == "") &&
-                      pastChildInformation.phone_number2 != childProfile.phone_number2 ?
-                      "field-input highlights" : "field-input"
+                      pastChildInformation &&
+                      (pastChildInformation.phone_number2 ||
+                        pastChildInformation.phone_number2 == "") &&
+                      pastChildInformation.phone_number2 !=
+                        childProfile.phone_number2
+                        ? "field-input highlights"
+                        : "field-input"
                     }
                     placeholder="Phone"
                     onChange={({ target }) => {
@@ -945,11 +971,7 @@ export default function index({
                     defaultValue={childProfile.phone_number}
                   />
                 )}
-                <label
-                  className="field-label"
-                >
-                  Phone Number
-                </label>
+                <label className="field-label">Phone Number</label>
               </div>
               <ErrorMessage
                 field={errors["ch_phone_number2" + (counter - 1)]}
@@ -968,10 +990,12 @@ export default function index({
                 className={
                   isReadonly &&
                   !isVendorView &&
-                  pastChildInformation && 
-                  (pastChildInformation.email_type || pastChildInformation.email_type == "") &&
-                  pastChildInformation.email_type != childProfile.email_type ?
-                  "field-input highlights" : "field-input"
+                  pastChildInformation &&
+                  (pastChildInformation.email_type ||
+                    pastChildInformation.email_type == "") &&
+                  pastChildInformation.email_type != childProfile.email_type
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -1014,10 +1038,13 @@ export default function index({
                 className={
                   isReadonly &&
                   !isVendorView &&
-                  pastChildInformation && 
-                  (pastChildInformation.email_address || pastChildInformation.email_address == "") &&
-                  pastChildInformation.email_address != childProfile.email_address ?
-                  "field-input highlights" : "field-input"
+                  pastChildInformation &&
+                  (pastChildInformation.email_address ||
+                    pastChildInformation.email_address == "") &&
+                  pastChildInformation.email_address !=
+                    childProfile.email_address
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 placeholder="Email Address"
                 onChange={({ target }) => {
@@ -1037,9 +1064,7 @@ export default function index({
                   }
                 })}
               />
-              <label
-                className="field-label"
-              >
+              <label className="field-label">
                 Email Address (Child only, if applicable)
               </label>
             </div>
@@ -1061,10 +1086,12 @@ export default function index({
                   className={
                     isReadonly &&
                     !isVendorView &&
-                    pastChildInformation && 
-                    (pastChildInformation.email_type2 || pastChildInformation.email_type2 == "") &&
-                    pastChildInformation.email_type2 != childProfile.email_type2 ?
-                    "field-input highlights" : "field-input"
+                    pastChildInformation &&
+                    (pastChildInformation.email_type2 ||
+                      pastChildInformation.email_type2 == "") &&
+                    pastChildInformation.email_type2 != childProfile.email_type2
+                      ? "field-input highlights"
+                      : "field-input"
                   }
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(
@@ -1096,10 +1123,13 @@ export default function index({
                   className={
                     isReadonly &&
                     !isVendorView &&
-                    pastChildInformation && 
-                    (pastChildInformation.email_address2 || pastChildInformation.email_address2 == "") &&
-                    pastChildInformation.email_address2 != childProfile.email_address2 ?
-                    "field-input highlights" : "field-input"
+                    pastChildInformation &&
+                    (pastChildInformation.email_address2 ||
+                      pastChildInformation.email_address2 == "") &&
+                    pastChildInformation.email_address2 !=
+                      childProfile.email_address2
+                      ? "field-input highlights"
+                      : "field-input"
                   }
                   placeholder="Email Address"
                   onChange={({ target }) => {
@@ -1119,9 +1149,7 @@ export default function index({
                     }
                   })}
                 />
-                <label
-                  className="field-label"
-                >
+                <label className="field-label">
                   Email Address (Child only, if applicable)
                 </label>
               </div>
@@ -1143,10 +1171,12 @@ export default function index({
                 className={
                   isReadonly &&
                   !isVendorView &&
-                  pastChildInformation && 
-                  (pastChildInformation.address || pastChildInformation.address == "") &&
-                  pastChildInformation.address != childProfile.address ?
-                  "field-input highlights" : "field-input"
+                  pastChildInformation &&
+                  (pastChildInformation.address ||
+                    pastChildInformation.address == "") &&
+                  pastChildInformation.address != childProfile.address
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 placeholder="Address"
                 onChange={({ target }) => {
@@ -1179,10 +1209,12 @@ export default function index({
                 className={
                   isReadonly &&
                   !isVendorView &&
-                  pastChildInformation && 
-                  (pastChildInformation.city || pastChildInformation.city == "") &&
-                  pastChildInformation.city != childProfile.city ?
-                  "field-input highlights" : "field-input"
+                  pastChildInformation &&
+                  (pastChildInformation.city ||
+                    pastChildInformation.city == "") &&
+                  pastChildInformation.city != childProfile.city
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 placeholder="City"
                 onChange={({ target }) => {
@@ -1218,10 +1250,12 @@ export default function index({
                 className={
                   isReadonly &&
                   !isVendorView &&
-                  pastChildInformation && 
-                  (pastChildInformation.state || pastChildInformation.state == "") &&
-                  pastChildInformation.state != childProfile.state ?
-                  "field-input highlights" : "field-input"
+                  pastChildInformation &&
+                  (pastChildInformation.state ||
+                    pastChildInformation.state == "") &&
+                  pastChildInformation.state != childProfile.state
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -1261,10 +1295,12 @@ export default function index({
                 className={
                   isReadonly &&
                   !isVendorView &&
-                  pastChildInformation && 
-                  (pastChildInformation.zip_code || pastChildInformation.zip_code == "") &&
-                  pastChildInformation.zip_code != childProfile.zip_code ?
-                  "field-input highlights" : "field-input"
+                  pastChildInformation &&
+                  (pastChildInformation.zip_code ||
+                    pastChildInformation.zip_code == "") &&
+                  pastChildInformation.zip_code != childProfile.zip_code
+                    ? "field-input highlights"
+                    : "field-input"
                 }
                 onChange={({ target }) => {
                   if (target.value.match(/^-{0,1}\d+$/)) {
@@ -1303,53 +1339,54 @@ export default function index({
         <div className="grid">
           <div className="form-group">
             <div className="field select-field-wrapper">
-              {
-                isReadonly ? (
-                  <p
-                    className={
-                      isReadonly &&
-                      !isVendorView &&
-                      pastChildInformation && 
-                      (pastChildInformation.location_site || pastChildInformation.location_site == "") &&
-                      pastChildInformation.location_site != childProfile.location_site ?
-                      "field-input highlights" : "field-input"
-                    }
-                    name={"ch_location_site" + (counter - 1)}
-                    style={{
-                      background: "white",
-                      borderBottom: "2px solid rgb(204, 204, 204) !important",
-                      resize: "none",
-                      whiteSpace: "pre-wrap",
-                      textIndent: "0",
-                      margin: "0"
-                    }}>
-                      {childProfile.location_site}
-                  </p>
-                ) : (
-                  <select
-                    readOnly={isReadonly}
-                    disabled={isReadonly}
-                    name={"ch_location_site" + (counter - 1)}
-                    className="field-input"
-                    onChange={({ target }) => {
-                      handleChildFormDetailsChange(
-                        counter - 1,
-                        "profile",
-                        "location_site",
-                        target.value
-                      );
-                    }}
-                    ref={register({ required: true, minLength: 5 })}
-                    defaultValue={childProfile.location_site}>
-                    <option value="">Select</option>
-                    {LOCATION_SITE_OPTIONS.map((opt, index) => (
-                      <option key={index + 1} value={opt.value}>
-                        {opt.name}
-                      </option>
-                    ))}
-                  </select>
-                )
-              }
+              {isReadonly ? (
+                <p
+                  className={
+                    isReadonly &&
+                    !isVendorView &&
+                    pastChildInformation &&
+                    (pastChildInformation.location_site ||
+                      pastChildInformation.location_site == "") &&
+                    pastChildInformation.location_site !=
+                      childProfile.location_site
+                      ? "field-input highlights"
+                      : "field-input"
+                  }
+                  name={"ch_location_site" + (counter - 1)}
+                  style={{
+                    background: "white",
+                    borderBottom: "2px solid rgb(204, 204, 204) !important",
+                    resize: "none",
+                    whiteSpace: "pre-wrap",
+                    textIndent: "0",
+                    margin: "0"
+                  }}>
+                  {childProfile.location_site}
+                </p>
+              ) : (
+                <select
+                  readOnly={isReadonly}
+                  disabled={isReadonly}
+                  name={"ch_location_site" + (counter - 1)}
+                  className="field-input"
+                  onChange={({ target }) => {
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "location_site",
+                      target.value
+                    );
+                  }}
+                  ref={register({ required: true, minLength: 5 })}
+                  defaultValue={childProfile.location_site}>
+                  <option value="">Select</option>
+                  {LOCATION_SITE_OPTIONS.map((opt, index) => (
+                    <option key={index + 1} value={opt.value}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </select>
+              )}
 
               <label className="field-label">
                 <span className="required">*</span> Location Site
@@ -1378,10 +1415,13 @@ export default function index({
                   className={
                     isReadonly &&
                     !isVendorView &&
-                    pastChildInformation && 
-                    (pastChildInformation.programs || pastChildInformation.programs == "") &&
-                    pastChildInformation.programs != readOnlyProgram.split("\n").join(",") ?
-                    "field-input readonly highlights" : "field-input readonly"
+                    pastChildInformation &&
+                    (pastChildInformation.programs ||
+                      pastChildInformation.programs == "") &&
+                    pastChildInformation.programs !=
+                      readOnlyProgram.split("\n").join(",")
+                      ? "field-input readonly highlights"
+                      : "field-input readonly"
                   }
                   name={"program_" + (counter - 1)}
                   style={{
@@ -1392,8 +1432,8 @@ export default function index({
                     textIndent: "0",
                     margin: "0"
                   }}>
-                    {readOnlyProgram}
-                  </p>
+                  {readOnlyProgram}
+                </p>
               ) : (
                 <Multiselect
                   selectedValues={childProfile.program}
@@ -1439,10 +1479,13 @@ export default function index({
                   className={
                     isReadonly &&
                     !isVendorView &&
-                    pastChildInformation && 
-                    (pastChildInformation.child_lives_with || pastChildInformation.child_lives_with == "") &&
-                    pastChildInformation.child_lives_with != readOnlyChildLivesWith.split("\n").join(",") ?
-                    "field-input readonly highlights" : "field-input readonly"
+                    pastChildInformation &&
+                    (pastChildInformation.child_lives_with ||
+                      pastChildInformation.child_lives_with == "") &&
+                    pastChildInformation.child_lives_with !=
+                      readOnlyChildLivesWith.split("\n").join(",")
+                      ? "field-input readonly highlights"
+                      : "field-input readonly"
                   }
                   style={{
                     background: "white",
@@ -1452,9 +1495,8 @@ export default function index({
                     textIndent: "0",
                     margin: "0"
                   }}
-                  name={"ch_lives_with" + (counter - 1)}
-                >
-                    {readOnlyChildLivesWith}
+                  name={"ch_lives_with" + (counter - 1)}>
+                  {readOnlyChildLivesWith}
                 </p>
               ) : (
                 <Multiselect

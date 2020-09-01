@@ -27,11 +27,23 @@ import TermsWaiverFormViewStyled from "../Application/view/waiver";
 import Loading from "../../../helpers/Loading.js";
 import SuccessUpdateModal from "./SuccessUpdateModal";
 
+/*
+#applicationForm .ethnicity-labels{
+      white-space:none !important;
+      font-size:12px !important;
+      margin-top:-5px;
+    }
+    */
+
 const ApplicationFormStyled = styled.form`
   @media all {
     .page-break {
       // display: none;
     }
+  }
+
+  .form-group.ethnicity-form{
+    margin-bottom:20px !important;
   }
 
   @media print {
@@ -48,8 +60,21 @@ const ApplicationFormStyled = styled.form`
     #applicationForm .form-group {
       margin-top: 30px !important;
     }
+
+    #applicationForm  .ethnicity-labels{
+      white-space:none !important;
+      font-size:12px !important;
+      margin-top:-5px;
+    }
+
+    #applicationForm  .form-group.ethnicity-form{
+      margin-bottom:20px !important;
+    }
+    .ch_phone_type2{
+      margin-top:5px !important;
+    }
   }
-  @page {git
+  @page {
     size: auto;
     margin: 5mm;
   }

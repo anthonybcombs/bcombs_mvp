@@ -56,9 +56,13 @@ const ApplicationFormStyled = styled.form`
     #applicationForm .form-group {
       margin-top: 30px !important;
     }
+
+    #applicationForm .form-group.ethnicity-form {
+      margin-bottom: 20px !important;
+    }
   }
-  @page {git
-    size: auto;
+  @page {
+    gitsize: auto;
     margin: 5mm;
   }
 `;
@@ -885,7 +889,7 @@ export default function index() {
               app_programs={
                 vendors && vendors.length > 0 ? vendors[0].app_programs : []
               }
-           //   isVendorView={true}
+              isVendorView={true}
             />
           )}
 

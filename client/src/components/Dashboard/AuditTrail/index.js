@@ -417,7 +417,7 @@ const AuditTrail = props => {
 
 
   useEffect(() => {
-      console.log('USE EFFECT', applications)
+    
     if(applications && applications.applicationHistory) {
       let defaultData = applications.applicationHistory.sort((item1,item2 ) => new Date(item1.updated_at )- new Date(item2.updated_at)).reverse();
       setDefaultApplication(defaultData)
@@ -692,6 +692,22 @@ const AuditTrail = props => {
 
   const columns = [
     {
+      name: "Updated At",
+      selector: "updated_at",
+      sortable: true,
+      cell: row => {
+        return format(new Date(row.updated_at), DATE_TIME_FORMAT);
+      }
+    },
+    {
+      name: "Updated By",
+      selector: "updated_by",
+      sortable: true,
+      cell: row => {
+        return row.updated_by
+      }
+    },
+    {
       name: "Application Date",
       selector: "details",
       cell: row => {
@@ -754,16 +770,7 @@ const AuditTrail = props => {
         return;
       }
     },
-  
- 
-    {
-      name: "Updated At",
-      selector: "updated_at",
-      sortable: true,
-      cell: row => {
-        return format(new Date(row.updated_at), DATE_TIME_FORMAT);
-      }
-    },
+
     {
       selector: 'class',
       sortable: true,
