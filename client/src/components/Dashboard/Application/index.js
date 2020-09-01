@@ -30,11 +30,6 @@ import ProfileImg from "../../../images/defaultprofile.png";
 import { format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
 
-/*
-
-
-  */
-
 const ApplicationFormStyled = styled.form`
   @media all {
     .page-break {
@@ -180,7 +175,7 @@ export default function index() {
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
-  const [emergencyContacts, setEmergencyContacts] = useState([]);
+  const [setupParentsListemergencyContacts, setEmergencyContacts] = useState([]);
 
   const [view, setView] = useState("");
 
@@ -648,6 +643,7 @@ export default function index() {
           childInformation.emergency_care_information.hospital_preference,
         hospital_phone:
           childInformation.emergency_care_information.hospital_phone,
+        nickname: childInformation.profile.nick_name,
         ch_id: childInformation.ch_id
       },
       parents: setupParentsList(),
@@ -701,13 +697,9 @@ export default function index() {
 
       child.profile = profile;
     } else if (section === "general_information") {
-      if (id === "was_suspended") {
-        value = value === "true";
-        if (!value)
-          general_information = {
-            ...general_information,
-            ["reason_suspended"]: ""
-          };
+      if(id === "was_suspended") {
+        if (value == "0")
+          general_information = {...general_information, ["reason_suspended"]: ""};
       }
 
       if (id.includes("act_scores")) {
@@ -893,9 +885,6 @@ export default function index() {
             <hr className="style-eight"></hr>
           )}
           <br />
-          {/* <br />
-          <br /> */}
-
           {selectNonMenuOption && view == "application" && (
             <ParentFormViewStyled
               parents={parentsInformation}
@@ -908,7 +897,6 @@ export default function index() {
               isVendorView={true}
             />
           )}
-          {/* <div className="page-break" /> */}
           {selectNonMenuOption && view == "application" && (
             <hr className="style-eight"></hr>
           )}
