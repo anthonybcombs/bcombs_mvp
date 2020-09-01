@@ -57,7 +57,7 @@ const ApplicationFormStyled = styled.form`
       margin-top: 30px !important;
     }
   }
-  @page {
+  @page {git
     size: auto;
     margin: 5mm;
   }

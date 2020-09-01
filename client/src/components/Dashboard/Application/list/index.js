@@ -640,7 +640,6 @@ export default function index({
   const subHeaderComponentMemo = useMemo(() => {
     const handleClear = () => {
       if (filterText) {
-        setResetPaginationToggle(!resetPaginationToggle);
         setFilterText("");
       }
     };
