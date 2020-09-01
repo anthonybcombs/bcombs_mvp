@@ -102,24 +102,22 @@ export default function index({
   app_programs = [],
   isVendorView = false
 }) {
-
-  const { applications } = useSelector(
-    ({ applications }) => {
-      return {applications}
-    }
-  );
+  const { applications } = useSelector(({ applications }) => {
+    return { applications };
+  });
 
   const handleScoresChange = () => {};
 
   let pastChildInformation = {};
 
-  if(applications && 
-    applications.applicationHistory && 
-    applications.applicationHistory.length > 0) {
+  if (
+    applications &&
+    applications.applicationHistory &&
+    applications.applicationHistory.length > 0
+  ) {
+    const application = JSON.parse(applications.applicationHistory[0].details);
 
-    const application = JSON.parse(applications.applicationHistory[0].details); 
-
-    if(application && application.child) {
+    if (application && application.child) {
       pastChildInformation = application.child;
     }
   }

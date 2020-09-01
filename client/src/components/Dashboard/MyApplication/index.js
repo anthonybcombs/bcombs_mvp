@@ -45,8 +45,11 @@ const ApplicationFormStyled = styled.form`
       page-break-before: auto;
       position: relative;
     }
+    #applicationForm .form-group {
+      margin-top: 30px !important;
+    }
   }
-  @page {
+  @page {git
     size: auto;
     margin: 5mm;
   }

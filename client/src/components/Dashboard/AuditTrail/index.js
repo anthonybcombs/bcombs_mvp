@@ -380,7 +380,10 @@ const AuditTrail = props => {
   const [statusText, setStatusText] = useState("");
   const [colorText, setColorText] = useState("");
 
+  const [defaultApplication,setDefaultApplication] = useState([])
   const [filteredData, setFilteredData] = useState([]);
+
+  const [isLoading,setIsLoading ] = useState(true)
 
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
@@ -414,9 +417,14 @@ const AuditTrail = props => {
 
 
   useEffect(() => {
+      console.log('USE EFFECT', applications)
+    if(applications && applications.applicationHistory) {
+      let defaultData = applications.applicationHistory.sort((item1,item2 ) => new Date(item1.updated_at )- new Date(item2.updated_at)).reverse();
+      setDefaultApplication(defaultData)
+    }
     if(filterText !== '' && applications   &&  applications.applicationHistory) {
      
-      let updatedApplication =applications ?  applications.applicationHistory.map((item,index) => {
+      let updatedApplication = applications ?  applications.applicationHistory.map((item,index) => {
         return {...item,index}
       }) : []
       updatedApplication = applications && updatedApplication.filter(item => {
@@ -447,17 +455,23 @@ const AuditTrail = props => {
     
         return false
       
-      });
+      }).sort((item1,item2 ) => new Date(item1.updated_at )- new Date(item2.updated_at)).reverse();
+     
       setFilteredData([...(updatedApplication || [])])
+    
     }
     else{
-      if(applications) {
+      if(applications && applications.applicationHistory.length > 0) {
         let updatedApplication = applications.applicationHistory.map((item,index) => {
           return {...item,index}
-        })
+        }).sort((item1,item2 )=> new Date(item1.updated_at )- new Date(item2.updated_at)).reverse();
         setFilteredData( updatedApplication|| [])
+        setIsLoading(false)
       }
     }
+
+
+    
   },[filterText,applications])
 
   const subHeaderComponentMemo = useMemo(() => {
@@ -695,7 +709,12 @@ const AuditTrail = props => {
       selector: "studentName",
       sortable: true,
       cell: row => {
-        let application = row.details ? JSON.parse(row.details) : null;
+       
+         let updatedData =   defaultApplication.find(item => {
+          return item.app_id === row.app_id
+        })
+        let application = updatedData && updatedData.details ? JSON.parse(updatedData.details) : null;
+      
         if (application) {
           return (
             <a target="_blank" href={"menteeprofile/" + application.id}>
@@ -1214,9 +1233,10 @@ const AuditTrail = props => {
             striped={true}
             subHeader
             subHeaderComponent={subHeaderComponentMemo}
+            progressPending={isLoading}
           />
         }
-{
+        {
                   loading.application ? (
                     <Loading />
                   ) : (
@@ -1232,6 +1252,8 @@ const AuditTrail = props => {
                         onSubmit={handleSubmit(onSubmitSaveApplication)}
                       >
                         <ChildFormViewStyled
+                          isFormHistory={true}
+                          isVendorView={true}
                           childInformation={childInformation}
                           vendor={{name: vendorName}}
                           ProfileImg={ProfileImg}
