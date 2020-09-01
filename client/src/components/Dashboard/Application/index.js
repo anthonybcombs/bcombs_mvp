@@ -175,7 +175,7 @@ export default function index() {
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
-  const [setupParentsListemergencyContacts, setEmergencyContacts] = useState([]);
+  const [emergencyContacts, setEmergencyContacts] = useState([]);
 
   const [view, setView] = useState("");
 
