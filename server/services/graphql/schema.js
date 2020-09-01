@@ -292,12 +292,12 @@ const inputs = `
         parents: [ParentInfoInput]
         updated_by: String
         emergency_contacts: String!
-        section1_signature: String!
-        section1_date_signed: Date!
-        section2_signature: String!
-        section2_date_signed: Date!
-        section3_signature: String!
-        section3_date_signed: Date!
+        section1_signature: String
+        section1_date_signed: Date
+        section2_signature: String
+        section2_date_signed: Date
+        section3_signature: String
+        section3_date_signed: Date
         section1_text: String
         section2_text: String
         section3_text: String
