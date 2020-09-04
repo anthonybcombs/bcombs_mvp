@@ -370,7 +370,7 @@ export default function Layout({ children }) {
                                   <span>Application</span>
                                 </Link>
                               )} */}
-                              {currentUserType === "VENDOR" && (
+                              {/* {currentUserType === "VENDOR" && (
                                 <Link
                                   to="/dashboard/audittrail"
                                   onClick={() => {
@@ -378,7 +378,7 @@ export default function Layout({ children }) {
                                   }}>
                                   <span>Audit Trail</span>
                                 </Link>
-                              )}
+                              )} */}
                               <a
                                 onClick={() => {
                                   dispatch(requestLogout());

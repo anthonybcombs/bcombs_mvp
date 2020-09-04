@@ -459,6 +459,17 @@ export default function index({
       cell: row => getPrimaryParentName(row.parents, row.id)
     },
     {
+      name: "Class",
+      selector: "class",
+      sortable: true,
+      cell: row => {
+        if (row.class_teacher && appGroups && appGroups.length) {
+          return (appGroups.find(e => e.app_grp_id === row.class_teacher) || {}).name || '-'
+        }
+        return '-'
+      }
+    },
+    {
       name: "Grade",
       selector: "class",
       sortable: true,

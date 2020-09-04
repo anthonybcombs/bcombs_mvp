@@ -48,7 +48,7 @@ const ChildFormHeader = styled.div`
     font-size: 2em;
     color: #f26e21;
     background: none;
-    z-index: 1;
+    z-index: 2;
   }
 
   .edit-button.activeEdit {
@@ -57,6 +57,7 @@ const ChildFormHeader = styled.div`
 
   .application-date {
     position: relative;
+    z-index: 1;
   }
   .application-date div {
     position: absolute;
@@ -66,6 +67,12 @@ const ChildFormHeader = styled.div`
     text-align: center;
     top: 18px;
     padding-left: 40px;
+  }
+  .application-date a {
+    position: absolute;
+    right: 56px;
+    top: 6px;
+    font-size: 16px;
   }
 
   @media (max-width: 768px) {
@@ -100,7 +107,8 @@ export default function index({
   isFormHistory = false,
   location_sites = [],
   app_programs = [],
-  isVendorView = false
+  isVendorView = false,
+  handleSelectLatestApplication = null
 }) {
   const { applications } = useSelector(({ applications }) => {
     return { applications };
@@ -136,7 +144,23 @@ export default function index({
           </button>
         )}
         <div className="application-date">
-          <div>{childInformation.profile.application_date}</div>
+          <div>
+            {childInformation.profile.application_date}
+            {
+              isFormHistory && handleSelectLatestApplication && (
+                <a 
+                  href=""
+                  target="_blank" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSelectLatestApplication()
+                  }}
+                >
+                  View Latest
+                </a>
+              )
+            }
+          </div>
         </div>
       </ChildFormHeader>
 
