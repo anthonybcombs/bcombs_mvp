@@ -881,7 +881,7 @@ export default function index() {
               app_programs={
                 vendors && vendors.length > 0 ? vendors[0].app_programs : []
               }
-              isVendorView={true}
+              //isVendorView={true}
             />
           )}
 
@@ -898,7 +898,7 @@ export default function index() {
               isReadonly={isReadonly}
               isUpdate={true}
               emergencyContacts={emergencyContacts}
-              isVendorView={true}
+           
             />
           )}
           {selectNonMenuOption && view == "application" && (
