@@ -487,26 +487,26 @@ export default function index({
       sortable: true,
       cell: row => format(new Date(row.application_date), DATE_FORMAT)
     },
-    {
-      name: "Attachment 1",
-      selector: "attachment1",
-      sortable: false,
-      cell: row => (
-        <a href="#">
-          <span>-</span>
-        </a>
-      )
-    },
-    {
-      name: "Attachment 2",
-      selector: "attachment2",
-      sortable: false,
-      cell: row => (
-        <a href="#">
-          <span>-</span>
-        </a>
-      )
-    }
+    // {
+    //   name: "Attachment 1",
+    //   selector: "attachment1",
+    //   sortable: false,
+    //   cell: row => (
+    //     <a href="#">
+    //       <span>-</span>
+    //     </a>
+    //   )
+    // },
+    // {
+    //   name: "Attachment 2",
+    //   selector: "attachment2",
+    //   sortable: false,
+    //   cell: row => (
+    //     <a href="#">
+    //       <span>-</span>
+    //     </a>
+    //   )
+    // }
   ];
 
   const customStyles = {
