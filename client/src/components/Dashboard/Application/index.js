@@ -701,9 +701,12 @@ export default function index() {
 
       child.profile = profile;
     } else if (section === "general_information") {
-      if(id === "was_suspended") {
+      if (id === "was_suspended") {
         if (value == "0")
-          general_information = {...general_information, ["reason_suspended"]: ""};
+          general_information = {
+            ...general_information,
+            ["reason_suspended"]: ""
+          };
       }
 
       if (id.includes("act_scores")) {
@@ -898,7 +901,6 @@ export default function index() {
               isReadonly={isReadonly}
               isUpdate={true}
               emergencyContacts={emergencyContacts}
-           
             />
           )}
           {selectNonMenuOption && view == "application" && (
