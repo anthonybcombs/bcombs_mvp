@@ -460,7 +460,7 @@ export default function index({
     },
     {
       name: "Class",
-      selector: "class",
+      selector: "classGroup",
       sortable: true,
       cell: row => {
         if (row.class_teacher && appGroups && appGroups.length) {
