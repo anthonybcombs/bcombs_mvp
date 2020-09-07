@@ -273,7 +273,6 @@ export default function index() {
               child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
               program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
               ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
-              nick_name: application.child.nickname ? application.child.nickname: ""
             },
             general_information: {
               grade: application.child.grade_number ? application.child.grade_number: "",
@@ -396,11 +395,6 @@ export default function index() {
           e.preventDefault();
 
           dispatch(requestGetApplicationHistory(application.app_id));
-          
-          const updatedAt = application.app_histories && application.app_histories.length
-            ? application.app_histories[0]
-              ? application.app_histories[0].updated_at : application.application_date
-            : application.application_date
 
           const childInformationObj = {
             profile: {
