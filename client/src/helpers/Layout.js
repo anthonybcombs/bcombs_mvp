@@ -226,9 +226,9 @@ export default function Layout({ children }) {
                     <Link data-testid="app-header-login" to="/">
                       Login
                     </Link>
-                    <Link data-testid="app-header-register" to="/auth/create">
+                    {/* <Link data-testid="app-header-register" to="/auth/create">
                       Register
-                    </Link>
+                    </Link> */}
                   </>
                 );
               }

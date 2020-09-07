@@ -119,14 +119,14 @@ export default function Form({
     reValidateMode: "onChange"
   });
 
-  const onVerifyCaptcha = (response) => {
+  const onVerifyCaptcha = response => {
     if (response) {
-      setValue('not_robot', response);
+      setValue("not_robot", response);
     }
   };
 
   useEffect(() => {
-    register({ name: 'not_robot'}, { required: true });
+    register({ name: "not_robot" }, { required: true });
   });
 
   return (
@@ -134,8 +134,7 @@ export default function Form({
       theme={theme}
       data-testid="app-login-form"
       method="POST"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      onSubmit={handleSubmit(onSubmit)}>
       <input
         type="email"
         id="email"
@@ -171,8 +170,8 @@ export default function Form({
         message="Password is required."
       />
       <Recaptcha
-        sitekey='6LcDvbQZAAAAAI5egI5fYzQYk3wCOZULXy_wHFM9'
-        render='explicit'
+        sitekey="6LcDvbQZAAAAAI5egI5fYzQYk3wCOZULXy_wHFM9"
+        render="explicit"
         verifyCallback={onVerifyCaptcha}
       />
       <ErrorMessage
@@ -208,10 +207,11 @@ export default function Form({
         </button>
       </div> */}
       {/* END Temporary comment as of august 28 */}
-      <div id="authOptions" className="grid">
-        <p>
+      {/*className="grid" */}
+      <div id="authOptions">
+        {/* <p>
           New Member! <Link to="/auth/create">Sign Up</Link>
-        </p>
+        </p> */}
         <p>
           <Link to="/auth/forgot-password">Forgot Password</Link>
         </p>

@@ -101,7 +101,7 @@ export default function App() {
             <AyncDashboardMyContactsPublic path="/mycalendars/public/:id" />
             <AsyncAuth path="/">
               <AsyncLogin default />
-              <AsyncCreateUser path="auth/create" />
+              {/* <AsyncCreateUser path="auth/create" /> */}
               <AsyncForgotPassword path="auth/forgot-password" />
             </AsyncAuth>
             <AsycDashboard path="/dashboard">
