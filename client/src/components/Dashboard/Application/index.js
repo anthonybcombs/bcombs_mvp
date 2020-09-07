@@ -1051,7 +1051,7 @@ export default function index() {
                 handleSelectedLabel("Form Settings");
               }}>
               <FontAwesomeIcon icon={faCogs} />
-              <span>Form Settings</span>
+              <span>Application Settings</span>
             </div>
 
             <a href={`/dashboard/audittrail`}>
