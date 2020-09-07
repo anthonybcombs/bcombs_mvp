@@ -221,6 +221,7 @@ const GlobalStyle = createGlobalStyle`
 
   #applicationForm .highlights {
     border: 1px solid #f26e21 !important;
+    padding: 5px;
     //border-color: #f26e21 !important;
   }
 
