@@ -280,6 +280,7 @@ export default function index({
     { id: 5, name: "Uncle", label: "Uncle" },
     { id: 6, name: "Aunt", label: "Aunt" },
     { id: 7, name: "Cousin (Male)", label: "Cousin (Male)" },
+    { id: 23, name: "Cousin (Female)", label: "Cousin (Female)" },
     { id: 8, name: "Grandfather", label: "Grandfather" },
     { id: 9, name: "Grandmother", label: "Grandmother" },
     { id: 10, name: "Stepbrother", label: "Stepbrother" },
