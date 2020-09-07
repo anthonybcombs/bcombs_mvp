@@ -949,7 +949,7 @@ export default function index() {
       name: 'Updated At',
       selector: 'status',
       sortable: true,
-      cell: row => format(new Date(row.updated_at), DATE_TIME_FORMAT)
+      cell: row => format(new Date(row.updated_at), "LLL dd, yyyy p")
     },
     {
       name: 'Updated By',
