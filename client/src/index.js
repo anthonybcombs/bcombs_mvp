@@ -222,15 +222,15 @@ const GlobalStyle = createGlobalStyle`
   #applicationForm .highlights {
     border: 1px solid #f26e21 !important;
     padding: 5px;
-    background-color: #f26e21;
-    color: #ffffff;
+    background-color: #f26e21 !important;
+    color: #ffffff !important;
     //border-color: #f26e21 !important;
   }
 
   #applicationForm .highlights-textarea {
-    background-color: #f26e21;
+    background-color: #f26e21 !important;
     border: 2px solid #f26e21 !important;
-    color: #ffffff;
+    color: #ffffff !important;
   }
 
   #applicationForm select {
