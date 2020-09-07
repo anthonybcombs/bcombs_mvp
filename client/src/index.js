@@ -220,7 +220,8 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #applicationForm .highlights {
-    border-color: #f26e21 !important;
+    border: 1px solid #f26e21 !important;
+    //border-color: #f26e21 !important;
   }
 
   #applicationForm .highlights-textarea {
