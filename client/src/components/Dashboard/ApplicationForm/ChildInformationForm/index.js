@@ -723,7 +723,7 @@ export default function index({
                     } `}
                     name={"ethinicity_" + (counter - 1)}
                     style={{
-                      background: "white",
+                      //background: "white",
                       borderBottom: "2px solid rgb(204, 204, 204) !important",
                       resize: "none",
                       margin: "0px 0px 15px 0px",
@@ -1355,7 +1355,7 @@ export default function index({
                   }
                   name={"ch_location_site" + (counter - 1)}
                   style={{
-                    background: "white",
+                    // background: "white",
                     borderBottom: "2px solid rgb(204, 204, 204) !important",
                     resize: "none",
                     whiteSpace: "pre-wrap",
@@ -1426,7 +1426,7 @@ export default function index({
                   }
                   name={"program_" + (counter - 1)}
                   style={{
-                    background: "white",
+                    //background: "white",
                     borderBottom: "2px solid rgb(204, 204, 204) !important",
                     resize: "none",
                     whiteSpace: "pre-wrap",
@@ -1489,7 +1489,7 @@ export default function index({
                       : "field-input readonly"
                   }
                   style={{
-                    background: "white",
+                    //background: "white",
                     borderBottom: "2px solid rgb(204, 204, 204) !important",
                     resize: "none",
                     whiteSpace: "pre-wrap",
