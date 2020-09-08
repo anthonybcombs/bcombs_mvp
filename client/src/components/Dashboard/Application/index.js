@@ -216,7 +216,11 @@ export default function index() {
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-    copyStyles: true
+    copyStyles: true,
+    pageStyle:`
+    #applicationForm  .highlights{
+      border-bottom: 2px solid #ccc !important;
+    }`
   });
 
   const { groups, auth, vendors, applications, loading } = useSelector(
