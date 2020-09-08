@@ -220,11 +220,17 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #applicationForm .highlights {
-    border-color: #f26e21;
+    border: 1px solid #f26e21;
+    padding: 5px;
+    background-color: #f26e21 !important;
+    color: #ffffff !important;
+    //border-color: #f26e21 !important;
   }
 
   #applicationForm .highlights-textarea {
+    background-color: #f26e21 !important;
     border: 2px solid #f26e21 !important;
+    color: #ffffff !important;
   }
 
   #applicationForm select {

@@ -1186,11 +1186,11 @@ export default function index({
           </div>
         </div>
 
-        <div className="agree-text">How long have you live in this area?</div>
+        <div className="agree-text">How long have you lived in this area?</div>
 
         <div className="form-group">
           <label className="cus-select-container">
-            1 - 5 Year
+            1 - 5 Year(s)
             <input
               type="radio"
               onChange={({ target }) => {
@@ -1208,7 +1208,7 @@ export default function index({
             <span className="checkmark"></span>
           </label>
           <label className="cus-select-container">
-            5 - 10 Year
+            5 - 10 Year(s)
             <input
               type="radio"
               onChange={({ target }) => {
@@ -1225,7 +1225,7 @@ export default function index({
             <span className="checkmark"></span>
           </label>
           <label className="cus-select-container">
-            More than 10 Year
+            More than 10 Year(s)
             <input
               type="radio"
               onChange={({ target }) => {

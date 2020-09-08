@@ -953,7 +953,7 @@ export default function index() {
       name: 'Updated At',
       selector: 'status',
       sortable: true,
-      cell: row => format(new Date(row.updated_at), DATE_TIME_FORMAT)
+      cell: row => format(new Date(row.updated_at), "LLL dd, yyyy p")
     },
     {
       name: 'Updated By',
@@ -1055,7 +1055,7 @@ export default function index() {
                 handleSelectedLabel("Form Settings");
               }}>
               <FontAwesomeIcon icon={faCogs} />
-              <span>Form Settings</span>
+              <span>Application Settings</span>
             </div>
 
             <a href={`/dashboard/audittrail`}>
