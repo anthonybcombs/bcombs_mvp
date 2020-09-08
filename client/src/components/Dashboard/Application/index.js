@@ -219,8 +219,22 @@ export default function index() {
     copyStyles: true,
     pageStyle:`
     #applicationForm  .highlights{
+
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
       border-bottom: 2px solid #ccc !important;
-    }`
+  
+      background: none !important ;
+      color: #555 !important;
+    }
+    #applicationForm .highlights-textarea {
+      border: 2px solid #ccc !important;
+      background: none !important ;
+      color: #555 !important;
+    }
+    
+    `
   });
 
   const { groups, auth, vendors, applications, loading } = useSelector(
