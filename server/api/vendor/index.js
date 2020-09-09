@@ -390,7 +390,7 @@ export const addVendor = async ({ user, name = "" }) => {
     console.log("ADD VENDORRR");
     result = await db.query(
       `INSERT INTO vendor(id, user, name)
-      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?))
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), ?)
       `,
       [user, name]
     );
