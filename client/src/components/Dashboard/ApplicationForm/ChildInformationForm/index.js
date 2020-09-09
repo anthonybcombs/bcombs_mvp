@@ -409,7 +409,7 @@ export default function index({
         id={`date_of_birth_${counter - 1}`}
         ref={register({ required: true })}
       />
-      <label className="field-label">
+      <label className="field-label" for={`date_of_birth_${counter - 1}`}>
         <span className="required">*</span> Date of Birth
       </label>
     </div>
@@ -460,7 +460,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.first_name}
               />
-              <label className="field-label">
+              <label className="field-label" for={`ch_first_name_${counter - 1}`}>
                 <span className="required">*</span> First Name
               </label>
             </div>
@@ -498,7 +498,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.last_name}
               />
-              <label className="field-label">
+              <label className="field-label" for={`ch_last_name_${counter - 1}`}>
                 <span className="required">*</span> Last Name
               </label>
             </div>
@@ -536,7 +536,7 @@ export default function index({
                 ref={register()}
                 defaultValue={childProfile.nick_name}
               />
-              <label className="field-label">Nick Name</label>
+              <label className="field-label" for={`ch_nick_name_${counter - 1}`}>Nick Name</label>
             </div>
           </div>
         </div>
@@ -876,7 +876,9 @@ export default function index({
                 />
               )}
 
-              <label className="field-label">Phone Number</label>
+              <label className="field-label" for={`ch_phone_number_${counter - 1}`}>
+                Phone Number
+              </label>
             </div>
             <ErrorMessage
               field={errors["ch_phone_number" + (counter - 1)]}
@@ -972,7 +974,9 @@ export default function index({
                     defaultValue={childProfile.phone_number}
                   />
                 )}
-                <label className="field-label">Phone Number</label>
+                <label className="field-label" for={`ch_phone_number2_${counter - 1}`}>
+                  Phone Number
+                </label>
               </div>
               <ErrorMessage
                 field={errors["ch_phone_number2" + (counter - 1)]}
@@ -1065,7 +1069,7 @@ export default function index({
                   }
                 })}
               />
-              <label className="field-label">
+              <label className="field-label" for={`ch_email_address_${counter - 1}`}>
                 Email Address (Child only, if applicable)
               </label>
             </div>
@@ -1150,7 +1154,7 @@ export default function index({
                     }
                   })}
                 />
-                <label className="field-label">
+                <label className="field-label" for={`ch_email_address2_${counter - 1}`}>
                   Email Address (Child only, if applicable)
                 </label>
               </div>
@@ -1192,7 +1196,7 @@ export default function index({
                 ref={register({ required: true })}
                 defaultValue={childProfile.address}
               />
-              <label className="field-label">
+              <label className="field-label" for={`ch_address_${counter - 1}`}>
                 <span className="required">*</span> Address
               </label>
             </div>
@@ -1230,7 +1234,7 @@ export default function index({
                 defaultValue={childProfile.city}
                 ref={register({ required: true })}
               />
-              <label className="field-label">
+              <label className="field-label" for={`ch_city_${counter - 1}`}>
                 <span className="required">*</span> City
               </label>
             </div>
@@ -1320,7 +1324,7 @@ export default function index({
                 ref={register({ required: true, minLength: 5 })}
                 maxLength="5"
               />
-              <label className="field-label">
+              <label className="field-label" for={`ch_zip_code_${counter - 1}`}>
                 <span className="required">*</span> Zip Code
               </label>
             </div>
