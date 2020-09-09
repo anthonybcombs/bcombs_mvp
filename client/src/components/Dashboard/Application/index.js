@@ -290,11 +290,13 @@ export default function index() {
 
         console.log("newDefaultVendor", newDefaultVendor);
         setSelectedVendor(newDefaultVendor[0]);
+        dispatch(requestGetApplications(newDefaultVendor[0].id));
       } else {
         setSelectedVendor(vendors[0]);
+        dispatch(requestGetApplications(vendors[0].id));
       }
 
-      dispatch(requestGetApplications(vendors[0].id));
+      
     }
   }, [vendors]);
 
