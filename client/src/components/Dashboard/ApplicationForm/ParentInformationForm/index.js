@@ -1190,7 +1190,7 @@ export default function index({
 
         <div className="form-group">
           <label className="cus-select-container">
-            1 - 5 Year(s)
+            1 - 5 Years
             <input
               type="radio"
               onChange={({ target }) => {
@@ -1208,7 +1208,7 @@ export default function index({
             <span className="checkmark"></span>
           </label>
           <label className="cus-select-container">
-            5 - 10 Year(s)
+            5 - 10 Years
             <input
               type="radio"
               onChange={({ target }) => {
@@ -1225,7 +1225,7 @@ export default function index({
             <span className="checkmark"></span>
           </label>
           <label className="cus-select-container">
-            More than 10 Year(s)
+            More than 10 Years
             <input
               type="radio"
               onChange={({ target }) => {
