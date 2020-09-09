@@ -673,7 +673,8 @@ export default function index() {
       name: 'Student Name',
       selector: 'studentName',
       sortable: true,
-      cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>
+      // cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>
+      cell: row => row.child?.firstname + " " + row.child?.lastname
     },
     {
       name: 'Vendor',
