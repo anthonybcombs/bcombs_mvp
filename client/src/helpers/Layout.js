@@ -146,6 +146,7 @@ const PopoverStyled = styled.div`
 `;
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
+  const [isPopOverSettingsVisible, setIsPopOverSettingsVisible] = useState(false);
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
   const [currentUserType, setCurrentUserType] = useState("");
 
@@ -322,7 +323,7 @@ export default function Layout({ children }) {
                         to="/dashboard/notifications">
                         <FontAwesomeIcon icon={faBell} />
                       </Link>
-                      <Link
+                      {/* <Link
                         className={`${
                           context.location.pathname === "/dashboard/settings"
                             ? "selected"
@@ -330,7 +331,55 @@ export default function Layout({ children }) {
                         }`}
                         to="/dashboard/settings">
                         <FontAwesomeIcon icon={faCog} />
-                      </Link>
+                      </Link> */}
+
+                      <Popover
+                        containerStyle={{
+                          position: "relative",
+                          right: 25
+                        }}
+                        isOpen={isPopOverSettingsVisible}
+                        position={["bottom", "right"]}
+                        content={({ position, targetRect, popoverRect }) => (
+                          <ArrowContainer
+                            position={position}
+                            targetRect={targetRect}
+                            align="end"
+                            popoverRect={popoverRect}
+                            arrowColor="lightgrey"
+                            arrowSize={7}
+                            arrowStyle={{ opacity: 1 }}
+                            containerStyle={{
+                              right: 12
+                            }}
+                            arrow="center">
+                            <PopoverStyled>
+                              {
+                                currentUserType === 'VENDOR' && (
+                                  <Link
+                                    to="/dashboard/admin"
+                                    onClick={() => {
+                                      setIsPopOverSettingsVisible(false);
+                                    }}>
+                                    <span>Manage Admin</span>
+                                  </Link>
+                                )
+                              }
+                            </PopoverStyled>
+                          </ArrowContainer>
+                        )}
+                        onClickOutside={({ position, targetRect, popoverRect }) => {
+                          setIsPopOverSettingsVisible(false);
+                        }}>
+                        <a
+                          onClick={() => {
+                            console.log("pop over is visible")
+                            setIsPopOverSettingsVisible(true);
+                          }}>
+                          <FontAwesomeIcon icon={faCog} />
+                        </a>
+                      </Popover>
+
                       <Popover
                         containerStyle={{
                           position: "relative",

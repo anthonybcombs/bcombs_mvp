@@ -10,7 +10,7 @@ import TermsWaiverFormStyled from "./Step3TermsWaiverForm";
 
 import { format } from "date-fns";
 
-import { requestVendor } from "../../../redux/actions/Vendors";
+import { requestVendor, requestVendorById2 } from "../../../redux/actions/Vendors";
 import { requestAddApplication } from "../../../redux/actions/Application";
 
 import ProfileImg from "../../../images/defaultprofile.png";
@@ -169,18 +169,21 @@ export default function index() {
 
   useEffect(() => {
     if(vendor_id) {
-      dispatch(requestVendor(vendor_id));
+      dispatch(requestVendorById2(vendor_id));
+      //dispatch(requestVendor(vendor_id));
     }
   }, []);
 
   useEffect(() => {
-    console.log("vendor", vendors);
     if (vendors && vendors.length > 0) {
       setVendor(vendors[0]);
     }
   }, [vendors]);
 
   if(vendor && vendor.id) {
+
+    console.log("vendor", vendor);
+
     let app_programs = []
 
     for(const program of vendor.app_programs) {
@@ -192,8 +195,6 @@ export default function index() {
     }
 
     vendor.app_programs = app_programs;
-
-    console.log("vendor", vendor);
   }
 
   const section1BtnContainerStyle = {
@@ -578,6 +579,8 @@ export default function index() {
   const handleRemoveParent = (index) => {
     if(parentsInformation.length > 1) {
       let tempParentsInformation = parentsInformation;
+
+      console.log("parentsInformation", parentsInformation);
       tempParentsInformation.splice( index, 1 )
       setParentsInformation([...tempParentsInformation]);
     }

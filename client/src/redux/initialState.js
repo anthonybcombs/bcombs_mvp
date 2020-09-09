@@ -231,4 +231,5 @@ export const initialState = {
   ],
   vendors: [],
   applications: [],
+  admins: []
 };

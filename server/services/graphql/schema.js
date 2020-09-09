@@ -305,6 +305,27 @@ const inputs = `
         section2_name: String
         section3_name: String
     }
+
+    input AddAdminInput {
+        name: String!
+        email: String!
+        vendors: [String!]
+        currentUser: String!
+    }
+
+    input DeleteAdminInput {
+        user: String!
+        vendor: String!
+        currentUser: String!
+    }
+
+    input UpdateAdminInput{
+        name: String!
+        email: String!
+        vendors: [String!]
+        currentUser: String!
+        user: String!
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -665,6 +686,15 @@ const queryTypes = `
         app_histories: [ApplicationHistory]
     }
 
+    type Admin{
+        user: String
+        email: String
+        name: String
+        vendorName: String
+        vendor: String
+        isOwner: Boolean
+    }
+
 `;
 
 const mutations = `
@@ -695,6 +725,9 @@ const mutations = `
         editVendorAppGroup(appGroup: AppGroupInput!): AllGroups
         deleteVendorAppGroup(appGroup: DeleteAppGroupInput!): AllGroups
         saveApplication(application: SaveApplicationUserInput): Status
+        addVendorAdmin(admin: AddAdminInput): [Admin]
+        deleteVendorAdmin(admins: [DeleteAdminInput]): [Admin]
+        updateVendorAdmin(admin: UpdateAdminInput): [Admin]
     }
 `;
 
@@ -716,6 +749,7 @@ const queries = `
         grades: [Grade]
         vendors: [Vendor]
         vendorsByUser(user: String): [Vendor]
+        getVendorById2(id2: String): [Vendor]
         getApplications: [Application]
         getVendorApplications(vendor_id: String!): [Application]
         getVendorArchivedApplications(vendor_id: String!): [Application]
@@ -727,6 +761,7 @@ const queries = `
         getUserApplicationsByUserId(user_id: String!): [Application]
         getApplicationHistory(app_id: String!): [ApplicationHistory]
         getUserApplicationHistory(id: String!):[ApplicationHistory]
+        getVendorAdminsByUser(user: String): [Admin]
     }
 `;
 

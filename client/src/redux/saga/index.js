@@ -55,7 +55,14 @@ import { getGrades } from "../actions/Grades";
 
 import { requestedStatus, removedStatus } from "../actions/Status";
 
-import { getVendor, updateVendor } from "../actions/Vendors";
+import { 
+  getVendor, 
+  updateVendor, 
+  getVendorById2, 
+  getVendorAdmins, 
+  addAdmin,
+  deleteAdmins,
+  updateAdmin } from "../actions/Vendors";
 
 import {
   addApplication,
@@ -184,6 +191,32 @@ function* rootSaga() {
     actionType.REQUEST_GET_USER_APPLICATION_HISTORY,
     getUserApplicationHistory
   );
+
+  yield takeLatest(
+    actionType.REQUEST_VENDOR_BY_ID2,
+    getVendorById2
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_GET_VENDOR_ADMINS,
+    getVendorAdmins
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_ADD_ADMIN,
+    addAdmin
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_UPDATE_ADMIN,
+    updateAdmin
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_DELETE_ADMINS,
+    deleteAdmins
+  );
+  
 }
 const sagaMiddleware = createSagaMiddleware();
 

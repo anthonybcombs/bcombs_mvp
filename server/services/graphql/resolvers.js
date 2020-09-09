@@ -8,7 +8,8 @@ import {
   executeGetUser,
   getUserApplication,
   checkUserEmail,
-  executeAddUserProfile
+  executeAddUserProfile,
+  updateUserType
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
@@ -49,7 +50,14 @@ import {
   editAppGroup,
   addAppGroup,
   getVendorAppGroups,
-  getVendorsByUserId
+  getVendorsByUserId,
+  getVendorById2,
+  addVendorAdmins,
+  getVendorAdmins,
+  getVendorsIdByUser,
+  deleteVendorAdmins,
+  updateVendorAdmins,
+  checkIfAdminVendorExists
 } from "../../api/vendor";
 import {
   createApplication,
@@ -71,6 +79,10 @@ import { addChild, getChildInformation } from "../../api/child";
 import { addParent, getParentByApplication } from "../../api/parents";
 
 import { getUserFromDatabase } from "../../api";
+
+import { generatePassword } from "../../helpers/randomPassword";
+
+import { sendAdminInvite } from "../../helpers/email"
 
 const resolvers = {
   RootQuery: {
@@ -139,16 +151,12 @@ const resolvers = {
     async vendorsByUser(root, { user }, context) {
       let vendors = await getVendorsByUserId(user);
       console.log("vendors", vendors);
-      // let vendor = vendors.filter(vendor => {
-      //   return user == vendor.user;
-      // });
 
-      if (vendors && vendors.length > 0) {
-        return vendors;
-      } else {
-        vendors = await addVendor({ user: user });
-        return vendors;
-      }
+      return vendors;
+    },
+    async getVendorById2(root, { id2 }, context) {
+      const vendors = await getVendorById2(id2);
+      return vendors;
     },
     async getVendorApplications(root, { vendor_id }, context) {
       let applications = await getApplicationsByVendor(vendor_id);
@@ -237,6 +245,21 @@ const resolvers = {
       } catch (err) {
         console.log("getUserApplicationHistory error", err);
       }
+    },
+    async getVendorAdminsByUser(root, { user }, context) {
+
+      const vendors = await getVendorsIdByUser(user);
+
+      console.log("vendors", vendors);
+      let admins = [];
+      for(const vendor of vendors) {
+        console.log("vendor", vendor);
+        let va = await getVendorAdmins(vendor.id)
+        admins.push(...va);
+      }
+
+      console.log("admins", admins);
+      return admins;
     }
   },
   RootMutation: {
@@ -532,6 +555,114 @@ const resolvers = {
         messageType: "info",
         message: "application successfully updated"
       };
+    },
+    async deleteVendorAdmin(root, { admins }, context) {
+
+      const currentUser = admins[0].currentUser;
+
+      for(const admin of admins) {
+        await deleteVendorAdmins(admin);
+      }
+
+      const vendors = await getVendorsIdByUser(currentUser);
+
+      let resAdmins = [];
+      for(const vendor of vendors) {
+        console.log("vendor", vendor);
+        let va = await getVendorAdmins(vendor.id)
+        resAdmins.push(...va);
+      }
+
+      console.log("admins", resAdmins);
+      return resAdmins;
+    },
+    async updateVendorAdmin(root, { admin }, context) {
+      
+      for(const vendor of admin.vendors) {
+        const checkVendorExists = await checkIfAdminVendorExists({user: admin.user, vendor:vendor})
+
+        if(checkVendorExists && checkVendorExists.is_exists) {
+          //Update
+          await updateVendorAdmins({user: admin.user, name: admin.name, vendor: vendor});
+        } else {
+          //add
+          await addVendorAdmins({user: admin.user, vendor: vendor, name: admin.name});
+        }
+      }
+
+      const currentUser = admin.currentUser;
+      const vendors = await getVendorsIdByUser(currentUser);
+
+      let resAdmins = [];
+      for(const vendor of vendors) {
+        console.log("vendor", vendor);
+        let va = await getVendorAdmins(vendor.id)
+        resAdmins.push(...va);
+      }
+
+      console.log("admins", resAdmins);
+      return resAdmins;
+
+    },
+    async addVendorAdmin(root, { admin }, context) {
+
+      const checkUser = await checkUserEmail(admin.email);
+
+      let userType = await getUserTypes();
+
+      userType = userType.filter(type => {
+        return type.name === "VENDOR";
+      })[0];
+
+      let user;
+
+      if(checkUser && checkUser.is_exist) {
+        user = checkUser.user;
+
+        if(!(user.type == userType.id)) {
+          //update user type to vendor
+          user.type = userType.id;
+
+          console.log("update user type to vendor", user);
+          await updateUserType(user);
+        }
+
+      } else {
+
+        const newPassword = generatePassword();
+
+        let userParams = {
+          username: admin.name,
+          email: admin.email,
+          password: newPassword,
+          type: userType
+        }
+
+        await executeSignUp(userParams);
+
+        user = await getUserFromDatabase(admin.email);
+
+        sendAdminInvite({email: admin.email, password: newPassword, name: admin.name});
+      }
+
+      for( const vendor of admin.vendors ) {
+        await addVendorAdmins({user: user.id, vendor: vendor, name: admin.name});
+      }
+
+      const vendors = await getVendorsIdByUser(admin.currentUser);
+
+      let admins = [];
+      for(const vendor of vendors) {
+        console.log("vendor", vendor);
+        let va = await getVendorAdmins(vendor.id)
+        admins.push(...va);
+      }
+
+      console.log("admins", admins);
+      return admins;
+
+      // const response = await getVendorAdmins(admin.currentUser);
+      // return response;
     }
   }
 };

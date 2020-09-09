@@ -15,6 +15,7 @@ import loading from "./Loading";
 import grades from "./Grades";
 import vendors from "./Vendors";
 import applications from "./Applications";
+import admins from "./Admins";
 
 const reducer = combineReducers({
   auth,
@@ -32,6 +33,7 @@ const reducer = combineReducers({
   loading,
   grades,
   vendors,
-  applications
+  applications,
+  admins
 });
 export default reducer;

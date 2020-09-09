@@ -206,6 +206,31 @@ export function* loggedOut() {
     type: actionType.REQUEST_GET_CALENDARS_COMPLETED,
     payload: []
   });
+
+  yield put({
+    type: actionType.REQUEST_GET_VENDOR_ADMINS_COMPLETED,
+    payload: []
+  });
+
+  yield put({
+    type: actionType.REQUEST_VENDOR_COMPLETED,
+    payload: [],
+  });
+
+  yield put({
+    type: actionType.REQUEST_VENDOR_COMPLETED,
+    payload: [],
+  });
+
+  yield put({
+    type: actionType.REQUEST_GET_APPLICATION_HISTORY_COMPLETE,
+    payload: []
+  });
+
+  yield put({
+    type: actionType.SET_USER_APPLICATIONS,
+    payload: []
+  });
   // sessionStorage.removeItem("bigCalendarViewType");
   // sessionStorage.removeItem("selectedCalendars");
   yield put({ type: actionType.REQUEST_AUTH_LOGOUT_COMPLETED });

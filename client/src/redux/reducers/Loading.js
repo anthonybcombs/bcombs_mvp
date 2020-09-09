@@ -8,7 +8,9 @@ export default function Loading(
     profile: true,
     application: false,
     form_settings: false,
-    userAllApplications: false
+    userAllApplications: false,
+    addAdmin: false,
+    deleteAdmins: false
   },
   action
 ) {
@@ -52,6 +54,16 @@ export default function Loading(
       return {
         ...state,
         form_settings: action.value
+      }
+    case actionType.SET_ADD_ADMIN_LOADING:
+      return {
+        ...state,
+        addAdmin: action.value
+      }
+    case actionType.SET_DELETE_ADMIN_LOADING:
+      return {
+        ...state,
+        deleteAdmins: action.value
       }
     default:
       return state;

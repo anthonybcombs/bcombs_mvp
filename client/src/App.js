@@ -88,6 +88,12 @@ const AsyncAuditTrail = Loadable({
   loader: () => import("./components/Dashboard/AuditTrail"),
   loading: Loading
 });
+
+const AsyncManageAdmin = Loadable({
+  loader: () => import("./components/Dashboard/Admin"),
+  loading: Loading
+});
+
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -118,6 +124,7 @@ export default function App() {
               <AsyncClassListInformationView path="class/:vendor_id/:name" />
               <AsyncMyApplication path="myapplication" />
               <AsyncAuditTrail path="audittrail" />
+              <AsyncManageAdmin path="admin" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />

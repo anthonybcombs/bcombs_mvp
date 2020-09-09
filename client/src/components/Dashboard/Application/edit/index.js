@@ -99,6 +99,12 @@ export default function index({
   appGroups = []
 }) {
 
+  appGroups = appGroups.filter((group) => {
+    return group.vendor == vendor.id;
+  });
+
+  console.log("appgroups...", appGroups);
+
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"

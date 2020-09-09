@@ -260,3 +260,31 @@ export const sendMigratedAccount = async ({ email, password, firstname }) => {
     console.log("Error", error);
   }
 };
+
+export const sendAdminInvite = async ({ email, password, name}) => {
+  try {
+    sendEmail({
+      ...defaultMailConfig,
+      subject: `Bcombs: Admin Invitation`,
+      to: email,
+      html: `
+        <div>
+          <p>Hi ${name}!</p>
+          <p>
+            This is your account for the bcombs site.
+            <br/>
+            Email: ${email}
+            <br/>
+            Password: ${password}
+            <br/>
+            Please change your password after signing in.
+            <br/>
+            Thanks
+          </p>
+        </div>
+      ` // html body
+    });
+  } catch (error) {
+    console.log("Error", error);
+  }
+}
