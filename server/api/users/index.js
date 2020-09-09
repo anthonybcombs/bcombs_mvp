@@ -328,7 +328,7 @@ export const executeSignUp = async user => {
       )
 
       if(latestUser.length > 0) {
-        await addVendor({user: latestUser[0].id})
+        await addVendor({user: latestUser[0].id, name: user.username + " " + "vendor"})
       }
     }
 

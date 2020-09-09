@@ -1035,8 +1035,6 @@ export default function index() {
               style={{ 
                 "margin-left": "20px",
                 "font-size": "1.5em",
-                "-webkit-appearance": "none",
-                "-moz-appearance": "none",
                 "border-radius": "0",
                 "cursor": "pointer",
                 "width": "100%",
