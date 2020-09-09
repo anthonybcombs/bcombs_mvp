@@ -66,11 +66,12 @@ export default function index({
   vendor
 }) {
 
-  appGroups = appGroups.filter((group) => {
-    return group.vendor == vendor.id;
-  })
-  
-  console.log("appGroups...", appGroups);
+  // appGroups = appGroups.filter((group) => {
+  //   return group.vendor == vendor.id;
+  // })
+
+  console.log("appGroups2...", appGroups);
+  console.log("appGroups...", vendor);
 
   const getClassCount = (group) => {
 
