@@ -382,17 +382,17 @@ export const getVendorAppLocationSite = async (vendor) => {
   }
 };
 
-export const addVendor = async ({ user }) => {
+export const addVendor = async ({ user, name = "" }) => {
   const db = makeDb();
   let result;
   let vendor;
   try {
     console.log("ADD VENDORRR");
     result = await db.query(
-      `INSERT INTO vendor(id, user)
-      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?))
+      `INSERT INTO vendor(id, user, name)
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), ?)
       `,
-      [user]
+      [user, name]
     );
 
     vendor = await db.query(
