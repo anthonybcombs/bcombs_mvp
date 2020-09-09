@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "@reach/router";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Collapsible from "react-collapsible";
@@ -33,6 +34,7 @@ import ProfileImg from "../../../images/defaultprofile.png";
 
 import { format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
+import { parse } from "query-string";
 
 const ApplicationFormStyled = styled.form`
   @media all {
@@ -239,6 +241,10 @@ export default function index() {
     `
   });
 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = parse(location.search);
+
   const { groups, auth, vendors, applications, loading } = useSelector(
     ({ groups, auth, vendors, applications, loading }) => {
       return { groups, auth, vendors, applications, loading };
@@ -275,7 +281,19 @@ export default function index() {
 
   useEffect(() => {
     if (vendors && vendors.length > 0 && vendors[0].id) {
-      setSelectedVendor(vendors[0]);
+
+      console.log("queryParams", queryParams );
+      if(queryParams && queryParams.vendor) {
+        const newDefaultVendor = vendors.filter((vendor) => {
+          return vendor.id2 == queryParams.vendor
+        });
+
+        console.log("newDefaultVendor", newDefaultVendor);
+        setSelectedVendor(newDefaultVendor[0]);
+      } else {
+        setSelectedVendor(vendors[0]);
+      }
+
       dispatch(requestGetApplications(vendors[0].id));
     }
   }, [vendors]);
@@ -1033,17 +1051,17 @@ export default function index() {
           <div>
             <select className="form-control" 
               style={{ 
-                "margin-left": "20px",
-                "font-size": "1.5em",
-                "border-radius": "0",
+                "marginLeft": "20px",
+                "fontSize": "1.5em",
+                "borderRadius": "0",
                 "cursor": "pointer",
                 "width": "100%",
                 "display": "block",
                 "background": "transparent",
-                "font-weight": "bold",
+                "fontWeight": "bold",
                 "border": "0",
                 "padding": "0",
-                "line-height": "1",
+                "lineHeight": "1",
                 "color": "#000000"
               }}
               onChange={({ target }) => {
@@ -1055,12 +1073,15 @@ export default function index() {
 
                 console.log("chosenVendor", chosenVendor);
 
+                window.history.replaceState("","","?vendor=" + chosenVendor[0].id2);
+
                 dispatch(requestGetApplications(target.value));
 
                 if(chosenVendor && chosenVendor.length > 0) {
                   setSelectedVendor(chosenVendor[0]);
                 }
               }}
+              value={selectedVendor.id}
             >
               {vendors.map(vendor => (
                 <option key={vendor.id} value={vendor.id}>
