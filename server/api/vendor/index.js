@@ -100,6 +100,7 @@ export const getVendorsByUserId = async user => {
       for(let i = 0; i < result.length; i++) {
         result[i].app_programs = await getVendorAppProgram(result[i].id);
         result[i].location_sites = await getVendorAppLocationSite(result[i].id);
+        result[i].app_groups = await getVendorAppGroupsByVendorId(result[i].id);
         vendors.push(result[i]);
       }
     }
@@ -130,6 +131,7 @@ export const getVendorsByUserId = async user => {
       for(let i = 0; i < result.length; i++) {
         result[i].app_programs = await getVendorAppProgram(result[i].id);
         result[i].location_sites = await getVendorAppLocationSite(result[i].id);
+        result[i].app_groups = await getVendorAppGroupsByVendorId(result[i].id);
         vendors.push(result[i]);
       }
     }

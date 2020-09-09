@@ -53,6 +53,13 @@ export const VENDOR_BY_USER_QUERY = gql`
         name
         created_at
       }
+      app_groups {
+        id
+        app_grp_id
+        size
+        name
+        created_at
+      }
     }
   }
 `;
@@ -86,6 +93,13 @@ export const VENDOR_BY_ID2_QUERY = gql`
         vendor_location_site_id
         vendor
         user
+        name
+        created_at
+      }
+      app_groups {
+        id
+        app_grp_id
+        size
         name
         created_at
       }

@@ -274,7 +274,7 @@ export default function index() {
 
   useEffect(() => {
     if (auth.user_id) {
-      dispatch(requestUserGroup(auth.email));
+      //dispatch(requestUserGroup(auth.email));
       dispatch(requestVendor(auth.user_id));
     }
   }, []);
@@ -1152,11 +1152,7 @@ export default function index() {
         <div>
           {selectedLabel === "Application Status" && !selectNonMenuOption && (
             <ApplicationSummaryStyled
-              appGroups={
-                groups && groups.application_groups
-                  ? groups.application_groups
-                  : []
-              }
+              appGroups={selectedVendor.app_groups}
               applications={applications.activeapplications}
               vendor={selectedVendor}
             />
@@ -1171,11 +1167,7 @@ export default function index() {
             <EditApplicationStyled
               application={selectedApplication}
               vendor={selectedVendor}
-              appGroups={
-                groups && groups.application_groups
-                  ? groups.application_groups
-                  : []
-              }
+              appGroups={selectedVendor.app_groups}
               onSubmit={onSubmit}
               handleUpdateOnchange={handleUpdateOnchange}
               updateLoading={loading.application}
@@ -1189,9 +1181,7 @@ export default function index() {
           handleSelectedApplication={handleSelectedApplication}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
-          appGroups={
-            groups && groups.application_groups ? groups.application_groups : []
-          }
+          appGroups={selectedVendor.app_groups}
         />
       )}
       {

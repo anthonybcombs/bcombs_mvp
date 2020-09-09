@@ -486,6 +486,7 @@ const queryTypes = `
         id2: Int
         app_programs: [VendorProgram]
         location_sites: [LocationSite]
+        app_groups: [VendorAppGroup]
     }
 
     type LocationSite {

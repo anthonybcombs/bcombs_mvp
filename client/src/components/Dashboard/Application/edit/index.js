@@ -99,9 +99,9 @@ export default function index({
   appGroups = []
 }) {
 
-  appGroups = appGroups.filter((group) => {
-    return group.vendor == vendor.id;
-  });
+  // appGroups = appGroups.filter((group) => {
+  //   return group.vendor == vendor.id;
+  // });
 
   console.log("appgroups...", appGroups);
 
