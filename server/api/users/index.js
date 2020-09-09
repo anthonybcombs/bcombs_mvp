@@ -8,6 +8,7 @@ import {
 } from "../../helpers/aws";
 import client, { getRedisKey } from "../../services/redis";
 import { getUserFromDatabase } from "../index";
+import { addVendor } from "../vendor"
 
 export const getUsers = async () => {
   const db = makeDb();
@@ -319,6 +320,18 @@ export const executeSignUp = async user => {
         user.username
       ]
     );
+
+    if(!user.hasOwnProperty("isSocial") && user.type.name == "VENDOR") {
+
+      const latestUser = await db.query(
+        `SELECT BIN_TO_UUID(id) as id, email FROM users WHERE email = (?)`, [user.email]
+      )
+
+      if(latestUser.length > 0) {
+        await addVendor({user: latestUser[0].id})
+      }
+    }
+
     if (insertedRows.affectedRows > 0) {
       if (!user.hasOwnProperty("isSocial")) {
         return {
@@ -474,6 +487,25 @@ export const executeUserUpdate = async user => {
   }
 };
 
+export const updateUserType = async ({
+  id,
+  type
+}) => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      "UPDATE users set type=UUID_TO_BIN(?) WHERE id=UUID_TO_BIN(?)",
+      [type, id]
+    );
+  } catch(err) {
+    console.log("err", err);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
 export const executeGetUser = async keyword => {
   const db = makeDb();
   let result = [];
@@ -577,14 +609,15 @@ export const checkUserEmail = async email => {
   try {
     console.log("Check User Email", email);
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id FROM users WHERE email=?`,
+      `SELECT BIN_TO_UUID(id) as id, BIN_TO_UUID(type) as type FROM users WHERE email=?`,
       [email]
     );
     console.log("Check User Rows", rows);
     if (rows.length > 0) {
       return {
         is_exist: true,
-        status: "Email is available to use"
+        status: "Email is available to use",
+        user: rows[0]
       };
     }
 

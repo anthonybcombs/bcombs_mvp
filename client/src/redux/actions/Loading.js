@@ -55,3 +55,17 @@ export const setFormSettingsLoading = value => {
     value
   };
 }
+
+export const setAddAdminLoading = value => {
+  return {
+    type: actionType.SET_ADD_ADMIN_LOADING,
+    value
+  };
+}
+
+export const setDeleteAdminLoading = value => {
+  return {
+    type: actionType.SET_DELETE_ADMIN_LOADING,
+    value
+  };
+}

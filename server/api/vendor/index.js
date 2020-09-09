@@ -2,6 +2,8 @@ import { makeDb } from "../../helpers/database";
 
 import { getUserGroups } from "../../api/groups";
 
+import { sort, distinct } from "../../helpers/array"
+
 export const getVendors = async () => {
   const db = makeDb();
   try {
@@ -30,43 +32,307 @@ export const getVendors = async () => {
   }
 };
 
+export const getVendorsIdByUser = async user => {
+  const db = makeDb();
+  let result;
+  let vendors = [];
+
+  try {
+    result = await db.query(
+      `
+        SELECT 
+          DISTINCT BIN_TO_UUID(id) as id
+        FROM vendor 
+        WHERE user=UUID_TO_BIN(?)
+      `,
+      [user]
+    );
+
+    if(result.length > 0) {vendors.push(...result)}
+
+    result = await db.query(
+      `
+        SELECT 
+          DISTINCT BIN_TO_UUID(vendor) as id
+        FROM vendor_admin
+        WHERE user=UUID_TO_BIN(?)
+      `,
+      [user]
+    );
+
+    if(result.length > 0) {vendors.push(...result)}
+
+  } catch(err) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return vendors;
+  }
+}
+
 export const getVendorsByUserId = async user => {
+  const db = makeDb();
+  let result;
+
+  let vendors = [];
+  try {
+    result = await db.query(
+      `SELECT 
+        BIN_TO_UUID(v.id) as id, 
+        BIN_TO_UUID(v.user) as user,
+        v.id2,
+        v.name, 
+        v.section1_text,
+        v.section2_text,
+        v.section3_text,
+        v.section1_name,
+        v.section2_name,
+        v.section3_name,
+        v.section1_show,
+        v.section2_show,
+        v.section3_show
+      FROM vendor v
+      WHERE v.user=UUID_TO_BIN(?)`,
+      [user]
+    );
+
+    if (result && result.length > 0) {
+      for(let i = 0; i < result.length; i++) {
+        result[i].app_programs = await getVendorAppProgram(result[i].id);
+        result[i].location_sites = await getVendorAppLocationSite(result[i].id);
+        vendors.push(result[i]);
+      }
+    }
+
+    result = await db.query(
+      `
+        SELECT 
+          BIN_TO_UUID(v.id) as id, 
+          BIN_TO_UUID(va.user) as user,
+          v.id2,
+          v.name, 
+          v.section1_text,
+          v.section2_text,
+          v.section3_text,
+          v.section1_name,
+          v.section2_name,
+          v.section3_name,
+          v.section1_show,
+          v.section2_show,
+          v.section3_show
+        FROM vendor v, vendor_admin va
+        WHERE va.user = UUID_TO_BIN(?) AND va.vendor = v.id
+      `,
+      [user]
+    );
+
+    if (result && result.length > 0) {
+      for(let i = 0; i < result.length; i++) {
+        result[i].app_programs = await getVendorAppProgram(result[i].id);
+        result[i].location_sites = await getVendorAppLocationSite(result[i].id);
+        vendors.push(result[i]);
+      }
+    }
+    
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return vendors;
+  }
+};
+
+export const getVendorById2 = async id2 =>  {
   const db = makeDb();
   let result;
   try {
     result = await db.query(
       `SELECT 
-        BIN_TO_UUID(id) as id, 
-        BIN_TO_UUID(user) as user,
-        id2,
-        name, 
-        section1_text,
-        section2_text,
-        section3_text,
-        section1_name,
-        section2_name,
-        section3_name,
-        section1_show,
-        section2_show,
-        section3_show
-      FROM vendor 
-      WHERE user=UUID_TO_BIN(?)`,
-      [user]
+        BIN_TO_UUID(v.id) as id, 
+        BIN_TO_UUID(v.user) as user,
+        v.id2,
+        v.name, 
+        v.section1_text,
+        v.section2_text,
+        v.section3_text,
+        v.section1_name,
+        v.section2_name,
+        v.section3_name,
+        v.section1_show,
+        v.section2_show,
+        v.section3_show
+      FROM vendor v
+      WHERE v.id2=?`,
+      [id2]
     );
 
     if (result && result.length > 0) {
-      result[0].app_programs = await getVendorAppProgram(result[0].id);
-      result[0].location_sites = await getVendorAppLocationSite(result[0].id);
+      for(let i = 0; i < result.length; i++) {
+        result[i].app_programs = []
+        result[i].location_sites = []
+      }
     }
+
   } catch (error) {
     console.log(error);
   } finally {
     await db.close();
     return result;
   }
-};
+}
 
-export const getVendorAppProgram = async vendor => {
+export const checkIfAdminVendorExists = async ({
+  user,
+  vendor
+}) => {
+  const db = makeDb();
+
+  try {
+    const rows = await db.query(
+      `SELECT 
+        BIN_TO_UUID(vendor) as vendor 
+      FROM vendor_admin
+      WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
+      [user, vendor]
+    );
+
+    if(rows.length > 0) {
+      return {
+        is_exists: true
+      }
+    }
+
+    return {
+      is_exists: false
+    }
+  } catch (error) {
+    console.log("error update admin", error);
+  } finally {
+    await db.close();
+  }
+}
+
+export const updateVendorAdmins = async ({
+  user,
+  vendor,
+  name
+}) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `UPDATE vendor_admin SET name=? WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
+      [name, user, vendor]
+    );
+
+  } catch (error) {
+    console.log("error update admin", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const addVendorAdmins = async ({
+  user,
+  vendor,
+  name
+}) => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `INSERT INTO vendor_admin(id, user, vendor, name)
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?)`,
+      [user, vendor, name]
+    );
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const deleteVendorAdmins = async ({
+  user,
+  vendor
+}) => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `DELETE FROM vendor_admin WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
+      [user, vendor]
+    )
+  } catch (error) {
+    console.log("delete admin error", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const getVendorAdmins = async (vendor) => {
+  const db = makeDb();
+  let result;
+  let admins = [];
+  try {
+    // result = await db.query(
+    //   `
+    //     SELECT 
+    //       BIN_TO_UUID(v.id) as vendor, 
+    //       BIN_TO_UUID(u.id) as user,
+    //       v.name as vendorName,
+    //       u.email
+    //     FROM vendor v, users u
+    //     WHERE v.id = UUID_TO_BIN(?) AND u.id = v.user
+    //     ORDER BY v.name ASC
+    //   `,
+    //   [vendor]
+    // );
+
+    // if(result.length > 0) {
+    //   for(let item of result) {
+    //     item.isOwner = true;
+    //     admins.push(item);
+    //   }
+    // }
+
+    result = await db.query(
+      `
+        SELECT 
+          BIN_TO_UUID(v.id) as vendor, 
+          BIN_TO_UUID(va.user) as user,
+          va.name,
+          v.name as vendorName,
+          u.email
+        FROM vendor v, users u, vendor_admin va
+        WHERE va.vendor = UUID_TO_BIN(?) AND v.id = UUID_TO_BIN(?) AND va.vendor = v.id AND va.user = u.id
+        ORDER BY va.name ASC
+      `,
+      [vendor, vendor]
+    );
+
+    if(result.length > 0) {
+      for(let item of result) {
+        item.isOwner = false;
+        admins.push(item);
+      }
+    }
+
+    admins = sort(admins, "name");
+
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return admins;
+  }
+}
+
+export const getVendorAppProgram = async (vendor) => {
   const db = makeDb();
   let result;
 
@@ -91,7 +357,7 @@ export const getVendorAppProgram = async vendor => {
   }
 };
 
-export const getVendorAppLocationSite = async vendor => {
+export const getVendorAppLocationSite = async (vendor) => {
   const db = makeDb();
   let result;
 
@@ -147,7 +413,7 @@ export const addVendor = async ({ user }) => {
         FROM vendor WHERE user=UUID_TO_BIN(?)`,
       [user]
     );
-    vendor = vendor.length > 0 ? vendor : "";
+    vendor = vendor.length > 0 ? vendor : [];
   } catch (err) {
     console.log(err);
   } finally {

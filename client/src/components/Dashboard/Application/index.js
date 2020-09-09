@@ -211,6 +211,8 @@ export default function index() {
 
   const [view, setView] = useState("");
 
+  const [selectedVendor, setSelectedVendor] = useState({});
+
   const dispatch = useDispatch();
 
   const componentRef = useRef();
@@ -273,6 +275,7 @@ export default function index() {
 
   useEffect(() => {
     if (vendors && vendors.length > 0 && vendors[0].id) {
+      setSelectedVendor(vendors[0]);
       dispatch(requestGetApplications(vendors[0].id));
     }
   }, [vendors]);
@@ -1028,7 +1031,41 @@ export default function index() {
         <h2>Application</h2>
         {vendors && vendors.length > 0 && (
           <div>
-            <select className="form-control" style={{ marginLeft: "20px" }}>
+            <select className="form-control" 
+              style={{ 
+                "margin-left": "20px",
+                "font-size": "1.5em",
+                "-webkit-appearance": "none",
+                "-moz-appearance": "none",
+                "border-radius": "0",
+                "cursor": "pointer",
+                "padding": "0",
+                "width": "100%",
+                "display": "block",
+                "background": "transparent",
+                "font-weight": "bold",
+                "padding-bottom": "5px",
+                "border": "0",
+                "padding": "0",
+                "line-height": "1",
+                "color": "#000000"
+              }}
+              onChange={({ target }) => {
+                console.log("target", target.value);
+
+                const chosenVendor = vendors.filter((vendor) => {
+                  return vendor.id == target.value
+                });
+
+                console.log("chosenVendor", chosenVendor);
+
+                dispatch(requestGetApplications(target.value));
+
+                if(chosenVendor && chosenVendor.length > 0) {
+                  setSelectedVendor(chosenVendor[0]);
+                }
+              }}
+            >
               {vendors.map(vendor => (
                 <option key={vendor.id} value={vendor.id}>
                   {vendor.name}
@@ -1041,15 +1078,25 @@ export default function index() {
       <div id="application">
         <div>
           <div id="labels">
-            <a
-              href={`/application/${
-                vendors && vendors.length > 0 ? vendors[0]?.user : ""
-              }`}
-              target="_blank">
-              <FontAwesomeIcon icon={faFileSignature} />
-              <span>Application</span>
-            </a>
-
+            {
+              selectedVendor && selectedVendor.id2 ? (
+                <a
+                  href={`/application/${
+                    selectedVendor.id2
+                  }`}
+                  target="_blank">
+                  <FontAwesomeIcon icon={faFileSignature} />
+                  <span>Application</span>
+                </a>
+              ) : (
+                <a
+                  target="_blank"
+                >
+                  <FontAwesomeIcon icon={faFileSignature} />
+                  <span>Application</span>
+                </a>
+              )
+            }
             <div
               className={`${
                 selectedLabel === "Application Status" ? "selected" : ""
@@ -1092,19 +1139,19 @@ export default function index() {
                   : []
               }
               applications={applications.activeapplications}
-              vendor={vendors && vendors.length > 0 ? vendors[0] : null}
+              vendor={selectedVendor}
             />
           )}
           {selectedLabel === "Form Settings" && !selectNonMenuOption && (
             <ApplicationSettingsStyled
-              vendor={vendors && vendors.length > 0 ? vendors[0] : null}
+              vendor={selectedVendor}
               formSettingsLoading={loading.form_settings}
             />
           )}
           {selectNonMenuOption && view == "application" && (
             <EditApplicationStyled
               application={selectedApplication}
-              vendor={vendors && vendors.length > 0 ? vendors[0] : null}
+              vendor={selectedVendor}
               appGroups={
                 groups && groups.application_groups
                   ? groups.application_groups
@@ -1122,7 +1169,7 @@ export default function index() {
           applications={applications.activeapplications}
           handleSelectedApplication={handleSelectedApplication}
           listApplicationLoading={loading.application}
-          vendor={vendors && vendors.length > 0 ? vendors[0] : null}
+          vendor={selectedVendor}
           appGroups={
             groups && groups.application_groups ? groups.application_groups : []
           }
@@ -1171,7 +1218,7 @@ export default function index() {
             {selectNonMenuOption && view == "application" && (
               <ChildFormViewStyled
                 childInformation={childInformation}
-                vendor={vendors && vendors.length > 0 ? vendors[0] : null}
+                vendor={selectedVendor}
                 ProfileImg={ProfileImg}
                 isReadonly={isReadonly}
                 handleChangeToEdit={handleChangeToEdit}
@@ -1186,7 +1233,6 @@ export default function index() {
                   vendors && vendors.length > 0 ? vendors[0].app_programs : []
                 }
                 handleSelectLatestApplication={handleSelectLatest}
-                //isVendorView={true}
               />
             )}
 
@@ -1197,7 +1243,7 @@ export default function index() {
             {selectNonMenuOption && view == "application" && (
               <ParentFormViewStyled
                 parents={parentsInformation}
-                vendor={vendors && vendors.length > 0 ? vendors[0] : null}
+                vendor={selectedVendor}
                 ProfileImg={ProfileImg}
                 handleParentFormDetailsChange={handleParentFormDetailsChange}
                 isReadonly={isReadonly}
