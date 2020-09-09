@@ -447,7 +447,7 @@ export default function index() {
                 closeOnSelect={false}
                 showCheckbox={true}
                 autocomplete="false"
-                style={{ searchBox: { borderColor: isVendorEmpty ? "red": "" }}}
+                style={{ searchBox: { border: isVendorEmpty ? "1px solid red": "1px solid #ccc" }}}
               />
             </div>
             <div style={{display:"flex", justifyContent:"center"}}>
