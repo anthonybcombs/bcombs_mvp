@@ -619,25 +619,44 @@ export const getUserApplicationsByUserId = async user_id => {
 export const getApplicationHistoryByUser = async id => {
   const db = makeDb();
   let auditTrails = [];
-  console.log("Get Application History By User", id);
+  console.log("Get Application History By User 1", id);
+  //let vendorId = id;
   try {
+    // const mainVendor = await db.query(
+    //   `select BIN_TO_UUID(users.id) as user_id
+    //   from vendor_admin,vendor,users WHERE vendor_admin.user=users.id AND
+    //   vendor.user=vendor_admin.user AND
+    //   users.id=UUID_TO_BIN(?)`,
+    //   [id]
+    // );
+    // console.log("getApplicationHistoryByUser mainVendor", mainVendor);
+    // if (mainVendor && mainVendor.length > 0) {
+    //   vendorId = mainVendor[0].user_id;
+    //   console.log("Vendor ID", vendorId);
+    //   console.log("Sub ID", id);
+    // }
+
     auditTrails = await db.query(
       `SELECT application_history.id,
-      BIN_TO_UUID(application_history.app_history_id) as app_history_id,
-      BIN_TO_UUID(application_history.app_id) as app_id,
-      application_history.details,
-      application_history.updated_at,
-      application_history.updated_by 
-      FROM application_history,application,parent, vendor WHERE
-      application_history.app_id = application.app_id AND 
-      application.app_id=parent.application  AND 
-      application.vendor = vendor.id AND
-      vendor.user=UUID_TO_BIN(?)
+        BIN_TO_UUID(application_history.app_history_id) as app_history_id,
+        BIN_TO_UUID(application_history.app_id) as app_id,
+        application_history.details,
+        application_history.updated_at,
+        application_history.updated_by 
+      FROM application_history,application,parent, vendor, vendor_admin WHERE
+        application_history.app_id = application.app_id AND 
+        application.app_id=parent.application  AND 
+        application.vendor = vendor.id AND
+        (vendor.user=UUID_TO_BIN(?) OR  
+        (application.vendor = vendor_admin.vendor AND 
+          vendor_admin.vendor=vendor.id AND 
+          vendor_admin.user=UUID_TO_BIN(?)
+        )) GROUP BY application_history.id
       `,
-      [id]
+      [id, id]
     );
 
-    console.log("Get Application History By User", auditTrails);
+    console.log("Get Application History By User 2", auditTrails);
   } catch (error) {
     console.log("get user applications", error);
   } finally {
