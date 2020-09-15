@@ -61,6 +61,181 @@ const ApplicationFormStyled = styled.form`
     #applicationForm .form-group.ethnicity-form {
       margin-bottom: 20px !important;
     }
+
+
+    
+    .child-info-wrapper .grid {
+      display: grid;
+      grid-template-columns: 31% 31% 31%;
+      grid-gap: 3.33333333%;
+      
+    }
+
+    .general-info-wrapper {
+      padding-bottom: 30px !important;
+      margin-top: 1rem;
+      display: block;
+      page-break-before: auto;
+    }
+  
+    .general-info-wrapper .grid-1 {
+      display: grid;
+      grid-template-columns: 31% 31% 31%;
+      grid-gap: 3.33333333%;
+    }
+  
+    .general-info-wrapper .grid-2 {
+      display: grid;
+      grid-template-columns: 48.33% 48.33%;
+      grid-gap: 3.33333333%;
+    }
+  
+    .general-info-wrapper .grid-3 {
+      display: grid;
+      grid-template-columns: 31% 65.3%;
+      grid-gap: 3.33333333%;
+    }
+  
+    .general-info-wrapper .grid-4 {
+      display: grid;
+      grid-template-columns: 31% 21% 41%;
+      grid-gap: 3.33333333%;
+    }
+  
+    .general-info-wrapper .grid-5 {
+      display: grid;
+      grid-template-columns: 19.2% 19.2% 19.2% 19.2%;
+      grid-gap: 8%;
+    }
+  
+    .medical-info-wrapper .grid-2 {
+      display: grid;
+      grid-template-columns: 48.33% 48.33%;
+      grid-gap: 3.33333333%;
+    }
+  
+    @media (max-width: 768px) {
+
+      #multiselectContainerReact {
+        position: relative;
+        top: 0;
+      }
+     .field-input:placeholder-shown + .field-label {
+        max-width: calc(100% - 30%) !important;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .medical-info-wrapper .grid-2 {
+        padding: 0;
+      }
+    }
+    
+
+    .parent-info-wrapper .grid-1 {
+      display: grid;
+      grid-template-columns: 31% 31% 31%;
+      grid-gap: 3.33333333%;
+    }
+  
+    .parent-info-wrapper .grid-2 {
+      display: grid;
+      grid-template-columns: 48.33% 48.33%;
+      grid-gap: 3.33333333%;
+    }
+  
+    .parent-info-wrapper .grid-3 {
+      display: grid;
+      grid-template-columns: 31% 65.3%;
+      grid-gap: 3.33333333%;
+    }
+  
+    .parent-info-wrapper .grid-4 {
+      display: grid;
+      grid-template-columns: 31% 31% 31%;
+      grid-gap: 3.33333333%;
+    }
+  
+    .parent-info-wrapper .img-profile-wrapper {
+      width: 17%;
+      margin-bottom: 30px;
+    }
+  
+    .parent-info-wrapper .address-wrapper {
+      padding: 0;
+      padding-right: 15px;
+      user-select: none;
+    }
+  
+    .parent-info-wrapper .add-address {
+      margin-left: 15px;
+      border: 2px solid #f26e21;
+      position: relative;
+      padding: 10px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+  
+    .parent-info-wrapper .add-address span i {
+      background: #f26e21;
+      width: 20px;
+      height: 20px;
+      line-height: 21px;
+      text-align: center;
+      border-radius: 50%;
+      font-size: 13px;
+      position: absolute;
+      left: -10px;
+      top: 12px;
+      font-weight: normal;
+      color: white;
+      cursor: pointer;
+    }
+  
+    .parent-info-wrapper .add-address span i.minus {
+      background: #d33125 !important;
+    }
+  
+    .parent-info-wrapper .add-address p {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+      padding-left: 15px;
+      color: #4b525a;
+    }
+  
+    .parent-info-wrapper .address-field-wrapper {
+      opacity: 0;
+      visibility: hidden;
+      display: none;
+  
+      -webkit-transition: opacity 100ms, visibility 100ms;
+      transition: opacity 100ms, visibility 100ms;
+    }
+  
+    .parent-info-wrapper .address-field-wrapper.show {
+      visibility: visible;
+      opacity: 1;
+      display: grid;
+    }
+  
+    @media (max-width: 768px) {
+  
+      #multiselectContainerReact {
+        position: relative;
+        top: 0;
+      }
+      .field-input:placeholder-shown + .field-label {
+        max-width: calc(100% - 30%) !important;
+      }
+    }
+  
+    @media (max-width: 600px) {
+      .parent-info-wrapper .grid-2,
+      .parent-info-wrapper > div {
+        padding: 0;
+      }
+    }
   }
   @page {
     gitsize: auto;
