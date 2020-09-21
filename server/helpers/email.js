@@ -132,7 +132,7 @@ const getTemplateInvitationStrings = ({
                 })}
               </ul>
             </div>
-            <form action="http://192.243.109.224:3001/api/invitation/event/${eventId}" method="GET">
+            <form action="https://bcombs.com/api/invitation/event/${eventId}" method="GET">
               Calendar:
               <select name="calendar">
                 ${data.calendars.map(calendar => {
@@ -204,12 +204,12 @@ export const getShareCalendarTemplate = (calendar, user, groupId) => {
   return `<h4>Calendar ${calendar.name} is shared to you!</h4>
 <p>You want to follow this calendar?</p>
 <div>
-  <form action="http://192.243.109.224:3001/api/invitation/calendar/${calendar.id}" method="GET">
+  <form action="https://bcombs.com/api/invitation/calendar/${calendar.id}" method="GET">
   <input type="submit" value="Yes" style="background-color:#f26e21;color:white;padding:5px;"/>
   <input type="hidden" name="userId" value="${user.user_id}"/>
   <input type="hidden" name="groupId" value="${groupId}"/>
   </form>
-  <form action="http://192.243.109.224:1234/dashboard/mycalendars" method="GET">
+  <form action="https://bcombs.com/api/dashboard/mycalendars" method="GET">
   <input type="submit" value="No" style="background-color:grey;color:white;padding:5px;"/>
   </form>  
 </div>`;
@@ -261,7 +261,7 @@ export const sendMigratedAccount = async ({ email, password, firstname }) => {
   }
 };
 
-export const sendAdminInvite = async ({ email, password, name}) => {
+export const sendAdminInvite = async ({ email, password, name }) => {
   try {
     sendEmail({
       ...defaultMailConfig,
@@ -287,4 +287,4 @@ export const sendAdminInvite = async ({ email, password, name}) => {
   } catch (error) {
     console.log("Error", error);
   }
-}
+};
