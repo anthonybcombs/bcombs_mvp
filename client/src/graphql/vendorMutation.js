@@ -37,6 +37,7 @@ export const VENDOR_BY_USER_QUERY = gql`
       section1_show
       section2_show
       section3_show
+      created_at
       app_programs {
         id
         vendor_program_id
@@ -80,6 +81,7 @@ export const VENDOR_BY_ID2_QUERY = gql`
       section1_show
       section2_show
       section3_show
+      created_at
       app_programs {
         id
         vendor_program_id
