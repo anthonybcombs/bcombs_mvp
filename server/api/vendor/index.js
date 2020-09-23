@@ -2,7 +2,7 @@ import { makeDb } from "../../helpers/database";
 
 import { getUserGroups } from "../../api/groups";
 
-import { sort, distinct } from "../../helpers/array"
+import { sort, distinct, sortByDate } from "../../helpers/array"
 
 export const getVendors = async () => {
   const db = makeDb();
@@ -90,7 +90,8 @@ export const getVendorsByUserId = async user => {
         v.section3_name,
         v.section1_show,
         v.section2_show,
-        v.section3_show
+        v.section3_show,
+        v.created_at as created_at
       FROM vendor v
       WHERE v.user=UUID_TO_BIN(?)`,
       [user]
@@ -120,7 +121,8 @@ export const getVendorsByUserId = async user => {
           v.section3_name,
           v.section1_show,
           v.section2_show,
-          v.section3_show
+          v.section3_show,
+          va.created_at as created_at
         FROM vendor v, vendor_admin va
         WHERE va.user = UUID_TO_BIN(?) AND va.vendor = v.id
       `,
@@ -135,12 +137,15 @@ export const getVendorsByUserId = async user => {
         vendors.push(result[i]);
       }
     }
+
+    if(vendors.length > 0)
+      vendors = sortByDate(vendors);
     
   } catch (error) {
     console.log(error);
   } finally {
     await db.close();
-    return vendors;
+    return vendors.reverse();
   }
 };
 

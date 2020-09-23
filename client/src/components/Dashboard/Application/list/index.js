@@ -607,20 +607,20 @@ export default function index({
 
     if (filterText) {
       name_match =
-        (item.child.firstname &&
-          item.child.firstname
+        (item.child?.firstname &&
+          item.child?.firstname
             .toLowerCase()
             .includes(filterText.toLowerCase())) ||
-        (item.child.lastname &&
-          item.child.lastname
+        (item.child?.lastname &&
+          item.child?.lastname
             .toLowerCase()
             .includes(filterText.toLowerCase())) ||
-        (item.parents[0].firstname &&
-          item.parents[0].firstname
+        (item.parents[0]?.firstname &&
+          item.parents[0]?.firstname
             .toLowerCase()
             .includes(filterText.toLowerCase())) ||
-        (item.parents[0].lastname &&
-          item.parents[0].lastname
+        (item.parents[0]?.lastname &&
+          item.parents[0]?.lastname
             .toLowerCase()
             .includes(filterText.toLowerCase()));
     }

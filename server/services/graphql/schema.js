@@ -487,6 +487,7 @@ const queryTypes = `
         app_programs: [VendorProgram]
         location_sites: [LocationSite]
         app_groups: [VendorAppGroup]
+        created_at: Date
     }
 
     type LocationSite {
