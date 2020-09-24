@@ -169,7 +169,7 @@ const resolvers = {
         // console.log("application child ", application.child);
         // console.log("child ", child);
         application.parents = await getParentByApplication(application.app_id);
-        application.parents = Object.assign({}, application.parents);
+
         application.child = child.length > 0 ? Object.assign({}, child[0]) : {};
 
         resapplications.push(Object.assign({}, application));
