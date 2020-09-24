@@ -163,18 +163,16 @@ const resolvers = {
       let applications = await getApplicationsByVendor(vendor_id);
       console.log("Get Vendor Application", applications.length);
       let resapplications = [];
-      let index = 0;
+
       for (let application of applications) {
         let child = await getChildInformation(application.child);
         // console.log("application child ", application.child);
         // console.log("child ", child);
         application.parents = await getParentByApplication(application.app_id);
 
-        application.child = child.length > 0 ? Object.assign({}, child[0]) : {};
+        application.child = child.length > 0 ? child[0] : {};
 
         resapplications.push(Object.assign({}, application));
-        console.log("Index", index);
-        index++;
       }
       // if (resapplications.length > 0) {
       //   resapplications = JSON.parse(JSON.stringify(resapplications));
