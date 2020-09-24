@@ -74,15 +74,17 @@ const getApplicationUserIdFromDatabase = user_id => {
 const getActiveApplicationFromDatabase = vendor_id => {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log("Get Active Application vendor_id", vendor_id);
       const { data } = await graphqlClient.query({
         query: GET_APPLICATIONS_QUERY,
         variables: {
           vendor_id: vendor_id
         }
       });
-
+      console.log("Get Active Application", data);
       return resolve(data.getVendorApplications);
     } catch (error) {
+      console.log("Get Active Application error", error);
       reject(error);
     }
   });
@@ -453,8 +455,9 @@ export function* getApplication({ vendor_id }) {
       getActiveApplicationFromDatabase,
       vendor_id
     );
+    console.log("applications111", applications);
     yield put(setApplicationLoading(false));
-    if (applications.length > 0) {
+    if (applications && applications.length > 0) {
       yield put({
         type: actionType.REQUEST_GET_APPLICATION_COMPLETED,
         payload: applications
@@ -574,7 +577,7 @@ export function* getApplicationHistory({ app_id }) {
       type: actionType.REQUEST_GET_APPLICATION_HISTORY_COMPLETE,
       payload: response
     });
-  } catch(err) {
+  } catch (err) {
     yield put({
       type: actionType.REQUEST_GET_APPLICATION_HISTORY_COMPLETE,
       payload: []

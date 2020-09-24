@@ -455,18 +455,18 @@ export default function index() {
   }, []);
 
   useEffect(() => {
+    console.log('Vendorssss', vendors)
     if (vendors && vendors.length > 0 && vendors[0].id) {
 
-      console.log("queryParams", queryParams );
       if(queryParams && queryParams.vendor) {
         const newDefaultVendor = vendors.filter((vendor) => {
           return vendor.id2 == queryParams.vendor
         });
 
-        console.log("newDefaultVendor", newDefaultVendor);
         setSelectedVendor(newDefaultVendor[0]);
         dispatch(requestGetApplications(newDefaultVendor[0].id));
       } else {
+        console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
         dispatch(requestGetApplications(vendors[0].id));
       }
@@ -1220,6 +1220,7 @@ export default function index() {
     }
   }
 
+  console.log('loading applications',applications)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>

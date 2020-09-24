@@ -38,7 +38,6 @@ const ClassListViewStyled = styled.div`
 `;
 
 export default function index() {
-
   const { name, vendor_id } = useParams();
 
   const { auth, vendors, groups, applications, loading } = useSelector(
@@ -52,7 +51,7 @@ export default function index() {
   let filterApplications = [];
 
   useEffect(() => {
-    if(auth.user_id) {
+    if (auth.user_id) {
       dispatch(requestVendor(auth.user_id));
       dispatch(requestUserGroup(auth.email));
     }
@@ -62,9 +61,9 @@ export default function index() {
     console.log("vendor", vendors);
     if (vendors && vendors.length > 0) {
       let vendorId;
-      for(const vendor of vendors) {
-        if(vendor.id2 == vendor_id) {
-          vendorId = vendor.id
+      for (const vendor of vendors) {
+        if (vendor.id2 == vendor_id) {
+          vendorId = vendor.id;
           break;
         }
       }
@@ -72,15 +71,18 @@ export default function index() {
     }
   }, [vendors]);
 
-  if(applications && applications.activeapplications.length > 0) {
-
+  if (applications && applications.activeapplications.length > 0) {
     let appGroupId = "";
 
-    if(groups && groups.application_groups && groups.application_groups.length > 0) {
+    if (
+      groups &&
+      groups.application_groups &&
+      groups.application_groups.length > 0
+    ) {
       const applicationGroups = groups.application_groups;
 
-      for(const group of applicationGroups) {
-        if(group.name === name) {
+      for (const group of applicationGroups) {
+        if (group.name === name) {
           appGroupId = group.app_grp_id;
           break;
         }
@@ -89,11 +91,11 @@ export default function index() {
 
     console.log("appGroupId", appGroupId);
 
-    filterApplications = applications.activeapplications.filter((application) => {
+    filterApplications = applications.activeapplications.filter(application => {
       return application && application.class_teacher == appGroupId;
     });
 
-    filterApplications = filterApplications.map((item) => {
+    filterApplications = filterApplications.map(item => {
       item.class_teacher = name;
       console.log("application", item);
 
@@ -103,59 +105,75 @@ export default function index() {
     console.log("filterApplications", filterApplications);
   }
 
-
   console.log("groups", groups);
 
-  const getPrimaryParentName = (parents, id) => {
-
-    if(parents.length > 0) {
-      return (<><span className="img-container"><img src={ProfileImg}/></span><a target="_blank" href={"/dashboard/parentprofile/" + id}><span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span></a></>)
+  const getPrimaryParentName = (parents = [], id) => {
+    if (parents && parents.length > 0) {
+      return (
+        <>
+          <span className="img-container">
+            <img src={ProfileImg} />
+          </span>
+          <a target="_blank" href={"/dashboard/parentprofile/" + id}>
+            <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
+          </a>
+        </>
+      );
     } else {
       return "";
     }
-  }
+  };
 
   const columns = [
     {
-      name: 'Child',
-      selector: 'studentName',
+      name: "Child",
+      selector: "studentName",
       sortable: false,
-      cell: row => (<><span className="img-container"><img src={ProfileImg}/></span><a target="_blank" href={"/dashboard/menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a></>)
+      cell: row => (
+        <>
+          <span className="img-container">
+            <img src={ProfileImg} />
+          </span>
+          <a target="_blank" href={"/dashboard/menteeprofile/" + row.id}>
+            <span>{row.child?.firstname + " " + row.child?.lastname}</span>
+          </a>
+        </>
+      )
     },
     {
-      name: 'Sibling(s)',
-      selector: 'parentName',
+      name: "Sibling(s)",
+      selector: "parentName",
       sortable: false,
       cell: ""
     },
     {
-      name: 'Parent(s)',
-      selector: 'class',
+      name: "Parent(s)",
+      selector: "class",
       sortable: false,
       cell: row => getPrimaryParentName(row.parents, row.id)
     },
     {
-      name: 'Class',
-      selector: 'birthDate',
+      name: "Class",
+      selector: "birthDate",
       sortable: false,
       cell: row => row?.child?.grade_desc
     },
     {
-      name: 'Group(s)',
-      selector: 'type',
+      name: "Group(s)",
+      selector: "type",
       sortable: false,
       cell: row => row.class_teacher
     },
     {
-      name: 'Days Requested',
-      selector: 'daysRequested',
+      name: "Days Requested",
+      selector: "daysRequested",
       sortable: false
     },
     {
-      name: 'Emergency',
-      selector: 'dateNeeded',
+      name: "Emergency",
+      selector: "dateNeeded",
       sortable: false,
-      cell: ''
+      cell: ""
     }
   ];
   const noHeader = true;
@@ -164,44 +182,44 @@ export default function index() {
   const customStyles = {
     subHeader: {
       style: {
-        justifyContent: 'flex-start',
-        paddingLeft: '0',
-        marginBottom: '20px'
+        justifyContent: "flex-start",
+        paddingLeft: "0",
+        marginBottom: "20px"
       }
     },
     headRow: {
       style: {
-        background: '#f26e21',
-        minHeight: '39px',
-        borderColor: '#fff'
+        background: "#f26e21",
+        minHeight: "39px",
+        borderColor: "#fff"
       }
     },
     headCells: {
       style: {
-        fontSize: '16px',
-        color: '#fff'
+        fontSize: "16px",
+        color: "#fff"
       }
     },
     cells: {
       style: {
-        fontSize: '16px'
+        fontSize: "16px"
       }
     },
     rows: {
       style: {
-        '&:not(:last-of-type)': {
+        "&:not(:last-of-type)": {
           borderColor: "#eaedf1"
         },
         minHeight: "35px",
         padding: "10px 0"
       }
     }
-  }
+  };
 
   return (
     <ClassListViewStyled>
       <div id="dataTableContainer">
-        <DataTable 
+        <DataTable
           columns={columns}
           data={filterApplications}
           pagination
@@ -212,5 +230,5 @@ export default function index() {
         />
       </div>
     </ClassListViewStyled>
-  )
+  );
 }

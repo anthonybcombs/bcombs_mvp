@@ -1,18 +1,15 @@
-
 import React, { useEffect, useState, useMemo } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUndo
-} from "@fortawesome/free-solid-svg-icons";
+import { faUndo } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import moment from "moment";
 
 import "react-datepicker/dist/react-datepicker.css";
-import "../../ApplicationForm/ApplicationForm.css"
+import "../../ApplicationForm/ApplicationForm.css";
 
 const ArchivedApplicationListStyled = styled.div`
   #dataTableContainer {
@@ -22,7 +19,7 @@ const ArchivedApplicationListStyled = styled.div`
     position: relative;
   }
 
-  #dataTableContainer >div header {
+  #dataTableContainer > div header {
     padding: 0;
     display: block;
     min-height: auto;
@@ -96,14 +93,15 @@ const ArchivedApplicationListStyled = styled.div`
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s,
+      -webkit-box-shadow ease-in-out 0.15s;
+    -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-    box-sizing: border-box;  
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box;
   }
 
   select.form-control {
@@ -116,7 +114,7 @@ const ArchivedApplicationListStyled = styled.div`
     max-width: 580px !important;
     min-width: 650px !important;
   }
-  
+
   .icdHOq {
     min-height: 280px;
   }
@@ -138,7 +136,7 @@ const ArchivedApplicationListStyled = styled.div`
 `;
 
 const TextField = styled.input`
-  box-sizing: border-box; 
+  box-sizing: border-box;
   height: 32px;
   width: 200px;
   border-radius: 3px;
@@ -149,19 +147,24 @@ const TextField = styled.input`
   border: 1px solid #e5e5e5;
   padding: 0 32px 0 16px;
   font-size: 16px;
-  m
-  &:hover {
+  m &:hover {
     cursor: pointer;
   }
 `;
 
-const CLASS_OPTIONS = ["Seniors", "Juniors", "Sophomores", "Freshmen", "Middle School"];
+const CLASS_OPTIONS = [
+  "Seniors",
+  "Juniors",
+  "Sophomores",
+  "Freshmen",
+  "Middle School"
+];
 const COLOR_OPTIONS = ["Blue", "Red", "Green"];
 
 const SearchDateComponent = ({
-  handleOnChange, 
-  startDate, 
-  endDate, 
+  handleOnChange,
+  startDate,
+  endDate,
   classText,
   colorText,
   onColorChange,
@@ -174,7 +177,7 @@ const SearchDateComponent = ({
         <DatePicker
           placeholderText="mm/dd/yyyy"
           selected={new Date(startDate)}
-          onChange={(date) => {
+          onChange={date => {
             handleOnChange("start_date", date);
           }}
         />
@@ -182,277 +185,299 @@ const SearchDateComponent = ({
         <DatePicker
           placeholderText="mm/dd/yyyy"
           selected={new Date(endDate)}
-          onChange={(date) => {
+          onChange={date => {
             handleOnChange("end_date", date);
           }}
         />
         <button className="go-btn">Go</button>
       </div>
       <div>
-        <select 
+        <select
           name="class"
           className="form-control"
           defaultValue={classText}
           onChange={onClassChange}>
           <option value="">Select Class</option>
-          {
-            CLASS_OPTIONS.map((opt, i) => (
-              <option key={i} value={opt}>{opt}</option>
-            ))
-          }
+          {CLASS_OPTIONS.map((opt, i) => (
+            <option key={i} value={opt}>
+              {opt}
+            </option>
+          ))}
         </select>
       </div>
       <div>
-        <select 
+        <select
           name="class"
           className="form-control"
           defaultValue={colorText}
           onChange={onColorChange}>
           <option value="">Select Color</option>
-          {
-            COLOR_OPTIONS.map((opt, i) => (
-              <option key={i} value={opt}>{opt}</option>
-            ))
-          }
+          {COLOR_OPTIONS.map((opt, i) => (
+            <option key={i} value={opt}>
+              {opt}
+            </option>
+          ))}
         </select>
       </div>
     </div>
-
   </>
 );
 
-export default function index({
-  archivedapplications,
-  handleUnarchived
-}) {
-  const getPrimaryParentName = (parents) => {
-    if(parents.length > 0) {
-      return <a href="" onClick={(e) => {e.preventDefault();}}><span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span></a>
+export default function index({ archivedapplications, handleUnarchived }) {
+  const getPrimaryParentName = parents => {
+    if (parents && parents.length > 0) {
+      return (
+        <a
+          href=""
+          onClick={e => {
+            e.preventDefault();
+          }}>
+          <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
+        </a>
+      );
     } else {
       return "";
     }
-  }
+  };
 
   const [startDate, setStartDate] = useState(moment());
-  const [endDate, setEndDate] = useState(moment().add(1, 'd'));
+  const [endDate, setEndDate] = useState(moment().add(1, "d"));
 
   const handleOnChange = (date_type, date) => {
-    if(date_type == "start_date")
-      setStartDate(date)
-    else
-      setEndDate(date)
-  }
+    if (date_type == "start_date") setStartDate(date);
+    else setEndDate(date);
+  };
 
   const DATE_FORMAT = "LLL dd, yyyy";
 
-  const getAgeBdate = (child) => {
-    if(!child.age && child <= -1) return "";
+  const getAgeBdate = child => {
+    if (!child.age && child <= -1) return "";
 
     let birthdate = format(new Date(child.birthdate), DATE_FORMAT);
-    return <div>
-      {child.age}&nbsp; ({birthdate})
-    </div>
-  }
+    return (
+      <div>
+        {child.age}&nbsp; ({birthdate})
+      </div>
+    );
+  };
 
   const getCurrentDate = () => {
     const currentDate = format(new Date(), DATE_FORMAT);
-    return <div>{currentDate}</div>
-  }
+    return <div>{currentDate}</div>;
+  };
 
-  
   const columns = [
     {
-      name: 'Student Name',
-      selector: 'studentName',
+      name: "Student Name",
+      selector: "studentName",
       sortable: false,
-      cell: row => <a onClick={(e) => {e.preventDefault();}} href="#"><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>,
+      cell: row => (
+        <a
+          onClick={e => {
+            e.preventDefault();
+          }}
+          href="#">
+          <span>{row.child?.firstname + " " + row.child?.lastname}</span>
+        </a>
+      )
     },
     {
-      name: 'Parent name',
-      selector: 'parentName',
+      name: "Parent name",
+      selector: "parentName",
       sortable: false,
       cell: row => getPrimaryParentName(row.parents)
     },
     {
-      name: 'Class',
-      selector: 'class',
+      name: "Class",
+      selector: "class",
       sortable: false,
-      cell: row => row.class_teacher ? row.class_teacher : row?.child?.grade_desc
+      cell: row =>
+        row.class_teacher ? row.class_teacher : row?.child?.grade_desc
     },
     {
-      name: 'Age (Bdate)',
-      selector: 'birthDate',
+      name: "Age (Bdate)",
+      selector: "birthDate",
       sortable: false,
       cell: row => getAgeBdate(row.child)
     },
     {
-      name: 'Type',
-      selector: 'type',
+      name: "Type",
+      selector: "type",
       sortable: false,
       cell: row => <div>PT</div>
     },
     {
-      name: 'Days Requested',
-      selector: 'daysRequested',
+      name: "Days Requested",
+      selector: "daysRequested",
       sortable: false
     },
     {
-      name: 'Date Needed',
-      selector: 'dateNeeded',
+      name: "Date Needed",
+      selector: "dateNeeded",
       sortable: false,
       cell: row => getCurrentDate()
     },
     {
-      name: 'Voucher',
-      selector: 'voucher',
+      name: "Voucher",
+      selector: "voucher",
       sortable: false,
-      cell: row => row.voucher ? 'Yes': 'No'
+      cell: row => (row.voucher ? "Yes" : "No")
     },
     {
-      name: 'Waiver',
-      selector: 'waiver',
+      name: "Waiver",
+      selector: "waiver",
       sortable: false,
-      cell: row => row.waiver ? 'Yes': 'No'
+      cell: row => (row.waiver ? "Yes" : "No")
     },
     {
-      name: 'Application Date',
-      selector: 'applicationDate',
+      name: "Application Date",
+      selector: "applicationDate",
       sortable: false,
       cell: row => format(new Date(row.application_date), DATE_FORMAT)
     },
     {
-      name: 'Archive Date',
-      selector: 'archiveDate',
+      name: "Archive Date",
+      selector: "archiveDate",
       sortable: false,
       cell: row => format(new Date(row.archived_date), DATE_FORMAT)
     },
     {
-      name: 'Unarchive',
-      selected: 'unarchived',
+      name: "Unarchive",
+      selected: "unarchived",
       sortable: false,
-      cell: row => <button className="unarchived" onClick={() => {handleUnarchived(row.app_id)}}><FontAwesomeIcon icon={faUndo} /></button>
+      cell: row => (
+        <button
+          className="unarchived"
+          onClick={() => {
+            handleUnarchived(row.app_id);
+          }}>
+          <FontAwesomeIcon icon={faUndo} />
+        </button>
+      )
     }
   ];
 
   const customStyles = {
     subHeader: {
       style: {
-        justifyContent: 'flex-start',
-        paddingLeft: '0',
-        marginBottom: '20px'
+        justifyContent: "flex-start",
+        paddingLeft: "0",
+        marginBottom: "20px"
       }
     },
     headRow: {
       style: {
-        background: '#f26e21',
-        minHeight: '39px',
-        borderColor: '#fff'
+        background: "#f26e21",
+        minHeight: "39px",
+        borderColor: "#fff"
       }
     },
     headCells: {
       style: {
-        fontSize: '16px',
-        color: '#fff'
+        fontSize: "16px",
+        color: "#fff"
       }
     },
     cells: {
       style: {
-        fontSize: '16px'
+        fontSize: "16px"
       }
     },
     rows: {
       style: {
-        '&:not(:last-of-type)': {
+        "&:not(:last-of-type)": {
           borderColor: "#eaedf1"
         },
         minHeight: "35px"
       }
     }
-  }
+  };
 
   const conditionalRowStyles = [
     {
       when: row => row.color_designation === "blue",
       style: {
-        backgroundColor: 'SteelBlue !important',
-        color: '#fff !important',
-        borderBottom: '1px solid #fff !important',
+        backgroundColor: "SteelBlue !important",
+        color: "#fff !important",
+        borderBottom: "1px solid #fff !important",
         a: {
-          color: 'inherit !important'
+          color: "inherit !important"
         }
       }
     },
     {
       when: row => row.color_designation === "red",
       style: {
-        backgroundColor: 'red !important',
-        color: '#fff !important',
-        borderBottom: '1px solid #fff !important',
+        backgroundColor: "red !important",
+        color: "#fff !important",
+        borderBottom: "1px solid #fff !important",
         a: {
-          color: 'inherit !important'
+          color: "inherit !important"
         }
       }
     },
     {
       when: row => row.color_designation === "green",
       style: {
-        backgroundColor: 'green !important',
-        color: '#fff !important',
-        borderBottom: '1px solid #fff !important',
+        backgroundColor: "green !important",
+        color: "#fff !important",
+        borderBottom: "1px solid #fff !important",
         a: {
-          color: 'inherit !important'
+          color: "inherit !important"
         }
       }
     }
-  ]
+  ];
 
   const noHeader = true;
   const striped = true;
 
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
 
-  const [classText, setClassText] = useState('');
-  const [colorText, setColorText] = useState('');
+  const [classText, setClassText] = useState("");
+  const [colorText, setColorText] = useState("");
 
   const subHeaderComponentMemo = useMemo(() => {
-    return <SearchDateComponent 
+    return (
+      <SearchDateComponent
         handleOnChange={handleOnChange}
-        startDate={startDate} 
-        endDate={endDate} 
-        onClassChange={e => setClassText(e.target.value)} 
+        startDate={startDate}
+        endDate={endDate}
+        onClassChange={e => setClassText(e.target.value)}
         onColorChange={e => setColorText(e.target.value)}
         colorText={colorText}
-        classText={classText} 
-      />;
+        classText={classText}
+      />
+    );
   }, [startDate, endDate, resetPaginationToggle, colorText, classText]);
 
   let data = archivedapplications.length > 0 ? archivedapplications : [];
 
-  let getApplications = archivedapplications.length > 0 ? archivedapplications : [];
+  let getApplications =
+    archivedapplications.length > 0 ? archivedapplications : [];
 
-  data = getApplications.filter((item) => {
-
+  data = getApplications.filter(item => {
     let class_match = true;
     let color_match = true;
 
-    if(classText) {
+    if (classText) {
       class_match = item.child.grade_desc == classText;
     }
 
-    if(colorText) {
-      if(item.color_designation)
-        color_match = item.color_designation.toLowerCase() == colorText.toLowerCase();
-      else
-        color_match = false;
+    if (colorText) {
+      if (item.color_designation)
+        color_match =
+          item.color_designation.toLowerCase() == colorText.toLowerCase();
+      else color_match = false;
     }
 
-    return class_match && color_match
+    return class_match && color_match;
   });
 
   return (
     <ArchivedApplicationListStyled>
       <div id="dataTableContainer">
-        <DataTable 
+        <DataTable
           columns={columns}
           data={data}
           pagination

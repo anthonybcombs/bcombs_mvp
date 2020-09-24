@@ -2,7 +2,7 @@ import { makeDb } from "../../helpers/database";
 
 import { getUserGroups } from "../../api/groups";
 
-import { sort, distinct, sortByDate } from "../../helpers/array"
+import { sort, distinct, sortByDate } from "../../helpers/array";
 
 export const getVendors = async () => {
   const db = makeDb();
@@ -48,7 +48,9 @@ export const getVendorsIdByUser = async user => {
       [user]
     );
 
-    if(result.length > 0) {vendors.push(...result)}
+    if (result.length > 0) {
+      vendors.push(...result);
+    }
 
     result = await db.query(
       `
@@ -60,15 +62,16 @@ export const getVendorsIdByUser = async user => {
       [user]
     );
 
-    if(result.length > 0) {vendors.push(...result)}
-
-  } catch(err) {
+    if (result.length > 0) {
+      vendors.push(...result);
+    }
+  } catch (err) {
     console.log("error", error);
   } finally {
     await db.close();
     return vendors;
   }
-}
+};
 
 export const getVendorsByUserId = async user => {
   const db = makeDb();
@@ -96,9 +99,10 @@ export const getVendorsByUserId = async user => {
       WHERE v.user=UUID_TO_BIN(?)`,
       [user]
     );
+    console.log("Get Vendor By User ID", result);
 
     if (result && result.length > 0) {
-      for(let i = 0; i < result.length; i++) {
+      for (let i = 0; i < result.length; i++) {
         result[i].app_programs = await getVendorAppProgram(result[i].id);
         result[i].location_sites = await getVendorAppLocationSite(result[i].id);
         result[i].app_groups = await getVendorAppGroupsByVendorId(result[i].id);
@@ -106,7 +110,7 @@ export const getVendorsByUserId = async user => {
       }
     }
 
-    result = await db.query(
+    let result2 = await db.query(
       `
         SELECT 
           BIN_TO_UUID(v.id) as id, 
@@ -128,28 +132,35 @@ export const getVendorsByUserId = async user => {
       `,
       [user]
     );
-
-    if (result && result.length > 0) {
-      for(let i = 0; i < result.length; i++) {
-        result[i].app_programs = await getVendorAppProgram(result[i].id);
-        result[i].location_sites = await getVendorAppLocationSite(result[i].id);
-        result[i].app_groups = await getVendorAppGroupsByVendorId(result[i].id);
-        vendors.push(result[i]);
+    console.log("Resultttt 1", result2);
+    if (result2 && result2.length > 0) {
+      console.log("Resultttt 2", result2);
+      for (let i = 0; i < result2.length; i++) {
+        result2[i].app_programs = await getVendorAppProgram(result2[i].id);
+        result2[i].location_sites = await getVendorAppLocationSite(
+          result2[i].id
+        );
+        result2[i].app_groups = await getVendorAppGroupsByVendorId(
+          result2[i].id
+        );
+        vendors.push(result2[i]);
       }
     }
 
-    if(vendors.length > 0)
-      vendors = sortByDate(vendors);
-    
+    // if (vendors.length > 0) {
+    //   vendors = sortByDate(vendors);
+    // }
+    console.log("Vendorsssszzz", vendors);
   } catch (error) {
-    console.log(error);
+    console.log("Error", error);
   } finally {
     await db.close();
+    console.log("getVendorsByUserId", vendors);
     return vendors.reverse();
   }
 };
 
-export const getVendorById2 = async id2 =>  {
+export const getVendorById2 = async id2 => {
   const db = makeDb();
   let result;
   try {
@@ -174,24 +185,20 @@ export const getVendorById2 = async id2 =>  {
     );
 
     if (result && result.length > 0) {
-      for(let i = 0; i < result.length; i++) {
-        result[i].app_programs = []
-        result[i].location_sites = []
+      for (let i = 0; i < result.length; i++) {
+        result[i].app_programs = [];
+        result[i].location_sites = [];
       }
     }
-
   } catch (error) {
     console.log(error);
   } finally {
     await db.close();
     return result;
   }
-}
+};
 
-export const checkIfAdminVendorExists = async ({
-  user,
-  vendor
-}) => {
+export const checkIfAdminVendorExists = async ({ user, vendor }) => {
   const db = makeDb();
 
   try {
@@ -203,27 +210,23 @@ export const checkIfAdminVendorExists = async ({
       [user, vendor]
     );
 
-    if(rows.length > 0) {
+    if (rows.length > 0) {
       return {
         is_exists: true
-      }
+      };
     }
 
     return {
       is_exists: false
-    }
+    };
   } catch (error) {
     console.log("error update admin", error);
   } finally {
     await db.close();
   }
-}
+};
 
-export const updateVendorAdmins = async ({
-  user,
-  vendor,
-  name
-}) => {
+export const updateVendorAdmins = async ({ user, vendor, name }) => {
   const db = makeDb();
   let result;
 
@@ -232,20 +235,15 @@ export const updateVendorAdmins = async ({
       `UPDATE vendor_admin SET name=? WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
       [name, user, vendor]
     );
-
   } catch (error) {
     console.log("error update admin", error);
   } finally {
     await db.close();
     return result;
   }
-}
+};
 
-export const addVendorAdmins = async ({
-  user,
-  vendor,
-  name
-}) => {
+export const addVendorAdmins = async ({ user, vendor, name }) => {
   const db = makeDb();
   let result;
   try {
@@ -260,36 +258,33 @@ export const addVendorAdmins = async ({
     await db.close();
     return result;
   }
-}
+};
 
-export const deleteVendorAdmins = async ({
-  user,
-  vendor
-}) => {
+export const deleteVendorAdmins = async ({ user, vendor }) => {
   const db = makeDb();
   let result;
   try {
     result = await db.query(
       `DELETE FROM vendor_admin WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
       [user, vendor]
-    )
+    );
   } catch (error) {
     console.log("delete admin error", error);
   } finally {
     await db.close();
     return result;
   }
-}
+};
 
-export const getVendorAdmins = async (vendor) => {
+export const getVendorAdmins = async vendor => {
   const db = makeDb();
   let result;
   let admins = [];
   try {
     // result = await db.query(
     //   `
-    //     SELECT 
-    //       BIN_TO_UUID(v.id) as vendor, 
+    //     SELECT
+    //       BIN_TO_UUID(v.id) as vendor,
     //       BIN_TO_UUID(u.id) as user,
     //       v.name as vendorName,
     //       u.email
@@ -322,24 +317,23 @@ export const getVendorAdmins = async (vendor) => {
       [vendor, vendor]
     );
 
-    if(result.length > 0) {
-      for(let item of result) {
+    if (result.length > 0) {
+      for (let item of result) {
         item.isOwner = false;
         admins.push(item);
       }
     }
 
     admins = sort(admins, "name");
-
   } catch (error) {
     console.log("error", error);
   } finally {
     await db.close();
     return admins;
   }
-}
+};
 
-export const getVendorAppProgram = async (vendor) => {
+export const getVendorAppProgram = async vendor => {
   const db = makeDb();
   let result;
 
@@ -364,7 +358,7 @@ export const getVendorAppProgram = async (vendor) => {
   }
 };
 
-export const getVendorAppLocationSite = async (vendor) => {
+export const getVendorAppLocationSite = async vendor => {
   const db = makeDb();
   let result;
 
