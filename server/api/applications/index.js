@@ -121,6 +121,7 @@ export const getApplicationsByVendor = async vendor => {
   const db = makeDb();
   let result = [];
   try {
+    console.log("getApplicationsByVendor vendor !!!!!!!!!!!!!!! ", vendor);
     const applications = await db.query(
       `SELECT 
         id,
@@ -153,6 +154,8 @@ export const getApplicationsByVendor = async vendor => {
       [vendor]
     );
     result = applications;
+
+    console.log("getApplicationsByVendor !!!!!!!!!!!!!!!", result);
   } catch (error) {
     console.log("error", error);
   } finally {

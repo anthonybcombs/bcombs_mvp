@@ -82,7 +82,7 @@ import { getUserFromDatabase } from "../../api";
 
 import { generatePassword } from "../../helpers/randomPassword";
 
-import { sendAdminInvite } from "../../helpers/email"
+import { sendAdminInvite } from "../../helpers/email";
 
 const resolvers = {
   RootQuery: {
@@ -149,8 +149,9 @@ const resolvers = {
       return vendors;
     },
     async vendorsByUser(root, { user }, context) {
+      console.log("vendorsByUser1111", user);
       let vendors = await getVendorsByUserId(user);
-      console.log("vendors", vendors);
+      console.log("vendorsByUser2222", vendors);
 
       return vendors;
     },
@@ -160,19 +161,25 @@ const resolvers = {
     },
     async getVendorApplications(root, { vendor_id }, context) {
       let applications = await getApplicationsByVendor(vendor_id);
-
+      console.log("Get Vendor Application", applications.length);
       let resapplications = [];
 
       for (let application of applications) {
         let child = await getChildInformation(application.child);
-        console.log("application child ", application.child);
-        console.log("child ", child);
+        // console.log("application child ", application.child);
+        // console.log("child ", child);
         application.parents = await getParentByApplication(application.app_id);
+
         application.child = child.length > 0 ? child[0] : {};
 
-        resapplications.push(application);
+        resapplications.push(Object.assign({}, application));
       }
+      // if (resapplications.length > 0) {
+      //   resapplications = JSON.parse(JSON.stringify(resapplications));
+      //console.log("resapplications", resapplications);
+      // }
 
+      console.log("Res Applications", resapplications);
       return resapplications;
     },
     async getUserApplications(root, { email }, context) {
@@ -247,14 +254,13 @@ const resolvers = {
       }
     },
     async getVendorAdminsByUser(root, { user }, context) {
-
       const vendors = await getVendorsIdByUser(user);
 
       console.log("vendors", vendors);
       let admins = [];
-      for(const vendor of vendors) {
+      for (const vendor of vendors) {
         console.log("vendor", vendor);
-        let va = await getVendorAdmins(vendor.id)
+        let va = await getVendorAdmins(vendor.id);
         admins.push(...va);
       }
 
@@ -531,7 +537,7 @@ const resolvers = {
         section2_name: application.section2_name,
         section3_name: application.section3_name,
         app_id: application.app_id
-      }
+      };
 
       console.log("tc_signatures", tc_signatures);
       const isSaved = await saveApplication({
@@ -557,19 +563,18 @@ const resolvers = {
       };
     },
     async deleteVendorAdmin(root, { admins }, context) {
-
       const currentUser = admins[0].currentUser;
 
-      for(const admin of admins) {
+      for (const admin of admins) {
         await deleteVendorAdmins(admin);
       }
 
       const vendors = await getVendorsIdByUser(currentUser);
 
       let resAdmins = [];
-      for(const vendor of vendors) {
+      for (const vendor of vendors) {
         console.log("vendor", vendor);
-        let va = await getVendorAdmins(vendor.id)
+        let va = await getVendorAdmins(vendor.id);
         resAdmins.push(...va);
       }
 
@@ -577,16 +582,26 @@ const resolvers = {
       return resAdmins;
     },
     async updateVendorAdmin(root, { admin }, context) {
-      
-      for(const vendor of admin.vendors) {
-        const checkVendorExists = await checkIfAdminVendorExists({user: admin.user, vendor:vendor})
+      for (const vendor of admin.vendors) {
+        const checkVendorExists = await checkIfAdminVendorExists({
+          user: admin.user,
+          vendor: vendor
+        });
 
-        if(checkVendorExists && checkVendorExists.is_exists) {
+        if (checkVendorExists && checkVendorExists.is_exists) {
           //Update
-          await updateVendorAdmins({user: admin.user, name: admin.name, vendor: vendor});
+          await updateVendorAdmins({
+            user: admin.user,
+            name: admin.name,
+            vendor: vendor
+          });
         } else {
           //add
-          await addVendorAdmins({user: admin.user, vendor: vendor, name: admin.name});
+          await addVendorAdmins({
+            user: admin.user,
+            vendor: vendor,
+            name: admin.name
+          });
         }
       }
 
@@ -594,18 +609,16 @@ const resolvers = {
       const vendors = await getVendorsIdByUser(currentUser);
 
       let resAdmins = [];
-      for(const vendor of vendors) {
+      for (const vendor of vendors) {
         console.log("vendor", vendor);
-        let va = await getVendorAdmins(vendor.id)
+        let va = await getVendorAdmins(vendor.id);
         resAdmins.push(...va);
       }
 
       console.log("admins", resAdmins);
       return resAdmins;
-
     },
     async addVendorAdmin(root, { admin }, context) {
-
       const checkUser = await checkUserEmail(admin.email);
 
       let userType = await getUserTypes();
@@ -616,19 +629,17 @@ const resolvers = {
 
       let user;
 
-      if(checkUser && checkUser.is_exist) {
+      if (checkUser && checkUser.is_exist) {
         user = checkUser.user;
 
-        if(!(user.type == userType.id)) {
+        if (!(user.type == userType.id)) {
           //update user type to vendor
           user.type = userType.id;
 
           console.log("update user type to vendor", user);
           await updateUserType(user);
         }
-
       } else {
-
         const newPassword = generatePassword();
 
         let userParams = {
@@ -636,25 +647,33 @@ const resolvers = {
           email: admin.email,
           password: newPassword,
           type: userType
-        }
+        };
 
         await executeSignUp(userParams);
 
         user = await getUserFromDatabase(admin.email);
 
-        sendAdminInvite({email: admin.email, password: newPassword, name: admin.name});
+        sendAdminInvite({
+          email: admin.email,
+          password: newPassword,
+          name: admin.name
+        });
       }
 
-      for( const vendor of admin.vendors ) {
-        await addVendorAdmins({user: user.id, vendor: vendor, name: admin.name});
+      for (const vendor of admin.vendors) {
+        await addVendorAdmins({
+          user: user.id,
+          vendor: vendor,
+          name: admin.name
+        });
       }
 
       const vendors = await getVendorsIdByUser(admin.currentUser);
 
       let admins = [];
-      for(const vendor of vendors) {
+      for (const vendor of vendors) {
         console.log("vendor", vendor);
-        let va = await getVendorAdmins(vendor.id)
+        let va = await getVendorAdmins(vendor.id);
         admins.push(...va);
       }
 

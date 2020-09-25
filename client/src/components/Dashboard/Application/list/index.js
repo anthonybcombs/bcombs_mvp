@@ -410,7 +410,7 @@ export default function index({
   };
 
   const getPrimaryParentName = (parents, id) => {
-    if (parents.length > 0) {
+    if (parents && parents.length > 0) {
       return (
         <a target="_blank" href={"parentprofile/" + id}>
           <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
@@ -464,9 +464,12 @@ export default function index({
       sortable: true,
       cell: row => {
         if (row.class_teacher && appGroups && appGroups.length) {
-          return (appGroups.find(e => e.app_grp_id === row.class_teacher) || {}).name || '-'
+          return (
+            (appGroups.find(e => e.app_grp_id === row.class_teacher) || {})
+              .name || "-"
+          );
         }
-        return '-'
+        return "-";
       }
     },
     {
@@ -486,7 +489,7 @@ export default function index({
       selector: "applicationDate",
       sortable: true,
       cell: row => format(new Date(row.application_date), DATE_FORMAT)
-    },
+    }
     // {
     //   name: "Attachment 1",
     //   selector: "attachment1",

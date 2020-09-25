@@ -7,7 +7,6 @@ import { format } from "date-fns";
 import { Multiselect } from "multiselect-react-dropdown";
 
 const ExportFilterModal = styled.div`
-
   .modal {
     padding: 0;
   }
@@ -65,14 +64,15 @@ const ExportFilterModal = styled.div`
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s,
+      -webkit-box-shadow ease-in-out 0.15s;
+    -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-    box-sizing: border-box;  
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box;
   }
 
   select {
@@ -97,29 +97,33 @@ const ExportFilter = ({
   app_programs = [],
   location_sites = []
 }) => {
-
-  const CLASS_OPTIONS = ["Seniors", "Juniors", "Sophomores", "Freshmen", "Middle School"];
+  const CLASS_OPTIONS = [
+    "Seniors",
+    "Juniors",
+    "Sophomores",
+    "Freshmen",
+    "Middle School"
+  ];
 
   const STUDENT_CLASS_OPTIONS = [
-    { name: "In process", value: "new_applicant_in_process"},
+    { name: "In process", value: "new_applicant_in_process" },
     { name: "Accepted", value: "new_applicant_accepted" },
-    { name: "Rejected", value: "new_applicant_rejected"},
+    { name: "Rejected", value: "new_applicant_rejected" },
     { name: "Current Student", value: "current_student" },
-    { name: "Waiting List", value: "waiting_list"},
-    { name: "No longer a Student", value: "no_longer_student"},
-    { name: "Missed opportunity", value: "missed_opportunity"},
+    { name: "Waiting List", value: "waiting_list" },
+    { name: "No longer a Student", value: "no_longer_student" },
+    { name: "Missed opportunity", value: "missed_opportunity" }
   ];
 
   const COLOR_OPTIONS = ["Blue", "Red", "Green"];
 
   const getVendorFilename = () => {
-
-    if(vendor && vendor.name) {
+    if (vendor && vendor.name) {
       return vendor.name + " Application List.csv";
     }
 
     return "";
-  }
+  };
 
   const [statusText, setStatusText] = useState("");
   const [classText, setClassText] = useState("");
@@ -132,8 +136,7 @@ const ExportFilter = ({
 
   console.log("appPrograms filter", appPrograms);
 
-  const filterApplications = applications.filter((item) => {
-
+  const filterApplications = applications.filter(item => {
     let class_match = true;
     let color_match = true;
     let status_match = true;
@@ -141,58 +144,67 @@ const ExportFilter = ({
     let program_match = true;
     let location_match = true;
 
-    if(classText) {
+    if (classText) {
       class_match = item.child.grade_desc == classText;
     }
 
-    if(colorText) {
-      if(item.color_designation)
-        color_match = item.color_designation.toLowerCase() == colorText.toLowerCase();
-      else
-        color_match = false;
-    }
-    
-    if(statusText) {
-      status_match = item.student_status.toLowerCase() == statusText.toLowerCase();
+    if (colorText) {
+      if (item.color_designation)
+        color_match =
+          item.color_designation.toLowerCase() == colorText.toLowerCase();
+      else color_match = false;
     }
 
-    if(appGroupText) {
+    if (statusText) {
+      status_match =
+        item.student_status.toLowerCase() == statusText.toLowerCase();
+    }
+
+    if (appGroupText) {
       group_match = false;
-      for(const group of appGroups) {
-        if(group.app_grp_id == item.class_teacher) {
-          group_match = true; break;
+      for (const group of appGroups) {
+        if (group.app_grp_id == item.class_teacher) {
+          group_match = true;
+          break;
         }
       }
     }
 
-    if(appPrograms.length > 0) {
+    if (appPrograms.length > 0) {
       program_match = false;
-      for(const program of appPrograms) {
-        if(item.child.programs.includes(program.name)) {
-          program_match = true; break;
+      for (const program of appPrograms) {
+        if (item.child.programs.includes(program.name)) {
+          program_match = true;
+          break;
         }
       }
     }
 
-    if(locationSites.length > 0) {
+    if (locationSites.length > 0) {
       location_match = false;
-      for(const locationSite of locationSites) {
-        if(item.child.location_site.includes(locationSite.name)) {
-          location_match = true; break;
+      for (const locationSite of locationSites) {
+        if (item.child.location_site.includes(locationSite.name)) {
+          location_match = true;
+          break;
         }
       }
     }
 
-    return class_match && color_match && status_match && group_match && program_match && location_match;
+    return (
+      class_match &&
+      color_match &&
+      status_match &&
+      group_match &&
+      program_match &&
+      location_match
+    );
   });
 
-
   const getApplicationStatus = (student_status, verification) => {
-
     let studentStatusVal = "";
-    let verificationVal = ""
+    let verificationVal = "";
 
-    if(student_status == "new_applicant_in_process") {
+    if (student_status == "new_applicant_in_process") {
       studentStatusVal = "In process";
     } else if (student_status == "new_applicant_accepted") {
       studentStatusVal = "Accepted";
@@ -209,55 +221,58 @@ const ExportFilter = ({
     }
 
     return studentStatusVal;
-  }
+  };
 
-  const getPrimaryParentName = (parents) => {
-    if(parents.length > 0) {
+  const getPrimaryParentName = parents => {
+    if (parents && parents.length > 0) {
       return parents[0]?.firstname + " " + parents[0]?.lastname;
     }
-    return ""
-  }
-  
+    return "";
+  };
 
-  const getPrimaryParentEmail = (parents) => {
-    if(parents.length > 0) {
+  const getPrimaryParentEmail = parents => {
+    if (parents.length > 0) {
       return parents[0]?.email_address;
     }
-    return ""
-  }
+    return "";
+  };
 
-  const getPrimaryParentPhone = (parents) => {
-    if(parents.length > 0) {
+  const getPrimaryParentPhone = parents => {
+    if (parents.length > 0) {
       return parents[0]?.phone_number;
     }
-    return ""
-  }
+    return "";
+  };
 
   const DATE_FORMAT = "LLL dd, yyyy";
 
-  const getAgeBdate = (child) => {
-    if(!child.age && child <= -1) return "";
+  const getAgeBdate = child => {
+    if (!child.age && child <= -1) return "";
 
     let birthdate = format(new Date(child.birthdate), DATE_FORMAT);
 
     return child.age + " (" + birthdate + ")";
-  }
-  
+  };
+
   let exportApplications = [];
 
-  for(const application of filterApplications) {
+  for (const application of filterApplications) {
     const tempApplication = {
-      "Status": getApplicationStatus(application.student_status),
-      "Student Name": application.child?.firstname + " " + application.child?.lastname,
+      Status: getApplicationStatus(application.student_status),
+      "Student Name":
+        application.child?.firstname + " " + application.child?.lastname,
       "Parent Name": getPrimaryParentName(application.parents),
       "Parent Phone": getPrimaryParentPhone(application.parents),
       "Parent Email": getPrimaryParentEmail(application.parents),
-      "Grade": application?.child?.grade_desc,
-      "Programs": application?.child?.programs,
+      Grade: application?.child?.grade_desc,
+      Programs: application?.child?.programs,
       "Location Sites": application?.child?.location_site,
-      "Age": getAgeBdate(application.child),
-      "Application Date": format(new Date(application.application_date), DATE_FORMAT)
-    }
+      Age: getAgeBdate(application.child),
+      "Application Date": format(
+        new Date(application.application_date),
+        DATE_FORMAT
+      )
+    };
 
     exportApplications.push(tempApplication);
   }
@@ -282,10 +297,10 @@ const ExportFilter = ({
     <ExportFilterModal>
       <div className="modal">
         <div className="modal-content">
-          <span onClick={handleExit} className="close">×</span>
-          <div className="modal-header">
-            Export Applications
-          </div>
+          <span onClick={handleExit} className="close">
+            ×
+          </span>
+          <div className="modal-header">Export Applications</div>
           <div className="modal-container">
             <p>Filter:</p>
             <div>
@@ -295,16 +310,15 @@ const ExportFilter = ({
                 onChange={e => {
                   console.log(e.target.value);
                   setAppGroupText(e.target.value);
-                }}
-              >
+                }}>
                 <option value="">All Class</option>
-                {
-                  appGroups.map((opt, i) => (
-                    <option key={i} value={opt.id}>{opt.name}</option>
-                  ))
-                }
+                {appGroups.map((opt, i) => (
+                  <option key={i} value={opt.id}>
+                    {opt.name}
+                  </option>
+                ))}
               </select>
-              <select 
+              <select
                 className="form-control"
                 value={classText}
                 onChange={e => {
@@ -312,39 +326,39 @@ const ExportFilter = ({
                   setClassText(e.target.value);
                 }}>
                 <option value="">All Grade</option>
-                {
-                  CLASS_OPTIONS.map((opt, i) => (
-                    <option key={i} value={opt}>{opt}</option>
-                  ))
-                }
+                {CLASS_OPTIONS.map((opt, i) => (
+                  <option key={i} value={opt}>
+                    {opt}
+                  </option>
+                ))}
               </select>
-              <select 
+              <select
                 className="form-control"
                 value={statusText}
                 onChange={e => {
                   setStatusText(e.target.value);
                 }}>
                 <option value="">All Status</option>
-                {
-                  STUDENT_CLASS_OPTIONS.map((opt, i) => (
-                    <option key={i} value={opt.value}>{opt.name}</option>
-                  ))
-                }
+                {STUDENT_CLASS_OPTIONS.map((opt, i) => (
+                  <option key={i} value={opt.value}>
+                    {opt.name}
+                  </option>
+                ))}
               </select>
-              <select 
+              <select
                 className="form-control"
                 value={colorText}
-                onChange={e => { 
+                onChange={e => {
                   setColorText(e.target.value);
                 }}>
                 <option value="">All Color</option>
-                {
-                  COLOR_OPTIONS.map((opt, i) => (
-                    <option key={i} value={opt}>{opt}</option>
-                  ))
-                }
+                {COLOR_OPTIONS.map((opt, i) => (
+                  <option key={i} value={opt}>
+                    {opt}
+                  </option>
+                ))}
               </select>
-              <Multiselect 
+              <Multiselect
                 autcomplete="false"
                 className="field-input"
                 hasSelectAll={false}
@@ -363,7 +377,7 @@ const ExportFilter = ({
                   setAppPrograms([...selectedList]);
                 }}
               />
-              <Multiselect 
+              <Multiselect
                 autcomplete="false"
                 className="field-input"
                 hasSelectAll={false}
@@ -383,8 +397,8 @@ const ExportFilter = ({
                 }}
               />
             </div>
-            <CSVLink 
-              id="filterExportButton" 
+            <CSVLink
+              id="filterExportButton"
               style={{
                 marginTop: "25px"
               }}
@@ -397,6 +411,6 @@ const ExportFilter = ({
       </div>
     </ExportFilterModal>
   );
-}
+};
 
 export default ExportFilter;
