@@ -185,9 +185,9 @@ export const getVendorById2 = async id2 => {
     );
 
     if (result && result.length > 0) {
-      for (let i = 0; i < result.length; i++) {
-        result[i].app_programs = [];
-        result[i].location_sites = [];
+      for(let i = 0; i < result.length; i++) {
+        result[i].app_programs = await getVendorAppProgram(result[i].id);
+        result[i].location_sites = await getVendorAppLocationSite(result[i].id);
       }
     }
   } catch (error) {
