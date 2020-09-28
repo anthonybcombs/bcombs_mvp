@@ -284,17 +284,12 @@ export default function index({
     { id: 8, name: "Grandfather", label: "Grandfather" },
     { id: 9, name: "Grandmother", label: "Grandmother" },
     { id: 10, name: "Stepbrother", label: "Stepbrother" },
-    { id: 11, name: "Step Sister", label: "Step Sister" },
+    { id: 11, name: "Stepsister", label: "Stepsister" },
     { id: 12, name: "Stepfather", label: "Stepfather" },
-    { id: 13, name: "Step Mother", label: "Step Mother" },
-    { id: 14, name: "Stepson", label: "Stepson" },
-    { id: 15, name: "Step Daughter", label: "Step Daughter" },
-    { id: 16, name: "Brother-in-law", label: "Brother-in-law" },
-    { id: 17, name: "Sister-in-law", label: "Sister-in-law" },
+    { id: 13, name: "Stepmother", label: "Stepmother" },
     { id: 18, name: "Father-in-law", label: "Father-in-law" },
     { id: 19, name: "Mother-in-law", label: "Mother-in-law" },
     { id: 20, name: "Family Friend", label: "Family Friend" },
-    { id: 21, name: "Other relatives", label: "Other relatives" },
     { id: 22, name: "Others", label: "Others" }
   ];
 
