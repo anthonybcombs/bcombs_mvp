@@ -1021,12 +1021,16 @@ export default function index({
                 placeholder="Zip Code"
                 id={`parentzipcode_${counter - 1}`}
                 onChange={({ target }) => {
-                  handleParentFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "zip_code",
-                    target.value
-                  );
+                  if (target.value.match(/^-{0,1}\d+$/)) {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "zip_code",
+                      target.value
+                    );
+                  } else {
+                    target.value = target.value.slice(0, -1);
+                  }
                 }}
                 ref={register({ maxLength: 5 })}
                 readOnly={isReadonly}

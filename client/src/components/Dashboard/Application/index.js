@@ -673,7 +673,7 @@ export default function index() {
         state: parent.state ? parent.state : application.child?.state,
         zip_code: parent.zip_code ? parent.zip_code : application.child?.zip_code,
         occupation: parent.zip_code ? parent.occupation : "",
-        employer_name: parent.employer_name ? parent.employer_name : "",
+        employer_name: parent.employers_name ? parent.employers_name : "",
         goals_parent_program: parent.parent_goals ? parent.parent_goals : "",
         goals_child_program: parent.parent_child_goals
           ? parent.parent_child_goals
