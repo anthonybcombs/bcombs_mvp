@@ -1021,21 +1021,16 @@ export default function index({
                 placeholder="Zip Code"
                 id={`parentzipcode_${counter - 1}`}
                 onChange={({ target }) => {
-                  if (target.value.match(/^-{0,1}\d+$/)) {
-                    handleParentFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "zip_code",
-                      target.value
-                    );
-                  } else {
-                    target.value = target.value.slice(0, -1);
-                  }
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "zip_code",
+                    target.value
+                  );
                 }}
-                ref={register({ minLength: 5 })}
+                ref={register({ maxLength: 5 })}
                 readOnly={isReadonly}
                 defaultValue={parentProfile?.zip_code}
-                maxLength="5"
               />
               <label
                 className="field-label"
