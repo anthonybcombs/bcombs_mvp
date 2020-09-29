@@ -68,7 +68,6 @@ export const addParent = async ({
   level_of_education,
   child_hs_grad,
   child_col_grad,
-  emergency_contacts,
   person_recommend
 }) => {
   const db = makeDb();
@@ -103,7 +102,6 @@ export const addParent = async ({
         level_of_education,
         child_hs_grad,
         child_col_grad,
-        emergency_contacts,
         person_recommend
       ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?),
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
@@ -134,7 +132,6 @@ export const addParent = async ({
         level_of_education,
         child_hs_grad,
         child_col_grad,
-        emergency_contacts,
         person_recommend
       ]
     )
@@ -174,7 +171,6 @@ export const updateParent = async ({
   level_of_education,
   child_hs_grad,
   child_col_grad,
-  emergency_contacts,
   person_recommend,
   parent_id
 }) => {
@@ -209,7 +205,6 @@ export const updateParent = async ({
         level_of_education=?,
         child_hs_grad=?,
         child_col_grad=?,
-        emergency_contacts=?,
         person_recommend=?
         WHERE parent_id=UUID_TO_BIN(?)
       `,
@@ -236,7 +231,6 @@ export const updateParent = async ({
         level_of_education,
         child_hs_grad,
         child_col_grad,
-        emergency_contacts,
         person_recommend,
         parent_id
       ]
