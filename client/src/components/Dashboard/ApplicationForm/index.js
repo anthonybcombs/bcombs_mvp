@@ -436,9 +436,7 @@ export default function index() {
 
   const renderChildform = () => {
     let items = [];
-
-    console
-
+    
     for(let i = 1; i <= childsInformation.length; i++) {
       if(i == childsInformation.length) {
         items.push(

@@ -1,0 +1,488 @@
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import ErrorMessage from "../../../../helpers/ErrorMessage";
+import NumberFormat from 'react-number-format';
+const GeneralInformationFormStyled = styled.div`
+  position: relative; 
+  margin-top:12px;
+
+  .general-info-wrapper {
+    padding-bottom: 30px !important;
+  }
+
+  .general-info-wrapper .grid-1 {
+    display: grid;
+    grid-template-columns: 31% 31% 31%;
+    grid-gap: 3.33333333%;
+  }
+
+  .general-info-wrapper .grid-2 {
+    display: grid;
+    grid-template-columns: 48.33% 48.33%;
+    grid-gap: 3.33333333%;
+  }
+
+  .general-info-wrapper .grid-3 {
+    display: grid;
+    grid-template-columns: 31% 65.3%;
+    grid-gap: 3.33333333%;
+  }
+
+  .general-info-wrapper .grid-4 {
+    display: grid;
+    grid-template-columns: 31% 21% 41%;
+    grid-gap: 3.33333333%;
+  }
+
+  .general-info-wrapper .grid-5 {
+    display: grid;
+    grid-template-columns: 19.2% 19.2% 19.2% 19.2%;
+    grid-gap: 8%;
+  }
+
+  @media (max-width: 940px) {
+    .general-info-wrapper .grid,
+    .general-info-wrapper .grid-5,
+    .general-info-wrapper .grid-4,
+    .general-info-wrapper .grid-3,
+    .general-info-wrapper .grid-2,
+    .general-info-wrapper .grid-1 {
+      grid-gap: 0;
+      grid-template-columns: 100%;
+    }
+    #multiselectContainerReact {
+      position: relative;
+      top: 0;
+    }
+   .field-input:placeholder-shown + .field-label {
+      max-width: calc(100% - 30%) !important;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .general-info-wrapper .grid,
+    .general-info-wrapper .grid-5,
+    .general-info-wrapper .grid-4,
+    .general-info-wrapper .grid-3,
+    .general-info-wrapper .grid-2,
+    .general-info-wrapper .grid-1 {
+      padding: 0;
+    }
+    .general-info-wrapper>div {
+      padding: 0;
+    }
+  }
+
+`;
+
+export default function index({
+  childGeneralInformation,
+  handleChildFormDetailsChange,
+  counter,
+  register,
+  errors,
+  isReadonly = false,
+  pastChildInformation = {},
+  isVendorView
+}) {
+
+  return (
+    <GeneralInformationFormStyled>
+      <h3 className="heading">General Information</h3>
+      <div className="general-info-wrapper">
+
+        <div className="agree-text">
+          Is your child transferring from a previous daycare? 
+        </div>
+        <div className="form-group">
+          <label className="cus-select-container">
+            Currently Enrolled 
+            <input type="radio" 
+              onChange={({ target }) => {
+                handleChildFormDetailsChange(counter - 1, "general_information", "is_child_tranferring", "Currently Enrolled");
+              }} 
+              value={"Currently Enrolled"}
+              checked={childGeneralInformation.is_child_tranferring == "Currently Enrolled"}
+              readOnly={isReadonly}
+              disabled={isReadonly}
+            />
+            <span className="checkmark"></span>
+          </label>
+          <label className="cus-select-container">
+            Yes 
+            <input type="radio" 
+              onChange={({ target }) => {
+                handleChildFormDetailsChange(counter - 1, "general_information", "is_child_tranferring", "Yes");
+              }} 
+              value={"Yes"}
+              checked={childGeneralInformation.is_child_tranferring == "Yes"}
+              readOnly={isReadonly}
+              disabled={isReadonly}
+            />
+            <span className="checkmark"></span>
+          </label>
+          <label className="cus-select-container">
+            No
+            <input type="radio" 
+              onChange={({ target }) => {
+                handleChildFormDetailsChange(counter - 1, "general_information", "is_child_tranferring", "No");
+              }} 
+              value={"No"}
+              checked={childGeneralInformation.is_child_tranferring == "No"}
+              readOnly={isReadonly}
+              disabled={isReadonly}
+            />
+            <span className="checkmark"></span>
+          </label>
+        </div>
+
+        <div className="agree-text">
+          Does your child required additional physical / educational services 
+        </div>
+        <div className="form-group">
+          <label className="cus-select-container">
+            Yes 
+            <input type="radio" 
+              onChange={({ target }) => {
+                handleChildFormDetailsChange(counter - 1, "general_information", "does_child_require_physical_education_service", "Yes");
+              }} 
+              value={"Yes"}
+              checked={childGeneralInformation.does_child_require_physical_education_service == "Yes"}
+              readOnly={isReadonly}
+              disabled={isReadonly}
+            />
+            <span className="checkmark"></span>
+          </label>
+          <label className="cus-select-container">
+            No
+            <input type="radio" 
+              onChange={({ target }) => {
+                handleChildFormDetailsChange(counter - 1, "general_information", "does_child_require_physical_education_service", "No");
+              }} 
+              value={"No"}
+              checked={childGeneralInformation.does_child_require_physical_education_service == "No"}
+              readOnly={isReadonly}
+              disabled={isReadonly}
+            />
+            <span className="checkmark"></span>
+          </label>
+        </div>
+
+        <div className="agree-text">
+          Are there currently any problems with your child either at home or at school? 
+        </div>
+        <div className="form-group">
+          <label className="cus-select-container">
+            Yes 
+            <input type="radio" 
+              onChange={({ target }) => {
+                handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
+              }} 
+              value={"1"}
+              checked={childGeneralInformation.was_suspended+"" == "1"}
+              readOnly={isReadonly}
+              disabled={isReadonly}
+            />
+            <span className="checkmark"></span>
+          </label>
+          <label className="cus-select-container">
+            No
+            <input type="radio" 
+              onChange={({ target }) => {
+                handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
+              }} 
+              value={"0"}
+              checked={childGeneralInformation.was_suspended+"" == "0"}
+              readOnly={isReadonly}
+              disabled={isReadonly}
+            />
+            <span className="checkmark"></span>
+          </label>
+        </div>
+        {
+          childGeneralInformation.was_suspended == "1" &&
+          <div className="form-group">
+            <textarea 
+              name="reasons_suspended"
+              className={
+                isReadonly &&
+                !isVendorView &&
+                pastChildInformation &&
+                (pastChildInformation.reason_suspended || pastChildInformation.reason_suspended == "") &&
+                pastChildInformation.reason_suspended != childGeneralInformation.reason_suspended ?
+                "form-control ta-justice highlights-textarea" : "form-control ta-justice"
+              }
+              rows="4"
+              placeholder="Explain"
+              onChange={({ target }) => {
+                handleChildFormDetailsChange(counter - 1, "general_information", "reason_suspended", target.value);
+              }}
+              //defaultValue={childGeneralInformation.reason_suspended}
+              value={childGeneralInformation.reason_suspended}
+              readOnly={isReadonly}
+            >
+            </textarea>
+          </div>
+        }
+        <div>
+          <div className="form-group">
+            <div>
+              <label className="field-label-simple">
+                1. Please list any history of significant previous diseases, including convulsions, heart trouble and diabetes.
+              </label>
+              <textarea 
+                name={"history_prev_diseases" + (counter - 1)}
+                className="form-control"
+                className={
+                  isReadonly &&
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.history_prev_diseases || pastChildInformation.history_prev_diseases == "") &&
+                  pastChildInformation.history_prev_diseases != childGeneralInformation.history_prev_diseases ?
+                  "form-control highlights-textarea" : "form-control"
+                }
+                rows="4"
+                ref={register()}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "general_information", "history_prev_diseases", target.value);
+                }}
+                defaultValue={childGeneralInformation.history_prev_diseases}
+                readOnly={isReadonly}
+              >
+              </textarea>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div>
+              <label className="field-label-simple">
+                2. Is your child currently under doctors care? please list the reason(s) and any medication(s) your child may be taking on a regular basis, including dosage and possible side effects.
+              </label>
+              <textarea 
+                name={"child_currently_doctors_care" + (counter - 1)}
+                className="form-control"
+                className={
+                  isReadonly &&
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.child_currently_doctors_care || pastChildInformation.child_currently_doctors_care == "") &&
+                  pastChildInformation.child_currently_doctors_care != childGeneralInformation.child_currently_doctors_care ?
+                  "form-control highlights-textarea" : "form-control"
+                }
+                rows="4"
+                ref={register()}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "general_information", "child_currently_doctors_care", target.value);
+                }}
+                defaultValue={childGeneralInformation.child_currently_doctors_care}
+                readOnly={isReadonly}
+              >
+              </textarea>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div>
+              <label className="field-label-simple">
+                3. Please list the date and reason(s) for any previous hospitalizations and/or surgeries.
+              </label>
+              <textarea 
+                name={"reasons_previous_hospitalizations" + (counter - 1)}
+                className="form-control"
+                className={
+                  isReadonly &&
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.reasons_previous_hospitalizations || pastChildInformation.reasons_previous_hospitalizations == "") &&
+                  pastChildInformation.reasons_previous_hospitalizations != childGeneralInformation.reasons_previous_hospitalizations ?
+                  "form-control highlights-textarea" : "form-control"
+                }
+                rows="4"
+                ref={register()}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "general_information", "reasons_previous_hospitalizations", target.value);
+                }}
+                defaultValue={childGeneralInformation.reasons_previous_hospitalizations}
+                readOnly={isReadonly}
+              >
+              </textarea>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div>
+              <label className="field-label-simple">
+                4. Any comments or suggestions regarding your child that may help us, including special activities he/she may enjoy.
+              </label>
+              <textarea 
+                name={"comments_suggestion" + (counter - 1)}
+                className="form-control"
+                className={
+                  isReadonly &&
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.comments_suggestion || pastChildInformation.comments_suggestion == "") &&
+                  pastChildInformation.comments_suggestion != childGeneralInformation.comments_suggestion ?
+                  "form-control highlights-textarea" : "form-control"
+                }
+                rows="4"
+                ref={register()}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "general_information", "comments_suggestion", target.value);
+                }}
+                defaultValue={childGeneralInformation.comments_suggestion}
+                readOnly={isReadonly}
+              >
+              </textarea>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div>
+              <label className="field-label-simple">
+                5. Please list any special dietary concerns.
+              </label>
+              <textarea 
+                name={"list_special_dietary" + (counter - 1)}
+                className="form-control"
+                className={
+                  isReadonly &&
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.list_special_dietary || pastChildInformation.list_special_dietary == "") &&
+                  pastChildInformation.list_special_dietary != childGeneralInformation.list_special_dietary ?
+                  "form-control highlights-textarea" : "form-control"
+                }
+                rows="4"
+                ref={register()}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "general_information", "list_special_dietary", target.value);
+                }}
+                defaultValue={childGeneralInformation.list_special_dietary}
+                readOnly={isReadonly}
+              >
+              </textarea>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div>
+              <label className="field-label-simple">
+                6. Please list any allergies that your child may have (e.g. Food Insect Stings, Medicines, Etc.) and related medication. <span className="required">*</span>
+              </label>
+              <textarea 
+                name={"list_any_allergies" + (counter - 1)}
+                className="form-control"
+                className={
+                  isReadonly &&
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.list_any_allergies || pastChildInformation.list_any_allergies == "") &&
+                  pastChildInformation.list_any_allergies != childGeneralInformation.list_any_allergies ?
+                  "form-control highlights-textarea" : "form-control"
+                }
+                rows="4"
+                ref={register()}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "general_information", "list_any_allergies", target.value);
+                }}
+                defaultValue={childGeneralInformation.list_any_allergies}
+                readOnly={isReadonly}
+              >
+              </textarea>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div>
+              <label className="field-label-simple">
+                7. Does the child have any physical or mental disabilities? If so, please list.
+              </label>
+              <textarea 
+                name={"mental_physical_disabilities" + (counter - 1)}
+                className="form-control"
+                className={
+                  isReadonly &&
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.mental_physical_disabilities || pastChildInformation.mental_physical_disabilities == "") &&
+                  pastChildInformation.mental_physical_disabilities != childGeneralInformation.mental_physical_disabilities ?
+                  "form-control highlights-textarea" : "form-control"
+                }
+                rows="4"
+                ref={register()}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "general_information", "mental_physical_disabilities", target.value);
+                }}
+                defaultValue={childGeneralInformation.mental_physical_disabilities}
+                readOnly={isReadonly}
+              >
+              </textarea>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div>
+              <label className="field-label-simple">
+                8. Is there a need for a medical action plan? If so, please describe.
+              </label>
+              <textarea 
+                name={"medical_action_plan" + (counter - 1)}
+                className="form-control"
+                className={
+                  isReadonly &&
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.medical_action_plan || pastChildInformation.medical_action_plan == "") &&
+                  pastChildInformation.medical_action_plan != childGeneralInformation.medical_action_plan ?
+                  "form-control highlights-textarea" : "form-control"
+                }
+                rows="4"
+                ref={register()}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "general_information", "medical_action_plan", target.value);
+                }}
+                defaultValue={childGeneralInformation.medical_action_plan}
+                readOnly={isReadonly}
+              >
+              </textarea>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div>
+              <label className="field-label-simple">
+                9. List any particular fears or unique behavior characteristics the child has.
+              </label>
+              <textarea 
+                name={"list_fears_unique_behavior" + (counter - 1)}
+                className="form-control"
+                className={
+                  isReadonly &&
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.list_fears_unique_behavior || pastChildInformation.list_fears_unique_behavior == "") &&
+                  pastChildInformation.list_fears_unique_behavior != childGeneralInformation.list_fears_unique_behavior ?
+                  "form-control highlights-textarea" : "form-control"
+                }
+                rows="4"
+                ref={register()}
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(counter - 1, "general_information", "list_fears_unique_behavior", target.value);
+                }}
+                defaultValue={childGeneralInformation.list_fears_unique_behavior}
+                readOnly={isReadonly}
+              >
+              </textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </GeneralInformationFormStyled>
+  )
+}
