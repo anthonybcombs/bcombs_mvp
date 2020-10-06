@@ -94,6 +94,11 @@ const AsyncManageAdmin = Loadable({
   loading: Loading
 });
 
+const AsyncDaycareApplicationForm = Loadable({
+  loader: () => import("./components/Dashboard/DaycareApplicationForm"),
+  loading: Loading
+})
+
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -128,6 +133,7 @@ export default function App() {
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />
+            <AsyncDaycareApplicationForm path="application/:vendor_id/daycare" />
           </Router>
         </div>
       </Layout>
