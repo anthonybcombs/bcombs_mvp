@@ -287,6 +287,17 @@ export default function Layout({ children }) {
                           to="/dashboard/mycontacts">
                           <span>Contacts</span>
                         </Link>
+
+                        <Link
+                          className={`${
+                            context.location.pathname ===
+                            "/dashboard/formbuilder"
+                              ? "selected"
+                              : ""
+                          }`}
+                          to="/dashboard/formbuilder">
+                          <span>Form Builder</span>
+                        </Link>
                       </>
                     )}
                     {currentUserType === "USER" && (
