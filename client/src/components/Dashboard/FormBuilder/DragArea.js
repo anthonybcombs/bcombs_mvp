@@ -9,6 +9,7 @@ export default () => {
 
   return (
     <div className='fb-draggables'>
+      <h3>Add Field</h3>
       {
         fields.map(({ label, type, ...rest }) => {
           return (
