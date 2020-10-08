@@ -9,7 +9,8 @@ import DropArea from './DropArea'
 const FormBuilder = () => {
   return (
     <FormBuilderStyled>
-      <div className='form-builder'>
+      <h2>New Application</h2>
+      <div id='formBuilder'>
         <DragArea />
         <DropArea />
       </div>
