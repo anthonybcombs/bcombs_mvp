@@ -1,11 +1,13 @@
 import React from 'react'
 import { useDrag } from 'react-dnd'
+import { uuid } from 'uuidv4'
 
 export default ({ name, type, fields, isDropped }) => {
   const [{ opacity }, drag] = useDrag({
-    item: { name, type, fields },
+    item: { type },
+    begin: () => ({ name, type, fields, id: uuid() }),
     collect: (monitor) => ({
-      opacity: monitor.isDragging() ? 0.4 : 1,
+      opacity: monitor.isDragging() ? 0.4 : 1
     })
   })
 

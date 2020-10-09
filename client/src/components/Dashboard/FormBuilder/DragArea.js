@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useDrag } from 'react-dnd'
 
-import { Items, Fields } from './Constants'
-import Draggable from './Draggble'
+import { Fields } from './Constants'
+import DraggableField from './DraggbleField'
 
 export default () => {
   const [fields] = useState([...Fields])
@@ -13,7 +12,7 @@ export default () => {
       {
         fields.map(({ label, type, ...rest }) => {
           return (
-            <Draggable key={type} name={label} type={type} {...rest} />
+            <DraggableField key={type} name={label} type={type} {...rest} />
           )
         })
       }
