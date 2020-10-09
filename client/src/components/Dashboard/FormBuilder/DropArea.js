@@ -5,22 +5,33 @@ import update from 'immutability-helper'
 
 import { Items } from './Constants'
 import SortableGroup from './SortableGroup'
+import CustomDragLayer from './CustomDragLayer'
 
 export default () => {
   const [droppedFields, setDrop] = useState([])
+  const [settings, setSettings] = useState({
+    columnNumber: 3
+  })
 
   const handleDrop = (field) => {
     const newFields = [...droppedFields]
     if (!newFields.find(e => e.id === field.id)) {
       newFields.push(field)
       setDrop(newFields)
+    } else {
+      setDrop(newFields.map(e => {
+        if (e.id === field.id) {
+          delete e.hidden
+        }
+        return e
+      }))
     }
   }
 
   const handleMoveGroup = (dragIndex, hoverIndex, draggedGroup) => {
     let newFields = [...droppedFields]
     if (dragIndex === undefined) {
-      newFields.push({ ...draggedGroup })
+      newFields.push({ ...draggedGroup, hidden: true })
       dragIndex = newFields.length - 1
     }
     const dragGroup = newFields[dragIndex]
@@ -32,6 +43,19 @@ export default () => {
     }))
   }
 
+  const handleShowHiddenGroup = (id) => {
+    setDrop(droppedFields.map(e => {
+      if (e.id === id) {
+        delete e.hidden
+      }
+      return e
+    }))
+  }
+
+  const handleRemoveGroup = (id) => {
+    setDrop(droppedFields.filter(e => e.id !== id))
+  }
+
   const [{ item, didDrop }, drop] = useDrop({
     accept: Object.values(Items),
     drop: () => handleDrop(item, didDrop),
@@ -40,17 +64,46 @@ export default () => {
       item: monitor.getItem()
     }),
   })
-
+  console.log('hala', settings)
   return (
     <div className='fb-drop-area' ref={drop}>
-      Drop here
+      <div>
+        Temporary Column input for testing:
+        <input
+          className='fb-form-title'
+          type='number'
+          id='column'
+          name='column'
+          value={settings.columnNumber}
+          onChange={({ target }) => {
+            setSettings({ columnNumber: target.value * 1 })
+          }}
+        />
+      </div>
+      <input
+        className='fb-form-title'
+        type='text'
+        id='title'
+        name='title'
+        placeholder='Form Title'
+        defaultValue='Untitled Form'
+      />
       {
         droppedFields.map((fieldProps, index) => {
           return (
-            <SortableGroup key={fieldProps.id} {...fieldProps} index={index} onMoveGroup={handleMoveGroup} />
+            <SortableGroup
+            {...fieldProps}
+              key={fieldProps.id}
+              index={index}
+              columnNumber={settings.columnNumber}
+              onMoveGroup={handleMoveGroup}
+              onShowHiddenGroup={handleShowHiddenGroup}
+              onRemoveGroup={handleRemoveGroup}
+            />
           )
         })
       }
+      <CustomDragLayer />
     </div>
   )
 }

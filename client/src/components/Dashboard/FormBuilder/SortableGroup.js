@@ -1,41 +1,69 @@
-import React, { useImperativeHandle, useRef } from 'react'
+import React, { useImperativeHandle, useRef, useEffect } from 'react'
 import { DragSource, DropTarget, } from 'react-dnd'
 import { uuid } from 'uuidv4'
+import { getEmptyImage } from 'react-dnd-html5-backend'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes, faCog } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from './Constants'
 import FieldConstructor from './FieldConstructor'
 
-const style = {
-  border: '1px dashed gray',
-  padding: '0.5rem 1rem',
-  marginBottom: '.5rem',
-  backgroundColor: 'white',
-  cursor: 'move',
-}
-
-const SortableGroup = React.forwardRef(({ name, fields, isDragging, connectDragSource, connectDropTarget }, ref) => {
+const SortableGroup = React.forwardRef(
+  ({ 
+    connectDragSource,connectDropTarget, connectDragPreview,
+    previewStyle = {}, preview = false,
+    hidden, name, fields, isDragging, id,
+    onRemoveGroup, columnNumber
+  }, ref) => {
   const elementRef = useRef(null)
   connectDragSource(elementRef)
   connectDropTarget(elementRef)
-  const opacity = isDragging ? 0 : 1
+  // connectDragPreview(previewElement)
+  const opacity = (isDragging || hidden) ? 0 : 1
   useImperativeHandle(ref, () => ({
       getNode: () => elementRef.current,
   }))
+
+  useEffect(() => {
+    connectDragPreview(getEmptyImage(), { captureDraggingState: true })
+  }, [])
+
   return (
-    <div ref={elementRef} style={{ ...style, opacity }}>
-      <div>{name}</div>
-      {
-        fields.map(({ key, label, placeholder = '', type, tag }) => {
-          return FieldConstructor[tag]({
-            name: key,
-            key: uuid(),
-            placeholder,
-            type,
-            label
+    <div ref={elementRef} className='sortableGroup' style={{ opacity, ...previewStyle }}>
+        {
+          !preview && (
+            <div className='sortablePreviewActions'>
+              <FontAwesomeIcon
+                className='info-icon'
+                icon={faTimes}
+                onClick={() => onRemoveGroup(id)}
+              />
+              <FontAwesomeIcon
+                className='info-icon'
+                icon={faCog}
+              />
+            </div>
+          )
+        }
+        <div>{name}</div>
+        {
+          fields.map(({ key, label, placeholder = '', type, tag }) => {
+            const colNum = columnNumber === 1 ? 1 : columnNumber + 0.5
+            const fieldCustomStyles = {
+              width: `calc(100% / ${colNum})`
+            }
+
+            return FieldConstructor[tag]({
+              style: fieldCustomStyles,
+              name: key,
+              key: uuid(),
+              placeholder,
+              type,
+              label
+            })
           })
-        })
-      }
-    </div>
+        }
+      </div>
   )
 })
 
@@ -82,15 +110,22 @@ export default DropTarget([...Object.values(Items), 'sortableGroup'], {
     // but it's good here for the sake of performance
     // to avoid expensive index searches.
     monitor.getItem().index = hoverIndex
+  },
+  drop(props) {
+    if (props.hidden) {
+      props.onShowHiddenGroup(props.id)
+    }
   }
 }, (connect) => ({
   connectDropTarget: connect.dropTarget(),
 }))(DragSource('sortableGroup', {
-  beginDrag: (props) => ({
+  beginDrag: (props, monitor, component) => ({
     index: props.index,
-    restProps: props
+    restProps: props,
+    component
   })
 }, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging(),
 }))(SortableGroup))
