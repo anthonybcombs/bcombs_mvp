@@ -184,6 +184,7 @@ export default styled.div`
 
   @media (min-width: 600px) {
     #formBuilder {
+      grid-gap: 1%;
       grid-template-columns: 1fr 2fr;
     }
   }
