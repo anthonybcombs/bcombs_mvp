@@ -46,9 +46,6 @@ export default function index({
   current,
   ProfileImg
 }) {
-
-  console.log("hello anditoi na ko");
-
   return (
     <ChildFormStyled>
       <ChildInformationFormStyled 

@@ -58,7 +58,31 @@ export const getChildInformation = async (id) => {
         hospital_preference,
         hospital_phone,
         child_lives_with,
-        nickname
+        nickname,
+        is_child_transferring,
+        does_child_require_physical_education_service,
+        history_prev_diseases,
+        child_currently_doctors_care,
+        reasons_previous_hospitalizations,
+        comments_suggestion,
+        list_special_dietary,
+        list_any_allergies,
+        mental_physical_disabilities,
+        medical_action_plan,
+        list_fears_unique_behavior,
+        transfer_reason,
+        prev_school_phone,
+        prev_school_city,
+        prev_school_address,
+        prev_school_attended,
+        prev_school_state,
+        prev_school_zip_code,
+        preffered_start_date,
+        current_classroom,
+        primary_language,
+        needed_days,
+        schedule_tour,
+        voucher
         FROM child 
         WHERE ch_id=UUID_TO_BIN(?)`,
         [id]
@@ -71,6 +95,170 @@ export const getChildInformation = async (id) => {
     return result;
   }
 };
+
+export const addDaycareChild = async ({
+  firstname,
+  lastname,
+  nickname,
+  age,
+  birthdate,
+  gender,
+  preffered_start_date,
+  current_classroom,
+  primary_language,
+  needed_days,
+  schedule_tour,
+  voucher,
+  address,
+  city,
+  state,
+  zip_code,
+  programs,
+  ethnicities,
+  child_lives_with,
+  has_suspended,
+  reason_suspended,
+  is_child_transferring,
+  does_child_require_physical_education_service,
+  history_prev_diseases,
+  child_currently_doctors_care,
+  reasons_previous_hospitalizations,
+  comments_suggestion,
+  list_special_dietary,
+  list_any_allergies,
+  mental_physical_disabilities,
+  medical_action_plan,
+  list_fears_unique_behavior,
+  transfer_reason,
+  prev_school_phone,
+  prev_school_city,
+  prev_school_address,
+  prev_school_attended,
+  prev_school_state,
+  prev_school_zip_code,
+  doctor_name,
+  doctor_phone,
+  hospital_preference,
+  hospital_phone
+}) => {
+  const db = makeDb();
+  let result = {};
+  let lastId = "";
+  let child;
+
+  try {
+    result = await db.query(
+      `INSERT INTO child(
+        ch_id,
+        firstname,
+        lastname,
+        nickname,
+        age,
+        birthdate,
+        gender,
+        preffered_start_date,
+        current_classroom,
+        primary_language,
+        needed_days,
+        schedule_tour,
+        voucher,
+        address,
+        city,
+        state,
+        zip_code,
+        programs,
+        ethnicities,
+        child_lives_with,
+        has_suspended,
+        reason_suspended,
+        is_child_transferring,
+        does_child_require_physical_education_service,
+        history_prev_diseases,
+        child_currently_doctors_care,
+        reasons_previous_hospitalizations,
+        comments_suggestion,
+        list_special_dietary,
+        list_any_allergies,
+        mental_physical_disabilities,
+        medical_action_plan,
+        list_fears_unique_behavior,
+        transfer_reason,
+        prev_school_phone,
+        prev_school_city,
+        prev_school_address,
+        prev_school_attended,
+        prev_school_state,
+        prev_school_zip_code,
+        doctor_name,
+        doctor_phone,
+        hospital_preference,
+        hospital_phone
+      ) VALUES (UUID_TO_BIN(UUID()), 
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+        ?, ?, ?)`,
+      [
+        firstname,
+        lastname,
+        nickname,
+        age,
+        birthdate,
+        gender,
+        preffered_start_date,
+        current_classroom,
+        primary_language,
+        needed_days,
+        schedule_tour,
+        voucher,
+        address,
+        city,
+        state,
+        zip_code,
+        programs,
+        ethnicities,
+        child_lives_with,
+        has_suspended,
+        reason_suspended,
+        is_child_transferring,
+        does_child_require_physical_education_service,
+        history_prev_diseases,
+        child_currently_doctors_care,
+        reasons_previous_hospitalizations,
+        comments_suggestion,
+        list_special_dietary,
+        list_any_allergies,
+        mental_physical_disabilities,
+        medical_action_plan,
+        list_fears_unique_behavior,
+        transfer_reason,
+        prev_school_phone,
+        prev_school_city,
+        prev_school_address,
+        prev_school_attended,
+        prev_school_state,
+        prev_school_zip_code,
+        doctor_name,
+        doctor_phone,
+        hospital_preference,
+        hospital_phone
+      ]
+    )
+
+    lastId = result.insertId;
+    child = await db.query(`SELECT (BIN_TO_UUID(ch_id)) as ch_id FROM child WHERE id=?`, [lastId]);
+    child = child.length > 0 ? child[0]: "";
+
+  } catch(err) {
+    console.log("add child error", err);
+  } finally {
+    await db.close();
+    console.log("Add child", result);
+    console.log("ID ID ID", child);
+    return child;
+  }
+}
 
 export const addChild = async ({
   firstname,

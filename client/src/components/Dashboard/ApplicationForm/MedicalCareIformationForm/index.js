@@ -77,7 +77,7 @@ export default function index({
                 defaultValue={childEmergencyCare.doctor_name}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for={`ch_doctorname_${counter - 1}`}>Doctor Name</label>
+              <label className="field-label" htmlFor={`ch_doctorname_${counter - 1}`}>Doctor Name</label>
             </div>
           </div>
 
@@ -127,7 +127,7 @@ export default function index({
                 />
               }
 
-              <label className="field-label" for={`doctophone_${counter - 1}`}>Phone</label>
+              <label className="field-label" htmlFor={`doctophone_${counter - 1}`}>Phone</label>
             </div>
             <ErrorMessage
               field={errors["doctophone"]}
@@ -159,7 +159,7 @@ export default function index({
                 placeholder="Hospital Preference"
                 readOnly={isReadonly}
               />
-              <label className="field-label" for={`hospitalname_${counter - 1}`}>Hospital Preference</label>
+              <label className="field-label" htmlFor={`hospitalname_${counter - 1}`}>Hospital Preference</label>
             </div>
           </div>
 
@@ -208,7 +208,7 @@ export default function index({
                   readOnly={isReadonly}
                 />
               }
-              <label className="field-label" for={`hospitalPhone_${counter - 1}`}>Phone</label>
+              <label className="field-label" htmlFor={`hospitalPhone_${counter - 1}`}>Phone</label>
             </div>
             <ErrorMessage
               field={errors["hospitalPhone"]}

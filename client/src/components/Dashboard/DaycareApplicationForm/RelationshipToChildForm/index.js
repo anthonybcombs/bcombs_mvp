@@ -125,118 +125,54 @@ export default function index({
       <h3 className="heading">Relationship to Child</h3>
       <div className="relationship-wrapper">
         <div className="content">
-          <div className="question-box">
-            <p>What is the relation of <strong>Test Parent 1</strong> to</p>
-            <ul>
-              <li>
-                <span>
-                  Test Child 1
-                  <small style={{fontSize: "50%"}}>(Child)</small>
-                </span>
-                
-                <div className='select-field-wrapper'>
-                  <select
-                    name={"ch_parent"}
-                    className="input-field"
-                    onChange={({target}) => {
-                      handleParentChildRelationship()
-                    }}
-                  >
-                    <option value="">Select</option>
-                    {
-                      RELATION_TO_CHILD_OPTIONS.map(opt => (
-                        <option key={opt.id} value={opt.name}>
-                          {opt.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-              </li>
-              <li>
-                <span>
-                  Test child 2
-                  <small style={{fontSize: "50%"}}>(Child)</small>
-                </span>
-                
-                <div className='select-field-wrapper'>
-                  <select
-                    name={"ch_parent"}
-                    className="input-field"
-                    onChange={({target}) => {
-                      handleParentChildRelationship()
-                    }}
-                  >
-                    <option value="">Select</option>
-                    {
-                      RELATION_TO_CHILD_OPTIONS.map(opt => (
-                        <option key={opt.id} value={opt.name}>
-                          {opt.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          <div className="question-box">
-            <p>What is the relation of <strong>Test Parent 2</strong> to</p>
-            <ul>
-              <li>
-                <span>
-                  Test Child 1
-                  <small style={{fontSize: "50%"}}>(Child)</small>
-                </span>
-                
-                <div className='select-field-wrapper'>
-                  <select
-                    name={"ch_parent"}
-                    className="input-field"
-                    onChange={({target}) => {
-                      handleParentChildRelationship()
-                    }}
-                  >
-                    <option value="">Select</option>
-                    {
-                      RELATION_TO_CHILD_OPTIONS.map(opt => (
-                        <option key={opt.id} value={opt.name}>
-                          {opt.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-              </li>
-              <li>
-                <span>
-                  Test child 2
-                  <small style={{fontSize: "50%"}}>(Child)</small>
-                </span>
-                
-                <div className='select-field-wrapper'>
-                  <select
-                    name={"ch_parent"}
-                    className="input-field"
-                    onChange={({target}) => {
-                      handleParentChildRelationship()
-                    }}
-                  >
-                    <option value="">Select</option>
-                    {
-                      RELATION_TO_CHILD_OPTIONS.map(opt => (
-                        <option key={opt.id} value={opt.name}>
-                          {opt.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-              </li>
-            </ul>
-          </div>
-
+        {
+          parents.map((parent, i) => (
+            <div key={i} className="question-box">
+              <p>What is the relation of <strong>{parent.profile.first_name}</strong> to</p>
+              {
+                <ul>
+                {
+                  childs.map((child, j) => (
+                    <li key={j}>
+                      <span>
+                        {child.profile.first_name}
+                        <small style={{fontSize: "50%"}}>(Child)</small>  
+                      </span>
+                      <div className='select-field-wrapper'>
+                        <select
+                          name={"ch_parent" + i + "" + j}
+                          className="input-field"
+                          onChange={({target}) => {
+                            handleParentChildRelationship(parent.id, child.id, target.value);
+                          }}
+                          ref={register({required: true})}
+                        >
+                          <option value="">Select</option>
+                          {
+                            RELATION_TO_CHILD_OPTIONS.map(opt => (
+                              <option key={opt.id} value={opt.name}>
+                                {opt.name}
+                              </option>
+                            ))
+                          }
+                        </select>
+                      </div>
+                      <div></div>
+                      {
+                        errors["ch_parent" + i +"" + j] && (
+                          <p style={{color:"red", fontSize:"16px"}}>
+                            Relationship is required
+                          </p>
+                        )
+                      }
+                    </li>
+                  ))
+                }
+                </ul>
+              }
+            </div>
+          ))
+        }
         </div>
       </div>
     </RelationshipToChildStyled>

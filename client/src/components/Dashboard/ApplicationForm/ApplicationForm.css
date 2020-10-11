@@ -45,6 +45,15 @@
   text-align: center;
 }
 
+#daycare-ul > li {
+  margin-bottom: 0;
+  display: block;
+  position: relative;
+  width: 20%;
+  float: left;
+  text-align: center;
+}
+
 .wizard-wrapper .nav-tabs > li a {
   padding: 0;
   border: none;
