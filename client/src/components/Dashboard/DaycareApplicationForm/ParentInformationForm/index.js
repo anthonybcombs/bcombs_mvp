@@ -116,7 +116,8 @@ const ParentInformationStyled = styled.div`
   }
   
   @media (max-width: 768px) {
-    .parent-info-wrapper .grid-2 {
+    .parent-info-wrapper .grid-2,
+    .parent-info-wrapper .grid-1 {
       grid-gap: 0;
       grid-template-columns: 100%;
     }
