@@ -1474,7 +1474,7 @@ export default function index() {
             {selectNonMenuOption && 
               view == "application" && 
               selectedApplication && 
-              !selectedApplication.is_daycare && (
+              !selectedApplication.is_daycare ? (
               <ChildFormViewStyled
                 childInformation={childInformation}
                 vendor={selectedVendor}
@@ -1493,12 +1493,12 @@ export default function index() {
                 }
                 handleSelectLatestApplication={handleSelectLatest}
               />
-            )}
+            ) : ""}
 
             {selectNonMenuOption && 
               view == "application" && 
               selectedApplication && 
-              selectedApplication.is_daycare && (
+              selectedApplication.is_daycare ? (
               <DaycareChildFormView
                 childInformation={childInformation}
                 vendor={selectedVendor}
@@ -1511,7 +1511,7 @@ export default function index() {
                 isFormHistory={isFormHistory}
                 handleSelectLatestApplication={handleSelectLatest}
               />
-            )}
+            ) : ""}
 
             {selectNonMenuOption && view == "application" && (
               <hr className="style-eight"></hr>
@@ -1520,7 +1520,7 @@ export default function index() {
             {selectNonMenuOption && 
               view == "application" && 
               selectedApplication && 
-              !selectedApplication.is_daycare && (
+              !selectedApplication.is_daycare ? (
               <ParentFormViewStyled
                 parents={parentsInformation}
                 vendor={selectedVendor}
@@ -1530,12 +1530,12 @@ export default function index() {
                 isUpdate={true}
                 emergencyContacts={emergencyContacts}
               />
-            )}
+            ) : ""}
 
             {selectNonMenuOption && 
               view == "application" && 
               selectedApplication && 
-              selectedApplication.is_daycare && (
+              selectedApplication.is_daycare ? (
               <DaycareParentFormView
                 parents={parentsInformation}
                 vendor={selectedVendor}
@@ -1545,7 +1545,7 @@ export default function index() {
                 isUpdate={true}
                 emergencyContacts={emergencyContacts}
               />
-            )}
+            ) : ""}
             {selectNonMenuOption && view == "application" && (
               <hr className="style-eight"></hr>
             )}
