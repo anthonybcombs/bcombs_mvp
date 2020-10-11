@@ -43,6 +43,105 @@ export const getParentByApplication = async (id) => {
   }
 };
 
+export  const addDaycareParent = async({
+  application,
+  firstname,
+  lastname,
+  phone_type,
+  phone_number,
+  email_type,
+  email_address,
+  occupation,
+  employers_name,
+  parent_goals,
+  parent_child_goals,
+  address,
+  city,
+  state,
+  zip_code,
+  phone_type2,
+  phone_number2,
+  email_type2,
+  email_address2,
+  age,
+  birthdate,
+  gender,
+  ethnicities
+}) => {
+  const db = makeDb();
+  let result = {};
+  let lastId = "";
+  let parent;
+  try {
+    let result = await db.query(
+      `INSERT INTO parent(
+        parent_id,
+        application,
+        firstname,
+        lastname,
+        phone_type,
+        phone_number,
+        email_type,
+        email_address,
+        occupation,
+        employers_name,
+        parent_goals,
+        parent_child_goals,
+        address,
+        city,
+        state,
+        zip_code,
+        phone_type2,
+        phone_number2,
+        email_type2,
+        email_address2,
+        age,
+        birthdate,
+        gender,
+        ethnicities
+      ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?),
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+        ?, ?)`,
+      [
+        application,
+        firstname,
+        lastname,
+        phone_type,
+        phone_number,
+        email_type,
+        email_address,
+        occupation,
+        employers_name,
+        parent_goals,
+        parent_child_goals,
+        address,
+        city,
+        state,
+        zip_code,
+        phone_type2,
+        phone_number2,
+        email_type2,
+        email_address2,
+        age,
+        birthdate,
+        gender,
+        ethnicities
+      ]
+    )
+
+    lastId = result.insertId;
+    parent = await db.query("SELECT (BIN_TO_UUID(parent_id)) as parent_id FROM parent WHERE id=?", [lastId]);
+    parent = parent.length > 0 ? parent[0]: "";
+    
+  } catch(err) {
+    console.log("add parent error", err);
+  } finally {
+    await db.close();
+    return parent;
+  }
+}
+
 export const addParent = async ({
   application,
   firstname,
@@ -240,5 +339,35 @@ export const updateParent = async ({
   } finally {
     await db.close();
     return result;
+  }
+}
+
+export const addParentChildRelationship = async({
+  parent,
+  child,
+  relationship
+}) => {
+  const db = makeDb();
+  let result = {};
+
+  try {
+    result = await db.query(
+      `INSERT INTO parent(
+        id,
+        child,
+        parent,
+        relationship
+      ) VALUES (UUID_TO_BIN(UUID()), ?, ?, ?)`,
+      [
+        parent,
+        child,
+        relationship
+      ]
+    )
+  } catch(err) {
+    console.log("add parent error", err)
+  } finally {
+    await db.close();
+    return result
   }
 }

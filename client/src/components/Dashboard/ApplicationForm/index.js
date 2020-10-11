@@ -195,6 +195,10 @@ export default function index() {
     }
 
     vendor.app_programs = app_programs;
+
+    if(vendor.is_daycare) {
+      window.location.replace(`/application/${vendor_id}/daycare`);
+    }
   }
 
   const section1BtnContainerStyle = {
@@ -781,6 +785,7 @@ export default function index() {
 
     parentsInformation.map((parent) => {
       parents.push({
+        parent_id: parent.id,
         firstname: parent.profile.first_name,
         lastname: parent.profile.last_name,
         phone_type: parent.profile.phone_type,
@@ -832,6 +837,7 @@ export default function index() {
       let request_params = {
         vendor: vendor.id,
         child: {
+          ch_id: childsInformation[i].id,
           firstname: childsInformation[i].profile.first_name,
           lastname: childsInformation[i].profile.last_name,
           nickname: childsInformation[i].profile.nick_name,

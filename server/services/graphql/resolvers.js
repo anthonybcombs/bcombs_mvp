@@ -75,8 +75,12 @@ import {
   getUserApplicationsByUserId,
   getApplicationHistoryByUser
 } from "../../api/applications";
-import { addChild, getChildInformation } from "../../api/child";
-import { addParent, getParentByApplication } from "../../api/parents";
+import { addChild, getChildInformation, addDaycareChild } from "../../api/child";
+import { 
+  addParent, 
+  getParentByApplication, 
+  addDaycareParent,
+  addParentChildRelationship } from "../../api/parents";
 
 import { getUserFromDatabase } from "../../api";
 
@@ -336,19 +340,33 @@ const resolvers = {
     async updateVendor(root, { vendor }, context) {
       return await updateVendor(vendor);
     },
-    async addApplication(root, { applications }, context) {
+    async addDaycareApplication(root, { applications }, context) {
+
+      let newChilds = [];
+      let newParents = [];
+
       for (let application of applications) {
-        const child = await addChild(application.child);
+        const child = await addDaycareChild(application.child);
+        const tempChildId = application.child?.ch_id
         const parents = application.parents;
 
         application.class_teacher = "";
         application.child = child.ch_id;
 
+        newChilds.push({
+          tempId: tempChildId,
+          newId: child.ch_id
+        })
+
         application = await createApplication(application);
 
         for (let parent of parents) {
           parent.application = application.app_id;
-          await addParent(parent);
+
+          const tempParentId = parent?.parent_id;
+          const newParent = await addDaycareParent(parent);
+
+          console.log("newParent", newParent);
 
           let checkEmail = await checkUserEmail(parent.email_address);
 
@@ -383,6 +401,11 @@ const resolvers = {
             console.log("add user res:", addUser);
           }
 
+          newParents.push({
+            tempId: tempParentId,
+            newId: newParent.parent_id
+          })
+
           const parentUser = await getUserFromDatabase(parent.email_address);
 
           console.log("parent user", parentUser);
@@ -396,7 +419,91 @@ const resolvers = {
 
       return {
         messageType: "info",
-        message: "application created"
+        message: "daycare application created",
+        childs: newParents,
+        parents: newChilds
+      };
+    },
+    async addApplication(root, { applications }, context) {
+
+      let newChilds = [];
+      let newParents = [];
+
+      for (let application of applications) {
+        const child = await addChild(application.child);
+        const tempChildId = application.child?.ch_id
+        const parents = application.parents;
+
+        application.class_teacher = "";
+        application.child = child.ch_id;
+
+        newChilds.push({
+          tempId: tempChildId,
+          newId: child.ch_id
+        })
+
+        application = await createApplication(application);
+
+        for (let parent of parents) {
+          parent.application = application.app_id;
+
+          const tempParentId = parent?.parent_id;
+          const newParent = await addParent(parent);
+
+          let checkEmail = await checkUserEmail(parent.email_address);
+
+          if (checkEmail && checkEmail.is_exist) {
+            console.log("Parent Status: ", checkEmail.status);
+          } else {
+            let userType = await getUserTypes();
+
+            userType = userType.filter(type => {
+              return type.name === "USER";
+            })[0];
+
+            console.log("user type: ", userType);
+
+            let user = {
+              username: parent.firstname + "" + parent.lastname,
+              email: parent.email_address,
+              password: parent.password,
+              type: userType
+            };
+
+            console.log("user:", user);
+            let addUser = await executeSignUp(user);
+            console.log("addUser:", user);
+            let parentInfo = {
+              ...parent,
+              email: parent.email_address
+            };
+            console.log("Parent Info", parentInfo);
+            await executeAddUserProfile(parentInfo);
+
+            console.log("add user res:", addUser);
+          }
+
+          newParents.push({
+            tempId: tempParentId,
+            newId: newParent.parent_id
+          })
+
+          const parentUser = await getUserFromDatabase(parent.email_address);
+
+          console.log("parent user", parentUser);
+
+          await addApplicationUser({
+            user_id: parentUser.id,
+            app_id: application.app_id
+          });
+        }
+      }
+
+      return {
+        messageType: "info",
+        message: "application created",
+        childs: newParents,
+        parents: newChilds
       };
     },
     async updateApplication(root, { application }, context) {
@@ -682,6 +789,16 @@ const resolvers = {
 
       // const response = await getVendorAdmins(admin.currentUser);
       // return response;
+    },
+    async addParentChildRelationship(root, { relationships }, context) {
+      for(const relationship of relationships) {
+        await addParentChildRelationship(relationship);
+      }
+
+      return {
+        messageType: "info",
+        message: "relationship successfully created"
+      }
     }
   }
 };

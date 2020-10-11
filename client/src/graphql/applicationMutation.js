@@ -5,6 +5,31 @@ export const APPLICATION_ADD_MUTATION = gql`
     addApplication(applications: $applications) {
       messageType
       message
+      childs {
+        tempId
+        newId
+      }
+      parents {
+        tempId
+        newId
+      }
+    }
+  }
+`;
+
+export const DAYCARE_APPLICATION_ADD_MUTATION = gql`
+  mutation application($applications: [DaycareApplicationInput]) {
+    addDaycareApplication(applications: $applications) {
+      messageType
+      message
+      childs {
+        tempId
+        newId
+      }
+      parents {
+        tempId
+        newId
+      }
     }
   }
 `;
@@ -77,8 +102,9 @@ export const GET_APPLICATIONS_QUERY = gql`
       id
       app_id
       vendor
+      is_daycare
       child {
-        ch_id
+        ch_id        
         firstname
         lastname
         age
@@ -97,8 +123,8 @@ export const GET_APPLICATIONS_QUERY = gql`
         state
         zip_code
         location_site
-        programs
         ethnicities
+        programs
         school_name
         school_phone
         has_suspended
@@ -131,6 +157,30 @@ export const GET_APPLICATIONS_QUERY = gql`
         hospital_phone
         child_lives_with
         nickname
+        is_child_transferring
+        does_child_require_physical_education_service
+        history_prev_diseases
+        child_currently_doctors_care
+        reasons_previous_hospitalizations
+        comments_suggestion
+        list_special_dietary
+        list_any_allergies
+        mental_physical_disabilities
+        medical_action_plan
+        list_fears_unique_behavior
+        transfer_reason
+        prev_school_phone
+        prev_school_city
+        prev_school_address
+        prev_school_attended
+        prev_school_state
+        prev_school_zip_code
+        preffered_start_date
+        current_classroom
+        primary_language
+        needed_days
+        schedule_tour
+        voucher
       }
       parents {
         parent_id
@@ -140,10 +190,6 @@ export const GET_APPLICATIONS_QUERY = gql`
         phone_number
         email_type
         email_address
-        phone_type2
-        phone_number2
-        email_type2
-        email_address2
         password
         occupation
         employers_name
@@ -153,11 +199,20 @@ export const GET_APPLICATIONS_QUERY = gql`
         level_of_education
         child_hs_grad
         child_col_grad
+        emergency_contacts
+        phone_type2
+        phone_number2
+        email_type2
+        email_address2
         person_recommend
         address
         city
         state
         zip_code
+        age
+        birthdate
+        gender
+        ethnicities
       }
       section1_signature
       section1_date_signed
@@ -205,8 +260,9 @@ export const GET_APPLICATION_ID_QUERY = gql`
       id
       app_id
       vendor
+      is_daycare
       child {
-        ch_id
+        ch_id        
         firstname
         lastname
         age
@@ -225,8 +281,8 @@ export const GET_APPLICATION_ID_QUERY = gql`
         state
         zip_code
         location_site
-        programs
         ethnicities
+        programs
         school_name
         school_phone
         has_suspended
@@ -259,6 +315,30 @@ export const GET_APPLICATION_ID_QUERY = gql`
         hospital_phone
         child_lives_with
         nickname
+        is_child_transferring
+        does_child_require_physical_education_service
+        history_prev_diseases
+        child_currently_doctors_care
+        reasons_previous_hospitalizations
+        comments_suggestion
+        list_special_dietary
+        list_any_allergies
+        mental_physical_disabilities
+        medical_action_plan
+        list_fears_unique_behavior
+        transfer_reason
+        prev_school_phone
+        prev_school_city
+        prev_school_address
+        prev_school_attended
+        prev_school_state
+        prev_school_zip_code
+        preffered_start_date
+        current_classroom
+        primary_language
+        needed_days
+        schedule_tour
+        voucher
       }
       parents {
         parent_id
@@ -268,10 +348,6 @@ export const GET_APPLICATION_ID_QUERY = gql`
         phone_number
         email_type
         email_address
-        phone_type2
-        phone_number2
-        email_type2
-        email_address2
         password
         occupation
         employers_name
@@ -281,11 +357,20 @@ export const GET_APPLICATION_ID_QUERY = gql`
         level_of_education
         child_hs_grad
         child_col_grad
+        emergency_contacts
+        phone_type2
+        phone_number2
+        email_type2
+        email_address2
         person_recommend
         address
         city
         state
         zip_code
+        age
+        birthdate
+        gender
+        ethnicities
       }
       section1_signature
       section1_date_signed
@@ -342,8 +427,9 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         user
         app_grp_id
       }
+      is_daycare
       child {
-        ch_id
+        ch_id        
         firstname
         lastname
         age
@@ -362,8 +448,8 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         state
         zip_code
         location_site
-        programs
         ethnicities
+        programs
         school_name
         school_phone
         has_suspended
@@ -396,6 +482,30 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         hospital_phone
         child_lives_with
         nickname
+        is_child_transferring
+        does_child_require_physical_education_service
+        history_prev_diseases
+        child_currently_doctors_care
+        reasons_previous_hospitalizations
+        comments_suggestion
+        list_special_dietary
+        list_any_allergies
+        mental_physical_disabilities
+        medical_action_plan
+        list_fears_unique_behavior
+        transfer_reason
+        prev_school_phone
+        prev_school_city
+        prev_school_address
+        prev_school_attended
+        prev_school_state
+        prev_school_zip_code
+        preffered_start_date
+        current_classroom
+        primary_language
+        needed_days
+        schedule_tour
+        voucher
       }
       parents {
         parent_id
@@ -405,10 +515,6 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         phone_number
         email_type
         email_address
-        phone_type2
-        phone_number2
-        email_type2
-        email_address2
         password
         occupation
         employers_name
@@ -418,11 +524,20 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         level_of_education
         child_hs_grad
         child_col_grad
+        emergency_contacts
+        phone_type2
+        phone_number2
+        email_type2
+        email_address2
         person_recommend
         address
         city
         state
         zip_code
+        age
+        birthdate
+        gender
+        ethnicities
       }
       section1_signature
       section1_date_signed
@@ -478,8 +593,9 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
       id
       app_id
       vendor
+      is_daycare
       child {
-        ch_id
+        ch_id        
         firstname
         lastname
         age
@@ -498,8 +614,8 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         state
         zip_code
         location_site
-        programs
         ethnicities
+        programs
         school_name
         school_phone
         has_suspended
@@ -532,6 +648,30 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         hospital_phone
         child_lives_with
         nickname
+        is_child_transferring
+        does_child_require_physical_education_service
+        history_prev_diseases
+        child_currently_doctors_care
+        reasons_previous_hospitalizations
+        comments_suggestion
+        list_special_dietary
+        list_any_allergies
+        mental_physical_disabilities
+        medical_action_plan
+        list_fears_unique_behavior
+        transfer_reason
+        prev_school_phone
+        prev_school_city
+        prev_school_address
+        prev_school_attended
+        prev_school_state
+        prev_school_zip_code
+        preffered_start_date
+        current_classroom
+        primary_language
+        needed_days
+        schedule_tour
+        voucher
       }
       parents {
         parent_id
@@ -541,10 +681,6 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         phone_number
         email_type
         email_address
-        phone_type2
-        phone_number2
-        email_type2
-        email_address2
         password
         occupation
         employers_name
@@ -554,11 +690,20 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         level_of_education
         child_hs_grad
         child_col_grad
+        emergency_contacts
+        phone_type2
+        phone_number2
+        email_type2
+        email_address2
         person_recommend
         address
         city
         state
         zip_code
+        age
+        birthdate
+        gender
+        ethnicities
       }
       section1_signature
       section1_date_signed

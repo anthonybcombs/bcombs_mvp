@@ -313,14 +313,28 @@ export default function index({
         className={className}
         placeholder="mm/dd/yyyy"
         readOnly={true}
-        id={`date_of_birth_${counter - 1}`}
-        ref={register()}
+        id={`parent_date_of_birth_${counter - 1}`}
+        ref={register({required: true})}
       />
-      <label className="field-label" htmlFor={`date_of_birth_${counter - 1}`}>
-        Date of Birth
+      <label className="field-label" htmlFor={`parent_date_of_birth_${counter - 1}`}>
+        <span className="required">*</span> Date of Birth
       </label>
     </div>
   );
+
+  let readOnlyEthinicity = "";
+
+  if (
+    parentProfile.ethinicity &&
+    parentProfile.ethinicity.length > 0 &&
+    isReadonly
+  ) {
+    parentProfile.ethinicity.forEach(item => {
+      readOnlyEthinicity += item.name + "\n";
+    });
+
+    readOnlyEthinicity = readOnlyEthinicity.slice(0, -1);
+  }
 
   return (
     <ParentInformationStyled>
@@ -409,6 +423,227 @@ export default function index({
               errorType="required"
               message="Last Name is required."
             />
+          </div>
+        </div>
+
+        <div className="grid-1">
+          <div className="form-group">
+            <div className="field">
+              <DatePicker
+                readOnly={isReadonly}
+                renderCustomHeader={({
+                  date,
+                  changeYear,
+                  changeMonth,
+                  decreaseMonth,
+                  increaseMonth,
+                  prevMonthButtonDisabled,
+                  nextMonthButtonDisabled
+                }) => (
+                  <div
+                    style={{
+                      margin: 0,
+                      display: "flex",
+                      alignCenter: "center",
+                      justifyContent: "center",
+                      background: "#f36e22",
+                      padding: "5px 3px"
+                    }}>
+                    <button
+                      className="datepicker-btn"
+                      onClick={e => {
+                        e.preventDefault();
+                      }}>
+                      <FontAwesomeIcon
+                        icon={faAngleLeft}
+                        onClick={decreaseMonth}
+                        disabled={prevMonthButtonDisabled}
+                      />
+                    </button>
+                    <select
+                      value={new Date(date).getFullYear()}
+                      onChange={({ target: { value } }) => changeYear(value)}>
+                      {years.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={months[date.getMonth()]}
+                      onChange={({ target: { value } }) =>
+                        changeMonth(months.indexOf(value))
+                      }>
+                      {months.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      className="datepicker-btn"
+                      onClick={e => {
+                        e.preventDefault();
+                      }}>
+                      <FontAwesomeIcon
+                        icon={faAngleRight}
+                        onClick={increaseMonth}
+                        disabled={nextMonthButtonDisabled}
+                      />
+                    </button>
+                  </div>
+                )}
+                selected={parentProfile.date_of_birth}
+                disabled={isReadonly}
+                onChange={date => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "date_of_birth",
+                    date
+                  );
+                }}
+                name={"parent_birthdate" + (counter - 1)}
+                customInput={
+                  <BirthdateCustomInput
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastParentInformation &&
+                      (pastParentInformation.date_of_birth ||
+                        pastParentInformation.date_of_birth == "") &&
+                      parentProfile.date_of_birth.toString() !=
+                        new Date(pastParentInformation.birthdate).toString()
+                        ? "field-input birthdate-field highlights"
+                        : "field-input birthdate-field"
+                    }
+                  />
+                }
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <div className="field select-field-wrapper">
+              <select
+                disabled={isReadonly}
+                readOnly={isReadonly}
+                name={"parent_gender" + (counter - 1)}
+                className={
+                  isReadonly &&
+                  !isVendorView &&
+                  pastParentInformation &&
+                  (pastParentInformation.gender ||
+                    pastParentInformation.gender == "") &&
+                  pastParentInformation.gender != parentProfile.gender
+                    ? "field-input highlights"
+                    : "field-input"
+                }
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "gender",
+                    target.value
+                  );
+                }}
+                ref={register({ required: true })}
+                defaultValue={parentProfile.gender}>
+                <option value="">Select</option>
+                <optgroup label="Gender">
+                  {GENDER_OPTIONS.map(opt => (
+                    <option key={opt.id} value={opt.value}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="Custom">
+                  {CUSTOM_GENDER_OPTIONS.map(opt => (
+                    <option key={opt.id} value={opt.value}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+              <label className="field-label">
+                <span className="required">*</span> Gender
+              </label>
+            </div>
+            <ErrorMessage
+              field={errors["parent_gender" + (counter - 1)]}
+              errorType="required"
+              message="Gender is required"
+            />
+          </div>
+          <div className="form-group  ethnicity-form">
+            <div className="field">
+              {isReadonly ? (
+                <>
+                  <p
+                    className={`${
+                      isReadonly &&
+                      !isVendorView &&
+                      pastParentInformation &&
+                      (pastParentInformation.ethnicities ||
+                        pastParentInformation.ethnicities == "") &&
+                      pastParentInformation.ethnicities !=
+                        readOnlyEthinicity.split("\n").join(",")
+                        ? "field-input readonly ethnicity-labels  highlights"
+                        : "field-input ethnicity-labels readonly"
+                    } `}
+                    name={"ethinicity_" + (counter - 1)}
+                    style={{
+                      //background: "white",
+                      borderBottom: "2px solid rgb(204, 204, 204) !important",
+                      resize: "none",
+                      margin: "0px 0px 15px 0px",
+                      textIndent: "0",
+                      // whiteSpace: "pre-wrap",
+                      position: "absolute",
+                      top: "27px"
+                    }}>
+                    {readOnlyEthinicity}
+                  </p>
+                </>
+              ) : (
+                <Multiselect
+                  readOnly={isReadonly}
+                  disabled={isReadonly}
+                  id={"parent_ethinicity_" + (counter - 1)}
+                  className="field-input"
+                  options={ETHINICITY_OPTIONS}
+                  hasSelectAll={hasSelectAll}
+                  onSelect={selectedList => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "ethinicity",
+                      selectedList
+                    );
+                  }}
+                  onRemove={selectedList => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "ethinicity",
+                      selectedList
+                    );
+                  }}
+                  placeholder="Select all that apply"
+                  displayValue="name"
+                  closeIcon="cancel"
+                  name={"parent_ethinicity_" + (counter - 1)}
+                  closeOnSelect={false}
+                  showCheckbox={true}
+                  autcomplete="false"
+                  selectedValues={parentProfile.ethinicity}
+                />
+              )}
+              <label className="field-label">
+                Ethinicity (select all choices that apply)
+              </label>
+            </div>
+            <br />
           </div>
         </div>
 
@@ -965,222 +1200,6 @@ export default function index({
           </div>
         )}
 
-        <div className="grid-1">
-          <div className="form-group">
-            <div className="field">
-              <DatePicker
-                readOnly={isReadonly}
-                renderCustomHeader={({
-                  date,
-                  changeYear,
-                  changeMonth,
-                  decreaseMonth,
-                  increaseMonth,
-                  prevMonthButtonDisabled,
-                  nextMonthButtonDisabled
-                }) => (
-                  <div
-                    style={{
-                      margin: 0,
-                      display: "flex",
-                      alignCenter: "center",
-                      justifyContent: "center",
-                      background: "#f36e22",
-                      padding: "5px 3px"
-                    }}>
-                    <button
-                      className="datepicker-btn"
-                      onClick={e => {
-                        e.preventDefault();
-                      }}>
-                      <FontAwesomeIcon
-                        icon={faAngleLeft}
-                        onClick={decreaseMonth}
-                        disabled={prevMonthButtonDisabled}
-                      />
-                    </button>
-                    <select
-                      value={new Date(date).getFullYear()}
-                      onChange={({ target: { value } }) => changeYear(value)}>
-                      {years.map(option => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-
-                    <select
-                      value={months[date.getMonth()]}
-                      onChange={({ target: { value } }) =>
-                        changeMonth(months.indexOf(value))
-                      }>
-                      {months.map(option => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      className="datepicker-btn"
-                      onClick={e => {
-                        e.preventDefault();
-                      }}>
-                      <FontAwesomeIcon
-                        icon={faAngleRight}
-                        onClick={increaseMonth}
-                        disabled={nextMonthButtonDisabled}
-                      />
-                    </button>
-                  </div>
-                )}
-                selected={parentProfile.date_of_birth}
-                disabled={isReadonly}
-                onChange={date => {
-                  handleParentFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "birthdate",
-                    date
-                  );
-                }}
-                name={"ch_birthdate" + (counter - 1)}
-                customInput={
-                  <BirthdateCustomInput
-                    className={
-                      isReadonly &&
-                      !isVendorView &&
-                      pastParentInformation &&
-                      (pastParentInformation.birthdate ||
-                        pastParentInformation.birthdate == "") &&
-                      parentProfile.date_of_birth.toString() !=
-                        new Date(pastParentInformation.birthdate).toString()
-                        ? "field-input birthdate-field highlights"
-                        : "field-input birthdate-field"
-                    }
-                  />
-                }
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <div className="field select-field-wrapper">
-              <select
-                disabled={isReadonly}
-                readOnly={isReadonly}
-                name={"parent_gender" + (counter - 1)}
-                className={
-                  isReadonly &&
-                  !isVendorView &&
-                  pastParentInformation &&
-                  (pastParentInformation.gender ||
-                    pastParentInformation.gender == "") &&
-                  pastParentInformation.gender != parentProfile.gender
-                    ? "field-input highlights"
-                    : "field-input"
-                }
-                onChange={({ target }) => {
-                  handleParentFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "gender",
-                    target.value
-                  );
-                }}
-                ref={register({ required: true })}
-                defaultValue={parentProfile.gender}>
-                <option value="">Select</option>
-                <optgroup label="Gender">
-                  {GENDER_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.value}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="Custom">
-                  {CUSTOM_GENDER_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.value}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
-              <label className="field-label">
-                Gender
-              </label>
-            </div>
-          </div>
-          <div className="form-group  ethnicity-form">
-            <div className="field">
-              {isReadonly ? (
-                <>
-                  <p
-                    className={`${
-                      isReadonly &&
-                      !isVendorView &&
-                      pastParentInformation &&
-                      (pastParentInformation.ethnicities ||
-                        pastParentInformation.ethnicities == "") &&
-                      pastParentInformation.ethnicities !=
-                        readOnlyEthinicity.split("\n").join(",")
-                        ? "field-input readonly ethnicity-labels  highlights"
-                        : "field-input ethnicity-labels readonly"
-                    } `}
-                    name={"ethinicity_" + (counter - 1)}
-                    style={{
-                      //background: "white",
-                      borderBottom: "2px solid rgb(204, 204, 204) !important",
-                      resize: "none",
-                      margin: "0px 0px 15px 0px",
-                      textIndent: "0",
-                      // whiteSpace: "pre-wrap",
-                      position: "absolute",
-                      top: "27px"
-                    }}>
-                    {readOnlyEthinicity}
-                  </p>
-                </>
-              ) : (
-                <Multiselect
-                  readOnly={isReadonly}
-                  disabled={isReadonly}
-                  id={"ethinicity_" + (counter - 1)}
-                  className="field-input"
-                  options={ETHINICITY_OPTIONS}
-                  hasSelectAll={hasSelectAll}
-                  onSelect={selectedList => {
-                    handleParentFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "ethinicity",
-                      selectedList
-                    );
-                  }}
-                  onRemove={selectedList => {
-                    handleParentFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "ethinicity",
-                      selectedList
-                    );
-                  }}
-                  placeholder="Select all that apply"
-                  displayValue="name"
-                  closeIcon="cancel"
-                  name={"ethinicity_" + (counter - 1)}
-                  closeOnSelect={false}
-                  showCheckbox={true}
-                  autcomplete="false"
-                  selectedValues={parentProfile.ethinicity}
-                />
-              )}
-              <label className="field-label">
-                Ethinicity (select all choices that apply)
-              </label>
-            </div>
-            <br />
-          </div>
-        </div>
-
         {!isReadonly && (
           <div className="address-wrapper">
             <div className="add-address">
@@ -1501,7 +1520,7 @@ export default function index({
             />
           </div>
         </div>
-
+{/* 
         <div className="agree-text">How long have you lived in this area?</div>
 
         <div className="form-group">
@@ -1759,7 +1778,7 @@ export default function index({
               message="This field is required"
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </ParentInformationStyled>
   );

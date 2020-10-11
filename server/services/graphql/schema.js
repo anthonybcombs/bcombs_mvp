@@ -240,6 +240,104 @@ const inputs = `
         parent_id: String
     }
 
+    input DaycareChildInfoInput {
+        ch_id: String
+        firstname: String!
+        lastname: String!
+        nickname: String
+        age: Int!
+        birthdate: String!
+        gender: String!
+        preffered_start_date: String!
+        current_classroom: String!
+        primary_language: String!
+        needed_days: String!
+        schedule_tour: String
+        voucher: String!
+        address: String!
+        city: String!
+        state: String!
+        zip_code: String!
+        programs: String
+        ethnicities: String
+        child_lives_with: String!
+        has_suspended: Int
+        reason_suspended: String
+        is_child_transferring: String
+        does_child_require_physical_education_service: String
+        history_prev_diseases: String
+        child_currently_doctors_care: String
+        reasons_previous_hospitalizations: String
+        comments_suggestion: String
+        list_special_dietary: String
+        list_any_allergies: String
+        mental_physical_disabilities: String
+        medical_action_plan: String
+        list_fears_unique_behavior: String
+        transfer_reason: String
+        prev_school_phone: String
+        prev_school_city: String
+        prev_school_address: String
+        prev_school_attended: String
+        prev_school_state: String
+        prev_school_zip_code: String
+        doctor_name: String
+        doctor_phone: String
+        hospital_preference: String
+        hospital_phone: String
+    }
+
+    input DaycareParentInfoInput {
+        parent_id: String
+        firstname: String!
+        lastname: String!
+        phone_type: String
+        phone_number: String!
+        email_type: String
+        email_address: String!
+        password: String
+        occupation: String
+        employers_name: String
+        parent_goals: String!
+        parent_child_goals: String!
+        address: String
+        city: String
+        state: String
+        zip_code: String
+        phone_type2: String
+        phone_number2: String
+        email_type2: String
+        email_address2: String
+        age: Int
+        birthdate: String
+        gender: String
+        ethnicities: String
+    }
+
+    input DaycareApplicationInput {
+        vendor: String!
+        child: DaycareChildInfoInput!
+        parents: [DaycareParentInfoInput]
+        section1_signature: String!
+        section1_date_signed: Date!
+        section2_signature: String!
+        section2_date_signed: Date!
+        section3_signature: String!
+        section3_date_signed: Date!
+        verification: String
+        student_status: Int
+        color_designation: String
+        notes: String
+        emergency_contacts: String
+        section1_text: String
+        section2_text: String
+        section3_text: String
+        section1_name: String
+        section2_name: String
+        section3_name: String
+        is_daycare: Int
+    }
+
     input ApplicationInput {
         vendor: String!
         child: ChildIInfoInput!
@@ -261,6 +359,7 @@ const inputs = `
         section1_name: String
         section2_name: String
         section3_name: String
+        is_daycare: Int
     }
 
     input UpdateApplicationInput {
@@ -284,6 +383,26 @@ const inputs = `
     input DeleteAppGroupInput {
         id: String!
         email: String!
+    }
+
+    input SaveDaycareApplicationUserInput {
+        app_id: String
+        child: DaycareChildInfoInput
+        parents: [DaycareParentInfoInput]
+        updated_by: String
+        emergency_contacts: String!
+        section1_signature: String
+        section1_date_signed: Date
+        section2_signature: String
+        section2_date_signed: Date
+        section3_signature: String
+        section3_date_signed: Date
+        section1_text: String
+        section2_text: String
+        section3_text: String
+        section1_name: String
+        section2_name: String
+        section3_name: String
     }
 
     input SaveApplicationUserInput {
@@ -325,6 +444,12 @@ const inputs = `
         vendors: [String!]
         currentUser: String!
         user: String!
+    }
+
+    input ParentChildRelationshipInput {
+        parent: String!
+        child: String!
+        relationship: String!
     }
 `;
 const queryTypes = `
@@ -488,6 +613,7 @@ const queryTypes = `
         location_sites: [LocationSite]
         app_groups: [VendorAppGroup]
         created_at: Date
+        is_daycare: Int
     }
 
     type LocationSite {
@@ -535,10 +661,10 @@ const queryTypes = `
         city: String!
         state: String!
         zip_code: String!
-        location_site: String!
+        location_site: String
         ethnicities: String
         programs: String
-        school_name: String!
+        school_name: String
         school_phone: String
         has_suspended: Int
         reason_suspended: String
@@ -551,8 +677,8 @@ const queryTypes = `
         awards: String
         accomplishments: String
         mentee_gain_program: String
-        grade_number: String!
-        grade_desc: String!
+        grade_number: String
+        grade_desc: String
         class_rank: String
         gpa_quarter_year: String
         gpa_quarter_q1: String
@@ -568,8 +694,32 @@ const queryTypes = `
         doctor_phone: String
         hospital_preference: String
         hospital_phone: String
-        child_lives_with: String!
+        child_lives_with: String
         nickname: String
+        is_child_transferring: String
+        does_child_require_physical_education_service: String
+        history_prev_diseases: String
+        child_currently_doctors_care: String
+        reasons_previous_hospitalizations: String
+        comments_suggestion: String
+        list_special_dietary: String
+        list_any_allergies: String
+        mental_physical_disabilities: String
+        medical_action_plan: String
+        list_fears_unique_behavior: String
+        transfer_reason: String
+        prev_school_phone: String
+        prev_school_city: String
+        prev_school_address: String
+        prev_school_attended: String
+        prev_school_state: String
+        prev_school_zip_code: String
+        preffered_start_date: String
+        current_classroom: String
+        primary_language: String
+        needed_days: String
+        schedule_tour: String
+        voucher: String
     }
 
     type Parent {
@@ -594,11 +744,15 @@ const queryTypes = `
         phone_number2: String
         email_type2: String
         email_address2: String
-        person_recommend: String!
+        person_recommend: String
         address: String
         city: String
         state: String
         zip_code: String
+        age: Int
+        birthdate: String
+        gender: String
+        ethnicities: String
     }
 
     type Application {
@@ -632,6 +786,7 @@ const queryTypes = `
         emergency_contacts: String
         vendorPrograms: [VendorProgram]
         vendorLocationSites: [LocationSite]
+        is_daycare: Int
     }
 
     type ParentUserApplication{
@@ -697,6 +852,17 @@ const queryTypes = `
         isOwner: Boolean
     }
 
+    type IdFormat {
+        tempId: String
+        newId: String
+    }
+    
+    type DaycareApplicationStatus{
+        messageType: String
+        message: String
+        childs: [IdFormat]
+        parents: [IdFormat]
+    }
 `;
 
 const mutations = `
@@ -718,7 +884,7 @@ const mutations = `
         createEvent(event:EventInput!): [Event]
         updateEvent(event:EventInput!): [Event]
         deleteEvent(id: String!, email:String!): [Event]
-        addApplication(applications: [ApplicationInput]): Status
+        addApplication(applications: [ApplicationInput]): DaycareApplicationStatus
         updateApplication(application: UpdateApplicationInput!): Status
         archivedApplications(app_ids: [String]): Status
         unarchivedApplications(app_ids: [String]): Status
@@ -730,6 +896,8 @@ const mutations = `
         addVendorAdmin(admin: AddAdminInput): [Admin]
         deleteVendorAdmin(admins: [DeleteAdminInput]): [Admin]
         updateVendorAdmin(admin: UpdateAdminInput): [Admin]
+        addDaycareApplication(applications: [DaycareApplicationInput]): DaycareApplicationStatus
+        addParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
     }
 `;
 

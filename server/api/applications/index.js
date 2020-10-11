@@ -147,7 +147,8 @@ export const getApplicationsByVendor = async vendor => {
         section1_name,
         section2_name,
         section3_name,
-        emergency_contacts
+        emergency_contacts,
+        is_daycare
         FROM application
         WHERE vendor=UUID_TO_BIN(?) and is_archived=0
         ORDER BY id DESC`,
@@ -226,7 +227,8 @@ export const createApplication = async ({
   section2_name,
   section3_name,
   class_teacher,
-  emergency_contacts
+  emergency_contacts,
+  is_daycare
 }) => {
   const db = makeDb();
   let result = {};
@@ -254,14 +256,15 @@ export const createApplication = async ({
         section2_name,
         section3_name,
         class_teacher,
-        emergency_contacts
+        emergency_contacts,
+        is_daycare
       ) VALUES (
         UUID_TO_BIN(UUID()), 
         UUID_TO_BIN(?), 
         UUID_TO_BIN(?), 
         ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, 
-        ?, ?, ?, ?)`,
+        ?, ?, ?, ?, ?)`,
       [
         vendor,
         child,
@@ -280,7 +283,8 @@ export const createApplication = async ({
         section2_name,
         section3_name,
         class_teacher,
-        emergency_contacts
+        emergency_contacts,
+        is_daycare
       ]
     );
 
