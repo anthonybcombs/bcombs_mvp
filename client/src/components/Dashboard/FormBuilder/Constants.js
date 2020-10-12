@@ -16,9 +16,12 @@ export const Fields = [
   },
   {
     fields: [
-      { key: 'street', label: 'Street Address', type: 'text', tag: 'input', placeholder: 'Street Address' },
+      { key: 'street1', label: 'Street Address', type: 'text', tag: 'input', placeholder: 'Street Address' },
+      { key: 'street2', label: 'Street Address Line 2', type: 'text', tag: 'input', placeholder: 'Street Address Line 2' },
       { key: 'city', label: 'City', type: 'text', tag: 'input', placeholder: 'City' },
-      { key: 'state', label: 'State', type: 'text', tag: 'input', placeholder: 'State' }
+      { key: 'state', label: 'State', type: 'text', tag: 'input', placeholder: 'State/Province/Region' },
+      { key: 'zipcode', label: 'Zipe Code', type: 'text', tag: 'input', placeholder: 'Postal/Zip Code' },
+      { key: 'country' , label: 'Country', type: 'text', tag: 'input', placeholder: 'Country' }
     ],
     label: 'Address',
     type: 'address'

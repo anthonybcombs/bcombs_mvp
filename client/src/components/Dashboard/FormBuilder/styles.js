@@ -138,6 +138,10 @@ export default styled.div`
     grid-column-gap: 2%;
     // grid-template-columns: repeat(1, 1fr);
   }
+  .sortableGroup-row .field-input:nth-child(1),
+  .sortableGroup-row .field-input:nth-child(2) {
+    grid-column: span 1; /* Spans two columns */
+  }
   .sortableGroup-row .field-input {
     padding-top: 1rem !important;
   }
