@@ -72,12 +72,14 @@ export default styled.div`
   }
 
   .draggble-container .draggble-item {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     
     cursor: grab;
     padding: 1rem;
+    overflow: hidden;
     margin: 0 0 4px 0;
     border-radius: 4px;
     text-transform: uppercase;
@@ -97,15 +99,29 @@ export default styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-  .draggble-container .draggble-item:hover {
+  .draggble-container .draggble-item:before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    
+    width: 5px;
+    height: 100%;
+    background:  #f5812f;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
-    border-left: 5px solid #f5812f;
+  }
+  .draggble-container .draggble-item:hover:before {
+    left: 0;
+    transition: all .15s ease-in-out;
+  }
+  .draggble-container .draggble-item:hover > svg {
+    transform: translate(3px, 0);
     transition: all .15s ease-in-out;
   }
   .draggble-container .draggble-item:hover > span {
     color: #f5812f;
     font-weight: 600;
+    transform: translate(3px, 0);
     transition: all .15s ease-in-out;
   }
 
