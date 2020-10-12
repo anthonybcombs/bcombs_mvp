@@ -30,7 +30,7 @@ const SortableGroup = React.forwardRef(
 
 
   return (
-    <div ref={elementRef} className='sortableGroup' style={{ opacity, ...previewStyle }}>
+    <div ref={elementRef} className={`sortableGroup ${name.toLowerCase().replace(/ +/g, "")}`} style={{ opacity, ...previewStyle }}>
         {
           !preview && (
             <div className='sortablePreviewActions'>
@@ -53,7 +53,7 @@ const SortableGroup = React.forwardRef(
         <p className='sortableGroup-name'>{name}</p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${columnNumber}, 1fr)`}}>
           {
-            fields.map(({ key, label, placeholder = '', type, tag }) => {
+            fields.map(({ key, label, placeholder = '', type = '', tag, fullWidth }) => {
               // const colNum = columnNumber === 1 ? 1 : columnNumber + 0.5
               // const fieldCustomStyles = {
               //   width: `calc(100% / ${colNum})`,
@@ -74,7 +74,7 @@ const SortableGroup = React.forwardRef(
   )
 })
 
-export default DropTarget([...Object.values(Items), 'sortableGroup'], {
+export default DropTarget([...Object.values(Items.standard), ...Object.values(Items.prime), 'sortableGroup'], {
   hover(props, monitor, component) {
     if (!component) {
       return null

@@ -57,14 +57,14 @@ export default () => {
   }
 
   const [{ item, didDrop }, drop] = useDrop({
-    accept: Object.values(Items),
+    accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
     drop: () => handleDrop(item, didDrop),
     collect: monitor => ({
       isOver: !!monitor.isOver(),
       item: monitor.getItem()
     }),
   })
-  console.log('hala', settings)
+
   return (
     <div className='drop-area-wrapper' ref={drop}>
       <div>

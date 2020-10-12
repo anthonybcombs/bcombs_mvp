@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import { Fields } from './Constants'
+import { StandardFields, PrimeFields } from './Constants'
 import DraggableField from './DraggbleField'
 
 export default () => {
-  const [fields] = useState([...Fields])
+  const [standardFields] = useState([...StandardFields])
+  const [primeFields] = useState([...PrimeFields])
 
   return (
     <div className='drag-area-wrapper'>
@@ -13,7 +14,7 @@ export default () => {
       <h4 className='sub-header'>Standard</h4>
       <div className='draggble-container standard-items'>    
         {
-          fields.map(({ label, type, ...rest }) => {
+          standardFields.map(({ label, type, ...rest }) => {
             return (
               <DraggableField key={type} name={label} type={type} {...rest} />
             )
@@ -24,7 +25,7 @@ export default () => {
       <h4 className='sub-header'>Prime</h4>
       <div className='draggble-container prime-items'>    
         {
-          fields.map(({ label, type, ...rest }) => {
+          primeFields.map(({ label, type, ...rest }) => {
             return (
               <DraggableField key={type} name={label} type={type} {...rest} />
             )

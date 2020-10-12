@@ -57,10 +57,18 @@ export default styled.div`
 
   .drag-area-wrapper .draggble-container {
     display: grid;
-    grid-gap: 2%;
+    grid-column-gap: 2%;
     grid-template-columns: 1fr 1fr;
 
     margin-bottom: 2.5rem;
+  }
+  .draggble-container.prime-items .draggble-item > svg {
+    width: 12px;
+    height: 12px;
+    padding: 5px;
+    color: #ffffff;
+    border-radius: 100px;
+    background: #f5812f;
   }
 
   .draggble-container .draggble-item {
@@ -70,6 +78,7 @@ export default styled.div`
     
     cursor: grab;
     padding: 1rem;
+    margin: 0 0 4px 0;
     border-radius: 4px;
     text-transform: uppercase;
     border: 1px solid #EAEAEA;
@@ -81,7 +90,12 @@ export default styled.div`
   }
   .draggble-container .draggble-item > span {
     margin-left: .5rem;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
+    font-size: 12px;
+    max-width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   .draggble-container .draggble-item:hover {
     border-top-left-radius: 5px;
@@ -122,10 +136,21 @@ export default styled.div`
     border: 1px dashed transparent;
   }
   .sortableGroup:hover {
+    background: #fff;
     border-radius: 3px;
     border-color: #f5812f;
     transition: all .15s ease-in-out
   }
+
+  // specific for ADDRESS ROW
+  .sortableGroup.address .sortableGroup-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .sortableGroup.address .sortableGroup-row .field-input:nth-child(1),
+  .sortableGroup.address .sortableGroup-row .field-input:nth-child(2) {
+    grid-column: span 2; /* Spans two columns */
+  }
+
 
   .sortableGroup-name {
     margin: 0;
@@ -137,10 +162,6 @@ export default styled.div`
     align-items: center;
     grid-column-gap: 2%;
     // grid-template-columns: repeat(1, 1fr);
-  }
-  .sortableGroup-row .field-input:nth-child(1),
-  .sortableGroup-row .field-input:nth-child(2) {
-    grid-column: span 1; /* Spans two columns */
   }
   .sortableGroup-row .field-input {
     padding-top: 1rem !important;
