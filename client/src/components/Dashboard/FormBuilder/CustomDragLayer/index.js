@@ -48,11 +48,7 @@ export default () => {
         )
       }
 
-      if (Object.values(Items).includes(itemType)) {
-        // Temporary style
-        // console.log('basin pa diay', {initialOffset, currentOffset})
-        // const style = {}
-        // return <DraggableField { ...item } previewStyle={style} />
+      if ([...Object.values(Items.standard), ...Object.values(Items.prime)].includes(itemType)) {
         return null
       }
     }
