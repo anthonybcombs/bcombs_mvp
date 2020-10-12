@@ -2,76 +2,194 @@ import styled from "styled-components";
 
 export default styled.div`
   width: auto;
-  max-width: 1920px;
   margin: auto;
+  max-width: 1920px;
   padding: 0rem 3em 2rem;
 
   #formBuilder {
     display: grid;
-    grid-gap: 12%;
+    grid-gap: 3%;
   }
   #formBuilder > div {
     padding: 1rem;
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
   }
+  #formBuilder .field-input {
+    border: 0;
+    cursor: text;
+    color: #555;
+    width: 100%;
+    padding: 5px 0;
+    font-size: 16px;
+    line-height: 1.8;
+    border-radius: 0;
+    text-indent: 5px;
+    font-family: inherit;
+    border-bottom: 1.65px solid #ccc;
 
-  .fb-form-title {
-    margin-bottom: 10px
+    -webkit-appearance: none;
+    -moz-appearance: none;
   }
+  
 
-  .draggble-items {
-    border: 1px dashed gray;
-    padding: 0.5rem 1rem;
-    margin-bottom: .5rem;
-    width: 50%;
-    text-align: center;
-  }
-
-  @media (min-width: 600px) {
-    #formBuilder {
-      grid-template-columns: 1fr 2fr;
-      grid-gap: 1%;
-    }
-  }
-  @media (max-width: 840px) {
-    padding: 0rem 1rem 2rem;
-  }
-
-  // START --- Sortable Field Group CSS
-  .sortableGroup {
-    border: 1px solid white;
-    padding: 0.3rem 0.7rem 0.7rem 0.7rem;
-    margin-bottom: .5rem;
-    background-color: white;
-    cursor: move;
+  .drag-area-wrapper .header {
     position: relative;
+    margin-bottom: 2rem;
+    font-weight: 100;
+    color: gray;
+  }
+  .drag-area-wrapper .header:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 80px;
+    height: 5px;
+    background: #f5812f;
+  }
+  .drag-area-wrapper .sub-header {
+    margin: 0;
+    font-weight: 100;
+    padding-bottom: 1rem;
+    text-transform: uppercase;
   }
 
-  .sortableGroup:hover {
-    border: 1px dashed gray;
+  .drag-area-wrapper .draggble-container {
+    display: grid;
+    grid-gap: 2%;
+    grid-template-columns: 1fr 1fr;
+
+    margin-bottom: 2.5rem;
   }
+
+  .draggble-container .draggble-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    
+    cursor: grab;
+    padding: 1rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    border: 1px solid #EAEAEA;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 8%);
+  }
+  .draggble-container .draggble-item > svg {
+    padding: 0 8px;
+    color: #f5812f;
+  }
+  .draggble-container .draggble-item > span {
+    margin-left: .5rem;
+    letter-spacing: 1.5px;
+  }
+  .draggble-container .draggble-item:hover {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-left: 5px solid #f5812f;
+    transition: all .15s ease-in-out;
+  }
+  .draggble-container .draggble-item:hover > span {
+    color: #f5812f;
+    font-weight: 600;
+    transition: all .15s ease-in-out;
+  }
+
+
+  .drop-area-wrapper {
+    padding: 1.5rem !important;
+  }
+  .drop-area-wrapper .form-title {
+    padding: 0 8px;
+  }
+  .drop-area-wrapper .form-title > input {
+    margin-bottom: 1rem;
+    font-weight: bold;
+    font-size: 18px !important;
+  }
+
+  // ===============================================
+  // ********* START SORTABLE FIELD GROUPS *********
+  // ===============================================
+
+  .sortableGroup {
+    position: relative;
+
+    cursor: move;
+    padding: 8px;
+    margin-bottom: 1rem;
+    border-radius: 3px;
+    border: 1px dashed transparent;
+  }
+  .sortableGroup:hover {
+    border-radius: 3px;
+    border-color: #f5812f;
+    transition: all .15s ease-in-out
+  }
+
+  .sortableGroup-name {
+    margin: 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .sortableGroup-row {
+    display: grid;
+    align-items: center;
+    grid-column-gap: 2%;
+    // grid-template-columns: repeat(1, 1fr);
+  }
+  .sortableGroup-row .field-input {
+    padding-top: 1rem !important;
+  }
+
 
   .sortableGroup:hover > .sortablePreviewActions {
     display: block;
   }
   .sortablePreviewActions {
-    display: none;
     position: absolute;
-    right: 10px;
+    right: 5px;
+    top: 0;
+    display: none;
     cursor: pointer;
   }
   .sortablePreviewActions svg {
-    margin-left: 5px;
+    width: 18px;
+    height: 18px;
+    padding: 10px;
+    border-radius: 100px;
+  }
+  .sortablePreviewActions svg:hover {
+    background: #f5f5f5;
+    box-shadow: 0 2px 6px #dddd;
+    transition: all .25s ease-in-out
   }
   .sortablePreviewActions svg:first-child {
     color: red;
   }
   .sortablePreviewActions svg:last-child {
-    color: blue;
+    color: #504c4c;
   }
 
-  // END --- Sortable Field Group CSS
+  // =============================================
+  // ********* END SORTABLE FIELD GROUPS *********
+  // =============================================
 
+
+
+
+  // =================================
+  // ********* MEDIA QUERIES *********
+  // =================================
+
+  @media (min-width: 600px) {
+    #formBuilder {
+      grid-gap: 1%;
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+  @media (max-width: 840px) {
+    padding: 0rem 1rem 2rem;
+  }
   
 `;

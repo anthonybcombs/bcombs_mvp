@@ -66,11 +66,10 @@ export default () => {
   })
   console.log('hala', settings)
   return (
-    <div className='fb-drop-area' ref={drop}>
+    <div className='drop-area-wrapper' ref={drop}>
       <div>
         Temporary Column input for testing:
         <input
-          className='fb-form-title'
           type='number'
           id='column'
           name='column'
@@ -80,14 +79,16 @@ export default () => {
           }}
         />
       </div>
-      <input
-        className='fb-form-title'
-        type='text'
-        id='title'
-        name='title'
-        placeholder='Form Title'
-        defaultValue='Untitled Form'
-      />
+      <div className='form-title'>
+        <input
+          type='text'
+          id='title'
+          name='title'
+          className='field-input'
+          placeholder='Form Title'
+          // defaultValue='Untitled Form'
+        />
+      </div>
       {
         droppedFields.map((fieldProps, index) => {
           return (

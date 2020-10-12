@@ -3,13 +3,17 @@ import { useDrag } from 'react-dnd'
 import { uuid } from 'uuidv4'
 import { getEmptyImage } from "react-dnd-html5-backend";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faGripVertical } from "@fortawesome/free-solid-svg-icons"
+
 export default ({ name, type, fields, previewStyle = {} }) => {
-  const [{ opacity }, drag, preview] = useDrag({
+  const [{ opacity, background }, drag, preview] = useDrag({
     item: { type },
     begin: () => ({ name, type, fields, id: uuid() }),
     collect: (monitor) => ({
-      opacity: monitor.isDragging() ? 0.4 : 1,
-      drag
+      opacity: monitor.isDragging() ? 0.5 : 1,
+      // background: monitor.isDragging() ? 'red' : 'blue'
+      // drag
     })
   })
 
@@ -19,11 +23,12 @@ export default ({ name, type, fields, previewStyle = {} }) => {
 
   return (
     <div
-      className='draggble-items'
+      className='draggble-item'
       ref={drag}
-      style={{ opacity, ...previewStyle }}
+      style={{ opacity, background, ...previewStyle }}
     >
-      {name}
+      <FontAwesomeIcon icon={faGripVertical}/>
+      <span>{name}</span>
     </div>
   )
 }

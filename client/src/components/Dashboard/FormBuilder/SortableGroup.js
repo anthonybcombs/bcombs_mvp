@@ -3,7 +3,7 @@ import { DragSource, DropTarget, } from 'react-dnd'
 import { uuid } from 'uuidv4'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faCog, faArrowsAlt } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from './Constants'
 import FieldConstructor from './FieldConstructor'
@@ -28,6 +28,7 @@ const SortableGroup = React.forwardRef(
     connectDragPreview(getEmptyImage(), { captureDraggingState: true })
   }, [])
 
+
   return (
     <div ref={elementRef} className='sortableGroup' style={{ opacity, ...previewStyle }}>
         {
@@ -42,28 +43,33 @@ const SortableGroup = React.forwardRef(
                 className='info-icon'
                 icon={faCog}
               />
+              <FontAwesomeIcon
+                className='info-icon'
+                icon={faArrowsAlt}
+              />
             </div>
           )
         }
-        <div>{name}</div>
-        {
-          fields.map(({ key, label, placeholder = '', type, tag }) => {
-            // @clark - magic begins haha
-            const colNum = columnNumber === 1 ? 1 : columnNumber + 0.5
-            const fieldCustomStyles = {
-              width: `calc(100% / ${colNum})`
-            }
+        <p className='sortableGroup-name'>{name}</p>
+        <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${columnNumber}, 1fr)`}}>
+          {
+            fields.map(({ key, label, placeholder = '', type, tag }) => {
+              // const colNum = columnNumber === 1 ? 1 : columnNumber + 0.5
+              // const fieldCustomStyles = {
+              //   width: `calc(100% / ${colNum})`,
+              // }
 
-            return FieldConstructor[tag]({
-              style: fieldCustomStyles,
-              name: key,
-              key: uuid(),
-              placeholder,
-              type,
-              label
+              return FieldConstructor[tag]({
+                // style: fieldCustomStyles,
+                name: key,
+                key: uuid(),
+                placeholder,
+                type,
+                label
+              })
             })
-          })
-        }
+          }
+        </div>
       </div>
   )
 })
