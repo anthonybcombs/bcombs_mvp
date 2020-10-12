@@ -37,7 +37,7 @@ export const StandardFields = [
       { key: 'singleLineText', label: 'Single Line Text', type: 'text', tag: 'input', placeholder: 'Single LIne Text' }
     ],
     label: 'Single Line Text',
-    type: 'singleLineText'
+    type: 'singleLineText',
   },
   {
     fields: [

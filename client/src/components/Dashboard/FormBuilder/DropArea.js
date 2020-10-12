@@ -14,9 +14,15 @@ export default () => {
   })
 
   const handleDrop = (field) => {
-    const newFields = [...droppedFields]
+    let newFields = [...droppedFields]
     if (!newFields.find(e => e.id === field.id)) {
-      newFields.push(field)
+      if(newFields.find(e => e.isActive)) {
+        newFields = update(droppedFields, {
+          [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } }
+        })
+      }
+
+      newFields.push({ ...field, isActive: true })
       setDrop(newFields)
     } else {
       setDrop(newFields.map(e => {
@@ -31,7 +37,11 @@ export default () => {
   const handleMoveGroup = (dragIndex, hoverIndex, draggedGroup) => {
     let newFields = [...droppedFields]
     if (dragIndex === undefined) {
-      newFields.push({ ...draggedGroup, hidden: true })
+      newFields = update(droppedFields, {
+        [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } },
+        $push: [{ ...draggedGroup, hidden: true, isActive: true }]
+      })
+
       dragIndex = newFields.length - 1
     }
     const dragGroup = newFields[dragIndex]
@@ -54,6 +64,16 @@ export default () => {
 
   const handleRemoveGroup = (id) => {
     setDrop(droppedFields.filter(e => e.id !== id))
+  }
+
+  const handleActive = (id) => {
+    setDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
+  }
+
+  const handleChangeSettings = ({ id, ...rest }) => {
+    setDrop(update(droppedFields, {
+      [droppedFields.findIndex(e => e.id === id)]: { settings: { $merge: rest } }
+    }))
   }
 
   const [{ item, didDrop }, drop] = useDrop({
@@ -100,6 +120,8 @@ export default () => {
               onMoveGroup={handleMoveGroup}
               onShowHiddenGroup={handleShowHiddenGroup}
               onRemoveGroup={handleRemoveGroup}
+              onActive={handleActive}
+              onChangeSettings={handleChangeSettings}
             />
           )
         })

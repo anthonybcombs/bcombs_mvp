@@ -1,19 +1,19 @@
-import React, { useImperativeHandle, useRef, useEffect } from 'react'
+import React, { useState, useImperativeHandle, useRef, useEffect } from 'react'
 import { DragSource, DropTarget, } from 'react-dnd'
 import { uuid } from 'uuidv4'
 import { getEmptyImage } from 'react-dnd-html5-backend'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faCog, faArrowsAlt } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from './Constants'
 import FieldConstructor from './FieldConstructor'
+import Settings from './Settings'
 
 const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource,connectDropTarget, connectDragPreview,
     previewStyle = {}, preview = false,
     hidden, name, fields, isDragging, id,
-    onRemoveGroup, columnNumber
+    onRemoveGroup, columnNumber, settings,
+    isActive, onActive, onChangeSettings,
   }, ref) => {
   const elementRef = useRef(null)
   connectDragSource(elementRef)
@@ -28,28 +28,8 @@ const SortableGroup = React.forwardRef(
     connectDragPreview(getEmptyImage(), { captureDraggingState: true })
   }, [])
 
-
   return (
-    <div ref={elementRef} className='sortableGroup' style={{ opacity, ...previewStyle }}>
-        {
-          !preview && (
-            <div className='sortablePreviewActions'>
-              <FontAwesomeIcon
-                className='info-icon'
-                icon={faTimes}
-                onClick={() => onRemoveGroup(id)}
-              />
-              <FontAwesomeIcon
-                className='info-icon'
-                icon={faCog}
-              />
-              <FontAwesomeIcon
-                className='info-icon'
-                icon={faArrowsAlt}
-              />
-            </div>
-          )
-        }
+    <div ref={elementRef} className='sortableGroup' style={{ opacity, ...previewStyle }} onClick={() => onActive(id)}>
         <p className='sortableGroup-name'>{name}</p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${columnNumber}, 1fr)`}}>
           {
@@ -62,7 +42,7 @@ const SortableGroup = React.forwardRef(
               return FieldConstructor[tag]({
                 // style: fieldCustomStyles,
                 name: key,
-                key: uuid(),
+                key: key + uuid(),
                 placeholder,
                 type,
                 label
@@ -70,6 +50,16 @@ const SortableGroup = React.forwardRef(
             })
           }
         </div>
+        {
+          (!preview && isActive && !isDragging) &&
+          (
+            <Settings
+              onChangeSettings={(data) => onChangeSettings({ ...data, id })}
+              onRemoveGroup={() => onRemoveGroup(id)}
+              settings={settings}
+            />
+          )
+        }
       </div>
   )
 })

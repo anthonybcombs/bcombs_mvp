@@ -9,7 +9,7 @@ import { faGripVertical } from "@fortawesome/free-solid-svg-icons"
 export default ({ name, type, fields, previewStyle = {} }) => {
   const [{ opacity, background }, drag, preview] = useDrag({
     item: { type },
-    begin: () => ({ name, type, fields, id: uuid() }),
+    begin: () => ({ name, type, fields, settings: {}, id: uuid() }),
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
       // background: monitor.isDragging() ? 'red' : 'blue'
