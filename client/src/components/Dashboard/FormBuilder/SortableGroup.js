@@ -29,7 +29,7 @@ const SortableGroup = React.forwardRef(
   }, [])
 
   return (
-    <div ref={elementRef} className='sortableGroup' style={{ opacity, ...previewStyle }} onClick={() => onActive(id)}>
+    <div ref={elementRef} className={`sortableGroup ${name.toLowerCase().replace(/ +/g, "")}`} style={{ opacity, ...previewStyle }}>
         <p className='sortableGroup-name'>{name}</p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${columnNumber}, 1fr)`}}>
           {

@@ -57,19 +57,30 @@ export default styled.div`
 
   .drag-area-wrapper .draggble-container {
     display: grid;
-    grid-gap: 2%;
+    grid-column-gap: 2%;
     grid-template-columns: 1fr 1fr;
 
     margin-bottom: 2.5rem;
   }
+  .draggble-container.prime-items .draggble-item > svg {
+    width: 12px;
+    height: 12px;
+    padding: 5px;
+    color: #ffffff;
+    border-radius: 100px;
+    background: #f5812f;
+  }
 
   .draggble-container .draggble-item {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     
     cursor: grab;
     padding: 1rem;
+    overflow: hidden;
+    margin: 0 0 4px 0;
     border-radius: 4px;
     text-transform: uppercase;
     border: 1px solid #EAEAEA;
@@ -81,17 +92,36 @@ export default styled.div`
   }
   .draggble-container .draggble-item > span {
     margin-left: .5rem;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
+    font-size: 12px;
+    max-width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
-  .draggble-container .draggble-item:hover {
+  .draggble-container .draggble-item:before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    
+    width: 5px;
+    height: 100%;
+    background:  #f5812f;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
-    border-left: 5px solid #f5812f;
+  }
+  .draggble-container .draggble-item:hover:before {
+    left: 0;
+    transition: all .15s ease-in-out;
+  }
+  .draggble-container .draggble-item:hover > svg {
+    transform: translate(3px, 0);
     transition: all .15s ease-in-out;
   }
   .draggble-container .draggble-item:hover > span {
     color: #f5812f;
     font-weight: 600;
+    transform: translate(3px, 0);
     transition: all .15s ease-in-out;
   }
 
@@ -122,10 +152,21 @@ export default styled.div`
     border: 1px dashed transparent;
   }
   .sortableGroup:hover {
+    background: #fff;
     border-radius: 3px;
     border-color: #f5812f;
     transition: all .15s ease-in-out
   }
+
+  // specific for ADDRESS ROW
+  .sortableGroup.address .sortableGroup-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .sortableGroup.address .sortableGroup-row .field-input:nth-child(1),
+  .sortableGroup.address .sortableGroup-row .field-input:nth-child(2) {
+    grid-column: span 2; /* Spans two columns */
+  }
+
 
   .sortableGroup-name {
     margin: 0;
