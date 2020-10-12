@@ -48,6 +48,7 @@ const SortableGroup = React.forwardRef(
         <div>{name}</div>
         {
           fields.map(({ key, label, placeholder = '', type, tag }) => {
+            // @clark - magic begins haha
             const colNum = columnNumber === 1 ? 1 : columnNumber + 0.5
             const fieldCustomStyles = {
               width: `calc(100% / ${colNum})`
