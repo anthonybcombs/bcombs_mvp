@@ -10,7 +10,8 @@ export default ({
     instruction = ''
   },
   onChangeSettings,
-  onRemoveGroup
+  onRemoveGroup,
+  onDuplicateGroup
 }) => {
   const { type, option, value, error } = validation
   const { validationTypes, validationOptions } = Sources
@@ -143,11 +144,18 @@ export default ({
           <FontAwesomeIcon
             className='info-icon'
             icon={faCopy}
+            onClick={e => {
+              e.stopPropagation()
+              onDuplicateGroup()
+            }}
           />
           <FontAwesomeIcon
             className='info-icon'
             icon={faTrashAlt}
-            onClick={onRemoveGroup}
+            onClick={e => {
+              e.stopPropagation()
+              onRemoveGroup()
+            }}
           />
         </div>
       </div>

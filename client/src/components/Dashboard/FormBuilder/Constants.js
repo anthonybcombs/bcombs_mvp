@@ -38,20 +38,23 @@ export const StandardFields = [
     ],
     label: 'Single Line Text',
     type: 'singleLineText',
+    canBeGrouped: true
   },
   {
     fields: [
       { key: 'numbers', label: 'Numbers', type: 'number', tag: 'input', placeholder: 'Numbers' }
     ],
     label: 'Numbers',
-    type: 'numbers'
+    type: 'numbers',
+    canBeGrouped: true
   },
   {
     fields: [
       { key: 'paragraphText', label: 'Paragraph Text', type: 'text', tag: 'textarea', placeholder: 'Paragraph Text' }
     ],
     label: 'Paragraph Text',
-    type: 'paragraphText'
+    type: 'paragraphText',
+    canBeGrouped: true
   },
   {
     fields: [
@@ -72,7 +75,8 @@ export const StandardFields = [
       { key: 'dropDown', label: 'Dropdown', type: 'text', tag: 'select', placeholder: 'Dropdown' }
     ],
     label: 'Dropdown',
-    type: 'dropDown'
+    type: 'dropDown',
+    canBeGrouped: true
   },
   {
     fields: [

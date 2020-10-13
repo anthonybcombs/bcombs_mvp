@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDrag } from 'react-dnd'
 import { uuid } from 'uuidv4'
-import { getEmptyImage } from "react-dnd-html5-backend";
+import cloneDeep from 'lodash.clonedeep'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -19,9 +19,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 
 export default ({ name, type, groupType, fields, previewStyle = {} }) => {
+  const newFields = cloneDeep(fields) //avoid mutating the array of objects
   const [{ opacity, background }, drag, preview] = useDrag({
     item: { type },
-    begin: () => ({ name, type, fields, groupType, settings: {}, id: uuid() }),
+    begin: () => ({ name, type, fields: newFields, groupType, settings: {}, id: uuid() }),
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
       // background: monitor.isDragging() ? 'red' : 'blue'
