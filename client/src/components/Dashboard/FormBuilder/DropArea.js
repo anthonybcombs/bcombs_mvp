@@ -12,8 +12,13 @@ export default () => {
   const [settings, setSettings] = useState({
     columnNumber: 3
   })
+  const [canceledDropGroup, setCancelDropGroup] = useState({})
 
   const handleDrop = (field) => {
+    if (field.id === canceledDropGroup.id) {
+      setCancelDropGroup({})
+      return
+    }
     let newFields = [...droppedFields]
     if (!newFields.find(e => e.id === field.id)) {
       if(newFields.find(e => e.isActive)) {
@@ -76,13 +81,26 @@ export default () => {
     }))
   }
 
+  const handleMergeStandardFields = (destination, source) => {
+    if (source.id === canceledDropGroup.id) {
+      return
+    }
+
+    setDrop(update(droppedFields, {
+      [droppedFields.findIndex(e => e.id === destination.id)]: { fields: { $push: source.fields } }
+    }))
+    setCancelDropGroup(source)
+  }
+
   const [{ item, didDrop }, drop] = useDrop({
     accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
     drop: () => handleDrop(item, didDrop),
-    collect: monitor => ({
-      isOver: !!monitor.isOver(),
-      item: monitor.getItem()
-    }),
+    collect: monitor => {
+      return {
+        isOver: !!monitor.isOver(),
+        item: monitor.getItem()
+      }
+    },
   })
 
   return (
@@ -122,6 +140,7 @@ export default () => {
               onRemoveGroup={handleRemoveGroup}
               onActive={handleActive}
               onChangeSettings={handleChangeSettings}
+              onMergeStandardFields={handleMergeStandardFields}
             />
           )
         })

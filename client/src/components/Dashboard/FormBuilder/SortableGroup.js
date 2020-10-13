@@ -29,7 +29,7 @@ const SortableGroup = React.forwardRef(
   }, [])
 
   return (
-    <div ref={elementRef} className={`sortableGroup ${name.toLowerCase().replace(/ +/g, "")}`} style={{ opacity, ...previewStyle }}>
+    <div ref={elementRef} className={`sortableGroup ${name.toLowerCase().replace(/ +/g, "")}`} style={{ opacity, ...previewStyle }} onClick={() => onActive(id)}>
         <p className='sortableGroup-name'>{name}</p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${columnNumber}, 1fr)`}}>
           {
@@ -66,17 +66,25 @@ const SortableGroup = React.forwardRef(
 
 export default DropTarget([...Object.values(Items.standard), ...Object.values(Items.prime), 'sortableGroup'], {
   hover(props, monitor, component) {
+    let source = monitor.getItem()
+    let destination = props
     if (!component) {
       return null
     }
+
+    if (source.groupType === 'standard' && destination.groupType === 'standard') {
+      destination.onMergeStandardFields(destination, source)
+      return null
+    }
+
     // node = HTML Div element from imperative API
     const node = component.getNode()
     if (!node) {
         return null
     }
 
-    const dragIndex = monitor.getItem().index
-    const hoverIndex = props.index
+    const dragIndex = source.index
+    const hoverIndex = destination.index
 
     if (dragIndex === hoverIndex) {
       return
@@ -101,12 +109,12 @@ export default DropTarget([...Object.values(Items.standard), ...Object.values(It
         return
     }
     // Time to actually perform the action
-    props.onMoveGroup(dragIndex, hoverIndex, monitor.getItem())
+    destination.onMoveGroup(dragIndex, hoverIndex, source)
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
     // but it's good here for the sake of performance
     // to avoid expensive index searches.
-    monitor.getItem().index = hoverIndex
+    source.index = hoverIndex
   },
   drop(props) {
     if (props.hidden) {
