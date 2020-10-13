@@ -85,6 +85,12 @@ export default () => {
     setDrop(update(droppedFields, { $push: [{ ...newField, id: uuid() }] }))
   }
 
+  const handleRemoveGroupField = (id, index) => {
+    setDrop(update(droppedFields, {
+      [droppedFields.findIndex(e => e.id === id)]: { fields: { $splice: [[index, 1]] } }
+    }))
+  }
+
   const [{ item, didDrop }, drop] = useDrop({
     accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
     drop: () => handleDrop(item, didDrop),
@@ -127,6 +133,7 @@ export default () => {
               onChangeSettings={handleChangeSettings}
               onMergeStandardFields={handleMergeStandardFields}
               onDuplicateGroup={handleDuplicateGroup}
+              onRemoveGroupField={handleRemoveGroupField}
             />
           )
         })
