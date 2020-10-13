@@ -2,6 +2,8 @@ import React, { useState, useImperativeHandle, useRef, useEffect } from 'react'
 import { DragSource, DropTarget, } from 'react-dnd'
 import { uuid } from 'uuidv4'
 import { getEmptyImage } from 'react-dnd-html5-backend'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGripHorizontal } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from './Constants'
 import FieldConstructor from './FieldConstructor'
@@ -28,8 +30,14 @@ const SortableGroup = React.forwardRef(
     connectDragPreview(getEmptyImage(), { captureDraggingState: true })
   }, [])
 
+  const itemGroup = name.toLowerCase().replace(/ +/g, "")
+  const itemActive = isActive ? 'active' : ''
   return (
-    <div ref={elementRef} className={`sortableGroup ${name.toLowerCase().replace(/ +/g, "")}`} style={{ opacity, ...previewStyle }} onClick={() => onActive(id)}>
+    <div ref={elementRef} className={`sortableGroup ${itemGroup} ${itemActive}`} style={{ opacity, ...previewStyle }} onClick={() => onActive(id)}>
+        <FontAwesomeIcon
+          className='drag-icon'
+          icon={faGripHorizontal}
+        />
         <p className='sortableGroup-name'>{name}</p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${columnNumber}, 1fr)`}}>
           {

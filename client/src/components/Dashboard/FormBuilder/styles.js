@@ -34,6 +34,22 @@ export default styled.div`
     -webkit-appearance: none;
     -moz-appearance: none;
   }
+  #formBuilder .select-field-wrapper {
+    position: relative;
+  }
+  #formBuilder .select-field-wrapper:after {
+    content: "\f078";
+    position: absolute;
+    right: 0;
+    bottom: 18px;
+    font-size: 12px;
+    color: #555 !important;
+    font-family: "fontawesome";
+  }
+  #formBuilder .select-field-wrapper select {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+  }
   
 
   .drag-area-wrapper .header {
@@ -155,11 +171,17 @@ export default styled.div`
     border-radius: 3px;
     border: 1px dashed transparent;
   }
-  .sortableGroup:hover {
+  .sortableGroup:hover,
+  .sortableGroup.active {
     background: #fff;
     border-radius: 3px;
     border-color: #f5812f;
     box-shadow: 0 3px 6px 3px #ddd;
+    transition: all .15s ease-in-out
+  }
+  .sortableGroup:hover >svg.drag-icon {
+    opacity: 1;
+    visibility: visible;
     transition: all .15s ease-in-out
   }
 
@@ -172,7 +194,23 @@ export default styled.div`
     grid-column: span 2; /* Spans two columns */
   }
 
+  .sortableGroup >svg.drag-icon {
+    position: absolute;
+    right: 12px;
+    cursor: move;
+    color: #f5812f;
+    font-size: 18px;
+    padding: 8px 9px;
+    cursor: row-resize;
+    border-radius: 100px;
 
+    opacity:0;
+    visibility: hidden;
+  }
+  .sortableGroup >svg.drag-icon:hover {
+    background: #f4f4f5;
+    transition: all .15s ease-in-out
+  }
   .sortableGroup-name {
     margin: 0;
     letter-spacing: 2px;
@@ -221,6 +259,12 @@ export default styled.div`
   .group-settings {
     margin-top: 3rem;
   }
+  .group-settings .settings-validation {
+    display: grid;
+    grid-gap: 2%;
+    margin-bottom: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+  }
   .group-settings .settings-control {
     display: flex;
     flex-wrap: wrap;
@@ -230,7 +274,7 @@ export default styled.div`
     padding: 1rem;
     margin: 5px -8px -8px;
     border-top: 1px solid #ccc;
-    background: hsl(25deg 91% 57% / 30%);
+    background: hsl(25deg 91% 57% / 18%);
   }
   .group-settings .settings-control >div {
     display: flex;
@@ -267,6 +311,18 @@ export default styled.div`
     background: rgb(239 239 239 / 55%);
     transition: all .25s ease-in-out
   }
+  .group-settings .settings-iconActions > svg:hover:nth-child(1) {
+    color: #ffffff;
+    background: #f5812f;
+    box-shadow: 0 3px 6px #ddd;
+    transition: all .15s ease-in-out
+  }
+  .group-settings .settings-iconActions > svg:hover:nth-child(2) {
+    color: #ffffff;
+    background: #f44336;
+    box-shadow: 0 3px 6px #ddd;
+    transition: all .15s ease-in-out
+  }
 
   // =============================================
   // ********* END SORTABLE FIELD GROUPS *********
@@ -275,28 +331,9 @@ export default styled.div`
 
 
 
-  // =================================
-  // ********* MEDIA QUERIES *********
-  // =================================
-
-  @media (min-width: 600px) {
-    #formBuilder {
-      grid-gap: 1%;
-      grid-template-columns: 1fr 2fr;
-    }
-  }
-  @media (max-width: 840px) {
-    padding: 0rem 1rem 2rem;
-  }
-  
-
-
-
   // ====================================
   // ********* Custom Checkbox **********
   // ====================================
-
-  /* Create a custom checkbox */
   .settings-checkbox {
     position: relative;
   }
@@ -344,5 +381,22 @@ export default styled.div`
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
   }
+
+
+  // =================================
+  // ********* MEDIA QUERIES *********
+  // =================================
+
+  @media (min-width: 600px) {
+    #formBuilder {
+      grid-gap: 1%;
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+  @media (max-width: 840px) {
+    padding: 0rem 1rem 2rem;
+  }
+  
+  
 
 `;

@@ -47,49 +47,59 @@ export default ({
   return (
     <div className='group-settings'>
       {/* Start For Validation */}
-      {/* <select
-        value={validationSettings.type}
-        onChange={({ target }) => {
-          handleChangeSettings({ type: target.value }, 'validation')
-        }}
-      >
+      <div className='settings-validation'>
+        <div className='field select-field-wrapper'>
+          <select
+            className='field-input'
+            value={validationSettings.type}
+            onChange={({ target }) => {
+              handleChangeSettings({ type: target.value }, 'validation')
+            }}
+          >
+            {
+              Object.entries(validationTypes).map(([key, label]) => (
+                <option value={key}>{label}</option>
+              ))
+            }
+          </select>
+        </div>
+        <div className='field select-field-wrapper'>
+          <select
+            className='field-input'
+            value={validationSettings.option}
+            onChange={({ target }) => {
+              handleChangeSettings({ option: target.value }, 'validation')
+            }}
+          >
+            {
+              validationOptionsArr.map(([key, { label }]) => (
+                <option value={key}>{label}</option>
+              ))
+            }
+          </select>
+        </div>
         {
-          Object.entries(validationTypes).map(([key, label]) => (
-            <option value={key}>{label}</option>
-          ))
+          (validationSettings.option !== 'emailAddress') &&
+          <input
+            className='field-input'
+            value={validationSettings.value}
+            type={validationSettings.type === 'length' ? 'number' : validationSettings.type}
+            placeholder={validationSettings.type === 'text' ? 'Text' : 'Number'}
+            onChange={({ target }) => {
+              handleChangeSettings({ option: target.value }, 'validation')
+            }}
+          />
         }
-      </select>
-      <select
-        value={validationSettings.option}
-        onChange={({ target }) => {
-          handleChangeSettings({ option: target.value }, 'validation')
-        }}
-      >
-        {
-          validationOptionsArr.map(([key, { label }]) => (
-            <option value={key}>{label}</option>
-          ))
-        }
-      </select>
-      {
-        (validationSettings.option !== 'emailAddress') &&
         <input
-          value={validationSettings.value}
-          type={validationSettings.type === 'length' ? 'number' : validationSettings.type}
-          placeholder={validationSettings.type === 'text' ? 'Text' : 'Number'}
+          type='text'
+          className='field-input'
+          placeholder='Custom error text'
+          value={validationSettings.error}
           onChange={({ target }) => {
             handleChangeSettings({ option: target.value }, 'validation')
           }}
         />
-      }
-      <input
-        value={validationSettings.error}
-        type='text'
-        placeholder='Custom error text'
-        onChange={({ target }) => {
-          handleChangeSettings({ option: target.value }, 'validation')
-        }}
-      /> */}
+      </div>
       {/* End for validation */}
 
       {/* Start for Instruction */}
@@ -103,7 +113,6 @@ export default ({
             handleChangeSettings({ instruction: target.value })
           }}
         /> */}
-        {/* <textarea name="message" rows="10" cols="30"></textarea> */}
         <textarea
           id='instructions'
           name='instructions'
