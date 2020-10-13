@@ -4,7 +4,7 @@ import { uuid } from 'uuidv4'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGripHorizontal } from '@fortawesome/free-solid-svg-icons'
+import { faGripHorizontal, faTimes, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 
 import { Items, StandardFields } from './Constants'
 import FieldConstructor from './FieldConstructor'
@@ -12,12 +12,13 @@ import Settings from './Settings'
 
 const SortableGroup = React.forwardRef(
   ({ 
-    connectDragSource,connectDropTarget, connectDragPreview,
+    connectDragSource, connectDropTarget, connectDragPreview,
     previewStyle = {}, preview = false,
     hidden, name, fields, isDragging, id,
     onRemoveGroup, settings,
     isActive, onActive, onChangeSettings,
-    groupType, onMergeStandardFields, onDuplicateGroup
+    groupType, onMergeStandardFields, onDuplicateGroup,
+    onRemoveGroupField
   }, ref) => {
   const elementRef = useRef(null)
   connectDragSource(elementRef)
@@ -29,13 +30,17 @@ const SortableGroup = React.forwardRef(
   }))
 
   const [additionalField, handleSelectFieldToAdd] = useState('')
+  const [addingFieldShow, setAddingFieldSHow] = useState(false)
+  console.log('addingFieldShow: ', addingFieldShow)
 
   useEffect(() => {
     connectDragPreview(getEmptyImage(), { captureDraggingState: true })
   }, [])
 
-  const itemGroup = name.toLowerCase().replace(/ +/g, "")
   const itemActive = isActive ? 'active' : ''
+  const itemGroup = name.toLowerCase().replace(/ +/g, "")
+  const isAddingFieldShow = addingFieldShow ? 'show' : ''
+
   return (
     <div
       ref={elementRef}
@@ -44,27 +49,47 @@ const SortableGroup = React.forwardRef(
       onClick={() => onActive(id)}
     >   
         <FontAwesomeIcon
+          icon={faPlusCircle}
           className='drag-icon'
-          icon={faGripHorizontal}
+          onClick={() => setAddingFieldSHow(addingFieldShow => !addingFieldShow) }
         />
         <p className='sortableGroup-name'>{name}</p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
           {
-            fields.map(({ key, label, placeholder = '', type = '', tag }) => {
+            fields.map(({ key, label, placeholder = '', type = '', tag }, index) => {
 
-              return FieldConstructor[tag]({
-                name: key,
-                key: key + uuid(),
-                placeholder,
-                type,
-                label
-              })
+              return (
+                <div className='sortableGroup-column'>
+                  {
+                    FieldConstructor[tag]({
+                      name: key,
+                      key: key + uuid(),
+                      placeholder,
+                      type,
+                      label
+                    })
+                  }
+                  {
+                    fields.length > 1 &&
+                    (
+                      <FontAwesomeIcon
+                        className='removeField-icon'
+                        icon={faTimes}
+                        onClick={e => {
+                          e.stopPropagation()
+                          onRemoveGroupField(id, index)
+                        }}
+                      />
+                    )
+                  }
+                </div>
+              )
             })
           }
         </div>
         {
           isActive && groupType === 'standard' && (
-            <div>
+            <div className={`sortableGroup-addFields ${isAddingFieldShow}`}>
               <div className='field select-field-wrapper'>
                 <select
                   className='field-input'
@@ -83,19 +108,29 @@ const SortableGroup = React.forwardRef(
                   }
                 </select>
               </div>
-              <button
-                type='button'
-                onClick={e => {
-                  e.stopPropagation()
-                  let newField = StandardFields.find(e => e.type === additionalField)
-                  if (newField) {
-                    newField = cloneDeep(newField) //avoid mutating the array of objects
-                    onMergeStandardFields(id, newField)
-                  }
-                }}
-              >
-                Add
-              </button>
+              <div className='addField-actions'>
+                <button
+                  type='button'
+                  className='add-btn'
+                  onClick={e => {
+                    e.stopPropagation()
+                    let newField = StandardFields.find(e => e.type === additionalField)
+                    if (newField) {
+                      newField = cloneDeep(newField) //avoid mutating the array of objects
+                      onMergeStandardFields(id, newField)
+                    }
+                  }}
+                >
+                  Add Field
+                </button>
+                <button
+                  type='button'
+                  className='close-btn'
+                  onClick={() => setAddingFieldSHow(addingFieldShow => !addingFieldShow) }
+                >
+                  Close
+                </button>
+              </div>
             </div>
           )
         }

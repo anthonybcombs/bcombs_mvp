@@ -201,7 +201,7 @@ export default styled.div`
     color: #f5812f;
     font-size: 18px;
     padding: 8px 9px;
-    cursor: row-resize;
+    cursor: pointer;
     border-radius: 100px;
 
     opacity:0;
@@ -222,38 +222,83 @@ export default styled.div`
     grid-column-gap: 2%;
     // grid-template-columns: repeat(1, 1fr);
   }
-  .sortableGroup-row .field-input {
+
+
+  .sortableGroup-column {
+    position: relative;
     padding-top: 1rem !important;
   }
-
-
-  .sortableGroup:hover > .sortablePreviewActions {
-    display: block;
-  }
-  .sortablePreviewActions {
+  .sortableGroup-column .removeField-icon {
     position: absolute;
-    right: 5px;
-    top: 0;
-    display: none;
+    right: -4px;
+    bottom: 4px;
+    color: #f44336;
     cursor: pointer;
-  }
-  .sortablePreviewActions svg {
-    width: 18px;
-    height: 18px;
-    padding: 10px;
+    padding: 8px 10px;
     border-radius: 100px;
   }
-  .sortablePreviewActions svg:hover {
-    background: #f5f5f5;
-    box-shadow: 0 2px 6px #dddd;
-    transition: all .25s ease-in-out
+  .sortableGroup-column .removeField-icon:hover {
+    color: #d32f2f;
   }
-  .sortablePreviewActions svg:first-child {
-    color: red;
+
+  .sortableGroup-addFields {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    padding: 8px;
+    background: white;
+    box-shadow: 0 3px 6px #b5b5b5;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-62px);
+    transition: transform .5s cubic-bezier(0,1.62,0.38,0.96),
+                opacity 1s cubic-bezier(0,1.62,0.38,0.96),
+                visibility 1.3s cubic-bezier(0,1.62,0.38,0.96)
   }
-  .sortablePreviewActions svg:last-child {
-    color: #504c4c;
+  .sortableGroup-addFields.show {
+    // display: block !important;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
   }
+
+  .sortableGroup-addFields .select-field-wrapper {
+    position: relative;
+    width: 200px;
+  }
+  .sortableGroup-addFields >div button {
+    // color: #fff;
+    // border: #f5812f;
+    // padding: 0 34px;
+    // background: #f5812f;
+
+    border-radius: 3px;
+    padding: 2px 13px;
+    color: #fff;
+    border: 0;
+  }
+  .sortableGroup-addFields .addField-actions {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sortableGroup-addFields >div button.add-btn {
+    background: #19AB27;
+  }
+  .sortableGroup-addFields >div button.add-btn:hover {
+    background: #128d15;
+    transition: .15s ease-in-out 
+  }
+  .sortableGroup-addFields >div button.close-btn {
+    background: #f44336;
+  }
+  .sortableGroup-addFields >div button.close-btn:hover {
+    background: #d32f2f;
+    transition: .15s ease-in-out;
+  }
+ 
 
 
   .group-settings {
