@@ -16,7 +16,7 @@ export default () => {
         {
           standardFields.map(({ label, type, ...rest }) => {
             return (
-              <DraggableField key={type} name={label} type={type} {...rest} />
+              <DraggableField key={type} name={label} type={type} {...rest} groupType='standard' />
             )
           })
         }
@@ -27,7 +27,7 @@ export default () => {
         {
           primeFields.map(({ label, type, ...rest }) => {
             return (
-              <DraggableField key={type} name={label} type={type} {...rest} />
+              <DraggableField key={type} name={label} type={type} {...rest} groupType='prime' />
             )
           })
         }
