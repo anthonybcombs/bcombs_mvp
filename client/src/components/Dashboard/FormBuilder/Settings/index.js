@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faCopy } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt, faCopy } from '@fortawesome/free-solid-svg-icons'
 
 import { Sources } from './Sources'
 
@@ -47,7 +47,7 @@ export default ({
   return (
     <div className='group-settings'>
       {/* Start For Validation */}
-      <select
+      {/* <select
         value={validationSettings.type}
         onChange={({ target }) => {
           handleChangeSettings({ type: target.value }, 'validation')
@@ -89,44 +89,67 @@ export default ({
         onChange={({ target }) => {
           handleChangeSettings({ option: target.value }, 'validation')
         }}
-      />
+      /> */}
       {/* End for validation */}
 
       {/* Start for Instruction */}
-      <div>
-        <input
-          value={settings.instruction}
+      <div className='settings-instruction'>
+        {/* <input
           type='text'
+          className='field-input'
+          value={settings.instruction}
           placeholder='Instruction for use'
           onChange={({ target }) => {
             handleChangeSettings({ instruction: target.value })
           }}
-        />
+        /> */}
+        {/* <textarea name="message" rows="10" cols="30"></textarea> */}
+        <textarea
+          id='instructions'
+          name='instructions'
+          className='field-input'
+          placeholder='Instructions'>
+        </textarea>
       </div>
       {/* End for Instruction */}
 
       {/* Start Lower Control */}
-      <div>
-        <input type='checkbox' id='instruction' name='instruction' />
-        <label for='instruction'> Instruction for Use</label>
+      <div className='settings-control'>
+        <div className='settings-checkbox'>
+          <input type='checkbox' id='instruction' name='instruction' unchecked/>
+          <span class='checkmark'/>
+          <label for='instruction'> Instruction for Use</label>
+        </div>
 
-        <input type='checkbox' id='validation' name='validation' />
-        <label for='validation'> Validation</label>
+        <div className='settings-checkbox'>
+          <input type='checkbox' id='validation' name='validation' />
+          <span class='checkmark'/>
+          <label for='validation'> Validation</label>
+        </div>
 
-        <input type='checkbox' id='logic' name='logic' />
-        <label for='logic'> Logic</label>
+        <div className='settings-checkbox'>
+          <input type='checkbox' id='logic' name='logic' />
+          <span class='checkmark'/>
+          <label for='logic'> Logic</label>
+        </div>
 
-        <input type='checkbox' id='required' name='required' />
-        <label for='required'> Required</label>
-        <FontAwesomeIcon
-          className='info-icon'
-          icon={faTrash}
-          onClick={onRemoveGroup}
-        />
-        <FontAwesomeIcon
-          className='info-icon'
-          icon={faCopy}
-        />
+        <div className='settings-checkbox'>
+          <input type='checkbox' id='required' name='required' />
+          <span class='checkmark'/>
+          <label for='required'> Required</label>
+        </div>
+
+        <div className='settings-iconActions'>
+          <FontAwesomeIcon
+            className='info-icon'
+            icon={faCopy}
+          />
+          <FontAwesomeIcon
+            className='info-icon'
+            icon={faTrashAlt}
+            onClick={onRemoveGroup}
+          />
+        </div>
       </div>
       {/* End Lower control */}
     </div>

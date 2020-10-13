@@ -15,6 +15,9 @@ export default styled.div`
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
   }
+  #formBuilder textarea.field-input {
+    background: #f4f4f5;
+  }
   #formBuilder .field-input {
     border: 0;
     cursor: text;
@@ -147,6 +150,7 @@ export default styled.div`
 
     cursor: move;
     padding: 8px;
+    background: #fff;
     margin-bottom: 1rem;
     border-radius: 3px;
     border: 1px dashed transparent;
@@ -155,6 +159,7 @@ export default styled.div`
     background: #fff;
     border-radius: 3px;
     border-color: #f5812f;
+    box-shadow: 0 3px 6px 3px #ddd;
     transition: all .15s ease-in-out
   }
 
@@ -212,6 +217,57 @@ export default styled.div`
     color: #504c4c;
   }
 
+
+  .group-settings {
+    margin-top: 3rem;
+  }
+  .group-settings .settings-control {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 1rem;
+    margin: 5px -8px -8px;
+    border-top: 1px solid #ccc;
+    background: hsl(25deg 91% 57% / 30%);
+  }
+  .group-settings .settings-control >div {
+    display: flex;
+    align-items: center;
+  }
+  .group-settings .settings-checkbox {
+    color: #555;
+    cursor: pointer;
+  }
+  .group-settings .settings-checkbox > input {
+    width: 16px;
+    height: 16px;
+    margin: .5rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .group-settings .settings-checkbox > label {
+    cursor: pointer;
+  }
+  .group-settings .settings-checkbox:hover {
+    color: #000;
+    transition: all .15s ease-in-out
+  }
+  .group-settings .settings-iconActions > svg {
+    color: gray;
+    padding: 10px;
+    margin: 0 3px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 100px;
+  }
+  .group-settings .settings-iconActions > svg:hover {
+    background: rgb(239 239 239 / 55%);
+    transition: all .25s ease-in-out
+  }
+
   // =============================================
   // ********* END SORTABLE FIELD GROUPS *********
   // =============================================
@@ -233,4 +289,60 @@ export default styled.div`
     padding: 0rem 1rem 2rem;
   }
   
+
+
+
+  // ====================================
+  // ********* Custom Checkbox **********
+  // ====================================
+
+  /* Create a custom checkbox */
+  .settings-checkbox {
+    position: relative;
+  }
+  .checkmark {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    height: 14px;
+    width: 14px;
+    border-radius: 2px;
+    background-color: #eee;
+    border: 1px solid #2196F3;
+  }
+  /* On mouse-over, add a grey background color */
+  .settings-checkbox:hover input ~ .checkmark {
+    // background-color: #ccc;
+  }
+
+  /* When the checkbox is checked, add a blue background */
+  .settings-checkbox input:checked ~ .checkmark {
+    background-color: #2196F3;
+  }
+
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  /* Show the checkmark when checked */
+  .settings-checkbox input:checked ~ .checkmark:after {
+    display: block;
+  }
+
+  /* Style the checkmark/indicator */
+  .settings-checkbox .checkmark:after {
+    left: 4px;
+    top: 0px;
+    width: 3px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
 `;
