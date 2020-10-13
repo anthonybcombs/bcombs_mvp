@@ -248,7 +248,17 @@ export default function index({
                     <NumberFormat
                       id={`ch_school_phone${counter - 1}`}
                       name={"ch_school_phone" + (counter - 1)}
-                      className="field-input"
+                      className={
+                        isReadonly &&
+                        !isVendorView &&
+                        pastChildInformation &&
+                        (pastChildInformation.prev_school_phone ||
+                          pastChildInformation.prev_school_phone == "") &&
+                        pastChildInformation.prev_school_phone !=
+                          childProfile.prev_school_phone
+                          ? "field-input highlights"
+                          : "field-input"
+                      }
                       placeholder="Phone Number"
                       onChange={({ target }) => {
                         handleChildFormDetailsChange(

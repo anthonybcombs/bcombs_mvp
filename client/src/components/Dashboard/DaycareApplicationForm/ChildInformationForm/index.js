@@ -928,9 +928,9 @@ export default function index({
                   isReadonly &&
                   !isVendorView &&
                   pastChildInformation &&
-                  (pastChildInformation.gender ||
-                    pastChildInformation.gender == "") &&
-                  pastChildInformation.gender != childProfile.current_classroom
+                  (pastChildInformation.current_classroom ||
+                    pastChildInformation.current_classroom == "") &&
+                  pastChildInformation.current_classroom != childProfile.current_classroom
                     ? "field-input highlights"
                     : "field-input"
                 }
