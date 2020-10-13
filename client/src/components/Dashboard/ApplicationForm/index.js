@@ -544,7 +544,10 @@ export default function index() {
       level_education: "",
       child_importance_hs: "",
       child_importance_col: "",
-      person_recommend: ""
+      person_recommend: "",
+      gender: "",
+      ethinicity: [],
+      date_of_birth: ""
     }
   };
   
@@ -680,7 +683,9 @@ export default function index() {
           !profile.email_address ||
           !profile.goals_parent_program ||
           !profile.goals_child_program ||
-          !profile.person_recommend) {
+          !profile.person_recommend,
+          !profile.gender ||
+          !profile.date_of_birth) {
             isValid = false;
             break;
           }
@@ -809,7 +814,13 @@ export default function index() {
         city: parent.profile.city,
         state: parent.profile.state,
         zip_code: parent.profile.zip_code,
-        person_recommend: parent.profile.person_recommend
+        person_recommend: parent.profile.person_recommend,
+        birthdate: format(
+          new Date(parent.profile.date_of_birth),
+          DATE_TIME_FORMAT),
+        gender: parent.profile.gender,
+        age: getAge(parent.profile.date_of_birth),
+        ethnicities: getAppEtnicities(parent.profile.ethinicity),
       })
     });
 

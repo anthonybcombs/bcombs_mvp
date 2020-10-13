@@ -80,7 +80,9 @@ import {
   addParent, 
   getParentByApplication, 
   addDaycareParent,
-  addParentChildRelationship } from "../../api/parents";
+  addParentChildRelationship,
+  updateParentChildRelationship,
+  getParentChildRelationship } from "../../api/parents";
 
 import { getUserFromDatabase } from "../../api";
 
@@ -176,6 +178,19 @@ const resolvers = {
 
         application.child = child.length > 0 ? child[0] : {};
 
+        let relationships = [];
+        
+        for(const appParent of application.parents) {
+          let tempRel = await getParentChildRelationship({
+            parent: appParent.parent_id,
+            child: application.child.ch_id
+          });
+  
+          if(tempRel.length > 0) relationships.push(tempRel[0]);
+        }
+
+        application.relationships = relationships
+
         resapplications.push(Object.assign({}, application));
       }
       // if (resapplications.length > 0) {
@@ -270,6 +285,17 @@ const resolvers = {
 
       console.log("admins", admins);
       return admins;
+    },
+    async getParentChildRelationship(root, { relationships }, context) {
+      let resRelationships = [];
+      for(const relationship of relationships) {
+        const temp = await getParentChildRelationship(relationship);
+
+        if(temp.length > 0)
+          resRelationships.push(temp[0])
+      }
+
+      return resRelationships;
     }
   },
   RootMutation: {
@@ -340,10 +366,10 @@ const resolvers = {
     async updateVendor(root, { vendor }, context) {
       return await updateVendor(vendor);
     },
-    async addDaycareApplication(root, { applications }, context) {
+    async addDaycareApplication(root, { daycare }, context) {
 
-      let newChilds = [];
-      let newParents = [];
+      let applications = daycare.applications;
+      let relationships = daycare.relationships;
 
       for (let application of applications) {
         const child = await addDaycareChild(application.child);
@@ -353,10 +379,10 @@ const resolvers = {
         application.class_teacher = "";
         application.child = child.ch_id;
 
-        newChilds.push({
-          tempId: tempChildId,
-          newId: child.ch_id
-        })
+        // newChilds.push({
+        //   tempId: tempChildId,
+        //   newId: child.ch_id
+        // })
 
         application = await createApplication(application);
 
@@ -401,10 +427,22 @@ const resolvers = {
             console.log("add user res:", addUser);
           }
 
-          newParents.push({
-            tempId: tempParentId,
-            newId: newParent.parent_id
-          })
+          // newParents.push({
+          //   tempId: tempParentId,
+          //   newId: newParent.parent_id
+          // })
+
+          const tempRel = relationships.filter((item) => {
+            return item.child == tempChildId && item.parent == tempParentId;
+          });
+
+          if(tempRel.length > 0) {
+            await addParentChildRelationship({
+              child: child.ch_id,
+              parent: newParent.parent_id,
+              relationship: tempRel[0].relationship
+            });
+          }
 
           const parentUser = await getUserFromDatabase(parent.email_address);
 
@@ -419,9 +457,7 @@ const resolvers = {
 
       return {
         messageType: "info",
-        message: "daycare application created",
-        childs: newParents,
-        parents: newChilds
+        message: "daycare application created"
       };
     },
     async addApplication(root, { applications }, context) {
@@ -793,6 +829,16 @@ const resolvers = {
     async addParentChildRelationship(root, { relationships }, context) {
       for(const relationship of relationships) {
         await addParentChildRelationship(relationship);
+      }
+
+      return {
+        messageType: "info",
+        message: "relationship successfully created"
+      }
+    },
+    async updateParentChildRelationship(root, { relationships }, context) {
+      for(const relationship of relationships) {
+        await updateParentChildRelationship(relationship);
       }
 
       return {

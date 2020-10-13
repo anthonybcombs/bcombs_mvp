@@ -111,8 +111,66 @@ const ParentInformationStyled = styled.div`
     display: grid;
   }
 
+  .datepicker-btn {
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    margin: 0 5px;
+    box-shadow: none;
+    background: transparent;
+    font-size: unset !important;
+    border-radius: 100% !important;
+  }
+  .datepicker-btn svg {
+    width: 100%;
+    height: 75%;
+  }
+  .datepicker-btn:hover {
+    background: rgb(255 255 255 / 20%);
+    transition: 0.15s ease-in-out;
+  }
+
   .react-datepicker-wrapper {
     margin: 0;
+  }
+
+  .react-datepicker__input-container .field {
+    margin: 0 !important;
+  }
+
+  .react-datepicker__header {
+    padding-top: 0;
+    border-bottom: none;
+  }
+  .react-datepicker__header select {
+    color: #fff;
+  }
+  .react-datepicker {
+    border: 1px solid #ddd;
+  }
+  .react-datepicker__triangle {
+    border-bottom-color: #f46d22 !important;
+  }
+  .react-datepicker__day-names,
+  .react-datepicker__week {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .react-datepicker__day-names {
+    padding: 5px 0;
+  }
+  .react-datepicker__day,
+  .react-datepicker__day-name,
+  .react-datepicker__time-name {
+    color: rgb(0 0 0 / 75%);
+  }
+  .react-datepicker__day--selected,
+  .react-datepicker__day--keyboard-selected {
+    color: #fff !important;
+  }
+  .react-datepicker__day--outside-month {
+    color: rgb(0 0 0 / 35%);
   }
   
   @media (max-width: 768px) {
@@ -523,6 +581,11 @@ export default function index({
                 }
               />
             </div>
+            <ErrorMessage
+              field={errors["parent_birthdate" + (counter - 1)]}
+              errorType="required"
+              message="Date of Birth is required."
+            />
           </div>
           <div className="form-group">
             <div className="field select-field-wrapper">

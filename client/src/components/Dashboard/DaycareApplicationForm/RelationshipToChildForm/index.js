@@ -106,7 +106,8 @@ export default function index({
   errors,
   parents,
   childs,
-  isReadonly = false
+  isReadonly = false,
+  relationships = []
 }) {
 
   const RELATION_TO_CHILD_OPTIONS = [
@@ -119,6 +120,23 @@ export default function index({
     { id: 7, value: "Family Friend", name: "Family Friend"},
     { id: 8, value: "Other", name: "Other"}
   ];
+
+  const getRelationshipVal = (parent, child) => {
+    if(relationships.length > 0) {
+
+      const rel = relationships.filter((item) => {
+        return item.parent == parent && item.child == child;
+      });
+
+      console.log("rel", rel);
+
+      if(rel.length > 0) return rel[0].relationship;
+    }
+  }
+
+  console.log("childs", childs);
+  console.log("parents", parents);
+  console.log("relationships", relationships);
 
   return (
     <RelationshipToChildStyled>
@@ -145,7 +163,10 @@ export default function index({
                           onChange={({target}) => {
                             handleParentChildRelationship(parent.id, child.id, target.value);
                           }}
+                          value={getRelationshipVal(parent.id, child.id)}
                           ref={register({required: true})}
+                          readOnly={isReadonly}
+                          disabled={isReadonly}
                         >
                           <option value="">Select</option>
                           {

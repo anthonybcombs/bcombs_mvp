@@ -22,7 +22,8 @@ export default function index({
   register,
   errors,
   isReadonly,
-  termsWaiver
+  termsWaiver,
+  vendor
 }) {
 
 
@@ -34,7 +35,7 @@ export default function index({
     <TermsWaiverFormViewStyled>
       <div id="applicationForm">
         {
-          application.section1_name && application.section1_text ?
+          (application.section1_name && application.section1_text) ?
           <>
             <Section1FormStyled 
               handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
@@ -53,7 +54,7 @@ export default function index({
           ""
         }
         {
-          application.section2_name && application.section2_text ?
+          (application.section2_name && application.section2_text) ?
           <>
             <Section2FormStyled
               handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
@@ -73,7 +74,7 @@ export default function index({
         }
 
         {
-          application.section3_name && application.section3_text ?
+          (application.section3_name && application.section3_text) ?
           <>
             <Section3FormStyled
               handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
