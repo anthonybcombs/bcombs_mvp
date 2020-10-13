@@ -255,7 +255,7 @@ export default function index({
                         (pastChildInformation.prev_school_phone ||
                           pastChildInformation.prev_school_phone == "") &&
                         pastChildInformation.prev_school_phone !=
-                          childProfile.prev_school_phone
+                        childGeneralInformation.prev_school_phone
                           ? "field-input highlights"
                           : "field-input"
                       }
