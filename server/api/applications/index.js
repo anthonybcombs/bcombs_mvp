@@ -1,7 +1,7 @@
 import { makeDb } from "../../helpers/database";
 
 import { updateChild, getChildInformation } from "../child";
-import { updateParent, getParentByApplication } from "../parents";
+import { updateParent, getParentByApplication, getParentChildRelationship } from "../parents";
 
 import {
   getVendorAppGroupsByVendorId,
@@ -83,7 +83,8 @@ export const getApplicationByAppId = async (app_id, isHistory = false) => {
         section1_name,
         section2_name,
         section3_name,
-        emergency_contacts
+        emergency_contacts,
+        is_daycare
         FROM application
         WHERE app_id=UUID_TO_BIN(?)
       `,
@@ -107,7 +108,20 @@ export const getApplicationByAppId = async (app_id, isHistory = false) => {
         application.vendor
       );
 
+      let relationships = [];
+
+      for(const appParent of application.parents) {
+        let tempRel = await getParentChildRelationship({
+          parent: appParent.parent_id,
+          child: application.child.ch_id
+        });
+
+        if(tempRel.length > 0) relationships.push(tempRel[0]);
+      }
+
       application.app_histories = [];
+
+      application.relationships = relationships;
     }
   } catch (error) {
     console.log("getApplicationByAppId error", error);
@@ -490,6 +504,7 @@ export const saveApplication = async ({
   }
 
   for (let parent of parents) {
+    console.log("parent 222", parent);
     parentResult = await updateParent(parent);
     if (parentResult && parentResult.changedRows > 0) {
       p_updatedRows = true;

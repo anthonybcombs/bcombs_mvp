@@ -18,18 +18,10 @@ export const APPLICATION_ADD_MUTATION = gql`
 `;
 
 export const DAYCARE_APPLICATION_ADD_MUTATION = gql`
-  mutation application($applications: [DaycareApplicationInput]) {
-    addDaycareApplication(applications: $applications) {
+  mutation application($daycare: DaycareMainInput) {
+    addDaycareApplication(daycare: $daycare) {
       messageType
       message
-      childs {
-        tempId
-        newId
-      }
-      parents {
-        tempId
-        newId
-      }
     }
   }
 `;
@@ -250,6 +242,12 @@ export const GET_APPLICATIONS_QUERY = gql`
         name
         created_at
       }
+      relationships {
+        id
+        parent
+        child
+        relationship
+      }
     }
   }
 `;
@@ -407,6 +405,12 @@ export const GET_APPLICATION_ID_QUERY = gql`
         user
         name
         created_at
+      }
+      relationships {
+        id
+        parent
+        child
+        relationship
       }
     }
   }
@@ -582,6 +586,12 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         user
         name
         created_at
+      }
+      relationships {
+        id
+        parent
+        child
+        relationship
       }
     }
   }

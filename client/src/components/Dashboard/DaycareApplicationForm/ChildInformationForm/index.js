@@ -209,6 +209,8 @@ export default function index({
 }) {
   const hasSelectAll = false;
 
+  console.log("pastChildInformation", pastChildInformation);
+
   const [ neededDaysCheck, setNeededDaysCheck ] = useState({
     option1: (childProfile.needed_days == "M,T,W,TH,F,"),
     option2: childProfile.needed_days.includes('M,'),
@@ -1016,6 +1018,15 @@ export default function index({
                 border: "1px solid #ccc",
                 paddingBottom: "0"
               }}
+              className={
+                isReadonly &&
+                !isVendorView &&
+                pastChildInformation &&
+                (pastChildInformation.needed_days || 
+                  pastChildInformation.needed_days == "") &&
+                pastChildInformation.needed_days != childProfile.needed_days
+                  ? "highlights" : ""
+              }
             >
               <span style={{marginRight: "10px"}}>
                 <input
@@ -1335,7 +1346,7 @@ export default function index({
                     }
                   }
                 })}
-                defaultValue={childProfile.current_classroom}>
+                defaultValue={childProfile.schedule_tour}>
                 <option value="">Select</option>
                 {SCHEDULE_TOUR_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.value}>

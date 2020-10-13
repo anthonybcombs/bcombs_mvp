@@ -99,12 +99,13 @@ export default function index({
       <div className="general-info-wrapper">
 
         <div className="agree-text">
-          Is your child transferring from a previous daycare? 
+          <span className="required">*</span> Is your child transferring from a previous daycare? 
         </div>
         <div className="form-group">
           <label className="cus-select-container">
             Currently Enrolled 
             <input type="radio" 
+              name={"ch_transfer" + (counter - 1)}
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "is_child_transferring", "Currently Enrolled");
               }} 
@@ -112,12 +113,21 @@ export default function index({
               checked={childGeneralInformation.is_child_transferring == "Currently Enrolled"}
               readOnly={isReadonly}
               disabled={isReadonly}
+              ref={register({
+                validate: {
+                  otherCBChecked: value => {
+                    if(childGeneralInformation.is_child_transferring) return true;
+                    return false;
+                  }
+                }
+              })}
             />
             <span className="checkmark"></span>
           </label>
           <label className="cus-select-container">
             Yes 
-            <input type="radio" 
+            <input type="radio"
+              name={"ch_transfer" + (counter - 1)}
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "is_child_transferring", "Yes");
               }} 
@@ -125,12 +135,21 @@ export default function index({
               checked={childGeneralInformation.is_child_transferring == "Yes"}
               readOnly={isReadonly}
               disabled={isReadonly}
+              ref={register({
+                validate: {
+                  otherCBChecked: value => {
+                    if(childGeneralInformation.is_child_transferring) return true;
+                    return false;
+                  }
+                }
+              })}
             />
             <span className="checkmark"></span>
           </label>
           <label className="cus-select-container">
             No
-            <input type="radio" 
+            <input type="radio"
+              name={"ch_transfer" + (counter - 1)}
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "is_child_transferring", "No");
               }} 
@@ -138,11 +157,23 @@ export default function index({
               checked={childGeneralInformation.is_child_transferring == "No"}
               readOnly={isReadonly}
               disabled={isReadonly}
+              ref={register({
+                validate: {
+                  otherCBChecked: value => {
+                    if(childGeneralInformation.is_child_transferring) return true;
+                    return false;
+                  }
+                }
+              })}
             />
             <span className="checkmark"></span>
           </label>
+          <ErrorMessage
+            field={errors["ch_transfer" + (counter - 1)]}
+            errorType="otherCBChecked"
+            message="Needed days is required"
+          />
         </div>
-
         {
           childGeneralInformation.is_child_transferring == "Yes" && (
             <>
@@ -164,14 +195,19 @@ export default function index({
                         handleChildFormDetailsChange(counter - 1, "general_information", "transfer_reason", target.value);
                       }}
                       placeholder="Explain"
-                      ref={register()}
+                      ref={register({required: true})}
                       defaultValue={childGeneralInformation.transfer_reason}
                       readOnly={isReadonly}
                     />
                     <label className="field-label" htmlFor={`ch_transfer_reason_${counter - 1}`}>
-                      If Yes, please explain
+                      <span className="required">*</span> If Yes, please explain
                     </label>
                   </div>
+                  <ErrorMessage
+                    field={errors["ch_transfer_reason" + (counter - 1)]}
+                    errorType="required"
+                    message="Explanation is required"
+                  />
                 </div>
                 <div className="form-group">
                   <div className="field">
@@ -190,14 +226,19 @@ export default function index({
                         handleChildFormDetailsChange(counter - 1, "general_information", "prev_school_attended", target.value);
                       }}
                       placeholder="Explain"
-                      ref={register()}
+                      ref={register({required: true})}
                       defaultValue={childGeneralInformation.prev_school_attended}
                       readOnly={isReadonly}
                     />
                     <label className="field-label" htmlFor={`ch_prev_school_attended${counter - 1}`}>
-                      Previous School Attended
+                      <span className="required">*</span>Previous School Attended
                     </label>
                   </div>
+                  <ErrorMessage
+                    field={errors["ch_prev_school_attended" + (counter - 1)]}
+                    errorType="required"
+                    message="Previous School Attended is required"
+                  />
                 </div>
               </div>
 
@@ -221,6 +262,7 @@ export default function index({
                       format="(###) ###-####"
                       mask="_"
                       getInputRef={register({
+                        required: true,
                         validate: {
                           completed: value => {
                             if (value) {
@@ -233,9 +275,14 @@ export default function index({
                       })}
                     />
                     <label className="field-label" htmlFor={`ch_school_phone${counter - 1}`}>
-                      School Phone
+                      <span className="required">*</span> School Phone
                     </label>
                   </div>
+                  <ErrorMessage
+                    field={errors["ch_school_phone" + (counter - 1)]}
+                    errorType="required"
+                    message="Phone is required"
+                  />
                 </div>
                 <div className="form-group">
                   <div className="field select-field-wrapper">
@@ -271,11 +318,11 @@ export default function index({
                       ))}
                     </select>
                     <label className="field-label">
-                      State
+                      <span className="required">*</span> State
                     </label>
                   </div>
                   <ErrorMessage
-                    field={errors["ch_state" + (counter - 1)]}
+                    field={errors["ch_school_state" + (counter - 1)]}
                     errorType="required"
                     message="State is required"
                   />
@@ -300,14 +347,19 @@ export default function index({
                         handleChildFormDetailsChange(counter - 1, "general_information", "prev_school_city", target.value);
                       }}
                       placeholder="City"
-                      ref={register()}
+                      ref={register({required: true})}
                       defaultValue={childGeneralInformation.prev_school_city}
                       readOnly={isReadonly}
                     />
                     <label className="field-label" htmlFor={`ch_school_city${counter - 1}`}>
-                      City
+                      <span className="required">*</span> City
                     </label>
                   </div>
+                  <ErrorMessage
+                    field={errors["ch_school_city" + (counter - 1)]}
+                    errorType="required"
+                    message="City is required"
+                  />
                 </div>
                 <div className="form-group">
                   <div className="field">
@@ -330,15 +382,20 @@ export default function index({
                         }
                       }}
                       placeholder="Zip Code"
-                      ref={register({ minLength: 5 })}
+                      ref={register({ minLength: 5, required: true })}
                       defaultValue={childGeneralInformation.prev_school_zip_code}
                       readOnly={isReadonly}
                       maxLength="5"
                     />
                     <label className="field-label" htmlFor={`ch_school_zip_code${counter - 1}`}>
-                      Zip Code
+                      <span className="required">*</span> Zip Code
                     </label>
                   </div>
+                  <ErrorMessage
+                    field={errors["ch_school_zip_code" + (counter - 1)]}
+                    errorType="required"
+                    message="Zip Code is required"
+                  />
                 </div>
               </div>
 
@@ -360,14 +417,19 @@ export default function index({
                         handleChildFormDetailsChange(counter - 1, "general_information", "prev_school_address", target.value);
                       }}
                       placeholder="Address"
-                      ref={register()}
+                      ref={register({required: true})}
                       defaultValue={childGeneralInformation.prev_school_address}
                       readOnly={isReadonly}
                     />
                     <label className="field-label" htmlFor={`ch_school_address${counter - 1}`}>
-                      Address
+                      <span className="required">*</span> Address
                     </label>
                   </div>
+                  <ErrorMessage
+                    field={errors["ch_school_address" + (counter - 1)]}
+                    errorType="required"
+                    message="Address is required"
+                  />
                 </div>
               </div>
             </>
@@ -606,7 +668,7 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                6. Please list any allergies that your child may have (e.g. Food Insect Stings, Medicines, Etc.) and related medication. <span className="required">*</span>
+                6. Please list any allergies that your child may have (e.g. Food Insect Stings, Medicines, Etc.) and related medication.
               </label>
               <textarea 
                 name={"list_any_allergies" + (counter - 1)}

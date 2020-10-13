@@ -29,7 +29,11 @@ export const getParentByApplication = async (id) => {
         level_of_education,
         child_hs_grad,
         child_col_grad,
-        person_recommend
+        person_recommend,
+        age,
+        birthdate,
+        gender,
+        ethnicities
         FROM parent
         WHERE application=UUID_TO_BIN(?)`,
         [id]
@@ -73,7 +77,7 @@ export  const addDaycareParent = async({
   let lastId = "";
   let parent;
   try {
-    let result = await db.query(
+    result = await db.query(
       `INSERT INTO parent(
         parent_id,
         application,
@@ -154,7 +158,6 @@ export const addParent = async ({
   phone_number2,
   email_type2,
   email_address2,
-  password,
   address,
   city,
   state,
@@ -167,14 +170,18 @@ export const addParent = async ({
   level_of_education,
   child_hs_grad,
   child_col_grad,
-  person_recommend
+  person_recommend,
+  age,
+  birthdate,
+  gender,
+  ethnicities
 }) => {
   const db = makeDb();
   let result = {};
   let lastId = "";
   let parent;
   try {
-    let result = await db.query(
+    result = await db.query(
       `INSERT INTO parent(
         parent_id,
         application,
@@ -188,7 +195,6 @@ export const addParent = async ({
         phone_number2,
         email_type2,
         email_address2,
-        password,
         address,
         city,
         state,
@@ -201,11 +207,15 @@ export const addParent = async ({
         level_of_education,
         child_hs_grad,
         child_col_grad,
-        person_recommend
+        person_recommend,
+        age,
+        birthdate,
+        gender,
+        ethnicities
       ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?),
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, ?)`,
+        ?, ?, ?, ?, ?, ?, ?)`,
       [
         application,
         firstname,
@@ -218,7 +228,6 @@ export const addParent = async ({
         phone_number2,
         email_type2,
         email_address2,
-        password,
         address,
         city,
         state,
@@ -231,7 +240,11 @@ export const addParent = async ({
         level_of_education,
         child_hs_grad,
         child_col_grad,
-        person_recommend
+        person_recommend,
+        age,
+        birthdate,
+        gender,
+        ethnicities
       ]
     )
 
@@ -271,6 +284,10 @@ export const updateParent = async ({
   child_hs_grad,
   child_col_grad,
   person_recommend,
+  age,
+  birthdate,
+  gender,
+  ethnicities,
   parent_id
 }) => {
 
@@ -304,7 +321,11 @@ export const updateParent = async ({
         level_of_education=?,
         child_hs_grad=?,
         child_col_grad=?,
-        person_recommend=?
+        person_recommend=?,
+        age=?,
+        birthdate=?,
+        gender=?,
+        ethnicities=?
         WHERE parent_id=UUID_TO_BIN(?)
       `,
       [
@@ -331,6 +352,10 @@ export const updateParent = async ({
         child_hs_grad,
         child_col_grad,
         person_recommend,
+        age,
+        birthdate,
+        gender,
+        ethnicities,
         parent_id
       ]
     )
@@ -343,8 +368,8 @@ export const updateParent = async ({
 }
 
 export const addParentChildRelationship = async({
-  parent,
   child,
+  parent,
   relationship
 }) => {
   const db = makeDb();
@@ -352,16 +377,74 @@ export const addParentChildRelationship = async({
 
   try {
     result = await db.query(
-      `INSERT INTO parent(
+      `INSERT INTO parent_child(
         id,
         child,
         parent,
         relationship
-      ) VALUES (UUID_TO_BIN(UUID()), ?, ?, ?)`,
+      ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?)`,
       [
-        parent,
         child,
+        parent,
         relationship
+      ]
+    )
+  } catch(err) {
+    console.log("add parent error", err)
+  } finally {
+    await db.close();
+    return result
+  }
+}
+
+export const updateParentChildRelationship = async({
+  id,
+  relationship
+}) => {
+  const db = makeDb();
+  let result = {};
+
+  try {
+    result = await db.query(
+      `
+        UPDATE parent_child SET
+        relationship=?
+        WHERE id=UUID_TO_BIN(?)
+      `,
+      [
+        relationship,
+        id
+      ]
+    )
+  } catch(err) {
+    console.log("add parent error", err)
+  } finally {
+    await db.close();
+    return result
+  }
+}
+
+export const getParentChildRelationship = async({
+  child,
+  parent
+}) => {
+  const db = makeDb();
+  let result = {};
+
+  try {
+    result = await db.query(
+      `
+        SELECT 
+        BIN_TO_UUID(id) as id,
+        BIN_TO_UUID(child) as child,
+        BIN_TO_UUID(parent) as parent,
+        relationship
+        FROM parent_child 
+        WHERE child=UUID_TO_BIN(?) AND parent=UUID_TO_BIN(?)
+      `,
+      [
+        child,
+        parent
       ]
     )
   } catch(err) {

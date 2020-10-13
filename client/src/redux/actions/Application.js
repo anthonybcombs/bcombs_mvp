@@ -223,10 +223,10 @@ const addApplicationToDatabase = applications => {
   });
 };
 
-const addDaycareApplicationToDatabase = applications => {
+const addDaycareApplicationToDatabase = daycare => {
   return new Promise(async (resolve, reject) => {
     let applications_obj = [];
-
+    let applications = daycare.applications
     for (let application of applications) {
       let temp = {
         vendor: application.vendor,
@@ -255,7 +255,10 @@ const addDaycareApplicationToDatabase = applications => {
       const { data } = await graphqlClient.mutate({
         mutation: DAYCARE_APPLICATION_ADD_MUTATION,
         variables: {
-          applications: [...applications_obj]
+          daycare: {
+            applications: [...applications_obj],
+            relationships: daycare.relationships
+          }
         }
       });
 
@@ -558,7 +561,7 @@ export function* addApplication({ applications }) {
   try {
     yield put(setApplicationLoading(true));
     let response;
-    if(applications[0].is_daycare == 1) {
+    if(applications.is_daycare) {
       response = yield call(addDaycareApplicationToDatabase, applications)
     } else {
       response = yield call(addApplicationToDatabase, applications)

@@ -551,7 +551,9 @@ export default function index() {
   }
 
   const onSubmit = () => {
-    let payload = []
+    let payload = {};
+    let applications = [];
+
     for(let i = 0; i < childsInformation.length; i++) {
       //setup Application Object
       let request_params = {
@@ -623,8 +625,15 @@ export default function index() {
         emergency_contacts: JSON.stringify(emergencyContacts)
       }
 
-      payload.push(request_params);
+      applications.push(request_params);
     }
+
+    payload = {
+      applications: applications,
+      relationships: relationships,
+      is_daycare: true
+    };
+
     console.log('Request Add Daycare Application Payload',payload);
     dispatch(requestAddApplication(payload));
   }
@@ -651,7 +660,7 @@ export default function index() {
         let profile = child.profile;
         let gi = child.general_information;
 
-
+        console.log("gi.transfer_reason", gi.transfer_reason);
         if(!profile.first_name ||
           !profile.last_name ||
           !profile.date_of_birth ||
@@ -665,9 +674,25 @@ export default function index() {
           !profile.current_classroom ||
           !profile.primary_language ||
           !profile.needed_days ||
-          !profile.voucher) {
+          !profile.voucher ||
+          !gi.is_child_transferring) {
+
             isValid = false;
             break;
+          }
+
+          if(gi.is_child_transferring == "Yes") {
+           
+            if(!gi.transfer_reason ||
+              !gi.prev_school_phone ||
+              !gi.prev_school_city ||
+              !gi.prev_school_address ||
+              !gi.prev_school_attended ||
+              !gi.prev_school_state ||
+              !gi.prev_school_zip_code) {
+                isValid = false;
+                break;
+              }
           }
       }
     } else if(section == "2") {
@@ -767,22 +792,6 @@ export default function index() {
   }
 
   const [relationships, setRelationships] = useState([{...relationshipObj}]);
-
-  if(applications.addapplication && 
-    applications.addapplication == "daycare application created" && 
-    applications.addapplication.childs &&
-    applications.addapplication.childs.length > 0 &&
-    applications.addapplication.parents &&
-    applications.addapplication.parents.length > 0) {
-
-    // let relationshipsPayload = [];
-
-    // for(const relationship of relationships) {
-
-    // }
-
-    // console.log("relationships", relationships);
-  }
 
   return (
     <DaycareApplicationFormStyled

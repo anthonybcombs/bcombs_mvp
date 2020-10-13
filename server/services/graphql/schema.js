@@ -209,6 +209,30 @@ const inputs = `
         hospital_phone: String
         child_lives_with: String!
         nickname: String
+        is_child_transferring: String
+        does_child_require_physical_education_service: String
+        history_prev_diseases: String
+        child_currently_doctors_care: String
+        reasons_previous_hospitalizations: String
+        comments_suggestion: String
+        list_special_dietary: String
+        list_any_allergies: String
+        mental_physical_disabilities: String
+        medical_action_plan: String
+        list_fears_unique_behavior: String
+        transfer_reason: String
+        prev_school_phone: String
+        prev_school_city: String
+        prev_school_address: String
+        prev_school_attended: String
+        prev_school_state: String
+        prev_school_zip_code: String
+        preffered_start_date: String
+        current_classroom: String
+        primary_language: String
+        needed_days: String
+        schedule_tour: String
+        voucher: String
         ch_id: String
     }
 
@@ -236,7 +260,11 @@ const inputs = `
         phone_number2: String
         email_type2: String
         email_address2: String
-        person_recommend: String!
+        person_recommend: String
+        age: Int
+        birthdate: String
+        gender: String
+        ethnicities: String
         parent_id: String
     }
 
@@ -336,6 +364,11 @@ const inputs = `
         section2_name: String
         section3_name: String
         is_daycare: Int
+    }
+
+    input DaycareMainInput {
+        applications: [DaycareApplicationInput]
+        relationships: [ParentChildRelationshipInput]
     }
 
     input ApplicationInput {
@@ -449,7 +482,7 @@ const inputs = `
     input ParentChildRelationshipInput {
         parent: String!
         child: String!
-        relationship: String!
+        relationship: String
     }
 `;
 const queryTypes = `
@@ -750,7 +783,7 @@ const queryTypes = `
         state: String
         zip_code: String
         age: Int
-        birthdate: String
+        birthdate: Date
         gender: String
         ethnicities: String
     }
@@ -787,6 +820,7 @@ const queryTypes = `
         vendorPrograms: [VendorProgram]
         vendorLocationSites: [LocationSite]
         is_daycare: Int
+        relationships: [ParentChildRelationship]
     }
 
     type ParentUserApplication{
@@ -863,6 +897,13 @@ const queryTypes = `
         childs: [IdFormat]
         parents: [IdFormat]
     }
+
+    type ParentChildRelationship {
+        id: String
+        parent: String
+        child: String
+        relationship: String
+    }
 `;
 
 const mutations = `
@@ -896,8 +937,9 @@ const mutations = `
         addVendorAdmin(admin: AddAdminInput): [Admin]
         deleteVendorAdmin(admins: [DeleteAdminInput]): [Admin]
         updateVendorAdmin(admin: UpdateAdminInput): [Admin]
-        addDaycareApplication(applications: [DaycareApplicationInput]): DaycareApplicationStatus
+        addDaycareApplication(daycare: DaycareMainInput): Status
         addParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
+        updateParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
     }
 `;
 
@@ -932,6 +974,7 @@ const queries = `
         getApplicationHistory(app_id: String!): [ApplicationHistory]
         getUserApplicationHistory(id: String!):[ApplicationHistory]
         getVendorAdminsByUser(user: String): [Admin]
+        getParentChildRelationship(relationships: [ParentChildRelationshipInput]): [ParentChildRelationship]
     }
 `;
 
