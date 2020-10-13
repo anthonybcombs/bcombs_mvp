@@ -321,9 +321,9 @@ export default function index() {
     }
   );
 
-  // if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
-  //   window.location.reload(false);
-  // }
+  if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
+    window.location.reload(false);
+  }
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
