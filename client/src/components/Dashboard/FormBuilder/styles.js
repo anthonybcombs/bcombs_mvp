@@ -154,7 +154,7 @@ export default styled.div`
   .drop-area-wrapper .form-title > input {
     margin-bottom: 1rem;
     font-weight: bold;
-    font-size: 18px !important;
+    font-size: 20px !important;
   }
 
   // ===============================================
