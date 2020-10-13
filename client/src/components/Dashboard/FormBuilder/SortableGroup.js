@@ -65,21 +65,24 @@ const SortableGroup = React.forwardRef(
         {
           isActive && groupType === 'standard' && (
             <div>
-              <select
-                defaultValue={additionalField}
-                onChange={({ target }) => {
-                  handleSelectFieldToAdd(target.value)
-                }}
-              >
-                <option value=''>Select a field to add</option>
-                {
-                  StandardFields
-                    .filter(e => e.canBeGrouped)
-                    .map(e => (
-                      <option key={e.type} value={e.type}>{e.label}</option>
-                    ))
-                }
-              </select>
+              <div className='field select-field-wrapper'>
+                <select
+                  className='field-input'
+                  defaultValue={additionalField}
+                  onChange={({ target }) => {
+                    handleSelectFieldToAdd(target.value)
+                  }}
+                >
+                  <option value=''>Select a field to add</option>
+                  {
+                    StandardFields
+                      .filter(e => e.canBeGrouped)
+                      .map(e => (
+                        <option key={e.type} value={e.type}>{e.label}</option>
+                      ))
+                  }
+                </select>
+              </div>
               <button
                 type='button'
                 onClick={e => {
