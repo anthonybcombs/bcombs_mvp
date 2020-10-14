@@ -48,11 +48,15 @@ const SortableGroup = React.forwardRef(
     >   
         {
           !isDragging && groupType === 'standard' && (
-            <FontAwesomeIcon
-              icon={faPlusCircle}
-              className='drag-icon'
-              onClick={() => setAddingFieldSHow(!addingFieldShow) }
-            />
+            <div className='tooltip-wrapper addField'>
+              <FontAwesomeIcon
+                size='2x' 
+                icon={faPlusCircle}
+                className='addField-icon'
+                onClick={() => setAddingFieldSHow(!addingFieldShow) }
+              />
+              <span className='tooltip'>Add Field</span>
+            </div>
           )
         }
         <p className='sortableGroup-name'>{name}</p>

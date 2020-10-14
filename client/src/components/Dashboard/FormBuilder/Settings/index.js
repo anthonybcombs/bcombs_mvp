@@ -205,22 +205,26 @@ export default ({
         </div>
 
         <div className='settings-iconActions'>
-          <FontAwesomeIcon
-            className='info-icon'
-            icon={faCopy}
-            onClick={e => {
-              e.stopPropagation()
-              onDuplicateGroup()
-            }}
-          />
-          <FontAwesomeIcon
-            className='info-icon'
-            icon={faTrashAlt}
-            onClick={e => {
-              e.stopPropagation()
-              onRemoveGroup()
-            }}
-          />
+          <div className='tooltip-wrapper copy-icon'>
+            <FontAwesomeIcon
+              icon={faCopy}
+              onClick={e => {
+                e.stopPropagation()
+                onDuplicateGroup()
+              }}
+            />
+            <span className='tooltip'>Copy</span>
+          </div>
+          <div className='tooltip-wrapper delete-icon'>
+            <FontAwesomeIcon
+              icon={faTrashAlt}
+              onClick={e => {
+                e.stopPropagation()
+                onRemoveGroup()
+              }}
+            />
+            <span className='tooltip'>Delete</span>
+          </div>
         </div>
       </div>
       {/* End Lower control */}
