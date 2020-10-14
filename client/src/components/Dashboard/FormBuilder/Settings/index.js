@@ -96,7 +96,7 @@ export default ({
                 type={validationSettings.type === 'length' ? 'number' : validationSettings.type}
                 placeholder={validationSettings.type === 'text' ? 'Text' : 'Number'}
                 onChange={({ target }) => {
-                  handleChangeSettings({ option: target.value }, 'validation')
+                  handleChangeSettings({ value: target.value }, 'validation')
                 }}
               />
             }
@@ -106,7 +106,7 @@ export default ({
               placeholder='Custom error text'
               value={validationSettings.error}
               onChange={({ target }) => {
-                handleChangeSettings({ option: target.value }, 'validation')
+                handleChangeSettings({ error: target.value }, 'validation')
               }}
             />
           </div>
