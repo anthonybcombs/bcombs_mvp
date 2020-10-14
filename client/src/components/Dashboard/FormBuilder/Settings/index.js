@@ -118,15 +118,6 @@ export default ({
       {
         instructionSettings.include && (
           <div className='settings-instruction'>
-            {/* <input
-              type='text'
-              className='field-input'
-              value={settings.instruction}
-              placeholder='Instruction for use'
-              onChange={({ target }) => {
-                handleChangeSettings({ instruction: target.value })
-              }}
-            /> */}
             <textarea
               id='instructions'
               name='instructions'
@@ -144,7 +135,7 @@ export default ({
 
       {/* Start Lower Control */}
       <div className='settings-control'>
-        <div className='settings-checkbox'>
+        <label for='instruction' className='checkboxContainer'>
           <input
             type='checkbox'
             id='instruction'
@@ -155,11 +146,11 @@ export default ({
               handleChangeSettings({ include: e.target.checked }, 'instruction')
             }}
           />
-          <span class='checkmark' />
-          <label for='instruction'> Instruction for Use</label>
-        </div>
-
-        <div className='settings-checkbox'>
+          <span className='checkmark' />
+          <span className='labelName'> Instruction for Use</span>
+        </label>
+        
+        <label for='validation' className='checkboxContainer' >
           <input
             type='checkbox'
             id='validation'
@@ -170,11 +161,11 @@ export default ({
               handleChangeSettings({ include: e.target.checked }, 'validation')
             }}
           />
-          <span class='checkmark'/>
-          <label for='validation'> Validation</label>
-        </div>
+          <span className='checkmark'/>
+          <span className='labelName'> Validation</span>
+        </label>
 
-        <div className='settings-checkbox'>
+        <label for='logic' className='checkboxContainer'>
           <input
             type='checkbox'
             id='logic'
@@ -185,11 +176,11 @@ export default ({
               handleChangeSettings({ include: e.target.checked }, 'logic')
             }}
           />
-          <span class='checkmark'/>
-          <label for='logic'> Logic</label>
-        </div>
+          <span className='checkmark'/>
+          <span className='labelName'> Logic</span>
+        </label>
 
-        <div className='settings-checkbox'>
+        <label for='required' className='checkboxContainer'>
           <input
             type='checkbox'
             id='required'
@@ -200,9 +191,9 @@ export default ({
               handleChangeSettings({ required: e.target.checked })
             }}
           />
-          <span class='checkmark'/>
-          <label for='required'> Required</label>
-        </div>
+          <span className='checkmark'/>
+          <span className='labelName'> Required</span>
+        </label>
 
         <div className='settings-iconActions'>
           <div className='tooltip-wrapper copy-icon'>

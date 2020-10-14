@@ -4,7 +4,7 @@ import { uuid } from 'uuidv4'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGripHorizontal, faTimes, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faGripHorizontal, faTimes, faPlusCircle, faEdit } from '@fortawesome/free-solid-svg-icons'
 
 import { Items, StandardFields } from './Constants'
 import FieldConstructor from './FieldConstructor'
@@ -28,8 +28,12 @@ const SortableGroup = React.forwardRef(
     getNode: () => elementRef.current,
   }))
 
+  const [fieldColumn, handleFieldColumn] = useState(1)
   const [additionalField, handleSelectFieldToAdd] = useState('')
-  const [addingFieldShow, setAddingFieldSHow] = useState(false)
+  const [editFieldDrawerShow, setEditFieldDrawerShow] = useState(false)
+  const [addingFieldDrawerShow, setAddingFieldDrawerShow] = useState(false)
+  const [editGroupNameDrawerShow, setEditGroupNameDrawerShow] = useState(false)
+
 
   useEffect(() => {
     connectDragPreview(getEmptyImage(), { captureDraggingState: true })
@@ -37,7 +41,9 @@ const SortableGroup = React.forwardRef(
 
   const itemActive = isActive ? 'active' : ''
   const itemGroup = name.toLowerCase().replace(/ +/g, "")
-  const isAddingFieldShow = addingFieldShow ? 'show' : ''
+  const isEditFieldDrawerShow = editFieldDrawerShow ? 'show' : ''
+  const isAddingFieldDrawerShow = addingFieldDrawerShow ? 'show' : ''
+  const isEditGroupNameDrawerShow = editGroupNameDrawerShow ? 'show' : ''
 
   return (
     <div
@@ -48,23 +54,42 @@ const SortableGroup = React.forwardRef(
     >   
         {
           !isDragging && groupType === 'standard' && (
-            <div className='tooltip-wrapper addField'>
-              <FontAwesomeIcon
-                size='2x' 
-                icon={faPlusCircle}
-                className='addField-icon'
-                onClick={() => setAddingFieldSHow(!addingFieldShow) }
-              />
-              <span className='tooltip'>Add Field</span>
+            <div className='sortableGroup-actions'>
+              <div className='tooltip-wrapper add-field'>
+                <FontAwesomeIcon
+                  size='2x' 
+                  icon={faPlusCircle}
+                  className='add-icon'
+                  onClick={() => setAddingFieldDrawerShow(!addingFieldDrawerShow) }
+                />
+                <span className='tooltip'>Add Field</span>
+              </div>
+              <div className='tooltip-wrapper edit-groupName'>
+                <FontAwesomeIcon
+                  size='2x' 
+                  icon={faEdit}
+                  className='edit-icon'
+                  onClick={() => setEditGroupNameDrawerShow(!editGroupNameDrawerShow) }
+                />
+                <span className='tooltip'>Edit Group Name</span>
+              </div>
             </div>
           )
         }
-        <p className='sortableGroup-name'>{name}</p>
+        <p className='sortableGroup-name'>{name}
+          {`   `}
+          <span
+            style={{ textTransform: 'lowercase', letterSpacing: 0, color: 'red', cursor: 'pointer'}}
+            onClick={() => setEditFieldDrawerShow(!editFieldDrawerShow)}
+            >
+              Show Edit Fields
+          </span>
+        </p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
           {
             fields.map(({ key, label, placeholder = '', type = '', tag }, index) => {
               return (
-                <div className='sortableGroup-column'>
+                <div className={`sortableGroup-column`} style={{ gridColumn: `span ${fieldColumn}`}}>
                   {
                     FieldConstructor[tag]({
                       name: key,
@@ -94,49 +119,107 @@ const SortableGroup = React.forwardRef(
         </div>
         {
           (!isDragging && isActive && groupType === 'standard') && (
-            <div className={`sortableGroup-addFields ${isAddingFieldShow}`}>
-              <div className='field select-field-wrapper'>
-                <select
+            <>
+              {/* Edit Group Name Drawer */}
+              <div className={`sortableGroup-drawer ${isEditGroupNameDrawerShow}`}>
+                <input
+                  type='text'
                   className='field-input'
-                  defaultValue={additionalField}
-                  onChange={({ target }) => {
-                    handleSelectFieldToAdd(target.value)
-                  }}
-                >
-                  <option value=''>Select a field to add</option>
-                  {
-                    StandardFields
-                      .filter(e => e.canBeGrouped)
-                      .map(e => (
-                        <option key={e.type} value={e.type}>{e.label}</option>
-                      ))
-                  }
-                </select>
+                  placeholder='Group Name'
+                  // value={name}
+                  // onChange={() => console.log('eee')}
+                />
+                <div className='addField-actions'>
+                  <button
+                    type='button'
+                    className='add-btn'
+                    onClick={() => setEditGroupNameDrawerShow(!editGroupNameDrawerShow) }
+                  >
+                    Update
+                  </button>
+                </div>
               </div>
-              <div className='addField-actions'>
-                <button
-                  type='button'
-                  className='add-btn'
-                  onClick={e => {
-                    e.stopPropagation()
-                    let newField = StandardFields.find(e => e.type === additionalField)
-                    if (newField) {
-                      newField = cloneDeep(newField) //avoid mutating the array of objects
-                      onMergeStandardFields(id, newField)
+
+              {/* Add Fields Drawer */}
+              <div className={`sortableGroup-drawer ${isAddingFieldDrawerShow}`}>
+                <div className='field select-field-wrapper'>
+                  <select
+                    className='field-input'
+                    defaultValue={additionalField}
+                    onChange={({ target }) => {
+                      handleSelectFieldToAdd(target.value)
+                    }}
+                  >
+                    <option value=''>Select a field to add</option>
+                    {
+                      StandardFields
+                        .filter(e => e.canBeGrouped)
+                        .map(e => (
+                          <option key={e.type} value={e.type}>{e.label}</option>
+                        ))
                     }
-                  }}
-                >
-                  Add Field
-                </button>
-                <button
-                  type='button'
-                  className='close-btn'
-                  onClick={() => setAddingFieldSHow(!addingFieldShow) }
-                >
-                  Close
-                </button>
+                  </select>
+                </div>
+                <div className='addField-actions'>
+                  <button
+                    type='button'
+                    className='add-btn'
+                    onClick={e => {
+                      e.stopPropagation()
+                      let newField = StandardFields.find(e => e.type === additionalField)
+                      if (newField) {
+                        newField = cloneDeep(newField) //avoid mutating the array of objects
+                        onMergeStandardFields(id, newField)
+                      }
+                    }}
+                  >
+                    Add Field
+                  </button>
+                  <button
+                    type='button'
+                    className='close-btn'
+                    onClick={() => setAddingFieldDrawerShow(!addingFieldDrawerShow) }
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
-            </div>
+
+              {/* Edit Fields Drawer */}
+              <div className={`sortableGroup-drawer ${isEditFieldDrawerShow}`}>
+                <input
+                  type='text'
+                  className='field-input'
+                  placeholder='Edit Placeholder'
+                  // value={name}
+                  // onChange={() => console.log('eee')}
+                />
+                <div className='field select-field-wrapper'>
+                  <select
+                    className='field-input'
+                    defaultValue={fieldColumn}
+                    onChange={({ target }) => {
+                      handleFieldColumn(target.value)
+                    }}
+                  >
+                    <option value=''>Select Field Size</option>
+                    <option value='1'>Small</option>
+                    <option value='2'>Medium</option>
+                    <option value='3'>Large</option>
+                  </select>
+                </div>
+                
+                <div className='addField-actions'>
+                  <button
+                    type='button'
+                    className='add-btn'
+                    onClick={() => setEditFieldDrawerShow(!editFieldDrawerShow) }
+                  >
+                    Update
+                  </button>
+                </div>
+              </div>
+            </>
           )
         }
         {

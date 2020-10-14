@@ -185,11 +185,46 @@ export default styled.div`
     box-shadow: 0 3px 6px 3px #ddd;
     transition: all .15s ease-in-out
   }
-  .sortableGroup:hover svg.addField-icon {
+  .sortableGroup:hover .sortableGroup-actions >div svg {
     opacity: 1;
     visibility: visible;
     transition: all .15s ease-in-out
   }
+
+
+  .sortableGroup-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: default;
+    display: flex;
+    flex-direction: row-reverse;
+  }
+  .sortableGroup-actions >div svg {
+    cursor: move;
+    color: #f5812f;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px 9px;
+    border-radius: 100px;
+
+    opacity:0;
+    visibility: hidden;
+  }
+  .sortableGroup-actions >div svg:hover {
+    background: #f4f4f5;
+    transition: all .15s ease-in-out
+  }
+  .sortableGroup-actions .tooltip-wrapper .tooltip {
+    white-space: pre;
+  }
+  .sortableGroup-actions .tooltip-wrapper.add-field .tooltip {
+    left: -20px;
+  }
+  .sortableGroup-actions .tooltip-wrapper.edit-groupName .tooltip {
+    left: -42px;
+  }
+  
 
   // specific for ADDRESS ROW
   .sortableGroup.address .sortableGroup-row {
@@ -201,34 +236,13 @@ export default styled.div`
   }
 
 
-  .sortableGroup .tooltip-wrapper.addField {
-    position: absolute;
-    right: 12px;
-  }
-  .sortableGroup .tooltip-wrapper.addField .tooltip {
-    left: -20px;
-    white-space: pre;
-  }
-  .sortableGroup svg.addField-icon {
-    cursor: move;
-    color: #f5812f;
-    font-size: 18px;
-    padding: 8px 9px;
-    cursor: pointer;
-    border-radius: 100px;
-
-    opacity:0;
-    visibility: hidden;
-  }
-  .sortableGroup svg.addField-icon:hover {
-    background: #f4f4f5;
-    transition: all .15s ease-in-out
-  }
   .sortableGroup-name {
     margin: 0;
-    letter-spacing: 2px;
+    letter-spacing: 1.3px;
     text-transform: uppercase;
   }
+
+
   .sortableGroup-row {
     display: grid;
     align-items: center;
@@ -254,7 +268,7 @@ export default styled.div`
     color: #d32f2f;
   }
 
-  .sortableGroup-addFields {
+  .sortableGroup-drawer {
     position: absolute;
     top: 2px;
     right: 4px;
@@ -269,45 +283,39 @@ export default styled.div`
                 opacity 1s cubic-bezier(0,1.62,0.38,0.96),
                 visibility 1.3s cubic-bezier(0,1.62,0.38,0.96)
   }
-  .sortableGroup-addFields.show {
-    // display: block !important;
+  .sortableGroup-drawer.show {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
   }
 
-  .sortableGroup-addFields .select-field-wrapper {
+  .sortableGroup-drawer .select-field-wrapper {
     position: relative;
     width: 200px;
   }
-  .sortableGroup-addFields >div button {
-    // color: #fff;
-    // border: #f5812f;
-    // padding: 0 34px;
-    // background: #f5812f;
-
+  .sortableGroup-drawer >div button {
     border-radius: 3px;
     padding: 2px 13px;
     color: #fff;
     border: 0;
   }
-  .sortableGroup-addFields .addField-actions {
+  .sortableGroup-drawer .addField-actions {
     margin-top: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  .sortableGroup-addFields >div button.add-btn {
+  .sortableGroup-drawer >div button.add-btn {
     background: #19AB27;
   }
-  .sortableGroup-addFields >div button.add-btn:hover {
+  .sortableGroup-drawer >div button.add-btn:hover {
     background: #128d15;
     transition: .15s ease-in-out 
   }
-  .sortableGroup-addFields >div button.close-btn {
+  .sortableGroup-drawer >div button.close-btn {
     background: #f44336;
   }
-  .sortableGroup-addFields >div button.close-btn:hover {
+  .sortableGroup-drawer >div button.close-btn:hover {
     background: #d32f2f;
     transition: .15s ease-in-out;
   }
@@ -315,7 +323,7 @@ export default styled.div`
 
 
   .group-settings {
-    margin-top: 3rem;
+    margin-top: 4rem;
   }
   .group-settings .settings-validation {
     display: grid;
@@ -334,28 +342,9 @@ export default styled.div`
     border-top: 1px solid #ccc;
     background: hsl(25deg 91% 57% / 18%);
   }
-  .group-settings .settings-control >div {
+  .group-settings .settings-iconActions {
     display: flex;
     align-items: center;
-  }
-  .group-settings .settings-checkbox {
-    color: #555;
-    cursor: pointer;
-  }
-  .group-settings .settings-checkbox > input {
-    width: 16px;
-    height: 16px;
-    margin: .5rem;
-    cursor: pointer;
-    opacity: 0;
-    visibility: hidden;
-  }
-  .group-settings .settings-checkbox > label {
-    cursor: pointer;
-  }
-  .group-settings .settings-checkbox:hover {
-    color: #000;
-    transition: all .15s ease-in-out
   }
   .group-settings .settings-iconActions  svg {
     color: gray;
@@ -407,6 +396,7 @@ export default styled.div`
     font-size: 12px;
     padding: 3px 9px;
     border-radius: 3px;
+    pointer-events: none;
     box-shadow: 0 3px 6px #ddd;
     background: rgb(87 84 84 / 92%);
 
@@ -424,8 +414,27 @@ export default styled.div`
   }
 
 
-  .settings-checkbox {
+  .checkboxContainer {
     position: relative;
+    color: #555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  .checkboxContainer > input {
+    width: 16px;
+    height: 16px;
+    margin: .5rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .checkboxContainer > label {
+    cursor: pointer;
+  }
+  .checkboxContainer:hover {
+    color: #000;
+    transition: all .15s ease-in-out
   }
   .checkmark {
     position: absolute;
@@ -438,12 +447,12 @@ export default styled.div`
     border: 1px solid #2196F3;
   }
   /* On mouse-over, add a grey background color */
-  .settings-checkbox:hover input ~ .checkmark {
+  .checkboxContainer:hover input ~ .checkmark {
     // background-color: #ccc;
   }
 
   /* When the checkbox is checked, add a blue background */
-  .settings-checkbox input:checked ~ .checkmark {
+  .checkboxContainer input:checked ~ .checkmark {
     background-color: #2196F3;
   }
 
@@ -455,12 +464,12 @@ export default styled.div`
   }
 
   /* Show the checkmark when checked */
-  .settings-checkbox input:checked ~ .checkmark:after {
+  .checkboxContainer input:checked ~ .checkmark:after {
     display: block;
   }
 
   /* Style the checkmark/indicator */
-  .settings-checkbox .checkmark:after {
+  .checkboxContainer .checkmark:after {
     left: 4px;
     top: 0px;
     width: 3px;
@@ -473,6 +482,8 @@ export default styled.div`
   }
 
 
+
+  
   // =================================
   // ********* MEDIA QUERIES *********
   // =================================
