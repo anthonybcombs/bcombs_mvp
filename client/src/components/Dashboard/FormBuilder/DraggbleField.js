@@ -20,9 +20,10 @@ import {
 
 export default ({ name, type, groupType, fields, previewStyle = {} }) => {
   const newFields = cloneDeep(fields) //avoid mutating the array of objects
+  const settings = {}
   const [{ opacity, background }, drag, preview] = useDrag({
     item: { type },
-    begin: () => ({ name, type, fields: newFields, groupType, settings: {}, id: uuid() }),
+    begin: () => ({ name, type, fields: newFields, groupType, settings, id: uuid() }),
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
       // background: monitor.isDragging() ? 'red' : 'blue'

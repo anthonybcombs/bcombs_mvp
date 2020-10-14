@@ -82,7 +82,7 @@ export default () => {
 
   const handleDuplicateGroup = (id) => {
     const newField = cloneDeep(droppedFields.find(e => e.id === id))
-    setDrop(update(droppedFields, { $push: [{ ...newField, id: uuid() }] }))
+    setDrop(update(droppedFields, { $push: [{ ...newField, id: uuid(), isActive: false }] }))
   }
 
   const handleRemoveGroupField = (id, index) => {

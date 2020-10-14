@@ -26,12 +26,11 @@ const SortableGroup = React.forwardRef(
   // connectDragPreview(previewElement)
   const opacity = (isDragging || hidden) ? 0 : 1
   useImperativeHandle(ref, () => ({
-      getNode: () => elementRef.current,
+    getNode: () => elementRef.current,
   }))
 
   const [additionalField, handleSelectFieldToAdd] = useState('')
   const [addingFieldShow, setAddingFieldSHow] = useState(false)
-  console.log('addingFieldShow: ', addingFieldShow)
 
   useEffect(() => {
     connectDragPreview(getEmptyImage(), { captureDraggingState: true })
@@ -48,11 +47,15 @@ const SortableGroup = React.forwardRef(
       style={{ opacity, ...previewStyle }}
       onClick={() => onActive(id)}
     >   
-        <FontAwesomeIcon
-          icon={faPlusCircle}
-          className='drag-icon'
-          onClick={() => setAddingFieldSHow(addingFieldShow => !addingFieldShow) }
-        />
+        {
+          groupType === 'standard' && (
+            <FontAwesomeIcon
+              icon={faPlusCircle}
+              className='drag-icon'
+              onClick={() => setAddingFieldSHow(!addingFieldShow) }
+            />
+          )
+        }
         <p className='sortableGroup-name'>{name}</p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
           {
@@ -126,7 +129,7 @@ const SortableGroup = React.forwardRef(
                 <button
                   type='button'
                   className='close-btn'
-                  onClick={() => setAddingFieldSHow(addingFieldShow => !addingFieldShow) }
+                  onClick={() => setAddingFieldSHow(!addingFieldShow) }
                 >
                   Close
                 </button>
