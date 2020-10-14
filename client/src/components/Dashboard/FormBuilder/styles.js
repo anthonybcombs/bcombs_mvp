@@ -156,6 +156,12 @@ export default styled.div`
     font-weight: bold;
     font-size: 20px !important;
   }
+  .drop-area-wrapper .empty-area {
+    color: gray;
+    padding: 2rem;
+    text-align: center;
+    border: 1px dashed #ddd;
+  }
 
   // ===============================================
   // ********* START SORTABLE FIELD GROUPS *********
@@ -179,7 +185,7 @@ export default styled.div`
     box-shadow: 0 3px 6px 3px #ddd;
     transition: all .15s ease-in-out
   }
-  .sortableGroup:hover >svg.drag-icon {
+  .sortableGroup:hover svg.addField-icon {
     opacity: 1;
     visibility: visible;
     transition: all .15s ease-in-out
@@ -189,14 +195,21 @@ export default styled.div`
   .sortableGroup.address .sortableGroup-row {
     grid-template-columns: repeat(2, 1fr) !important;
   }
-  .sortableGroup.address .sortableGroup-row .field-input:nth-child(1),
-  .sortableGroup.address .sortableGroup-row .field-input:nth-child(2) {
+  .sortableGroup.address .sortableGroup-row .sortableGroup-column:nth-child(1),
+  .sortableGroup.address .sortableGroup-row .sortableGroup-column:nth-child(2) {
     grid-column: span 2; /* Spans two columns */
   }
 
-  .sortableGroup >svg.drag-icon {
+
+  .sortableGroup .tooltip-wrapper.addField {
     position: absolute;
     right: 12px;
+  }
+  .sortableGroup .tooltip-wrapper.addField .tooltip {
+    left: -20px;
+    white-space: pre;
+  }
+  .sortableGroup svg.addField-icon {
     cursor: move;
     color: #f5812f;
     font-size: 18px;
@@ -207,7 +220,7 @@ export default styled.div`
     opacity:0;
     visibility: hidden;
   }
-  .sortableGroup >svg.drag-icon:hover {
+  .sortableGroup svg.addField-icon:hover {
     background: #f4f4f5;
     transition: all .15s ease-in-out
   }
@@ -344,30 +357,33 @@ export default styled.div`
     color: #000;
     transition: all .15s ease-in-out
   }
-  .group-settings .settings-iconActions > svg {
+  .group-settings .settings-iconActions  svg {
     color: gray;
     padding: 10px;
-    margin: 0 3px;
     font-size: 18px;
     cursor: pointer;
     border-radius: 100px;
   }
-  .group-settings .settings-iconActions > svg:hover {
+  .group-settings .settings-iconActions  svg:hover {
     background: rgb(239 239 239 / 55%);
     transition: all .25s ease-in-out
   }
-  .group-settings .settings-iconActions > svg:hover:nth-child(1) {
+  .group-settings .settings-iconActions  svg:hover:nth-child(1) {
+    position: relative;
     color: #ffffff;
     background: #f5812f;
     box-shadow: 0 3px 6px #ddd;
     transition: all .15s ease-in-out
   }
-  .group-settings .settings-iconActions > svg:hover:nth-child(2) {
+  .group-settings .settings-iconActions  svg:hover:nth-child(2) {
+    position: relative;
     color: #ffffff;
     background: #f44336;
     box-shadow: 0 3px 6px #ddd;
     transition: all .15s ease-in-out
   }
+  
+
 
   // =============================================
   // ********* END SORTABLE FIELD GROUPS *********
@@ -377,8 +393,37 @@ export default styled.div`
 
 
   // ====================================
-  // ********* Custom Checkbox **********
+  // ********* Customs  **********
   // ====================================
+  .tooltip-wrapper {
+    position: relative;
+    margin: 0 3px;
+  }
+  .tooltip-wrapper .tooltip {
+    position: absolute;
+    top: -25px;
+    left: -8px;
+    color: #fff;
+    font-size: 12px;
+    padding: 3px 9px;
+    border-radius: 3px;
+    box-shadow: 0 3px 6px #ddd;
+    background: rgb(87 84 84 / 92%);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(32px);
+    transition: transform .5s cubic-bezier(0,1.62,0.38,0.96),
+                opacity .8s cubic-bezier(0,1.62,0.38,0.96),
+                visibility 1s cubic-bezier(0,1.62,0.38,0.96)
+  }
+  .tooltip-wrapper:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+
   .settings-checkbox {
     position: relative;
   }

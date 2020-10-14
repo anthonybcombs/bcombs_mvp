@@ -116,7 +116,7 @@ export default () => {
       </div>
       {
         droppedFields.length === 0 && (
-          <div>Drag fields here.</div>
+          <div className='empty-area'>Drag fields here.</div>
         )
       }
       {
