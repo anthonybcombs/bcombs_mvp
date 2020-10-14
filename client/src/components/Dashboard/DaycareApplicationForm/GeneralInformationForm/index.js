@@ -6,6 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 import NumberFormat from 'react-number-format';
+
+import STATES from "../../ApplicationForm/states.json";
+
 const GeneralInformationFormStyled = styled.div`
   position: relative; 
   margin-top:12px;
@@ -96,49 +99,352 @@ export default function index({
       <div className="general-info-wrapper">
 
         <div className="agree-text">
-          Is your child transferring from a previous daycare? 
+          <span className="required">*</span> Is your child transferring from a previous daycare? 
         </div>
         <div className="form-group">
           <label className="cus-select-container">
             Currently Enrolled 
             <input type="radio" 
+              name={"ch_transfer" + (counter - 1)}
               onChange={({ target }) => {
-                handleChildFormDetailsChange(counter - 1, "general_information", "is_child_tranferring", "Currently Enrolled");
+                handleChildFormDetailsChange(counter - 1, "general_information", "is_child_transferring", "Currently Enrolled");
               }} 
               value={"Currently Enrolled"}
-              checked={childGeneralInformation.is_child_tranferring == "Currently Enrolled"}
+              checked={childGeneralInformation.is_child_transferring == "Currently Enrolled"}
               readOnly={isReadonly}
               disabled={isReadonly}
+              ref={register({
+                validate: {
+                  otherCBChecked: value => {
+                    if(childGeneralInformation.is_child_transferring) return true;
+                    return false;
+                  }
+                }
+              })}
             />
             <span className="checkmark"></span>
           </label>
           <label className="cus-select-container">
             Yes 
-            <input type="radio" 
+            <input type="radio"
+              name={"ch_transfer" + (counter - 1)}
               onChange={({ target }) => {
-                handleChildFormDetailsChange(counter - 1, "general_information", "is_child_tranferring", "Yes");
+                handleChildFormDetailsChange(counter - 1, "general_information", "is_child_transferring", "Yes");
               }} 
               value={"Yes"}
-              checked={childGeneralInformation.is_child_tranferring == "Yes"}
+              checked={childGeneralInformation.is_child_transferring == "Yes"}
               readOnly={isReadonly}
               disabled={isReadonly}
+              ref={register({
+                validate: {
+                  otherCBChecked: value => {
+                    if(childGeneralInformation.is_child_transferring) return true;
+                    return false;
+                  }
+                }
+              })}
             />
             <span className="checkmark"></span>
           </label>
           <label className="cus-select-container">
             No
-            <input type="radio" 
+            <input type="radio"
+              name={"ch_transfer" + (counter - 1)}
               onChange={({ target }) => {
-                handleChildFormDetailsChange(counter - 1, "general_information", "is_child_tranferring", "No");
+                handleChildFormDetailsChange(counter - 1, "general_information", "is_child_transferring", "No");
               }} 
               value={"No"}
-              checked={childGeneralInformation.is_child_tranferring == "No"}
+              checked={childGeneralInformation.is_child_transferring == "No"}
               readOnly={isReadonly}
               disabled={isReadonly}
+              ref={register({
+                validate: {
+                  otherCBChecked: value => {
+                    if(childGeneralInformation.is_child_transferring) return true;
+                    return false;
+                  }
+                }
+              })}
             />
             <span className="checkmark"></span>
           </label>
+          <ErrorMessage
+            field={errors["ch_transfer" + (counter - 1)]}
+            errorType="otherCBChecked"
+            message="Needed days is required"
+          />
         </div>
+        {
+          childGeneralInformation.is_child_transferring == "Yes" && (
+            <>
+              <div className="grid-2">
+                <div className="form-group">
+                  <div className="field">
+                    <input
+                      id={`ch_transfer_reason${counter - 1}`}
+                      name={"ch_transfer_reason" + (counter - 1)}
+                      className={
+                        isReadonly &&
+                        !isVendorView &&
+                        pastChildInformation &&
+                        (pastChildInformation.transfer_reason || pastChildInformation.transfer_reason == "") &&
+                        pastChildInformation.transfer_reason != childGeneralInformation.transfer_reason ?
+                        "field-input highlights" : "field-input"
+                      }
+                      onChange={({ target }) => {
+                        handleChildFormDetailsChange(counter - 1, "general_information", "transfer_reason", target.value);
+                      }}
+                      placeholder="Explain"
+                      ref={register({required: true})}
+                      defaultValue={childGeneralInformation.transfer_reason}
+                      readOnly={isReadonly}
+                    />
+                    <label className="field-label" htmlFor={`ch_transfer_reason_${counter - 1}`}>
+                      <span className="required">*</span> If Yes, please explain
+                    </label>
+                  </div>
+                  <ErrorMessage
+                    field={errors["ch_transfer_reason" + (counter - 1)]}
+                    errorType="required"
+                    message="Explanation is required"
+                  />
+                </div>
+                <div className="form-group">
+                  <div className="field">
+                    <input
+                      id={`ch_prev_school_attended${counter - 1}`}
+                      name={"ch_prev_school_attended" + (counter - 1)}
+                      className={
+                        isReadonly &&
+                        !isVendorView &&
+                        pastChildInformation &&
+                        (pastChildInformation.prev_school_attended || pastChildInformation.prev_school_attended == "") &&
+                        pastChildInformation.prev_school_attended != childGeneralInformation.prev_school_attended ?
+                        "field-input highlights" : "field-input"
+                      }
+                      onChange={({ target }) => {
+                        handleChildFormDetailsChange(counter - 1, "general_information", "prev_school_attended", target.value);
+                      }}
+                      placeholder="Explain"
+                      ref={register({required: true})}
+                      defaultValue={childGeneralInformation.prev_school_attended}
+                      readOnly={isReadonly}
+                    />
+                    <label className="field-label" htmlFor={`ch_prev_school_attended${counter - 1}`}>
+                      <span className="required">*</span>Previous School Attended
+                    </label>
+                  </div>
+                  <ErrorMessage
+                    field={errors["ch_prev_school_attended" + (counter - 1)]}
+                    errorType="required"
+                    message="Previous School Attended is required"
+                  />
+                </div>
+              </div>
+
+              <div className="grid-2">
+                <div className="form-group">
+                  <div className="field">
+                    <NumberFormat
+                      id={`ch_school_phone${counter - 1}`}
+                      name={"ch_school_phone" + (counter - 1)}
+                      className={
+                        isReadonly &&
+                        !isVendorView &&
+                        pastChildInformation &&
+                        (pastChildInformation.prev_school_phone ||
+                          pastChildInformation.prev_school_phone == "") &&
+                        pastChildInformation.prev_school_phone !=
+                        childGeneralInformation.prev_school_phone
+                          ? "field-input highlights"
+                          : "field-input"
+                      }
+                      placeholder="Phone Number"
+                      onChange={({ target }) => {
+                        handleChildFormDetailsChange(
+                          counter - 1,
+                          "general_information",
+                          "prev_school_phone",
+                          target.value
+                        );
+                      }}
+                      defaultValue={childGeneralInformation?.prev_school_phone}
+                      format="(###) ###-####"
+                      mask="_"
+                      getInputRef={register({
+                        required: true,
+                        validate: {
+                          completed: value => {
+                            if (value) {
+                              return value.match(/\d/g).length === 10;
+                            } else {
+                              return true;
+                            }
+                          }
+                        }
+                      })}
+                    />
+                    <label className="field-label" htmlFor={`ch_school_phone${counter - 1}`}>
+                      <span className="required">*</span> School Phone
+                    </label>
+                  </div>
+                  <ErrorMessage
+                    field={errors["ch_school_phone" + (counter - 1)]}
+                    errorType="required"
+                    message="Phone is required"
+                  />
+                </div>
+                <div className="form-group">
+                  <div className="field select-field-wrapper">
+                    <select
+                      disabled={isReadonly}
+                      name={"ch_school_state" + (counter - 1)}
+                      className={
+                        isReadonly &&
+                        !isVendorView &&
+                        pastChildInformation &&
+                        (pastChildInformation.prev_school_state ||
+                          pastChildInformation.prev_school_state == "") &&
+                        pastChildInformation.prev_school_state != childGeneralInformation.prev_school_state
+                          ? "field-input highlights"
+                          : "field-input"
+                      }
+                      onChange={({ target }) => {
+                        handleChildFormDetailsChange(
+                          counter - 1,
+                          "general_information",
+                          "prev_school_state",
+                          target.value
+                        );
+                      }}
+                      readOnly={isReadonly}
+                      defaultValue={childGeneralInformation.prev_school_state}
+                      ref={register({ required: true })}>
+                      <option value="">Select</option>
+                      {STATES.map((opt, index) => (
+                        <option key={index + 1} value={opt.abbreviation}>
+                          {opt.name}
+                        </option>
+                      ))}
+                    </select>
+                    <label className="field-label">
+                      <span className="required">*</span> State
+                    </label>
+                  </div>
+                  <ErrorMessage
+                    field={errors["ch_school_state" + (counter - 1)]}
+                    errorType="required"
+                    message="State is required"
+                  />
+                </div>
+              </div>
+
+              <div className="grid-2">
+                <div className="form-group">
+                  <div className="field">
+                    <input
+                      id={`ch_school_city${counter - 1}`}
+                      name={"ch_school_city" + (counter - 1)}
+                      className={
+                        isReadonly &&
+                        !isVendorView &&
+                        pastChildInformation &&
+                        (pastChildInformation.prev_school_city || pastChildInformation.prev_school_city == "") &&
+                        pastChildInformation.prev_school_city != childGeneralInformation.prev_school_city ?
+                        "field-input highlights" : "field-input"
+                      }
+                      onChange={({ target }) => {
+                        handleChildFormDetailsChange(counter - 1, "general_information", "prev_school_city", target.value);
+                      }}
+                      placeholder="City"
+                      ref={register({required: true})}
+                      defaultValue={childGeneralInformation.prev_school_city}
+                      readOnly={isReadonly}
+                    />
+                    <label className="field-label" htmlFor={`ch_school_city${counter - 1}`}>
+                      <span className="required">*</span> City
+                    </label>
+                  </div>
+                  <ErrorMessage
+                    field={errors["ch_school_city" + (counter - 1)]}
+                    errorType="required"
+                    message="City is required"
+                  />
+                </div>
+                <div className="form-group">
+                  <div className="field">
+                    <input
+                      id={`ch_school_zip_code${counter - 1}`}
+                      name={"ch_school_zip_code" + (counter - 1)}
+                      className={
+                        isReadonly &&
+                        !isVendorView &&
+                        pastChildInformation &&
+                        (pastChildInformation.prev_school_zip_code || pastChildInformation.prev_school_zip_code == "") &&
+                        pastChildInformation.prev_school_zip_code != childGeneralInformation.prev_school_zip_code ?
+                        "field-input highlights" : "field-input"
+                      }
+                      onChange={({ target }) => {
+                        if (target.value.match(/^-{0,1}\d+$/)) {
+                          handleChildFormDetailsChange(counter - 1, "general_information", "prev_school_zip_code", target.value);
+                        } else {
+                          target.value = target.value.slice(0, -1);
+                        }
+                      }}
+                      placeholder="Zip Code"
+                      ref={register({ minLength: 5, required: true })}
+                      defaultValue={childGeneralInformation.prev_school_zip_code}
+                      readOnly={isReadonly}
+                      maxLength="5"
+                    />
+                    <label className="field-label" htmlFor={`ch_school_zip_code${counter - 1}`}>
+                      <span className="required">*</span> Zip Code
+                    </label>
+                  </div>
+                  <ErrorMessage
+                    field={errors["ch_school_zip_code" + (counter - 1)]}
+                    errorType="required"
+                    message="Zip Code is required"
+                  />
+                </div>
+              </div>
+
+              <div className="grid-2">
+                <div className="form-group">
+                  <div className="field">
+                    <input
+                      id={`ch_school_address${counter - 1}`}
+                      name={"ch_school_address" + (counter - 1)}
+                      className={
+                        isReadonly &&
+                        !isVendorView &&
+                        pastChildInformation &&
+                        (pastChildInformation.prev_school_address || pastChildInformation.prev_school_address == "") &&
+                        pastChildInformation.prev_school_address != childGeneralInformation.prev_school_address ?
+                        "field-input highlights" : "field-input"
+                      }
+                      onChange={({ target }) => {
+                        handleChildFormDetailsChange(counter - 1, "general_information", "prev_school_address", target.value);
+                      }}
+                      placeholder="Address"
+                      ref={register({required: true})}
+                      defaultValue={childGeneralInformation.prev_school_address}
+                      readOnly={isReadonly}
+                    />
+                    <label className="field-label" htmlFor={`ch_school_address${counter - 1}`}>
+                      <span className="required">*</span> Address
+                    </label>
+                  </div>
+                  <ErrorMessage
+                    field={errors["ch_school_address" + (counter - 1)]}
+                    errorType="required"
+                    message="Address is required"
+                  />
+                </div>
+              </div>
+            </>
+          )
+        }
 
         <div className="agree-text">
           Does your child required additional physical / educational services 
@@ -182,8 +488,8 @@ export default function index({
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
               }} 
-              value={"1"}
-              checked={childGeneralInformation.was_suspended+"" == "1"}
+              value={"Yes"}
+              checked={childGeneralInformation.was_suspended+"" == "Yes"}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -195,8 +501,8 @@ export default function index({
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
               }} 
-              value={"0"}
-              checked={childGeneralInformation.was_suspended+"" == "0"}
+              value={"No"}
+              checked={childGeneralInformation.was_suspended+"" == "No"}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -372,7 +678,7 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                6. Please list any allergies that your child may have (e.g. Food Insect Stings, Medicines, Etc.) and related medication. <span className="required">*</span>
+                6. Please list any allergies that your child may have (e.g. Food Insect Stings, Medicines, Etc.) and related medication.
               </label>
               <textarea 
                 name={"list_any_allergies" + (counter - 1)}

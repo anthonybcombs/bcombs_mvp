@@ -94,7 +94,8 @@ export const getVendorsByUserId = async user => {
         v.section1_show,
         v.section2_show,
         v.section3_show,
-        v.created_at as created_at
+        v.created_at as created_at,
+        v.is_daycare
       FROM vendor v
       WHERE v.user=UUID_TO_BIN(?)`,
       [user]
@@ -126,6 +127,7 @@ export const getVendorsByUserId = async user => {
           v.section1_show,
           v.section2_show,
           v.section3_show,
+          v.is_daycare,
           va.created_at as created_at
         FROM vendor v, vendor_admin va
         WHERE va.user = UUID_TO_BIN(?) AND va.vendor = v.id
@@ -178,7 +180,8 @@ export const getVendorById2 = async id2 => {
         v.section3_name,
         v.section1_show,
         v.section2_show,
-        v.section3_show
+        v.section3_show,
+        v.is_daycare
       FROM vendor v
       WHERE v.id2=?`,
       [id2]

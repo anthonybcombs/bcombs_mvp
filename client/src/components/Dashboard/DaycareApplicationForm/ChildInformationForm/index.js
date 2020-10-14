@@ -209,6 +209,17 @@ export default function index({
 }) {
   const hasSelectAll = false;
 
+  console.log("pastChildInformation", pastChildInformation);
+
+  const [ neededDaysCheck, setNeededDaysCheck ] = useState({
+    option1: (childProfile.needed_days == "M,T,W,TH,F,"),
+    option2: childProfile.needed_days.includes('M,'),
+    option3: childProfile.needed_days.includes('T,'),
+    option4: childProfile.needed_days.includes('W,'),
+    option5: childProfile.needed_days.includes('TH,'),
+    option6: childProfile.needed_days.includes('F,')
+  })
+
   const GENDER_OPTIONS = [
     { id: 1, value: "Male", name: "Male" },
     { id: 2, value: "Female", name: "Female" }
@@ -325,8 +336,6 @@ export default function index({
     });
 
     readOnlyChildLivesWith = readOnlyChildLivesWith.slice(0, -1);
-
-    console.log("childProfile.child_lives_with", readOnlyChildLivesWith);
   }
 
   let readOnlyProgram = "";
@@ -445,10 +454,10 @@ export default function index({
         className={className}
         placeholder="mm/dd/yyyy"
         readOnly={true}
-        id={`pref_startdate${counter - 1}`}
+        id={`preffered_start_date${counter - 1}`}
         ref={register({ required: true })}
       />
-      <label className="field-label" htmlFor={`pref_startdate${counter - 1}`}>
+      <label className="field-label" htmlFor={`preffered_start_date${counter - 1}`}>
         <span className="required">*</span> Preffered Start Date
       </label>
     </div>
@@ -874,13 +883,13 @@ export default function index({
                         </button>
                     </div>
                     )}
-                    selected={childProfile.pref_startdate}
+                    selected={childProfile.preffered_start_date}
                     disabled={isReadonly}
                     onChange={date => {
                     handleChildFormDetailsChange(
                         counter - 1,
                         "profile",
-                        "pref_startdate",
+                        "preffered_start_date",
                         date
                     );
                     }}
@@ -891,10 +900,10 @@ export default function index({
                         isReadonly &&
                         !isVendorView &&
                         pastChildInformation &&
-                        (pastChildInformation.birthdate ||
-                            pastChildInformation.birthdate == "") &&
-                        childProfile.pref_startdate.toString() !=
-                            new Date(pastChildInformation.birthdate).toString()
+                        (pastChildInformation.preffered_start_date ||
+                            pastChildInformation.preffered_start_date == "") &&
+                        childProfile.preffered_start_date.toString() !=
+                            new Date(pastChildInformation.preffered_start_date).toString()
                             ? "field-input birthdate-field highlights"
                             : "field-input birthdate-field"
                         }
@@ -903,7 +912,7 @@ export default function index({
                 />
             </div>
             <ErrorMessage
-              field={errors["ch_pref_start_date" + (counter - 1)]}
+              field={errors["ch_preffered_start_date" + (counter - 1)]}
               errorType="required"
               message="Preffered Start Date is required."
             />
@@ -919,9 +928,9 @@ export default function index({
                   isReadonly &&
                   !isVendorView &&
                   pastChildInformation &&
-                  (pastChildInformation.gender ||
-                    pastChildInformation.gender == "") &&
-                  pastChildInformation.gender != childProfile.current_classroom
+                  (pastChildInformation.current_classroom ||
+                    pastChildInformation.current_classroom == "") &&
+                  pastChildInformation.current_classroom != childProfile.current_classroom
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -987,7 +996,7 @@ export default function index({
                 ))}
               </select>
               <label className="field-label">
-                <span className="required">*</span> Current Classroom
+                <span className="required">*</span> Primary Language
               </label>
             </div>
             <ErrorMessage
@@ -999,154 +1008,303 @@ export default function index({
         </div>
 
         <div className="grid">
-          <div>
+          <div style={{marginBottom: "20px"}}>
             <label style={{marginBottom: "20px", width:"100%"}}>
               <span className="required" style={{marginRight: "5px"}}>*</span>Needed Days
             </label>
-            <span style={{marginRight: "10px"}}>
-              <input
-                name={"ch_needed_days" + (counter - 1)}
-                type="checkbox" 
-                checked={childProfile.needed_days == "M-F"}
-                onChange={({ target }) => {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "needed_days",
-                    "M-F")
-                }}
-                ref={register({required: true})}
-                disabled={isReadonly}
-              />
-              <label htmlFor={"ch_needed_days" + (counter - 1)}>M-F</label>
-            </span>
-            <span style={{marginRight: "10px"}}>
-              <input
-                name={"ch_needed_days" + (counter - 1)}
-                type="checkbox" 
-                checked={childProfile.needed_days == "M" || childProfile.needed_days == "M-F"}
-                onChange={({ target }) => {
-                  if(childProfile.needed_days == "M-F") {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "needed_days",
-                      "M-F")
-                  } else {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "needed_days",
-                      "M")
-                  }
-                }}
-                ref={register({required: true})}
-                disabled={isReadonly}
-              />
-              <label htmlFor={"ch_needed_days" + (counter - 1)}>M</label>
-            </span>
-            <span style={{marginRight: "10px"}}>
-              <input
-                name={"ch_needed_days" + (counter - 1)}
-                type="checkbox" 
-                checked={childProfile.needed_days == "T" || childProfile.needed_days == "M-F"}
-                onChange={({ target }) => {
-                  if(childProfile.needed_days == "M-F") {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "needed_days",
-                      "M-F")
-                  } else {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "needed_days",
-                      "T")
-                  }
-                }}
-                ref={register({required: true})}
-                disabled={isReadonly}
-              />
-              <label htmlFor={"ch_needed_days" + (counter - 1)}>T</label>
-            </span>
-            <span style={{marginRight: "10px"}}>
-              <input
-                name={"ch_needed_days" + (counter - 1)}
-                type="checkbox" 
-                checked={childProfile.needed_days == "W" || childProfile.needed_days == "M-F"}
-                onChange={({ target }) => {
-                  if(childProfile.needed_days == "M-F") {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "needed_days",
-                      "M-F")
-                  } else {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "needed_days",
-                      "W")
-                  }
-                }}
-                ref={register({required: true})}
-                disabled={isReadonly}
-              />
-              <label htmlFor={"ch_needed_days" + (counter - 1)}>W</label>
-            </span>
-            <span style={{marginRight: "10px"}}>
-              <input
-                name={"ch_needed_days" + (counter - 1)}
-                type="checkbox" 
-                checked={childProfile.needed_days == "TH" || childProfile.needed_days == "M-F"}
-                onChange={({ target }) => {
-                  if(childProfile.needed_days == "M-F") {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "needed_days",
-                      "M-F")
-                  } else {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "needed_days",
-                      "TH")
-                  }
-                }}
-                ref={register({required: true})}
-                disabled={isReadonly}
-              />
-              <label htmlFor={"ch_needed_days" + (counter - 1)}>TH</label>
-            </span>
-            <span style={{marginRight: "10px"}}>
-              <input
-                name={"ch_needed_days" + (counter - 1)}
-                type="checkbox" 
-                checked={childProfile.needed_days == "F" || childProfile.needed_days == "M-F"}
-                onChange={({ target }) => {
+            <div
+              style={{
+                padding: "5px",
+                border: "1px solid #ccc",
+                paddingBottom: "0"
+              }}
+              className={
+                isReadonly &&
+                !isVendorView &&
+                pastChildInformation &&
+                (pastChildInformation.needed_days || 
+                  pastChildInformation.needed_days == "") &&
+                pastChildInformation.needed_days != childProfile.needed_days
+                  ? "highlights" : ""
+              }
+            >
+              <span style={{marginRight: "10px"}}>
+                <input
+                  name={"ch_needed_days" + (counter - 1)}
+                  type="checkbox" 
+                  checked={neededDaysCheck.option1}
+                  onChange={({ target }) => {
+                    console.log("needed days", !neededDaysCheck?.option1);
+                    if(!neededDaysCheck?.option1) {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        "M,T,W,TH,F,")
+                        setNeededDaysCheck({
+                          option1: true,
+                          option2: true,
+                          option3: true,
+                          option4: true,
+                          option5: true,
+                          option6: true
+                        })
+                    } else {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        "")
+                      setNeededDaysCheck({
+                        option1: false,
+                        option2: false,
+                        option3: false,
+                        option4: false,
+                        option5: false,
+                        option6: false
+                      })
+                    }
+                  }}
+                  ref={register({
+                    validate: {
+                      otherCBChecked: value => {
+                        if(neededDaysCheck.option1 ||
+                          neededDaysCheck.option2 ||
+                          neededDaysCheck.option3 ||
+                          neededDaysCheck.option4 ||
+                          neededDaysCheck.option5 ||
+                          neededDaysCheck.option6) {
+                            return true
+                          }
+                        return false
+                      }
+                    }
+                  })}
+                  disabled={isReadonly}
+                />
+                <label htmlFor={"ch_needed_days" + (counter - 1)}>M-F</label>
+              </span>
+              <span style={{marginRight: "10px"}}>
+                <input
+                  name={"ch_needed_days" + (counter - 1)}
+                  type="checkbox" 
+                  checked={neededDaysCheck.option2}
+                  onChange={({ target }) => {
+                    if(!neededDaysCheck.option2) {
+                      if(neededDaysCheck.option1) return;
 
-                  if(childProfile.needed_days == "M-F") {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "needed_days",
-                      "M-F")
-                  } else {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "needed_days",
-                      "F")
-                  }
-  
-                }}
-                ref={register({required: true})}
-                disabled={isReadonly}
-              />
-              <label htmlFor={"ch_needed_days" + (counter - 1)}>F</label>
-            </span>
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        childProfile.needed_days+ "M,")
+                      setNeededDaysCheck({...neededDaysCheck, ['option2']: true})
+                    } else {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        childProfile.needed_days.replace("M,", "")) 
+                      setNeededDaysCheck({...neededDaysCheck, ['option1']: false, ['option2']: false})
+                    }
+                  }}
+                  ref={register({
+                    validate: {
+                      otherCBChecked: value => {
+                        if(neededDaysCheck.option1 ||
+                          neededDaysCheck.option2 ||
+                          neededDaysCheck.option3 ||
+                          neededDaysCheck.option4 ||
+                          neededDaysCheck.option5 ||
+                          neededDaysCheck.option6) {
+                            return true
+                          }
+                        return false
+                      }
+                    }
+                  })}
+                  disabled={isReadonly}
+                />
+                <label htmlFor={"ch_needed_days" + (counter - 1)}>M</label>
+              </span>
+              <span style={{marginRight: "10px"}}>
+                <input
+                  name={"ch_needed_days" + (counter - 1)}
+                  type="checkbox" 
+                  checked={neededDaysCheck.option3}
+                  onChange={({ target }) => {
+                    if(!neededDaysCheck.option3) {
+                      if(neededDaysCheck.option1) return;
+
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        childProfile.needed_days+ "T,")
+                      setNeededDaysCheck({...neededDaysCheck, ['option3']: true})
+                    } else {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        childProfile.needed_days.replace("T,", "")) 
+                      setNeededDaysCheck({...neededDaysCheck, ['option1']: false, ['option3']: false})
+                    }
+                  }}
+                  ref={register({
+                    validate: {
+                      otherCBChecked: value => {
+                        if(neededDaysCheck.option1 ||
+                          neededDaysCheck.option2 ||
+                          neededDaysCheck.option3 ||
+                          neededDaysCheck.option4 ||
+                          neededDaysCheck.option5 ||
+                          neededDaysCheck.option6) {
+                            return true
+                          }
+                        return false
+                      }
+                    }
+                  })}
+                  disabled={isReadonly}
+                />
+                <label htmlFor={"ch_needed_days" + (counter - 1)}>T</label>
+              </span>
+              <span style={{marginRight: "10px"}}>
+                <input
+                  name={"ch_needed_days" + (counter - 1)}
+                  type="checkbox" 
+                  checked={neededDaysCheck.option4}
+                  onChange={({ target }) => {
+                    if(!neededDaysCheck.option4) {
+                      if(neededDaysCheck.option1) return;
+
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        childProfile.needed_days+ "W,")
+                      setNeededDaysCheck({...neededDaysCheck, ['option4']: true})
+                    } else {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        childProfile.needed_days.replace("W,", "")) 
+                      setNeededDaysCheck({...neededDaysCheck, ['option1']: false, ['option4']: false})
+                    }
+                  }}
+                  ref={register({
+                    validate: {
+                      otherCBChecked: value => {
+                        if(neededDaysCheck.option1 ||
+                          neededDaysCheck.option2 ||
+                          neededDaysCheck.option3 ||
+                          neededDaysCheck.option4 ||
+                          neededDaysCheck.option5 ||
+                          neededDaysCheck.option6) {
+                            return true
+                          }
+                        return false
+                      }
+                    }
+                  })}
+                  disabled={isReadonly}
+                />
+                <label htmlFor={"ch_needed_days" + (counter - 1)}>W</label>
+              </span>
+              <span style={{marginRight: "10px"}}>
+                <input
+                  name={"ch_needed_days" + (counter - 1)}
+                  type="checkbox" 
+                  checked={neededDaysCheck.option5}
+                  onChange={({ target }) => {
+                    if(!neededDaysCheck.option5) {
+                      if(neededDaysCheck.option1) return;
+
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        childProfile.needed_days+ "TH,")
+                      setNeededDaysCheck({...neededDaysCheck, ['option5']: true})
+                    } else {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        childProfile.needed_days.replace("TH,", "")) 
+                      setNeededDaysCheck({...neededDaysCheck, ['option1']: false, ['option5']: false})
+                    }
+                  }}
+                  ref={register({
+                    validate: {
+                      otherCBChecked: value => {
+                        if(neededDaysCheck.option1 ||
+                          neededDaysCheck.option2 ||
+                          neededDaysCheck.option3 ||
+                          neededDaysCheck.option4 ||
+                          neededDaysCheck.option5 ||
+                          neededDaysCheck.option6) {
+                            return true
+                          }
+                        return false
+                      }
+                    }
+                  })}
+                  disabled={isReadonly}
+                />
+                <label htmlFor={"ch_needed_days" + (counter - 1)}>TH</label>
+              </span>
+              <span style={{marginRight: "10px"}}>
+                <input
+                  name={"ch_needed_days" + (counter - 1)}
+                  type="checkbox" 
+                  checked={neededDaysCheck.option6}
+                  onChange={({ target }) => {
+                    if(!neededDaysCheck.option6) {
+                      if(neededDaysCheck.option1) return;
+
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        childProfile.needed_days + "F,")
+                      setNeededDaysCheck({...neededDaysCheck, ['option6']: true})
+                    } else {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "needed_days",
+                        childProfile.needed_days.replace("F,", ""))
+                      setNeededDaysCheck({...neededDaysCheck, ['option1']: false, ['option6']: false})
+                    } 
+                  }}
+                  ref={register({
+                    validate: {
+                      otherCBChecked: value => {
+                        if(neededDaysCheck.option1 ||
+                          neededDaysCheck.option2 ||
+                          neededDaysCheck.option3 ||
+                          neededDaysCheck.option4 ||
+                          neededDaysCheck.option5 ||
+                          neededDaysCheck.option6) {
+                            return true
+                          }
+                        return false
+                      }
+                    }
+                  })}
+                  disabled={isReadonly}
+                />
+                <label htmlFor={"ch_needed_days" + (counter - 1)}>F</label>
+              </span>
+            </div>
+            <ErrorMessage
+              field={errors["ch_needed_days" + (counter - 1)]}
+              errorType="otherCBChecked"
+              message="Needed days is required"
+            />
           </div>
 
           <div className="form-group">
@@ -1173,8 +1331,22 @@ export default function index({
                     target.value
                   );
                 }}
-                ref={register()}
-                defaultValue={childProfile.current_classroom}>
+                ref={register({
+                  validate: {
+                    otherCBChecked: value => {
+                      if(neededDaysCheck.option1 ||
+                        neededDaysCheck.option2 ||
+                        neededDaysCheck.option3 ||
+                        neededDaysCheck.option4 ||
+                        neededDaysCheck.option5 ||
+                        neededDaysCheck.option6) {
+                          return true
+                        }
+                      return false
+                    }
+                  }
+                })}
+                defaultValue={childProfile.schedule_tour}>
                 <option value="">Select</option>
                 {SCHEDULE_TOUR_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.value}>
@@ -1212,7 +1384,7 @@ export default function index({
                     target.value
                   );
                 }}
-                ref={register()}
+                ref={register({required: true})}
                 defaultValue={childProfile.voucher}>
                 <option value="">Select</option>
                 {VOUCHER_OPTIONS.map(opt => (

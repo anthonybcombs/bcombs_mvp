@@ -115,7 +115,7 @@ export default function index({
       {renderParentForm()}
       <br/>
       <br/>
-      <RelationshipToChildStyled
+      {/* <RelationshipToChildStyled
         handleParentChildRelationship={handleParentChildRelationship}
         register={register}
         errors={errors}
@@ -123,7 +123,7 @@ export default function index({
         parents={parents}
       />
       <br/>
-      <br/>
+      <br/> */}
       <EmergencyContactFormStyled
         handleParentFormDetailsChange={handleParentFormDetailsChange}
         parentEmergencyContacts={emergencyContacts}

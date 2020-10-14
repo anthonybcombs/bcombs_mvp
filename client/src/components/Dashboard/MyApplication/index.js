@@ -23,6 +23,10 @@ import { requestLogout } from "../../../redux/actions/Auth";
 import ProfileImg from "../../../images/defaultprofile.png";
 import ChildFormViewStyled from "../Application/view/child";
 import ParentFormViewStyled from "../Application/view/parent";
+import DaycareChildFormView from "../Application/daycare/child";
+import RelationshipToChildStyled from "../DaycareApplicationForm/RelationshipToChildForm";
+import DaycareParentFormView from "../Application/daycare/parent";
+
 import TermsWaiverFormViewStyled from "../Application/view/waiver";
 import Loading from "../../../helpers/Loading.js";
 import SuccessUpdateModal from "./SuccessUpdateModal";
@@ -317,9 +321,9 @@ export default function index() {
     }
   );
 
-  // if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
-  //   window.location.reload(false);
-  // }
+  if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
+    window.location.reload(false);
+  }
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
@@ -464,6 +468,12 @@ export default function index() {
               child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
               program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
               ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
+              preffered_start_date: new Date(application.child.preffered_start_date),
+              current_classroom: application.child.current_classroom ? application.child.current_classroom: "",
+              primary_language: application.child.primary_language ? application.child.primary_language : "",
+              needed_days: application.child.needed_days ? application.child.needed_days : "",
+              schedule_tour: application.child.schedule_tour ? application.child.schedule_tour : "",
+              voucher: application.child.voucher ? application.child.voucher : ""
             },
             general_information: {
               grade: application.child.grade_number ? application.child.grade_number: "",
@@ -493,7 +503,61 @@ export default function index() {
               team_affiliations: application.child.affiliations ? application.child.affiliations : "",
               awards: application.child.awards ? application.child.awards : "",
               accomplishments: application.child.accomplishments ? application.child.accomplishments : "",
-              mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : ""
+              mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : "",
+              is_child_transferring: application.child.is_child_transferring 
+                ? application.child.is_child_transferring 
+                : "",
+              does_child_require_physical_education_service: application.child.does_child_require_physical_education_service 
+                ? application.child.does_child_require_physical_education_service 
+                : "",
+              history_prev_diseases: application.child.history_prev_diseases 
+                ? application.child.history_prev_diseases 
+                : "", //start of questions
+              child_currently_doctors_care: application.child.child_currently_doctors_care 
+                ? application.child.child_currently_doctors_care 
+                : "",
+              reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations 
+                ? application.child.reasons_previous_hospitalizations 
+                : "",
+              comments_suggestion: application.child.comments_suggestion 
+                ? application.child.comments_suggestion 
+                : "",
+              list_special_dietary: application.child.list_special_dietary 
+                ? application.child.list_special_dietary 
+                : "",
+              list_any_allergies: application.child.list_any_allergies 
+              ? application.child.list_any_allergies 
+              : "",
+              mental_physical_disabilities: application.child.mental_physical_disabilities 
+              ? application.child.mental_physical_disabilities 
+              : "",
+              medical_action_plan: application.child.medical_action_plan 
+              ? application.child.medical_action_plan 
+              : "",
+              list_fears_unique_behavior: application.child.list_fears_unique_behavior 
+              ? application.child.list_fears_unique_behavior 
+              : "",
+              transfer_reason: application.child.transfer_reason 
+              ? application.child.transfer_reason 
+              : "",
+              prev_school_phone: application.child.prev_school_phone 
+              ? application.child.prev_school_phone 
+              : "",
+              prev_school_city: application.child.prev_school_city 
+              ? application.child.prev_school_city 
+              : "",
+              prev_school_address: application.child.prev_school_address 
+              ? application.child.prev_school_address 
+              : "",
+              prev_school_attended: application.child.prev_school_attended 
+              ? application.child.prev_school_attended 
+              : "",
+              prev_school_state: application.child.prev_school_state 
+              ? application.child.prev_school_state 
+              : "",
+              prev_school_zip_code: application.child.prev_school_zip_code 
+              ? application.child.prev_school_zip_code 
+              : ""
             },
             emergency_care_information: {
               doctor_name: application.child.doctor_name ? application.child.doctor_name : "",
@@ -501,7 +565,8 @@ export default function index() {
               hospital_preference: application.child.hospital_preference ? application.child.hospital_preference : "",
               hospital_phone: application.child.hospital_phone ? application.child.hospital_phone : ""
             },
-            ch_id: application.child.ch_id
+            ch_id: application.child.ch_id,
+            id: application.child.ch_id
           }
 
           const parents = application.parents;
@@ -531,10 +596,16 @@ export default function index() {
               level_education: parent.level_of_education ? parent.level_of_education : "",
               child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
               child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
-              person_recommend: parent.person_recommend ? parent.person_recommend: ""
+              person_recommend: parent.person_recommend ? parent.person_recommend: "",
+              ethinicity: parent.ethnicities
+                ? parseArrayFormat(parent.ethnicities.split(","))
+                : [],
+              gender: parent.gender,
+              date_of_birth: new Date(parent.birthdate)
             }
 
-            items.push({profile: profile, parent_id: parent.parent_id});
+            items.push({profile: profile, id: parent.parent_id, parent_id: parent.parent_id});
+            
           }
 
           setTempHideForm(true);
@@ -577,6 +648,9 @@ export default function index() {
       </a>
     )
   }
+
+  const [relationships, setRelationships] = useState([]);
+
   const createViewButton = (application) => {
     return (
       <a 
@@ -586,6 +660,8 @@ export default function index() {
           e.preventDefault();
 
           dispatch(requestGetApplicationHistory(application.app_id));
+
+          console.log("selected application", application);
 
           const childInformationObj = {
             profile: {
@@ -608,7 +684,13 @@ export default function index() {
               child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
               program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
               ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
-              nick_name: application.child.nickname ? application.child.nickname: ""
+              nick_name: application.child.nickname ? application.child.nickname: "",
+              preffered_start_date: new Date(application.child.preffered_start_date),
+              current_classroom: application.child.current_classroom ? application.child.current_classroom: "",
+              primary_language: application.child.primary_language ? application.child.primary_language : "",
+              needed_days: application.child.needed_days ? application.child.needed_days : "",
+              schedule_tour: application.child.schedule_tour ? application.child.schedule_tour : "",
+              voucher: application.child.voucher ? application.child.voucher : ""
             },
             general_information: {
               grade: application.child.grade_number ? application.child.grade_number: "",
@@ -638,7 +720,61 @@ export default function index() {
               team_affiliations: application.child.affiliations ? application.child.affiliations : "",
               awards: application.child.awards ? application.child.awards : "",
               accomplishments: application.child.accomplishments ? application.child.accomplishments : "",
-              mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : ""
+              mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : "",
+              is_child_transferring: application.child.is_child_transferring 
+                ? application.child.is_child_transferring 
+                : "",
+              does_child_require_physical_education_service: application.child.does_child_require_physical_education_service 
+                ? application.child.does_child_require_physical_education_service 
+                : "",
+              history_prev_diseases: application.child.history_prev_diseases 
+                ? application.child.history_prev_diseases 
+                : "", //start of questions
+              child_currently_doctors_care: application.child.child_currently_doctors_care 
+                ? application.child.child_currently_doctors_care 
+                : "",
+              reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations 
+                ? application.child.reasons_previous_hospitalizations 
+                : "",
+              comments_suggestion: application.child.comments_suggestion 
+                ? application.child.comments_suggestion 
+                : "",
+              list_special_dietary: application.child.list_special_dietary 
+                ? application.child.list_special_dietary 
+                : "",
+              list_any_allergies: application.child.list_any_allergies 
+              ? application.child.list_any_allergies 
+              : "",
+              mental_physical_disabilities: application.child.mental_physical_disabilities 
+              ? application.child.mental_physical_disabilities 
+              : "",
+              medical_action_plan: application.child.medical_action_plan 
+              ? application.child.medical_action_plan 
+              : "",
+              list_fears_unique_behavior: application.child.list_fears_unique_behavior 
+              ? application.child.list_fears_unique_behavior 
+              : "",
+              transfer_reason: application.child.transfer_reason 
+              ? application.child.transfer_reason 
+              : "",
+              prev_school_phone: application.child.prev_school_phone 
+              ? application.child.prev_school_phone 
+              : "",
+              prev_school_city: application.child.prev_school_city 
+              ? application.child.prev_school_city 
+              : "",
+              prev_school_address: application.child.prev_school_address 
+              ? application.child.prev_school_address 
+              : "",
+              prev_school_attended: application.child.prev_school_attended 
+              ? application.child.prev_school_attended 
+              : "",
+              prev_school_state: application.child.prev_school_state 
+              ? application.child.prev_school_state 
+              : "",
+              prev_school_zip_code: application.child.prev_school_zip_code 
+              ? application.child.prev_school_zip_code 
+              : ""
             },
             emergency_care_information: {
               doctor_name: application.child.doctor_name ? application.child.doctor_name : "",
@@ -646,7 +782,8 @@ export default function index() {
               hospital_preference: application.child.hospital_preference ? application.child.hospital_preference : "",
               hospital_phone: application.child.hospital_phone ? application.child.hospital_phone : ""
             },
-            ch_id: application.child.ch_id
+            ch_id: application.child.ch_id,
+            id: application.child.ch_id
           }
 
           const parents = application.parents;
@@ -676,10 +813,15 @@ export default function index() {
               level_education: parent.level_of_education ? parent.level_of_education : "",
               child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
               child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
-              person_recommend: parent.person_recommend ? parent.person_recommend: ""
+              person_recommend: parent.person_recommend ? parent.person_recommend: "",
+              ethinicity: parent.ethnicities
+                ? parseArrayFormat(parent.ethnicities.split(","))
+                : [],
+              gender: parent.gender,
+              date_of_birth: new Date(parent.birthdate)
             }
           
-            items.push({profile: profile, parent_id: parent.parent_id});
+            items.push({profile: profile, id: parent.parent_id, parent_id: parent.parent_id});
           }
 
           if(application && application.vendorPrograms && application.vendorPrograms.length > 0) {
@@ -715,6 +857,16 @@ export default function index() {
           setTempHideForm(true);
           setIsFormHistory(false);
 
+          console.log("items", items);
+
+          // const relationshipObj = {
+          //   parent: items[0].parent_id,
+          //   child: childInformationObj.ch_id,
+          //   relationship: ""
+          // }
+
+          setRelationships(application.relationships);
+
           const termsWaiver = {
             date: new Date().toString(),
             section1: {
@@ -738,6 +890,7 @@ export default function index() {
             scrollToApplicationForm()
           }, 200)    
         }}
+        
       >
         View Application
       </a>
@@ -967,6 +1120,12 @@ export default function index() {
         state: parent.profile.state,
         zip_code: parent.profile.zip_code,
         person_recommend: parent.profile.person_recommend,
+        birthdate: format(
+          new Date(parent.profile.date_of_birth),
+          DATE_TIME_FORMAT),
+        gender: parent.profile.gender,
+        age: getAge(parent.profile.date_of_birth),
+        ethnicities: getArrayValue(parent.profile.ethinicity),
         parent_id: parent.parent_id
       })
     });
@@ -1062,6 +1221,32 @@ export default function index() {
         hospital_preference: childInformation.emergency_care_information.hospital_preference,
         hospital_phone: childInformation.emergency_care_information.hospital_phone,
         nickname: childInformation.profile.nick_name,
+        is_child_transferring: childInformation.general_information.is_child_transferring,
+        does_child_require_physical_education_service: childInformation.general_information.does_child_require_physical_education_service,
+        history_prev_diseases: childInformation.general_information.history_prev_diseases,
+        child_currently_doctors_care: childInformation.general_information.child_currently_doctors_care,
+        reasons_previous_hospitalizations: childInformation.general_information.reasons_previous_hospitalizations,
+        comments_suggestion: childInformation.general_information.comments_suggestion,
+        list_special_dietary: childInformation.general_information.list_special_dietary,
+        list_any_allergies: childInformation.general_information.list_any_allergies,
+        mental_physical_disabilities: childInformation.general_information.mental_physical_disabilities,
+        medical_action_plan: childInformation.general_information.medical_action_plan,
+        list_fears_unique_behavior: childInformation.general_information.list_fears_unique_behavior,
+        transfer_reason: childInformation.general_information.transfer_reason,
+        prev_school_phone: childInformation.general_information.prev_school_phone,
+        prev_school_city: childInformation.general_information.prev_school_city,
+        prev_school_address: childInformation.general_information.prev_school_address,
+        prev_school_attended: childInformation.general_information.prev_school_attended,
+        prev_school_state: childInformation.general_information.prev_school_state,
+        prev_school_zip_code: childInformation.general_information.prev_school_zip_code,
+        preffered_start_date:format(
+          new Date(childInformation.profile.preffered_start_date),
+          DATE_TIME_FORMAT),
+        current_classroom: childInformation.profile.current_classroom,
+        primary_language: childInformation.profile.primary_language,
+        needed_days: childInformation.profile.needed_days,
+        schedule_tour: childInformation.profile.schedule_tour,
+        voucher: childInformation.profile.voucher,
         ch_id: childInformation.ch_id
       },
       parents: setupParentsList(),
@@ -1116,6 +1301,34 @@ export default function index() {
     setTimeout(() => {
       setIsReadonly(!isReadonly);
     }, 100);
+  }
+
+  const handleParentChildRelationship = (parent, child, relationship) => {
+
+    let exists = false;
+
+    console.log("relationships", relationships)
+
+    for(const [index, item] of relationships.entries()) {
+      if(item.parent == parent && item.child == child) {
+        let tempRelationships = relationships;
+        tempRelationships[index].parent = parent;
+        tempRelationships[index].child = child;
+        tempRelationships[index].relationship = relationship;
+
+        exists = true;
+        setRelationships([...tempRelationships]);
+        break;
+      }
+    }
+
+    if(!exists) {
+      setRelationships([...relationships, {
+        parent: parent,
+        child: child,
+        relationship: relationship
+      }])
+    }
   }
 
   return (
@@ -1187,39 +1400,90 @@ export default function index() {
                         autoComplete="off"
                         onSubmit={handleSubmit(onSubmitSaveApplication)}
                       >
-                        <ChildFormViewStyled
-                          childInformation={childInformation}
-                          vendor={{name: vendorName}}
-                          ProfileImg={ProfileImg}
-                          isReadonly={isReadonly}
-                          handleChangeToEdit={handleChangeToEdit}
-                          errors={errors}
-                          register={register}
-                          handleChildFormDetailsChange={handleChildFormDetailsChange}
-                          isFormHistory={isFormHistory}
-                          app_programs={selectedApplication.vendorPrograms}
-                          location_sites={selectedApplication.vendorLocationSites}
-                        />
-                        <hr className="style-eight"></hr>
-                        <ParentFormViewStyled
-                          parents={parentsInformation}
-                          vendor={{name: vendorName}}
-                          ProfileImg={ProfileImg}
-                          handleParentFormDetailsChange={handleParentFormDetailsChange}
-                          isReadonly={isReadonly}
-                          isUpdate={true}
-                          emergencyContacts={emergencyContacts}
-                          errors={errors}
-                        />
-                        <hr className="style-eight"></hr>
-                        <TermsWaiverFormViewStyled
-                          application={selectedApplication}
-                          isReadonly={isReadonly}
-                          register={register}
-                          errors={errors}
-                          handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
-                          termsWaiver={termsWaiver}
-                        />
+                        {
+                          selectedApplication &&
+                          selectedApplication.is_daycare ? (
+                            <>
+                              <DaycareChildFormView
+                                childInformation={childInformation}
+                                vendor={{name: vendorName}}
+                                ProfileImg={ProfileImg}
+                                isReadonly={isReadonly}
+                                handleChangeToEdit={handleChangeToEdit}
+                                errors={errors}
+                                register={register}
+                                handleChildFormDetailsChange={handleChildFormDetailsChange}
+                                isFormHistory={isFormHistory}
+                              />
+                              <hr className="style-eight"></hr>
+                              <DaycareParentFormView
+                                parents={parentsInformation}
+                                vendor={{name: vendorName}}
+                                ProfileImg={ProfileImg}
+                                handleParentFormDetailsChange={handleParentFormDetailsChange}
+                                isReadonly={isReadonly}
+                                isUpdate={true}
+                                emergencyContacts={emergencyContacts}
+                              />
+                              <hr className="style-eight"></hr>
+                              <RelationshipToChildStyled
+                                handleParentChildRelationship={handleParentChildRelationship}
+                                parents={parentsInformation}
+                                childs={[{...childInformation}]}
+                                errors={errors}
+                                register={register}
+                                isReadonly={isReadonly}
+                                relationships={relationships}
+                              />
+                              <hr className="style-eight"></hr>
+                              <TermsWaiverFormViewStyled
+                                application={selectedApplication}
+                                isReadonly={isReadonly}
+                                register={register}
+                                errors={errors}
+                                handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+                                termsWaiver={termsWaiver}
+                              />
+                            </>
+                          ) : (
+                            <>
+                            <ChildFormViewStyled
+                              childInformation={childInformation}
+                              vendor={{name: vendorName}}
+                              ProfileImg={ProfileImg}
+                              isReadonly={isReadonly}
+                              handleChangeToEdit={handleChangeToEdit}
+                              errors={errors}
+                              register={register}
+                              handleChildFormDetailsChange={handleChildFormDetailsChange}
+                              isFormHistory={isFormHistory}
+                              app_programs={selectedApplication.vendorPrograms}
+                              location_sites={selectedApplication.vendorLocationSites}
+                            />
+                            <hr className="style-eight"></hr>
+                            <ParentFormViewStyled
+                              parents={parentsInformation}
+                              vendor={{name: vendorName}}
+                              ProfileImg={ProfileImg}
+                              handleParentFormDetailsChange={handleParentFormDetailsChange}
+                              isReadonly={isReadonly}
+                              isUpdate={true}
+                              emergencyContacts={emergencyContacts}
+                              errors={errors}
+                            />
+                            <hr className="style-eight"></hr>
+                            <TermsWaiverFormViewStyled
+                              application={selectedApplication}
+                              isReadonly={isReadonly}
+                              register={register}
+                              errors={errors}
+                              handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+                              termsWaiver={termsWaiver}
+                            />
+                            </>
+                          )
+                        }
+
                         {
                           !isReadonly && (
                             <div style={{textAlign: "center", marginBottom: "20px"}}>

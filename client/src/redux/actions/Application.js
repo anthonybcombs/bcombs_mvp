@@ -13,7 +13,8 @@ import {
   APPLICATION_SAVE_MUTATION,
   GET_APPLICATION_USER_ID_QUERY,
   GET_APPLICATION_HISTORY,
-  GET_USER_APPLICATION_HISTORY
+  GET_USER_APPLICATION_HISTORY,
+  DAYCARE_APPLICATION_ADD_MUTATION
 } from "../../graphql/applicationMutation";
 import * as actionType from "./Constant";
 import { setApplicationLoading, setUserApplicationLoading } from "./Loading";
@@ -198,7 +199,8 @@ const addApplicationToDatabase = applications => {
         section1_name: application.section1_name,
         section2_name: application.section2_name,
         section3_name: application.section3_name,
-        emergency_contacts: application.emergency_contacts
+        emergency_contacts: application.emergency_contacts,
+        is_daycare: 0
       };
 
       applications_obj.push(temp);
@@ -220,6 +222,54 @@ const addApplicationToDatabase = applications => {
     }
   });
 };
+
+const addDaycareApplicationToDatabase = daycare => {
+  return new Promise(async (resolve, reject) => {
+    let applications_obj = [];
+    let applications = daycare.applications
+    for (let application of applications) {
+      let temp = {
+        vendor: application.vendor,
+        child: application.child,
+        parents: application.parents,
+        section1_signature: application.section1_signature,
+        section1_date_signed: application.section1_date_signed,
+        section2_signature: application.section2_signature,
+        section2_date_signed: application.section2_date_signed,
+        section3_signature: application.section3_signature,
+        section3_date_signed: application.section3_date_signed,
+        section1_text: application.section1_text,
+        section2_text: application.section2_text,
+        section3_text: application.section3_text,
+        section1_name: application.section1_name,
+        section2_name: application.section2_name,
+        section3_name: application.section3_name,
+        emergency_contacts: application.emergency_contacts,
+        is_daycare: 1
+      };
+
+      applications_obj.push(temp);
+    }
+
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: DAYCARE_APPLICATION_ADD_MUTATION,
+        variables: {
+          daycare: {
+            applications: [...applications_obj],
+            relationships: daycare.relationships
+          }
+        }
+      });
+
+      console.log("response", data);
+
+      return resolve(data.addDaycareApplication);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
 
 export const requestGetApplicationHistory = app_id => {
   return {
@@ -510,7 +560,12 @@ export function* getArchivedApplication({ vendor_id }) {
 export function* addApplication({ applications }) {
   try {
     yield put(setApplicationLoading(true));
-    const response = yield call(addApplicationToDatabase, applications);
+    let response;
+    if(applications.is_daycare) {
+      response = yield call(addDaycareApplicationToDatabase, applications)
+    } else {
+      response = yield call(addApplicationToDatabase, applications)
+    }
     yield put(setApplicationLoading(false));
     if (response) {
       console.log("application", response);

@@ -96,7 +96,7 @@ export default function index({
                   readOnly={isReadonly}
                   value={section3.signature}
                 />
-                <label className="field-label" for="section3_signature"><span className="required">*</span> Electronic Signature</label>
+                <label className="field-label" htmlFor="section3_signature"><span className="required">*</span> Electronic Signature</label>
               </div>
               <ErrorMessage
                 field={errors.section3_signature}
