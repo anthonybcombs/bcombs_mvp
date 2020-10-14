@@ -1,8 +1,7 @@
 import React from 'react'
 import { useDragLayer } from 'react-dnd'
 
-import DraggableField from '../DraggbleField'
-import SortableGroup from '../SortableGroup'
+import CustomDraggable from './CustomDraggable'
 
 import { Items } from '../Constants' 
 
@@ -39,7 +38,7 @@ export default () => {
       if (itemType === 'sortableGroup') {
         const offsetWidth = item.component.getNode().getBoundingClientRect().width - 35
         return (
-          <SortableGroup
+          <CustomDraggable
             {...item.restProps}
             key={`preview-${item.restProps.id}`}
             previewStyle={{ width: offsetWidth, border: '1px dashed gray' }}

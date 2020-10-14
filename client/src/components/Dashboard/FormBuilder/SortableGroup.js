@@ -13,7 +13,6 @@ import Settings from './Settings'
 const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
-    previewStyle = {}, preview = false,
     hidden, name, fields, isDragging, id,
     onRemoveGroup, settings,
     isActive, onActive, onChangeSettings,
@@ -44,11 +43,11 @@ const SortableGroup = React.forwardRef(
     <div
       ref={elementRef}
       className={`sortableGroup ${itemGroup} ${itemActive}`}
-      style={{ opacity, ...previewStyle }}
+      style={{ opacity }}
       onClick={() => onActive(id)}
     >   
         {
-          groupType === 'standard' && (
+          !isDragging && groupType === 'standard' && (
             <FontAwesomeIcon
               icon={faPlusCircle}
               className='drag-icon'
@@ -60,7 +59,6 @@ const SortableGroup = React.forwardRef(
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
           {
             fields.map(({ key, label, placeholder = '', type = '', tag }, index) => {
-
               return (
                 <div className='sortableGroup-column'>
                   {
@@ -91,7 +89,7 @@ const SortableGroup = React.forwardRef(
           }
         </div>
         {
-          isActive && groupType === 'standard' && (
+          (!isDragging && isActive && groupType === 'standard') && (
             <div className={`sortableGroup-addFields ${isAddingFieldShow}`}>
               <div className='field select-field-wrapper'>
                 <select
@@ -138,7 +136,7 @@ const SortableGroup = React.forwardRef(
           )
         }
         {
-          (!preview && isActive && !isDragging) &&
+          (!isDragging && isActive && !isDragging) &&
           (
             <Settings
               onChangeSettings={(data) => onChangeSettings({ ...data, id })}
