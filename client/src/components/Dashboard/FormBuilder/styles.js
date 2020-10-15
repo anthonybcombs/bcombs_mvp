@@ -15,6 +15,11 @@ export default styled.div`
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
   }
+  #formBuilder .field-label {
+    color: gray;
+    font-size: 14px;
+    font-weight: 600;
+  }
   #formBuilder textarea.field-input {
     background: #f4f4f5;
   }
@@ -169,6 +174,7 @@ export default styled.div`
 
   .sortableGroup {
     position: relative;
+    overflow: hidden;
 
     cursor: move;
     padding: 8px;
@@ -215,13 +221,23 @@ export default styled.div`
     background: #f4f4f5;
     transition: all .15s ease-in-out
   }
-  .sortableGroup-actions .tooltip-wrapper .tooltip {
+  .sortableGroup-actions .tooltip-wrapper .tooltip-left {
+
+  }
+  .sortableGroup-actions .tooltip-wrapper.tooltip-left .tooltip {
+    z-index: 10;
+    top: unset;
+    bottom: -22px;
     white-space: pre;
+    transform: translateY(-32px);
   }
-  .sortableGroup-actions .tooltip-wrapper.add-field .tooltip {
-    left: -20px;
+  .sortableGroup-actions .tooltip-wrapper.tooltip-left:hover .tooltip {
+    transform: translateY(0);
   }
-  .sortableGroup-actions .tooltip-wrapper.edit-groupName .tooltip {
+  .sortableGroup-actions .tooltip-wrapper.tooltip-left.add-field .tooltip {
+    left: -33px;
+  }
+  .sortableGroup-actions .tooltip-wrapper.tooltip-left.edit-groupName .tooltip {
     left: -42px;
   }
   
@@ -272,7 +288,9 @@ export default styled.div`
     position: absolute;
     top: 2px;
     right: 4px;
+    z-index: 1;
     padding: 8px;
+    max-width: 210px;
     background: white;
     box-shadow: 0 3px 6px #b5b5b5;
 
@@ -288,10 +306,11 @@ export default styled.div`
     visibility: visible;
     transform: translateY(0);
   }
-
+  .sortableGroup-drawer .field:not(:first-child) {
+    padding: 12px 0 5px;
+  }
   .sortableGroup-drawer .select-field-wrapper {
     position: relative;
-    width: 200px;
   }
   .sortableGroup-drawer >div button {
     border-radius: 3px;
@@ -318,6 +337,33 @@ export default styled.div`
   .sortableGroup-drawer >div button.close-btn:hover {
     background: #d32f2f;
     transition: .15s ease-in-out;
+  }
+
+
+  // Drawer Right
+  .sortableGroup-drawer.drawer-right {
+    top: 0;
+    right: 0;
+    width: 100%;
+    padding: 16px;
+    cursor: pointer;
+    max-width: 214px;
+    overflow-y: auto;
+    height: calc(100% - 1.9rem);
+    transform: translate(62px, 0);
+    transition: transform .5s cubic-bezier(0, 1.62, 0.68, 0.68),
+                opacity 1s cubic-bezier(0,1.62,0.38,0.96),
+                visibility 1.3s cubic-bezier(0,1.62,0.38,0.96);
+  }
+  .sortableGroup-drawer.drawer-right.show {
+    transform: translate(0, 0);
+  }
+  .sortableGroup-drawer.drawer-right .addField-actions {
+    position: sticky;
+    bottom: -16px;
+    padding: 1rem;
+    margin: 0 -16px;
+    background: #fff;
   }
  
 
@@ -483,7 +529,7 @@ export default styled.div`
 
 
 
-  
+
   // =================================
   // ********* MEDIA QUERIES *********
   // =================================

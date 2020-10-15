@@ -32,7 +32,12 @@ const SortableGroup = React.forwardRef(
   const [additionalField, handleSelectFieldToAdd] = useState('')
   const [editFieldDrawerShow, setEditFieldDrawerShow] = useState(false)
   const [addingFieldDrawerShow, setAddingFieldDrawerShow] = useState(false)
-  const [editGroupNameDrawerShow, setEditGroupNameDrawerShow] = useState(false)
+  // const [editGroupNameDrawerShow, setEditGroupNameDrawerShow] = useState(false)
+
+  const [editGroupNameDrawerShow, setEditGroupNameDrawerShow] = useState({
+    show: false,
+    anchorEl: null
+  })
 
 
   useEffect(() => {
@@ -43,7 +48,7 @@ const SortableGroup = React.forwardRef(
   const itemGroup = name.toLowerCase().replace(/ +/g, "")
   const isEditFieldDrawerShow = editFieldDrawerShow ? 'show' : ''
   const isAddingFieldDrawerShow = addingFieldDrawerShow ? 'show' : ''
-  const isEditGroupNameDrawerShow = editGroupNameDrawerShow ? 'show' : ''
+  const isEditGroupNameDrawerShow = editGroupNameDrawerShow.show ? 'show' : ''
 
   return (
     <div
@@ -55,7 +60,7 @@ const SortableGroup = React.forwardRef(
         {
           !isDragging && groupType === 'standard' && (
             <div className='sortableGroup-actions'>
-              <div className='tooltip-wrapper add-field'>
+              <div className='tooltip-wrapper tooltip-left add-field'>
                 <FontAwesomeIcon
                   size='2x' 
                   icon={faPlusCircle}
@@ -64,12 +69,16 @@ const SortableGroup = React.forwardRef(
                 />
                 <span className='tooltip'>Add Field</span>
               </div>
-              <div className='tooltip-wrapper edit-groupName'>
+              <div className='tooltip-wrapper tooltip-left edit-groupName'>
                 <FontAwesomeIcon
                   size='2x' 
                   icon={faEdit}
                   className='edit-icon'
-                  onClick={() => setEditGroupNameDrawerShow(!editGroupNameDrawerShow) }
+                  // onClick={() => setEditGroupNameDrawerShow(!editGroupNameDrawerShow) }
+                  onClick={(e) => setEditGroupNameDrawerShow({
+                    show: true,
+                    anchorEl: e.currentTarget
+                  }) }
                 />
                 <span className='tooltip'>Edit Group Name</span>
               </div>
@@ -122,18 +131,26 @@ const SortableGroup = React.forwardRef(
             <>
               {/* Edit Group Name Drawer */}
               <div className={`sortableGroup-drawer ${isEditGroupNameDrawerShow}`}>
-                <input
-                  type='text'
-                  className='field-input'
-                  placeholder='Group Name'
-                  // value={name}
-                  // onChange={() => console.log('eee')}
-                />
+                <div className='field'>
+                  <label for='group-name' className='field-label'>Group Name</label>
+                  <input
+                    type='text'
+                    id='group-name'
+                    className='field-input'
+                    placeholder='Group Name'
+                    // value={name}
+                    // onChange={() => console.log('eee')}
+                  />
+                </div>
                 <div className='addField-actions'>
                   <button
                     type='button'
                     className='add-btn'
-                    onClick={() => setEditGroupNameDrawerShow(!editGroupNameDrawerShow) }
+                    // onClick={() => setEditGroupNameDrawerShow(!editGroupNameDrawerShow) }
+                    onClick={() => setEditGroupNameDrawerShow({
+                      show: false,
+                      anchorEl: null
+                    }) }
                   >
                     Update
                   </button>
@@ -141,9 +158,11 @@ const SortableGroup = React.forwardRef(
               </div>
 
               {/* Add Fields Drawer */}
-              <div className={`sortableGroup-drawer ${isAddingFieldDrawerShow}`}>
+              <div className={`sortableGroup-drawer drawer-right ${isAddingFieldDrawerShow}`}>
                 <div className='field select-field-wrapper'>
+                  <label for='add-field' className='field-label'>Select a field to add</label>
                   <select
+                    id='add-field'
                     className='field-input'
                     defaultValue={additionalField}
                     onChange={({ target }) => {
@@ -186,16 +205,23 @@ const SortableGroup = React.forwardRef(
               </div>
 
               {/* Edit Fields Drawer */}
-              <div className={`sortableGroup-drawer ${isEditFieldDrawerShow}`}>
-                <input
-                  type='text'
-                  className='field-input'
-                  placeholder='Edit Placeholder'
-                  // value={name}
-                  // onChange={() => console.log('eee')}
-                />
+              <div className={`sortableGroup-drawer drawer-right ${isEditFieldDrawerShow}`}>
+                <div className='field'>
+                  <label for='placeholder' className='field-label'>Placeholder</label>
+                  <input
+                    type='text'
+                    id='placeholder'
+                    className='field-input'
+                    placeholder='Edit Placeholder'
+                    // value={name}
+                    // onChange={() => console.log('eee')}
+                  />
+                </div>
+                
                 <div className='field select-field-wrapper'>
+                <label for='column' className='field-label'>Column</label>
                   <select
+                    id='column'
                     className='field-input'
                     defaultValue={fieldColumn}
                     onChange={({ target }) => {
