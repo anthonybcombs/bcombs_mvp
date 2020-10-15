@@ -96,33 +96,59 @@ const SortableGroup = React.forwardRef(
         </p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
           {
-            fields.map(({ key, label, placeholder = '', type = '', tag }, index) => {
-              return (
-                <div className={`sortableGroup-column`} style={{ gridColumn: `span ${fieldColumn}`}}>
-                  {
-                    FieldConstructor[tag]({
-                      name: key,
-                      key: key + uuid(),
-                      placeholder,
-                      type,
-                      label
-                    })
-                  }
-                  {
-                    fields.length > 1 &&
-                    (
-                      <FontAwesomeIcon
-                        className='removeField-icon'
-                        icon={faTimes}
-                        onClick={e => {
-                          e.stopPropagation()
-                          onRemoveGroupField(id, index)
-                        }}
-                      />
-                    )
-                  }
-                </div>
-              )
+            fields.map((field, index) => {
+              const { type = '', tag, options } = field
+              if (type !== 'group') {
+                return (
+                  <div className={`sortableGroup-column`} style={{ gridColumn: `span ${fieldColumn}`}}>
+                    {
+                      FieldConstructor[tag]({
+                        key: tag + uuid(),
+                        ...field
+                      })
+                    }
+                    {
+                      fields.length > 1 &&
+                      (
+                        <FontAwesomeIcon
+                          className='removeField-icon'
+                          icon={faTimes}
+                          onClick={e => {
+                            e.stopPropagation()
+                            onRemoveGroupField(id, index)
+                          }}
+                        />
+                      )
+                    }
+                  </div>
+                )
+              } else {
+                return options.map(option => {
+                  return (
+                    <div className={`sortableGroup-column`} style={{ gridColumn: `span 3`}}>
+                      {
+                        FieldConstructor[option.tag]({
+                          key: option.tag + uuid(),
+                          ...option
+                        })
+                      }
+                      {
+                        options.length > 1 &&
+                        (
+                          <FontAwesomeIcon
+                            className='removeField-icon'
+                            icon={faTimes}
+                            onClick={e => {
+                              e.stopPropagation()
+                              // onRemoveGroupField(id, index)
+                            }}
+                          />
+                        )
+                      }
+                    </div>
+                  )
+                })
+              }
             })
           }
         </div>

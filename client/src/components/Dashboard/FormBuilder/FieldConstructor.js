@@ -9,11 +9,28 @@ export default {
       />
     )
   },
-  textarea: ({ label }) => {
-    return <div>{label}</div>
+  textarea: ({ label, ...rest }) => {
+    return <textarea
+      className='field-input'
+      {...rest}
+    />
   },
-  checkbox: ({ label }) => {
-    return <div>{label}</div>
+  checkbox: ({ label, name }) => {
+    return (
+      <label for={name} className='checkboxContainer'>
+        <input
+          type='checkbox'
+          id={name}
+          name={name}
+          // onChange={e => {
+          //   e.stopPropagation()
+          //   handleChangeSettings({ include: e.target.checked }, 'instruction')
+          // }}
+        />
+        <span className='checkmark' />
+        <span className='labelName'> {label}</span>
+      </label>
+    )
   },
   multipleChoice: ({ label }) => {
     return <div>{label}</div>
