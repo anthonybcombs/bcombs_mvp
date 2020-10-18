@@ -647,9 +647,7 @@ export default function index() {
   const formRef = useRef(null);
 
   const isFormValid = (section) => {
-
-    return true;
-
+    
     if(selectedStep == "5") return true;
     
     let isValid = true
