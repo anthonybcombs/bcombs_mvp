@@ -25,7 +25,8 @@ export default function index({
   handleParentFormDetailsChange,
   isReadonly,
   emergencyContacts = [],
-  isVendorView = false
+  isVendorView = false,
+  selectedApplication
 }) {
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
@@ -143,6 +144,7 @@ export default function index({
               ProfileImg={ProfileImg}
               pastParentInformation={pastParentInformation[i - 1]}
               isVendorView={isVendorView}
+              selectedApplication={selectedApplication}
             />
           </div>
         );
@@ -162,6 +164,7 @@ export default function index({
               ProfileImg={ProfileImg}
               pastParentInformation={pastParentInformation[i - 1]}
               isVendorView={isVendorView}
+              selectedApplication={selectedApplication}
             />
           </div>
         );

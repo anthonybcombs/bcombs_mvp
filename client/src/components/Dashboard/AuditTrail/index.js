@@ -1386,6 +1386,7 @@ const AuditTrail = props => {
                       isUpdate={true}
                       emergencyContacts={emergencyContacts}
                       errors={errors}
+                      selectedApplication={selectedApplication}
                     />
                     <hr className="style-eight"></hr>
                     <RelationshipToChildStyled
@@ -1436,6 +1437,7 @@ const AuditTrail = props => {
                       isUpdate={true}
                       emergencyContacts={emergencyContacts}
                       errors={errors}
+                      selectedApplication={selectedApplication}
                     />
                     <hr className="style-eight"></hr>
                     <TermsWaiverFormViewStyled
