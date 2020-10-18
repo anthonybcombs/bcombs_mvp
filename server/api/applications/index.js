@@ -127,7 +127,7 @@ export const getApplicationByAppId = async (app_id, isHistory = false) => {
 
       application.relationships = relationships;
 
-      application.chRelationhips = await getChildChildRelationship(application.child.ch_id);
+      application.chRelationships = await getChildChildRelationship(application.child.ch_id);
     }
   } catch (error) {
     console.log("getApplicationByAppId error", error);
