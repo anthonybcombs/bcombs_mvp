@@ -369,6 +369,7 @@ const inputs = `
     input DaycareMainInput {
         applications: [DaycareApplicationInput]
         relationships: [ParentChildRelationshipInput]
+        chRelationships: [ChildChildRelationshipInput]
     }
 
     input ApplicationInput {
@@ -482,6 +483,12 @@ const inputs = `
     input ParentChildRelationshipInput {
         parent: String!
         child: String!
+        relationship: String
+    }
+
+    input ChildChildRelationshipInput {
+        child: String
+        child2: String
         relationship: String
     }
 `;
@@ -821,6 +828,7 @@ const queryTypes = `
         vendorLocationSites: [LocationSite]
         is_daycare: Int
         relationships: [ParentChildRelationship]
+        chRelationships: [ChildChildRelationship]
     }
 
     type ParentUserApplication{
@@ -904,6 +912,14 @@ const queryTypes = `
         child: String
         relationship: String
     }
+
+    type ChildChildRelationship {
+        id: String
+        child: String
+        child2: String
+        relationship: String
+        details: Child
+    }
 `;
 
 const mutations = `
@@ -962,6 +978,7 @@ const queries = `
         vendors: [Vendor]
         vendorsByUser(user: String): [Vendor]
         getVendorById2(id2: String): [Vendor]
+        getVendorById(id: String): [Vendor]
         getApplications: [Application]
         getVendorApplications(vendor_id: String!): [Application]
         getVendorArchivedApplications(vendor_id: String!): [Application]

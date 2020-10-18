@@ -410,6 +410,8 @@ export default function index({
     </div>
   );
 
+
+  console.log("pastChildInformation", pastChildInformation);
   return (
     <ChildInfomationFormStyled>
       <h3 className="heading">
@@ -829,9 +831,7 @@ export default function index({
                     isReadonly &&
                     !isVendorView &&
                     pastChildInformation &&
-                    (pastChildInformation.phone_number ||
-                      pastChildInformation.phone_number == "") &&
-                    pastChildInformation.phone_number !=
+                    pastChildInformation?.phone_number !=
                       childProfile.phone_number
                       ? "field-input highlights"
                       : "field-input"
@@ -863,7 +863,15 @@ export default function index({
               ) : (
                 <input
                   name="ch_phone_number"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    !isVendorView &&
+                    pastChildInformation &&
+                    pastChildInformation?.phone_number !=
+                      childProfile.phone_number
+                      ? "field-input highlights"
+                      : "field-input"
+                  }
                   placeholder="Phone"
                   readOnly={isReadonly}
                   id={`ch_phone_number_${counter - 1}`}
@@ -1172,9 +1180,7 @@ export default function index({
                   isReadonly &&
                   !isVendorView &&
                   pastChildInformation &&
-                  (pastChildInformation.address ||
-                    pastChildInformation.address == "") &&
-                  pastChildInformation.address != childProfile.address
+                  pastChildInformation?.address != childProfile.address
                     ? "field-input highlights"
                     : "field-input"
                 }

@@ -476,7 +476,7 @@ export default function index({
       name: "Grade",
       selector: "class",
       sortable: true,
-      cell: row => row?.child?.grade_desc
+      cell: row => row.is_daycare ? "-" : row?.child?.grade_desc
     },
     {
       name: "Age (Bdate)",

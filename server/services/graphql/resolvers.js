@@ -52,6 +52,7 @@ import {
   getVendorAppGroups,
   getVendorsByUserId,
   getVendorById2,
+  getVendorById,
   addVendorAdmins,
   getVendorAdmins,
   getVendorsIdByUser,
@@ -75,7 +76,12 @@ import {
   getUserApplicationsByUserId,
   getApplicationHistoryByUser
 } from "../../api/applications";
-import { addChild, getChildInformation, addDaycareChild } from "../../api/child";
+import { 
+  addChild, 
+  getChildInformation, 
+  addDaycareChild,
+  addChildChildRelationship,
+  getChildChildRelationship } from "../../api/child";
 import { 
   addParent, 
   getParentByApplication, 
@@ -165,6 +171,10 @@ const resolvers = {
       const vendors = await getVendorById2(id2);
       return vendors;
     },
+    async getVendorById(root, {id}, context) {
+      const vendors = await getVendorById(id);
+      return vendors;
+    },
     async getVendorApplications(root, { vendor_id }, context) {
       let applications = await getApplicationsByVendor(vendor_id);
       console.log("Get Vendor Application", applications.length);
@@ -179,6 +189,8 @@ const resolvers = {
         application.child = child.length > 0 ? child[0] : {};
 
         let relationships = [];
+
+        let chRelationships = [];
         
         for(const appParent of application.parents) {
           let tempRel = await getParentChildRelationship({
@@ -189,8 +201,8 @@ const resolvers = {
           if(tempRel.length > 0) relationships.push(tempRel[0]);
         }
 
-        application.relationships = relationships
-
+        application.relationships = relationships;
+        application.chRelationships = await getChildChildRelationship(application.child.ch_id);
         resapplications.push(Object.assign({}, application));
       }
       // if (resapplications.length > 0) {
@@ -213,6 +225,7 @@ const resolvers = {
     },
     async getUserApplicationsByUserId(root, { user_id }, context) {
       try {
+        console.log("Im here mofos!!!");
         const response = await getUserApplicationsByUserId(user_id);
         return response;
       } catch (err) {
@@ -370,6 +383,9 @@ const resolvers = {
 
       let applications = daycare.applications;
       let relationships = daycare.relationships;
+      let chRelationships = daycare.chRelationships;
+
+      let saveChilds = [];
 
       for (let application of applications) {
         const child = await addDaycareChild(application.child);
@@ -378,6 +394,8 @@ const resolvers = {
 
         application.class_teacher = "";
         application.child = child.ch_id;
+
+        saveChilds.push({...child, tempId: tempChildId});
 
         // newChilds.push({
         //   tempId: tempChildId,
@@ -452,6 +470,29 @@ const resolvers = {
             user_id: parentUser.id,
             app_id: application.app_id
           });
+        }
+      }
+
+      if(saveChilds.length > 1) {
+        for(let i = 0; i < saveChilds.length; i++) {
+          for(let k = 0; k < saveChilds.length; k++) {
+            if( i != k ) {
+              const tempChildId = saveChilds[i].tempId;
+              const tempChildId2 = saveChilds[k].tempId;
+    
+              const tempRel =  chRelationships.filter((item) => {
+                return item.child == tempChildId && item.child2 == tempChildId2;
+              });
+    
+              if(tempRel.length > 0) {
+                await addChildChildRelationship({
+                  child: saveChilds[i].ch_id,
+                  child2: saveChilds[k].ch_id,
+                  relationship: tempRel[0].relationship
+                })
+              }
+            }
+          }
         }
       }
 

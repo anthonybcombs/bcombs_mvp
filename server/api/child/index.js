@@ -703,3 +703,123 @@ export const updateChild = async ({
     return result;
   }
 }
+
+export const addChildChildRelationship = async({
+  child,
+  child2,
+  relationship
+}) => {
+  const db = makeDb();
+  let result = {};
+
+  try {
+    result = await db.query(
+      `INSERT INTO child_child(
+        id,
+        child,
+        child2,
+        relationship
+      ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?)`,
+      [
+        child,
+        child2,
+        relationship
+      ]
+    )
+  } catch(err) {
+    console.log("add parent error", err)
+  } finally {
+    await db.close();
+    return result
+  }
+}
+
+export const updateParentChildRelationship = async({
+  id,
+  relationship
+}) => {
+  const db = makeDb();
+  let result = {};
+
+  try {
+    result = await db.query(
+      `
+        UPDATE child_child SET
+        relationship=?
+        WHERE id=UUID_TO_BIN(?)
+      `,
+      [
+        relationship,
+        id
+      ]
+    )
+  } catch(err) {
+    console.log("add parent error", err)
+  } finally {
+    await db.close();
+    return result
+  }
+}
+
+export const getChildName = async(child) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `
+        SELECT
+        firstname
+        FROM child
+        WHERE ch_id=UUID_TO_BIN(?)
+      `,
+      [
+        child
+      ]
+    );
+  } catch(error) {
+    console.log("error getchildname", error)
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+export const getChildChildRelationship = async(child) => {
+  const db = makeDb();
+  let result = {};
+  let childs = [];
+  try {
+    result = await db.query(
+      `
+        SELECT 
+        BIN_TO_UUID(id) as id,
+        BIN_TO_UUID(child) as child,
+        BIN_TO_UUID(child2) as child2,
+        relationship
+        FROM child_child 
+        WHERE child=UUID_TO_BIN(?)
+      `,
+      [
+        child
+      ]
+    )
+
+    for(const item of result) {
+      const temp = await getChildName(item.child2);
+      if(temp && temp.length > 0) {
+        childs.push({
+          id: item.id,
+          child: item.child,
+          child2: item.child2,
+          relationship: item.relationship,
+          details: temp[0]
+        })
+      }
+    }
+  } catch(err) {
+    console.log("add parent error", err)
+  } finally {
+    await db.close();
+    return childs
+  }
+}

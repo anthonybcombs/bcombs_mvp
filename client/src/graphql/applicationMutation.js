@@ -248,6 +248,15 @@ export const GET_APPLICATIONS_QUERY = gql`
         child
         relationship
       }
+      chRelationships {
+        id
+        child
+        child2
+        details {
+          firstname
+        }
+        relationship
+      }
     }
   }
 `;
@@ -410,6 +419,15 @@ export const GET_APPLICATION_ID_QUERY = gql`
         id
         parent
         child
+        relationship
+      }
+      chRelationships {
+        id
+        child
+        child2
+        details {
+          firstname
+        }
         relationship
       }
     }
@@ -591,6 +609,15 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         id
         parent
         child
+        relationship
+      }
+      chRelationships {
+        id
+        child
+        child2
+        details {
+          firstname
+        }
         relationship
       }
     }

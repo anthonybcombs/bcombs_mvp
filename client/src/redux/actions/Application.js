@@ -257,7 +257,8 @@ const addDaycareApplicationToDatabase = daycare => {
         variables: {
           daycare: {
             applications: [...applications_obj],
-            relationships: daycare.relationships
+            relationships: daycare.relationships,
+            chRelationships: daycare.chRelationships
           }
         }
       });

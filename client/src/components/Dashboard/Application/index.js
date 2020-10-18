@@ -734,10 +734,10 @@ export default function index() {
         email_address: parent.email_address ? parent.email_address : "",
         email_type2: parent.email_type2 ? parent.email_type2 : "",
         email_address2: parent.email_address2 ? parent.email_address2 : "",
-        address: parent.address ? parent.address : application.child?.address,
-        city: parent.city ? parent.city : application.child?.city,
-        state: parent.state ? parent.state : application.child?.state,
-        zip_code: parent.zip_code ? parent.zip_code : application.child?.zip_code,
+        address: parent.address ? parent.address : "",
+        city: parent.city ? parent.city : "",
+        state: parent.state ? parent.state : "",
+        zip_code: parent.zip_code ? parent.zip_code : "",
         occupation: parent.occupation ? parent.occupation : "",
         employer_name: parent.employers_name ? parent.employers_name : "",
         goals_parent_program: parent.parent_goals ? parent.parent_goals : "",
@@ -777,6 +777,7 @@ export default function index() {
     setUpdateApplication({ ...temp });
 
     setRelationships(application.relationships);
+    setChRelationships(application.chRelationships);
 
     const termsWaiver = {
       date: new Date().toString(),
@@ -796,6 +797,8 @@ export default function index() {
 
     setTermsWaiver(termsWaiver);
   };
+
+  const [chRelationships, setChRelationships] = useState([]);
 
   const [relationships, setRelationships] = useState([]);
 
@@ -1598,6 +1601,7 @@ export default function index() {
                 isReadonly={isReadonly}
                 isUpdate={true}
                 emergencyContacts={emergencyContacts}
+                selectedApplication={selectedApplication}
               />
             ) : ""}
 
@@ -1630,6 +1634,8 @@ export default function index() {
                   register={register}
                   isReadonly={isReadonly}
                   relationships={relationships}
+                  chRelationships={chRelationships}
+                  isReadView={true}
                 />
                 </>
               ) : ""
@@ -1647,6 +1653,7 @@ export default function index() {
                 termsWaiver={termsWaiver}
                 isVendorView={true}
                 isUpdate={true}
+                vendor={selectedVendor}
               />
             )}
 
