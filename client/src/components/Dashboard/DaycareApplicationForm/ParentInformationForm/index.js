@@ -22,6 +22,7 @@ const ParentInformationStyled = styled.div`
   margin-top: 12px !important;
   .parent-info-wrapper {
     padding-bottom: 45px !important;
+    overflow: revert;
   }
 
   .parent-info-wrapper .grid-1 {
@@ -206,6 +207,7 @@ export default function index({
   isUpdate = false,
   ProfileImg,
   pastParentInformation = {},
+  childProfile = {},
   isVendorView
 }) {
   let confirmed_passwords = [];
@@ -1289,29 +1291,52 @@ export default function index({
           }>
           <div className="form-group">
             <div className="field">
-              <input
-                name="parentAddress"
-                className={
-                  isReadonly &&
-                  pastParentInformation && 
-                  !isVendorView &&
-                  (pastParentInformation.address || pastParentInformation.address == "") &&
-                  pastParentInformation.address != parentProfile.address ?
-                  "field-input highlights" : "field-input"
-                }
-                placeholder="Address"
-                id={`parentAddress_${counter - 1}`}
-                onChange={({ target }) => {
-                  handleParentFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "address",
-                    target.value
-                  );
-                }}
-                readOnly={isReadonly}
-                defaultValue={parentProfile?.address}
-              />
+              {
+                parentProfile.address ? (
+                  <input
+                  name="parentAddress"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    !isVendorView &&
+                    (pastParentInformation.address || pastParentInformation.address == "") &&
+                    pastParentInformation.address != parentProfile.address ?
+                    "field-input highlights" : "field-input"
+                  }
+                  placeholder="Address"
+                  id={`parentAddress_${counter - 1}`}
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "address",
+                      target.value
+                    );
+                  }}
+                  readOnly={isReadonly}
+                  defaultValue={parentProfile?.address}
+                />
+                ) :
+                (
+                  <input
+                  name="parentAddress"
+                  className="field-input"
+                  placeholder="Address"
+                  id={`parentAddress_${counter - 1}`}
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "address",
+                      target.value
+                    );
+                  }}
+                  readOnly={isReadonly}
+                  defaultValue={childProfile?.address}
+                />
+                )
+              }
+
               <label
                 className="field-label"
                 htmlFor={`parentAddress_${counter - 1}`}>

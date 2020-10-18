@@ -5,6 +5,11 @@ import { useSelector } from "react-redux";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 
 const RelationshipToChildStyled = styled.div`
+
+  margin-bottom: 40px;
+  padding-left: 15px;
+  padding-right: 15px;
+
   .relationship-wrapper {
     padding: 20px;
     background-color: #ffffff;
@@ -101,13 +106,16 @@ const RelationshipToChildStyled = styled.div`
 `;
 
 export default function index({
-  handleParentChildRelationship = {},
+  handleParentChildRelationship,
+  handleChildChildRelationship,
   register,
   errors,
   parents,
   childs,
   isReadonly = false,
-  relationships = []
+  relationships = [],
+  chRelationships = [],
+  isReadView = false
 }) {
 
   const RELATION_TO_CHILD_OPTIONS = [
@@ -134,9 +142,42 @@ export default function index({
     }
   }
 
+  const getChRelationshipVal = (child, child2) => {
+    if(chRelationships.length > 0) {
+
+      const rel = chRelationships.filter((item) => {
+        return item.child == child && item.child2 == child2;
+      });
+
+      console.log("rel", rel);
+
+      if(rel.length > 0) return rel[0].relationship;
+    }
+  }
+
   console.log("childs", childs);
   console.log("parents", parents);
   console.log("relationships", relationships);
+
+  let tempChilds = []
+
+  if(isReadView) {
+    tempChilds.push({
+      id: childs[0].id,
+      first_name: childs[0].profile.first_name
+    })
+
+    for(const item of chRelationships) {
+      tempChilds.push({
+        id: item.child2,
+        first_name: item.details?.firstname
+      })
+    } 
+  }
+
+  console.log("chRelationships", chRelationships);
+  console.log("isReadView", isReadView);
+  console.log("tempChilds", tempChilds);
 
   return (
     <RelationshipToChildStyled>
@@ -195,6 +236,118 @@ export default function index({
           ))
         }
         </div>
+        {
+          childs.length > 1 && (
+            childs.map((child, i) => (
+              <div className="content">
+                <div key={i} className="question-box">
+                  <p>What is the relation of <strong>{child.profile.first_name}</strong> to</p>
+                  {
+                    <ul>
+                      {
+                        childs.map((child2, j) => (
+                          child.id != child2.id && (
+                            <li key={j}>
+                              <span>
+                                {child2.profile.first_name}
+                                <small style={{fontSize: "50%"}}>(Child)</small>  
+                              </span>
+                              <div className="select-field-wrapper">
+                                <select
+                                  name={"ch_ch" + i + "" + j}
+                                  className="input-field"
+                                  onChange={({target}) => {
+                                    handleChildChildRelationship(child.id, child2.id, target.value);
+                                  }}
+                                  value={getChRelationshipVal(child.id, child2.id)}
+                                  ref={register({required: true})}
+                                  readOnly={isReadonly}
+                                  disabled={isReadonly}
+                                >
+                                  <option value="">Select</option>
+                                  {
+                                    RELATION_TO_CHILD_OPTIONS.map(opt => (
+                                      <option key={opt.id} value={opt.name}>
+                                        {opt.name}
+                                      </option>
+                                    ))
+                                  }
+                                </select>
+                              </div>
+                              <div></div>
+                              {
+                                errors["ch_ch" + i +"" + j] && (
+                                  <p style={{color:"red", fontSize:"16px"}}>
+                                    Relationship is required
+                                  </p>
+                                )
+                              }
+                            </li>
+                          )
+                        ))
+                      }
+                    </ul>
+                  }
+                </div>
+              </div>
+            ))
+          )
+        }
+        {
+          tempChilds && tempChilds.length > 0 && isReadView ? (
+            <div className="content">
+              <div className="question-box">
+                <p>What is the relation of <strong>{tempChilds[0].first_name}</strong> to</p>
+                {
+                  <ul>
+                    {
+                      tempChilds.map((child2, j) => (
+                        tempChilds[0].id != child2.id && (
+                          <li key={j}>
+                            <span>
+                              {child2.first_name}
+                              <small style={{fontSize: "50%"}}>(Child)</small>  
+                            </span>
+                            <div className="select-field-wrapper">
+                              <select
+                                name={"ch_ch0" + j}
+                                className="input-field"
+                                onChange={({target}) => {
+                                  handleChildChildRelationship(tempChilds[0].id, child2.id, target.value);
+                                }}
+                                value={getChRelationshipVal(tempChilds[0].id, child2.id)}
+                                ref={register({required: true})}
+                                readOnly={isReadonly}
+                                disabled={isReadonly}
+                              >
+                                <option value="">Select</option>
+                                {
+                                  RELATION_TO_CHILD_OPTIONS.map(opt => (
+                                    <option key={opt.id} value={opt.name}>
+                                      {opt.name}
+                                    </option>
+                                  ))
+                                }
+                              </select>
+                            </div>
+                            <div></div>
+                            {
+                              errors["ch_ch0" + j] && (
+                                <p style={{color:"red", fontSize:"16px"}}>
+                                  Relationship is required
+                                </p>
+                              )
+                            }
+                          </li>
+                        )
+                      ))
+                    }
+                  </ul>
+                }
+            </div>
+          </div>
+          ) : ""
+        }
       </div>
     </RelationshipToChildStyled>
   )

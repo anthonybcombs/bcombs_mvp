@@ -631,6 +631,7 @@ export default function index() {
     payload = {
       applications: applications,
       relationships: relationships,
+      chRelationships: chRelationships,
       is_daycare: true
     };
 
@@ -646,6 +647,8 @@ export default function index() {
   const formRef = useRef(null);
 
   const isFormValid = (section) => {
+
+    return true;
 
     if(selectedStep == "5") return true;
     
@@ -675,7 +678,8 @@ export default function index() {
           !profile.primary_language ||
           !profile.needed_days ||
           !profile.voucher ||
-          !gi.is_child_transferring) {
+          !gi.is_child_transferring ||
+          !gi.list_any_allergies) {
 
             isValid = false;
             break;
@@ -779,6 +783,33 @@ export default function index() {
     }
   }
 
+  const handleChildChildRelationship = (child, child2, relationship) => {
+    let exists = false;
+
+    console.log("relationships", chRelationships)
+
+    for(const [index, item] of chRelationships.entries()) {
+      if(item.child == child && item.child2 == child2) {
+        let tempRelationships = chRelationships;
+        tempRelationships[index].child = child;
+        tempRelationships[index].child2 = child2;
+        tempRelationships[index].relationship = relationship;
+
+        exists = true;
+        setChRelationships([...tempRelationships]);
+        break;
+      }
+    }
+
+    if(!exists) {
+      setChRelationships([...chRelationships, {
+        child: child,
+        child2: child2,
+        relationship: relationship
+      }])
+    }
+  }
+
   const handleRedirectToOrigin = () => {
     window.location.replace(window.location.origin);
   }
@@ -791,7 +822,15 @@ export default function index() {
     relationship: ""
   }
 
+  const chRelationshipObj = {
+    child: "",
+    child2: "",
+    relationship: ""
+  }
+
   const [relationships, setRelationships] = useState([{...relationshipObj}]);
+
+  const [chRelationships, setChRelationships] = useState([]);
 
   return (
     <DaycareApplicationFormStyled
@@ -909,6 +948,7 @@ export default function index() {
                       <div className={(selectedStep == 3 || selectedStep == 5 ) ? "" : "hide"}>
                         <RelationshipToChildStyled
                           handleParentChildRelationship={handleParentChildRelationship}
+                          handleChildChildRelationship={handleChildChildRelationship}
                           parents={parentsInformation}
                           childs={childsInformation}
                           errors={errors}

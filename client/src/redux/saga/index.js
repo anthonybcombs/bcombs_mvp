@@ -59,6 +59,7 @@ import {
   getVendor, 
   updateVendor, 
   getVendorById2, 
+  getVendorById,
   getVendorAdmins, 
   addAdmin,
   deleteAdmins,
@@ -195,6 +196,11 @@ function* rootSaga() {
   yield takeLatest(
     actionType.REQUEST_VENDOR_BY_ID2,
     getVendorById2
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_VENDOR_BY_ID,
+    getVendorById
   );
 
   yield takeLatest(

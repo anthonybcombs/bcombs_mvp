@@ -49,7 +49,8 @@ export default function index({
   errors,
   name,
   text,
-  isReadonly = false
+  isReadonly = false,
+  isVendorView = false
 }) {
 
   return (
@@ -71,7 +72,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleWaiverFormDetailsChange("section1", "checked", !section1.checked)
                 }}
-                ref={register({required: true})}
+                ref={register({required: !isVendorView })}
                 disabled={isReadonly}
               />
               <span 
@@ -91,7 +92,7 @@ export default function index({
                   onChange={({ target }) => {
                     handleWaiverFormDetailsChange("section1", "signature", target.value)
                   }}
-                  ref={register({required: true})}
+                  ref={register({required: !isVendorView })}
                   value={section1.signature}
                   readOnly={isReadonly}
                 />

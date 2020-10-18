@@ -18,6 +18,11 @@ import {
   requestSaveApplication ,
   requestGetApplicationHistory
 } from "../../../redux/actions/Application";
+
+import {
+  requestVendorById
+} from "../../../redux/actions/Vendors";
+
 import { requestLogout } from "../../../redux/actions/Auth";
 
 import ProfileImg from "../../../images/defaultprofile.png";
@@ -315,15 +320,23 @@ export default function index() {
 
   const dispatch = useDispatch();
 
-  const { auth, applications, loading } = useSelector(
-    ({auth, applications, loading}) => {
-      return {auth, applications, loading}
+  const { auth, applications, loading, vendors } = useSelector(
+    ({auth, applications, loading, vendors}) => {
+      return {auth, applications, loading, vendors}
     }
   );
 
   if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
     window.location.reload(false);
   }
+
+  const [selectedVendor, setSelectedVendor] = useState({});
+
+  useEffect(() => {
+    if (vendors && vendors.length > 0) {
+      setSelectedVendor(vendors[0]);
+    }
+  }, [vendors]);
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
@@ -400,7 +413,8 @@ export default function index() {
 
   if( applications.updateapplication 
     && applications.updateapplication.message == "application successfully updated" ) {
-    window.location.replace(window.location.origin);
+    //window.location.replace(window.location.origin);
+    window.location.reload();
   }
 
   const DATE_FORMAT = "LLL dd, yyyy";
@@ -650,7 +664,7 @@ export default function index() {
   }
 
   const [relationships, setRelationships] = useState([]);
-
+  const [chRelationships, setChRelationships] = useState([]);
   const createViewButton = (application) => {
     return (
       <a 
@@ -659,7 +673,9 @@ export default function index() {
         onClick={(e) => {
           e.preventDefault();
 
+          setSelectedVendor({});
           dispatch(requestGetApplicationHistory(application.app_id));
+          dispatch(requestVendorById(application.vendor));
 
           console.log("selected application", application);
 
@@ -866,7 +882,8 @@ export default function index() {
           // }
 
           setRelationships(application.relationships);
-
+          setChRelationships(application.chRelationships);
+          
           const termsWaiver = {
             date: new Date().toString(),
             section1: {
@@ -1122,7 +1139,7 @@ export default function index() {
         person_recommend: parent.profile.person_recommend,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
-          DATE_TIME_FORMAT),
+          DATE_TIME_FORMAT2),
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getArrayValue(parent.profile.ethinicity),
@@ -1241,7 +1258,7 @@ export default function index() {
         prev_school_zip_code: childInformation.general_information.prev_school_zip_code,
         preffered_start_date:format(
           new Date(childInformation.profile.preffered_start_date),
-          DATE_TIME_FORMAT),
+          DATE_TIME_FORMAT2),
         current_classroom: childInformation.profile.current_classroom,
         primary_language: childInformation.profile.primary_language,
         needed_days: childInformation.profile.needed_days,
@@ -1257,12 +1274,12 @@ export default function index() {
       section2_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT2),
       section3_signature: termsWaiver.section3.signature,
       section3_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT2),
-      section1_text: selectedApplication.section1_text,
-      section2_text: selectedApplication.section2_text,
-      section3_text: selectedApplication.section3_text,
-      section1_name: selectedApplication.section1_name,
-      section2_name: selectedApplication.section2_name,
-      section3_name: selectedApplication.section3_name,
+      section1_text: selectedVendor.section1_show ? selectedVendor.section1_text : "",
+      section2_text: selectedVendor.section2_show ? selectedVendor.section2_text : "",
+      section3_text: selectedVendor.section3_show ? selectedVendor.section3_text : "",
+      section1_name: selectedVendor.section1_show ? selectedVendor.section1_name : "",
+      section2_name: selectedVendor.section2_show ? selectedVendor.section2_name : "",
+      section3_name: selectedVendor.section3_show ? selectedVendor.section3_name : "",
       updated_by: auth.name
     }
 
@@ -1406,7 +1423,7 @@ export default function index() {
                             <>
                               <DaycareChildFormView
                                 childInformation={childInformation}
-                                vendor={{name: vendorName}}
+                                vendor={selectedVendor}
                                 ProfileImg={ProfileImg}
                                 isReadonly={isReadonly}
                                 handleChangeToEdit={handleChangeToEdit}
@@ -1418,7 +1435,7 @@ export default function index() {
                               <hr className="style-eight"></hr>
                               <DaycareParentFormView
                                 parents={parentsInformation}
-                                vendor={{name: vendorName}}
+                                vendor={selectedVendor}
                                 ProfileImg={ProfileImg}
                                 handleParentFormDetailsChange={handleParentFormDetailsChange}
                                 isReadonly={isReadonly}
@@ -1434,6 +1451,8 @@ export default function index() {
                                 register={register}
                                 isReadonly={isReadonly}
                                 relationships={relationships}
+                                chRelationships={chRelationships}
+                                isReadView={true}
                               />
                               <hr className="style-eight"></hr>
                               <TermsWaiverFormViewStyled
@@ -1443,13 +1462,14 @@ export default function index() {
                                 errors={errors}
                                 handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
                                 termsWaiver={termsWaiver}
+                                vendor={selectedVendor}
                               />
                             </>
                           ) : (
                             <>
                             <ChildFormViewStyled
                               childInformation={childInformation}
-                              vendor={{name: vendorName}}
+                              vendor={selectedVendor}
                               ProfileImg={ProfileImg}
                               isReadonly={isReadonly}
                               handleChangeToEdit={handleChangeToEdit}
@@ -1457,13 +1477,17 @@ export default function index() {
                               register={register}
                               handleChildFormDetailsChange={handleChildFormDetailsChange}
                               isFormHistory={isFormHistory}
-                              app_programs={selectedApplication.vendorPrograms}
-                              location_sites={selectedApplication.vendorLocationSites}
+                              location_sites={
+                                vendors && vendors.length > 0 ? vendors[0].location_sites : []
+                              }
+                              app_programs={
+                                vendors && vendors.length > 0 ? vendors[0].app_programs : []
+                              }
                             />
                             <hr className="style-eight"></hr>
                             <ParentFormViewStyled
                               parents={parentsInformation}
-                              vendor={{name: vendorName}}
+                              vendor={selectedVendor}
                               ProfileImg={ProfileImg}
                               handleParentFormDetailsChange={handleParentFormDetailsChange}
                               isReadonly={isReadonly}
@@ -1479,6 +1503,7 @@ export default function index() {
                               errors={errors}
                               handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
                               termsWaiver={termsWaiver}
+                              vendor={selectedVendor}
                             />
                             </>
                           )
