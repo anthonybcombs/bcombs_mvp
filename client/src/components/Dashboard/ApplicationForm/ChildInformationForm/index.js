@@ -831,6 +831,7 @@ export default function index({
                     isReadonly &&
                     !isVendorView &&
                     pastChildInformation &&
+                    pastChildInformation.phone_number &&
                     pastChildInformation?.phone_number !=
                       childProfile.phone_number
                       ? "field-input highlights"
@@ -1180,7 +1181,8 @@ export default function index({
                   isReadonly &&
                   !isVendorView &&
                   pastChildInformation &&
-                  pastChildInformation?.address != childProfile.address
+                  pastChildInformation.address &&
+                  pastChildInformation.address != childProfile.address
                     ? "field-input highlights"
                     : "field-input"
                 }
