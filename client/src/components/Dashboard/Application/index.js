@@ -1617,6 +1617,7 @@ export default function index() {
                 isReadonly={isReadonly}
                 isUpdate={true}
                 emergencyContacts={emergencyContacts}
+                childProfile={selectedApplication?.child}
               />
             ) : ""}
             {

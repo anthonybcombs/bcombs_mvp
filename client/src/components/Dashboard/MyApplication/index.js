@@ -1441,6 +1441,7 @@ export default function index() {
                                 isReadonly={isReadonly}
                                 isUpdate={true}
                                 emergencyContacts={emergencyContacts}
+                                selectedApplication={selectedApplication?.child}
                               />
                               <hr className="style-eight"></hr>
                               <RelationshipToChildStyled
@@ -1494,6 +1495,7 @@ export default function index() {
                               isUpdate={true}
                               emergencyContacts={emergencyContacts}
                               errors={errors}
+                              selectedApplication={selectedApplication}
                             />
                             <hr className="style-eight"></hr>
                             <TermsWaiverFormViewStyled
