@@ -30,7 +30,6 @@ const SortableGroup = React.forwardRef(
 
   const [fieldColumn, handleFieldColumn] = useState(1)
   const [additionalField, handleSelectFieldToAdd] = useState('')
-  const [editFieldDrawerShow, setEditFieldDrawerShow] = useState(false)
   const [addingFieldDrawerShow, setAddingFieldDrawerShow] = useState(false)
   // const [editGroupNameDrawerShow, setEditGroupNameDrawerShow] = useState(false)
 
@@ -46,7 +45,6 @@ const SortableGroup = React.forwardRef(
 
   const itemActive = isActive ? 'active' : ''
   const itemGroup = name.toLowerCase().replace(/ +/g, "")
-  const isEditFieldDrawerShow = editFieldDrawerShow ? 'show' : ''
   const isAddingFieldDrawerShow = addingFieldDrawerShow ? 'show' : ''
   const isEditGroupNameDrawerShow = editGroupNameDrawerShow.show ? 'show' : ''
 
@@ -85,15 +83,6 @@ const SortableGroup = React.forwardRef(
             </div>
           )
         }
-        <p className='sortableGroup-name'>{name}
-          {`   `}
-          <span
-            style={{ textTransform: 'lowercase', letterSpacing: 0, color: 'red', cursor: 'pointer'}}
-            onClick={() => setEditFieldDrawerShow(!editFieldDrawerShow)}
-            >
-              Show Edit Fields
-          </span>
-        </p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
           {
             fields.map((field, index) => {
@@ -230,47 +219,7 @@ const SortableGroup = React.forwardRef(
                 </div>
               </div>
 
-              {/* Edit Fields Drawer */}
-              <div className={`sortableGroup-drawer drawer-right ${isEditFieldDrawerShow}`}>
-                <div className='field'>
-                  <label for='placeholder' className='field-label'>Placeholder</label>
-                  <input
-                    type='text'
-                    id='placeholder'
-                    className='field-input'
-                    placeholder='Edit Placeholder'
-                    // value={name}
-                    // onChange={() => console.log('eee')}
-                  />
-                </div>
-                
-                <div className='field select-field-wrapper'>
-                <label for='column' className='field-label'>Column</label>
-                  <select
-                    id='column'
-                    className='field-input'
-                    defaultValue={fieldColumn}
-                    onChange={({ target }) => {
-                      handleFieldColumn(target.value)
-                    }}
-                  >
-                    <option value=''>Select Field Size</option>
-                    <option value='1'>Small</option>
-                    <option value='2'>Medium</option>
-                    <option value='3'>Large</option>
-                  </select>
-                </div>
-                
-                <div className='addField-actions'>
-                  <button
-                    type='button'
-                    className='add-btn'
-                    onClick={() => setEditFieldDrawerShow(!editFieldDrawerShow) }
-                  >
-                    Update
-                  </button>
-                </div>
-              </div>
+              
             </>
           )
         }
