@@ -248,7 +248,7 @@ export default styled.div`
   }
   .sortableGroup.address .sortableGroup-row .sortableGroup-column:nth-child(1),
   .sortableGroup.address .sortableGroup-row .sortableGroup-column:nth-child(2) {
-    grid-column: span 2; /* Spans two columns */
+    grid-column: span 2 !important; /* Spans two columns */
   }
 
 
