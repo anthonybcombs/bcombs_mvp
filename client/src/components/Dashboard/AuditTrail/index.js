@@ -21,6 +21,11 @@ import DataTable from "react-data-table-component";
 import ProfileImg from "../../../images/defaultprofile.png";
 import ChildFormViewStyled from "../Application/view/child";
 import ParentFormViewStyled from "../Application/view/parent";
+
+import DaycareChildFormView from "../Application/daycare/child";
+import RelationshipToChildStyled from "../DaycareApplicationForm/RelationshipToChildForm";
+import DaycareParentFormView from "../Application/daycare/parent";
+
 import TermsWaiverFormViewStyled from "../Application/view/waiver";
 import Loading from "../../../helpers/Loading.js";
 import SuccessUpdateModal from "../MyApplication/SuccessUpdateModal";
@@ -750,7 +755,7 @@ const AuditTrail = props => {
       cell: row => {
         let application = row.details ? JSON.parse(row.details) : null;
 
-        if (application) {
+        if (application && !application.is_daycare) {
           return application.child?.grade_desc;
         }
         return;
@@ -777,8 +782,9 @@ const AuditTrail = props => {
       cell: row => createViewButton(row)
     }
   ];
-  
 
+  const [relationships, setRelationships] = useState([]);
+  const [chRelationships, setChRelationships] = useState([]);
   
   const createViewButton = (application) => {
     console.log('Create View Button Application',application)
@@ -790,8 +796,7 @@ const AuditTrail = props => {
           e.preventDefault();
           const applicationDetails = application.details ? JSON.parse(application.details) : {};
           dispatch(requestGetApplicationHistory(application.app_id));
-          
-        
+
           const childInformationObj = {
             profile: {
               image: "",
@@ -813,7 +818,12 @@ const AuditTrail = props => {
               child_lives_with: applicationDetails.child.child_lives_with ? parseArrayFormat(applicationDetails.child.child_lives_with.split(",")) : [],
               program: applicationDetails.child.programs ? parseArrayFormat(applicationDetails.child.programs.split(",")) : [],
               ethinicity: applicationDetails.child.ethnicities ? parseArrayFormat(applicationDetails.child.ethnicities.split(",")) : [],
-              nick_name: applicationDetails.child.nickname ? applicationDetails.child.nickname: ""
+              preffered_start_date: applicationDetails.child.preffered_start_date ? new Date(applicationDetails.child.preffered_start_date) : "",
+              current_classroom: applicationDetails.child.current_classroom ? applicationDetails.child.current_classroom: "",
+              primary_language: applicationDetails.child.primary_language ? applicationDetails.child.primary_language : "",
+              needed_days: applicationDetails.child.needed_days ? applicationDetails.child.needed_days : "",
+              schedule_tour: applicationDetails.child.schedule_tour ? applicationDetails.child.schedule_tour : "",
+              voucher: applicationDetails.child.voucher ? applicationDetails.child.voucher : ""
             },
             general_information: {
               grade: applicationDetails.child.grade_number ? applicationDetails.child.grade_number: "",
@@ -843,7 +853,61 @@ const AuditTrail = props => {
               team_affiliations: applicationDetails.child.affiliations ? applicationDetails.child.affiliations : "",
               awards: applicationDetails.child.awards ? applicationDetails.child.awards : "",
               accomplishments: applicationDetails.child.accomplishments ? applicationDetails.child.accomplishments : "",
-              mentee_gain: applicationDetails.child.mentee_gain_program ? applicationDetails.child.mentee_gain_program : ""
+              mentee_gain: applicationDetails.child.mentee_gain_program ? applicationDetails.child.mentee_gain_program : "",
+              is_child_transferring: applicationDetails.child.is_child_transferring 
+                ? applicationDetails.child.is_child_transferring 
+                : "",
+              does_child_require_physical_education_service: applicationDetails.child.does_child_require_physical_education_service 
+                ? applicationDetails.child.does_child_require_physical_education_service 
+                : "",
+              history_prev_diseases: applicationDetails.child.history_prev_diseases 
+                ? applicationDetails.child.history_prev_diseases 
+                : "", //start of questions
+              child_currently_doctors_care: applicationDetails.child.child_currently_doctors_care 
+                ? applicationDetails.child.child_currently_doctors_care 
+                : "",
+              reasons_previous_hospitalizations: applicationDetails.child.reasons_previous_hospitalizations 
+                ? applicationDetails.child.reasons_previous_hospitalizations 
+                : "",
+              comments_suggestion: applicationDetails.child.comments_suggestion 
+                ? applicationDetails.child.comments_suggestion 
+                : "",
+              list_special_dietary: applicationDetails.child.list_special_dietary 
+                ? applicationDetails.child.list_special_dietary 
+                : "",
+              list_any_allergies: applicationDetails.child.list_any_allergies 
+                ? applicationDetails.child.list_any_allergies 
+                : "",
+              mental_physical_disabilities: applicationDetails.child.mental_physical_disabilities 
+                ? applicationDetails.child.mental_physical_disabilities 
+                : "",
+              medical_action_plan: applicationDetails.child.medical_action_plan 
+                ? applicationDetails.child.medical_action_plan 
+                : "",
+              list_fears_unique_behavior: applicationDetails.child.list_fears_unique_behavior 
+                ? applicationDetails.child.list_fears_unique_behavior 
+                : "",
+              transfer_reason: applicationDetails.child.transfer_reason 
+                ? applicationDetails.child.transfer_reason 
+                : "",
+              prev_school_phone: applicationDetails.child.prev_school_phone 
+                ? applicationDetails.child.prev_school_phone 
+                : "",
+              prev_school_city: applicationDetails.child.prev_school_city 
+                ? applicationDetails.child.prev_school_city 
+                : "",
+              prev_school_address: applicationDetails.child.prev_school_address 
+                ? applicationDetails.child.prev_school_address 
+                : "",
+              prev_school_attended: applicationDetails.child.prev_school_attended 
+                ? applicationDetails.child.prev_school_attended 
+                : "",
+              prev_school_state: applicationDetails.child.prev_school_state 
+                ? applicationDetails.child.prev_school_state 
+                : "",
+              prev_school_zip_code: applicationDetails.child.prev_school_zip_code 
+                ? applicationDetails.child.prev_school_zip_code 
+                : ""
             },
             emergency_care_information: {
               doctor_name: applicationDetails.child.doctor_name ? applicationDetails.child.doctor_name : "",
@@ -851,7 +915,8 @@ const AuditTrail = props => {
               hospital_preference: applicationDetails.child.hospital_preference ? applicationDetails.child.hospital_preference : "",
               hospital_phone: applicationDetails.child.hospital_phone ? applicationDetails.child.hospital_phone : ""
             },
-            ch_id: applicationDetails.child.ch_id
+            ch_id: applicationDetails.child.ch_id,
+            id: applicationDetails.child.ch_id
           }
 
           const parents = applicationDetails.parents;
@@ -881,7 +946,12 @@ const AuditTrail = props => {
               level_education: parent.level_of_education ? parent.level_of_education : "",
               child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
               child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
-              person_recommend: parent.person_recommend ? parent.person_recommend: ""
+              person_recommend: parent.person_recommend ? parent.person_recommend: "",
+              ethinicity: parent.ethnicities
+                ? parseArrayFormat(parent.ethnicities.split(","))
+                : [],
+              gender: parent.gender,
+              date_of_birth: new Date(parent.birthdate)
             }
           
             items.push({profile: profile, parent_id: parent.parent_id});
@@ -919,6 +989,9 @@ const AuditTrail = props => {
 
           setTempHideForm(true);
           setIsFormHistory(false);
+
+          setRelationships(application.relationships);
+          setChRelationships(application.chRelationships);
 
           const termsWaiver = {
             date: new Date().toString(),
@@ -1073,6 +1146,12 @@ const AuditTrail = props => {
         state: parent.profile.state,
         zip_code: parent.profile.zip_code,
         person_recommend: parent.profile.person_recommend,
+        birthdate: format(
+          new Date(parent.profile.date_of_birth),
+          DATE_TIME_FORMAT2),
+        gender: parent.profile.gender,
+        age: getAge(parent.profile.date_of_birth),
+        ethnicities: getArrayValue(parent.profile.ethinicity),
         parent_id: parent.parent_id
       })
     });
@@ -1168,6 +1247,32 @@ const AuditTrail = props => {
         hospital_preference: childInformation.emergency_care_information.hospital_preference,
         hospital_phone: childInformation.emergency_care_information.hospital_phone,
         nickname: childInformation.profile.nick_name,
+        is_child_transferring: childInformation.general_information.is_child_transferring,
+        does_child_require_physical_education_service: childInformation.general_information.does_child_require_physical_education_service,
+        history_prev_diseases: childInformation.general_information.history_prev_diseases,
+        child_currently_doctors_care: childInformation.general_information.child_currently_doctors_care,
+        reasons_previous_hospitalizations: childInformation.general_information.reasons_previous_hospitalizations,
+        comments_suggestion: childInformation.general_information.comments_suggestion,
+        list_special_dietary: childInformation.general_information.list_special_dietary,
+        list_any_allergies: childInformation.general_information.list_any_allergies,
+        mental_physical_disabilities: childInformation.general_information.mental_physical_disabilities,
+        medical_action_plan: childInformation.general_information.medical_action_plan,
+        list_fears_unique_behavior: childInformation.general_information.list_fears_unique_behavior,
+        transfer_reason: childInformation.general_information.transfer_reason,
+        prev_school_phone: childInformation.general_information.prev_school_phone,
+        prev_school_city: childInformation.general_information.prev_school_city,
+        prev_school_address: childInformation.general_information.prev_school_address,
+        prev_school_attended: childInformation.general_information.prev_school_attended,
+        prev_school_state: childInformation.general_information.prev_school_state,
+        prev_school_zip_code: childInformation.general_information.prev_school_zip_code,
+        preffered_start_date:format(
+          new Date(childInformation.profile.preffered_start_date),
+          DATE_TIME_FORMAT2),
+        current_classroom: childInformation.profile.current_classroom,
+        primary_language: childInformation.profile.primary_language,
+        needed_days: childInformation.profile.needed_days,
+        schedule_tour: childInformation.profile.schedule_tour,
+        voucher: childInformation.profile.voucher,
         ch_id: childInformation.ch_id
       },
       parents: setupParentsList(),
@@ -1244,67 +1349,121 @@ const AuditTrail = props => {
           />
         }
         {
-                  loading.application ? (
-                    <Loading />
+          loading.application ? (
+            <Loading />
+          ) : (
+            !tempHideForm && (
+              <>
+              <ApplicationFormStyled
+                ref={componentRef}
+                autoComplete="off"
+                onSubmit={handleSubmit(onSubmitSaveApplication)}
+              >
+                {
+                  selectedApplication &&
+                  selectedApplication.is_daycare ? (
+                    <>
+                    <DaycareChildFormView
+                      isFormHistory={true}
+                      isVendorView={true}
+                      childInformation={childInformation}
+                      vendor={{name: vendorName}}
+                      ProfileImg={ProfileImg}
+                      isReadonly={isReadonly}
+                      handleChangeToEdit={handleChangeToEdit}
+                      errors={errors}
+                      register={register}
+                      handleChildFormDetailsChange={handleChildFormDetailsChange}
+                      isFormHistory={isFormHistory}
+                    />
+                    <hr className="style-eight"></hr>
+                    <DaycareParentFormView
+                      parents={parentsInformation}
+                      vendor={{name: vendorName}}
+                      ProfileImg={ProfileImg}
+                      handleParentFormDetailsChange={handleParentFormDetailsChange}
+                      isReadonly={isReadonly}
+                      isUpdate={true}
+                      emergencyContacts={emergencyContacts}
+                      errors={errors}
+                      childProfile={selectedApplication?.child}
+                    />
+                    <hr className="style-eight"></hr>
+                    <RelationshipToChildStyled
+                      handleParentChildRelationship={()=> {}}
+                      parents={parentsInformation}
+                      childs={[{...childInformation}]}
+                      errors={errors}
+                      register={register}
+                      isReadonly={isReadonly}
+                      relationships={relationships}
+                      chRelationships={chRelationships}
+                      isReadView={true}
+                    />
+                    <hr className="style-eight"></hr>
+                    <TermsWaiverFormViewStyled
+                      application={selectedApplication}
+                      isReadonly={isReadonly}
+                      register={register}
+                      errors={errors}
+                      handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+                      termsWaiver={termsWaiver}
+                    />
+                    </>
                   ) : (
-                    !tempHideForm && (
-                      <>
-                      {/* <button className="print-button" onClick={handlePrint}>
-                        {" "}
-                        <FontAwesomeIcon icon={faPrint} />
-                      </button> */}
-                      <ApplicationFormStyled
-                       ref={componentRef}
-                        autoComplete="off"
-                        onSubmit={handleSubmit(onSubmitSaveApplication)}
-                      >
-                        <ChildFormViewStyled
-                          isFormHistory={true}
-                          isVendorView={true}
-                          childInformation={childInformation}
-                          vendor={{name: vendorName}}
-                          ProfileImg={ProfileImg}
-                          isReadonly={isReadonly}
-                          handleChangeToEdit={handleChangeToEdit}
-                          errors={errors}
-                          register={register}
-                          handleChildFormDetailsChange={handleChildFormDetailsChange}
-                          isFormHistory={isFormHistory}
-                          app_programs={selectedApplication.vendorPrograms}
-                          location_sites={selectedApplication.vendorLocationSites}
-                        />
-                        <hr className="style-eight"></hr>
-                        <ParentFormViewStyled
-                          parents={parentsInformation}
-                          vendor={{name: vendorName}}
-                          ProfileImg={ProfileImg}
-                          handleParentFormDetailsChange={handleParentFormDetailsChange}
-                          isReadonly={isReadonly}
-                          isUpdate={true}
-                          emergencyContacts={emergencyContacts}
-                          errors={errors}
-                        />
-                        <hr className="style-eight"></hr>
-                        <TermsWaiverFormViewStyled
-                          application={selectedApplication}
-                          isReadonly={isReadonly}
-                          register={register}
-                          errors={errors}
-                          handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
-                          termsWaiver={termsWaiver}
-                        />
-                        {
-                          !isReadonly && (
-                            <div style={{textAlign: "center", marginBottom: "20px"}}>
-                              <button className="save-button" type="Submit">Save</button>
-                            </div>
-                          )
-                        }
-                      </ApplicationFormStyled>
-                      </>
-                    )
+                    <>
+                    <ChildFormViewStyled
+                      isFormHistory={true}
+                      isVendorView={true}
+                      childInformation={childInformation}
+                      vendor={{name: vendorName}}
+                      ProfileImg={ProfileImg}
+                      isReadonly={isReadonly}
+                      handleChangeToEdit={handleChangeToEdit}
+                      errors={errors}
+                      register={register}
+                      handleChildFormDetailsChange={handleChildFormDetailsChange}
+                      isFormHistory={isFormHistory}
+                      app_programs={selectedApplication.vendorPrograms}
+                      location_sites={selectedApplication.vendorLocationSites}
+                    />
+                    <hr className="style-eight"></hr>
+                    <ParentFormViewStyled
+                      parents={parentsInformation}
+                      vendor={{name: vendorName}}
+                      ProfileImg={ProfileImg}
+                      handleParentFormDetailsChange={handleParentFormDetailsChange}
+                      isReadonly={isReadonly}
+                      isUpdate={true}
+                      emergencyContacts={emergencyContacts}
+                      errors={errors}
+                      selectedApplication={selectedApplication}
+                    />
+                    <hr className="style-eight"></hr>
+                    <TermsWaiverFormViewStyled
+                      application={selectedApplication}
+                      isReadonly={isReadonly}
+                      register={register}
+                      errors={errors}
+                      handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+                      termsWaiver={termsWaiver}
+                    />
+                    </>
                   )
                 }
+
+                {
+                  !isReadonly && (
+                    <div style={{textAlign: "center", marginBottom: "20px"}}>
+                      <button className="save-button" type="Submit">Save</button>
+                    </div>
+                  )
+                }
+              </ApplicationFormStyled>
+              </>
+            )
+          )
+        }
       </div>
 
 

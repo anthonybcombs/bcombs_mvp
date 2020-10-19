@@ -171,7 +171,7 @@ export default function index({
           <ErrorMessage
             field={errors["ch_transfer" + (counter - 1)]}
             errorType="otherCBChecked"
-            message="Needed days is required"
+            message="Is child transferring required"
           />
         </div>
         {
@@ -678,7 +678,7 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                6. Please list any allergies that your child may have (e.g. Food Insect Stings, Medicines, Etc.) and related medication.
+                6. Please list any allergies that your child may have (e.g. Food Insect Stings, Medicines, Etc.) and related medication. <span className="required">*</span>
               </label>
               <textarea 
                 name={"list_any_allergies" + (counter - 1)}
@@ -692,7 +692,7 @@ export default function index({
                   "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
-                ref={register()}
+                ref={register({ required: true })}
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "list_any_allergies", target.value);
                 }}
@@ -700,6 +700,11 @@ export default function index({
                 readOnly={isReadonly}
               >
               </textarea>
+              <ErrorMessage
+                field={errors["list_any_allergies" + (counter - 1)]}
+                errorType="required"
+                message="Explain"
+              />
             </div>
           </div>
 

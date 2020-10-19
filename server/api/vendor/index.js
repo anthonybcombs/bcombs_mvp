@@ -201,6 +201,48 @@ export const getVendorById2 = async id2 => {
   }
 };
 
+export const getVendorById = async id => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `SELECT 
+        BIN_TO_UUID(v.id) as id, 
+        BIN_TO_UUID(v.user) as user,
+        v.id2,
+        v.name, 
+        v.section1_text,
+        v.section2_text,
+        v.section3_text,
+        v.section1_name,
+        v.section2_name,
+        v.section3_name,
+        v.section1_show,
+        v.section2_show,
+        v.section3_show,
+        v.is_daycare
+      FROM vendor v
+      WHERE v.id=UUID_TO_BIN(?)`,
+      [id]
+    );
+
+    if (result && result.length > 0) {
+      for(let i = 0; i < result.length; i++) {
+        result[i].app_programs = await getVendorAppProgram(result[i].id);
+        result[i].location_sites = await getVendorAppLocationSite(result[i].id);
+        result[i].vendorGroup = await getVendorAppGroupsByVendorId(
+          result[i].id
+        );
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return result;
+  }
+};
+
 export const checkIfAdminVendorExists = async ({ user, vendor }) => {
   const db = makeDb();
 

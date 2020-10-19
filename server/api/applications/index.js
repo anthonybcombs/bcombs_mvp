@@ -1,6 +1,6 @@
 import { makeDb } from "../../helpers/database";
 
-import { updateChild, getChildInformation } from "../child";
+import { updateChild, getChildInformation, getChildChildRelationship } from "../child";
 import { updateParent, getParentByApplication, getParentChildRelationship } from "../parents";
 
 import {
@@ -96,17 +96,21 @@ export const getApplicationByAppId = async (app_id, isHistory = false) => {
       const child = await getChildInformation(application.child);
       application.parents = await getParentByApplication(application.app_id);
       application.child = child.length > 0 ? child[0] : {};
-
       application.vendorName = await getVendorName(application.vendor);
-      application.vendorGroup = await getVendorAppGroupsByVendorId(
-        application.vendor
-      );
-      application.vendorPrograms = await getVendorAppProgram(
-        application.vendor
-      );
-      application.vendorLocationSites = await getVendorAppLocationSite(
-        application.vendor
-      );
+
+      // application.vendorGroup = await getVendorAppGroupsByVendorId(
+      //   application.vendor
+      // );
+      // application.vendorPrograms = await getVendorAppProgram(
+      //   application.vendor
+      // );
+      // application.vendorLocationSites = await getVendorAppLocationSite(
+      //   application.vendor
+      // );
+
+      application.vendorPrograms = [];
+      application.vendorLocationSites = [];
+      application.vendorGroup = [];
 
       let relationships = [];
 
@@ -122,6 +126,8 @@ export const getApplicationByAppId = async (app_id, isHistory = false) => {
       application.app_histories = [];
 
       application.relationships = relationships;
+
+      application.chRelationships = await getChildChildRelationship(application.child.ch_id);
     }
   } catch (error) {
     console.log("getApplicationByAppId error", error);

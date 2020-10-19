@@ -112,6 +112,51 @@ export const VENDOR_BY_ID2_QUERY = gql`
   }
 `;
 
+export const VENDOR_BY_ID_QUERY = gql`
+  query getVendorById($id: String) {
+    getVendorById(id: $id) {
+      id
+      user
+      id2
+      name
+      section1_text
+      section2_text
+      section3_text
+      section1_name
+      section2_name
+      section3_name
+      section1_show
+      section2_show
+      section3_show
+      created_at
+      is_daycare
+      app_programs {
+        id
+        vendor_program_id
+        vendor
+        user
+        name
+        created_at
+      }
+      location_sites {
+        id
+        vendor_location_site_id
+        vendor
+        user
+        name
+        created_at
+      }
+      app_groups {
+        id
+        app_grp_id
+        size
+        name
+        created_at
+      }
+    }
+  }
+`;
+
 export const GET_VENDOR_ADMINS = gql`
   query getVendorAdminsByUser($user: String!) {
     getVendorAdminsByUser(user: $user) {

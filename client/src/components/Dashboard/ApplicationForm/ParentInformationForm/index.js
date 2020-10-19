@@ -206,7 +206,8 @@ export default function index({
   isUpdate = false,
   ProfileImg,
   pastParentInformation = {},
-  isVendorView
+  isVendorView,
+  selectedApplication={}
 }) {
   let confirmed_passwords = [];
 
@@ -1287,29 +1288,51 @@ export default function index({
           }>
           <div className="form-group">
             <div className="field">
-              <input
-                name="parentAddress"
-                className={
-                  isReadonly &&
-                  pastParentInformation && 
-                  !isVendorView &&
-                  (pastParentInformation.address || pastParentInformation.address == "") &&
-                  pastParentInformation.address != parentProfile.address ?
-                  "field-input highlights" : "field-input"
-                }
-                placeholder="Address"
-                id={`parentAddress_${counter - 1}`}
-                onChange={({ target }) => {
-                  handleParentFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "address",
-                    target.value
-                  );
-                }}
-                readOnly={isReadonly}
-                defaultValue={parentProfile?.address}
-              />
+              {
+                parentProfile.address ? (
+                <input
+                  name="parentAddress"
+                  className={
+                    isReadonly &&
+                    pastParentInformation && 
+                    !isVendorView &&
+                    (pastParentInformation.address || pastParentInformation.address == "") &&
+                    pastParentInformation.address != parentProfile.address ?
+                    "field-input highlights" : "field-input"
+                  }
+                  placeholder="Address"
+                  id={`parentAddress_${counter - 1}`}
+                  onChange={({ target }) => {
+                    handleParentFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "address",
+                      target.value
+                    );
+                  }}
+                  readOnly={isReadonly}
+                  defaultValue={parentProfile?.address}
+                />
+                ) : (
+                  <input
+                    name="parentAddress"
+                    className="field-input"
+                    placeholder="Address"
+                    id={`parentAddress_${counter - 1}`}
+                    onChange={({ target }) => {
+                      handleParentFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "address",
+                        target.value
+                      );
+                    }}
+                    readOnly={isReadonly}
+                    defaultValue={isReadonly ? selectedApplication?.child?.address : ""}
+                 />
+                )
+              }
+
               <label
                 className="field-label"
                 for={`parentAddress_${counter - 1}`}>
@@ -1320,29 +1343,51 @@ export default function index({
 
           <div className="form-group">
             <div className="field">
-              <input
-                name="parentCity"
-                className={
-                  isReadonly &&
-                  pastParentInformation && 
-                  !isVendorView &&
-                  (pastParentInformation.city || pastParentInformation.city == "") &&
-                  pastParentInformation.city != parentProfile.city ?
-                  "field-input highlights" : "field-input"
-                }
-                placeholder="City"
-                id={`parentCity_${counter - 1}`}
-                onChange={({ target }) => {
-                  handleParentFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "city",
-                    target.value
-                  );
-                }}
-                readOnly={isReadonly}
-                defaultValue={parentProfile?.city}
-              />
+              {
+                parentProfile.city ? (
+                  <input
+                    name="parentCity"
+                    className={
+                      isReadonly &&
+                      pastParentInformation && 
+                      !isVendorView &&
+                      (pastParentInformation.city || pastParentInformation.city == "") &&
+                      pastParentInformation.city != parentProfile.city ?
+                      "field-input highlights" : "field-input"
+                    }
+                    placeholder="City"
+                    id={`parentCity_${counter - 1}`}
+                    onChange={({ target }) => {
+                      handleParentFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "city",
+                        target.value
+                      );
+                    }}
+                    readOnly={isReadonly}
+                    defaultValue={parentProfile?.city}
+                  />
+                ) : (
+                  <input
+                    name="parentCity"
+                    className="field-input"
+                    placeholder="City"
+                    id={`parentCity_${counter - 1}`}
+                    onChange={({ target }) => {
+                      handleParentFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "city",
+                        target.value
+                      );
+                    }}
+                    readOnly={isReadonly}
+                    defaultValue={isReadonly ? selectedApplication?.child?.city : ""}
+                  />
+                )
+              }
+
               <label className="field-label" for={`parentCity_${counter - 1}`}>
                 City
               </label>
@@ -1378,7 +1423,7 @@ export default function index({
                     </option>
                   ))}
                 </select>
-              ) : (
+              ) : parentProfile.state ? (
                 <input
                   type="text"
                   className={
@@ -1394,41 +1439,76 @@ export default function index({
                   placeholder="State"
                   name="parentstate"
                 />
+              ) : (
+                <input
+                  type="text"
+                  className="field-input"
+                  defaultValue={isReadonly ? selectedApplication?.child?.state : ""}
+                  readOnly={isReadonly}
+                  placeholder="State"
+                  name="parentstate"
+                />
               )}
-
               <label className="field-label">State</label>
             </div>
           </div>
           <div className="form-group">
             <div className="field">
-              <input
-                name="parentzipcode"
-                className={
-                  isReadonly &&
-                  !isVendorView &&
-                  pastParentInformation && 
-                  (pastParentInformation.zip_code || pastParentInformation.zip_code == "") &&
-                  pastParentInformation.zip_code != parentProfile.zip_code ?
-                  "field-input highlights" : "field-input"
-                }
-                placeholder="Zip Code"
-                id={`parentzipcode_${counter - 1}`}
-                onChange={({ target }) => {
-                  if (target.value.match(/^-{0,1}\d+$/)) {
-                    handleParentFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "zip_code",
-                      target.value
-                    );
-                  } else {
-                    target.value = target.value.slice(0, -1);
-                  }
-                }}
-                ref={register({ maxLength: 5 })}
-                readOnly={isReadonly}
-                defaultValue={parentProfile?.zip_code}
-              />
+              {
+                parentProfile.zip_code ? (
+                  <input
+                    name="parentzipcode"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastParentInformation && 
+                      (pastParentInformation.zip_code || pastParentInformation.zip_code == "") &&
+                      pastParentInformation.zip_code != parentProfile.zip_code ?
+                      "field-input highlights" : "field-input"
+                    }
+                    placeholder="Zip Code"
+                    id={`parentzipcode_${counter - 1}`}
+                    onChange={({ target }) => {
+                      if (target.value.match(/^-{0,1}\d+$/)) {
+                        handleParentFormDetailsChange(
+                          counter - 1,
+                          "profile",
+                          "zip_code",
+                          target.value
+                        );
+                      } else {
+                        target.value = target.value.slice(0, -1);
+                      }
+                    }}
+                    ref={register({ maxLength: 5 })}
+                    readOnly={isReadonly}
+                    defaultValue={parentProfile?.zip_code}
+                  />
+                ) : (
+                  <input
+                    name="parentzipcode"
+                    className="field-input"
+                    placeholder="Zip Code"
+                    id={`parentzipcode_${counter - 1}`}
+                    onChange={({ target }) => {
+                      if (target.value.match(/^-{0,1}\d+$/)) {
+                        handleParentFormDetailsChange(
+                          counter - 1,
+                          "profile",
+                          "zip_code",
+                          target.value
+                        );
+                      } else {
+                        target.value = target.value.slice(0, -1);
+                      }
+                    }}
+                    ref={register({ maxLength: 5 })}
+                    readOnly={isReadonly}
+                    defaultValue={isReadonly ? selectedApplication?.child?.zip_code : ""}
+                  />
+                )
+              }
+
               <label
                 className="field-label"
                 for={`parentzipcode_${counter - 1}`}>

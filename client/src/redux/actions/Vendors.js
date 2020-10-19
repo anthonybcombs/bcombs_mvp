@@ -3,6 +3,7 @@ import graphqlClient from "../../graphql";
 import {
   VENDOR_UPDATE_MUTATION,
   VENDOR_BY_USER_QUERY,
+  VENDOR_BY_ID_QUERY,
   VENDOR_BY_ID2_QUERY,
   GET_VENDOR_ADMINS,
   ADD_VENDOR_ADMIN,
@@ -116,6 +117,21 @@ const getVendorById2FromDatabase = id2 => {
   });
 };
 
+const getVendorByIdFromDatabase = id => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: VENDOR_BY_ID_QUERY,
+        variables: { id }
+      });
+
+      return resolve(data.getVendorById);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const updateVendorToDatabase = vendor => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -150,6 +166,13 @@ export const requestVendorById2 = id2 => {
   return {
     type: actionType.REQUEST_VENDOR_BY_ID2,
     id2
+  };
+};
+
+export const requestVendorById = id => {
+  return {
+    type: actionType.REQUEST_VENDOR_BY_ID,
+    id
   };
 };
 
@@ -286,6 +309,25 @@ export function* updateVendor({ vendor }) {
     yield put({
       type: actionType.REQUEST_UPDATE_VENDOR_COMPLETED,
       payload: {}
+    });
+  }
+}
+
+export function* getVendorById({ id }) {
+  console.log("ACTION", id);
+  try {
+    const vendors = yield call(getVendorByIdFromDatabase, id);
+
+    console.log("getvendor id", vendors);
+    yield put({
+      type: actionType.REQUEST_VENDOR_COMPLETED,
+      payload: vendors
+    });
+  } catch (err) {
+    console.log("err", err);
+    yield put({
+      type: actionType.REQUEST_VENDOR_COMPLETED,
+      payload: []
     });
   }
 }
