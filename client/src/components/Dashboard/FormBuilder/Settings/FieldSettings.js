@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState  } from 'react'
 
-export default () => {
-  const [editFieldDrawerShow, setEditFieldDrawerShow] = useState(false)
-  const isEditFieldDrawerShow = editFieldDrawerShow ? 'show' : ''
+export default (props) => {
+  const { column, placeholder, onCloseUpdate, onUpdateFieldSetting, index, shownClassName } = props
+  const handleUpdateField = ({ target: { id, value } }) => {
+    onUpdateFieldSetting({ [id]: value }, index)
+  }
 
   return (
-    <div className={`sortableGroup-drawer drawer-right ${isEditFieldDrawerShow}`}>
+    <div className={`sortableGroup-drawer drawer-right ${shownClassName}`}>
       <div className='field'>
         <label for='placeholder' className='field-label'>Placeholder</label>
         <input
@@ -13,8 +15,8 @@ export default () => {
           id='placeholder'
           className='field-input'
           placeholder='Edit Placeholder'
-          // value={name}
-          // onChange={() => console.log('eee')}
+          value={placeholder}
+          onChange={handleUpdateField}
         />
       </div>
       
@@ -23,10 +25,8 @@ export default () => {
         <select
           id='column'
           className='field-input'
-          defaultValue={fieldColumn}
-          onChange={({ target }) => {
-            handleFieldColumn(target.value)
-          }}
+          value={column}
+          onChange={handleUpdateField}
         >
           <option value=''>Select Field Size</option>
           <option value='1'>Small</option>
@@ -39,9 +39,12 @@ export default () => {
         <button
           type='button'
           className='add-btn'
-          onClick={() => setEditFieldDrawerShow(!editFieldDrawerShow) }
+          onClick={(e) => {
+            e.stopPropagation()
+            onCloseUpdate()
+          }}
         >
-          Update
+          Close
         </button>
       </div>
     </div>

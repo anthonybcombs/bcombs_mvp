@@ -34,7 +34,7 @@ export const Items = {
 export const StandardFields = [
   {
     fields: [
-      { label: 'Single Line Text', type: 'text', tag: 'input', placeholder: 'Single LIne Text' }
+      { label: 'Single Line Text', type: 'text', tag: 'input', placeholder: 'Single LIne Text', column: '1'}
     ],
     label: 'Single Line Text',
     type: 'singleLineText',
@@ -42,7 +42,7 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Numbers', type: 'number', tag: 'input', placeholder: 'Numbers' }
+      { label: 'Numbers', type: 'number', tag: 'input', placeholder: 'Numbers', column: '1'}
     ],
     label: 'Numbers',
     type: 'numbers',
@@ -50,7 +50,7 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Paragraph Text', type: 'text', tag: 'textarea', placeholder: 'Paragraph Text' }
+      { label: 'Paragraph Text', type: 'text', tag: 'textarea', placeholder: 'Paragraph Text', column: '1'}
     ],
     label: 'Paragraph Text',
     type: 'paragraphText',
@@ -58,7 +58,7 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Question', type: 'text', tag: 'input', placeholder: 'Question' },
+      { label: 'Question', type: 'text', tag: 'input', placeholder: 'Question', column: '1'},
       {
         type: 'group',
         options: [
@@ -74,14 +74,14 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Multiple Choice', tag: 'multipleChoice', multiple: false }
+      { label: 'Multiple Choice', tag: 'multipleChoice', multiple: false, column: '1'}
     ],
     label: 'Multiple Choice',
     type: 'multipleChoice'
   },
   {
     fields: [
-      { label: 'Dropdown', type: 'text', tag: 'select', placeholder: 'Dropdown' }
+      { label: 'Dropdown', type: 'text', tag: 'select', placeholder: 'Dropdown', column: '1'}
     ],
     label: 'Dropdown',
     type: 'dropDown',
@@ -89,63 +89,63 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Matrix / Rating', tag: 'rating' }
+      { label: 'Matrix / Rating', tag: 'rating', column: '1'}
     ],
     label: 'Matrix / Rating',
     type: 'rating'
   },
   {
     fields: [
-      { label: 'Radio Button', tag: 'radio' }
+      { label: 'Radio Button', tag: 'radio', column: '1'}
     ],
     label: 'Radio Button',
     type: 'radioButton'
   },
   {
     fields: [
-      { label: 'Linear Scale', tag: 'linear' }
+      { label: 'Linear Scale', tag: 'linear', column: '1'}
     ],
     label: 'Linear Scale',
     type: 'linearScale'
   },
   {
     fields: [
-      { label: 'Slider', tag: 'slider' }
+      { label: 'Slider', tag: 'slider', column: '1'}
     ],
     label: 'Slider',
     type: 'slider'
   },
   {
     fields: [
-      { label: 'Checkbox Grid', tag: 'checkbox', isGrid: true }
+      { label: 'Checkbox Grid', tag: 'checkbox', isGrid: true, column: '1'}
     ],
     label: 'Checkbox Grid',
     type: 'checkboxGrid'
   },
   {
     fields: [
-      { label: 'Ranking', tag: 'ranking' }
+      { label: 'Ranking', tag: 'ranking', column: '1'}
     ],
     label: 'Ranking',
     type: 'ranking'
   },
   {
     fields: [
-      { label: 'File Upload', tag: 'file' }
+      { label: 'File Upload', tag: 'file', column: '1'}
     ],
     label: 'File Upload',
     type: 'file'
   },
   {
     fields: [
-      { label: 'Section Break', tag: 'sectionBreak' }
+      { label: 'Section Break', tag: 'sectionBreak', column: '1'}
     ],
     label: 'Section Break',
     type: 'sectionBreak'
   },
   {
     fields: [
-      { label: 'Page Break', tag: 'pageBreak' }
+      { label: 'Page Break', tag: 'pageBreak', column: '1'}
     ],
     label: 'Page Break',
     type: 'pageBreak'
@@ -155,81 +155,81 @@ export const StandardFields = [
 export const PrimeFields = [
   {
     fields: [
-      { label: 'First Name', type: 'text', tag: 'input', placeholder: 'First Name' },
-      { label: 'Middle Name', type: 'text', tag: 'input', placeholder: 'Middle Name' },
-      { label: 'Last Name', type: 'text', tag: 'input', placeholder: 'Last Name' }
+      { label: 'First Name', type: 'text', tag: 'input', placeholder: 'First Name', column: '1'},
+      { label: 'Middle Name', type: 'text', tag: 'input', placeholder: 'Middle Name', column: '1'},
+      { label: 'Last Name', type: 'text', tag: 'input', placeholder: 'Last Name', column: '1'}
     ],
     label: 'Name',
     type: 'name'
   },
   {
     fields: [
-      { label: 'File Upload', tag: 'file' }
+      { label: 'File Upload', tag: 'file', column: '1'}
     ],
     label: 'File Upload',
     type: 'primeFile'
   },
   {
     fields: [
-      { label: 'Street Address', type: 'text', tag: 'input', placeholder: 'Street Address' },
-      { label: 'Street Address Line 2', type: 'text', tag: 'input', placeholder: 'Street Address Line 2' },
-      { label: 'State / Province / Region', type: 'text', tag: 'input', placeholder: 'State / Province / Region' },
-      { label: 'City', type: 'text', tag: 'input', placeholder: 'City' },
-      { label: 'Postal / Zip Code', type: 'text', tag: 'input', placeholder: 'Postal / Zip Code' },
-      { label: 'Country', type: 'text', tag: 'select', placeholder: 'Country' }
+      { label: 'Street Address', type: 'text', tag: 'input', placeholder: 'Street Address', column: '1'},
+      { label: 'Street Address Line 2', type: 'text', tag: 'input', placeholder: 'Street Address Line 2', column: '1'},
+      { label: 'State / Province / Region', type: 'text', tag: 'input', placeholder: 'State / Province / Region', column: '1'},
+      { label: 'City', type: 'text', tag: 'input', placeholder: 'City', column: '1'},
+      { label: 'Postal / Zip Code', type: 'text', tag: 'input', placeholder: 'Postal / Zip Code', column: '1'},
+      { label: 'Country', type: 'text', tag: 'select', placeholder: 'Country', column: '1'}
     ],
     label: 'Address',
     type: 'address'
   },
   {
     fields: [
-      { label: 'Rating', tag: 'rating' }
+      { label: 'Rating', tag: 'rating', column: '1'}
     ],
     label: 'Rating',
     type: 'primeRating'
   },
   {
     fields: [
-      { label: 'Email', type: 'email', tag: 'input', placeholder: 'Email' },
+      { label: 'Email', type: 'email', tag: 'input', placeholder: 'Email', column: '1'},
     ],
     label: 'Email',
     type: 'email'
   },
   {
     fields: [
-      { label: 'MM', type: 'text', tag: 'input', placeholder: 'MM' },
-      { label: 'DD', type: 'text', tag: 'input', placeholder: 'DD' },
-      { label: 'YYYY', type: 'text', tag: 'input', placeholder: 'YYYY' },
+      { label: 'MM', type: 'text', tag: 'input', placeholder: 'MM', column: '1'},
+      { label: 'DD', type: 'text', tag: 'input', placeholder: 'DD', column: '1'},
+      { label: 'YYYY', type: 'text', tag: 'input', placeholder: 'YYYY', column: '1'},
     ],
     label: 'Date',
     type: 'date'
   },
   {
     fields: [
-      { label: 'Mobile', type: 'number', tag: 'input', placeholder: 'Mobile' },
-      { label: 'Home', type: 'number', tag: 'input', placeholder: 'Home' },
-      { label: 'Business', type: 'number', tag: 'input', placeholder: 'Business' },
+      { label: 'Mobile', type: 'number', tag: 'input', placeholder: 'Mobile', column: '1'},
+      { label: 'Home', type: 'number', tag: 'input', placeholder: 'Home', column: '1'},
+      { label: 'Business', type: 'number', tag: 'input', placeholder: 'Business', column: '1'},
     ],
     label: 'Phone',
     type: 'phone'
   },
   {
     fields: [
-      { label: 'Time', type: 'text', tag: 'input', placeholder: 'Time' },
+      { label: 'Time', type: 'text', tag: 'input', placeholder: 'Time', column: '1'},
     ],
     label: 'Time',
     type: 'time'
   },
   {
     fields: [
-      { label: 'Price', type: 'text', tag: 'input', placeholder: 'Price' },
+      { label: 'Price', type: 'text', tag: 'input', placeholder: 'Price', column: '1'},
     ],
     label: 'Price',
     type: 'price'
   },
   {
     fields: [
-      { label: 'Website', type: 'text', tag: 'input', placeholder: 'Website' },
+      { label: 'Website', type: 'text', tag: 'input', placeholder: 'Website', column: '1'},
     ],
     label: 'Website',
     type: 'website'

@@ -2,25 +2,31 @@ import React, { useState, useImperativeHandle, useRef, useEffect } from 'react'
 import { DragSource, DropTarget, } from 'react-dnd'
 import { uuid } from 'uuidv4'
 import { getEmptyImage } from 'react-dnd-html5-backend'
-import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGripHorizontal, faTimes, faPlusCircle, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faGripHorizontal, faTimes, faCogs, faEdit } from '@fortawesome/free-solid-svg-icons'
 
-import { Items, StandardFields } from './Constants'
+import { Items } from './Constants'
 import FieldConstructor from './FieldConstructor'
-import Settings from './Settings'
+import GeneralSettings from './Settings/GeneralSettings'
+import FieldSettings from './Settings/FieldSettings'
+import GroupSettings from './Settings/GroupSettings'
 
 const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
-    hidden, name, fields, isDragging, id,
+    hidden, label, fields, isDragging, id,
     onRemoveGroup, settings,
     isActive, onActive, onChangeSettings,
     groupType, onMergeStandardFields, onDuplicateGroup,
-    onRemoveGroupField
+    onRemoveGroupField, onUpdateFieldSettings, onChangeGroupName
   }, ref) => {
+  
+  const [fieldIndex, showFieldSettings] = useState('')
+  const [showSettings, setShowSettings] = useState(false)
+  const settingsShown = fieldIndex !== '' || showSettings
+
   const elementRef = useRef(null)
-  connectDragSource(elementRef)
+  connectDragSource(!settingsShown ? elementRef : null)
   connectDropTarget(elementRef)
   // connectDragPreview(previewElement)
   const opacity = (isDragging || hidden) ? 0 : 1
@@ -28,25 +34,13 @@ const SortableGroup = React.forwardRef(
     getNode: () => elementRef.current,
   }))
 
-  const [fieldColumn, handleFieldColumn] = useState(1)
-  const [additionalField, handleSelectFieldToAdd] = useState('')
-  const [addingFieldDrawerShow, setAddingFieldDrawerShow] = useState(false)
-  // const [editGroupNameDrawerShow, setEditGroupNameDrawerShow] = useState(false)
-
-  const [editGroupNameDrawerShow, setEditGroupNameDrawerShow] = useState({
-    show: false,
-    anchorEl: null
-  })
-
-
   useEffect(() => {
     connectDragPreview(getEmptyImage(), { captureDraggingState: true })
   }, [])
 
   const itemActive = isActive ? 'active' : ''
-  const itemGroup = name.toLowerCase().replace(/ +/g, "")
-  const isAddingFieldDrawerShow = addingFieldDrawerShow ? 'show' : ''
-  const isEditGroupNameDrawerShow = editGroupNameDrawerShow.show ? 'show' : ''
+  const itemGroup = label.toLowerCase().replace(/ +/g, "")
+  const isStandard = groupType === 'standard'
 
   return (
     <div
@@ -56,40 +50,32 @@ const SortableGroup = React.forwardRef(
       onClick={() => onActive(id)}
     >   
         {
-          !isDragging && groupType === 'standard' && (
+          !isDragging && (
             <div className='sortableGroup-actions'>
               <div className='tooltip-wrapper tooltip-left add-field'>
                 <FontAwesomeIcon
                   size='2x' 
-                  icon={faPlusCircle}
+                  icon={faCogs}
                   className='add-icon'
-                  onClick={() => setAddingFieldDrawerShow(!addingFieldDrawerShow) }
+                  onClick={() => setShowSettings(!showSettings) }
                 />
-                <span className='tooltip'>Add Field</span>
-              </div>
-              <div className='tooltip-wrapper tooltip-left edit-groupName'>
-                <FontAwesomeIcon
-                  size='2x' 
-                  icon={faEdit}
-                  className='edit-icon'
-                  // onClick={() => setEditGroupNameDrawerShow(!editGroupNameDrawerShow) }
-                  onClick={(e) => setEditGroupNameDrawerShow({
-                    show: true,
-                    anchorEl: e.currentTarget
-                  }) }
-                />
-                <span className='tooltip'>Edit Group Name</span>
+                <span className='tooltip'>Settings</span>
               </div>
             </div>
           )
         }
+        <p className='sortableGroup-name'>{label}</p>
         <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
           {
             fields.map((field, index) => {
-              const { type = '', tag, options } = field
+              const { type = '', tag, options, column = 1 } = field
               if (type !== 'group') {
                 return (
-                  <div className={`sortableGroup-column`} style={{ gridColumn: `span ${fieldColumn}`}}>
+                  <div
+                    className={`sortableGroup-column`}
+                    style={{ gridColumn: `span ${column}`}}
+                    onClick={() => showFieldSettings(index)}
+                  >
                     {
                       FieldConstructor[tag]({
                         key: tag + uuid(),
@@ -142,91 +128,31 @@ const SortableGroup = React.forwardRef(
           }
         </div>
         {
-          (!isDragging && isActive && groupType === 'standard') && (
+          (!isDragging && isActive) && (
             <>
-              {/* Edit Group Name Drawer */}
-              <div className={`sortableGroup-drawer ${isEditGroupNameDrawerShow}`}>
-                <div className='field'>
-                  <label for='group-name' className='field-label'>Group Name</label>
-                  <input
-                    type='text'
-                    id='group-name'
-                    className='field-input'
-                    placeholder='Group Name'
-                    // value={name}
-                    // onChange={() => console.log('eee')}
-                  />
-                </div>
-                <div className='addField-actions'>
-                  <button
-                    type='button'
-                    className='add-btn'
-                    // onClick={() => setEditGroupNameDrawerShow(!editGroupNameDrawerShow) }
-                    onClick={() => setEditGroupNameDrawerShow({
-                      show: false,
-                      anchorEl: null
-                    }) }
-                  >
-                    Update
-                  </button>
-                </div>
-              </div>
-
-              {/* Add Fields Drawer */}
-              <div className={`sortableGroup-drawer drawer-right ${isAddingFieldDrawerShow}`}>
-                <div className='field select-field-wrapper'>
-                  <label for='add-field' className='field-label'>Select a field to add</label>
-                  <select
-                    id='add-field'
-                    className='field-input'
-                    defaultValue={additionalField}
-                    onChange={({ target }) => {
-                      handleSelectFieldToAdd(target.value)
-                    }}
-                  >
-                    <option value=''>Select a field to add</option>
-                    {
-                      StandardFields
-                        .filter(e => e.canBeGrouped)
-                        .map(e => (
-                          <option key={e.type} value={e.type}>{e.label}</option>
-                        ))
-                    }
-                  </select>
-                </div>
-                <div className='addField-actions'>
-                  <button
-                    type='button'
-                    className='add-btn'
-                    onClick={e => {
-                      e.stopPropagation()
-                      let newField = StandardFields.find(e => e.type === additionalField)
-                      if (newField) {
-                        newField = cloneDeep(newField) //avoid mutating the array of objects
-                        onMergeStandardFields(id, newField)
-                      }
-                    }}
-                  >
-                    Add Field
-                  </button>
-                  <button
-                    type='button'
-                    className='close-btn'
-                    onClick={() => setAddingFieldDrawerShow(!addingFieldDrawerShow) }
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-
-              
+              <GroupSettings
+                id={id}
+                label={label}
+                isStandard={isStandard}
+                shownClassName={showSettings ? 'show' : ''}
+                onHideSettings={() => setShowSettings(false)}
+                onMergeStandardFields={onMergeStandardFields}
+                onChangeGroupName={onChangeGroupName}
+              />
+              <FieldSettings
+                shownClassName={fieldIndex !== '' ? 'show' : ''}
+                {...fields[fieldIndex]}
+                index={fieldIndex}
+                onCloseUpdate={() => showFieldSettings('')}
+                onUpdateFieldSetting={(data, index) => onUpdateFieldSettings(data, index, id)}
+              />
             </>
           )
         }
         {
           (!isDragging && isActive && !isDragging) &&
           (
-            <Settings
+            <GeneralSettings
               onChangeSettings={(data) => onChangeSettings({ ...data, id })}
               onRemoveGroup={() => onRemoveGroup(id)}
               onDuplicateGroup={() => onDuplicateGroup(id)}

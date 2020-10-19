@@ -91,6 +91,18 @@ export default () => {
     }))
   }
 
+  const handleUpdateFieldSettings = (data, index, id) => {
+    setDrop(update(droppedFields, {
+      [droppedFields.findIndex(e => e.id === id)]: { fields: { [index]: { $merge: data } } }
+    }))
+  }
+
+  const handleUpdateGroupName = (label, id) => {
+    setDrop(update(droppedFields, {
+      [droppedFields.findIndex(e => e.id === id)]: { $merge: { label } }
+    }))
+  }
+
   const [{ item, didDrop }, drop] = useDrop({
     accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
     drop: () => handleDrop(item, didDrop),
@@ -123,7 +135,7 @@ export default () => {
         droppedFields.map((fieldProps, index) => {
           return (
             <SortableGroup
-            {...fieldProps}
+              {...fieldProps}
               key={fieldProps.id}
               index={index}
               onMoveGroup={handleMoveGroup}
@@ -134,6 +146,8 @@ export default () => {
               onMergeStandardFields={handleMergeStandardFields}
               onDuplicateGroup={handleDuplicateGroup}
               onRemoveGroupField={handleRemoveGroupField}
+              onUpdateFieldSettings={handleUpdateFieldSettings}
+              onChangeGroupName={handleUpdateGroupName}
             />
           )
         })

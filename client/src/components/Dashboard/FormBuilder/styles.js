@@ -39,6 +39,10 @@ export default styled.div`
     -webkit-appearance: none;
     -moz-appearance: none;
   }
+  #formBuilder .field-input.hasError {
+    border-bottom: 1.65px solid red;
+    color: red;
+  }
   #formBuilder .select-field-wrapper {
     position: relative;
   }
