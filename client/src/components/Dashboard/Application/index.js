@@ -1010,6 +1010,18 @@ export default function index() {
       },
       parents: setupParentsList(),
       emergency_contacts: JSON.stringify(emergencyContacts),
+      section1_signature: selectedApplication.section1_signature,
+      section1_date_signed: selectedApplication.section1_date_signed,
+      section2_signature: selectedApplication.section2_signature,
+      section2_date_signed:  selectedApplication.section2_date_signed,
+      section3_signature: selectedApplication.section3_signature,
+      section3_date_signed: selectedApplication.section3_date_signed,
+      section1_text: selectedApplication.section1_text,
+      section2_text: selectedApplication.section2_text,
+      section3_text: selectedApplication.section3_text,
+      section1_name: selectedApplication.section1_name,
+      section2_name: selectedApplication.section2_name,
+      section3_name: selectedApplication.section3_name,
       updated_by: auth.name
     };
 

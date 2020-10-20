@@ -1274,12 +1274,12 @@ export default function index() {
       section2_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT2),
       section3_signature: termsWaiver.section3.signature,
       section3_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT2),
-      section1_text: selectedVendor.section1_show ? selectedVendor.section1_text : "",
-      section2_text: selectedVendor.section2_show ? selectedVendor.section2_text : "",
-      section3_text: selectedVendor.section3_show ? selectedVendor.section3_text : "",
-      section1_name: selectedVendor.section1_show ? selectedVendor.section1_name : "",
-      section2_name: selectedVendor.section2_show ? selectedVendor.section2_name : "",
-      section3_name: selectedVendor.section3_show ? selectedVendor.section3_name : "",
+      section1_text: selectedApplication.section1_text,
+      section2_text: selectedApplication.section2_text,
+      section3_text: selectedApplication.section3_text,
+      section1_name: selectedApplication.section1_name,
+      section2_name: selectedApplication.section2_name,
+      section3_name: selectedApplication.section3_name,
       updated_by: auth.name
     }
 
