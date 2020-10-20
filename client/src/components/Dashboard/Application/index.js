@@ -434,21 +434,21 @@ export default function index() {
     applications.updateapplication &&
     applications.updateapplication.message == "application updated"
   ) {
-    window.location.reload(false);
+    window.location.reload()
   }
 
   if (
     applications.archivedapplication &&
     applications.archivedapplication.message == "application archived"
   ) {
-    window.location.reload(false);
+    window.location.reload()
   }
 
   if (
     applications.updateapplication &&
     applications.updateapplication.message == "application successfully updated"
   ) {
-    window.location.reload(false);
+    window.location.reload()
   }
 
   useEffect(() => {
