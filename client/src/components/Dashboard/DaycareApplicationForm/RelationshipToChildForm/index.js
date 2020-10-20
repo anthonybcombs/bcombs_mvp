@@ -294,7 +294,7 @@ export default function index({
           )
         }
         {
-          tempChilds && tempChilds.length > 0 && isReadView ? (
+          tempChilds && tempChilds.length > 1 && isReadView ? (
             <div className="content">
               <div className="question-box">
                 <p>What is the relation of <strong>{tempChilds[0].first_name}</strong> to</p>
