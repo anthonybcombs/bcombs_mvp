@@ -215,7 +215,9 @@ export default styled.div`
     color: #f5812f;
     font-size: 18px;
     cursor: pointer;
-    padding: 8px 9px;
+    padding: 8px;
+    width: 28px;
+    height: 28px;
     border-radius: 100px;
 
     opacity:0;
@@ -313,6 +315,14 @@ export default styled.div`
   .sortableGroup-drawer .field:not(:first-child) {
     padding: 12px 0 5px;
   }
+  .sortableGroup-drawer .field >label {
+    opacity: .85;
+    color: #f5812f !important;
+  }
+  .sortableGroup-drawer .field >input,
+  .sortableGroup-drawer .field >select {
+    padding-top: 0 !important;
+  }
   .sortableGroup-drawer .select-field-wrapper {
     position: relative;
   }
@@ -380,6 +390,16 @@ export default styled.div`
     grid-gap: 2%;
     margin-bottom: 1rem;
     grid-template-columns: repeat(4, 1fr);
+  }
+  .group-settings .settings-validation .add-validation {
+    grid-column: none;
+  }
+  .group-settings .settings-validation .add-validation > svg {
+    width: 24px;
+    color: #f5812f;
+  }
+  .group-settings .settings-validation .add-validation >span.tooltip {
+    left: -76px;
   }
   .group-settings .settings-control {
     display: flex;

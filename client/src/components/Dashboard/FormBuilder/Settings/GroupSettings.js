@@ -10,7 +10,7 @@ export default ({
   return (
     <>
       {/* Edit Group Name Drawer */}
-      <div className={`sortableGroup-drawer ${shownClassName}`}>
+      <div className={`sortableGroup-drawer drawer-right ${shownClassName}`}>
         <div className='field'>
           <label for='group-name' className='field-label'>Group Name</label>
           <input
@@ -61,11 +61,18 @@ export default ({
                 >
                   Add Field
                 </button>
+                <button
+                  type='button'
+                  className='close-btn'
+                  onClick={onHideSettings}
+                >
+                  Close
+                </button>
               </div>
             </>
           )
         }
-        <div>
+        {/* <div>
           <button
             type='button'
             className='close-btn'
@@ -73,7 +80,7 @@ export default ({
           >
             Close
           </button>
-        </div>
+        </div> */}
       </div>
     </>
   )

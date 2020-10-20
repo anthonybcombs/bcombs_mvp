@@ -127,7 +127,7 @@ export default ({
               />
               {
                 (!hasValidationError && (index === items.length - 1)) && (
-                  <div className='tooltip-wrapper tooltip-left add-field'>
+                  <div className='tooltip-wrapper add-validation'>
                     <FontAwesomeIcon
                       size='2x' 
                       icon={faPlusCircle}
