@@ -249,13 +249,13 @@ export default styled.div`
   
 
   // specific for ADDRESS ROW
-  .sortableGroup.address .sortableGroup-row {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  .sortableGroup.address .sortableGroup-row .sortableGroup-column:nth-child(1),
-  .sortableGroup.address .sortableGroup-row .sortableGroup-column:nth-child(2) {
-    grid-column: span 2 !important; /* Spans two columns */
-  }
+  // .sortableGroup.address .sortableGroup-row {
+  //   grid-template-columns: repeat(2, 1fr) !important;
+  // }
+  // .sortableGroup.address .sortableGroup-row .sortableGroup-column:nth-child(1),
+  // .sortableGroup.address .sortableGroup-row .sortableGroup-column:nth-child(2) {
+  //   grid-column: span 2 !important; /* Spans two columns */
+  // }
 
 
   .sortableGroup-name {

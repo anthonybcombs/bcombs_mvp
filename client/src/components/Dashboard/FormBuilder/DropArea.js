@@ -39,9 +39,9 @@ export default () => {
   }
 
   const handleMoveGroup = (dragIndex, hoverIndex, draggedGroup) => {
-    const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id) }
     let newFields = [...droppedFields]
     if (dragIndex === undefined) {
+      const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id) }
       newFields = update(droppedFields, {
         [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } },
         $push: [{ ...newField, hidden: true, isActive: true }]

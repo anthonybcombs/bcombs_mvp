@@ -5,15 +5,15 @@ import cloneDeep from 'lodash.clonedeep'
 import FieldConstructor from '../FormBuilder/FieldConstructor'
 
 export default ({ 
-  label, fields, fieldState, onChange
+  label, fields, fieldState, onChange, type: itemGroup
 }) => {
-
+  const gridColRepeat = itemGroup === 'address' ? 4 : 3
   return (
     <div
       className={`sortableGroup`}
     >   
       <p className='sortableGroup-name'>{label}</p>
-      <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
+      <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {
           cloneDeep(fields).map((field, index) => {
             const { type = '', tag, options, column = 1, id: fieldId } = field

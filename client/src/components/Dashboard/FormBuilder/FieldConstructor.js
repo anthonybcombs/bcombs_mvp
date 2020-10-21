@@ -47,8 +47,10 @@ export default {
       <select
         className='field-input'
         {...rest}
+        disabled={true}
+        style={{ opacity: 1 }}
       >
-        <option value=''>{fieldLabel}</option>
+        <option value=''>{rest.placeholder}</option>
         {
           !isFormBuilder &&
           (

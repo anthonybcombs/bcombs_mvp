@@ -21,10 +21,10 @@ export default ({
   console.log('@@@fieldState', fieldState)
   return (
     <FormrStyled>
+      <div>
+        {formTitle}
+      </div>
       <div id='form'>
-        <div className='form-title'>
-          {formTitle}
-        </div>
         {
           formData.map((fieldProps, index) => {
             return (

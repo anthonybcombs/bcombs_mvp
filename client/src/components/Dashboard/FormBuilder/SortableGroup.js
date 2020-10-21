@@ -14,14 +14,14 @@ import GroupSettings from './Settings/GroupSettings'
 const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
-    hidden, label, fields, isDragging, id,
+    hidden, label, fields, isDragging, id, type: itemGroup,
     onRemoveGroup, settings,
     isActive, onActive, onChangeSettings,
     groupType, onMergeStandardFields, onDuplicateGroup,
     onRemoveGroupField, onUpdateFieldSettings, onChangeGroupName
   }, ref) => {
   
-  const [fieldIndex, showFieldSettings] = useState('')
+  const [fieldIndex, setActiveFieldIndex] = useState('')
   const [showSettings, setShowSettings] = useState(false)
   const settingsShown = fieldIndex !== '' || showSettings
 
@@ -34,14 +34,17 @@ const SortableGroup = React.forwardRef(
     getNode: () => elementRef.current,
   }))
 
-  useEffect(() => {
+  useEffect((props) => {
     connectDragPreview(getEmptyImage(), { captureDraggingState: true })
-  }, [])
+    if (!isActive) {
+      setShowSettings(false)
+      setActiveFieldIndex('')
+    }
+  })
 
   const itemActive = isActive ? 'active' : ''
-  const itemGroup = label.toLowerCase().replace(/ +/g, "")
   const isStandard = groupType === 'standard'
-
+  const gridColRepeat = itemGroup === 'address' ? 4 : 3
   return (
     <div
       ref={elementRef}
@@ -65,16 +68,19 @@ const SortableGroup = React.forwardRef(
           )
         }
         <p className='sortableGroup-name'>{label}</p>
-        <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
+        <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
           {
             fields.map((field, index) => {
-              const { type = '', tag, options, column = 1 } = field
+              const { type = '', tag, options, column } = field
               if (type !== 'group') {
                 return (
                   <div
                     className={`sortableGroup-column`}
                     style={{ gridColumn: `span ${column}`}}
-                    onClick={() => showFieldSettings(index)}
+                    onClick={() => {
+                      setActiveFieldIndex(index)
+                      onActive(id)
+                    }}
                   >
                     {
                       FieldConstructor[tag]({
@@ -142,10 +148,11 @@ const SortableGroup = React.forwardRef(
                 onChangeGroupName={onChangeGroupName}
               />
               <FieldSettings
-                shownClassName={fieldIndex !== '' ? 'show' : ''}
+                shownClassName={(fieldIndex !== '') ? 'show' : ''}
                 {...fields[fieldIndex]}
                 index={fieldIndex}
-                onCloseUpdate={() => showFieldSettings('')}
+                itemGroup={itemGroup}
+                onCloseUpdate={() => setActiveFieldIndex('')}
                 onUpdateFieldSetting={(data, index) => onUpdateFieldSettings(data, index, id)}
               />
             </>
@@ -173,10 +180,6 @@ export default DropTarget([...Object.values(Items.standard), ...Object.values(It
     if (!component) {
       return null
     }
-
-    // if (source.groupType === 'standard' && destination.groupType === 'standard') {
-    //   return null
-    // }
 
     // node = HTML Div element from imperative API
     const node = component.getNode()

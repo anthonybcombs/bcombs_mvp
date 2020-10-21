@@ -1,7 +1,7 @@
 import React, { useState  } from 'react'
 
 export default (props) => {
-  const { column, placeholder, onCloseUpdate, onUpdateFieldSetting, index, shownClassName } = props
+  const { column, placeholder, onCloseUpdate, onUpdateFieldSetting, index, shownClassName, itemGroup } = props
   const handleUpdateField = ({ target: { id, value } }) => {
     onUpdateFieldSetting({ [id]: value }, index)
   }
@@ -20,20 +20,24 @@ export default (props) => {
         />
       </div>
       
-      <div className='field select-field-wrapper'>
-      <label for='column' className='field-label'>Column</label>
-        <select
-          id='column'
-          className='field-input'
-          value={column}
-          onChange={handleUpdateField}
-        >
-          <option value=''>Select Field Size</option>
-          <option value='1'>Small</option>
-          <option value='2'>Medium</option>
-          <option value='3'>Large</option>
-        </select>
-      </div>
+      {
+        itemGroup !== 'address' && (
+          <div className='field select-field-wrapper'>
+            <label for='column' className='field-label'>Column</label>
+            <select
+              id='column'
+              className='field-input'
+              value={column}
+              onChange={handleUpdateField}
+            >
+              <option value=''>Select Field Size</option>
+              <option value='1'>Small</option>
+              <option value='2'>Medium</option>
+              <option value='3'>Large</option>
+            </select>
+          </div>
+        )
+      }
       
       <div className='addField-actions'>
         <button

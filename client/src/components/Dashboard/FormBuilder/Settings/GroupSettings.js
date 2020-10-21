@@ -61,18 +61,11 @@ export default ({
                 >
                   Add Field
                 </button>
-                <button
-                  type='button'
-                  className='close-btn'
-                  onClick={onHideSettings}
-                >
-                  Close
-                </button>
               </div>
             </>
           )
         }
-        {/* <div>
+        <div className='addField-actions'>
           <button
             type='button'
             className='close-btn'
@@ -80,7 +73,7 @@ export default ({
           >
             Close
           </button>
-        </div> */}
+        </div>
       </div>
     </>
   )
