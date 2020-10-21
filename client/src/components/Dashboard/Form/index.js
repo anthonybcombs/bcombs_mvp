@@ -25,19 +25,21 @@ export default ({
         <div className='form-title'>
           {formTitle}
         </div>
-        {
-          formData.map((fieldProps, index) => {
-            return (
-              <FormGroup
-                {...fieldProps}
-                key={fieldProps.id}
-                index={index}
-                fieldState={fieldState}
-                onChange={handleChange}
-              />
-            )
-          })
-        }
+        <div className='form-content'>
+          {
+            formData.map((fieldProps, index) => {
+              return (
+                <FormGroup
+                  {...fieldProps}
+                  key={fieldProps.id}
+                  index={index}
+                  fieldState={fieldState}
+                  onChange={handleChange}
+                />
+              )
+            })
+          }
+        </div>
       </div>
     </FormrStyled>
   )

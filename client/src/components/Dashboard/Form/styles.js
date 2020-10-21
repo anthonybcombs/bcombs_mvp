@@ -4,16 +4,42 @@ export default styled.div`
   width: auto;
   margin: auto;
   max-width: 1920px;
-  padding: 0rem 3em 2rem;
+  background: #fffefe;
+  min-height: calc(100vh - 3rem);
 
   #form {
-    display: grid;
-    grid-gap: 3%;
+    // display: grid;
+    // grid-gap: 3%;
+    // max-width: 900px;
+    // margin: 2rem auto;
+    // padding: 2rem;
+    // box-shadow: 0 0 25px #eae9e9;
+  }
+  #form .form-title {
+    padding: 1rem;
+    color: #f26e21;
+    font-weight: 600;    
+    font-size: 1.8rem;
+    padding-top: 2rem;
+    text-align: center;
+    background: #ffe5d5;
+    padding-bottom: 5rem;
+  }
+  #form .form-content {
+    position: relative;
+    top: -55px;
+
+    margin: auto;
+    padding: 2rem;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 2px;
+    box-shadow: 0 3px 6px #ddd;
   }
   #form > div {
-    padding: 1rem;
-    background-color: white;
-    box-shadow: 0 0 25px #eae9e9;
+    // padding: 1rem;
+    // background-color: white;
+    // box-shadow: 0 0 25px #eae9e9;
   }
   #form .field-label {
     color: gray;
@@ -38,6 +64,10 @@ export default styled.div`
 
     -webkit-appearance: none;
     -moz-appearance: none;
+  }
+  #form .field-input.focus-visible {
+    border-bottom: 2px solid #f26e21;
+    transition: all .05s linear;
   }
   #form .field-input.hasError {
     border-bottom: 1.65px solid red;
@@ -187,14 +217,14 @@ export default styled.div`
     border-radius: 3px;
     border: 1px dashed transparent;
   }
-  .sortableGroup:hover,
-  .sortableGroup.active {
-    background: #fff;
-    border-radius: 3px;
-    border-color: #f5812f;
-    box-shadow: 0 3px 6px 3px #ddd;
-    transition: all .15s ease-in-out
-  }
+  // .sortableGroup:hover,
+  // .sortableGroup.active {
+  //   background: #fff;
+  //   border-radius: 3px;
+  //   border-color: #f5812f;
+  //   box-shadow: 0 3px 6px 3px #ddd;
+  //   transition: all .15s ease-in-out
+  // }
   .sortableGroup:hover .sortableGroup-actions >div svg {
     opacity: 1;
     visibility: visible;
@@ -558,15 +588,15 @@ export default styled.div`
   // ********* MEDIA QUERIES *********
   // =================================
 
-  @media (min-width: 600px) {
-    #form {
-      grid-gap: 1%;
-      grid-template-columns: 1fr 2fr;
-    }
-  }
-  @media (max-width: 840px) {
-    padding: 0rem 1rem 2rem;
-  }
+  // @media (min-width: 600px) {
+  //   #form {
+  //     grid-gap: 1%;
+  //     grid-template-columns: 1fr 2fr;
+  //   }
+  // }
+  // @media (max-width: 840px) {
+  //   padding: 0rem 1rem 2rem;
+  // }
   
   
 

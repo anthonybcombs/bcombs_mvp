@@ -3,6 +3,8 @@ import { useDrop } from 'react-dnd'
 import { uuid } from 'uuidv4'
 import update from 'immutability-helper'
 import cloneDeep from 'lodash.clonedeep'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from './Constants'
 import SortableGroup from './SortableGroup'
@@ -162,14 +164,18 @@ export default () => {
           })
         }
         <CustomDragLayer />
-        <div>
+        <div className='drop-area-wrapper-actions'>
           <a
             type='button'
-            className='preview'
             target='_blank'
+            className='preview'
             href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
           >
-            View
+            <FontAwesomeIcon
+              className='preview-icon'
+              icon={faEye}
+            />
+            <span>View</span>
           </a>
         </div>
       </div>

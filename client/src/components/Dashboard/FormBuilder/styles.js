@@ -171,6 +171,29 @@ export default styled.div`
     text-align: center;
     border: 1px dashed #ddd;
   }
+  .drop-area-wrapper-actions {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .drop-area-wrapper-actions .preview {
+    color: #fff;
+    padding: 8px 2rem;
+    background: #2196f3;
+    text-decoration: none;
+    transition: all .3s ease-in-out;
+
+    display: flex;
+    align-items: center
+  }
+  .drop-area-wrapper-actions .preview >span {
+    padding: 0 .5rem;
+  }
+  .drop-area-wrapper-actions .preview:hover {
+    background: #1976d2;
+    box-shadow: 0 3px 6px #ddd;
+  }
 
   // ===============================================
   // ********* START SORTABLE FIELD GROUPS *********
