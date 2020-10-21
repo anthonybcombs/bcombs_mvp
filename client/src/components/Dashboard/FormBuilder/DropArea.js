@@ -12,20 +12,25 @@ export default () => {
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
 
+  const reMapFields = (fields, id) => {
+    return fields.map(e => ({ ...e, id: `${e.tag}_${uuid()}_${id}` }))
+  }
+
   const handleDrop = (field) => {
+    const newField = { ...field, fields: reMapFields(field.fields, field.id) }
     let newFields = [...droppedFields]
-    if (!newFields.find(e => e.id === field.id)) {
+    if (!newFields.find(e => e.id === newField.id)) {
       if(newFields.find(e => e.isActive)) {
         newFields = update(droppedFields, {
           [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } }
         })
       }
 
-      newFields.push({ ...field, isActive: true })
+      newFields.push({ ...newField, isActive: true })
       setDrop(newFields)
     } else {
       setDrop(newFields.map(e => {
-        if (e.id === field.id) {
+        if (e.id === newField.id) {
           delete e.hidden
         }
         return e
@@ -34,11 +39,12 @@ export default () => {
   }
 
   const handleMoveGroup = (dragIndex, hoverIndex, draggedGroup) => {
+    const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id) }
     let newFields = [...droppedFields]
     if (dragIndex === undefined) {
       newFields = update(droppedFields, {
         [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } },
-        $push: [{ ...draggedGroup, hidden: true, isActive: true }]
+        $push: [{ ...newField, hidden: true, isActive: true }]
       })
 
       dragIndex = newFields.length - 1
@@ -77,7 +83,7 @@ export default () => {
 
   const handleMergeStandardFields = (id, source) => {
     setDrop(update(droppedFields, {
-      [droppedFields.findIndex(e => e.id === id)]: { fields: { $push: source.fields } }
+      [droppedFields.findIndex(e => e.id === id)]: { fields: { $push: reMapFields(source.fields, source.id) } }
     }))
   }
 

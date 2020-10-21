@@ -173,10 +173,10 @@ export const PrimeFields = [
     fields: [
       { label: 'Street Address', type: 'text', tag: 'input', placeholder: 'Street Address', column: '1'},
       { label: 'Street Address Line 2', type: 'text', tag: 'input', placeholder: 'Street Address Line 2', column: '1'},
-      { label: 'State / Province / Region', type: 'text', tag: 'input', placeholder: 'State / Province / Region', column: '1'},
+      { label: 'State / Province / Region', type: 'state', tag: 'select', placeholder: 'State / Province / Region', column: '1'},
       { label: 'City', type: 'text', tag: 'input', placeholder: 'City', column: '1'},
       { label: 'Postal / Zip Code', type: 'text', tag: 'input', placeholder: 'Postal / Zip Code', column: '1'},
-      { label: 'Country', type: 'text', tag: 'select', placeholder: 'Country', column: '1'}
+      { label: 'Country', type: 'country', tag: 'select', placeholder: 'Country', column: '1', options: [] }
     ],
     label: 'Address',
     type: 'address'

@@ -79,6 +79,7 @@ const SortableGroup = React.forwardRef(
                     {
                       FieldConstructor[tag]({
                         key: tag + uuid(),
+                        isFormBuilder: true,
                         ...field
                       })
                     }
@@ -104,6 +105,7 @@ const SortableGroup = React.forwardRef(
                       {
                         FieldConstructor[option.tag]({
                           key: option.tag + uuid(),
+                          isFormBuilder: true,
                           ...option
                         })
                       }

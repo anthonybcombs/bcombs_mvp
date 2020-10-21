@@ -1,4 +1,11 @@
 import React from 'react'
+import STATES from '../ApplicationForm/states.json'
+import COUNTRIES from '../ApplicationForm/country.json'
+
+const selectMappings = {
+  state: STATES.map(({ name, abbreviation }) => ({ label: name, value: abbreviation })),
+  country: COUNTRIES.map(({ name, code }) => ({ label: name, value: code }))
+}
 
 export default {
   input: ({ label, ...rest }) => {
@@ -35,8 +42,23 @@ export default {
   multipleChoice: ({ label }) => {
     return <div>{label}</div>
   },
-  select: ({ label }) => {
-    return <div>{label}</div>
+  select: ({ options, label: fieldLabel, type, isFormBuilder = false, ...rest }) => {
+    return (
+      <select
+        className='field-input'
+        {...rest}
+      >
+        <option value=''>{fieldLabel}</option>
+        {
+          !isFormBuilder &&
+          (
+            selectMappings[type].map(({ label, value }, index) => {
+              return (<option key={value + index} value={value}>{label}</option>)
+            })
+          )
+        }
+      </select>
+    )
   },
   rating: ({ label }) => {
     return <div>{label}</div>
