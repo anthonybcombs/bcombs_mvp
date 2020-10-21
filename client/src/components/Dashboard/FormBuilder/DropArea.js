@@ -10,6 +10,7 @@ import CustomDragLayer from './CustomDragLayer'
 
 export default () => {
   const [droppedFields, setDrop] = useState([])
+  const [formTitle, setFormTitle] = useState('Untitled')
 
   const handleDrop = (field) => {
     let newFields = [...droppedFields]
@@ -115,44 +116,58 @@ export default () => {
   })
 
   return (
-    <div className='drop-area-wrapper' ref={drop}>
-      <div className='form-title'>
-        <input
-          type='text'
-          id='title'
-          name='title'
-          className='field-input'
-          placeholder='Form Title'
-          // defaultValue='Untitled Form'
-        />
-      </div>
-      {
-        droppedFields.length === 0 && (
-          <div className='empty-area'>Drag fields here.</div>
-        )
-      }
-      {
-        droppedFields.map((fieldProps, index) => {
-          return (
-            <SortableGroup
-              {...fieldProps}
-              key={fieldProps.id}
-              index={index}
-              onMoveGroup={handleMoveGroup}
-              onShowHiddenGroup={handleShowHiddenGroup}
-              onRemoveGroup={handleRemoveGroup}
-              onActive={handleActive}
-              onChangeSettings={handleChangeSettings}
-              onMergeStandardFields={handleMergeStandardFields}
-              onDuplicateGroup={handleDuplicateGroup}
-              onRemoveGroupField={handleRemoveGroupField}
-              onUpdateFieldSettings={handleUpdateFieldSettings}
-              onChangeGroupName={handleUpdateGroupName}
-            />
+    <>
+      <div className='drop-area-wrapper' ref={drop}>
+        <div className='form-title'>
+          <input
+            type='text'
+            id='title'
+            name='title'
+            className='field-input'
+            placeholder='Form Title'
+            value={formTitle}
+            onChange={({ target }) => setFormTitle(target.value)}
+          />
+        </div>
+        {
+          droppedFields.length === 0 && (
+            <div className='empty-area'>Drag fields here.</div>
           )
-        })
-      }
-      <CustomDragLayer />
-    </div>
+        }
+        {
+          droppedFields.map((fieldProps, index) => {
+            return (
+              <SortableGroup
+                {...fieldProps}
+                key={fieldProps.id}
+                index={index}
+                onMoveGroup={handleMoveGroup}
+                onShowHiddenGroup={handleShowHiddenGroup}
+                onRemoveGroup={handleRemoveGroup}
+                onActive={handleActive}
+                onChangeSettings={handleChangeSettings}
+                onMergeStandardFields={handleMergeStandardFields}
+                onDuplicateGroup={handleDuplicateGroup}
+                onRemoveGroupField={handleRemoveGroupField}
+                onUpdateFieldSettings={handleUpdateFieldSettings}
+                onChangeGroupName={handleUpdateGroupName}
+              />
+            )
+          })
+        }
+        <CustomDragLayer />
+        <div>
+          <a
+            type='button'
+            className='preview'
+            target='_blank'
+            href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
+          >
+            View
+          </a>
+        </div>
+      </div>
+      
+    </>
   )
 }
