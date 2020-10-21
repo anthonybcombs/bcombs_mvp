@@ -3,11 +3,32 @@ import { uuid } from 'uuidv4'
 import cloneDeep from 'lodash.clonedeep'
 
 import FieldConstructor from '../FormBuilder/FieldConstructor'
+import { Sources } from '../FormBuilder/Settings/Sources'
 
 export default ({ 
-  label, fields, fieldState, onChange, type: itemGroup
+  label, fields, fieldState, fieldError, onChange, type: itemGroup, settings, onCheckError
 }) => {
+  console.log('@settings', { settings, fieldError })
   const gridColRepeat = itemGroup === 'address' ? 4 : 3
+
+  const { validationOptions } = Sources
+  const { validation } = settings
+  const { include: validate, items } = validation || {}
+
+  const handleChange = ({ target: { id, value } }) => {
+    let errors = []
+    if (validate) {
+      errors = items.map(({ type: itemType, option: itemOption, value: itemValue, error: itemError }) => {
+        return !validationOptions[itemType][itemOption].func(
+            itemType === 'number' ? value * 1 : value,
+            itemType === 'number' ? itemValue * 1 : itemValue
+          ) ? itemError : ''
+      })
+    }
+    onChange(id, value)
+    onCheckError(id, errors)
+  }
+
   return (
     <div
       className={`sortableGroup`}
@@ -17,6 +38,9 @@ export default ({
         {
           cloneDeep(fields).map((field, index) => {
             const { type = '', tag, options, column = 1, id: fieldId } = field
+            const errors = fieldError[fieldId] || []
+            const hasError = errors.length ? !!errors.find(e => e) : false
+ 
             if (type !== 'group') {
               return (
                 <div
@@ -28,8 +52,15 @@ export default ({
                       key: fieldId,
                       ...field,
                       value: fieldState[fieldId] || '',
-                      onChange
+                      onChange: handleChange,
+                      className: hasError ? 'hasError': ''
                     })
+                  }
+                  {
+                    hasError && 
+                      errors.map(e => {
+                        return e && <div className='error'>- {e}</div>
+                      })
                   }
                 </div>
               )

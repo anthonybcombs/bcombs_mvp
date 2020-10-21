@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashAlt, faCopy, faPlusCircle, faOilCan } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt, faCopy, faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+import cloneDeep from 'lodash.clonedeep'
 
 import { Sources } from './Sources'
 
@@ -13,7 +14,7 @@ export default ({
   const { validationTypes, validationOptions } = Sources
 
   const validationOptionsArr = (valType) => Object.entries(validationOptions[valType || 'text'])
-  const defaultValidation = { type: 'text', option: '', value: '', error: '', errorField: 'value' }
+  const defaultValidation = { type: 'text', option: 'contains', value: '', error: '', errorField: 'value' }
 
   const handleChangeSettings = (data, key, index) => {
     let newSettings = { ...settings }
@@ -25,16 +26,39 @@ export default ({
       } else if (fieldKey === 'value' && !value) {
         errorField = 'value'
       }
+
+      // Automatic get first option if type is changed
+      let optionData = {}
+      let valueData = {}
+      if (fieldKey === 'type') {
+        optionData = { option: validationOptionsArr(value)[0][0] }
+        valueData = { value: '' }
+        errorField = 'value'
+      }
+
+      if (fieldKey === 'option') {
+        errorField = !['emailAddress', 'isNumber'].includes(value) ? 'value' : ''
+      }
+
       newSettings[key] = {
         ...newSettings[key],
         items: newSettings[key].items
           ? newSettings[key].items.map((e, i) => {
               if (i === index) {
-                return { ...e, ...data, errorField }
+                return { ...e, ...optionData, ...valueData, ...data, errorField }
               }
               return e
             })
-          : [{ ...defaultValidation, ...data, errorField }]
+          : [{ ...defaultValidation, ...optionData, ...valueData, ...data, errorField }]
+      }
+      onChangeSettings(newSettings)
+      return
+    }
+
+    if (key === 'removeValidation') {
+      newSettings.validation = {
+        ...newSettings.validation,
+        items: newSettings.validation.items.filter((e, i) => i !== index)
       }
       onChangeSettings(newSettings)
       return
@@ -67,6 +91,7 @@ export default ({
   const { validation = {}, instruction = {}, logic = {}, required = false } = settings
   const { include, items = [{ ...defaultValidation }] } = validation
   const hasValidationError = items.find(e => e.errorField)
+
   return (
     <div className='group-settings'>
       {/* Start For Validation */}
@@ -83,8 +108,8 @@ export default ({
                   }}
                 >
                   {
-                    Object.entries(validationTypes).map(([key, label]) => (
-                      <option value={key}>{label}</option>
+                    Object.entries(validationTypes).map(([key, label], valIndex) => (
+                      <option key={`validationType-${valIndex}`} value={key}>{label}</option>
                     ))
                   }
                 </select>
@@ -98,14 +123,14 @@ export default ({
                   }}
                 >
                   {
-                    validationOptionsArr(type).map(([key, { label }]) => (
-                      <option value={key}>{label}</option>
+                    validationOptionsArr(type).map(([key, { label }], optIndex) => (
+                      <option key={`validationOption-${optIndex}`} value={key}>{label}</option>
                     ))
                   }
                 </select>
               </div>
               {
-                (option !== 'emailAddress') &&
+                (!['emailAddress', 'isNumber'].includes(option)) &&
                 <input
                   className={`field-input ${errorField === 'value' ? 'hasError' : ''}`}
                   value={value}
@@ -125,6 +150,20 @@ export default ({
                   handleChangeSettings({ error: target.value }, 'validation', index)
                 }}
               />
+              {
+                items.length > 1 &&
+                (
+                  <div className='tooltip-wrapper remove-validation'>
+                    <FontAwesomeIcon
+                      size='2x' 
+                      icon={faMinusCircle}
+                      className='remove-icon'
+                      onClick={() => handleChangeSettings(null, 'removeValidation', index)}
+                    />
+                    <span className='tooltip'>Remove Validation</span>
+                  </div>
+                )
+              }
               {
                 (!hasValidationError && (index === items.length - 1)) && (
                   <div className='tooltip-wrapper add-validation'>

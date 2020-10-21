@@ -171,6 +171,29 @@ export default styled.div`
     text-align: center;
     border: 1px dashed #ddd;
   }
+  .drop-area-wrapper-actions {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .drop-area-wrapper-actions .preview {
+    color: #fff;
+    padding: 8px 2rem;
+    background: #2196f3;
+    text-decoration: none;
+    transition: all .3s ease-in-out;
+
+    display: flex;
+    align-items: center
+  }
+  .drop-area-wrapper-actions .preview >span {
+    padding: 0 .5rem;
+  }
+  .drop-area-wrapper-actions .preview:hover {
+    background: #1976d2;
+    box-shadow: 0 3px 6px #ddd;
+  }
 
   // ===============================================
   // ********* START SORTABLE FIELD GROUPS *********
@@ -261,7 +284,7 @@ export default styled.div`
   .sortableGroup-name {
     margin: 0;
     letter-spacing: 1.3px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 
 
@@ -391,14 +414,21 @@ export default styled.div`
     margin-bottom: 1rem;
     grid-template-columns: repeat(4, 1fr);
   }
-  .group-settings .settings-validation .add-validation {
+  .group-settings .settings-validation .add-validation,
+  .group-settings .settings-validation .remove-validation {
     grid-column: none;
+    cursor: pointer!important;
   }
   .group-settings .settings-validation .add-validation > svg {
     width: 24px;
     color: #f5812f;
   }
-  .group-settings .settings-validation .add-validation >span.tooltip {
+  .group-settings .settings-validation .remove-validation > svg {
+    width: 24px;
+    color: red;
+  }
+  .group-settings .settings-validation .add-validation >span.tooltip,
+  .group-settings .settings-validation .remove-validation >span.tooltip {
     left: -76px;
   }
   .group-settings .settings-control {

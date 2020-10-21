@@ -9,11 +9,11 @@ const validationOptions = {
   text: {
     'contains': {
       label: 'Contains',
-      func: (ans, text) => ans.contains(text)
+      func: (ans, text) => ans.includes(text)
     },
     'doestContain': {
       label: `Doesn't contain`,
-      func: (ans, text) => !ans.contains(text)
+      func: (ans, text) => !ans.includes(text)
     },
     'emailAddress': {
       label: `Email Address`,

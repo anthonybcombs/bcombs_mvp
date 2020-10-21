@@ -8,17 +8,17 @@ const selectMappings = {
 }
 
 export default {
-  input: ({ label, ...rest }) => {
+  input: ({ label, className, ...rest }) => {
     return (
       <input
-        className='field-input'
+        className={`field-input ${className}`}
         {...rest}
       />
     )
   },
-  textarea: ({ label, ...rest }) => {
+  textarea: ({ label, className, ...rest }) => {
     return <textarea
-      className='field-input'
+      className={`field-input ${className}`}
       {...rest}
     />
   },
@@ -42,10 +42,10 @@ export default {
   multipleChoice: ({ label }) => {
     return <div>{label}</div>
   },
-  select: ({ options, label: fieldLabel, type, isFormBuilder = false, ...rest }) => {
+  select: ({ options, label: fieldLabel, type, className, isFormBuilder = false, ...rest }) => {
     return (
       <select
-        className='field-input'
+        className={`field-input ${className}`}
         {...rest}
         disabled={true}
         style={{ opacity: 1 }}

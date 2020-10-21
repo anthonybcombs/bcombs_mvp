@@ -12,32 +12,45 @@ export default ({
   const formTitle = query.get('formTitle')
   
   const [fieldState, setField] = useState({})
-  const handleChange = ({ target: { id, value } }) => {
+  const handleChange = (id, value) => {
     setField({
       ...fieldState,
       [id]: value
     })
   }
+
+  const [fieldError, setFieldError] = useState({})
+  const handleCheckError = (id, error) => {
+    setFieldError({
+      ...fieldError,
+      [id]: error
+    })
+  }
+
   console.log('@@@fieldState', fieldState)
   return (
     <FormrStyled>
-      <div>
-        {formTitle}
-      </div>
       <div id='form'>
-        {
-          formData.map((fieldProps, index) => {
-            return (
-              <FormGroup
-                {...fieldProps}
-                key={fieldProps.id}
-                index={index}
-                fieldState={fieldState}
-                onChange={handleChange}
-              />
-            )
-          })
-        }
+        <div className='form-title'>
+          {formTitle}
+        </div>
+        <div className='form-content'>
+          {
+            formData.map((fieldProps, index) => {
+              return (
+                <FormGroup
+                  {...fieldProps}
+                  key={fieldProps.id}
+                  index={index}
+                  fieldState={fieldState}
+                  fieldError={fieldError}
+                  onChange={handleChange}
+                  onCheckError={handleCheckError}
+                />
+              )
+            })
+          }
+        </div>
       </div>
     </FormrStyled>
   )

@@ -3,6 +3,8 @@ import { useDrop } from 'react-dnd'
 import { uuid } from 'uuidv4'
 import update from 'immutability-helper'
 import cloneDeep from 'lodash.clonedeep'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from './Constants'
 import SortableGroup from './SortableGroup'
@@ -13,6 +15,7 @@ export default () => {
   const [formTitle, setFormTitle] = useState('Untitled')
 
   const reMapFields = (fields, id) => {
+    console.log('zzz', fields)
     return fields.map(e => ({ ...e, id: `${e.tag}_${uuid()}_${id}` }))
   }
 
@@ -162,15 +165,23 @@ export default () => {
           })
         }
         <CustomDragLayer />
-        <div>
-          <a
-            type='button'
-            className='preview'
-            target='_blank'
-            href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
-          >
-            View
-          </a>
+        <div className='drop-area-wrapper-actions'>
+          {
+            droppedFields.length > 0 && (
+              <a
+                type='button'
+                target='_blank'
+                className='preview'
+                href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
+              >
+                <FontAwesomeIcon
+                  className='preview-icon'
+                  icon={faEye}
+                />
+                <span>View</span>
+              </a>
+            )
+          }
         </div>
       </div>
       
