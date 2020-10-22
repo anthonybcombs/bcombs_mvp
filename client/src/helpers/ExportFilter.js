@@ -134,7 +134,7 @@ const ExportFilter = ({
 
   console.log("applications", applications);
 
-  console.log("appPrograms filter", appPrograms);
+  console.log("appGroups", appGroups);
 
   const filterApplications = applications.filter(item => {
     let class_match = true;
@@ -162,12 +162,15 @@ const ExportFilter = ({
 
     if (appGroupText) {
       group_match = false;
-      for (const group of appGroups) {
-        if (group.app_grp_id == item.class_teacher) {
-          group_match = true;
-          break;
-        }
+
+      if(appGroupText == item.class_teacher) {
+        group_match = true;
       }
+      // for (const group of appGroups) {
+      //   if (group.app_grp_id == item.class_teacher) {
+      //     group_match = true;
+      //   }
+      // }
     }
 
     if (appPrograms.length > 0) {
@@ -190,6 +193,13 @@ const ExportFilter = ({
       }
     }
 
+    console.log("class_match", class_match);
+    console.log("color_match", color_match);
+    console.log("status_match", status_match);
+    console.log("group_match", group_match);
+    console.log("program_match", program_match);
+    console.log("location_match", location_match);
+    console.log("application", item);
     return (
       class_match &&
       color_match &&
@@ -256,6 +266,8 @@ const ExportFilter = ({
 
   let exportApplications = [];
 
+ 
+
   for (const application of filterApplications) {
     const tempApplication = {
       Status: getApplicationStatus(application.student_status),
@@ -276,6 +288,9 @@ const ExportFilter = ({
 
     exportApplications.push(tempApplication);
   }
+
+  console.log("filterApplications", filterApplications);
+  console.log("exportApplications", exportApplications);
 
   const PROGRAMS_OPTIONS =
     app_programs.length > 0
@@ -313,7 +328,7 @@ const ExportFilter = ({
                 }}>
                 <option value="">All Class</option>
                 {appGroups.map((opt, i) => (
-                  <option key={i} value={opt.id}>
+                  <option key={i} value={opt.app_grp_id}>
                     {opt.name}
                   </option>
                 ))}
