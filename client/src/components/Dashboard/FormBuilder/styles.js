@@ -203,7 +203,7 @@ export default styled.div`
     position: relative;
     overflow: hidden;
 
-    cursor: move;
+    // cursor: move;
     padding: 8px;
     background: #fff;
     margin-bottom: 1rem;

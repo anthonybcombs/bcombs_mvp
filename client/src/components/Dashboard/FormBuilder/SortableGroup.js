@@ -4,7 +4,7 @@ import { uuid } from 'uuidv4'
 import cloneDeep from 'lodash.clonedeep'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowRight, faArrowLeft, faTimes, faCogs, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRight, faArrowLeft, faTimes, faGripHorizontal, faEdit } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from './Constants'
 import FieldConstructor from './FieldConstructor'
@@ -24,11 +24,12 @@ const SortableGroup = React.forwardRef(
   const [fieldIndex, setActiveFieldIndex] = useState('')
   const [additionalField, handleSelectFieldToAdd] = useState('')
   const [disableDrag, handleDisableDrag] = useState(false)
+  const [enableEditGroupName, handleEnableEditGroupName] = useState(false)
 
   const elementRef = useRef(null)
-  connectDragSource(!disableDrag ? elementRef : null)
+  connectDragSource(elementRef)
   connectDropTarget(elementRef)
-  // connectDragPreview(previewElement)
+
   const opacity = (isDragging || hidden) ? 0 : 1
   useImperativeHandle(ref, () => ({
     getNode: () => elementRef.current,
@@ -46,20 +47,41 @@ const SortableGroup = React.forwardRef(
   const gridColRepeat = itemGroup === 'address' ? 4 : 3
   return (
     <div
-      ref={elementRef}
       className={`sortableGroup ${itemGroup} ${itemActive}`}
       style={{ opacity }}
       onClick={() => onActive(id)}
-    >   
+    >
+      <div ref={elementRef}>
+        <FontAwesomeIcon
+          icon={faGripHorizontal}
+          className='drag-icon'
+        />
+      </div>
       <p className='sortableGroup-name'>
         <input
           type='text'
           className='field-input'
           value={label}
+          disabled={!enableEditGroupName}
           onMouseDown={() => handleDisableDrag(true)}
-          onBlur={() => handleDisableDrag(false)}
+          onBlur={() => {
+            handleDisableDrag(false)
+            handleEnableEditGroupName(false)
+          }}
           onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
         />
+        {
+          !enableEditGroupName && (
+            <FontAwesomeIcon
+              className='edit-icon'
+              icon={faEdit}
+              onClick={e => {
+                e.stopPropagation()
+                handleEnableEditGroupName(true)
+              }}
+            />
+          )
+        }
       </p>
       <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {
