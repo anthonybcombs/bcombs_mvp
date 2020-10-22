@@ -300,6 +300,9 @@ export default styled.div`
     position: relative;
     padding-top: 1rem !important;
   }
+  .sortableGroup-column.active {
+    border: 1px solid red;
+  }
   .sortableGroup-column .removeField-icon {
     position: absolute;
     right: -4px;

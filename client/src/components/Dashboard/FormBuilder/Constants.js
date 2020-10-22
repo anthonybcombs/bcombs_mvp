@@ -40,14 +40,14 @@ export const StandardFields = [
     type: 'singleLineText',
     canBeGrouped: true
   },
-  {
-    fields: [
-      { label: 'Numbers', type: 'number', tag: 'input', placeholder: 'Numbers', column: '1'}
-    ],
-    label: 'Numbers',
-    type: 'numbers',
-    canBeGrouped: true
-  },
+  // {
+  //   fields: [
+  //     { label: 'Numbers', type: 'number', tag: 'input', placeholder: 'Numbers', column: '1'}
+  //   ],
+  //   label: 'Numbers',
+  //   type: 'numbers',
+  //   canBeGrouped: true
+  // },
   {
     fields: [
       { label: 'Paragraph Text', type: 'text', tag: 'textarea', placeholder: 'Paragraph Text', column: '1'}
