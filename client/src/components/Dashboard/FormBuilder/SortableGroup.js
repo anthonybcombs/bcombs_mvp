@@ -15,15 +15,14 @@ const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
     hidden, label, fields, isDragging, id, type: itemGroup,
-    onRemoveGroup, settings,
-    isActive, onActive, onChangeSettings,
+    onRemoveGroup, settings: generalSettings,
+    isActive, onActive, onChangeGeneralSettings,
     groupType, onMergeStandardFields, onDuplicateGroup,
-    onRemoveGroupField, onUpdateFieldSettings, onChangeGroupName
+    onRemoveGroupField, onChangeFieldSettings, onChangeGroupName
   }, ref) => {
   
   const [fieldIndex, setActiveFieldIndex] = useState('')
   const [additionalField, handleSelectFieldToAdd] = useState('')
-  const [disableDrag, handleDisableDrag] = useState(false)
   const [enableEditGroupName, handleEnableEditGroupName] = useState(false)
 
   const elementRef = useRef(null)
@@ -63,9 +62,7 @@ const SortableGroup = React.forwardRef(
           className='field-input'
           value={label}
           disabled={!enableEditGroupName}
-          onMouseDown={() => handleDisableDrag(true)}
           onBlur={() => {
-            handleDisableDrag(false)
             handleEnableEditGroupName(false)
           }}
           onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
@@ -107,9 +104,7 @@ const SortableGroup = React.forwardRef(
                       key: field.id,
                       isFormBuilder: true,
                       value: placeholder,
-                      onMouseDown: () => handleDisableDrag(true),
-                      onBlur: () => handleDisableDrag(false),
-                      onChange: ({ target }) => onUpdateFieldSettings({ placeholder: target.value }, index, id)
+                      onChange: ({ target }) => onChangeFieldSettings({ placeholder: target.value }, index, id)
                     })
                   }
                   {
@@ -122,7 +117,7 @@ const SortableGroup = React.forwardRef(
                               icon={faArrowLeft}
                               onClick={e => {
                                 e.stopPropagation()
-                                onUpdateFieldSettings({ column: (columnInt - 1).toString() }, index, id)
+                                onChangeFieldSettings({ column: (columnInt - 1).toString() }, index, id)
                               }}
                             />
                           )
@@ -134,7 +129,7 @@ const SortableGroup = React.forwardRef(
                               icon={faArrowRight}
                               onClick={e => {
                                 e.stopPropagation()
-                                onUpdateFieldSettings({ column: (columnInt + 1).toString() }, index, id)
+                                onChangeFieldSettings({ column: (columnInt + 1).toString() }, index, id)
                               }}
                             />
                           )
@@ -234,10 +229,13 @@ const SortableGroup = React.forwardRef(
         (!isDragging && isActive && !isDragging) &&
         (
           <GeneralSettings
-            onChangeSettings={(data) => onChangeSettings({ ...data, id })}
+            onChangeGeneralSettings={(data) => onChangeGeneralSettings({ ...data, id })}
+            onChangeFieldSettings={(data) => onChangeFieldSettings(data, fieldIndex, id)}
             onRemoveGroup={() => onRemoveGroup(id)}
             onDuplicateGroup={() => onDuplicateGroup(id)}
-            settings={settings}
+            generalSettings={generalSettings}
+            fieldSettings={fieldIndex !== '' ? fields[fieldIndex] : {}}
+            hasSelectedField={fieldIndex !== ''}
           />
         )
       }

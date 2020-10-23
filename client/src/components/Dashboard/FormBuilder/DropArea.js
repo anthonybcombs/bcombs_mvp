@@ -78,9 +78,15 @@ export default () => {
     setDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
   }
 
-  const handleChangeSettings = ({ id, ...rest }) => {
+  const handleChangeGeneralSettings = ({ id, ...rest }) => {
     setDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { settings: { $merge: rest } }
+    }))
+  }
+
+  const handleChangeFieldSettings = (data, index, id) => {
+    setDrop(update(droppedFields, {
+      [droppedFields.findIndex(e => e.id === id)]: { fields: { [index]: { $merge: data } } }
     }))
   }
 
@@ -101,12 +107,6 @@ export default () => {
     }))
   }
 
-  const handleUpdateFieldSettings = (data, index, id) => {
-    setDrop(update(droppedFields, {
-      [droppedFields.findIndex(e => e.id === id)]: { fields: { [index]: { $merge: data } } }
-    }))
-  }
-
   const handleUpdateGroupName = (label, id) => {
     setDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { $merge: { label } }
@@ -123,7 +123,7 @@ export default () => {
       }
     },
   })
-
+  console.log('droppedFields', droppedFields)
   return (
     <>
       <div className='drop-area-wrapper' ref={drop}>
@@ -154,11 +154,11 @@ export default () => {
                 onShowHiddenGroup={handleShowHiddenGroup}
                 onRemoveGroup={handleRemoveGroup}
                 onActive={handleActive}
-                onChangeSettings={handleChangeSettings}
+                onChangeGeneralSettings={handleChangeGeneralSettings}
+                onChangeFieldSettings={handleChangeFieldSettings}
                 onMergeStandardFields={handleMergeStandardFields}
                 onDuplicateGroup={handleDuplicateGroup}
                 onRemoveGroupField={handleRemoveGroupField}
-                onUpdateFieldSettings={handleUpdateFieldSettings}
                 onChangeGroupName={handleUpdateGroupName}
               />
             )

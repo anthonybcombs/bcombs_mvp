@@ -6,18 +6,41 @@ import cloneDeep from 'lodash.clonedeep'
 import { Sources } from './Sources'
 
 export default ({
-  settings,
-  onChangeSettings,
+  generalSettings,
+  fieldSettings,
+  hasSelectedField,
+  onChangeGeneralSettings,
+  onChangeFieldSettings,
   onRemoveGroup,
   onDuplicateGroup
 }) => {
+
   const { validationTypes, validationOptions } = Sources
 
   const validationOptionsArr = (valType) => Object.entries(validationOptions[valType || 'text'])
   const defaultValidation = { type: 'text', option: 'contains', value: '', error: '', errorField: 'value' }
 
-  const handleChangeSettings = (data, key, index) => {
-    let newSettings = { ...settings }
+  const handleChangeGeneralSettings = (data, key) => {
+    let newSettings = { ...generalSettings }
+
+    if (key) {
+      newSettings[key] = {
+        ...newSettings[key],
+        ...data
+      }
+    } else {
+      newSettings = {
+        ...newSettings,
+        ...data
+      }
+    }
+
+    onChangeGeneralSettings(newSettings)
+  }
+
+  const handleChangeFieldSettings = (data, key, index) => {
+    let validationSettings = fieldSettings.validation || {}
+
     if (key === 'validation' && index !== undefined) {
       const [fieldKey, value] = Object.entries(data)[0]
       let errorField = ''
@@ -40,10 +63,10 @@ export default ({
         errorField = !['emailAddress', 'isNumber'].includes(value) ? 'value' : ''
       }
 
-      newSettings[key] = {
-        ...newSettings[key],
-        items: newSettings[key].items
-          ? newSettings[key].items.map((e, i) => {
+      validationSettings = {
+        ...validationSettings,
+        items: validationSettings.items
+          ? validationSettings.items.map((e, i) => {
               if (i === index) {
                 return { ...e, ...optionData, ...valueData, ...data, errorField }
               }
@@ -51,44 +74,33 @@ export default ({
             })
           : [{ ...defaultValidation, ...optionData, ...valueData, ...data, errorField }]
       }
-      onChangeSettings(newSettings)
+      onChangeFieldSettings({ validation: validationSettings })
       return
     }
 
     if (key === 'removeValidation') {
-      newSettings.validation = {
-        ...newSettings.validation,
-        items: newSettings.validation.items.filter((e, i) => i !== index)
+      validationSettings = {
+        ...validationSettings,
+        items: validationSettings.items.filter((e, i) => i !== index)
       }
-      onChangeSettings(newSettings)
+      onChangeFieldSettings({ validation: validationSettings })
       return
     }
 
     if (key === 'addValidation') {
-      newSettings.validation = {
-        ...newSettings.validation,
-        items: newSettings.validation.items.push(data)
+      validationSettings = {
+        ...validationSettings,
+        items: validationSettings.items.push(data)
       }
-      onChangeSettings(newSettings)
+      onChangeFieldSettings({ validation: validationSettings })
       return
     }
 
-    if (key) {
-      newSettings[key] = {
-        ...newSettings[key],
-        ...data
-      }
-    } else {
-      newSettings = {
-        ...newSettings,
-        ...data
-      }
-    }
-
-    onChangeSettings(newSettings)
+    onChangeFieldSettings(data)
   }
 
-  const { validation = {}, instruction = {}, logic = {}, required = false } = settings
+  const { instruction = {}, logic = {}, } = generalSettings
+  const { validation = {}, required = false } = fieldSettings
   const { include, items = [{ ...defaultValidation }] } = validation
   const hasValidationError = items.find(e => e.errorField)
 
@@ -104,7 +116,7 @@ export default ({
                   className='field-input'
                   value={type}
                   onChange={({ target }) => {
-                    handleChangeSettings({ type: target.value }, 'validation', index)
+                    handleChangeFieldSettings({ type: target.value }, 'validation', index)
                   }}
                 >
                   {
@@ -119,7 +131,7 @@ export default ({
                   className='field-input'
                   value={option}
                   onChange={({ target }) => {
-                    handleChangeSettings({ option: target.value }, 'validation', index)
+                    handleChangeFieldSettings({ option: target.value }, 'validation', index)
                   }}
                 >
                   {
@@ -137,7 +149,7 @@ export default ({
                   type={type === 'length' ? 'number' : type}
                   placeholder={type === 'text' ? 'Text' : 'Number'}
                   onChange={({ target }) => {
-                    handleChangeSettings({ value: target.value }, 'validation', index)
+                    handleChangeFieldSettings({ value: target.value }, 'validation', index)
                   }}
                 />
               }
@@ -147,7 +159,7 @@ export default ({
                 placeholder='Custom error text'
                 value={error}
                 onChange={({ target }) => {
-                  handleChangeSettings({ error: target.value }, 'validation', index)
+                  handleChangeFieldSettings({ error: target.value }, 'validation', index)
                 }}
               />
               {
@@ -160,7 +172,7 @@ export default ({
                       className='remove-icon'
                       onClick={(e) => {
                         e.stopPropagation()
-                        handleChangeSettings(null, 'removeValidation', index)
+                        handleChangeFieldSettings(null, 'removeValidation', index)
                       }}
                     />
                     <span className='tooltip'>Remove Validation</span>
@@ -174,7 +186,7 @@ export default ({
                       size='2x' 
                       icon={faPlusCircle}
                       className='add-icon'
-                      onClick={() => handleChangeSettings(defaultValidation, 'addValidation') }
+                      onClick={() => handleChangeFieldSettings(defaultValidation, 'addValidation') }
                     />
                     <span className='tooltip'>Add Validation</span>
                   </div>
@@ -197,7 +209,7 @@ export default ({
               placeholder='Instructions'
               value={instruction.value}
               onChange={({ target }) => {
-                handleChangeSettings({ value: target.value }, 'instruction')
+                handleChangeGeneralSettings({ value: target.value }, 'instruction')
               }}
             />
           </div>
@@ -207,30 +219,32 @@ export default ({
 
       {/* Start Lower Control */}
       <div className='settings-control'>
-        <label for='instruction' className='checkboxContainer'>
+        <label for='required'  className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
           <input
             type='checkbox'
-            id='instruction'
-            name='instruction'
-            checked={!!instruction.include}
+            id='required'
+            name='required'
+            disabled={!hasSelectedField}
+            checked={required}
             onChange={e => {
               e.stopPropagation()
-              handleChangeSettings({ include: e.target.checked }, 'instruction')
+              handleChangeFieldSettings({ required: e.target.checked })
             }}
           />
-          <span className='checkmark' />
-          <span className='labelName'> Instruction for Use</span>
+          <span className='checkmark'/>
+          <span className='labelName'> Required</span>
         </label>
-        
-        <label for='validation' className='checkboxContainer' >
+
+        <label for='validation' className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
           <input
             type='checkbox'
             id='validation'
             name='validation'
+            disabled={!hasSelectedField}
             checked={!!validation.include}
             onChange={e => {
               e.stopPropagation()
-              handleChangeSettings({ include: e.target.checked }, 'validation')
+              handleChangeFieldSettings({ validation: { include: e.target.checked, items: [defaultValidation] } })
             }}
           />
           <span className='checkmark'/>
@@ -245,26 +259,26 @@ export default ({
             checked={!!logic.include}
             onChange={e => {
               e.stopPropagation()
-              handleChangeSettings({ include: e.target.checked }, 'logic')
+              handleChangeGeneralSettings({ include: e.target.checked }, 'logic')
             }}
           />
           <span className='checkmark'/>
           <span className='labelName'> Logic</span>
         </label>
 
-        <label for='required' className='checkboxContainer'>
+        <label for='instruction' className='checkboxContainer'>
           <input
             type='checkbox'
-            id='required'
-            name='required'
-            checked={required}
+            id='instruction'
+            name='instruction'
+            checked={!!instruction.include}
             onChange={e => {
               e.stopPropagation()
-              handleChangeSettings({ required: e.target.checked })
+              handleChangeGeneralSettings({ include: e.target.checked }, 'instruction')
             }}
           />
-          <span className='checkmark'/>
-          <span className='labelName'> Required</span>
+          <span className='checkmark' />
+          <span className='labelName'> Instruction for Use</span>
         </label>
 
         <div className='settings-iconActions'>

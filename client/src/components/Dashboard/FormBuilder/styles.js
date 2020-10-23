@@ -524,6 +524,11 @@ export default styled.div`
     display: flex;
     align-items: center;
   }
+
+  .checkboxContainer.disabled {
+    color: #a99595;
+  }
+
   .checkboxContainer > input {
     width: 16px;
     height: 16px;
@@ -535,7 +540,7 @@ export default styled.div`
   .checkboxContainer > label {
     cursor: pointer;
   }
-  .checkboxContainer:hover {
+  .checkboxContainer:not(.disabled):hover {
     color: #000;
     transition: all .15s ease-in-out
   }
@@ -548,6 +553,9 @@ export default styled.div`
     border-radius: 2px;
     background-color: #eee;
     border: 1px solid #2196F3;
+  }
+  .checkboxContainer.disabled .checkmark {
+    border: 1px solid #a99595;
   }
   /* On mouse-over, add a grey background color */
   .checkboxContainer:hover input ~ .checkmark {
