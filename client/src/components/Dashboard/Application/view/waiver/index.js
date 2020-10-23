@@ -39,9 +39,7 @@ export default function index({
     <TermsWaiverFormViewStyled>
       <div id="applicationForm">
         {
-          (application.section1_name && application.section1_text) || 
-          (!isReadonly && vendor.section1_show) ||
-          (isVendorView && vendor.section1_show && application.section1_name && application.section1_text) ?
+          (application.section1_name && application.section1_text) ?
           <>
             <Section1FormStyled 
               handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
@@ -49,10 +47,9 @@ export default function index({
               pDate={pDate}
               register={register}
               errors={errors}
-              name={isReadonly ? application.section1_name : vendor.section1_name}
-              text={isReadonly ? application.section1_text : vendor.section1_text}
+              name={application.section1_name}
+              text={application.section1_text}
               isReadonly={isVendorView ? true: isReadonly}
-              isVendorView={isVendorView}
             />
             <br/>
             <br/>
@@ -61,9 +58,7 @@ export default function index({
           ""
         }
         {
-          (application.section2_name && application.section2_text) || 
-          (!isReadonly && vendor.section2_show) ||
-          (isVendorView && vendor.section2_show && application.section2_name && application.section2_text) ?
+          (application.section2_name && application.section2_text) ? 
           <>
             <Section2FormStyled
               handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
@@ -71,10 +66,9 @@ export default function index({
               pDate={pDate}
               register={register}
               errors={errors}
-              name={isReadonly ? application.section2_name : vendor.section2_name}
-              text={isReadonly ? application.section2_text : vendor.section2_text}
+              name={application.section2_name}
+              text={application.section2_text}
               isReadonly={isVendorView ? true: isReadonly}
-              isVendorView={isVendorView}
             />
             <br/>
             <br/>
@@ -84,9 +78,7 @@ export default function index({
         }
 
         {
-          (application.section3_name && application.section3_text) || 
-          (!isReadonly && vendor.section3_show) ||
-          (isVendorView && vendor.section3_show && application.section3_name && application.section3_text) ?
+          (application.section3_name && application.section3_text) ?
           <>
             <Section3FormStyled
               handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
@@ -94,10 +86,9 @@ export default function index({
               pDate={pDate}
               register={register}
               errors={errors}
-              name={isReadonly ? application.section3_name : vendor.section3_name}
-              text={isReadonly ? application.section3_text : vendor.section3_text}
+              name={application.section3_name}
+              text={application.section3_text}
               isReadonly={isVendorView ? true: isReadonly}
-              isVendorView={isVendorView}
             />
             <br/>
             <br/>

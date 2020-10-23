@@ -434,21 +434,21 @@ export default function index() {
     applications.updateapplication &&
     applications.updateapplication.message == "application updated"
   ) {
-    window.location.reload(false);
+    window.location.reload()
   }
 
   if (
     applications.archivedapplication &&
     applications.archivedapplication.message == "application archived"
   ) {
-    window.location.reload(false);
+    window.location.reload()
   }
 
   if (
     applications.updateapplication &&
     applications.updateapplication.message == "application successfully updated"
   ) {
-    window.location.reload(false);
+    window.location.reload()
   }
 
   useEffect(() => {
@@ -1010,6 +1010,18 @@ export default function index() {
       },
       parents: setupParentsList(),
       emergency_contacts: JSON.stringify(emergencyContacts),
+      section1_signature: selectedApplication.section1_signature,
+      section1_date_signed: selectedApplication.section1_date_signed,
+      section2_signature: selectedApplication.section2_signature,
+      section2_date_signed:  selectedApplication.section2_date_signed,
+      section3_signature: selectedApplication.section3_signature,
+      section3_date_signed: selectedApplication.section3_date_signed,
+      section1_text: selectedApplication.section1_text,
+      section2_text: selectedApplication.section2_text,
+      section3_text: selectedApplication.section3_text,
+      section1_name: selectedApplication.section1_name,
+      section2_name: selectedApplication.section2_name,
+      section3_name: selectedApplication.section3_name,
       updated_by: auth.name
     };
 
@@ -1153,7 +1165,13 @@ export default function index() {
               child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
               program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
               ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
-              nick_name: application.child.nickname ? application.child.nickname: ""
+              nick_name: application.child.nickname ? application.child.nickname: "",
+              preffered_start_date: new Date(application.child.preffered_start_date),
+              current_classroom: application.child.current_classroom ? application.child.current_classroom: "",
+              primary_language: application.child.primary_language ? application.child.primary_language : "",
+              needed_days: application.child.needed_days ? application.child.needed_days : "",
+              schedule_tour: application.child.schedule_tour ? application.child.schedule_tour : "",
+              voucher: application.child.voucher ? application.child.voucher : ""
             },
             general_information: {
               grade: application.child.grade_number ? application.child.grade_number: "",
@@ -1183,7 +1201,61 @@ export default function index() {
               team_affiliations: application.child.affiliations ? application.child.affiliations : "",
               awards: application.child.awards ? application.child.awards : "",
               accomplishments: application.child.accomplishments ? application.child.accomplishments : "",
-              mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : ""
+              mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : "",
+              is_child_transferring: application.child.is_child_transferring 
+                ? application.child.is_child_transferring 
+                : "",
+              does_child_require_physical_education_service: application.child.does_child_require_physical_education_service 
+                ? application.child.does_child_require_physical_education_service 
+                : "",
+              history_prev_diseases: application.child.history_prev_diseases 
+                ? application.child.history_prev_diseases 
+                : "", //start of questions
+              child_currently_doctors_care: application.child.child_currently_doctors_care 
+                ? application.child.child_currently_doctors_care 
+                : "",
+              reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations 
+                ? application.child.reasons_previous_hospitalizations 
+                : "",
+              comments_suggestion: application.child.comments_suggestion 
+                ? application.child.comments_suggestion 
+                : "",
+              list_special_dietary: application.child.list_special_dietary 
+                ? application.child.list_special_dietary 
+                : "",
+              list_any_allergies: application.child.list_any_allergies 
+              ? application.child.list_any_allergies 
+              : "",
+              mental_physical_disabilities: application.child.mental_physical_disabilities 
+              ? application.child.mental_physical_disabilities 
+              : "",
+              medical_action_plan: application.child.medical_action_plan 
+              ? application.child.medical_action_plan 
+              : "",
+              list_fears_unique_behavior: application.child.list_fears_unique_behavior 
+              ? application.child.list_fears_unique_behavior 
+              : "",
+              transfer_reason: application.child.transfer_reason 
+              ? application.child.transfer_reason 
+              : "",
+              prev_school_phone: application.child.prev_school_phone 
+              ? application.child.prev_school_phone 
+              : "",
+              prev_school_city: application.child.prev_school_city 
+              ? application.child.prev_school_city 
+              : "",
+              prev_school_address: application.child.prev_school_address 
+              ? application.child.prev_school_address 
+              : "",
+              prev_school_attended: application.child.prev_school_attended 
+              ? application.child.prev_school_attended 
+              : "",
+              prev_school_state: application.child.prev_school_state 
+              ? application.child.prev_school_state 
+              : "",
+              prev_school_zip_code: application.child.prev_school_zip_code 
+              ? application.child.prev_school_zip_code 
+              : ""
             },
             emergency_care_information: {
               doctor_name: application.child.doctor_name ? application.child.doctor_name : "",
@@ -1221,7 +1293,12 @@ export default function index() {
               level_education: parent.level_of_education ? parent.level_of_education : "",
               child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
               child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
-              person_recommend: parent.person_recommend ? parent.person_recommend: ""
+              person_recommend: parent.person_recommend ? parent.person_recommend: "",
+              ethinicity: parent?.ethnicities
+              ? parseArrayFormat(parent.ethnicities.split(","))
+              : [],
+              gender: parent?.gender,
+              date_of_birth: new Date(parent?.birthdate)
             }
 
             items.push({profile: profile, parent_id: parent.parent_id});

@@ -58,7 +58,7 @@ export default function protectedRoutes({ children }) {
     const currentUserType = userTypes.filter(type => {
       return type.id === auth.type;
     })[0];
-    if (currentUserType.name === "USER" && location.pathname === "/dashboard") {
+    if (currentUserType?.name === "USER" && location.pathname === "/dashboard") {
       return <Redirect to="/dashboard/myapplication" />;
     }
     // === END Temporary implementation
