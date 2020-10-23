@@ -158,7 +158,10 @@ export default ({
                       size='2x' 
                       icon={faMinusCircle}
                       className='remove-icon'
-                      onClick={() => handleChangeSettings(null, 'removeValidation', index)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleChangeSettings(null, 'removeValidation', index)
+                      }}
                     />
                     <span className='tooltip'>Remove Validation</span>
                   </div>
