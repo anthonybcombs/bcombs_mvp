@@ -72,7 +72,7 @@ export default styled.div`
     position: absolute;
     bottom: -10px;
     left: 0;
-    width: 80px;
+    width: 110px;
     height: 5px;
     background: #f5812f;
   }
@@ -174,8 +174,10 @@ export default styled.div`
   .drop-area-wrapper-actions {
     padding: 1rem;
     display: flex;
+    margin-top: 2rem;
     align-items: center;
     justify-content: flex-end;
+    border-top: 1px solid #ddd;
   }
   .drop-area-wrapper-actions .preview {
     color: #fff;
@@ -203,7 +205,6 @@ export default styled.div`
     position: relative;
     overflow: hidden;
 
-    // cursor: move;
     padding: 8px;
     background: #fff;
     margin-bottom: 1rem;
@@ -218,10 +219,31 @@ export default styled.div`
     box-shadow: 0 3px 6px 3px #ddd;
     transition: all .15s ease-in-out
   }
+  .sortableGroup:hover .sortableGroup-dragger,
+  .sortableGroup.active .sortableGroup-dragger {
+    opacity: 1;
+    visibility: visible;
+    transition: all .15s ease-in-out
+  }
+
   .sortableGroup:hover .sortableGroup-actions >div svg {
     opacity: 1;
     visibility: visible;
     transition: all .15s ease-in-out
+  }
+
+  // default svg
+  .sortableGroup svg {
+    color: intial;
+    padding: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 100px;
+    transition: all .15s ease-in-out
+  }
+  .sortableGroup svg:hover {
+    background: #f1f1f1;
+    box-shadow: 0 3px 6px #ddd;
   }
 
 
@@ -250,58 +272,82 @@ export default styled.div`
     background: #f4f4f5;
     transition: all .15s ease-in-out
   }
-  .sortableGroup-actions .tooltip-wrapper .tooltip-left {
 
+
+
+  .sortableGroup-dragger {
+    cursor: grab;
+    margin: -8px;
+    background: #f1f1f1;
+    text-align: center;
+
+    visibility: hidden;
+    opacity: 0
   }
-  .sortableGroup-actions .tooltip-wrapper.tooltip-left .tooltip {
-    z-index: 10;
-    top: unset;
-    bottom: -22px;
-    white-space: pre;
-    transform: translateY(-32px);
+  .sortableGroup-dragger > svg {
+    color: grey;
   }
-  .sortableGroup-actions .tooltip-wrapper.tooltip-left:hover .tooltip {
-    transform: translateY(0);
+  .sortableGroup-dragger:hover > svg {
+    color: #5a5757;
+    transition: color .15s ease-in-out
   }
-  .sortableGroup-actions .tooltip-wrapper.tooltip-left.add-field .tooltip {
-    left: -33px;
-  }
-  .sortableGroup-actions .tooltip-wrapper.tooltip-left.edit-groupName .tooltip {
-    left: -42px;
+  .sortableGroup-dragger > svg:hover {
+    box-shadow: none;
   }
   
-
-  // specific for ADDRESS ROW
-  // .sortableGroup.address .sortableGroup-row {
-  //   grid-template-columns: repeat(2, 1fr) !important;
-  // }
-  // .sortableGroup.address .sortableGroup-row .sortableGroup-column:nth-child(1),
-  // .sortableGroup.address .sortableGroup-row .sortableGroup-column:nth-child(2) {
-  //   grid-column: span 2 !important; /* Spans two columns */
-  // }
-
+  
 
   .sortableGroup-name {
+    position: relative;
     margin: 0;
-    letter-spacing: 1.3px;
-    // text-transform: uppercase;
+    letter-spacing: 1.3px;    
+  }
+  .sortableGroup-name >input {
+    color: #f5812f !important;
+    font-weight: bold !important;
+    background: transparent !important;
+  }
+  .sortableGroup-name >div {
+    position: absolute;
+    right: -8px;
+    top: 0px;
+  }
+  .sortableGroup-name >div >svg {
+    color: #2097f3;
   }
 
 
   .sortableGroup-row {
     display: grid;
-    align-items: center;
+    align-items: end;
     grid-column-gap: 2%;
-    // grid-template-columns: repeat(1, 1fr);
   }
-
 
   .sortableGroup-column {
     position: relative;
     padding-top: 1rem !important;
+  }  
+  // .sortableGroup-column.active {
+  //   border: 1px solid red;
+  // }
+  .sortableGroup-column.active .field-input,
+  .sortableGroup-column.active textarea.field-input {
+    background: #fde8db !important;
   }
-  .sortableGroup-column.active {
-    border: 1px solid red;
+  .sortableGroup-column.addField-column > button {
+    border: 0;
+    color: #fff;
+    padding: 2px 13px;
+    border-radius: 3px;
+  }
+  .sortableGroup-column.addField-column > button.add-btn {
+    position: absolute;
+    bottom: -22px;
+    background: #19AB27;
+    transition: background .15s ease-in-out 
+  }
+  .sortableGroup-column.addField-column > button.add-btn:hover {
+    background: #128d15;
   }
   .sortableGroup-column .removeField-icon {
     position: absolute;
@@ -315,7 +361,28 @@ export default styled.div`
   .sortableGroup-column .removeField-icon:hover {
     color: #d32f2f;
   }
+  .sortableGroup-column > textarea.field-input {
+    margin-bottom: -5px;
+  }
 
+  .sortableGroup-column .column-adjuster {
+    position: absolute;
+    right: 1px;
+    bottom: -35px;
+    z-index: 999;
+  }
+  .sortableGroup-column .column-adjuster > svg {
+    color: #9e9d9d;
+    transition: .15s ease-in-out;
+  }
+  .sortableGroup-column .column-adjuster > svg:hover {
+    color: #000;
+    background: transparent;
+  }
+
+
+
+  // Start Group Drawer
   .sortableGroup-drawer {
     position: absolute;
     top: 2px;
@@ -405,9 +472,12 @@ export default styled.div`
     margin: 0 -16px;
     background: #fff;
   }
+  // End Group Drawer
  
 
 
+
+  // start Group Fields Seetings
   .group-settings {
     margin-top: 4rem;
   }
@@ -415,7 +485,14 @@ export default styled.div`
     display: grid;
     grid-gap: 2%;
     margin-bottom: 1rem;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .group-settings .settings-validation .addRemove-validation {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    grid-column: none;
+    width: 80px;
   }
   .group-settings .settings-validation .add-validation,
   .group-settings .settings-validation .remove-validation {
@@ -423,17 +500,20 @@ export default styled.div`
     cursor: pointer!important;
   }
   .group-settings .settings-validation .add-validation > svg {
-    width: 24px;
     color: #f5812f;
   }
   .group-settings .settings-validation .remove-validation > svg {
-    width: 24px;
     color: red;
   }
-  .group-settings .settings-validation .add-validation >span.tooltip,
-  .group-settings .settings-validation .remove-validation >span.tooltip {
-    left: -76px;
+  .group-settings .settings-validation .add-validation >span.tooltip {
+    left: -55px;
+    white-space: pre;
   }
+  .group-settings .settings-validation .remove-validation >span.tooltip {
+    left: -75px;
+    white-space: pre;
+  }
+
   .group-settings .settings-control {
     display: flex;
     flex-wrap: wrap;
@@ -460,21 +540,21 @@ export default styled.div`
     background: rgb(239 239 239 / 55%);
     transition: all .25s ease-in-out
   }
-  .group-settings .settings-iconActions  svg:hover:nth-child(1) {
+  .group-settings .settings-iconActions  .copy-icon svg:hover {
     position: relative;
     color: #ffffff;
     background: #f5812f;
     box-shadow: 0 3px 6px #ddd;
     transition: all .15s ease-in-out
   }
-  .group-settings .settings-iconActions  svg:hover:nth-child(2) {
+  .group-settings .settings-iconActions  .delete-icon svg:hover {
     position: relative;
     color: #ffffff;
     background: #f44336;
     box-shadow: 0 3px 6px #ddd;
     transition: all .15s ease-in-out
   }
-  
+  // End Group Fields Seetings
 
 
   // =============================================
@@ -515,6 +595,21 @@ export default styled.div`
     visibility: visible;
     transform: translateY(0);
   }
+
+  .tooltip-wrapper.tooltip-left {
+
+  }
+  .tooltip-wrapper.tooltip-left .tooltip {
+    left: 0;
+    top: 8px;
+    white-space: pre;
+    letter-spacing: 0;
+    transform: translate(-100px, 0);
+  }
+  .tooltip-wrapper.tooltip-left:hover .tooltip {
+    transform: translate(-120px, 0);
+  }
+  
 
 
   .checkboxContainer {

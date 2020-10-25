@@ -162,36 +162,54 @@ export default ({
                   handleChangeFieldSettings({ error: target.value }, 'validation', index)
                 }}
               />
-              {
-                items.length > 1 &&
-                (
-                  <div className='tooltip-wrapper remove-validation'>
-                    <FontAwesomeIcon
-                      size='2x' 
-                      icon={faMinusCircle}
-                      className='remove-icon'
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleChangeFieldSettings(null, 'removeValidation', index)
-                      }}
-                    />
-                    <span className='tooltip'>Remove Validation</span>
-                  </div>
-                )
-              }
-              {
-                (!hasValidationError && (index === items.length - 1)) && (
-                  <div className='tooltip-wrapper add-validation'>
-                    <FontAwesomeIcon
-                      size='2x' 
-                      icon={faPlusCircle}
-                      className='add-icon'
-                      onClick={() => handleChangeFieldSettings(defaultValidation, 'addValidation') }
-                    />
-                    <span className='tooltip'>Add Validation</span>
-                  </div>
-                )
-              }
+              <div className='field select-field-wrapper'>
+                <label for='applyAll'
+                  style={{ color: 'grey', fontSize: '12px', position: 'absolute', top: '-10px'}}
+                >Apply to all field?</label>
+                <select
+                  className='field-input'
+                  value={option}
+                  onChange={({ target }) => {
+                    handleChangeFieldSettings({ option: target.value }, 'validation', index)
+                  }}
+                >
+                  <option value='no'>No</option>
+                  <option value='yes'>Yes</option>
+                </select>
+              </div>
+              <div className='addRemove-validation'>
+                {
+                  (!hasValidationError && (index === items.length - 1)) && (
+                    <div className='tooltip-wrapper add-validation'>
+                      <FontAwesomeIcon
+                        size='2x' 
+                        icon={faPlusCircle}
+                        className='add-icon'
+                        onClick={() => handleChangeFieldSettings(defaultValidation, 'addValidation') }
+                      />
+                      <span className='tooltip'>Add Validation</span>
+                    </div>
+                  )
+                }
+                {
+                  items.length > 1 &&
+                  (
+                    <div className='tooltip-wrapper remove-validation'>
+                      <FontAwesomeIcon
+                        size='2x' 
+                        icon={faMinusCircle}
+                        className='remove-icon'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleChangeFieldSettings(null, 'removeValidation', index)
+                        }}
+                      />
+                      <span className='tooltip'>Remove Validation</span>
+                    </div>
+                  )
+                }
+              </div>
+              
             </div>
           )
         })

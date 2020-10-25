@@ -9,7 +9,7 @@ export default () => {
 
   return (
     <div className='drag-area-wrapper'>
-      <h3 className='header'>Add Field</h3>
+      <h3 className='header'>Form Builder</h3>
 
       <h4 className='sub-header'>Standard</h4>
       <div className='draggble-container standard-items'>    

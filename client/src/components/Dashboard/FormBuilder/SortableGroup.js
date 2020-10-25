@@ -41,22 +41,28 @@ const SortableGroup = React.forwardRef(
     }
   })
 
-  const itemActive = isActive ? 'active' : ''
+
+  const isGroupActive = isActive ? 'active' : ''
   const isStandard = groupType === 'standard'
   const gridColRepeat = itemGroup === 'address' ? 4 : 3
   return (
     <div
-      className={`sortableGroup ${itemGroup} ${itemActive}`}
+      className={`sortableGroup ${itemGroup} ${isGroupActive}`}
       style={{ opacity }}
       onClick={() => onActive(id)}
     >
-      <div ref={elementRef}>
+      <div ref={elementRef} className='sortableGroup-dragger'>
         <FontAwesomeIcon
           icon={faGripHorizontal}
           className='drag-icon'
         />
       </div>
-      <p className='sortableGroup-name'>
+      <div className='sortableGroup-name'
+        onClick={e => {
+          e.stopPropagation()
+          handleEnableEditGroupName(true)
+        }}
+      >
         <input
           type='text'
           className='field-input'
@@ -66,20 +72,25 @@ const SortableGroup = React.forwardRef(
             handleEnableEditGroupName(false)
           }}
           onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
+          onkeypress={(e) => console.log('e: ', e)}
         />
         {
           !enableEditGroupName && (
-            <FontAwesomeIcon
-              className='edit-icon'
-              icon={faEdit}
-              onClick={e => {
-                e.stopPropagation()
-                handleEnableEditGroupName(true)
-              }}
-            />
+            <div className='tooltip-wrapper tooltip-left editGroupName'>
+              <FontAwesomeIcon
+                icon={faEdit}
+                className='edit-icon'
+                onClick={e => {
+                  e.stopPropagation()
+                  handleEnableEditGroupName(true)
+                }}
+              />
+              <span className='tooltip'>Edit Group Name</span>
+            </div>
+            
           )
         }
-      </p>
+      </div>
       <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {
           fields.map((field, index) => {
@@ -109,7 +120,7 @@ const SortableGroup = React.forwardRef(
                   }
                   {
                     (isActive && isActiveField) && (
-                      <>
+                      <div className='column-adjuster'>
                         {
                           columnInt > 1 && (
                             <FontAwesomeIcon
@@ -134,7 +145,7 @@ const SortableGroup = React.forwardRef(
                             />
                           )
                         }
-                      </>
+                      </div>
                     )
                   }
                   {
@@ -183,9 +194,9 @@ const SortableGroup = React.forwardRef(
           })
         }
         {
-          isStandard && (
+          (isStandard && !!isActive) &&  (
             <div
-              className={`sortableGroup-column`}
+              className={`sortableGroup-column addField-column`}
               style={{ gridColumn: `span 1`}}
             >
               <div className='field select-field-wrapper'>
@@ -206,7 +217,8 @@ const SortableGroup = React.forwardRef(
                       ))
                   }
                 </select>
-                <button
+              </div>
+              <button
                   type='button'
                   className='add-btn'
                   onClick={e => {
@@ -220,7 +232,6 @@ const SortableGroup = React.forwardRef(
                 >
                   Add Field
                 </button>
-              </div>
             </div>
           )
         }

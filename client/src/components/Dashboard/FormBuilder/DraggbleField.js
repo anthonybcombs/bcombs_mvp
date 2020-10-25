@@ -26,8 +26,6 @@ export default ({ label, type, groupType, fields, previewStyle = {} }) => {
     begin: () => ({ label, type, fields: newFields, groupType, settings, id: uuid() }),
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
-      // background: monitor.isDragging() ? 'red' : 'blue'
-      // drag
     })
   })
 
