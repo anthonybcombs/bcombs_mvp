@@ -163,9 +163,7 @@ export default ({
                 }}
               />
               <div className='field select-field-wrapper'>
-                <label for='applyAll'
-                  style={{ color: 'grey', fontSize: '12px', position: 'absolute', top: '-10px'}}
-                >Apply to all field?</label>
+                <label for='applyAll'>Apply to all field?</label>
                 <select
                   className='field-input'
                   value={option}

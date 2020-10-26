@@ -55,6 +55,12 @@ export default styled.div`
     color: #555 !important;
     font-family: "fontawesome";
   }
+  #formBuilder .select-field-wrapper label {
+    position: absolute;
+    top: -10px;
+    color: grey;
+    font-size: 12px;
+  }
   #formBuilder .select-field-wrapper select {
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
@@ -172,15 +178,17 @@ export default styled.div`
     border: 1px dashed #ddd;
   }
   .drop-area-wrapper-actions {
-    padding: 1rem;
     display: flex;
+    padding: 1rem 0;
     margin-top: 2rem;
-    align-items: center;
+    align-items: stretch;
     justify-content: flex-end;
     border-top: 1px solid #ddd;
   }
-  .drop-area-wrapper-actions .preview {
+  .drop-area-wrapper-actions .btn {
     color: #fff;
+    margin: 5px;
+    border: none;
     padding: 8px 2rem;
     background: #2196f3;
     text-decoration: none;
@@ -189,12 +197,21 @@ export default styled.div`
     display: flex;
     align-items: center
   }
-  .drop-area-wrapper-actions .preview >span {
+  .drop-area-wrapper-actions .btn >span {
     padding: 0 .5rem;
   }
-  .drop-area-wrapper-actions .preview:hover {
+  .drop-area-wrapper-actions .btn:hover {
     background: #1976d2;
     box-shadow: 0 3px 6px #ddd;
+  }
+  .drop-area-wrapper-actions .btn.save {
+    color: #2196f3;
+    border: 2px solid #2196f3;
+    background: transparent;
+  }
+  .drop-area-wrapper-actions .btn.save:hover {
+    border-color: transparent;
+    background: #2097f32b 
   }
 
   // ===============================================
@@ -370,12 +387,15 @@ export default styled.div`
     right: 1px;
     bottom: -35px;
     z-index: 999;
+
+    display: flex;
+    align-items: center;
   }
-  .sortableGroup-column .column-adjuster > svg {
+  .sortableGroup-column .column-adjuster >div svg {
     color: #9e9d9d;
     transition: .15s ease-in-out;
   }
-  .sortableGroup-column .column-adjuster > svg:hover {
+  .sortableGroup-column .column-adjuster >div svg:hover {
     color: #000;
     background: transparent;
   }
