@@ -537,14 +537,37 @@ export default styled.div`
   .group-settings .settings-control {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
 
-    // padding: 1rem;
+    padding: 1rem;
     margin: 5px -8px -8px;
     border-top: 1px solid #ccc;
     background: hsl(25deg 91% 57% / 18%);
   }
+  .group-settings .settings-control .settings-control-item p.label {
+    position: relative;
+    margin: 0 0 .5rem 0;
+  }
+  .group-settings .settings-control .settings-control-item p.label > svg {
+    position: absolute;
+    left: 100px;
+    top: -4px;
+    color: #f5812f;
+  }
+  .group-settings .settings-control .settings-control-item .settings-content {
+    display: flex;
+    align-items: center;
+  }
+  .group-settings .settings-control .settings-control-item.field {
+    margin-right: auto;
+  }
+  .group-settings .settings-control .settings-control-item.group p.label > svg  {
+    left: 148px;
+  }
+  .group-settings .settings-control .settings-control-item.group .checkboxContainer {
+    margin-right: 1rem;
+  }
+
   .group-settings .settings-iconActions {
     display: flex;
     align-items: center;
@@ -573,16 +596,6 @@ export default styled.div`
     background: #f44336;
     box-shadow: 0 3px 6px #ddd;
     transition: all .15s ease-in-out
-  }
-
-  .group-settings .settings-control .settings-control-item {
-    padding: 0.5rem;
-  }
-  .group-settings .settings-control .settings-control-item.field {
-    // background-color: red;
-  }
-  .group-settings .settings-control .settings-control-item.group {
-    // background-color: blue;
   }
   // End Group Fields Seetings
 

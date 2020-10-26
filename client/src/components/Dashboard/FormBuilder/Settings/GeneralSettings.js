@@ -236,14 +236,14 @@ export default ({
       {/* Start Lower Control */}
       <div className='settings-control'>
         <div className='settings-control-item field'>
-          <div>
-            Field Settings
-            <div style={{ paddingLeft: '10px', fontSize: '11px' }}>
-              <FontAwesomeIcon style={{ marginRight: '5px' }} className='exclude-global' icon={faQuestionCircle}/>
-              Select a field first to enable these options.
-            </div>
+          <div className='tooltip-wrapper'>
+            <p className='label'>Field Settings
+              <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+            </p>
+            <span className='tooltip'>Select a field first to enable these options.</span>
           </div>
-          <div style={{ display: 'flex' }}>
+
+          <div className='settings-content'>
             <label for='required'  className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
               <input
                 type='checkbox'
@@ -295,14 +295,14 @@ export default ({
         </div>
 
         <div className='settings-control-item group'>
-          <div>
-            Group Settings
-            <div style={{ paddingLeft: '10px', fontSize: '11px' }}>
-              <FontAwesomeIcon style={{ marginRight: '5px' }} className='exclude-global' icon={faQuestionCircle}/>
-              These options are for the entire group.
-            </div>
+          <div className='tooltip-wrapper'>
+            <p className='label'>FieGroupld Settings
+              <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+            </p>
+            <span className='tooltip'>These options are for the entire group.</span>
           </div>
-          <div style={{ display: 'flex' }}>
+
+          <div className='settings-content'>
             <label for='instruction' className='checkboxContainer'>
               <input
                 type='checkbox'
