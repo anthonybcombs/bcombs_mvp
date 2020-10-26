@@ -278,11 +278,12 @@ export default ({
               <span className='labelName'> Validation</span>
             </label>
 
-            <label for='logic' className='checkboxContainer'>
+            <label for='logic' className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
               <input
                 type='checkbox'
                 id='logic'
                 name='logic'
+                disabled={!hasSelectedField}
                 checked={!!logic.include}
                 onChange={e => {
                   e.stopPropagation()
