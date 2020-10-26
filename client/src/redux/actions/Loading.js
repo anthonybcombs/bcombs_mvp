@@ -69,3 +69,10 @@ export const setDeleteAdminLoading = value => {
     value
   };
 }
+
+export const setAddFormLoading = value => {
+  return {
+    type: actionType.SET_ADD_FORM_LOADING,
+    value
+  };
+}

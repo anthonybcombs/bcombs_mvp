@@ -65,6 +65,11 @@ export default function Loading(
         ...state,
         deleteAdmins: action.value
       }
+    case actionType.SET_ADD_FORM_LOADING:
+      return {
+        ...state,
+        addForm: action.value
+      }
     default:
       return state;
   }
