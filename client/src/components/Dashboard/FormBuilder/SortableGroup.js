@@ -34,10 +34,15 @@ const SortableGroup = React.forwardRef(
     getNode: () => elementRef.current,
   }))
 
+  const groupTitle = useRef(null)
   useEffect((props) => {
     connectDragPreview(getEmptyImage(), { captureDraggingState: true })
     if (!isActive) {
       setActiveFieldIndex('')
+    }
+    if (enableEditGroupName) {
+      const input = document.querySelector(`.group-name-input-${id}`);
+      input.focus();
     }
   })
 
@@ -61,11 +66,14 @@ const SortableGroup = React.forwardRef(
         onClick={e => {
           e.stopPropagation()
           handleEnableEditGroupName(true)
+          if (!isActive) {
+            onActive(id)
+          }
         }}
       >
         <input
           type='text'
-          className='field-input'
+          className={`field-input group-name-input-${id}`}
           value={label}
           disabled={!enableEditGroupName}
           onBlur={() => {
@@ -75,7 +83,7 @@ const SortableGroup = React.forwardRef(
           onkeypress={(e) => console.log('e: ', e)}
         />
         {
-          !enableEditGroupName && (
+          (isActive && !enableEditGroupName) && (
             <div className='tooltip-wrapper tooltip-left editGroupName'>
               <FontAwesomeIcon
                 icon={faEdit}
@@ -83,6 +91,9 @@ const SortableGroup = React.forwardRef(
                 onClick={e => {
                   e.stopPropagation()
                   handleEnableEditGroupName(true)
+                  if (!isActive) {
+                    onActive(id)
+                  }
                 }}
               />
               <span className='tooltip'>Edit Group Name</span>
@@ -219,19 +230,19 @@ const SortableGroup = React.forwardRef(
                 </select>
               </div>
               <button
-                  type='button'
-                  className='add-btn'
-                  onClick={e => {
-                    e.stopPropagation()
-                    let newField = StandardFields.find(e => e.type === additionalField)
-                    if (newField) {
-                      newField = cloneDeep(newField) //avoid mutating the array of objects
-                      onMergeStandardFields(id, newField)
-                    }
-                  }}
-                >
-                  Add Field
-                </button>
+                type='button'
+                className='add-btn'
+                onClick={e => {
+                  e.stopPropagation()
+                  let newField = StandardFields.find(e => e.type === additionalField)
+                  if (newField) {
+                    newField = cloneDeep(newField) //avoid mutating the array of objects
+                    onMergeStandardFields(id, newField)
+                  }
+                }}
+              >
+                Add Field
+              </button>
             </div>
           )
         }
