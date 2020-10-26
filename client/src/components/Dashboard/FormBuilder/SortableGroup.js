@@ -15,7 +15,7 @@ const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
     hidden, label, fields, isDragging, id, type: itemGroup,
-    onRemoveGroup, settings: generalSettings,
+    onRemoveGroup, settings: generalSettings, allowAddField,
     isActive, onActive, onChangeGeneralSettings,
     groupType, onMergeStandardFields, onDuplicateGroup,
     onRemoveGroupField, onChangeFieldSettings, onChangeGroupName
@@ -108,7 +108,7 @@ const SortableGroup = React.forwardRef(
             const { type = '', tag, options, column, placeholder } = field
             const columnInt = column * 1
             const isActiveField = fieldIndex === index
-            if (type !== 'group') {
+            if (type !== 'option') {
               return (
                 <div
                   className={`sortableGroup-column ${isActiveField ? 'active' : ''}`}
@@ -124,7 +124,7 @@ const SortableGroup = React.forwardRef(
                     FieldConstructor[tag]({
                       ...field,
                       key: field.id,
-                      isFormBuilder: true,
+                      isBuilder: true,
                       value: placeholder,
                       onChange: ({ target }) => onChangeFieldSettings({ placeholder: target.value }, index, id)
                     })
@@ -160,7 +160,7 @@ const SortableGroup = React.forwardRef(
                     )
                   }
                   {
-                    (isActive && fields.length > 1) &&
+                    (isStandard && isActive && fields.length > 1) &&
                     (
                       <FontAwesomeIcon
                         className='removeField-icon'
@@ -181,7 +181,7 @@ const SortableGroup = React.forwardRef(
                     {
                       FieldConstructor[option.tag]({
                         key: option.tag + uuid(),
-                        isFormBuilder: true,
+                        isBuilder: true,
                         ...option
                       })
                     }
@@ -205,7 +205,7 @@ const SortableGroup = React.forwardRef(
           })
         }
         {
-          (isStandard && !!isActive) &&  (
+          (isStandard && allowAddField && !!isActive) &&  (
             <div
               className={`sortableGroup-column addField-column`}
               style={{ gridColumn: `span 1`}}
@@ -258,6 +258,7 @@ const SortableGroup = React.forwardRef(
             generalSettings={generalSettings}
             fieldSettings={fieldIndex !== '' ? fields[fieldIndex] : {}}
             hasSelectedField={fieldIndex !== ''}
+            allowAddField={allowAddField}
           />
         )
       }

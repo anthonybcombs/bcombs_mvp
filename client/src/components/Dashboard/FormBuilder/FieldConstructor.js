@@ -22,27 +22,32 @@ export default {
       {...rest}
     />
   },
-  checkbox: ({ label, name }) => {
+  checkbox: ({ label, name, isBuilder, onChange }) => {
     return (
       <label for={name} className='checkboxContainer'>
         <input
           type='checkbox'
-          id={name}
-          name={name}
-          // onChange={e => {
-          //   e.stopPropagation()
-          //   handleChangeSettings({ include: e.target.checked }, 'instruction')
-          // }}
+          onChange={onChange}
+          disabled={isBuilder}
         />
         <span className='checkmark' />
-        <span className='labelName'> {label}</span>
+        {
+          isBuilder
+            ? <input
+                type='text'
+                className={`labelName`}
+                value={label}
+                onChange={onChange}
+              />
+            : <span className='labelName'> {label}</span>
+        }
       </label>
     )
   },
   multipleChoice: ({ label }) => {
     return <div>{label}</div>
   },
-  select: ({ options, label: fieldLabel, type, className, isFormBuilder = false, ...rest }) => {
+  select: ({ options, label: fieldLabel, type, className, isBuilder = false, ...rest }) => {
     return (
       <select
         className={`field-input ${className}`}
@@ -52,7 +57,7 @@ export default {
       >
         <option value=''>{rest.placeholder}</option>
         {
-          !isFormBuilder &&
+          !isBuilder &&
           (
             selectMappings[type].map(({ label, value }, index) => {
               return (<option key={value + index} value={value}>{label}</option>)

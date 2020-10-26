@@ -223,7 +223,8 @@ export default styled.div`
   .sortableGroup.active .sortableGroup-dragger {
     opacity: 1;
     visibility: visible;
-    transition: all .15s ease-in-out
+    transition: all .15s ease-in-out;
+    margin-bottom: 5px;
   }
 
   .sortableGroup:hover .sortableGroup-actions >div svg {

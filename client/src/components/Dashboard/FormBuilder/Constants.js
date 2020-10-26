@@ -38,7 +38,8 @@ export const StandardFields = [
     ],
     label: 'Single Line Text',
     type: 'singleLineText',
-    canBeGrouped: true
+    canBeGrouped: true,
+    allowAddField: true
   },
   // {
   //   fields: [
@@ -54,13 +55,13 @@ export const StandardFields = [
     ],
     label: 'Paragraph Text',
     type: 'paragraphText',
-    canBeGrouped: true
+    canBeGrouped: true,
+    allowAddField: true
   },
   {
     fields: [
-      { label: 'Question', type: 'text', tag: 'input', placeholder: 'Question', column: '1'},
       {
-        type: 'group',
+        type: 'option',
         options: [
           { name: 'option1', label: 'Option 1', tag: 'checkbox' },
           { name: 'option2', label: 'Option 2', tag: 'checkbox' },
@@ -85,7 +86,8 @@ export const StandardFields = [
     ],
     label: 'Dropdown',
     type: 'dropDown',
-    canBeGrouped: true
+    canBeGrouped: true,
+    allowAddField: true
   },
   {
     fields: [

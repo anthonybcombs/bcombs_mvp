@@ -18,12 +18,12 @@ import {
   faGripVertical,
 } from "@fortawesome/free-solid-svg-icons"
 
-export default ({ label, type, groupType, fields, previewStyle = {} }) => {
+export default ({ label, type, groupType, fields, previewStyle = {}, allowAddField = false }) => {
   const newFields = cloneDeep(fields) //avoid mutating the array of objects
   const settings = {}
   const [{ opacity, background }, drag, preview] = useDrag({
     item: { type },
-    begin: () => ({ label, type, fields: newFields, groupType, settings, id: uuid() }),
+    begin: () => ({ label, type, fields: newFields, groupType, settings, id: uuid(), allowAddField }),
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
     })
