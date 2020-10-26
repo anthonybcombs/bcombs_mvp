@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashAlt, faCopy, faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt, faCopy, faPlusCircle, faMinusCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
 import { Sources } from './Sources'
@@ -237,88 +237,110 @@ export default ({
 
       {/* Start Lower Control */}
       <div className='settings-control'>
-        <label for='required'  className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
-          <input
-            type='checkbox'
-            id='required'
-            name='required'
-            disabled={!hasSelectedField}
-            checked={required}
-            onChange={e => {
-              e.stopPropagation()
-              handleChangeFieldSettings({ required: e.target.checked })
-            }}
-          />
-          <span className='checkmark'/>
-          <span className='labelName'> Required</span>
-        </label>
-
-        <label for='validation' className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
-          <input
-            type='checkbox'
-            id='validation'
-            name='validation'
-            disabled={!hasSelectedField}
-            checked={!!validation.include}
-            onChange={e => {
-              e.stopPropagation()
-              handleChangeFieldSettings({ validation: { include: e.target.checked, items: [defaultValidation] } })
-            }}
-          />
-          <span className='checkmark'/>
-          <span className='labelName'> Validation</span>
-        </label>
-
-        <label for='logic' className='checkboxContainer'>
-          <input
-            type='checkbox'
-            id='logic'
-            name='logic'
-            checked={!!logic.include}
-            onChange={e => {
-              e.stopPropagation()
-              handleChangeGeneralSettings({ include: e.target.checked }, 'logic')
-            }}
-          />
-          <span className='checkmark'/>
-          <span className='labelName'> Logic</span>
-        </label>
-
-        <label for='instruction' className='checkboxContainer'>
-          <input
-            type='checkbox'
-            id='instruction'
-            name='instruction'
-            checked={!!instruction.include}
-            onChange={e => {
-              e.stopPropagation()
-              handleChangeGeneralSettings({ include: e.target.checked }, 'instruction')
-            }}
-          />
-          <span className='checkmark' />
-          <span className='labelName'> Instruction for Use</span>
-        </label>
-
-        <div className='settings-iconActions'>
-          <div className='tooltip-wrapper copy-icon'>
-            <FontAwesomeIcon
-              icon={faCopy}
-              onClick={e => {
-                e.stopPropagation()
-                onDuplicateGroup()
-              }}
-            />
-            <span className='tooltip'>Copy</span>
+        <div className='settings-control-item field'>
+          <div>
+            Field Settings
+            <div style={{ paddingLeft: '10px', fontSize: '11px' }}>
+              <FontAwesomeIcon style={{ marginRight: '5px' }} className='exclude-global' icon={faQuestionCircle}/>
+              Select a field first to enable these options.
+            </div>
           </div>
-          <div className='tooltip-wrapper delete-icon'>
-            <FontAwesomeIcon
-              icon={faTrashAlt}
-              onClick={e => {
-                e.stopPropagation()
-                onRemoveGroup()
-              }}
-            />
-            <span className='tooltip'>Delete</span>
+          <div style={{ display: 'flex' }}>
+            <label for='required'  className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
+              <input
+                type='checkbox'
+                id='required'
+                name='required'
+                disabled={!hasSelectedField}
+                checked={required}
+                onChange={e => {
+                  e.stopPropagation()
+                  handleChangeFieldSettings({ required: e.target.checked })
+                }}
+              />
+              <span className='checkmark'/>
+              <span className='labelName'> Required</span>
+            </label>
+
+            <label for='validation' className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
+              <input
+                type='checkbox'
+                id='validation'
+                name='validation'
+                disabled={!hasSelectedField}
+                checked={!!validation.include}
+                onChange={e => {
+                  e.stopPropagation()
+                  handleChangeFieldSettings({ validation: { include: e.target.checked, items: [defaultValidation] } })
+                }}
+              />
+              <span className='checkmark'/>
+              <span className='labelName'> Validation</span>
+            </label>
+
+            <label for='logic' className='checkboxContainer'>
+              <input
+                type='checkbox'
+                id='logic'
+                name='logic'
+                checked={!!logic.include}
+                onChange={e => {
+                  e.stopPropagation()
+                  handleChangeGeneralSettings({ include: e.target.checked }, 'logic')
+                }}
+              />
+              <span className='checkmark'/>
+              <span className='labelName'> Logic</span>
+            </label>
+          </div>
+        </div>
+
+        <div className='settings-control-item group'>
+          <div>
+            Group Settings
+            <div style={{ paddingLeft: '10px', fontSize: '11px' }}>
+              <FontAwesomeIcon style={{ marginRight: '5px' }} className='exclude-global' icon={faQuestionCircle}/>
+              These options are for the entire group.
+            </div>
+          </div>
+          <div style={{ display: 'flex' }}>
+            <label for='instruction' className='checkboxContainer'>
+              <input
+                type='checkbox'
+                id='instruction'
+                name='instruction'
+                checked={!!instruction.include}
+                onChange={e => {
+                  e.stopPropagation()
+                  handleChangeGeneralSettings({ include: e.target.checked }, 'instruction')
+                }}
+              />
+              <span className='checkmark' />
+              <span className='labelName'> Instruction for Use</span>
+            </label>
+
+            <div className='settings-iconActions'>
+              <div className='tooltip-wrapper copy-icon'>
+                <FontAwesomeIcon
+                  icon={faCopy}
+                  onClick={e => {
+                    e.stopPropagation()
+                    onDuplicateGroup()
+                  }}
+                />
+                <span className='tooltip'>Copy</span>
+              </div>
+              <div className='tooltip-wrapper delete-icon'>
+                <FontAwesomeIcon
+                  icon={faTrashAlt}
+                  onClick={e => {
+                    e.stopPropagation()
+                    onRemoveGroup()
+                  }}
+                />
+                <span className='tooltip'>Delete</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
