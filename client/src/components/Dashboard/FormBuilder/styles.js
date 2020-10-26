@@ -250,7 +250,7 @@ export default styled.div`
   }
 
   // default svg
-  .sortableGroup svg {
+  .sortableGroup svg:not(.exclude-global) {
     color: intial;
     padding: 10px;
     font-size: 18px;
@@ -258,7 +258,7 @@ export default styled.div`
     border-radius: 100px;
     transition: all .15s ease-in-out
   }
-  .sortableGroup svg:hover {
+  .sortableGroup svg:not(.exclude-global):hover {
     background: #f1f1f1;
     box-shadow: 0 3px 6px #ddd;
   }
@@ -540,7 +540,7 @@ export default styled.div`
     align-items: center;
     justify-content: space-between;
 
-    padding: 1rem;
+    // padding: 1rem;
     margin: 5px -8px -8px;
     border-top: 1px solid #ccc;
     background: hsl(25deg 91% 57% / 18%);
@@ -573,6 +573,16 @@ export default styled.div`
     background: #f44336;
     box-shadow: 0 3px 6px #ddd;
     transition: all .15s ease-in-out
+  }
+
+  .group-settings .settings-control .settings-control-item {
+    padding: 0.5rem;
+  }
+  .group-settings .settings-control .settings-control-item.field {
+    // background-color: red;
+  }
+  .group-settings .settings-control .settings-control-item.group {
+    // background-color: blue;
   }
   // End Group Fields Seetings
 
