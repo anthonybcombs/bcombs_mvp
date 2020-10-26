@@ -175,7 +175,7 @@ export default () => {
                 <button
                   type='button'
                   target='_blank'
-                  className='save'
+                  className='btn save'
                   onClick={() => {
                     dispatch(requestAddForm({
                       formTitle,
@@ -192,7 +192,7 @@ export default () => {
                 <a
                   type='button'
                   target='_blank'
-                  className='preview'
+                  className='btn preview'
                   href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
                 >
                   <FontAwesomeIcon

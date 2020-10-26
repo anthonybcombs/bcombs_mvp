@@ -134,26 +134,32 @@ const SortableGroup = React.forwardRef(
                       <div className='column-adjuster'>
                         {
                           columnInt > 1 && (
-                            <FontAwesomeIcon
-                              className='minusColumn-icon'
-                              icon={faArrowLeft}
-                              onClick={e => {
-                                e.stopPropagation()
-                                onChangeFieldSettings({ column: (columnInt - 1).toString() }, index, id)
-                              }}
-                            />
+                            <div className='tooltip-wrapper tooltip-left'>
+                              <FontAwesomeIcon
+                                className='minusColumn-icon'
+                                icon={faArrowLeft}
+                                onClick={e => {
+                                  e.stopPropagation()
+                                  onChangeFieldSettings({ column: (columnInt - 1).toString() }, index, id)
+                                }}
+                              />
+                              <span className='tooltip'>Decrease width size</span>
+                            </div>
                           )
                         }
                         {
                           columnInt < gridColRepeat && (
-                            <FontAwesomeIcon
-                              className='addColumn-icon'
-                              icon={faArrowRight}
-                              onClick={e => {
-                                e.stopPropagation()
-                                onChangeFieldSettings({ column: (columnInt + 1).toString() }, index, id)
-                              }}
-                            />
+                            <div className='tooltip-wrapper tooltip-left'>
+                              <FontAwesomeIcon
+                                className='addColumn-icon'
+                                icon={faArrowRight}
+                                onClick={e => {
+                                  e.stopPropagation()
+                                  onChangeFieldSettings({ column: (columnInt + 1).toString() }, index, id)
+                                }}
+                              />
+                              <span className='tooltip'>Increase width size</span>
+                            </div>
                           )
                         }
                       </div>
@@ -211,6 +217,7 @@ const SortableGroup = React.forwardRef(
               style={{ gridColumn: `span 1`}}
             >
               <div className='field select-field-wrapper'>
+                <label for='applyAll'>Select a field to add</label>
                 <select
                   id='add-field'
                   className='field-input'

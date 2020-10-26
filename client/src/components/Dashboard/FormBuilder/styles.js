@@ -55,6 +55,12 @@ export default styled.div`
     color: #555 !important;
     font-family: "fontawesome";
   }
+  #formBuilder .select-field-wrapper label {
+    position: absolute;
+    top: -10px;
+    color: grey;
+    font-size: 12px;
+  }
   #formBuilder .select-field-wrapper select {
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
@@ -172,15 +178,17 @@ export default styled.div`
     border: 1px dashed #ddd;
   }
   .drop-area-wrapper-actions {
-    padding: 1rem;
     display: flex;
+    padding: 1rem 0;
     margin-top: 2rem;
-    align-items: center;
+    align-items: stretch;
     justify-content: flex-end;
     border-top: 1px solid #ddd;
   }
-  .drop-area-wrapper-actions .preview {
+  .drop-area-wrapper-actions .btn {
     color: #fff;
+    margin: 5px;
+    border: none;
     padding: 8px 2rem;
     background: #2196f3;
     text-decoration: none;
@@ -189,12 +197,21 @@ export default styled.div`
     display: flex;
     align-items: center
   }
-  .drop-area-wrapper-actions .preview >span {
+  .drop-area-wrapper-actions .btn >span {
     padding: 0 .5rem;
   }
-  .drop-area-wrapper-actions .preview:hover {
+  .drop-area-wrapper-actions .btn:hover {
     background: #1976d2;
     box-shadow: 0 3px 6px #ddd;
+  }
+  .drop-area-wrapper-actions .btn.save {
+    color: #2196f3;
+    border: 2px solid #2196f3;
+    background: transparent;
+  }
+  .drop-area-wrapper-actions .btn.save:hover {
+    border-color: transparent;
+    background: #2097f32b 
   }
 
   // ===============================================
@@ -371,12 +388,15 @@ export default styled.div`
     right: 1px;
     bottom: -35px;
     z-index: 999;
+
+    display: flex;
+    align-items: center;
   }
-  .sortableGroup-column .column-adjuster > svg {
+  .sortableGroup-column .column-adjuster >div svg {
     color: #9e9d9d;
     transition: .15s ease-in-out;
   }
-  .sortableGroup-column .column-adjuster > svg:hover {
+  .sortableGroup-column .column-adjuster >div svg:hover {
     color: #000;
     background: transparent;
   }
@@ -518,14 +538,37 @@ export default styled.div`
   .group-settings .settings-control {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
 
-    // padding: 1rem;
+    padding: 1rem;
     margin: 5px -8px -8px;
     border-top: 1px solid #ccc;
     background: hsl(25deg 91% 57% / 18%);
   }
+  .group-settings .settings-control .settings-control-item p.label {
+    position: relative;
+    margin: 0 0 .5rem 0;
+  }
+  .group-settings .settings-control .settings-control-item p.label > svg {
+    position: absolute;
+    left: 100px;
+    top: -4px;
+    color: #f5812f;
+  }
+  .group-settings .settings-control .settings-control-item .settings-content {
+    display: flex;
+    align-items: center;
+  }
+  .group-settings .settings-control .settings-control-item.field {
+    margin-right: auto;
+  }
+  .group-settings .settings-control .settings-control-item.group p.label > svg  {
+    left: 148px;
+  }
+  .group-settings .settings-control .settings-control-item.group .checkboxContainer {
+    margin-right: 1rem;
+  }
+
   .group-settings .settings-iconActions {
     display: flex;
     align-items: center;
@@ -554,16 +597,6 @@ export default styled.div`
     background: #f44336;
     box-shadow: 0 3px 6px #ddd;
     transition: all .15s ease-in-out
-  }
-
-  .group-settings .settings-control .settings-control-item {
-    padding: 0.5rem;
-  }
-  .group-settings .settings-control .settings-control-item.field {
-    // background-color: red;
-  }
-  .group-settings .settings-control .settings-control-item.group {
-    // background-color: blue;
   }
   // End Group Fields Seetings
 
