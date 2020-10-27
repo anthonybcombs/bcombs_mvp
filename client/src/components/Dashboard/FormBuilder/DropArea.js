@@ -5,7 +5,7 @@ import { uuid } from 'uuidv4'
 import update from 'immutability-helper'
 import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faCheck, faBars } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from './Constants'
 import SortableGroup from './SortableGroup'
@@ -13,7 +13,7 @@ import CustomDragLayer from './CustomDragLayer'
 
 import { requestAddForm } from "../../../redux/actions/FormBuilder";
 
-export default () => {
+export default ({ handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
@@ -139,6 +139,11 @@ export default () => {
     <>
       <div className='drop-area-wrapper' ref={drop}>
         <div className='form-title'>
+          <FontAwesomeIcon
+            icon={faBars}
+            className='menu-bar-builder'
+            onClick={handleBuilderDrawerOpen}
+          />
           <input
             type='text'
             id='title'
@@ -181,6 +186,18 @@ export default () => {
           {
             droppedFields.length > 0 && (
               <>
+                <a
+                  type='button'
+                  target='_blank'
+                  className='btn preview'
+                  href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
+                >
+                  <FontAwesomeIcon
+                    className='preview-icon'
+                    icon={faEye}
+                  />
+                  <span>View</span>
+                </a>
                 <button
                   type='button'
                   target='_blank'
@@ -198,18 +215,6 @@ export default () => {
                   />
                   <span>Save</span>
                 </button>
-                <a
-                  type='button'
-                  target='_blank'
-                  className='btn preview'
-                  href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
-                >
-                  <FontAwesomeIcon
-                    className='preview-icon'
-                    icon={faEye}
-                  />
-                  <span>View</span>
-                </a>
               </>
             )
           }

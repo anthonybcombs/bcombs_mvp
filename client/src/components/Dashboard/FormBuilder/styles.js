@@ -8,7 +8,7 @@ export default styled.div`
 
   #formBuilder {
     display: grid;
-    grid-gap: 3%;
+    grid-gap: 1%;
   }
   #formBuilder > div {
     padding: 1rem;
@@ -65,8 +65,25 @@ export default styled.div`
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
   }
-  
 
+
+  .drag-area-wrapper .arrow-left {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    padding: 8px;
+    color: grey;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 100px;
+    transition: all .15s ease-in-out;
+  }
+  .drag-area-wrapper .arrow-left:hover {
+    color: #f5812f;
+    background: #f7f7f7;
+  }
   .drag-area-wrapper .header {
     position: relative;
     margin-bottom: 2rem;
@@ -164,12 +181,32 @@ export default styled.div`
     padding: 1.5rem !important;
   }
   .drop-area-wrapper .form-title {
+    display: flex;
+    align-items: center;
+
     padding: 0 8px;
   }
   .drop-area-wrapper .form-title > input {
     margin-bottom: 1rem;
     font-weight: bold;
     font-size: 20px !important;
+  }
+  .drop-area-wrapper .form-title  svg.menu-bar-builder {
+    position: relative;
+    top: -8px;
+    left: -8px;
+    width: 18px;
+    height: 18px;
+    padding: 8px;
+    color: grey;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 100px;
+    transition: all .15s ease-in-out;
+  }
+  .drop-area-wrapper .form-title  svg.menu-bar-builder:hover {
+    color: #f5812f;
+    background: #f7f7f7;
   }
   .drop-area-wrapper .empty-area {
     color: gray;
@@ -191,6 +228,7 @@ export default styled.div`
     border: none;
     padding: 8px 2rem;
     background: #2196f3;
+    border-radius: 3px;
     text-decoration: none;
     transition: all .3s ease-in-out;
 
@@ -205,15 +243,21 @@ export default styled.div`
     box-shadow: 0 3px 6px #ddd;
   }
   .drop-area-wrapper-actions .btn.save {
-    color: #2196f3;
-    border: 2px solid #2196f3;
-    background: transparent;
+    color: #fff;
+    border: 2px solid #18ab27;
+    background: #18ab27;
   }
   .drop-area-wrapper-actions .btn.save:hover {
-    border-color: transparent;
-    background: #2097f32b 
+    background: #128D15;
   }
-
+  .drop-area-wrapper-actions .btn.preview {
+    color: #1e98f3;
+    background: transparent;
+    border: 2px solid #1e98f3;
+  }
+  .drop-area-wrapper-actions .btn.preview:hover{
+    background: rgb(30 152 243 / 15%)
+  }
   // ===============================================
   // ********* START SORTABLE FIELD GROUPS *********
   // ===============================================
@@ -349,9 +393,6 @@ export default styled.div`
     position: relative;
     padding-top: 1rem !important;
   }  
-  // .sortableGroup-column.active {
-  //   border: 1px solid red;
-  // }
   .sortableGroup-column.active .field-input,
   .sortableGroup-column.active textarea.field-input {
     background: #fde8db !important;
@@ -364,12 +405,28 @@ export default styled.div`
   }
   .sortableGroup-column.addField-column > button.add-btn {
     position: absolute;
-    bottom: -22px;
-    background: #19AB27;
-    transition: background .15s ease-in-out 
+    bottom: -45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    width: 100%;
+    color: #1d99f3;
+    font-weight: 600;
+    background: transparent;
+    border: 1.9px dashed #1d99f3;
+    transition: all .15s ease-in-out 
   }
   .sortableGroup-column.addField-column > button.add-btn:hover {
-    background: #128d15;
+    background: rgb(29 153 243 / 15%);
+  }
+  .sortableGroup-column.addField-column > button.add-btn svg {
+    font-size: 12px;
+  }
+  .sortableGroup-column.addField-column > button.add-btn svg:hover {
+    box-shadow: none;
+    background: transparent;
   }
   .sortableGroup-column .removeField-icon {
     position: absolute;
@@ -525,7 +582,7 @@ export default styled.div`
     cursor: pointer!important;
   }
   .group-settings .settings-validation .add-validation > svg {
-    color: #f5812f;
+    color: #1d99f3;
   }
   .group-settings .settings-validation .remove-validation > svg {
     color: red;
@@ -557,7 +614,7 @@ export default styled.div`
     position: absolute;
     left: 100px;
     top: -4px;
-    color: #f5812f;
+    color: #808080;
   }
   .group-settings .settings-control .settings-control-item .settings-content {
     display: flex;
@@ -740,17 +797,54 @@ export default styled.div`
   // =================================
   // ********* MEDIA QUERIES *********
   // =================================
-
+  
   @media (min-width: 600px) {
     #formBuilder {
       grid-gap: 1%;
       grid-template-columns: 1fr 2fr;
     }
   }
+  @media (min-width: 980px) {
+    .drag-area-wrapper .arrow-left,
+    svg.menu-bar-builder {
+      display: none;
+    }
+  }
+
+  @media (max-width: 980px) {
+    #formBuilder {
+      display: block;
+    }
+    #formBuilder .drag-area-wrapper {
+      position: fixed;
+      top: 0;
+      z-index: 10;
+
+      left: -400px;
+      box-shadow: 3px 3px 6px #ddd;
+      transition: left .8s cubic-bezier(.77,0,.175,1);
+    }
+    #formBuilder.show .drag-area-wrapper {
+      left: 0;
+    }
+    #formBuilder .drop-area-wrapper {
+      min-height: 600px;
+    }
+  }
   @media (max-width: 840px) {
     padding: 0rem 1rem 2rem;
   }
   
+  @media (max-width: 640px) {
+    #formBuilder .drag-area-wrapper {
+      max-width: 200px;
+      overflow-y: auto;
+      height: 100%;
+    }
+    .drag-area-wrapper .draggble-container {
+      display: block;
+    }
+  }
   
 
 `;

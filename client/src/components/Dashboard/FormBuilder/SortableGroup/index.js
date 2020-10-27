@@ -3,7 +3,7 @@ import { DragSource, DropTarget, } from 'react-dnd'
 import cloneDeep from 'lodash.clonedeep'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGripHorizontal, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faGripHorizontal, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from '../Constants'
 import GeneralSettings from '../Settings/GeneralSettings'
@@ -185,7 +185,11 @@ const SortableGroup = React.forwardRef(
                   }
                 }}
               >
-                Add Field
+                <FontAwesomeIcon
+                  className='addField-icon'
+                  icon={faPlus}
+                />
+                <span>Add Field</span>
               </button>
             </div>
           )

@@ -6,13 +6,22 @@ import FormBuilderStyled from './styles'
 import DragArea from './DragArea'
 import DropArea from './DropArea'
 
+
+
 const FormBuilder = () => {
+  const [builderDrawerOpen, setBuilderDrawerOpen] = useState(false)
+  console.log('isOpen: ', builderDrawerOpen)
+  
+  const handleBuilderDrawerOpen = () => {
+    setBuilderDrawerOpen(!builderDrawerOpen)
+  }
+
   return (
     <FormBuilderStyled>
       <h2>New Application</h2>
-      <div id='formBuilder'>
-        <DragArea />
-        <DropArea />
+      <div id='formBuilder' className={builderDrawerOpen ? 'show': 'hide'}>
+        <DragArea handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
+        <DropArea handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
       </div>
     </FormBuilderStyled>
   )
