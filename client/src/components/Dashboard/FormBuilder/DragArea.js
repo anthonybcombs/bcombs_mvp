@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 import { StandardFields, PrimeFields } from './Constants'
 import DraggableField from './DraggbleField'
 
-export default () => {
+export default ({ handleBuilderDrawerOpen }) => {
   const [standardFields] = useState([...StandardFields])
   const [primeFields] = useState([...PrimeFields])
 
   return (
     <div className='drag-area-wrapper'>
+      <FontAwesomeIcon // Show on tablet and mobile only
+        icon={faArrowLeft}
+        className='arrow-left'
+        onClick={handleBuilderDrawerOpen}
+      />
       <h3 className='header'>Form Builder</h3>
 
       <h4 className='sub-header'>Standard</h4>

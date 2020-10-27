@@ -4,7 +4,7 @@ import { uuid } from 'uuidv4'
 import cloneDeep from 'lodash.clonedeep'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowRight, faArrowLeft, faTimes, faGripHorizontal, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRight, faArrowLeft, faTimes, faGripHorizontal, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from './Constants'
 import FieldConstructor from './FieldConstructor'
@@ -248,7 +248,11 @@ const SortableGroup = React.forwardRef(
                   }
                 }}
               >
-                Add Field
+                <FontAwesomeIcon
+                  className='addField-icon'
+                  icon={faPlus}
+                />
+                <span>Add Field</span>
               </button>
             </div>
           )
