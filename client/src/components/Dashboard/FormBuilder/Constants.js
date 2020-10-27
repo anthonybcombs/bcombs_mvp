@@ -62,6 +62,7 @@ export const StandardFields = [
     fields: [
       {
         type: 'option',
+        tag: 'checkboxes',
         options: [
           { name: 'option1', label: 'Option 1', tag: 'checkbox' },
           { name: 'option2', label: 'Option 2', tag: 'checkbox' },
@@ -69,7 +70,8 @@ export const StandardFields = [
         ]
       }
     ],
-    label: 'Checkboxes',
+    displayLabel: 'Checkboxes',
+    label: 'Question',
     type: 'checkboxes',
     isQA: true
   },

@@ -1,15 +1,15 @@
 import React, { useState, useImperativeHandle, useRef, useEffect } from 'react'
 import { DragSource, DropTarget, } from 'react-dnd'
-import { uuid } from 'uuidv4'
 import cloneDeep from 'lodash.clonedeep'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowRight, faArrowLeft, faTimes, faGripHorizontal, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faGripHorizontal, faEdit } from '@fortawesome/free-solid-svg-icons'
 
-import { Items } from './Constants'
-import FieldConstructor from './FieldConstructor'
-import GeneralSettings from './Settings/GeneralSettings'
-import { StandardFields } from './Constants'
+import { Items } from '../Constants'
+import GeneralSettings from '../Settings/GeneralSettings'
+import { StandardFields } from '../Constants'
+import Field from './Field'
+import OptionField from './OptionField'
 
 const SortableGroup = React.forwardRef(
   ({ 
@@ -18,16 +18,19 @@ const SortableGroup = React.forwardRef(
     onRemoveGroup, settings: generalSettings, allowAddField,
     isActive, onActive, onChangeGeneralSettings,
     groupType, onMergeStandardFields, onDuplicateGroup,
-    onRemoveGroupField, onChangeFieldSettings, onChangeGroupName
+    onRemoveGroupField, onChangeFieldSettings, onChangeGroupName,
+    onApplyValidationToAll
   }, ref) => {
   
   const [fieldIndex, setActiveFieldIndex] = useState('')
   const [additionalField, handleSelectFieldToAdd] = useState('')
   const [enableEditGroupName, handleEnableEditGroupName] = useState(false)
+  const [validationAppliedToAll, applyValidationToAll] = useState(false)
 
   const elementRef = useRef(null)
+  const dropElement = useRef(null)
   connectDragSource(elementRef)
-  connectDropTarget(elementRef)
+  connectDropTarget(dropElement)
 
   const opacity = (isDragging || hidden) ? 0 : 1
   useImperativeHandle(ref, () => ({
@@ -55,6 +58,7 @@ const SortableGroup = React.forwardRef(
       className={`sortableGroup ${itemGroup} ${isGroupActive}`}
       style={{ opacity }}
       onClick={() => onActive(id)}
+      ref={dropElement}
     >
       <div ref={elementRef} className='sortableGroup-dragger'>
         <FontAwesomeIcon
@@ -110,103 +114,34 @@ const SortableGroup = React.forwardRef(
             const isActiveField = fieldIndex === index
             if (type !== 'option') {
               return (
-                <div
-                  className={`sortableGroup-column ${isActiveField ? 'active' : ''}`}
-                  style={{ gridColumn: `span ${column}`}}
-                  onClick={() => {
-                    setActiveFieldIndex(index)
-                    if (!isActive) {
-                      onActive(id)
-                    }
-                  }}
-                >
-                  {
-                    FieldConstructor[tag]({
-                      ...field,
-                      key: field.id,
-                      isBuilder: true,
-                      value: placeholder,
-                      onChange: ({ target }) => onChangeFieldSettings({ placeholder: target.value }, index, id)
-                    })
-                  }
-                  {
-                    (isActive && isActiveField) && (
-                      <div className='column-adjuster'>
-                        {
-                          columnInt > 1 && (
-                            <div className='tooltip-wrapper tooltip-left'>
-                              <FontAwesomeIcon
-                                className='minusColumn-icon'
-                                icon={faArrowLeft}
-                                onClick={e => {
-                                  e.stopPropagation()
-                                  onChangeFieldSettings({ column: (columnInt - 1).toString() }, index, id)
-                                }}
-                              />
-                              <span className='tooltip'>Decrease width size</span>
-                            </div>
-                          )
-                        }
-                        {
-                          columnInt < gridColRepeat && (
-                            <div className='tooltip-wrapper tooltip-left'>
-                              <FontAwesomeIcon
-                                className='addColumn-icon'
-                                icon={faArrowRight}
-                                onClick={e => {
-                                  e.stopPropagation()
-                                  onChangeFieldSettings({ column: (columnInt + 1).toString() }, index, id)
-                                }}
-                              />
-                              <span className='tooltip'>Increase width size</span>
-                            </div>
-                          )
-                        }
-                      </div>
-                    )
-                  }
-                  {
-                    (isStandard && isActive && fields.length > 1) &&
-                    (
-                      <FontAwesomeIcon
-                        className='removeField-icon'
-                        icon={faTimes}
-                        onClick={e => {
-                          e.stopPropagation()
-                          onRemoveGroupField(id, index)
-                        }}
-                      />
-                    )
-                  }
-                </div>
+                <Field
+                  key={`field-${index}`}
+                  id={id}
+                  index={index}
+                  field={field}
+                  fieldsCount={fields.length}
+                  isActive={isActive}
+                  isActiveField={isActiveField}
+                  columnInt={columnInt}
+                  isStandard={isStandard}
+                  gridColRepeat={gridColRepeat}
+                  setActiveFieldIndex={setActiveFieldIndex}
+                  onActive={onActive}
+                  onChangeFieldSettings={onChangeFieldSettings}
+                  onRemoveGroupField={onRemoveGroupField}
+                />
               )
             } else {
-              return options.map(option => {
-                return (
-                  <div className={`sortableGroup-column`} style={{ gridColumn: `span 3`}}>
-                    {
-                      FieldConstructor[option.tag]({
-                        key: option.tag + uuid(),
-                        isBuilder: true,
-                        ...option
-                      })
-                    }
-                    {
-                      options.length > 1 &&
-                      (
-                        <FontAwesomeIcon
-                          className='removeField-icon'
-                          icon={faTimes}
-                          onClick={e => {
-                            e.stopPropagation()
-                            // onRemoveGroupField(id, index)
-                          }}
-                        />
-                      )
-                    }
-                  </div>
-                )
-              })
+              return (
+                <OptionField
+                  key={`optionField-${field}`}
+                  options={options}
+                  id={id}
+                  index={index}
+                  isActive={isActive}
+                  onChangeFieldSettings={onChangeFieldSettings}
+                />
+              )
             }
           })
         }
@@ -243,7 +178,9 @@ const SortableGroup = React.forwardRef(
                   e.stopPropagation()
                   let newField = StandardFields.find(e => e.type === additionalField)
                   if (newField) {
+                    const validationDefault = validationAppliedToAll ? fields[0].validation : {}
                     newField = cloneDeep(newField) //avoid mutating the array of objects
+                    newField.fields = newField.fields.map(e => ({ ...e, validation: cloneDeep(validationDefault) }))
                     onMergeStandardFields(id, newField)
                   }
                 }}
@@ -262,10 +199,17 @@ const SortableGroup = React.forwardRef(
             onChangeFieldSettings={(data) => onChangeFieldSettings(data, fieldIndex, id)}
             onRemoveGroup={() => onRemoveGroup(id)}
             onDuplicateGroup={() => onDuplicateGroup(id)}
+            onApplyValidationToAll={(data, checked) => {
+              applyValidationToAll(checked)
+              if (checked) {
+                onApplyValidationToAll(data, id)
+              }
+            }}
             generalSettings={generalSettings}
             fieldSettings={fieldIndex !== '' ? fields[fieldIndex] : {}}
             hasSelectedField={fieldIndex !== ''}
             allowAddField={allowAddField}
+            validationAppliedToAll={validationAppliedToAll}
           />
         )
       }

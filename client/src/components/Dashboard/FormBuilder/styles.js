@@ -241,7 +241,6 @@ export default styled.div`
     opacity: 1;
     visibility: visible;
     transition: all .15s ease-in-out;
-    margin-bottom: 5px;
   }
 
   .sortableGroup:hover .sortableGroup-actions >div svg {
@@ -298,9 +297,14 @@ export default styled.div`
     margin: -8px;
     background: #f1f1f1;
     text-align: center;
+    margin-bottom: 5px;
 
     visibility: hidden;
-    opacity: 0
+    opacity: 0;
+  }
+  .sortableGroup-dragger.custom-dragger {
+    visibility: visible;
+    opacity: 1;
   }
   .sortableGroup-dragger > svg {
     color: grey;
@@ -506,7 +510,7 @@ export default styled.div`
     display: grid;
     grid-gap: 2%;
     margin-bottom: 1rem;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
   .group-settings .settings-validation .addRemove-validation {
     display: flex;
@@ -668,7 +672,7 @@ export default styled.div`
     color: #a99595;
   }
 
-  .checkboxContainer > input {
+  .checkboxContainer > input[type='checkbox'] {
     width: 16px;
     height: 16px;
     margin: .5rem;
@@ -730,7 +734,6 @@ export default styled.div`
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
   }
-
 
 
 

@@ -41,7 +41,7 @@ export default () => {
           <CustomDraggable
             {...item.restProps}
             key={`preview-${item.restProps.id}`}
-            previewStyle={{ width: offsetWidth, border: '1px dashed gray' }}
+            previewStyle={{ width: offsetWidth, border: `1px dashed #f5812f` }}
             preview
           />
         )

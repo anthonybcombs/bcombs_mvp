@@ -18,7 +18,7 @@ import {
   faGripVertical,
 } from "@fortawesome/free-solid-svg-icons"
 
-export default ({ label, type, groupType, fields, previewStyle = {}, allowAddField = false }) => {
+export default ({ label, type, groupType, fields, previewStyle = {}, allowAddField = false, displayLabel }) => {
   const newFields = cloneDeep(fields) //avoid mutating the array of objects
   const settings = {}
   const [{ opacity, background }, drag, preview] = useDrag({
@@ -63,7 +63,7 @@ export default ({ label, type, groupType, fields, previewStyle = {}, allowAddFie
       style={{ opacity, background, ...previewStyle }}
     >
       <FontAwesomeIcon icon={primeIcon}/>
-      <span>{label}</span>
+      <span>{displayLabel || label}</span>
     </div>
   )
 }

@@ -116,6 +116,14 @@ export default () => {
     }))
   }
 
+  const handleApplyValidationToAll = (validation, id) => {
+    const fields = cloneDeep(droppedFields.find(e => e.id === id).fields)
+    
+    setDrop(update(droppedFields, {
+      [droppedFields.findIndex(e => e.id === id)]: { fields: { $set: fields.map(e => ({ ...e, validation })) } }
+    }))
+  }
+
   const [{ item, didDrop }, drop] = useDrop({
     accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
     drop: () => handleDrop(item, didDrop),
@@ -163,6 +171,7 @@ export default () => {
                 onDuplicateGroup={handleDuplicateGroup}
                 onRemoveGroupField={handleRemoveGroupField}
                 onChangeGroupName={handleUpdateGroupName}
+                onApplyValidationToAll={handleApplyValidationToAll}
               />
             )
           })

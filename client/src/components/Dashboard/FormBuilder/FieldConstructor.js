@@ -35,7 +35,7 @@ export default {
           isBuilder
             ? <input
                 type='text'
-                className={`labelName`}
+                className={`field-input`}
                 value={label}
                 onChange={onChange}
               />
