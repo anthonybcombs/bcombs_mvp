@@ -16,7 +16,7 @@ export default ({
   }
 
   const handleAddOption = () => {
-    const newOption =  { name: `option${options.length + 1}`, label: `Option ${options.length + 1}`, tag: 'checkbox' }
+    const newOption =  { ...options[0], name: `option${options.length + 1}`, label: `Option ${options.length + 1}` }
     onChangeFieldSettings({ options: update(options, { $push: [newOption] }) }, index, id)
   }
 
@@ -35,6 +35,7 @@ export default ({
                   key: option.tag + uuid(),
                   isBuilder: true,
                   onChange: (e) => handleChangeOption(e, optionIndex),
+                  index: optionIndex,
                   ...option
                 })
               }

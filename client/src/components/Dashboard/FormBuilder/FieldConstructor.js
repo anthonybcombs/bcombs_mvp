@@ -66,6 +66,23 @@ export default {
       </label>
     )
   },
+  dropdown: ({ label, name, isBuilder, onChange, index }) => {
+    return (
+      <div>
+        {index + 1}.
+        {
+          isBuilder
+            ? <input
+                type='text'
+                className={`field-input`}
+                value={label}
+                onChange={onChange}
+              />
+            : <span className='labelName'> {label}</span>
+        }
+      </div>
+    )
+  },
   select: ({ options, label: fieldLabel, type, className, isBuilder = false, ...rest }) => {
     return (
       <select

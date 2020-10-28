@@ -94,12 +94,20 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Dropdown', type: 'text', tag: 'select', placeholder: 'Dropdown', column: '1'}
+      {
+        type: 'option',
+        tag: 'dropdown',
+        options: [
+          { name: 'option1', label: 'Option 1', tag: 'dropdown' },
+          { name: 'option2', label: 'Option 2', tag: 'dropdown' },
+          { name: 'option3', label: 'Option 3', tag: 'dropdown' }
+        ]
+      }
     ],
-    label: 'Dropdown',
+    displayLabel: 'Dropdown',
+    label: 'Question',
     type: 'dropDown',
-    canBeGrouped: true,
-    allowAddField: true
+    isQA: true
   },
   {
     fields: [
