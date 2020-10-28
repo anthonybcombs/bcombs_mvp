@@ -46,7 +46,7 @@ export default {
   },
   radio: ({ label, name, isBuilder, onChange }) => {
     return (
-      <label for={name} className='checkboxContainer'>
+      <label for={name} className='radioButtonContainer'>
         <input
           type='radio'
           onChange={onChange}
@@ -68,8 +68,8 @@ export default {
   },
   dropdown: ({ label, name, isBuilder, onChange, index }) => {
     return (
-      <div>
-        {index + 1}.
+      <div className='option'>
+        <span>{index + 1}.</span>
         {
           isBuilder
             ? <input

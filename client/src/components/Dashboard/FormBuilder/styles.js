@@ -278,7 +278,7 @@ export default styled.div`
     border-radius: 3px;
     border-color: #f5812f;
     box-shadow: 0 3px 6px 3px #ddd;
-    transition: all .15s ease-in-out
+    transition: all .15s ease-in-out;
   }
   .sortableGroup:hover .sortableGroup-dragger,
   .sortableGroup.active .sortableGroup-dragger {
@@ -290,7 +290,7 @@ export default styled.div`
   .sortableGroup:hover .sortableGroup-actions >div svg {
     opacity: 1;
     visibility: visible;
-    transition: all .15s ease-in-out
+    transition: all .15s ease-in-out;
   }
 
   // default svg
@@ -300,12 +300,36 @@ export default styled.div`
     font-size: 18px;
     cursor: pointer;
     border-radius: 100px;
-    transition: all .15s ease-in-out
+    transition: all .15s ease-in-out;
   }
   .sortableGroup svg:not(.exclude-global):hover {
     background: #f1f1f1;
     box-shadow: 0 3px 6px #ddd;
   }
+
+
+  // specific Group Fields
+  .sortableGroup.checkboxes .sortableGroup-column .checkboxContainer .checkmark {
+    top: 12px;
+  }
+  .sortableGroup.multipleChoice .sortableGroup-column .checkboxContainer .checkmark {
+    top: 11px;
+  }
+  .sortableGroup.dropDown .addCheckboxOption {
+    margin: 1rem 1.5rem;
+  }
+  .sortableGroup.dropDown .sortableGroup-column .option {
+    display: flex;
+    align-items: center;
+  }
+  .sortableGroup.dropDown .sortableGroup-column .option >span {
+    padding: 0 5px;
+  }
+
+
+
+
+
 
 
   .sortableGroup-actions {
@@ -740,8 +764,9 @@ export default styled.div`
   }
   
 
-
-  .checkboxContainer {
+  
+  .checkboxContainer,
+  .radioButtonContainer {
     position: relative;
     color: #555;
     cursor: pointer;
@@ -749,11 +774,13 @@ export default styled.div`
     align-items: center;
   }
 
-  .checkboxContainer.disabled {
+  .checkboxContainer.disabled,
+  .radioButtonContainer.disabled {
     color: #a99595;
   }
 
-  .checkboxContainer > input[type='checkbox'] {
+  .checkboxContainer > input[type='checkbox'],
+  .radioButtonContainer > input[type='radio'] {
     width: 16px;
     height: 16px;
     margin: .5rem;
@@ -761,10 +788,12 @@ export default styled.div`
     opacity: 0;
     visibility: hidden;
   }
-  .checkboxContainer > label {
+  .checkboxContainer > label,
+  .radioButtonContainer > label {
     cursor: pointer;
   }
-  .checkboxContainer:not(.disabled):hover {
+  .checkboxContainer:not(.disabled):hover,
+  .radioButtonContainer:not(.disabled):hover {
     color: #000;
     transition: all .15s ease-in-out
   }
@@ -778,11 +807,13 @@ export default styled.div`
     background-color: #eee;
     border: 1px solid #2196F3;
   }
-  .checkboxContainer.disabled .checkmark {
+  .checkboxContainer.disabled .checkmark,
+  .radioButtonContainer.disabled .checkmark {
     border: 1px solid #a99595;
   }
   /* On mouse-over, add a grey background color */
-  .checkboxContainer:hover input ~ .checkmark {
+  .checkboxContainer:hover input ~ .checkmark,
+  .radioButtonContainer:hover input ~ .checkmark {
     // background-color: #ccc;
   }
 
@@ -799,12 +830,14 @@ export default styled.div`
   }
 
   /* Show the checkmark when checked */
-  .checkboxContainer input:checked ~ .checkmark:after {
+  .checkboxContainer input:checked ~ .checkmark:after,
+  .radioButtonContainer input:checked ~ .checkmark:after {
     display: block;
   }
 
   /* Style the checkmark/indicator */
-  .checkboxContainer .checkmark:after {
+  .checkboxContainer .checkmark:after,
+  .radioButtonContainer .checkmark:after {
     left: 4px;
     top: 0px;
     width: 3px;
@@ -816,6 +849,13 @@ export default styled.div`
     transform: rotate(45deg);
   }
 
+
+
+  .radioButtonContainer .checkmark {
+    border-radius: 100px;
+    background-color: #fff;
+    border: 2px solid #2196F3;
+  }
 
 
   // =================================
