@@ -10,7 +10,6 @@ import DropArea from './DropArea'
 
 const FormBuilder = () => {
   const [builderDrawerOpen, setBuilderDrawerOpen] = useState(false)
-  console.log('isOpen: ', builderDrawerOpen)
   
   const handleBuilderDrawerOpen = () => {
     setBuilderDrawerOpen(!builderDrawerOpen)

@@ -388,6 +388,30 @@ export default styled.div`
     align-items: end;
     grid-column-gap: 2%;
   }
+  .sortableGroup-row .addCheckboxOption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    width: 100%;
+    color: #1d99f3;
+    font-weight: 600;
+    margin: 1rem 2rem 1rem;
+    background: transparent;
+    border: 1.9px dashed #1d99f3;
+    transition: all .15s ease-in-out 
+  }
+  .sortableGroup-row .addCheckboxOption:hover {
+    background: rgb(29 153 243 / 15%);
+  }
+  .sortableGroup-row .addCheckboxOption svg {
+    font-size: 12px;
+  }
+  .sortableGroup-row .addCheckboxOption svg:hover {
+    box-shadow: none;
+    background: transparent;
+  }
 
   .sortableGroup-column {
     position: relative;
@@ -561,7 +585,7 @@ export default styled.div`
 
   // start Group Fields Seetings
   .group-settings {
-    margin-top: 4rem;
+    margin-top: 10rem;
   }
   .group-settings .settings-validation {
     display: grid;
@@ -624,7 +648,7 @@ export default styled.div`
     margin-right: auto;
   }
   .group-settings .settings-control .settings-control-item.group p.label > svg  {
-    left: 148px;
+    left: 112px;
   }
   .group-settings .settings-control .settings-control-item.group .checkboxContainer {
     margin-right: 1rem;

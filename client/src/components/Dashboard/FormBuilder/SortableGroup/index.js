@@ -152,7 +152,7 @@ const SortableGroup = React.forwardRef(
               style={{ gridColumn: `span 1`}}
             >
               <div className='field select-field-wrapper'>
-                <label for='applyAll'>Select a field to add</label>
+                {/* <label for='applyAll'>Select a field to add</label> */}
                 <select
                   id='add-field'
                   className='field-input'

@@ -3,7 +3,7 @@ import cloneDeep from 'lodash.clonedeep'
 import update from 'immutability-helper'
 import { uuid } from 'uuidv4'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 import FieldConstructor from '../FieldConstructor'
 
@@ -60,12 +60,16 @@ export default ({
           <button
             type='button'
             target='_blank'
-            className='btn save'
+            className='btn addCheckboxOption'
             onClick={(e) => {
               e.stopPropagation()
               handleAddOption()
             }}
           >
+            <FontAwesomeIcon
+              icon={faPlus}
+              className='addField-icon'
+            />
             <span>Add Option</span>
           </button>
         )
