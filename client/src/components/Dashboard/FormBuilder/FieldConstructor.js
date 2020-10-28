@@ -44,8 +44,27 @@ export default {
       </label>
     )
   },
-  multipleChoice: ({ label }) => {
-    return <div>{label}</div>
+  radio: ({ label, name, isBuilder, onChange }) => {
+    return (
+      <label for={name} className='checkboxContainer'>
+        <input
+          type='radio'
+          onChange={onChange}
+          disabled={isBuilder}
+        />
+        <span className='checkmark' />
+        {
+          isBuilder
+            ? <input
+                type='text'
+                className={`field-input`}
+                value={label}
+                onChange={onChange}
+              />
+            : <span className='labelName'> {label}</span>
+        }
+      </label>
+    )
   },
   select: ({ options, label: fieldLabel, type, className, isBuilder = false, ...rest }) => {
     return (
@@ -68,9 +87,6 @@ export default {
     )
   },
   rating: ({ label }) => {
-    return <div>{label}</div>
-  },
-  radio: ({ label }) => {
     return <div>{label}</div>
   },
   linear: ({ label }) => {

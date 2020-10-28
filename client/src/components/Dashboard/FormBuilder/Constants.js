@@ -77,10 +77,20 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Multiple Choice', tag: 'multipleChoice', multiple: false, column: '1'}
+      {
+        type: 'option',
+        tag: 'radios',
+        options: [
+          { name: 'option1', label: 'Option 1', tag: 'radio' },
+          { name: 'option2', label: 'Option 2', tag: 'radio' },
+          { name: 'option3', label: 'Option 3', tag: 'radio' }
+        ]
+      }
     ],
-    label: 'Multiple Choice',
-    type: 'multipleChoice'
+    displayLabel: 'Mupltiple Choice',
+    label: 'Question',
+    type: 'multipleChoice',
+    isQA: true
   },
   {
     fields: [
