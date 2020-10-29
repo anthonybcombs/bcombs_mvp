@@ -4,7 +4,8 @@ import COUNTRIES from '../ApplicationForm/country.json'
 
 const selectMappings = {
   state: STATES.map(({ name, abbreviation }) => ({ label: name, value: abbreviation })),
-  country: COUNTRIES.map(({ name, code }) => ({ label: name, value: code }))
+  country: COUNTRIES.map(({ name, code }) => ({ label: name, value: code })),
+  title: [{ label: 'Mr.', value: 'Mr.' }, { label: 'Mrs.', value: 'Mrs.' }]
 }
 
 export default {
@@ -88,7 +89,7 @@ export default {
       <select
         className={`field-input ${className}`}
         {...rest}
-        disabled={true}
+        disabled={isBuilder}
         style={{ opacity: 1 }}
       >
         <option value=''>{rest.placeholder}</option>

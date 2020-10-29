@@ -177,12 +177,14 @@ export const StandardFields = [
 export const PrimeFields = [
   {
     fields: [
+      { label: 'Title', type: 'title', tag: 'select', placeholder: 'Title', column: '1'},
       { label: 'First Name', type: 'text', tag: 'input', placeholder: 'First Name', column: '1'},
       { label: 'Middle Name', type: 'text', tag: 'input', placeholder: 'Middle Name', column: '1'},
       { label: 'Last Name', type: 'text', tag: 'input', placeholder: 'Last Name', column: '1'}
     ],
     label: 'Name',
-    type: 'name'
+    type: 'name',
+    gridMax: 4
   },
   {
     fields: [
@@ -201,7 +203,8 @@ export const PrimeFields = [
       { label: 'Country', type: 'country', tag: 'select', placeholder: 'Country', column: '2', options: [] }
     ],
     label: 'Address',
-    type: 'address'
+    type: 'address',
+    gridMax: 4
   },
   {
     fields: [

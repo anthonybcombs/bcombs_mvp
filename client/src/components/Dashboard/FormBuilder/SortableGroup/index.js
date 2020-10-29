@@ -14,7 +14,7 @@ import OptionField from './OptionField'
 const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
-    hidden, label, fields, isDragging, id, type: itemGroup,
+    hidden, label, fields, isDragging, id, type: itemGroup, gridMax: gridColRepeat,
     onRemoveGroup, settings: generalSettings, allowAddField,
     isActive, onActive, onChangeGeneralSettings,
     groupType, onMergeStandardFields, onDuplicateGroup,
@@ -26,6 +26,7 @@ const SortableGroup = React.forwardRef(
   const [additionalField, handleSelectFieldToAdd] = useState('')
   const [enableEditGroupName, handleEnableEditGroupName] = useState(false)
   const [validationAppliedToAll, applyValidationToAll] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
 
   const elementRef = useRef(null)
   const dropElement = useRef(null)
@@ -52,12 +53,14 @@ const SortableGroup = React.forwardRef(
 
   const isGroupActive = isActive ? 'active' : ''
   const isStandard = groupType === 'standard'
-  const gridColRepeat = itemGroup === 'address' ? 4 : 3
+
   return (
     <div
       className={`sortableGroup ${itemGroup} ${isGroupActive}`}
       style={{ opacity }}
       onClick={() => onActive(id)}
+      onMouseEnter={() => setShowSettings(true)}
+      onMouseLeave={() => setShowSettings(false)}
       ref={dropElement}
     >
       <div ref={elementRef} className='sortableGroup-dragger'>
@@ -196,7 +199,7 @@ const SortableGroup = React.forwardRef(
         }
       </div>
       {
-        (!isDragging && isActive && !isDragging) &&
+        (!isDragging && (showSettings || isActive)) &&
         (
           <GeneralSettings
             onChangeGeneralSettings={(data) => onChangeGeneralSettings({ ...data, id })}
@@ -214,6 +217,8 @@ const SortableGroup = React.forwardRef(
             hasSelectedField={fieldIndex !== ''}
             allowAddField={allowAddField}
             validationAppliedToAll={validationAppliedToAll}
+            showSettings={showSettings}
+            isActive={isActive}
           />
         )
       }
