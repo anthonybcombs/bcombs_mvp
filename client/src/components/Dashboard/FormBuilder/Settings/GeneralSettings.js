@@ -9,6 +9,8 @@ export default ({
   generalSettings,
   fieldSettings,
   hasSelectedField,
+  showSettings,
+  isActive,
   validationAppliedToAll,
   onChangeGeneralSettings,
   onChangeFieldSettings,
@@ -124,8 +126,10 @@ export default ({
   const { include, items = [{ ...defaultValidation }] } = validation
   const hasValidationError = items.find(e => e.errorField)
 
+  const showOptions = !showSettings || isActive
+
   return (
-    <div className='group-settings'>
+    <div className='group-settings' style={{ marginTop: isActive ? '10rem' : '2rem' }}>
       {/* Start For Validation */}
       {
         include && 
@@ -263,7 +267,7 @@ export default ({
 
       {/* Start Lower Control */}
       <div className='settings-control'>
-        <div className='settings-control-item field'>
+        <div className={`settings-control-item field ${!showOptions ? 'hidden' : ''}`}>
           <div className='tooltip-wrapper'>
             <p className='label'>Field Settings
               <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
@@ -303,8 +307,19 @@ export default ({
               <span className='checkmark'/>
               <span className='labelName'> Validation</span>
             </label>
+          </div>
+        </div>
 
-            <label for='logic' className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
+        <div className={`settings-control-item group ${!showOptions ? 'hidden' : ''}`}>
+          <div className='tooltip-wrapper'>
+            <p className='label'>Group Settings
+              <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+            </p>
+            <span className='tooltip'>These options are for the entire group.</span>
+          </div>
+
+          <div className='settings-content'>
+          <label for='logic' className={`checkboxContainer`} >
               <input
                 type='checkbox'
                 id='logic'
@@ -319,18 +334,7 @@ export default ({
               <span className='checkmark'/>
               <span className='labelName'> Logic</span>
             </label>
-          </div>
-        </div>
 
-        <div className='settings-control-item group'>
-          <div className='tooltip-wrapper'>
-            <p className='label'>Group Settings
-              <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
-            </p>
-            <span className='tooltip'>These options are for the entire group.</span>
-          </div>
-
-          <div className='settings-content'>
             <label for='instruction' className='checkboxContainer'>
               <input
                 type='checkbox'
@@ -345,28 +349,30 @@ export default ({
               <span className='checkmark' />
               <span className='labelName'> Instruction for Use</span>
             </label>
-
-            <div className='settings-iconActions'>
-              <div className='tooltip-wrapper copy-icon'>
-                <FontAwesomeIcon
-                  icon={faCopy}
-                  onClick={e => {
-                    e.stopPropagation()
-                    onDuplicateGroup()
-                  }}
-                />
-                <span className='tooltip'>Copy</span>
-              </div>
-              <div className='tooltip-wrapper delete-icon'>
-                <FontAwesomeIcon
-                  icon={faTrashAlt}
-                  onClick={e => {
-                    e.stopPropagation()
-                    onRemoveGroup()
-                  }}
-                />
-                <span className='tooltip'>Delete</span>
-              </div>
+          </div>
+        </div>
+        
+        <div className='settings-control-item'>
+          <div className='settings-iconActions'>
+            <div className='tooltip-wrapper copy-icon'>
+              <FontAwesomeIcon
+                icon={faCopy}
+                onClick={e => {
+                  e.stopPropagation()
+                  onDuplicateGroup()
+                }}
+              />
+              <span className='tooltip'>Copy</span>
+            </div>
+            <div className='tooltip-wrapper delete-icon'>
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                onClick={e => {
+                  e.stopPropagation()
+                  onRemoveGroup()
+                }}
+              />
+              <span className='tooltip'>Delete</span>
             </div>
           </div>
         </div>

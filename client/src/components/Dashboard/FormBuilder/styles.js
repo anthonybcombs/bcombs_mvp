@@ -648,6 +648,8 @@ export default styled.div`
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
+    justify-content: space-between;
+    align-items: center;
 
     padding: 1rem;
     margin: 5px -8px -8px;
@@ -664,12 +666,18 @@ export default styled.div`
     top: -4px;
     color: #808080;
   }
+
+  .group-settings .settings-control .settings-control-item.hidden {
+    visibility: hidden;
+    height: 0px;
+  }
+
   .group-settings .settings-control .settings-control-item .settings-content {
     display: flex;
     align-items: center;
   }
   .group-settings .settings-control .settings-control-item.field {
-    margin-right: auto;
+    // margin-right: auto;
   }
   .group-settings .settings-control .settings-control-item.group p.label > svg  {
     left: 112px;
