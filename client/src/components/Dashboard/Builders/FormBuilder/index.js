@@ -1,0 +1,33 @@
+import React, { useEffect, useState } from "react";
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+
+import FormBuilderStyled from './styles'
+import DragArea from './DragArea'
+import DropArea from './DropArea'
+
+
+
+const FormBuilder = ({ form_id }) => {
+  const [builderDrawerOpen, setBuilderDrawerOpen] = useState(false)
+  
+  const handleBuilderDrawerOpen = () => {
+    setBuilderDrawerOpen(!builderDrawerOpen)
+  }
+
+  return (
+    <FormBuilderStyled>
+      <h2>New Application</h2>
+      <div id='formBuilder' className={builderDrawerOpen ? 'show': 'hide'}>
+        <DragArea form_id={form_id} handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
+        <DropArea handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
+      </div>
+    </FormBuilderStyled>
+  )
+}
+
+export default (props) => (
+  <DndProvider backend={HTML5Backend}>
+    <FormBuilder {...props} />
+  </DndProvider>
+)

@@ -99,13 +99,13 @@ const AsyncDaycareApplicationForm = Loadable({
   loading: Loading
 })
 
-const AsyncFormBuilder = Loadable({
-  loader: () => import("./components/Dashboard/FormBuilder"),
+const AsynBuilder = Loadable({
+  loader: () => import("./components/Dashboard/Builders"),
   loading: Loading
 })
 
 const AsyncForm = Loadable({
-  loader: () => import("./components/Dashboard/Form"),
+  loader: () => import("./components/Dashboard/Builders/Form"),
   loading: Loading
 })
 
@@ -140,7 +140,7 @@ export default function App() {
               <AsyncMyApplication path="myapplication" />
               <AsyncAuditTrail path="audittrail" />
               <AsyncManageAdmin path="admin" />
-              <AsyncFormBuilder path="formbuilder" />
+              <AsynBuilder path="builder/:form_id/:type" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />
