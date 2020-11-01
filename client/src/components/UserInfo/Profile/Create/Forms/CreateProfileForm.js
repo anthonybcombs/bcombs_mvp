@@ -343,7 +343,7 @@ export default function CreateProfileForm({
     </div>
   );
 
-  console.log("gender", gender);
+  console.log("dataaaa", data);
   return (
     <CreateProfileStyled
       data-testid="app-create-profile-form"
@@ -697,6 +697,7 @@ export default function CreateProfileForm({
             })}
             maxLength="5"
             onInput={maxLengthCheck}
+            defaultValue={data.zipcode}
           />
           <label className="field-label" for="zipCode">
             <span className="required">*</span> Zip Code

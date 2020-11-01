@@ -44,7 +44,8 @@ export default function index({ navigate }) {
           firstname: user.profile.first_name,
           lastname: user.profile.last_name,
           dateofbirth: user.profile.birth_date,
-          zipcode: user.profile.zip_code
+          zipcode: user.profile.zip_code,
+          gender: user.profile.gender
         }
       });
     }

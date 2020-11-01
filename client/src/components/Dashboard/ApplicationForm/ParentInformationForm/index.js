@@ -207,7 +207,8 @@ export default function index({
   ProfileImg,
   pastParentInformation = {},
   isVendorView,
-  selectedApplication={}
+  selectedApplication={},
+  setIsParentAddressRequired
 }) {
   let confirmed_passwords = [];
 
@@ -274,6 +275,7 @@ export default function index({
 
   const handleShowAddress = () => {
     setShowAddress(!showAddress);
+    setIsParentAddressRequired(!showAddress)
   };
 
   const handleYearLivedStatus = e => {
@@ -1329,6 +1331,9 @@ export default function index({
                     }}
                     readOnly={isReadonly}
                     defaultValue={isReadonly ? selectedApplication?.child?.address : ""}
+                    ref={register({
+                      required: showAddress
+                    })}
                  />
                 )
               }
@@ -1339,6 +1344,12 @@ export default function index({
                 Address
               </label>
             </div>
+
+            <ErrorMessage
+                field={errors[`parentAddress`]}
+                errorType="required"
+                message="Address is required."
+              />
           </div>
 
           <div className="form-group">
@@ -1384,6 +1395,9 @@ export default function index({
                     }}
                     readOnly={isReadonly}
                     defaultValue={isReadonly ? selectedApplication?.child?.city : ""}
+                    ref={register({
+                      required: showAddress
+                    })}
                   />
                 )
               }
@@ -1392,6 +1406,11 @@ export default function index({
                 City
               </label>
             </div>
+              <ErrorMessage
+                field={errors["parentCity"]}
+                errorType="required"
+                message="City is Required"
+              />
           </div>
         </div>
 
@@ -1451,6 +1470,11 @@ export default function index({
               )}
               <label className="field-label">State</label>
             </div>
+            <ErrorMessage
+              field={errors["parentstate"]}
+              errorType="required"
+              message="State is Required"
+            />
           </div>
           <div className="form-group">
             <div className="field">
@@ -1480,9 +1504,10 @@ export default function index({
                         target.value = target.value.slice(0, -1);
                       }
                     }}
-                    ref={register({ maxLength: 5 })}
+                    ref={register({ maxLength: 5 ,required: showAddress })}
                     readOnly={isReadonly}
                     defaultValue={parentProfile?.zip_code}
+                    maxLength="5"
                   />
                 ) : (
                   <input
@@ -1502,7 +1527,7 @@ export default function index({
                         target.value = target.value.slice(0, -1);
                       }
                     }}
-                    ref={register({ maxLength: 5 })}
+                    ref={register({ maxLength: 5,required: showAddress })}
                     readOnly={isReadonly}
                     defaultValue={isReadonly ? selectedApplication?.child?.zip_code : ""}
                   />
@@ -1515,6 +1540,11 @@ export default function index({
                 Zip Code
               </label>
             </div>
+              <ErrorMessage
+                field={errors["parentzipcode"]}
+                errorType="required"
+                message="Zip Code is Required"
+              />
           </div>
         </div>
 

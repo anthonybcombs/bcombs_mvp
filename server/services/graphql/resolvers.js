@@ -437,7 +437,8 @@ const resolvers = {
             console.log("addUser:", user);
             let parentInfo = {
               ...parent,
-              email: parent.email_address
+              email: parent.email_address,
+              dateofbirth:parent.birthdate
             };
             console.log("Parent Info", parentInfo);
             await executeAddUserProfile(parentInfo);
@@ -552,7 +553,8 @@ const resolvers = {
             console.log("addUser:", user);
             let parentInfo = {
               ...parent,
-              email: parent.email_address
+              email: parent.email_address,
+              dateofbirth:parent.birthdate
             };
             console.log("Parent Info", parentInfo);
             await executeAddUserProfile(parentInfo);
@@ -567,7 +569,7 @@ const resolvers = {
 
           const parentUser = await getUserFromDatabase(parent.email_address);
 
-          console.log("parent user", parentUser);
+          console.log("PARENT USER", parentUser);
 
           await addApplicationUser({
             user_id: parentUser.id,

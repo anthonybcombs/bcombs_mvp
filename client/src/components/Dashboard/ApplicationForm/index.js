@@ -210,7 +210,8 @@ export default function index() {
   }
 
   const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
-
+  const DATE_FORMAT = "yyyy-MM-dd";
+  
   const [selectedStep, setSelectedStep] = useState(1);
 
   const [numChild, setNumChild] = useState(1);
@@ -222,6 +223,8 @@ export default function index() {
   const [psatCount, setPsatCount] = useState(1);
 
   const [showRelationshipView, setShowRelationshipView ] = useState(false);
+
+  const [isParentAddressRequired,setIsParentAddressRequired] = useState(false)
 
   const handleWizardSelection = (index) => {
     setSelectedStep(index);
@@ -674,6 +677,8 @@ export default function index() {
         let parent = parents[i];
         let profile = parent.profile;
         
+        console.log('PARENTTTTT', profile)
+        console.log('PARENTTTTT isParentAddressRequired', isParentAddressRequired)
         if(!profile.first_name ||
           !profile.last_name ||
           !profile.password ||
@@ -685,7 +690,9 @@ export default function index() {
           !profile.goals_child_program ||
           !profile.person_recommend,
           !profile.gender ||
-          !profile.date_of_birth) {
+          !profile.date_of_birth  ||  
+          (isParentAddressRequired && (!profile.address || !profile.zip_code || !profile.state || !profile.city))
+          ) {
             isValid = false;
             break;
           }
@@ -696,6 +703,7 @@ export default function index() {
           !emergencyContacts[i].last_name ||
           !emergencyContacts[i].gender ||
           !emergencyContacts[i].mobile_phone ||
+          !emergencyContacts[i].work_phone ||
           !emergencyContacts[i].relationship_to_child) {
             isValid = false;
             break;
@@ -817,7 +825,7 @@ export default function index() {
         person_recommend: parent.profile.person_recommend,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
-          DATE_TIME_FORMAT),
+          DATE_FORMAT),
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getAppEtnicities(parent.profile.ethinicity),
@@ -855,7 +863,7 @@ export default function index() {
           age: getAge(childsInformation[i].profile.date_of_birth),
           birthdate: format(
             new Date(childsInformation[i].profile.date_of_birth),
-            DATE_TIME_FORMAT),
+            DATE_FORMAT),
           gender: childsInformation[i].profile.gender,
           phone_type: childsInformation[i].profile.phone_type,
           phone_number: childsInformation[i].profile.phone_number,
@@ -1188,6 +1196,7 @@ export default function index() {
                           errors={errors}
                           emergencyContacts={emergencyContacts}
                           ProfileImg={ProfileImg}
+                          setIsParentAddressRequired={setIsParentAddressRequired}
                         />
                       </div>
                       {selectedStep == 4 && <hr className="style-eight"></hr>}
