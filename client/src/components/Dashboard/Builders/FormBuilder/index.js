@@ -17,9 +17,9 @@ const FormBuilder = ({ form_id }) => {
     setBuilderDrawerOpen(!builderDrawerOpen)
   }
 
-  const { auth, vendors, loading } = useSelector(
-    ({ auth, vendors, loading }) => {
-      return { auth, vendors, loading };
+  const { auth, vendors, loading, form } = useSelector(
+    ({ auth, vendors, loading, form }) => {
+      return { auth, vendors, loading, form };
     }
   );
 
@@ -39,7 +39,10 @@ const FormBuilder = ({ form_id }) => {
     }
   }, [vendors])
 
-  console.log("vendorss", vendors);
+  if(form.addForm && form.addForm.message == "successfully created your application form") {
+    //form successfully created
+    window.location.reload();
+  }
 
   return (
     <FormBuilderStyled>
