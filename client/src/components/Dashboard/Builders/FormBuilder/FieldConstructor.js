@@ -9,12 +9,14 @@ const selectMappings = {
 }
 
 export default {
-  input: ({ label, className, ...rest }) => {
+  input: ({ label, className, options = null, isBuilder, ...rest }) => {
     return (
-      <input
-        className={`field-input ${className}`}
-        {...rest}
-      />
+      <div>
+        <input
+          className={`field-input ${className}`}
+          {...rest}
+        />
+      </div>
     )
   },
   textarea: ({ label, className, ...rest }) => {

@@ -23,7 +23,7 @@ export default ({ handleBuilderDrawerOpen }) => {
   }
 
   const handleDrop = (field) => {
-    const newField = { ...field, fields: reMapFields(field.fields, field.id) }
+    const newField = { ...field, value: '', fields: reMapFields(field.fields, field.id) }
     let newFields = [...droppedFields]
     if (!newFields.find(e => e.id === newField.id)) {
       if(newFields.find(e => e.isActive)) {
