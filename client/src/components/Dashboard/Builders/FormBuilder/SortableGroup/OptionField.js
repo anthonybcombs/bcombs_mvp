@@ -29,6 +29,8 @@ export default ({
     onChangeFieldSettings({ options: update(options, { $splice: [[optionIndex, 1]] }) }, index, id)
   }
 
+  const hasOthers = options.find(e => e.name === 'other')
+
   return (
     <>
       {
@@ -81,7 +83,7 @@ export default ({
         )
       }
       {
-        ['multipleChoice', 'checkboxes'].includes(type) && (
+        (!hasOthers && isActive && ['multipleChoice', 'checkboxes'].includes(type)) && (
           <button
             type='button'
             target='_blank'
@@ -95,7 +97,7 @@ export default ({
               icon={faPlus}
               className='addField-icon'
             />
-            <span>Add Others</span>
+            <span>Add Other</span>
           </button>
         )
       }

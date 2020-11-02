@@ -1,6 +1,9 @@
 import React from 'react'
 
 import Rating from './Rating'
+import Linear from './Linear'
+import Slider from './Slider'
+import Ranking from './Ranking'
 
 import STATES from '../../../ApplicationForm/states.json'
 import COUNTRIES from '../../../ApplicationForm/country.json'
@@ -116,14 +119,14 @@ export default {
   rating: (props) => {
     return <Rating {...props} />
   },
-  linear: ({ label }) => {
-    return <div>{label}</div>
+  linear: (props) => {
+    return <Linear {...props} />
   },
-  slider: ({ label }) => {
-    return <div>{label}</div>
+  slider: (props) => {
+    return <Slider {...props} />
   },
-  ranking: ({ label }) => {
-    return <div>{label}</div>
+  ranking: (props) => {
+    return <Ranking {...props} />
   },
   file: ({ label }) => {
     return <div>{label}</div>

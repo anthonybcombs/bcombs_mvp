@@ -71,7 +71,7 @@ export const StandardFields = [
       }
     ],
     displayLabel: 'Checkboxes',
-    label: 'Question',
+    label: 'Checkboxes question',
     type: 'checkboxes',
     isQA: true
   },
@@ -87,8 +87,8 @@ export const StandardFields = [
         ]
       }
     ],
-    displayLabel: 'Mupltiple Choice',
-    label: 'Question',
+    displayLabel: 'Multiple Choice',
+    label: 'Multiple Choice question',
     type: 'multipleChoice',
     isQA: true
   },
@@ -105,7 +105,7 @@ export const StandardFields = [
       }
     ],
     displayLabel: 'Dropdown',
-    label: 'Question',
+    label: 'Dropdown question',
     type: 'dropDown',
     isQA: true
   },
@@ -151,7 +151,7 @@ export const StandardFields = [
       }
     ],
     displayLabel: 'Matrix / Rating',
-    label: 'Question',
+    label: 'Matrix / Rating question',
     type: 'rating',
     isQa: true
   },
@@ -164,17 +164,31 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Linear Scale', tag: 'linear', column: '1'}
+      {
+        label: 'Linear Scale',
+        tag: 'linear',
+        min: { value: 1, label: '' },
+        max: { value: 10, label: '' },
+      }
     ],
-    label: 'Linear Scale',
-    type: 'linearScale'
+    displayLabel: 'Linear Scale',
+    label: 'Linear scale question',
+    type: 'linearScale',
+    isQa: true
   },
   {
     fields: [
-      { label: 'Slider', tag: 'slider', column: '1'}
+      {
+        label: 'Slider',
+        tag: 'slider',
+        scale: { min: 0, max: 100 },
+        scaleLabels: { left: '0', center: '', right: '100' }
+      }
     ],
-    label: 'Slider',
-    type: 'slider'
+    displayLabel: 'Slider',
+    label: 'Slider question',
+    type: 'slider',
+    isQa: true
   },
   {
     fields: [
@@ -185,10 +199,20 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Ranking', tag: 'ranking', column: '1'}
+      {
+        label: 'Ranking',
+        tag: 'ranking',
+        items: [
+          { label: '', rank: '' },
+          { label: '', rank: '' },
+          { label: '', rank: '' } 
+        ]
+      }
     ],
-    label: 'Ranking',
-    type: 'ranking'
+    displayLabel: 'Ranking',
+    label: 'Ranking question',
+    type: 'ranking',
+    isQa: true
   },
   {
     fields: [
