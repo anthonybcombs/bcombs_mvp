@@ -5,8 +5,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import ReportBuilderStyled from './styles'
 import DragArea from './DragArea'
 import DropArea from './DropArea'
-
-
+import { useSelector } from "react-redux";
 
 const ReportBuilder = ({ form_id }) => {
   const [builderDrawerOpen, setBuilderDrawerOpen] = useState(false)
@@ -15,6 +14,7 @@ const ReportBuilder = ({ form_id }) => {
     setBuilderDrawerOpen(!builderDrawerOpen)
   }
   console.log('nge', form_id)
+
   return (
     <ReportBuilderStyled>
       <h2>New Application</h2>
