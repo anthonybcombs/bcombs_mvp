@@ -84,11 +84,20 @@ export default styled.div`
     color: #f5812f;
     background: #f7f7f7;
   }
+  .drag-area-wrapper .header-tabs {
+    display: flex;
+    align-items: center;
+  }
   .drag-area-wrapper .header {
     position: relative;
     margin-bottom: 2rem;
     font-weight: 100;
+    cursor: pointer;
     color: gray;
+  }
+  .drag-area-wrapper .header:hover {
+    color: rgb(0 0 0 / 85%);
+    transition: .15s ease-in-out;
   }
   .drag-area-wrapper .header:after {
     content: '';
@@ -99,6 +108,15 @@ export default styled.div`
     height: 5px;
     background: #f5812f;
   }
+  .drag-area-wrapper .header.report {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .drag-area-wrapper .header.report:after {
+    width: 122px;
+    background: transparent;
+  }
+
   .drag-area-wrapper .sub-header {
     margin: 0;
     font-weight: 100;

@@ -20,17 +20,20 @@ export default ({ handleBuilderDrawerOpen, form_id }) => {
         className='arrow-left'
         onClick={handleBuilderDrawerOpen}
       />
-      <h3
-        onClick={() => handleSelectFormType('edit')}
-      >
-        Form Builder
-      </h3>
-      <h3
-        className='header'
-        onClick={() => handleSelectFormType('report')}
-      >
-        Report Builder
-      </h3>
+      <div className='header-tabs'>
+        <h3
+          className='header form'
+          onClick={() => handleSelectFormType('edit')}
+        >
+          Form Builder
+        </h3>
+        <h3
+          className='header report'
+          onClick={() => handleSelectFormType('report')}
+        >
+          Report Builder
+        </h3>
+      </div>
 
       <h4 className='sub-header'>Standard</h4>
       <div className='draggble-container standard-items'>    
