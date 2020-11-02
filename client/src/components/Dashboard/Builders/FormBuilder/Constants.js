@@ -34,7 +34,7 @@ export const Items = {
 export const StandardFields = [
   {
     fields: [
-      { label: 'Single Line Text', type: 'text', tag: 'input', placeholder: 'Single LIne Text', column: '1'}
+      { label: 'Single Line Text', type: 'text', tag: 'input', placeholder: 'Single Line Text', column: '1'}
     ],
     label: 'Single Line Text',
     type: 'singleLineText',

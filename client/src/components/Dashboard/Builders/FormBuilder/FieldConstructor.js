@@ -86,22 +86,24 @@ export default {
   },
   select: ({ options, label: fieldLabel, type, className, isBuilder = false, ...rest }) => {
     return (
-      <select
-        className={`field-input ${className}`}
-        {...rest}
-        disabled={isBuilder}
-        style={{ opacity: 1 }}
-      >
-        <option value=''>{rest.placeholder}</option>
-        {
-          !isBuilder &&
-          (
-            selectMappings[type].map(({ label, value }, index) => {
-              return (<option key={value + index} value={value}>{label}</option>)
-            })
-          )
-        }
-      </select>
+      <div className='field select-field-wrapper'>
+        <select
+          className={`field-input ${className}`}
+          {...rest}
+          disabled={isBuilder}
+          style={{ opacity: 1 }}
+        >
+          <option value=''>{rest.placeholder}</option>
+          {
+            !isBuilder &&
+            (
+              selectMappings[type].map(({ label, value }, index) => {
+                return (<option key={value + index} value={value}>{label}</option>)
+              })
+            )
+          }
+        </select>
+      </div>
     )
   },
   rating: ({ label }) => {
