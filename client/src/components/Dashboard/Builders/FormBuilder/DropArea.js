@@ -19,11 +19,11 @@ export default ({ handleBuilderDrawerOpen }) => {
   const [formTitle, setFormTitle] = useState('Untitled')
 
   const reMapFields = (fields, id) => {
-    return fields.map(e => ({ ...e, id: `${e.tag}_${uuid()}_${id}` }))
+    return fields.map(e => ({ ...e, id: `${e.tag}_${uuid()}_${id}`, value: '' }))
   }
 
   const handleDrop = (field) => {
-    const newField = { ...field, value: '', fields: reMapFields(field.fields, field.id) }
+    const newField = { ...field, fields: reMapFields(field.fields, field.id) }
     let newFields = [...droppedFields]
     if (!newFields.find(e => e.id === newField.id)) {
       if(newFields.find(e => e.isActive)) {
