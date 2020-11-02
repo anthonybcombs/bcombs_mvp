@@ -9,17 +9,15 @@ const selectMappings = {
 }
 
 export default {
-  input: ({ label, className, options = null, isBuilder, ...rest }) => {
+  input: ({ label, className = '', options = null, isBuilder, ...rest }) => {
     return (
-      <div>
-        <input
-          className={`field-input ${className}`}
-          {...rest}
-        />
-      </div>
+      <input
+        className={`field-input ${className}`}
+        {...rest}
+      />
     )
   },
-  textarea: ({ label, className, ...rest }) => {
+  textarea: ({ label, className = '', ...rest }) => {
     return <textarea
       className={`field-input ${className}`}
       {...rest}
@@ -86,24 +84,27 @@ export default {
       </div>
     )
   },
-  select: ({ options, label: fieldLabel, type, className, isBuilder = false, ...rest }) => {
+  select: ({ options, label: fieldLabel, type, className = '', isBuilder = false, ...rest }) => {
     return (
-      <select
-        className={`field-input ${className}`}
-        {...rest}
-        disabled={isBuilder}
-        style={{ opacity: 1 }}
-      >
-        <option value=''>{rest.placeholder}</option>
-        {
-          !isBuilder &&
-          (
-            selectMappings[type].map(({ label, value }, index) => {
-              return (<option key={value + index} value={value}>{label}</option>)
-            })
-          )
-        }
-      </select>
+      isBuilder
+        ? (<input
+            className={`field-input input-select ${className}`}
+            {...rest}
+          />)
+        : (
+          <select
+            className={`field-input ${className}`}
+            {...rest}
+            style={{ opacity: 1 }}
+          >
+            <option value=''>{rest.placeholder}</option>
+            {
+              selectMappings[type].map(({ label, value }, index) => {
+                return (<option key={value + index} value={value}>{label}</option>)
+              })
+            }
+          </select>
+        )
     )
   },
   rating: ({ label }) => {
