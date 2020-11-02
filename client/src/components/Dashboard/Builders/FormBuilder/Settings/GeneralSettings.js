@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashAlt, faCopy, faPlusCircle, faMinusCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt, faCopy, faPlusCircle, faMinusCircle, faQuestionCircle, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
 import { Sources } from './Sources'
@@ -114,6 +114,16 @@ export default ({
       return
     }
 
+    if (key === 'addOption') {
+      const options = fieldSettings.options
+      const newOptions = options.map((option, i) => {
+        const newLabel = i === index ? data : option.label
+        return { ...option, label: newLabel, name: newLabel.toLowerCase() }
+      })
+      onChangeFieldSettings({ options: newOptions })
+      return
+    }
+
     onChangeFieldSettings(data)
   }
 
@@ -122,14 +132,68 @@ export default ({
   }
 
   const { instruction = {}, logic = {}, } = generalSettings
-  const { validation = {}, required = false } = fieldSettings || {}
+  const { validation = {}, required = false, options } = fieldSettings || {}
   const { include, items = [{ ...defaultValidation }] } = validation
   const hasValidationError = items.find(e => e.errorField)
 
   const showOptions = !showSettings || isActive
-
   return (
     <div className='group-settings' style={{ marginTop: isActive ? '10rem' : '2rem' }}>
+      {/* Start For Field with options */}
+      {
+        options &&
+        (
+          <>
+            <span className='labelName'> Options for {fieldSettings.label}:</span>
+            {
+              options.map((option, optionIndex) => {
+                return (
+                  <div className='option'>
+                    <span>{optionIndex + 1}.</span>
+                    <input
+                      type='text'
+                      className={`field-input`}
+                      value={option.label}
+                      onChange={({ target }) => handleChangeFieldSettings(target.value, 'addOption', optionIndex)}
+                    />
+                    {
+                      options.length > 1 && (
+                        <FontAwesomeIcon
+                          className='removeField-icon'
+                          icon={faTimes}
+                          onClick={e => {
+                            e.stopPropagation()
+                            const newOptions = cloneDeep(options)
+                            newOptions.splice(optionIndex, 1)
+                            onChangeFieldSettings({ options: newOptions })
+                          }}
+                        />
+                      )
+                    }
+                  </div>
+                )
+              })
+            }
+            <button
+              type='button'
+              target='_blank'
+              className='btn addCheckboxOption'
+              onClick={(e) => {
+                e.stopPropagation()
+                onChangeFieldSettings({ options: [...options, { name: `title-${options.length + 1}`, label: `Title ${options.length + 1}`, tag: 'checkbox' },] })
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faPlus}
+                className='addField-icon'
+              />
+              <span>Add Option</span>
+            </button>
+          </>
+        )
+      }
+      {/* End For Field with options */}
+
       {/* Start For Validation */}
       {
         include && 
