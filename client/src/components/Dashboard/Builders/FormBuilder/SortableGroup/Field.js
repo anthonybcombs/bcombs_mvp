@@ -26,6 +26,7 @@ export default ({
           key: field.id,
           isBuilder: true,
           value: placeholder,
+          onChangeFieldSettings, // for direct change of fields in the field constructor
           onChange: ({ target }) => onChangeFieldSettings({ placeholder: target.value }, index, id)
         })
       }

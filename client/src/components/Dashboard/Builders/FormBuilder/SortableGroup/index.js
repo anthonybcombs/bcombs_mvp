@@ -130,7 +130,7 @@ const SortableGroup = React.forwardRef(
                   gridColRepeat={gridColRepeat}
                   setActiveFieldIndex={setActiveFieldIndex}
                   onActive={onActive}
-                  onChangeFieldSettings={onChangeFieldSettings}
+                  onChangeFieldSettings={(data) => onChangeFieldSettings(data, index, id)}
                   onRemoveGroupField={onRemoveGroupField}
                 />
               )
