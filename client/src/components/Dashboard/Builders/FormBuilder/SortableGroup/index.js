@@ -138,6 +138,7 @@ const SortableGroup = React.forwardRef(
               return (
                 <OptionField
                   key={`optionField-${field}`}
+                  type={itemGroup}
                   options={options}
                   id={id}
                   index={index}

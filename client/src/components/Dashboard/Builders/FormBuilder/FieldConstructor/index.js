@@ -35,7 +35,7 @@ export default {
         />
         <span className='checkmark' />
         {
-          isBuilder
+          (isBuilder && name !== 'other')
             ? <input
                 type='text'
                 className={`field-input`}
@@ -57,7 +57,7 @@ export default {
         />
         <span className='checkmark' />
         {
-          isBuilder
+          (isBuilder && name !== 'other')
             ? <input
                 type='text'
                 className={`field-input`}

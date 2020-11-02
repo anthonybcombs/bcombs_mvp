@@ -8,7 +8,7 @@ import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 import FieldConstructor from '../FieldConstructor'
 
 export default ({
-  options, index, onChangeFieldSettings, id, isActive
+  options, index, onChangeFieldSettings, id, isActive, type
 }) => {
 
   const handleChangeOption = ({ target }, optionIndex) => {
@@ -17,6 +17,11 @@ export default ({
 
   const handleAddOption = () => {
     const newOption =  { ...options[0], name: `option${options.length + 1}`, label: `Option ${options.length + 1}` }
+    onChangeFieldSettings({ options: update(options, { $push: [newOption] }) }, index, id)
+  }
+
+  const handleAddOthers = () => {
+    const newOption =  { ...options[0], name: 'other', label: 'Other...' }
     onChangeFieldSettings({ options: update(options, { $push: [newOption] }) }, index, id)
   }
 
@@ -72,6 +77,25 @@ export default ({
               className='addField-icon'
             />
             <span>Add Option</span>
+          </button>
+        )
+      }
+      {
+        ['multipleChoice', 'checkboxes'].includes(type) && (
+          <button
+            type='button'
+            target='_blank'
+            className='btn addCheckboxOption'
+            onClick={(e) => {
+              e.stopPropagation()
+              handleAddOthers()
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faPlus}
+              className='addField-icon'
+            />
+            <span>Add Others</span>
           </button>
         )
       }
