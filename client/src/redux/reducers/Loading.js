@@ -10,7 +10,8 @@ export default function Loading(
     form_settings: false,
     userAllApplications: false,
     addAdmin: false,
-    deleteAdmins: false
+    deleteAdmins: false,
+    addForm: false
   },
   action
 ) {
