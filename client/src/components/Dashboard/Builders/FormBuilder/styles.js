@@ -730,11 +730,15 @@ export default styled.div`
     transition: all .15s ease-in-out
   }
 
+ 
   .group-settings .option {
     position: relative;
     margin: 10px 0;
     display: flex;
     align-items: center;
+  }
+  .group-settings .option-label {
+    color: grey;
   }
   .group-settings .option >span {
     padding: 0 5px;

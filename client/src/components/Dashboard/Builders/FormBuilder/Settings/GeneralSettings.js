@@ -144,7 +144,7 @@ export default ({
         options &&
         (
           <>
-            <span className='labelName'> Options for {fieldSettings.label}:</span>
+            <span className='option-label'> Options for {fieldSettings.label}:</span>
             {
               options.map((option, optionIndex) => {
                 return (
