@@ -343,6 +343,13 @@ export default styled.div`
   .sortableGroup.dropDown .sortableGroup-column .option >span {
     padding: 0 5px;
   }
+  .sortableGroup.name .sortableGroup-row {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .sortableGroup.name .sortableGroup-row .sortableGroup-column:nth-child(1) {
+    max-width: 130px;
+    grid-column: 1 / span 3 !important;
+  }
 
 
 
