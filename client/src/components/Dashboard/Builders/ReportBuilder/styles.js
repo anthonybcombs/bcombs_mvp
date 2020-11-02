@@ -693,8 +693,8 @@ export default styled.div`
   }
 
   .group-settings .settings-control .settings-control-item .settings-content {
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
   }
   .group-settings .settings-control .settings-control-item.field {
     // margin-right: auto;

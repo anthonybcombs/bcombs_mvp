@@ -144,7 +144,7 @@ export default ({
         options &&
         (
           <>
-            <span className='labelName'> Options for {fieldSettings.label}:</span>
+            <span className='option-label'> Options for {fieldSettings.label}:</span>
             {
               options.map((option, optionIndex) => {
                 return (
@@ -177,7 +177,7 @@ export default ({
             <button
               type='button'
               target='_blank'
-              className='btn addCheckboxOption'
+              className='btn option-btn'
               onClick={(e) => {
                 e.stopPropagation()
                 onChangeFieldSettings({ options: [...options, { name: `title-${options.length + 1}`, label: `Title ${options.length + 1}`, tag: 'checkbox' },] })

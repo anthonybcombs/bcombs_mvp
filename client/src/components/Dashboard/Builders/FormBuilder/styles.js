@@ -346,10 +346,6 @@ export default styled.div`
 
 
 
-
-
-
-
   .sortableGroup-actions {
     position: absolute;
     top: 0;
@@ -691,8 +687,8 @@ export default styled.div`
   }
 
   .group-settings .settings-control .settings-control-item .settings-content {
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
   }
   .group-settings .settings-control .settings-control-item.field {
     // margin-right: auto;
@@ -732,6 +728,46 @@ export default styled.div`
     background: #f44336;
     box-shadow: 0 3px 6px #ddd;
     transition: all .15s ease-in-out
+  }
+
+ 
+  .group-settings .option {
+    position: relative;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+  }
+  .group-settings .option-label {
+    color: grey;
+  }
+  .group-settings .option >span {
+    padding: 0 5px;
+  }
+  .group-settings .option >svg {
+    position: absolute;
+    right: -4px;
+    bottom: 4px;
+    color: #f44336;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 100px;
+  }
+  .group-settings .option-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    width: 100%;
+    color: #1d99f3;
+    max-width: 250px;
+    font-weight: 600;
+    margin: 1rem 1.5rem 2rem;
+    background: transparent;
+    border: 1.9px dashed #1d99f3;
+    transition: all .15s ease-in-out;
+  }
+  .group-settings .option-btn:hover {
+    background: rgb(29 153 243 / 15%);
   }
   // End Group Fields Seetings
 
