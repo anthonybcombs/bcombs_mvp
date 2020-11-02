@@ -111,10 +111,49 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Matrix / Rating', tag: 'rating', column: '1'}
+      {
+        label: 'Matrix / Rating',
+        tag: 'rating',
+        choices: [
+          {
+            statement: 'Statement 1',
+            answers: []
+          },
+          {
+            statement: 'Statement 2',
+            answers: []
+          }
+        ],
+        scales: [
+          {
+            label: 'Strongly Agree',
+            value: 1
+          },
+          {
+            label: 'Agree',
+            value: 2
+          },
+          {
+            label: 'Undecided',
+            value: 3
+          },
+          {
+            label: 'Disagree',
+            value: 4
+          },
+          {
+            label: 'Strongly Disagree',
+            value: 5
+          }
+        ],
+        isMultiple: false,
+        position: 'vertical',
+      }
     ],
-    label: 'Matrix / Rating',
-    type: 'rating'
+    displayLabel: 'Matrix / Rating',
+    label: 'Question',
+    type: 'rating',
+    isQa: true
   },
   {
     fields: [

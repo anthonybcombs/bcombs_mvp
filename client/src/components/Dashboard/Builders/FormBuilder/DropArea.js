@@ -13,17 +13,17 @@ import CustomDragLayer from './CustomDragLayer'
 
 import { requestAddForm } from "../../../../redux/actions/FormBuilder";
 
-export default ({ handleBuilderDrawerOpen }) => {
+export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
 
   const reMapFields = (fields, id) => {
-    return fields.map(e => ({ ...e, id: `${e.tag}_${uuid()}_${id}` }))
+    return fields.map(e => ({ ...e, id: `${e.tag}_${uuid()}_${id}`, value: '' }))
   }
 
   const handleDrop = (field) => {
-    const newField = { ...field, value: '', fields: reMapFields(field.fields, field.id) }
+    const newField = { ...field, fields: reMapFields(field.fields, field.id) }
     let newFields = [...droppedFields]
     if (!newFields.find(e => e.id === newField.id)) {
       if(newFields.find(e => e.isActive)) {
@@ -134,6 +134,23 @@ export default ({ handleBuilderDrawerOpen }) => {
       }
     },
   })
+
+  const handleSubmitForm = (e) => {
+    e.preventDefault();
+
+    const payload = {
+      user: user.user_id,
+      vendor: vendor.id,
+      form_contents: {
+        formTitle,
+        formData: droppedFields
+      }
+    }
+
+    console.log("create form payload", payload);
+    dispatch(requestAddForm(payload))
+  }
+
   console.log('droppedFields', droppedFields)
   return (
     <>
@@ -202,12 +219,8 @@ export default ({ handleBuilderDrawerOpen }) => {
                   type='button'
                   target='_blank'
                   className='btn save'
-                  onClick={() => {
-                    dispatch(requestAddForm({
-                      formTitle,
-                      formData: droppedFields
-                    }))
-                  }}
+                  disabled={!(user && user.user_id && vendor && vendor.id)}
+                  onClick={handleSubmitForm}
                 >
                   <FontAwesomeIcon
                     className='save-icon'

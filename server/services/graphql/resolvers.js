@@ -74,7 +74,9 @@ import {
   addApplicationHistory,
   getApplicationByAppId,
   getUserApplicationsByUserId,
-  getApplicationHistoryByUser
+  getApplicationHistoryByUser,
+  createCustomApplication,
+  getCustomApplicationFormByFormId
 } from "../../api/applications";
 import { 
   addChild, 
@@ -309,6 +311,11 @@ const resolvers = {
       }
 
       return resRelationships;
+    },
+    async getCustomApplicationsByFormId(root, { form_id }, context) {
+      
+      const application = await getCustomApplicationFormByFormId(form_id);
+      return application;
     }
   },
   RootMutation: {
@@ -886,7 +893,25 @@ const resolvers = {
         messageType: "info",
         message: "relationship successfully created"
       }
-    }
+    },
+    async createCustomApplicationForm(root, { application }, context) {
+
+      let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
+      application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+      console.log("formContentsString", formContentsString.length);
+      console.log("custom application", application.form_contents.length);
+
+      await createCustomApplication(application);
+
+      const res = {
+        messageType: "info",
+        message: "successfully created your application form"
+      } 
+
+      console.log("res", res);
+      return res;
+    } 
   }
 };
 

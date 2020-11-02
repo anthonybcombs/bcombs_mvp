@@ -1,15 +1,22 @@
 import { call, take, put } from "redux-saga/effects";
 import graphqlClient from "../../graphql";
 import * as actionType from "./Constant";
-
+import {
+  FORM_ADD_MUTATION
+} from "../../graphql/FormQueryMutation"
 import {
   setAddFormLoading
 } from "./Loading";
 
-const addFormToDatabse = admin => {
+const addFormToDatabase = application => {
   return new Promise(async (resolve, reject) => {
     try {
-      
+      const { data } = await graphqlClient.mutate({
+        mutation: FORM_ADD_MUTATION,
+        variables: { application }
+      })
+
+      return resolve(data.createCustomApplicationForm);
     } catch (error) {
       reject(error);
     }
@@ -85,21 +92,20 @@ export function* getForms({ vendor_id }) {
 }
 export function* addForm({ form }) {
   console.log('@ADD FORM', form)
-  return
   try {
     yield put(setAddFormLoading(true));
-    const response = yield call(addFormToDatabse, form);
+    const response = yield call(addFormToDatabase, form);
     yield put(setAddFormLoading(false));
-    // yield put({
-    //   type: actionType.REQUEST_GET_FORMS_COMPLETED,
-    //   payload: response
-    // });
+    yield put({
+      type: actionType.REQUEST_ADD_FORM_COMPLETED,
+      payload: response
+    });
   } catch (err) {
     yield put(setAddFormLoading(false));
-    // yield put({
-    //   type: actionType.REQUEST_GET_FORMS_COMPLETED,
-    //   payload: []
-    // });
+    yield put({
+      type: actionType.REQUEST_ADD_FORM_COMPLETED,
+      payload: {}
+    });
   }
 }
 export function* getFormById({ id }) {

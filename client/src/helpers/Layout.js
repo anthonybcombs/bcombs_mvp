@@ -291,11 +291,11 @@ export default function Layout({ children }) {
                         <Link
                           className={`${
                             context.location.pathname ===
-                            "/dashboard/builder/1/edit"
+                            "/dashboard/builder"
                               ? "selected"
                               : ""
                           }`}
-                          to="/dashboard/builder/1/edit">
+                          to="/dashboard/builder">
                           <span>Admin</span>
                         </Link>
                       </>

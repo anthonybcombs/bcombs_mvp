@@ -141,6 +141,7 @@ export default function App() {
               <AsyncAuditTrail path="audittrail" />
               <AsyncManageAdmin path="admin" />
               <AsynBuilder path="builder/:form_id/:type" />
+              <AsynBuilder path="builder" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />

@@ -491,6 +491,68 @@ const inputs = `
         child2: String
         relationship: String
     }
+
+    input CustomApplicationInput {
+        form_id: String
+        vendor: String
+        user: String
+        form_contents: CustomFormInput
+    }
+
+    input CustomFormInput {
+        formTitle: String
+        formData: [CustomFormDataInput]
+    }
+
+    input CustomFormDataInput {
+        id: String
+        label: String
+        type: String
+        fields: [CustomFormFieldsInput]
+        groupType: String
+        settings: CustomFormSettingsInput
+        isActive: Boolean
+        allowAddField: Boolean
+        gridMax: Int
+    }
+
+    input CustomFormFieldsInput {
+        id: String
+        label: String
+        type: String
+        tag: String
+        placeholder: String
+        column: String
+        value: String
+        required: Boolean
+        validation: CustomFormValidationInput
+    }
+
+    input CustomFormValidationInput {
+        include: Boolean
+        items: [CustomFormValidationErrorsInput]
+    }
+
+    input CustomFormValidationErrorsInput {
+        error: String
+        errorField: String
+        option: String
+        type: String
+        value: String
+    }
+
+    input CustomFormSettingsInput {
+        logic: CustomFormSettingsLogicInput
+        instruction: CustomFormSettingsInstructionInput
+    }
+
+    input CustomFormSettingsLogicInput {
+        include: Boolean
+    }
+
+    input CustomFormSettingsInstructionInput {
+        include: Boolean
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -920,6 +982,70 @@ const queryTypes = `
         relationship: String
         details: Child
     }
+
+    type CustomApplicationOutput {
+        id: String
+        vendor: String
+        user: String
+        form_id: String
+        form_contents: CustomForm
+        created_at: Date
+    }
+
+    type CustomForm {
+        formTitle: String
+        formData: [CustomFormData]
+    }
+
+    type CustomFormData {
+        id: String
+        label: String
+        type: String
+        fields: [CustomFormFields]
+        groupType: String
+        settings: CustomFormSettings
+        isActive: Boolean
+        allowAddField: Boolean
+        gridMax: Int
+    }
+
+    type CustomFormFields {
+        id: String
+        label: String
+        type: String
+        tag: String
+        placeholder: String
+        column: String
+        value: String
+        required: Boolean
+        validation: CustomFormValidation
+    }
+
+    type CustomFormValidation {
+        include: Boolean
+        items: [CustomFormValidationErrors]
+    }
+
+    type CustomFormValidationErrors {
+        error: String
+        errorField: String
+        option: String
+        type: String
+        value: String
+    }
+
+    type CustomFormSettings {
+        logic: CustomFormSettingsLogic
+        instruction: CustomFormSettingsInstruction
+    }
+
+    type CustomFormSettingsLogic {
+        include: Boolean
+    }
+
+    type CustomFormSettingsInstruction {
+        include: Boolean
+    }
 `;
 
 const mutations = `
@@ -956,6 +1082,9 @@ const mutations = `
         addDaycareApplication(daycare: DaycareMainInput): Status
         addParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
         updateParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
+        createCustomApplicationForm(application: CustomApplicationInput): Status
+        updateCustomApplicationForm(application: CustomApplicationInput): Status
+        submitCustomApplicationFOrm(application: CustomApplicationInput): Status
     }
 `;
 
@@ -992,6 +1121,9 @@ const queries = `
         getUserApplicationHistory(id: String!):[ApplicationHistory]
         getVendorAdminsByUser(user: String): [Admin]
         getParentChildRelationship(relationships: [ParentChildRelationshipInput]): [ParentChildRelationship]
+        getVendorCustomApplications(vendor: String): [CustomApplicationOutput]
+        getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
+        getCustomApplicationApplicants(form_id: String): [CustomApplicationOutput]
     }
 `;
 
