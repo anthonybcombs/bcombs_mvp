@@ -5,9 +5,13 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { StandardFields, PrimeFields } from './Constants'
 import DraggableField from './DraggbleField'
 
-export default ({ handleBuilderDrawerOpen }) => {
+export default ({ handleBuilderDrawerOpen, form_id }) => {
   const [standardFields] = useState([...StandardFields])
   const [primeFields] = useState([...PrimeFields])
+
+  const handleSelectFormType = (type) => {
+    window.location.replace(`/dashboard/builder/${form_id}/${type}`)
+  }
 
   return (
     <div className='drag-area-wrapper'>
@@ -16,7 +20,18 @@ export default ({ handleBuilderDrawerOpen }) => {
         className='arrow-left'
         onClick={handleBuilderDrawerOpen}
       />
-      <h3 className='header'>Form Builder</h3>
+      
+      <h3
+        className='header'
+        onClick={() => handleSelectFormType('edit')}
+      >
+        Form Builder
+      </h3>
+      <h3
+        onClick={() => handleSelectFormType('report')}
+      >
+        Report Builder
+      </h3>
 
       <h4 className='sub-header'>Standard</h4>
       <div className='draggble-container standard-items'>    

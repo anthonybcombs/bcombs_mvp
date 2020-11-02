@@ -1,6 +1,6 @@
 import React from 'react'
-import STATES from '../ApplicationForm/states.json'
-import COUNTRIES from '../ApplicationForm/country.json'
+import STATES from '../../ApplicationForm/states.json'
+import COUNTRIES from '../../ApplicationForm/country.json'
 
 const selectMappings = {
   state: STATES.map(({ name, abbreviation }) => ({ label: name, value: abbreviation })),

@@ -11,7 +11,7 @@ import { Items } from './Constants'
 import SortableGroup from './SortableGroup'
 import CustomDragLayer from './CustomDragLayer'
 
-import { requestAddForm } from "../../../redux/actions/FormBuilder";
+import { requestAddForm } from "../../../../redux/actions/FormBuilder";
 
 export default ({ handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
@@ -156,7 +156,7 @@ export default ({ handleBuilderDrawerOpen }) => {
         </div>
         {
           droppedFields.length === 0 && (
-            <div className='empty-area'>Drag fields here.</div>
+            <div className='empty-area'>Drag objects here.</div>
           )
         }
         {
