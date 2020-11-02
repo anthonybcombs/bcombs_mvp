@@ -1,11 +1,13 @@
 import React from 'react'
-import STATES from '../../ApplicationForm/states.json'
-import COUNTRIES from '../../ApplicationForm/country.json'
+
+import Rating from './Rating'
+
+import STATES from '../../../ApplicationForm/states.json'
+import COUNTRIES from '../../../ApplicationForm/country.json'
 
 const selectMappings = {
   state: STATES.map(({ name, abbreviation }) => ({ label: name, value: abbreviation })),
-  country: COUNTRIES.map(({ name, code }) => ({ label: name, value: code })),
-  title: [{ label: 'Mr.', value: 'Mr.' }, { label: 'Mrs.', value: 'Mrs.' }]
+  country: COUNTRIES.map(({ name, code }) => ({ label: name, value: code }))
 }
 
 export default {
@@ -47,7 +49,7 @@ export default {
   },
   radio: ({ label, name, isBuilder, onChange }) => {
     return (
-      <label for={name} className='radioButtonContainer'>
+      <label for={name} className='radiobuttonContainer'>
         <input
           type='radio'
           onChange={onChange}
@@ -111,8 +113,8 @@ export default {
         )
     )
   },
-  rating: ({ label }) => {
-    return <div>{label}</div>
+  rating: (props) => {
+    return <Rating {...props} />
   },
   linear: ({ label }) => {
     return <div>{label}</div>
