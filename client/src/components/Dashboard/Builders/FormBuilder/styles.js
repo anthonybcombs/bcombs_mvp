@@ -66,6 +66,31 @@ export default styled.div`
     -moz-appearance: none !important;
   }
 
+  #formBuilder .outlined-addBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    width: 100%;
+    color: #1d99f3;
+    max-width: 250px;
+    font-weight: 600;
+    margin: 1rem 0;
+    background: transparent;
+    border: 1.9px dashed #1d99f3;
+    transition: all .15s ease-in-out;
+  }
+  #formBuilder .outlined-addBtn:hover {
+    background: rgb(29 153 243 / 15%);
+  }
+  #formBuilder .outlined-addBtn >svg {
+    font-size: 12px;
+  }
+  #formBuilder .outlined-addBtn >svg:hover {
+    box-shadow: none;
+    background: transparent;
+  }
+
 
   .drag-area-wrapper .arrow-left {
     position: absolute;
@@ -276,6 +301,8 @@ export default styled.div`
   .drop-area-wrapper-actions .btn.preview:hover{
     background: rgb(30 152 243 / 15%)
   }
+
+
   // ===============================================
   // ********* START SORTABLE FIELD GROUPS *********
   // ===============================================
@@ -324,33 +351,6 @@ export default styled.div`
     background: #f1f1f1;
     box-shadow: 0 3px 6px #ddd;
   }
-
-
-  // specific Group Fields
-  .sortableGroup.checkboxes .sortableGroup-column .checkboxContainer .checkmark {
-    top: 12px;
-  }
-  .sortableGroup.multipleChoice .sortableGroup-column .checkboxContainer .checkmark {
-    top: 11px;
-  }
-  .sortableGroup.dropDown .addCheckboxOption {
-    margin: 1rem 1.5rem;
-  }
-  .sortableGroup.dropDown .sortableGroup-column .option {
-    display: flex;
-    align-items: center;
-  }
-  .sortableGroup.dropDown .sortableGroup-column .option >span {
-    padding: 0 5px;
-  }
-  .sortableGroup.name .sortableGroup-row {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-  .sortableGroup.name .sortableGroup-row .sortableGroup-column:nth-child(1) {
-    max-width: 130px;
-    grid-column: 1 / span 3 !important;
-  }
-
 
 
   .sortableGroup-actions {
@@ -433,30 +433,30 @@ export default styled.div`
     align-items: end;
     grid-column-gap: 2%;
   }
-  .sortableGroup-row .addCheckboxOption {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  // .sortableGroup-row .addCheckboxOption {
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
 
-    padding: 0;
-    width: 100%;
-    color: #1d99f3;
-    font-weight: 600;
-    margin: 1rem 2rem 1rem;
-    background: transparent;
-    border: 1.9px dashed #1d99f3;
-    transition: all .15s ease-in-out 
-  }
-  .sortableGroup-row .addCheckboxOption:hover {
-    background: rgb(29 153 243 / 15%);
-  }
-  .sortableGroup-row .addCheckboxOption svg {
-    font-size: 12px;
-  }
-  .sortableGroup-row .addCheckboxOption svg:hover {
-    box-shadow: none;
-    background: transparent;
-  }
+  //   padding: 0;
+  //   width: 100%;
+  //   color: #1d99f3;
+  //   font-weight: 600;
+  //   margin: 1rem 2rem 1rem;
+  //   background: transparent;
+  //   border: 1.9px dashed #1d99f3;
+  //   transition: all .15s ease-in-out 
+  // }
+  // .sortableGroup-row .addCheckboxOption:hover {
+  //   background: rgb(29 153 243 / 15%);
+  // }
+  // .sortableGroup-row .addCheckboxOption svg {
+  //   font-size: 12px;
+  // }
+  // .sortableGroup-row .addCheckboxOption svg:hover {
+  //   box-shadow: none;
+  //   background: transparent;
+  // }
 
   .sortableGroup-column {
     position: relative;
@@ -472,31 +472,12 @@ export default styled.div`
     padding: 2px 13px;
     border-radius: 3px;
   }
-  .sortableGroup-column.addField-column > button.add-btn {
+  .sortableGroup-column.addField-column > button.outlined-addBtn {
     position: absolute;
-    bottom: -45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0;
-    width: 100%;
-    color: #1d99f3;
-    font-weight: 600;
-    background: transparent;
-    border: 1.9px dashed #1d99f3;
-    transition: all .15s ease-in-out 
+    bottom: -58px;
+    max-width: unset !important;
   }
-  .sortableGroup-column.addField-column > button.add-btn:hover {
-    background: rgb(29 153 243 / 15%);
-  }
-  .sortableGroup-column.addField-column > button.add-btn svg {
-    font-size: 12px;
-  }
-  .sortableGroup-column.addField-column > button.add-btn svg:hover {
-    box-shadow: none;
-    background: transparent;
-  }
+  
   .sortableGroup-column .removeField-icon {
     position: absolute;
     right: -4px;
@@ -582,10 +563,10 @@ export default styled.div`
     align-items: center;
     justify-content: space-between;
   }
-  .sortableGroup-drawer >div button.add-btn {
+  .sortableGroup-drawer >div button.outlined-addBtn {
     background: #19AB27;
   }
-  .sortableGroup-drawer >div button.add-btn:hover {
+  .sortableGroup-drawer >div button.outlined-addBtn:hover {
     background: #128d15;
     transition: .15s ease-in-out 
   }
@@ -786,6 +767,75 @@ export default styled.div`
 
 
 
+
+
+
+  // ====================================
+  // ********* Specific Group Fields  **********
+  // ====================================
+    // checkbox & Radiobutton
+  .sortableGroup.checkboxes .sortableGroup-column .checkboxContainer .labelName,
+  .sortableGroup.multipleChoice .sortableGroup-column .radiobuttonContainer .labelName {
+    position: relative;
+    top: 3px;
+  } 
+  .sortableGroup.checkboxes .sortableGroup-row .actions,
+  .sortableGroup.multipleChoice .sortableGroup-row .actions{
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 2rem;
+  } 
+  .sortableGroup.checkboxes .sortableGroup-row .actions .other,
+  .sortableGroup.multipleChoice .sortableGroup-row .actions .other{
+    margin-left: 1rem !important;
+  } 
+  .sortableGroup.checkboxes .sortableGroup-column .checkboxContainer .checkmark {
+    top: 11px;
+  }
+  .sortableGroup.multipleChoice .sortableGroup-column .radiobuttonContainer .checkmark {
+    top: 10px;
+  }
+  
+    // Dropdown
+  .sortableGroup.dropDown .actions {
+    margin: 0 1.5rem;
+  }
+  .sortableGroup.dropDown .sortableGroup-column .option {
+    display: flex;
+    align-items: center;
+  }
+  .sortableGroup.dropDown .sortableGroup-column .option >span {
+    padding: 0 5px;
+  }
+
+    // Name
+  .sortableGroup.name .sortableGroup-row {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .sortableGroup.name .sortableGroup-row .sortableGroup-column:nth-child(1) {
+    max-width: 130px;
+    grid-column: 1 / span 3 !important;
+  }
+
+    // Ranking
+  .sortableGroup.ranking .ranking-item {
+    position: relative;
+    padding: 1rem 0 0;
+  }
+  .sortableGroup.ranking .ranking-item svg {
+    position: absolute;
+    right: -4px;
+    bottom: 4px;
+    color: #f44336;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 100px;
+  }
+
+
+
+
+
   // ====================================
   // ********* Customs  **********
   // ====================================
@@ -832,10 +882,11 @@ export default styled.div`
     transform: translate(-120px, 0);
   }
   
-
+ 
   
+  // checkbox and radiobutton
   .checkboxContainer,
-  .radioButtonContainer {
+  .radiobuttonContainer {
     position: relative;
     color: #555;
     cursor: pointer;
@@ -848,8 +899,8 @@ export default styled.div`
     color: #a99595;
   }
 
-  .checkboxContainer > input[type='checkbox'],
-  .radioButtonContainer > input[type='radio'] {
+  .checkboxContainer > input[type="checkbox"],
+  .radiobuttonContainer > input[type="radio"] {
     width: 16px;
     height: 16px;
     margin: .5rem;
@@ -861,6 +912,7 @@ export default styled.div`
   .radioButtonContainer > label {
     cursor: pointer;
   }
+
   .checkboxContainer:not(.disabled):hover,
   .radioButtonContainer:not(.disabled):hover {
     color: #000;
@@ -920,11 +972,13 @@ export default styled.div`
 
 
 
-  .radioButtonContainer .checkmark {
+  .radiobuttonContainer .checkmark {
+    top: 10px;
     border-radius: 100px;
     background-color: #fff;
     border: 2px solid #2196F3;
   }
+
 
 
   // =================================
@@ -978,6 +1032,7 @@ export default styled.div`
       display: block;
     }
   }
-  
+
+
 
 `;

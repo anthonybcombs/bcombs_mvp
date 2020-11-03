@@ -178,14 +178,23 @@ export default styled.div`
   }
 
 
-  .checkboxContainer {
+  // checkbox and radiobutton
+  .checkboxContainer,
+  .radiobuttonContainer {
     position: relative;
     color: #555;
     cursor: pointer;
     display: flex;
     align-items: center;
   }
-  .checkboxContainer > input {
+
+  .checkboxContainer.disabled,
+  .radioButtonContainer.disabled {
+    color: #a99595;
+  }
+
+  .checkboxContainer > input[type="checkbox"],
+  .radiobuttonContainer > input[type="radio"] {
     width: 16px;
     height: 16px;
     margin: .5rem;
@@ -193,16 +202,19 @@ export default styled.div`
     opacity: 0;
     visibility: hidden;
   }
-  .checkboxContainer > label {
+  .checkboxContainer > label,
+  .radioButtonContainer > label {
     cursor: pointer;
   }
-  .checkboxContainer:hover {
+
+  .checkboxContainer:not(.disabled):hover,
+  .radioButtonContainer:not(.disabled):hover {
     color: #000;
     transition: all .15s ease-in-out
   }
   .checkmark {
     position: absolute;
-    top: 8px;
+    top: 7px;
     left: 8px;
     height: 14px;
     width: 14px;
@@ -210,8 +222,13 @@ export default styled.div`
     background-color: #eee;
     border: 1px solid #2196F3;
   }
+  .checkboxContainer.disabled .checkmark,
+  .radioButtonContainer.disabled .checkmark {
+    border: 1px solid #a99595;
+  }
   /* On mouse-over, add a grey background color */
-  .checkboxContainer:hover input ~ .checkmark {
+  .checkboxContainer:hover input ~ .checkmark,
+  .radioButtonContainer:hover input ~ .checkmark {
     // background-color: #ccc;
   }
 
@@ -228,12 +245,14 @@ export default styled.div`
   }
 
   /* Show the checkmark when checked */
-  .checkboxContainer input:checked ~ .checkmark:after {
+  .checkboxContainer input:checked ~ .checkmark:after,
+  .radioButtonContainer input:checked ~ .checkmark:after {
     display: block;
   }
 
   /* Style the checkmark/indicator */
-  .checkboxContainer .checkmark:after {
+  .checkboxContainer .checkmark:after,
+  .radioButtonContainer .checkmark:after {
     left: 4px;
     top: 0px;
     width: 3px;
@@ -243,6 +262,14 @@ export default styled.div`
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+  }
+
+
+
+  .radiobuttonContainer .checkmark {
+    border-radius: 100px;
+    background-color: #fff;
+    border: 2px solid #2196F3;
   }
 
 

@@ -8,7 +8,7 @@ import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 import FieldConstructor from '../FieldConstructor'
 
 export default ({
-  options, index, onChangeFieldSettings, id, isActive, type
+  options, column, index, onChangeFieldSettings, id, isActive, type
 }) => {
 
   const handleChangeOption = ({ target }, optionIndex) => {
@@ -36,7 +36,7 @@ export default ({
       {
         options.map((option, optionIndex) => {
           return (
-            <div key={`${index}-option-${optionIndex}`} className={`sortableGroup-column`} style={{ gridColumn: `span 3`}}>
+            <div key={`${index}-option-${optionIndex}`} className={`sortableGroup-column`} style={{ gridColumn: `span ${column}`}}>
               {
                 FieldConstructor[option.tag]({
                   key: option.tag + uuid(),
@@ -63,44 +63,48 @@ export default ({
           )
         })
       }
-      {
-        isActive && (
-          <button
-            type='button'
-            target='_blank'
-            className='btn addCheckboxOption'
-            onClick={(e) => {
-              e.stopPropagation()
-              handleAddOption()
-            }}
-          >
-            <FontAwesomeIcon
-              icon={faPlus}
-              className='addField-icon'
-            />
-            <span>Add Option</span>
-          </button>
-        )
-      }
-      {
-        (!hasOthers && isActive && ['multipleChoice', 'checkboxes'].includes(type)) && (
-          <button
-            type='button'
-            target='_blank'
-            className='btn addCheckboxOption'
-            onClick={(e) => {
-              e.stopPropagation()
-              handleAddOthers()
-            }}
-          >
-            <FontAwesomeIcon
-              icon={faPlus}
-              className='addField-icon'
-            />
-            <span>Add Other</span>
-          </button>
-        )
-      }
+      { isActive && (
+        <div className='actions'>
+          {
+            isActive && (
+              <button
+                type='button'
+                target='_blank'
+                className='btn outlined-addBtn options'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleAddOption()
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  className='addField-icon'
+                />
+                <span>Add Option</span>
+              </button>
+            )
+          }
+          {
+            (!hasOthers && isActive && ['multipleChoice', 'checkboxes'].includes(type)) && (
+              <button
+                type='button'
+                target='_blank'
+                className='btn outlined-addBtn other'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleAddOthers()
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  className='addField-icon'
+                />
+                <span>Add Other</span>
+              </button>
+            )
+          }
+        </div>
+      )}
     </>
   )
 }

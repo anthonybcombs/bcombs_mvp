@@ -42,7 +42,7 @@ export default (props) => {
       <div className='addField-actions'>
         <button
           type='button'
-          className='add-btn'
+          className='outlined-addBtn'
           onClick={(e) => {
             e.stopPropagation()
             onCloseUpdate()

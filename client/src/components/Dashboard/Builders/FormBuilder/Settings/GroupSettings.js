@@ -49,7 +49,7 @@ export default ({
               <div className='addField-actions'>
                 <button
                   type='button'
-                  className='add-btn'
+                  className='outlined-addBtn'
                   onClick={e => {
                     e.stopPropagation()
                     let newField = StandardFields.find(e => e.type === additionalField)

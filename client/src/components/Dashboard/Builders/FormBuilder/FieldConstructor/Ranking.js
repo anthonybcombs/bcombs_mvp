@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
 export default ({ items, onChangeFieldSettings }) => {
@@ -25,13 +25,14 @@ export default ({ items, onChangeFieldSettings }) => {
   }
   
   return (
-    <div>
+    <div className='ranking-items'>
       {
         items.map((item, index) => {
           return (
-            <div key={`rankingItems-${index}`} className='option'>
+            <div key={`rankingItems-${index}`} className='ranking-item'>
               <input
                 type='text'
+                className='field-input'
                 placeholder='Lowest Scale Label (optional)'
                 value={item.label}
                 onChange={(e) => handleChangeValues(e, index)}
@@ -52,12 +53,17 @@ export default ({ items, onChangeFieldSettings }) => {
         })
       }
       <button
+        className='outlined-addBtn'
         onClick={(e) => {
           e.stopPropagation()
           handleAddRow()
         }}
       >
-        Add row
+        <FontAwesomeIcon
+          icon={faPlus}
+          className='addField-icon'
+        />
+        <span>Add row</span>
       </button>
     </div>
   )

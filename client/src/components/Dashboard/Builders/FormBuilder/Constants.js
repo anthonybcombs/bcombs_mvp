@@ -67,12 +67,14 @@ export const StandardFields = [
           { name: 'option1', label: 'Option 1', tag: 'checkbox' },
           { name: 'option2', label: 'Option 2', tag: 'checkbox' },
           { name: 'option3', label: 'Option 3', tag: 'checkbox' }
-        ]
+        ],
+        column: '1'
       }
     ],
     displayLabel: 'Checkboxes',
     label: 'Checkboxes question',
     type: 'checkboxes',
+    gridMax: 1,
     isQA: true
   },
   {
@@ -84,12 +86,14 @@ export const StandardFields = [
           { name: 'option1', label: 'Option 1', tag: 'radio' },
           { name: 'option2', label: 'Option 2', tag: 'radio' },
           { name: 'option3', label: 'Option 3', tag: 'radio' }
-        ]
+        ],
+        column: '1'
       }
     ],
     displayLabel: 'Multiple Choice',
     label: 'Multiple Choice question',
     type: 'multipleChoice',
+    gridMax: 1,
     isQA: true
   },
   {
@@ -101,12 +105,14 @@ export const StandardFields = [
           { name: 'option1', label: 'Option 1', tag: 'dropdown' },
           { name: 'option2', label: 'Option 2', tag: 'dropdown' },
           { name: 'option3', label: 'Option 3', tag: 'dropdown' }
-        ]
+        ],
+        column: '1'
       }
     ],
     displayLabel: 'Dropdown',
     label: 'Dropdown question',
     type: 'dropDown',
+    gridMax: 1,
     isQA: true
   },
   {
@@ -206,12 +212,14 @@ export const StandardFields = [
           { label: '', rank: '' },
           { label: '', rank: '' },
           { label: '', rank: '' } 
-        ]
+        ],
+        column: '1'
       }
     ],
     displayLabel: 'Ranking',
     label: 'Ranking question',
     type: 'ranking',
+    gridMax: 1,
     isQa: true
   },
   {
@@ -285,7 +293,7 @@ export const PrimeFields = [
       { label: 'Rating', tag: 'rating', column: '1'}
     ],
     label: 'Rating',
-    type: 'primeRating'
+    type: 'primeRating',
   },
   {
     fields: [

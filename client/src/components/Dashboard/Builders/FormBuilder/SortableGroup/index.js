@@ -140,6 +140,7 @@ const SortableGroup = React.forwardRef(
                   key={`optionField-${field}`}
                   type={itemGroup}
                   options={options}
+                  column={column}
                   id={id}
                   index={index}
                   isActive={isActive}
@@ -176,7 +177,7 @@ const SortableGroup = React.forwardRef(
               </div>
               <button
                 type='button'
-                className='add-btn'
+                className='outlined-addBtn'
                 onClick={e => {
                   e.stopPropagation()
                   let newField = StandardFields.find(e => e.type === additionalField)
