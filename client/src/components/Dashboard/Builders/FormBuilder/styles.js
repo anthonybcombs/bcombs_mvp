@@ -24,6 +24,9 @@ export default styled.div`
     background: #f4f4f5;
   }
   #formBuilder .field-input {
+    position: relative;
+
+
     border: 0;
     cursor: text;
     color: #555;
@@ -39,6 +42,10 @@ export default styled.div`
     -webkit-appearance: none;
     -moz-appearance: none;
   }
+  #formBuilder .field-input.focus-visible {
+    border-bottom: 2px solid #f26e21;
+    transition: all .05s linear;
+  }
   #formBuilder .field-input.hasError {
     border-bottom: 1.65px solid red;
     color: red;
@@ -51,7 +58,7 @@ export default styled.div`
     position: absolute;
     right: 0;
     bottom: 18px;
-    font-size: 12px;
+    font-size: 10px;
     color: #555 !important;
     font-family: "fontawesome";
   }
@@ -818,6 +825,9 @@ export default styled.div`
   }
 
     // Ranking
+    .sortableGroup.ranking .field-input {
+      background: transparent !important;
+    }
   .sortableGroup.ranking .ranking-item {
     position: relative;
     padding: 1rem 0 0;
@@ -831,6 +841,39 @@ export default styled.div`
     padding: 8px 10px;
     border-radius: 100px;
   }
+
+    // Linear Scale
+  .sortableGroup.linearScale .field-input {
+    background: transparent !important;
+  }
+  .sortableGroup.linearScale .scale-number {
+    display: flex;
+    align-items: center;
+    margin: 1rem 1rem 2rem 3rem;
+  }
+  .sortableGroup.linearScale .scale-number >div.field {
+    width: 100%;
+    max-width: 62px;
+  }
+  .sortableGroup.linearScale .scale-number >div.field select {
+    font-weight: bolder;
+    color: #00 !important;
+    text-indent: 20px !important;
+  }
+  .sortableGroup.linearScale .scale-number >span {
+    margin: 0 1.5rem;
+  }
+  .sortableGroup.linearScale .scale-label {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+  }
+  .sortableGroup.linearScale .scale-label span {
+    width: 40px;
+    color: #555;
+    text-align: left;
+    margin-left: 1rem;
+    }
 
 
 

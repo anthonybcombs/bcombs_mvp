@@ -175,11 +175,12 @@ export const StandardFields = [
         tag: 'linear',
         min: { value: 1, label: '' },
         max: { value: 10, label: '' },
-      }
+      },
     ],
     displayLabel: 'Linear Scale',
     label: 'Linear scale question',
     type: 'linearScale',
+    gridMax: 2,
     isQa: true
   },
   {
