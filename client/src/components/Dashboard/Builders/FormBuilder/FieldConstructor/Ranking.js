@@ -33,7 +33,7 @@ export default ({ items, onChangeFieldSettings }) => {
               <input
                 type='text'
                 className='field-input'
-                placeholder='Lowest Scale Label (optional)'
+                placeholder='Item Label'
                 value={item.label}
                 onChange={(e) => handleChangeValues(e, index)}
               />

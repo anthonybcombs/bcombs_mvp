@@ -4,6 +4,7 @@ import Rating from './Rating'
 import Linear from './Linear'
 import Slider from './Slider'
 import Ranking from './Ranking'
+import FileUpload from './FileUpload'
 
 import STATES from '../../../ApplicationForm/states.json'
 import COUNTRIES from '../../../ApplicationForm/country.json'
@@ -128,8 +129,8 @@ export default {
   ranking: (props) => {
     return <Ranking {...props} />
   },
-  file: ({ label }) => {
-    return <div>{label}</div>
+  file: (props) => {
+    return <FileUpload {...props} />
   },
   sectionBreak: ({ label }) => {
     return <div>{label}</div>
