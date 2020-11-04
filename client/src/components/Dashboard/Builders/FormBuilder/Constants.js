@@ -133,6 +133,10 @@ export const StandardFields = [
           {
             statement: 'Row 2',
             answers: []
+          },
+          {
+            statement: 'Row 3',
+            answers: []
           }
         ],
         scales: [
@@ -143,13 +147,14 @@ export const StandardFields = [
           {
             label: 'Column 2',
             value: 2
-          }
+          },
         ]
       }
     ],
     displayLabel: 'Matrix / Rating',
     label: 'Matrix / Rating question',
     type: 'rating',
+    gridMax: 1,
     isQa: true,
     includeLogic: false,
   },

@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
 export default (props) => {
@@ -90,100 +90,128 @@ export default (props) => {
   }
 
   return (
-    <>
-      <table>
-        <thead>
-          <tr className='scale'>
-            <td colSpan={2} />
+    <div className='matrixRating-container'>
+      <div className='table-scroll-wrapper'>
+        <table className='matrixRating-table'>
+          <thead className='matrixRating-table-head'>
+            <tr className='scale'>
+              <th colSpan={2} className='column-head-blank'/>
+              {
+                scales.map(({ label, value }, scaleIndex) => {
+                  const cellProps = {
+                    key: `col-${scaleIndex}`,
+                    align: 'center' ,
+                  }
+                  return (
+                    <th {...cellProps} className='column-head'>
+                      <input
+                        value={label}
+                        placeholder='Scale'
+                        className='field-input'
+                        onChange={(e) => handleChangeScale(e, scaleIndex)}
+                      />
+                      <input
+                        value={value}
+                        placeholder='Value'
+                        className='field-input'
+                        onChange={(e) => handleChangeScaleValue(e, scaleIndex)}
+                      />
+                    </th>
+                  )
+                })
+              }
+            </tr>
+          </thead>
+          <tbody className='matrixRating-table-body'>
             {
-              scales.map(({ label, value }, scaleIndex) => {
-                const cellProps = {
-                  key: `col-${scaleIndex}`,
-                  align: 'left' ,
-                }
+              choices.map(({ statement, answers }, index) => {
+                // const [valueError = '', statementError = ''] = errors && errors.choices ? (errors.choices[index] || []) : []
                 return (
-                  <td {...cellProps}>
-                    <input
-                      value={label}
-                      placeholder='Scale'
-                      onChange={(e) => handleChangeScale(e, scaleIndex)}
-                    />
-                    <input
-                      value={value}
-                      placeholder='Value'
-                      onChange={(e) => handleChangeScaleValue(e, scaleIndex)}
-                    />
-                  </td>
+                  <tr key={`statement-${index}`} className='choiceRow'>
+                    <td align='right' className='removeStatement'>
+                      {
+                        choices.length > 1
+                        && (
+                          <FontAwesomeIcon
+                            icon={faTimes}
+                            onClick={e => {
+                              e.stopPropagation()
+                              handleRemoveStatement(index)
+                            }}
+                          />
+                        )
+                      }
+                    </td>
+                    <td align='right' className='choices'>
+                      <input
+                        value={statement}
+                        className='inputChoice'
+                        className='field-input'
+                        placeholder='Type your statement here'
+                        onChange={(e) => handleChangeStatement(e, index)}
+                      />
+                    </td>
+                    {
+                      scales.map((scale, scaleIndex) => {
+                        return (
+                          <td key={`scale=${scaleIndex}`} align='center' className='checkbox'>
+                            <input
+                              type={isMultiple ? 'checkbox' : 'radio'}
+                            />
+                          </td>
+                        )
+                      })
+                    }
+                  </tr>
                 )
               })
             }
-          </tr>
-        </thead>
-        <tbody>
-          {
-            choices.map(({ statement, answers }, index) => {
-              // const [valueError = '', statementError = ''] = errors && errors.choices ? (errors.choices[index] || []) : []
-              return (
-                <tr key={`statement-${index}`} className='choiceRow'>
-                  <td align='right' className='removeStatement'>
-                    {
-                      choices.length > 1
-                      && (
+            <tr>
+              <td colSpan={2}>
+                <div className='actions'>
+                  <button
+                    className='outlined-addBtn'
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleAddStatement()
+                    }}
+                  >
+                    Add Row
+                  </button>
+                  <button
+                    className='outlined-addBtn'
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleAddScale()
+                    }}
+                  >
+                    Add Column
+                  </button>
+                </div>
+              </td>
+              {
+                scales.length > 1
+                && scales.map((e, removeIndex) => (
+                    <td key={`remove-${removeIndex}`} align='center'>
+                      <div className='tooltip-wrapper removeScale'>
                         <FontAwesomeIcon
-                          icon={faTimes}
-                          onClick={e => {
+                          icon={faMinusCircle}
+                          onClick={(e) => {
                             e.stopPropagation()
-                            handleRemoveStatement(index)
+                            handleRemoveScale(removeIndex)
                           }}
                         />
-                      )
-                    }
-                  </td>
-                  <td align='right' className='choices'>
-                    <input
-                      value={statement}
-                      className='inputChoice'
-                      placeholder='Type your statement here'
-                      onChange={(e) => handleChangeStatement(e, index)}
-                    />
-                  </td>
-                  {
-                    scales.map((scale, scaleIndex) => {
-                      return (
-                        <td key={`scale=${scaleIndex}`} align='center' className='checkbox'>
-                          <input
-                            type={isMultiple ? 'checkbox' : 'radio'}
-                          />
-                        </td>
-                      )
-                    })
-                  }
-                </tr>
-              )
-            })
-          }
-          <tr>
-            <td colSpan={2} />
-            {
-              scales.length > 1
-              && scales.map((e, removeIndex) => (
-                  <td key={`remove-${removeIndex}`} align='left'>
-                    <button
-                      className='removeIcon removeScale'
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleRemoveScale(removeIndex)
-                      }}
-                    >
-                      Remove Scale
-                    </button>
-                  </td>
-                ))
-            }
-          </tr>
-        </tbody>
-      </table>
-      <div>
+                        <span className='tooltip'>Remove Scale</span>
+                      </div>
+                    </td>
+                  ))
+              }
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {/* <div>
         <button
           onClick={(e) => {
             e.stopPropagation()
@@ -200,7 +228,7 @@ export default (props) => {
         >
           Add Column
         </button>
-      </div>
-    </>
+      </div> */}
+    </div>
   )
 }

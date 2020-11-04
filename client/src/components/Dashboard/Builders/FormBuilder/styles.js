@@ -915,7 +915,6 @@ export default styled.div`
     font-size: 14px;
   }
 
-
     // File Upload
   .sortableGroup.file input.field-input {
     background: transparent !important;
@@ -942,6 +941,94 @@ export default styled.div`
     color: #f44336;
     font-size: 12px;
   }
+
+    // Matrix/Rating
+  .sortableGroup.rating .matrixRating-container input.field-input {
+    background: transparent !important;
+  }
+  .matrixRating-container {
+    // background: #f1f1f1;
+  }
+  .matrixRating-container .table-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    max-width: calc(100vw - 32rem);
+    // background: #f1f1f1;
+  }
+  .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 5px;
+  }
+  .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar-track {
+    border-radius: 10px;
+    transition: 0.5s ease-in-out;
+    background: rgb(243 110 34 / 20%);
+  }
+  .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #f36e22;
+    border-radius: 10px;
+  }
+
+
+  .matrixRating-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 0;
+    margin-bottom: 20px;
+    table-layout: auto;
+  }
+  .matrixRating-table > thead > tr th.column-head {
+    max-width: 150px;
+    min-width: 100px;
+    padding: 0 .5rem;
+  }
+  .matrixRating-table > thead > tr th.column-head input {
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+  }
+  .matrixRating-table > tbody > tr.choiceRow {
+    height: 50px;
+  }
+  .matrixRating-table > tbody > tr.choiceRow:nth-child(even) {
+    background: #f1f1f1;
+  }
+  .matrixRating-table > tbody > tr td.removeStatement svg {
+    color: #f44336;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 100px;
+  }
+  .matrixRating-table > tbody > tr td.removeStatement {
+    width: 10px !important;
+  }
+  .matrixRating-table > tbody > tr td.choices {
+    width: 200px !important;
+  }
+  .matrixRating-table > tbody > tr td input {
+    width: 200px !important;
+  }
+  .matrixRating-table > tbody > tr td >div.actions {
+    display: flex;
+    position: relative;
+    left: 37px;
+    top: 5px;
+  }
+  .matrixRating-table > tbody > tr td >div.actions .outlined-addBtn {
+    padding: 8px 17px !important;
+    margin: 0 8px!important;
+    white-space: pre;
+  }
+  .matrixRating-table > tbody > tr td >div.removeScale {
+    width: 88px !important;
+  }
+  .matrixRating-table > tbody > tr td >div.removeScale svg {
+    color: #f44336;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 100px;
+  }
+
 
 
   // ====================================
