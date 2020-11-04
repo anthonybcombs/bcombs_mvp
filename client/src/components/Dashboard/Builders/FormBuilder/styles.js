@@ -825,7 +825,7 @@ export default styled.div`
   }
 
     // Ranking
-    .sortableGroup.ranking .field-input {
+    .sortableGroup.ranking input.field-input {
       background: transparent !important;
     }
   .sortableGroup.ranking .ranking-item {
@@ -843,13 +843,13 @@ export default styled.div`
   }
 
     // Linear Scale
-  .sortableGroup.linearScale .field-input {
+  .sortableGroup.linearScale input.field-input {
     background: transparent !important;
   }
   .sortableGroup.linearScale .scale-number {
     display: flex;
     align-items: center;
-    margin: 1rem 1rem 2rem 3rem;
+    margin: 1rem 1rem 1rem 3rem;
   }
   .sortableGroup.linearScale .scale-number >div.field {
     width: 100%;
@@ -873,10 +873,75 @@ export default styled.div`
     color: #555;
     text-align: left;
     margin-left: 1rem;
-    }
+  }
+
+    // Slider
+  .sortableGroup.slider input.field-input {
+    background: transparent !important;
+  }
+  .sortableGroup.slider .tooltip-wrapper p {
+    margin-bottom: 0;
+  }
+  .sortableGroup.slider .tooltip-wrapper p >svg {
+    position: relative;
+    top: -3px;
+    right: -3px;
+    color: gray;
+  }
+  .sortableGroup.slider .slider-scale-number {
+    display: flex;
+    align-items: center;
+  }
+  .sortableGroup.slider .slider-scale-number >input {
+    max-width: 62px;
+    text-align: center;
+  }
+  .sortableGroup.slider .slider-scale-number >span {
+    margin: 0 1.5rem;
+  }
+  .sortableGroup.slider .slider-scale-range p {
+    margin-bottom: 0;
+    margin-top: 2rem;
+    font-weight: 600;
+  }
+  .sortableGroup.slider .slider-scale-range label {
+    display: flex;
+    align-items: center;
+  }
+  .sortableGroup.slider .slider-scale-range label span {
+    white-space: pre;
+    width: 141px;
+    color: #555;
+    font-size: 14px;
+  }
 
 
-
+    // File Upload
+  .sortableGroup.file input.field-input {
+    background: transparent !important;
+  }
+  .sortableGroup.file .fileTypes p {
+    margin-bottom: 0;
+  }
+  .sortableGroup.file .fileTypes .options {
+    display: flex;
+    align-items: center;
+  }
+  .sortableGroup.file .fileTypes .options .checkboxContainer {
+    margin-right: .5rem;
+  }
+  .sortableGroup.file .validation .input-wrapper label {
+    color: gray;
+    font-size: 12px;
+  }
+  .sortableGroup.file .validation p {
+    margin-top: 2rem;
+    margin-bottom: 0;
+  }
+  .sortableGroup.file .validation .limit-size {
+    color: #f44336;
+    font-size: 12px;
+  }
 
 
   // ====================================

@@ -187,6 +187,7 @@ export const StandardFields = [
     displayLabel: 'Slider',
     label: 'Slider question',
     type: 'slider',
+    gridMax: 2,
     isQa: true,
     includeLogic: false
   },
@@ -264,6 +265,7 @@ export const StandardFields = [
     label: 'File upload question',
     type: 'file',
     includeLogic: false,
+    gridMax: 1,
     isQA: true
   },
   {
