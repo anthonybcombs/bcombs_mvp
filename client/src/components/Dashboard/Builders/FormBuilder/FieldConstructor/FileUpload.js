@@ -24,17 +24,6 @@ export default ({ instruction, allowedTypes, limit, errorMessage, onChangeFieldS
 
   return (
     <div className='fileUpload-container'>
-      {/* <div className='instruction'>
-        Instruction for respondent
-        <br />
-        <input
-          className='field-input'
-          value={instruction}
-          placeholder='Type instruction for respondent'
-          onChange={(e) => handleChangeValues(e, 'instruction')}
-        />
-      </div> */}
-
       <div className='fileTypes'>
         <p>Allowable file types</p>
         <div className='options'>
