@@ -4,14 +4,14 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
 export default (props) => {
-  const { scales, choices, onChangeFieldSettings } = props
+  const { scales, choices, onChangeFieldSettings, isMultiple = false } = props
 
   const handleAddStatement = () => {
     onChangeFieldSettings({
       choices: [
         ...choices,
         {
-          statement: `Statement ${choices.length + 1}`,
+          statement: `Row ${choices.length + 1}`,
           answers: []
         }
       ]
@@ -44,7 +44,7 @@ export default (props) => {
       scales: [
         ...scales,
         {
-          label: `Scale ${scales.length + 1}`,
+          label: `Column ${scales.length + 1}`,
           value: scales[scales.length - 1].value + 1 || 1
         }
       ]
@@ -152,7 +152,7 @@ export default (props) => {
                       return (
                         <td key={`scale=${scaleIndex}`} align='center' className='checkbox'>
                           <input
-                            type='radio'
+                            type={isMultiple ? 'checkbox' : 'radio'}
                           />
                         </td>
                       )
@@ -190,7 +190,7 @@ export default (props) => {
             handleAddStatement()
           }}
         >
-          Add a statement
+          Add Row
         </button>
         <button
           onClick={(e) => {
@@ -198,7 +198,7 @@ export default (props) => {
             handleAddScale()
           }}
         >
-          Add Scale
+          Add Column
         </button>
       </div>
     </>

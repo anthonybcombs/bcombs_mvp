@@ -127,38 +127,24 @@ export const StandardFields = [
         tag: 'rating',
         choices: [
           {
-            statement: 'Statement 1',
+            statement: 'Row 1',
             answers: []
           },
           {
-            statement: 'Statement 2',
+            statement: 'Row 2',
             answers: []
           }
         ],
         scales: [
           {
-            label: 'Strongly Agree',
+            label: 'Column 1',
             value: 1
           },
           {
-            label: 'Agree',
+            label: 'Column 2',
             value: 2
-          },
-          {
-            label: 'Undecided',
-            value: 3
-          },
-          {
-            label: 'Disagree',
-            value: 4
-          },
-          {
-            label: 'Strongly Disagree',
-            value: 5
           }
-        ],
-        isMultiple: false,
-        position: 'vertical',
+        ]
       }
     ],
     displayLabel: 'Matrix / Rating',
@@ -206,10 +192,36 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Checkbox Grid', tag: 'checkbox', isGrid: true, column: '1'}
+      {
+        label: 'Checkbox Grid',
+        tag: 'checkboxGrid',
+        choices: [
+          {
+            statement: 'Row 1',
+            answers: []
+          },
+          {
+            statement: 'Row 2',
+            answers: []
+          }
+        ],
+        scales: [
+          {
+            label: 'Column 1',
+            value: 1
+          },
+          {
+            label: 'Column 2',
+            value: 2
+          }
+        ]
+      }
     ],
-    label: 'Checkbox Grid',
-    type: 'checkboxGrid'
+    displayLabel: 'Checkbox Grid',
+    label: 'Checkbox grid question',
+    type: 'checkboxGrid',
+    isQa: true,
+    includeLogic: false,
   },
   {
     fields: [

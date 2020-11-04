@@ -132,6 +132,9 @@ export default {
   file: (props) => {
     return <FileUpload {...props} />
   },
+  checkboxGrid: (props) => {
+    return <Rating {...props} isMultiple />
+  },
   sectionBreak: ({ label }) => {
     return <div>{label}</div>
   },
