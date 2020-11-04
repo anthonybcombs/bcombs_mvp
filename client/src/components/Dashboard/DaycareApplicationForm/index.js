@@ -145,7 +145,7 @@ export default function index() {
   
   const [vendor, setVendor] = useState({});
   const [selectedStep, setSelectedStep] = useState(1);
-
+  const [isParentAddressRequired,setIsParentAddressRequired] = useState(false)
   const dispatch = useDispatch();
 
   const { vendors, loading, applications } = useSelector(
@@ -715,7 +715,9 @@ export default function index() {
           !profile.goals_parent_program ||
           !profile.goals_child_program ||
           !profile.gender ||
-          !profile.date_of_birth) {
+          !profile.date_of_birth ||
+          (isParentAddressRequired && (!profile.address || !profile.zip_code || !profile.state || !profile.city))
+          ) {
             isValid = false;
             break;
           }
@@ -726,6 +728,7 @@ export default function index() {
           !emergencyContacts[i].last_name ||
           !emergencyContacts[i].gender ||
           !emergencyContacts[i].mobile_phone ||
+          !emergencyContacts[i].work_phone ||
           !emergencyContacts[i].relationship_to_child) {
             isValid = false;
             break;
@@ -940,6 +943,7 @@ export default function index() {
                           errors={errors}
                           emergencyContacts={emergencyContacts}
                           ProfileImg={ProfileImg}
+                          setIsParentAddressRequired={setIsParentAddressRequired}
                         />
                       </div>
                       {selectedStep == 5 && <hr className="style-eight"></hr>}
