@@ -195,6 +195,7 @@ export const StandardFields = [
     displayLabel: 'Slider',
     label: 'Slider question',
     type: 'slider',
+    gridMax: 2,
     isQa: true
   },
   {

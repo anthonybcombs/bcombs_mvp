@@ -849,7 +849,7 @@ export default styled.div`
   .sortableGroup.linearScale .scale-number {
     display: flex;
     align-items: center;
-    margin: 1rem 1rem 2rem 3rem;
+    margin: 1rem 1rem 1rem 3rem;
   }
   .sortableGroup.linearScale .scale-number >div.field {
     width: 100%;
@@ -873,9 +873,47 @@ export default styled.div`
     color: #555;
     text-align: left;
     margin-left: 1rem;
-    }
+  }
 
-
+    // Slider
+  .sortableGroup.slider .field-input {
+    background: transparent !important;
+  }
+  .sortableGroup.slider .tooltip-wrapper p {
+    margin-bottom: 0;
+  }
+  .sortableGroup.slider .tooltip-wrapper p >svg {
+    position: relative;
+    top: -3px;
+    right: -3px;
+    color: gray;
+  }
+  .sortableGroup.slider .slider-scale-number {
+    display: flex;
+    align-items: center;
+  }
+  .sortableGroup.slider .slider-scale-number >input {
+    max-width: 62px;
+    text-align: center;
+  }
+  .sortableGroup.slider .slider-scale-number >span {
+    margin: 0 1.5rem;
+  }
+  .sortableGroup.slider .slider-scale-range p {
+    margin-bottom: 0;
+    margin-top: 2rem;
+    font-weight: 600;
+  }
+  .sortableGroup.slider .slider-scale-range label {
+    display: flex;
+    align-items: center;
+  }
+  .sortableGroup.slider .slider-scale-range label span {
+    white-space: pre;
+    width: 141px;
+    color: #555;
+    font-size: 14px;
+  }
 
 
 
