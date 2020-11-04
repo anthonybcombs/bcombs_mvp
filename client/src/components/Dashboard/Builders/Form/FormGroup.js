@@ -31,20 +31,20 @@ export default ({
 
   return (
     <div
-      className={`sortableGroup`}
+      className={`formGroup ${itemGroup}`}
     >   
-      <p className='sortableGroup-name'>{label}</p>
-      <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
+      <p className='formGroup-name'>{label}</p>
+      <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {
           cloneDeep(fields).map((field, index) => {
             const { type = '', tag, options, column = 1, id: fieldId } = field
             const errors = fieldError[fieldId] || []
             const hasError = errors.length ? !!errors.find(e => e) : false
  
-            if (type !== 'group') {
+            if (type !== 'option') {
               return (
                 <div
-                  className={`sortableGroup-column`}
+                  className={`formGroup-column`}
                   style={{ gridColumn: `span ${column}`}}
                 >
                   {
@@ -67,7 +67,7 @@ export default ({
             } else {
               return options.map(option => {
                 return (
-                  <div className={`sortableGroup-column`} style={{ gridColumn: `span 3`}}>
+                  <div className={`formGroup-column`} style={{ gridColumn: `span 3`}}>
                     {
                       FieldConstructor[option.tag]({
                         key: option.tag + uuid(),

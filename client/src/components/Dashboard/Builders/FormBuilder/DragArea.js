@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
-import { StandardFields, PrimeFields } from './Constants'
+import { StandardFields, PrimeFields } from './Fields'
 import DraggableField from './DraggbleField'
 
 export default ({ handleBuilderDrawerOpen, form_id }) => {

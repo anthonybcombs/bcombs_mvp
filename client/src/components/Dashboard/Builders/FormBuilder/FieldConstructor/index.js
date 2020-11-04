@@ -1,5 +1,8 @@
 import React from 'react'
 
+import Checkboxes from './Checkboxes'
+import MultipleChoice from './MultipleChoice'
+import DropDown from './DropDown'
 import Rating from './Rating'
 import Linear from './Linear'
 import Slider from './Slider'
@@ -51,6 +54,12 @@ export default {
       </label>
     )
   },
+  checkboxes: (props) => {
+    return <Checkboxes {...props} />
+  },
+  multipleChoice: (props) => {
+    return <MultipleChoice {...props} />
+  },
   radio: ({ label, name, isBuilder, onChange }) => {
     return (
       <label for={name} className='radiobuttonContainer'>
@@ -73,22 +82,23 @@ export default {
       </label>
     )
   },
-  dropdown: ({ label, name, isBuilder, onChange, index }) => {
-    return (
-      <div className='option'>
-        <span>{index + 1}.</span>
-        {
-          isBuilder
-            ? <input
-                type='text'
-                className={`field-input`}
-                value={label}
-                onChange={onChange}
-              />
-            : <span className='labelName'> {label}</span>
-        }
-      </div>
-    )
+  dropdown: (props) => {
+    return <DropDown {...props} />
+    // return (
+    //   <div className='option'>
+    //     <span>{index + 1}.</span>
+    //     {
+    //       isBuilder
+    //         ? <input
+    //             type='text'
+    //             className={`field-input`}
+    //             value={label}
+    //             onChange={onChange}
+    //           />
+    //         : <span className='labelName'> {label}</span>
+    //     }
+    //   </div>
+    // )
   },
   select: ({ options, label: fieldLabel, type, className = '', isBuilder = false, ...rest }) => {
     return (

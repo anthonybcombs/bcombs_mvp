@@ -7,7 +7,7 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faCheck, faBars } from '@fortawesome/free-solid-svg-icons'
 
-import { Items } from './Constants'
+import { Items } from './Fields'
 import SortableGroup from './SortableGroup'
 import CustomDragLayer from './CustomDragLayer'
 

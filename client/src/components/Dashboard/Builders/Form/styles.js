@@ -94,10 +94,10 @@ export default styled.div`
 
 
   // ===============================================
-  // ********* START SORTABLE FIELD GROUPS *********
+  // ********* START FORM FIELD GROUPS *********
   // ===============================================
 
-  .sortableGroup {
+  .formGroup {
     position: relative;
     overflow: hidden;
 
@@ -107,20 +107,20 @@ export default styled.div`
     border-radius: 3px;
     border: 1px dashed transparent;
   }
-  .sortableGroup:hover .sortableGroup-actions >div svg {
+  .formGroup:hover .formGroup-actions >div svg {
     opacity: 1;
     visibility: visible;
     transition: all .15s ease-in-out
   }
 
-  .sortableGroup-name {
+  .formGroup-name {
     color: #f26e21;
     margin: 0 0 -10px 0;
     letter-spacing: 1.3px;
   }
 
 
-  .sortableGroup-row {
+  .formGroup-row {
     display: grid;
     align-items: center;
     grid-column-gap: 2%;
@@ -128,7 +128,7 @@ export default styled.div`
   }
 
 
-  .sortableGroup-column {
+  .formGroup-column {
     position: relative;
     padding-top: 1rem !important;
   }
@@ -139,7 +139,7 @@ export default styled.div`
 
 
   // =============================================
-  // ********* END SORTABLE FIELD GROUPS *********
+  // ********* END FORM FIELD GROUPS *********
   // =============================================
 
 
@@ -280,7 +280,7 @@ export default styled.div`
   // =================================
 
   @media (max-width: 640px) {
-    .sortableGroup-row {
+    .formGroup-row {
       display: block;
     }
   }

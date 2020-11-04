@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StandardFields } from '../Constants'
+import { StandardFields } from '../Fields'
 import cloneDeep from 'lodash.clonedeep'
 
 export default ({
