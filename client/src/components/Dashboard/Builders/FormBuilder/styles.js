@@ -943,6 +943,7 @@ export default styled.div`
   }
 
     // Matrix/Rating
+  .sortableGroup.checkboxGrid .matrixRating-container input.field-input,
   .sortableGroup.rating .matrixRating-container input.field-input {
     background: transparent !important;
   }
@@ -957,7 +958,7 @@ export default styled.div`
   }
   .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar {
     width: 8px;
-    height: 5px;
+    height: 8px;
   }
   .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar-track {
     border-radius: 10px;
@@ -969,12 +970,11 @@ export default styled.div`
     border-radius: 10px;
   }
 
-
   .matrixRating-table {
     width: 100%;
     border-collapse: collapse;
     border: 0;
-    margin-bottom: 20px;
+    margin-bottom: 32px;
     table-layout: auto;
   }
   .matrixRating-table > thead > tr th.column-head {
@@ -983,9 +983,9 @@ export default styled.div`
     padding: 0 .5rem;
   }
   .matrixRating-table > thead > tr th.column-head input {
-    color: #000;
     font-weight: bold;
     text-align: center;
+    color: #000 !important;
   }
   .matrixRating-table > tbody > tr.choiceRow {
     height: 50px;
