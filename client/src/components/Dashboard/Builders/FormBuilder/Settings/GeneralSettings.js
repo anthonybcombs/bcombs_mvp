@@ -138,7 +138,7 @@ export default ({
 
   const showOptions = !showSettings || isActive
   return (
-    <div className='group-settings' style={{ marginTop: isActive ? '10rem' : '2rem' }}>
+    <div className='group-settings' style={{ marginTop: isActive ? '8rem' : '2rem' }}>
       {/* Start For Field with options */}
       {
         options &&
