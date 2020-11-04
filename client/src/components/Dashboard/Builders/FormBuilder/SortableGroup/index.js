@@ -15,8 +15,8 @@ const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
     hidden, label, fields, isDragging, id, type: itemGroup, gridMax: gridColRepeat,
-    onRemoveGroup, settings: generalSettings, allowAddField,
-    isActive, onActive, onChangeGeneralSettings,
+    onRemoveGroup, settings: generalSettings, allowAddField, includeLogic,
+    includeValidation, isActive, onActive, onChangeGeneralSettings, 
     groupType, onMergeStandardFields, onDuplicateGroup,
     onRemoveGroupField, onChangeFieldSettings, onChangeGroupName,
     onApplyValidationToAll
@@ -214,6 +214,8 @@ const SortableGroup = React.forwardRef(
               }
             }}
             generalSettings={generalSettings}
+            includeLogic={includeLogic}
+            includeValidation={includeValidation}
             fieldSettings={fieldIndex !== '' ? fields[fieldIndex] : {}}
             hasSelectedField={fieldIndex !== ''}
             allowAddField={allowAddField}

@@ -658,7 +658,7 @@ export default styled.div`
     flex-wrap: wrap;
     align-items: flex-start;
     justify-content: space-between;
-    align-items: center;
+    align-items: end;
 
     padding: 1rem;
     margin: 5px -8px -8px;
@@ -825,7 +825,7 @@ export default styled.div`
   }
 
     // Ranking
-    .sortableGroup.ranking .field-input {
+    .sortableGroup.ranking input.field-input {
       background: transparent !important;
     }
   .sortableGroup.ranking .ranking-item {
@@ -843,7 +843,7 @@ export default styled.div`
   }
 
     // Linear Scale
-  .sortableGroup.linearScale .field-input {
+  .sortableGroup.linearScale input.field-input {
     background: transparent !important;
   }
   .sortableGroup.linearScale .scale-number {
@@ -876,7 +876,7 @@ export default styled.div`
   }
 
     // Slider
-  .sortableGroup.slider .field-input {
+  .sortableGroup.slider input.field-input {
     background: transparent !important;
   }
   .sortableGroup.slider .tooltip-wrapper p {
