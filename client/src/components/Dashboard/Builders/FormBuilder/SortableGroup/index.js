@@ -8,7 +8,6 @@ import { faGripHorizontal, faEdit, faPlus } from '@fortawesome/free-solid-svg-ic
 import { Items, StandardFields } from '../Fields'
 import GeneralSettings from '../Settings/GeneralSettings'
 import Field from './Field'
-import OptionField from './OptionField'
 
 const SortableGroup = React.forwardRef(
   ({ 
@@ -114,40 +113,25 @@ const SortableGroup = React.forwardRef(
             const { column } = field
             const columnInt = column * 1
             const isActiveField = fieldIndex === index
-            // if (type !== 'option') {
-              return (
-                <Field
-                  key={`field-${index}`}
-                  id={id}
-                  index={index}
-                  field={field}
-                  type={itemGroup}
-                  fieldsCount={fields.length}
-                  isActive={isActive}
-                  isActiveField={isActiveField}
-                  columnInt={columnInt}
-                  isStandard={isStandard}
-                  gridColRepeat={gridColRepeat}
-                  setActiveFieldIndex={setActiveFieldIndex}
-                  onActive={onActive}
-                  onChangeFieldSettings={(data) => onChangeFieldSettings(data, index, id)}
-                  onRemoveGroupField={onRemoveGroupField}
-                />
-              )
-            // } else {
-            //   return (
-            //     <OptionField
-            //       key={`optionField-${field}`}
-            //       type={itemGroup}
-            //       options={options}
-            //       column={column}
-            //       id={id}
-            //       index={index}
-            //       isActive={isActive}
-            //       onChangeFieldSettings={onChangeFieldSettings}
-            //     />
-            //   )
-            // }
+            return (
+              <Field
+                key={`field-${index}`}
+                id={id}
+                index={index}
+                field={field}
+                type={itemGroup}
+                fieldsCount={fields.length}
+                isActive={isActive}
+                isActiveField={isActiveField}
+                columnInt={columnInt}
+                isStandard={isStandard}
+                gridColRepeat={gridColRepeat}
+                setActiveFieldIndex={setActiveFieldIndex}
+                onActive={onActive}
+                onChangeFieldSettings={(data) => onChangeFieldSettings(data, index, id)}
+                onRemoveGroupField={onRemoveGroupField}
+              />
+            )
           })
         }
         {
