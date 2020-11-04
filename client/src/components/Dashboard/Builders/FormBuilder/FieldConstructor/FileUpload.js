@@ -23,48 +23,51 @@ export default ({ instruction, allowedTypes, limit, errorMessage, onChangeFieldS
   }
 
   return (
-    <div>
-      <div>
+    <div className='fileUpload-container'>
+      {/* <div className='instruction'>
         Instruction for respondent
         <br />
         <input
+          className='field-input'
           value={instruction}
           placeholder='Type instruction for respondent'
           onChange={(e) => handleChangeValues(e, 'instruction')}
         />
+      </div> */}
+
+      <div className='fileTypes'>
+        <p>Allowable file types</p>
+        <div className='options'>
+          {
+            allowedTypes.map(({ label, selected }, index) => {
+              return (
+                <label key={`allowedType-${index}`} className='checkboxContainer'>
+                  <input
+                    type='checkbox'
+                    checked={selected}
+                    onChange={(e) => handleChangeTypes(e, index)}
+                  />
+                  <span className='checkmark' />
+                  <span className='labelName'> {label}</span>
+                </label>
+              )
+            })
+          }
+        </div>
       </div>
-      <div>
-        Allowable file types
-        <br />
-        {
-          allowedTypes.map(({ label, selected }, index) => {
-            return (
-              <label key={`allowedType-${index}`} className='checkboxContainer'>
-                <input
-                  type='checkbox'
-                  checked={selected}
-                  onChange={(e) => handleChangeTypes(e, index)}
-                />
-                <span className='checkmark' />
-                <span className='labelName'> {label}</span>
-              </label>
-            )
-          })
-        }
-      </div>
-      <div>
-        Validation Message
-        <br />
-        <span>When an invalid file type is uploaded, display this error message.</span>
-        <br />
-        <input
-          placeholder='Error message when file type is not allowed'
-          value={errorMessage}
-          onChange={e => handleChangeValues(e, 'errorMessage')}
-        />
-      </div>
-      <div>
-        File size limit is {limit}MB
+      <div className='validation'>
+        <p>Validation Message</p>
+        <div className='input-wrapper'>
+          <label for='error-msg'>When an invalid file type is uploaded, display this error message.</label>
+          <input
+            id='error-msg'
+            className='field-input'
+            placeholder='Error message when file type is not allowed'
+            value={errorMessage}
+            onChange={e => handleChangeValues(e, 'errorMessage')}
+          />
+        </div>
+        <span className='limit-size'>File size limit is {limit}MB</span>
       </div>
     </div>
   )

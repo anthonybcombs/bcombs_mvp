@@ -253,6 +253,7 @@ export const StandardFields = [
     label: 'File upload question',
     type: 'file',
     includeLogic: false,
+    gridMax: 1,
     isQA: true
   },
   {

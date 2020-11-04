@@ -916,6 +916,33 @@ export default styled.div`
   }
 
 
+    // File Upload
+  .sortableGroup.file input.field-input {
+    background: transparent !important;
+  }
+  .sortableGroup.file .fileTypes p {
+    margin-bottom: 0;
+  }
+  .sortableGroup.file .fileTypes .options {
+    display: flex;
+    align-items: center;
+  }
+  .sortableGroup.file .fileTypes .options .checkboxContainer {
+    margin-right: .5rem;
+  }
+  .sortableGroup.file .validation .input-wrapper label {
+    color: gray;
+    font-size: 12px;
+  }
+  .sortableGroup.file .validation p {
+    margin-top: 2rem;
+    margin-bottom: 0;
+  }
+  .sortableGroup.file .validation .limit-size {
+    color: #f44336;
+    font-size: 12px;
+  }
+
 
   // ====================================
   // ********* Customs  **********
