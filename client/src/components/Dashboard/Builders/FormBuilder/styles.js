@@ -658,7 +658,7 @@ export default styled.div`
     flex-wrap: wrap;
     align-items: flex-start;
     justify-content: space-between;
-    align-items: center;
+    align-items: end;
 
     padding: 1rem;
     margin: 5px -8px -8px;

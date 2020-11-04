@@ -11,6 +11,8 @@ export default ({
   hasSelectedField,
   showSettings,
   isActive,
+  includeLogic,
+  includeValidation,
   validationAppliedToAll,
   onChangeGeneralSettings,
   onChangeFieldSettings,
@@ -18,7 +20,7 @@ export default ({
   onDuplicateGroup,
   onApplyValidationToAll,
 }) => {
-
+  console.log('zzzz',generalSettings)
   const { validationTypes, validationOptions } = Sources
 
   const validationOptionsArr = (valType) => Object.entries(validationOptions[valType || 'text'])
@@ -355,22 +357,25 @@ export default ({
               <span className='checkmark'/>
               <span className='labelName'> Required</span>
             </label>
-
-            <label for='validation' className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
-              <input
-                type='checkbox'
-                id='validation'
-                name='validation'
-                disabled={!hasSelectedField}
-                checked={!!validation.include}
-                onChange={e => {
-                  e.stopPropagation()
-                  handleChangeFieldSettings({ validation: { include: e.target.checked, items: [defaultValidation] } })
-                }}
-              />
-              <span className='checkmark'/>
-              <span className='labelName'> Validation</span>
-            </label>
+            {
+              includeValidation && (
+                <label for='validation' className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
+                  <input
+                    type='checkbox'
+                    id='validation'
+                    name='validation'
+                    disabled={!hasSelectedField}
+                    checked={!!validation.include}
+                    onChange={e => {
+                      e.stopPropagation()
+                      handleChangeFieldSettings({ validation: { include: e.target.checked, items: [defaultValidation] } })
+                    }}
+                  />
+                  <span className='checkmark'/>
+                  <span className='labelName'> Validation</span>
+                </label>
+              )
+            }
           </div>
         </div>
 
@@ -383,21 +388,25 @@ export default ({
           </div>
 
           <div className='settings-content'>
-          <label for='logic' className={`checkboxContainer`} >
-              <input
-                type='checkbox'
-                id='logic'
-                name='logic'
-                disabled={!hasSelectedField}
-                checked={!!logic.include}
-                onChange={e => {
-                  e.stopPropagation()
-                  handleChangeGeneralSettings({ include: e.target.checked }, 'logic')
-                }}
-              />
-              <span className='checkmark'/>
-              <span className='labelName'> Logic</span>
-            </label>
+            {
+              includeLogic && (
+                <label for='logic' className={`checkboxContainer`} >
+                  <input
+                    type='checkbox'
+                    id='logic'
+                    name='logic'
+                    disabled={!hasSelectedField}
+                    checked={!!logic.include}
+                    onChange={e => {
+                      e.stopPropagation()
+                      handleChangeGeneralSettings({ include: e.target.checked }, 'logic')
+                    }}
+                  />
+                  <span className='checkmark'/>
+                  <span className='labelName'> Logic</span>
+                </label>
+              )
+            }
 
             <label for='instruction' className='checkboxContainer'>
               <input

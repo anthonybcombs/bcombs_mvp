@@ -8,7 +8,7 @@ export default ({
   id, index, field, fieldsCount, isActive, isActiveField, columnInt, isStandard, gridColRepeat,
   setActiveFieldIndex, onActive, onChangeFieldSettings, onRemoveGroupField,
 }) => {
-  const { tag, column, placeholder } = field
+  const { tag, column, placeholder, fixedWidth = false } = field
   return (
     <div
       className={`sortableGroup-column ${isActiveField ? 'active' : ''}`}
@@ -31,7 +31,7 @@ export default ({
         })
       }
       {
-        (isActive && isActiveField) && (
+        (!fixedWidth && isActive && isActiveField) && (
           <div className='column-adjuster'>
             {
               columnInt > 1 && (

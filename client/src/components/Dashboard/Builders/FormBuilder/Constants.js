@@ -39,7 +39,9 @@ export const StandardFields = [
     label: 'Single Line Text',
     type: 'singleLineText',
     canBeGrouped: true,
-    allowAddField: true
+    allowAddField: true,
+    includeLogic: false,
+    includeValidation: true
   },
   // {
   //   fields: [
@@ -56,7 +58,9 @@ export const StandardFields = [
     label: 'Paragraph Text',
     type: 'paragraphText',
     canBeGrouped: true,
-    allowAddField: true
+    allowAddField: true,
+    includeLogic: false,
+    includeValidation: true,
   },
   {
     fields: [
@@ -75,7 +79,8 @@ export const StandardFields = [
     label: 'Checkboxes question',
     type: 'checkboxes',
     gridMax: 1,
-    isQA: true
+    isQA: true,
+    includeValidation: true
   },
   {
     fields: [
@@ -159,7 +164,8 @@ export const StandardFields = [
     displayLabel: 'Matrix / Rating',
     label: 'Matrix / Rating question',
     type: 'rating',
-    isQa: true
+    isQa: true,
+    includeLogic: false,
   },
   {
     fields: [
@@ -195,7 +201,8 @@ export const StandardFields = [
     displayLabel: 'Slider',
     label: 'Slider question',
     type: 'slider',
-    isQa: true
+    isQa: true,
+    includeLogic: false
   },
   {
     fields: [
@@ -221,7 +228,8 @@ export const StandardFields = [
     label: 'Ranking question',
     type: 'ranking',
     gridMax: 1,
-    isQa: true
+    isQa: true,
+    includeLogic: false,
   },
   {
     fields: [
@@ -243,6 +251,7 @@ export const StandardFields = [
     displayLabel: 'File Upload',
     label: 'File upload question',
     type: 'file',
+    includeLogic: false,
     isQA: true
   },
   {
@@ -270,6 +279,7 @@ export const PrimeFields = [
         tag: 'select',
         placeholder: 'Title',
         column: '1',
+        fixedWidth: true,
         options: [
           { name: 'mr', label: 'Mr.', tag: 'checkbox' },
           { name: 'mrs', label: 'Mrs.', tag: 'checkbox' },
@@ -282,7 +292,8 @@ export const PrimeFields = [
     label: 'Name',
     type: 'name',
     gridMax: 4,
-    isQA: true
+    isQA: true,
+    includeLogic: false
   },
   {
     fields: [
@@ -302,7 +313,8 @@ export const PrimeFields = [
     ],
     label: 'Address',
     type: 'address',
-    gridMax: 4
+    gridMax: 4,
+    includeLogic: false
   },
   {
     fields: [
@@ -310,13 +322,15 @@ export const PrimeFields = [
     ],
     label: 'Rating',
     type: 'primeRating',
+    includeLogic: false
   },
   {
     fields: [
       { label: 'Email', type: 'email', tag: 'input', placeholder: 'Email', column: '1'},
     ],
     label: 'Email',
-    type: 'email'
+    type: 'email',
+    includeLogic: false
   },
   {
     fields: [
@@ -325,7 +339,8 @@ export const PrimeFields = [
       { label: 'YYYY', type: 'text', tag: 'input', placeholder: 'YYYY', column: '1'},
     ],
     label: 'Date',
-    type: 'date'
+    type: 'date',
+    includeLogic: false
   },
   {
     fields: [
@@ -334,27 +349,31 @@ export const PrimeFields = [
       { label: 'Business', type: 'number', tag: 'input', placeholder: 'Business', column: '1'},
     ],
     label: 'Phone',
-    type: 'phone'
+    type: 'phone',
+    includeLogic: false
   },
   {
     fields: [
       { label: 'Time', type: 'text', tag: 'input', placeholder: 'Time', column: '1'},
     ],
     label: 'Time',
-    type: 'time'
+    type: 'time',
+    includeLogic: false
   },
   {
     fields: [
       { label: 'Price', type: 'text', tag: 'input', placeholder: 'Price', column: '1'},
     ],
     label: 'Price',
-    type: 'price'
+    type: 'price',
+    includeLogic: false
   },
   {
     fields: [
       { label: 'Website', type: 'text', tag: 'input', placeholder: 'Website', column: '1'},
     ],
     label: 'Website',
-    type: 'website'
+    type: 'website',
+    includeLogic: false
   },
 ]
