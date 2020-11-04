@@ -723,11 +723,28 @@ export const createCustomApplication = async ({
     );
 
     lastId = result.insertId;
+
     application = await db.query(
-      "SELECT (BIN_TO_UUID(app_id)) as app_id FROM application WHERE id=?",
+      `SELECT 
+        id,
+        BIN_TO_UUID(form_id) as form_id,
+        BIN_TO_UUID(user) as user,
+        BIN_TO_UUID(vendor) as vendor,
+        CONVERT(form_contents USING utf8) as form_contents,
+        created_at
+      FROM vendor_custom_application 
+      WHERE id=?`,
       [lastId]
     );
-    application = application.length > 0 ? application[0] : "";
+
+    if(application.length > 0) {
+      application = application[0];
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+      console.log("get custom application string", application);
+      application.form_contents = JSON.parse(application.form_contents);
+    } else {
+      application = ""
+    }
 
     console.log("application result", result);
   } catch (err) {
@@ -774,5 +791,40 @@ export const getCustomApplicationFormByFormId = async form_id => {
   } finally {
     await db.close();
     return application;
+  }
+}
+
+export const getVendorCustomApplicationForm = async vendor => {
+  const db = makeDb();
+  let applications;
+  try {
+    application = await db.query(
+      `
+        SELECT
+        id,
+        BIN_TO_UUID(form_id) as form_id,
+        BIN_TO_UUID(user) as user,
+        BIN_TO_UUID(vendor) as vendor,
+        CONVERT(form_contents USING utf8) as form_contents,
+        created_at
+        FROM vendor_custom_application
+        WHERE vendor=UUID_TO_BIN(?)
+      `,
+      [
+        vendor
+      ]
+    )
+
+    for(const application of applications) {
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+      console.log("get custom application string", application);
+      application.form_contents = JSON.parse(application.form_contents);
+    }
+
+  } catch(err) {
+    console.log("get custom application by form id", err);
+  } finally {
+    await db.close();
+    return applications;
   }
 }

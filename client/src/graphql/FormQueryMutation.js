@@ -5,6 +5,49 @@ export const FORM_ADD_MUTATION = gql`
     createCustomApplicationForm(application:$application){
       messageType
       message
+      form {
+        id
+        vendor
+        user
+        form_id
+        form_contents {
+          formTitle
+          formData {
+            id
+            label
+            type
+            fields {
+              id
+              label
+              type
+              tag
+              placeholder
+              column
+              value
+              required
+              validation {
+                include
+                items {
+                  error
+                  errorField
+                  option
+                  type
+                  value
+                }
+              }
+            }
+            groupType
+            settings {
+              logic { include }
+              instruction { include }
+            }
+            isActive
+            allowAddField
+            gridMax
+          }
+        }
+        created_at
+      }
     }
   }
 `;
