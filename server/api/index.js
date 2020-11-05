@@ -687,7 +687,7 @@ router.get("/invitation/event/:id", async (req, res) => {
       [id, calendar]
     );
 
-    res.redirect("http://prod.bcombs.com/dashboard");
+    res.redirect(`${process.env.APP_CLIENT_URL}/dashboard`);
   } catch (error) {
     console.log("Invitation Error", error);
   } finally {
@@ -704,7 +704,7 @@ router.get("/invitation/calendar/:id", async (req, res) => {
       "UPDATE user_calendars_follow SET is_following=1 WHERE calendar_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?) AND group_id=UUID_TO_BIN(?) AND is_following=0",
       [id, userId, groupId]
     );
-    res.redirect("http://prod.bcombs.com/dashboard/mycalendars");
+    res.redirect(`${process.env.APP_CLIENT_URL}/dashboard/mycalendars`);
   } catch (error) {
     console.log("Invitation Error", error);
   } finally {
