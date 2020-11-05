@@ -713,6 +713,11 @@ export default function index() {
       for(let i = 0; i < parentsInformation.length; i++) {
         let parent = parents[i];
         let profile = parent.profile;
+
+        if(profile.first_name  === '' || profile.last_name  === '') {
+          isValid = false;
+          break;
+        }
         
         if(!profile.first_name ||
           !profile.last_name ||
@@ -739,7 +744,6 @@ export default function index() {
           !emergencyContacts[i].last_name ||
           !emergencyContacts[i].gender ||
           !emergencyContacts[i].mobile_phone ||
-          !emergencyContacts[i].work_phone ||
           (emergencyContacts[i].mobile_phone && emergencyContacts[i].mobile_phone.includes('_')) ||
           (emergencyContacts[i].work_phone && emergencyContacts[i].work_phone.includes('_')  )||
           !emergencyContacts[i].relationship_to_child) {
