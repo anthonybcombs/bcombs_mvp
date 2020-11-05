@@ -124,21 +124,18 @@ export const StandardFields = [
       {
         label: 'Matrix / Rating',
         tag: 'rating',
-        choices: [
+        rows: [
           {
-            statement: 'Row 1',
-            answers: []
+            row: 'Row 1'
           },
           {
-            statement: 'Row 2',
-            answers: []
+            row: 'Row 2'
           },
           {
-            statement: 'Row 3',
-            answers: []
+            row: 'Row 3'
           }
         ],
-        scales: [
+        columns: [
           {
             label: 'Column 1',
             value: 1
@@ -200,17 +197,15 @@ export const StandardFields = [
       {
         label: 'Checkbox Grid',
         tag: 'checkboxGrid',
-        choices: [
+        rows: [
           {
-            statement: 'Row 1',
-            answers: []
+            row: 'Row 1'
           },
           {
-            statement: 'Row 2',
-            answers: []
+            row: 'Row 2'
           }
         ],
-        scales: [
+        columns: [
           {
             label: 'Column 1',
             value: 1

@@ -165,21 +165,18 @@
       {
         "label": "Matrix / Rating",
         "tag": "rating",
-        "choices": [
+        "rows": [
           {
-            "statement": "Row 1",
-            "answers": []
+            "row": "Row 1"
           },
           {
-            "statement": "Row 2",
-            "answers": []
+            "row": "Row 2"
           },
           {
-            "statement": "Row 3",
-            "answers": []
+            "row": "Row 3"
           }
         ],
-        "scales": [
+        "columns": [
           {
             "label": "Column 1",
             "value": 1
@@ -211,11 +208,11 @@
         "tag": "linear",
         "min": {
           "value": 1,
-          "label": ""
+          "label": "gamay"
         },
         "max": {
           "value": 10,
-          "label": ""
+          "label": "dako"
         },
         "id": "linear_f0bde37e-ce83-49d1-aa51-6db1715f3d5c_6482af8a-935e-4cda-92e7-f7034bfe1ecf",
         "value": ""
@@ -266,17 +263,15 @@
       {
         "label": "Checkbox Grid",
         "tag": "checkboxGrid",
-        "choices": [
+        "rows": [
           {
-            "statement": "Row 1",
-            "answers": []
+            "row": "Row 1"
           },
           {
-            "statement": "Row 2",
-            "answers": []
+            "row": "Row 2"
           }
         ],
-        "scales": [
+        "columns": [
           {
             "label": "Column 1",
             "value": 1

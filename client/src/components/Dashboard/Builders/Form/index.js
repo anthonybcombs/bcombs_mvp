@@ -27,7 +27,7 @@ export default ({
       [id]: error
     })
   }
-
+  console.log('zzz', fieldState)
   return (
     <FormrStyled>
       <div id='form'>

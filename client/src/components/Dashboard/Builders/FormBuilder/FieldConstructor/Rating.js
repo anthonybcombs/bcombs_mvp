@@ -4,33 +4,33 @@ import { faTimes, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
 export default (props) => {
-  const { scales, choices, onChangeFieldSettings, isMultiple = false, isActive } = props
+  const { columns, rows, onChangeFieldSettings, isMultiple = false, isBuilder, isActive, id: fieldId, onChange, value = [] } = props
 
-  const handleAddStatement = () => {
+  const handleAddRow = () => {
     onChangeFieldSettings({
-      choices: [
-        ...choices,
+      rows: [
+        ...rows,
         {
-          statement: `Row ${choices.length + 1}`,
+          row: `Row ${rows.length + 1}`,
           answers: []
         }
       ]
     })
   }
 
-  const handleRemoveStatement = (index) => {
-    const newChoies = cloneDeep(choices)
-    newChoies.splice(index, 1)
-    onChangeFieldSettings({ choices: newChoies })
+  const handleRemoveRow = (index) => {
+    const newRows = cloneDeep(rows)
+    newRows.splice(index, 1)
+    onChangeFieldSettings({ rows: newRows })
   }
 
-  const handleChangeStatement = ({ target: { value } }, index) => {
+  const handleChangeRow = ({ target: { value } }, index) => {
     onChangeFieldSettings({
-      choices: choices.map((choice, i) => {
+      rows: rows.map((choice, i) => {
         if (i === index) {
           return {
             ...choice,
-            statement: value
+            row: value
           }
         }
         return choice
@@ -39,34 +39,34 @@ export default (props) => {
   }
 
 
-  const handleAddScale = () => {
+  const handleAddColumn = () => {
     onChangeFieldSettings({
-      scales: [
-        ...scales,
+      columns: [
+        ...columns,
         {
-          label: `Column ${scales.length + 1}`,
-          value: scales[scales.length - 1].value + 1 || 1
+          label: `Column ${columns.length + 1}`,
+          value: columns[columns.length - 1].value + 1 || 1
         }
       ]
     })
   }
 
   const handleRemoveScale = (index) => {
-    const newScales = cloneDeep(scales)
-    newScales.splice(index, 1)
-    onChangeFieldSettings({ scales: newScales })
+    const newcolumns = cloneDeep(columns)
+    newcolumns.splice(index, 1)
+    onChangeFieldSettings({ columns: newcolumns })
   }
 
   const handleChangeScale = ({ target: { value } }, index) => {
     onChangeFieldSettings({
-      scales: scales.map((scale, i) => {
+      columns: columns.map((column, i) => {
         if (i === index) {
           return {
-            ...scale,
+            ...column,
             label: value
           }
         }
-        return scale
+        return column
       })
     })
   }
@@ -77,16 +77,27 @@ export default (props) => {
       return
     }
     onChangeFieldSettings({
-      scales: scales.map((scale, i) => {
+      columns: columns.map((column, i) => {
         if (i === index) {
           return {
-            ...scale,
+            ...column,
             value
           }
         }
-        return scale
+        return column
       }),
     })
+  }
+
+  const handleAnswer = (answer, index) => {
+    let newValue = cloneDeep(value || [])
+    console.log('toinks', newValue)
+    if (newValue[index]) {
+      newValue[index] = answer
+    } else {
+      newValue.push(answer)
+    }
+    onChange({ target: { id: fieldId, value: newValue } })
   }
 
   return (
@@ -94,28 +105,37 @@ export default (props) => {
       <div className='table-scroll-wrapper'>
         <table className='matrixRating-table'>
           <thead className='matrixRating-table-head'>
-            <tr className='scale'>
+            <tr className='column'>
               <th colSpan={2} className='column-head-blank'/>
               {
-                scales.map(({ label, value }, scaleIndex) => {
+                columns.map(({ label, value }, columnIndex) => {
                   const cellProps = {
-                    key: `col-${scaleIndex}`,
+                    key: `col-${columnIndex}`,
                     align: 'center' ,
                   }
                   return (
                     <th {...cellProps} className='column-head'>
-                      <input
-                        value={label}
-                        placeholder='Scale'
-                        className='field-input'
-                        onChange={(e) => handleChangeScale(e, scaleIndex)}
-                      />
-                      <input
-                        value={value}
-                        placeholder='Value'
-                        className='field-input'
-                        onChange={(e) => handleChangeScaleValue(e, scaleIndex)}
-                      />
+                      {
+                        isBuilder
+                         ? (
+                            <input
+                              value={label}
+                              placeholder='Scale'
+                              className='field-input'
+                              onChange={(e) => handleChangeScale(e, columnIndex)}
+                            />
+                          ) : label
+                      }
+                      {
+                        isBuilder && (
+                          <input
+                            value={value}
+                            placeholder='Value'
+                            className='field-input'
+                            onChange={(e) => handleChangeScaleValue(e, columnIndex)}
+                          />
+                        )
+                      }
                     </th>
                   )
                 })
@@ -124,39 +144,46 @@ export default (props) => {
           </thead>
           <tbody className='matrixRating-table-body'>
             {
-              choices.map(({ statement, answers }, index) => {
-                // const [valueError = '', statementError = ''] = errors && errors.choices ? (errors.choices[index] || []) : []
+              rows.map(({ row }, rowIndex) => {
                 return (
-                  <tr key={`statement-${index}`} className='choiceRow'>
-                    <td align='right' className='removeStatement'>
+                  <tr key={`row-${rowIndex}`} className='choiceRow'>
+                    <td align='right' className='removeRow'>
                       {
-                        (isActive && choices.length > 1)
+                        (isActive && rows.length > 1)
                         && (
                           <FontAwesomeIcon
                             icon={faTimes}
                             onClick={e => {
                               e.stopPropagation()
-                              handleRemoveStatement(index)
+                              handleRemoveRow(rowIndex)
                             }}
                           />
                         )
                       }
                     </td>
-                    <td align='right' className='choices'>
-                      <input
-                        value={statement}
-                        className='inputChoice'
-                        className='field-input'
-                        placeholder='Type your statement here'
-                        onChange={(e) => handleChangeStatement(e, index)}
-                      />
+                    <td align='right' className='rows'>
+                      {
+                        isBuilder ? (
+                          <input
+                            value={row}
+                            className='inputChoice'
+                            className='field-input'
+                            placeholder='Row Label'
+                            onChange={(e) => handleChangeRow(e, rowIndex)}
+                          />
+                        ) : row
+                      }
                     </td>
                     {
-                      scales.map((scale, scaleIndex) => {
+                      columns.map((column, columnIndex) => {
+                        const { answers = [] } = value[rowIndex] || {}
+                        const columnAnswer = answers.find(e => e.value === column.value)
                         return (
-                          <td key={`scale=${scaleIndex}`} align='center' className='checkbox'>
+                          <td key={`column=${columnIndex}`} align='center' className='checkbox'>
                             <input
                               type={isMultiple ? 'checkbox' : 'radio'}
+                              checked={!!columnAnswer}
+                              onChange={e => handleAnswer({ row, answers: [column]  }, rowIndex)}
                             />
                           </td>
                         )
@@ -175,7 +202,7 @@ export default (props) => {
                         className='outlined-addBtn'
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleAddStatement()
+                          handleAddRow()
                         }}
                       >
                         Add Row
@@ -184,7 +211,7 @@ export default (props) => {
                         className='outlined-addBtn'
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleAddScale()
+                          handleAddColumn()
                         }}
                       >
                         Add Column
@@ -194,8 +221,8 @@ export default (props) => {
                 }
               </td>
               {
-                scales.length > 1
-                && scales.map((e, removeIndex) => (
+                columns.length > 1
+                && columns.map((e, removeIndex) => (
                     <td key={`remove-${removeIndex}`} align='center'>
                       {
                         isActive && (
@@ -223,7 +250,7 @@ export default (props) => {
         <button
           onClick={(e) => {
             e.stopPropagation()
-            handleAddStatement()
+            handleAddRow()
           }}
         >
           Add Row
@@ -231,7 +258,7 @@ export default (props) => {
         <button
           onClick={(e) => {
             e.stopPropagation()
-            handleAddScale()
+            handleAddColumn()
           }}
         >
           Add Column

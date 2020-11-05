@@ -4,7 +4,7 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId, index, isActive, onChange, value = {} }) => {
+export default ({ options, column, onChangeFieldSettings, isBuilder, index, isActive, id: fieldId, onChange, value = {} }) => {
   const hasOthers = options.find(e => e.name === 'other')
 
   const handleChangeOption = ({ target }, optionIndex) => {
@@ -37,12 +37,14 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId
     onChange({ target: { id: fieldId, value: { [id]: checked ? radioValue : '' } } })
   }
 
+  const groupClassLabel = isBuilder ? 'sortableGroup' : 'formGroup'
+
   return (
     <>
       {
         options.map((option, optionIndex) => {
           return (
-            <div key={`${index}-option-${optionIndex}`} className={`sortableGroup-column`} style={{ gridColumn: `span ${column}`}}>
+            <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
               <label className='radiobuttonContainer'>
                 <input
                   type='radio'
@@ -50,6 +52,7 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId
                   id={option.name}
                   value={option.label}
                   checked={true}
+                  className='Kani bai clark'
                   onChange={(e) => {
                     if (!isBuilder) {
                       handleAnswer(e)

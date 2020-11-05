@@ -36,12 +36,13 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId
     onChange({ target: { id: fieldId, value: { ...value, [id]: checked ? checkboxValue : '' } } })
   }
 
+  const groupClassLabel = isBuilder ? 'sortableGroup' : 'formGroup'
   return (
     <>
       {
         options.map((option, optionIndex) => {
           return (
-            <div key={`${index}-option-${optionIndex}`} className={`sortableGroup-column`} style={{ gridColumn: `span ${column}`}}>
+            <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
               <label className='checkboxContainer'>
                 <input
                   type='checkbox'
