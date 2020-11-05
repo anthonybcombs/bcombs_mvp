@@ -25,6 +25,7 @@ export default function index({
   register,
   errors,
   ProfileImg,
+  setIsParentAddressRequired,
   parents = [],
   childs = []
 }) {
@@ -43,6 +44,7 @@ export default function index({
               register={register}
               errors={errors}
               ProfileImg={ProfileImg}
+              setIsParentAddressRequired={setIsParentAddressRequired}
             />
             <div className="application-btn-container">
               {
@@ -81,6 +83,7 @@ export default function index({
               register={register}
               errors={errors}
               ProfileImg={ProfileImg}
+              setIsParentAddressRequired={setIsParentAddressRequired}
             />
             <div className="application-btn-container">
               {

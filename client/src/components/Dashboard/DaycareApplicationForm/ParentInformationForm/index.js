@@ -208,7 +208,8 @@ export default function index({
   ProfileImg,
   pastParentInformation = {},
   childProfile = {},
-  isVendorView
+  isVendorView,
+  setIsParentAddressRequired
 }) {
   let confirmed_passwords = [];
 

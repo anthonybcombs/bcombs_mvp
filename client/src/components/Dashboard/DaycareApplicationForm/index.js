@@ -699,6 +699,7 @@ export default function index() {
       }
     } else if(section == "2") {
 
+      console.log('isParentAddressRequired',isParentAddressRequired)
       let parents = parentsInformation;
 
       for(let i = 0; i < parentsInformation.length; i++) {
@@ -832,7 +833,7 @@ export default function index() {
   const [relationships, setRelationships] = useState([{...relationshipObj}]);
 
   const [chRelationships, setChRelationships] = useState([]);
-
+  console.log('isParentAddressRequired',isParentAddressRequired)
   return (
     <DaycareApplicationFormStyled
       id="applicationForm"
