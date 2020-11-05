@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
-export default ({ instruction, allowedTypes, limit, errorMessage, onChangeFieldSettings }) => {
+export default ({ instruction, allowedTypes, limit, errorMessage, onChangeFieldSettings, isBuilder }) => {
   const handleChangeValues = ({ target: { value } }, type) => {
     onChangeFieldSettings({ [type]: value })
   }
@@ -23,41 +23,58 @@ export default ({ instruction, allowedTypes, limit, errorMessage, onChangeFieldS
   }
 
   return (
-    <div className='fileUpload-container'>
-      <div className='fileTypes'>
-        <p>Allowable file types</p>
-        <div className='options'>
-          {
-            allowedTypes.map(({ label, selected }, index) => {
-              return (
-                <label key={`allowedType-${index}`} className='checkboxContainer'>
-                  <input
-                    type='checkbox'
-                    checked={selected}
-                    onChange={(e) => handleChangeTypes(e, index)}
-                  />
-                  <span className='checkmark' />
-                  <span className='labelName'> {label}</span>
-                </label>
-              )
-            })
-          }
-        </div>
-      </div>
-      <div className='validation'>
-        <p>Validation Message</p>
-        <div className='input-wrapper'>
-          <label for='error-msg'>When an invalid file type is uploaded, display this error message.</label>
-          <input
-            id='error-msg'
-            className='field-input'
-            placeholder='Error message when file type is not allowed'
-            value={errorMessage}
-            onChange={e => handleChangeValues(e, 'errorMessage')}
-          />
-        </div>
-        <span className='limit-size'>File size limit is {limit}MB</span>
-      </div>
-    </div>
+    <>
+      {
+        isBuilder ? (
+          <div className='fileUpload-container'>
+            <div className='fileTypes'>
+              <p>Allowable file types</p>
+              <div className='options'>
+                {
+                  allowedTypes.map(({ label, selected }, index) => {
+                    return (
+                      <label key={`allowedType-${index}`} className='checkboxContainer'>
+                        <input
+                          type='checkbox'
+                          checked={selected}
+                          onChange={(e) => handleChangeTypes(e, index)}
+                        />
+                        <span className='checkmark' />
+                        <span className='labelName'> {label}</span>
+                      </label>
+                    )
+                  })
+                }
+              </div>
+            </div>
+            <div className='validation'>
+              <p>Validation Message</p>
+              <div className='input-wrapper'>
+                <label for='error-msg'>When an invalid file type is uploaded, display this error message.</label>
+                <input
+                  id='error-msg'
+                  className='field-input'
+                  placeholder='Error message when file type is not allowed'
+                  value={errorMessage}
+                  onChange={e => handleChangeValues(e, 'errorMessage')}
+                />
+              </div>
+              <span className='limit-size'>File size limit is {limit}MB</span>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <input
+              type='file'
+              id='file'
+              name='file'
+              onChange={(e) => {
+                console.log('e', e.target.files[0])
+              }}
+            />
+          </div>
+        )
+      }
+    </>
   )
 }
