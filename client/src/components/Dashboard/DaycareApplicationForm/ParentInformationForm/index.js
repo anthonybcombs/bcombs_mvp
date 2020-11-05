@@ -1552,6 +1552,11 @@ export default function index({
                 errorType="required"
                 message="Zip Code is Required"
               />
+              <ErrorMessage
+                field={errors["parentzipcode"]}
+                errorType="minLength"
+                message="Zip Code must be of 5 digits"
+              />
           </div>
         </div>
 

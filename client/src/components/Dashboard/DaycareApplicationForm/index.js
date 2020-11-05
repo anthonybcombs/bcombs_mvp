@@ -662,6 +662,8 @@ export default function index() {
         let gi = child.general_information;
 
         console.log("gi.transfer_reason", gi.transfer_reason);
+
+        
         if(!profile.first_name ||
           !profile.last_name ||
           !profile.date_of_birth ||
@@ -670,6 +672,7 @@ export default function index() {
           !profile.city ||
           !profile.state ||
           !profile.zip_code ||
+          (profile.zip_code !== '' && profile.zip_code.length < 5) || 
           !profile.child_lives_with ||
           !profile.preffered_start_date ||
           !profile.current_classroom ||
@@ -677,7 +680,10 @@ export default function index() {
           !profile.needed_days ||
           !profile.voucher ||
           !gi.is_child_transferring ||
-          !gi.list_any_allergies) {
+          !gi.list_any_allergies ||
+          (childsInformation[i].emergency_care_information !== '' &&  childsInformation[i].emergency_care_information.doctor_phone.includes('_')) || 
+          (childsInformation[i].emergency_care_information  !== '' &&  childsInformation[i].emergency_care_information.hospital_phone.includes('_')) 
+          ) {
 
             isValid = false;
             break;
@@ -691,7 +697,8 @@ export default function index() {
               !gi.prev_school_address ||
               !gi.prev_school_attended ||
               !gi.prev_school_state ||
-              !gi.prev_school_zip_code) {
+              !gi.prev_school_zip_code || 
+              (gi.prev_school_zip_code && gi.prev_school_zip_code.length < 5)) {
                 isValid = false;
                 break;
               }
@@ -701,7 +708,8 @@ export default function index() {
 
       console.log('isParentAddressRequired',isParentAddressRequired)
       let parents = parentsInformation;
-
+      console.log('PAARENTTTT', parentsInformation)
+      console.log('PAARENTTTT emergencyContacts', emergencyContacts)
       for(let i = 0; i < parentsInformation.length; i++) {
         let parent = parents[i];
         let profile = parent.profile;
@@ -712,12 +720,13 @@ export default function index() {
           !profile.confirmed_password ||
           !(profile.password == profile.confirmed_password) ||
           !profile.phone_number ||
+          profile.phone_number.includes('_') || 
           !profile.email_address ||
           !profile.goals_parent_program ||
           !profile.goals_child_program ||
           !profile.gender ||
           !profile.date_of_birth ||
-          (isParentAddressRequired && (!profile.address || !profile.zip_code || !profile.state || !profile.city))
+          (isParentAddressRequired && (!profile.address ||( !profile.zip_code || (profile.zip_code && profile.zip_code.length < 5)) || !profile.state || !profile.city))
           ) {
             isValid = false;
             break;
@@ -730,6 +739,8 @@ export default function index() {
           !emergencyContacts[i].gender ||
           !emergencyContacts[i].mobile_phone ||
           !emergencyContacts[i].work_phone ||
+          (emergencyContacts[i].mobile_phone && emergencyContacts[i].mobile_phone.includes('_')) ||
+          (emergencyContacts[i].work_phone && emergencyContacts[i].work_phone.includes('_')  )||
           !emergencyContacts[i].relationship_to_child) {
             isValid = false;
             break;

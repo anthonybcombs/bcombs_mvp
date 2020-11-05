@@ -660,11 +660,15 @@ export default function index() {
           !profile.city ||
           !profile.state ||
           !profile.zip_code ||
+          profile.zip_code.length < 5  || 
           !profile.location_site ||
           !profile.child_lives_with ||
           !gi.grade ||
           !gi.school_name ||
-          !gi.mentee_gain) {
+          !gi.mentee_gain ||
+          (childsInformation[i].emergency_care_information !== '' &&  childsInformation[i].emergency_care_information.doctor_phone.includes('_')) || 
+          (childsInformation[i].emergency_care_information  !== '' &&  childsInformation[i].emergency_care_information.hospital_phone.includes('_')) 
+          ) {
             isValid = false;
             break;
           }
@@ -685,13 +689,14 @@ export default function index() {
           !profile.confirmed_password ||
           !(profile.password == profile.confirmed_password) ||
           !profile.phone_number ||
+          profile.phone_number.length < 10 ||
           !profile.email_address ||
           !profile.goals_parent_program ||
           !profile.goals_child_program ||
           !profile.person_recommend,
           !profile.gender ||
           !profile.date_of_birth  ||  
-          (isParentAddressRequired && (!profile.address || !profile.zip_code || !profile.state || !profile.city))
+          (isParentAddressRequired && (!profile.address || !profile.zip_code || profile.zip_code.length < 5 || !profile.state || !profile.city))
           ) {
             isValid = false;
             break;
@@ -703,7 +708,9 @@ export default function index() {
           !emergencyContacts[i].last_name ||
           !emergencyContacts[i].gender ||
           !emergencyContacts[i].mobile_phone ||
+          emergencyContacts[i].mobile_phone.length < 10 || 
           !emergencyContacts[i].work_phone ||
+          mergencyContacts[i].work_phone.length < 10 || 
           !emergencyContacts[i].relationship_to_child) {
             isValid = false;
             break;
