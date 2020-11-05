@@ -8,7 +8,7 @@ import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 import FieldConstructor from '../FieldConstructor'
 
 export default ({
-  options, columnInt, index, onChangeFieldSettings, id, isActive, type
+  options, column, index, onChangeFieldSettings, id, isActive, type
 }) => {
 
   const handleChangeOption = ({ target }, optionIndex) => {
@@ -36,7 +36,7 @@ export default ({
       {
         options.map((option, optionIndex) => {
           return (
-            <div key={`${index}-option-${optionIndex}`} className={`sortableGroup-column`} style={{ gridColumn: `span ${columnInt}`}}>
+            <div key={`${index}-option-${optionIndex}`} className={`sortableGroup-column`} style={{ gridColumn: `span ${column}`}}>
               {
                 FieldConstructor[option.tag]({
                   key: option.tag + uuid(),

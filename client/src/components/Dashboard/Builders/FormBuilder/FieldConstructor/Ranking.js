@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
-export default ({ items, onChangeFieldSettings }) => {
+export default ({ items, onChangeFieldSettings, isActive }) => {
   const handleChangeValues = ({ target: { value } }, index) => {
     onChangeFieldSettings({
       items: items.map((item, i) => ({
@@ -38,7 +38,7 @@ export default ({ items, onChangeFieldSettings }) => {
                 onChange={(e) => handleChangeValues(e, index)}
               />
               {
-                items.length > 2 && (
+                (isActive && items.length > 2) && (
                   <FontAwesomeIcon
                     icon={faTimes}
                     onClick={e => {
@@ -52,19 +52,23 @@ export default ({ items, onChangeFieldSettings }) => {
           )
         })
       }
-      <button
-        className='outlined-addBtn'
-        onClick={(e) => {
-          e.stopPropagation()
-          handleAddRow()
-        }}
-      >
-        <FontAwesomeIcon
-          icon={faPlus}
-          className='addField-icon'
-        />
-        <span>Add row</span>
-      </button>
+      {
+        isActive && (
+          <button
+            className='outlined-addBtn'
+            onClick={(e) => {
+              e.stopPropagation()
+              handleAddRow()
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faPlus}
+              className='addField-icon'
+            />
+            <span>Add row</span>
+          </button>
+        )
+      }
     </div>
   )
 }

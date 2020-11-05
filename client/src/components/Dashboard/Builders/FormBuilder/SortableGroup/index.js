@@ -5,11 +5,9 @@ import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGripHorizontal, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-import { Items } from '../Constants'
+import { Items, StandardFields } from '../Fields'
 import GeneralSettings from '../Settings/GeneralSettings'
-import { StandardFields } from '../Constants'
 import Field from './Field'
-import OptionField from './OptionField'
 
 const SortableGroup = React.forwardRef(
   ({ 
@@ -112,42 +110,28 @@ const SortableGroup = React.forwardRef(
       <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {
           fields.map((field, index) => {
-            const { type = '', tag, options, column, placeholder } = field
+            const { column } = field
             const columnInt = column * 1
             const isActiveField = fieldIndex === index
-            if (type !== 'option') {
-              return (
-                <Field
-                  key={`field-${index}`}
-                  id={id}
-                  index={index}
-                  field={field}
-                  fieldsCount={fields.length}
-                  isActive={isActive}
-                  isActiveField={isActiveField}
-                  columnInt={columnInt}
-                  isStandard={isStandard}
-                  gridColRepeat={gridColRepeat}
-                  setActiveFieldIndex={setActiveFieldIndex}
-                  onActive={onActive}
-                  onChangeFieldSettings={(data) => onChangeFieldSettings(data, index, id)}
-                  onRemoveGroupField={onRemoveGroupField}
-                />
-              )
-            } else {
-              return (
-                <OptionField
-                  key={`optionField-${field}`}
-                  type={itemGroup}
-                  options={options}
-                  column={column}
-                  id={id}
-                  index={index}
-                  isActive={isActive}
-                  onChangeFieldSettings={onChangeFieldSettings}
-                />
-              )
-            }
+            return (
+              <Field
+                key={`field-${index}`}
+                id={id}
+                index={index}
+                field={field}
+                type={itemGroup}
+                fieldsCount={fields.length}
+                isActive={isActive}
+                isActiveField={isActiveField}
+                columnInt={columnInt}
+                isStandard={isStandard}
+                gridColRepeat={gridColRepeat}
+                setActiveFieldIndex={setActiveFieldIndex}
+                onActive={onActive}
+                onChangeFieldSettings={(data) => onChangeFieldSettings(data, index, id)}
+                onRemoveGroupField={onRemoveGroupField}
+              />
+            )
           })
         }
         {

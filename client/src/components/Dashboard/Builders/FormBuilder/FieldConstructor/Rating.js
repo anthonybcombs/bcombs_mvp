@@ -4,7 +4,7 @@ import { faTimes, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
 export default (props) => {
-  const { scales, choices, onChangeFieldSettings, isMultiple = false } = props
+  const { scales, choices, onChangeFieldSettings, isMultiple = false, isActive } = props
 
   const handleAddStatement = () => {
     onChangeFieldSettings({
@@ -130,7 +130,7 @@ export default (props) => {
                   <tr key={`statement-${index}`} className='choiceRow'>
                     <td align='right' className='removeStatement'>
                       {
-                        choices.length > 1
+                        (isActive && choices.length > 1)
                         && (
                           <FontAwesomeIcon
                             icon={faTimes}
@@ -168,41 +168,49 @@ export default (props) => {
             }
             <tr>
               <td colSpan={2}>
-                <div className='actions'>
-                  <button
-                    className='outlined-addBtn'
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleAddStatement()
-                    }}
-                  >
-                    Add Row
-                  </button>
-                  <button
-                    className='outlined-addBtn'
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleAddScale()
-                    }}
-                  >
-                    Add Column
-                  </button>
-                </div>
+                {
+                  isActive && (
+                    <div className='actions'>
+                      <button
+                        className='outlined-addBtn'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleAddStatement()
+                        }}
+                      >
+                        Add Row
+                      </button>
+                      <button
+                        className='outlined-addBtn'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleAddScale()
+                        }}
+                      >
+                        Add Column
+                      </button>
+                    </div>
+                  )
+                }
               </td>
               {
                 scales.length > 1
                 && scales.map((e, removeIndex) => (
                     <td key={`remove-${removeIndex}`} align='center'>
-                      <div className='tooltip-wrapper removeScale'>
-                        <FontAwesomeIcon
-                          icon={faMinusCircle}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleRemoveScale(removeIndex)
-                          }}
-                        />
-                        <span className='tooltip'>Remove Scale</span>
-                      </div>
+                      {
+                        isActive && (
+                          <div className='tooltip-wrapper removeScale'>
+                            <FontAwesomeIcon
+                              icon={faMinusCircle}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleRemoveScale(removeIndex)
+                              }}
+                            />
+                            <span className='tooltip'>Remove Scale</span>
+                          </div>
+                        )
+                      }
                     </td>
                   ))
               }

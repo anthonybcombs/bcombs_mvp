@@ -76,7 +76,8 @@ import {
   getUserApplicationsByUserId,
   getApplicationHistoryByUser,
   createCustomApplication,
-  getCustomApplicationFormByFormId
+  getCustomApplicationFormByFormId,
+  getVendorCustomApplicationForm
 } from "../../api/applications";
 import { 
   addChild, 
@@ -316,6 +317,10 @@ const resolvers = {
       
       const application = await getCustomApplicationFormByFormId(form_id);
       return application;
+    },
+    async getVendorsCustomApplication(root, { vendor_id }, context) {
+      const forms = await getVendorCustomApplicationForm(vendor_id);
+      return forms;
     }
   },
   RootMutation: {
@@ -902,11 +907,14 @@ const resolvers = {
       console.log("formContentsString", formContentsString.length);
       console.log("custom application", application.form_contents.length);
 
-      await createCustomApplication(application);
+      let form = await createCustomApplication(application);
+
+      form = form ? form : {};
 
       const res = {
         messageType: "info",
-        message: "successfully created your application form"
+        message: "successfully created your application form",
+        form
       } 
 
       console.log("res", res);

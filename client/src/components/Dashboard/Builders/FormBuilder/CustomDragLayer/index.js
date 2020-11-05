@@ -3,7 +3,7 @@ import { useDragLayer } from 'react-dnd'
 
 import CustomDraggable from './CustomDraggable'
 
-import { Items } from '../Constants' 
+import { Items } from '../Fields' 
 
 const layerStyles = {
     position: 'fixed',

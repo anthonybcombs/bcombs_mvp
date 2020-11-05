@@ -41,7 +41,9 @@ const FormBuilder = ({ form_id }) => {
 
   if(form.addForm && form.addForm.message == "successfully created your application form") {
     //form successfully created
-    window.location.reload();
+    //window.location.reload();
+
+    console.log("newly created form", form);
   }
 
   return (

@@ -1,0 +1,115 @@
+import React from 'react'
+import update from 'immutability-helper'
+import cloneDeep from 'lodash.clonedeep'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
+
+export default ({ options, column, onChangeFieldSettings, isBuilder, index, isActive }) => {
+  const hasOthers = options.find(e => e.name === 'other')
+
+  const handleChangeOption = ({ target }, optionIndex) => {
+    onChangeFieldSettings({ options: update(options, { [optionIndex]: { $merge: { label: target.value } } }) })
+  }
+
+  const handleAddOption = () => {
+    const incrementNum = hasOthers ? 0 : 1
+    const newOption =  { ...options[0], name: `option${options.length + incrementNum}`, label: `Option ${options.length + incrementNum}` }
+    const newOptions = cloneDeep(options)
+    if (hasOthers) {
+      newOptions.splice(newOptions.length-1, 0, newOption)
+    } else {
+      newOptions.push(newOption)
+    }
+    onChangeFieldSettings({ options: newOptions })
+  }
+
+  const handleAddOthers = () => {
+    const newOption =  { ...options[0], name: 'other', label: 'Other...' }
+    onChangeFieldSettings({ options: update(options, { $push: [newOption] }) })
+  }
+
+  const handleRemoveField = (optionIndex) => {
+    onChangeFieldSettings({ options: update(options, { $splice: [[optionIndex, 1]] }) })
+  }
+
+  return (
+    <>
+      {
+        isBuilder
+          ? (
+            <>
+              {
+                options.map((option, optionIndex) => {
+                  return (
+                    <div key={`${index}-option-${optionIndex}`} className={`sortableGroup-column`} style={{ gridColumn: `span ${column}`}}>
+                      <div className='option'>
+                        <span>{optionIndex + 1}.</span>
+                        {
+                          isBuilder
+                            ? <input
+                                type='text'
+                                className={`field-input`}
+                                value={option.label}
+                                onChange={(e) => handleChangeOption(e, optionIndex)}
+                              />
+                            : <span className='labelName'> {option.label}</span>
+                        }
+                      </div>
+                      {
+                        (isActive && options.length > 2) &&
+                        (
+                          <FontAwesomeIcon
+                            className='removeField-icon'
+                            icon={faTimes}
+                            onClick={e => {
+                              e.stopPropagation()
+                              handleRemoveField(optionIndex)
+                            }}
+                          />
+                        )
+                      }
+                    </div>
+                  )
+                })
+              }
+              { isActive && (
+                <div className='actions'>
+                  {
+                    isActive && (
+                      <button
+                        type='button'
+                        target='_blank'
+                        className='btn outlined-addBtn options'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleAddOption()
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={faPlus}
+                          className='addField-icon'
+                        />
+                        <span>Add Option</span>
+                      </button>
+                    )
+                  }
+                </div>
+              )}
+            </>
+          )
+          : (
+            <select
+                className={`field-input`}
+              >
+                <option value=''>Choose</option>
+                {
+                  options.map(({ label, name }, index) => {
+                    return (<option key={name + index} value={name}>{label}</option>)
+                  })
+                }
+              </select>
+          )
+      }
+    </>
+  )
+}

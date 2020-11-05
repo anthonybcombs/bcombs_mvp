@@ -1046,6 +1046,12 @@ const queryTypes = `
     type CustomFormSettingsInstruction {
         include: Boolean
     }
+
+    type CreateCustomFormStatus {
+        messageType: String
+        message: String
+        form: CustomApplicationOutput
+    }
 `;
 
 const mutations = `
@@ -1082,7 +1088,7 @@ const mutations = `
         addDaycareApplication(daycare: DaycareMainInput): Status
         addParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
         updateParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
-        createCustomApplicationForm(application: CustomApplicationInput): Status
+        createCustomApplicationForm(application: CustomApplicationInput): CreateCustomFormStatus
         updateCustomApplicationForm(application: CustomApplicationInput): Status
         submitCustomApplicationFOrm(application: CustomApplicationInput): Status
     }
@@ -1124,6 +1130,7 @@ const queries = `
         getVendorCustomApplications(vendor: String): [CustomApplicationOutput]
         getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
         getCustomApplicationApplicants(form_id: String): [CustomApplicationOutput]
+        getVendorsCustomApplication(vendor_id: String!): [CustomApplicationOutput]
     }
 `;
 

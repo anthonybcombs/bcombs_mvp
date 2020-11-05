@@ -65,14 +65,13 @@ export const StandardFields = [
   {
     fields: [
       {
-        type: 'option',
+        type: 'checkboxes',
         tag: 'checkboxes',
         options: [
           { name: 'option1', label: 'Option 1', tag: 'checkbox' },
           { name: 'option2', label: 'Option 2', tag: 'checkbox' },
           { name: 'option3', label: 'Option 3', tag: 'checkbox' }
-        ],
-        column: '1'
+        ]
       }
     ],
     displayLabel: 'Checkboxes',
@@ -85,8 +84,8 @@ export const StandardFields = [
   {
     fields: [
       {
-        type: 'option',
-        tag: 'radios',
+        type: 'multipleChoice',
+        tag: 'multipleChoice',
         options: [
           { name: 'option1', label: 'Option 1', tag: 'radio' },
           { name: 'option2', label: 'Option 2', tag: 'radio' },
@@ -104,7 +103,7 @@ export const StandardFields = [
   {
     fields: [
       {
-        type: 'option',
+        type: 'dropdown',
         tag: 'dropdown',
         options: [
           { name: 'option1', label: 'Option 1', tag: 'dropdown' },
@@ -158,13 +157,13 @@ export const StandardFields = [
     isQa: true,
     includeLogic: false,
   },
-  {
-    fields: [
-      { label: 'Radio Button', tag: 'radio', column: '1'}
-    ],
-    label: 'Radio Button',
-    type: 'radioButton'
-  },
+  // {
+  //   fields: [
+  //     { label: 'Radio Button', tag: 'radio', column: '1'}
+  //   ],
+  //   label: 'Radio Button',
+  //   type: 'radioButton'
+  // },
   {
     fields: [
       {
