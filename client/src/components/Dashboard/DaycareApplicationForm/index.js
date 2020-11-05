@@ -722,6 +722,7 @@ export default function index() {
           !profile.phone_number ||
           profile.phone_number.includes('_') || 
           !profile.email_address ||
+          !profile.email_address.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) || 
           !profile.goals_parent_program ||
           !profile.goals_child_program ||
           !profile.gender ||
