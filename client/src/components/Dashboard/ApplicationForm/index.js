@@ -139,7 +139,11 @@ const ApplicationFormStyled = styled.div`
   }
 `;
 
-const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+
+function isEmailAddress(str) {
+  var pattern =/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return pattern.test(str);  // returns a boolean 
+}
 
 export default function index() {
 
@@ -653,6 +657,12 @@ export default function index() {
         let profile = child.profile;
         let gi = child.general_information;
 
+        console.log("isEmailAddress(profile.email_address2)",isEmailAddress(profile.email_address))
+        console.log("isEmailAddress(profile.email_address2)",profile)
+        if( (profile.email_address !== ''  && !isEmailAddress(profile.email_address))) {
+          isValid = false;
+          break;
+        }
 
         if(!profile.first_name ||
           !profile.last_name ||
@@ -660,8 +670,7 @@ export default function index() {
           !profile.gender ||
           !profile.address ||
           !profile.city ||
-          (profile.email_address2 !== ''  && !profile.email_address2.match(EMAIL_REGEX)) || 
-          ( profile.phone_number && profile.phone_number.includes('_')) || 
+          ( profile.phone_number !== '' && profile.phone_number.includes('_')) || 
           !profile.state ||
           !profile.zip_code ||
           profile.zip_code.length < 5  || 
@@ -686,13 +695,19 @@ export default function index() {
         let parent = parents[i];
         let profile = parent.profile;
         
-        console.log('PARENTTTTT', profile)
-        console.log('PARENTTTTT isParentAddressRequired', isParentAddressRequired)
-        console.log('PARENTTTTT profile.first_name  ==',profile.first_name  === '')
-
+  
         if(profile.first_name  === '' || profile.last_name  === '') {
           isValid = false;
           break;
+        }
+        if( (profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
+          isValid = false;
+          break;
+        }
+        if( (profile.phone_number !== '' && profile.phone_number.includes('_'))){
+          isValid = false;
+          break;
+
         }
         if( !profile.first_name   ||
           !profile.last_name   ||
@@ -700,9 +715,7 @@ export default function index() {
           !profile.confirmed_password ||
           !(profile.password == profile.confirmed_password) ||
           !profile.phone_number ||
-          (profile.phone_number !== '' && profile.phone_number.includes('_')) ||
           !profile.email_address ||
-          (profile.email_address !== '' && !profile.email_address.match(EMAIL_REGEX)) || 
           !profile.goals_parent_program ||
           !profile.goals_child_program ||
           !profile.person_recommend,
