@@ -28,7 +28,6 @@ export default ({
     })
   }
 
-  console.log('@@@fieldState', fieldState)
   return (
     <FormrStyled>
       <div id='form'>

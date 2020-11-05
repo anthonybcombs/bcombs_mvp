@@ -4,7 +4,7 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ options, column, onChangeFieldSettings, isBuilder, index, isActive }) => {
+export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId, index, isActive, onChange, value = {} }) => {
   const hasOthers = options.find(e => e.name === 'other')
 
   const handleChangeOption = ({ target }, optionIndex) => {
@@ -32,16 +32,27 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
     onChangeFieldSettings({ options: update(options, { $splice: [[optionIndex, 1]] }) })
   }
 
+  const handleAnswer = ({ target: { id, value: checkboxValue, checked } }) => {
+    onChange({ target: { id: fieldId, value: { ...value, [id]: checked ? checkboxValue : '' } } })
+  }
+
   return (
     <>
       {
         options.map((option, optionIndex) => {
           return (
             <div key={`${index}-option-${optionIndex}`} className={`sortableGroup-column`} style={{ gridColumn: `span ${column}`}}>
-              <label for={name} className='checkboxContainer'>
+              <label className='checkboxContainer'>
                 <input
                   type='checkbox'
-                  // onChange={onChange}
+                  id={option.name}
+                  value={option.label}
+                  checked={!!value[option.name]}
+                  onChange={(e) => {
+                    if (!isBuilder) {
+                      handleAnswer(e)
+                    }
+                  }}
                   disabled={isBuilder}
                 />
                 <span className='checkmark' />

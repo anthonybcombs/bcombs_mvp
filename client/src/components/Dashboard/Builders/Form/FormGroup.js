@@ -25,6 +25,7 @@ export default ({
           ) ? itemError : ''
       })
     }
+    
     onChange(id, value)
     onCheckError(id, errors)
   }

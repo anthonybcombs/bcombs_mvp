@@ -214,13 +214,14 @@ export default styled.div`
   }
   .checkmark {
     position: absolute;
-    top: 7px;
+    top: 8px;
     left: 8px;
     height: 14px;
     width: 14px;
     border-radius: 2px;
-    background-color: #eee;
-    border: 1px solid #2196F3;
+    // background-color: #eee;
+    background-color: #fff;
+    border: 2px solid #2196F3;
   }
   .checkboxContainer.disabled .checkmark,
   .radioButtonContainer.disabled .checkmark {
@@ -267,9 +268,8 @@ export default styled.div`
 
 
   .radiobuttonContainer .checkmark {
+    top: 10px;
     border-radius: 100px;
-    background-color: #fff;
-    border: 2px solid #2196F3;
   }
 
 
