@@ -708,9 +708,8 @@ export default function index() {
           !emergencyContacts[i].last_name ||
           !emergencyContacts[i].gender ||
           !emergencyContacts[i].mobile_phone ||
-          emergencyContacts[i].mobile_phone.length < 10 || 
-          !emergencyContacts[i].work_phone ||
-          mergencyContacts[i].work_phone.length < 10 || 
+          (emergencyContacts[i].mobile_phone && emergencyContacts[i].mobile_phone.includes('_')) ||
+          (emergencyContacts[i].work_phone && emergencyContacts[i].work_phone.includes('_')  )||
           !emergencyContacts[i].relationship_to_child) {
             isValid = false;
             break;
