@@ -688,8 +688,14 @@ export default function index() {
         
         console.log('PARENTTTTT', profile)
         console.log('PARENTTTTT isParentAddressRequired', isParentAddressRequired)
-        if(!profile.first_name ||
-          !profile.last_name ||
+        console.log('PARENTTTTT profile.first_name  ==',profile.first_name  === '')
+
+        if(profile.first_name  === '' || profile.last_name  === '') {
+          isValid = false;
+          break;
+        }
+        if( !profile.first_name   ||
+          !profile.last_name   ||
           !profile.password ||
           !profile.confirmed_password ||
           !(profile.password == profile.confirmed_password) ||

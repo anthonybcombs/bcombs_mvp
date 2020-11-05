@@ -333,7 +333,7 @@ export default function index({
                 format="(###) ###-####"
                 mask="_"
                 getInputRef={register({
-                  required: i <= 1,
+                  //required: i <= 1,
                   validate: {
                     completed: value => {
                       if (value) {
@@ -370,11 +370,11 @@ export default function index({
                 readOnly={isReadonly}
               />
             )}
-            <ErrorMessage
+            {/* <ErrorMessage
               field={errors["work_phone_" + i]}
               errorType="required"
               message="Work phone no is required."
-            />
+            /> */}
             <ErrorMessage
               field={errors["work_phone_" + i]}
               errorType="completed"
