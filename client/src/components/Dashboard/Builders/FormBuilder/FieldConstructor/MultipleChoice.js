@@ -41,9 +41,10 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId
     <>
       {
         options.map((option, optionIndex) => {
+          console.log('optionIndex: ', optionIndex)
           return (
             <div key={`${index}-option-${optionIndex}`} className={`sortableGroup-column`} style={{ gridColumn: `span ${column}`}}>
-              <label className='radiobuttonContainer'>
+              {/* <label className='radiobuttonContainer'>
                 <input
                   type='radio'
                   name={fieldId}
@@ -68,7 +69,38 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId
                       />
                     : <span className='labelName'> {option.label}</span>
                 }
-              </label>
+              </label> */}
+
+              <div className='radiobuttonContainer'>
+                <input
+                  type='radio'
+                  name={fieldId}
+                  id={option.name}
+                  value={option.label}
+                  checked={true}
+                  onChange={(e) => {
+                    if (!isBuilder) {
+                      handleAnswer(e)
+                    }
+                  }}
+                  disabled={isBuilder}
+                />
+                {
+                  (isBuilder && option.name !== 'other')
+                    ? (
+                      <>
+                        <label/>
+                        <input
+                          type='text'
+                          className={`field-input`}
+                          value={option.label}
+                          onChange={(e) => handleChangeOption(e, optionIndex)}
+                        />
+                      </>
+                    )
+                    : <label for={option.name}>{option.label}</label>
+                }
+              </div>
               {
                 (isActive && options.length > 2) &&
                 (
