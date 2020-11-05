@@ -139,6 +139,8 @@ const ApplicationFormStyled = styled.div`
   }
 `;
 
+const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+
 export default function index() {
 
   const [vendor, setVendor] = useState({});
@@ -658,6 +660,8 @@ export default function index() {
           !profile.gender ||
           !profile.address ||
           !profile.city ||
+          (profile.email_address2  !== '' && profile.email_address2.match(EMAIL_REGEX)) || 
+          ( profile.phone_number && profile.phone_number.includes('_')) || 
           !profile.state ||
           !profile.zip_code ||
           profile.zip_code.length < 5  || 
@@ -666,6 +670,7 @@ export default function index() {
           !gi.grade ||
           !gi.school_name ||
           !gi.mentee_gain ||
+          ( gi.school_phone && gi.school_phone.includes('_')) ||
           (childsInformation[i].emergency_care_information !== '' &&  childsInformation[i].emergency_care_information.doctor_phone.includes('_')) || 
           (childsInformation[i].emergency_care_information  !== '' &&  childsInformation[i].emergency_care_information.hospital_phone.includes('_')) 
           ) {
@@ -689,9 +694,9 @@ export default function index() {
           !profile.confirmed_password ||
           !(profile.password == profile.confirmed_password) ||
           !profile.phone_number ||
-          profile.phone_number.length < 10 ||
+          profile.phone_number.includes('_') ||
           !profile.email_address ||
-          !profile.email_address.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) || 
+          (profile.email_address !== '' && profile.email_address.match(EMAIL_REGEX)) || 
           !profile.goals_parent_program ||
           !profile.goals_child_program ||
           !profile.person_recommend,
