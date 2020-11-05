@@ -8,7 +8,7 @@ import { Sources } from '../FormBuilder/Settings/Sources'
 export default ({ 
   label, fields, fieldState, fieldError, onChange, type: itemGroup, settings, onCheckError
 }) => {
-  console.log('@settings', { settings, fieldError })
+  // console.log('@settings', { settings, fieldError })
   const gridColRepeat = itemGroup === 'address' ? 4 : 3
 
   const { validationOptions } = Sources
@@ -50,7 +50,7 @@ export default ({
                 >
                   {
                     FieldConstructor[tag]({
-                      key: fieldId,
+                      key: `witwew-${index}`,
                       ...field,
                       value: fieldState[fieldId] || '',
                       onChange: handleChange,

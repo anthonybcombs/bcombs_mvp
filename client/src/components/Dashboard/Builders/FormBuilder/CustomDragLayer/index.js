@@ -1,5 +1,7 @@
 import React from 'react'
 import { useDragLayer } from 'react-dnd'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 import CustomDraggable from './CustomDraggable'
 
@@ -44,6 +46,21 @@ export default () => {
             previewStyle={{ width: offsetWidth, border: `1px dashed #f5812f` }}
             preview
           />
+        )
+      }
+
+      if (itemType === 'sortableItem') {
+        return (
+          // Custom drag layer for ranking
+          <div style={{ display: 'flex' }}>
+            <div>
+              <FontAwesomeIcon
+                icon={faBars}
+                className='menu-bar-builder'
+              />
+            </div>
+            <div>{item.label}</div>
+          </div>
         )
       }
 

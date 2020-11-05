@@ -20,7 +20,7 @@ export default ({
   onDuplicateGroup,
   onApplyValidationToAll,
 }) => {
-  console.log('zzzz',generalSettings)
+
   const { validationTypes, validationOptions } = Sources
 
   const validationOptionsArr = (valType) => Object.entries(validationOptions[valType || 'text'])
@@ -134,7 +134,7 @@ export default ({
   }
 
   const { instruction = {}, logic = {}, } = generalSettings
-  const { validation = {}, required = false, options } = fieldSettings || {}
+  const { validation = {}, required = false, options, requireAddOption = false } = fieldSettings || {}
   const { include, items = [{ ...defaultValidation }] } = validation
   const hasValidationError = items.find(e => e.errorField)
 
@@ -143,7 +143,7 @@ export default ({
     <div className='group-settings' style={{ marginTop: isActive ? '8rem' : '2rem' }}>
       {/* Start For Field with options */}
       {
-        options &&
+        requireAddOption &&
         (
           <>
             <span className='option-label'> Options for {fieldSettings.label}:</span>

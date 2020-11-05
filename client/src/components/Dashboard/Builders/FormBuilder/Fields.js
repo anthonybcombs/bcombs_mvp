@@ -230,9 +230,9 @@ export const StandardFields = [
         label: 'Ranking',
         tag: 'ranking',
         items: [
-          { label: '', rank: '' },
-          { label: '', rank: '' },
-          { label: '', rank: '' } 
+          { label: '', rank: 1 },
+          { label: '', rank: 2 },
+          { label: '', rank: 3 } 
         ],
         column: '1'
       }
@@ -294,9 +294,11 @@ export const PrimeFields = [
         placeholder: 'Title',
         column: '1',
         fixedWidth: true,
+        requireAddOption: true,
         options: [
           { name: 'mr', label: 'Mr.', tag: 'checkbox' },
           { name: 'mrs', label: 'Mrs.', tag: 'checkbox' },
+          { name: 'ms', label: 'Ms.', tag: 'checkbox' },
         ]
       },
       { label: 'First Name', type: 'text', tag: 'input', placeholder: 'First Name', column: '1'},

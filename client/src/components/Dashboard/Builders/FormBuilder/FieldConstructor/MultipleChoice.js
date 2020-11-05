@@ -38,7 +38,6 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
 
   const groupClassLabel = isBuilder ? 'sortableGroup' : 'formGroup'
 
-  console.log('yawa', value)
   return (
     <>
       {
