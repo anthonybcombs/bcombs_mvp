@@ -47,24 +47,28 @@ export default {
   },
   radio: ({ label, name, isBuilder, onChange }) => {
     return (
-      <label for={name} className='radioButtonContainer'>
+      <div className='radiobuttonContainer'>
         <input
           type='radio'
           onChange={onChange}
           disabled={isBuilder}
         />
-        <span className='checkmark' />
         {
-          isBuilder
-            ? <input
-                type='text'
-                className={`field-input`}
-                value={label}
-                onChange={onChange}
-              />
-            : <span className='labelName'> {label}</span>
+          (isBuilder && name !== 'other')
+            ? (
+              <>
+                <label/>
+                <input
+                  type='text'
+                  className={`field-input`}
+                  value={label}
+                  onChange={onChange}
+                />
+              </>
+            )
+            : <label for={name}>{label}</label>
         }
-      </label>
+      </div>
     )
   },
   dropdown: ({ label, name, isBuilder, onChange, index }) => {

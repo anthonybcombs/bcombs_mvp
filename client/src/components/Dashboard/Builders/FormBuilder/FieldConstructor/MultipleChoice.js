@@ -32,46 +32,48 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
     onChangeFieldSettings({ options: update(options, { $splice: [[optionIndex, 1]] }) })
   }
 
-  const handleAnswer = ({ target: { id, value: radioValue, checked } }) => {
-    console.log('toinks', { id, checked, radioValue, value })
+  const handleAnswer = ({ target: { value: radioValue, checked } }, id) => {
     onChange({ target: { id: fieldId, value: { [id]: checked ? radioValue : '' } } })
   }
 
   const groupClassLabel = isBuilder ? 'sortableGroup' : 'formGroup'
 
+  console.log('yawa', value)
   return (
     <>
       {
         options.map((option, optionIndex) => {
           return (
             <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
-              <label className='radiobuttonContainer'>
+              <div className='radiobuttonContainer'>
                 <input
                   type='radio'
-                  name={fieldId}
-                  id={option.name}
+                  id={`${fieldId}_${option.name}`}
                   value={option.label}
-                  checked={true}
-                  className='Kani bai clark'
+                  checked={!!value[`${option.name}`]}
                   onChange={(e) => {
                     if (!isBuilder) {
-                      handleAnswer(e)
+                      handleAnswer(e, option.name)
                     }
                   }}
                   disabled={isBuilder}
                 />
-                <span className='checkmark' />
                 {
                   (isBuilder && option.name !== 'other')
-                    ? <input
-                        type='text'
-                        className={`field-input`}
-                        value={option.label}
-                        onChange={(e) => handleChangeOption(e, optionIndex)}
-                      />
-                    : <span className='labelName'> {option.label}</span>
+                    ? (
+                      <>
+                        <label/>
+                        <input
+                          type='text'
+                          className={`field-input`}
+                          value={option.label}
+                          onChange={(e) => handleChangeOption(e, optionIndex)}
+                        />
+                      </>
+                    )
+                    : <label for={`${fieldId}_${option.name}`}>{option.label}</label>
                 }
-              </label>
+              </div>
               {
                 (isActive && options.length > 2) &&
                 (

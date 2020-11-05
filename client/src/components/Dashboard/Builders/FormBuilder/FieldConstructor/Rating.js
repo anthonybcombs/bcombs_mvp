@@ -91,11 +91,11 @@ export default (props) => {
 
   const handleAnswer = (answer, index) => {
     let newValue = cloneDeep(value || [])
-    console.log('toinks', newValue)
-    if (newValue[index]) {
-      newValue[index] = answer
+    const rowExists = newValue.find(e => e.row === answer.row)
+    if (!rowExists) {
+      newValue.splice(index, 0, answer)
     } else {
-      newValue.push(answer)
+      newValue = newValue.map(e => e.row === answer.row ? answer : e)
     }
     onChange({ target: { id: fieldId, value: newValue } })
   }
@@ -176,14 +176,26 @@ export default (props) => {
                     </td>
                     {
                       columns.map((column, columnIndex) => {
-                        const { answers = [] } = value[rowIndex] || {}
+                        const { answers = [] } = (value || []).find(e => e.row === row) || {}
                         const columnAnswer = answers.find(e => e.value === column.value)
                         return (
                           <td key={`column=${columnIndex}`} align='center' className='checkbox'>
                             <input
                               type={isMultiple ? 'checkbox' : 'radio'}
                               checked={!!columnAnswer}
-                              onChange={e => handleAnswer({ row, answers: [column]  }, rowIndex)}
+                              onChange={({ target: { checked } }) => {
+                                let answers = [...(((value || []).find(e => e.row === row) || {}).answers || [])]
+                                if (isMultiple) {
+                                  if (checked) {
+                                    answers.splice(columnIndex, 0, column)
+                                  } else {
+                                    answers = answers.filter(e => e.value !== column.value)
+                                  }
+                                } else {
+                                  answers = [column]
+                                }
+                                handleAnswer({ row, answers }, rowIndex)
+                              }}
                             />
                           </td>
                         )

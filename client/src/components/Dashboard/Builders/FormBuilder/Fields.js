@@ -220,6 +220,7 @@ export const StandardFields = [
     displayLabel: 'Checkbox Grid',
     label: 'Checkbox grid question',
     type: 'checkboxGrid',
+    gridMax: 1,
     isQa: true,
     includeLogic: false,
   },

@@ -178,23 +178,18 @@ export default styled.div`
   }
 
 
-  // checkbox and radiobutton
-  .checkboxContainer,
-  .radiobuttonContainer {
+  // checkbox
+  .checkboxContainer{
     position: relative;
     color: #555;
     cursor: pointer;
     display: flex;
     align-items: center;
   }
-
-  .checkboxContainer.disabled,
-  .radioButtonContainer.disabled {
+  .checkboxContainer.disabled {
     color: #a99595;
   }
-
-  .checkboxContainer > input[type="checkbox"],
-  .radiobuttonContainer > input[type="radio"] {
+  .checkboxContainer > input[type="checkbox"] {
     width: 16px;
     height: 16px;
     margin: .5rem;
@@ -202,13 +197,10 @@ export default styled.div`
     opacity: 0;
     visibility: hidden;
   }
-  .checkboxContainer > label,
-  .radioButtonContainer > label {
+  .checkboxContainer > label{
     cursor: pointer;
   }
-
-  .checkboxContainer:not(.disabled):hover,
-  .radioButtonContainer:not(.disabled):hover {
+  .checkboxContainer:not(.disabled):hover {
     color: #000;
     transition: all .15s ease-in-out
   }
@@ -219,41 +211,32 @@ export default styled.div`
     height: 14px;
     width: 14px;
     border-radius: 2px;
-    // background-color: #eee;
     background-color: #fff;
-    border: 2px solid #2196F3;
+    border: 1px solid #2196F3;
   }
-  .checkboxContainer.disabled .checkmark,
-  .radioButtonContainer.disabled .checkmark {
+  .checkboxContainer.disabled .checkmark {
     border: 1px solid #a99595;
   }
   /* On mouse-over, add a grey background color */
-  .checkboxContainer:hover input ~ .checkmark,
-  .radioButtonContainer:hover input ~ .checkmark {
+  .checkboxContainer:hover input ~ .checkmark {
     // background-color: #ccc;
   }
-
   /* When the checkbox is checked, add a blue background */
   .checkboxContainer input:checked ~ .checkmark {
     background-color: #2196F3;
   }
-
   /* Create the checkmark/indicator (hidden when not checked) */
   .checkmark:after {
     content: "";
     position: absolute;
     display: none;
   }
-
   /* Show the checkmark when checked */
-  .checkboxContainer input:checked ~ .checkmark:after,
-  .radioButtonContainer input:checked ~ .checkmark:after {
+  .checkboxContainer input:checked ~ .checkmark:after {
     display: block;
   }
-
   /* Style the checkmark/indicator */
-  .checkboxContainer .checkmark:after,
-  .radioButtonContainer .checkmark:after {
+  .checkboxContainer .checkmark:after  {
     left: 4px;
     top: 0px;
     width: 3px;
@@ -266,11 +249,62 @@ export default styled.div`
   }
 
 
-
-  .radiobuttonContainer .checkmark {
-    top: 10px;
-    border-radius: 100px;
+  // radio button
+  .radiobuttonContainer {
+    display: flex;
+    align-items: center;
+    height: 32px;
   }
+  .radiobuttonContainer [type="radio"]:checked,
+  .radiobuttonContainer [type="radio"]:not(:checked) {
+      position: absolute;
+      left: -9999px;
+  }
+  .radiobuttonContainer [type="radio"]:checked + label,
+  .radiobuttonContainer [type="radio"]:not(:checked) + label {
+      position: relative;
+      padding-left: 28px;
+      cursor: pointer;
+      line-height: 20px;
+      display: inline-block;
+      color: #666;
+  }
+  .radiobuttonContainer [type="radio"]:checked + label:before,
+  .radiobuttonContainer [type="radio"]:not(:checked) + label:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 100%;
+      border: 1px solid #1e98f3;
+  }
+  .radiobuttonContainer [type="radio"]:checked + label:after,
+  .radiobuttonContainer [type="radio"]:not(:checked) + label:after {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background: #2097f3;
+      position: absolute;
+      top: 4px;
+      left: 4.3px;
+      border-radius: 100%;
+      -webkit-transition: all 0.2s ease;
+      transition: all 0.2s ease;
+  }
+  .radiobuttonContainer [type="radio"]:not(:checked) + label:after {
+      opacity: 0;
+      -webkit-transform: scale(0);
+      transform: scale(0);
+  }
+  .radiobuttonContainer [type="radio"]:checked + label:after {
+      opacity: 1;
+      -webkit-transform: scale(1);
+      transform: scale(1);
+  }
+  
 
 
 

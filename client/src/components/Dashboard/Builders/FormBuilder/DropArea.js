@@ -19,7 +19,7 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
   const [formTitle, setFormTitle] = useState('Untitled')
 
   const reMapFields = (fields, id) => {
-    return fields.map(e => ({ ...e, id: `${e.tag}_${uuid()}_${id}`, value: '' }))
+    return fields.map(e => ({ ...e, id: `${e.tag}_${id}`, value: '' }))
   }
 
   const handleDrop = (field) => {

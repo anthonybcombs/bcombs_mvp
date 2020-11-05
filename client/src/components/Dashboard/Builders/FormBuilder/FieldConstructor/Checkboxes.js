@@ -32,7 +32,7 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId
     onChangeFieldSettings({ options: update(options, { $splice: [[optionIndex, 1]] }) })
   }
 
-  const handleAnswer = ({ target: { id, value: checkboxValue, checked } }) => {
+  const handleAnswer = ({ target: { value: checkboxValue, checked } }, id) => {
     onChange({ target: { id: fieldId, value: { ...value, [id]: checked ? checkboxValue : '' } } })
   }
 
@@ -43,15 +43,15 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId
         options.map((option, optionIndex) => {
           return (
             <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
-              <label className='checkboxContainer'>
+              <label for={`${fieldId}_${option.name}`} className='checkboxContainer'>
                 <input
                   type='checkbox'
-                  id={option.name}
+                  id={`${fieldId}_${option.name}`}
                   value={option.label}
-                  checked={!!value[option.name]}
+                  checked={!!value[`${option.name}`]}
                   onChange={(e) => {
                     if (!isBuilder) {
-                      handleAnswer(e)
+                      handleAnswer(e, option.name)
                     }
                   }}
                   disabled={isBuilder}
