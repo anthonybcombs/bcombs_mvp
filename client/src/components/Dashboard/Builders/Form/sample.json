@@ -239,9 +239,9 @@
           "max": 100
         },
         "scaleLabels": {
-          "left": "0",
-          "center": "",
-          "right": "100"
+          "left": "left",
+          "center": "center",
+          "right": "right"
         },
         "id": "slider_890edac2-6397-451a-8415-afb5d4c4244e_07844cce-6dcd-430e-b7d3-71a922f5596f",
         "value": ""
