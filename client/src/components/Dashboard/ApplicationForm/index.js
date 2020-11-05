@@ -660,7 +660,7 @@ export default function index() {
           !profile.gender ||
           !profile.address ||
           !profile.city ||
-          (profile.email_address2  && !profile.email_address2.match(EMAIL_REGEX)) || 
+          (profile.email_address2 !== ''  && !profile.email_address2.match(EMAIL_REGEX)) || 
           ( profile.phone_number && profile.phone_number.includes('_')) || 
           !profile.state ||
           !profile.zip_code ||
@@ -700,9 +700,9 @@ export default function index() {
           !profile.confirmed_password ||
           !(profile.password == profile.confirmed_password) ||
           !profile.phone_number ||
-          profile.phone_number.includes('_') ||
+          (profile.phone_number !== '' && profile.phone_number.includes('_')) ||
           !profile.email_address ||
-          !profile.email_address.match(EMAIL_REGEX) || 
+          (profile.email_address !== '' && !profile.email_address.match(EMAIL_REGEX)) || 
           !profile.goals_parent_program ||
           !profile.goals_child_program ||
           !profile.person_recommend,
