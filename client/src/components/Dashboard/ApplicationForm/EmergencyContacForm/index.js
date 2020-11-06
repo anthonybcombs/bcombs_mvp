@@ -316,7 +316,7 @@ export default function index({
             />
           </td>
           <td>
-          {!isReadonly && i <= 1 && <span className="required">*</span>}
+          {/* {!isReadonly && i <= 1 && <span className="required">*</span>} */}
             {!isReadonly ? (
               <NumberFormat
                 name={"work_phone_" + i}

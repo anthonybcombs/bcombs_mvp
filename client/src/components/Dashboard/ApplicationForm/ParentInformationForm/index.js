@@ -17,7 +17,7 @@ import DatePicker from "react-datepicker";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 import STATES from "../states.json";
 import NumberFormat from "react-number-format";
-
+ //  margin-top: 12px !important;
 const ParentInformationStyled = styled.div`
   position: relative;
   margin-top: 12px !important;
@@ -380,6 +380,8 @@ export default function index({
       </label>
     </div>
   );
+
+  
 
   let readOnlyEthinicity = "";
 
