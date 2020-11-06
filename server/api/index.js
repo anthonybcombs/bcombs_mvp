@@ -642,7 +642,8 @@ router.post("/contact", async (req, res) => {
 router.post("/group/update", upload.single("file"), async (req, res) => {
   const db = makeDb();
   const file = req.file;
-  const { id, email, selected_contacts } = req.body;
+  const { id = '', email, selected_contacts } = req.body;
+  console.log('REQ BODYYY',req.body)
   const currentUser = await getUserFromDatabase(email);
 
   if (file) {
