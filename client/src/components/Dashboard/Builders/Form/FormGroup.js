@@ -6,10 +6,10 @@ import FieldConstructor from '../FormBuilder/FieldConstructor'
 import { Sources } from '../FormBuilder/Settings/Sources'
 
 export default ({ 
-  label, fields, fieldState, fieldError, onChange, type: itemGroup, settings, onCheckError
+  label, fields, fieldState, fieldError, onChange, type: itemGroup, settings, onCheckError, gridMax
 }) => {
   // console.log('@settings', { settings, fieldError })
-  const gridColRepeat = itemGroup === 'address' ? 4 : 3
+  const gridColRepeat = itemGroup === 'address' ? 4 : gridMax
 
   const { validationOptions } = Sources
   const { validation } = settings

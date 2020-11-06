@@ -81,10 +81,16 @@ export default styled.div`
     content: "\f078";
     position: absolute;
     right: 0;
-    bottom: 18px;
-    font-size: 12px;
+    bottom: 1px;
+    font-size: 10px;
     color: #555 !important;
     font-family: "fontawesome";
+
+    width: 20px;
+    height: 25px;
+    padding-top: 10px;
+    padding-left: 9px;
+    background: #fff;
   }
   #form .select-field-wrapper select {
     -webkit-appearance: none !important;
@@ -103,7 +109,7 @@ export default styled.div`
 
     padding: 8px;
     background: #fff;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     border-radius: 3px;
     border: 1px dashed transparent;
   }
@@ -115,7 +121,7 @@ export default styled.div`
 
   .formGroup-name {
     color: #f26e21;
-    margin: 0 0 -10px 0;
+    margin: 0;
     letter-spacing: 1.3px;
   }
 
@@ -132,15 +138,153 @@ export default styled.div`
     position: relative;
     padding-top: 1rem !important;
   }
- 
 
-  
-  
+
+  // ********* Specific Group Fields  **********
+    // Dropdown
+  .formGroup.dropDown .formGroup-row {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+    // Checkbox & Radio Button
+  .formGroup.checkboxes .formGroup-row >div,
+  .formGroup.multipleChoice .formGroup-row >div {
+    padding-top: 0 !important;
+  }
+
+
+  // Linear Scale
+  .formGroup.linearScale .scaleForm,
+  .formGroup.linearScale .scaleForm .scaleForm-choices {
+    display: flex;
+    align-items: center
+  }
+  .formGroup.linearScale .scaleForm .scaleForm-choices {
+    margin: 1rem .5rem;
+  }
+  .formGroup.linearScale .scaleForm p {
+    margin: 0;
+  }
+  .formGroup.linearScale .scaleForm .scaleForm-value {
+    margin: 2px;
+    text-align: center;
+  }
+  .formGroup.linearScale .scaleForm .scaleForm-value label {
+    right: -9px;
+  }
+  .formGroup.linearScale .scaleForm .scaleForm-value label > span {
+    position: relative;
+    top: -22px;
+    left: -22px;
+    color: grey;
+  }
+  .formGroup.linearScale .scaleForm .scaleForm-value:last-child label > span {
+    left: -28px;
+  }
+
+
+  // Matrix/Rating
+  .matrixRating-container .table-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    max-width: unset;
+  }
+  .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar-track {
+    border-radius: 10px;
+    transition: 0.5s ease-in-out;
+    background: rgb(243 110 34 / 20%);
+  }
+  .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #f36e22;
+    border-radius: 10px;
+  }
+
+  .matrixRating-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 0;
+    margin-bottom: 32px;
+    table-layout: auto;
+  }
+  .matrixRating-table > thead > tr th.column-head {
+    color: #555;
+    max-width: 150px;
+    min-width: 100px;
+    padding: 0 .5rem;
+  }
+  .matrixRating-table > thead > tr th.column-head input {
+    font-weight: bold;
+    text-align: center;
+    color: #000 !important;
+  }
+  .matrixRating-table > tbody > tr.choiceRow {
+    height: 50px;
+  }
+  .matrixRating-table > tbody > tr.choiceRow:nth-child(odd) {
+    background: #f1f1f1;
+  }
+  .matrixRating-table > tbody > tr td.removeStatement svg {
+    color: #f44336;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 100px;
+  }
+  .matrixRating-table > tbody > tr td.removeStatement {
+    width: 10px !important;
+  }
+  .matrixRating-table > tbody > tr td input {
+    width: 200px !important;
+  }
+
+  .matrixRating-table > tbody > tr td .checkboxContainer,
+  .matrixRating-table > tbody > tr td .radiobuttonContainer {
+    justify-content: center;
+  }
+  .matrixRating-table > tbody > tr td .checkboxContainer span.checkmark {
+    left: unset;
+  }
+  .matrixRating-table > tbody > tr td .radiobuttonContainer label {
+    top: -10px;
+  }
+
+
+  .matrixRating-table > tbody > tr td >div.actions {
+    display: flex;
+    position: relative;
+    left: 37px;
+    top: 5px;
+  }
+  .matrixRating-table > tbody > tr td >div.actions .outlined-addBtn {
+    padding: 8px 17px !important;
+    margin: 0 8px!important;
+    white-space: pre;
+  }
+  .matrixRating-table > tbody > tr td >div.removeScale {
+    width: 88px !important;
+  }
+  .matrixRating-table > tbody > tr td >div.removeScale svg {
+    color: #f44336;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 100px;
+  }
+
+
 
 
   // =============================================
   // ********* END FORM FIELD GROUPS *********
   // =============================================
+
+
+ 
+
+
+
 
 
 
@@ -267,7 +411,12 @@ export default styled.div`
       cursor: pointer;
       line-height: 20px;
       display: inline-block;
-      color: #666;
+      color: #555;
+  }
+  .radiobuttonContainer [type="radio"]:checked + label:hover,
+  .radiobuttonContainer [type="radio"]:not(:checked) + label:hover {
+    color: #000;
+    transition: all .15s ease-in-out;
   }
   .radiobuttonContainer [type="radio"]:checked + label:before,
   .radiobuttonContainer [type="radio"]:not(:checked) + label:before {

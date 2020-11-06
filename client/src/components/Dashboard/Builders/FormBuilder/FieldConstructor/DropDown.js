@@ -100,7 +100,8 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
             </>
           )
           : (
-            <select
+            <div className='field select-field-wrapper'>
+              <select
                 className={`field-input`}
                 value={Object.keys(value)[0]}
                 onChange={(e) => handleAnswer(e)}
@@ -112,6 +113,7 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
                   })
                 }
               </select>
+            </div>
           )
       }
     </>

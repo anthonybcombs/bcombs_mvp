@@ -777,9 +777,9 @@ export default styled.div`
 
 
 
-  // ====================================
+  // ===========================================
   // ********* Specific Group Fields  **********
-  // ====================================
+  // ===========================================
     // checkbox & Radiobutton
   .sortableGroup.checkboxes .sortableGroup-column .checkboxContainer .labelName {
     position: relative;
@@ -950,14 +950,10 @@ export default styled.div`
   .sortableGroup.rating .matrixRating-container input.field-input {
     background: transparent !important;
   }
-  .matrixRating-container {
-    // background: #f1f1f1;
-  }
   .matrixRating-container .table-scroll-wrapper {
     width: 100%;
     overflow-x: auto;
-    max-width: calc(100vw - 32rem);
-    // background: #f1f1f1;
+    max-width: calc(100vw - 38rem);
   }
   .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar {
     width: 8px;
@@ -981,8 +977,8 @@ export default styled.div`
     table-layout: auto;
   }
   .matrixRating-table > thead > tr th.column-head {
-    max-width: 150px;
-    min-width: 100px;
+    max-width: 250px;
+    min-width: 150px;
     padding: 0 .5rem;
   }
   .matrixRating-table > thead > tr th.column-head input {
@@ -996,25 +992,37 @@ export default styled.div`
   .matrixRating-table > tbody > tr.choiceRow:nth-child(even) {
     background: #f1f1f1;
   }
-  .matrixRating-table > tbody > tr td.removeStatement svg {
+  .matrixRating-table > tbody > tr td.removeRow svg {
     color: #f44336;
     cursor: pointer;
     padding: 8px 10px;
     border-radius: 100px;
   }
-  .matrixRating-table > tbody > tr td.removeStatement {
+  .matrixRating-table > tbody > tr td.removeRow {
     width: 10px !important;
   }
-  .matrixRating-table > tbody > tr td.choices {
-    width: 200px !important;
-  }
   .matrixRating-table > tbody > tr td input {
-    width: 200px !important;
+    min-width: 200px !important;
   }
+
+
+  .matrixRating-table > tbody > tr td .checkboxContainer,
+  .matrixRating-table > tbody > tr td .radiobuttonContainer {
+    justify-content: center;
+  }
+  .matrixRating-table > tbody > tr td .checkboxContainer span.checkmark {
+    left: unset;
+  }
+  .matrixRating-table > tbody > tr td .radiobuttonContainer label {
+    top: 5px;
+    left: 5px;
+  }
+
+
   .matrixRating-table > tbody > tr td >div.actions {
     display: flex;
     position: relative;
-    left: 37px;
+    left: 28px;
     top: 5px;
   }
   .matrixRating-table > tbody > tr td >div.actions .outlined-addBtn {
@@ -1228,6 +1236,12 @@ export default styled.div`
     }
   }
 
+  @media (max-width: 1400px) {
+    .matrixRating-container .table-scroll-wrapper {
+      max-width: calc(100vw - 30rem);
+    }
+  }
+
   @media (max-width: 980px) {
     #formBuilder {
       display: block;
@@ -1247,9 +1261,16 @@ export default styled.div`
     #formBuilder .drop-area-wrapper {
       min-height: 600px;
     }
+    .matrixRating-container .table-scroll-wrapper {
+      max-width: calc(100vw - 10rem);
+    }
   }
   @media (max-width: 840px) {
     padding: 0rem 1rem 2rem;
+    
+    .matrixRating-container .table-scroll-wrapper {
+      max-width: calc(100vw - 6rem);
+    }
   }
   
   @media (max-width: 640px) {
@@ -1262,6 +1283,8 @@ export default styled.div`
       display: block;
     }
   }
+
+  
 
 
 

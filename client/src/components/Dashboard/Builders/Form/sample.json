@@ -224,7 +224,7 @@
     "allowAddField": false,
     "includeLogic": true,
     "includeValidation": false,
-    "gridMax": 2,
+    "gridMax": 1,
     "isActive": false
   },
   {
@@ -291,7 +291,7 @@
     "allowAddField": false,
     "includeLogic": false,
     "includeValidation": false,
-    "gridMax": 3,
+    "gridMax": 1,
     "isActive": false
   },
   {
