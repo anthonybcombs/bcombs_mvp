@@ -1016,9 +1016,10 @@ export default function index() {
                           (selectedStep > 1 && selectedStep != 5) &&
                           <a href="#" className="left" onClick={(e) => {
                             e.preventDefault();
-              
+                         
                             if(selectedStep == 3) handleWizardSelection(2);
                             else if(selectedStep == 2) handleWizardSelection(1)
+                            else if(selectedStep == 4) handleWizardSelection(3)
               
                             window.scrollTo(0, 0)
       
