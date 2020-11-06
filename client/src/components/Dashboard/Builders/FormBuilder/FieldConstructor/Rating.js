@@ -161,7 +161,7 @@ export default (props) => {
                         )
                       }
                     </td>
-                    <td align='right' className='rows'>
+                    <td align='left' className='rows'>
                       {
                         isBuilder ? (
                           <input
@@ -179,8 +179,8 @@ export default (props) => {
                         const { answers = [] } = (value || []).find(e => e.row === row) || {}
                         const columnAnswer = answers.find(e => e.value === column.value)
                         return (
-                          <td key={`column=${columnIndex}`} align='center' className='checkbox'>
-                            <input
+                          <td key={`column=${columnIndex}`} align='center' className='choices'>
+                            {/* <input
                               type={isMultiple ? 'checkbox' : 'radio'}
                               checked={!!columnAnswer}
                               onChange={({ target: { checked } }) => {
@@ -196,7 +196,44 @@ export default (props) => {
                                 }
                                 handleAnswer({ row, answers }, rowIndex)
                               }}
-                            />
+                            /> */}
+
+
+                            {
+                              !isMultiple ? (
+                                <div className='radiobuttonContainer'>
+                                  <input
+                                    id={`radio_${rowIndex}${columnIndex}`}
+                                    type='radio'
+                                    checked={!!columnAnswer}
+                                    onChange={({ target: { checked } }) => {
+                                      let answers = [...(((value || []).find(e => e.row === row) || {}).answers || [])]
+                                      answers = [column]
+                                      handleAnswer({ row, answers }, rowIndex)
+                                    }}
+                                  />
+                                  <label for={`radio_${rowIndex}${columnIndex}`}/>
+                                </div>
+                              ) : (
+                                <label for={`checkbox_${rowIndex}${columnIndex}`} className='checkboxContainer'>
+                                  <input
+                                    type='checkbox'
+                                    checked={!!columnAnswer}
+                                    id={`checkbox_${rowIndex}${columnIndex}`}
+                                    onChange={({ target: { checked } }) => {
+                                      let answers = [...(((value || []).find(e => e.row === row) || {}).answers || [])]
+                                      if (checked) {
+                                        answers.splice(columnIndex, 0, column)
+                                      } else {
+                                        answers = answers.filter(e => e.value !== column.value)
+                                      }
+                                      handleAnswer({ row, answers }, rowIndex)
+                                    }}
+                                  />
+                                  <span className='checkmark' />
+                                </label>
+                              )
+                            }
                           </td>
                         )
                       })

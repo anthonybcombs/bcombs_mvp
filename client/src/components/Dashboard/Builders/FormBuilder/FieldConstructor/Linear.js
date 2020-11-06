@@ -75,30 +75,32 @@ export default ({ min, max, onChangeFieldSettings, isBuilder, id: fieldId, onCha
               </div>
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+            <div className='scaleForm'>
               {
-                minLabel && <div>{minLabel}</div>
+                minLabel && <p className='linear-label'>{minLabel}</p>
               }
-              <div style={{ display: 'flex' }}>
+              <div className='scaleForm-choices'>
                 {
                   Array(maxValue - (minValue-1)).fill(null).map((e, i) => {
                     return (
-                      <div>
-                        <span>{minValue + i}</span>
-                        <br/>
-                        <input
-                          type='radio'
-                          value={minValue + i}
-                          checked={value === (minValue + i)}
-                          onChange={e => handleAnswer(e)}
-                        />
+                      <div className='scaleForm-value'>
+                        <div className='radiobuttonContainer'>
+                          <input
+                            id={`radio_${minValue + i}`}
+                            type='radio'
+                            value={minValue + i}
+                            checked={value === (minValue + i)}
+                            onChange={e => handleAnswer(e)}
+                          />
+                          <label for={`radio_${minValue + i}`}><span>{minValue + i}</span></label>
+                        </div>
                       </div>
                     )
                   })
                 }
               </div>
               {
-                maxLabel && <div>{maxLabel}</div>
+                maxLabel && <p className='linear-label'>{maxLabel}</p>
               }
             </div>
           )
