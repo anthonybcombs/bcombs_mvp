@@ -1025,7 +1025,7 @@ export default function index() {
                             window.scrollTo(0, 0)
       
                           }}>
-                            Previous 1
+                            Previous
                           </a>
                         }
                         {
