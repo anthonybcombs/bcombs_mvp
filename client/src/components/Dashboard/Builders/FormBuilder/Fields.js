@@ -124,21 +124,18 @@ export const StandardFields = [
       {
         label: 'Matrix / Rating',
         tag: 'rating',
-        choices: [
+        rows: [
           {
-            statement: 'Row 1',
-            answers: []
+            row: 'Row 1'
           },
           {
-            statement: 'Row 2',
-            answers: []
+            row: 'Row 2'
           },
           {
-            statement: 'Row 3',
-            answers: []
+            row: 'Row 3'
           }
         ],
-        scales: [
+        columns: [
           {
             label: 'Column 1',
             value: 1
@@ -200,17 +197,15 @@ export const StandardFields = [
       {
         label: 'Checkbox Grid',
         tag: 'checkboxGrid',
-        choices: [
+        rows: [
           {
-            statement: 'Row 1',
-            answers: []
+            row: 'Row 1'
           },
           {
-            statement: 'Row 2',
-            answers: []
+            row: 'Row 2'
           }
         ],
-        scales: [
+        columns: [
           {
             label: 'Column 1',
             value: 1
@@ -235,9 +230,9 @@ export const StandardFields = [
         label: 'Ranking',
         tag: 'ranking',
         items: [
-          { label: '', rank: '' },
-          { label: '', rank: '' },
-          { label: '', rank: '' } 
+          { label: '', rank: 1 },
+          { label: '', rank: 2 },
+          { label: '', rank: 3 } 
         ],
         column: '1'
       }
@@ -299,9 +294,11 @@ export const PrimeFields = [
         placeholder: 'Title',
         column: '1',
         fixedWidth: true,
+        requireAddOption: true,
         options: [
           { name: 'mr', label: 'Mr.', tag: 'checkbox' },
           { name: 'mrs', label: 'Mrs.', tag: 'checkbox' },
+          { name: 'ms', label: 'Ms.', tag: 'checkbox' },
         ]
       },
       { label: 'First Name', type: 'text', tag: 'input', placeholder: 'First Name', column: '1'},

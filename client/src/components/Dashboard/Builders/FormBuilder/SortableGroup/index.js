@@ -36,7 +36,6 @@ const SortableGroup = React.forwardRef(
     getNode: () => elementRef.current,
   }))
 
-  const groupTitle = useRef(null)
   useEffect((props) => {
     connectDragPreview(getEmptyImage(), { captureDraggingState: true })
     if (!isActive) {

@@ -4,7 +4,7 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ options, column, onChangeFieldSettings, isBuilder, index, isActive }) => {
+export default ({ options, column, onChangeFieldSettings, isBuilder, index, isActive, id: fieldId, onChange, value = {} }) => {
   const hasOthers = options.find(e => e.name === 'other')
 
   const handleChangeOption = ({ target }, optionIndex) => {
@@ -23,14 +23,16 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
     onChangeFieldSettings({ options: newOptions })
   }
 
-  const handleAddOthers = () => {
-    const newOption =  { ...options[0], name: 'other', label: 'Other...' }
-    onChangeFieldSettings({ options: update(options, { $push: [newOption] }) })
-  }
-
   const handleRemoveField = (optionIndex) => {
     onChangeFieldSettings({ options: update(options, { $splice: [[optionIndex, 1]] }) })
   }
+
+  const handleAnswer = ({ target: { value: dropDownValue } }) => {
+    const { name, label } = options.find(e => e.name === dropDownValue)
+    onChange({ target: { id: fieldId, value: { [name]: label } } })
+  }
+
+  const groupClassLabel = isBuilder ? 'sortableGroup' : 'formGroup'
 
   return (
     <>
@@ -41,7 +43,7 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
               {
                 options.map((option, optionIndex) => {
                   return (
-                    <div key={`${index}-option-${optionIndex}`} className={`sortableGroup-column`} style={{ gridColumn: `span ${column}`}}>
+                    <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
                       <div className='option'>
                         <span>{optionIndex + 1}.</span>
                         {
@@ -100,6 +102,8 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
           : (
             <select
                 className={`field-input`}
+                value={Object.keys(value)[0]}
+                onChange={(e) => handleAnswer(e)}
               >
                 <option value=''>Choose</option>
                 {

@@ -165,21 +165,18 @@
       {
         "label": "Matrix / Rating",
         "tag": "rating",
-        "choices": [
+        "rows": [
           {
-            "statement": "Row 1",
-            "answers": []
+            "row": "Row 1"
           },
           {
-            "statement": "Row 2",
-            "answers": []
+            "row": "Row 2"
           },
           {
-            "statement": "Row 3",
-            "answers": []
+            "row": "Row 3"
           }
         ],
-        "scales": [
+        "columns": [
           {
             "label": "Column 1",
             "value": 1
@@ -211,11 +208,11 @@
         "tag": "linear",
         "min": {
           "value": 1,
-          "label": ""
+          "label": "gamay"
         },
         "max": {
           "value": 10,
-          "label": ""
+          "label": "dako"
         },
         "id": "linear_f0bde37e-ce83-49d1-aa51-6db1715f3d5c_6482af8a-935e-4cda-92e7-f7034bfe1ecf",
         "value": ""
@@ -242,9 +239,9 @@
           "max": 100
         },
         "scaleLabels": {
-          "left": "0",
-          "center": "",
-          "right": "100"
+          "left": "left",
+          "center": "center",
+          "right": "right"
         },
         "id": "slider_890edac2-6397-451a-8415-afb5d4c4244e_07844cce-6dcd-430e-b7d3-71a922f5596f",
         "value": ""
@@ -266,17 +263,15 @@
       {
         "label": "Checkbox Grid",
         "tag": "checkboxGrid",
-        "choices": [
+        "rows": [
           {
-            "statement": "Row 1",
-            "answers": []
+            "row": "Row 1"
           },
           {
-            "statement": "Row 2",
-            "answers": []
+            "row": "Row 2"
           }
         ],
-        "scales": [
+        "columns": [
           {
             "label": "Column 1",
             "value": 1
@@ -308,16 +303,16 @@
         "tag": "ranking",
         "items": [
           {
-            "label": "",
-            "rank": ""
+            "label": "Label 1",
+            "rank": 1
           },
           {
-            "label": "",
-            "rank": ""
+            "label": "Label 2",
+            "rank": 2
           },
           {
-            "label": "",
-            "rank": ""
+            "label": "Label 3",
+            "rank": 3
           }
         ],
         "column": "1",
