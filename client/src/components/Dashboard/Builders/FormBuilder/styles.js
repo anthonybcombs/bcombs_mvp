@@ -950,14 +950,10 @@ export default styled.div`
   .sortableGroup.rating .matrixRating-container input.field-input {
     background: transparent !important;
   }
-  .matrixRating-container {
-    // background: #f1f1f1;
-  }
   .matrixRating-container .table-scroll-wrapper {
     width: 100%;
     overflow-x: auto;
-    max-width: calc(100vw - 32rem);
-    // background: #f1f1f1;
+    max-width: calc(100vw - 38rem);
   }
   .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar {
     width: 8px;
@@ -1228,6 +1224,12 @@ export default styled.div`
     }
   }
 
+  @media (max-width: 1400px) {
+    .matrixRating-container .table-scroll-wrapper {
+      max-width: calc(100vw - 30rem);
+    }
+  }
+
   @media (max-width: 980px) {
     #formBuilder {
       display: block;
@@ -1247,9 +1249,16 @@ export default styled.div`
     #formBuilder .drop-area-wrapper {
       min-height: 600px;
     }
+    .matrixRating-container .table-scroll-wrapper {
+      max-width: calc(100vw - 10rem);
+    }
   }
   @media (max-width: 840px) {
     padding: 0rem 1rem 2rem;
+    
+    .matrixRating-container .table-scroll-wrapper {
+      max-width: calc(100vw - 6rem);
+    }
   }
   
   @media (max-width: 640px) {
@@ -1262,6 +1271,8 @@ export default styled.div`
       display: block;
     }
   }
+
+  
 
 
 
