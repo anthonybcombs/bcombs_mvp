@@ -1268,18 +1268,19 @@ export default function index() {
                             Next
                           </button>
                         }
-                        {
-                          (selectedStep > 1 && selectedStep != 4) &&
+                        { //
+                          (selectedStep > 1 && selectedStep != 4 ) &&
                           <a href="#" className="left" onClick={(e) => {
                             e.preventDefault();
-              
+                            console.log('Selected Step', selectedStep)
                             if(selectedStep == 3) handleWizardSelection(2);
                             else if(selectedStep == 2) handleWizardSelection(1)
+                            //else if(selectedStep == 4) handleWizardSelection(3)
               
                             scrollToTop("smooth");
       
                           }}>
-                            Previous
+                            Previous1
                           </a>
                         }
                         {
