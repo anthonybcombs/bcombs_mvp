@@ -25,7 +25,7 @@ export default {
   },
   checkbox: ({ label, name, isBuilder, onChange }) => {
     return (
-      <label for={name} className='checkboxContainer'>
+      <label htmlFor={name} className='checkboxContainer'>
         <input
           type='checkbox'
           onChange={onChange}
@@ -66,7 +66,7 @@ export default {
                 />
               </>
             )
-            : <label for={name}>{label}</label>
+            : <label htmlFor={name}>{label}</label>
         }
       </div>
     )

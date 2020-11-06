@@ -50,7 +50,7 @@ export default ({ instruction, allowedTypes, limit, errorMessage, onChangeFieldS
             <div className='validation'>
               <p>Validation Message</p>
               <div className='input-wrapper'>
-                <label for='error-msg'>When an invalid file type is uploaded, display this error message.</label>
+                <label htmlFor='error-msg'>When an invalid file type is uploaded, display this error message.</label>
                 <input
                   id='error-msg'
                   className='field-input'

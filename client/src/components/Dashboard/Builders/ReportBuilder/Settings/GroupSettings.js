@@ -12,7 +12,7 @@ export default ({
       {/* Edit Group Name Drawer */}
       <div className={`sortableGroup-drawer drawer-right ${shownClassName}`}>
         <div className='field'>
-          <label for='group-name' className='field-label'>Group Name</label>
+          <label htmlFor='group-name' className='field-label'>Group Name</label>
           <input
             type='text'
             id='group-name'
@@ -27,7 +27,7 @@ export default ({
           isStandard && (
             <>
               <div className='field select-field-wrapper'>
-                <label for='add-field' className='field-label'>Select a field to add</label>
+                <label htmlFor='add-field' className='field-label'>Select a field to add</label>
                 <select
                   id='add-field'
                   className='field-input'

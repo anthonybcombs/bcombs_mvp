@@ -9,7 +9,7 @@ export default (props) => {
   return (
     <div className={`sortableGroup-drawer drawer-right ${shownClassName}`}>
       <div className='field'>
-        <label for='placeholder' className='field-label'>Placeholder</label>
+        <label htmlFor='placeholder' className='field-label'>Placeholder</label>
         <input
           type='text'
           id='placeholder'
@@ -23,7 +23,7 @@ export default (props) => {
       {
         itemGroup !== 'address' && (
           <div className='field select-field-wrapper'>
-            <label for='column' className='field-label'>Column</label>
+            <label htmlFor='column' className='field-label'>Column</label>
             <select
               id='column'
               className='field-input'

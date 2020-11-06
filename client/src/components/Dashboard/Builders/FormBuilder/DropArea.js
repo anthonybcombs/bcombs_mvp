@@ -49,10 +49,12 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
     console.log('shits', newFields)
     if (dragIndex === undefined) {
       const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id) }
-      newFields = update(droppedFields, {
-        [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } },
-        $push: [{ ...newField, hidden: true, isActive: true }]
-      })
+      if (droppedFields.find(e => e.isActive)) {
+        newFields = update(droppedFields, {
+          [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } }
+        })
+      }
+      newFields.push({ ...newField, hidden: true, isActive: true })
 
       dragIndex = newFields.length - 1
     }

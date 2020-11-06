@@ -135,7 +135,7 @@ export default ({
         include && 
           (
             <div>
-              <label for='applyValidation'  className={`checkboxContainer`} >
+              <label htmlFor='applyValidation'  className={`checkboxContainer`} >
                 <input
                   type='checkbox'
                   id='applyValidation'
@@ -276,7 +276,7 @@ export default ({
           </div>
 
           <div className='settings-content'>
-            <label for='required'  className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
+            <label htmlFor='required'  className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
               <input
                 type='checkbox'
                 id='required'
@@ -292,7 +292,7 @@ export default ({
               <span className='labelName'> Required</span>
             </label>
 
-            <label for='validation' className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
+            <label htmlFor='validation' className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
               <input
                 type='checkbox'
                 id='validation'
@@ -319,7 +319,7 @@ export default ({
           </div>
 
           <div className='settings-content'>
-          <label for='logic' className={`checkboxContainer`} >
+          <label htmlFor='logic' className={`checkboxContainer`} >
               <input
                 type='checkbox'
                 id='logic'
@@ -335,7 +335,7 @@ export default ({
               <span className='labelName'> Logic</span>
             </label>
 
-            <label for='instruction' className='checkboxContainer'>
+            <label htmlFor='instruction' className='checkboxContainer'>
               <input
                 type='checkbox'
                 id='instruction'

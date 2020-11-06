@@ -14,8 +14,8 @@ const SortableGroup = React.forwardRef(
     connectDragSource, connectDropTarget, connectDragPreview,
     hidden, label, fields, isDragging, id, type: itemGroup, gridMax: gridColRepeat,
     onRemoveGroup, settings: generalSettings, allowAddField, includeLogic,
-    includeValidation, isActive, onActive, onChangeGeneralSettings, 
-    groupType, onMergeStandardFields, onDuplicateGroup,
+    includeValidation, isActive, hasSettings, groupType,
+    onActive, onChangeGeneralSettings,  onMergeStandardFields, onDuplicateGroup,
     onRemoveGroupField, onChangeFieldSettings, onChangeGroupName,
     onApplyValidationToAll
   }, ref) => {
@@ -84,7 +84,7 @@ const SortableGroup = React.forwardRef(
             handleEnableEditGroupName(false)
           }}
           onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
-          onkeypress={(e) => console.log('e: ', e)}
+          onKeyPress={(e) => console.log('e: ', e)}
         />
         {
           (isActive && !enableEditGroupName) && (
@@ -183,7 +183,7 @@ const SortableGroup = React.forwardRef(
         }
       </div>
       {
-        (!isDragging && isActive) ? (
+        (hasSettings && !isDragging && isActive) ? (
           <GeneralSettings
             onChangeGeneralSettings={(data) => onChangeGeneralSettings({ ...data, id })}
             onChangeFieldSettings={(data) => onChangeFieldSettings(data, fieldIndex, id)}

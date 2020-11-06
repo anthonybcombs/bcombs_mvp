@@ -212,10 +212,10 @@ export default (props) => {
                                       handleAnswer({ row, answers }, rowIndex)
                                     }}
                                   />
-                                  <label for={`radio_${rowIndex}${columnIndex}`}/>
+                                  <label htmlFor={`radio_${rowIndex}${columnIndex}`}/>
                                 </div>
                               ) : (
-                                <label for={`checkbox_${rowIndex}${columnIndex}`} className='checkboxContainer'>
+                                <label htmlFor={`checkbox_${rowIndex}${columnIndex}`} className='checkboxContainer'>
                                   <input
                                     type='checkbox'
                                     checked={!!columnAnswer}

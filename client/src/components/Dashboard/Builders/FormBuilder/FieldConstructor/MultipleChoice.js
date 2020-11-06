@@ -70,7 +70,7 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
                         />
                       </>
                     )
-                    : <label for={`${fieldId}_${option.name}`}>{option.label}</label>
+                    : <label htmlFor={`${fieldId}_${option.name}`}>{option.label}</label>
                 }
               </div>
               {

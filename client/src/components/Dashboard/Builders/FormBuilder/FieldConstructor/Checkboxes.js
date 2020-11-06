@@ -43,7 +43,7 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId
         options.map((option, optionIndex) => {
           return (
             <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
-              <label for={`${fieldId}_${option.name}`} className='checkboxContainer'>
+              <label htmlFor={`${fieldId}_${option.name}`} className='checkboxContainer'>
                 <input
                   type='checkbox'
                   id={`${fieldId}_${option.name}`}

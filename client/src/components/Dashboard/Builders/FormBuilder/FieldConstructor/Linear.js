@@ -92,7 +92,7 @@ export default ({ min, max, onChangeFieldSettings, isBuilder, id: fieldId, onCha
                             checked={value === (minValue + i)}
                             onChange={e => handleAnswer(e)}
                           />
-                          <label for={`radio_${minValue + i}`}><span>{minValue + i}</span></label>
+                          <label htmlFor={`radio_${minValue + i}`}><span>{minValue + i}</span></label>
                         </div>
                       </div>
                     )
