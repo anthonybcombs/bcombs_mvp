@@ -3,7 +3,7 @@ import { DragSource, DropTarget, } from 'react-dnd'
 import cloneDeep from 'lodash.clonedeep'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGripHorizontal, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faGripHorizontal, faEdit, faPlus, faCopy, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
 import { Items, StandardFields } from '../Fields'
 import GeneralSettings from '../Settings/GeneralSettings'
@@ -183,8 +183,7 @@ const SortableGroup = React.forwardRef(
         }
       </div>
       {
-        (!isDragging && (showSettings || isActive)) &&
-        (
+        (!isDragging && isActive) ? (
           <GeneralSettings
             onChangeGeneralSettings={(data) => onChangeGeneralSettings({ ...data, id })}
             onChangeFieldSettings={(data) => onChangeFieldSettings(data, fieldIndex, id)}
@@ -206,7 +205,31 @@ const SortableGroup = React.forwardRef(
             showSettings={showSettings}
             isActive={isActive}
           />
-        )
+        ) : showSettings
+            ? (
+                <div>
+                  <div className='tooltip-wrapper copy-icon'>
+                    <FontAwesomeIcon
+                      icon={faCopy}
+                      onClick={e => {
+                        e.stopPropagation()
+                        onDuplicateGroup(id)
+                      }}
+                    />
+                    <span className='tooltip'>Copy</span>
+                  </div>
+                  <div className='tooltip-wrapper delete-icon'>
+                    <FontAwesomeIcon
+                      icon={faTrashAlt}
+                      onClick={e => {
+                        e.stopPropagation()
+                        onRemoveGroup(id)
+                      }}
+                    />
+                    <span className='tooltip'>Delete</span>
+                  </div>
+                </div>
+              ) : null
       }
     </div>
   )

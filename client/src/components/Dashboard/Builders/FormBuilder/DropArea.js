@@ -46,6 +46,7 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
 
   const handleMoveGroup = (dragIndex, hoverIndex, draggedGroup) => {
     let newFields = [...droppedFields]
+    console.log('shits', newFields)
     if (dragIndex === undefined) {
       const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id) }
       newFields = update(droppedFields, {

@@ -8,6 +8,7 @@ import Linear from './Linear'
 import Slider from './Slider'
 import Ranking from './Ranking'
 import FileUpload from './FileUpload'
+import PageBreak from './PageBreak'
 
 import STATES from '../../../ApplicationForm/states.json'
 import COUNTRIES from '../../../ApplicationForm/country.json'
@@ -151,8 +152,8 @@ export default {
   checkboxGrid: (props) => {
     return <Rating {...props} isMultiple />
   },
-  sectionBreak: ({ label }) => {
-    return <div>{label}</div>
+  sectionBreak: (props) => {
+    return <PageBreak {...props} />
   },
   pageBreak: ({ label }) => {
     return <div>{label}</div>
