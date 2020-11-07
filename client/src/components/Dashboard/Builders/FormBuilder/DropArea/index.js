@@ -11,15 +11,31 @@ import { Items } from '../Fields'
 import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
 
-import { requestAddForm } from "../../../../../redux/actions/FormBuilder";
+import { requestAddForm } from "../../../../../redux/actions/FormBuilder"
 
 export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
+  const [hasPageBreak, checkHasPageBreak] = useState(false)
+  const [pageBreaks, getPageBreaks] = useState([])
+  const [lastField, getLastField] = useState({})
 
   const reMapFields = (fields, id) => {
     return fields.map(e => ({ ...e, id: `${e.tag}_${id}`, value: '' }))
+  }
+
+  const checkPageBreaks = (newFields) => {
+    newFields = (newFields || droppedFields)
+    const pageBreakFields = newFields.filter(e => e.type === 'pageBreak')
+    checkHasPageBreak(!!pageBreakFields.length)
+    getPageBreaks(pageBreakFields)
+    getLastField(newFields[newFields.length - 1])
+
+    return {
+      hasPageBreak: !!pageBreakFields.length,
+      lastField: newFields[newFields.length - 1]
+    }
   }
 
   const handleDrop = (field) => {
@@ -33,20 +49,24 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
       }
 
       newFields.push({ ...newField, isActive: true })
-      setDrop(newFields)
     } else {
-      setDrop(newFields.map(e => {
+      newFields = newFields.map(e => {
         if (e.id === newField.id) {
           delete e.hidden
         }
         return e
-      }))
+      })
     }
+
+    if (field.type === 'pageBreak' && !hasPageBreak) {
+      newFields.push({ ...field, id: uuid() })
+    }
+    setDrop(newFields)
+    checkPageBreaks(newFields)
   }
 
   const handleMoveGroup = (dragIndex, hoverIndex, draggedGroup) => {
     let newFields = [...droppedFields]
-    console.log('shits', newFields)
     if (dragIndex === undefined) {
       const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id) }
       if (droppedFields.find(e => e.isActive)) {
@@ -76,8 +96,15 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
     }))
   }
 
-  const handleRemoveGroup = (id) => {
-    setDrop(droppedFields.filter(e => e.id !== id))
+  const handleRemoveGroup = (id, type) => {
+    let newFields = droppedFields
+    if (type === 'pageBreak' && pageBreaks.length === 2) {
+      newFields = newFields.filter(e => e.type !== 'pageBreak')
+    } else {
+      newFields = newFields.filter(e => e.id !== id)
+    }
+    setDrop(newFields)
+    checkPageBreaks(newFields)
   }
 
   const handleActive = (id) => {
@@ -127,17 +154,6 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
     }))
   }
 
-  const [{ item, didDrop }, drop] = useDrop({
-    accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
-    drop: () => handleDrop(item, didDrop),
-    collect: monitor => {
-      return {
-        isOver: !!monitor.isOver(),
-        item: monitor.getItem()
-      }
-    },
-  })
-
   const handleClearActive = () => {
     if (droppedFields.find(e => e.isActive)) {
       setDrop(update(droppedFields, {
@@ -162,7 +178,17 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
     dispatch(requestAddForm(payload))
   }
 
-  console.log('droppedFields', droppedFields)
+  const [{ item, didDrop }, drop] = useDrop({
+    accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
+    drop: () => handleDrop(item, didDrop),
+    collect: monitor => {
+      return {
+        isOver: !!monitor.isOver(),
+        item: monitor.getItem()
+      }
+    },
+  })
+
   return (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop}>
@@ -194,9 +220,12 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
                 {...fieldProps}
                 key={fieldProps.id}
                 index={index}
+                // hasPageBreak={hasPageBreak}
+                lastField={lastField}
+                pageBreaks={pageBreaks}
                 onMoveGroup={handleMoveGroup}
                 onShowHiddenGroup={handleShowHiddenGroup}
-                onRemoveGroup={handleRemoveGroup}
+                onRemoveGroup={(id) => handleRemoveGroup(id, fieldProps.type)}
                 onActive={handleActive}
                 onChangeGeneralSettings={handleChangeGeneralSettings}
                 onChangeFieldSettings={handleChangeFieldSettings}

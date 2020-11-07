@@ -12,7 +12,7 @@ export default ({
   const gridColRepeat = itemGroup === 'address' ? 4 : gridMax
 
   const { validationOptions } = Sources
-  const { validation } = settings
+  const { validation } = settings || {}
   const { include: validate, items } = validation || {}
 
   const handleChange = ({ target: { id, value } }) => {
@@ -50,7 +50,7 @@ export default ({
                 >
                   {
                     FieldConstructor[tag]({
-                      key: `witwew-${index}`,
+                      key: `field-${index}`,
                       ...field,
                       value: fieldState[fieldId] || '',
                       onChange: handleChange,

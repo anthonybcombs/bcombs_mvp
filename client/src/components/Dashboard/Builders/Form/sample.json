@@ -1,5 +1,27 @@
 [
   {
+    "label": "Page Break",
+    "type": "pageBreak",
+    "fields": [
+      {
+        "label": "Page Break",
+        "description": "",
+        "tag": "pageBreak",
+        "id": "pageBreak_879f7af8-48a7-4698-8225-ee8d0e88e418",
+        "value": ""
+      }
+    ],
+    "groupType": "standard",
+    "settings": {},
+    "id": "879f7af8-48a7-4698-8225-ee8d0e88e418",
+    "allowAddField": false,
+    "includeLogic": true,
+    "includeValidation": false,
+    "gridMax": 3,
+    "hasSettings": false,
+    "isActive": false
+  },
+  {
     "label": "Single Line Text",
     "type": "singleLineText",
     "fields": [
@@ -9,386 +31,129 @@
         "tag": "input",
         "placeholder": "Single Line Text",
         "column": "1",
-        "id": "input_75ae9d3a-e76e-4d7c-b60d-e8fa3062c0b1_451b9666-33e5-466b-a4b0-cde276159548",
+        "id": "input_eca7c1b4-4e7c-47d8-b398-c2adfde66ef4",
         "value": ""
       }
     ],
     "groupType": "standard",
     "settings": {},
-    "id": "451b9666-33e5-466b-a4b0-cde276159548",
+    "id": "eca7c1b4-4e7c-47d8-b398-c2adfde66ef4",
     "allowAddField": true,
     "includeLogic": false,
     "includeValidation": true,
     "gridMax": 3,
-    "isActive": true
+    "hasSettings": true,
+    "isActive": false
   },
   {
-    "label": "Paragraph Text",
-    "type": "paragraphText",
+    "label": "Page Break",
+    "type": "pageBreak",
     "fields": [
       {
-        "label": "Paragraph Text",
+        "label": "Page Break",
+        "description": "",
+        "tag": "pageBreak",
+        "id": "pageBreak_6c253501-84e1-4916-b27f-8c7b9c31797b",
+        "value": ""
+      }
+    ],
+    "groupType": "standard",
+    "settings": {},
+    "id": "6c253501-84e1-4916-b27f-8c7b9c31797b",
+    "allowAddField": false,
+    "includeLogic": true,
+    "includeValidation": false,
+    "gridMax": 3,
+    "hasSettings": false,
+    "isActive": false
+  },
+  {
+    "label": "Single Line Text",
+    "type": "singleLineText",
+    "fields": [
+      {
+        "label": "Single Line Text",
         "type": "text",
-        "tag": "textarea",
-        "placeholder": "Paragraph Text",
+        "tag": "input",
+        "placeholder": "Single Line Text",
         "column": "1",
-        "id": "textarea_89dd7778-7d10-4902-a0ba-02457ab06fca_1c329a5a-2b99-434b-9d62-d39b72eaa8ee",
+        "id": "input_fd7ccdd0-3db1-4e6a-b9da-cd6a4478f58e",
         "value": ""
       }
     ],
     "groupType": "standard",
     "settings": {},
-    "id": "1c329a5a-2b99-434b-9d62-d39b72eaa8ee",
+    "id": "fd7ccdd0-3db1-4e6a-b9da-cd6a4478f58e",
     "allowAddField": true,
     "includeLogic": false,
     "includeValidation": true,
     "gridMax": 3,
+    "hasSettings": true,
     "isActive": false
   },
   {
-    "label": "Checkboxes question",
-    "type": "checkboxes",
+    "label": "Section Break",
+    "type": "sectionBreak",
     "fields": [
       {
-        "type": "checkboxes",
-        "tag": "checkboxes",
-        "options": [
-          {
-            "name": "option1",
-            "label": "Option 1",
-            "tag": "checkbox"
-          },
-          {
-            "name": "option2",
-            "label": "Option 2",
-            "tag": "checkbox"
-          },
-          {
-            "name": "option3",
-            "label": "Option 3",
-            "tag": "checkbox"
-          }
-        ],
-        "id": "checkboxes_eefb63f9-cde8-4e20-8420-91db720f3131_fc517c7d-2055-46fd-9501-1d63cb52a5bb",
+        "label": "Section Break",
+        "description": "",
+        "tag": "sectionBreak",
+        "id": "sectionBreak_14fc07ea-391d-4eb5-9f2b-7e0209306dcd",
         "value": ""
       }
     ],
     "groupType": "standard",
     "settings": {},
-    "id": "fc517c7d-2055-46fd-9501-1d63cb52a5bb",
+    "id": "14fc07ea-391d-4eb5-9f2b-7e0209306dcd",
     "allowAddField": false,
     "includeLogic": true,
+    "includeValidation": false,
+    "gridMax": 3,
+    "hasSettings": false,
+    "isActive": false
+  },
+  {
+    "label": "Single Line Text",
+    "type": "singleLineText",
+    "fields": [
+      {
+        "label": "Single Line Text",
+        "type": "text",
+        "tag": "input",
+        "placeholder": "Single Line Text",
+        "column": "1",
+        "id": "input_1e8c09fc-9f65-4afb-a2b5-5b23ae7106ba",
+        "value": ""
+      }
+    ],
+    "groupType": "standard",
+    "settings": {},
+    "id": "1e8c09fc-9f65-4afb-a2b5-5b23ae7106ba",
+    "allowAddField": true,
+    "includeLogic": false,
     "includeValidation": true,
-    "gridMax": 1,
+    "gridMax": 3,
+    "hasSettings": true,
     "isActive": false
   },
   {
-    "label": "Multiple Choice question",
-    "type": "multipleChoice",
+    "label": "Page Break",
+    "type": "pageBreak",
     "fields": [
       {
-        "type": "multipleChoice",
-        "tag": "multipleChoice",
-        "options": [
-          {
-            "name": "option1",
-            "label": "Option 1",
-            "tag": "radio"
-          },
-          {
-            "name": "option2",
-            "label": "Option 2",
-            "tag": "radio"
-          },
-          {
-            "name": "option3",
-            "label": "Option 3",
-            "tag": "radio"
-          }
-        ],
-        "column": "1",
-        "id": "multipleChoice_3dac9b0e-e5e7-4865-9a12-ed01070e019c_36b6d958-11bd-4049-85ba-75fcd2acff6e",
-        "value": ""
+        "label": "Page Break",
+        "description": "",
+        "tag": "pageBreak"
       }
     ],
     "groupType": "standard",
     "settings": {},
-    "id": "36b6d958-11bd-4049-85ba-75fcd2acff6e",
+    "id": "5d9bd293-6985-4a27-b137-02c84f6a085d",
     "allowAddField": false,
     "includeLogic": true,
     "includeValidation": false,
-    "gridMax": 1,
-    "isActive": false
-  },
-  {
-    "label": "Dropdown question",
-    "type": "dropDown",
-    "fields": [
-      {
-        "type": "dropdown",
-        "tag": "dropdown",
-        "options": [
-          {
-            "name": "option1",
-            "label": "Option 1",
-            "tag": "dropdown"
-          },
-          {
-            "name": "option2",
-            "label": "Option 2",
-            "tag": "dropdown"
-          },
-          {
-            "name": "option3",
-            "label": "Option 3",
-            "tag": "dropdown"
-          }
-        ],
-        "column": "1",
-        "id": "dropdown_b0826eb7-4872-4185-ba7e-b17dc612db72_8b03005f-1c28-4afd-bf7e-896b02f6c9ed",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "8b03005f-1c28-4afd-bf7e-896b02f6c9ed",
-    "allowAddField": false,
-    "includeLogic": true,
-    "includeValidation": false,
-    "gridMax": 1,
-    "isActive": false
-  },
-  {
-    "label": "Matrix / Rating question",
-    "type": "rating",
-    "fields": [
-      {
-        "label": "Matrix / Rating",
-        "tag": "rating",
-        "rows": [
-          {
-            "row": "Row 1"
-          },
-          {
-            "row": "Row 2"
-          },
-          {
-            "row": "Row 3"
-          }
-        ],
-        "columns": [
-          {
-            "label": "Column 1",
-            "value": 1
-          },
-          {
-            "label": "Column 2",
-            "value": 2
-          }
-        ],
-        "id": "rating_93dc1b95-7ec0-41a3-96f2-d536d9970f52_829f2fc6-fb24-4cbd-ba39-badd862ab227",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "829f2fc6-fb24-4cbd-ba39-badd862ab227",
-    "allowAddField": false,
-    "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 1,
-    "isActive": false
-  },
-  {
-    "label": "Linear scale question",
-    "type": "linearScale",
-    "fields": [
-      {
-        "label": "Linear Scale",
-        "tag": "linear",
-        "min": {
-          "value": 1,
-          "label": "gamay"
-        },
-        "max": {
-          "value": 10,
-          "label": "dako"
-        },
-        "id": "linear_f0bde37e-ce83-49d1-aa51-6db1715f3d5c_6482af8a-935e-4cda-92e7-f7034bfe1ecf",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "6482af8a-935e-4cda-92e7-f7034bfe1ecf",
-    "allowAddField": false,
-    "includeLogic": true,
-    "includeValidation": false,
-    "gridMax": 1,
-    "isActive": false
-  },
-  {
-    "label": "Slider question",
-    "type": "slider",
-    "fields": [
-      {
-        "label": "Slider",
-        "tag": "slider",
-        "scale": {
-          "min": 0,
-          "max": 100
-        },
-        "scaleLabels": {
-          "left": "left",
-          "center": "center",
-          "right": "right"
-        },
-        "id": "slider_890edac2-6397-451a-8415-afb5d4c4244e_07844cce-6dcd-430e-b7d3-71a922f5596f",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "07844cce-6dcd-430e-b7d3-71a922f5596f",
-    "allowAddField": false,
-    "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 2,
-    "isActive": false
-  },
-  {
-    "label": "Checkbox grid question",
-    "type": "checkboxGrid",
-    "fields": [
-      {
-        "label": "Checkbox Grid",
-        "tag": "checkboxGrid",
-        "rows": [
-          {
-            "row": "Row 1"
-          },
-          {
-            "row": "Row 2"
-          }
-        ],
-        "columns": [
-          {
-            "label": "Column 1",
-            "value": 1
-          },
-          {
-            "label": "Column 2",
-            "value": 2
-          }
-        ],
-        "id": "checkboxGrid_a8fc26a2-ba18-48d9-9276-036ea8e2f1b5_b5c33069-99ac-494d-bfc4-f13cc0cb49ac",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "b5c33069-99ac-494d-bfc4-f13cc0cb49ac",
-    "allowAddField": false,
-    "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 1,
-    "isActive": false
-  },
-  {
-    "label": "Ranking question",
-    "type": "ranking",
-    "fields": [
-      {
-        "label": "Ranking",
-        "tag": "ranking",
-        "items": [
-          {
-            "label": "Label 1",
-            "rank": 1
-          },
-          {
-            "label": "Label 2",
-            "rank": 2
-          },
-          {
-            "label": "Label 3",
-            "rank": 3
-          }
-        ],
-        "column": "1",
-        "id": "ranking_03a50835-ff9c-4c85-b9e4-772a81e14532_717048df-afd2-4e91-89d0-891f65213154",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "717048df-afd2-4e91-89d0-891f65213154",
-    "allowAddField": false,
-    "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 1,
-    "isActive": false
-  },
-  {
-    "label": "File upload question",
-    "type": "file",
-    "fields": [
-      {
-        "label": "File Upload",
-        "tag": "file",
-        "instruction": "",
-        "limit": 5,
-        "errorMessage": "Only PDF, PNG, JPG, JPEG, DOC, DOCX, GIF files are supported.",
-        "allowedTypes": [
-          {
-            "label": "PDF",
-            "ext": [
-              ".pdf"
-            ],
-            "selected": true
-          },
-          {
-            "label": "PNG",
-            "ext": [
-              ".png"
-            ],
-            "selected": true
-          },
-          {
-            "label": "JPG, JPEG",
-            "ext": [
-              ".jpg",
-              ".jpeg"
-            ],
-            "selected": true
-          },
-          {
-            "label": "DOC, DOCX",
-            "ext": [
-              ".doc",
-              ".docx"
-            ],
-            "selected": true
-          },
-          {
-            "label": "GIF",
-            "ext": [
-              ".gif"
-            ],
-            "selected": true
-          }
-        ],
-        "id": "file_bdef9f2e-00cd-4f67-ab70-593ca8c48a19_7213f4d1-195f-4eff-9b21-28c5114ca081",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "7213f4d1-195f-4eff-9b21-28c5114ca081",
-    "allowAddField": false,
-    "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 1,
-    "isActive": false
+    "gridMax": 3,
+    "hasSettings": false
   }
 ]

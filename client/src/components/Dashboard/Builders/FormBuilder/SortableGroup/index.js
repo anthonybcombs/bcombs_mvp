@@ -12,9 +12,9 @@ import Field from './Field'
 const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
-    hidden, label, fields, isDragging, id, type: itemGroup, gridMax: gridColRepeat,
+    hidden, label, fields, isDragging, id, type: fieldGroupType, gridMax: gridColRepeat,
     onRemoveGroup, settings: generalSettings, allowAddField, includeLogic,
-    includeValidation, isActive, hasSettings, groupType,
+    includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField,
     onActive, onChangeGeneralSettings,  onMergeStandardFields, onDuplicateGroup,
     onRemoveGroupField, onChangeFieldSettings, onChangeGroupName,
     onApplyValidationToAll
@@ -50,10 +50,13 @@ const SortableGroup = React.forwardRef(
 
   const isGroupActive = isActive ? 'active' : ''
   const isStandard = groupType === 'standard'
+  const isPageBreak = fieldGroupType === 'pageBreak'
+  const pageBreakIndex = isPageBreak ? pageBreaks.findIndex(e => e.id === id) + 1 : 0
+  const isLastPageBreak = lastField.id === id && isPageBreak
 
   return (
     <div
-      className={`sortableGroup ${itemGroup} ${isGroupActive}`}
+      className={`sortableGroup ${fieldGroupType} ${isGroupActive}`}
       style={{ opacity }}
       onClick={(e) => {
         e.stopPropagation()
@@ -61,53 +64,66 @@ const SortableGroup = React.forwardRef(
       }}
       onMouseEnter={() => setShowSettings(true)}
       onMouseLeave={() => setShowSettings(false)}
-      ref={dropElement}
+      ref={!isLastPageBreak ? dropElement : null}
     >
-      <div ref={elementRef} className='sortableGroup-dragger'>
-        <FontAwesomeIcon
-          icon={faGripHorizontal}
-          className='drag-icon'
-        />
-      </div>
-      <div className='sortableGroup-name'
-        onClick={e => {
-          e.stopPropagation()
-          handleEnableEditGroupName(true)
-          if (!isActive) {
-            onActive(id)
+      {
+        !isLastPageBreak && (
+          <div ref={!isLastPageBreak ? elementRef : null} className='sortableGroup-dragger'>
+            <FontAwesomeIcon
+              icon={faGripHorizontal}
+              className='drag-icon'
+            />
+          </div>
+        )
+      }
+      <div>
+        <div className='sortableGroup-name'
+            onClick={e => {
+              e.stopPropagation()
+              handleEnableEditGroupName(true)
+              if (!isActive) {
+                onActive(id)
+              }
+            }}
+          >
+            <input
+              type='text'
+              className={`field-input group-name-input-${id}`}
+              value={label}
+              disabled={!enableEditGroupName}
+              onBlur={() => {
+                handleEnableEditGroupName(false)
+              }}
+              onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
+              onKeyPress={(e) => console.log('e: ', e)}
+            />
+            {
+              (isActive && !enableEditGroupName) && (
+                <div className='tooltip-wrapper tooltip-left editGroupName'>
+                  <FontAwesomeIcon
+                    icon={faEdit}
+                    className='edit-icon'
+                    onClick={e => {
+                      e.stopPropagation()
+                      handleEnableEditGroupName(true)
+                      if (!isActive) {
+                        onActive(id)
+                      }
+                    }}
+                  />
+                  <span className='tooltip'>Edit Group Name</span>
+                </div>
+                
+              )
+            }
+          </div>
+          {
+            isPageBreak && (
+              <div>
+                {pageBreakIndex}/{pageBreaks.length} 
+              </div>
+            )
           }
-        }}
-      >
-        <input
-          type='text'
-          className={`field-input group-name-input-${id}`}
-          value={label}
-          disabled={!enableEditGroupName}
-          onBlur={() => {
-            handleEnableEditGroupName(false)
-          }}
-          onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
-          onKeyPress={(e) => console.log('e: ', e)}
-        />
-        {
-          (isActive && !enableEditGroupName) && (
-            <div className='tooltip-wrapper tooltip-left editGroupName'>
-              <FontAwesomeIcon
-                icon={faEdit}
-                className='edit-icon'
-                onClick={e => {
-                  e.stopPropagation()
-                  handleEnableEditGroupName(true)
-                  if (!isActive) {
-                    onActive(id)
-                  }
-                }}
-              />
-              <span className='tooltip'>Edit Group Name</span>
-            </div>
-            
-          )
-        }
       </div>
       <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {
@@ -121,7 +137,7 @@ const SortableGroup = React.forwardRef(
                 id={id}
                 index={index}
                 field={field}
-                type={itemGroup}
+                type={fieldGroupType}
                 fieldsCount={fields.length}
                 isActive={isActive}
                 isActiveField={isActiveField}
@@ -186,7 +202,7 @@ const SortableGroup = React.forwardRef(
         }
       </div>
       {
-        (hasSettings && !isDragging && isActive) ? (
+        (hasSettings && !isDragging && isActive && !isLastPageBreak) ? (
           <GeneralSettings
             onChangeGeneralSettings={(data) => onChangeGeneralSettings({ ...data, id })}
             onChangeFieldSettings={(data) => onChangeFieldSettings(data, fieldIndex, id)}
@@ -208,7 +224,7 @@ const SortableGroup = React.forwardRef(
             showSettings={showSettings}
             isActive={isActive}
           />
-        ) : showSettings
+        ) : (showSettings && !isLastPageBreak)
             ? (
                 <div>
                   <div className='tooltip-wrapper copy-icon'>

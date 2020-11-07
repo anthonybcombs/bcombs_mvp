@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import FormrStyled from './styles'
 import FormGroup from './FormGroup'
 import FORM_DATA from './sample.json'
+import { groupFieldsByPageBreak } from '../utils'
 
 export default ({
   location: { search }
@@ -27,6 +28,7 @@ export default ({
       [id]: error
     })
   }
+  console.log('@groupedFields', groupFieldsByPageBreak(formData))
   console.log('@fieldState', fieldState)
   return (
     <FormrStyled>
