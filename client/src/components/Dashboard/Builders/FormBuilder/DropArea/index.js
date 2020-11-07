@@ -7,11 +7,11 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faCheck, faBars } from '@fortawesome/free-solid-svg-icons'
 
-import { Items } from './Fields'
-import SortableGroup from './SortableGroup'
-import CustomDragLayer from './CustomDragLayer'
+import { Items } from '../Fields'
+import SortableGroup from '../SortableGroup'
+import CustomDragLayer from '../CustomDragLayer'
 
-import { requestAddForm } from "../../../../redux/actions/FormBuilder";
+import { requestAddForm } from "../../../../../redux/actions/FormBuilder";
 
 export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
@@ -138,6 +138,14 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
     },
   })
 
+  const handleClearActive = () => {
+    if (droppedFields.find(e => e.isActive)) {
+      setDrop(update(droppedFields, {
+        [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } }
+      }))
+    }
+  }
+
   const handleSubmitForm = (e) => {
     e.preventDefault();
 
@@ -156,8 +164,8 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
 
   console.log('droppedFields', droppedFields)
   return (
-    <>
-      <div className='drop-area-wrapper' ref={drop}>
+    <div className='drop-area-wrapper' onClick={handleClearActive}>
+      <div ref={drop}>
         <div className='form-title'>
           <FontAwesomeIcon
             icon={faBars}
@@ -201,42 +209,41 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
             )
           })
         }
-        <CustomDragLayer />
-        <div className='drop-area-wrapper-actions'>
-          {
-            droppedFields.length > 0 && (
-              <>
-                <a
-                  type='button'
-                  target='_blank'
-                  className='btn preview'
-                  href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
-                >
-                  <FontAwesomeIcon
-                    className='preview-icon'
-                    icon={faEye}
-                  />
-                  <span>View</span>
-                </a>
-                <button
-                  type='button'
-                  target='_blank'
-                  className='btn save'
-                  disabled={!(user && user.user_id && vendor && vendor.id)}
-                  onClick={handleSubmitForm}
-                >
-                  <FontAwesomeIcon
-                    className='save-icon'
-                    icon={faCheck}
-                  />
-                  <span>Save</span>
-                </button>
-              </>
-            )
-          }
-        </div>
       </div>
-      
-    </>
+      <CustomDragLayer />
+      <div className='drop-area-wrapper-actions'>
+        {
+          droppedFields.length > 0 && (
+            <>
+              <a
+                type='button'
+                target='_blank'
+                className='btn preview'
+                href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
+              >
+                <FontAwesomeIcon
+                  className='preview-icon'
+                  icon={faEye}
+                />
+                <span>View</span>
+              </a>
+              <button
+                type='button'
+                target='_blank'
+                className='btn save'
+                disabled={!(user && user.user_id && vendor && vendor.id)}
+                onClick={handleSubmitForm}
+              >
+                <FontAwesomeIcon
+                  className='save-icon'
+                  icon={faCheck}
+                />
+                <span>Save</span>
+              </button>
+            </>
+          )
+        }
+      </div>
+    </div>
   )
 }

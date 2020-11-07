@@ -8,6 +8,7 @@ import Linear from './Linear'
 import Slider from './Slider'
 import Ranking from './Ranking'
 import FileUpload from './FileUpload'
+import SectionBreak from './SectionBreak'
 import PageBreak from './PageBreak'
 
 import STATES from '../../../ApplicationForm/states.json'
@@ -153,9 +154,9 @@ export default {
     return <Rating {...props} isMultiple />
   },
   sectionBreak: (props) => {
-    return <PageBreak {...props} />
+    return <SectionBreak {...props} />
   },
-  pageBreak: ({ label }) => {
-    return <div>{label}</div>
+  pageBreak: (props) => {
+    return <PageBreak {...props} />
   },
 }

@@ -4,7 +4,7 @@ export default ({ description, onChangeFieldSettings, isBuilder }) => {
   return (
     <div>
       <input
-        placeholder='Page break description here.'
+        placeholder='Section break description here.'
         value={description}
         onChange={({ target: { value } }) => onChangeFieldSettings({ description: value })}
       />

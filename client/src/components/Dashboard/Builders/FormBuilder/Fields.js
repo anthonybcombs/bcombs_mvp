@@ -278,11 +278,12 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Page Break', tag: 'pageBreak', column: '1'}
+      { label: 'Page Break', description: '', tag: 'pageBreak'}
     ],
     label: 'Page Break',
-    type: 'pageBreak'
-  },
+    type: 'pageBreak',
+    hasSettings: false
+  }
 ]
 
 export const PrimeFields = [
@@ -314,10 +315,27 @@ export const PrimeFields = [
   },
   {
     fields: [
-      { label: 'File Upload', tag: 'file', column: '1'}
+      {
+        label: 'File Upload',
+        tag: 'file',
+        instruction: '',
+        limit: 5,
+        errorMessage: 'Only PDF, PNG, JPG, JPEG, DOC, DOCX, GIF files are supported.',
+        allowedTypes: [
+          { label: 'PDF', ext: ['.pdf'], selected: true },
+          { label: 'PNG', ext: ['.png'], selected: true },
+          { label: 'JPG, JPEG', ext: ['.jpg', '.jpeg'], selected: true },
+          { label: 'DOC, DOCX', ext: ['.doc', '.docx'], selected: true },
+          { label: 'GIF', ext: ['.gif'], selected: true }
+        ]
+      }
     ],
-    label: 'File Upload',
-    type: 'primeFile'
+    displayLabel: 'File Upload',
+    label: 'File upload question',
+    type: 'primeFile',
+    includeLogic: false,
+    gridMax: 1,
+    isQA: true
   },
   {
     fields: [

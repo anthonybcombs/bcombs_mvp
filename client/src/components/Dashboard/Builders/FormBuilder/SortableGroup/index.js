@@ -55,7 +55,10 @@ const SortableGroup = React.forwardRef(
     <div
       className={`sortableGroup ${itemGroup} ${isGroupActive}`}
       style={{ opacity }}
-      onClick={() => onActive(id)}
+      onClick={(e) => {
+        e.stopPropagation()
+        onActive(id)
+      }}
       onMouseEnter={() => setShowSettings(true)}
       onMouseLeave={() => setShowSettings(false)}
       ref={dropElement}
