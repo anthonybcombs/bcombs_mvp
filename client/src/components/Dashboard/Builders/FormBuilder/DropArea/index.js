@@ -188,7 +188,7 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
       }
     },
   })
-
+  console.log('shits', droppedFields)
   return (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop}>

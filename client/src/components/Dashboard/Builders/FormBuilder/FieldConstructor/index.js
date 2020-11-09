@@ -126,7 +126,7 @@ export default {
             >
               <option value=''>{rest.placeholder}</option>
               {
-                selectMappings[type].map(({ label, value }, index) => {
+                (options || selectMappings[type]).map(({ label, value }, index) => {
                   return (<option key={value + index} value={value}>{label}</option>)
                 })
               }

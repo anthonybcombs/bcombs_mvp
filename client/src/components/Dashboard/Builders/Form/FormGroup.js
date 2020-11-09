@@ -9,6 +9,7 @@ export default ({
   label, fields, fieldState, fieldError, onChange, type: itemGroup, settings, onCheckError, gridMax
 }) => {
   // console.log('@settings', { settings, fieldError })
+  console.log('toinkszzzzzzzzzzzz', fields)
   const gridColRepeat = itemGroup === 'address' ? 4 : gridMax
 
   const { validationOptions } = Sources
