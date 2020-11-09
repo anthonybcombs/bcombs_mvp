@@ -49,7 +49,7 @@ export default ({
         </div>
         <div className='form-content'>
           {
-            hasWizard && (
+            hasWizard ? (
               <div className='wizard-wrapper'>
                 <Stepper
                   fields={fields}
@@ -57,7 +57,7 @@ export default ({
                   onSetStep={handleChangeStep}
                 />
                 <Content
-                  fields={fields[currentStep]}
+                  fields={fields[currentStep].formFields}
                   currentStep={currentStep}
                   fieldState={fieldState}
                   fieldError={fieldError}
@@ -65,14 +65,25 @@ export default ({
                   onChange={handleChange}
                   onCheckError={handleCheckError}
                 />
-                <Actions
-                  fields={fields}
-                  currentStep={currentStep}
-                  onSetStep={handleChangeStep}
-                />
               </div>
+            ) : (
+              <Content
+                fields={fields}
+                currentStep={currentStep}
+                fieldState={fieldState}
+                fieldError={fieldError}
+                onSetStep={handleChangeStep}
+                onChange={handleChange}
+                onCheckError={handleCheckError}
+              />
             )
           }
+          <Actions
+            hasWizard={hasWizard}
+            fields={fields}
+            currentStep={currentStep}
+            onSetStep={handleChangeStep}
+          />
         </div>
       </div>
     </FormrStyled>

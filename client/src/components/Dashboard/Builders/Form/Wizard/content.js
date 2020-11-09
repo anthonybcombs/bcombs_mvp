@@ -3,11 +3,10 @@ import React from 'react'
 import FormGroup from '../FormGroup'
 
 export default ({ fields, currentStep, onSetStep, fieldState, fieldError, onChange, onCheckError }) => {
-  const { formFields } = fields
   return (
     <div className='wizard-content'>
       {
-        formFields.map((fieldProps, index) => {
+        fields.map((fieldProps, index) => {
           return (
             <FormGroup
               {...fieldProps}

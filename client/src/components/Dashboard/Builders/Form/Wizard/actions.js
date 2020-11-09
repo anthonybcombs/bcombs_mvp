@@ -1,10 +1,10 @@
 import React from 'react'
 
-export default ({ fields, currentStep, onSetStep }) => {
+export default ({ fields, currentStep, hasWizard, onSetStep }) => {
   const fieldCount = fields.length
-  const showPrev = currentStep > 0
-  const showNext = currentStep + 1 < fieldCount
-  const showSubmit = currentStep + 1 === fieldCount
+  const showPrev = currentStep > 0 && hasWizard
+  const showNext = currentStep + 1 < fieldCount && hasWizard
+  const showSubmit = currentStep + 1 === fieldCount || !hasWizard
   return (
     <div className='wizard-actions'>
       {
