@@ -34,7 +34,7 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
 
     return {
       hasPageBreak: !!pageBreakFields.length,
-      lastField: newFields[newFields.length - 1]
+      lastField: newFields[newFields.length - 1] || {}
     }
   }
 

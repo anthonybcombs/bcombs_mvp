@@ -14,7 +14,7 @@ const SortableGroup = React.forwardRef(
     connectDragSource, connectDropTarget, connectDragPreview,
     hidden, label, fields, isDragging, id, type: fieldGroupType, gridMax: gridColRepeat,
     onRemoveGroup, settings: generalSettings, allowAddField, includeLogic,
-    includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField,
+    includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField = {},
     onActive, onChangeGeneralSettings,  onMergeStandardFields, onDuplicateGroup,
     onRemoveGroupField, onChangeFieldSettings, onChangeGroupName,
     onApplyValidationToAll

@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 
 import FormrStyled from './styles'
-import FormGroup from './FormGroup'
 import FORM_DATA from './sample.json'
 import { groupFieldsByPageBreak } from '../utils'
+
+import Stepper from './Wizard/stepper'
+import Content from './Wizard/content'
+import Actions from './Wizard/actions'
 
 export default ({
   location: { search }
@@ -28,7 +31,15 @@ export default ({
       [id]: error
     })
   }
-  console.log('@groupedFields', groupFieldsByPageBreak(formData))
+
+  const [currentStep, setStep] = useState(0)
+  const handleChangeStep = (step) => {
+    setStep(step)
+  }
+
+  const hasWizard = !!formData.find(e => e.type === 'pageBreak')
+  const fields = hasWizard ? groupFieldsByPageBreak(formData) : formData
+  console.log('@groupedFields', groupFieldsByPageBreak(fields))
   console.log('@fieldState', fieldState)
   return (
     <FormrStyled>
@@ -38,19 +49,29 @@ export default ({
         </div>
         <div className='form-content'>
           {
-            formData.map((fieldProps, index) => {
-              return (
-                <FormGroup
-                  {...fieldProps}
-                  key={fieldProps.id}
-                  index={index}
+            hasWizard && (
+              <div className='wizard-wrapper'>
+                <Stepper
+                  fields={fields}
+                  currentStep={currentStep}
+                  onSetStep={handleChangeStep}
+                />
+                <Content
+                  fields={fields[currentStep]}
+                  currentStep={currentStep}
                   fieldState={fieldState}
                   fieldError={fieldError}
+                  onSetStep={handleChangeStep}
                   onChange={handleChange}
                   onCheckError={handleCheckError}
                 />
-              )
-            })
+                <Actions
+                  fields={fields}
+                  currentStep={currentStep}
+                  onSetStep={handleChangeStep}
+                />
+              </div>
+            )
           }
         </div>
       </div>
