@@ -12,15 +12,15 @@ import Field from './Field'
 const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
-    hidden, label, fields, isDragging, id, type: fieldGroupType, gridMax: gridColRepeat,
-    onRemoveGroup, settings: generalSettings, allowAddField, includeLogic,
-    includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField = {},
     onActive, onChangeGeneralSettings,  onMergeStandardFields, onDuplicateGroup,
-    onRemoveGroupField, onChangeFieldSettings, onChangeGroupName,
-    onApplyValidationToAll
+    onRemoveGroupField, onChangeFieldSettings, onChangeGroupName, onApplyValidationToAll,
+    hidden, label, fields, isDragging, id, type: fieldGroupType, gridMax: gridColRepeat,
+    includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField = {},
+    onRemoveGroup, settings: generalSettings, allowAddField, includeLogic, supportMultiple,
+    isMultiple,
   }, ref) => {
   
-  const [fieldIndex, setActiveFieldIndex] = useState('')
+  const [fieldIndex, setActiveFieldIndex] = useState(0)
   const [additionalField, handleSelectFieldToAdd] = useState('')
   const [enableEditGroupName, handleEnableEditGroupName] = useState(false)
   const [validationAppliedToAll, applyValidationToAll] = useState(false)
@@ -32,6 +32,7 @@ const SortableGroup = React.forwardRef(
   connectDropTarget(dropElement)
 
   const opacity = (isDragging || hidden) ? 0 : 1
+  const height = (isDragging || hidden) ? 100 : ''
   useImperativeHandle(ref, () => ({
     getNode: () => elementRef.current,
   }))
@@ -57,7 +58,7 @@ const SortableGroup = React.forwardRef(
   return (
     <div
       className={`sortableGroup ${fieldGroupType} ${isGroupActive}`}
-      style={{ opacity }}
+      style={{ opacity, height }}
       onClick={(e) => {
         e.stopPropagation()
         onActive(id)
@@ -223,6 +224,7 @@ const SortableGroup = React.forwardRef(
             validationAppliedToAll={validationAppliedToAll}
             showSettings={showSettings}
             isActive={isActive}
+            supportMultiple={supportMultiple}
           />
         ) : (showSettings && !isLastPageBreak)
             ? (

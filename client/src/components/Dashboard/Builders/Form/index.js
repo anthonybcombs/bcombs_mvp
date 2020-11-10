@@ -13,8 +13,10 @@ export default ({
 }) => {
 
   const query = new URLSearchParams(search)
-  const formData = FORM_DATA //JSON.parse(query.get('formData'))
-  const formTitle = 'Sample' //query.get('formTitle')
+  const formData = JSON.parse(query.get('formData'))
+  const formTitle = query.get('formTitle')
+  // const formData = FORM_DATA //JSON.parse(query.get('formData'))
+  // const formTitle = 'Sample' //query.get('formTitle')
   
   const [fieldState, setField] = useState({})
   const handleChange = (id, value) => {

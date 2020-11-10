@@ -3,14 +3,14 @@ export const Items = {
     singleLineText: 'singleLineText',
     numbers: 'numbers',
     paragraphText: 'paragraphText',
-    checkboxes: 'checkboxes',
+    // checkboxes: 'checkboxes',
     multipleChoice: 'multipleChoice',
     dropDown: 'dropDown',
     rating: 'rating',
     radioButton: 'radioButton',
     linearScale: 'linearScale',
     slider: 'slider',
-    checkboxGrid: 'checkboxGrid',
+    // checkboxGrid: 'checkboxGrid',
     ranking: 'ranking',
     file: 'file',
     sectionBreak: 'sectionBreak',
@@ -62,25 +62,25 @@ export const StandardFields = [
     includeLogic: false,
     includeValidation: true,
   },
-  {
-    fields: [
-      {
-        type: 'checkboxes',
-        tag: 'checkboxes',
-        options: [
-          { name: 'option1', label: 'Option 1', tag: 'checkbox' },
-          { name: 'option2', label: 'Option 2', tag: 'checkbox' },
-          { name: 'option3', label: 'Option 3', tag: 'checkbox' }
-        ]
-      }
-    ],
-    displayLabel: 'Checkboxes',
-    label: 'Checkboxes question',
-    type: 'checkboxes',
-    gridMax: 1,
-    isQA: true,
-    includeValidation: true
-  },
+  // {
+  //   fields: [
+  //     {
+  //       type: 'checkboxes',
+  //       tag: 'checkboxes',
+  //       options: [
+  //         { name: 'option1', label: 'Option 1', tag: 'checkbox' },
+  //         { name: 'option2', label: 'Option 2', tag: 'checkbox' },
+  //         { name: 'option3', label: 'Option 3', tag: 'checkbox' }
+  //       ]
+  //     }
+  //   ],
+  //   displayLabel: 'Checkboxes',
+  //   label: 'Checkboxes question',
+  //   type: 'checkboxes',
+  //   gridMax: 1,
+  //   isQA: true,
+  //   includeValidation: true
+  // },
   {
     fields: [
       {
@@ -91,13 +91,15 @@ export const StandardFields = [
           { name: 'option2', label: 'Option 2', tag: 'radio' },
           { name: 'option3', label: 'Option 3', tag: 'radio' }
         ],
-        column: '1'
+        column: '1',
+        isMultiple: false, // Added nov 11
       }
     ],
     displayLabel: 'Multiple Choice',
     label: 'Multiple Choice question',
     type: 'multipleChoice',
     gridMax: 1,
+    supportMultiple: true, // Added nov 11
     isQA: true
   },
   {
@@ -124,6 +126,7 @@ export const StandardFields = [
       {
         label: 'Matrix / Rating',
         tag: 'rating',
+        isMultiple: false, // Added nov 11
         rows: [
           {
             row: 'Row 1'
@@ -152,6 +155,7 @@ export const StandardFields = [
     type: 'rating',
     gridMax: 1,
     isQa: true,
+    supportMultiple: true, // Added nov 11
     includeLogic: false,
   },
   // {
@@ -192,38 +196,38 @@ export const StandardFields = [
     isQa: true,
     includeLogic: false
   },
-  {
-    fields: [
-      {
-        label: 'Checkbox Grid',
-        tag: 'checkboxGrid',
-        rows: [
-          {
-            row: 'Row 1'
-          },
-          {
-            row: 'Row 2'
-          }
-        ],
-        columns: [
-          {
-            label: 'Column 1',
-            value: 1
-          },
-          {
-            label: 'Column 2',
-            value: 2
-          }
-        ]
-      }
-    ],
-    displayLabel: 'Checkbox Grid',
-    label: 'Checkbox grid question',
-    type: 'checkboxGrid',
-    gridMax: 1,
-    isQa: true,
-    includeLogic: false,
-  },
+  // {
+  //   fields: [
+  //     {
+  //       label: 'Checkbox Grid',
+  //       tag: 'checkboxGrid',
+  //       rows: [
+  //         {
+  //           row: 'Row 1'
+  //         },
+  //         {
+  //           row: 'Row 2'
+  //         }
+  //       ],
+  //       columns: [
+  //         {
+  //           label: 'Column 1',
+  //           value: 1
+  //         },
+  //         {
+  //           label: 'Column 2',
+  //           value: 2
+  //         }
+  //       ]
+  //     }
+  //   ],
+  //   displayLabel: 'Checkbox Grid',
+  //   label: 'Checkbox grid question',
+  //   type: 'checkboxGrid',
+  //   gridMax: 1,
+  //   isQa: true,
+  //   includeLogic: false,
+  // },
   {
     fields: [
       {

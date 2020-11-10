@@ -4,9 +4,8 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ options, column, onChangeFieldSettings, isBuilder, index, isActive, id: fieldId, onChange, value = {} }) => {
+export default ({ options, column, onChangeFieldSettings, isBuilder, isMultiple, index, isActive, id: fieldId, onChange, value = {} }) => {
   const hasOthers = options.find(e => e.name === 'other')
-
   const handleChangeOption = ({ target }, optionIndex) => {
     onChangeFieldSettings({ options: update(options, { [optionIndex]: { $merge: { label: target.value } } }) })
   }
@@ -32,8 +31,8 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
     onChangeFieldSettings({ options: update(options, { $splice: [[optionIndex, 1]] }) })
   }
 
-  const handleAnswer = ({ target: { value: radioValue, checked } }, id) => {
-    onChange({ target: { id: fieldId, value: { [id]: checked ? radioValue : '' } } })
+  const handleAnswer = ({ target: { value: optionValue, checked } }, id) => {
+    onChange({ target: { id: fieldId, value: { ...(isMultiple ? value : {}), [id]: checked ? optionValue : '' } } })
   }
 
   const groupClassLabel = isBuilder ? 'sortableGroup' : 'formGroup'
@@ -44,35 +43,65 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
         options.map((option, optionIndex) => {
           return (
             <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
-              <div className='radiobuttonContainer'>
-                <input
-                  type='radio'
-                  id={`${fieldId}_${option.name}`}
-                  value={option.label}
-                  checked={!!value[`${option.name}`]}
-                  onChange={(e) => {
-                    if (!isBuilder) {
-                      handleAnswer(e, option.name)
+              {
+                !isMultiple ? (
+                  <div className='radiobuttonContainer'>
+                    <input
+                      type='radio'
+                      id={`${fieldId}_${option.name}`}
+                      value={option.label}
+                      checked={!!value[`${option.name}`]}
+                      onChange={(e) => {
+                        if (!isBuilder) {
+                          handleAnswer(e, option.name)
+                        }
+                      }}
+                      disabled={isBuilder}
+                    />
+                    {
+                      (isBuilder && option.name !== 'other')
+                        ? (
+                          <>
+                            <label/>
+                            <input
+                              type='text'
+                              className={`field-input`}
+                              value={option.label}
+                              onChange={(e) => handleChangeOption(e, optionIndex)}
+                            />
+                          </>
+                        )
+                        : <label htmlFor={`${fieldId}_${option.name}`}>{option.label}</label>
                     }
-                  }}
-                  disabled={isBuilder}
-                />
-                {
-                  (isBuilder && option.name !== 'other')
-                    ? (
-                      <>
-                        <label/>
-                        <input
-                          type='text'
-                          className={`field-input`}
-                          value={option.label}
-                          onChange={(e) => handleChangeOption(e, optionIndex)}
-                        />
-                      </>
-                    )
-                    : <label htmlFor={`${fieldId}_${option.name}`}>{option.label}</label>
-                }
-              </div>
+                  </div>
+                ) : (
+                  <label htmlFor={`${fieldId}_${option.name}`} className='checkboxContainer'>
+                    <input
+                      type='checkbox'
+                      id={`${fieldId}_${option.name}`}
+                      value={option.label}
+                      checked={!!value[`${option.name}`]}
+                      onChange={(e) => {
+                        if (!isBuilder) {
+                          handleAnswer(e, option.name)
+                        }
+                      }}
+                      disabled={isBuilder}
+                    />
+                    <span className='checkmark' />
+                    {
+                      (isBuilder && option.name !== 'other')
+                        ? <input
+                            type='text'
+                            className={`field-input`}
+                            value={option.label}
+                            onChange={(e) => handleChangeOption(e, optionIndex)}
+                          />
+                        : <span className='labelName'> {option.label}</span>
+                    }
+                  </label>
+                )
+              }
               {
                 (isActive && options.length > 2) &&
                 (
