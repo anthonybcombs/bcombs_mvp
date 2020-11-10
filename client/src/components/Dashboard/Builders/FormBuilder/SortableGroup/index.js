@@ -226,7 +226,7 @@ const SortableGroup = React.forwardRef(
           />
         ) : (showSettings && !isLastPageBreak)
             ? (
-                <div>
+                <div className='floating-settings-iconActions'>
                   <div className='tooltip-wrapper copy-icon'>
                     <FontAwesomeIcon
                       icon={faCopy}

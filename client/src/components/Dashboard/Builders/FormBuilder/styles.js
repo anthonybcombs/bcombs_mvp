@@ -710,19 +710,46 @@ export default styled.div`
     background: rgb(239 239 239 / 55%);
     transition: all .25s ease-in-out
   }
-  .group-settings .settings-iconActions  .copy-icon svg:hover {
+  .group-settings .settings-iconActions  .copy-icon svg:hover,
+  .floating-settings-iconActions .copy-icon svg:hover {
     position: relative;
     color: #ffffff;
     background: #f5812f;
     box-shadow: 0 3px 6px #ddd;
     transition: all .15s ease-in-out
   }
-  .group-settings .settings-iconActions  .delete-icon svg:hover {
+  .group-settings .settings-iconActions  .delete-icon svg:hover,
+  .floating-settings-iconActions .delete-icon svg:hover {
     position: relative;
     color: #ffffff;
     background: #f44336;
     box-shadow: 0 3px 6px #ddd;
     transition: all .15s ease-in-out
+  }
+  .floating-settings-iconActions {
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    display: flex;
+    justify-content: flex-end;
+  }
+  .floating-settings-iconActions .copy-icon svg {
+    color: #f5812f;
+  }
+  .floating-settings-iconActions .delete-icon svg {
+    color: #f44336;
+  }
+  .floating-settings-iconActions .tooltip-wrapper .tooltip {
+    top: 40px;
+    left: -16px;
+    transform: translateY(-32px);
+  }
+  .floating-settings-iconActions .tooltip-wrapper:hover .tooltip {
+    transform: translateY(0);
+  }
+  .floating-settings-iconActions .copy-icon .tooltip-wrapper .tooltip {
+    left: -6px !important;
   }
 
  
