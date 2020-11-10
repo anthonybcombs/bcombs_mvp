@@ -77,6 +77,28 @@
     "isActive": false
   },
   {
+    "label": "Section Break",
+    "type": "sectionBreak",
+    "fields": [
+      {
+        "label": "Section Break",
+        "description": "",
+        "tag": "sectionBreak",
+        "id": "sectionBreak_89375a22-70e8-47c2-b7b2-66fea730273d",
+        "value": ""
+      }
+    ],
+    "groupType": "standard",
+    "settings": {},
+    "id": "89375a22-70e8-47c2-b7b2-66fea730273d",
+    "allowAddField": false,
+    "includeLogic": true,
+    "includeValidation": false,
+    "gridMax": 3,
+    "hasSettings": false,
+    "isActive": false
+  },
+  {
     "label": "Dropdown question",
     "type": "dropDown",
     "fields": [
