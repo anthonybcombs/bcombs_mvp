@@ -320,12 +320,13 @@ export default styled.div`
 
     padding: 8px;
     background: #fff;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
     border-radius: 3px;
     border: 1px dashed transparent;
   }
   .sortableGroup:hover,
   .sortableGroup.active {
+    z-index: 1;
     background: #fff;
     border-radius: 3px;
     border-color: #f5812f;
@@ -971,6 +972,24 @@ export default styled.div`
     color: #f44336;
     font-size: 12px;
   }
+
+
+  // Secion Break
+  .sortableGroup.sectionBreak .sortableGroup-name >input {
+    font-size: 18px !important;
+    color: #000 !important;
+  }
+
+  
+    // Page Break
+  .sortableGroup.pageBreak .sortableGroup-name >input {
+    text-align: center;
+    border-bottom: 2px dashed #ccc !important;
+  }
+  .sortableGroup.pageBreak .pageBreak-counter {
+    text-align: right;
+  }
+
 
     // Matrix/Rating
   .sortableGroup.checkboxGrid .matrixRating-container input.field-input,

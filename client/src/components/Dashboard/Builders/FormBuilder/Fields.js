@@ -274,7 +274,8 @@ export const StandardFields = [
     ],
     label: 'Section Break',
     type: 'sectionBreak',
-    hasSettings: false
+    hasSettings: false,
+    gridMax: 1,
   },
   {
     fields: [
@@ -282,7 +283,8 @@ export const StandardFields = [
     ],
     label: 'Page Break',
     type: 'pageBreak',
-    hasSettings: false
+    hasSettings: false,
+    gridMax: 1,
   }
 ]
 

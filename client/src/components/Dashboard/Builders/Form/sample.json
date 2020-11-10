@@ -94,7 +94,7 @@
     "allowAddField": false,
     "includeLogic": true,
     "includeValidation": false,
-    "gridMax": 3,
+    "gridMax": 1,
     "hasSettings": false,
     "isActive": false
   },

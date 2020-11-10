@@ -63,7 +63,7 @@ export default ({ instruction, allowedTypes, limit, errorMessage, onChangeFieldS
             </div>
           </div>
         ) : (
-          <div>
+          <div className='uploadForm'>
             <input
               type='file'
               id='file'
