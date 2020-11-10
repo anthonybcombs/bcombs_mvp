@@ -120,7 +120,7 @@ const SortableGroup = React.forwardRef(
           </div>
           {
             isPageBreak && (
-              <div>
+              <div className='pageBreak-counter'>
                 {pageBreakIndex}/{pageBreaks.length} 
               </div>
             )

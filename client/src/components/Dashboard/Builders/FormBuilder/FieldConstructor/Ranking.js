@@ -80,14 +80,14 @@ const SortableItem = DropTarget('sortableItem', {
     // ingna lang ko bai if maglibog ka or naay mas dali nga paagi imong makita, di na mogana akong utok haha
 
     return (
-      <div ref={dropElement} style={{ display: 'flex', opacity }}>
-        <div ref={elementRef}>
+      <div ref={dropElement} className='draggable-item'>
+        <div ref={elementRef} className='dragger-icon'>
           <FontAwesomeIcon
             icon={faBars}
             className='menu-bar-builder'
           />
         </div>
-        <div>{label}</div>
+        <div className='label'>{label} Draggable Item</div>
       </div>
     )
   
@@ -178,7 +178,7 @@ export default ({ items, onChangeFieldSettings, isActive, isBuilder, id: fieldId
             }
           </div>
         ) : (
-          <div>
+          <div className='rankingForm'>
             <DndProvider backend={HTML5Backend}>
               {
                 newItems.map((item, itemIndex) => {

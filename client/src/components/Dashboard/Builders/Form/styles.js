@@ -8,7 +8,8 @@ export default styled.div`
   min-height: calc(100vh - 3rem);
 
   #form {
-   
+    background-position: center;
+    background-image: url(/loginbg.c1f1206f.png);
   }
   #form .form-title {
     padding: 1rem;
@@ -141,16 +142,87 @@ export default styled.div`
 
 
   // ********* Specific Group Fields  **********
-    // Dropdown
+  // Dropdown
   .formGroup.dropDown .formGroup-row {
     grid-template-columns: repeat(3, 1fr) !important;
   }
 
-    // Checkbox & Radio Button
+  // Checkbox & Radio Button
   .formGroup.checkboxes .formGroup-row >div,
   .formGroup.multipleChoice .formGroup-row >div {
     padding-top: 0 !important;
   }
+
+
+  // Ranking Question
+  .formGroup.ranking .rankingForm .draggable-item {
+    display: flex;
+    align-items: center;
+    margin: 0 0 .5rem;
+    cursor: pointer;
+  }
+  .formGroup.ranking .rankingForm .draggable-item:hover {
+    opacity: 0.5;
+    transition: .15s ease-in-out;
+  }
+  .formGroup.ranking .rankingForm .draggable-item .dragger-icon {
+
+  }
+  .formGroup.ranking .rankingForm .draggable-item .dragger-icon svg {
+    color: grey;
+  }
+  .formGroup.ranking .rankingForm .draggable-item .label {
+    margin-left: 1rem;
+  }
+
+
+  // File Upload
+  .formGroup.file .uploadForm {
+    position: relative;
+    overflow: hidden;
+  }
+  .formGroup.file:hover .uploadForm:before {
+    background: #ea7726;
+    transition: .15s ease-in-out;
+  }
+  .formGroup.file .uploadForm > input {
+    width: 100%;
+    color: gray;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 15px;
+    background: #f1f1f1;
+    padding: .5rem 1rem .5rem 1rem;
+  }
+  .formGroup.file .uploadForm:before {
+    content: 'Upload';
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    height: 100%;
+    color: #fff;
+    font-weight: 700;
+    z-index: 25;
+    font-size: 16px;
+    line-height: 56px;
+    padding: 0 24px;
+    background: #f5812f;
+    text-transform: uppercase;
+
+    display: flex;
+    align-items: center;
+  }
+  .formGroup.file .uploadForm:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -70px;
+    height: 100%;
+    width: 200px;
+    background: #f1f1f1;
+  }
+
 
 
   // Linear Scale
@@ -250,8 +322,6 @@ export default styled.div`
   .matrixRating-table > tbody > tr td .radiobuttonContainer label {
     top: -10px;
   }
-
-
   .matrixRating-table > tbody > tr td >div.actions {
     display: flex;
     position: relative;
