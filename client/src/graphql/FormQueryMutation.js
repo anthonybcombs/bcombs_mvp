@@ -35,6 +35,46 @@ export const FORM_ADD_MUTATION = gql`
                   value
                 }
               }
+              options {
+                name
+                label
+                tag
+              }
+              columns {
+                label
+                value
+              }
+              rows {
+                row
+              }
+              min {
+                value
+                label
+              }
+              max {
+                value
+                label
+              }
+              scale {
+                min
+                max
+              }
+              scaleLabels {
+                left
+                center
+                right
+              }
+              items {
+                label
+                rank
+              }
+              limit
+              errorMessage
+              allowTypes {
+                label
+                ext
+                selected
+              }
             }
             groupType
             settings {
@@ -44,6 +84,10 @@ export const FORM_ADD_MUTATION = gql`
             isActive
             allowAddField
             gridMax
+            includeLogic
+            includeValidation
+            hasSettings
+            supportMultiple
           }
         }
         created_at
@@ -84,6 +128,46 @@ export const GET_FORM_BY_FORM_ID = gql`
                 value
               }
             }
+            options {
+              name
+              label
+              tag
+            }
+            columns {
+              label
+              value
+            }
+            rows {
+              row
+            }
+            min {
+              value
+              label
+            }
+            max {
+              value
+              label
+            }
+            scale {
+              min
+              max
+            }
+            scaleLabels {
+              left
+              center
+              right
+            }
+            items {
+              label
+              rank
+            }
+            limit
+            errorMessage
+            allowTypes {
+              label
+              ext
+              selected
+            }
           }
           groupType
           settings {
@@ -93,6 +177,102 @@ export const GET_FORM_BY_FORM_ID = gql`
           isActive
           allowAddField
           gridMax
+          includeLogic
+          includeValidation
+          hasSettings
+          supportMultiple
+        }
+      }
+      created_at
+    }
+  }
+`;
+
+export const GET_FORMS_BY_VENDOR = gql`
+  query getVendorCustomApplicationForm($vendor_id:String!){
+    getVendorCustomApplicationForm(vendor_id:$vendor_id){
+      id
+      vendor
+      user
+      form_id
+      form_contents {
+        formTitle
+        formData {
+          id
+          label
+          type
+          fields {
+            id
+            label
+            type
+            tag
+            placeholder
+            column
+            value
+            required
+            validation {
+              include
+              items {
+                error
+                errorField
+                option
+                type
+                value
+              }
+            }
+            options {
+              name
+              label
+              tag
+            }
+            columns {
+              label
+              value
+            }
+            rows {
+              row
+            }
+            min {
+              value
+              label
+            }
+            max {
+              value
+              label
+            }
+            scale {
+              min
+              max
+            }
+            scaleLabels {
+              left
+              center
+              right
+            }
+            items {
+              label
+              rank
+            }
+            limit
+            errorMessage
+            allowTypes {
+              label
+              ext
+              selected
+            }
+          }
+          groupType
+          settings {
+            logic { include }
+            instruction { include }
+          }
+          isActive
+          allowAddField
+          gridMax
+          includeLogic
+          includeValidation
+          hasSettings
+          supportMultiple
         }
       }
       created_at

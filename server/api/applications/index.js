@@ -588,7 +588,7 @@ export const addApplicationHistory = async ({
   }
 };
 
-export const addApplicationUser = async ({ user_id, app_id }) => {
+export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id = "" }) => {
   const db = makeDb();
   let result;
 
@@ -598,14 +598,16 @@ export const addApplicationUser = async ({ user_id, app_id }) => {
         INSERT INTO application_user(
           app_user_id,
           app_id,
+          custom_app_id,
           user_id
         ) VALUES (
           UUID_TO_BIN(UUID()),
           UUID_TO_BIN(?),
+          UUID_TO_BIN(?),
           UUID_TO_BIN(?)
         )
       `,
-      [app_id, user_id]
+      [app_id, custom_app_id, user_id]
     );
   } catch (error) {
     console.log("add application user error", error);
@@ -826,5 +828,50 @@ export const getVendorCustomApplicationForm = async vendor => {
   } finally {
     await db.close();
     return applications;
+  }
+}
+
+export const submitCustomApplication = async ({
+  vendor,
+  form,
+  form_contents
+}) => {
+  const db = makeDb();
+  let result = {};
+  let lastId = "";
+  let application;
+
+  try {
+    result = await db.query(
+      `INSERT INTO custom_application(
+        app_id,
+        vendor,
+        form,
+        form_contents
+      ) VALUES (
+        UUID_TO_BIN(UUID()), 
+        UUID_TO_BIN(?), 
+        UUID_TO_BIN(?),
+        ?)`,
+      [
+        vendor,
+        form,
+        form_contents
+      ]
+    );
+
+    lastId = result.insertId;
+    application = await db.query(
+      "SELECT (BIN_TO_UUID(app_id)) as app_id FROM custom_application WHERE id=?",
+      [lastId]
+    );
+    application = application.length > 0 ? application[0] : "";
+
+    console.log("custom application result", result);
+  } catch (err) {
+    console.log("submit custom application error", err);
+  } finally {
+    await db.close();
+    return application;
   }
 }
