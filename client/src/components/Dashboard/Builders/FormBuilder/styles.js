@@ -288,6 +288,15 @@ export default styled.div`
     display: flex;
     align-items: center
   }
+  .drop-area-wrapper-actions .btn:disabled,
+  .drop-area-wrapper-actions .btn[disabled],
+  .drop-area-wrapper-actions .btn.disabled {
+    cursor: auto;
+    box-shadow: none !important;
+    background: #e0e0e0 !important;
+    border-color: transparent !important;
+    color: rgb(255 255 255 / 50%) !important;
+  }
   .drop-area-wrapper-actions .btn >span {
     padding: 0 .5rem;
   }
