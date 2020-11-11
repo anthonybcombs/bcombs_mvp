@@ -119,7 +119,6 @@ export default ({ items, onChangeFieldSettings, isActive, isBuilder, id: fieldId
 
   const handleMoveItem = (dragIndex, hoverIndex) => {
     let sortedItems = cloneDeep(newItems)
-    console.log('toinks', sortedItems)
     const dragItem = sortedItems[dragIndex]
     onChange({ target: { id: fieldId, value: update(sortedItems, {
       $splice: [

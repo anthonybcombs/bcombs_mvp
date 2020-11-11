@@ -514,6 +514,10 @@ const inputs = `
         isActive: Boolean
         allowAddField: Boolean
         gridMax: Int
+        includeLogic: Boolean
+        includeValidation: Boolean
+        hasSettings: Boolean
+        supportMultiple: Boolean
     }
 
     input CustomFormFieldsInput {
@@ -525,7 +529,66 @@ const inputs = `
         column: String
         value: String
         required: Boolean
+        description: String
         validation: CustomFormValidationInput
+        options: [CustomCheckboxOptionInput]
+        columns: [CustomMatrixRatingColumnsInput]
+        rows: [CustomMatrixRatingRowsInput]
+        min: CustomLinearScaleMinInput
+        max: CustomLinearScaleMaxInput
+        scale: CustomSliderScaleInput
+        scaleLabels: CustomSliderScaleLabelsInput
+        items: [CustomRankingItemsInput]
+        limit: Int
+        errorMessage: String
+        allowTypes: [CustomFileUploadTypesInput]
+    }
+
+    input CustomFileUploadTypesInput {
+        label: String
+        ext: [String]
+        selected: Boolean
+    }
+
+    input CustomRankingItemsInput {
+        label: String
+        rank: Int
+    }
+
+    input CustomSliderScaleInput {
+        min: Int
+        max: Int
+    }
+
+    input CustomSliderScaleLabelsInput {
+        left: String
+        center: String
+        right: String
+    }
+
+    input CustomLinearScaleMinInput {
+        value: Int
+        label: String
+    }
+
+    input CustomLinearScaleMaxInput {
+        value: Int
+        label: String
+    }
+
+    input CustomMatrixRatingColumnsInput {
+        label: String
+        value: Int
+    }
+
+    input CustomMatrixRatingRowsInput {
+        row: String
+    }
+
+    input CustomCheckboxOptionInput {
+        name: String
+        label: String
+        tag: String
     }
 
     input CustomFormValidationInput {
@@ -552,6 +615,12 @@ const inputs = `
 
     input CustomFormSettingsInstructionInput {
         include: Boolean
+    }
+
+    input SubmitCustomApplicationInput {
+        vendor: String!
+        form: String!
+        form_contents: CustomFormInput
     }
 `;
 const queryTypes = `
@@ -1007,6 +1076,10 @@ const queryTypes = `
         isActive: Boolean
         allowAddField: Boolean
         gridMax: Int
+        includeLogic: Boolean
+        includeValidation: Boolean
+        hasSettings: Boolean
+        supportMultiple: Boolean
     }
 
     type CustomFormFields {
@@ -1018,7 +1091,66 @@ const queryTypes = `
         column: String
         value: String
         required: Boolean
+        description: String
         validation: CustomFormValidation
+        options: [CustomCheckboxOption]
+        columns: [CustomMatrixRatingColumns]
+        rows: [CustomMatrixRatingRows]
+        min: CustomLinearScaleMin
+        max: CustomLinearScaleMax
+        scale: CustomSliderScale
+        scaleLabels: CustomSliderScaleLabels
+        items: [CustomRankingItems]
+        limit: Int
+        errorMessage: String
+        allowTypes: [CustomFileUploadTypes]
+    }
+
+    type CustomFileUploadTypes {
+        label: String
+        ext: [String]
+        selected: Boolean
+    }
+
+    type CustomRankingItems {
+        label: String
+        rank: Int
+    }
+
+    type CustomSliderScale {
+        min: Int
+        max: Int
+    }
+
+    type CustomSliderScaleLabels {
+        left: String
+        center: String
+        right: String
+    }
+
+    type CustomLinearScaleMin {
+        value: Int
+        label: String
+    }
+
+    type CustomLinearScaleMax {
+        value: Int
+        label: String
+    }
+
+    type CustomMatrixRatingColumns {
+        label: String
+        value: Int
+    }
+
+    type CustomMatrixRatingRows {
+        row: String
+    }
+
+    type CustomCheckboxOption {
+        name: String
+        label: String
+        tag: String
     }
 
     type CustomFormValidation {
@@ -1090,7 +1222,7 @@ const mutations = `
         updateParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
         createCustomApplicationForm(application: CustomApplicationInput): CreateCustomFormStatus
         updateCustomApplicationForm(application: CustomApplicationInput): Status
-        submitCustomApplicationFOrm(application: CustomApplicationInput): Status
+        submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
     }
 `;
 

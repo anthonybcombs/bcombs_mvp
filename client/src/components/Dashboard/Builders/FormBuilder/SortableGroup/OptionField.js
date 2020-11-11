@@ -85,7 +85,7 @@ export default ({
             )
           }
           {
-            (!hasOthers && isActive && ['multipleChoice', 'checkboxes'].includes(type)) && (
+            (!hasOthers && isActive && ['multipleChoice'].includes(type)) && (
               <button
                 type='button'
                 target='_blank'

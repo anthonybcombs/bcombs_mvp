@@ -11,9 +11,11 @@ export default ({
   hasSelectedField,
   showSettings,
   isActive,
+  allowAddField,
   includeLogic,
   includeValidation,
   validationAppliedToAll,
+  supportMultiple,
   onChangeGeneralSettings,
   onChangeFieldSettings,
   onRemoveGroup,
@@ -125,7 +127,6 @@ export default ({
       onChangeFieldSettings({ options: newOptions })
       return
     }
-
     onChangeFieldSettings(data)
   }
 
@@ -134,7 +135,7 @@ export default ({
   }
 
   const { instruction = {}, logic = {}, } = generalSettings
-  const { validation = {}, required = false, options, requireAddOption = false } = fieldSettings || {}
+  const { validation = {}, required = false, options, requireAddOption = false, isMultiple } = fieldSettings || {}
   const { include, items = [{ ...defaultValidation }] } = validation
   const hasValidationError = items.find(e => e.errorField)
 
@@ -334,12 +335,18 @@ export default ({
       {/* Start Lower Control */}
       <div className='settings-control'>
         <div className={`settings-control-item field ${!showOptions ? 'hidden' : ''}`}>
-          <div className='tooltip-wrapper'>
-            <p className='label'>Field Settings
-              <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
-            </p>
-            <span className='tooltip'>Select a field first to enable these options.</span>
-          </div>
+          {
+            allowAddField ? (
+              <div className='tooltip-wrapper'>
+                <p className='label'>Field Settings
+                  <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+                </p>
+                <span className='tooltip'>Select a field first to enable these options.</span>
+              </div>
+            ) : (
+              <p className='label'>Field Settings</p>
+            )
+          }
 
           <div className='settings-content'>
             <label htmlFor='required'  className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
@@ -357,6 +364,25 @@ export default ({
               <span className='checkmark'/>
               <span className='labelName'> Required</span>
             </label>
+            {
+              supportMultiple && (
+                <label htmlFor='isMultiple'  className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
+                  <input
+                    type='checkbox'
+                    id='isMultiple'
+                    name='isMultiple'
+                    disabled={!hasSelectedField}
+                    checked={isMultiple}
+                    onChange={e => {
+                      e.stopPropagation()
+                      handleChangeFieldSettings({ isMultiple: e.target.checked })
+                    }}
+                  />
+                  <span className='checkmark'/>
+                  <span className='labelName'> Multiple</span>
+                </label>
+              )
+            }
             {
               includeValidation && (
                 <label htmlFor='validation' className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >

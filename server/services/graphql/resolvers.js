@@ -77,7 +77,8 @@ import {
   getApplicationHistoryByUser,
   createCustomApplication,
   getCustomApplicationFormByFormId,
-  getVendorCustomApplicationForm
+  getVendorCustomApplicationForm,
+  submitCustomApplication
 } from "../../api/applications";
 import { 
   addChild, 
@@ -919,7 +920,76 @@ const resolvers = {
 
       console.log("res", res);
       return res;
-    } 
+    },
+    async submitCustomApplicationForm(root, { application }, context) {
+    
+      let email;
+      let password;
+
+      const fields = application?.form_contents?.formData?.fields ? application.form_contents.formData.fields : [];
+
+      email = fields.map((item) => {
+        return item.type == "email"
+      });
+
+      password = fields.map((item) => {
+        return item.type == "password"
+      });
+
+      email = email.length > 0 ? email[0] : "";
+      password = password.length > 0 ? password[0] : "";
+
+      let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
+      application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+      const newApplication = await submitCustomApplication(application);
+
+      if(newApplication && newApplication.app_id) {
+        const checkEmail = await checkUserEmail(email);
+
+        if(checkEmail && checkEmail.is_exist) {
+          console.log("Parent Status: ", checkEmail.status);
+        } else {
+          let userType = await getUserTypes();
+
+          userType = userType.filter(type => {
+            return type.name === "USER";
+          })[0];
+
+          console.log("user type: ", userType);
+
+          let user = {
+            username: email,
+            email: email,
+            password: password,
+            type: userType
+          };
+
+          console.log("user:", user);
+          let addUser = await executeSignUp(user);
+          console.log("addUser:", user);
+          let userInfo = {
+            email: email
+          };
+          console.log("User Info", userInfo);
+          await executeAddUserProfile(userInfo);
+
+          console.log("add user res:", addUser);
+        }
+
+        const newUser = await getUserFromDatabase(email);
+
+        await addApplicationUser({
+          user_id: newUser.id,
+          custom_app_id: newApplication.app_id
+        });
+      }
+
+      return {
+        messageType: "info",
+        message: "successfully submitted your application form"
+      } 
+    }
   }
 };
 
