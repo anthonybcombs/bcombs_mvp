@@ -75,6 +75,7 @@ export const FORM_ADD_MUTATION = gql`
                 ext
                 selected
               }
+              isMultiple
             }
             groupType
             settings {
@@ -168,6 +169,7 @@ export const GET_FORM_BY_FORM_ID = gql`
               ext
               selected
             }
+            isMultiple
           }
           groupType
           settings {
@@ -260,6 +262,7 @@ export const GET_FORMS_BY_VENDOR = gql`
               ext
               selected
             }
+            isMultiple
           }
           groupType
           settings {

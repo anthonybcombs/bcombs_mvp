@@ -542,6 +542,7 @@ const inputs = `
         limit: Int
         errorMessage: String
         allowTypes: [CustomFileUploadTypesInput]
+        isMultiple: Boolean
     }
 
     input CustomFileUploadTypesInput {
@@ -1104,6 +1105,7 @@ const queryTypes = `
         limit: Int
         errorMessage: String
         allowTypes: [CustomFileUploadTypes]
+        isMultiple: Boolean
     }
 
     type CustomFileUploadTypes {
