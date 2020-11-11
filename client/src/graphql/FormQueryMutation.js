@@ -97,6 +97,15 @@ export const FORM_ADD_MUTATION = gql`
   }
 `;
 
+export const FORM_UPDATE_MUTATION = gql`
+  mutation updateCustomApplicationForm($application:CustomApplicationInput){
+    updateCustomApplicationForm(application:$application){
+      messageType
+      message
+    }
+  }
+`;
+
 export const GET_FORM_BY_FORM_ID = gql`
   query getCustomApplicationsByFormId($form_id:String!){
     getCustomApplicationsByFormId(form_id:$form_id){

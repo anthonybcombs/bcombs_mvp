@@ -757,6 +757,34 @@ export const createCustomApplication = async ({
   }
 };
 
+export const updateCustomApplicationForm = async ({
+  form_id,
+  user,
+  vendor,
+  form_contents
+}) => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `
+        UPDATE vendor_custom_application SET
+        form_contents=?
+        WHERE form_id=UUID_TO_BIN(?)
+      `,
+      [
+        form_contents,
+        form_id
+      ]
+    )
+  } catch(err) {
+    console.log("update custom application form error", error);
+  } finally {
+    await db.close();
+    return result
+  }
+}
+
 export const getCustomApplicationFormByFormId = async form_id => {
   const db = makeDb();
   let application;

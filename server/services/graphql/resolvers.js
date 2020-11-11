@@ -76,6 +76,7 @@ import {
   getUserApplicationsByUserId,
   getApplicationHistoryByUser,
   createCustomApplication,
+  updateCustomApplicationForm,
   getCustomApplicationFormByFormId,
   getVendorCustomApplicationForm,
   submitCustomApplication
@@ -916,6 +917,25 @@ const resolvers = {
         messageType: "info",
         message: "successfully created your application form",
         form
+      } 
+
+      console.log("res", res);
+      return res;
+    },
+    async updateCustomApplicationForm(root, { application }, context) {
+      let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
+      application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+      console.log("formContentsString", formContentsString.length);
+      console.log("custom application", application.form_contents.length);
+
+      let form = await updateCustomApplicationForm(application);
+
+      form = form ? form : {};
+
+      const res = {
+        messageType: "info",
+        message: "successfully update your application form"
       } 
 
       console.log("res", res);
