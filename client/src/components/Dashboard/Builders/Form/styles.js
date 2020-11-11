@@ -281,15 +281,15 @@ export default styled.div`
 
 
   // File Upload
-  .formGroup.file .uploadForm {
+  .formGroup.primeFile .uploadForm {
     position: relative;
     overflow: hidden;
   }
-  .formGroup.file:hover .uploadForm:before {
+  .formGroup.primeFile:hover .uploadForm:before {
     background: #1388e0;
     transition: .15s ease-in-out;
   }
-  .formGroup.file .uploadForm > input {
+  .formGroup.primeFile .uploadForm > input {
     width: 100%;
     color: gray;
     font-size: 16px;
@@ -298,7 +298,7 @@ export default styled.div`
     background: #f1f1f1;
     padding: .5rem 1rem .5rem 1rem;
   }
-  .formGroup.file .uploadForm:before {
+  .formGroup.primeFile .uploadForm:before {
     content: 'Upload';
     position: absolute;
     top: 0;
@@ -317,7 +317,7 @@ export default styled.div`
     display: flex;
     align-items: center;
   }
-  .formGroup.file .uploadForm:after {
+  .formGroup.primeFile .uploadForm:after {
     content: '';
     position: absolute;
     top: 0;
