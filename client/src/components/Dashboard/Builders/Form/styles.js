@@ -8,6 +8,7 @@ export default styled.div`
   min-height: calc(100vh - 3rem);
 
   #form {
+    min-height: 100vh;
     background-position: center;
     background-image: url(/loginbg.c1f1206f.png);
   }
@@ -97,7 +98,110 @@ export default styled.div`
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
   }
-  
+
+  // wizzard
+  #form .wizard-wrapper {
+    margin-top: 0;
+  }
+  .wizard-wrapper .wizard-stepper {
+    display: grid;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    padding-inline-start: 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .wizard-wrapper .wizard-stepper li.step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .wizard-wrapper .wizard-stepper li.step .step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    color: #fff;
+    width: 35px;
+    height: 35px;
+    z-index: 2;
+    border-radius: 100px;
+    background: #E0E0E0;
+  }
+  .wizard-wrapper .wizard-stepper li.step .step-label {
+    color: #E0E0E0;
+    margin: .5rem;
+    font-weight: 600;
+  }
+  .wizard-wrapper .wizard-stepper li.step.active .step-number {
+    background: #f5812f;
+  }
+  .wizard-wrapper .wizard-stepper li.step.active .step-label {
+    color: #f5812f;
+  }
+  .wizard-wrapper .wizard-stepper li.step:after {
+    content: '';
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    z-index: 1;
+    width: 100%;
+    height: 3px;
+    display: block;
+    background: #f1f1f1;
+  }
+  .wizard-wrapper .wizard-stepper li.step:last-child:after {
+    display: none;
+  }
+  .wizard-actions {
+    display: flex;
+    padding: 1rem;
+    background: #f9f9f9;
+    margin: 0 -2rem -2rem;
+}
+  }
+  .wizard-actions button {
+    color: #fff;
+    margin: 5px;
+    border: none;
+    padding: 14px 2rem;
+    background: #808080;
+    border-radius: 3px;
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+    transition: all .3s ease-in-out;
+  }
+  .wizard-actions button.nextBtn,
+  .wizard-actions button.submitBtn {
+    margin-left: auto;
+    background: #f5812f;
+  }
+  .wizard-actions button.nextBtn svg,
+  .wizard-actions button.submitBtn svg {
+    margin-left: 8px;
+  }
+  .wizard-actions button.nextBtn:hover,
+  .wizard-actions button.submitBtn:hover {
+    background: #e47120;
+  }
+
+  .wizard-actions button.prevBtn {
+    color: #f5812f;
+    background: transparent;
+    border: 1px solid #f5812f;
+  }
+  .wizard-actions button.prevBtn:hover {
+    border-color: transparent;
+    background: rgb(245 129 47 / 15%);
+  }
+  .wizard-actions button.prevBtn svg {
+    margin-right: 8px;
+  }
+
+
+
 
 
   // ===============================================
@@ -182,7 +286,7 @@ export default styled.div`
     overflow: hidden;
   }
   .formGroup.file:hover .uploadForm:before {
-    background: #ea7726;
+    background: #1388e0;
     transition: .15s ease-in-out;
   }
   .formGroup.file .uploadForm > input {
@@ -207,7 +311,7 @@ export default styled.div`
     font-size: 16px;
     line-height: 56px;
     padding: 0 24px;
-    background: #f5812f;
+    background: #1e98f3;
     text-transform: uppercase;
 
     display: flex;

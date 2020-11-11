@@ -230,6 +230,9 @@ export default styled.div`
   .drop-area-wrapper {
     padding: 1.5rem !important;
   }
+  .drop-area-wrapper-droppable {
+    height: calc(100% - 100px);
+  }
   .drop-area-wrapper .form-title {
     display: flex;
     align-items: center;
@@ -1268,19 +1271,27 @@ export default styled.div`
   // =================================
   // ********* MEDIA QUERIES *********
   // =================================
-  
+  @media (min-width: 980px) {
+    .drag-area-wrapper .arrow-left,
+    svg.menu-bar-builder {
+      display: none;
+    }
+
+    #formBuilder .drag-area-wrapper {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+  }
+
   @media (min-width: 600px) {
     #formBuilder {
       grid-gap: 1%;
       grid-template-columns: 1fr 2fr;
     }
   }
-  @media (min-width: 980px) {
-    .drag-area-wrapper .arrow-left,
-    svg.menu-bar-builder {
-      display: none;
-    }
-  }
+  
 
   @media (max-width: 1400px) {
     .matrixRating-container .table-scroll-wrapper {

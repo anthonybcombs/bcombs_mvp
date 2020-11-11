@@ -2,18 +2,18 @@ import React from 'react'
 
 export default ({ fields, currentStep, onSetStep }) => {
   return (
-    <div className='wizard-stepper'>
+    <ul className='wizard-stepper' style={{ gridTemplateColumns: `repeat(${fields.length}, 1fr)`}}>
       {
         fields.map((field, index) => {
         const stepLabel = index + 1
          return (
-          <div className={`step ${currentStep === index ? 'active' : ''}`}>
-            <div>{stepLabel}</div>
-            <div>{field.fields[0].label}</div>
-          </div>
+          <li className={`step ${currentStep === index ? 'active' : ''}`}>
+            <div className='step-number'>{stepLabel}</div>
+            <div  className='step-label'>{field.fields[0].label}</div>
+          </li>
          )
         })
       }
-    </div>
+    </ul>
   )
 }

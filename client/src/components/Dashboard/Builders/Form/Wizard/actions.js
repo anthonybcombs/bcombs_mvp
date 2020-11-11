@@ -1,4 +1,6 @@
 import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
 export default ({ fields, currentStep, hasWizard, onSetStep }) => {
   const fieldCount = fields.length
@@ -13,6 +15,10 @@ export default ({ fields, currentStep, hasWizard, onSetStep }) => {
             className='prevBtn'
             onClick={() => onSetStep(currentStep - 1)}
           >
+            <FontAwesomeIcon
+              className='save-icon'
+              icon={faAngleLeft}
+            />
             Previous
           </button>
         )
@@ -24,6 +30,10 @@ export default ({ fields, currentStep, hasWizard, onSetStep }) => {
             onClick={() => onSetStep(currentStep + 1)}
           >
             Next
+            <FontAwesomeIcon
+              className='save-icon'
+              icon={faAngleRight}
+            />
           </button>
         )
       }
@@ -34,6 +44,10 @@ export default ({ fields, currentStep, hasWizard, onSetStep }) => {
             onClick={() => {}}
           >
             Submit
+            <FontAwesomeIcon
+              className='save-icon'
+              icon={faCheck}
+            />
           </button>
         )
       }
