@@ -11,9 +11,9 @@ import { Items } from '../Fields'
 import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
 
-import { requestAddForm } from "../../../../../redux/actions/FormBuilder"
+import { requestAddForm, requestUpdateForm } from "../../../../../redux/actions/FormBuilder"
 
-export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
+export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', form_id, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
@@ -163,19 +163,25 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
   }
 
   const handleSubmitForm = (e) => {
-    e.preventDefault();
-
-    const payload = {
-      user: user.user_id,
-      vendor: vendor.id,
-      form_contents: {
-        formTitle,
-        formData: droppedFields
-      }
+    if (form_id) {
+      dispatch(requestUpdateForm({
+        form_id,
+        form_contents: {
+          formTitle,
+          formData: droppedFields
+        }
+      }))
+    } else {
+      console.log("create form payload")
+      dispatch(requestAddForm({
+        user: user.user_id,
+        vendor: vendor.id,
+        form_contents: {
+          formTitle,
+          formData: droppedFields
+        }
+      }))
     }
-
-    console.log("create form payload", payload);
-    dispatch(requestAddForm(payload))
   }
 
   const [{ item, didDrop }, drop] = useDrop({
@@ -188,7 +194,21 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
       }
     },
   })
-  console.log('@droppedFields', droppedFields)
+
+  useEffect(() => {
+    if (form_data) {
+      setDrop(form_data)
+    }
+  }, [form_data])
+
+  useEffect(() => {
+    if (form_title) {
+      setFormTitle(form_title)
+    }
+  }, [form_title])
+
+  console.log('toinks', { droppedFields, form_data, form_title })
+
   return (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop} className='drop-area-wrapper-droppable'>
@@ -261,7 +281,10 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
                 target='_blank'
                 className='btn save'
                 disabled={!(user && user.user_id && vendor && vendor.id)}
-                onClick={handleSubmitForm}
+                onClick={e => {
+                  e.stopPropagation()
+                  handleSubmitForm(e)
+                }}
               >
                 <FontAwesomeIcon
                   className='save-icon'

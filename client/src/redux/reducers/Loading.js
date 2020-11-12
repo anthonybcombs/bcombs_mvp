@@ -71,6 +71,16 @@ export default function Loading(
         ...state,
         addForm: action.value
       }
+    case actionType.SET_UPDATE_FORM_LOADING:
+      return {
+        ...state,
+        updateForm: action.value
+      }
+    case actionType.SET_GET_FORM_LOADING:
+      return {
+        ...state,
+        getForm: action.value
+      }
     default:
       return state;
   }

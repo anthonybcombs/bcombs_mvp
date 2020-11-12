@@ -4,6 +4,7 @@ export default function Applications(
   state = {
     formList: [],
     addForm: {},
+    updateForm: {},
     selectedForm: {}
   },
   action
@@ -17,7 +18,12 @@ export default function Applications(
         addForm: { ...action.payload }
       };
     case actionType.REQUEST_GET_FORM_ID_COMPLETED:
-      return { ...state, selectedForm: [...action.payload] };
+      return { ...state, selectedForm: {...action.payload} };
+    case actionType.REQUEST_UPDATE_FORM_COMPLETED:
+        return {
+          ...state,
+          updateForm: { ...action.payload }
+        };
     default:
       return state;
   }

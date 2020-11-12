@@ -6,22 +6,30 @@ import FormBuilderStyled from './styles'
 import DragArea from './DragArea'
 import DropArea from './DropArea'
 
+import Loading from "../../../../helpers/Loading.js";
+
 import { useSelector, useDispatch } from "react-redux";
 
 import { requestVendor } from "../../../../redux/actions/Vendors";
+import { requestGetFormById } from "../../../../redux/actions/FormBuilder"
 
-const FormBuilder = ({ form_id }) => {
+const FormBuilder = ({ form_id, type, history }) => {
   const [builderDrawerOpen, setBuilderDrawerOpen] = useState(false)
   
   const handleBuilderDrawerOpen = () => {
     setBuilderDrawerOpen(!builderDrawerOpen)
   }
 
-  const { auth, vendors, loading, form } = useSelector(
+  const {
+    auth, vendors, loading, 
+    form: { addForm, updateForm, selectedForm: { form_contents } }
+  } = useSelector(
     ({ auth, vendors, loading, form }) => {
       return { auth, vendors, loading, form };
     }
   );
+  let isLoading = loading.addForm || loading.updateForm || loading.getForm
+  const { formData = [], formTitle = '' } = form_contents || {}
 
   const [vendor, setVendor] = useState();
 
@@ -31,6 +39,9 @@ const FormBuilder = ({ form_id }) => {
     if (auth.user_id) {
       dispatch(requestVendor(auth.user_id));
     }
+    if (form_id && type) {
+      dispatch(requestGetFormById(form_id))
+    }
   }, []);
 
   useEffect(() => {
@@ -39,22 +50,52 @@ const FormBuilder = ({ form_id }) => {
     }
   }, [vendors])
 
-  if(form.addForm && form.addForm.message == "successfully created your application form") {
-    //form successfully created
-    //window.location.reload();
-
+  if(addForm && addForm.message == "successfully created your application form" && addForm.form) {
+    window.location.replace(`/dashboard/builder/${addForm.form.form_id}/edit`)
     console.log("newly created form", form);
   }
 
-  return (
-    <FormBuilderStyled>
-      <h2>New Application</h2>
-      <div id='formBuilder' className={builderDrawerOpen ? 'show': 'hide'}>
-        <DragArea form_id={form_id} handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
-        <DropArea vendor={vendor} user={auth} handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
-      </div>
-    </FormBuilderStyled>
-  )
+  if (updateForm && updateForm.message == 'successfully update your application form') {
+    window.location.replace(`/dashboard/builder/${form_id}/edit`)
+    console.log('magandang larawan', updateForm)
+  }
+
+  const cleanFormData = (formData) => {
+    const objArr = Object.entries(formData)
+    const newObj = {}
+    objArr.forEach(([key, value], index) => {
+      if (value !== null) {
+        if (Array.isArray(value)) {
+          newObj[key] = value.map(e => cleanFormData(e))
+        } else if (typeof value === 'object') {
+          newObj[key] = cleanFormData(value)
+        } else {
+          newObj[key] = value
+        }
+      }
+    })
+    return newObj
+  }
+
+  return isLoading ? (
+      <Loading />
+    ) : (
+      <FormBuilderStyled>
+        <h2>New Application</h2>
+        <div id='formBuilder' className={builderDrawerOpen ? 'show': 'hide'}>
+          <DragArea form_id={form_id} handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
+          <DropArea
+            form_data={formData.map(e => cleanFormData(e))}
+            form_title={formTitle}
+            form_id={form_id}
+            vendor={vendor}
+            user={auth}
+            handleBuilderDrawerOpen={handleBuilderDrawerOpen}
+          />
+        </div>
+      </FormBuilderStyled>
+      )
+
 }
 
 export default (props) => (

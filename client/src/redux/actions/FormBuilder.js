@@ -2,10 +2,14 @@ import { call, take, put } from "redux-saga/effects";
 import graphqlClient from "../../graphql";
 import * as actionType from "./Constant";
 import {
-  FORM_ADD_MUTATION
+  FORM_ADD_MUTATION,
+  FORM_UPDATE_MUTATION,
+  GET_FORM_BY_FORM_ID
 } from "../../graphql/FormQueryMutation"
 import {
-  setAddFormLoading
+  setAddFormLoading,
+  setUpdateFormLoading,
+  setGetFormLoading
 } from "./Loading";
 
 const addFormToDatabase = application => {
@@ -31,10 +35,29 @@ const getFormsFromDatabase = vendor_id => {
     }
   });
 };
-const getFormIdFromDatabase = id => {
+const getFormByIdFromDatabase = form_id => {
   return new Promise(async (resolve, reject) => {
     try {
+      const { data } = await graphqlClient.mutate({
+        mutation: GET_FORM_BY_FORM_ID,
+        variables: { form_id }
+      })
 
+      return resolve(data.getCustomApplicationsByFormId);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+const updateFormToDatabase = application => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: FORM_UPDATE_MUTATION,
+        variables: { application }
+      })
+
+      return resolve(data.updateCustomApplicationForm);
     } catch (error) {
       reject(error);
     }
@@ -58,6 +81,12 @@ export const requestGetFormById = id => {
   return {
     type: actionType.REQUEST_GET_FORM_ID,
     id: id
+  };
+};
+export const requestUpdateForm = form => {
+  return {
+    type: actionType.REQUEST_UPDATE_FORM,
+    form
   };
 };
 
@@ -109,26 +138,36 @@ export function* addForm({ form }) {
   }
 }
 export function* getFormById({ id }) {
-  console.log('@GET FORM BY ID', id)
-  return
   try {
-    const response = yield call(getFormIdFromDatabase, id);
-
-    console.log("response", response);
-    if (response) {
-      yield put({
-        type: actionType.REQUEST_GET_FORM_ID_COMPLETED,
-        payload: response
-      });
-    } else {
-      yield put({
-        type: actionType.REQUEST_GET_FORM_ID_COMPLETED,
-        payload: {}
-      });
-    }
-  } catch (err) {
+    const response = yield call(getFormByIdFromDatabase, id);
+    yield put(setGetFormLoading(true));
     yield put({
       type: actionType.REQUEST_GET_FORM_ID_COMPLETED,
+      payload: response || {}
+    });
+    yield put(setGetFormLoading(false));
+  } catch (err) {
+    yield put(setGetFormLoading(false));
+    yield put({
+      type: actionType.REQUEST_GET_FORM_ID_COMPLETED,
+      payload: {}
+    });
+  }
+}
+export function* updateForm({ form }) {
+  console.log('@UPDATE FORM', form)
+  try {
+    yield put(setUpdateFormLoading(true));
+    const response = yield call(updateFormToDatabase, form);
+    yield put(setUpdateFormLoading(false));
+    yield put({
+      type: actionType.REQUEST_UPDATE_FORM_COMPLETED,
+      payload: response
+    });
+  } catch (err) {
+    yield put(setUpdateFormLoading(false));
+    yield put({
+      type: actionType.REQUEST_UPDATE_FORM_COMPLETED,
       payload: {}
     });
   }
