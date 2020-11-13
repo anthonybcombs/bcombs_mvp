@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ fields, currentStep, hasWizard, onSetStep }) => {
+export default ({ fields, currentStep, hasWizard, onSetStep, onSubmit }) => {
   const fieldCount = fields.length
   const showPrev = currentStep > 0 && hasWizard
   const showNext = currentStep + 1 < fieldCount && hasWizard
@@ -41,7 +41,7 @@ export default ({ fields, currentStep, hasWizard, onSetStep }) => {
         showSubmit && (
           <button
             className='submitBtn'
-            onClick={() => {}}
+            onClick={onSubmit}
           >
             Submit
             <FontAwesomeIcon

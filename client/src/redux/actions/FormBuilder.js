@@ -1,4 +1,4 @@
-import { call, take, put } from "redux-saga/effects";
+import { call, take, put, all } from "redux-saga/effects";
 import graphqlClient from "../../graphql";
 import * as actionType from "./Constant";
 import {
@@ -77,10 +77,10 @@ export const requestAddForm = form => {
     form
   };
 };
-export const requestGetFormById = id => {
+export const requestGetFormById = form => {
   return {
     type: actionType.REQUEST_GET_FORM_ID,
-    id: id
+    form
   };
 };
 export const requestUpdateForm = form => {
@@ -89,6 +89,12 @@ export const requestUpdateForm = form => {
     form
   };
 };
+export const setViewMode = bool => {
+  return {
+    type: actionType.SET_VIEW_MODE,
+    bool
+  };
+}
 
 
 
@@ -120,15 +126,20 @@ export function* getForms({ vendor_id }) {
   }
 }
 export function* addForm({ form }) {
-  console.log('@ADD FORM', form)
+  const { isViewMode = false, ...application } = form
   try {
     yield put(setAddFormLoading(true));
-    const response = yield call(addFormToDatabase, form);
-    yield put(setAddFormLoading(false));
-    yield put({
-      type: actionType.REQUEST_ADD_FORM_COMPLETED,
-      payload: response
-    });
+    const response = yield call(addFormToDatabase, application);
+    yield all([
+      put(setAddFormLoading(false)),
+      put({
+        type: actionType.REQUEST_ADD_FORM_COMPLETED,
+        payload: {
+          ...response,
+          isViewMode
+        }
+      })
+    ])
   } catch (err) {
     yield put(setAddFormLoading(false));
     yield put({
@@ -137,15 +148,18 @@ export function* addForm({ form }) {
     });
   }
 }
-export function* getFormById({ id }) {
+export function* getFormById({ form }) {
   try {
-    const response = yield call(getFormByIdFromDatabase, id);
     yield put(setGetFormLoading(true));
-    yield put({
-      type: actionType.REQUEST_GET_FORM_ID_COMPLETED,
-      payload: response || {}
-    });
-    yield put(setGetFormLoading(false));
+    const response = yield call(getFormByIdFromDatabase, form.form_id)
+    yield all ([
+      put(setGetFormLoading(false)),
+      put({
+        type: actionType.REQUEST_GET_FORM_ID_COMPLETED,
+        payload: response || {}
+      }),
+      form.isViewMode ? put(setViewMode(true)) : null
+    ])
   } catch (err) {
     yield put(setGetFormLoading(false));
     yield put({

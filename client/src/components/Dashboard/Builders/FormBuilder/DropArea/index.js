@@ -11,15 +11,16 @@ import { Items } from '../Fields'
 import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
 
-import { requestAddForm, requestUpdateForm } from "../../../../../redux/actions/FormBuilder"
+import { requestAddForm, requestUpdateForm, setViewMode } from "../../../../../redux/actions/FormBuilder"
 
-export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', form_id, handleBuilderDrawerOpen }) => {
+export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', form_id, isFormView, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
   const [hasPageBreak, checkHasPageBreak] = useState(false)
   const [pageBreaks, getPageBreaks] = useState([])
   const [lastField, getLastField] = useState({})
+  const [isView, setIsView] = useState(false)
 
   const reMapFields = (fields, id) => {
     return fields.map(e => ({ ...e, id: `${e.tag}_${id}`, value: '' }))
@@ -162,7 +163,7 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
     }
   }
 
-  const handleSubmitForm = (e) => {
+  const handleSubmitForm = () => {
     if (form_id) {
       dispatch(requestUpdateForm({
         form_id,
@@ -184,6 +185,22 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
     }
   }
 
+  const handleViewForm = () => {
+    if (!form_id) {
+      dispatch(requestAddForm({
+        user: user.user_id,
+        vendor: vendor.id,
+        isViewMode: true,
+        form_contents: {
+          formTitle,
+          formData: droppedFields
+        }
+      }))
+    } else {
+      dispatch(setViewMode(true))
+    }
+  }
+
   const [{ item, didDrop }, drop] = useDrop({
     accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
     drop: () => handleDrop(item, didDrop),
@@ -196,7 +213,7 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
   })
 
   useEffect(() => {
-    if (form_data) {
+    if (form_data && form_data.length) {
       setDrop(form_data)
     }
   }, [form_data])
@@ -207,7 +224,15 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
     }
   }, [form_title])
 
-  console.log('toinks', { droppedFields, form_data, form_title })
+  
+  useEffect(() => {
+    if (form_id && isFormView) {
+      window.open(`/form/${form_id}`, '_blank')
+      dispatch(setViewMode(false))
+    }
+  }, [isFormView])
+
+  console.log('toinks', { isFormView, droppedFields, form_data, form_title })
 
   return (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
@@ -264,26 +289,27 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
         {
           droppedFields.length > 0 && (
             <>
-              <a
+              <button
                 type='button'
-                target='_blank'
                 className='btn preview'
-                href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
+                onClick={e => {
+                  e.stopPropagation()
+                  handleViewForm()
+                }}
               >
                 <FontAwesomeIcon
                   className='preview-icon'
                   icon={faEye}
                 />
                 <span>View</span>
-              </a>
+              </button>
               <button
                 type='button'
-                target='_blank'
                 className='btn save'
                 disabled={!(user && user.user_id && vendor && vendor.id)}
                 onClick={e => {
                   e.stopPropagation()
-                  handleSubmitForm(e)
+                  handleSubmitForm()
                 }}
               >
                 <FontAwesomeIcon

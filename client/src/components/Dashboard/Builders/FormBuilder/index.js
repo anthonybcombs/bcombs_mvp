@@ -11,7 +11,7 @@ import Loading from "../../../../helpers/Loading.js";
 import { useSelector, useDispatch } from "react-redux";
 
 import { requestVendor } from "../../../../redux/actions/Vendors";
-import { requestGetFormById } from "../../../../redux/actions/FormBuilder"
+import { requestGetFormById, setViewMode } from "../../../../redux/actions/FormBuilder"
 
 const FormBuilder = ({ form_id, type, history }) => {
   const [builderDrawerOpen, setBuilderDrawerOpen] = useState(false)
@@ -22,7 +22,7 @@ const FormBuilder = ({ form_id, type, history }) => {
 
   const {
     auth, vendors, loading, 
-    form: { addForm, updateForm, selectedForm: { form_contents } }
+    form: { addForm, updateForm, selectedForm: { form_contents }, isFormView }
   } = useSelector(
     ({ auth, vendors, loading, form }) => {
       return { auth, vendors, loading, form };
@@ -39,8 +39,14 @@ const FormBuilder = ({ form_id, type, history }) => {
     if (auth.user_id) {
       dispatch(requestVendor(auth.user_id));
     }
-    if (form_id && type) {
-      dispatch(requestGetFormById(form_id))
+    if (form_id && type === 'edit') {
+      dispatch(requestGetFormById({ form_id }))
+    }
+    if (form_id && type === 'view') {
+      dispatch(setViewMode(true))
+      setTimeout(() => {
+        window.location.replace(`/dashboard/builder/${form_id}/edit`)
+      }, 1000)
     }
   }, []);
 
@@ -51,8 +57,8 @@ const FormBuilder = ({ form_id, type, history }) => {
   }, [vendors])
 
   if(addForm && addForm.message == "successfully created your application form" && addForm.form) {
-    window.location.replace(`/dashboard/builder/${addForm.form.form_id}/edit`)
-    console.log("newly created form", form);
+    window.location.replace(`/dashboard/builder/${addForm.form.form_id}/${addForm.isViewMode ? 'view': 'edit'}`)
+    console.log("newly created form", addForm);
   }
 
   if (updateForm && updateForm.message == 'successfully update your application form') {
@@ -90,6 +96,7 @@ const FormBuilder = ({ form_id, type, history }) => {
             form_id={form_id}
             vendor={vendor}
             user={auth}
+            isFormView={isFormView}
             handleBuilderDrawerOpen={handleBuilderDrawerOpen}
           />
         </div>

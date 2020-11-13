@@ -5,7 +5,8 @@ export default function Applications(
     formList: [],
     addForm: {},
     updateForm: {},
-    selectedForm: {}
+    selectedForm: {},
+    isFormView: false
   },
   action
 ) {
@@ -20,10 +21,15 @@ export default function Applications(
     case actionType.REQUEST_GET_FORM_ID_COMPLETED:
       return { ...state, selectedForm: {...action.payload} };
     case actionType.REQUEST_UPDATE_FORM_COMPLETED:
-        return {
-          ...state,
-          updateForm: { ...action.payload }
-        };
+      return {
+        ...state,
+        updateForm: { ...action.payload }
+      };
+    case actionType.SET_VIEW_MODE:
+      return {
+        ...state,
+        isFormView: action.bool
+      }
     default:
       return state;
   }
