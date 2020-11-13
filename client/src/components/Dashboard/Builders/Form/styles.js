@@ -212,9 +212,9 @@ export default styled.div`
     position: relative;
     overflow: hidden;
 
-    padding: 8px;
+    padding: 0 8px;
     background: #fff;
-    margin-bottom: 2rem;
+    // margin-bottom: 2rem;
     border-radius: 3px;
     border: 1px dashed transparent;
   }
@@ -226,7 +226,7 @@ export default styled.div`
 
   .formGroup-name {
     color: #f26e21;
-    margin: 0;
+    margin: 1rem 0 -10px 0;
     letter-spacing: 1.3px;
   }
 
