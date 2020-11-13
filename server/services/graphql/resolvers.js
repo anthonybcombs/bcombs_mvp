@@ -935,7 +935,8 @@ const resolvers = {
 
       const res = {
         messageType: "info",
-        message: "successfully update your application form"
+        message: "successfully update your application form",
+        form: form
       } 
 
       console.log("res", res);

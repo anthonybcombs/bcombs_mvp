@@ -1181,7 +1181,7 @@ const queryTypes = `
         include: Boolean
     }
 
-    type CreateCustomFormStatus {
+    type CustomFormStatus {
         messageType: String
         message: String
         form: CustomApplicationOutput
@@ -1222,8 +1222,8 @@ const mutations = `
         addDaycareApplication(daycare: DaycareMainInput): Status
         addParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
         updateParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
-        createCustomApplicationForm(application: CustomApplicationInput): CreateCustomFormStatus
-        updateCustomApplicationForm(application: CustomApplicationInput): Status
+        createCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
+        updateCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
     }
 `;

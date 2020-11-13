@@ -102,6 +102,94 @@ export const FORM_UPDATE_MUTATION = gql`
     updateCustomApplicationForm(application:$application){
       messageType
       message
+      form {
+        id
+        vendor
+        user
+        form_id
+        form_contents {
+          formTitle
+          formData {
+            id
+            label
+            type
+            fields {
+              id
+              label
+              type
+              tag
+              placeholder
+              column
+              value
+              required
+              validation {
+                include
+                items {
+                  error
+                  errorField
+                  option
+                  type
+                  value
+                }
+              }
+              options {
+                name
+                label
+                tag
+              }
+              columns {
+                label
+                value
+              }
+              rows {
+                row
+              }
+              min {
+                value
+                label
+              }
+              max {
+                value
+                label
+              }
+              scale {
+                min
+                max
+              }
+              scaleLabels {
+                left
+                center
+                right
+              }
+              items {
+                label
+                rank
+              }
+              limit
+              errorMessage
+              allowTypes {
+                label
+                ext
+                selected
+              }
+              isMultiple
+            }
+            groupType
+            settings {
+              logic { include }
+              instruction { include }
+            }
+            isActive
+            allowAddField
+            gridMax
+            includeLogic
+            includeValidation
+            hasSettings
+            supportMultiple
+          }
+        }
+        created_at
+      }
     }
   }
 `;

@@ -765,6 +765,8 @@ export const updateCustomApplicationForm = async ({
 }) => {
   const db = makeDb();
   let result;
+  let application;
+
   try {
     result = await db.query(
       `
@@ -777,11 +779,34 @@ export const updateCustomApplicationForm = async ({
         form_id
       ]
     )
+
+    application = await db.query(
+      `SELECT 
+        id,
+        BIN_TO_UUID(form_id) as form_id,
+        BIN_TO_UUID(user) as user,
+        BIN_TO_UUID(vendor) as vendor,
+        CONVERT(form_contents USING utf8) as form_contents,
+        created_at
+      FROM vendor_custom_application 
+      WHERE form_id=UUID_TO_BIN(?)`,
+      [form_id]
+    );
+
+    if(application.length > 0) {
+      application = application[0];
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+      console.log("get custom application string", application);
+      application.form_contents = JSON.parse(application.form_contents);
+    } else {
+      application = ""
+    }
+
   } catch(err) {
     console.log("update custom application form error", error);
   } finally {
     await db.close();
-    return result
+    return application;
   }
 }
 
