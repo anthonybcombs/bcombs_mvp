@@ -29,8 +29,8 @@ const FormBuilder = ({ form_id, type, history }) => {
     }
   );
   let isLoading = loading.addForm || loading.updateForm || loading.getForm
-  const { formData = [], formTitle = '' } = form_contents || {}
-
+  const { formData = [], formTitle = '' } = (updateForm.form && updateForm.form.form_contents) || form_contents || {}
+  console.log('taya', { form_contents, updatefc: updateForm })
   const [vendor, setVendor] = useState();
 
   const dispatch = useDispatch();
@@ -62,7 +62,7 @@ const FormBuilder = ({ form_id, type, history }) => {
   }
 
   if (updateForm && updateForm.message == 'successfully update your application form') {
-    window.location.replace(`/dashboard/builder/${form_id}/edit`)
+    // window.location.replace(`/dashboard/builder/${form_id}/edit`)
     console.log('magandang larawan', updateForm)
   }
 
