@@ -3,23 +3,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
-export default ({ instruction, allowedTypes, limit, errorMessage, onChangeFieldSettings, isBuilder }) => {
+export default ({ instruction, allowTypes, limit, errorMessage, onChangeFieldSettings, isBuilder }) => {
   const handleChangeValues = ({ target: { value } }, type) => {
     onChangeFieldSettings({ [type]: value })
   }
   
   const handleChangeTypes = ({ target: { checked } }, index) => {
-    let newTypes = cloneDeep(allowedTypes)
+    let newTypes = cloneDeep(allowTypes)
     newTypes[index].selected = checked
 
     const getErrorMsg = (arr) => `Only ${arr.filter(e => e.selected).map(e => e.label).join(', ')} files are supported.`
-    let newErrorMessage = getErrorMsg(allowedTypes)
+    let newErrorMessage = getErrorMsg(allowTypes)
     if (errorMessage !== newErrorMessage) {
       newErrorMessage = errorMessage
     } else {
       newErrorMessage = getErrorMsg(newTypes)
     }
-    onChangeFieldSettings({ allowedTypes: newTypes, errorMessage: newErrorMessage })
+    onChangeFieldSettings({ allowTypes: newTypes, errorMessage: newErrorMessage })
   }
 
   return (
@@ -31,7 +31,7 @@ export default ({ instruction, allowedTypes, limit, errorMessage, onChangeFieldS
               <p>Allowable file types</p>
               <div className='options'>
                 {
-                  allowedTypes.map(({ label, selected }, index) => {
+                  allowTypes.map(({ label, selected }, index) => {
                     return (
                       <label key={`allowedType-${index}`} className='checkboxContainer'>
                         <input

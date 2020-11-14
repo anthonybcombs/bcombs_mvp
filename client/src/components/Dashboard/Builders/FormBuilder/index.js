@@ -29,8 +29,8 @@ const FormBuilder = ({ form_id, type, history }) => {
     }
   );
   let isLoading = loading.addForm || loading.updateForm || loading.getForm
-  const { formData = [], formTitle = '' } = (updateForm.form && updateForm.form.form_contents) || form_contents || {}
-  console.log('taya', { form_contents, updatefc: updateForm })
+  const { formData = [], formTitle = '' } = form_contents || {}
+
   const [vendor, setVendor] = useState();
 
   const dispatch = useDispatch();
@@ -38,6 +38,7 @@ const FormBuilder = ({ form_id, type, history }) => {
   useEffect(() => {
     if (auth.user_id) {
       dispatch(requestVendor(auth.user_id));
+      isLoading = true
     }
     if (form_id && type === 'edit') {
       dispatch(requestGetFormById({ form_id }))
@@ -52,18 +53,18 @@ const FormBuilder = ({ form_id, type, history }) => {
 
   useEffect(() => {
     if(vendors && vendors.length > 0) {
-      setVendor(vendors[0]);
+      setVendor(vendors[0])
+      isLoading = false
     }
   }, [vendors])
 
   if(addForm && addForm.message == "successfully created your application form" && addForm.form) {
     window.location.replace(`/dashboard/builder/${addForm.form.form_id}/${addForm.isViewMode ? 'view': 'edit'}`)
-    console.log("newly created form", addForm);
   }
 
   if (updateForm && updateForm.message == 'successfully update your application form') {
-    // window.location.replace(`/dashboard/builder/${form_id}/edit`)
-    console.log('magandang larawan', updateForm)
+    window.location.replace(`/dashboard/builder/${form_id}/edit`)
+    isLoading = true
   }
 
   const cleanFormData = (formData) => {

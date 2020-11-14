@@ -3,13 +3,15 @@ import React from 'react'
 import Checkboxes from './Checkboxes'
 import MultipleChoice from './MultipleChoice'
 import DropDown from './DropDown'
-import Rating from './Rating'
+import Matrix from './Matrix'
 import Linear from './Linear'
 import Slider from './Slider'
 import Ranking from './Ranking'
 import FileUpload from './FileUpload'
 import SectionBreak from './SectionBreak'
 import PageBreak from './PageBreak'
+import Rating from './Rating'
+import Email from './Email'
 
 import STATES from '../../../ApplicationForm/states.json'
 import COUNTRIES from '../../../ApplicationForm/country.json'
@@ -150,13 +152,16 @@ export default {
   file: (props) => {
     return <FileUpload {...props} />
   },
-  checkboxGrid: (props) => {
-    return <Rating {...props} isMultiple />
+  matrix: (props) => {
+    return <Matrix {...props} />
   },
   sectionBreak: (props) => {
     return <SectionBreak {...props} />
   },
   pageBreak: (props) => {
     return <PageBreak {...props} />
+  },
+  email: (props) => {
+    return <Email {...props} />
   },
 }

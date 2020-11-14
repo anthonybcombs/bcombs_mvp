@@ -23,7 +23,8 @@ export default function Applications(
     case actionType.REQUEST_UPDATE_FORM_COMPLETED:
       return {
         ...state,
-        updateForm: { ...action.payload }
+        updateForm: { ...action.payload },
+        addForm: {}
       };
     case actionType.SET_VIEW_MODE:
       return {

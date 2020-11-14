@@ -12,6 +12,7 @@ import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
 
 import { requestAddForm, requestUpdateForm, setViewMode } from "../../../../../redux/actions/FormBuilder"
+import Loading from '../../../../../helpers/Loading';
 
 export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', form_id, isFormView, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
@@ -20,7 +21,6 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
   const [hasPageBreak, checkHasPageBreak] = useState(false)
   const [pageBreaks, getPageBreaks] = useState([])
   const [lastField, getLastField] = useState({})
-  const [isView, setIsView] = useState(false)
 
   const reMapFields = (fields, id) => {
     return fields.map(e => ({ ...e, id: `${e.tag}_${id}`, value: '' }))
@@ -60,7 +60,8 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
     }
 
     if (field.type === 'pageBreak' && !hasPageBreak) {
-      newFields.push({ ...field, id: uuid() })
+      const { index, ...rest } = field
+      newFields.push({ ...rest, id: uuid() })
     }
     setDrop(newFields)
     checkPageBreaks(newFields)
@@ -119,6 +120,7 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
   }
 
   const handleChangeFieldSettings = (data, index, id) => {
+    console.log('kayata', { data, index, id })
     setDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { fields: { [index]: { $merge: data } } }
     }))
@@ -215,6 +217,7 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
   useEffect(() => {
     if (form_data && form_data.length) {
       setDrop(form_data)
+      checkPageBreaks(form_data)
     }
   }, [form_data])
 
@@ -234,7 +237,7 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
 
   console.log('toinks', { isFormView, droppedFields, form_data, form_title })
 
-  return (
+  return (user && user.user_id && vendor && vendor.id) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop} className='drop-area-wrapper-droppable'>
         <div className='form-title'>
@@ -286,42 +289,37 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
       </div>
       <CustomDragLayer />
       <div className='drop-area-wrapper-actions'>
-        {
-          droppedFields.length > 0 && (
-            <>
-              <button
-                type='button'
-                className='btn preview'
-                onClick={e => {
-                  e.stopPropagation()
-                  handleViewForm()
-                }}
-              >
-                <FontAwesomeIcon
-                  className='preview-icon'
-                  icon={faEye}
-                />
-                <span>View</span>
-              </button>
-              <button
-                type='button'
-                className='btn save'
-                disabled={!(user && user.user_id && vendor && vendor.id)}
-                onClick={e => {
-                  e.stopPropagation()
-                  handleSubmitForm()
-                }}
-              >
-                <FontAwesomeIcon
-                  className='save-icon'
-                  icon={faCheck}
-                />
-                <span>Save</span>
-              </button>
-            </>
-          )
-        }
+        <button
+          type='button'
+          className='btn preview'
+          onClick={e => {
+            e.stopPropagation()
+            handleViewForm()
+          }}
+        >
+          <FontAwesomeIcon
+            className='preview-icon'
+            icon={faEye}
+          />
+          <span>View</span>
+        </button>
+        <button
+          type='button'
+          className='btn save'
+          onClick={e => {
+            e.stopPropagation()
+            handleSubmitForm()
+          }}
+        >
+          <FontAwesomeIcon
+            className='save-icon'
+            icon={faCheck}
+          />
+          <span>Save</span>
+        </button>
       </div>
     </div>
+  ) : (
+    <Loading />
   )
 }

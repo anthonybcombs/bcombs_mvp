@@ -6,7 +6,7 @@ export const Items = {
     // checkboxes: 'checkboxes',
     multipleChoice: 'multipleChoice',
     dropDown: 'dropDown',
-    rating: 'rating',
+    matrix: 'matrix',
     radioButton: 'radioButton',
     linearScale: 'linearScale',
     slider: 'slider',
@@ -20,7 +20,7 @@ export const Items = {
     name: 'name',
     primeFile: 'primeFile',
     address: 'address',
-    primeRating: 'primeRating',
+    rating: 'rating',
     email: 'email',
     date: 'date',
     phone: 'phone',
@@ -125,7 +125,7 @@ export const StandardFields = [
     fields: [
       {
         label: 'Matrix / Rating',
-        tag: 'rating',
+        tag: 'matrix',
         isMultiple: false, // Added nov 11
         rows: [
           {
@@ -152,7 +152,7 @@ export const StandardFields = [
     ],
     displayLabel: 'Matrix / Rating',
     label: 'Matrix / Rating question',
-    type: 'rating',
+    type: 'matrix',
     gridMax: 1,
     isQa: true,
     supportMultiple: true, // Added nov 11
@@ -253,10 +253,9 @@ export const StandardFields = [
       {
         label: 'File Upload',
         tag: 'file',
-        instruction: '',
         limit: 5,
         errorMessage: 'Only PDF, PNG, JPG, JPEG, DOC, DOCX, GIF files are supported.',
-        allowedTypes: [
+        allowTypes: [
           { label: 'PDF', ext: ['.pdf'], selected: true },
           { label: 'PNG', ext: ['.png'], selected: true },
           { label: 'JPG, JPEG', ext: ['.jpg', '.jpeg'], selected: true },
@@ -324,10 +323,9 @@ export const PrimeFields = [
       {
         label: 'File Upload',
         tag: 'file',
-        instruction: '',
         limit: 5,
         errorMessage: 'Only PDF, PNG, JPG, JPEG, DOC, DOCX, GIF files are supported.',
-        allowedTypes: [
+        allowTypes: [
           { label: 'PDF', ext: ['.pdf'], selected: true },
           { label: 'PNG', ext: ['.png'], selected: true },
           { label: 'JPG, JPEG', ext: ['.jpg', '.jpeg'], selected: true },
@@ -359,19 +357,47 @@ export const PrimeFields = [
   },
   {
     fields: [
-      { label: 'Rating', tag: 'rating', column: '1'}
+      {
+        label: 'Rating',
+        tag: 'rating',
+        scale: { max: 5 },
+        items: [
+          { label: '', rank: 1 },
+          { label: '', rank: 2 },
+          { label: '', rank: 3 },
+          { label: '', rank: 4 },
+          { label: '', rank: 5 }
+        ]
+      }
     ],
-    label: 'Rating',
-    type: 'primeRating',
-    includeLogic: false
+    displayLabel: 'Rating',
+    label: 'Rating question',
+    type: 'rating',
+    gridMax: 1,
+    isQa: true,
+    includeLogic: false,
   },
   {
     fields: [
-      { label: 'Email', type: 'email', tag: 'input', placeholder: 'Email', column: '1'},
+      {
+        label: 'Type',
+        type: 'type',
+        tag: 'select',
+        placeholder: 'Type',
+        column: '1',
+        requireAddOption: true,
+        options: [
+          { name: 'Personal', label: 'Personal' },
+          { name: 'Work', label: 'Work' },
+        ]
+      },
+      { label: 'Email', type: 'email', tag: 'input', placeholder: 'sample@email.com', column: '3'},
     ],
     label: 'Email',
     type: 'email',
-    includeLogic: false
+    gridMax: 4,
+    isQa: true,
+    includeLogic: false,
   },
   {
     fields: [
@@ -385,13 +411,26 @@ export const PrimeFields = [
   },
   {
     fields: [
-      { label: 'Mobile', type: 'number', tag: 'input', placeholder: 'Mobile', column: '1'},
-      { label: 'Home', type: 'number', tag: 'input', placeholder: 'Home', column: '1'},
-      { label: 'Business', type: 'number', tag: 'input', placeholder: 'Business', column: '1'},
+      {
+        label: 'Type',
+        type: 'type',
+        tag: 'select',
+        placeholder: 'Type',
+        column: '1',
+        requireAddOption: true,
+        options: [
+          { name: 'Cell', label: 'Cell' },
+          { name: 'Home', label: 'Home' },
+          { name: 'Work', label: 'Work' },
+        ]
+      },
+      { label: 'Phone', type: 'text', tag: 'input', placeholder: '###-###-####', column: '3'}
     ],
     label: 'Phone',
     type: 'phone',
-    includeLogic: false
+    gridMax: 4,
+    isQa: true,
+    includeLogic: false,
   },
   {
     fields: [
