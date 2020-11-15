@@ -8,7 +8,6 @@ export default ({
   id, index, field, fieldsCount, isActive, isActiveField, columnInt, isStandard, gridColRepeat,
   setActiveFieldIndex, onActive, onChangeFieldSettings, onRemoveGroupField,
 }) => {
-  console.log('taweweng', columnInt)
   const { tag, column, placeholder, fixedWidth = false } = field
   return (
     <div

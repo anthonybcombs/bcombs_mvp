@@ -384,26 +384,26 @@ export const PrimeFields = [
         type: 'type',
         tag: 'select',
         placeholder: 'Type',
-        column: '1',
         requireAddOption: true,
         options: [
           { name: 'Personal', label: 'Personal' },
           { name: 'Work', label: 'Work' },
         ]
       },
-      { label: 'Email', type: 'email', tag: 'input', placeholder: 'sample@email.com', column: '3'},
+      { label: 'Email', type: 'email', tag: 'input', placeholder: 'sample@email.com' },
     ],
     label: 'Email',
     type: 'email',
-    gridMax: 4,
+    allowAddField: false,
     isQa: true,
     includeLogic: false,
   },
   {
     fields: [
-      { label: 'MM', type: 'text', tag: 'input', placeholder: 'MM', column: '1'},
-      { label: 'DD', type: 'text', tag: 'input', placeholder: 'DD', column: '1'},
-      { label: 'YYYY', type: 'text', tag: 'input', placeholder: 'YYYY', column: '1'},
+      { label: 'MM', type: 'text', tag: 'input', placeholder: 'MM' },
+      { label: 'DD', type: 'text', tag: 'input', placeholder: 'DD' },
+      { label: 'YYYY', type: 'text', tag: 'input', placeholder: 'YYYY' },
+      { label: '', type: 'date', tag: 'icon', placeholder: 'date' }
     ],
     label: 'Date',
     type: 'date',
@@ -416,7 +416,6 @@ export const PrimeFields = [
         type: 'type',
         tag: 'select',
         placeholder: 'Type',
-        column: '1',
         requireAddOption: true,
         options: [
           { name: 'Cell', label: 'Cell' },
@@ -424,17 +423,18 @@ export const PrimeFields = [
           { name: 'Work', label: 'Work' },
         ]
       },
-      { label: 'Phone', type: 'text', tag: 'input', placeholder: '###-###-####', column: '3'}
+      { label: 'Phone', type: 'text', tag: 'input', placeholder: '###-###-####' }
     ],
     label: 'Phone',
     type: 'phone',
-    gridMax: 4,
+    allowAddField: false,
     isQa: true,
     includeLogic: false,
   },
   {
     fields: [
-      { label: 'Time', type: 'text', tag: 'input', placeholder: 'Time', column: '1'},
+      { label: 'Time', type: 'text', tag: 'input', placeholder: 'Time' },
+      { label: '', type: 'time', tag: 'icon', placeholder: 'time' }
     ],
     label: 'Time',
     type: 'time',
@@ -442,7 +442,8 @@ export const PrimeFields = [
   },
   {
     fields: [
-      { label: 'Price', type: 'text', tag: 'input', placeholder: 'Price', column: '1'},
+      { label: '', type: 'currency', tag: 'icon', placeholder: 'currency' },
+      { label: 'Price', type: 'number', tag: 'input', placeholder: 'Price' }
     ],
     label: 'Price',
     type: 'price',
