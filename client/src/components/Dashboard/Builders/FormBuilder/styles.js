@@ -481,10 +481,6 @@ export default styled.div`
   .sortableGroup-column {
     position: relative;
     padding-top: 1rem !important;
-  }  
-  .sortableGroup-column.active .field-input,
-  .sortableGroup-column.active textarea.field-input {
-    background: #fde8db !important;
   }
   .sortableGroup-column.addField-column > button {
     border: 0;
@@ -820,6 +816,13 @@ export default styled.div`
   // ===========================================
   // ********* Specific Group Fields  **********
   // ===========================================
+  .sortableGroup.singleLineText .sortableGroup-column.active .field-input,
+  .sortableGroup.singleLineText .sortableGroup-column.active textarea.field-input,
+  .sortableGroup.paragraphText .sortableGroup-column.active .field-input,
+  .sortableGroup.paragraphText .sortableGroup-column.active textarea.field-input {
+    background: #fde8db !important;
+  }
+  
     // checkbox & Radiobutton
   .sortableGroup.checkboxes .sortableGroup-column .checkboxContainer .labelName {
     position: relative;
