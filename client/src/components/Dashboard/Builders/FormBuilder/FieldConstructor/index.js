@@ -1,4 +1,6 @@
 import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCalendarDay, faClock, faDollarSign } from '@fortawesome/free-solid-svg-icons'
 
 import Checkboxes from './Checkboxes'
 import MultipleChoice from './MultipleChoice'
@@ -29,6 +31,33 @@ export default {
         {...rest}
       />
     )
+  },
+  icon: ({ type, label }) => {
+    switch(type) {
+      case 'date':
+        return (
+          <FontAwesomeIcon
+            className='date-icon'
+            icon={faCalendarDay}
+          />
+        )
+      case 'time': 
+        return (
+          <FontAwesomeIcon
+            className='time-icon'
+            icon={faClock}
+          />
+        )
+      case 'currency': 
+        return (
+          <FontAwesomeIcon
+            className='date-icon'
+            icon={faDollarSign}
+          />
+        )
+      default:
+        return <span>{label}</span>
+    }
   },
   textarea: ({ label, className = '', ...rest }) => {
     return <textarea

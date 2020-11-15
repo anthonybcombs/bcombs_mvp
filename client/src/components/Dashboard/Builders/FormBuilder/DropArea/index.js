@@ -113,6 +113,12 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
     setDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
   }
 
+  const handleChangeDefaultProps = ({ id, ...rest }) => {
+    setDrop(update(droppedFields, {
+      [droppedFields.findIndex(e => e.id === id)]: { $merge: rest }
+    }))
+  }
+
   const handleChangeGeneralSettings = ({ id, ...rest }) => {
     setDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { settings: { $merge: rest } }
@@ -282,6 +288,7 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
                 onRemoveGroupField={handleRemoveGroupField}
                 onChangeGroupName={handleUpdateGroupName}
                 onApplyValidationToAll={handleApplyValidationToAll}
+                onChangeDefaultProps={handleChangeDefaultProps}
               />
             )
           })

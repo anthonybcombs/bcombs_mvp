@@ -16,11 +16,15 @@ export default ({
   includeValidation,
   validationAppliedToAll,
   supportMultiple,
+  fieldGroupType,
+  isStandard,
+
   onChangeGeneralSettings,
   onChangeFieldSettings,
   onRemoveGroup,
   onDuplicateGroup,
   onApplyValidationToAll,
+  onChangeDefaultProps
 }) => {
 
   const { validationTypes, validationOptions } = Sources
@@ -336,7 +340,7 @@ export default ({
       <div className='settings-control'>
         <div className={`settings-control-item field ${!showOptions ? 'hidden' : ''}`}>
           {
-            allowAddField ? (
+            (allowAddField && isStandard) ? (
               <div className='tooltip-wrapper'>
                 <p className='label'>Field Settings
                   <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
@@ -448,6 +452,25 @@ export default ({
               <span className='checkmark' />
               <span className='labelName'> Instruction for Use</span>
             </label>
+
+            {
+              (!isStandard && ['phone', 'email'].includes(fieldGroupType)) && (
+                <label htmlFor='allowAddField'  className={`checkboxContainer`} >
+                  <input
+                    type='checkbox'
+                    id='allowAddField'
+                    name='allowAddField'
+                    checked={allowAddField}
+                    onChange={e => {
+                      e.stopPropagation()
+                      onChangeDefaultProps({ allowAddField: e.target.checked })
+                    }}
+                  />
+                  <span className='checkmark'/>
+                  <span className='labelName'> Allow add field row</span>
+                </label>
+              )
+            }
           </div>
         </div>
         

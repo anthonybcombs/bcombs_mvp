@@ -14,6 +14,8 @@ const SortableGroup = React.forwardRef(
     connectDragSource, connectDropTarget, connectDragPreview,
     onActive, onChangeGeneralSettings,  onMergeStandardFields, onDuplicateGroup,
     onRemoveGroupField, onChangeFieldSettings, onChangeGroupName, onApplyValidationToAll,
+    onChangeDefaultProps,
+
     hidden, label, fields, isDragging, id, type: fieldGroupType, gridMax: gridColRepeat,
     includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField = {},
     onRemoveGroup, settings: generalSettings, allowAddField, includeLogic, supportMultiple,
@@ -205,6 +207,7 @@ const SortableGroup = React.forwardRef(
       {
         (hasSettings && !isDragging && isActive && !isLastPageBreak) ? (
           <GeneralSettings
+            onChangeDefaultProps={(data) => onChangeDefaultProps({ ...data, id })}
             onChangeGeneralSettings={(data) => onChangeGeneralSettings({ ...data, id })}
             onChangeFieldSettings={(data) => onChangeFieldSettings(data, fieldIndex, id)}
             onRemoveGroup={() => onRemoveGroup(id)}
@@ -224,6 +227,8 @@ const SortableGroup = React.forwardRef(
             validationAppliedToAll={validationAppliedToAll}
             showSettings={showSettings}
             isActive={isActive}
+            isStandard={isStandard}
+            fieldGroupType={fieldGroupType}
             supportMultiple={supportMultiple}
           />
         ) : (showSettings && !isLastPageBreak)
