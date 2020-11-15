@@ -157,7 +157,7 @@ export default styled.div`
     display: flex;
     padding: 1rem;
     background: #f9f9f9;
-    margin: 0 -2rem -2rem;
+    margin: 3rem -2rem -2rem;
 }
   }
   .wizard-actions button {
@@ -246,6 +246,13 @@ export default styled.div`
 
 
   // ********* Specific Group Fields  **********
+  // Section Break
+  .formGroup.sectionBreak .formGroup-name {
+    font-size: 20px;
+    color: #000;
+    font-weight: 700;
+  }
+
   // Dropdown
   .formGroup.dropDown .formGroup-row {
     grid-template-columns: repeat(3, 1fr) !important;
