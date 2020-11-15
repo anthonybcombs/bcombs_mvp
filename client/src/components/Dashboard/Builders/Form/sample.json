@@ -1,561 +1,229 @@
 [
   {
-    "label": "Checkboxes question",
-    "type": "checkboxes",
+    "label": "Date",
+    "type": "date",
     "fields": [
       {
-        "type": "checkboxes",
-        "tag": "checkboxes",
-        "options": [
-          {
-            "name": "option1",
-            "label": "Option 1",
-            "tag": "checkbox"
-          },
-          {
-            "name": "option2",
-            "label": "Option 2",
-            "tag": "checkbox"
-          },
-          {
-            "name": "option3",
-            "label": "Option 3",
-            "tag": "checkbox"
-          }
-        ],
-        "id": "checkboxes_0da307fc-0d61-4ec0-8a7b-29a3ed1292c6",
+        "label": "MM",
+        "type": "text",
+        "tag": "input",
+        "placeholder": "MM",
+        "id": "input_85ef86a3-9591-489f-bc22-8bf900f6f8ef",
+        "value": ""
+      },
+      {
+        "label": "DD",
+        "type": "text",
+        "tag": "input",
+        "placeholder": "DD",
+        "id": "input_85ef86a3-9591-489f-bc22-8bf900f6f8ef",
+        "value": ""
+      },
+      {
+        "label": "YYYY",
+        "type": "text",
+        "tag": "input",
+        "placeholder": "YYYY",
+        "id": "input_85ef86a3-9591-489f-bc22-8bf900f6f8ef",
+        "value": ""
+      },
+      {
+        "label": "",
+        "type": "date",
+        "tag": "icon",
+        "placeholder": "date",
+        "id": "icon_85ef86a3-9591-489f-bc22-8bf900f6f8ef",
         "value": ""
       }
     ],
-    "groupType": "standard",
+    "groupType": "prime",
     "settings": {},
-    "id": "0da307fc-0d61-4ec0-8a7b-29a3ed1292c6",
-    "allowAddField": false,
-    "includeLogic": true,
-    "includeValidation": true,
-    "gridMax": 1,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "Multiple Choice question",
-    "type": "multipleChoice",
-    "fields": [
-      {
-        "type": "multipleChoice",
-        "tag": "multipleChoice",
-        "options": [
-          {
-            "name": "option1",
-            "label": "Option 1",
-            "tag": "radio"
-          },
-          {
-            "name": "option2",
-            "label": "Option 2",
-            "tag": "radio"
-          },
-          {
-            "name": "option3",
-            "label": "Option 3",
-            "tag": "radio"
-          }
-        ],
-        "column": "1",
-        "id": "multipleChoice_d7ad97de-3b96-4858-94f4-8c810ccbcf84",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "d7ad97de-3b96-4858-94f4-8c810ccbcf84",
-    "allowAddField": false,
-    "includeLogic": true,
-    "includeValidation": false,
-    "gridMax": 1,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "Section Break",
-    "type": "sectionBreak",
-    "fields": [
-      {
-        "label": "Section Break",
-        "description": "",
-        "tag": "sectionBreak",
-        "id": "sectionBreak_89375a22-70e8-47c2-b7b2-66fea730273d",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "89375a22-70e8-47c2-b7b2-66fea730273d",
-    "allowAddField": false,
-    "includeLogic": true,
-    "includeValidation": false,
-    "gridMax": 1,
-    "hasSettings": false,
-    "isActive": false
-  },
-  {
-    "label": "Dropdown question",
-    "type": "dropDown",
-    "fields": [
-      {
-        "type": "dropdown",
-        "tag": "dropdown",
-        "options": [
-          {
-            "name": "option1",
-            "label": "Option 1",
-            "tag": "dropdown"
-          },
-          {
-            "name": "option2",
-            "label": "Option 2",
-            "tag": "dropdown"
-          },
-          {
-            "name": "option3",
-            "label": "Option 3",
-            "tag": "dropdown"
-          }
-        ],
-        "column": "1",
-        "id": "dropdown_57f152a1-3e39-4288-a1ac-f662a8b04caa",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "57f152a1-3e39-4288-a1ac-f662a8b04caa",
-    "allowAddField": false,
-    "includeLogic": true,
-    "includeValidation": false,
-    "gridMax": 1,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "Matrix / Rating question",
-    "type": "rating",
-    "fields": [
-      {
-        "label": "Matrix / Rating",
-        "tag": "rating",
-        "rows": [
-          {
-            "row": "Row 1"
-          },
-          {
-            "row": "Row 2"
-          },
-          {
-            "row": "Row 3"
-          }
-        ],
-        "columns": [
-          {
-            "label": "Column 1",
-            "value": 1
-          },
-          {
-            "label": "Column 2",
-            "value": 2
-          }
-        ],
-        "id": "rating_028b8a5c-ae4c-439f-88ca-3a3c0e8e47ea",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "028b8a5c-ae4c-439f-88ca-3a3c0e8e47ea",
+    "id": "85ef86a3-9591-489f-bc22-8bf900f6f8ef",
     "allowAddField": false,
     "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 1,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "Linear scale question",
-    "type": "linearScale",
-    "fields": [
-      {
-        "label": "Linear Scale",
-        "tag": "linear",
-        "min": {
-          "value": 1,
-          "label": ""
-        },
-        "max": {
-          "value": 10,
-          "label": ""
-        },
-        "id": "linear_a70f1b25-a862-43eb-b5d7-f616008aa32b",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "a70f1b25-a862-43eb-b5d7-f616008aa32b",
-    "allowAddField": false,
-    "includeLogic": true,
-    "includeValidation": false,
-    "gridMax": 2,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "Slider question",
-    "type": "slider",
-    "fields": [
-      {
-        "label": "Slider",
-        "tag": "slider",
-        "scale": {
-          "min": 0,
-          "max": 100
-        },
-        "scaleLabels": {
-          "left": "0",
-          "center": "",
-          "right": "100"
-        },
-        "id": "slider_900bd8d6-9b9e-46f1-9c75-bd8fcb57f3a5",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "900bd8d6-9b9e-46f1-9c75-bd8fcb57f3a5",
-    "allowAddField": false,
-    "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 2,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "Checkbox grid question",
-    "type": "checkboxGrid",
-    "fields": [
-      {
-        "label": "Checkbox Grid",
-        "tag": "checkboxGrid",
-        "rows": [
-          {
-            "row": "Row 1"
-          },
-          {
-            "row": "Row 2"
-          }
-        ],
-        "columns": [
-          {
-            "label": "Column 1",
-            "value": 1
-          },
-          {
-            "label": "Column 2",
-            "value": 2
-          }
-        ],
-        "id": "checkboxGrid_ded5711f-5b5e-4d7f-8e36-dbc7ab1e28c5",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "ded5711f-5b5e-4d7f-8e36-dbc7ab1e28c5",
-    "allowAddField": false,
-    "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 1,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "Ranking question",
-    "type": "ranking",
-    "fields": [
-      {
-        "label": "Ranking",
-        "tag": "ranking",
-        "items": [
-          {
-            "label": "",
-            "rank": 1
-          },
-          {
-            "label": "",
-            "rank": 2
-          },
-          {
-            "label": "",
-            "rank": 3
-          }
-        ],
-        "column": "1",
-        "id": "ranking_a4d29b43-82ea-44db-8efa-e4f86867a546",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "a4d29b43-82ea-44db-8efa-e4f86867a546",
-    "allowAddField": false,
-    "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 1,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "File upload question",
-    "type": "file",
-    "fields": [
-      {
-        "label": "File Upload",
-        "tag": "file",
-        "instruction": "",
-        "limit": 5,
-        "errorMessage": "Only PDF, PNG, JPG, JPEG, DOC, DOCX, GIF files are supported.",
-        "allowedTypes": [
-          {
-            "label": "PDF",
-            "ext": [
-              ".pdf"
-            ],
-            "selected": true
-          },
-          {
-            "label": "PNG",
-            "ext": [
-              ".png"
-            ],
-            "selected": true
-          },
-          {
-            "label": "JPG, JPEG",
-            "ext": [
-              ".jpg",
-              ".jpeg"
-            ],
-            "selected": true
-          },
-          {
-            "label": "DOC, DOCX",
-            "ext": [
-              ".doc",
-              ".docx"
-            ],
-            "selected": true
-          },
-          {
-            "label": "GIF",
-            "ext": [
-              ".gif"
-            ],
-            "selected": true
-          }
-        ],
-        "id": "file_7bb115e9-f232-48a1-bcdc-c5a38342b6bb",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "7bb115e9-f232-48a1-bcdc-c5a38342b6bb",
-    "allowAddField": false,
-    "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 1,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "Page Break",
-    "type": "pageBreak",
-    "fields": [
-      {
-        "label": "Page Break",
-        "description": "",
-        "tag": "pageBreak",
-        "id": "pageBreak_c21dcf44-a165-45f0-be1b-bd5ac4bf951c",
-        "value": ""
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "c21dcf44-a165-45f0-be1b-bd5ac4bf951c",
-    "allowAddField": false,
-    "includeLogic": true,
     "includeValidation": false,
     "gridMax": 3,
-    "hasSettings": false,
+    "hasSettings": true,
+    "supportMultiple": false,
     "isActive": false
   },
   {
-    "label": "Name",
-    "type": "name",
+    "label": "Email",
+    "type": "email",
     "fields": [
       {
-        "label": "Title",
-        "type": "title",
+        "label": "Type",
+        "type": "type",
         "tag": "select",
-        "placeholder": "Title",
-        "column": "1",
-        "fixedWidth": true,
+        "placeholder": "Type",
         "requireAddOption": true,
         "options": [
           {
-            "name": "mr",
-            "label": "Mr.",
-            "tag": "checkbox"
+            "name": "Personal",
+            "label": "Personal"
           },
           {
-            "name": "mrs",
-            "label": "Mrs.",
-            "tag": "checkbox"
-          },
-          {
-            "name": "ms",
-            "label": "Ms.",
-            "tag": "checkbox"
+            "name": "Work",
+            "label": "Work"
           }
         ],
-        "id": "select_1192b1b6-4d08-4349-b49a-7ae29b7748b5",
+        "id": "select_ca25b75c-48fc-4ac5-85ac-30b505fd19ec",
         "value": ""
       },
       {
-        "label": "First Name",
-        "type": "text",
+        "label": "Email",
+        "type": "email",
         "tag": "input",
-        "placeholder": "First Name",
-        "column": "1",
-        "id": "input_1192b1b6-4d08-4349-b49a-7ae29b7748b5",
-        "value": ""
-      },
-      {
-        "label": "Middle Name",
-        "type": "text",
-        "tag": "input",
-        "placeholder": "Middle Name",
-        "column": "1",
-        "id": "input_1192b1b6-4d08-4349-b49a-7ae29b7748b5",
-        "value": ""
-      },
-      {
-        "label": "Last Name",
-        "type": "text",
-        "tag": "input",
-        "placeholder": "Last Name",
-        "column": "1",
-        "id": "input_1192b1b6-4d08-4349-b49a-7ae29b7748b5",
+        "placeholder": "sample@email.com",
+        "id": "input_ca25b75c-48fc-4ac5-85ac-30b505fd19ec",
         "value": ""
       }
     ],
     "groupType": "prime",
     "settings": {},
-    "id": "1192b1b6-4d08-4349-b49a-7ae29b7748b5",
+    "id": "ca25b75c-48fc-4ac5-85ac-30b505fd19ec",
     "allowAddField": false,
     "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 4,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "Address",
-    "type": "address",
-    "fields": [
-      {
-        "label": "Street Address",
-        "type": "text",
-        "tag": "input",
-        "placeholder": "Street Address",
-        "column": "4",
-        "id": "input_74949b62-e3d7-4e6e-aa29-ff511bc61a9c",
-        "value": ""
-      },
-      {
-        "label": "Street Address Line 2",
-        "type": "text",
-        "tag": "input",
-        "placeholder": "Street Address Line 2",
-        "column": "4",
-        "id": "input_74949b62-e3d7-4e6e-aa29-ff511bc61a9c",
-        "value": ""
-      },
-      {
-        "label": "State / Province / Region",
-        "type": "state",
-        "tag": "select",
-        "placeholder": "State / Province / Region",
-        "column": "2",
-        "id": "select_74949b62-e3d7-4e6e-aa29-ff511bc61a9c",
-        "value": ""
-      },
-      {
-        "label": "City",
-        "type": "text",
-        "tag": "input",
-        "placeholder": "City",
-        "column": "2",
-        "id": "input_74949b62-e3d7-4e6e-aa29-ff511bc61a9c",
-        "value": ""
-      },
-      {
-        "label": "Postal / Zip Code",
-        "type": "text",
-        "tag": "input",
-        "placeholder": "Postal / Zip Code",
-        "column": "2",
-        "id": "input_74949b62-e3d7-4e6e-aa29-ff511bc61a9c",
-        "value": ""
-      },
-      {
-        "label": "Country",
-        "type": "country",
-        "tag": "select",
-        "placeholder": "Country",
-        "column": "2",
-        "options": [],
-        "id": "select_74949b62-e3d7-4e6e-aa29-ff511bc61a9c",
-        "value": ""
-      }
-    ],
-    "groupType": "prime",
-    "settings": {},
-    "id": "74949b62-e3d7-4e6e-aa29-ff511bc61a9c",
-    "allowAddField": false,
-    "includeLogic": false,
-    "includeValidation": false,
-    "gridMax": 4,
-    "hasSettings": true,
-    "isActive": false
-  },
-  {
-    "label": "Personal Information",
-    "type": "pageBreak",
-    "fields": [
-      {
-        "label": "Page Break",
-        "description": "Personal information description",
-        "tag": "pageBreak"
-      }
-    ],
-    "groupType": "standard",
-    "settings": {},
-    "id": "7f970994-6298-4717-84f5-a84add78b839",
-    "allowAddField": false,
-    "includeLogic": true,
     "includeValidation": false,
     "gridMax": 3,
-    "hasSettings": false,
+    "hasSettings": true,
+    "supportMultiple": false,
+    "isActive": false
+  },
+  {
+    "label": "Time",
+    "type": "time",
+    "fields": [
+      {
+        "label": "Time",
+        "type": "text",
+        "tag": "input",
+        "placeholder": "Time",
+        "id": "input_412609c4-2bd8-4ddc-a052-8afd99c52a86",
+        "value": ""
+      },
+      {
+        "label": "",
+        "type": "time",
+        "tag": "icon",
+        "placeholder": "time",
+        "id": "icon_412609c4-2bd8-4ddc-a052-8afd99c52a86",
+        "value": ""
+      }
+    ],
+    "groupType": "prime",
+    "settings": {},
+    "id": "412609c4-2bd8-4ddc-a052-8afd99c52a86",
+    "allowAddField": false,
+    "includeLogic": false,
+    "includeValidation": false,
+    "gridMax": 3,
+    "hasSettings": true,
+    "supportMultiple": false,
+    "isActive": false
+  },
+  {
+    "label": "Phone",
+    "type": "phone",
+    "fields": [
+      {
+        "label": "Type",
+        "type": "type",
+        "tag": "select",
+        "placeholder": "Type",
+        "requireAddOption": true,
+        "options": [
+          {
+            "name": "Cell",
+            "label": "Cell"
+          },
+          {
+            "name": "Home",
+            "label": "Home"
+          },
+          {
+            "name": "Work",
+            "label": "Work"
+          }
+        ],
+        "id": "select_751deb8e-4316-4d34-a759-93bdc5b81ef6",
+        "value": ""
+      },
+      {
+        "label": "Phone",
+        "type": "text",
+        "tag": "input",
+        "placeholder": "###-###-####",
+        "id": "input_751deb8e-4316-4d34-a759-93bdc5b81ef6",
+        "value": ""
+      }
+    ],
+    "groupType": "prime",
+    "settings": {},
+    "id": "751deb8e-4316-4d34-a759-93bdc5b81ef6",
+    "allowAddField": false,
+    "includeLogic": false,
+    "includeValidation": false,
+    "gridMax": 3,
+    "hasSettings": true,
+    "supportMultiple": false,
+    "isActive": false
+  },
+  {
+    "label": "Website",
+    "type": "website",
+    "fields": [
+      {
+        "label": "Website",
+        "type": "text",
+        "tag": "input",
+        "placeholder": "Website",
+        "column": "1",
+        "id": "input_1f0d9871-827f-4b13-8e69-0b076cca42bc",
+        "value": ""
+      }
+    ],
+    "groupType": "prime",
+    "settings": {},
+    "id": "1f0d9871-827f-4b13-8e69-0b076cca42bc",
+    "allowAddField": false,
+    "includeLogic": false,
+    "includeValidation": false,
+    "gridMax": 3,
+    "hasSettings": true,
+    "supportMultiple": false,
+    "isActive": false
+  },
+  {
+    "label": "Price",
+    "type": "price",
+    "fields": [
+      {
+        "label": "",
+        "type": "currency",
+        "tag": "icon",
+        "placeholder": "currency",
+        "id": "icon_fe55f8af-8968-4c56-b091-53ff177b04da",
+        "value": ""
+      },
+      {
+        "label": "Price",
+        "type": "text",
+        "tag": "input",
+        "placeholder": "Price",
+        "id": "input_fe55f8af-8968-4c56-b091-53ff177b04da",
+        "value": ""
+      }
+    ],
+    "groupType": "prime",
+    "settings": {},
+    "id": "fe55f8af-8968-4c56-b091-53ff177b04da",
+    "allowAddField": false,
+    "includeLogic": false,
+    "includeValidation": false,
+    "gridMax": 3,
+    "hasSettings": true,
+    "supportMultiple": false,
     "isActive": true
   }
 ]

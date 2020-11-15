@@ -11,8 +11,10 @@ export default ({ fields, type, id, onChange, value = {} }) => {
     <div
       className={`formGroup ${type}`}
     > 
-      <div className='formGroup-row'>
-        EMAIL
+      <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
+        <input
+          className={`field-input`}
+        />
       </div>
     </div>
   )

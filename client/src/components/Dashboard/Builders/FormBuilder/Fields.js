@@ -443,7 +443,7 @@ export const PrimeFields = [
   {
     fields: [
       { label: '', type: 'currency', tag: 'icon', placeholder: 'currency' },
-      { label: 'Price', type: 'number', tag: 'input', placeholder: 'Price' }
+      { label: 'Price', type: 'text', tag: 'input', placeholder: 'Price' }
     ],
     label: 'Price',
     type: 'price',

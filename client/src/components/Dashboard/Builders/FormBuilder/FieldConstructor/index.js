@@ -14,6 +14,11 @@ import SectionBreak from './SectionBreak'
 import PageBreak from './PageBreak'
 import Rating from './Rating'
 import Email from './Email'
+import Date from './Date'
+import Time from './Time'
+import Phone from './Phone'
+import Price from './Price'
+
 
 import STATES from '../../../ApplicationForm/states.json'
 import COUNTRIES from '../../../ApplicationForm/country.json'
@@ -193,4 +198,16 @@ export default {
   email: (props) => {
     return <Email {...props} />
   },
+  date: (props) => {
+    return <Date {...props} />
+  },
+  time: (props) => {
+    return <Time {...props} />
+  },
+  phone: (props) => {
+    return <Phone {...props} />
+  },
+  price: (props) => {
+    return <Price {...props} />
+  }
 }

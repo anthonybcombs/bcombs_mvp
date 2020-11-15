@@ -71,7 +71,10 @@ const SortableGroup = React.forwardRef(
     >
       {
         !isLastPageBreak && (
-          <div ref={!isLastPageBreak ? elementRef : null} className='sortableGroup-dragger'>
+          <div
+            ref={!isLastPageBreak ? elementRef : null}
+            className='sortableGroup-dragger'
+          >
             <FontAwesomeIcon
               icon={faGripHorizontal}
               className='drag-icon'
@@ -265,6 +268,7 @@ export default DropTarget([...Object.values(Items.standard), ...Object.values(It
   hover(props, monitor, component) {
     let source = monitor.getItem()
     let destination = props
+
     if (!component) {
       return null
     }

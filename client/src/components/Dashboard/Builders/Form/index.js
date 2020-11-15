@@ -71,6 +71,9 @@ export default ({
   }
 
   let { formData = [], formTitle = '' } = form_contents || {}
+  // TESTING
+  // formData = FORM_DATA
+  // TESTING
   formData = formData.map(e => cleanFormData(e))
 
   const hasWizard = !!formData.find(e => e.type === 'pageBreak')
@@ -78,7 +81,7 @@ export default ({
 
   // console.log('@groupedFields', groupFieldsByPageBreak(fields))
   // console.log('@fieldState', fieldState)
-  console.log('@@loading', loading.getForm)
+  console.log('@@loading', loading.getForm, formData)
 
   return (
     <FormrStyled>

@@ -7,7 +7,7 @@ export default ({ fields, label, previewStyle, itemActive }) => {
   return (
     <div
       className={`sortableGroup ${itemGroup} ${itemActive}`}
-      style={previewStyle}
+      style={{ ...previewStyle, height: 100 }}
     >   
       <div className='sortableGroup-dragger custom-dragger'>
         <FontAwesomeIcon

@@ -12,7 +12,7 @@ export default ({ fields, type, id, onChange, value = {} }) => {
       className={`formGroup ${type}`}
     > 
       <div className='formGroup-row'>
-        EMAIL
+        Price
       </div>
     </div>
   )
