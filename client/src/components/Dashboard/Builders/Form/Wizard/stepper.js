@@ -6,8 +6,9 @@ export default ({ fields, currentStep, onSetStep }) => {
       {
         fields.map((field, index) => {
         const stepLabel = index + 1
+        const isActive = index <= currentStep
          return (
-          <li className={`step ${currentStep === index ? 'active' : ''}`}>
+          <li className={`step ${isActive ? 'active' : ''}`}>
             <div className='step-number'>{stepLabel}</div>
             <div  className='step-label'>{field.fields[0].label}</div>
           </li>

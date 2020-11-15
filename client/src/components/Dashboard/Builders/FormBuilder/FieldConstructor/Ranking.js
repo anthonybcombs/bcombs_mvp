@@ -73,21 +73,16 @@ const SortableItem = DropTarget('sortableItem', {
     useEffect(() => {
       connectDragPreview(getEmptyImage(), { captureDraggingState: true })
     })
-    
-    // Bai clark custom ang drag layer ani
-    // Search lang "Custom drag layer for ranking"
-    // naa sa CustomDragLayer/index.js
-    // ingna lang ko bai if maglibog ka or naay mas dali nga paagi imong makita, di na mogana akong utok haha
 
     return (
-      <div ref={dropElement} className='draggable-item'>
+      <div ref={dropElement} className='draggable-item' style={{ opacity }}>
         <div ref={elementRef} className='dragger-icon'>
           <FontAwesomeIcon
             icon={faBars}
             className='menu-bar-builder'
           />
         </div>
-        <div className='label'>{label} Draggable Item</div>
+        <div className='label'>{label}</div>
       </div>
     )
   
@@ -96,11 +91,10 @@ const SortableItem = DropTarget('sortableItem', {
 
 export default ({ items, onChangeFieldSettings, isActive, isBuilder, id: fieldId, onChange, value = [] }) => {
   const newItems = value.length ? value : items
-
-  const handleChangeValues = ({ target: { value } }, index) => {
+  const handleChangeValues = ({ target: { value: rankingValue } }, index) => {
     onChangeFieldSettings({
       items: items.map((item, i) => ({
-        ...item, label: index === i ? value : item.value
+        ...item, label: index === i ? rankingValue : item.label
       }))
     })
   }
@@ -141,7 +135,7 @@ export default ({ items, onChangeFieldSettings, isActive, isBuilder, id: fieldId
                       type='text'
                       className='field-input'
                       placeholder='Item Label'
-                      value={item.label}
+                      value={item.label || ''}
                       onChange={(e) => handleChangeValues(e, index)}
                     />
                     {

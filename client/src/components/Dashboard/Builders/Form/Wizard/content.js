@@ -3,7 +3,6 @@ import React from 'react'
 import FormGroup from '../FormGroup'
 
 export default ({ fields, currentStep, onSetStep, fieldState, fieldError, onChange, onCheckError }) => {
-  console.log('zzzzzzzzzzzzzzzz', fields)
   return (
     <div className='wizard-content'>
       {

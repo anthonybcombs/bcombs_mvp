@@ -76,3 +76,17 @@ export const setAddFormLoading = value => {
     value
   };
 }
+
+export const setUpdateFormLoading = value => {
+  return {
+    type: actionType.SET_UPDATE_FORM_LOADING,
+    value
+  };
+}
+
+export const setGetFormLoading = value => {
+  return {
+    type: actionType.SET_GET_FORM_LOADING,
+    value
+  };
+}

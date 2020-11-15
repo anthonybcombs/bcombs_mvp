@@ -63,7 +63,7 @@ const SortableGroup = React.forwardRef(
         e.stopPropagation()
         onActive(id)
       }}
-      onMouseEnter={() => setShowSettings(true)}
+      onMouseOver={() => setShowSettings(true)}
       onMouseLeave={() => setShowSettings(false)}
       ref={!isLastPageBreak ? dropElement : null}
     >

@@ -11,9 +11,10 @@ import { Items } from '../Fields'
 import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
 
-import { requestAddForm } from "../../../../../redux/actions/FormBuilder"
+import { requestAddForm, requestUpdateForm, setViewMode } from "../../../../../redux/actions/FormBuilder"
+import Loading from '../../../../../helpers/Loading';
 
-export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
+export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', form_id, isFormView, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
@@ -59,7 +60,8 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
     }
 
     if (field.type === 'pageBreak' && !hasPageBreak) {
-      newFields.push({ ...field, id: uuid() })
+      const { index, ...rest } = field
+      newFields.push({ ...rest, id: uuid() })
     }
     setDrop(newFields)
     checkPageBreaks(newFields)
@@ -118,6 +120,7 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
   }
 
   const handleChangeFieldSettings = (data, index, id) => {
+    console.log('kayata', { data, index, id })
     setDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { fields: { [index]: { $merge: data } } }
     }))
@@ -162,20 +165,42 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
     }
   }
 
-  const handleSubmitForm = (e) => {
-    e.preventDefault();
-
-    const payload = {
-      user: user.user_id,
-      vendor: vendor.id,
-      form_contents: {
-        formTitle,
-        formData: droppedFields
-      }
+  const handleSubmitForm = () => {
+    if (form_id) {
+      dispatch(requestUpdateForm({
+        form_id,
+        form_contents: {
+          formTitle,
+          formData: droppedFields
+        }
+      }))
+    } else {
+      console.log("create form payload")
+      dispatch(requestAddForm({
+        user: user.user_id,
+        vendor: vendor.id,
+        form_contents: {
+          formTitle,
+          formData: droppedFields
+        }
+      }))
     }
+  }
 
-    console.log("create form payload", payload);
-    dispatch(requestAddForm(payload))
+  const handleViewForm = () => {
+    if (!form_id) {
+      dispatch(requestAddForm({
+        user: user.user_id,
+        vendor: vendor.id,
+        isViewMode: true,
+        form_contents: {
+          formTitle,
+          formData: droppedFields
+        }
+      }))
+    } else {
+      dispatch(setViewMode(true))
+    }
   }
 
   const [{ item, didDrop }, drop] = useDrop({
@@ -188,8 +213,31 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
       }
     },
   })
-  console.log('@droppedFields', droppedFields)
-  return (
+
+  useEffect(() => {
+    if (form_data && form_data.length) {
+      setDrop(form_data)
+      checkPageBreaks(form_data)
+    }
+  }, [form_data])
+
+  useEffect(() => {
+    if (form_title) {
+      setFormTitle(form_title)
+    }
+  }, [form_title])
+
+  
+  useEffect(() => {
+    if (form_id && isFormView) {
+      window.open(`/form/${form_id}`, '_blank')
+      dispatch(setViewMode(false))
+    }
+  }, [isFormView])
+
+  console.log('toinks', { isFormView, droppedFields, form_data, form_title })
+
+  return (user && user.user_id && vendor && vendor.id) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop} className='drop-area-wrapper-droppable'>
         <div className='form-title'>
@@ -241,38 +289,37 @@ export default ({  vendor = {}, user = {}, handleBuilderDrawerOpen }) => {
       </div>
       <CustomDragLayer />
       <div className='drop-area-wrapper-actions'>
-        {
-          droppedFields.length > 0 && (
-            <>
-              <a
-                type='button'
-                target='_blank'
-                className='btn preview'
-                href={`/form/test123?formData=${JSON.stringify(droppedFields)}&formTitle=${formTitle}`}
-              >
-                <FontAwesomeIcon
-                  className='preview-icon'
-                  icon={faEye}
-                />
-                <span>View</span>
-              </a>
-              <button
-                type='button'
-                target='_blank'
-                className='btn save'
-                disabled={!(user && user.user_id && vendor && vendor.id)}
-                onClick={handleSubmitForm}
-              >
-                <FontAwesomeIcon
-                  className='save-icon'
-                  icon={faCheck}
-                />
-                <span>Save</span>
-              </button>
-            </>
-          )
-        }
+        <button
+          type='button'
+          className='btn preview'
+          onClick={e => {
+            e.stopPropagation()
+            handleViewForm()
+          }}
+        >
+          <FontAwesomeIcon
+            className='preview-icon'
+            icon={faEye}
+          />
+          <span>View</span>
+        </button>
+        <button
+          type='button'
+          className='btn save'
+          onClick={e => {
+            e.stopPropagation()
+            handleSubmitForm()
+          }}
+        >
+          <FontAwesomeIcon
+            className='save-icon'
+            icon={faCheck}
+          />
+          <span>Save</span>
+        </button>
       </div>
     </div>
+  ) : (
+    <Loading />
   )
 }

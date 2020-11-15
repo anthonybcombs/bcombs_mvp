@@ -51,15 +51,14 @@ export default () => {
 
       if (itemType === 'sortableItem') {
         return (
-          // Custom drag layer for ranking
-          <div style={{ display: 'flex' }}>
-            <div>
+          <div className='draggable-item'>
+            <div className='dragger-icon'>
               <FontAwesomeIcon
                 icon={faBars}
                 className='menu-bar-builder'
               />
             </div>
-            <div>{item.label}</div>
+            <div className='label'>{item.label}</div>
           </div>
         )
       }

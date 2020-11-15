@@ -9,7 +9,7 @@ const selectMappings = {
 }
 
 export default {
-  input: ({ label, className, ...rest }) => {
+  input: ({ label, className, isBuilder, onChangeFieldSettings, isActive, ...rest }) => {
     return (
       <input
         className={`field-input ${className}`}
@@ -17,7 +17,7 @@ export default {
       />
     )
   },
-  textarea: ({ label, className, ...rest }) => {
+  textarea: ({ label, className, isBuilder, onChangeFieldSettings, isActive, ...rest }) => {
     return <textarea
       className={`field-input ${className}`}
       {...rest}
