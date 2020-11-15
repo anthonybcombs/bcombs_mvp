@@ -286,6 +286,21 @@ export default styled.div`
     margin-left: 1rem;
   }
 
+  // Rating Question
+  .formGroup.rating .ratingForm {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .formGroup.rating .ratingForm .ratingItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .formGroup.rating .ratingForm .ratingLabel {
+    color: #555;
+    margin-bottom: 8px;
+  }
 
   // File Upload
   .formGroup.primeFile .uploadForm {
@@ -636,7 +651,42 @@ export default styled.div`
   }
   
 
+  // star rating
+  .starRating {
+    // width: 208px;
+    // height: 40px;
+    // margin: 0 auto;
+    // padding: 40px 50px;
+    // border: 1px solid #cccccc;
+    // background: #f9f9f9;
+  }
+  .starRating label {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+  }
+  .starRating label:not(:first-of-type) {
+    padding-right: 2px;
+  }
+  .starRating label:before {
+    content: "\f005";
+    font-size: 24px;
+    color: #cccccc;
+    line-height: 1;
+    font-family: "fontawesome";
+  }
+  .starRating input {
+    display: none;
+  }
+  .starRating input:checked ~ label:before,
+  .starRating:not(:checked) > label:hover:before,
+  .starRating:not(:checked) > label:hover ~ label:before {
+    color: #2196F3;
+  }
 
+
+  
 
 
   // =================================

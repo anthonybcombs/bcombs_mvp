@@ -70,7 +70,7 @@ export default ({ scale, items, onChangeFieldSettings, isBuilder, id: fieldId, o
                     items.map((item, index) => {
                       return (
                         <tr key={`ratingRow-${index}`}>
-                          <td className='ratingNo'>{index + 1} {`Star${!index ? 's' : ''}`}</td>
+                          <td className='ratingNo'>{index + 1} {`Star${!index ? '' : 's'}`}</td>
                           <td className='labels'>
                             <input
                               type='text'
@@ -98,18 +98,20 @@ export default ({ scale, items, onChangeFieldSettings, isBuilder, id: fieldId, o
             </div>
           </div>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+          <div className='ratingForm'>
             {
               items.map(({ label, rank }, index) => {
                 return (
-                  <div key={`ratingStar-${index}`}>
-                    <div>{label}</div>
-                    <div>
+                  <div key={`ratingStar-${index}`} className='ratingItem'>
+                    <div className='ratingLabel'>{label}</div>
+                    <div className='starRating'>
                       <input
+                        id={`star-${index}`}
                         type='checkbox'
                         checked={answerIndex >= index}
                         onChange={() => handleAnswer({ label, rank })}
                       />
+                      <label for={`star-${index}`} />
                     </div>
                   </div>
                 )
