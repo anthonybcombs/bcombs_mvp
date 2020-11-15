@@ -871,9 +871,9 @@ export default styled.div`
   }
 
     // Ranking
-    .sortableGroup.ranking input.field-input {
-      background: transparent !important;
-    }
+  .sortableGroup.ranking input.field-input {
+    background: transparent !important;
+  }
   .sortableGroup.ranking .ranking-item {
     position: relative;
     padding: 1rem 0 0;
@@ -1004,6 +1004,85 @@ export default styled.div`
   .sortableGroup.pageBreak .pageBreak-counter {
     text-align: right;
   }
+
+
+    // Email & Phone
+  .sortableGroup.email .sortableGroup-row,
+  .sortableGroup.phone .sortableGroup-row  {
+    grid-template-columns: repeat(1, 1fr) !important;
+  }
+  .sortableGroup.email .sortableGroup-row .sortableGroup-column:first-child,
+  .sortableGroup.phone .sortableGroup-row .sortableGroup-column:first-child {
+    grid-column: span 1 / -2 !important;
+  }
+  .sortableGroup.email .sortableGroup-row .sortableGroup-column:nth-child(2),
+  .sortableGroup.phone .sortableGroup-row .sortableGroup-column:nth-child(2) {
+    grid-column: 1 !important;
+    max-width: 300px;
+  }
+
+
+    // Date & Time
+  .sortableGroup.date .sortableGroup-row,
+  .sortableGroup.time .sortableGroup-row {
+    display: flex;
+    align-items: center;
+    grid-gap: 1%;
+  }
+  .sortableGroup.date .sortableGroup-row .sortableGroup-column svg,
+  .sortableGroup.time .sortableGroup-row .sortableGroup-column svg {
+    color: grey;
+    transition: .15s ease-in-out
+  }
+  .sortableGroup.date .sortableGroup-row .sortableGroup-column svg:hover,
+  .sortableGroup.time .sortableGroup-row .sortableGroup-column svg:hover  {
+    color: #f5812f;
+  }
+
+
+    // Price
+  .sortableGroup.price .sortableGroup-row {
+    display: flex;
+    align-items: center;
+    grid-gap: 1%;
+  }
+  .sortableGroup.price .sortableGroup-row .sortableGroup-column svg {
+    color: grey;
+  }
+
+
+    // Rating 
+  .sortableGroup.rating .rating-scaleSet {
+    display: flex;
+    align-items: center;
+    margin: 0 0 2rem;
+  }
+  .sortableGroup.rating .rating-scaleSet .field {
+    width: 80px;
+    margin-left: 1rem;
+  }
+  .sortableGroup.rating .rating-scaleSet .field select {
+    color: #555 !important;
+    text-indent: 32px !important;
+  }
+
+  .sortableGroup.rating .rating-table tbody tr td.ratingNo {
+    width: 65px;
+    color: #555;
+    font-size: 14px;
+    white-space: pre;
+  }
+  .sortableGroup.rating .rating-table tbody tr td.labels,
+  .sortableGroup.rating .rating-table tbody tr td.value {
+    padding: 0 .5rem 0 0;
+  }
+  .sortableGroup.rating .rating-table tbody tr td.value {
+    width: 90px;
+  }
+  .sortableGroup.rating .rating-table tbody tr td.value >input {
+    text-align: center;
+  }
+
 
 
     // Matrix/Rating

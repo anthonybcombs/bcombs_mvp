@@ -39,27 +39,30 @@ export default ({ scale, items, onChangeFieldSettings, isBuilder, id: fieldId, o
     <>
       {
         isBuilder ? (
-          <div>
-            <div>
-              Scale
-              <select
-                value={scale.max}
-                onChange={(e) => handleChangeValues(e, 'scale', 'max')}
-              >
-                {
-                  [2,3,4,5,6,7,8,9,10].map((num, index) => {
-                    return (<option key={'scale' + index} value={num}>{num}</option>)
-                  })
-                }
-              </select>
+          <div className='rating-container'>
+            <div className='rating-scaleSet'>
+              <p>Scale:</p>
+              <div className='field select-field-wrapper'>
+                <select
+                  value={scale.max}
+                  className='field-input'
+                  onChange={(e) => handleChangeValues(e, 'scale', 'max')}
+                >
+                  {
+                    [2,3,4,5,6,7,8,9,10].map((num, index) => {
+                      return (<option key={'scale' + index} value={num}>{num}</option>)
+                    })
+                  }
+                </select>
+              </div>
             </div>
-            <div>
-              <table>
+            <div className='tableWrapper'>
+              <table className='rating-table'>
                 <thead>
                   <tr>
                     <td></td>
                     <td>Labels</td>
-                    <td>Value</td>
+                    <td align='center'>Value</td>
                   </tr>
                 </thead>
                 <tbody>
@@ -67,18 +70,20 @@ export default ({ scale, items, onChangeFieldSettings, isBuilder, id: fieldId, o
                     items.map((item, index) => {
                       return (
                         <tr key={`ratingRow-${index}`}>
-                          <td>{index + 1} {`Star${!index ? 's' : ''}`}</td>
-                          <td>
+                          <td className='ratingNo'>{index + 1} {`Star${!index ? 's' : ''}`}</td>
+                          <td className='labels'>
                             <input
                               type='text'
+                              className='field-input'
                               placeholder='Enter Label (optional)'
                               value={item.label || ''}
                               onChange={(e) => handleChangeValues(e, 'items', 'label', index)}
                             />
                           </td>
-                          <td>
+                          <td className='value'>
                             <input
                               type='text'
+                              className='field-input'
                               value={item.rank || ''}
                               onChange={(e) => handleChangeValues(e, 'items', 'rank', index)}
                             />
