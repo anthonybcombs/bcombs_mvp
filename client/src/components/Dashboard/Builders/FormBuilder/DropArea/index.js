@@ -14,7 +14,7 @@ import CustomDragLayer from '../CustomDragLayer'
 import { requestAddForm, requestUpdateForm, setViewMode } from "../../../../../redux/actions/FormBuilder"
 import Loading from '../../../../../helpers/Loading';
 
-export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', form_id, isFormView, handleBuilderDrawerOpen }) => {
+export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Untitled', form_id, isFormView, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
@@ -243,7 +243,7 @@ export default ({ vendor = {}, user = {}, form_data, form_title = 'Untitled', fo
 
   console.log('toinks', { isFormView, droppedFields, form_data, form_title })
 
-  return (user && user.user_id && vendor && vendor.id) ? (
+  return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop} className='drop-area-wrapper-droppable'>
         <div className='form-title'>

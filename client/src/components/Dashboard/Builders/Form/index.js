@@ -72,7 +72,7 @@ export default ({
 
   let { formData = [], formTitle = '' } = form_contents || {}
   // TESTING
-  // formData = FORM_DATA
+  formData = FORM_DATA
   // TESTING
   formData = formData.map(e => cleanFormData(e))
 
@@ -80,8 +80,7 @@ export default ({
   const fields = hasWizard ? groupFieldsByPageBreak(formData) : formData
 
   // console.log('@groupedFields', groupFieldsByPageBreak(fields))
-  // console.log('@fieldState', fieldState)
-  console.log('@@loading', loading.getForm, formData)
+  console.log('@fieldState', fieldState)
 
   return (
     <FormrStyled>

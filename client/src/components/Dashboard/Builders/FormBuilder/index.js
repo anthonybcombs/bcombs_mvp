@@ -52,7 +52,7 @@ const FormBuilder = ({ form_id, type, history }) => {
   }, []);
 
   useEffect(() => {
-    if(vendors && vendors.length > 0) {
+    if(vendors && vendors.length > 0 && !form_id) {
       setVendor(vendors[0])
       isLoading = false
     }
@@ -84,25 +84,24 @@ const FormBuilder = ({ form_id, type, history }) => {
     return newObj
   }
 
-  return isLoading ? (
-      <Loading />
-    ) : (
-      <FormBuilderStyled>
-        <h2>New Application</h2>
-        <div id='formBuilder' className={builderDrawerOpen ? 'show': 'hide'}>
-          <DragArea form_id={form_id} handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
-          <DropArea
-            form_data={formData.map(e => cleanFormData(e))}
-            form_title={formTitle}
-            form_id={form_id}
-            vendor={vendor}
-            user={auth}
-            isFormView={isFormView}
-            handleBuilderDrawerOpen={handleBuilderDrawerOpen}
-          />
-        </div>
-      </FormBuilderStyled>
-      )
+  return (
+    <FormBuilderStyled>
+      <h2>New Application</h2>
+      <div id='formBuilder' className={builderDrawerOpen ? 'show': 'hide'}>
+        <DragArea form_id={form_id} handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
+        <DropArea
+          form_data={formData.map(e => cleanFormData(e))}
+          form_title={formTitle}
+          form_id={form_id}
+          vendor={vendor}
+          user={auth}
+          isLoading={isLoading}
+          isFormView={isFormView}
+          handleBuilderDrawerOpen={handleBuilderDrawerOpen}
+        />
+      </div>
+    </FormBuilderStyled>
+  )
 
 }
 
