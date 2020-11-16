@@ -76,6 +76,8 @@ export const FORM_ADD_MUTATION = gql`
                 selected
               }
               isMultiple
+              requireAddOption
+              fixedWidth
             }
             groupType
             settings {
@@ -173,6 +175,8 @@ export const FORM_UPDATE_MUTATION = gql`
                 selected
               }
               isMultiple
+              requireAddOption
+              fixedWidth
             }
             groupType
             settings {
@@ -267,6 +271,8 @@ export const GET_FORM_BY_FORM_ID = gql`
               selected
             }
             isMultiple
+            requireAddOption
+            fixedWidth
           }
           groupType
           settings {
@@ -360,6 +366,8 @@ export const GET_FORMS_BY_VENDOR = gql`
               selected
             }
             isMultiple
+            requireAddOption
+            fixedWidth
           }
           groupType
           settings {
