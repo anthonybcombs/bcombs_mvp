@@ -8,7 +8,7 @@ export default ({ fields, currentStep, onSetStep, fieldState, fieldError, onChan
     <div className='wizard-content'>
       {
         fields.map((fieldProps, index) => {
-          const specialComps = ['date', 'email', 'time', 'phone', 'price']
+          const specialComps = ['date', 'email', 'time', 'phone']
           return specialComps.includes(fieldProps.type) ?
               FieldConstructor[fieldProps.type]({
                 key: `specialField-${index}`,

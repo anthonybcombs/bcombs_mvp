@@ -9,6 +9,7 @@ export default ({ fields, type, id, onChange, value = '' }) => {
   const fieldId = `${type}_${id}`
   const handleAnswer = (date) => {
     onChange(fieldId, date)
+    // document.querySelector('.react-datepicker__input-container input').blur()
   }
   
   const range = (start, end) => {
