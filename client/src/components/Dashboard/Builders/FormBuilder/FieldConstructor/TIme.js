@@ -21,29 +21,35 @@ export default ({ label, type, id, onChange, value = {} }) => {
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
 
         <div
-            className={`formGroup-column`}
+            className={`formGroup-column okoi`}
             style={{ gridColumn: `span 1`}}
           >
             <input
               type='number'
               id='hour'
+              className='field-input'
               value={value.hour}
               onChange={handleAnswer}
             />
             <input
               type='number'
               id='minutes'
+              className='field-input'
               value={value.minutes}
               onChange={handleAnswer}
             />
-             <select
+            <div className='field select-field-wrapper'>
+              <select
                 id='type'
                 value={value.type}
+                className='field-input'
                 onChange={handleAnswer}
               >
-                <option value='AM'>AM</option>
+                <option value='AM'>PM</option>
                 <option value='PM'>PM</option>
               </select>
+            </div>
+             
           </div>
       </div>
     </div>

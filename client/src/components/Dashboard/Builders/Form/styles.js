@@ -501,6 +501,11 @@ export default styled.div`
     color: #fff;
   }
 
+  .formGroup.time .formGroup-column .field-input,
+  .formGroup.time .formGroup-column .select-field-wrapper {
+    flex: 1;
+  }
+
 
   // Email & Phone
   .formGroup.email .formGroup-column ,
