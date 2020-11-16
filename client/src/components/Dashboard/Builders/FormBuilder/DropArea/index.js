@@ -22,8 +22,15 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   const [pageBreaks, getPageBreaks] = useState([])
   const [lastField, getLastField] = useState({})
 
+  let fieldHasChanged = !form_id || droppedFields.length > form_data.length
+
   const reMapFields = (fields, id) => {
     return fields.map((e, i) => ({ ...e, id: `${e.tag}${i}_${id}`, value: '' }))
+  }
+
+  const beforeSetDrop = (fields) => {
+    fieldHasChanged = true
+    setDrop(fields)
   }
 
   const checkPageBreaks = (newFields) => {
@@ -63,7 +70,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
       const { index, ...rest } = field
       newFields.push({ ...rest, id: uuid() })
     }
-    setDrop(newFields)
+    beforeSetDrop(newFields)
     checkPageBreaks(newFields)
   }
 
@@ -81,7 +88,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
       dragIndex = newFields.length - 1
     }
     const dragGroup = newFields[dragIndex]
-    setDrop(update(newFields, {
+    beforeSetDrop(update(newFields, {
         $splice: [
             [dragIndex, 1],
             [hoverIndex, 0, dragGroup],
@@ -90,7 +97,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   }
 
   const handleShowHiddenGroup = (id) => {
-    setDrop(droppedFields.map(e => {
+    beforeSetDrop(droppedFields.map(e => {
       if (e.id === id) {
         delete e.hidden
       }
@@ -105,52 +112,52 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
     } else {
       newFields = newFields.filter(e => e.id !== id)
     }
-    setDrop(newFields)
+    beforeSetDrop(newFields)
     checkPageBreaks(newFields)
   }
 
   const handleActive = (id) => {
-    setDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
+    beforeSetDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
   }
 
   const handleChangeDefaultProps = ({ id, ...rest }) => {
-    setDrop(update(droppedFields, {
+    beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { $merge: rest }
     }))
   }
 
   const handleChangeGeneralSettings = ({ id, ...rest }) => {
-    setDrop(update(droppedFields, {
+    beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { settings: { $merge: rest } }
     }))
   }
 
   const handleChangeFieldSettings = (data, index, id) => {
     console.log('kayata', { data, index, id })
-    setDrop(update(droppedFields, {
+    beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { fields: { [index]: { $merge: data } } }
     }))
   }
 
   const handleMergeStandardFields = (id, source) => {
-    setDrop(update(droppedFields, {
+    beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { fields: { $push: reMapFields(source.fields, source.id) } }
     }))
   }
 
   const handleDuplicateGroup = (id) => {
     const newField = cloneDeep(droppedFields.find(e => e.id === id))
-    setDrop(update(droppedFields, { $push: [{ ...newField, id: uuid(), isActive: false }] }))
+    beforeSetDrop(update(droppedFields, { $push: [{ ...newField, id: uuid(), isActive: false }] }))
   }
 
   const handleRemoveGroupField = (id, index) => {
-    setDrop(update(droppedFields, {
+    beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { fields: { $splice: [[index, 1]] } }
     }))
   }
 
   const handleUpdateGroupName = (label, id) => {
-    setDrop(update(droppedFields, {
+    beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { $merge: { label } }
     }))
   }
@@ -158,14 +165,14 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   const handleApplyValidationToAll = (validation, id) => {
     const fields = cloneDeep(droppedFields.find(e => e.id === id).fields)
     
-    setDrop(update(droppedFields, {
+    beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { fields: { $set: fields.map(e => ({ ...e, validation })) } }
     }))
   }
 
   const handleClearActive = () => {
     if (droppedFields.find(e => e.isActive)) {
-      setDrop(update(droppedFields, {
+      beforeSetDrop(update(droppedFields, {
         [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } }
       }))
     }
@@ -220,7 +227,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
 
   useEffect(() => {
     if (form_data && form_data.length) {
-      setDrop(form_data)
+      beforeSetDrop(form_data)
       checkPageBreaks(form_data)
     }
   }, [form_data])
@@ -231,7 +238,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
     }
   }, [form_title])
 
-  console.log('toinks', { droppedFields, form_data, form_title })
+  // console.log('toinks', { droppedFields, form_data, form_title })
 
   return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
@@ -287,7 +294,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
       <CustomDragLayer />
       <div className='drop-area-wrapper-actions'>
         {
-          form_id ? (
+          !fieldHasChanged ? (
             <a
               type='button'
               className='btn preview'
@@ -306,7 +313,8 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
               className='btn preview'
               onClick={e => {
                 e.stopPropagation()
-                handleViewForm()
+                alert('Please save your changes to enable preview.')
+                // handleViewForm()
               }}
             >
               <FontAwesomeIcon

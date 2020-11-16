@@ -43,13 +43,13 @@ const FormBuilder = ({ form_id, type, history }) => {
     if (form_id && type === 'edit') {
       dispatch(requestGetFormById({ form_id }))
     }
-    if (form_id && type === 'view') {
-      dispatch(setViewMode(true))
-      document.querySelector('.btn.preview').click()
-      setTimeout(() => {
-        window.location.replace(`/dashboard/builder/${form_id}/edit`)
-      }, 1000)
-    }
+    // if (form_id && type === 'view') {
+    //   dispatch(setViewMode(true))
+    //   document.querySelector('.btn.preview').click()
+    //   setTimeout(() => {
+    //     window.location.replace(`/dashboard/builder/${form_id}/edit`)
+    //   }, 1000)
+    // }
   }, []);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const FormBuilder = ({ form_id, type, history }) => {
   }, [vendors])
 
   if(addForm && addForm.message == "successfully created your application form" && addForm.form) {
-    window.location.replace(`/dashboard/builder/${addForm.form.form_id}/${addForm.isViewMode ? 'view': 'edit'}`)
+    window.location.replace(`/dashboard/builder/${addForm.form.form_id}/edit`)
   }
 
   if (updateForm && updateForm.message == 'successfully update your application form') {
