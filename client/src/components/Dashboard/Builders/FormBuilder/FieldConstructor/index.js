@@ -56,7 +56,7 @@ export default {
       case 'currency': 
         return (
           <FontAwesomeIcon
-            className='date-icon'
+            className='price-icon'
             icon={faDollarSign}
           />
         )

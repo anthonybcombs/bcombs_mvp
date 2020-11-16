@@ -470,6 +470,59 @@ export default styled.div`
   }
 
 
+  // Time & Date
+  .formGroup.time,
+  .formGroup.date {
+    overflow: visible;
+  }
+  .formGroup.time .formGroup-column,
+  .formGroup.date .formGroup-column {
+    display: flex;
+    grid-gap: 4%;
+    align-items: center;
+  }
+  .formGroup.time .formGroup-column svg,
+  .formGroup.date .formGroup-column svg {
+    color: grey;
+    cursor: pointer;
+    transition: .15s ease-in-out
+  }
+  .formGroup.time .formGroup-column svg:hover,
+  .formGroup.date .formGroup-column svg:hover {
+    color: #f5812f;
+  }
+  .formGroup.time .formGroup-column .react-datepicker__tab-loop,
+  .formGroup.date .formGroup-column .react-datepicker__tab-loop {
+    position: absolute;
+    top: 54px;
+  }
+  .formGroup.time .formGroup-column .react-datepicker__tab-loop svg,
+  .formGroup.date .formGroup-column .react-datepicker__tab-loop svg {
+    color: #fff;
+  }
+
+
+  // Email & Phone
+  .formGroup.email .formGroup-column ,
+  .formGroup.phone .formGroup-column {
+    display: flex;
+    align-items: center;
+    grid-gap: 4%;
+  }
+  .formGroup.email .formGroup-column .select-field-wrapper,
+  .formGroup.phone .formGroup-column .select-field-wrapper {
+    width: 200px;
+  }
+
+  // Price
+  .formGroup.price .formGroup-row  {
+    display: flex;
+    align-items: center;
+  }
+  .formGroup.price .formGroup-row svg {
+    color: grey;
+  }
+
 
 
   // =============================================
