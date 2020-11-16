@@ -1,7 +1,7 @@
 import React from 'react'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ fields, type, id, onChange, value = {} }) => {
+export default ({ label, fields, type, id, onChange, value = {} }) => {
   const fieldId = `${type}_${id}`
   const handleAnswer = ({ target: { id, value: phoneValue } }) => {
     onChange(fieldId, { ...value, [id]: phoneValue })
@@ -11,6 +11,7 @@ export default ({ fields, type, id, onChange, value = {} }) => {
     <div
       className={`formGroup ${type}`}
     > 
+      <p className='formGroup-name'>{label}</p>
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
 
         <div

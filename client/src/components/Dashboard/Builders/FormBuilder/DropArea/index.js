@@ -21,15 +21,14 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   const [hasPageBreak, checkHasPageBreak] = useState(false)
   const [pageBreaks, getPageBreaks] = useState([])
   const [lastField, getLastField] = useState({})
-
-  let fieldHasChanged = !form_id || droppedFields.length > form_data.length
+  const [fieldHasChanged, setFieldHasChanged] = useState(!form_id)
 
   const reMapFields = (fields, id) => {
     return fields.map((e, i) => ({ ...e, id: `${e.tag}${i}_${id}`, value: '' }))
   }
 
-  const beforeSetDrop = (fields) => {
-    fieldHasChanged = true
+  const beforeSetDrop = (fields, changed = true) => {
+    setFieldHasChanged(changed)
     setDrop(fields)
   }
 
@@ -227,7 +226,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
 
   useEffect(() => {
     if (form_data && form_data.length) {
-      beforeSetDrop(form_data)
+      beforeSetDrop(form_data, false)
       checkPageBreaks(form_data)
     }
   }, [form_data])
@@ -239,7 +238,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   }, [form_title])
 
   // console.log('toinks', { droppedFields, form_data, form_title })
-
+  console.log('@fieldHasChanged', fieldHasChanged)
   return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop} className='drop-area-wrapper-droppable'>
