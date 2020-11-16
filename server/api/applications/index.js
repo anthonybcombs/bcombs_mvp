@@ -768,14 +768,17 @@ export const updateCustomApplicationForm = async ({
   let application;
 
   try {
+    const currentDate = new Date();
     result = await db.query(
       `
         UPDATE vendor_custom_application SET
-        form_contents=?
+        form_contents=?,
+        updated_at=?
         WHERE form_id=UUID_TO_BIN(?)
       `,
       [
         form_contents,
+        currentDate,
         form_id
       ]
     )
@@ -787,7 +790,8 @@ export const updateCustomApplicationForm = async ({
         BIN_TO_UUID(user) as user,
         BIN_TO_UUID(vendor) as vendor,
         CONVERT(form_contents USING utf8) as form_contents,
-        created_at
+        created_at,
+        updated_at
       FROM vendor_custom_application 
       WHERE form_id=UUID_TO_BIN(?)`,
       [form_id]
@@ -822,7 +826,8 @@ export const getCustomApplicationFormByFormId = async form_id => {
         BIN_TO_UUID(user) as user,
         BIN_TO_UUID(vendor) as vendor,
         CONVERT(form_contents USING utf8) as form_contents,
-        created_at
+        created_at,
+        updated_at
         FROM vendor_custom_application
         WHERE form_id=UUID_TO_BIN(?)
       `,
@@ -853,7 +858,7 @@ export const getVendorCustomApplicationForm = async vendor => {
   const db = makeDb();
   let applications;
   try {
-    application = await db.query(
+    applications = await db.query(
       `
         SELECT
         id,
@@ -861,7 +866,8 @@ export const getVendorCustomApplicationForm = async vendor => {
         BIN_TO_UUID(user) as user,
         BIN_TO_UUID(vendor) as vendor,
         CONVERT(form_contents USING utf8) as form_contents,
-        created_at
+        created_at,
+        updated_at
         FROM vendor_custom_application
         WHERE vendor=UUID_TO_BIN(?)
       `,

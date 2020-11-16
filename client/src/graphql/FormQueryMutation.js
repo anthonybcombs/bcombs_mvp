@@ -94,6 +94,7 @@ export const FORM_ADD_MUTATION = gql`
           }
         }
         created_at
+        updated_at
       }
     }
   }
@@ -193,6 +194,7 @@ export const FORM_UPDATE_MUTATION = gql`
           }
         }
         created_at
+        updated_at
       }
     }
   }
@@ -289,6 +291,7 @@ export const GET_FORM_BY_FORM_ID = gql`
         }
       }
       created_at
+      updated_at
     }
   }
 `;
@@ -384,6 +387,7 @@ export const GET_FORMS_BY_VENDOR = gql`
         }
       }
       created_at
+      updated_at
     }
   }
 `;
