@@ -287,6 +287,17 @@ export default function Layout({ children }) {
                           to="/dashboard/mycontacts">
                           <span>Contacts</span>
                         </Link>
+
+                        <Link
+                          className={`${
+                            context.location.pathname ===
+                            "/dashboard/builder"
+                              ? "selected"
+                              : ""
+                          }`}
+                          to="/dashboard/builder">
+                          <span>Admin</span>
+                        </Link>
                       </>
                     )}
                     {currentUserType === "USER" && (

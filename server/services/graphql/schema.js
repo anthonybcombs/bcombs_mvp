@@ -491,6 +491,140 @@ const inputs = `
         child2: String
         relationship: String
     }
+
+    input CustomApplicationInput {
+        form_id: String
+        vendor: String
+        user: String
+        form_contents: CustomFormInput
+    }
+
+    input CustomFormInput {
+        formTitle: String
+        formData: [CustomFormDataInput]
+    }
+
+    input CustomFormDataInput {
+        id: String
+        label: String
+        type: String
+        fields: [CustomFormFieldsInput]
+        groupType: String
+        settings: CustomFormSettingsInput
+        isActive: Boolean
+        allowAddField: Boolean
+        gridMax: Int
+        includeLogic: Boolean
+        includeValidation: Boolean
+        hasSettings: Boolean
+        supportMultiple: Boolean
+    }
+
+    input CustomFormFieldsInput {
+        id: String
+        label: String
+        type: String
+        tag: String
+        placeholder: String
+        column: String
+        value: String
+        required: Boolean
+        description: String
+        validation: CustomFormValidationInput
+        options: [CustomCheckboxOptionInput]
+        columns: [CustomMatrixRatingColumnsInput]
+        rows: [CustomMatrixRatingRowsInput]
+        min: CustomLinearScaleMinInput
+        max: CustomLinearScaleMaxInput
+        scale: CustomSliderScaleInput
+        scaleLabels: CustomSliderScaleLabelsInput
+        items: [CustomRankingItemsInput]
+        limit: Int
+        errorMessage: String
+        allowTypes: [CustomFileUploadTypesInput]
+        isMultiple: Boolean
+        requireAddOption : Boolean
+        fixedWidth: Boolean
+    }
+
+    input CustomFileUploadTypesInput {
+        label: String
+        ext: [String]
+        selected: Boolean
+    }
+
+    input CustomRankingItemsInput {
+        label: String
+        rank: Int
+    }
+
+    input CustomSliderScaleInput {
+        min: Int
+        max: Int
+    }
+
+    input CustomSliderScaleLabelsInput {
+        left: String
+        center: String
+        right: String
+    }
+
+    input CustomLinearScaleMinInput {
+        value: Int
+        label: String
+    }
+
+    input CustomLinearScaleMaxInput {
+        value: Int
+        label: String
+    }
+
+    input CustomMatrixRatingColumnsInput {
+        label: String
+        value: Int
+    }
+
+    input CustomMatrixRatingRowsInput {
+        row: String
+    }
+
+    input CustomCheckboxOptionInput {
+        name: String
+        label: String
+        tag: String
+    }
+
+    input CustomFormValidationInput {
+        include: Boolean
+        items: [CustomFormValidationErrorsInput]
+    }
+
+    input CustomFormValidationErrorsInput {
+        error: String
+        errorField: String
+        option: String
+        type: String
+        value: String
+    }
+
+    input CustomFormSettingsInput {
+        logic: CustomFormSettingsLogicInput
+        instruction: CustomFormSettingsInstructionInput
+    }
+
+    input CustomFormSettingsLogicInput {
+        include: Boolean
+    }
+
+    input CustomFormSettingsInstructionInput {
+        include: Boolean
+    }
+
+    input SubmitCustomApplicationInput {
+        vendor: String!
+        form: String!
+        form_contents: CustomFormInput
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -920,6 +1054,143 @@ const queryTypes = `
         relationship: String
         details: Child
     }
+
+    type CustomApplicationOutput {
+        id: String
+        vendor: String
+        user: String
+        form_id: String
+        form_contents: CustomForm
+        created_at: Date
+        updated_at: Date
+    }
+
+    type CustomForm {
+        formTitle: String
+        formData: [CustomFormData]
+    }
+
+    type CustomFormData {
+        id: String
+        label: String
+        type: String
+        fields: [CustomFormFields]
+        groupType: String
+        settings: CustomFormSettings
+        isActive: Boolean
+        allowAddField: Boolean
+        gridMax: Int
+        includeLogic: Boolean
+        includeValidation: Boolean
+        hasSettings: Boolean
+        supportMultiple: Boolean
+    }
+
+    type CustomFormFields {
+        id: String
+        label: String
+        type: String
+        tag: String
+        placeholder: String
+        column: String
+        value: String
+        required: Boolean
+        description: String
+        validation: CustomFormValidation
+        options: [CustomCheckboxOption]
+        columns: [CustomMatrixRatingColumns]
+        rows: [CustomMatrixRatingRows]
+        min: CustomLinearScaleMin
+        max: CustomLinearScaleMax
+        scale: CustomSliderScale
+        scaleLabels: CustomSliderScaleLabels
+        items: [CustomRankingItems]
+        limit: Int
+        errorMessage: String
+        allowTypes: [CustomFileUploadTypes]
+        isMultiple: Boolean
+        requireAddOption : Boolean
+        fixedWidth: Boolean
+    }
+
+    type CustomFileUploadTypes {
+        label: String
+        ext: [String]
+        selected: Boolean
+    }
+
+    type CustomRankingItems {
+        label: String
+        rank: Int
+    }
+
+    type CustomSliderScale {
+        min: Int
+        max: Int
+    }
+
+    type CustomSliderScaleLabels {
+        left: String
+        center: String
+        right: String
+    }
+
+    type CustomLinearScaleMin {
+        value: Int
+        label: String
+    }
+
+    type CustomLinearScaleMax {
+        value: Int
+        label: String
+    }
+
+    type CustomMatrixRatingColumns {
+        label: String
+        value: Int
+    }
+
+    type CustomMatrixRatingRows {
+        row: String
+    }
+
+    type CustomCheckboxOption {
+        name: String
+        label: String
+        tag: String
+    }
+
+    type CustomFormValidation {
+        include: Boolean
+        items: [CustomFormValidationErrors]
+    }
+
+    type CustomFormValidationErrors {
+        error: String
+        errorField: String
+        option: String
+        type: String
+        value: String
+    }
+
+    type CustomFormSettings {
+        logic: CustomFormSettingsLogic
+        instruction: CustomFormSettingsInstruction
+    }
+
+    type CustomFormSettingsLogic {
+        include: Boolean
+    }
+
+    type CustomFormSettingsInstruction {
+        include: Boolean
+    }
+
+    type CustomFormStatus {
+        messageType: String
+        message: String
+        form: CustomApplicationOutput
+    }
 `;
 
 const mutations = `
@@ -956,6 +1227,9 @@ const mutations = `
         addDaycareApplication(daycare: DaycareMainInput): Status
         addParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
         updateParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
+        createCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
+        updateCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
+        submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
     }
 `;
 
@@ -992,6 +1266,10 @@ const queries = `
         getUserApplicationHistory(id: String!):[ApplicationHistory]
         getVendorAdminsByUser(user: String): [Admin]
         getParentChildRelationship(relationships: [ParentChildRelationshipInput]): [ParentChildRelationship]
+        getVendorCustomApplications(vendor: String): [CustomApplicationOutput]
+        getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
+        getCustomApplicationApplicants(form_id: String): [CustomApplicationOutput]
+        getVendorsCustomApplication(vendor_id: String!): [CustomApplicationOutput]
     }
 `;
 

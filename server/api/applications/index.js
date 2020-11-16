@@ -588,7 +588,7 @@ export const addApplicationHistory = async ({
   }
 };
 
-export const addApplicationUser = async ({ user_id, app_id }) => {
+export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id = "" }) => {
   const db = makeDb();
   let result;
 
@@ -598,14 +598,16 @@ export const addApplicationUser = async ({ user_id, app_id }) => {
         INSERT INTO application_user(
           app_user_id,
           app_id,
+          custom_app_id,
           user_id
         ) VALUES (
           UUID_TO_BIN(UUID()),
           UUID_TO_BIN(?),
+          UUID_TO_BIN(?),
           UUID_TO_BIN(?)
         )
       `,
-      [app_id, user_id]
+      [app_id, custom_app_id, user_id]
     );
   } catch (error) {
     console.log("add application user error", error);
@@ -692,3 +694,243 @@ export const getApplicationHistoryByUser = async id => {
     return auditTrails;
   }
 };
+
+export const createCustomApplication = async ({
+  user,
+  vendor,
+  form_contents
+}) => {
+  const db = makeDb();
+  let result = {};
+  let lastId = "";
+  let application;
+
+  try {
+    result = await db.query(
+      `INSERT INTO vendor_custom_application(
+        form_id,
+        user,
+        vendor,
+        form_contents
+      ) VALUES (
+        UUID_TO_BIN(UUID()),
+        UUID_TO_BIN(?),
+        UUID_TO_BIN(?),
+        ?)`,
+      [
+        user,
+        vendor,
+        form_contents
+      ]
+    );
+
+    lastId = result.insertId;
+
+    application = await db.query(
+      `SELECT 
+        id,
+        BIN_TO_UUID(form_id) as form_id,
+        BIN_TO_UUID(user) as user,
+        BIN_TO_UUID(vendor) as vendor,
+        CONVERT(form_contents USING utf8) as form_contents,
+        created_at
+      FROM vendor_custom_application 
+      WHERE id=?`,
+      [lastId]
+    );
+
+    if(application.length > 0) {
+      application = application[0];
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+      console.log("get custom application string", application);
+      application.form_contents = JSON.parse(application.form_contents);
+    } else {
+      application = ""
+    }
+
+    console.log("application result", result);
+  } catch (err) {
+    console.log("create custom application error", err);
+  } finally {
+    await db.close();
+    return application;
+  }
+};
+
+export const updateCustomApplicationForm = async ({
+  form_id,
+  user,
+  vendor,
+  form_contents
+}) => {
+  const db = makeDb();
+  let result;
+  let application;
+
+  try {
+    const currentDate = new Date();
+    result = await db.query(
+      `
+        UPDATE vendor_custom_application SET
+        form_contents=?,
+        updated_at=?
+        WHERE form_id=UUID_TO_BIN(?)
+      `,
+      [
+        form_contents,
+        currentDate,
+        form_id
+      ]
+    )
+
+    application = await db.query(
+      `SELECT 
+        id,
+        BIN_TO_UUID(form_id) as form_id,
+        BIN_TO_UUID(user) as user,
+        BIN_TO_UUID(vendor) as vendor,
+        CONVERT(form_contents USING utf8) as form_contents,
+        created_at,
+        updated_at
+      FROM vendor_custom_application 
+      WHERE form_id=UUID_TO_BIN(?)`,
+      [form_id]
+    );
+
+    if(application.length > 0) {
+      application = application[0];
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+      console.log("get custom application string", application);
+      application.form_contents = JSON.parse(application.form_contents);
+    } else {
+      application = ""
+    }
+
+  } catch(err) {
+    console.log("update custom application form error", error);
+  } finally {
+    await db.close();
+    return application;
+  }
+}
+
+export const getCustomApplicationFormByFormId = async form_id => {
+  const db = makeDb();
+  let application;
+  try {
+    application = await db.query(
+      `
+        SELECT
+        id,
+        BIN_TO_UUID(form_id) as form_id,
+        BIN_TO_UUID(user) as user,
+        BIN_TO_UUID(vendor) as vendor,
+        CONVERT(form_contents USING utf8) as form_contents,
+        created_at,
+        updated_at
+        FROM vendor_custom_application
+        WHERE form_id=UUID_TO_BIN(?)
+      `,
+      [
+        form_id
+      ]
+    )
+
+    if(application.length > 0) {
+      application = application[0];
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+      console.log("get custom application string", application);
+      application.form_contents = JSON.parse(application.form_contents);
+    } else {
+      application = ""
+    }
+
+    console.log("get custom application", application);
+  } catch(err) {
+    console.log("get custom application by form id", err);
+  } finally {
+    await db.close();
+    return application;
+  }
+}
+
+export const getVendorCustomApplicationForm = async vendor => {
+  const db = makeDb();
+  let applications;
+  try {
+    applications = await db.query(
+      `
+        SELECT
+        id,
+        BIN_TO_UUID(form_id) as form_id,
+        BIN_TO_UUID(user) as user,
+        BIN_TO_UUID(vendor) as vendor,
+        CONVERT(form_contents USING utf8) as form_contents,
+        created_at,
+        updated_at
+        FROM vendor_custom_application
+        WHERE vendor=UUID_TO_BIN(?)
+      `,
+      [
+        vendor
+      ]
+    )
+
+    for(const application of applications) {
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+      console.log("get custom application string", application);
+      application.form_contents = JSON.parse(application.form_contents);
+    }
+
+  } catch(err) {
+    console.log("get custom application by form id", err);
+  } finally {
+    await db.close();
+    return applications;
+  }
+}
+
+export const submitCustomApplication = async ({
+  vendor,
+  form,
+  form_contents
+}) => {
+  const db = makeDb();
+  let result = {};
+  let lastId = "";
+  let application;
+
+  try {
+    result = await db.query(
+      `INSERT INTO custom_application(
+        app_id,
+        vendor,
+        form,
+        form_contents
+      ) VALUES (
+        UUID_TO_BIN(UUID()), 
+        UUID_TO_BIN(?), 
+        UUID_TO_BIN(?),
+        ?)`,
+      [
+        vendor,
+        form,
+        form_contents
+      ]
+    );
+
+    lastId = result.insertId;
+    application = await db.query(
+      "SELECT (BIN_TO_UUID(app_id)) as app_id FROM custom_application WHERE id=?",
+      [lastId]
+    );
+    application = application.length > 0 ? application[0] : "";
+
+    console.log("custom application result", result);
+  } catch (err) {
+    console.log("submit custom application error", err);
+  } finally {
+    await db.close();
+    return application;
+  }
+}

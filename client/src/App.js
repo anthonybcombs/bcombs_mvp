@@ -99,6 +99,16 @@ const AsyncDaycareApplicationForm = Loadable({
   loading: Loading
 })
 
+const AsynBuilder = Loadable({
+  loader: () => import("./components/Dashboard/Builders"),
+  loading: Loading
+})
+
+const AsyncForm = Loadable({
+  loader: () => import("./components/Dashboard/Builders/Form"),
+  loading: Loading
+})
+
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -130,9 +140,12 @@ export default function App() {
               <AsyncMyApplication path="myapplication" />
               <AsyncAuditTrail path="audittrail" />
               <AsyncManageAdmin path="admin" />
+              <AsynBuilder path="builder/:form_id/:type" />
+              <AsynBuilder path="builder" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />
+            <AsyncForm path="form/:form_id" />
             <AsyncDaycareApplicationForm path="application/:vendor_id/daycare" />
           </Router>
         </div>
