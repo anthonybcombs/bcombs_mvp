@@ -11,7 +11,7 @@ export default ({ fields, currentStep, onSetStep, fieldState, fieldError, onChan
           const specialComps = ['date', 'email', 'time', 'phone']
           return specialComps.includes(fieldProps.type) ?
               FieldConstructor[fieldProps.type]({
-                key: `specialField-${index}`,
+                key: `specialField-${fieldProps.id}`,
                 ...fieldProps,
                 value: fieldState[`${fieldProps.type}_${fieldProps.id}`] || '',
                 // className: hasError ? 'hasError': '',
@@ -20,7 +20,7 @@ export default ({ fields, currentStep, onSetStep, fieldState, fieldError, onChan
               }) : (
               <FormGroup
                 {...fieldProps}
-                key={fieldProps.id}
+                key={`formField-${fieldProps.id}`}
                 index={index}
                 fieldState={fieldState}
                 fieldError={fieldError}

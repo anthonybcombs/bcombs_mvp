@@ -155,7 +155,7 @@ export default ({
             {
               options.map((option, optionIndex) => {
                 return (
-                  <div className='option'>
+                  <div key={`option-${optionIndex}`} className='option'>
                     <span>{optionIndex + 1}.</span>
                     <input
                       type='text'

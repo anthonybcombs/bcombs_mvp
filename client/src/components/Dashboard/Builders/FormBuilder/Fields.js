@@ -314,7 +314,7 @@ export const PrimeFields = [
     ],
     label: 'Name',
     type: 'name',
-    gridMax: 4,
+    gridMax: 3,
     isQA: true,
     includeLogic: false
   },

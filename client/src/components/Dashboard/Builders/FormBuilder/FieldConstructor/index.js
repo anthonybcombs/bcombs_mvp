@@ -29,11 +29,14 @@ const selectMappings = {
 }
 
 export default {
-  input: ({ label, className = '', options = null, isBuilder, ...rest }) => {
+  input: ({ className = '', onChange = () => {}, value = '', id = '', placeholder = '' }) => {
     return (
       <input
         className={`field-input ${className}`}
-        {...rest}
+        id={id}
+        value={value}
+        placeholder={placeholder}
+        onChange={onChange}
       />
     )
   },
@@ -64,10 +67,13 @@ export default {
         return <span>{label}</span>
     }
   },
-  textarea: ({ label, className = '', ...rest }) => {
+  textarea: ({ className = '', onChange = () => {}, value = '', id = '', placeholder = '' }) => {
     return <textarea
       className={`field-input ${className}`}
-      {...rest}
+      id={id}
+      value={value}
+      placeholder={placeholder}
+      onChange={onChange}
     />
   },
   checkbox: ({ label, name, isBuilder, onChange }) => {
@@ -144,26 +150,32 @@ export default {
     //   </div>
     // )
   },
-  select: ({ options, label: fieldLabel, type, className = '', isBuilder = false, ...rest }) => {
+  select: ({ options, type, className = '', isBuilder = false, onChange = () => {}, value = '', id = '', placeholder = '' }) => {
     return (
       isBuilder
         ? (<div className='field select-field-wrapper'>
             <input
               className={`field-input input-select ${className}`}
-              {...rest}
+              id={id}
+              value={value}
+              placeholder={placeholder}
+              onChange={onChange}
             />
           </div>)
         :(
           <div className='field select-field-wrapper'>
             <select
               className={`field-input ${className}`}
-              {...rest}
+              id={id}
+              value={value}
+              placeholder={placeholder}
+              onChange={onChange}
               style={{ opacity: 1 }}
             >
-              <option value=''>{rest.placeholder}</option>
+              <option value=''>{placeholder}</option>
               {
                 (options || selectMappings[type]).map(({ label, value }, index) => {
-                  return (<option key={value + index} value={value}>{label}</option>)
+                  return (<option key={`options_${value}${index}`} value={value}>{label}</option>)
                 })
               }
             </select>

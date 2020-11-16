@@ -11,10 +11,10 @@ import { Items } from '../Fields'
 import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
 
-import { requestAddForm, requestUpdateForm, setViewMode } from "../../../../../redux/actions/FormBuilder"
+import { requestAddForm, requestUpdateForm } from "../../../../../redux/actions/FormBuilder"
 import Loading from '../../../../../helpers/Loading';
 
-export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Untitled', form_id, isFormView, handleBuilderDrawerOpen }) => {
+export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Untitled', form_id, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
@@ -23,7 +23,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   const [lastField, getLastField] = useState({})
 
   const reMapFields = (fields, id) => {
-    return fields.map(e => ({ ...e, id: `${e.tag}_${id}`, value: '' }))
+    return fields.map((e, i) => ({ ...e, id: `${e.tag}${i}_${id}`, value: '' }))
   }
 
   const checkPageBreaks = (newFields) => {
@@ -204,8 +204,6 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
           formData: droppedFields
         }
       }))
-    } else {
-      dispatch(setViewMode(true))
     }
   }
 
@@ -233,15 +231,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
     }
   }, [form_title])
 
-  
-  useEffect(() => {
-    if (form_id && isFormView) {
-      window.open(`/form/${form_id}`, '_blank')
-      dispatch(setViewMode(false))
-    }
-  }, [isFormView])
-
-  console.log('toinks', { isFormView, droppedFields, form_data, form_title })
+  console.log('toinks', { droppedFields, form_data, form_title })
 
   return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
@@ -296,20 +286,37 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
       </div>
       <CustomDragLayer />
       <div className='drop-area-wrapper-actions'>
-        <button
-          type='button'
-          className='btn preview'
-          onClick={e => {
-            e.stopPropagation()
-            handleViewForm()
-          }}
-        >
-          <FontAwesomeIcon
-            className='preview-icon'
-            icon={faEye}
-          />
-          <span>View</span>
-        </button>
+        {
+          form_id ? (
+            <a
+              type='button'
+              className='btn preview'
+              target='_blank'
+              href={`/form/${form_id}`}
+            >
+              <FontAwesomeIcon
+                className='preview-icon'
+                icon={faEye}
+              />
+              <span>View</span>
+            </a>
+          ) : (
+            <button
+              type='button'
+              className='btn preview'
+              onClick={e => {
+                e.stopPropagation()
+                handleViewForm()
+              }}
+            >
+              <FontAwesomeIcon
+                className='preview-icon'
+                icon={faEye}
+              />
+              <span>View</span>
+            </button>
+          )
+        }
         <button
           type='button'
           className='btn save'

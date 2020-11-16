@@ -71,7 +71,7 @@ export default ({
                   <div className={`formGroup-column`} style={{ gridColumn: `span 3`}}>
                     {
                       FieldConstructor[option.tag]({
-                        key: option.tag + uuid(),
+                        key: `field_${option.tag}_${uuid()}`,
                         ...option
                       })
                     }

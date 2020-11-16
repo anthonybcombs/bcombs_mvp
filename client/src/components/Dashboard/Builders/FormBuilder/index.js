@@ -45,6 +45,7 @@ const FormBuilder = ({ form_id, type, history }) => {
     }
     if (form_id && type === 'view') {
       dispatch(setViewMode(true))
+      document.querySelector('.btn.preview').click()
       setTimeout(() => {
         window.location.replace(`/dashboard/builder/${form_id}/edit`)
       }, 1000)
