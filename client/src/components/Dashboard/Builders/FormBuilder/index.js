@@ -73,7 +73,9 @@ const FormBuilder = ({ form_id, type, history }) => {
     const newObj = {}
     objArr.forEach(([key, value], index) => {
       if (value !== null) {
-        if (Array.isArray(value)) {
+        if (Array.isArray(value) && !value.find(e => typeof e === 'object')) {
+          newObj[key] = value
+        } else if (Array.isArray(value)) {
           newObj[key] = value.map(e => cleanFormData(e))
         } else if (typeof value === 'object') {
           newObj[key] = cleanFormData(value)

@@ -303,7 +303,7 @@ export default styled.div`
   }
 
   // File Upload
-  .formGroup.primeFile .uploadForm {
+  .uploadForm {
     position: relative;
     overflow: hidden;
   }
@@ -311,7 +311,7 @@ export default styled.div`
     background: #1388e0;
     transition: .15s ease-in-out;
   }
-  .formGroup.primeFile .uploadForm > input {
+  .uploadForm > input {
     width: 100%;
     color: gray;
     font-size: 16px;
@@ -320,7 +320,7 @@ export default styled.div`
     background: #f1f1f1;
     padding: .5rem 1rem .5rem 1rem;
   }
-  .formGroup.primeFile .uploadForm:before {
+  .uploadForm:before {
     content: 'Upload';
     position: absolute;
     top: 0;
@@ -339,7 +339,7 @@ export default styled.div`
     display: flex;
     align-items: center;
   }
-  .formGroup.primeFile .uploadForm:after {
+  .uploadForm:after {
     content: '';
     position: absolute;
     top: 0;
