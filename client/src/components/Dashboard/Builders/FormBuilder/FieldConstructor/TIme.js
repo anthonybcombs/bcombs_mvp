@@ -28,13 +28,16 @@ export default ({ label, type, id, onChange, value = {} }) => {
               type='number'
               id='hour'
               className='field-input'
+              placeholder='Hour'
               value={value.hour}
               onChange={handleAnswer}
             />
+            <span>:</span>
             <input
               type='number'
               id='minutes'
               className='field-input'
+              placeholder='Min'
               value={value.minutes}
               onChange={handleAnswer}
             />
@@ -45,7 +48,7 @@ export default ({ label, type, id, onChange, value = {} }) => {
                 className='field-input'
                 onChange={handleAnswer}
               >
-                <option value='AM'>PM</option>
+                <option value='AM'>AM</option>
                 <option value='PM'>PM</option>
               </select>
             </div>
