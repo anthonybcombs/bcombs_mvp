@@ -432,7 +432,7 @@ export default function index({
                     target.value
                   );
                 }}
-                ref={register({ required: true, maxLength:5})}
+                ref={register({ required: true})}
                 defaultValue={parentProfile?.first_name}
                 readOnly={isReadonly}
               />
