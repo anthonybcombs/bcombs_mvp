@@ -4,7 +4,8 @@ import * as actionType from "./Constant";
 import {
   FORM_ADD_MUTATION,
   FORM_UPDATE_MUTATION,
-  GET_FORM_BY_FORM_ID
+  GET_FORM_BY_FORM_ID,
+  GET_FORMS_BY_VENDOR
 } from "../../graphql/FormQueryMutation"
 import {
   setAddFormLoading,
@@ -29,8 +30,13 @@ const addFormToDatabase = application => {
 const getFormsFromDatabase = vendor_id => {
   return new Promise(async (resolve, reject) => {
     try {
+      const { data } = await graphqlClient.mutate({
+        mutation: GET_FORMS_BY_VENDOR,
+        variables: { vendor_id }
+      })
+
+      return resolve(data.getVendorCustomApplicationForm);
     } catch (error) {
-      console.log("Get forms error", error);
       reject(error);
     }
   });
@@ -68,7 +74,7 @@ const updateFormToDatabase = application => {
 export const requestGetForms = vendor_id => {
   return {
     type: actionType.REQUEST_GET_FORMS,
-    vendor_id: vendor_id
+    vendor_id
   };
 };
 export const requestAddForm = form => {
@@ -99,12 +105,10 @@ export const setViewMode = bool => {
 
 
 export function* getForms({ vendor_id }) {
-  console.log('@GET FORM', vendor_id)
-  return
   try {
-    yield put(setAddFormLoading(true));
+    yield put(setGetFormLoading(true));
     const forms = yield call(getFormsFromDatabase, vendor_id);
-    yield put(setAddFormLoading(false));
+    yield put(setGetFormLoading(false));
     if (forms && forms.length > 0) {
       yield put({
         type: actionType.REQUEST_GET_FORMS_COMPLETED,
@@ -118,7 +122,7 @@ export function* getForms({ vendor_id }) {
     }
   } catch (err) {
     console.log("Error", err);
-    yield put(setAddFormLoading(false));
+    yield put(setGetFormLoading(false));
     yield put({
       type: actionType.REQUEST_GET_APPLICATION_COMPLETED,
       payload: []

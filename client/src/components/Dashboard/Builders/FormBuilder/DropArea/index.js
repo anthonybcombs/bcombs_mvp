@@ -18,6 +18,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
+  const [formCategory, setFormCategory] = useState('')
   const [hasPageBreak, checkHasPageBreak] = useState(false)
   const [pageBreaks, getPageBreaks] = useState([])
   const [lastField, getLastField] = useState({})
@@ -116,7 +117,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   }
 
   const handleActive = (id) => {
-    beforeSetDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
+    beforeSetDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })), false)
   }
 
   const handleChangeDefaultProps = ({ id, ...rest }) => {
@@ -243,11 +244,11 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop} className='drop-area-wrapper-droppable'>
         <div className='form-title'>
-          <FontAwesomeIcon
+          {/* <FontAwesomeIcon
             icon={faBars}
             className='menu-bar-builder'
             onClick={handleBuilderDrawerOpen}
-          />
+          /> */}
           <input
             type='text'
             id='title'
@@ -257,6 +258,14 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
             value={formTitle}
             onChange={({ target }) => setFormTitle(target.value)}
           />
+          <select
+            value={formCategory}
+            onChange={({ target: { value } }) => setFormCategory(value)}
+          >
+            <option value=''>Select form category</option>
+            <option value='sports'>Sorts</option>
+            <option value='teaching'>Teaching</option>
+          </select>
         </div>
         {
           droppedFields.length === 0 && (

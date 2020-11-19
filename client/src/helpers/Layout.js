@@ -291,13 +291,24 @@ export default function Layout({ children }) {
                         <Link
                           className={`${
                             context.location.pathname ===
+                            "/dashboard/forms"
+                              ? "selected"
+                              : ""
+                          }`}
+                          to="/dashboard/forms">
+                          <span>Admin</span>
+                        </Link>
+
+                        {/* <Link
+                          className={`${
+                            context.location.pathname ===
                             "/dashboard/builder"
                               ? "selected"
                               : ""
                           }`}
                           to="/dashboard/builder">
                           <span>Admin</span>
-                        </Link>
+                        </Link> */}
                       </>
                     )}
                     {currentUserType === "USER" && (
