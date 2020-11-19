@@ -518,6 +518,7 @@ const inputs = `
         includeValidation: Boolean
         hasSettings: Boolean
         supportMultiple: Boolean
+        showLabel: Boolean
     }
 
     input CustomFormFieldsInput {
@@ -1084,6 +1085,7 @@ const queryTypes = `
         includeValidation: Boolean
         hasSettings: Boolean
         supportMultiple: Boolean
+        showLabel: Boolean
     }
 
     type CustomFormFields {

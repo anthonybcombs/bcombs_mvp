@@ -91,6 +91,7 @@ export const FORM_ADD_MUTATION = gql`
             includeValidation
             hasSettings
             supportMultiple
+            showLabel
           }
         }
         created_at
@@ -191,6 +192,7 @@ export const FORM_UPDATE_MUTATION = gql`
             includeValidation
             hasSettings
             supportMultiple
+            showLabel
           }
         }
         created_at
@@ -288,6 +290,7 @@ export const GET_FORM_BY_FORM_ID = gql`
           includeValidation
           hasSettings
           supportMultiple
+          showLabel
         }
       }
       created_at
@@ -384,6 +387,7 @@ export const GET_FORMS_BY_VENDOR = gql`
           includeValidation
           hasSettings
           supportMultiple
+          showLabel
         }
       }
       created_at
