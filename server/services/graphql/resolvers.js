@@ -77,8 +77,9 @@ import {
   getApplicationHistoryByUser,
   createCustomApplication,
   updateCustomApplicationForm,
+  deleteCustomApplicationForm,
   getCustomApplicationFormByFormId,
-  getVendorCustomApplicationForm,
+  getVendorCustomApplicationForms,
   submitCustomApplication
 } from "../../api/applications";
 import { 
@@ -320,8 +321,8 @@ const resolvers = {
       const application = await getCustomApplicationFormByFormId(form_id);
       return application;
     },
-    async getVendorsCustomApplication(root, { vendor_id }, context) {
-      const forms = await getVendorCustomApplicationForm(vendor_id);
+    async getVendorCustomApplicationForms(root, { vendor_id }, context) {
+      const forms = await getVendorCustomApplicationForms(vendor_id);
       return forms;
     }
   },
@@ -941,6 +942,14 @@ const resolvers = {
 
       console.log("res", res);
       return res;
+    },
+    async deleteCustomApplicationForm(root, { application }, context) {
+      await deleteCustomApplicationForm(application);
+
+      return {
+        messageType: "info",
+        message: "successfully delete you application form"
+      }
     },
     async submitCustomApplicationForm(root, { application }, context) {
     

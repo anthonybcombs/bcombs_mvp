@@ -202,6 +202,16 @@ export const FORM_UPDATE_MUTATION = gql`
   }
 `;
 
+export const FORM_DELETE_MUTATION = gql`
+  mutation deleteCustomApplicationForm($application:CustomApplicationInput){
+    deleteCustomApplicationForm(application:$application){
+      messageType
+      message
+    }
+  }
+`;
+
+//queries
 export const GET_FORM_BY_FORM_ID = gql`
   query getCustomApplicationsByFormId($form_id:String!){
     getCustomApplicationsByFormId(form_id:$form_id){
@@ -300,8 +310,8 @@ export const GET_FORM_BY_FORM_ID = gql`
 `;
 
 export const GET_FORMS_BY_VENDOR = gql`
-  query getVendorCustomApplicationForm($vendor_id:String!){
-    getVendorCustomApplicationForm(vendor_id:$vendor_id){
+  query getVendorCustomApplicationForms($vendor_id:String!){
+    getVendorCustomApplicationForms(vendor_id:$vendor_id){
       id
       vendor
       user
