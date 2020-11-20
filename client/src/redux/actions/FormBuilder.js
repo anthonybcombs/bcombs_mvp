@@ -35,7 +35,7 @@ const getFormsFromDatabase = vendor_id => {
         variables: { vendor_id }
       })
 
-      return resolve(data.getVendorCustomApplicationForm);
+      return resolve(data.getVendorCustomApplicationForms);
     } catch (error) {
       reject(error);
     }

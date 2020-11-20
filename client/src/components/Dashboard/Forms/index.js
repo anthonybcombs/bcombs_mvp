@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import FormStyled from './styles'
+import Loading from "../../../helpers/Loading.js"
 
 import { requestVendor } from '../../../redux/actions/Vendors'
 import { requestGetForms } from '../../../redux/actions/FormBuilder'
+
+import Headers from './headers'
+import List from './list'
 
 export default (props) => {
   
@@ -17,26 +21,44 @@ export default (props) => {
     }
   )
   const dispatch = useDispatch()
-  let isLoading = false
-
+  
+  const [isLoading, setIsLoading] = useState(false)
   const [vendor, setVendor] = useState()
 
   useEffect(() => {
     if (auth.user_id) {
       dispatch(requestVendor(auth.user_id))
-      isLoading = true
+      setIsLoading(true)
     }
   }, [])
 
   useEffect(() => {
     if(vendors && vendors.length > 0) {
       dispatch(requestGetForms(vendors[0].id))
+      setIsLoading(true)
     }
   }, [vendors])
-  console.log('wewwwwwwwwwwww', { loading, formList })
+ 
+  useEffect(() => {
+    if (isLoading && !loading.getForm) {
+      setIsLoading(false)
+    }
+  }, [loading.getForm])
+  
+  console.log('wewwwwwwwwwwww', { isLoading, formList })
+
   return (
     <FormStyled>
-      Forms
+      <Headers />
+      {
+        isLoading ? (
+          <Loading />
+        ) : (
+          <List
+            list={formList}
+          />
+        )
+      }
     </FormStyled>
   )
 }
