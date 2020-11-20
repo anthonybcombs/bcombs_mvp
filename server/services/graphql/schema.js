@@ -1268,7 +1268,7 @@ const queries = `
         getUserApplicationHistory(id: String!):[ApplicationHistory]
         getVendorAdminsByUser(user: String): [Admin]
         getParentChildRelationship(relationships: [ParentChildRelationshipInput]): [ParentChildRelationship]
-        getVendorCustomApplications(vendor: String): [CustomApplicationOutput]
+        getVendorCustomApplicationForms(vendor: String): [CustomApplicationOutput]
         getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
         getCustomApplicationApplicants(form_id: String): [CustomApplicationOutput]
         getVendorsCustomApplication(vendor_id: String!): [CustomApplicationOutput]

@@ -320,7 +320,7 @@ const resolvers = {
       const application = await getCustomApplicationFormByFormId(form_id);
       return application;
     },
-    async getVendorsCustomApplication(root, { vendor_id }, context) {
+    async getVendorCustomApplicationForm(root, { vendor_id }, context) {
       const forms = await getVendorCustomApplicationForm(vendor_id);
       return forms;
     }
