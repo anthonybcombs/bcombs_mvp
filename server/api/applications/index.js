@@ -854,7 +854,7 @@ export const getCustomApplicationFormByFormId = async form_id => {
   }
 }
 
-export const getVendorCustomApplicationForm = async vendor => {
+export const getVendorCustomApplicationForms = async vendor => {
   const db = makeDb();
   let applications;
   try {
