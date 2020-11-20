@@ -881,7 +881,7 @@ export const getCustomApplicationFormByFormId = async form_id => {
   }
 }
 
-export const getVendorCustomApplicationForms = async vendor => {
+export const getVendorCustomApplicationForms = async ({vendor, category}) => {
   const db = makeDb();
   let applications;
   try {
@@ -894,12 +894,14 @@ export const getVendorCustomApplicationForms = async vendor => {
         BIN_TO_UUID(vendor) as vendor,
         CONVERT(form_contents USING utf8) as form_contents,
         created_at,
-        updated_at
+        updated_at,
+        category
         FROM vendor_custom_application
-        WHERE vendor=UUID_TO_BIN(?) AND status <> 'deleted'
+        WHERE vendor=UUID_TO_BIN(?) AND category=(?) AND status <> 'deleted'
       `,
       [
-        vendor
+        vendor,
+        category
       ]
     )
 

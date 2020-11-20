@@ -9,6 +9,7 @@ export const FORM_ADD_MUTATION = gql`
         id
         vendor
         user
+        category
         form_id
         form_contents {
           formTitle
@@ -110,6 +111,7 @@ export const FORM_UPDATE_MUTATION = gql`
         id
         vendor
         user
+        category
         form_id
         form_contents {
           formTitle
@@ -218,6 +220,7 @@ export const GET_FORM_BY_FORM_ID = gql`
       id
       vendor
       user
+      category
       form_id
       form_contents {
         formTitle
@@ -310,11 +313,12 @@ export const GET_FORM_BY_FORM_ID = gql`
 `;
 
 export const GET_FORMS_BY_VENDOR = gql`
-  query getVendorCustomApplicationForms($vendor_id:String!){
-    getVendorCustomApplicationForms(vendor_id:$vendor_id){
+  query getVendorCustomApplicationForms(filter:CustomApplicationFormFilterInput){
+    getVendorCustomApplicationForms(filter:$filter){
       id
       vendor
       user
+      category
       form_id
       form_contents {
         formTitle

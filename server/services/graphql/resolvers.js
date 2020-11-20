@@ -321,8 +321,8 @@ const resolvers = {
       const application = await getCustomApplicationFormByFormId(form_id);
       return application;
     },
-    async getVendorCustomApplicationForms(root, { vendor_id }, context) {
-      const forms = await getVendorCustomApplicationForms(vendor_id);
+    async getVendorCustomApplicationForms(root, { filter }, context) {
+      const forms = await getVendorCustomApplicationForms(filter);
       return forms;
     }
   },

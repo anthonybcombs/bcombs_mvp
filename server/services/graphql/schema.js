@@ -497,6 +497,7 @@ const inputs = `
         vendor: String
         user: String
         form_contents: CustomFormInput
+        category: String
     }
 
     input CustomFormInput {
@@ -625,6 +626,11 @@ const inputs = `
         vendor: String!
         form: String!
         form_contents: CustomFormInput
+    }
+
+    input CustomApplicationFormFilterInput {
+        vendor: String!
+        category: String
     }
 `;
 const queryTypes = `
@@ -1062,6 +1068,7 @@ const queryTypes = `
         user: String
         form_id: String
         form_contents: CustomForm
+        category: String
         created_at: Date
         updated_at: Date
     }
@@ -1269,10 +1276,9 @@ const queries = `
         getUserApplicationHistory(id: String!):[ApplicationHistory]
         getVendorAdminsByUser(user: String): [Admin]
         getParentChildRelationship(relationships: [ParentChildRelationshipInput]): [ParentChildRelationship]
-        getVendorCustomApplicationForms(vendor: String): [CustomApplicationOutput]
+        getVendorCustomApplicationForms(filter: CustomApplicationFormFilterInput): [CustomApplicationOutput]
         getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
         getCustomApplicationApplicants(form_id: String): [CustomApplicationOutput]
-        getVendorsCustomApplication(vendor_id: String!): [CustomApplicationOutput]
     }
 `;
 
