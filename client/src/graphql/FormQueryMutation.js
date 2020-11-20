@@ -313,7 +313,7 @@ export const GET_FORM_BY_FORM_ID = gql`
 `;
 
 export const GET_FORMS_BY_VENDOR = gql`
-  query getVendorCustomApplicationForms(filter:CustomApplicationFormFilterInput){
+  query getVendorCustomApplicationForms($filter:CustomApplicationFormFilterInput){
     getVendorCustomApplicationForms(filter:$filter){
       id
       vendor
