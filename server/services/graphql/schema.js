@@ -1231,7 +1231,7 @@ const mutations = `
         updateParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
         createCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
         updateCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
-        deleteCustomApplicationForm: CustomApplicationInput): Status
+        deleteCustomApplicationForm(application: CustomApplicationInput): Status
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
     }
 `;
