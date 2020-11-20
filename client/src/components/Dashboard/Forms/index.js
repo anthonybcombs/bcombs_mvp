@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import update from 'immutability-helper'
+import cloneDeep from 'lodash.clonedeep'
 
 import FormStyled from './styles'
-import Loading from "../../../helpers/Loading.js"
+import Loading from '../../../helpers/Loading.js'
 
 import { requestVendor } from '../../../redux/actions/Vendors'
-import { requestGetForms } from '../../../redux/actions/FormBuilder'
+import { requestGetForms, requestUpdateForm, requestAddForm } from '../../../redux/actions/FormBuilder'
 
 import Headers from './headers'
 import List from './list'
@@ -14,7 +16,7 @@ export default (props) => {
   
   const {
     auth, vendors, loading, 
-    form: { formList }
+    form: { formList = [], updateForm, addForm }
   } = useSelector(
     ({ auth, vendors, loading, form }) => {
       return { auth, vendors, loading, form }
@@ -23,7 +25,8 @@ export default (props) => {
   const dispatch = useDispatch()
   
   const [isLoading, setIsLoading] = useState(false)
-  const [vendor, setVendor] = useState()
+  const [list, setList] = useState(formList)
+  const [forceCloseDialogs, setForceCloseDialogs] = useState(true)
 
   useEffect(() => {
     if (auth.user_id) {
@@ -34,7 +37,7 @@ export default (props) => {
 
   useEffect(() => {
     if(vendors && vendors.length > 0) {
-      dispatch(requestGetForms(vendors[0].id))
+      dispatch(requestGetForms({ vendor: vendors[0].id, category: '' }))
       setIsLoading(true)
     }
   }, [vendors])
@@ -44,8 +47,36 @@ export default (props) => {
       setIsLoading(false)
     }
   }, [loading.getForm])
+
+  useEffect(() => {
+    if (formList.length) {
+      setList(formList)
+    }
+  }, [formList])
+
+  useEffect(() => {
+    if (updateForm.form && Object.keys(updateForm.form).length && !loading.updateForm) {
+      setList(update(list, {
+        [list.findIndex(e => e.form_id === updateForm.form.form_id)]: { $merge: updateForm.form }
+      }))
+      setForceCloseDialogs(true)
+    }
+  }, [updateForm])
+
+  if(addForm && addForm.message == 'successfully created your application form') {
+    window.location.reload()
+  }
+
+  const handleUpdateList = (data) => {
+    setForceCloseDialogs(false)
+    dispatch(requestUpdateForm(data))
+  }
+
+  const handleCloneForm = (data) => {
+    dispatch(requestAddForm(data))
+  }
   
-  console.log('wewwwwwwwwwwww', { isLoading, formList })
+  console.log('wewwwwwwwwwwww', { loading, list })
 
   return (
     <FormStyled>
@@ -55,7 +86,12 @@ export default (props) => {
           <Loading />
         ) : (
           <List
-            list={formList}
+            list={list}
+            loading={loading.updateForm || loading.addForm}
+            forceCloseDialogs={forceCloseDialogs}
+            onSetForceCloseDialogs={(bool) => setForceCloseDialogs(bool)}
+            onUpdateList={handleUpdateList}
+            onCloneForm={handleCloneForm}
           />
         )
       }

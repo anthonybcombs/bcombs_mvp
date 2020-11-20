@@ -12,13 +12,17 @@ export default () => {
           placeholder='Search'
           onChange={({ target }) => {}}
         />
-        <button>
+        <a
+          type='button'
+          href='/dashboard/builder'
+          target='_blank'
+        >
           <FontAwesomeIcon
             className='create-icon'
             icon={faPlusCircle}
           />
           Create a new form
-        </button>
+        </a>
       </div>
       <div>
         <div>

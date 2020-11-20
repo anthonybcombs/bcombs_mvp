@@ -22,7 +22,7 @@ const FormBuilder = ({ form_id, type, history }) => {
 
   const {
     auth, vendors, loading, 
-    form: { addForm, updateForm, selectedForm: { form_contents }, isFormView }
+    form: { addForm, updateForm, selectedForm: { form_contents, category }, isFormView }
   } = useSelector(
     ({ auth, vendors, loading, form }) => {
       return { auth, vendors, loading, form };
@@ -95,6 +95,7 @@ const FormBuilder = ({ form_id, type, history }) => {
         <DropArea
           form_data={formData.map(e => cleanFormData(e))}
           form_title={formTitle}
+          category={category}
           form_id={form_id}
           vendor={vendor}
           user={auth}

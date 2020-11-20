@@ -5,16 +5,17 @@ import {
   format,
 } from 'date-fns'
 
+import Form from './form'
+import cloneDeep from 'lodash.clonedeep'
+
 export default ({
-  list
+  list, forceCloseDialogs, loading,
+  
+  onUpdateList, onCloneForm, onSetForceCloseDialogs
 }) => {
-
-  const recentList = list.splice(0, 4)
-  const allList = list
-
-  const handleClickForm = (form_id) => {
-    window.open(`/dashboard/builder/${form_id}/edit`, '_blank')
-  }
+  const newList = cloneDeep(list)
+  const recentList = newList.splice(0, 4)
+  const allList = newList
 
   return (
     <div>
@@ -22,46 +23,18 @@ export default ({
         <label>Recent</label>
         <div style={{ display: 'flex' }}>
           {
-            recentList.map(({ created_at, updated_at, form_contents, form_id }, index) => {
+            recentList.map((e, index) => {
               return (
-                <div
+                <Form
+                  {...e}
                   key={`recent-${index}`}
-                  style={{ border: '1px solid red', padding: '10px' }}
-                  onClick={() => handleClickForm(form_id)}
-                >
-                  <div>
-                    <label>{form_contents.formTitle}</label>
-                    <FontAwesomeIcon
-                      className='edit-icon'
-                      icon={faEdit}
-                      onClick={e => {
-                        e.stopPropagation()
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <span>Created: {format(new Date(created_at), 'MMMM dd, yyyy')}</span><br />
-                    {
-                      updated_at && <span>Modified: {format(new Date(updated_at), 'MMMM dd, yyyy')}</span>
-                    }
-                  </div>
-                  <div>
-                    <button>
-                      <FontAwesomeIcon
-                        className='copy-icon'
-                        icon={faCopy}
-                      />
-                      Duplicate Form
-                    </button>
-                    <button>
-                      <FontAwesomeIcon
-                        className='delete-icon'
-                        icon={faTrash}
-                      />
-                      Delete Form
-                    </button>
-                  </div>
-                </div>
+                  loading={loading}
+                  forceCloseDialogs={forceCloseDialogs}
+
+                  onUpdateList={onUpdateList}
+                  onCloneForm={onCloneForm}
+                  onSetForceCloseDialogs={onSetForceCloseDialogs}
+                />
               )
             })
           }
@@ -71,46 +44,18 @@ export default ({
         <label>All</label>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           {
-            allList.map(({ created_at, updated_at, form_contents, form_id }, index) => {
+            allList.map((e, index) => {
               return (
-                <div
+                <Form
+                  {...e}
                   key={`all-${index}`}
-                  style={{ border: '1px solid red', padding: '10px' }}
-                  onClick={() => handleClickForm(form_id)}
-                >
-                  <div>
-                    <label>{form_contents.formTitle}</label>
-                    <FontAwesomeIcon
-                      className='edit-icon'
-                      icon={faEdit}
-                      onClick={e => {
-                        e.stopPropagation()
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <span>Created: {format(new Date(created_at), 'MMMM dd, yyyy')}</span><br />
-                    {
-                      updated_at && <span>Modified: {format(new Date(updated_at), 'MMMM dd, yyyy')}</span>
-                    }
-                  </div>
-                  <div>
-                    <button>
-                      <FontAwesomeIcon
-                        className='copy-icon'
-                        icon={faCopy}
-                      />
-                      Duplicate Form
-                    </button>
-                    <button>
-                      <FontAwesomeIcon
-                        className='delete-icon'
-                        icon={faTrash}
-                      />
-                      Delete Form
-                    </button>
-                  </div>
-                </div>
+                  loading={loading}
+                  forceCloseDialogs={forceCloseDialogs}
+
+                  onUpdateList={onUpdateList}
+                  onCloneForm={onCloneForm}
+                  onSetForceCloseDialogs={onSetForceCloseDialogs}
+                />
               )
             })
           }

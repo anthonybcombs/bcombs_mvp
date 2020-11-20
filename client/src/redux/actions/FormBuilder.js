@@ -27,12 +27,12 @@ const addFormToDatabase = application => {
     }
   });
 };
-const getFormsFromDatabase = vendor_id => {
+const getFormsFromDatabase = formData => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.mutate({
         mutation: GET_FORMS_BY_VENDOR,
-        variables: { vendor_id }
+        variables: { filter: formData }
       })
 
       return resolve(data.getVendorCustomApplicationForms);
@@ -71,10 +71,10 @@ const updateFormToDatabase = application => {
 };
 
 
-export const requestGetForms = vendor_id => {
+export const requestGetForms = data => {
   return {
     type: actionType.REQUEST_GET_FORMS,
-    vendor_id
+    data
   };
 };
 export const requestAddForm = form => {
@@ -104,10 +104,10 @@ export const setViewMode = bool => {
 
 
 
-export function* getForms({ vendor_id }) {
+export function* getForms({ data }) {
   try {
     yield put(setGetFormLoading(true));
-    const forms = yield call(getFormsFromDatabase, vendor_id);
+    const forms = yield call(getFormsFromDatabase, data);
     yield put(setGetFormLoading(false));
     if (forms && forms.length > 0) {
       yield put({

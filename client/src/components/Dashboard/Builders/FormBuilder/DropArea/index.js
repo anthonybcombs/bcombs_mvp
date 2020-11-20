@@ -14,11 +14,11 @@ import CustomDragLayer from '../CustomDragLayer'
 import { requestAddForm, requestUpdateForm } from "../../../../../redux/actions/FormBuilder"
 import Loading from '../../../../../helpers/Loading';
 
-export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Untitled', form_id, handleBuilderDrawerOpen }) => {
+export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, form_title = 'Untitled', form_id, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
-  const [formCategory, setFormCategory] = useState('')
+  const [formCategory, setFormCategory] = useState(category)
   const [hasPageBreak, checkHasPageBreak] = useState(false)
   const [pageBreaks, getPageBreaks] = useState([])
   const [lastField, getLastField] = useState({})
@@ -133,7 +133,6 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   }
 
   const handleChangeFieldSettings = (data, index, id) => {
-    console.log('kayata', { data, index, id })
     beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { fields: { [index]: { $merge: data } } }
     }))
@@ -182,6 +181,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
     if (form_id) {
       dispatch(requestUpdateForm({
         form_id,
+        category: formCategory,
         form_contents: {
           formTitle,
           formData: droppedFields
@@ -192,6 +192,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
       dispatch(requestAddForm({
         user: user.user_id,
         vendor: vendor.id,
+        category: formCategory,
         form_contents: {
           formTitle,
           formData: droppedFields
@@ -238,7 +239,13 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
     }
   }, [form_title])
 
-  console.log('toinks', { droppedFields, form_data, form_title, fieldHasChanged })
+  useEffect(() => {
+    if (category) {
+      setFormCategory(category)
+    }
+  }, [category])
+
+  console.log('toinks', { droppedFields, form_data, form_title, formCategory, fieldHasChanged })
 
   return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
