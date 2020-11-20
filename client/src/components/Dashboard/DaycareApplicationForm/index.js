@@ -145,7 +145,7 @@ export default function index() {
   
   const [vendor, setVendor] = useState({});
   const [selectedStep, setSelectedStep] = useState(1);
-
+  const [isParentAddressRequired,setIsParentAddressRequired] = useState(false)
   const dispatch = useDispatch();
 
   const { vendors, loading, applications } = useSelector(
@@ -662,6 +662,8 @@ export default function index() {
         let gi = child.general_information;
 
         console.log("gi.transfer_reason", gi.transfer_reason);
+
+        
         if(!profile.first_name ||
           !profile.last_name ||
           !profile.date_of_birth ||
@@ -670,6 +672,7 @@ export default function index() {
           !profile.city ||
           !profile.state ||
           !profile.zip_code ||
+          (profile.zip_code !== '' && profile.zip_code.length < 5) || 
           !profile.child_lives_with ||
           !profile.preffered_start_date ||
           !profile.current_classroom ||
@@ -677,7 +680,10 @@ export default function index() {
           !profile.needed_days ||
           !profile.voucher ||
           !gi.is_child_transferring ||
-          !gi.list_any_allergies) {
+          !gi.list_any_allergies ||
+          (childsInformation[i].emergency_care_information !== '' &&  childsInformation[i].emergency_care_information.doctor_phone.includes('_')) || 
+          (childsInformation[i].emergency_care_information  !== '' &&  childsInformation[i].emergency_care_information.hospital_phone.includes('_')) 
+          ) {
 
             isValid = false;
             break;
@@ -691,7 +697,8 @@ export default function index() {
               !gi.prev_school_address ||
               !gi.prev_school_attended ||
               !gi.prev_school_state ||
-              !gi.prev_school_zip_code) {
+              !gi.prev_school_zip_code || 
+              (gi.prev_school_zip_code && gi.prev_school_zip_code.length < 5)) {
                 isValid = false;
                 break;
               }
@@ -699,11 +706,18 @@ export default function index() {
       }
     } else if(section == "2") {
 
+      console.log('isParentAddressRequired',isParentAddressRequired)
       let parents = parentsInformation;
-
+      console.log('PAARENTTTT', parentsInformation)
+      console.log('PAARENTTTT emergencyContacts', emergencyContacts)
       for(let i = 0; i < parentsInformation.length; i++) {
         let parent = parents[i];
         let profile = parent.profile;
+
+        if(profile.first_name  === '' || profile.last_name  === '') {
+          isValid = false;
+          break;
+        }
         
         if(!profile.first_name ||
           !profile.last_name ||
@@ -711,11 +725,15 @@ export default function index() {
           !profile.confirmed_password ||
           !(profile.password == profile.confirmed_password) ||
           !profile.phone_number ||
+          profile.phone_number.includes('_') || 
           !profile.email_address ||
+          !profile.email_address.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) || 
           !profile.goals_parent_program ||
           !profile.goals_child_program ||
           !profile.gender ||
-          !profile.date_of_birth) {
+          !profile.date_of_birth ||
+          (isParentAddressRequired && (!profile.address ||( !profile.zip_code || (profile.zip_code && profile.zip_code.length < 5)) || !profile.state || !profile.city))
+          ) {
             isValid = false;
             break;
           }
@@ -726,6 +744,8 @@ export default function index() {
           !emergencyContacts[i].last_name ||
           !emergencyContacts[i].gender ||
           !emergencyContacts[i].mobile_phone ||
+          (emergencyContacts[i].mobile_phone && emergencyContacts[i].mobile_phone.includes('_')) ||
+          (emergencyContacts[i].work_phone && emergencyContacts[i].work_phone.includes('_')  )||
           !emergencyContacts[i].relationship_to_child) {
             isValid = false;
             break;
@@ -829,7 +849,7 @@ export default function index() {
   const [relationships, setRelationships] = useState([{...relationshipObj}]);
 
   const [chRelationships, setChRelationships] = useState([]);
-
+  console.log('isParentAddressRequired',isParentAddressRequired)
   return (
     <DaycareApplicationFormStyled
       id="applicationForm"
@@ -940,6 +960,7 @@ export default function index() {
                           errors={errors}
                           emergencyContacts={emergencyContacts}
                           ProfileImg={ProfileImg}
+                          setIsParentAddressRequired={setIsParentAddressRequired}
                         />
                       </div>
                       {selectedStep == 5 && <hr className="style-eight"></hr>}
@@ -995,9 +1016,11 @@ export default function index() {
                           (selectedStep > 1 && selectedStep != 5) &&
                           <a href="#" className="left" onClick={(e) => {
                             e.preventDefault();
-              
-                            if(selectedStep == 3) handleWizardSelection(2);
+                            console.log(';Handle Wizard Selection', selectedStep)
+                            if(selectedStep == 4) handleWizardSelection(3)
+                            else if(selectedStep == 3) handleWizardSelection(2);
                             else if(selectedStep == 2) handleWizardSelection(1)
+                           
               
                             window.scrollTo(0, 0)
       

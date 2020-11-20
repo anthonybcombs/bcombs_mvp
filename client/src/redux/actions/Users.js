@@ -22,6 +22,7 @@ const getUserProfileToDatabase = email => {
         }
       );
       const response = await userProfileRequest.json();
+      console.log('Get User Profile To Database', response)
       resolve(response);
     } catch (error) {
       reject("error");
@@ -275,6 +276,7 @@ export function* getUserInfo({ email }) {
   try {
     yield put(setProfileLoading(true));
     const response = yield call(getUserProfileToDatabase, [email]);
+    console.log('Get User info', response)
     yield put(setUserProfile(response));
     yield put(setProfileLoading(false));
   } catch (error) {

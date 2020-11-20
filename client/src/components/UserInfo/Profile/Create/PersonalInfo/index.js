@@ -45,10 +45,10 @@ export default function index({
   const [personalInfo, setPersonalInfo] = useState({
     firstname: profileDetails.firstname,
     lastname: profileDetails.lastname,
-    gender: "",
+    gender:  profileDetails.gender,
     customgender: "",
     familyrelationship: "",
-    zipcode: "",
+    zipcode: profileDetails.zip_code,
     dateofbirth: ""
   });
   console.log(`profileDetails`, profileDetails);
@@ -71,6 +71,8 @@ export default function index({
       return { ...prevPersonalDetails, personalInfo: personalInfo };
     });
   };
+
+  console.log('personalInfo',personalInfo)
   return (
     <CreateProfileStyled data-testid="app-profile">
       <h2>Let's get started!</h2>

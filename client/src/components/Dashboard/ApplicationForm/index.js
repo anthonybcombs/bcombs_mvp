@@ -139,6 +139,12 @@ const ApplicationFormStyled = styled.div`
   }
 `;
 
+
+function isEmailAddress(str) {
+  var pattern =/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return pattern.test(str);  // returns a boolean 
+}
+
 export default function index() {
 
   const [vendor, setVendor] = useState({});
@@ -210,7 +216,8 @@ export default function index() {
   }
 
   const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
-
+  const DATE_FORMAT = "yyyy-MM-dd";
+  
   const [selectedStep, setSelectedStep] = useState(1);
 
   const [numChild, setNumChild] = useState(1);
@@ -222,6 +229,8 @@ export default function index() {
   const [psatCount, setPsatCount] = useState(1);
 
   const [showRelationshipView, setShowRelationshipView ] = useState(false);
+
+  const [isParentAddressRequired,setIsParentAddressRequired] = useState(false)
 
   const handleWizardSelection = (index) => {
     setSelectedStep(index);
@@ -648,6 +657,12 @@ export default function index() {
         let profile = child.profile;
         let gi = child.general_information;
 
+        console.log("isEmailAddress(profile.email_address2)",isEmailAddress(profile.email_address))
+        console.log("isEmailAddress(profile.email_address2)",profile)
+        if( (profile.email_address !== ''  && !isEmailAddress(profile.email_address))) {
+          isValid = false;
+          break;
+        }
 
         if(!profile.first_name ||
           !profile.last_name ||
@@ -655,13 +670,19 @@ export default function index() {
           !profile.gender ||
           !profile.address ||
           !profile.city ||
+          ( profile.phone_number !== '' && profile.phone_number.includes('_')) || 
           !profile.state ||
           !profile.zip_code ||
+          profile.zip_code.length < 5  || 
           !profile.location_site ||
           !profile.child_lives_with ||
           !gi.grade ||
           !gi.school_name ||
-          !gi.mentee_gain) {
+          !gi.mentee_gain ||
+          ( gi.school_phone && gi.school_phone.includes('_')) ||
+          (childsInformation[i].emergency_care_information !== '' &&  childsInformation[i].emergency_care_information.doctor_phone.includes('_')) || 
+          (childsInformation[i].emergency_care_information  !== '' &&  childsInformation[i].emergency_care_information.hospital_phone.includes('_')) 
+          ) {
             isValid = false;
             break;
           }
@@ -674,8 +695,22 @@ export default function index() {
         let parent = parents[i];
         let profile = parent.profile;
         
-        if(!profile.first_name ||
-          !profile.last_name ||
+  
+        if(profile.first_name  === '' || profile.last_name  === '') {
+          isValid = false;
+          break;
+        }
+        if( (profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
+          isValid = false;
+          break;
+        }
+        if( (profile.phone_number !== '' && profile.phone_number.includes('_'))){
+          isValid = false;
+          break;
+
+        }
+        if( !profile.first_name   ||
+          !profile.last_name   ||
           !profile.password ||
           !profile.confirmed_password ||
           !(profile.password == profile.confirmed_password) ||
@@ -685,7 +720,9 @@ export default function index() {
           !profile.goals_child_program ||
           !profile.person_recommend,
           !profile.gender ||
-          !profile.date_of_birth) {
+          !profile.date_of_birth  ||  
+          (isParentAddressRequired && (!profile.address || !profile.zip_code || profile.zip_code.length < 5 || !profile.state || !profile.city))
+          ) {
             isValid = false;
             break;
           }
@@ -696,6 +733,8 @@ export default function index() {
           !emergencyContacts[i].last_name ||
           !emergencyContacts[i].gender ||
           !emergencyContacts[i].mobile_phone ||
+          (emergencyContacts[i].mobile_phone && emergencyContacts[i].mobile_phone.includes('_')) ||
+          (emergencyContacts[i].work_phone && emergencyContacts[i].work_phone.includes('_')  )||
           !emergencyContacts[i].relationship_to_child) {
             isValid = false;
             break;
@@ -817,7 +856,7 @@ export default function index() {
         person_recommend: parent.profile.person_recommend,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
-          DATE_TIME_FORMAT),
+          DATE_FORMAT),
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getAppEtnicities(parent.profile.ethinicity),
@@ -855,7 +894,7 @@ export default function index() {
           age: getAge(childsInformation[i].profile.date_of_birth),
           birthdate: format(
             new Date(childsInformation[i].profile.date_of_birth),
-            DATE_TIME_FORMAT),
+            DATE_FORMAT),
           gender: childsInformation[i].profile.gender,
           phone_type: childsInformation[i].profile.phone_type,
           phone_number: childsInformation[i].profile.phone_number,
@@ -1188,6 +1227,7 @@ export default function index() {
                           errors={errors}
                           emergencyContacts={emergencyContacts}
                           ProfileImg={ProfileImg}
+                          setIsParentAddressRequired={setIsParentAddressRequired}
                         />
                       </div>
                       {selectedStep == 4 && <hr className="style-eight"></hr>}
@@ -1228,18 +1268,19 @@ export default function index() {
                             Next
                           </button>
                         }
-                        {
-                          (selectedStep > 1 && selectedStep != 4) &&
+                        { //
+                          (selectedStep > 1 && selectedStep != 4 ) &&
                           <a href="#" className="left" onClick={(e) => {
                             e.preventDefault();
-              
+                            console.log('Selected Step', selectedStep)
                             if(selectedStep == 3) handleWizardSelection(2);
                             else if(selectedStep == 2) handleWizardSelection(1)
+                            //else if(selectedStep == 4) handleWizardSelection(3)
               
                             scrollToTop("smooth");
       
                           }}>
-                            Previous
+                            Previous1
                           </a>
                         }
                         {
