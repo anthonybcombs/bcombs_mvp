@@ -7,7 +7,7 @@ import FormStyled from './styles'
 import Loading from '../../../helpers/Loading.js'
 
 import { requestVendor } from '../../../redux/actions/Vendors'
-import { requestGetForms, requestUpdateForm, requestAddForm } from '../../../redux/actions/FormBuilder'
+import { requestGetForms, requestUpdateForm, requestAddForm, requestDeleteForm } from '../../../redux/actions/FormBuilder'
 
 import Headers from './headers'
 import List from './list'
@@ -75,6 +75,10 @@ export default (props) => {
   const handleCloneForm = (data) => {
     dispatch(requestAddForm(data))
   }
+
+  const handleDeleteForm = (form_id) => {
+    dispatch(requestDeleteForm(form_id))
+  }
   
   console.log('wewwwwwwwwwwww', { loading, list })
 
@@ -92,6 +96,7 @@ export default (props) => {
             onSetForceCloseDialogs={(bool) => setForceCloseDialogs(bool)}
             onUpdateList={handleUpdateList}
             onCloneForm={handleCloneForm}
+            onDeleteForm={handleDeleteForm}
           />
         )
       }

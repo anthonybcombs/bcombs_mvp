@@ -7,15 +7,17 @@ import {
 
 import RenameModal from './Modals/rename'
 import CloneModal from './Modals/clone'
+import DeleteModal from './Modals/delete'
 
 export default ({
   created_at, updated_at, form_contents, form_id, category, forceCloseDialogs, loading, vendor, user,
 
-  onUpdateList, onCloneForm, onSetForceCloseDialogs
+  onUpdateList, onCloneForm, onDeleteForm
 }) => {
 
   const [renameModal, setRenameModal] = useState(false)
   const [cloneModal, setCloneModal] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
 
   useEffect(() => {
     if (renameModal && forceCloseDialogs) {
@@ -68,6 +70,10 @@ export default ({
           <FontAwesomeIcon
             className='delete-icon'
             icon={faTrash}
+            onClick={e => {
+              e.stopPropagation()
+              setDeleteModal(true)
+            }}
           />
         </div>
       </div>
@@ -103,6 +109,16 @@ export default ({
                 user
               })
             }
+          />
+        )
+      }
+      {
+        deleteModal && (
+          <DeleteModal
+            title={form_contents.formTitle}
+            onCancel={() => setDeleteModal(false)}
+            loading={loading}
+            onSubmit={() => onDeleteForm(form_id)}
           />
         )
       }

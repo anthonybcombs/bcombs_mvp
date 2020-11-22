@@ -5,12 +5,14 @@ import {
   FORM_ADD_MUTATION,
   FORM_UPDATE_MUTATION,
   GET_FORM_BY_FORM_ID,
-  GET_FORMS_BY_VENDOR
+  GET_FORMS_BY_VENDOR,
+  FORM_DELETE_MUTATION
 } from "../../graphql/FormQueryMutation"
 import {
   setAddFormLoading,
   setUpdateFormLoading,
-  setGetFormLoading
+  setGetFormLoading,
+  setDeleteFormLoading
 } from "./Loading";
 
 const addFormToDatabase = application => {
@@ -70,6 +72,22 @@ const updateFormToDatabase = application => {
   });
 };
 
+const deleteFormFromDatabase = form_id => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: FORM_DELETE_MUTATION,
+        variables: { application: { form_id } }
+      })
+
+      return resolve(data.deleteCustomApplicationForm);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+
 
 export const requestGetForms = data => {
   return {
@@ -95,6 +113,12 @@ export const requestUpdateForm = form => {
     form
   };
 };
+export const requestDeleteForm = form_id => {
+  return {
+    type: actionType.REQUEST_DELETE_FORM,
+    form_id
+  };
+}
 export const setViewMode = bool => {
   return {
     type: actionType.SET_VIEW_MODE,
@@ -190,3 +214,23 @@ export function* updateForm({ form }) {
     });
   }
 }
+
+export function* deleteForm({ form_id }) {
+  console.log('@DELETE FORM', form_id)
+  try {
+    yield put(setDeleteFormLoading(true));
+    const response = yield call(deleteFormFromDatabase, form_id);
+    yield put(setDeleteFormLoading(false));
+    yield put({
+      type: actionType.REQUEST_DELETE_FORM_COMPLETED,
+      payload: response
+    });
+  } catch (err) {
+    yield put(setDeleteFormLoading(false));
+    yield put({
+      type: actionType.REQUEST_DELETE_FORM_COMPLETED,
+      payload: {}
+    });
+  }
+}
+

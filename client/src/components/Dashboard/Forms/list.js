@@ -11,7 +11,7 @@ import cloneDeep from 'lodash.clonedeep'
 export default ({
   list, forceCloseDialogs, loading,
   
-  onUpdateList, onCloneForm, onSetForceCloseDialogs
+  onUpdateList, onCloneForm, onDeleteForm, onSetForceCloseDialogs
 }) => {
   const newList = cloneDeep(list)
   const recentList = newList.splice(0, 4)
@@ -33,6 +33,7 @@ export default ({
 
                   onUpdateList={onUpdateList}
                   onCloneForm={onCloneForm}
+                  onDeleteForm={onDeleteForm}
                   onSetForceCloseDialogs={onSetForceCloseDialogs}
                 />
               )
@@ -54,6 +55,7 @@ export default ({
 
                   onUpdateList={onUpdateList}
                   onCloneForm={onCloneForm}
+                  onDeleteForm={onDeleteForm}
                   onSetForceCloseDialogs={onSetForceCloseDialogs}
                 />
               )

@@ -5,6 +5,7 @@ export default function Applications(
     formList: [],
     addForm: {},
     updateForm: {},
+    deleteForm: {},
     selectedForm: {},
     isFormView: false
   },
@@ -25,6 +26,11 @@ export default function Applications(
         ...state,
         updateForm: { ...action.payload },
         addForm: {}
+      };
+    case actionType.REQUEST_DELETE_FORM_COMPLETED:
+      return {
+        ...state,
+        deleteForm: { ...action.payload }
       };
     case actionType.SET_VIEW_MODE:
       return {
