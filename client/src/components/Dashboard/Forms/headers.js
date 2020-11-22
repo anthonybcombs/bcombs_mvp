@@ -26,12 +26,6 @@ export default () => {
       </div>
       <div>
         <div>
-          <button>
-            All
-          </button>
-          <button>
-            Favorites
-          </button>
           <select
             onChange={({ target: { value } }) => {}}
           >
@@ -39,6 +33,9 @@ export default () => {
             <option value='sports'>Sorts</option>
             <option value='teaching'>Teaching</option>
           </select>
+          <button>
+            Favorites
+          </button>
         </div>
         <div>
           <div>

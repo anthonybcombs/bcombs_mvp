@@ -16,7 +16,7 @@ export default (props) => {
   
   const {
     auth, vendors, loading, 
-    form: { formList = [], updateForm, addForm }
+    form: { formList = [], updateForm, addForm, deleteForm }
   } = useSelector(
     ({ auth, vendors, loading, form }) => {
       return { auth, vendors, loading, form }
@@ -63,7 +63,10 @@ export default (props) => {
     }
   }, [updateForm])
 
-  if(addForm && addForm.message == 'successfully created your application form') {
+  if(
+    (addForm && addForm.message == 'successfully created your application form') ||
+    (deleteForm && deleteForm.message == 'successfully delete you application form')
+  ) {
     window.location.reload()
   }
 
@@ -91,7 +94,7 @@ export default (props) => {
         ) : (
           <List
             list={list}
-            loading={loading.updateForm || loading.addForm}
+            loading={loading.updateForm || loading.addForm || loading.deleteForm}
             forceCloseDialogs={forceCloseDialogs}
             onSetForceCloseDialogs={(bool) => setForceCloseDialogs(bool)}
             onUpdateList={handleUpdateList}
