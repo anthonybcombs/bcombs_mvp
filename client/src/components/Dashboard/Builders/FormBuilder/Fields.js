@@ -18,8 +18,9 @@ export const Items = {
   },
   prime: {
     name: 'name',
-    primeFile: 'primeFile',
     address: 'address',
+    login: 'login',
+    primeFile: 'primeFile',
     rating: 'rating',
     email: 'email',
     date: 'date',
@@ -320,6 +321,30 @@ export const PrimeFields = [
   },
   {
     fields: [
+      { label: 'Street Address', type: 'text', tag: 'input', placeholder: 'Street Address', column: '4'},
+      { label: 'Street Address Line 2', type: 'text', tag: 'input', placeholder: 'Street Address Line 2', column: '4'},
+      { label: 'State / Province / Region', type: 'state', tag: 'select', placeholder: 'State / Province / Region', column: '2'},
+      { label: 'City', type: 'text', tag: 'input', placeholder: 'City', column: '2'},
+      { label: 'Postal / Zip Code', type: 'text', tag: 'input', placeholder: 'Postal / Zip Code', column: '2'},
+      { label: 'Country', type: 'country', tag: 'select', placeholder: 'Country', column: '2', options: [] }
+    ],
+    label: 'Address',
+    type: 'address',
+    gridMax: 4,
+    includeLogic: false
+  },
+  {
+    fields: [
+      { label: 'Username / Email', type: 'text', tag: 'input', placeholder: 'Username / Email', column: '4'},
+      { label: 'Password', type: 'password', tag: 'input', placeholder: 'Password', column: '4'}
+    ],
+    label: 'Login',
+    type: 'login',
+    gridMax: 4,
+    includeLogic: false
+  },
+  {
+    fields: [
       {
         label: 'File Upload',
         tag: 'file',
@@ -340,20 +365,6 @@ export const PrimeFields = [
     includeLogic: false,
     gridMax: 1,
     isQA: true
-  },
-  {
-    fields: [
-      { label: 'Street Address', type: 'text', tag: 'input', placeholder: 'Street Address', column: '4'},
-      { label: 'Street Address Line 2', type: 'text', tag: 'input', placeholder: 'Street Address Line 2', column: '4'},
-      { label: 'State / Province / Region', type: 'state', tag: 'select', placeholder: 'State / Province / Region', column: '2'},
-      { label: 'City', type: 'text', tag: 'input', placeholder: 'City', column: '2'},
-      { label: 'Postal / Zip Code', type: 'text', tag: 'input', placeholder: 'Postal / Zip Code', column: '2'},
-      { label: 'Country', type: 'country', tag: 'select', placeholder: 'Country', column: '2', options: [] }
-    ],
-    label: 'Address',
-    type: 'address',
-    gridMax: 4,
-    includeLogic: false
   },
   {
     fields: [
