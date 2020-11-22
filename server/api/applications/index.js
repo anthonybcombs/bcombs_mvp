@@ -836,7 +836,7 @@ export const deleteCustomApplicationForm = async ({
     console.log("delete custom application form error", error);
   } finally {
     await db.close();
-    return application;
+    return result;
   }
 }
 
