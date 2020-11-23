@@ -893,30 +893,56 @@ export const getCustomApplicationFormByFormId = async form_id => {
   }
 }
 
-export const getVendorCustomApplicationForms = async ({vendor, category}) => {
+export const getVendorCustomApplicationForms = async ({vendor, category = ""}) => {
   const db = makeDb();
   let applications;
   try {
-    applications = await db.query(
-      `
-        SELECT
-        id,
-        BIN_TO_UUID(form_id) as form_id,
-        BIN_TO_UUID(user) as user,
-        BIN_TO_UUID(vendor) as vendor,
-        CONVERT(form_contents USING utf8) as form_contents,
-        created_at,
-        updated_at,
-        category,
-        status
-        FROM vendor_custom_application
-        WHERE vendor=UUID_TO_BIN(?) AND category=(?) AND status <> 'deleted'
-      `,
-      [
-        vendor,
-        category
-      ]
-    )
+
+    if(category) {
+      applications = await db.query(
+        `
+          SELECT
+          id,
+          BIN_TO_UUID(form_id) as form_id,
+          BIN_TO_UUID(user) as user,
+          BIN_TO_UUID(vendor) as vendor,
+          CONVERT(form_contents USING utf8) as form_contents,
+          created_at,
+          updated_at,
+          category,
+          status
+          FROM vendor_custom_application
+          WHERE vendor=UUID_TO_BIN(?) AND category=(?) AND status <> 'deleted'
+          ORDER BY updated_at DESC
+        `,
+        [
+          vendor,
+          category
+        ]
+      )
+    } else {
+      applications = await db.query(
+        `
+          SELECT
+          id,
+          BIN_TO_UUID(form_id) as form_id,
+          BIN_TO_UUID(user) as user,
+          BIN_TO_UUID(vendor) as vendor,
+          CONVERT(form_contents USING utf8) as form_contents,
+          created_at,
+          updated_at,
+          category,
+          status
+          FROM vendor_custom_application
+          WHERE vendor=UUID_TO_BIN(?) AND status <> 'deleted'
+          ORDER BY updated_at DESC
+        `,
+        [
+          vendor
+        ]
+      )
+    }
+
 
     for(const application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
