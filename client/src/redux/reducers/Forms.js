@@ -13,11 +13,19 @@ export default function Applications(
 ) {
   switch (action.type) {
     case actionType.REQUEST_GET_FORMS_COMPLETED:
-      return { ...state, formList: [...action.payload] };
+      return {
+        ...state,
+        formList: [...action.payload],
+        addForm: {},
+        updateForm: {},
+        deleteForm: {}
+      };
     case actionType.REQUEST_ADD_FORM_COMPLETED:
       return {
         ...state,
-        addForm: { ...action.payload }
+        addForm: { ...action.payload },
+        updateForm: {},
+        deleteForm: {}
       };
     case actionType.REQUEST_GET_FORM_ID_COMPLETED:
       return { ...state, selectedForm: {...action.payload} };
@@ -25,12 +33,15 @@ export default function Applications(
       return {
         ...state,
         updateForm: { ...action.payload },
-        addForm: {}
+        addForm: {},
+        deleteForm: {}
       };
     case actionType.REQUEST_DELETE_FORM_COMPLETED:
       return {
         ...state,
-        deleteForm: { ...action.payload }
+        deleteForm: { ...action.payload },
+        addForm: {},
+        updateForm: {}
       };
     case actionType.SET_VIEW_MODE:
       return {

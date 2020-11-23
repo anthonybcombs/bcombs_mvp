@@ -26,7 +26,20 @@ export default (props) => {
   
   const [isLoading, setIsLoading] = useState(false)
   const [list, setList] = useState(formList)
-  const [forceCloseDialogs, setForceCloseDialogs] = useState(true)
+  const [category, setCategory] = useState('')
+
+  const [renameModal, setRenameModal] = useState(false)
+  const [cloneModal, setCloneModal] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
+
+  const GetRequestFormList = (value) => {
+    if (value !== undefined) {
+      setCategory(value)
+    }
+
+    dispatch(requestGetForms({ vendor: vendors[0].id, category: value || category }))
+    setIsLoading(true)
+  }
 
   useEffect(() => {
     if (auth.user_id) {
@@ -37,8 +50,7 @@ export default (props) => {
 
   useEffect(() => {
     if(vendors && vendors.length > 0) {
-      dispatch(requestGetForms({ vendor: vendors[0].id, category: '' }))
-      setIsLoading(true)
+      GetRequestFormList()
     }
   }, [vendors])
  
@@ -59,19 +71,25 @@ export default (props) => {
       setList(update(list, {
         [list.findIndex(e => e.form_id === updateForm.form.form_id)]: { $merge: updateForm.form }
       }))
-      setForceCloseDialogs(true)
+      setRenameModal(false)
     }
   }, [updateForm])
 
-  if(
-    (addForm && addForm.message == 'successfully created your application form') ||
-    (deleteForm && deleteForm.message == 'successfully delete you application form')
-  ) {
-    window.location.reload()
-  }
+  useEffect(() => {
+    if (addForm && addForm.message == 'successfully created your application form') {
+      GetRequestFormList()
+      setCloneModal(false)
+    }
+  }, [addForm])
+
+  useEffect(() => {
+    if (deleteForm && deleteForm.message == 'successfully delete you application form') {
+      GetRequestFormList()
+      setDeleteModal(false)
+    }
+  }, [deleteForm])
 
   const handleUpdateList = (data) => {
-    setForceCloseDialogs(false)
     dispatch(requestUpdateForm(data))
   }
 
@@ -82,12 +100,18 @@ export default (props) => {
   const handleDeleteForm = (form_id) => {
     dispatch(requestDeleteForm(form_id))
   }
+
+  const handleChangeFilter = ({ target: { value } }) => {
+    GetRequestFormList(value)
+  }
   
   console.log('wewwwwwwwwwwww', { loading, list })
 
   return (
     <FormStyled>
-      <Headers />
+      <Headers
+        onChangeFilter={handleChangeFilter}
+      />
       {
         isLoading ? (
           <Loading />
@@ -95,11 +119,17 @@ export default (props) => {
           <List
             list={list}
             loading={loading.updateForm || loading.addForm || loading.deleteForm}
-            forceCloseDialogs={forceCloseDialogs}
-            onSetForceCloseDialogs={(bool) => setForceCloseDialogs(bool)}
             onUpdateList={handleUpdateList}
             onCloneForm={handleCloneForm}
             onDeleteForm={handleDeleteForm}
+
+            //for modals
+            renameModal={renameModal}
+            cloneModal={cloneModal}
+            deleteModal={deleteModal}
+            setRenameModal={(data) => setRenameModal(data)}
+            setCloneModal={(data) => setCloneModal(data)}
+            setDeleteModal={(data) => setDeleteModal(data)}
           />
         )
       }

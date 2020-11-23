@@ -10,20 +10,23 @@ import CloneModal from './Modals/clone'
 import DeleteModal from './Modals/delete'
 
 export default ({
-  created_at, updated_at, form_contents, form_id, category, forceCloseDialogs, loading, vendor, user,
+  created_at, updated_at, form_contents, form_id, category, loading, vendor, user,
+  renameModal, cloneModal, deleteModal,
 
-  onUpdateList, onCloneForm, onDeleteForm
+  onUpdateList, onCloneForm, onDeleteForm, setRenameModal, setCloneModal, setDeleteModal
 }) => {
 
-  const [renameModal, setRenameModal] = useState(false)
-  const [cloneModal, setCloneModal] = useState(false)
-  const [deleteModal, setDeleteModal] = useState(false)
-
-  useEffect(() => {
-    if (renameModal && forceCloseDialogs) {
-      setRenameModal(false)
-    }
-  }, [forceCloseDialogs])
+  // useEffect(() => {
+  //   if (renameModal) {
+  //     setRenameModal({ bool: false, form_id })
+  //   }
+  //   if (deleteModal) {
+  //     setDeleteModal({ bool: false, form_id })
+  //   }
+  //   if (deleteModal) {
+  //     setDeleteModal({ bool: false, form_id })
+  //   }
+  // }, [renameModal, cloneModal, deleteModal])
   
   const handleClickForm = () => {
     document.getElementById(`trigger-click-${form_id}`).click()
@@ -47,7 +50,7 @@ export default ({
             icon={faEdit}
             onClick={e => {
               e.stopPropagation()
-              setRenameModal(true)
+              setRenameModal({ bool: true, form_id })
             }}
           />
         </div>
@@ -64,7 +67,7 @@ export default ({
             icon={faCopy}
             onClick={e => {
               e.stopPropagation()
-              setCloneModal(true)
+              setCloneModal({ bool: true, form_id })
             }}
           />
           <FontAwesomeIcon
@@ -72,7 +75,7 @@ export default ({
             icon={faTrash}
             onClick={e => {
               e.stopPropagation()
-              setDeleteModal(true)
+              setDeleteModal({ bool: true, form_id })
             }}
           />
         </div>
@@ -80,10 +83,10 @@ export default ({
 
       {/* Modals */}
       {
-        renameModal && (
+        (renameModal.bool && renameModal.form_id === form_id) && (
           <RenameModal
             title={form_contents.formTitle}
-            onCancel={() => setRenameModal(false)}
+            onCancel={() => setRenameModal({ bool: false, form_id })}
             loading={loading}
             onSubmit={data => 
               onUpdateList({
@@ -96,10 +99,10 @@ export default ({
         )
       }
       {
-        cloneModal && (
+        (cloneModal.bool && cloneModal.form_id === form_id) && (
           <CloneModal
             title={form_contents.formTitle}
-            onCancel={() => setCloneModal(false)}
+            onCancel={() => setCloneModal({ bool: false, form_id })}
             loading={loading}
             onSubmit={data => 
               onCloneForm({
@@ -113,10 +116,10 @@ export default ({
         )
       }
       {
-        deleteModal && (
+        (deleteModal.bool && deleteModal.form_id === form_id) && (
           <DeleteModal
             title={form_contents.formTitle}
-            onCancel={() => setDeleteModal(false)}
+            onCancel={() => setDeleteModal({ bool: false, form_id })}
             loading={loading}
             onSubmit={() => onDeleteForm(form_id)}
           />

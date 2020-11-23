@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle, faArrowUp, faArrowDown, faTh, faBars } from '@fortawesome/free-solid-svg-icons'
 
-export default () => {
+export default ({ onChangeFilter }) => {
   return (
     <div>
       <div>
@@ -27,10 +27,10 @@ export default () => {
       <div>
         <div>
           <select
-            onChange={({ target: { value } }) => {}}
+            onChange={onChangeFilter}
           >
-            <option value=''>Filter by category</option>
-            <option value='sports'>Sorts</option>
+            <option value=''>All</option>
+            <option value='sports'>Sports</option>
             <option value='teaching'>Teaching</option>
           </select>
           <button>

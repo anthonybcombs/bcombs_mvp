@@ -9,9 +9,9 @@ import Form from './form'
 import cloneDeep from 'lodash.clonedeep'
 
 export default ({
-  list, forceCloseDialogs, loading,
+  list, loading, renameModal, cloneModal, deleteModal,
   
-  onUpdateList, onCloneForm, onDeleteForm, onSetForceCloseDialogs
+  onUpdateList, onCloneForm, onDeleteForm, setRenameModal, setCloneModal, setDeleteModal
 }) => {
   const newList = cloneDeep(list)
   const recentList = newList.splice(0, 4)
@@ -29,12 +29,17 @@ export default ({
                   {...e}
                   key={`recent-${index}`}
                   loading={loading}
-                  forceCloseDialogs={forceCloseDialogs}
 
                   onUpdateList={onUpdateList}
                   onCloneForm={onCloneForm}
                   onDeleteForm={onDeleteForm}
-                  onSetForceCloseDialogs={onSetForceCloseDialogs}
+
+                  renameModal={renameModal}
+                  cloneModal={cloneModal}
+                  deleteModal={deleteModal}
+                  setRenameModal={setRenameModal}
+                  setCloneModal={setCloneModal}
+                  setDeleteModal={setDeleteModal}
                 />
               )
             })
@@ -51,12 +56,17 @@ export default ({
                   {...e}
                   key={`all-${index}`}
                   loading={loading}
-                  forceCloseDialogs={forceCloseDialogs}
 
                   onUpdateList={onUpdateList}
                   onCloneForm={onCloneForm}
                   onDeleteForm={onDeleteForm}
-                  onSetForceCloseDialogs={onSetForceCloseDialogs}
+
+                  renameModal={renameModal}
+                  cloneModal={cloneModal}
+                  deleteModal={deleteModal}
+                  setRenameModal={setRenameModal}
+                  setCloneModal={setCloneModal}
+                  setDeleteModal={setDeleteModal}
                 />
               )
             })

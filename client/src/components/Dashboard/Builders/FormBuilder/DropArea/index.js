@@ -272,7 +272,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
             onChange={({ target: { value } }) => setFormCategory(value)}
           >
             <option value=''>Select form category</option>
-            <option value='sports'>Sorts</option>
+            <option value='sports'>Sports</option>
             <option value='teaching'>Teaching</option>
           </select>
         </div>
