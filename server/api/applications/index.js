@@ -737,7 +737,8 @@ export const createCustomApplication = async ({
         BIN_TO_UUID(vendor) as vendor,
         CONVERT(form_contents USING utf8) as form_contents,
         created_at,
-        category
+        category,
+        status
       FROM vendor_custom_application 
       WHERE id=?`,
       [lastId]
@@ -799,7 +800,8 @@ export const updateCustomApplicationForm = async ({
         CONVERT(form_contents USING utf8) as form_contents,
         created_at,
         updated_at,
-        category
+        category,
+        status
       FROM vendor_custom_application 
       WHERE form_id=UUID_TO_BIN(?)`,
       [form_id]
@@ -862,7 +864,9 @@ export const getCustomApplicationFormByFormId = async form_id => {
         BIN_TO_UUID(vendor) as vendor,
         CONVERT(form_contents USING utf8) as form_contents,
         created_at,
-        updated_at
+        updated_at,
+        category,
+        status
         FROM vendor_custom_application
         WHERE form_id=UUID_TO_BIN(?) AND status <> 'deleted'
       `,
