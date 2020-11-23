@@ -87,6 +87,7 @@ export default (props) => {
 
   return (
     <FormStyled>
+      <h2>Form Manager</h2>
       <Headers />
       {
         isLoading ? (
