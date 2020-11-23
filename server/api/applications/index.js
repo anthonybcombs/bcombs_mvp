@@ -718,7 +718,7 @@ export const createCustomApplication = async ({
         UUID_TO_BIN(UUID()),
         UUID_TO_BIN(?),
         UUID_TO_BIN(?),
-        ?)`,
+        ?, ?)`,
       [
         user,
         vendor,
@@ -779,7 +779,7 @@ export const updateCustomApplicationForm = async ({
         UPDATE vendor_custom_application SET
         form_contents=?,
         updated_at=?,
-        category
+        category=?
         WHERE form_id=UUID_TO_BIN(?)
       `,
       [
