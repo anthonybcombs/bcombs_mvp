@@ -785,8 +785,8 @@ export const updateCustomApplicationForm = async ({
       [
         form_contents,
         currentDate,
-        form_id,
-        category
+        category,
+        form_id
       ]
     )
 
