@@ -10,6 +10,7 @@ import { faEye, faCheck, faBars } from '@fortawesome/free-solid-svg-icons'
 import { Items } from '../Fields'
 import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
+import PreviewWarningModal from '../PreviewWarningModal'
 
 import { requestAddForm, requestUpdateForm } from "../../../../../redux/actions/FormBuilder"
 import Loading from '../../../../../helpers/Loading';
@@ -23,6 +24,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const [pageBreaks, getPageBreaks] = useState([])
   const [lastField, getLastField] = useState({})
   const [fieldHasChanged, setFieldHasChanged] = useState(!form_id)
+  const [previewWarning, setPreviewWarning] = useState(false)
 
   const reMapFields = (fields, id) => {
     return fields.map((e, i) => ({ ...e, id: `${e.tag}${i}_${id}`, value: '' }))
@@ -328,8 +330,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
               className='btn preview'
               onClick={e => {
                 e.stopPropagation()
-                alert('Please save your changes to enable preview.')
-                // handleViewForm()
+                setPreviewWarning(true)
               }}
             >
               <FontAwesomeIcon
@@ -355,6 +356,11 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
           <span>Save</span>
         </button>
       </div>
+      {
+        previewWarning && (
+          <PreviewWarningModal onClose={() => setPreviewWarning(false)}/>
+        )
+      }
     </div>
   ) : (
     <Loading />
