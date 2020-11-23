@@ -360,7 +360,7 @@ export default styled.div`
 
   // default svg
   .sortableGroup svg:not(.exclude-global) {
-    color: intial;
+    color: initial;
     padding: 10px;
     font-size: 18px;
     cursor: pointer;
