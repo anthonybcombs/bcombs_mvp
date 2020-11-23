@@ -698,7 +698,8 @@ export const getApplicationHistoryByUser = async id => {
 export const createCustomApplication = async ({
   user,
   vendor,
-  form_contents
+  form_contents,
+  category
 }) => {
   const db = makeDb();
   let result = {};
@@ -711,7 +712,8 @@ export const createCustomApplication = async ({
         form_id,
         user,
         vendor,
-        form_contents
+        form_contents,
+        category
       ) VALUES (
         UUID_TO_BIN(UUID()),
         UUID_TO_BIN(?),
@@ -720,7 +722,8 @@ export const createCustomApplication = async ({
       [
         user,
         vendor,
-        form_contents
+        form_contents,
+        category
       ]
     );
 
@@ -733,7 +736,8 @@ export const createCustomApplication = async ({
         BIN_TO_UUID(user) as user,
         BIN_TO_UUID(vendor) as vendor,
         CONVERT(form_contents USING utf8) as form_contents,
-        created_at
+        created_at,
+        category
       FROM vendor_custom_application 
       WHERE id=?`,
       [lastId]
@@ -761,7 +765,8 @@ export const updateCustomApplicationForm = async ({
   form_id,
   user,
   vendor,
-  form_contents
+  form_contents,
+  category
 }) => {
   const db = makeDb();
   let result;
@@ -773,13 +778,15 @@ export const updateCustomApplicationForm = async ({
       `
         UPDATE vendor_custom_application SET
         form_contents=?,
-        updated_at=?
+        updated_at=?,
+        category
         WHERE form_id=UUID_TO_BIN(?)
       `,
       [
         form_contents,
         currentDate,
-        form_id
+        form_id,
+        category
       ]
     )
 
@@ -791,7 +798,8 @@ export const updateCustomApplicationForm = async ({
         BIN_TO_UUID(vendor) as vendor,
         CONVERT(form_contents USING utf8) as form_contents,
         created_at,
-        updated_at
+        updated_at,
+        category
       FROM vendor_custom_application 
       WHERE form_id=UUID_TO_BIN(?)`,
       [form_id]
