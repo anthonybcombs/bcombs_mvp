@@ -824,7 +824,7 @@ export const deleteCustomApplicationForm = async ({
     result = await db.query(
       `
         UPDATE vendor_custom_application SET
-        status='deleted',
+        status='deleted'
         WHERE form_id=UUID_TO_BIN(?)
       `,
       [
@@ -895,7 +895,8 @@ export const getVendorCustomApplicationForms = async ({vendor, category}) => {
         CONVERT(form_contents USING utf8) as form_contents,
         created_at,
         updated_at,
-        category
+        category,
+        status
         FROM vendor_custom_application
         WHERE vendor=UUID_TO_BIN(?) AND category=(?) AND status <> 'deleted'
       `,

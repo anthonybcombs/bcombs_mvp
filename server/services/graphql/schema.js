@@ -1069,6 +1069,7 @@ const queryTypes = `
         form_id: String
         form_contents: CustomForm
         category: String
+        status: String
         created_at: Date
         updated_at: Date
     }
