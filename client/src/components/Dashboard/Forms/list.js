@@ -20,7 +20,7 @@ export default ({
   return (
     <div className='form-list-wrapper'>
       <div className='form-listGroup form-list-recent'>
-        <h4 class="sub-header">Recent</h4>
+        <h4 className="sub-header">Recent</h4>
         <div className='form-list'>
           {
             recentList.map((e, index) => {
@@ -47,7 +47,7 @@ export default ({
         </div>
       </div>
       <div className='orm-listGroup form-list-all'>
-        <h4 class="sub-header">All</h4>
+        <h4 className="sub-header">All</h4>
         <div className='form-list'>
           {
             allList.map((e, index) => {
