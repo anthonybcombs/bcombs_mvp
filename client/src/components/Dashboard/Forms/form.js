@@ -61,7 +61,13 @@ export default ({
           }
         </div>
         <div className='form-category'>
-          <label>{category || 'No Category'}</label>
+          <label>
+            {
+              category
+                ? category.charAt(0).toUpperCase() + category.slice(1)
+                : 'No Category'
+            }
+          </label>
           <div className='category-actions'>
             <FontAwesomeIcon
               className='copy-icon'
