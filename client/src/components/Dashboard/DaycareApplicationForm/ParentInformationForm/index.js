@@ -398,7 +398,8 @@ export default function index({
 
     readOnlyEthinicity = readOnlyEthinicity.slice(0, -1);
   }
-
+  console.log('parentProfile123123',parentProfile)
+  console.log('parentProfile123123 childProfile',childProfile)
   return (
     <ParentInformationStyled>
       <h3 className="heading">
@@ -1632,7 +1633,7 @@ export default function index({
             <div>
               <label className="field-label-simple">
                 <span className="required">*</span> What are some of your
-                expectations from the Mentoring Program?
+                expectations from our Program?
               </label>
               <textarea
                 name={`parent_goals${counter - 1}`}
@@ -1671,7 +1672,7 @@ export default function index({
             <div>
               <label className="field-label-simple">
                 <span className="required">*</span> Why are you referring your
-                child to the program?
+                child to our program?
               </label>
               <textarea
                 name={`parent_child_goals${counter - 1}`}

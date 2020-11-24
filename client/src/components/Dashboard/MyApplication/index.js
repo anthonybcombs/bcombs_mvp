@@ -1347,7 +1347,7 @@ export default function index() {
       }])
     }
   }
-
+  console.log('childInformation123123123',childInformation)
   return (
     <MyApplicationStyled>
       {
@@ -1442,6 +1442,7 @@ export default function index() {
                                 isUpdate={true}
                                 emergencyContacts={emergencyContacts}
                                 selectedApplication={selectedApplication?.child}
+                                childProfile={childInformation?.profile}
                               />
                               <hr className="style-eight"></hr>
                               <RelationshipToChildStyled
@@ -1496,6 +1497,7 @@ export default function index() {
                               emergencyContacts={emergencyContacts}
                               errors={errors}
                               selectedApplication={selectedApplication}
+                              childProfile={childInformation}
                             />
                             <hr className="style-eight"></hr>
                             <TermsWaiverFormViewStyled
