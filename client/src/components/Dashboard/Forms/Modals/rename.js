@@ -5,61 +5,77 @@ import styled from 'styled-components'
 import Loading from '../loading'
 
 const RenameModalStyled = styled.div`
-  h2 {
-    color: #F26E21;
-  }
+.modal-content {
+  position: relative;
+  top: 100px;
+  width: auto;
+  max-width: 500px;
+  padding: 0;
+}
+.close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  color: #fff;
+}
+.modal-header {
+  padding: 1em;
+  background-color: #f26e21;
+  color: #fff;
+}
+.modal-container {
+  background-color: #fff;
+  padding: 20px 25px;
+  padding-top: 3rem;
+}
+.field-input {
+  position: relative;
 
-  .details {
-    text-align: justify;
-  }
+  border: 0;
+  cursor: text;
+  color: #555;
+  width: 100%;
+  padding: 5px 0;
+  font-size: 16px;
+  line-height: 1.8;
+  border-radius: 0;
+  text-indent: 5px;
+  font-family: inherit;
+  border-bottom: 1.65px solid #ccc;
 
-  .modal-footer {
-    width: 100%;
-    text-align: center
-  }
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
 
-  .closeBtn {
-    font-size: 1em;
-    color: #fff;
-    background-color: #f26e21;
-    border-radius: 4px;
-    padding: 10px 15px;
-    border: 0;
-  }
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 
+  padding: 1.5rem;
+}
+.submitBtn {
+  width: 100%;
+  color: white;
+  border: none;
+  padding: 10px;
+  max-width: 100px;
+  background-color: #f26e21;
+  font-size: 0.8em !important;
+  border-radius: 0 !important;
+  transition: .15s ease-in-out;
+}
+.submitBtn:hover {
+  background: #e47120;
+}
+
+
+
+@media (max-width: 500px) {
   .modal-content {
-    margin: 1em auto;
-    padding: 0 2em 1em 2em;
-    width: 20%;
-    position: relative;
+    max-width: 300px;
   }
-  @media screen and (max-width: 1920px) {
-    .modal-content {
-      margin: 1.5em auto;
-      width: 35%;
-    }
-    #content {
-      justify-content: center;
-      display: grid;
-      grid-gap: 1%;
-      margin: 0 50px;
-    }
-    button[type='submit'] {
-      width: 30%;
-    }
-  }
-  @media screen and (max-width: 1024px) {
-    .modal-content {
-      margin: 1.5em auto;
-      width: 50%;
-    }
-  }
-  @media screen and (max-width: 768px) {
-    .modal-content {
-      margin: 1.5em auto;
-      width: 62%;
-    }
-  }
+}
 `;
 export default function index({ onCancel, onSubmit, title = '', loading }) {
 
@@ -70,14 +86,18 @@ export default function index({ onCancel, onSubmit, title = '', loading }) {
       data-testid='app-big-calendar-create-modal'
       className='modal'>
       <div className='modal-content'>
-        <h2>
-          Rename form
-        </h2>
-
-        <div className='details'>
+        <span
+          className="close"
+          onClick={onCancel}
+        >
+          &times;
+        </span>
+        <div className='modal-header'>Rename form</div>
+        <div className='modal-container'>
           <input
             id='title'
             name='title'
+            className='field-input'
             placeholder='Form Title'
             value={formTitle}
             onChange={({ target: { value } }) => setFormTitle(value)}
@@ -89,12 +109,12 @@ export default function index({ onCancel, onSubmit, title = '', loading }) {
               <Loading />
             ) : (
               <>
-                <button
+                {/* <button
                   className='closeBtn'
                   onClick={onCancel}
                 >
                   Cancel
-                </button>
+                </button> */}
                 <button
                   className='submitBtn'
                   onClick={() => {
