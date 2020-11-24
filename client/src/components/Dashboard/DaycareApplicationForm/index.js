@@ -494,7 +494,7 @@ export default function index() {
     right: "15px"
   }
 
-  const setupParentsList = () => {
+  const setupParentsList = (childProfile) => {
     let parents = [];
 
     parentsInformation.map((parent) => {
@@ -518,7 +518,7 @@ export default function index() {
         address: parent.profile.address,
         city: parent.profile.city,
         state: parent.profile.state,
-        zip_code: parent.profile.zip_code,
+        zip_code: parent.profile.zip_code !== '' ? parent.profile.zip_code : childProfile.zip_code,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
           DATE_TIME_FORMAT),
@@ -609,7 +609,7 @@ export default function index() {
           prev_school_state: childsInformation[i].general_information.prev_school_state,
           prev_school_zip_code: childsInformation[i].general_information.prev_school_zip_code
         },
-        parents: setupParentsList(),
+        parents: setupParentsList( childsInformation[i].profile),
         section1_signature: termsWaiver.section1.signature,
         section1_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
         section2_signature: termsWaiver.section2.signature,

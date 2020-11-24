@@ -1633,7 +1633,7 @@ export default function index({
             <div>
               <label className="field-label-simple">
                 <span className="required">*</span> What are some of your
-                expectations from our Program?
+                expectations from our program?
               </label>
               <textarea
                 name={`parent_goals${counter - 1}`}

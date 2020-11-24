@@ -588,26 +588,27 @@ export const addApplicationHistory = async ({
   }
 };
 
-export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id = "" }) => {
+export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id = '' }) => {
   const db = makeDb();
   let result;
 
+  let values = custom_app_id !== '' ? [app_id, custom_app_id, user_id] : [app_id, user_id]
   try {
     await db.query(
       `
         INSERT INTO application_user(
           app_user_id,
           app_id,
-          custom_app_id,
+          ${custom_app_id !== '' ? 'custom_app_id,' : ''}
           user_id
         ) VALUES (
           UUID_TO_BIN(UUID()),
           UUID_TO_BIN(?),
-          UUID_TO_BIN(?),
+          ${custom_app_id !== '' ? 'UUID_TO_BIN(?),' : ''}
           UUID_TO_BIN(?)
         )
       `,
-      [app_id, custom_app_id, user_id]
+      values
     );
   } catch (error) {
     console.log("add application user error", error);
@@ -633,7 +634,6 @@ export const getUserApplicationsByUserId = async user_id => {
       `,
       [user_id]
     );
-
     for (const ua of userApplications) {
       const application = await getApplicationByAppId(ua.app_id);
       applications.push(application);
