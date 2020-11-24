@@ -824,7 +824,7 @@ export default function index() {
     }
   }
 
-  const setupParentsList = () => {
+  const setupParentsList = (childProfile) => {
     let parents = [];
 
     parentsInformation.map((parent) => {
@@ -852,7 +852,7 @@ export default function index() {
         address: parent.profile.address,
         city: parent.profile.city,
         state: parent.profile.state,
-        zip_code: parent.profile.zip_code,
+        zip_code: parent.profile.zip_code !== '' ?  parent.profile.zip_code : childProfile.zip_code,
         person_recommend: parent.profile.person_recommend,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
@@ -943,7 +943,7 @@ export default function index() {
           hospital_preference: childsInformation[i].emergency_care_information.hospital_preference,
           hospital_phone: childsInformation[i].emergency_care_information.hospital_phone
         },
-        parents: setupParentsList(),
+        parents: setupParentsList(childsInformation[i].profile),
         section1_signature: termsWaiver.section1.signature,
         section1_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
         section2_signature: termsWaiver.section2.signature,
