@@ -575,8 +575,8 @@ export default function index({
                       isReadonly &&
                       !isVendorView &&
                       pastParentInformation &&
-                      (pastParentInformation.date_of_birth ||
-                        pastParentInformation.date_of_birth == "") &&
+                      (pastParentInformation.birthdate ||
+                        pastParentInformation.birthdate == "") &&
                       parentProfile.date_of_birth.toString() !=
                         new Date(pastParentInformation.birthdate).toString()
                         ? "field-input birthdate-field highlights"
@@ -1006,7 +1006,6 @@ export default function index({
                 type="text"
                 id={`parent_emailaddress_${counter - 1}`}
                 defaultValue={parentProfile.email_address}
-                defaultValue={parentProfile?.email_address}
                 readOnly={isReadonly}
                 name={"parent_emailaddress" + (counter - 1)}
                 className={
