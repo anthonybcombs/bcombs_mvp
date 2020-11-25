@@ -36,8 +36,8 @@ export default (props) => {
     if (value !== undefined) {
       setCategory(value)
     }
-
-    dispatch(requestGetForms({ vendor: vendors[0].id, category: value || category }))
+    console.log('yawaaaaaaaa', value)
+    dispatch(requestGetForms({ vendor: vendors[0].id, category: value }))
     setIsLoading(true)
   }
 
@@ -61,9 +61,9 @@ export default (props) => {
   }, [loading.getForm])
 
   useEffect(() => {
-    if (formList.length) {
+    // if (formList.length) {
       setList(formList)
-    }
+    // }
   }, [formList])
 
   useEffect(() => {
@@ -105,7 +105,7 @@ export default (props) => {
     GetRequestFormList(value)
   }
   
-  console.log('wewwwwwwwwwwww', { loading, list })
+  // console.log('wewwwwwwwwwwww', { loading, list })
 
   return (
     <FormStyled>

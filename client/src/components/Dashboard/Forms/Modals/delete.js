@@ -47,7 +47,7 @@ const RenameModalStyled = styled.div`
     -moz-appearance: none;
   }
 
-  .modal-footer {
+  .modal-footer:not(.loading) {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -111,7 +111,7 @@ export default function index({ onCancel, onSubmit, title = '', loading }) {
         <div className='modal-container'>
           Are you sure you want to delete form {title}?
         </div>
-        <div className='modal-footer'>
+        <div className={`modal-footer ${loading ? 'loading' : ''}`}>
           {
             loading ? (
               <Loading />

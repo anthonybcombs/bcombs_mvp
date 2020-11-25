@@ -47,7 +47,7 @@ const RenameModalStyled = styled.div`
     -moz-appearance: none;
   }
 
-  .modal-footer {
+  .modal-footer:not(.loading) {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -104,7 +104,7 @@ export default function index({ onCancel, onSubmit, title = '', loading }) {
               onChange={({ target: { value } }) => setFormTitle(value)}
             />
           </div>
-          <div className='modal-footer'>
+          <div className={`modal-footer ${loading ? 'loading' : ''}`}>
             {
               loading ? (
                 <Loading />
