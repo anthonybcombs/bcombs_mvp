@@ -106,7 +106,7 @@ const SortableGroup = React.forwardRef(
             />
             {
               isActive && (
-                <div>
+                <div className='title-action'>
                   <div className='tooltip-wrapper tooltip-left editGroupName'>
                     <FontAwesomeIcon
                       icon={showLabel ? faEye : faEyeSlash}
@@ -118,7 +118,7 @@ const SortableGroup = React.forwardRef(
                     />
                     <span className='tooltip'>{`${showLabel ? 'Hide' : 'Show'} Title`}</span>
                   </div>
-                  {
+                  {/* {
                     (!enableEditGroupName && showLabel) && (
                       <div className='tooltip-wrapper tooltip-left editGroupName'>
                         <FontAwesomeIcon
@@ -136,7 +136,7 @@ const SortableGroup = React.forwardRef(
                       </div>
                       
                     )
-                  }
+                  } */}
                 </div>
               )
             }

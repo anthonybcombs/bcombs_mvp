@@ -267,14 +267,17 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
             value={formTitle}
             onChange={({ target }) => setFormTitle(target.value)}
           />
-          <select
-            value={formCategory}
-            onChange={({ target: { value } }) => setFormCategory(value)}
-          >
-            <option value=''>Select form category</option>
-            <option value='sports'>Sports</option>
-            <option value='teaching'>Teaching</option>
-          </select>
+          <div className='field select-field-wrapper'>
+            <select
+            className='field-input'
+              value={formCategory}
+              onChange={({ target: { value } }) => setFormCategory(value)}
+            >
+              <option value=''>Select form category</option>
+              <option value='sports'>Sports</option>
+              <option value='teaching'>Teaching</option>
+            </select>
+          </div>
         </div>
         {
           droppedFields.length === 0 && (
