@@ -20,9 +20,8 @@ export default ({ onChangeFilter }) => {
           />
         </div>
         <a
-          type='button'
           href='/dashboard/builder'
-          target='_blank'
+          // target='_blank'
           className='newFrom-btn'
         >
           <FontAwesomeIcon

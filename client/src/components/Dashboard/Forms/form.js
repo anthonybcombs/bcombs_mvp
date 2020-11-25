@@ -40,7 +40,7 @@ export default ({
       >
         {/* START - This is a hidden button to be triggered(click) on clicking the parent div */}
         {/* Reason is window.open will be blocked at some browser */}
-        <a id={`trigger-click-${form_id}`} style={{ display: 'none' }} href={`/dashboard/builder/${form_id}/edit`} target='_blank' />
+        <a id={`trigger-click-${form_id}`} style={{ display: 'none' }} href={`/dashboard/builder/${form_id}/edit`} />
         {/* END  */}
 
         <div className='form-title'>
