@@ -398,7 +398,7 @@ export default function index({
   }
 
   const hasSelectAll = false;
-
+  console.log(';parentProfile',parentProfile)
   return (
     <ParentInformationStyled>
       <h3 className="heading">
@@ -574,8 +574,8 @@ export default function index({
                       isReadonly &&
                       !isVendorView &&
                       pastParentInformation &&
-                      (pastParentInformation.date_of_birth ||
-                        pastParentInformation.date_of_birth == "") &&
+                      (pastParentInformation.birthdate ||
+                        pastParentInformation.birthdate == "") &&
                       parentProfile.date_of_birth.toString() !=
                         new Date(pastParentInformation.birthdate).toString()
                         ? "field-input birthdate-field highlights"
@@ -1660,8 +1660,7 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                <span className="required">*</span> Why are you referring your
-                child to the program?
+                <span className="required">*</span> Why are you referring your child to our program?
               </label>
               <textarea
                 name={`parent_child_goals${counter - 1}`}

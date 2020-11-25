@@ -507,7 +507,15 @@ export default function index({
               <div className="field">
                 <input
                   name="ch_class_rank"
-                  className="field-input"
+                  // className="field-input"
+                  className={
+                    isReadonly &&
+                    !isVendorView &&
+                    pastChildInformation &&
+                    (pastChildInformation.class_rank || pastChildInformation.class_rank == "") &&
+                    pastChildInformation.class_rank != childGeneralInformation.class_rank ?
+                    "field-input highlights" : "field-input"
+                  }
                   id={`ch_class_rank_${counter - 1}`}
                   placeholder="Enter Class Rank as a #"
                   onChange={({ target }) => {
@@ -542,7 +550,15 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_cumulative_q1_${counter - 1}`}
                     name="gpa_cumulative_q1"
-                    className="field-input"
+                    //className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_cumulative_q1 || pastChildInformation.gpa_cumulative_q1 == "") &&
+                      pastChildInformation.gpa_cumulative_q1 != childGeneralInformation.gpa_cumulative_q1 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q1"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_cumulative_q1", target.value);
@@ -558,7 +574,14 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_cumulative_q2_${counter - 1}`}
                     name="gpa_cumulative_q2"
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_cumulative_q2 || pastChildInformation.gpa_cumulative_q2 == "") &&
+                      pastChildInformation.gpa_cumulative_q2 != childGeneralInformation.gpa_cumulative_q2 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q2"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_cumulative_q2", target.value);
@@ -574,7 +597,15 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_cumulative_q3_${counter - 1}`}
                     name="gpa_cumulative_q3"
-                    className="field-input"
+                    // className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_cumulative_q3 || pastChildInformation.gpa_cumulative_q3 == "") &&
+                      pastChildInformation.gpa_cumulative_q3 != childGeneralInformation.gpa_cumulative_q3 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q3"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_cumulative_q3", target.value);
@@ -590,7 +621,15 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_cumulative_q4_${counter - 1}`}
                     name="gpa_cumulative_q4"
-                    className="field-input"
+                    // className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_cumulative_q4 || pastChildInformation.gpa_cumulative_q4 == "") &&
+                      pastChildInformation.gpa_cumulative_q4 != childGeneralInformation.gpa_cumulative_q4 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q4"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_cumulative_q4", target.value);
