@@ -497,6 +497,7 @@ const inputs = `
         vendor: String
         user: String
         form_contents: CustomFormInput
+        category: String
     }
 
     input CustomFormInput {
@@ -518,6 +519,7 @@ const inputs = `
         includeValidation: Boolean
         hasSettings: Boolean
         supportMultiple: Boolean
+        showLabel: Boolean
     }
 
     input CustomFormFieldsInput {
@@ -624,6 +626,11 @@ const inputs = `
         vendor: String!
         form: String!
         form_contents: CustomFormInput
+    }
+
+    input CustomApplicationFormFilterInput {
+        vendor: String!
+        category: String
     }
 `;
 const queryTypes = `
@@ -1061,6 +1068,8 @@ const queryTypes = `
         user: String
         form_id: String
         form_contents: CustomForm
+        category: String
+        status: String
         created_at: Date
         updated_at: Date
     }
@@ -1084,6 +1093,7 @@ const queryTypes = `
         includeValidation: Boolean
         hasSettings: Boolean
         supportMultiple: Boolean
+        showLabel: Boolean
     }
 
     type CustomFormFields {
@@ -1229,6 +1239,7 @@ const mutations = `
         updateParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
         createCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
         updateCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
+        deleteCustomApplicationForm(application: CustomApplicationInput): Status
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
     }
 `;
@@ -1266,10 +1277,9 @@ const queries = `
         getUserApplicationHistory(id: String!):[ApplicationHistory]
         getVendorAdminsByUser(user: String): [Admin]
         getParentChildRelationship(relationships: [ParentChildRelationshipInput]): [ParentChildRelationship]
-        getVendorCustomApplications(vendor: String): [CustomApplicationOutput]
+        getVendorCustomApplicationForms(filter: CustomApplicationFormFilterInput): [CustomApplicationOutput]
         getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
         getCustomApplicationApplicants(form_id: String): [CustomApplicationOutput]
-        getVendorsCustomApplication(vendor_id: String!): [CustomApplicationOutput]
     }
 `;
 

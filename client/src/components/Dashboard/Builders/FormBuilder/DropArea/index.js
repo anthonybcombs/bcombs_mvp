@@ -10,18 +10,21 @@ import { faEye, faCheck, faBars } from '@fortawesome/free-solid-svg-icons'
 import { Items } from '../Fields'
 import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
+import PreviewWarningModal from '../PreviewWarningModal'
 
 import { requestAddForm, requestUpdateForm } from "../../../../../redux/actions/FormBuilder"
 import Loading from '../../../../../helpers/Loading';
 
-export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Untitled', form_id, handleBuilderDrawerOpen }) => {
+export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, form_title = 'Untitled', form_id, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
+  const [formCategory, setFormCategory] = useState(category)
   const [hasPageBreak, checkHasPageBreak] = useState(false)
   const [pageBreaks, getPageBreaks] = useState([])
   const [lastField, getLastField] = useState({})
   const [fieldHasChanged, setFieldHasChanged] = useState(!form_id)
+  const [previewWarning, setPreviewWarning] = useState(false)
 
   const reMapFields = (fields, id) => {
     return fields.map((e, i) => ({ ...e, id: `${e.tag}${i}_${id}`, value: '' }))
@@ -116,7 +119,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   }
 
   const handleActive = (id) => {
-    beforeSetDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
+    beforeSetDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })), false)
   }
 
   const handleChangeDefaultProps = ({ id, ...rest }) => {
@@ -132,7 +135,6 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
   }
 
   const handleChangeFieldSettings = (data, index, id) => {
-    console.log('kayata', { data, index, id })
     beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { fields: { [index]: { $merge: data } } }
     }))
@@ -181,6 +183,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
     if (form_id) {
       dispatch(requestUpdateForm({
         form_id,
+        category: formCategory,
         form_contents: {
           formTitle,
           formData: droppedFields
@@ -191,6 +194,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
       dispatch(requestAddForm({
         user: user.user_id,
         vendor: vendor.id,
+        category: formCategory,
         form_contents: {
           formTitle,
           formData: droppedFields
@@ -237,17 +241,23 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
     }
   }, [form_title])
 
-  console.log('toinks', { droppedFields, form_data, form_title, fieldHasChanged })
+  useEffect(() => {
+    if (category) {
+      setFormCategory(category)
+    }
+  }, [category])
+
+  console.log('toinks', { droppedFields, form_data, form_title, formCategory, fieldHasChanged })
 
   return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop} className='drop-area-wrapper-droppable'>
         <div className='form-title'>
-          <FontAwesomeIcon
+          {/* <FontAwesomeIcon
             icon={faBars}
             className='menu-bar-builder'
             onClick={handleBuilderDrawerOpen}
-          />
+          /> */}
           <input
             type='text'
             id='title'
@@ -257,6 +267,17 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
             value={formTitle}
             onChange={({ target }) => setFormTitle(target.value)}
           />
+          <div className='field select-field-wrapper'>
+            <select
+            className='field-input'
+              value={formCategory}
+              onChange={({ target: { value } }) => setFormCategory(value)}
+            >
+              <option value=''>Select form category</option>
+              <option value='sports'>Sports</option>
+              <option value='teaching'>Teaching</option>
+            </select>
+          </div>
         </div>
         {
           droppedFields.length === 0 && (
@@ -312,8 +333,7 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
               className='btn preview'
               onClick={e => {
                 e.stopPropagation()
-                alert('Please save your changes to enable preview.')
-                // handleViewForm()
+                setPreviewWarning(true)
               }}
             >
               <FontAwesomeIcon
@@ -339,6 +359,11 @@ export default ({ vendor = {}, user = {}, form_data, isLoading, form_title = 'Un
           <span>Save</span>
         </button>
       </div>
+      {
+        previewWarning && (
+          <PreviewWarningModal onClose={() => setPreviewWarning(false)}/>
+        )
+      }
     </div>
   ) : (
     <Loading />

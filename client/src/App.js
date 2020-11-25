@@ -109,6 +109,11 @@ const AsyncForm = Loadable({
   loading: Loading
 })
 
+const AsyncForms = Loadable({
+  loader: () => import("./components/Dashboard/Forms"),
+  loading: Loading
+})
+
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -142,6 +147,7 @@ export default function App() {
               <AsyncManageAdmin path="admin" />
               <AsynBuilder path="builder/:form_id/:type" />
               <AsynBuilder path="builder" />
+              <AsyncForms path="forms" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />

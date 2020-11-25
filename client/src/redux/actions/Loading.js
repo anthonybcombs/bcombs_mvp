@@ -90,3 +90,10 @@ export const setGetFormLoading = value => {
     value
   };
 }
+
+export const setDeleteFormLoading = value => {
+  return {
+    type: actionType.SET_DELETE_FORM_LOADING,
+    value
+  };
+}

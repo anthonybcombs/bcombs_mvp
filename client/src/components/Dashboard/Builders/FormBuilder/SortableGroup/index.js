@@ -3,7 +3,7 @@ import { DragSource, DropTarget, } from 'react-dnd'
 import cloneDeep from 'lodash.clonedeep'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGripHorizontal, faEdit, faPlus, faCopy, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faGripHorizontal, faEdit, faPlus, faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
 import { Items, StandardFields } from '../Fields'
 import GeneralSettings from '../Settings/GeneralSettings'
@@ -19,7 +19,7 @@ const SortableGroup = React.forwardRef(
     hidden, label, fields, isDragging, id, type: fieldGroupType, gridMax: gridColRepeat,
     includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField = {},
     onRemoveGroup, settings: generalSettings, allowAddField, includeLogic, supportMultiple,
-    isMultiple,
+    isMultiple, showLabel
   }, ref) => {
   
   const [fieldIndex, setActiveFieldIndex] = useState(0)
@@ -94,9 +94,10 @@ const SortableGroup = React.forwardRef(
           >
             <input
               type='text'
-              className={`field-input group-name-input-${id}`}
+              className={`field-input group-name-input-${id} ${showLabel ? 'shown-title' : 'hidden-title'}`}
               value={label}
               disabled={!enableEditGroupName}
+              readOnly={!showLabel}
               onBlur={() => {
                 handleEnableEditGroupName(false)
               }}
@@ -104,22 +105,24 @@ const SortableGroup = React.forwardRef(
               onKeyPress={(e) => console.log('e: ', e)}
             />
             {
-              (isActive && !enableEditGroupName) && (
-                <div className='tooltip-wrapper tooltip-left editGroupName'>
-                  <FontAwesomeIcon
-                    icon={faEdit}
-                    className='edit-icon'
-                    onClick={e => {
-                      e.stopPropagation()
-                      handleEnableEditGroupName(true)
-                      if (!isActive) {
-                        onActive(id)
-                      }
-                    }}
-                  />
-                  <span className='tooltip'>Edit Group Name</span>
+              isActive && (
+                <div className='title-action'>
+                  <div className='tooltip-wrapper tooltip-left editGroupName'>
+                    <FontAwesomeIcon
+                      icon={showLabel ? faEye : faEyeSlash}
+                      className='show-icon'
+                      onClick={e => {
+                        e.stopPropagation()
+                        onChangeDefaultProps({ showLabel: !showLabel, id })
+                        handleEnableEditGroupName(true)
+                        if (!isActive) {
+                          onActive(id)
+                        }
+                      }}
+                    />
+                    <span className='tooltip'>{`${showLabel ? 'Hide' : 'Show'} Title`}</span>
+                  </div>
                 </div>
-                
               )
             }
           </div>

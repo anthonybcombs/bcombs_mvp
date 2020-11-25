@@ -238,9 +238,10 @@ export default styled.div`
     align-items: center;
 
     padding: 0 8px;
+    margin-bottom: 1rem;
   }
   .drop-area-wrapper .form-title > input {
-    margin-bottom: 1rem;
+    margin-bottom: 7px;
     font-weight: bold;
     font-size: 20px !important;
   }
@@ -267,6 +268,11 @@ export default styled.div`
     text-align: center;
     border: 1px dashed #ddd;
   }
+  .drop-area-wrapper .form-title .select-field-wrapper {
+    width: 300px;
+    margin-left: 1rem;
+  }
+
   .drop-area-wrapper-actions {
     display: flex;
     padding: 1rem 0;
@@ -360,7 +366,7 @@ export default styled.div`
 
   // default svg
   .sortableGroup svg:not(.exclude-global) {
-    color: intial;
+    // color: initial;
     padding: 10px;
     font-size: 18px;
     cursor: pointer;
@@ -438,13 +444,17 @@ export default styled.div`
     font-weight: bold !important;
     background: transparent !important;
   }
+  .sortableGroup-name >input.hidden-title {
+    color: #ccc !important;
+    border-color: rgb(204 204 204 / 15%) !important;
+  }
   .sortableGroup-name >div {
     position: absolute;
     right: -8px;
     top: 0px;
   }
-  .sortableGroup-name >div >svg {
-    color: #2097f3;
+  .sortableGroup-name >div svg {
+    color: #1d99f3;
   }
 
 

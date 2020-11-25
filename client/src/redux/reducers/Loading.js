@@ -81,6 +81,11 @@ export default function Loading(
         ...state,
         getForm: action.value
       }
+    case actionType.SET_DELETE_FORM_LOADING:
+      return {
+        ...state,
+        deleteForm: action.value
+      }
     default:
       return state;
   }

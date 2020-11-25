@@ -4,12 +4,15 @@ import * as actionType from "./Constant";
 import {
   FORM_ADD_MUTATION,
   FORM_UPDATE_MUTATION,
-  GET_FORM_BY_FORM_ID
+  GET_FORM_BY_FORM_ID,
+  GET_FORMS_BY_VENDOR,
+  FORM_DELETE_MUTATION
 } from "../../graphql/FormQueryMutation"
 import {
   setAddFormLoading,
   setUpdateFormLoading,
-  setGetFormLoading
+  setGetFormLoading,
+  setDeleteFormLoading
 } from "./Loading";
 
 const addFormToDatabase = application => {
@@ -26,11 +29,16 @@ const addFormToDatabase = application => {
     }
   });
 };
-const getFormsFromDatabase = vendor_id => {
+const getFormsFromDatabase = formData => {
   return new Promise(async (resolve, reject) => {
     try {
+      const { data } = await graphqlClient.mutate({
+        mutation: GET_FORMS_BY_VENDOR,
+        variables: { filter: formData }
+      })
+
+      return resolve(data.getVendorCustomApplicationForms);
     } catch (error) {
-      console.log("Get forms error", error);
       reject(error);
     }
   });
@@ -64,11 +72,27 @@ const updateFormToDatabase = application => {
   });
 };
 
+const deleteFormFromDatabase = form_id => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: FORM_DELETE_MUTATION,
+        variables: { application: { form_id } }
+      })
 
-export const requestGetForms = vendor_id => {
+      return resolve(data.deleteCustomApplicationForm);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+
+
+export const requestGetForms = data => {
   return {
     type: actionType.REQUEST_GET_FORMS,
-    vendor_id: vendor_id
+    data
   };
 };
 export const requestAddForm = form => {
@@ -89,6 +113,12 @@ export const requestUpdateForm = form => {
     form
   };
 };
+export const requestDeleteForm = form_id => {
+  return {
+    type: actionType.REQUEST_DELETE_FORM,
+    form_id
+  };
+}
 export const setViewMode = bool => {
   return {
     type: actionType.SET_VIEW_MODE,
@@ -98,13 +128,11 @@ export const setViewMode = bool => {
 
 
 
-export function* getForms({ vendor_id }) {
-  console.log('@GET FORM', vendor_id)
-  return
+export function* getForms({ data }) {
   try {
-    yield put(setAddFormLoading(true));
-    const forms = yield call(getFormsFromDatabase, vendor_id);
-    yield put(setAddFormLoading(false));
+    yield put(setGetFormLoading(true));
+    const forms = yield call(getFormsFromDatabase, data);
+    yield put(setGetFormLoading(false));
     if (forms && forms.length > 0) {
       yield put({
         type: actionType.REQUEST_GET_FORMS_COMPLETED,
@@ -118,7 +146,7 @@ export function* getForms({ vendor_id }) {
     }
   } catch (err) {
     console.log("Error", err);
-    yield put(setAddFormLoading(false));
+    yield put(setGetFormLoading(false));
     yield put({
       type: actionType.REQUEST_GET_APPLICATION_COMPLETED,
       payload: []
@@ -186,3 +214,23 @@ export function* updateForm({ form }) {
     });
   }
 }
+
+export function* deleteForm({ form_id }) {
+  console.log('@DELETE FORM', form_id)
+  try {
+    yield put(setDeleteFormLoading(true));
+    const response = yield call(deleteFormFromDatabase, form_id);
+    yield put(setDeleteFormLoading(false));
+    yield put({
+      type: actionType.REQUEST_DELETE_FORM_COMPLETED,
+      payload: response
+    });
+  } catch (err) {
+    yield put(setDeleteFormLoading(false));
+    yield put({
+      type: actionType.REQUEST_DELETE_FORM_COMPLETED,
+      payload: {}
+    });
+  }
+}
+

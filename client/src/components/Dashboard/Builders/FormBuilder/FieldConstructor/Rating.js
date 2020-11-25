@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash.clonedeep'
 import React from 'react'
 
-export default ({ scale, items, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value = {} }) => {
+export default ({ scale = {}, items = [], onChangeFieldSettings, isBuilder, id: fieldId, onChange, value = {} }) => {
   const handleChangeValues = ({ target: { value: ratingValue } }, type, subType, index) => {
     if (type === 'scale') {
       ratingValue = ratingValue * 1
