@@ -411,8 +411,8 @@ export default function index({
                       isReadonly &&
                       !isVendorView &&
                       pastChildInformation &&
-                      (pastChildInformation.ch_gpa_quarter || pastChildInformation.ch_gpa_quarter == "") &&
-                      pastChildInformation.ch_gpa_quarter != childGeneralInformation.ch_gpa_quarter ?
+                      (pastChildInformation.gpa_quarter_year || pastChildInformation.gpa_quarter_year == "") &&
+                      pastChildInformation.gpa_quarter_year != childGeneralInformation.gpa_quarter_year ?
                       "field-input highlights" : "field-input"
                     }
                     onChange={({ target }) => {
@@ -574,8 +574,8 @@ export default function index({
                     isReadonly &&
                     !isVendorView &&
                     pastChildInformation &&
-                    (pastChildInformation.ch_gpa_cumulative || pastChildInformation.ch_gpa_cumulative == "") &&
-                    pastChildInformation.ch_gpa_cumulative != childGeneralInformation.ch_gpa_cumulative ?
+                    (pastChildInformation.gpa_cumulative_year || pastChildInformation.gpa_cumulative_year == "") &&
+                    pastChildInformation.gpa_cumulative_year != childGeneralInformation.gpa_cumulative_year ?
                     "field-input highlights" : "field-input"
                   }
                   onChange={({ target }) => {
