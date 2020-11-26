@@ -491,7 +491,7 @@ export default function index({
                 handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
               value={"Yes"}
-              checked={childGeneralInformation.has_suspended+"" == "Yes" || childGeneralInformation.has_suspended+"" == "1" || childGeneralInformation.has_suspended+"" === true}
+              checked={childGeneralInformation.has_suspended == "Yes" || childGeneralInformation.has_suspended == "1" || (typeof  childGeneralInformation.has_suspended === 'boolean' &&  == true)}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -504,7 +504,7 @@ export default function index({
                 handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
               value={"No"}
-              checked={childGeneralInformation.has_suspended+"" == "No" || childGeneralInformation.has_suspended+"" == "0" ||  childGeneralInformation.has_suspended+"" === false}
+              checked={childGeneralInformation.has_suspended+"" == "No" || childGeneralInformation.has_suspended == "0" ||  (typeof  childGeneralInformation.has_suspended === 'boolean' &&  == false)}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
