@@ -1332,9 +1332,9 @@ export default function index({
                       );
                     }}
                     readOnly={isReadonly}
-                    //defaultValue={isReadonly ? selectedApplication?.child?.address : ""}
+                    defaultValue={isReadonly ? selectedApplication?.child?.address : ""}
                     
-                    defaultValue={isReadonly ? parentProfile?.address : ''}
+                    //defaultValue={isReadonly ? parentProfile?.address : ''}
                     ref={register({
                       required: showAddress
                     })}
@@ -1398,8 +1398,8 @@ export default function index({
                       );
                     }}
                     readOnly={isReadonly}
-                    // defaultValue={isReadonly ? selectedApplication?.child?.city : ""}
-                    defaultValue={isReadonly ? parentProfile?.city : ''}
+                    defaultValue={isReadonly ? selectedApplication?.child?.city : ""}
+                    //defaultValue={isReadonly ? parentProfile?.city : ''}
                     ref={register({
                       required: showAddress
                     })}
@@ -1467,8 +1467,8 @@ export default function index({
                 <input
                   type="text"
                   className="field-input"
-                  //defaultValue={isReadonly ? selectedApplication?.child?.state : ""}
-                  defaultValue={isReadonly ? parentProfile?.state : ''}
+                  defaultValue={isReadonly ? selectedApplication?.child?.state : ""}
+                  //defaultValue={isReadonly ? parentProfile?.state : ''}
                   readOnly={isReadonly}
                   placeholder="State"
                   name="parentstate"
@@ -1535,8 +1535,8 @@ export default function index({
                     }}
                     ref={register({ maxLength: 5,required: showAddress })}
                     readOnly={isReadonly}
-                    defaultValue={isReadonly ? parentProfile?.zip_code : ''}
-                    //defaultValue={isReadonly ? selectedApplication?.child?.zip_code : ""}
+                    //defaultValue={isReadonly ? parentProfile?.zip_code : ''}
+                    defaultValue={isReadonly ? selectedApplication?.child?.zip_code : ""}
                   />
                 )
               }

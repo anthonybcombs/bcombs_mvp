@@ -1334,7 +1334,7 @@ export default function index({
                     );
                   }}
                   readOnly={isReadonly}
-                  defaultValue={parentProfile?.address}
+                  defaultValue={childProfile?.address}
                   ref={register({
                     required: showAddress
                   })}
@@ -1398,7 +1398,7 @@ export default function index({
                       );
                     }}
                     readOnly={isReadonly}
-                    defaultValue={parentProfile?.city}
+                    defaultValue={childProfile?.city}
                     ref={register({
                       required: showAddress
                     })}
@@ -1466,7 +1466,7 @@ export default function index({
                 <input
                   type="text"
                   className="field-input"
-                  defaultValue={parentProfile?.state}
+                  defaultValue={childProfile?.state}
                   readOnly={isReadonly}
                   placeholder="State"
                   name="parentstate"
@@ -1536,7 +1536,7 @@ export default function index({
                     ref={register({ minLength: 5,required: showAddress })}
                     maxLength="5"
                     readOnly={isReadonly}
-                    defaultValue={parentProfile?.zip_code}
+                    defaultValue={childProfile?.zip_code}
                   />
                 )
               }

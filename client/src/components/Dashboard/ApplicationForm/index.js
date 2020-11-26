@@ -359,7 +359,7 @@ export default function index() {
       psat_scores: [{...scoreObj}],
       school_name: "",
       school_phone: "",
-      was_suspended: 0,
+      has_suspended: 0,
       reason_suspended: "",
       mentee_start_year: "",
       hobbies: "",
@@ -393,7 +393,7 @@ export default function index() {
       childs[index].profile = profile;
     } else if(section === "general_information") {
 
-      if(id === "was_suspended") {
+      if(id === "has_suspended") {
         if (value == "0")
           general_information = {...general_information, ["reason_suspended"]: ""};
       }
@@ -912,7 +912,7 @@ export default function index() {
           child_lives_with: getChildLivesWith(childsInformation[i].profile.child_lives_with),
           school_name: childsInformation[i].general_information.school_name,
           school_phone: childsInformation[i].general_information.school_phone,
-          has_suspended: childsInformation[i].general_information.was_suspended ? 1 : 0,
+          has_suspended: childsInformation[i].general_information.has_suspended ? 1 : 0,
           reason_suspended: childsInformation[i].general_information.reason_suspended,
           year_taken: childsInformation[i].general_information.mentee_start_year,
           hobbies: childsInformation[i].general_information.hobbies,
