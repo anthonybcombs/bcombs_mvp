@@ -407,7 +407,14 @@ export default function index({
                   !isReadonly ?
                   <select
                     name="ch_gpa_quarter"
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.ch_gpa_quarter || pastChildInformation.ch_gpa_quarter == "") &&
+                      pastChildInformation.ch_gpa_quarter != childGeneralInformation.ch_gpa_quarter ?
+                      "field-input highlights" : "field-input"
+                    }
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_quarter_year", target.value);
                     }}
@@ -563,7 +570,14 @@ export default function index({
               <div className="field select-field-wrapper">
                 <select
                   name="ch_gpa_cumulative"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    !isVendorView &&
+                    pastChildInformation &&
+                    (pastChildInformation.ch_gpa_cumulative || pastChildInformation.ch_gpa_cumulative == "") &&
+                    pastChildInformation.ch_gpa_cumulative != childGeneralInformation.ch_gpa_cumulative ?
+                    "field-input highlights" : "field-input"
+                  }
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(counter - 1, "general_information", "gpa_cumulative_year", target.value);
                   }}
@@ -779,10 +793,10 @@ export default function index({
             Yes 
             <input type="radio" 
               onChange={({ target }) => {
-                handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
+                handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
               value={"1"}
-              checked={childGeneralInformation.was_suspended+"" == "1"}
+              checked={childGeneralInformation.has_suspended+"" == "1"}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -792,10 +806,10 @@ export default function index({
             No
             <input type="radio" 
               onChange={({ target }) => {
-                handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
+                handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
               value={"0"}
-              checked={childGeneralInformation.was_suspended+"" == "0"}
+              checked={childGeneralInformation.has_suspended+"" == "0"}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -803,7 +817,7 @@ export default function index({
           </label>
         </div>
         {
-          childGeneralInformation.was_suspended == "1" &&
+          childGeneralInformation.has_suspended == "1" &&
           <div className="form-group">
             <textarea 
               name="reasons_suspended"

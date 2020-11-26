@@ -93,6 +93,8 @@ export default function index({
   isVendorView
 }) {
 
+  console.log('DayCare Application Form', childGeneralInformation)
+
   return (
     <GeneralInformationFormStyled>
       <h3 className="heading">General Information</h3>
@@ -486,10 +488,10 @@ export default function index({
             Yes 
             <input type="radio" 
               onChange={({ target }) => {
-                handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
+                handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
               value={"Yes"}
-              checked={childGeneralInformation.was_suspended+"" == "Yes"}
+              checked={childGeneralInformation.has_suspended+"" == "Yes" || childGeneralInformation.has_suspended+"" == "1"}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -499,10 +501,10 @@ export default function index({
             No
             <input type="radio" 
               onChange={({ target }) => {
-                handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
+                handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
               value={"No"}
-              checked={childGeneralInformation.was_suspended+"" == "No"}
+              checked={childGeneralInformation.has_suspended+"" == "No" || childGeneralInformation.has_suspended+"" == "0"}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -510,7 +512,7 @@ export default function index({
           </label>
         </div>
         {
-          childGeneralInformation.was_suspended == "1" &&
+          childGeneralInformation.has_suspended == "1" &&
           <div className="form-group">
             <textarea 
               name="reasons_suspended"

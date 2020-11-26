@@ -205,7 +205,7 @@ export default function index() {
       voucher: ""
     },
     general_information: {
-      was_suspended: "",
+      has_suspended: "",
       reason_suspended: "",
       is_child_transferring: "",
       does_child_require_physical_education_service: "",
@@ -237,7 +237,9 @@ export default function index() {
   const [childsInformation, setChildsInformation] = useState([{...childInfoObject}]);
 
   const handleChildFormDetailsChange = (index, section, id, value) => {
-
+    console.log('handleChildFormDetailsChange section', section)
+    console.log('handleChildFormDetailsChange id', id)
+    console.log('handleChildFormDetailsChange value', value)
     let childs = childsInformation;
     let profile = childs[index].profile;
     let general_information = childs[index].general_information;
@@ -248,14 +250,16 @@ export default function index() {
       childs[index].profile = profile;
     } else if(section === "general_information") {
 
-      if(id === "was_suspended") {
+      if(id === "has_suspended") {
         if (value == "Yes")
           general_information = {...general_information, ["reason_suspended"]: ""};
       }
 
       general_information = {...general_information, [id]: value};
+      console.log('general_information',general_information)
 
       childs[index].general_information = general_information;
+      console.log('general_information  childs[index]', childs[index])
     } else if(section === "emergency_care_information") {
       emergency_care_information = {...emergency_care_information, [id]: value};
       childs[index].emergency_care_information = emergency_care_information;
@@ -582,7 +586,7 @@ export default function index() {
           needed_days: childsInformation[i].profile.needed_days,
           schedule_tour: childsInformation[i].profile.schedule_tour,
           voucher: childsInformation[i].profile.voucher,
-          has_suspended: childsInformation[i].general_information.was_suspended == "Yes" ? 1 : 0,
+          has_suspended: childsInformation[i].general_information.has_suspended == "Yes" ? 1 : 0,
           reason_suspended: childsInformation[i].general_information.reason_suspended,
           ethnicities: getAppEtnicities(childsInformation[i].profile.ethinicity),
           programs: getAppPrograms(childsInformation[i].profile.program),

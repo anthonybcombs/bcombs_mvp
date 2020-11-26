@@ -625,7 +625,7 @@ export default function index() {
         school_phone: application.child.school_phone
           ? application.child.school_phone
           : "",
-        was_suspended: !!application.child.has_suspended,
+        has_suspended: !!application.child.has_suspended,
         reason_suspended: application.child.reason_suspended,
         mentee_start_year: application.child.year_taken,
         hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -941,7 +941,7 @@ export default function index() {
         school_name: childInformation.general_information.school_name,
         school_phone: childInformation.general_information.school_phone,
         has_suspended: parseInt(
-          childInformation.general_information.was_suspended
+          childInformation.general_information.has_suspended
         ),
         reason_suspended: childInformation.general_information.reason_suspended,
         year_taken: childInformation.general_information.mentee_start_year,
@@ -1073,7 +1073,7 @@ export default function index() {
 
       child.profile = profile;
     } else if (section === "general_information") {
-      if (id === "was_suspended") {
+      if (id === "has_suspended") {
         if (value == "0")
           general_information = {
             ...general_information,
@@ -1191,7 +1191,7 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-              was_suspended: application.child.has_suspended + "",
+              has_suspended: application.child.has_suspended + "",
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -1438,6 +1438,7 @@ export default function index() {
   }
 
   console.log('loading applications',applications)
+  console.log('selectedApplication123123',selectedApplication)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -1679,6 +1680,7 @@ export default function index() {
                 isUpdate={true}
                 emergencyContacts={emergencyContacts}
                 selectedApplication={selectedApplication}
+                childProfile={selectedApplication?.child}
               />
             ) : ""}
 
