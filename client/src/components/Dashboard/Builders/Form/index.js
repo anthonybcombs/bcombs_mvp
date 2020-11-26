@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"
+import update from 'immutability-helper'
+import cloneDeep from 'lodash.clonedeep'
 
 import FormrStyled from './styles'
 import FORM_DATA from './sample.json'
 import { groupFieldsByPageBreak } from '../utils'
 import { requestGetFormById } from "../../../../redux/actions/FormBuilder"
-import Loading from "../../../../helpers/Loading.js";
+import Loading from "../../../../helpers/Loading.js"
 
 import Stepper from './Wizard/stepper'
 import Content from './Wizard/content'
@@ -20,38 +22,6 @@ export default ({
       return { auth, loading, form };
     }
   )
-
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    // if (auth.user_id) {
-    //   dispatch(requestVendor(auth.user_id));
-    // }
-    if (form_id) {
-      dispatch(requestGetFormById({ form_id }))
-    }
-  }, []);
-  
-  const [fieldState, setField] = useState({})
-  const handleChange = (id, value) => {
-    setField({
-      ...fieldState,
-      [id]: value
-    })
-  }
-
-  const [fieldError, setFieldError] = useState({})
-  const handleCheckError = (id, error) => {
-    setFieldError({
-      ...fieldError,
-      [id]: error
-    })
-  }
-
-  const [currentStep, setStep] = useState(0)
-  const handleChangeStep = (step) => {
-    setStep(step)
-  }
 
   const cleanFormData = (formData) => {
     const objArr = Object.entries(formData)
@@ -79,8 +49,89 @@ export default ({
   const hasWizard = !!formData.find(e => e.type === 'pageBreak')
   const fields = hasWizard ? groupFieldsByPageBreak(formData) : formData
 
-  // console.log('@groupedFields', groupFieldsByPageBreak(fields))
+  const [formFields, setFormFields] = useState([])
+  const [formIsSet, setForm] = useState(false)
+
+  useEffect(() => {
+    if (fields.length && !formIsSet) {
+      setForm(true)
+      setFormFields(fields)
+    }
+  }, [fields])
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    // if (auth.user_id) {
+    //   dispatch(requestVendor(auth.user_id));
+    // }
+    if (form_id) {
+      dispatch(requestGetFormById({ form_id }))
+    }
+  }, []);
+  
+  const [fieldState, setField] = useState({})
+  const handleChange = (id, value) => {
+    setField({
+      ...fieldState,
+      [id]: value
+    })
+    
+    const [, groupId] = id.split('_')
+
+    const fields = cloneDeep(formFields.find(e => e.id === groupId).fields)
+    setFormFields(update(formFields, {
+      [formFields.findIndex(e => e.id === groupId)]: {
+        fields: {
+          $set: fields.map(e => ({
+            ...e, value: e.id === id ? value : e.value
+          }))
+        }
+      }
+    }))
+
+  }
+
+  const [fieldError, setFieldError] = useState({})
+  const handleCheckError = (id, error) => {
+    setFieldError({
+      ...fieldError,
+      [id]: error
+    })
+  }
+
+  const [currentStep, setStep] = useState(0)
+  const handleChangeStep = (step) => {
+    setStep(step)
+  }
+
+  const handleSubmit = () => {
+    // Check for required
+    let newFielderror = cloneDeep(fieldError)
+    formFields
+      .reduce((acc, curr) => {
+        acc = [
+          ...acc,
+          ...curr.fields
+        ]
+        return acc
+      }, [])
+      .forEach(({ required, value, id, placeholder, label }) => {
+        if (required && !value) {
+          const requiredError = `${placeholder || label || 'This'} is required.`
+          if (!newFielderror[id] || !newFielderror[id].find(e => e === requiredError)) {
+            newFielderror[id] = [
+              ...(newFielderror[id] || []),
+              requiredError
+            ]
+          }
+        }
+      })
+    setFieldError(newFielderror)
+  }
+  
   console.log('@fieldState', fieldState)
+  console.log('@formFields', formFields)
 
   return (
     <FormrStyled>
@@ -98,12 +149,12 @@ export default ({
                   hasWizard ? (
                     <div className='wizard-wrapper'>
                       <Stepper
-                        fields={fields}
+                        fields={formFields}
                         currentStep={currentStep}
                         onSetStep={handleChangeStep}
                       />
                       <Content
-                        fields={fields[currentStep].formFields}
+                        fields={formFields[currentStep].formFields}
                         currentStep={currentStep}
                         fieldState={fieldState}
                         fieldError={fieldError}
@@ -114,7 +165,7 @@ export default ({
                     </div>
                   ) : (
                     <Content
-                      fields={fields}
+                      fields={formFields}
                       currentStep={currentStep}
                       fieldState={fieldState}
                       fieldError={fieldError}
@@ -126,10 +177,10 @@ export default ({
                 }
                 <Actions
                   hasWizard={hasWizard}
-                  fields={fields}
+                  fields={formFields}
                   currentStep={currentStep}
                   onSetStep={handleChangeStep}
-                  onSubmit={() => dispatch(requestGetFormById(form_id))}
+                  onSubmit={handleSubmit}
                 />
               </>
             )

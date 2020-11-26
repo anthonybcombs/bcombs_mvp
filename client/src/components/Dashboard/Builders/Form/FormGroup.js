@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { uuid } from 'uuidv4'
 import cloneDeep from 'lodash.clonedeep'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 import FieldConstructor from '../FormBuilder/FieldConstructor'
 import { Sources } from '../FormBuilder/Settings/Sources'
 
 export default ({ 
-  label, fields, fieldState, fieldError, onChange, type: itemGroup, settings, onCheckError, gridMax
+  label, fields, fieldState, fieldError, onChange, type: itemGroup, settings, onCheckError, gridMax, showLabel
 }) => {
   // console.log('@settings', { settings, fieldError })
   const gridColRepeat = itemGroup === 'address' ? 4 : gridMax
@@ -33,12 +35,16 @@ export default ({
   return (
     <div
       className={`formGroup ${itemGroup}`}
-    >   
-      <p className='formGroup-name'>{label}</p>
+    >
+      <p className='formGroup-name'>{showLabel ? label : ''}</p>
+      <div className='tooltip-wrapper'>
+        <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+        <span className='tooltip'>Instruction here..........................</span>
+      </div>
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {
           cloneDeep(fields).map((field, index) => {
-            const { type = '', tag, options, column = 1, id: fieldId } = field
+            const { type = '', tag, options, column = 1, id: fieldId, placeholder, required } = field
             const errors = fieldError[fieldId] || []
             const hasError = errors.length ? !!errors.find(e => e) : false
  
@@ -52,6 +58,7 @@ export default ({
                     FieldConstructor[tag]({
                       key: `field-${index}`,
                       ...field,
+                      placeholder: `${placeholder} ${required ? '*' : ''}`,
                       value: fieldState[fieldId] || '',
                       onChange: handleChange,
                       className: hasError ? 'hasError': ''

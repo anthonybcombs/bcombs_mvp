@@ -8,7 +8,7 @@ export default ({ fields, currentStep, onSetStep }) => {
         const stepLabel = index + 1
         const isActive = index <= currentStep
          return (
-          <li className={`step ${isActive ? 'active' : ''}`}>
+          <li key={`stepper-${index}`} className={`step ${isActive ? 'active' : ''}`}>
             <div className='step-number'>{stepLabel}</div>
             <div  className='step-label'>{field.fields[0].label}</div>
           </li>
