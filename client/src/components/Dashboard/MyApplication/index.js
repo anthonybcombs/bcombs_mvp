@@ -1347,7 +1347,7 @@ export default function index() {
       }])
     }
   }
-  console.log('childInformation123123123',childInformation)
+  console.log('parentsInformation1123123123',parentsInformation)
   return (
     <MyApplicationStyled>
       {
