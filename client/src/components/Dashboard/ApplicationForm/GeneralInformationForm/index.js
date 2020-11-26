@@ -819,7 +819,7 @@ export default function index({
           </label>
         </div>
         {
-          childGeneralInformation.has_suspended == "1" &&
+         (childGeneralInformation.has_suspended == "Yes" || childGeneralInformation.has_suspended == "1" || (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === true))  &&
           <div className="form-group">
             <textarea 
               name="reasons_suspended"
