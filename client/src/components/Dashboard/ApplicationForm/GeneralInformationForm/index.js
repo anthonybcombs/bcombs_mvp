@@ -360,6 +360,8 @@ export default function index({
     return items;
   }
 
+  console.log('GeneralInformationFormStyled childGeneralInformation',childGeneralInformation)
+
   return (
     <GeneralInformationFormStyled>
       <h3 className="heading">General Information</h3>
