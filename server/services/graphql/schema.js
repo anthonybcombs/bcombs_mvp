@@ -630,7 +630,7 @@ const inputs = `
 
     input CustomApplicationFormFilterInput {
         vendor: String!
-        category: String
+        categories: [String]
     }
 `;
 const queryTypes = `

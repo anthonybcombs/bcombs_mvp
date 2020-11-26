@@ -322,7 +322,15 @@ const resolvers = {
       return application;
     },
     async getVendorCustomApplicationForms(root, { filter }, context) {
-      const forms = await getVendorCustomApplicationForms(filter);
+      let forms = [];
+      if(filter?.categories.length > 0) {
+        for(const category of filter.categories) {
+          const filterForm = await getVendorCustomApplicationForms({vendor: filter.vendor, category: category});
+          forms.push(...filterForm);
+        }
+      } else {
+        forms = await getVendorCustomApplicationForms({vendor: filter.vendor});
+      }
       return forms;
     }
   },
@@ -954,17 +962,24 @@ const resolvers = {
       }
     },
     async submitCustomApplicationForm(root, { application }, context) {
-    
+
+      let loginType;
       let email;
       let password;
 
-      const fields = application?.form_contents?.formData?.fields ? application.form_contents.formData.fields : [];
+      const formData = application?.form_contents?.formData;
 
-      email = fields.map((item) => {
-        return item.type == "email"
+      loginType = formData.map((item) => {
+        return item.type == "login"
       });
 
-      password = fields.map((item) => {
+      loginType = loginType.length > 0 ? loginType[0] : {};
+
+      email = loginType?.fields.map((item) => {
+        return item.type == "text"
+      });
+
+      password = loginType?.fields.map((item) => {
         return item.type == "password"
       });
 
