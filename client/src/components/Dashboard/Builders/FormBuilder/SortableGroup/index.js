@@ -106,7 +106,7 @@ const SortableGroup = React.forwardRef(
             />
             {
               isActive && (
-                <div>
+                <div className='title-action'>
                   <div className='tooltip-wrapper tooltip-left editGroupName'>
                     <FontAwesomeIcon
                       icon={showLabel ? faEye : faEyeSlash}
@@ -114,29 +114,14 @@ const SortableGroup = React.forwardRef(
                       onClick={e => {
                         e.stopPropagation()
                         onChangeDefaultProps({ showLabel: !showLabel, id })
+                        handleEnableEditGroupName(true)
+                        if (!isActive) {
+                          onActive(id)
+                        }
                       }}
                     />
                     <span className='tooltip'>{`${showLabel ? 'Hide' : 'Show'} Title`}</span>
                   </div>
-                  {
-                    (!enableEditGroupName && showLabel) && (
-                      <div className='tooltip-wrapper tooltip-left editGroupName'>
-                        <FontAwesomeIcon
-                          icon={faEdit}
-                          className='edit-icon'
-                          onClick={e => {
-                            e.stopPropagation()
-                            handleEnableEditGroupName(true)
-                            if (!isActive) {
-                              onActive(id)
-                            }
-                          }}
-                        />
-                        <span className='tooltip'>Edit Group Name</span>
-                      </div>
-                      
-                    )
-                  }
                 </div>
               )
             }
