@@ -79,6 +79,12 @@ export const FORM_ADD_MUTATION = gql`
               isMultiple
               requireAddOption
               fixedWidth
+              file {
+                filename
+                extension
+                url
+                data
+              }
             }
             groupType
             settings {
@@ -184,6 +190,12 @@ export const FORM_UPDATE_MUTATION = gql`
               isMultiple
               requireAddOption
               fixedWidth
+              file {
+                filename
+                extension
+                url
+                data
+              }
             }
             groupType
             settings {
@@ -296,6 +308,12 @@ export const GET_FORM_BY_FORM_ID = gql`
             isMultiple
             requireAddOption
             fixedWidth
+            file {
+              filename
+              extension
+              url
+              data
+            }
           }
           groupType
           settings {
@@ -397,6 +415,12 @@ export const GET_FORMS_BY_VENDOR = gql`
             isMultiple
             requireAddOption
             fixedWidth
+            file {
+              filename
+              extension
+              url
+              data
+            }
           }
           groupType
           settings {

@@ -547,6 +547,14 @@ const inputs = `
         isMultiple: Boolean
         requireAddOption : Boolean
         fixedWidth: Boolean
+        file: FileContentInput
+    }
+    
+    input FileContentInput {
+        filename: String
+        extension: String
+        url: String
+        data: String
     }
 
     input CustomFileUploadTypesInput {
@@ -1122,6 +1130,14 @@ const queryTypes = `
         isMultiple: Boolean
         requireAddOption : Boolean
         fixedWidth: Boolean
+        file: FileContent
+    }
+
+    type FileContent {
+        filename: String
+        extension: String
+        url: String
+        data: String
     }
 
     type CustomFileUploadTypes {
