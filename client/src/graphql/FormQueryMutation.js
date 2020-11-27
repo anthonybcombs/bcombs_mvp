@@ -83,7 +83,10 @@ export const FORM_ADD_MUTATION = gql`
             groupType
             settings {
               logic { include }
-              instruction { include }
+              instruction { 
+                include
+                value 
+              }
             }
             isActive
             allowAddField
@@ -185,7 +188,10 @@ export const FORM_UPDATE_MUTATION = gql`
             groupType
             settings {
               logic { include }
-              instruction { include }
+              instruction { 
+                include
+                value 
+              }
             }
             isActive
             allowAddField
@@ -294,7 +300,10 @@ export const GET_FORM_BY_FORM_ID = gql`
           groupType
           settings {
             logic { include }
-            instruction { include }
+            instruction { 
+              include
+              value 
+            }
           }
           isActive
           allowAddField
@@ -392,7 +401,10 @@ export const GET_FORMS_BY_VENDOR = gql`
           groupType
           settings {
             logic { include }
-            instruction { include }
+            instruction { 
+              include
+              value 
+            }
           }
           isActive
           allowAddField

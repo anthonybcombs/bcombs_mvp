@@ -620,6 +620,7 @@ const inputs = `
 
     input CustomFormSettingsInstructionInput {
         include: Boolean
+        value: String
     }
 
     input SubmitCustomApplicationInput {
@@ -1194,6 +1195,7 @@ const queryTypes = `
 
     type CustomFormSettingsInstruction {
         include: Boolean
+        value: String
     }
 
     type CustomFormStatus {
