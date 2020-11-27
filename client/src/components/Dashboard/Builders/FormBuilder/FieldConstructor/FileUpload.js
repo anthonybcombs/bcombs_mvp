@@ -1,11 +1,28 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faFileImage, faFilePdf, faFileWord } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
-export default ({ instruction, allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings, isBuilder, onChange, value = {} }) => {
-  const handleChangeValues = ({ target: { value } }, type) => {
-    onChangeFieldSettings({ [type]: value })
+const getExtensionIcon = (ext) => {
+  switch(ext) {
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+    case 'gif':      
+      return faFileImage
+    case 'pdf':
+      return faFilePdf
+    case 'doc':
+    case 'docx':
+      return faFileWord
+    default:
+      null
+  }
+}
+
+export default ({ allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings, isBuilder, onChange, onCheckError, errors, value }) => {
+  const handleChangeValues = ({ target: { value: fileValue } }, type) => {
+    onChangeFieldSettings({ [type]: fileValue })
   }
   
   const handleChangeTypes = ({ target: { checked } }, index) => {
@@ -26,14 +43,23 @@ export default ({ instruction, allowTypes, limit, errorMessage, id: fieldId, onC
     if (!file) {
       return
     }
+    const [, ext] = file.name.split('.')
+
+    const allowedExt = allowTypes.filter(e => e.selected).reduce((acc, curr) => [...acc, ...curr.ext], [])
+    if (!allowedExt.includes(`.${ext}`)) {
+      onCheckError(fieldId, [errorMessage])
+      return
+    }
+
     var reader = new FileReader()
     reader.onloadend = function() {
-      const [, ext] = file.name.split('.')
       onChange({ target: { id: fieldId, value: { data: reader.result, filename: file.name, extension: `.${ext}` } } })
     }
     reader.readAsDataURL(file)
   }
 
+  const { data, filename = '' } = value || {}
+  const [, ext] = filename.split('.')
   return (
     <>
       {
@@ -75,14 +101,33 @@ export default ({ instruction, allowTypes, limit, errorMessage, id: fieldId, onC
             </div>
           </div>
         ) : (
-          <div className='uploadForm'>
-            <input
-              type='file'
-              id='file'
-              name='file'
-              onChange={(e) => encodeImageFileAsURL(e.target.files[0])}
-            />
-          </div>
+          data ? (
+            <div>
+              <FontAwesomeIcon
+                icon={getExtensionIcon(ext)}
+              />
+              <span>{filename}</span>
+              <FontAwesomeIcon
+                icon={faTimes}
+                onClick={() => onChange({ target: { id: fieldId, value: '' } })}
+              />
+            </div>
+          ) : (
+            <div
+              className='uploadForm'
+              onClick={() => {
+                document.getElementById(`file${fieldId}`).click()
+              }}
+            >
+              <input
+                type='file'
+                id={`file${fieldId}`}
+                name='file'
+                onClick={e => e.stopPropagation()}
+                onChange={(e) => encodeImageFileAsURL(e.target.files[0])}
+              />
+            </div>
+          )
         )
       }
     </>

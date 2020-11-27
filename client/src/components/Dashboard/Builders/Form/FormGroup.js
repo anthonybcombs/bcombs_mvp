@@ -39,31 +39,21 @@ export default ({
       className={`formGroup ${itemGroup}`}
     >
       <p className='formGroup-name'>
-        <span>
-          {showLabel ? (
-            <>
-              {label}
-              {
-                include && (
-                  <div className='tooltip-wrapper'>
-                    <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
-                    <span className='tooltip'>{value}</span>
-                  </div>
-                )
-              }
-            </>
-            
-          ) : ''}
-        </span>
+        {showLabel ? (
+          <span>
+            {label}
+            {
+              (include && value) && (
+                <div className='tooltip-wrapper'>
+                  <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+                  <span className='tooltip'>{value}</span>
+                </div>
+              )
+            }
+          </span>
+        ) : ''}
       </p>
-      {/* {
-        include && (
-          <div className='tooltip-wrapper'>
-            <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
-            <span className='tooltip'>{value}</span>
-          </div>
-        )
-      } */}
+      
       {
         (!showLabel && include) && <div className='formGroup-name-instruction'>{value}</div>
       }
@@ -87,6 +77,8 @@ export default ({
                     placeholder: `${placeholder} ${required ? '*' : ''}`,
                     // value, // fieldState[fieldId] || '',
                     onChange: handleChange,
+                    onCheckError,
+                    errors,
                     className: hasError ? 'hasError': ''
                   })
                 }

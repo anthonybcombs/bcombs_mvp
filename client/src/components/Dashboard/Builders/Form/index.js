@@ -49,17 +49,18 @@ export default ({
   formData = formData.map(e => cleanFormData(e))
 
   const hasWizard = !!formData.find(e => e.type === 'pageBreak')
-  const fields = hasWizard ? groupFieldsByPageBreak(formData) : formData
 
-  const [formFields, setFormFields] = useState([])
+  const [actualFormFields, setFormFields] = useState([])
   const [formIsSet, setForm] = useState(false)
+  const [currentStep, setStep] = useState(0)
 
   useEffect(() => {
-    if (fields.length && !formIsSet) {
-      setForm(true)
+    if (formData.length && !formIsSet) {
+      const fields = hasWizard ? groupFieldsByPageBreak(formData) : formData
       setFormFields(fields)
+      setForm(true)
     }
-  }, [fields])
+  }, [formData])
 
   const dispatch = useDispatch()
 
@@ -74,16 +75,35 @@ export default ({
 
   const handleChange = (id, value) => { 
     const [, groupId] = id.split('_')
-    const fields = cloneDeep(formFields.find(e => e.id === groupId).fields)
-    setFormFields(update(formFields, {
-      [formFields.findIndex(e => e.id === groupId)]: {
-        fields: {
-          $set: fields.map(e => ({
-            ...e, value: e.id === id ? value : e.value
-          }))
+    let fields = []
+    if (hasWizard) {
+      fields = cloneDeep(actualFormFields[currentStep].formFields.find(e => e.id === groupId).fields)
+      console.log('witwewerwerwerwer', fields)
+      setFormFields(update(actualFormFields, {
+        [currentStep]: {
+          formFields: {
+            [actualFormFields[currentStep].formFields.findIndex(e => e.id === groupId)]: {
+              fields: {
+                $set: fields.map(e => ({
+                  ...e, value: e.id === id ? value : e.value
+                }))
+              }
+            }
+          }
         }
-      }
-    }))
+      }))
+    } else {
+      fields = cloneDeep(actualFormFields.find(e => e.id === groupId).fields)
+      setFormFields(update(actualFormFields, {
+        [actualFormFields.findIndex(e => e.id === groupId)]: {
+          fields: {
+            $set: fields.map(e => ({
+              ...e, value: e.id === id ? value : e.value
+            }))
+          }
+        }
+      }))
+    }
   }
 
   const [fieldError, setFieldError] = useState({})
@@ -94,38 +114,59 @@ export default ({
     })
   }
 
-  const [currentStep, setStep] = useState(0)
+  const handleCheckRequired = () => {
+    // Check for required
+    let newFielderrors = cloneDeep(fieldError)
+    const fields = hasWizard 
+      ? actualFormFields[currentStep].formFields
+      : actualFormFields
+    
+    fields.reduce((acc, curr) => {
+      acc = [
+        ...acc,
+        ...curr.fields
+      ]
+      return acc
+    }, [])
+    .forEach(({ required, value, id, placeholder, label }) => {
+      if (required && !value) {
+        const requiredError = `${placeholder || label || 'This'} is required.`
+        if (!newFielderrors[id] || !newFielderrors[id].find(e => e === requiredError)) {
+          newFielderrors[id] = [
+            ...(newFielderrors[id] || []),
+            requiredError
+          ]
+        }
+      }
+      if (newFielderrors[id] && !newFielderrors[id].length) {
+        delete newFielderrors[id]
+      }
+    })
+
+    return {
+      formHasError: Object.keys(newFielderrors).length > 0,
+      errors: newFielderrors
+    }
+  }
+
   const handleChangeStep = (step) => {
-    setStep(step)
+    const { formHasError, errors } = handleCheckRequired()
+    console.log('@handleChangeStep', { formHasError, errors })
+    if (!formHasError) {
+      setStep(step)
+    }
+
+    setFieldError(errors)
   }
 
   const handleSubmit = () => {
-    // Check for required
-    let newFielderror = cloneDeep(fieldError)
-    formFields
-      .reduce((acc, curr) => {
-        acc = [
-          ...acc,
-          ...curr.fields
-        ]
-        return acc
-      }, [])
-      .forEach(({ required, value, id, placeholder, label }) => {
-        if (required && !value) {
-          const requiredError = `${placeholder || label || 'This'} is required.`
-          if (!newFielderror[id] || !newFielderror[id].find(e => e === requiredError)) {
-            newFielderror[id] = [
-              ...(newFielderror[id] || []),
-              requiredError
-            ]
-          }
-        }
-      })
-    setFieldError(newFielderror)
+    const { formHasError, errors } = handleCheckRequired()
+    console.log('@handleSubmit', { formHasError, errors })
+    setFieldError(errors)
   }
 
   console.log('@fieldError', fieldError)
-  console.log('@formFields', formFields)
+  console.log('@actualFormFields', actualFormFields)
 
   return (
     <FormrStyled>
@@ -143,12 +184,12 @@ export default ({
                   hasWizard ? (
                     <div className='wizard-wrapper'>
                       <Stepper
-                        fields={formFields}
+                        fields={actualFormFields}
                         currentStep={currentStep}
                         onSetStep={handleChangeStep}
                       />
                       <Content
-                        fields={formFields[currentStep].formFields}
+                        fields={(actualFormFields[currentStep] || {}).formFields || []}
                         currentStep={currentStep}
                         fieldError={fieldError}
                         onSetStep={handleChangeStep}
@@ -158,7 +199,7 @@ export default ({
                     </div>
                   ) : (
                     <Content
-                      fields={formFields}
+                      fields={actualFormFields}
                       currentStep={currentStep}
                       fieldError={fieldError}
                       onSetStep={handleChangeStep}
@@ -169,7 +210,7 @@ export default ({
                 }
                 <Actions
                   hasWizard={hasWizard}
-                  fields={formFields}
+                  fields={actualFormFields}
                   currentStep={currentStep}
                   onSetStep={handleChangeStep}
                   onSubmit={handleSubmit}

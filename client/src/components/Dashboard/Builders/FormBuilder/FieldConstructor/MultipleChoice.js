@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 export default ({ options, column, onChangeFieldSettings, isBuilder, isMultiple, index, isActive, id: fieldId, onChange, value = {} }) => {
-  console.log('witwew', value)
   const hasOthers = options.find(e => e.name === 'other')
   const handleChangeOption = ({ target }, optionIndex) => {
     onChangeFieldSettings({ options: update(options, { [optionIndex]: { $merge: { label: target.value } } }) })
