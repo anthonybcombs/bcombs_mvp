@@ -962,7 +962,7 @@ export default function index() {
       payload.push(request_params);
     }
     console.log('Request Add Application Payload',payload)
-    //dispatch(requestAddApplication(payload));
+    dispatch(requestAddApplication(payload));
   }
 
   const formRef = useRef(null);

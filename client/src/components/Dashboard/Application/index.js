@@ -718,17 +718,17 @@ export default function index() {
       ch_id: application.child.ch_id,
       id: application.child.ch_id
     };
-
+    console.log('APPLICATIONNNNN', application)
     const parents = application.parents;
-
+    
     let items = [];
     for (const parent of parents) {
       const profile = {
         first_name: parent.firstname ? parent.firstname : "",
         last_name: parent.lastname ? parent.lastname : "",
-        phone_type: parent.phont_type ? parent.phone_type : "",
+        phone_type: parent.phone_type ? parent.phone_type : "",
         phone_number: parent.phone_number ? parent.phone_number : "",
-        phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+        phone_type2: parent.phone_type2 ? parent.phone_type2 : "",
         phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
         email_type: parent.email_type ? parent.email_type : "",
         email_address: parent.email_address ? parent.email_address : "",
@@ -1448,7 +1448,7 @@ export default function index() {
   }
 
   console.log('loading applications',applications)
-  console.log('selectedApplication123123',selectedApplication)
+  console.log('parentsInformation123123123123',parentsInformation)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>

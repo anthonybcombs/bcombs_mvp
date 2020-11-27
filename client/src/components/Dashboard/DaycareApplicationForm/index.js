@@ -639,7 +639,7 @@ export default function index() {
       is_daycare: true
     };
 
-    console.log('Request Add Daycare Application Payload',payload);
+
     dispatch(requestAddApplication(payload));
   }
 

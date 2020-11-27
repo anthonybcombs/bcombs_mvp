@@ -398,7 +398,7 @@ export default function index({
   }
 
   const hasSelectAll = false;
-
+  console.log('parentProfile55555',parentProfile)
   return (
     <ParentInformationStyled>
       <h3 className="heading">
@@ -1590,7 +1590,7 @@ export default function index({
 
           <div className="form-group">
             <div className="field">
-              <input
+              <inputParentInformationStyled
                 name="parentemployer"
                 className={
                   isReadonly &&
