@@ -18,6 +18,7 @@ import Date from './Date'
 import Time from './Time'
 import Phone from './Phone'
 import Price from './Price'
+import Login from './Login'
 
 
 import STATES from '../../../ApplicationForm/states.json'
@@ -221,5 +222,8 @@ export default {
   },
   price: (props) => {
     return <Price {...props} />
+  },
+  login: (props) => {
+    return <Login {...props} />
   }
 }

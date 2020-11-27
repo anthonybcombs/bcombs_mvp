@@ -112,7 +112,7 @@ export default ({ label, fields, type, id, onChange, value = '' }) => {
                   <select
                     value={new Date(date).getFullYear()}
                     onChange={({ target: { value } }) => changeYear(value)}>
-                    {years.map(option => (
+                    {years.map((option, index) => (
                       <option key={option} value={option}>
                         {option}
                       </option>

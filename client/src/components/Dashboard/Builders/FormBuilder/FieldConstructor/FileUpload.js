@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
-export default ({ instruction, allowTypes, limit, errorMessage, onChangeFieldSettings, isBuilder }) => {
+export default ({ instruction, allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings, isBuilder, onChange, value = {} }) => {
   const handleChangeValues = ({ target: { value } }, type) => {
     onChangeFieldSettings({ [type]: value })
   }
@@ -20,6 +20,18 @@ export default ({ instruction, allowTypes, limit, errorMessage, onChangeFieldSet
       newErrorMessage = getErrorMsg(newTypes)
     }
     onChangeFieldSettings({ allowTypes: newTypes, errorMessage: newErrorMessage })
+  }
+
+  const encodeImageFileAsURL = (file) => {
+    if (!file) {
+      return
+    }
+    var reader = new FileReader()
+    reader.onloadend = function() {
+      const [, ext] = file.name.split('.')
+      onChange({ target: { id: fieldId, value: { data: reader.result, filename: file.name, extension: `.${ext}` } } })
+    }
+    reader.readAsDataURL(file)
   }
 
   return (
@@ -68,9 +80,7 @@ export default ({ instruction, allowTypes, limit, errorMessage, onChangeFieldSet
               type='file'
               id='file'
               name='file'
-              onChange={(e) => {
-                console.log('e', e.target.files[0])
-              }}
+              onChange={(e) => encodeImageFileAsURL(e.target.files[0])}
             />
           </div>
         )

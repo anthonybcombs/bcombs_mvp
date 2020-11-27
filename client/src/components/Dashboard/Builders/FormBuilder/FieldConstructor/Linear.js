@@ -83,7 +83,7 @@ export default ({ min, max, onChangeFieldSettings, isBuilder, id: fieldId, onCha
                 {
                   Array(maxValue - (minValue-1)).fill(null).map((e, i) => {
                     return (
-                      <div className='scaleForm-value'>
+                      <div key={`maxValue-${i}`} className='scaleForm-value'>
                         <div className='radiobuttonContainer'>
                           <input
                             id={`radio_${minValue + i}`}

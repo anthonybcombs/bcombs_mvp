@@ -28,7 +28,9 @@ export default ({
     const newObj = {}
     objArr.forEach(([key, value], index) => {
       if (value !== null) {
-        if (Array.isArray(value)) {
+        if (Array.isArray(value) && !value.find(e => typeof e === 'object')) {
+          newObj[key] = value
+        } else if (Array.isArray(value)) {
           newObj[key] = value.map(e => cleanFormData(e))
         } else if (typeof value === 'object') {
           newObj[key] = cleanFormData(value)
@@ -69,16 +71,9 @@ export default ({
       dispatch(requestGetFormById({ form_id }))
     }
   }, []);
-  
-  const [fieldState, setField] = useState({})
-  const handleChange = (id, value) => {
-    setField({
-      ...fieldState,
-      [id]: value
-    })
-    
-    const [, groupId] = id.split('_')
 
+  const handleChange = (id, value) => { 
+    const [, groupId] = id.split('_')
     const fields = cloneDeep(formFields.find(e => e.id === groupId).fields)
     setFormFields(update(formFields, {
       [formFields.findIndex(e => e.id === groupId)]: {
@@ -89,14 +84,13 @@ export default ({
         }
       }
     }))
-
   }
 
   const [fieldError, setFieldError] = useState({})
-  const handleCheckError = (id, error) => {
+  const handleCheckError = (id, errors) => {
     setFieldError({
       ...fieldError,
-      [id]: error
+      [id]: errors
     })
   }
 
@@ -129,8 +123,8 @@ export default ({
       })
     setFieldError(newFielderror)
   }
-  
-  console.log('@fieldState', fieldState)
+
+  console.log('@fieldError', fieldError)
   console.log('@formFields', formFields)
 
   return (
@@ -156,7 +150,6 @@ export default ({
                       <Content
                         fields={formFields[currentStep].formFields}
                         currentStep={currentStep}
-                        fieldState={fieldState}
                         fieldError={fieldError}
                         onSetStep={handleChangeStep}
                         onChange={handleChange}
@@ -167,7 +160,6 @@ export default ({
                     <Content
                       fields={formFields}
                       currentStep={currentStep}
-                      fieldState={fieldState}
                       fieldError={fieldError}
                       onSetStep={handleChangeStep}
                       onChange={handleChange}

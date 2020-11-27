@@ -335,9 +335,9 @@ export const PrimeFields = [
   },
   {
     fields: [
-      { label: 'Username / Email', type: 'text', tag: 'input', placeholder: 'Username / Email', column: '4'},
-      { label: 'Password', type: 'password', tag: 'input', placeholder: 'Password', column: '2'},
-      { label: 'Confirm Password', type: 'password', tag: 'input', placeholder: 'Confirm Password', column: '2'}
+      { label: 'Email Address', type: 'email', tag: 'input', placeholder: 'Username / Email', column: '4', required: true},
+      { label: 'Password', type: 'password', tag: 'input', placeholder: 'Password', column: '2', required: true},
+      { label: 'Confirm Password', type: 'confirmPassword', tag: 'input', placeholder: 'Confirm Password', column: '2', required: true}
     ],
     label: 'Login',
     type: 'login',
