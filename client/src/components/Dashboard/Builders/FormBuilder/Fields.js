@@ -44,14 +44,6 @@ export const StandardFields = [
     includeLogic: false,
     includeValidation: true
   },
-  // {
-  //   fields: [
-  //     { label: 'Numbers', type: 'number', tag: 'input', placeholder: 'Numbers', column: '1'}
-  //   ],
-  //   label: 'Numbers',
-  //   type: 'numbers',
-  //   canBeGrouped: true
-  // },
   {
     fields: [
       { label: 'Paragraph Text', type: 'text', tag: 'textarea', placeholder: 'Paragraph Text', column: '1'}
@@ -63,25 +55,6 @@ export const StandardFields = [
     includeLogic: false,
     includeValidation: true,
   },
-  // {
-  //   fields: [
-  //     {
-  //       type: 'checkboxes',
-  //       tag: 'checkboxes',
-  //       options: [
-  //         { name: 'option1', label: 'Option 1', tag: 'checkbox' },
-  //         { name: 'option2', label: 'Option 2', tag: 'checkbox' },
-  //         { name: 'option3', label: 'Option 3', tag: 'checkbox' }
-  //       ]
-  //     }
-  //   ],
-  //   displayLabel: 'Checkboxes',
-  //   label: 'Checkboxes question',
-  //   type: 'checkboxes',
-  //   gridMax: 1,
-  //   isQA: true,
-  //   includeValidation: true
-  // },
   {
     fields: [
       {
@@ -279,6 +252,7 @@ export const StandardFields = [
     label: 'Section Break',
     type: 'sectionBreak',
     hasSettings: false,
+    showLabel: true,
     gridMax: 1,
   },
   {
@@ -288,6 +262,7 @@ export const StandardFields = [
     label: 'Page Break',
     type: 'pageBreak',
     hasSettings: false,
+    showLabel: true,
     gridMax: 1,
   }
 ]

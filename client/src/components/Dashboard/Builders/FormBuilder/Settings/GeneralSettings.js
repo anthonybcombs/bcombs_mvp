@@ -27,10 +27,21 @@ export default ({
   onChangeDefaultProps
 }) => {
 
-  const { validationTypes, validationOptions } = Sources
+  let { validationTypes, validationOptions } = Sources
 
-  const validationOptionsArr = (valType) => Object.entries(validationOptions[valType || 'text'])
+  validationTypes = cloneDeep(validationTypes)
+
+  const validationOptionsArr = (valType) => {
+    const valOptions = Object.entries(validationOptions[valType || 'text'])
+    return fieldGroupType === 'paragraphText'
+      ? valOptions.filter(e => e[0] !== 'emailAddress')
+      : valOptions
+  }
   const defaultValidation = { type: 'text', option: 'contains', value: '', error: '', errorField: 'value' }
+
+  if (fieldGroupType === 'paragraphText') {
+    delete validationTypes.number
+  }
 
   const handleChangeGeneralSettings = (data, key) => {
     let newSettings = { ...generalSettings }

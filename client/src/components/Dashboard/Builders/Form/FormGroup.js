@@ -40,7 +40,7 @@ export default ({
     >
       <p className='formGroup-name'>{showLabel ? label : ''}</p>
       {
-        include && (
+        (include && value) && (
           <div className='tooltip-wrapper'>
             <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
             <span className='tooltip'>{value}</span>

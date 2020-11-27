@@ -247,7 +247,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }
   }, [category])
 
-  console.log('toinks', { droppedFields, form_data, form_title, formCategory, fieldHasChanged })
+  console.log('@@@@@FORM BUILD LOGS', { droppedFields, form_data, form_title, formCategory, fieldHasChanged })
 
   return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
