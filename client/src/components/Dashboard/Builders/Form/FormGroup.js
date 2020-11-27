@@ -67,6 +67,8 @@ export default ({
                     placeholder: `${placeholder} ${required ? '*' : ''}`,
                     // value, // fieldState[fieldId] || '',
                     onChange: handleChange,
+                    onCheckError,
+                    errors,
                     className: hasError ? 'hasError': ''
                   })
                 }
