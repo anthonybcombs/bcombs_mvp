@@ -157,43 +157,58 @@ export default styled.div`
   }
   
   .formManager-header .header-actions .left-actions .select-field-wrapper {
-    width: 130px;
+    max-width: 300px;
+    min-width: 300px;
     border: 1.65px solid #ccc;
   }
-  .formManager-header .header-actions .left-actions .select-field-wrapper > select {
-    border-bottom: 0 !important;
-    text-indent: unset !important;
-    text-align-last: center !important;
+  .formManager-header .header-actions .left-actions .select-field-wrapper #multiselectContainerReact div:first-child {
+    border: none;
+  }
+  .formManager-header .header-actions .left-actions .select-field-wrapper input {
+    margin-top: 0 !important;
+    font-size: 16px !important;
+    line-height: 1.5;
   }
   .formManager-header .header-actions .left-actions .select-field-wrapper:after {
+    top: 15px;
     right: 10px !important;
   }
-  .formManager-header .header-actions .left-actions .favorites-btn {
-    margin: 0;
-    width: 150px;
-    padding: 12px;
-    font-size: 16px;
-    background: transparent;
-    border: 1.65px solid #ccc;
-    border-left: 0;
+  #multiselectContainerReact .chip,
+  #multiselectContainerReact .optionContainer li:hover,
+  #multiselectContainerReact .optionContainer li.highlight {
+    background: #1e98f3;
   }
-  .formManager-header .header-actions .left-actions .favorites-btn:hover {
-    color: #1e98f3;
-    transition: .15s ease-in-out;
-  }
-  .formManager-header .header-actions .left-actions .active,
-  .formManager-header .header-actions .left-actions .active > select {
-    background: #2097f3;
-    color: #fff !important;
-    cursor: pointer !important;
-  }
-  .formManager-header .header-actions .left-actions .active.select-field-wrapper:after  {
-    color: #fff !important;
-  }
+
+
 
 
   .formManager-header .header-actions .right-actions {
     margin-left: auto;
+  }
+  .formManager-header .header-actions .right-actions .favorites-btn {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: grey;
+    width: 150px;
+    padding: 12px;
+    font-size: 16px;
+    margin-right: 1rem;
+    border-radius: 3px;
+    background: transparent;
+    border: 1.65px solid #ccc;
+    transition: .15s ease-in-out;
+  }
+  .formManager-header .header-actions .right-actions .favorites-btn svg {
+    padding: 0 10px !important;
+    transition: none !important;
+  }
+  .formManager-header .header-actions .right-actions .favorites-btn:hover {
+    color: #1e98f3;
+  }
+  .formManager-header .header-actions .right-actions .favorites-btn.active{
+    color: #1e98f3;
+    border-color: #1e98f3;
   }
   .formManager-header .header-actions .right-actions .dateFilter {
     display: flex;
@@ -269,20 +284,19 @@ export default styled.div`
     display: flex;
     flex-direction: column;
 
-
     padding: 1rem;
     cursor: pointer;
     background: #fff;
     border-radius: 4px;
     box-shadow: 0 3px 5px #ddd;
-    border-bottom: 6px solid #f5812f;
     border: 1px solid rgb(221 221 221 / 50%);
+
+    border-bottom: 3px solid #f5812f;
     transition: .15s ease-in-out;
   }
   .form-list-item:hover {
     transform: scale(1.03);
     box-shadow: 0 7px 30px 10px #ddd;
-    border-bottom: 6px solid #f5812f !important;
   }
   .form-list-item:hover .form-title label {
     color: #f5812f;

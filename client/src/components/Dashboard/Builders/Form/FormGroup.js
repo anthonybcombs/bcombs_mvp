@@ -38,14 +38,34 @@ export default ({
     <div
       className={`formGroup ${itemGroup}`}
     >
-      <p className='formGroup-name'>{showLabel ? label : ''}</p>
-      {
+      <p className='formGroup-name'>
+        <span>
+          {showLabel ? (
+            <>
+              {label}
+              {
+                include && (
+                  <div className='tooltip-wrapper'>
+                    <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+                    <span className='tooltip'>{value}</span>
+                  </div>
+                )
+              }
+            </>
+            
+          ) : ''}
+        </span>
+      </p>
+      {/* {
         include && (
           <div className='tooltip-wrapper'>
             <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
             <span className='tooltip'>{value}</span>
           </div>
         )
+      } */}
+      {
+        (!showLabel && include) && <div className='formGroup-name-instruction'>{value}</div>
       }
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faSearch, faArrowUp, faArrowDown, faTh, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faSearch, faArrowUp, faArrowDown, faTh, faBars, faHeart } from '@fortawesome/free-solid-svg-icons'
 import { Multiselect } from 'multiselect-react-dropdown'
 
 export default ({ onChangeFilter }) => {
@@ -70,7 +70,7 @@ export default ({ onChangeFilter }) => {
               onRemove={selectedList => {}}
               displayValue='name'
               closeIcon='cancel'
-              // name={'ethinicity'}
+              // name={'ethinicity
               placeholder='Filter by categories'
               closeOnSelect={false}
               showCheckbox={true}
@@ -78,11 +78,18 @@ export default ({ onChangeFilter }) => {
               selectedValues={categories}
             />
           </div>
-          <button className='favorites-btn'>
+          {/* <button className='favorites-btn'>
             Favorites
-          </button>
+          </button> */}
         </div>
         <div className='right-actions'>
+          <button className='favorites-btn'> {/* add active class if selected*/}
+            <FontAwesomeIcon
+              className='sort-icon'
+              icon={faHeart}
+            />
+            Favorites
+          </button>
           <div className='dateFilter'>
             <div className='field select-field-wrapper'>
               <select

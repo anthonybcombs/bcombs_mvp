@@ -227,13 +227,39 @@ export default styled.div`
   .formGroup-name {
     color: #f26e21;
     margin: 1rem 0 -10px 0;
-    letter-spacing: 1.3px;
+    letter-spacing: 0.8px;
   }
+  .formGroup-name >span {
+    position: relative;
+  }
+  .formGroup-name >span .tooltip-wrapper {
+    position: absolute;
+    margin: unset;
+    top: 0;
+    right: -24px;
+    color: #bfbfbf;
+  }
+  .formGroup-name >span .tooltip-wrapper .tooltip {
+    left: 22px;
+  }
+  .formGroup-name >span .tooltip-wrapper:hover .tooltip {
+    transform: translateY(10px);
+  }
+
+  .formGroup-name-instruction {
+    color: gray;
+    font-size: 14px;
+    font-weight: 100;
+    margin-top: 2rem;
+    margin-bottom: -10px;
+  }
+
 
 
   .formGroup-row {
     display: grid;
-    align-items: center;
+    // align-items: center;
+    align-items: baseline;
     grid-column-gap: 2%;
     // grid-template-columns: repeat(1, 1fr);
   }
@@ -246,6 +272,15 @@ export default styled.div`
 
 
   // ********* Specific Group Fields  **********
+  // Name
+  .formGroup.name .formGroup-row {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .formGroup.name .formGroup-row .formGroup-column:nth-child(1) {
+    max-width: 130px;
+    grid-column: 1 / span 3 !important;
+  }
+
   // Section Break
   .formGroup.sectionBreak .formGroup-name {
     font-size: 20px;
@@ -385,7 +420,7 @@ export default styled.div`
   .matrixRating-container .table-scroll-wrapper {
     width: 100%;
     overflow-x: auto;
-    max-width: unset;
+    max-width: calc(100% - 210rem);
   }
   .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar {
     width: 8px;
@@ -823,11 +858,19 @@ export default styled.div`
   // ********* MEDIA QUERIES *********
   // =================================
 
+  @media (max-width: 970px) {
+    .matrixRating-container .table-scroll-wrapper {
+      //   max-width: 610px;
+      max-width: calc(100vw - 5rem)
+    }
+  }
+
   @media (max-width: 640px) {
     .formGroup-row {
       display: block;
     }
   }
+
   
   
 
