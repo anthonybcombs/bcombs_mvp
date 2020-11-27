@@ -911,7 +911,7 @@ export default function index() {
   const onSubmitSaveApplication = () => {
     console.log("Click Save Application");
 
-    const payload = {
+    let payload = {
       app_id: selectedApplication.app_id,
       child: {
         firstname: childInformation.profile.first_name,
@@ -1025,6 +1025,10 @@ export default function index() {
       updated_by: auth.name
     };
 
+    payload = {
+      ...payload,
+      relationships: relationships
+    };
     console.log("Submit update application", payload);
 
     dispatch(requestSaveApplication(payload));
@@ -1423,12 +1427,18 @@ export default function index() {
         tempRelationships[index].relationship = relationship;
 
         exists = true;
+        console.log('Temp Relationships 1',tempRelationships)
         setRelationships([...tempRelationships]);
         break;
       }
     }
 
     if(!exists) {
+      console.log('Temp Relationships 2',...relationships, {
+        parent: parent,
+        child: child,
+        relationship: relationship
+      })
       setRelationships([...relationships, {
         parent: parent,
         child: child,

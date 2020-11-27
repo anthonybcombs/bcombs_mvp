@@ -723,7 +723,7 @@ const resolvers = {
       const previousApplication = await getApplicationByAppId(
         application.app_id
       );
-
+      console.log('Application saveApplication', application)
       const tc_signatures = {
         section1_signature: application.section1_signature,
         section1_date_signed: application.section1_date_signed,
@@ -748,6 +748,12 @@ const resolvers = {
         child: application.child,
         parents: application.parents
       });
+
+      if(application.relationships) {
+        for(const relationship of application.relationships) {
+          await updateParentChildRelationship(relationship);
+        }
+      }
 
       if (isSaved) {
         const params = {

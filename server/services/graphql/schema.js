@@ -456,7 +456,8 @@ const inputs = `
         section3_text: String
         section1_name: String
         section2_name: String
-        section3_name: String
+        section3_name: String,
+        relationships: [ParentChildRelationshipInput]
     }
 
     input AddAdminInput {
@@ -484,6 +485,7 @@ const inputs = `
         parent: String!
         child: String!
         relationship: String
+        id: String
     }
 
     input ChildChildRelationshipInput {
