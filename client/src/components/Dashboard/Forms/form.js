@@ -75,6 +75,15 @@ export default ({
               onClick={e => {
                 e.stopPropagation()
                 setCloneModal({ bool: true, form_id })
+                onCloneForm({
+                  form_contents: {
+                    ...form_contents,
+                    formTitle: `${form_contents.formTitle} (Copy)`
+                  },
+                  category,
+                  vendor,
+                  user
+                })
               }}
             />
             <FontAwesomeIcon
@@ -106,7 +115,7 @@ export default ({
           />
         )
       }
-      {
+      {/* {
         (cloneModal.bool && cloneModal.form_id === form_id) && (
           <CloneModal
             title={form_contents.formTitle}
@@ -122,7 +131,7 @@ export default ({
             }
           />
         )
-      }
+      } */}
       {
         (deleteModal.bool && deleteModal.form_id === form_id) && (
           <DeleteModal

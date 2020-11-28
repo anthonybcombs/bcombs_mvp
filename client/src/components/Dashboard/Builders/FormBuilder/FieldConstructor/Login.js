@@ -1,7 +1,7 @@
 import React from 'react'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ label, fields, type, id, onChange, fieldError = [], onCheckError }) => {
+export default ({ showLabel, settings, label, fields, type, id, onChange, fieldError = [], onCheckError }) => {
   const fieldId = `${type}_${id}`
   const handleAnswer = ({ target: { id, value } }, type) => {
     let errors = fieldError[id] || []
@@ -40,11 +40,27 @@ export default ({ label, fields, type, id, onChange, fieldError = [], onCheckErr
     onCheckError(id, errors)
   }
 
+  const { include, value: instructionValue } = settings.instruction || {}
+
   return (
     <div
       className={`formGroup ${type}`}
     > 
-      <p className='formGroup-name'>{label}</p>
+      <p className='formGroup-name'>
+        {showLabel ? (
+          <span>
+            {label}
+            {
+              (include && instructionValue) && (
+                <div className='tooltip-wrapper'>
+                  <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+                  <span className='tooltip'>{instructionValue}</span>
+                </div>
+              )
+            }
+          </span>
+        ) : ''}
+      </p>
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(4, 1fr)`}}>
         {
           fields.map((field, index) => {

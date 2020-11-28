@@ -111,7 +111,7 @@ export default ({ scale = {}, items = [], onChangeFieldSettings, isBuilder, id: 
                         checked={answerIndex >= index}
                         onChange={() => handleAnswer({ label, rank })}
                       />
-                      <label for={`star-${index}`} />
+                      <label htmlFor={`star-${index}`} />
                     </div>
                   </div>
                 )
