@@ -455,6 +455,14 @@ export default function index({
           <label className="cus-select-container">
             Yes 
             <input type="radio" 
+             className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation &&
+              (pastChildInformation.does_child_require_physical_education_service || pastChildInformation.does_child_require_physical_education_service == "") &&
+              pastChildInformation.does_child_require_physical_education_service != childGeneralInformation.does_child_require_physical_education_service ?
+              "field-input highlights" : "field-input"
+              }
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "does_child_require_physical_education_service", "Yes");
               }} 
@@ -471,6 +479,8 @@ export default function index({
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "does_child_require_physical_education_service", "No");
               }} 
+
+           
               value={"No"}
               checked={childGeneralInformation.does_child_require_physical_education_service == "No"}
               readOnly={isReadonly}

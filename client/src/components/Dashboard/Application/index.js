@@ -1717,6 +1717,7 @@ export default function index() {
                 <>
                 <hr className="style-eight"></hr>
                 <RelationshipToChildStyled
+                  selectedApplication={selectedApplication}
                   handleParentChildRelationship={handleParentChildRelationship}
                   parents={parentsInformation}
                   childs={[{...childInformation}]}

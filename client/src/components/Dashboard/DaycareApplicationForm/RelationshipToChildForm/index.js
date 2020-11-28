@@ -103,6 +103,17 @@ const RelationshipToChildStyled = styled.div`
     right: 8px !important;
     bottom: 8px !important;
   }
+
+   .highlights{
+
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 2px solid #ccc !important;
+
+    background: #f26e21 !important ;
+    color: white !important;
+  }
 `;
 
 export default function index({
@@ -115,9 +126,42 @@ export default function index({
   isReadonly = false,
   relationships = [],
   chRelationships = [],
-  isReadView = false
+  isReadView = false,
+  selectedApplication = null
 }) {
+  let pastRelationship  = null;
+  const { applications } = useSelector(
+    ({ applications }) => {
+      return {applications}
+    }
+  );
+console.log('selectedApplication 123123',selectedApplication)
+console.log('selectedApplication 123123 applications',applications)
 
+if(applications && 
+  applications.applicationHistory && 
+  applications.applicationHistory.length > 0 && selectedApplication) {
+
+  const application = JSON.parse(applications.applicationHistory[0].details); 
+    console.log("APPLICATIONNNNNNNNNNN", application)
+    pastRelationship = application.relationships[0]
+  // if(application && application.parents && application.parents.length > 0) {
+  //   pastParentInformation = application.parents;
+  // }
+
+  // if(application && application.emergency_contacts) {
+  //   pastEmergencyContacts = JSON.parse(application.emergency_contacts);
+
+  //   if(Array.isArray(pastEmergencyContacts) && pastEmergencyContacts.length > 0) {
+  //     pastEmergencyContacts = pastEmergencyContacts;
+  //   } else {
+  //     pastEmergencyContacts = [];
+  //   }
+
+  //   console.log("pastEmergencyContacts", pastEmergencyContacts);      
+  // }
+}
+  
   const RELATION_TO_CHILD_OPTIONS = [
     { id: 1, value: "Mother", name: "Mother"},
     { id: 2, value: "Father", name: "Father"},
@@ -177,7 +221,7 @@ export default function index({
 
   console.log("chRelationships", chRelationships);
   console.log("isReadView", isReadView);
-  console.log("tempChilds", tempChilds);
+  console.log("pastRelationship", pastRelationship);
 
   return (
     <RelationshipToChildStyled>
@@ -200,7 +244,15 @@ export default function index({
                       <div className='select-field-wrapper'>
                         <select
                           name={"ch_parent" + i + "" + j}
-                          className="input-field"
+                          className={
+                            isReadonly &&
+                            pastRelationship &&
+                            (pastRelationship.relationship ||
+                              pastRelationship.relationship == "") &&
+                              pastRelationship.relationship != getRelationshipVal(parent.id, child.id)
+                              ? "field-input highlights"
+                              : "field-input"
+                          }
                           onChange={({target}) => {
                             handleParentChildRelationship(parent.id, child.id, target.value);
                           }}
@@ -311,7 +363,7 @@ export default function index({
                             <div className="select-field-wrapper">
                               <select
                                 name={"ch_ch0" + j}
-                                className="input-field"
+                                className="input-field"   
                                 onChange={({target}) => {
                                   handleChildChildRelationship(tempChilds[0].id, child2.id, target.value);
                                 }}
