@@ -628,9 +628,9 @@ const AuditTrail = props => {
             const profile = {
               first_name: parent.firstname ? parent.firstname : "",
               last_name: parent.lastname ? parent.lastname : "",
-              phone_type: parent.phont_type ? parent.phone_type : "",
+              phone_type: parent.phone_type ? parent.phone_type : "",
               phone_number: parent.phone_number ? parent.phone_number : "",
-              phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+              phone_type2: parent.phone_type ? parent.phone_type2 : "",
               phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
               email_type: parent.email_type ? parent.email_type : "",
               email_address: parent.email_address ? parent.email_address : "",
@@ -926,9 +926,9 @@ const AuditTrail = props => {
             const profile = {
               first_name: parent.firstname ? parent.firstname : "",
               last_name: parent.lastname ? parent.lastname : "",
-              phone_type: parent.phont_type ? parent.phone_type : "",
+              phone_type: parent.phone_type ? parent.phone_type : "",
               phone_number: parent.phone_number ? parent.phone_number : "",
-              phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+              phone_type2: parent.phone_type2 ? parent.phone_type2 : "",
               phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
               email_type: parent.email_type ? parent.email_type : "",
               email_address: parent.email_address ? parent.email_address : "",

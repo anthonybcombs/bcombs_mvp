@@ -590,9 +590,9 @@ export default function index() {
             const profile = {
               first_name: parent.firstname ? parent.firstname : "",
               last_name: parent.lastname ? parent.lastname : "",
-              phone_type: parent.phont_type ? parent.phone_type : "",
+              phone_type: parent.phone_type ? parent.phone_type : "",
               phone_number: parent.phone_number ? parent.phone_number : "",
-              phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+              phone_type2: parent.phone_type2 ? parent.phone_type2 : "",
               phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
               email_type: parent.email_type ? parent.email_type : "",
               email_address: parent.email_address ? parent.email_address : "",
@@ -809,9 +809,9 @@ export default function index() {
             const profile = {
               first_name: parent.firstname ? parent.firstname : "",
               last_name: parent.lastname ? parent.lastname : "",
-              phone_type: parent.phont_type ? parent.phone_type : "",
+              phone_type: parent.phone_type ? parent.phone_type : "",
               phone_number: parent.phone_number ? parent.phone_number : "",
-              phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+              phone_type2: parent.phone_type ? parent.phone_type2 : "",
               phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
               email_type: parent.email_type ? parent.email_type : "",
               email_address: parent.email_address ? parent.email_address : "",
@@ -1181,7 +1181,7 @@ export default function index() {
 
   const onSubmitSaveApplication = () => {
 
-    const payload = {
+    let payload = {
       app_id: selectedApplication.app_id,
       child: {
         firstname: childInformation.profile.first_name,
@@ -1207,7 +1207,7 @@ export default function index() {
         child_lives_with: getArrayValue(childInformation.profile.child_lives_with),
         school_name: childInformation.general_information.school_name,
         school_phone: childInformation.general_information.school_phone,
-        has_suspended: parseInt(childInformation.general_information.has_suspended),
+        has_suspended: childInformation.general_information.has_suspended == "Yes" ? 1 : 0,
         reason_suspended: childInformation.general_information.reason_suspended,
         year_taken: childInformation.general_information.mentee_start_year,
         hobbies: childInformation.general_information.hobbies,
@@ -1282,6 +1282,11 @@ export default function index() {
       section3_name: selectedApplication.section3_name,
       updated_by: auth.name
     }
+
+    payload = {
+      ...payload,
+      relationships: relationships
+    };
 
     dispatch(requestSaveApplication(payload));
   }
@@ -1446,6 +1451,7 @@ export default function index() {
                               />
                               <hr className="style-eight"></hr>
                               <RelationshipToChildStyled
+                                selectedApplication={selectedApplication}
                                 handleParentChildRelationship={handleParentChildRelationship}
                                 parents={parentsInformation}
                                 childs={[{...childInformation}]}
