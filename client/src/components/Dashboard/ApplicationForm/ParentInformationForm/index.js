@@ -194,6 +194,10 @@ const ParentInformationStyled = styled.div`
       padding: 0;
     }
   }
+
+  .radio-highlights{
+    background: #f26e21 !important ;
+  }
 `;
 
 export default function index({
@@ -205,7 +209,7 @@ export default function index({
   isReadonly = false,
   isUpdate = false,
   ProfileImg,
-  pastParentInformation = {},
+  pastParentInformation = null,
   isVendorView,
   selectedApplication={},
   setIsParentAddressRequired
@@ -399,6 +403,7 @@ export default function index({
 
   const hasSelectAll = false;
   console.log('parentProfile55555',parentProfile)
+  console.log('parentProfile55555 pastParentInformation',pastParentInformation)
   return (
     <ParentInformationStyled>
       <h3 className="heading">
@@ -1590,7 +1595,7 @@ export default function index({
 
           <div className="form-group">
             <div className="field">
-              <inputParentInformationStyled
+              <input 
                 name="parentemployer"
                 className={
                   isReadonly &&
@@ -1702,7 +1707,14 @@ export default function index({
         <div className="agree-text">How long have you lived in this area?</div>
 
         <div className="form-group">
-          <label className="cus-select-container">
+          <label  className={
+              isReadonly &&
+              !isVendorView &&
+              pastParentInformation && (parentProfile.live_area == 1) && 
+              ( pastParentInformation.live_area != 1) &&
+              pastParentInformation.live_area != parentProfile.live_area ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             1 - 5 Years
             <input
               type="radio"
@@ -1717,10 +1729,18 @@ export default function index({
               value="1"
               checked={parentProfile?.live_area == 1}
               readOnly={isReadonly}
+              disabled={isReadonly}
             />
             <span className="checkmark"></span>
           </label>
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastParentInformation && (parentProfile.live_area == 2 ) && 
+              ( pastParentInformation.live_area != 2) &&
+              pastParentInformation.live_area != parentProfile.live_area ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             5 - 10 Years
             <input
               type="radio"
@@ -1734,10 +1754,19 @@ export default function index({
               }}
               value="2"
               checked={parentProfile?.live_area == 2}
+              readOnly={isReadonly}
+              disabled={isReadonly}
             />
             <span className="checkmark"></span>
           </label>
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastParentInformation && (parentProfile.live_area == 3 ) && 
+              ( pastParentInformation.live_area != 3) &&
+              pastParentInformation.live_area != parentProfile.live_area ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             More than 10 Years
             <input
               type="radio"
@@ -1752,6 +1781,7 @@ export default function index({
               value="3"
               checked={parentProfile?.live_area == 3}
               readOnly={isReadonly}
+              disabled={isReadonly}
             />
             <span className="checkmark"></span>
           </label>
@@ -1827,8 +1857,8 @@ export default function index({
                     isReadonly &&
                     !isVendorView &&
                     pastParentInformation && 
-                    (pastParentInformation.child_hs_grad || pastParentInformation.child_hs_grad == "") &&
-                    pastParentInformation.child_hs_grad != parentProfile.child_importance_hs ?
+                    (pastParentInformation.child_importance_hs || pastParentInformation.child_importance_hs == "") &&
+                    pastParentInformation.child_importance_hs != parentProfile.child_importance_hs ?
                     "field-input highlights" : "field-input"
                   }
                   onChange={({ target }) => {

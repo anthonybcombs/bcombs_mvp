@@ -76,6 +76,9 @@ const GeneralInformationFormStyled = styled.div`
       padding: 0;
     }
   }
+  .radio-highlights{
+    background: #f26e21 !important ;
+  }
 
 `;
 
@@ -360,7 +363,8 @@ export default function index({
     return items;
   }
 
-  console.log('GeneralInformationFormStyled childGeneralInformation',childGeneralInformation)
+  console.log('GeneralInformationFormStyled123 childGeneralInformation',childGeneralInformation)
+  console.log('GeneralInformationFormStyled123 pastChildInformation',pastChildInformation)
 
   return (
     <GeneralInformationFormStyled>
@@ -412,9 +416,8 @@ export default function index({
                     className={
                       isReadonly &&
                       !isVendorView &&
-                      pastChildInformation &&
-                      (pastChildInformation.gpa_quarter_year || pastChildInformation.gpa_quarter_year == "") &&
-                      pastChildInformation.gpa_quarter_year != childGeneralInformation.gpa_quarter_year ?
+                      pastChildInformation && (pastChildInformation.gpa_quarter_year || pastChildInformation.gpa_quarter_year == '') &&
+                      (pastChildInformation.gpa_quarter_year != childGeneralInformation.gpa_quarter_year) ?
                       "field-input highlights" : "field-input"
                     }
                     onChange={({ target }) => {
@@ -427,9 +430,15 @@ export default function index({
                   </select>
                   :
                   <input 
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation && (pastChildInformation.gpa_quarter_year || pastChildInformation.gpa_quarter_year == '') &&
+                      (pastChildInformation.gpa_quarter_year != childGeneralInformation.gpa_quarter_year) ?
+                      "field-input highlights" : "field-input"
+                    }
                     type="text"
                     name="ch_gpa_quarter"
-                    className="field-input"
                     defaultValue={childGeneralInformation.gpa_quarter_year}
                     readOnly={isReadonly}
                   />
@@ -791,27 +800,43 @@ export default function index({
           Are there currently any problems with your child either at home or at school? 
         </div>
         <div className="form-group">
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation && (childGeneralInformation.has_suspended === "Yes" ||( childGeneralInformation.has_suspended === 1 || typeof  childGeneralInformation.has_suspended === 'boolean' &&  childGeneralInformation.has_suspended === true)) && 
+              ( pastChildInformation.has_suspended == 0) &&
+              pastChildInformation.has_suspended != childGeneralInformation.has_suspended ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             Yes 
             <input type="radio" 
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
-              value={"1"}
-              checked={childGeneralInformation.has_suspended+"" == "1"  || childGeneralInformation.has_suspended+"" === true}
+              value={"Yes"}
+              //checked={childGeneralInformation.has_suspended+"" == "1"  || childGeneralInformation.has_suspended+"" === true}
+              checked={childGeneralInformation.has_suspended+"" == "Yes" || childGeneralInformation.has_suspended == "1" ||  (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === true)}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
             <span className="checkmark"></span>
           </label>
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation &&  (childGeneralInformation.has_suspended === "No" || childGeneralInformation.has_suspended === 0 ||  childGeneralInformation.has_suspended === "1" || typeof  childGeneralInformation.has_suspended === 'boolean' &&  childGeneralInformation.has_suspended === false) && 
+              ( pastChildInformation.has_suspended == 1 ) &&
+              pastChildInformation.has_suspended != childGeneralInformation.has_suspended ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             No
             <input type="radio" 
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
-              value={"0"}
-              checked={childGeneralInformation.has_suspended+"" == "0" || childGeneralInformation.has_suspended+"" === false}
+              value={"No"}
+              //checked={childGeneralInformation.has_suspended+"" == "0" || childGeneralInformation.has_suspended+"" === false}
+              checked={childGeneralInformation.has_suspended+"" == "No" || childGeneralInformation.has_suspended == "0" ||  (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === false)}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
