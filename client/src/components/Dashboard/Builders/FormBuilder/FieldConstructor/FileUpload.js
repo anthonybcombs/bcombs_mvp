@@ -106,13 +106,15 @@ export default ({ allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSet
           </div>
         ) : (
           data ? (
-            <div>
+            <div className='uploadForm-value'>
               <FontAwesomeIcon
+                className='file-icon'
                 icon={getExtensionIcon(ext)}
               />
               <span>{filename}</span>
               <FontAwesomeIcon
                 icon={faTimes}
+                className='close-icon'
                 onClick={() => onChange({ target: { id: fieldId, value: '' } })}
               />
             </div>

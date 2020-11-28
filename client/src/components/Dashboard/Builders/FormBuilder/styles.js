@@ -972,28 +972,35 @@ export default styled.div`
   }
 
     // File Upload
-  .sortableGroup.file input.field-input {
+  .sortableGroup.file input.field-input,
+  .sortableGroup.primeFile input.field-input {
     background: transparent !important;
   }
-  .sortableGroup.file .fileTypes p {
+  .sortableGroup.file .fileTypes p,
+  .sortableGroup.primeFile .fileTypes p {
     margin-bottom: 0;
   }
-  .sortableGroup.file .fileTypes .options {
+  .sortableGroup.file .fileTypes .options,
+  .sortableGroup.primeFile .fileTypes .options {
     display: flex;
     align-items: center;
   }
-  .sortableGroup.file .fileTypes .options .checkboxContainer {
+  .sortableGroup.file .fileTypes .options .checkboxContainer,
+  .sortableGroup.primeFile .fileTypes .options .checkboxContainer {
     margin-right: .5rem;
   }
-  .sortableGroup.file .validation .input-wrapper label {
+  .sortableGroup.file .validation .input-wrapper label,
+  .sortableGroup.primeFile .validation .input-wrapper label {
     color: gray;
     font-size: 12px;
   }
-  .sortableGroup.file .validation p {
+  .sortableGroup.file .validation p,
+  .sortableGroup.primeFile .validation p {
     margin-top: 2rem;
     margin-bottom: 0;
   }
-  .sortableGroup.file .validation .limit-size {
+  .sortableGroup.file .validation .limit-size,
+  .sortableGroup.primeFile .validation .limit-size {
     color: #f44336;
     font-size: 12px;
   }

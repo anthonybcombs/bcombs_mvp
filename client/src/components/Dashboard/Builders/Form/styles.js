@@ -383,7 +383,26 @@ export default styled.div`
     width: 200px;
     background: #f1f1f1;
   }
+  .uploadForm-value {
+    display: flex;
+    align-items: center;
 
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 15px;
+    background: #f1f1f1;
+    padding: .5rem 1rem .5rem 1rem;
+  }
+  .uploadForm-value .file-icon {
+    color: gray;
+    margin-right: .5rem;
+  }
+  .uploadForm-value .close-icon {
+    margin-right: 2rem;
+    margin-left: auto;
+    color: #f44336;
+  }
 
 
   // Linear Scale
@@ -417,10 +436,13 @@ export default styled.div`
 
 
   // Matrix/Rating
+  .formGroup.matrix .formGroup-row {
+    display: block !important;
+  }
   .matrixRating-container .table-scroll-wrapper {
-    width: 100%;
+    // width: 100%;
     overflow-x: auto;
-    max-width: calc(100% - 210rem);
+    // max-width: calc(100% - 210rem);
   }
   .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar {
     width: 8px;
@@ -859,10 +881,10 @@ export default styled.div`
   // =================================
 
   @media (max-width: 970px) {
-    .matrixRating-container .table-scroll-wrapper {
-      //   max-width: 610px;
-      max-width: calc(100vw - 5rem)
-    }
+    // .matrixRating-container .table-scroll-wrapper {
+    //   //   max-width: 610px;
+    //   // max-width: calc(100vw - 5rem)
+    // }
   }
 
   @media (max-width: 640px) {
