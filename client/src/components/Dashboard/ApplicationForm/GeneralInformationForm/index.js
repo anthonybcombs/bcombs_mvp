@@ -815,7 +815,7 @@ export default function index({
               }} 
               value={"Yes"}
               //checked={childGeneralInformation.has_suspended+"" == "1"  || childGeneralInformation.has_suspended+"" === true}
-              checked={childGeneralInformation.has_suspended+"" == "Yes" || childGeneralInformation.has_suspended == "1" ||  (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === true)}
+              checked={childGeneralInformation.has_suspended == "Yes" || childGeneralInformation.has_suspended == "1" ||  (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === true)}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -836,7 +836,7 @@ export default function index({
               }} 
               value={"No"}
               //checked={childGeneralInformation.has_suspended+"" == "0" || childGeneralInformation.has_suspended+"" === false}
-              checked={childGeneralInformation.has_suspended+"" == "No" || childGeneralInformation.has_suspended == "0" ||  (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === false)}
+              checked={childGeneralInformation.has_suspended == "No" || childGeneralInformation.has_suspended == "0" ||  (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === false)}
               readOnly={isReadonly}
               disabled={isReadonly}
             />

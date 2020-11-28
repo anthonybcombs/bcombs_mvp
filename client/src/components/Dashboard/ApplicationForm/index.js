@@ -359,7 +359,7 @@ export default function index() {
       psat_scores: [{...scoreObj}],
       school_name: "",
       school_phone: "",
-      has_suspended: 0,
+      has_suspended: null,
       reason_suspended: "",
       mentee_start_year: "",
       hobbies: "",
