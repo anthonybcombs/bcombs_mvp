@@ -507,7 +507,7 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-              has_suspended: application.child.has_suspended + "",
+              has_suspended: application.child.has_suspended ? 1 : 0,
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -726,7 +726,7 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-              has_suspended: application.child.has_suspended + "",
+              has_suspended: application.child.has_suspended ? 1 : 0,
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -1207,7 +1207,7 @@ export default function index() {
         child_lives_with: getArrayValue(childInformation.profile.child_lives_with),
         school_name: childInformation.general_information.school_name,
         school_phone: childInformation.general_information.school_phone,
-        has_suspended: childInformation.general_information.has_suspended == "Yes" ? 1 : 0,
+        has_suspended: childInformation.general_information.has_suspended == "Yes" || childInformation.general_information.has_suspended == 1 ? 1 : 0,
         reason_suspended: childInformation.general_information.reason_suspended,
         year_taken: childInformation.general_information.mentee_start_year,
         hobbies: childInformation.general_information.hobbies,
@@ -1287,7 +1287,7 @@ export default function index() {
       ...payload,
       relationships: relationships
     };
-
+    console.log('PAYLOADDD', payload)
     dispatch(requestSaveApplication(payload));
   }
 

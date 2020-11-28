@@ -532,8 +532,8 @@ export default function index({
           <label className={
               isReadonly &&
               !isVendorView &&
-              pastChildInformation && (childGeneralInformation.has_suspended === "Yes" ||( childGeneralInformation.has_suspended === "1" || typeof  childGeneralInformation.has_suspended === 'boolean' &&  childGeneralInformation.has_suspended === true)) && 
-              (!pastChildInformation.has_suspended || pastChildInformation.has_suspended == false) &&
+              pastChildInformation && (childGeneralInformation.has_suspended === "Yes" ||( childGeneralInformation.has_suspended === 1 || typeof  childGeneralInformation.has_suspended === 'boolean' &&  childGeneralInformation.has_suspended === true)) && 
+              ( pastChildInformation.has_suspended == 0) &&
               pastChildInformation.has_suspended != childGeneralInformation.has_suspended ?
               "cus-select-container radio-highlights" : "cus-select-container"
             }>
@@ -552,8 +552,8 @@ export default function index({
           <label className={
               isReadonly &&
               !isVendorView &&
-              pastChildInformation &&  (childGeneralInformation.has_suspended === "No" || childGeneralInformation.has_suspended === "0" ||  childGeneralInformation.has_suspended === "1" || typeof  childGeneralInformation.has_suspended === 'boolean' &&  childGeneralInformation.has_suspended === false) && 
-              ( pastChildInformation.has_suspended ) &&
+              pastChildInformation &&  (childGeneralInformation.has_suspended === "No" || childGeneralInformation.has_suspended === 0 ||  childGeneralInformation.has_suspended === "1" || typeof  childGeneralInformation.has_suspended === 'boolean' &&  childGeneralInformation.has_suspended === false) && 
+              ( pastChildInformation.has_suspended == 1 ) &&
               pastChildInformation.has_suspended != childGeneralInformation.has_suspended ?
               "cus-select-container radio-highlights" : "cus-select-container"
             }>
