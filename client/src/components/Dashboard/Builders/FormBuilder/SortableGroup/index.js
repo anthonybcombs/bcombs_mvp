@@ -168,12 +168,7 @@ const SortableGroup = React.forwardRef(
             )
           })
         }
-        {
-          (hasError && !fieldSettings.requireAddOption) && 
-            fieldErrors.map((e, i) => {
-              return e && <div key={`error-${i}`} className='error'> {e}</div>
-            })
-        }
+        
         {
           (isStandard && allowAddField && !!isActive) &&  (
             <div
@@ -223,6 +218,13 @@ const SortableGroup = React.forwardRef(
           )
         }
       </div>
+      {
+        (hasError && !fieldSettings.requireAddOption) && 
+          fieldErrors.map((e, i) => {
+            return e && <div key={`error-${i}`} className='error groupError'> {e}</div>
+          })
+      }
+
       {
         (hasSettings && !isDragging && isActive && !isLastPageBreak) ? (
           <GeneralSettings

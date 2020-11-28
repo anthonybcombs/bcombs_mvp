@@ -98,6 +98,9 @@ export default styled.div`
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
   }
+  #form .select-field-wrapper select >option {
+    color: #000 !important;
+  }
 
   // wizzard
   #form .wizard-wrapper {

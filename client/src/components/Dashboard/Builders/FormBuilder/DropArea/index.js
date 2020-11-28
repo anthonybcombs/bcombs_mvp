@@ -197,7 +197,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
 
   const handleSubmitForm = () => {
     if (Object.keys(errors).length) {
-      setPreviewLabel('Please clear all form errors.') 
+      setPreviewLabel('Please clear all fields/options label errors.') 
       setPreviewWarning(true)
       return
     }

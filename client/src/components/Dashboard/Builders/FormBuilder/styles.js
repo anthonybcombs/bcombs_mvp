@@ -357,6 +357,9 @@ export default styled.div`
     visibility: visible;
     transition: all .15s ease-in-out;
   }
+  .sortableGroup.active .groupError {
+    display: none;
+  }
 
   .sortableGroup:hover .sortableGroup-actions >div svg {
     opacity: 1;
@@ -377,6 +380,10 @@ export default styled.div`
     background: #f1f1f1;
     box-shadow: 0 3px 6px #ddd;
   }
+
+
+  
+
 
 
   .sortableGroup-actions {
@@ -1130,7 +1137,7 @@ export default styled.div`
     width: 100%;
     border-collapse: collapse;
     border: 0;
-    margin-bottom: 32px;
+    margin-bottom: 3px;
     table-layout: auto;
   }
   .matrixRating-table > thead > tr th.column-head {

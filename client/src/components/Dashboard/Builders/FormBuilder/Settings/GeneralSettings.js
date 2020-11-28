@@ -206,6 +206,7 @@ export default ({
                 )
               })
             }
+            
             <button
               type='button'
               target='_blank'
@@ -225,12 +226,7 @@ export default ({
         )
       }
       {/* End For Field with options */}
-      {
-        (hasError && requireAddOption) && 
-          fieldErrors.map((e, i) => {
-            return e && <div key={`error-${i}`} className='error'> {e}</div>
-          })
-      }
+      
       {/* Start For Validation */}
       {
         include && 
@@ -365,6 +361,22 @@ export default ({
         )
       }
       {/* End for Instruction */}
+
+      {/* Start for Group Validation */}
+      {
+        (hasError && (!fieldSettings.requireAddOption || requireAddOption)) && 
+        fieldErrors.map((e, i) => {
+          return e && <div
+            key={`error-${i}`}
+            className='error'
+            style={{ padding: '1rem', background: '#ffe0dd'}}
+          >
+            {e}
+          </div>
+        })
+      }
+      {/* End for Group Validation */}
+
 
       {/* Start Lower Control */}
       <div className='settings-control'>
