@@ -250,8 +250,8 @@ if(applications &&
                             (pastRelationship.relationship ||
                               pastRelationship.relationship == "") &&
                               pastRelationship.relationship != getRelationshipVal(parent.id, child.id)
-                              ? "field-input highlights"
-                              : "field-input"
+                              ? "input-field highlights"
+                              : "input-field"
                           }
                           onChange={({target}) => {
                             handleParentChildRelationship(parent.id, child.id, target.value);
