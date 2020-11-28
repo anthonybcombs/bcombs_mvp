@@ -4,7 +4,7 @@ import { faTimes, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
 export default (props) => {
-  const { columns, rows, onChangeFieldSettings, isMultiple = false, isBuilder, isActive, id: fieldId, onChange, value = [] } = props
+  const { columns, rows, onChangeFieldSettings, isMultiple = false, isBuilder, isActive, id: fieldId, onChange, value = [], onCheckError } = props
 
   const handleAddRow = () => {
     onChangeFieldSettings({
@@ -18,24 +18,35 @@ export default (props) => {
     })
   }
 
+  const handleCheckError = (data) => {
+    const newErrors = !!data.find(e => e.row.replace(/\s/g, '') === '')
+      ? ['Row labels are required.']
+      : []
+
+    onCheckError(newErrors)
+  }
+
   const handleRemoveRow = (index) => {
     const newRows = cloneDeep(rows)
     newRows.splice(index, 1)
     onChangeFieldSettings({ rows: newRows })
+    handleCheckError(newRows)
   }
 
   const handleChangeRow = ({ target: { value } }, index) => {
-    onChangeFieldSettings({
-      rows: rows.map((choice, i) => {
-        if (i === index) {
-          return {
-            ...choice,
-            row: value
-          }
+    const newRows = rows.map((choice, i) => {
+      if (i === index) {
+        return {
+          ...choice,
+          row: value
         }
-        return choice
-      })
+      }
+      return choice
     })
+    onChangeFieldSettings({
+      rows: newRows
+    })
+    handleCheckError(newRows)
   }
 
 

@@ -29,6 +29,10 @@ export default ({ allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSet
     let newTypes = cloneDeep(allowTypes)
     newTypes[index].selected = checked
 
+    if (newTypes.filter(e => e.selected).length === 0) {
+      return
+    }
+
     const getErrorMsg = (arr) => `Only ${arr.filter(e => e.selected).map(e => e.label).join(', ')} files are supported.`
     let newErrorMessage = getErrorMsg(allowTypes)
     if (errorMessage !== newErrorMessage) {

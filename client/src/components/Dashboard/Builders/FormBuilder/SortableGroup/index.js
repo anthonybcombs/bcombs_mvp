@@ -14,12 +14,12 @@ const SortableGroup = React.forwardRef(
     connectDragSource, connectDropTarget, connectDragPreview,
     onActive, onChangeGeneralSettings,  onMergeStandardFields, onDuplicateGroup,
     onRemoveGroupField, onChangeFieldSettings, onChangeGroupName, onApplyValidationToAll,
-    onChangeDefaultProps,
+    onChangeDefaultProps, errors,
 
     hidden, label, fields, isDragging, id, type: fieldGroupType, gridMax: gridColRepeat,
     includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField = {},
     onRemoveGroup, settings: generalSettings, allowAddField, includeLogic, supportMultiple,
-    isMultiple, showLabel
+    isMultiple, showLabel, onCheckError
   }, ref) => {
   
   const [fieldIndex, setActiveFieldIndex] = useState(0)
@@ -56,6 +56,9 @@ const SortableGroup = React.forwardRef(
   const isPageBreak = fieldGroupType === 'pageBreak'
   const pageBreakIndex = isPageBreak ? pageBreaks.findIndex(e => e.id === id) + 1 : 0
   const isLastPageBreak = lastField.id === id && isPageBreak
+  const fieldErrors = errors[id] || []
+  const hasError = fieldErrors.length > 0
+  const fieldSettings = fieldIndex !== '' ? fields[fieldIndex] : {}
 
   return (
     <div
@@ -153,13 +156,23 @@ const SortableGroup = React.forwardRef(
                 columnInt={columnInt}
                 isStandard={isStandard}
                 gridColRepeat={gridColRepeat}
+                errors={errors}
+                fieldErrors={fieldErrors}
+
                 setActiveFieldIndex={setActiveFieldIndex}
                 onActive={onActive}
                 onChangeFieldSettings={(data) => onChangeFieldSettings(data, index, id)}
                 onRemoveGroupField={onRemoveGroupField}
+                onCheckError={(errArr) => onCheckError(id, errArr)}
               />
             )
           })
+        }
+        {
+          (hasError && !fieldSettings.requireAddOption) && 
+            fieldErrors.map((e, i) => {
+              return e && <div key={`error-${i}`} className='error'> {e}</div>
+            })
         }
         {
           (isStandard && allowAddField && !!isActive) &&  (
@@ -224,10 +237,12 @@ const SortableGroup = React.forwardRef(
                 onApplyValidationToAll(data, id)
               }
             }}
+            onCheckError={(errArr) => onCheckError(id, errArr)}
+
             generalSettings={generalSettings}
             includeLogic={includeLogic}
             includeValidation={includeValidation}
-            fieldSettings={fieldIndex !== '' ? fields[fieldIndex] : {}}
+            fieldSettings={fieldSettings}
             hasSelectedField={fieldIndex !== ''}
             allowAddField={allowAddField}
             validationAppliedToAll={validationAppliedToAll}
@@ -236,6 +251,8 @@ const SortableGroup = React.forwardRef(
             isStandard={isStandard}
             fieldGroupType={fieldGroupType}
             supportMultiple={supportMultiple}
+            hasError={hasError}
+            fieldErrors={fieldErrors}
           />
         ) : (showSettings && !isLastPageBreak)
             ? (

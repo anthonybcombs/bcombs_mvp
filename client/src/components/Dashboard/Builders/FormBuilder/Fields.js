@@ -208,9 +208,9 @@ export const StandardFields = [
         label: 'Ranking',
         tag: 'ranking',
         items: [
-          { label: '', rank: 1 },
-          { label: '', rank: 2 },
-          { label: '', rank: 3 } 
+          { label: 'Item 1', rank: 1 },
+          { label: 'Item 2', rank: 2 },
+          { label: 'Item 3', rank: 3 } 
         ],
         column: '1'
       }

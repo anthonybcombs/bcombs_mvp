@@ -92,7 +92,7 @@ const RenameModalStyled = styled.div`
     }
   }
 `;
-export default function index({ onClose }) {
+export default function index({ title, onClose }) {
 
   return ReactDOM.createPortal(
     <RenameModalStyled
@@ -100,7 +100,7 @@ export default function index({ onClose }) {
       className='modal'>
       <div className='modal-content'>
         <div className='modal-container'>
-          Please save your changes to enable preview.
+          {title}
         </div>
 
         <div className='modal-footer'>
