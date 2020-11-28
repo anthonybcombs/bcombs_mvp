@@ -940,9 +940,7 @@ export default function index() {
         ),
         school_name: childInformation.general_information.school_name,
         school_phone: childInformation.general_information.school_phone,
-        has_suspended: parseInt(
-          childInformation.general_information.has_suspended
-        ),
+        has_suspended:  childInformation.general_information.has_suspended == "Yes" ? 1 : 0,
         reason_suspended: childInformation.general_information.reason_suspended,
         year_taken: childInformation.general_information.mentee_start_year,
         hobbies: childInformation.general_information.hobbies,
@@ -1078,11 +1076,18 @@ export default function index() {
       child.profile = profile;
     } else if (section === "general_information") {
       if (id === "has_suspended") {
-        if (value == "0")
+        console.log('Has Suspended Value',value)
+        if (value == "0" ){
           general_information = {
             ...general_information,
-            ["reason_suspended"]: ""
+            ["reason_suspended"]: "",
           };
+        }
+        // general_information = {
+        //   ...general_information,
+        //   has_suspended: value == "Yes" || value == "1" ? 1 : 0,
+        // };
+         
       }
 
       if (id.includes("act_scores")) {
@@ -1195,7 +1200,8 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-              has_suspended: application.child.has_suspended + "",
+            //  has_suspended: application.child.has_suspended + "",
+              has_suspended: application.child.has_suspended ,
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",

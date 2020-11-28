@@ -80,6 +80,10 @@ const GeneralInformationFormStyled = styled.div`
     }
   }
 
+  .radio-highlights{
+    background: #f26e21 !important ;
+  }
+
 `;
 
 export default function index({
@@ -94,6 +98,7 @@ export default function index({
 }) {
 
   console.log('DayCare Application Form', childGeneralInformation)
+  console.log('DayCare Application Form pastChildInformation',pastChildInformation)
 
   return (
     <GeneralInformationFormStyled>
@@ -104,7 +109,14 @@ export default function index({
           <span className="required">*</span> Is your child transferring from a previous daycare? 
         </div>
         <div className="form-group">
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation && childGeneralInformation.is_child_transferring === "Currently Enrolled" && 
+              (pastChildInformation.is_child_transferring || pastChildInformation.is_child_transferring == "") &&
+              pastChildInformation.is_child_transferring != childGeneralInformation.is_child_transferring ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+              }>
             Currently Enrolled 
             <input type="radio" 
               name={"ch_transfer" + (counter - 1)}
@@ -126,7 +138,14 @@ export default function index({
             />
             <span className="checkmark"></span>
           </label>
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation && childGeneralInformation.is_child_transferring === "Yes" && 
+              (pastChildInformation.is_child_transferring || pastChildInformation.is_child_transferring == "") &&
+              pastChildInformation.is_child_transferring != childGeneralInformation.is_child_transferring ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             Yes 
             <input type="radio"
               name={"ch_transfer" + (counter - 1)}
@@ -148,7 +167,14 @@ export default function index({
             />
             <span className="checkmark"></span>
           </label>
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation && childGeneralInformation.is_child_transferring === "No" && 
+              (pastChildInformation.is_child_transferring || pastChildInformation.is_child_transferring == "") &&
+              pastChildInformation.is_child_transferring != childGeneralInformation.is_child_transferring ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             No
             <input type="radio"
               name={"ch_transfer" + (counter - 1)}
@@ -452,17 +478,19 @@ export default function index({
           Does your child required additional physical / educational services 
         </div>
         <div className="form-group">
-          <label className="cus-select-container">
-            Yes 
-            <input type="radio" 
-             className={
+
+      
+          <label  className={
               isReadonly &&
               !isVendorView &&
-              pastChildInformation &&
+              pastChildInformation && childGeneralInformation.does_child_require_physical_education_service === "Yes" && 
               (pastChildInformation.does_child_require_physical_education_service || pastChildInformation.does_child_require_physical_education_service == "") &&
               pastChildInformation.does_child_require_physical_education_service != childGeneralInformation.does_child_require_physical_education_service ?
-              "field-input highlights" : "field-input"
-              }
+              "cus-select-container radio-highlights" : "cus-select-container"
+              }>
+            Yes 
+            <input type="radio" 
+              className="field-input"
               onChange={({ target }) => {
                 handleChildFormDetailsChange(counter - 1, "general_information", "does_child_require_physical_education_service", "Yes");
               }} 
@@ -473,7 +501,14 @@ export default function index({
             />
             <span className="checkmark"></span>
           </label>
-          <label className="cus-select-container">
+          <label  className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation && childGeneralInformation.does_child_require_physical_education_service === "No" && 
+              (pastChildInformation.does_child_require_physical_education_service || pastChildInformation.does_child_require_physical_education_service == "") &&
+              pastChildInformation.does_child_require_physical_education_service != childGeneralInformation.does_child_require_physical_education_service ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+              }>
             No
             <input type="radio" 
               onChange={({ target }) => {
@@ -494,7 +529,14 @@ export default function index({
           Are there currently any problems with your child either at home or at school? 
         </div>
         <div className="form-group">
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation && (childGeneralInformation.has_suspended === "Yes" || childGeneralInformation.has_suspended === true) && 
+              (!pastChildInformation.has_suspended || pastChildInformation.has_suspended == false) &&
+              pastChildInformation.has_suspended != childGeneralInformation.has_suspended ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             Yes 
             <input type="radio" 
               onChange={({ target }) => {
@@ -507,7 +549,14 @@ export default function index({
             />
             <span className="checkmark"></span>
           </label>
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation &&  (childGeneralInformation.has_suspended === "No" ||  childGeneralInformation.has_suspended === false) && 
+              ( pastChildInformation.has_suspended ) &&
+              pastChildInformation.has_suspended != childGeneralInformation.has_suspended ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             No
             <input type="radio" 
               onChange={({ target }) => {
