@@ -90,6 +90,7 @@ export default (props) => {
 
   const handleCloneForm = (data) => {
     dispatch(requestAddForm(data))
+    setIsLoading(true)
   }
 
   const handleDeleteForm = (form_id) => {

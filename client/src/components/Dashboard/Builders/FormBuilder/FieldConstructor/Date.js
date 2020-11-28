@@ -5,7 +5,7 @@ import FieldConstructor from '../../FormBuilder/FieldConstructor'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ label, fields, type, id, onChange, value = '' }) => {
+export default ({ showLabel, settings, label, fields, type, id, onChange, value = '' }) => {
   const fieldId = `${type}_${id}`
   const handleAnswer = (date) => {
     onChange(fieldId, date)
@@ -23,25 +23,41 @@ export default ({ label, fields, type, id, onChange, value = '' }) => {
   };
   const years = range(1900, new Date().getFullYear());
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
   ];
+
+  const { include, value: instructionValue } = settings.instruction || {}
 
   return (
     <div
       className={`formGroup ${type}`}
     > 
-      <p className='formGroup-name'>{label}</p>
+      <p className='formGroup-name'>
+        {showLabel ? (
+          <span>
+            {label}
+            {
+              (include && instructionValue) && (
+                <div className='tooltip-wrapper'>
+                  <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+                  <span className='tooltip'>{instructionValue}</span>
+                </div>
+              )
+            }
+          </span>
+        ) : ''}
+      </p>
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
         {/* <input
           className={`field-input`}
