@@ -8,10 +8,12 @@ import FieldConstructor from '../FormBuilder/FieldConstructor'
 import { Sources } from '../FormBuilder/Settings/Sources'
 
 export default ({ 
-  label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError, gridMax, showLabel
+  label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError, gridMax, showLabel, addresses, id: groupId, onCopyFirstAddress
 }) => {
-  // console.log('@settings', { settings, fieldError })
-  const gridColRepeat = itemGroup === 'address' ? 4 : gridMax
+  
+  const isAddress = itemGroup === 'address'
+
+  const gridColRepeat = isAddress ? 4 : gridMax
 
   const { validationOptions } = Sources
 
@@ -33,7 +35,8 @@ export default ({
   }
 
   const { include, value } = settings.instruction || {}
-  console.log('@@@@@@@@@@@@@@itemGroup', itemGroup)
+  const isNotFirstAddress = isAddress && addresses.findIndex(e => e.id === groupId) > 0
+
   return (
     <div
       className={`formGroup ${itemGroup}`}
@@ -67,7 +70,6 @@ export default ({
             const { type = '', tag, options, column = 1, id: fieldId, placeholder, required } = field
             const errors = fieldError[fieldId] || []
             const hasError = errors.length ? !!errors.find(e => e) : false
-
             return (
               <div
                 key={`formGroupField-${index}`}
@@ -97,6 +99,19 @@ export default ({
           })
         }
       </div>
+      {
+        isNotFirstAddress && (
+          <label htmlFor={`sameAddress-${groupId}`} className='checkboxContainer'>
+            <input
+              type='checkbox'
+              id={`sameAddress-${groupId}`}
+              onChange={(e) => onCopyFirstAddress(e, groupId)}
+            />
+            <span className='checkmark' />
+            <span className='labelName'>Same as first address</span>
+          </label>
+        )
+      }
     </div>
   )
 }

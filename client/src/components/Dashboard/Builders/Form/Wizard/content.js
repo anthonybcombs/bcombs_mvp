@@ -3,7 +3,7 @@ import React from 'react'
 import FormGroup from '../FormGroup'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ fields, fieldError, onChange, onCheckError }) => {
+export default ({ fields, fieldError, addresses, onChange, onCheckError, onCopyFirstAddress }) => {
   return (
     <div className='wizard-content'>
       {
@@ -13,8 +13,6 @@ export default ({ fields, fieldError, onChange, onCheckError }) => {
             FieldConstructor[fieldProps.type]({
               key: `specialField-${fieldProps.id}-${index}`,
               ...fieldProps,
-              // value: fieldState[`${fieldProps.type}_${fieldProps.id}`] || '',
-              // className: hasError ? 'hasError': '',
               onChange,
               fieldError,
               onCheckError
@@ -23,8 +21,10 @@ export default ({ fields, fieldError, onChange, onCheckError }) => {
               {...fieldProps}
               key={`formField-${fieldProps.id}-${index}`}
               index={index}
-              // fieldState={fieldState}
+              addresses={addresses}
               fieldError={fieldError}
+
+              onCopyFirstAddress={onCopyFirstAddress}
               onChange={onChange}
               onCheckError={onCheckError}
             />
