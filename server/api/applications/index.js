@@ -1042,3 +1042,49 @@ export const updateSubmitCustomApplication = async({
     return result;
   }
 }
+
+export const getCustomFormApplicants = async({form_id, is_archived = 0}) => {
+  const db = makeDb();
+  let applications;
+  try {
+    
+    applications = await db.query(
+      `
+        SELECT
+        id,
+        BIN_TO_UUID(form) as form,
+        BIN_TO_UUID(vendor) as vendor,
+        BIN_TO_UUID(app_id) as app_id,
+        CONVERT(form_contents USING utf8) as form_contents,
+        application_date,
+        archived_date,
+        class_teacher,
+        color_designation,
+        verification,
+        student_status,
+        notes
+        FROM custom_application
+        WHERE form=UUID_TO_BIN(?) AND is_archived=?
+        ORDER BY application_date DESC
+      `,
+      [
+        form_id,
+        is_archived
+      ]
+    )
+
+    console.log("applications", applications);
+
+    for(const application of applications) {
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+      console.log("get custom application string", application);
+      application.form_contents = JSON.parse(application.form_contents);
+    }
+
+  } catch(err) {
+    console.log("get custom application by form id", err);
+  } finally {
+    await db.close();
+    return applications;
+  }
+}

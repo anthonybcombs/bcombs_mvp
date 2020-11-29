@@ -81,7 +81,8 @@ import {
   getCustomApplicationFormByFormId,
   getVendorCustomApplicationForms,
   submitCustomApplication,
-  updateSubmitCustomApplication
+  updateSubmitCustomApplication,
+  getCustomFormApplicants
 } from "../../api/applications";
 import { 
   addChild, 
@@ -342,6 +343,11 @@ const resolvers = {
         forms = await getVendorCustomApplicationForms({vendor: filter.vendor});
       }
       return forms;
+    },
+    async getCustomFormApplicants(root, { form_id }, context) {
+
+      const applications = await getCustomFormApplicants({form_id: form_id});
+      return applications;
     }
   },
   RootMutation: {
@@ -1069,6 +1075,7 @@ const resolvers = {
               await uploadFile(s3Payload);
   
               fileContent.url = s3Payload.Key;
+              fileContent.data = "";
   
               console.log("fileContent url", fileContent.url);
 
