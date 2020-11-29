@@ -1084,6 +1084,21 @@ const queryTypes = `
         updated_at: Date
     }
 
+    type SubmittedCustomApplicationOutput {
+        id: String
+        app_id: String
+        vendor: String
+        form_id: String
+        form_contents: CustomForm
+        application_date: Date
+        archived_date: Date
+        class_teacher: String
+        color_designation: String
+        verification: String
+        student_status: Int
+        notes: String
+    }
+
     type CustomForm {
         formTitle: String
         formData: [CustomFormData]
@@ -1299,7 +1314,7 @@ const queries = `
         getParentChildRelationship(relationships: [ParentChildRelationshipInput]): [ParentChildRelationship]
         getVendorCustomApplicationForms(filter: CustomApplicationFormFilterInput): [CustomApplicationOutput]
         getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
-        getCustomApplicationApplicants(form_id: String): [CustomApplicationOutput]
+        getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
     }
 `;
 
