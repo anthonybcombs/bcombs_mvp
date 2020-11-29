@@ -258,6 +258,9 @@ export default styled.div`
     margin-top: 2rem;
     margin-bottom: -10px;
   }
+  .formGroup-name-instruction svg {
+    margin-right: .5rem;
+  }
 
 
 
@@ -573,12 +576,12 @@ export default styled.div`
   .formGroup.email .formGroup-column ,
   .formGroup.phone .formGroup-column {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     grid-gap: 4%;
   }
   .formGroup.email .formGroup-column .select-field-wrapper,
   .formGroup.phone .formGroup-column .select-field-wrapper {
-    width: 200px;
+    width: 110px;
   }
 
   // Price

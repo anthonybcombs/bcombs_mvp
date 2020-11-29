@@ -48,36 +48,39 @@ export default ({ showLabel, settings, label, fields, type, onChange, fieldError
         )
       }
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
+        <div
+          className={`formGroup-column`}
+          style={{ gridColumn: `span 1`}}
+        >
         {
           fields.map((field, index) => {
             const { column = 1, id: fieldId, required, placeholder, tag, type } = field
             const errors = fieldError[fieldId] || []
             const hasError = errors.length ? !!errors.find(e => e) : false
+            
             return (
-              <div
-                key={`formGroupField-${index}`}
-                className={`formGroup-column`}
-                style={{ gridColumn: `span ${column}`}}
-              >
-                {
-                  FieldConstructor[tag]({
-                    key: `emailField-${index}`,
-                    ...field,
-                    placeholder: `${placeholder} ${required ? '*' : ''}`,
-                    onChange: e => handleAnswer(e, type),
-                    className: hasError ? 'hasError': ''
-                  })
-                }
-                {
-                  hasError && 
-                    errors.map((e, i) => {
-                      return e && <div key={`error-${i}`} className='error'> {e}</div>
+                <div>
+                  {
+                    FieldConstructor[tag]({
+                      key: `emailField-${index}`,
+                      ...field,
+                      placeholder: `${placeholder} ${required ? '*' : ''}`,
+                      onChange: e => handleAnswer(e, type),
+                      className: hasError ? 'hasError': ''
                     })
-                }
-              </div>
+                  }
+                  {
+                    hasError && 
+                      errors.map((e, i) => {
+                        return e && <div key={`error-${i}`} className='error'> {e}</div>
+                      })
+                  }
+                </div>
             )
           })
         }
+        </div>
+
       </div>
     </div>
   )
