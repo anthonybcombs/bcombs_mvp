@@ -53,9 +53,13 @@ export default ({
   const [actualFormFields, setFormFields] = useState([])
   const [formIsSet, setForm] = useState(false)
   const [currentStep, setStep] = useState(0)
+  const [addresses, setAddresses] = useState([])
 
   useEffect(() => {
     if (formData.length && !formIsSet) {
+      const newAddresses = formData.filter(e => e.type === 'address')
+      setAddresses(newAddresses)
+
       const fields = hasWizard ? groupFieldsByPageBreak(formData) : formData
       setFormFields(fields)
       setForm(true)
@@ -74,7 +78,6 @@ export default ({
   }, []);
 
   const handleChange = (id, value, isMultiple = false) => {
-    console.log('jawa na', { id, value })
     const [, groupId] = id.split('_')
     let fields = []
     if (hasWizard) {
@@ -184,6 +187,23 @@ export default ({
     setFieldError(errors)
   }
 
+  const handleCopyFirstAddress = ({ target: { checked } }, id) => {
+    const { id: firstAddressId } = addresses[0]
+    const flattenFields = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
+    const { fields: firstAddressFields } = flattenFields.find(e => e.id === firstAddressId)
+    const { fields: targetAddressFields, type } = flattenFields.find(e => e.id === id)
+    if (checked) {
+      const fieldValues = firstAddressFields.map(e => e.value)
+      const targetAddressValues = targetAddressFields.reduce((acc, curr, index) => {
+        acc[curr.id] = fieldValues[index]
+        return acc
+      }, {})
+
+      handleChange(`${type}_${id}`, targetAddressValues, true)
+    }
+  }
+
+
   console.log('@fieldError', fieldError)
   console.log('@actualFormFields', actualFormFields)
 
@@ -211,6 +231,8 @@ export default ({
                         fields={(actualFormFields[currentStep] || {}).formFields || []}
                         currentStep={currentStep}
                         fieldError={fieldError}
+                        addresses={addresses}
+                        onCopyFirstAddress={handleCopyFirstAddress}
                         onSetStep={handleChangeStep}
                         onChange={handleChange}
                         onCheckError={handleCheckError}
@@ -221,6 +243,8 @@ export default ({
                       fields={actualFormFields}
                       currentStep={currentStep}
                       fieldError={fieldError}
+                      addresses={addresses}
+                      onCopyFirstAddress={handleCopyFirstAddress}
                       onSetStep={handleChangeStep}
                       onChange={handleChange}
                       onCheckError={handleCheckError}
