@@ -91,7 +91,8 @@ import {
   addForm,
   getFormById,
   updateForm,
-  deleteForm
+  deleteForm,
+  submitForm
 } from "../actions/FormBuilder";
 
 import reducer from "../reducers";
@@ -237,7 +238,8 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_GET_FORM_ID, getFormById);
   yield takeLatest(actionType.REQUEST_UPDATE_FORM, updateForm);
   yield takeLatest(actionType.REQUEST_DELETE_FORM, deleteForm);
-  
+  yield takeLatest(actionType.REQUEST_DELETE_FORM, deleteForm);
+  yield takeLatest(actionType.REQUEST_SUBMIT_FORM, submitForm);
 }
 const sagaMiddleware = createSagaMiddleware();
 

@@ -410,7 +410,7 @@ export const PrimeFields = [
           { name: 'Work', label: 'Work' },
         ]
       },
-      { label: 'Phone', type: 'text', tag: 'input', placeholder: '###-###-####' }
+      { label: 'Phone', type: 'text', tag: 'input', placeholder: 'Phone' }
     ],
     label: 'Phone',
     type: 'phone',

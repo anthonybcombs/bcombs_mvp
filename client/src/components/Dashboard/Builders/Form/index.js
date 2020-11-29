@@ -6,7 +6,7 @@ import cloneDeep from 'lodash.clonedeep'
 import FormrStyled from './styles'
 import FORM_DATA from './sample.json'
 import { groupFieldsByPageBreak } from '../utils'
-import { requestGetFormById } from "../../../../redux/actions/FormBuilder"
+import { requestGetFormById, requestSubmitForm } from "../../../../redux/actions/FormBuilder"
 import Loading from "../../../../helpers/Loading.js"
 
 import Stepper from './Wizard/stepper'
@@ -181,12 +181,6 @@ export default ({
     setFieldError(errors)
   }
 
-  const handleSubmit = () => {
-    const { formHasError, errors } = handleCheckRequired()
-    console.log('@handleSubmit', { formHasError, errors })
-    setFieldError(errors)
-  }
-
   const handleCopyFirstAddress = ({ target: { checked } }, id) => {
     const { id: firstAddressId } = addresses[0]
     const flattenFields = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
@@ -201,6 +195,18 @@ export default ({
 
       handleChange(`${type}_${id}`, targetAddressValues, true)
     }
+  }
+
+  const handleSubmit = () => {
+    const { formHasError, errors } = handleCheckRequired()
+    if (!formHasError) {
+      const newFormContents = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
+      dispatch(requestSubmitForm({
+        formTitle,
+        formData: newFormContents
+      }))
+    }
+    setFieldError(errors)
   }
 
 
