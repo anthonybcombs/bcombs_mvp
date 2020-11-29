@@ -1,3 +1,4 @@
+import { async } from "regenerator-runtime";
 import { makeDb } from "../../helpers/database";
 
 import { updateChild, getChildInformation, getChildChildRelationship } from "../child";
@@ -593,22 +594,38 @@ export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id =
   let result;
 
   try {
-    await db.query(
-      `
-        INSERT INTO application_user(
-          app_user_id,
-          app_id,
-          custom_app_id,
-          user_id
-        ) VALUES (
-          UUID_TO_BIN(UUID()),
-          UUID_TO_BIN(?),
-          UUID_TO_BIN(?),
-          UUID_TO_BIN(?)
-        )
-      `,
-      [app_id, custom_app_id, user_id]
-    );
+    if(app_id) {
+      await db.query(
+        `
+          INSERT INTO application_user(
+            app_user_id,
+            app_id,
+            user_id
+          ) VALUES (
+            UUID_TO_BIN(UUID()),
+            UUID_TO_BIN(?),
+            UUID_TO_BIN(?)
+          )
+        `,
+        [app_id, user_id]
+      );
+    } else {
+      await db.query(
+        `
+          INSERT INTO application_user(
+            app_user_id,
+            custom_app_id,
+            user_id
+          ) VALUES (
+            UUID_TO_BIN(UUID()),
+            UUID_TO_BIN(?),
+            UUID_TO_BIN(?)
+          )
+        `,
+        [custom_app_id, user_id]
+      );
+    }
+
   } catch (error) {
     console.log("add application user error", error);
   } finally {
@@ -942,8 +959,7 @@ export const getVendorCustomApplicationForms = async ({vendor, category = ""}) =
         ]
       )
     }
-
-
+    
     for(const application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       console.log("get custom application string", application);
@@ -1000,5 +1016,29 @@ export const submitCustomApplication = async ({
   } finally {
     await db.close();
     return application;
+  }
+}
+
+export const updateSubmitCustomApplication = async({
+  app_id,
+  form_contents
+}) => {
+  const db = makeDb();
+  let result = {};
+
+  try {
+    result = await db.query(`
+      UPDATE custom_application SET
+      form_contents=?
+      WHERE app_id=UUID_TO_BIN(?)
+    `, [
+      form_contents,
+      app_id
+    ])
+  } catch(err) {
+    console.log("update custom application error", error);
+  } finally {
+    await db.close();
+    return result;
   }
 }

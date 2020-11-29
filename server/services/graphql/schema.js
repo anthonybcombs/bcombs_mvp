@@ -553,6 +553,7 @@ const inputs = `
     input FileContentInput {
         filename: String
         extension: String
+        contentType: String
         url: String
         data: String
     }
@@ -1136,6 +1137,7 @@ const queryTypes = `
     type FileContent {
         filename: String
         extension: String
+        contentType: String
         url: String
         data: String
     }

@@ -244,6 +244,8 @@ export default styled.div`
   }
   .formGroup-name >span .tooltip-wrapper .tooltip {
     left: 22px;
+    width: 100%;
+    min-width: 200px;
   }
   .formGroup-name >span .tooltip-wrapper:hover .tooltip {
     transform: translateY(10px);
@@ -623,6 +625,7 @@ export default styled.div`
     background: rgb(87 84 84 / 92%);
 
     opacity: 0;
+    z-index: 9999;
     visibility: hidden;
     transform: translateY(32px);
     transition: transform .5s cubic-bezier(0,1.62,0.38,0.96),
