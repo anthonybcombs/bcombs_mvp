@@ -1,4 +1,7 @@
 import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
 export default ({ showLabel, settings, label, fields, type, id, onChange, value = {} }) => {
@@ -19,17 +22,22 @@ export default ({ showLabel, settings, label, fields, type, id, onChange, value 
             {label}
             {
               (include && instructionValue) && (
-                <div className='tooltip-wrapper'>
+                <span className='tooltip-wrapper'>
                   <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
                   <span className='tooltip'>{instructionValue}</span>
-                </div>
+                </span>
               )
             }
           </span>
         ) : ''}
       </p>
       {
-        (!showLabel && include) && <div className='formGroup-name-instruction'>{instructionValue}</div>
+        (!showLabel && include) && (
+          <div className='formGroup-name-instruction'>
+            <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+            {instructionValue}
+          </div>
+        )
       }
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
 

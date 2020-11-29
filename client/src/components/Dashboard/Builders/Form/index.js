@@ -73,7 +73,7 @@ export default ({
     }
   }, []);
 
-  const handleChange = (id, value) => {
+  const handleChange = (id, value, isMultiple = false) => {
     console.log('jawa na', { id, value })
     const [, groupId] = id.split('_')
     let fields = []
@@ -85,7 +85,10 @@ export default ({
             [actualFormFields[currentStep].formFields.findIndex(e => e.id === groupId)]: {
               fields: {
                 $set: fields.map(e => ({
-                  ...e, value: e.id === id ? value : e.value
+                  ...e,
+                  value: isMultiple
+                    ? value[e.id]
+                    : e.id === id ? value : e.value
                 }))
               }
             }
@@ -98,7 +101,10 @@ export default ({
         [actualFormFields.findIndex(e => e.id === groupId)]: {
           fields: {
             $set: fields.map(e => ({
-              ...e, value: e.id === id ? value : e.value
+              ...e,
+              value: isMultiple
+                ? value[e.id]
+                : e.id === id ? value : e.value
             }))
           }
         }
@@ -107,11 +113,24 @@ export default ({
   }
 
   const [fieldError, setFieldError] = useState({})
-  const handleCheckError = (id, errors) => {
-    setFieldError({
-      ...fieldError,
-      [id]: errors
-    })
+  const handleCheckError = (id, errors, isMultiple = false) => {
+    let newErrors = { ...fieldError }
+    if (!isMultiple) {
+      newErrors[id] = errors
+    } else {
+      newErrors = {
+        ...newErrors,
+        ...errors
+      }
+    }
+    setFieldError(
+      Object.entries(newErrors).reduce((acc, [key, val]) => {
+        if (val.length) {
+          acc[key] = val
+        }
+        return acc
+      }, {})
+    )
   }
 
   const handleCheckRequired = () => {

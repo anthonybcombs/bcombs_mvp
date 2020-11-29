@@ -33,7 +33,7 @@ export default ({
   }
 
   const { include, value } = settings.instruction || {}
-
+  console.log('@@@@@@@@@@@@@@itemGroup', itemGroup)
   return (
     <div
       className={`formGroup ${itemGroup}`}
@@ -44,18 +44,22 @@ export default ({
             {label}
             {
               (include && value) && (
-                <div className='tooltip-wrapper'>
+                <span className='tooltip-wrapper'>
                   <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
                   <span className='tooltip'>{value}</span>
-                </div>
+                </span>
               )
             }
           </span>
         ) : ''}
       </p>
-      
       {
-        (!showLabel && include) && <div className='formGroup-name-instruction'>{value}</div>
+        (!showLabel && include) && (
+          <div className='formGroup-name-instruction'>
+            <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+            {value}
+          </div>
+        )
       }
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {

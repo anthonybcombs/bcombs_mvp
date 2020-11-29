@@ -8,27 +8,27 @@ export default ({ fields, fieldError, onChange, onCheckError }) => {
     <div className='wizard-content'>
       {
         fields.map((fieldProps, index) => {
-          const specialComps = ['date', 'email', 'time', 'phone', 'login']
+          const specialComps = ['date', 'email', 'time', 'phone', 'login', 'price', 'website']
           return specialComps.includes(fieldProps.type) ?
-              FieldConstructor[fieldProps.type]({
-                key: `specialField-${fieldProps.id}`,
-                ...fieldProps,
-                // value: fieldState[`${fieldProps.type}_${fieldProps.id}`] || '',
-                // className: hasError ? 'hasError': '',
-                onChange,
-                fieldError,
-                onCheckError
-              }) : (
-              <FormGroup
-                {...fieldProps}
-                key={`formField-${fieldProps.id}`}
-                index={index}
-                // fieldState={fieldState}
-                fieldError={fieldError}
-                onChange={onChange}
-                onCheckError={onCheckError}
-              />
-            )
+            FieldConstructor[fieldProps.type]({
+              key: `specialField-${fieldProps.id}-${index}`,
+              ...fieldProps,
+              // value: fieldState[`${fieldProps.type}_${fieldProps.id}`] || '',
+              // className: hasError ? 'hasError': '',
+              onChange,
+              fieldError,
+              onCheckError
+            }) : (
+            <FormGroup
+              {...fieldProps}
+              key={`formField-${fieldProps.id}-${index}`}
+              index={index}
+              // fieldState={fieldState}
+              fieldError={fieldError}
+              onChange={onChange}
+              onCheckError={onCheckError}
+            />
+          )
         })
       }
     </div>

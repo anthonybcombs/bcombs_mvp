@@ -377,7 +377,7 @@ export const PrimeFields = [
           { name: 'Work', label: 'Work' },
         ]
       },
-      { label: 'Email', type: 'email', tag: 'input', placeholder: 'sample@email.com' },
+      { label: 'Email', type: 'email', tag: 'input', placeholder: 'Email' },
     ],
     label: 'Email',
     type: 'email',
