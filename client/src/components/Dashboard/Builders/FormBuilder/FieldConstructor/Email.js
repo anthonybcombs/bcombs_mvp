@@ -1,36 +1,86 @@
 import React from 'react'
-import cloneDeep from 'lodash.clonedeep'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ label, fields, type, id, onChange, value = {} }) => {
-  const fieldId = `${type}_${id}`
-  const handleAnswer = ({ target: { id, value: emailValue } }) => {
-    onChange(fieldId, { ...value, [id]: emailValue })
+export default ({ showLabel, settings, label, fields, type: groupType, onChange, fieldError, onCheckError }) => {
+  const handleAnswer = ({ target: { id, value } }, type) => {
+    let errors = fieldError[id] || []
+    if (type === 'email') {
+      errors = !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
+        ? [`Invalid email address`]
+        : []
+      onCheckError(id, errors)
+    } else {
+      onCheckError(id, [])
+    }
+    onChange(id, value)
   }
+
+  const { include, value: instructionValue } = settings.instruction || {}
 
   return (
     <div
-      className={`formGroup ${type}`}
+      className={`formGroup ${groupType}`}
     > 
-      <p className='formGroup-name'>{label}</p>
-      <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
-
-        <div
-            className={`formGroup-column`}
-            style={{ gridColumn: `span 1`}}
-          >
+      <p className='formGroup-name'>
+        {showLabel ? (
+          <span>
+            {label}
             {
-              fields.map((field, index) => {
-                return FieldConstructor[field.tag]({
-                  key: `field-${index}`,
-                  ...field,
-                  id: field.type,
-                  value: value[field.type] || '',
-                  onChange: handleAnswer
-                })
-              })
+              (include && instructionValue) && (
+                <span className='tooltip-wrapper'>
+                  <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+                  <span className='tooltip'>{instructionValue}</span>
+                </span>
+              )
             }
+          </span>
+        ) : ''}
+      </p>
+      {
+        (!showLabel && include) && (
+          <div className='formGroup-name-instruction'>
+            <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+            {instructionValue}
           </div>
+        )
+      }
+      <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
+        <div
+          className={`formGroup-column`}
+          style={{ gridColumn: `span 1`}}
+        >
+        {
+          fields.map((field, index) => {
+            const { column = 1, id: fieldId, required, placeholder, tag, type } = field
+            const errors = fieldError[fieldId] || []
+            const hasError = errors.length ? !!errors.find(e => e) : false
+            
+            return (
+                <div>
+                  {
+                    FieldConstructor[tag]({
+                      key: `emailField-${index}`,
+                      ...field,
+                      placeholder: `${placeholder} ${required ? '*' : ''}`,
+                      onChange: e => handleAnswer(e, type),
+                      className: hasError ? 'hasError': ''
+                    })
+                  }
+                  {
+                    hasError && 
+                      errors.map((e, i) => {
+                        return e && <div key={`error-${i}`} className='error'> {e}</div>
+                      })
+                  }
+                </div>
+            )
+          })
+        }
+        </div>
+
       </div>
     </div>
   )

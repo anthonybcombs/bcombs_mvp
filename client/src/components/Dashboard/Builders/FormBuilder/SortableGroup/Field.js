@@ -5,8 +5,8 @@ import { faArrowRight, faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-
 import FieldConstructor from '../FieldConstructor'
 
 export default ({
-  id, index, field, fieldsCount, isActive, isActiveField, columnInt, isStandard, gridColRepeat,
-  setActiveFieldIndex, onActive, onChangeFieldSettings, onRemoveGroupField,
+  id, index, field, fieldsCount, isActive, isActiveField, columnInt, isStandard, gridColRepeat, errors,
+  setActiveFieldIndex, onActive, onChangeFieldSettings, onRemoveGroupField, onCheckError,
 }) => {
   const { tag, column, placeholder, fixedWidth = false } = field
   return (
@@ -27,6 +27,8 @@ export default ({
           isBuilder: true,
           value: placeholder,
           isActive,
+          errors,
+          onCheckError,
           onChangeFieldSettings, // for direct change of fields in the field constructor
           onChange: ({ target }) => onChangeFieldSettings({ placeholder: target.value }, index, id)
         })

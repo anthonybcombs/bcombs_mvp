@@ -44,14 +44,6 @@ export const StandardFields = [
     includeLogic: false,
     includeValidation: true
   },
-  // {
-  //   fields: [
-  //     { label: 'Numbers', type: 'number', tag: 'input', placeholder: 'Numbers', column: '1'}
-  //   ],
-  //   label: 'Numbers',
-  //   type: 'numbers',
-  //   canBeGrouped: true
-  // },
   {
     fields: [
       { label: 'Paragraph Text', type: 'text', tag: 'textarea', placeholder: 'Paragraph Text', column: '1'}
@@ -63,25 +55,6 @@ export const StandardFields = [
     includeLogic: false,
     includeValidation: true,
   },
-  // {
-  //   fields: [
-  //     {
-  //       type: 'checkboxes',
-  //       tag: 'checkboxes',
-  //       options: [
-  //         { name: 'option1', label: 'Option 1', tag: 'checkbox' },
-  //         { name: 'option2', label: 'Option 2', tag: 'checkbox' },
-  //         { name: 'option3', label: 'Option 3', tag: 'checkbox' }
-  //       ]
-  //     }
-  //   ],
-  //   displayLabel: 'Checkboxes',
-  //   label: 'Checkboxes question',
-  //   type: 'checkboxes',
-  //   gridMax: 1,
-  //   isQA: true,
-  //   includeValidation: true
-  // },
   {
     fields: [
       {
@@ -235,9 +208,9 @@ export const StandardFields = [
         label: 'Ranking',
         tag: 'ranking',
         items: [
-          { label: '', rank: 1 },
-          { label: '', rank: 2 },
-          { label: '', rank: 3 } 
+          { label: 'Item 1', rank: 1 },
+          { label: 'Item 2', rank: 2 },
+          { label: 'Item 3', rank: 3 } 
         ],
         column: '1'
       }
@@ -279,6 +252,7 @@ export const StandardFields = [
     label: 'Section Break',
     type: 'sectionBreak',
     hasSettings: false,
+    showLabel: true,
     gridMax: 1,
   },
   {
@@ -288,6 +262,7 @@ export const StandardFields = [
     label: 'Page Break',
     type: 'pageBreak',
     hasSettings: false,
+    showLabel: true,
     gridMax: 1,
   }
 ]
@@ -326,7 +301,7 @@ export const PrimeFields = [
       { label: 'State / Province / Region', type: 'state', tag: 'select', placeholder: 'State / Province / Region', column: '2'},
       { label: 'City', type: 'text', tag: 'input', placeholder: 'City', column: '2'},
       { label: 'Postal / Zip Code', type: 'text', tag: 'input', placeholder: 'Postal / Zip Code', column: '2'},
-      { label: 'Country', type: 'country', tag: 'select', placeholder: 'Country', column: '2', options: [] }
+      { label: 'Country', type: 'country', tag: 'select', placeholder: 'Country', column: '2' }
     ],
     label: 'Address',
     type: 'address',
@@ -335,8 +310,9 @@ export const PrimeFields = [
   },
   {
     fields: [
-      { label: 'Username / Email', type: 'text', tag: 'input', placeholder: 'Username / Email', column: '4'},
-      { label: 'Password', type: 'password', tag: 'input', placeholder: 'Password', column: '4'}
+      { label: 'Email Address', type: 'email', tag: 'input', placeholder: 'Username / Email', column: '4', required: true},
+      { label: 'Password', type: 'password', tag: 'input', placeholder: 'Password', column: '2', required: true},
+      { label: 'Confirm Password', type: 'confirmPassword', tag: 'input', placeholder: 'Confirm Password', column: '2', required: true}
     ],
     label: 'Login',
     type: 'login',
@@ -401,7 +377,7 @@ export const PrimeFields = [
           { name: 'Work', label: 'Work' },
         ]
       },
-      { label: 'Email', type: 'email', tag: 'input', placeholder: 'sample@email.com' },
+      { label: 'Email', type: 'email', tag: 'input', placeholder: 'Email' },
     ],
     label: 'Email',
     type: 'email',
@@ -434,7 +410,7 @@ export const PrimeFields = [
           { name: 'Work', label: 'Work' },
         ]
       },
-      { label: 'Phone', type: 'text', tag: 'input', placeholder: '###-###-####' }
+      { label: 'Phone', type: 'text', tag: 'input', placeholder: 'Phone' }
     ],
     label: 'Phone',
     type: 'phone',

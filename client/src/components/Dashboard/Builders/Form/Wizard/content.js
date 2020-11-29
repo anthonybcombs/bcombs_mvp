@@ -3,31 +3,32 @@ import React from 'react'
 import FormGroup from '../FormGroup'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ fields, currentStep, onSetStep, fieldState, fieldError, onChange, onCheckError }) => {
+export default ({ fields, fieldError, addresses, onChange, onCheckError, onCopyFirstAddress }) => {
   return (
     <div className='wizard-content'>
       {
         fields.map((fieldProps, index) => {
-          const specialComps = ['date', 'email', 'time', 'phone']
+          const specialComps = ['date', 'email', 'time', 'phone', 'login', 'price', 'website']
           return specialComps.includes(fieldProps.type) ?
-              FieldConstructor[fieldProps.type]({
-                key: `specialField-${fieldProps.id}`,
-                ...fieldProps,
-                value: fieldState[`${fieldProps.type}_${fieldProps.id}`] || '',
-                // className: hasError ? 'hasError': '',
-                onChange,
-                onCheckError
-              }) : (
-              <FormGroup
-                {...fieldProps}
-                key={`formField-${fieldProps.id}`}
-                index={index}
-                fieldState={fieldState}
-                fieldError={fieldError}
-                onChange={onChange}
-                onCheckError={onCheckError}
-              />
-            )
+            FieldConstructor[fieldProps.type]({
+              key: `specialField-${fieldProps.id}-${index}`,
+              ...fieldProps,
+              onChange,
+              fieldError,
+              onCheckError
+            }) : (
+            <FormGroup
+              {...fieldProps}
+              key={`formField-${fieldProps.id}-${index}`}
+              index={index}
+              addresses={addresses}
+              fieldError={fieldError}
+
+              onCopyFirstAddress={onCopyFirstAddress}
+              onChange={onChange}
+              onCheckError={onCheckError}
+            />
+          )
         })
       }
     </div>

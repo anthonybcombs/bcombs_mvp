@@ -549,6 +549,15 @@ const inputs = `
         isMultiple: Boolean
         requireAddOption : Boolean
         fixedWidth: Boolean
+        file: FileContentInput
+    }
+    
+    input FileContentInput {
+        filename: String
+        extension: String
+        contentType: String
+        url: String
+        data: String
     }
 
     input CustomFileUploadTypesInput {
@@ -622,6 +631,7 @@ const inputs = `
 
     input CustomFormSettingsInstructionInput {
         include: Boolean
+        value: String
     }
 
     input SubmitCustomApplicationInput {
@@ -632,7 +642,7 @@ const inputs = `
 
     input CustomApplicationFormFilterInput {
         vendor: String!
-        category: String
+        categories: [String]
     }
 `;
 const queryTypes = `
@@ -1076,6 +1086,21 @@ const queryTypes = `
         updated_at: Date
     }
 
+    type SubmittedCustomApplicationOutput {
+        id: String
+        app_id: String
+        vendor: String
+        form_id: String
+        form_contents: CustomForm
+        application_date: Date
+        archived_date: Date
+        class_teacher: String
+        color_designation: String
+        verification: String
+        student_status: Int
+        notes: String
+    }
+
     type CustomForm {
         formTitle: String
         formData: [CustomFormData]
@@ -1123,6 +1148,15 @@ const queryTypes = `
         isMultiple: Boolean
         requireAddOption : Boolean
         fixedWidth: Boolean
+        file: FileContent
+    }
+
+    type FileContent {
+        filename: String
+        extension: String
+        contentType: String
+        url: String
+        data: String
     }
 
     type CustomFileUploadTypes {
@@ -1196,6 +1230,7 @@ const queryTypes = `
 
     type CustomFormSettingsInstruction {
         include: Boolean
+        value: String
     }
 
     type CustomFormStatus {
@@ -1281,7 +1316,7 @@ const queries = `
         getParentChildRelationship(relationships: [ParentChildRelationshipInput]): [ParentChildRelationship]
         getVendorCustomApplicationForms(filter: CustomApplicationFormFilterInput): [CustomApplicationOutput]
         getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
-        getCustomApplicationApplicants(form_id: String): [CustomApplicationOutput]
+        getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
     }
 `;
 

@@ -40,7 +40,7 @@ export default ({
       >
         {/* START - This is a hidden button to be triggered(click) on clicking the parent div */}
         {/* Reason is window.open will be blocked at some browser */}
-        <a id={`trigger-click-${form_id}`} style={{ display: 'none' }} href={`/dashboard/builder/${form_id}/edit`} target='_blank' />
+        <a id={`trigger-click-${form_id}`} style={{ display: 'none' }} href={`/dashboard/builder/${form_id}/edit`} />
         {/* END  */}
 
         <div className='form-title'>
@@ -75,6 +75,15 @@ export default ({
               onClick={e => {
                 e.stopPropagation()
                 setCloneModal({ bool: true, form_id })
+                onCloneForm({
+                  form_contents: {
+                    ...form_contents,
+                    formTitle: `${form_contents.formTitle} (Copy)`
+                  },
+                  category,
+                  vendor,
+                  user
+                })
               }}
             />
             <FontAwesomeIcon
@@ -106,7 +115,7 @@ export default ({
           />
         )
       }
-      {
+      {/* {
         (cloneModal.bool && cloneModal.form_id === form_id) && (
           <CloneModal
             title={form_contents.formTitle}
@@ -122,7 +131,7 @@ export default ({
             }
           />
         )
-      }
+      } */}
       {
         (deleteModal.bool && deleteModal.form_id === form_id) && (
           <DeleteModal

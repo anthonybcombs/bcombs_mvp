@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 export default ({ scale, scaleLabels, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value }) => {
-  const handleChangeValues = ({ target: { value } }, type, subType) => {
+  const handleChangeValues = ({ target: { value: sliderValue } }, type, subType) => {
     const currentTypeData = type === 'scale' ? { ...scale } : { ...scaleLabels }
-    onChangeFieldSettings({ [type]: { ...currentTypeData, [subType]: value } })
+    onChangeFieldSettings({ [type]: { ...currentTypeData, [subType]: sliderValue } })
   }
 
   const handleBlurValues = (type) => {
@@ -102,7 +102,7 @@ export default ({ scale, scaleLabels, onChangeFieldSettings, isBuilder, id: fiel
               type='range'
               min={scale.min}
               max={scale.max}
-              value={value}
+              value={value || 0}
               onChange={(e) => handleAnswer(e)}
             />
           </div>

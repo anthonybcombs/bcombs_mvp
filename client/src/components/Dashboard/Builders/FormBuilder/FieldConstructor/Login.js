@@ -4,18 +4,42 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ showLabel, settings, label, fields, type, onChange, fieldError, onCheckError }) => {
-  const handleAnswer = ({ target: { id, value } }, isBlur = false) => {
-    if (!isBlur) {
-      const [whole, decimal = ''] = value.split('.')
-      if (isNaN(whole) || decimal.length > 2) {
-        return
-      }
-    } else if(!value) {
-      return
+export default ({ showLabel, settings, label, fields, type, onChange, fieldError = [], onCheckError }) => {
+  const handleAnswer = ({ target: { id, value } }, type) => {
+    let errors = fieldError[id] || []
+
+    const validatePassword = (condition, message, errorArr) => {
+      return !condition
+        ? [...errorArr, message]
+        : errorArr.filter(e => e !== message)
     }
-    onChange(id, isBlur ? Number(value).toFixed(2) : value)
-    onCheckError(id, [])
+
+    if (type === 'email') {
+      errors = !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
+        ? [`Invalid email address`]
+        : []
+    }
+    if (type === 'password') {
+      value = value.replace(/\s/g, '')
+      if (value) {
+        errors = []
+        errors = validatePassword(value.length >= 8, 'Password minimum length must be at least 8 characters.', errors)
+        errors = validatePassword(/(?=.*[A-Z])/.test(value), 'Must contain atleast one upper case', errors)
+        errors = validatePassword(/(?=.*[a-z])/.test(value), 'Must contain atleast one lower case.', errors)
+        errors = validatePassword(/(?=.*\d)/.test(value), 'Must contain atleast one number.', errors)
+        errors = validatePassword(/(?=.*[!@#$%^&+=])/.test(value), 'Must contain atleast one special character.', errors)
+      }
+    }
+    if (type === 'confirmPassword') {
+      value = value.replace(/\s/g, '')
+      if (value) {
+        errors = []
+        const { value: passVal } = (fields.find(e => e.type === 'password') || {})
+        errors = validatePassword(passVal === value, 'Password do not match.', errors)
+      }
+    }
+    onChange(id, value)
+    onCheckError(id, errors)
   }
 
   const { include, value: instructionValue } = settings.instruction || {}
@@ -47,26 +71,24 @@ export default ({ showLabel, settings, label, fields, type, onChange, fieldError
           </div>
         )
       }
-      <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
+      <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(4, 1fr)`}}>
         {
           fields.map((field, index) => {
-            const { column = 1, id: fieldId, required, placeholder, tag, type } = field
-            const errors = fieldError[fieldId] || []
+            const { tag, column, placeholder, required } = field
+            const errors = fieldError[field.id] || []
             const hasError = errors.length ? !!errors.find(e => e) : false
             return (
               <div
                 key={`formGroupField-${index}`}
                 className={`formGroup-column`}
-                style={{ gridColumn: `span ${column}`}}
+                style={{ gridColumn: `span ${column}` }}
               >
                 {
                   FieldConstructor[tag]({
-                    key: `emailField-${index}`,
+                    key: `field-${index}`,
                     ...field,
                     placeholder: `${placeholder} ${required ? '*' : ''}`,
-                    onChange: handleAnswer,
-                    onBlur: (e) => handleAnswer(e, true),
-                    type: tag !== 'icon' ? 'number' : type,
+                    onChange: e => handleAnswer(e, field.type),
                     className: hasError ? 'hasError': ''
                   })
                 }
@@ -80,6 +102,7 @@ export default ({ showLabel, settings, label, fields, type, onChange, fieldError
             )
           })
         }
+          
       </div>
     </div>
   )

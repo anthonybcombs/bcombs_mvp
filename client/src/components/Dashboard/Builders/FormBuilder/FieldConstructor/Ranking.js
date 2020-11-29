@@ -89,26 +89,39 @@ const SortableItem = DropTarget('sortableItem', {
   })
 ))
 
-export default ({ items, onChangeFieldSettings, isActive, isBuilder, id: fieldId, onChange, value = [] }) => {
+export default ({ items, onChangeFieldSettings, isActive, isBuilder, id: fieldId, onChange, value = [], onCheckError }) => {
   const newItems = value.length ? value : items
+
+  const handleCheckError = (data) => {
+    const newErrors = !!data.find(e => e.label.replace(/\s/g, '') === '')
+      ? ['Item labels are required.']
+      : []
+
+    onCheckError(newErrors)
+  }
+
   const handleChangeValues = ({ target: { value: rankingValue } }, index) => {
+    const newItems = items.map((item, i) => ({
+      ...item, label: index === i ? rankingValue : item.label
+    }))
     onChangeFieldSettings({
-      items: items.map((item, i) => ({
-        ...item, label: index === i ? rankingValue : item.label
-      }))
+      items: newItems
     })
+    handleCheckError(newItems)
   }
 
   const handleAddRow = () => {
     onChangeFieldSettings({
-      items: [...items, { label: '', rank: items.length + 1 }]
+      items: [...items, { label: `Item ${items.length + 1}`, rank: items.length + 1 }]
     })
   }
 
   const handleRemoveRow = (index) => {
-    const newItems = cloneDeep(items)
+    let newItems = cloneDeep(items)
     newItems.splice(index, 1)
-    onChangeFieldSettings({ items: newItems.map((e, i) => ({ ...e, rank: i + 1 })) })
+    newItems = newItems.map((e, i) => ({ ...e, rank: i + 1 }))
+    onChangeFieldSettings({ items: newItems })
+    handleCheckError(newItems)
   }
 
   const handleMoveItem = (dragIndex, hoverIndex) => {

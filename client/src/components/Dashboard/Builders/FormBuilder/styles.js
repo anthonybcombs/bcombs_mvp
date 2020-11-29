@@ -357,6 +357,9 @@ export default styled.div`
     visibility: visible;
     transition: all .15s ease-in-out;
   }
+  .sortableGroup.active .groupError {
+    display: none;
+  }
 
   .sortableGroup:hover .sortableGroup-actions >div svg {
     opacity: 1;
@@ -377,6 +380,10 @@ export default styled.div`
     background: #f1f1f1;
     box-shadow: 0 3px 6px #ddd;
   }
+
+
+  
+
 
 
   .sortableGroup-actions {
@@ -972,28 +979,35 @@ export default styled.div`
   }
 
     // File Upload
-  .sortableGroup.file input.field-input {
+  .sortableGroup.file input.field-input,
+  .sortableGroup.primeFile input.field-input {
     background: transparent !important;
   }
-  .sortableGroup.file .fileTypes p {
+  .sortableGroup.file .fileTypes p,
+  .sortableGroup.primeFile .fileTypes p {
     margin-bottom: 0;
   }
-  .sortableGroup.file .fileTypes .options {
+  .sortableGroup.file .fileTypes .options,
+  .sortableGroup.primeFile .fileTypes .options {
     display: flex;
     align-items: center;
   }
-  .sortableGroup.file .fileTypes .options .checkboxContainer {
+  .sortableGroup.file .fileTypes .options .checkboxContainer,
+  .sortableGroup.primeFile .fileTypes .options .checkboxContainer {
     margin-right: .5rem;
   }
-  .sortableGroup.file .validation .input-wrapper label {
+  .sortableGroup.file .validation .input-wrapper label,
+  .sortableGroup.primeFile .validation .input-wrapper label {
     color: gray;
     font-size: 12px;
   }
-  .sortableGroup.file .validation p {
+  .sortableGroup.file .validation p,
+  .sortableGroup.primeFile .validation p {
     margin-top: 2rem;
     margin-bottom: 0;
   }
-  .sortableGroup.file .validation .limit-size {
+  .sortableGroup.file .validation .limit-size,
+  .sortableGroup.primeFile .validation .limit-size {
     color: #f44336;
     font-size: 12px;
   }
@@ -1123,7 +1137,7 @@ export default styled.div`
     width: 100%;
     border-collapse: collapse;
     border: 0;
-    margin-bottom: 32px;
+    margin-bottom: 3px;
     table-layout: auto;
   }
   .matrixRating-table > thead > tr th.column-head {

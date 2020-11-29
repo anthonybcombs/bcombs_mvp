@@ -1,3 +1,4 @@
+import { async } from "regenerator-runtime";
 import { makeDb } from "../../helpers/database";
 
 import { updateChild, getChildInformation, getChildChildRelationship } from "../child";
@@ -594,22 +595,38 @@ export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id =
 
   let values = custom_app_id !== '' ? [app_id, custom_app_id, user_id] : [app_id, user_id]
   try {
-    await db.query(
-      `
-        INSERT INTO application_user(
-          app_user_id,
-          app_id,
-          ${custom_app_id !== '' ? 'custom_app_id,' : ''}
-          user_id
-        ) VALUES (
-          UUID_TO_BIN(UUID()),
-          UUID_TO_BIN(?),
-          ${custom_app_id !== '' ? 'UUID_TO_BIN(?),' : ''}
-          UUID_TO_BIN(?)
-        )
-      `,
-      values
-    );
+    if(app_id) {
+      await db.query(
+        `
+          INSERT INTO application_user(
+            app_user_id,
+            app_id,
+            user_id
+          ) VALUES (
+            UUID_TO_BIN(UUID()),
+            UUID_TO_BIN(?),
+            UUID_TO_BIN(?)
+          )
+        `,
+        [app_id, user_id]
+      );
+    } else {
+      await db.query(
+        `
+          INSERT INTO application_user(
+            app_user_id,
+            custom_app_id,
+            user_id
+          ) VALUES (
+            UUID_TO_BIN(UUID()),
+            UUID_TO_BIN(?),
+            UUID_TO_BIN(?)
+          )
+        `,
+        [custom_app_id, user_id]
+      );
+    }
+
   } catch (error) {
     console.log("add application user error", error);
   } finally {
@@ -942,8 +959,7 @@ export const getVendorCustomApplicationForms = async ({vendor, category = ""}) =
         ]
       )
     }
-
-
+    
     for(const application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       console.log("get custom application string", application);
@@ -1000,5 +1016,75 @@ export const submitCustomApplication = async ({
   } finally {
     await db.close();
     return application;
+  }
+}
+
+export const updateSubmitCustomApplication = async({
+  app_id,
+  form_contents
+}) => {
+  const db = makeDb();
+  let result = {};
+
+  try {
+    result = await db.query(`
+      UPDATE custom_application SET
+      form_contents=?
+      WHERE app_id=UUID_TO_BIN(?)
+    `, [
+      form_contents,
+      app_id
+    ])
+  } catch(err) {
+    console.log("update custom application error", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const getCustomFormApplicants = async({form_id, is_archived = 0}) => {
+  const db = makeDb();
+  let applications;
+  try {
+    
+    applications = await db.query(
+      `
+        SELECT
+        id,
+        BIN_TO_UUID(form) as form,
+        BIN_TO_UUID(vendor) as vendor,
+        BIN_TO_UUID(app_id) as app_id,
+        CONVERT(form_contents USING utf8) as form_contents,
+        application_date,
+        archived_date,
+        class_teacher,
+        color_designation,
+        verification,
+        student_status,
+        notes
+        FROM custom_application
+        WHERE form=UUID_TO_BIN(?) AND is_archived=?
+        ORDER BY application_date DESC
+      `,
+      [
+        form_id,
+        is_archived
+      ]
+    )
+
+    console.log("applications", applications);
+
+    for(const application of applications) {
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+      console.log("get custom application string", application);
+      application.form_contents = JSON.parse(application.form_contents);
+    }
+
+  } catch(err) {
+    console.log("get custom application by form id", err);
+  } finally {
+    await db.close();
+    return applications;
   }
 }

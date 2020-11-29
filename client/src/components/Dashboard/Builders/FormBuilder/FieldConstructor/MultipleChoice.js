@@ -4,10 +4,24 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ options, column, onChangeFieldSettings, isBuilder, isMultiple, index, isActive, id: fieldId, onChange, value = {} }) => {
+export default ({
+  options, column, onChangeFieldSettings, isBuilder, isMultiple, index, isActive, id: fieldId, value = {},
+  onChange, onCheckError
+}) => {
   const hasOthers = options.find(e => e.name === 'other')
+
+  const handleCheckError = (data) => {
+    const newErrors = !!data.find(e => e.label.replace(/\s/g, '') === '')
+      ? ['Option labels are required.']
+      : []
+
+    onCheckError(newErrors)
+  }
+
   const handleChangeOption = ({ target }, optionIndex) => {
-    onChangeFieldSettings({ options: update(options, { [optionIndex]: { $merge: { label: target.value } } }) })
+    const newOptions = update(options, { [optionIndex]: { $merge: { label: target.value } } })
+    onChangeFieldSettings({ options: newOptions })
+    handleCheckError(newOptions)
   }
 
   const handleAddOption = () => {
@@ -28,7 +42,9 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, isMultiple,
   }
 
   const handleRemoveField = (optionIndex) => {
-    onChangeFieldSettings({ options: update(options, { $splice: [[optionIndex, 1]] }) })
+    const newOptions = update(options, { $splice: [[optionIndex, 1]] })
+    onChangeFieldSettings({ options: newOptions })
+    handleCheckError(newOptions)
   }
 
   const handleAnswer = ({ target: { value: optionValue, checked } }, id) => {

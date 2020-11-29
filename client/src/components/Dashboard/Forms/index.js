@@ -26,18 +26,13 @@ export default (props) => {
   
   const [isLoading, setIsLoading] = useState(false)
   const [list, setList] = useState(formList)
-  const [category, setCategory] = useState('')
 
   const [renameModal, setRenameModal] = useState(false)
   const [cloneModal, setCloneModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
 
   const GetRequestFormList = (value) => {
-    if (value !== undefined) {
-      setCategory(value)
-    }
-    console.log('yawaaaaaaaa', value)
-    dispatch(requestGetForms({ vendor: vendors[0].id, category: value }))
+    dispatch(requestGetForms({ vendor: vendors[0].id, categories: value || [] }))
     setIsLoading(true)
   }
 
@@ -95,13 +90,14 @@ export default (props) => {
 
   const handleCloneForm = (data) => {
     dispatch(requestAddForm(data))
+    setIsLoading(true)
   }
 
   const handleDeleteForm = (form_id) => {
     dispatch(requestDeleteForm(form_id))
   }
 
-  const handleChangeFilter = ({ target: { value } }) => {
+  const handleChangeFilter = (value) => {
     GetRequestFormList(value)
   }
   

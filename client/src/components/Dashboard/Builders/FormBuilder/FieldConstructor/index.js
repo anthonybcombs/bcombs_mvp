@@ -18,6 +18,9 @@ import Date from './Date'
 import Time from './Time'
 import Phone from './Phone'
 import Price from './Price'
+import Login from './Login'
+import Website from './Website'
+import Address from './Address'
 
 
 import STATES from '../../../ApplicationForm/states.json'
@@ -29,7 +32,7 @@ const selectMappings = {
 }
 
 export default {
-  input: ({ className = '', onChange = () => {}, value = '', id = '', placeholder = '' }) => {
+  input: ({ className = '', onChange = () => {}, value = '', id = '', placeholder = '', onBlur = () => {} }) => {
     return (
       <input
         className={`field-input ${className}`}
@@ -37,6 +40,7 @@ export default {
         value={value}
         placeholder={placeholder}
         onChange={onChange}
+        onBlur={onBlur}
       />
     )
   },
@@ -221,5 +225,14 @@ export default {
   },
   price: (props) => {
     return <Price {...props} />
-  }
+  },
+  website: (props) => {
+    return <Website {...props} />
+  },
+  login: (props) => {
+    return <Login {...props} />
+  },
+  // address: (props) => {
+  //   return <Address {...props} />
+  // }
 }

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"
+import update from 'immutability-helper'
+import cloneDeep from 'lodash.clonedeep'
 
 import FormrStyled from './styles'
 import FORM_DATA from './sample.json'
 import { groupFieldsByPageBreak } from '../utils'
-import { requestGetFormById } from "../../../../redux/actions/FormBuilder"
-import Loading from "../../../../helpers/Loading.js";
+import { requestGetFormById, requestSubmitForm } from "../../../../redux/actions/FormBuilder"
+import Loading from "../../../../helpers/Loading.js"
 
 import Stepper from './Wizard/stepper'
 import Content from './Wizard/content'
@@ -21,44 +23,14 @@ export default ({
     }
   )
 
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    // if (auth.user_id) {
-    //   dispatch(requestVendor(auth.user_id));
-    // }
-    if (form_id) {
-      dispatch(requestGetFormById({ form_id }))
-    }
-  }, []);
-  
-  const [fieldState, setField] = useState({})
-  const handleChange = (id, value) => {
-    setField({
-      ...fieldState,
-      [id]: value
-    })
-  }
-
-  const [fieldError, setFieldError] = useState({})
-  const handleCheckError = (id, error) => {
-    setFieldError({
-      ...fieldError,
-      [id]: error
-    })
-  }
-
-  const [currentStep, setStep] = useState(0)
-  const handleChangeStep = (step) => {
-    setStep(step)
-  }
-
   const cleanFormData = (formData) => {
     const objArr = Object.entries(formData)
     const newObj = {}
     objArr.forEach(([key, value], index) => {
       if (value !== null) {
-        if (Array.isArray(value)) {
+        if (Array.isArray(value) && !value.find(e => typeof e === 'object')) {
+          newObj[key] = value
+        } else if (Array.isArray(value)) {
           newObj[key] = value.map(e => cleanFormData(e))
         } else if (typeof value === 'object') {
           newObj[key] = cleanFormData(value)
@@ -77,10 +49,169 @@ export default ({
   formData = formData.map(e => cleanFormData(e))
 
   const hasWizard = !!formData.find(e => e.type === 'pageBreak')
-  const fields = hasWizard ? groupFieldsByPageBreak(formData) : formData
 
-  // console.log('@groupedFields', groupFieldsByPageBreak(fields))
-  console.log('@fieldState', fieldState)
+  const [actualFormFields, setFormFields] = useState([])
+  const [formIsSet, setForm] = useState(false)
+  const [currentStep, setStep] = useState(0)
+  const [addresses, setAddresses] = useState([])
+
+  useEffect(() => {
+    if (formData.length && !formIsSet) {
+      const newAddresses = formData.filter(e => e.type === 'address')
+      setAddresses(newAddresses)
+
+      const fields = hasWizard ? groupFieldsByPageBreak(formData) : formData
+      setFormFields(fields)
+      setForm(true)
+    }
+  }, [formData])
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    // if (auth.user_id) {
+    //   dispatch(requestVendor(auth.user_id));
+    // }
+    if (form_id) {
+      dispatch(requestGetFormById({ form_id }))
+    }
+  }, []);
+
+  const handleChange = (id, value, isMultiple = false) => {
+    const [, groupId] = id.split('_')
+    let fields = []
+    if (hasWizard) {
+      fields = cloneDeep(actualFormFields[currentStep].formFields.find(e => e.id === groupId).fields)
+      setFormFields(update(actualFormFields, {
+        [currentStep]: {
+          formFields: {
+            [actualFormFields[currentStep].formFields.findIndex(e => e.id === groupId)]: {
+              fields: {
+                $set: fields.map(e => ({
+                  ...e,
+                  value: isMultiple
+                    ? value[e.id]
+                    : e.id === id ? value : e.value
+                }))
+              }
+            }
+          }
+        }
+      }))
+    } else {
+      fields = cloneDeep(actualFormFields.find(e => e.id === groupId).fields)
+      setFormFields(update(actualFormFields, {
+        [actualFormFields.findIndex(e => e.id === groupId)]: {
+          fields: {
+            $set: fields.map(e => ({
+              ...e,
+              value: isMultiple
+                ? value[e.id]
+                : e.id === id ? value : e.value
+            }))
+          }
+        }
+      }))
+    }
+  }
+
+  const [fieldError, setFieldError] = useState({})
+  const handleCheckError = (id, errors, isMultiple = false) => {
+    let newErrors = { ...fieldError }
+    if (!isMultiple) {
+      newErrors[id] = errors
+    } else {
+      newErrors = {
+        ...newErrors,
+        ...errors
+      }
+    }
+    setFieldError(
+      Object.entries(newErrors).reduce((acc, [key, val]) => {
+        if (val.length) {
+          acc[key] = val
+        }
+        return acc
+      }, {})
+    )
+  }
+
+  const handleCheckRequired = () => {
+    // Check for required
+    let newFielderrors = cloneDeep(fieldError)
+    const fields = hasWizard 
+      ? actualFormFields[currentStep].formFields
+      : actualFormFields
+    
+    fields.reduce((acc, curr) => {
+      acc = [
+        ...acc,
+        ...curr.fields
+      ]
+      return acc
+    }, [])
+    .forEach(({ required, value, id, placeholder, label }) => {
+      if (required && !value) {
+        const requiredError = `${placeholder || label || 'This'} is required.`
+        if (!newFielderrors[id] || !newFielderrors[id].find(e => e === requiredError)) {
+          newFielderrors[id] = [
+            ...(newFielderrors[id] || []),
+            requiredError
+          ]
+        }
+      }
+      if (newFielderrors[id] && !newFielderrors[id].length) {
+        delete newFielderrors[id]
+      }
+    })
+
+    return {
+      formHasError: Object.keys(newFielderrors).length > 0,
+      errors: newFielderrors
+    }
+  }
+
+  const handleChangeStep = (step) => {
+    const { formHasError, errors } = handleCheckRequired()
+    console.log('@handleChangeStep', { formHasError, errors })
+    if (!formHasError) {
+      setStep(step)
+    }
+
+    setFieldError(errors)
+  }
+
+  const handleCopyFirstAddress = ({ target: { checked } }, id) => {
+    const { id: firstAddressId } = addresses[0]
+    const flattenFields = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
+    const { fields: firstAddressFields } = flattenFields.find(e => e.id === firstAddressId)
+    const { fields: targetAddressFields, type } = flattenFields.find(e => e.id === id)
+    if (checked) {
+      const fieldValues = firstAddressFields.map(e => e.value)
+      const targetAddressValues = targetAddressFields.reduce((acc, curr, index) => {
+        acc[curr.id] = fieldValues[index]
+        return acc
+      }, {})
+
+      handleChange(`${type}_${id}`, targetAddressValues, true)
+    }
+  }
+
+  const handleSubmit = () => {
+    const { formHasError, errors } = handleCheckRequired()
+    if (!formHasError) {
+      const newFormContents = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
+      dispatch(requestSubmitForm({
+        formTitle,
+        formData: newFormContents
+      }))
+    }
+    setFieldError(errors)
+  }
+
+
+  console.log('@fieldError', fieldError)
+  console.log('@actualFormFields', actualFormFields)
 
   return (
     <FormrStyled>
@@ -98,15 +229,16 @@ export default ({
                   hasWizard ? (
                     <div className='wizard-wrapper'>
                       <Stepper
-                        fields={fields}
+                        fields={actualFormFields}
                         currentStep={currentStep}
                         onSetStep={handleChangeStep}
                       />
                       <Content
-                        fields={fields[currentStep].formFields}
+                        fields={(actualFormFields[currentStep] || {}).formFields || []}
                         currentStep={currentStep}
-                        fieldState={fieldState}
                         fieldError={fieldError}
+                        addresses={addresses}
+                        onCopyFirstAddress={handleCopyFirstAddress}
                         onSetStep={handleChangeStep}
                         onChange={handleChange}
                         onCheckError={handleCheckError}
@@ -114,10 +246,11 @@ export default ({
                     </div>
                   ) : (
                     <Content
-                      fields={fields}
+                      fields={actualFormFields}
                       currentStep={currentStep}
-                      fieldState={fieldState}
                       fieldError={fieldError}
+                      addresses={addresses}
+                      onCopyFirstAddress={handleCopyFirstAddress}
                       onSetStep={handleChangeStep}
                       onChange={handleChange}
                       onCheckError={handleCheckError}
@@ -126,10 +259,10 @@ export default ({
                 }
                 <Actions
                   hasWizard={hasWizard}
-                  fields={fields}
+                  fields={actualFormFields}
                   currentStep={currentStep}
                   onSetStep={handleChangeStep}
-                  onSubmit={() => dispatch(requestGetFormById(form_id))}
+                  onSubmit={handleSubmit}
                 />
               </>
             )

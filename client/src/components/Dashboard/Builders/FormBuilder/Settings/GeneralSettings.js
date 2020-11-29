@@ -18,19 +18,33 @@ export default ({
   supportMultiple,
   fieldGroupType,
   isStandard,
+  hasError,
+  fieldErrors,
 
   onChangeGeneralSettings,
   onChangeFieldSettings,
   onRemoveGroup,
   onDuplicateGroup,
   onApplyValidationToAll,
-  onChangeDefaultProps
+  onChangeDefaultProps,
+  onCheckError
 }) => {
 
-  const { validationTypes, validationOptions } = Sources
+  let { validationTypes, validationOptions } = Sources
 
-  const validationOptionsArr = (valType) => Object.entries(validationOptions[valType || 'text'])
+  validationTypes = cloneDeep(validationTypes)
+
+  const validationOptionsArr = (valType) => {
+    const valOptions = Object.entries(validationOptions[valType || 'text'])
+    return fieldGroupType === 'paragraphText'
+      ? valOptions.filter(e => e[0] !== 'emailAddress')
+      : valOptions
+  }
   const defaultValidation = { type: 'text', option: 'contains', value: '', error: '', errorField: 'value' }
+
+  if (fieldGroupType === 'paragraphText') {
+    delete validationTypes.number
+  }
 
   const handleChangeGeneralSettings = (data, key) => {
     let newSettings = { ...generalSettings }
@@ -48,6 +62,14 @@ export default ({
     }
 
     onChangeGeneralSettings(newSettings)
+  }
+
+  const handleCheckError = (data) => {
+    const newErrors = !!data.find(e => e.label.replace(/\s/g, '') === '')
+    ? [`Option labels for ${fieldSettings.label} are required.`]
+    : []
+
+    onCheckError(newErrors)
   }
 
   const handleChangeFieldSettings = (data, key, index) => {
@@ -129,6 +151,8 @@ export default ({
         return { ...option, label: newLabel, name: newLabel.toLowerCase() }
       })
       onChangeFieldSettings({ options: newOptions })
+      handleCheckError(newOptions)
+    
       return
     }
     onChangeFieldSettings(data)
@@ -173,6 +197,7 @@ export default ({
                             const newOptions = cloneDeep(options)
                             newOptions.splice(optionIndex, 1)
                             onChangeFieldSettings({ options: newOptions })
+                            handleCheckError(newOptions)
                           }}
                         />
                       )
@@ -181,6 +206,7 @@ export default ({
                 )
               })
             }
+            
             <button
               type='button'
               target='_blank'
@@ -200,7 +226,7 @@ export default ({
         )
       }
       {/* End For Field with options */}
-
+      
       {/* Start For Validation */}
       {
         include && 
@@ -336,6 +362,22 @@ export default ({
       }
       {/* End for Instruction */}
 
+      {/* Start for Group Validation */}
+      {
+        (hasError && (!fieldSettings.requireAddOption || requireAddOption)) && 
+        fieldErrors.map((e, i) => {
+          return e && <div
+            key={`error-${i}`}
+            className='error'
+            style={{ padding: '1rem', background: '#ffe0dd'}}
+          >
+            {e}
+          </div>
+        })
+      }
+      {/* End for Group Validation */}
+
+
       {/* Start Lower Control */}
       <div className='settings-control'>
         <div className={`settings-control-item field ${!showOptions ? 'hidden' : ''}`}>
@@ -454,22 +496,22 @@ export default ({
             </label>
 
             {
-              (!isStandard && ['phone', 'email'].includes(fieldGroupType)) && (
-                <label htmlFor='allowAddField'  className={`checkboxContainer`} >
-                  <input
-                    type='checkbox'
-                    id='allowAddField'
-                    name='allowAddField'
-                    checked={allowAddField}
-                    onChange={e => {
-                      e.stopPropagation()
-                      onChangeDefaultProps({ allowAddField: e.target.checked })
-                    }}
-                  />
-                  <span className='checkmark'/>
-                  <span className='labelName'> Allow add field row</span>
-                </label>
-              )
+              // (!isStandard && ['phone', 'email'].includes(fieldGroupType)) && (
+              //   <label htmlFor='allowAddField'  className={`checkboxContainer`} >
+              //     <input
+              //       type='checkbox'
+              //       id='allowAddField'
+              //       name='allowAddField'
+              //       checked={allowAddField}
+              //       onChange={e => {
+              //         e.stopPropagation()
+              //         onChangeDefaultProps({ allowAddField: e.target.checked })
+              //       }}
+              //     />
+              //     <span className='checkmark'/>
+              //     <span className='labelName'> Allow add field row</span>
+              //   </label>
+              // )
             }
           </div>
         </div>

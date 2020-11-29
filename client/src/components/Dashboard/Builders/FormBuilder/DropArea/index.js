@@ -25,6 +25,8 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const [lastField, getLastField] = useState({})
   const [fieldHasChanged, setFieldHasChanged] = useState(!form_id)
   const [previewWarning, setPreviewWarning] = useState(false)
+  const [previewLabel, setPreviewLabel] = useState('Please save your changes to enable preview.')
+  const [errors, setErrors] = useState({})
 
   const reMapFields = (fields, id) => {
     return fields.map((e, i) => ({ ...e, id: `${e.tag}${i}_${id}`, value: '' }))
@@ -107,6 +109,19 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }))
   }
 
+  const handleCheckError = (id, errArr) => {
+    if (errArr.length === 0) {
+      const newErrors = cloneDeep(errors)
+      delete newErrors[id]
+      setErrors(newErrors)
+      return
+    }
+    setErrors({
+      ...errors,
+      [id]: errArr
+    })
+  }
+
   const handleRemoveGroup = (id, type) => {
     let newFields = droppedFields
     if (type === 'pageBreak' && pageBreaks.length === 2) {
@@ -116,10 +131,11 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }
     beforeSetDrop(newFields)
     checkPageBreaks(newFields)
+    handleCheckError(id, [])
   }
 
   const handleActive = (id) => {
-    beforeSetDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })), false)
+    setDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
   }
 
   const handleChangeDefaultProps = ({ id, ...rest }) => {
@@ -180,6 +196,11 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   }
 
   const handleSubmitForm = () => {
+    if (Object.keys(errors).length) {
+      setPreviewLabel('Please clear all fields/options label errors.') 
+      setPreviewWarning(true)
+      return
+    }
     if (form_id) {
       dispatch(requestUpdateForm({
         form_id,
@@ -247,7 +268,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }
   }, [category])
 
-  console.log('toinks', { droppedFields, form_data, form_title, formCategory, fieldHasChanged })
+  // console.log('@@@@@FORM BUILD LOGS', { droppedFields, form_data, form_title, formCategory, fieldHasChanged })
 
   return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
@@ -294,6 +315,8 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
                 // hasPageBreak={hasPageBreak}
                 lastField={lastField}
                 pageBreaks={pageBreaks}
+                errors={errors}
+
                 onMoveGroup={handleMoveGroup}
                 onShowHiddenGroup={handleShowHiddenGroup}
                 onRemoveGroup={(id) => handleRemoveGroup(id, fieldProps.type)}
@@ -306,6 +329,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
                 onChangeGroupName={handleUpdateGroupName}
                 onApplyValidationToAll={handleApplyValidationToAll}
                 onChangeDefaultProps={handleChangeDefaultProps}
+                onCheckError={handleCheckError}
               />
             )
           })
@@ -361,7 +385,14 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       </div>
       {
         previewWarning && (
-          <PreviewWarningModal onClose={() => setPreviewWarning(false)}/>
+          <PreviewWarningModal
+            title={previewLabel}
+            onClose={(e) => {
+              e.stopPropagation()
+              setPreviewWarning(false)
+              setPreviewLabel('Please save your changes to enable preview.')
+            }}
+          />
         )
       }
     </div>
