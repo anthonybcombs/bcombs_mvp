@@ -1002,7 +1002,7 @@ const resolvers = {
 
       console.log("newApplication", newApplication);
 
-      if(newApplication && newApplication.app_id) {
+      if(newApplication && newApplication.app_id && email?.value && password?.value) {
         const checkEmail = await checkUserEmail(email.value);
 
         if(checkEmail && checkEmail.is_exist) {
