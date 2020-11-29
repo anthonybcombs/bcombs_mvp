@@ -967,19 +967,25 @@ const resolvers = {
       let email;
       let password;
 
+      console.log("application", application);
+
       const formData = application?.form_contents?.formData;
 
-      loginType = formData.map((item) => {
+      console.log("formdata", formData);
+
+      loginType = formData.filter((item) => {
         return item.type == "login"
       });
 
+      console.log("loginType", loginType);
+
       loginType = loginType.length > 0 ? loginType[0] : {};
 
-      email = loginType?.fields.map((item) => {
+      email = loginType?.fields.filter((item) => {
         return item.type == "text"
       });
 
-      password = loginType?.fields.map((item) => {
+      password = loginType?.fields.filter((item) => {
         return item.type == "password"
       });
 
@@ -989,10 +995,15 @@ const resolvers = {
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
+      console.log("email", email);
+      console.log("password", password);
+
       const newApplication = await submitCustomApplication(application);
 
+      console.log("newApplication", newApplication);
+
       if(newApplication && newApplication.app_id) {
-        const checkEmail = await checkUserEmail(email);
+        const checkEmail = await checkUserEmail(email.value);
 
         if(checkEmail && checkEmail.is_exist) {
           console.log("Parent Status: ", checkEmail.status);
@@ -1024,8 +1035,9 @@ const resolvers = {
           console.log("add user res:", addUser);
         }
 
-        const newUser = await getUserFromDatabase(email);
+        const newUser = await getUserFromDatabase(email.value);
 
+        console.log("newUser", newUser);
         await addApplicationUser({
           user_id: newUser.id,
           custom_app_id: newApplication.app_id

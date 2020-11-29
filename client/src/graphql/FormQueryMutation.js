@@ -231,6 +231,15 @@ export const FORM_DELETE_MUTATION = gql`
   }
 `;
 
+export const FORM_SUBMIT_APPLICATION = gql`
+  mutation submitCustomApplicationForm($application:SubmitCustomApplicationInput){
+    submitCustomApplicationForm(application:$application){
+      messageType
+      message
+    }
+  }
+`;
+
 //queries
 export const GET_FORM_BY_FORM_ID = gql`
   query getCustomApplicationsByFormId($form_id:String!){

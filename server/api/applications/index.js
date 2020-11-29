@@ -593,22 +593,38 @@ export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id =
   let result;
 
   try {
-    await db.query(
-      `
-        INSERT INTO application_user(
-          app_user_id,
-          app_id,
-          custom_app_id,
-          user_id
-        ) VALUES (
-          UUID_TO_BIN(UUID()),
-          UUID_TO_BIN(?),
-          UUID_TO_BIN(?),
-          UUID_TO_BIN(?)
-        )
-      `,
-      [app_id, custom_app_id, user_id]
-    );
+    if(app_id) {
+      await db.query(
+        `
+          INSERT INTO application_user(
+            app_user_id,
+            app_id,
+            user_id
+          ) VALUES (
+            UUID_TO_BIN(UUID()),
+            UUID_TO_BIN(?),
+            UUID_TO_BIN(?)
+          )
+        `,
+        [app_id, user_id]
+      );
+    } else {
+      await db.query(
+        `
+          INSERT INTO application_user(
+            app_user_id,
+            custom_app_id,
+            user_id
+          ) VALUES (
+            UUID_TO_BIN(UUID()),
+            UUID_TO_BIN(?),
+            UUID_TO_BIN(?)
+          )
+        `,
+        [custom_app_id, user_id]
+      );
+    }
+
   } catch (error) {
     console.log("add application user error", error);
   } finally {
