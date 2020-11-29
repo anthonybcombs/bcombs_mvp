@@ -73,12 +73,12 @@ export default ({
     }
   }, []);
 
-  const handleChange = (id, value) => { 
+  const handleChange = (id, value) => {
+    console.log('jawa na', { id, value })
     const [, groupId] = id.split('_')
     let fields = []
     if (hasWizard) {
       fields = cloneDeep(actualFormFields[currentStep].formFields.find(e => e.id === groupId).fields)
-      console.log('witwewerwerwerwer', fields)
       setFormFields(update(actualFormFields, {
         [currentStep]: {
           formFields: {

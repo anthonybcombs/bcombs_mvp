@@ -57,7 +57,7 @@ export default ({ allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSet
 
     var reader = new FileReader()
     reader.onloadend = function() {
-      onChange({ target: { id: fieldId, value: { data: reader.result, filename: file.name, extension: `.${ext}` } } })
+      onChange({ target: { id: fieldId, value: { data: reader.result, filename: file.name, contentType: file.type, extension: `.${ext}` } } })
     }
     reader.readAsDataURL(file)
   }

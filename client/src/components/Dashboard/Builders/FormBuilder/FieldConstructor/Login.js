@@ -61,6 +61,9 @@ export default ({ showLabel, settings, label, fields, type, id, onChange, fieldE
           </span>
         ) : ''}
       </p>
+      {
+        (!showLabel && include) && <div className='formGroup-name-instruction'>{instructionValue}</div>
+      }
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(4, 1fr)`}}>
         {
           fields.map((field, index) => {
