@@ -288,7 +288,7 @@ export default function Layout({ children }) {
                           <span>Contacts</span>
                         </Link>
 
-                        <Link
+                        {/* <Link
                           className={`${
                             context.location.pathname ===
                             "/dashboard/forms"
@@ -297,7 +297,7 @@ export default function Layout({ children }) {
                           }`}
                           to="/dashboard/forms">
                           <span>Admin</span>
-                        </Link>
+                        </Link> */}
 
                         {/* <Link
                           className={`${
