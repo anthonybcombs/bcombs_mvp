@@ -13,7 +13,8 @@ import CustomDragLayer from '../CustomDragLayer'
 import PreviewWarningModal from '../PreviewWarningModal'
 
 import { requestAddForm, requestUpdateForm } from "../../../../../redux/actions/FormBuilder"
-import Loading from '../../../../../helpers/Loading';
+import Loading from '../../../../../helpers/Loading'
+import { groupFieldsByPageBreak } from '../../utils'
 
 export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, form_title = 'Untitled', form_id, handleBuilderDrawerOpen }) => {
   const dispatch = useDispatch()
@@ -157,8 +158,9 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   }
 
   const handleMergeStandardFields = (id, source) => {
+    const newFields = (droppedFields.find(e => e.id === id) || {}).fields || []
     beforeSetDrop(update(droppedFields, {
-      [droppedFields.findIndex(e => e.id === id)]: { fields: { $push: reMapFields(source.fields, source.id) } }
+      [droppedFields.findIndex(e => e.id === id)]: { fields: { $set: reMapFields([...newFields, ...source.fields], id) } }
     }))
   }
 
@@ -224,20 +226,6 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }
   }
 
-  const handleViewForm = () => {
-    if (!form_id) {
-      dispatch(requestAddForm({
-        user: user.user_id,
-        vendor: vendor.id,
-        isViewMode: true,
-        form_contents: {
-          formTitle,
-          formData: droppedFields
-        }
-      }))
-    }
-  }
-
   const [{ item, didDrop }, drop] = useDrop({
     accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
     drop: () => handleDrop(item, didDrop),
@@ -268,8 +256,8 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }
   }, [category])
 
-  // console.log('@@@@@FORM BUILD LOGS', { droppedFields, form_data, form_title, formCategory, fieldHasChanged })
-
+  console.log('@@@@@FORM BUILD LOGS', { droppedFields })
+  
   return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop} className='drop-area-wrapper-droppable'>
@@ -312,10 +300,11 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
                 {...fieldProps}
                 key={fieldProps.id}
                 index={index}
-                // hasPageBreak={hasPageBreak}
                 lastField={lastField}
                 pageBreaks={pageBreaks}
                 errors={errors}
+                hasPageBreak={hasPageBreak}
+                breakedFields={hasPageBreak ? groupFieldsByPageBreak(droppedFields) : droppedFields}
 
                 onMoveGroup={handleMoveGroup}
                 onShowHiddenGroup={handleShowHiddenGroup}

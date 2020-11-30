@@ -151,6 +151,7 @@ export const StandardFields = [
     displayLabel: 'Linear Scale',
     label: 'Linear scale question',
     type: 'linearScale',
+    includeLogic: false,
     gridMax: 2,
     isQa: true
   },
@@ -254,6 +255,7 @@ export const StandardFields = [
     hasSettings: false,
     showLabel: true,
     gridMax: 1,
+    includeLogic: false
   },
   {
     fields: [
@@ -264,6 +266,7 @@ export const StandardFields = [
     hasSettings: false,
     showLabel: true,
     gridMax: 1,
+    includeLogic: false
   }
 ]
 
@@ -300,7 +303,7 @@ export const PrimeFields = [
       { label: 'Street Address Line 2', type: 'text', tag: 'input', placeholder: 'Street Address Line 2', column: '4'},
       { label: 'State / Province / Region', type: 'state', tag: 'select', placeholder: 'State / Province / Region', column: '2'},
       { label: 'City', type: 'text', tag: 'input', placeholder: 'City', column: '2'},
-      { label: 'Postal / Zip Code', type: 'text', tag: 'input', placeholder: 'Postal / Zip Code', column: '2'},
+      { label: 'Postal / Zip Code', type: 'zipcode', tag: 'input', placeholder: 'Postal / Zip Code', column: '2'},
       { label: 'Country', type: 'country', tag: 'select', placeholder: 'Country', column: '2' }
     ],
     label: 'Address',

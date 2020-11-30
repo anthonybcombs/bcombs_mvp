@@ -600,7 +600,34 @@ export default styled.div`
   // =============================================
 
 
- 
+ .thankyouPage {
+   text-align: center; 
+ }
+ .thankyouPage svg {
+  color: #18ab27;
+  font-size: 3rem;
+ }
+ .thankyouPage .message {
+  font-size: 2rem;
+  margin: 1rem 1rem 2rem;
+ }
+ .thankyouPage .message span {
+  display: block;
+  font-size: 1rem;
+ }
+ .thankyouPage button {
+  color: #f5812f;
+  font-weight: 600;
+  padding: 12px 2rem;
+  border-radius: 3px;
+  background: transparent;
+  border: 2px solid #f5812f;
+  transition: .15s ease-in-out;
+ }
+ .thankyouPage button:hover {
+  color: #fff;
+  background: #f5812f;
+ }
 
 
 

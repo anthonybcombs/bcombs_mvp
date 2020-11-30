@@ -12,16 +12,19 @@ import Loading from "../../../../helpers/Loading.js"
 import Stepper from './Wizard/stepper'
 import Content from './Wizard/content'
 import Actions from './Wizard/actions'
+import ThankyouPage from './ThankyouPage'
 
 export default ({
   form_id
 }) => {
 
-  const { auth, loading, form: { selectedForm: { form_contents } } } = useSelector(
+  const { auth, loading, form: { selectedForm: { form_contents, vendor }, submitForm } } = useSelector(
     ({ auth, loading, form }) => {
       return { auth, loading, form };
     }
   )
+
+  const isSuccessfulSubmit = submitForm.message === 'successfully submitted your application form'
 
   const cleanFormData = (formData) => {
     const objArr = Object.entries(formData)
@@ -151,7 +154,8 @@ export default ({
       return acc
     }, [])
     .forEach(({ required, value, id, placeholder, label }) => {
-      if (required && !value) {
+      const newVal = value ? JSON.parse(value) : ''
+      if (required && !newVal) {
         const requiredError = `${placeholder || label || 'This'} is required.`
         if (!newFielderrors[id] || !newFielderrors[id].find(e => e === requiredError)) {
           newFielderrors[id] = [
@@ -172,8 +176,15 @@ export default ({
   }
 
   const handleChangeStep = (step) => {
+    const isPrev = currentStep > step
+
+    if (isPrev) {
+      setStep(step)
+      setFieldError([])
+      return
+    }
+
     const { formHasError, errors } = handleCheckRequired()
-    console.log('@handleChangeStep', { formHasError, errors })
     if (!formHasError) {
       setStep(step)
     }
@@ -199,12 +210,19 @@ export default ({
 
   const handleSubmit = () => {
     const { formHasError, errors } = handleCheckRequired()
+
     if (!formHasError) {
       const newFormContents = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
       dispatch(requestSubmitForm({
-        formTitle,
-        formData: newFormContents
+        form_contents: {
+          formTitle,
+          formData: newFormContents
+        },
+        vendor,
+        form: form_id
       }))
+
+      window.scrollTo({ top: 0 })
     }
     setFieldError(errors)
   }
@@ -220,53 +238,59 @@ export default ({
           {!loading.getForm ? formTitle : ''}
         </div>
         <div className='form-content'>
-          {
-            loading.getForm ? (
-              <Loading />
-            ) : (
-              <>
-                {
-                  hasWizard ? (
-                    <div className='wizard-wrapper'>
-                      <Stepper
-                        fields={actualFormFields}
-                        currentStep={currentStep}
-                        onSetStep={handleChangeStep}
-                      />
-                      <Content
-                        fields={(actualFormFields[currentStep] || {}).formFields || []}
-                        currentStep={currentStep}
-                        fieldError={fieldError}
-                        addresses={addresses}
-                        onCopyFirstAddress={handleCopyFirstAddress}
-                        onSetStep={handleChangeStep}
-                        onChange={handleChange}
-                        onCheckError={handleCheckError}
-                      />
-                    </div>
-                  ) : (
-                    <Content
+          <> 
+            {
+              isSuccessfulSubmit ? (
+                <ThankyouPage />
+              ) : (
+                (loading.getForm || loading.submitForm) ? (
+                  <Loading />
+                ) : (
+                  <>
+                    {
+                      hasWizard ? (
+                        <div className='wizard-wrapper'>
+                          <Stepper
+                            fields={actualFormFields}
+                            currentStep={currentStep}
+                            onSetStep={handleChangeStep}
+                          />
+                          <Content
+                            fields={(actualFormFields[currentStep] || {}).formFields || []}
+                            currentStep={currentStep}
+                            fieldError={fieldError}
+                            addresses={addresses}
+                            onCopyFirstAddress={handleCopyFirstAddress}
+                            onSetStep={handleChangeStep}
+                            onChange={handleChange}
+                            onCheckError={handleCheckError}
+                          />
+                        </div>
+                      ) : (
+                        <Content
+                          fields={actualFormFields}
+                          currentStep={currentStep}
+                          fieldError={fieldError}
+                          addresses={addresses}
+                          onCopyFirstAddress={handleCopyFirstAddress}
+                          onSetStep={handleChangeStep}
+                          onChange={handleChange}
+                          onCheckError={handleCheckError}
+                        />
+                      )
+                    }
+                    <Actions
+                      hasWizard={hasWizard}
                       fields={actualFormFields}
                       currentStep={currentStep}
-                      fieldError={fieldError}
-                      addresses={addresses}
-                      onCopyFirstAddress={handleCopyFirstAddress}
                       onSetStep={handleChangeStep}
-                      onChange={handleChange}
-                      onCheckError={handleCheckError}
+                      onSubmit={handleSubmit}
                     />
-                  )
-                }
-                <Actions
-                  hasWizard={hasWizard}
-                  fields={actualFormFields}
-                  currentStep={currentStep}
-                  onSetStep={handleChangeStep}
-                  onSubmit={handleSubmit}
-                />
-              </>
-            )
-          }
+                  </>
+                )
+              )
+            }
+          </>
         </div>
       </div>
     </FormrStyled>

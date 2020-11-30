@@ -627,6 +627,7 @@ const inputs = `
 
     input CustomFormSettingsLogicInput {
         include: Boolean
+        items: String
     }
 
     input CustomFormSettingsInstructionInput {
@@ -1226,6 +1227,7 @@ const queryTypes = `
 
     type CustomFormSettingsLogic {
         include: Boolean
+        items: String
     }
 
     type CustomFormSettingsInstruction {

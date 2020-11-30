@@ -17,7 +17,7 @@ export default ({
 
   const { validationOptions } = Sources
 
-  const handleChange = ({ target: { id, value } }) => {
+  const handleChange = ({ target: { id, value } }, { type, placeholder }, isBlur = false) => {
     const { validation } = fields.find(e => e.id === id) || {}
     const { include: validate, items } = validation || {}
     let errors = []
@@ -29,8 +29,17 @@ export default ({
           ) ? itemError : ''
       })
     }
+
+    if (type === 'zipcode') {
+      if (isNaN(value) || value.length > 5) {
+        return
+      }
+      if (value && value.length < 5 && isBlur) {
+        errors.push(`${placeholder} is invalid.`)
+      }
+    }
     
-    onChange(id, value)
+    onChange(id, JSON.stringify(value))
     onCheckError(id, errors)
   }
 
@@ -81,8 +90,9 @@ export default ({
                     key: `field-${index}`,
                     ...field,
                     placeholder: `${placeholder} ${required ? '*' : ''}`,
-                    // value, // fieldState[fieldId] || '',
-                    onChange: handleChange,
+                    value: field.value ? JSON.parse(field.value) : '',
+                    onChange: (e) => handleChange(e, field),
+                    onBlur:  (e) => handleChange(e, field, true),
                     onCheckError,
                     errors,
                     className: hasError ? 'hasError': ''

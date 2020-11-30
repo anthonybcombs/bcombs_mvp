@@ -32,9 +32,14 @@ const selectMappings = {
 }
 
 export default {
-  input: ({ className = '', onChange = () => {}, value = '', id = '', placeholder = '', onBlur = () => {} }) => {
+  input: ({ className = '', onChange = () => {}, value = '', id = '', placeholder = '', onBlur = () => {}, isBuilder,type }) => {
+    let specialProp = {}
+    if (!isBuilder && type === 'password') {
+      specialProp = { type: 'password' }
+    }
     return (
       <input
+        {...specialProp}
         className={`field-input ${className}`}
         id={id}
         value={value}

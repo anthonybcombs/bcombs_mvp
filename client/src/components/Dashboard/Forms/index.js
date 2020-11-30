@@ -98,6 +98,7 @@ export default (props) => {
   }
 
   const handleChangeFilter = (value) => {
+    console.log('yawa', value)
     GetRequestFormList(value)
   }
   

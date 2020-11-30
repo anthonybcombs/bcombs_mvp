@@ -6,13 +6,15 @@ import {
   FORM_UPDATE_MUTATION,
   GET_FORM_BY_FORM_ID,
   GET_FORMS_BY_VENDOR,
-  FORM_DELETE_MUTATION
+  FORM_DELETE_MUTATION,
+  FORM_SUBMIT_APPLICATION
 } from '../../graphql/FormQueryMutation'
 import {
   setAddFormLoading,
   setUpdateFormLoading,
   setGetFormLoading,
-  setDeleteFormLoading
+  setDeleteFormLoading,
+  setSubmitFormLoading
 } from './Loading'
 
 const addFormToDatabase = application => {
@@ -81,6 +83,21 @@ const deleteFormFromDatabase = form_id => {
       })
 
       return resolve(data.deleteCustomApplicationForm)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+const submitFormToDatabase = application => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: FORM_SUBMIT_APPLICATION,
+        variables: { application }
+      })
+
+      return resolve(data.submitCustomApplicationForm)
     } catch (error) {
       reject(error)
     }
@@ -242,5 +259,19 @@ export function* deleteForm({ form_id }) {
 
 export function* submitForm({ application }) {
   console.log('@SUBMIT FORM', application)
+  try {
+    yield put(setSubmitFormLoading(true))
+    const response = yield call(submitFormToDatabase, application)
+    yield put(setSubmitFormLoading(false))
+    yield put({
+      type: actionType.REQUEST_SUBMIT_FORM_COMPLETED,
+      payload: response
+    })
+  } catch (err) {
+    yield put(setSubmitFormLoading(false))
+    yield put({
+      type: actionType.REQUEST_SUBMIT_FORM_COMPLETED,
+      payload: {}
+    })
+  }
 }
-

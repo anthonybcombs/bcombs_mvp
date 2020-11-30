@@ -7,6 +7,7 @@ export default function Applications(
     updateForm: {},
     deleteForm: {},
     selectedForm: {},
+    submitForm: {},
     isFormView: false
   },
   action
@@ -42,6 +43,11 @@ export default function Applications(
         deleteForm: { ...action.payload },
         addForm: {},
         updateForm: {}
+      };
+    case actionType.REQUEST_SUBMIT_FORM_COMPLETED:
+      return {
+        ...state,
+        submitForm: { ...action.payload }
       };
     case actionType.SET_VIEW_MODE:
       return {
