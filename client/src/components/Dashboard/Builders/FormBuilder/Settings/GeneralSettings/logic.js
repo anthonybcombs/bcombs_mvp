@@ -43,8 +43,13 @@ export default ({
 
     onChangeGeneralSettings({ ...generalSettings, logic: { include: true, items: JSON.stringify(itemArr) } })
   }
+
+  const handleClear = (name) => {
+    itemArr = itemArr.filter(e => e.name !== name)
+    onChangeGeneralSettings({ ...generalSettings, logic: { include: true, items: JSON.stringify(itemArr) } })
+  }
   
-  console.log('@@@LOGICCCCCCCC', { fields, breakedFields, generalSettings })
+  console.log('@@@LOGICCCCCCCC', { itemArr })
 
   return (
     <div>
@@ -101,6 +106,20 @@ export default ({
                             ))
                           }
                         </select>
+                      )
+                    }
+                  </td>
+                  <td>
+                    {
+                      pageId && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleClear(name)
+                          }}
+                        >
+                          Clear
+                        </button>
                       )
                     }
                   </td>
