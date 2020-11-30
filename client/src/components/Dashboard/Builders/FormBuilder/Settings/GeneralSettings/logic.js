@@ -44,8 +44,8 @@ export default ({
     onChangeGeneralSettings({ ...generalSettings, logic: { include: true, items: JSON.stringify(itemArr) } })
   }
 
-  const handleClear = (name) => {
-    itemArr = itemArr.filter(e => e.name !== name)
+  const handleClear = (name = '') => {
+    itemArr = name ? itemArr.filter(e => e.name !== name) : []
     onChangeGeneralSettings({ ...generalSettings, logic: { include: true, items: JSON.stringify(itemArr) } })
   }
   
@@ -59,7 +59,20 @@ export default ({
             <th>If answer is ...</th>
             <th>Then skip to ...</th>
             <th></th>
-            <th></th>
+            <th>
+              {
+                itemArr.length > 0 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleClear()
+                    }}
+                  >
+                    Clear All
+                  </button>
+                )
+              }
+            </th>
           </tr>
         </thead>
         <tbody>
