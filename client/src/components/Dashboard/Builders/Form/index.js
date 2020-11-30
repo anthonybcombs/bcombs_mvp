@@ -80,8 +80,18 @@ export default ({
     }
   }, []);
 
+  const flattenFields = () => {
+    if (hasWizard) {
+      return actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], [])
+    } else {
+      return actualFormFields
+    }
+  }
+
   const handleChange = (id, value, isMultiple = false) => {
     const [, groupId] = id.split('_')
+    const { settings: { logic } } = flattenFields().find(e => e.id === groupId)
+
     let fields = []
     if (hasWizard) {
       fields = cloneDeep(actualFormFields[currentStep].formFields.find(e => e.id === groupId).fields)
@@ -115,6 +125,34 @@ export default ({
           }
         }
       }))
+    }
+
+    // Apply logic and PRAY
+    const { include, items } = logic || {}
+    if (include) {
+      const newItems = items ? JSON.parse(items) : ''
+      const newValue = value ? JSON.parse(value) : ''
+      const [name] = Object.keys(newValue)
+      const selectedLogic = newItems.find(e => e.name === name)
+      if (selectedLogic) {
+        const { pageId = '', fieldId = '' } = selectedLogic
+        if (pageId === 'end') {
+          handleSubmit(true)
+          return
+        }
+        if (hasWizard) {
+          const pageIndex = actualFormFields.findIndex(e => e.id === pageId)
+          if (currentStep !== pageIndex && pageIndex !== 'firstPage') {
+            setStep(pageIndex)
+          }
+          if (fieldId) {
+            setTimeout(() => {
+              const elmnt = document.getElementById(`group_${fieldId}`)
+              elmnt.scrollIntoView()
+            }, 100)
+          }
+        }
+      }
     }
   }
 
@@ -208,10 +246,10 @@ export default ({
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (forceSubmit = false) => {
     const { formHasError, errors } = handleCheckRequired()
 
-    if (!formHasError) {
+    if (!formHasError || forceSubmit) {
       const newFormContents = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
       dispatch(requestSubmitForm({
         form_contents: {
@@ -256,6 +294,7 @@ export default ({
                             onSetStep={handleChangeStep}
                           />
                           <Content
+                            id={(actualFormFields[currentStep] || {}).id}
                             fields={(actualFormFields[currentStep] || {}).formFields || []}
                             currentStep={currentStep}
                             fieldError={fieldError}
@@ -268,6 +307,7 @@ export default ({
                         </div>
                       ) : (
                         <Content
+                          id={'firstPage'}
                           fields={actualFormFields}
                           currentStep={currentStep}
                           fieldError={fieldError}

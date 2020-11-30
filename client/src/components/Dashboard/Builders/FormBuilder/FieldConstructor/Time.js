@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ showLabel, settings, fields, label, type, id, onChange, fieldError, onCheckError }) => {
+export default ({ showLabel, settings, fields, label, type, id: groupId, onChange, fieldError, onCheckError }) => {
   const { id: fieldId, value, required } = fields[0]
 
   const handleFormatAnswer = (timeId, timeVal, isBlur) => {
@@ -50,6 +50,7 @@ export default ({ showLabel, settings, fields, label, type, id, onChange, fieldE
   return (
     <div
       className={`formGroup ${type}`}
+      id={`group_${groupId}`}
     > 
       <p className='formGroup-name'>
         {showLabel ? (

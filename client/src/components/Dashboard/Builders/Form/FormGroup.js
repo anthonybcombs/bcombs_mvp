@@ -49,6 +49,7 @@ export default ({
   return (
     <div
       className={`formGroup ${itemGroup}`}
+      id={`group_${groupId}`}
     >
       <p className='formGroup-name'>
         {showLabel ? (

@@ -8,14 +8,15 @@ export default ({
 }) => {
   const { logic: { items = '[]' } } = generalSettings
   const { options  } = fields[0]
-  let itemArr = JSON.parse(items)
+  const validPageIds = ['firstPage', 'end', ...pageBreaks.map(e => e.id)]
+  let itemArr = JSON.parse(items).filter(e => validPageIds.includes(e.pageId))
   
   let pageOptions = [
     { value: 'end', label: 'End of Survey' }
   ]
 
   if (hasPageBreak) {
-    const breaks = pageBreaks.map(({ id, label }) => ({ value: id, label }))
+    const breaks = breakedFields.map(({ id, label }) => ({ value: id, label }))
     pageOptions = [
       ...breaks,
       ...pageOptions

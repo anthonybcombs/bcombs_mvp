@@ -5,8 +5,8 @@ import FieldConstructor from '../../FormBuilder/FieldConstructor'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ showLabel, settings, label, fields, type, id, onChange, fieldError, onCheckError }) => {
-  const fieldId = `${type}_${id}`
+export default ({ showLabel, settings, label, fields, type, id: groupId, onChange, fieldError, onCheckError }) => {
+  const fieldId = `${type}_${groupId}`
   const handleAnswer = (date) => {
     const dateObj = date ? new Date(date) : ''
     let answers = {}
@@ -68,6 +68,7 @@ export default ({ showLabel, settings, label, fields, type, id, onChange, fieldE
   return (
     <div
       className={`formGroup ${type}`}
+      id={`group_${groupId}`}
     >
       <p className='formGroup-name'>
         {showLabel ? (
