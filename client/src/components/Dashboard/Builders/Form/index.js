@@ -24,7 +24,7 @@ export default ({
     }
   )
 
-  const isSuccessfulSubmit = true //submitForm.message === 'successfully submitted your application form'
+  const isSuccessfulSubmit = submitForm.message === 'successfully submitted your application form'
 
   const cleanFormData = (formData) => {
     const objArr = Object.entries(formData)
@@ -221,6 +221,8 @@ export default ({
         vendor,
         form: form_id
       }))
+
+      window.scrollTo({ top: 0 })
     }
     setFieldError(errors)
   }
@@ -241,7 +243,7 @@ export default ({
               isSuccessfulSubmit ? (
                 <ThankyouPage />
               ) : (
-                loading.getForm ? (
+                (loading.getForm || loading.submitForm) ? (
                   <Loading />
                 ) : (
                   <>
