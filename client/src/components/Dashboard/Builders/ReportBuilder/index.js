@@ -13,7 +13,6 @@ const ReportBuilder = ({ form_id }) => {
   const handleBuilderDrawerOpen = () => {
     setBuilderDrawerOpen(!builderDrawerOpen)
   }
-  console.log('nge', form_id)
 
   return (
     <ReportBuilderStyled>

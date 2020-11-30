@@ -3,7 +3,7 @@ import React from 'react'
 import FormGroup from '../FormGroup'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ fields, fieldError, addresses, onChange, onCheckError, onCopyFirstAddress }) => {
+export default ({ fields, fieldError, id: pageId, addresses, onChange, onCheckError, onCopyFirstAddress }) => {
 
   const handleChange = (id, answers, bool) => {
     if (bool) {
@@ -19,7 +19,7 @@ export default ({ fields, fieldError, addresses, onChange, onCheckError, onCopyF
   }
 
   return (
-    <div className='wizard-content'>
+    <div className='wizard-content' id={`page_${pageId}`}>
       {
         fields.map((fieldProps, index) => {
           const specialComps = ['date', 'email', 'time', 'phone', 'login', 'price', 'website']

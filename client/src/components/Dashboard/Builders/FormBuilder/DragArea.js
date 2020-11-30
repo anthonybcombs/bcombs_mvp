@@ -10,7 +10,6 @@ export default ({ handleBuilderDrawerOpen, form_id }) => {
   const [primeFields] = useState([...PrimeFields])
 
   const handleSelectFormType = (type) => {
-    console.log('type: ', type)
     window.location.replace(`/dashboard/builder/${form_id}/${type}`)
   }
 
