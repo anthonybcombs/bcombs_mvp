@@ -256,6 +256,8 @@ export default ({
             pageBreaks={pageBreaks}
             hasPageBreak={hasPageBreak}
             breakedFields={breakedFields}
+
+            onChangeGeneralSettings={onChangeGeneralSettings}
           />
         )
       }
