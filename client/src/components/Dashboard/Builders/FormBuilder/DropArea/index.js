@@ -158,8 +158,9 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   }
 
   const handleMergeStandardFields = (id, source) => {
+    const newFields = (droppedFields.find(e => e.id === id) || {}).fields || []
     beforeSetDrop(update(droppedFields, {
-      [droppedFields.findIndex(e => e.id === id)]: { fields: { $push: reMapFields(source.fields, source.id) } }
+      [droppedFields.findIndex(e => e.id === id)]: { fields: { $set: reMapFields([...newFields, ...source.fields], id) } }
     }))
   }
 

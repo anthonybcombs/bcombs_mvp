@@ -11,8 +11,7 @@ export default (props) => {
       rows: [
         ...rows,
         {
-          row: `Row ${rows.length + 1}`,
-          answers: []
+          row: `Row ${rows.length + 1}`
         }
       ]
     })
