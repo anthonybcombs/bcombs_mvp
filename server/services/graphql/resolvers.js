@@ -999,25 +999,29 @@ const resolvers = {
         return item.type == "primeFile"
       });
 
+      const hasLoginField = !!(loginType.length > 0);
+
       loginType = loginType.length > 0 ? loginType[0] : {};
-
-      email = loginType?.fields.filter((item) => {
-        return item.type == "text"
-      });
-
-      password = loginType?.fields.filter((item) => {
-        return item.type == "password"
-      });
-
-      email = email.length > 0 ? email[0] : "";
-      password = password.length > 0 ? password[0] : "";
+      
+      if(hasLoginField) {
+        email = loginType?.fields.filter((item) => {
+          return item.type == "text"
+        });
+  
+        password = loginType?.fields.filter((item) => {
+          return item.type == "password"
+        });
+  
+        email = email.length > 0 ? email[0] : "";
+        password = password.length > 0 ? password[0] : "";
+      }
 
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
       const newApplication = await submitCustomApplication(application);
 
-      if(newApplication && newApplication.app_id && email?.value && password?.value) {
+      if(newApplication && newApplication.app_id && hasLoginField) {
         const checkEmail = await checkUserEmail(email.value);
 
         if(checkEmail && checkEmail.is_exist) {
@@ -1051,57 +1055,57 @@ const resolvers = {
           user_id: newUser.id,
           custom_app_id: newApplication.app_id
         });
+      }
 
-        console.log("primeFiles", primeFiles);
+      console.log("primeFiles", primeFiles);
 
-        for(let primeFile of primeFiles) {
-          if(primeFile?.fields.length > 0) {
-            let fileContent = primeFile.fields[0]?.file;
-            if(fileContent) {
-              const buf = Buffer.from(
-                fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
-                "base64"
-              );
-  
-              const s3Payload = {
-                Bucket: currentS3BucketName,
-                Key: `user/${newApplication.app_id}/${primeFile.id}/${fileContent.filename}`,
-                Body: buf,
-                ContentEncoding: "base64",
-                ContentType: fileContent.contentType,
-                ACL: "public-read"
-              };
-  
-              await uploadFile(s3Payload);
-  
-              fileContent.url = s3Payload.Key;
-              fileContent.data = "";
-  
-              console.log("fileContent url", fileContent.url);
+      for(let primeFile of primeFiles) {
+        if(primeFile?.fields.length > 0) {
+          let fileContent = primeFile.fields[0]?.file;
+          if(fileContent) {
+            const buf = Buffer.from(
+              fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
+              "base64"
+            );
 
-              primeFile.fields[0].file = fileContent;
+            const s3Payload = {
+              Bucket: currentS3BucketName,
+              Key: `user/${newApplication.app_id}/${primeFile.id}/${fileContent.filename}`,
+              Body: buf,
+              ContentEncoding: "base64",
+              ContentType: fileContent.contentType,
+              ACL: "public-read"
+            };
 
-              console.log("update primefile", util.inspect(primeFile, false, null, true));
+            await uploadFile(s3Payload);
 
-              formData = formData.map((item) => {
-                if(item.id == primeFile.id) {
-                  item = primeFile
-                }
-                return item;
-              });
-              
-              const formContents = {
-                formTitle: formTitle,
-                formData: formData
+            fileContent.url = s3Payload.Key;
+            fileContent.data = "";
+
+            console.log("fileContent url", fileContent.url);
+
+            primeFile.fields[0].file = fileContent;
+
+            console.log("update primefile", util.inspect(primeFile, false, null, true));
+
+            formData = formData.map((item) => {
+              if(item.id == primeFile.id) {
+                item = primeFile
               }
-
-              console.log("formContents", util.inspect(formContents, false, null, true));
-
-              let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
-              formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
-
-              await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
+              return item;
+            });
+            
+            const formContents = {
+              formTitle: formTitle,
+              formData: formData
             }
+
+            console.log("formContents", util.inspect(formContents, false, null, true));
+
+            let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
+            formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+            await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
           }
         }
       }
