@@ -88,7 +88,10 @@ export const FORM_ADD_MUTATION = gql`
             }
             groupType
             settings {
-              logic { include }
+              logic { 
+                include 
+                items
+              }
               instruction { 
                 include
                 value 
@@ -199,7 +202,10 @@ export const FORM_UPDATE_MUTATION = gql`
             }
             groupType
             settings {
-              logic { include }
+              logic { 
+                include
+                items
+              }
               instruction { 
                 include
                 value 
@@ -332,7 +338,10 @@ export const GET_APPLICANTS_BY_FORM = gql`
           }
           groupType
           settings {
-            logic { include }
+            logic { 
+              include 
+              items
+            }
             instruction { 
               include
               value 
@@ -437,7 +446,10 @@ export const GET_FORM_BY_FORM_ID = gql`
           }
           groupType
           settings {
-            logic { include }
+            logic { 
+              include 
+              items
+            }
             instruction { 
               include
               value 
@@ -544,7 +556,10 @@ export const GET_FORMS_BY_VENDOR = gql`
           }
           groupType
           settings {
-            logic { include }
+            logic { 
+              include 
+              items
+            }
             instruction { 
               include
               value 
