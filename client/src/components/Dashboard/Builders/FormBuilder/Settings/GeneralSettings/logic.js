@@ -1,3 +1,4 @@
+import { faFileExcel } from '@fortawesome/free-solid-svg-icons'
 import { id } from 'date-fns/locale'
 import cloneDeep from 'lodash.clonedeep'
 import React, { useState } from 'react'
@@ -52,14 +53,13 @@ export default ({
   console.log('@@@LOGICCCCCCCC', { itemArr })
 
   return (
-    <div>
-      <table>
+    <div className='settings-logic'>
+      <table style={{ width: '100%' }} className='logic-table'>
         <thead>
           <tr>
-            <th>If answer is ...</th>
-            <th>Then skip to ...</th>
-            <th></th>
-            <th>
+            <th align='left' className='label'>If answer is ...</th>
+            <th align='left' className='dropdown-options'>Then skip to ...</th>
+            <th align='right' className='actions'>
               {
                 itemArr.length > 0 && (
                   <button
@@ -87,42 +87,49 @@ export default ({
 
               return (
                 <tr key={`options-${index}`}>
-                  <td>{label}</td>
-                  <td>
-                    <select
-                      value={pageId}
-                      onChange={e => handleChange(e, name, 'pageId')}
-                    >
-                      <option value=''>Choose Page</option>
-                      {
-                        pageOptions.map((poption, i) => (
-                          <option key={`pageOption-${i}`} value={poption.value}>
-                            {poption.label}
-                          </option>
-                        ))
-                      }
-                    </select>
-                  </td>
-                  <td>
-                    {
-                      pageFields.length > 0 && (
+                  <td align='left' className='label'>{label}</td>
+                  <td align='left' className='dropdown-options'>
+                    
+                    <div className='logic-options'>
+                      <div className='field select-field-wrapper'>
                         <select
-                          value={fieldId}
-                          onChange={e => handleChange(e, name, 'fieldId')}
+                          value={pageId}
+                          className='field-input'
+                          onChange={e => handleChange(e, name, 'pageId')}
                         >
-                          <option value=''>Choose Field</option>
+                          <option value=''>Choose Page</option>
                           {
-                            pageFields.map((foption, i) => (
-                              <option key={`fieldOption-${i}`} value={foption.value}>
-                                {foption.label}
+                            pageOptions.map((poption, i) => (
+                              <option key={`pageOption-${i}`} value={poption.value}>
+                                {poption.label}
                               </option>
                             ))
                           }
                         </select>
-                      )
-                    }
+                      </div>
+                      {
+                        pageFields.length > 0 && (
+                          <div className='field select-field-wrapper'>
+                            <select
+                              value={fieldId}
+                              className='field-input'
+                              onChange={e => handleChange(e, name, 'fieldId')}
+                            >
+                              <option value=''>Choose Field</option>
+                              {
+                                pageFields.map((foption, i) => (
+                                  <option key={`fieldOption-${i}`} value={foption.value}>
+                                    {foption.label}
+                                  </option>
+                                ))
+                              }
+                            </select>
+                          </div>
+                        )
+                      }
+                    </div>
                   </td>
-                  <td>
+                  <td align='right' className='actions'>
                     {
                       pageId && (
                         <button

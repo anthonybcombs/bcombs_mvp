@@ -679,6 +679,55 @@ export default styled.div`
     white-space: pre;
   }
 
+  .group-settings .settings-logic {
+    padding: .3rem;
+    margin-bottom: .3rem;
+    background: rgb(24 171 39 / 5%);
+  }
+  .group-settings .settings-logic  table {
+    width: 100% !important:
+  }
+  .logic-table tr th.label,
+  .logic-table tr td.label {
+    width: 150px;
+    max-width: 150px;
+    white-space: pre;
+    overflow: hidden;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+  }
+  .logic-table tr th.dropdown-options {
+    width: 500px;
+  }
+  .logic-table tr th.actions {
+    width: 100px;
+  }
+  .logic-table tr th.actions button {
+    border: none;
+    color: #1d99f3;
+    font-weight: bold;
+    background: transparent;
+  }
+  .logic-table tr td.actions button {
+    border: none;
+    color: #1d99f3;
+    background: transparent;
+  }
+  .group-settings .settings-logic > table td .logic-options {
+    display: grid;
+    grid-column-gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+  }
+  .group-settings .settings-logic > table td .logic-options .field {
+    width: 100%:
+  }
+  .group-settings .settings-logic > table td .logic-options .field .field-input {
+    background: transparent;
+  }
+  
+
+
+
   .group-settings .settings-control {
     display: flex;
     flex-wrap: wrap;
