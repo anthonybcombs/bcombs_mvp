@@ -145,12 +145,12 @@ export default ({
           if (currentStep !== pageIndex && pageIndex !== 'firstPage') {
             setStep(pageIndex)
           }
-          if (fieldId) {
-            setTimeout(() => {
-              const elmnt = document.getElementById(`group_${fieldId}`)
-              elmnt.scrollIntoView()
-            }, 100)
-          }
+        }
+        if (fieldId) {
+          setTimeout(() => {
+            const elmnt = document.getElementById(`group_${fieldId}`)
+            elmnt.scrollIntoView()
+          }, 100)
         }
       }
     }
