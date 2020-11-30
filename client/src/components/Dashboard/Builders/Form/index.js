@@ -24,7 +24,7 @@ export default ({
     }
   )
 
-  const isSuccessfulSubmit = submitForm.message === 'successfully submitted your application form'
+  const isSuccessfulSubmit = true //submitForm.message === 'successfully submitted your application form'
 
   const cleanFormData = (formData) => {
     const objArr = Object.entries(formData)
