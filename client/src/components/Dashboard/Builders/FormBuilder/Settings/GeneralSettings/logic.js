@@ -12,7 +12,7 @@ export default ({
   let itemArr = JSON.parse(items).filter(e => validPageIds.includes(e.pageId))
   
   let pageOptions = [
-    { value: 'end', label: 'End of Survey' }
+    { value: 'end', label: 'Submit Application' }
   ]
 
   if (hasPageBreak) {
