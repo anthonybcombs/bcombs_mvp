@@ -4,7 +4,7 @@ import { faTimes, faFileImage, faFilePdf, faFileWord } from '@fortawesome/free-s
 import cloneDeep from 'lodash.clonedeep'
 
 const getExtensionIcon = (ext) => {
-  switch(ext) {
+  switch(ext.toLowerCase()) {
     case 'png':
     case 'jpg':
     case 'jpeg':
@@ -50,7 +50,7 @@ export default ({ allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSet
     const [, ext] = file.name.split('.')
 
     const allowedExt = allowTypes.filter(e => e.selected).reduce((acc, curr) => [...acc, ...curr.ext], [])
-    if (!allowedExt.includes(`.${ext}`)) {
+    if (!allowedExt.includes(`.${ext.toLowerCase()}`)) {
       onCheckError(fieldId, [errorMessage])
       return
     }

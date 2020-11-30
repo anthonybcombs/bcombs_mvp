@@ -4,7 +4,7 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ options, column, onChangeFieldSettings, isBuilder, index, isActive, id: fieldId, onChange, onCheckError, value = {} }) => {
+export default ({ options, required, column, onChangeFieldSettings, isBuilder, requiredindex, isActive, id: fieldId, onChange, onCheckError, value = {} }) => {
   const hasOthers = options.find(e => e.name === 'other')
 
   const handleCheckError = (data) => {
@@ -40,8 +40,8 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
   }
 
   const handleAnswer = ({ target: { value: dropDownValue } }) => {
-    const { name, label } = options.find(e => e.name === dropDownValue)
-    onChange({ target: { id: fieldId, value: { [name]: label } } })
+    const { name, label } = options.find(e => e.name === dropDownValue) || {}
+    onChange({ target: { id: fieldId, value: name ? { [name]: label } : '' } })
   }
 
   const groupClassLabel = isBuilder ? 'sortableGroup' : 'formGroup'
@@ -55,7 +55,7 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
               {
                 options.map((option, optionIndex) => {
                   return (
-                    <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
+                    <div key={`option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
                       <div className='option'>
                         <span>{optionIndex + 1}.</span>
                         {
@@ -115,10 +115,12 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, index, isAc
             <div className='field select-field-wrapper'>
               <select
                 className={`field-input`}
-                value={Object.keys(value)[0]}
+                value={value ? Object.keys(value)[0] : ''}
                 onChange={(e) => handleAnswer(e)}
               >
-                <option value=''>Choose</option>
+                <option value=''>
+                  {`Choose ${required ? '*' : ''}`}
+                </option>
                 {
                   options.map(({ label, name }, index) => {
                     return (<option key={name + index} value={name}>{label}</option>)
