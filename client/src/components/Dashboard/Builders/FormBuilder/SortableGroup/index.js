@@ -19,7 +19,7 @@ const SortableGroup = React.forwardRef(
     hidden, label, fields, isDragging, id, type: fieldGroupType, gridMax: gridColRepeat,
     includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField = {},
     onRemoveGroup, settings: generalSettings, allowAddField, includeLogic, supportMultiple,
-    isMultiple, showLabel, onCheckError
+    isMultiple, showLabel, onCheckError, breakedFields, hasPageBreak
   }, ref) => {
   
   const [fieldIndex, setActiveFieldIndex] = useState(0)
@@ -241,6 +241,7 @@ const SortableGroup = React.forwardRef(
             }}
             onCheckError={(errArr) => onCheckError(id, errArr)}
 
+            fields={fields}
             generalSettings={generalSettings}
             includeLogic={includeLogic}
             includeValidation={includeValidation}
@@ -255,6 +256,9 @@ const SortableGroup = React.forwardRef(
             supportMultiple={supportMultiple}
             hasError={hasError}
             fieldErrors={fieldErrors}
+            hasPageBreak={hasPageBreak}
+            pageBreaks={pageBreaks}
+            breakedFields={breakedFields}
           />
         ) : (showSettings && !isLastPageBreak)
             ? (

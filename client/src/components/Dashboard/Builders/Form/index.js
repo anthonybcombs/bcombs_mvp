@@ -42,7 +42,7 @@ export default ({
     return newObj
   }
 
-  let { formData = [], formTitle = '' } = form_contents || {}
+  let { formData = [], formTitle = '', vendor } = form_contents || {}
   // TESTING
   // formData = FORM_DATA
   // TESTING
@@ -202,8 +202,12 @@ export default ({
     if (!formHasError) {
       const newFormContents = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
       dispatch(requestSubmitForm({
-        formTitle,
-        formData: newFormContents
+        form_contents: {
+          formTitle,
+          formData: newFormContents
+        },
+        vendor,
+        form_id
       }))
     }
     setFieldError(errors)

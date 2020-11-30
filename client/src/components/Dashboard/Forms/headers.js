@@ -67,7 +67,7 @@ export default ({ onChangeFilter }) => {
               options={CATEGORIES_OPTIONS}
               // hasSelectAll={hasSelectAll}
               onSelect={selectedList => handleSelectCategory(selectedList)}
-              onRemove={selectedList => {}}
+              onRemove={selectedList => handleSelectCategory(selectedList)}
               displayValue='name'
               closeIcon='cancel'
               // name={'ethinicity

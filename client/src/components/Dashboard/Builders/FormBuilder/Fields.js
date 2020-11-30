@@ -151,6 +151,7 @@ export const StandardFields = [
     displayLabel: 'Linear Scale',
     label: 'Linear scale question',
     type: 'linearScale',
+    includeLogic: false,
     gridMax: 2,
     isQa: true
   },
@@ -254,6 +255,7 @@ export const StandardFields = [
     hasSettings: false,
     showLabel: true,
     gridMax: 1,
+    includeLogic: false
   },
   {
     fields: [
@@ -264,6 +266,7 @@ export const StandardFields = [
     hasSettings: false,
     showLabel: true,
     gridMax: 1,
+    includeLogic: false
   }
 ]
 

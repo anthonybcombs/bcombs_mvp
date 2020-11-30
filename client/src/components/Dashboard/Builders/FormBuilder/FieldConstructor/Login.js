@@ -74,7 +74,7 @@ export default ({ showLabel, settings, label, fields, type, onChange, fieldError
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(4, 1fr)`}}>
         {
           fields.map((field, index) => {
-            const { tag, column, placeholder, required } = field
+            const { tag, column, placeholder, required, type: fieldType } = field
             const errors = fieldError[field.id] || []
             const hasError = errors.length ? !!errors.find(e => e) : false
             return (
@@ -87,6 +87,7 @@ export default ({ showLabel, settings, label, fields, type, onChange, fieldError
                   FieldConstructor[tag]({
                     key: `field-${index}`,
                     ...field,
+                    type: fieldType !== 'email' ? 'password' : fieldType,
                     placeholder: `${placeholder} ${required ? '*' : ''}`,
                     onChange: e => handleAnswer(e, field.type),
                     className: hasError ? 'hasError': ''
