@@ -22,7 +22,7 @@ export default ({
     ]
   } else {
     pageOptions = [
-      { value: '', label: 'First Page' },
+      { value: 'firstPage', label: 'First Page' },
       ...pageOptions
     ]
   }
@@ -79,7 +79,7 @@ export default ({
           {
             options.map(({ label, name }, index) => {
               const { pageId = '', fieldId = '' } = itemArr.find(e => e.name === name) || {}
-              const pageFields = (pageId
+              const pageFields = (pageId && pageId !== 'end'
                 ? hasPageBreak
                   ? (breakedFields.find(e => e.id === pageId) || {}).formFields || []
                   : breakedFields
