@@ -30,8 +30,10 @@ import {
   requestGetApplications,
   requestUpdateApplication,
   requestSaveApplication,
-  requestGetApplicationHistory
+  requestGetApplicationHistory,
+  requestGetCustomApplications
 } from "../../../redux/actions/Application";
+import { requestGetForms } from '../../../redux/actions/FormBuilder'
 import { requestUserGroup } from "../../../redux/actions/Groups";
 import Loading from "../../../helpers/Loading.js";
 import ProfileImg from "../../../images/defaultprofile.png";
@@ -394,6 +396,8 @@ export default function index() {
 
   const [selectedVendor, setSelectedVendor] = useState({});
 
+  const [selectedForm, setSelectedForm] = useState("default");
+
   const dispatch = useDispatch();
 
   const componentRef = useRef();
@@ -424,11 +428,13 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
-  const { groups, auth, vendors, applications, loading } = useSelector(
-    ({ groups, auth, vendors, applications, loading }) => {
-      return { groups, auth, vendors, applications, loading };
+  const { groups, auth, vendors, applications, loading, form: {formList = []} } = useSelector(
+    ({ groups, auth, vendors, applications, loading, form }) => {
+      return { groups, auth, vendors, applications, loading, form };
     }
   );
+
+  console.log("form 123", formList);
 
   if (
     applications.updateapplication &&
@@ -468,16 +474,20 @@ export default function index() {
         });
 
         setSelectedVendor(newDefaultVendor[0]);
-        dispatch(requestGetApplications(newDefaultVendor[0].id));
+        //dispatch(requestGetApplications(newDefaultVendor[0].id));
+        dispatch(requestGetForms({ vendor: newDefaultVendor[0].id, categories: [] }))
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
-        dispatch(requestGetApplications(vendors[0].id));
+        dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
+        //dispatch(requestGetApplications(vendors[0].id));
       }
-
-      
     }
   }, [vendors]);
+
+  useEffect(() => {
+    dispatch(requestGetApplications(selectedVendor.id));
+  }, [formList])
 
   console.log("vendor", vendors);
 
@@ -1453,7 +1463,6 @@ export default function index() {
                 "width": "100%",
                 "display": "block",
                 "background": "transparent",
-                "fontWeight": "bold",
                 "border": "0",
                 "padding": "0",
                 "lineHeight": "1",
@@ -1470,8 +1479,8 @@ export default function index() {
 
                 window.history.replaceState("","","?vendor=" + chosenVendor[0].id2);
 
-                dispatch(requestGetApplications(target.value));
-
+                //dispatch(requestGetApplications(target.value));
+                dispatch(requestGetForms({ vendor: target.value, categories: [] }))
                 if(chosenVendor && chosenVendor.length > 0) {
                   setSelectedVendor(chosenVendor[0]);
                 }
@@ -1486,12 +1495,56 @@ export default function index() {
             </select>
           </div>
         )}
+
+        {
+          vendors && vendors.length > 0 && (
+            <div>
+              <select
+                style={{ 
+                  "marginLeft": "20px",
+                  "fontSize": "1.5em",
+                  "borderRadius": "0",
+                  "cursor": "pointer",
+                  "width": "100%",
+                  "display": "block",
+                  "background": "transparent",
+                  "border": "0",
+                  "padding": "0",
+                  "lineHeight": "1",
+                  "color": "#000000"
+                }}
+                onChange={({ target }) => {
+
+                  console.log("target", target.value);
+                  if(target.value == "default") {
+                    setSelectedForm("default");
+                    dispatch(requestGetApplications(selectedVendor.id));
+                  } else {
+                    setSelectedForm(target.value);
+                    dispatch(requestGetCustomApplications(target.value));
+                  }
+                }}
+              >
+                <option key={selectedVendor.id} value="default">
+                  Bcombs Form
+                </option>
+                {
+                  formList.map(form => (
+                    <option key={form.form_id} value={form?.form_id}>
+                      {form?.form_contents?.formTitle}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+          )
+        }
       </div>
       <div id="application">
         <div>
           <div id="labels">
             {
-              selectedVendor && selectedVendor.id2 ? (
+              selectedVendor && selectedVendor.id2 && selectedForm == "default" ? (
                 <a
                   href={ selectedVendor.is_daycare ? `/application/${
                     selectedVendor.id2
@@ -1500,6 +1553,14 @@ export default function index() {
                   }`}
 
                   target="_blank">
+                  <FontAwesomeIcon icon={faFileSignature} />
+                  <span>Application</span>
+                </a>
+              ) : selectedForm && selectedForm != "default" ? (
+                <a
+                  href={`/form/${selectedForm}`}
+                  target="_blank"
+                >
                   <FontAwesomeIcon icon={faFileSignature} />
                   <span>Application</span>
                 </a>

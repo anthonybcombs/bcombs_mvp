@@ -253,7 +253,8 @@ export const GET_APPLICANTS_BY_FORM = gql`
     getCustomFormApplicants(form_id:$form_id){
       id
       vendor
-      form_id
+      form
+      app_id
       application_date
       archived_date
       class_teacher

@@ -77,7 +77,8 @@ import {
   saveApplication,
   getApplicationByUserId,
   getApplicationHistory,
-  getUserApplicationHistory
+  getUserApplicationHistory,
+  getCustomApplications
 } from "../actions/Application";
 
 import {
@@ -240,6 +241,11 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_DELETE_FORM, deleteForm);
   yield takeLatest(actionType.REQUEST_DELETE_FORM, deleteForm);
   yield takeLatest(actionType.REQUEST_SUBMIT_FORM, submitForm);
+
+  yield takeLatest(
+    actionType.REQUEST_GET_CUSTOM_APPLICATION,
+    getCustomApplications
+  );
 }
 const sagaMiddleware = createSagaMiddleware();
 

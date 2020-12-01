@@ -1089,7 +1089,7 @@ const queryTypes = `
         id: String
         app_id: String
         vendor: String
-        form_id: String
+        form: String
         form_contents: CustomForm
         application_date: Date
         archived_date: Date

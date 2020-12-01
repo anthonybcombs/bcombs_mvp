@@ -14,10 +14,29 @@ import {
   GET_APPLICATION_USER_ID_QUERY,
   GET_APPLICATION_HISTORY,
   GET_USER_APPLICATION_HISTORY,
-  DAYCARE_APPLICATION_ADD_MUTATION
+  DAYCARE_APPLICATION_ADD_MUTATION,
 } from "../../graphql/applicationMutation";
+import { GET_APPLICANTS_BY_FORM } from "../../graphql/FormQueryMutation";
 import * as actionType from "./Constant";
 import { setApplicationLoading, setUserApplicationLoading } from "./Loading";
+
+const getCustomApplicationsFromDatabase = form_id => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: GET_APPLICANTS_BY_FORM,
+        variables: {
+          form_id
+        }
+      });
+      console.log("Get Custom Active Application", data);
+      return resolve(data.getCustomFormApplicants);
+    } catch (error) {
+      console.log("Get Custom Active Application error", error);
+      reject(error);
+    }
+  });
+}
 
 const getApplicationHistoryFromDatabase = app_id => {
   return new Promise(async (resolve, reject) => {
@@ -299,6 +318,13 @@ export const requestGetApplications = vendor_id => {
     vendor_id: vendor_id
   };
 };
+
+export const requestGetCustomApplications = form_id => {
+  return {
+    type: actionType.REQUEST_GET_CUSTOM_APPLICATION,
+    form_id: form_id
+  }
+}
 
 export const requestAddApplication = applications => {
   return {
@@ -621,6 +647,21 @@ export function* getUserApplication({ email }) {
     yield put(setApplicationLoading(false));
     yield put({
       type: actionType.SET_USER_APPLICATIONS,
+      payload: []
+    });
+  }
+}
+
+export function* getCustomApplications({form_id}) {
+  try {
+    const response = yield call(getCustomApplicationsFromDatabase, form_id);
+    yield put({
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
+      payload: response
+    });
+  } catch (err) {
+    yield put({
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
       payload: []
     });
   }
