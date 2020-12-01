@@ -248,6 +248,120 @@ export const FORM_SUBMIT_APPLICATION = gql`
 
 //queries
 
+export const GET_CUSTOM_APPLICATION_BY_ID = gql`
+  query getCustomFormApplicantById($app_id:String){
+    getCustomFormApplicantById(app_id:$app_id){
+      id
+      vendor
+      form
+      app_id
+      application_date
+      archived_date
+      class_teacher
+      color_designation
+      verification
+      student_status
+      notes
+      form_contents {
+        formTitle
+        formData {
+          id
+          label
+          type
+          fields {
+            id
+            label
+            type
+            tag
+            placeholder
+            column
+            value
+            required
+            validation {
+              include
+              items {
+                error
+                errorField
+                option
+                type
+                value
+              }
+            }
+            options {
+              name
+              label
+              tag
+            }
+            columns {
+              label
+              value
+            }
+            rows {
+              row
+            }
+            min {
+              value
+              label
+            }
+            max {
+              value
+              label
+            }
+            scale {
+              min
+              max
+            }
+            scaleLabels {
+              left
+              center
+              right
+            }
+            items {
+              label
+              rank
+            }
+            limit
+            errorMessage
+            allowTypes {
+              label
+              ext
+              selected
+            }
+            isMultiple
+            requireAddOption
+            fixedWidth
+            file {
+              filename
+              extension
+              url
+              data
+            }
+          }
+          groupType
+          settings {
+            logic { 
+              include 
+              items
+            }
+            instruction { 
+              include
+              value 
+            }
+          }
+          isActive
+          allowAddField
+          gridMax
+          includeLogic
+          includeValidation
+          hasSettings
+          supportMultiple
+          showLabel
+        }
+      }
+    }
+  }
+`;
+
 export const GET_APPLICANTS_BY_FORM = gql`
   query getCustomFormApplicants($form_id:String){
     getCustomFormApplicants(form_id:$form_id){

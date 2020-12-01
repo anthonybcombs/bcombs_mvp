@@ -1021,7 +1021,12 @@ export const submitCustomApplication = async ({
 
 export const updateSubmitCustomApplication = async({
   app_id,
-  form_contents
+  form_contents,
+  class_teacher="",
+  color_designation="",
+  verification="",
+  student_status=0,
+  notes=""
 }) => {
   const db = makeDb();
   let result = {};
@@ -1030,9 +1035,19 @@ export const updateSubmitCustomApplication = async({
     result = await db.query(`
       UPDATE custom_application SET
       form_contents=?
+      class_teacher=?,
+      color_designation=?,
+      verification=?,
+      student_status=?,
+      notes=?
       WHERE app_id=UUID_TO_BIN(?)
     `, [
       form_contents,
+      class_teacher,
+      color_designation,
+      verification,
+      student_status,
+      notes,
       app_id
     ])
   } catch(err) {
@@ -1080,6 +1095,54 @@ export const getCustomFormApplicants = async({form_id, is_archived = 0}) => {
       console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
     }
+
+  } catch(err) {
+    console.log("get custom application by form id", err);
+  } finally {
+    await db.close();
+    return applications;
+  }
+}
+
+export const getCustomFormApplicantById = async({app_id, is_archived = 0}) => {
+  const db = makeDb();
+  let applications;
+  try {
+    
+    applications = await db.query(
+      `
+        SELECT
+        id,
+        BIN_TO_UUID(form) as form,
+        BIN_TO_UUID(vendor) as vendor,
+        BIN_TO_UUID(app_id) as app_id,
+        CONVERT(form_contents USING utf8) as form_contents,
+        application_date,
+        archived_date,
+        class_teacher,
+        color_designation,
+        verification,
+        student_status,
+        notes
+        FROM custom_application
+        WHERE form=UUID_TO_BIN(?) AND is_archived=?
+        ORDER BY application_date DESC
+      `,
+      [
+        app_id,
+        is_archived
+      ]
+    )
+
+    console.log("applications", applications);
+
+    for(const application of applications) {
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+      console.log("get custom application string", application);
+      application.form_contents = JSON.parse(application.form_contents);
+    }
+
+    applications = applications.length > 0 ? applications[0] : {};
 
   } catch(err) {
     console.log("get custom application by form id", err);

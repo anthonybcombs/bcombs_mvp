@@ -1278,6 +1278,7 @@ const mutations = `
         updateCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
         deleteCustomApplicationForm(application: CustomApplicationInput): Status
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
+        updateCustomApplication(application: SubmitCustomApplicationInput): Status
     }
 `;
 
@@ -1317,6 +1318,7 @@ const queries = `
         getVendorCustomApplicationForms(filter: CustomApplicationFormFilterInput): [CustomApplicationOutput]
         getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
         getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
+        getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
     }
 `;
 

@@ -82,7 +82,8 @@ import {
   getVendorCustomApplicationForms,
   submitCustomApplication,
   updateSubmitCustomApplication,
-  getCustomFormApplicants
+  getCustomFormApplicants,
+  getCustomFormApplicantById
 } from "../../api/applications";
 import { 
   addChild, 
@@ -345,9 +346,12 @@ const resolvers = {
       return forms;
     },
     async getCustomFormApplicants(root, { form_id }, context) {
-
       const applications = await getCustomFormApplicants({form_id: form_id});
       return applications;
+    },
+    async getCustomFormApplicantById(root, {app_id}, contenxt) {
+      const application = await getCustomFormApplicantById({app_id: app_id});
+      return application;
     }
   },
   RootMutation: {
@@ -1114,6 +1118,14 @@ const resolvers = {
         messageType: "info",
         message: "successfully submitted your application form"
       } 
+    },
+    async updateCustomApplication(root, {application}, context) {
+      await updateSubmitCustomApplication(application);
+
+      return {
+        messageType: "info",
+        message: "successfully update your application form",
+      }
     }
   }
 };
