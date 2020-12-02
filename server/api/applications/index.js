@@ -1034,7 +1034,7 @@ export const updateSubmitCustomApplication = async({
   try {
     result = await db.query(`
       UPDATE custom_application SET
-      form_contents=?
+      form_contents=?,
       class_teacher=?,
       color_designation=?,
       verification=?,
