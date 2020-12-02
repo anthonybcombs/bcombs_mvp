@@ -247,8 +247,8 @@ export const FORM_SUBMIT_APPLICATION = gql`
 `;
 
 export const FORM_UPDATE_SUBMIT_APPLICATION = gql`
-  mutation updateCustomApplication($application:UpdateCustomApplicationInput){
-    updateCustomApplication(application:$application){
+  mutation updateSubmitCustomApplication($application:UpdateCustomApplicationInput){
+    updateSubmitCustomApplication(application:$application){
       messageType
       message
     }

@@ -1289,7 +1289,7 @@ const mutations = `
         updateCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
         deleteCustomApplicationForm(application: CustomApplicationInput): Status
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
-        updateCustomApplication(application: UpdateCustomApplicationInput): Status
+        updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
     }
 `;
 
