@@ -642,6 +642,7 @@ const inputs = `
     input UpdateCustomApplicationInput {
         vendor: String!
         form: String!
+        app_id: String!
         form_contents: CustomFormInput
         class_teacher: String
         color_designation: String
