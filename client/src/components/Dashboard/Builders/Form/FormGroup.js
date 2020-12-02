@@ -8,7 +8,7 @@ import FieldConstructor from '../FormBuilder/FieldConstructor'
 import { Sources } from '../FormBuilder/Settings/Sources'
 
 export default ({ 
-  label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError, gridMax, showLabel, addresses, id: groupId, onCopyFirstAddress
+  label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError, gridMax, showLabel, addresses, id: groupId, onCopyFirstAddress, isReadOnly
 }) => {
   
   const isAddress = itemGroup === 'address'
@@ -96,6 +96,7 @@ export default ({
                     onBlur:  (e) => handleChange(e, field, true),
                     onCheckError,
                     errors,
+                    isReadOnly,
                     className: hasError ? 'hasError': ''
                   })
                 }

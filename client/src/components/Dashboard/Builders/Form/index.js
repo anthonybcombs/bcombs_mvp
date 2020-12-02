@@ -14,9 +14,13 @@ import Content from './Wizard/content'
 import Actions from './Wizard/actions'
 import ThankyouPage from './ThankyouPage'
 
-export default ({
-  form_id
-}) => {
+export default (props) => {
+  const {
+    form_id,
+    form_contents: application_form_contents
+  } = props
+
+  const isReadOnly = !form_id
 
   const { auth, loading, form: { selectedForm: { form_contents, vendor }, submitForm } } = useSelector(
     ({ auth, loading, form }) => {
@@ -45,7 +49,7 @@ export default ({
     return newObj
   }
 
-  let { formData = [], formTitle = '' } = form_contents || {}
+  let { formData = [], formTitle = '' } = (!isReadOnly ? form_contents : application_form_contents) || {}
   // TESTING
   // formData = FORM_DATA
   // TESTING
@@ -63,7 +67,7 @@ export default ({
       const newAddresses = formData.filter(e => e.type === 'address')
       setAddresses(newAddresses)
 
-      const fields = hasWizard ? groupFieldsByPageBreak(formData) : formData
+      const fields = (hasWizard && !isReadOnly) ? groupFieldsByPageBreak(formData) : formData
       setFormFields(fields)
       setForm(true)
     }
@@ -149,7 +153,14 @@ export default ({
         if (fieldId) {
           setTimeout(() => {
             const elmnt = document.getElementById(`group_${fieldId}`)
-            elmnt.scrollIntoView()
+            elmnt.style.background = '#ffe5d5'
+            setTimeout(() => {
+              elmnt.style.cssText = "color: transparent !important; transition: all 1s"
+            }, 100)
+            elmnt.scrollIntoView({
+              // behavior: 'smooth',
+              block: 'center'
+            })
           }, 100)
         }
       }
@@ -266,8 +277,8 @@ export default ({
   }
 
 
-  console.log('@fieldError', fieldError)
-  console.log('@actualFormFields', actualFormFields)
+  // console.log('@fieldError', fieldError)
+  // console.log('@actualFormFields', actualFormFields)
 
   return (
     <FormrStyled>
@@ -275,7 +286,7 @@ export default ({
         <div className='form-title'>
           {!loading.getForm ? formTitle : ''}
         </div>
-        <div className='form-content'>
+        <div className={`form-content ${isReadOnly ? 'read-only' : ''}`}>
           <> 
             {
               isSuccessfulSubmit ? (
@@ -295,6 +306,7 @@ export default ({
                           />
                           <Content
                             id={(actualFormFields[currentStep] || {}).id}
+                            isReadOnly={isReadOnly}
                             fields={(actualFormFields[currentStep] || {}).formFields || []}
                             currentStep={currentStep}
                             fieldError={fieldError}
@@ -308,6 +320,7 @@ export default ({
                       ) : (
                         <Content
                           id={'firstPage'}
+                          isReadOnly={isReadOnly}
                           fields={actualFormFields}
                           currentStep={currentStep}
                           fieldError={fieldError}
@@ -319,13 +332,17 @@ export default ({
                         />
                       )
                     }
-                    <Actions
-                      hasWizard={hasWizard}
-                      fields={actualFormFields}
-                      currentStep={currentStep}
-                      onSetStep={handleChangeStep}
-                      onSubmit={handleSubmit}
-                    />
+                    {
+                      !isReadOnly && (
+                        <Actions
+                          hasWizard={hasWizard}
+                          fields={actualFormFields}
+                          currentStep={currentStep}
+                          onSetStep={handleChangeStep}
+                          onSubmit={handleSubmit}
+                        />
+                      )
+                    }
                   </>
                 )
               )

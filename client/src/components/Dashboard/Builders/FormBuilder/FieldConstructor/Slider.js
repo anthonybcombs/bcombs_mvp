@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ scale, scaleLabels, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value }) => {
+export default ({ isReadOnly = false, scale, scaleLabels, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value }) => {
   const handleChangeValues = ({ target: { value: sliderValue } }, type, subType) => {
     const currentTypeData = type === 'scale' ? { ...scale } : { ...scaleLabels }
     onChangeFieldSettings({ [type]: { ...currentTypeData, [subType]: sliderValue } })
@@ -100,6 +100,7 @@ export default ({ scale, scaleLabels, onChangeFieldSettings, isBuilder, id: fiel
             <input
               style={{ width: '100%' }}
               type='range'
+              readOnly={isReadOnly}
               min={scale.min}
               max={scale.max}
               value={value || 0}

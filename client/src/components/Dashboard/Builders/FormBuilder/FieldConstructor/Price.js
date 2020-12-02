@@ -4,7 +4,7 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ showLabel, settings, label, fields, type, onChange, id: groupId, fieldError, onCheckError }) => {
+export default ({ isReadOnly = false, showLabel, settings, label, fields, type, onChange, id: groupId, fieldError, onCheckError }) => {
   const handleAnswer = ({ target: { id, value } }, isBlur = false) => {
     if (!isBlur) {
       const [whole, decimal = ''] = value.split('.')
@@ -66,6 +66,7 @@ export default ({ showLabel, settings, label, fields, type, onChange, id: groupI
                     ...field,
                     placeholder: `${placeholder} ${required ? '*' : ''}`,
                     onChange: handleAnswer,
+                    isReadOnly,
                     onBlur: (e) => handleAnswer(e, true),
                     type: tag !== 'icon' ? 'number' : type,
                     className: hasError ? 'hasError': ''

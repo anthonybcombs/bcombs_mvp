@@ -33,6 +33,10 @@ export default styled.div`
     border-radius: 2px;
     box-shadow: 0 3px 6px #ddd;
   }
+
+  #form .form-content.read-only {
+    max-width: unset;
+  }
   #form > div {
     // padding: 1rem;
     // background-color: white;

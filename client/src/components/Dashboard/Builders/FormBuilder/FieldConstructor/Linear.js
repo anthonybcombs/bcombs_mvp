@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default ({ min, max, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value }) => {
+export default ({ isReadOnly = false, min, max, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value }) => {
   const handleChangeValues = ({ target: { value } }, type, subType) => {
     const currentTypeData = type === 'min' ? { ...min } : { ...max }
     onChangeFieldSettings({ [type]: { ...currentTypeData, [subType]: value } })
@@ -89,6 +89,7 @@ export default ({ min, max, onChangeFieldSettings, isBuilder, id: fieldId, onCha
                             id={`radio_${minValue + i}`}
                             type='radio'
                             value={minValue + i}
+                            readOnly={isReadOnly}
                             checked={value === (minValue + i)}
                             onChange={e => handleAnswer(e)}
                           />

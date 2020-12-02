@@ -31,7 +31,8 @@ import {
   requestUpdateApplication,
   requestSaveApplication,
   requestGetApplicationHistory,
-  requestGetCustomApplications
+  requestGetCustomApplications,
+  requestGetCustomFormApplicantById
 } from "../../../redux/actions/Application";
 import { requestGetForms } from '../../../redux/actions/FormBuilder'
 import { requestUserGroup } from "../../../redux/actions/Groups";
@@ -41,6 +42,8 @@ import ProfileImg from "../../../images/defaultprofile.png";
 import { format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
 import { parse } from "query-string";
+
+import Form from '../../Dashboard/Builders/Form'
 
 const ApplicationFormStyled = styled.form`
   @media all {
@@ -465,6 +468,12 @@ export default function index() {
   }, []);
 
   useEffect(() => {
+    if (applications.selectedbuilderapplication) {
+      setSelectedApplication(applications.selectedbuilderapplication)
+    }
+  }, [applications.selectedbuilderapplication])
+
+  useEffect(() => {
     console.log('Vendorssss', vendors)
     if (vendors && vendors.length > 0 && vendors[0].id) {
 
@@ -517,6 +526,11 @@ export default function index() {
   };
 
   const handleSelectedApplication = (application, view) => {
+    if (view === 'builderForm') {
+      setView(view)
+      dispatch(requestGetCustomFormApplicantById(application.form))
+      return
+    }
     setSelectedApplication(application);
     setSelectNonMenuOption(true);
     setView(view);
@@ -901,6 +915,12 @@ export default function index() {
   };
 
   const onSubmit = () => {
+    if (view === 'builderForm' && selectedApplication) {
+      newUpdateApplication = {
+        ...selectedApplication,
+        ...updateApplication
+      }
+    }
     dispatch(requestUpdateApplication(updateApplication));
   };
 
@@ -1607,7 +1627,7 @@ export default function index() {
           </div>
         </div>
         <div>
-          {selectedLabel === "Application Status" && !selectNonMenuOption && (
+          {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
             <ApplicationSummaryStyled
               appGroups={selectedVendor.app_groups}
               applications={applications.activeapplications}
@@ -1620,7 +1640,7 @@ export default function index() {
               formSettingsLoading={loading.form_settings}
             />
           )}
-          {selectNonMenuOption && view == "application" && (
+          {(selectNonMenuOption && view == "application" || view === 'builderForm') && (
             <EditApplicationStyled
               application={selectedApplication}
               vendor={selectedVendor}
@@ -1632,15 +1652,22 @@ export default function index() {
           )}
         </div>
       </div>
-      {selectedLabel === "Application Status" && !selectNonMenuOption && (
+      {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
         <ApplicationListStyled
           applications={applications.activeapplications}
-          handleSelectedApplication={handleSelectedApplication}
+          handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" ? viewType : 'builderForm')}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
           appGroups={selectedVendor.app_groups}
         />
       )}
+      {
+        view === 'builderForm' && (
+          <Form
+            { ...selectedApplication }
+          />
+        )
+      }
       {
         showApplication && view == "application" && (
           <div>

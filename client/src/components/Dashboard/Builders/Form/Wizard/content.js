@@ -3,7 +3,7 @@ import React from 'react'
 import FormGroup from '../FormGroup'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ fields, fieldError, id: pageId, addresses, onChange, onCheckError, onCopyFirstAddress }) => {
+export default ({ isReadOnly, fields, fieldError, id: pageId, addresses, onChange, onCheckError, onCopyFirstAddress }) => {
 
   const handleChange = (id, answers, bool) => {
     if (bool) {
@@ -29,6 +29,7 @@ export default ({ fields, fieldError, id: pageId, addresses, onChange, onCheckEr
               ...fieldProps,
               fields: fieldProps.fields.map(e => ({ ...e, value: e.value ? JSON.parse(e.value) : '' })),
               onChange: handleChange,
+              isReadOnly: isReadOnly,
               fieldError,
               onCheckError
             }) : (
@@ -38,6 +39,7 @@ export default ({ fields, fieldError, id: pageId, addresses, onChange, onCheckEr
               index={index}
               addresses={addresses}
               fieldError={fieldError}
+              isReadOnly={isReadOnly}
 
               onCopyFirstAddress={onCopyFirstAddress}
               onChange={onChange}

@@ -14,9 +14,9 @@ import {
   GET_APPLICATION_USER_ID_QUERY,
   GET_APPLICATION_HISTORY,
   GET_USER_APPLICATION_HISTORY,
-  DAYCARE_APPLICATION_ADD_MUTATION,
+  DAYCARE_APPLICATION_ADD_MUTATION
 } from "../../graphql/applicationMutation";
-import { GET_APPLICANTS_BY_FORM } from "../../graphql/FormQueryMutation";
+import { GET_APPLICANTS_BY_FORM, GET_CUSTOM_APPLICATION_BY_ID } from "../../graphql/FormQueryMutation";
 import * as actionType from "./Constant";
 import { setApplicationLoading, setUserApplicationLoading } from "./Loading";
 
@@ -33,6 +33,25 @@ const getCustomApplicationsFromDatabase = form_id => {
       return resolve(data.getCustomFormApplicants);
     } catch (error) {
       console.log("Get Custom Active Application error", error);
+      reject(error);
+    }
+  });
+}
+
+const getCustomApplicationByIdFromDatabase = app_id => {
+  console.log('app_id', app_id)
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: GET_CUSTOM_APPLICATION_BY_ID,
+        variables: {
+          app_id
+        }
+      });
+      console.log("Get Custom Active Application by id", data);
+      return resolve(data.getCustomFormApplicantById);
+    } catch (error) {
+      console.log("Get Custom Active Application by id error", error);
       reject(error);
     }
   });
@@ -323,6 +342,13 @@ export const requestGetCustomApplications = form_id => {
   return {
     type: actionType.REQUEST_GET_CUSTOM_APPLICATION,
     form_id: form_id
+  }
+}
+
+export const requestGetCustomFormApplicantById = application_id => {
+  return {
+    type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID,
+    application_id
   }
 }
 
@@ -662,6 +688,21 @@ export function* getCustomApplications({form_id}) {
   } catch (err) {
     yield put({
       type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
+      payload: []
+    });
+  }
+}
+
+export function* getCustomApplicationById({application_id}) {
+  try {
+    const response = yield call(getCustomApplicationByIdFromDatabase, application_id);
+    yield put({
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID_COMPLETED,
+      payload: response
+    });
+  } catch (err) {
+    yield put({
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID_COMPLETED,
       payload: []
     });
   }

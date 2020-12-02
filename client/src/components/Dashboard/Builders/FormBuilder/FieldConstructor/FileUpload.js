@@ -20,7 +20,7 @@ const getExtensionIcon = (ext) => {
   }
 }
 
-export default ({ allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings, isBuilder, onChange, onCheckError, errors, value }) => {
+export default ({ isReadOnly = false, allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings, isBuilder, onChange, onCheckError, errors, value }) => {
   const handleChangeValues = ({ target: { value: fileValue } }, type) => {
     onChangeFieldSettings({ [type]: fileValue })
   }
@@ -115,22 +115,25 @@ export default ({ allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSet
               <FontAwesomeIcon
                 icon={faTimes}
                 className='close-icon'
-                onClick={() => onChange({ target: { id: fieldId, value: '' } })}
+                onClick={() => !isReadOnly ? onChange({ target: { id: fieldId, value: '' } }) : {}}
               />
             </div>
           ) : (
             <div
               className='uploadForm'
               onClick={() => {
-                document.getElementById(`file${fieldId}`).click()
+                if (!isReadOnly) {
+                  document.getElementById(`file${fieldId}`).click()
+                }
               }}
             >
               <input
                 type='file'
                 id={`file${fieldId}`}
                 name='file'
+                readOnly={isReadOnly}
                 onClick={e => e.stopPropagation()}
-                onChange={(e) => encodeImageFileAsURL(e.target.files[0])}
+                onChange={(e) => !isReadOnly ? encodeImageFileAsURL(e.target.files[0]) : {}}
               />
             </div>
           )

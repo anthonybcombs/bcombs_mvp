@@ -32,7 +32,7 @@ const selectMappings = {
 }
 
 export default {
-  input: ({ className = '', onChange = () => {}, value = '', id = '', placeholder = '', onBlur = () => {}, isBuilder,type }) => {
+  input: ({ className = '', onChange = () => {}, value = '', id = '', placeholder = '', onBlur = () => {}, isBuilder, type, key, isReadOnly = false }) => {
     let specialProp = {}
     if (!isBuilder && type === 'password') {
       specialProp = { type: 'password' }
@@ -40,6 +40,8 @@ export default {
     return (
       <input
         {...specialProp}
+        key={key}
+        readOnly={isReadOnly}
         className={`field-input ${className}`}
         id={id}
         value={value}
@@ -49,11 +51,15 @@ export default {
       />
     )
   },
-  icon: ({ type, label }) => {
+  icon: ({ type, label, isReadOnly = false }) => {
+    if (isReadOnly) {
+      return null
+    }
     switch(type) {
       case 'date':
         return (
           <FontAwesomeIcon
+            key={type}
             className='date-icon'
             icon={faCalendarDay}
           />
@@ -61,6 +67,7 @@ export default {
       case 'time': 
         return (
           <FontAwesomeIcon
+            key={type}
             className='time-icon'
             icon={faClock}
           />
@@ -68,6 +75,7 @@ export default {
       case 'currency': 
         return (
           <FontAwesomeIcon
+            key={type}
             className='price-icon'
             icon={faDollarSign}
           />
@@ -76,20 +84,22 @@ export default {
         return <span>{label}</span>
     }
   },
-  textarea: ({ className = '', onChange = () => {}, value = '', id = '', placeholder = '' }) => {
+  textarea: ({ className = '', onChange = () => {}, value = '', id = '', placeholder = '', isReadOnly = false }) => {
     return <textarea
       className={`field-input ${className}`}
       id={id}
+      readOnly={isReadOnly}
       value={value}
       placeholder={placeholder}
       onChange={onChange}
     />
   },
-  checkbox: ({ label, name, isBuilder, onChange }) => {
+  checkbox: ({ label, name, isBuilder, onChange, isReadOnly = false }) => {
     return (
       <label htmlFor={name} className='checkboxContainer'>
         <input
           type='checkbox'
+          readOnly={isReadOnly}
           onChange={onChange}
           disabled={isBuilder}
         />
@@ -113,12 +123,13 @@ export default {
   multipleChoice: (props) => {
     return <MultipleChoice {...props} />
   },
-  radio: ({ label, name, isBuilder, onChange }) => {
+  radio: ({ label, name, isBuilder, onChange, isReadOnly = false }) => {
     return (
       <>
         <div className='radiobuttonContainer'>
           <input
             type='radio'
+            readOnly={isReadOnly}
             onChange={onChange}
             disabled={isBuilder}
           />
@@ -159,7 +170,7 @@ export default {
     //   </div>
     // )
   },
-  select: ({ options, type, className = '', isBuilder = false, onChange = () => {}, value = '', id = '', placeholder = '' }) => {
+  select: ({ options, type, className = '', isBuilder = false, onChange = () => {}, value = '', id = '', placeholder = '', isReadOnly = false }) => {
     return (
       isBuilder
         ? (<div className='field select-field-wrapper'>
@@ -176,9 +187,10 @@ export default {
             <select
               className={`field-input ${className}`}
               id={id}
+              readOnly={isReadOnly}
               value={value}
               placeholder={placeholder}
-              onChange={onChange}
+              onChange={!isReadOnly ? onChange : () => {}}
               style={{ opacity: 1 }}
             >
               <option value=''>{placeholder}</option>
