@@ -1125,8 +1125,7 @@ export const getCustomFormApplicantById = async({app_id, is_archived = 0}) => {
         student_status,
         notes
         FROM custom_application
-        WHERE form=UUID_TO_BIN(?) AND is_archived=?
-        ORDER BY application_date DESC
+        WHERE app_id=UUID_TO_BIN(?) AND is_archived=?
       `,
       [
         app_id,
