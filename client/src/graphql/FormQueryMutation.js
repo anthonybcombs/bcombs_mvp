@@ -246,6 +246,15 @@ export const FORM_SUBMIT_APPLICATION = gql`
   }
 `;
 
+export const FORM_UPDATE_SUBMIT_APPLICATION = gql`
+  mutation updateCustomApplication($application:UpdateCustomApplicationInput){
+    updateCustomApplication(application:$application){
+      messageType
+      message
+    }
+  }
+`;
+
 //queries
 
 export const GET_CUSTOM_APPLICATION_BY_ID = gql`
