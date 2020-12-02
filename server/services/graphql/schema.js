@@ -639,6 +639,17 @@ const inputs = `
         form_contents: CustomFormInput
     }
 
+    input UpdateCustomApplicationInput {
+        vendor: String!
+        form: String!
+        form_contents: CustomFormInput
+        class_teacher: String
+        color_designation: String
+        verification: String
+        student_status: Int
+        notes: String
+    }
+
     input CustomApplicationFormFilterInput {
         vendor: String!
         categories: [String]
@@ -1278,7 +1289,7 @@ const mutations = `
         updateCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
         deleteCustomApplicationForm(application: CustomApplicationInput): Status
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
-        updateCustomApplication(application: SubmitCustomApplicationInput): Status
+        updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
     }
 `;
 

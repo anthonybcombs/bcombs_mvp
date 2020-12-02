@@ -1119,7 +1119,7 @@ const resolvers = {
         message: "successfully submitted your application form"
       } 
     },
-    async updateCustomApplication(root, {application}, context) {
+    async updateSubmitCustomApplication(root, {application}, context) {
       await updateSubmitCustomApplication(application);
 
       return {
