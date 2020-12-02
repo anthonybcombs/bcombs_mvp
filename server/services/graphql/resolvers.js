@@ -1120,6 +1120,10 @@ const resolvers = {
       } 
     },
     async updateSubmitCustomApplication(root, {application}, context) {
+
+      let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
+      application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+      
       await updateSubmitCustomApplication(application);
 
       return {

@@ -353,7 +353,7 @@ const inputs = `
         section3_signature: String!
         section3_date_signed: Date!
         verification: String
-        student_status: Int
+        student_status: String
         color_designation: String
         notes: String
         emergency_contacts: String
@@ -383,7 +383,7 @@ const inputs = `
         section3_signature: String!
         section3_date_signed: Date!
         verification: String
-        student_status: Int
+        student_status: String
         color_designation: String
         notes: String
         emergency_contacts: String
@@ -646,7 +646,7 @@ const inputs = `
         class_teacher: String
         color_designation: String
         verification: String
-        student_status: Int
+        student_status: String
         notes: String
     }
 
@@ -1107,7 +1107,7 @@ const queryTypes = `
         class_teacher: String
         color_designation: String
         verification: String
-        student_status: Int
+        student_status: String
         notes: String
     }
 

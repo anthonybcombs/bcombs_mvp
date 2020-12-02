@@ -1024,8 +1024,8 @@ export const updateSubmitCustomApplication = async({
   form_contents,
   class_teacher="",
   color_designation="",
-  verification="",
-  student_status=0,
+  verification = "",
+  student_status = "",
   notes=""
 }) => {
   const db = makeDb();
