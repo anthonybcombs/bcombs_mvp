@@ -7,6 +7,26 @@ export default styled.div`
   background: #fffefe;
   min-height: calc(100vh - 3rem);
 
+  .print-button {
+    top: 13px;
+  }
+
+  .edit-button {
+    border: 0;
+    position: absolute;
+    right: 80px;
+    cursor: pointer;
+    font-size: 2em;
+    color: #f26e21;
+    background: none;
+    z-index: 2;
+    top: 60px;
+  }
+
+  .edit-button.activeEdit {
+    color: #599600;
+  }
+
   #form {
     min-height: 100vh;
     background-position: center;

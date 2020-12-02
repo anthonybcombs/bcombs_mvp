@@ -629,18 +629,18 @@ export default function index({
           item.child?.lastname
             .toLowerCase()
             .includes(filterText.toLowerCase())) ||
-        (item.parents[0]?.firstname &&
-          item.parents[0]?.firstname
+        (item.parents && item.parents[0]?.firstname &&
+          item?.parents[0]?.firstname
             .toLowerCase()
             .includes(filterText.toLowerCase())) ||
-        (item.parents[0]?.lastname &&
-          item.parents[0]?.lastname
+        (item.parents && item.parents[0]?.lastname &&
+          item?.parents[0]?.lastname
             .toLowerCase()
             .includes(filterText.toLowerCase()));
     }
 
     if (classText) {
-      class_match = item.child.grade_desc == classText;
+      class_match = item?.child?.grade_desc == classText;
     }
 
     if (colorText) {

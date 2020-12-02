@@ -94,7 +94,8 @@ import {
   getFormById,
   updateForm,
   deleteForm,
-  submitForm
+  submitForm,
+  updateSubmittedForm
 } from "../actions/FormBuilder";
 
 import reducer from "../reducers";
@@ -251,6 +252,11 @@ function* rootSaga() {
   yield takeLatest(
     actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID,
     getCustomApplicationById
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_UPDATE_SUBMITTED_FORM,
+    updateSubmittedForm
   );
 }
 const sagaMiddleware = createSagaMiddleware();

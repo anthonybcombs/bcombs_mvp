@@ -680,12 +680,15 @@ export function* getUserApplication({ email }) {
 
 export function* getCustomApplications({form_id}) {
   try {
+    yield put(setApplicationLoading(true));
     const response = yield call(getCustomApplicationsFromDatabase, form_id);
+    yield put(setApplicationLoading(false));
     yield put({
       type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
       payload: response
     });
   } catch (err) {
+    yield put(setApplicationLoading(false));
     yield put({
       type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
       payload: []

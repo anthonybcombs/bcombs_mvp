@@ -34,7 +34,7 @@ import {
   requestGetCustomApplications,
   requestGetCustomFormApplicantById
 } from "../../../redux/actions/Application";
-import { requestGetForms } from '../../../redux/actions/FormBuilder'
+import { requestGetForms, requestUpdateSubmittedForm } from '../../../redux/actions/FormBuilder'
 import { requestUserGroup } from "../../../redux/actions/Groups";
 import Loading from "../../../helpers/Loading.js";
 import ProfileImg from "../../../images/defaultprofile.png";
@@ -399,7 +399,7 @@ export default function index() {
 
   const [selectedVendor, setSelectedVendor] = useState({});
 
-  const [selectedForm, setSelectedForm] = useState("default");
+  const [selectedForm, setSelectedForm] = useState("default")
 
   const dispatch = useDispatch();
 
@@ -431,13 +431,17 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
-  const { groups, auth, vendors, applications, loading, form: {formList = []} } = useSelector(
+  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm } } = useSelector(
     ({ groups, auth, vendors, applications, loading, form }) => {
       return { groups, auth, vendors, applications, loading, form };
     }
   );
 
   console.log("form 123", formList);
+
+  if (updateSubmittedForm.message === 'successfully update your application form') {
+    window.location.reload()
+  }
 
   if (
     applications.updateapplication &&
@@ -528,7 +532,8 @@ export default function index() {
   const handleSelectedApplication = (application, view) => {
     if (view === 'builderForm') {
       setView(view)
-      dispatch(requestGetCustomFormApplicantById(application.form))
+      setSelectedApplication(application)
+      // dispatch(requestGetCustomFormApplicantById(application.app_id))
       return
     }
     setSelectedApplication(application);
@@ -916,10 +921,17 @@ export default function index() {
 
   const onSubmit = () => {
     if (view === 'builderForm' && selectedApplication) {
-      newUpdateApplication = {
-        ...selectedApplication,
-        ...updateApplication
-      }
+      dispatch(requestUpdateSubmittedForm({
+        vendor: selectedApplication.vendor,
+        form: selectedApplication.form,
+        app_id: selectedApplication.app_id,
+        form_contents: selectedApplication.form_contents,
+        class_teacher: updateApplication.class_teacher,
+        color_designation: updateApplication.color_designation,
+        verification: updateApplication.verification,
+        student_status: updateApplication.student_status,
+        notes: updateApplication.notes
+      }))
     }
     dispatch(requestUpdateApplication(updateApplication));
   };
@@ -1541,6 +1553,10 @@ export default function index() {
                     dispatch(requestGetApplications(selectedVendor.id));
                   } else {
                     setSelectedForm(target.value);
+                    if (view === 'builderForm') {
+                      setView('')
+                      setSelectedApplication({})
+                    }
                     dispatch(requestGetCustomApplications(target.value));
                   }
                 }}
@@ -1665,6 +1681,12 @@ export default function index() {
         view === 'builderForm' && (
           <Form
             { ...selectedApplication }
+            isReadOnly={isReadonly}
+            onChangeToEdit={handleChangeToEdit}
+            onGetUpdatedApplication={(form_contents) => setSelectedApplication({
+              ...selectedApplication,
+              form_contents
+            })}
           />
         )
       }
@@ -1698,7 +1720,7 @@ export default function index() {
           <FontAwesomeIcon icon={faPrint} />
         </button>
       )}
-      {loading.application ? (
+      {(loading.application) ? (
         <Loading />
       ) : (
         <>

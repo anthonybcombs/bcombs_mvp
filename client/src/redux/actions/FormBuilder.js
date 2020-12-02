@@ -7,7 +7,8 @@ import {
   GET_FORM_BY_FORM_ID,
   GET_FORMS_BY_VENDOR,
   FORM_DELETE_MUTATION,
-  FORM_SUBMIT_APPLICATION
+  FORM_SUBMIT_APPLICATION,
+  FORM_UPDATE_SUBMIT_APPLICATION
 } from '../../graphql/FormQueryMutation'
 import {
   setAddFormLoading,
@@ -74,6 +75,21 @@ const updateFormToDatabase = application => {
   })
 }
 
+const updateSubmittedFormToDatabase = application => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: FORM_UPDATE_SUBMIT_APPLICATION,
+        variables: { application }
+      })
+
+      return resolve(data.updateSubmitCustomApplication)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 const deleteFormFromDatabase = form_id => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -128,6 +144,12 @@ export const requestUpdateForm = form => {
   return {
     type: actionType.REQUEST_UPDATE_FORM,
     form
+  }
+}
+export const requestUpdateSubmittedForm = application => {
+  return {
+    type: actionType.REQUEST_UPDATE_SUBMITTED_FORM,
+    application
   }
 }
 export const requestDeleteForm = form_id => {
@@ -233,6 +255,23 @@ export function* updateForm({ form }) {
     yield put(setUpdateFormLoading(false))
     yield put({
       type: actionType.REQUEST_UPDATE_FORM_COMPLETED,
+      payload: {}
+    })
+  }
+}
+
+export function* updateSubmittedForm({ application }) {
+  console.log('@UPDATE APPLICATION', application)
+  try {
+    const response = yield call(updateSubmittedFormToDatabase, application)
+    yield put({
+      type: actionType.REQUEST_UPDATE_SUBMITTED_FORM_COMPLETED,
+      payload: response
+    })
+  } catch (err) {
+    yield put(setUpdateFormLoading(false))
+    yield put({
+      type: actionType.REQUEST_UPDATE_SUBMITTED_FORM_COMPLETED,
       payload: {}
     })
   }
