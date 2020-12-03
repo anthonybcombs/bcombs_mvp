@@ -649,6 +649,7 @@ const inputs = `
         verification: String
         student_status: String
         notes: String
+        updated_by: String
     }
 
     input CustomApplicationFormFilterInput {
