@@ -262,7 +262,7 @@ export const GET_CUSTOM_APPLICATION_HISTORY = gql`
     getCustomApplicationHistoryById(app_id: $app_id) {
       id
       app_history_id
-      customn_app_id
+      custom_app_id
       details
       updated_by
       updated_at
