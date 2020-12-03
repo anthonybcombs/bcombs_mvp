@@ -1126,7 +1126,7 @@ const resolvers = {
     },
     async updateSubmitCustomApplication(root, {application}, context) {
 
-      const previousApplication = await getCustomFormApplicantById({app_id: app_id});
+      const previousApplication = await getCustomFormApplicantById({app_id: application.app_id});
 
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
