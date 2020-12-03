@@ -257,6 +257,19 @@ export const FORM_UPDATE_SUBMIT_APPLICATION = gql`
 
 //queries
 
+export const GET_CUSTOM_APPLICATION_HISTORY = gql`
+  query getCustomApplicationHistoryById($app_id: String!) {
+    getCustomApplicationHistoryById(app_id: $app_id) {
+      id
+      app_history_id
+      customn_app_id
+      details
+      updated_by
+      updated_at
+    }
+  }
+`;
+
 export const GET_CUSTOM_APPLICATION_BY_ID = gql`
   query getCustomFormApplicantById($app_id:String){
     getCustomFormApplicantById(app_id:$app_id){

@@ -1038,7 +1038,8 @@ const queryTypes = `
     type ApplicationHistory{
         id: Int
         app_history_id: String!
-        app_id: String!
+        app_id: String
+        custom_app_id: String
         details: String
         updated_by: String
         updated_at: Date
@@ -1331,6 +1332,7 @@ const queries = `
         getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
         getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
         getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
+        getCustomApplicationHistoryById:(app_id: String!): [ApplicationHistory]
     }
 `;
 

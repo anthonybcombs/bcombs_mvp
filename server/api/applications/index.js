@@ -557,8 +557,37 @@ export const getApplicationHistoryById = async app_id => {
   }
 };
 
+export const getCustomApplicationHistoryById = async custom_app_id => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = db.query(
+      `
+      SELECT 
+        id,
+        BIN_TO_UUID(app_history_id) as app_history_id,
+        BIN_TO_UUID(custom_app_id) as custom_app_id,
+        details,
+        updated_at,
+        updated_by
+      FROM application_history
+      WHERE custom_app_id=UUID_TO_BIN(?)
+      ORDER BY id DESC
+    `,
+      [custom_app_id]
+    );
+  } catch (error) {
+    console.log("get application by id", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+};
+
 export const addApplicationHistory = async ({
-  app_id,
+  app_id = "",
+  custom_app_id = "",
   details,
   updated_by
 }) => {
@@ -571,15 +600,17 @@ export const addApplicationHistory = async ({
     INSERT INTO application_history(
       app_history_id,
       app_id,
+      custom_app_id,
       details,
       updated_by
     ) VALUES (
       UUID_TO_BIN(UUID()),
       UUID_TO_BIN(?),
+      UUID_TO_BIN(?),
       ?, ?
     )
     `,
-      [app_id, details, updated_by]
+      [app_id, custom_app_id, details, updated_by]
     );
   } catch (error) {
     console.log("add application history", error);

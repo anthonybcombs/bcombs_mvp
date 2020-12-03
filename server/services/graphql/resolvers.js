@@ -83,7 +83,8 @@ import {
   submitCustomApplication,
   updateSubmitCustomApplication,
   getCustomFormApplicants,
-  getCustomFormApplicantById
+  getCustomFormApplicantById,
+  getCustomApplicationHistoryById
 } from "../../api/applications";
 import { 
   addChild, 
@@ -293,6 +294,10 @@ const resolvers = {
     },
     async getApplicationHistory(root, { app_id }, context) {
       const response = await getApplicationHistoryById(app_id);
+      return response;
+    },
+    async getCustomApplicationHistoryById(root, { app_id }, context) {
+      const response = await getCustomApplicationHistoryById(app_id);
       return response;
     },
     async getUserApplicationHistory(root, { id }, context) {
@@ -1121,10 +1126,20 @@ const resolvers = {
     },
     async updateSubmitCustomApplication(root, {application}, context) {
 
+      const previousApplication = await getCustomFormApplicantById({app_id: app_id});
+
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
       
       await updateSubmitCustomApplication(application);
+
+      const params = {
+        custom_app_id: application.app_id,
+        details: JSON.stringify(previousApplication),
+        updated_by: application.updated_by
+      }
+
+      addApplicationHistory(params)
 
       return {
         messageType: "info",
