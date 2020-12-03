@@ -594,24 +594,42 @@ export const addApplicationHistory = async ({
   const db = makeDb();
   let result;
 
+
   try {
-    result = await db.query(
-      `
-    INSERT INTO application_history(
-      app_history_id,
-      app_id,
-      custom_app_id,
-      details,
-      updated_by
-    ) VALUES (
-      UUID_TO_BIN(UUID()),
-      UUID_TO_BIN(?),
-      UUID_TO_BIN(?),
-      ?, ?
-    )
-    `,
-      [app_id, custom_app_id, details, updated_by]
-    );
+
+    if(app_id) {
+      result = await db.query(
+        `
+          INSERT INTO application_history(
+            app_history_id,
+            app_id,
+            details,
+            updated_by
+          ) VALUES (
+            UUID_TO_BIN(UUID()),
+            UUID_TO_BIN(?),
+            ?, ?
+          )
+       `,
+        [app_id, details, updated_by]
+      );
+    } else {
+      result = await db.query(
+        `
+          INSERT INTO application_history(
+            app_history_id,
+            custom_app_id,
+            details,
+            updated_by
+          ) VALUES (
+            UUID_TO_BIN(UUID()),
+            UUID_TO_BIN(?),
+            ?, ?
+          )
+       `,
+        [custom_app_id, details, updated_by]
+      );
+    }
   } catch (error) {
     console.log("add application history", error);
   } finally {
