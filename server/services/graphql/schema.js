@@ -1332,7 +1332,7 @@ const queries = `
         getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
         getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
         getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
-        getCustomApplicationHistoryById:(app_id: String!): [ApplicationHistory]
+        getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
     }
 `;
 
