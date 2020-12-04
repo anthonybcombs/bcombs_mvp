@@ -8,7 +8,8 @@ import {
   GET_FORMS_BY_VENDOR,
   FORM_DELETE_MUTATION,
   FORM_SUBMIT_APPLICATION,
-  FORM_UPDATE_SUBMIT_APPLICATION
+  FORM_UPDATE_SUBMIT_APPLICATION,
+  GET_CUSTOM_APPLICATION_HISTORY
 } from '../../graphql/FormQueryMutation'
 import {
   setAddFormLoading,
@@ -90,6 +91,20 @@ const updateSubmittedFormToDatabase = application => {
   })
 }
 
+const getCustomApplicationHistoryFromDatabase = app_id => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: GET_CUSTOM_APPLICATION_HISTORY,
+        variables: { app_id }
+      })
+      return resolve(data.getCustomApplicationHistoryById)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 const deleteFormFromDatabase = form_id => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -150,6 +165,12 @@ export const requestUpdateSubmittedForm = application => {
   return {
     type: actionType.REQUEST_UPDATE_SUBMITTED_FORM,
     application
+  }
+}
+export const requestGetCustomApplicationHistory = app_id => {
+  return {
+    type: actionType.REQUEST_CUSTOM_APPLICATION_HISTORY,
+    app_id
   }
 }
 export const requestDeleteForm = form_id => {
@@ -263,7 +284,9 @@ export function* updateForm({ form }) {
 export function* updateSubmittedForm({ application }) {
   console.log('@UPDATE APPLICATION', application)
   try {
+    yield put(setUpdateFormLoading(true))
     const response = yield call(updateSubmittedFormToDatabase, application)
+    yield put(setUpdateFormLoading(false))
     yield put({
       type: actionType.REQUEST_UPDATE_SUBMITTED_FORM_COMPLETED,
       payload: response
@@ -273,6 +296,22 @@ export function* updateSubmittedForm({ application }) {
     yield put({
       type: actionType.REQUEST_UPDATE_SUBMITTED_FORM_COMPLETED,
       payload: {}
+    })
+  }
+}
+
+export function* getCustomApplicationHistory({ app_id }) {
+  console.log('@GET CUSTOM APPLICATION HISTORY', app_id)
+  try {
+    const response = yield call(getCustomApplicationHistoryFromDatabase, app_id)
+    yield put({
+      type: actionType.REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED,
+      payload: response
+    })
+  } catch (err) {
+    yield put({
+      type: actionType.REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED,
+      payload: []
     })
   }
 }

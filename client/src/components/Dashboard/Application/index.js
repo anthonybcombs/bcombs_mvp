@@ -34,7 +34,7 @@ import {
   requestGetCustomApplications,
   requestGetCustomFormApplicantById
 } from "../../../redux/actions/Application";
-import { requestGetForms, requestUpdateSubmittedForm } from '../../../redux/actions/FormBuilder'
+import { requestGetForms, requestUpdateSubmittedForm, requestGetCustomApplicationHistory } from '../../../redux/actions/FormBuilder'
 import { requestUserGroup } from "../../../redux/actions/Groups";
 import Loading from "../../../helpers/Loading.js";
 import ProfileImg from "../../../images/defaultprofile.png";
@@ -389,6 +389,8 @@ export default function index() {
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
+  const [selectedCustomFormHistory, setSelectedCustomFormHistory] = useState({});
+
   const [emergencyContacts, setEmergencyContacts] = useState([]);
 
   const [showApplication, setShowApplication] = useState(false);
@@ -431,7 +433,7 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
-  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm } } = useSelector(
+  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm, customApplicationHistory } } = useSelector(
     ({ groups, auth, vendors, applications, loading, form }) => {
       return { groups, auth, vendors, applications, loading, form };
     }
@@ -534,6 +536,8 @@ export default function index() {
       setView(view)
       setSelectedApplication(application)
       // dispatch(requestGetCustomFormApplicantById(application.app_id))
+      setShowApplication(true);
+      dispatch(requestGetCustomApplicationHistory(application.app_id))
       return
     }
     setSelectedApplication(application);
@@ -922,15 +926,16 @@ export default function index() {
   const onSubmit = () => {
     if (view === 'builderForm' && selectedApplication) {
       dispatch(requestUpdateSubmittedForm({
+        updated_by: auth.email,
         vendor: selectedApplication.vendor,
         form: selectedApplication.form,
         app_id: selectedApplication.app_id,
         form_contents: selectedApplication.form_contents,
-        class_teacher: updateApplication.class_teacher,
-        color_designation: updateApplication.color_designation,
-        verification: updateApplication.verification,
-        student_status: updateApplication.student_status,
-        notes: updateApplication.notes
+        class_teacher: updateApplication.class_teacher || selectedApplication?.class_teacher,
+        color_designation: updateApplication.color_designation || selectedApplication?.color_designation,
+        verification: updateApplication.verification || selectedApplication?.verification,
+        student_status: updateApplication.student_status || selectedApplication?.student_status,
+        notes: updateApplication.notes || selectedApplication?.notes
       }))
     }
     dispatch(requestUpdateApplication(updateApplication));
@@ -1174,6 +1179,28 @@ export default function index() {
   }
 
   const createHistoryViewButton = (row) => {
+    if (view === 'builderForm') {
+      const detailsObj = row.details ? JSON.parse(row.details) : {}
+      row = {
+        ...row,
+        ...detailsObj
+      }
+
+      return (
+        <a 
+          href=""
+          onClick={(e) => {
+            e.preventDefault()
+            setApplicationFormKey(new Date().toISOString());
+            setSelectedCustomFormHistory(row)
+            setIsReadonly(true)
+            setIsFormHistory(true)
+          }}
+        >
+          View Application
+        </a>
+      )
+    }
     return (
       <a 
         href=""
@@ -1678,20 +1705,7 @@ export default function index() {
         />
       )}
       {
-        view === 'builderForm' && (
-          <Form
-            { ...selectedApplication }
-            isReadOnly={isReadonly}
-            onChangeToEdit={handleChangeToEdit}
-            onGetUpdatedApplication={(form_contents) => setSelectedApplication({
-              ...selectedApplication,
-              form_contents
-            })}
-          />
-        )
-      }
-      {
-        showApplication && view == "application" && (
+        (showApplication && (["application", "builderForm"].includes(view))) && (
           <div>
             <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
               <div id="dataTableContainer">
@@ -1699,7 +1713,7 @@ export default function index() {
                   (
                     <DataTable 
                       columns={columnsAppHistory}
-                      data={applications.applicationHistory}
+                      data={view === 'application' ? applications.applicationHistory : customApplicationHistory}
                       pagination
                       noHeader={true}
                       striped={true}
@@ -1712,6 +1726,48 @@ export default function index() {
               </div>
             </Collapsible>
           </div>
+        )
+      }
+      {
+        view === 'builderForm' && (
+          loading.updateForm ? (
+            <Loading />
+          ) : (
+            <Form
+              key={applicationFormKey}
+              { ...(isFormHistory ? selectedCustomFormHistory : selectedApplication) }
+              application_date={
+                isFormHistory
+                  ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")}`
+                  : 'Most Up to date Application'
+              }
+              isReadOnly={isReadonly}
+              isFormHistory={isFormHistory}
+              onChangeToEdit={handleChangeToEdit}
+              onGetUpdatedApplication={(form_contents) => setSelectedApplication({
+                ...selectedApplication,
+                form_contents
+              })}
+              onSubmitApplication={(form_contents) => {
+                dispatch(requestUpdateSubmittedForm({
+                  updated_by: auth.email,
+                  vendor: selectedApplication.vendor,
+                  form: selectedApplication.form,
+                  app_id: selectedApplication.app_id,
+                  form_contents,
+                  class_teacher: selectedApplication.class_teacher,
+                  color_designation: selectedApplication.color_designation,
+                  verification: selectedApplication.verification,
+                  student_status: selectedApplication.student_status,
+                  notes: selectedApplication.notes
+                }))
+              }}
+              onSelectLatest={() => {
+                setIsFormHistory(false)
+                setApplicationFormKey(new Date().toISOString())
+              }}
+            />
+          )
         )
       }
       {!loading.application && selectNonMenuOption && view == "application" && (

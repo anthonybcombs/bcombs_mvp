@@ -9,6 +9,7 @@ export default function Applications(
     selectedForm: {},
     submitForm: {},
     updateSubmittedForm: {},
+    customApplicationHistory: [],
     isFormView: false
   },
   action
@@ -59,6 +60,11 @@ export default function Applications(
       return {
         ...state,
         isFormView: action.bool
+      }
+    case actionType.REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED:
+      return {
+        ...state,
+        customApplicationHistory: [...action.payload]
       }
     default:
       return state;

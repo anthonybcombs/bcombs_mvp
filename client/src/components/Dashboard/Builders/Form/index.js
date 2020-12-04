@@ -19,15 +19,20 @@ import Content from './Wizard/content'
 import Actions from './Wizard/actions'
 import ThankyouPage from './ThankyouPage'
 
-export default ({
-  form_id,
-  form_contents: application_form_contents,
-  isReadOnly = false,
-  onChangeToEdit,
-  form,
-  vendor: applicationVendor,
-  onGetUpdatedApplication
-}) => {
+export default (props) => {
+  const {
+    form_id,
+    form_contents: application_form_contents,
+    isReadOnly = false,
+    onChangeToEdit,
+    form,
+    application_date = 'Most Up to date Application',
+    vendor: applicationVendor,
+    onGetUpdatedApplication,
+    onSubmitApplication,
+    onSelectLatest,
+    isFormHistory
+  } = props
 
   const isApplication = !form_id
 
@@ -272,6 +277,16 @@ export default ({
 
     if (!formHasError || forceSubmit) {
       const newFormContents = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
+
+      // Submit for update custom application form
+      if (isApplication) {
+        onSubmitApplication({
+          formTitle,
+          formData: newFormContents
+        })
+        return
+      }
+
       dispatch(requestSubmitForm({
         form_contents: {
           formTitle,
@@ -317,19 +332,40 @@ export default ({
             {!loading.getForm ? formTitle : ''}
           </div>
           {
+            !form_id && (
+              <div className='app-date'>{application_date}</div>
+            )
+          }
+          {
             (!form_id && behavior !== 'print') && (
               <>
                 <button type='button' className='print-button' onClick={handlePrint}>
                   {' '}
                   <FontAwesomeIcon icon={faPrint} />
                 </button>
-                <button
-                  className={`edit-button ${!isReadOnly ? 'activeEdit' : ''}`}
-                  type='button'
-                  onClick={onChangeToEdit}
-                >
-                  <FontAwesomeIcon icon={faEdit} />
-                </button>
+                {
+                  !isFormHistory ? (
+                    <button
+                      className={`edit-button ${!isReadOnly ? 'activeEdit' : ''}`}
+                      type='button'
+                      onClick={onChangeToEdit}
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                  ) : (
+                    <a 
+                      href=""
+                      className='view-latest'
+                      target="_blank" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onSelectLatest()
+                      }}
+                    >
+                      View Latest
+                    </a>
+                  )
+                }
               </>
             )
           }

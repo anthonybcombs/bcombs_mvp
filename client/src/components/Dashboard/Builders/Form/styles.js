@@ -14,17 +14,34 @@ export default styled.div`
   .edit-button {
     border: 0;
     position: absolute;
-    right: 80px;
+    right: 85px;
     cursor: pointer;
     font-size: 2em;
     color: #f26e21;
     background: none;
     z-index: 2;
-    top: 60px;
+    top: 80px;
   }
 
   .edit-button.activeEdit {
     color: #599600;
+  }
+
+  .app-date {
+    position: absolute;
+    font-size: 1.5em;
+    color: #f26e21;
+    width: 100%;
+    text-align: center;
+    bottom: 25px;
+  }
+
+  .view-latest {
+    position: absolute;
+    right: 80px;
+    cursor: pointer;
+    z-index: 2;
+    bottom: 35px;
   }
 
   #form {
@@ -56,6 +73,7 @@ export default styled.div`
 
   #form .form-content.read-only {
     max-width: unset;
+    top: unset;
   }
   #form > div {
     // padding: 1rem;
