@@ -1,11 +1,10 @@
 import React from 'react'
 import DatePicker from 'react-datepicker'
-import cloneDeep from 'lodash.clonedeep'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ showLabel, settings, label, fields, type, id: groupId, onChange, fieldError, onCheckError }) => {
+export default ({ isReadOnly = false, showLabel, settings, label, fields, type, id: groupId, onChange, fieldError, onCheckError }) => {
   const fieldId = `${type}_${groupId}`
   const handleAnswer = (date) => {
     const dateObj = date ? new Date(date) : ''
@@ -101,15 +100,18 @@ export default ({ showLabel, settings, label, fields, type, id: groupId, onChang
           className={`formGroup-column`}
           style={{ gridColumn: `span 1`}}
           onClick={() => {
-            document.querySelector('.react-datepicker__input-container input').click()
+            if (!isReadOnly) {
+              document.querySelector('.react-datepicker__input-container input').click()
+            }
           }}
         >
           {
             fields.map((field, index) => {
               const { placeholder, required } = field
               return FieldConstructor[field.tag]({
-                key: `dateField-${index}`,
                 ...field,
+                isReadOnly,
+                key: `dateField${index}`,
                 placeholder: `${placeholder} ${required ? '*' : ''}`,
                 readOnly: true,
               })
@@ -149,7 +151,7 @@ export default ({ showLabel, settings, label, fields, type, id: groupId, onChang
                   value={new Date(date).getFullYear()}
                   onChange={({ target: { value } }) => changeYear(value)}>
                   {years.map((option, index) => (
-                    <option key={`year-${option}`} value={option}>
+                    <option key={`year-${index}`} value={option}>
                       {option}
                     </option>
                   ))}
@@ -160,8 +162,8 @@ export default ({ showLabel, settings, label, fields, type, id: groupId, onChang
                   onChange={({ target: { value } }) =>
                     changeMonth(months.indexOf(value))
                   }>
-                  {months.map(option => (
-                    <option key={`month-${option}`} value={option}>
+                  {months.map((option, index) => (
+                    <option key={`month-${index}`} value={option}>
                       {option}
                     </option>
                   ))}

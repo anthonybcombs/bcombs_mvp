@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ showLabel, settings, fields, label, type, id: groupId, onChange, fieldError, onCheckError }) => {
+export default ({ isReadOnly = false, showLabel, settings, fields, label, type, id: groupId, onChange, fieldError, onCheckError }) => {
   const { id: fieldId, value, required } = fields[0]
 
   const handleFormatAnswer = (timeId, timeVal, isBlur) => {
@@ -87,6 +87,7 @@ export default ({ showLabel, settings, fields, label, type, id: groupId, onChang
               className='field-input'
               placeholder={`Hour ${required ? '*' : ''}`}
               value={value ? value[0] : ''}
+              readOnly={isReadOnly}
               onChange={handleAnswer}
               onBlur={(e) => handleAnswer(e, true)}
             />
@@ -97,6 +98,7 @@ export default ({ showLabel, settings, fields, label, type, id: groupId, onChang
               className='field-input'
               placeholder={`Minutes ${required ? '*' : ''}`}
               value={value ? value[1] : ''}
+              readOnly={isReadOnly}
               onChange={handleAnswer}
               onBlur={(e) => handleAnswer(e, true)}
             />
@@ -105,6 +107,7 @@ export default ({ showLabel, settings, fields, label, type, id: groupId, onChang
                 id='type'
                 value={value ? value[2] : ''}
                 className='field-input'
+                readOnly={isReadOnly}
                 onChange={handleAnswer}
                 onBlur={(e) => handleAnswer(e, true)}
               >

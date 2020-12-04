@@ -30,8 +30,11 @@ import {
   requestGetApplications,
   requestUpdateApplication,
   requestSaveApplication,
-  requestGetApplicationHistory
+  requestGetApplicationHistory,
+  requestGetCustomApplications,
+  requestGetCustomFormApplicantById
 } from "../../../redux/actions/Application";
+import { requestGetForms, requestUpdateSubmittedForm, requestGetCustomApplicationHistory } from '../../../redux/actions/FormBuilder'
 import { requestUserGroup } from "../../../redux/actions/Groups";
 import Loading from "../../../helpers/Loading.js";
 import ProfileImg from "../../../images/defaultprofile.png";
@@ -39,6 +42,8 @@ import ProfileImg from "../../../images/defaultprofile.png";
 import { format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
 import { parse } from "query-string";
+
+import Form from '../../Dashboard/Builders/Form'
 
 const ApplicationFormStyled = styled.form`
   @media all {
@@ -384,6 +389,8 @@ export default function index() {
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
+  const [selectedCustomFormHistory, setSelectedCustomFormHistory] = useState({});
+
   const [emergencyContacts, setEmergencyContacts] = useState([]);
 
   const [showApplication, setShowApplication] = useState(false);
@@ -393,6 +400,8 @@ export default function index() {
   const [view, setView] = useState("");
 
   const [selectedVendor, setSelectedVendor] = useState({});
+
+  const [selectedForm, setSelectedForm] = useState("default")
 
   const dispatch = useDispatch();
 
@@ -424,11 +433,17 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
-  const { groups, auth, vendors, applications, loading } = useSelector(
-    ({ groups, auth, vendors, applications, loading }) => {
-      return { groups, auth, vendors, applications, loading };
+  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm, customApplicationHistory } } = useSelector(
+    ({ groups, auth, vendors, applications, loading, form }) => {
+      return { groups, auth, vendors, applications, loading, form };
     }
   );
+
+  console.log("form 123", formList);
+
+  if (updateSubmittedForm.message === 'successfully update your application form') {
+    window.location.reload()
+  }
 
   if (
     applications.updateapplication &&
@@ -459,6 +474,12 @@ export default function index() {
   }, []);
 
   useEffect(() => {
+    if (applications.selectedbuilderapplication) {
+      setSelectedApplication(applications.selectedbuilderapplication)
+    }
+  }, [applications.selectedbuilderapplication])
+
+  useEffect(() => {
     console.log('Vendorssss', vendors)
     if (vendors && vendors.length > 0 && vendors[0].id) {
 
@@ -468,16 +489,20 @@ export default function index() {
         });
 
         setSelectedVendor(newDefaultVendor[0]);
-        dispatch(requestGetApplications(newDefaultVendor[0].id));
+        //dispatch(requestGetApplications(newDefaultVendor[0].id));
+        dispatch(requestGetForms({ vendor: newDefaultVendor[0].id, categories: [] }))
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
-        dispatch(requestGetApplications(vendors[0].id));
+        dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
+        //dispatch(requestGetApplications(vendors[0].id));
       }
-
-      
     }
   }, [vendors]);
+
+  useEffect(() => {
+    dispatch(requestGetApplications(selectedVendor.id));
+  }, [formList])
 
   console.log("vendor", vendors);
 
@@ -507,6 +532,14 @@ export default function index() {
   };
 
   const handleSelectedApplication = (application, view) => {
+    if (view === 'builderForm') {
+      setView(view)
+      setSelectedApplication(application)
+      // dispatch(requestGetCustomFormApplicantById(application.app_id))
+      setShowApplication(true);
+      dispatch(requestGetCustomApplicationHistory(application.app_id))
+      return
+    }
     setSelectedApplication(application);
     setSelectNonMenuOption(true);
     setView(view);
@@ -891,6 +924,20 @@ export default function index() {
   };
 
   const onSubmit = () => {
+    if (view === 'builderForm' && selectedApplication) {
+      dispatch(requestUpdateSubmittedForm({
+        updated_by: auth.email,
+        vendor: selectedApplication.vendor,
+        form: selectedApplication.form,
+        app_id: selectedApplication.app_id,
+        form_contents: selectedApplication.form_contents,
+        class_teacher: updateApplication.class_teacher || selectedApplication?.class_teacher,
+        color_designation: updateApplication.color_designation || selectedApplication?.color_designation,
+        verification: updateApplication.verification || selectedApplication?.verification,
+        student_status: updateApplication.student_status || selectedApplication?.student_status,
+        notes: updateApplication.notes || selectedApplication?.notes
+      }))
+    }
     dispatch(requestUpdateApplication(updateApplication));
   };
 
@@ -1141,6 +1188,28 @@ export default function index() {
   }
 
   const createHistoryViewButton = (row) => {
+    if (view === 'builderForm') {
+      const detailsObj = row.details ? JSON.parse(row.details) : {}
+      row = {
+        ...row,
+        ...detailsObj
+      }
+
+      return (
+        <a 
+          href=""
+          onClick={(e) => {
+            e.preventDefault()
+            setApplicationFormKey(new Date().toISOString());
+            setSelectedCustomFormHistory(row)
+            setIsReadonly(true)
+            setIsFormHistory(true)
+          }}
+        >
+          View Application
+        </a>
+      )
+    }
     return (
       <a 
         href=""
@@ -1470,7 +1539,6 @@ export default function index() {
                 "width": "100%",
                 "display": "block",
                 "background": "transparent",
-                "fontWeight": "bold",
                 "border": "0",
                 "padding": "0",
                 "lineHeight": "1",
@@ -1487,8 +1555,8 @@ export default function index() {
 
                 window.history.replaceState("","","?vendor=" + chosenVendor[0].id2);
 
-                dispatch(requestGetApplications(target.value));
-
+                //dispatch(requestGetApplications(target.value));
+                dispatch(requestGetForms({ vendor: target.value, categories: [] }))
                 if(chosenVendor && chosenVendor.length > 0) {
                   setSelectedVendor(chosenVendor[0]);
                 }
@@ -1503,12 +1571,60 @@ export default function index() {
             </select>
           </div>
         )}
+
+        {
+          vendors && vendors.length > 0 && (
+            <div>
+              <select
+                style={{ 
+                  "marginLeft": "20px",
+                  "fontSize": "1.5em",
+                  "borderRadius": "0",
+                  "cursor": "pointer",
+                  "width": "100%",
+                  "display": "block",
+                  "background": "transparent",
+                  "border": "0",
+                  "padding": "0",
+                  "lineHeight": "1",
+                  "color": "#000000"
+                }}
+                onChange={({ target }) => {
+
+                  console.log("target", target.value);
+                  if(target.value == "default") {
+                    setSelectedForm("default");
+                    dispatch(requestGetApplications(selectedVendor.id));
+                  } else {
+                    setSelectedForm(target.value);
+                    if (view === 'builderForm') {
+                      setView('')
+                      setSelectedApplication({})
+                    }
+                    dispatch(requestGetCustomApplications(target.value));
+                  }
+                }}
+              >
+                <option key={selectedVendor.id} value="default">
+                  Bcombs Form
+                </option>
+                {
+                  formList.map(form => (
+                    <option key={form.form_id} value={form?.form_id}>
+                      {form?.form_contents?.formTitle}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+          )
+        }
       </div>
       <div id="application">
         <div>
           <div id="labels">
             {
-              selectedVendor && selectedVendor.id2 ? (
+              selectedVendor && selectedVendor.id2 && selectedForm == "default" ? (
                 <a
                   href={ selectedVendor.is_daycare ? `/application/${
                     selectedVendor.id2
@@ -1517,6 +1633,14 @@ export default function index() {
                   }`}
 
                   target="_blank">
+                  <FontAwesomeIcon icon={faFileSignature} />
+                  <span>Application</span>
+                </a>
+              ) : selectedForm && selectedForm != "default" ? (
+                <a
+                  href={`/form/${selectedForm}`}
+                  target="_blank"
+                >
                   <FontAwesomeIcon icon={faFileSignature} />
                   <span>Application</span>
                 </a>
@@ -1563,7 +1687,7 @@ export default function index() {
           </div>
         </div>
         <div>
-          {selectedLabel === "Application Status" && !selectNonMenuOption && (
+          {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
             <ApplicationSummaryStyled
               appGroups={selectedVendor.app_groups}
               applications={applications.activeapplications}
@@ -1576,7 +1700,7 @@ export default function index() {
               formSettingsLoading={loading.form_settings}
             />
           )}
-          {selectNonMenuOption && view == "application" && (
+          {(selectNonMenuOption && view == "application" || view === 'builderForm') && (
             <EditApplicationStyled
               application={selectedApplication}
               vendor={selectedVendor}
@@ -1588,17 +1712,17 @@ export default function index() {
           )}
         </div>
       </div>
-      {selectedLabel === "Application Status" && !selectNonMenuOption && (
+      {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
         <ApplicationListStyled
           applications={applications.activeapplications}
-          handleSelectedApplication={handleSelectedApplication}
+          handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" ? viewType : 'builderForm')}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
           appGroups={selectedVendor.app_groups}
         />
       )}
       {
-        showApplication && view == "application" && (
+        (showApplication && (["application", "builderForm"].includes(view))) && (
           <div>
             <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
               <div id="dataTableContainer">
@@ -1606,7 +1730,7 @@ export default function index() {
                   (
                     <DataTable 
                       columns={columnsAppHistory}
-                      data={applications.applicationHistory}
+                      data={view === 'application' ? applications.applicationHistory : customApplicationHistory}
                       pagination
                       noHeader={true}
                       striped={true}
@@ -1621,13 +1745,55 @@ export default function index() {
           </div>
         )
       }
+      {
+        view === 'builderForm' && (
+          loading.updateForm ? (
+            <Loading />
+          ) : (
+            <Form
+              key={applicationFormKey}
+              { ...(isFormHistory ? selectedCustomFormHistory : selectedApplication) }
+              application_date={
+                isFormHistory
+                  ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")}`
+                  : 'Most Up to date Application'
+              }
+              isReadOnly={isReadonly}
+              isFormHistory={isFormHistory}
+              onChangeToEdit={handleChangeToEdit}
+              onGetUpdatedApplication={(form_contents) => setSelectedApplication({
+                ...selectedApplication,
+                form_contents
+              })}
+              onSubmitApplication={(form_contents) => {
+                dispatch(requestUpdateSubmittedForm({
+                  updated_by: auth.email,
+                  vendor: selectedApplication.vendor,
+                  form: selectedApplication.form,
+                  app_id: selectedApplication.app_id,
+                  form_contents,
+                  class_teacher: selectedApplication.class_teacher,
+                  color_designation: selectedApplication.color_designation,
+                  verification: selectedApplication.verification,
+                  student_status: selectedApplication.student_status,
+                  notes: selectedApplication.notes
+                }))
+              }}
+              onSelectLatest={() => {
+                setIsFormHistory(false)
+                setApplicationFormKey(new Date().toISOString())
+              }}
+            />
+          )
+        )
+      }
       {!loading.application && selectNonMenuOption && view == "application" && (
         <button type="button" className="print-button" onClick={handlePrint}>
           {" "}
           <FontAwesomeIcon icon={faPrint} />
         </button>
       )}
-      {loading.application ? (
+      {(loading.application) ? (
         <Loading />
       ) : (
         <>

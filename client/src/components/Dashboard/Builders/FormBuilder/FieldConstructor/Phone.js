@@ -5,7 +5,7 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 import { formatPhoneNumber } from '../../utils'
 
-export default ({ showLabel, settings, label, fields, type: groupType, id: groupId, onChange, fieldError, onCheckError }) => {
+export default ({ isReadOnly = false, showLabel, settings, label, fields, type: groupType, id: groupId, onChange, fieldError, onCheckError }) => {
   const handleAnswer = ({ target: { id, value } }, type) => {
     if (type === 'text') {
       if (!Number(value.replace(/[^0-9a-zA-Z]/gi, ''))) {
@@ -72,6 +72,7 @@ export default ({ showLabel, settings, label, fields, type: groupType, id: group
                       key: `phoneField-${index}`,
                       ...field,
                       placeholder: `${placeholder} ${required ? '*' : ''}`,
+                      isReadOnly,
                       onChange: e => handleAnswer(e, type),
                       className: hasError ? 'hasError': ''
                     })

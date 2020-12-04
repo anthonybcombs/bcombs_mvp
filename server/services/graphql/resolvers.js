@@ -82,7 +82,9 @@ import {
   getVendorCustomApplicationForms,
   submitCustomApplication,
   updateSubmitCustomApplication,
-  getCustomFormApplicants
+  getCustomFormApplicants,
+  getCustomFormApplicantById,
+  getCustomApplicationHistoryById
 } from "../../api/applications";
 import { 
   addChild, 
@@ -294,6 +296,10 @@ const resolvers = {
       const response = await getApplicationHistoryById(app_id);
       return response;
     },
+    async getCustomApplicationHistoryById(root, { app_id }, context) {
+      const response = await getCustomApplicationHistoryById(app_id);
+      return response;
+    },
     async getUserApplicationHistory(root, { id }, context) {
       try {
         const response = await getApplicationHistoryByUser(id);
@@ -345,9 +351,12 @@ const resolvers = {
       return forms;
     },
     async getCustomFormApplicants(root, { form_id }, context) {
-
       const applications = await getCustomFormApplicants({form_id: form_id});
       return applications;
+    },
+    async getCustomFormApplicantById(root, {app_id}, contenxt) {
+      const application = await getCustomFormApplicantById({app_id: app_id});
+      return application;
     }
   },
   RootMutation: {
@@ -1173,6 +1182,28 @@ const resolvers = {
         messageType: "info",
         message: "successfully submitted your application form"
       } 
+    },
+    async updateSubmitCustomApplication(root, {application}, context) {
+
+      const previousApplication = await getCustomFormApplicantById({app_id: application.app_id});
+
+      let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
+      application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+      
+      await updateSubmitCustomApplication(application);
+
+      const params = {
+        custom_app_id: application.app_id,
+        details: JSON.stringify(previousApplication),
+        updated_by: application.updated_by
+      }
+
+      addApplicationHistory(params)
+
+      return {
+        messageType: "info",
+        message: "successfully update your application form",
+      }
     }
   }
 };

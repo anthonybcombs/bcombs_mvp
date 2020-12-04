@@ -4,7 +4,7 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ options, required, column, onChangeFieldSettings, isBuilder, requiredindex, isActive, id: fieldId, onChange, onCheckError, value = {} }) => {
+export default ({ isReadOnly = false, options, required, column, onChangeFieldSettings, isBuilder, requiredindex, isActive, id: fieldId, onChange, onCheckError, value = {} }) => {
   const hasOthers = options.find(e => e.name === 'other')
 
   const handleCheckError = (data) => {
@@ -116,7 +116,8 @@ export default ({ options, required, column, onChangeFieldSettings, isBuilder, r
               <select
                 className={`field-input`}
                 value={value ? Object.keys(value)[0] : ''}
-                onChange={(e) => handleAnswer(e)}
+                readOnly={isReadOnly}
+                onChange={(e) => !isReadOnly ? handleAnswer(e) : {}}
               >
                 <option value=''>
                   {`Choose ${required ? '*' : ''}`}

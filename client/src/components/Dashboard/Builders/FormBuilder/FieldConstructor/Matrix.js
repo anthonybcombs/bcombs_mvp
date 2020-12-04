@@ -4,7 +4,7 @@ import { faTimes, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
 export default (props) => {
-  const { columns, rows, onChangeFieldSettings, isMultiple = false, isBuilder, isActive, id: fieldId, onChange, value = [], onCheckError } = props
+  const { isReadOnly = false, columns, rows, onChangeFieldSettings, isMultiple = false, isBuilder, isActive, id: fieldId, onChange, value = [], onCheckError } = props
 
   const handleAddRow = () => {
     onChangeFieldSettings({
@@ -197,8 +197,9 @@ export default (props) => {
                                     id={`radio_${rowIndex}${columnIndex}`}
                                     type='radio'
                                     checked={!!columnAnswer}
+                                    readOnly={isReadOnly}
                                     onChange={({ target: { checked } }) => {
-                                      if (!isBuilder) {
+                                      if (!isBuilder && !isReadOnly) {
                                         let answers = [...(((value || []).find(e => e.row === row) || {}).answers || [])]
                                         answers = [column]
                                         handleAnswer({ row, answers }, rowIndex)
@@ -213,8 +214,9 @@ export default (props) => {
                                     type='checkbox'
                                     checked={!!columnAnswer}
                                     id={`checkbox_${rowIndex}${columnIndex}`}
+                                    readOnly={isReadOnly}
                                     onChange={({ target: { checked } }) => {
-                                      if (!isBuilder) {
+                                      if (!isBuilder && !isReadOnly) {
                                         let answers = [...(((value || []).find(e => e.row === row) || {}).answers || [])]
                                         if (checked) {
                                           answers.splice(columnIndex, 0, column)

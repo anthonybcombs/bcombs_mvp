@@ -7,6 +7,43 @@ export default styled.div`
   background: #fffefe;
   min-height: calc(100vh - 3rem);
 
+  .print-button {
+    top: 13px;
+  }
+
+  .edit-button {
+    border: 0;
+    position: absolute;
+    right: 85px;
+    cursor: pointer;
+    font-size: 2em;
+    color: #f26e21;
+    background: none;
+    z-index: 2;
+    top: 80px;
+  }
+
+  .edit-button.activeEdit {
+    color: #599600;
+  }
+
+  .app-date {
+    position: absolute;
+    font-size: 1.5em;
+    color: #f26e21;
+    width: 100%;
+    text-align: center;
+    bottom: 25px;
+  }
+
+  .view-latest {
+    position: absolute;
+    right: 80px;
+    cursor: pointer;
+    z-index: 2;
+    bottom: 35px;
+  }
+
   #form {
     min-height: 100vh;
     background-position: center;
@@ -32,6 +69,11 @@ export default styled.div`
     background: #fff;
     border-radius: 2px;
     box-shadow: 0 3px 6px #ddd;
+  }
+
+  #form .form-content.read-only {
+    max-width: unset;
+    top: unset;
   }
   #form > div {
     // padding: 1rem;

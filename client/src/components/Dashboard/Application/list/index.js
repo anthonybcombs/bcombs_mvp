@@ -380,6 +380,8 @@ export default function index({
       studentStatusVal = "No longer a Student";
     } else if (student_status == "missed_oppurtunity") {
       studentStatusVal = "Missed oppurtunity";
+    } else {
+      studentStatusVal = "In process";
     }
 
     if (verification == "verified") {
@@ -434,6 +436,19 @@ export default function index({
     );
   };
 
+  const getStudentName = row => {
+    console.log("row row", row);
+    if(row?.child?.firstname && row?.child?.lastname) {
+      return (
+        <a target="_blank" href={"menteeprofile/" + row.id}>
+          <span>{row?.child.firstname + " " + row?.child.lastname}</span>
+        </a>
+      )
+    } else {
+      return "";
+    }
+  }
+
   const columns = [
     {
       name: "Status",
@@ -446,11 +461,7 @@ export default function index({
       name: "Student Name",
       selector: "studentName",
       sortable: true,
-      cell: row => (
-        <a target="_blank" href={"menteeprofile/" + row.id}>
-          <span>{row.child?.firstname + " " + row.child?.lastname}</span>
-        </a>
-      )
+      cell: row => getStudentName(row)
     },
     {
       name: "Parent name",
@@ -618,18 +629,18 @@ export default function index({
           item.child?.lastname
             .toLowerCase()
             .includes(filterText.toLowerCase())) ||
-        (item.parents[0]?.firstname &&
-          item.parents[0]?.firstname
+        (item.parents && item.parents[0]?.firstname &&
+          item?.parents[0]?.firstname
             .toLowerCase()
             .includes(filterText.toLowerCase())) ||
-        (item.parents[0]?.lastname &&
-          item.parents[0]?.lastname
+        (item.parents && item.parents[0]?.lastname &&
+          item?.parents[0]?.lastname
             .toLowerCase()
             .includes(filterText.toLowerCase()));
     }
 
     if (classText) {
-      class_match = item.child.grade_desc == classText;
+      class_match = item?.child?.grade_desc == classText;
     }
 
     if (colorText) {

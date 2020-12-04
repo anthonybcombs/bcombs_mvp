@@ -353,7 +353,7 @@ const inputs = `
         section3_signature: String!
         section3_date_signed: Date!
         verification: String
-        student_status: Int
+        student_status: String
         color_designation: String
         notes: String
         emergency_contacts: String
@@ -383,7 +383,7 @@ const inputs = `
         section3_signature: String!
         section3_date_signed: Date!
         verification: String
-        student_status: Int
+        student_status: String
         color_designation: String
         notes: String
         emergency_contacts: String
@@ -639,6 +639,19 @@ const inputs = `
         vendor: String!
         form: String!
         form_contents: CustomFormInput
+    }
+
+    input UpdateCustomApplicationInput {
+        vendor: String!
+        form: String!
+        app_id: String!
+        form_contents: CustomFormInput
+        class_teacher: String
+        color_designation: String
+        verification: String
+        student_status: String
+        notes: String
+        updated_by: String
     }
 
     input CustomApplicationFormFilterInput {
@@ -1028,7 +1041,8 @@ const queryTypes = `
     type ApplicationHistory{
         id: Int
         app_history_id: String!
-        app_id: String!
+        app_id: String
+        custom_app_id: String
         details: String
         updated_by: String
         updated_at: Date
@@ -1091,14 +1105,14 @@ const queryTypes = `
         id: String
         app_id: String
         vendor: String
-        form_id: String
+        form: String
         form_contents: CustomForm
         application_date: Date
         archived_date: Date
         class_teacher: String
         color_designation: String
         verification: String
-        student_status: Int
+        student_status: String
         notes: String
     }
 
@@ -1280,6 +1294,7 @@ const mutations = `
         updateCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
         deleteCustomApplicationForm(application: CustomApplicationInput): Status
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
+        updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
     }
 `;
 
@@ -1319,6 +1334,8 @@ const queries = `
         getVendorCustomApplicationForms(filter: CustomApplicationFormFilterInput): [CustomApplicationOutput]
         getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
         getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
+        getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
+        getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
     }
 `;
 

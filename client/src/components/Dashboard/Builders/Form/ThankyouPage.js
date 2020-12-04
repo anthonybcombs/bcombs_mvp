@@ -12,7 +12,7 @@ export default () => {
           window.location.reload()
         }}
       >
-        Fill out form again.
+        Fill out form again
       </button>
     </div>
   )

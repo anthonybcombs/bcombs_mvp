@@ -4,7 +4,7 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ showLabel, settings, label, fields, type, onChange, id: groupId, fieldError = [], onCheckError }) => {
+export default ({ isReadOnly= false, showLabel, settings, label, fields, type, onChange, id: groupId, fieldError = [], onCheckError }) => {
   const handleAnswer = ({ target: { id, value } }, type) => {
     let errors = fieldError[id] || []
 
@@ -88,6 +88,7 @@ export default ({ showLabel, settings, label, fields, type, onChange, id: groupI
                   FieldConstructor[tag]({
                     key: `field-${index}`,
                     ...field,
+                    isReadOnly,
                     type: fieldType !== 'email' ? 'password' : fieldType,
                     placeholder: `${placeholder} ${required ? '*' : ''}`,
                     onChange: e => handleAnswer(e, field.type),

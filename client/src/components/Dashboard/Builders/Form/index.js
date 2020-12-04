@@ -1,26 +1,44 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from "react-redux"
+import React, { useState, useEffect, useRef } from 'react'
+import styled from 'styled-components'
+
+import { useSelector, useDispatch } from 'react-redux'
 import update from 'immutability-helper'
 import cloneDeep from 'lodash.clonedeep'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPrint, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { useReactToPrint } from 'react-to-print'
 
-import FormrStyled from './styles'
+import FormStyled from './styles'
 import FORM_DATA from './sample.json'
 import { groupFieldsByPageBreak } from '../utils'
-import { requestGetFormById, requestSubmitForm } from "../../../../redux/actions/FormBuilder"
-import Loading from "../../../../helpers/Loading.js"
+import { requestGetFormById, requestSubmitForm } from '../../../../redux/actions/FormBuilder'
+import Loading from '../../../../helpers/Loading.js'
 
 import Stepper from './Wizard/stepper'
 import Content from './Wizard/content'
 import Actions from './Wizard/actions'
 import ThankyouPage from './ThankyouPage'
 
-export default ({
-  form_id
-}) => {
+export default (props) => {
+  const {
+    form_id,
+    form_contents: application_form_contents,
+    isReadOnly = false,
+    onChangeToEdit,
+    form,
+    application_date = 'Most Up to date Application',
+    vendor: applicationVendor,
+    onGetUpdatedApplication,
+    onSubmitApplication,
+    onSelectLatest,
+    isFormHistory
+  } = props
+
+  const isApplication = !form_id
 
   const { auth, loading, form: { selectedForm: { form_contents, vendor }, submitForm } } = useSelector(
     ({ auth, loading, form }) => {
-      return { auth, loading, form };
+      return { auth, loading, form }
     }
   )
 
@@ -45,18 +63,19 @@ export default ({
     return newObj
   }
 
-  let { formData = [], formTitle = '' } = form_contents || {}
+  let { formData = [], formTitle = '' } = (!isApplication ? form_contents : application_form_contents) || {}
   // TESTING
   // formData = FORM_DATA
   // TESTING
   formData = formData.map(e => cleanFormData(e))
 
-  const hasWizard = !!formData.find(e => e.type === 'pageBreak')
+  const hasWizard = !!formData.find(e => e.type === 'pageBreak') && !isApplication
 
   const [actualFormFields, setFormFields] = useState([])
   const [formIsSet, setForm] = useState(false)
   const [currentStep, setStep] = useState(0)
   const [addresses, setAddresses] = useState([])
+  const [behavior, setBehaviour] = useState('')
 
   useEffect(() => {
     if (formData.length && !formIsSet) {
@@ -129,7 +148,7 @@ export default ({
 
     // Apply logic and PRAY
     const { include, items } = logic || {}
-    if (include) {
+    if (include && !isApplication) {
       const newItems = items ? JSON.parse(items) : ''
       const newValue = value ? JSON.parse(value) : ''
       const [name] = Object.keys(newValue)
@@ -149,7 +168,14 @@ export default ({
         if (fieldId) {
           setTimeout(() => {
             const elmnt = document.getElementById(`group_${fieldId}`)
-            elmnt.scrollIntoView()
+            elmnt.style.background = '#ffe5d5'
+            setTimeout(() => {
+              elmnt.style.cssText = "color: transparent !important; transition: all 1s"
+            }, 100)
+            elmnt.scrollIntoView({
+              // behavior: 'smooth',
+              block: 'center'
+            })
           }, 100)
         }
       }
@@ -251,34 +277,103 @@ export default ({
 
     if (!formHasError || forceSubmit) {
       const newFormContents = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
+
+      // Submit for update custom application form
+      if (isApplication) {
+        onSubmitApplication({
+          formTitle,
+          formData: newFormContents
+        })
+        return
+      }
+
       dispatch(requestSubmitForm({
         form_contents: {
           formTitle,
           formData: newFormContents
         },
-        vendor,
-        form: form_id
+        vendor: vendor || applicationVendor,
+        form: form_id || form
       }))
+
+      if (onGetUpdatedApplication) {
+        onGetUpdatedApplication({
+          formTitle,
+          formData: newFormContents
+        })
+      }
 
       window.scrollTo({ top: 0 })
     }
     setFieldError(errors)
   }
 
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    copyStyles: true,
+    onBeforeGetContent: () => {
+      setBehaviour('print')
+    },
+    onAfterPrint: () => {
+      setBehaviour('')
+    }
+  })
 
-  console.log('@fieldError', fieldError)
-  console.log('@actualFormFields', actualFormFields)
+
+  // console.log('@fieldError', fieldError)
+  // console.log('@actualFormFields', actualFormFields)
 
   return (
-    <FormrStyled>
-      <div id='form'>
-        <div className='form-title'>
-          {!loading.getForm ? formTitle : ''}
+    <FormStyled ref={componentRef}>
+      <div id='form' >
+        <div style={{ position: 'relative' }}>
+          <div className='form-title'>
+            {!loading.getForm ? formTitle : ''}
+          </div>
+          {
+            !form_id && (
+              <div className='app-date'>{application_date}</div>
+            )
+          }
+          {
+            (!form_id && behavior !== 'print') && (
+              <>
+                <button type='button' className='print-button' onClick={handlePrint}>
+                  {' '}
+                  <FontAwesomeIcon icon={faPrint} />
+                </button>
+                {
+                  !isFormHistory ? (
+                    <button
+                      className={`edit-button ${!isReadOnly ? 'activeEdit' : ''}`}
+                      type='button'
+                      onClick={onChangeToEdit}
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                  ) : (
+                    <a 
+                      href=""
+                      className='view-latest'
+                      target="_blank" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onSelectLatest()
+                      }}
+                    >
+                      View Latest
+                    </a>
+                  )
+                }
+              </>
+            )
+          }
         </div>
-        <div className='form-content'>
+        <div className={`form-content ${isApplication ? 'read-only' : ''}`}>
           <> 
             {
-              isSuccessfulSubmit ? (
+              (isSuccessfulSubmit && form_id) ? (
                 <ThankyouPage />
               ) : (
                 (loading.getForm || loading.submitForm) ? (
@@ -295,6 +390,7 @@ export default ({
                           />
                           <Content
                             id={(actualFormFields[currentStep] || {}).id}
+                            isReadOnly={isReadOnly}
                             fields={(actualFormFields[currentStep] || {}).formFields || []}
                             currentStep={currentStep}
                             fieldError={fieldError}
@@ -308,6 +404,7 @@ export default ({
                       ) : (
                         <Content
                           id={'firstPage'}
+                          isReadOnly={isReadOnly}
                           fields={actualFormFields}
                           currentStep={currentStep}
                           fieldError={fieldError}
@@ -319,13 +416,17 @@ export default ({
                         />
                       )
                     }
-                    <Actions
-                      hasWizard={hasWizard}
-                      fields={actualFormFields}
-                      currentStep={currentStep}
-                      onSetStep={handleChangeStep}
-                      onSubmit={handleSubmit}
-                    />
+                    {
+                      (behavior !== 'print' && !isReadOnly) && (
+                        <Actions
+                          hasWizard={hasWizard}
+                          fields={actualFormFields}
+                          currentStep={currentStep}
+                          onSetStep={handleChangeStep}
+                          onSubmit={handleSubmit}
+                        />
+                      )
+                    }
                   </>
                 )
               )
@@ -333,6 +434,6 @@ export default ({
           </>
         </div>
       </div>
-    </FormrStyled>
+    </FormStyled>
   )
 }

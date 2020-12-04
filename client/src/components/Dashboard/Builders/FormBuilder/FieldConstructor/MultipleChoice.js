@@ -6,7 +6,7 @@ import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 export default ({
   options, column, onChangeFieldSettings, isBuilder, isMultiple, index, isActive, id: fieldId, value = {},
-  onChange, onCheckError
+  onChange, onCheckError, isReadOnly = false
 }) => {
   const hasOthers = options.find(e => e.name === 'other')
 
@@ -68,10 +68,11 @@ export default ({
                       value={option.label}
                       checked={!!value[`${option.name}`]}
                       onChange={(e) => {
-                        if (!isBuilder) {
+                        if (!isBuilder && !isReadOnly) {
                           handleAnswer(e, option.name)
                         }
                       }}
+                      readOnly={isReadOnly}
                       disabled={isBuilder}
                     />
                     {
@@ -98,10 +99,11 @@ export default ({
                       value={option.label}
                       checked={!!value[`${option.name}`]}
                       onChange={(e) => {
-                        if (!isBuilder) {
+                        if (!isBuilder && !isReadOnly) {
                           handleAnswer(e, option.name)
                         }
                       }}
+                      readOnly={isReadOnly}
                       disabled={isBuilder}
                     />
                     <span className='checkmark' />

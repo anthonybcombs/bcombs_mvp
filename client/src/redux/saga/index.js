@@ -77,7 +77,9 @@ import {
   saveApplication,
   getApplicationByUserId,
   getApplicationHistory,
-  getUserApplicationHistory
+  getUserApplicationHistory,
+  getCustomApplications,
+  getCustomApplicationById
 } from "../actions/Application";
 
 import {
@@ -92,7 +94,9 @@ import {
   getFormById,
   updateForm,
   deleteForm,
-  submitForm
+  submitForm,
+  updateSubmittedForm,
+  getCustomApplicationHistory
 } from "../actions/FormBuilder";
 
 import reducer from "../reducers";
@@ -240,6 +244,26 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_DELETE_FORM, deleteForm);
   yield takeLatest(actionType.REQUEST_DELETE_FORM, deleteForm);
   yield takeLatest(actionType.REQUEST_SUBMIT_FORM, submitForm);
+
+  yield takeLatest(
+    actionType.REQUEST_GET_CUSTOM_APPLICATION,
+    getCustomApplications
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID,
+    getCustomApplicationById
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_UPDATE_SUBMITTED_FORM,
+    updateSubmittedForm
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_CUSTOM_APPLICATION_HISTORY,
+    getCustomApplicationHistory
+  )
 }
 const sagaMiddleware = createSagaMiddleware();
 
