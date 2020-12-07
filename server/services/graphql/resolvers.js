@@ -1032,14 +1032,17 @@ const resolvers = {
 
       if(newApplication && newApplication.app_id && hasLoginField) {
 
-        console.log("email", email); console.log("password", password);
+        email.value = email.value.slice(1, -1);
+        password.value = password.value.slice(1, -1);
+        
         const checkEmail = await checkUserEmail(email.value);
+
+        console.log("email", email); console.log("password", password);
 
         if(checkEmail && checkEmail.is_exist) {
           console.log("Parent Status: ", checkEmail.status);
         } else {
           let userType = await getUserTypes();
-
           userType = userType.filter(type => {
             return type.name === "USER";
           })[0];
