@@ -1734,6 +1734,7 @@ export default function index() {
             <Loading />
           ) : (
             <Form
+              historyList={customApplicationHistory}
               key={applicationFormKey}
               { ...(isFormHistory ? selectedCustomFormHistory : selectedApplication) }
               application_date={

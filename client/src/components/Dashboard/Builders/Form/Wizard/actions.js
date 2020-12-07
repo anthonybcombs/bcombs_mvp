@@ -41,7 +41,7 @@ export default ({ fields, currentStep, hasWizard, onSetStep, onSubmit }) => {
         showSubmit && (
           <button
             className='submitBtn'
-            onClick={onSubmit}
+            onClick={() => onSubmit(false)}
           >
             Submit
             <FontAwesomeIcon

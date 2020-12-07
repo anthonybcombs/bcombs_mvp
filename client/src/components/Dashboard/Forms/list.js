@@ -15,7 +15,7 @@ export default ({
 }) => {
   const newList = cloneDeep(list)
   const recentList = newList.splice(0, 4)
-  const allList = newList
+  const allList = cloneDeep(list)
 
   return (
     <div className='form-list-wrapper'>
