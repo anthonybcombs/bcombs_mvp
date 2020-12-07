@@ -346,7 +346,7 @@ export default (props) => {
   // console.log('@fieldError', fieldError)
   
   // For application
-  const { form_contents: historyContents } = historyList && historyList.length ? JSON.parse(historyList[historyList.length-1].details) : {}
+  const { form_contents: historyContents } = historyList && historyList.length ? JSON.parse(historyList[0].details) : {}
   const { formData: historyfields } = historyContents || {}
   
   console.log('@history', { historyList, historyfields })
@@ -418,7 +418,7 @@ export default (props) => {
                             id={(actualFormFields[currentStep] || {}).id}
                             isReadOnly={isReadOnly}
                             fields={(actualFormFields[currentStep] || {}).formFields || []}
-                            historyFields={historyfields}
+                            historyFields={isReadOnly ? historyfields : []}
                             currentStep={currentStep}
                             fieldError={fieldError}
                             addresses={addresses}
@@ -434,7 +434,7 @@ export default (props) => {
                           id={'firstPage'}
                           isReadOnly={isReadOnly}
                           fields={actualFormFields}
-                          historyFields={historyfields}
+                          historyFields={isReadOnly ? historyfields : []}
                           currentStep={currentStep}
                           fieldError={fieldError}
                           addresses={addresses}

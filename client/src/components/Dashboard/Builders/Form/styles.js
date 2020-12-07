@@ -14,10 +14,6 @@ export default styled.div`
     color: rgb(255, 255, 255)!important;
   }
 
-  select.highlights:after {
-    background: unset!important;
-  }
-
   textarea.highlights {
     background-color: rgb(242, 110, 33)!important;
     border: 2px solid rgb(242, 110, 33)!important;
@@ -968,6 +964,10 @@ export default styled.div`
   }
   .react-datepicker__day--outside-month {
     color: rgb(0 0 0 / 35%);
+  }
+
+  select.highlights:after {
+    background: unset!important;
   }
 
 
