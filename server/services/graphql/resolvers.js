@@ -1014,7 +1014,7 @@ const resolvers = {
       
       if(hasLoginField) {
         email = loginType?.fields.filter((item) => {
-          return item.type == "text"
+          return item.type == "email"
         });
   
         password = loginType?.fields.filter((item) => {
@@ -1031,6 +1031,8 @@ const resolvers = {
       const newApplication = await submitCustomApplication(application);
 
       if(newApplication && newApplication.app_id && hasLoginField) {
+
+        console.log("email", email); console.log("password", password);
         const checkEmail = await checkUserEmail(email.value);
 
         if(checkEmail && checkEmail.is_exist) {
@@ -1043,9 +1045,9 @@ const resolvers = {
           })[0];
 
           let user = {
-            username: email,
-            email: email,
-            password: password,
+            username: email.value,
+            email: email.value,
+            password: password.value,
             type: userType
           };
 
@@ -1053,7 +1055,7 @@ const resolvers = {
           let addUser = await executeSignUp(user);
           console.log("addUser:", user);
           let userInfo = {
-            email: email
+            email: email.value
           };
 
           await executeAddUserProfile(userInfo);
