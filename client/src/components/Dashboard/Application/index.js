@@ -1589,7 +1589,7 @@ export default function index() {
                 }}
               >
                 <option key={selectedVendor.id} value="default">
-                  Bcombs Form
+                  {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
                 </option>
                 {
                   formList.map(form => (
