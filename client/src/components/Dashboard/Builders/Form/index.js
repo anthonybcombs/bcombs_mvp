@@ -258,9 +258,8 @@ export default (props) => {
 
   const handleCopyFirstAddress = ({ target: { checked } }, id) => {
     const { id: firstAddressId } = addresses[0]
-    const flattenFields = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
-    const { fields: firstAddressFields } = flattenFields.find(e => e.id === firstAddressId)
-    const { fields: targetAddressFields, type } = flattenFields.find(e => e.id === id)
+    const { fields: firstAddressFields } = flattenFields().find(e => e.id === firstAddressId)
+    const { fields: targetAddressFields, type } = flattenFields().find(e => e.id === id)
     if (checked) {
       const fieldValues = firstAddressFields.map(e => e.value)
       const targetAddressValues = targetAddressFields.reduce((acc, curr, index) => {
@@ -319,6 +318,10 @@ export default (props) => {
       setBehaviour('')
     }
   })
+
+  const handleGetGroupById = (id, field) => {
+    return flattenFields().find(e => e.id === id)[field]
+  }
 
 
   // console.log('@fieldError', fieldError)
@@ -399,6 +402,7 @@ export default (props) => {
                             onSetStep={handleChangeStep}
                             onChange={handleChange}
                             onCheckError={handleCheckError}
+                            onGetGroupById={handleGetGroupById}
                           />
                         </div>
                       ) : (
@@ -413,6 +417,7 @@ export default (props) => {
                           onSetStep={handleChangeStep}
                           onChange={handleChange}
                           onCheckError={handleCheckError}
+                          onGetGroupById={handleGetGroupById}
                         />
                       )
                     }

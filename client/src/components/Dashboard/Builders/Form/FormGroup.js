@@ -8,7 +8,8 @@ import FieldConstructor from '../FormBuilder/FieldConstructor'
 import { Sources } from '../FormBuilder/Settings/Sources'
 
 export default ({ 
-  label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError, gridMax, showLabel, addresses, id: groupId, onCopyFirstAddress, isReadOnly
+  label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError,
+  gridMax, showLabel, addresses, id: groupId, onCopyFirstAddress, isReadOnly, onGetGroupById
 }) => {
   
   const isAddress = itemGroup === 'address'
@@ -45,6 +46,22 @@ export default ({
 
   const { include, value } = settings.instruction || {}
   const isNotFirstAddress = isAddress && addresses.findIndex(e => e.id === groupId) > 0
+  let issameAsFirstAddress = true
+
+  if (isNotFirstAddress) {
+    const firstAddress = onGetGroupById(addresses[0].id, 'fields')
+    const currAddress = fields
+    const isNotemptyAddress = fields.find(e => !!(e.value ? JSON.parse(e.value) : e.value))
+    if (!!isNotemptyAddress) {
+      currAddress.forEach(({ value }, index) => {
+        if (value !== firstAddress[index].value) {
+          issameAsFirstAddress = false
+        }
+      })
+    } else {
+      issameAsFirstAddress = false
+    }
+  }
 
   return (
     <div
@@ -117,6 +134,7 @@ export default ({
             <input
               type='checkbox'
               id={`sameAddress-${groupId}`}
+              checked={issameAsFirstAddress}
               onChange={(e) => onCopyFirstAddress(e, groupId)}
             />
             <span className='checkmark' />
