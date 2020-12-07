@@ -31,7 +31,8 @@ export default (props) => {
     onGetUpdatedApplication,
     onSubmitApplication,
     onSelectLatest,
-    isFormHistory
+    isFormHistory,
+    historyList
   } = props
 
   const isApplication = !form_id
@@ -311,6 +312,24 @@ export default (props) => {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     copyStyles: true,
+    pageStyle:`
+    #form .highlights{
+
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
+      border-bottom: 2px solid #ccc !important;
+  
+      background: none !important ;
+      color: #555 !important;
+    }
+    #form .highlights-textarea {
+      border: 2px solid #ccc !important;
+      background: none !important ;
+      color: #555 !important;
+    }
+    
+    `,
     onBeforeGetContent: () => {
       setBehaviour('print')
     },
@@ -325,8 +344,12 @@ export default (props) => {
 
 
   // console.log('@fieldError', fieldError)
-  // console.log('@actualFormFields', actualFormFields)
-
+  
+  // For application
+  const { form_contents: historyContents } = historyList && historyList.length ? JSON.parse(historyList[historyList.length-1].details) : {}
+  const { formData: historyfields } = historyContents || {}
+  
+  console.log('@history', { historyList, historyfields })
   return (
     <FormStyled ref={componentRef}>
       <div id='form' >
@@ -395,6 +418,7 @@ export default (props) => {
                             id={(actualFormFields[currentStep] || {}).id}
                             isReadOnly={isReadOnly}
                             fields={(actualFormFields[currentStep] || {}).formFields || []}
+                            historyFields={historyfields}
                             currentStep={currentStep}
                             fieldError={fieldError}
                             addresses={addresses}
@@ -410,6 +434,7 @@ export default (props) => {
                           id={'firstPage'}
                           isReadOnly={isReadOnly}
                           fields={actualFormFields}
+                          historyFields={historyfields}
                           currentStep={currentStep}
                           fieldError={fieldError}
                           addresses={addresses}

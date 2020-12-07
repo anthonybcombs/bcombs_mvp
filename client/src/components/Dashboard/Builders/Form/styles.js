@@ -7,6 +7,23 @@ export default styled.div`
   background: #fffefe;
   min-height: calc(100vh - 3rem);
 
+  .highlights {
+    border: 1px solid rgb(242, 110, 33)!important;
+    padding: 5px;
+    background-color: rgb(242, 110, 33);
+    color: rgb(255, 255, 255)!important;
+  }
+
+  select.highlights:after {
+    background: unset!important;
+  }
+
+  textarea.highlights {
+    background-color: rgb(242, 110, 33)!important;
+    border: 2px solid rgb(242, 110, 33)!important;
+    color: rgb(255, 255, 255)!important;
+  }
+
   .print-button {
     top: 13px;
   }

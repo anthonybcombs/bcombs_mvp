@@ -8,7 +8,7 @@ import FieldConstructor from '../FormBuilder/FieldConstructor'
 import { Sources } from '../FormBuilder/Settings/Sources'
 
 export default ({ 
-  label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError,
+  label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError, historyFields,
   gridMax, showLabel, addresses, id: groupId, onCopyFirstAddress, isReadOnly, onGetGroupById
 }) => {
   
@@ -97,6 +97,9 @@ export default ({
             const { type = '', tag, options, column = 1, id: fieldId, placeholder, required } = field
             const errors = fieldError[fieldId] || []
             const hasError = errors.length ? !!errors.find(e => e) : false
+            const historyValue = historyFields.find(e => e.id === field.id)?.value
+            const className = historyValue && historyValue !== field.value ? 'highlights' : ''
+            // console.log('basta di mogana', { historyFields, field })
             return (
               <div
                 key={`formGroupField-${index}`}
@@ -114,7 +117,7 @@ export default ({
                     onCheckError,
                     errors,
                     isReadOnly,
-                    className: hasError ? 'hasError': ''
+                    className: `${className} ${hasError ? 'hasError': ''}`
                   })
                 }
                 {
