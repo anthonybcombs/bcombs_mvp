@@ -1025,6 +1025,69 @@ const resolvers = {
         password = password.length > 0 ? password[0] : "";
       }
 
+      //check if there is file
+      console.log("primeFiles", primeFiles);
+
+      for(let primeFile of primeFiles) {
+        if(primeFile?.fields.length > 0) {
+          console.log("why i'm not here");
+          let fileContent = primeFile.fields[0]?.value;
+
+          fileContent = fileContent ? JSON.parse(fileContent): {};
+
+          console.log("fileContent", fileContent);
+          if(fileContent && fileContent.data) {
+
+            console.log("why i'm not here2");
+            const buf = Buffer.from(
+              fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
+              "base64"
+            );
+
+            const s3Payload = {
+              Bucket: currentS3BucketName,
+              Key: `file/${primeFile.id}/${fileContent.filename}`,
+              Body: buf,
+              ContentEncoding: "base64",
+              ContentType: fileContent.contentType,
+              ACL: "public-read"
+            };
+
+            await uploadFile(s3Payload);
+
+            fileContent.url = s3Payload.Key;
+            fileContent.data = "";
+
+            console.log("fileContent url", fileContent.url);
+
+            primeFile.fields[0].value = JSON.stringify(fileContent);
+
+            console.log("update primefile", util.inspect(primeFile, false, null, true));
+
+            formData = formData.map((item) => {
+              if(item.id == primeFile.id) {
+                item = primeFile
+              }
+              return item;
+            });
+            
+            const formContents = {
+              formTitle: formTitle,
+              formData: formData
+            }
+
+            application.form_contents = formContents;
+
+            console.log("formContents", util.inspect(formContents, false, null, true));
+
+            // let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
+            // formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+            // await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
+          }
+        }
+      }
+
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
@@ -1069,59 +1132,6 @@ const resolvers = {
           user_id: newUser.id,
           custom_app_id: newApplication.app_id
         });
-      }
-
-      console.log("primeFiles", primeFiles);
-
-      for(let primeFile of primeFiles) {
-        if(primeFile?.fields.length > 0) {
-          let fileContent = primeFile.fields[0]?.file;
-          if(fileContent) {
-            const buf = Buffer.from(
-              fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
-              "base64"
-            );
-
-            const s3Payload = {
-              Bucket: currentS3BucketName,
-              Key: `user/${newApplication.app_id}/${primeFile.id}/${fileContent.filename}`,
-              Body: buf,
-              ContentEncoding: "base64",
-              ContentType: fileContent.contentType,
-              ACL: "public-read"
-            };
-
-            await uploadFile(s3Payload);
-
-            fileContent.url = s3Payload.Key;
-            fileContent.data = "";
-
-            console.log("fileContent url", fileContent.url);
-
-            primeFile.fields[0].file = fileContent;
-
-            console.log("update primefile", util.inspect(primeFile, false, null, true));
-
-            formData = formData.map((item) => {
-              if(item.id == primeFile.id) {
-                item = primeFile
-              }
-              return item;
-            });
-            
-            const formContents = {
-              formTitle: formTitle,
-              formData: formData
-            }
-
-            console.log("formContents", util.inspect(formContents, false, null, true));
-
-            let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
-            formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
-
-            await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
-          }
-        }
       }
 
       return {
