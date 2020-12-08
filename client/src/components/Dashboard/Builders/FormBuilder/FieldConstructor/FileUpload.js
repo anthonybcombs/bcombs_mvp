@@ -57,7 +57,7 @@ export default ({ isReadOnly = false, allowTypes, limit, errorMessage, id: field
 
     var reader = new FileReader()
     reader.onloadend = function() {
-      onChange({ target: { id: fieldId, value: { data: reader.result, filename: file.name, contentType: file.type, extension: `.${ext}` } } })
+      onChange({ target: { id: fieldId, value: { url: '', data: reader.result, filename: file.name, contentType: file.type, extension: `.${ext}` } } })
     }
     reader.readAsDataURL(file)
   }
@@ -105,18 +105,22 @@ export default ({ isReadOnly = false, allowTypes, limit, errorMessage, id: field
             </div>
           </div>
         ) : (
-          data ? (
+          filename ? (
             <div className='uploadForm-value'>
               <FontAwesomeIcon
                 className='file-icon'
                 icon={getExtensionIcon(ext)}
               />
               <span>{filename}</span>
-              <FontAwesomeIcon
-                icon={faTimes}
-                className='close-icon'
-                onClick={() => !isReadOnly ? onChange({ target: { id: fieldId, value: '' } }) : {}}
-              />
+              {
+                !isReadOnly && (
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    className='close-icon'
+                    onClick={() => !isReadOnly ? onChange({ target: { id: fieldId, value: '' } }) : {}}
+                  />
+                )
+              }
             </div>
           ) : (
             <div
@@ -131,7 +135,7 @@ export default ({ isReadOnly = false, allowTypes, limit, errorMessage, id: field
                 type='file'
                 id={`file${fieldId}`}
                 name='file'
-                readOnly={isReadOnly}
+                disabled={isReadOnly}
                 onClick={e => e.stopPropagation()}
                 onChange={(e) => !isReadOnly ? encodeImageFileAsURL(e.target.files[0]) : {}}
               />

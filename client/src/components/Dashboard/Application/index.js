@@ -1606,7 +1606,7 @@ export default function index() {
                 }}
               >
                 <option key={selectedVendor.id} value="default">
-                  Bcombs Form
+                  {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
                 </option>
                 {
                   formList.map(form => (
@@ -1751,6 +1751,7 @@ export default function index() {
             <Loading />
           ) : (
             <Form
+              historyList={customApplicationHistory}
               key={applicationFormKey}
               { ...(isFormHistory ? selectedCustomFormHistory : selectedApplication) }
               application_date={

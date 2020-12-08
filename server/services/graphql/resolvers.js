@@ -1020,7 +1020,7 @@ const resolvers = {
       
       if(hasLoginField) {
         email = loginType?.fields.filter((item) => {
-          return item.type == "text"
+          return item.type == "email"
         });
   
         password = loginType?.fields.filter((item) => {
@@ -1031,27 +1031,95 @@ const resolvers = {
         password = password.length > 0 ? password[0] : "";
       }
 
+      //check if there is file
+      console.log("primeFiles", primeFiles);
+
+      for(let primeFile of primeFiles) {
+        if(primeFile?.fields.length > 0) {
+          console.log("why i'm not here");
+          let fileContent = primeFile.fields[0]?.value;
+
+          fileContent = fileContent ? JSON.parse(fileContent): {};
+
+          console.log("fileContent", fileContent);
+          if(fileContent && fileContent.data) {
+
+            console.log("why i'm not here2");
+            const buf = Buffer.from(
+              fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
+              "base64"
+            );
+
+            const s3Payload = {
+              Bucket: currentS3BucketName,
+              Key: `file/${primeFile.id}/${fileContent.filename}`,
+              Body: buf,
+              ContentEncoding: "base64",
+              ContentType: fileContent.contentType,
+              ACL: "public-read"
+            };
+
+            await uploadFile(s3Payload);
+
+            fileContent.url = s3Payload.Key;
+            fileContent.data = "";
+
+            console.log("fileContent url", fileContent.url);
+
+            primeFile.fields[0].value = JSON.stringify(fileContent);
+
+            console.log("update primefile", util.inspect(primeFile, false, null, true));
+
+            formData = formData.map((item) => {
+              if(item.id == primeFile.id) {
+                item = primeFile
+              }
+              return item;
+            });
+            
+            const formContents = {
+              formTitle: formTitle,
+              formData: formData
+            }
+
+            application.form_contents = formContents;
+
+            console.log("formContents", util.inspect(formContents, false, null, true));
+
+            // let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
+            // formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+            // await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
+          }
+        }
+      }
+
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
       const newApplication = await submitCustomApplication(application);
 
       if(newApplication && newApplication.app_id && hasLoginField) {
+
+        email.value = email.value.slice(1, -1);
+        password.value = password.value.slice(1, -1);
+        
         const checkEmail = await checkUserEmail(email.value);
+
+        console.log("email", email); console.log("password", password);
 
         if(checkEmail && checkEmail.is_exist) {
           console.log("Parent Status: ", checkEmail.status);
         } else {
           let userType = await getUserTypes();
-
           userType = userType.filter(type => {
             return type.name === "USER";
           })[0];
 
           let user = {
-            username: email,
-            email: email,
-            password: password,
+            username: email.value,
+            email: email.value,
+            password: password.value,
             type: userType
           };
 
@@ -1059,7 +1127,7 @@ const resolvers = {
           let addUser = await executeSignUp(user);
           console.log("addUser:", user);
           let userInfo = {
-            email: email
+            email: email.value
           };
 
           await executeAddUserProfile(userInfo);
@@ -1125,12 +1193,36 @@ const resolvers = {
         }
       }
 
+      return {
+        messageType: "info",
+        message: "successfully submitted your application form"
+      } 
+    },
+    async updateSubmitCustomApplication(root, {application}, context) {
+
+      const previousApplication = await getCustomFormApplicantById({app_id: application.app_id});
+
+      let formData = application?.form_contents?.formData;
+      let formTitle = application?.form_contents?.formTitle;
+
+      let primeFiles = formData.filter((item) => {
+        return item.type == "primeFile"
+      });
+
+      //check if there is file
       console.log("primeFiles", primeFiles);
 
       for(let primeFile of primeFiles) {
         if(primeFile?.fields.length > 0) {
-          let fileContent = primeFile.fields[0]?.file;
-          if(fileContent) {
+          console.log("why i'm not here");
+          let fileContent = primeFile.fields[0]?.value;
+
+          fileContent = fileContent ? JSON.parse(fileContent): {};
+
+          console.log("fileContent", fileContent);
+          if(fileContent && fileContent.data) {
+
+            console.log("why i'm not here2");
             const buf = Buffer.from(
               fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
               "base64"
@@ -1138,7 +1230,7 @@ const resolvers = {
 
             const s3Payload = {
               Bucket: currentS3BucketName,
-              Key: `user/${newApplication.app_id}/${primeFile.id}/${fileContent.filename}`,
+              Key: `file/${primeFile.id}/${fileContent.filename}`,
               Body: buf,
               ContentEncoding: "base64",
               ContentType: fileContent.contentType,
@@ -1152,7 +1244,7 @@ const resolvers = {
 
             console.log("fileContent url", fileContent.url);
 
-            primeFile.fields[0].file = fileContent;
+            primeFile.fields[0].value = JSON.stringify(fileContent);
 
             console.log("update primefile", util.inspect(primeFile, false, null, true));
 
@@ -1168,24 +1260,12 @@ const resolvers = {
               formData: formData
             }
 
+            application.form_contents = formContents;
+
             console.log("formContents", util.inspect(formContents, false, null, true));
-
-            let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
-            formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
-
-            await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
           }
         }
       }
-
-      return {
-        messageType: "info",
-        message: "successfully submitted your application form"
-      } 
-    },
-    async updateSubmitCustomApplication(root, {application}, context) {
-
-      const previousApplication = await getCustomFormApplicantById({app_id: application.app_id});
 
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");

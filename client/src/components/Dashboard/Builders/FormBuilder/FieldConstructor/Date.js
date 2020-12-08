@@ -4,7 +4,7 @@ import FieldConstructor from '../../FormBuilder/FieldConstructor'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ isReadOnly = false, showLabel, settings, label, fields, type, id: groupId, onChange, fieldError, onCheckError }) => {
+export default ({ isReadOnly = false, showLabel, settings, label, fields, type, id: groupId, onChange, fieldError, onCheckError, historyFields }) => {
   const fieldId = `${type}_${groupId}`
   const handleAnswer = (date) => {
     const dateObj = date ? new Date(date) : ''
@@ -108,12 +108,16 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
           {
             fields.map((field, index) => {
               const { placeholder, required } = field
+              const historyValue = historyFields.find(e => e.id === field.id)?.value
+              const className = historyValue && JSON.parse(historyValue) !== field.value ? 'highlights' : ''
+
               return FieldConstructor[field.tag]({
                 ...field,
                 isReadOnly,
                 key: `dateField${index}`,
                 placeholder: `${placeholder} ${required ? '*' : ''}`,
                 readOnly: true,
+                className
               })
             })
           }

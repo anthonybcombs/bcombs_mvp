@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ isReadOnly = false, showLabel, settings, fields, label, type, id: groupId, onChange, fieldError, onCheckError }) => {
+export default ({ isReadOnly = false, showLabel, settings, fields, label, type, id: groupId, onChange, fieldError, onCheckError, historyFields }) => {
   const { id: fieldId, value, required } = fields[0]
 
   const handleFormatAnswer = (timeId, timeVal, isBlur) => {
@@ -47,6 +47,9 @@ export default ({ isReadOnly = false, showLabel, settings, fields, label, type, 
 
   const { include, value: instructionValue } = settings.instruction || {}
   const hasError = !!fieldError[fieldId]
+  const historyValue = historyFields.find(e => e.id === fields[0].id)?.value
+  const className = historyValue && JSON.parse(historyValue) !== fields[0].value ? 'highlights' : ''
+
   return (
     <div
       className={`formGroup ${type}`}
@@ -84,7 +87,7 @@ export default ({ isReadOnly = false, showLabel, settings, fields, label, type, 
             <input
               type='number'
               id='hour'
-              className='field-input'
+              className={`${className} field-input`}
               placeholder={`Hour ${required ? '*' : ''}`}
               value={value ? value[0] : ''}
               readOnly={isReadOnly}
@@ -95,7 +98,7 @@ export default ({ isReadOnly = false, showLabel, settings, fields, label, type, 
             <input
               type='number'
               id='minutes'
-              className='field-input'
+              className={`${className} field-input`}
               placeholder={`Minutes ${required ? '*' : ''}`}
               value={value ? value[1] : ''}
               readOnly={isReadOnly}
@@ -106,7 +109,7 @@ export default ({ isReadOnly = false, showLabel, settings, fields, label, type, 
               <select
                 id='type'
                 value={value ? value[2] : ''}
-                className='field-input'
+                className={`${className} field-input`}
                 readOnly={isReadOnly}
                 onChange={handleAnswer}
                 onBlur={(e) => handleAnswer(e, true)}

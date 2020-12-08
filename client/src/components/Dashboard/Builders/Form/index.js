@@ -31,7 +31,8 @@ export default (props) => {
     onGetUpdatedApplication,
     onSubmitApplication,
     onSelectLatest,
-    isFormHistory
+    isFormHistory,
+    historyList
   } = props
 
   const isApplication = !form_id
@@ -108,6 +109,7 @@ export default (props) => {
   }
 
   const handleChange = (id, value, isMultiple = false) => {
+
     const [, groupId] = id.split('_')
     const { settings: { logic } } = flattenFields().find(e => e.id === groupId)
 
@@ -258,9 +260,8 @@ export default (props) => {
 
   const handleCopyFirstAddress = ({ target: { checked } }, id) => {
     const { id: firstAddressId } = addresses[0]
-    const flattenFields = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
-    const { fields: firstAddressFields } = flattenFields.find(e => e.id === firstAddressId)
-    const { fields: targetAddressFields, type } = flattenFields.find(e => e.id === id)
+    const { fields: firstAddressFields } = flattenFields().find(e => e.id === firstAddressId)
+    const { fields: targetAddressFields, type } = flattenFields().find(e => e.id === id)
     if (checked) {
       const fieldValues = firstAddressFields.map(e => e.value)
       const targetAddressValues = targetAddressFields.reduce((acc, curr, index) => {
@@ -312,6 +313,24 @@ export default (props) => {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     copyStyles: true,
+    pageStyle:`
+    #form .highlights{
+
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
+      border-bottom: 2px solid #ccc !important;
+  
+      background: none !important ;
+      color: #555 !important;
+    }
+    #form .highlights-textarea {
+      border: 2px solid #ccc !important;
+      background: none !important ;
+      color: #555 !important;
+    }
+    
+    `,
     onBeforeGetContent: () => {
       setBehaviour('print')
     },
@@ -320,10 +339,18 @@ export default (props) => {
     }
   })
 
+  const handleGetGroupById = (id, field) => {
+    return flattenFields().find(e => e.id === id)[field]
+  }
+
 
   // console.log('@fieldError', fieldError)
-  // console.log('@actualFormFields', actualFormFields)
-
+  
+  // For application
+  const { form_contents: historyContents } = historyList && historyList.length ? JSON.parse(historyList[0].details) : {}
+  const { formData: historyfields } = historyContents || {}
+  
+  console.log('@history', { historyList, historyfields })
   return (
     <FormStyled ref={componentRef}>
       <div id='form' >
@@ -392,6 +419,7 @@ export default (props) => {
                             id={(actualFormFields[currentStep] || {}).id}
                             isReadOnly={isReadOnly}
                             fields={(actualFormFields[currentStep] || {}).formFields || []}
+                            historyFields={(isReadOnly && !isFormHistory) ? historyfields : []}
                             currentStep={currentStep}
                             fieldError={fieldError}
                             addresses={addresses}
@@ -399,6 +427,7 @@ export default (props) => {
                             onSetStep={handleChangeStep}
                             onChange={handleChange}
                             onCheckError={handleCheckError}
+                            onGetGroupById={handleGetGroupById}
                           />
                         </div>
                       ) : (
@@ -406,6 +435,7 @@ export default (props) => {
                           id={'firstPage'}
                           isReadOnly={isReadOnly}
                           fields={actualFormFields}
+                          historyFields={(isReadOnly && !isFormHistory) ? historyfields : []}
                           currentStep={currentStep}
                           fieldError={fieldError}
                           addresses={addresses}
@@ -413,6 +443,7 @@ export default (props) => {
                           onSetStep={handleChangeStep}
                           onChange={handleChange}
                           onCheckError={handleCheckError}
+                          onGetGroupById={handleGetGroupById}
                         />
                       )
                     }
