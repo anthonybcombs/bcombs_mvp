@@ -1143,6 +1143,71 @@ const resolvers = {
 
       const previousApplication = await getCustomFormApplicantById({app_id: application.app_id});
 
+      let formData = application?.form_contents?.formData;
+      let formTitle = application?.form_contents?.formTitle;
+
+      let primeFiles = formData.filter((item) => {
+        return item.type == "primeFile"
+      });
+
+      //check if there is file
+      console.log("primeFiles", primeFiles);
+
+      for(let primeFile of primeFiles) {
+        if(primeFile?.fields.length > 0) {
+          console.log("why i'm not here");
+          let fileContent = primeFile.fields[0]?.value;
+
+          fileContent = fileContent ? JSON.parse(fileContent): {};
+
+          console.log("fileContent", fileContent);
+          if(fileContent && fileContent.data) {
+
+            console.log("why i'm not here2");
+            const buf = Buffer.from(
+              fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
+              "base64"
+            );
+
+            const s3Payload = {
+              Bucket: currentS3BucketName,
+              Key: `file/${primeFile.id}/${fileContent.filename}`,
+              Body: buf,
+              ContentEncoding: "base64",
+              ContentType: fileContent.contentType,
+              ACL: "public-read"
+            };
+
+            await uploadFile(s3Payload);
+
+            fileContent.url = s3Payload.Key;
+            fileContent.data = "";
+
+            console.log("fileContent url", fileContent.url);
+
+            primeFile.fields[0].value = JSON.stringify(fileContent);
+
+            console.log("update primefile", util.inspect(primeFile, false, null, true));
+
+            formData = formData.map((item) => {
+              if(item.id == primeFile.id) {
+                item = primeFile
+              }
+              return item;
+            });
+            
+            const formContents = {
+              formTitle: formTitle,
+              formData: formData
+            }
+
+            application.form_contents = formContents;
+
+            console.log("formContents", util.inspect(formContents, false, null, true));
+          }
+        }
+      }
+
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
       
