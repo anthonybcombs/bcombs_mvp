@@ -109,6 +109,7 @@ export default (props) => {
   }
 
   const handleChange = (id, value, isMultiple = false) => {
+
     const [, groupId] = id.split('_')
     const { settings: { logic } } = flattenFields().find(e => e.id === groupId)
 
@@ -418,7 +419,7 @@ export default (props) => {
                             id={(actualFormFields[currentStep] || {}).id}
                             isReadOnly={isReadOnly}
                             fields={(actualFormFields[currentStep] || {}).formFields || []}
-                            historyFields={isReadOnly ? historyfields : []}
+                            historyFields={(isReadOnly && !isFormHistory) ? historyfields : []}
                             currentStep={currentStep}
                             fieldError={fieldError}
                             addresses={addresses}
@@ -434,7 +435,7 @@ export default (props) => {
                           id={'firstPage'}
                           isReadOnly={isReadOnly}
                           fields={actualFormFields}
-                          historyFields={isReadOnly ? historyfields : []}
+                          historyFields={(isReadOnly && !isFormHistory) ? historyfields : []}
                           currentStep={currentStep}
                           fieldError={fieldError}
                           addresses={addresses}

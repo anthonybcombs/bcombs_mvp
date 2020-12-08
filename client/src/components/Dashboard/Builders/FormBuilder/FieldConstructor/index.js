@@ -52,9 +52,9 @@ export default {
     )
   },
   icon: ({ type, label, isReadOnly = false }) => {
-    if (isReadOnly) {
-      return null
-    }
+    // if (isReadOnly) {
+    //   return null
+    // }
     switch(type) {
       case 'date':
         return (
