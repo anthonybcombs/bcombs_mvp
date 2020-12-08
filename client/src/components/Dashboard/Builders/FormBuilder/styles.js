@@ -1091,7 +1091,7 @@ export default styled.div`
   .sortableGroup.email .sortableGroup-row .sortableGroup-column:nth-child(2),
   .sortableGroup.phone .sortableGroup-row .sortableGroup-column:nth-child(2) {
     grid-column: 1 !important;
-    max-width: 300px;
+    max-width: 400px;
   }
 
 
