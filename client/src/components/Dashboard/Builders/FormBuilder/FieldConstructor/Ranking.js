@@ -58,12 +58,14 @@ const SortableItem = DropTarget('sortableItem', {
 }))(
   React.forwardRef(
     ({
-      connectDragSource, connectDropTarget, connectDragPreview, label, isDragging
+      connectDragSource, connectDropTarget, connectDragPreview, label, isDragging, isReadOnly
     }, ref) => {
     const elementRef = useRef(null)
     const dropElement = useRef(null)
-    connectDragSource(elementRef)
-    connectDropTarget(dropElement)
+    if (!isReadOnly) {
+      connectDragSource(elementRef)
+      connectDropTarget(dropElement)
+    }
   
     const opacity = (isDragging) ? 0 : 1
     useImperativeHandle(ref, () => ({
@@ -186,36 +188,22 @@ export default ({ isReadOnly = false, items, onChangeFieldSettings, isActive, is
           </div>
         ) : (
           <div className='rankingForm'>
-            {
-              isReadOnly ? (
+            <DndProvider backend={HTML5Backend}>
+              {
                 newItems.map((item, itemIndex) => {
                   return (
                     <SortableItem
                       {...item}
                       key={`sortableItem-${item.rank}`}
                       index={itemIndex}
-                      onMoveItem={handleMoveItem}
+                      onMoveItem={isReadOnly ? () => {} : handleMoveItem}
+                      isReadOnly={isReadOnly}
                     />
                   )
                 })
-              ) : (
-                <DndProvider backend={HTML5Backend}>
-                  {
-                    newItems.map((item, itemIndex) => {
-                      return (
-                        <SortableItem
-                          {...item}
-                          key={`sortableItem-${item.rank}`}
-                          index={itemIndex}
-                          onMoveItem={handleMoveItem}
-                        />
-                      )
-                    })
-                  }
-                  <CustomDragLayer />
-                </DndProvider>
-              )
-            }
+              }
+              <CustomDragLayer />
+            </DndProvider>
           </div>
         )
       }
