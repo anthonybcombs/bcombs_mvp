@@ -1,14 +1,20 @@
 import React from 'react'
 
-export default ({ description, onChangeFieldSettings, isBuilder }) => {
+export default ({ label, onChangeFieldSettings, isBuilder }) => {
   return (
     <div className='sectionBreak-desc'>
-      <input
-        value={description}
-        className='field-input'
-        placeholder='Section break description here.'
-        onChange={({ target: { value } }) => onChangeFieldSettings({ description: value })}
-      />
+      {
+        isBuilder ? (
+          <input
+            value={label}
+            className='field-input'
+            placeholder='Section break description here.'
+            onChange={({ target: { value } }) => onChangeFieldSettings({ label: value })}
+          />
+        ) : (
+          <label>{label}</label>
+        )
+      }
     </div>
   )
 }

@@ -248,7 +248,7 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Section Break', description: '', tag: 'sectionBreak' }
+      { label: '', description: '', tag: 'sectionBreak' }
     ],
     label: 'Section Break',
     type: 'sectionBreak',
