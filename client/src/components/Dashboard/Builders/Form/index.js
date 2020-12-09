@@ -359,7 +359,7 @@ export default (props) => {
             {!loading.getForm ? formTitle : ''}
           </div>
           {
-            !form_id && (
+            (!form_id && behavior !== 'print') && (
               <div className='app-date'>{application_date}</div>
             )
           }

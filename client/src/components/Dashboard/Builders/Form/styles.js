@@ -639,6 +639,13 @@ export default styled.div`
     width: 110px;
   }
 
+  .formGroup.email div:nth-child(2),
+  .formGroup.phone div:nth-child(2) {
+    // grid-column: 1 !important;
+    width: 400px;
+  }
+
+
   // Price
   .formGroup.price .formGroup-row  {
     display: flex;
