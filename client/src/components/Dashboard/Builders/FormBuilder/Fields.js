@@ -259,12 +259,12 @@ export const StandardFields = [
   },
   {
     fields: [
-      { label: 'Page Break', description: '', tag: 'pageBreak'}
+      { label: '', tag: 'pageBreak' }
     ],
     label: 'Page Break',
     type: 'pageBreak',
     hasSettings: false,
-    showLabel: true,
+    showLabel: false,
     gridMax: 1,
     includeLogic: false
   }

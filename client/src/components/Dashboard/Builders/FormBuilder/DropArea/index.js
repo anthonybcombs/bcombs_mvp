@@ -139,7 +139,17 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     setDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
   }
 
-  const handleChangeDefaultProps = ({ id, ...rest }) => {
+  const handleChangeDefaultProps = ({ id, isPageBreak, ...rest }) => {
+    if (isPageBreak && Object.keys(rest).includes('showLabel')) {
+      beforeSetDrop(droppedFields.map(e => {
+        if (e.type === 'pageBreak') {
+          return { ...e, ...rest }
+        }
+        return e
+      }))
+      return
+    }
+
     beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { $merge: rest }
     }))

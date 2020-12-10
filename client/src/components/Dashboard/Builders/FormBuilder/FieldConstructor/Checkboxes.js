@@ -24,7 +24,7 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId
   }
 
   const handleAddOthers = () => {
-    const newOption =  { ...options[0], name: 'other', label: 'Other...' }
+    const newOption =  { ...options[0], name: 'other', label: 'Other:' }
     onChangeFieldSettings({ options: update(options, { $push: [newOption] }) })
   }
 

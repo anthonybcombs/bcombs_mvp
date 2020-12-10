@@ -42,6 +42,10 @@ export default styled.div`
     -webkit-appearance: none;
     -moz-appearance: none;
   }
+
+  #formBuilder .field-input.pageBreak {
+    width: unset!important;
+  }
   #formBuilder .field-input.focus-visible {
     border-bottom: 2px solid #f26e21;
     transition: all .05s linear;

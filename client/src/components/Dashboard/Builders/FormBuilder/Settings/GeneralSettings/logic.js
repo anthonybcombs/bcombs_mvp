@@ -12,11 +12,11 @@ export default ({
   let itemArr = JSON.parse(items).filter(e => validPageIds.includes(e.pageId))
   
   let pageOptions = [
-    { value: 'end', label: 'Submit Application' }
+    { value: 'end', label: 'Submit Form' }
   ]
 
   if (hasPageBreak) {
-    const breaks = breakedFields.map(({ id, label }) => ({ value: id, label }))
+    const breaks = breakedFields.map(({ id, label }, index) => ({ value: id, label: `Page ${index + 1} (${label})` }))
     pageOptions = [
       ...breaks,
       ...pageOptions

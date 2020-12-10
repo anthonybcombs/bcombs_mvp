@@ -75,8 +75,11 @@ export default (props) => {
   const [actualFormFields, setFormFields] = useState([])
   const [formIsSet, setForm] = useState(false)
   const [currentStep, setStep] = useState(0)
+  const [backSteps, setBackSteps] = useState([])
   const [addresses, setAddresses] = useState([])
   const [behavior, setBehaviour] = useState('')
+  const [fieldError, setFieldError] = useState({})
+  const [nextPage, setNextPage] = useState('')
 
   useEffect(() => {
     if (formData.length && !formIsSet) {
@@ -100,12 +103,33 @@ export default (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (hasWizard) {
+      const [field] = actualFormFields[currentStep]?.fields || []
+      setNextPage(field?.value || '')
+    }
+  })
+
   const flattenFields = () => {
     if (hasWizard) {
       return actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], [])
     } else {
       return actualFormFields
     }
+  }
+
+  const beforeSetStep = (step, isBack = false) => {
+    if (!isBack) {
+      setBackSteps([...backSteps, currentStep])
+    } else {
+      const newBackSteps = [...backSteps]
+      if (newBackSteps.length) {
+        step = newBackSteps[newBackSteps.length - 1]
+      }
+      newBackSteps.splice(newBackSteps.length - 1, 1)
+      setBackSteps(newBackSteps)
+    }
+    setStep(step)
   }
 
   const handleChange = (id, value, isMultiple = false) => {
@@ -164,7 +188,8 @@ export default (props) => {
         if (hasWizard) {
           const pageIndex = actualFormFields.findIndex(e => e.id === pageId)
           if (currentStep !== pageIndex && pageIndex !== 'firstPage') {
-            setStep(pageIndex)
+            beforeSetStep(pageIndex)
+            setTimeout(() => setFieldError({}), 100)
           }
         }
         if (fieldId) {
@@ -172,7 +197,7 @@ export default (props) => {
             const elmnt = document.getElementById(`group_${fieldId}`)
             elmnt.style.background = '#ffe5d5'
             setTimeout(() => {
-              elmnt.style.cssText = "color: transparent !important; transition: all 1s"
+              elmnt.style.cssText = 'color: transparent !important; transition: all 1s'
             }, 100)
             elmnt.scrollIntoView({
               // behavior: 'smooth',
@@ -184,7 +209,6 @@ export default (props) => {
     }
   }
 
-  const [fieldError, setFieldError] = useState({})
   const handleCheckError = (id, errors, isMultiple = false) => {
     let newErrors = { ...fieldError }
     if (!isMultiple) {
@@ -219,9 +243,9 @@ export default (props) => {
       ]
       return acc
     }, [])
-    .forEach(({ required, value, id, placeholder, label }) => {
+    .forEach(({ required, value, id, placeholder, label, tag }) => {
       const newVal = value ? JSON.parse(value) : ''
-      if (required && !newVal) {
+      if (required && !newVal && tag !== 'icon') {
         const requiredError = `${placeholder || label || 'This'} is required.`
         if (!newFielderrors[id] || !newFielderrors[id].find(e => e === requiredError)) {
           newFielderrors[id] = [
@@ -245,14 +269,22 @@ export default (props) => {
     const isPrev = currentStep > step
 
     if (isPrev) {
-      setStep(step)
-      setFieldError([])
+      beforeSetStep(step, true)
+      setFieldError({})
       return
     }
 
     const { formHasError, errors } = handleCheckRequired()
     if (!formHasError) {
-      setStep(step)
+      if (nextPage && nextPage !== 'end') {
+        step = actualFormFields.findIndex(e => e.id === nextPage)
+      }
+
+      if (nextPage === 'end') {
+        handleSubmit(true)  
+      }
+      
+      beforeSetStep(step)
     }
 
     setFieldError(errors)
@@ -349,8 +381,10 @@ export default (props) => {
   // For application
   const { form_contents: historyContents } = historyList && historyList.length ? JSON.parse(historyList[0].details) : {}
   const { formData: historyfields } = historyContents || {}
+  const hideStepper = hasWizard && !!actualFormFields.find(e => !e.showLabel)
   
-  console.log('@history', { historyList, historyfields })
+  console.log('@actualFormFields', { actualFormFields, nextPage })
+
   return (
     <FormStyled ref={componentRef}>
       <div id='form' >
@@ -381,9 +415,9 @@ export default (props) => {
                     </button>
                   ) : (
                     <a 
-                      href=""
+                      href=''
                       className='view-latest'
-                      target="_blank" 
+                      target='_blank' 
                       onClick={(e) => {
                         e.preventDefault();
                         onSelectLatest()
@@ -410,11 +444,15 @@ export default (props) => {
                     {
                       hasWizard ? (
                         <div className='wizard-wrapper'>
-                          <Stepper
-                            fields={actualFormFields}
-                            currentStep={currentStep}
-                            onSetStep={handleChangeStep}
-                          />
+                          {
+                            !hideStepper && (
+                              <Stepper
+                                fields={actualFormFields}
+                                currentStep={currentStep}
+                                onSetStep={handleChangeStep}
+                              />
+                            )
+                          }
                           <Content
                             id={(actualFormFields[currentStep] || {}).id}
                             isReadOnly={isReadOnly}
@@ -453,6 +491,7 @@ export default (props) => {
                           hasWizard={hasWizard}
                           fields={actualFormFields}
                           currentStep={currentStep}
+                          hasBackSteps={backSteps.length > 0}
                           onSetStep={handleChangeStep}
                           onSubmit={handleSubmit}
                         />
