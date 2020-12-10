@@ -37,7 +37,7 @@ export default ({
   }
 
   const handleAddOthers = () => {
-    const newOption =  { ...options[0], name: 'other', label: 'Other...' }
+    const newOption =  { ...options[0], name: 'other', label: 'Other:' }
     onChangeFieldSettings({ options: update(options, { $push: [newOption] }) })
   }
 
@@ -48,6 +48,21 @@ export default ({
   }
 
   const handleAnswer = ({ target: { value: optionValue, checked } }, id) => {
+    if (id === 'other') {
+      optionValue = ''
+    }
+
+    if (id === 'otherInput') {
+      const newValue = { ...value, other: optionValue }
+      onChange({ target: { id: fieldId, value: newValue } })  
+      return
+    }
+    if (!checked) {
+      let newValue = { ...value }
+      delete newValue[id]
+      onChange({ target: { id: fieldId, value: newValue } })  
+      return  
+    }
     onChange({ target: { id: fieldId, value: { ...(isMultiple ? value : {}), [id]: checked ? optionValue : '' } } })
   }
 
@@ -57,8 +72,15 @@ export default ({
     <>
       {
         options.map((option, optionIndex) => {
+          const isOther = option.name === 'other'
+          const isSelected = Object.keys(value).includes(option.name)
+          let style = { gridColumn: `span ${column}` }
+          if (isOther && isSelected) {
+            style.display = 'flex'
+            style.alignItems = 'end'
+          }
           return (
-            <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
+            <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={style}>
               {
                 !isMultiple ? (
                   <div className='radiobuttonContainer'>
@@ -66,7 +88,7 @@ export default ({
                       type='radio'
                       id={`${fieldId}_${option.name}`}
                       value={option.label}
-                      checked={!!value[`${option.name}`]}
+                      checked={isSelected}
                       onChange={(e) => {
                         if (!isBuilder && !isReadOnly) {
                           handleAnswer(e, option.name)
@@ -76,7 +98,7 @@ export default ({
                       disabled={isBuilder}
                     />
                     {
-                      (isBuilder && option.name !== 'other')
+                      (isBuilder && !isOther)
                         ? (
                           <>
                             <label/>
@@ -97,7 +119,7 @@ export default ({
                       type='checkbox'
                       id={`${fieldId}_${option.name}`}
                       value={option.label}
-                      checked={!!value[`${option.name}`]}
+                      checked={isSelected}
                       onChange={(e) => {
                         if (!isBuilder && !isReadOnly) {
                           handleAnswer(e, option.name)
@@ -108,7 +130,7 @@ export default ({
                     />
                     <span className='checkmark' />
                     {
-                      (isBuilder && option.name !== 'other')
+                      (isBuilder && !isOther)
                         ? <input
                             type='text'
                             className={`field-input`}
@@ -118,6 +140,17 @@ export default ({
                         : <span className='labelName'> {option.label}</span>
                     }
                   </label>
+                )
+              }
+              {
+                (isOther && isSelected) && (
+                  <input
+                    className='field-input'
+                    placeholder='Enter other option'
+                    value={value?.other || ''}
+                    onChange={(e) => handleAnswer(e, 'otherInput')}
+                    style={{ marginLeft: '10px', position: 'relative', bottom: '5px' }}
+                  />
                 )
               }
               {

@@ -116,7 +116,7 @@ const SortableGroup = React.forwardRef(
                       className='show-icon'
                       onClick={e => {
                         e.stopPropagation()
-                        onChangeDefaultProps({ showLabel: !showLabel, id })
+                        onChangeDefaultProps({ showLabel: !showLabel, id, isPageBreak })
                         handleEnableEditGroupName(true)
                         if (!isActive) {
                           onActive(id)
@@ -157,7 +157,11 @@ const SortableGroup = React.forwardRef(
                 isStandard={isStandard}
                 gridColRepeat={gridColRepeat}
                 errors={errors}
+                label={label}
                 fieldErrors={fieldErrors}
+                hasPageBreak={hasPageBreak}
+                pageBreaks={pageBreaks}
+                isLastPageBreak={isLastPageBreak}
 
                 setActiveFieldIndex={setActiveFieldIndex}
                 onActive={onActive}

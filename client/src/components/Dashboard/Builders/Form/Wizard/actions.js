@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ fields, currentStep, hasWizard, onSetStep, onSubmit }) => {
+export default ({ fields, currentStep, hasWizard, hasBackSteps, onSetStep, onSubmit }) => {
   const fieldCount = fields.length
   const showPrev = currentStep > 0 && hasWizard
   const showNext = currentStep + 1 < fieldCount && hasWizard
@@ -10,7 +10,7 @@ export default ({ fields, currentStep, hasWizard, onSetStep, onSubmit }) => {
   return (
     <div className='wizard-actions'>
       {
-        showPrev && (
+        hasBackSteps && (
           <button
             className='prevBtn'
             onClick={() => onSetStep(currentStep - 1)}
@@ -19,7 +19,7 @@ export default ({ fields, currentStep, hasWizard, onSetStep, onSubmit }) => {
               className='save-icon'
               icon={faAngleLeft}
             />
-            Previous
+            Back
           </button>
         )
       }
