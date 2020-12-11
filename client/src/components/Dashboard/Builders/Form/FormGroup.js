@@ -39,7 +39,11 @@ export default ({
         errors.push(`${placeholder} is invalid.`)
       }
     }
-    
+
+    if (errors.length === 1 && errors[0] === '') {
+      errors = []
+    }
+
     onChange(id, JSON.stringify(value))
     onCheckError(id, errors)
   }
@@ -63,6 +67,11 @@ export default ({
     }
   }
 
+  const isRequired = fields.find(e => e.required)
+  const finalLabel = isRequired
+    ? label.slice(-1) === '*' ? label : label + ' *'
+    : label
+
   return (
     <div
       className={`formGroup ${itemGroup}`}
@@ -71,7 +80,7 @@ export default ({
       <p className='formGroup-name'>
         {showLabel ? (
           <span>
-            {label}
+            {finalLabel}
             {
               (include && value) && (
                 <span className='tooltip-wrapper'>

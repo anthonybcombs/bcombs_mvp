@@ -63,7 +63,7 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
   const ansFields = fields.filter(e => e.tag !== 'icon')
   const newDate = ansFields.find(e => !e.value) ? '' : ansFields.map(e => e.value).join()
   const hasError = !!fields.find(e => fieldError[e.id])
-
+  const isRequired = !!fields.find(e => e.required)
   return (
     <div
       className={`formGroup ${type}`}
@@ -107,7 +107,7 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
         >
           {
             fields.map((field, index) => {
-              const { placeholder, required } = field
+              const { placeholder } = field
               const historyValue = historyFields.find(e => e.id === field.id)?.value
               const className = historyValue && JSON.parse(historyValue) !== field.value ? 'highlights' : ''
 
@@ -115,7 +115,7 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
                 ...field,
                 isReadOnly,
                 key: `dateField${index}`,
-                placeholder: `${placeholder} ${required ? '*' : ''}`,
+                placeholder: `${placeholder} ${isRequired ? '*' : ''}`,
                 readOnly: true,
                 className
               })

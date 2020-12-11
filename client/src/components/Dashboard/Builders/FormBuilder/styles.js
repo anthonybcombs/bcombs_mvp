@@ -44,7 +44,7 @@ export default styled.div`
   }
 
   #formBuilder .field-input.pageBreak {
-    width: unset!important;
+    max-width: 50%!important;
   }
   #formBuilder .field-input.focus-visible {
     border-bottom: 2px solid #f26e21;
@@ -65,6 +65,10 @@ export default styled.div`
     font-size: 10px;
     color: #555 !important;
     font-family: "fontawesome";
+  }
+  #formBuilder .select-field-wrapper.pageBreak:after {
+    position: unset!important;
+    right: unset!important;
   }
   #formBuilder .select-field-wrapper label {
     position: absolute;

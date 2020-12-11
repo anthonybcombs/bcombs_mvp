@@ -86,14 +86,14 @@ export default ({ isReadOnly = false, min, max, onChangeFieldSettings, isBuilder
                       <div key={`maxValue-${i}`} className='scaleForm-value'>
                         <div className='radiobuttonContainer'>
                           <input
-                            id={`radio_${minValue + i}`}
+                            id={`linear_radio_${minValue + i}`}
                             type='radio'
                             value={minValue + i}
                             readOnly={isReadOnly}
                             checked={value === (minValue + i)}
                             onChange={e => handleAnswer(e)}
                           />
-                          <label htmlFor={`radio_${minValue + i}`}><span>{minValue + i}</span></label>
+                          <label htmlFor={`linear_radio_${minValue + i}`}><span>{minValue + i}</span></label>
                         </div>
                       </div>
                     )
