@@ -29,7 +29,7 @@ export default ({
           value: tag === 'pageBreak' ? field.value : placeholder,
           isActive,
           errors,
-          label,
+          pageBreakLabel: label,
           
           hasPageBreak,
           pageBreaks,

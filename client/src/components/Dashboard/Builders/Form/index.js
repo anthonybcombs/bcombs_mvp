@@ -276,6 +276,7 @@ export default (props) => {
 
     const { formHasError, errors } = handleCheckRequired()
     if (!formHasError) {
+      console.log('shits', nextPage)
       if (nextPage && nextPage !== 'end') {
         step = actualFormFields.findIndex(e => e.id === nextPage)
       }
@@ -383,7 +384,7 @@ export default (props) => {
   const { formData: historyfields } = historyContents || {}
   const hideStepper = hasWizard && !!actualFormFields.find(e => !e.showLabel)
   
-  console.log('@actualFormFields', { actualFormFields, nextPage })
+  console.log('@actualFormFields', { actualFormFields, nextPage, fieldError })
 
   return (
     <FormStyled ref={componentRef}>
