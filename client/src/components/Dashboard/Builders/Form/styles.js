@@ -655,6 +655,26 @@ export default styled.div`
     width: 110px;
   }
 
+  // Slider
+  .formGroup.slider .formGroup-column {
+    grid-column: span 2 / auto!important;
+  }
+  .formGroup.slider .formGroup-column .slider-field {
+    display: flex;
+    align-items: center;
+  }
+
+  .formGroup.slider .formGroup-column .slider-field div:nth-child(1) {
+    width: 50%;
+    margin-right: 25px;
+  }
+
+  .formGroup.slider .formGroup-column .slider-field div:nth-child(2) input {
+    line-height: 1!important;
+    border: 1px solid #ccc!important;
+    width: 30%!important;
+  }
+
   .formGroup.email div:nth-child(2),
   .formGroup.phone div:nth-child(2) {
     // grid-column: 1 !important;
