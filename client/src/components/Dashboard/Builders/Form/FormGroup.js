@@ -9,7 +9,7 @@ import { Sources } from '../FormBuilder/Settings/Sources'
 
 export default ({ 
   label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError, historyFields,
-  gridMax, showLabel, addresses, id: groupId, onCopyFirstAddress, isReadOnly, onGetGroupById
+  gridMax, showLabel, addresses, id: groupId, onCopyFirstAddress, isReadOnly, onGetGroupById, isApplication
 }) => {
   
   const isAddress = itemGroup === 'address'
@@ -107,8 +107,8 @@ export default ({
             const errors = fieldError[fieldId] || []
             const hasError = errors.length ? !!errors.find(e => e) : false
             const historyValue = historyFields.find(e => e.id === field.id)?.value
-            const className = historyValue && historyValue !== field.value ? 'highlights' : ''
-            // console.log('basta di mogana', { historyFields, field })
+            const className = historyFields.length && historyValue !== field.value ? 'highlights' : ''
+
             return (
               <div
                 key={`formGroupField-${index}`}
@@ -147,7 +147,8 @@ export default ({
               type='checkbox'
               id={`sameAddress-${groupId}`}
               checked={issameAsFirstAddress}
-              onChange={(e) => onCopyFirstAddress(e, groupId)}
+              readOnly={isReadOnly}
+              onChange={(e) => isReadOnly ? () => {} : onCopyFirstAddress(e, groupId)}
             />
             <span className='checkmark' />
             <span className='labelName'>Same as first address</span>

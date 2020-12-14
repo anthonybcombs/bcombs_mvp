@@ -20,6 +20,16 @@ export default styled.div`
     color: rgb(255, 255, 255)!important;
   }
 
+  .highlights label,
+  .highlights span,
+  .highlights svg {
+    color: #fff!important;
+  }
+
+  .highlights .choiceRow {
+    background-color: unset!important;
+  }
+
   .print-button {
     top: 13px;
   }
@@ -156,6 +166,10 @@ export default styled.div`
   #form .select-field-wrapper select >option {
     color: #000 !important;
   }
+
+  // #form .select-field-wrapper:after .highlights {
+  //   background: unset!important;
+  // }
 
   // wizzard
   #form .wizard-wrapper {
@@ -466,7 +480,9 @@ export default styled.div`
     margin-left: auto;
     color: #f44336;
   }
-
+  .uploadForm-value.highlights {
+    background: rgb(242,110,33)!important;
+  }
 
   // Linear Scale
   .formGroup.linearScale .scaleForm,
@@ -971,10 +987,6 @@ export default styled.div`
   }
   .react-datepicker__day--outside-month {
     color: rgb(0 0 0 / 35%);
-  }
-
-  select.highlights:after {
-    background: unset!important;
   }
 
 

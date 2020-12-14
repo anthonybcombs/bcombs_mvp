@@ -3,7 +3,10 @@ import React from 'react'
 import FormGroup from '../FormGroup'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ isReadOnly, fields, fieldError, id: pageId, addresses, historyFields = [], onChange, onCheckError, onCopyFirstAddress, onGetGroupById }) => {
+export default ({
+  isReadOnly, fields, fieldError, id: pageId, addresses, historyFields = [],
+  onChange, onCheckError, onCopyFirstAddress, onGetGroupById
+}) => {
 
   const handleChange = (id, answers, bool) => {
     if (bool) {

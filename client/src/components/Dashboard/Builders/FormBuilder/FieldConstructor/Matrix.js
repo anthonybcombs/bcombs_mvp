@@ -3,8 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
-export default (props) => {
-  const { isReadOnly = false, columns, rows, onChangeFieldSettings, isMultiple = false, isBuilder, isActive, id: fieldId, onChange, value = [], onCheckError } = props
+export default ({
+  isReadOnly = false, columns, rows, onChangeFieldSettings, isMultiple = false,
+  isBuilder, isActive, id: fieldId, onChange, value = [], onCheckError, className
+}) => {
 
   const handleAddRow = () => {
     onChangeFieldSettings({
@@ -111,7 +113,7 @@ export default (props) => {
   }
 
   return (
-    <div className='matrixRating-container'>
+    <div className={`matrixRating-container ${className}`}>
       <div className='table-scroll-wrapper'>
         <table className='matrixRating-table'>
           <thead className='matrixRating-table-head'>

@@ -6,7 +6,7 @@ import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 export default ({
   options, column, onChangeFieldSettings, isBuilder, isMultiple, index, isActive, id: fieldId, value = {},
-  onChange, onCheckError, isReadOnly = false
+  onChange, onCheckError, isReadOnly = false, className
 }) => {
   const hasOthers = options.find(e => e.name === 'other')
 
@@ -69,7 +69,7 @@ export default ({
   const groupClassLabel = isBuilder ? 'sortableGroup' : 'formGroup'
 
   return (
-    <>
+    <div className={className}>
       {
         options.map((option, optionIndex) => {
           const isOther = option.name === 'other'
@@ -212,6 +212,6 @@ export default ({
           }
         </div>
       )}
-    </>
+    </div>
   )
 }

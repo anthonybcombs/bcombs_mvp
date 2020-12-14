@@ -59,8 +59,8 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, id: gr
             const errors = fieldError[fieldId] || []
             const hasError = errors.length ? !!errors.find(e => e) : false
             const historyValue = historyFields.find(e => e.id === field.id)?.value
-            const className = historyValue && JSON.parse(historyValue) !== field.value ? 'highlights' : ''
-            
+            const className = historyFields.length && (historyValue ? JSON.parse(historyValue) : '') !== field.value ? 'highlights' : ''
+
             return (
                 <div>
                   {

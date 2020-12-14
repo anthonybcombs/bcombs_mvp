@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default ({ isReadOnly = false, min, max, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value }) => {
+export default ({ isReadOnly = false, min, max, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value, className }) => {
   const handleChangeValues = ({ target: { value } }, type, subType) => {
     const currentTypeData = type === 'min' ? { ...min } : { ...max }
     onChangeFieldSettings({ [type]: { ...currentTypeData, [subType]: value } })
@@ -75,7 +75,7 @@ export default ({ isReadOnly = false, min, max, onChangeFieldSettings, isBuilder
               </div>
             </div>
           ) : (
-            <div className='scaleForm'>
+            <div className={`scaleForm ${className}`}>
               {
                 minLabel && <p className='linear-label'>{minLabel}</p>
               }
@@ -91,7 +91,7 @@ export default ({ isReadOnly = false, min, max, onChangeFieldSettings, isBuilder
                             value={minValue + i}
                             readOnly={isReadOnly}
                             checked={value === (minValue + i)}
-                            onChange={e => handleAnswer(e)}
+                            onChange={e => isReadOnly ? () => {} : handleAnswer(e)}
                           />
                           <label htmlFor={`linear_radio_${minValue + i}`}><span>{minValue + i}</span></label>
                         </div>
