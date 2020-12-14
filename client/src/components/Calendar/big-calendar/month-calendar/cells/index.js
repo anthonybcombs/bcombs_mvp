@@ -131,7 +131,8 @@ export default function index({
   handleChangeDay,
   setIsEventModalVisible,
   publicView,
-  handleViewEvent
+  handleViewEvent,
+  vendors
 }) {
   const theme = useContext(ThemeContext);
   const monthStart = startOfMonth(currentMonth);
@@ -320,6 +321,7 @@ export default function index({
                 key={key}
                 selectedCalendars={selectedCalendars}
                 publicView={publicView}
+                vendors={vendors}
               />
             );
           })}

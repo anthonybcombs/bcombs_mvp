@@ -164,7 +164,9 @@ const resolvers = {
       return await getMembers(id);
     },
     async getEvents(root, { email }, context) {
-      return await getUserEvents(email);
+      let response = await getUserEvents(email);
+      console.log('Get Events Response,',response)
+      return response;
     },
     async getUserList(root, { keyword }, context) {
       console.log("Get User List", keyword);

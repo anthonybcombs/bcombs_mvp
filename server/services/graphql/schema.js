@@ -126,6 +126,7 @@ const inputs = `
         visibility: String
         auth_email: String
         group_ids:[String]
+        app_group_ids:[String]
         guests:[String]
         removed_guests:[String]
         recurring: String
@@ -680,6 +681,7 @@ const queryTypes = `
         recurring_end_date: Date
         allowed_edit: Boolean
         group_ids:[String]
+        app_group_ids:[String]
     }
     type Contact{
         id: String
