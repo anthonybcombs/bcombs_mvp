@@ -91,7 +91,10 @@ const SortableItem = DropTarget('sortableItem', {
   })
 ))
 
-export default ({ isReadOnly = false, items, onChangeFieldSettings, isActive, isBuilder, id: fieldId, onChange, value = [], onCheckError }) => {
+export default ({
+  isReadOnly = false, items, onChangeFieldSettings, isActive, isBuilder, id: fieldId, onChange, value = [],
+  onCheckError, className
+}) => {
   const newItems = value.length ? value : items
 
   const handleCheckError = (data) => {
@@ -187,7 +190,7 @@ export default ({ isReadOnly = false, items, onChangeFieldSettings, isActive, is
             }
           </div>
         ) : (
-          <div className='rankingForm'>
+          <div className={`rankingForm ${className}`}>
             <DndProvider backend={HTML5Backend}>
               {
                 newItems.map((item, itemIndex) => {

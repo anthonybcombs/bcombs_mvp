@@ -20,6 +20,16 @@ export default styled.div`
     color: rgb(255, 255, 255)!important;
   }
 
+  .highlights label,
+  .highlights span,
+  .highlights svg {
+    color: #fff!important;
+  }
+
+  .highlights .choiceRow {
+    background-color: unset!important;
+  }
+
   .print-button {
     top: 13px;
   }
@@ -156,6 +166,10 @@ export default styled.div`
   #form .select-field-wrapper select >option {
     color: #000 !important;
   }
+
+  // #form .select-field-wrapper:after .highlights {
+  //   background: unset!important;
+  // }
 
   // wizzard
   #form .wizard-wrapper {
@@ -466,7 +480,9 @@ export default styled.div`
     margin-left: auto;
     color: #f44336;
   }
-
+  .uploadForm-value.highlights {
+    background: rgb(242,110,33)!important;
+  }
 
   // Linear Scale
   .formGroup.linearScale .scaleForm,
@@ -637,6 +653,26 @@ export default styled.div`
   .formGroup.email .formGroup-column .select-field-wrapper,
   .formGroup.phone .formGroup-column .select-field-wrapper {
     width: 110px;
+  }
+
+  // Slider
+  .formGroup.slider .formGroup-column {
+    grid-column: span 2 / auto!important;
+  }
+  .formGroup.slider .formGroup-column .slider-field {
+    display: flex;
+    align-items: center;
+  }
+
+  .formGroup.slider .formGroup-column .slider-field div:nth-child(1) {
+    width: 50%;
+    margin-right: 25px;
+  }
+
+  .formGroup.slider .formGroup-column .slider-field div:nth-child(2) input {
+    line-height: 1!important;
+    border: 1px solid #ccc!important;
+    width: 30%!important;
   }
 
   .formGroup.email div:nth-child(2),
@@ -971,10 +1007,6 @@ export default styled.div`
   }
   .react-datepicker__day--outside-month {
     color: rgb(0 0 0 / 35%);
-  }
-
-  select.highlights:after {
-    background: unset!important;
   }
 
 

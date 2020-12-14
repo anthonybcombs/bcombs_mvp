@@ -2,7 +2,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ isReadOnly = false, scale, scaleLabels, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value }) => {
+export default ({ isReadOnly = false, scale, scaleLabels, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value, className }) => {
   const handleChangeValues = ({ target: { value: sliderValue } }, type, subType) => {
     const currentTypeData = type === 'scale' ? { ...scale } : { ...scaleLabels }
     onChangeFieldSettings({ [type]: { ...currentTypeData, [subType]: sliderValue } })
@@ -91,21 +91,31 @@ export default ({ isReadOnly = false, scale, scaleLabels, onChangeFieldSettings,
             </div>
           </div>
         ) : (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div>{scaleLabels.left}</div>
-              <div>{scaleLabels.center}</div>
-              <div>{scaleLabels.right}</div>
+          <div className={`slider-field ${className}`}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                <div>{scaleLabels.left}</div>
+                <div>{scaleLabels.center}</div>
+                <div>{scaleLabels.right}</div>
+              </div>
+              <input
+                style={{ width: '100%' }}
+                type='range'
+                readOnly={isReadOnly}
+                min={scale.min}
+                max={scale.max}
+                value={value || 0}
+                onChange={(e) => isReadOnly ? () => {} : handleAnswer(e)}
+              />
             </div>
-            <input
-              style={{ width: '100%' }}
-              type='range'
-              readOnly={isReadOnly}
-              min={scale.min}
-              max={scale.max}
-              value={value || 0}
-              onChange={(e) => handleAnswer(e)}
-            />
+            <div>
+              <input
+                className='field-input'
+                type='text'
+                readOnly={true}
+                value={value || 0}
+              />
+            </div>
           </div>
         )
       }

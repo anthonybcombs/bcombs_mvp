@@ -276,7 +276,6 @@ export default (props) => {
 
     const { formHasError, errors } = handleCheckRequired()
     if (!formHasError) {
-      console.log('shits', nextPage)
       if (nextPage && nextPage !== 'end') {
         step = actualFormFields.findIndex(e => e.id === nextPage)
       }

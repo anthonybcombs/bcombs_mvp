@@ -20,7 +20,10 @@ const getExtensionIcon = (ext) => {
   }
 }
 
-export default ({ isReadOnly = false, allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings, isBuilder, onChange, onCheckError, errors, value }) => {
+export default ({
+  isReadOnly = false, allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings,
+  isBuilder, onChange, onCheckError, value, className
+}) => {
   const handleChangeValues = ({ target: { value: fileValue } }, type) => {
     onChangeFieldSettings({ [type]: fileValue })
   }
@@ -106,7 +109,7 @@ export default ({ isReadOnly = false, allowTypes, limit, errorMessage, id: field
           </div>
         ) : (
           filename ? (
-            <div className='uploadForm-value'>
+            <div className={`uploadForm-value ${className}`}>
               <FontAwesomeIcon
                 className='file-icon'
                 icon={getExtensionIcon(ext)}
