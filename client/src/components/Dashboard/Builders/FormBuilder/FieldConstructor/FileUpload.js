@@ -22,7 +22,7 @@ const getExtensionIcon = (ext) => {
 
 export default ({
   isReadOnly = false, allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings,
-  isBuilder, onChange, onCheckError, value, className
+  isBuilder, onChange, onCheckError, value, className, fieldError
 }) => {
   const handleChangeValues = ({ target: { value: fileValue } }, type) => {
     onChangeFieldSettings({ [type]: fileValue })
@@ -50,6 +50,10 @@ export default ({
     if (!file) {
       return
     }
+    if (file.size / 1048576 > 5) {
+      onCheckError(fieldId, ['Maximum size for file upload is 5MB.'])
+      return
+    }
     const [, ext] = file.name.split('.')
 
     const allowedExt = allowTypes.filter(e => e.selected).reduce((acc, curr) => [...acc, ...curr.ext], [])
@@ -60,6 +64,7 @@ export default ({
 
     var reader = new FileReader()
     reader.onloadend = function() {
+      console.log('ssssss', reader)
       onChange({ target: { id: fieldId, value: { url: '', data: reader.result, filename: file.name, contentType: file.type, extension: `.${ext}` } } })
     }
     reader.readAsDataURL(file)
@@ -140,7 +145,7 @@ export default ({
                 name='file'
                 disabled={isReadOnly}
                 onClick={e => e.stopPropagation()}
-                onChange={(e) => !isReadOnly ? encodeImageFileAsURL(e.target.files[0]) : {}}
+                onChange={(e) => !isReadOnly ? encodeImageFileAsURL(e.target.files[0],) : {}}
               />
             </div>
           )

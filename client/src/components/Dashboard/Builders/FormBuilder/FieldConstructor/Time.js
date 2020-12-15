@@ -48,7 +48,15 @@ export default ({ isReadOnly = false, showLabel, settings, fields, label, type, 
   const { include, value: instructionValue } = settings.instruction || {}
   const hasError = !!fieldError[fieldId]
   const historyValue = historyFields.find(e => e.id === fields[0].id)?.value
-  const className = historyValue && JSON.parse(historyValue) !== fields[0].value ? 'highlights' : ''
+  const parsedValue = historyValue ? JSON.parse(historyValue) : []
+  let className = ''
+  if (Array.isArray(fields[0].value) && historyFields.length) {
+    fields[0].value.forEach((e, i) => {
+      if (e !== parsedValue[i]) {
+        className = 'highlights'
+      }
+    })
+  }
 
   return (
     <div
@@ -81,13 +89,13 @@ export default ({ isReadOnly = false, showLabel, settings, fields, label, type, 
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
 
         <div
-            className={`formGroup-column okoi`}
+            className={`${className} formGroup-column okoi`}
             style={{ gridColumn: `span 1`}}
           >
             <input
               type='number'
               id='hour'
-              className={`${className} field-input`}
+              className={`field-input`}
               placeholder={`Hour ${required ? '*' : ''}`}
               value={value ? value[0] : ''}
               readOnly={isReadOnly}
@@ -98,7 +106,7 @@ export default ({ isReadOnly = false, showLabel, settings, fields, label, type, 
             <input
               type='number'
               id='minutes'
-              className={`${className} field-input`}
+              className={`field-input`}
               placeholder={`Minutes ${required ? '*' : ''}`}
               value={value ? value[1] : ''}
               readOnly={isReadOnly}
@@ -109,7 +117,7 @@ export default ({ isReadOnly = false, showLabel, settings, fields, label, type, 
               <select
                 id='type'
                 value={value ? value[2] : ''}
-                className={`${className} field-input`}
+                className={`field-input`}
                 readOnly={isReadOnly}
                 onChange={handleAnswer}
                 onBlur={(e) => handleAnswer(e, true)}
