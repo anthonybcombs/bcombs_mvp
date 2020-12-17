@@ -309,7 +309,23 @@ export default (props) => {
     const { formHasError, errors } = handleCheckRequired()
 
     if (!formHasError || forceSubmit) {
-      const newFormContents = hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields
+      const newFormContents = (hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields)
+        .map(e => {
+          return {
+            ...e,
+            fields: cloneDeep(e.fields).map(f => {
+              const fValue = f.value ? JSON.parse(f.value) : f.value
+              if (
+                fValue === '' ||
+                (Array.isArray(fValue) && fValue.length === 0) ||
+                (typeof fValue === 'object' && Object.keys(fValue).length === 0)
+              ) {
+                f.required = false
+              }
+              return f
+            })
+          }
+        })
 
       // Submit for update custom application form
       if (isApplication) {
