@@ -115,11 +115,11 @@ export default function index(props) {
 					...accum,
 					[att.child_id] :{
 						...att,
+						total_volunteer_hours: ( accum[att.child_id] && accum[att.child_id].total_volunteer_hours || 0) + att.volunteer_hours || 0,
 						attendance:{
 							...(accum[att.child_id] && accum[att.child_id].attendance || {}),
 							[attDate]: {
-								status:att.attendance_status,
-								volunteer_hours: att.volunteer_hours
+								status:att.attendance_status
 							}
 						}
 					}
@@ -135,7 +135,7 @@ export default function index(props) {
 	const renderTableData = () => {
 	
 		let formattedDateKeys = displayDays.map(key => format(key,DATE_KEY_FORMAT));
-	
+		console.log('attendanceDisplay',attendanceDisplay)
 		return attendanceDisplay.map((att, index) => {
 
 			return (
@@ -144,6 +144,7 @@ export default function index(props) {
 						<a href={'#'}>{`${att.firstname} ${att.lastname}`}</a>
 					</td>
 					<td>{att.app_group_name}</td>
+					<td>85% (34/40)</td>
 					{/* <td>{format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)}</td> */}
 					<td>
 						<div className="attendance-status-container">
@@ -154,9 +155,9 @@ export default function index(props) {
 					</td>
 					<td>
 					<div className="attendance-status-container">
-							<div> {att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].volunteer_hours || 0}</div>
-							<div> {att.attendance[formattedDateKeys[1]] && att.attendance[formattedDateKeys[1]].volunteer_hours || 0}</div>
-							<div> {att.attendance[formattedDateKeys[2]] && att.attendance[formattedDateKeys[2]].volunteer_hours || 0 }</div>
+							<div> {att.total_volunteer_hours}</div>
+							<div> </div>
+							<div> </div>
 						</div>
 					</td>
 				</tr>
@@ -196,11 +197,13 @@ export default function index(props) {
 							<tr>
 								<th>Name</th>
 								<th>Class</th>
+								<th>Summary</th>
 								<th>Attendance Status</th>
-								<th>Volunteer Hours</th>
+								<th>Other Hours</th>
 							</tr>
 
 							<tr>
+								<td></td>
 								<td></td>
 								<td></td>
 								<td>
@@ -218,9 +221,8 @@ export default function index(props) {
 								</td>
 								<td>
 									<div className="attendance-status-container">
-										<div>Act 1</div>
-										<div>Act 2</div>
-										<div>Act 3</div>
+										<div>Total Volunteer Hours</div>
+										<div>Total Mentoring Hours</div>
 									</div>
 								</td>
 							</tr>

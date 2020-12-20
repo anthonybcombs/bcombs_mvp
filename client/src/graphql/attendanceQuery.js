@@ -15,6 +15,7 @@ export const GET_ATTENDANCE_QUERY = gql`
       attendance_status
       app_group_name
       volunteer_hours
+      is_excused
     }
   }
 `;

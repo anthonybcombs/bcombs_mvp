@@ -53,6 +53,10 @@ const ClassListViewStyled = styled.div`
 		display: flex;
 		flex-flow: row wrap;
 	}
+
+	.attendance-action div{
+		margin: 3px;
+	}
 	.child-body {
 		margin-top: 10px;
 		display: flex;
@@ -272,6 +276,12 @@ const ClassListViewStyled = styled.div`
 	.field{
 		margin-top:-5px !important;
 	}
+	.circle-icon {
+		border-radius:50%;
+		width: 15px;
+		height: 15px;
+		margin:0 auto;
+	}
 `;
 
 const range = (start, end) => {
@@ -408,7 +418,8 @@ export default function index() {
 		updatedApplication[currentIndex] = {
 			...updatedApplication[currentIndex],
 			attendance_status: attendanceType,
-		};
+			excused:null
+		}
 		setApplicationList(updatedApplication);
 	};
 
@@ -438,7 +449,8 @@ export default function index() {
 				attendance_status:app.attendance_status,
 				child_id:app.child.ch_id,
 				vendor:app.vendor,
-				volunteer_hours: parseInt(app.volunteer_hours)
+				volunteer_hours: parseInt(app.volunteer_hours),
+				is_excused:app.excused ? 1 : 0
 
 			}
 		})
@@ -465,6 +477,21 @@ export default function index() {
 			[name]: value
 		})
 	}
+
+	const handleExcused = (payload, excuseType) => {
+		let updatedApplication = [...(applicationList || [])];
+
+		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
+
+		if(excuseType === updatedApplication[currentIndex].attendance_status.toLowerCase()) {
+			updatedApplication[currentIndex] = {
+				...updatedApplication[currentIndex],
+				excused: excuseType,
+			};
+			setApplicationList(updatedApplication);
+		}
+
+	};
 
 
 	return (
@@ -601,40 +628,49 @@ export default function index() {
 									</div>
 									<div className="attendance-action">
 										<div>
-											<button
-												type="button"
-												style={{
-													backgroundColor: app.attendance_status === 'Present' ? 'gray' : '',
-												}}
-												onClick={() => {
+											<div onClick={() => {
 													handleAttendance(app, 'Present');
 												}}>
+												<div className="circle-icon" style={{	margin:'0 auto',backgroundColor: app.attendance_status === 'Present' ? 'green' : 'gray'}} />	
 												Present
-											</button>
+											</div>
+										
 										</div>
 										<div>
-											<button
-												type="button"
-												style={{
-													backgroundColor: app.attendance_status === 'Absent' ? 'gray' : '',
-												}}
-												onClick={() => {
+												<div onClick={() => {
 													handleAttendance(app, 'Absent');
 												}}>
+												<div className="circle-icon" style={{	margin:'0 auto',backgroundColor: app.attendance_status === 'Absent' ? 'red' : 'gray'}} />	
 												Absent
-											</button>
+											</div>
+
+											<div onClick={() => {
+													handleExcused(app, 'absent');
+												}} style={{fontSize:12,marginTop:8}}>
+												<div className="circle-icon" style={{	width:12,height:12,margin:'0 auto', backgroundColor: app.excused === 'absent' ? 'green' : 'gray'}} />	
+												Excused
+											</div>
+
+
 										</div>
 										<div>
-											<button
-												type="button"
-												style={{
-													backgroundColor: app.attendance_status === 'Tardy' ? 'gray' : '',
-												}}
-												onClick={() => {
+						
+											<div onClick={() => {
 													handleAttendance(app, 'Tardy');
 												}}>
+												<div className="circle-icon" style={{	margin:'0 auto', backgroundColor: app.attendance_status === 'Tardy' ? 'yellow' : 'gray'}} />	
 												Tardy
-											</button>
+											</div>
+						
+
+											<div onClick={() => {
+													handleExcused(app, 'tardy');
+												}} style={{fontSize:12,marginTop:8}}>
+												<div className="circle-icon" style={{	width:12,height:12,margin:'0 auto', backgroundColor: app.excused === 'tardy' ? 'green' : 'gray'}} />	
+												Excused
+											</div>
+
+								
 										</div>
 									</div>
 									<div className="attendance-action">

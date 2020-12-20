@@ -17,10 +17,11 @@ export const getChildAttendance = async applicationGroupId => {
       attendance.volunteer_hours,
       attendance.event_name,
       attendance.location,
+      attendance.is_excused,
       child.firstname,
       child.lastname,
       child.gender,
-      vendor_app_groups.name as app_group_name
+      vendor_app_groups.name as app_group_name,
     FROM attendance,child, vendor_app_groups
     WHERE attendance.app_group_id=UUID_TO_BIN(?) AND child.ch_id=attendance.child_id AND
            vendor_app_groups.app_grp_id=attendance.app_group_id
@@ -58,6 +59,7 @@ export const updateChildAttendance = async (attendance) => {
                 app_group_id,
                 child_id,
                 attendance_status,
+                is_excused,
                 attendance_date,
                 attendance_start_time,
                 attendance_end_time,
@@ -75,6 +77,7 @@ export const updateChildAttendance = async (attendance) => {
                 ?,
                 ?,
                 ?,
+                ?,
                 ?
               )
             `,
@@ -82,6 +85,7 @@ export const updateChildAttendance = async (attendance) => {
               attendance.app_group_id,
               att.child_id,
               att.attendance_status,
+              att.is_excused || 0,
               attendance.attendance_date,
               attendance.attendance_start_time,
               attendance.attendance_end_time,
@@ -102,7 +106,8 @@ export const updateChildAttendance = async (attendance) => {
               event_name=?,
               location=?,
               volunteer_hours=?,
-              mentoring_hours=?
+              mentoring_hours=?,
+              is_excused=?
             WHERE app_group_id=UUID_TO_BIN(?) 
               AND child_id=UUID_TO_BIN(?) 
               AND attendance_date=?
@@ -115,9 +120,10 @@ export const updateChildAttendance = async (attendance) => {
             attendance.location,
             att.volunteer_hours || 0,
             att.mentoring_hours || 0,
+            att.is_excused || 0,
             attendance.app_group_id,
             att.child_id,
-            attendance.attendance_date
+            attendance.attendance_date,
             ]
           );
       

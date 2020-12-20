@@ -15,6 +15,7 @@ export const ATTENDANCE_UPDATE_MUTATION = gql`
         vendor
         volunteer_hours
         mentoring_hours
+        is_excused
       }
     }
   }

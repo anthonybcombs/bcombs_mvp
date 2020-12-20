@@ -667,6 +667,7 @@ const inputs = `
         mentoring_hours: Int
         child_id: String   
         vendor: String   
+        is_excused: Int
     }
 
     input AttendanceInput {
@@ -1283,6 +1284,7 @@ const queryTypes = `
         vendor: String   
         mentoring_hours: Int
         volunteer_hours: Int
+        is_excused: Int
     }
 
     type Attendance {
@@ -1293,6 +1295,7 @@ const queryTypes = `
         attendance_list: [AttendanceChild]
         event_name: String
         location: String
+        
     }
 
     type AttendanceList {
@@ -1308,6 +1311,7 @@ const queryTypes = `
         child_id: String   
         mentoring_hours: Int
         volunteer_hours: Int
+        is_excused: Int
         app_group_name: String
     }
     
