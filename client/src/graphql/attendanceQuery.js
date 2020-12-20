@@ -14,6 +14,7 @@ export const GET_ATTENDANCE_QUERY = gql`
       lastname
       attendance_status
       app_group_name
+      volunteer_hours
     }
   }
 `;

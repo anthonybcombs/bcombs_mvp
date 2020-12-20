@@ -76,6 +76,7 @@ const AttendanceSummaryStyled = styled.div`
 `;
 
 const DATE_FORMAT = 'yyyy-MM-dd';
+const DATE_KEY_FORMAT = 'yyyy_MM_dd';
 
 export default function index(props) {
 	const dispatch = useDispatch();
@@ -85,6 +86,7 @@ export default function index(props) {
 		}
 	);
 	const [displayDays, setDisplayDays] = useState([subDays(new Date(), 2), subDays(new Date(), 1), new Date()]);
+	const [attendanceDisplay, setAttendanceDisplay] = useState([]);
 
 	const { app_group_id } = useParams();
 
@@ -104,8 +106,38 @@ export default function index(props) {
 		}
 	}, []);
 
+	useEffect(() => {
+		if(attendance.list) {
+			let currentAttendance = attendance.list.reduce((accum,att) => {
+				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
+				attDate = attDate.replaceAll('-','_')
+				return {
+					...accum,
+					[att.child_id] :{
+						...att,
+						attendance:{
+							...(accum[att.child_id] && accum[att.child_id].attendance || {}),
+							[attDate]: {
+								status:att.attendance_status,
+								volunteer_hours: att.volunteer_hours
+							}
+						}
+					}
+				}
+			},{});
+			currentAttendance = Object.keys(currentAttendance).map((key) => {
+				return currentAttendance[key];
+			});
+			setAttendanceDisplay(currentAttendance);
+		}
+	},[attendance.list])
+
 	const renderTableData = () => {
-		return attendance.list.map((att, index) => {
+	
+		let formattedDateKeys = displayDays.map(key => format(key,DATE_KEY_FORMAT));
+	
+		return attendanceDisplay.map((att, index) => {
+
 			return (
 				<tr key={index}>
 					<td>
@@ -115,13 +147,18 @@ export default function index(props) {
 					{/* <td>{format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)}</td> */}
 					<td>
 						<div className="attendance-status-container">
-							{/* att.attendance_status */}
-							<div>Present</div>
-							<div>Absent</div>
-							<div>Tardy</div>
+							<div> {att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].status || ''}</div>
+							<div> {att.attendance[formattedDateKeys[1]] && att.attendance[formattedDateKeys[1]].status || ''}</div>
+							<div> {att.attendance[formattedDateKeys[2]] && att.attendance[formattedDateKeys[2]].status || '' }</div>
 						</div>
 					</td>
-					<td></td>
+					<td>
+					<div className="attendance-status-container">
+							<div> {att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].volunteer_hours || 0}</div>
+							<div> {att.attendance[formattedDateKeys[1]] && att.attendance[formattedDateKeys[1]].volunteer_hours || 0}</div>
+							<div> {att.attendance[formattedDateKeys[2]] && att.attendance[formattedDateKeys[2]].volunteer_hours || 0 }</div>
+						</div>
+					</td>
 				</tr>
 			);
 		});
@@ -163,7 +200,7 @@ export default function index(props) {
 								<th>Volunteer Hours</th>
 							</tr>
 
-							<tr style={{ backroundColor: 'white' }}>
+							<tr>
 								<td></td>
 								<td></td>
 								<td>
