@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import auth from "./Auth";
+import attendance from "./Attendance";
 import events from "./Events";
 import familyMembers from "./FamilyMembers";
 import calendars from "./Calendars";
@@ -20,6 +21,7 @@ import form from "./Forms";
 
 const reducer = combineReducers({
   auth,
+  attendance,
   events,
   familyMembers,
   calendars,

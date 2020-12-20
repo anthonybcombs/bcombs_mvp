@@ -659,6 +659,25 @@ const inputs = `
         vendor: String!
         categories: [String]
     }
+
+    input AttendanceChildInput {
+        app_id: String   
+        attendance_status: String   
+        volunteer_hours: Int
+        mentoring_hours: Int
+        child_id: String   
+        vendor: String   
+    }
+
+    input AttendanceInput {
+        app_group_id: String
+        attendance_date: String
+        attendance_start_time: String
+        attendance_end_time: String
+        attendance_list: [AttendanceChildInput]
+        event_name: String
+        location: String
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -1256,6 +1275,42 @@ const queryTypes = `
         message: String
         form: CustomApplicationOutput
     }
+
+    type AttendanceChild {
+        app_id: String   
+        attendance_status: String   
+        child_id: String   
+        vendor: String   
+        mentoring_hours: Int
+        volunteer_hours: Int
+    }
+
+    type Attendance {
+        app_group_id: String
+        attendance_date: String
+        attendance_start_time: String
+        attendance_end_time: String
+        attendance_list: [AttendanceChild]
+        event_name: String
+        location: String
+    }
+
+    type AttendanceList {
+        app_group_id: String
+        attendance_date: String
+        attendance_start_time: String
+        attendance_end_time: String
+        event_name: String
+        location: String
+        firstname: String
+        lastname: String
+        attendance_status: String   
+        child_id: String   
+        mentoring_hours: Int
+        volunteer_hours: Int
+        app_group_name: String
+    }
+    
 `;
 
 const mutations = `
@@ -1297,6 +1352,7 @@ const mutations = `
         deleteCustomApplicationForm(application: CustomApplicationInput): Status
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
+        updateAttendance(attendance: AttendanceInput): [Attendance]
     }
 `;
 
@@ -1338,6 +1394,7 @@ const queries = `
         getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
         getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
         getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
+        getAttendance(application_group_id: String): [AttendanceList]
     }
 `;
 
