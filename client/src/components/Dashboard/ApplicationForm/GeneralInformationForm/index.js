@@ -76,6 +76,9 @@ const GeneralInformationFormStyled = styled.div`
       padding: 0;
     }
   }
+  .radio-highlights{
+    background: #f26e21 !important ;
+  }
 
 `;
 
@@ -360,6 +363,9 @@ export default function index({
     return items;
   }
 
+  console.log('GeneralInformationFormStyled123 childGeneralInformation',childGeneralInformation)
+  console.log('GeneralInformationFormStyled123 pastChildInformation',pastChildInformation)
+
   return (
     <GeneralInformationFormStyled>
       <h3 className="heading">General Information</h3>
@@ -407,7 +413,13 @@ export default function index({
                   !isReadonly ?
                   <select
                     name="ch_gpa_quarter"
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation && (pastChildInformation.gpa_quarter_year || pastChildInformation.gpa_quarter_year == '') &&
+                      (pastChildInformation.gpa_quarter_year != childGeneralInformation.gpa_quarter_year) ?
+                      "field-input highlights" : "field-input"
+                    }
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_quarter_year", target.value);
                     }}
@@ -418,9 +430,15 @@ export default function index({
                   </select>
                   :
                   <input 
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation && (pastChildInformation.gpa_quarter_year || pastChildInformation.gpa_quarter_year == '') &&
+                      (pastChildInformation.gpa_quarter_year != childGeneralInformation.gpa_quarter_year) ?
+                      "field-input highlights" : "field-input"
+                    }
                     type="text"
                     name="ch_gpa_quarter"
-                    className="field-input"
                     defaultValue={childGeneralInformation.gpa_quarter_year}
                     readOnly={isReadonly}
                   />
@@ -438,7 +456,14 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_quarter_q1_${counter - 1}`}
                     name="gpa_quarter_q1"
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_quarter_q1 || pastChildInformation.gpa_quarter_q1 == "") &&
+                      pastChildInformation.gpa_quarter_q1 != childGeneralInformation.gpa_quarter_q1 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q1"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_quarter_q1", target.value);
@@ -454,7 +479,18 @@ export default function index({
                   <NumberFormat
                     id={`gpa_quarter_q2_${counter - 1}`}
                     name="gpa_quarter_q2"
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_quarter_q2 || pastChildInformation.gpa_quarter_q2 == "") &&
+                      pastChildInformation.gpa_quarter_q2 != childGeneralInformation.gpa_quarter_q2 ?
+                      "field-input highlights" : "field-input"
+                    }
+                    placeholder="Q3"
+                    onChange={({ target }) => {
+                      handleChildFormDetailsChange(counter - 1, "general_information", "gpa_quarter_q3", target.value);
+                    }}
                     placeholder="Q2"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_quarter_q2", target.value);
@@ -470,7 +506,14 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_quarter_q3_${counter - 1}`}
                     name="gpa_quarter_q3"
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_quarter_q3 || pastChildInformation.gpa_quarter_q3 == "") &&
+                      pastChildInformation.gpa_quarter_q3 != childGeneralInformation.gpa_quarter_q3 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q3"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_quarter_q3", target.value);
@@ -486,7 +529,14 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_quarter_q4_${counter - 1}`}
                     name="gpa_quarter_q4"
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_quarter_q4 || pastChildInformation.gpa_quarter_q4 == "") &&
+                      pastChildInformation.gpa_quarter_q4 != childGeneralInformation.gpa_quarter_q4 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q4"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_quarter_q4", target.value);
@@ -507,7 +557,15 @@ export default function index({
               <div className="field">
                 <input
                   name="ch_class_rank"
-                  className="field-input"
+                  // className="field-input"
+                  className={
+                    isReadonly &&
+                    !isVendorView &&
+                    pastChildInformation &&
+                    (pastChildInformation.class_rank || pastChildInformation.class_rank == "") &&
+                    pastChildInformation.class_rank != childGeneralInformation.class_rank ?
+                    "field-input highlights" : "field-input"
+                  }
                   id={`ch_class_rank_${counter - 1}`}
                   placeholder="Enter Class Rank as a #"
                   onChange={({ target }) => {
@@ -523,7 +581,14 @@ export default function index({
               <div className="field select-field-wrapper">
                 <select
                   name="ch_gpa_cumulative"
-                  className="field-input"
+                  className={
+                    isReadonly &&
+                    !isVendorView &&
+                    pastChildInformation &&
+                    (pastChildInformation.gpa_cumulative_year || pastChildInformation.gpa_cumulative_year == "") &&
+                    pastChildInformation.gpa_cumulative_year != childGeneralInformation.gpa_cumulative_year ?
+                    "field-input highlights" : "field-input"
+                  }
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(counter - 1, "general_information", "gpa_cumulative_year", target.value);
                   }}
@@ -542,7 +607,15 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_cumulative_q1_${counter - 1}`}
                     name="gpa_cumulative_q1"
-                    className="field-input"
+                    //className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_cumulative_q1 || pastChildInformation.gpa_cumulative_q1 == "") &&
+                      pastChildInformation.gpa_cumulative_q1 != childGeneralInformation.gpa_cumulative_q1 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q1"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_cumulative_q1", target.value);
@@ -558,7 +631,14 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_cumulative_q2_${counter - 1}`}
                     name="gpa_cumulative_q2"
-                    className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_cumulative_q2 || pastChildInformation.gpa_cumulative_q2 == "") &&
+                      pastChildInformation.gpa_cumulative_q2 != childGeneralInformation.gpa_cumulative_q2 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q2"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_cumulative_q2", target.value);
@@ -574,7 +654,15 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_cumulative_q3_${counter - 1}`}
                     name="gpa_cumulative_q3"
-                    className="field-input"
+                    // className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_cumulative_q3 || pastChildInformation.gpa_cumulative_q3 == "") &&
+                      pastChildInformation.gpa_cumulative_q3 != childGeneralInformation.gpa_cumulative_q3 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q3"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_cumulative_q3", target.value);
@@ -590,7 +678,15 @@ export default function index({
                   <NumberFormat 
                     id={`gpa_cumulative_q4_${counter - 1}`}
                     name="gpa_cumulative_q4"
-                    className="field-input"
+                    // className="field-input"
+                    className={
+                      isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.gpa_cumulative_q4 || pastChildInformation.gpa_cumulative_q4 == "") &&
+                      pastChildInformation.gpa_cumulative_q4 != childGeneralInformation.gpa_cumulative_q4 ?
+                      "field-input highlights" : "field-input"
+                    }
                     placeholder="Q4"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "gpa_cumulative_q4", target.value);
@@ -704,27 +800,43 @@ export default function index({
           Are there currently any problems with your child either at home or at school? 
         </div>
         <div className="form-group">
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation && (childGeneralInformation.has_suspended === "Yes" ||( childGeneralInformation.has_suspended === 1 || typeof  childGeneralInformation.has_suspended === 'boolean' &&  childGeneralInformation.has_suspended === true)) && 
+              ( pastChildInformation.has_suspended == 0) &&
+              pastChildInformation.has_suspended != childGeneralInformation.has_suspended ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             Yes 
             <input type="radio" 
               onChange={({ target }) => {
-                handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
+                handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
-              value={"1"}
-              checked={childGeneralInformation.was_suspended+"" == "1"}
+              value={"Yes"}
+              //checked={childGeneralInformation.has_suspended+"" == "1"  || childGeneralInformation.has_suspended+"" === true}
+              checked={childGeneralInformation.has_suspended == "Yes" || childGeneralInformation.has_suspended == "1" ||  (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === true)}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
             <span className="checkmark"></span>
           </label>
-          <label className="cus-select-container">
+          <label className={
+              isReadonly &&
+              !isVendorView &&
+              pastChildInformation &&  (childGeneralInformation.has_suspended === "No" || childGeneralInformation.has_suspended === 0 ||  childGeneralInformation.has_suspended === "1" || typeof  childGeneralInformation.has_suspended === 'boolean' &&  childGeneralInformation.has_suspended === false) && 
+              ( pastChildInformation.has_suspended == 1 ) &&
+              pastChildInformation.has_suspended != childGeneralInformation.has_suspended ?
+              "cus-select-container radio-highlights" : "cus-select-container"
+            }>
             No
             <input type="radio" 
               onChange={({ target }) => {
-                handleChildFormDetailsChange(counter - 1, "general_information", "was_suspended", target.value);
+                handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
-              value={"0"}
-              checked={childGeneralInformation.was_suspended+"" == "0"}
+              value={"No"}
+              //checked={childGeneralInformation.has_suspended+"" == "0" || childGeneralInformation.has_suspended+"" === false}
+              checked={childGeneralInformation.has_suspended == "No" || childGeneralInformation.has_suspended == "0" ||  (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === false)}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -732,7 +844,7 @@ export default function index({
           </label>
         </div>
         {
-          childGeneralInformation.was_suspended == "1" &&
+         (childGeneralInformation.has_suspended == "Yes" || childGeneralInformation.has_suspended == "1" || (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === true))  &&
           <div className="form-group">
             <textarea 
               name="reasons_suspended"

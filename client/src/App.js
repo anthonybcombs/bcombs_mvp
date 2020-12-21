@@ -114,6 +114,22 @@ const AsyncForms = Loadable({
   loading: Loading
 })
 
+
+const AsyncAttendance = Loadable({
+  loader: () => import("./components/Dashboard/Attendance"),
+  loading: Loading
+});
+
+const AsyncAttendanceList = Loadable({
+  loader: () => import("./components/Dashboard/Attendance/list"),
+  loading: Loading
+});
+
+const AsyncAttendanceSummary = Loadable({
+  loader: () => import("./components/Dashboard/Attendance/view"),
+  loading: Loading
+});
+
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -148,6 +164,9 @@ export default function App() {
               <AsynBuilder path="builder/:form_id/:type" />
               <AsynBuilder path="builder" />
               <AsyncForms path="forms" />
+              <AsyncAttendance path="attendance" />
+              <AsyncAttendanceList path="attendance/:vendor_id/:name" />
+              <AsyncAttendanceSummary path="attendance/view/:app_group_id" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />

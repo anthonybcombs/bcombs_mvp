@@ -114,6 +114,8 @@ export default function index({
     return { applications };
   });
 
+  console.log('childInformation54444',childInformation)
+
   const handleScoresChange = () => {};
 
   let pastChildInformation = {};

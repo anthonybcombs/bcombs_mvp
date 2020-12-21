@@ -638,10 +638,11 @@ export const addApplicationHistory = async ({
   }
 };
 
-export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id = "" }) => {
+export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id = '' }) => {
   const db = makeDb();
   let result;
 
+  let values = custom_app_id !== '' ? [app_id, custom_app_id, user_id] : [app_id, user_id]
   try {
     if(app_id) {
       await db.query(
@@ -699,7 +700,6 @@ export const getUserApplicationsByUserId = async user_id => {
       `,
       [user_id]
     );
-
     for (const ua of userApplications) {
       const application = await getApplicationByAppId(ua.app_id);
       applications.push(application);

@@ -100,7 +100,7 @@ export default function index({
       relationship_to_child: "-"
     }
   ];
-
+  console.log('PARENTTTTTTTTTTTTTTT', parents)
   const renderParentForm = () => {
     let items = [];
 

@@ -658,7 +658,7 @@ export default function index() {
         school_phone: application.child.school_phone
           ? application.child.school_phone
           : "",
-        was_suspended: !!application.child.has_suspended,
+        has_suspended: !!application.child.has_suspended ? 1 : 0,
         reason_suspended: application.child.reason_suspended,
         mentee_start_year: application.child.year_taken,
         hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -751,17 +751,17 @@ export default function index() {
       ch_id: application.child.ch_id,
       id: application.child.ch_id
     };
-
+    console.log('APPLICATIONNNNN', application)
     const parents = application.parents;
-
+    
     let items = [];
     for (const parent of parents) {
       const profile = {
         first_name: parent.firstname ? parent.firstname : "",
         last_name: parent.lastname ? parent.lastname : "",
-        phone_type: parent.phont_type ? parent.phone_type : "",
+        phone_type: parent.phone_type ? parent.phone_type : "",
         phone_number: parent.phone_number ? parent.phone_number : "",
-        phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+        phone_type2: parent.phone_type2 ? parent.phone_type2 : "",
         phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
         email_type: parent.email_type ? parent.email_type : "",
         email_address: parent.email_address ? parent.email_address : "",
@@ -958,7 +958,7 @@ export default function index() {
   const onSubmitSaveApplication = () => {
     console.log("Click Save Application");
 
-    const payload = {
+    let payload = {
       app_id: selectedApplication.app_id,
       child: {
         firstname: childInformation.profile.first_name,
@@ -987,9 +987,7 @@ export default function index() {
         ),
         school_name: childInformation.general_information.school_name,
         school_phone: childInformation.general_information.school_phone,
-        has_suspended: parseInt(
-          childInformation.general_information.was_suspended
-        ),
+        has_suspended:   childInformation.general_information.has_suspended == "Yes" || childInformation.general_information.has_suspended == 1 ? 1 : 0,
         reason_suspended: childInformation.general_information.reason_suspended,
         year_taken: childInformation.general_information.mentee_start_year,
         hobbies: childInformation.general_information.hobbies,
@@ -1072,6 +1070,10 @@ export default function index() {
       updated_by: auth.name
     };
 
+    payload = {
+      ...payload,
+      relationships: relationships
+    };
     console.log("Submit update application", payload);
 
     dispatch(requestSaveApplication(payload));
@@ -1120,12 +1122,19 @@ export default function index() {
 
       child.profile = profile;
     } else if (section === "general_information") {
-      if (id === "was_suspended") {
-        if (value == "0")
+      if (id === "has_suspended") {
+        console.log('Has Suspended Value',value)
+        if (value == "0" ){
           general_information = {
             ...general_information,
-            ["reason_suspended"]: ""
+            ["reason_suspended"]: "",
           };
+        }
+        // general_information = {
+        //   ...general_information,
+        //   has_suspended: value == "Yes" || value == "1" ? 1 : 0,
+        // };
+         
       }
 
       if (id.includes("act_scores")) {
@@ -1260,7 +1269,8 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-              was_suspended: application.child.has_suspended + "",
+            //  has_suspended: application.child.has_suspended + "",
+              has_suspended: application.child.has_suspended ,
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -1342,9 +1352,9 @@ export default function index() {
             const profile = {
               first_name: parent.firstname ? parent.firstname : "",
               last_name: parent.lastname ? parent.lastname : "",
-              phone_type: parent.phont_type ? parent.phone_type : "",
+              phone_type: parent.phone_type ? parent.phone_type : "",
               phone_number: parent.phone_number ? parent.phone_number : "",
-              phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+              phone_type2: parent.phone_type2 ? parent.phone_type2 : "",
               phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
               email_type: parent.email_type ? parent.email_type : "",
               email_address: parent.email_address ? parent.email_address : "",
@@ -1492,12 +1502,18 @@ export default function index() {
         tempRelationships[index].relationship = relationship;
 
         exists = true;
+        console.log('Temp Relationships 1',tempRelationships)
         setRelationships([...tempRelationships]);
         break;
       }
     }
 
     if(!exists) {
+      console.log('Temp Relationships 2',...relationships, {
+        parent: parent,
+        child: child,
+        relationship: relationship
+      })
       setRelationships([...relationships, {
         parent: parent,
         child: child,
@@ -1507,6 +1523,7 @@ export default function index() {
   }
 
   console.log('loading applications',applications)
+  console.log('parentsInformation123123123123',parentsInformation)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -1846,6 +1863,7 @@ export default function index() {
                 isUpdate={true}
                 emergencyContacts={emergencyContacts}
                 selectedApplication={selectedApplication}
+                childProfile={selectedApplication?.child}
               />
             ) : ""}
 
@@ -1872,6 +1890,7 @@ export default function index() {
                 <>
                 <hr className="style-eight"></hr>
                 <RelationshipToChildStyled
+                  selectedApplication={selectedApplication}
                   handleParentChildRelationship={handleParentChildRelationship}
                   parents={parentsInformation}
                   childs={[{...childInformation}]}

@@ -99,6 +99,8 @@ import {
   addParentChildRelationship,
   updateParentChildRelationship,
   getParentChildRelationship } from "../../api/parents";
+  
+import { getChildAttendance ,updateChildAttendance} from '../../api/attendance';
 
 import { getUserFromDatabase } from "../../api";
 
@@ -164,7 +166,9 @@ const resolvers = {
       return await getMembers(id);
     },
     async getEvents(root, { email }, context) {
-      return await getUserEvents(email);
+      let response = await getUserEvents(email);
+      console.log('Get Events Response,',response)
+      return response;
     },
     async getUserList(root, { keyword }, context) {
       console.log("Get User List", keyword);
@@ -357,6 +361,11 @@ const resolvers = {
     async getCustomFormApplicantById(root, {app_id}, contenxt) {
       const application = await getCustomFormApplicantById({app_id: app_id});
       return application;
+    },
+
+    async getAttendance(root, { application_group_id }, contenxt) {
+      console.log('Get Attendance App Grp Id', application_group_id)
+      return await getChildAttendance(application_group_id);
     }
   },
   RootMutation: {
@@ -756,7 +765,7 @@ const resolvers = {
       const previousApplication = await getApplicationByAppId(
         application.app_id
       );
-
+      console.log('Application saveApplication', application)
       const tc_signatures = {
         section1_signature: application.section1_signature,
         section1_date_signed: application.section1_date_signed,
@@ -781,6 +790,12 @@ const resolvers = {
         child: application.child,
         parents: application.parents
       });
+
+      if(application.relationships) {
+        for(const relationship of application.relationships) {
+          await updateParentChildRelationship(relationship);
+        }
+      }
 
       if (isSaved) {
         const params = {
@@ -1132,6 +1147,59 @@ const resolvers = {
           user_id: newUser.id,
           custom_app_id: newApplication.app_id
         });
+
+        console.log("primeFiles", primeFiles);
+
+        for(let primeFile of primeFiles) {
+          if(primeFile?.fields.length > 0) {
+            let fileContent = primeFile.fields[0]?.file;
+            if(fileContent) {
+              const buf = Buffer.from(
+                fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
+                "base64"
+              );
+  
+              const s3Payload = {
+                Bucket: currentS3BucketName,
+                Key: `user/${newApplication.app_id}/${primeFile.id}/${fileContent.filename}`,
+                Body: buf,
+                ContentEncoding: "base64",
+                ContentType: fileContent.contentType,
+                ACL: "public-read"
+              };
+  
+              await uploadFile(s3Payload);
+  
+              fileContent.url = s3Payload.Key;
+              fileContent.data = "";
+  
+              console.log("fileContent url", fileContent.url);
+
+              primeFile.fields[0].file = fileContent;
+
+              console.log("update primefile", util.inspect(primeFile, false, null, true));
+
+              formData = formData.map((item) => {
+                if(item.id == primeFile.id) {
+                  item = primeFile
+                }
+                return item;
+              });
+              
+              const formContents = {
+                formTitle: formTitle,
+                formData: formData
+              }
+
+              console.log("formContents", util.inspect(formContents, false, null, true));
+
+              let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
+              formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+              await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
+            }
+          }
+        }
       }
 
       return {
@@ -1225,6 +1293,11 @@ const resolvers = {
         messageType: "info",
         message: "successfully update your application form",
       }
+    },
+
+    async updateAttendance(root, {attendance}, context) {
+      console.log('UpdateAttendance',attendance)
+      return await updateChildAttendance(attendance)
     }
   }
 };

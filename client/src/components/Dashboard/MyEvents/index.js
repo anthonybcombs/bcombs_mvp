@@ -144,7 +144,8 @@ export default function index() {
     events,
     familyMembers,
     groups,
-    loading
+    loading,
+    vendors
   } = useSelector(
     ({
       auth,
@@ -153,7 +154,8 @@ export default function index() {
       events,
       familyMembers,
       groups,
-      loading
+      loading,
+      vendors
     }) => ({
       auth,
       calendars,
@@ -161,7 +163,8 @@ export default function index() {
       events,
       familyMembers,
       groups,
-      loading
+      loading,
+      vendors
     })
   );
 

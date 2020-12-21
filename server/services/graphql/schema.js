@@ -126,6 +126,7 @@ const inputs = `
         visibility: String
         auth_email: String
         group_ids:[String]
+        app_group_ids:[String]
         guests:[String]
         removed_guests:[String]
         recurring: String
@@ -456,7 +457,8 @@ const inputs = `
         section3_text: String
         section1_name: String
         section2_name: String
-        section3_name: String
+        section3_name: String,
+        relationships: [ParentChildRelationshipInput]
     }
 
     input AddAdminInput {
@@ -484,6 +486,7 @@ const inputs = `
         parent: String!
         child: String!
         relationship: String
+        id: String
     }
 
     input ChildChildRelationshipInput {
@@ -656,6 +659,26 @@ const inputs = `
         vendor: String!
         categories: [String]
     }
+
+    input AttendanceChildInput {
+        app_id: String   
+        attendance_status: String   
+        volunteer_hours: Int
+        mentoring_hours: Int
+        child_id: String   
+        vendor: String   
+        is_excused: Int
+    }
+
+    input AttendanceInput {
+        app_group_id: String
+        attendance_date: String
+        attendance_start_time: String
+        attendance_end_time: String
+        attendance_list: [AttendanceChildInput]
+        event_name: String
+        location: String
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -678,6 +701,7 @@ const queryTypes = `
         recurring_end_date: Date
         allowed_edit: Boolean
         group_ids:[String]
+        app_group_ids:[String]
     }
     type Contact{
         id: String
@@ -1252,6 +1276,45 @@ const queryTypes = `
         message: String
         form: CustomApplicationOutput
     }
+
+    type AttendanceChild {
+        app_id: String   
+        attendance_status: String   
+        child_id: String   
+        vendor: String   
+        mentoring_hours: Int
+        volunteer_hours: Int
+        is_excused: Int
+    }
+
+    type Attendance {
+        app_group_id: String
+        attendance_date: String
+        attendance_start_time: String
+        attendance_end_time: String
+        attendance_list: [AttendanceChild]
+        event_name: String
+        location: String
+        
+    }
+
+    type AttendanceList {
+        app_group_id: String
+        attendance_date: String
+        attendance_start_time: String
+        attendance_end_time: String
+        event_name: String
+        location: String
+        firstname: String
+        lastname: String
+        attendance_status: String   
+        child_id: String   
+        mentoring_hours: Int
+        volunteer_hours: Int
+        is_excused: Int
+        app_group_name: String
+    }
+    
 `;
 
 const mutations = `
@@ -1293,6 +1356,7 @@ const mutations = `
         deleteCustomApplicationForm(application: CustomApplicationInput): Status
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
+        updateAttendance(attendance: AttendanceInput): [Attendance]
     }
 `;
 
@@ -1334,6 +1398,7 @@ const queries = `
         getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
         getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
         getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
+        getAttendance(application_group_id: String): [AttendanceList]
     }
 `;
 

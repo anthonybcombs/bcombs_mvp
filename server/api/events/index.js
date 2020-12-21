@@ -127,6 +127,30 @@ export const createNewEvent = async data => {
       updatedGuestIds = [...guests];
     }
 
+    // ADDED BY DENNIS
+    if (data.app_group_ids.length > 0) {
+      let groupVisibilityQuery = data.app_group_ids.reduce(
+        (accumulator, groupId) => {
+          accumulator += `(UUID_TO_BIN('${id}'),UUID_TO_BIN('${groupId}'),'application',NOW()),`;
+          return accumulator;
+        },
+        ""
+      );
+      groupVisibilityQuery = groupVisibilityQuery.substring(
+        0,
+        groupVisibilityQuery.length - 1
+      );
+
+      await db.query(
+        "INSERT IGNORE INTO event_visibility(event_id,group_id,group_type,date_added) VALUES " +
+          groupVisibilityQuery
+      );
+
+    
+    } else {
+    }
+    // --------------------------------
+
     const formattedRecipients = await formatRecipient(updatedGuestIds, id, db);
 
     if (formattedRecipients && formattedRecipients.length > 0) {
@@ -294,22 +318,31 @@ export const getUserEvents = async (email, calendars = []) => {
         guests = JSON.parse(JSON.stringify(guests));
 
         let groups = await db.query(`
-          SELECT BIN_TO_UUID(event_visibility.event_id) as event_id ,BIN_TO_UUID(event_visibility.group_id) as group_id
+          SELECT BIN_TO_UUID(event_visibility.event_id) as event_id ,BIN_TO_UUID(event_visibility.group_id) as group_id,
+          event_visibility.group_type as group_type
           FROM event_visibility 
           WHERE event_visibility.event_id IN (${eventIds.join(",")})`);
         groups = JSON.parse(JSON.stringify(groups));
-
+        console.log('groupszzz',groups)
+        // let updatedGroups = groups.reduce((accum,item) => {
+        //   return {
+        //     [item.group_type]: [...(accum[item.group_type] || []),...item]
+        //   }
+        // },[]);
+        
+        // console.log('Update Groupssss', updatedGroups)
         result = events.map(event => {
           const invitedGuest = guests.filter(
             guest => guest.event_id === event.id
           );
           const sharedGroups = groups
             .filter(group => group.event_id === event.id)
-            .map(group => group.group_id);
+            .map(group => group);
           return {
             ...event,
             guests: [...(invitedGuest || [])],
-            group_ids: [...(sharedGroups || [])]
+            group_ids: sharedGroups.filter(group => group.group_type === 'user').map(group => group.group_id),
+            app_group_ids: sharedGroups.filter(group => group.group_type === 'application').map(group => group.group_id)
           };
         });
       } else {
@@ -343,7 +376,8 @@ export const editEvents = async data => {
     calendar_ids = [],
     guests = [],
     removed_guests = [],
-    group_ids: []
+    group_ids =  [],
+    app_group_id = []
   } = data;
   const db = makeDb();
   let results = [];
@@ -368,7 +402,7 @@ export const editEvents = async data => {
         recurring_end_date,
         id
       ]
-    );
+    );  
 
     if (guests.length > 0) {
       await addEventAttendee(guests, id, db);
@@ -389,7 +423,7 @@ export const editEvents = async data => {
     if (data.group_ids.length > 0) {
       let groupVisibilityQuery = data.group_ids.reduce(
         (accumulator, groupId) => {
-          accumulator += `(UUID_TO_BIN("${id}"),UUID_TO_BIN("${groupId}"),NOW()),`;
+          accumulator += `(UUID_TO_BIN('${id}'),UUID_TO_BIN('${groupId}'),NOW()),`;
           return accumulator;
         },
         ""
@@ -404,6 +438,30 @@ export const editEvents = async data => {
           groupVisibilityQuery
       );
     }
+
+    // ADDED BY DENNIS
+    if (data.app_group_ids.length > 0) {
+      console.log('APP GROUP IDS', data)
+      let groupVisibilityQuery = data.app_group_ids.reduce(
+        (accumulator, groupId) => {
+          accumulator += `(UUID_TO_BIN('${id}'),UUID_TO_BIN('${groupId}'),'application',NOW()),`;
+          return accumulator;
+        },
+        ""
+      );
+      groupVisibilityQuery = groupVisibilityQuery.substring(
+        0,
+        groupVisibilityQuery.length - 1
+      );
+
+      await db.query(
+        "INSERT IGNORE INTO event_visibility(event_id,group_id,group_type,date_added) VALUES " +
+          groupVisibilityQuery
+      );
+
+    
+    }
+    // --------------------------------
 
     if (currentEvent[0].status !== status) {
       if (status === "Cancelled") {

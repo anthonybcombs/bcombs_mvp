@@ -507,7 +507,7 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-              was_suspended: application.child.has_suspended + "",
+              has_suspended: application.child.has_suspended ? 1 : 0,
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -590,9 +590,9 @@ export default function index() {
             const profile = {
               first_name: parent.firstname ? parent.firstname : "",
               last_name: parent.lastname ? parent.lastname : "",
-              phone_type: parent.phont_type ? parent.phone_type : "",
+              phone_type: parent.phone_type ? parent.phone_type : "",
               phone_number: parent.phone_number ? parent.phone_number : "",
-              phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+              phone_type2: parent.phone_type2 ? parent.phone_type2 : "",
               phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
               email_type: parent.email_type ? parent.email_type : "",
               email_address: parent.email_address ? parent.email_address : "",
@@ -726,7 +726,7 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-              was_suspended: application.child.has_suspended + "",
+              has_suspended: application.child.has_suspended ? 1 : 0,
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -809,9 +809,9 @@ export default function index() {
             const profile = {
               first_name: parent.firstname ? parent.firstname : "",
               last_name: parent.lastname ? parent.lastname : "",
-              phone_type: parent.phont_type ? parent.phone_type : "",
+              phone_type: parent.phone_type ? parent.phone_type : "",
               phone_number: parent.phone_number ? parent.phone_number : "",
-              phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+              phone_type2: parent.phone_type ? parent.phone_type2 : "",
               phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
               email_type: parent.email_type ? parent.email_type : "",
               email_address: parent.email_address ? parent.email_address : "",
@@ -925,7 +925,7 @@ export default function index() {
       profile = {...profile, [id]: value}
       child.profile = profile;
     } else if (section === "general_information") {
-      if(id === "was_suspended") {
+      if(id === "has_suspended") {
         if (value == "0")
           general_information = {...general_information, ["reason_suspended"]: ""};
       }
@@ -1181,7 +1181,7 @@ export default function index() {
 
   const onSubmitSaveApplication = () => {
 
-    const payload = {
+    let payload = {
       app_id: selectedApplication.app_id,
       child: {
         firstname: childInformation.profile.first_name,
@@ -1207,7 +1207,7 @@ export default function index() {
         child_lives_with: getArrayValue(childInformation.profile.child_lives_with),
         school_name: childInformation.general_information.school_name,
         school_phone: childInformation.general_information.school_phone,
-        has_suspended: parseInt(childInformation.general_information.was_suspended),
+        has_suspended: childInformation.general_information.has_suspended == "Yes" || childInformation.general_information.has_suspended == 1 ? 1 : 0,
         reason_suspended: childInformation.general_information.reason_suspended,
         year_taken: childInformation.general_information.mentee_start_year,
         hobbies: childInformation.general_information.hobbies,
@@ -1283,6 +1283,11 @@ export default function index() {
       updated_by: auth.name
     }
 
+    payload = {
+      ...payload,
+      relationships: relationships
+    };
+    console.log('PAYLOADDD', payload)
     dispatch(requestSaveApplication(payload));
   }
 
@@ -1347,7 +1352,7 @@ export default function index() {
       }])
     }
   }
-
+  console.log('parentsInformation1123123123',parentsInformation)
   return (
     <MyApplicationStyled>
       {
@@ -1442,9 +1447,11 @@ export default function index() {
                                 isUpdate={true}
                                 emergencyContacts={emergencyContacts}
                                 selectedApplication={selectedApplication?.child}
+                                childProfile={childInformation?.profile}
                               />
                               <hr className="style-eight"></hr>
                               <RelationshipToChildStyled
+                                selectedApplication={selectedApplication}
                                 handleParentChildRelationship={handleParentChildRelationship}
                                 parents={parentsInformation}
                                 childs={[{...childInformation}]}
@@ -1496,6 +1503,7 @@ export default function index() {
                               emergencyContacts={emergencyContacts}
                               errors={errors}
                               selectedApplication={selectedApplication}
+                              childProfile={childInformation}
                             />
                             <hr className="style-eight"></hr>
                             <TermsWaiverFormViewStyled
