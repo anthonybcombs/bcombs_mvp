@@ -36,6 +36,9 @@ import TermsWaiverFormViewStyled from "../Application/view/waiver";
 import Loading from "../../../helpers/Loading.js";
 import SuccessUpdateModal from "./SuccessUpdateModal";
 
+import Form from '../../Dashboard/Builders/Form'
+import { requestUpdateSubmittedForm, requestGetCustomApplicationHistory } from '../../../redux/actions/FormBuilder'
+
 /*
 #applicationForm .ethnicity-labels{
       white-space:none !important;
@@ -320,11 +323,16 @@ export default function index() {
 
   const dispatch = useDispatch();
 
-  const { auth, applications, loading, vendors } = useSelector(
-    ({auth, applications, loading, vendors}) => {
-      return {auth, applications, loading, vendors}
+  const { auth, applications, loading, vendors, form: { updateSubmittedForm, customApplicationHistory } } = useSelector(
+    ({auth, applications, loading, vendors, form}) => {
+      return {auth, applications, loading, vendors, form}
     }
   );
+
+  
+  if (updateSubmittedForm.message === 'successfully update your application form') {
+    window.location.reload()
+  }
 
   if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
     window.location.reload(false);
@@ -357,6 +365,9 @@ export default function index() {
   const [isFormHistory, setIsFormHistory] = useState(false)
 
   const [emergencyContacts, setEmergencyContacts] = useState([]);
+
+  const [applicationFormKey, setApplicationFormKey] = useState(new Date().toISOString());
+  const [selectedCustomFormHistory, setSelectedCustomFormHistory] = useState({});
   
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
@@ -449,6 +460,28 @@ export default function index() {
   }
 
   const createHistoryViewButton = (row) => {
+    if (view === 'builderForm') {
+      const detailsObj = row.details ? JSON.parse(row.details) : {}
+      row = {
+        ...row,
+        ...detailsObj
+      }
+
+      return (
+        <a 
+          href=""
+          onClick={(e) => {
+            e.preventDefault()
+            setApplicationFormKey(new Date().toISOString());
+            setSelectedCustomFormHistory(row)
+            setIsReadonly(true)
+            setIsFormHistory(true)
+          }}
+        >
+          View Application
+        </a>
+      )
+    }
     return (
       <a 
         href=""
@@ -665,7 +698,23 @@ export default function index() {
 
   const [relationships, setRelationships] = useState([]);
   const [chRelationships, setChRelationships] = useState([]);
+  const [view, setView] = useState('')
   const createViewButton = (application) => {
+    if (application.form_contents) {
+     return (<a
+        href=""
+        target="_blank" 
+        onClick={(e) => {
+          e.preventDefault();
+          // setShowApplication(true);
+          setView('builderForm')
+          dispatch(requestGetCustomApplicationHistory(application.app_id))
+          setSelectedApplication(application)
+        }}
+      >
+        View Application
+      </a>)
+    }
     return (
       <a 
         href=""
@@ -1389,7 +1438,7 @@ export default function index() {
             </div>
           </Collapsible>
           {
-            showApplication && (
+            (showApplication && view !== 'builderForm') && (
               <div>
                 <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
                   <div id="dataTableContainer">
@@ -1531,6 +1580,69 @@ export default function index() {
                   )
                 }
               </div>
+            )
+          }
+          {
+            view === 'builderForm' && (
+              loading.updateForm ? (
+                <Loading />
+              ) : (
+                <>
+                  <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
+                    <div id="dataTableContainer">
+                      {
+                        (
+                          <DataTable 
+                            columns={columnsAppHistory}
+                            data={customApplicationHistory}
+                            pagination
+                            noHeader={true}
+                            striped={true}
+                            customStyles={customStyles}
+                            paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+                            paginationComponentOptions={paginationComponentOptions}
+                          />
+                        )
+                      }
+                    </div>
+                  </Collapsible>
+                  <Form
+                    historyList={customApplicationHistory}
+                    key={applicationFormKey}
+                    { ...(isFormHistory ? selectedCustomFormHistory : selectedApplication) }
+                    application_date={
+                      isFormHistory
+                        ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")}`
+                        : 'Most Up to date Application'
+                    }
+                    isReadOnly={isReadonly}
+                    isFormHistory={isFormHistory}
+                    onChangeToEdit={handleChangeToEdit}
+                    onGetUpdatedApplication={(form_contents) => setSelectedApplication({
+                      ...selectedApplication,
+                      form_contents
+                    })}
+                    onSubmitApplication={(form_contents) => {
+                      dispatch(requestUpdateSubmittedForm({
+                        updated_by: auth.email,
+                        vendor: selectedApplication.vendor,
+                        form: selectedApplication.form,
+                        app_id: selectedApplication.app_id,
+                        form_contents,
+                        class_teacher: selectedApplication.class_teacher,
+                        color_designation: selectedApplication.color_designation,
+                        verification: selectedApplication.verification,
+                        student_status: selectedApplication.student_status,
+                        notes: selectedApplication.notes
+                      }))
+                    }}
+                    onSelectLatest={() => {
+                      setIsFormHistory(false)
+                      setApplicationFormKey(new Date().toISOString())
+                    }}
+                  />
+                </>
+              )
             )
           }
           </>
