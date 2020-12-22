@@ -701,8 +701,10 @@ export const getUserApplicationsByUserId = async user_id => {
       [user_id]
     );
     for (const ua of userApplications) {
-      const application = await getApplicationByAppId(ua.app_id);
-      applications.push(application);
+      if(ua.app_id) {
+        const application = await getApplicationByAppId(ua.app_id);
+        applications.push(application);
+      }
     }
   } catch (error) {
     console.log("get user applications", error);
