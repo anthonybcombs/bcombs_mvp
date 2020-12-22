@@ -84,7 +84,8 @@ import {
   updateSubmitCustomApplication,
   getCustomFormApplicants,
   getCustomFormApplicantById,
-  getCustomApplicationHistoryById
+  getCustomApplicationHistoryById,
+  getUserCustomApplicationsByUserId
 } from "../../api/applications";
 import { 
   addChild, 
@@ -244,9 +245,15 @@ const resolvers = {
     },
     async getUserApplicationsByUserId(root, { user_id }, context) {
       try {
-        console.log("Im here mofos!!!");
-        const response = await getUserApplicationsByUserId(user_id);
-        return response;
+        const applications = await getUserApplicationsByUserId(user_id);
+        console.log("12345");
+        const customApplications = await getUserCustomApplicationsByUserId(user_id);
+
+        console.log("customApplications", customApplications);
+        return {
+          applications: applications,
+          customApplications: customApplications
+        }
       } catch (err) {
         console.log("Get User Applications", err);
       }
