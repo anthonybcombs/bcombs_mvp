@@ -103,7 +103,12 @@ const getApplicationUserIdFromDatabase = user_id => {
         }
       });
 
-      return resolve(data.getUserApplicationsByUserId);
+      let applications = [...data.getUserApplicationsByUserId.applications,
+                          ...data.getUserApplicationsByUserId.customApplications]
+
+      // applications = applications.sort((a, b) => new Date(b.application_date) - new Date(a.application_date))
+
+      return resolve(applications);
     } catch (error) {
       reject(error);
     }

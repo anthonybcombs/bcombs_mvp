@@ -1252,6 +1252,11 @@ const queryTypes = `
         message: String
         form: CustomApplicationOutput
     }
+
+    type UserApplicationsOutput {
+        applications: [Application]
+        customApplications: [SubmittedCustomApplicationOutput]
+    }
 `;
 
 const mutations = `
@@ -1324,7 +1329,7 @@ const queries = `
         getUserApplications(email: String!): UserApplication
         getUserByEmail(email: String): CheckUserEmail
         getVendorAppGroups(vendor: String): AllGroups
-        getUserApplicationsByUserId(user_id: String!): [Application]
+        getUserApplicationsByUserId(user_id: String!): UserApplicationsOutput
         getApplicationHistory(app_id: String!): [ApplicationHistory]
         getUserApplicationHistory(id: String!):[ApplicationHistory]
         getVendorAdminsByUser(user: String): [Admin]

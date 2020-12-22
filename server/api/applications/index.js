@@ -1183,12 +1183,8 @@ export const getCustomFormApplicantById = async({app_id, is_archived = 0}) => {
         is_archived
       ]
     )
-
-    console.log("applications", applications);
-
     for(const application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-      console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
     }
 
@@ -1201,3 +1197,34 @@ export const getCustomFormApplicantById = async({app_id, is_archived = 0}) => {
     return applications;
   }
 }
+
+export const getUserCustomApplicationsByUserId = async user_id => {
+  const db = makeDb();
+  let applications = [];
+
+  try {
+    const userApplications = await db.query(
+      `
+        SELECT 
+          id,
+          BIN_TO_UUID(custom_app_id) as custom_app_id
+        FROM application_user
+        WHERE user_id=UUID_TO_BIN(?)
+        ORDER BY id DESC
+      `,
+      [user_id]
+    );
+
+    for (const ua of userApplications) {
+      if(ua.custom_app_id) {
+        const application = await getCustomFormApplicantById({app_id: ua.custom_app_id});
+        applications.push(application);
+      }
+    }
+  } catch (error) {
+    console.log("get user custom applications", error);
+  } finally {
+    await db.close();
+    return applications;
+  }
+};
