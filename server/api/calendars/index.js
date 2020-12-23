@@ -255,8 +255,6 @@ export const executeCreateCalendar = async calendar => {
       }
     }
     // **************************************************************** //
-    console.log('CALENDARRRRRRRRRRRRRR', calendar)
-    console.log('CALENDARRRRRRRRRRRRRR insertedCalendar', insertedCalendar)
     for (
       let groupIndex = 0;
       groupIndex < calendar.info.app_group_ids.length;
@@ -276,12 +274,18 @@ export const executeCreateCalendar = async calendar => {
               application.vendor=vendor_app_groups.vendor AND
               application.app_id=parent.application AND
               users.email=parent.email_address;`);
-
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', users.length)        
+      console.log('****** USERS', `SELECT BIN_TO_UUID(vendor_app_groups.vendor), 
+      parent.email_address as email,BIN_TO_UUID(users.id) as user_id
+ FROM vendor_app_groups, application,parent, users
+ WHERE vendor_app_groups.app_grp_id=UUID_TO_BIN('${calendar.info.app_group_ids[groupIndex]}') AND
+       application.vendor=vendor_app_groups.vendor AND
+       application.app_id=parent.application AND
+       users.email=parent.email_address;`)
       for (let userIndex = 0; userIndex < users.length;userIndex++) {
         const db1 = makeDb();
           try {
               try {
-                console.log("Contactttttttttttt", users[userIndex]);
                 await db1.query(
                   "INSERT IGNORE INTO user_calendars_follow(calendar_id,user_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?),UUID_TO_BIN(?))",
                 [
