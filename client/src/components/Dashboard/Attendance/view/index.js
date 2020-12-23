@@ -70,8 +70,14 @@ const AttendanceSummaryStyled = styled.div`
 	.attendance-status-container {
 		display: flex;
 	}
-	.attendance-status-container div {
+	.attendance-status-container > div {
 		width: 33%;
+	}
+	.circle-icon {
+		border-radius:50%;
+		width: 15px;
+		height: 15px;
+		margin:0 auto;
 	}
 `;
 
@@ -148,9 +154,9 @@ export default function index(props) {
 					{/* <td>{format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)}</td> */}
 					<td>
 						<div className="attendance-status-container">
-							<div> {att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].status || ''}</div>
-							<div> {att.attendance[formattedDateKeys[1]] && att.attendance[formattedDateKeys[1]].status || ''}</div>
-							<div> {att.attendance[formattedDateKeys[2]] && att.attendance[formattedDateKeys[2]].status || '' }</div>
+							<div> {att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].status === 'Present' && <div className="circle-icon" style={{backgroundColor:'green'}}></div>  || ''}</div>
+							<div> {att.attendance[formattedDateKeys[1]] && att.attendance[formattedDateKeys[1]].status === 'Absent' &&  <div className="circle-icon" style={{backgroundColor:'red'}}></div> || ''}</div>
+							<div> {att.attendance[formattedDateKeys[2]] && att.attendance[formattedDateKeys[2]].status &&  <div className="circle-icon" style={{backgroundColor:'yellow'}}></div> || '' }</div>
 						</div>
 					</td>
 					<td>

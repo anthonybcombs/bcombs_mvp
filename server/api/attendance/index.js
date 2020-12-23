@@ -21,7 +21,7 @@ export const getChildAttendance = async applicationGroupId => {
       child.firstname,
       child.lastname,
       child.gender,
-      vendor_app_groups.name as app_group_name,
+      vendor_app_groups.name as app_group_name
     FROM attendance,child, vendor_app_groups
     WHERE attendance.app_group_id=UUID_TO_BIN(?) AND child.ch_id=attendance.child_id AND
            vendor_app_groups.app_grp_id=attendance.app_group_id

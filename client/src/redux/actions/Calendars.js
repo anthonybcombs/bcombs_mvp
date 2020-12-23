@@ -15,6 +15,7 @@ import { groupBy } from "../../helpers/Arrays";
 const addCalendarInDatabase = ({ creds, info }) => {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log('Add Calendar ini Database', info)
       const { data } = await graphqlClient.mutate({
         mutation: CREATE_CALENDAR_MUTATION,
         variables: { calendar: { creds, info } }
@@ -100,7 +101,8 @@ export const requestAddCalendar = details => {
     familyMembers: details.selectedFamilyMembers,
     visibilityType: details.visibilityType,
     image: details.image,
-    groups: details.groups
+    groups: details.groups,
+    app_group_ids: details.app_group_ids
   };
 };
 export const requestEditCalendar = details => {
@@ -112,7 +114,8 @@ export const requestEditCalendar = details => {
     visibilityType: details.visibilityType,
     image: details.image,
     color: details.color,
-    groups: details.groups
+    groups: details.groups,
+    app_group_ids: details.app_group_ids
   };
 };
 export const requestDeleteCalendar = details => {
@@ -149,7 +152,8 @@ export function* addCalendar({
   familyMembers,
   visibilityType,
   image,
-  groups
+  groups,
+  app_group_ids
 }) {
   try {
     const response = yield call(addCalendarInDatabase, {
@@ -162,7 +166,8 @@ export function* addCalendar({
         familyMembers: Array.from(familyMembers.keys()),
         visibilityType,
         image,
-        groups
+        groups,
+        app_group_ids
       }
     });
 

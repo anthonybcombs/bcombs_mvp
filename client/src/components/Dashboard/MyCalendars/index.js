@@ -52,8 +52,7 @@ export default function index() {
       dispatch(requestUserGroup(auth.email));
       dispatch(requestVendor(auth.user_id));
     }
-  }, []);
-
+  }, [])
   return (
     <MyCalendarStyled>
       <h2>My Calendars</h2>

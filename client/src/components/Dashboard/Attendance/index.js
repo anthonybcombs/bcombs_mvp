@@ -128,7 +128,7 @@ export default function index(props) {
           <td>{availableCount}</td>
           <td>{classCount}</td>
           <td>
-            <a href={"attendance/view/" + group.app_grp_id} target="_blank">
+            <a href={"view/" + group.app_grp_id} target="_blank">
               View
             </a>
           </td>

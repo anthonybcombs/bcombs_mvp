@@ -221,6 +221,7 @@ export const sendToUserShareCalendarConfirmation = async ({
   groupId
 }) => {
   try {
+    console.log('Recipientttt',recipient)
     const template = getShareCalendarTemplate(calendar, recipient, groupId);
     sendEmail({
       ...defaultMailConfig,

@@ -52,10 +52,11 @@ const ClassListViewStyled = styled.div`
 	.attendance-action {
 		display: flex;
 		flex-flow: row wrap;
+		flex-grow: 1;
 	}
 
 	.attendance-action div{
-		margin: 3px;
+		margin: 7px;
 	}
 	.child-body {
 		margin-top: 10px;
@@ -66,7 +67,7 @@ const ClassListViewStyled = styled.div`
 	.child-body .block {
 		padding-left: 3px;
 		padding-right: 3px;
-		width: 250px;
+		width: 280px;
 	}
 
 	.child-body .extra_activitybox {
@@ -486,7 +487,7 @@ export default function index() {
 		if(excuseType === updatedApplication[currentIndex].attendance_status.toLowerCase()) {
 			updatedApplication[currentIndex] = {
 				...updatedApplication[currentIndex],
-				excused: excuseType,
+				excused: updatedApplication[currentIndex].excused === excuseType ? null : excuseType,
 			};
 			setApplicationList(updatedApplication);
 		}

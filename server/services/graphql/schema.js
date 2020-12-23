@@ -84,6 +84,7 @@ const inputs = `
         groups:[String]
         visibilityType: String
         color: String
+        app_group_ids: [String]
     }    
     input CreateProfileInput{
         email: String!
@@ -774,6 +775,7 @@ const queryTypes = `
         familyMembers:[String]
         groups:[String]
         visibilityType: String!   
+        app_group_ids: [String]
     }
     type CalendarType{
         status: Status!
