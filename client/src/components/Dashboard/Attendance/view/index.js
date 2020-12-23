@@ -6,7 +6,7 @@ import { useParams } from '@reach/router';
 import { format } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
-import { getHours, max, addDays,subDays } from 'date-fns';
+import { getHours, max, addDays, subDays } from 'date-fns';
 
 import { requestAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
@@ -74,10 +74,48 @@ const AttendanceSummaryStyled = styled.div`
 		width: 33%;
 	}
 	.circle-icon {
-		border-radius:50%;
+		border-radius: 50%;
 		width: 15px;
 		height: 15px;
-		margin:0 auto;
+		margin: 0 auto;
+	}
+
+	.form-control {
+		display: block;
+		width: 100%;
+		height: auto;
+		padding: 6px 12px;
+		font-size: 14px;
+		line-height: 1.42857143;
+		color: #555;
+		background-color: #fff;
+		background-image: none;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+		box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+		-webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+		-o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+		transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+		-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+		-moz-box-sizing: border-box; /* Firefox, other Gecko */
+		box-sizing: border-box;
+	}
+
+	.form-control[disabled],
+	.form-control[readonly],
+	fieldset[disabled] .form-control {
+		background-color: #eee;
+		opacity: 1;
+	}
+
+	.filter-container {
+		display: flex;
+		padding-bottom: 12px;
+	}
+	.filter-container > div {
+		min-width: 200px;
+		margin-left:12px;
 	}
 `;
 
@@ -93,6 +131,7 @@ export default function index(props) {
 	);
 	const [displayDays, setDisplayDays] = useState([subDays(new Date(), 2), subDays(new Date(), 1), new Date()]);
 	const [attendanceDisplay, setAttendanceDisplay] = useState([]);
+	const [defaultAttendanceDisplay, setDefaultAttendanceDisplay] = useState([]);
 
 	const { app_group_id } = useParams();
 
@@ -113,37 +152,37 @@ export default function index(props) {
 	}, []);
 
 	useEffect(() => {
-		if(attendance.list) {
-			let currentAttendance = attendance.list.reduce((accum,att) => {
+		if (attendance.list) {
+			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
-				attDate = attDate.replaceAll('-','_')
+				attDate = attDate.replaceAll('-', '_');
 				return {
 					...accum,
-					[att.child_id] :{
+					[att.child_id]: {
 						...att,
-						total_volunteer_hours: ( accum[att.child_id] && accum[att.child_id].total_volunteer_hours || 0) + att.volunteer_hours || 0,
-						attendance:{
-							...(accum[att.child_id] && accum[att.child_id].attendance || {}),
+						total_volunteer_hours:
+							((accum[att.child_id] && accum[att.child_id].total_volunteer_hours) || 0) + att.volunteer_hours || 0,
+						attendance: {
+							...((accum[att.child_id] && accum[att.child_id].attendance) || {}),
 							[attDate]: {
-								status:att.attendance_status
-							}
-						}
-					}
-				}
-			},{});
-			currentAttendance = Object.keys(currentAttendance).map((key) => {
+								status: att.attendance_status,
+							},
+						},
+					},
+				};
+			}, {});
+			currentAttendance = Object.keys(currentAttendance).map(key => {
 				return currentAttendance[key];
 			});
 			setAttendanceDisplay(currentAttendance);
+			setDefaultAttendanceDisplay(currentAttendance)
 		}
-	},[attendance.list])
+	}, [attendance.list]);
 
 	const renderTableData = () => {
-	
-		let formattedDateKeys = displayDays.map(key => format(key,DATE_KEY_FORMAT));
-		console.log('attendanceDisplay',attendanceDisplay)
-		return attendanceDisplay.map((att, index) => {
+		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
 
+		return attendanceDisplay.map((att, index) => {
 			return (
 				<tr key={index}>
 					<td>
@@ -154,13 +193,87 @@ export default function index(props) {
 					{/* <td>{format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)}</td> */}
 					<td>
 						<div className="attendance-status-container">
-							<div> {att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].status === 'Present' && <div className="circle-icon" style={{backgroundColor:'green'}}></div>  || ''}</div>
-							<div> {att.attendance[formattedDateKeys[1]] && att.attendance[formattedDateKeys[1]].status === 'Absent' &&  <div className="circle-icon" style={{backgroundColor:'red'}}></div> || ''}</div>
-							<div> {att.attendance[formattedDateKeys[2]] && att.attendance[formattedDateKeys[2]].status &&  <div className="circle-icon" style={{backgroundColor:'yellow'}}></div> || '' }</div>
+							<div>
+								<div>
+									{' '}
+									{(att.attendance[formattedDateKeys[0]] &&
+										att.attendance[formattedDateKeys[0]].status === 'Present' && (
+											<div className="circle-icon" style={{ backgroundColor: 'green' }}></div>
+										)) ||
+										''}
+								</div>
+								<div>
+									{' '}
+									{(att.attendance[formattedDateKeys[0]] &&
+										att.attendance[formattedDateKeys[0]].status === 'Absent' && (
+											<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+										)) ||
+										''}
+								</div>
+								<div>
+									{' '}
+									{(att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].status === 'Tardy' && (
+										<div className="circle-icon" style={{ backgroundColor: 'yellow' }}></div>
+									)) ||
+										''}
+								</div>
+							</div>
+
+							<div>
+								<div>
+									{' '}
+									{(att.attendance[formattedDateKeys[1]] &&
+										att.attendance[formattedDateKeys[1]].status === 'Present' && (
+											<div className="circle-icon" style={{ backgroundColor: 'green' }}></div>
+										)) ||
+										''}
+								</div>
+								<div>
+									{' '}
+									{(att.attendance[formattedDateKeys[1]] &&
+										att.attendance[formattedDateKeys[1]].status === 'Absent' && (
+											<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+										)) ||
+										''}
+								</div>
+								<div>
+									{' '}
+									{(att.attendance[formattedDateKeys[1]] && att.attendance[formattedDateKeys[1]].status === 'Tardy' && (
+										<div className="circle-icon" style={{ backgroundColor: 'yellow' }}></div>
+									)) ||
+										''}
+								</div>
+							</div>
+
+							<div>
+								<div>
+									{' '}
+									{(att.attendance[formattedDateKeys[2]] &&
+										att.attendance[formattedDateKeys[2]].status === 'Present' && (
+											<div className="circle-icon" style={{ backgroundColor: 'green' }}></div>
+										)) ||
+										''}
+								</div>
+								<div>
+									{' '}
+									{(att.attendance[formattedDateKeys[2]] &&
+										att.attendance[formattedDateKeys[2]].status === 'Absent' && (
+											<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+										)) ||
+										''}
+								</div>
+								<div>
+									{' '}
+									{(att.attendance[formattedDateKeys[2]] && att.attendance[formattedDateKeys[2]].status === 'Tardy' && (
+										<div className="circle-icon" style={{ backgroundColor: 'yellow' }}></div>
+									)) ||
+										''}
+								</div>
+							</div>
 						</div>
 					</td>
 					<td>
-					<div className="attendance-status-container">
+						<div className="attendance-status-container">
 							<div> {att.total_volunteer_hours}</div>
 							<div> </div>
 							<div> </div>
@@ -171,30 +284,44 @@ export default function index(props) {
 		});
 	};
 
-	console.log('app_group_id', app_group_id);
-	console.log('app_group_id attendance', attendance);
-	console.log('initialDayszzzz', displayDays);
-
 	const handlePreviousDate = () => {
-		setDisplayDays([
-			subDays(displayDays[0],1),
-			subDays(displayDays[1],1),
-			subDays(displayDays[2],1),
-		])
+		setDisplayDays([subDays(displayDays[0], 1), subDays(displayDays[1], 1), subDays(displayDays[2], 1)]);
 	};
 	const handleNextDate = () => {
-		setDisplayDays([
-			addDays(displayDays[0],1),
-			addDays(displayDays[1],1),
-			addDays(displayDays[2],1),
-		])
+		setDisplayDays([addDays(displayDays[0], 1), addDays(displayDays[1], 1), addDays(displayDays[2], 1)]);
 	};
+
+	const handleSearchChange = e => {
+		const { value } = e.target;
+		if(value === '') {
+			setAttendanceDisplay(defaultAttendanceDisplay);
+		}
+		else{
+			let lowerCaseValue = value.toLowerCase();
+			const list = defaultAttendanceDisplay.filter((item) => item.lastname.toLowerCase().includes(lowerCaseValue) || item.firstname.toLowerCase().includes(lowerCaseValue));
+			console.log('attendanceeeee', list)
+			setAttendanceDisplay(list);
+		}
+	}
 	return (
 		<AttendanceSummaryStyled>
 			<div id="application-status">
 				<div id="application-status-header">
 					<div>
 						<span>Attendance</span>
+					</div>
+				</div>
+				<div className="filter-container">
+					<div>
+							<select className="form-control">
+								<option value="">Filter By</option>
+								<option key={1} value={1}>
+									Test
+								</option>
+							</select>
+					</div>
+					<div>
+						<input type="text" className="form-control" name="search" placeholder="Search" onChange={handleSearchChange} />
 					</div>
 				</div>
 				<div id="application-status-list">
@@ -217,9 +344,9 @@ export default function index(props) {
 										{displayDays.map((date, index) => {
 											return (
 												<div>
-													{index === 0 && <span onClick={handlePreviousDate}>{`<`}</span>}
+													{index === 0 && <span onClick={handlePreviousDate} style={{ cursor: 'pointer' }}>{`<`}</span>}
 													{format(date, DATE_FORMAT)}
-													{index === 2 && <span onClick={handleNextDate}>{`>`}</span>}
+													{index === 2 && <span onClick={handleNextDate} style={{ cursor: 'pointer' }}>{`>`}</span>}
 												</div>
 											);
 										})}
