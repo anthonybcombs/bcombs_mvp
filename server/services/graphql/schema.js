@@ -1287,6 +1287,7 @@ const queryTypes = `
         mentoring_hours: Int
         volunteer_hours: Int
         is_excused: Int
+        is_following: Int
     }
 
     type Attendance {
@@ -1314,6 +1315,7 @@ const queryTypes = `
         mentoring_hours: Int
         volunteer_hours: Int
         is_excused: Int
+        is_following: Int
         app_group_name: String
     }
     

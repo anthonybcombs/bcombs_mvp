@@ -6,8 +6,9 @@ export const getChildAttendance = async applicationGroupId => {
   const db = makeDb();  
   let result = [];
   try{
-    console.log('Get Child Attendance Application Group Id',applicationGroupId)
-    result = await db.query(`SELECT BIN_TO_UUID(attendance.app_group_id) as app_group_id,
+
+    result = await db.query(`
+    SELECT BIN_TO_UUID(attendance.app_group_id) as app_group_id,
       BIN_TO_UUID(attendance.child_id) as child_id,
       attendance.attendance_date,
       attendance.attendance_start_time,
@@ -21,12 +22,57 @@ export const getChildAttendance = async applicationGroupId => {
       child.firstname,
       child.lastname,
       child.gender,
-      vendor_app_groups.name as app_group_name
-    FROM attendance,child, vendor_app_groups
-    WHERE attendance.app_group_id=UUID_TO_BIN(?) AND child.ch_id=attendance.child_id AND
-           vendor_app_groups.app_grp_id=attendance.app_group_id
+      vendor_app_groups.name as app_group_name,
+      user_calendars_follow.is_following
+    FROM application, attendance, child, vendor_app_groups, 
+      user_calendars_follow, parent, users, user_calendars_groups
+    WHERE  attendance.app_group_id=UUID_TO_BIN(?) AND 
+      child.ch_id=attendance.child_id AND
+      application.child=child.ch_id AND
+      vendor_app_groups.app_grp_id=attendance.app_group_id AND
+      user_calendars_follow.group_id=vendor_app_groups.app_grp_id AND
+      parent.application=application.app_id AND
+      application.vendor=vendor_app_groups.vendor AND
+      parent.email_address=users.email AND
+      users.id=user_calendars_follow.user_id AND
+      user_calendars_follow.user_id = users.id  AND
+      user_calendars_groups.group_id=attendance.app_group_id AND
+      user_calendars_follow.group_id = user_calendars_groups.group_id AND
+      user_calendars_groups.group_type= 'applications' 
       `,
     [applicationGroupId]);
+
+    /*
+    UPDATED QUERY - WILL IMPLEMENT TOMORROW
+    
+    SELECT BIN_TO_UUID(attendance.app_group_id) as app_group_id,
+      BIN_TO_UUID(attendance.child_id) as child_id,
+      attendance.attendance_date,
+      attendance.attendance_start_time,
+      attendance.attendance_end_time,
+      attendance.attendance_status,
+      attendance.mentoring_hours,
+      attendance.volunteer_hours,
+      attendance.event_name,
+      attendance.location,
+      attendance.is_excused,
+      child.firstname,
+      child.lastname,
+      child.gender,
+      vendor_app_groups.name as app_group_name,
+      user_calendars_follow.is_following
+    FROM application,attendance,child, vendor_app_groups, 
+    user_calendars_follow,parent, users, user_calendars_groups
+    WHERE attendance.app_group_id=UUID_TO_BIN('a4f0bbef-44f2-11eb-8212-dafd2d0ae3ff') AND child.ch_id=attendance.child_id AND
+           vendor_app_groups.app_grp_id=attendance.app_group_id AND
+           user_calendars_follow.group_id=attendance.app_group_id AND
+           parent.application=application.app_id AND
+           parent.email_address=users.email AND
+           users.id=user_calendars_follow.user_id AND
+           user_calendars_groups.group_id=attendance.app_group_id AND
+           user_calendars_groups.group_type= 'applications'
+
+           */
 
     console.log('Get Child Attendance result',result)
   }catch (error) {

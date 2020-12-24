@@ -14,7 +14,7 @@ import {
 
 import DataTable from 'react-data-table-component';
 
-import { requestUpdateAttendance } from '../../../../redux/actions/Attendance';
+import { requestAttendance,requestUpdateAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
 import { requestGetApplications } from '../../../../redux/actions/Application';
 import { requestUserGroup } from '../../../../redux/actions/Groups';
@@ -346,9 +346,9 @@ export default function index() {
     reValidateMode: "onSubmit"
   });
 	const { name, vendor_id } = useParams();
-	const { auth, vendors, groups, applications, loading } = useSelector(
-		({ auth, vendors, applications, groups, loading }) => {
-			return { auth, vendors, applications, groups, loading };
+	const { attendance,auth, vendors, groups, applications, loading } = useSelector(
+		({ attendance,auth, vendors, applications, groups, loading }) => {
+			return { attendance,auth, vendors, applications, groups, loading };
 		}
 	);
 	const [attendanceDetails, setAttendanceDetails] = useState({
@@ -383,6 +383,12 @@ export default function index() {
 	}, [vendors]);
 
 	useEffect(() => {
+		if(appGroupId !== '') {
+			dispatch(requestAttendance(appGroupId))
+		}
+	},[appGroupId])
+
+	useEffect(() => {
 		if (applications && applications.activeapplications.length > 0) {
 			let currentAppGroupId = '';
 
@@ -400,8 +406,9 @@ export default function index() {
 			let filterApplications = applications.activeapplications.filter(application => {
 				return application && application.class_teacher == currentAppGroupId;
 			});
-
+	
 			filterApplications = filterApplications.map(item => {
+				let currentAttendance = attendance.list.find((att) => att.child_id === item.child.ch_id);
 				item.class_teacher = name;
 				return item;
 			});
@@ -410,6 +417,19 @@ export default function index() {
 			setAppGroupId(currentAppGroupId)
 		}
 	}, [applications]);
+
+	useEffect(() => {
+		if(attendance.list) {
+			let updatedApplicationList = applicationList.map((application) => {
+				let currentAttendance = attendance.list.find((att) => att.child_id === application.child.ch_id);
+				return {
+					...application,
+					is_following: currentAttendance.is_following
+				}
+			});
+			setApplicationList(updatedApplicationList)
+		}
+	},[attendance.list])
 
 	const handleAttendance = (payload, attendanceType) => {
 		let updatedApplication = [...(applicationList || [])];
@@ -493,7 +513,7 @@ export default function index() {
 		}
 
 	};
-
+	console.log('applicationListttt',applicationList)
 
 	return (
 		<ClassListViewStyled>
@@ -683,6 +703,13 @@ export default function index() {
 											 Volunteer Hours
 											</label>
 										</div>
+									</div>
+
+									<div className="attendance-action">
+										{app.is_following && 	<div className="field">
+												Calendar Invite: {`${app.is_following === 1 ? 'Yes' : 'No'}`}
+										</div>}
+
 									</div>
 								</div>
 							</div>

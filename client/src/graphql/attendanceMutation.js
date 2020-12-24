@@ -16,6 +16,7 @@ export const ATTENDANCE_UPDATE_MUTATION = gql`
         volunteer_hours
         mentoring_hours
         is_excused
+        is_following
       }
     }
   }

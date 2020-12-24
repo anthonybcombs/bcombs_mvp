@@ -16,6 +16,7 @@ export const GET_ATTENDANCE_QUERY = gql`
       app_group_name
       volunteer_hours
       is_excused
+      is_following
     }
   }
 `;
