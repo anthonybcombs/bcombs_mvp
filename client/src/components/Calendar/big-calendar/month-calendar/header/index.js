@@ -186,6 +186,7 @@ export default function index({
   setTimeDisplayed,
   handleCalendarSelection,
   publicView,
+  vendors
 }) {
   const [isVisibleCreateCalendarModal, toggleCreateCalendarModal] = useState(
     false

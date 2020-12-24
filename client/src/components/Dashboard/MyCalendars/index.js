@@ -7,6 +7,7 @@ import { requestCalendars } from "../../../redux/actions/Calendars";
 import { getContact } from "../../../redux/actions/Contacts";
 import { getEvents } from "../../../redux/actions/Events";
 import { requestUserGroup } from "../../../redux/actions/Groups";
+import { requestVendor } from "../../../redux/actions/Vendors";
 
 const MyCalendarStyled = styled.div`
   // margin: 1em;
@@ -30,15 +31,17 @@ export default function index() {
     contacts,
     events,
     familyMembers,
-    groups
+    groups,
+    vendors
   } = useSelector(
-    ({ auth, calendars, contacts, events, familyMembers, groups }) => ({
+    ({ auth, calendars, contacts, events, familyMembers, groups, vendors }) => ({
       auth,
       calendars,
       contacts,
       events,
       familyMembers,
-      groups
+      groups,
+      vendors
     })
   );
   const dispatch = useDispatch();
@@ -47,8 +50,9 @@ export default function index() {
       dispatch(getEvents(auth.email));
       dispatch(getContact(auth.email));
       dispatch(requestUserGroup(auth.email));
+      dispatch(requestVendor(auth.user_id));
     }
-  }, []);
+  }, [])
   return (
     <MyCalendarStyled>
       <h2>My Calendars</h2>
@@ -58,6 +62,7 @@ export default function index() {
         events={events}
         calendars={calendars}
         familyMembers={familyMembers}
+        vendors={vendors}
       />
     </MyCalendarStyled>
   );

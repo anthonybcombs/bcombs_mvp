@@ -100,6 +100,8 @@ import {
   addParentChildRelationship,
   updateParentChildRelationship,
   getParentChildRelationship } from "../../api/parents";
+  
+import { getChildAttendance ,updateChildAttendance} from '../../api/attendance';
 
 import { getUserFromDatabase } from "../../api";
 
@@ -165,7 +167,9 @@ const resolvers = {
       return await getMembers(id);
     },
     async getEvents(root, { email }, context) {
-      return await getUserEvents(email);
+      let response = await getUserEvents(email);
+      console.log('Get Events Response,',response)
+      return response;
     },
     async getUserList(root, { keyword }, context) {
       console.log("Get User List", keyword);
@@ -364,6 +368,11 @@ const resolvers = {
     async getCustomFormApplicantById(root, {app_id}, contenxt) {
       const application = await getCustomFormApplicantById({app_id: app_id});
       return application;
+    },
+
+    async getAttendance(root, { application_group_id }, contenxt) {
+      console.log('Get Attendance App Grp Id', application_group_id)
+      return await getChildAttendance(application_group_id);
     }
   },
   RootMutation: {
@@ -1291,6 +1300,11 @@ const resolvers = {
         messageType: "info",
         message: "successfully update your application form",
       }
+    },
+
+    async updateAttendance(root, {attendance}, context) {
+      console.log('UpdateAttendance',attendance)
+      return await updateChildAttendance(attendance)
     }
   }
 };

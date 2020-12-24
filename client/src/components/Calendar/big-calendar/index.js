@@ -8,6 +8,7 @@ export default function index({
   events,
   calendars,
   familyMembers,
+  vendors,
   publicView = false
 }) {
   const [calendarType, setCalendarType] = useState(
@@ -79,6 +80,7 @@ export default function index({
           handleCalendarSelection={handleCalendarSelection}
           familyMembers={familyMembers}
           publicView={publicView}
+          vendors={vendors}
         />
       )}
       {calendarType === "week" && (
@@ -93,6 +95,7 @@ export default function index({
           handleCalendarSelection={handleCalendarSelection}
           familyMembers={familyMembers}
           publicView={publicView}
+          vendors={vendors}
         />
       )}
     </>
