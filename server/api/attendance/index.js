@@ -47,8 +47,7 @@ export const getChildAttendance = async applicationGroupId => {
     [applicationGroupId]);
 
     /*
-    UPDATED QUERY - WILL IMPLEMENT TOMORROW
-    
+
     SELECT BIN_TO_UUID(attendance.app_group_id) as app_group_id,
       BIN_TO_UUID(attendance.child_id) as child_id,
       attendance.attendance_date,

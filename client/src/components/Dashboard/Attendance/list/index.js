@@ -343,11 +343,19 @@ const DateCustomInput = ({
 const style = {
 	attendanceAction:{
 		cursor:'pointer'
+	},
+	circleIcon:{
+		margin:'0 auto'
+	},
+	miniCircleIcon:{
+		width:12,
+		height:12,
+		margin:'0 auto'
 	}
 }
 
 export default function index() {
-	const { register, handleSubmit, errors, clearError, setError } = useForm({
+	const { register, handleSubmit, errors, clearError, setError,reset  } = useForm({
     mode: "onSubmit",
     reValidateMode: "onSubmit"
   });
@@ -366,6 +374,7 @@ export default function index() {
 	});
 	const [appGroupId,setAppGroupId] = useState('');
 	const [applicationList, setApplicationList] = useState([]);
+	const [defaultApplicationList, setDefaultApplicationList] = useState([]);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -426,18 +435,24 @@ export default function index() {
 
 	useEffect(() => {
 		if(attendance.list) {
-			console.log('Attendance List', attendance.list)
 			let updatedApplicationList = applicationList.map((application) => {
 				let currentAttendance = attendance.list.find((att) => att.child_id === application.child.ch_id);
-				console.log('currentAttendance',currentAttendance)
+
 				return {
 					...application,
 					is_following: currentAttendance?.is_following
 				}
 			});
-			setApplicationList(updatedApplicationList)
+			setApplicationList(updatedApplicationList);
+			setDefaultApplicationList(updatedApplicationList);
 		}
-	},[attendance.list])
+	},[attendance.list]);
+
+	useEffect(() => {
+		if(attendance.isAttendanceUpdateSuccess) {
+			setApplicationList(defaultApplicationList)
+		}
+	},[attendance.isAttendanceUpdateSuccess])
 
 	const handleAttendance = (payload, attendanceType) => {
 		let updatedApplication = [...(applicationList || [])];
@@ -462,13 +477,13 @@ export default function index() {
 			...updatedApplication[currentIndex],
 			volunteer_hours: volunteerHrs,
 		};
-		console.log('handleVolunteerHours updatedApplication', updatedApplication)
 		setApplicationList(updatedApplication);
 	}
 
 	
 
-	const onSubmit = () => {
+	const onSubmit = (e) => {
+		reset();
 		const attendanceList = applicationList.map(app => {
 			return {
 				app_id:app.app_id,
@@ -489,8 +504,6 @@ export default function index() {
 				DATE_FORMAT)
 		};
 
-
-		console.log('ClassListViewStyled payload', payload)
 		dispatch(requestUpdateAttendance(payload));
 	};
 
@@ -523,8 +536,11 @@ export default function index() {
 		<ClassListViewStyled>
 			<div id="dataTableContainer">
 				<form onSubmit={handleSubmit(onSubmit)}>
+					{attendance.isAttendanceUpdateSuccess && <div>
+						Attendance has been updated successfully!
+					</div>}
 				<div className="search-field-container">
-		
+				
 					<div className="field">
 		
 					<DatePicker
@@ -662,7 +678,7 @@ export default function index() {
 												}}
 												style={style.attendanceAction}
 												>
-												<div className="circle-icon" style={{	margin:'0 auto',backgroundColor: app.attendance_status === 'Present' ? 'green' : 'gray'}} />	
+												<div className="circle-icon" style={{	...style.circleIcon,backgroundColor: app.attendance_status === 'Present' ? 'green' : 'gray'}} />	
 												Present
 											</div>
 										
@@ -673,14 +689,14 @@ export default function index() {
 												}}
 												style={style.attendanceAction}
 												>
-												<div className="circle-icon" style={{	margin:'0 auto',backgroundColor: app.attendance_status === 'Absent' ? 'red' : 'gray'}} />	
+												<div className="circle-icon" style={{	...style.circleIcon,backgroundColor: app.attendance_status === 'Absent' ? 'red' : 'gray'}} />	
 												Absent
 											</div>
 
 											<div onClick={() => {
 													handleExcused(app, 'absent');
 												}} style={{fontSize:12,marginTop:8}}>
-												<div className="circle-icon" style={{	width:12,height:12,margin:'0 auto', backgroundColor: app.excused === 'absent' ? 'green' : 'gray',cursor:'pointer'}} />	
+												<div className="circle-icon" style={{	...style.miniCircleIcon, backgroundColor: app.excused === 'absent' ? 'green' : 'gray',cursor:'pointer'}} />	
 												Excused
 											</div>
 
@@ -691,7 +707,7 @@ export default function index() {
 											<div onClick={() => {
 													handleAttendance(app, 'Tardy');
 												}} style={style.attendanceAction}>
-												<div className="circle-icon" style={{	margin:'0 auto', backgroundColor: app.attendance_status === 'Tardy' ? 'yellow' : 'gray'}} />	
+												<div className="circle-icon" style={{	...style.circleIcon, backgroundColor: app.attendance_status === 'Tardy' ? 'yellow' : 'gray'}} />	
 												Tardy
 											</div>
 						
@@ -699,7 +715,7 @@ export default function index() {
 											<div onClick={() => {
 													handleExcused(app, 'tardy');
 												}} style={{fontSize:12,marginTop:8}}>
-												<div className="circle-icon" style={{	width:12,height:12,margin:'0 auto', backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',cursor:'pointer'}} />	
+												<div className="circle-icon" style={{ ...style.miniCircleIcon, backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',cursor:'pointer'}} />	
 												Excused
 											</div>
 
@@ -728,7 +744,7 @@ export default function index() {
 						);
 					})}
 				</div>
-				{applicationList.length > 0 && <button onClick={handleSubmit}>Submit</button>}
+				{applicationList.length > 0 && <button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}</button>}
 				</form>
 			</div>
 		</ClassListViewStyled>

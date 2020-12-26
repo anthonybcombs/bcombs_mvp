@@ -1,4 +1,5 @@
 import React, { useEffect,useState } from "react";
+import { Link } from "@reach/router";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
@@ -120,17 +121,17 @@ export default function index(props) {
       return (
         <tr key={group.id}>
           <td>
-            <a href={"attendance/" + selectedVendor?.id2 + "/" + group.name} target="_blank">
+            <Link to={"" + selectedVendor?.id2 + "/" + group.name}>
               {group.name}
-            </a>
+            </Link>
           </td>
           <td>{count}</td>
           <td>{availableCount}</td>
           <td>{classCount}</td>
           <td>
-            <a href={"attendance/view/" + group.app_grp_id} target="_blank">
+            <Link to={"view/" + group.app_grp_id}>
               View
-            </a>
+            </Link>
           </td>
         </tr>
       )

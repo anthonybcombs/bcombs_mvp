@@ -67,12 +67,21 @@ export const setAttendanceList = (data) => {
   }
 }
 
+export const requestUpdateAttendanceSuccess = () => {
+  return {
+    type: actionType.REQUEST_UPDATE_ATTENDANCE_SUCCESS
+  }
+}
+
+
 
 
 export function* updateAttendance({ data }) {
   try {
     const response = yield call(updateAttendanceToDatabase, data)
-    console.log('Update Attendance Response',response)
+    if(response) {
+      yield put(requestUpdateAttendanceSuccess());
+    }
   } catch (err) {
   }
 }
@@ -80,8 +89,10 @@ export function* updateAttendance({ data }) {
 export function* getAttendance({ applicationGroupId }) {
   try {
     console.log('Get ATtendance ',applicationGroupId )
-    const response = yield call(getAttendanceToDatabase, applicationGroupId)
-    yield put(setAttendanceList(response))
+    const response = yield call(getAttendanceToDatabase, applicationGroupId);
+    if(response) {
+      yield put(setAttendanceList(response));
+    }
   } catch (err) {
   }
 }
