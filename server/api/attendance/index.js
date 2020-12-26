@@ -30,15 +30,19 @@ export const getChildAttendance = async applicationGroupId => {
       child.ch_id=attendance.child_id AND
       application.child=child.ch_id AND
       vendor_app_groups.app_grp_id=attendance.app_group_id AND
-      user_calendars_follow.group_id=vendor_app_groups.app_grp_id AND
       parent.application=application.app_id AND
       application.vendor=vendor_app_groups.vendor AND
       parent.email_address=users.email AND
-      users.id=user_calendars_follow.user_id AND
-      user_calendars_follow.user_id = users.id  AND
-      user_calendars_groups.group_id=attendance.app_group_id AND
-      user_calendars_follow.group_id = user_calendars_groups.group_id AND
-      user_calendars_groups.group_type= 'applications' 
+      ((user_calendars_follow.user_id = users.id AND 
+        user_calendars_follow.group_id = user_calendars_groups.group_id AND
+        user_calendars_follow.group_id = vendor_app_groups.app_grp_id) OR
+        users.id NOT IN (
+          SELECT user_calendars_follow.user_id FROM user_calendars_follow ,user_calendars_groups
+          WHERE user_calendars_follow.group_id = user_calendars_groups.group_id AND 
+            user_calendars_follow.user_id is not null)
+        ) AND 
+        user_calendars_groups.group_id=attendance.app_group_id AND 
+        user_calendars_groups.group_type= 'applications';
       `,
     [applicationGroupId]);
 

@@ -153,9 +153,11 @@ export default function index(props) {
 
 	useEffect(() => {
 		if (attendance.list) {
+			console.log('attendance.list',attendance.list)
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 				attDate = attDate.replaceAll('-', '_');
+
 				return {
 					...accum,
 					[att.child_id]: {
@@ -181,15 +183,19 @@ export default function index(props) {
 
 	const renderTableData = () => {
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
-
 		return attendanceDisplay.map((att, index) => {
+			const totalAttendance = Object.keys(att.attendance).length;
+			const totalPresent = Object.keys(att.attendance).filter(key =>{
+				return att.attendance[key].status === 'Present'
+			}).length;
+
 			return (
 				<tr key={index}>
 					<td>
 						<a href={'#'}>{`${att.firstname} ${att.lastname}`}</a>
 					</td>
 					<td>{att.app_group_name}</td>
-					<td>85% (34/40)</td>
+					<td>{`${((totalPresent * 100)/totalAttendance).toFixed(2)}%`} ({totalPresent}/{totalAttendance})</td>
 					{/* <td>{format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)}</td> */}
 					<td>
 						<div className="attendance-status-container">

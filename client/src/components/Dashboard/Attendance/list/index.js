@@ -340,6 +340,12 @@ const DateCustomInput = ({
 );
 
 
+const style = {
+	attendanceAction:{
+		cursor:'pointer'
+	}
+}
+
 export default function index() {
 	const { register, handleSubmit, errors, clearError, setError } = useForm({
     mode: "onSubmit",
@@ -420,11 +426,13 @@ export default function index() {
 
 	useEffect(() => {
 		if(attendance.list) {
+			console.log('Attendance List', attendance.list)
 			let updatedApplicationList = applicationList.map((application) => {
 				let currentAttendance = attendance.list.find((att) => att.child_id === application.child.ch_id);
+				console.log('currentAttendance',currentAttendance)
 				return {
 					...application,
-					is_following: currentAttendance.is_following
+					is_following: currentAttendance?.is_following
 				}
 			});
 			setApplicationList(updatedApplicationList)
@@ -454,25 +462,21 @@ export default function index() {
 			...updatedApplication[currentIndex],
 			volunteer_hours: volunteerHrs,
 		};
-		console.log('handleVolunteerHours volunteerHrs', volunteerHrs)
+		console.log('handleVolunteerHours updatedApplication', updatedApplication)
 		setApplicationList(updatedApplication);
 	}
 
 	
 
 	const onSubmit = () => {
-		console.log('onSubmit2222 applicationList', applicationList);
-		console.log('onSubmit2222 attendanceDetails', attendanceDetails);
-
 		const attendanceList = applicationList.map(app => {
 			return {
 				app_id:app.app_id,
-				attendance_status:app.attendance_status,
+				attendance_status:app.attendance_status || '',
 				child_id:app.child.ch_id,
 				vendor:app.vendor,
 				volunteer_hours: parseInt(app.volunteer_hours),
 				is_excused:app.excused ? 1 : 0
-
 			}
 		})
 
@@ -557,7 +561,11 @@ export default function index() {
                     </button>
                     <select
                       value={new Date(date).getFullYear()}
-                      onChange={({ target: { value } }) => changeYear(value)}>
+                      onChange={({ target: { value } }) => {
+												if(value) {
+													return changeYear(value)
+												}
+											}}>
                       {years.map(option => (
                         <option key={option} value={option}>
                           {option}
@@ -651,7 +659,9 @@ export default function index() {
 										<div>
 											<div onClick={() => {
 													handleAttendance(app, 'Present');
-												}}>
+												}}
+												style={style.attendanceAction}
+												>
 												<div className="circle-icon" style={{	margin:'0 auto',backgroundColor: app.attendance_status === 'Present' ? 'green' : 'gray'}} />	
 												Present
 											</div>
@@ -660,7 +670,9 @@ export default function index() {
 										<div>
 												<div onClick={() => {
 													handleAttendance(app, 'Absent');
-												}}>
+												}}
+												style={style.attendanceAction}
+												>
 												<div className="circle-icon" style={{	margin:'0 auto',backgroundColor: app.attendance_status === 'Absent' ? 'red' : 'gray'}} />	
 												Absent
 											</div>
@@ -668,7 +680,7 @@ export default function index() {
 											<div onClick={() => {
 													handleExcused(app, 'absent');
 												}} style={{fontSize:12,marginTop:8}}>
-												<div className="circle-icon" style={{	width:12,height:12,margin:'0 auto', backgroundColor: app.excused === 'absent' ? 'green' : 'gray'}} />	
+												<div className="circle-icon" style={{	width:12,height:12,margin:'0 auto', backgroundColor: app.excused === 'absent' ? 'green' : 'gray',cursor:'pointer'}} />	
 												Excused
 											</div>
 
@@ -678,7 +690,7 @@ export default function index() {
 						
 											<div onClick={() => {
 													handleAttendance(app, 'Tardy');
-												}}>
+												}} style={style.attendanceAction}>
 												<div className="circle-icon" style={{	margin:'0 auto', backgroundColor: app.attendance_status === 'Tardy' ? 'yellow' : 'gray'}} />	
 												Tardy
 											</div>
@@ -687,7 +699,7 @@ export default function index() {
 											<div onClick={() => {
 													handleExcused(app, 'tardy');
 												}} style={{fontSize:12,marginTop:8}}>
-												<div className="circle-icon" style={{	width:12,height:12,margin:'0 auto', backgroundColor: app.excused === 'tardy' ? 'green' : 'gray'}} />	
+												<div className="circle-icon" style={{	width:12,height:12,margin:'0 auto', backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',cursor:'pointer'}} />	
 												Excused
 											</div>
 
@@ -706,8 +718,8 @@ export default function index() {
 									</div>
 
 									<div className="attendance-action">
-										{app.is_following && 	<div className="field">
-												Calendar Invite: {`${app.is_following === 1 ? 'Yes' : 'No'}`}
+										{app.is_following && 	<div className="field" >
+												Calendar Invite: {`${app.is_following === 1 ? 'Accepted' : 'Declined'}`}
 										</div>}
 
 									</div>
