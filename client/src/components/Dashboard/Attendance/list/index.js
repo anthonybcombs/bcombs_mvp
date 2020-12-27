@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from '@reach/router';
 import { format } from 'date-fns';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import {
-  faAngleRight,
-  faAngleLeft
-} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 
 import DataTable from 'react-data-table-component';
 
-import { requestAttendance,requestUpdateAttendance } from '../../../../redux/actions/Attendance';
+import { requestAttendance, requestUpdateAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
 import { requestGetApplications } from '../../../../redux/actions/Application';
 import { requestUserGroup } from '../../../../redux/actions/Groups';
@@ -23,7 +20,7 @@ import ProfileImg from '../../../../images/defaultprofile.png';
 
 import CustomDatePicker from '../../../../helpers/CustomDatePicker';
 
-const DATE_FORMAT = "yyyy-MM-dd";
+const DATE_FORMAT = 'yyyy-MM-dd';
 
 const ClassListViewStyled = styled.div`
 	padding: 1em;
@@ -55,7 +52,7 @@ const ClassListViewStyled = styled.div`
 		flex-grow: 1;
 	}
 
-	.attendance-action div{
+	.attendance-action div {
 		margin: 7px;
 	}
 	.child-body {
@@ -77,6 +74,7 @@ const ClassListViewStyled = styled.div`
 		padding: 10px 15px;
 		margin-bottom: 10px;
 		text-align: center;
+		border-bottom: 4px solid #f26e21;
 	}
 
 	.child-body h4 {
@@ -106,9 +104,9 @@ const ClassListViewStyled = styled.div`
 		}
 	}
 
-	.field { 
-		padding:5px !important;
-		margin:5px !important;
+	.field {
+		padding: 5px !important;
+		margin: 5px !important;
 	}
 	.field-input:placeholder-shown + .field-label {
 		max-width: calc(100% - 30%) !important;
@@ -212,76 +210,75 @@ const ClassListViewStyled = styled.div`
 		flex-flow: row wrap;
 	}
 
-
 	.react-datetimerange-picker,
-  .react-date-picker,
-  .react-time-picker {
-    width: 100%;
-  }
-  .react-datetimerange-picker button,
-  .react-date-picker button,
-  .react-time-picker button {
-    width: inherit;
-    color: initial;
-    background-color: initial;
-    box-shadow: initial;
-    border-radius: initial;
-  }
-  .react-datetimerange-picker,
-  .react-date-picker,
-  .react-time-picker {
-    border: none;
-    width: 100%;
-    margin: 1em 0 1em 0;
-  }
-  .react-datetimerange-picker input,
-  .react-date-picker input,
-  .react-time-picker input {
-    margin: 0;
-    width: initial;
-    border-bottom: none;
-  }
-  .react-datetimerange-picker__wrapper,
-  .react-date-picker__wrapper,
-  .react-time-picker__wrapper {
-    border: none;
-  }
-
-  .react-calendar .react-calendar__tile--active,
-  .react-calendar__tile--rangeStart {
-    background-color: #f26e21 !important;
-    color: white !important;
-  }
-
-  .react-datetimerange-picker__inputGroup__input--hasLeadingZero,
-  .react-date-picker__inputGroup__input--hasLeadingZero,
-  .react-time-picker__inputGroup__input--hasLeadingZero {
-    padding: 0;
-  }
-  .react-date-picker__inputGroup__input,
-  .react-time-picker__inputGroup__input,
-  .react-datetimerange-picker__inputGroup__input {
-    display: inline !important;
-    transition: none !important;
-  }
-
-  .react-calendar__tile--active:enabled:focus {
-    background-color: #f26e21;
-    color: white;
+	.react-date-picker,
+	.react-time-picker {
+		width: 100%;
 	}
-	
-	.react-datepicker-wrapper{
-		padding-top:24px;
+	.react-datetimerange-picker button,
+	.react-date-picker button,
+	.react-time-picker button {
+		width: inherit;
+		color: initial;
+		background-color: initial;
+		box-shadow: initial;
+		border-radius: initial;
+	}
+	.react-datetimerange-picker,
+	.react-date-picker,
+	.react-time-picker {
+		border: none;
+		width: 100%;
+		margin: 1em 0 1em 0;
+	}
+	.react-datetimerange-picker input,
+	.react-date-picker input,
+	.react-time-picker input {
+		margin: 0;
+		width: initial;
+		border-bottom: none;
+	}
+	.react-datetimerange-picker__wrapper,
+	.react-date-picker__wrapper,
+	.react-time-picker__wrapper {
+		border: none;
 	}
 
-	.field{
-		margin-top:-5px !important;
+	.react-calendar .react-calendar__tile--active,
+	.react-calendar__tile--rangeStart {
+		background-color: #f26e21 !important;
+		color: white !important;
+	}
+
+	.react-datetimerange-picker__inputGroup__input--hasLeadingZero,
+	.react-date-picker__inputGroup__input--hasLeadingZero,
+	.react-time-picker__inputGroup__input--hasLeadingZero {
+		padding: 0;
+	}
+	.react-date-picker__inputGroup__input,
+	.react-time-picker__inputGroup__input,
+	.react-datetimerange-picker__inputGroup__input {
+		display: inline !important;
+		transition: none !important;
+	}
+
+	.react-calendar__tile--active:enabled:focus {
+		background-color: #f26e21;
+		color: white;
+	}
+
+	.react-datepicker-wrapper {
+		padding-top: 24px;
+	}
+
+	.field {
+		margin-top: -5px !important;
 	}
 	.circle-icon {
-		border-radius:50%;
+		border-radius: 50%;
 		width: 15px;
 		height: 15px;
-		margin:0 auto;
+		margin: 0 auto;
 	}
 `;
 
@@ -295,33 +292,24 @@ const range = (start, end) => {
 	return arr;
 };
 
-
 const years = range(1900, new Date().getFullYear());
 const months = [
-	"January",
-	"February",
-	"March",
-	"April",
-	"May",
-	"June",
-	"July",
-	"August",
-	"September",
-	"October",
-	"November",
-	"December"
+	'January',
+	'February',
+	'March',
+	'April',
+	'May',
+	'June',
+	'July',
+	'August',
+	'September',
+	'October',
+	'November',
+	'December',
 ];
 
-
-const DateCustomInput = ({
-	value,
-	onClick,
-	name,
-	className,
-	placeholder,
-	register
-}) => (
-	<div className="field" >
+const DateCustomInput = ({ value, onClick, name, className, placeholder, register }) => (
+	<div className="field">
 		<input
 			defaultValue={value}
 			onClick={onClick}
@@ -330,7 +318,7 @@ const DateCustomInput = ({
 			placeholder="mm/dd/yyyy"
 			readOnly={true}
 			id={`attendance_date`}
-			style={{marginTop:24}}
+			style={{ marginTop: 24 }}
 			ref={register({ required: true })}
 		/>
 		<label className="field-label" for={`date`}>
@@ -339,42 +327,42 @@ const DateCustomInput = ({
 	</div>
 );
 
-
 const style = {
-	attendanceAction:{
-		cursor:'pointer'
+	attendanceAction: {
+		cursor: 'pointer',
 	},
-	circleIcon:{
-		margin:'0 auto'
+	circleIcon: {
+		margin: '0 auto',
 	},
-	miniCircleIcon:{
-		width:12,
-		height:12,
-		margin:'0 auto'
-	}
-}
+	miniCircleIcon: {
+		width: 12,
+		height: 12,
+		margin: '0 auto',
+	},
+};
 
 export default function index() {
-	const { register, handleSubmit, errors, clearError, setError,reset  } = useForm({
-    mode: "onSubmit",
-    reValidateMode: "onSubmit"
-  });
+	const { register, handleSubmit, errors, clearError, setError, reset } = useForm({
+		mode: 'onSubmit',
+		reValidateMode: 'onSubmit',
+	});
 	const { name, vendor_id } = useParams();
-	const { attendance,auth, vendors, groups, applications, loading } = useSelector(
-		({ attendance,auth, vendors, applications, groups, loading }) => {
-			return { attendance,auth, vendors, applications, groups, loading };
+	const { attendance, auth, vendors, groups, applications, loading } = useSelector(
+		({ attendance, auth, vendors, applications, groups, loading }) => {
+			return { attendance, auth, vendors, applications, groups, loading };
 		}
 	);
 	const [attendanceDetails, setAttendanceDetails] = useState({
-		attendance_date:null,
-		attendance_start_time:null,
-		attendance_end_time:null,
-		event_name:null,
-		location:null,
+		attendance_date: null,
+		attendance_start_time: null,
+		attendance_end_time: null,
+		event_name: null,
+		location: null,
 	});
-	const [appGroupId,setAppGroupId] = useState('');
+	const [appGroupId, setAppGroupId] = useState('');
 	const [applicationList, setApplicationList] = useState([]);
 	const [defaultApplicationList, setDefaultApplicationList] = useState([]);
+	const [filteredApplicationList, setFilteredApplicationList] = useState([]);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -398,10 +386,10 @@ export default function index() {
 	}, [vendors]);
 
 	useEffect(() => {
-		if(appGroupId !== '') {
-			dispatch(requestAttendance(appGroupId))
+		if (appGroupId !== '') {
+			dispatch(requestAttendance(appGroupId));
 		}
-	},[appGroupId])
+	}, [appGroupId]);
 
 	useEffect(() => {
 		if (applications && applications.activeapplications.length > 0) {
@@ -421,330 +409,421 @@ export default function index() {
 			let filterApplications = applications.activeapplications.filter(application => {
 				return application && application.class_teacher == currentAppGroupId;
 			});
-	
+
 			filterApplications = filterApplications.map(item => {
-				let currentAttendance = attendance.list.find((att) => att.child_id === item.child.ch_id);
+				let currentAttendance = attendance.list.find(att => att.child_id === item.child.ch_id);
 				item.class_teacher = name;
 				return item;
 			});
 
 			setApplicationList(filterApplications);
-			setAppGroupId(currentAppGroupId)
+			setAppGroupId(currentAppGroupId);
 		}
 	}, [applications]);
 
 	useEffect(() => {
-		if(attendance.list) {
-			let updatedApplicationList = applicationList.map((application) => {
-				let currentAttendance = attendance.list.find((att) => att.child_id === application.child.ch_id);
+		if (attendance.list) {
+			let updatedApplicationList = applicationList.map(application => {
+				let currentAttendance = attendance.list.find(att => att.child_id === application.child.ch_id);
 
 				return {
 					...application,
-					is_following: currentAttendance?.is_following
-				}
+					is_following: currentAttendance?.is_following,
+				};
 			});
 			setApplicationList(updatedApplicationList);
 			setDefaultApplicationList(updatedApplicationList);
+			setFilteredApplicationList(updatedApplicationList);
 		}
-	},[attendance.list]);
+	}, [attendance.list]);
 
 	useEffect(() => {
-		if(attendance.isAttendanceUpdateSuccess) {
-			setApplicationList(defaultApplicationList)
+		if (attendance.isAttendanceUpdateSuccess) {
+			setApplicationList(defaultApplicationList);
 		}
-	},[attendance.isAttendanceUpdateSuccess])
+	}, [attendance.isAttendanceUpdateSuccess]);
 
 	const handleAttendance = (payload, attendanceType) => {
 		let updatedApplication = [...(applicationList || [])];
-
+		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
-
+		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
 		updatedApplication[currentIndex] = {
 			...updatedApplication[currentIndex],
 			attendance_status: attendanceType,
-			excused:null
-		}
+			excused: null,
+		};
+		updatedFilteredApplication[currentFilteredIndex] = {
+			...updatedFilteredApplication[currentFilteredIndex],
+			attendance_status: attendanceType,
+			excused: null,
+		};
+		
 		setApplicationList(updatedApplication);
+		setFilteredApplicationList(updatedFilteredApplication);
 	};
 
-	const handleVolunteerHours = (payload,volunteerHrs) => {
+	const handleVolunteerHours = (payload, volunteerHrs) => {
 		let updatedApplication = [...(applicationList || [])];
-
+		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
-		console.log('handleVolunteerHours payload', payload)
-		console.log('handleVolunteerHours volunteerHrs', volunteerHrs)
+		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
+		console.log('handleVolunteerHours payload', payload);
+		console.log('handleVolunteerHours volunteerHrs', volunteerHrs);
 		updatedApplication[currentIndex] = {
 			...updatedApplication[currentIndex],
 			volunteer_hours: volunteerHrs,
 		};
+		updatedFilteredApplication[currentFilteredIndex] = {
+			...updatedFilteredApplication[currentFilteredIndex],
+			volunteer_hours: volunteerHrs,
+		};
 		setApplicationList(updatedApplication);
-	}
+		setFilteredApplicationList(updatedFilteredApplication);
+	};
 
-	
-
-	const onSubmit = (e) => {
+	const onSubmit = e => {
 		reset();
 		const attendanceList = applicationList.map(app => {
 			return {
-				app_id:app.app_id,
-				attendance_status:app.attendance_status || '',
-				child_id:app.child.ch_id,
-				vendor:app.vendor,
+				app_id: app.app_id,
+				attendance_status: app.attendance_status || '',
+				child_id: app.child.ch_id,
+				vendor: app.vendor,
 				volunteer_hours: parseInt(app.volunteer_hours),
-				is_excused:app.excused ? 1 : 0
-			}
-		})
+				is_excused: app.excused ? 1 : 0,
+			};
+		});
 
 		const payload = {
-			attendance_list:attendanceList,
+			attendance_list: attendanceList,
 			app_group_id: appGroupId,
 			...attendanceDetails,
-			attendance_date: format(
-				new Date(attendanceDetails.attendance_date),
-				DATE_FORMAT)
+			attendance_date: format(new Date(attendanceDetails.attendance_date), DATE_FORMAT),
 		};
 
 		dispatch(requestUpdateAttendance(payload));
 	};
 
 	const handleAttedanceDetailChange = e => {
-		const { name ,value } = e.target;
+		const { name, value } = e.target;
 
 		setAttendanceDetails({
 			...attendanceDetails,
-			[name]: value
-		})
-	}
+			[name]: value,
+		});
+	};
 
 	const handleExcused = (payload, excuseType) => {
 		let updatedApplication = [...(applicationList || [])];
-
+		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
-
-		if(excuseType === updatedApplication[currentIndex].attendance_status.toLowerCase()) {
+		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
+		if (excuseType === updatedApplication[currentIndex].attendance_status.toLowerCase()) {
 			updatedApplication[currentIndex] = {
 				...updatedApplication[currentIndex],
 				excused: updatedApplication[currentIndex].excused === excuseType ? null : excuseType,
 			};
+			updatedFilteredApplication[currentFilteredIndex] = {
+				...updatedFilteredApplication[currentFilteredIndex],
+				excused: updatedApplication[currentIndex].excused === excuseType ? null : excuseType,
+			};
+	
 			setApplicationList(updatedApplication);
+			setFilteredApplicationList(updatedFilteredApplication);
+		}
+	};
+
+	const handleSearchChange = e => {
+		let { name, value } = e.target;
+		let lowerCaseVale = value;
+
+		if(value !== '') {
+			value = value.toLowerCase();
+			const filteredApplication = applicationList.filter((app) => {
+				if(app.child) {
+					return app.child.lastname.toLowerCase().includes(value) || app.child.firstname.toLowerCase().includes(value)
+				}
+			})
+			setFilteredApplicationList(filteredApplication);
+		}
+		else{
+			setFilteredApplicationList(applicationList);
 		}
 
-	};
-	console.log('applicationListttt',applicationList)
+	}
+	console.log('applicationListttt', applicationList);
 
 	return (
 		<ClassListViewStyled>
 			<div id="dataTableContainer">
 				<form onSubmit={handleSubmit(onSubmit)}>
-					{attendance.isAttendanceUpdateSuccess && <div>
-						Attendance has been updated successfully!
-					</div>}
-				<div className="search-field-container">
-				
-					<div className="field">
-		
-					<DatePicker
+					{attendance.isAttendanceUpdateSuccess && <div>Attendance has been updated successfully!</div>}
+					<div className="search-field-container">
+						<div className="field">
+							<DatePicker
 								readOnly={false}
-								style={{marginTop:24}}
-                renderCustomHeader={({
-                  date,
-                  changeYear,
-                  changeMonth,
-                  decreaseMonth,
-                  increaseMonth,
-                  prevMonthButtonDisabled,
-                  nextMonthButtonDisabled
-                }) => (
-                  <div
-                    style={{
-                      margin: 0,
-                      display: "flex",
-                      alignCenter: "center",
-                      justifyContent: "center",
-                      background: "#f36e22",
-                      padding: "5px 3px"
-                    }}>
-                    <button
-                      className="datepicker-btn"
-                      onClick={e => {
-                        e.preventDefault();
-                      }}>
-                      <FontAwesomeIcon
-                        icon={faAngleLeft}
-                        onClick={decreaseMonth}
-                        disabled={prevMonthButtonDisabled}
-                      />
-                    </button>
-                    <select
-                      value={new Date(date).getFullYear()}
-                      onChange={({ target: { value } }) => {
-												if(value) {
-													return changeYear(value)
+								style={{ marginTop: 24 }}
+								renderCustomHeader={({
+									date,
+									changeYear,
+									changeMonth,
+									decreaseMonth,
+									increaseMonth,
+									prevMonthButtonDisabled,
+									nextMonthButtonDisabled,
+								}) => (
+									<div
+										style={{
+											margin: 0,
+											display: 'flex',
+											alignCenter: 'center',
+											justifyContent: 'center',
+											background: '#f36e22',
+											padding: '5px 3px',
+										}}>
+										<button
+											className="datepicker-btn"
+											onClick={e => {
+												e.preventDefault();
+											}}>
+											<FontAwesomeIcon icon={faAngleLeft} onClick={decreaseMonth} disabled={prevMonthButtonDisabled} />
+										</button>
+										<select
+											value={new Date(date).getFullYear()}
+											onChange={({ target: { value } }) => {
+												if (value) {
+													return changeYear(value);
 												}
 											}}>
-                      {years.map(option => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+											{years.map(option => (
+												<option key={option} value={option}>
+													{option}
+												</option>
+											))}
+										</select>
 
-                    <select
-                      value={months[date.getMonth()]}
-                      onChange={({ target: { value } }) =>
-                        changeMonth(months.indexOf(value))
-                      }>
-                      {months.map(option => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      className="datepicker-btn"
-                      onClick={e => {
-                        e.preventDefault();
-                      }}>
-                      <FontAwesomeIcon
-                        icon={faAngleRight}
-                        onClick={increaseMonth}
-                        disabled={nextMonthButtonDisabled}
-                      />
-                    </button>
-                  </div>
-                )}
-                selected={null}
+										<select
+											value={months[date.getMonth()]}
+											onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}>
+											{months.map(option => (
+												<option key={option} value={option}>
+													{option}
+												</option>
+											))}
+										</select>
+										<button
+											className="datepicker-btn"
+											onClick={e => {
+												e.preventDefault();
+											}}>
+											<FontAwesomeIcon icon={faAngleRight} onClick={increaseMonth} disabled={nextMonthButtonDisabled} />
+										</button>
+									</div>
+								)}
+								selected={null}
 								disabled={false}
 								selected={attendanceDetails.attendance_date}
-                onChange={value => {
+								onChange={value => {
 									setAttendanceDetails({
 										...attendanceDetails,
-										attendance_date: value
-									})
-									
-                }}
-                name={"attendance_date"}
-                customInput={
-                  <DateCustomInput
-										className={"field-input date-field"}
-										register={register}
-                  />
-                }
-              />
+										attendance_date: value,
+									});
+								}}
+								name={'attendance_date'}
+								customInput={<DateCustomInput className={'field-input date-field'} register={register} />}
+							/>
+						</div>
+						<div className="field">
+							<input
+								onChange={handleAttedanceDetailChange}
+								ref={register({ required: true })}
+								type="time"
+								name={'attendance_start_time'}
+								className={'field-input'}
+								placeholder="Start Name"
+							/>
+							<label className="field-label" for={`attendance_start_time`}>
+								<span className="required">*</span> Start Time
+							</label>
+						</div>
+						<div className="field">
+							<input
+								onChange={handleAttedanceDetailChange}
+								ref={register({ required: true })}
+								type="time"
+								name={'attendance_end_time'}
+								className={'field-input'}
+								placeholder="End Time"
+							/>
+							<label className="field-label" for={`attendance_end_time`}>
+								<span className="required">*</span> End Time
+							</label>
+						</div>
+						<div className="field">
+							<input
+								onChange={handleAttedanceDetailChange}
+								ref={register({ required: true })}
+								name={'event_name'}
+								className={'field-input'}
+								placeholder="Event Name"
+							/>
+							<label className="field-label" for={`event_name`}>
+								<span className="required">*</span> Event Name
+							</label>
+						</div>
+						<div className="field">
+							<input
+								onChange={handleAttedanceDetailChange}
+								ref={register({ required: true })}
+								name={'location'}
+								className={'field-input'}
+								placeholder="Location"
+							/>
+							<label className="field-label" for={`location`}>
+								<span className="required">*</span> Location
+							</label>
+						</div>
 					</div>
-					<div className="field">
-						<input onChange={handleAttedanceDetailChange}  ref={register({ required: true })} type="time" name={'attendance_start_time'} className={'field-input'} placeholder="Start Name" />
-						<label className="field-label" for={`attendance_start_time`}>
-							<span className="required">*</span> Start Time
-						</label>
+					<div className="search-field-container"  style={{marginLeft:12}}>
+						<div className="field">
+							<input name={'search'} className={'field-input'} onChange={handleSearchChange} placeholder="Search" />
+							<label className="field-label" for={`search`}>
+								Search
+							</label>
+						</div>
 					</div>
-					<div className="field">
-						<input  onChange={handleAttedanceDetailChange} ref={register({ required: true })} type="time" name={'attendance_end_time'} className={'field-input'} placeholder="End Time" />
-						<label className="field-label" for={`attendance_end_time`}>
-							<span className="required">*</span> End Time
-						</label>
-					</div>
-					<div className="field">
-						<input  onChange={handleAttedanceDetailChange} ref={register({ required: true })} name={'event_name'} className={'field-input'} placeholder="Event Name" />
-						<label className="field-label" for={`event_name`}>
-							<span className="required">*</span> Event Name
-						</label>
-					</div>
-					<div className="field">
-						<input  onChange={handleAttedanceDetailChange} ref={register({ required: true })} name={'location'} className={'field-input'} placeholder="Location" />
-						<label className="field-label" for={`location`}>
-							<span className="required">*</span> Location
-						</label>
-					</div>
-				</div>
-				<div className="child-body">
-					{applicationList.map(app => {
-						return (
-							<div className="block">
-								<div className="extra_activitybox">
-									<span className="img-container" style={{ margin: '0 auto' }}>
-										<img src={ProfileImg} />
-									</span>
+					<div className="child-body">
+						{filteredApplicationList.map(app => {
+							return (
+								<div className="block">
+									<div className="extra_activitybox">
+										<span className="img-container" style={{ margin: '0 auto' }}>
+											<img src={ProfileImg} />
+										</span>
 
-									<div className="extra_activitylist">
-										<a target="_blank" href={'/dashboard/menteeprofile/' + app.id}>
-											<span>{app.child?.firstname + ' ' + app.child?.lastname}</span>
-										</a>
-									</div>
-									<div className="attendance-action">
-										<div>
-											<div onClick={() => {
-													handleAttendance(app, 'Present');
-												}}
-												style={style.attendanceAction}
-												>
-												<div className="circle-icon" style={{	...style.circleIcon,backgroundColor: app.attendance_status === 'Present' ? 'green' : 'gray'}} />	
-												Present
-											</div>
-										
+										<div className="extra_activitylist">
+											<a target="_blank" href={'/dashboard/menteeprofile/' + app.id}>
+												<span>{app.child?.firstname + ' ' + app.child?.lastname}</span>
+											</a>
 										</div>
-										<div>
-												<div onClick={() => {
-													handleAttendance(app, 'Absent');
-												}}
-												style={style.attendanceAction}
-												>
-												<div className="circle-icon" style={{	...style.circleIcon,backgroundColor: app.attendance_status === 'Absent' ? 'red' : 'gray'}} />	
-												Absent
+										<div className="attendance-action">
+											<div>
+												<div
+													onClick={() => {
+														handleAttendance(app, 'Present');
+													}}
+													style={style.attendanceAction}>
+													<div
+														className="circle-icon"
+														style={{
+															...style.circleIcon,
+															backgroundColor: app.attendance_status === 'Present' ? 'green' : 'gray',
+														}}
+													/>
+													Present
+												</div>
 											</div>
+											<div>
+												<div
+													onClick={() => {
+														handleAttendance(app, 'Absent');
+													}}
+													style={style.attendanceAction}>
+													<div
+														className="circle-icon"
+														style={{
+															...style.circleIcon,
+															backgroundColor: app.attendance_status === 'Absent' ? 'red' : 'gray',
+														}}
+													/>
+													Absent
+												</div>
 
-											<div onClick={() => {
-													handleExcused(app, 'absent');
-												}} style={{fontSize:12,marginTop:8}}>
-												<div className="circle-icon" style={{	...style.miniCircleIcon, backgroundColor: app.excused === 'absent' ? 'green' : 'gray',cursor:'pointer'}} />	
-												Excused
+												<div
+													onClick={() => {
+														handleExcused(app, 'absent');
+													}}
+													style={{ fontSize: 12, marginTop: 8 }}>
+													<div
+														className="circle-icon"
+														style={{
+															...style.miniCircleIcon,
+															backgroundColor: app.excused === 'absent' ? 'green' : 'gray',
+															cursor: 'pointer',
+														}}
+													/>
+													Excused
+												</div>
 											</div>
+											<div>
+												<div
+													onClick={() => {
+														handleAttendance(app, 'Tardy');
+													}}
+													style={style.attendanceAction}>
+													<div
+														className="circle-icon"
+														style={{
+															...style.circleIcon,
+															backgroundColor: app.attendance_status === 'Tardy' ? 'yellow' : 'gray',
+														}}
+													/>
+													Tardy
+												</div>
 
-
+												<div
+													onClick={() => {
+														handleExcused(app, 'tardy');
+													}}
+													style={{ fontSize: 12, marginTop: 8 }}>
+													<div
+														className="circle-icon"
+														style={{
+															...style.miniCircleIcon,
+															backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',
+															cursor: 'pointer',
+														}}
+													/>
+													Excused
+												</div>
+											</div>
 										</div>
-										<div>
-						
-											<div onClick={() => {
-													handleAttendance(app, 'Tardy');
-												}} style={style.attendanceAction}>
-												<div className="circle-icon" style={{	...style.circleIcon, backgroundColor: app.attendance_status === 'Tardy' ? 'yellow' : 'gray'}} />	
-												Tardy
+										<div className="attendance-action">
+											<div className="field">
+												<input
+													type="number"
+													onChange={e => {
+														handleVolunteerHours(app, e.target.value);
+													}}
+													name={'volunteer_hrs'}
+													className={'field-input'}
+													placeholder="Volunteer Hours"
+													value={app?.volunteer_hours || '0'}
+												/>
+												<label className="field-label" for={`volunteer_hrs`}>
+													Volunteer Hours
+												</label>
 											</div>
-						
-
-											<div onClick={() => {
-													handleExcused(app, 'tardy');
-												}} style={{fontSize:12,marginTop:8}}>
-												<div className="circle-icon" style={{ ...style.miniCircleIcon, backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',cursor:'pointer'}} />	
-												Excused
-											</div>
-
-								
 										</div>
-									</div>
-									<div className="attendance-action">
-										<div className="field">
-											<input type="number" onChange={e => {
-												handleVolunteerHours(app,e.target.value)
-											}} name={'volunteer_hrs'} className={'field-input'} placeholder="Volunteer Hours" />
-											<label className="field-label" for={`volunteer_hrs`}>
-											 Volunteer Hours
-											</label>
+
+										<div className="attendance-action">
+											{app.is_following && (
+												<div className="field">
+													Calendar Invite: {`${app.is_following === 1 ? 'Accepted' : 'Declined'}`}
+												</div>
+											)}
 										</div>
-									</div>
-
-									<div className="attendance-action">
-										{app.is_following && 	<div className="field" >
-												Calendar Invite: {`${app.is_following === 1 ? 'Accepted' : 'Declined'}`}
-										</div>}
-
 									</div>
 								</div>
-							</div>
-						);
-					})}
-				</div>
-				{applicationList.length > 0 && <button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}</button>}
+							);
+						})}
+					</div>
+					{applicationList.length > 0 && (
+						<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
+							{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
+						</button>
+					)}
 				</form>
 			</div>
 		</ClassListViewStyled>
