@@ -14,6 +14,7 @@ export const GET_ATTENDANCE_QUERY = gql`
       lastname
       attendance_status
       app_group_name
+      mentoring_hours
       volunteer_hours
       is_excused
       is_following
