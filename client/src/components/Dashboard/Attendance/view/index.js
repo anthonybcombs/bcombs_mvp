@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { useParams } from '@reach/router';
-import { format } from 'date-fns';
+import { format, isRan } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
-import { getHours, max, addDays, subDays } from 'date-fns';
+import { getHours, max, addDays, subDays ,isWithinInterval} from 'date-fns';
 
 import { requestAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
 
+
+import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
 const AttendanceSummaryStyled = styled.div`
 	#application-status {
 		padding: 1em;
@@ -115,8 +118,9 @@ const AttendanceSummaryStyled = styled.div`
 	}
 	.filter-container > div {
 		min-width: 200px;
-		margin-left:12px;
+		margin-left: 12px;
 	}
+
 `;
 
 const DATE_FORMAT = 'yyyy-MM-dd';
@@ -132,6 +136,7 @@ export default function index(props) {
 	const [displayDays, setDisplayDays] = useState([subDays(new Date(), 2), subDays(new Date(), 1), new Date()]);
 	const [attendanceDisplay, setAttendanceDisplay] = useState([]);
 	const [defaultAttendanceDisplay, setDefaultAttendanceDisplay] = useState([]);
+	const [selectedRangeDate, setSelectedRangeDate] = useState([new Date(),new Date()]);
 
 	const { app_group_id } = useParams();
 
@@ -153,7 +158,7 @@ export default function index(props) {
 
 	useEffect(() => {
 		if (attendance.list) {
-			console.log('attendance.list',attendance.list)
+			console.log('attendance.list', attendance.list);
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 				attDate = attDate.replaceAll('-', '_');
@@ -170,17 +175,18 @@ export default function index(props) {
 							...((accum[att.child_id] && accum[att.child_id].attendance) || {}),
 							[attDate]: {
 								status: att.attendance_status,
+								mentoring_hours:att.mentoring_hours,
+								volunteer_hours:att.volunteer_hours
 							},
 						},
 					},
 				};
 			}, {});
-			console.log('currentAttendancezzz',currentAttendance)
 			currentAttendance = Object.keys(currentAttendance).map(key => {
 				return currentAttendance[key];
 			});
 			setAttendanceDisplay(currentAttendance);
-			setDefaultAttendanceDisplay(currentAttendance)
+			setDefaultAttendanceDisplay(currentAttendance);
 		}
 	}, [attendance.list]);
 
@@ -188,8 +194,8 @@ export default function index(props) {
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
 		return attendanceDisplay.map((att, index) => {
 			const totalAttendance = Object.keys(att.attendance).length;
-			const totalPresent = Object.keys(att.attendance).filter(key =>{
-				return att.attendance[key].status === 'Present'
+			const totalPresent = Object.keys(att.attendance).filter(key => {
+				return att.attendance[key].status === 'Present';
 			}).length;
 
 			return (
@@ -198,7 +204,9 @@ export default function index(props) {
 						<a href={'#'}>{`${att.firstname} ${att.lastname}`}</a>
 					</td>
 					<td>{att.app_group_name}</td>
-					<td>{`${((totalPresent * 100)/totalAttendance).toFixed(2)}%`} ({totalPresent}/{totalAttendance})</td>
+					<td>
+						{`${((totalPresent * 100) / totalAttendance).toFixed(2)}%`} ({totalPresent}/{totalAttendance})
+					</td>
 					{/* <td>{format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)}</td> */}
 					<td>
 						<div className="attendance-status-container">
@@ -284,7 +292,7 @@ export default function index(props) {
 					<td>
 						<div className="attendance-status-container">
 							<div> {att.total_volunteer_hours}</div>
-							<div>  {att.total_mentoring_hours}</div>
+							<div> {att.total_mentoring_hours}</div>
 							<div> </div>
 						</div>
 					</td>
@@ -302,16 +310,70 @@ export default function index(props) {
 
 	const handleSearchChange = e => {
 		const { value } = e.target;
-		if(value === '') {
+		if (value === '') {
 			setAttendanceDisplay(defaultAttendanceDisplay);
-		}
-		else{
+		} else {
 			let lowerCaseValue = value.toLowerCase();
-			const list = defaultAttendanceDisplay.filter((item) => item.lastname.toLowerCase().includes(lowerCaseValue) || item.firstname.toLowerCase().includes(lowerCaseValue));
-			console.log('attendanceeeee', list)
+			const list = defaultAttendanceDisplay.filter(
+				item =>
+					item.lastname.toLowerCase().includes(lowerCaseValue) || item.firstname.toLowerCase().includes(lowerCaseValue)
+			);
+			console.log('attendanceeeee', list);
 			setAttendanceDisplay(list);
 		}
+	};
+
+	const handleChangeRangeDate = date => {
+		console.log('!!!!!!!!!!!!!!!')
+		if (date == null) {
+			setAttendanceDisplay(defaultAttendanceDisplay);
+			setSelectedRangeDate([
+				new Date(),
+				new Date()
+			]);
+			return;
+		}
+		let updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
+			let dateKeys = Object.keys(att.attendance);
+			let filteredDate = dateKeys.filter(key => {
+				return isWithinInterval(new Date(key.replaceAll('_','-')), {
+					start: subDays(new Date(date[0]), 1),
+					end: addDays(new Date(date[1]), 1)
+				})
+			});
+
+			const totalHours = filteredDate.reduce((accum,key) => {
+				return {
+					total_volunteer_hours:
+					(( accum.total_volunteer_hours) || 0) + att.attendance[key].volunteer_hours || 0,
+					total_mentoring_hours:
+					((accum.total_mentoring_hours) || 0) + att.attendance[key].mentoring_hours || 0,
+				}
+			},{ total_volunteer_hours:0,total_mentoring_hours:0 });
+
+			return {
+				...att,
+				...totalHours,
+				attendance: filteredDate.reduce((accum,key) => {
+					return {
+						...accum,
+		
+						[key]: {
+							...att.attendance[key],
+							
+						}
+					}
+				},{})
+			}
+
+		});
+		setAttendanceDisplay(updatedAttendanceDisplay);
+		setSelectedRangeDate([
+			new Date(date[0]),
+			new Date(date[1])
+		])
 	}
+	console.log('attendanceDisplayzzz',attendanceDisplay)
 	return (
 		<AttendanceSummaryStyled>
 			<div id="application-status">
@@ -322,15 +384,23 @@ export default function index(props) {
 				</div>
 				<div className="filter-container">
 					<div>
-							<select className="form-control">
+						{/* <select className="form-control">
 								<option value="">Filter By</option>
 								<option key={1} value={1}>
 									Test
 								</option>
-							</select>
+							</select> */}
+
+						<CustomRangeDatePicker value={selectedRangeDate} onChange={handleChangeRangeDate} />
 					</div>
 					<div>
-						<input type="text" className="form-control" name="search" placeholder="Search" onChange={handleSearchChange} />
+						<input
+							type="text"
+							className="form-control"
+							name="search"
+							placeholder="Search"
+							onChange={handleSearchChange}
+						/>
 					</div>
 				</div>
 				<div id="application-status-list">
