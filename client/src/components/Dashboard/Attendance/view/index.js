@@ -126,6 +126,8 @@ const AttendanceSummaryStyled = styled.div`
 const DATE_FORMAT = 'yyyy-MM-dd';
 const DATE_KEY_FORMAT = 'yyyy_MM_dd';
 
+const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()]
+
 export default function index(props) {
 	const dispatch = useDispatch();
 	const { attendance, applications, groups, auth, vendors, loading } = useSelector(
@@ -133,7 +135,7 @@ export default function index(props) {
 			return { attendance, applications, groups, auth, vendors, loading };
 		}
 	);
-	const [displayDays, setDisplayDays] = useState([subDays(new Date(), 2), subDays(new Date(), 1), new Date()]);
+	const [displayDays, setDisplayDays] = useState(DEFAULT_DISPLAY_DAYS);
 	const [attendanceDisplay, setAttendanceDisplay] = useState([]);
 	const [defaultAttendanceDisplay, setDefaultAttendanceDisplay] = useState([]);
 	const [selectedRangeDate, setSelectedRangeDate] = useState([new Date(),new Date()]);
@@ -158,7 +160,7 @@ export default function index(props) {
 
 	useEffect(() => {
 		if (attendance.list) {
-			console.log('attendance.list', attendance.list);
+
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 				attDate = attDate.replaceAll('-', '_');
@@ -318,30 +320,28 @@ export default function index(props) {
 				item =>
 					item.lastname.toLowerCase().includes(lowerCaseValue) || item.firstname.toLowerCase().includes(lowerCaseValue)
 			);
-			console.log('attendanceeeee', list);
 			setAttendanceDisplay(list);
 		}
 	};
 
 	const handleChangeRangeDate = date => {
-		console.log('!!!!!!!!!!!!!!!')
 		if (date == null) {
 			setAttendanceDisplay(defaultAttendanceDisplay);
 			setSelectedRangeDate([
 				new Date(),
 				new Date()
 			]);
+			setDisplayDays(DEFAULT_DISPLAY_DAYS)
 			return;
 		}
-		let updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
-			let dateKeys = Object.keys(att.attendance);
-			let filteredDate = dateKeys.filter(key => {
+		const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
+			const dateKeys = Object.keys(att.attendance);
+			const filteredDate = dateKeys.filter(key => {
 				return isWithinInterval(new Date(key.replaceAll('_','-')), {
 					start: subDays(new Date(date[0]), 1),
 					end: addDays(new Date(date[1]), 1)
 				})
 			});
-
 			const totalHours = filteredDate.reduce((accum,key) => {
 				return {
 					total_volunteer_hours:
@@ -357,10 +357,8 @@ export default function index(props) {
 				attendance: filteredDate.reduce((accum,key) => {
 					return {
 						...accum,
-		
 						[key]: {
 							...att.attendance[key],
-							
 						}
 					}
 				},{})
@@ -368,12 +366,17 @@ export default function index(props) {
 
 		});
 		setAttendanceDisplay(updatedAttendanceDisplay);
+		setDisplayDays(	[
+			new Date(date[0]),
+			addDays(new Date(	new Date(date[0])), 1),
+			addDays(new Date(	new Date(date[0])), 2)
+		]);
 		setSelectedRangeDate([
 			new Date(date[0]),
 			new Date(date[1])
 		])
 	}
-	console.log('attendanceDisplayzzz',attendanceDisplay)
+
 	return (
 		<AttendanceSummaryStyled>
 			<div id="application-status">
