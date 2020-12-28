@@ -463,21 +463,23 @@ export default function index() {
 		setFilteredApplicationList(updatedFilteredApplication);
 	};
 
-	const handleVolunteerHours = (payload, volunteerHrs) => {
+	const handleHours = (payload, hours,type = 'volunteer_hours') => {
 		let updatedApplication = [...(applicationList || [])];
 		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
-		console.log('handleVolunteerHours payload', payload);
-		console.log('handleVolunteerHours volunteerHrs', volunteerHrs);
+		console.log('Handle Hours', hours)
+		console.log('Handle Hours Type', type)
 		updatedApplication[currentIndex] = {
 			...updatedApplication[currentIndex],
-			volunteer_hours: volunteerHrs,
+			[type]: hours,
 		};
 		updatedFilteredApplication[currentFilteredIndex] = {
 			...updatedFilteredApplication[currentFilteredIndex],
-			volunteer_hours: volunteerHrs,
+			[type]: hours,
 		};
+		console.log('Handle Hours updatedApplication 11',updatedApplication[currentIndex])
+		console.log('Handle Hours updatedApplication 22',	updatedFilteredApplication[currentFilteredIndex])
 		setApplicationList(updatedApplication);
 		setFilteredApplicationList(updatedFilteredApplication);
 	};
@@ -491,6 +493,7 @@ export default function index() {
 				child_id: app.child.ch_id,
 				vendor: app.vendor,
 				volunteer_hours: parseInt(app.volunteer_hours),
+				mentoring_hours: parseInt(app.mentoring_hours),
 				is_excused: app.excused ? 1 : 0,
 			};
 		});
@@ -794,7 +797,7 @@ export default function index() {
 												<input
 													type="number"
 													onChange={e => {
-														handleVolunteerHours(app, e.target.value);
+														handleHours(app, e.target.value,'volunteer_hours');
 													}}
 													name={'volunteer_hrs'}
 													className={'field-input'}
@@ -807,6 +810,23 @@ export default function index() {
 											</div>
 										</div>
 
+										<div className="attendance-action">
+											<div className="field">
+												<input
+													type="number"
+													onChange={e => {
+														handleHours(app, e.target.value,'mentoring_hours');
+													}}
+													name={'mentoring_hrs'}
+													className={'field-input'}
+													placeholder="Mentoring Hours"
+													value={app?.mentoring_hours || '0'}
+												/>
+												<label className="field-label" for={`mentoring_hrs`}>
+													Mentoring Hours
+												</label>
+											</div>
+										</div>
 										<div className="attendance-action">
 											{app.is_following && (
 												<div className="field">

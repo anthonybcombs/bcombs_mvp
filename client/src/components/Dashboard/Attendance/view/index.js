@@ -164,6 +164,8 @@ export default function index(props) {
 						...att,
 						total_volunteer_hours:
 							((accum[att.child_id] && accum[att.child_id].total_volunteer_hours) || 0) + att.volunteer_hours || 0,
+						total_mentoring_hours:
+							((accum[att.child_id] && accum[att.child_id].total_mentoring_hours) || 0) + att.mentoring_hours || 0,
 						attendance: {
 							...((accum[att.child_id] && accum[att.child_id].attendance) || {}),
 							[attDate]: {
@@ -173,6 +175,7 @@ export default function index(props) {
 					},
 				};
 			}, {});
+			console.log('currentAttendancezzz',currentAttendance)
 			currentAttendance = Object.keys(currentAttendance).map(key => {
 				return currentAttendance[key];
 			});
@@ -281,7 +284,7 @@ export default function index(props) {
 					<td>
 						<div className="attendance-status-container">
 							<div> {att.total_volunteer_hours}</div>
-							<div> </div>
+							<div>  {att.total_mentoring_hours}</div>
 							<div> </div>
 						</div>
 					</td>
