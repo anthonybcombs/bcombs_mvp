@@ -10,6 +10,7 @@ import { getHours, max } from "date-fns";
 import {
   requestGetApplications
 } from "../../../redux/actions/Application";
+import { requestGetForms } from '../../../redux/actions/FormBuilder'   
 import { requestVendor } from "../../../redux/actions/Vendors";
 
 const AttendanceSummaryStyled = styled.div`
@@ -64,11 +65,12 @@ const AttendanceSummaryStyled = styled.div`
 
 export default function index(props) {
   const dispatch = useDispatch();
-  const { applications ,groups, auth, vendors, loading } = useSelector(
-    ({ applications,groups, auth, vendors, loading }) => {
-      return { applications,groups, auth, vendors, loading };
+  const { applications ,groups, auth, vendors, loading, form : { formList = [] } } = useSelector(
+    ({ applications,groups, auth, vendors, loading, form }) => {
+      return { applications,groups, auth, vendors, loading,form };
     }
   );
+
   const [appGroups,setAppGroups] = useState([]);
   const [selectedVendor,setSelectedVendor] = useState({});
   // appGroups = appGroups.filter((group) => {
@@ -89,10 +91,11 @@ export default function index(props) {
       setSelectedVendor(vendors[0]);
       setAppGroups(vendors[0].app_groups);
       dispatch(requestGetApplications(vendors[0].id));
+
+      dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
     }
   },[vendors]);
 
-  console.log('appGroupszzzzzzz',appGroups)
 
   const getClassCount = (group) => {
 
@@ -106,7 +109,9 @@ export default function index(props) {
   }
   
   const renderTableData = () => {
-    console.log('appGroupszzz',appGroups)
+    const currentForm = formList.map(form => (
+      form.vendor === vendors[0].id
+    ))
     return appGroups.map((group, index) => {
 
       let count = group.size;
@@ -116,6 +121,7 @@ export default function index(props) {
 
       return (
         <tr key={group.id}>
+          <td>{currentForm && currentForm.form_contents ? currentForm.form_contents?.formTitle : 'Bcombs Form'}</td>
           <td>
             <Link to={"" + selectedVendor?.id2 + "/" + group.name}>
               {group.name}
@@ -169,6 +175,8 @@ export default function index(props) {
         <table id="groups">
           <tbody>
             <tr>
+              {/* <th>Form</th> */}
+              <th>Form</th>
               <th>Class</th>
               <th>Count</th>
               <th>Available</th>
@@ -176,6 +184,7 @@ export default function index(props) {
               <th>Action</th>
             </tr>
             <tr>
+              <td></td>
               <td>Total</td>
               <td>{getTotalCount()}</td>
               <td>{getTotalAvailable()}</td>
