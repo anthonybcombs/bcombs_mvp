@@ -29,12 +29,24 @@ const ClassListViewStyled = styled.div`
 	margin: auto;
 	padding: 0rem 3em 2rem;
 
-	#dataTableContainer {
+	#attendanceContainer {
 		position: relative;
 		padding: 1rem;
 		background-color: #fff;
 		box-shadow: 0 0 25px #eae9e9;
 	}
+	#attendanceContainer .back-btn {
+		width: 50px;
+		color: #3e89fe;
+		display: flex;
+		align-items: center;
+		padding-bottom: 1rem;
+		text-decoration: none;
+	}
+	#attendanceContainer .back-btn svg {
+		padding-right: 5px;
+	}
+
 
 	.field {
 		padding: 5px !important;
@@ -797,10 +809,14 @@ export default function index() {
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
-			<Link to={"/dashboard/attendance"} >
-         Back
-      </Link>
-			<div id="dataTableContainer" style={{marginTop:12}}>
+			<div id="attendanceContainer" style={{marginTop:12}}>
+				<Link to={"/dashboard/attendance"} className='back-btn'>
+					<FontAwesomeIcon
+						className='back-icon'
+						icon={faAngleLeft}
+					/>	
+					Back
+				</Link>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					{attendance.isAttendanceUpdateSuccess && <div>Attendance has been updated successfully!</div>}
 					<div className="filter-container">
