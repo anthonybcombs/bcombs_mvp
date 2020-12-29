@@ -382,7 +382,7 @@ export default function index(props) {
 			<div id="application-status">
 				<div id="application-status-header">
 					<div>
-						<span>Attendance</span>
+						<span>Attendance Summary</span>
 					</div>
 				</div>
 				<div className="filter-container">

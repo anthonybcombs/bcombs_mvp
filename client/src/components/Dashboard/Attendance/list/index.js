@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faAngleLeft, faCalendar, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import DataTable from 'react-data-table-component';
 
@@ -23,85 +23,16 @@ import CustomDatePicker from '../../../../helpers/CustomDatePicker';
 const DATE_FORMAT = 'yyyy-MM-dd';
 
 const ClassListViewStyled = styled.div`
-	padding: 1em;
+	width: auto;
+	max-width: 1920px;
+	margin: auto;
+	padding: 0rem 3em 2rem;
 
 	#dataTableContainer {
-		box-shadow: 0px 0px 10px #ccc;
-		padding: 1em;
-		background-color: #fff;
 		position: relative;
-	}
-
-	#dataTableContainer a {
-		color: #3e89fe;
-		text-decoration: none;
-	}
-
-	#dataTableContainer .img-container {
-		margin-right: 10px;
-	}
-
-	#dataTableContainer img {
-		width: 55px;
-		height: 55px;
-	}
-
-	.attendance-action {
-		display: flex;
-		flex-flow: row wrap;
-		flex-grow: 1;
-	}
-
-	.attendance-action div {
-		margin: 7px;
-	}
-	.child-body {
-		margin-top: 10px;
-		display: flex;
-		flex-flow: row wrap;
-	}
-
-	.child-body .block {
-		padding-left: 3px;
-		padding-right: 3px;
-		width: 280px;
-	}
-
-	.child-body .extra_activitybox {
-		background: white;
-		border: 1px solid #ccc;
-		box-shadow: 0px 0px 10px #ccc;
-		padding: 10px 15px;
-		margin-bottom: 10px;
-		text-align: center;
-		border-bottom: 4px solid #f26e21;
-	}
-
-	.child-body h4 {
-		border-bottom: 3px solid #f26e21;
-		width: fit-content;
-		margin: 0 auto;
-		display: table;
-		padding-bottom: 5px;
-		font-size: 20px;
-	}
-
-	.child-body .extra_activitylist {
-		margin-top: 20px;
-		overflow-x: hidden;
-		padding: 10px;
-	}
-
-	@media screen and (max-width: 1366px) {
-		.child-body .block {
-			width: 32.8%;
-		}
-	}
-
-	@media screen and (max-width: 1080px) {
-		.child-body .block {
-			width: 49.3%;
-		}
+		padding: 1rem;
+    background-color: #fff;
+    box-shadow: 0 0 25px #eae9e9;
 	}
 
 	.field {
@@ -201,13 +132,8 @@ const ClassListViewStyled = styled.div`
 	.field-input:focus + .field-label {
 		transform: translate(0, 0) scale(1);
 		cursor: pointer;
-		margin-bottom: 5px;
+		// margin-bottom: 5px;
 		font-weight: bold;
-	}
-
-	.search-field-container {
-		display: flex;
-		flex-flow: row wrap;
 	}
 
 	.react-datetimerange-picker,
@@ -268,18 +194,137 @@ const ClassListViewStyled = styled.div`
 	}
 
 	.react-datepicker-wrapper {
-		padding-top: 24px;
+		margin: 0;
+	}
+	.react-datepicker__input-container .field {
+    margin: 0 !important;
+		padding: 0 !important;
+	}
+	.react-datepicker__input-container .field svg.calendar-icon {
+		position: absolute;
+    right: 0;
+		bottom: 10px;
+		color: grey;
+	}
+	.required {
+		color: red;
+	}
+	.filter-container {
+		display: grid;
+		// grid-template-columns: repeat(5, 1fr);
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))
 	}
 
-	.field {
-		margin-top: -5px !important;
+
+	.search-field-container {
+		display: flex;
+    align-items: baseline;
 	}
+	.search-field-container .field {
+		flex: 1;
+		position: relative;
+	}
+	.search-field-container .field svg.search-icon {
+		position: absolute;
+    bottom: 20px;
+    right: 15px;
+    color: gray;
+	}
+	.search-field-container button {
+		width: 120px;
+    border: none;
+    color: #fff;
+    border-radius: 3px;
+		background: #f5812f;
+		transition: .15s ease-in-out;
+	}
+	.search-field-container button:hover {
+		background: #e87828;
+	}
+	
+
 	.circle-icon {
 		border-radius: 50%;
 		width: 15px;
 		height: 15px;
 		margin: 0 auto;
 	}
+	.child-body .block .extra_activitybox {
+		text-align: center;
+	}
+
+	.child-body {
+		margin-top: 3rem;
+		display: grid;
+    grid-gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	}
+
+	.child-body .block {
+		width: auto;
+		border: 1px solid #ccc;
+    box-shadow: 0 0 10px #ccc;
+    border-bottom: 4px solid #f5812f;
+	}
+
+	.child-body .block .extra_activitybox .img-container {
+		padding: 1rem;
+	}
+	.child-body .block .extra_activitybox .img-container img {
+		max-width: 120px;
+    width: 100%;
+	}
+	.child-body .block .extra_activitybox .attendance-name {
+		padding-bottom: 1rem;
+	}
+	.child-body .block .extra_activitybox .attendance-name a {
+		color: #000;
+    font-weight: 600;
+		text-decoration: none;
+		transition: .15s ease-in-out;
+	}
+	.child-body .block .extra_activitybox .attendance-name a:hover {
+		color: #f5812f;
+	}
+	.child-body .block .extra_activitybox .attendance-action {
+		display: flex;
+		justify-content: space-around;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+	}
+	.child-body .block .extra_activitybox .attendance-action >div {
+		flex: 1;
+    padding: 1rem 0;
+	}
+	.child-body .block .extra_activitybox .attendance-action >div:not(:last-child) {
+		border-right: 1px solid #ddd;
+	}
+	.child-body .block .extra_activitybox .attendance-hours {
+		display: flex;
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+	}
+	.child-body .block .extra_activitybox .attendance-hours .field > input {
+		text-align: center;
+	}
+	
+	.child-body .block .extra_activitybox .attendance-invitation {
+		padding: 1rem;
+    color: gray;
+    font-size: 14px;
+	}
+	.child-body .block .extra_activitybox .attendance-invitation span {
+		color: #000;
+		font-weight: 600;
+	}
+
+
+
+
+	// media query
+	@media (max-width: 840px) {
+    padding: 0rem 1rem 2rem;
+  }
 `;
 
 const range = (start, end) => {
@@ -318,12 +363,15 @@ const DateCustomInput = ({ value, onClick, name, className, placeholder, registe
 			placeholder="mm/dd/yyyy"
 			readOnly={true}
 			id={`attendance_date`}
-			style={{ marginTop: 24 }}
 			ref={register({ required: true })}
 		/>
-		<label className="field-label" for={`date`}>
+		<label className="field-label" for={`attendance_date`}>
 			<span className="required">*</span> Date
 		</label>
+		<FontAwesomeIcon
+			icon={faCalendar}
+			className='calendar-icon'
+		/>
 	</div>
 );
 
@@ -331,13 +379,23 @@ const style = {
 	attendanceAction: {
 		cursor: 'pointer',
 	},
+	attendanceSubAction: {
+		marginTop: '8px',
+		fontSize: '12px',
+		cursor: 'pointer',
+		color: 'grey',
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 	circleIcon: {
 		margin: '0 auto',
 	},
 	miniCircleIcon: {
-		width: 12,
-		height: 12,
-		margin: '0 auto',
+		width: 10,
+		height: 10,
+		marginRight: '3px',
+		marginLeft: '0',
 	},
 };
 
@@ -559,10 +617,11 @@ export default function index() {
 
 	return (
 		<ClassListViewStyled>
+			<h2>Attendance</h2>
 			<div id="dataTableContainer">
 				<form onSubmit={handleSubmit(onSubmit)}>
 					{attendance.isAttendanceUpdateSuccess && <div>Attendance has been updated successfully!</div>}
-					<div className="search-field-container">
+					<div className="filter-container">
 						<div className="field">
 							<DatePicker
 								readOnly={false}
@@ -665,6 +724,7 @@ export default function index() {
 						</div>
 						<div className="field">
 							<input
+								id="event_name"
 								onChange={handleAttedanceDetailChange}
 								ref={register({ required: true })}
 								name={'event_name'}
@@ -677,6 +737,7 @@ export default function index() {
 						</div>
 						<div className="field">
 							<input
+								id="location"
 								onChange={handleAttedanceDetailChange}
 								ref={register({ required: true })}
 								name={'location'}
@@ -688,28 +749,40 @@ export default function index() {
 							</label>
 						</div>
 					</div>
-					<div className="search-field-container"  style={{marginLeft:12}}>
+
+					<div className="search-field-container">
 						<div className="field">
-							<input name={'search'} className={'field-input'} onChange={handleSearchChange} placeholder="Search" />
+							<input id="search" name={'search'} className={'field-input'} onChange={handleSearchChange} placeholder="Search" />
 							<label className="field-label" for={`search`}>
 								Search
 							</label>
+							<FontAwesomeIcon
+								className='search-icon'
+								icon={faSearch}
+							/>
 						</div>
+						{applicationList.length > 0 && (
+							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
+								{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
+							</button>
+						)}
 					</div>
+
 					<div className="child-body">
 						{filteredApplicationList.map(app => {
 							return (
 								<div className="block">
 									<div className="extra_activitybox">
-										<span className="img-container" style={{ margin: '0 auto' }}>
+										<div className="img-container" style={{ margin: '0 auto' }}>
 											<img src={ProfileImg} />
-										</span>
+										</div>
 
-										<div className="extra_activitylist">
+										<div className="attendance-name">
 											<a target="_blank" href={'/dashboard/menteeprofile/' + app.id}>
 												<span>{app.child?.firstname + ' ' + app.child?.lastname}</span>
 											</a>
 										</div>
+
 										<div className="attendance-action">
 											<div>
 												<div
@@ -727,6 +800,7 @@ export default function index() {
 													Present
 												</div>
 											</div>
+
 											<div>
 												<div
 													onClick={() => {
@@ -747,18 +821,19 @@ export default function index() {
 													onClick={() => {
 														handleExcused(app, 'absent');
 													}}
-													style={{ fontSize: 12, marginTop: 8 }}>
+													style={style.attendanceSubAction}
+												>
 													<div
 														className="circle-icon"
 														style={{
 															...style.miniCircleIcon,
 															backgroundColor: app.excused === 'absent' ? 'green' : 'gray',
-															cursor: 'pointer',
 														}}
 													/>
 													Excused
 												</div>
 											</div>
+
 											<div>
 												<div
 													onClick={() => {
@@ -769,7 +844,7 @@ export default function index() {
 														className="circle-icon"
 														style={{
 															...style.circleIcon,
-															backgroundColor: app.attendance_status === 'Tardy' ? 'yellow' : 'gray',
+															backgroundColor: app.attendance_status === 'Tardy' ? 'orange' : 'gray',
 														}}
 													/>
 													Tardy
@@ -779,20 +854,20 @@ export default function index() {
 													onClick={() => {
 														handleExcused(app, 'tardy');
 													}}
-													style={{ fontSize: 12, marginTop: 8 }}>
+													style={style.attendanceSubAction}>
 													<div
 														className="circle-icon"
 														style={{
 															...style.miniCircleIcon,
 															backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',
-															cursor: 'pointer',
 														}}
 													/>
 													Excused
 												</div>
 											</div>
 										</div>
-										<div className="attendance-action">
+										
+										<div className="attendance-hours">
 											<div className="field">
 												<input
 													type="number"
@@ -808,9 +883,6 @@ export default function index() {
 													Volunteer Hours
 												</label>
 											</div>
-										</div>
-
-										<div className="attendance-action">
 											<div className="field">
 												<input
 													type="number"
@@ -827,10 +899,12 @@ export default function index() {
 												</label>
 											</div>
 										</div>
-										<div className="attendance-action">
+
+										
+										<div className="attendance-invitation">
 											{app.is_following && (
-												<div className="field">
-													Calendar Invite: {`${app.is_following === 1 ? 'Accepted' : 'Declined'}`}
+												<div className="calendar-invite">
+													Calendar Invite: <span>{`${app.is_following === 1 ? 'Accepted' : 'Declined'}`}</span>
 												</div>
 											)}
 										</div>
@@ -839,11 +913,11 @@ export default function index() {
 							);
 						})}
 					</div>
-					{applicationList.length > 0 && (
+					{/* {applicationList.length > 0 && (
 						<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
 							{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
 						</button>
-					)}
+					)} */}
 				</form>
 			</div>
 		</ClassListViewStyled>

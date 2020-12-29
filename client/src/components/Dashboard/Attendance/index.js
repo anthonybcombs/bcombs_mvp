@@ -13,36 +13,26 @@ import {
 import { requestVendor } from "../../../redux/actions/Vendors";
 
 const AttendanceSummaryStyled = styled.div`
-  #application-status {
-    padding: 1em;
-  }
+  width: auto;
+  max-width: 1920px;
+  margin: auto;
+  padding: 0rem 3em 2rem;
 
-  #application-status-header {
-    font-size: 1.2em;
-  }
+ 
 
-  #application-status-header > div {
-    padding: 1em 0;
-  }
-
-  #application-status-header > div > span {
-    font-weight: normal;
-  }
-
-  #application-status-header > div > svg {
-    color: #D33125;
-  }
-
-  #application-status-list {
-    box-shadow: 0px 0px 10px #ccc;
+  #attendance {
+    padding: 1rem;
+    background-color: white;
+    box-shadow: 0 0 25px #eae9e9;
   }
 
   #groups {
-    text-align: center;
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
     border: 0;
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+    box-shadow: 0px 0px 10px #ccc;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   }
   
   #groups td, #groups th {
@@ -64,6 +54,12 @@ const AttendanceSummaryStyled = styled.div`
     color: #3e89fe;
     text-decoration: none;
   }
+
+
+  @media (max-width: 840px) {
+    padding: 0rem 1rem 2rem;
+  }
+
 `;
 
 export default function index(props) {
@@ -168,32 +164,27 @@ export default function index(props) {
 
   return (
     <AttendanceSummaryStyled>
-      <div id="application-status">
-        <div id="application-status-header">
-          <div>              
-            <span>Attendance</span>
-          </div>
-        </div>
-        <div id="application-status-list">
-          <table id="groups">
-            <tbody>
-              <tr>
-                <th>Class</th>
-                <th>Count</th>
-                <th>Available</th>
-                <th>Class Count</th>
-                <th>Action</th>
-              </tr>
-              <tr>
-                <td>Total</td>
-                <td>{getTotalCount()}</td>
-                <td>{getTotalAvailable()}</td>
-                <td>{getTotalClassCount()}</td>
-              </tr>
-              {renderTableData()}
-            </tbody>
-          </table>
-        </div>
+      <h2>Attendance</h2>
+      <div id="attendance">
+        <table id="groups">
+          <tbody>
+            <tr>
+              <th>Class</th>
+              <th>Count</th>
+              <th>Available</th>
+              <th>Class Count</th>
+              <th>Action</th>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td>{getTotalCount()}</td>
+              <td>{getTotalAvailable()}</td>
+              <td>{getTotalClassCount()}</td>
+              <td></td>
+            </tr>
+            {renderTableData()}
+          </tbody>
+        </table>
       </div>
     </AttendanceSummaryStyled>
   )
