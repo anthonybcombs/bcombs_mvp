@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from "@reach/router";
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
@@ -7,11 +8,10 @@ import { useParams } from '@reach/router';
 import { format, isRan } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
-import { getHours, max, addDays, subDays ,isWithinInterval} from 'date-fns';
+import { getHours, max, addDays, subDays, isWithinInterval } from 'date-fns';
 
 import { requestAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
-
 
 import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
 const AttendanceSummaryStyled = styled.div`
@@ -121,9 +121,9 @@ const AttendanceSummaryStyled = styled.div`
 		margin-left: 12px;
 	}
 
-	.exclude-icon{
+	.exclude-icon {
 		background-color: black;
-		position:relative;
+		position: relative;
 		width: 3px;
 		height: 20px;
 		z-index: 99px;
@@ -131,13 +131,12 @@ const AttendanceSummaryStyled = styled.div`
 		margin: 0 auto;
 		transform: rotateY(0deg) rotate(45deg);
 	}
-
 `;
 
 const DATE_FORMAT = 'yyyy-MM-dd';
 const DATE_KEY_FORMAT = 'yyyy_MM_dd';
 
-const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()]
+const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];
 
 export default function index(props) {
 	const dispatch = useDispatch();
@@ -149,7 +148,7 @@ export default function index(props) {
 	const [displayDays, setDisplayDays] = useState(DEFAULT_DISPLAY_DAYS);
 	const [attendanceDisplay, setAttendanceDisplay] = useState([]);
 	const [defaultAttendanceDisplay, setDefaultAttendanceDisplay] = useState([]);
-	const [selectedRangeDate, setSelectedRangeDate] = useState([new Date(),new Date()]);
+	const [selectedRangeDate, setSelectedRangeDate] = useState([new Date(), new Date()]);
 
 	const { app_group_id } = useParams();
 
@@ -171,7 +170,6 @@ export default function index(props) {
 
 	useEffect(() => {
 		if (attendance.list) {
-
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 				attDate = attDate.replaceAll('-', '_');
@@ -188,9 +186,9 @@ export default function index(props) {
 							...((accum[att.child_id] && accum[att.child_id].attendance) || {}),
 							[attDate]: {
 								status: att.attendance_status,
-								mentoring_hours:att.mentoring_hours,
-								volunteer_hours:att.volunteer_hours,
-								is_excused:att.is_excused
+								mentoring_hours: att.mentoring_hours,
+								volunteer_hours: att.volunteer_hours,
+								is_excused: att.is_excused,
 							},
 						},
 					},
@@ -209,10 +207,9 @@ export default function index(props) {
 		return attendanceDisplay.map((att, index) => {
 			const totalAttendance = Object.keys(att.attendance).length;
 			const totalPresent = Object.keys(att.attendance).filter(key => {
-				return att.attendance[key].status === 'Present' ||  att.attendance[key].is_excused === 1;
+				return att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1;
 			}).length;
-		
-	
+
 			return (
 				<tr key={index}>
 					<td>
@@ -239,10 +236,13 @@ export default function index(props) {
 									{(att.attendance[formattedDateKeys[0]] &&
 										att.attendance[formattedDateKeys[0]].status === 'Absent' && (
 											<div>
-														<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
-														{att.attendance[formattedDateKeys[0]].is_excused  === 1 ? <div className="exclude-icon"></div> : <span/>}
+												<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+												{att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
+													<div className="exclude-icon"></div>
+												) : (
+													<span />
+												)}
 											</div>
-									
 										)) ||
 										''}
 								</div>
@@ -251,9 +251,12 @@ export default function index(props) {
 									{(att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].status === 'Tardy' && (
 										<div>
 											<div className="circle-icon" style={{ backgroundColor: '#f26e21' }}></div>
-											{att.attendance[formattedDateKeys[0]].is_excused  === 1 ? <div className="exclude-icon"></div> : <span/>}
+											{att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
+												<div className="exclude-icon"></div>
+											) : (
+												<span />
+											)}
 										</div>
-									
 									)) ||
 										''}
 								</div>
@@ -274,8 +277,12 @@ export default function index(props) {
 										att.attendance[formattedDateKeys[1]].status === 'Absent' && (
 											<div>
 												<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
-												{att.attendance[formattedDateKeys[1]].is_excused  === 1 ? <div className="exclude-icon"></div> : <span/>}
-										</div>
+												{att.attendance[formattedDateKeys[1]].is_excused === 1 ? (
+													<div className="exclude-icon"></div>
+												) : (
+													<span />
+												)}
+											</div>
 										)) ||
 										''}
 								</div>
@@ -284,7 +291,11 @@ export default function index(props) {
 									{(att.attendance[formattedDateKeys[1]] && att.attendance[formattedDateKeys[1]].status === 'Tardy' && (
 										<div>
 											<div className="circle-icon" style={{ backgroundColor: '#f26e21' }}></div>
-											{att.attendance[formattedDateKeys[1]].is_excused === 1 ? <div className="exclude-icon"></div> : <span/>}
+											{att.attendance[formattedDateKeys[1]].is_excused === 1 ? (
+												<div className="exclude-icon"></div>
+											) : (
+												<span />
+											)}
 										</div>
 									)) ||
 										''}
@@ -305,8 +316,12 @@ export default function index(props) {
 									{(att.attendance[formattedDateKeys[2]] &&
 										att.attendance[formattedDateKeys[2]].status === 'Absent' && (
 											<div>
-											<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
-											{att.attendance[formattedDateKeys[2]].is_excused === 1 ? <div className="exclude-icon"></div> : <span/>}										
+												<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+												{att.attendance[formattedDateKeys[2]].is_excused === 1 ? (
+													<div className="exclude-icon"></div>
+												) : (
+													<span />
+												)}
 											</div>
 										)) ||
 										''}
@@ -316,8 +331,12 @@ export default function index(props) {
 									{(att.attendance[formattedDateKeys[2]] && att.attendance[formattedDateKeys[2]].status === 'Tardy' && (
 										<div>
 											<div className="circle-icon" style={{ backgroundColor: '#f26e21' }}></div>
-											{att.attendance[formattedDateKeys[2]].is_excused === 1 ? <div className="exclude-icon"></div> : <span/>}
-									</div>
+											{att.attendance[formattedDateKeys[2]].is_excused === 1 ? (
+												<div className="exclude-icon"></div>
+											) : (
+												<span />
+											)}
+										</div>
 									)) ||
 										''}
 								</div>
@@ -360,55 +379,49 @@ export default function index(props) {
 	const handleChangeRangeDate = date => {
 		if (date == null) {
 			setAttendanceDisplay(defaultAttendanceDisplay);
-			setSelectedRangeDate([
-				new Date(),
-				new Date()
-			]);
-			setDisplayDays(DEFAULT_DISPLAY_DAYS)
+			setSelectedRangeDate([new Date(), new Date()]);
+			setDisplayDays(DEFAULT_DISPLAY_DAYS);
 			return;
 		}
 		const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
 			const dateKeys = Object.keys(att.attendance);
 			const filteredDate = dateKeys.filter(key => {
-				return isWithinInterval(new Date(key.replaceAll('_','-')), {
+				return isWithinInterval(new Date(key.replaceAll('_', '-')), {
 					start: subDays(new Date(date[0]), 1),
-					end: addDays(new Date(date[1]), 1)
-				})
+					end: addDays(new Date(date[1]), 1),
+				});
 			});
-			const totalHours = filteredDate.reduce((accum,key) => {
-				return {
-					total_volunteer_hours:
-					(( accum.total_volunteer_hours) || 0) + att.attendance[key].volunteer_hours || 0,
-					total_mentoring_hours:
-					((accum.total_mentoring_hours) || 0) + att.attendance[key].mentoring_hours || 0,
-				}
-			},{ total_volunteer_hours:0,total_mentoring_hours:0 });
+			const totalHours = filteredDate.reduce(
+				(accum, key) => {
+					return {
+						total_volunteer_hours: (accum.total_volunteer_hours || 0) + att.attendance[key].volunteer_hours || 0,
+						total_mentoring_hours: (accum.total_mentoring_hours || 0) + att.attendance[key].mentoring_hours || 0,
+					};
+				},
+				{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
+			);
 
 			return {
 				...att,
 				...totalHours,
-				attendance: filteredDate.reduce((accum,key) => {
+				attendance: filteredDate.reduce((accum, key) => {
 					return {
 						...accum,
 						[key]: {
 							...att.attendance[key],
-						}
-					}
-				},{})
-			}
-
+						},
+					};
+				}, {}),
+			};
 		});
 		setAttendanceDisplay(updatedAttendanceDisplay);
-		setDisplayDays(	[
+		setDisplayDays([
 			new Date(date[0]),
-			addDays(new Date(	new Date(date[0])), 1),
-			addDays(new Date(	new Date(date[0])), 2)
+			addDays(new Date(new Date(date[0])), 1),
+			addDays(new Date(new Date(date[0])), 2),
 		]);
-		setSelectedRangeDate([
-			new Date(date[0]),
-			new Date(date[1])
-		])
-	}
+		setSelectedRangeDate([new Date(date[0]), new Date(date[1])]);
+	};
 
 	return (
 		<AttendanceSummaryStyled>
@@ -416,7 +429,9 @@ export default function index(props) {
 				<div id="application-status-header">
 					<div>
 						<span>Attendance Summary</span>
+						<div>	<Link to={'/dashboard/attendance'}>Back</Link></div>
 					</div>
+
 				</div>
 				<div className="filter-container">
 					<div>

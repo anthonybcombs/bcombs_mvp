@@ -112,6 +112,7 @@ export default function index(props) {
     const currentForm = formList.map(form => (
       form.vendor === vendors[0].id
     ))
+    console.log('appGroupszzz',appGroups)
     return appGroups.map((group, index) => {
 
       let count = group.size;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from "@reach/router";
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,8 +32,8 @@ const ClassListViewStyled = styled.div`
 	#dataTableContainer {
 		position: relative;
 		padding: 1rem;
-    background-color: #fff;
-    box-shadow: 0 0 25px #eae9e9;
+		background-color: #fff;
+		box-shadow: 0 0 25px #eae9e9;
 	}
 
 	.field {
@@ -197,12 +198,12 @@ const ClassListViewStyled = styled.div`
 		margin: 0;
 	}
 	.react-datepicker__input-container .field {
-    margin: 0 !important;
+		margin: 0 !important;
 		padding: 0 !important;
 	}
 	.react-datepicker__input-container .field svg.calendar-icon {
 		position: absolute;
-    right: 0;
+		right: 0;
 		bottom: 10px;
 		color: grey;
 	}
@@ -212,13 +213,12 @@ const ClassListViewStyled = styled.div`
 	.filter-container {
 		display: grid;
 		// grid-template-columns: repeat(5, 1fr);
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	}
-
 
 	.search-field-container {
 		display: flex;
-    align-items: baseline;
+		align-items: baseline;
 	}
 	.search-field-container .field {
 		flex: 1;
@@ -226,22 +226,21 @@ const ClassListViewStyled = styled.div`
 	}
 	.search-field-container .field svg.search-icon {
 		position: absolute;
-    bottom: 20px;
-    right: 15px;
-    color: gray;
+		bottom: 20px;
+		right: 15px;
+		color: gray;
 	}
 	.search-field-container button {
 		width: 120px;
-    border: none;
-    color: #fff;
-    border-radius: 3px;
+		border: none;
+		color: #fff;
+		border-radius: 3px;
 		background: #f5812f;
-		transition: .15s ease-in-out;
+		transition: 0.15s ease-in-out;
 	}
 	.search-field-container button:hover {
 		background: #e87828;
 	}
-	
 
 	.circle-icon {
 		border-radius: 50%;
@@ -256,15 +255,15 @@ const ClassListViewStyled = styled.div`
 	.child-body {
 		margin-top: 3rem;
 		display: grid;
-    grid-gap: 18px;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		grid-gap: 18px;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 	}
 
 	.child-body .block {
 		width: auto;
 		border: 1px solid #ccc;
-    box-shadow: 0 0 10px #ccc;
-    border-bottom: 4px solid #f5812f;
+		box-shadow: 0 0 10px #ccc;
+		border-bottom: 4px solid #f5812f;
 	}
 
 	.child-body .block .extra_activitybox .img-container {
@@ -272,16 +271,16 @@ const ClassListViewStyled = styled.div`
 	}
 	.child-body .block .extra_activitybox .img-container img {
 		max-width: 120px;
-    width: 100%;
+		width: 100%;
 	}
 	.child-body .block .extra_activitybox .attendance-name {
 		padding-bottom: 1rem;
 	}
 	.child-body .block .extra_activitybox .attendance-name a {
 		color: #000;
-    font-weight: 600;
+		font-weight: 600;
 		text-decoration: none;
-		transition: .15s ease-in-out;
+		transition: 0.15s ease-in-out;
 	}
 	.child-body .block .extra_activitybox .attendance-name a:hover {
 		color: #f5812f;
@@ -289,42 +288,93 @@ const ClassListViewStyled = styled.div`
 	.child-body .block .extra_activitybox .attendance-action {
 		display: flex;
 		justify-content: space-around;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+		border-top: 1px solid #ddd;
+		border-bottom: 1px solid #ddd;
 	}
-	.child-body .block .extra_activitybox .attendance-action >div {
+	.child-body .block .extra_activitybox .attendance-action > div {
 		flex: 1;
-    padding: 1rem 0;
+		padding: 1rem 0;
 	}
-	.child-body .block .extra_activitybox .attendance-action >div:not(:last-child) {
+	.child-body .block .extra_activitybox .attendance-action > div:not(:last-child) {
 		border-right: 1px solid #ddd;
 	}
 	.child-body .block .extra_activitybox .attendance-hours {
 		display: flex;
-    padding: 1rem;
-    border-bottom: 1px solid #ddd;
+		padding: 1rem;
+		border-bottom: 1px solid #ddd;
 	}
 	.child-body .block .extra_activitybox .attendance-hours .field > input {
 		text-align: center;
 	}
-	
+
 	.child-body .block .extra_activitybox .attendance-invitation {
 		padding: 1rem;
-    color: gray;
-    font-size: 14px;
+		color: gray;
+		font-size: 14px;
 	}
 	.child-body .block .extra_activitybox .attendance-invitation span {
 		color: #000;
 		font-weight: 600;
 	}
 
-
-
-
 	// media query
 	@media (max-width: 840px) {
-    padding: 0rem 1rem 2rem;
-  }
+		padding: 0rem 1rem 2rem;
+	}
+
+	#groups {
+		text-align: center;
+		font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+		border-collapse: collapse;
+		width: 100%;
+		border: 0;
+	}
+
+	#groups td,
+	#groups th {
+		border: 0;
+		padding: 15px;
+	}
+
+	#groups tr:nth-child(odd) {
+		background-color: #f9f9f9;
+	}
+
+	// #groups tr:hover {background-color: #ddd;}
+
+	#groups th {
+		text-align: center;
+		background-color: #f26e21;
+		color: white;
+	}
+
+	#groups a {
+		color: #3e89fe;
+		text-decoration: none;
+	}
+
+	.attendance-status-container,
+	.attendance-hours-container {
+		display: flex;
+	}
+	.attendance-status-container > div {
+		width: 33.33%;
+	}
+
+	.attendance-hours-container > div {
+		width: 50%;
+	}
+
+	.exclude-icon {
+		background-color: black;
+		position: relative;
+		width: 3px;
+		height: 20px;
+		z-index: 200;
+		top: -17px;
+		margin: 0 auto;
+		transform: rotateY(0deg) rotate(45deg);
+	}
 `;
 
 const range = (start, end) => {
@@ -368,10 +418,7 @@ const DateCustomInput = ({ value, onClick, name, className, placeholder, registe
 		<label className="field-label" for={`attendance_date`}>
 			<span className="required">*</span> Date
 		</label>
-		<FontAwesomeIcon
-			icon={faCalendar}
-			className='calendar-icon'
-		/>
+		<FontAwesomeIcon icon={faCalendar} className="calendar-icon" />
 	</div>
 );
 
@@ -421,6 +468,7 @@ export default function index() {
 	const [applicationList, setApplicationList] = useState([]);
 	const [defaultApplicationList, setDefaultApplicationList] = useState([]);
 	const [filteredApplicationList, setFilteredApplicationList] = useState([]);
+	const [viewMode, setViewMode] = useState('grid');
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -516,18 +564,19 @@ export default function index() {
 			attendance_status: attendanceType,
 			excused: null,
 		};
-		
+
 		setApplicationList(updatedApplication);
 		setFilteredApplicationList(updatedFilteredApplication);
 	};
 
-	const handleHours = (payload, hours,type = 'volunteer_hours') => {
+	const handleHours = (payload, hours, type = 'volunteer_hours') => {
+		console.log('Handl');
 		let updatedApplication = [...(applicationList || [])];
 		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
-		console.log('Handle Hours', hours)
-		console.log('Handle Hours Type', type)
+		console.log('Handle Hours', hours);
+		console.log('Handle Hours Type', type);
 		updatedApplication[currentIndex] = {
 			...updatedApplication[currentIndex],
 			[type]: hours,
@@ -536,8 +585,8 @@ export default function index() {
 			...updatedFilteredApplication[currentFilteredIndex],
 			[type]: hours,
 		};
-		console.log('Handle Hours updatedApplication 11',updatedApplication[currentIndex])
-		console.log('Handle Hours updatedApplication 22',	updatedFilteredApplication[currentFilteredIndex])
+		console.log('Handle Hours updatedApplication 11', updatedApplication[currentIndex]);
+		console.log('Handle Hours updatedApplication 22', updatedFilteredApplication[currentFilteredIndex]);
 		setApplicationList(updatedApplication);
 		setFilteredApplicationList(updatedFilteredApplication);
 	};
@@ -551,8 +600,8 @@ export default function index() {
 				attendance_status: app.attendance_status || '',
 				child_id: app.child.ch_id,
 				vendor: app.vendor,
-				volunteer_hours:app.volunteer_hours ?  parseInt(app.volunteer_hours) : 0,
-				mentoring_hours: app.mentoring_hours ?  parseInt(app.mentoring_hours) : 0,
+				volunteer_hours: app.volunteer_hours ? parseInt(app.volunteer_hours) : 0,
+				mentoring_hours: app.mentoring_hours ? parseInt(app.mentoring_hours) : 0,
 				is_excused: app.excused ? 1 : 0,
 			};
 		});
@@ -601,25 +650,157 @@ export default function index() {
 		let { name, value } = e.target;
 		let lowerCaseVale = value;
 
-		if(value !== '') {
+		if (value !== '') {
 			value = value.toLowerCase();
-			const filteredApplication = applicationList.filter((app) => {
-				if(app.child) {
-					return app.child.lastname.toLowerCase().includes(value) || app.child.firstname.toLowerCase().includes(value)
+			const filteredApplication = applicationList.filter(app => {
+				if (app.child) {
+					return app.child.lastname.toLowerCase().includes(value) || app.child.firstname.toLowerCase().includes(value);
 				}
-			})
+			});
 			setFilteredApplicationList(filteredApplication);
-		}
-		else{
+		} else {
 			setFilteredApplicationList(applicationList);
 		}
+	};
 
-	}
+	const handleViewChange = e => {
+		console.log('Handle View Change Value', e.target.value);
+		setViewMode(e.target.value);
+	};
+
+	const renderTableData = () => {
+		console.log('Filtered Applicationnnnn', filteredApplicationList);
+		return filteredApplicationList.map((app, index) => {
+			// const totalAttendance = Object.keys(att.attendance).length;
+			// const totalPresent = Object.keys(att.attendance).filter(key => {
+			// 	return att.attendance[key].status === 'Present' ||  att.attendance[key].is_excused === 1;
+			// }).length;
+
+			return (
+				<tr key={index}>
+					<td>
+						<span>{app.child?.firstname + ' ' + app.child?.lastname}</span>
+					</td>
+					<td>{app.class_teacher}</td>
+					{/* <td>
+						{`${((totalPresent * 100) / totalAttendance).toFixed(2)}%`} ({totalPresent}/{totalAttendance})
+					</td> */}
+					{/* <td>{format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)}</td> */}
+					<td>
+						<div className="attendance-status-container">
+							<div>
+								<div>
+									<div
+										className="circle-icon"
+										onClick={() => {
+											handleAttendance(app, 'Present');
+										}}
+										style={{ ...style.attendanceAction, backgroundColor: 'green' }}></div>
+									{app.attendance_status === 'Present' ? <div className="exclude-icon"></div> : <span />}
+								</div>
+							</div>
+							<div style={{minHeight:22}}>
+								<div>
+									<div
+										className="circle-icon"
+										onClick={() => {
+											handleAttendance(app, 'Absent');
+										}}
+										style={{ ...style.attendanceAction, backgroundColor: 'red' }}></div>
+									{app.attendance_status === 'Absent' ? <div className="exclude-icon"></div> : <span />}
+								</div>
+								<div>
+									<div
+										onClick={() => {
+											handleExcused(app, 'absent');
+										}}
+										style={style.attendanceSubAction}>
+										<div
+											className="circle-icon"
+											style={{
+												...style.miniCircleIcon,
+												backgroundColor: app.excused === 'absent' ? 'green' : 'gray',
+											}}
+										/>
+										Excused
+									</div>
+								</div>
+							</div>
+							<div style={{minHeight:22}}>
+								<div>
+									<div
+										className="circle-icon"
+										onClick={() => {
+											handleAttendance(app, 'Tardy');
+										}}
+										style={{ ...style.attendanceAction, backgroundColor: '#f26e21' }}></div>
+									{app.attendance_status === 'Tardy' ? <div className="exclude-icon"></div> : <span />}
+								</div>
+
+								<div>
+									<div
+										onClick={() => {
+											handleExcused(app, 'tardy');
+										}}
+										style={style.attendanceSubAction}>
+										<div
+											className="circle-icon"
+											style={{
+												...style.miniCircleIcon,
+												backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',
+											}}
+										/>
+										Excused
+									</div>
+								</div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div className="attendance-hours-container">
+							{/* <div> {att.total_volunteer_hours}</div>
+							<div> {att.total_mentoring_hours}</div>
+							<div> </div> */}
+							<div>
+								<input
+									type="number"
+									onChange={e => {
+										handleHours(app, e.target.value, 'volunteer_hours');
+									}}
+									name={'volunteer_hours'}
+									className={'field-input'}
+									placeholder="Volunteer Hours"
+									value={app?.volunteer_hours || '0'}
+									style={{ textAlign: 'center' }}
+								/>
+							</div>
+							<div>
+								<input
+									type="number"
+									onChange={e => {
+										handleHours(app, e.target.value, 'mentoring_hours');
+									}}
+									name={'mentoring_hours'}
+									className={'field-input'}
+									placeholder="Mentoring Hours"
+									value={app?.mentoring_hours || '0'}
+									style={{ textAlign: 'center' }}
+								/>
+							</div>
+						</div>
+					</td>
+				</tr>
+			);
+		});
+	};
 
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
-			<div id="dataTableContainer">
+			<Link to={"/dashboard/attendance"} >
+         Back
+      </Link>
+			<div id="dataTableContainer" style={{marginTop:12}}>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					{attendance.isAttendanceUpdateSuccess && <div>Attendance has been updated successfully!</div>}
 					<div className="filter-container">
@@ -753,14 +934,17 @@ export default function index() {
 
 					<div className="search-field-container">
 						<div className="field">
-							<input id="search" name={'search'} className={'field-input'} onChange={handleSearchChange} placeholder="Search" />
+							<input
+								id="search"
+								name={'search'}
+								className={'field-input'}
+								onChange={handleSearchChange}
+								placeholder="Search"
+							/>
 							<label className="field-label" for={`search`}>
 								Search
 							</label>
-							<FontAwesomeIcon
-								className='search-icon'
-								icon={faSearch}
-							/>
+							<FontAwesomeIcon className="search-icon" icon={faSearch} />
 						</div>
 						{applicationList.length > 0 && (
 							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
@@ -769,151 +953,201 @@ export default function index() {
 						)}
 					</div>
 
-					<div className="child-body">
-						{filteredApplicationList.map(app => {
-							return (
-								<div className="block">
-									<div className="extra_activitybox">
-										<div className="img-container" style={{ margin: '0 auto' }}>
-											<img src={ProfileImg} />
-										</div>
+					<div>
+						<div className="field">
+							<select onChange={handleViewChange} className={'field-input'}>
+								<option value="grid">Grid</option>
+								<option value="list">List</option>
+							</select>
+							{/* <input
+								id="event_name"
+								onChange={handleAttedanceDetailChange}
+								ref={register({ required: true })}
+								name={'event_name'}
+								className={'field-input'}
+								placeholder="Event Name"
+							/> */}
+							{/* <label className="field-label" for={`event_name`}>
+								<span className="required">*</span> Event Name
+							</label> */}
+						</div>
+					</div>
 
-										<div className="attendance-name">
-											<a target="_blank" href={'/dashboard/menteeprofile/' + app.id}>
-												<span>{app.child?.firstname + ' ' + app.child?.lastname}</span>
-											</a>
-										</div>
+					{viewMode === 'grid' ? (
+						<div className="child-body">
+							{filteredApplicationList.map(app => {
+								return (
+									<div className="block">
+										<div className="extra_activitybox">
+											<div className="img-container" style={{ margin: '0 auto' }}>
+												<img src={ProfileImg} />
+											</div>
 
-										<div className="attendance-action">
-											<div>
-												<div
-													onClick={() => {
-														handleAttendance(app, 'Present');
-													}}
-													style={style.attendanceAction}>
+											<div className="attendance-name">
+												<a target="_blank" href={'/dashboard/menteeprofile/' + app.id}>
+													<span>{app.child?.firstname + ' ' + app.child?.lastname}</span>
+												</a>
+											</div>
+
+											<div className="attendance-action">
+												<div>
 													<div
-														className="circle-icon"
-														style={{
-															...style.circleIcon,
-															backgroundColor: app.attendance_status === 'Present' ? 'green' : 'gray',
+														onClick={() => {
+															handleAttendance(app, 'Present');
 														}}
-													/>
-													Present
+														style={style.attendanceAction}>
+														<div
+															className="circle-icon"
+															style={{
+																...style.circleIcon,
+																backgroundColor: app.attendance_status === 'Present' ? 'green' : 'gray',
+															}}
+														/>
+														Present
+													</div>
+												</div>
+
+												<div>
+													<div
+														onClick={() => {
+															handleAttendance(app, 'Absent');
+														}}
+														style={style.attendanceAction}>
+														<div
+															className="circle-icon"
+															style={{
+																...style.circleIcon,
+																backgroundColor: app.attendance_status === 'Absent' ? 'red' : 'gray',
+															}}
+														/>
+														Absent
+													</div>
+
+													<div
+														onClick={() => {
+															handleExcused(app, 'absent');
+														}}
+														style={style.attendanceSubAction}>
+														<div
+															className="circle-icon"
+															style={{
+																...style.miniCircleIcon,
+																backgroundColor: app.excused === 'absent' ? 'green' : 'gray',
+															}}
+														/>
+														Excused
+													</div>
+												</div>
+
+												<div>
+													<div
+														onClick={() => {
+															handleAttendance(app, 'Tardy');
+														}}
+														style={style.attendanceAction}>
+														<div
+															className="circle-icon"
+															style={{
+																...style.circleIcon,
+																backgroundColor: app.attendance_status === 'Tardy' ? '#f26e21' : 'gray',
+															}}
+														/>
+														Tardy
+													</div>
+
+													<div
+														onClick={() => {
+															handleExcused(app, 'tardy');
+														}}
+														style={style.attendanceSubAction}>
+														<div
+															className="circle-icon"
+															style={{
+																...style.miniCircleIcon,
+																backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',
+															}}
+														/>
+														Excused
+													</div>
 												</div>
 											</div>
 
-											<div>
-												<div
-													onClick={() => {
-														handleAttendance(app, 'Absent');
-													}}
-													style={style.attendanceAction}>
-													<div
-														className="circle-icon"
-														style={{
-															...style.circleIcon,
-															backgroundColor: app.attendance_status === 'Absent' ? 'red' : 'gray',
+											<div className="attendance-hours">
+												<div className="field">
+													<input
+														type="number"
+														onChange={e => {
+															handleHours(app, e.target.value, 'volunteer_hours');
 														}}
+														name={'volunteer_hrs'}
+														className={'field-input'}
+														placeholder="Volunteer Hours"
+														value={app?.volunteer_hours || '0'}
 													/>
-													Absent
+													<label className="field-label" for={`volunteer_hrs`}>
+														Volunteer Hours
+													</label>
 												</div>
-
-												<div
-													onClick={() => {
-														handleExcused(app, 'absent');
-													}}
-													style={style.attendanceSubAction}
-												>
-													<div
-														className="circle-icon"
-														style={{
-															...style.miniCircleIcon,
-															backgroundColor: app.excused === 'absent' ? 'green' : 'gray',
+												<div className="field">
+													<input
+														type="number"
+														onChange={e => {
+															handleHours(app, e.target.value, 'mentoring_hours');
 														}}
+														name={'mentoring_hrs'}
+														className={'field-input'}
+														placeholder="Mentoring Hours"
+														value={app?.mentoring_hours || '0'}
 													/>
-													Excused
+													<label className="field-label" for={`mentoring_hrs`}>
+														Mentoring Hours
+													</label>
 												</div>
 											</div>
 
-											<div>
-												<div
-													onClick={() => {
-														handleAttendance(app, 'Tardy');
-													}}
-													style={style.attendanceAction}>
-													<div
-														className="circle-icon"
-														style={{
-															...style.circleIcon,
-															backgroundColor: app.attendance_status === 'Tardy' ? '#f26e21' : 'gray',
-														}}
-													/>
-													Tardy
-												</div>
-
-												<div
-													onClick={() => {
-														handleExcused(app, 'tardy');
-													}}
-													style={style.attendanceSubAction}>
-													<div
-														className="circle-icon"
-														style={{
-															...style.miniCircleIcon,
-															backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',
-														}}
-													/>
-													Excused
-												</div>
+											<div className="attendance-invitation">
+												{app.is_following && (
+													<div className="calendar-invite">
+														Calendar Invite: <span>{`${app.is_following === 1 ? 'Accepted' : 'Declined'}`}</span>
+													</div>
+												)}
 											</div>
-										</div>
-										
-										<div className="attendance-hours">
-											<div className="field">
-												<input
-													type="number"
-													onChange={e => {
-														handleHours(app, e.target.value,'volunteer_hours');
-													}}
-													name={'volunteer_hrs'}
-													className={'field-input'}
-													placeholder="Volunteer Hours"
-													value={app?.volunteer_hours || '0'}
-												/>
-												<label className="field-label" for={`volunteer_hrs`}>
-													Volunteer Hours
-												</label>
-											</div>
-											<div className="field">
-												<input
-													type="number"
-													onChange={e => {
-														handleHours(app, e.target.value,'mentoring_hours');
-													}}
-													name={'mentoring_hrs'}
-													className={'field-input'}
-													placeholder="Mentoring Hours"
-													value={app?.mentoring_hours || '0'}
-												/>
-												<label className="field-label" for={`mentoring_hrs`}>
-													Mentoring Hours
-												</label>
-											</div>
-										</div>
-
-										
-										<div className="attendance-invitation">
-											{app.is_following && (
-												<div className="calendar-invite">
-													Calendar Invite: <span>{`${app.is_following === 1 ? 'Accepted' : 'Declined'}`}</span>
-												</div>
-											)}
 										</div>
 									</div>
-								</div>
-							);
-						})}
-					</div>
+								);
+							})}
+						</div>
+					) : (
+						<table id="groups">
+							<tbody>
+								<tr>
+									<th>Name</th>
+									<th>Class</th>
+									{/* <th>Summary</th> */}
+									<th>Attendance Status</th>
+									<th>Other Hours</th>
+								</tr>
+
+								<tr>
+									<td></td>
+									<td></td>
+
+									<td>
+										<div className="attendance-status-container"></div>
+									</td>
+									<td>
+										<div className="attendance-hours-container">
+											<div>Total Volunteer Hours</div>
+											<div>Total Mentoring Hours</div>
+										</div>
+									</td>
+								</tr>
+
+								{renderTableData()}
+							</tbody>
+						</table>
+					)}
+
 					{/* {applicationList.length > 0 && (
 						<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
 							{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
