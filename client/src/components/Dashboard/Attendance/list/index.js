@@ -224,9 +224,9 @@ const ClassListViewStyled = styled.div`
 	}
 	.filter-container {
 		display: grid;
-		// grid-template-columns: repeat(5, 1fr);
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 	}
+	
 
 	.search-field-container {
 		display: flex;
@@ -242,15 +242,41 @@ const ClassListViewStyled = styled.div`
 		right: 15px;
 		color: gray;
 	}
-	.search-field-container button {
-		width: 120px;
+	
+	.search-field-container .select-field-wrapper {
+    position: relative;
+  }
+  .search-field-container .select-field-wrapper:after {
+    content: "\f078";
+    position: absolute;
+    right: 0;
+    bottom: 18px;
+    font-size: 10px;
+    color: #555;
+    font-family: "fontawesome";
+  }
+  .search-field-container .select-field-wrapper label {
+    position: absolute;
+    top: -10px;
+    color: grey;
+    font-size: 12px;
+  }
+  .search-field-container .select-field-wrapper select {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+	}
+	
+	.actionBtn button {
+		// width: 120px;
 		border: none;
-		color: #fff;
+		color: #f5812f;
+		font-size: 18px;
 		border-radius: 3px;
-		background: #f5812f;
+		background: rgb(245 129 47 / 25%);
 		transition: 0.15s ease-in-out;
 	}
-	.search-field-container button:hover {
+	.actionBtn button:hover {
+		color: #fff;
 		background: #e87828;
 	}
 
@@ -260,71 +286,71 @@ const ClassListViewStyled = styled.div`
 		height: 15px;
 		margin: 0 auto;
 	}
-	.child-body .block .extra_activitybox {
+	.gridView .block .extra_activitybox {
 		text-align: center;
 	}
 
-	.child-body {
+	.gridView {
 		margin-top: 3rem;
 		display: grid;
 		grid-gap: 18px;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 	}
 
-	.child-body .block {
+	.gridView .block {
 		width: auto;
 		border: 1px solid #ccc;
 		box-shadow: 0 0 10px #ccc;
 		border-bottom: 4px solid #f5812f;
 	}
 
-	.child-body .block .extra_activitybox .img-container {
+	.gridView .block .extra_activitybox .img-container {
 		padding: 1rem;
 	}
-	.child-body .block .extra_activitybox .img-container img {
+	.gridView .block .extra_activitybox .img-container img {
 		max-width: 120px;
 		width: 100%;
 	}
-	.child-body .block .extra_activitybox .attendance-name {
+	.gridView .block .extra_activitybox .attendance-name {
 		padding-bottom: 1rem;
 	}
-	.child-body .block .extra_activitybox .attendance-name a {
+	.gridView .block .extra_activitybox .attendance-name a {
 		color: #000;
 		font-weight: 600;
 		text-decoration: none;
 		transition: 0.15s ease-in-out;
 	}
-	.child-body .block .extra_activitybox .attendance-name a:hover {
+	.gridView .block .extra_activitybox .attendance-name a:hover {
 		color: #f5812f;
 	}
-	.child-body .block .extra_activitybox .attendance-action {
+	.gridView .block .extra_activitybox .attendance-action {
 		display: flex;
 		justify-content: space-around;
 		border-top: 1px solid #ddd;
 		border-bottom: 1px solid #ddd;
 	}
-	.child-body .block .extra_activitybox .attendance-action > div {
+	.gridView .block .extra_activitybox .attendance-action > div {
 		flex: 1;
 		padding: 1rem 0;
 	}
-	.child-body .block .extra_activitybox .attendance-action > div:not(:last-child) {
+	.gridView .block .extra_activitybox .attendance-action > div:not(:last-child) {
 		border-right: 1px solid #ddd;
 	}
-	.child-body .block .extra_activitybox .attendance-hours {
+	.gridView .block .extra_activitybox .attendance-hours {
 		display: flex;
 		padding: 1rem;
 		border-bottom: 1px solid #ddd;
 	}
-	.child-body .block .extra_activitybox .attendance-hours .field > input {
+	.gridView .block .extra_activitybox .attendance-hours .field > input {
 		text-align: center;
 	}
 
-	.child-body .block .extra_activitybox .attendance-invitation {
+	.gridView .block .extra_activitybox .attendance-invitation {
 		padding: 1rem;
 		color: gray;
 		font-size: 14px;
 	}
-	.child-body .block .extra_activitybox .attendance-invitation span {
+	.gridView .block .extra_activitybox .attendance-invitation span {
 		color: #000;
 		font-weight: 600;
 	}
@@ -334,33 +360,37 @@ const ClassListViewStyled = styled.div`
 		padding: 0rem 1rem 2rem;
 	}
 
-	#groups {
+	#listView {
 		text-align: center;
 		font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
 		border-collapse: collapse;
 		width: 100%;
 		border: 0;
+		margin-top: 3rem;
 	}
 
-	#groups td,
-	#groups th {
+	#listView td,
+	#listView th {
 		border: 0;
 		padding: 15px;
+		width: 200px;
 	}
 
-	#groups tr:nth-child(odd) {
+	#listView th:not(:last-child) {
+		border-right: 1px solid rgb(255 255 255 / 65%);
+	}
+
+	#listView tr:nth-child(odd) {
 		background-color: #f9f9f9;
 	}
 
-	// #groups tr:hover {background-color: #ddd;}
-
-	#groups th {
+	#listView th {
 		text-align: center;
 		background-color: #f26e21;
 		color: white;
 	}
 
-	#groups a {
+	#listView a {
 		color: #3e89fe;
 		text-decoration: none;
 	}
@@ -375,6 +405,22 @@ const ClassListViewStyled = styled.div`
 
 	.attendance-hours-container > div {
 		width: 50%;
+	}
+	.listViewTableContainer {
+		overflow-x: auto;
+	}
+	.listViewTableContainer::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}
+	.listViewTableContainer::-webkit-scrollbar-track {
+		border-radius: 10px;
+		transition: 0.5s ease-in-out;
+		background: rgb(243 110 34 / 20%);
+	}
+	.listViewTableContainer::-webkit-scrollbar-thumb {
+		background: #f36e22;
+		border-radius: 10px;
 	}
 
 	.exclude-icon {
@@ -698,7 +744,7 @@ export default function index() {
 						{`${((totalPresent * 100) / totalAttendance).toFixed(2)}%`} ({totalPresent}/{totalAttendance})
 					</td> */}
 					{/* <td>{format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)}</td> */}
-					<td>
+					<td style={{ width: "300px" }}>
 						<div className="attendance-status-container">
 							<div>
 								<div>
@@ -768,11 +814,8 @@ export default function index() {
 							</div>
 						</div>
 					</td>
-					<td>
+					{/* <td>
 						<div className="attendance-hours-container">
-							{/* <div> {att.total_volunteer_hours}</div>
-							<div> {att.total_mentoring_hours}</div>
-							<div> </div> */}
 							<div>
 								<input
 									type="number"
@@ -800,7 +843,40 @@ export default function index() {
 								/>
 							</div>
 						</div>
+					</td> */}
+					
+					<td style={{ }}>
+						<div style={{ display: "flex", justifyContent: "center" }}>
+							<input
+								type="number"
+								onChange={e => {
+									handleHours(app, e.target.value, 'volunteer_hours');
+								}}
+								name={'volunteer_hours'}
+								className={'field-input'}
+								placeholder="Volunteer Hours"
+								value={app?.volunteer_hours || '0'}
+								style={{ textAlign: 'center', maxWidth: '200px' }}
+							/>
+						</div>
 					</td>
+					
+					<td style={{ }}>
+						<div style={{ display: "flex", justifyContent: "center" }}>
+							<input
+								type="number"
+								onChange={e => {
+									handleHours(app, e.target.value, 'mentoring_hours');
+								}}
+								name={'mentoring_hours'}
+								className={'field-input'}
+								placeholder="Mentoring Hours"
+								value={app?.mentoring_hours || '0'}
+								style={{ textAlign: 'center', maxWidth: '200px' }}
+							/>
+						</div>
+					</td>
+
 				</tr>
 			);
 		});
@@ -946,7 +1022,17 @@ export default function index() {
 								<span className="required">*</span> Location
 							</label>
 						</div>
+						
 					</div>
+					
+					<div className="field actionBtn">
+						{applicationList.length > 0 && (
+							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
+								{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
+							</button>
+						)}
+					</div>
+
 
 					<div className="search-field-container">
 						<div className="field">
@@ -962,18 +1048,10 @@ export default function index() {
 							</label>
 							<FontAwesomeIcon className="search-icon" icon={faSearch} />
 						</div>
-						{applicationList.length > 0 && (
-							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
-								{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
-							</button>
-						)}
-					</div>
-
-					<div>
-						<div className="field">
+						<div className="field select-field-wrapper">
 							<select onChange={handleViewChange} className={'field-input'}>
-								<option value="grid">Grid</option>
-								<option value="list">List</option>
+								<option value="grid">Grid View</option>
+								<option value="list">List View</option>
 							</select>
 							{/* <input
 								id="event_name"
@@ -989,8 +1067,10 @@ export default function index() {
 						</div>
 					</div>
 
+					
+
 					{viewMode === 'grid' ? (
-						<div className="child-body">
+						<div className="gridView">
 							{filteredApplicationList.map(app => {
 								return (
 									<div className="block">
@@ -1134,17 +1214,18 @@ export default function index() {
 							})}
 						</div>
 					) : (
-						<table id="groups">
+						<div className='listViewTableContainer'>
+						<table id="listView">
 							<tbody>
 								<tr>
 									<th>Name</th>
 									<th>Class</th>
-									{/* <th>Summary</th> */}
 									<th>Attendance Status</th>
-									<th>Other Hours</th>
+									<th>Total Volunteer Hours</th>
+									<th>Total Mentoring Hours</th>
 								</tr>
 
-								<tr>
+								{/* <tr>
 									<td></td>
 									<td></td>
 
@@ -1157,11 +1238,12 @@ export default function index() {
 											<div>Total Mentoring Hours</div>
 										</div>
 									</td>
-								</tr>
+								</tr> */}
 
 								{renderTableData()}
 							</tbody>
 						</table>
+						</div>
 					)}
 
 					{/* {applicationList.length > 0 && (

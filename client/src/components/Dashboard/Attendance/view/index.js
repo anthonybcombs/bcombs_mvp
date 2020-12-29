@@ -88,7 +88,7 @@ const AttendanceSummaryStyled = styled.div`
 	}
 
 	#attendance-table tbody tr:nth-child(2) {
-		background: rgb(242 110 33 / 20%);
+		background: rgb(128 128 128 / 20%);
 	}
 
 	#attendance-table th:not(:last-child),
