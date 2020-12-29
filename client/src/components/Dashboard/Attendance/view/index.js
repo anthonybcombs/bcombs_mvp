@@ -121,6 +121,17 @@ const AttendanceSummaryStyled = styled.div`
 		margin-left: 12px;
 	}
 
+	.exclude-icon{
+		background-color: black;
+		position:relative;
+		width: 3px;
+		height: 20px;
+		z-index: 99px;
+		top: -17px;
+		margin: 0 auto;
+		transform: rotateY(0deg) rotate(45deg);
+	}
+
 `;
 
 const DATE_FORMAT = 'yyyy-MM-dd';
@@ -178,7 +189,8 @@ export default function index(props) {
 							[attDate]: {
 								status: att.attendance_status,
 								mentoring_hours:att.mentoring_hours,
-								volunteer_hours:att.volunteer_hours
+								volunteer_hours:att.volunteer_hours,
+								is_excused:att.is_excused
 							},
 						},
 					},
@@ -197,9 +209,10 @@ export default function index(props) {
 		return attendanceDisplay.map((att, index) => {
 			const totalAttendance = Object.keys(att.attendance).length;
 			const totalPresent = Object.keys(att.attendance).filter(key => {
-				return att.attendance[key].status === 'Present';
+				return att.attendance[key].status === 'Present' ||  att.attendance[key].is_excused === 1;
 			}).length;
-
+		
+	
 			return (
 				<tr key={index}>
 					<td>
@@ -225,14 +238,22 @@ export default function index(props) {
 									{' '}
 									{(att.attendance[formattedDateKeys[0]] &&
 										att.attendance[formattedDateKeys[0]].status === 'Absent' && (
-											<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+											<div>
+														<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+														{att.attendance[formattedDateKeys[0]].is_excused  === 1 ? <div className="exclude-icon"></div> : <span/>}
+											</div>
+									
 										)) ||
 										''}
 								</div>
 								<div>
 									{' '}
 									{(att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].status === 'Tardy' && (
-										<div className="circle-icon" style={{ backgroundColor: 'yellow' }}></div>
+										<div>
+											<div className="circle-icon" style={{ backgroundColor: '#f26e21' }}></div>
+											{att.attendance[formattedDateKeys[0]].is_excused  === 1 ? <div className="exclude-icon"></div> : <span/>}
+										</div>
+									
 									)) ||
 										''}
 								</div>
@@ -251,14 +272,20 @@ export default function index(props) {
 									{' '}
 									{(att.attendance[formattedDateKeys[1]] &&
 										att.attendance[formattedDateKeys[1]].status === 'Absent' && (
-											<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+											<div>
+												<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+												{att.attendance[formattedDateKeys[1]].is_excused  === 1 ? <div className="exclude-icon"></div> : <span/>}
+										</div>
 										)) ||
 										''}
 								</div>
 								<div>
 									{' '}
 									{(att.attendance[formattedDateKeys[1]] && att.attendance[formattedDateKeys[1]].status === 'Tardy' && (
-										<div className="circle-icon" style={{ backgroundColor: 'yellow' }}></div>
+										<div>
+											<div className="circle-icon" style={{ backgroundColor: '#f26e21' }}></div>
+											{att.attendance[formattedDateKeys[1]].is_excused === 1 ? <div className="exclude-icon"></div> : <span/>}
+										</div>
 									)) ||
 										''}
 								</div>
@@ -277,14 +304,20 @@ export default function index(props) {
 									{' '}
 									{(att.attendance[formattedDateKeys[2]] &&
 										att.attendance[formattedDateKeys[2]].status === 'Absent' && (
+											<div>
 											<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+											{att.attendance[formattedDateKeys[2]].is_excused === 1 ? <div className="exclude-icon"></div> : <span/>}										
+											</div>
 										)) ||
 										''}
 								</div>
 								<div>
 									{' '}
 									{(att.attendance[formattedDateKeys[2]] && att.attendance[formattedDateKeys[2]].status === 'Tardy' && (
-										<div className="circle-icon" style={{ backgroundColor: 'yellow' }}></div>
+										<div>
+											<div className="circle-icon" style={{ backgroundColor: '#f26e21' }}></div>
+											{att.attendance[formattedDateKeys[2]].is_excused === 1 ? <div className="exclude-icon"></div> : <span/>}
+									</div>
 									)) ||
 										''}
 								</div>

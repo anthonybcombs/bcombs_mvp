@@ -486,14 +486,15 @@ export default function index() {
 
 	const onSubmit = e => {
 		reset();
+
 		const attendanceList = applicationList.map(app => {
 			return {
 				app_id: app.app_id,
 				attendance_status: app.attendance_status || '',
 				child_id: app.child.ch_id,
 				vendor: app.vendor,
-				volunteer_hours: parseInt(app.volunteer_hours),
-				mentoring_hours: parseInt(app.mentoring_hours),
+				volunteer_hours:app.volunteer_hours ?  parseInt(app.volunteer_hours) : 0,
+				mentoring_hours: app.mentoring_hours ?  parseInt(app.mentoring_hours) : 0,
 				is_excused: app.excused ? 1 : 0,
 			};
 		});
@@ -522,16 +523,17 @@ export default function index() {
 		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
+
 		if (excuseType === updatedApplication[currentIndex].attendance_status.toLowerCase()) {
 			updatedApplication[currentIndex] = {
 				...updatedApplication[currentIndex],
-				excused: updatedApplication[currentIndex].excused === excuseType ? null : excuseType,
+				excused: updatedApplication[currentIndex].excused === null ? excuseType : null,
 			};
 			updatedFilteredApplication[currentFilteredIndex] = {
 				...updatedFilteredApplication[currentFilteredIndex],
-				excused: updatedApplication[currentIndex].excused === excuseType ? null : excuseType,
+				excused: updatedFilteredApplication[currentIndex].excused === null ? excuseType : null,
 			};
-	
+
 			setApplicationList(updatedApplication);
 			setFilteredApplicationList(updatedFilteredApplication);
 		}
@@ -555,7 +557,6 @@ export default function index() {
 		}
 
 	}
-	console.log('applicationListttt', applicationList);
 
 	return (
 		<ClassListViewStyled>
@@ -769,7 +770,7 @@ export default function index() {
 														className="circle-icon"
 														style={{
 															...style.circleIcon,
-															backgroundColor: app.attendance_status === 'Tardy' ? 'yellow' : 'gray',
+															backgroundColor: app.attendance_status === 'Tardy' ? '#f26e21' : 'gray',
 														}}
 													/>
 													Tardy
