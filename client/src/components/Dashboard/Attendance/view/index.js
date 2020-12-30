@@ -25,6 +25,7 @@ const AttendanceSummaryStyled = styled.div`
 		padding: 1rem;
 		background-color: #fff;
 		box-shadow: 0 0 25px #eae9e9;
+		min-height: calc(100vh - 220px);
 	}
 	#attendance-summary .back-btn {
 		width: 50px;
@@ -358,16 +359,6 @@ const AttendanceSummaryStyled = styled.div`
 		}
 	}
 
-	// .exclude-icon {
-	// 	background-color: black;
-	// 	position: relative;
-	// 	width: 3px;
-	// 	height: 20px;
-	// 	z-index: 99px;
-	// 	top: -17px;
-	// 	margin: 0 auto;
-	// 	transform: rotateY(0deg) rotate(45deg);
-	// }
 `;
 
 const DATE_FORMAT = 'yyyy-MM-dd';

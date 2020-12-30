@@ -25,6 +25,7 @@ const AttendanceSummaryStyled = styled.div`
     padding: 1rem;
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
+    min-height: calc(100vh - 220px);
   }
 
   #groups {

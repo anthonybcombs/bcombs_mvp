@@ -34,6 +34,7 @@ const ClassListViewStyled = styled.div`
 		padding: 1rem;
 		background-color: #fff;
 		box-shadow: 0 0 25px #eae9e9;
+		min-height: calc(100vh - 220px);
 	}
 	#attendanceContainer .back-btn {
 		width: 50px;
@@ -422,13 +423,13 @@ const ClassListViewStyled = styled.div`
 	}
 
 	.exclude-icon {
+		position: absolute;
 		background-color: black;
-		position: relative;
 		width: 3px;
 		height: 20px;
 		z-index: 200;
-		top: -17px;
-		margin: 0 auto;
+		top: -2px;
+		margin-left: 48%;
 		transform: rotateY(0deg) rotate(45deg);
 	}
 `;
@@ -746,7 +747,7 @@ export default function index() {
 					<td style={{ width: '300px' }}>
 						<div className="attendance-status-container">
 							<div>
-								<div>
+								<div style={{ position: 'relative'}}>
 									<div
 										className="circle-icon"
 										onClick={() => {
@@ -757,7 +758,7 @@ export default function index() {
 								</div>
 							</div>
 							<div style={{ minHeight: 22 }}>
-								<div>
+								<div style={{ position: 'relative'}}>
 									<div
 										className="circle-icon"
 										onClick={() => {
@@ -784,7 +785,7 @@ export default function index() {
 								</div>
 							</div>
 							<div style={{ minHeight: 22 }}>
-								<div>
+								<div style={{ position: 'relative'}}>
 									<div
 										className="circle-icon"
 										onClick={() => {
