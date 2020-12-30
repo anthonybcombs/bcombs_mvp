@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "@reach/router";
+import { Link } from '@reach/router';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -46,7 +46,6 @@ const ClassListViewStyled = styled.div`
 	#attendanceContainer .back-btn svg {
 		padding-right: 5px;
 	}
-
 
 	.field {
 		padding: 5px !important;
@@ -226,7 +225,6 @@ const ClassListViewStyled = styled.div`
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 	}
-	
 
 	.search-field-container {
 		display: flex;
@@ -242,30 +240,30 @@ const ClassListViewStyled = styled.div`
 		right: 15px;
 		color: gray;
 	}
-	
+
 	.search-field-container .select-field-wrapper {
-    position: relative;
-  }
-  .search-field-container .select-field-wrapper:after {
-    content: "\f078";
-    position: absolute;
-    right: 0;
-    bottom: 18px;
-    font-size: 10px;
-    color: #555;
-    font-family: "fontawesome";
-  }
-  .search-field-container .select-field-wrapper label {
-    position: absolute;
-    top: -10px;
-    color: grey;
-    font-size: 12px;
-  }
-  .search-field-container .select-field-wrapper select {
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
+		position: relative;
 	}
-	
+	.search-field-container .select-field-wrapper:after {
+		content: '\f078';
+		position: absolute;
+		right: 0;
+		bottom: 18px;
+		font-size: 10px;
+		color: #555;
+		font-family: 'fontawesome';
+	}
+	.search-field-container .select-field-wrapper label {
+		position: absolute;
+		top: -10px;
+		color: grey;
+		font-size: 12px;
+	}
+	.search-field-container .select-field-wrapper select {
+		-webkit-appearance: none !important;
+		-moz-appearance: none !important;
+	}
+
 	.actionBtn button {
 		// width: 120px;
 		border: none;
@@ -727,24 +725,25 @@ export default function index() {
 	};
 
 	const renderTableData = () => {
-		console.log('Filtered Applicationnnnn', filteredApplicationList);
 		return filteredApplicationList.map((app, index) => {
-			// const totalAttendance = Object.keys(att.attendance).length;
-			// const totalPresent = Object.keys(att.attendance).filter(key => {
-			// 	return att.attendance[key].status === 'Present' ||  att.attendance[key].is_excused === 1;
-			// }).length;
-
 			return (
 				<tr key={index}>
 					<td>
 						<span>{app.child?.firstname + ' ' + app.child?.lastname}</span>
 					</td>
 					<td>{app.class_teacher}</td>
-					{/* <td>
-						{`${((totalPresent * 100) / totalAttendance).toFixed(2)}%`} ({totalPresent}/{totalAttendance})
-					</td> */}
-					{/* <td>{format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)}</td> */}
-					<td style={{ width: "300px" }}>
+					<td>
+						<span>{
+							app.is_following === 1 ? (
+								<div className="circle-icon" style={{ ...style.attendanceAction, backgroundColor: 'green' }}></div>
+							) : app.is_following === 2 ? (
+								<div className="circle-icon" style={{ ...style.attendanceAction, backgroundColor: '#f26e21' }}></div>
+							) : (
+								<span />
+							)
+						}</span>
+					</td>
+					<td style={{ width: '300px' }}>
 						<div className="attendance-status-container">
 							<div>
 								<div>
@@ -757,7 +756,7 @@ export default function index() {
 									{app.attendance_status === 'Present' ? <div className="exclude-icon"></div> : <span />}
 								</div>
 							</div>
-							<div style={{minHeight:22}}>
+							<div style={{ minHeight: 22 }}>
 								<div>
 									<div
 										className="circle-icon"
@@ -784,7 +783,7 @@ export default function index() {
 									</div>
 								</div>
 							</div>
-							<div style={{minHeight:22}}>
+							<div style={{ minHeight: 22 }}>
 								<div>
 									<div
 										className="circle-icon"
@@ -844,9 +843,9 @@ export default function index() {
 							</div>
 						</div>
 					</td> */}
-					
-					<td style={{ }}>
-						<div style={{ display: "flex", justifyContent: "center" }}>
+
+					<td style={{}}>
+						<div style={{ display: 'flex', justifyContent: 'center' }}>
 							<input
 								type="number"
 								onChange={e => {
@@ -860,9 +859,9 @@ export default function index() {
 							/>
 						</div>
 					</td>
-					
-					<td style={{ }}>
-						<div style={{ display: "flex", justifyContent: "center" }}>
+
+					<td style={{}}>
+						<div style={{ display: 'flex', justifyContent: 'center' }}>
 							<input
 								type="number"
 								onChange={e => {
@@ -876,7 +875,6 @@ export default function index() {
 							/>
 						</div>
 					</td>
-
 				</tr>
 			);
 		});
@@ -885,12 +883,9 @@ export default function index() {
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
-			<div id="attendanceContainer" style={{marginTop:12}}>
-				<Link to={"/dashboard/attendance"} className='back-btn'>
-					<FontAwesomeIcon
-						className='back-icon'
-						icon={faAngleLeft}
-					/>	
+			<div id="attendanceContainer" style={{ marginTop: 12 }}>
+				<Link to={'/dashboard/attendance'} className="back-btn">
+					<FontAwesomeIcon className="back-icon" icon={faAngleLeft} />
 					Back
 				</Link>
 				<form onSubmit={handleSubmit(onSubmit)}>
@@ -1022,9 +1017,8 @@ export default function index() {
 								<span className="required">*</span> Location
 							</label>
 						</div>
-						
 					</div>
-					
+
 					<div className="field actionBtn">
 						{applicationList.length > 0 && (
 							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
@@ -1032,7 +1026,6 @@ export default function index() {
 							</button>
 						)}
 					</div>
-
 
 					<div className="search-field-container">
 						<div className="field">
@@ -1066,8 +1059,6 @@ export default function index() {
 							</label> */}
 						</div>
 					</div>
-
-					
 
 					{viewMode === 'grid' ? (
 						<div className="gridView">
@@ -1214,43 +1205,23 @@ export default function index() {
 							})}
 						</div>
 					) : (
-						<div className='listViewTableContainer'>
-						<table id="listView">
-							<tbody>
-								<tr>
-									<th>Name</th>
-									<th>Class</th>
-									<th>Attendance Status</th>
-									<th>Total Volunteer Hours</th>
-									<th>Total Mentoring Hours</th>
-								</tr>
+						<div className="listViewTableContainer">
+							<table id="listView">
+								<tbody>
+									<tr>
+										<th>Name</th>
+										<th>Class</th>
+										<th>Calendar Invite</th>
+										<th>Attendance Status</th>
+										<th>Total Volunteer Hours</th>
+										<th>Total Mentoring Hours</th>
+									</tr>
 
-								{/* <tr>
-									<td></td>
-									<td></td>
-
-									<td>
-										<div className="attendance-status-container"></div>
-									</td>
-									<td>
-										<div className="attendance-hours-container">
-											<div>Total Volunteer Hours</div>
-											<div>Total Mentoring Hours</div>
-										</div>
-									</td>
-								</tr> */}
-
-								{renderTableData()}
-							</tbody>
-						</table>
+									{renderTableData()}
+								</tbody>
+							</table>
 						</div>
 					)}
-
-					{/* {applicationList.length > 0 && (
-						<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
-							{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
-						</button>
-					)} */}
 				</form>
 			</div>
 		</ClassListViewStyled>
