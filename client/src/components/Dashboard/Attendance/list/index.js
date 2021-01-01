@@ -527,13 +527,15 @@ export default function index() {
 	const [filteredApplicationList, setFilteredApplicationList] = useState([]);
 	const [viewMode, setViewMode] = useState('grid');
 	const dispatch = useDispatch();
-
+	console.log("applicationszzzz", applications)
+	console.log("applicationszzzz attendance", attendance)
 	useEffect(() => {
-		if (auth.user_id) {
+	
+		if (name && vendor_id && auth.user_id) {
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		}
-	}, []);
+	}, [name,vendor_id]);
 
 	useEffect(() => {
 		if (vendors && vendors.length > 0) {
@@ -548,29 +550,18 @@ export default function index() {
 		}
 	}, [vendors]);
 
+
+
 	useEffect(() => {
+
 		if (appGroupId !== '') {
 			dispatch(requestAttendance(appGroupId));
 		}
-	}, [appGroupId]);
 
-	useEffect(() => {
-		if (applications && applications.activeapplications.length > 0) {
-			let currentAppGroupId = '';
-
-			if (groups && groups.application_groups && groups.application_groups.length > 0) {
-				const applicationGroups = groups.application_groups;
-
-				for (const group of applicationGroups) {
-					if (group.name === name) {
-						currentAppGroupId = group.app_grp_id;
-						break;
-					}
-				}
-			}
-
+		if (applications && applications.activeapplications.length > 0 && appGroupId !== '') {
+	
 			let filterApplications = applications.activeapplications.filter(application => {
-				return application && application.class_teacher == currentAppGroupId;
+				return application && application.class_teacher == appGroupId;
 			});
 
 			filterApplications = filterApplications.map(item => {
@@ -578,13 +569,30 @@ export default function index() {
 				item.class_teacher = name;
 				return item;
 			});
-
 			setApplicationList(filterApplications);
-			setAppGroupId(currentAppGroupId);
+
 		}
-	}, [applications]);
+	}, [applications,appGroupId]);
+
 
 	useEffect(() => {
+		let currentAppGroupId = '';
+
+		if (groups && groups.application_groups && groups.application_groups.length > 0) {
+			const applicationGroups = groups.application_groups;
+			for (const group of applicationGroups) {
+				if (group.name.trim() === name.trim()) {
+					currentAppGroupId = group.app_grp_id;
+					break;
+				}
+			}
+
+			setAppGroupId(currentAppGroupId);
+		}
+	},[groups])
+
+	useEffect(() => {
+		console.log('UseEffect Attendance', attendance.list)
 		if (attendance.list) {
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(att => att.child_id === application.child.ch_id);
@@ -724,7 +732,7 @@ export default function index() {
 		console.log('Handle View Change Value', e.target.value);
 		setViewMode(e.target.value);
 	};
-
+	console.log('filteredApplicationList',filteredApplicationList)
 	const renderTableData = () => {
 		return filteredApplicationList.map((app, index) => {
 			return (
@@ -1194,9 +1202,9 @@ export default function index() {
 											</div>
 
 											<div className="attendance-invitation">
-												{app.is_following && (
+												{ (
 													<div className="calendar-invite">
-														Calendar Invite: <span>{`${app.is_following === 1 ? 'Accepted' : 'Declined'}`}</span>
+														Calendar Invite: <span>{`${app.is_following !== null ? app.is_following === 1 ?'Accepted' : 'Declined' : 'Pending'}`}</span>
 													</div>
 												)}
 											</div>

@@ -8,6 +8,46 @@ export const getChildAttendance = async applicationGroupId => {
   try{
 
     result = await db.query(`
+    SELECT BIN_TO_UUID(att.app_group_id) as app_group_id,
+      BIN_TO_UUID(att.child_id) as child_id,
+      BIN_TO_UUID(usr.id) as user_id,
+      att.attendance_date,
+      att.attendance_start_time,
+      att.attendance_end_time,
+      att.attendance_status,
+      att.mentoring_hours,
+      att.volunteer_hours,
+      att.event_name,
+      att.location,
+      att.is_excused,
+      ch.firstname,
+      ch.lastname,
+      ch.gender,
+      vag.name as app_group_name,
+      ucf.is_following
+    FROM  attendance att
+    INNER JOIN child ch 
+    ON ch.ch_id=att.child_id
+    INNER JOIN application app
+    ON app.child=ch.ch_id
+    INNER JOIN vendor_app_groups vag
+    ON vag.app_grp_id=att.app_group_id AND
+       vag.vendor=app.vendor
+    INNER JOIN parent pr
+    ON pr.application=app.app_id
+    INNER JOIN users usr
+    ON usr.email=pr.email_address
+    LEFT JOIN user_calendars_groups ucg
+    ON ucg.group_id=att.app_group_id AND
+       ucg.group_type='applications'
+    LEFT JOIN user_calendars_follow ucf
+    ON ucf.user_id=usr.id AND
+       ucf.group_id=att.app_group_id
+    WHERE att.app_group_id=UUID_TO_BIN(?) 
+      `,
+    [applicationGroupId]);
+
+    /*
     SELECT BIN_TO_UUID(attendance.app_group_id) as app_group_id,
       BIN_TO_UUID(attendance.child_id) as child_id,
       attendance.attendance_date,
@@ -43,38 +83,6 @@ export const getChildAttendance = async applicationGroupId => {
         ) AND 
         user_calendars_groups.group_id=attendance.app_group_id AND 
         user_calendars_groups.group_type= 'applications';
-      `,
-    [applicationGroupId]);
-
-    /*
-
-    SELECT BIN_TO_UUID(attendance.app_group_id) as app_group_id,
-      BIN_TO_UUID(attendance.child_id) as child_id,
-      attendance.attendance_date,
-      attendance.attendance_start_time,
-      attendance.attendance_end_time,
-      attendance.attendance_status,
-      attendance.mentoring_hours,
-      attendance.volunteer_hours,
-      attendance.event_name,
-      attendance.location,
-      attendance.is_excused,
-      child.firstname,
-      child.lastname,
-      child.gender,
-      vendor_app_groups.name as app_group_name,
-      user_calendars_follow.is_following
-    FROM application,attendance,child, vendor_app_groups, 
-    user_calendars_follow,parent, users, user_calendars_groups
-    WHERE attendance.app_group_id=UUID_TO_BIN('a4f0bbef-44f2-11eb-8212-dafd2d0ae3ff') AND child.ch_id=attendance.child_id AND
-           vendor_app_groups.app_grp_id=attendance.app_group_id AND
-           user_calendars_follow.group_id=attendance.app_group_id AND
-           parent.application=application.app_id AND
-           parent.email_address=users.email AND
-           users.id=user_calendars_follow.user_id AND
-           user_calendars_groups.group_id=attendance.app_group_id AND
-           user_calendars_groups.group_type= 'applications'
-
            */
 
     console.log('Get Child Attendance result',result)

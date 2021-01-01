@@ -4,10 +4,16 @@ import * as actionType from "../actions/Constant";
 const initialState = {
   list: [],
   isAttendanceUpdateSuccess:false,
-  isAttendanceUpdateLoading: false
+  isAttendanceUpdateLoading: false,
+  isLoading:false
 }
 export default function Attendance(state = initialState, action) {
   switch (action.type) {
+    case actionType.REQUEST_ATTENDANCE:
+      return {
+        ...state,
+        isLoading:true
+      }
     case actionType.REQUEST_UPDATE_ATTENDANCE:
       return {
         ...state,
@@ -17,13 +23,15 @@ export default function Attendance(state = initialState, action) {
     case actionType.SET_ATTENDANCE_LIST:
         return {
           ...state,
-          list: [...action.data]
+          list: [...action.data],
+          isLoading:false
       }
     case actionType.REQUEST_UPDATE_ATTENDANCE_SUCCESS:
         return {
           ...state,
           isAttendanceUpdateSuccess:true,
-          isAttendanceUpdateSuccess:false 
+          isAttendanceUpdateSuccess:false ,
+          isLoading:false
         }
     default:
       return state;

@@ -88,8 +88,8 @@ export function* updateAttendance({ data }) {
 
 export function* getAttendance({ applicationGroupId }) {
   try {
-    console.log('Get ATtendance ',applicationGroupId )
     const response = yield call(getAttendanceToDatabase, applicationGroupId);
+    console.log('getAttendanceeeee ',response )
     if(response) {
       yield put(setAttendanceList(response));
     }

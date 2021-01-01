@@ -391,12 +391,13 @@ export default function index(props) {
 	}, []);
 
 	useEffect(() => {
-		if (app_group_id) {
+		if (app_group_id && !attendance.isLoading) {
 			dispatch(requestAttendance(app_group_id));
 		}
 	}, []);
 
 	useEffect(() => {
+		console.log('Attendance Listttt', attendance)
 		if (attendance.list) {
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
@@ -429,8 +430,9 @@ export default function index(props) {
 			setDefaultAttendanceDisplay(currentAttendance);
 		}
 	}, [attendance.list]);
-
+	console.log('Render Table Data Attendance', attendance)
 	const renderTableData = () => {
+		console.log('Render Table Data', attendanceDisplay)
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
 		return attendanceDisplay.map((att, index) => {
 			const totalAttendance = Object.keys(att.attendance).length;
