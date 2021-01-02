@@ -527,8 +527,7 @@ export default function index() {
 	const [filteredApplicationList, setFilteredApplicationList] = useState([]);
 	const [viewMode, setViewMode] = useState('grid');
 	const dispatch = useDispatch();
-	console.log("applicationszzzz", applications)
-	console.log("applicationszzzz attendance", attendance)
+
 	useEffect(() => {
 	
 		if (name && vendor_id && auth.user_id) {
@@ -592,7 +591,7 @@ export default function index() {
 	},[groups])
 
 	useEffect(() => {
-		console.log('UseEffect Attendance', attendance.list)
+
 		if (attendance.list) {
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(att => att.child_id === application.child.ch_id);
@@ -635,13 +634,12 @@ export default function index() {
 	};
 
 	const handleHours = (payload, hours, type = 'volunteer_hours') => {
-		console.log('Handl');
+
 		let updatedApplication = [...(applicationList || [])];
 		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
-		console.log('Handle Hours', hours);
-		console.log('Handle Hours Type', type);
+
 		updatedApplication[currentIndex] = {
 			...updatedApplication[currentIndex],
 			[type]: hours,
@@ -650,8 +648,7 @@ export default function index() {
 			...updatedFilteredApplication[currentFilteredIndex],
 			[type]: hours,
 		};
-		console.log('Handle Hours updatedApplication 11', updatedApplication[currentIndex]);
-		console.log('Handle Hours updatedApplication 22', updatedFilteredApplication[currentFilteredIndex]);
+
 		setApplicationList(updatedApplication);
 		setFilteredApplicationList(updatedFilteredApplication);
 	};
@@ -729,10 +726,10 @@ export default function index() {
 	};
 
 	const handleViewChange = e => {
-		console.log('Handle View Change Value', e.target.value);
+
 		setViewMode(e.target.value);
 	};
-	console.log('filteredApplicationList',filteredApplicationList)
+
 	const renderTableData = () => {
 		return filteredApplicationList.map((app, index) => {
 			return (
@@ -761,8 +758,8 @@ export default function index() {
 										onClick={() => {
 											handleAttendance(app, 'Present');
 										}}
-										style={{ ...style.attendanceAction, backgroundColor: 'green' }}></div>
-									{app.attendance_status === 'Present' ? <div className="exclude-icon"></div> : <span />}
+										style={{ ...style.attendanceAction, backgroundColor: app.attendance_status === 'Present' ?  'green' : 'gray' }}></div>
+									{/* {app.attendance_status === 'Present' ? <div className="exclude-icon"></div> : <span />} */}
 								</div>
 							</div>
 							<div style={{ minHeight: 22 }}>
@@ -772,8 +769,9 @@ export default function index() {
 										onClick={() => {
 											handleAttendance(app, 'Absent');
 										}}
-										style={{ ...style.attendanceAction, backgroundColor: 'red' }}></div>
-									{app.attendance_status === 'Absent' ? <div className="exclude-icon"></div> : <span />}
+										
+										style={{ ...style.attendanceAction, backgroundColor: app.attendance_status === 'Absent' ?  'red' : 'gray'}}></div>
+									{/* {app.attendance_status === 'Absent' ? <div className="exclude-icon"></div> : <span />} */}
 								</div>
 								<div>
 									<div
@@ -799,8 +797,8 @@ export default function index() {
 										onClick={() => {
 											handleAttendance(app, 'Tardy');
 										}}
-										style={{ ...style.attendanceAction, backgroundColor: '#f26e21' }}></div>
-									{app.attendance_status === 'Tardy' ? <div className="exclude-icon"></div> : <span />}
+										style={{ ...style.attendanceAction, backgroundColor: app.attendance_status === 'Tardy' ?  '#f26e21' : 'gray'}}></div>
+									{/* {app.attendance_status === 'Tardy' ? <div className="exclude-icon"></div> : <span />} */}
 								</div>
 
 								<div>

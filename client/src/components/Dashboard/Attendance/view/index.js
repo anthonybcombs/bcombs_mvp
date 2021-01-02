@@ -366,6 +366,16 @@ const DATE_KEY_FORMAT = 'yyyy_MM_dd';
 
 const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];
 
+const AttendanceIcon = ({color = 'gray'}) => {
+		return <div className="circle-icon" style={{backgroundColor:color}}/>
+}
+
+const attendanceColor = {
+	present:'green',
+	absent:'red',
+	tardy:'#f26e21'
+}
+
 export default function index(props) {
 	const dispatch = useDispatch();
 	const { attendance, applications, groups, auth, vendors, loading } = useSelector(
@@ -397,7 +407,6 @@ export default function index(props) {
 	}, []);
 
 	useEffect(() => {
-		console.log('Attendance Listttt', attendance)
 		if (attendance.list) {
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
@@ -430,9 +439,8 @@ export default function index(props) {
 			setDefaultAttendanceDisplay(currentAttendance);
 		}
 	}, [attendance.list]);
-	console.log('Render Table Data Attendance', attendance)
+
 	const renderTableData = () => {
-		console.log('Render Table Data', attendanceDisplay)
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
 		return attendanceDisplay.map((att, index) => {
 			const totalAttendance = Object.keys(att.attendance).length;
@@ -462,17 +470,27 @@ export default function index(props) {
 											<div>
 												{' '}
 												{(att.attendance[formattedDateKeys[0]] &&
-													att.attendance[formattedDateKeys[0]].status === 'Present' && (
-														<div className="circle-icon" style={{ backgroundColor: 'green' }}></div>
+													att.attendance[formattedDateKeys[0]].status !== null && (
+														<div>
+														<AttendanceIcon color={attendanceColor[	att.attendance[formattedDateKeys[0]].status.toLowerCase()]}/>
+													
+															{(att.attendance[formattedDateKeys[0]].status === 'Absent' || 
+																att.attendance[formattedDateKeys[0]].status === 'Tardy') && 
+																att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
+																<div className="exclude-icon"></div>
+															) : (
+																<span />
+															)}
+														</div>
 													)) ||
-													''}
+													<AttendanceIcon />	}
 											</div>
-											<div>
+											{/* <div>
 												{' '}
 												{(att.attendance[formattedDateKeys[0]] &&
 													att.attendance[formattedDateKeys[0]].status === 'Absent' && (
 														<div>
-															<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
+															<AttendanceIcon color="red"/>
 															{att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
 																<div className="exclude-icon"></div>
 															) : (
@@ -486,7 +504,7 @@ export default function index(props) {
 												{' '}
 												{(att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].status === 'Tardy' && (
 													<div>
-														<div className="circle-icon" style={{ backgroundColor: '#f26e21' }}></div>
+															<AttendanceIcon color="#f26e21"/>
 														{att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
 															<div className="exclude-icon"></div>
 														) : (
@@ -495,87 +513,43 @@ export default function index(props) {
 													</div>
 												)) ||
 													''}
-											</div>
+											</div> */}
 										</div>
 
 										<div>
-											<div>
-												{' '}
-												{(att.attendance[formattedDateKeys[1]] &&
-													att.attendance[formattedDateKeys[1]].status === 'Present' && (
-														<div className="circle-icon" style={{ backgroundColor: 'green' }}></div>
-													)) ||
-													''}
-											</div>
-											<div>
-												{' '}
-												{(att.attendance[formattedDateKeys[1]] &&
-													att.attendance[formattedDateKeys[1]].status === 'Absent' && (
+										{(att.attendance[formattedDateKeys[1]] &&
+													att.attendance[formattedDateKeys[1]].status !== null && (
 														<div>
-															<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
-															{att.attendance[formattedDateKeys[1]].is_excused === 1 ? (
+														<AttendanceIcon color={attendanceColor[att.attendance[formattedDateKeys[1]].status.toLowerCase()]}/>
+													
+															{(att.attendance[formattedDateKeys[1]].status === 'Absent' || 
+																att.attendance[formattedDateKeys[1]].status === 'Tardy') && 
+																att.attendance[formattedDateKeys[1]].is_excused === 1 ? (
 																<div className="exclude-icon"></div>
 															) : (
 																<span />
 															)}
 														</div>
 													)) ||
-													''}
-											</div>
-											<div>
-												{' '}
-												{(att.attendance[formattedDateKeys[1]] && att.attendance[formattedDateKeys[1]].status === 'Tardy' && (
-													<div>
-														<div className="circle-icon" style={{ backgroundColor: '#f26e21' }}></div>
-														{att.attendance[formattedDateKeys[1]].is_excused === 1 ? (
-															<div className="exclude-icon"></div>
-														) : (
-															<span />
-														)}
-													</div>
-												)) ||
-													''}
-											</div>
+													<AttendanceIcon />	}
 										</div>
 
 										<div>
-											<div>
-												{' '}
-												{(att.attendance[formattedDateKeys[2]] &&
-													att.attendance[formattedDateKeys[2]].status === 'Present' && (
-														<div className="circle-icon" style={{ backgroundColor: 'green' }}></div>
-													)) ||
-													''}
-											</div>
-											<div>
-												{' '}
-												{(att.attendance[formattedDateKeys[2]] &&
-													att.attendance[formattedDateKeys[2]].status === 'Absent' && (
+											{(att.attendance[formattedDateKeys[2]] &&
+													att.attendance[formattedDateKeys[2]].status !== null && (
 														<div>
-															<div className="circle-icon" style={{ backgroundColor: 'red' }}></div>
-															{att.attendance[formattedDateKeys[2]].is_excused === 1 ? (
+														<AttendanceIcon color={attendanceColor[	att.attendance[formattedDateKeys[2]].status.toLowerCase()]}/>
+													
+															{(att.attendance[formattedDateKeys[2]].status === 'Absent' || 
+																att.attendance[formattedDateKeys[2]].status === 'Tardy') && 
+																att.attendance[formattedDateKeys[2]].is_excused === 1 ? (
 																<div className="exclude-icon"></div>
 															) : (
 																<span />
 															)}
 														</div>
 													)) ||
-													''}
-											</div>
-											<div>
-												{' '}
-												{(att.attendance[formattedDateKeys[2]] && att.attendance[formattedDateKeys[2]].status === 'Tardy' && (
-													<div>
-														<div className="circle-icon" style={{ backgroundColor: '#f26e21' }}></div>
-														{att.attendance[formattedDateKeys[2]].is_excused === 1 ? (
-															<div className="exclude-icon"></div>
-														) : (
-															<span />
-														)}
-													</div>
-												)) ||
-													''}
-											</div>
+													<AttendanceIcon />	}
 										</div>
 									</div>
 								</td>
