@@ -416,6 +416,7 @@ export default function index(props) {
 					...accum,
 					[att.child_id]: {
 						...att,
+						fullname: `${att.firstname} ${att.lastname}`,
 						total_volunteer_hours:
 							((accum[att.child_id] && accum[att.child_id].total_volunteer_hours) || 0) + att.volunteer_hours || 0,
 						total_mentoring_hours:
@@ -584,9 +585,10 @@ export default function index(props) {
 			setAttendanceDisplay(defaultAttendanceDisplay);
 		} else {
 			let lowerCaseValue = value.toLowerCase();
+			console.log('defaultAttendanceDisplay',defaultAttendanceDisplay)
+			console.log('defaultAttendanceDisplay lowerCaseValue',lowerCaseValue)
 			const list = defaultAttendanceDisplay.filter(
-				item =>
-					item.lastname.toLowerCase().includes(lowerCaseValue) || item.firstname.toLowerCase().includes(lowerCaseValue)
+				item => item.fullname && item.fullname.toLowerCase().includes(lowerCaseValue)
 			);
 			setAttendanceDisplay(list);
 		}
