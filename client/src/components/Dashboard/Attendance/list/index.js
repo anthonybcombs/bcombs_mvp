@@ -585,8 +585,8 @@ export default function index() {
 	useEffect(() => {
 		let currentAppGroupId = '';
 
-		if (groups && groups.application_groups && groups.application_groups.length > 0) {
-			const applicationGroups = groups.application_groups;
+		if (vendors && vendors[0] && vendors[0].app_groups.length > 0) {
+			const applicationGroups = vendors[0].app_groups;
 			for (const group of applicationGroups) {
 				if (group.name.trim() === name.trim()) {
 					currentAppGroupId = group.app_grp_id;
@@ -596,7 +596,7 @@ export default function index() {
 
 			setAppGroupId(currentAppGroupId);
 		}
-	},[groups])
+	},[vendors])
 
 	useEffect(() => {
 
