@@ -528,6 +528,14 @@ export default function index() {
 	const [viewMode, setViewMode] = useState('grid');
 	const dispatch = useDispatch();
 
+	console.log('Attendance List attendance',attendance)
+	console.log('Attendance List auth',auth)
+	console.log('Attendance List vendors',vendors)
+	console.log('Attendance List groups',groups)
+	console.log('Attendance List applications',applications)
+	console.log('Attendance List filteredApplicationList',filteredApplicationList)
+	console.log('Attendance List appGroupId',appGroupId)
+	
 	useEffect(() => {
 	
 		if (name && vendor_id && auth.user_id) {
