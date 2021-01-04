@@ -555,6 +555,24 @@ export default function index() {
 			}
 			dispatch(requestGetApplications(vendorId));
 		}
+
+		let currentAppGroupId = '';
+		console.log('Use Effect Vendors', vendors)
+		if (vendors && vendors[0] && vendors[0].app_groups.length > 0) {
+			const applicationGroups = vendors[0].app_groups;
+			console.log('Use Effect Vendors applicationGroups', applicationGroups)
+			console.log('Use Effect Vendors name', name)
+			for (const group of applicationGroups) {
+				if (group.name.trim() === name.trim()) {
+					console.log('Use Effect Vendors current group', group)
+					currentAppGroupId = group.app_grp_id;
+					break;
+				}
+			}
+
+			console.log('Use Effect Vendors currentAppGroupId', currentAppGroupId)
+			setAppGroupId(currentAppGroupId);
+		}
 	}, [vendors]);
 
 
@@ -582,21 +600,7 @@ export default function index() {
 	}, [applications,appGroupId]);
 
 
-	useEffect(() => {
-		let currentAppGroupId = '';
 
-		if (vendors && vendors[0] && vendors[0].app_groups.length > 0) {
-			const applicationGroups = vendors[0].app_groups;
-			for (const group of applicationGroups) {
-				if (group.name.trim() === name.trim()) {
-					currentAppGroupId = group.app_grp_id;
-					break;
-				}
-			}
-
-			setAppGroupId(currentAppGroupId);
-		}
-	},[vendors])
 
 	useEffect(() => {
 
