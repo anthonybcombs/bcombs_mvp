@@ -169,7 +169,7 @@ export default function index(props) {
 
     return totalClassCount;
   }
-
+  console.log('applications getTotalClassCount',applications)
   return (
     <AttendanceSummaryStyled>
       <h2>Attendance</h2>

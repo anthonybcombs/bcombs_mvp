@@ -679,6 +679,7 @@ const inputs = `
         attendance_list: [AttendanceChildInput]
         event_name: String
         location: String
+        description: String
     }
 `;
 const queryTypes = `
@@ -1301,6 +1302,7 @@ const queryTypes = `
         attendance_end_time: String
         attendance_list: [AttendanceChild]
         event_name: String
+        description: String
         location: String
         
     }
@@ -1312,6 +1314,7 @@ const queryTypes = `
         attendance_end_time: String
         event_name: String
         location: String
+        description: String
         firstname: String
         lastname: String
         attendance_status: String   

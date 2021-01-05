@@ -19,6 +19,7 @@ export const getChildAttendance = async applicationGroupId => {
       att.volunteer_hours,
       att.event_name,
       att.location,
+      att.description,
       att.is_excused,
       ch.firstname,
       ch.lastname,
@@ -123,10 +124,12 @@ export const updateChildAttendance = async (attendance) => {
                 volunteer_hours,
                 mentoring_hours,
                 event_name,
-                location
+                location,
+                description
               ) VALUES (
                 UUID_TO_BIN(?),
                 UUID_TO_BIN(?),
+                ?,
                 ?,
                 ?,
                 ?,
@@ -149,7 +152,8 @@ export const updateChildAttendance = async (attendance) => {
               att.volunteer_hours || 0,
               att.mentoring_hours || 0,
               attendance.event_name,
-              attendance.location
+              attendance.location,
+              attendance.description
             ]
           );
         }
@@ -162,6 +166,7 @@ export const updateChildAttendance = async (attendance) => {
               attendance_end_time=?,
               event_name=?,
               location=?,
+              description=?,
               volunteer_hours=?,
               mentoring_hours=?,
               is_excused=?
@@ -175,6 +180,7 @@ export const updateChildAttendance = async (attendance) => {
             attendance.attendance_end_time,
             attendance.event_name,
             attendance.location,
+            attendance.description || '',
             att.volunteer_hours || 0,
             att.mentoring_hours || 0,
             att.is_excused || 0,

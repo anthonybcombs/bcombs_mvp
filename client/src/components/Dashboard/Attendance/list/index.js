@@ -423,13 +423,13 @@ const ClassListViewStyled = styled.div`
 	}
 
 	.exclude-icon {
-		position: absolute;
+		position:relative;
 		background-color: black;
-		width: 3px;
-		height: 20px;
+		width: 1.5px;
+		height: 14px;
 		z-index: 200;
-		top: -2px;
-		margin-left: 48%;
+		top: 0px;
+		left: -9px;
 		transform: rotateY(0deg) rotate(45deg);
 	}
 `;
@@ -757,7 +757,7 @@ export default function index() {
 							) : app.is_following === 2 ? (
 								<div className="circle-icon" style={{ ...style.attendanceAction, backgroundColor: '#f26e21' }}></div>
 							) : (
-								<span />
+								"Blank"
 							)
 						}</span>
 					</td>
@@ -784,6 +784,7 @@ export default function index() {
 										
 										style={{ ...style.attendanceAction, backgroundColor: app.attendance_status === 'Absent' ?  'red' : 'gray'}}></div>
 									{/* {app.attendance_status === 'Absent' ? <div className="exclude-icon"></div> : <span />} */}
+								
 								</div>
 								<div>
 									<div
@@ -795,10 +796,11 @@ export default function index() {
 											className="circle-icon"
 											style={{
 												...style.miniCircleIcon,
-												backgroundColor: app.excused === 'absent' ? 'green' : 'gray',
+												backgroundColor: app.excused === 'absent' ? 'red' : 'gray',
 											}}
 										/>
-										Excused
+											{app.excused === 'absent' ? <div className="exclude-icon"></div> : <span />} 
+										{'    '}Excused
 									</div>
 								</div>
 							</div>
@@ -810,7 +812,7 @@ export default function index() {
 											handleAttendance(app, 'Tardy');
 										}}
 										style={{ ...style.attendanceAction, backgroundColor: app.attendance_status === 'Tardy' ?  '#f26e21' : 'gray'}}></div>
-									{/* {app.attendance_status === 'Tardy' ? <div className="exclude-icon"></div> : <span />} */}
+							
 								</div>
 
 								<div>
@@ -823,10 +825,12 @@ export default function index() {
 											className="circle-icon"
 											style={{
 												...style.miniCircleIcon,
-												backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',
+												backgroundColor: app.excused === 'tardy' ? '#f26e21' : 'gray',
 											}}
-										/>
-										Excused
+										/>		 
+										{app.excused === 'tardy' ? <div className="exclude-icon"></div> : <span />}
+										{'    '}Excused 
+										{'  '}
 									</div>
 								</div>
 							</div>
@@ -1039,11 +1043,19 @@ export default function index() {
 					</div>
 
 					<div className="field actionBtn">
-						{applicationList.length > 0 && (
-							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
-								{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
-							</button>
-						)}
+		
+							<div className="field">
+								<input
+									id="description"
+									name={'description'}
+									className={'field-input'}
+									placeholder="Description"
+									onChange={handleAttedanceDetailChange}
+							/>
+							<label className="field-label" for={`description`}>
+								Description
+							</label>
+						</div>
 					</div>
 
 					<div className="search-field-container">
@@ -1138,10 +1150,11 @@ export default function index() {
 															className="circle-icon"
 															style={{
 																...style.miniCircleIcon,
-																backgroundColor: app.excused === 'absent' ? 'green' : 'gray',
+																backgroundColor: app.excused === 'absent' ? 'red' : 'gray',
 															}}
 														/>
-														Excused
+														{app.excused === 'absent' ? <div className="exclude-icon"></div> : <span />}
+														{'    '}Excused {'  '}
 													</div>
 												</div>
 
@@ -1170,10 +1183,11 @@ export default function index() {
 															className="circle-icon"
 															style={{
 																...style.miniCircleIcon,
-																backgroundColor: app.excused === 'tardy' ? 'green' : 'gray',
+																backgroundColor: app.excused === 'tardy' ? '#f26e21' : 'gray',
 															}}
 														/>
-														Excused
+														{app.excused === 'tardy' ? <div className="exclude-icon"></div> : <span />}
+														{'    '}Excused {'  '}
 													</div>
 												</div>
 											</div>
@@ -1241,6 +1255,15 @@ export default function index() {
 							</table>
 						</div>
 					)}
+					<div className="field actionBtn">
+ 						{applicationList.length > 0 && (
+							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
+								{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
+							</button>
+						)} 
+					</div>
+								
+
 				</form>
 			</div>
 		</ClassListViewStyled>
