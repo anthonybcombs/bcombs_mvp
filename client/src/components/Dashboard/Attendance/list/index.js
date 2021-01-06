@@ -302,7 +302,7 @@ const ClassListViewStyled = styled.div`
 		margin-top: 3rem;
 		display: grid;
 		grid-gap: 18px;
-		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 	}
 
 	.gridView .block {
@@ -316,7 +316,7 @@ const ClassListViewStyled = styled.div`
 		padding: 1rem;
 	}
 	.gridView .block .extra_activitybox .img-container img {
-		max-width: 120px;
+		max-width: 92px;
 		width: 100%;
 	}
 	.gridView .block .extra_activitybox .attendance-name {
@@ -350,10 +350,13 @@ const ClassListViewStyled = styled.div`
 		border-bottom: 1px solid #ddd;
 	}
 	.gridView .block .extra_activitybox .attendance-hours .field {
-		padding: 0 1rem;
+		padding: 0 .5rem;
 	}
 	.gridView .block .extra_activitybox .attendance-hours .field > input {
 		text-align: center;
+	}
+	.gridView .block .extra_activitybox .attendance-hours .field > label {
+		font-size: 12px;
 	}
 
 	.gridView .block .extra_activitybox .attendance-invitation {
@@ -377,7 +380,6 @@ const ClassListViewStyled = styled.div`
 		border-collapse: collapse;
 		width: 100%;
 		border: 0;
-		// margin-top: 3rem;
 	}
 
 	#listView td,
@@ -402,6 +404,12 @@ const ClassListViewStyled = styled.div`
 		background-color: #f26e21;
 	}
 
+	#listView td .name,
+	#listView td .class {
+		min-width: 100px;
+
+	}
+
 	#listView a {
 		color: #3e89fe;
 		text-decoration: none;
@@ -413,7 +421,8 @@ const ClassListViewStyled = styled.div`
 		display: flex;
 	}
 	.attendance-status-container > div {
-		width: 33.33%;
+		width: 100%;
+    min-width: 100px;
 	}
 
 	.attendance-hours-container > div {
@@ -767,13 +776,13 @@ export default function index() {
 			return (
 				<tr key={index}>
 					<td>
-						<span>{app.child?.firstname + ' ' + app.child?.lastname}</span>
+						<div className='name'>{app.child?.firstname + ' ' + app.child?.lastname}</div>
 					</td>
-					<td>{app.class_teacher}</td>
+					<td><div className='class'>{app.class_teacher}</div></td>
 					<td>
 						<span>{
 							app.is_following === 1 ? (
-								<div className="circle-icon" style={{ ...style.attendanceAction, backgroundColor: 'green' }}></div>
+								<div className="circle-icon" style={{ ...style.attendanceAction, backgroundColor: '#14e414' }}></div>
 							) : app.is_following === 2 ? (
 								<div className="circle-icon" style={{ ...style.attendanceAction, backgroundColor: '#f26e21' }}></div>
 							) : (
@@ -793,7 +802,7 @@ export default function index() {
 											handleAttendance(app, 'Present');
 										}}
 										style={{ ...style.attendanceAction, 
-										backgroundColor: app.attendance_status === 'Present' ?  'green' : 'gray' }}
+										backgroundColor: app.attendance_status === 'Present' ?  '#14e414' : 'gray' }}
 									/>
 										<div>Present</div>
 									{/* {app.attendance_status === 'Present' ? <div className="exclude-icon"></div> : <span />} */}
@@ -1114,7 +1123,7 @@ export default function index() {
 							<FontAwesomeIcon onClick={() =>{
 								handleViewChange("list")
 							}}className={`view-icon ${viewMode === 'list' ? 'selected-view' : ''}`} icon={faListUl} />
-						</div>	
+						</div>
 					
 					</div>
 
@@ -1146,7 +1155,7 @@ export default function index() {
 															className="circle-icon"
 															style={{
 																...style.circleIcon,
-																backgroundColor: app.attendance_status === 'Present' ? 'green' : 'gray',
+																backgroundColor: app.attendance_status === 'Present' ? '#14e414' : 'gray',
 															}}
 														/>
 														Present

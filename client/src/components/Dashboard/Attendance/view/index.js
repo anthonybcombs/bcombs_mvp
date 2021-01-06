@@ -101,7 +101,15 @@ const AttendanceSummaryStyled = styled.div`
 		white-space: nowrap;
 	}
 	#attendance-table tbody tr .subHeader .subTable tr td {
-		min-width: 80px;
+		width: 200px;
+	}
+	#attendance-table tbody tr .subHeader .subTable tr td .name,
+	#attendance-table tbody tr .subHeader .subTable tr td .class {
+		min-width: 100px;
+	}
+
+	#attendance-table tbody tr .subHeader .subTable tr td .summary {
+		white-space: nowrap;
 	}
 
 	#attendance-table td,
@@ -151,8 +159,17 @@ const AttendanceSummaryStyled = styled.div`
 		color: #000;
 	}
 	.attendance-status-container > div {
-		width: 33%;
+		width: 100%;
+    min-width: 110px;
 	}
+	.attendance-status-container > div.date {
+		padding: 15px 0;
+	}
+	.attendance-status-container > div.date:not(:last-child) {
+		border-right: 1px solid rgb(255 255 255);
+	}
+
+
 	.circle-icon {
 		border-radius: 50%;
 		width: 15px;
@@ -372,7 +389,7 @@ const AttendanceIcon = ({color = 'gray'}) => {
 }
 
 const attendanceColor = {
-	present:'green',
+	present:'#14e414',
 	absent:'red',
 	tardy:'#f26e21'
 }
@@ -455,8 +472,10 @@ export default function index(props) {
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td><a href={'#'}>{`${att.firstname} ${att.lastname}`}</a></td>
-								<td>{att.app_group_name}</td>
+								<td>
+									<div className='name'><a href={'#'}>{`${att.firstname} ${att.lastname}`}</a></div>
+								</td>
+								<td><div className='class'>{att.app_group_name}</div></td>
 							</tr>
 						</table>
 						
@@ -465,7 +484,7 @@ export default function index(props) {
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td>{`${((totalPresent * 100) / totalAttendance).toFixed(2)}%`} ({totalPresent}/{totalAttendance})</td>
+								<td><div className='summary'>{`${((totalPresent * 100) / totalAttendance).toFixed(2)}%`} ({totalPresent}/{totalAttendance})</div></td>
 								<td style={{ width: '380px'}}>
 									<div className="attendance-status-container">
 										<div>
@@ -711,7 +730,7 @@ export default function index(props) {
 									<table className="subTable">
 										<tr>
 											<td>Summary</td>
-											<td style={{ width: '380px'}}>
+											<td style={{ width: '380px', padding: '0'}}>
 												<div className="attendance-status-container">
 													{displayDays.map((date, index) => {
 														return (
