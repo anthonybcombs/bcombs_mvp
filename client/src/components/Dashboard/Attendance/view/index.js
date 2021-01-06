@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from "@reach/router";
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 import { faMinusCircle, faAngleLeft, faAngleRight, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useParams } from '@reach/router';
 import { format, isRan } from 'date-fns';
@@ -482,6 +481,7 @@ export default function index(props) {
 															) : (
 																<span />
 															)}
+																{att.attendance[formattedDateKeys[0]].status}
 														</div>
 													)) ||
 													<AttendanceIcon />	}
@@ -530,6 +530,7 @@ export default function index(props) {
 															) : (
 																<span />
 															)}
+																	{att.attendance[formattedDateKeys[1]].status}
 														</div>
 													)) ||
 													<AttendanceIcon />	}
@@ -548,6 +549,7 @@ export default function index(props) {
 															) : (
 																<span />
 															)}
+															{att.attendance[formattedDateKeys[2]].status}
 														</div>
 													)) ||
 													<AttendanceIcon />	}
@@ -662,9 +664,9 @@ export default function index(props) {
 							</select> */}
 
 						<CustomRangeDatePicker value={selectedRangeDate} onChange={handleChangeRangeDate} />
-						<label className="field-label calendars">
+						{/* <label className="field-label calendars">
 							Calendars
-						</label>
+						</label> */}
 					</div>
 					<div className="field search">
 						<input

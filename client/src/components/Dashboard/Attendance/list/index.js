@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { faAngleRight, faAngleLeft, faCalendar, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faAngleLeft, faCalendar, faSearch, faListUl,faBorderAll } from '@fortawesome/free-solid-svg-icons';
 
 import DataTable from 'react-data-table-component';
 
@@ -242,6 +242,11 @@ const ClassListViewStyled = styled.div`
 		color: gray;
 	}
 
+	 .search-field-container .view-icon{
+		font-size:24px;
+		margin-left:12px;
+		cursor:pointer;
+	 }
 	.search-field-container .select-field-wrapper {
 		position: relative;
 	}
@@ -431,6 +436,10 @@ const ClassListViewStyled = styled.div`
 		top: 0px;
 		left: -9px;
 		transform: rotateY(0deg) rotate(45deg);
+	}
+
+	.selected-view{
+		color: #f26e21 !important;
 	}
 `;
 
@@ -737,9 +746,9 @@ export default function index() {
 		}
 	};
 
-	const handleViewChange = e => {
+	const handleViewChange = value => {
 
-		setViewMode(e.target.value);
+		setViewMode(value);
 	};
 
 	const renderTableData = () => {
@@ -757,9 +766,11 @@ export default function index() {
 							) : app.is_following === 2 ? (
 								<div className="circle-icon" style={{ ...style.attendanceAction, backgroundColor: '#f26e21' }}></div>
 							) : (
-								"Blank"
+								""
 							)
-						}</span>
+						}
+						{	app.is_following  ? app.is_following === 1 ?  'Accepted' : 'Declined' : app.is_following === 0 ? 'Pending' : 'Blank'}
+						</span>
 					</td>
 					<td style={{ width: '300px' }}>
 						<div className="attendance-status-container">
@@ -770,7 +781,10 @@ export default function index() {
 										onClick={() => {
 											handleAttendance(app, 'Present');
 										}}
-										style={{ ...style.attendanceAction, backgroundColor: app.attendance_status === 'Present' ?  'green' : 'gray' }}></div>
+										style={{ ...style.attendanceAction, 
+										backgroundColor: app.attendance_status === 'Present' ?  'green' : 'gray' }}
+									/>
+										<div>Present</div>
 									{/* {app.attendance_status === 'Present' ? <div className="exclude-icon"></div> : <span />} */}
 								</div>
 							</div>
@@ -784,7 +798,7 @@ export default function index() {
 										
 										style={{ ...style.attendanceAction, backgroundColor: app.attendance_status === 'Absent' ?  'red' : 'gray'}}></div>
 									{/* {app.attendance_status === 'Absent' ? <div className="exclude-icon"></div> : <span />} */}
-								
+									<div>Absent</div>
 								</div>
 								<div>
 									<div
@@ -799,6 +813,8 @@ export default function index() {
 												backgroundColor: app.excused === 'absent' ? 'red' : 'gray',
 											}}
 										/>
+									
+										
 											{app.excused === 'absent' ? <div className="exclude-icon"></div> : <span />} 
 										{'    '}Excused
 									</div>
@@ -812,7 +828,7 @@ export default function index() {
 											handleAttendance(app, 'Tardy');
 										}}
 										style={{ ...style.attendanceAction, backgroundColor: app.attendance_status === 'Tardy' ?  '#f26e21' : 'gray'}}></div>
-							
+									<div>Tardy</div>
 								</div>
 
 								<div>
@@ -827,7 +843,7 @@ export default function index() {
 												...style.miniCircleIcon,
 												backgroundColor: app.excused === 'tardy' ? '#f26e21' : 'gray',
 											}}
-										/>		 
+										/>
 										{app.excused === 'tardy' ? <div className="exclude-icon"></div> : <span />}
 										{'    '}Excused 
 										{'  '}
@@ -867,7 +883,7 @@ export default function index() {
 						</div>
 					</td> */}
 
-					<td style={{}}>
+					<td >
 						<div style={{ display: 'flex', justifyContent: 'center' }}>
 							<input
 								type="number"
@@ -883,7 +899,7 @@ export default function index() {
 						</div>
 					</td>
 
-					<td style={{}}>
+					<td>
 						<div style={{ display: 'flex', justifyContent: 'center' }}>
 							<input
 								type="number"
@@ -1071,25 +1087,27 @@ export default function index() {
 								Search
 							</label>
 							<FontAwesomeIcon className="search-icon" icon={faSearch} />
+						
 						</div>
-						<div className="field select-field-wrapper">
+						{/* <div className="field select-field-wrapper">
 							<select onChange={handleViewChange} className={'field-input'}>
 								<option value="grid">Grid View</option>
 								<option value="list">List View</option>
 							</select>
-							{/* <input
-								id="event_name"
-								onChange={handleAttedanceDetailChange}
-								ref={register({ required: true })}
-								name={'event_name'}
-								className={'field-input'}
-								placeholder="Event Name"
-							/> */}
-							{/* <label className="field-label" for={`event_name`}>
-								<span className="required">*</span> Event Name
-							</label> */}
-						</div>
+						
+						</div>	 */}
+
+						<div>
+							<FontAwesomeIcon onClick={() =>{
+								handleViewChange("grid")
+							}} className={`view-icon ${viewMode === 'grid' ? 'selected-view' : ''}`} icon={faBorderAll} />
+							<FontAwesomeIcon onClick={() =>{
+								handleViewChange("list")
+							}}className={`view-icon ${viewMode === 'list' ? 'selected-view' : ''}`} icon={faListUl} />
+						</div>	
+					
 					</div>
+
 
 					{viewMode === 'grid' ? (
 						<div className="gridView">
@@ -1228,7 +1246,7 @@ export default function index() {
 											<div className="attendance-invitation">
 												{ (
 													<div className="calendar-invite">
-														Calendar Invite: <span>{`${app.is_following !== null ? app.is_following === 1 ?'Accepted' : 'Declined' : 'Pending'}`}</span>
+														Calendar Invite: <span>{`${app.is_following !== null ? app.is_following === 1 ?'Accepted' : 'Declined' : app.is_following === null ? 'Blank' :  'Pending'}`}</span>
 													</div>
 												)}
 											</div>

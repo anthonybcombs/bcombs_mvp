@@ -66,6 +66,12 @@ const CustomRangeDatePickerStyled = styled.div`
 	svg[class='react-datetimerange-picker__clear-button__icon react-datetimerange-picker__button__icon'] {
 		display: none;
 	}
+	
+	.react-datetimerange-picker .react-datetimerange-picker__calendar{
+		top:100% !important;
+	}
+
+	
 `;
 
 const CustomRangeDatePicker = ({
@@ -73,14 +79,15 @@ const CustomRangeDatePicker = ({
   onChange,
   onCalendarClose
 }) => {
-	return (
+	return (<CustomRangeDatePickerStyled>	
 		<DateTimeRangePicker
-			value={value}
-			disableClock={true}
-			rangeDivider={true}
-      onChange={onChange}
-      onCalendarClose={onCalendarClose}
+				value={value}
+				disableClock={true}
+				rangeDivider={true}
+     	 	onChange={onChange}
+      	onCalendarClose={onCalendarClose}
 		/>
+	</CustomRangeDatePickerStyled>
 	);
 };
 
