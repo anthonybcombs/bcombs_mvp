@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { faAngleRight, faAngleLeft, faCalendar, faSearch, faListUl,faBorderAll } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faAngleLeft, faCalendar, faSearch, faListUl,faBorderAll, faTh, faBars } from '@fortawesome/free-solid-svg-icons';
 
 import DataTable from 'react-data-table-component';
 
@@ -228,6 +228,17 @@ const ClassListViewStyled = styled.div`
 		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 	}
 
+	.description {
+		background: #80808033;
+	}
+	.description .field {
+		margin-bottom: 4px;
+    padding: 8px 8px 12px;
+	}
+	.description .field >input {
+		background: transparent;
+	}
+
 	.search-field-container {
 		display: flex;
 		align-items: baseline;
@@ -235,6 +246,8 @@ const ClassListViewStyled = styled.div`
 	.search-field-container .field {
 		flex: 1;
 		position: relative;
+		max-width: 350px;
+    margin-right: auto;
 	}
 	.search-field-container .field svg.search-icon {
 		position: absolute;
@@ -243,11 +256,7 @@ const ClassListViewStyled = styled.div`
 		color: gray;
 	}
 
-	 .search-field-container .view-icon{
-		font-size:24px;
-		margin-left:12px;
-		cursor:pointer;
-	 }
+	 
 	.search-field-container .select-field-wrapper {
 		position: relative;
 	}
@@ -270,6 +279,38 @@ const ClassListViewStyled = styled.div`
 		-webkit-appearance: none !important;
 		-moz-appearance: none !important;
 	}
+
+	.viewType {
+    margin-left: 1rem;
+    display: flex;
+    align-items: stretch;
+  }
+  .viewType > svg {
+    height: auto;
+    color: grey;
+		font-size:18px;
+		cursor:pointer;
+    padding: 11px !important;
+    border-radius: 0 !important;
+		border: 1.65px solid #ccc;		
+  }
+	.viewType > svg:first-child {
+		border-right: 0;
+	}
+  .viewType > svg:last-child {
+    border-left: 0;
+	}
+  .viewType > svg.selected-view {
+    color: #fff;
+    background: #f5812f;
+    border-color: rgb(204 204 204 / 30%);
+    transition: .15s ease-in-out;
+  }
+  .viewType > svg:not(.selected-view):hover {
+    color: #f5812f;
+  }
+
+
 
 	.actionBtn {
 		margin-top: 3rem !important;
@@ -456,10 +497,6 @@ const ClassListViewStyled = styled.div`
 		top: 0px;
 		left: -9px;
 		transform: rotateY(0deg) rotate(45deg);
-	}
-
-	.selected-view{
-		color: #f26e21 !important;
 	}
 `;
 
@@ -1116,13 +1153,13 @@ export default function index() {
 						
 						</div>	 */}
 
-						<div>
+						<div className="viewType">
 							<FontAwesomeIcon onClick={() =>{
 								handleViewChange("grid")
-							}} className={`view-icon ${viewMode === 'grid' ? 'selected-view' : ''}`} icon={faBorderAll} />
+							}} className={`view-icon ${viewMode === 'grid' ? 'selected-view' : ''}`} icon={faTh} />
 							<FontAwesomeIcon onClick={() =>{
 								handleViewChange("list")
-							}}className={`view-icon ${viewMode === 'list' ? 'selected-view' : ''}`} icon={faListUl} />
+							}}className={`view-icon ${viewMode === 'list' ? 'selected-view' : ''}`} icon={faBars} />
 						</div>
 					
 					</div>

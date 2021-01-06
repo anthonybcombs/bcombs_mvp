@@ -260,6 +260,9 @@ const AttendanceSummaryStyled = styled.div`
 		position: relative;
 		min-width: 200px;
 	}
+	.filter-container .react-datetimerange-picker{
+		margin: 0;
+	}
 	.filter-container .react-datetimerange-picker__wrapper {
 		border: 0;
 		padding-top: 8px;
