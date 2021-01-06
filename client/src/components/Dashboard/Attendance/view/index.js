@@ -162,13 +162,15 @@ const AttendanceSummaryStyled = styled.div`
 
 
 	.exclude-icon {
-		background-color: black;
-		position:relative;
+    position: absolute;
+		top: -2px;
+    left: 49%;
 		width: 3px;
 		height: 20px;
 		z-index: 99px;
-		top: -17px;
+		// top: -17px;
 		margin: 0 auto;
+		background-color: black;
 		transform: rotateY(0deg) rotate(45deg);
 	}
 
@@ -467,7 +469,7 @@ export default function index(props) {
 								<td style={{ width: '380px'}}>
 									<div className="attendance-status-container">
 										<div>
-											<div>
+											<div style={{ position: 'relative'}}>
 												{' '}
 												{(att.attendance[formattedDateKeys[0]] &&
 													att.attendance[formattedDateKeys[0]].status !== null && (
@@ -520,7 +522,7 @@ export default function index(props) {
 										<div>
 										{(att.attendance[formattedDateKeys[1]] &&
 													att.attendance[formattedDateKeys[1]].status !== null && (
-														<div>
+														<div style={{ position: 'relative'}}>
 														<AttendanceIcon color={attendanceColor[att.attendance[formattedDateKeys[1]].status.toLowerCase()]}/>
 													
 															{(att.attendance[formattedDateKeys[1]].status === 'Absent' || 
@@ -539,7 +541,7 @@ export default function index(props) {
 										<div>
 											{(att.attendance[formattedDateKeys[2]] &&
 													att.attendance[formattedDateKeys[2]].status !== null && (
-														<div>
+														<div style={{ position: 'relative'}}>
 														<AttendanceIcon color={attendanceColor[	att.attendance[formattedDateKeys[2]].status.toLowerCase()]}/>
 													
 															{(att.attendance[formattedDateKeys[2]].status === 'Absent' || 
