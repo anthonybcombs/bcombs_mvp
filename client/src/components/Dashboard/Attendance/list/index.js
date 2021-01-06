@@ -49,8 +49,8 @@ const ClassListViewStyled = styled.div`
 	}
 
 	.field {
-		padding: 5px !important;
-		margin: 5px !important;
+		// padding: 5px !important;
+		// margin: 5px !important;
 	}
 	.field-input:placeholder-shown + .field-label {
 		max-width: calc(100% - 30%) !important;
@@ -224,6 +224,7 @@ const ClassListViewStyled = styled.div`
 	}
 	.filter-container {
 		display: grid;
+		grid-column-gap: 12px;
 		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 	}
 
@@ -270,6 +271,9 @@ const ClassListViewStyled = styled.div`
 		-moz-appearance: none !important;
 	}
 
+	.actionBtn {
+		margin-top: 3rem !important;
+	}
 	.actionBtn button {
 		// width: 120px;
 		border: none;
@@ -370,7 +374,7 @@ const ClassListViewStyled = styled.div`
 		border-collapse: collapse;
 		width: 100%;
 		border: 0;
-		margin-top: 3rem;
+		// margin-top: 3rem;
 	}
 
 	#listView td,
@@ -389,9 +393,10 @@ const ClassListViewStyled = styled.div`
 	}
 
 	#listView th {
-		text-align: center;
-		background-color: #f26e21;
 		color: white;
+		text-align: center;
+		white-space: nowrap;
+		background-color: #f26e21;
 	}
 
 	#listView a {
@@ -401,6 +406,7 @@ const ClassListViewStyled = styled.div`
 
 	.attendance-status-container,
 	.attendance-hours-container {
+		min-width: 300px;
 		display: flex;
 	}
 	.attendance-status-container > div {
@@ -412,6 +418,8 @@ const ClassListViewStyled = styled.div`
 	}
 	.listViewTableContainer {
 		overflow-x: auto;
+    margin-top: 3rem;
+		box-shadow: 0px 0px 10px #ccc;
 	}
 	.listViewTableContainer::-webkit-scrollbar {
 		width: 8px;
@@ -1058,8 +1066,7 @@ export default function index() {
 						</div>
 					</div>
 
-					<div className="field actionBtn">
-		
+					<div className="field description">
 							<div className="field">
 								<input
 									id="description"
