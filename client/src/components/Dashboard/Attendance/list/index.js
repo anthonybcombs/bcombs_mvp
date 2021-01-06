@@ -349,6 +349,9 @@ const ClassListViewStyled = styled.div`
 		padding: 1rem;
 		border-bottom: 1px solid #ddd;
 	}
+	.gridView .block .extra_activitybox .attendance-hours .field {
+		padding: 0 1rem;
+	}
 	.gridView .block .extra_activitybox .attendance-hours .field > input {
 		text-align: center;
 	}
