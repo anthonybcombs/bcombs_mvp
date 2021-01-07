@@ -680,18 +680,10 @@ export default function index(props) {
 					Back
 				</Link>
 				<div className="filter-container">
-					<div className="field">
-						{/* <select className="form-control">
-								<option value="">Filter By</option>
-								<option key={1} value={1}>
-									Test
-								</option>
-							</select> */}
-
+					<div className="field"></div>
+					<div className="field search">
+	
 						<CustomRangeDatePicker value={selectedRangeDate} onChange={handleChangeRangeDate} />
-						{/* <label className="field-label calendars">
-							Calendars
-						</label> */}
 					</div>
 					<div className="field search">
 						<input
