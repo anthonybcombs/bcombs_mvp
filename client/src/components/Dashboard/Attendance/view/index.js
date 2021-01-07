@@ -465,11 +465,12 @@ export default function index(props) {
 	const renderTableData = () => {
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
 		return attendanceDisplay.map((att, index) => {
-			const totalAttendance = Object.keys(att.attendance).length;
+			const totalAttendance = Object.keys(att.attendance).length || 0;
 			const totalPresent = Object.keys(att.attendance).filter(key => {
 				return att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1;
-			}).length;
-
+			}).length || 0;
+			let summaryTotal = 	((totalPresent * 100) / totalAttendance).toFixed(2);
+					summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			return (
 				<tr key={index}>
 					<td className="subHeader">
@@ -487,7 +488,7 @@ export default function index(props) {
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td><div className='summary'>{`${((totalPresent * 100) / totalAttendance).toFixed(2)}%`} ({totalPresent}/{totalAttendance})</div></td>
+								<td><div className='summary'>{`${summaryTotal}%`} ({totalPresent}/{totalAttendance})</div></td>
 								<td style={{ width: '380px'}}>
 									<div className="attendance-status-container">
 										<div>
@@ -505,7 +506,7 @@ export default function index(props) {
 															) : (
 																<span />
 															)}
-																{att.attendance[formattedDateKeys[0]].status}
+														
 														</div>
 													)) ||
 													<AttendanceIcon />	}
@@ -554,7 +555,7 @@ export default function index(props) {
 															) : (
 																<span />
 															)}
-																	{att.attendance[formattedDateKeys[1]].status}
+															
 														</div>
 													)) ||
 													<AttendanceIcon />	}
@@ -573,7 +574,7 @@ export default function index(props) {
 															) : (
 																<span />
 															)}
-															{att.attendance[formattedDateKeys[2]].status}
+														
 														</div>
 													)) ||
 													<AttendanceIcon />	}
