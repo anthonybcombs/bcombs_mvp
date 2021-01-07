@@ -69,6 +69,7 @@ const CustomRangeDatePickerStyled = styled.div`
 	
 	.react-datetimerange-picker .react-datetimerange-picker__calendar{
 		top:100% !important;
+		bottom: unset !important;
 	}
 
 	
