@@ -101,7 +101,7 @@ import {
   updateParentChildRelationship,
   getParentChildRelationship } from "../../api/parents";
   
-import { getChildAttendance ,updateChildAttendance} from '../../api/attendance';
+import { getChildAttendance ,getChildEventAttendance,updateChildAttendance} from '../../api/attendance';
 
 import { getUserFromDatabase } from "../../api";
 
@@ -373,6 +373,11 @@ const resolvers = {
     async getAttendance(root, { application_group_id }, contenxt) {
       console.log('Get Attendance App Grp Id', application_group_id)
       return await getChildAttendance(application_group_id);
+    },
+
+    async getEventAttendance(root, { application_group_id }, context) {
+      console.log('Get Event Attendance App Grp Id', application_group_id)
+      return await getChildEventAttendance(application_group_id);
     }
   },
   RootMutation: {

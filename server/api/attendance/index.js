@@ -2,6 +2,45 @@
 import { makeDb } from "../../helpers/database";
 
 
+export const getChildEventAttendance = async applicationGroupId => {
+  const db = makeDb();
+  let result = [];
+
+  try{
+  console.log('getChildEventAttendance',applicationGroupId)
+  result = await db.query(`
+    SELECT BIN_TO_UUID(ucg.group_id) app_group_id,
+      BIN_TO_UUID(ucg.calendar_id) calendar_id ,
+      BIN_TO_UUID(evnt.id) event_id ,
+      evnt.name as event_name,
+      evnt.type as type,
+      evnt.start_of_event as start_of_event,
+      evnt.end_of_event as end_of_event,
+      evnt.recurring as recurring,
+      evnt.recurring_end_date as recurring_end_date
+    FROM user_calendars_groups as ucg
+    INNER JOIN event_calendar ec
+    ON ec.calendar_id=ucg.calendar_id
+    INNER JOIN event_visibility ev
+    ON ev.group_id=ucg.group_id AND 
+      ev.group_type = 'application'
+    INNER JOIN events evnt 
+    ON evnt.id=ev.event_id  AND evnt.id=ec.event_id
+    WHERE ucg.group_id=UUID_TO_BIN(?) ;
+    `,
+
+    
+  [applicationGroupId]);
+  }catch (error) {
+    console.log("Get child attendance error", error);
+    return null;
+  } finally {
+    await db.close();
+    return result;
+  }
+  
+}
+
 export const getChildAttendance = async applicationGroupId => {
   const db = makeDb();  
   let result = [];

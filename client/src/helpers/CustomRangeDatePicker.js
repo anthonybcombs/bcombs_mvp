@@ -2,6 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+
+
 const CustomRangeDatePickerStyled = styled.div`
 	.react-datetimerange-picker,
 	.react-date-picker,
@@ -69,6 +73,7 @@ const CustomRangeDatePickerStyled = styled.div`
 	
 	.react-datetimerange-picker .react-datetimerange-picker__calendar{
 		top:100% !important;
+		bottom: unset !important;
 	}
 
 	
@@ -77,7 +82,8 @@ const CustomRangeDatePickerStyled = styled.div`
 const CustomRangeDatePicker = ({
   value,
   onChange,
-  onCalendarClose
+	onCalendarClose,
+	disableClock = true
 }) => {
 	return (<CustomRangeDatePickerStyled>	
 		<DateTimeRangePicker
@@ -85,7 +91,13 @@ const CustomRangeDatePicker = ({
 				disableClock={true}
 				rangeDivider={true}
      	 	onChange={onChange}
-      	onCalendarClose={onCalendarClose}
+				onCalendarClose={onCalendarClose}
+				disableClock={true}
+				// disabled={true}
+				format={'y-MM-dd'}
+				clearIcon={	<FontAwesomeIcon
+					icon={faTimesCircle}
+				/>}
 		/>
 	</CustomRangeDatePickerStyled>
 	);

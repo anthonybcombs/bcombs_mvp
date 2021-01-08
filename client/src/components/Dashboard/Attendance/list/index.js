@@ -552,7 +552,7 @@ const style = {
 	attendanceSubAction: {
 		marginTop: '8px',
 		fontSize: '12px',
-		cursor: 'pointer',
+		//cursor: 'pointer',
 		color: 'grey',
 		display: 'flex',
 		alignItems: 'center',
@@ -623,20 +623,18 @@ export default function index() {
 		}
 
 		let currentAppGroupId = '';
-		console.log('Use Effect Vendors', vendors)
+
 		if (vendors && vendors[0] && vendors[0].app_groups.length > 0) {
 			const applicationGroups = vendors[0].app_groups;
-			console.log('Use Effect Vendors applicationGroups', applicationGroups)
-			console.log('Use Effect Vendors name', name)
+
 			for (const group of applicationGroups) {
 				if (group.name.trim() === name.trim()) {
-					console.log('Use Effect Vendors current group', group)
 					currentAppGroupId = group.app_grp_id;
 					break;
 				}
 			}
 
-			console.log('Use Effect Vendors currentAppGroupId', currentAppGroupId)
+
 			setAppGroupId(currentAppGroupId);
 		}
 	}, [vendors]);
@@ -696,16 +694,77 @@ export default function index() {
 		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
-		updatedApplication[currentIndex] = {
-			...updatedApplication[currentIndex],
-			attendance_status: attendanceType,
-			excused: null,
-		};
-		updatedFilteredApplication[currentFilteredIndex] = {
-			...updatedFilteredApplication[currentFilteredIndex],
-			attendance_status: attendanceType,
-			excused: null,
-		};
+		
+
+		if(updatedApplication[currentIndex] && 
+			updatedApplication[currentIndex].attendance_status === attendanceType && 
+			!updatedApplication[currentIndex].excused ) {
+			// console.log('Triggered Excused')
+			//  handleExcused(payload,attendanceType.toLowerCase());
+
+			if(attendanceType !== 'Present') {
+				updatedApplication[currentIndex] = {
+					...updatedApplication[currentIndex],
+					excused: updatedApplication[currentIndex].excused === null ? attendanceType.toLowerCase() : null,
+				};
+				updatedFilteredApplication[currentFilteredIndex] = {
+					...updatedFilteredApplication[currentFilteredIndex],
+					excused: updatedFilteredApplication[currentIndex].excused === null ? attendanceType.toLowerCase() : null,
+				};
+			}
+			else{
+				updatedApplication[currentIndex] = {
+					...updatedApplication[currentIndex],
+					excused:null,
+					attendance_status:null
+				};
+				updatedFilteredApplication[currentFilteredIndex] = {
+					...updatedFilteredApplication[currentFilteredIndex],
+					excused: null,
+					attendance_status:null
+				};
+			}
+
+
+			
+		}
+		else if(updatedApplication[currentIndex] && 
+			updatedApplication[currentIndex].attendance_status === attendanceType && 
+			updatedApplication[currentIndex].excused === attendanceType.toLowerCase()) {
+
+				updatedApplication[currentIndex] = {
+					...updatedApplication[currentIndex],
+					attendance_status: null,
+					excused: null,
+				};
+				updatedFilteredApplication[currentFilteredIndex] = {
+					...updatedFilteredApplication[currentFilteredIndex],
+					attendance_status: null,
+					excused: null,
+				};
+				
+		}
+
+		else{		
+
+			updatedApplication[currentIndex] = {
+				...updatedApplication[currentIndex],
+				attendance_status: attendanceType,
+				excused: null,
+			};
+			updatedFilteredApplication[currentFilteredIndex] = {
+				...updatedFilteredApplication[currentFilteredIndex],
+				attendance_status: attendanceType,
+				excused: null,
+			};
+		}
+		
+		// updatedApplication[currentIndex] = {
+		// 	...updatedApplication[currentIndex],
+		// 	attendance_status: attendanceType,
+		// 	excused: null,
+		// };
+
 
 		setApplicationList(updatedApplication);
 		setFilteredApplicationList(updatedFilteredApplication);
@@ -771,7 +830,7 @@ export default function index() {
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
 
-		if (excuseType === updatedApplication[currentIndex].attendance_status.toLowerCase()) {
+		if (excuseType === payload.attendance_status.toLowerCase()) {
 			updatedApplication[currentIndex] = {
 				...updatedApplication[currentIndex],
 				excused: updatedApplication[currentIndex].excused === null ? excuseType : null,
@@ -826,7 +885,7 @@ export default function index() {
 								""
 							)
 						}
-						{	app.is_following  ? app.is_following === 1 ?  'Accepted' : 'Declined' : app.is_following === 0 ? 'Pending' : 'Blank'}
+						{	app.is_following || app.is_following === 0   ? '' :  'Blank'}
 						</span>
 					</td>
 					<td style={{ width: '300px' }}>
@@ -859,9 +918,7 @@ export default function index() {
 								</div>
 								<div>
 									<div
-										onClick={() => {
-											handleExcused(app, 'absent');
-										}}
+								
 										style={style.attendanceSubAction}>
 										<div
 											className="circle-icon"
@@ -890,9 +947,7 @@ export default function index() {
 
 								<div>
 									<div
-										onClick={() => {
-											handleExcused(app, 'tardy');
-										}}
+
 										style={style.attendanceSubAction}>
 										<div
 											className="circle-icon"
@@ -909,36 +964,6 @@ export default function index() {
 							</div>
 						</div>
 					</td>
-					{/* <td>
-						<div className="attendance-hours-container">
-							<div>
-								<input
-									type="number"
-									onChange={e => {
-										handleHours(app, e.target.value, 'volunteer_hours');
-									}}
-									name={'volunteer_hours'}
-									className={'field-input'}
-									placeholder="Volunteer Hours"
-									value={app?.volunteer_hours || '0'}
-									style={{ textAlign: 'center' }}
-								/>
-							</div>
-							<div>
-								<input
-									type="number"
-									onChange={e => {
-										handleHours(app, e.target.value, 'mentoring_hours');
-									}}
-									name={'mentoring_hours'}
-									className={'field-input'}
-									placeholder="Mentoring Hours"
-									value={app?.mentoring_hours || '0'}
-									style={{ textAlign: 'center' }}
-								/>
-							</div>
-						</div>
-					</td> */}
 
 					<td >
 						<div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -1216,9 +1241,7 @@ export default function index() {
 													</div>
 
 													<div
-														onClick={() => {
-															handleExcused(app, 'absent');
-														}}
+									
 														style={style.attendanceSubAction}>
 														<div
 															className="circle-icon"
@@ -1249,9 +1272,7 @@ export default function index() {
 													</div>
 
 													<div
-														onClick={() => {
-															handleExcused(app, 'tardy');
-														}}
+												
 														style={style.attendanceSubAction}>
 														<div
 															className="circle-icon"

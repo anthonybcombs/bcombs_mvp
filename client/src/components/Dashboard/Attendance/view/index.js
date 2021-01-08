@@ -7,9 +7,9 @@ import { useParams } from '@reach/router';
 import { format, isRan } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
-import { getHours, max, addDays, subDays, isWithinInterval } from 'date-fns';
+import { getHours, max, addDays, subDays, addYears, isWithinInterval } from 'date-fns';
 
-import { requestAttendance } from '../../../../redux/actions/Attendance';
+import { requestAttendance,requestEventAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
 
 import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
@@ -410,15 +410,20 @@ export default function index(props) {
 	);
 	const [displayDays, setDisplayDays] = useState(DEFAULT_DISPLAY_DAYS);
 	const [attendanceDisplay, setAttendanceDisplay] = useState([]);
+	const [attendanceSummary, setAttendanceSummary] = useState({});
 	const [defaultAttendanceDisplay, setDefaultAttendanceDisplay] = useState([]);
+	const [events, setEvents] = useState([]);
+	const [defaultEvents, setDefaultEvents] = useState([]);
 	const [selectedRangeDate, setSelectedRangeDate] = useState([new Date(), new Date()]);
+	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState([new Date(), 	addYears(new Date(), 1)]);
+
 
 	const { app_group_id } = useParams();
 
 	// appGroups = appGroups.filter((group) => {
 	//   return group.vendor == vendor.id;
 	// })
-
+	console.log('attendanceeeeee',attendance)
 	useEffect(() => {
 		if (auth.user_id) {
 			dispatch(requestVendor(auth.user_id));
@@ -428,6 +433,7 @@ export default function index(props) {
 	useEffect(() => {
 		if (app_group_id && !attendance.isLoading) {
 			dispatch(requestAttendance(app_group_id));
+			dispatch(requestEventAttendance(app_group_id));
 		}
 	}, []);
 
@@ -466,20 +472,63 @@ export default function index(props) {
 		}
 	}, [attendance.list]);
 
+	useEffect(() => {
+		if(attendance.eventAttendanceList) {
+
+			const updatedEvents = attendance.eventAttendanceList.map( event => {
+				return {
+					...event,
+					start_of_event: format(new Date(parseInt(event.start_of_event)), DATE_FORMAT),
+					end_of_event: format(new Date(parseInt(event.end_of_event)), DATE_FORMAT)
+				}
+			});
+			setEvents(updatedEvents);
+			setDefaultEvents(updatedEvents);
+		}
+		
+	},[attendance.eventAttendanceList])
+
 	const renderTableData = () => {
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
+		console.log('renderTableData defaultAttendanceDisplay',defaultAttendanceDisplay)
+		console.log('renderTableData events',events)
 		return attendanceDisplay.map((att, index) => {
-			const totalAttendance = Object.keys(att.attendance).length;
-			const totalPresent = Object.keys(att.attendance).filter(key => {
-				return att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1;
-			}).length;
+			let totalPresent = null;
+			let totalAttendance = null;
+			if(events.length > 0) {
 
+				totalPresent = defaultAttendanceDisplay.reduce((accum,defaultAtt) => {
+					if(	att && defaultAtt.child_id === att.child_id) {
+						let result = Object.keys(defaultAtt.attendance).filter(key => {
+							let dashedDate = key.replaceAll('_','-');
+							
+							const hasEvent = events.find( event => dashedDate === event.start_of_event);
+		
+							return hasEvent && (att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1));
+						}).length || 0;
+						return accum + result
+					}
+					return accum;
+				},0)
+		
+				totalAttendance = events.length || 0;
+			}
+			else {
+				totalPresent = Object.keys(att.attendance).filter(key => {
+					return att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1);
+				}).length || 0;
+				totalAttendance = Object.keys(att.attendance).length || 0;
+			}
+	
+
+			let summaryTotal = 	((totalPresent * 100) / totalAttendance).toFixed(2);
+					summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			return (
 				<tr key={index}>
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td>
+								<td style={{width:110}}>
 									<div className='name'><a href={'#'}>{`${att.firstname} ${att.lastname}`}</a></div>
 								</td>
 								<td><div className='class'>{att.app_group_name}</div></td>
@@ -491,7 +540,7 @@ export default function index(props) {
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td><div className='summary'>{`${((totalPresent * 100) / totalAttendance).toFixed(2)}%`} ({totalPresent}/{totalAttendance})</div></td>
+								<td><div className='summary'>{`${summaryTotal}%`} ({totalPresent}/{totalAttendance})</div></td>
 								<td style={{ width: '380px'}}>
 									<div className="attendance-status-container">
 										<div>
@@ -509,7 +558,7 @@ export default function index(props) {
 															) : (
 																<span />
 															)}
-																{att.attendance[formattedDateKeys[0]].status}
+														
 														</div>
 													)) ||
 													<AttendanceIcon />	}
@@ -558,7 +607,7 @@ export default function index(props) {
 															) : (
 																<span />
 															)}
-																	{att.attendance[formattedDateKeys[1]].status}
+															
 														</div>
 													)) ||
 													<AttendanceIcon />	}
@@ -577,7 +626,7 @@ export default function index(props) {
 															) : (
 																<span />
 															)}
-															{att.attendance[formattedDateKeys[2]].status}
+														
 														</div>
 													)) ||
 													<AttendanceIcon />	}
@@ -624,11 +673,34 @@ export default function index(props) {
 		}
 	};
 
+	const handleChangeDateFilter = date => {
+		if (date === null) {
+			setAttendanceDisplay(defaultAttendanceDisplay);
+			setSelectedSummaryRangeDate([new Date(), new Date()]);
+			setDisplayDays(DEFAULT_DISPLAY_DAYS);
+			return;
+		}
+
+		if(defaultEvents.length > 0) {
+		
+			let filteredEvents = defaultEvents.filter(event => {
+				return 	isWithinInterval(new Date(event.start_of_event), {
+					start: subDays(new Date(date[0]), 1),
+					end: addDays(new Date(date[1]), 1) 
+				});
+			})
+			console.log('Filtered Events', filteredEvents)
+			setEvents(filteredEvents);
+	
+		}
+
+		setSelectedSummaryRangeDate([new Date(date[0]),new Date(date[1])])
+
+	}
+
 	const handleChangeRangeDate = date => {
 		if (date == null) {
-			setAttendanceDisplay(defaultAttendanceDisplay);
 			setSelectedRangeDate([new Date(), new Date()]);
-			setDisplayDays(DEFAULT_DISPLAY_DAYS);
 			return;
 		}
 		const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
@@ -654,9 +726,9 @@ export default function index(props) {
 				...totalHours,
 				attendance: filteredDate.reduce((accum, key) => {
 					return {
-						...accum,
+						...(accum || {}),
 						[key]: {
-							...att.attendance[key],
+							...(att.attendance[key] || {}),
 						},
 					};
 				}, {}),
@@ -684,17 +756,11 @@ export default function index(props) {
 				</Link>
 				<div className="filter-container">
 					<div className="field">
-						{/* <select className="form-control">
-								<option value="">Filter By</option>
-								<option key={1} value={1}>
-									Test
-								</option>
-							</select> */}
-
+						<CustomRangeDatePicker value={selectedSummaryRangeDate} onChange={handleChangeDateFilter} />
+					</div>
+					<div className="field search">
+	
 						<CustomRangeDatePicker value={selectedRangeDate} onChange={handleChangeRangeDate} />
-						{/* <label className="field-label calendars">
-							Calendars
-						</label> */}
 					</div>
 					<div className="field search">
 						<input
