@@ -885,7 +885,7 @@ export default function index() {
 								""
 							)
 						}
-						{	app.is_following  ? app.is_following === 1 ?  'Accepted' : 'Declined' : app.is_following === 0 ? 'Pending' : 'Blank'}
+						{	app.is_following || app.is_following === 0   ? '' :  'Blank'}
 						</span>
 					</td>
 					<td style={{ width: '300px' }}>
@@ -964,36 +964,6 @@ export default function index() {
 							</div>
 						</div>
 					</td>
-					{/* <td>
-						<div className="attendance-hours-container">
-							<div>
-								<input
-									type="number"
-									onChange={e => {
-										handleHours(app, e.target.value, 'volunteer_hours');
-									}}
-									name={'volunteer_hours'}
-									className={'field-input'}
-									placeholder="Volunteer Hours"
-									value={app?.volunteer_hours || '0'}
-									style={{ textAlign: 'center' }}
-								/>
-							</div>
-							<div>
-								<input
-									type="number"
-									onChange={e => {
-										handleHours(app, e.target.value, 'mentoring_hours');
-									}}
-									name={'mentoring_hours'}
-									className={'field-input'}
-									placeholder="Mentoring Hours"
-									value={app?.mentoring_hours || '0'}
-									style={{ textAlign: 'center' }}
-								/>
-							</div>
-						</div>
-					</td> */}
 
 					<td >
 						<div style={{ display: 'flex', justifyContent: 'center' }}>

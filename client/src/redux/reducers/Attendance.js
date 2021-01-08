@@ -3,6 +3,7 @@ import * as actionType from "../actions/Constant";
 
 const initialState = {
   list: [],
+  eventAttendanceList:[],
   isAttendanceUpdateSuccess:false,
   isAttendanceUpdateLoading: false,
   isLoading:false
@@ -24,6 +25,12 @@ export default function Attendance(state = initialState, action) {
         return {
           ...state,
           list: [...action.data],
+          isLoading:false
+      }
+    case actionType.SET_EVENT_ATTENDANCE_LIST:
+        return {
+          ...state,
+          eventAttendanceList: [...action.data],
           isLoading:false
       }
     case actionType.REQUEST_UPDATE_ATTENDANCE_SUCCESS:

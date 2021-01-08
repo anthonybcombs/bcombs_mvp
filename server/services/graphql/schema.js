@@ -1325,6 +1325,20 @@ const queryTypes = `
         is_following: Int
         app_group_name: String
     }
+
+    type EventAttendanceList {
+        app_group_name: String
+        app_group_id: String
+        group_id: String
+        calendar_id: String
+        event_id: String
+        event_name: String
+        type: String
+        start_of_event: String
+        end_of_event: String
+        recurring: String
+        recurring_end_date: String
+    }
     
 `;
 
@@ -1410,6 +1424,7 @@ const queries = `
         getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
         getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
         getAttendance(application_group_id: String): [AttendanceList]
+        getEventAttendance(application_group_id: String): [EventAttendanceList]
     }
 `;
 

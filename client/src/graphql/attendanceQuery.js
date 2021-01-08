@@ -21,3 +21,24 @@ export const GET_ATTENDANCE_QUERY = gql`
     }
   }
 `;
+
+
+export const GET_EVENT_ATTENDANCE_QUERY = gql`
+  query getEventAttendance($application_group_id: String!) {
+    getEventAttendance(application_group_id: $application_group_id) {
+      app_group_name
+      app_group_id
+      group_id
+      calendar_id
+      event_id
+      event_name
+      type
+      start_of_event
+      end_of_event
+      recurring
+      recurring_end_date
+    }
+  }
+`;
+
+

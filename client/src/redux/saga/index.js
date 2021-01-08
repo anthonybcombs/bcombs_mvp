@@ -99,7 +99,7 @@ import {
   getCustomApplicationHistory
 } from "../actions/FormBuilder";
 
-import { requestUpdateAttendance, updateAttendance,getAttendance } from "../actions/Attendance";
+import { requestUpdateAttendance, updateAttendance,getAttendance,getEventAttendance } from "../actions/Attendance";
 
 import reducer from "../reducers";
 function* rootSaga() {
@@ -269,6 +269,7 @@ function* rootSaga() {
 
   yield takeLatest(actionType.REQUEST_UPDATE_ATTENDANCE, updateAttendance);
   yield takeLatest(actionType.REQUEST_ATTENDANCE, getAttendance);
+  yield takeLatest(actionType.REQUEST_EVENT_ATTENDANCE, getEventAttendance);
 }
 const sagaMiddleware = createSagaMiddleware();
 

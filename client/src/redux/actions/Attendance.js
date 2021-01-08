@@ -5,7 +5,8 @@ import {
   ATTENDANCE_UPDATE_MUTATION
 } from '../../graphql/attendanceMutation';
 import {
-  GET_ATTENDANCE_QUERY
+  GET_ATTENDANCE_QUERY,
+  GET_EVENT_ATTENDANCE_QUERY
 } from '../../graphql/attendanceQuery';
 
 const updateAttendanceToDatabase = attendance => {
@@ -34,8 +35,28 @@ const getAttendanceToDatabase = applicationGroupId => {
           application_group_id: applicationGroupId
         }
       });
-      console.log('Get Attendance To Database Response', data)
+      console.log('c', data)
       return resolve(data.getAttendance)
+    } catch (error) {
+      console.log('getAttendanceToDatabase error', error)
+      reject(error)
+    }
+  })
+}
+
+
+const getEventAttendanceToDatabase = applicationGroupId => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log('getEventAttendanceToDatabase',applicationGroupId)
+      const { data } = await graphqlClient.query({
+        query: GET_EVENT_ATTENDANCE_QUERY,
+        variables: {
+          application_group_id: applicationGroupId
+        }
+      });
+      console.log('Get Attendance To Database Response', data)
+      return resolve(data.getEventAttendance)
     } catch (error) {
       console.log('getAttendanceToDatabase error', error)
       reject(error)
@@ -59,10 +80,25 @@ export const requestAttendance = applicationGroupId => {
   }
 }
 
+export const requestEventAttendance = applicationGroupId => {
+  return {
+    type: actionType.REQUEST_EVENT_ATTENDANCE,
+    applicationGroupId
+  }
+}
+
+
 
 export const setAttendanceList = (data) => {
   return {
     type: actionType.SET_ATTENDANCE_LIST,
+    data
+  }
+}
+
+export const setEventAttendanceList = (data) => {
+  return {
+    type: actionType.SET_EVENT_ATTENDANCE_LIST,
     data
   }
 }
@@ -94,5 +130,19 @@ export function* getAttendance({ applicationGroupId }) {
       yield put(setAttendanceList(response));
     }
   } catch (err) {
+    yield put(setAttendanceList([]));
+  }
+}
+
+export function* getEventAttendance({ applicationGroupId }) {
+  try {
+    console.log('GET EVENT ATTENDANCE ',applicationGroupId)
+    const response = yield call(getEventAttendanceToDatabase, applicationGroupId);
+    
+    if(response) {
+      yield put(setEventAttendanceList(response));
+    }
+  } catch (err) {
+    yield put(setEventAttendanceList([]));
   }
 }
