@@ -524,7 +524,7 @@ export default function index(props) {
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td style={{width:110}}>
+								<td style={{width:250}}>
 									<div className='name'><a href={'#'}>{`${att.firstname} ${att.lastname}`}</a></div>
 								</td>
 								<td><div className='class'>{att.app_group_name}</div></td>
