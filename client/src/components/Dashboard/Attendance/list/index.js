@@ -885,7 +885,7 @@ export default function index() {
 								""
 							)
 						}
-						{	app.is_following || app.is_following === 0   ? '' :  'Blank'}
+						{	app.is_following === null || 	app.is_following === undefined ||  app.is_following === 0   ? 'Blank' :  ''}
 						</span>
 					</td>
 					<td style={{ width: '300px' }}>

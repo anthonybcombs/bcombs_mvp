@@ -480,45 +480,51 @@ export default function index(props) {
 			});
 			setEvents(updatedEvents);
 			setDefaultEvents(updatedEvents);
+		
+	
 		}
 		
 	},[attendance.eventAttendanceList])
 
+	useEffect(() => {
+		handleChangeDateFilter(	[new Date() , new Date(addYears(new Date(), 1))]	)
+	},[defaultEvents])
+
 	const renderTableData = () => {
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
-		console.log('renderTableData defaultAttendanceDisplay',defaultAttendanceDisplay)
-		console.log('renderTableData events',events)
 		return attendanceDisplay.map((att, index) => {
-			let totalPresent = null;
-			let totalAttendance = null;
-			if(events.length > 0) {
+			// let totalPresent = null;
+			// let totalAttendance = null;
+			// if(events.length > 0) {
 
-				totalPresent = defaultAttendanceDisplay.reduce((accum,defaultAtt) => {
-					if(	att && defaultAtt.child_id === att.child_id) {
-						let result = Object.keys(defaultAtt.attendance).filter(key => {
-							let dashedDate = key.replaceAll('_','-');
+			// 	totalPresent = defaultAttendanceDisplay.reduce((accum,defaultAtt) => {
+			// 		if(	att && defaultAtt.child_id === att.child_id) {
+			// 			let result = Object.keys(defaultAtt.attendance).filter(key => {
+			// 				let dashedDate = key.replaceAll('_','-');
 							
-							const hasEvent = events.find( event => dashedDate === event.start_of_event);
+			// 				const hasEvent = events.find( event => dashedDate === event.start_of_event);
 		
-							return hasEvent && (att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1));
-						}).length || 0;
-						return accum + result
-					}
-					return accum;
-				},0)
+			// 				return hasEvent && (att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1));
+			// 			}).length || 0;
+			// 			return accum + result
+			// 		}
+			// 		return accum;
+			// 	},0)
 		
-				totalAttendance = events.length || 0;
+			// 	totalAttendance = events.length || 0;
+			// }
+			// else {
+			// 	totalPresent = Object.keys(att.attendance).filter(key => {
+			// 		return att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1);
+			// 	}).length || 0;
+			// 	totalAttendance = Object.keys(att.attendance).length || 0;
+			// }
+			let summaryTotal = 0;
+			if(attendanceSummary[att.child_id]) {
+				summaryTotal = 	((attendanceSummary[att.child_id].total_present * 100) / attendanceSummary[att.child_id].total_attendance).toFixed(2);
+				summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			}
-			else {
-				totalPresent = Object.keys(att.attendance).filter(key => {
-					return att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1);
-				}).length || 0;
-				totalAttendance = Object.keys(att.attendance).length || 0;
-			}
-	
-
-			let summaryTotal = 	((totalPresent * 100) / totalAttendance).toFixed(2);
-					summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
+			console.log('attendanceSummary[att.child_id]', attendanceSummary)
 			return (
 				<tr key={index}>
 					<td className="subHeader">
@@ -536,7 +542,13 @@ export default function index(props) {
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td><div className='summary'>{`${summaryTotal}%`} ({totalPresent}/{totalAttendance})</div></td>
+								<td>
+									{attendanceSummary[att.child_id] && <div className='summary'>
+										{`${summaryTotal}%`} ({attendanceSummary[att.child_id].total_present}/{attendanceSummary[att.child_id].total_attendance})
+									</div> }
+									
+								
+								</td>
 								<td style={{ width: '380px'}}>
 									<div className="attendance-status-container">
 										<div>
@@ -559,35 +571,7 @@ export default function index(props) {
 													)) ||
 													<AttendanceIcon />	}
 											</div>
-											{/* <div>
-												{' '}
-												{(att.attendance[formattedDateKeys[0]] &&
-													att.attendance[formattedDateKeys[0]].status === 'Absent' && (
-														<div>
-															<AttendanceIcon color="red"/>
-															{att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
-																<div className="exclude-icon"></div>
-															) : (
-																<span />
-															)}
-														</div>
-													)) ||
-													''}
-											</div>
-											<div>
-												{' '}
-												{(att.attendance[formattedDateKeys[0]] && att.attendance[formattedDateKeys[0]].status === 'Tardy' && (
-													<div>
-															<AttendanceIcon color="#f26e21"/>
-														{att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
-															<div className="exclude-icon"></div>
-														) : (
-															<span />
-														)}
-													</div>
-												)) ||
-													''}
-											</div> */}
+			
 										</div>
 
 										<div>
@@ -686,6 +670,94 @@ export default function index(props) {
 				});
 			})
 			console.log('Filtered Events', filteredEvents)
+
+			// ------------------------------------------- //
+			let totalPresent = null;
+			let totalAttendance = null;
+			if(filteredEvents.length > 0) {
+				totalAttendance = filteredEvents.length || 0;
+				let childEventAttendance = defaultAttendanceDisplay.reduce((accum,defaultAtt) => {
+						let totalPresent = Object.keys(defaultAtt.attendance).filter(key => {
+							let dashedDate = key.replaceAll('_','-');
+					
+							const hasEvent = filteredEvents.find( event => dashedDate === event.start_of_event);
+		
+							return hasEvent && (defaultAtt.attendance[key] && (defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].is_excused === 1));
+						}).length || 0;
+
+					return {
+						...accum,
+						[defaultAtt.child_id]:{
+							...(accum[defaultAtt.child_id] || {}),
+							total_present: accum[defaultAtt.child_id] &&  accum[defaultAtt.child_id].total_present ? 
+								accum[defaultAtt.child_id].total_present + totalPresent : totalPresent,
+							total_attendance: totalAttendance
+						}
+					}
+				},{});
+
+				setAttendanceSummary(childEventAttendance)
+
+				console.log('childEventAttendance',childEventAttendance)
+			}
+			else {
+
+				// totalAttendance = Object.keys(att.attendance).length || 0;
+				const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
+					const dateKeys = Object.keys(att.attendance);
+					const filteredDate = dateKeys.filter(key => {
+						return isWithinInterval(new Date(key.replaceAll('_', '-')), {
+							start: subDays(new Date(date[0]), 1),
+							end: addDays(new Date(date[1]), 1),
+						});
+					});
+					const totalHours = filteredDate.reduce(
+						(accum, key) => {
+							return {
+								total_volunteer_hours: (accum.total_volunteer_hours || 0) + att.attendance[key].volunteer_hours || 0,
+								total_mentoring_hours: (accum.total_mentoring_hours || 0) + att.attendance[key].mentoring_hours || 0,
+							};
+						},
+						{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
+					);
+		
+					return {
+						...att,
+						...totalHours,
+						attendance: filteredDate.reduce((accum, key) => {
+							return {
+								...(accum || {}),
+								[key]: {
+									...(att.attendance[key] || {}),
+								},
+							};
+						}, {}),
+					};
+				});
+				
+
+				let childEventAttendance = updatedAttendanceDisplay.reduce((accum,att) => {
+
+						let totalAttendance = Object.keys(att.attendance).length || 0;
+						let totalPresent = Object.keys(att.attendance).filter(key => {
+							return att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1);
+						}).length || 0;
+					return {
+						...accum,
+						[att.child_id]:{
+							...(accum[att.child_id] || {}),
+							total_present: accum[att.child_id] &&  accum[att.child_id].total_present ? 
+								accum[att.child_id].total_present + totalPresent : totalPresent,
+							total_attendance: totalAttendance
+						}
+					}
+				},{});
+				console.log('childEventAttendance',childEventAttendance)
+				setAttendanceSummary(childEventAttendance)
+				
+			}
+	
+
 			setEvents(filteredEvents);
 	
 		}
