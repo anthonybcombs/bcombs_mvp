@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "@reach/router";
+import { Link } from '@reach/router';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faAngleLeft, faAngleRight, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
 import { getHours, max, addDays, subDays, addYears, isWithinInterval } from 'date-fns';
 
-import { requestAttendance,requestEventAttendance } from '../../../../redux/actions/Attendance';
+import { requestAttendance, requestEventAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
 
 import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
@@ -30,7 +30,7 @@ const AttendanceSummaryStyled = styled.div`
 		width: 50px;
 		color: #3e89fe;
 		display: flex;
-    align-items: center;
+		align-items: center;
 		padding-bottom: 1rem;
 		text-decoration: none;
 	}
@@ -56,8 +56,6 @@ const AttendanceSummaryStyled = styled.div`
 		background: #f36e22;
 		border-radius: 10px;
 	}
-	
-
 
 	#application-status {
 		padding: 1em;
@@ -108,7 +106,7 @@ const AttendanceSummaryStyled = styled.div`
 		min-width: 100px;
 	}
 	#attendance-table tbody tr .subHeader .subTable tr td .name a,
-	#attendance-table tbody tr .subHeader .subTable tr td .class >div {
+	#attendance-table tbody tr .subHeader .subTable tr td .class > div {
 		word-break: break-word;
 	}
 
@@ -136,7 +134,6 @@ const AttendanceSummaryStyled = styled.div`
 		padding: 0;
 	}
 
-
 	#attendance-table td.subHeader table.subTable {
 		width: 100%;
 	}
@@ -144,27 +141,24 @@ const AttendanceSummaryStyled = styled.div`
 		background: transparent;
 	}
 
-
 	#attendance-table a {
 		color: #3e89fe;
 		text-decoration: none;
 	}
-
-
 
 	.attendance-status-container {
 		display: flex;
 	}
 	.attendance-status-container .date svg {
 		color: grey;
-		transition: .15s ease-in-out;
+		transition: 0.15s ease-in-out;
 	}
 	.attendance-status-container .date svg:hover {
 		color: #000;
 	}
 	.attendance-status-container > div {
 		width: 100%;
-    min-width: 110px;
+		min-width: 110px;
 	}
 	.attendance-status-container > div.date {
 		padding: 15px 0;
@@ -173,7 +167,6 @@ const AttendanceSummaryStyled = styled.div`
 		border-right: 1px solid rgb(255 255 255);
 	}
 
-
 	.circle-icon {
 		border-radius: 50%;
 		width: 15px;
@@ -181,11 +174,10 @@ const AttendanceSummaryStyled = styled.div`
 		margin: 0 auto;
 	}
 
-
 	.exclude-icon {
-    position: absolute;
+		position: absolute;
 		top: -2px;
-    left: 49%;
+		left: 49%;
 		width: 3px;
 		height: 20px;
 		z-index: 99px;
@@ -253,9 +245,6 @@ const AttendanceSummaryStyled = styled.div`
 		padding-left: 2.3rem;
 	}
 
-
-
-
 	.filter-container {
 		display: flex;
 		padding-bottom: 12px;
@@ -264,7 +253,7 @@ const AttendanceSummaryStyled = styled.div`
 		position: relative;
 		min-width: 200px;
 	}
-	.filter-container .react-datetimerange-picker{
+	.filter-container .react-datetimerange-picker {
 		margin: 0;
 	}
 	.filter-container .react-datetimerange-picker__wrapper {
@@ -280,7 +269,7 @@ const AttendanceSummaryStyled = styled.div`
 	}
 	.filter-container .react-datetimerange-picker__wrapper button svg {
 		stroke: grey;
-		transition: .15s ease-in-out;
+		transition: 0.15s ease-in-out;
 	}
 	.filter-container .react-datetimerange-picker__calendar-button:hover svg,
 	.filter-container .react-datetimerange-picker__calendar-button svg:hover {
@@ -311,7 +300,6 @@ const AttendanceSummaryStyled = styled.div`
 		padding-left: 1.5rem;
 	}
 
-
 	.react-calendar {
 		border: none;
 		box-shadow: 0 3px 6px #ddd;
@@ -332,11 +320,11 @@ const AttendanceSummaryStyled = styled.div`
 	.react-calendar__month-view__weekdays__weekday {
 		font-weight: normal;
 	}
-	.react-calendar__month-view__weekdays__weekday >abbr {
+	.react-calendar__month-view__weekdays__weekday > abbr {
 		text-decoration: none;
 	}
 	.react-calendar__month-view__days {
-		padding: 0 .3rem .5rem;
+		padding: 0 0.3rem 0.5rem;
 	}
 	.react-calendar__tile--hasActive,
 	.react-calendar__tile--active:enabled:hover,
@@ -346,22 +334,17 @@ const AttendanceSummaryStyled = styled.div`
 		font-weight: 600;
 	}
 	.react-calendar__tile--active {
-	background: rgb(242 110 33 / 25%);
-	color: #000;
+		background: rgb(242 110 33 / 25%);
+		color: #000;
 	}
-
 
 	.react-calendar__tile {
-	border-radius: 5px;
+		border-radius: 5px;
 	}
-	.react-calendar__navigation button:enabled:hover, 
+	.react-calendar__navigation button:enabled:hover,
 	react-calendar__navigation button:enabled:focus {
-	background-color: rgb(255 255 255 / 20%);
+		background-color: rgb(255 255 255 / 20%);
 	}
-
-
-
-
 
 	@media (max-width: 840px) {
 		padding: 0rem 1rem 2rem;
@@ -383,7 +366,6 @@ const AttendanceSummaryStyled = styled.div`
 			flex-grow: unset;
 		}
 	}
-
 `;
 
 const DATE_FORMAT = 'yyyy-MM-dd';
@@ -391,15 +373,15 @@ const DATE_KEY_FORMAT = 'yyyy_MM_dd';
 
 const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];
 
-const AttendanceIcon = ({color = 'gray'}) => {
-		return <div className="circle-icon" style={{backgroundColor:color}}/>
-}
+const AttendanceIcon = ({ color = 'gray' }) => {
+	return <div className="circle-icon" style={{ backgroundColor: color }} />;
+};
 
 const attendanceColor = {
-	present:'#14e414',
-	absent:'red',
-	tardy:'#f26e21'
-}
+	present: '#14e414',
+	absent: 'red',
+	tardy: '#f26e21',
+};
 
 export default function index(props) {
 	const dispatch = useDispatch();
@@ -415,15 +397,14 @@ export default function index(props) {
 	const [events, setEvents] = useState([]);
 	const [defaultEvents, setDefaultEvents] = useState([]);
 	const [selectedRangeDate, setSelectedRangeDate] = useState([new Date(), new Date()]);
-	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState([new Date(), 	addYears(new Date(), 1)]);
-
+	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState([new Date(), addYears(new Date(), 1)]);
 
 	const { app_group_id } = useParams();
 
 	// appGroups = appGroups.filter((group) => {
 	//   return group.vendor == vendor.id;
 	// })
-	console.log('attendanceeeeee',attendance)
+	console.log('attendanceeeeee', attendance);
 	useEffect(() => {
 		if (auth.user_id) {
 			dispatch(requestVendor(auth.user_id));
@@ -473,26 +454,22 @@ export default function index(props) {
 	}, [attendance.list]);
 
 	useEffect(() => {
-		if(attendance.eventAttendanceList) {
-
-			const updatedEvents = attendance.eventAttendanceList.map( event => {
+		if (attendance.eventAttendanceList) {
+			const updatedEvents = attendance.eventAttendanceList.map(event => {
 				return {
 					...event,
 					start_of_event: format(new Date(parseInt(event.start_of_event)), DATE_FORMAT),
-					end_of_event: format(new Date(parseInt(event.end_of_event)), DATE_FORMAT)
-				}
+					end_of_event: format(new Date(parseInt(event.end_of_event)), DATE_FORMAT),
+				};
 			});
 			setEvents(updatedEvents);
 			setDefaultEvents(updatedEvents);
-		
-	
 		}
-		
-	},[attendance.eventAttendanceList])
+	}, [attendance.eventAttendanceList]);
 
 	useEffect(() => {
-		handleChangeDateFilter(	[new Date() , new Date(addYears(new Date(), 1))]	)
-	},[defaultEvents])
+		handleChangeDateFilter([new Date(), new Date(addYears(new Date(), 1))]);
+	}, [defaultEvents, defaultAttendanceDisplay]);
 
 	const renderTableData = () => {
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
@@ -505,16 +482,16 @@ export default function index(props) {
 			// 		if(	att && defaultAtt.child_id === att.child_id) {
 			// 			let result = Object.keys(defaultAtt.attendance).filter(key => {
 			// 				let dashedDate = key.replaceAll('_','-');
-							
+
 			// 				const hasEvent = events.find( event => dashedDate === event.start_of_event);
-		
+
 			// 				return hasEvent && (att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1));
 			// 			}).length || 0;
 			// 			return accum + result
 			// 		}
 			// 		return accum;
 			// 	},0)
-		
+
 			// 	totalAttendance = events.length || 0;
 			// }
 			// else {
@@ -524,96 +501,102 @@ export default function index(props) {
 			// 	totalAttendance = Object.keys(att.attendance).length || 0;
 			// }
 			let summaryTotal = 0;
-			if(attendanceSummary[att.child_id]) {
-				summaryTotal = 	((attendanceSummary[att.child_id].total_present * 100) / attendanceSummary[att.child_id].total_attendance).toFixed(2);
+			if (attendanceSummary[att.child_id]) {
+				summaryTotal = (
+					(attendanceSummary[att.child_id].total_present * 100) /
+					attendanceSummary[att.child_id].total_attendance
+				).toFixed(2);
 				summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			}
-			console.log('attendanceSummary[att.child_id]', attendanceSummary)
+			console.log('attendanceSummary[att.child_id]', attendanceSummary);
 			return (
 				<tr key={index}>
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td style={{width:250}}>
-									<div className='name'><a href={'#'}>{`${att.firstname} ${att.lastname}`}</a></div>
+								<td style={{ width: 250 }}>
+									<div className="name">
+										<a href={'#'}>{`${att.firstname} ${att.lastname}`}</a>
+									</div>
 								</td>
-								<td><div className='class'>{att.app_group_name}</div></td>
+								<td>
+									<div className="class">{att.app_group_name}</div>
+								</td>
 							</tr>
 						</table>
-						
 					</td>
-					
+
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
 								<td>
-									{attendanceSummary[att.child_id] && <div className='summary'>
-										{`${summaryTotal}%`} ({attendanceSummary[att.child_id].total_present}/{attendanceSummary[att.child_id].total_attendance})
-									</div> }
-									
-								
+									{attendanceSummary[att.child_id] && (
+										<div className="summary">
+											{`${summaryTotal}%`} ({attendanceSummary[att.child_id].total_present}/
+											{attendanceSummary[att.child_id].total_attendance})
+										</div>
+									)}
 								</td>
-								<td style={{ width: '380px'}}>
+								<td style={{ width: '380px' }}>
 									<div className="attendance-status-container">
 										<div>
-											<div style={{ position: 'relative'}}>
+											<div style={{ position: 'relative' }}>
 												{' '}
 												{(att.attendance[formattedDateKeys[0]] &&
 													att.attendance[formattedDateKeys[0]].status !== null && (
 														<div>
-														<AttendanceIcon color={attendanceColor[	att.attendance[formattedDateKeys[0]].status.toLowerCase()]}/>
-													
-															{(att.attendance[formattedDateKeys[0]].status === 'Absent' || 
-																att.attendance[formattedDateKeys[0]].status === 'Tardy') && 
-																att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
+															<AttendanceIcon
+																color={attendanceColor[att.attendance[formattedDateKeys[0]].status.toLowerCase()]}
+															/>
+
+															{(att.attendance[formattedDateKeys[0]].status === 'Absent' ||
+																att.attendance[formattedDateKeys[0]].status === 'Tardy') &&
+															att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
 																<div className="exclude-icon"></div>
 															) : (
 																<span />
 															)}
-														
 														</div>
-													)) ||
-													<AttendanceIcon />	}
+													)) || <AttendanceIcon />}
 											</div>
-			
 										</div>
 
 										<div>
-										{(att.attendance[formattedDateKeys[1]] &&
-													att.attendance[formattedDateKeys[1]].status !== null && (
-														<div style={{ position: 'relative'}}>
-														<AttendanceIcon color={attendanceColor[att.attendance[formattedDateKeys[1]].status.toLowerCase()]}/>
-													
-															{(att.attendance[formattedDateKeys[1]].status === 'Absent' || 
-																att.attendance[formattedDateKeys[1]].status === 'Tardy') && 
-																att.attendance[formattedDateKeys[1]].is_excused === 1 ? (
-																<div className="exclude-icon"></div>
-															) : (
-																<span />
-															)}
-															
-														</div>
-													)) ||
-													<AttendanceIcon />	}
+											{(att.attendance[formattedDateKeys[1]] &&
+												att.attendance[formattedDateKeys[1]].status !== null && (
+													<div style={{ position: 'relative' }}>
+														<AttendanceIcon
+															color={attendanceColor[att.attendance[formattedDateKeys[1]].status.toLowerCase()]}
+														/>
+
+														{(att.attendance[formattedDateKeys[1]].status === 'Absent' ||
+															att.attendance[formattedDateKeys[1]].status === 'Tardy') &&
+														att.attendance[formattedDateKeys[1]].is_excused === 1 ? (
+															<div className="exclude-icon"></div>
+														) : (
+															<span />
+														)}
+													</div>
+												)) || <AttendanceIcon />}
 										</div>
 
 										<div>
 											{(att.attendance[formattedDateKeys[2]] &&
-													att.attendance[formattedDateKeys[2]].status !== null && (
-														<div style={{ position: 'relative'}}>
-														<AttendanceIcon color={attendanceColor[	att.attendance[formattedDateKeys[2]].status.toLowerCase()]}/>
-													
-															{(att.attendance[formattedDateKeys[2]].status === 'Absent' || 
-																att.attendance[formattedDateKeys[2]].status === 'Tardy') && 
-																att.attendance[formattedDateKeys[2]].is_excused === 1 ? (
-																<div className="exclude-icon"></div>
-															) : (
-																<span />
-															)}
-														
-														</div>
-													)) ||
-													<AttendanceIcon />	}
+												att.attendance[formattedDateKeys[2]].status !== null && (
+													<div style={{ position: 'relative' }}>
+														<AttendanceIcon
+															color={attendanceColor[att.attendance[formattedDateKeys[2]].status.toLowerCase()]}
+														/>
+
+														{(att.attendance[formattedDateKeys[2]].status === 'Absent' ||
+															att.attendance[formattedDateKeys[2]].status === 'Tardy') &&
+														att.attendance[formattedDateKeys[2]].is_excused === 1 ? (
+															<div className="exclude-icon"></div>
+														) : (
+															<span />
+														)}
+													</div>
+												)) || <AttendanceIcon />}
 										</div>
 									</div>
 								</td>
@@ -621,12 +604,12 @@ export default function index(props) {
 						</table>
 					</td>
 					{/* <td>{format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)}</td> */}
-					
+
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td style={{ width: '100px'}}> {att.total_volunteer_hours}</td>
-								<td style={{ width: '100px'}}> {att.total_mentoring_hours}</td>
+								<td style={{ width: '100px' }}> {att.total_volunteer_hours}</td>
+								<td style={{ width: '100px' }}> {att.total_mentoring_hours}</td>
 							</tr>
 						</table>
 					</td>
@@ -648,8 +631,8 @@ export default function index(props) {
 			setAttendanceDisplay(defaultAttendanceDisplay);
 		} else {
 			let lowerCaseValue = value.toLowerCase();
-			console.log('defaultAttendanceDisplay',defaultAttendanceDisplay)
-			console.log('defaultAttendanceDisplay lowerCaseValue',lowerCaseValue)
+			console.log('defaultAttendanceDisplay', defaultAttendanceDisplay);
+			console.log('defaultAttendanceDisplay lowerCaseValue', lowerCaseValue);
 			const list = defaultAttendanceDisplay.filter(
 				item => item.fullname && item.fullname.toLowerCase().includes(lowerCaseValue)
 			);
@@ -665,110 +648,118 @@ export default function index(props) {
 			return;
 		}
 
-		if(defaultEvents.length > 0) {
-		
+		if (defaultEvents.length > 0) {
 			let filteredEvents = defaultEvents.filter(event => {
-				return 	isWithinInterval(new Date(event.start_of_event), {
+				return isWithinInterval(new Date(event.start_of_event), {
 					start: subDays(new Date(date[0]), 1),
-					end: addDays(new Date(date[1]), 1) 
+					end: addDays(new Date(date[1]), 1),
 				});
-			})
-			console.log('Filtered Events', filteredEvents)
+			});
+			console.log('Filtered Events', filteredEvents);
 
 			// ------------------------------------------- //
 			let totalPresent = null;
 			let totalAttendance = null;
-			if(filteredEvents.length > 0) {
+			if (filteredEvents.length > 0) {
 				totalAttendance = filteredEvents.length || 0;
-				let childEventAttendance = defaultAttendanceDisplay.reduce((accum,defaultAtt) => {
-						let totalPresent = Object.keys(defaultAtt.attendance).filter(key => {
-							let dashedDate = key.replaceAll('_','-');
-					
-							const hasEvent = filteredEvents.find( event => dashedDate === event.start_of_event);
-		
-							return hasEvent && (defaultAtt.attendance[key] && (defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].is_excused === 1));
+				let childEventAttendance = defaultAttendanceDisplay.reduce((accum, defaultAtt) => {
+					let totalPresent =
+						Object.keys(defaultAtt.attendance).filter(key => {
+							let dashedDate = key.replaceAll('_', '-');
+
+							const hasEvent = filteredEvents.find(event => dashedDate === event.start_of_event);
+
+							return (
+								hasEvent &&
+								defaultAtt.attendance[key] &&
+									(defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].is_excused === 1)
+							);
 						}).length || 0;
 
 					return {
 						...accum,
-						[defaultAtt.child_id]:{
+						[defaultAtt.child_id]: {
 							...(accum[defaultAtt.child_id] || {}),
-							total_present: accum[defaultAtt.child_id] &&  accum[defaultAtt.child_id].total_present ? 
-								accum[defaultAtt.child_id].total_present + totalPresent : totalPresent,
-							total_attendance: totalAttendance
-						}
-					}
-				},{});
-
-				setAttendanceSummary(childEventAttendance)
-
-				console.log('childEventAttendance',childEventAttendance)
-			}
-			else {
-
-				// totalAttendance = Object.keys(att.attendance).length || 0;
-				const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
-					const dateKeys = Object.keys(att.attendance);
-					const filteredDate = dateKeys.filter(key => {
-						return isWithinInterval(new Date(key.replaceAll('_', '-')), {
-							start: subDays(new Date(date[0]), 1),
-							end: addDays(new Date(date[1]), 1),
-						});
-					});
-					const totalHours = filteredDate.reduce(
-						(accum, key) => {
-							return {
-								total_volunteer_hours: (accum.total_volunteer_hours || 0) + att.attendance[key].volunteer_hours || 0,
-								total_mentoring_hours: (accum.total_mentoring_hours || 0) + att.attendance[key].mentoring_hours || 0,
-							};
+							total_present:
+								accum[defaultAtt.child_id] && accum[defaultAtt.child_id].total_present
+									? accum[defaultAtt.child_id].total_present + totalPresent
+									: totalPresent,
+							total_attendance: totalAttendance,
 						},
-						{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
-					);
-		
-					return {
-						...att,
-						...totalHours,
-						attendance: filteredDate.reduce((accum, key) => {
-							return {
-								...(accum || {}),
-								[key]: {
-									...(att.attendance[key] || {}),
-								},
-							};
-						}, {}),
 					};
-				});
-				
+				}, {});
 
-				let childEventAttendance = updatedAttendanceDisplay.reduce((accum,att) => {
+				setAttendanceSummary(childEventAttendance);
 
-						let totalAttendance = Object.keys(att.attendance).length || 0;
-						let totalPresent = Object.keys(att.attendance).filter(key => {
-							return att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1);
-						}).length || 0;
-					return {
-						...accum,
-						[att.child_id]:{
-							...(accum[att.child_id] || {}),
-							total_present: accum[att.child_id] &&  accum[att.child_id].total_present ? 
-								accum[att.child_id].total_present + totalPresent : totalPresent,
-							total_attendance: totalAttendance
-						}
-					}
-				},{});
-				console.log('childEventAttendance',childEventAttendance)
-				setAttendanceSummary(childEventAttendance)
-				
+				console.log('childEventAttendance', childEventAttendance);
+			} else {
+				attendanceSummyByAttendance(date);
 			}
-	
 
 			setEvents(filteredEvents);
-	
+		} else {
+			attendanceSummyByAttendance(date);
 		}
 
-		setSelectedSummaryRangeDate([new Date(date[0]),new Date(date[1])])
+		setSelectedSummaryRangeDate([new Date(date[0]), new Date(date[1])]);
+	};
 
-	}
+	const attendanceSummyByAttendance = date => {
+		const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
+			const dateKeys = Object.keys(att.attendance);
+			const filteredDate = dateKeys.filter(key => {
+				return isWithinInterval(new Date(key.replaceAll('_', '-')), {
+					start: subDays(new Date(date[0]), 1),
+					end: addDays(new Date(date[1]), 1),
+				});
+			});
+			const totalHours = filteredDate.reduce(
+				(accum, key) => {
+					return {
+						total_volunteer_hours: (accum.total_volunteer_hours || 0) + att.attendance[key].volunteer_hours || 0,
+						total_mentoring_hours: (accum.total_mentoring_hours || 0) + att.attendance[key].mentoring_hours || 0,
+					};
+				},
+				{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
+			);
+
+			return {
+				...att,
+				...totalHours,
+				attendance: filteredDate.reduce((accum, key) => {
+					return {
+						...(accum || {}),
+						[key]: {
+							...(att.attendance[key] || {}),
+						},
+					};
+				}, {}),
+			};
+		});
+
+		let childEventAttendance = updatedAttendanceDisplay.reduce((accum, att) => {
+			let totalAttendance = Object.keys(att.attendance).length || 0;
+			let totalPresent =
+				Object.keys(att.attendance).filter(key => {
+					return (
+						att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1)
+					);
+				}).length || 0;
+			return {
+				...accum,
+				[att.child_id]: {
+					...(accum[att.child_id] || {}),
+					total_present:
+						accum[att.child_id] && accum[att.child_id].total_present
+							? accum[att.child_id].total_present + totalPresent
+							: totalPresent,
+					total_attendance: totalAttendance,
+				},
+			};
+		}, {});
+
+		setAttendanceSummary(childEventAttendance);
+	};
 
 	const handleChangeRangeDate = date => {
 		if (date == null) {
@@ -820,10 +811,7 @@ export default function index(props) {
 			<h2>Attendance Summary</h2>
 			<div id="attendance-summary">
 				<Link to={'/dashboard/attendance'} className="back-btn">
-					<FontAwesomeIcon
-						className='back-icon'
-						icon={faAngleLeft}
-					/>	
+					<FontAwesomeIcon className="back-icon" icon={faAngleLeft} />
 					Back
 				</Link>
 				<div className="filter-container">
@@ -831,7 +819,6 @@ export default function index(props) {
 						<CustomRangeDatePicker value={selectedSummaryRangeDate} onChange={handleChangeDateFilter} />
 					</div>
 					<div className="field search">
-	
 						<CustomRangeDatePicker value={selectedRangeDate} onChange={handleChangeRangeDate} />
 					</div>
 					<div className="field search">
@@ -844,12 +831,9 @@ export default function index(props) {
 							onChange={handleSearchChange}
 						/>
 						<label className="field-label" for={`search`}>
-								Search
-							</label>
-							<FontAwesomeIcon
-								className='search-icon'
-								icon={faSearch}
-							/>
+							Search
+						</label>
+						<FontAwesomeIcon className="search-icon" icon={faSearch} />
 					</div>
 				</div>
 				<div id="attendance-summary-list">
@@ -875,24 +859,22 @@ export default function index(props) {
 									<table className="subTable">
 										<tr>
 											<td>Summary</td>
-											<td style={{ width: '380px', padding: '0'}}>
+											<td style={{ width: '380px', padding: '0' }}>
 												<div className="attendance-status-container">
 													{displayDays.map((date, index) => {
 														return (
-															<div className='date'>
-																{index === 0 && <span onClick={handlePreviousDate} style={{ cursor: 'pointer', marginRight: '1rem' }}>
-																	<FontAwesomeIcon
-																		className='search-icon'
-																		icon={faAngleLeft}
-																	/>	
-																</span>}
+															<div className="date">
+																{index === 0 && (
+																	<span onClick={handlePreviousDate} style={{ cursor: 'pointer', marginRight: '1rem' }}>
+																		<FontAwesomeIcon className="search-icon" icon={faAngleLeft} />
+																	</span>
+																)}
 																{format(date, DATE_FORMAT)}
-																{index === 2 && <span onClick={handleNextDate} style={{ cursor: 'pointer', marginLeft: '1rem' }}>
-																	<FontAwesomeIcon
-																		className='search-icon'
-																		icon={faAngleRight}
-																	/>	
-																</span>}
+																{index === 2 && (
+																	<span onClick={handleNextDate} style={{ cursor: 'pointer', marginLeft: '1rem' }}>
+																		<FontAwesomeIcon className="search-icon" icon={faAngleRight} />
+																	</span>
+																)}
 															</div>
 														);
 													})}
