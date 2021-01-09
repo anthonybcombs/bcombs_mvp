@@ -107,6 +107,10 @@ const AttendanceSummaryStyled = styled.div`
 	#attendance-table tbody tr .subHeader .subTable tr td .class {
 		min-width: 100px;
 	}
+	#attendance-table tbody tr .subHeader .subTable tr td .name a,
+	#attendance-table tbody tr .subHeader .subTable tr td .class >div {
+		word-break: break-word;
+	}
 
 	#attendance-table tbody tr .subHeader .subTable tr td .summary {
 		white-space: nowrap;
