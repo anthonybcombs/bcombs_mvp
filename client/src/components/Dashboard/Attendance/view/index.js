@@ -420,19 +420,20 @@ export default function index(props) {
 
 	useEffect(() => {
 		if (attendance.list) {
+
+
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
-				attDate = attDate.replaceAll('-', '_');
-
+				attDate = attDate.replaceAll('-', '_');				
 				return {
 					...accum,
 					[att.child_id]: {
 						...att,
 						fullname: `${att.firstname} ${att.lastname}`,
-						total_volunteer_hours:
-							((accum[att.child_id] && accum[att.child_id].total_volunteer_hours) || 0) + att.volunteer_hours || 0,
-						total_mentoring_hours:
-							((accum[att.child_id] && accum[att.child_id].total_mentoring_hours) || 0) + att.mentoring_hours || 0,
+						// total_volunteer_hours:
+						// 	((accum[att.child_id] && accum[att.child_id].total_volunteer_hours) || 0) + att.volunteer_hours || 0,
+						// total_mentoring_hours:
+						// 	((accum[att.child_id] && accum[att.child_id].total_mentoring_hours) || 0) + att.mentoring_hours || 0,
 						attendance: {
 							...((accum[att.child_id] && accum[att.child_id].attendance) || {}),
 							[attDate]: {
@@ -445,9 +446,63 @@ export default function index(props) {
 					},
 				};
 			}, {});
+
 			currentAttendance = Object.keys(currentAttendance).map(key => {
 				return currentAttendance[key];
+			}).map(att => {
+
+				
+				// const dateKeys = Object.keys(att.attendance);
+				// const filteredDate = dateKeys.filter(key => {
+				// 	return isWithinInterval(new Date(key.replaceAll('_', '-')), {
+				// 		start: subDays(new Date(), 1),
+				// 		end: addDays(new Date(), 1),
+				// 	});
+				// });
+
+				
+				// const totalHours = filteredDate.reduce(
+				// 	(accum, key) => {
+				// 		return {
+				// 			total_volunteer_hours: (accum.total_volunteer_hours) + att.attendance[key].volunteer_hours || 0,
+				// 			total_mentoring_hours: (accum.total_mentoring_hours) + att.attendance[key].mentoring_hours || 0,
+				// 		};
+				// 	},
+				// 	{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
+				// );
+
+
+				const dateKeys = Object.keys(att.attendance);
+				const filteredDate = dateKeys.filter(key => {
+					return isWithinInterval(new Date(key.replaceAll('_', '-')), {
+						start: subDays(new Date(), 1),
+						end: addDays(new Date(), 1),
+					});
+				});
+				const totalHours = filteredDate.reduce(
+					(accum, key) => {
+						return {
+							total_volunteer_hours: (accum.total_volunteer_hours) + att.attendance[key].volunteer_hours || 0,
+							total_mentoring_hours: (accum.total_mentoring_hours) + att.attendance[key].mentoring_hours || 0,
+						};
+					},
+					{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
+				);
+	
+				return {
+					...att,
+					...totalHours,
+					// attendance: filteredDate.reduce((accum, key) => {
+					// 	return {
+					// 		...(accum || {}),
+					// 		[key]: {
+					// 			...(att.attendance[key] || {}),
+					// 		},
+					// 	};
+					// }, {}),
+				};
 			});
+			console.log('currentAttendance123123',currentAttendance)
 			setAttendanceDisplay(currentAttendance);
 			setDefaultAttendanceDisplay(currentAttendance);
 		}
@@ -716,8 +771,8 @@ export default function index(props) {
 			const totalHours = filteredDate.reduce(
 				(accum, key) => {
 					return {
-						total_volunteer_hours: (accum.total_volunteer_hours || 0) + att.attendance[key].volunteer_hours || 0,
-						total_mentoring_hours: (accum.total_mentoring_hours || 0) + att.attendance[key].mentoring_hours || 0,
+						total_volunteer_hours: (accum.total_volunteer_hours) + att.attendance[key].volunteer_hours || 0,
+						total_mentoring_hours: (accum.total_mentoring_hours) + att.attendance[key].mentoring_hours || 0,
 					};
 				},
 				{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
