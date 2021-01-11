@@ -1592,7 +1592,7 @@ export default function index() {
                 onChange={({ target }) => {
 
                   console.log("target", target.value);
-                  if(target.value == "default") {
+                  if(target.value == "s") {
                     setSelectedForm("default");
                     dispatch(requestGetApplications(selectedVendor.id));
                   } else {
@@ -1605,7 +1605,7 @@ export default function index() {
                   }
                 }}
               >
-                <option key={selectedVendor.id} value="default">
+                <option key={selectedVendor.id} selected value="default">
                   {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
                 </option>
                 {
