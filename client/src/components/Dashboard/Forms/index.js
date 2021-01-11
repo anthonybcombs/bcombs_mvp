@@ -111,22 +111,6 @@ export default props => {
 
 	return (
 		<FormStyled>
-			<div style={{ paddingTop: 24 }}>
-				<a
-					href="/dashboard/attendance"
-					// target='_blank'
-					style={{
-						backgroundColor: '#f5812f',
-						padding: '4px 22px',
-						borderRadius: 3,
-						color: 'white',
-						fontSize: 16,
-						fontWeight: 600,
-						textDecoration: 'none',
-					}}>
-					Attendance
-				</a>
-			</div>
 			<h2>Form Manager</h2>
 			<div id="formManager">
 				<Headers onChangeFilter={handleChangeFilter} />
