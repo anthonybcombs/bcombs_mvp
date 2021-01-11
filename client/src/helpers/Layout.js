@@ -147,6 +147,7 @@ const PopoverStyled = styled.div`
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
   const [isPopOverSettingsVisible, setIsPopOverSettingsVisible] = useState(false);
+  const [isAdminPopOverVisible, setIsAdminPopOverVisible] = useState(false);
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
   const [currentUserType, setCurrentUserType] = useState("");
 
@@ -288,16 +289,70 @@ export default function Layout({ children }) {
                           <span>Contacts</span>
                         </Link>
 
-                        <Link
+                  
+
+                        <Popover
+                        containerStyle={{
+                          position: "relative",
+                          right: 25
+                        }}
+                        isOpen={isAdminPopOverVisible}
+                        position={["bottom", "right"]}
+                        content={({ position, targetRect, popoverRect }) => (
+                          <ArrowContainer
+                            position={position}
+                            targetRect={targetRect}
+                            align="end"
+                            popoverRect={popoverRect}
+                            arrowColor="lightgrey"
+                            arrowSize={7}
+                            arrowStyle={{ opacity: 1 }}
+                            containerStyle={{
+                              right: 12
+                            }}
+                            arrow="center">
+                            <PopoverStyled>
+                                <Link
+                                    to="/dashboard/attendance"
+                                    onClick={() => {
+                                      setIsAdminPopOverVisible(false);
+                                    }}>
+                                    <span>Attendance</span>
+                                </Link>
+                            </PopoverStyled>
+
+                            <PopoverStyled>
+                                <Link
+                                    to="/dashboard/forms"
+                                    onClick={() => {
+                                      setIsAdminPopOverVisible(false);
+                                    }}>
+                                    <span>Forms</span>
+                                </Link>
+                            </PopoverStyled>
+                          </ArrowContainer>
+                        )}
+                        onClickOutside={({ position, targetRect, popoverRect }) => {
+                          setIsAdminPopOverVisible(false);
+                        }}>
+                          {/* <Link
                           className={`${
                             context.location.pathname ===
                             "/dashboard/forms"
                               ? "selected"
                               : ""
                           }`}
-                          to="/dashboard/forms">
-                          <span>Admin</span>
-                        </Link>
+                          to="/dashboard/forms"> */}
+                          <a
+                          onClick={() => {
+                            console.log("pop over is visible")
+                            setIsAdminPopOverVisible(true);
+                          }}>
+                             <span>Admin</span>
+                          </a>
+                         
+                        {/* </Link> */}
+                      </Popover>
 
                         {/* <Link
                           className={`${
