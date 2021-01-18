@@ -58,7 +58,8 @@ import {
   getVendorsIdByUser,
   deleteVendorAdmins,
   updateVendorAdmins,
-  checkIfAdminVendorExists
+  checkIfAdminVendorExists,
+  getVendorAppGroupsByFormId
 } from "../../api/vendor";
 import {
   createApplication,
@@ -185,11 +186,37 @@ const resolvers = {
       return vendors;
     },
     async vendorsByUser(root, { user }, context) {
-      console.log("vendorsByUser1111", user);
+
       let vendors = await getVendorsByUserId(user);
-      console.log("vendorsByUser2222", vendors);
 
       return vendors;
+    },
+    async getUserVendorForms(root, { user }, context) {
+
+      const vendors = await getVendorsByUserId(user);
+
+      let response = [];
+
+      for(const vendor of vendors) {
+
+        response.push({
+          name: vendor.name + " (Bcombs Form)",
+          id: vendor.id,
+          is_form: false
+        })
+
+        const forms = await getVendorCustomApplicationForms({vendor: vendor.id});
+
+        for(const form of forms) {
+          response.push({
+            name: form && form.form_contents && form.form_contents.formTitle ? form.form_contents.formTitle : "Untitled Form",
+            id: form.form_id,
+            is_form: true
+          })
+        }
+      }
+
+      return response;
     },
     async getVendorById2(root, { id2 }, context) {
       const vendors = await getVendorById2(id2);
@@ -332,6 +359,9 @@ const resolvers = {
 
       console.log("admins", admins);
       return admins;
+    },
+    async getFormAppGroup(root, {form}, contenxt) {
+      return await getVendorAppGroupsByFormId(form);
     },
     async getParentChildRelationship(root, { relationships }, context) {
       let resRelationships = [];
@@ -736,10 +766,12 @@ const resolvers = {
       for (const vendor of vendors) {
         const fields = {
           user_id: appGroup.user_id,
-          vendor: vendor,
+          vendor: !vendor.is_form ? vendor.id : null,
+          form: vendor.is_form ? vendor.id : null,
           size: appGroup.size,
           name: appGroup.name,
-          email: appGroup.email
+          email: appGroup.email,
+          pool_id: appGroup.pool_id
         };
         await addAppGroup(fields);
       }

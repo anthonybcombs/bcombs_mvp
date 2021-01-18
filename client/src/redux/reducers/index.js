@@ -18,6 +18,7 @@ import vendors from "./Vendors";
 import applications from "./Applications";
 import admins from "./Admins";
 import form from "./Forms";
+import vendorForms from "./VendorForms";
 
 const reducer = combineReducers({
   auth,
@@ -38,6 +39,7 @@ const reducer = combineReducers({
   vendors,
   applications,
   admins,
-  form
+  form,
+  vendorForms
 });
 export default reducer;

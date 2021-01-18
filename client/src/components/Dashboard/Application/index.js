@@ -25,7 +25,7 @@ import DaycareParentFormView from "./daycare/parent";
 import RelationshipToChildStyled from "../DaycareApplicationForm/RelationshipToChildForm";
 
 import TermsWaiverFormViewStyled from "./view/waiver";
-import { requestVendor } from "../../../redux/actions/Vendors";
+import { requestVendor, requestGetFormAppGroup } from "../../../redux/actions/Vendors";
 import {
   requestGetApplications,
   requestUpdateApplication,
@@ -433,7 +433,7 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
-  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm, customApplicationHistory } } = useSelector(
+  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups } } = useSelector(
     ({ groups, auth, vendors, applications, loading, form }) => {
       return { groups, auth, vendors, applications, loading, form };
     }
@@ -466,6 +466,10 @@ export default function index() {
     window.location.reload()
   }
 
+  const [appGroups, setAppGroups] = useState([]);
+
+  console.log("form app group", formAppGroups);
+
   useEffect(() => {
     if (auth.user_id) {
       //dispatch(requestUserGroup(auth.email));
@@ -489,11 +493,13 @@ export default function index() {
         });
 
         setSelectedVendor(newDefaultVendor[0]);
+        setAppGroups(newDefaultVendor[0].app_groups);
         //dispatch(requestGetApplications(newDefaultVendor[0].id));
         dispatch(requestGetForms({ vendor: newDefaultVendor[0].id, categories: [] }))
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
+        setAppGroups(selectedVendor.app_groups);
         dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
@@ -503,6 +509,12 @@ export default function index() {
   useEffect(() => {
     dispatch(requestGetApplications(selectedVendor.id));
   }, [formList])
+
+  useEffect(() => {
+    console.log("Im here here formAppGroups");
+    console.log("formAppGroups, formAppGroups", formAppGroups);
+    setAppGroups(formAppGroups);
+  }, [formAppGroups])
 
   console.log("vendor", vendors);
 
@@ -1592,8 +1604,10 @@ export default function index() {
                 onChange={({ target }) => {
 
                   console.log("target", target.value);
-                  if(target.value == "s") {
+                  if(target.value == "default") {
+                    console.log("selectedvendor", selectedVendor);
                     setSelectedForm("default");
+                    setAppGroups(selectedVendor.app_groups);
                     dispatch(requestGetApplications(selectedVendor.id));
                   } else {
                     setSelectedForm(target.value);
@@ -1601,6 +1615,10 @@ export default function index() {
                       setView('')
                       setSelectedApplication({})
                     }
+
+                    console.log("form form", target.value);
+                    setAppGroups([]);
+                    dispatch(requestGetFormAppGroup(target.value));
                     dispatch(requestGetCustomApplications(target.value));
                   }
                 }}
@@ -1689,7 +1707,7 @@ export default function index() {
         <div>
           {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
             <ApplicationSummaryStyled
-              appGroups={selectedVendor.app_groups}
+              appGroups={appGroups}
               applications={applications.activeapplications}
               vendor={selectedVendor}
             />
@@ -1704,7 +1722,7 @@ export default function index() {
             <EditApplicationStyled
               application={selectedApplication}
               vendor={selectedVendor}
-              appGroups={selectedVendor.app_groups}
+              appGroups={appGroups}
               onSubmit={onSubmit}
               handleUpdateOnchange={handleUpdateOnchange}
               updateLoading={loading.application}
@@ -1718,7 +1736,7 @@ export default function index() {
           handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" ? viewType : 'builderForm')}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
-          appGroups={selectedVendor.app_groups}
+          appGroups={appGroups}
         />
       )}
       {

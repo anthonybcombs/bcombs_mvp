@@ -407,13 +407,19 @@ const inputs = `
         class_teacher: String
     }
 
+    input AppGroupVendorInput {
+        id: String
+        is_form: Boolean
+    }
+
     input AppGroupInput {
         app_grp_id: String
         user_id: String!
         email: String!
-        vendors: [String!]
+        vendors: [AppGroupVendorInput]
         size: Int!
         name: String!
+        pool_id: String!
     }
 
     input DeleteAppGroupInput {
@@ -1051,10 +1057,12 @@ const queryTypes = `
         id: Int
         app_grp_id: String!
         user: String!
-        vendor: String!
+        vendor: String
+        form: String
         size: Int
         name: String!
         created_at: Date
+        pool_id: String
     }
 
     type AppGroupStatus{
@@ -1339,6 +1347,12 @@ const queryTypes = `
         recurring: String
         recurring_end_date: String
     }
+
+    type VendorForms {
+        name: String
+        id: String
+        is_form: Boolean
+    }
     
 `;
 
@@ -1425,6 +1439,8 @@ const queries = `
         getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
         getAttendance(application_group_id: String): [AttendanceList]
         getEventAttendance(application_group_id: String): [EventAttendanceList]
+        getUserVendorForms(user: String!): [VendorForms]
+        getFormAppGroup(form: String!): [VendorAppGroup]
     }
 `;
 

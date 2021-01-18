@@ -75,37 +75,47 @@ export default function index({
 
   const getClassCount = (group) => {
 
-    const size = applications.filter((app) => {
-      if(app.class_teacher) {
-        return app.class_teacher == group.app_grp_id;
-      }
-    });
+    if(applications.length > 0) {
+      const size = applications.filter((app) => {
+        if(app.class_teacher) {
+          return app.class_teacher == group.app_grp_id;
+        }
+      });
+  
+      return size.length;
+    }
 
-    return size.length;
+    return 0;
+
   }
 
   const renderTableData = () => {
 
-    return appGroups.map((group, index) => {
+    if(appGroups.length > 0) {
+      return appGroups.map((group, index) => {
 
-      let count = group.size;
-      let classCount = getClassCount(group);
-      let availableCount = count - classCount;
-      availableCount = availableCount < 0 ? 0 : availableCount;
+        let count = group.size;
+        let classCount = getClassCount(group);
+        let availableCount = count - classCount;
+        availableCount = availableCount < 0 ? 0 : availableCount;
+  
+        return (
+          <tr key={group.id}>
+            <td>
+              <a href={"class/" + vendor?.id2 + "/" + group.name} target="_blank">
+                {group.name}
+              </a>
+            </td>
+            <td>{count}</td>
+            <td>{availableCount}</td>
+            <td>{classCount}</td>
+          </tr>
+        )
+      })
+    } else {
+      return (<tr></tr>)
+    }
 
-      return (
-        <tr key={group.id}>
-          <td>
-            <a href={"class/" + vendor?.id2 + "/" + group.name} target="_blank">
-              {group.name}
-            </a>
-          </td>
-          <td>{count}</td>
-          <td>{availableCount}</td>
-          <td>{classCount}</td>
-        </tr>
-      )
-    })
   }
 
   const getTotalCount = () => {
@@ -144,25 +154,29 @@ export default function index({
             <span>Overall Summary</span>
           </div>
         </div>
-        <div id="application-status-list">
-          <table id="groups">
-            <tbody>
-              <tr>
-                <th>Class</th>
-                <th>Count</th>
-                <th>Available</th>
-                <th>Class Count</th>
-              </tr>
-              <tr>
-                <td>Total</td>
-                <td>{getTotalCount()}</td>
-                <td>{getTotalAvailable()}</td>
-                <td>{getTotalClassCount()}</td>
-              </tr>
-              {renderTableData()}
-            </tbody>
-          </table>
-        </div>
+        {
+          appGroups.length > 0 && (
+          <div id="application-status-list">
+            <table id="groups">
+              <tbody>
+                <tr>
+                  <th>Class</th>
+                  <th>Count</th>
+                  <th>Available</th>
+                  <th>Class Count</th>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td>{getTotalCount()}</td>
+                  <td>{getTotalAvailable()}</td>
+                  <td>{getTotalClassCount()}</td>
+                </tr>
+                {renderTableData()}
+              </tbody>
+            </table>
+          </div>
+          )
+        }
       </div>
     </ApplicationSummaryStyled>
   )

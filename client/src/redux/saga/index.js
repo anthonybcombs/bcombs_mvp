@@ -56,14 +56,16 @@ import { getGrades } from "../actions/Grades";
 import { requestedStatus, removedStatus } from "../actions/Status";
 
 import { 
-  getVendor, 
+  getVendor,
+  getUserVendorForms,
   updateVendor, 
   getVendorById2, 
   getVendorById,
   getVendorAdmins, 
   addAdmin,
   deleteAdmins,
-  updateAdmin } from "../actions/Vendors";
+  updateAdmin,
+  getFormAppGroup } from "../actions/Vendors";
 
 import {
   addApplication,
@@ -237,6 +239,16 @@ function* rootSaga() {
     actionType.REQUEST_DELETE_ADMINS,
     deleteAdmins
   );
+
+  yield takeLatest(
+    actionType.REQUEST_USER_VENDOR_FORMS,
+    getUserVendorForms
+  )
+
+  yield takeLatest(
+    actionType.REQUEST_GET_FORM_APP_GROUP,
+    getFormAppGroup
+  )
 
   // Added by Jeff for Form Builder
   yield takeLatest(actionType.REQUEST_GET_FORMS, getForms);

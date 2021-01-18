@@ -170,6 +170,16 @@ export const GET_VENDOR_ADMINS = gql`
   }
 `;
 
+export const GET_USER_VENDOR_FORMS = gql`
+  query getUserVendorForms($user:String!) {
+    getUserVendorForms(user: $user) {
+      name
+      id
+      is_form
+    }
+  }
+`;
+
 //mutation
 
 export const ADD_VENDOR_ADMIN = gql`
@@ -249,6 +259,8 @@ export const ADD_VENDORS_APP_GROUP = gql`
         name
         size
         vendor
+        pool_id
+        form
         user
         app_grp_id
       }
@@ -274,6 +286,8 @@ export const UPDATE_VENDORS_APP_GROUP = gql`
         name
         size
         vendor
+        pool_id
+        form
         user
         app_grp_id
       }
@@ -298,6 +312,8 @@ export const DELETE_VENDORS_APP_GROUP = gql`
         name
         size
         vendor
+        pool_id
+        form
         user
         app_grp_id
       }
