@@ -155,7 +155,7 @@ export default function index({
     );
     while (day <= endDate) {
       const currentDateTime = parseISO(
-        `${format(day, "yyyy-MM-dd")}T${hour < 10 ? `0${hour}` : hour}:00:00`
+        `${format(day, "MM/dd/yyyy")}T${hour < 10 ? `0${hour}` : hour}:00:00`
       );
       let currentDay = new Date(day).getDay();
       let eventsOnThisDay = events.filter(event => {

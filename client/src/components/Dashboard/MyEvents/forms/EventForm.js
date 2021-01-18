@@ -108,6 +108,9 @@ const EventFormStyled = styled.form`
     background-color: #f26e21;
     color: white;
   }
+  .react-datetimerange-picker__range-divider{
+    margin-top:5px !important;
+  }
   input[placeholder="Add guests"] {
     display: inline-block;
     width: initial;
@@ -524,6 +527,7 @@ export default function createEventForm({
         <br />
       </div>
       <DateTimeRangePicker
+        format={'MM/dd/yyyy'}
         value={eventDetails.eventSchedule}
         disableClock={true}
         rangeDivider={true}
@@ -639,7 +643,7 @@ export default function createEventForm({
             Recurring End Date
             <CustomDatePicker
               className="custom-date-picker"
-              placeholderText="mm/dd/yyyy"
+              placeholderText="MM/dd/yyyy"
               selected={
                 eventDetails.recurringEndDate &&
                 new Date(eventDetails.recurringEndDate)
@@ -647,7 +651,7 @@ export default function createEventForm({
               onChange={date => {
                 handleEventDetailsChange(
                   "recurringEndDate",
-                  format(new Date(date), "yyyy-MM-dd")
+                  format(new Date(date), "MM/dd/yyyy")
                 );
               }}
             />

@@ -18,7 +18,7 @@ const CustomDatePicker = ({
       selected={selected}
       onChange={onChange}
       onChangeRaw={handleDateChangeRaw}
-
+      dateFormat={'MM/dd/yyyy'}
     />
   );
 };

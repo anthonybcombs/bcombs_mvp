@@ -127,7 +127,7 @@ const initialEventDetails = selectedDate => {
   };
 };
 
-const DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+const DATE_TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
 export default function index({
   isVisible = true,
   auth,

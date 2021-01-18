@@ -258,7 +258,7 @@ export default function index() {
         familyrelationship: user.profile.family_relationship,
         zipcode: user.profile.zip_code,
         dateofbirth: isValidDate(user.profile.birth_date)
-          ? format(new Date(user.profile.birth_date), "yyyy-MM-dd")
+          ? format(new Date(user.profile.birth_date), "MM/dd/yyyy")
           : null,
         address: user.profile.address,
         school: user.profile.school,
