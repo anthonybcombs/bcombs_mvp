@@ -21,7 +21,7 @@ import ProfileImg from '../../../../images/defaultprofile.png';
 
 import CustomDatePicker from '../../../../helpers/CustomDatePicker';
 
-const DATE_FORMAT = 'yyyy-MM-dd';
+const DATE_FORMAT = 'MM/dd/yyyy';
 
 const ClassListViewStyled = styled.div`
 	width: auto;
@@ -533,7 +533,7 @@ const DateCustomInput = ({ value, onClick, name, className, placeholder, registe
 			onClick={onClick}
 			name={name}
 			className={className}
-			placeholder="mm/dd/yyyy"
+			placeholder={DATE_FORMAT}
 			readOnly={true}
 			id={`attendance_date`}
 			ref={register({ required: true })}
@@ -1014,6 +1014,7 @@ export default function index() {
 					<div className="filter-container">
 						<div className="field">
 							<DatePicker
+								dateFormat={DATE_FORMAT}
 								readOnly={false}
 								style={{ marginTop: 24 }}
 								renderCustomHeader={({

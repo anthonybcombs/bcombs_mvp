@@ -530,6 +530,7 @@ const inputs = `
         hasSettings: Boolean
         supportMultiple: Boolean
         showLabel: Boolean
+        format: String
     }
 
     input CustomFormFieldsInput {
@@ -1169,6 +1170,7 @@ const queryTypes = `
         hasSettings: Boolean
         supportMultiple: Boolean
         showLabel: Boolean
+        format: String
     }
 
     type CustomFormFields {

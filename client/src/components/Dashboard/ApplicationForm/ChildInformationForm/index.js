@@ -399,7 +399,7 @@ export default function index({
         onClick={onClick}
         name={name}
         className={className}
-        placeholder="mm/dd/yyyy"
+        placeholder="MM/dd/yyyy"
         readOnly={true}
         id={`date_of_birth_${counter - 1}`}
         ref={register({ required: true })}

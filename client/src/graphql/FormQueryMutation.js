@@ -105,6 +105,7 @@ export const FORM_ADD_MUTATION = gql`
             hasSettings
             supportMultiple
             showLabel
+            format
           }
         }
         created_at
@@ -219,6 +220,7 @@ export const FORM_UPDATE_MUTATION = gql`
             hasSettings
             supportMultiple
             showLabel
+            format
           }
         }
         created_at
@@ -378,6 +380,7 @@ export const GET_CUSTOM_APPLICATION_BY_ID = gql`
           hasSettings
           supportMultiple
           showLabel
+          format
         }
       }
     }
@@ -492,6 +495,7 @@ export const GET_APPLICANTS_BY_FORM = gql`
           hasSettings
           supportMultiple
           showLabel
+          format
         }
       }
     }
@@ -600,6 +604,7 @@ export const GET_FORM_BY_FORM_ID = gql`
           hasSettings
           supportMultiple
           showLabel
+          format
         }
       }
       created_at
@@ -710,6 +715,7 @@ export const GET_FORMS_BY_VENDOR = gql`
           hasSettings
           supportMultiple
           showLabel
+          format
         }
       }
       created_at

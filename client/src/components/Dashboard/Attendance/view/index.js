@@ -368,7 +368,7 @@ const AttendanceSummaryStyled = styled.div`
 	}
 `;
 
-const DATE_FORMAT = 'yyyy-MM-dd';
+const DATE_FORMAT = 'MM/dd/yyyy';
 const DATE_KEY_FORMAT = 'yyyy_MM_dd';
 
 const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];

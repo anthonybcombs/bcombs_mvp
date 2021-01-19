@@ -58,10 +58,13 @@ export const VENDOR_BY_USER_QUERY = gql`
       }
       app_groups {
         id
-        app_grp_id
-        size
         name
-        created_at
+        size
+        vendor
+        pool_id
+        form
+        user
+        app_grp_id
       }
     }
   }
@@ -103,10 +106,13 @@ export const VENDOR_BY_ID2_QUERY = gql`
       }
       app_groups {
         id
-        app_grp_id
-        size
         name
-        created_at
+        size
+        vendor
+        pool_id
+        form
+        user
+        app_grp_id
       }
     }
   }
@@ -148,10 +154,13 @@ export const VENDOR_BY_ID_QUERY = gql`
       }
       app_groups {
         id
-        app_grp_id
-        size
         name
-        created_at
+        size
+        vendor
+        pool_id
+        form
+        user
+        app_grp_id
       }
     }
   }

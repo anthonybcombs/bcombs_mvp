@@ -499,7 +499,7 @@ export default function index() {
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
-        setAppGroups(selectedVendor.app_groups);
+        setAppGroups(vendors[0].app_groups);
         dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
@@ -965,7 +965,7 @@ export default function index() {
     reValidateMode: "onChange"
   });
 
-  const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+  const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
 
   const onSubmitSaveApplication = () => {
     console.log("Click Save Application");
@@ -1710,6 +1710,8 @@ export default function index() {
               appGroups={appGroups}
               applications={applications.activeapplications}
               vendor={selectedVendor}
+              form={selectedForm}
+              isForm={selectedForm !== "default"}
             />
           )}
           {selectedLabel === "Form Settings" && !selectNonMenuOption && (

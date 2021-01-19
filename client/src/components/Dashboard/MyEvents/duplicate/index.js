@@ -273,11 +273,11 @@ export default function index({
       id: uuid(),
       start_of_event: format(
         getUTCDate(eventDetails.eventSchedule[0]),
-        "yyyy-MM-dd HH:mm:ss"
+        "MM/dd/yyyy HH:mm:ss"
       ),
       end_of_event: format(
         getUTCDate(eventDetails.eventSchedule[1]),
-        "yyyy-MM-dd HH:mm:ss"
+        "MM/dd/yyyy HH:mm:ss"
       ),
       type: defaultEventDetails.type,
       location: defaultEventDetails.location,
