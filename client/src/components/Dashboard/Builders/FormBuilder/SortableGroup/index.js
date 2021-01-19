@@ -112,7 +112,7 @@ const SortableGroup = React.forwardRef(
             value={label}
             disabled={!enableEditGroupName}
             readOnly={!showLabel}
-            style={{ color: `red!important` }}
+            style={{ color: `${color}` }}
             onBlur={() => {
               handleEnableEditGroupName(false)
             }}
