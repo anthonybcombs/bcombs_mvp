@@ -17,13 +17,13 @@ app.use(compression());
 app.use(
   bodyParser.urlencoded({
     extended: true,
-    parameterLimit: 10000000,
+    parameterLimit: 100000,
     limit: "50mb",
     extended: true
   })
 );
 app.use(
-  bodyParser.json({ parameterLimit: 10000000, limit: "50mb", extended: true })
+  bodyParser.json({ parameterLimit: 100000, limit: "50mb", extended: true })
 );
 
 const serviceNames = Object.keys(services);

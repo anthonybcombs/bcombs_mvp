@@ -55,7 +55,6 @@ export const CREATE_CALENDAR_MUTATION = gql`
         color
         visibilityType
         image
-        app_group_ids
       }
     }
   }
@@ -74,7 +73,6 @@ export const EDIT_CALENDAR_MUTATON = gql`
         color
         visibilityType
         image
-        app_group_ids
       }
     }
   }

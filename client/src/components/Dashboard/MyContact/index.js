@@ -30,7 +30,7 @@ import {
   requestUserGroup,
   requestMembers
 } from "../../../redux/actions/Groups";
-import { requestVendor, requestUserVendorForms } from "../../../redux/actions/Vendors";
+import { requestVendor } from "../../../redux/actions/Vendors";
 
 const MyContactsStyled = styled.div`
   // padding: 1em;
@@ -150,10 +150,9 @@ export default function index() {
     contacts,
     loading,
     vendors,
-    userTypes,
-    vendorForms
+    userTypes
   } = useSelector(
-    ({ auth, groups, groupMembers, contacts, loading, vendors, userTypes, vendorForms }) => {
+    ({ auth, groups, groupMembers, contacts, loading, vendors, userTypes }) => {
       return {
         auth,
         groups,
@@ -161,8 +160,7 @@ export default function index() {
         contacts,
         loading,
         vendors,
-        userTypes,
-        vendorForms
+        userTypes
       };
     }
   );
@@ -170,41 +168,19 @@ export default function index() {
   useEffect(() => {
     if (auth.email) {
       dispatch(requestUserGroup(auth.email));
-      dispatch(requestUserVendorForms(auth.user_id));
-      //dispatch(requestVendor(auth.user_id));
+      dispatch(requestVendor(auth.user_id));
     }
     if (contacts) {
       setCurrentContacts(contacts);
     }
   }, [contacts]);
-
   useEffect(() => {
     dispatch(getContact(auth.email));
     setCurrentContacts(contacts);
   }, []);
 
-  const [appGroups, setAppGroups] = useState([]);
-
-  useEffect(() => {
-    console.log("groups.application_groups", groups.application_groups);
-
-    if(groups && groups.application_groups && groups.application_groups.length > 0) {
-      let ap = [];
-      ap = groups.application_groups;
-
-      console.log("ap1", ap);
-      
-      ap = ap.filter((elem, index) => 
-            ap.findIndex(obj => obj.pool_id === elem.pool_id) === index);
-
-      console.log("ap", ap);
-
-      setAppGroups(ap);
-    }
-  }, [groups])
-
   console.log("groups", groups);
-  console.log("vendorForms", vendorForms);
+  console.log("vendors", vendors);
 
   // const selectedGroup = groups.find(group => group.id === selectedGroupId);
   const filteredContacts = contacts.filter(contact => {
@@ -322,7 +298,7 @@ export default function index() {
         isEditMode={isAppGroupEditMode}
         isVisible={isNewAppGroupModalVisible}
         toggleCreateAppGroupModal={setIsNewAppGroupModalVisible}
-        vendors={vendorForms.formList}
+        vendors={vendors}
         auth={auth}
       />
 
@@ -422,9 +398,9 @@ export default function index() {
                 open
                 lazyRender>
                 <hr />
-                {appGroups &&
-                  appGroups &&
-                  appGroups.map(group => (
+                {groups &&
+                  groups.application_groups &&
+                  groups.application_groups.map(group => (
                     <div
                       className={`${
                         group.id === selectedGroupId ? "selected" : ""

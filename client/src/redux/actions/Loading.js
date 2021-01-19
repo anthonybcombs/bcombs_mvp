@@ -69,38 +69,3 @@ export const setDeleteAdminLoading = value => {
     value
   };
 }
-
-export const setAddFormLoading = value => {
-  return {
-    type: actionType.SET_ADD_FORM_LOADING,
-    value
-  };
-}
-
-export const setUpdateFormLoading = value => {
-  return {
-    type: actionType.SET_UPDATE_FORM_LOADING,
-    value
-  };
-}
-
-export const setGetFormLoading = value => {
-  return {
-    type: actionType.SET_GET_FORM_LOADING,
-    value
-  };
-}
-
-export const setDeleteFormLoading = value => {
-  return {
-    type: actionType.SET_DELETE_FORM_LOADING,
-    value
-  };
-}
-
-export const setSubmitFormLoading = value => {
-  return {
-    type: actionType.SET_SUBMIT_FORM_LOADING,
-    value
-  };
-}

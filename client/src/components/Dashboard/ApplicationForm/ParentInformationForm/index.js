@@ -194,10 +194,6 @@ const ParentInformationStyled = styled.div`
       padding: 0;
     }
   }
-
-  .radio-highlights{
-    background: #f26e21 !important ;
-  }
 `;
 
 export default function index({
@@ -209,7 +205,7 @@ export default function index({
   isReadonly = false,
   isUpdate = false,
   ProfileImg,
-  pastParentInformation = null,
+  pastParentInformation = {},
   isVendorView,
   selectedApplication={},
   setIsParentAddressRequired
@@ -402,8 +398,7 @@ export default function index({
   }
 
   const hasSelectAll = false;
-  console.log('parentProfile55555',parentProfile)
-  console.log('parentProfile55555 pastParentInformation',pastParentInformation)
+
   return (
     <ParentInformationStyled>
       <h3 className="heading">
@@ -579,8 +574,8 @@ export default function index({
                       isReadonly &&
                       !isVendorView &&
                       pastParentInformation &&
-                      (pastParentInformation.birthdate ||
-                        pastParentInformation.birthdate == "") &&
+                      (pastParentInformation.date_of_birth ||
+                        pastParentInformation.date_of_birth == "") &&
                       parentProfile.date_of_birth.toString() !=
                         new Date(pastParentInformation.birthdate).toString()
                         ? "field-input birthdate-field highlights"
@@ -1338,8 +1333,6 @@ export default function index({
                     }}
                     readOnly={isReadonly}
                     defaultValue={isReadonly ? selectedApplication?.child?.address : ""}
-                    
-                    //defaultValue={isReadonly ? parentProfile?.address : ''}
                     ref={register({
                       required: showAddress
                     })}
@@ -1404,7 +1397,6 @@ export default function index({
                     }}
                     readOnly={isReadonly}
                     defaultValue={isReadonly ? selectedApplication?.child?.city : ""}
-                    //defaultValue={isReadonly ? parentProfile?.city : ''}
                     ref={register({
                       required: showAddress
                     })}
@@ -1473,7 +1465,6 @@ export default function index({
                   type="text"
                   className="field-input"
                   defaultValue={isReadonly ? selectedApplication?.child?.state : ""}
-                  //defaultValue={isReadonly ? parentProfile?.state : ''}
                   readOnly={isReadonly}
                   placeholder="State"
                   name="parentstate"
@@ -1540,7 +1531,6 @@ export default function index({
                     }}
                     ref={register({ maxLength: 5,required: showAddress })}
                     readOnly={isReadonly}
-                    //defaultValue={isReadonly ? parentProfile?.zip_code : ''}
                     defaultValue={isReadonly ? selectedApplication?.child?.zip_code : ""}
                   />
                 )
@@ -1595,7 +1585,7 @@ export default function index({
 
           <div className="form-group">
             <div className="field">
-              <input 
+              <input
                 name="parentemployer"
                 className={
                   isReadonly &&
@@ -1670,7 +1660,8 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                <span className="required">*</span> Why are you referring your child to our program?
+                <span className="required">*</span> Why are you referring your
+                child to the program?
               </label>
               <textarea
                 name={`parent_child_goals${counter - 1}`}
@@ -1707,14 +1698,7 @@ export default function index({
         <div className="agree-text">How long have you lived in this area?</div>
 
         <div className="form-group">
-          <label  className={
-              isReadonly &&
-              !isVendorView &&
-              pastParentInformation && (parentProfile.live_area == 1) && 
-              ( pastParentInformation.live_area != 1) &&
-              pastParentInformation.live_area != parentProfile.live_area ?
-              "cus-select-container radio-highlights" : "cus-select-container"
-            }>
+          <label className="cus-select-container">
             1 - 5 Years
             <input
               type="radio"
@@ -1729,18 +1713,10 @@ export default function index({
               value="1"
               checked={parentProfile?.live_area == 1}
               readOnly={isReadonly}
-              disabled={isReadonly}
             />
             <span className="checkmark"></span>
           </label>
-          <label className={
-              isReadonly &&
-              !isVendorView &&
-              pastParentInformation && (parentProfile.live_area == 2 ) && 
-              ( pastParentInformation.live_area != 2) &&
-              pastParentInformation.live_area != parentProfile.live_area ?
-              "cus-select-container radio-highlights" : "cus-select-container"
-            }>
+          <label className="cus-select-container">
             5 - 10 Years
             <input
               type="radio"
@@ -1754,19 +1730,10 @@ export default function index({
               }}
               value="2"
               checked={parentProfile?.live_area == 2}
-              readOnly={isReadonly}
-              disabled={isReadonly}
             />
             <span className="checkmark"></span>
           </label>
-          <label className={
-              isReadonly &&
-              !isVendorView &&
-              pastParentInformation && (parentProfile.live_area == 3 ) && 
-              ( pastParentInformation.live_area != 3) &&
-              pastParentInformation.live_area != parentProfile.live_area ?
-              "cus-select-container radio-highlights" : "cus-select-container"
-            }>
+          <label className="cus-select-container">
             More than 10 Years
             <input
               type="radio"
@@ -1781,7 +1748,6 @@ export default function index({
               value="3"
               checked={parentProfile?.live_area == 3}
               readOnly={isReadonly}
-              disabled={isReadonly}
             />
             <span className="checkmark"></span>
           </label>
@@ -1857,8 +1823,8 @@ export default function index({
                     isReadonly &&
                     !isVendorView &&
                     pastParentInformation && 
-                    (pastParentInformation.child_importance_hs || pastParentInformation.child_importance_hs == "") &&
-                    pastParentInformation.child_importance_hs != parentProfile.child_importance_hs ?
+                    (pastParentInformation.child_hs_grad || pastParentInformation.child_hs_grad == "") &&
+                    pastParentInformation.child_hs_grad != parentProfile.child_importance_hs ?
                     "field-input highlights" : "field-input"
                   }
                   onChange={({ target }) => {

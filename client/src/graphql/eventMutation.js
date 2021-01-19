@@ -18,7 +18,6 @@ export const EVENT_CREATE_MUTATION = gql`
       recurring
       recurring_end_date
       group_ids
-      app_group_ids
       guests {
         email
         status
@@ -49,7 +48,6 @@ export const EVENT_UPDATE_MUTATION = gql`
       recurring
       recurring_end_date
       group_ids
-      app_group_ids
       guests {
         email
         status

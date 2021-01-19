@@ -51,9 +51,8 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
     color: "",
     groups: []
   });
-  const [selectedAppGroup, setSelectedAppGroup] = useState([]);
-  const { familyMembers, groups, vendors } = useSelector(({ familyMembers, groups,vendors }) => {
-    return { familyMembers, groups,vendors };
+  const { familyMembers, groups } = useSelector(({ familyMembers, groups }) => {
+    return { familyMembers, groups };
   });
   const dispatch = useDispatch();
   const handleInputChange = (id, value) => {
@@ -90,31 +89,16 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
     toggleCreateCalendarModal(false);
   };
   const handleFormSubmit = async () => {
-    const payload = {
-      ...calendarDetails,
-      app_group_ids:selectedAppGroup.map(item => item.app_grp_id)
-    }
-    console.log('Handle Form Submit', payload)
-    dispatch(requestAddCalendar(payload));
+    dispatch(requestAddCalendar(calendarDetails));
     setCalendarDetails({
       name: "",
       selectedFamilyMembers: new Map(),
       visibilityType: "Private",
       image: "",
-      groups: [],
-      app_group_ids:[]
+      groups: []
     });
     toggleCreateCalendarModal(false);
   };
-
-  const handleAppGroupSelect = value => {
-    setSelectedAppGroup(value);
-  };
-  const handleAppGroupRemove = value => {
-    setSelectedAppGroup(value);
-  };
-  console.log('selectedAppGroupzzzzz', selectedAppGroup)
-
   if (!isVisible) {
     return <></>;
   }
@@ -141,11 +125,8 @@ export default function index({ isVisible = true, toggleCreateCalendarModal }) {
           groups={groups}
           onSubmit={handleFormSubmit}
           onCancel={handleCancel}
-          handleAppGroupSelect={handleAppGroupSelect}
-          handleAppGroupRemove={handleAppGroupRemove}
           handleInputChange={handleInputChange}
           handleCheckBoxChange={handleCheckBoxChange}
-          vendors={vendors}
         />
       </div>
     </CreateCalendarModalStyled>,

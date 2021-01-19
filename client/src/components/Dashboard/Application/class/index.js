@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useLocation } from "@reach/router";
+import { useParams } from "@reach/router";
 import { format } from "date-fns";
-import { parse } from "query-string";
 
 import DataTable from "react-data-table-component";
 
 import { requestVendor } from "../../../../redux/actions/Vendors";
-import { requestGetApplications, requestGetCustomApplications } from "../../../../redux/actions/Application";
+import { requestGetApplications } from "../../../../redux/actions/Application";
 import { requestUserGroup } from "../../../../redux/actions/Groups";
 
 import ProfileImg from "../../../../images/defaultprofile.png";
@@ -39,11 +38,8 @@ const ClassListViewStyled = styled.div`
 `;
 
 export default function index() {
-  const { form_type, form_id } = useParams();
-  
-  const location = useLocation();
-  const queryParams = parse(location.search);
-  
+  const { name, vendor_id } = useParams();
+
   const { auth, vendors, groups, applications, loading } = useSelector(
     ({ auth, vendors, applications, groups, loading }) => {
       return { auth, vendors, applications, groups, loading };
@@ -56,37 +52,28 @@ export default function index() {
 
   useEffect(() => {
     if (auth.user_id) {
-      //dispatch(requestUserGroup(auth.email));
-      if(form_type === "bcombs") {
-        dispatch(requestVendor(auth.user_id));
-      }
+      dispatch(requestVendor(auth.user_id));
+      dispatch(requestUserGroup(auth.email));
     }
   }, []);
 
   useEffect(() => {
-    console.log("vendor vendor", vendors);
-    if(form_type === "bcombs") {
-      if (vendors && vendors.length > 0) {
-        let vendorId;
-        for (const vendor of vendors) {
-          if (vendor.id2 == form_id) {
-            vendorId = vendor.id;
-            break;
-          }
+    console.log("vendor", vendors);
+    if (vendors && vendors.length > 0) {
+      let vendorId;
+      for (const vendor of vendors) {
+        if (vendor.id2 == vendor_id) {
+          vendorId = vendor.id;
+          break;
         }
-        console.log("type type type", form_type);
-        console.log("id id id", form_id);
-        console.log("vendorId", vendorId);
-        dispatch(requestGetApplications(vendorId));
       }
-    } else if(form_type === "custom") {
-      dispatch(requestGetCustomApplications(form_id));
+      dispatch(requestGetApplications(vendorId));
     }
   }, [vendors]);
 
   if (applications && applications.activeapplications.length > 0) {
     let appGroupId = "";
-    let appGroupName = ""
+
     if (
       groups &&
       groups.application_groups &&
@@ -94,40 +81,31 @@ export default function index() {
     ) {
       const applicationGroups = groups.application_groups;
 
-      if(queryParams && queryParams.appgroup) {
-        for (const group of applicationGroups) {
-          if (group.app_grp_id === queryParams.appgroup) {
-            appGroupId = group.app_grp_id;
-            appGroupName = group.name;
-            break;
-          }
+      for (const group of applicationGroups) {
+        if (group.name === name) {
+          appGroupId = group.app_grp_id;
+          break;
         }
-
-        filterApplications = applications.activeapplications.filter(application => {
-          return application && application.class_teacher == appGroupId;
-        });
-      } else {
-        filterApplications = applications.activeapplications;
       }
-
-      filterApplications = filterApplications.map(item => {
-
-        if(item.class_teacher && !appGroupId && !appGroupName) {
-
-          console.log("applicationGroups", applicationGroups);
-          console.log("application", item);
-
-          const getMatchAppGroup = applicationGroups.filter((a) => item.class_teacher == a.app_grp_id);
-          item.group_name = getMatchAppGroup.length > 0 ? getMatchAppGroup[0].name : "";
-          console.log("getMatchAppGroup", getMatchAppGroup);
-        } else {
-          item.group_name = appGroupName
-        }
-
-        return item;
-      });
     }
+
+    console.log("appGroupId", appGroupId);
+
+    filterApplications = applications.activeapplications.filter(application => {
+      return application && application.class_teacher == appGroupId;
+    });
+
+    filterApplications = filterApplications.map(item => {
+      item.class_teacher = name;
+      console.log("application", item);
+
+      return item;
+    });
+
+    console.log("filterApplications", filterApplications);
   }
+
+  console.log("groups", groups);
 
   const getPrimaryParentName = (parents = [], id) => {
     if (parents && parents.length > 0) {
@@ -156,13 +134,9 @@ export default function index() {
           <span className="img-container">
             <img src={ProfileImg} />
           </span>
-          {
-            row && row.child && row.child.firstname && row.child.lastname ? (
-              <a target="_blank" href={"/dashboard/menteeprofile/" + row.id}>
-              <span>{row?.child?.firstname + " " + row?.child?.lastname}</span>
-            </a>
-            ) : ""
-          }
+          <a target="_blank" href={"/dashboard/menteeprofile/" + row.id}>
+            <span>{row.child?.firstname + " " + row.child?.lastname}</span>
+          </a>
         </>
       )
     },
@@ -179,8 +153,8 @@ export default function index() {
       cell: row => getPrimaryParentName(row.parents, row.id)
     },
     {
-      name: "Grade",
-      selector: "grade",
+      name: "Class",
+      selector: "birthDate",
       sortable: false,
       cell: row => row?.child?.grade_desc
     },
@@ -188,7 +162,7 @@ export default function index() {
       name: "Group(s)",
       selector: "type",
       sortable: false,
-      cell: row => row?.group_name
+      cell: row => row.class_teacher
     },
     {
       name: "Days Requested",

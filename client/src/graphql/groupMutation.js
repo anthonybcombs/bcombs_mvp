@@ -17,8 +17,6 @@ export const GROUP_UPDATE_MUTATION = gql`
         name
         size
         vendor
-        pool_id
-        form
         user
         app_grp_id
       }
@@ -44,8 +42,6 @@ export const GROUP_DELETE_MUTATION = gql`
         name
         size
         vendor
-        pool_id
-        form
         user
         app_grp_id
       }
@@ -71,8 +67,6 @@ export const GROUP_CREATE_MUTATION = gql`
         name
         size
         vendor
-        pool_id
-        form
         user
         app_grp_id
       }

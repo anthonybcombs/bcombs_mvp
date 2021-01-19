@@ -320,21 +320,15 @@ export default function createEventForm({
   handleCalendarRemove,
   handleGroupSelect,
   handleGroupRemove,
-  handleAppGroupSelect,
-  handleAppGroupRemove,
   handleEventDetailsChange,
   onSubmit,
   calendars = [],
   selectedCalendar = [],
   selectedGroup = [],
   groups = [],
-  vendors = [],
   editMode = false,
   isEventSection = false
 }) {
-
-  console.log('Event Form Vendor Data', vendors)
-  console.log('Event Form Vendor eventDetails', eventDetails)
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
@@ -345,7 +339,6 @@ export default function createEventForm({
   const [autoCompleteValue, setAutoCompleteValue] = useState("");
   const [userNotFound, setUserNotFound] = useState(false);
   const [isFetching, setFetching] = useState(false);
-  const [appGroups, setAppGroups] = useState([]);
 
   useEffect(() => {
     if (calendars) {
@@ -372,21 +365,6 @@ export default function createEventForm({
       setSelectedGuest(defaultGuests);
     }
   }, [eventDetails.guests]);
-
-  useEffect(() => {
-    if(vendors && vendors[0]) {
-      console.log('useEffect vendors',vendors)
-      let appGroupList = vendors.map(v => {
-        return v.app_groups.map(appGroup => {
-          return  {
-            ...appGroup,
-            id:appGroup.app_grp_id
-          }
-        })
-      }).flat();
-      setAppGroups(appGroupList);
-    }
-  },[vendors])
 
   const automCompleteOnChange = (event, { newValue }) => {
     setAutoCompleteValue(newValue);
@@ -463,6 +441,7 @@ export default function createEventForm({
     setSelectedGuest(updatedGuest);
     handleEventDetailsChange("removeGuests", removedGuest);
   };
+
   return (
     <EventFormStyled
       data-testid="app-dashboard-my-events-event-form"
@@ -692,7 +671,6 @@ export default function createEventForm({
         (defaultCalendar &&
           defaultCalendar.visibilityType &&
           defaultCalendar.visibilityType.toLowerCase() === "custom")) && (
-       <>
         <div className="form-group">
           <div className="field">
             <CustomMultiSelect
@@ -707,22 +685,6 @@ export default function createEventForm({
             />
           </div>
         </div>
-
-        <div className="form-group">
-          <div className="field">
-            <CustomMultiSelect
-              className="field-input"
-              options={appGroups}
-              selectedValues={eventDetails.defaultAppGroupIds}
-              onSelect={handleAppGroupSelect}
-              onRemove={handleAppGroupRemove}
-              placeholder="Add Application Group"
-              displayValue="name"
-              closeIcon="cancel"
-            />
-          </div>
-        </div>
-       </>
       )}
       <Autosuggest
         autoComplete="off"
