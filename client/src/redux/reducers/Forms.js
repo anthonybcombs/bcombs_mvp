@@ -10,7 +10,8 @@ export default function Applications(
     submitForm: {},
     updateSubmittedForm: {},
     customApplicationHistory: [],
-    isFormView: false
+    isFormView: false,
+    formAppGroups: []
   },
   action
 ) {
@@ -65,6 +66,11 @@ export default function Applications(
       return {
         ...state,
         customApplicationHistory: [...action.payload]
+      }
+    case actionType.REQUEST_GET_FORM_APP_GROUP_COMPLETED:
+      return {
+        ...state,
+        formAppGroups: [...action.payload]
       }
     default:
       return state;

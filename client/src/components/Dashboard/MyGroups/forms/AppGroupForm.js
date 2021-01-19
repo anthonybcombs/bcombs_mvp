@@ -216,15 +216,16 @@ export default function AppGroupForm({
   };
   console.log("groupDetails", groupDetails);
   useEffect(() => {
-    if (vendors) {
+    console.log("vendors", vendors);
+    if (vendors && vendors.length > 0) {
       let fomattedVendors = vendors.map(item => {
         return {
           id: item.id,
           name: item.name,
-          label: item.name
+          label: item.name,
+          is_form: item.is_form
         };
       });
-
       console.log("formatted vendors", fomattedVendors);
       setVendorOptions(fomattedVendors);
     }
@@ -292,11 +293,11 @@ export default function AppGroupForm({
               className="field-input"
               options={vendorOptions}
               hasSelectAll={hasSelectAll}
-              selectedValues={vendorOptions.filter(
-                item => item.id === groupDetails.vendor
-              )}
+              // selectedValues={vendorOptions.filter(
+              //   item => item.id === groupDetails.vendor
+              // )}
               onSelect={handleSelectChange}
-              placeholder="Choose Application"
+              placeholder="Choose Form"
               displayValue="name"
               closeIcon="cancel"
             />
