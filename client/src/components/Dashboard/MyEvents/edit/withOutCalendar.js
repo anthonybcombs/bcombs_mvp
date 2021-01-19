@@ -114,14 +114,17 @@ export default function index({
   toggleEditEventModal,
   defaultEventDetails,
   selectedCalendars,
+  vendors = []
 }) {
   const { groups } = useSelector(({ groups }) => ({
     groups,
   }));
   const [groupOptions, setGroupOptions] = useState([]);
+  const [appGroupOptions,setAppGroupOptions] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState([]);
+  const [selectedAppGroup, setSelectedAppGroup] = useState([]);
   const [eventDetails, setEventDetails] = useState({});
-
+  console.log('Edit Event Modal Without Calendar groupOptions', groupOptions)
   useEffect(() => {
     if (defaultEventDetails) {
       console.log("defaultEventDetails", defaultEventDetails);
@@ -136,6 +139,11 @@ export default function index({
             defaultEventDetails.group_ids &&
             defaultEventDetails.group_ids.includes(item.id)
         ),
+        defaultAppGroupIds: groupOptions.filter(
+          (item) =>
+            defaultEventDetails.app_group_ids &&
+            defaultEventDetails.app_group_ids.includes(item.app_grp_id)
+        ),
         recurringEndDate: defaultEventDetails.recurring_end_date,
         recurringEndType: defaultEventDetails.recurring_end_date
           ? "on"
@@ -149,9 +157,16 @@ export default function index({
     if (groups) {
       const createdGroups = groups.created_groups;
       const joinedGroups = groups.joined_groups;
+      const applicationGroups =  groups.application_groups ?  groups.application_groups.map(item => {
+        return {
+          ...item,
+          id: item.app_grp_id
+        }
+      }) : [];
       const combinedGroups = [
         ...(createdGroups || []),
         ...(joinedGroups || []),
+        ...(applicationGroups || [])
       ];
       // let groupOpt = combinedGroups.map((item) => {
       //   return {
@@ -229,10 +244,14 @@ export default function index({
           : [],
       group_ids:
         eventDetails.visibility === "custom"
-          ? selectedGroup.map((item) => item.id)
+          ? selectedGroup.map((item) => item)
           : [],
+      app_group_ids:
+          eventDetails.visibility === "custom"
+            ? selectedAppGroup.map((item) => item.id)
+            : [],
     };
-
+    console.log('Payloadddd Updpate', payload)
     dispatch(updateEvent(payload));
     toggleEditEventModal();
   };
@@ -242,6 +261,13 @@ export default function index({
   };
   const handleGroupRemove = (value) => {
     setSelectedGroup(value);
+  };
+
+  const handleAppGroupSelect = value => {
+    setSelectedAppGroup(value);
+  };
+  const handleAppGroupRemove = value => {
+    setSelectedAppGroup(value);
   };
 
   console.log("selectedGroupggggg", selectedGroup);
@@ -280,11 +306,14 @@ export default function index({
             eventDetails={eventDetails}
             handleGroupSelect={handleGroupSelect}
             handleGroupRemove={handleGroupRemove}
+            handleAppGroupSelect={handleAppGroupSelect}
+            handleAppGroupRemove={handleAppGroupRemove}
             groups={groupOptions}
             header={"Edit Event"}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}
             selectedGroup={selectedGroup}
+            vendors={vendors}
           />
         </div>
       </div>

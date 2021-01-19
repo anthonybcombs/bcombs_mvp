@@ -97,7 +97,7 @@ const CustomMultiSelect = ({
             closeIcon={closeIcon}
             showCheckbox={true}
             closeOnSelect={false}
-            autcomplete="false"
+            autocomplete="false"
           />
 
           <label className="field-label">{label}</label>

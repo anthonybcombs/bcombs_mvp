@@ -30,7 +30,8 @@ export default function index({
   selectedCalendars,
   handleCalendarSelection,
   familyMembers,
-  publicView
+  publicView,
+  vendors
 }) {
   const [isNewEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isViewEventModalVisible, setViewEventModalVisible] = useState(false);
@@ -59,6 +60,7 @@ export default function index({
       isTimedDisplay === true ? "true" : "false"
     );
   }, [isTimedDisplay]);
+
   const handleChangeMonthYear = (month, year) => {
     let currentMonth;
     currentMonth = addMonths(
@@ -109,11 +111,12 @@ export default function index({
   };
 
   const handleToggleEditEvent = (event = null) => {
+    console.log('Handle Toggle Edit Event', vendors)
     setSelectedEventDetails(!isEditEventVisible === true ? event : null);
     setEditEventModalVisible(!isEditEventVisible);
     setViewEventModalVisible(false);
   };
-  console.log("eventszzzzzzzzz11", events);
+  console.log('EditEvent vendors', vendors)
   return (
     <BigCalendarStyled data-testid="app-big-calendar">
       {!publicView && (
@@ -124,6 +127,7 @@ export default function index({
           toggleCreateEventModal={setIsEventModalVisible}
           defaultSelectedDate={currentDate.selectedDate}
           selectedCalendars={selectedCalendars}
+          vendors={vendors}
         />
       )}
       <ViewEventModal
@@ -161,6 +165,7 @@ export default function index({
         setIsEventModalVisible={setIsEventModalVisible}
         publicView={publicView}
         handleViewEvent={handleViewEvent}
+        vendors={vendors}
       />
 
       <EditEvent
@@ -169,6 +174,7 @@ export default function index({
         toggleEditEventModal={handleToggleEditEvent}
         defaultEventDetails={selectedEventDetails}
         selectedCalendars={selectedCalendars}
+        vendors={vendors}
       />
     </BigCalendarStyled>
   );

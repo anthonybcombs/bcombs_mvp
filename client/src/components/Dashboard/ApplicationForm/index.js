@@ -359,7 +359,7 @@ export default function index() {
       psat_scores: [{...scoreObj}],
       school_name: "",
       school_phone: "",
-      was_suspended: 0,
+      has_suspended: null,
       reason_suspended: "",
       mentee_start_year: "",
       hobbies: "",
@@ -393,7 +393,7 @@ export default function index() {
       childs[index].profile = profile;
     } else if(section === "general_information") {
 
-      if(id === "was_suspended") {
+      if(id === "has_suspended") {
         if (value == "0")
           general_information = {...general_information, ["reason_suspended"]: ""};
       }
@@ -824,7 +824,7 @@ export default function index() {
     }
   }
 
-  const setupParentsList = () => {
+  const setupParentsList = (childProfile) => {
     let parents = [];
 
     parentsInformation.map((parent) => {
@@ -852,7 +852,7 @@ export default function index() {
         address: parent.profile.address,
         city: parent.profile.city,
         state: parent.profile.state,
-        zip_code: parent.profile.zip_code,
+        zip_code: parent.profile.zip_code !== '' ?  parent.profile.zip_code : childProfile.zip_code,
         person_recommend: parent.profile.person_recommend,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
@@ -912,7 +912,7 @@ export default function index() {
           child_lives_with: getChildLivesWith(childsInformation[i].profile.child_lives_with),
           school_name: childsInformation[i].general_information.school_name,
           school_phone: childsInformation[i].general_information.school_phone,
-          has_suspended: childsInformation[i].general_information.was_suspended ? 1 : 0,
+          has_suspended: childsInformation[i].general_information.has_suspended ? 1 : 0,
           reason_suspended: childsInformation[i].general_information.reason_suspended,
           year_taken: childsInformation[i].general_information.mentee_start_year,
           hobbies: childsInformation[i].general_information.hobbies,
@@ -943,7 +943,7 @@ export default function index() {
           hospital_preference: childsInformation[i].emergency_care_information.hospital_preference,
           hospital_phone: childsInformation[i].emergency_care_information.hospital_phone
         },
-        parents: setupParentsList(),
+        parents: setupParentsList(childsInformation[i].profile),
         section1_signature: termsWaiver.section1.signature,
         section1_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
         section2_signature: termsWaiver.section2.signature,

@@ -398,7 +398,8 @@ export default function index({
 
     readOnlyEthinicity = readOnlyEthinicity.slice(0, -1);
   }
-
+  console.log('parentProfile123123',parentProfile)
+  console.log('parentProfile123123 childProfile',childProfile)
   return (
     <ParentInformationStyled>
       <h3 className="heading">
@@ -574,8 +575,8 @@ export default function index({
                       isReadonly &&
                       !isVendorView &&
                       pastParentInformation &&
-                      (pastParentInformation.date_of_birth ||
-                        pastParentInformation.date_of_birth == "") &&
+                      (pastParentInformation.birthdate ||
+                        pastParentInformation.birthdate == "") &&
                       parentProfile.date_of_birth.toString() !=
                         new Date(pastParentInformation.birthdate).toString()
                         ? "field-input birthdate-field highlights"
@@ -1005,7 +1006,6 @@ export default function index({
                 type="text"
                 id={`parent_emailaddress_${counter - 1}`}
                 defaultValue={parentProfile.email_address}
-                defaultValue={parentProfile?.email_address}
                 readOnly={isReadonly}
                 name={"parent_emailaddress" + (counter - 1)}
                 className={
@@ -1316,7 +1316,7 @@ export default function index({
                     );
                   }}
                   readOnly={isReadonly}
-                  defaultValue={parentProfile?.address}
+                  defaultValue={parentProfile.address}
                 />
                 ) :
                 (
@@ -1632,7 +1632,7 @@ export default function index({
             <div>
               <label className="field-label-simple">
                 <span className="required">*</span> What are some of your
-                expectations from the Mentoring Program?
+                expectations from our program?
               </label>
               <textarea
                 name={`parent_goals${counter - 1}`}
@@ -1671,7 +1671,7 @@ export default function index({
             <div>
               <label className="field-label-simple">
                 <span className="required">*</span> Why are you referring your
-                child to the program?
+                child to our program?
               </label>
               <textarea
                 name={`parent_child_goals${counter - 1}`}

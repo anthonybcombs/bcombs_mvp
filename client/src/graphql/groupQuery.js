@@ -18,6 +18,8 @@ export const GET_USER_GROUP_QUERY = gql`
         name
         size
         vendor
+        pool_id
+        form
         user
         app_grp_id
       }
@@ -33,6 +35,21 @@ export const GET_GROUP_MEMBERS_QUERY = gql`
       last_name
       first_name
       profile_img
+    }
+  }
+`;
+
+export const GET_FORM_APP_GROUP = gql`
+  query getFormAppGroup($form: String!) {
+    getFormAppGroup(form: $form) {
+      id
+      name
+      size
+      vendor
+      pool_id
+      form
+      user
+      app_grp_id
     }
   }
 `;

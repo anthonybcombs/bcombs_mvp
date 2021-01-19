@@ -58,10 +58,13 @@ export const VENDOR_BY_USER_QUERY = gql`
       }
       app_groups {
         id
-        app_grp_id
-        size
         name
-        created_at
+        size
+        vendor
+        pool_id
+        form
+        user
+        app_grp_id
       }
     }
   }
@@ -103,10 +106,13 @@ export const VENDOR_BY_ID2_QUERY = gql`
       }
       app_groups {
         id
-        app_grp_id
-        size
         name
-        created_at
+        size
+        vendor
+        pool_id
+        form
+        user
+        app_grp_id
       }
     }
   }
@@ -148,10 +154,13 @@ export const VENDOR_BY_ID_QUERY = gql`
       }
       app_groups {
         id
-        app_grp_id
-        size
         name
-        created_at
+        size
+        vendor
+        pool_id
+        form
+        user
+        app_grp_id
       }
     }
   }
@@ -166,6 +175,16 @@ export const GET_VENDOR_ADMINS = gql`
       vendor
       isOwner
       name
+    }
+  }
+`;
+
+export const GET_USER_VENDOR_FORMS = gql`
+  query getUserVendorForms($user:String!) {
+    getUserVendorForms(user: $user) {
+      name
+      id
+      is_form
     }
   }
 `;
@@ -249,6 +268,8 @@ export const ADD_VENDORS_APP_GROUP = gql`
         name
         size
         vendor
+        pool_id
+        form
         user
         app_grp_id
       }
@@ -274,6 +295,8 @@ export const UPDATE_VENDORS_APP_GROUP = gql`
         name
         size
         vendor
+        pool_id
+        form
         user
         app_grp_id
       }
@@ -298,6 +321,8 @@ export const DELETE_VENDORS_APP_GROUP = gql`
         name
         size
         vendor
+        pool_id
+        form
         user
         app_grp_id
       }

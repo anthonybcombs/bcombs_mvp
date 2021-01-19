@@ -25,13 +25,16 @@ import DaycareParentFormView from "./daycare/parent";
 import RelationshipToChildStyled from "../DaycareApplicationForm/RelationshipToChildForm";
 
 import TermsWaiverFormViewStyled from "./view/waiver";
-import { requestVendor } from "../../../redux/actions/Vendors";
+import { requestVendor, requestGetFormAppGroup } from "../../../redux/actions/Vendors";
 import {
   requestGetApplications,
   requestUpdateApplication,
   requestSaveApplication,
-  requestGetApplicationHistory
+  requestGetApplicationHistory,
+  requestGetCustomApplications,
+  requestGetCustomFormApplicantById
 } from "../../../redux/actions/Application";
+import { requestGetForms, requestUpdateSubmittedForm, requestGetCustomApplicationHistory } from '../../../redux/actions/FormBuilder'
 import { requestUserGroup } from "../../../redux/actions/Groups";
 import Loading from "../../../helpers/Loading.js";
 import ProfileImg from "../../../images/defaultprofile.png";
@@ -39,6 +42,8 @@ import ProfileImg from "../../../images/defaultprofile.png";
 import { format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
 import { parse } from "query-string";
+
+import Form from '../../Dashboard/Builders/Form'
 
 const ApplicationFormStyled = styled.form`
   @media all {
@@ -384,6 +389,8 @@ export default function index() {
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
+  const [selectedCustomFormHistory, setSelectedCustomFormHistory] = useState({});
+
   const [emergencyContacts, setEmergencyContacts] = useState([]);
 
   const [showApplication, setShowApplication] = useState(false);
@@ -393,6 +400,8 @@ export default function index() {
   const [view, setView] = useState("");
 
   const [selectedVendor, setSelectedVendor] = useState({});
+
+  const [selectedForm, setSelectedForm] = useState("default")
 
   const dispatch = useDispatch();
 
@@ -424,11 +433,17 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
-  const { groups, auth, vendors, applications, loading } = useSelector(
-    ({ groups, auth, vendors, applications, loading }) => {
-      return { groups, auth, vendors, applications, loading };
+  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups } } = useSelector(
+    ({ groups, auth, vendors, applications, loading, form }) => {
+      return { groups, auth, vendors, applications, loading, form };
     }
   );
+
+  console.log("form 123", formList);
+
+  if (updateSubmittedForm.message === 'successfully update your application form') {
+    window.location.reload()
+  }
 
   if (
     applications.updateapplication &&
@@ -451,12 +466,22 @@ export default function index() {
     window.location.reload()
   }
 
+  const [appGroups, setAppGroups] = useState([]);
+
+  console.log("form app group", formAppGroups);
+
   useEffect(() => {
     if (auth.user_id) {
       //dispatch(requestUserGroup(auth.email));
       dispatch(requestVendor(auth.user_id));
     }
   }, []);
+
+  useEffect(() => {
+    if (applications.selectedbuilderapplication) {
+      setSelectedApplication(applications.selectedbuilderapplication)
+    }
+  }, [applications.selectedbuilderapplication])
 
   useEffect(() => {
     console.log('Vendorssss', vendors)
@@ -468,16 +493,28 @@ export default function index() {
         });
 
         setSelectedVendor(newDefaultVendor[0]);
-        dispatch(requestGetApplications(newDefaultVendor[0].id));
+        setAppGroups(newDefaultVendor[0].app_groups);
+        //dispatch(requestGetApplications(newDefaultVendor[0].id));
+        dispatch(requestGetForms({ vendor: newDefaultVendor[0].id, categories: [] }))
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
-        dispatch(requestGetApplications(vendors[0].id));
+        setAppGroups(vendors[0].app_groups);
+        dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
+        //dispatch(requestGetApplications(vendors[0].id));
       }
-
-      
     }
   }, [vendors]);
+
+  useEffect(() => {
+    dispatch(requestGetApplications(selectedVendor.id));
+  }, [formList])
+
+  useEffect(() => {
+    console.log("Im here here formAppGroups");
+    console.log("formAppGroups, formAppGroups", formAppGroups);
+    setAppGroups(formAppGroups);
+  }, [formAppGroups])
 
   console.log("vendor", vendors);
 
@@ -507,6 +544,14 @@ export default function index() {
   };
 
   const handleSelectedApplication = (application, view) => {
+    if (view === 'builderForm') {
+      setView(view)
+      setSelectedApplication(application)
+      // dispatch(requestGetCustomFormApplicantById(application.app_id))
+      setShowApplication(true);
+      dispatch(requestGetCustomApplicationHistory(application.app_id))
+      return
+    }
     setSelectedApplication(application);
     setSelectNonMenuOption(true);
     setView(view);
@@ -625,7 +670,7 @@ export default function index() {
         school_phone: application.child.school_phone
           ? application.child.school_phone
           : "",
-        was_suspended: !!application.child.has_suspended,
+        has_suspended: !!application.child.has_suspended ? 1 : 0,
         reason_suspended: application.child.reason_suspended,
         mentee_start_year: application.child.year_taken,
         hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -718,17 +763,17 @@ export default function index() {
       ch_id: application.child.ch_id,
       id: application.child.ch_id
     };
-
+    console.log('APPLICATIONNNNN', application)
     const parents = application.parents;
-
+    
     let items = [];
     for (const parent of parents) {
       const profile = {
         first_name: parent.firstname ? parent.firstname : "",
         last_name: parent.lastname ? parent.lastname : "",
-        phone_type: parent.phont_type ? parent.phone_type : "",
+        phone_type: parent.phone_type ? parent.phone_type : "",
         phone_number: parent.phone_number ? parent.phone_number : "",
-        phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+        phone_type2: parent.phone_type2 ? parent.phone_type2 : "",
         phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
         email_type: parent.email_type ? parent.email_type : "",
         email_address: parent.email_address ? parent.email_address : "",
@@ -891,6 +936,20 @@ export default function index() {
   };
 
   const onSubmit = () => {
+    if (view === 'builderForm' && selectedApplication) {
+      dispatch(requestUpdateSubmittedForm({
+        updated_by: auth.email,
+        vendor: selectedApplication.vendor,
+        form: selectedApplication.form,
+        app_id: selectedApplication.app_id,
+        form_contents: selectedApplication.form_contents,
+        class_teacher: updateApplication.class_teacher || selectedApplication?.class_teacher,
+        color_designation: updateApplication.color_designation || selectedApplication?.color_designation,
+        verification: updateApplication.verification || selectedApplication?.verification,
+        student_status: updateApplication.student_status || selectedApplication?.student_status,
+        notes: updateApplication.notes || selectedApplication?.notes
+      }))
+    }
     dispatch(requestUpdateApplication(updateApplication));
   };
 
@@ -911,7 +970,7 @@ export default function index() {
   const onSubmitSaveApplication = () => {
     console.log("Click Save Application");
 
-    const payload = {
+    let payload = {
       app_id: selectedApplication.app_id,
       child: {
         firstname: childInformation.profile.first_name,
@@ -940,9 +999,7 @@ export default function index() {
         ),
         school_name: childInformation.general_information.school_name,
         school_phone: childInformation.general_information.school_phone,
-        has_suspended: parseInt(
-          childInformation.general_information.was_suspended
-        ),
+        has_suspended:   childInformation.general_information.has_suspended == "Yes" || childInformation.general_information.has_suspended == 1 ? 1 : 0,
         reason_suspended: childInformation.general_information.reason_suspended,
         year_taken: childInformation.general_information.mentee_start_year,
         hobbies: childInformation.general_information.hobbies,
@@ -1025,6 +1082,10 @@ export default function index() {
       updated_by: auth.name
     };
 
+    payload = {
+      ...payload,
+      relationships: relationships
+    };
     console.log("Submit update application", payload);
 
     dispatch(requestSaveApplication(payload));
@@ -1073,12 +1134,19 @@ export default function index() {
 
       child.profile = profile;
     } else if (section === "general_information") {
-      if (id === "was_suspended") {
-        if (value == "0")
+      if (id === "has_suspended") {
+        console.log('Has Suspended Value',value)
+        if (value == "0" ){
           general_information = {
             ...general_information,
-            ["reason_suspended"]: ""
+            ["reason_suspended"]: "",
           };
+        }
+        // general_information = {
+        //   ...general_information,
+        //   has_suspended: value == "Yes" || value == "1" ? 1 : 0,
+        // };
+         
       }
 
       if (id.includes("act_scores")) {
@@ -1132,6 +1200,28 @@ export default function index() {
   }
 
   const createHistoryViewButton = (row) => {
+    if (view === 'builderForm') {
+      const detailsObj = row.details ? JSON.parse(row.details) : {}
+      row = {
+        ...row,
+        ...detailsObj
+      }
+
+      return (
+        <a 
+          href=""
+          onClick={(e) => {
+            e.preventDefault()
+            setApplicationFormKey(new Date().toISOString());
+            setSelectedCustomFormHistory(row)
+            setIsReadonly(true)
+            setIsFormHistory(true)
+          }}
+        >
+          View Application
+        </a>
+      )
+    }
     return (
       <a 
         href=""
@@ -1191,7 +1281,8 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-              was_suspended: application.child.has_suspended + "",
+            //  has_suspended: application.child.has_suspended + "",
+              has_suspended: application.child.has_suspended ,
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -1273,9 +1364,9 @@ export default function index() {
             const profile = {
               first_name: parent.firstname ? parent.firstname : "",
               last_name: parent.lastname ? parent.lastname : "",
-              phone_type: parent.phont_type ? parent.phone_type : "",
+              phone_type: parent.phone_type ? parent.phone_type : "",
               phone_number: parent.phone_number ? parent.phone_number : "",
-              phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+              phone_type2: parent.phone_type2 ? parent.phone_type2 : "",
               phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
               email_type: parent.email_type ? parent.email_type : "",
               email_address: parent.email_address ? parent.email_address : "",
@@ -1423,12 +1514,18 @@ export default function index() {
         tempRelationships[index].relationship = relationship;
 
         exists = true;
+        console.log('Temp Relationships 1',tempRelationships)
         setRelationships([...tempRelationships]);
         break;
       }
     }
 
     if(!exists) {
+      console.log('Temp Relationships 2',...relationships, {
+        parent: parent,
+        child: child,
+        relationship: relationship
+      })
       setRelationships([...relationships, {
         parent: parent,
         child: child,
@@ -1438,6 +1535,7 @@ export default function index() {
   }
 
   console.log('loading applications',applications)
+  console.log('parentsInformation123123123123',parentsInformation)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -1453,7 +1551,6 @@ export default function index() {
                 "width": "100%",
                 "display": "block",
                 "background": "transparent",
-                "fontWeight": "bold",
                 "border": "0",
                 "padding": "0",
                 "lineHeight": "1",
@@ -1470,8 +1567,8 @@ export default function index() {
 
                 window.history.replaceState("","","?vendor=" + chosenVendor[0].id2);
 
-                dispatch(requestGetApplications(target.value));
-
+                //dispatch(requestGetApplications(target.value));
+                dispatch(requestGetForms({ vendor: target.value, categories: [] }))
                 if(chosenVendor && chosenVendor.length > 0) {
                   setSelectedVendor(chosenVendor[0]);
                 }
@@ -1486,12 +1583,66 @@ export default function index() {
             </select>
           </div>
         )}
+
+        {
+          vendors && vendors.length > 0 && (
+            <div>
+              <select
+                style={{ 
+                  "marginLeft": "20px",
+                  "fontSize": "1.5em",
+                  "borderRadius": "0",
+                  "cursor": "pointer",
+                  "width": "100%",
+                  "display": "block",
+                  "background": "transparent",
+                  "border": "0",
+                  "padding": "0",
+                  "lineHeight": "1",
+                  "color": "#000000"
+                }}
+                onChange={({ target }) => {
+
+                  console.log("target", target.value);
+                  if(target.value == "default") {
+                    console.log("selectedvendor", selectedVendor);
+                    setSelectedForm("default");
+                    setAppGroups(selectedVendor.app_groups);
+                    dispatch(requestGetApplications(selectedVendor.id));
+                  } else {
+                    setSelectedForm(target.value);
+                    if (view === 'builderForm') {
+                      setView('')
+                      setSelectedApplication({})
+                    }
+
+                    console.log("form form", target.value);
+                    setAppGroups([]);
+                    dispatch(requestGetFormAppGroup(target.value));
+                    dispatch(requestGetCustomApplications(target.value));
+                  }
+                }}
+              >
+                <option key={selectedVendor.id} selected value="default">
+                  {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
+                </option>
+                {
+                  formList.map(form => (
+                    <option key={form.form_id} value={form?.form_id}>
+                      {form?.form_contents?.formTitle}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+          )
+        }
       </div>
       <div id="application">
         <div>
           <div id="labels">
             {
-              selectedVendor && selectedVendor.id2 ? (
+              selectedVendor && selectedVendor.id2 && selectedForm == "default" ? (
                 <a
                   href={ selectedVendor.is_daycare ? `/application/${
                     selectedVendor.id2
@@ -1500,6 +1651,14 @@ export default function index() {
                   }`}
 
                   target="_blank">
+                  <FontAwesomeIcon icon={faFileSignature} />
+                  <span>Application</span>
+                </a>
+              ) : selectedForm && selectedForm != "default" ? (
+                <a
+                  href={`/form/${selectedForm}`}
+                  target="_blank"
+                >
                   <FontAwesomeIcon icon={faFileSignature} />
                   <span>Application</span>
                 </a>
@@ -1546,11 +1705,13 @@ export default function index() {
           </div>
         </div>
         <div>
-          {selectedLabel === "Application Status" && !selectNonMenuOption && (
+          {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
             <ApplicationSummaryStyled
-              appGroups={selectedVendor.app_groups}
+              appGroups={appGroups}
               applications={applications.activeapplications}
               vendor={selectedVendor}
+              form={selectedForm}
+              isForm={selectedForm !== "default"}
             />
           )}
           {selectedLabel === "Form Settings" && !selectNonMenuOption && (
@@ -1559,11 +1720,11 @@ export default function index() {
               formSettingsLoading={loading.form_settings}
             />
           )}
-          {selectNonMenuOption && view == "application" && (
+          {(selectNonMenuOption && view == "application" || view === 'builderForm') && (
             <EditApplicationStyled
               application={selectedApplication}
               vendor={selectedVendor}
-              appGroups={selectedVendor.app_groups}
+              appGroups={appGroups}
               onSubmit={onSubmit}
               handleUpdateOnchange={handleUpdateOnchange}
               updateLoading={loading.application}
@@ -1571,17 +1732,17 @@ export default function index() {
           )}
         </div>
       </div>
-      {selectedLabel === "Application Status" && !selectNonMenuOption && (
+      {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
         <ApplicationListStyled
           applications={applications.activeapplications}
-          handleSelectedApplication={handleSelectedApplication}
+          handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" ? viewType : 'builderForm')}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
-          appGroups={selectedVendor.app_groups}
+          appGroups={appGroups}
         />
       )}
       {
-        showApplication && view == "application" && (
+        (showApplication && (["application", "builderForm"].includes(view))) && (
           <div>
             <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
               <div id="dataTableContainer">
@@ -1589,7 +1750,7 @@ export default function index() {
                   (
                     <DataTable 
                       columns={columnsAppHistory}
-                      data={applications.applicationHistory}
+                      data={view === 'application' ? applications.applicationHistory : customApplicationHistory}
                       pagination
                       noHeader={true}
                       striped={true}
@@ -1604,13 +1765,56 @@ export default function index() {
           </div>
         )
       }
+      {
+        view === 'builderForm' && (
+          loading.updateForm ? (
+            <Loading />
+          ) : (
+            <Form
+              historyList={customApplicationHistory}
+              key={applicationFormKey}
+              { ...(isFormHistory ? selectedCustomFormHistory : selectedApplication) }
+              application_date={
+                isFormHistory
+                  ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")}`
+                  : 'Most Up to date Application'
+              }
+              isReadOnly={isReadonly}
+              isFormHistory={isFormHistory}
+              onChangeToEdit={handleChangeToEdit}
+              onGetUpdatedApplication={(form_contents) => setSelectedApplication({
+                ...selectedApplication,
+                form_contents
+              })}
+              onSubmitApplication={(form_contents) => {
+                dispatch(requestUpdateSubmittedForm({
+                  updated_by: auth.email,
+                  vendor: selectedApplication.vendor,
+                  form: selectedApplication.form,
+                  app_id: selectedApplication.app_id,
+                  form_contents,
+                  class_teacher: selectedApplication.class_teacher,
+                  color_designation: selectedApplication.color_designation,
+                  verification: selectedApplication.verification,
+                  student_status: selectedApplication.student_status,
+                  notes: selectedApplication.notes
+                }))
+              }}
+              onSelectLatest={() => {
+                setIsFormHistory(false)
+                setApplicationFormKey(new Date().toISOString())
+              }}
+            />
+          )
+        )
+      }
       {!loading.application && selectNonMenuOption && view == "application" && (
         <button type="button" className="print-button" onClick={handlePrint}>
           {" "}
           <FontAwesomeIcon icon={faPrint} />
         </button>
       )}
-      {loading.application ? (
+      {(loading.application) ? (
         <Loading />
       ) : (
         <>
@@ -1679,6 +1883,7 @@ export default function index() {
                 isUpdate={true}
                 emergencyContacts={emergencyContacts}
                 selectedApplication={selectedApplication}
+                childProfile={selectedApplication?.child}
               />
             ) : ""}
 
@@ -1705,6 +1910,7 @@ export default function index() {
                 <>
                 <hr className="style-eight"></hr>
                 <RelationshipToChildStyled
+                  selectedApplication={selectedApplication}
                   handleParentChildRelationship={handleParentChildRelationship}
                   parents={parentsInformation}
                   childs={[{...childInformation}]}
