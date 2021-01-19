@@ -140,21 +140,25 @@ const SortableGroup = React.forwardRef(
               </div>
             )
           }
-          <div className='title-action'>
-            <div className='tooltip-wrapper tooltip-left'>
-              <FontAwesomeIcon
-                icon={faTint}
-                className='show-icon'
-                onClick={e => {
-                  e.stopPropagation()
-                  setColorPickerShown(!colorPickerShown)
-                }}
-              />
-              <span className='tooltip'>Set Color</span>
-            </div>
-          </div>
           {
-            colorPickerShown && (
+            isActive && (
+              <div className='title-action'>
+                <div className='tooltip-wrapper tooltip-left'>
+                  <FontAwesomeIcon
+                    icon={faTint}
+                    className='show-icon'
+                    onClick={e => {
+                      e.stopPropagation()
+                      setColorPickerShown(!colorPickerShown)
+                    }}
+                  />
+                  <span className='tooltip'>Set Color</span>
+                </div>
+              </div>
+            )
+          }
+          {
+            colorPickerShown && isActive && (
               <div className='colorPicker' onClick={e => e.stopPropagation()}>
                 <ChromePicker
                   color={color.length > 0 ? color : "red"}
