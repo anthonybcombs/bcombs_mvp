@@ -112,7 +112,7 @@ const SortableGroup = React.forwardRef(
             value={label}
             disabled={!enableEditGroupName}
             readOnly={!showLabel}
-            style={{ color: `${color}` }}
+            style={{ color }}
             onBlur={() => {
               handleEnableEditGroupName(false)
             }}
@@ -203,6 +203,7 @@ const SortableGroup = React.forwardRef(
                 hasPageBreak={hasPageBreak}
                 pageBreaks={pageBreaks}
                 isLastPageBreak={isLastPageBreak}
+                format={format}
 
                 setActiveFieldIndex={setActiveFieldIndex}
                 onActive={onActive}

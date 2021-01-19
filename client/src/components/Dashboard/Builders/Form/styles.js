@@ -297,7 +297,7 @@ export default styled.div`
   }
 
   .formGroup-name {
-    color: #f26e21;
+    // color: #f26e21;
     margin: 1rem 0 -10px 0;
     letter-spacing: 0.8px;
   }

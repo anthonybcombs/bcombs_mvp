@@ -4,7 +4,7 @@ import FieldConstructor from '../../FormBuilder/FieldConstructor'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ isReadOnly = false, showLabel, settings, label, fields, type, id: groupId, onChange, fieldError, onCheckError, historyFields }) => {
+export default ({ isReadOnly = false, showLabel, settings, label, fields, type, id: groupId, onChange, fieldError, onCheckError, historyFields, format }) => {
   const fieldId = `${type}_${groupId}`
   const handleAnswer = (date) => {
     const dateObj = date ? new Date(date) : ''
@@ -64,12 +64,15 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
   const newDate = ansFields.find(e => !e.value) ? '' : ansFields.map(e => e.value).join()
   const hasError = !!fields.find(e => fieldError[e.id])
   const isRequired = !!fields.find(e => e.required)
+  const formatObj = format ? JSON.parse(format) : {}
+  const color = formatObj?.color || '#000'
+
   return (
     <div
       className={`formGroup ${type}`}
       id={`group_${groupId}`}
     >
-      <p className='formGroup-name'>
+      <p className='formGroup-name' style={{ color }}>
         {showLabel ? (
           <span>
             {label}

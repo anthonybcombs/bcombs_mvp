@@ -1073,7 +1073,7 @@ export default styled.div`
   // Secion Break
   .sortableGroup.sectionBreak .sortableGroup-name >input {
     font-size: 18px !important;
-    color: #000 !important;
+    // color: #000 !important;
   }
 
   
