@@ -455,7 +455,7 @@ export default styled.div`
     letter-spacing: 1.3px;    
   }
   .sortableGroup-name >input {
-    color: #f5812f !important;
+    // color: #f5812f !important;
     font-weight: bold !important;
     background: transparent !important;
   }
@@ -1073,7 +1073,7 @@ export default styled.div`
   // Secion Break
   .sortableGroup.sectionBreak .sortableGroup-name >input {
     font-size: 18px !important;
-    color: #000 !important;
+    // color: #000 !important;
   }
 
   
@@ -1514,7 +1514,13 @@ export default styled.div`
   }
 
   
+  .title-action.editName {
+    right: 22px!important;
+  }
 
+  .colorPicker {
+    z-index: 10;
+  }
 
 
 `;

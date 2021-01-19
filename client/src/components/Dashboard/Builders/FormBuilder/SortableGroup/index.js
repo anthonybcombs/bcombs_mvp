@@ -3,18 +3,19 @@ import { DragSource, DropTarget, } from 'react-dnd'
 import cloneDeep from 'lodash.clonedeep'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGripHorizontal, faEdit, faPlus, faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { faGripHorizontal, faTint, faPlus, faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
 import { Items, StandardFields } from '../Fields'
 import GeneralSettings from '../Settings/GeneralSettings'
 import Field from './Field'
+import { ChromePicker } from 'react-color'
 
 const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
     onActive, onChangeGeneralSettings,  onMergeStandardFields, onDuplicateGroup,
     onRemoveGroupField, onChangeFieldSettings, onChangeGroupName, onApplyValidationToAll,
-    onChangeDefaultProps, errors,
+    onChangeDefaultProps, errors, format,
 
     hidden, label, fields, isDragging, id, type: fieldGroupType, gridMax: gridColRepeat,
     includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField = {},
@@ -59,6 +60,15 @@ const SortableGroup = React.forwardRef(
   const fieldErrors = errors[id] || []
   const hasError = fieldErrors.length > 0
   const fieldSettings = fieldIndex !== '' ? fields[fieldIndex] : {}
+  let formatObj = {}
+  let color = ''
+
+  if (format) {
+    formatObj = JSON.parse(format)
+    color = formatObj?.color || '#000'
+  }
+
+  const [colorPickerShown, setColorPickerShown] = useState(false)
 
   return (
     <div
@@ -67,6 +77,7 @@ const SortableGroup = React.forwardRef(
       onClick={(e) => {
         e.stopPropagation()
         onActive(id)
+        setColorPickerShown(false)
       }}
       onMouseOver={() => setShowSettings(true)}
       onMouseLeave={() => setShowSettings(false)}
@@ -87,55 +98,85 @@ const SortableGroup = React.forwardRef(
       }
       <div>
         <div className='sortableGroup-name'
-            onClick={e => {
-              e.stopPropagation()
-              handleEnableEditGroupName(true)
-              if (!isActive) {
-                onActive(id)
-              }
-            }}
-          >
-            <input
-              type='text'
-              className={`field-input group-name-input-${id} ${showLabel ? 'shown-title' : 'hidden-title'}`}
-              value={label}
-              disabled={!enableEditGroupName}
-              readOnly={!showLabel}
-              onBlur={() => {
-                handleEnableEditGroupName(false)
-              }}
-              onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
-              onKeyPress={(e) => console.log('e: ', e)}
-            />
-            {
-              isActive && (
-                <div className='title-action'>
-                  <div className='tooltip-wrapper tooltip-left editGroupName'>
-                    <FontAwesomeIcon
-                      icon={showLabel ? faEye : faEyeSlash}
-                      className='show-icon'
-                      onClick={e => {
-                        e.stopPropagation()
-                        onChangeDefaultProps({ showLabel: !showLabel, id, isPageBreak })
-                        handleEnableEditGroupName(true)
-                        if (!isActive) {
-                          onActive(id)
-                        }
-                      }}
-                    />
-                    <span className='tooltip'>{`${showLabel ? 'Hide' : 'Show'} Title`}</span>
-                  </div>
-                </div>
-              )
+          onClick={e => {
+            e.stopPropagation()
+            handleEnableEditGroupName(true)
+            if (!isActive) {
+              onActive(id)
             }
-          </div>
+          }}
+        >
+          <input
+            type='text'
+            className={`field-input group-name-input-${id} ${showLabel ? 'shown-title' : 'hidden-title'}`}
+            value={label}
+            disabled={!enableEditGroupName}
+            readOnly={!showLabel}
+            style={{ color }}
+            onBlur={() => {
+              handleEnableEditGroupName(false)
+            }}
+            onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
+            onKeyPress={(e) => console.log('e: ', e)}
+          />
           {
-            isPageBreak && (
-              <div className='pageBreak-counter'>
-                {pageBreakIndex}/{pageBreaks.length} 
+            isActive && (
+              <div className='title-action editName'>
+                <div className='tooltip-wrapper tooltip-left editGroupName'>
+                  <FontAwesomeIcon
+                    icon={showLabel ? faEye : faEyeSlash}
+                    className='show-icon'
+                    onClick={e => {
+                      e.stopPropagation()
+                      onChangeDefaultProps({ showLabel: !showLabel, id, isPageBreak })
+                      handleEnableEditGroupName(true)
+                      if (!isActive) {
+                        onActive(id)
+                      }
+                    }}
+                  />
+                  <span className='tooltip'>{`${showLabel ? 'Hide' : 'Show'} Title`}</span>
+                </div>
               </div>
             )
           }
+          {
+            isActive && (
+              <div className='title-action'>
+                <div className='tooltip-wrapper tooltip-left'>
+                  <FontAwesomeIcon
+                    icon={faTint}
+                    className='show-icon'
+                    onClick={e => {
+                      e.stopPropagation()
+                      setColorPickerShown(!colorPickerShown)
+                    }}
+                  />
+                  <span className='tooltip'>Set Color</span>
+                </div>
+              </div>
+            )
+          }
+          {
+            colorPickerShown && isActive && (
+              <div className='colorPicker' onClick={e => e.stopPropagation()}>
+                <ChromePicker
+                  color={color.length > 0 ? color : "red"}
+                  onChange={(e) => {
+                    onChangeDefaultProps({ id, format: JSON.stringify({ ...formatObj, color: e.hex }) })
+                  }}
+                />
+              </div>
+            )
+          }
+        </div>
+        {
+          isPageBreak && (
+            <div className='pageBreak-counter'>
+              {pageBreakIndex}/{pageBreaks.length} 
+            </div>
+          )
+        }
       </div>
       <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {
@@ -162,6 +203,7 @@ const SortableGroup = React.forwardRef(
                 hasPageBreak={hasPageBreak}
                 pageBreaks={pageBreaks}
                 isLastPageBreak={isLastPageBreak}
+                format={format}
 
                 setActiveFieldIndex={setActiveFieldIndex}
                 onActive={onActive}

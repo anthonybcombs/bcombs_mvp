@@ -21,7 +21,7 @@ import {
 export default ({
   label, type, groupType, fields, previewStyle = {}, gridMax = 3, allowAddField = false,
   includeLogic = true, includeValidation = false, displayLabel, hasSettings = true,
-  supportMultiple = false, showLabel = false
+  supportMultiple = false, showLabel = false, format = ''
 }) => {
   const newFields = cloneDeep(fields) //avoid mutating the array of objects
   const settings = {}
@@ -29,7 +29,7 @@ export default ({
     item: { type },
     begin: () => ({
       label, type, fields: newFields, groupType, settings, id: uuid(), allowAddField,
-      includeLogic, includeValidation, gridMax, hasSettings, supportMultiple, showLabel
+      includeLogic, includeValidation, gridMax, hasSettings, supportMultiple, showLabel, format
     }),
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
