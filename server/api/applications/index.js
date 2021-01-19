@@ -1,4 +1,3 @@
-import { async } from "regenerator-runtime";
 import { makeDb } from "../../helpers/database";
 
 import { updateChild, getChildInformation, getChildChildRelationship } from "../child";
@@ -557,79 +556,30 @@ export const getApplicationHistoryById = async app_id => {
   }
 };
 
-export const getCustomApplicationHistoryById = async custom_app_id => {
-  const db = makeDb();
-  let result;
-
-  try {
-    result = db.query(
-      `
-      SELECT 
-        id,
-        BIN_TO_UUID(app_history_id) as app_history_id,
-        BIN_TO_UUID(custom_app_id) as custom_app_id,
-        details,
-        updated_at,
-        updated_by
-      FROM application_history
-      WHERE custom_app_id=UUID_TO_BIN(?)
-      ORDER BY id DESC
-    `,
-      [custom_app_id]
-    );
-  } catch (error) {
-    console.log("get application by id", error);
-  } finally {
-    await db.close();
-    return result;
-  }
-};
-
 export const addApplicationHistory = async ({
-  app_id = "",
-  custom_app_id = "",
+  app_id,
   details,
   updated_by
 }) => {
   const db = makeDb();
   let result;
 
-
   try {
-
-    if(app_id) {
-      result = await db.query(
-        `
-          INSERT INTO application_history(
-            app_history_id,
-            app_id,
-            details,
-            updated_by
-          ) VALUES (
-            UUID_TO_BIN(UUID()),
-            UUID_TO_BIN(?),
-            ?, ?
-          )
-       `,
-        [app_id, details, updated_by]
-      );
-    } else {
-      result = await db.query(
-        `
-          INSERT INTO application_history(
-            app_history_id,
-            custom_app_id,
-            details,
-            updated_by
-          ) VALUES (
-            UUID_TO_BIN(UUID()),
-            UUID_TO_BIN(?),
-            ?, ?
-          )
-       `,
-        [custom_app_id, details, updated_by]
-      );
-    }
+    result = await db.query(
+      `
+    INSERT INTO application_history(
+      app_history_id,
+      app_id,
+      details,
+      updated_by
+    ) VALUES (
+      UUID_TO_BIN(UUID()),
+      UUID_TO_BIN(?),
+      ?, ?
+    )
+    `,
+      [app_id, details, updated_by]
+    );
   } catch (error) {
     console.log("add application history", error);
   } finally {
@@ -638,44 +588,25 @@ export const addApplicationHistory = async ({
   }
 };
 
-export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id = '' }) => {
+export const addApplicationUser = async ({ user_id, app_id }) => {
   const db = makeDb();
   let result;
 
-  let values = custom_app_id !== '' ? [app_id, custom_app_id, user_id] : [app_id, user_id]
   try {
-    if(app_id) {
-      await db.query(
-        `
-          INSERT INTO application_user(
-            app_user_id,
-            app_id,
-            user_id
-          ) VALUES (
-            UUID_TO_BIN(UUID()),
-            UUID_TO_BIN(?),
-            UUID_TO_BIN(?)
-          )
-        `,
-        [app_id, user_id]
-      );
-    } else {
-      await db.query(
-        `
-          INSERT INTO application_user(
-            app_user_id,
-            custom_app_id,
-            user_id
-          ) VALUES (
-            UUID_TO_BIN(UUID()),
-            UUID_TO_BIN(?),
-            UUID_TO_BIN(?)
-          )
-        `,
-        [custom_app_id, user_id]
-      );
-    }
-
+    await db.query(
+      `
+        INSERT INTO application_user(
+          app_user_id,
+          app_id,
+          user_id
+        ) VALUES (
+          UUID_TO_BIN(UUID()),
+          UUID_TO_BIN(?),
+          UUID_TO_BIN(?)
+        )
+      `,
+      [app_id, user_id]
+    );
   } catch (error) {
     console.log("add application user error", error);
   } finally {
@@ -700,11 +631,10 @@ export const getUserApplicationsByUserId = async user_id => {
       `,
       [user_id]
     );
+
     for (const ua of userApplications) {
-      if(ua.app_id) {
-        const application = await getApplicationByAppId(ua.app_id);
-        applications.push(application);
-      }
+      const application = await getApplicationByAppId(ua.app_id);
+      applications.push(application);
     }
   } catch (error) {
     console.log("get user applications", error);
@@ -760,471 +690,5 @@ export const getApplicationHistoryByUser = async id => {
   } finally {
     await db.close();
     return auditTrails;
-  }
-};
-
-export const createCustomApplication = async ({
-  user,
-  vendor,
-  form_contents,
-  category
-}) => {
-  const db = makeDb();
-  let result = {};
-  let lastId = "";
-  let application;
-
-  try {
-    result = await db.query(
-      `INSERT INTO vendor_custom_application(
-        form_id,
-        user,
-        vendor,
-        form_contents,
-        category
-      ) VALUES (
-        UUID_TO_BIN(UUID()),
-        UUID_TO_BIN(?),
-        UUID_TO_BIN(?),
-        ?, ?)`,
-      [
-        user,
-        vendor,
-        form_contents,
-        category
-      ]
-    );
-
-    lastId = result.insertId;
-
-    application = await db.query(
-      `SELECT 
-        id,
-        BIN_TO_UUID(form_id) as form_id,
-        BIN_TO_UUID(user) as user,
-        BIN_TO_UUID(vendor) as vendor,
-        CONVERT(form_contents USING utf8) as form_contents,
-        created_at,
-        category,
-        status
-      FROM vendor_custom_application 
-      WHERE id=?`,
-      [lastId]
-    );
-
-    if(application.length > 0) {
-      application = application[0];
-      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-      console.log("get custom application string", application);
-      application.form_contents = JSON.parse(application.form_contents);
-    } else {
-      application = ""
-    }
-
-    console.log("application result", result);
-  } catch (err) {
-    console.log("create custom application error", err);
-  } finally {
-    await db.close();
-    return application;
-  }
-};
-
-export const updateCustomApplicationForm = async ({
-  form_id,
-  user,
-  vendor,
-  form_contents,
-  category
-}) => {
-  const db = makeDb();
-  let result;
-  let application;
-
-  try {
-    const currentDate = new Date();
-    result = await db.query(
-      `
-        UPDATE vendor_custom_application SET
-        form_contents=?,
-        updated_at=?,
-        category=?
-        WHERE form_id=UUID_TO_BIN(?)
-      `,
-      [
-        form_contents,
-        currentDate,
-        category,
-        form_id
-      ]
-    )
-
-    application = await db.query(
-      `SELECT 
-        id,
-        BIN_TO_UUID(form_id) as form_id,
-        BIN_TO_UUID(user) as user,
-        BIN_TO_UUID(vendor) as vendor,
-        CONVERT(form_contents USING utf8) as form_contents,
-        created_at,
-        updated_at,
-        category,
-        status
-      FROM vendor_custom_application 
-      WHERE form_id=UUID_TO_BIN(?)`,
-      [form_id]
-    );
-
-    if(application.length > 0) {
-      application = application[0];
-      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-      console.log("get custom application string", application);
-      application.form_contents = JSON.parse(application.form_contents);
-    } else {
-      application = ""
-    }
-
-  } catch(err) {
-    console.log("update custom application form error", error);
-  } finally {
-    await db.close();
-    return application;
-  }
-}
-
-export const deleteCustomApplicationForm = async ({
-  form_id
-}) => {
-  const db = makeDb();
-  let result;
-
-  try {
-    result = await db.query(
-      `
-        UPDATE vendor_custom_application SET
-        status='deleted'
-        WHERE form_id=UUID_TO_BIN(?)
-      `,
-      [
-        form_id
-      ]
-    )
-
-  } catch(err) {
-    console.log("delete custom application form error", error);
-  } finally {
-    await db.close();
-    return result;
-  }
-}
-
-
-export const getCustomApplicationFormByFormId = async form_id => {
-  const db = makeDb();
-  let application;
-  try {
-    application = await db.query(
-      `
-        SELECT
-        id,
-        BIN_TO_UUID(form_id) as form_id,
-        BIN_TO_UUID(user) as user,
-        BIN_TO_UUID(vendor) as vendor,
-        CONVERT(form_contents USING utf8) as form_contents,
-        created_at,
-        updated_at,
-        category,
-        status
-        FROM vendor_custom_application
-        WHERE form_id=UUID_TO_BIN(?) AND status <> 'deleted'
-      `,
-      [
-        form_id
-      ]
-    )
-
-    if(application.length > 0) {
-      application = application[0];
-      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-      console.log("get custom application string", application);
-      application.form_contents = JSON.parse(application.form_contents);
-    } else {
-      application = ""
-    }
-
-    console.log("get custom application", application);
-  } catch(err) {
-    console.log("get custom application by form id", err);
-  } finally {
-    await db.close();
-    return application;
-  }
-}
-
-export const getVendorCustomApplicationForms = async ({vendor, category = ""}) => {
-  const db = makeDb();
-  let applications;
-  try {
-
-    if(category) {
-      applications = await db.query(
-        `
-          SELECT
-          id,
-          BIN_TO_UUID(form_id) as form_id,
-          BIN_TO_UUID(user) as user,
-          BIN_TO_UUID(vendor) as vendor,
-          CONVERT(form_contents USING utf8) as form_contents,
-          created_at,
-          updated_at,
-          category,
-          status
-          FROM vendor_custom_application
-          WHERE vendor=UUID_TO_BIN(?) AND category=(?) AND status <> 'deleted'
-          ORDER BY updated_at DESC
-        `,
-        [
-          vendor,
-          category
-        ]
-      )
-    } else {
-      applications = await db.query(
-        `
-          SELECT
-          id,
-          BIN_TO_UUID(form_id) as form_id,
-          BIN_TO_UUID(user) as user,
-          BIN_TO_UUID(vendor) as vendor,
-          CONVERT(form_contents USING utf8) as form_contents,
-          created_at,
-          updated_at,
-          category,
-          status
-          FROM vendor_custom_application
-          WHERE vendor=UUID_TO_BIN(?) AND status <> 'deleted'
-          ORDER BY updated_at DESC
-        `,
-        [
-          vendor
-        ]
-      )
-    }
-    
-    for(const application of applications) {
-      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-      console.log("get custom application string", application);
-      application.form_contents = JSON.parse(application.form_contents);
-    }
-
-  } catch(err) {
-    console.log("get custom application by form id", err);
-  } finally {
-    await db.close();
-    return applications;
-  }
-}
-
-export const submitCustomApplication = async ({
-  vendor,
-  form,
-  form_contents
-}) => {
-  const db = makeDb();
-  let result = {};
-  let lastId = "";
-  let application;
-
-  try {
-    result = await db.query(
-      `INSERT INTO custom_application(
-        app_id,
-        vendor,
-        form,
-        form_contents
-      ) VALUES (
-        UUID_TO_BIN(UUID()), 
-        UUID_TO_BIN(?), 
-        UUID_TO_BIN(?),
-        ?)`,
-      [
-        vendor,
-        form,
-        form_contents
-      ]
-    );
-
-    lastId = result.insertId;
-    application = await db.query(
-      "SELECT (BIN_TO_UUID(app_id)) as app_id FROM custom_application WHERE id=?",
-      [lastId]
-    );
-    application = application.length > 0 ? application[0] : "";
-
-    console.log("custom application result", result);
-  } catch (err) {
-    console.log("submit custom application error", err);
-  } finally {
-    await db.close();
-    return application;
-  }
-}
-
-export const updateSubmitCustomApplication = async({
-  app_id,
-  form_contents,
-  class_teacher="",
-  color_designation="",
-  verification = "",
-  student_status = "",
-  notes=""
-}) => {
-  const db = makeDb();
-  let result = {};
-
-  try {
-    result = await db.query(`
-      UPDATE custom_application SET
-      form_contents=?,
-      class_teacher=?,
-      color_designation=?,
-      verification=?,
-      student_status=?,
-      notes=?
-      WHERE app_id=UUID_TO_BIN(?)
-    `, [
-      form_contents,
-      class_teacher,
-      color_designation,
-      verification,
-      student_status,
-      notes,
-      app_id
-    ])
-  } catch(err) {
-    console.log("update custom application error", error);
-  } finally {
-    await db.close();
-    return result;
-  }
-}
-
-export const getCustomFormApplicants = async({form_id, is_archived = 0}) => {
-  const db = makeDb();
-  let applications;
-  try {
-    
-    applications = await db.query(
-      `
-        SELECT
-        id,
-        BIN_TO_UUID(form) as form,
-        BIN_TO_UUID(vendor) as vendor,
-        BIN_TO_UUID(app_id) as app_id,
-        CONVERT(form_contents USING utf8) as form_contents,
-        application_date,
-        archived_date,
-        class_teacher,
-        color_designation,
-        verification,
-        student_status,
-        notes
-        FROM custom_application
-        WHERE form=UUID_TO_BIN(?) AND is_archived=?
-        ORDER BY application_date DESC
-      `,
-      [
-        form_id,
-        is_archived
-      ]
-    )
-
-    console.log("applications", applications);
-
-    for(const application of applications) {
-      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-      console.log("get custom application string", application);
-      application.form_contents = JSON.parse(application.form_contents);
-    }
-
-  } catch(err) {
-    console.log("get custom application by form id", err);
-  } finally {
-    await db.close();
-    return applications;
-  }
-}
-
-export const getCustomFormApplicantById = async({app_id, is_archived = 0}) => {
-  const db = makeDb();
-  let applications;
-  try {
-    
-    applications = await db.query(
-      `
-        SELECT
-        id,
-        BIN_TO_UUID(form) as form,
-        BIN_TO_UUID(vendor) as vendor,
-        BIN_TO_UUID(app_id) as app_id,
-        CONVERT(form_contents USING utf8) as form_contents,
-        application_date,
-        archived_date,
-        class_teacher,
-        color_designation,
-        verification,
-        student_status,
-        notes
-        FROM custom_application
-        WHERE app_id=UUID_TO_BIN(?) AND is_archived=?
-      `,
-      [
-        app_id,
-        is_archived
-      ]
-    )
-    for(const application of applications) {
-      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-      application.form_contents = JSON.parse(application.form_contents);
-    }
-
-    applications = applications.length > 0 ? applications[0] : {};
-
-  } catch(err) {
-    console.log("get custom application by form id", err);
-  } finally {
-    await db.close();
-    return applications;
-  }
-}
-
-export const getUserCustomApplicationsByUserId = async user_id => {
-  const db = makeDb();
-  let applications = [];
-
-  try {
-    const userApplications = await db.query(
-      `
-        SELECT 
-          id,
-          BIN_TO_UUID(custom_app_id) as custom_app_id
-        FROM application_user
-        WHERE user_id=UUID_TO_BIN(?)
-        ORDER BY id DESC
-      `,
-      [user_id]
-    );
-
-    for (const ua of userApplications) {
-      if(ua.custom_app_id) {
-        const application = await getCustomFormApplicantById({app_id: ua.custom_app_id});
-        applications.push(application);
-      }
-    }
-  } catch (error) {
-    console.log("get user custom applications", error);
-  } finally {
-    await db.close();
-    return applications;
   }
 };

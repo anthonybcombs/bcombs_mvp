@@ -204,15 +204,13 @@ export const getShareCalendarTemplate = (calendar, user, groupId) => {
   return `<h4>Calendar ${calendar.name} is shared to you!</h4>
 <p>You want to follow this calendar?</p>
 <div>
-  <form action="${process.env.API_URL}/api/invitation/calendar/${calendar.id}/1" method="GET">
+  <form action="${process.env.API_URL}/api/invitation/calendar/${calendar.id}" method="GET">
   <input type="submit" value="Yes" style="background-color:#f26e21;color:white;padding:5px;"/>
   <input type="hidden" name="userId" value="${user.user_id}"/>
   <input type="hidden" name="groupId" value="${groupId}"/>
   </form>
-  <form action="${process.env.API_URL}/api/invitation/calendar/${calendar.id}/2" method="GET">
+  <form action="${process.env.API_URL}/api/dashboard/mycalendars" method="GET">
   <input type="submit" value="No" style="background-color:grey;color:white;padding:5px;"/>
-  <input type="hidden" name="userId" value="${user.user_id}"/>
-  <input type="hidden" name="groupId" value="${groupId}"/>
   </form>  
 </div>`;
 };
@@ -223,7 +221,6 @@ export const sendToUserShareCalendarConfirmation = async ({
   groupId
 }) => {
   try {
-    console.log('Recipientttt',recipient)
     const template = getShareCalendarTemplate(calendar, recipient, groupId);
     sendEmail({
       ...defaultMailConfig,

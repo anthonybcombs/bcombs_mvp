@@ -10,8 +10,7 @@ export default function Loading(
     form_settings: false,
     userAllApplications: false,
     addAdmin: false,
-    deleteAdmins: false,
-    addForm: false
+    deleteAdmins: false
   },
   action
 ) {
@@ -65,31 +64,6 @@ export default function Loading(
       return {
         ...state,
         deleteAdmins: action.value
-      }
-    case actionType.SET_ADD_FORM_LOADING:
-      return {
-        ...state,
-        addForm: action.value
-      }
-    case actionType.SET_UPDATE_FORM_LOADING:
-      return {
-        ...state,
-        updateForm: action.value
-      }
-    case actionType.SET_GET_FORM_LOADING:
-      return {
-        ...state,
-        getForm: action.value
-      }
-    case actionType.SET_DELETE_FORM_LOADING:
-      return {
-        ...state,
-        deleteForm: action.value
-      }
-    case actionType.SET_SUBMIT_FORM_LOADING:
-      return {
-        ...state,
-        submitForm: action.value
       }
     default:
       return state;

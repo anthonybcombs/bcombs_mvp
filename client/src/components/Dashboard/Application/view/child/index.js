@@ -130,7 +130,6 @@ export default function index({
     }
   }
 
-  console.log('childInformation555',childInformation)
   return (
     <>
       <ChildFormHeader id="userApplicationForm">

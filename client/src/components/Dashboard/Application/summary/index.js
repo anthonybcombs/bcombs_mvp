@@ -63,63 +63,49 @@ const ApplicationSummaryStyled = styled.div`
 export default function index({
   appGroups = [],
   applications = [],
-  vendor={},
-  form={},
-  isForm = false
+  vendor
 }) {
 
-  console.log("selected form", form);
+  // appGroups = appGroups.filter((group) => {
+  //   return group.vendor == vendor.id;
+  // })
+
+  console.log("appGroups2...", appGroups);
+  console.log("appGroups...", vendor);
 
   const getClassCount = (group) => {
 
-    if(applications.length > 0) {
-      const size = applications.filter((app) => {
-        if(app.class_teacher) {
-          return app.class_teacher == group.app_grp_id;
-        }
-      });
-  
-      return size.length;
-    }
+    const size = applications.filter((app) => {
+      if(app.class_teacher) {
+        return app.class_teacher == group.app_grp_id;
+      }
+    });
 
-    return 0;
-
+    return size.length;
   }
 
   const renderTableData = () => {
 
-    if(appGroups.length > 0) {
-      return appGroups.map((group, index) => {
+    return appGroups.map((group, index) => {
 
-        let count = group.size;
-        let classCount = getClassCount(group);
-        let availableCount = count - classCount;
-        availableCount = availableCount < 0 ? 0 : availableCount;
+      let count = group.size;
+      let classCount = getClassCount(group);
+      let availableCount = count - classCount;
+      availableCount = availableCount < 0 ? 0 : availableCount;
 
-        let classLink = ""
-        if(group.vendor) {
-          classLink = `class/bcombs/${vendor.id2}?appgroup=${group.app_grp_id}`;
-        }
-        else if(group.form) {
-          classLink = `class/custom/${group.form}?appgroup=${group.app_grp_id}`;
-        }
-        return (
-          <tr key={group.id}>
-            <td>
-              <a href={classLink} target="_blank">
-                {group.name}
-              </a>
-            </td>
-            <td>{count}</td>
-            <td>{availableCount}</td>
-            <td>{classCount}</td>
-          </tr>
-        )
-      })
-    } else {
-      return (<tr></tr>)
-    }
-
+      return (
+        <tr key={group.id}>
+          <td>
+            <a href={"class/" + vendor?.id2 + "/" + group.name} target="_blank">
+              {group.name}
+            </a>
+          </td>
+          <td>{count}</td>
+          <td>{availableCount}</td>
+          <td>{classCount}</td>
+        </tr>
+      )
+    })
   }
 
   const getTotalCount = () => {
@@ -150,13 +136,6 @@ export default function index({
     return totalClassCount;
   }
 
-  let allLink;
-
-  if(!isForm)
-    allLink = `class/bcombs/${vendor.id2}`;
-  else
-    allLink = `class/custom/${form}`;
-
   return (
     <ApplicationSummaryStyled>
       <div id="application-status">
@@ -165,33 +144,25 @@ export default function index({
             <span>Overall Summary</span>
           </div>
         </div>
-        {
-          appGroups.length > 0 && (
-          <div id="application-status-list">
-            <table id="groups">
-              <tbody>
-                <tr>
-                  <th>Class</th>
-                  <th>Count</th>
-                  <th>Available</th>
-                  <th>Class Count</th>
-                </tr>
-                <tr>
-                  <td>
-                  <a href={allLink} target="_blank">
-                    All
-                  </a>
-                  </td>
-                  <td>{getTotalCount()}</td>
-                  <td>{getTotalAvailable()}</td>
-                  <td>{getTotalClassCount()}</td>
-                </tr>
-                {renderTableData()}
-              </tbody>
-            </table>
-          </div>
-          )
-        }
+        <div id="application-status-list">
+          <table id="groups">
+            <tbody>
+              <tr>
+                <th>Class</th>
+                <th>Count</th>
+                <th>Available</th>
+                <th>Class Count</th>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td>{getTotalCount()}</td>
+                <td>{getTotalAvailable()}</td>
+                <td>{getTotalClassCount()}</td>
+              </tr>
+              {renderTableData()}
+            </tbody>
+          </table>
+        </div>
       </div>
     </ApplicationSummaryStyled>
   )

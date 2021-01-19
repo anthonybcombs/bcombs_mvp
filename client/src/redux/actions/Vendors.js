@@ -8,11 +8,8 @@ import {
   GET_VENDOR_ADMINS,
   ADD_VENDOR_ADMIN,
   DELETE_VENDOR_ADMIN,
-  UPDATE_VENDOR_ADMIN,
-  GET_USER_VENDOR_FORMS
+  UPDATE_VENDOR_ADMIN
 } from "../../graphql/vendorMutation";
-
-import { GET_FORM_APP_GROUP } from "../../graphql/groupQuery";
 import * as actionType from "./Constant";
 
 import {
@@ -89,36 +86,6 @@ const getVendorAdminsFromDatabase = user => {
     }
   });
 };
-
-const getUserVendorFormsFromDatabase = user => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { data } = await graphqlClient.query({
-        query: GET_USER_VENDOR_FORMS,
-        variables: { user }
-      });
-
-      return resolve(data.getUserVendorForms);
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
-
-const getFormAppGroupFromDatabase = form => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { data } = await graphqlClient.query({
-        query: GET_FORM_APP_GROUP,
-        variables: { form }
-      });
-
-      return resolve(data.getFormAppGroup);
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
 
 const getVendorFromDatabase = user => {
   return new Promise(async (resolve, reject) => {
@@ -215,20 +182,6 @@ export const requestVendor = user => {
     user
   };
 };
-
-export const requestUserVendorForms = user => {
-  return {
-    type: actionType.REQUEST_USER_VENDOR_FORMS,
-    user
-  };
-}
-
-export const requestGetFormAppGroup = form => {
-  return {
-    type: actionType.REQUEST_GET_FORM_APP_GROUP,
-    form
-  }
-}
 
 export const requestUpdateVendor = vendor => {
   return {
@@ -417,37 +370,3 @@ export function* getVendor(action) {
     });
   }
 }
-
-export function* getUserVendorForms(action) {
-  try {
-    const forms = yield call(getUserVendorFormsFromDatabase, action.user);
-    yield put({
-      type: actionType.REQUEST_USER_VENDOR_FORMS_COMPLETED,
-      payload: forms
-    });
-  } catch (err) {
-    console.log("err", err);
-    yield put({
-      type: actionType.REQUEST_USER_VENDOR_FORMS_COMPLETED,
-      payload: []
-    });
-  }
-}
-
-export function* getFormAppGroup(action) {
-  try {
-    const appGroups = yield call(getFormAppGroupFromDatabase, action.form);
-    yield put({
-      type: actionType.REQUEST_GET_FORM_APP_GROUP_COMPLETED,
-      payload: appGroups
-    });
-  } catch (err) {
-    console.log("err", err);
-    yield put({
-      type: actionType.REQUEST_GET_FORM_APP_GROUP_COMPLETED,
-      payload: []
-    });
-  }
-}
-
-

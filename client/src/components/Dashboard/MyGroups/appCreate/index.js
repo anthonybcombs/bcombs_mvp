@@ -46,10 +46,7 @@ export default function index({
   }, [isVisible]);
   const handleGroupDetailsChange = (id, value) => {
     if (id == "vendors") {
-      let ids = value.map((vendor) => { return {id: vendor.id, is_form: vendor.is_form}});
-
-      console.log("value", value);
-      console.log("ids", ids);
+      let ids = value.map(vendor => vendor.id);
       setGroupDetails({
         ...groupDetails,
         [id]: ids
@@ -68,8 +65,7 @@ export default function index({
         size: groupDetails.size,
         name: groupDetails.name,
         email: auth.email,
-        user_id: auth.user_id,
-        pool_id: uuid()
+        user_id: auth.user_id
       };
       payload.size = parseInt(payload.size);
       console.log("PAYLOADDD EDIT", groupDetails);
@@ -85,8 +81,7 @@ export default function index({
         let payload = {
           ...groupDetails,
           user_id: auth.user_id,
-          email: auth.email,
-          pool_id: uuid()
+          email: auth.email
         };
         payload.size = parseInt(payload.size);
         console.log("PAYLOADDD CREATE", payload);

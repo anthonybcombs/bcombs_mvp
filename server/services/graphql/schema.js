@@ -84,7 +84,6 @@ const inputs = `
         groups:[String]
         visibilityType: String
         color: String
-        app_group_ids: [String]
     }    
     input CreateProfileInput{
         email: String!
@@ -127,7 +126,6 @@ const inputs = `
         visibility: String
         auth_email: String
         group_ids:[String]
-        app_group_ids:[String]
         guests:[String]
         removed_guests:[String]
         recurring: String
@@ -355,7 +353,7 @@ const inputs = `
         section3_signature: String!
         section3_date_signed: Date!
         verification: String
-        student_status: String
+        student_status: Int
         color_designation: String
         notes: String
         emergency_contacts: String
@@ -385,7 +383,7 @@ const inputs = `
         section3_signature: String!
         section3_date_signed: Date!
         verification: String
-        student_status: String
+        student_status: Int
         color_designation: String
         notes: String
         emergency_contacts: String
@@ -407,19 +405,13 @@ const inputs = `
         class_teacher: String
     }
 
-    input AppGroupVendorInput {
-        id: String
-        is_form: Boolean
-    }
-
     input AppGroupInput {
         app_grp_id: String
         user_id: String!
         email: String!
-        vendors: [AppGroupVendorInput]
+        vendors: [String!]
         size: Int!
         name: String!
-        pool_id: String!
     }
 
     input DeleteAppGroupInput {
@@ -464,8 +456,7 @@ const inputs = `
         section3_text: String
         section1_name: String
         section2_name: String
-        section3_name: String,
-        relationships: [ParentChildRelationshipInput]
+        section3_name: String
     }
 
     input AddAdminInput {
@@ -493,199 +484,12 @@ const inputs = `
         parent: String!
         child: String!
         relationship: String
-        id: String
     }
 
     input ChildChildRelationshipInput {
         child: String
         child2: String
         relationship: String
-    }
-
-    input CustomApplicationInput {
-        form_id: String
-        vendor: String
-        user: String
-        form_contents: CustomFormInput
-        category: String
-    }
-
-    input CustomFormInput {
-        formTitle: String
-        formData: [CustomFormDataInput]
-    }
-
-    input CustomFormDataInput {
-        id: String
-        label: String
-        type: String
-        fields: [CustomFormFieldsInput]
-        groupType: String
-        settings: CustomFormSettingsInput
-        isActive: Boolean
-        allowAddField: Boolean
-        gridMax: Int
-        includeLogic: Boolean
-        includeValidation: Boolean
-        hasSettings: Boolean
-        supportMultiple: Boolean
-        showLabel: Boolean
-    }
-
-    input CustomFormFieldsInput {
-        id: String
-        label: String
-        type: String
-        tag: String
-        placeholder: String
-        column: String
-        value: String
-        required: Boolean
-        description: String
-        validation: CustomFormValidationInput
-        options: [CustomCheckboxOptionInput]
-        columns: [CustomMatrixRatingColumnsInput]
-        rows: [CustomMatrixRatingRowsInput]
-        min: CustomLinearScaleMinInput
-        max: CustomLinearScaleMaxInput
-        scale: CustomSliderScaleInput
-        scaleLabels: CustomSliderScaleLabelsInput
-        items: [CustomRankingItemsInput]
-        limit: Int
-        errorMessage: String
-        allowTypes: [CustomFileUploadTypesInput]
-        isMultiple: Boolean
-        requireAddOption : Boolean
-        fixedWidth: Boolean
-        file: FileContentInput
-    }
-    
-    input FileContentInput {
-        filename: String
-        extension: String
-        contentType: String
-        url: String
-        data: String
-    }
-
-    input CustomFileUploadTypesInput {
-        label: String
-        ext: [String]
-        selected: Boolean
-    }
-
-    input CustomRankingItemsInput {
-        label: String
-        rank: Int
-    }
-
-    input CustomSliderScaleInput {
-        min: Int
-        max: Int
-    }
-
-    input CustomSliderScaleLabelsInput {
-        left: String
-        center: String
-        right: String
-    }
-
-    input CustomLinearScaleMinInput {
-        value: Int
-        label: String
-    }
-
-    input CustomLinearScaleMaxInput {
-        value: Int
-        label: String
-    }
-
-    input CustomMatrixRatingColumnsInput {
-        label: String
-        value: Int
-    }
-
-    input CustomMatrixRatingRowsInput {
-        row: String
-    }
-
-    input CustomCheckboxOptionInput {
-        name: String
-        label: String
-        tag: String
-    }
-
-    input CustomFormValidationInput {
-        include: Boolean
-        items: [CustomFormValidationErrorsInput]
-    }
-
-    input CustomFormValidationErrorsInput {
-        error: String
-        errorField: String
-        option: String
-        type: String
-        value: String
-    }
-
-    input CustomFormSettingsInput {
-        logic: CustomFormSettingsLogicInput
-        instruction: CustomFormSettingsInstructionInput
-    }
-
-    input CustomFormSettingsLogicInput {
-        include: Boolean
-        items: String
-    }
-
-    input CustomFormSettingsInstructionInput {
-        include: Boolean
-        value: String
-    }
-
-    input SubmitCustomApplicationInput {
-        vendor: String!
-        form: String!
-        form_contents: CustomFormInput
-    }
-
-    input UpdateCustomApplicationInput {
-        vendor: String!
-        form: String!
-        app_id: String!
-        form_contents: CustomFormInput
-        class_teacher: String
-        color_designation: String
-        verification: String
-        student_status: String
-        notes: String
-        updated_by: String
-    }
-
-    input CustomApplicationFormFilterInput {
-        vendor: String!
-        categories: [String]
-    }
-
-    input AttendanceChildInput {
-        app_id: String   
-        attendance_status: String   
-        volunteer_hours: Int
-        mentoring_hours: Int
-        child_id: String   
-        vendor: String   
-        is_excused: Int
-    }
-
-    input AttendanceInput {
-        app_group_id: String
-        attendance_date: String
-        attendance_start_time: String
-        attendance_end_time: String
-        attendance_list: [AttendanceChildInput]
-        event_name: String
-        location: String
-        description: String
     }
 `;
 const queryTypes = `
@@ -709,7 +513,6 @@ const queryTypes = `
         recurring_end_date: Date
         allowed_edit: Boolean
         group_ids:[String]
-        app_group_ids:[String]
     }
     type Contact{
         id: String
@@ -782,7 +585,6 @@ const queryTypes = `
         familyMembers:[String]
         groups:[String]
         visibilityType: String!   
-        app_group_ids: [String]
     }
     type CalendarType{
         status: Status!
@@ -1057,12 +859,10 @@ const queryTypes = `
         id: Int
         app_grp_id: String!
         user: String!
-        vendor: String
-        form: String
+        vendor: String!
         size: Int
         name: String!
         created_at: Date
-        pool_id: String
     }
 
     type AppGroupStatus{
@@ -1074,8 +874,7 @@ const queryTypes = `
     type ApplicationHistory{
         id: Int
         app_history_id: String!
-        app_id: String
-        custom_app_id: String
+        app_id: String!
         details: String
         updated_by: String
         updated_at: Date
@@ -1121,239 +920,6 @@ const queryTypes = `
         relationship: String
         details: Child
     }
-
-    type CustomApplicationOutput {
-        id: String
-        vendor: String
-        user: String
-        form_id: String
-        form_contents: CustomForm
-        category: String
-        status: String
-        created_at: Date
-        updated_at: Date
-    }
-
-    type SubmittedCustomApplicationOutput {
-        id: String
-        app_id: String
-        vendor: String
-        form: String
-        form_contents: CustomForm
-        application_date: Date
-        archived_date: Date
-        class_teacher: String
-        color_designation: String
-        verification: String
-        student_status: String
-        notes: String
-    }
-
-    type CustomForm {
-        formTitle: String
-        formData: [CustomFormData]
-    }
-
-    type CustomFormData {
-        id: String
-        label: String
-        type: String
-        fields: [CustomFormFields]
-        groupType: String
-        settings: CustomFormSettings
-        isActive: Boolean
-        allowAddField: Boolean
-        gridMax: Int
-        includeLogic: Boolean
-        includeValidation: Boolean
-        hasSettings: Boolean
-        supportMultiple: Boolean
-        showLabel: Boolean
-    }
-
-    type CustomFormFields {
-        id: String
-        label: String
-        type: String
-        tag: String
-        placeholder: String
-        column: String
-        value: String
-        required: Boolean
-        description: String
-        validation: CustomFormValidation
-        options: [CustomCheckboxOption]
-        columns: [CustomMatrixRatingColumns]
-        rows: [CustomMatrixRatingRows]
-        min: CustomLinearScaleMin
-        max: CustomLinearScaleMax
-        scale: CustomSliderScale
-        scaleLabels: CustomSliderScaleLabels
-        items: [CustomRankingItems]
-        limit: Int
-        errorMessage: String
-        allowTypes: [CustomFileUploadTypes]
-        isMultiple: Boolean
-        requireAddOption : Boolean
-        fixedWidth: Boolean
-        file: FileContent
-    }
-
-    type FileContent {
-        filename: String
-        extension: String
-        contentType: String
-        url: String
-        data: String
-    }
-
-    type CustomFileUploadTypes {
-        label: String
-        ext: [String]
-        selected: Boolean
-    }
-
-    type CustomRankingItems {
-        label: String
-        rank: Int
-    }
-
-    type CustomSliderScale {
-        min: Int
-        max: Int
-    }
-
-    type CustomSliderScaleLabels {
-        left: String
-        center: String
-        right: String
-    }
-
-    type CustomLinearScaleMin {
-        value: Int
-        label: String
-    }
-
-    type CustomLinearScaleMax {
-        value: Int
-        label: String
-    }
-
-    type CustomMatrixRatingColumns {
-        label: String
-        value: Int
-    }
-
-    type CustomMatrixRatingRows {
-        row: String
-    }
-
-    type CustomCheckboxOption {
-        name: String
-        label: String
-        tag: String
-    }
-
-    type CustomFormValidation {
-        include: Boolean
-        items: [CustomFormValidationErrors]
-    }
-
-    type CustomFormValidationErrors {
-        error: String
-        errorField: String
-        option: String
-        type: String
-        value: String
-    }
-
-    type CustomFormSettings {
-        logic: CustomFormSettingsLogic
-        instruction: CustomFormSettingsInstruction
-    }
-
-    type CustomFormSettingsLogic {
-        include: Boolean
-        items: String
-    }
-
-    type CustomFormSettingsInstruction {
-        include: Boolean
-        value: String
-    }
-
-    type CustomFormStatus {
-        messageType: String
-        message: String
-        form: CustomApplicationOutput
-    }
-
-    type UserApplicationsOutput {
-        applications: [Application]
-        customApplications: [SubmittedCustomApplicationOutput]
-    }
-    type AttendanceChild {
-        app_id: String   
-        attendance_status: String   
-        child_id: String   
-        vendor: String   
-        mentoring_hours: Int
-        volunteer_hours: Int
-        is_excused: Int
-        is_following: Int
-    }
-
-    type Attendance {
-        app_group_id: String
-        attendance_date: String
-        attendance_start_time: String
-        attendance_end_time: String
-        attendance_list: [AttendanceChild]
-        event_name: String
-        description: String
-        location: String
-        
-    }
-
-    type AttendanceList {
-        app_group_id: String
-        attendance_date: String
-        attendance_start_time: String
-        attendance_end_time: String
-        event_name: String
-        location: String
-        description: String
-        firstname: String
-        lastname: String
-        attendance_status: String   
-        child_id: String   
-        mentoring_hours: Int
-        volunteer_hours: Int
-        is_excused: Int
-        is_following: Int
-        app_group_name: String
-    }
-
-    type EventAttendanceList {
-        app_group_name: String
-        app_group_id: String
-        group_id: String
-        calendar_id: String
-        event_id: String
-        event_name: String
-        type: String
-        start_of_event: String
-        end_of_event: String
-        recurring: String
-        recurring_end_date: String
-    }
-
-    type VendorForms {
-        name: String
-        id: String
-        is_form: Boolean
-    }
-    
 `;
 
 const mutations = `
@@ -1390,12 +956,6 @@ const mutations = `
         addDaycareApplication(daycare: DaycareMainInput): Status
         addParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
         updateParentChildRelationship(relationships: [ParentChildRelationshipInput]): Status
-        createCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
-        updateCustomApplicationForm(application: CustomApplicationInput): CustomFormStatus
-        deleteCustomApplicationForm(application: CustomApplicationInput): Status
-        submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
-        updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
-        updateAttendance(attendance: AttendanceInput): [Attendance]
     }
 `;
 
@@ -1427,20 +987,11 @@ const queries = `
         getUserApplications(email: String!): UserApplication
         getUserByEmail(email: String): CheckUserEmail
         getVendorAppGroups(vendor: String): AllGroups
-        getUserApplicationsByUserId(user_id: String!): UserApplicationsOutput
+        getUserApplicationsByUserId(user_id: String!): [Application]
         getApplicationHistory(app_id: String!): [ApplicationHistory]
         getUserApplicationHistory(id: String!):[ApplicationHistory]
         getVendorAdminsByUser(user: String): [Admin]
         getParentChildRelationship(relationships: [ParentChildRelationshipInput]): [ParentChildRelationship]
-        getVendorCustomApplicationForms(filter: CustomApplicationFormFilterInput): [CustomApplicationOutput]
-        getCustomApplicationsByFormId(form_id: String!): CustomApplicationOutput
-        getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
-        getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
-        getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
-        getAttendance(application_group_id: String): [AttendanceList]
-        getEventAttendance(application_group_id: String): [EventAttendanceList]
-        getUserVendorForms(user: String!): [VendorForms]
-        getFormAppGroup(form: String!): [VendorAppGroup]
     }
 `;
 

@@ -148,8 +148,7 @@ export default function index({
   event,
   isTimedDisplay,
   selectedCalendars,
-  publicView,
-  vendors
+  publicView
 }) {
   const [isVisible, setVisibility] = useState(false);
   const [isEditEventVisible, setEditEventVisible] = useState(false);
@@ -315,7 +314,6 @@ export default function index({
             toggleEditEventModal={toggleEditEventModal}
             defaultEventDetails={event}
             selectedCalendars={selectedCalendars}
-            vendors={vendors}
           />
 
           <DuplicateEvent

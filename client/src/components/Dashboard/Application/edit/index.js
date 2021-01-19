@@ -200,7 +200,7 @@ export default function index({
                     <input
                       type="text"
                       className="form-control"
-                      defaultValue={application?.child?.age}
+                      defaultValue={application.child.age}
                       readOnly
                       onChange={({ target }) => {
                       }} 

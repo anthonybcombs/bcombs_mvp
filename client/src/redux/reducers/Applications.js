@@ -12,10 +12,7 @@ export default function Applications(
     archivedlist: [],
     selectedapplication: {},
     userAllApplications: [],
-    applicationHistory: [],
-    customActiveApplications: [],
-    customArchiveApplications: [],
-    selectedbuilderapplication: null
+    applicationHistory: []
   },
   action
 ) {
@@ -47,11 +44,6 @@ export default function Applications(
       return { ...state, applicationHistory: action.payload };
     case actionType.REQUEST_GET_USER_APPLICATION_HISTORY_COMPLETE:
       return { ...state, applicationHistory: action.payload };
-    case actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED:
-      return { ...state, activeapplications: action.payload };
-    case actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID_COMPLETED:
-      return { ...state, selectedbuilderapplication: action.payload };
-  
 
     default:
       return state;

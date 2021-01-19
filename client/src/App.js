@@ -99,37 +99,6 @@ const AsyncDaycareApplicationForm = Loadable({
   loading: Loading
 })
 
-const AsynBuilder = Loadable({
-  loader: () => import("./components/Dashboard/Builders"),
-  loading: Loading
-})
-
-const AsyncForm = Loadable({
-  loader: () => import("./components/Dashboard/Builders/Form"),
-  loading: Loading
-})
-
-const AsyncForms = Loadable({
-  loader: () => import("./components/Dashboard/Forms"),
-  loading: Loading
-})
-
-
-const AsyncAttendance = Loadable({
-  loader: () => import("./components/Dashboard/Attendance"),
-  loading: Loading
-});
-
-const AsyncAttendanceList = Loadable({
-  loader: () => import("./components/Dashboard/Attendance/list"),
-  loading: Loading
-});
-
-const AsyncAttendanceSummary = Loadable({
-  loader: () => import("./components/Dashboard/Attendance/view"),
-  loading: Loading
-});
-
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -157,20 +126,13 @@ export default function App() {
               <AsyncChildInformationView path="menteeprofile/:id" />
               <AsyncParentInformationView path="parentprofile/:id" />
               <AsyncArchivedApplication path="archived" />
-              <AsyncClassListInformationView path="class/:form_type/:form_id" />
+              <AsyncClassListInformationView path="class/:vendor_id/:name" />
               <AsyncMyApplication path="myapplication" />
               <AsyncAuditTrail path="audittrail" />
               <AsyncManageAdmin path="admin" />
-              <AsynBuilder path="builder/:form_id/:type" />
-              <AsynBuilder path="builder" />
-              <AsyncForms path="forms" />
-              <AsyncAttendance path="attendance" />
-              <AsyncAttendanceList path="attendance/:vendor_id/:name" />
-              <AsyncAttendanceSummary path="attendance/view/:app_group_id" />
             </AsycDashboard>
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />
-            <AsyncForm path="form/:form_id" />
             <AsyncDaycareApplicationForm path="application/:vendor_id/daycare" />
           </Router>
         </div>
