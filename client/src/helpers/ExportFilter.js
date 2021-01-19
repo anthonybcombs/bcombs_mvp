@@ -95,8 +95,12 @@ const ExportFilter = ({
   vendor = {},
   appGroups = [],
   app_programs = [],
-  location_sites = []
+  location_sites = [],
+  isCustomForm = false,
+  filename = ""
 }) => {
+
+  console.log("filename filename", filename);
   const CLASS_OPTIONS = [
     "Seniors",
     "Juniors",
@@ -118,11 +122,7 @@ const ExportFilter = ({
   const COLOR_OPTIONS = ["Blue", "Red", "Green"];
 
   const getVendorFilename = () => {
-    if (vendor && vendor.name) {
-      return vendor.name + " Application List.csv";
-    }
-
-    return "";
+    return filename + " Application List.csv";
   };
 
   const [statusText, setStatusText] = useState("");
@@ -131,10 +131,6 @@ const ExportFilter = ({
   const [appGroupText, setAppGroupText] = useState("");
   const [locationSites, setLocationSites] = useState([]);
   const [appPrograms, setAppPrograms] = useState([]);
-
-  console.log("applications", applications);
-
-  console.log("appGroups", appGroups);
 
   const filterApplications = applications.filter(item => {
     let class_match = true;
@@ -193,12 +189,6 @@ const ExportFilter = ({
       }
     }
 
-    console.log("class_match", class_match);
-    console.log("color_match", color_match);
-    console.log("status_match", status_match);
-    console.log("group_match", group_match);
-    console.log("program_match", program_match);
-    console.log("location_match", location_match);
     console.log("application", item);
     return (
       class_match &&
@@ -266,31 +256,141 @@ const ExportFilter = ({
 
   let exportApplications = [];
 
- 
+  // for (const application of filterApplications) {
+  //   const tempApplication = {
+  //     Status: getApplicationStatus(application.student_status),
+  //     "Student Name":
+  //       application.child?.firstname + " " + application.child?.lastname,
+  //     "Parent Name": getPrimaryParentName(application.parents),
+  //     "Parent Phone": getPrimaryParentPhone(application.parents),
+  //     "Parent Email": getPrimaryParentEmail(application.parents),
+  //     Grade: application?.child?.grade_desc,
+  //     Programs: application?.child?.programs,
+  //     "Location Sites": application?.child?.location_site,
+  //     Age: getAgeBdate(application.child),
+  //     "Application Date": format(
+  //       new Date(application.application_date),
+  //       DATE_FORMAT
+  //     )
+  //   };
 
-  for (const application of filterApplications) {
-    const tempApplication = {
-      Status: getApplicationStatus(application.student_status),
-      "Student Name":
-        application.child?.firstname + " " + application.child?.lastname,
-      "Parent Name": getPrimaryParentName(application.parents),
-      "Parent Phone": getPrimaryParentPhone(application.parents),
-      "Parent Email": getPrimaryParentEmail(application.parents),
-      Grade: application?.child?.grade_desc,
-      Programs: application?.child?.programs,
-      "Location Sites": application?.child?.location_site,
-      Age: getAgeBdate(application.child),
-      "Application Date": format(
-        new Date(application.application_date),
-        DATE_FORMAT
-      )
-    };
+  //   exportApplications.push(tempApplication);
+  // }
 
-    exportApplications.push(tempApplication);
+
+  let exportFilename;
+
+  if(isCustomForm) {
+    console.log("this is my custom form");
+
+    for(const application of filterApplications) {
+      let formattedApplication = {};
+
+      for(const key1 of Object.keys(application)) {
+        if(key1 === "form_contents") {
+          if(typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
+            const formContents = application.form_contents;
+
+            console.log("formCOntents", formContents);
+
+            exportFilename = formContents.formTitle;
+
+            const formData = formContents?.formData?.length > 0 ? formContents.formData : [];
+
+            console.log("formdata", formData);
+
+            for(const [i, k] of formData.entries()) {
+              if(k?.type === "sectionBreak") { continue }
+              else {
+                console.log("kkkk", k);
+                const fields = k?.fields?.length > 0 ? k.fields : [];
+
+                let fieldValue = ""
+                for(const [x, field] of fields.entries() ) {
+                  fieldValue += (field.value ? field.value :"");
+                  fieldValue += " ";
+                }
+                fieldValue = fieldValue.trim();
+
+                formattedApplication = {...formattedApplication, [k.label]: fieldValue}
+              }
+            }
+          }
+        } else {
+          formattedApplication = {...formattedApplication, [key1]: application[key1] ? application[key1] : "" } 
+        }
+      }
+
+      console.log("formattedApplication", formattedApplication);
+
+      exportApplications.push(formattedApplication);
+    }
+
+  } else {
+    console.log("this is not custom form");
+
+    for(const application of filterApplications) {
+      let formattedApplication = {};
+
+      for(const key1 of Object.keys(application)) {
+        console.log("obj", key1);
+
+        if(key1 == "vendorPrograms" || key1 == "vendorLocationSites") {continue;};
+
+        if(typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
+          if(Array.isArray(application[key1])) {
+            console.log("this is an array", application[key1]);
+
+            const level1Arr = application[key1];
+
+            for(const [i, arrObj] of level1Arr.entries()) {
+              for(const key3 of Object.keys(arrObj)) {
+                if(key3 != "password") {
+                  formattedApplication = {...formattedApplication, [key1+ "" + (i+1) +" "+key3]: arrObj[key3] ? arrObj[key3]: ""}
+                }
+              }
+            }
+
+          } else {
+            console.log("this is an object", application[key1]);
+            const level1 = application[key1];
+            for(const key2 of Object.keys(level1)) {
+              formattedApplication = {...formattedApplication, [key1+ " "+ key2]: level1[key2] ? level1[key2] : ""}
+            }
+          }
+        } else {
+
+          if(key1 == "emergency_contacts") {
+            try {
+              const ecs = JSON.parse(application[key1]);
+              console.log("ec ec", ecs);
+
+              if(Array.isArray(ecs)) {
+                for(const [i, ec] of ecs.entries()) {
+                  for(const key4 of Object.keys(ec)) {
+                    formattedApplication = {...formattedApplication, [key1 + "" + (i+1) + " " + key4]: ec[key4] ? ec[key4] : "" }
+                  }
+                }
+              } else {
+                formattedApplication = {...formattedApplication, [key1]: ""}
+              }
+            } catch (e) {
+              formattedApplication = {...formattedApplication, [key1]: ""}
+            }
+          } else {
+            formattedApplication = {...formattedApplication, [key1]: application[key1] ? application[key1]: ""}
+          }
+        }
+      }
+
+      console.log("formattedApplication", formattedApplication);
+
+      exportApplications.push(formattedApplication);
+    }
   }
 
   console.log("filterApplications", filterApplications);
-  console.log("exportApplications", exportApplications);
+  //console.log("exportApplications", exportApplications);
 
   const PROGRAMS_OPTIONS =
     app_programs.length > 0

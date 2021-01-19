@@ -375,7 +375,9 @@ export default function index({
   handleSelectedApplication,
   listApplicationLoading = false,
   vendor = {},
-  appGroups = []
+  appGroups = [],
+  isCustomForm = false,
+  filename = ""
 }) {
 
   console.log("appGroups select", appGroups);
@@ -858,6 +860,8 @@ export default function index({
               ? vendor.location_sites
               : []
           }
+          isCustomForm={isCustomForm}
+          filename={filename}
         />
       )}
     </ApplicationListStyled>

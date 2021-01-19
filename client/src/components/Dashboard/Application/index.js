@@ -401,7 +401,9 @@ export default function index() {
 
   const [selectedVendor, setSelectedVendor] = useState({});
 
-  const [selectedForm, setSelectedForm] = useState("default")
+  const [selectedForm, setSelectedForm] = useState("default");
+
+  const [exportFilename, setExportFilename] = useState("");
 
   const dispatch = useDispatch();
 
@@ -474,6 +476,10 @@ export default function index() {
     if (auth.user_id) {
       //dispatch(requestUserGroup(auth.email));
       dispatch(requestVendor(auth.user_id));
+
+      if(queryParams && queryParams.form) {
+        dispatch(requestGetCustomApplications(queryParams.form));
+      }
     }
   }, []);
 
@@ -493,13 +499,23 @@ export default function index() {
         });
 
         setSelectedVendor(newDefaultVendor[0]);
-        setAppGroups(newDefaultVendor[0].app_groups);
+
+        if(queryParams && queryParams.form) {
+          dispatch(requestGetFormAppGroup(queryParams.form));
+        } else {
+          setAppGroups(newDefaultVendor[0].app_groups);
+        }
+        
         //dispatch(requestGetApplications(newDefaultVendor[0].id));
         dispatch(requestGetForms({ vendor: newDefaultVendor[0].id, categories: [] }))
       } else {
-        console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
-        setAppGroups(vendors[0].app_groups);
+        if(queryParams && queryParams.form) {
+          dispatch(requestGetFormAppGroup(queryParams.form));
+        } else {
+          setAppGroups(vendors[0].app_groups);
+        }
+        
         dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
@@ -507,12 +523,26 @@ export default function index() {
   }, [vendors]);
 
   useEffect(() => {
-    dispatch(requestGetApplications(selectedVendor.id));
+    
+    if(queryParams && queryParams.form) {
+      setSelectedForm(queryParams.form);
+
+      const tempForm = formList.filter((form) => {
+        return form.form_id == queryParams.form;
+      });
+      console.log("tempForm", tempForm);
+      if(tempForm && tempForm.length > 0) {
+        setExportFilename(tempForm[0]?.form_contents?.formTitle);
+      }
+      // dispatch(requestGetCustomApplications(queryParams.form));
+    } else {
+      setExportFilename(selectedVendor.name);
+      dispatch(requestGetApplications(selectedVendor.id));
+    }
+    
   }, [formList])
 
   useEffect(() => {
-    console.log("Im here here formAppGroups");
-    console.log("formAppGroups, formAppGroups", formAppGroups);
     setAppGroups(formAppGroups);
   }, [formAppGroups])
 
@@ -1608,6 +1638,8 @@ export default function index() {
                     console.log("selectedvendor", selectedVendor);
                     setSelectedForm("default");
                     setAppGroups(selectedVendor.app_groups);
+
+                    window.history.replaceState("","","?vendor=" + selectedVendor.id2);
                     dispatch(requestGetApplications(selectedVendor.id));
                   } else {
                     setSelectedForm(target.value);
@@ -1617,18 +1649,20 @@ export default function index() {
                     }
 
                     console.log("form form", target.value);
+
+                    window.history.replaceState("","","?form=" + target.value);
                     setAppGroups([]);
                     dispatch(requestGetFormAppGroup(target.value));
                     dispatch(requestGetCustomApplications(target.value));
                   }
                 }}
               >
-                <option key={selectedVendor.id} selected value="default">
+                <option key={selectedVendor.id} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
                 </option>
                 {
                   formList.map(form => (
-                    <option key={form.form_id} value={form?.form_id}>
+                    <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
                       {form?.form_contents?.formTitle}
                     </option>
                   ))
@@ -1739,6 +1773,8 @@ export default function index() {
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
           appGroups={appGroups}
+          isCustomForm={selectedForm !== "default"}
+          filename={exportFilename}
         />
       )}
       {
