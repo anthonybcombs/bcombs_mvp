@@ -63,15 +63,12 @@ const ApplicationSummaryStyled = styled.div`
 export default function index({
   appGroups = [],
   applications = [],
-  vendor
+  vendor={},
+  form={},
+  isForm = false
 }) {
 
-  // appGroups = appGroups.filter((group) => {
-  //   return group.vendor == vendor.id;
-  // })
-
-  console.log("appGroups2...", appGroups);
-  console.log("appGroups...", vendor);
+  console.log("selected form", form);
 
   const getClassCount = (group) => {
 
@@ -98,11 +95,18 @@ export default function index({
         let classCount = getClassCount(group);
         let availableCount = count - classCount;
         availableCount = availableCount < 0 ? 0 : availableCount;
-  
+
+        let classLink = ""
+        if(group.vendor) {
+          classLink = `class/bcombs/${vendor.id2}?appgroup=${group.app_grp_id}`;
+        }
+        else if(group.form) {
+          classLink = `class/custom/${group.form}?appgroup=${group.app_grp_id}`;
+        }
         return (
           <tr key={group.id}>
             <td>
-              <a href={"class/" + vendor?.id2 + "/" + group.name} target="_blank">
+              <a href={classLink} target="_blank">
                 {group.name}
               </a>
             </td>
@@ -146,6 +150,13 @@ export default function index({
     return totalClassCount;
   }
 
+  let allLink;
+
+  if(!isForm)
+    allLink = `class/bcombs/${vendor.id2}`;
+  else
+    allLink = `class/custom/${form}`;
+
   return (
     <ApplicationSummaryStyled>
       <div id="application-status">
@@ -166,7 +177,11 @@ export default function index({
                   <th>Class Count</th>
                 </tr>
                 <tr>
-                  <td>Total</td>
+                  <td>
+                  <a href={allLink} target="_blank">
+                    All
+                  </a>
+                  </td>
                   <td>{getTotalCount()}</td>
                   <td>{getTotalAvailable()}</td>
                   <td>{getTotalClassCount()}</td>

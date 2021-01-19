@@ -157,7 +157,7 @@ export default function App() {
               <AsyncChildInformationView path="menteeprofile/:id" />
               <AsyncParentInformationView path="parentprofile/:id" />
               <AsyncArchivedApplication path="archived" />
-              <AsyncClassListInformationView path="class/:vendor_id/:name" />
+              <AsyncClassListInformationView path="class/:form_type/:form_id" />
               <AsyncMyApplication path="myapplication" />
               <AsyncAuditTrail path="audittrail" />
               <AsyncManageAdmin path="admin" />

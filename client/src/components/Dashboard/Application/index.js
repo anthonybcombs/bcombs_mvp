@@ -499,7 +499,7 @@ export default function index() {
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
-        setAppGroups(selectedVendor.app_groups);
+        setAppGroups(vendors[0].app_groups);
         dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
@@ -1710,6 +1710,8 @@ export default function index() {
               appGroups={appGroups}
               applications={applications.activeapplications}
               vendor={selectedVendor}
+              form={selectedForm}
+              isForm={selectedForm !== "default"}
             />
           )}
           {selectedLabel === "Form Settings" && !selectNonMenuOption && (
