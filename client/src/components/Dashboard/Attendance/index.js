@@ -66,19 +66,20 @@ const AttendanceSummaryStyled = styled.div`
 
 export default function index(props) {
   const dispatch = useDispatch();
-  const { applications ,groups, auth, vendors, loading, form : { formList = [] } } = useSelector(
+  const { applications ,groups, auth, vendors, loading, form = {} } = useSelector(
     ({ applications,groups, auth, vendors, loading, form }) => {
       return { applications,groups, auth, vendors, loading,form };
     }
   );
+  const { formList = [] }  = form
 
   const [appGroups,setAppGroups] = useState([]);
   const [selectedVendor,setSelectedVendor] = useState({});
   // appGroups = appGroups.filter((group) => {
   //   return group.vendor == vendor.id;
   // })
-    console.log('APplicationzzz', applications)
   
+
   useEffect(() => {
     if (auth.user_id) {
       //dispatch(requestUserGroup(auth.email));
@@ -113,17 +114,18 @@ export default function index(props) {
     const currentForm = formList.map(form => (
       form.vendor === vendors[0].id
     ))
-    console.log('appGroupszzz',appGroups)
+
     return appGroups.map((group, index) => {
 
       let count = group.size;
       let classCount = getClassCount(group);
       let availableCount = count - classCount;
+      const formGroup = form.formList.find(formItem => formItem.form_id === group.form)
       availableCount = availableCount < 0 ? 0 : availableCount;
 
       return (
         <tr key={group.id}>
-          <td>{currentForm && currentForm.form_contents ? currentForm.form_contents?.formTitle : 'Bcombs Form'}</td>
+          <td>{formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : currentForm && currentForm.form_contents ? currentForm.form_contents?.formTitle : 'Bcombs Form'}</td>
           <td>
             <Link to={"" + selectedVendor?.id2 + "/" + group.name}>
               {group.name}
