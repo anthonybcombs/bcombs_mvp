@@ -25,7 +25,8 @@ export default ({ onChangeFilter }) => {
   return (
     <div className='formManager-header'>
       <div className='header-searchBar'>
-        <div className='search-input'>
+        <div className='field search-input'>
+          <FontAwesomeIcon className='search-icon' icon={faSearch} />
           <input
             id='search'
             name='search'
@@ -33,10 +34,9 @@ export default ({ onChangeFilter }) => {
             className='field-input'
             onChange={({ target }) => {}}
           />
-          <FontAwesomeIcon
-            className='search-icon'
-            icon={faSearch}
-          />
+          <label className="field-label" for={`search`}>
+            Search
+          </label>
         </div>
         <a
           href='/dashboard/builder'
@@ -83,13 +83,6 @@ export default ({ onChangeFilter }) => {
           </button> */}
         </div>
         <div className='right-actions'>
-          <button className='favorites-btn'> {/* add active class if selected*/}
-            <FontAwesomeIcon
-              className='sort-icon'
-              icon={faHeart}
-            />
-            Favorites
-          </button>
           <div className='dateFilter'>
             <div className='field select-field-wrapper'>
               <select
@@ -104,6 +97,13 @@ export default ({ onChangeFilter }) => {
               icon={faArrowUp}
             />
           </div>
+          <button className='favorites-btn'> {/* add active class if selected*/}
+            <FontAwesomeIcon
+              className='sort-icon'
+              icon={faHeart}
+            />
+            Favorites
+          </button>
           <div className='viewType'>
             <FontAwesomeIcon
               className='sort-icon active'
