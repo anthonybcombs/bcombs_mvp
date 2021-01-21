@@ -342,7 +342,7 @@ export default styled.div`
 
   .sortableGroup {
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
 
     padding: 8px;
     background: #fff;
@@ -465,7 +465,7 @@ export default styled.div`
   }
   .sortableGroup-name >div {
     position: absolute;
-    right: -8px;
+    right: 0;
     top: 0px;
   }
   .sortableGroup-name >div svg {
@@ -1520,6 +1520,22 @@ export default styled.div`
 
   .colorPicker {
     z-index: 10;
+    border-radius: 4px;
+    background: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px, rgba(0, 0, 0, 0.15) 0px 8px 16px;
+  }
+  .colorPicker .sketch-picker  {
+    box-shadow: none !important;
+    padding-bottom: 8px !important;
+    border: none !important;
+    // border-radius: 4px !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-bottom: 1px solid #ddd !important;
+  }
+
+  .colorPicker label {
+    margin: 6px 6px 8px 6px;
   }
 
 
