@@ -8,7 +8,7 @@ import { faGripHorizontal, faTint, faPlus, faCopy, faTrashAlt, faEye, faEyeSlash
 import { Items, StandardFields } from '../Fields'
 import GeneralSettings from '../Settings/GeneralSettings'
 import Field from './Field'
-import { ChromePicker } from 'react-color'
+import { SketchPicker } from 'react-color'
 
 const SortableGroup = React.forwardRef(
   ({ 
@@ -62,10 +62,14 @@ const SortableGroup = React.forwardRef(
   const fieldSettings = fieldIndex !== '' ? fields[fieldIndex] : {}
   let formatObj = {}
   let color = ''
+  let presetColors = []
+  let applyToAll = false
 
   if (format) {
     formatObj = JSON.parse(format)
     color = formatObj?.color || '#000'
+    presetColors = [...(formatObj?.presetColors || [])]
+    applyToAll = formatObj?.applyToAll || false
   }
 
   const [colorPickerShown, setColorPickerShown] = useState(false)
@@ -160,12 +164,46 @@ const SortableGroup = React.forwardRef(
           {
             colorPickerShown && isActive && (
               <div className='colorPicker' onClick={e => e.stopPropagation()}>
-                <ChromePicker
+                <SketchPicker
                   color={color.length > 0 ? color : "red"}
-                  onChange={(e) => {
-                    onChangeDefaultProps({ id, format: JSON.stringify({ ...formatObj, color: e.hex }) })
+                  disableAlpha
+                  presetColors={presetColors}
+                  onChangeComplete={(e) => {
+                    presetColors = presetColors.filter(pc => pc !== e.hex)
+                    onChangeDefaultProps({
+                      id,
+                      format: JSON.stringify({
+                        ...formatObj,
+                        color: e.hex,
+                        presetColors: [e.hex, ...presetColors].slice(0, 6)
+                      })
+                    }, {
+                      isColor: true,
+                      applyToAll
+                    })
                   }}
                 />
+                <label htmlFor='applyToAll' className={`checkboxContainer`} >
+                  <input
+                    type='checkbox'
+                    id='applyToAll'
+                    name='applyToAll'
+                    // disabled={!hasSelectedField}
+                    checked={applyToAll}
+                    onChange={e => {
+                      e.stopPropagation()
+                      onChangeDefaultProps({
+                        id,
+                        format: JSON.stringify({
+                          ...formatObj,
+                          applyToAll: e.target.checked
+                        })
+                      })
+                    }}
+                  />
+                  <span className='checkmark'/>
+                  <span className='labelName'>Apply to all</span>
+                </label>
               </div>
             )
           }
