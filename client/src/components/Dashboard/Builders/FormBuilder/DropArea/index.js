@@ -139,13 +139,43 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     setDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
   }
 
-  const handleChangeDefaultProps = ({ id, isPageBreak, ...rest }) => {
+  const handleChangeDefaultProps = ({ id, isPageBreak, ...rest }, options = null) => {
     if (isPageBreak && Object.keys(rest).includes('showLabel')) {
       beforeSetDrop(droppedFields.map(e => {
         if (e.type === 'pageBreak') {
           return { ...e, ...rest }
         }
         return e
+      }))
+      return
+    }
+
+    const { isColor, applyToAll } = options || {}
+    if (isColor) {
+      beforeSetDrop(droppedFields.map(e => {
+        const formatObj = e.format ? JSON.parse(e.format) : {}
+        let newFormat = rest.format ? JSON.parse(rest.format) : {}
+        let finalFormat = {
+          ...formatObj,
+          presetColors: newFormat.presetColors
+        }
+
+        if (applyToAll) {
+          finalFormat.color = newFormat.color
+        } else if (e.id === id) {
+          return {
+            ...e,
+            format: JSON.stringify({
+              ...finalFormat,
+              color: newFormat.color,
+            })
+          }
+        }
+
+        return {
+          ...e,
+          format: JSON.stringify(finalFormat)
+        }
       }))
       return
     }
