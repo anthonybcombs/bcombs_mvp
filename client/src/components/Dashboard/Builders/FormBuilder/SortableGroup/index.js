@@ -3,7 +3,7 @@ import { DragSource, DropTarget, } from 'react-dnd'
 import cloneDeep from 'lodash.clonedeep'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGripHorizontal, faTint, faPlus, faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { faGripHorizontal, faTint, faPlus, faCopy, faTrashAlt, faEye, faEyeSlash, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 import { Items, StandardFields } from '../Fields'
 import GeneralSettings from '../Settings/GeneralSettings'
@@ -202,7 +202,13 @@ const SortableGroup = React.forwardRef(
                     }}
                   />
                   <span className='checkmark'/>
-                  <span className='labelName'>Apply to all</span>
+                  <div className='tooltip-wrapper' style={{ position: 'absolute', left: '35px' }}>
+                    <p className='label'>Apply to all
+                      <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle} style={{ marginLeft: '10px' }}/>
+                    </p>
+                    <span className='tooltip' style={{ top: '-140px' }} >Make sure to tick the apply to all button first, then select the color you want to apply to all headers.</span>
+                  </div>
+                  {/* <span className='labelName'></span> */}
                 </label>
               </div>
             )
