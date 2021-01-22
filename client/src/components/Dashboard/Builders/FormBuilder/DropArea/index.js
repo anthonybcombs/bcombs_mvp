@@ -82,7 +82,9 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const handleMoveGroup = (dragIndex, hoverIndex, draggedGroup) => {
     let newFields = [...droppedFields]
     if (dragIndex === undefined) {
-      const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id) }
+      const fieldFormat = droppedFields.find(e => e.format)
+      const { presetColors = [], color } = fieldFormat ? JSON.parse(fieldFormat.format) : {}
+      const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id), format: JSON.stringify({ presetColors }) }
       if (droppedFields.find(e => e.isActive)) {
         newFields = update(droppedFields, {
           [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } }
