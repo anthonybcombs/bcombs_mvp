@@ -273,6 +273,7 @@ export const ADD_VENDORS_APP_GROUP = gql`
         user
         app_grp_id
       }
+      message
     }
   }
 `;
@@ -300,6 +301,8 @@ export const UPDATE_VENDORS_APP_GROUP = gql`
         user
         app_grp_id
       }
+      message
+      status
     }
   }
 `;
