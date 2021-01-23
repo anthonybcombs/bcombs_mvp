@@ -3,13 +3,17 @@ import { Link } from '@reach/router';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faAngleLeft, faAngleRight, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useParams } from '@reach/router';
+import { useLocation ,useParams } from '@reach/router';
 import { format, isRan } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
 import { getHours, max, addDays, subDays, addYears, isWithinInterval } from 'date-fns';
+import { parse } from 'query-string';
 
 import { requestAttendance, requestEventAttendance } from '../../../../redux/actions/Attendance';
+import { requestGetApplications, requestGetCustomApplications } from '../../../../redux/actions/Application';
+import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
+import { requestUserGroup } from '../../../../redux/actions/Groups';
 import { requestVendor } from '../../../../redux/actions/Vendors';
 
 import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
@@ -368,8 +372,8 @@ const AttendanceSummaryStyled = styled.div`
 	}
 `;
 
-const DATE_FORMAT = 'MM/dd/yyyy';
-const DATE_KEY_FORMAT = 'yyyy_MM_dd';
+const DATE_FORMAT = 'MM-dd-yyyy';
+const DATE_KEY_FORMAT = 'MM_dd_yyyy';
 
 const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];
 
@@ -400,31 +404,57 @@ export default function index(props) {
 	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState([new Date(), addYears(new Date(), 1)]);
 
 	const { app_group_id } = useParams();
+	const queryLocation = useLocation();
+	const searchParams = parse(queryLocation.search); // => {init: "true"}
 
 	// appGroups = appGroups.filter((group) => {
 	//   return group.vendor == vendor.id;
 	// })
-	console.log('attendanceeeeee', attendance);
+
 	useEffect(() => {
-		if (auth.user_id) {
+		// if (auth.user_id) {
+		// 	dispatch(requestVendor(auth.user_id));
+		// }
+
+		if (searchParams && searchParams.type === 'custom') {
+			dispatch(requestGetCustomApplications(searchParams.formId));
 			dispatch(requestVendor(auth.user_id));
+			dispatch(requestUserGroup(auth.email));
+		} else if (searchParams && searchParams.type !== 'custom' && app_group_id && auth.user_id) {
+			dispatch(requestVendor(auth.user_id));
+			dispatch(requestUserGroup(auth.email));
 		}
 	}, []);
 
+
+
 	useEffect(() => {
-		if (app_group_id && !attendance.isLoading) {
-			dispatch(requestAttendance(app_group_id));
+		console.log('app_group_id',app_group_id)
+		if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
+			dispatch(requestAttendance(app_group_id,'bcombs'));
 			dispatch(requestEventAttendance(app_group_id));
 		}
+		else{
+			dispatch(requestAttendance(searchParams.formId,'forms'));
+			// dispatch(requestEventAttendance(app_group_id));
+		}
 	}, []);
-
+	console.log('applicationszzzz', applications)
 	useEffect(() => {
 		if (attendance.list) {
 
-
+			console.log("Attendaance Listtt", attendance)
+			console.log("Attendaance Listtt applications.activeapplications", applications)
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 				attDate = attDate.replaceAll('-', '_');				
+
+				let formApplication = {};
+
+				if(searchParams && searchParams.type === 'custom') {
+					formApplication = applications.activeapplications.find(item => item.app_id === att.child_id)
+				}
+				console.log('formApplication',formApplication)
 				return {
 					...accum,
 					[att.child_id]: {
@@ -443,6 +473,9 @@ export default function index(props) {
 								is_excused: att.is_excused,
 							},
 						},
+						custom:{
+							...(formApplication || {})
+						}
 					},
 				};
 			}, {});
@@ -450,26 +483,6 @@ export default function index(props) {
 			currentAttendance = Object.keys(currentAttendance).map(key => {
 				return currentAttendance[key];
 			}).map(att => {
-
-				
-				// const dateKeys = Object.keys(att.attendance);
-				// const filteredDate = dateKeys.filter(key => {
-				// 	return isWithinInterval(new Date(key.replaceAll('_', '-')), {
-				// 		start: subDays(new Date(), 1),
-				// 		end: addDays(new Date(), 1),
-				// 	});
-				// });
-
-				
-				// const totalHours = filteredDate.reduce(
-				// 	(accum, key) => {
-				// 		return {
-				// 			total_volunteer_hours: (accum.total_volunteer_hours) + att.attendance[key].volunteer_hours || 0,
-				// 			total_mentoring_hours: (accum.total_mentoring_hours) + att.attendance[key].mentoring_hours || 0,
-				// 		};
-				// 	},
-				// 	{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
-				// );
 
 
 				const dateKeys = Object.keys(att.attendance);
@@ -492,21 +505,18 @@ export default function index(props) {
 				return {
 					...att,
 					...totalHours,
-					// attendance: filteredDate.reduce((accum, key) => {
-					// 	return {
-					// 		...(accum || {}),
-					// 		[key]: {
-					// 			...(att.attendance[key] || {}),
-					// 		},
-					// 	};
-					// }, {}),
+
 				};
 			});
-			console.log('currentAttendance123123',currentAttendance)
+
+
+			console.log('currentAttendance',currentAttendance)
 			setAttendanceDisplay(currentAttendance);
 			setDefaultAttendanceDisplay(currentAttendance);
 		}
-	}, [attendance.list]);
+	}, [attendance.list, applications]);
+
+
 
 	useEffect(() => {
 		if (attendance.eventAttendanceList) {
@@ -526,8 +536,11 @@ export default function index(props) {
 		handleChangeDateFilter([new Date(), new Date(addYears(new Date(), 1))]);
 	}, [defaultEvents, defaultAttendanceDisplay]);
 
+	
+
 	const renderTableData = () => {
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
+		console.log('AttendanceDisplayyyy', attendanceDisplay)
 		return attendanceDisplay.map((att, index) => {
 			// let totalPresent = null;
 			// let totalAttendance = null;
@@ -555,6 +568,7 @@ export default function index(props) {
 			// 	}).length || 0;
 			// 	totalAttendance = Object.keys(att.attendance).length || 0;
 			// }
+			//  app.form_contents?.formData[0]?.fields[0]?.value
 			let summaryTotal = 0;
 			if (attendanceSummary[att.child_id]) {
 				summaryTotal = (
@@ -563,7 +577,7 @@ export default function index(props) {
 				).toFixed(2);
 				summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			}
-			console.log('attendanceSummary[att.child_id]', attendanceSummary);
+			console.log('formattedDateKeys',formattedDateKeys)
 			return (
 				<tr key={index}>
 					<td className="subHeader">
@@ -571,7 +585,7 @@ export default function index(props) {
 							<tr>
 								<td style={{ width: 250 }}>
 									<div className="name">
-										<a href={'#'}>{`${att.firstname} ${att.lastname}`}</a>
+										<a href={'#'}>{`${searchParams && searchParams.type !== 'custom' && att.firstname && att.lastname ?  `${att.firstname} ${att.lastname}` : att.custom?.form_contents?.formData[0]?.fields[0]?.value}`}</a>
 									</div>
 								</td>
 								<td>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from '@reach/router';
+import { Link, useLocation } from '@reach/router';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,14 +8,25 @@ import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { faAngleRight, faAngleLeft, faCalendar, faSearch, faListUl,faBorderAll, faTh, faBars } from '@fortawesome/free-solid-svg-icons';
+import {
+	faAngleRight,
+	faAngleLeft,
+	faCalendar,
+	faSearch,
+	faListUl,
+	faBorderAll,
+	faTh,
+	faBars,
+} from '@fortawesome/free-solid-svg-icons';
+import { parse } from 'query-string';
 
 import DataTable from 'react-data-table-component';
 
 import { requestAttendance, requestUpdateAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
-import { requestGetApplications } from '../../../../redux/actions/Application';
+import { requestGetApplications, requestGetCustomApplications } from '../../../../redux/actions/Application';
 import { requestUserGroup } from '../../../../redux/actions/Groups';
+import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
 
 import ProfileImg from '../../../../images/defaultprofile.png';
 
@@ -233,9 +244,9 @@ const ClassListViewStyled = styled.div`
 	}
 	.description .field {
 		margin-bottom: 4px;
-    padding: 8px 8px 12px;
+		padding: 8px 8px 12px;
 	}
-	.description .field >input {
+	.description .field > input {
 		background: transparent;
 	}
 
@@ -247,7 +258,7 @@ const ClassListViewStyled = styled.div`
 		flex: 1;
 		position: relative;
 		max-width: 350px;
-    margin-right: auto;
+		margin-right: auto;
 	}
 	.search-field-container .field svg.search-icon {
 		position: absolute;
@@ -256,7 +267,6 @@ const ClassListViewStyled = styled.div`
 		color: gray;
 	}
 
-	 
 	.search-field-container .select-field-wrapper {
 		position: relative;
 	}
@@ -281,36 +291,34 @@ const ClassListViewStyled = styled.div`
 	}
 
 	.viewType {
-    margin-left: 1rem;
-    display: flex;
-    align-items: stretch;
-  }
-  .viewType > svg {
-    height: auto;
-    color: grey;
-		font-size:18px;
-		cursor:pointer;
-    padding: 11px !important;
-    border-radius: 0 !important;
-		border: 1.65px solid #ccc;		
-  }
+		margin-left: 1rem;
+		display: flex;
+		align-items: stretch;
+	}
+	.viewType > svg {
+		height: auto;
+		color: grey;
+		font-size: 18px;
+		cursor: pointer;
+		padding: 11px !important;
+		border-radius: 0 !important;
+		border: 1.65px solid #ccc;
+	}
 	.viewType > svg:first-child {
 		border-right: 0;
 	}
-  .viewType > svg:last-child {
-    border-left: 0;
+	.viewType > svg:last-child {
+		border-left: 0;
 	}
-  .viewType > svg.selected-view {
-    color: #fff;
-    background: #f5812f;
-    border-color: rgb(204 204 204 / 30%);
-    transition: .15s ease-in-out;
-  }
-  .viewType > svg:not(.selected-view):hover {
-    color: #f5812f;
-  }
-
-
+	.viewType > svg.selected-view {
+		color: #fff;
+		background: #f5812f;
+		border-color: rgb(204 204 204 / 30%);
+		transition: 0.15s ease-in-out;
+	}
+	.viewType > svg:not(.selected-view):hover {
+		color: #f5812f;
+	}
 
 	.actionBtn {
 		margin-top: 3rem !important;
@@ -391,7 +399,7 @@ const ClassListViewStyled = styled.div`
 		border-bottom: 1px solid #ddd;
 	}
 	.gridView .block .extra_activitybox .attendance-hours .field {
-		padding: 0 .5rem;
+		padding: 0 0.5rem;
 	}
 	.gridView .block .extra_activitybox .attendance-hours .field > input {
 		text-align: center;
@@ -448,7 +456,6 @@ const ClassListViewStyled = styled.div`
 	#listView td .name,
 	#listView td .class {
 		min-width: 100px;
-
 	}
 
 	#listView a {
@@ -463,7 +470,7 @@ const ClassListViewStyled = styled.div`
 	}
 	.attendance-status-container > div {
 		width: 100%;
-    min-width: 100px;
+		min-width: 100px;
 	}
 
 	.attendance-hours-container > div {
@@ -471,7 +478,7 @@ const ClassListViewStyled = styled.div`
 	}
 	.listViewTableContainer {
 		overflow-x: auto;
-    margin-top: 3rem;
+		margin-top: 3rem;
 		box-shadow: 0px 0px 10px #ccc;
 	}
 	.listViewTableContainer::-webkit-scrollbar {
@@ -489,7 +496,7 @@ const ClassListViewStyled = styled.div`
 	}
 
 	.exclude-icon {
-		position:relative;
+		position: relative;
 		background-color: black;
 		width: 1.5px;
 		height: 14px;
@@ -575,9 +582,11 @@ export default function index() {
 		reValidateMode: 'onSubmit',
 	});
 	const { name, vendor_id } = useParams();
-	const { attendance, auth, vendors, groups, applications, loading } = useSelector(
-		({ attendance, auth, vendors, applications, groups, loading }) => {
-			return { attendance, auth, vendors, applications, groups, loading };
+	const queryLocation = useLocation();
+	const searchParams = parse(queryLocation.search); // => {init: "true"}
+	const { attendance, auth, vendors, groups, applications, loading, form = {} } = useSelector(
+		({ attendance, auth, vendors, applications, groups, loading, form }) => {
+			return { attendance, auth, vendors, applications, groups, loading, form };
 		}
 	);
 	const [attendanceDetails, setAttendanceDetails] = useState({
@@ -587,90 +596,124 @@ export default function index() {
 		event_name: null,
 		location: null,
 	});
-	const [appGroupId, setAppGroupId] = useState('');
+	const [appGroupId, setAppGroupId] = useState(null);
 	const [applicationList, setApplicationList] = useState([]);
 	const [defaultApplicationList, setDefaultApplicationList] = useState([]);
 	const [filteredApplicationList, setFilteredApplicationList] = useState([]);
 	const [viewMode, setViewMode] = useState('grid');
 	const dispatch = useDispatch();
+	const { formList = [] } = form;
 
-	console.log('Attendance List attendance',attendance)
-	console.log('Attendance List auth',auth)
-	console.log('Attendance List vendors',vendors)
-	console.log('Attendance List groups',groups)
-	console.log('Attendance List applications',applications)
-	console.log('Attendance List filteredApplicationList',filteredApplicationList)
-	console.log('Attendance List appGroupId',appGroupId)
 	
+
 	useEffect(() => {
-	
-		if (name && vendor_id && auth.user_id) {
+		if (name === 'custom' && vendor_id && auth.user_id) {
+			//dispatch(requestGetForms({ vendor: vendor_id, categories: [] }));
+			dispatch(requestGetCustomApplications(searchParams.formId));
+			dispatch(requestVendor(auth.user_id));
+			dispatch(requestUserGroup(auth.email));
+		} else if (name !== 'custom' && vendor_id && auth.user_id) {
+
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		}
-	}, [name,vendor_id]);
+	}, [name, vendor_id]);
 
 	useEffect(() => {
+	
 		if (vendors && vendors.length > 0) {
 			let vendorId;
 			for (const vendor of vendors) {
-				if (vendor.id2 == vendor_id) {
+				if ((name === 'custom' && vendor.id == vendor_id) || vendor.id2 == vendor_id) {
 					vendorId = vendor.id;
 					break;
 				}
 			}
+			console.log('requestGetApplications', vendorId);
 			dispatch(requestGetApplications(vendorId));
-		}
-
-		let currentAppGroupId = '';
-
-		if (vendors && vendors[0] && vendors[0].app_groups.length > 0) {
-			const applicationGroups = vendors[0].app_groups;
-
-			for (const group of applicationGroups) {
-				if (group.name.trim() === name.trim()) {
-					currentAppGroupId = group.app_grp_id;
-					break;
-				}
-			}
-
-
-			setAppGroupId(currentAppGroupId);
 		}
 	}, [vendors]);
 
 
 
 	useEffect(() => {
+		if (name === 'custom' && searchParams) {
+			let currentAppGroupId = '';
+			if (groups && groups.application_groups) {
+				const applicationGroups = groups.application_groups;
 
-		if (appGroupId !== '') {
-			dispatch(requestAttendance(appGroupId));
+				for (const group of applicationGroups) {
+					if (group.form === searchParams.formId) {
+						currentAppGroupId = group.app_grp_id;
+						break;
+					}
+				}
+				console.log('currentAppGroupId', currentAppGroupId);
+
+				setAppGroupId(currentAppGroupId);
+			}
+		} else {
+			if(vendors.length > 0) {
+				let currentAppGroupId = '';
+				if (vendors[0] && vendors[0].app_groups) {
+					const applicationGroups = vendors[0].app_groups;
+					console.log('applicationGroups', vendors)
+					console.log('applicationGroups', name)
+					for (const group of applicationGroups) {
+						if (group.name.trim() === name.trim()) {
+							currentAppGroupId = group.app_grp_id;
+							break;
+						}
+					}
+					console.log('currentAppGroupId', currentAppGroupId);
+					setAppGroupId(currentAppGroupId);
+				}
+			}
+
+		}
+	}, [groups, vendors]);
+
+	useEffect(() => {
+		// && name !== 'custom'
+		if (appGroupId && appGroupId !== '' ) {
+			//console.log('appGroupId',appGroupId)
+			console.log('TESTTT111', name === 'custom' ? searchParams.formId : appGroupId)
+			console.log('TESTTT111 222', name === 'custom' ? 'custom' : 'bcombs')
+			dispatch(requestAttendance(name === 'custom' ? searchParams.formId : appGroupId, name === 'custom' ? 'custom' : 'bcombs'));
 		}
 
-		if (applications && applications.activeapplications.length > 0 && appGroupId !== '') {
-	
+		if (applications && applications.activeapplications.length > 0 && name !== 'custom' && appGroupId !== '') {
 			let filterApplications = applications.activeapplications.filter(application => {
 				return application && application.class_teacher == appGroupId;
 			});
-
 			filterApplications = filterApplications.map(item => {
-				let currentAttendance = attendance.list.find(att => att.child_id === item.child.ch_id);
+				let currentAttendance = attendance.list.find(att =>  item.child && (att.child_id === item.child.ch_id));
 				item.class_teacher = name;
 				return item;
 			});
 			setApplicationList(filterApplications);
-
 		}
-	}, [applications,appGroupId]);
 
+		else if (applications && applications.activeapplications.length > 0 && name === 'custom') {
+			let filterApplications = applications.activeapplications
 
+			filterApplications = filterApplications.map(item => {
+				let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
+				item.class_teacher = name;
+				return item;
+			});
 
+			setApplicationList(filterApplications);
+		}
+
+	}, [applications, appGroupId]);
 
 	useEffect(() => {
-
+		console.log('ATTENDANCEEEEE123123123123 applications', applications)
 		if (attendance.list) {
+			console.log('ATTENDANCEEEEE123123123123', attendance)
 			let updatedApplicationList = applicationList.map(application => {
-				let currentAttendance = attendance.list.find(att => att.child_id === application.child.ch_id);
+				let currentAttendance = attendance.list.find(att => application.child && (att.child_id === application.child.ch_id));
 
 				return {
 					...application,
@@ -694,15 +737,16 @@ export default function index() {
 		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
-		
 
-		if(updatedApplication[currentIndex] && 
-			updatedApplication[currentIndex].attendance_status === attendanceType && 
-			!updatedApplication[currentIndex].excused ) {
+		if (
+			updatedApplication[currentIndex] &&
+			updatedApplication[currentIndex].attendance_status === attendanceType &&
+			!updatedApplication[currentIndex].excused
+		) {
 			// console.log('Triggered Excused')
 			//  handleExcused(payload,attendanceType.toLowerCase());
 
-			if(attendanceType !== 'Present') {
+			if (attendanceType !== 'Present') {
 				updatedApplication[currentIndex] = {
 					...updatedApplication[currentIndex],
 					excused: updatedApplication[currentIndex].excused === null ? attendanceType.toLowerCase() : null,
@@ -711,42 +755,34 @@ export default function index() {
 					...updatedFilteredApplication[currentFilteredIndex],
 					excused: updatedFilteredApplication[currentIndex].excused === null ? attendanceType.toLowerCase() : null,
 				};
-			}
-			else{
+			} else {
 				updatedApplication[currentIndex] = {
 					...updatedApplication[currentIndex],
-					excused:null,
-					attendance_status:null
+					excused: null,
+					attendance_status: null,
 				};
 				updatedFilteredApplication[currentFilteredIndex] = {
 					...updatedFilteredApplication[currentFilteredIndex],
 					excused: null,
-					attendance_status:null
+					attendance_status: null,
 				};
 			}
-
-
-			
-		}
-		else if(updatedApplication[currentIndex] && 
-			updatedApplication[currentIndex].attendance_status === attendanceType && 
-			updatedApplication[currentIndex].excused === attendanceType.toLowerCase()) {
-
-				updatedApplication[currentIndex] = {
-					...updatedApplication[currentIndex],
-					attendance_status: null,
-					excused: null,
-				};
-				updatedFilteredApplication[currentFilteredIndex] = {
-					...updatedFilteredApplication[currentFilteredIndex],
-					attendance_status: null,
-					excused: null,
-				};
-				
-		}
-
-		else{		
-
+		} else if (
+			updatedApplication[currentIndex] &&
+			updatedApplication[currentIndex].attendance_status === attendanceType &&
+			updatedApplication[currentIndex].excused === attendanceType.toLowerCase()
+		) {
+			updatedApplication[currentIndex] = {
+				...updatedApplication[currentIndex],
+				attendance_status: null,
+				excused: null,
+			};
+			updatedFilteredApplication[currentFilteredIndex] = {
+				...updatedFilteredApplication[currentFilteredIndex],
+				attendance_status: null,
+				excused: null,
+			};
+		} else {
 			updatedApplication[currentIndex] = {
 				...updatedApplication[currentIndex],
 				attendance_status: attendanceType,
@@ -758,20 +794,18 @@ export default function index() {
 				excused: null,
 			};
 		}
-		
+
 		// updatedApplication[currentIndex] = {
 		// 	...updatedApplication[currentIndex],
 		// 	attendance_status: attendanceType,
 		// 	excused: null,
 		// };
 
-
 		setApplicationList(updatedApplication);
 		setFilteredApplicationList(updatedFilteredApplication);
 	};
 
 	const handleHours = (payload, hours, type = 'volunteer_hours') => {
-
 		let updatedApplication = [...(applicationList || [])];
 		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
@@ -797,7 +831,7 @@ export default function index() {
 			return {
 				app_id: app.app_id,
 				attendance_status: app.attendance_status || '',
-				child_id: app.child.ch_id,
+				child_id: name === 'custom' ? app.app_id  : app.child && app.child.ch_id,
 				vendor: app.vendor,
 				volunteer_hours: app.volunteer_hours ? parseInt(app.volunteer_hours) : 0,
 				mentoring_hours: app.mentoring_hours ? parseInt(app.mentoring_hours) : 0,
@@ -807,9 +841,10 @@ export default function index() {
 
 		const payload = {
 			attendance_list: attendanceList,
-			app_group_id: appGroupId,
+			app_group_id: name === 'custom' ? searchParams && searchParams.formId  : appGroupId,
+			attendance_type: name === 'custom' ? 'forms' : 'bcombs',
 			...attendanceDetails,
-			attendance_date: format(new Date(attendanceDetails.attendance_date), DATE_FORMAT),
+			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
 		};
 
 		dispatch(requestUpdateAttendance(payload));
@@ -817,9 +852,9 @@ export default function index() {
 
 	const handleAttedanceDetailChange = e => {
 		const { name, value } = e.target;
-
+		console.log('attendanceDetails',attendanceDetails)
 		setAttendanceDetails({
-			...attendanceDetails,
+			...(attendanceDetails || {}),
 			[name]: value,
 		});
 	};
@@ -863,63 +898,66 @@ export default function index() {
 	};
 
 	const handleViewChange = value => {
-
 		setViewMode(value);
 	};
 
 	const renderTableData = () => {
+		console.log('Render Table Data', filteredApplicationList)
 		return filteredApplicationList.map((app, index) => {
 			return (
 				<tr key={index}>
 					<td>
-						<div className='name'>{app.child?.firstname + ' ' + app.child?.lastname}</div>
+						<div className="name">{app.child ? app.child?.firstname + ' ' + app.child?.lastname : app.form_contents?.formData[0]?.fields[0]?.value}</div>
 					</td>
-					<td><div className='class'>{app.class_teacher}</div></td>
 					<td>
-						<span>{
-							app.is_following === 1 ? (
+						<div className="class">{app.class_teacher}</div>
+					</td>
+					<td>
+						<span>
+							{app.is_following === 1 ? (
 								<div className="circle-icon" style={{ ...style.attendanceAction, backgroundColor: '#14e414' }}></div>
 							) : app.is_following === 2 ? (
 								<div className="circle-icon" style={{ ...style.attendanceAction, backgroundColor: '#f26e21' }}></div>
 							) : (
-								""
-							)
-						}
-						{	app.is_following === null || 	app.is_following === undefined ||  app.is_following === 0   ? 'Blank' :  ''}
+								''
+							)}
+							{app.is_following === null || app.is_following === undefined || app.is_following === 0 ? 'Blank' : ''}
 						</span>
 					</td>
 					<td style={{ width: '300px' }}>
 						<div className="attendance-status-container">
 							<div>
-								<div style={{ position: 'relative'}}>
+								<div style={{ position: 'relative' }}>
 									<div
 										className="circle-icon"
 										onClick={() => {
 											handleAttendance(app, 'Present');
 										}}
-										style={{ ...style.attendanceAction, 
-										backgroundColor: app.attendance_status === 'Present' ?  '#14e414' : 'gray' }}
+										style={{
+											...style.attendanceAction,
+											backgroundColor: app.attendance_status === 'Present' ? '#14e414' : 'gray',
+										}}
 									/>
-										<div>Present</div>
+									<div>Present</div>
 									{/* {app.attendance_status === 'Present' ? <div className="exclude-icon"></div> : <span />} */}
 								</div>
 							</div>
 							<div style={{ minHeight: 22 }}>
-								<div style={{ position: 'relative'}}>
+								<div style={{ position: 'relative' }}>
 									<div
 										className="circle-icon"
 										onClick={() => {
 											handleAttendance(app, 'Absent');
 										}}
-										
-										style={{ ...style.attendanceAction, backgroundColor: app.attendance_status === 'Absent' ?  'red' : 'gray'}}></div>
+										style={{
+											...style.attendanceAction,
+											backgroundColor: app.attendance_status === 'Absent' ? 'red' : 'gray',
+										}}></div>
 									{/* {app.attendance_status === 'Absent' ? <div className="exclude-icon"></div> : <span />} */}
 									<div>Absent</div>
 								</div>
 								<div>
-									<div
-								
-										style={style.attendanceSubAction}>
+									<div style={style.attendanceSubAction}>
 										<div
 											className="circle-icon"
 											style={{
@@ -927,28 +965,27 @@ export default function index() {
 												backgroundColor: app.excused === 'absent' ? 'red' : 'gray',
 											}}
 										/>
-									
-										
-											{app.excused === 'absent' ? <div className="exclude-icon"></div> : <span />} 
+										{app.excused === 'absent' ? <div className="exclude-icon"></div> : <span />}
 										{'    '}Excused
 									</div>
 								</div>
 							</div>
 							<div style={{ minHeight: 22 }}>
-								<div style={{ position: 'relative'}}>
+								<div style={{ position: 'relative' }}>
 									<div
 										className="circle-icon"
 										onClick={() => {
 											handleAttendance(app, 'Tardy');
 										}}
-										style={{ ...style.attendanceAction, backgroundColor: app.attendance_status === 'Tardy' ?  '#f26e21' : 'gray'}}></div>
+										style={{
+											...style.attendanceAction,
+											backgroundColor: app.attendance_status === 'Tardy' ? '#f26e21' : 'gray',
+										}}></div>
 									<div>Tardy</div>
 								</div>
 
 								<div>
-									<div
-
-										style={style.attendanceSubAction}>
+									<div style={style.attendanceSubAction}>
 										<div
 											className="circle-icon"
 											style={{
@@ -957,7 +994,7 @@ export default function index() {
 											}}
 										/>
 										{app.excused === 'tardy' ? <div className="exclude-icon"></div> : <span />}
-										{'    '}Excused 
+										{'    '}Excused
 										{'  '}
 									</div>
 								</div>
@@ -965,7 +1002,7 @@ export default function index() {
 						</div>
 					</td>
 
-					<td >
+					<td>
 						<div style={{ display: 'flex', justifyContent: 'center' }}>
 							<input
 								type="number"
@@ -1142,13 +1179,13 @@ export default function index() {
 					</div>
 
 					<div className="field description">
-							<div className="field">
-								<input
-									id="description"
-									name={'description'}
-									className={'field-input'}
-									placeholder="Description"
-									onChange={handleAttedanceDetailChange}
+						<div className="field">
+							<input
+								id="description"
+								name={'description'}
+								className={'field-input'}
+								placeholder="Description"
+								onChange={handleAttedanceDetailChange}
 							/>
 							<label className="field-label" for={`description`}>
 								Description
@@ -1169,7 +1206,6 @@ export default function index() {
 								Search
 							</label>
 							<FontAwesomeIcon className="search-icon" icon={faSearch} />
-						
 						</div>
 						{/* <div className="field select-field-wrapper">
 							<select onChange={handleViewChange} className={'field-input'}>
@@ -1180,16 +1216,22 @@ export default function index() {
 						</div>	 */}
 
 						<div className="viewType">
-							<FontAwesomeIcon onClick={() =>{
-								handleViewChange("grid")
-							}} className={`view-icon ${viewMode === 'grid' ? 'selected-view' : ''}`} icon={faTh} />
-							<FontAwesomeIcon onClick={() =>{
-								handleViewChange("list")
-							}}className={`view-icon ${viewMode === 'list' ? 'selected-view' : ''}`} icon={faBars} />
+							<FontAwesomeIcon
+								onClick={() => {
+									handleViewChange('grid');
+								}}
+								className={`view-icon ${viewMode === 'grid' ? 'selected-view' : ''}`}
+								icon={faTh}
+							/>
+							<FontAwesomeIcon
+								onClick={() => {
+									handleViewChange('list');
+								}}
+								className={`view-icon ${viewMode === 'list' ? 'selected-view' : ''}`}
+								icon={faBars}
+							/>
 						</div>
-					
 					</div>
-
 
 					{viewMode === 'grid' ? (
 						<div className="gridView">
@@ -1203,7 +1245,7 @@ export default function index() {
 
 											<div className="attendance-name">
 												<a target="_blank" href={'/dashboard/menteeprofile/' + app.id}>
-													<span>{app.child?.firstname + ' ' + app.child?.lastname}</span>
+													<span>{app.child ? app.child?.firstname + ' ' + app.child?.lastname : app.form_contents?.formData[0]?.fields[0]?.value}</span>
 												</a>
 											</div>
 
@@ -1241,9 +1283,7 @@ export default function index() {
 														Absent
 													</div>
 
-													<div
-									
-														style={style.attendanceSubAction}>
+													<div style={style.attendanceSubAction}>
 														<div
 															className="circle-icon"
 															style={{
@@ -1272,9 +1312,7 @@ export default function index() {
 														Tardy
 													</div>
 
-													<div
-												
-														style={style.attendanceSubAction}>
+													<div style={style.attendanceSubAction}>
 														<div
 															className="circle-icon"
 															style={{
@@ -1322,11 +1360,20 @@ export default function index() {
 											</div>
 
 											<div className="attendance-invitation">
-												{ (
+												{
 													<div className="calendar-invite">
-														Calendar Invite: <span>{`${app.is_following !== null ? app.is_following === 1 ?'Accepted' : 'Declined' : app.is_following === null ? 'Blank' :  'Pending'}`}</span>
+														Calendar Invite:{' '}
+														<span>{`${
+															app.is_following !== null
+																? app.is_following === 1
+																	? 'Accepted'
+																	: 'Declined'
+																: app.is_following === null
+																? 'Blank'
+																: 'Pending'
+														}`}</span>
 													</div>
-												)}
+												}
 											</div>
 										</div>
 									</div>
@@ -1352,14 +1399,12 @@ export default function index() {
 						</div>
 					)}
 					<div className="field actionBtn">
- 						{applicationList.length > 0 && (
+						{applicationList.length > 0 && (
 							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
 								{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
 							</button>
-						)} 
+						)}
 					</div>
-								
-
 				</form>
 			</div>
 		</ClassListViewStyled>

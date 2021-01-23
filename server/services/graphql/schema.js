@@ -680,6 +680,7 @@ const inputs = `
 
     input AttendanceInput {
         app_group_id: String
+        attendance_type: String
         attendance_date: String
         attendance_start_time: String
         attendance_end_time: String
@@ -1307,6 +1308,7 @@ const queryTypes = `
 
     type Attendance {
         app_group_id: String
+        attendance_type: String
         attendance_date: String
         attendance_start_time: String
         attendance_end_time: String
@@ -1319,6 +1321,7 @@ const queryTypes = `
 
     type AttendanceList {
         app_group_id: String
+        attendance_type: String
         attendance_date: String
         attendance_start_time: String
         attendance_end_time: String
@@ -1439,7 +1442,7 @@ const queries = `
         getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
         getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
         getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
-        getAttendance(application_group_id: String): [AttendanceList]
+        getAttendance(application_group_id: String, attendance_type: String): [AttendanceList]
         getEventAttendance(application_group_id: String): [EventAttendanceList]
         getUserVendorForms(user: String!): [VendorForms]
         getFormAppGroup(form: String!): [VendorAppGroup]

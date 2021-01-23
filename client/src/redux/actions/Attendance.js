@@ -26,16 +26,17 @@ const updateAttendanceToDatabase = attendance => {
   })
 }
 
-const getAttendanceToDatabase = applicationGroupId => {
+const getAttendanceToDatabase = (applicationGroupId, attendanceType) => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.query({
         query: GET_ATTENDANCE_QUERY,
         variables: {
-          application_group_id: applicationGroupId
+          application_group_id: applicationGroupId,
+          attendance_type: attendanceType
         }
       });
-      console.log('c', data)
+      console.log('getAttendanceToDatabase response', data)
       return resolve(data.getAttendance)
     } catch (error) {
       console.log('getAttendanceToDatabase error', error)
@@ -73,10 +74,11 @@ export const requestUpdateAttendance = data => {
   }
 }
 
-export const requestAttendance = applicationGroupId => {
+export const requestAttendance = (applicationGroupId,attendanceType = 'bcombs') => {
   return {
     type: actionType.REQUEST_ATTENDANCE,
-    applicationGroupId
+    applicationGroupId,
+    attendanceType
   }
 }
 
@@ -122,9 +124,9 @@ export function* updateAttendance({ data }) {
   }
 }
 
-export function* getAttendance({ applicationGroupId }) {
+export function* getAttendance({ applicationGroupId, attendanceType }) {
   try {
-    const response = yield call(getAttendanceToDatabase, applicationGroupId);
+    const response = yield call(getAttendanceToDatabase, applicationGroupId,attendanceType);
     console.log('getAttendanceeeee ',response )
     if(response) {
       yield put(setAttendanceList(response));

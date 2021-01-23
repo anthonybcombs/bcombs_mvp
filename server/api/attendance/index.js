@@ -41,52 +41,71 @@ export const getChildEventAttendance = async applicationGroupId => {
   
 }
 
-export const getChildAttendance = async applicationGroupId => {
+export const getChildAttendance = async (applicationGroupId,attendanceType = 'bcombs') => {
   const db = makeDb();  
   let result = [];
   try{
+    console.log('Get Child Attendance applicationGroupId',applicationGroupId)
+    const currentQuery = attendanceType === 'bcombs' ? 
+    ` SELECT BIN_TO_UUID(att.app_group_id) as app_group_id,
+        BIN_TO_UUID(att.child_id) as child_id,
+        BIN_TO_UUID(usr.id) as user_id,
+        att.attendance_type,
+        att.attendance_date,
+        att.attendance_start_time,
+        att.attendance_end_time,
+        att.attendance_status,
+        att.mentoring_hours,
+        att.volunteer_hours,
+        att.event_name,
+        att.location,
+        att.description,
+        att.is_excused,
+        ch.firstname,
+        ch.lastname,
+        ch.gender,
+        vag.name as app_group_name,
+        ucf.is_following
+      FROM  attendance att
+      INNER JOIN child ch 
+      ON ch.ch_id=att.child_id
+      INNER JOIN application app
+      ON app.child=ch.ch_id
+      INNER JOIN vendor_app_groups vag
+      ON vag.app_grp_id=att.app_group_id AND
+        vag.vendor=app.vendor
+      INNER JOIN parent pr
+      ON pr.application=app.app_id
+      INNER JOIN users usr
+      ON usr.email=pr.email_address
+      LEFT JOIN user_calendars_groups ucg
+      ON ucg.group_id=att.app_group_id AND
+        ucg.group_type='applications'
+      LEFT JOIN user_calendars_follow ucf
+      ON ucf.user_id=usr.id AND
+        ucf.group_id=att.app_group_id
+      WHERE att.app_group_id=UUID_TO_BIN(?) AND att.attendance_type='bcombs'` :
+      `SELECT BIN_TO_UUID(att.app_group_id) as app_group_id,
+        BIN_TO_UUID(att.child_id) as child_id,
+        att.attendance_date,
+        att.attendance_start_time,
+        att.attendance_end_time,
+        att.attendance_status,
+        att.attendance_type,
+        att.mentoring_hours,
+        att.volunteer_hours,
+        att.event_name,
+        att.location,
+        att.description,
+        att.is_excused
+      FROM  attendance att
+      INNER JOIN custom_application ch 
+      ON ch.app_id=att.child_id
+      WHERE att.app_group_id=UUID_TO_BIN(?)
+      AND att.attendance_type = 'forms'`;
 
-    result = await db.query(`
-    SELECT BIN_TO_UUID(att.app_group_id) as app_group_id,
-      BIN_TO_UUID(att.child_id) as child_id,
-      BIN_TO_UUID(usr.id) as user_id,
-      att.attendance_date,
-      att.attendance_start_time,
-      att.attendance_end_time,
-      att.attendance_status,
-      att.mentoring_hours,
-      att.volunteer_hours,
-      att.event_name,
-      att.location,
-      att.description,
-      att.is_excused,
-      ch.firstname,
-      ch.lastname,
-      ch.gender,
-      vag.name as app_group_name,
-      ucf.is_following
-    FROM  attendance att
-    INNER JOIN child ch 
-    ON ch.ch_id=att.child_id
-    INNER JOIN application app
-    ON app.child=ch.ch_id
-    INNER JOIN vendor_app_groups vag
-    ON vag.app_grp_id=att.app_group_id AND
-       vag.vendor=app.vendor
-    INNER JOIN parent pr
-    ON pr.application=app.app_id
-    INNER JOIN users usr
-    ON usr.email=pr.email_address
-    LEFT JOIN user_calendars_groups ucg
-    ON ucg.group_id=att.app_group_id AND
-       ucg.group_type='applications'
-    LEFT JOIN user_calendars_follow ucf
-    ON ucf.user_id=usr.id AND
-       ucf.group_id=att.app_group_id
-    WHERE att.app_group_id=UUID_TO_BIN(?) 
-      `,
-    [applicationGroupId]);
-
+    result = await db.query(currentQuery,[applicationGroupId]);
+    console.log('ATTENDANCE RESULT', result)
     /*
     SELECT BIN_TO_UUID(attendance.app_group_id) as app_group_id,
       BIN_TO_UUID(attendance.child_id) as child_id,
@@ -156,6 +175,7 @@ export const updateChildAttendance = async (attendance) => {
                 app_group_id,
                 child_id,
                 attendance_status,
+                attendance_type,
                 is_excused,
                 attendance_date,
                 attendance_start_time,
@@ -177,6 +197,7 @@ export const updateChildAttendance = async (attendance) => {
                 ?,
                 ?,
                 ?,
+                ?,
                 ?
               )
             `,
@@ -184,6 +205,7 @@ export const updateChildAttendance = async (attendance) => {
               attendance.app_group_id,
               att.child_id,
               att.attendance_status,
+              attendance.attendance_type,
               att.is_excused || 0,
               attendance.attendance_date,
               attendance.attendance_start_time,

@@ -400,9 +400,9 @@ const resolvers = {
       return application;
     },
 
-    async getAttendance(root, { application_group_id }, contenxt) {
-      console.log('Get Attendance App Grp Id', application_group_id)
-      return await getChildAttendance(application_group_id);
+    async getAttendance(root, { application_group_id, attendance_type }, contenxt) {
+
+      return await getChildAttendance(application_group_id, attendance_type);
     },
 
     async getEventAttendance(root, { application_group_id }, context) {

@@ -6,6 +6,7 @@ export const ATTENDANCE_UPDATE_MUTATION = gql`
       app_group_id
       attendance_date
       attendance_start_time
+      attendance_type
       event_name
       location
       description
