@@ -621,7 +621,7 @@ export default function index() {
 
 	useEffect(() => {
 	
-		if (vendors && vendors.length > 0) {
+		if (vendors && vendors.length > 0 && name !== 'custom') {
 			let vendorId;
 			for (const vendor of vendors) {
 				if ((name === 'custom' && vendor.id == vendor_id) || vendor.id2 == vendor_id) {
