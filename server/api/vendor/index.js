@@ -611,6 +611,26 @@ export const getVendorAppGroupsByFormId = async form => {
   }
 };
 
+export const getAppGroupByPool = async pool_id => {
+  const db = makeDb();
+
+  let appGroupsResult = [];
+  try {
+    appGroupsResult = await db.query(
+      `SELECT
+        BIN_TO_UUID(app_grp_id) as app_grp_id
+      FROM vendor_app_groups 
+      WHERE pool_id=?`,
+      [pool_id]
+    );
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return appGroupsResult;
+  }
+}
+
 export const addAppGroup = async ({ user_id, vendor, form, size, name, email, pool_id }) => {
   const db = makeDb();
 
@@ -658,15 +678,23 @@ export const editAppGroup = async ({ app_grp_id, email, name, size }) => {
   }
 };
 
-export const deleteAppGroup = async ({ id }) => {
-  console.log("INSIDE DELETE APP GROUP ID", id);
+export const deleteAppGroup = async ({ app_grp_id, pool_id }) => {
   const db = makeDb();
   let result;
   try {
-    result = await db.query(
-      `DELETE FROM vendor_app_groups WHERE app_grp_id=UUID_TO_BIN(?) `,
-      [id]
-    );
+
+    if(pool_id) {
+      result = await db.query(
+        `DELETE FROM vendor_app_groups WHERE pool_id=? `,
+        [pool_id]
+      );
+    } else if(app_grp_id) {
+      result = await db.query(
+        `DELETE FROM vendor_app_groups WHERE app_grp_id=UUID_TO_BIN(?) `,
+        [app_grp_id]
+      );
+    }
+
   } catch (error) {
     console.log("error", error);
   } finally {

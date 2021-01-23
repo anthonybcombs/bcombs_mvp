@@ -45,12 +45,11 @@ const editVendorApplicationGroupToDatabase = appGroup => {
   });
 };
 
-const deleteVendorApplicationGroupToDatabase = ({ app_grp_id, email }) => {
+const deleteVendorApplicationGroupToDatabase = (ap) => {
   return new Promise(async (resolve, reject) => {
     try {
       const appGroup = {
-        id: app_grp_id,
-        email
+        ...ap
       };
       const { data } = await graphqlClient.mutate({
         mutation: DELETE_VENDORS_APP_GROUP,

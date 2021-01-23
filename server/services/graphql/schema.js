@@ -410,6 +410,9 @@ const inputs = `
     input AppGroupVendorInput {
         id: String
         is_form: Boolean
+        app_grp_id: String
+        name: String
+        label: String
     }
 
     input AppGroupInput {
@@ -420,10 +423,12 @@ const inputs = `
         size: Int!
         name: String!
         pool_id: String!
+        
     }
 
     input DeleteAppGroupInput {
-        id: String!
+        app_grp_id: String!
+        pool_id: String
         email: String!
     }
 
@@ -800,6 +805,14 @@ const queryTypes = `
         created_groups:[Group]
         application_groups: [VendorAppGroup]
     }    
+
+    type EditAllGroups {
+        joined_groups:[Group]
+        created_groups:[Group]
+        application_groups: [VendorAppGroup]
+        message: String
+        status: String
+    }
 
     type FammilyMemberType{
         id: String!
@@ -1385,8 +1398,8 @@ const mutations = `
         archivedApplications(app_ids: [String]): Status
         unarchivedApplications(app_ids: [String]): Status
         updateVendor(vendor: VendorInput!): Vendor
-        addVendorAppGroup(appGroup: AppGroupInput!): AllGroups
-        editVendorAppGroup(appGroup: AppGroupInput!): AllGroups
+        addVendorAppGroup(appGroup: AppGroupInput!): EditAllGroups
+        editVendorAppGroup(appGroup: AppGroupInput!): EditAllGroups
         deleteVendorAppGroup(appGroup: DeleteAppGroupInput!): AllGroups
         saveApplication(application: SaveApplicationUserInput): Status
         addVendorAdmin(admin: AddAdminInput): [Admin]

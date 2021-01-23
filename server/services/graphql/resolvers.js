@@ -59,7 +59,8 @@ import {
   deleteVendorAdmins,
   updateVendorAdmins,
   checkIfAdminVendorExists,
-  getVendorAppGroupsByFormId
+  getVendorAppGroupsByFormId,
+  getAppGroupByPool
 } from "../../api/vendor";
 import {
   createApplication,
@@ -86,7 +87,8 @@ import {
   getCustomFormApplicants,
   getCustomFormApplicantById,
   getCustomApplicationHistoryById,
-  getUserCustomApplicationsByUserId
+  getUserCustomApplicationsByUserId,
+  getApplicationByAppGroup
 } from "../../api/applications";
 import { 
   addChild, 
@@ -776,26 +778,74 @@ const resolvers = {
         await addAppGroup(fields);
       }
       response = await getUserGroups(appGroup.email);
-
+      response.message = "success"
       return response;
     },
 
     async editVendorAppGroup(root, { appGroup }, context) {
-      // const vendors = appGroup.vendors;
-      // let response = {};
-      // console.log("appGroup server", appGroup);
-      // for (const vendor of vendors) {
-      // }
+      const vendors = appGroup.vendors;
 
-      const fields = {
-        app_grp_id: appGroup.app_grp_id,
-        email: appGroup.email,
-        size: appGroup.size,
-        name: appGroup.name
-      };
-      await editAppGroup(fields);
+      //remove forms on app group
+
+      const currentAppGroups = await getAppGroupByPool(appGroup.pool_id);
+
+      for(const ap of currentAppGroups) {
+        
+        const isExist = vendors.filter(v => v.app_grp_id == ap.app_grp_id);
+
+        console.log("ap ap", ap);
+        console.log("isExist", isExist);
+        if(isExist && isExist.length > 0) {
+          // do not delete
+        } else {
+          ap.id = ap.app_grp_id;
+          await deleteAppGroup(ap);
+        }
+      }
+
+      for(const vendor of vendors) {
+        if(vendor.app_grp_id) {
+          const applications = await getApplicationByAppGroup({app_grp_id: vendor.app_grp_id, is_form: vendor.is_form});
+          const totalApplication = applications.length;
+
+          console.log("totalApplication", totalApplication);
+          if(totalApplication > appGroup.size) {
+            let response = await getUserGroups(appGroup.email);
+            response.message = "Sorry, you currently have more members added to your group, please make sure you have enough available count";
+            response.status = "failed"
+            return response;
+          }
+        }
+      }
+
+      for (const vendor of vendors) {
+        if(!vendor.app_grp_id) {
+          // add addgroup
+          const fields = {
+            user_id: appGroup.user_id,
+            vendor: !vendor.is_form ? vendor.id : null,
+            form: vendor.is_form ? vendor.id : null,
+            size: appGroup.size,
+            name: appGroup.name,
+            email: appGroup.email,
+            pool_id: appGroup.pool_id
+          }
+
+          await addAppGroup(fields);
+        } else {
+          const fields = {
+            app_grp_id: vendor.app_grp_id,
+            email: appGroup.email,
+            size: appGroup.size,
+            name: appGroup.name
+          }
+
+          await editAppGroup(fields);
+        }
+      }
+
       let response = await getUserGroups(appGroup.email);
-
+      response.status = "success"
       return response;
     },
     async deleteVendorAppGroup(root, { appGroup }, context) {

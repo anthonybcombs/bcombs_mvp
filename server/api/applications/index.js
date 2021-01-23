@@ -1228,3 +1228,46 @@ export const getUserCustomApplicationsByUserId = async user_id => {
     return applications;
   }
 };
+
+export const getApplicationByAppGroup = async ({
+  app_grp_id,
+  is_form=false
+}) => {
+  const db = makeDb();
+  let applications;
+  try {
+    if(is_form) {
+      applications = await db.query(
+        `
+          SELECT
+          id,
+          BIN_TO_UUID(app_id) as app_id
+          FROM custom_application
+          WHERE class_teacher=?
+        `,
+        [
+          app_grp_id
+        ]
+      )
+    } else {
+      applications = await db.query(
+        `
+          SELECT
+          id,
+          BIN_TO_UUID(app_id) as app_id
+          FROM application
+          WHERE class_teacher=?
+        `,
+        [
+          app_grp_id
+        ]
+      )
+    }
+  
+  } catch(err) {
+    console.log("get custom application by form id", err);
+  } finally {
+    await db.close();
+    return applications;
+  }
+}

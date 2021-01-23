@@ -183,25 +183,78 @@ export default function index() {
     setCurrentContacts(contacts);
   }, []);
 
+  // if(groups.status == "success") {
+  //   window.location.reload();
+  // }
+
   const [appGroups, setAppGroups] = useState([]);
+  const [apiStatus, setApiStatus] = useState();
+  const [selectedForms, setSelectedForms] = useState([]);
+  const [formattedVendors, setFormattedVendors] = useState([]);
+  const [appGroupDetails, setAppGroupDetails] = useState();
 
   useEffect(() => {
     console.log("groups.application_groups", groups.application_groups);
 
     if(groups && groups.application_groups && groups.application_groups.length > 0) {
       let ap = [];
+      let oAp = [];
+
+      let newAp = []
+
       ap = groups.application_groups;
+      oAp = groups.application_groups;
 
       console.log("ap1", ap);
+      console.log("oAp", oAp);
       
       ap = ap.filter((elem, index) => 
             ap.findIndex(obj => obj.pool_id === elem.pool_id) === index);
 
+
+      for(const [i, gr] of ap.entries()) {
+        const members = oAp.filter((x) => {
+
+          //if(x.members) delete x.members;
+          return x.pool_id == gr.pool_id && gr.app_grp_id != x.app_grp_id;
+        });
+
+        console.log("members", members);
+
+        ap[i].members = members;
+        // console.log("gr gr", gr);
+      }
+
       console.log("ap", ap);
 
       setAppGroups(ap);
+      setApiStatus(groups.status);
     }
   }, [groups])
+
+  useEffect(() => {
+
+    const formList = vendorForms.formList;
+
+    console.log("vendors.formList", vendorForms.formList);
+
+    const formattedVendors = getFormattedVendors(formList);
+
+    setFormattedVendors(formattedVendors);
+
+  }, [vendorForms.formList])
+
+  const getFormattedVendors = (formList) => {
+    const formattedVendors = formList.map(item => {
+      return {
+        id: item.id,
+        name: item.name,
+        label: item.name,
+        is_form: item.is_form
+      }
+    });
+    return formattedVendors;
+  }
 
   console.log("groups", groups);
   console.log("vendorForms", vendorForms);
@@ -262,13 +315,63 @@ export default function index() {
   };
   const editGroupSubmit = data => {};
 
+  const getSelectedForms = (currentAppGroup) => {
+
+    let selectedForms = [];
+    if(currentAppGroup && (currentAppGroup.vendor || currentAppGroup.form)) {
+
+      if(currentAppGroup.vendor) {
+        selectedForms = [...selectedForms, currentAppGroup.vendor];
+      } else if(currentAppGroup.form) {
+        selectedForms = [...selectedForms, currentAppGroup.form];
+      }
+  
+      if(currentAppGroup.members && currentAppGroup.members.length > 0) {
+        const members = currentAppGroup.members;
+  
+        for(const member of members) {
+          if(member.vendor) {
+            selectedForms = [...selectedForms, member.vendor];
+          } else if(member.form) {
+            selectedForms = [...selectedForms, member.form];
+          }
+        }
+      }
+    }
+
+    return selectedForms;
+  }
+
+  const handleAppGroupDetails = () => {
+    
+  }
+
   const handleAppGroupModal = group => {
-    setCurrentAppGroup(group);
-    setIsAppGroupEditMode(true);
-    setTimeout(() => {
-      setIsNewAppGroupModalVisible(true);
-    }, 1000);
+    if(vendorForms.formList.length > 0) {
+      setCurrentAppGroup(group);
+      setIsAppGroupEditMode(true);
+      let sForms = getSelectedForms(group);
+      const formattedVendors = getFormattedVendors(vendorForms.formList);
+      sForms = formattedVendors.filter((form) => {
+        return sForms.includes(form.id)
+      });
+      console.log("group group", group);
+      console.log("formattedVendors", formattedVendors);
+      console.log("sForms", sForms);
+
+      setSelectedForms(sForms);
+      setAppGroupDetails({...appGroupDetails, ["vendors"]: sForms}); 
+      setApiStatus("");
+      setTimeout(() => {
+        setIsNewAppGroupModalVisible(true);
+      }, 500);
+    }
   };
+
+  const handleCloseModal = () => {
+    setCurrentAppGroup();
+    setApiStatus("");
+  }
 
   const isVendor = () => {
     const currentUserType = userTypes.filter(type => {
@@ -324,6 +427,11 @@ export default function index() {
         toggleCreateAppGroupModal={setIsNewAppGroupModalVisible}
         vendors={vendorForms.formList}
         auth={auth}
+        errorMessage={groups.message}
+        status={apiStatus}
+        handleCloseModal ={handleCloseModal}
+        selectedForms={selectedForms}
+        formattedVendors={formattedVendors}
       />
 
       <h2>Contacts </h2>
@@ -426,12 +534,15 @@ export default function index() {
                   appGroups &&
                   appGroups.map(group => (
                     <div
+                      style={{"color": vendorForms.formList.length > 0 ? "rgb(68, 68, 68)" : "darkgrey"}}
                       className={`${
                         group.id === selectedGroupId ? "selected" : ""
                       }`}
                       key={group.app_grp_id}
                       onClick={() => {
-                        handleAppGroupModal(group);
+                        if(vendorForms.formList.length > 0) {
+                          handleAppGroupModal(group);
+                        }
                       }}>
                       <FontAwesomeIcon icon={faUsers} />
                       <span>{group.name}</span>
@@ -440,11 +551,15 @@ export default function index() {
               </Collapsible>
               <hr />
               <button
+                disabled={!vendorForms.formList.length > 0}
                 onClick={() => {
-                  setIsAppGroupEditMode(false);
-                  setTimeout(() => {
-                    setIsNewAppGroupModalVisible(true);
-                  }, 500);
+                  if(vendorForms.formList.length > 0) {
+                    setIsAppGroupEditMode(false);
+                    setSelectedForms([]);
+                    setTimeout(() => {
+                      setIsNewAppGroupModalVisible(true);
+                    }, 500);
+                  }
                 }}>
                 <FontAwesomeIcon icon={faPlus} />
                 <span> ADD NEW GROUP</span>
