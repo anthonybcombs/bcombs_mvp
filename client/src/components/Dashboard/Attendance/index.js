@@ -138,7 +138,7 @@ export default function index(props) {
 					<td>{availableCount}</td>
 					<td>{classCount}</td>
 					<td>
-						<Link to={'view/' + group?.app_grp_id}>View 2</Link>
+						<Link to={'view/' + group?.app_grp_id}>View</Link>
 					</td>
 				</tr>
 			);
