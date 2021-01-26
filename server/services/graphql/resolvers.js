@@ -49,7 +49,7 @@ import {
   deleteAppGroup,
   editAppGroup,
   addAppGroup,
-  getVendorAppGroups,
+  getAppGroupsByVendor,
   getVendorsByUserId,
   getVendorById2,
   getVendorById,
@@ -60,7 +60,8 @@ import {
   updateVendorAdmins,
   checkIfAdminVendorExists,
   getVendorAppGroupsByFormId,
-  getAppGroupByPool
+  getAppGroupByPool,
+  getVendorAppGroupsByVendorId
 } from "../../api/vendor";
 import {
   createApplication,
@@ -329,7 +330,13 @@ const resolvers = {
       return response;
     },
     async getVendorAppGroups(root, { vendor }, context) {
-      const response = await getVendorAppGroups(vendor);
+      console.log('getVendorAppGroups',vendor)
+      const response = await getVendorAppGroupsByVendorId(vendor);
+      console.log('getVendorAppGroups response',response)
+      return response;
+    },
+    async getAllFormAppGroupsByVendor(root,{ vendor },context) {
+      const response = await getAppGroupsByVendor(vendor);
       return response;
     },
     async getApplicationHistory(root, { app_id }, context) {
@@ -1392,7 +1399,7 @@ const resolvers = {
     async updateAttendance(root, {attendance}, context) {
       console.log('UpdateAttendance',attendance)
       return await updateChildAttendance(attendance)
-    }
+    },
   }
 };
 

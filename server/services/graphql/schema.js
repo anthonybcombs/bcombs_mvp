@@ -1444,7 +1444,7 @@ const queries = `
         getApplication(application_id: String!): Application
         getUserApplications(email: String!): UserApplication
         getUserByEmail(email: String): CheckUserEmail
-        getVendorAppGroups(vendor: String): AllGroups
+        getVendorAppGroups(vendor: String): [VendorAppGroup]
         getUserApplicationsByUserId(user_id: String!): UserApplicationsOutput
         getApplicationHistory(app_id: String!): [ApplicationHistory]
         getUserApplicationHistory(id: String!):[ApplicationHistory]
@@ -1459,9 +1459,12 @@ const queries = `
         getEventAttendance(application_group_id: String): [EventAttendanceList]
         getUserVendorForms(user: String!): [VendorForms]
         getFormAppGroup(form: String!): [VendorAppGroup]
+        getAllFormAppGroupsByVendor(vendor: String): [VendorAppGroup]
     }
 `;
 
+
+// getVendorAppGroups(vendor: String): AllGroups
 const schema = `
     schema{
         query: RootQuery        

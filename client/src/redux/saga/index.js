@@ -65,7 +65,9 @@ import {
   addAdmin,
   deleteAdmins,
   updateAdmin,
-  getFormAppGroup } from "../actions/Vendors";
+  getFormAppGroup,
+  getVendorAppGroups,
+} from "../actions/Vendors";
 
 import {
   addApplication,
@@ -282,6 +284,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_UPDATE_ATTENDANCE, updateAttendance);
   yield takeLatest(actionType.REQUEST_ATTENDANCE, getAttendance);
   yield takeLatest(actionType.REQUEST_EVENT_ATTENDANCE, getEventAttendance);
+  yield takeLatest(actionType.REQUEST_VENDOR_APP_GROUPS,getVendorAppGroups)
 }
 const sagaMiddleware = createSagaMiddleware();
 

@@ -332,3 +332,20 @@ export const DELETE_VENDORS_APP_GROUP = gql`
     }
   }
 `;
+
+
+export const GET_VENDOR_APP_GROUP = gql`
+  query getAllFormAppGroupsByVendor($vendor: String) {
+    getAllFormAppGroupsByVendor(vendor: $vendor) {
+      id
+      app_grp_id
+      user
+      vendor
+      form
+      size
+      name
+      created_at
+      pool_id
+    }
+  }
+`;

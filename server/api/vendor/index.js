@@ -527,9 +527,9 @@ export const updateVendor = async ({
   }
 };
 
-export const getVendorAppGroups = async user_id => {
+export const getAppGroupsByVendor = async vendor => {
   const db = makeDb();
-
+  console.log('getAppGroupsByVendor vendor', vendor)
   let appGroupsResult = [];
   try {
     appGroupsResult = await db.query(
@@ -544,9 +544,10 @@ export const getVendorAppGroups = async user_id => {
         pool_id,
         created_at 
       FROM vendor_app_groups 
-      WHERE user=UUID_TO_BIN(?)`,
-      [user_id]
+      WHERE vendor=UUID_TO_BIN(?) OR vendor IS NULL`,
+      [vendor]
     );
+    console.log('getAppGroupsByVendor appGroupsResult', appGroupsResult)
   } catch (error) {
     console.log("error", error);
   } finally {
@@ -557,7 +558,7 @@ export const getVendorAppGroups = async user_id => {
 
 export const getVendorAppGroupsByVendorId = async vendor => {
   const db = makeDb();
-
+  console.log('getVendorAppGroupsByVendorId VENDOR ID',vendor)
   let appGroupsResult = [];
   try {
     appGroupsResult = await db.query(
@@ -572,7 +573,7 @@ export const getVendorAppGroupsByVendorId = async vendor => {
         pool_id,
         created_at 
       FROM vendor_app_groups 
-      WHERE vendor=UUID_TO_BIN(?)`,
+      WHERE vendor=UUID_TO_BIN(?) `,
       [vendor]
     );
   } catch (error) {

@@ -13,6 +13,8 @@ import {
 } from "../../graphql/vendorMutation";
 
 import { GET_FORM_APP_GROUP } from "../../graphql/groupQuery";
+
+import { getVendorApplicationGroupFromDatabase } from './VendorAppGroups';
 import * as actionType from "./Constant";
 
 import {
@@ -230,6 +232,13 @@ export const requestGetFormAppGroup = form => {
   }
 }
 
+export const requestVendorAppGroups = vendor => {
+  console.log('requestVendorAppGroups vendor', vendor)
+  return {
+    type: actionType.REQUEST_VENDOR_APP_GROUPS,
+    vendor
+  }
+}
 export const requestUpdateVendor = vendor => {
   return {
     type: actionType.REQUEST_UPDATE_VENDOR,
@@ -451,3 +460,21 @@ export function* getFormAppGroup(action) {
 }
 
 
+
+export function* getVendorAppGroups(action) {
+  try {
+    console.log('getVendorAppGroups  action.vendor',  action.vendor)
+    const appGroups = yield call(getVendorApplicationGroupFromDatabase, action.vendor);
+    console.log('getVendorAppGroups appGroups', appGroups)
+    yield put({
+      type: actionType.REQUEST_GET_FORM_APP_GROUP_COMPLETED,
+      payload: appGroups
+    });
+  } catch (err) {
+    console.log("err", err);
+    yield put({
+      type: actionType.REQUEST_GET_FORM_APP_GROUP_COMPLETED,
+      payload: []
+    });
+  }
+}
