@@ -70,7 +70,7 @@ export default function index(props) {
 		}
 	);
 	const { formAppGroups = [],formList = [] } = form;
-
+	const [formIds, setFormIds] = useState([]);
 	const [appGroups, setAppGroups] = useState([]);
 	const [selectedVendor, setSelectedVendor] = useState({});
 	// appGroups = appGroups.filter((group) => {
@@ -95,6 +95,13 @@ export default function index(props) {
 			dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }));
 		}
 	}, [vendors]);
+
+	useEffect(() => {
+		if(form.formList) {
+			const ids = formList && formList.map(form => form.form_id);
+			setFormIds(ids)
+		}
+	},[form.formList])
 	// dispatch(requestVendorAppGroups(vendors[0].id))
 
 	// useEffect(() => {
@@ -124,9 +131,22 @@ export default function index(props) {
 		return size ? size.length : 0
 	};
 
-	const renderTableData = () => {
-		const formIds = formList && formList.map(form => form.form_id);
 
+	
+	const getDefaultClassCount = () => {
+		const appGroupIds = appGroups.map(item => item.app_grp_id);
+		console.log('appGroupIds',appGroupIds)
+		console.log('appGroupIds appGroups',appGroups)
+		const size = applications.activeapplications.filter(app => {
+			if (app.class_teacher) {
+				return appGroupIds && appGroupIds.includes(app.class_teacher)
+			}
+		});
+		return size.length;
+	};
+
+	const renderTableData = () => {
+	
 		const currentForm = formList.find(form => form.vendor === vendors[0].id);
 	  const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
 
@@ -163,13 +183,39 @@ export default function index(props) {
 
 	const getTotalCount = () => {
 		let totalCount = 0;
+
+		const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
+
+		filteredGroups.map(group => {
+			totalCount += group.size;
+		});
+		return totalCount;
+	};
+
+	const getDefaultTotalCount = () => {
+		let totalCount = 0;
 		appGroups.map(group => {
 			totalCount += group.size;
 		});
 		return totalCount;
 	};
 
+
 	const getTotalAvailable = () => {
+		let totalAvailable = 0;
+
+		const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
+
+		for (const group of filteredGroups) {
+			let classCount = getClassCount(group);
+			totalAvailable += group.size - classCount;
+		}
+
+		totalAvailable = totalAvailable < 0 ? 0 : totalAvailable;
+		return totalAvailable;
+	};
+
+	const getDefaultTotalAvailable = () => {
 		let totalAvailable = 0;
 		for (const group of appGroups) {
 			let classCount = getClassCount(group);
@@ -252,6 +298,15 @@ export default function index(props) {
 							<td>{getTotalCount()}</td>
 							<td>{getTotalAvailable()}</td>
 							<td>{getTotalClassCount()}</td>
+							<td></td>
+						</tr>
+
+						<tr>
+							<td>Bcombs Form</td>
+							<td><Link to={'' + selectedVendor?.id2 + '/all'}>All</Link></td>
+							<td>{getDefaultTotalCount()}</td>
+							<td>{getDefaultTotalAvailable()}</td>
+							<td>{getDefaultClassCount()}</td>
 							<td></td>
 						</tr>
 						{form.formList.map(item => {

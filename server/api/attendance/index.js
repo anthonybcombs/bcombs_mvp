@@ -45,6 +45,7 @@ export const getChildAttendance = async (applicationGroupId,attendanceType = 'bc
   const db = makeDb();  
   let result = [];
   try{
+    const field = applicationGroupId === 'all' ? 'app.vendor' : 'att.app_group_id'
     console.log('Get Child Attendance applicationGroupId',applicationGroupId)
     const currentQuery = attendanceType === 'bcombs' ? 
     ` SELECT BIN_TO_UUID(att.app_group_id) as app_group_id,
@@ -84,7 +85,7 @@ export const getChildAttendance = async (applicationGroupId,attendanceType = 'bc
       LEFT JOIN user_calendars_follow ucf
       ON ucf.user_id=usr.id AND
         ucf.group_id=att.app_group_id
-      WHERE att.app_group_id=UUID_TO_BIN(?) AND att.attendance_type='bcombs'` :
+        WHERE ${applicationGroupId === 'all' ? `` : `${field}=UUID_TO_BIN(?) AND`} att.attendance_type='bcombs'` :
       `SELECT BIN_TO_UUID(att.app_group_id) as app_group_id,
         BIN_TO_UUID(att.child_id) as child_id,
         att.attendance_date,
@@ -101,8 +102,8 @@ export const getChildAttendance = async (applicationGroupId,attendanceType = 'bc
       FROM  attendance att
       INNER JOIN custom_application ch 
       ON ch.app_id=att.child_id
-      WHERE att.app_group_id=UUID_TO_BIN(?)
-      AND att.attendance_type = 'forms'`;
+      WHERE ${applicationGroupId === 'all' ? `` : `${field}=UUID_TO_BIN(?) AND`}
+      att.attendance_type = 'forms'`;
 
     result = await db.query(currentQuery,[applicationGroupId]);
     console.log('ATTENDANCE RESULT', result)

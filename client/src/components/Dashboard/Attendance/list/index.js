@@ -612,16 +612,17 @@ export default function index() {
 			dispatch(requestGetCustomApplications(searchParams.formId));
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
-		} else if (name !== 'custom' && vendor_id && auth.user_id) {
+		} else if ((name !== 'custom' || name === 'all') && vendor_id && auth.user_id) {
 
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		}
+
 	}, [name, vendor_id]);
 
 	useEffect(() => {
 	
-		if (vendors && vendors.length > 0 && name !== 'custom') {
+		if (vendors && vendors.length > 0 && (name !== 'custom' || name === 'all')) {
 			let vendorId;
 			for (const vendor of vendors) {
 				if ((name === 'custom' && vendor.id == vendor_id) || vendor.id2 == vendor_id) {
@@ -653,7 +654,7 @@ export default function index() {
 				setAppGroupId(currentAppGroupId);
 			}
 		} else {
-			if(vendors.length > 0) {
+			if(vendors.length > 0 && name !== 'all') {
 				let currentAppGroupId = '';
 				if (vendors[0] && vendors[0].app_groups) {
 					const applicationGroups = vendors[0].app_groups;
@@ -669,6 +670,9 @@ export default function index() {
 					setAppGroupId(currentAppGroupId);
 				}
 			}
+			else if(name === 'all') {
+				setAppGroupId('all');
+			}
 
 		}
 	}, [groups, vendors]);
@@ -676,21 +680,31 @@ export default function index() {
 	useEffect(() => {
 		// && name !== 'custom'
 		if (appGroupId && appGroupId !== '' ) {
+
 			//console.log('appGroupId',appGroupId)
-			console.log('TESTTT111', name === 'custom' ? searchParams.formId : appGroupId)
-			console.log('TESTTT111 222', name === 'custom' ? 'custom' : 'bcombs')
+
 			dispatch(requestAttendance(name === 'custom' ? searchParams.formId : appGroupId, name === 'custom' ? 'custom' : 'bcombs'));
 		}
 
-		if (applications && applications.activeapplications.length > 0 && name !== 'custom' && appGroupId !== '') {
-			let filterApplications = applications.activeapplications.filter(application => {
-				return application && application.class_teacher == appGroupId;
-			});
+		if (applications && applications.activeapplications.length > 0 && appGroupId !== '' && (name !== 'custom'  || name === 'all')) {
+			let filterApplications = [];
+			if(appGroupId === 'all') {
+				filterApplications = applications.activeapplications.filter(application => {
+					return application
+				});
+				console.log('Filtered Application', filterApplications)
+			}
+			else{
+				filterApplications = applications.activeapplications.filter(application => {
+					return application && application.class_teacher == appGroupId;
+				});
+			}
 			filterApplications = filterApplications.map(item => {
 				let currentAttendance = attendance.list.find(att =>  item.child && (att.child_id === item.child.ch_id));
 				item.class_teacher = name;
 				return item;
 			});
+			console.log('filterApplications',filterApplications)
 			setApplicationList(filterApplications);
 		}
 
@@ -702,7 +716,8 @@ export default function index() {
 				item.class_teacher = name;
 				return item;
 			});
-
+			console.log('filterApplications123123123',filterApplications)
+			console.log('filterApplications123123123 applications',applications)
 			setApplicationList(filterApplications);
 		}
 
@@ -712,6 +727,7 @@ export default function index() {
 		console.log('ATTENDANCEEEEE123123123123 applications', applications)
 		if (attendance.list) {
 			console.log('ATTENDANCEEEEE123123123123', attendance)
+			console.log('ATTENDANCEEEEE123123123123 applicationList', applicationList)
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(att => application.child && (att.child_id === application.child.ch_id));
 
