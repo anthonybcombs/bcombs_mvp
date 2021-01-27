@@ -1271,3 +1271,33 @@ export const getApplicationByAppGroup = async ({
     return applications;
   }
 }
+
+
+
+export const getCustomApplicationByVendorId = async (vendor) => {
+  const db = makeDb();
+  let applications;
+  console.log('getCustomApplicationByVendor vendor', vendor)
+  try {
+    applications = await db.query(
+      `SELECT
+        id,
+        BIN_TO_UUID(app_id) as app_id,
+        BIN_TO_UUID(form) as form,
+        class_teacher
+        FROM custom_application
+        WHERE vendor=UUID_TO_BIN(?)
+      `,
+      [
+        vendor
+      ]
+    );
+    console.log('getCustomApplicationByVendor vendor', applications)
+  
+  } catch(err) {
+    console.log("get custom application by form id", err);
+  } finally {
+    await db.close();
+    return applications;
+  }
+}

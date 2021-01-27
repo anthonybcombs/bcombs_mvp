@@ -89,7 +89,8 @@ import {
   getCustomFormApplicantById,
   getCustomApplicationHistoryById,
   getUserCustomApplicationsByUserId,
-  getApplicationByAppGroup
+  getApplicationByAppGroup,
+  getCustomApplicationByVendorId
 } from "../../api/applications";
 import { 
   addChild, 
@@ -417,6 +418,12 @@ const resolvers = {
     async getEventAttendance(root, { application_group_id }, context) {
       console.log('Get Event Attendance App Grp Id', application_group_id)
       return await getChildEventAttendance(application_group_id);
+    },
+    async getCustomApplicationByVendor(root, {vendor}, contex) {
+      console.log('getCustomApplicationByVendor venndorrrrr', vendor)
+      const response = await getCustomApplicationByVendorId(vendor);
+      console.log('getCustomApplicationByVendor response', response)
+      return response;
     }
   },
   RootMutation: {

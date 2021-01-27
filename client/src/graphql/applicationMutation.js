@@ -926,6 +926,17 @@ export const USER_APPLICATION_QUERY = gql`
     }
   }
 `;
+
+export const GET_CUSTOM_APPLICATION_BY_VENDOR = gql`
+  query getCustomApplicationByVendor($vendor: String!) {
+    getCustomApplicationByVendor(vendor: $vendor) {
+      id
+      app_id
+      form
+      class_teacher
+    }
+  }
+`;
 /*
     name
       email_address

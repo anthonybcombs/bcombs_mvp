@@ -1164,6 +1164,14 @@ const queryTypes = `
         notes: String
     }
 
+
+    type CustomApplicationByVendor {
+        id: String
+        app_id: String
+        form: String
+        class_teacher: String
+    }
+
     type CustomForm {
         formTitle: String
         formData: [CustomFormData]
@@ -1371,6 +1379,8 @@ const queryTypes = `
         id: String
         is_form: Boolean
     }
+
+    
     
 `;
 
@@ -1460,6 +1470,7 @@ const queries = `
         getUserVendorForms(user: String!): [VendorForms]
         getFormAppGroup(form: String!): [VendorAppGroup]
         getAllFormAppGroupsByVendor(vendor: String): [VendorAppGroup]
+        getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
     }
 `;
 

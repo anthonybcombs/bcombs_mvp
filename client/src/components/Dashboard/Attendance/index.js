@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
 import { getHours, max } from 'date-fns';
 
-import { requestGetApplications } from '../../../redux/actions/Application';
+import { requestGetApplications, requestGetCustomApplicationByVendor } from '../../../redux/actions/Application';
 import { requestGetForms } from '../../../redux/actions/FormBuilder';
 import { requestUserGroup } from '../../../redux/actions/Groups';
 import { requestVendor,requestVendorAppGroups } from '../../../redux/actions/Vendors';
@@ -83,15 +83,15 @@ export default function index(props) {
 			dispatch(requestVendor(auth.user_id));
 		}
 	}, []);
-	console.log('formmmm',groups)
+
 
 	useEffect(() => {
 		if (vendors && vendors[0]) {
-			console.log('vendors[0].app_groups',vendors[0].app_groups)
 			setSelectedVendor(vendors[0]);
 			setAppGroups(vendors[0].app_groups)
 			dispatch(requestGetApplications(vendors[0].id));
 			dispatch(requestVendorAppGroups(vendors[0].id))
+			dispatch(requestGetCustomApplicationByVendor(vendors[0].id));
 			dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }));
 		}
 	}, [vendors]);
@@ -114,19 +114,29 @@ export default function index(props) {
 		return size.length;
 	};
 
+	const getFormClassCount = group => {
+		const size = form.activeapplications.filter(app => {
+			if (app.class_teacher) {
+				return group.app_grp_id && app.class_teacher == group.app_grp_id;
+			}
+		});
+
+		return size.length;
+	};
+
 	const renderTableData = () => {
 		const formIds = formList && formList.map(form => form.form_id);
-		console.log('formzzzzzzzzzzzzzzzzzzzz', form)
+
 		const currentForm = formList.find(form => form.vendor === vendors[0].id);
 	  const filteredGroups = form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
-		console.log('filteredGroupszxzczxc',filteredGroups)
+
 		return filteredGroups.map((group, index) => {
 			let count = group.size;
 			let classCount = getClassCount(group);
 			let availableCount = count - classCount;
 			const formGroup =  group.form &&  form.formList.find(formItem => formItem.form_id === group.form );
 			availableCount = availableCount < 0 ? 0 : availableCount;
-			console.log('currentForm formGroup',formGroup)
+		
 			return (
 				<tr key={group.id}>
 					<td>
@@ -183,7 +193,10 @@ export default function index(props) {
 	const getTotalCountByForm = id => {
 		console.log('appGroups1111',appGroups)
 		console.log('appGroups1111 groups',groups)
-		const formGroups = groups.application_groups.filter(item => item.form === id);
+
+		const formGroups = form.formAppGroups.filter(appGroup => appGroup.form === id);
+
+		// const formGroups = groups.application_groups.filter(item => item.form === id);
 
 		let total = formGroups.reduce((accum, item) => {
 			return accum + item.size;
@@ -193,7 +206,8 @@ export default function index(props) {
 	};
 
 	const getTotalAvailableByForm = id => {
-		const formGroups =  groups.application_groups.filter(item => item.form === id) || [];
+		const formGroups = form.formAppGroups.filter(appGroup => appGroup.form === id);
+
 		console.log('formGroups',formGroups)
 		const total = formGroups.reduce((accum, item) => {
 			let classCount = item.group ? getClassCount(item.group) : 0;
@@ -205,14 +219,14 @@ export default function index(props) {
 
 	const getTotalClassCountByForm = id => {
 		console.log('Get Total Class Count', groups)
-		const formGroups =  groups.application_groups.filter(item => item.form === id);
-			console.log('getTotalClassCountByForm', formGroups)
-		const total = formGroups.reduce((accum, item) => {
-			let classCount = getClassCount(item);
-			return accum + item.size;
-		}, 0);
-
-		return total;
+		const formGroups = form.formAppGroups.filter(appGroup => appGroup.form === id);
+		let totalClassCount = 0;
+		
+		for (const group of formGroups) {
+			totalClassCount += getClassCount(group);
+		}
+		console.log('getTotalClassCountByForm', totalClassCount)
+		return totalClassCount;
 	};
 
 

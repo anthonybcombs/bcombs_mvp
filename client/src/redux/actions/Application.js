@@ -14,7 +14,8 @@ import {
   GET_APPLICATION_USER_ID_QUERY,
   GET_APPLICATION_HISTORY,
   GET_USER_APPLICATION_HISTORY,
-  DAYCARE_APPLICATION_ADD_MUTATION
+  DAYCARE_APPLICATION_ADD_MUTATION,
+  GET_CUSTOM_APPLICATION_BY_VENDOR
 } from "../../graphql/applicationMutation";
 import { GET_APPLICANTS_BY_FORM, GET_CUSTOM_APPLICATION_BY_ID } from "../../graphql/FormQueryMutation";
 import * as actionType from "./Constant";
@@ -315,6 +316,25 @@ const addDaycareApplicationToDatabase = daycare => {
   });
 }
 
+const getCustomApplicationsByVendorFromDatabase = vendor => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log('getCustomApplicationsByVendorFromDatabase vendorr', vendor)
+      const { data } = await graphqlClient.query({
+        query: GET_CUSTOM_APPLICATION_BY_VENDOR,
+        variables: {
+          vendor
+        }
+      });
+      console.log("Get Custom Active Application", data);
+      return resolve(data.getCustomApplicationByVendor);
+    } catch (error) {
+      console.log("Get Custom Active Application error", error);
+      reject(error);
+    }
+  });
+}
+
 export const requestGetApplicationHistory = app_id => {
   return {
     type: actionType.REQUEST_GET_APPLICATION_HISTORY,
@@ -328,7 +348,6 @@ export const requestGetApplicationByUserId = user_id => {
     user_id
   };
 };
-
 export const requestGetApplicationById = id => {
   return {
     type: actionType.REQUEST_GET_APPLICATION_ID,
@@ -356,6 +375,13 @@ export const requestGetCustomFormApplicantById = application_id => {
     application_id
   }
 }
+
+export const requestGetCustomApplicationByVendor = vendor => {
+  return {
+    type: actionType.REQUEST_CUSTOM_APPLICATION_BY_VENDOR,
+    vendor
+  }
+}  
 
 export const requestAddApplication = applications => {
   return {
@@ -772,3 +798,34 @@ const getUserApplicationHistoryFromDatabase = id => {
     }
   });
 };
+
+
+export function* getCustomApplicationByVendors({ vendor }) {
+  try {
+    yield put(setApplicationLoading(true));
+    const applications = yield call(
+      getCustomApplicationsByVendorFromDatabase,
+      vendor
+    );
+    console.log('getCustomApplicationByVendors applications',applications)
+    yield put(setApplicationLoading(false));
+    if (applications.length > 0) {
+      yield put({
+        type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
+        payload: applications
+      });
+    } else {
+      yield put({
+        type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
+        payload: []
+      });
+    }
+  } catch (err) {
+    console.log("Error", err);
+    yield put(setApplicationLoading(false));
+    yield put({
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
+      payload: []
+    });
+  }
+}

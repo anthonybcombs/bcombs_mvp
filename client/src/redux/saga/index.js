@@ -83,7 +83,8 @@ import {
   getApplicationHistory,
   getUserApplicationHistory,
   getCustomApplications,
-  getCustomApplicationById
+  getCustomApplicationById,
+  getCustomApplicationByVendors
 } from "../actions/Application";
 
 import {
@@ -285,6 +286,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ATTENDANCE, getAttendance);
   yield takeLatest(actionType.REQUEST_EVENT_ATTENDANCE, getEventAttendance);
   yield takeLatest(actionType.REQUEST_VENDOR_APP_GROUPS,getVendorAppGroups)
+  yield takeLatest(actionType.REQUEST_CUSTOM_APPLICATION_BY_VENDOR,getCustomApplicationByVendors)
 }
 const sagaMiddleware = createSagaMiddleware();
 
