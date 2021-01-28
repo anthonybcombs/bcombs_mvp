@@ -248,7 +248,7 @@ export default function Layout({ children }) {
                     // Trello card https://trello.com/c/BXEQaXbB/252-for-users-only-can-we-only-show-the-application-page-and-menu-hide-dashboard-calendar-events-and-contacts-pages-and-menu-items
                     currentUserType === "VENDOR" && (
                       <>
-                        <Link
+                        {/* <Link
                           className={`${
                             context.location.pathname === "/dashboard"
                               ? "selected"
@@ -257,8 +257,8 @@ export default function Layout({ children }) {
                           to="/dashboard"
                           state={{ calendarName: "" }}>
                           <span> Dashboard</span>
-                        </Link>
-                        <Link
+                        </Link> */}
+                        {/* <Link
                           className={`${
                             context.location.pathname ===
                             "/dashboard/mycalendars"
@@ -267,8 +267,8 @@ export default function Layout({ children }) {
                           }`}
                           to="/dashboard/mycalendars">
                           <span>Calendars</span>
-                        </Link>
-                        <Link
+                        </Link> */}
+                        {/* <Link
                           className={`${
                             context.location.pathname === "/dashboard/myevents"
                               ? "selected"
@@ -276,8 +276,17 @@ export default function Layout({ children }) {
                           }`}
                           to="/dashboard/myevents">
                           <span>Events</span>
+                        </Link> */}
+                        <Link
+                          className={`${
+                            context.location.pathname ===
+                            "/dashboard/attendance"
+                              ? "selected"
+                              : ""
+                          }`}
+                          to="/dashboard/attendance">
+                          <span>Attendance</span>
                         </Link>
-
                         <Link
                           className={`${
                             context.location.pathname ===
@@ -291,7 +300,7 @@ export default function Layout({ children }) {
 
                   
 
-                        <Popover
+                        {/* <Popover
                         containerStyle={{
                           position: "relative",
                           right: 25
@@ -335,14 +344,6 @@ export default function Layout({ children }) {
                         onClickOutside={({ position, targetRect, popoverRect }) => {
                           setIsAdminPopOverVisible(false);
                         }}>
-                          {/* <Link
-                          className={`${
-                            context.location.pathname ===
-                            "/dashboard/forms"
-                              ? "selected"
-                              : ""
-                          }`}
-                          to="/dashboard/forms"> */}
                           <a
                           onClick={() => {
                             console.log("pop over is visible")
@@ -350,9 +351,7 @@ export default function Layout({ children }) {
                           }}>
                              <span>Admin</span>
                           </a>
-                         
-                        {/* </Link> */}
-                      </Popover>
+                      </Popover> */}
 
                         {/* <Link
                           className={`${
