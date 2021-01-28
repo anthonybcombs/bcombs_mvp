@@ -1361,6 +1361,8 @@ const resolvers = {
           response.messageType = "error"
           return response;
         }
+      } else {
+        application.class_teacher = "";
       }
 
       let formData = application?.form_contents?.formData;
