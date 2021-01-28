@@ -122,14 +122,14 @@ export default function index(props) {
 	};
 
 	const getFormClassCount = group => {
-		console.log('Get Form Class Count', form)
+		console.log('Get Form Class Count', group)
 		console.log('Get Form Class Count applications', applications)
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher) {
 				return group.app_grp_id && app.class_teacher == group.app_grp_id;
 			}
 		});
-	
+		console.log('SIZEEEEEEEEEE', size)
 		return size ? size.length : 0
 	};
 
@@ -254,15 +254,23 @@ export default function index(props) {
 
 	const getTotalAvailableByForm = id => {
 		const formGroups = form && form.formAppGroups ? form.formAppGroups.filter(appGroup => appGroup.form === id) : [];
+		// let total = 0;
+		// console.log('Get Toital AVailable formGroups', formGroups)
+		// if(formGroups) {
+		// 	total = formGroups && formGroups.reduce((accum, item) => {
+		// 		let classCount = item.group ? getFormClassCount(item) : 0;
+		// 		return accum + item.size - classCount;
+		// 	}, 0);
+		// }
+
+
 		let total = 0;
-		if(formGroups) {
-			total = formGroups && formGroups.reduce((accum, item) => {
-				let classCount = item.group ? getFormClassCount(item.group) : 0;
-				return accum + item.size - classCount;
-			}, 0);
+		for (const group of formGroups) {
+			let classCount = getFormClassCount(group);
+			total += group.size - classCount;
 		}
-
-
+		console.log('Totalll', total)
+		total = total < 0 ? 0 : total;
 		return total;
 	};
 
