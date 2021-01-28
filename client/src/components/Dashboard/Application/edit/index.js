@@ -96,7 +96,8 @@ export default function index({
   onSubmit,
   handleUpdateOnchange,
   updateLoading = false,
-  appGroups = []
+  appGroups = [],
+  updateError = ""
 }) {
 
   // appGroups = appGroups.filter((group) => {
@@ -258,8 +259,15 @@ export default function index({
                     </textarea>
                   </div>
                 </div>
-                <div>
-                </div>
+                {
+                  updateError ? (
+                    <div>
+                      <div></div>
+                      <div style={{color: "red", textAlign: "center"}}> {updateError} </div>
+                      <div></div>
+                    </div>
+                  ) : ""
+                }
                 <div>
                   <button className="update-btn" type="submit">Update Status</button>
                 </div>

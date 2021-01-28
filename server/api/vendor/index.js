@@ -632,6 +632,34 @@ export const getAppGroupByPool = async pool_id => {
   }
 }
 
+export const getAppGroupById = async app_grp_id => {
+  const db = makeDb();
+
+  let appGroupsResult = [];
+  try {
+    appGroupsResult = await db.query(
+      `SELECT
+        id, 
+        BIN_TO_UUID(app_grp_id) as app_grp_id, 
+        BIN_TO_UUID(user) as user, 
+        BIN_TO_UUID(vendor) as vendor, 
+        BIN_TO_UUID(form) as form, 
+        size, 
+        name,
+        pool_id,
+        created_at 
+      FROM vendor_app_groups 
+      WHERE app_grp_id=UUID_TO_BIN(?)`,
+      [app_grp_id]
+    );
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return appGroupsResult;
+  }
+}
+
 export const addAppGroup = async ({ user_id, vendor, form, size, name, email, pool_id }) => {
   const db = makeDb();
 
