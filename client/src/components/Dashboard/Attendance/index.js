@@ -230,8 +230,14 @@ export default function index(props) {
 
 	const getTotalClassCount = () => {
 		let totalClassCount = 0;
+		const formGroups = form && form.formAppGroups ? form.formAppGroups.filter(appGroup => appGroup.form) : []
 		for (const group of appGroups) {
 			totalClassCount += getClassCount(group);
+		}
+		console.log('getTotalClassCount123123123 formGroups',formGroups)
+		console.log('getTotalClassCount123123123 appGroups',appGroups)
+		for (const group of formGroups) {
+			totalClassCount += getFormClassCount(group);
 		}
 
 		return totalClassCount;
