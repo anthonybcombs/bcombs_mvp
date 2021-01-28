@@ -24,7 +24,7 @@ import DataTable from 'react-data-table-component';
 
 import { requestAttendance, requestUpdateAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
-import { requestGetApplications, requestGetCustomApplications } from '../../../../redux/actions/Application';
+import { requestGetApplications, requestGetCustomApplications,requestGetCustomApplicationByVendor } from '../../../../redux/actions/Application';
 import { requestUserGroup } from '../../../../redux/actions/Groups';
 import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
 
@@ -610,7 +610,9 @@ export default function index() {
 	useEffect(() => {
 		if (name === 'custom' && vendor_id && auth.user_id) {
 			//dispatch(requestGetForms({ vendor: vendor_id, categories: [] }));
+
 			dispatch(requestGetCustomApplications(searchParams.formId));
+			///dispatch(requestGetCustomApplicationByVendor(vendor_id));
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		} else if ((name !== 'custom' || name === 'all') && vendor_id && auth.user_id) {
@@ -687,14 +689,15 @@ export default function index() {
 	useEffect(() => {
 		if (appGroupId && appGroupId !== '' ) {
 			dispatch(requestAttendance(name === 'custom' ? searchParams.formId : appGroupId, name === 'custom' ? 'custom' : 'bcombs'));
-		}
-
+		}	
+		console.log('APPPLICATIONZZZZZ', applications)
 		if (applications && applications.activeapplications.length > 0 && appGroupId !== '' && (name !== 'custom'  || name === 'all')) {
 			let filterApplications = [];
 			if(appGroupId === 'all') {
-				filterApplications = applications.activeapplications.filter(application => {
-					return appGroupIds.includes(application.class_teacher)
-				});
+				filterApplications = applications.activeapplications;
+				// filterApplications = applications.activeapplications.filter(application => {
+				// 	return appGroupIds.includes(application.class_teacher)
+				// });
 	
 			}
 			else{
@@ -707,20 +710,22 @@ export default function index() {
 				item.class_teacher = name;
 				return item;
 			});
-			console.log('filterApplications',filterApplications)
+			console.log('filterApplications 123123123',filterApplications)
 			setApplicationList(filterApplications);
 		}
 
 		else if (applications && applications.activeapplications.length > 0 && name === 'custom') {
-			let filterApplications = applications.activeapplications
 
+			console.log('APplicationssssss', applications)
+			let filterApplications = applications.activeapplications;
+			filterApplications = filterApplications.filter(item => item.class_teacher === appGroupId);
 			filterApplications = filterApplications.map(item => {
-				let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
-				item.class_teacher = name;
+				//let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
+				// item.class_teacher = name;
 				return item;
 			});
-			console.log('filterApplications123123123',filterApplications)
-			console.log('filterApplications123123123 applications',applications)
+
+
 			setApplicationList(filterApplications);
 		}
 
@@ -729,8 +734,7 @@ export default function index() {
 	useEffect(() => {
 		console.log('ATTENDANCEEEEE123123123123 1111', applications)
 		if (attendance.list) {
-			console.log('ATTENDANCEEEEE123123123123 2222', attendance)
-			console.log('ATTENDANCEEEEE123123123123 3333', applicationList)
+
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(att => application.child && (att.child_id === application.child.ch_id));
 
