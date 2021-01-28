@@ -600,12 +600,13 @@ export default function index() {
 	const [applicationList, setApplicationList] = useState([]);
 	const [defaultApplicationList, setDefaultApplicationList] = useState([]);
 	const [filteredApplicationList, setFilteredApplicationList] = useState([]);
+	const [appGroupIds, setAppGroupIds] = useState([]);
 	const [viewMode, setViewMode] = useState('grid');
 	const dispatch = useDispatch();
 	const { formList = [] } = form;
 
 	
-
+	console.log('APPPLICATIONZZZZZZZ', applications)
 	useEffect(() => {
 		if (name === 'custom' && vendor_id && auth.user_id) {
 			//dispatch(requestGetForms({ vendor: vendor_id, categories: [] }));
@@ -671,18 +672,20 @@ export default function index() {
 				}
 			}
 			else if(name === 'all') {
-				setAppGroupId('all');
+				if (vendors[0] && vendors[0].app_groups) {
+					const applicationGroups = vendors[0].app_groups;
+					const ids = applicationGroups.map(item => item.app_grp_id);
+					console.log('AppGroupIdssss', ids)
+					console.log('AppGroupIdssss applicationGroups', applicationGroups)
+					setAppGroupIds(ids);
+					setAppGroupId('all');	
+				}
 			}
-
 		}
 	}, [groups, vendors]);
 
 	useEffect(() => {
-		// && name !== 'custom'
 		if (appGroupId && appGroupId !== '' ) {
-
-			//console.log('appGroupId',appGroupId)
-
 			dispatch(requestAttendance(name === 'custom' ? searchParams.formId : appGroupId, name === 'custom' ? 'custom' : 'bcombs'));
 		}
 
@@ -690,9 +693,9 @@ export default function index() {
 			let filterApplications = [];
 			if(appGroupId === 'all') {
 				filterApplications = applications.activeapplications.filter(application => {
-					return application
+					return appGroupIds.includes(application.class_teacher)
 				});
-				console.log('Filtered Application', filterApplications)
+	
 			}
 			else{
 				filterApplications = applications.activeapplications.filter(application => {
@@ -721,13 +724,13 @@ export default function index() {
 			setApplicationList(filterApplications);
 		}
 
-	}, [applications, appGroupId]);
+	}, [applications, appGroupId, appGroupIds]);
 
 	useEffect(() => {
-		console.log('ATTENDANCEEEEE123123123123 applications', applications)
+		console.log('ATTENDANCEEEEE123123123123 1111', applications)
 		if (attendance.list) {
-			console.log('ATTENDANCEEEEE123123123123', attendance)
-			console.log('ATTENDANCEEEEE123123123123 applicationList', applicationList)
+			console.log('ATTENDANCEEEEE123123123123 2222', attendance)
+			console.log('ATTENDANCEEEEE123123123123 3333', applicationList)
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(att => application.child && (att.child_id === application.child.ch_id));
 
@@ -1053,7 +1056,7 @@ export default function index() {
 			);
 		});
 	};
-
+	console.log('filteredApplicationList',filteredApplicationList)
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>

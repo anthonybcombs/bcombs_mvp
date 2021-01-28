@@ -84,14 +84,14 @@ export default function index(props) {
 		}
 	}, []);
 
-
+	console.log('applicationszxczxczxczxc',applications)
 	useEffect(() => {
 		if (vendors && vendors[0]) {
 			setSelectedVendor(vendors[0]);
-			setAppGroups(vendors[0].app_groups)
+			setAppGroups(vendors[0].app_groups);
+			dispatch(requestGetCustomApplicationByVendor(vendors[0].id));
 			dispatch(requestGetApplications(vendors[0].id));
 			dispatch(requestVendorAppGroups(vendors[0].id))
-			dispatch(requestGetCustomApplicationByVendor(vendors[0].id));
 			dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }));
 		}
 	}, [vendors]);
@@ -122,12 +122,14 @@ export default function index(props) {
 	};
 
 	const getFormClassCount = group => {
-		const size = form && form.activeapplications && form.activeapplications.filter(app => {
+		console.log('Get Form Class Count', form)
+		console.log('Get Form Class Count applications', applications)
+		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher) {
 				return group.app_grp_id && app.class_teacher == group.app_grp_id;
 			}
 		});
-
+	
 		return size ? size.length : 0
 	};
 
@@ -307,7 +309,7 @@ export default function index(props) {
 							<td>{getDefaultTotalCount()}</td>
 							<td>{getDefaultTotalAvailable()}</td>
 							<td>{getDefaultClassCount()}</td>
-							<td></td>
+							<td>{<Link to={`view/${ selectedVendor?.id2}?type=all&`}>View</Link>}</td>
 						</tr>
 						{form.formList.map(item => {
 						

@@ -119,17 +119,17 @@ const getApplicationUserIdFromDatabase = user_id => {
 const getActiveApplicationFromDatabase = vendor_id => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("Get Active Application vendor_id", vendor_id);
+      console.log("getActiveApplicationFromDatabase Get Active Application vendor_id", vendor_id);
       const { data } = await graphqlClient.query({
         query: GET_APPLICATIONS_QUERY,
         variables: {
           vendor_id: vendor_id
         }
       });
-      console.log("Get Active Application", data);
+      console.log("getActiveApplicationFromDatabase Get Active Application", data);
       return resolve(data.getVendorApplications);
     } catch (error) {
-      console.log("Get Active Application error", error);
+      console.log("getActiveApplicationFromDatabase Get Active Application error", error);
       reject(error);
     }
   });
@@ -356,6 +356,7 @@ export const requestGetApplicationById = id => {
 };
 
 export const requestGetApplications = vendor_id => {
+  console.log('REQUEST GET APPLICATIONSSSS')
   return {
     type: actionType.REQUEST_GET_APPLICATION,
     vendor_id: vendor_id
@@ -811,12 +812,12 @@ export function* getCustomApplicationByVendors({ vendor }) {
     yield put(setApplicationLoading(false));
     if (applications.length > 0) {
       yield put({
-        type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
+        type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_VENDOR_COMPLETED,
         payload: applications
       });
     } else {
       yield put({
-        type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
+        type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_VENDOR_COMPLETED,
         payload: []
       });
     }
@@ -824,7 +825,7 @@ export function* getCustomApplicationByVendors({ vendor }) {
     console.log("Error", err);
     yield put(setApplicationLoading(false));
     yield put({
-      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_VENDOR_COMPLETED,
       payload: []
     });
   }
