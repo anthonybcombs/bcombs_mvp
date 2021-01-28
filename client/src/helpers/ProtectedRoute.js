@@ -61,6 +61,9 @@ export default function protectedRoutes({ children }) {
     if (currentUserType?.name === "USER" && location.pathname === "/dashboard") {
       return <Redirect to="/dashboard/myapplication" />;
     }
+    if (currentUserType?.name === "VENDOR" && location.pathname === "/dashboard") {
+      return <Redirect to="/dashboard/application" />;
+    }
     // === END Temporary implementation
 
     if (

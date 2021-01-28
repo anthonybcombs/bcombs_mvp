@@ -12,7 +12,8 @@ import {
   faFileSignature,
   faCogs,
   faPrint,
-  faHistory
+  faHistory,
+  faFileAlt
 } from "@fortawesome/free-solid-svg-icons";
 import ApplicationSummaryStyled from "./summary";
 import ApplicationSettingsStyled from "./settings";
@@ -1760,6 +1761,11 @@ export default function index() {
             <a href={`/dashboard/myapplication`}>
               <FontAwesomeIcon icon={faFile} />
               <span>My Application</span>
+            </a>
+
+            <a href={`/dashboard/forms`}>
+              <FontAwesomeIcon icon={faFileAlt} />
+              <span>Forms</span>
             </a>
           </div>
         </div>
