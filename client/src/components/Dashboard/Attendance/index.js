@@ -154,9 +154,9 @@ export default function index(props) {
 
 		return filteredGroups.map((group, index) => {
 			let count = group.size;
-			let classCount = getClassCount(group);
-			let availableCount = count - classCount;
 			const formGroup =  group.form &&  form.formList.find(formItem => formItem.form_id === group.form );
+			let classCount = formGroup && formGroup.form_contents ? getFormClassCount(group) : getClassCount(group);
+			let availableCount = count - classCount;
 			availableCount = availableCount < 0 ? 0 : availableCount;
 		
 			return (
