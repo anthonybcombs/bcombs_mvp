@@ -61,7 +61,8 @@ import {
   checkIfAdminVendorExists,
   getVendorAppGroupsByFormId,
   getAppGroupByPool,
-  getVendorAppGroupsByVendorId
+  getVendorAppGroupsByVendorId,
+  getAppGroupById
 } from "../../api/vendor";
 import {
   createApplication,
@@ -702,11 +703,34 @@ const resolvers = {
     },
     async updateApplication(root, { application }, context) {
       console.log("APPLICATION ", application);
+
+      let response = {};
       try {
-        const response = await updateApplication(application);
+        const previousApplication = await getApplicationByAppId(
+          application.app_id
+        );
+        if(application.class_teacher && application.class_teacher != previousApplication.class_teacher) {
+          let selectedAppGroup = await getAppGroupById(application.class_teacher);
+
+          console.log("selectedAppGroup", selectedAppGroup);
+          selectedAppGroup = selectedAppGroup.length > 0 ? selectedAppGroup[0] : {};
+
+          const applications = await getApplicationByAppGroup({app_grp_id: application.class_teacher, is_form: application.is_form});
+          const totalApplication = applications.length + 1;
+
+          console.log("totalApplication", totalApplication);
+          console.log("selectedAppGroup.size", selectedAppGroup.size);
+          
+          if(totalApplication > selectedAppGroup.size) {
+            response.message = "Sorry, you currently have more members added to your group, please make sure you have enough available count";
+            response.messageType = "error"
+            return response;
+          }
+        }
+        response = await updateApplication(application);
         if (!response.error) {
           return {
-            messageType: "info",
+            messageType: "info", 
             message: "application updated"
           };
         } else {
@@ -1318,6 +1342,26 @@ const resolvers = {
     async updateSubmitCustomApplication(root, {application}, context) {
 
       const previousApplication = await getCustomFormApplicantById({app_id: application.app_id});
+
+      if(application.class_teacher && application.class_teacher != previousApplication.class_teacher) {
+        let selectedAppGroup = await getAppGroupById(application.class_teacher);
+
+        console.log("selectedAppGroup", selectedAppGroup);
+        selectedAppGroup = selectedAppGroup.length > 0 ? selectedAppGroup[0] : {};
+
+        const applications = await getApplicationByAppGroup({app_grp_id: application.class_teacher, is_form: true});
+        const totalApplication = applications.length + 1;
+
+        console.log("totalApplication", totalApplication);
+        console.log("selectedAppGroup.size", selectedAppGroup.size);
+        
+        if(totalApplication > selectedAppGroup.size) {
+          const response = {};
+          response.message = "Sorry, you currently have more members added to your group, please make sure you have enough available count";
+          response.messageType = "error"
+          return response;
+        }
+      }
 
       let formData = application?.form_contents?.formData;
       let formTitle = application?.form_contents?.formTitle;

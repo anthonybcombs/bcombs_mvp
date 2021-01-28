@@ -405,6 +405,7 @@ const inputs = `
         color_designation: String
         notes: String
         class_teacher: String
+        is_form: Boolean
     }
 
     input AppGroupVendorInput {

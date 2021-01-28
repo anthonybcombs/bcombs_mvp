@@ -443,31 +443,6 @@ export default function index() {
 
   console.log("form 123", formList);
 
-  if (updateSubmittedForm.message === 'successfully update your application form') {
-    window.location.reload()
-  }
-
-  if (
-    applications.updateapplication &&
-    applications.updateapplication.message == "application updated"
-  ) {
-    window.location.reload()
-  }
-
-  if (
-    applications.archivedapplication &&
-    applications.archivedapplication.message == "application archived"
-  ) {
-    window.location.reload()
-  }
-
-  if (
-    applications.updateapplication &&
-    applications.updateapplication.message == "application successfully updated"
-  ) {
-    window.location.reload()
-  }
-
   const [appGroups, setAppGroups] = useState([]);
 
   console.log("form app group", formAppGroups);
@@ -488,6 +463,51 @@ export default function index() {
       setSelectedApplication(applications.selectedbuilderapplication)
     }
   }, [applications.selectedbuilderapplication])
+
+  const [updateError, setUpdateError] = useState("");
+
+  useEffect(() => {
+    console.log("this is my effect");
+
+    if (
+      applications.updateapplication &&
+      applications.updateapplication.message == "application updated"
+    ) {
+      setUpdateError("");
+      window.location.reload()
+    } else if (
+      applications.updateapplication &&
+      applications.updateapplication.message == "application successfully updated"
+    ) {
+      setUpdateError("");
+      window.location.reload()
+    } else if (
+      applications.updateapplication &&
+      applications.updateapplication.messageType == "error" 
+    ) {
+      setUpdateError(applications.updateapplication.message);
+    }
+  }, [applications.updateapplication])
+
+  useEffect(() => {
+
+    console.log("updateSubmittedForm", updateSubmittedForm);
+    if (updateSubmittedForm.message === 'successfully update your application form') {
+      setUpdateError("");
+      window.location.reload()
+    } else if (updateSubmittedForm && updateSubmittedForm.messageType == "error") {
+      setUpdateError(updateSubmittedForm.message);
+    }
+  }, [updateSubmittedForm])
+
+  useState(() => {
+    if (
+      applications.archivedapplication &&
+      applications.archivedapplication.message == "application archived"
+    ) {
+      window.location.reload()
+    } 
+  }, [applications.archivedapplication])
 
   useEffect(() => {
     console.log('Vendorssss', vendors)
@@ -552,6 +572,7 @@ export default function index() {
     setSelectedLabel(value);
     setSelectNonMenuOption(false);
     setSelectedApplication({});
+    setUpdateError("");
     setView("");
   };
 
@@ -966,6 +987,7 @@ export default function index() {
   };
 
   const onSubmit = () => {
+    console.log("view", view); console.log("updateApplication", updateApplication)
     if (view === 'builderForm' && selectedApplication) {
       dispatch(requestUpdateSubmittedForm({
         updated_by: auth.email,
@@ -979,8 +1001,11 @@ export default function index() {
         student_status: updateApplication.student_status || selectedApplication?.student_status,
         notes: updateApplication.notes || selectedApplication?.notes
       }))
+    } else {
+      let payload = {...updateApplication};
+      payload.is_form = selectedForm !== "default";
+      dispatch(requestUpdateApplication(payload));
     }
-    dispatch(requestUpdateApplication(updateApplication));
   };
 
   const [isReadonly, setIsReadonly] = useState(true);
@@ -1762,6 +1787,7 @@ export default function index() {
               onSubmit={onSubmit}
               handleUpdateOnchange={handleUpdateOnchange}
               updateLoading={loading.application}
+              updateError={updateError}
             />
           )}
         </div>
