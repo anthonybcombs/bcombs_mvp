@@ -657,6 +657,8 @@ export default function index() {
 				setAppGroupId(currentAppGroupId);
 			}
 		} else {
+			console.log('UseEffect Vendorssss', vendors)
+			console.log('UseEffect Vendorssss name', name)
 			if(vendors.length > 0 && name !== 'all') {
 				let currentAppGroupId = '';
 				if (vendors[0] && vendors[0].app_groups) {
@@ -690,7 +692,8 @@ export default function index() {
 		if (appGroupId && appGroupId !== '' ) {
 			dispatch(requestAttendance(name === 'custom' ? searchParams.formId : appGroupId, name === 'custom' ? 'custom' : 'bcombs'));
 		}	
-		console.log('APPPLICATIONZZZZZ', applications)
+		console.log('appGroupIzzzzzzd',appGroupId)
+		console.log('APPPLICATIONZZZZZ attendance', attendance)
 		if (applications && applications.activeapplications.length > 0 && appGroupId !== '' && (name !== 'custom'  || name === 'all')) {
 			let filterApplications = [];
 			if(appGroupId === 'all') {
@@ -715,17 +718,17 @@ export default function index() {
 		}
 
 		else if (applications && applications.activeapplications.length > 0 && name === 'custom') {
-
-			console.log('APplicationssssss', applications)
+			console.log('APPLZZZZZZZZZZZZZZ', applications)
+			console.log('APPLZZZZZZZZZZZZZZ appGroupId', applications)
 			let filterApplications = applications.activeapplications;
 			filterApplications = filterApplications.filter(item => item.class_teacher === appGroupId);
-			filterApplications = filterApplications.map(item => {
-				//let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
-				// item.class_teacher = name;
-				return item;
-			});
+			// filterApplications = filterApplications.map(item => {
+			// 	//let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
+			// 	// item.class_teacher = name;
+			// 	return item;
+			// });
 
-
+			console.log('filterApplications123123123',filterApplications)
 			setApplicationList(filterApplications);
 		}
 
@@ -869,7 +872,7 @@ export default function index() {
 			...attendanceDetails,
 			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
 		};
-
+		console.log('ONSUBMITTTTTTTTTTTTTTTTTTTT', payload)
 		dispatch(requestUpdateAttendance(payload));
 	};
 

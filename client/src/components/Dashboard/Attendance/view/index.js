@@ -416,27 +416,37 @@ export default function index(props) {
 		// 	dispatch(requestVendor(auth.user_id));
 		// }
 
-		if (searchParams && searchParams.type === 'custom') {
+		if (searchParams && searchParams.type === 'custom' && searchParams.formId) {
 			dispatch(requestGetCustomApplications(searchParams.formId));
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
-		} else if (searchParams && searchParams.type !== 'custom' && app_group_id && auth.user_id) {
+		} 
+		
+		else if (searchParams && searchParams.type !== 'custom' && app_group_id && auth.user_id) {
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		}
 	}, []);
 
 
+	useEffect(() => {
+	
+		if (vendors && vendors.length > 0 ) {
+			console.log('REQUEST GET APPLICATIONSSS', vendors)
+			//dispatch(requestGetApplications(vendors[0].id));
+		}
+	}, [vendors]);
+
+
 
 	useEffect(() => {
-		console.log('app_group_id',app_group_id)
+		console.log('useEffect app_group_id',app_group_id)
 		if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
 			dispatch(requestAttendance(app_group_id,'bcombs'));
 			dispatch(requestEventAttendance(app_group_id));
 		}
-		else{
+		else if(searchParams.formId){
 			dispatch(requestAttendance(searchParams.formId,'forms'));
-			// dispatch(requestEventAttendance(app_group_id));
 		}
 	}, []);
 	console.log('applicationszzzz', applications)
