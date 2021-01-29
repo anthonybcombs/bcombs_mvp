@@ -12,8 +12,7 @@ import {
   faFileSignature,
   faCogs,
   faPrint,
-  faHistory,
-  faFileAlt
+  faHistory
 } from "@fortawesome/free-solid-svg-icons";
 import ApplicationSummaryStyled from "./summary";
 import ApplicationSettingsStyled from "./settings";
@@ -61,9 +60,10 @@ const ApplicationFormStyled = styled.form`
     .page-break {
       margin-top: 1rem;
       display: block;
-      page-break-before: auto;
       position: relative;
+      page-break-before: auto;
     }
+    
     #applicationForm .form-group {
       margin-top: 30px !important;
     }
@@ -72,13 +72,52 @@ const ApplicationFormStyled = styled.form`
       margin-bottom: 20px !important;
     }
 
+    #userApplicationForm {
+      margin-bottom: 4rem;
+    }
 
+    .printpage-break {
+      padding: 0;
+      page-break-after: always;
+    }
     
+    .printpage-break.parent-information #applicationForm >div {
+      page-break-after: always;
+    }
+
+    .printpage-break.waiver-information #applicationForm >br {
+      display: none;
+    }
+
+    .printpage-break.waiver-information #applicationForm >div {
+      page-break-inside: avoid;
+      margin-bottom: 4rem;
+    }
+
+    .child-info-wrapper,
+    .general-info-wrapper,
+    .medical-info-wrapper,
+    .emergency-contact-wrapper,
+    .waiver-wrapper,
+    .relationship-wrapper,
+    .parent-info-wrapper {
+      box-shadow: none;
+      padding: 0;
+      margin-top: 0;
+    }
+
+    .style-eight {
+      display: none;
+    }
+    
+    
+
     .child-info-wrapper .grid {
       display: grid;
       grid-template-columns: 31% 31% 31%;
       grid-gap: 3.33333333%;
-      
+
+      page-break-inside: avoid;
     }
 
     .general-info-wrapper {
@@ -86,6 +125,10 @@ const ApplicationFormStyled = styled.form`
       margin-top: 1rem;
       display: block;
       page-break-before: auto;
+    }
+
+    .general-info-wrapper >div {
+      page-break-inside: avoid;
     }
   
     .general-info-wrapper .grid-1 {
@@ -141,6 +184,9 @@ const ApplicationFormStyled = styled.form`
       }
     }
     
+    .parent-info-wrapper >div {
+      page-break-inside: avoid;
+    }
 
     .parent-info-wrapper .grid-1 {
       display: grid;
@@ -227,6 +273,10 @@ const ApplicationFormStyled = styled.form`
       visibility: visible;
       opacity: 1;
       display: grid;
+    }
+
+    .emergency-contact-wrapper {
+      margin-top: 30px;
     }
   
     @media (max-width: 768px) {
@@ -402,9 +452,7 @@ export default function index() {
 
   const [selectedVendor, setSelectedVendor] = useState({});
 
-  const [selectedForm, setSelectedForm] = useState("default");
-
-  const [exportFilename, setExportFilename] = useState("");
+  const [selectedForm, setSelectedForm] = useState("default")
 
   const dispatch = useDispatch();
 
@@ -444,6 +492,31 @@ export default function index() {
 
   console.log("form 123", formList);
 
+  if (updateSubmittedForm.message === 'successfully update your application form') {
+    window.location.reload()
+  }
+
+  if (
+    applications.updateapplication &&
+    applications.updateapplication.message == "application updated"
+  ) {
+    window.location.reload()
+  }
+
+  if (
+    applications.archivedapplication &&
+    applications.archivedapplication.message == "application archived"
+  ) {
+    window.location.reload()
+  }
+
+  if (
+    applications.updateapplication &&
+    applications.updateapplication.message == "application successfully updated"
+  ) {
+    window.location.reload()
+  }
+
   const [appGroups, setAppGroups] = useState([]);
 
   console.log("form app group", formAppGroups);
@@ -452,10 +525,6 @@ export default function index() {
     if (auth.user_id) {
       //dispatch(requestUserGroup(auth.email));
       dispatch(requestVendor(auth.user_id));
-
-      if(queryParams && queryParams.form) {
-        dispatch(requestGetCustomApplications(queryParams.form));
-      }
     }
   }, []);
 
@@ -464,51 +533,6 @@ export default function index() {
       setSelectedApplication(applications.selectedbuilderapplication)
     }
   }, [applications.selectedbuilderapplication])
-
-  const [updateError, setUpdateError] = useState("");
-
-  useEffect(() => {
-    console.log("this is my effect");
-
-    if (
-      applications.updateapplication &&
-      applications.updateapplication.message == "application updated"
-    ) {
-      setUpdateError("");
-      window.location.reload()
-    } else if (
-      applications.updateapplication &&
-      applications.updateapplication.message == "application successfully updated"
-    ) {
-      setUpdateError("");
-      window.location.reload()
-    } else if (
-      applications.updateapplication &&
-      applications.updateapplication.messageType == "error" 
-    ) {
-      setUpdateError(applications.updateapplication.message);
-    }
-  }, [applications.updateapplication])
-
-  useEffect(() => {
-
-    console.log("updateSubmittedForm", updateSubmittedForm);
-    if (updateSubmittedForm.message === 'successfully update your application form') {
-      setUpdateError("");
-      window.location.reload()
-    } else if (updateSubmittedForm && updateSubmittedForm.messageType == "error") {
-      setUpdateError(updateSubmittedForm.message);
-    }
-  }, [updateSubmittedForm])
-
-  useState(() => {
-    if (
-      applications.archivedapplication &&
-      applications.archivedapplication.message == "application archived"
-    ) {
-      window.location.reload()
-    } 
-  }, [applications.archivedapplication])
 
   useEffect(() => {
     console.log('Vendorssss', vendors)
@@ -520,23 +544,13 @@ export default function index() {
         });
 
         setSelectedVendor(newDefaultVendor[0]);
-
-        if(queryParams && queryParams.form) {
-          dispatch(requestGetFormAppGroup(queryParams.form));
-        } else {
-          setAppGroups(newDefaultVendor[0].app_groups);
-        }
-        
+        setAppGroups(newDefaultVendor[0].app_groups);
         //dispatch(requestGetApplications(newDefaultVendor[0].id));
         dispatch(requestGetForms({ vendor: newDefaultVendor[0].id, categories: [] }))
       } else {
+        console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
-        if(queryParams && queryParams.form) {
-          dispatch(requestGetFormAppGroup(queryParams.form));
-        } else {
-          setAppGroups(vendors[0].app_groups);
-        }
-        
+        setAppGroups(vendors[0].app_groups);
         dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
@@ -544,26 +558,12 @@ export default function index() {
   }, [vendors]);
 
   useEffect(() => {
-    
-    if(queryParams && queryParams.form) {
-      setSelectedForm(queryParams.form);
-
-      const tempForm = formList.filter((form) => {
-        return form.form_id == queryParams.form;
-      });
-      console.log("tempForm", tempForm);
-      if(tempForm && tempForm.length > 0) {
-        setExportFilename(tempForm[0]?.form_contents?.formTitle);
-      }
-      // dispatch(requestGetCustomApplications(queryParams.form));
-    } else {
-      setExportFilename(selectedVendor.name);
-      dispatch(requestGetApplications(selectedVendor.id));
-    }
-    
+    dispatch(requestGetApplications(selectedVendor.id));
   }, [formList])
 
   useEffect(() => {
+    console.log("Im here here formAppGroups");
+    console.log("formAppGroups, formAppGroups", formAppGroups);
     setAppGroups(formAppGroups);
   }, [formAppGroups])
 
@@ -573,7 +573,6 @@ export default function index() {
     setSelectedLabel(value);
     setSelectNonMenuOption(false);
     setSelectedApplication({});
-    setUpdateError("");
     setView("");
   };
 
@@ -628,7 +627,7 @@ export default function index() {
     const childInformationObj = {
       profile: {
         image: "",
-        application_date: format(new Date(application.application_date), "LLL dd, yyyy p"),
+        application_date: 'Most Up to date Application',
         first_name: application.child.firstname
           ? application.child.firstname
           : "",
@@ -988,7 +987,6 @@ export default function index() {
   };
 
   const onSubmit = () => {
-    console.log("view", view); console.log("updateApplication", updateApplication)
     if (view === 'builderForm' && selectedApplication) {
       dispatch(requestUpdateSubmittedForm({
         updated_by: auth.email,
@@ -1002,11 +1000,8 @@ export default function index() {
         student_status: updateApplication.student_status || selectedApplication?.student_status,
         notes: updateApplication.notes || selectedApplication?.notes
       }))
-    } else {
-      let payload = {...updateApplication};
-      payload.is_form = selectedForm !== "default";
-      dispatch(requestUpdateApplication(payload));
     }
+    dispatch(requestUpdateApplication(updateApplication));
   };
 
   const [isReadonly, setIsReadonly] = useState(true);
@@ -1664,8 +1659,6 @@ export default function index() {
                     console.log("selectedvendor", selectedVendor);
                     setSelectedForm("default");
                     setAppGroups(selectedVendor.app_groups);
-
-                    window.history.replaceState("","","?vendor=" + selectedVendor.id2);
                     dispatch(requestGetApplications(selectedVendor.id));
                   } else {
                     setSelectedForm(target.value);
@@ -1675,20 +1668,18 @@ export default function index() {
                     }
 
                     console.log("form form", target.value);
-
-                    window.history.replaceState("","","?form=" + target.value);
                     setAppGroups([]);
                     dispatch(requestGetFormAppGroup(target.value));
                     dispatch(requestGetCustomApplications(target.value));
                   }
                 }}
               >
-                <option key={selectedVendor.id} selected={!(queryParams && queryParams.form)} value="default">
+                <option key={selectedVendor.id} selected value="default">
                   {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
                 </option>
                 {
                   formList.map(form => (
-                    <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
+                    <option key={form.form_id} value={form?.form_id}>
                       {form?.form_contents?.formTitle}
                     </option>
                   ))
@@ -1762,11 +1753,6 @@ export default function index() {
               <FontAwesomeIcon icon={faFile} />
               <span>My Application</span>
             </a>
-
-            <a href={`/dashboard/forms`}>
-              <FontAwesomeIcon icon={faFileAlt} />
-              <span>Forms</span>
-            </a>
           </div>
         </div>
         <div>
@@ -1793,7 +1779,6 @@ export default function index() {
               onSubmit={onSubmit}
               handleUpdateOnchange={handleUpdateOnchange}
               updateLoading={loading.application}
-              updateError={updateError}
             />
           )}
         </div>
@@ -1805,8 +1790,6 @@ export default function index() {
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
           appGroups={appGroups}
-          isCustomForm={selectedForm !== "default"}
-          filename={exportFilename}
         />
       )}
       {
@@ -1845,7 +1828,7 @@ export default function index() {
               application_date={
                 isFormHistory
                   ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")}`
-                  :  format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")
+                  : 'Most Up to date Application'
               }
               isReadOnly={isReadonly}
               isFormHistory={isFormHistory}
@@ -1937,7 +1920,7 @@ export default function index() {
             {selectNonMenuOption && view == "application" && (
               <hr className="style-eight"></hr>
             )}
-            <br />
+
             {selectNonMenuOption && 
               view == "application" && 
               selectedApplication && 

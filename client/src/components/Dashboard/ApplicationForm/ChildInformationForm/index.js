@@ -205,7 +205,8 @@ export default function index({
   app_programs = [],
   location_sites = [],
   pastChildInformation = {},
-  isVendorView = false
+  isVendorView = false,
+  printPageClassname
 }) {
   const hasSelectAll = false;
 
@@ -413,7 +414,7 @@ export default function index({
 
   console.log("pastChildInformation", pastChildInformation);
   return (
-    <ChildInfomationFormStyled>
+    <ChildInfomationFormStyled className={printPageClassname}>
       <h3 className="heading">
         Child Information {counter > 1 ? `(${counter})` : ``}
       </h3>

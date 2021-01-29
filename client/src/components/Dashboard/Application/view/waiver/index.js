@@ -36,7 +36,7 @@ export default function index({
                 moment().format("MM/dd/yyyy")
                 
   return (
-    <TermsWaiverFormViewStyled>
+    <TermsWaiverFormViewStyled className="printpage-break waiver-information">
       <div id="applicationForm">
         {
           (application.section1_name && application.section1_text) ?
