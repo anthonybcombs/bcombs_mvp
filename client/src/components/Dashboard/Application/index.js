@@ -628,7 +628,7 @@ export default function index() {
     const childInformationObj = {
       profile: {
         image: "",
-        application_date: 'Most Up to date Application',
+        application_date: format(new Date(application.application_date), "LLL dd, yyyy p"),
         first_name: application.child.firstname
           ? application.child.firstname
           : "",
@@ -1845,7 +1845,7 @@ export default function index() {
               application_date={
                 isFormHistory
                   ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")}`
-                  : 'Most Up to date Application'
+                  :  format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")
               }
               isReadOnly={isReadonly}
               isFormHistory={isFormHistory}
