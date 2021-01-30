@@ -89,6 +89,7 @@ const ChildFormViewStyled = styled.div`
   padding-left: 15px;
   padding-right: 15px;
   margin-top: 30px;
+  margin-bottom: 40px;
   h1 {
     color: #f26e21;
     text-align: center;
@@ -165,10 +166,10 @@ export default function index({
         </div>
       </ChildFormHeader>
 
-      <ChildFormViewStyled>
+      <ChildFormViewStyled className="printpage-break">
         <div id="applicationForm">
           <ChildInformationFormStyled
-            className="page-break"
+            printPageClassname="printpage-break child-information"
             handleChildFormDetailsChange={handleChildFormDetailsChange}
             childProfile={childInformation.profile}
             counter={1}
@@ -183,7 +184,7 @@ export default function index({
           />
           <br />
           <GeneralInformationFormStyled
-            className="page-break"
+            printPageClassname="printpage-break general-information"
             handleChildFormDetailsChange={handleChildFormDetailsChange}
             childGeneralInformation={childInformation.general_information}
             counter={1}
@@ -196,7 +197,7 @@ export default function index({
           />
           <br />
           <MedicalCareInfoStyled
-            className="page-break"
+            printPageClassname="printpage-break medicalCare-information"
             childEmergencyCare={childInformation.emergency_care_information}
             handleChildFormDetailsChange={handleChildFormDetailsChange}
             counter={1}
