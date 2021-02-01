@@ -209,9 +209,18 @@ export default function index(props) {
 		const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
 
 		for (const group of filteredGroups) {
+			let classCount = getFormClassCount(group);
+			totalAvailable += group.size - classCount;
+		}
+
+
+		for (const group of appGroups) {
 			let classCount = getClassCount(group);
 			totalAvailable += group.size - classCount;
 		}
+
+
+
 
 		totalAvailable = totalAvailable < 0 ? 0 : totalAvailable;
 		return totalAvailable;
@@ -323,7 +332,7 @@ export default function index(props) {
 							<td>{getDefaultTotalCount()}</td>
 							<td>{getDefaultTotalAvailable()}</td>
 							<td>{getDefaultClassCount()}</td>
-							<td>{<Link to={`view/${ selectedVendor?.id2}?type=all&`}>View</Link>}</td>
+							<td>{<Link to={`view/${ selectedVendor?.id2}?type=all`}>View</Link>}</td>
 						</tr>
 						{form.formList.map(item => {
 						
