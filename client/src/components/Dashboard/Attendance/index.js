@@ -188,9 +188,9 @@ export default function index(props) {
 
 		const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
 
-		for (const group of appGroups) {
-			totalCount += group.size;
-		}
+		// for (const group of appGroups) {
+		// 	totalCount += group.size;
+		// }
 
 		for (const group of filteredGroups) {
 			totalCount += group.size;
@@ -211,27 +211,26 @@ export default function index(props) {
 
 
 	const getTotalAvailable = () => {
-		//let totalAvailable = 0;
-		const totalCount = getTotalCount();
-		const totalClassCount = getTotalClassCount();
-		// const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
+		let totalAvailable = 0;
+		// const totalCount = getTotalCount();
+	  const totalClassCount = getTotalClassCount();
+		const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
 
-		// for (const group of filteredGroups) {
-		// 	let classCount = getFormClassCount(group);
-		// 	totalAvailable += group.size - classCount;
-		// }
+		for (const group of filteredGroups) {
+
+			totalAvailable += group.size
+		}
 
 
 		// for (const group of appGroups) {
-		// 	let classCount = getClassCount(group);
-		// 	totalAvailable += group.size - classCount;
+		// 	//let classCount = getClassCount(group);
+		// 	totalAvailable += group.size ;
 		// }
 
 
 
 
-		// totalAvailable = totalAvailable < 0 ? 0 : totalAvailable;
-		return totalCount - totalClassCount;
+		return totalAvailable - totalClassCount;
 	};
 
 	const getDefaultTotalAvailable = () => {
