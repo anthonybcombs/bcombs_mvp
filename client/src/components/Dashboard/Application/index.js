@@ -9,6 +9,7 @@ import DataTable from 'react-data-table-component';
 import {
   faThList,
   faFile,
+  faFileAlt,
   faFileSignature,
   faCogs,
   faPrint,
@@ -1752,6 +1753,11 @@ export default function index() {
             <a href={`/dashboard/myapplication`}>
               <FontAwesomeIcon icon={faFile} />
               <span>My Application</span>
+            </a>
+
+            <a href={`/dashboard/forms`}>
+              <FontAwesomeIcon icon={faFileAlt} />
+              <span>Forms</span>
             </a>
           </div>
         </div>
