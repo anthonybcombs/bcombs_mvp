@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from '@reach/router';
+import { Link, useLocation, useParams,redirectTo } from '@reach/router';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from '@reach/router';
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DatePicker from 'react-datepicker';
@@ -775,7 +774,12 @@ export default function index() {
 	useEffect(() => {
 		if (attendance.isAttendanceUpdateSuccess) {
 			setApplicationList(defaultApplicationList);
-
+			const redirect = () => {
+				// setTimeout(() => {
+				// 	window.location.replace(`/dashboard/attendance`);
+				// },1000);
+			};
+			redirect();
 		}
 	}, [attendance.isAttendanceUpdateSuccess]);
 
@@ -1109,7 +1113,7 @@ export default function index() {
 			);
 		});
 	};
-	console.log('filteredApplicationList',filteredApplicationList)
+	console.log('attendanceeeeeeeeeeeeeee',attendance)
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
@@ -1412,7 +1416,7 @@ export default function index() {
 														name={'volunteer_hrs'}
 														className={'field-input'}
 														placeholder="Volunteer Hours"
-														value={app?.volunteer_hours || '0'}
+														value={app?.volunteer_hours || ''}
 													/>
 													<label className="field-label" for={`volunteer_hrs`}>
 														Volunteer Hours
@@ -1427,7 +1431,7 @@ export default function index() {
 														name={'mentoring_hrs'}
 														className={'field-input'}
 														placeholder="Mentoring Hours"
-														value={app?.mentoring_hours || '0'}
+														value={app?.mentoring_hours || ''}
 													/>
 													<label className="field-label" for={`mentoring_hrs`}>
 														Mentoring Hours
