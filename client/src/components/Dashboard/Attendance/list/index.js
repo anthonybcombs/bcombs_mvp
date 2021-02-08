@@ -1119,7 +1119,10 @@ export default function index() {
 					Back
 				</Link>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					{attendance.isAttendanceUpdateSuccess && <div>Attendance has been updated successfully!</div>}
+					{attendance.isAttendanceUpdateSuccess && 
+					<div style={{marginTop:12,marginBottom:12}}>
+						Attendance has been updated successfully!
+					</div>}
 					<div className="filter-container">
 						<div className="field">
 							<DatePicker
@@ -1474,7 +1477,7 @@ export default function index() {
 					<div className="field actionBtn">
 						{applicationList.length > 0 && (
 							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
-								{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
+								{attendance.isAttendanceUpdateLoading ? 'Please Wait...' : 'Submit'}
 							</button>
 						)}
 					</div>
