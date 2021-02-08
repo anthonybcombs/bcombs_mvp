@@ -18,7 +18,8 @@ export default function Attendance(state = initialState, action) {
     case actionType.REQUEST_UPDATE_ATTENDANCE:
       return {
         ...state,
-        isAttendanceUpdateSuccess:false 
+        isAttendanceUpdateSuccess:false ,
+        isAttendanceUpdateLoading:true
       }
     case actionType.SET_ATTENDANCE_LIST:
         return {
@@ -30,12 +31,14 @@ export default function Attendance(state = initialState, action) {
         return {
           ...state,
           eventAttendanceList: [...action.data],
+          isAttendanceUpdateLoading: false,
           isLoading:false
       }
     case actionType.REQUEST_UPDATE_ATTENDANCE_SUCCESS:
         return {
           ...state,
           isAttendanceUpdateSuccess:true,
+          isAttendanceUpdateLoading:false,
           isLoading:false
         }
     default:
