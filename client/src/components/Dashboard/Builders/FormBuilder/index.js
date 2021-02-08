@@ -89,7 +89,7 @@ const FormBuilder = ({ form_id, type, history }) => {
 
   return (
     <FormBuilderStyled>
-      <h2>New Application</h2>
+      <h2>{type !== 'edit' ? 'New Forms' : 'Existing Forms'}</h2>
       <div id='formBuilder' className={builderDrawerOpen ? 'show': 'hide'}>
         <DragArea form_id={form_id} handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
         <DropArea
