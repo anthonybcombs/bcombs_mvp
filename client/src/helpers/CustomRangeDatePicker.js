@@ -83,6 +83,7 @@ const CustomRangeDatePicker = ({
   value,
   onChange,
 	onCalendarClose,
+	format = 'MM/dd/yyyy',
 	disableClock = true
 }) => {
 	return (<CustomRangeDatePickerStyled>	
@@ -94,7 +95,7 @@ const CustomRangeDatePicker = ({
 				onCalendarClose={onCalendarClose}
 				disableClock={true}
 				// disabled={true}
-				format={'MM/dd/yyyy'}
+				format={format}
 				clearIcon={	<FontAwesomeIcon
 					icon={faTimesCircle}
 				/>}

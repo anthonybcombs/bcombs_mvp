@@ -31,9 +31,10 @@ import { requestGetForms, requestGetFormById } from '../../../../redux/actions/F
 import ProfileImg from '../../../../images/defaultprofile.png';
 
 import CustomDatePicker from '../../../../helpers/CustomDatePicker';
+import { isObject } from 'util';
 
-const DATE_FORMAT = 'MM/dd/yyyy';
-
+//const DATE_FORMAT = 'MM/dd/yyyy';
+const DATE_FORMAT = 'MMM d, yyyy'
 const ClassListViewStyled = styled.div`
 	width: auto;
 	max-width: 1920px;
@@ -533,6 +534,30 @@ const months = [
 	'December',
 ];
 
+
+const addtime = (time,hour) => {
+  let times=time.split(":");
+  times[0]=(parseInt(times[0])) + hour;
+  times[0]>=24 ?  times[0]-=24  :null;
+  times[0]<10 ? times[0]= "0" + times[0] : null ;
+  
+  return times.join(":");
+}
+
+const timeCompare = (time1,time2) => {
+	console.log('Time Compare', time1)
+	console.log('Time Compare 2', time2)
+  let t1 = new Date();
+  let parts = time1.split(":");
+  t1.setHours(parts[0],parts[1],0);
+  let t2 = new Date();
+  parts = time2.split(":");
+  t2.setHours(parts[0],parts[1],0);
+  if (t1.getTime()>t2.getTime()) return 1;
+  if (t1.getTime()<t2.getTime()) return -1;
+  return 0;
+}
+
 const DateCustomInput = ({ value, onClick, name, className, placeholder, register }) => (
 	<div className="field">
 		<input
@@ -692,8 +717,6 @@ export default function index() {
 		if (appGroupId && appGroupId !== '' ) {
 			dispatch(requestAttendance(name === 'custom' ? searchParams.formId : appGroupId, name === 'custom' ? 'custom' : 'bcombs'));
 		}	
-		console.log('appGroupIzzzzzzd',appGroupId)
-		console.log('APPPLICATIONZZZZZ attendance', attendance)
 		if (applications && applications.activeapplications.length > 0 && appGroupId !== '' && (name !== 'custom'  || name === 'all')) {
 			let filterApplications = [];
 			if(appGroupId === 'all') {
@@ -713,13 +736,10 @@ export default function index() {
 				item.class_teacher = name;
 				return item;
 			});
-			console.log('filterApplications 123123123',filterApplications)
 			setApplicationList(filterApplications);
 		}
 
 		else if (applications && applications.activeapplications.length > 0 && name === 'custom') {
-			console.log('APPLZZZZZZZZZZZZZZ', applications)
-			console.log('APPLZZZZZZZZZZZZZZ appGroupId', applications)
 			let filterApplications = applications.activeapplications;
 			filterApplications = filterApplications.filter(item => item.class_teacher === appGroupId);
 			// filterApplications = filterApplications.map(item => {
@@ -755,6 +775,7 @@ export default function index() {
 	useEffect(() => {
 		if (attendance.isAttendanceUpdateSuccess) {
 			setApplicationList(defaultApplicationList);
+
 		}
 	}, [attendance.isAttendanceUpdateSuccess]);
 
@@ -872,16 +893,41 @@ export default function index() {
 			...attendanceDetails,
 			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
 		};
-		console.log('ONSUBMITTTTTTTTTTTTTTTTTTTT', payload)
 		dispatch(requestUpdateAttendance(payload));
 	};
 
 	const handleAttedanceDetailChange = e => {
 		const { name, value } = e.target;
-		console.log('attendanceDetails',attendanceDetails)
-		setAttendanceDetails({
+		let payload = {
 			...(attendanceDetails || {}),
 			[name]: value,
+		}
+
+		if(name === 'attendance_start_time') {
+			payload = {
+				...(attendanceDetails || {}),
+				attendance_start_time: value,
+				attendance_end_time: addtime(value, 1)
+			}
+		}
+		else if(name === 'attendance_end_time') {
+			const timeCompareValue = timeCompare(value,attendanceDetails.attendance_start_time);
+			if(timeCompareValue > -1) {
+
+				payload = {
+					...(attendanceDetails || {}),
+					attendance_end_time: value
+				}
+			}
+			else{
+				payload = {
+					...(attendanceDetails || {}),
+					attendance_end_time: addtime(attendanceDetails.attendance_start_time, 1)
+				}
+			}
+		}
+		setAttendanceDetails({
+			...payload
 		});
 	};
 
@@ -1038,7 +1084,7 @@ export default function index() {
 								name={'volunteer_hours'}
 								className={'field-input'}
 								placeholder="Volunteer Hours"
-								value={app?.volunteer_hours || '0'}
+								value={app?.volunteer_hours || ''}
 								style={{ textAlign: 'center', maxWidth: '200px' }}
 							/>
 						</div>
@@ -1054,7 +1100,7 @@ export default function index() {
 								name={'mentoring_hours'}
 								className={'field-input'}
 								placeholder="Mentoring Hours"
-								value={app?.mentoring_hours || '0'}
+								value={app?.mentoring_hours || ''}
 								style={{ textAlign: 'center', maxWidth: '200px' }}
 							/>
 						</div>
@@ -1153,53 +1199,54 @@ export default function index() {
 						<div className="field">
 							<input
 								onChange={handleAttedanceDetailChange}
-								ref={register({ required: true })}
+								// ref={register({ required: true })}
 								type="time"
 								name={'attendance_start_time'}
 								className={'field-input'}
 								placeholder="Start Name"
 							/>
 							<label className="field-label" for={`attendance_start_time`}>
-								<span className="required">*</span> Start Time
+								Start Time
 							</label>
 						</div>
 						<div className="field">
 							<input
 								onChange={handleAttedanceDetailChange}
-								ref={register({ required: true })}
+								// ref={register({ required: true })}
 								type="time"
 								name={'attendance_end_time'}
 								className={'field-input'}
 								placeholder="End Time"
+								value={attendanceDetails.attendance_end_time}
 							/>
 							<label className="field-label" for={`attendance_end_time`}>
-								<span className="required">*</span> End Time
+								End Time
 							</label>
 						</div>
 						<div className="field">
 							<input
 								id="event_name"
 								onChange={handleAttedanceDetailChange}
-								ref={register({ required: true })}
+								// ref={register({ required: true })}
 								name={'event_name'}
 								className={'field-input'}
 								placeholder="Event Name"
 							/>
 							<label className="field-label" for={`event_name`}>
-								<span className="required">*</span> Event Name
+								Event Name
 							</label>
 						</div>
 						<div className="field">
 							<input
 								id="location"
 								onChange={handleAttedanceDetailChange}
-								ref={register({ required: true })}
+								// ref={register({ required: true })}
 								name={'location'}
 								className={'field-input'}
 								placeholder="Location"
 							/>
 							<label className="field-label" for={`location`}>
-								<span className="required">*</span> Location
+								Location
 							</label>
 						</div>
 					</div>

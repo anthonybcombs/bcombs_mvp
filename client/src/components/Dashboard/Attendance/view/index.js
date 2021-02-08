@@ -374,6 +374,7 @@ const AttendanceSummaryStyled = styled.div`
 
 const DATE_FORMAT = 'MM-dd-yyyy';
 const DATE_KEY_FORMAT = 'MM_dd_yyyy';
+const DISPLAY_DATE_FORMAT = 'MMM d, yyyy'
 
 const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];
 
@@ -895,10 +896,10 @@ export default function index(props) {
 				</Link>
 				<div className="filter-container">
 					<div className="field">
-						<CustomRangeDatePicker value={selectedSummaryRangeDate} onChange={handleChangeDateFilter} />
+						<CustomRangeDatePicker format={DISPLAY_DATE_FORMAT} value={selectedSummaryRangeDate} onChange={handleChangeDateFilter} />
 					</div>
 					<div className="field search">
-						<CustomRangeDatePicker value={selectedRangeDate} onChange={handleChangeRangeDate} />
+						<CustomRangeDatePicker format={DISPLAY_DATE_FORMAT} value={selectedRangeDate} onChange={handleChangeRangeDate} />
 					</div>
 					<div className="field search">
 						<input
@@ -948,7 +949,7 @@ export default function index(props) {
 																		<FontAwesomeIcon className="search-icon" icon={faAngleLeft} />
 																	</span>
 																)}
-																{format(date, DATE_FORMAT)}
+																{format(date, DISPLAY_DATE_FORMAT)}
 																{index === 2 && (
 																	<span onClick={handleNextDate} style={{ cursor: 'pointer', marginLeft: '1rem' }}>
 																		<FontAwesomeIcon className="search-icon" icon={faAngleRight} />
