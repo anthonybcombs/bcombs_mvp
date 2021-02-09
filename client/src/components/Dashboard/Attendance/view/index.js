@@ -551,7 +551,6 @@ export default function index(props) {
 
 	const renderTableData = () => {
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
-		console.log('AttendanceDisplayyyy', attendanceDisplay)
 		return attendanceDisplay.map((att, index) => {
 			// let totalPresent = null;
 			// let totalAttendance = null;
