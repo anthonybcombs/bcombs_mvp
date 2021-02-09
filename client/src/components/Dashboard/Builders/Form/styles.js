@@ -713,6 +713,9 @@ export default styled.div`
   display: block;
   font-size: 1rem;
  }
+ .thankyouPage .message .hasLogin {
+   text-align: left;
+ }
  .thankyouPage button {
   color: #f5812f;
   font-weight: 600;
