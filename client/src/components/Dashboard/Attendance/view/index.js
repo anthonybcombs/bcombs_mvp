@@ -374,6 +374,7 @@ const AttendanceSummaryStyled = styled.div`
 
 const DATE_FORMAT = 'MM-dd-yyyy';
 const DATE_KEY_FORMAT = 'MM_dd_yyyy';
+const DISPLAY_DATE_FORMAT = 'MMM d, yyyy'
 
 const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];
 
@@ -416,27 +417,37 @@ export default function index(props) {
 		// 	dispatch(requestVendor(auth.user_id));
 		// }
 
-		if (searchParams && searchParams.type === 'custom') {
+		if (searchParams && searchParams.type === 'custom' && searchParams.formId) {
 			dispatch(requestGetCustomApplications(searchParams.formId));
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
-		} else if (searchParams && searchParams.type !== 'custom' && app_group_id && auth.user_id) {
+		} 
+		
+		else if (searchParams && searchParams.type !== 'custom' && app_group_id && auth.user_id) {
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		}
 	}, []);
 
 
+	useEffect(() => {
+	
+		if (vendors && vendors.length > 0 ) {
+			console.log('REQUEST GET APPLICATIONSSS', vendors)
+			//dispatch(requestGetApplications(vendors[0].id));
+		}
+	}, [vendors]);
+
+
 
 	useEffect(() => {
-		console.log('app_group_id',app_group_id)
+		console.log('useEffect app_group_id',app_group_id)
 		if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
 			dispatch(requestAttendance(app_group_id,'bcombs'));
 			dispatch(requestEventAttendance(app_group_id));
 		}
-		else{
+		else if(searchParams.formId){
 			dispatch(requestAttendance(searchParams.formId,'forms'));
-			// dispatch(requestEventAttendance(app_group_id));
 		}
 	}, []);
 	console.log('applicationszzzz', applications)
@@ -533,14 +544,13 @@ export default function index(props) {
 	}, [attendance.eventAttendanceList]);
 
 	useEffect(() => {
-		handleChangeDateFilter([new Date(), new Date(addYears(new Date(), 1))]);
+		handleChangeDateFilter([new Date('2020-08-01'),new Date('2021-07-31')]);
 	}, [defaultEvents, defaultAttendanceDisplay]);
 
 	
 
 	const renderTableData = () => {
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
-		console.log('AttendanceDisplayyyy', attendanceDisplay)
 		return attendanceDisplay.map((att, index) => {
 			// let totalPresent = null;
 			// let totalAttendance = null;
@@ -885,10 +895,10 @@ export default function index(props) {
 				</Link>
 				<div className="filter-container">
 					<div className="field">
-						<CustomRangeDatePicker value={selectedSummaryRangeDate} onChange={handleChangeDateFilter} />
+						<CustomRangeDatePicker format={DISPLAY_DATE_FORMAT} value={selectedSummaryRangeDate} onChange={handleChangeDateFilter} />
 					</div>
 					<div className="field search">
-						<CustomRangeDatePicker value={selectedRangeDate} onChange={handleChangeRangeDate} />
+						<CustomRangeDatePicker format={DISPLAY_DATE_FORMAT} value={selectedRangeDate} onChange={handleChangeRangeDate} />
 					</div>
 					<div className="field search">
 						<input
@@ -938,7 +948,7 @@ export default function index(props) {
 																		<FontAwesomeIcon className="search-icon" icon={faAngleLeft} />
 																	</span>
 																)}
-																{format(date, DATE_FORMAT)}
+																{format(date, DISPLAY_DATE_FORMAT)}
 																{index === 2 && (
 																	<span onClick={handleNextDate} style={{ cursor: 'pointer', marginLeft: '1rem' }}>
 																		<FontAwesomeIcon className="search-icon" icon={faAngleRight} />

@@ -188,9 +188,16 @@ export default function index(props) {
 
 		const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
 
-		filteredGroups.map(group => {
+		// for (const group of appGroups) {
+		// 	totalCount += group.size;
+		// }
+
+		for (const group of filteredGroups) {
 			totalCount += group.size;
-		});
+		}
+		// filteredGroups.map(group => {
+		// 	totalCount += group.size;
+		// });
 		return totalCount;
 	};
 
@@ -205,16 +212,25 @@ export default function index(props) {
 
 	const getTotalAvailable = () => {
 		let totalAvailable = 0;
-
+		// const totalCount = getTotalCount();
+	  const totalClassCount = getTotalClassCount();
 		const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
 
 		for (const group of filteredGroups) {
-			let classCount = getClassCount(group);
-			totalAvailable += group.size - classCount;
+
+			totalAvailable += group.size
 		}
 
-		totalAvailable = totalAvailable < 0 ? 0 : totalAvailable;
-		return totalAvailable;
+
+		// for (const group of appGroups) {
+		// 	//let classCount = getClassCount(group);
+		// 	totalAvailable += group.size ;
+		// }
+
+
+
+
+		return totalAvailable - totalClassCount;
 	};
 
 	const getDefaultTotalAvailable = () => {
@@ -323,7 +339,7 @@ export default function index(props) {
 							<td>{getDefaultTotalCount()}</td>
 							<td>{getDefaultTotalAvailable()}</td>
 							<td>{getDefaultClassCount()}</td>
-							<td>{<Link to={`view/${ selectedVendor?.id2}?type=all&`}>View</Link>}</td>
+							<td>{<Link to={`view/${ selectedVendor?.id2}?type=all`}>View</Link>}</td>
 						</tr>
 						{form.formList.map(item => {
 						

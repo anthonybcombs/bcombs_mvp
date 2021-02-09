@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from '@reach/router';
+import { Link, useLocation, useParams, redirectTo } from '@reach/router';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from '@reach/router';
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DatePicker from 'react-datepicker';
@@ -24,16 +23,23 @@ import DataTable from 'react-data-table-component';
 
 import { requestAttendance, requestUpdateAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
-import { requestGetApplications, requestGetCustomApplications,requestGetCustomApplicationByVendor } from '../../../../redux/actions/Application';
+import {
+	requestGetApplications,
+	requestGetCustomApplications,
+	requestGetCustomApplicationByVendor,
+} from '../../../../redux/actions/Application';
 import { requestUserGroup } from '../../../../redux/actions/Groups';
 import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
 
 import ProfileImg from '../../../../images/defaultprofile.png';
 
 import CustomDatePicker from '../../../../helpers/CustomDatePicker';
+import Confirmation from '../../../../helpers/Confirmation';
 
-const DATE_FORMAT = 'MM/dd/yyyy';
+import { isObject } from 'util';
 
+//const DATE_FORMAT = 'MM/dd/yyyy';
+const DATE_FORMAT = 'MMM d, yyyy';
 const ClassListViewStyled = styled.div`
 	width: auto;
 	max-width: 1920px;
@@ -533,6 +539,29 @@ const months = [
 	'December',
 ];
 
+const addtime = (time, hour) => {
+	let times = time.split(':');
+	times[0] = parseInt(times[0]) + hour;
+	times[0] >= 24 ? (times[0] -= 24) : null;
+	times[0] < 10 ? (times[0] = '0' + times[0]) : null;
+
+	return times.join(':');
+};
+
+const timeCompare = (time1, time2) => {
+	console.log('Time Compare', time1);
+	console.log('Time Compare 2', time2);
+	let t1 = new Date();
+	let parts = time1.split(':');
+	t1.setHours(parts[0], parts[1], 0);
+	let t2 = new Date();
+	parts = time2.split(':');
+	t2.setHours(parts[0], parts[1], 0);
+	if (t1.getTime() > t2.getTime()) return 1;
+	if (t1.getTime() < t2.getTime()) return -1;
+	return 0;
+};
+
 const DateCustomInput = ({ value, onClick, name, className, placeholder, register }) => (
 	<div className="field">
 		<input
@@ -597,16 +626,17 @@ export default function index() {
 		location: null,
 	});
 	const [appGroupId, setAppGroupId] = useState(null);
+	const [appGroupName, setAppGroupName] = useState(null);
 	const [applicationList, setApplicationList] = useState([]);
 	const [defaultApplicationList, setDefaultApplicationList] = useState([]);
 	const [filteredApplicationList, setFilteredApplicationList] = useState([]);
+	const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
 	const [appGroupIds, setAppGroupIds] = useState([]);
 	const [viewMode, setViewMode] = useState('grid');
 	const dispatch = useDispatch();
 	const { formList = [] } = form;
 
-	
-	console.log('APPPLICATIONZZZZZZZ', applications)
+	console.log('APPPLICATIONZZZZZZZ', applications);
 	useEffect(() => {
 		if (name === 'custom' && vendor_id && auth.user_id) {
 			//dispatch(requestGetForms({ vendor: vendor_id, categories: [] }));
@@ -616,15 +646,12 @@ export default function index() {
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		} else if ((name !== 'custom' || name === 'all') && vendor_id && auth.user_id) {
-
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		}
-
 	}, [name, vendor_id]);
 
 	useEffect(() => {
-	
 		if (vendors && vendors.length > 0 && (name !== 'custom' || name === 'all')) {
 			let vendorId;
 			for (const vendor of vendors) {
@@ -638,105 +665,103 @@ export default function index() {
 		}
 	}, [vendors]);
 
-
-
 	useEffect(() => {
 		if (name === 'custom' && searchParams) {
 			let currentAppGroupId = '';
+			let currentAppGroupName = '';
 			if (groups && groups.application_groups) {
 				const applicationGroups = groups.application_groups;
 
 				for (const group of applicationGroups) {
 					if (group.form === searchParams.formId) {
 						currentAppGroupId = group.app_grp_id;
+						currentAppGroupName = group.name;
 						break;
 					}
 				}
-				console.log('currentAppGroupId', currentAppGroupId);
-
 				setAppGroupId(currentAppGroupId);
+				setAppGroupName(currentAppGroupName);
 			}
 		} else {
-			if(vendors.length > 0 && name !== 'all') {
+			if (vendors.length > 0 && name !== 'all') {
 				let currentAppGroupId = '';
+				let currentAppGroupName = '';
 				if (vendors[0] && vendors[0].app_groups) {
 					const applicationGroups = vendors[0].app_groups;
-					console.log('applicationGroups', vendors)
-					console.log('applicationGroups', name)
 					for (const group of applicationGroups) {
 						if (group.name.trim() === name.trim()) {
 							currentAppGroupId = group.app_grp_id;
+							currentAppGroupName = group.name;
 							break;
 						}
 					}
-					console.log('currentAppGroupId', currentAppGroupId);
+
 					setAppGroupId(currentAppGroupId);
+					setAppGroupName(currentAppGroupName);
 				}
-			}
-			else if(name === 'all') {
+			} else if (name === 'all') {
 				if (vendors[0] && vendors[0].app_groups) {
 					const applicationGroups = vendors[0].app_groups;
 					const ids = applicationGroups.map(item => item.app_grp_id);
-					console.log('AppGroupIdssss', ids)
-					console.log('AppGroupIdssss applicationGroups', applicationGroups)
+					console.log('AppGroupIdssss', ids);
+					console.log('AppGroupIdssss applicationGroups', applicationGroups);
 					setAppGroupIds(ids);
-					setAppGroupId('all');	
+					setAppGroupId('all');
 				}
 			}
 		}
 	}, [groups, vendors]);
 
 	useEffect(() => {
-		if (appGroupId && appGroupId !== '' ) {
-			dispatch(requestAttendance(name === 'custom' ? searchParams.formId : appGroupId, name === 'custom' ? 'custom' : 'bcombs'));
-		}	
-		console.log('APPPLICATIONZZZZZ', applications)
-		if (applications && applications.activeapplications.length > 0 && appGroupId !== '' && (name !== 'custom'  || name === 'all')) {
+		if (appGroupId && appGroupId !== '') {
+			dispatch(
+				requestAttendance(name === 'custom' ? searchParams.formId : appGroupId, name === 'custom' ? 'custom' : 'bcombs')
+			);
+		}
+		if (
+			applications &&
+			applications.activeapplications.length > 0 &&
+			appGroupId !== '' &&
+			(name !== 'custom' || name === 'all')
+		) {
 			let filterApplications = [];
-			if(appGroupId === 'all') {
+			if (appGroupId === 'all') {
 				filterApplications = applications.activeapplications;
 				// filterApplications = applications.activeapplications.filter(application => {
 				// 	return appGroupIds.includes(application.class_teacher)
 				// });
-	
-			}
-			else{
+			} else {
 				filterApplications = applications.activeapplications.filter(application => {
 					return application && application.class_teacher == appGroupId;
 				});
 			}
 			filterApplications = filterApplications.map(item => {
-				let currentAttendance = attendance.list.find(att =>  item.child && (att.child_id === item.child.ch_id));
+				let currentAttendance = attendance.list.find(att => item.child && att.child_id === item.child.ch_id);
 				item.class_teacher = name;
 				return item;
 			});
-			console.log('filterApplications 123123123',filterApplications)
 			setApplicationList(filterApplications);
-		}
-
-		else if (applications && applications.activeapplications.length > 0 && name === 'custom') {
-
-			console.log('APplicationssssss', applications)
+		} else if (applications && applications.activeapplications.length > 0 && name === 'custom') {
 			let filterApplications = applications.activeapplications;
 			filterApplications = filterApplications.filter(item => item.class_teacher === appGroupId);
-			filterApplications = filterApplications.map(item => {
-				//let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
-				// item.class_teacher = name;
-				return item;
-			});
+			// filterApplications = filterApplications.map(item => {
+			// 	//let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
+			// 	// item.class_teacher = name;
+			// 	return item;
+			// });
 
-
+			console.log('filterApplications123123123', filterApplications);
 			setApplicationList(filterApplications);
 		}
-
 	}, [applications, appGroupId, appGroupIds]);
 
 	useEffect(() => {
-		console.log('ATTENDANCEEEEE123123123123 1111', applications)
+		console.log('ATTENDANCEEEEE123123123123 1111', applications);
 		if (attendance.list) {
-
 			let updatedApplicationList = applicationList.map(application => {
-				let currentAttendance = attendance.list.find(att => application.child && (att.child_id === application.child.ch_id));
+				let currentAttendance = attendance.list.find(
+					att => application.child && att.child_id === application.child.ch_id
+				);
 
 				return {
 					...application,
@@ -752,6 +777,12 @@ export default function index() {
 	useEffect(() => {
 		if (attendance.isAttendanceUpdateSuccess) {
 			setApplicationList(defaultApplicationList);
+			const redirect = () => {
+				// setTimeout(() => {
+				// 	window.location.replace(`/dashboard/attendance`);
+				// },1000);
+			};
+			redirect();
 		}
 	}, [attendance.isAttendanceUpdateSuccess]);
 
@@ -848,13 +879,36 @@ export default function index() {
 	};
 
 	const onSubmit = e => {
-		reset();
+		// const attendanceList = applicationList.map(app => {
+		// 	return {
+		// 		app_id: app.app_id,
+		// 		attendance_status: app.attendance_status || '',
+		// 		child_id: name === 'custom' ? app.app_id  : app.child && app.child.ch_id,
+		// 		vendor: app.vendor,
+		// 		volunteer_hours: app.volunteer_hours ? parseInt(app.volunteer_hours) : 0,
+		// 		mentoring_hours: app.mentoring_hours ? parseInt(app.mentoring_hours) : 0,
+		// 		is_excused: app.excused ? 1 : 0,
+		// 	};
+		// });
 
+		// const payload = {
+		// 	attendance_list: attendanceList,
+		// 	app_group_id: name === 'custom' ? searchParams && searchParams.formId  : appGroupId,
+		// 	attendance_type: name === 'custom' ? 'forms' : 'bcombs',
+		// 	...attendanceDetails,
+		// 	attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
+		// };
+		// dispatch(requestUpdateAttendance(payload));
+		setIsConfirmationVisible(true);
+	};
+
+	const handleAttendanceSave = () => {
+		reset();
 		const attendanceList = applicationList.map(app => {
 			return {
 				app_id: app.app_id,
 				attendance_status: app.attendance_status || '',
-				child_id: name === 'custom' ? app.app_id  : app.child && app.child.ch_id,
+				child_id: name === 'custom' ? app.app_id : app.child && app.child.ch_id,
 				vendor: app.vendor,
 				volunteer_hours: app.volunteer_hours ? parseInt(app.volunteer_hours) : 0,
 				mentoring_hours: app.mentoring_hours ? parseInt(app.mentoring_hours) : 0,
@@ -864,21 +918,47 @@ export default function index() {
 
 		const payload = {
 			attendance_list: attendanceList,
-			app_group_id: name === 'custom' ? searchParams && searchParams.formId  : appGroupId,
+			app_group_id: name === 'custom' ? searchParams && searchParams.formId : appGroupId,
 			attendance_type: name === 'custom' ? 'forms' : 'bcombs',
 			...attendanceDetails,
 			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
 		};
-
 		dispatch(requestUpdateAttendance(payload));
+		setIsConfirmationVisible(false);
+		setTimeout(() => {
+			window.location.replace(`/dashboard/attendance`);
+		}, 1000);
 	};
 
 	const handleAttedanceDetailChange = e => {
 		const { name, value } = e.target;
-		console.log('attendanceDetails',attendanceDetails)
-		setAttendanceDetails({
+		let payload = {
 			...(attendanceDetails || {}),
 			[name]: value,
+		};
+
+		if (name === 'attendance_start_time') {
+			payload = {
+				...(attendanceDetails || {}),
+				attendance_start_time: value,
+				attendance_end_time: addtime(value, 1),
+			};
+		} else if (name === 'attendance_end_time') {
+			const timeCompareValue = timeCompare(value, attendanceDetails.attendance_start_time);
+			if (timeCompareValue > -1) {
+				payload = {
+					...(attendanceDetails || {}),
+					attendance_end_time: value,
+				};
+			} else {
+				payload = {
+					...(attendanceDetails || {}),
+					attendance_end_time: addtime(attendanceDetails.attendance_start_time, 1),
+				};
+			}
+		}
+		setAttendanceDetails({
+			...payload,
 		});
 	};
 
@@ -925,12 +1005,16 @@ export default function index() {
 	};
 
 	const renderTableData = () => {
-		console.log('Render Table Data', filteredApplicationList)
+		console.log('Render Table Data', filteredApplicationList);
 		return filteredApplicationList.map((app, index) => {
 			return (
 				<tr key={index}>
 					<td>
-						<div className="name">{app.child ? app.child?.firstname + ' ' + app.child?.lastname : app.form_contents?.formData[0]?.fields[0]?.value}</div>
+						<div className="name">
+							{app.child
+								? app.child?.firstname + ' ' + app.child?.lastname
+								: app.form_contents?.formData[0]?.fields[0]?.value}
+						</div>
 					</td>
 					<td>
 						<div className="class">{app.class_teacher}</div>
@@ -944,7 +1028,7 @@ export default function index() {
 							) : (
 								''
 							)}
-							{app.is_following === null || app.is_following === undefined || app.is_following === 0 ? 'Blank' : ''}
+							{app.is_following === null || app.is_following === undefined || app.is_following === 0 ? '' : ''}
 						</span>
 					</td>
 					<td style={{ width: '300px' }}>
@@ -1035,7 +1119,7 @@ export default function index() {
 								name={'volunteer_hours'}
 								className={'field-input'}
 								placeholder="Volunteer Hours"
-								value={app?.volunteer_hours || '0'}
+								value={app?.volunteer_hours || ''}
 								style={{ textAlign: 'center', maxWidth: '200px' }}
 							/>
 						</div>
@@ -1051,7 +1135,7 @@ export default function index() {
 								name={'mentoring_hours'}
 								className={'field-input'}
 								placeholder="Mentoring Hours"
-								value={app?.mentoring_hours || '0'}
+								value={app?.mentoring_hours || ''}
 								style={{ textAlign: 'center', maxWidth: '200px' }}
 							/>
 						</div>
@@ -1060,7 +1144,7 @@ export default function index() {
 			);
 		});
 	};
-	console.log('filteredApplicationList',filteredApplicationList)
+	console.log('Appp Group name', appGroupName);
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
@@ -1070,7 +1154,9 @@ export default function index() {
 					Back
 				</Link>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					{attendance.isAttendanceUpdateSuccess && <div>Attendance has been updated successfully!</div>}
+					{attendance.isAttendanceUpdateSuccess && (
+						<div style={{ marginTop: 12, marginBottom: 12 }}>Attendance has been updated successfully!</div>
+					)}
 					<div className="filter-container">
 						<div className="field">
 							<DatePicker
@@ -1150,53 +1236,54 @@ export default function index() {
 						<div className="field">
 							<input
 								onChange={handleAttedanceDetailChange}
-								ref={register({ required: true })}
+								// ref={register({ required: true })}
 								type="time"
 								name={'attendance_start_time'}
 								className={'field-input'}
 								placeholder="Start Name"
 							/>
 							<label className="field-label" for={`attendance_start_time`}>
-								<span className="required">*</span> Start Time
+								Start Time
 							</label>
 						</div>
 						<div className="field">
 							<input
 								onChange={handleAttedanceDetailChange}
-								ref={register({ required: true })}
+								// ref={register({ required: true })}
 								type="time"
 								name={'attendance_end_time'}
 								className={'field-input'}
 								placeholder="End Time"
+								value={attendanceDetails.attendance_end_time}
 							/>
 							<label className="field-label" for={`attendance_end_time`}>
-								<span className="required">*</span> End Time
+								End Time
 							</label>
 						</div>
 						<div className="field">
 							<input
 								id="event_name"
 								onChange={handleAttedanceDetailChange}
-								ref={register({ required: true })}
+								// ref={register({ required: true })}
 								name={'event_name'}
 								className={'field-input'}
 								placeholder="Event Name"
 							/>
 							<label className="field-label" for={`event_name`}>
-								<span className="required">*</span> Event Name
+								Event Name
 							</label>
 						</div>
 						<div className="field">
 							<input
 								id="location"
 								onChange={handleAttedanceDetailChange}
-								ref={register({ required: true })}
+								// ref={register({ required: true })}
 								name={'location'}
 								className={'field-input'}
 								placeholder="Location"
 							/>
 							<label className="field-label" for={`location`}>
-								<span className="required">*</span> Location
+								Location
 							</label>
 						</div>
 					</div>
@@ -1230,6 +1317,9 @@ export default function index() {
 							</label>
 							<FontAwesomeIcon className="search-icon" icon={faSearch} />
 						</div>
+
+			
+
 						{/* <div className="field select-field-wrapper">
 							<select onChange={handleViewChange} className={'field-input'}>
 								<option value="grid">Grid View</option>
@@ -1256,6 +1346,14 @@ export default function index() {
 						</div>
 					</div>
 
+					<div>
+					{(appGroupName && viewMode === 'grid') && (
+							<div className="field">
+								<h4>{appGroupName}</h4>
+							</div>
+						)}
+					</div>
+
 					{viewMode === 'grid' ? (
 						<div className="gridView">
 							{filteredApplicationList.map(app => {
@@ -1268,7 +1366,11 @@ export default function index() {
 
 											<div className="attendance-name">
 												<a target="_blank" href={'/dashboard/menteeprofile/' + app.id}>
-													<span>{app.child ? app.child?.firstname + ' ' + app.child?.lastname : app.form_contents?.formData[0]?.fields[0]?.value}</span>
+													<span>
+														{app.child
+															? app.child?.firstname + ' ' + app.child?.lastname
+															: app.form_contents?.formData[0]?.fields[0]?.value}
+													</span>
 												</a>
 											</div>
 
@@ -1359,7 +1461,7 @@ export default function index() {
 														name={'volunteer_hrs'}
 														className={'field-input'}
 														placeholder="Volunteer Hours"
-														value={app?.volunteer_hours || '0'}
+														value={app?.volunteer_hours || ''}
 													/>
 													<label className="field-label" for={`volunteer_hrs`}>
 														Volunteer Hours
@@ -1374,7 +1476,7 @@ export default function index() {
 														name={'mentoring_hrs'}
 														className={'field-input'}
 														placeholder="Mentoring Hours"
-														value={app?.mentoring_hours || '0'}
+														value={app?.mentoring_hours || ''}
 													/>
 													<label className="field-label" for={`mentoring_hrs`}>
 														Mentoring Hours
@@ -1382,7 +1484,7 @@ export default function index() {
 												</div>
 											</div>
 
-											<div className="attendance-invitation">
+											{/* <div className="attendance-invitation">
 												{
 													<div className="calendar-invite">
 														Calendar Invite:{' '}
@@ -1397,7 +1499,7 @@ export default function index() {
 														}`}</span>
 													</div>
 												}
-											</div>
+											</div> */}
 										</div>
 									</div>
 								);
@@ -1424,12 +1526,20 @@ export default function index() {
 					<div className="field actionBtn">
 						{applicationList.length > 0 && (
 							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
-								{attendance.isAttendanceUpdateSuccess ? 'Please Wait...' : 'Submit'}
+								{attendance.isAttendanceUpdateLoading ? 'Please Wait...' : 'Submit'}
 							</button>
 						)}
 					</div>
 				</form>
 			</div>
+
+			<Confirmation
+				isVisible={isConfirmationVisible}
+				message={`Are you sure you want to save this attendance?`}
+				toggleConfirmationVisible={setIsConfirmationVisible}
+				onSubmit={handleAttendanceSave}
+				submitButtonLabel="Submit"
+			/>
 		</ClassListViewStyled>
 	);
 }

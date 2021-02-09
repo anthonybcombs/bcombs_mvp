@@ -76,6 +76,13 @@ const CustomRangeDatePickerStyled = styled.div`
 		bottom: unset !important;
 	}
 
+	.react-datetimerange-picker__inputGroup__input, .react-datetimerange-picker__inputGroup__month{
+		pointer-events: none !important;
+		apperance: none !important;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+	}
+
 	
 `;
 
@@ -83,6 +90,7 @@ const CustomRangeDatePicker = ({
   value,
   onChange,
 	onCalendarClose,
+	format = 'MM/dd/yyyy',
 	disableClock = true
 }) => {
 	return (<CustomRangeDatePickerStyled>	
@@ -94,7 +102,7 @@ const CustomRangeDatePicker = ({
 				onCalendarClose={onCalendarClose}
 				disableClock={true}
 				// disabled={true}
-				format={'MM/dd/yyyy'}
+				format={format}
 				clearIcon={	<FontAwesomeIcon
 					icon={faTimesCircle}
 				/>}
