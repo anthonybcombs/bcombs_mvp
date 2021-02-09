@@ -30,6 +30,8 @@ import { requestGetForms, requestGetFormById } from '../../../../redux/actions/F
 import ProfileImg from '../../../../images/defaultprofile.png';
 
 import CustomDatePicker from '../../../../helpers/CustomDatePicker';
+import Confirmation from "../../../../helpers/Confirmation";
+
 import { isObject } from 'util';
 
 //const DATE_FORMAT = 'MM/dd/yyyy';
@@ -624,6 +626,7 @@ export default function index() {
 	const [applicationList, setApplicationList] = useState([]);
 	const [defaultApplicationList, setDefaultApplicationList] = useState([]);
 	const [filteredApplicationList, setFilteredApplicationList] = useState([]);
+	const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
 	const [appGroupIds, setAppGroupIds] = useState([]);
 	const [viewMode, setViewMode] = useState('grid');
 	const dispatch = useDispatch();
@@ -876,8 +879,33 @@ export default function index() {
 	};
 
 	const onSubmit = e => {
-		reset();
+		
 
+		// const attendanceList = applicationList.map(app => {
+		// 	return {
+		// 		app_id: app.app_id,
+		// 		attendance_status: app.attendance_status || '',
+		// 		child_id: name === 'custom' ? app.app_id  : app.child && app.child.ch_id,
+		// 		vendor: app.vendor,
+		// 		volunteer_hours: app.volunteer_hours ? parseInt(app.volunteer_hours) : 0,
+		// 		mentoring_hours: app.mentoring_hours ? parseInt(app.mentoring_hours) : 0,
+		// 		is_excused: app.excused ? 1 : 0,
+		// 	};
+		// });
+
+		// const payload = {
+		// 	attendance_list: attendanceList,
+		// 	app_group_id: name === 'custom' ? searchParams && searchParams.formId  : appGroupId,
+		// 	attendance_type: name === 'custom' ? 'forms' : 'bcombs',
+		// 	...attendanceDetails,
+		// 	attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
+		// };
+		// dispatch(requestUpdateAttendance(payload));
+		setIsConfirmationVisible(true);
+	};
+
+	const handleAttendanceSave = () => {
+		reset();
 		const attendanceList = applicationList.map(app => {
 			return {
 				app_id: app.app_id,
@@ -898,7 +926,11 @@ export default function index() {
 			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
 		};
 		dispatch(requestUpdateAttendance(payload));
-	};
+		setIsConfirmationVisible(false);
+		setTimeout(() => {
+			window.location.replace(`/dashboard/attendance`)
+		},1000)
+	}
 
 	const handleAttedanceDetailChange = e => {
 		const { name, value } = e.target;
@@ -997,7 +1029,7 @@ export default function index() {
 							) : (
 								''
 							)}
-							{app.is_following === null || app.is_following === undefined || app.is_following === 0 ? 'Blank' : ''}
+							{app.is_following === null || app.is_following === undefined || app.is_following === 0 ? '' : ''}
 						</span>
 					</td>
 					<td style={{ width: '300px' }}>
@@ -1113,7 +1145,7 @@ export default function index() {
 			);
 		});
 	};
-	console.log('attendanceeeeeeeeeeeeeee',attendance)
+
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
@@ -1439,7 +1471,7 @@ export default function index() {
 												</div>
 											</div>
 
-											<div className="attendance-invitation">
+											{/* <div className="attendance-invitation">
 												{
 													<div className="calendar-invite">
 														Calendar Invite:{' '}
@@ -1454,7 +1486,7 @@ export default function index() {
 														}`}</span>
 													</div>
 												}
-											</div>
+											</div> */}
 										</div>
 									</div>
 								);
@@ -1487,6 +1519,15 @@ export default function index() {
 					</div>
 				</form>
 			</div>
+
+			<Confirmation
+        isVisible={isConfirmationVisible}
+        message={`Are you sure you want to save this attendance?`}
+        toggleConfirmationVisible={setIsConfirmationVisible}
+        onSubmit={handleAttendanceSave}
+        submitButtonLabel="Submit"
+      />
+
 		</ClassListViewStyled>
 	);
 }

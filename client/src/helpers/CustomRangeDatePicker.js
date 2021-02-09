@@ -76,6 +76,13 @@ const CustomRangeDatePickerStyled = styled.div`
 		bottom: unset !important;
 	}
 
+	.react-datetimerange-picker__inputGroup__input, .react-datetimerange-picker__inputGroup__month{
+		pointer-events: none !important;
+		apperance: none !important;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+	}
+
 	
 `;
 

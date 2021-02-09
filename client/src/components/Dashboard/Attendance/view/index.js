@@ -544,7 +544,7 @@ export default function index(props) {
 	}, [attendance.eventAttendanceList]);
 
 	useEffect(() => {
-		handleChangeDateFilter([new Date(), new Date(addYears(new Date(), 1))]);
+		handleChangeDateFilter([new Date('2020-08-01'),new Date('2021-07-31')]);
 	}, [defaultEvents, defaultAttendanceDisplay]);
 
 	
