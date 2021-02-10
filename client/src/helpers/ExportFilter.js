@@ -402,7 +402,7 @@ const ExportFilter = ({
             console.log("this is an object", application[key1]);
             let level1 = application[key1];
 
-            if(level1.is_daycare) {
+            if(application.is_daycare) {
               delete level1.phone_type;
               delete level1.phone_number;
               delete level1.phone_type2;
