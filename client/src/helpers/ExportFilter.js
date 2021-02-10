@@ -359,14 +359,10 @@ const ExportFilter = ({
     }
 
   } else {
-    console.log("this is not custom form");
-
     for(const application of filterApplications) {
       let formattedApplication = {};
 
       for(const key1 of Object.keys(application)) {
-        console.log("obj", key1);
-
         if(key1 == "vendorPrograms" || 
           key1 == "vendorLocationSites" || 
           key1 == "app_id" || 
@@ -399,15 +395,15 @@ const ExportFilter = ({
             } else if(application[key1] == 'relationships') {
 
             }
-            console.log("this is an array", application[key1]);
-
+    
           } else {
             // child 
-            console.log("this is an object", application[key1]);
             let level1 = application[key1];
 
             console.log("export application", application);
+
             if(!!application.is_daycare) {
+              console.log("application is daycare");
               delete level1.phone_type;
               delete level1.phone_number;
               delete level1.phone_type2;
@@ -469,7 +465,7 @@ const ExportFilter = ({
               if(key2 == 'ch_id') { continue; }
               if(key2 == 'birthdate') {
                 const newDate = level1[key2] ? format(new Date(level1[key2]), DATE_FORMAT) : "";
-                formattedApplication = {...formattedApplication, [exportHeaders.child.main['birthdate']]: newDate }
+                formattedApplication = {...formattedApplication, ['(Child) ' + exportHeaders.child.main['birthdate']]: newDate }
               } else if(key2 == 'has_suspended') {
                 const val = level1[key2] == 1 ? 'Yes' : level1[key2] == 0 ? 'No' : '';
                 formattedApplication = {...formattedApplication, ['(Child) ' + exportHeaders.child.main['has_suspended']]: val}
@@ -521,9 +517,6 @@ const ExportFilter = ({
           }
         }
       }
-      delete formattedApplication.undefined;
-      console.log("formattedApplication", formattedApplication);
-
       exportApplications.push(formattedApplication);
     }
   }
