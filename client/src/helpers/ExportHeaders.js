@@ -120,7 +120,8 @@ export const exportHeaders = {
             hospital_phone: 'Hospital Phone',
             hospital_preference: 'Hospital Preference',
             doctor_name: 'Doctor Name',
-            doctor_phone: 'Doctore Phone'
+            doctor_phone: 'Doctore Phone',
+            programs: 'Programs'
         }
     },
     parent: {
