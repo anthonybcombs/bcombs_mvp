@@ -756,7 +756,8 @@ export default function index() {
 	}, [applications, appGroupId, appGroupIds]);
 
 	useEffect(() => {
-		console.log('ATTENDANCEEEEE123123123123 1111', applications);
+		console.log('ATTENDANCEEEEE123123123123 applications', applications);
+		console.log('ATTENDANCEEEEE123123123123 applicationList', applicationList);
 		if (attendance.list) {
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(
