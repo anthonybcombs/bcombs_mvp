@@ -122,7 +122,8 @@ export const exportHeaders = {
             doctor_name: 'Doctor Name',
             doctor_phone: 'Doctore Phone',
             programs: 'Programs',
-            ethnicities: 'Ethnicities'
+            ethnicities: 'Ethnicities',
+            birthdate: 'Birthdate'
         }
     },
     parent: {
