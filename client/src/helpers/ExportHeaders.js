@@ -115,7 +115,8 @@ export const exportHeaders = {
             medical_action_plan: 'Is there a need for a medical action plan?',
             list_fears_unique_behavior: 'List any particular fears or unique behavior characteristics the child has.',
             does_child_require_physical_education_service: 'Does your child required additional physical / educational services',
-            transfer_reason: 'Transfer Reason'
+            transfer_reason: 'Transfer Reason',
+            child_lives_with: 'Child lives with',
         }
     },
     parent: {
