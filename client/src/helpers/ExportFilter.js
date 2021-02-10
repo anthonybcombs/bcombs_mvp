@@ -402,6 +402,7 @@ const ExportFilter = ({
 
             console.log("export application", application);
 
+            delete level1.ch_id;
             if(!!application.is_daycare) {
               console.log("application is daycare");
               delete level1.phone_type;
