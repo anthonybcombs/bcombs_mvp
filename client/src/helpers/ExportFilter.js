@@ -465,12 +465,17 @@ const ExportFilter = ({
               if(key2 == 'ch_id') { continue; }
               if(key2 == 'birthdate') {
                 const newDate = level1[key2] ? format(new Date(level1[key2]), DATE_FORMAT) : "";
-                formattedApplication = {...formattedApplication, ['(Child) ' + exportHeaders.child.main['birthdate']]: newDate }
+                formattedApplication = {...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['birthdate'] : exportHeaders.child.main['birthdate'])]: newDate }
               } else if(key2 == 'has_suspended') {
                 const val = level1[key2] == 1 ? 'Yes' : level1[key2] == 0 ? 'No' : '';
-                formattedApplication = {...formattedApplication, ['(Child) ' + exportHeaders.child.main['has_suspended']]: val}
+                formattedApplication = {...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['has_suspended'] : exportHeaders.child.main['has_suspended'])]: val}
               } else {
-                formattedApplication = {...formattedApplication, ['(Child) ' + exportHeaders.child.main[key2]]: level1[key2] ? level1[key2] : ""}
+                if(!!application.is_daycare) {
+                  formattedApplication = {...formattedApplication, ['(Child) ' + exportHeaders.child.daycare[key2]]: level1[key2] ? level1[key2] : ""}
+                } else {
+                  formattedApplication = {...formattedApplication, ['(Child) ' + exportHeaders.child.main[key2]]: level1[key2] ? level1[key2] : ""}
+                }
+                
               }
             }
           }
