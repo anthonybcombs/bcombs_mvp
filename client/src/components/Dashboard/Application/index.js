@@ -976,7 +976,7 @@ export default function index() {
         person_recommend: parent.profile.person_recommend,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
-          DATE_TIME_FORMAT),
+          DATE_FORMAT),
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getArrayValue(parent.profile.ethinicity),
@@ -1018,6 +1018,7 @@ export default function index() {
   });
 
   const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
+  const DATE_FORMAT = "yyyy-MM-dd";
 
   const onSubmitSaveApplication = () => {
     console.log("Click Save Application");
@@ -1030,7 +1031,7 @@ export default function index() {
         age: getAge(childInformation.profile.date_of_birth),
         birthdate: format(
           new Date(childInformation.profile.date_of_birth),
-          DATE_TIME_FORMAT
+          DATE_FORMAT
         ),
         gender: childInformation.profile.gender,
         phone_type: childInformation.profile.phone_type,
@@ -1107,9 +1108,9 @@ export default function index() {
         prev_school_attended: childInformation.general_information.prev_school_attended,
         prev_school_state: childInformation.general_information.prev_school_state,
         prev_school_zip_code: childInformation.general_information.prev_school_zip_code,
-        preffered_start_date:format(
+        preffered_start_date: childInformation.preffered_start_date ? format(
           new Date(childInformation.profile.preffered_start_date),
-          DATE_TIME_FORMAT),
+          DATE_FORMAT) : null,
         current_classroom: childInformation.profile.current_classroom,
         primary_language: childInformation.profile.primary_language,
         needed_days: childInformation.profile.needed_days,
