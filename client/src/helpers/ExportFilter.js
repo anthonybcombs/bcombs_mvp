@@ -372,7 +372,7 @@ const ExportFilter = ({
           if(Array.isArray(application[key1])) {
             // parent
 
-            if(application[key1] == 'parents') {
+            if(key1 == 'parents') {
               const level1Arr = application[key1];
 
               for(const [i, arrObj] of level1Arr.entries()) {
