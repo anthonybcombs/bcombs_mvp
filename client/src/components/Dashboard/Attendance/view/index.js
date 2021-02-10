@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from '@reach/router';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faAngleLeft, faAngleRight, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useLocation ,useParams } from '@reach/router';
+import { faMinusCircle, faAngleLeft, faAngleRight, faSearch, faClock } from '@fortawesome/free-solid-svg-icons';
+import { useLocation, useParams } from '@reach/router';
 import { format, isRan } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
@@ -374,7 +374,7 @@ const AttendanceSummaryStyled = styled.div`
 
 const DATE_FORMAT = 'MM-dd-yyyy';
 const DATE_KEY_FORMAT = 'MM_dd_yyyy';
-const DISPLAY_DATE_FORMAT = 'MMM d, yyyy'
+const DISPLAY_DATE_FORMAT = 'MMM d, yyyy';
 
 const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];
 
@@ -403,7 +403,7 @@ export default function index(props) {
 	const [defaultEvents, setDefaultEvents] = useState([]);
 	const [selectedRangeDate, setSelectedRangeDate] = useState([new Date(), new Date()]);
 	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState([new Date(), addYears(new Date(), 1)]);
-
+	const [isRightCalendarVisible, setIsRightCalendarVisible] = useState(false);
 	const { app_group_id } = useParams();
 	const queryLocation = useLocation();
 	const searchParams = parse(queryLocation.search); // => {init: "true"}
@@ -421,51 +421,43 @@ export default function index(props) {
 			dispatch(requestGetCustomApplications(searchParams.formId));
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
-		} 
-		
-		else if (searchParams && searchParams.type !== 'custom' && app_group_id && auth.user_id) {
+		} else if (searchParams && searchParams.type !== 'custom' && app_group_id && auth.user_id) {
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		}
 	}, []);
 
-
 	useEffect(() => {
-	
-		if (vendors && vendors.length > 0 ) {
-			console.log('REQUEST GET APPLICATIONSSS', vendors)
+		if (vendors && vendors.length > 0) {
+			console.log('REQUEST GET APPLICATIONSSS', vendors);
 			//dispatch(requestGetApplications(vendors[0].id));
 		}
 	}, [vendors]);
 
-
-
 	useEffect(() => {
-		console.log('useEffect app_group_id',app_group_id)
+		console.log('useEffect app_group_id', app_group_id);
 		if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
-			dispatch(requestAttendance(app_group_id,'bcombs'));
+			dispatch(requestAttendance(app_group_id, 'bcombs'));
 			dispatch(requestEventAttendance(app_group_id));
-		}
-		else if(searchParams.formId){
-			dispatch(requestAttendance(searchParams.formId,'forms'));
+		} else if (searchParams.formId) {
+			dispatch(requestAttendance(searchParams.formId, 'forms'));
 		}
 	}, []);
-	console.log('applicationszzzz', applications)
+	console.log('applicationszzzz', applications);
 	useEffect(() => {
 		if (attendance.list) {
-
-			console.log("Attendaance Listtt", attendance)
-			console.log("Attendaance Listtt applications.activeapplications", applications)
+			console.log('Attendaance Listtt', attendance);
+			console.log('Attendaance Listtt applications.activeapplications', applications);
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
-				attDate = attDate.replaceAll('-', '_');				
+				attDate = attDate.replaceAll('-', '_');
 
 				let formApplication = {};
 
-				if(searchParams && searchParams.type === 'custom') {
-					formApplication = applications.activeapplications.find(item => item.app_id === att.child_id)
+				if (searchParams && searchParams.type === 'custom') {
+					formApplication = applications.activeapplications.find(item => item.app_id === att.child_id);
 				}
-				console.log('formApplication',formApplication)
+				console.log('formApplication', formApplication);
 				return {
 					...accum,
 					[att.child_id]: {
@@ -484,50 +476,46 @@ export default function index(props) {
 								is_excused: att.is_excused,
 							},
 						},
-						custom:{
-							...(formApplication || {})
-						}
+						custom: {
+							...(formApplication || {}),
+						},
 					},
 				};
 			}, {});
 
-			currentAttendance = Object.keys(currentAttendance).map(key => {
-				return currentAttendance[key];
-			}).map(att => {
-
-
-				const dateKeys = Object.keys(att.attendance);
-				const filteredDate = dateKeys.filter(key => {
-					return isWithinInterval(new Date(key.replaceAll('_', '-')), {
-						start: subDays(new Date(), 1),
-						end: addDays(new Date(), 1),
+			currentAttendance = Object.keys(currentAttendance)
+				.map(key => {
+					return currentAttendance[key];
+				})
+				.map(att => {
+					const dateKeys = Object.keys(att.attendance);
+					const filteredDate = dateKeys.filter(key => {
+						return isWithinInterval(new Date(key.replaceAll('_', '-')), {
+							start: subDays(new Date(), 1),
+							end: addDays(new Date(), 1),
+						});
 					});
+					const totalHours = filteredDate.reduce(
+						(accum, key) => {
+							return {
+								total_volunteer_hours: accum.total_volunteer_hours + att.attendance[key].volunteer_hours || 0,
+								total_mentoring_hours: accum.total_mentoring_hours + att.attendance[key].mentoring_hours || 0,
+							};
+						},
+						{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
+					);
+
+					return {
+						...att,
+						...totalHours,
+					};
 				});
-				const totalHours = filteredDate.reduce(
-					(accum, key) => {
-						return {
-							total_volunteer_hours: (accum.total_volunteer_hours) + att.attendance[key].volunteer_hours || 0,
-							total_mentoring_hours: (accum.total_mentoring_hours) + att.attendance[key].mentoring_hours || 0,
-						};
-					},
-					{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
-				);
-	
-				return {
-					...att,
-					...totalHours,
 
-				};
-			});
-
-
-			console.log('currentAttendance',currentAttendance)
+			console.log('currentAttendance', currentAttendance);
 			setAttendanceDisplay(currentAttendance);
 			setDefaultAttendanceDisplay(currentAttendance);
 		}
 	}, [attendance.list, applications]);
-
-
 
 	useEffect(() => {
 		if (attendance.eventAttendanceList) {
@@ -544,10 +532,8 @@ export default function index(props) {
 	}, [attendance.eventAttendanceList]);
 
 	useEffect(() => {
-		handleChangeDateFilter([new Date('2020-08-01'),new Date('2021-07-31')]);
+		handleChangeDateFilter([new Date('2020-08-01'), new Date('2021-07-31')]);
 	}, [defaultEvents, defaultAttendanceDisplay]);
-
-	
 
 	const renderTableData = () => {
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
@@ -587,7 +573,7 @@ export default function index(props) {
 				).toFixed(2);
 				summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			}
-			console.log('formattedDateKeys',formattedDateKeys)
+			console.log('formattedDateKeys', formattedDateKeys);
 			return (
 				<tr key={index}>
 					<td className="subHeader">
@@ -595,7 +581,11 @@ export default function index(props) {
 							<tr>
 								<td style={{ width: 250 }}>
 									<div className="name">
-										<a href={'#'}>{`${searchParams && searchParams.type !== 'custom' && att.firstname && att.lastname ?  `${att.firstname} ${att.lastname}` : att.custom?.form_contents?.formData[0]?.fields[0]?.value}`}</a>
+										<a href={'#'}>{`${
+											searchParams && searchParams.type !== 'custom' && att.firstname && att.lastname
+												? `${att.firstname} ${att.lastname}`
+												: att.custom?.form_contents?.formData[0]?.fields[0]?.value
+										}`}</a>
 									</div>
 								</td>
 								<td>
@@ -751,7 +741,7 @@ export default function index(props) {
 							return (
 								hasEvent &&
 								defaultAtt.attendance[key] &&
-									(defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].is_excused === 1)
+								(defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].is_excused === 1)
 							);
 						}).length || 0;
 
@@ -795,8 +785,8 @@ export default function index(props) {
 			const totalHours = filteredDate.reduce(
 				(accum, key) => {
 					return {
-						total_volunteer_hours: (accum.total_volunteer_hours) + att.attendance[key].volunteer_hours || 0,
-						total_mentoring_hours: (accum.total_mentoring_hours) + att.attendance[key].mentoring_hours || 0,
+						total_volunteer_hours: accum.total_volunteer_hours + att.attendance[key].volunteer_hours || 0,
+						total_mentoring_hours: accum.total_mentoring_hours + att.attendance[key].mentoring_hours || 0,
 					};
 				},
 				{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
@@ -885,6 +875,10 @@ export default function index(props) {
 		setSelectedRangeDate([new Date(date[0]), new Date(date[1])]);
 	};
 
+	const handleRightCalendar = () => {
+		setIsRightCalendarVisible(!isRightCalendarVisible);
+	};
+
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Attendance Summary</h2>
@@ -895,11 +889,13 @@ export default function index(props) {
 				</Link>
 				<div className="filter-container">
 					<div className="field">
-						<CustomRangeDatePicker format={DISPLAY_DATE_FORMAT} value={selectedSummaryRangeDate} onChange={handleChangeDateFilter} />
+						<CustomRangeDatePicker
+							format={DISPLAY_DATE_FORMAT}
+							value={selectedSummaryRangeDate}
+							onChange={handleChangeDateFilter}
+						/>
 					</div>
-					<div className="field search">
-						<CustomRangeDatePicker format={DISPLAY_DATE_FORMAT} value={selectedRangeDate} onChange={handleChangeRangeDate} />
-					</div>
+
 					<div className="field search">
 						<input
 							id="search"
@@ -914,13 +910,28 @@ export default function index(props) {
 						</label>
 						<FontAwesomeIcon className="search-icon" icon={faSearch} />
 					</div>
+
+					<div className="field search">
+						{isRightCalendarVisible && (
+							<CustomRangeDatePicker
+								format={DISPLAY_DATE_FORMAT}
+								value={selectedRangeDate}
+								onChange={handleChangeRangeDate}
+							/>
+						)}
+					</div>
 				</div>
 				<div id="attendance-summary-list">
 					<table id="attendance-table">
 						<tbody>
 							<tr>
 								<th>Student</th>
-								<th>Attendance Status</th>
+								<th>
+									Attendance Status{' '}
+									<span onClick={handleRightCalendar} style={{ cursor: 'pointer' }}>
+										<FontAwesomeIcon style={{ color: isRightCalendarVisible ? 'gray' : 'white' }} icon={faClock} />
+									</span>
+								</th>
 								<th>Other Hours</th>
 							</tr>
 
