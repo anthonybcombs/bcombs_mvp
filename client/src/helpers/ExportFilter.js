@@ -371,8 +371,8 @@ const ExportFilter = ({
         if(typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
           if(Array.isArray(application[key1])) {
             // parent
-
-            if(application[key1] == 'parents') {
+            console.log("key1", key1);
+            if(key1 == 'parents') {
               const level1Arr = application[key1];
 
               for(const [i, arrObj] of level1Arr.entries()) {
@@ -392,7 +392,7 @@ const ExportFilter = ({
                   }
                 }
               }
-            } else if(application[key1] == 'relationships') {
+            } else if(key1 == 'relationships') {
 
             }
     
@@ -522,6 +522,7 @@ const ExportFilter = ({
           }
         }
       }
+      delete formattedApplication.undefined;
       exportApplications.push(formattedApplication);
     }
   }
