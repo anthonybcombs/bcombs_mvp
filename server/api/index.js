@@ -92,6 +92,189 @@ const getUserProfileFromDatabase = async userId => {
   }
 };
 
+export const getVendors = async () => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `SELECT 
+        BIN_TO_UUID(id) as id,
+        id2,
+        new_vendorId
+        FROM vendor`
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const updateVendorNewId = async ({ newVendorId, id }) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `UPDATE 
+        vendor 
+      SET new_vendorId=? 
+      WHERE id=UUID_TO_BIN(?)`,
+      [newVendorId, id]
+    );
+  } catch (error) {
+    console.log("error update admin", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+} 
+
+export const getUsers = async () => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `SELECT 
+        BIN_TO_UUID(id) as id,
+        id2,
+        new_userId
+        FROM users`
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const updateUserNewId = async ({ newUserId, id }) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `UPDATE 
+        users 
+      SET new_userId=? 
+      WHERE id=UUID_TO_BIN(?)`,
+      [newUserId, id]
+    );
+  } catch (error) {
+    console.log("error update admin", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+} 
+
+const getChilds = async () => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `SELECT 
+        id,
+        BIN_TO_UUID(ch_id) as ch_id,
+        new_childId
+        FROM child`
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const updateChildNewId = async ({ newChildId, ch_id }) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `UPDATE 
+        child 
+      SET new_childId=? 
+      WHERE ch_id=UUID_TO_BIN(?)`,
+      [newChildId, ch_id]
+    );
+  } catch (error) {
+    console.log("error update admin", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+} 
+
+router.get("/updateChildNewId", async (req, res) => {
+  const childs = await getChilds();
+  const defaultSize = 4;
+  for(let child of childs) {
+    let addZero = 0;
+    if(child.id > 9999) {
+      addZero = 1;
+    }
+
+    const id2 = child.id + "";
+    const padId = id2.padStart(defaultSize + addZero, '0');
+    const newChildId = 'C11' + padId;
+    child.newChildId = newChildId;
+
+    if(!child.new_childId) {
+      updateChildNewId(child);
+    }
+  }
+  res.send(childs);
+});
+
+router.get("/updateUserNewId", async (req, res) => {
+  const users = await getUsers();
+  const defaultSize = 4;
+  for(let user of users) {
+    let addZero = 0;
+
+    if(user.id2 > 9999) {
+      addZero = 1;
+    }
+
+    const id2 = user.id2 + "";
+    const padId = id2.padStart(defaultSize + addZero, '0');
+    const newUserId = 'U11' + padId;
+    user.newUserId = newUserId;
+
+    if(!user.new_userId) {
+      await updateUserNewId(user);
+    }
+  }
+  res.send(users);
+});
+
+router.get("/updateVendorNewId", async (req, res) => {
+  const vendors = await getVendors();
+
+  vendors.map(async (vendor) => {
+    let addZero = 0;
+    const defaultSize = 4;
+
+    if(vendor.id2 > 9999) {
+      addZero = 1;
+    }
+
+    const id2 = vendor.id2 + "";
+    const padId = id2.padStart(defaultSize + addZero, '0');
+    const newVendorId = 'V11' + padId;
+    vendor.newVendorId = newVendorId;
+
+    if(!vendor.new_vendorId) {
+      await updateVendorNewId(vendor);
+    }
+  });
+  res.send(vendors);
+});
+
 router.get("/userProfile", async (req, res) => {
   try {
     const { email } = req.query;
