@@ -121,7 +121,8 @@ export const exportHeaders = {
             hospital_preference: 'Hospital Preference',
             doctor_name: 'Doctor Name',
             doctor_phone: 'Doctore Phone',
-            programs: 'Programs'
+            programs: 'Programs',
+            ethnicities: 'Ethnicities'
         }
     },
     parent: {
