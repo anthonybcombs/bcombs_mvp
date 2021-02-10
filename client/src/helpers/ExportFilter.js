@@ -344,7 +344,7 @@ const ExportFilter = ({
 
                   if(field.label == 'Password' || field.label == 'Confirm Password') {continue;}
 
-                  fieldValue = fieldValue.trim();
+                  fieldValue = fieldValue ? fieldValue.trim() : '';
                   const fieldLabel = field.label ? field.label.toLowerCase() : '';
                   formattedApplication = {...formattedApplication, [fieldLabel]: fieldValue}
                 }
