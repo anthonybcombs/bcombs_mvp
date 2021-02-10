@@ -522,6 +522,7 @@ const ExportFilter = ({
           }
         }
       }
+      delete formattedApplication.undefined;
       exportApplications.push(formattedApplication);
     }
   }
