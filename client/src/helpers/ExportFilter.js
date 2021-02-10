@@ -412,6 +412,8 @@ const ExportFilter = ({
               delete level1.email_address;
               delete level1.email_type2;
               delete level1.email_address2;
+              delete level1.gpa_cumulative_year;
+              delete level1.gpa_quarter_year;
               delete level1.gpa_cumulative_q1;
               delete level1.gpa_cumulative_q2;
               delete level1.gpa_cumulative_q3;
@@ -434,6 +436,7 @@ const ExportFilter = ({
               delete level1.accomplishments;
               delete level1.mentee_gain_program;
               delete level1.class_rank;
+              delete level1.location_site;
             } else {
               delete level1.child_currently_doctors_care;
               delete level1.comments_suggestion;
