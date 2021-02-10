@@ -346,7 +346,12 @@ const ExportFilter = ({
 
                   fieldValue = fieldValue ? fieldValue.trim() : '';
                   const fieldLabel = field.label ? field.label.toLowerCase() : '';
-                  formattedApplication = {...formattedApplication, [fieldLabel]: fieldValue}
+                  if(fieldLabel) {
+                    formattedApplication = {...formattedApplication, [fieldLabel]: fieldValue}
+                  } else {
+                    formattedApplication = {...formattedApplication, [k.label]: fieldValue}
+                  }
+                  
                 }
               }
             }
