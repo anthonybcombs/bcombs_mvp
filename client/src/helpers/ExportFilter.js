@@ -339,12 +339,15 @@ const ExportFilter = ({
 
                 let fieldValue = ""
                 for(const [x, field] of fields.entries() ) {
-                  fieldValue += (field.value ? field.value :"");
-                  fieldValue += " ";
-                }
-                fieldValue = fieldValue.trim();
+                  console.log("field", field);
+                  fieldValue = field.value;
 
-                formattedApplication = {...formattedApplication, [k.label]: fieldValue}
+                  if(field.label == 'Password' || field.label == 'Confirm Password') {continue;}
+
+                  fieldValue = fieldValue.trim();
+                  const fieldLabel = field.label ? field.label.toLowerCase() : '';
+                  formattedApplication = {...formattedApplication, [fieldLabel]: fieldValue}
+                }
               }
             }
           }
@@ -353,6 +356,13 @@ const ExportFilter = ({
         }
       }
 
+      delete formattedApplication.app_id;
+      delete formattedApplication.form;
+      formattedApplication.vendor = vendor?.name ? vendor.name : '';
+      formattedApplication.verification = getVerificationStatus(formattedApplication.verification);
+      formattedApplication.application_date = format(new Date(formattedApplication.application_date), DATE_FORMAT) 
+      formattedApplication.class_teacher = getClassTeacher(formattedApplication.class_teacher);
+      formattedApplication.student_status = getApplicationStatus(formattedApplication.student_status);
       console.log("formattedApplication", formattedApplication);
 
       exportApplications.push(formattedApplication);
