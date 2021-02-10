@@ -1797,6 +1797,7 @@ export default function index() {
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
           appGroups={appGroups}
+          isCustomForm={selectedForm !== "default"}
         />
       )}
       {
