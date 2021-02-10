@@ -117,6 +117,10 @@ export const exportHeaders = {
             does_child_require_physical_education_service: 'Does your child required additional physical / educational services',
             transfer_reason: 'Transfer Reason',
             child_lives_with: 'Child lives with',
+            hospital_phone: 'Hospital Phone',
+            hospital_preference: 'Hospital Preference',
+            doctor_name: 'Doctor Name',
+            doctor_phone: 'Doctore Phone'
         }
     },
     parent: {
