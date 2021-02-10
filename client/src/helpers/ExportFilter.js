@@ -375,34 +375,39 @@ const ExportFilter = ({
         if(typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
           if(Array.isArray(application[key1])) {
             // parent
-            console.log("this is an array", application[key1]);
 
-            const level1Arr = application[key1];
+            if(application[key1] == 'parents') {
+              const level1Arr = application[key1];
 
-            for(const [i, arrObj] of level1Arr.entries()) {
-              delete arrObj.password;
-              delete arrObj.emergency_contacts;
-              delete arrObj.parent_id;
-
-              for(const key3 of Object.keys(arrObj)) {
-                if(key3 != "password" || key3 !== 'parent_id') {
-                  if(key3 == 'birthdate') {
-                    const newDate = arrObj[key3] ? format(new Date(arrObj[key3]), DATE_FORMAT) : "";
-                    formattedApplication = {...formattedApplication, ["(Parent " + (i+1) +") "+ exportHeaders.parent[key3]]: newDate}
-                  } else {
-                    formattedApplication = {...formattedApplication, ["(Parent " + (i+1) +") "+ exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3]: ""}
+              for(const [i, arrObj] of level1Arr.entries()) {
+                delete arrObj.password;
+                delete arrObj.emergency_contacts;
+                delete arrObj.parent_id;
+  
+                for(const key3 of Object.keys(arrObj)) {
+                  if(key3 != "password" || key3 !== 'parent_id') {
+                    if(key3 == 'birthdate') {
+                      const newDate = arrObj[key3] ? format(new Date(arrObj[key3]), DATE_FORMAT) : "";
+                      formattedApplication = {...formattedApplication, ["(Parent " + (i+1) +") "+ exportHeaders.parent[key3]]: newDate}
+                    } else {
+                      formattedApplication = {...formattedApplication, ["(Parent " + (i+1) +") "+ exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3]: ""}
+                    }
+                    
                   }
-                  
                 }
               }
+            } else if(application[key1] == 'relationships') {
+
             }
+            console.log("this is an array", application[key1]);
 
           } else {
             // child 
             console.log("this is an object", application[key1]);
             let level1 = application[key1];
 
-            if(application.is_daycare) {
+            console.log("export application", application);
+            if(!!application.is_daycare) {
               delete level1.phone_type;
               delete level1.phone_number;
               delete level1.phone_type2;
@@ -458,14 +463,10 @@ const ExportFilter = ({
               delete level1.voucher;
               delete level1.reasons_previous_hospitalizations;
               delete level1.current_classroom;
-
-              console.log("level1", level1);
-              console.log("exportHeaders.child.main['birthdate']", exportHeaders);
             }
+
             for(const key2 of Object.keys(level1)) {
               if(key2 == 'ch_id') { continue; }
-              console.log("key2", key2);
-              console.log("[exportHeaders.child.main[key2]]", [exportHeaders.child.main[key2]]);
               if(key2 == 'birthdate') {
                 const newDate = level1[key2] ? format(new Date(level1[key2]), DATE_FORMAT) : "";
                 formattedApplication = {...formattedApplication, [exportHeaders.child.main['birthdate']]: newDate }
@@ -482,8 +483,6 @@ const ExportFilter = ({
           if(key1 == "emergency_contacts") {
             try {
               const ecs = JSON.parse(application[key1]);
-              console.log("ec ec", ecs);
-
               if(Array.isArray(ecs)) {
                 for(const [i, ec] of ecs.entries()) {
                   for(const key4 of Object.keys(ec)) {
