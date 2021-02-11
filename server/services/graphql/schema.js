@@ -898,6 +898,7 @@ const queryTypes = `
 
     type Child {
         ch_id: String!
+        new_childId: String
         firstname: String!
         lastname: String!
         age: Int!

@@ -78,7 +78,8 @@ export const exportHeaders = {
             gpa_quarter_q4: 'GPA Quarter 4',
             class_rank: 'Class Rank',
             grade_number: 'Grade',
-            grade_desc: 'Grade Name'
+            grade_desc: 'Grade Name',
+            new_childId: 'Child Id'
         },
         daycare: {
             firstname: 'Firstname',
@@ -123,7 +124,8 @@ export const exportHeaders = {
             doctor_phone: 'Doctore Phone',
             programs: 'Programs',
             ethnicities: 'Ethnicities',
-            birthdate: 'Birthdate'
+            birthdate: 'Birthdate',
+            new_childId: 'Child Id'
         }
     },
     parent: {
