@@ -779,9 +779,10 @@ export default function index() {
 		if (attendance.isAttendanceUpdateSuccess) {
 			setApplicationList(defaultApplicationList);
 			const redirect = () => {
-				// setTimeout(() => {
-				// 	window.location.replace(`/dashboard/attendance`);
-				// },1000);
+				setTimeout(() => {
+					window.location.replace(`/dashboard/attendance`);
+				},2000);
+				//window.location.replace(`/dashboard/attendance`);
 			};
 			redirect();
 		}
@@ -911,12 +912,11 @@ export default function index() {
 				attendance_status: app.attendance_status || '',
 				child_id: name === 'custom' ? app.app_id : app.child && app.child.ch_id,
 				vendor: app.vendor,
-				volunteer_hours: app.volunteer_hours ? parseInt(app.volunteer_hours) : 0,
-				mentoring_hours: app.mentoring_hours ? parseInt(app.mentoring_hours) : 0,
+				volunteer_hours: app.volunteer_hours ? parseFloat(app.volunteer_hours) : 0,
+				mentoring_hours: app.mentoring_hours ? parseFloat(app.mentoring_hours) : 0,
 				is_excused: app.excused ? 1 : 0,
 			};
 		});
-
 		const payload = {
 			attendance_list: attendanceList,
 			app_group_id: name === 'custom' ? searchParams && searchParams.formId : appGroupId,
@@ -926,9 +926,7 @@ export default function index() {
 		};
 		dispatch(requestUpdateAttendance(payload));
 		setIsConfirmationVisible(false);
-		setTimeout(() => {
-			window.location.replace(`/dashboard/attendance`);
-		}, 1000);
+
 	};
 
 	const handleAttedanceDetailChange = e => {

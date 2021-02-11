@@ -12,12 +12,12 @@ import {
 const updateAttendanceToDatabase = attendance => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log('updateAttendanceToDatabase attendance', attendance)
+      console.log('!!!!!!!!!!!!!!!!updateAttendanceToDatabase attendance', attendance)
       const { data } = await graphqlClient.mutate({
         mutation: ATTENDANCE_UPDATE_MUTATION,
         variables: { attendance }
       })
-      console.log('updateAttendanceToDatabase response', data)
+      console.log('!!!!!!!!!!!!!!!!updateAttendanceToDatabase response', data)
       return resolve(data)
     } catch (error) {
       console.log('updateAttendanceToDatabase error', error)

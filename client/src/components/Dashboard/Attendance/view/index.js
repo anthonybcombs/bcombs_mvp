@@ -491,10 +491,11 @@ export default function index(props) {
 					const dateKeys = Object.keys(att.attendance);
 					const filteredDate = dateKeys.filter(key => {
 						return isWithinInterval(new Date(key.replaceAll('_', '-')), {
-							start: subDays(new Date(), 1),
-							end: addDays(new Date(), 1),
+							start: new Date('2020-08-01'),
+							end: new Date('2021-07-31')
 						});
 					});
+					console.log('Total Hourssss filteredDate', filteredDate)
 					const totalHours = filteredDate.reduce(
 						(accum, key) => {
 							return {
@@ -504,6 +505,8 @@ export default function index(props) {
 						},
 						{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
 					);
+
+					console.log('Total Hourssss', totalHours)
 
 					return {
 						...att,
@@ -536,6 +539,7 @@ export default function index(props) {
 	}, [defaultEvents, defaultAttendanceDisplay]);
 
 	const renderTableData = () => {
+		console.log('Render Table Data', attendanceDisplay)
 		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
 		return attendanceDisplay.map((att, index) => {
 			// let totalPresent = null;
@@ -573,6 +577,7 @@ export default function index(props) {
 				).toFixed(2);
 				summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			}
+			console.log('attendanceSummary',attendanceSummary)
 			console.log('formattedDateKeys', formattedDateKeys);
 			return (
 				<tr key={index}>
@@ -806,7 +811,10 @@ export default function index(props) {
 			};
 		});
 
+		console.log('updatedAttendanceDisplazzzzy',updatedAttendanceDisplay)
+
 		let childEventAttendance = updatedAttendanceDisplay.reduce((accum, att) => {
+			console.log('ACCUMMM', accum)
 			let totalAttendance = Object.keys(att.attendance).length || 0;
 			let totalPresent =
 				Object.keys(att.attendance).filter(key => {
@@ -814,10 +822,14 @@ export default function index(props) {
 						att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1)
 					);
 				}).length || 0;
+
+
 			return {
 				...accum,
 				[att.child_id]: {
 					...(accum[att.child_id] || {}),
+					total_mentoring_hours:att.total_mentoring_hours,
+					total_volunteer_hours:att.total_volunteer_hours,
 					total_present:
 						accum[att.child_id] && accum[att.child_id].total_present
 							? accum[att.child_id].total_present + totalPresent
@@ -827,6 +839,7 @@ export default function index(props) {
 			};
 		}, {});
 
+		console.log('childEventAttendance123123123123123',childEventAttendance)
 		setAttendanceSummary(childEventAttendance);
 	};
 

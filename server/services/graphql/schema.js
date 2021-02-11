@@ -677,8 +677,8 @@ const inputs = `
     input AttendanceChildInput {
         app_id: String   
         attendance_status: String   
-        volunteer_hours: Int
-        mentoring_hours: Int
+        volunteer_hours: Float
+        mentoring_hours: Float
         child_id: String   
         vendor: String   
         is_excused: Int
@@ -1322,8 +1322,8 @@ const queryTypes = `
         attendance_status: String   
         child_id: String   
         vendor: String   
-        mentoring_hours: Int
-        volunteer_hours: Int
+        mentoring_hours: Float
+        volunteer_hours: Float
         is_excused: Int
         is_following: Int
     }
@@ -1354,8 +1354,8 @@ const queryTypes = `
         lastname: String
         attendance_status: String   
         child_id: String   
-        mentoring_hours: Int
-        volunteer_hours: Int
+        mentoring_hours: Float
+        volunteer_hours: Float
         is_excused: Int
         is_following: Int
         app_group_name: String

@@ -159,6 +159,7 @@ export const updateChildAttendance = async (attendance) => {
   const db = makeDb();
   let result = [];
   try {
+    console.log('Update Child Attendance', attendance)
     if(attendance) {
       for(const att of attendance.attendance_list) {
         const response = await db.query(`SELECT attendance_id 
