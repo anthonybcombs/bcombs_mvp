@@ -682,8 +682,8 @@ export default function index(props) {
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td style={{ width: '100px' }}> {att.total_volunteer_hours}</td>
-								<td style={{ width: '100px' }}> {att.total_mentoring_hours}</td>
+								<td style={{ width: '100px' }}> {Math.round(att.total_volunteer_hours)}</td>
+								<td style={{ width: '100px' }}> {Math.round(att.total_mentoring_hours)}</td>
 							</tr>
 						</table>
 					</td>
