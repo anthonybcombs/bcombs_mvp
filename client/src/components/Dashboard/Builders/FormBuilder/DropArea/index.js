@@ -445,13 +445,13 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
             actions={() => (
               <>
                 <button
-                  className='saveAndPreviewBtn'
+                  className='modalBtn saveAndPreviewBtn'
                   onClick={onSaveAndPreview}
                 >
                   Save and View
                 </button>
                 <button
-                  className='discardAndPreviewBtn'
+                  className='modalBtn discardAndPreviewBtn'
                   onClick={onDiscardAndPreview}
                 >
                   Discard and View
