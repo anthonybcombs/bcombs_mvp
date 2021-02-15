@@ -616,13 +616,12 @@ const TimeCustomInput = ({ value, onClick, name, className, placeholder, registe
 				placeholder={'HH:mm'}
 				readOnly={true}
 				id={`attendance_time`}
-				ref={register({ required: true })}
 				style={{
 					width:'100%'
 				}}
 			/>
 			<label className="field-label" for={`attendance_date`}>
-				<span className="required">*</span> {label}
+				{label}
 			</label>
 			<FontAwesomeIcon icon={faClock} className="calendar-icon" />
 		</div>
