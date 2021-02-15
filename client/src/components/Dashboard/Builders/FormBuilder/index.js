@@ -11,7 +11,7 @@ import Loading from "../../../../helpers/Loading.js";
 import { useSelector, useDispatch } from "react-redux";
 
 import { requestVendor } from "../../../../redux/actions/Vendors";
-import { requestGetFormById, setViewMode } from "../../../../redux/actions/FormBuilder"
+import { requestGetFormById, clearFormMessage } from "../../../../redux/actions/FormBuilder"
 
 const FormBuilder = ({ form_id, type, history }) => {
   const [builderDrawerOpen, setBuilderDrawerOpen] = useState(false)
@@ -64,8 +64,12 @@ const FormBuilder = ({ form_id, type, history }) => {
   }
 
   if (updateForm && updateForm.message == 'successfully update your application form') {
-    window.location.replace(`/dashboard/builder/${form_id}/edit`)
-    isLoading = true
+    if(isFormView) {
+      document.getElementById('previewButton') && document.getElementById('previewButton').click()
+    }
+    dispatch(clearFormMessage())
+    // window.location.replace(`/dashboard/builder/${form_id}/edit`)
+    // isLoading = true
   }
 
   const cleanFormData = (formData) => {
@@ -100,7 +104,6 @@ const FormBuilder = ({ form_id, type, history }) => {
           vendor={vendor}
           user={auth}
           isLoading={isLoading}
-          isFormView={isFormView}
           handleBuilderDrawerOpen={handleBuilderDrawerOpen}
         />
       </div>

@@ -1528,10 +1528,13 @@ export default styled.div`
     box-shadow: none !important;
     padding-bottom: 8px !important;
     border: none !important;
-    // border-radius: 4px !important;
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
     border-bottom: 1px solid #ddd !important;
+  }
+
+  .colorPicker .sketch-picker >div:last-child >div:nth-last-child(2) {
+    margin-left: auto !important;
   }
 
   .colorPicker label {

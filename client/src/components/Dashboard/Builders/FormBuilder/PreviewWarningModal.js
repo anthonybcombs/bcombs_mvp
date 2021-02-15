@@ -52,20 +52,41 @@ const RenameModalStyled = styled.div`
 
     padding: 1.5rem;
   }
-  .closeBtn {
+  .modalBtn {
     width: 100%;
-    color: white;
     border: none;
+    color: white;
     padding: 10px;
-    max-width: 80px;
-    margin-left: 1rem;
+    max-width: 120px;
+    margin-left: .5rem;
     background-color: #f26e21;
     font-size: 0.8em !important;
     border-radius: 0 !important;
     transition: .15s ease-in-out;
   }
+  .modalBtn:hover {
+    box-shadow: 0 3px 3px #ddd;
+  }
+  .discardAndPreviewBtn:hover {
+    background-color: #e26218;
+  }
+  .saveAndPreviewBtn {
+    color: #f26e21;
+    border: 1px solid #f26e21;
+    background-color: transparent;
+  }
+  .saveAndPreviewBtn:hover {
+    background-color: rgb(242 110 33 / 5%);
+  }
+  .closeBtn {
+    color: #f26e21;
+    max-width: 80px;
+    margin-right: auto;
+    border: 1px solid #f26e21;
+    background-color: transparent;
+  }
   .closeBtn:hover {
-    background: #e47120;
+    background-color: rgb(242 110 33 / 5%);
   }
   .cancelBtn {
     width: 100%;
@@ -92,7 +113,7 @@ const RenameModalStyled = styled.div`
     }
   }
 `;
-export default function index({ title, onClose }) {
+export default function index({ title, onClose, actions }) {
 
   return ReactDOM.createPortal(
     <RenameModalStyled
@@ -105,11 +126,14 @@ export default function index({ title, onClose }) {
 
         <div className='modal-footer'>
           <button
-            className='closeBtn'
+            className='modalBtn closeBtn'
             onClick={onClose}
           >
             Close
           </button>
+          {
+            actions && actions()
+          }
         </div>
       </div>
     </RenameModalStyled>,

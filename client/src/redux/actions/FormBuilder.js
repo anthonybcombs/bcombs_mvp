@@ -191,6 +191,11 @@ export const setViewMode = bool => {
     bool
   }
 }
+export const clearFormMessage = () => {
+  return {
+    type: actionType.CLEAR_FORM_MESSAGE
+  }
+}
 
 
 

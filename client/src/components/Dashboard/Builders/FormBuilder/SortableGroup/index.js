@@ -72,6 +72,7 @@ const SortableGroup = React.forwardRef(
     applyToAll = formatObj?.applyToAll || false
   }
 
+
   const [colorPickerShown, setColorPickerShown] = useState(false)
 
   return (
@@ -167,7 +168,7 @@ const SortableGroup = React.forwardRef(
                 <SketchPicker
                   color={color.length > 0 ? color : "red"}
                   disableAlpha
-                  presetColors={presetColors}
+                  presetColors={[...presetColors, '#F5812F','#000000']}
                   onChangeComplete={(e) => {
                     presetColors = presetColors.filter(pc => pc !== e.hex)
                     onChangeDefaultProps({
@@ -175,7 +176,7 @@ const SortableGroup = React.forwardRef(
                       format: JSON.stringify({
                         ...formatObj,
                         color: e.hex,
-                        presetColors: [e.hex, ...presetColors].slice(0, 6)
+                        presetColors: [e.hex, ...presetColors].slice(0, 4)
                       })
                     }, {
                       isColor: true,
