@@ -932,6 +932,16 @@ export default function index(props) {
 	const handleChangeRangeDate = date => {
 		if (date == null) {
 			setSelectedRangeDate([new Date(), new Date()]);
+			if(displayDayList.length <= 3) {
+				setCurrentDisplayDays(displayDayList)
+			}
+			else {
+				setCurrentDisplayDays([
+					displayDayList[0],
+					displayDayList[1],
+					displayDayList[2]
+				]);
+			}
 			return;
 		}
 		const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
@@ -966,11 +976,15 @@ export default function index(props) {
 			};
 		});
 		setAttendanceDisplay(updatedAttendanceDisplay);
-		setDisplayDays([
+		setCurrentDisplayDays([
 			new Date(date[0]),
 			addDays(new Date(new Date(date[0])), 1),
 			addDays(new Date(new Date(date[0])), 2),
 		]);
+
+
+
+
 		setSelectedRangeDate([new Date(date[0]), new Date(date[1])]);
 	};
 
