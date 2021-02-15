@@ -92,7 +92,7 @@ const RenameModalStyled = styled.div`
     }
   }
 `;
-export default function index({ title, onClose }) {
+export default function index({ title, onClose, actions }) {
 
   return ReactDOM.createPortal(
     <RenameModalStyled
@@ -110,6 +110,9 @@ export default function index({ title, onClose }) {
           >
             Close
           </button>
+          {
+            actions && actions()
+          }
         </div>
       </div>
     </RenameModalStyled>,
