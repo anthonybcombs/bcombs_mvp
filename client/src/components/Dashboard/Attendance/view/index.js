@@ -950,7 +950,7 @@ export default function index(props) {
 				return isWithinInterval(new Date(key.replaceAll('_', '-')), {
 					start: subDays(new Date(date[0]), 1),
 					end: addDays(new Date(date[1]), 1),
-				});
+				}); 
 			});
 			const totalHours = filteredDate.reduce(
 				(accum, key) => {
@@ -976,11 +976,13 @@ export default function index(props) {
 			};
 		});
 		setAttendanceDisplay(updatedAttendanceDisplay);
-		setCurrentDisplayDays([
-			new Date(date[0]),
-			addDays(new Date(new Date(date[0])), 1),
-			addDays(new Date(new Date(date[0])), 2),
-		]);
+		// console.log('Dayzzzzzzz', currentDisplayDays)
+		// console.log('Dayzzzzzzz 222', displayDays)
+		// setCurrentDisplayDays([
+		// 	new Date(date[0]),
+		// 	addDays(new Date(new Date(date[0])), 1),
+		// 	addDays(new Date(new Date(date[0])), 2),
+		// ]);
 
 
 
