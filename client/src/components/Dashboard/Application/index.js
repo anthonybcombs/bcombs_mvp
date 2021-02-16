@@ -9,6 +9,7 @@ import DataTable from 'react-data-table-component';
 import {
   faThList,
   faFile,
+  faFileAlt,
   faFileSignature,
   faCogs,
   faPrint,
@@ -25,7 +26,7 @@ import DaycareParentFormView from "./daycare/parent";
 import RelationshipToChildStyled from "../DaycareApplicationForm/RelationshipToChildForm";
 
 import TermsWaiverFormViewStyled from "./view/waiver";
-import { requestVendor } from "../../../redux/actions/Vendors";
+import { requestVendor, requestGetFormAppGroup } from "../../../redux/actions/Vendors";
 import {
   requestGetApplications,
   requestUpdateApplication,
@@ -60,9 +61,10 @@ const ApplicationFormStyled = styled.form`
     .page-break {
       margin-top: 1rem;
       display: block;
-      page-break-before: auto;
       position: relative;
+      page-break-before: auto;
     }
+    
     #applicationForm .form-group {
       margin-top: 30px !important;
     }
@@ -71,13 +73,52 @@ const ApplicationFormStyled = styled.form`
       margin-bottom: 20px !important;
     }
 
+    #userApplicationForm {
+      margin-bottom: 4rem;
+    }
 
+    .printpage-break {
+      padding: 0;
+      page-break-after: always;
+    }
     
+    .printpage-break.parent-information #applicationForm >div {
+      page-break-after: always;
+    }
+
+    .printpage-break.waiver-information #applicationForm >br {
+      display: none;
+    }
+
+    .printpage-break.waiver-information #applicationForm >div {
+      page-break-inside: avoid;
+      margin-bottom: 4rem;
+    }
+
+    .child-info-wrapper,
+    .general-info-wrapper,
+    .medical-info-wrapper,
+    .emergency-contact-wrapper,
+    .waiver-wrapper,
+    .relationship-wrapper,
+    .parent-info-wrapper {
+      box-shadow: none;
+      padding: 0;
+      margin-top: 0;
+    }
+
+    .style-eight {
+      display: none;
+    }
+    
+    
+
     .child-info-wrapper .grid {
       display: grid;
       grid-template-columns: 31% 31% 31%;
       grid-gap: 3.33333333%;
-      
+
+      page-break-inside: avoid;
     }
 
     .general-info-wrapper {
@@ -85,6 +126,10 @@ const ApplicationFormStyled = styled.form`
       margin-top: 1rem;
       display: block;
       page-break-before: auto;
+    }
+
+    .general-info-wrapper >div {
+      page-break-inside: avoid;
     }
   
     .general-info-wrapper .grid-1 {
@@ -140,6 +185,9 @@ const ApplicationFormStyled = styled.form`
       }
     }
     
+    .parent-info-wrapper >div {
+      page-break-inside: avoid;
+    }
 
     .parent-info-wrapper .grid-1 {
       display: grid;
@@ -226,6 +274,10 @@ const ApplicationFormStyled = styled.form`
       visibility: visible;
       opacity: 1;
       display: grid;
+    }
+
+    .emergency-contact-wrapper {
+      margin-top: 30px;
     }
   
     @media (max-width: 768px) {
@@ -433,7 +485,7 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
-  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm, customApplicationHistory } } = useSelector(
+  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups } } = useSelector(
     ({ groups, auth, vendors, applications, loading, form }) => {
       return { groups, auth, vendors, applications, loading, form };
     }
@@ -466,6 +518,10 @@ export default function index() {
     window.location.reload()
   }
 
+  const [appGroups, setAppGroups] = useState([]);
+
+  console.log("form app group", formAppGroups);
+
   useEffect(() => {
     if (auth.user_id) {
       //dispatch(requestUserGroup(auth.email));
@@ -489,11 +545,13 @@ export default function index() {
         });
 
         setSelectedVendor(newDefaultVendor[0]);
+        setAppGroups(newDefaultVendor[0].app_groups);
         //dispatch(requestGetApplications(newDefaultVendor[0].id));
         dispatch(requestGetForms({ vendor: newDefaultVendor[0].id, categories: [] }))
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
+        setAppGroups(vendors[0].app_groups);
         dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
@@ -503,6 +561,12 @@ export default function index() {
   useEffect(() => {
     dispatch(requestGetApplications(selectedVendor.id));
   }, [formList])
+
+  useEffect(() => {
+    console.log("Im here here formAppGroups");
+    console.log("formAppGroups, formAppGroups", formAppGroups);
+    setAppGroups(formAppGroups);
+  }, [formAppGroups])
 
   console.log("vendor", vendors);
 
@@ -953,7 +1017,7 @@ export default function index() {
     reValidateMode: "onChange"
   });
 
-  const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+  const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
 
   const onSubmitSaveApplication = () => {
     console.log("Click Save Application");
@@ -1593,7 +1657,9 @@ export default function index() {
 
                   console.log("target", target.value);
                   if(target.value == "default") {
+                    console.log("selectedvendor", selectedVendor);
                     setSelectedForm("default");
+                    setAppGroups(selectedVendor.app_groups);
                     dispatch(requestGetApplications(selectedVendor.id));
                   } else {
                     setSelectedForm(target.value);
@@ -1601,11 +1667,15 @@ export default function index() {
                       setView('')
                       setSelectedApplication({})
                     }
+
+                    console.log("form form", target.value);
+                    setAppGroups([]);
+                    dispatch(requestGetFormAppGroup(target.value));
                     dispatch(requestGetCustomApplications(target.value));
                   }
                 }}
               >
-                <option key={selectedVendor.id} value="default">
+                <option key={selectedVendor.id} selected value="default">
                   {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
                 </option>
                 {
@@ -1684,14 +1754,21 @@ export default function index() {
               <FontAwesomeIcon icon={faFile} />
               <span>My Application</span>
             </a>
+
+            <a href={`/dashboard/forms`}>
+              <FontAwesomeIcon icon={faFileAlt} />
+              <span>Forms</span>
+            </a>
           </div>
         </div>
         <div>
           {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
             <ApplicationSummaryStyled
-              appGroups={selectedVendor.app_groups}
+              appGroups={appGroups}
               applications={applications.activeapplications}
               vendor={selectedVendor}
+              form={selectedForm}
+              isForm={selectedForm !== "default"}
             />
           )}
           {selectedLabel === "Form Settings" && !selectNonMenuOption && (
@@ -1704,7 +1781,7 @@ export default function index() {
             <EditApplicationStyled
               application={selectedApplication}
               vendor={selectedVendor}
-              appGroups={selectedVendor.app_groups}
+              appGroups={appGroups}
               onSubmit={onSubmit}
               handleUpdateOnchange={handleUpdateOnchange}
               updateLoading={loading.application}
@@ -1718,7 +1795,7 @@ export default function index() {
           handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" ? viewType : 'builderForm')}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
-          appGroups={selectedVendor.app_groups}
+          appGroups={appGroups}
         />
       )}
       {
@@ -1849,7 +1926,7 @@ export default function index() {
             {selectNonMenuOption && view == "application" && (
               <hr className="style-eight"></hr>
             )}
-            <br />
+
             {selectNonMenuOption && 
               view == "application" && 
               selectedApplication && 

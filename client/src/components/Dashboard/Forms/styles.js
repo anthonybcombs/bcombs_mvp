@@ -6,6 +6,61 @@ export default styled.div`
   max-width: 1920px;
   padding: 0rem 3em 2rem;
 
+  .field {
+		padding: 5px !important;
+		margin: 5px !important;
+		display: flex;
+		flex-flow: column-reverse;
+		margin-bottom: 1em;
+	}
+	.field-input {
+		font-size: 18px;
+		border: 0;
+		border-bottom: 2px solid #ccc;
+		font-family: inherit;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		border-radius: 0;
+		padding: 5px;
+		cursor: text;
+		line-height: 1.8;
+
+		padding: 5px 0;
+		width: 100%;
+		display: block;
+		text-indent: 5px;
+	}
+	.field-input:placeholder-shown + .field-label {
+		max-width: calc(100% - 30%) !important;
+	}
+	.field-label,
+	.field-input {
+		transition: all 0.2s;
+		touch-action: manipulation;
+	}
+	.field-label {
+		font-size: 14px;
+		color: #4b525a;
+	}
+	.field-input:placeholder-shown + .field-label {
+		overflow: hidden;
+		transform-origin: left bottom;
+		transform: translate(0, 2.125rem) scale(1.4);
+	}
+	.field-input::placeholder {
+		opacity: 0;
+		transition: inherit;
+		font-size: 12px;
+	}
+	.field-input:focus::placeholder {
+		opacity: 1;
+	}
+	.field-input:focus + .field-label {
+		transform: translate(0, 0) scale(1);
+		cursor: pointer;
+		font-weight: bold;
+	}
+
   #formManager {
     padding: 2rem;
     background-color: white;
@@ -36,7 +91,6 @@ export default styled.div`
   }
   #formManager .field-input {
     position: relative;
-
 
     border: 0;
     cursor: text;
@@ -101,20 +155,24 @@ export default styled.div`
     border-bottom: 1px solid #ddd;
   }
   .formManager-header .header-searchBar .search-input {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    border: 1.65px solid #ccc;
-    max-width: 400px;
+    position: relative;
+    max-width: 300px;
+    width: 100%;
   }
   .formManager-header .header-searchBar .search-input > input {
-    padding-left: 8px !important;
-    border-bottom: 0 !important;
+    text-indent: 2rem !important;
+    background: transparent;
+  }
+  .formManager-header .header-searchBar .search-input > label {
+    padding-left: 1.5rem;
   }
   .formManager-header .header-searchBar .search-input > svg {
     color: grey;
     opacity: 0.5;
+    bottom: 13px;
+    position: absolute;
     pointer-events: none;
+    padding: 0 !important;
   }
   .formManager-header .header-searchBar .search-input > svg:hover {
     box-shadow: none !important;
@@ -148,18 +206,21 @@ export default styled.div`
 
   .formManager-header .header-actions {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
   .formManager-header .header-actions .left-actions,
   .formManager-header .header-actions .right-actions {
     display: flex;
-    align-items: stretch;
+    align-items: center;
   }
   
   .formManager-header .header-actions .left-actions .select-field-wrapper {
+    border: 0;
     max-width: 300px;
     min-width: 300px;
-    border: 1.65px solid #ccc;
+    border-bottom: 1.65px solid #ccc;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   .formManager-header .header-actions .left-actions .select-field-wrapper #multiselectContainerReact div:first-child {
     border: none;
@@ -170,7 +231,7 @@ export default styled.div`
     line-height: 1.5;
   }
   .formManager-header .header-actions .left-actions .select-field-wrapper:after {
-    top: 15px;
+    top: unset;
     right: 10px !important;
   }
   #multiselectContainerReact .chip,
@@ -193,7 +254,7 @@ export default styled.div`
     width: 150px;
     padding: 12px;
     font-size: 16px;
-    margin-right: 1rem;
+    // margin-right: 1rem;
     border-radius: 3px;
     background: transparent;
     border: 1.65px solid #ccc;
@@ -212,32 +273,27 @@ export default styled.div`
   }
   .formManager-header .header-actions .right-actions .dateFilter {
     display: flex;
-    align-items: stretch;
+    align-items: center;
+    margin-right: 1rem;
+    border-bottom: 1.65px solid #ccc;
   }
   .formManager-header .header-actions .right-actions .select-field-wrapper {
-    padding: 0 2rem 0 1rem;
-    border: 1.65px solid #ccc;
+    padding: 0 !important;
+    margin: 0 !important;
   }
   .formManager-header .header-actions .right-actions .select-field-wrapper > select {
-    cursor: pointer !important;
-    border-bottom: 0 !important;
-    text-indent: unset !important;
-    text-align-last: center !important;
-  }
-  .formManager-header .header-actions .right-actions .select-field-wrapper:after {
-    right: 10px !important;
+    width: 200px !important;
+    border: none !important;
   }
   .formManager-header .header-actions .right-actions svg:hover {
     box-shadow: none !important;
   }
   .formManager-header .header-actions .right-actions .dateFilter > svg {
-    border: 1.65px solid #ccc;
-    border-left: 0;
+    // border: 1.65px solid #ccc;
     color: grey;
     height: auto;
     padding: 11px !important;
-    border-radius: 0 !important;
-    background: rgb(221 221 221 / 25%);
+    // border-radius: 3px !important;
   }
   .formManager-header .header-actions .right-actions .dateFilter > svg:hover {
     color: #1e98f3;
@@ -372,9 +428,71 @@ export default styled.div`
   // ********* MEDIA QUERIES *********
   // =================================
 
+  @media (max-width: 980px) {
+    .formManager-header .header-actions {
+      display: flex;
+      flex-direction: column;
+    }
+    .formManager-header .header-actions .left-actions,
+    .formManager-header .header-actions .right-actions {
+      width: 100%;
+      margin: 1rem 0 !important;
+    }
+    .formManager-header .header-actions .left-actions .select-field-wrapper {
+      width: 100%;
+      max-width: unset;
+    }
+    .formManager-header .header-actions .right-actions .favorites-btn {
+      margin-left: auto;
+    }
+  }
+
   @media (max-width: 840px) {
     padding: 0rem 1rem 2rem;
-    
+  }
+
+  @media (max-width: 640px) {
+    .formManager-header .header-searchBar {
+      display: block;
+    }
+    .formManager-header .header-searchBar .search-input {
+      max-width: unset;
+      padding: 0 !important;
+      margin: 0 0 1rem 0 !important;
+    }
+    .formManager-header .header-searchBar .newFrom-btn {
+      text-align: center;
+      justify-content: center;
+    }
+    .formManager-header .header-actions {
+      display: flex;
+      flex-direction: column;
+    }
+    .formManager-header .header-actions .right-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      width: 100%;
+      margin: 1rem 0 !important;
+    }
+    .formManager-header .header-actions .right-actions .dateFilter {
+      grid-column: span 3;
+      margin: 0 0 1rem 0;
+    }
+    .formManager-header .header-actions .right-actions .select-field-wrapper {
+      flex: 1;
+    }
+    .formManager-header .header-actions .right-actions .favorites-btn {
+      margin: 0;
+      width: 100%;
+      max-width: unset;
+      grid-column: span 2;
+      text-align: center;
+      justify-content: center;
+    }
+    .formManager-header .header-actions .right-actions .viewType {
+      margin-left: auto;
+    }
   }
   
 `;

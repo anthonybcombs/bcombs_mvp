@@ -8,10 +8,10 @@ import FieldConstructor from '../FormBuilder/FieldConstructor'
 import { Sources } from '../FormBuilder/Settings/Sources'
 
 export default ({ 
-  label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError, historyFields,
+  label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError, historyFields, format,
   gridMax, showLabel, addresses, id: groupId, onCopyFirstAddress, isReadOnly, onGetGroupById, isApplication
 }) => {
-  
+
   const isAddress = itemGroup === 'address'
 
   const gridColRepeat = isAddress ? 4 : gridMax
@@ -71,13 +71,15 @@ export default ({
   const finalLabel = isRequired
     ? label.slice(-1) === '*' ? label : label + ' *'
     : label
+  const formatObj = format ? JSON.parse(format) : {}
+  const color = formatObj?.color || '#000'
 
   return (
     <div
       className={`formGroup ${itemGroup}`}
       id={`group_${groupId}`}
     >
-      <p className='formGroup-name'>
+      <p className='formGroup-name' style={{ color }}>
         {showLabel ? (
           <span>
             {finalLabel}

@@ -400,6 +400,9 @@ export default (props) => {
   const hideStepper = hasWizard && !!actualFormFields.find(e => !e.showLabel)
   
   console.log('@actualFormFields', { actualFormFields, nextPage, fieldError })
+  console.log('flattenFields ', flattenFields());
+
+  const hasLoginField = !!(flattenFields().find(e => e.type === 'login'))
 
   return (
     <FormStyled ref={componentRef}>
@@ -451,7 +454,7 @@ export default (props) => {
           <> 
             {
               (isSuccessfulSubmit && form_id) ? (
-                <ThankyouPage />
+                <ThankyouPage hasLoginField={hasLoginField}/>
               ) : (
                 (loading.getForm || loading.submitForm) ? (
                   <Loading />

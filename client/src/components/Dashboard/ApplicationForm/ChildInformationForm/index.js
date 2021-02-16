@@ -205,7 +205,8 @@ export default function index({
   app_programs = [],
   location_sites = [],
   pastChildInformation = {},
-  isVendorView = false
+  isVendorView = false,
+  printPageClassname
 }) {
   const hasSelectAll = false;
 
@@ -399,7 +400,7 @@ export default function index({
         onClick={onClick}
         name={name}
         className={className}
-        placeholder="mm/dd/yyyy"
+        placeholder="MM/dd/yyyy"
         readOnly={true}
         id={`date_of_birth_${counter - 1}`}
         ref={register({ required: true })}
@@ -413,7 +414,7 @@ export default function index({
 
   console.log("pastChildInformation", pastChildInformation);
   return (
-    <ChildInfomationFormStyled>
+    <ChildInfomationFormStyled className={printPageClassname}>
       <h3 className="heading">
         Child Information {counter > 1 ? `(${counter})` : ``}
       </h3>

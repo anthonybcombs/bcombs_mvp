@@ -112,13 +112,13 @@ export default function index({
         </span>
 
         <div className="profile-confirmation">
-          <center>
+          {/* <center>
             <FontAwesomeIcon
               icon={faTimesCircle}
               size="6x"
               style={{ marginBottom: 20, color: "#F36F21" }}
             />
-          </center>
+          </center> */}
           <h4>{headerMessage}</h4>
           <div>{message}</div>
         </div>

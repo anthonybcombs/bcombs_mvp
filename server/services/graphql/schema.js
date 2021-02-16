@@ -84,6 +84,7 @@ const inputs = `
         groups:[String]
         visibilityType: String
         color: String
+        app_group_ids: [String]
     }    
     input CreateProfileInput{
         email: String!
@@ -404,19 +405,31 @@ const inputs = `
         color_designation: String
         notes: String
         class_teacher: String
+        is_form: Boolean
+    }
+
+    input AppGroupVendorInput {
+        id: String
+        is_form: Boolean
+        app_grp_id: String
+        name: String
+        label: String
     }
 
     input AppGroupInput {
         app_grp_id: String
         user_id: String!
         email: String!
-        vendors: [String!]
+        vendors: [AppGroupVendorInput]
         size: Int!
         name: String!
+        pool_id: String!
+        
     }
 
     input DeleteAppGroupInput {
-        id: String!
+        app_grp_id: String!
+        pool_id: String
         email: String!
     }
 
@@ -523,6 +536,7 @@ const inputs = `
         hasSettings: Boolean
         supportMultiple: Boolean
         showLabel: Boolean
+        format: String
     }
 
     input CustomFormFieldsInput {
@@ -672,12 +686,14 @@ const inputs = `
 
     input AttendanceInput {
         app_group_id: String
+        attendance_type: String
         attendance_date: String
         attendance_start_time: String
         attendance_end_time: String
         attendance_list: [AttendanceChildInput]
         event_name: String
         location: String
+        description: String
     }
 `;
 const queryTypes = `
@@ -774,6 +790,7 @@ const queryTypes = `
         familyMembers:[String]
         groups:[String]
         visibilityType: String!   
+        app_group_ids: [String]
     }
     type CalendarType{
         status: Status!
@@ -789,6 +806,14 @@ const queryTypes = `
         created_groups:[Group]
         application_groups: [VendorAppGroup]
     }    
+
+    type EditAllGroups {
+        joined_groups:[Group]
+        created_groups:[Group]
+        application_groups: [VendorAppGroup]
+        message: String
+        status: String
+    }
 
     type FammilyMemberType{
         id: String!
@@ -1048,10 +1073,12 @@ const queryTypes = `
         id: Int
         app_grp_id: String!
         user: String!
-        vendor: String!
+        vendor: String
+        form: String
         size: Int
         name: String!
         created_at: Date
+        pool_id: String
     }
 
     type AppGroupStatus{
@@ -1138,6 +1165,14 @@ const queryTypes = `
         notes: String
     }
 
+
+    type CustomApplicationByVendor {
+        id: String
+        app_id: String
+        form: String
+        class_teacher: String
+    }
+
     type CustomForm {
         formTitle: String
         formData: [CustomFormData]
@@ -1158,6 +1193,7 @@ const queryTypes = `
         hasSettings: Boolean
         supportMultiple: Boolean
         showLabel: Boolean
+        format: String
     }
 
     type CustomFormFields {
@@ -1277,6 +1313,10 @@ const queryTypes = `
         form: CustomApplicationOutput
     }
 
+    type UserApplicationsOutput {
+        applications: [Application]
+        customApplications: [SubmittedCustomApplicationOutput]
+    }
     type AttendanceChild {
         app_id: String   
         attendance_status: String   
@@ -1285,26 +1325,31 @@ const queryTypes = `
         mentoring_hours: Int
         volunteer_hours: Int
         is_excused: Int
+        is_following: Int
     }
 
     type Attendance {
         app_group_id: String
+        attendance_type: String
         attendance_date: String
         attendance_start_time: String
         attendance_end_time: String
         attendance_list: [AttendanceChild]
         event_name: String
+        description: String
         location: String
         
     }
 
     type AttendanceList {
         app_group_id: String
+        attendance_type: String
         attendance_date: String
         attendance_start_time: String
         attendance_end_time: String
         event_name: String
         location: String
+        description: String
         firstname: String
         lastname: String
         attendance_status: String   
@@ -1312,8 +1357,31 @@ const queryTypes = `
         mentoring_hours: Int
         volunteer_hours: Int
         is_excused: Int
+        is_following: Int
         app_group_name: String
     }
+
+    type EventAttendanceList {
+        app_group_name: String
+        app_group_id: String
+        group_id: String
+        calendar_id: String
+        event_id: String
+        event_name: String
+        type: String
+        start_of_event: String
+        end_of_event: String
+        recurring: String
+        recurring_end_date: String
+    }
+
+    type VendorForms {
+        name: String
+        id: String
+        is_form: Boolean
+    }
+
+    
     
 `;
 
@@ -1341,8 +1409,8 @@ const mutations = `
         archivedApplications(app_ids: [String]): Status
         unarchivedApplications(app_ids: [String]): Status
         updateVendor(vendor: VendorInput!): Vendor
-        addVendorAppGroup(appGroup: AppGroupInput!): AllGroups
-        editVendorAppGroup(appGroup: AppGroupInput!): AllGroups
+        addVendorAppGroup(appGroup: AppGroupInput!): EditAllGroups
+        editVendorAppGroup(appGroup: AppGroupInput!): EditAllGroups
         deleteVendorAppGroup(appGroup: DeleteAppGroupInput!): AllGroups
         saveApplication(application: SaveApplicationUserInput): Status
         addVendorAdmin(admin: AddAdminInput): [Admin]
@@ -1387,8 +1455,8 @@ const queries = `
         getApplication(application_id: String!): Application
         getUserApplications(email: String!): UserApplication
         getUserByEmail(email: String): CheckUserEmail
-        getVendorAppGroups(vendor: String): AllGroups
-        getUserApplicationsByUserId(user_id: String!): [Application]
+        getVendorAppGroups(vendor: String): [VendorAppGroup]
+        getUserApplicationsByUserId(user_id: String!): UserApplicationsOutput
         getApplicationHistory(app_id: String!): [ApplicationHistory]
         getUserApplicationHistory(id: String!):[ApplicationHistory]
         getVendorAdminsByUser(user: String): [Admin]
@@ -1398,10 +1466,17 @@ const queries = `
         getCustomFormApplicants(form_id: String): [SubmittedCustomApplicationOutput]
         getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
         getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
-        getAttendance(application_group_id: String): [AttendanceList]
+        getAttendance(application_group_id: String, attendance_type: String): [AttendanceList]
+        getEventAttendance(application_group_id: String): [EventAttendanceList]
+        getUserVendorForms(user: String!): [VendorForms]
+        getFormAppGroup(form: String!): [VendorAppGroup]
+        getAllFormAppGroupsByVendor(vendor: String): [VendorAppGroup]
+        getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
     }
 `;
 
+
+// getVendorAppGroups(vendor: String): AllGroups
 const schema = `
     schema{
         query: RootQuery        

@@ -6,6 +6,7 @@ import ErrorMessage from "../../../../helpers/ErrorMessage";
 
 const MedicalCareInfoStyled = styled.div`
   position: relative;
+  margin-top:12px;
 
   .medical-info-wrapper {
     padding-bottom: 30px !important;
@@ -46,13 +47,14 @@ export default function index({
   errors,
   isReadonly = false,
   pastChildInformation = {},
-  isVendorView
+  isVendorView,
+  printPageClassname
 }) {
 
   const data = {};
 
   return (
-    <MedicalCareInfoStyled>
+    <MedicalCareInfoStyled className={printPageClassname}>
       <h3 className="heading">Emergency Medical Care Information</h3>
       <div className="medical-info-wrapper">
 

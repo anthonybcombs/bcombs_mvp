@@ -29,9 +29,17 @@ export default function index({
   isVisible = true,
   toggleCreateAppGroupModal,
   vendors = [],
-  auth
+  auth,
+  errorMessage="",
+  status="",
+  handleCloseModal,
+  selectedForms=[],
+  formattedVendors=[]
 }) {
+
+  console.log("currentAppGroup", currentAppGroup);
   const action = isEditMode ? "edit" : "create";
+
   const [groupDetails, setGroupDetails] = useState({
     ...currentAppGroup
   });
@@ -41,12 +49,41 @@ export default function index({
 
   useEffect(() => {
     if (isVisible && isEditMode) {
+      if(formattedVendors.length > 0 && selectedForms.length > 0) {
+        currentAppGroup = {...currentAppGroup, ["vendors"]: selectedForms};
+      }
       setGroupDetails(currentAppGroup);
     }
   }, [isVisible]);
+
+
+  useEffect(() => {
+    if(status == "success") {
+      setGroupDetails({
+        name: "",
+        size: "",
+        vendors: []
+      });
+      toggleCreateAppGroupModal(false);
+    }
+  }, [status])
+
+  // useEffect(() => {
+  //   if(selectedForms.length > 0) {
+  //     currentAppGroup = {...currentAppGroup, ["vendors"]: selectedForms};
+  //     console.log("Im here 12345");
+  //     console.log("currentAppGroup3", currentAppGroup);
+  //   }
+  //   console.log("selectedForms selectedForms", selectedForms);
+  //   setGroupDetails({...currentAppGroup});
+  // }, [formattedVendors, selectedForms])
+
   const handleGroupDetailsChange = (id, value) => {
     if (id == "vendors") {
-      let ids = value.map(vendor => vendor.id);
+      let ids = value.map((vendor) => { return {id: vendor.id, is_form: vendor.is_form}});
+
+      console.log("value", value);
+      console.log("ids", ids);
       setGroupDetails({
         ...groupDetails,
         [id]: ids
@@ -58,41 +95,75 @@ export default function index({
       });
     }
   };
-  const handleSubmit = value => {
+  const handleSubmit = () => {
+    console.log("cant edit edit");
     if (isEditMode) {
       let payload = {
-        app_grp_id: groupDetails.app_grp_id,
         size: groupDetails.size,
         name: groupDetails.name,
         email: auth.email,
-        user_id: auth.user_id
+        user_id: auth.user_id,
+        pool_id: groupDetails.pool_id
       };
-      payload.size = parseInt(payload.size);
-      console.log("PAYLOADDD EDIT", groupDetails);
-      dispatch(requestEditVendorAppGroup(payload));
-      setGroupDetails({
-        name: "",
-        size: "",
-        vendors: []
+
+      const editVendors = groupDetails.vendors && groupDetails.vendors.length > 0 ? groupDetails.vendors : [];
+      //payload.vendors = editVendors;
+
+      console.log("editvendors", editVendors);
+
+      payload.vendors = editVendors.map((v) => {
+        if(v.is_form) {
+          v.app_grp_id = v.id == currentAppGroup.form ? currentAppGroup.app_grp_id : ""
+        } else {
+          v.app_grp_id = v.id == currentAppGroup.vendor ? currentAppGroup.app_grp_id : ""
+        }
+
+        const currentMembers = currentAppGroup.members;
+        const matchMember = currentMembers.filter((member) => {
+          if(v.is_form) {
+            return v.id == member.form;
+          } else {
+            return v.id == member.vendor;
+          }
+        });
+
+        if(matchMember.length > 0) {
+          v.app_grp_id = matchMember[0].app_grp_id;
+        }
+
+        // delete v.name;
+        // delete v.label;
+        return v;
       });
-      toggleCreateAppGroupModal(false);
+
+      console.log("groupDetails", groupDetails);
+      payload.size = parseInt(payload.size);
+      console.log("PAYLOADDD EDIT", payload);
+      dispatch(requestEditVendorAppGroup(payload));
+      // setGroupDetails({
+      //   name: "",
+      //   size: "",
+      //   vendors: []
+      // });
+      //toggleCreateAppGroupModal(false);
     } else {
       if (groupDetails.vendors.length > 0) {
         let payload = {
           ...groupDetails,
           user_id: auth.user_id,
-          email: auth.email
+          email: auth.email,
+          pool_id: uuid()
         };
         payload.size = parseInt(payload.size);
         console.log("PAYLOADDD CREATE", payload);
         dispatch(requestAddVendorAppGroup(payload));
         toggleCreateAppGroupModal(false);
-        setVendorError("");
-        setGroupDetails({
-          name: "",
-          size: "",
-          vendors: []
-        });
+        // setVendorError("");
+        // setGroupDetails({
+        //   name: "",
+        //   size: "",
+        //   vendors: []
+        // });
       } else {
         setVendorError("Vendor is required!");
       }
@@ -102,6 +173,7 @@ export default function index({
   const handleDelete = () => {
     let payload = {
       app_grp_id: groupDetails.app_grp_id,
+      pool_id: groupDetails.pool_id,
       email: auth.email
     };
     console.log("payloadddd", payload);
@@ -129,21 +201,46 @@ export default function index({
               size: "",
               vendors: []
             });
+            handleCloseModal()
             toggleCreateAppGroupModal(false);
           }}>
           &times;
         </span>
         <div>
           <h2>{isEditMode ? "Edit" : "Create"} a Group</h2>
+          {
+            status == "failed" && errorMessage ? (
+              <p style={{"color": "red"}}>
+                {errorMessage}
+              </p>
+            ) : ""
+          }
+          {
+            status == "success" ? (
+              <p style={{"color": "#f26e21"}}>
+                Application Group successfully updated.
+              </p>
+            ) : ""
+          }
           <AppGroupForm
-            vendors={vendors}
+            formattedVendors={formattedVendors}
             groupDetails={groupDetails}
             onSubmit={handleSubmit}
             handleGroupDetailsChange={handleGroupDetailsChange}
             action={action}
             handleDelete={handleDelete}
             vendorError={vendorError}
+            currentAppGroup={currentAppGroup}
+            selectedForms={selectedForms}
+            isEditMode={isEditMode}
           />
+          {
+            isEditMode && (
+              <p>
+                Single form edit is not supported with groups created for multiple forms. If you want to edit the existing group in single form, deselect/remove it from this group and create a new one.
+              </p>
+            )
+          }
         </div>
       </div>
     </NewContactModal>,

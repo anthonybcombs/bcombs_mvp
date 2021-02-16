@@ -94,7 +94,8 @@ export default function index({
   errors,
   isReadonly = false,
   pastChildInformation = {},
-  isVendorView
+  isVendorView,
+  printPageClassname
 }) {
 
   const createYearTakenSelect = () => {
@@ -367,7 +368,7 @@ export default function index({
   console.log('GeneralInformationFormStyled123 pastChildInformation',pastChildInformation)
 
   return (
-    <GeneralInformationFormStyled>
+    <GeneralInformationFormStyled className={printPageClassname}>
       <h3 className="heading">General Information</h3>
       <div className="general-info-wrapper">
         <div className="grid-4">

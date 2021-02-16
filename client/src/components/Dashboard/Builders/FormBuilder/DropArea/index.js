@@ -12,7 +12,7 @@ import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
 import PreviewWarningModal from '../PreviewWarningModal'
 
-import { requestAddForm, requestUpdateForm } from "../../../../../redux/actions/FormBuilder"
+import { requestAddForm, requestUpdateForm, setViewMode } from "../../../../../redux/actions/FormBuilder"
 import Loading from '../../../../../helpers/Loading'
 import { groupFieldsByPageBreak } from '../../utils'
 
@@ -26,7 +26,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const [lastField, getLastField] = useState({})
   const [fieldHasChanged, setFieldHasChanged] = useState(!form_id)
   const [previewWarning, setPreviewWarning] = useState(false)
-  const [previewLabel, setPreviewLabel] = useState('Please save your changes to enable preview.')
+  const [previewLabel, setPreviewLabel] = useState('You have unsaved changes.')
   const [errors, setErrors] = useState({})
 
   const reMapFields = (fields, id) => {
@@ -82,7 +82,9 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const handleMoveGroup = (dragIndex, hoverIndex, draggedGroup) => {
     let newFields = [...droppedFields]
     if (dragIndex === undefined) {
-      const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id) }
+      const fieldFormat = droppedFields.find(e => e.format)
+      const { presetColors = [], color } = fieldFormat ? JSON.parse(fieldFormat.format) : {}
+      const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id), format: JSON.stringify({ presetColors }) }
       if (droppedFields.find(e => e.isActive)) {
         newFields = update(droppedFields, {
           [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } }
@@ -139,13 +141,43 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     setDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
   }
 
-  const handleChangeDefaultProps = ({ id, isPageBreak, ...rest }) => {
+  const handleChangeDefaultProps = ({ id, isPageBreak, ...rest }, options = null) => {
     if (isPageBreak && Object.keys(rest).includes('showLabel')) {
       beforeSetDrop(droppedFields.map(e => {
         if (e.type === 'pageBreak') {
           return { ...e, ...rest }
         }
         return e
+      }))
+      return
+    }
+
+    const { isColor, applyToAll } = options || {}
+    if (isColor) {
+      beforeSetDrop(droppedFields.map(e => {
+        const formatObj = e.format ? JSON.parse(e.format) : {}
+        let newFormat = rest.format ? JSON.parse(rest.format) : {}
+        let finalFormat = {
+          ...formatObj,
+          presetColors: newFormat.presetColors
+        }
+
+        if (applyToAll) {
+          finalFormat.color = newFormat.color
+        } else if (e.id === id) {
+          return {
+            ...e,
+            format: JSON.stringify({
+              ...finalFormat,
+              color: newFormat.color,
+            })
+          }
+        }
+
+        return {
+          ...e,
+          format: JSON.stringify(finalFormat)
+        }
       }))
       return
     }
@@ -236,6 +268,20 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }
   }
 
+  const onSaveAndPreview = (e) => {
+    e.stopPropagation()
+    dispatch(setViewMode(true))
+    document.getElementById('saveBtn').click()
+    setPreviewWarning(false)
+  }
+
+  const onDiscardAndPreview = (e) => {
+    e.stopPropagation()
+    document.getElementById('previewButton').click()
+    setTimeout(() => setDrop(cloneDeep(form_data)), 100)
+    setPreviewWarning(false)
+  }
+
   const [{ item, didDrop }, drop] = useDrop({
     accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
     drop: () => handleDrop(item, didDrop),
@@ -249,8 +295,8 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
 
   useEffect(() => {
     if (form_data && form_data.length) {
-      beforeSetDrop(form_data, false)
-      checkPageBreaks(form_data)
+      beforeSetDrop(cloneDeep(form_data), false)
+      checkPageBreaks(cloneDeep(form_data))
     }
   }, [form_data])
 
@@ -336,38 +382,43 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       </div>
       <CustomDragLayer />
       <div className='drop-area-wrapper-actions'>
-        {
-          !fieldHasChanged ? (
-            <a
-              type='button'
-              className='btn preview'
-              target='_blank'
-              href={`/form/${form_id}`}
-            >
-              <FontAwesomeIcon
-                className='preview-icon'
-                icon={faEye}
-              />
-              <span>View</span>
-            </a>
-          ) : (
-            <button
-              type='button'
-              className='btn preview'
-              onClick={e => {
-                e.stopPropagation()
-                setPreviewWarning(true)
-              }}
-            >
-              <FontAwesomeIcon
-                className='preview-icon'
-                icon={faEye}
-              />
-              <span>View</span>
-            </button>
+      {
+          form_id && (
+            <>
+              <a
+                style={{ display: fieldHasChanged ? 'none' : 'block' }}
+                id='previewButton'
+                type='button'
+                className='btn preview'
+                target='_blank'
+                href={`/form/${form_id}`}
+              >
+                <FontAwesomeIcon
+                  className='preview-icon'
+                  icon={faEye}
+                />
+                <span>View</span>
+              </a>
+              <button
+                style={{ display: !fieldHasChanged ? 'none' : 'block' }}
+                type='button'
+                className='btn preview'
+                onClick={e => {
+                  e.stopPropagation()
+                  setPreviewWarning(true)
+                }}
+              >
+                <FontAwesomeIcon
+                  className='preview-icon'
+                  icon={faEye}
+                />
+                <span>View</span>
+              </button>
+            </>
           )
         }
         <button
+          id='saveBtn'
           type='button'
           className='btn save'
           onClick={e => {
@@ -389,8 +440,24 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
             onClose={(e) => {
               e.stopPropagation()
               setPreviewWarning(false)
-              setPreviewLabel('Please save your changes to enable preview.')
+              setPreviewLabel('You have unsaved changes.') 
             }}
+            actions={() => (
+              <>
+                <button
+                  className='modalBtn saveAndPreviewBtn'
+                  onClick={onSaveAndPreview}
+                >
+                  Save and View
+                </button>
+                <button
+                  className='modalBtn discardAndPreviewBtn'
+                  onClick={onDiscardAndPreview}
+                >
+                  Discard and View
+                </button>
+              </>
+            )}
           />
         )
       }

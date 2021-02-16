@@ -49,7 +49,7 @@ import {
   deleteAppGroup,
   editAppGroup,
   addAppGroup,
-  getVendorAppGroups,
+  getAppGroupsByVendor,
   getVendorsByUserId,
   getVendorById2,
   getVendorById,
@@ -58,7 +58,11 @@ import {
   getVendorsIdByUser,
   deleteVendorAdmins,
   updateVendorAdmins,
-  checkIfAdminVendorExists
+  checkIfAdminVendorExists,
+  getVendorAppGroupsByFormId,
+  getAppGroupByPool,
+  getVendorAppGroupsByVendorId,
+  getAppGroupById
 } from "../../api/vendor";
 import {
   createApplication,
@@ -84,7 +88,10 @@ import {
   updateSubmitCustomApplication,
   getCustomFormApplicants,
   getCustomFormApplicantById,
-  getCustomApplicationHistoryById
+  getCustomApplicationHistoryById,
+  getUserCustomApplicationsByUserId,
+  getApplicationByAppGroup,
+  getCustomApplicationByVendorId
 } from "../../api/applications";
 import { 
   addChild, 
@@ -100,7 +107,7 @@ import {
   updateParentChildRelationship,
   getParentChildRelationship } from "../../api/parents";
   
-import { getChildAttendance ,updateChildAttendance} from '../../api/attendance';
+import { getChildAttendance ,getChildEventAttendance,updateChildAttendance} from '../../api/attendance';
 
 import { getUserFromDatabase } from "../../api";
 
@@ -184,11 +191,37 @@ const resolvers = {
       return vendors;
     },
     async vendorsByUser(root, { user }, context) {
-      console.log("vendorsByUser1111", user);
+
       let vendors = await getVendorsByUserId(user);
-      console.log("vendorsByUser2222", vendors);
 
       return vendors;
+    },
+    async getUserVendorForms(root, { user }, context) {
+
+      const vendors = await getVendorsByUserId(user);
+
+      let response = [];
+
+      for(const vendor of vendors) {
+
+        response.push({
+          name: vendor.name + " (Bcombs Form)",
+          id: vendor.id,
+          is_form: false
+        })
+
+        const forms = await getVendorCustomApplicationForms({vendor: vendor.id});
+
+        for(const form of forms) {
+          response.push({
+            name: form && form.form_contents && form.form_contents.formTitle ? form.form_contents.formTitle : "Untitled Form",
+            id: form.form_id,
+            is_form: true
+          })
+        }
+      }
+
+      return response;
     },
     async getVendorById2(root, { id2 }, context) {
       const vendors = await getVendorById2(id2);
@@ -248,9 +281,15 @@ const resolvers = {
     },
     async getUserApplicationsByUserId(root, { user_id }, context) {
       try {
-        console.log("Im here mofos!!!");
-        const response = await getUserApplicationsByUserId(user_id);
-        return response;
+        const applications = await getUserApplicationsByUserId(user_id);
+        console.log("12345");
+        const customApplications = await getUserCustomApplicationsByUserId(user_id);
+
+        console.log("customApplications", customApplications);
+        return {
+          applications: applications,
+          customApplications: customApplications
+        }
       } catch (err) {
         console.log("Get User Applications", err);
       }
@@ -293,7 +332,13 @@ const resolvers = {
       return response;
     },
     async getVendorAppGroups(root, { vendor }, context) {
-      const response = await getVendorAppGroups(vendor);
+      console.log('getVendorAppGroups',vendor)
+      const response = await getVendorAppGroupsByVendorId(vendor);
+      console.log('getVendorAppGroups response',response)
+      return response;
+    },
+    async getAllFormAppGroupsByVendor(root,{ vendor },context) {
+      const response = await getAppGroupsByVendor(vendor);
       return response;
     },
     async getApplicationHistory(root, { app_id }, context) {
@@ -325,6 +370,9 @@ const resolvers = {
 
       console.log("admins", admins);
       return admins;
+    },
+    async getFormAppGroup(root, {form}, contenxt) {
+      return await getVendorAppGroupsByFormId(form);
     },
     async getParentChildRelationship(root, { relationships }, context) {
       let resRelationships = [];
@@ -363,9 +411,20 @@ const resolvers = {
       return application;
     },
 
-    async getAttendance(root, { application_group_id }, contenxt) {
-      console.log('Get Attendance App Grp Id', application_group_id)
-      return await getChildAttendance(application_group_id);
+    async getAttendance(root, { application_group_id, attendance_type }, contenxt) {
+
+      return await getChildAttendance(application_group_id, attendance_type);
+    },
+
+    async getEventAttendance(root, { application_group_id }, context) {
+      console.log('Get Event Attendance App Grp Id', application_group_id)
+      return await getChildEventAttendance(application_group_id);
+    },
+    async getCustomApplicationByVendor(root, {vendor}, contex) {
+      console.log('getCustomApplicationByVendor venndorrrrr', vendor)
+      const response = await getCustomApplicationByVendorId(vendor);
+      console.log('getCustomApplicationByVendor response', response)
+      return response;
     }
   },
   RootMutation: {
@@ -644,11 +703,34 @@ const resolvers = {
     },
     async updateApplication(root, { application }, context) {
       console.log("APPLICATION ", application);
+
+      let response = {};
       try {
-        const response = await updateApplication(application);
+        const previousApplication = await getApplicationByAppId(
+          application.app_id
+        );
+        if(application.class_teacher && application.class_teacher != previousApplication.class_teacher) {
+          let selectedAppGroup = await getAppGroupById(application.class_teacher);
+
+          console.log("selectedAppGroup", selectedAppGroup);
+          selectedAppGroup = selectedAppGroup.length > 0 ? selectedAppGroup[0] : {};
+
+          const applications = await getApplicationByAppGroup({app_grp_id: application.class_teacher, is_form: application.is_form});
+          const totalApplication = applications.length + 1;
+
+          console.log("totalApplication", totalApplication);
+          console.log("selectedAppGroup.size", selectedAppGroup.size);
+          
+          if(totalApplication > selectedAppGroup.size) {
+            response.message = "Sorry, you currently have more members added to your group, please make sure you have enough available count";
+            response.messageType = "error"
+            return response;
+          }
+        }
+        response = await updateApplication(application);
         if (!response.error) {
           return {
-            messageType: "info",
+            messageType: "info", 
             message: "application updated"
           };
         } else {
@@ -724,34 +806,84 @@ const resolvers = {
       for (const vendor of vendors) {
         const fields = {
           user_id: appGroup.user_id,
-          vendor: vendor,
+          vendor: !vendor.is_form ? vendor.id : null,
+          form: vendor.is_form ? vendor.id : null,
           size: appGroup.size,
           name: appGroup.name,
-          email: appGroup.email
+          email: appGroup.email,
+          pool_id: appGroup.pool_id
         };
         await addAppGroup(fields);
       }
       response = await getUserGroups(appGroup.email);
-
+      response.message = "success"
       return response;
     },
 
     async editVendorAppGroup(root, { appGroup }, context) {
-      // const vendors = appGroup.vendors;
-      // let response = {};
-      // console.log("appGroup server", appGroup);
-      // for (const vendor of vendors) {
-      // }
+      const vendors = appGroup.vendors;
 
-      const fields = {
-        app_grp_id: appGroup.app_grp_id,
-        email: appGroup.email,
-        size: appGroup.size,
-        name: appGroup.name
-      };
-      await editAppGroup(fields);
+      //remove forms on app group
+
+      const currentAppGroups = await getAppGroupByPool(appGroup.pool_id);
+
+      for(const ap of currentAppGroups) {
+        
+        const isExist = vendors.filter(v => v.app_grp_id == ap.app_grp_id);
+
+        console.log("ap ap", ap);
+        console.log("isExist", isExist);
+        if(isExist && isExist.length > 0) {
+          // do not delete
+        } else {
+          ap.id = ap.app_grp_id;
+          await deleteAppGroup(ap);
+        }
+      }
+
+      for(const vendor of vendors) {
+        if(vendor.app_grp_id) {
+          const applications = await getApplicationByAppGroup({app_grp_id: vendor.app_grp_id, is_form: vendor.is_form});
+          const totalApplication = applications.length;
+
+          console.log("totalApplication", totalApplication);
+          if(totalApplication > appGroup.size) {
+            let response = await getUserGroups(appGroup.email);
+            response.message = "Sorry, you currently have more members added to your group, please make sure you have enough available count";
+            response.status = "failed"
+            return response;
+          }
+        }
+      }
+
+      for (const vendor of vendors) {
+        if(!vendor.app_grp_id) {
+          // add addgroup
+          const fields = {
+            user_id: appGroup.user_id,
+            vendor: !vendor.is_form ? vendor.id : null,
+            form: vendor.is_form ? vendor.id : null,
+            size: appGroup.size,
+            name: appGroup.name,
+            email: appGroup.email,
+            pool_id: appGroup.pool_id
+          }
+
+          await addAppGroup(fields);
+        } else {
+          const fields = {
+            app_grp_id: vendor.app_grp_id,
+            email: appGroup.email,
+            size: appGroup.size,
+            name: appGroup.name
+          }
+
+          await editAppGroup(fields);
+        }
+      }
+
       let response = await getUserGroups(appGroup.email);
-
+      response.status = "success"
       return response;
     },
     async deleteVendorAppGroup(root, { appGroup }, context) {
@@ -1211,6 +1343,28 @@ const resolvers = {
 
       const previousApplication = await getCustomFormApplicantById({app_id: application.app_id});
 
+      if(application.class_teacher && application.class_teacher != previousApplication.class_teacher) {
+        let selectedAppGroup = await getAppGroupById(application.class_teacher);
+
+        console.log("selectedAppGroup", selectedAppGroup);
+        selectedAppGroup = selectedAppGroup.length > 0 ? selectedAppGroup[0] : {};
+
+        const applications = await getApplicationByAppGroup({app_grp_id: application.class_teacher, is_form: true});
+        const totalApplication = applications.length + 1;
+
+        console.log("totalApplication", totalApplication);
+        console.log("selectedAppGroup.size", selectedAppGroup.size);
+        
+        if(totalApplication > selectedAppGroup.size) {
+          const response = {};
+          response.message = "Sorry, you currently have more members added to your group, please make sure you have enough available count";
+          response.messageType = "error"
+          return response;
+        }
+      } else {
+        application.class_teacher = "";
+      }
+
       let formData = application?.form_contents?.formData;
       let formTitle = application?.form_contents?.formTitle;
 
@@ -1298,7 +1452,7 @@ const resolvers = {
     async updateAttendance(root, {attendance}, context) {
       console.log('UpdateAttendance',attendance)
       return await updateChildAttendance(attendance)
-    }
+    },
   }
 };
 

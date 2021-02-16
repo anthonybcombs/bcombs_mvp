@@ -28,12 +28,12 @@ export default ({ handleBuilderDrawerOpen, form_id }) => {
         >
           Form Builder
         </h3>
-        <h3
+        {/* <h3
           className='header report'
           onClick={() => handleSelectFormType('report')}
         >
           Report Builder
-        </h3>
+        </h3> */}
       </div>
 
       <h4 className='sub-header'>Standard</h4>

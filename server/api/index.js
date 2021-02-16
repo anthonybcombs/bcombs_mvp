@@ -695,15 +695,15 @@ router.get("/invitation/event/:id", async (req, res) => {
     await db.close();
   }
 });
-router.get("/invitation/calendar/:id", async (req, res) => {
+router.get("/invitation/calendar/:id/:status", async (req, res) => {
   const db = makeDb();
-  const { id } = req.params;
+  const { id, status } = req.params;
   const { userId, groupId } = req.query;
 
   try {
     await db.query(
-      "UPDATE user_calendars_follow SET is_following=1 WHERE calendar_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?) AND group_id=UUID_TO_BIN(?) AND is_following=0",
-      [id, userId, groupId]
+      `UPDATE user_calendars_follow SET is_following=? WHERE calendar_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?) AND group_id=UUID_TO_BIN(?)`,
+      [status,id, userId, groupId]
     );
     res.redirect(`${process.env.APP_CLIENT_URL}/dashboard/mycalendars`);
   } catch (error) {

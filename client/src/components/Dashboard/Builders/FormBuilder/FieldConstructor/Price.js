@@ -4,7 +4,7 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
-export default ({ isReadOnly = false, showLabel, settings, label, fields, type, onChange, id: groupId, fieldError, onCheckError, historyFields }) => {
+export default ({ isReadOnly = false, format, showLabel, settings, label, fields, type, onChange, id: groupId, fieldError, onCheckError, historyFields }) => {
   const handleAnswer = ({ target: { id, value } }, isBlur = false) => {
     if (!isBlur) {
       const [whole, decimal = ''] = value.split('.')
@@ -19,13 +19,15 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
   }
 
   const { include, value: instructionValue } = settings.instruction || {}
+  const formatObj = format ? JSON.parse(format) : {}
+  const color = formatObj?.color || '#000'
 
   return (
     <div
       className={`formGroup ${type}`}
       id={`group_${groupId}`}
     > 
-      <p className='formGroup-name'>
+      <p className='formGroup-name' style={{ color }}>
         {showLabel ? (
           <span>
             {label}

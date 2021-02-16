@@ -175,7 +175,7 @@ export default function index({
 
   console.log("parentProfile", parents);
   return (
-    <ParentFormViewStyled className="page-break">
+    <ParentFormViewStyled className="printpage-break parent-information">
       <div id="applicationForm">
         {renderParentForm()}
         <br/>

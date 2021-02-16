@@ -3,14 +3,12 @@ export const Items = {
     singleLineText: 'singleLineText',
     numbers: 'numbers',
     paragraphText: 'paragraphText',
-    // checkboxes: 'checkboxes',
     multipleChoice: 'multipleChoice',
     dropDown: 'dropDown',
     matrix: 'matrix',
     radioButton: 'radioButton',
     linearScale: 'linearScale',
     slider: 'slider',
-    // checkboxGrid: 'checkboxGrid',
     ranking: 'ranking',
     file: 'file',
     sectionBreak: 'sectionBreak',
@@ -42,6 +40,7 @@ export const StandardFields = [
     canBeGrouped: true,
     allowAddField: true,
     includeLogic: false,
+    format: '',
     includeValidation: true
   },
   {
@@ -53,6 +52,7 @@ export const StandardFields = [
     canBeGrouped: true,
     allowAddField: true,
     includeLogic: false,
+    format: '',
     includeValidation: true,
   },
   {
@@ -73,6 +73,7 @@ export const StandardFields = [
     label: 'Multiple Choice question',
     type: 'multipleChoice',
     gridMax: 1,
+    format: '',
     supportMultiple: true, // Added nov 11
     isQA: true
   },
@@ -93,6 +94,7 @@ export const StandardFields = [
     label: 'Dropdown question',
     type: 'dropDown',
     gridMax: 1,
+    format: '',
     isQA: true
   },
   {
@@ -131,14 +133,8 @@ export const StandardFields = [
     isQa: true,
     supportMultiple: true, // Added nov 11
     includeLogic: false,
+    format: '',
   },
-  // {
-  //   fields: [
-  //     { label: 'Radio Button', tag: 'radio', column: '1'}
-  //   ],
-  //   label: 'Radio Button',
-  //   type: 'radioButton'
-  // },
   {
     fields: [
       {
@@ -153,6 +149,7 @@ export const StandardFields = [
     type: 'linearScale',
     includeLogic: false,
     gridMax: 2,
+    format: '',
     isQa: true
   },
   {
@@ -169,40 +166,9 @@ export const StandardFields = [
     type: 'slider',
     gridMax: 2,
     isQa: true,
+    format: '',
     includeLogic: false
   },
-  // {
-  //   fields: [
-  //     {
-  //       label: 'Checkbox Grid',
-  //       tag: 'checkboxGrid',
-  //       rows: [
-  //         {
-  //           row: 'Row 1'
-  //         },
-  //         {
-  //           row: 'Row 2'
-  //         }
-  //       ],
-  //       columns: [
-  //         {
-  //           label: 'Column 1',
-  //           value: 1
-  //         },
-  //         {
-  //           label: 'Column 2',
-  //           value: 2
-  //         }
-  //       ]
-  //     }
-  //   ],
-  //   displayLabel: 'Checkbox Grid',
-  //   label: 'Checkbox grid question',
-  //   type: 'checkboxGrid',
-  //   gridMax: 1,
-  //   isQa: true,
-  //   includeLogic: false,
-  // },
   {
     fields: [
       {
@@ -221,6 +187,7 @@ export const StandardFields = [
     type: 'ranking',
     gridMax: 1,
     isQa: true,
+    format: '',
     includeLogic: false,
   },
   {
@@ -244,6 +211,7 @@ export const StandardFields = [
     type: 'file',
     includeLogic: false,
     gridMax: 1,
+    format: '',
     isQA: true
   },
   {
@@ -255,6 +223,7 @@ export const StandardFields = [
     hasSettings: false,
     showLabel: true,
     gridMax: 1,
+    format: '',
     includeLogic: false
   },
   {
@@ -266,6 +235,7 @@ export const StandardFields = [
     hasSettings: false,
     showLabel: false,
     gridMax: 1,
+    format: '',
     includeLogic: false
   }
 ]
@@ -295,6 +265,7 @@ export const PrimeFields = [
     type: 'name',
     gridMax: 3,
     isQA: true,
+    format: '',
     includeLogic: false
   },
   {
@@ -309,17 +280,19 @@ export const PrimeFields = [
     label: 'Address',
     type: 'address',
     gridMax: 4,
+    format: '',
     includeLogic: false
   },
   {
     fields: [
-      { label: 'Email Address', type: 'email', tag: 'input', placeholder: 'Username / Email', column: '4', required: true},
+      { label: 'Email Address', type: 'email', tag: 'input', placeholder: 'Email', column: '4', required: true},
       { label: 'Password', type: 'password', tag: 'input', placeholder: 'Password', column: '2', required: true},
       { label: 'Confirm Password', type: 'confirmPassword', tag: 'input', placeholder: 'Confirm Password', column: '2', required: true}
     ],
     label: 'Login',
     type: 'login',
     gridMax: 4,
+    format: '',
     includeLogic: false
   },
   {
@@ -343,6 +316,7 @@ export const PrimeFields = [
     type: 'primeFile',
     includeLogic: false,
     gridMax: 1,
+    format: '',
     isQA: true
   },
   {
@@ -365,6 +339,7 @@ export const PrimeFields = [
     type: 'rating',
     gridMax: 1,
     isQa: true,
+    format: '',
     includeLogic: false,
   },
   {
@@ -386,6 +361,7 @@ export const PrimeFields = [
     type: 'email',
     allowAddField: false,
     isQa: true,
+    format: '',
     includeLogic: false,
   },
   {
@@ -397,6 +373,7 @@ export const PrimeFields = [
     ],
     label: 'Date',
     type: 'date',
+    format: '',
     includeLogic: false
   },
   {
@@ -419,6 +396,7 @@ export const PrimeFields = [
     type: 'phone',
     allowAddField: false,
     isQa: true,
+    format: '',
     includeLogic: false,
   },
   {
@@ -428,6 +406,7 @@ export const PrimeFields = [
     ],
     label: 'Time',
     type: 'time',
+    format: '',
     includeLogic: false
   },
   {
@@ -437,6 +416,7 @@ export const PrimeFields = [
     ],
     label: 'Price',
     type: 'price',
+    format: '',
     includeLogic: false
   },
   {
@@ -445,6 +425,7 @@ export const PrimeFields = [
     ],
     label: 'Website',
     type: 'website',
+    format: '',
     includeLogic: false
   },
 ]

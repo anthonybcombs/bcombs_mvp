@@ -175,7 +175,7 @@ const SearchDateComponent = ({
       <div className="date-range">
         <span className="date-label">Date :</span>
         <DatePicker
-          placeholderText="mm/dd/yyyy"
+          placeholderText="MM/dd/yyyy"
           selected={new Date(startDate)}
           onChange={date => {
             handleOnChange("start_date", date);
@@ -183,7 +183,7 @@ const SearchDateComponent = ({
         />
         <span className="to-label">To</span>
         <DatePicker
-          placeholderText="mm/dd/yyyy"
+          placeholderText="MM/dd/yyyy"
           selected={new Date(endDate)}
           onChange={date => {
             handleOnChange("end_date", date);

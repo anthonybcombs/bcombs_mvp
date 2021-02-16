@@ -49,6 +49,8 @@ export default function Applications(
       return { ...state, applicationHistory: action.payload };
     case actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED:
       return { ...state, activeapplications: action.payload };
+    case actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_VENDOR_COMPLETED:
+        return { ...state, customActiveApplications: [...action.payload ]};
     case actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID_COMPLETED:
       return { ...state, selectedbuilderapplication: action.payload };
   

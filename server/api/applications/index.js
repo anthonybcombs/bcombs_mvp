@@ -701,8 +701,10 @@ export const getUserApplicationsByUserId = async user_id => {
       [user_id]
     );
     for (const ua of userApplications) {
-      const application = await getApplicationByAppId(ua.app_id);
-      applications.push(application);
+      if(ua.app_id) {
+        const application = await getApplicationByAppId(ua.app_id);
+        applications.push(application);
+      }
     }
   } catch (error) {
     console.log("get user applications", error);
@@ -1181,17 +1183,117 @@ export const getCustomFormApplicantById = async({app_id, is_archived = 0}) => {
         is_archived
       ]
     )
-
-    console.log("applications", applications);
-
     for(const application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-      console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
     }
 
     applications = applications.length > 0 ? applications[0] : {};
 
+  } catch(err) {
+    console.log("get custom application by form id", err);
+  } finally {
+    await db.close();
+    return applications;
+  }
+}
+
+export const getUserCustomApplicationsByUserId = async user_id => {
+  const db = makeDb();
+  let applications = [];
+
+  try {
+    const userApplications = await db.query(
+      `
+        SELECT 
+          id,
+          BIN_TO_UUID(custom_app_id) as custom_app_id
+        FROM application_user
+        WHERE user_id=UUID_TO_BIN(?)
+        ORDER BY id DESC
+      `,
+      [user_id]
+    );
+
+    for (const ua of userApplications) {
+      if(ua.custom_app_id) {
+        const application = await getCustomFormApplicantById({app_id: ua.custom_app_id});
+        applications.push(application);
+      }
+    }
+  } catch (error) {
+    console.log("get user custom applications", error);
+  } finally {
+    await db.close();
+    return applications;
+  }
+};
+
+export const getApplicationByAppGroup = async ({
+  app_grp_id,
+  is_form=false
+}) => {
+  const db = makeDb();
+  let applications;
+  try {
+    if(is_form) {
+      applications = await db.query(
+        `
+          SELECT
+          id,
+          BIN_TO_UUID(app_id) as app_id
+          FROM custom_application
+          WHERE class_teacher=?
+        `,
+        [
+          app_grp_id
+        ]
+      )
+    } else {
+      applications = await db.query(
+        `
+          SELECT
+          id,
+          BIN_TO_UUID(app_id) as app_id
+          FROM application
+          WHERE class_teacher=?
+        `,
+        [
+          app_grp_id
+        ]
+      )
+    }
+  
+  } catch(err) {
+    console.log("get custom application by form id", err);
+  } finally {
+    await db.close();
+    return applications;
+  }
+}
+
+
+
+export const getCustomApplicationByVendorId = async (vendor) => {
+  const db = makeDb();
+  let applications;
+  console.log('getCustomApplicationByVendor vendor', vendor)
+  try {
+    applications = await db.query(
+      `SELECT
+        id,
+        BIN_TO_UUID(app_id) as app_id,
+        BIN_TO_UUID(form) as form,
+        class_teacher
+        FROM custom_application
+        WHERE vendor=UUID_TO_BIN(?)
+      `,
+      [
+        vendor
+      ]
+    );
+    console.log('getCustomApplicationByVendor vendor', applications)
+  
   } catch(err) {
     console.log("get custom application by form id", err);
   } finally {

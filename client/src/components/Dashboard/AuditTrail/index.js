@@ -1186,7 +1186,7 @@ const AuditTrail = props => {
     }
   }
 
-  const DATE_TIME_FORMAT2 = "yyyy-MM-dd hh:mm:ss";
+  const DATE_TIME_FORMAT2 = "MM/dd/yyyy hh:mm:ss";
 
   const onSubmitSaveApplication = () => {
 

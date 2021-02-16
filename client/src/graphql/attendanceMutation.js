@@ -6,8 +6,10 @@ export const ATTENDANCE_UPDATE_MUTATION = gql`
       app_group_id
       attendance_date
       attendance_start_time
+      attendance_type
       event_name
       location
+      description
       attendance_list {
         app_id
         attendance_status
@@ -16,6 +18,7 @@ export const ATTENDANCE_UPDATE_MUTATION = gql`
         volunteer_hours
         mentoring_hours
         is_excused
+        is_following
       }
     }
   }

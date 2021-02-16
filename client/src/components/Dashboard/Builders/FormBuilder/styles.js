@@ -342,7 +342,7 @@ export default styled.div`
 
   .sortableGroup {
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
 
     padding: 8px;
     background: #fff;
@@ -455,7 +455,7 @@ export default styled.div`
     letter-spacing: 1.3px;    
   }
   .sortableGroup-name >input {
-    color: #f5812f !important;
+    // color: #f5812f !important;
     font-weight: bold !important;
     background: transparent !important;
   }
@@ -465,7 +465,7 @@ export default styled.div`
   }
   .sortableGroup-name >div {
     position: absolute;
-    right: -8px;
+    right: 0;
     top: 0px;
   }
   .sortableGroup-name >div svg {
@@ -1073,7 +1073,7 @@ export default styled.div`
   // Secion Break
   .sortableGroup.sectionBreak .sortableGroup-name >input {
     font-size: 18px !important;
-    color: #000 !important;
+    // color: #000 !important;
   }
 
   
@@ -1514,7 +1514,32 @@ export default styled.div`
   }
 
   
+  .title-action.editName {
+    right: 22px!important;
+  }
 
+  .colorPicker {
+    z-index: 10;
+    border-radius: 4px;
+    background: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px, rgba(0, 0, 0, 0.15) 0px 8px 16px;
+  }
+  .colorPicker .sketch-picker  {
+    box-shadow: none !important;
+    padding-bottom: 8px !important;
+    border: none !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-bottom: 1px solid #ddd !important;
+  }
+
+  .colorPicker .sketch-picker >div:last-child >div:nth-last-child(2) {
+    margin-left: auto !important;
+  }
+
+  .colorPicker label {
+    margin: 6px 6px 8px 6px;
+  }
 
 
 `;

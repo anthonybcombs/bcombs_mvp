@@ -21,15 +21,18 @@ import {
 export default ({
   label, type, groupType, fields, previewStyle = {}, gridMax = 3, allowAddField = false,
   includeLogic = true, includeValidation = false, displayLabel, hasSettings = true,
-  supportMultiple = false, showLabel = false
+  supportMultiple = false, showLabel = false, format
 }) => {
+  if (!format.trim()) {
+    format = JSON.stringify({ presetColors: ['#ff007b','#8f5772','#a5a4b7','#1d13d2'] })
+  }
   const newFields = cloneDeep(fields) //avoid mutating the array of objects
   const settings = {}
   const [{ opacity, background }, drag, preview] = useDrag({
     item: { type },
     begin: () => ({
       label, type, fields: newFields, groupType, settings, id: uuid(), allowAddField,
-      includeLogic, includeValidation, gridMax, hasSettings, supportMultiple, showLabel
+      includeLogic, includeValidation, gridMax, hasSettings, supportMultiple, showLabel, format
     }),
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,

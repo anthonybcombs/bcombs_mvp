@@ -297,7 +297,7 @@ export default styled.div`
   }
 
   .formGroup-name {
-    color: #f26e21;
+    // color: #f26e21;
     margin: 1rem 0 -10px 0;
     letter-spacing: 0.8px;
   }
@@ -712,6 +712,9 @@ export default styled.div`
  .thankyouPage .message span {
   display: block;
   font-size: 1rem;
+ }
+ .thankyouPage .message .hasLogin {
+   text-align: left;
  }
  .thankyouPage button {
   color: #f5812f;

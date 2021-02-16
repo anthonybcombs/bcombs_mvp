@@ -191,6 +191,11 @@ export const setViewMode = bool => {
     bool
   }
 }
+export const clearFormMessage = () => {
+  return {
+    type: actionType.CLEAR_FORM_MESSAGE
+  }
+}
 
 
 
@@ -198,6 +203,7 @@ export function* getForms({ data }) {
   try {
     yield put(setGetFormLoading(true))
     const forms = yield call(getFormsFromDatabase, data)
+    console.log('GET FORMSSSSSSSSSS', forms)
     yield put(setGetFormLoading(false))
     if (forms && forms.length > 0) {
       yield put({

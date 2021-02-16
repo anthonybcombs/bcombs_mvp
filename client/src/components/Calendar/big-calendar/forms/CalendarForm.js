@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext,useEffect,useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 import CustomMultiSelect from "../../../../helpers/CustomMultiSelect";
@@ -205,11 +205,15 @@ export default function CreateCalendarForm({
   handleInputChange,
   handleCheckBoxChange,
   onCancel,
+  handleAppGroupSelect,
+  handleAppGroupRemove,
+  vendors
 }) {
   const { register, handleSubmit, errors, setValue } = useForm({
     mode: "onSubmit",
   });
-  React.useEffect(() => {
+  const [appGroups, setAppGroups] = useState([])
+  useEffect(() => {
     register({ name: "image" }, { required: true });
     register(
       { name: "color" },
@@ -227,6 +231,21 @@ export default function CreateCalendarForm({
       setValue("color", details.color);
     }
   }, []);
+
+  useEffect(() => {
+    if(vendors && vendors[0]) {
+  
+      let appGroupList = vendors.map(v => {
+        return v.app_groups.map(appGroup => {
+          return  {
+            ...appGroup,
+            id:appGroup.app_grp_id
+          }
+        })
+      }).flat();
+      setAppGroups(appGroupList);
+    }
+  },[vendors])
   const options = [];
   Object.keys(groups).forEach((key) => {
     groups[key].forEach((data) => {
@@ -373,6 +392,20 @@ export default function CreateCalendarForm({
           message="Groups is required."
         /> */}
       </div>
+
+      <div className="form-group">
+          <div className="field">
+            <CustomMultiSelect
+              className="field-input"
+              options={appGroups}
+              onSelect={handleAppGroupSelect}
+              onRemove={handleAppGroupRemove}
+              placeholder="Add Application Group"
+              displayValue="name"
+              closeIcon="cancel"
+            />
+          </div>
+        </div>
 
       <div id="family-members-private">
         <p>
