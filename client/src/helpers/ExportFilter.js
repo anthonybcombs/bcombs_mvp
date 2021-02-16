@@ -366,19 +366,19 @@ const ExportFilter = ({
       formattedApplication.student_status = getApplicationStatus(formattedApplication.student_status);
       console.log("formattedApplication", formattedApplication);
 
-      let initialApplication = {
-        'Id': formattedApplication['Id'],
-        'Vendor': formattedApplication['Vendor'],
-        'Verification': formattedApplication['Verification'],
-        'Student Status': formattedApplication['Student Status'],
-        'Class Teacher': formattedApplication['Class Teacher'],
-        'Color Designation': formattedApplication['Color Designation'],
-        'Recommended Class': '',
-        'Notes': formattedApplication['Notes'],
-        ...formattedApplication
-      }
+      // let initialApplication = {
+      //   'Id': formattedApplication['Id'],
+      //   'Vendor': formattedApplication['Vendor'],
+      //   'Verification': formattedApplication['Verification'],
+      //   'Student Status': formattedApplication['Student Status'],
+      //   'Class Teacher': formattedApplication['Class Teacher'],
+      //   'Color Designation': formattedApplication['Color Designation'],
+      //   'Recommended Class': '',
+      //   'Notes': formattedApplication['Notes'],
+      //   ...formattedApplication
+      // }
 
-      exportApplications.push(initialApplication);
+      exportApplications.push(formattedApplication);
     }
 
   } else {
