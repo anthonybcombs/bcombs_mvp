@@ -17,6 +17,8 @@ export const exportHeaders = {
     section1_text: 'Terms and Waiver Context 1',
     section2_text: 'Terms and Waiver Context 2',
     section3_text: 'Terms and Waiver Context 3',
+    color_designation: 'Color Designation',
+    notes: 'Notes',
     emergency_contacts: {
         first_name: 'Firstname',
         gender: 'Gender',
@@ -65,7 +67,7 @@ export const exportHeaders = {
             hospital_phone: 'Hospital Phone',
             hospital_preference: 'Hospital Preference',
             doctor_name: 'Doctor Name',
-            doctor_phone: 'Doctore Phone',
+            doctor_phone: 'Doctor Phone',
             gpa_cumulative_q1: 'GPA Cumulative Q1',
             gpa_cumulative_q2: 'GPA Cumulative Q2',
             gpa_cumulative_q3: 'GPA Cumulative Q3',
@@ -121,7 +123,7 @@ export const exportHeaders = {
             hospital_phone: 'Hospital Phone',
             hospital_preference: 'Hospital Preference',
             doctor_name: 'Doctor Name',
-            doctor_phone: 'Doctore Phone',
+            doctor_phone: 'Doctor Phone',
             programs: 'Programs',
             ethnicities: 'Ethnicities',
             birthdate: 'Birthdate',
@@ -155,6 +157,7 @@ export const exportHeaders = {
         phone_type: 'Phone Type',
         phone_type2: 'Phone Type 2',
         state: 'State',
-        zip_code: 'Zip Code'
+        zip_code: 'Zip Code',
+        new_parentId: 'Parent Id'
     }
 }

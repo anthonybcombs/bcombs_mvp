@@ -177,6 +177,7 @@ export const GET_APPLICATIONS_QUERY = gql`
       }
       parents {
         parent_id
+        new_parentId
         firstname
         lastname
         phone_type

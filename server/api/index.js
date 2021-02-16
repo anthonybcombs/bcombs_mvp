@@ -209,6 +209,69 @@ export const updateChildNewId = async ({ newChildId, ch_id }) => {
   }
 } 
 
+export const getParents = async () => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `SELECT 
+        id,
+        BIN_TO_UUID(parent_id) as parent_id,
+        new_parentId
+        FROM parent`
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const updateNewParentId = async ({ newParentId, parent_id }) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `UPDATE 
+        parent 
+      SET new_parentId=? 
+      WHERE parent_id=UUID_TO_BIN(?)`,
+      [newParentId, parent_id]
+    );
+  } catch (error) {
+    console.log("error update admin", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+} 
+
+router.get("/updateParentNewId", async (req, res) => {
+  const parents = await getParents();
+  const defaultSize = 4;
+
+  for(let parent of parents) {
+    let addZero = 0;
+    if(parent.id > 9999) {
+      addZero = 1;
+    }
+
+    const id2 = parent.id + "";
+    const padId = id2.padStart(defaultSize + addZero, '0');
+    const newParentId = 'P11' + padId;
+    parent.newParentId = newParentId;
+
+    if(!parent.new_parentId) {
+      updateNewParentId(parent);
+    }
+
+    delete parent.newParentId;
+  }
+  res.send(parents);
+});
+
 router.get("/updateChildNewId", async (req, res) => {
   const childs = await getChilds();
   const defaultSize = 4;

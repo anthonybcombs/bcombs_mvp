@@ -979,6 +979,7 @@ const queryTypes = `
 
     type Parent {
         parent_id: String!
+        new_parentId: String
         firstname: String!
         lastname: String!
         phone_type: String

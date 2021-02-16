@@ -322,14 +322,10 @@ const ExportFilter = ({
         if(key1 === "form_contents") {
           if(typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
             const formContents = application.form_contents;
-
-            console.log("formCOntents", formContents);
-
+            
             exportFilename = formContents.formTitle;
 
             const formData = formContents?.formData?.length > 0 ? formContents.formData : [];
-
-            console.log("formdata", formData);
 
             for(const [i, k] of formData.entries()) {
               if(k?.type === "sectionBreak") { continue }
@@ -339,13 +335,13 @@ const ExportFilter = ({
 
                 let fieldValue = ""
                 for(const [x, field] of fields.entries() ) {
-                  console.log("field", field);
                   fieldValue = field.value;
 
                   if(field.label == 'Password' || field.label == 'Confirm Password') {continue;}
 
                   fieldValue = fieldValue ? fieldValue.trim() : '';
                   const fieldLabel = field.label ? field.label.toLowerCase() : '';
+                  console.log("fieldLabel", fieldLabel);
                   if(fieldLabel) {
                     formattedApplication = {...formattedApplication, [fieldLabel]: fieldValue}
                   } else {
@@ -370,7 +366,19 @@ const ExportFilter = ({
       formattedApplication.student_status = getApplicationStatus(formattedApplication.student_status);
       console.log("formattedApplication", formattedApplication);
 
-      exportApplications.push(formattedApplication);
+      let initialApplication = {
+        'Id': formattedApplication['Id'],
+        'Vendor': formattedApplication['Vendor'],
+        'Verification': formattedApplication['Verification'],
+        'Student Status': formattedApplication['Student Status'],
+        'Class Teacher': formattedApplication['Class Teacher'],
+        'Color Designation': formattedApplication['Color Designation'],
+        'Recommended Class': '',
+        'Notes': formattedApplication['Notes'],
+        ...formattedApplication
+      }
+
+      exportApplications.push(initialApplication);
     }
 
   } else {
@@ -542,7 +550,21 @@ const ExportFilter = ({
         }
       }
       delete formattedApplication.undefined;
-      exportApplications.push(formattedApplication);
+      let initialApplication = {
+        'Id': formattedApplication['Id'],
+        'Vendor': formattedApplication['Vendor'],
+        'Verification': formattedApplication['Verification'],
+        'Student Status': formattedApplication['Student Status'],
+        '(Child) Age': formattedApplication['(Child) Age'],
+        'Class Teacher': formattedApplication['Class Teacher'],
+        'Color Designation': formattedApplication['Color Designation'],
+        'Recommended Class': '',
+        'Notes': formattedApplication['Notes'],
+        ...formattedApplication
+      }
+
+      console.log("initialApplication", initialApplication);
+      exportApplications.push(initialApplication);
     }
   }
 
