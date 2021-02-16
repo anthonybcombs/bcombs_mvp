@@ -37,6 +37,7 @@ export default function Applications(
       return {
         ...state,
         updateForm: { ...action.payload },
+        selectedForm: { ...action.payload.form },
         addForm: {},
         deleteForm: {}
       };
@@ -61,7 +62,14 @@ export default function Applications(
       return {
         ...state,
         isFormView: action.bool
-      }
+      };
+    case actionType.CLEAR_FORM_MESSAGE: {
+      return {
+        ...state,
+        updateForm: {},
+        isFormView: false
+      };
+    }
     case actionType.REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED:
       return {
         ...state,
