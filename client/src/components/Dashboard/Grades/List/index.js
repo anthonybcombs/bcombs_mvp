@@ -19,7 +19,7 @@ export default ({ form_id, type, history }) => {
     {
       name: 'John Doe',
       address: 'Address 1',
-      grade: '1',
+      grade: '5.9',
       math: 'A',
       science: 'B',
       english: 'C',
@@ -29,7 +29,7 @@ export default ({ form_id, type, history }) => {
     {
       name: 'John Smith',
       address: 'Address 2',
-      grade: '2',
+      grade: '2.2',
       math: 'B',
       science: 'B',
       english: 'B',
@@ -67,9 +67,9 @@ export default ({ form_id, type, history }) => {
       date: '2021-05-16T18:26:16.468Z',
     },
     {
-      name: 'Doe Smith',
+      name: 'John Doe',
       address: 'Address 6',
-      grade: '1.1',
+      grade: '3.1',
       math: 'A',
       science: 'C',
       english: 'B',
@@ -130,18 +130,18 @@ export default ({ form_id, type, history }) => {
           <td>
             <table>
               <tr>
-                <td>{name}</td>
-                <td>{address}</td>
+                <td style={{ width: '50%' }}>{name}</td>
+                <td style={{ width: '50%' }}>{address}</td>
               </tr>
             </table>
           </td>
           <td>
             <table>
               <tr>
-                <td>{grade}</td>
+                <td style={{ width: '25%' }}>{grade}</td>
                 {
                   activeSubjectColumns.map(e => (
-                    <td>{row[e]}</td>
+                    <td style={{ width: '25%' }}>{row[e]}</td>
                   ))
                 }
               </tr>
@@ -162,15 +162,23 @@ export default ({ form_id, type, history }) => {
   return (
     <GradesStyled>
       <h2>Grade List View</h2>
-      <Headers
-         enableClearFilter
-         filterOptions={['sort', 'column', 'highlight', 'date']}
-         onSearch={handleSearch}
-         columns={columns}
-         rows={rows}
+      <div>
+        <Headers
+          enableClearFilter
+          filterOptions={['sort', 'column', 'highlight', 'date']}
+          onSearch={handleSearch}
+          columns={columns}
+          rows={rows}
 
-         onApplyFilter={handleApplyFilter}
-      />
+          onApplyFilter={handleApplyFilter}
+        />
+        <button
+          className='applyFilterBtn'
+          onClick={handleApplyFilter}
+        >
+          {`GRADES & TEST INPUT`}
+        </button>
+      </div>
       <table>
         <tbody>
           <tr>
@@ -183,8 +191,8 @@ export default ({ form_id, type, history }) => {
             <td>
               <table>
                 <tr>
-                  <td>Name</td>
-                  <td>Address</td>
+                  <td style={{ width: '50%' }}>Name</td>
+                  <td style={{ width: '50%' }}>Address</td>
                 </tr>
               </table>
             </td>
@@ -192,7 +200,7 @@ export default ({ form_id, type, history }) => {
             <td>
               <table>
                 <tr>
-                  <td>Grade</td>
+                  <td style={{ width: '25%' }}>Grade</td>
                   {
                     activeSubjectColumns.map((e, index) => {
                       const isFirst = index === 0
@@ -200,7 +208,7 @@ export default ({ form_id, type, history }) => {
                       const showFirst = isFirst && subjectCounter > activeSubjectColumns.length
                       const showLast = isLast && subjectColumns.length > subjectCounter
                       return (
-                        <td key={`subjectCol-${index}`}>
+                        <td style={{ width: '25%' }} key={`subjectCol-${index}`}>
                           {
                             showFirst && (
                               <FontAwesomeIcon icon={faAngleLeft} onClick={() => setSubjectCounter(subjectCounter - subjectDisplayCount)} />
