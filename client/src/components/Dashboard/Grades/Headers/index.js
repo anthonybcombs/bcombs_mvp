@@ -5,26 +5,31 @@ import { faFilter, faSearch } from '@fortawesome/free-solid-svg-icons'
 import HeaderStyled from './styles'
 import CustomSelect from '../../CustomComponents/CustomSelect'
 import { FilterOptionsObj } from './options'
+import FilterDialog from './FilterDialog'
 
 export default ({ 
-  filterOptions, // Filter Props
+  filterOptions, enableClearFilter, // Filter Props
+  onSearch, // Search Props
 }) => {
 
-  const [filterValue, setFilterValue] = useState('')
+  const [filterValue, setFilterValue] = useState(filterOptions[0])
   const [searchValue, setSearchValue] = useState('')
+  const [filterDialogOpen, setFilterDialogOpen] = useState(true)
 
   const handleChangeFilter = ({ target }) => {
     setFilterValue(target.value)
+    setFilterDialogOpen(true)
   }
   
   const handleChangeSearch = ({ target }) => {
     setSearchValue(target.value)
+    onSearch(target.value)
   }
 
   return (
     <HeaderStyled>
       <CustomSelect
-        value={filterValue}
+        value={''}
         options={filterOptions.map(e => ({
           value: e, label: FilterOptionsObj[e].label
         }))}
@@ -46,6 +51,18 @@ export default ({
           Search
         </label>
       </div>
+      {
+        filterDialogOpen && (
+          <FilterDialog
+            title='Filters'
+            enableClearFilter={enableClearFilter}
+            activeFilter={filterValue}
+            filterOptions={filterOptions.map(e => ({ ...FilterOptionsObj[e], key: e }))}
+            onChangeActiveFilter={(e) => setFilterValue(e)}
+            onClose={() => setFilterDialogOpen(false)}
+          />
+        )
+      }
     </HeaderStyled>
   )
 }

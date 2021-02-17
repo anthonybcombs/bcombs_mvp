@@ -23,7 +23,7 @@ export default ({ form_id, type, history }) => {
       science: 'B',
       english: 'C',
       history: 'B',
-      date: '2021-02-16T18:26:16.468Z',
+      date: '2021-01-16T18:26:16.468Z',
     },
     {
       name: 'John Smith',
@@ -43,7 +43,7 @@ export default ({ form_id, type, history }) => {
       science: 'A',
       english: 'A',
       history: 'A',
-      date: '2021-02-16T18:26:16.468Z',
+      date: '2021-03-16T18:26:16.468Z',
     },
     {
       name: 'John Legend',
@@ -53,7 +53,7 @@ export default ({ form_id, type, history }) => {
       science: 'A',
       english: 'B',
       history: 'C',
-      date: '2021-02-16T18:26:16.468Z',
+      date: '2021-04-16T18:26:16.468Z',
     },
     {
       name: 'Legend Doe',
@@ -63,7 +63,7 @@ export default ({ form_id, type, history }) => {
       science: 'C',
       english: 'C',
       history: 'C',
-      date: '2021-02-16T18:26:16.468Z',
+      date: '2021-05-16T18:26:16.468Z',
     },
     {
       name: 'Doe Smith',
@@ -73,7 +73,7 @@ export default ({ form_id, type, history }) => {
       science: 'C',
       english: 'B',
       history: 'C',
-      date: '2021-02-16T18:26:16.468Z',
+      date: '2021-06-16T18:26:16.468Z',
     },
   ])
 
@@ -93,8 +93,25 @@ export default ({ form_id, type, history }) => {
   const [rows, setRows] = useState(data)
   const [subjectCounter, setSubjectCounter] = useState(subjectDisplayCount)
   
-  const activeSubjectColumns = subjectColumns.slice(subjectCounter - subjectDisplayCount, subjectCounter)
+  let activeSubjectColumns = subjectColumns.slice(subjectCounter - subjectDisplayCount, subjectCounter)
+  if (activeSubjectColumns.length < subjectDisplayCount) {
+    activeSubjectColumns = subjectColumns.slice(subjectColumns.length - subjectDisplayCount, subjectColumns.length)
+  }
   const activeColumns = ['name', 'address', 'grade', ...activeSubjectColumns, 'date']
+
+  const handleSearch = (keyWord) => {
+    const newRows = data.filter(({ id, ...rest }) => {
+      const itemEntries = Object.entries(rest)
+      return itemEntries.find(([key, val]) => {
+        const isDate = columns[key].type === 'date'
+        if (isDate) {
+          return moment(val).format('ll').toString().toLowerCase().includes(keyWord.toLowerCase())
+        }
+        return ['string', 'number'].includes(typeof val) && val.toString().toLowerCase().includes(keyWord.toLowerCase())
+      })
+    })
+    setRows(newRows)
+  }
 
   const renderTableData = () => {
     return rows.map((row, index) => {
@@ -137,7 +154,9 @@ export default ({ form_id, type, history }) => {
     <GradesStyled>
       <h2>Grade List View</h2>
       <Headers
-         filterOptions={['date', 'sort', 'highlight', 'column', 'clear']}
+         enableClearFilter
+         filterOptions={['sort', 'column', 'highlight', 'date']}
+         onSearch={handleSearch}
       />
       <table>
         <tbody>
@@ -168,13 +187,13 @@ export default ({ form_id, type, history }) => {
                       const showFirst = isFirst && subjectCounter > activeSubjectColumns.length
                       const showLast = isLast && subjectColumns.length > subjectCounter
                       return (
-                        <td>
+                        <td key={`subjectCol-${index}`}>
                           {
                             showFirst && (
                               <FontAwesomeIcon icon={faAngleLeft} onClick={() => setSubjectCounter(subjectCounter - subjectDisplayCount)} />
                             )
                           }
-                          {columns[e].label}
+                          {columns[e]?.label || e}
                           {
                             showLast && (
                               <FontAwesomeIcon icon={faAngleRight} onClick={() => setSubjectCounter(subjectCounter + subjectDisplayCount)} />

@@ -10,8 +10,5 @@ export const FilterOptionsObj = {
   },
   column: {
     label: 'Column'
-  },
-  clear: {
-    label: 'Clear'
   }
 }
