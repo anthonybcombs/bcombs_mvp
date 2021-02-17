@@ -5,8 +5,8 @@ import FilterDialogStyled from './style'
 import Filters from './filters'
 
 export default function index({
-  title, actions, activeFilter, filterOptions, enableClearFilter,
-  onChangeActiveFilter, onClose
+  title, actions, activeFilter, filterOptions, enableClearFilter, filters, columns, rows, filterErrors,
+  onClose, onChangeActiveFilter, onChangeFilter
 }) {
 
   return ReactDOM.createPortal(
@@ -36,7 +36,18 @@ export default function index({
           </div>
           <Filters
             activeFilter={activeFilter}
+            filters={filters}
+            columns={columns}
+            rows={rows}
+            onChangeFilter={onChangeFilter}
           />
+          {
+            filterErrors.length > 0 && (
+              filterErrors.map(e => (
+                <div>{e}</div>
+              ))
+            )
+          }
         </div>
 
         <div className='modal-footer'>

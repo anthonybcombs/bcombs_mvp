@@ -8,15 +8,29 @@ import { FilterOptionsObj } from './options'
 import FilterDialog from './FilterDialog'
 
 export default ({ 
-  filterOptions, enableClearFilter, // Filter Props
+  filterOptions, enableClearFilter, onApplyFilter, // Filter Props
   onSearch, // Search Props
+  columns, rows // Table props
 }) => {
+
+  const defaultFilters = {
+    sort: [{ column: '', value: 'asc' }]
+  }
 
   const [filterValue, setFilterValue] = useState(filterOptions[0])
   const [searchValue, setSearchValue] = useState('')
-  const [filterDialogOpen, setFilterDialogOpen] = useState(true)
+  const [filterDialogOpen, setFilterDialogOpen] = useState(false)
+  const [filters, setFilters] = useState(defaultFilters)
+  const [filterErrors, setFilterErrors] = useState([])
 
-  const handleChangeFilter = ({ target }) => {
+  const handleChangeFilter = (key, data) => {
+    setFilters({
+      ...filters,
+      [key]: data
+    })
+  }
+
+  const handleSelectFilter = ({ target }) => {
     setFilterValue(target.value)
     setFilterDialogOpen(true)
   }
@@ -24,6 +38,45 @@ export default ({
   const handleChangeSearch = ({ target }) => {
     setSearchValue(target.value)
     onSearch(target.value)
+  }
+
+  const handleApplyFilter = () => {
+    const checkSort = filters.sort.reduce((acc, { column }) => {
+      return {
+        ...acc,
+        [column]: (acc[column] || 0) + 1
+      }
+    }, {})
+
+    let newErrors = [...filterErrors]
+    if (Object.values(checkSort).find(e => e > 1)) {
+      newErrors = [
+        ...filterErrors.filter(e => e !== 'Please remove duplicate sort column.'),
+        'Please remove duplicate sort column.'
+      ]
+    } else {
+      newErrors = filterErrors.filter(e => e !== 'Please remove duplicate sort column.')
+    }
+
+    setFilterErrors(newErrors)
+
+    if (newErrors.length === 0) {
+      onApplyFilter(filters)
+      setFilterDialogOpen(false)
+    }
+  }
+
+  const renderActions = () => {
+    return (
+      <>
+        <button
+          className='applyFilterBtn'
+          onClick={handleApplyFilter}
+        >
+          Apply Filter
+        </button>
+      </>
+    )
   }
 
   return (
@@ -35,7 +88,7 @@ export default ({
         }))}
         placeholder='Filter by'
         icon={<FontAwesomeIcon icon={faFilter} />}
-        onChange={handleChangeFilter}
+        onChange={handleSelectFilter}
       />
       <div>
         <FontAwesomeIcon className='search-icon' icon={faSearch} />
@@ -55,10 +108,18 @@ export default ({
         filterDialogOpen && (
           <FilterDialog
             title='Filters'
+            filters={filters}
             enableClearFilter={enableClearFilter}
             activeFilter={filterValue}
             filterOptions={filterOptions.map(e => ({ ...FilterOptionsObj[e], key: e }))}
+            filterErrors={filterErrors}
+            
+            columns={columns}
+            rows={rows}
+            actions={renderActions}
+
             onChangeActiveFilter={(e) => setFilterValue(e)}
+            onChangeFilter={handleChangeFilter}
             onClose={() => setFilterDialogOpen(false)}
           />
         )

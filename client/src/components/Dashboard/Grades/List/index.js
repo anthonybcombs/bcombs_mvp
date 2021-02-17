@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import cloneDeep from 'lodash.clonedeep'
+import orderBy from 'lodash.orderby'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
@@ -80,7 +81,7 @@ export default ({ form_id, type, history }) => {
   const columns = {
     name: { type: 'string', label: 'Name' },
     address: { type: 'string', label: 'Address' },
-    grade: { type: 'string', label: 'Grade' },
+    grade: { type: 'number', label: 'Grade' },
     math: { type: 'string', label: 'Math' },
     science: { type: 'string', label: 'Science' },
     english: { type: 'string', label: 'English' },
@@ -111,6 +112,14 @@ export default ({ form_id, type, history }) => {
       })
     })
     setRows(newRows)
+  }
+
+  const handleApplyFilter = (filters) => {
+    const { sort } = cloneDeep(filters)
+    const sortColumns = sort.map(e => e.column)
+    const sortOrder = sort.map(e => e.value)
+
+    setRows(orderBy(rows, sortColumns, sortOrder))
   }
 
   const renderTableData = () => {
@@ -157,6 +166,10 @@ export default ({ form_id, type, history }) => {
          enableClearFilter
          filterOptions={['sort', 'column', 'highlight', 'date']}
          onSearch={handleSearch}
+         columns={columns}
+         rows={rows}
+
+         onApplyFilter={handleApplyFilter}
       />
       <table>
         <tbody>
