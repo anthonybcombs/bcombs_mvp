@@ -5,10 +5,9 @@ import FilterDialogStyled from './style'
 import Filters from './filters'
 
 export default function index({
-  title, actions, activeFilter, filterOptions, enableClearFilter, filters, columns, rows, filterErrors,
+  title, actions, activeFilter, filterOptions, enableClearFilter, filters, previousFilter, columns, rows, filterErrors,
   onClose, onChangeActiveFilter, onChangeFilter
 }) {
-
   return ReactDOM.createPortal(
     <FilterDialogStyled
       data-testid='app-big-calendar-create-modal'
@@ -55,7 +54,7 @@ export default function index({
             className='modalBtn closeBtn'
             onClick={onClose}
           >
-            Close
+            Cancel
           </button>
           {
             actions && actions()

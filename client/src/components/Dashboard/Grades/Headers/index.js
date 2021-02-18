@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useCallback, useState } from 'react'
+import debounce from 'lodash.debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilter, faSearch } from '@fortawesome/free-solid-svg-icons'
 
@@ -6,6 +7,7 @@ import HeaderStyled from './styles'
 import CustomSelect from '../../CustomComponents/CustomSelect'
 import { FilterOptionsObj } from './options'
 import FilterDialog from './FilterDialog'
+import cloneDeep from 'lodash.clonedeep'
 
 export default ({ 
   filterOptions, enableClearFilter, onApplyFilter, // Filter Props
@@ -14,13 +16,14 @@ export default ({
 }) => {
 
   const defaultFilters = {
-    sort: [{ column: '', value: 'asc' }]
+    sort: [{ column: '', value: 'asc' }],
+    search: ''
   }
 
   const [filterValue, setFilterValue] = useState(filterOptions[0])
-  const [searchValue, setSearchValue] = useState('')
   const [filterDialogOpen, setFilterDialogOpen] = useState(false)
   const [filters, setFilters] = useState(defaultFilters)
+  const [previousFilter, setPreviousFilter] = useState({}) // For cancelation of filter dialog
   const [filterErrors, setFilterErrors] = useState([])
 
   const handleChangeFilter = (key, data) => {
@@ -32,23 +35,29 @@ export default ({
 
   const handleSelectFilter = ({ target }) => {
     setFilterValue(target.value)
+    setPreviousFilter(cloneDeep(filters))
     setFilterDialogOpen(true)
   }
-  
-  const handleChangeSearch = ({ target }) => {
-    setSearchValue(target.value)
-    onSearch(target.value)
+
+  const debounceSearch = (...args) => {
+    const debouncedSearch = useCallback(debounce(...args), [])
+    return e => {
+      handleChangeFilter('search', e.target.value)
+      e.persist()
+      return debouncedSearch(e)
+    }
   }
 
-  const handleApplyFilter = () => {
+  const handleApplyFilter = ({ target }, isSearch = false) => {
+    let newErrors = [...filterErrors]
+    console.log('kayama')
+    // START Sort Filter Logic
     const checkSort = filters.sort.reduce((acc, { column }) => {
       return {
         ...acc,
         [column]: (acc[column] || 0) + 1
       }
     }, {})
-
-    let newErrors = [...filterErrors]
     if (Object.values(checkSort).find(e => e > 1)) {
       newErrors = [
         ...filterErrors.filter(e => e !== 'Please remove duplicate sort column.'),
@@ -57,11 +66,15 @@ export default ({
     } else {
       newErrors = filterErrors.filter(e => e !== 'Please remove duplicate sort column.')
     }
+    // END Sort Filter Logic
 
     setFilterErrors(newErrors)
 
     if (newErrors.length === 0) {
-      onApplyFilter(filters)
+      onApplyFilter({
+        ...filters,
+        search: isSearch ? target.value : filters.search
+      })
       setFilterDialogOpen(false)
     }
   }
@@ -97,10 +110,10 @@ export default ({
           name='search'
           placeholder='Search'
           className='field-input'
-          value={searchValue}
-          onChange={handleChangeSearch}
+          value={filters?.search || ''}
+          onChange={debounceSearch((e) => handleApplyFilter(e, true), 500)}
         />
-        <label className="field-label" htmlFor='search'>
+        <label className='field-label' htmlFor='search'>
           Search
         </label>
       </div>
@@ -109,6 +122,7 @@ export default ({
           <FilterDialog
             title='Filters'
             filters={filters}
+            previousFilter={previousFilter}
             enableClearFilter={enableClearFilter}
             activeFilter={filterValue}
             filterOptions={filterOptions.map(e => ({ ...FilterOptionsObj[e], key: e }))}
@@ -120,7 +134,10 @@ export default ({
 
             onChangeActiveFilter={(e) => setFilterValue(e)}
             onChangeFilter={handleChangeFilter}
-            onClose={() => setFilterDialogOpen(false)}
+            onClose={() => {
+              setFilters(previousFilter)
+              setFilterDialogOpen(false)
+            }}
           />
         )
       }

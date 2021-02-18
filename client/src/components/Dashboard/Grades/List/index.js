@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,11 +8,11 @@ import moment from 'moment'
 import GradesStyled from './styles'
 import Headers from '../Headers'
 
-import Loading from "../../../../helpers/Loading.js";
+import Loading from '../../../../helpers/Loading.js'
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from 'react-redux'
 
-import { requestVendor } from "../../../../redux/actions/Vendors";
+import { requestVendor } from '../../../../redux/actions/Vendors'
 
 export default ({ form_id, type, history }) => {
   const data = cloneDeep([
@@ -100,26 +100,27 @@ export default ({ form_id, type, history }) => {
   }
   const activeColumns = ['name', 'address', 'grade', ...activeSubjectColumns, 'date']
 
-  const handleSearch = (keyWord) => {
-    const newRows = data.filter(({ id, ...rest }) => {
+  const handleApplyFilter = (filters) => {
+    const { sort, search } = cloneDeep(filters)
+
+    // Search always executes for the data to reset even if search is empty
+    let newRows = cloneDeep(data).filter(({ id, ...rest }) => {
       const itemEntries = Object.entries(rest)
       return itemEntries.find(([key, val]) => {
         const isDate = columns[key].type === 'date'
         if (isDate) {
-          return moment(val).format('ll').toString().toLowerCase().includes(keyWord.toLowerCase())
+          return moment(val).format('ll').toString().toLowerCase().includes(search.toLowerCase())
         }
-        return ['string', 'number'].includes(typeof val) && val.toString().toLowerCase().includes(keyWord.toLowerCase())
+        return ['string', 'number'].includes(typeof val) && val.toString().toLowerCase().includes(search.toLowerCase())
       })
     })
-    setRows(newRows)
-  }
 
-  const handleApplyFilter = (filters) => {
-    const { sort } = cloneDeep(filters)
-    const sortColumns = sort.map(e => e.column)
-    const sortOrder = sort.map(e => e.value)
-
-    setRows(orderBy(rows, sortColumns, sortOrder))
+    // Sort executes here
+    if (sort && sort.length > 0) {
+      const sortColumns = sort.map(e => e.column)
+      const sortOrder = sort.map(e => e.value)
+      setRows(orderBy(newRows, sortColumns, sortOrder))
+    }
   }
 
   const renderTableData = () => {
@@ -166,7 +167,6 @@ export default ({ form_id, type, history }) => {
         <Headers
           enableClearFilter
           filterOptions={['sort', 'column', 'highlight', 'date']}
-          onSearch={handleSearch}
           columns={columns}
           rows={rows}
 

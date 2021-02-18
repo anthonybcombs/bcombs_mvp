@@ -40,10 +40,10 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
     case 'sort': 
       const sortFilters = clonedFilters?.sort || []
       const getSortOrder = (type = 'string') => {
-        if (type === 'string') {
-          return [{ value: 'asc', label: 'A to Z' }, { value: 'desc', label: 'Z to A' }]
-        } else if (type === 'number') {
+        if (type === 'number') {
           return [{ value: 'asc', label: 'Smallest to Largest' }, { value: 'desc', label: 'Largest to Smallest' }]
+        } else {
+          return [{ value: 'asc', label: 'A to Z' }, { value: 'desc', label: 'Z to A' }]
         }
       } 
 
