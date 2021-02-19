@@ -41,7 +41,7 @@ import {
   removeEvents
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
-import { getGrades } from "../../api/grades";
+import { addStudentCumulativeGrades,getGrades } from "../../api/grades";
 import {
   getVendors,
   updateVendor,
@@ -1453,6 +1453,9 @@ const resolvers = {
       console.log('UpdateAttendance',attendance)
       return await updateChildAttendance(attendance)
     },
+    async addStudentCumulative(root,{ studentCumulative },context){
+      return await addStudentCumulativeGrades(studentCumulative)
+    }
   }
 };
 
