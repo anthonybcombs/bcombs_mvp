@@ -14,7 +14,7 @@ import { useLocation, useParams } from '@reach/router';
 import { format, isRan } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
-import { isAfter, isEqual,getHours, max, addDays, subDays, addYears, isWithinInterval } from 'date-fns';
+import { isAfter, isEqual, getHours, max, addDays, subDays, addYears, isWithinInterval } from 'date-fns';
 import { parse } from 'query-string';
 
 import DatePicker from 'react-datepicker';
@@ -261,14 +261,14 @@ const AttendanceSummaryStyled = styled.div`
 
 	.filter-container {
 		display: flex;
-		padding-bottom: 12px;
+	
 	}
 	.filter-container > div {
 		position: relative;
 		min-width: 200px;
 	}
 
-	.filter-container .custom-range-picker{
+	.filter-container .custom-range-picker {
 		width: 150px !important;
 		min-width: 150px;
 	}
@@ -443,7 +443,6 @@ const months = [
 	'December',
 ];
 
-
 const DateCustomInput = ({ value, onClick, name, className, placeholder, label }) => (
 	<div className="field">
 		<input
@@ -462,82 +461,82 @@ const DateCustomInput = ({ value, onClick, name, className, placeholder, label }
 	</div>
 );
 
-const CustomRangePicker = ({
-	onChange,
-	placeholder,
-	selected
-}) => {
-	return <DatePicker
-		dateFormat={DISPLAY_DATE_FORMAT}
-		readOnly={false}
-		style={{ marginTop: 24 }}
-		renderCustomHeader={({
-			date,
-			changeYear,
-			changeMonth,
-			decreaseMonth,
-			increaseMonth,
-			prevMonthButtonDisabled,
-			nextMonthButtonDisabled,
-		}) => (
-			<div
-				style={{
-					margin: 0,
-					display: 'flex',
-					alignCenter: 'center',
-					justifyContent: 'center',
-					background: '#f36e22',
-					padding: '5px 3px',
-				}}>
-				<button
-					className="datepicker-btn"
-					onClick={e => {
-						e.preventDefault();
+const CustomRangePicker = ({ onChange, placeholder, selected }) => {
+	return (
+		<DatePicker
+			dateFormat={DISPLAY_DATE_FORMAT}
+			readOnly={false}
+			style={{ marginTop: 24 }}
+			renderCustomHeader={({
+				date,
+				changeYear,
+				changeMonth,
+				decreaseMonth,
+				increaseMonth,
+				prevMonthButtonDisabled,
+				nextMonthButtonDisabled,
+			}) => (
+				<div
+					style={{
+						margin: 0,
+						display: 'flex',
+						alignCenter: 'center',
+						justifyContent: 'center',
+						background: '#f36e22',
+						padding: '5px 3px',
 					}}>
-					<FontAwesomeIcon icon={faAngleLeft} onClick={decreaseMonth} disabled={prevMonthButtonDisabled} />
-				</button>
-				<select
-					value={new Date(date).getFullYear()}
-					onChange={({ target: { value } }) => {
-						if (value) {
-							return changeYear(value);
-						}
-					}}>
-					{years.map(option => (
-						<option key={option} value={option}>
-							{option}
-						</option>
-					))}
-				</select>
+					<button
+						className="datepicker-btn"
+						onClick={e => {
+							e.preventDefault();
+						}}>
+						<FontAwesomeIcon icon={faAngleLeft} onClick={decreaseMonth} disabled={prevMonthButtonDisabled} />
+					</button>
+					<select
+						value={new Date(date).getFullYear()}
+						onChange={({ target: { value } }) => {
+							if (value) {
+								return changeYear(value);
+							}
+						}}>
+						{years.map(option => (
+							<option key={option} value={option}>
+								{option}
+							</option>
+						))}
+					</select>
 
-				<select
-					value={months[date.getMonth()]}
-					onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}>
-					{months.map(option => (
-						<option key={option} value={option}>
-							{option}
-						</option>
-					))}
-				</select>
-				<button
-					className="datepicker-btn"
-					onClick={e => {
-						e.preventDefault();
-					}}>
-					<FontAwesomeIcon icon={faAngleRight} onClick={increaseMonth} disabled={nextMonthButtonDisabled} />
-				</button>
-			</div>
-		)}
+					<select
+						value={months[date.getMonth()]}
+						onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}>
+						{months.map(option => (
+							<option key={option} value={option}>
+								{option}
+							</option>
+						))}
+					</select>
+					<button
+						className="datepicker-btn"
+						onClick={e => {
+							e.preventDefault();
+						}}>
+						<FontAwesomeIcon icon={faAngleRight} onClick={increaseMonth} disabled={nextMonthButtonDisabled} />
+					</button>
+				</div>
+			)}
+			disabled={false}
+			onChange={onChange}
+			name={'attendance_date'}
+			customInput={<DateCustomInput label={placeholder} className={'field-input date-field'} />}
+			selected={selected}
+		/>
+	);
+};
 
-		disabled={false}
-		onChange={onChange}
-		name={'attendance_date'}
-		customInput={<DateCustomInput  label={placeholder} className={'field-input date-field'}  />}
-		selected={selected}
-	/>
-}
-
-
+const DEFAULT_DATE = {
+	start: new Date('2020-08-01'),
+	end: new Date('2021-07-31'),
+};
 
 export default function index(props) {
 	const dispatch = useDispatch();
@@ -555,8 +554,11 @@ export default function index(props) {
 	const [defaultAttendanceDisplay, setDefaultAttendanceDisplay] = useState([]);
 	const [events, setEvents] = useState([]);
 	const [defaultEvents, setDefaultEvents] = useState([]);
-	const [selectedRangeDate, setSelectedRangeDate] = useState({start: new Date(), end: new Date()});
-	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState({ start:new Date(), end:addYears(new Date(), 1)});
+	const [selectedRangeDate, setSelectedRangeDate] = useState({ start: new Date(), end: new Date() });
+	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState({
+		start: new Date(),
+		end: addYears(new Date(), 1),
+	});
 	const [isRightCalendarVisible, setIsRightCalendarVisible] = useState(false);
 	const { app_group_id } = useParams();
 	const queryLocation = useLocation();
@@ -701,7 +703,7 @@ export default function index(props) {
 	useEffect(() => {
 		handleChangeDateFilter({
 			start: new Date('2020-08-01'),
-			end: new Date('2021-07-31')
+			end: new Date('2021-07-31'),
 		});
 	}, [defaultEvents, defaultAttendanceDisplay]);
 
@@ -917,40 +919,49 @@ export default function index(props) {
 		}
 	};
 
-
-	const handleLeftCustomRangeDatePickerChange = (name,value) => {
+	const handleLeftCustomRangeDatePickerChange = (name, value) => {
 		const payload = {
 			...selectedSummaryRangeDate,
-			[name]:value
-		}
+			[name]: value,
+		};
 
-		console.log('handleLeftCustomRangeDatePickerChange isAfter', 	isAfter(new Date(payload.end), new Date(payload.start)))
-		if(isEqual(new Date(payload.start),new Date(payload.end)) || 
-			isAfter(new Date(payload.end), new Date(payload.start))){
-			handleChangeDateFilter(payload)
+		console.log(
+			'handleLeftCustomRangeDatePickerChange isAfter',
+			isAfter(new Date(payload.end), new Date(payload.start))
+		);
+		if (
+			isEqual(new Date(payload.start), new Date(payload.end)) ||
+			isAfter(new Date(payload.end), new Date(payload.start))
+		) {
+			handleChangeDateFilter(payload);
 		}
-	}
-	const handleRightCustomRangeDatePickerChange = (name,value) => {
+	};
+	const handleRightCustomRangeDatePickerChange = (name, value) => {
 		const payload = {
 			...selectedRangeDate,
-			[name]:value
-		}
+			[name]: value,
+		};
 
-		console.log('handleLeftCustomRangeDatePickerChange isAfter', 	isAfter(new Date(payload.end), new Date(payload.start)))
-		if(isEqual(new Date(payload.start),new Date(payload.end)) || 
-			isAfter(new Date(payload.end), new Date(payload.start))){
-				handleChangeRangeDate(payload)
+		console.log(
+			'handleLeftCustomRangeDatePickerChange isAfter',
+			isAfter(new Date(payload.end), new Date(payload.start))
+		);
+		if (
+			isEqual(new Date(payload.start), new Date(payload.end)) ||
+			isAfter(new Date(payload.end), new Date(payload.start))
+		) {
+			handleChangeRangeDate(payload);
 		}
-	}
+	};
 
 	const handleChangeDateFilter = date => {
-		console.log('handleChangeDateFilter date', date)
-		console.log('handleChangeDateFilter defaultAttendanceDisplay', defaultAttendanceDisplay)
+		console.log('handleChangeDateFilter date', date);
+		console.log('handleChangeDateFilter defaultAttendanceDisplay', defaultAttendanceDisplay);
 		if (Object.keys(date).length === 0) {
 			setAttendanceDisplay(defaultAttendanceDisplay);
 			setSelectedSummaryRangeDate({
-				start:new Date('2020-08-01'),
-				end: new Date('2021-07-31')
+				start: new Date('2020-08-01'),
+				end: new Date('2021-07-31'),
 			});
 
 			//setDisplayDays(DEFAULT_DISPLAY_DAYS);
@@ -964,18 +975,17 @@ export default function index(props) {
 		}
 
 		if (defaultEvents.length > 0) {
-	
 			let filteredEvents = defaultEvents.filter(event => {
-				console.log('Formatted Date event', new Date(event.start_of_event))
-				console.log('Formatted Date start', new Date(date.start))
-				console.log('Formatted Date end', new Date(date.end))
-				let response =  isWithinInterval(new Date(event.start_of_event), {
+				console.log('Formatted Date event', new Date(event.start_of_event));
+				console.log('Formatted Date start', new Date(date.start));
+				console.log('Formatted Date end', new Date(date.end));
+				let response = isWithinInterval(new Date(event.start_of_event), {
 					// start:  subDays(new Date(date.start), 1),
 					// end: addDays(new Date(date.end), 1)
 					start: new Date(date.start),
-					end: new Date(date.end)
+					end: new Date(date.end),
 				});
-				console.log('Formatted Date response',response)
+				console.log('Formatted Date response', response);
 				return response;
 			});
 			console.log('Filtered Events1111 defaultEvents', defaultEvents);
@@ -1029,7 +1039,7 @@ export default function index(props) {
 
 		//setSelectedSummaryRangeDate([new Date(date[0]), new Date(date[1])]);
 		//console.log('selectedSummaryRangeDate',selectedSummaryRangeDate)
-		console.log('DATEEEEEEEE', date)
+		console.log('DATEEEEEEEE', date);
 		setSelectedSummaryRangeDate(date);
 	};
 
@@ -1099,7 +1109,7 @@ export default function index(props) {
 
 	const handleChangeRangeDate = date => {
 		if (!date.start && !date.end) {
-			setSelectedRangeDate({start: new Date(), end: new Date()});
+			setSelectedRangeDate({ start: new Date(), end: new Date() });
 			if (displayDayList.length <= 3) {
 				setCurrentDisplayDays(displayDayList);
 			} else {
@@ -1147,7 +1157,7 @@ export default function index(props) {
 		// 	addDays(new Date(new Date(date[0])), 2),
 		// ]);
 
-		setSelectedRangeDate({start:new Date(date.start), end:new Date(date.end)});
+		setSelectedRangeDate({ start: new Date(date.start), end: new Date(date.end) });
 	};
 
 	const handleRightCalendar = () => {
@@ -1164,26 +1174,24 @@ export default function index(props) {
 					Back
 				</Link>
 				<div className="filter-container">
-					<div className="field custom-range-picker" style={{width:150}}>
-						<CustomRangePicker 
+					<div className="field custom-range-picker" style={{ width: 150 }}>
+						<CustomRangePicker
 							onChange={value => {
-								handleLeftCustomRangeDatePickerChange('start',value)
-							}} 
-							placeholder="From" 
-							selected={selectedSummaryRangeDate.start}	
+								handleLeftCustomRangeDatePickerChange('start', value);
+							}}
+							placeholder="From"
+							selected={selectedSummaryRangeDate.start}
 						/>
-
 					</div>
 
-					<div className="field custom-range-picker" style={{width:150}}>
-						<CustomRangePicker 
+					<div className="field custom-range-picker" style={{ width: 150 }}>
+						<CustomRangePicker
 							onChange={value => {
-								handleLeftCustomRangeDatePickerChange('end',value)
-							}} 
-							placeholder="To" 
-							selected={selectedSummaryRangeDate.end}	
+								handleLeftCustomRangeDatePickerChange('end', value);
+							}}
+							placeholder="To"
+							selected={selectedSummaryRangeDate.end}
 						/>
-					
 					</div>
 
 					<div className="field search">
@@ -1201,7 +1209,7 @@ export default function index(props) {
 						<FontAwesomeIcon className="search-icon" icon={faSearch} />
 					</div>
 
-					<div style={{width:400}} >
+					<div style={{ width: 400 }}>
 						{isRightCalendarVisible && (
 							// <CustomRangeDatePicker
 							// 	format={DISPLAY_DATE_FORMAT}
@@ -1209,31 +1217,48 @@ export default function index(props) {
 							// 	onChange={handleChangeRangeDate}
 							// />
 							<>
+								<div className="field custom-range-picker" style={{ display: 'inline-block' }}>
+									<CustomRangePicker
+										onChange={value => {
+											handleRightCustomRangeDatePickerChange('start', value);
+										}}
+										placeholder="From"
+										selected={selectedRangeDate.start}
+									/>
+								</div>
 
-					<div className="field custom-range-picker" style={{display:'inline-block'}}>
-						<CustomRangePicker 
-							onChange={value => {
-								handleRightCustomRangeDatePickerChange('start',value)
-							}} 
-							placeholder="From" 
-							selected={selectedRangeDate.start}	
-						/>
-
-					</div>
-
-					<div className="field custom-range-picker"  style={{display:'inline-block'}}>
-						<CustomRangePicker 
-							onChange={value => {
-								handleRightCustomRangeDatePickerChange('end',value)
-							}} 
-							placeholder="To" 
-							selected={selectedRangeDate.end}	
-						/>
-					
-					</div>
+								<div className="field custom-range-picker" style={{ display: 'inline-block' }}>
+									<CustomRangePicker
+										onChange={value => {
+											handleRightCustomRangeDatePickerChange('end', value);
+										}}
+										placeholder="To"
+										selected={selectedRangeDate.end}
+									/>
+								</div>
 							</>
 						)}
 					</div>
+				</div>
+				<div style={{ marginBottom: 12, marginLeft: 8 }}>
+					<span
+						style={{ cursor: 'pointer' }}
+						onClick={() => {
+							handleChangeDateFilter(DEFAULT_DATE);
+						}}>
+						Set Default Date
+					</span>
+
+					{isRightCalendarVisible && <span
+						style={{ cursor: 'pointer', float: 'right', marginRight:70 }}
+						onClick={() => {
+							handleChangeRangeDate({
+								start: new Date(),
+								end: new Date()
+							});
+						}}>
+						Set Default Date
+					</span>}
 				</div>
 				<div id="attendance-summary-list">
 					<table id="attendance-table">
