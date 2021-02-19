@@ -49,11 +49,11 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
 
       return (
         <div className='filter-sort'>
-          <table>
+          <table id='filterTable'>
             <thead>
               <tr>
-                <th>Sort by</th>
-                <th>Order</th>
+                <th align='left'>Sort by</th>
+                <th align='left'>Order</th>
               </tr>
             </thead>
             <tbody>
@@ -61,7 +61,7 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
                 sortFilters.map((sf, si) => {
                   return (
                     <tr>
-                      <td>
+                      <td align='left'>
                         <CustomSelect
                           value={sf.column}
                           placeholder='Select Column'
@@ -69,14 +69,14 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
                           onChange={(e) => handleChangeFilter(e, si, 'column', 'sort')}
                         />
                       </td>
-                      <td>
+                      <td align='left'>
                         <CustomSelect
                           value={sf.value}
                           options={getSortOrder(sf.column ? columns[sf.column].type : 'string')}
                           onChange={(e) => handleChangeFilter(e, si, 'value', 'sort')}
                         />
                       </td>
-                      <td>
+                      <td className='actions'>
                         {
                           sortFilters.length > 1 && (
                             <FontAwesomeIcon icon={faMinusCircle} onClick={() => handleRemoveFilter('sort', si)} />

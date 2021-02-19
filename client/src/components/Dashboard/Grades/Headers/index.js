@@ -83,7 +83,7 @@ export default ({
     return (
       <>
         <button
-          className='applyFilterBtn'
+          className='modalBtn applyFilterBtn'
           onClick={handleApplyFilter}
         >
           Apply Filter
@@ -103,7 +103,7 @@ export default ({
         icon={<FontAwesomeIcon icon={faFilter} />}
         onChange={handleSelectFilter}
       />
-      <div>
+      <div className='field search-input'>
         <FontAwesomeIcon className='search-icon' icon={faSearch} />
         <input
           id='search'

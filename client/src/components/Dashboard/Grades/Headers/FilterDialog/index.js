@@ -51,7 +51,7 @@ export default function index({
 
         <div className='modal-footer'>
           <button
-            className='modalBtn closeBtn'
+            className='modalBtn cancelBtn'
             onClick={onClose}
           >
             Cancel

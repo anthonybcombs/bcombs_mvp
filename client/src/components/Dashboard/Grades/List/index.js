@@ -128,18 +128,20 @@ export default ({ form_id, type, history }) => {
       const { name, address, grade, date } = row
       return (
         <tr key={`grades-list-${index}`}>
-          <td>
-            <table>
+          <td className="subHeader">
+            <table className="subTable student">
               <tr>
-                <td style={{ width: '50%' }}>{name}</td>
-                <td style={{ width: '50%' }}>{address}</td>
+                <td  style={{ minWidth: '100px', wordBreak: 'break-word'}}>{name}</td>
+                <td  style={{ minWidth: '100px', wordBreak: 'break-word'}}>Middle School</td>
+                <td  style={{ minWidth: '100px', wordBreak: 'break-word'}}>6th</td>
+                <td  style={{ minWidth: '50px', wordBreak: 'break-word'}}>{grade}</td>
+                <td  style={{ minWidth: '100px', wordBreak: 'break-word'}}>85% (30/40)</td>
               </tr>
             </table>
           </td>
-          <td>
-            <table>
+          <td className="subHeader">
+            <table className="subTable">
               <tr>
-                <td style={{ width: '25%' }}>{grade}</td>
                 {
                   activeSubjectColumns.map(e => (
                     <td style={{ width: '25%' }}>{row[e]}</td>
@@ -148,9 +150,11 @@ export default ({ form_id, type, history }) => {
               </tr>
             </table>
           </td>
-          <td>
-            <table>
+          <td className="subHeader">
+            <table className="subTable">
               <tr>
+                <td>{moment(date).format('ll')}</td>
+                <td>{moment(date).format('ll')}</td>
                 <td>{moment(date).format('ll')}</td>
               </tr>
             </table>
@@ -162,84 +166,98 @@ export default ({ form_id, type, history }) => {
 
   return (
     <GradesStyled>
-      <h2>Grade List View</h2>
-      <div>
-        <Headers
-          enableClearFilter
-          filterOptions={['sort', 'column', 'highlight', 'date']}
-          columns={columns}
-          rows={rows}
+      <h2>Grade List Views</h2>
+      <div id='gradeListView'>
+        <div className='gradeListFilter'>
+          <Headers
+            enableClearFilter
+            filterOptions={['sort', 'column', 'highlight', 'date']}
+            columns={columns}
+            rows={rows}
 
-          onApplyFilter={handleApplyFilter}
-        />
-        <button
-          className='applyFilterBtn'
-          onClick={handleApplyFilter}
-        >
-          {`GRADES & TEST INPUT`}
-        </button>
+            onApplyFilter={handleApplyFilter}
+          />
+          <button
+            className='applyFilterBtn'
+            onClick={handleApplyFilter}
+          >
+            {`Grades & Test Input`}
+          </button>
+        </div>
+        <div id='gradeListTableWrapper'>
+          <table id='gradeListView-table'>
+            <tbody>
+              <tr>
+                <th>Student</th>
+                <th>Grades</th>
+                <th>Standard Test</th>
+              </tr>
+
+              <tr>
+                <td className="subHeader">
+                  <table className="subTable student">
+                    <tr>
+                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>Name</td>
+                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>School Type</td>
+                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>Grade Level</td>
+                      <td style={{ minWidth: '50px', whiteSpace: 'initial' }}>GPA Cum (Semester)</td>
+                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>Attendance Summary</td>
+                    </tr>
+                  </table>
+                </td>
+
+                <td className="subHeader">
+                  <table className="subTable">
+                    <tr>
+                      {/* <td style={{ width: '25%' }}>Grade</td> */}
+                      {
+                        activeSubjectColumns.map((e, index) => {
+                          const isFirst = index === 0
+                          const isLast = index === (subjectDisplayCount - 1)
+                          const showFirst = isFirst && subjectCounter > activeSubjectColumns.length
+                          const showLast = isLast && subjectColumns.length > subjectCounter
+                          return (
+                            <td style={{ width: '25%' }} key={`subjectCol-${index}`}>
+                              {
+                                showFirst && (
+                                  <span style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => setSubjectCounter(subjectCounter - subjectDisplayCount)} >
+                                    <FontAwesomeIcon icon={faAngleLeft}/>
+                                  </span>
+                                )
+                              }
+                              {columns[e]?.label || e}
+                              {
+                                showLast && (
+                                  <span style={{ cursor: 'pointer', marginLeft: '1rem' }} onClick={() => setSubjectCounter(subjectCounter + subjectDisplayCount)} >
+                                    <FontAwesomeIcon icon={faAngleRight} />
+                                  </span>
+                                )
+                              }
+                            </td>
+                          )
+                        })
+                      }
+                    </tr>
+                  </table>
+                </td>
+
+                <td className="subHeader">
+                  <table className="subTable">
+                    <tr>
+                      <td>Act 1</td>
+                      <td>Act 2</td>
+                      <td>SAT</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              {renderTableData()}
+            </tbody>
+          </table>
+    
+        </div>
       </div>
-      <table>
-        <tbody>
-          <tr>
-            <th>Student</th>
-            <th>Grades</th>
-            <th>Standard Test</th>
-          </tr>
-
-          <tr>
-            <td>
-              <table>
-                <tr>
-                  <td style={{ width: '50%' }}>Name</td>
-                  <td style={{ width: '50%' }}>Address</td>
-                </tr>
-              </table>
-            </td>
-
-            <td>
-              <table>
-                <tr>
-                  <td style={{ width: '25%' }}>Grade</td>
-                  {
-                    activeSubjectColumns.map((e, index) => {
-                      const isFirst = index === 0
-                      const isLast = index === (subjectDisplayCount - 1)
-                      const showFirst = isFirst && subjectCounter > activeSubjectColumns.length
-                      const showLast = isLast && subjectColumns.length > subjectCounter
-                      return (
-                        <td style={{ width: '25%' }} key={`subjectCol-${index}`}>
-                          {
-                            showFirst && (
-                              <FontAwesomeIcon icon={faAngleLeft} onClick={() => setSubjectCounter(subjectCounter - subjectDisplayCount)} />
-                            )
-                          }
-                          {columns[e]?.label || e}
-                          {
-                            showLast && (
-                              <FontAwesomeIcon icon={faAngleRight} onClick={() => setSubjectCounter(subjectCounter + subjectDisplayCount)} />
-                            )
-                          }
-                        </td>
-                      )
-                    })
-                  }
-                </tr>
-              </table>
-            </td>
-
-            <td>
-              <table>
-                <tr>
-                  <td>Date</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          {renderTableData()}
-        </tbody>
-      </table>
     </GradesStyled>
   )
 }
