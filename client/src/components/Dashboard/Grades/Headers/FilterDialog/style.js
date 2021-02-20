@@ -5,7 +5,7 @@ export default styled.div`
     position: relative;
     top: 100px;
     width: auto;
-    max-width: 500px;
+    max-width: 550px;
     padding: 0;
   }
   .close {
@@ -115,18 +115,41 @@ export default styled.div`
   }
 
 
+  #filterTable {
+    width: 100%;
+  }
   #filterTable th {
     font-size: 14px;
     color: gray;
+    text-indent: .5rem;
+  }
+  #filterTable td >div {
+    margin: 0 .5rem .5rem;
+  }
+  #filterTable td.actions {
+    display: flex;
   }
   #filterTable td.actions >svg {
-    margin-left 1rem;
+    padding: .5rem;
+    // margin-left 1rem;
+    cursor: pointer;
+    border-radius: 100px;
+    transition: .25s ease-in-out;
+  }
+  #filterTable td.actions >svg:hover {
+    background: #dddddd3d;
+  }
+  #filterTable td.actions >svg.addIcon {
+    color: #f26e21;
+  }
+  #filterTable td.actions >svg.minusIcon {
+    color: #f44336;
   }
 
 
   @media (max-width: 500px) {
     .modal-content {
-      max-width: 300px;
+      max-width: 450px;
     }
   }
 `;

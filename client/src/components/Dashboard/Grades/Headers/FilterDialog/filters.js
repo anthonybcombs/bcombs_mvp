@@ -79,12 +79,12 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
                       <td className='actions'>
                         {
                           sortFilters.length > 1 && (
-                            <FontAwesomeIcon icon={faMinusCircle} onClick={() => handleRemoveFilter('sort', si)} />
+                            <FontAwesomeIcon icon={faMinusCircle} className='minusIcon' onClick={() => handleRemoveFilter('sort', si)} />
                           )
                         }
                         {
                           si === (sortFilters.length - 1) && (
-                            <FontAwesomeIcon icon={faPlusCircle} onClick={() => handleAddFilter('sort', { column: '', value: 'asc' })} />
+                            <FontAwesomeIcon icon={faPlusCircle} className='addIcon' onClick={() => handleAddFilter('sort', { column: '', value: 'asc' })} />
                           )
                         }
                       </td>
