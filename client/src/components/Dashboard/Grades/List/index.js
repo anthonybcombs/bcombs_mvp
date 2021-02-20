@@ -7,6 +7,7 @@ import moment from 'moment'
 
 import GradesStyled from './styles'
 import Headers from '../Headers'
+import { FilterOptionsObj } from '../Headers/options'
 
 import Loading from '../../../../helpers/Loading.js'
 
@@ -18,81 +19,110 @@ export default ({ form_id, type, history }) => {
   const data = cloneDeep([
     {
       name: 'John Doe',
-      address: 'Address 1',
-      grade: '5.9',
+      schoolType: 'Middle School',
+      gradeLevel: '6th',
+      gpa: '3.2(2.6)',
+      attendanceSummary: '85%(34/40)',
       math: 'A',
       science: 'B',
       english: 'C',
       history: 'B',
-      date: '2021-01-16T18:26:16.468Z',
+      act1: 0,
+      act2: 2,
+      sat: 12
     },
     {
       name: 'John Smith',
-      address: 'Address 2',
-      grade: '2.2',
+      schoolType: 'Middle School',
+      gradeLevel: '5th',
+      gpa: '3.3(3.6)',
+      attendanceSummary: '95%(35/40)',
       math: 'B',
       science: 'B',
-      english: 'B',
-      history: 'B',
-      date: '2021-02-16T18:26:16.468Z',
+      english: 'A',
+      history: 'A',
+      act1: 0,
+      act2: 3,
+      sat: 10
     },
     {
       name: 'Smith Legend',
-      address: 'Address 3',
-      grade: '3.1',
+      schoolType: 'High School',
+      gradeLevel: '8th',
+      gpa: '1.2(1.6)',
+      attendanceSummary: '95%(30/40)',
       math: 'A',
       science: 'A',
       english: 'A',
       history: 'A',
-      date: '2021-03-16T18:26:16.468Z',
+      act1: 0,
+      act2: 4,
+      sat: 20
     },
     {
       name: 'John Legend',
-      address: 'Address 4',
-      grade: '2.1',
+      schoolType: 'Middle School',
+      gradeLevel: '4th',
+      gpa: '3.1(2.1)',
+      attendanceSummary: '75%(31/40)',
       math: 'C',
-      science: 'A',
+      science: 'C',
       english: 'B',
       history: 'C',
-      date: '2021-04-16T18:26:16.468Z',
+      act1: 0,
+      act2: 1,
+      sat: 15
     },
     {
       name: 'Legend Doe',
-      address: 'Address 5',
-      grade: '2.5',
-      math: 'C',
-      science: 'C',
-      english: 'C',
-      history: 'C',
-      date: '2021-05-16T18:26:16.468Z',
+      schoolType: 'High School',
+      gradeLevel: '9th',
+      gpa: '2.5(1.6)',
+      attendanceSummary: '89%(20/40)',
+      math: 'A',
+      science: 'B',
+      english: 'A',
+      history: 'B',
+      act1: 0,
+      act2: 1,
+      sat: 9
     },
     {
       name: 'John Doe',
-      address: 'Address 6',
-      grade: '3.1',
+      schoolType: 'High School',
+      gradeLevel: '10th',
+      gpa: '1.1(1.1)',
+      attendanceSummary: '98%(31/40)',
       math: 'A',
-      science: 'C',
-      english: 'B',
-      history: 'C',
-      date: '2021-06-16T18:26:16.468Z',
+      science: 'A',
+      english: 'A',
+      history: 'A',
+      act1: 0,
+      act2: 1,
+      sat: 1
     },
   ])
 
   const columns = {
     name: { type: 'string', label: 'Name' },
-    address: { type: 'string', label: 'Address' },
-    grade: { type: 'number', label: 'Grade' },
+    schoolType: { type: 'string', label: 'School Type' },
+    gradeLevel: { type: 'string', label: 'Grade Level' },
+    gpa: { type: 'string', label: 'GPA Cum(semester)' },
+    attendanceSummary: { type: 'string', label: 'Attendance Summary' },
     math: { type: 'string', label: 'Math' },
     science: { type: 'string', label: 'Science' },
     english: { type: 'string', label: 'English' },
     history: { type: 'string', label: 'History' },
-    date: { type: 'date', label: 'Date' },
+    act1: { type: 'number', label: 'Act 1' },
+    act2: { type: 'number', label: 'Act 2' },
+    sat: { type: 'number', label: 'SAT' },
   }
   const subjectColumns = ['math', 'science', 'english', 'history']
   const subjectDisplayCount = 3
 
   const [rows, setRows] = useState(data)
   const [subjectCounter, setSubjectCounter] = useState(subjectDisplayCount)
+  const [allFilters, setAllFilters] = useState({})
   
   let activeSubjectColumns = subjectColumns.slice(subjectCounter - subjectDisplayCount, subjectCounter)
   if (activeSubjectColumns.length < subjectDisplayCount) {
@@ -121,21 +151,32 @@ export default ({ form_id, type, history }) => {
       const sortOrder = sort.map(e => e.value)
       setRows(orderBy(newRows, sortColumns, sortOrder))
     }
+
+    setAllFilters(cloneDeep(filters))
   }
 
   const renderTableData = () => {
+    const { condition, value, format } = (allFilters?.highlight || [])[0] || {}
+    const { conditions } = FilterOptionsObj.highlight
     return rows.map((row, index) => {
-      const { name, address, grade, date } = row
+      const { 
+        name, schoolType, gradeLevel, gpa, attendanceSummary, act1, act2, sat
+      } = row
+      const highLight = (rowVal) => {
+        const isTrue = condition && conditions[condition](rowVal, value)
+        return isTrue && format ? JSON.parse(format) : {}
+      }
+
       return (
         <tr key={`grades-list-${index}`}>
           <td className="subHeader">
             <table className="subTable student">
               <tr>
-                <td  style={{ minWidth: '100px', wordBreak: 'break-word'}}>{name}</td>
-                <td  style={{ minWidth: '100px', wordBreak: 'break-word'}}>Middle School</td>
-                <td  style={{ minWidth: '100px', wordBreak: 'break-word'}}>6th</td>
-                <td  style={{ minWidth: '50px', wordBreak: 'break-word'}}>{grade}</td>
-                <td  style={{ minWidth: '100px', wordBreak: 'break-word'}}>85% (30/40)</td>
+                <td style={{ ...highLight(name), minWidth: '100px', wordBreak: 'break-word'}}>{name}</td>
+                <td style={{ ...highLight(schoolType), minWidth: '100px', wordBreak: 'break-word'}}>{schoolType}</td>
+                <td style={{ ...highLight(gradeLevel), minWidth: '100px', wordBreak: 'break-word'}}>{gradeLevel}</td>
+                <td style={{ ...highLight(gpa), minWidth: '50px', wordBreak: 'break-word'}}>{gpa}</td>
+                <td style={{ ...highLight(attendanceSummary), minWidth: '100px', wordBreak: 'break-word'}}>{attendanceSummary}</td>
               </tr>
             </table>
           </td>
@@ -144,7 +185,7 @@ export default ({ form_id, type, history }) => {
               <tr>
                 {
                   activeSubjectColumns.map(e => (
-                    <td style={{ width: '25%' }}>{row[e]}</td>
+                    <td style={{ ...highLight(row[e]), width: '25%' }}>{row[e]}</td>
                   ))
                 }
               </tr>
@@ -153,9 +194,9 @@ export default ({ form_id, type, history }) => {
           <td className="subHeader">
             <table className="subTable">
               <tr>
-                <td>{moment(date).format('ll')}</td>
-                <td>{moment(date).format('ll')}</td>
-                <td>{moment(date).format('ll')}</td>
+                <td style={highLight(act1)}>{act1}</td>
+                <td style={highLight(act2)}>{act2}</td>
+                <td style={highLight(sat)}>{sat}</td>
               </tr>
             </table>
           </td>
@@ -171,7 +212,7 @@ export default ({ form_id, type, history }) => {
         <div className='gradeListFilter'>
           <Headers
             enableClearFilter
-            filterOptions={['sort', 'column', 'highlight', 'date']}
+            filterOptions={['sort', 'highlight', 'date']}
             columns={columns}
             rows={rows}
 
