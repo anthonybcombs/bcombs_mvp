@@ -156,15 +156,24 @@ export default ({ form_id, type, history }) => {
   }
 
   const renderTableData = () => {
-    const { condition, value, format } = (allFilters?.highlight || [])[0] || {}
+    const highlightFilters = allFilters?.highlight || []
     const { conditions } = FilterOptionsObj.highlight
     return rows.map((row, index) => {
       const { 
         name, schoolType, gradeLevel, gpa, attendanceSummary, act1, act2, sat
       } = row
-      const highLight = (rowVal) => {
-        const isTrue = condition && conditions[condition](rowVal, value)
-        return isTrue && format ? JSON.parse(format) : {}
+      const highLight = (rowVal, columnName) => {
+        const newFormat = highlightFilters.reduce((acc, { column, condition, value, format }) => {
+          const isTrue = column.includes(columnName) && condition && conditions[condition](rowVal, value)
+          if (isTrue) {
+            return {
+              ...acc,
+              ...JSON.parse(format)
+            }
+          }
+          return acc
+        }, {})
+        return newFormat
       }
 
       return (
@@ -172,11 +181,11 @@ export default ({ form_id, type, history }) => {
           <td className="subHeader">
             <table className="subTable student">
               <tr>
-                <td style={{ ...highLight(name), minWidth: '100px', wordBreak: 'break-word'}}>{name}</td>
-                <td style={{ ...highLight(schoolType), minWidth: '100px', wordBreak: 'break-word'}}>{schoolType}</td>
-                <td style={{ ...highLight(gradeLevel), minWidth: '100px', wordBreak: 'break-word'}}>{gradeLevel}</td>
-                <td style={{ ...highLight(gpa), minWidth: '50px', wordBreak: 'break-word'}}>{gpa}</td>
-                <td style={{ ...highLight(attendanceSummary), minWidth: '100px', wordBreak: 'break-word'}}>{attendanceSummary}</td>
+                <td style={{ ...highLight(name, 'name'), minWidth: '100px', wordBreak: 'break-word'}}>{name}</td>
+                <td style={{ ...highLight(schoolType, 'schoolType'), minWidth: '100px', wordBreak: 'break-word'}}>{schoolType}</td>
+                <td style={{ ...highLight(gradeLevel, 'gradeLevel'), minWidth: '100px', wordBreak: 'break-word'}}>{gradeLevel}</td>
+                <td style={{ ...highLight(gpa, 'gpa'), minWidth: '50px', wordBreak: 'break-word'}}>{gpa}</td>
+                <td style={{ ...highLight(attendanceSummary, 'attendanceSummary'), minWidth: '100px', wordBreak: 'break-word'}}>{attendanceSummary}</td>
               </tr>
             </table>
           </td>
@@ -185,7 +194,7 @@ export default ({ form_id, type, history }) => {
               <tr>
                 {
                   activeSubjectColumns.map(e => (
-                    <td style={{ ...highLight(row[e]), width: '25%' }}>{row[e]}</td>
+                    <td style={{ ...highLight(row[e], e), width: '25%' }}>{row[e]}</td>
                   ))
                 }
               </tr>
@@ -194,9 +203,9 @@ export default ({ form_id, type, history }) => {
           <td className="subHeader">
             <table className="subTable">
               <tr>
-                <td style={highLight(act1)}>{act1}</td>
-                <td style={highLight(act2)}>{act2}</td>
-                <td style={highLight(sat)}>{sat}</td>
+                <td style={highLight(act1, 'act1')}>{act1}</td>
+                <td style={highLight(act2, 'act2')}>{act2}</td>
+                <td style={highLight(sat, 'sat')}>{sat}</td>
               </tr>
             </table>
           </td>

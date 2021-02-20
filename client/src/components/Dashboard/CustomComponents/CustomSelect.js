@@ -1,5 +1,6 @@
 import React from 'react'
-import styled from "styled-components";
+import styled from 'styled-components'
+import { Multiselect } from 'multiselect-react-dropdown'
 
 const CustomSelectStyled = styled.div`
   display: flex;
@@ -14,13 +15,13 @@ const CustomSelectStyled = styled.div`
     position: relative;
   }
   .select-field-wrapper:after {
-    content: "\f078";
+    content: '\f078';
     position: absolute;
     right: 0;
     bottom: 18px;
     font-size: 10px;
     color: #555;
-    font-family: "fontawesome";
+    font-family: 'fontawesome';
   }
   .select-field-wrapper select {
     position: relative;
@@ -43,31 +44,50 @@ const CustomSelectStyled = styled.div`
 
 export default ({
   value, options = [], placeholder = '', icon, onChange,
-  isMultiple = false // coming soon
+  isMultiple = false, onRemove, closeOnSelect = false,
+  showCheckbox = true, autcomplete = false, displayValue = 'label'
 }) => {
   return (
     <CustomSelectStyled>
       {
         icon && icon
       }
-      <div className="field select-field-wrapper">
-        <select
-          value={value}
-          onChange={onChange}
-        >
-          {
-            placeholder && (
-              <option value=''>{placeholder}</option>
-            )
-          }
-          {
-            options.map(({ value: optionValue, label }, index) => {
-              return (
-                <option key={`option-${index}`} value={optionValue}>{label}</option>
-              )
-            })
-          }
-        </select>
+      <div className='field select-field-wrapper'>
+        {
+          !isMultiple ? (
+            <select
+              value={value}
+              onChange={onChange}
+            >
+              {
+                placeholder && (
+                  <option value=''>{placeholder}</option>
+                )
+              }
+              {
+                options.map(({ value: optionValue, label }, index) => {
+                  return (
+                    <option key={`option-${index}`} value={optionValue}>{label}</option>
+                  )
+                })
+              }
+            </select>
+          ) : (
+            <Multiselect
+              options={options}
+              onSelect={onChange}
+              onRemove={onRemove}
+              displayValue={displayValue}
+              closeIcon='cancel'
+              placeholder={placeholder}
+              closeOnSelect={closeOnSelect}
+              showCheckbox={showCheckbox}
+              autcomplete={autcomplete}
+              selectedValues={value}
+            />
+          )
+
+        }
       </div>
     </CustomSelectStyled>
   )

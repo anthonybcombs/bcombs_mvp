@@ -8,6 +8,7 @@ import CustomSelect from '../../../CustomComponents/CustomSelect'
 export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
 
   const handleChangeFilter = (value, index, key, filterKey) => {
+    console.log('zzz', { value, index, key, filterKey })
     const clonedFilters = cloneDeep(filters)
     const newFilters = clonedFilters[filterKey].map((nf, i) => {
       if (i === index) {
@@ -106,7 +107,7 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
         { label: 'Contains', value: 'contains' },
       ]
       const colors = [
-        { label: 'Black fill with white text', value: JSON.stringify({ backgroundColor: '#000000', color: '#ffffff' }) },
+        { label: 'Black fill with white text', value: JSON.stringify({ backgroundColor: '#000000', color: '#ffffff' }) }, // First value, being used in the Headers 
         { label: 'Orange fill with white text', value: JSON.stringify({ backgroundColor: '#F5812F', color: '#ffffff' }) },
         { label: 'Yellow fill with white text', value: JSON.stringify({ color: '#ffff00' }) },
         { label: 'Red text', value: JSON.stringify({ color: '#ff0000' }) },
@@ -133,10 +134,12 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
                     <tr>
                       <td align='left'>
                         <CustomSelect
-                          value={column}
+                          isMultiple
+                          value={column.map(e => ({ value: e, label: columns[e].label }))}
                           placeholder='Select Column'
                           options={Object.entries(columns).map(([key, val]) => ({ value: key, label: val.label }))}
-                          onChange={(e) => handleChangeFilter(e.target.value, fi, 'column', 'highlight')}
+                          onChange={(selected) => handleChangeFilter(selected.map(e => e.value), fi, 'column', 'highlight')}
+                          onRemove={(selected) => handleChangeFilter(selected.map(e => e.value), fi, 'column', 'highlight')}
                         />
                       </td>
                       <td align='left'>
@@ -165,6 +168,7 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
                       <td align='left'>
                         <CustomSelect
                           value={format}
+                          place
                           options={colors}
                           onChange={(e) => handleChangeFilter(e.target.value, fi, 'format', 'highlight')}
                         />
@@ -177,7 +181,7 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
                         }
                         {
                           fi === (highlightFilters.length - 1) && (
-                            <FontAwesomeIcon icon={faPlusCircle} className='addIcon' onClick={() => handleAddFilter('highlight', { column: '', condition: 'gt', value: [], color: '' })} />
+                            <FontAwesomeIcon icon={faPlusCircle} className='addIcon' onClick={() => handleAddFilter('highlight', { column: [], condition: 'gt', value: [], format: JSON.stringify({ backgroundColor: '#000000', color: '#ffffff' }) })} />
                           )
                         }
                       </td>

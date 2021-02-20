@@ -17,7 +17,7 @@ export default ({
 
   const defaultFilters = {
     sort: [{ column: '', value: 'asc' }],
-    highlight: [{ column: '', condition: 'gt', value: [], color: '' }],
+    highlight: [{ column: [], condition: 'gt', value: [], format: JSON.stringify({ backgroundColor: '#000000', color: '#ffffff' }) }],
     search: ''
   }
 
@@ -51,7 +51,7 @@ export default ({
 
   const handleApplyFilter = ({ target }, isSearch = false) => {
     let newErrors = [...filterErrors]
-    console.log('kayama', filters)
+    console.log('@@@filters', filters)
     // START Sort Filter Logic
     const checkSort = filters.sort.reduce((acc, { column }) => {
       return {
