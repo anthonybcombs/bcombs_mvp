@@ -96,7 +96,8 @@ export const GET_APPLICATIONS_QUERY = gql`
       vendor
       is_daycare
       child {
-        ch_id        
+        ch_id     
+        new_childId   
         firstname
         lastname
         age
@@ -176,6 +177,7 @@ export const GET_APPLICATIONS_QUERY = gql`
       }
       parents {
         parent_id
+        new_parentId
         firstname
         lastname
         phone_type

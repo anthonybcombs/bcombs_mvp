@@ -1020,7 +1020,7 @@ export default function index({
                 defaultValue={childProfile.email_type}>
                 <option value="">Select Type</option>
                 {EMAIL_OPTIONS.map(opt => (
-                  <option key={opt.id} value={opt.id}>
+                  <option key={opt.id} value={opt.name}>
                     {opt.name}
                   </option>
                 ))}
@@ -1116,7 +1116,7 @@ export default function index({
                   defaultValue={childProfile.email_type2}>
                   <option value="">Select Type</option>
                   {EMAIL_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.id}>
+                    <option key={opt.id} value={opt.name}>
                       {opt.name}
                     </option>
                   ))}

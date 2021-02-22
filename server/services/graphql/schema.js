@@ -677,8 +677,8 @@ const inputs = `
     input AttendanceChildInput {
         app_id: String   
         attendance_status: String   
-        volunteer_hours: Int
-        mentoring_hours: Int
+        volunteer_hours: Float
+        mentoring_hours: Float
         child_id: String   
         vendor: String   
         is_excused: Int
@@ -695,6 +695,34 @@ const inputs = `
         location: String
         description: String
     }
+
+    input StudentGradeInput {
+        student_grade_cumulative_id: Int
+        subject: String
+        quarter_1: Float
+        quarter_2: Float
+        quarter_3: Float
+        quarter_4: Float
+    }
+
+    input StudentGradeCumulativeInput {
+        student_grade_cumulative_id: Int
+        child_id: String
+        app_group_id: String
+        type: String
+        year_level: Int
+        school_year_start: Int
+        school_year_end: Int
+        school_year_frame: String
+        class_name: String
+        class_type: String
+        class_teacher: String
+        attachment: String
+        grades: [StudentGradeInput]
+        date_created: String
+    }
+
+
 `;
 const queryTypes = `
     scalar Date
@@ -898,6 +926,7 @@ const queryTypes = `
 
     type Child {
         ch_id: String!
+        new_childId: String
         firstname: String!
         lastname: String!
         age: Int!
@@ -978,6 +1007,7 @@ const queryTypes = `
 
     type Parent {
         parent_id: String!
+        new_parentId: String
         firstname: String!
         lastname: String!
         phone_type: String
@@ -1322,8 +1352,8 @@ const queryTypes = `
         attendance_status: String   
         child_id: String   
         vendor: String   
-        mentoring_hours: Int
-        volunteer_hours: Int
+        mentoring_hours: Float
+        volunteer_hours: Float
         is_excused: Int
         is_following: Int
     }
@@ -1354,8 +1384,8 @@ const queryTypes = `
         lastname: String
         attendance_status: String   
         child_id: String   
-        mentoring_hours: Int
-        volunteer_hours: Int
+        mentoring_hours: Float
+        volunteer_hours: Float
         is_excused: Int
         is_following: Int
         app_group_name: String
@@ -1381,7 +1411,32 @@ const queryTypes = `
         is_form: Boolean
     }
 
-    
+    type StudentCumulativeGrade {
+        student_grade_cumulative_id: Int
+        app_group_id: String
+        child_id: String
+        year_level: Int
+        designation: String
+        school_year_start: Int
+        school_year_end: Int
+        school_year_frame: String
+        class_name: String
+        class_type: String
+        class_teacher: String
+        attachment: String
+        grades: [StudentGrades]
+        date_created: String
+    }
+
+    type StudentGrades {
+        student_grade_cumulative_id: Int
+        subject: String
+        quarter_1: Float
+        quarter_2: Float
+        quarter_3: Float
+        quarter_4: Float
+        date_created: String
+    }
     
 `;
 
@@ -1425,6 +1480,7 @@ const mutations = `
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
         updateAttendance(attendance: AttendanceInput): [Attendance]
+        addUpdateStudentCumulative(studentCumulative: StudentGradeCumulativeInput): StudentCumulativeGrade
     }
 `;
 
@@ -1472,6 +1528,8 @@ const queries = `
         getFormAppGroup(form: String!): [VendorAppGroup]
         getAllFormAppGroupsByVendor(vendor: String): [VendorAppGroup]
         getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
+        getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
+        getStudentCumulativeGradeByAppGroup(app_group_id: String): [StudentCumulativeGrade]
     }
 `;
 

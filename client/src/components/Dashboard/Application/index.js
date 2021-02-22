@@ -519,13 +519,18 @@ export default function index() {
   }
 
   const [appGroups, setAppGroups] = useState([]);
-
+  const [exportFilename, setExportFilename] = useState("");
+  
   console.log("form app group", formAppGroups);
 
   useEffect(() => {
     if (auth.user_id) {
       //dispatch(requestUserGroup(auth.email));
       dispatch(requestVendor(auth.user_id));
+
+      if(queryParams && queryParams.form) {
+        dispatch(requestGetCustomApplications(queryParams.form));
+      }
     }
   }, []);
 
@@ -545,13 +550,23 @@ export default function index() {
         });
 
         setSelectedVendor(newDefaultVendor[0]);
-        setAppGroups(newDefaultVendor[0].app_groups);
+
+        if(queryParams && queryParams.form) {
+          dispatch(requestGetFormAppGroup(queryParams.form));
+        } else {
+          setAppGroups(newDefaultVendor[0].app_groups);
+        }
+
         //dispatch(requestGetApplications(newDefaultVendor[0].id));
         dispatch(requestGetForms({ vendor: newDefaultVendor[0].id, categories: [] }))
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
-        setAppGroups(vendors[0].app_groups);
+        if(queryParams && queryParams.form) {
+          dispatch(requestGetFormAppGroup(queryParams.form));
+        } else {
+          setAppGroups(vendors[0].app_groups);
+        }
         dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
@@ -559,7 +574,24 @@ export default function index() {
   }, [vendors]);
 
   useEffect(() => {
-    dispatch(requestGetApplications(selectedVendor.id));
+    //dispatch(requestGetApplications(selectedVendor.id));
+
+    if(queryParams && queryParams.form) {
+      setSelectedForm(queryParams.form);
+
+      const tempForm = formList.filter((form) => {
+        return form.form_id == queryParams.form;
+      });
+      console.log("tempForm", tempForm);
+      if(tempForm && tempForm.length > 0) {
+        setExportFilename(tempForm[0]?.form_contents?.formTitle);
+      }
+      // dispatch(requestGetCustomApplications(queryParams.form));
+    } else {
+      setExportFilename(selectedVendor.name);
+      dispatch(requestGetApplications(selectedVendor.id));
+    }
+
   }, [formList])
 
   useEffect(() => {
@@ -976,7 +1008,7 @@ export default function index() {
         person_recommend: parent.profile.person_recommend,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
-          DATE_TIME_FORMAT),
+          DATE_FORMAT),
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getArrayValue(parent.profile.ethinicity),
@@ -1018,6 +1050,7 @@ export default function index() {
   });
 
   const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
+  const DATE_FORMAT = "yyyy-MM-dd";
 
   const onSubmitSaveApplication = () => {
     console.log("Click Save Application");
@@ -1030,7 +1063,7 @@ export default function index() {
         age: getAge(childInformation.profile.date_of_birth),
         birthdate: format(
           new Date(childInformation.profile.date_of_birth),
-          DATE_TIME_FORMAT
+          DATE_FORMAT
         ),
         gender: childInformation.profile.gender,
         phone_type: childInformation.profile.phone_type,
@@ -1107,9 +1140,9 @@ export default function index() {
         prev_school_attended: childInformation.general_information.prev_school_attended,
         prev_school_state: childInformation.general_information.prev_school_state,
         prev_school_zip_code: childInformation.general_information.prev_school_zip_code,
-        preffered_start_date:format(
+        preffered_start_date: childInformation.preffered_start_date ? format(
           new Date(childInformation.profile.preffered_start_date),
-          DATE_TIME_FORMAT),
+          DATE_FORMAT) : null,
         current_classroom: childInformation.profile.current_classroom,
         primary_language: childInformation.profile.primary_language,
         needed_days: childInformation.profile.needed_days,
@@ -1660,6 +1693,7 @@ export default function index() {
                     console.log("selectedvendor", selectedVendor);
                     setSelectedForm("default");
                     setAppGroups(selectedVendor.app_groups);
+                    window.history.replaceState("","","?vendor=" + selectedVendor.id2);
                     dispatch(requestGetApplications(selectedVendor.id));
                   } else {
                     setSelectedForm(target.value);
@@ -1667,20 +1701,20 @@ export default function index() {
                       setView('')
                       setSelectedApplication({})
                     }
-
                     console.log("form form", target.value);
+                    window.history.replaceState("","","?form=" + target.value);
                     setAppGroups([]);
                     dispatch(requestGetFormAppGroup(target.value));
                     dispatch(requestGetCustomApplications(target.value));
                   }
                 }}
               >
-                <option key={selectedVendor.id} selected value="default">
+                <option key={selectedVendor.id} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
                 </option>
                 {
                   formList.map(form => (
-                    <option key={form.form_id} value={form?.form_id}>
+                    <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
                       {form?.form_contents?.formTitle}
                     </option>
                   ))
@@ -1796,6 +1830,8 @@ export default function index() {
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
           appGroups={appGroups}
+          isCustomForm={selectedForm !== "default"}
+          filename={exportFilename}
         />
       )}
       {

@@ -7,6 +7,7 @@ export const getParentByApplication = async (id) => {
     const parent = await db.query (
       `SELECT 
         BIN_TO_UUID(parent_id) as parent_id,
+        new_parentId,
         firstname,
         lastname,
         phone_type,

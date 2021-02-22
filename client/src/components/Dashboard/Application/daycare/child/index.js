@@ -116,6 +116,8 @@ export default function index({
 
   console.log('childInformation54444',childInformation)
 
+  console.log("this is my daycare");
+  
   const handleScoresChange = () => {};
 
   let pastChildInformation = {};

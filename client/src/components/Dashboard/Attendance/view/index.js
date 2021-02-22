@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from '@reach/router';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faAngleLeft, faAngleRight, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useLocation ,useParams } from '@reach/router';
+import { faMinusCircle, faAngleLeft, faAngleRight, faSearch, faClock } from '@fortawesome/free-solid-svg-icons';
+import { useLocation, useParams } from '@reach/router';
 import { format, isRan } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
@@ -374,7 +374,7 @@ const AttendanceSummaryStyled = styled.div`
 
 const DATE_FORMAT = 'MM-dd-yyyy';
 const DATE_KEY_FORMAT = 'MM_dd_yyyy';
-const DISPLAY_DATE_FORMAT = 'MMM d, yyyy'
+const DISPLAY_DATE_FORMAT = 'MMM d, yyyy';
 
 const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];
 
@@ -395,7 +395,10 @@ export default function index(props) {
 			return { attendance, applications, groups, auth, vendors, loading };
 		}
 	);
+	const [currentDisplayDays, setCurrentDisplayDays] = useState([]);
 	const [displayDays, setDisplayDays] = useState(DEFAULT_DISPLAY_DAYS);
+	const [defaultDisplayDays, setDefaultDisplayDays] = useState(DEFAULT_DISPLAY_DAYS);
+	const [displayDayIndex,setDisplayDayIndex] = useState([0,1,2]);
 	const [attendanceDisplay, setAttendanceDisplay] = useState([]);
 	const [attendanceSummary, setAttendanceSummary] = useState({});
 	const [defaultAttendanceDisplay, setDefaultAttendanceDisplay] = useState([]);
@@ -403,7 +406,7 @@ export default function index(props) {
 	const [defaultEvents, setDefaultEvents] = useState([]);
 	const [selectedRangeDate, setSelectedRangeDate] = useState([new Date(), new Date()]);
 	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState([new Date(), addYears(new Date(), 1)]);
-
+	const [isRightCalendarVisible, setIsRightCalendarVisible] = useState(false);
 	const { app_group_id } = useParams();
 	const queryLocation = useLocation();
 	const searchParams = parse(queryLocation.search); // => {init: "true"}
@@ -421,51 +424,43 @@ export default function index(props) {
 			dispatch(requestGetCustomApplications(searchParams.formId));
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
-		} 
-		
-		else if (searchParams && searchParams.type !== 'custom' && app_group_id && auth.user_id) {
+		} else if (searchParams && searchParams.type !== 'custom' && app_group_id && auth.user_id) {
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		}
 	}, []);
 
-
 	useEffect(() => {
-	
-		if (vendors && vendors.length > 0 ) {
-			console.log('REQUEST GET APPLICATIONSSS', vendors)
+		if (vendors && vendors.length > 0) {
+			console.log('REQUEST GET APPLICATIONSSS', vendors);
 			//dispatch(requestGetApplications(vendors[0].id));
 		}
 	}, [vendors]);
 
-
-
 	useEffect(() => {
-		console.log('useEffect app_group_id',app_group_id)
+		console.log('useEffect app_group_id', app_group_id);
 		if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
-			dispatch(requestAttendance(app_group_id,'bcombs'));
+			dispatch(requestAttendance(app_group_id, 'bcombs'));
 			dispatch(requestEventAttendance(app_group_id));
-		}
-		else if(searchParams.formId){
-			dispatch(requestAttendance(searchParams.formId,'forms'));
+		} else if (searchParams.formId) {
+			dispatch(requestAttendance(searchParams.formId, 'forms'));
 		}
 	}, []);
-	console.log('applicationszzzz', applications)
+	console.log('applicationszzzz', applications);
 	useEffect(() => {
 		if (attendance.list) {
-
-			console.log("Attendaance Listtt", attendance)
-			console.log("Attendaance Listtt applications.activeapplications", applications)
+			console.log('Attendaance Listtt', attendance);
+			console.log('Attendaance Listtt applications.activeapplications', applications);
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
-				attDate = attDate.replaceAll('-', '_');				
+				attDate = attDate.replaceAll('-', '_');
 
 				let formApplication = {};
 
-				if(searchParams && searchParams.type === 'custom') {
-					formApplication = applications.activeapplications.find(item => item.app_id === att.child_id)
+				if (searchParams && searchParams.type === 'custom') {
+					formApplication = applications.activeapplications.find(item => item.app_id === att.child_id);
 				}
-				console.log('formApplication',formApplication)
+				console.log('formApplication', formApplication);
 				return {
 					...accum,
 					[att.child_id]: {
@@ -484,50 +479,64 @@ export default function index(props) {
 								is_excused: att.is_excused,
 							},
 						},
-						custom:{
-							...(formApplication || {})
-						}
+						custom: {
+							...(formApplication || {}),
+						},
 					},
 				};
 			}, {});
 
-			currentAttendance = Object.keys(currentAttendance).map(key => {
-				return currentAttendance[key];
-			}).map(att => {
-
-
-				const dateKeys = Object.keys(att.attendance);
-				const filteredDate = dateKeys.filter(key => {
-					return isWithinInterval(new Date(key.replaceAll('_', '-')), {
-						start: subDays(new Date(), 1),
-						end: addDays(new Date(), 1),
+			currentAttendance = Object.keys(currentAttendance)
+				.map(key => {
+					return currentAttendance[key];
+				})
+				.map(att => {
+					const dateKeys = Object.keys(att.attendance);
+					const filteredDate = dateKeys.filter(key => {
+						return isWithinInterval(new Date(key.replaceAll('_', '-')), {
+							start: new Date('2020-08-01'),
+							end: new Date('2021-07-31')
+						});
 					});
+					console.log('Total Hourssss filteredDate', filteredDate)
+					const totalHours = filteredDate.reduce(
+						(accum, key) => {
+							return {
+								total_volunteer_hours: accum.total_volunteer_hours + att.attendance[key].volunteer_hours || 0,
+								total_mentoring_hours: accum.total_mentoring_hours + att.attendance[key].mentoring_hours || 0,
+							};
+						},
+						{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
+					);
+
+					console.log('Total Hourssss', totalHours)
+
+					return {
+						...att,
+						...totalHours,
+					};
 				});
-				const totalHours = filteredDate.reduce(
-					(accum, key) => {
-						return {
-							total_volunteer_hours: (accum.total_volunteer_hours) + att.attendance[key].volunteer_hours || 0,
-							total_mentoring_hours: (accum.total_mentoring_hours) + att.attendance[key].mentoring_hours || 0,
-						};
-					},
-					{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
-				);
-	
-				return {
-					...att,
-					...totalHours,
 
-				};
-			});
+			let displayDayList = attendance.list.map(att => 
+				format(new Date(parseInt(att.attendance_date)),DATE_FORMAT));
+			displayDayList = [...new Set(displayDayList)].sort();
 
-
-			console.log('currentAttendance',currentAttendance)
+			setDisplayDays(displayDayList);
 			setAttendanceDisplay(currentAttendance);
 			setDefaultAttendanceDisplay(currentAttendance);
+
+			if(displayDayList.length <= 3) {
+				setCurrentDisplayDays(displayDayList)
+			}
+			else {
+				setCurrentDisplayDays([
+					displayDayList[0],
+					displayDayList[1],
+					displayDayList[2]
+				]);
+			}
 		}
 	}, [attendance.list, applications]);
-
-
 
 	useEffect(() => {
 		if (attendance.eventAttendanceList) {
@@ -544,13 +553,19 @@ export default function index(props) {
 	}, [attendance.eventAttendanceList]);
 
 	useEffect(() => {
-		handleChangeDateFilter([new Date('2020-08-01'),new Date('2021-07-31')]);
+	console.log('Triggered!!!!!',defaultEvents)
+		handleChangeDateFilter([new Date('2020-08-01'), new Date('2021-07-31')]);
 	}, [defaultEvents, defaultAttendanceDisplay]);
 
-	
+
 
 	const renderTableData = () => {
-		let formattedDateKeys = displayDays.map(key => format(key, DATE_KEY_FORMAT));
+		console.log('Render Table Data', attendanceDisplay)
+		console.log('Render Table Data displayDays', displayDays)
+		let formattedDateKeys = currentDisplayDays.map(key => format(new Date(key), DATE_KEY_FORMAT));
+
+		console.log('Render Table Data attendanceDisplay', attendanceDisplay)
+		console.log('attendanceSummary',attendanceSummary)
 		return attendanceDisplay.map((att, index) => {
 			// let totalPresent = null;
 			// let totalAttendance = null;
@@ -587,7 +602,8 @@ export default function index(props) {
 				).toFixed(2);
 				summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			}
-			console.log('formattedDateKeys',formattedDateKeys)
+			console.log('attendanceSummary',attendanceSummary)
+			console.log('formattedDateKeys', formattedDateKeys);
 			return (
 				<tr key={index}>
 					<td className="subHeader">
@@ -595,7 +611,11 @@ export default function index(props) {
 							<tr>
 								<td style={{ width: 250 }}>
 									<div className="name">
-										<a href={'#'}>{`${searchParams && searchParams.type !== 'custom' && att.firstname && att.lastname ?  `${att.firstname} ${att.lastname}` : att.custom?.form_contents?.formData[0]?.fields[0]?.value}`}</a>
+										<a href={'#'}>{`${
+											searchParams && searchParams.type !== 'custom' && att.firstname && att.lastname
+												? `${att.firstname} ${att.lastname}`
+												: att.custom?.form_contents?.formData[0]?.fields[0]?.value
+										}`}</a>
 									</div>
 								</td>
 								<td>
@@ -618,6 +638,7 @@ export default function index(props) {
 								</td>
 								<td style={{ width: '380px' }}>
 									<div className="attendance-status-container">
+									{currentDisplayDays.length > 0 && 
 										<div>
 											<div style={{ position: 'relative' }}>
 												{' '}
@@ -638,9 +659,8 @@ export default function index(props) {
 														</div>
 													)) || <AttendanceIcon />}
 											</div>
-										</div>
-
-										<div>
+										</div>}
+										{currentDisplayDays.length >= 2 && <div>
 											{(att.attendance[formattedDateKeys[1]] &&
 												att.attendance[formattedDateKeys[1]].status !== null && (
 													<div style={{ position: 'relative' }}>
@@ -657,9 +677,10 @@ export default function index(props) {
 														)}
 													</div>
 												)) || <AttendanceIcon />}
-										</div>
+										</div>}
+										
 
-										<div>
+										{currentDisplayDays.length >= 3 && <div>
 											{(att.attendance[formattedDateKeys[2]] &&
 												att.attendance[formattedDateKeys[2]].status !== null && (
 													<div style={{ position: 'relative' }}>
@@ -676,7 +697,7 @@ export default function index(props) {
 														)}
 													</div>
 												)) || <AttendanceIcon />}
-										</div>
+										</div>} 
 									</div>
 								</td>
 							</tr>
@@ -687,8 +708,8 @@ export default function index(props) {
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td style={{ width: '100px' }}> {att.total_volunteer_hours}</td>
-								<td style={{ width: '100px' }}> {att.total_mentoring_hours}</td>
+								<td style={{ width: '100px' }}> {Math.round(att.total_volunteer_hours)}</td>
+								<td style={{ width: '100px' }}> {Math.round(att.total_mentoring_hours)}</td>
 							</tr>
 						</table>
 					</td>
@@ -697,12 +718,55 @@ export default function index(props) {
 		});
 	};
 
+	// const handlePreviousDate = () => {
+	// 	setDisplayDays([subDays(displayDays[0], 1), subDays(displayDays[1], 1), subDays(displayDays[2], 1)]);
+	// };
+	// const handleNextDate = () => {
+	// 	setDisplayDays([addDays(displayDays[0], 1), addDays(displayDays[1], 1), addDays(displayDays[2], 1)]);
+	// };
+
 	const handlePreviousDate = () => {
-		setDisplayDays([subDays(displayDays[0], 1), subDays(displayDays[1], 1), subDays(displayDays[2], 1)]);
+		//setDisplayDays([subDays(displayDays[0], 1), subDays(displayDays[1], 1), subDays(displayDays[2], 1)]);
+		
+		if(displayDayIndex[0] > 0 && displayDays.length > 3) {
+			let first = displayDayIndex[0] - 1;
+			let second =	displayDayIndex[1] - 1;
+			let third =	displayDayIndex[2] - 1;
+			setCurrentDisplayDays([
+				displayDays[first],
+				displayDays[second],
+				displayDays[third]
+			]);
+			setDisplayDayIndex([
+				first,
+				second,
+				third
+			])
+		}
+
 	};
 	const handleNextDate = () => {
-		setDisplayDays([addDays(displayDays[0], 1), addDays(displayDays[1], 1), addDays(displayDays[2], 1)]);
+		//setDisplayDays([addDays(displayDays[0], 1), addDays(displayDays[1], 1), addDays(displayDays[2], 1)]);
+		
+		if( (displayDayIndex[2] === displayDayIndex[displayDayIndex.length - 1]) && ( displayDayIndex[displayDayIndex.length - 1] < displayDays.length - 1) && displayDays.length > 3) {
+			let first = displayDayIndex[0] + 1;
+			let second =	displayDayIndex[1] + 1;
+			let third =	displayDayIndex[2] + 1;
+	
+			setCurrentDisplayDays([
+				displayDays[first],
+				displayDays[second],
+				displayDays[third]
+			]);
+			setDisplayDayIndex([
+				first,
+				second,
+				third
+			])
+		}
+	
 	};
+	
 
 	const handleSearchChange = e => {
 		const { value } = e.target;
@@ -710,8 +774,7 @@ export default function index(props) {
 			setAttendanceDisplay(defaultAttendanceDisplay);
 		} else {
 			let lowerCaseValue = value.toLowerCase();
-			console.log('defaultAttendanceDisplay', defaultAttendanceDisplay);
-			console.log('defaultAttendanceDisplay lowerCaseValue', lowerCaseValue);
+
 			const list = defaultAttendanceDisplay.filter(
 				item => item.fullname && item.fullname.toLowerCase().includes(lowerCaseValue)
 			);
@@ -722,10 +785,25 @@ export default function index(props) {
 	const handleChangeDateFilter = date => {
 		if (date === null) {
 			setAttendanceDisplay(defaultAttendanceDisplay);
-			setSelectedSummaryRangeDate([new Date(), new Date()]);
-			setDisplayDays(DEFAULT_DISPLAY_DAYS);
+			setSelectedSummaryRangeDate([new Date('2020-08-01'),  new Date('2021-07-31')]);
+			//setDisplayDays(DEFAULT_DISPLAY_DAYS);
+			console.log('displayDayszzzz',displayDays)
+			//setCurrentDisplayDays(displayDays)
+			if(displayDays.length <= 3) {
+				setCurrentDisplayDays(displayDays)
+			}
+			else {
+				setCurrentDisplayDays([
+					displayDays[0],
+					displayDays[1],
+					displayDays[2]
+				]);
+			}
+
+
 			return;
-		}
+		}	
+
 
 		if (defaultEvents.length > 0) {
 			let filteredEvents = defaultEvents.filter(event => {
@@ -734,9 +812,11 @@ export default function index(props) {
 					end: addDays(new Date(date[1]), 1),
 				});
 			});
-			console.log('Filtered Events', filteredEvents);
+			console.log('Filtered Events1111 defaultEvents', defaultEvents);
+			console.log('Filtered Events1111', filteredEvents);
 
 			// ------------------------------------------- //
+			console.log('defaultAttendanceDisplay',defaultAttendanceDisplay)
 			let totalPresent = null;
 			let totalAttendance = null;
 			if (filteredEvents.length > 0) {
@@ -745,16 +825,17 @@ export default function index(props) {
 					let totalPresent =
 						Object.keys(defaultAtt.attendance).filter(key => {
 							let dashedDate = key.replaceAll('_', '-');
-
+							console.log('dashedDate',dashedDate)
+							console.log('dashedDate 2',filteredEvents)
 							const hasEvent = filteredEvents.find(event => dashedDate === event.start_of_event);
 
 							return (
 								hasEvent &&
 								defaultAtt.attendance[key] &&
-									(defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].is_excused === 1)
+								(defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].is_excused === 1)
 							);
 						}).length || 0;
-
+						console.log('totalPresent',totalPresent)
 					return {
 						...accum,
 						[defaultAtt.child_id]: {
@@ -795,8 +876,8 @@ export default function index(props) {
 			const totalHours = filteredDate.reduce(
 				(accum, key) => {
 					return {
-						total_volunteer_hours: (accum.total_volunteer_hours) + att.attendance[key].volunteer_hours || 0,
-						total_mentoring_hours: (accum.total_mentoring_hours) + att.attendance[key].mentoring_hours || 0,
+						total_volunteer_hours: accum.total_volunteer_hours + att.attendance[key].volunteer_hours || 0,
+						total_mentoring_hours: accum.total_mentoring_hours + att.attendance[key].mentoring_hours || 0,
 					};
 				},
 				{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
@@ -816,7 +897,10 @@ export default function index(props) {
 			};
 		});
 
+		console.log('updatedAttendanceDisplazzzzy',updatedAttendanceDisplay)
+
 		let childEventAttendance = updatedAttendanceDisplay.reduce((accum, att) => {
+			console.log('ACCUMMM', accum)
 			let totalAttendance = Object.keys(att.attendance).length || 0;
 			let totalPresent =
 				Object.keys(att.attendance).filter(key => {
@@ -824,10 +908,14 @@ export default function index(props) {
 						att.attendance[key] && (att.attendance[key].status === 'Present' || att.attendance[key].is_excused === 1)
 					);
 				}).length || 0;
+
+
 			return {
 				...accum,
 				[att.child_id]: {
 					...(accum[att.child_id] || {}),
+					total_mentoring_hours:att.total_mentoring_hours,
+					total_volunteer_hours:att.total_volunteer_hours,
 					total_present:
 						accum[att.child_id] && accum[att.child_id].total_present
 							? accum[att.child_id].total_present + totalPresent
@@ -837,12 +925,23 @@ export default function index(props) {
 			};
 		}, {});
 
+		console.log('childEventAttendance123123123123123',childEventAttendance)
 		setAttendanceSummary(childEventAttendance);
 	};
 
 	const handleChangeRangeDate = date => {
 		if (date == null) {
 			setSelectedRangeDate([new Date(), new Date()]);
+			if(displayDayList.length <= 3) {
+				setCurrentDisplayDays(displayDayList)
+			}
+			else {
+				setCurrentDisplayDays([
+					displayDayList[0],
+					displayDayList[1],
+					displayDayList[2]
+				]);
+			}
 			return;
 		}
 		const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
@@ -851,7 +950,7 @@ export default function index(props) {
 				return isWithinInterval(new Date(key.replaceAll('_', '-')), {
 					start: subDays(new Date(date[0]), 1),
 					end: addDays(new Date(date[1]), 1),
-				});
+				}); 
 			});
 			const totalHours = filteredDate.reduce(
 				(accum, key) => {
@@ -877,14 +976,25 @@ export default function index(props) {
 			};
 		});
 		setAttendanceDisplay(updatedAttendanceDisplay);
-		setDisplayDays([
-			new Date(date[0]),
-			addDays(new Date(new Date(date[0])), 1),
-			addDays(new Date(new Date(date[0])), 2),
-		]);
+		// console.log('Dayzzzzzzz', currentDisplayDays)
+		// console.log('Dayzzzzzzz 222', displayDays)
+		// setCurrentDisplayDays([
+		// 	new Date(date[0]),
+		// 	addDays(new Date(new Date(date[0])), 1),
+		// 	addDays(new Date(new Date(date[0])), 2),
+		// ]);
+
+
+
+
 		setSelectedRangeDate([new Date(date[0]), new Date(date[1])]);
 	};
 
+	const handleRightCalendar = () => {
+		setIsRightCalendarVisible(!isRightCalendarVisible);
+	};
+
+	console.log('currentDisplayDays',currentDisplayDays)
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Attendance Summary</h2>
@@ -895,11 +1005,13 @@ export default function index(props) {
 				</Link>
 				<div className="filter-container">
 					<div className="field">
-						<CustomRangeDatePicker format={DISPLAY_DATE_FORMAT} value={selectedSummaryRangeDate} onChange={handleChangeDateFilter} />
+						<CustomRangeDatePicker
+							format={DISPLAY_DATE_FORMAT}
+							value={selectedSummaryRangeDate}
+							onChange={handleChangeDateFilter}
+						/>
 					</div>
-					<div className="field search">
-						<CustomRangeDatePicker format={DISPLAY_DATE_FORMAT} value={selectedRangeDate} onChange={handleChangeRangeDate} />
-					</div>
+
 					<div className="field search">
 						<input
 							id="search"
@@ -914,13 +1026,28 @@ export default function index(props) {
 						</label>
 						<FontAwesomeIcon className="search-icon" icon={faSearch} />
 					</div>
+
+					<div className="field search">
+						{isRightCalendarVisible && (
+							<CustomRangeDatePicker
+								format={DISPLAY_DATE_FORMAT}
+								value={selectedRangeDate}
+								onChange={handleChangeRangeDate}
+							/>
+						)}
+					</div>
 				</div>
 				<div id="attendance-summary-list">
 					<table id="attendance-table">
 						<tbody>
 							<tr>
 								<th>Student</th>
-								<th>Attendance Status</th>
+								<th>
+									Attendance Status{' '}
+									<span onClick={handleRightCalendar} style={{ cursor: 'pointer' }}>
+										<FontAwesomeIcon style={{ color: isRightCalendarVisible ? 'gray' : 'white' }} icon={faClock} />
+									</span>
+								</th>
 								<th>Other Hours</th>
 							</tr>
 
@@ -940,7 +1067,7 @@ export default function index(props) {
 											<td>Summary</td>
 											<td style={{ width: '380px', padding: '0' }}>
 												<div className="attendance-status-container">
-													{displayDays.map((date, index) => {
+													{currentDisplayDays.map((date, index) => {
 														return (
 															<div className="date">
 																{index === 0 && (
@@ -948,7 +1075,7 @@ export default function index(props) {
 																		<FontAwesomeIcon className="search-icon" icon={faAngleLeft} />
 																	</span>
 																)}
-																{format(date, DISPLAY_DATE_FORMAT)}
+																{format(new Date(date), DISPLAY_DATE_FORMAT)}
 																{index === 2 && (
 																	<span onClick={handleNextDate} style={{ cursor: 'pointer', marginLeft: '1rem' }}>
 																		<FontAwesomeIcon className="search-icon" icon={faAngleRight} />

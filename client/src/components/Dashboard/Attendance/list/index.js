@@ -16,6 +16,7 @@ import {
 	faBorderAll,
 	faTh,
 	faBars,
+	faClock
 } from '@fortawesome/free-solid-svg-icons';
 import { parse } from 'query-string';
 
@@ -511,6 +512,16 @@ const ClassListViewStyled = styled.div`
 		left: -9px;
 		transform: rotateY(0deg) rotate(45deg);
 	}
+
+	.react-datepicker--time-only{
+		width:200px !important;
+	}
+	.react-datepicker__time-container  {
+		width:100% !important;
+	}
+	.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box{
+		width:100% !important;
+	}
 `;
 
 const range = (start, end) => {
@@ -540,25 +551,37 @@ const months = [
 ];
 
 const addtime = (time, hour) => {
+	console.log('Add Time Time', time)
+	console.log('Add Time hour', hour)
 	let times = time.split(':');
+	console.log('Add Time Timesssss', times)
 	times[0] = parseInt(times[0]) + hour;
 	times[0] >= 24 ? (times[0] -= 24) : null;
 	times[0] < 10 ? (times[0] = '0' + times[0]) : null;
-
+	console.log('ADDTIMEEEE', times)
 	return times.join(':');
 };
 
 const timeCompare = (time1, time2) => {
-	console.log('Time Compare', time1);
-	console.log('Time Compare 2', time2);
-	let t1 = new Date();
-	let parts = time1.split(':');
-	t1.setHours(parts[0], parts[1], 0);
-	let t2 = new Date();
-	parts = time2.split(':');
-	t2.setHours(parts[0], parts[1], 0);
-	if (t1.getTime() > t2.getTime()) return 1;
-	if (t1.getTime() < t2.getTime()) return -1;
+	// console.log('Time Compare', time1);
+	// console.log('Time Compare 2', time2);
+	// let t1 = new Date();
+	// let parts = time1.split(':');
+	// t1.setHours(parts[0], parts[1], 0);
+	// let t2 = new Date();
+	// parts = time2.split(':');
+	// t2.setHours(parts[0], parts[1], 0);
+	// if (t1.getTime() > t2.getTime()) return 1;
+	// if (t1.getTime() < t2.getTime()) return -1;
+	// return 0;
+
+	if(time1 && time2) {
+		let arrTime1 = time1.split(':');
+		let arrTime2 = time2.split(':');
+	
+		if (parseInt(arrTime1[0]) > parseInt(arrTime2[0])) return 1;
+		if (parseInt(arrTime1[0]) < parseInt(arrTime2[0])) return -1;
+	}
 	return 0;
 };
 
@@ -580,6 +603,30 @@ const DateCustomInput = ({ value, onClick, name, className, placeholder, registe
 		<FontAwesomeIcon icon={faCalendar} className="calendar-icon" />
 	</div>
 );
+
+const TimeCustomInput = ({ value, onClick, name, className, placeholder, register, label }) => {
+	console.log('Time Custom Input', value)
+	return (
+		<div className="field">
+			<input
+				value={value}
+				onClick={onClick}
+				name={name}
+				className={className}
+				placeholder={'HH:mm'}
+				readOnly={true}
+				id={`attendance_time`}
+				style={{
+					width:'100%'
+				}}
+			/>
+			<label className="field-label" for={`attendance_date`}>
+				{label}
+			</label>
+			<FontAwesomeIcon icon={faClock} className="calendar-icon" />
+		</div>
+	);
+}
 
 const style = {
 	attendanceAction: {
@@ -756,7 +803,8 @@ export default function index() {
 	}, [applications, appGroupId, appGroupIds]);
 
 	useEffect(() => {
-		console.log('ATTENDANCEEEEE123123123123 1111', applications);
+		console.log('ATTENDANCEEEEE123123123123 applications', applications);
+		console.log('ATTENDANCEEEEE123123123123 applicationList', applicationList);
 		if (attendance.list) {
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(
@@ -778,9 +826,10 @@ export default function index() {
 		if (attendance.isAttendanceUpdateSuccess) {
 			setApplicationList(defaultApplicationList);
 			const redirect = () => {
-				// setTimeout(() => {
-				// 	window.location.replace(`/dashboard/attendance`);
-				// },1000);
+				setTimeout(() => {
+					window.location.replace(`/dashboard/attendance`);
+				},2000);
+				//window.location.replace(`/dashboard/attendance`);
 			};
 			redirect();
 		}
@@ -910,12 +959,11 @@ export default function index() {
 				attendance_status: app.attendance_status || '',
 				child_id: name === 'custom' ? app.app_id : app.child && app.child.ch_id,
 				vendor: app.vendor,
-				volunteer_hours: app.volunteer_hours ? parseInt(app.volunteer_hours) : 0,
-				mentoring_hours: app.mentoring_hours ? parseInt(app.mentoring_hours) : 0,
+				volunteer_hours: app.volunteer_hours ? parseFloat(app.volunteer_hours) : 0,
+				mentoring_hours: app.mentoring_hours ? parseFloat(app.mentoring_hours) : 0,
 				is_excused: app.excused ? 1 : 0,
 			};
 		});
-
 		const payload = {
 			attendance_list: attendanceList,
 			app_group_id: name === 'custom' ? searchParams && searchParams.formId : appGroupId,
@@ -923,11 +971,11 @@ export default function index() {
 			...attendanceDetails,
 			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
 		};
+
+		console.log('PAYLOADDDDD', payload)
 		dispatch(requestUpdateAttendance(payload));
 		setIsConfirmationVisible(false);
-		setTimeout(() => {
-			window.location.replace(`/dashboard/attendance`);
-		}, 1000);
+
 	};
 
 	const handleAttedanceDetailChange = e => {
@@ -936,7 +984,6 @@ export default function index() {
 			...(attendanceDetails || {}),
 			[name]: value,
 		};
-
 		if (name === 'attendance_start_time') {
 			payload = {
 				...(attendanceDetails || {}),
@@ -957,9 +1004,54 @@ export default function index() {
 				};
 			}
 		}
+
+		console.log('PAYLAODDDD', payload)
 		setAttendanceDetails({
 			...payload,
 		});
+	};
+
+	const handleTimeChange =  name => value => {
+	
+		const formattedValue = format(new Date(value),'HH:mm');
+		let payload = {
+			...(attendanceDetails || {}),
+			[name]: formattedValue
+		};
+		console.log('handleAttedanceDetailChange Formatted Valueeeee', formattedValue)
+		console.log('handleAttedanceDetailChange Handle Time Change', formattedValue)
+		console.log('handleAttedanceDetailChange name', name)
+		console.log('handleAttedanceDetailChange value', formattedValue)
+		console.log('handleAttedanceDetailChange payload', payload)
+
+		if(name === 'attendance_start_time' || name === 'attendance_end_time') {
+			if (name === 'attendance_start_time') {
+				payload = {
+					...(attendanceDetails || {}),
+					attendance_start_time: formattedValue,
+					attendance_end_time: addtime(formattedValue, 1),
+				};
+			} else if (name === 'attendance_end_time') {
+				const timeCompareValue = timeCompare(formattedValue, attendanceDetails.attendance_start_time);
+				if (timeCompareValue > -1) {
+					payload = {
+						...(attendanceDetails || {}),
+						attendance_end_time: formattedValue,
+					};
+				} else {
+					payload = {
+						...(attendanceDetails || {}),
+						attendance_end_time: addtime(attendanceDetails.attendance_start_time, 1),
+					};
+				}
+			}
+		}
+
+		console.log('PAYLOADDDD', payload)
+		setAttendanceDetails({
+			...payload,
+		});
+
 	};
 
 	const handleExcused = (payload, excuseType) => {
@@ -1145,6 +1237,7 @@ export default function index() {
 		});
 	};
 	console.log('Appp Group name', appGroupName);
+	console.log("attendanceDetailsssssssssssssss", attendanceDetails)
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
@@ -1234,7 +1327,7 @@ export default function index() {
 							/>
 						</div>
 						<div className="field">
-							<input
+							{/* <input
 								onChange={handleAttedanceDetailChange}
 								// ref={register({ required: true })}
 								type="time"
@@ -1244,10 +1337,29 @@ export default function index() {
 							/>
 							<label className="field-label" for={`attendance_start_time`}>
 								Start Time
-							</label>
+							</label> */}
+
+							<DatePicker
+								className={'field-input'}
+								onChange={handleTimeChange('attendance_start_time')}
+								showTimeSelect
+								showTimeSelectOnly
+								timeIntervals={15}
+								timeCaption="Time"
+							  dateFormat="h:mm aa"
+								//selected={attendanceDetails.attendance_start_time && new Date(attendanceDetails.attendance_start_time)}
+								disabled={false}
+								name={'attendance_start_time'}
+								placeholder="Start Time"
+								value={attendanceDetails.attendance_start_time}
+								customInput={<TimeCustomInput value={attendanceDetails.attendance_start_time} name="attendance_start_time" className={'field-input date-field'} label="Start Time" register={register} />}
+							/>
+							{/* <label className="field-label" for={`attendance_start_time`}>
+								Start Time
+							</label> */}
 						</div>
 						<div className="field">
-							<input
+							{/* <input
 								onChange={handleAttedanceDetailChange}
 								// ref={register({ required: true })}
 								type="time"
@@ -1255,10 +1367,26 @@ export default function index() {
 								className={'field-input'}
 								placeholder="End Time"
 								value={attendanceDetails.attendance_end_time}
+							/> */}
+
+							<DatePicker
+								className={'field-input'}
+								onChange={handleTimeChange('attendance_end_time')}
+								showTimeSelect
+								showTimeSelectOnly
+								timeIntervals={30}
+								timeCaption="Time"
+							  dateFormat="h:mm aa"
+								//selected={attendanceDetails.attendance_end_time}
+								disabled={false}
+								name={'attendance_end_time'}
+								placeholder="End Time"
+								value={attendanceDetails.attendance_end_time}
+								customInput={<TimeCustomInput value={attendanceDetails.attendance_end_time} name="attendance_end_time" className={'field-input date-field'} label="End Time" register={register} />}
 							/>
-							<label className="field-label" for={`attendance_end_time`}>
+							{/* <label className="field-label" for={`attendance_end_time`}>
 								End Time
-							</label>
+							</label> */}
 						</div>
 						<div className="field">
 							<input

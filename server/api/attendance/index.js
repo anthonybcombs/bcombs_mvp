@@ -72,12 +72,12 @@ export const getChildAttendance = async (applicationGroupId,attendanceType = 'bc
       ON ch.ch_id=att.child_id
       INNER JOIN application app
       ON app.child=ch.ch_id
-      INNER JOIN vendor_app_groups vag
+      LEFT JOIN vendor_app_groups vag
       ON vag.app_grp_id=att.app_group_id AND
         vag.vendor=app.vendor
-      INNER JOIN parent pr
+        LEFT JOIN parent pr
       ON pr.application=app.app_id
-      INNER JOIN users usr
+      LEFT JOIN users usr
       ON usr.email=pr.email_address
       LEFT JOIN user_calendars_groups ucg
       ON ucg.group_id=att.app_group_id AND
@@ -159,6 +159,7 @@ export const updateChildAttendance = async (attendance) => {
   const db = makeDb();
   let result = [];
   try {
+    console.log('Update Child Attendance', attendance)
     if(attendance) {
       for(const att of attendance.attendance_list) {
         const response = await db.query(`SELECT attendance_id 
