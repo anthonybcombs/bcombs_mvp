@@ -707,7 +707,7 @@ const inputs = `
 
     input StudentGradeCumulativeInput {
         student_grade_cumulative_id: Int
-        user_id: String
+        child_id: String
         app_group_id: String
         type: String
         year_level: Int
@@ -1414,7 +1414,7 @@ const queryTypes = `
     type StudentCumulativeGrade {
         student_grade_cumulative_id: Int
         app_group_id: String
-        user_id: String
+        child_id: String
         year_level: Int
         designation: String
         school_year_start: Int
@@ -1480,7 +1480,7 @@ const mutations = `
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
         updateAttendance(attendance: AttendanceInput): [Attendance]
-        addUpdateStudentCumulative(studentCumulative: StudentGradeCumulativeInput): [StudentCumulativeGrade]
+        addUpdateStudentCumulative(studentCumulative: StudentGradeCumulativeInput): StudentCumulativeGrade
     }
 `;
 
