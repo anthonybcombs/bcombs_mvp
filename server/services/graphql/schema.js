@@ -706,7 +706,10 @@ const inputs = `
     }
 
     input StudentGradeCumulativeInput {
+        student_grade_cumulative_id: Int
         user_id: String
+        app_group_id: String
+        type: String
         year_level: Int
         school_year_start: Int
         school_year_end: Int
@@ -1410,8 +1413,10 @@ const queryTypes = `
 
     type StudentCumulativeGrade {
         student_grade_cumulative_id: Int
+        app_group_id: String
         user_id: String
         year_level: Int
+        designation: String
         school_year_start: Int
         school_year_end: Int
         school_year_frame: String
@@ -1475,7 +1480,7 @@ const mutations = `
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
         updateAttendance(attendance: AttendanceInput): [Attendance]
-        addStudentCumulative(studentCumulative: StudentGradeCumulativeInput): [StudentCumulativeGrade]
+        addUpdateStudentCumulative(studentCumulative: StudentGradeCumulativeInput): [StudentCumulativeGrade]
     }
 `;
 
@@ -1523,7 +1528,8 @@ const queries = `
         getFormAppGroup(form: String!): [VendorAppGroup]
         getAllFormAppGroupsByVendor(vendor: String): [VendorAppGroup]
         getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
-        getStudentCumulative(user_id: String): [StudentCumulativeGrade]
+        getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
+        getStudentCumulativeGradeByAppGroup(app_group_id: String): [StudentCumulativeGrade]
     }
 `;
 

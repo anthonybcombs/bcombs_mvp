@@ -41,7 +41,7 @@ import {
   removeEvents
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
-import { addStudentCumulativeGrades,getGrades } from "../../api/grades";
+import { addUpdateStudentCumulativeGrades,getStudentCumulativeGradeByGroup,getStudentCumulativeGrade,getGrades } from "../../api/grades";
 import {
   getVendors,
   updateVendor,
@@ -424,6 +424,19 @@ const resolvers = {
       console.log('getCustomApplicationByVendor venndorrrrr', vendor)
       const response = await getCustomApplicationByVendorId(vendor);
       console.log('getCustomApplicationByVendor response', response)
+      return response;
+    },
+    async getStudentCumulative(root,{ app_group_id,user_id }, context) {
+      const response = await getStudentCumulativeGrade({
+        app_group_id,
+        user_id
+      });
+      return response;
+    },
+    async getStudentCumulativeGradeByAppGroup(root,{ app_group_id }, context) {
+      const response = await getStudentCumulativeGradeByGroup({
+        app_group_id
+      });
       return response;
     }
   },
@@ -1453,8 +1466,8 @@ const resolvers = {
       console.log('UpdateAttendance',attendance)
       return await updateChildAttendance(attendance)
     },
-    async addStudentCumulative(root,{ studentCumulative },context){
-      return await addStudentCumulativeGrades(studentCumulative)
+    async addUpdateStudentCumulative(root,{ studentCumulative },context){
+      return await addUpdateStudentCumulativeGrades(studentCumulative)
     }
   }
 };
