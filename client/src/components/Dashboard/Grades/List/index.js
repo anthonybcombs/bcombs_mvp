@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { faCaretDown, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
 
 import GradesStyled from './styles'
 import Headers from '../Headers'
 import { FilterOptionsObj } from '../Headers/options'
+import CustomSelect from '../../CustomComponents/CustomSelect'
 
 import Loading from '../../../../helpers/Loading.js'
 
@@ -122,7 +123,9 @@ export default ({ form_id, type, history }) => {
 
   const [rows, setRows] = useState(data)
   const [subjectCounter, setSubjectCounter] = useState(subjectDisplayCount)
-  const [allFilters, setAllFilters] = useState({})
+  const [filterFromHeaders, setFilterFromHeaders] = useState({})
+  const [activeTableFilterColumn, setActiveTableFilterColumn] = useState('')
+  const [tableFilters, setTableFilters] = useState({})
   
   let activeSubjectColumns = subjectColumns.slice(subjectCounter - subjectDisplayCount, subjectCounter)
   if (activeSubjectColumns.length < subjectDisplayCount) {
@@ -152,11 +155,11 @@ export default ({ form_id, type, history }) => {
       setRows(orderBy(newRows, sortColumns, sortOrder))
     }
 
-    setAllFilters(cloneDeep(filters))
+    setFilterFromHeaders(cloneDeep(filters))
   }
 
   const renderTableData = () => {
-    const highlightFilters = allFilters?.highlight || []
+    const highlightFilters = filterFromHeaders?.highlight || []
     const { conditions } = FilterOptionsObj.highlight
     return rows.map((row, index) => {
       const { 
@@ -214,10 +217,70 @@ export default ({ form_id, type, history }) => {
     })
   }
 
+  const getColumnValues = (key) => {
+    return data
+      .reduce((acc, curr) => {
+        if (!acc.includes(curr[key])) {
+          acc.push(curr[key])
+        }
+        return acc
+      }, [])
+      .sort()
+  }
+
+  const renderTableFilter = (key) => {
+    if (activeTableFilterColumn && activeTableFilterColumn === key) {
+      return (
+        <div
+          style={{ position: 'absolute', backgroundColor: '#fff' }}
+          onClick={e => e.stopPropagation()}
+        >
+          {
+            getColumnValues(key).map((e, index) => {
+              const existingFilter = tableFilters[key] || []
+              return (
+                <div id={`${key}_${e}_${index}`}>
+                  <label htmlFor={`${key}_${e}_${index}`} className='checkboxContainer'>
+                    <input
+                      type='checkbox'
+                      id={`${key}_${e}_${index}`}
+                      value={e}
+                      checked={existingFilter.includes(e)}
+                      onChange={({ target: { checked, value } }) => {
+                        let newFilters = [...existingFilter]
+                        if (checked) {
+                          newFilters.push(e)
+                        } else {
+                          newFilters = newFilters.filter(ne => ne !== e)
+                        }
+                        setTableFilters({
+                          ...tableFilters,
+                          [key]: newFilters
+                        })
+                      }}
+                    />
+                    <span className='checkmark' />
+                    <span className='labelName'>{e}</span>
+                  </label>
+                </div>
+              )
+            })
+          }
+        </div>
+      )
+    }
+    return null
+  }
+  console.log('toinks', { tableFilters })
   return (
     <GradesStyled>
       <h2>Grade List Views</h2>
-      <div id='gradeListView'>
+      <div
+        id='gradeListView'
+        onClick={() => {
+          setActiveTableFilterColumn('')
+        }}
+      >
         <div className='gradeListFilter'>
           <Headers
             enableClearFilter
@@ -247,11 +310,40 @@ export default ({ form_id, type, history }) => {
                 <td className="subHeader">
                   <table className="subTable student">
                     <tr>
-                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>Name</td>
-                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>School Type</td>
-                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>Grade Level</td>
-                      <td style={{ minWidth: '50px', whiteSpace: 'initial' }}>GPA Cum (Semester)</td>
-                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>Attendance Summary</td>
+                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
+                        <span>Name</span>
+                        <FontAwesomeIcon
+                          icon={faCaretDown}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setActiveTableFilterColumn('name')
+                          }}
+                        />
+                        {renderTableFilter('name')}
+                      </td>
+                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
+                        School Type
+                        <FontAwesomeIcon
+                          icon={faCaretDown}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setActiveTableFilterColumn('schoolType')
+                          }}
+                        />
+                        {renderTableFilter('schoolType')}
+                      </td>
+                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
+                        Grade Level
+                        <FontAwesomeIcon icon={faCaretDown}/>
+                      </td>
+                      <td style={{ minWidth: '50px', whiteSpace: 'initial' }}>
+                        GPA Cum (Semester)
+                        <FontAwesomeIcon icon={faCaretDown}/>
+                      </td>
+                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
+                        Attendance Summary
+                        <FontAwesomeIcon icon={faCaretDown}/>
+                      </td>
                     </tr>
                   </table>
                 </td>
@@ -294,9 +386,18 @@ export default ({ form_id, type, history }) => {
                 <td className="subHeader">
                   <table className="subTable">
                     <tr>
-                      <td>Act 1</td>
-                      <td>Act 2</td>
-                      <td>SAT</td>
+                      <td>
+                        Act 1
+                        <FontAwesomeIcon icon={faCaretDown}/>
+                      </td>
+                      <td>
+                        Act 2
+                        <FontAwesomeIcon icon={faCaretDown}/>
+                      </td>
+                      <td>
+                        SAT
+                        <FontAwesomeIcon icon={faCaretDown}/>
+                      </td>
                     </tr>
                   </table>
                 </td>

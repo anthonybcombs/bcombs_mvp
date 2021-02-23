@@ -45,7 +45,7 @@ const CustomSelectStyled = styled.div`
 export default ({
   value, options = [], placeholder = '', icon, onChange,
   isMultiple = false, onRemove, closeOnSelect = false,
-  showCheckbox = true, autcomplete = false, displayValue = 'label'
+  showCheckbox = true, autcomplete = false, displayValue, isObject = true
 }) => {
   return (
     <CustomSelectStyled>
@@ -74,6 +74,7 @@ export default ({
             </select>
           ) : (
             <Multiselect
+              isObject={isObject}
               options={options}
               onSelect={onChange}
               onRemove={onRemove}

@@ -137,6 +137,7 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
                           isMultiple
                           value={column.map(e => ({ value: e, label: columns[e].label }))}
                           placeholder='Select Column'
+                          displayValue='label'
                           options={Object.entries(columns).map(([key, val]) => ({ value: key, label: val.label }))}
                           onChange={(selected) => handleChangeFilter(selected.map(e => e.value), fi, 'column', 'highlight')}
                           onRemove={(selected) => handleChangeFilter(selected.map(e => e.value), fi, 'column', 'highlight')}
