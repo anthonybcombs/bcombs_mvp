@@ -14,7 +14,7 @@ import { useLocation, useParams } from '@reach/router';
 import { format, isRan } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { uuid } from 'uuidv4';
-import { isAfter, isEqual, getHours, max, addDays, subDays, addYears, isWithinInterval } from 'date-fns';
+import { isAfter, isEqual ,getHours, max, addDays, subDays, addYears, isWithinInterval,parseISO  } from 'date-fns';
 import { parse } from 'query-string';
 
 import DatePicker from 'react-datepicker';
@@ -400,11 +400,13 @@ const AttendanceSummaryStyled = styled.div`
 		color: grey;
 	}
 `;
-
+//const DATE_FORMAT = 'yyyy-MM-dd ';
 const DATE_FORMAT = 'MM-dd-yyyy';
 const DATE_KEY_FORMAT = 'MM_dd_yyyy';
+//const DATE_KEY_FORMAT = 'yyyy-MM-dd';
 const DISPLAY_DATE_FORMAT = 'MMM d, yyyy';
-
+/// YYYY-MM-DD
+// MMM d, yyyy
 const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];
 
 const AttendanceIcon = ({ color = 'gray' }) => {
@@ -538,18 +540,23 @@ const CustomRangePicker = ({ onChange, placeholder, selected }) => {
 // console.log('ATTENDANCEEEEEEE DEFAULT_ATTENDANCE_FILTER_RANGE',DEFAULT_ATTENDANCE_FILTER_RANGE)
 // console.log('ATTENDANCEEEEEEE DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RANGE)
 
+function parseDate(input) {
+	if(!input) return new Date();
+  let parts = input.split('-');
+	console.log('partssss', parts)
+  // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
+  return new Date(parts[2], parts[0] - 1, parts[1]); // Note: months are 0-based
+}
+
 export default function index(props) {
 
-	let attendanceFilterRange =  localStorage.getItem('attendanceFilterRange') ? 
+let attendanceFilterRange =  localStorage.getItem('attendanceFilterRange') ? 
 		JSON.parse(localStorage.getItem('attendanceFilterRange')) :  null;
 
 let summaryFilterRange =  localStorage.getItem('summaryFilterRange') ? 
 		JSON.parse(localStorage.getItem('summaryFilterRange')) :  null;
 
-if(summaryFilterRange) {
-	console.log('!!!!!!!!!!!!! attendanceFilterRange', attendanceFilterRange)
-	console.log('!!!!!!!!!!!!! summaryFilterRange', new Date(summaryFilterRange.start))
-}
+
 
 const DEFAULT_ATTENDANCE_FILTER_RANGE =  {
 	start: attendanceFilterRange ? new Date(attendanceFilterRange.start) : new Date(),
@@ -557,8 +564,8 @@ const DEFAULT_ATTENDANCE_FILTER_RANGE =  {
 }
 
 const DEFAULT_SUMMARY_FILTER_RANGE =  {
-	start: summaryFilterRange ? new Date(summaryFilterRange.start) : new Date(),
-	end: summaryFilterRange ? new Date(summaryFilterRange.end) : new Date(),
+	start: summaryFilterRange ? new Date(summaryFilterRange.start) :new Date('2020-08-01'),
+	end: summaryFilterRange ? new Date(summaryFilterRange.end) : new Date('2021-07-31')
 }
 
 console.log('DEFAULTTTT',DEFAULT_ATTENDANCE_FILTER_RANGE)
@@ -623,6 +630,7 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 			console.log('Attendaance Listtt applications.activeapplications', applications);
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
+				console.log('attDate',attDate)
 				attDate = attDate.replaceAll('-', '_');
 
 				let formApplication = {};
@@ -681,10 +689,11 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 						...totalHours,
 					};
 				});
-
+				console.log('currentAttendance',currentAttendance)
 			let displayDayList = attendance.list.map(att => format(new Date(parseInt(att.attendance_date)), DATE_FORMAT));
 			displayDayList = [...new Set(displayDayList)].sort();
-
+			console.log('currentAttendance',currentAttendance)
+			console.log('currentAttendance displayDayList',displayDayList)
 			setDisplayDays(displayDayList);
 			setAttendanceDisplay(currentAttendance);
 			setDefaultAttendanceDisplay(currentAttendance);
@@ -716,12 +725,13 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 	}, [defaultEvents, defaultAttendanceDisplay]);
 
 	const renderTableData = () => {
-		console.log('Render Table Data', attendanceDisplay);
-		console.log('Render Table Data displayDays', displayDays);
-		let formattedDateKeys = currentDisplayDays.map(key => format(new Date(key), DATE_KEY_FORMAT));
-
-		console.log('Render Table Data attendanceDisplay', attendanceDisplay);
-		console.log('attendanceSummary', attendanceSummary);
+		console.log('Render Table Data', attendanceDisplay)
+		console.log('Render Table Data displayDays', currentDisplayDays)
+		let formattedDateKeys = currentDisplayDays.map(key => format(parseDate(key), DATE_KEY_FORMAT));
+		//let formattedDateKeys = [];
+		console.log('formattedKkaaeysss', formattedDateKeys)
+		console.log('Render Table Data attendanceDisplay', attendanceDisplay)
+		console.log('attendanceSummary',attendanceSummary)
 		return attendanceDisplay.map((att, index) => {
 			// let totalPresent = null;
 			// let totalAttendance = null;
@@ -759,7 +769,7 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 				summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			}
 			console.log('attendanceSummary', attendanceSummary);
-			console.log('formattedDateKeys', formattedDateKeys);
+			console.log('formattedDateKeys', att.attendance[formattedDateKeys[0]]);
 			return (
 				<tr key={index}>
 					<td className="subHeader">
@@ -925,7 +935,7 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 
 		console.log(
 			'handleLeftCustomRangeDatePickerChange isAfter',
-			isAfter(new Date(payload.end), new Date(payload.start))
+		payload
 		);
 		if (
 			isEqual(new Date(payload.start), new Date(payload.end)) ||
@@ -943,19 +953,19 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 
 		console.log(
 			'handleLeftCustomRangeDatePickerChange isAfter',
-			isAfter(new Date(payload.end), new Date(payload.start))
+		payload
 		);
 		if (
-			isEqual(new Date(payload.start), new Date(payload.end)) ||
-			isAfter(new Date(payload.end), new Date(payload.start))
+			isEqual(payload.start, payload.end) ||
+			isAfter(payload.end, payload.start)
 		) {
 			handleChangeRangeDate(payload);
 		}
 	};
 
 	const handleChangeDateFilter = date => {
-		console.log('handleChangeDateFilter date', date);
-		console.log('handleChangeDateFilter defaultAttendanceDisplay', defaultAttendanceDisplay);
+
+		console.log('defaultEvents',defaultEvents)
 		if (Object.keys(date).length === 0) {
 			setAttendanceDisplay(defaultAttendanceDisplay);
 			setSelectedSummaryRangeDate({
@@ -975,17 +985,12 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 
 		if (defaultEvents.length > 0) {
 			let filteredEvents = defaultEvents.filter(event => {
-				console.log('Formatted Date event', new Date(event.start_of_event));
-				console.log('Formatted Date start', new Date(date.start));
-				console.log('Formatted Date end', new Date(date.end));
-				let response = isWithinInterval(new Date(event.start_of_event), {
-					// start:  subDays(new Date(date.start), 1),
-					// end: addDays(new Date(date.end), 1)
-					start: new Date(date.start),
-					end: new Date(date.end),
+		
+				return isWithinInterval(parseDate(event.start_of_event), {
+					start: subDays(new Date(date.start), 1),
+					end: addDays(new Date(date.end), 1)
 				});
-				console.log('Formatted Date response', response);
-				return response;
+				//return event
 			});
 			console.log('Filtered Events1111 defaultEvents', defaultEvents);
 			console.log('Filtered Events1111', filteredEvents);
@@ -1116,14 +1121,18 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 			}
 			return;
 		}
+		console.log('defaultAttendanceDisplay',defaultAttendanceDisplay)
+			console.log('defaultAttendanceDisplay date',date)
 		const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
 			const dateKeys = Object.keys(att.attendance);
+			console.log('Date keysss', dateKeys)
 			const filteredDate = dateKeys.filter(key => {
-				return isWithinInterval(new Date(key.replaceAll('_', '-')), {
-					start: subDays(new Date(date.start), 1),
-					end: addDays(new Date(date.end), 1),
+				return isWithinInterval(parseDate(key.replaceAll('_', '-')), {
+					start: subDays(date.start, 1),
+					end: addDays(date.end, 1),
 				});
 			});
+			console.log('filteredDate',filteredDate)
 			const totalHours = filteredDate.reduce(
 				(accum, key) => {
 					return {
@@ -1163,7 +1172,7 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 		setIsRightCalendarVisible(!isRightCalendarVisible);
 	};
 
-	console.log('selectedSummaryRangeDate', selectedSummaryRangeDate);
+	console.log('currentDisplayDays', currentDisplayDays);
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Attendance Summary</h2>
@@ -1297,6 +1306,8 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 											<td style={{ width: '380px', padding: '0' }}>
 												<div className="attendance-status-container">
 													{currentDisplayDays.map((date, index) => {
+														// console.log('Current  Display Dayzzzzz', date)
+														// console.log('Current  Display Dayzzzzz 2', format(parseDate(date), DISPLAY_DATE_FORMAT))
 														return (
 															<div className="date">
 																{index === 0 && (
@@ -1304,7 +1315,7 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 																		<FontAwesomeIcon className="search-icon" icon={faAngleLeft} />
 																	</span>
 																)}
-																{format(new Date(date), DISPLAY_DATE_FORMAT)}
+																{format(parseDate(date), DISPLAY_DATE_FORMAT)}
 																{index === 2 && (
 																	<span onClick={handleNextDate} style={{ cursor: 'pointer', marginLeft: '1rem' }}>
 																		<FontAwesomeIcon className="search-icon" icon={faAngleRight} />
@@ -1322,6 +1333,7 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 								<td className="subHeader">
 									<table className="subTable">
 										<tr>
+												
 											<td>Total Volunteer Hours</td>
 											<td>Total Mentoring Hours</td>
 										</tr>
