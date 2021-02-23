@@ -722,6 +722,24 @@ const inputs = `
         date_created: String
     }
 
+    input StudentStandardizedTestInput {
+        student_test_id: Int
+        child_id: String
+        app_group_id: String
+        test_name: String
+        attempt: Int
+        grade_taken: Int
+        month_taken: String
+        score: Int
+        ach_level: Int
+        school_percentage: Float
+        nationality_percentage: Float
+        district_percentage: Float
+        state_percentage: Float
+        attachment: String
+        date_created: String
+    }
+
 
 `;
 const queryTypes = `
@@ -1437,7 +1455,25 @@ const queryTypes = `
         quarter_4: Float
         date_created: String
     }
-    
+
+    type StudentStandardizedTest {
+        student_test_id: Int
+        child_id: String
+        app_group_id: String
+        test_name: String
+        attempt: Int
+        grade_taken: Int
+        month_taken: String
+        score: Int
+        ach_level: Int
+        school_percentage: Float
+        nationality_percentage: Float
+        district_percentage: Float
+        state_percentage: Float
+        attachment: String
+        date_created: String
+    }
+ 
 `;
 
 const mutations = `
@@ -1481,6 +1517,7 @@ const mutations = `
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
         updateAttendance(attendance: AttendanceInput): [Attendance]
         addUpdateStudentCumulative(studentCumulative: StudentGradeCumulativeInput): StudentCumulativeGrade
+        addUpdateStudentStandardizedTest(studentStandardizedTest: StudentStandardizedTestInput): StudentStandardizedTest
     }
 `;
 

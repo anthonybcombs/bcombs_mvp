@@ -41,7 +41,13 @@ import {
   removeEvents
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
-import { addUpdateStudentCumulativeGrades,getStudentCumulativeGradeByGroup,getStudentCumulativeGrade,getGrades } from "../../api/grades";
+import { 
+  addUpdateStudentCumulativeGrades,
+  getStudentCumulativeGradeByGroup,
+  getStudentCumulativeGrade,
+  getGrades ,
+  addUpdateStudentTest
+} from "../../api/grades";
 import {
   getVendors,
   updateVendor,
@@ -1468,6 +1474,9 @@ const resolvers = {
     },
     async addUpdateStudentCumulative(root,{ studentCumulative },context){
       return await addUpdateStudentCumulativeGrades(studentCumulative)
+    },
+    async addUpdateStudentStandardizedTest(root, { studentStandardizedTest },context) {
+        return await addUpdateStudentTest(studentStandardizedTest)
     }
   }
 };

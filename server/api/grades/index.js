@@ -279,9 +279,6 @@ export const addUpdateStudentCumulativeGrades = async ({
     }
 
     
-
-
-
     studentCumulative = await db.query(
       `SELECT  BIN_TO_UUID(child_id) as child_id,
         BIN_TO_UUID(app_group_id) as app_group_id,
@@ -324,5 +321,150 @@ export const addUpdateStudentCumulativeGrades = async ({
   } finally {
     await db.close();
     return studentCumulative;
+  }
+}
+
+export const addUpdateStudentTest = async ({
+  student_test_id = null,
+  child_id,
+  app_group_id,
+  test_name,
+  attempt,
+  grade_taken,
+  month_taken,
+  score,
+  ach_level,
+  school_percentage,
+  nationality_percentage,
+  district_percentage,
+  state_percentage,
+  attachment,
+  date_created,
+}) =>  {
+  const db = makeDb();
+  let studentTest = null;
+
+  try {
+    let studentTestId = student_test_id;
+    let currentSubjectGrades = [];
+    const isTestExist = student_test_id ?  await db.query(`
+      SELECT student_test_id 
+      FROM student_standardized_test 
+      WHERE student_test_id=?`,
+    [student_test_id]) : null
+
+    if(!isTestExist && !studentTestId) {
+      const studentStardizedTestResult = await db.query(
+        `INSERT INTO student_standardized_test(
+          child_id,
+          app_group_id,
+          test_name,
+          attempt,
+          grade_taken,
+          month_taken,
+          score,
+          ach_level,
+          school_percentage,
+          nationality_percentage,
+          district_percentage,
+          state_percentage,
+          attachment,
+          date_added
+        )
+        VALUES (
+          UUID_TO_BIN(?),
+          UUID_TO_BIN(?),
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          NOW()
+        )
+        `,
+        [
+          child_id,
+          app_group_id,
+          test_name,
+          attempt,
+          grade_taken,
+          month_taken,
+          score,
+          ach_level,
+          school_percentage,
+          nationality_percentage,
+          district_percentage,
+          state_percentage,
+          attachment
+        ]
+      );
+
+      studentTestId =  studentStardizedTestResult.insertId
+  
+    }
+    else{
+      const studentStardizedTestResult = await db.query(
+        `UPDATE student_standardized_test
+         SET test_name=?,attempt=?,
+         grade_taken=?,month_taken=?,
+         score=?,ach_level=?,school_percentage=?,
+         nationality_percentage=?, district_percentage=?,
+         state_percentage=?, attachment=?,
+         date_updated=NOW() WHERE student_test_id=?
+        
+        `,
+        [
+          test_name,
+          attempt,
+          grade_taken,
+          month_taken,
+          score,
+          ach_level,
+          school_percentage,
+          nationality_percentage,
+          district_percentage,
+          state_percentage,
+          attachment,
+          studentTestId
+        ]
+      );
+
+
+    }
+    console.log('studentTestId',studentTestId)
+    
+    studentTest = await db.query(`SELECT  
+        student_test_id,
+        BIN_TO_UUID(child_id) as child_id,
+        BIN_TO_UUID(app_group_id) as app_group_id,
+        test_name,
+        attempt,
+        grade_taken,
+        month_taken,
+        score,
+        ach_level,
+        school_percentage,
+        nationality_percentage,
+        district_percentage,
+        state_percentage,
+        attachment
+      FROM student_standardized_test
+      WHERE student_test_id=?`,
+      [studentTestId]
+    );
+    studentTest = studentTest ? studentTest[0] : {}
+
+  
+  } catch (error) {
+    console.log('Error', error)
+  } finally {
+    await db.close();
+    return studentTest;
   }
 }
