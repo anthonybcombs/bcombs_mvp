@@ -1166,7 +1166,7 @@ export default function index(props) {
 					<FontAwesomeIcon className="back-icon" icon={faAngleLeft} />
 					Back
 				</Link>
-				{isDefaultDateSetLabel && <div style={{marginLeft: 12}}>Default Date Set!</div>}
+				{isDefaultDateSetLabel && <div style={{ marginLeft: 12, color: '#52d42a' }}>Default Date Set!</div>}
 
 				<div className="filter-container">
 					<div className="field custom-range-picker" style={{ width: 150 }}>
