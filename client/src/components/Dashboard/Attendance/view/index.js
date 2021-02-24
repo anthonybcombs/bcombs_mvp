@@ -613,6 +613,7 @@ export default function index(props) {
 	useEffect(() => {
 		console.log('useEffect app_group_id', app_group_id);
 		if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
+			console.log('Search Params Type', searchParams.type === 'all' ? 'all' : app_group_id)
 			dispatch(requestAttendance( searchParams.type === 'all' ? 'all' : app_group_id, 'bcombs'));
 			dispatch(requestEventAttendance(app_group_id));
 		} else if (searchParams.formId) {
