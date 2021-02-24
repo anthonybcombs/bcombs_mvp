@@ -634,6 +634,10 @@ export default function index(props) {
 				if (searchParams && searchParams.type === 'custom') {
 					formApplication = applications.activeapplications.find(item => item.app_id === att.child_id);
 				}
+
+				console.log('formApplicationnnn',formApplication)
+				console.log('formApplicationnnn ',applications)
+				console.log('formApplicationnnn att',att)
 				return {
 					...accum,
 					[att.child_id]: {
@@ -760,6 +764,7 @@ export default function index(props) {
 			// }
 			//  app.form_contents?.formData[0]?.fields[0]?.value
 			let summaryTotal = 0;
+			let customFormName = null;
 			if (attendanceSummary[att.child_id]) {
 				summaryTotal = (
 					(attendanceSummary[att.child_id].total_present * 100) /
@@ -767,8 +772,19 @@ export default function index(props) {
 				).toFixed(2);
 				summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			}
-			console.log('attendanceSummary', attendanceSummary);
-			console.log('formattedDateKeys', att.attendance[formattedDateKeys[0]]);
+
+			if(att.custom && att.custom.form_contents && att.custom.form_contents.formData ) {
+				console.log(' att.custom.form_contents', att.custom.form_contents)
+				 let currentFormName = att.custom.form_contents.formData.filter(item => {
+					 let fieldLabel = item.label.toLowerCase();
+					 return fieldLabel.includes('name')
+				 })
+
+				 customFormName = currentFormName ? currentFormName[0]?.fields[0]?.value : ''
+				 console.log('Fieldssss', currentFormName)
+				 console.log('Fieldssss customFormName', customFormName)
+			}
+
 			return (
 				<tr key={index}>
 					<td className="subHeader">
@@ -779,12 +795,12 @@ export default function index(props) {
 										<a href={'#'}>{`${
 											searchParams && searchParams.type !== 'custom' && att.firstname && att.lastname
 												? `${att.firstname} ${att.lastname}`
-												: att.custom?.form_contents?.formData[0]?.fields[0]?.value
+												: att.custom?.form_contents?.formData[0]?.fields[0]?.value || customFormName
 										}`}</a>
 									</div>
 								</td>
 								<td>
-									<div className="class">{att.app_group_name}</div>
+									<div className="class">{att.app_group_name || att?.custom?.form_contents?.formTitle }</div>
 								</td>
 							</tr>
 						</table>
