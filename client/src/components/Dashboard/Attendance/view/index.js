@@ -564,7 +564,7 @@ const DEFAULT_ATTENDANCE_FILTER_RANGE =  {
 }
 
 const DEFAULT_SUMMARY_FILTER_RANGE =  {
-	start: summaryFilterRange ? new Date(summaryFilterRange.start) :new Date('2020-08-01'),
+	start: summaryFilterRange ? new Date(summaryFilterRange.start) : new Date('2020-08-01'),
 	end: summaryFilterRange ? new Date(summaryFilterRange.end) : new Date('2021-07-31')
 }
 
@@ -721,7 +721,10 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 	}, [attendance.eventAttendanceList]);
 
 	useEffect(() => {
+		console.log('useEffect!!!!!!!! selectedRangeDate',selectedRangeDate)
+		console.log('useEffect!!!!!!!! selectedSummaryRangeDate',selectedSummaryRangeDate)
 		handleChangeDateFilter(selectedSummaryRangeDate);
+		handleChangeRangeDate(selectedRangeDate);
 	}, [defaultEvents, defaultAttendanceDisplay]);
 
 	const renderTableData = () => {
@@ -951,10 +954,7 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 			[name]: value,
 		};
 
-		console.log(
-			'handleLeftCustomRangeDatePickerChange isAfter',
-		payload
-		);
+		console.log('handleLeftCustomRangeDatePickerChange isAfter',payload);
 		if (
 			isEqual(payload.start, payload.end) ||
 			isAfter(payload.end, payload.start)
@@ -1250,7 +1250,7 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 				</div>
 				<div style={{ marginBottom: 12, marginLeft: 8 }}>
 					<span
-						style={{ cursor: 'pointer' }}
+						style={{ cursor: 'pointer', color: '#3e89fe',position:'relative', left:180 }}
 						onClick={() => {
 							//handleChangeDateFilter(DEFAULT_DATE);
 							console.log("selectedSummaryRangeDate",selectedSummaryRangeDate)
@@ -1258,11 +1258,12 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 								localStorage.setItem('summaryFilterRange',JSON.stringify(selectedSummaryRangeDate))
 							}
 						}}>
+	
 						Set Default Date
 					</span>
 
 					{isRightCalendarVisible && <span
-						style={{ cursor: 'pointer', float: 'right', marginRight:70 }}
+						style={{ cursor: 'pointer', color: '#3e89fe', float: 'right', marginRight:70 }}
 						onClick={() => {
 							// handleChangeRangeDate({
 							// 	start: new Date(),
@@ -1272,6 +1273,7 @@ console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE',DEFAULT_SUMMARY_FILTER_RAN
 								localStorage.setItem('attendanceFilterRange',JSON.stringify(selectedRangeDate))
 							}
 						}}>
+					
 						Set Default Date
 					</span>}
 				</div>
