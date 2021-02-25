@@ -1,5 +1,27 @@
 import { makeDb } from "../../helpers/database";
 
+const getAverage = (grades, type) => {
+  return grades.map(grade => {
+    if(type === 'semestral') {
+      return  {
+        ...grade,
+        semestral_1_average:  parseFloat(((grade.quarter_1 || 0) + (grade.quarter_2 || 0) ) / 2),
+        semestral_2_average:  parseFloat(( (grade.quarter_3 || 0) + (grade.quarter_4 || 0)) / 2),
+        semestral_final: parseFloat(((grade.quarter_1 || 0) + (grade.quarter_2 || 0) + (grade.quarter_3 || 0) + (grade.quarter_4 || 0)) / 4)
+      }
+    }
+    else if(type === 'quarter') {
+      return  {
+        ...grade,
+        quarter_average:  parseFloat(((grade.quarter_1 || 0) + (grade.quarter_2 || 0) + (grade.quarter_3 || 0) + (grade.quarter_4 || 0)) / 4)
+      }
+    }
+    return {
+      ...grade
+    }
+  });
+}
+
 export const getGrades = async () => {
   const db = makeDb();
   const result = [];
@@ -30,6 +52,8 @@ export const getStudentCumulativeGradeByGroup = async ({
         student_grade_cumulative_id,
         type,
         year_level,
+        school_type,
+        school_name,
         school_year_start,
         school_year_end,
         school_year_frame,
@@ -62,6 +86,14 @@ export const getStudentCumulativeGradeByGroup = async ({
         })
       }
     }
+
+    for(const sc of studentCumulative) {
+      sc.grades = getAverage(sc.grades,sc.school_year_frame );
+      console.log('studentCumulative sc', sc)
+      console.log('studentCumulative',  getAverage(sc.grades,sc.school_year_frame ))
+    }
+
+   
     
   } catch (error) {
     console.log('Error', error)
@@ -70,6 +102,8 @@ export const getStudentCumulativeGradeByGroup = async ({
     return studentCumulative;
   }
 }
+
+
 
 export const getStudentCumulativeGrade = async({
   app_group_id,
@@ -86,6 +120,8 @@ export const getStudentCumulativeGrade = async({
         student_grade_cumulative_id,
         type,
         year_level,
+        school_type,
+        school_name,
         school_year_start,
         school_year_end,
         school_year_frame,
@@ -115,9 +151,10 @@ export const getStudentCumulativeGrade = async({
           ...studentCumulative,
           grades: currentSubjectGrades
         }
+
+        studentCumulative.grades = getAverage(studentCumulative.grades,studentCumulative.school_year_frame );
       }
     }
-    
   } catch (error) {
     console.log('Error', error)
   } finally {
@@ -132,6 +169,8 @@ export const addUpdateStudentCumulativeGrades = async ({
   app_group_id,
   child_id,
   year_level,
+  school_type,
+  school_name,
   school_year_start,
   school_year_end,
   school_year_frame,
@@ -159,6 +198,8 @@ export const addUpdateStudentCumulativeGrades = async ({
           child_id,
           app_group_id,
           year_level,
+          school_type,
+          school_name,
           school_year_start,
           school_year_end,
           school_year_frame,
@@ -179,6 +220,8 @@ export const addUpdateStudentCumulativeGrades = async ({
           ?,
           ?,
           ?,
+          ?,
+          ?,
           NOW()
         )
         `,
@@ -186,6 +229,8 @@ export const addUpdateStudentCumulativeGrades = async ({
           child_id,
           app_group_id,
           year_level,
+          school_type,
+          school_name,
           school_year_start,
           school_year_end,
           school_year_frame,
@@ -202,7 +247,9 @@ export const addUpdateStudentCumulativeGrades = async ({
     else{
       const studentCumulativeResult = await db.query(
         `UPDATE student_grade_cumulative
-         SET year_level=?,school_year_start=?,
+         SET year_level=?,
+         school_type=?,school_name=?,
+         school_year_start=?,
          school_year_end=?,school_year_frame=?,
          class_name=?,class_type=?,class_teacher=?,
          attachment=?,date_updated=NOW() WHERE child_id=UUID_TO_BIN(?) AND app_group_id=UUID_TO_BIN(?)
@@ -210,6 +257,8 @@ export const addUpdateStudentCumulativeGrades = async ({
         `,
         [
           year_level,
+          school_type,
+          school_name,
           school_year_start,
           school_year_end,
           school_year_frame,
@@ -284,6 +333,8 @@ export const addUpdateStudentCumulativeGrades = async ({
         BIN_TO_UUID(app_group_id) as app_group_id,
         student_grade_cumulative_id,
         year_level,
+        school_type,
+        school_name,
         school_year_start,
         school_year_end,
         school_year_frame,
@@ -293,8 +344,8 @@ export const addUpdateStudentCumulativeGrades = async ({
         attachment,
         date_added
       FROM student_grade_cumulative
-      WHERE child_id=UUID_TO_BIN(?)`,
-      [child_id]
+      WHERE student_grade_cumulative_id=?`,
+      [cumulativeId]
     );
 
     if(studentCumulative && studentCumulative[0]) {
@@ -302,7 +353,6 @@ export const addUpdateStudentCumulativeGrades = async ({
         ...studentCumulative[0]
       }
       if(studentCumulative) {
-        console.log('studentCumulative',studentCumulative.student_grade_cumulative_id)
         let currentSubjectGrades = await db.query(`
          SELECT * FROM student_grades 
          WHERE student_grade_cumulative_id=? `, [
@@ -312,8 +362,7 @@ export const addUpdateStudentCumulativeGrades = async ({
           ...studentCumulative,
           grades: currentSubjectGrades
         }
-
-        console.log('studentCumulative',studentCumulative)
+        studentCumulative.grades = getAverage(studentCumulative.grades,studentCumulative.school_year_frame );
       }
     }
   } catch (error) {
@@ -321,6 +370,40 @@ export const addUpdateStudentCumulativeGrades = async ({
   } finally {
     await db.close();
     return studentCumulative;
+  }
+}
+
+export const getStudentStandardizedTest = async (child_id) => {
+  const db = makeDb();
+  let studentStandardizedTest = [];
+  try {
+    studentStandardizedTest = await db.query(
+      `SELECT student_test_id,
+        BIN_TO_UUID(child_id) as child_id,
+        BIN_TO_UUID(app_group_id) as app_group_id,
+        test_name,
+        attempt,
+        grade_taken,
+        month_taken,
+        score,
+        ach_level,
+        school_percentage,
+        nationality_percentage,
+        district_percentage,
+        state_percentage,
+        attachment
+      FROM student_standardized_test
+      WHERE child_id=UUID_TO_BIN(?)`,
+      [
+        child_id
+      ]
+    );
+    
+  } catch (error) {
+    console.log('Error', error)
+  } finally {
+    await db.close();
+    return studentStandardizedTest;
   }
 }
 
@@ -412,12 +495,12 @@ export const addUpdateStudentTest = async ({
       const studentStardizedTestResult = await db.query(
         `UPDATE student_standardized_test
          SET test_name=?,attempt=?,
-         grade_taken=?,month_taken=?,
-         score=?,ach_level=?,school_percentage=?,
-         nationality_percentage=?, district_percentage=?,
-         state_percentage=?, attachment=?,
-         date_updated=NOW() WHERE student_test_id=?
-        
+          grade_taken=?,month_taken=?,
+          score=?,ach_level=?,school_percentage=?,
+          nationality_percentage=?, district_percentage=?,
+          state_percentage=?, attachment=?,
+          date_updated=NOW() 
+         WHERE student_test_id=?
         `,
         [
           test_name,

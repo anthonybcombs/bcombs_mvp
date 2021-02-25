@@ -46,7 +46,8 @@ import {
   getStudentCumulativeGradeByGroup,
   getStudentCumulativeGrade,
   getGrades ,
-  addUpdateStudentTest
+  addUpdateStudentTest,
+  getStudentStandardizedTest
 } from "../../api/grades";
 import {
   getVendors,
@@ -444,6 +445,9 @@ const resolvers = {
         app_group_id
       });
       return response;
+    },
+    async getStudentTest(root, { child_id }, context ) {
+      return await getStudentStandardizedTest(child_id)
     }
   },
   RootMutation: {

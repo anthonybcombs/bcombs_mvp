@@ -711,6 +711,8 @@ const inputs = `
         app_group_id: String
         type: String
         year_level: Int
+        school_type: String
+        school_name: String
         school_year_start: Int
         school_year_end: Int
         school_year_frame: String
@@ -1435,6 +1437,8 @@ const queryTypes = `
         child_id: String
         year_level: Int
         designation: String
+        school_type: String
+        school_name: String
         school_year_start: Int
         school_year_end: Int
         school_year_frame: String
@@ -1453,6 +1457,10 @@ const queryTypes = `
         quarter_2: Float
         quarter_3: Float
         quarter_4: Float
+        quarter_average: Float
+        semestral_1_average: Float
+        semestral_2_average: Float
+        semestral_final: Float
         date_created: String
     }
 
@@ -1567,6 +1575,7 @@ const queries = `
         getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
         getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
         getStudentCumulativeGradeByAppGroup(app_group_id: String): [StudentCumulativeGrade]
+        getStudentTest(child_id: String): [StudentStandardizedTest]
     }
 `;
 
