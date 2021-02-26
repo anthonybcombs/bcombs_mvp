@@ -64,6 +64,7 @@ const inputs = `
         creds: CredsInput!
         info: UserInfoInput!
     }
+
     input ContactInput{
         id: String
         first_name: String
@@ -695,6 +696,12 @@ const inputs = `
         location: String
         description: String
     }
+
+    input UserAttendanceFilterConfigInput{
+        creds: CredsInput
+        user_id: String
+        attendance_filter_config: String
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -752,6 +759,8 @@ const queryTypes = `
         picture: String
         name: String   
         profile_img: String     
+        attendance_filter_config: String
+        
     }
     type UserType {
         id: String,
@@ -1427,6 +1436,7 @@ const mutations = `
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
         updateAttendance(attendance: AttendanceInput): [Attendance]
+        updateUserAttendanceFilterConfig(user_attendance_filter_config: UserAttendanceFilterConfigInput): User
     }
 `;
 

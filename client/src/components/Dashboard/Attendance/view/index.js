@@ -25,6 +25,7 @@ import { requestGetApplications, requestGetCustomApplications } from '../../../.
 import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
 import { requestUserGroup } from '../../../../redux/actions/Groups';
 import { requestVendor } from '../../../../redux/actions/Vendors';
+import { requestUpdateUserAttendanceFilterConfig } from '../../../../redux/actions/Auth';
 
 import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
 const AttendanceSummaryStyled = styled.div`
@@ -555,24 +556,51 @@ export default function index(props) {
 		: null;
 
 	const DEFAULT_ATTENDANCE_FILTER_RANGE = {
-		start: attendanceFilterRange ? new Date(attendanceFilterRange.start) : new Date(),
-		end: attendanceFilterRange ? new Date(attendanceFilterRange.end) : new Date(),
+		start:new Date(),
+		end:  new Date(),
 	};
 
 	const DEFAULT_SUMMARY_FILTER_RANGE = {
-		start: summaryFilterRange ? new Date(summaryFilterRange.start) : new Date('2020-08-01'),
-		end: summaryFilterRange ? new Date(summaryFilterRange.end) : new Date('2021-07-31'),
+		start:  new Date('2020-08-01'),
+		end:  new Date('2021-07-31'),
 	};
 
 	console.log('DEFAULTTTT', DEFAULT_ATTENDANCE_FILTER_RANGE);
 	console.log('DEFAULTTTT DEFAULT_SUMMARY_FILTER_RANGE', DEFAULT_SUMMARY_FILTER_RANGE);
 
 	const dispatch = useDispatch();
-	const { attendance, applications, groups, auth, vendors, loading } = useSelector(
-		({ attendance, applications, groups, auth, vendors, loading }) => {
-			return { attendance, applications, groups, auth, vendors, loading };
+	const { attendance, applications, groups, auth, vendors, loading, user } = useSelector(
+		({ attendance, applications, groups, auth, vendors, loading, user }) => {
+			return { attendance, applications, groups, auth, vendors, loading, user };
 		}
 	);
+	let dateAttendanceConfigFilter = {};
+	if(auth && auth.attendance_filter_config && auth.attendance_filter_config !== '') {
+		dateAttendanceConfigFilter = JSON.parse( auth.attendance_filter_config);
+
+		if(dateAttendanceConfigFilter.default_attendance_filter_range) {
+			dateAttendanceConfigFilter = {
+				...dateAttendanceConfigFilter,
+				default_attendance_filter_range:{
+					start:new Date(dateAttendanceConfigFilter.default_attendance_filter_range.start),
+					end:new Date(dateAttendanceConfigFilter.default_attendance_filter_range.end)
+				}
+			
+			}
+		}
+		if(dateAttendanceConfigFilter.default_summary_filter_range) {
+			dateAttendanceConfigFilter = {
+				...dateAttendanceConfigFilter,
+				default_summary_filter_range:{
+					start:new Date(dateAttendanceConfigFilter.default_summary_filter_range.start),
+					end:new Date(dateAttendanceConfigFilter.default_summary_filter_range.end)
+				}
+			
+			}
+		}
+
+	}
+
 	const [currentDisplayDays, setCurrentDisplayDays] = useState([]);
 	const [displayDays, setDisplayDays] = useState(DEFAULT_DISPLAY_DAYS);
 	const [defaultDisplayDays, setDefaultDisplayDays] = useState(DEFAULT_DISPLAY_DAYS);
@@ -582,16 +610,19 @@ export default function index(props) {
 	const [defaultAttendanceDisplay, setDefaultAttendanceDisplay] = useState([]);
 	const [events, setEvents] = useState([]);
 	const [defaultEvents, setDefaultEvents] = useState([]);
-	const [selectedRangeDate, setSelectedRangeDate] = useState(DEFAULT_ATTENDANCE_FILTER_RANGE);
-	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState(DEFAULT_SUMMARY_FILTER_RANGE);
+	const [selectedRangeDate, setSelectedRangeDate] = useState(dateAttendanceConfigFilter.default_attendance_filter_range ? dateAttendanceConfigFilter.default_attendance_filter_range : DEFAULT_ATTENDANCE_FILTER_RANGE);
+	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState(dateAttendanceConfigFilter.default_summary_filter_range ? dateAttendanceConfigFilter.default_summary_filter_range : DEFAULT_SUMMARY_FILTER_RANGE);
 	const [isRightCalendarVisible, setIsRightCalendarVisible] = useState(false);
 	const [isDefaultDateSetLabel, setIsDefaultDateSetLabel] = useState(false);
 	const { app_group_id } = useParams();
 	const queryLocation = useLocation();
 	const searchParams = parse(queryLocation.search); // => {init: "true"}
+	
 
 	console.log('Selected Range Days 1111', selectedRangeDate);
 	console.log('Selected Range Days 2222', selectedSummaryRangeDate);
+	console.log('authhhhhhhhhhhhhhhhhh', auth)
+	//console.log('authhhhhhhhhhhhhhhhhh user', user)
 	useEffect(() => {
 		if (searchParams && searchParams.type === 'custom' && searchParams.formId) {
 			dispatch(requestGetCustomApplications(searchParams.formId));
@@ -1261,9 +1292,19 @@ export default function index(props) {
 							//handleChangeDateFilter(DEFAULT_DATE);
 							console.log('selectedSummaryRangeDate', selectedSummaryRangeDate);
 							if (selectedSummaryRangeDate) {
-								localStorage.setItem('summaryFilterRange', JSON.stringify(selectedSummaryRangeDate));
+							//	localStorage.setItem('summaryFilterRange', JSON.stringify(selectedSummaryRangeDate));
 								if(!isDefaultDateSetLabel) {
 									setIsDefaultDateSetLabel(true);
+									const payload = {
+										user_id: auth.user_id,
+										attendance_filter_config: JSON.stringify({
+											//...(auth && auth.attendance_filter_config && auth.attendance_filter_config !== '' && JSON.parse(auth.attendance_filter_config) ||  {}),
+											default_attendance_filter_range:selectedRangeDate,
+											default_summary_filter_range: selectedSummaryRangeDate
+										})
+									}
+									console.log('requestUpdateUserAttendanceFilterConfig payload ', payload)
+									dispatch(requestUpdateUserAttendanceFilterConfig(payload))
 									setTimeout(() => {
 										setIsDefaultDateSetLabel(false)
 									},5000)
@@ -1283,9 +1324,19 @@ export default function index(props) {
 								// 	end: new Date()
 								// });
 								if (selectedRangeDate) {
-									localStorage.setItem('attendanceFilterRange', JSON.stringify(selectedRangeDate));
+								//	localStorage.setItem('attendanceFilterRange', JSON.stringify(selectedRangeDate));
 									if(!isDefaultDateSetLabel) {
 										setIsDefaultDateSetLabel(true);
+										const payload ={
+											user_id: auth.user_id,
+											attendance_filter_config: JSON.stringify({
+												//...(auth && auth.attendance_filter_config  && auth.attendance_filter_config  !== '' && JSON.parse(auth.attendance_filter_config) || {}),
+												default_summary_filter_range:selectedSummaryRangeDate,
+												default_attendance_filter_range: selectedRangeDate
+											})
+										}
+										console.log('requestUpdateUserAttendanceFilterConfig payload 2', payload)
+										dispatch(requestUpdateUserAttendanceFilterConfig(payload))
 										setTimeout(() => {
 											setIsDefaultDateSetLabel(false)
 										},5000)

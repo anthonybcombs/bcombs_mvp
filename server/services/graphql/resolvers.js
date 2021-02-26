@@ -9,7 +9,8 @@ import {
   getUserApplication,
   checkUserEmail,
   executeAddUserProfile,
-  updateUserType
+  updateUserType,
+  executeUpdateUserAttendanceConfig
 } from "../../api/users";
 import { getUserTypes } from "../../api/userTypes/";
 import {
@@ -1453,6 +1454,11 @@ const resolvers = {
       console.log('UpdateAttendance',attendance)
       return await updateChildAttendance(attendance)
     },
+
+    async updateUserAttendanceFilterConfig(root, { user_attendance_filter_config }, context) {
+        console.log('user_attendance_filter_config',user_attendance_filter_config)
+        return executeUpdateUserAttendanceConfig(user_attendance_filter_config)
+    }
   }
 };
 
