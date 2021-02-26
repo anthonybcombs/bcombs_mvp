@@ -117,3 +117,12 @@ export const DELETE_CALENDAR_MUTATION = gql`
     }
   }
 `;
+
+export const USER_ATTENDANCE_FILTER_CONFIG_MUTATION = gql`
+  mutation updateUserAttendanceFilterConfig($user_attendance_filter_config: UserAttendanceFilterConfigInput!) {
+    updateUserAttendanceFilterConfig(user_attendance_filter_config: $user_attendance_filter_config) {
+      user_id
+    }
+  }
+`;
+
