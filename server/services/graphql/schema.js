@@ -698,6 +698,7 @@ const inputs = `
 
     input StudentGradeInput {
         student_grade_cumulative_id: Int
+        class: String
         subject: String
         quarter_1: Float
         quarter_2: Float
@@ -721,6 +722,7 @@ const inputs = `
         class_teacher: String
         attachment: String
         grades: [StudentGradeInput]
+        deleted_grades: [Int]
         date_created: String
     }
 
@@ -741,6 +743,7 @@ const inputs = `
         attachment: String
         date_created: String
     }
+
 
 
 `;
@@ -1452,6 +1455,7 @@ const queryTypes = `
 
     type StudentGrades {
         student_grade_cumulative_id: Int
+        class: String
         subject: String
         quarter_1: Float
         quarter_2: Float
@@ -1525,7 +1529,7 @@ const mutations = `
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
         updateAttendance(attendance: AttendanceInput): [Attendance]
         addUpdateStudentCumulative(studentCumulative: StudentGradeCumulativeInput): StudentCumulativeGrade
-        addUpdateStudentStandardizedTest(studentStandardizedTest: StudentStandardizedTestInput): StudentStandardizedTest
+        addUpdateStudentStandardizedTest(studentStandardizedTest: [StudentStandardizedTestInput]): [StudentStandardizedTest]
     }
 `;
 
