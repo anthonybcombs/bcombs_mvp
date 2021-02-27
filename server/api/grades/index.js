@@ -40,6 +40,65 @@ export const getGrades = async () => {
 	}
 };
 
+export const getStudentCumulativeByChildID = async (childId) => {
+  const db = makeDb();
+	let studentCumulative = [];
+	let studentGrades = [];
+	try {
+		const response = await db.query(
+			`SELECT  BIN_TO_UUID(child_id) as child_id,
+        BIN_TO_UUID(app_group_id) as app_group_id,
+        student_grade_cumulative_id,
+        type,
+        year_level,
+        school_type,
+        school_name,
+        school_year_start,
+        school_year_end,
+        school_year_frame,
+        class_name,
+        class_type,
+        class_teacher,
+        attachment,
+        date_added
+      FROM student_grade_cumulative
+      WHERE child_id=UUID_TO_BIN(?)`,
+			[childId]
+		);
+		if (response) {
+			studentCumulative = [...(response || [])];
+			const studentGradeCumulativeIds = response.map(item => item.student_grade_cumulative_id);
+
+			if (studentGradeCumulativeIds.length > 0) {
+				let subjects = await db.query(`
+          SELECT * FROM student_grades 
+          WHERE student_grade_cumulative_id IN (${studentGradeCumulativeIds.join(',')})`);
+
+				studentCumulative = studentCumulative.map(item => {
+					const studentCumulativeGrade = subjects.filter(
+						grade => item.student_grade_cumulative_id === grade.student_grade_cumulative_id
+					);
+					return {
+						...item,
+						grades: [...(studentCumulativeGrade || [])],
+					};
+				});
+			}
+		}
+
+		for (const sc of studentCumulative) {
+			sc.grades = getAverage(sc.grades, sc.school_year_frame);
+			console.log('studentCumulative sc', sc);
+			console.log('studentCumulative', getAverage(sc.grades, sc.school_year_frame));
+		}
+	} catch (error) {
+		console.log('Error', error);
+	} finally {
+		await db.close();
+		return studentCumulative;
+	}
+}
+
 export const getStudentCumulativeGradeByGroup = async ({ app_group_id }) => {
 	const db = makeDb();
 	let studentCumulative = [];
