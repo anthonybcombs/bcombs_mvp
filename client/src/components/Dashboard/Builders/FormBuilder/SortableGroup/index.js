@@ -51,7 +51,6 @@ const SortableGroup = React.forwardRef(
     }
   })
 
-
   const isGroupActive = isActive ? 'active' : ''
   const isStandard = groupType === 'standard'
   const isPageBreak = fieldGroupType === 'pageBreak'
@@ -71,7 +70,6 @@ const SortableGroup = React.forwardRef(
     presetColors = [...(formatObj?.presetColors || [])]
     applyToAll = formatObj?.applyToAll || false
   }
-
 
   const [colorPickerShown, setColorPickerShown] = useState(false)
 
@@ -436,6 +434,7 @@ export default DropTarget([...Object.values(Items.standard), ...Object.values(It
     if (destination.hidden) {
       destination.onShowHiddenGroup(destination.id)
     }
+
     // if (source.groupType === 'standard' && destination.groupType === 'standard') {
     //   destination.onMergeStandardFields(destination, source)
     // }
