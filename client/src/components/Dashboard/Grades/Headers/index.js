@@ -76,6 +76,10 @@ export default ({
         ...filters,
         search: isSearch ? target.value : filters.search
       })
+      console.log('animala nimo oi', {
+        ...filters,
+        search: isSearch ? target.value : filters.search
+      })
       setFilterDialogOpen(false)
     }
   }
@@ -112,7 +116,10 @@ export default ({
           placeholder='Search'
           className='field-input'
           value={filters?.search || ''}
-          onChange={debounceSearch((e) => handleApplyFilter(e, true), 500)}
+          onChange={(e) => {
+            handleChangeFilter('search', e.target.value)
+            handleApplyFilter(e, true)
+          }}
         />
         <label className='field-label' htmlFor='search'>
           Search

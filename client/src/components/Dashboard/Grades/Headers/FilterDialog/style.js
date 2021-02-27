@@ -5,7 +5,7 @@ export default styled.div`
     position: relative;
     top: 100px;
     width: auto;
-    max-width: 550px;
+    max-width: 830px;
     padding: 0;
   }
   .close {

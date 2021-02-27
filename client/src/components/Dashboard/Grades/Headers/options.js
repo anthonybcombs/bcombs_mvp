@@ -12,7 +12,7 @@ export const FilterOptionsObj = {
       lt: (val, [num]) => val < num,
       bt: (val, [firstNum, secondNum]) => val > firstNum && val < secondNum,
       eq: (val, [num]) => val == num,
-      contains: (val, [txt]) => val.contains(txt),
+      contains: (val, [txt]) => val.toLowerCase().includes(txt.toLowerCase()),
     }
   },
   column: {
