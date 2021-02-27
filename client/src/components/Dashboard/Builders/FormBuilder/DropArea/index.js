@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch } from "react-redux";
 import { useDrop } from 'react-dnd'
 import { uuid } from 'uuidv4'
@@ -16,7 +16,7 @@ import { requestAddForm, requestUpdateForm, setViewMode } from "../../../../../r
 import Loading from '../../../../../helpers/Loading'
 import { groupFieldsByPageBreak } from '../../utils'
 
-export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, form_title = 'Untitled', form_id, handleBuilderDrawerOpen }) => {
+export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, form_title = 'Untitled', form_id, item }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
@@ -49,6 +49,12 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       hasPageBreak: !!pageBreakFields.length,
       lastField: newFields[newFields.length - 1] || {}
     }
+  }
+
+  const handleCancelDrop = (field) => {
+    const newFields = droppedFields.filter(e => e.id !== field.id)
+    beforeSetDrop(newFields)
+    checkPageBreaks(newFields)
   }
 
   const handleDrop = (field) => {
@@ -282,9 +288,12 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     setPreviewWarning(false)
   }
 
-  const [{ item, didDrop }, drop] = useDrop({
+  const [{ item: dropItem }, drop] = useDrop({
     accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
-    drop: () => handleDrop(item, didDrop),
+    drop: () => {
+      // handleDrop(item)
+      return { dropItem }
+    },
     collect: monitor => {
       return {
         isOver: !!monitor.isOver(),
@@ -311,6 +320,16 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       setFormCategory(category)
     }
   }, [category])
+
+  useEffect(() => {
+    if (item) {
+      if (item.didDrop) {
+        handleDrop(item)
+      } else {
+        handleCancelDrop(item)
+      } 
+    }
+  }, [item])
 
   console.log('@@@@@FORM BUILD LOGS', { droppedFields })
   
