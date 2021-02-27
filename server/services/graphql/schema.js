@@ -1485,6 +1485,11 @@ const queryTypes = `
         attachment: String
         date_created: String
     }
+
+    type StudentRecords {
+        standardized_test: [StudentStandardizedTest]
+        cumulative_grades: [StudentCumulativeGrade]
+    }
  
 `;
 
@@ -1582,6 +1587,7 @@ const queries = `
         getStudentCumulativeGradeByAppGroup(app_group_id: String): [StudentCumulativeGrade]
         getStudentCumulativeGradeByUser(child_id: String): [StudentCumulativeGrade]
         getStudentTest(child_id: String): [StudentStandardizedTest]
+        getStudentRecords(child_id: String): StudentRecords
     }
 `;
 

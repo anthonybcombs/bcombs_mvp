@@ -40,7 +40,7 @@ export const getGrades = async () => {
 	}
 };
 
-export const getStudentCumulativeByChildID = async (childId) => {
+export const getStudentCumulativeByChildId = async (childId) => {
   const db = makeDb();
 	let studentCumulative = [];
 	let studentGrades = [];
@@ -88,8 +88,6 @@ export const getStudentCumulativeByChildID = async (childId) => {
 
 		for (const sc of studentCumulative) {
 			sc.grades = getAverage(sc.grades, sc.school_year_frame);
-			console.log('studentCumulative sc', sc);
-			console.log('studentCumulative', getAverage(sc.grades, sc.school_year_frame));
 		}
 	} catch (error) {
 		console.log('Error', error);
@@ -147,8 +145,6 @@ export const getStudentCumulativeGradeByGroup = async ({ app_group_id }) => {
 
 		for (const sc of studentCumulative) {
 			sc.grades = getAverage(sc.grades, sc.school_year_frame);
-			console.log('studentCumulative sc', sc);
-			console.log('studentCumulative', getAverage(sc.grades, sc.school_year_frame));
 		}
 	} catch (error) {
 		console.log('Error', error);
@@ -234,14 +230,12 @@ export const addUpdateStudentCumulativeGrades = async ({
 	try {
 		let cumulativeId = student_grade_cumulative_id;
 		let currentSubjectGrades = [];
-		const isUserExist = await db.query(
-			`
-      SELECT student_grade_cumulative_id 
-      FROM student_grade_cumulative 
-      WHERE child_id=UUID_TO_BIN(?) AND app_group_id=UUID_TO_BIN(?)`,
-			[child_id, app_group_id]
-		);
-
+		const isUserExist =  student_grade_cumulative_id ? await db.query(
+			`SELECT student_grade_cumulative_id 
+      	FROM student_grade_cumulative 
+      	WHERE child_id=UUID_TO_BIN(?) AND student_grade_cumulative_id=?`,
+			[child_id, student_grade_cumulative_id]
+		) :  [];
 		if (isUserExist.length === 0) {
 			const studentCumulativeResult = await db.query(
 				`INSERT INTO student_grade_cumulative(
@@ -300,7 +294,7 @@ export const addUpdateStudentCumulativeGrades = async ({
          school_year_start=?,
          school_year_end=?,school_year_frame=?,
          class_name=?,class_type=?,class_teacher=?,
-         attachment=?,date_updated=NOW() WHERE child_id=UUID_TO_BIN(?) AND app_group_id=UUID_TO_BIN(?)
+         attachment=?,date_updated=NOW() WHERE child_id=UUID_TO_BIN(?) AND student_grade_cumulative_id=?
         
         `,
 				[
@@ -315,7 +309,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 					class_teacher,
 					attachment,
 					child_id,
-					app_group_id,
+					student_grade_cumulative_id
 				]
 			);
 
@@ -633,3 +627,26 @@ export const removeStudentTest = async (studentTestIds = [], childId) => {
 		return studentTestList;
 	}
 };
+
+/*
+ 	standardized_test: [StudentStandardizedTest]
+	cumulative_grades: [StudentCumulativeGrade]
+*/
+export const getStudentRecordById = async (childId) => {
+	let studentRecord = {};
+	try{
+		const cumulativeGrades = await getStudentCumulativeByChildId(childId);
+		const standardizedTest = await getStudentStandardizedTest(childId);
+		studentRecord = {
+			standardized_test:standardizedTest, 
+			cumulative_grades: cumulativeGrades
+		}
+		
+	}
+	catch (err) {
+    console.log('Error getStudentRecordById', err);
+    return [];
+	} finally {
+		return studentRecord;
+	}
+}
