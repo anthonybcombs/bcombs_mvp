@@ -1530,6 +1530,7 @@ const mutations = `
         updateAttendance(attendance: AttendanceInput): [Attendance]
         addUpdateStudentCumulative(studentCumulative: StudentGradeCumulativeInput): StudentCumulativeGrade
         addUpdateStudentStandardizedTest(studentStandardizedTest: [StudentStandardizedTestInput]): [StudentStandardizedTest]
+        deleteStudentStandardizedTest(student_test_ids:[Int], child_id: String ): [StudentStandardizedTest]
     }
 `;
 

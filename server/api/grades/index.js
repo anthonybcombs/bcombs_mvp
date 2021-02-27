@@ -406,26 +406,6 @@ export const getStudentStandardizedTest = async child_id => {
 	}
 };
 
-/*
-
-{
-  student_test_id = null,
-  child_id,
-  app_group_id,
-  test_name,
-  attempt,
-  grade_taken,
-  month_taken,
-  score,
-  ach_level,
-  school_percentage,
-  nationality_percentage,
-  district_percentage,
-  state_percentage,
-  attachment,
-  date_created,
-}
-*/
 export const addUpdateStudentTest = async (studentTest = []) => {
 	const db = makeDb();
 	let studentTestList = [];
@@ -434,13 +414,14 @@ export const addUpdateStudentTest = async (studentTest = []) => {
 		for (const test of studentTest) {
 			let studentTestId = test.student_test_id || null;
 			let studentChildId = test.child_id;
-      let currentSubjectGrades = [];
+			let currentSubjectGrades = [];
 			const isTestExist = studentTestId
-				? await db.query(`SELECT student_test_id 
+				? await db.query(
+						`SELECT student_test_id 
           FROM student_standardized_test 
           WHERE student_test_id=?`,
-				  [studentTestId]
-				)
+						[studentTestId]
+				  )
 				: null;
 
 			if (!isTestExist && !studentTestId) {
@@ -547,6 +528,47 @@ export const addUpdateStudentTest = async (studentTest = []) => {
 		}
 	} catch (error) {
 		console.log('Error', error);
+	} finally {
+		await db.close();
+		return studentTestList;
+	}
+};
+
+export const removeStudentTest = async (studentTestIds = [], childId) => {
+	const db = makeDb();
+  let studentTestList = [];
+	try {
+		await db.query(
+			`DELETE FROM student_standardized_test
+       WHERE student_test_id IN (${studentTestIds.join(',')}) AND 
+       child_id=UUID_TO_BIN(?)
+      `,
+			[childId]
+		);
+
+		studentTestList = await db.query(
+			`SELECT  
+        student_test_id,
+        BIN_TO_UUID(child_id) as child_id,
+        BIN_TO_UUID(app_group_id) as app_group_id,
+        test_name,
+        attempt,
+        grade_taken,
+        month_taken,
+        score,
+        ach_level,
+        school_percentage,
+        nationality_percentage,
+        district_percentage,
+        state_percentage,
+        attachment
+      FROM student_standardized_test
+      WHERE child_id=UUID_TO_BIN(?)`,
+			[childId]
+		);
+	} catch (err) {
+    console.log('Error removeStudentTest', err);
+    return [];
 	} finally {
 		await db.close();
 		return studentTestList;
