@@ -41,7 +41,17 @@ import {
   removeEvents
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
-import { addUpdateStudentCumulativeGrades,getStudentCumulativeGradeByGroup,getStudentCumulativeGrade,getGrades } from "../../api/grades";
+import { 
+  addUpdateStudentCumulativeGrades,
+  getStudentCumulativeGradeByGroup,
+  getStudentCumulativeGrade,
+  getGrades ,
+  addUpdateStudentTest,
+  getStudentStandardizedTest,
+  removeStudentTest,
+  getStudentCumulativeByChildId,
+  getStudentRecordById
+} from "../../api/grades";
 import {
   getVendors,
   updateVendor,
@@ -438,6 +448,15 @@ const resolvers = {
         app_group_id
       });
       return response;
+    },
+    async getStudentCumulativeGradeByUser(root, { child_id }, context) {
+      return await getStudentCumulativeByChildId(child_id)
+    },
+    async getStudentTest(root, { child_id }, context ) {
+      return await getStudentStandardizedTest(child_id)
+    },
+    async getStudentRecords(root, { child_id }, context) {
+      return await getStudentRecordById(child_id)
     }
   },
   RootMutation: {
@@ -1468,6 +1487,14 @@ const resolvers = {
     },
     async addUpdateStudentCumulative(root,{ studentCumulative },context){
       return await addUpdateStudentCumulativeGrades(studentCumulative)
+    },
+    async addUpdateStudentStandardizedTest(root, { studentStandardizedTest },context) {
+        return await addUpdateStudentTest(studentStandardizedTest)
+    },
+    async deleteStudentStandardizedTest(root,{ student_test_ids = [], child_id }, context) {
+      console.log('deleteStudentStandardizedTest student_test_ids',student_test_ids)
+      console.log('deleteStudentStandardizedTest child_id',child_id)
+      return await removeStudentTest(student_test_ids,child_id)
     }
   }
 };

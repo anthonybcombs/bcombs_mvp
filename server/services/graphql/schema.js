@@ -698,6 +698,7 @@ const inputs = `
 
     input StudentGradeInput {
         student_grade_cumulative_id: Int
+        class: String
         subject: String
         quarter_1: Float
         quarter_2: Float
@@ -711,6 +712,8 @@ const inputs = `
         app_group_id: String
         type: String
         year_level: Int
+        school_type: String
+        school_name: String
         school_year_start: Int
         school_year_end: Int
         school_year_frame: String
@@ -719,8 +722,28 @@ const inputs = `
         class_teacher: String
         attachment: String
         grades: [StudentGradeInput]
+        deleted_grades: [Int]
         date_created: String
     }
+
+    input StudentStandardizedTestInput {
+        student_test_id: Int
+        child_id: String
+        app_group_id: String
+        test_name: String
+        attempt: Int
+        grade_taken: Int
+        month_taken: String
+        score: Int
+        ach_level: Int
+        school_percentage: Float
+        nationality_percentage: Float
+        district_percentage: Float
+        state_percentage: Float
+        attachment: String
+        date_created: String
+    }
+
 
 
 `;
@@ -1417,6 +1440,8 @@ const queryTypes = `
         child_id: String
         year_level: Int
         designation: String
+        school_type: String
+        school_name: String
         school_year_start: Int
         school_year_end: Int
         school_year_frame: String
@@ -1430,14 +1455,42 @@ const queryTypes = `
 
     type StudentGrades {
         student_grade_cumulative_id: Int
+        class: String
         subject: String
         quarter_1: Float
         quarter_2: Float
         quarter_3: Float
         quarter_4: Float
+        quarter_average: Float
+        semestral_1_average: Float
+        semestral_2_average: Float
+        semestral_final: Float
         date_created: String
     }
-    
+
+    type StudentStandardizedTest {
+        student_test_id: Int
+        child_id: String
+        app_group_id: String
+        test_name: String
+        attempt: Int
+        grade_taken: Int
+        month_taken: String
+        score: Int
+        ach_level: Int
+        school_percentage: Float
+        nationality_percentage: Float
+        district_percentage: Float
+        state_percentage: Float
+        attachment: String
+        date_created: String
+    }
+
+    type StudentRecords {
+        standardized_test: [StudentStandardizedTest]
+        cumulative_grades: [StudentCumulativeGrade]
+    }
+ 
 `;
 
 const mutations = `
@@ -1481,6 +1534,8 @@ const mutations = `
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
         updateAttendance(attendance: AttendanceInput): [Attendance]
         addUpdateStudentCumulative(studentCumulative: StudentGradeCumulativeInput): StudentCumulativeGrade
+        addUpdateStudentStandardizedTest(studentStandardizedTest: [StudentStandardizedTestInput]): [StudentStandardizedTest]
+        deleteStudentStandardizedTest(student_test_ids:[Int], child_id: String ): [StudentStandardizedTest]
     }
 `;
 
@@ -1530,6 +1585,9 @@ const queries = `
         getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
         getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
         getStudentCumulativeGradeByAppGroup(app_group_id: String): [StudentCumulativeGrade]
+        getStudentCumulativeGradeByUser(child_id: String): [StudentCumulativeGrade]
+        getStudentTest(child_id: String): [StudentStandardizedTest]
+        getStudentRecords(child_id: String): StudentRecords
     }
 `;
 
