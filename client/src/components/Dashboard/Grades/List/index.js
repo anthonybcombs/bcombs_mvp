@@ -126,6 +126,8 @@ export default ({ form_id, type, history }) => {
   const [filterFromHeaders, setFilterFromHeaders] = useState({})
   const [activeTableFilterColumn, setActiveTableFilterColumn] = useState('')
   const [tableFilters, setTableFilters] = useState({})
+  const [previousTableFilter, savePreviousTableFilter] = useState(null)
+  const [firstTableFilterColumn, setFirstTableFilterColumn] = useState('')
   
   let activeSubjectColumns = subjectColumns.slice(subjectCounter - subjectDisplayCount, subjectCounter)
   if (activeSubjectColumns.length < subjectDisplayCount) {
@@ -185,7 +187,6 @@ export default ({ form_id, type, history }) => {
 
   const renderTableData = () => {
     const highlightFilters = filterFromHeaders?.highlight || []
-    console.log('kayaaaaaaaaaaaama', highlightFilters)
     const { conditions } = FilterOptionsObj.highlight
     return rows.map((row, index) => {
       const { 
@@ -244,7 +245,7 @@ export default ({ form_id, type, history }) => {
   }
 
   const getColumnValues = (key) => {
-    return data
+    return (key === firstTableFilterColumn ? data : rows)
       .reduce((acc, curr) => {
         if (!acc.includes(curr[key])) {
           acc.push(curr[key])
@@ -254,7 +255,7 @@ export default ({ form_id, type, history }) => {
       .sort()
   }
 
-  const handleTableFilter = ({ target: { checked, value } }, key) => {
+  const handlePrepareTableFilter = ({ target: { checked, value } }, key) => {
     const existingFilter = tableFilters[key] || []
     let newFilters = [...existingFilter]
     if (checked) {
@@ -267,19 +268,20 @@ export default ({ form_id, type, history }) => {
       ...tableFilters,
       [key]: newFilters
     })
-
-    handleApplyFilter(filterFromHeaders, {
-      ...tableFilters,
-      [key]: newFilters
-    })
   }
 
   const handleChangeTableFIlterColumn = (key) =>{
+    savePreviousTableFilter(tableFilters) // saves the previous table filter
     setTableFilters({
       ...tableFilters,
       [key]: rows.map(e => e[key])
     })
     setActiveTableFilterColumn(key)
+    
+    //Set first table filter if table filter is empty
+    if (!Object.keys(tableFilters).length) {
+      setFirstTableFilterColumn(key)
+    }
   }
 
   const renderTableFilter = (key) => {
@@ -300,7 +302,7 @@ export default ({ form_id, type, history }) => {
                       id={`${key}_${e}_${index}`}
                       value={e}
                       checked={existingFilter.includes(e)}
-                      onChange={(e) => handleTableFilter(e, key)}
+                      onChange={(e) => handlePrepareTableFilter(e, key)}
                     />
                     <span className='checkmark' />
                     <span className='labelName'>{e}</span>
@@ -309,6 +311,25 @@ export default ({ form_id, type, history }) => {
               )
             })
           }
+          <button
+            onClick={() => {
+              setTableFilters(previousTableFilter)
+              setActiveTableFilterColumn('')
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            disabled={tableFilters[key].length === 0}
+            onClick={() => {
+              if (tableFilters[key].length > 0) {
+                handleApplyFilter(filterFromHeaders, tableFilters)
+                setActiveTableFilterColumn('')
+              }
+            }}
+          >
+            Apply
+          </button>
         </div>
       )
     }
@@ -370,7 +391,7 @@ export default ({ form_id, type, history }) => {
                           icon={faCaretDown}
                           onClick={(e) => {
                             e.stopPropagation()
-                            setActiveTableFilterColumn('schoolType')
+                            handleChangeTableFIlterColumn('schoolType')
                           }}
                         />
                         {renderTableFilter('schoolType')}
