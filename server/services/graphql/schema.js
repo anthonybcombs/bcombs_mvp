@@ -700,10 +700,14 @@ const inputs = `
         student_grade_cumulative_id: Int
         class: String
         subject: String
-        quarter_1: Float
-        quarter_2: Float
-        quarter_3: Float
-        quarter_4: Float
+        grade_quarter_1: Float
+        grade_quarter_2: Float
+        grade_quarter_3: Float
+        grade_quarter_4: Float
+        attendance_quarter_1: Int
+        attendance_quarter_2: Int
+        attendance_quarter_3: Int
+        attendance_quarter_4: Int
     }
 
     input StudentGradeCumulativeInput {
@@ -1450,6 +1454,8 @@ const queryTypes = `
         class_teacher: String
         attachment: String
         grades: [StudentGrades]
+        firstname: String
+        lastname: String
         date_created: String
     }
 
@@ -1457,14 +1463,22 @@ const queryTypes = `
         student_grade_cumulative_id: Int
         class: String
         subject: String
-        quarter_1: Float
-        quarter_2: Float
-        quarter_3: Float
-        quarter_4: Float
+        grade_quarter_1: Float
+        grade_quarter_2: Float
+        grade_quarter_3: Float
+        grade_quarter_4: Float
+        attendance_quarter_1: Int
+        attendance_quarter_2: Int
+        attendance_quarter_3: Int
+        attendance_quarter_4: Int
         quarter_average: Float
         semestral_1_average: Float
         semestral_2_average: Float
         semestral_final: Float
+        semestral_1_attendance: Int
+        semestral_2_attendance: Int
+        final_quarter_attendance: Int
+        attendance: Int
         date_created: String
     }
 

@@ -5,18 +5,22 @@ const getAverage = (grades, type) => {
 		if (type === 'semestral') {
 			return {
 				...grade,
-				semestral_1_average: parseFloat(((grade.quarter_1 || 0) + (grade.quarter_2 || 0)) / 2),
-				semestral_2_average: parseFloat(((grade.quarter_3 || 0) + (grade.quarter_4 || 0)) / 2),
+				semestral_1_average: parseFloat(((grade.grade_quarter_1 || 0) + (grade.grade_quarter_2 || 0)) / 2),
+				semestral_2_average: parseFloat(((grade.grade_quarter_3 || 0) + (grade.grade_quarter_4 || 0)) / 2),
 				semestral_final: parseFloat(
-					((grade.quarter_1 || 0) + (grade.quarter_2 || 0) + (grade.quarter_3 || 0) + (grade.quarter_4 || 0)) / 4
+					((grade.grade_quarter_1 || 0) + (grade.grade_quarter_2 || 0) + (grade.grade_quarter_3 || 0) + (grade.grade_quarter_4 || 0)) / 4
 				),
+				semestral_1_attendance: (grade.attendance_quarter_1 || 0) + (grade.attendance_quarter_2 || 0) ,
+				semestral_2_attendance: (grade.attendance_quarter_3 || 0) + (grade.attendance_quarter_4 || 0),
+			
 			};
 		} else if (type === 'quarter') {
 			return {
 				...grade,
 				quarter_average: parseFloat(
-					((grade.quarter_1 || 0) + (grade.quarter_2 || 0) + (grade.quarter_3 || 0) + (grade.quarter_4 || 0)) / 4
+					((grade.grade_quarter_1 || 0) + (grade.grade_quarter_2 || 0) + (grade.grade_quarter_3 || 0) + (grade.grade_quarter_4 || 0)) / 4
 				),
+				final_quarter_attendance:	((grade.attendance_quarter_1 || 0) + (grade.attendance_quarter_2 || 0) + (grade.attendance_quarter_3 || 0) + (grade.attendance_quarter_4 || 0))
 			};
 		}
 		return {
@@ -25,6 +29,16 @@ const getAverage = (grades, type) => {
 	});
 };
 
+const getTotalAttendance = (cumulativeGrade, type) => {
+
+	cumulativeGrade.map(cumulative => {
+		if(cumulative.school_year_frame === 'semestral') {
+			item.grades.reduce((accum,grade) => { return accum + ( grade.attendance || 0)},0);
+		}
+	
+	})
+
+};
 export const getGrades = async () => {
 	const db = makeDb();
 	const result = [];
@@ -40,6 +54,7 @@ export const getGrades = async () => {
 	}
 };
 
+
 export const getStudentCumulativeByChildId = async (childId) => {
   const db = makeDb();
 	let studentCumulative = [];
@@ -47,22 +62,29 @@ export const getStudentCumulativeByChildId = async (childId) => {
 	try {
 		const response = await db.query(
 			`SELECT  BIN_TO_UUID(child_id) as child_id,
-        BIN_TO_UUID(app_group_id) as app_group_id,
-        student_grade_cumulative_id,
-        type,
-        year_level,
-        school_type,
-        school_name,
-        school_year_start,
-        school_year_end,
-        school_year_frame,
-        class_name,
-        class_type,
-        class_teacher,
-        attachment,
-        date_added
-      FROM student_grade_cumulative
-      WHERE child_id=UUID_TO_BIN(?)`,
+				BIN_TO_UUID(app_group_id) as app_group_id,
+				student_grade_cumulative.student_grade_cumulative_id,
+				student_grade_cumulative.type,
+				student_grade_cumulative.year_level,
+				student_grade_cumulative.school_type,
+				student_grade_cumulative.school_name,
+				student_grade_cumulative.school_year_start,
+				student_grade_cumulative.school_year_end,
+				student_grade_cumulative.school_year_frame,
+				student_grade_cumulative.class_name,
+				student_grade_cumulative.class_type,
+				student_grade_cumulative.class_teacher,
+				student_grade_cumulative.attachment,
+				student_grade_cumulative.date_added,
+				child.firstname,
+				child.lastname,
+				child.birthdate,
+				child.gender
+			FROM student_grade_cumulative,child
+			WHERE 
+				student_grade_cumulative.child_id=UUID_TO_BIN(?)
+			AND
+				child.ch_id=student_grade_cumulative.child_id`,
 			[childId]
 		);
 		if (response) {
@@ -86,9 +108,11 @@ export const getStudentCumulativeByChildId = async (childId) => {
 			}
 		}
 
+
 		for (const sc of studentCumulative) {
 			sc.grades = getAverage(sc.grades, sc.school_year_frame);
 		}
+	
 	} catch (error) {
 		console.log('Error', error);
 	} finally {
@@ -330,39 +354,55 @@ export const addUpdateStudentCumulativeGrades = async ({
                 student_grade_cumulative_id,
                 class,
                 subject,
-                quarter_1,
-                quarter_2,
-                quarter_3,
-                quarter_4,
+                grade_quarter_1,
+                grade_quarter_2,
+                grade_quarter_3,
+								grade_quarter_4,
+								attendance_quarter_1,
+                attendance_quarter_2,
+                attendance_quarter_3,
+                attendance_quarter_4,
                 date_created
               )
-            VALUES (?,?,?,?,?,?,?,NOW())
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW())
             `,
 						[
 							cumulativeId,
 							grade.class,
 							grade.subject,
-							grade.quarter_1 || 0,
-							grade.quarter_2 || 0,
-							grade.quarter_3 || 0,
-							grade.quarter_4 || 0,
+							grade.grade_quarter_1 || 0,
+							grade.grade_quarter_2 || 0,
+							grade.grade_quarter_3 || 0,
+							grade.grade_quarter_4 || 0,
+							grade.attendance_quarter_1 || 0,
+							grade.attendance_quarter_2 || 0,
+							grade.attendance_quarter_3 || 0,
+							grade.attendance_quarter_4 || 0,
 						]
 					);
 				} else {
 					await db.query(
 						`UPDATE student_grades
              SET
-              quarter_1=?,
-              quarter_2=?,
-              quarter_3=?,
-              quarter_4=?
+						  grade_quarter_1=?,
+						  grade_quarter_2=?,
+						  grade_quarter_3=?,
+						  grade_quarter_4=?,
+							attendance_quarter_1=?,
+              attendance_quarter_2=?,
+              attendance_quarter_3=?,
+              attendance_quarter_4=?
             WHERE student_grade_cumulative_id=? AND subject=? AND class=?
             `,
 						[
-							grade.quarter_1 || 0,
-							grade.quarter_2 || 0,
-							grade.quarter_3 || 0,
-							grade.quarter_4 || 0,
+							grade.grade_quarter_1 || 0,
+							grade.grade_quarter_2 || 0,
+							grade.grade_quarter_3 || 0,
+							grade.grade_quarter_4 || 0,
+							grade.attendance_quarter_1 || 0,
+							grade.attendance_quarter_2 || 0,
+							grade.attendance_quarter_3 || 0,
+							grade.attendance_quarter_4 || 0,
 							cumulativeId,
 							grade.subject,
 							grade.class,
