@@ -713,7 +713,7 @@ const inputs = `
     input StudentGradeCumulativeInput {
         student_grade_cumulative_id: Int
         child_id: String
-        app_group_id: String
+        app_id: String
         type: String
         year_level: Int
         school_type: String
@@ -733,7 +733,7 @@ const inputs = `
     input StudentStandardizedTestInput {
         student_test_id: Int
         child_id: String
-        app_group_id: String
+        app_id: String
         test_name: String
         attempt: Int
         grade_taken: Int
@@ -1440,7 +1440,7 @@ const queryTypes = `
 
     type StudentCumulativeGrade {
         student_grade_cumulative_id: Int
-        app_group_id: String
+        app_id: String
         child_id: String
         year_level: Int
         designation: String
@@ -1485,7 +1485,7 @@ const queryTypes = `
     type StudentStandardizedTest {
         student_test_id: Int
         child_id: String
-        app_group_id: String
+        app_id: String
         test_name: String
         attempt: Int
         grade_taken: Int
