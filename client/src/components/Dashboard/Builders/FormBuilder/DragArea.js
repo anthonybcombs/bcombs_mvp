@@ -5,7 +5,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { StandardFields, PrimeFields } from './Fields'
 import DraggableField from './DraggbleField'
 
-export default ({ handleBuilderDrawerOpen, form_id }) => {
+export default ({ handleBuilderDrawerOpen, form_id, getItem }) => {
   const [standardFields] = useState([...StandardFields])
   const [primeFields] = useState([...PrimeFields])
 
@@ -41,7 +41,7 @@ export default ({ handleBuilderDrawerOpen, form_id }) => {
         {
           standardFields.map(({ label, type, ...rest }) => {
             return (
-              <DraggableField key={type} label={label} type={type} {...rest} groupType='standard' />
+              <DraggableField getItem={getItem} key={type} label={label} type={type} {...rest} groupType='standard' />
             )
           })
         }
@@ -52,7 +52,7 @@ export default ({ handleBuilderDrawerOpen, form_id }) => {
         {
           primeFields.map(({ label, type, ...rest }) => {
             return (
-              <DraggableField key={type} label={label} type={type} {...rest} groupType='prime' />
+              <DraggableField getItem={getItem} key={type} label={label} type={type} {...rest} groupType='prime' />
             )
           })
         }

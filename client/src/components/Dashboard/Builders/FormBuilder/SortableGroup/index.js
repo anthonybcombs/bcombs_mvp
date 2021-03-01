@@ -51,7 +51,6 @@ const SortableGroup = React.forwardRef(
     }
   })
 
-
   const isGroupActive = isActive ? 'active' : ''
   const isStandard = groupType === 'standard'
   const isPageBreak = fieldGroupType === 'pageBreak'
@@ -435,6 +434,7 @@ export default DropTarget([...Object.values(Items.standard), ...Object.values(It
     if (destination.hidden) {
       destination.onShowHiddenGroup(destination.id)
     }
+
     // if (source.groupType === 'standard' && destination.groupType === 'standard') {
     //   destination.onMergeStandardFields(destination, source)
     // }

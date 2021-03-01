@@ -15,6 +15,7 @@ import { requestGetFormById, clearFormMessage } from "../../../../redux/actions/
 
 const FormBuilder = ({ form_id, type, history }) => {
   const [builderDrawerOpen, setBuilderDrawerOpen] = useState(false)
+  const [item, getItem] = useState(null)
   
   const handleBuilderDrawerOpen = () => {
     setBuilderDrawerOpen(!builderDrawerOpen)
@@ -43,13 +44,6 @@ const FormBuilder = ({ form_id, type, history }) => {
     if (form_id && type === 'edit') {
       dispatch(requestGetFormById({ form_id }))
     }
-    // if (form_id && type === 'view') {
-    //   dispatch(setViewMode(true))
-    //   document.querySelector('.btn.preview').click()
-    //   setTimeout(() => {
-    //     window.location.replace(`/dashboard/builder/${form_id}/edit`)
-    //   }, 1000)
-    // }
   }, []);
 
   useEffect(() => {
@@ -95,8 +89,13 @@ const FormBuilder = ({ form_id, type, history }) => {
     <FormBuilderStyled>
       <h2>{type !== 'edit' ? 'New Forms' : 'Existing Forms'}</h2>
       <div id='formBuilder' className={builderDrawerOpen ? 'show': 'hide'}>
-        <DragArea form_id={form_id} handleBuilderDrawerOpen={handleBuilderDrawerOpen}/>
+        <DragArea
+          form_id={form_id}
+          getItem={(e) => getItem(e)}
+          handleBuilderDrawerOpen={handleBuilderDrawerOpen}
+        />
         <DropArea
+          item={item}
           form_data={formData.map(e => cleanFormData(e))}
           form_title={formTitle}
           category={category}
