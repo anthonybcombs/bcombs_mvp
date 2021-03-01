@@ -5,7 +5,10 @@ import { Multiselect } from 'multiselect-react-dropdown'
 const CustomSelectStyled = styled.div`
   display: flex;
   align-items: center;
-  border-bottom: 1.65px solid #ccc;
+
+  .select-field-wrapper {
+    border-bottom: 1.65px solid #ccc;
+  }
 
   >svg {
     color: grey;

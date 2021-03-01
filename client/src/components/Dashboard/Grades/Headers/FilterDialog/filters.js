@@ -116,7 +116,7 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
 
       return (
         <div className='filter-highlight'>
-          <div>Highlight cells that matches below conditions</div>
+          <div style={{ padding: '5px 5px 12px 10px', fontWeight: 'bolder' }}>Highlight cells that matches below conditions</div>
           <table id='filterTable'>
             <thead>
               <tr>

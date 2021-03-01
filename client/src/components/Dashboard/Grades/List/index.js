@@ -126,6 +126,8 @@ export default ({ form_id, type, history }) => {
   const [filterFromHeaders, setFilterFromHeaders] = useState({})
   const [activeTableFilterColumn, setActiveTableFilterColumn] = useState('')
   const [tableFilters, setTableFilters] = useState({})
+  const [previousTableFilter, savePreviousTableFilter] = useState(null)
+  const [firstTableFilterColumn, setFirstTableFilterColumn] = useState('')
   
   let activeSubjectColumns = subjectColumns.slice(subjectCounter - subjectDisplayCount, subjectCounter)
   if (activeSubjectColumns.length < subjectDisplayCount) {
@@ -133,8 +135,8 @@ export default ({ form_id, type, history }) => {
   }
   const activeColumns = ['name', 'address', 'grade', ...activeSubjectColumns, 'date']
 
-  const handleApplyFilter = (filters) => {
-    const { sort, search } = cloneDeep(filters)
+  const handleApplyFilter = (filters, columnFilters = null) => {
+    const { sort, search = '' } = cloneDeep(filters)
 
     // Search always executes for the data to reset even if search is empty
     let newRows = cloneDeep(data).filter(({ id, ...rest }) => {
@@ -152,8 +154,33 @@ export default ({ form_id, type, history }) => {
     if (sort && sort.length > 0) {
       const sortColumns = sort.map(e => e.column)
       const sortOrder = sort.map(e => e.value)
-      setRows(orderBy(newRows, sortColumns, sortOrder))
+      newRows = orderBy(newRows, sortColumns, sortOrder)
     }
+
+    // Sort per table column
+    const newTableColumnFilters = columnFilters || tableFilters
+    const tableColumnFiltersArr = Object.entries(newTableColumnFilters)
+
+    if (tableColumnFiltersArr.length) {
+      tableColumnFiltersArr.forEach(([key, value]) => {
+        newRows = newRows.filter(e => value.includes(e[key]))
+      })
+    }
+    // if (Object.keys(newTableColumnFilters).length) {
+    //   newRows = newRows.reduce((acc, curr) => {
+    //     const currEntries = Object.entries(curr)
+    //     const currSearch = currEntries.filter(([key, value]) => newTableColumnFilters[key] && newTableColumnFilters[key].includes(value))
+    //     if (currSearch.length) {
+    //       acc = [
+    //         ...acc,
+    //         curr
+    //       ]
+    //     }
+    //     return acc
+    //   }, [])
+    // }
+
+    setRows(newRows)
 
     setFilterFromHeaders(cloneDeep(filters))
   }
@@ -218,7 +245,7 @@ export default ({ form_id, type, history }) => {
   }
 
   const getColumnValues = (key) => {
-    return data
+    return (key === firstTableFilterColumn ? data : rows)
       .reduce((acc, curr) => {
         if (!acc.includes(curr[key])) {
           acc.push(curr[key])
@@ -226,6 +253,35 @@ export default ({ form_id, type, history }) => {
         return acc
       }, [])
       .sort()
+  }
+
+  const handlePrepareTableFilter = ({ target: { checked, value } }, key) => {
+    const existingFilter = tableFilters[key] || []
+    let newFilters = [...existingFilter]
+    if (checked) {
+      newFilters.push(value)
+    } else {
+      newFilters = newFilters.filter(ne => ne !== value)
+    }
+
+    setTableFilters({
+      ...tableFilters,
+      [key]: newFilters
+    })
+  }
+
+  const handleChangeTableFIlterColumn = (key) =>{
+    savePreviousTableFilter(tableFilters) // saves the previous table filter
+    setTableFilters({
+      ...tableFilters,
+      [key]: rows.map(e => e[key])
+    })
+    setActiveTableFilterColumn(key)
+    
+    //Set first table filter if table filter is empty
+    if (!Object.keys(tableFilters).length) {
+      setFirstTableFilterColumn(key)
+    }
   }
 
   const renderTableFilter = (key) => {
@@ -246,18 +302,7 @@ export default ({ form_id, type, history }) => {
                       id={`${key}_${e}_${index}`}
                       value={e}
                       checked={existingFilter.includes(e)}
-                      onChange={({ target: { checked, value } }) => {
-                        let newFilters = [...existingFilter]
-                        if (checked) {
-                          newFilters.push(e)
-                        } else {
-                          newFilters = newFilters.filter(ne => ne !== e)
-                        }
-                        setTableFilters({
-                          ...tableFilters,
-                          [key]: newFilters
-                        })
-                      }}
+                      onChange={(e) => handlePrepareTableFilter(e, key)}
                     />
                     <span className='checkmark' />
                     <span className='labelName'>{e}</span>
@@ -266,12 +311,31 @@ export default ({ form_id, type, history }) => {
               )
             })
           }
+          <button
+            onClick={() => {
+              setTableFilters(previousTableFilter)
+              setActiveTableFilterColumn('')
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            disabled={tableFilters[key].length === 0}
+            onClick={() => {
+              if (tableFilters[key].length > 0) {
+                handleApplyFilter(filterFromHeaders, tableFilters)
+                setActiveTableFilterColumn('')
+              }
+            }}
+          >
+            Apply
+          </button>
         </div>
       )
     }
     return null
   }
-  console.log('toinks', { tableFilters })
+  // console.log('toinks', { tableFilters })
   return (
     <GradesStyled>
       <h2>Grade List Views</h2>
@@ -292,7 +356,7 @@ export default ({ form_id, type, history }) => {
           />
           <button
             className='applyFilterBtn'
-            onClick={handleApplyFilter}
+            onClick={() => {}}
           >
             {`Grades & Test Input`}
           </button>
@@ -316,7 +380,7 @@ export default ({ form_id, type, history }) => {
                           icon={faCaretDown}
                           onClick={(e) => {
                             e.stopPropagation()
-                            setActiveTableFilterColumn('name')
+                            handleChangeTableFIlterColumn('name')
                           }}
                         />
                         {renderTableFilter('name')}
@@ -327,7 +391,7 @@ export default ({ form_id, type, history }) => {
                           icon={faCaretDown}
                           onClick={(e) => {
                             e.stopPropagation()
-                            setActiveTableFilterColumn('schoolType')
+                            handleChangeTableFIlterColumn('schoolType')
                           }}
                         />
                         {renderTableFilter('schoolType')}
