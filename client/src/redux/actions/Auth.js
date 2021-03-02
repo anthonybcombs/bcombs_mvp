@@ -2,9 +2,7 @@ import { call, take, put } from "redux-saga/effects";
 import graphqlClient from "../../graphql";
 import {
   SIGN_IN_MUTATION,
-  CHANGE_PASSWORD_MUTATION,
-  USER_ATTENDANCE_FILTER_CONFIG_MUTATION
-
+  CHANGE_PASSWORD_MUTATION
 } from "../../graphql/mutation";
 import { USER_INFO_QUERY } from "../../graphql/query";
 import * as actionType from "./Constant";
@@ -61,37 +59,6 @@ const requestPasswordChangeFromServer = user => {
         message: data.changePassword.message
       });
     } catch (error) {
-      reject("error");
-    }
-  });
-};
-
-const updateUserAttendanceFilterConfigFromServer = payload => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const graphqlPayload = {
-        user_attendance_filter_config:{
-          ...payload, 
-          creds:{
-            access_token: sessionStorage.getItem("access_token"),
-            token_type: sessionStorage.getItem("token_type")
-          }
-        }
-  
-      }
-      console.log('updateUserAttendanceFilterConfigFromServer graphqlPayload',graphqlPayload)
-      const { data } = await graphqlClient.mutate({
-        mutation: USER_ATTENDANCE_FILTER_CONFIG_MUTATION,
-        variables: graphqlPayload
-      });
-      console.log('updateUserAttendanceFilterConfigFromServer data', data)
-      resolve({
-        data:{}
-      });
-    } catch (error) {
-      const {graphQLErrors,networkError} = error
-      console.log('updateUserAttendanceFilterConfigFromServer graphQLErrors', graphQLErrors)
-   //   console.log('updateUserAttendanceFilterConfigFromServer networkError', networkError.result)
       reject("error");
     }
   });
@@ -285,25 +252,3 @@ export function* requestedPasswordChange({ user }) {
     }
   });
 }
-
-
-export const requestUpdateUserAttendanceFilterConfig = payload => {
-  return {
-    type: actionType.REQUEST_USER_ATTENDANCE_FILTER_CONFIG,
-    payload
-  };
-};
-
-
-export function* updateUserAttendanceFilterConfig({payload})  {
-  console.log('updateUserAttendanceFilterConfig payload')
-    try{
-      const updateAttendanceFilter = yield call(
-        updateUserAttendanceFilterConfigFromServer,
-        payload
-      );
-    }
-  catch (err) {
-    console.log("updateUserAttendanceFilterConfig err", err)
-  }
-};

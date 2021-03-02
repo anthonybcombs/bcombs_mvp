@@ -324,7 +324,6 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   useEffect(() => {
     if (item) {
       if (item.didDrop) {
-        delete item.didDrop
         handleDrop(item)
       } else {
         handleCancelDrop(item)

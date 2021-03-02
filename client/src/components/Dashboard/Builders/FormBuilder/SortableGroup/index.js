@@ -25,7 +25,7 @@ const SortableGroup = React.forwardRef(
   
   const [fieldIndex, setActiveFieldIndex] = useState(0)
   const [additionalField, handleSelectFieldToAdd] = useState('')
-  const [enableEditGroupName, handleEnableEditGroupName] = useState(showLabel)
+  const [enableEditGroupName, handleEnableEditGroupName] = useState(false)
   const [validationAppliedToAll, applyValidationToAll] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
 
@@ -72,7 +72,6 @@ const SortableGroup = React.forwardRef(
   }
 
   const [colorPickerShown, setColorPickerShown] = useState(false)
-  const titleDisableProps = enableEditGroupName ? { disabled: false } : {}
 
   return (
     <div
@@ -114,7 +113,8 @@ const SortableGroup = React.forwardRef(
             type='text'
             className={`field-input group-name-input-${id} ${showLabel ? 'shown-title' : 'hidden-title'}`}
             value={label}
-            {...titleDisableProps}
+            disabled={!enableEditGroupName}
+            readOnly={!showLabel}
             style={{ color }}
             onBlur={() => {
               handleEnableEditGroupName(false)
