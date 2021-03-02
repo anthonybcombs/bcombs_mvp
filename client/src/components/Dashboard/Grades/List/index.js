@@ -127,15 +127,10 @@ export default ({ form_id, type, history }) => {
   const [filterFromHeaders, setFilterFromHeaders] = useState({})
   const [activeColumnKey, setActiveColumnKey] = useState('')
 
-  const generateColumnFilters = (newRows = null, filters = null) => {
+  const generateColumnFilters = () => {
     let newColumnFilters = {}
     Object.keys(columns).forEach(key => {
-      newColumnFilters[key] = (newRows || rows)
-
-      if (filters) {
-        newColumnFilters[key] = newColumnFilters[key].filter(e => filters.includes(e[activeColumnKey]))
-      }
-      newColumnFilters[key] = newColumnFilters[key]
+      newColumnFilters[key] = data
         .map(e => e[key])
         .sort()
         .reduce((acc, curr) => {
@@ -150,8 +145,7 @@ export default ({ form_id, type, history }) => {
 
   const [columnFilters, setColumnFilters] = useState(generateColumnFilters())
   const [previousColumnFilters, setPreviousColumnFilters] = useState(null)
-  const [firstColumnFilter, setFirstColumnFilter] = useState('')
-  const [columnFilterHistory, setColumnFilterHistory] = useState([generateColumnFilters()])
+  const [columnFilterSearch, setColumnFilterSearch] = useState(null)
   
   let activeSubjectColumns = subjectColumns.slice(subjectCounter - subjectDisplayCount, subjectCounter)
   if (activeSubjectColumns.length < subjectDisplayCount) {
@@ -159,7 +153,7 @@ export default ({ form_id, type, history }) => {
   }
   const activeColumns = ['name', 'address', 'grade', ...activeSubjectColumns, 'date']
   
-  const handleApplyFilter = (filters, columnFilters = null) => {
+  const handleApplyFilter = (filters) => {
     const { sort, search = '' } = cloneDeep(filters)
 
     // Search always executes for the data to reset even if search is empty
@@ -181,47 +175,11 @@ export default ({ form_id, type, history }) => {
       newRows = orderBy(newRows, sortColumns, sortOrder)
     }
 
-    // Sort per table column
-    if (columnFilters) {
-      // Set column filter history
-      const columnIndex = columnFilterHistory.findIndex(e => isEqual(e[activeColumnKey], columnFilters[activeColumnKey]))
-      let newColumnFilters = {}
-      if (columnIndex !== -1) {
-        newColumnFilters = cloneDeep(columnFilterHistory[columnIndex])
-      } else {
-        newColumnFilters = generateColumnFilters(newRows, columnFilters[activeColumnKey].filter(e => e.checked).map(e => e.value))
-      }
-
-      console.log('achay baya', { columnIndex, columnFilterHistory, newColumnFilters, newRows })
-      newRows = newRows.filter(e => {
-        const rowArr = Object.entries(e)
-        return rowArr.filter(([key, value]) => !!newColumnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
-      })
-
-      // {
-      //   name: 'John Doe',
-      //   schoolType: 'High School',
-      //   gradeLevel: '10th',
-      //   gpa: '1.1(1.1)',
-      //   attendanceSummary: '98% (31/40)',
-      //   math: 'A',
-      //   science: 'A',
-      //   english: 'A',
-      //   history: 'A',
-      //   act1: 0,
-      //   act2: 1,
-      //   sat: 1
-      // }
-
-      if (columnIndex === -1) {
-        let newAdjustedColumnFilters = generateColumnFilters(newRows)
-        newAdjustedColumnFilters[activeColumnKey] = columnFilters[activeColumnKey]
-        setColumnFilters(cloneDeep(newAdjustedColumnFilters))
-        setColumnFilterHistory([cloneDeep(newAdjustedColumnFilters), ...columnFilterHistory])
-      } else {
-        setColumnFilters(cloneDeep(columnFilterHistory[columnIndex]))
-      }
-    }
+    // Column filter
+    newRows = newRows.filter(e => {
+      const rowArr = Object.entries(e)
+      return rowArr.filter(([key, value]) => !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
+    })
 
     setRows(newRows)
 
@@ -287,17 +245,6 @@ export default ({ form_id, type, history }) => {
     })
   }
 
-  const getColumnValues = (key) => {
-    return (key === firstColumnFilter ? data : rows)
-      .reduce((acc, curr) => {
-        if (!acc.includes(curr[key])) {
-          acc.push(curr[key])
-        }
-        return acc
-      }, [])
-      .sort()
-  }
-
   const handlePrepareColumnFilter = ({ target: { checked, value } }, key) => {
     const newFilters = (columnFilters[key] || [])
       .map(e => ({ ...e, checked: e.value === value ? checked : e.checked }))
@@ -308,50 +255,72 @@ export default ({ form_id, type, history }) => {
     })
   }
 
+  const handleSetActiveColumnKey = (key = '') => {
+    setActiveColumnKey(key)
+    setColumnFilterSearch('')
+  }
+
   const handleChangeTableFilterColumn = (key) =>{
     setPreviousColumnFilters(cloneDeep(columnFilters)) // saves the previous table filter
-    // setColumnFilters({
-    //   ...columnFilters,
-    //   [key]: rows.map(e => e[key])
-    // })
-    setActiveColumnKey(key)
-    
-    //Set first table filter if table filter is empty
-    // if (!Object.keys(columnFilters).length) {
-    //   setFirstColumnFilter(key)
-    // }
+    handleSetActiveColumnKey(key)
+  }
+
+  const handleSelectAllColumFilter = ({ target: { checked } }, key) => {
+    setColumnFilters({
+      ...columnFilters,
+      [key]: columnFilters[key].map(e => ({ ...e, checked }))
+    })
   }
 
   const renderTableFilter = (key) => {
     if (activeColumnKey && activeColumnKey === key) {
+      const currColumnFilter = columnFilters[key]
       return (
         <div
           style={{ position: 'absolute', backgroundColor: '#fff' }}
           onClick={e => e.stopPropagation()}
         >
+          <div>
+            <input
+              placeholder='Search'
+              value={columnFilterSearch}
+              onChange={(e) => setColumnFilterSearch(e.target.value)}
+            />
+          </div>
+          <label htmlFor={`${key}_selectAll`} className='checkboxContainer'>
+            <input
+              type='checkbox'
+              id={`${key}_selectAll`}
+              checked={currColumnFilter.length === currColumnFilter.filter(e => e.checked).length}
+              onChange={(e) => handleSelectAllColumFilter(e, key)}
+            />
+            <span className='checkmark' />
+            <span className='labelName'>Select All</span>
+          </label>
           {
-            columnFilters[key].map(({ value, checked }, index) => {
-              return (
-                <div id={`${key}_${value}_${index}`}>
-                  <label htmlFor={`${key}_${value}_${index}`} className='checkboxContainer'>
-                    <input
-                      type='checkbox'
-                      id={`${key}_${value}_${index}`}
-                      value={value}
-                      checked={checked}
-                      onChange={(e) => handlePrepareColumnFilter(e, key)}
-                    />
-                    <span className='checkmark' />
-                    <span className='labelName'>{value}</span>
-                  </label>
-                </div>
-              )
-            })
+            (columnFilterSearch ? currColumnFilter.filter(e => e.value.toLowerCase().includes(columnFilterSearch.toLowerCase())) : currColumnFilter)
+              .map(({ value, checked }, index) => {
+                return (
+                  <div id={`${key}_${value}_${index}`}>
+                    <label htmlFor={`${key}_${value}_${index}`} className='checkboxContainer'>
+                      <input
+                        type='checkbox'
+                        id={`${key}_${value}_${index}`}
+                        value={value}
+                        checked={checked}
+                        onChange={(e) => handlePrepareColumnFilter(e, key)}
+                      />
+                      <span className='checkmark' />
+                      <span className='labelName'>{value}</span>
+                    </label>
+                  </div>
+                )
+              })
           }
           <button
             onClick={() => {
               setColumnFilters(previousColumnFilters)
-              setActiveColumnKey('')
+              handleSetActiveColumnKey()
             }}
           >
             Cancel
@@ -360,8 +329,8 @@ export default ({ form_id, type, history }) => {
             disabled={columnFilters[key].filter(e => e.checked).length === 0}
             onClick={() => {
               if (columnFilters[key].filter(e => e.checked).length > 0) {
-                handleApplyFilter(filterFromHeaders, columnFilters)
-                setActiveColumnKey('')
+                handleApplyFilter(filterFromHeaders)
+                handleSetActiveColumnKey()
               }
             }}
           >
@@ -372,14 +341,14 @@ export default ({ form_id, type, history }) => {
     }
     return null
   }
-  console.log('sharooow', { columnFilters, columnFilterHistory })
+  // console.log('sharooow', { columnFilters })
   return (
     <GradesStyled>
       <h2>Grade List Views</h2>
       <div
         id='gradeListView'
         onClick={() => {
-          setActiveColumnKey('')
+          handleSetActiveColumnKey()
         }}
       >
         <div className='gradeListFilter'>
@@ -528,7 +497,11 @@ export default ({ form_id, type, history }) => {
               {renderTableData()}
             </tbody>
           </table>
-    
+          {
+            rows.length === 0 && (
+              <div>No records.</div>
+            )
+          }
         </div>
       </div>
     </GradesStyled>
