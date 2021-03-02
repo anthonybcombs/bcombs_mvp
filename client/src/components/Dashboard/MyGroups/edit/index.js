@@ -158,9 +158,7 @@ export default function index({
   const [currentContacts, setCurrentContacts] = useState([]);
   const [removedContacts, setRemovedContacts] = useState([]);
   const [contactSelections, setContactSelections] = useState([]);
-  console.log("contactsssssssssssssgroup", group);
-  console.log("contactsssssssssssssgroup contacts", contacts);
-  console.log("contactsssssssssssssgroup groupMembers", groupMembers);
+
   const resetState = () => {
     setCurrentContacts([]);
     setContactSelections([]);
@@ -273,7 +271,6 @@ export default function index({
     setCurrentContacts(updatedContacts);
   };
 
-  console.log("contactSelections", contactSelections);
   if (!isVisible) {
     return <></>;
   }

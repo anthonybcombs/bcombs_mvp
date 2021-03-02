@@ -14,10 +14,49 @@ import {
   GET_APPLICATION_USER_ID_QUERY,
   GET_APPLICATION_HISTORY,
   GET_USER_APPLICATION_HISTORY,
-  DAYCARE_APPLICATION_ADD_MUTATION
+  DAYCARE_APPLICATION_ADD_MUTATION,
+  GET_CUSTOM_APPLICATION_BY_VENDOR
 } from "../../graphql/applicationMutation";
+import { GET_APPLICANTS_BY_FORM, GET_CUSTOM_APPLICATION_BY_ID } from "../../graphql/FormQueryMutation";
 import * as actionType from "./Constant";
 import { setApplicationLoading, setUserApplicationLoading } from "./Loading";
+
+const getCustomApplicationsFromDatabase = form_id => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: GET_APPLICANTS_BY_FORM,
+        variables: {
+          form_id
+        }
+      });
+      console.log("Get Custom Active Application", data);
+      return resolve(data.getCustomFormApplicants);
+    } catch (error) {
+      console.log("Get Custom Active Application error", error);
+      reject(error);
+    }
+  });
+}
+
+const getCustomApplicationByIdFromDatabase = app_id => {
+  console.log('app_id', app_id)
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: GET_CUSTOM_APPLICATION_BY_ID,
+        variables: {
+          app_id
+        }
+      });
+      console.log("Get Custom Active Application by id", data);
+      return resolve(data.getCustomFormApplicantById);
+    } catch (error) {
+      console.log("Get Custom Active Application by id error", error);
+      reject(error);
+    }
+  });
+}
 
 const getApplicationHistoryFromDatabase = app_id => {
   return new Promise(async (resolve, reject) => {
@@ -65,7 +104,12 @@ const getApplicationUserIdFromDatabase = user_id => {
         }
       });
 
-      return resolve(data.getUserApplicationsByUserId);
+      let applications = [...data.getUserApplicationsByUserId.applications,
+                          ...data.getUserApplicationsByUserId.customApplications]
+
+      // applications = applications.sort((a, b) => new Date(b.application_date) - new Date(a.application_date))
+
+      return resolve(applications);
     } catch (error) {
       reject(error);
     }
@@ -75,17 +119,17 @@ const getApplicationUserIdFromDatabase = user_id => {
 const getActiveApplicationFromDatabase = vendor_id => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("Get Active Application vendor_id", vendor_id);
+      console.log("getActiveApplicationFromDatabase Get Active Application vendor_id", vendor_id);
       const { data } = await graphqlClient.query({
         query: GET_APPLICATIONS_QUERY,
         variables: {
           vendor_id: vendor_id
         }
       });
-      console.log("Get Active Application", data);
+      console.log("getActiveApplicationFromDatabase Get Active Application", data);
       return resolve(data.getVendorApplications);
     } catch (error) {
-      console.log("Get Active Application error", error);
+      console.log("getActiveApplicationFromDatabase Get Active Application error", error);
       reject(error);
     }
   });
@@ -272,6 +316,25 @@ const addDaycareApplicationToDatabase = daycare => {
   });
 }
 
+const getCustomApplicationsByVendorFromDatabase = vendor => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log('getCustomApplicationsByVendorFromDatabase vendorr', vendor)
+      const { data } = await graphqlClient.query({
+        query: GET_CUSTOM_APPLICATION_BY_VENDOR,
+        variables: {
+          vendor
+        }
+      });
+      console.log("Get Custom Active Application", data);
+      return resolve(data.getCustomApplicationByVendor);
+    } catch (error) {
+      console.log("Get Custom Active Application error", error);
+      reject(error);
+    }
+  });
+}
+
 export const requestGetApplicationHistory = app_id => {
   return {
     type: actionType.REQUEST_GET_APPLICATION_HISTORY,
@@ -285,7 +348,6 @@ export const requestGetApplicationByUserId = user_id => {
     user_id
   };
 };
-
 export const requestGetApplicationById = id => {
   return {
     type: actionType.REQUEST_GET_APPLICATION_ID,
@@ -294,11 +356,33 @@ export const requestGetApplicationById = id => {
 };
 
 export const requestGetApplications = vendor_id => {
+  console.log('REQUEST GET APPLICATIONSSSS')
   return {
     type: actionType.REQUEST_GET_APPLICATION,
     vendor_id: vendor_id
   };
 };
+
+export const requestGetCustomApplications = form_id => {
+  return {
+    type: actionType.REQUEST_GET_CUSTOM_APPLICATION,
+    form_id: form_id
+  }
+}
+
+export const requestGetCustomFormApplicantById = application_id => {
+  return {
+    type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID,
+    application_id
+  }
+}
+
+export const requestGetCustomApplicationByVendor = vendor => {
+  return {
+    type: actionType.REQUEST_CUSTOM_APPLICATION_BY_VENDOR,
+    vendor
+  }
+}  
 
 export const requestAddApplication = applications => {
   return {
@@ -626,6 +710,39 @@ export function* getUserApplication({ email }) {
   }
 }
 
+export function* getCustomApplications({form_id}) {
+  try {
+    yield put(setApplicationLoading(true));
+    const response = yield call(getCustomApplicationsFromDatabase, form_id);
+    yield put(setApplicationLoading(false));
+    yield put({
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
+      payload: response
+    });
+  } catch (err) {
+    yield put(setApplicationLoading(false));
+    yield put({
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_COMPLETED,
+      payload: []
+    });
+  }
+}
+
+export function* getCustomApplicationById({application_id}) {
+  try {
+    const response = yield call(getCustomApplicationByIdFromDatabase, application_id);
+    yield put({
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID_COMPLETED,
+      payload: response
+    });
+  } catch (err) {
+    yield put({
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID_COMPLETED,
+      payload: []
+    });
+  }
+}
+
 export function* getApplicationHistory({ app_id }) {
   try {
     const response = yield call(getApplicationHistoryFromDatabase, app_id);
@@ -682,3 +799,34 @@ const getUserApplicationHistoryFromDatabase = id => {
     }
   });
 };
+
+
+export function* getCustomApplicationByVendors({ vendor }) {
+  try {
+    yield put(setApplicationLoading(true));
+    const applications = yield call(
+      getCustomApplicationsByVendorFromDatabase,
+      vendor
+    );
+    console.log('getCustomApplicationByVendors applications',applications)
+    yield put(setApplicationLoading(false));
+    if (applications.length > 0) {
+      yield put({
+        type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_VENDOR_COMPLETED,
+        payload: applications
+      });
+    } else {
+      yield put({
+        type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_VENDOR_COMPLETED,
+        payload: []
+      });
+    }
+  } catch (err) {
+    console.log("Error", err);
+    yield put(setApplicationLoading(false));
+    yield put({
+      type: actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_VENDOR_COMPLETED,
+      payload: []
+    });
+  }
+}

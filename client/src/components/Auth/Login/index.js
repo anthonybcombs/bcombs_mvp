@@ -81,6 +81,13 @@ export default function index(props) {
       setRegistrationSuccess("Account has been verified successfully");
     }
   }, []);
+
+  useEffect(() => {
+    if (status && status.message === 'Wrong email or password.') {
+      setRegistrationSuccess('')
+    }
+  }, [status])
+
   const handleInputChange = (id, value) => {
     setUserDetails({ ...userDetails, [id]: value });
   };

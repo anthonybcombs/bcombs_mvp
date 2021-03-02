@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt, faCopy, faPlusCircle, faMinusCircle, faQuestionCircle, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
-import { Sources } from './Sources'
+import { Sources } from '../Sources'
+import Logic from './logic'
+import Validation from './validation'
 
 export default ({
   generalSettings,
@@ -18,19 +20,37 @@ export default ({
   supportMultiple,
   fieldGroupType,
   isStandard,
+  hasError,
+  fieldErrors,
+  fields,
+  pageBreaks,
+  breakedFields,
+  hasPageBreak,
 
   onChangeGeneralSettings,
   onChangeFieldSettings,
   onRemoveGroup,
   onDuplicateGroup,
   onApplyValidationToAll,
-  onChangeDefaultProps
+  onChangeDefaultProps,
+  onCheckError
 }) => {
 
-  const { validationTypes, validationOptions } = Sources
+  let { validationTypes, validationOptions } = Sources
 
-  const validationOptionsArr = (valType) => Object.entries(validationOptions[valType || 'text'])
+  validationTypes = cloneDeep(validationTypes)
+
+  const validationOptionsArr = (valType) => {
+    const valOptions = Object.entries(validationOptions[valType || 'text'])
+    return fieldGroupType === 'paragraphText'
+      ? valOptions.filter(e => e[0] !== 'emailAddress')
+      : valOptions
+  }
   const defaultValidation = { type: 'text', option: 'contains', value: '', error: '', errorField: 'value' }
+
+  if (fieldGroupType === 'paragraphText') {
+    delete validationTypes.number
+  }
 
   const handleChangeGeneralSettings = (data, key) => {
     let newSettings = { ...generalSettings }
@@ -48,6 +68,14 @@ export default ({
     }
 
     onChangeGeneralSettings(newSettings)
+  }
+
+  const handleCheckError = (data) => {
+    const newErrors = !!data.find(e => e.label.replace(/\s/g, '') === '')
+    ? [`Option labels for ${fieldSettings.label} are required.`]
+    : []
+
+    onCheckError(newErrors)
   }
 
   const handleChangeFieldSettings = (data, key, index) => {
@@ -129,19 +157,16 @@ export default ({
         return { ...option, label: newLabel, name: newLabel.toLowerCase() }
       })
       onChangeFieldSettings({ options: newOptions })
+      handleCheckError(newOptions)
+    
       return
     }
     onChangeFieldSettings(data)
   }
 
-  const handleApplyValidationToAll = (checked) => {
-    onApplyValidationToAll(fieldSettings.validation, checked)
-  }
-
   const { instruction = {}, logic = {}, } = generalSettings
   const { validation = {}, required = false, options, requireAddOption = false, isMultiple } = fieldSettings || {}
   const { include, items = [{ ...defaultValidation }] } = validation
-  const hasValidationError = items.find(e => e.errorField)
 
   const showOptions = !showSettings || isActive
   return (
@@ -173,6 +198,7 @@ export default ({
                             const newOptions = cloneDeep(options)
                             newOptions.splice(optionIndex, 1)
                             onChangeFieldSettings({ options: newOptions })
+                            handleCheckError(newOptions)
                           }}
                         />
                       )
@@ -181,6 +207,7 @@ export default ({
                 )
               })
             }
+            
             <button
               type='button'
               target='_blank'
@@ -200,122 +227,41 @@ export default ({
         )
       }
       {/* End For Field with options */}
-
+      
       {/* Start For Validation */}
       {
         include && 
           (
-            <div>
-              <label htmlFor='applyValidation'  className={`checkboxContainer`} >
-                <input
-                  type='checkbox'
-                  id='applyValidation'
-                  name='applyValidation'
-                  checked={validationAppliedToAll}
-                  onChange={e => {
-                    e.stopPropagation()
-                    handleApplyValidationToAll(e.target.checked)
-                  }}
-                />
-                <span className='checkmark'/>
-                <span className='labelName'> Apply to all fields</span>
-              </label>
-              {
-                items.map(({ type = 'text', option, value, error, errorField }, index) => {
-                  return (
-                    <div key={`validation-${index}`} className='settings-validation'>
-                      <div className='field select-field-wrapper'>
-                        <select
-                          className='field-input'
-                          value={type}
-                          onChange={({ target }) => {
-                            handleChangeFieldSettings({ type: target.value }, 'validation', index)
-                          }}
-                        >
-                          {
-                            Object.entries(validationTypes).map(([key, label], valIndex) => (
-                              <option key={`validationType-${valIndex}`} value={key}>{label}</option>
-                            ))
-                          }
-                        </select>
-                      </div>
-                      <div className='field select-field-wrapper'>
-                        <select
-                          className='field-input'
-                          value={option}
-                          onChange={({ target }) => {
-                            handleChangeFieldSettings({ option: target.value }, 'validation', index)
-                          }}
-                        >
-                          {
-                            validationOptionsArr(type).map(([key, { label }], optIndex) => (
-                              <option key={`validationOption-${optIndex}`} value={key}>{label}</option>
-                            ))
-                          }
-                        </select>
-                      </div>
-                      {
-                        (!['emailAddress', 'isNumber'].includes(option)) &&
-                        <input
-                          className={`field-input ${errorField === 'value' ? 'hasError' : ''}`}
-                          value={value}
-                          type={type === 'length' ? 'number' : type}
-                          placeholder={type === 'text' ? 'Text' : 'Number'}
-                          onChange={({ target }) => {
-                            handleChangeFieldSettings({ value: target.value }, 'validation', index)
-                          }}
-                        />
-                      }
-                      <input
-                        type='text'
-                        className='field-input'
-                        placeholder='Custom error text'
-                        value={error}
-                        onChange={({ target }) => {
-                          handleChangeFieldSettings({ error: target.value }, 'validation', index)
-                        }}
-                      />
-                      <div className='addRemove-validation'>
-                        {
-                          (!hasValidationError && (index === items.length - 1)) && (
-                            <div className='tooltip-wrapper add-validation'>
-                              <FontAwesomeIcon
-                                size='2x' 
-                                icon={faPlusCircle}
-                                className='add-icon'
-                                onClick={() => handleChangeFieldSettings(defaultValidation, 'addValidation') }
-                              />
-                              <span className='tooltip'>Add Validation</span>
-                            </div>
-                          )
-                        }
-                        {
-                          items.length > 1 &&
-                          (
-                            <div className='tooltip-wrapper remove-validation'>
-                              <FontAwesomeIcon
-                                size='2x' 
-                                icon={faMinusCircle}
-                                className='remove-icon'
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleChangeFieldSettings(null, 'removeValidation', index)
-                                }}
-                              />
-                              <span className='tooltip'>Remove Validation</span>
-                            </div>
-                          )
-                        }
-                      </div>
-                      
-                    </div>
-                  )
-                })
-              }
-            </div>
+            <Validation
+              items={items}
+              validationAppliedToAll={validationAppliedToAll}
+              validationTypes={validationTypes}
+              validationOptionsArr={validationOptionsArr}
+              defaultValidation={defaultValidation}
+              fieldSettings={fieldSettings}
+              
+              onApplyValidationToAll={onApplyValidationToAll}
+              onChangeFieldSettings={handleChangeFieldSettings}
+            />
           )
       }
       {/* End for validation */}
+
+      {/* Start for Logic */}
+      {
+        includeLogic && logic.include && (
+          <Logic
+            fields={fields}
+            generalSettings={generalSettings}
+            pageBreaks={pageBreaks}
+            hasPageBreak={hasPageBreak}
+            breakedFields={breakedFields}
+
+            onChangeGeneralSettings={onChangeGeneralSettings}
+          />
+        )
+      }
+      {/* End for Logic  */}
 
       {/* Start for Instruction */}
       {
@@ -335,6 +281,21 @@ export default ({
         )
       }
       {/* End for Instruction */}
+
+      {/* Start for Group Validation */}
+      {
+        (hasError && (!fieldSettings.requireAddOption || requireAddOption)) && 
+        fieldErrors.map((e, i) => {
+          return e && <div
+            key={`error-${i}`}
+            className='error'
+            style={{ padding: '1rem', background: '#ffe0dd'}}
+          >
+            {e}
+          </div>
+        })
+      }
+      {/* End for Group Validation */}
 
       {/* Start Lower Control */}
       <div className='settings-control'>
@@ -454,22 +415,22 @@ export default ({
             </label>
 
             {
-              (!isStandard && ['phone', 'email'].includes(fieldGroupType)) && (
-                <label htmlFor='allowAddField'  className={`checkboxContainer`} >
-                  <input
-                    type='checkbox'
-                    id='allowAddField'
-                    name='allowAddField'
-                    checked={allowAddField}
-                    onChange={e => {
-                      e.stopPropagation()
-                      onChangeDefaultProps({ allowAddField: e.target.checked })
-                    }}
-                  />
-                  <span className='checkmark'/>
-                  <span className='labelName'> Allow add field row</span>
-                </label>
-              )
+              // (!isStandard && ['phone', 'email'].includes(fieldGroupType)) && (
+              //   <label htmlFor='allowAddField'  className={`checkboxContainer`} >
+              //     <input
+              //       type='checkbox'
+              //       id='allowAddField'
+              //       name='allowAddField'
+              //       checked={allowAddField}
+              //       onChange={e => {
+              //         e.stopPropagation()
+              //         onChangeDefaultProps({ allowAddField: e.target.checked })
+              //       }}
+              //     />
+              //     <span className='checkmark'/>
+              //     <span className='labelName'> Allow add field row</span>
+              //   </label>
+              // )
             }
           </div>
         </div>

@@ -147,6 +147,7 @@ const PopoverStyled = styled.div`
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
   const [isPopOverSettingsVisible, setIsPopOverSettingsVisible] = useState(false);
+  const [isAdminPopOverVisible, setIsAdminPopOverVisible] = useState(false);
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
   const [currentUserType, setCurrentUserType] = useState("");
 
@@ -247,7 +248,7 @@ export default function Layout({ children }) {
                     // Trello card https://trello.com/c/BXEQaXbB/252-for-users-only-can-we-only-show-the-application-page-and-menu-hide-dashboard-calendar-events-and-contacts-pages-and-menu-items
                     currentUserType === "VENDOR" && (
                       <>
-                        <Link
+                        {/* <Link
                           className={`${
                             context.location.pathname === "/dashboard"
                               ? "selected"
@@ -256,8 +257,8 @@ export default function Layout({ children }) {
                           to="/dashboard"
                           state={{ calendarName: "" }}>
                           <span> Dashboard</span>
-                        </Link>
-                        <Link
+                        </Link> */}
+                        {/* <Link
                           className={`${
                             context.location.pathname ===
                             "/dashboard/mycalendars"
@@ -266,8 +267,8 @@ export default function Layout({ children }) {
                           }`}
                           to="/dashboard/mycalendars">
                           <span>Calendars</span>
-                        </Link>
-                        <Link
+                        </Link> */}
+                        {/* <Link
                           className={`${
                             context.location.pathname === "/dashboard/myevents"
                               ? "selected"
@@ -275,8 +276,17 @@ export default function Layout({ children }) {
                           }`}
                           to="/dashboard/myevents">
                           <span>Events</span>
+                        </Link> */}
+                        <Link
+                          className={`${
+                            context.location.pathname ===
+                            "/dashboard/attendance"
+                              ? "selected"
+                              : ""
+                          }`}
+                          to="/dashboard/attendance">
+                          <span>Attendance</span>
                         </Link>
-
                         <Link
                           className={`${
                             context.location.pathname ===
@@ -288,16 +298,60 @@ export default function Layout({ children }) {
                           <span>Contacts</span>
                         </Link>
 
-                        {/* <Link
-                          className={`${
-                            context.location.pathname ===
-                            "/dashboard/forms"
-                              ? "selected"
-                              : ""
-                          }`}
-                          to="/dashboard/forms">
-                          <span>Admin</span>
-                        </Link> */}
+                  
+
+                        {/* <Popover
+                        containerStyle={{
+                          position: "relative",
+                          right: 25
+                        }}
+                        isOpen={isAdminPopOverVisible}
+                        position={["bottom", "right"]}
+                        content={({ position, targetRect, popoverRect }) => (
+                          <ArrowContainer
+                            position={position}
+                            targetRect={targetRect}
+                            align="end"
+                            popoverRect={popoverRect}
+                            arrowColor="lightgrey"
+                            arrowSize={7}
+                            arrowStyle={{ opacity: 1 }}
+                            containerStyle={{
+                              right: 12
+                            }}
+                            arrow="center">
+                            <PopoverStyled>
+                                <Link
+                                    to="/dashboard/attendance"
+                                    onClick={() => {
+                                      setIsAdminPopOverVisible(false);
+                                    }}>
+                                    <span>Attendance</span>
+                                </Link>
+                            </PopoverStyled>
+
+                            <PopoverStyled>
+                                <Link
+                                    to="/dashboard/forms"
+                                    onClick={() => {
+                                      setIsAdminPopOverVisible(false);
+                                    }}>
+                                    <span>Forms</span>
+                                </Link>
+                            </PopoverStyled>
+                          </ArrowContainer>
+                        )}
+                        onClickOutside={({ position, targetRect, popoverRect }) => {
+                          setIsAdminPopOverVisible(false);
+                        }}>
+                          <a
+                          onClick={() => {
+                            console.log("pop over is visible")
+                            setIsAdminPopOverVisible(true);
+                          }}>
+                             <span>Admin</span>
+                          </a>
+                      </Popover> */}
 
                         {/* <Link
                           className={`${

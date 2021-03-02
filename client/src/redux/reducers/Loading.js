@@ -86,6 +86,11 @@ export default function Loading(
         ...state,
         deleteForm: action.value
       }
+    case actionType.SET_SUBMIT_FORM_LOADING:
+      return {
+        ...state,
+        submitForm: action.value
+      }
     default:
       return state;
   }

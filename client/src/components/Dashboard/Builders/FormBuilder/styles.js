@@ -42,6 +42,10 @@ export default styled.div`
     -webkit-appearance: none;
     -moz-appearance: none;
   }
+
+  #formBuilder .field-input.pageBreak {
+    max-width: 50%!important;
+  }
   #formBuilder .field-input.focus-visible {
     border-bottom: 2px solid #f26e21;
     transition: all .05s linear;
@@ -61,6 +65,10 @@ export default styled.div`
     font-size: 10px;
     color: #555 !important;
     font-family: "fontawesome";
+  }
+  #formBuilder .select-field-wrapper.pageBreak:after {
+    position: unset!important;
+    right: unset!important;
   }
   #formBuilder .select-field-wrapper label {
     position: absolute;
@@ -334,7 +342,7 @@ export default styled.div`
 
   .sortableGroup {
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
 
     padding: 8px;
     background: #fff;
@@ -357,6 +365,9 @@ export default styled.div`
     visibility: visible;
     transition: all .15s ease-in-out;
   }
+  .sortableGroup.active .groupError {
+    display: none;
+  }
 
   .sortableGroup:hover .sortableGroup-actions >div svg {
     opacity: 1;
@@ -377,6 +388,10 @@ export default styled.div`
     background: #f1f1f1;
     box-shadow: 0 3px 6px #ddd;
   }
+
+
+  
+
 
 
   .sortableGroup-actions {
@@ -440,7 +455,7 @@ export default styled.div`
     letter-spacing: 1.3px;    
   }
   .sortableGroup-name >input {
-    color: #f5812f !important;
+    // color: #f5812f !important;
     font-weight: bold !important;
     background: transparent !important;
   }
@@ -450,7 +465,7 @@ export default styled.div`
   }
   .sortableGroup-name >div {
     position: absolute;
-    right: -8px;
+    right: 0;
     top: 0px;
   }
   .sortableGroup-name >div svg {
@@ -671,6 +686,55 @@ export default styled.div`
     left: -75px;
     white-space: pre;
   }
+
+  .group-settings .settings-logic {
+    padding: .3rem;
+    margin-bottom: .3rem;
+    background: rgb(24 171 39 / 5%);
+  }
+  .group-settings .settings-logic  table {
+    width: 100% !important:
+  }
+  .logic-table tr th.label,
+  .logic-table tr td.label {
+    width: 150px;
+    max-width: 150px;
+    white-space: pre;
+    overflow: hidden;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+  }
+  .logic-table tr th.dropdown-options {
+    width: 500px;
+  }
+  .logic-table tr th.actions {
+    width: 100px;
+  }
+  .logic-table tr th.actions button {
+    border: none;
+    color: #1d99f3;
+    font-weight: bold;
+    background: transparent;
+  }
+  .logic-table tr td.actions button {
+    border: none;
+    color: #1d99f3;
+    background: transparent;
+  }
+  .group-settings .settings-logic > table td .logic-options {
+    display: grid;
+    grid-column-gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+  }
+  .group-settings .settings-logic > table td .logic-options .field {
+    width: 100%:
+  }
+  .group-settings .settings-logic > table td .logic-options .field .field-input {
+    background: transparent;
+  }
+  
+
+
 
   .group-settings .settings-control {
     display: flex;
@@ -972,28 +1036,35 @@ export default styled.div`
   }
 
     // File Upload
-  .sortableGroup.file input.field-input {
+  .sortableGroup.file input.field-input,
+  .sortableGroup.primeFile input.field-input {
     background: transparent !important;
   }
-  .sortableGroup.file .fileTypes p {
+  .sortableGroup.file .fileTypes p,
+  .sortableGroup.primeFile .fileTypes p {
     margin-bottom: 0;
   }
-  .sortableGroup.file .fileTypes .options {
+  .sortableGroup.file .fileTypes .options,
+  .sortableGroup.primeFile .fileTypes .options {
     display: flex;
     align-items: center;
   }
-  .sortableGroup.file .fileTypes .options .checkboxContainer {
+  .sortableGroup.file .fileTypes .options .checkboxContainer,
+  .sortableGroup.primeFile .fileTypes .options .checkboxContainer {
     margin-right: .5rem;
   }
-  .sortableGroup.file .validation .input-wrapper label {
+  .sortableGroup.file .validation .input-wrapper label,
+  .sortableGroup.primeFile .validation .input-wrapper label {
     color: gray;
     font-size: 12px;
   }
-  .sortableGroup.file .validation p {
+  .sortableGroup.file .validation p,
+  .sortableGroup.primeFile .validation p {
     margin-top: 2rem;
     margin-bottom: 0;
   }
-  .sortableGroup.file .validation .limit-size {
+  .sortableGroup.file .validation .limit-size,
+  .sortableGroup.primeFile .validation .limit-size {
     color: #f44336;
     font-size: 12px;
   }
@@ -1002,7 +1073,7 @@ export default styled.div`
   // Secion Break
   .sortableGroup.sectionBreak .sortableGroup-name >input {
     font-size: 18px !important;
-    color: #000 !important;
+    // color: #000 !important;
   }
 
   
@@ -1028,7 +1099,7 @@ export default styled.div`
   .sortableGroup.email .sortableGroup-row .sortableGroup-column:nth-child(2),
   .sortableGroup.phone .sortableGroup-row .sortableGroup-column:nth-child(2) {
     grid-column: 1 !important;
-    max-width: 300px;
+    max-width: 400px;
   }
 
 
@@ -1123,7 +1194,7 @@ export default styled.div`
     width: 100%;
     border-collapse: collapse;
     border: 0;
-    margin-bottom: 32px;
+    margin-bottom: 3px;
     table-layout: auto;
   }
   .matrixRating-table > thead > tr th.column-head {
@@ -1443,7 +1514,32 @@ export default styled.div`
   }
 
   
+  .title-action.editName {
+    right: 22px!important;
+  }
 
+  .colorPicker {
+    z-index: 10;
+    border-radius: 4px;
+    background: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px, rgba(0, 0, 0, 0.15) 0px 8px 16px;
+  }
+  .colorPicker .sketch-picker  {
+    box-shadow: none !important;
+    padding-bottom: 8px !important;
+    border: none !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-bottom: 1px solid #ddd !important;
+  }
+
+  .colorPicker .sketch-picker >div:last-child >div:nth-last-child(2) {
+    margin-left: auto !important;
+  }
+
+  .colorPicker label {
+    margin: 6px 6px 8px 6px;
+  }
 
 
 `;

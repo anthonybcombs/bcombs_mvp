@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default ({ min, max, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value }) => {
+export default ({ isReadOnly = false, min, max, onChangeFieldSettings, isBuilder, id: fieldId, onChange, value, className }) => {
   const handleChangeValues = ({ target: { value } }, type, subType) => {
     const currentTypeData = type === 'min' ? { ...min } : { ...max }
     onChangeFieldSettings({ [type]: { ...currentTypeData, [subType]: value } })
@@ -75,7 +75,7 @@ export default ({ min, max, onChangeFieldSettings, isBuilder, id: fieldId, onCha
               </div>
             </div>
           ) : (
-            <div className='scaleForm'>
+            <div className={`scaleForm ${className}`}>
               {
                 minLabel && <p className='linear-label'>{minLabel}</p>
               }
@@ -83,16 +83,17 @@ export default ({ min, max, onChangeFieldSettings, isBuilder, id: fieldId, onCha
                 {
                   Array(maxValue - (minValue-1)).fill(null).map((e, i) => {
                     return (
-                      <div className='scaleForm-value'>
+                      <div key={`maxValue-${i}`} className='scaleForm-value'>
                         <div className='radiobuttonContainer'>
                           <input
-                            id={`radio_${minValue + i}`}
+                            id={`linear_radio_${minValue + i}`}
                             type='radio'
                             value={minValue + i}
+                            readOnly={isReadOnly}
                             checked={value === (minValue + i)}
-                            onChange={e => handleAnswer(e)}
+                            onChange={e => isReadOnly ? () => {} : handleAnswer(e)}
                           />
-                          <label htmlFor={`radio_${minValue + i}`}><span>{minValue + i}</span></label>
+                          <label htmlFor={`linear_radio_${minValue + i}`}><span>{minValue + i}</span></label>
                         </div>
                       </div>
                     )

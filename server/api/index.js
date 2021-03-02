@@ -46,7 +46,7 @@ export const getUserFromDatabase = async email => {
   let result;
   try {
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,email,is_profile_filled,BIN_TO_UUID(type),profile_img from users where email=?`,
+      `SELECT BIN_TO_UUID(id) as id,email,is_profile_filled,BIN_TO_UUID(type),profile_img,attendance_filter_config from users where email=?`,
       [email]
     );
     result = rows[0];
@@ -91,6 +91,252 @@ const getUserProfileFromDatabase = async userId => {
     return result;
   }
 };
+
+export const getVendors = async () => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `SELECT 
+        BIN_TO_UUID(id) as id,
+        id2,
+        new_vendorId
+        FROM vendor`
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const updateVendorNewId = async ({ newVendorId, id }) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `UPDATE 
+        vendor 
+      SET new_vendorId=? 
+      WHERE id=UUID_TO_BIN(?)`,
+      [newVendorId, id]
+    );
+  } catch (error) {
+    console.log("error update admin", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+} 
+
+export const getUsers = async () => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `SELECT 
+        BIN_TO_UUID(id) as id,
+        id2,
+        new_userId
+        FROM users`
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const updateUserNewId = async ({ newUserId, id }) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `UPDATE 
+        users 
+      SET new_userId=? 
+      WHERE id=UUID_TO_BIN(?)`,
+      [newUserId, id]
+    );
+  } catch (error) {
+    console.log("error update admin", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+} 
+
+const getChilds = async () => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `SELECT 
+        id,
+        BIN_TO_UUID(ch_id) as ch_id,
+        new_childId
+        FROM child`
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const updateChildNewId = async ({ newChildId, ch_id }) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `UPDATE 
+        child 
+      SET new_childId=? 
+      WHERE ch_id=UUID_TO_BIN(?)`,
+      [newChildId, ch_id]
+    );
+  } catch (error) {
+    console.log("error update admin", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+} 
+
+export const getParents = async () => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `SELECT 
+        id,
+        BIN_TO_UUID(parent_id) as parent_id,
+        new_parentId
+        FROM parent`
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}
+
+export const updateNewParentId = async ({ newParentId, parent_id }) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `UPDATE 
+        parent 
+      SET new_parentId=? 
+      WHERE parent_id=UUID_TO_BIN(?)`,
+      [newParentId, parent_id]
+    );
+  } catch (error) {
+    console.log("error update admin", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+} 
+
+router.get("/updateParentNewId", async (req, res) => {
+  const parents = await getParents();
+  const defaultSize = 4;
+
+  for(let parent of parents) {
+    let addZero = 0;
+    if(parent.id > 9999) {
+      addZero = 1;
+    }
+
+    const id2 = parent.id + "";
+    const padId = id2.padStart(defaultSize + addZero, '0');
+    const newParentId = 'P11' + padId;
+    parent.newParentId = newParentId;
+
+    if(!parent.new_parentId) {
+      updateNewParentId(parent);
+    }
+
+    delete parent.newParentId;
+  }
+  res.send(parents);
+});
+
+router.get("/updateChildNewId", async (req, res) => {
+  const childs = await getChilds();
+  const defaultSize = 4;
+  for(let child of childs) {
+    let addZero = 0;
+    if(child.id > 9999) {
+      addZero = 1;
+    }
+
+    const id2 = child.id + "";
+    const padId = id2.padStart(defaultSize + addZero, '0');
+    const newChildId = 'C11' + padId;
+    child.newChildId = newChildId;
+
+    if(!child.new_childId) {
+      updateChildNewId(child);
+    }
+  }
+  res.send(childs);
+});
+
+router.get("/updateUserNewId", async (req, res) => {
+  const users = await getUsers();
+  const defaultSize = 4;
+  for(let user of users) {
+    let addZero = 0;
+
+    if(user.id2 > 9999) {
+      addZero = 1;
+    }
+
+    const id2 = user.id2 + "";
+    const padId = id2.padStart(defaultSize + addZero, '0');
+    const newUserId = 'U11' + padId;
+    user.newUserId = newUserId;
+
+    if(!user.new_userId) {
+      await updateUserNewId(user);
+    }
+  }
+  res.send(users);
+});
+
+router.get("/updateVendorNewId", async (req, res) => {
+  const vendors = await getVendors();
+
+  vendors.map(async (vendor) => {
+    let addZero = 0;
+    const defaultSize = 4;
+
+    if(vendor.id2 > 9999) {
+      addZero = 1;
+    }
+
+    const id2 = vendor.id2 + "";
+    const padId = id2.padStart(defaultSize + addZero, '0');
+    const newVendorId = 'V11' + padId;
+    vendor.newVendorId = newVendorId;
+
+    if(!vendor.new_vendorId) {
+      await updateVendorNewId(vendor);
+    }
+  });
+  res.send(vendors);
+});
 
 router.get("/userProfile", async (req, res) => {
   try {
@@ -695,15 +941,15 @@ router.get("/invitation/event/:id", async (req, res) => {
     await db.close();
   }
 });
-router.get("/invitation/calendar/:id", async (req, res) => {
+router.get("/invitation/calendar/:id/:status", async (req, res) => {
   const db = makeDb();
-  const { id } = req.params;
+  const { id, status } = req.params;
   const { userId, groupId } = req.query;
 
   try {
     await db.query(
-      "UPDATE user_calendars_follow SET is_following=1 WHERE calendar_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?) AND group_id=UUID_TO_BIN(?) AND is_following=0",
-      [id, userId, groupId]
+      `UPDATE user_calendars_follow SET is_following=? WHERE calendar_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?) AND group_id=UUID_TO_BIN(?)`,
+      [status,id, userId, groupId]
     );
     res.redirect(`${process.env.APP_CLIENT_URL}/dashboard/mycalendars`);
   } catch (error) {

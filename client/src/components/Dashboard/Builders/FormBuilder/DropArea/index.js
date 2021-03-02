@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch } from "react-redux";
 import { useDrop } from 'react-dnd'
 import { uuid } from 'uuidv4'
@@ -12,10 +12,11 @@ import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
 import PreviewWarningModal from '../PreviewWarningModal'
 
-import { requestAddForm, requestUpdateForm } from "../../../../../redux/actions/FormBuilder"
-import Loading from '../../../../../helpers/Loading';
+import { requestAddForm, requestUpdateForm, setViewMode } from "../../../../../redux/actions/FormBuilder"
+import Loading from '../../../../../helpers/Loading'
+import { groupFieldsByPageBreak } from '../../utils'
 
-export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, form_title = 'Untitled', form_id, handleBuilderDrawerOpen }) => {
+export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, form_title = 'Untitled', form_id, item }) => {
   const dispatch = useDispatch()
   const [droppedFields, setDrop] = useState([])
   const [formTitle, setFormTitle] = useState('Untitled')
@@ -25,6 +26,8 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const [lastField, getLastField] = useState({})
   const [fieldHasChanged, setFieldHasChanged] = useState(!form_id)
   const [previewWarning, setPreviewWarning] = useState(false)
+  const [previewLabel, setPreviewLabel] = useState('You have unsaved changes.')
+  const [errors, setErrors] = useState({})
 
   const reMapFields = (fields, id) => {
     return fields.map((e, i) => ({ ...e, id: `${e.tag}${i}_${id}`, value: '' }))
@@ -46,6 +49,12 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       hasPageBreak: !!pageBreakFields.length,
       lastField: newFields[newFields.length - 1] || {}
     }
+  }
+
+  const handleCancelDrop = (field) => {
+    const newFields = droppedFields.filter(e => e.id !== field.id)
+    beforeSetDrop(newFields)
+    checkPageBreaks(newFields)
   }
 
   const handleDrop = (field) => {
@@ -79,7 +88,9 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const handleMoveGroup = (dragIndex, hoverIndex, draggedGroup) => {
     let newFields = [...droppedFields]
     if (dragIndex === undefined) {
-      const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id) }
+      const fieldFormat = droppedFields.find(e => e.format)
+      const { presetColors = [], color } = fieldFormat ? JSON.parse(fieldFormat.format) : {}
+      const newField = { ...draggedGroup, fields: reMapFields(draggedGroup.fields, draggedGroup.id), format: JSON.stringify({ presetColors }) }
       if (droppedFields.find(e => e.isActive)) {
         newFields = update(droppedFields, {
           [droppedFields.findIndex(e => e.isActive)]: { $merge: { isActive: false } }
@@ -107,6 +118,19 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }))
   }
 
+  const handleCheckError = (id, errArr) => {
+    if (errArr.length === 0) {
+      const newErrors = cloneDeep(errors)
+      delete newErrors[id]
+      setErrors(newErrors)
+      return
+    }
+    setErrors({
+      ...errors,
+      [id]: errArr
+    })
+  }
+
   const handleRemoveGroup = (id, type) => {
     let newFields = droppedFields
     if (type === 'pageBreak' && pageBreaks.length === 2) {
@@ -116,13 +140,54 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }
     beforeSetDrop(newFields)
     checkPageBreaks(newFields)
+    handleCheckError(id, [])
   }
 
   const handleActive = (id) => {
-    beforeSetDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })), false)
+    setDrop(droppedFields.map(e => ({ ...e, isActive: e.id === id })))
   }
 
-  const handleChangeDefaultProps = ({ id, ...rest }) => {
+  const handleChangeDefaultProps = ({ id, isPageBreak, ...rest }, options = null) => {
+    if (isPageBreak && Object.keys(rest).includes('showLabel')) {
+      beforeSetDrop(droppedFields.map(e => {
+        if (e.type === 'pageBreak') {
+          return { ...e, ...rest }
+        }
+        return e
+      }))
+      return
+    }
+
+    const { isColor, applyToAll } = options || {}
+    if (isColor) {
+      beforeSetDrop(droppedFields.map(e => {
+        const formatObj = e.format ? JSON.parse(e.format) : {}
+        let newFormat = rest.format ? JSON.parse(rest.format) : {}
+        let finalFormat = {
+          ...formatObj,
+          presetColors: newFormat.presetColors
+        }
+
+        if (applyToAll) {
+          finalFormat.color = newFormat.color
+        } else if (e.id === id) {
+          return {
+            ...e,
+            format: JSON.stringify({
+              ...finalFormat,
+              color: newFormat.color,
+            })
+          }
+        }
+
+        return {
+          ...e,
+          format: JSON.stringify(finalFormat)
+        }
+      }))
+      return
+    }
+
     beforeSetDrop(update(droppedFields, {
       [droppedFields.findIndex(e => e.id === id)]: { $merge: rest }
     }))
@@ -141,8 +206,9 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   }
 
   const handleMergeStandardFields = (id, source) => {
+    const newFields = (droppedFields.find(e => e.id === id) || {}).fields || []
     beforeSetDrop(update(droppedFields, {
-      [droppedFields.findIndex(e => e.id === id)]: { fields: { $push: reMapFields(source.fields, source.id) } }
+      [droppedFields.findIndex(e => e.id === id)]: { fields: { $set: reMapFields([...newFields, ...source.fields], id) } }
     }))
   }
 
@@ -180,6 +246,11 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   }
 
   const handleSubmitForm = () => {
+    if (Object.keys(errors).length) {
+      setPreviewLabel('Please clear all fields/options label errors.') 
+      setPreviewWarning(true)
+      return
+    }
     if (form_id) {
       dispatch(requestUpdateForm({
         form_id,
@@ -203,23 +274,26 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }
   }
 
-  const handleViewForm = () => {
-    if (!form_id) {
-      dispatch(requestAddForm({
-        user: user.user_id,
-        vendor: vendor.id,
-        isViewMode: true,
-        form_contents: {
-          formTitle,
-          formData: droppedFields
-        }
-      }))
-    }
+  const onSaveAndPreview = (e) => {
+    e.stopPropagation()
+    dispatch(setViewMode(true))
+    document.getElementById('saveBtn').click()
+    setPreviewWarning(false)
   }
 
-  const [{ item, didDrop }, drop] = useDrop({
+  const onDiscardAndPreview = (e) => {
+    e.stopPropagation()
+    document.getElementById('previewButton').click()
+    setTimeout(() => setDrop(cloneDeep(form_data)), 100)
+    setPreviewWarning(false)
+  }
+
+  const [{ item: dropItem }, drop] = useDrop({
     accept: [...Object.values(Items.standard), ...Object.values(Items.prime)],
-    drop: () => handleDrop(item, didDrop),
+    drop: () => {
+      // handleDrop(item)
+      return { dropItem }
+    },
     collect: monitor => {
       return {
         isOver: !!monitor.isOver(),
@@ -230,8 +304,8 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
 
   useEffect(() => {
     if (form_data && form_data.length) {
-      beforeSetDrop(form_data, false)
-      checkPageBreaks(form_data)
+      beforeSetDrop(cloneDeep(form_data), false)
+      checkPageBreaks(cloneDeep(form_data))
     }
   }, [form_data])
 
@@ -247,8 +321,19 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
     }
   }, [category])
 
-  console.log('toinks', { droppedFields, form_data, form_title, formCategory, fieldHasChanged })
+  useEffect(() => {
+    if (item) {
+      if (item.didDrop) {
+        delete item.didDrop
+        handleDrop(item)
+      } else {
+        handleCancelDrop(item)
+      } 
+    }
+  }, [item])
 
+  console.log('@@@@@FORM BUILD LOGS', { droppedFields })
+  
   return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop} className='drop-area-wrapper-droppable'>
@@ -291,9 +376,12 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
                 {...fieldProps}
                 key={fieldProps.id}
                 index={index}
-                // hasPageBreak={hasPageBreak}
                 lastField={lastField}
                 pageBreaks={pageBreaks}
+                errors={errors}
+                hasPageBreak={hasPageBreak}
+                breakedFields={hasPageBreak ? groupFieldsByPageBreak(droppedFields) : droppedFields}
+
                 onMoveGroup={handleMoveGroup}
                 onShowHiddenGroup={handleShowHiddenGroup}
                 onRemoveGroup={(id) => handleRemoveGroup(id, fieldProps.type)}
@@ -306,6 +394,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
                 onChangeGroupName={handleUpdateGroupName}
                 onApplyValidationToAll={handleApplyValidationToAll}
                 onChangeDefaultProps={handleChangeDefaultProps}
+                onCheckError={handleCheckError}
               />
             )
           })
@@ -313,38 +402,43 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       </div>
       <CustomDragLayer />
       <div className='drop-area-wrapper-actions'>
-        {
-          !fieldHasChanged ? (
-            <a
-              type='button'
-              className='btn preview'
-              target='_blank'
-              href={`/form/${form_id}`}
-            >
-              <FontAwesomeIcon
-                className='preview-icon'
-                icon={faEye}
-              />
-              <span>View</span>
-            </a>
-          ) : (
-            <button
-              type='button'
-              className='btn preview'
-              onClick={e => {
-                e.stopPropagation()
-                setPreviewWarning(true)
-              }}
-            >
-              <FontAwesomeIcon
-                className='preview-icon'
-                icon={faEye}
-              />
-              <span>View</span>
-            </button>
+      {
+          form_id && (
+            <>
+              <a
+                style={{ display: fieldHasChanged ? 'none' : 'block' }}
+                id='previewButton'
+                type='button'
+                className='btn preview'
+                target='_blank'
+                href={`/form/${form_id}`}
+              >
+                <FontAwesomeIcon
+                  className='preview-icon'
+                  icon={faEye}
+                />
+                <span>View</span>
+              </a>
+              <button
+                style={{ display: !fieldHasChanged ? 'none' : 'block' }}
+                type='button'
+                className='btn preview'
+                onClick={e => {
+                  e.stopPropagation()
+                  setPreviewWarning(true)
+                }}
+              >
+                <FontAwesomeIcon
+                  className='preview-icon'
+                  icon={faEye}
+                />
+                <span>View</span>
+              </button>
+            </>
           )
         }
         <button
+          id='saveBtn'
           type='button'
           className='btn save'
           onClick={e => {
@@ -361,7 +455,30 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       </div>
       {
         previewWarning && (
-          <PreviewWarningModal onClose={() => setPreviewWarning(false)}/>
+          <PreviewWarningModal
+            title={previewLabel}
+            onClose={(e) => {
+              e.stopPropagation()
+              setPreviewWarning(false)
+              setPreviewLabel('You have unsaved changes.') 
+            }}
+            actions={() => (
+              <>
+                <button
+                  className='modalBtn saveAndPreviewBtn'
+                  onClick={onSaveAndPreview}
+                >
+                  Save and View
+                </button>
+                <button
+                  className='modalBtn discardAndPreviewBtn'
+                  onClick={onDiscardAndPreview}
+                >
+                  Discard and View
+                </button>
+              </>
+            )}
+          />
         )
       }
     </div>

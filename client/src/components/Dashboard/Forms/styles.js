@@ -6,6 +6,61 @@ export default styled.div`
   max-width: 1920px;
   padding: 0rem 3em 2rem;
 
+  .field {
+		padding: 5px !important;
+		margin: 5px !important;
+		display: flex;
+		flex-flow: column-reverse;
+		margin-bottom: 1em;
+	}
+	.field-input {
+		font-size: 18px;
+		border: 0;
+		border-bottom: 2px solid #ccc;
+		font-family: inherit;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		border-radius: 0;
+		padding: 5px;
+		cursor: text;
+		line-height: 1.8;
+
+		padding: 5px 0;
+		width: 100%;
+		display: block;
+		text-indent: 5px;
+	}
+	.field-input:placeholder-shown + .field-label {
+		max-width: calc(100% - 30%) !important;
+	}
+	.field-label,
+	.field-input {
+		transition: all 0.2s;
+		touch-action: manipulation;
+	}
+	.field-label {
+		font-size: 14px;
+		color: #4b525a;
+	}
+	.field-input:placeholder-shown + .field-label {
+		overflow: hidden;
+		transform-origin: left bottom;
+		transform: translate(0, 2.125rem) scale(1.4);
+	}
+	.field-input::placeholder {
+		opacity: 0;
+		transition: inherit;
+		font-size: 12px;
+	}
+	.field-input:focus::placeholder {
+		opacity: 1;
+	}
+	.field-input:focus + .field-label {
+		transform: translate(0, 0) scale(1);
+		cursor: pointer;
+		font-weight: bold;
+	}
+
   #formManager {
     padding: 2rem;
     background-color: white;
@@ -36,7 +91,6 @@ export default styled.div`
   }
   #formManager .field-input {
     position: relative;
-
 
     border: 0;
     cursor: text;
@@ -101,20 +155,24 @@ export default styled.div`
     border-bottom: 1px solid #ddd;
   }
   .formManager-header .header-searchBar .search-input {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    border: 1.65px solid #ccc;
-    max-width: 400px;
+    position: relative;
+    max-width: 300px;
+    width: 100%;
   }
   .formManager-header .header-searchBar .search-input > input {
-    padding-left: 8px !important;
-    border-bottom: 0 !important;
+    text-indent: 2rem !important;
+    background: transparent;
+  }
+  .formManager-header .header-searchBar .search-input > label {
+    padding-left: 1.5rem;
   }
   .formManager-header .header-searchBar .search-input > svg {
     color: grey;
     opacity: 0.5;
+    bottom: 13px;
+    position: absolute;
     pointer-events: none;
+    padding: 0 !important;
   }
   .formManager-header .header-searchBar .search-input > svg:hover {
     box-shadow: none !important;
@@ -148,81 +206,94 @@ export default styled.div`
 
   .formManager-header .header-actions {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
   .formManager-header .header-actions .left-actions,
   .formManager-header .header-actions .right-actions {
     display: flex;
-    align-items: stretch;
+    align-items: center;
   }
   
   .formManager-header .header-actions .left-actions .select-field-wrapper {
-    width: 130px;
-    border: 1.65px solid #ccc;
+    border: 0;
+    max-width: 300px;
+    min-width: 300px;
+    border-bottom: 1.65px solid #ccc;
+    margin: 0 !important;
+    padding: 0 !important;
   }
-  .formManager-header .header-actions .left-actions .select-field-wrapper > select {
-    border-bottom: 0 !important;
-    text-indent: unset !important;
-    text-align-last: center !important;
+  .formManager-header .header-actions .left-actions .select-field-wrapper #multiselectContainerReact div:first-child {
+    border: none;
+  }
+  .formManager-header .header-actions .left-actions .select-field-wrapper input {
+    margin-top: 0 !important;
+    font-size: 16px !important;
+    line-height: 1.5;
   }
   .formManager-header .header-actions .left-actions .select-field-wrapper:after {
+    top: unset;
     right: 10px !important;
   }
-  .formManager-header .header-actions .left-actions .favorites-btn {
-    margin: 0;
-    width: 150px;
-    padding: 12px;
-    font-size: 16px;
-    background: transparent;
-    border: 1.65px solid #ccc;
-    border-left: 0;
+  #multiselectContainerReact .chip,
+  #multiselectContainerReact .optionContainer li:hover,
+  #multiselectContainerReact .optionContainer li.highlight {
+    background: #1e98f3;
   }
-  .formManager-header .header-actions .left-actions .favorites-btn:hover {
-    color: #1e98f3;
-    transition: .15s ease-in-out;
-  }
-  .formManager-header .header-actions .left-actions .active,
-  .formManager-header .header-actions .left-actions .active > select {
-    background: #2097f3;
-    color: #fff !important;
-    cursor: pointer !important;
-  }
-  .formManager-header .header-actions .left-actions .active.select-field-wrapper:after  {
-    color: #fff !important;
-  }
+
+
 
 
   .formManager-header .header-actions .right-actions {
     margin-left: auto;
   }
+  .formManager-header .header-actions .right-actions .favorites-btn {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: grey;
+    width: 150px;
+    padding: 12px;
+    font-size: 16px;
+    // margin-right: 1rem;
+    border-radius: 3px;
+    background: transparent;
+    border: 1.65px solid #ccc;
+    transition: .15s ease-in-out;
+  }
+  .formManager-header .header-actions .right-actions .favorites-btn svg {
+    padding: 0 10px !important;
+    transition: none !important;
+  }
+  .formManager-header .header-actions .right-actions .favorites-btn:hover {
+    color: #1e98f3;
+  }
+  .formManager-header .header-actions .right-actions .favorites-btn.active{
+    color: #1e98f3;
+    border-color: #1e98f3;
+  }
   .formManager-header .header-actions .right-actions .dateFilter {
     display: flex;
-    align-items: stretch;
+    align-items: center;
+    margin-right: 1rem;
+    border-bottom: 1.65px solid #ccc;
   }
   .formManager-header .header-actions .right-actions .select-field-wrapper {
-    padding: 0 2rem 0 1rem;
-    border: 1.65px solid #ccc;
+    padding: 0 !important;
+    margin: 0 !important;
   }
   .formManager-header .header-actions .right-actions .select-field-wrapper > select {
-    cursor: pointer !important;
-    border-bottom: 0 !important;
-    text-indent: unset !important;
-    text-align-last: center !important;
-  }
-  .formManager-header .header-actions .right-actions .select-field-wrapper:after {
-    right: 10px !important;
+    width: 200px !important;
+    border: none !important;
   }
   .formManager-header .header-actions .right-actions svg:hover {
     box-shadow: none !important;
   }
   .formManager-header .header-actions .right-actions .dateFilter > svg {
-    border: 1.65px solid #ccc;
-    border-left: 0;
+    // border: 1.65px solid #ccc;
     color: grey;
     height: auto;
     padding: 11px !important;
-    border-radius: 0 !important;
-    background: rgb(221 221 221 / 25%);
+    // border-radius: 3px !important;
   }
   .formManager-header .header-actions .right-actions .dateFilter > svg:hover {
     color: #1e98f3;
@@ -269,20 +340,19 @@ export default styled.div`
     display: flex;
     flex-direction: column;
 
-
     padding: 1rem;
     cursor: pointer;
     background: #fff;
     border-radius: 4px;
     box-shadow: 0 3px 5px #ddd;
-    border-bottom: 6px solid #f5812f;
     border: 1px solid rgb(221 221 221 / 50%);
+
+    border-bottom: 3px solid #f5812f;
     transition: .15s ease-in-out;
   }
   .form-list-item:hover {
     transform: scale(1.03);
     box-shadow: 0 7px 30px 10px #ddd;
-    border-bottom: 6px solid #f5812f !important;
   }
   .form-list-item:hover .form-title label {
     color: #f5812f;
@@ -358,9 +428,71 @@ export default styled.div`
   // ********* MEDIA QUERIES *********
   // =================================
 
+  @media (max-width: 980px) {
+    .formManager-header .header-actions {
+      display: flex;
+      flex-direction: column;
+    }
+    .formManager-header .header-actions .left-actions,
+    .formManager-header .header-actions .right-actions {
+      width: 100%;
+      margin: 1rem 0 !important;
+    }
+    .formManager-header .header-actions .left-actions .select-field-wrapper {
+      width: 100%;
+      max-width: unset;
+    }
+    .formManager-header .header-actions .right-actions .favorites-btn {
+      margin-left: auto;
+    }
+  }
+
   @media (max-width: 840px) {
     padding: 0rem 1rem 2rem;
-    
+  }
+
+  @media (max-width: 640px) {
+    .formManager-header .header-searchBar {
+      display: block;
+    }
+    .formManager-header .header-searchBar .search-input {
+      max-width: unset;
+      padding: 0 !important;
+      margin: 0 0 1rem 0 !important;
+    }
+    .formManager-header .header-searchBar .newFrom-btn {
+      text-align: center;
+      justify-content: center;
+    }
+    .formManager-header .header-actions {
+      display: flex;
+      flex-direction: column;
+    }
+    .formManager-header .header-actions .right-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      width: 100%;
+      margin: 1rem 0 !important;
+    }
+    .formManager-header .header-actions .right-actions .dateFilter {
+      grid-column: span 3;
+      margin: 0 0 1rem 0;
+    }
+    .formManager-header .header-actions .right-actions .select-field-wrapper {
+      flex: 1;
+    }
+    .formManager-header .header-actions .right-actions .favorites-btn {
+      margin: 0;
+      width: 100%;
+      max-width: unset;
+      grid-column: span 2;
+      text-align: center;
+      justify-content: center;
+    }
+    .formManager-header .header-actions .right-actions .viewType {
+      margin-left: auto;
+    }
   }
   
 `;

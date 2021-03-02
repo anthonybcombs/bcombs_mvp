@@ -1,15 +1,36 @@
 import React from 'react'
 import DatePicker from 'react-datepicker'
-import cloneDeep from 'lodash.clonedeep'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
+import { faAngleRight, faAngleLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ label, fields, type, id, onChange, value = '' }) => {
-  const fieldId = `${type}_${id}`
+export default ({ isReadOnly = false, showLabel, settings, label, fields, type, id: groupId, onChange, fieldError, onCheckError, historyFields, format }) => {
+  const fieldId = `${type}_${groupId}`
   const handleAnswer = (date) => {
-    onChange(fieldId, date)
-    // document.querySelector('.react-datepicker__input-container input').blur()
+    const dateObj = date ? new Date(date) : ''
+    let answers = {}
+    fields.forEach((e, index) => {
+      switch (index) {
+        case 0:
+          answers[e.id] = dateObj ? dateObj.getMonth() + 1 : ''
+          break
+        case 1:
+          answers[e.id] = dateObj ? dateObj.getDate() : ''
+          break
+        case 2:
+          answers[e.id] = dateObj ? dateObj.getFullYear() : ''
+          break
+        default: 
+          break
+      }
+    })
+
+    onChange(fieldId, answers, true)
+    const newErrors = {}
+    fields.forEach(e => {
+      newErrors[e.id] = []
+    })
+    onCheckError(fieldId, newErrors, true)
   }
   
   const range = (start, end) => {
@@ -23,147 +44,158 @@ export default ({ label, fields, type, id, onChange, value = '' }) => {
   };
   const years = range(1900, new Date().getFullYear());
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
   ];
+
+  const { include, value: instructionValue } = settings.instruction || {}
+
+  const ansFields = fields.filter(e => e.tag !== 'icon')
+  const newDate = ansFields.find(e => !e.value) ? '' : ansFields.map(e => e.value).join()
+  const hasError = !!fields.find(e => fieldError[e.id])
+  const isRequired = !!fields.find(e => e.required)
+  const formatObj = format ? JSON.parse(format) : {}
+  const color = formatObj?.color || '#000'
 
   return (
     <div
       className={`formGroup ${type}`}
-    > 
-      <p className='formGroup-name'>{label}</p>
+      id={`group_${groupId}`}
+    >
+      <p className='formGroup-name' style={{ color }}>
+        {showLabel ? (
+          <span>
+            {label}
+            {
+              (include && instructionValue) && (
+                <span className='tooltip-wrapper'>
+                  <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+                  <span className='tooltip'>{instructionValue}</span>
+                </span>
+              )
+            }
+          </span>
+        ) : ''}
+      </p>
+      {
+        (!showLabel && include) && (
+          <div className='formGroup-name-instruction'>
+            <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+            {instructionValue}
+          </div>
+        )
+      }
       <div className='formGroup-row' style={{ gridTemplateColumns: `repeat(3, 1fr)`}}>
         {/* <input
           className={`field-input`}
         /> */}
-         <div
-            className={`formGroup-column`}
-            style={{ gridColumn: `span 1`}}
-            onClick={() => {
+        <div
+          className={`formGroup-column`}
+          style={{ gridColumn: `span 1`}}
+          onClick={() => {
+            if (!isReadOnly) {
               document.querySelector('.react-datepicker__input-container input').click()
-            }}
-          >
-            {
-              fields.map((field, index) => {
-                const dateObj = value ? new Date(value) : ''
-                let actualVal = ''
-                switch (index) {
-                  case 0:
-                    actualVal = dateObj ? dateObj.getMonth() : ''
-                    break
-                  case 1:
-                    actualVal = dateObj ? dateObj.getDate() : ''
-                    break
-                  case 2:
-                    actualVal = dateObj ? dateObj.getFullYear() : ''
-                    break
-                  default: 
-                    break
-                }
-
-                return FieldConstructor[field.tag]({
-                  key: `field-${index}`,
-                  readOnly: true,
-                  ...field,
-                  value: actualVal
-                })
-              })
             }
-            <DatePicker
-              renderCustomHeader={({
-                date,
-                changeYear,
-                changeMonth,
-                decreaseMonth,
-                increaseMonth,
-                prevMonthButtonDisabled,
-                nextMonthButtonDisabled
-              }) => (
-                <div
-                  style={{
-                    margin: 0,
-                    display: 'flex',
-                    alignCenter: 'center',
-                    justifyContent: 'center',
-                    background: '#f36e22',
-                    padding: '5px 3px'
-                  }}>
-                  <button
-                    className='datepicker-btn'
-                    onClick={e => {
-                      e.preventDefault();
-                    }}>
-                    <FontAwesomeIcon
-                      icon={faAngleLeft}
-                      onClick={decreaseMonth}
-                      disabled={prevMonthButtonDisabled}
-                    />
-                  </button>
-                  <select
-                    value={new Date(date).getFullYear()}
-                    onChange={({ target: { value } }) => changeYear(value)}>
-                    {years.map(option => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
+          }}
+        >
+          {
+            fields.map((field, index) => {
+              const { placeholder } = field
+              const historyValue = historyFields.find(e => e.id === field.id)?.value
+              const className = historyValue && JSON.parse(historyValue) !== field.value ? 'highlights' : ''
 
-                  <select
-                    value={months[date.getMonth()]}
-                    onChange={({ target: { value } }) =>
-                      changeMonth(months.indexOf(value))
-                    }>
-                    {months.map(option => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    className='datepicker-btn'
-                    onClick={e => {
-                      e.preventDefault();
-                    }}>
-                    <FontAwesomeIcon
-                      icon={faAngleRight}
-                      onClick={increaseMonth}
-                      disabled={nextMonthButtonDisabled}
-                    />
-                  </button>
-                </div>
-              )}
-              selected={value ? new Date(value) : ''}
-              onChange={handleAnswer}
-              // name={'ch_birthdate' + (counter - 1)}
-              // customInput={
-              //   <BirthdateCustomInput
-              //     className={
-              //       isReadonly &&
-              //       !isVendorView &&
-              //       pastChildInformation &&
-              //       (pastChildInformation.birthdate ||
-              //         pastChildInformation.birthdate == ') &&
-              //       childProfile.date_of_birth.toString() !=
-              //         new Date(pastChildInformation.birthdate).toString()
-              //         ? 'field-input birthdate-field highlights'
-              //         : 'field-input birthdate-field'
-              //     }
-              //   />
-              // }
-            />
-          </div>
+              return FieldConstructor[field.tag]({
+                ...field,
+                isReadOnly,
+                key: `dateField${index}`,
+                placeholder: `${placeholder} ${isRequired ? '*' : ''}`,
+                readOnly: true,
+                className
+              })
+            })
+          }
+          <DatePicker
+            renderCustomHeader={({
+              date,
+              changeYear,
+              changeMonth,
+              decreaseMonth,
+              increaseMonth,
+              prevMonthButtonDisabled,
+              nextMonthButtonDisabled
+            }) => (
+              <div
+                style={{
+                  margin: 0,
+                  display: 'flex',
+                  alignCenter: 'center',
+                  justifyContent: 'center',
+                  background: '#f36e22',
+                  padding: '5px 3px'
+                }}>
+                <button
+                  className='datepicker-btn'
+                  onClick={e => {
+                    e.preventDefault();
+                  }}>
+                  <FontAwesomeIcon
+                    icon={faAngleLeft}
+                    onClick={decreaseMonth}
+                    disabled={prevMonthButtonDisabled}
+                  />
+                </button>
+                <select
+                  value={new Date(date).getFullYear()}
+                  onChange={({ target: { value } }) => changeYear(value)}>
+                  {years.map((option, index) => (
+                    <option key={`year-${index}`} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={months[date.getMonth()]}
+                  onChange={({ target: { value } }) =>
+                    changeMonth(months.indexOf(value))
+                  }>
+                  {months.map((option, index) => (
+                    <option key={`month-${index}`} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  className='datepicker-btn'
+                  onClick={e => {
+                    e.preventDefault();
+                  }}>
+                  <FontAwesomeIcon
+                    icon={faAngleRight}
+                    onClick={increaseMonth}
+                    disabled={nextMonthButtonDisabled}
+                  />
+                </button>
+              </div>
+            )}
+            selected={newDate ? new Date(newDate) : ''}
+            onChange={handleAnswer}
+          />
+        </div>
       </div>
+      {
+        hasError && (<div className='error'> Date is required.</div>)
+      }
     </div>
   )
 }

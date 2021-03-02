@@ -285,7 +285,7 @@ export default function CreateProfileForm({
       lastname: data.lastname
     }
   });
-  const maxDate = format(new Date(), "yyyy-MM-dd");
+  const maxDate = format(new Date(), "MM/dd/yyyy");
   useEffect(() => {
     register({ name: "zipcode" }, { required: true });
     register({ name: "dateofbirth" }, { required: true });
@@ -333,7 +333,7 @@ export default function CreateProfileForm({
         onClick={onClick}
         name={name}
         className={className}
-        placeholder="mm/dd/yyyy"
+        placeholder="MM/dd/yyyy"
         readOnly={true}
         ref={register({ required: true })}
       />
@@ -668,7 +668,7 @@ export default function CreateProfileForm({
                 isValidDate(data.dateofbirth) && new Date(data.dateofbirth)
               }
               onChange={date => {
-                handleInputChange("dateofbirth", format(date, "yyyy-MM-dd"));
+                handleInputChange("dateofbirth", format(date, "MM/dd/yyyy"));
               }}
               name={"dateofbirth"}
               customInput={

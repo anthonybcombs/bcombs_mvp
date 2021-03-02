@@ -148,7 +148,8 @@ export default function index({
   event,
   isTimedDisplay,
   selectedCalendars,
-  publicView
+  publicView,
+  vendors
 }) {
   const [isVisible, setVisibility] = useState(false);
   const [isEditEventVisible, setEditEventVisible] = useState(false);
@@ -171,8 +172,8 @@ export default function index({
   const isCurrentUserGuest = isGuest(event.guests, auth.email);
 
   let schedule = [
-    format(new Date(event.start_of_event), "MMM dd,yyyy hh:mm a"),
-    format(new Date(event.end_of_event), "MMM dd,yyyy hh:mm a")
+    format(new Date(event.start_of_event), "MM/dd/yyyy hh:mm a"),
+    format(new Date(event.end_of_event), "MM/dd/yyyy hh:mm a")
   ];
   const isEventOver = compareAsc(day, new Date());
   let eventStartTime = "";
@@ -180,7 +181,7 @@ export default function index({
   if (event.recurring !== "" && event.recurring !== "no-repeat") {
     eventStartTime = format(new Date(event.start_of_event), "hh:mm a");
     eventEndTime = format(new Date(event.end_of_event), "hh:mm a");
-    schedule = [format(day, "MMM dd,yyyy "), format(day, "MMM dd,yyyy ")];
+    schedule = [format(day, "MM/dd/yyyy "), format(day, "MM/dd/yyyy ")];
   }
 
   return (
@@ -314,6 +315,7 @@ export default function index({
             toggleEditEventModal={toggleEditEventModal}
             defaultEventDetails={event}
             selectedCalendars={selectedCalendars}
+            vendors={vendors}
           />
 
           <DuplicateEvent

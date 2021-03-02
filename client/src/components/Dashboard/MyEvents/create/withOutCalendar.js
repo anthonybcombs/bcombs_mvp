@@ -127,7 +127,7 @@ const initialEventDetails = selectedDate => {
   };
 };
 
-const DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+const DATE_TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
 export default function index({
   isVisible = true,
   auth,
@@ -135,12 +135,14 @@ export default function index({
   selectedCalendars,
   defaultSelectedDate = new Date()
 }) {
-  const { calendars, groups } = useSelector(({ calendars, groups }) => ({
+  const { calendars, groups,vendors } = useSelector(({ calendars, groups,vendors }) => ({
     calendars,
-    groups
+    groups,
+    vendors
   }));
   const [groupOptions, setGroupOptions] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState([]);
+  const [selectedAppGroup, setSelectedAppGroup] = useState([]);
   const [eventDetails, setEventDetails] = useState({
     id: uuid(),
     name: "",
@@ -247,10 +249,15 @@ export default function index({
       group_ids:
         eventDetails.visibility === "custom"
           ? selectedGroup.map(item => item.id)
-          : []
+          : [],
+      app_group_ids:
+          eventDetails.visibility === "custom"
+            ? selectedAppGroup.map(item => item.id)
+            : []
     };
 
     if (selectedCalendars.length > 0) {
+      console.log('handleSubmit payload', payload)
       toggleCreateEventModal(false);
       dispatch(addEvent(payload));
       setEventDetails(initialEventDetails(new Date()));
@@ -264,6 +271,13 @@ export default function index({
   };
   const handleGroupRemove = value => {
     setSelectedGroup(value);
+  };
+
+  const handleAppGroupSelect = value => {
+    setSelectedAppGroup(value);
+  };
+  const handleAppGroupRemove = value => {
+    setSelectedAppGroup(value);
   };
 
   if (!isVisible) {
@@ -298,10 +312,13 @@ export default function index({
             eventDetails={eventDetails}
             handleGroupSelect={handleGroupSelect}
             handleGroupRemove={handleGroupRemove}
+            handleAppGroupSelect={handleAppGroupSelect}
+            handleAppGroupRemove={handleAppGroupRemove}
             groups={groupOptions}
             handleEventDetailsChange={handleEventDetailsChange}
             onSubmit={handleSubmit}
             selectedGroup={selectedGroup}
+            vendors={vendors}
           />
         </div>
       </div>

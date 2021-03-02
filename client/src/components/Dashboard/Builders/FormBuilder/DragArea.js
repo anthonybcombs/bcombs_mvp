@@ -5,12 +5,11 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { StandardFields, PrimeFields } from './Fields'
 import DraggableField from './DraggbleField'
 
-export default ({ handleBuilderDrawerOpen, form_id }) => {
+export default ({ handleBuilderDrawerOpen, form_id, getItem }) => {
   const [standardFields] = useState([...StandardFields])
   const [primeFields] = useState([...PrimeFields])
 
   const handleSelectFormType = (type) => {
-    console.log('type: ', type)
     window.location.replace(`/dashboard/builder/${form_id}/${type}`)
   }
 
@@ -29,12 +28,12 @@ export default ({ handleBuilderDrawerOpen, form_id }) => {
         >
           Form Builder
         </h3>
-        <h3
+        {/* <h3
           className='header report'
           onClick={() => handleSelectFormType('report')}
         >
           Report Builder
-        </h3>
+        </h3> */}
       </div>
 
       <h4 className='sub-header'>Standard</h4>
@@ -42,7 +41,7 @@ export default ({ handleBuilderDrawerOpen, form_id }) => {
         {
           standardFields.map(({ label, type, ...rest }) => {
             return (
-              <DraggableField key={type} label={label} type={type} {...rest} groupType='standard' />
+              <DraggableField getItem={getItem} key={type} label={label} type={type} {...rest} groupType='standard' />
             )
           })
         }
@@ -53,7 +52,7 @@ export default ({ handleBuilderDrawerOpen, form_id }) => {
         {
           primeFields.map(({ label, type, ...rest }) => {
             return (
-              <DraggableField key={type} label={label} type={type} {...rest} groupType='prime' />
+              <DraggableField getItem={getItem} key={type} label={label} type={type} {...rest} groupType='prime' />
             )
           })
         }

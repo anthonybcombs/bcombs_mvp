@@ -201,7 +201,7 @@ export default function index({
     reValidateMode: "onChange",
   });
   const minDate = new Date("1990-01-01");
-  const maxDate = new Date(format(new Date(), "yyyy-MM-dd"));
+  const maxDate = new Date(format(new Date(), "MM/dd/yyyy"));
   const dispatch = useDispatch();
   const gender = watch("gender");
 
@@ -238,7 +238,7 @@ export default function index({
         onClick={onClick}
         name={name}
         className={className}
-        placeholder="mm/dd/yyyy"
+        placeholder="MM/dd/yyyy"
         readOnly={true}
         ref={register({ required: true })}
       />
@@ -389,7 +389,7 @@ export default function index({
             <div className="field">
               <DatePicker
                 className="field-input"
-                placeholderText="MM/DD/YYYY"
+                placeholderText="MM/dd/yyyy"
                 minDate={minDate}
                 maxDate={maxDate}
                 selected={
@@ -398,7 +398,7 @@ export default function index({
                 onChange={(date) => {
                   handleInputChange(
                     "dateofbirth",
-                    format(new Date(date), "yyyy-MM-dd")
+                    format(new Date(date), "MM/dd/yyyy")
                   );
                 }}
 
@@ -477,7 +477,7 @@ export default function index({
                   isValidDate(data.dateofbirth) && new Date(data.dateofbirth)
                 }
                 onChange={(date) => {
-                  handleInputChange("dateofbirth", format(date, "yyyy-MM-dd"));
+                  handleInputChange("dateofbirth", format(date, "MM/dd/yyyy"));
                 }}
                 name={"dateofbirth"}
                 customInput={
@@ -830,7 +830,7 @@ export default function index({
             handleInputChange("dateofbirth", target.value);
           }}
           ref={register}
-          value={format(new Date(data.dateofbirth), "yyyy-MM-dd")}
+          value={format(new Date(data.dateofbirth), "MM/dd/yyyy")}
         />
         <ErrorMessage
           field={errors.dateofbirth}

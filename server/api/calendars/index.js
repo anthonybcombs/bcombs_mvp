@@ -204,7 +204,7 @@ export const executeCreateCalendar = async calendar => {
       groupIndex < calendar.info.groups.length;
       groupIndex++
     ) {
-      console.log("CONTACTTTTTTTTTTTTTT", calendar.info.groups[groupIndex]);
+
       await db.query(
         "INSERT INTO user_calendars_groups(calendar_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?))",
         [insertedCalendar[0].id, calendar.info.groups[groupIndex]]
@@ -254,7 +254,103 @@ export const executeCreateCalendar = async calendar => {
         }
       }
     }
+    // **************************************************************** //
+    for (
+      let groupIndex = 0;
+      groupIndex < calendar.info.app_group_ids.length;
+      groupIndex++
+    ) {
 
+      await db.query(
+        "INSERT INTO user_calendars_groups(calendar_id,group_id,group_type) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?),?)",
+        [insertedCalendar[0].id, calendar.info.app_group_ids[groupIndex],'applications']
+      );
+
+
+      const users = await db.query(`SELECT BIN_TO_UUID(vendor_app_groups.vendor), 
+             parent.email_address as email,BIN_TO_UUID(users.id) as user_id
+        FROM vendor_app_groups, application,parent, users
+        WHERE vendor_app_groups.app_grp_id=UUID_TO_BIN('${calendar.info.app_group_ids[groupIndex]}') AND
+              application.vendor=vendor_app_groups.vendor AND
+              application.app_id=parent.application AND
+              users.email=parent.email_address;`);
+
+
+
+      for (let userIndex = 0; userIndex < users.length;userIndex++) {
+        const db1 = makeDb();
+          try {
+              try {
+                await db1.query(
+                  "INSERT IGNORE INTO user_calendars_follow(calendar_id,user_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?),UUID_TO_BIN(?))",
+                [
+                  insertedCalendar[0].id,
+                  users[userIndex].user_id,
+                  calendar.info.app_group_ids[groupIndex]
+                ]
+                );
+                await sendToUserShareCalendarConfirmation({
+                  calendar: insertedCalendar[0],
+                  recipient: users[userIndex],
+                  groupId: calendar.info.app_group_ids[groupIndex]
+                });
+              } catch (error) {
+                  console.log(error);
+              } finally {
+                  db2.close();
+                }
+            } catch (error) {
+          } finally {
+            db1.close();
+          }
+        }
+
+      // let contacts = await db.query(
+      //   "SELECT c.email as email,BIN_TO_UUID(c.user_id) as user_id FROM contacts c INNER JOIN group_members gm ON c.user_id =gm.user_id WHERE gm.group_id =UUID_TO_BIN(?)",
+      //   [calendar.info.app_group_ids[groupIndex]]
+      // );
+
+      // if (contacts.length === 0) {
+      //   contacts = await db.query(
+      //     "SELECT c.email as email,BIN_TO_UUID(c.id) as user_id FROM users as c INNER JOIN group_members gm ON c.id = gm.user_id WHERE gm.group_id =UUID_TO_BIN(?)",
+      //     [calendar.info.app_group_ids[groupIndex]]
+      //   );
+      // }
+
+      // for (
+      //   let contactIndex = 0;
+      //   contactIndex < contacts.length;
+      //   contactIndex++
+      // ) {
+      //   const db1 = makeDb();
+      //   try {
+      //     try {
+      //       console.log("Contactttttttttttt", contacts[contactIndex]);
+      //       await db1.query(
+      //         "INSERT IGNORE INTO user_calendars_follow(calendar_id,user_id,group_id) VALUES(UUID_TO_BIN(?),UUID_TO_BIN(?),UUID_TO_BIN(?))",
+      //         [
+      //           insertedCalendar[0].id,
+      //           contacts[contactIndex].user_id,
+      //           calendar.info.groups[groupIndex]
+      //         ]
+      //       );
+      //       await sendToUserShareCalendarConfirmation({
+      //         calendar: insertedCalendar[0],
+      //         recipient: contacts[contactIndex],
+      //         groupId: calendar.info.app_group_ids[groupIndex]
+      //       });
+      //     } catch (error) {
+      //       console.log(error);
+      //     } finally {
+      //       db2.close();
+      //     }
+      //   } catch (error) {
+      //   } finally {
+      //     db1.close();
+      //   }
+      // }
+    }
+    // **************************************************************** //
     const buf = Buffer.from(
       calendar.info.image.replace(/^data:image\/\w+;base64,/, ""),
       "base64"

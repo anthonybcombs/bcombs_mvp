@@ -55,6 +55,7 @@ export const CREATE_CALENDAR_MUTATION = gql`
         color
         visibilityType
         image
+        app_group_ids
       }
     }
   }
@@ -73,6 +74,7 @@ export const EDIT_CALENDAR_MUTATON = gql`
         color
         visibilityType
         image
+        app_group_ids
       }
     }
   }
@@ -115,3 +117,12 @@ export const DELETE_CALENDAR_MUTATION = gql`
     }
   }
 `;
+
+export const USER_ATTENDANCE_FILTER_CONFIG_MUTATION = gql`
+  mutation updateUserAttendanceFilterConfig($user_attendance_filter_config: UserAttendanceFilterConfigInput!) {
+    updateUserAttendanceFilterConfig(user_attendance_filter_config: $user_attendance_filter_config) {
+      user_id
+    }
+  }
+`;
+

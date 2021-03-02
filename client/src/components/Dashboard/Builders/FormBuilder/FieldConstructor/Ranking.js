@@ -58,12 +58,14 @@ const SortableItem = DropTarget('sortableItem', {
 }))(
   React.forwardRef(
     ({
-      connectDragSource, connectDropTarget, connectDragPreview, label, isDragging
+      connectDragSource, connectDropTarget, connectDragPreview, label, isDragging, isReadOnly
     }, ref) => {
     const elementRef = useRef(null)
     const dropElement = useRef(null)
-    connectDragSource(elementRef)
-    connectDropTarget(dropElement)
+    if (!isReadOnly) {
+      connectDragSource(elementRef)
+      connectDropTarget(dropElement)
+    }
   
     const opacity = (isDragging) ? 0 : 1
     useImperativeHandle(ref, () => ({
@@ -89,26 +91,42 @@ const SortableItem = DropTarget('sortableItem', {
   })
 ))
 
-export default ({ items, onChangeFieldSettings, isActive, isBuilder, id: fieldId, onChange, value = [] }) => {
+export default ({
+  isReadOnly = false, items, onChangeFieldSettings, isActive, isBuilder, id: fieldId, onChange, value = [],
+  onCheckError, className
+}) => {
   const newItems = value.length ? value : items
+
+  const handleCheckError = (data) => {
+    const newErrors = !!data.find(e => e.label.replace(/\s/g, '') === '')
+      ? ['Item labels are required.']
+      : []
+
+    onCheckError(newErrors)
+  }
+
   const handleChangeValues = ({ target: { value: rankingValue } }, index) => {
+    const newItems = items.map((item, i) => ({
+      ...item, label: index === i ? rankingValue : item.label
+    }))
     onChangeFieldSettings({
-      items: items.map((item, i) => ({
-        ...item, label: index === i ? rankingValue : item.label
-      }))
+      items: newItems
     })
+    handleCheckError(newItems)
   }
 
   const handleAddRow = () => {
     onChangeFieldSettings({
-      items: [...items, { label: '', rank: items.length + 1 }]
+      items: [...items, { label: `Item ${items.length + 1}`, rank: items.length + 1 }]
     })
   }
 
   const handleRemoveRow = (index) => {
-    const newItems = cloneDeep(items)
+    let newItems = cloneDeep(items)
     newItems.splice(index, 1)
-    onChangeFieldSettings({ items: newItems.map((e, i) => ({ ...e, rank: i + 1 })) })
+    newItems = newItems.map((e, i) => ({ ...e, rank: i + 1 }))
+    onChangeFieldSettings({ items: newItems })
+    handleCheckError(newItems)
   }
 
   const handleMoveItem = (dragIndex, hoverIndex) => {
@@ -172,7 +190,7 @@ export default ({ items, onChangeFieldSettings, isActive, isBuilder, id: fieldId
             }
           </div>
         ) : (
-          <div className='rankingForm'>
+          <div className={`rankingForm ${className}`}>
             <DndProvider backend={HTML5Backend}>
               {
                 newItems.map((item, itemIndex) => {
@@ -181,7 +199,8 @@ export default ({ items, onChangeFieldSettings, isActive, isBuilder, id: fieldId
                       {...item}
                       key={`sortableItem-${item.rank}`}
                       index={itemIndex}
-                      onMoveItem={handleMoveItem}
+                      onMoveItem={isReadOnly ? () => {} : handleMoveItem}
+                      isReadOnly={isReadOnly}
                     />
                   )
                 })

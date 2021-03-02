@@ -3,39 +3,51 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import cloneDeep from 'lodash.clonedeep'
 
-export default (props) => {
-  const { columns, rows, onChangeFieldSettings, isMultiple = false, isBuilder, isActive, id: fieldId, onChange, value = [] } = props
+export default ({
+  isReadOnly = false, columns, rows, onChangeFieldSettings, isMultiple = false,
+  isBuilder, isActive, id: fieldId, onChange, value = [], onCheckError, className
+}) => {
 
   const handleAddRow = () => {
     onChangeFieldSettings({
       rows: [
         ...rows,
         {
-          row: `Row ${rows.length + 1}`,
-          answers: []
+          row: `Row ${rows.length + 1}`
         }
       ]
     })
+  }
+
+  const handleCheckError = (data) => {
+    const newErrors = !!data.find(e => e.row.replace(/\s/g, '') === '')
+      ? ['Row labels are required.']
+      : []
+
+    onCheckError(newErrors)
   }
 
   const handleRemoveRow = (index) => {
     const newRows = cloneDeep(rows)
     newRows.splice(index, 1)
     onChangeFieldSettings({ rows: newRows })
+    handleCheckError(newRows)
   }
 
   const handleChangeRow = ({ target: { value } }, index) => {
-    onChangeFieldSettings({
-      rows: rows.map((choice, i) => {
-        if (i === index) {
-          return {
-            ...choice,
-            row: value
-          }
+    const newRows = rows.map((choice, i) => {
+      if (i === index) {
+        return {
+          ...choice,
+          row: value
         }
-        return choice
-      })
+      }
+      return choice
     })
+    onChangeFieldSettings({
+      rows: newRows
+    })
+    handleCheckError(newRows)
   }
 
 
@@ -101,7 +113,7 @@ export default (props) => {
   }
 
   return (
-    <div className='matrixRating-container'>
+    <div className={`matrixRating-container ${className}`}>
       <div className='table-scroll-wrapper'>
         <table className='matrixRating-table'>
           <thead className='matrixRating-table-head'>
@@ -180,25 +192,6 @@ export default (props) => {
                         const columnAnswer = answers.find(e => e.value === column.value)
                         return (
                           <td key={`column=${columnIndex}`} align='center' className='choices'>
-                            {/* <input
-                              type={isMultiple ? 'checkbox' : 'radio'}
-                              checked={!!columnAnswer}
-                              onChange={({ target: { checked } }) => {
-                                let answers = [...(((value || []).find(e => e.row === row) || {}).answers || [])]
-                                if (isMultiple) {
-                                  if (checked) {
-                                    answers.splice(columnIndex, 0, column)
-                                  } else {
-                                    answers = answers.filter(e => e.value !== column.value)
-                                  }
-                                } else {
-                                  answers = [column]
-                                }
-                                handleAnswer({ row, answers }, rowIndex)
-                              }}
-                            /> */}
-
-
                             {
                               !isMultiple ? (
                                 <div className='radiobuttonContainer'>
@@ -206,10 +199,13 @@ export default (props) => {
                                     id={`radio_${rowIndex}${columnIndex}`}
                                     type='radio'
                                     checked={!!columnAnswer}
+                                    readOnly={isReadOnly}
                                     onChange={({ target: { checked } }) => {
-                                      let answers = [...(((value || []).find(e => e.row === row) || {}).answers || [])]
-                                      answers = [column]
-                                      handleAnswer({ row, answers }, rowIndex)
+                                      if (!isBuilder && !isReadOnly) {
+                                        let answers = [...(((value || []).find(e => e.row === row) || {}).answers || [])]
+                                        answers = [column]
+                                        handleAnswer({ row, answers }, rowIndex)
+                                      }
                                     }}
                                   />
                                   <label htmlFor={`radio_${rowIndex}${columnIndex}`}/>
@@ -220,14 +216,17 @@ export default (props) => {
                                     type='checkbox'
                                     checked={!!columnAnswer}
                                     id={`checkbox_${rowIndex}${columnIndex}`}
+                                    readOnly={isReadOnly}
                                     onChange={({ target: { checked } }) => {
-                                      let answers = [...(((value || []).find(e => e.row === row) || {}).answers || [])]
-                                      if (checked) {
-                                        answers.splice(columnIndex, 0, column)
-                                      } else {
-                                        answers = answers.filter(e => e.value !== column.value)
+                                      if (!isBuilder && !isReadOnly) {
+                                        let answers = [...(((value || []).find(e => e.row === row) || {}).answers || [])]
+                                        if (checked) {
+                                          answers.splice(columnIndex, 0, column)
+                                        } else {
+                                          answers = answers.filter(e => e.value !== column.value)
+                                        }
+                                        handleAnswer({ row, answers }, rowIndex)
                                       }
-                                      handleAnswer({ row, answers }, rowIndex)
                                     }}
                                   />
                                   <span className='checkmark' />

@@ -14,7 +14,7 @@ export const getUsers = async () => {
   const db = makeDb();
   try {
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,email,auth_id,is_profile_filled,BIN_TO_UUID(type) as type,profile_img from users`
+      `SELECT BIN_TO_UUID(id) as id,email,auth_id,is_profile_filled,BIN_TO_UUID(type) as type,profile_img, attendance_filter_config from users`
     );
     return rows;
   } catch (error) {
@@ -76,13 +76,15 @@ export const getUserInfo = async creds => {
       const users = await getUsers();
       const user = users.filter(user => user.email === userInfo.email)[0];
       if (user) {
-        const { is_profile_filled, profile_img, id, type } = user;
+        const { is_profile_filled, profile_img, id, type, attendance_filter_config } = user;
         userInfo.is_profile_filled = is_profile_filled === 0 ? false : true;
         userInfo.profile_img = profile_img
           ? `${s3BucketRootPath}${profile_img}`
           : null;
         userInfo.user_id = id;
         userInfo.type = type;
+        userInfo.attendance_filter_config = attendance_filter_config;
+        
         client.set(creds.access_token, JSON.stringify(userInfo));
         client.EXPIRE([creds.access_token, "5"]);
       }
@@ -516,7 +518,8 @@ export const executeGetUser = async keyword => {
       BIN_TO_UUID(users.id) as id,
       users.email,
       user_profiles.last_name,
-      user_profiles.first_name 
+      user_profiles.first_name ,
+      user_profiles.attendance_filter_config
       FROM users,user_profiles 
       WHERE ( LOWER(users.email) LIKE ? OR 
         LOWER(user_profiles.last_name) LIKE ? OR 
@@ -530,6 +533,7 @@ export const executeGetUser = async keyword => {
         given_name: user.first_name,
         family_name: user.last_name,
         email: user.email,
+        attendance_filter_config: user.attendance_filter_config ? JSON.parse(attendance_filter_config) : {},
         id: user.id
       };
     });
@@ -656,6 +660,35 @@ export const executeAddUserProfile = async payload => {
     await db.close();
   }
 };
+
+export const executeUpdateUserAttendanceConfig = async payload => {
+  const db = makeDb();
+  try{
+    console.log('PAYLOADDDDD', payload)
+    const response = await db.query(
+      "UPDATE users SET attendance_filter_config=? WHERE id=UUID_TO_BIN(?)",
+      [
+        payload.attendance_filter_config,
+        payload.user_id
+      ]
+    );
+
+    let userInfoCache = JSON.parse(await getRedisKey(payload.creds.access_token));
+    console.log('userInfoCache',userInfoCache)
+    userInfoCache.attendance_filter_config = payload.attendance_filter_config;
+    client.set(payload.creds.access_token, JSON.stringify(userInfoCache));
+    client.EXPIRE([payload.creds.access_token, "5"]);
+    console.log('executeUpdateUserAttendanceConfig response', response)
+  }catch(err) {
+    console.log("executeUpdateUserAttendanceConfig err", err);
+  }finally {
+    await db.close();
+    return {
+      user_id:'test'
+    };
+  }
+}
+
 /*
 select vendor.name,parent.email_address,parent.firstname,parent.lastname,parent.phone_number,
 parent.address,

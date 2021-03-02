@@ -215,7 +215,7 @@ export default function index() {
     right: "15px"
   }
 
-  const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+  const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
   const DATE_FORMAT = "yyyy-MM-dd";
   
   const [selectedStep, setSelectedStep] = useState(1);

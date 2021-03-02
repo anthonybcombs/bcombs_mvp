@@ -3,28 +3,29 @@ import { DragSource, DropTarget, } from 'react-dnd'
 import cloneDeep from 'lodash.clonedeep'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGripHorizontal, faEdit, faPlus, faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { faGripHorizontal, faTint, faPlus, faCopy, faTrashAlt, faEye, faEyeSlash, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 import { Items, StandardFields } from '../Fields'
 import GeneralSettings from '../Settings/GeneralSettings'
 import Field from './Field'
+import { SketchPicker } from 'react-color'
 
 const SortableGroup = React.forwardRef(
   ({ 
     connectDragSource, connectDropTarget, connectDragPreview,
     onActive, onChangeGeneralSettings,  onMergeStandardFields, onDuplicateGroup,
     onRemoveGroupField, onChangeFieldSettings, onChangeGroupName, onApplyValidationToAll,
-    onChangeDefaultProps,
+    onChangeDefaultProps, errors, format,
 
     hidden, label, fields, isDragging, id, type: fieldGroupType, gridMax: gridColRepeat,
     includeValidation, isActive, hasSettings, groupType, pageBreaks, lastField = {},
     onRemoveGroup, settings: generalSettings, allowAddField, includeLogic, supportMultiple,
-    isMultiple, showLabel
+    isMultiple, showLabel, onCheckError, breakedFields, hasPageBreak
   }, ref) => {
   
   const [fieldIndex, setActiveFieldIndex] = useState(0)
   const [additionalField, handleSelectFieldToAdd] = useState('')
-  const [enableEditGroupName, handleEnableEditGroupName] = useState(false)
+  const [enableEditGroupName, handleEnableEditGroupName] = useState(showLabel)
   const [validationAppliedToAll, applyValidationToAll] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
 
@@ -50,12 +51,28 @@ const SortableGroup = React.forwardRef(
     }
   })
 
-
   const isGroupActive = isActive ? 'active' : ''
   const isStandard = groupType === 'standard'
   const isPageBreak = fieldGroupType === 'pageBreak'
   const pageBreakIndex = isPageBreak ? pageBreaks.findIndex(e => e.id === id) + 1 : 0
   const isLastPageBreak = lastField.id === id && isPageBreak
+  const fieldErrors = errors[id] || []
+  const hasError = fieldErrors.length > 0
+  const fieldSettings = fieldIndex !== '' ? fields[fieldIndex] : {}
+  let formatObj = {}
+  let color = ''
+  let presetColors = []
+  let applyToAll = false
+
+  if (format) {
+    formatObj = JSON.parse(format)
+    color = formatObj?.color || '#000'
+    presetColors = [...(formatObj?.presetColors || [])]
+    applyToAll = formatObj?.applyToAll || false
+  }
+
+  const [colorPickerShown, setColorPickerShown] = useState(false)
+  const titleDisableProps = enableEditGroupName ? { disabled: false } : {}
 
   return (
     <div
@@ -64,6 +81,7 @@ const SortableGroup = React.forwardRef(
       onClick={(e) => {
         e.stopPropagation()
         onActive(id)
+        setColorPickerShown(false)
       }}
       onMouseOver={() => setShowSettings(true)}
       onMouseLeave={() => setShowSettings(false)}
@@ -84,55 +102,124 @@ const SortableGroup = React.forwardRef(
       }
       <div>
         <div className='sortableGroup-name'
-            onClick={e => {
-              e.stopPropagation()
-              handleEnableEditGroupName(true)
-              if (!isActive) {
-                onActive(id)
-              }
-            }}
-          >
-            <input
-              type='text'
-              className={`field-input group-name-input-${id} ${showLabel ? 'shown-title' : 'hidden-title'}`}
-              value={label}
-              disabled={!enableEditGroupName}
-              readOnly={!showLabel}
-              onBlur={() => {
-                handleEnableEditGroupName(false)
-              }}
-              onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
-              onKeyPress={(e) => console.log('e: ', e)}
-            />
-            {
-              isActive && (
-                <div className='title-action'>
-                  <div className='tooltip-wrapper tooltip-left editGroupName'>
-                    <FontAwesomeIcon
-                      icon={showLabel ? faEye : faEyeSlash}
-                      className='show-icon'
-                      onClick={e => {
-                        e.stopPropagation()
-                        onChangeDefaultProps({ showLabel: !showLabel, id })
-                        handleEnableEditGroupName(true)
-                        if (!isActive) {
-                          onActive(id)
-                        }
-                      }}
-                    />
-                    <span className='tooltip'>{`${showLabel ? 'Hide' : 'Show'} Title`}</span>
-                  </div>
-                </div>
-              )
+          onClick={e => {
+            e.stopPropagation()
+            handleEnableEditGroupName(true)
+            if (!isActive) {
+              onActive(id)
             }
-          </div>
+          }}
+        >
+          <input
+            type='text'
+            className={`field-input group-name-input-${id} ${showLabel ? 'shown-title' : 'hidden-title'}`}
+            value={label}
+            {...titleDisableProps}
+            style={{ color }}
+            onBlur={() => {
+              handleEnableEditGroupName(false)
+            }}
+            onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
+            onKeyPress={(e) => console.log('e: ', e)}
+          />
           {
-            isPageBreak && (
-              <div className='pageBreak-counter'>
-                {pageBreakIndex}/{pageBreaks.length} 
+            isActive && (
+              <div className='title-action editName'>
+                <div className='tooltip-wrapper tooltip-left editGroupName'>
+                  <FontAwesomeIcon
+                    icon={showLabel ? faEye : faEyeSlash}
+                    className='show-icon'
+                    onClick={e => {
+                      e.stopPropagation()
+                      onChangeDefaultProps({ showLabel: !showLabel, id, isPageBreak })
+                      handleEnableEditGroupName(true)
+                      if (!isActive) {
+                        onActive(id)
+                      }
+                    }}
+                  />
+                  <span className='tooltip'>{`${showLabel ? 'Hide' : 'Show'} Title`}</span>
+                </div>
               </div>
             )
           }
+          {
+            isActive && (
+              <div className='title-action'>
+                <div className='tooltip-wrapper tooltip-left'>
+                  <FontAwesomeIcon
+                    icon={faTint}
+                    className='show-icon'
+                    onClick={e => {
+                      e.stopPropagation()
+                      setColorPickerShown(!colorPickerShown)
+                    }}
+                  />
+                  <span className='tooltip'>Set Color</span>
+                </div>
+              </div>
+            )
+          }
+          {
+            colorPickerShown && isActive && (
+              <div className='colorPicker' onClick={e => e.stopPropagation()}>
+                <SketchPicker
+                  color={color.length > 0 ? color : "red"}
+                  disableAlpha
+                  presetColors={[...presetColors, '#F5812F','#000000']}
+                  onChangeComplete={(e) => {
+                    presetColors = presetColors.filter(pc => pc !== e.hex)
+                    onChangeDefaultProps({
+                      id,
+                      format: JSON.stringify({
+                        ...formatObj,
+                        color: e.hex,
+                        presetColors: [e.hex, ...presetColors].slice(0, 4)
+                      })
+                    }, {
+                      isColor: true,
+                      applyToAll
+                    })
+                  }}
+                />
+                <label htmlFor='applyToAll' className={`checkboxContainer`} >
+                  <input
+                    type='checkbox'
+                    id='applyToAll'
+                    name='applyToAll'
+                    // disabled={!hasSelectedField}
+                    checked={applyToAll}
+                    onChange={e => {
+                      e.stopPropagation()
+                      onChangeDefaultProps({
+                        id,
+                        format: JSON.stringify({
+                          ...formatObj,
+                          applyToAll: e.target.checked
+                        })
+                      })
+                    }}
+                  />
+                  <span className='checkmark'/>
+                  <div className='tooltip-wrapper' style={{ position: 'absolute', left: '35px' }}>
+                    <p className='label'>Apply to all
+                      <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle} style={{ marginLeft: '10px' }}/>
+                    </p>
+                    <span className='tooltip' style={{ top: '-140px' }} >Make sure to tick the apply to all button first, then select the color you want to apply to all headers.</span>
+                  </div>
+                  {/* <span className='labelName'></span> */}
+                </label>
+              </div>
+            )
+          }
+        </div>
+        {
+          isPageBreak && (
+            <div className='pageBreak-counter'>
+              {pageBreakIndex}/{pageBreaks.length} 
+            </div>
+          )
+        }
       </div>
       <div className='sortableGroup-row' style={{ gridTemplateColumns: `repeat(${gridColRepeat}, 1fr)`}}>
         {
@@ -153,14 +240,24 @@ const SortableGroup = React.forwardRef(
                 columnInt={columnInt}
                 isStandard={isStandard}
                 gridColRepeat={gridColRepeat}
+                errors={errors}
+                label={label}
+                fieldErrors={fieldErrors}
+                hasPageBreak={hasPageBreak}
+                pageBreaks={pageBreaks}
+                isLastPageBreak={isLastPageBreak}
+                format={format}
+
                 setActiveFieldIndex={setActiveFieldIndex}
                 onActive={onActive}
                 onChangeFieldSettings={(data) => onChangeFieldSettings(data, index, id)}
                 onRemoveGroupField={onRemoveGroupField}
+                onCheckError={(errArr) => onCheckError(id, errArr)}
               />
             )
           })
         }
+        
         {
           (isStandard && allowAddField && !!isActive) &&  (
             <div
@@ -211,6 +308,13 @@ const SortableGroup = React.forwardRef(
         }
       </div>
       {
+        (hasError && !fieldSettings.requireAddOption) && 
+          fieldErrors.map((e, i) => {
+            return e && <div key={`error-${i}`} className='error groupError'> {e}</div>
+          })
+      }
+
+      {
         (hasSettings && !isDragging && isActive && !isLastPageBreak) ? (
           <GeneralSettings
             onChangeDefaultProps={(data) => onChangeDefaultProps({ ...data, id })}
@@ -224,10 +328,13 @@ const SortableGroup = React.forwardRef(
                 onApplyValidationToAll(data, id)
               }
             }}
+            onCheckError={(errArr) => onCheckError(id, errArr)}
+
+            fields={fields}
             generalSettings={generalSettings}
             includeLogic={includeLogic}
             includeValidation={includeValidation}
-            fieldSettings={fieldIndex !== '' ? fields[fieldIndex] : {}}
+            fieldSettings={fieldSettings}
             hasSelectedField={fieldIndex !== ''}
             allowAddField={allowAddField}
             validationAppliedToAll={validationAppliedToAll}
@@ -236,6 +343,11 @@ const SortableGroup = React.forwardRef(
             isStandard={isStandard}
             fieldGroupType={fieldGroupType}
             supportMultiple={supportMultiple}
+            hasError={hasError}
+            fieldErrors={fieldErrors}
+            hasPageBreak={hasPageBreak}
+            pageBreaks={pageBreaks}
+            breakedFields={breakedFields}
           />
         ) : (showSettings && !isLastPageBreak)
             ? (
@@ -322,6 +434,7 @@ export default DropTarget([...Object.values(Items.standard), ...Object.values(It
     if (destination.hidden) {
       destination.onShowHiddenGroup(destination.id)
     }
+
     // if (source.groupType === 'standard' && destination.groupType === 'standard') {
     //   destination.onMergeStandardFields(destination, source)
     // }

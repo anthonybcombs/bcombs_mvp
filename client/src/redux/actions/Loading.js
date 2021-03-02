@@ -97,3 +97,10 @@ export const setDeleteFormLoading = value => {
     value
   };
 }
+
+export const setSubmitFormLoading = value => {
+  return {
+    type: actionType.SET_SUBMIT_FORM_LOADING,
+    value
+  };
+}

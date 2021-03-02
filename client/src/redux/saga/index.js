@@ -6,7 +6,8 @@ import {
   authenticated,
   gotUserInfo,
   loggedOut,
-  requestedPasswordChange
+  requestedPasswordChange,
+  updateUserAttendanceFilterConfig
 } from "../actions/Auth";
 import {
   addCalendar,
@@ -56,14 +57,18 @@ import { getGrades } from "../actions/Grades";
 import { requestedStatus, removedStatus } from "../actions/Status";
 
 import { 
-  getVendor, 
+  getVendor,
+  getUserVendorForms,
   updateVendor, 
   getVendorById2, 
   getVendorById,
   getVendorAdmins, 
   addAdmin,
   deleteAdmins,
-  updateAdmin } from "../actions/Vendors";
+  updateAdmin,
+  getFormAppGroup,
+  getVendorAppGroups,
+} from "../actions/Vendors";
 
 import {
   addApplication,
@@ -77,7 +82,10 @@ import {
   saveApplication,
   getApplicationByUserId,
   getApplicationHistory,
-  getUserApplicationHistory
+  getUserApplicationHistory,
+  getCustomApplications,
+  getCustomApplicationById,
+  getCustomApplicationByVendors
 } from "../actions/Application";
 
 import {
@@ -91,8 +99,13 @@ import {
   addForm,
   getFormById,
   updateForm,
-  deleteForm
+  deleteForm,
+  submitForm,
+  updateSubmittedForm,
+  getCustomApplicationHistory
 } from "../actions/FormBuilder";
+
+import { requestUpdateAttendance, updateAttendance,getAttendance,getEventAttendance } from "../actions/Attendance";
 
 import reducer from "../reducers";
 function* rootSaga() {
@@ -231,13 +244,51 @@ function* rootSaga() {
     deleteAdmins
   );
 
+  yield takeLatest(
+    actionType.REQUEST_USER_VENDOR_FORMS,
+    getUserVendorForms
+  )
+
+  yield takeLatest(
+    actionType.REQUEST_GET_FORM_APP_GROUP,
+    getFormAppGroup
+  )
+
   // Added by Jeff for Form Builder
   yield takeLatest(actionType.REQUEST_GET_FORMS, getForms);
   yield takeLatest(actionType.REQUEST_ADD_FORM, addForm);
   yield takeLatest(actionType.REQUEST_GET_FORM_ID, getFormById);
   yield takeLatest(actionType.REQUEST_UPDATE_FORM, updateForm);
   yield takeLatest(actionType.REQUEST_DELETE_FORM, deleteForm);
-  
+  yield takeLatest(actionType.REQUEST_DELETE_FORM, deleteForm);
+  yield takeLatest(actionType.REQUEST_SUBMIT_FORM, submitForm);
+
+  yield takeLatest(
+    actionType.REQUEST_GET_CUSTOM_APPLICATION,
+    getCustomApplications
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID,
+    getCustomApplicationById
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_UPDATE_SUBMITTED_FORM,
+    updateSubmittedForm
+  );
+
+  yield takeLatest(
+    actionType.REQUEST_CUSTOM_APPLICATION_HISTORY,
+    getCustomApplicationHistory
+  );
+
+  yield takeLatest(actionType.REQUEST_UPDATE_ATTENDANCE, updateAttendance);
+  yield takeLatest(actionType.REQUEST_ATTENDANCE, getAttendance);
+  yield takeLatest(actionType.REQUEST_EVENT_ATTENDANCE, getEventAttendance);
+  yield takeLatest(actionType.REQUEST_VENDOR_APP_GROUPS,getVendorAppGroups)
+  yield takeLatest(actionType.REQUEST_CUSTOM_APPLICATION_BY_VENDOR,getCustomApplicationByVendors);
+  yield takeEvery(actionType.REQUEST_USER_ATTENDANCE_FILTER_CONFIG,updateUserAttendanceFilterConfig);
 }
 const sagaMiddleware = createSagaMiddleware();
 

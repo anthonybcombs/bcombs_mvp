@@ -1,12 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faSearch, faArrowUp, faArrowDown, faTh, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faSearch, faArrowUp, faArrowDown, faTh, faBars, faHeart } from '@fortawesome/free-solid-svg-icons'
+import { Multiselect } from 'multiselect-react-dropdown'
 
 export default ({ onChangeFilter }) => {
+
+  const CATEGORIES_OPTIONS = [
+    { label: 'all', name: 'All' },
+    { label: 'sports', name: 'Sports' },
+    { label: 'teaching', name: 'Teaching' }
+  ]
+
+  const [categories, setCategories] = useState([])
+
+  const handleSelectCategory = (data) => {
+    if (data.find(e => e.label === 'all')) {
+      onChangeFilter([])
+      setCategories
+    } else {
+      onChangeFilter(data.map(e => e.label))
+    }
+  }
+
   return (
     <div className='formManager-header'>
       <div className='header-searchBar'>
-        <div className='search-input'>
+        <div className='field search-input'>
+          <FontAwesomeIcon className='search-icon' icon={faSearch} />
           <input
             id='search'
             name='search'
@@ -14,15 +34,13 @@ export default ({ onChangeFilter }) => {
             className='field-input'
             onChange={({ target }) => {}}
           />
-          <FontAwesomeIcon
-            className='search-icon'
-            icon={faSearch}
-          />
+          <label className="field-label" for={`search`}>
+            Search
+          </label>
         </div>
         <a
-          type='button'
           href='/dashboard/builder'
-          target='_blank'
+          // target='_blank'
           className='newFrom-btn'
         >
           <FontAwesomeIcon
@@ -36,18 +54,33 @@ export default ({ onChangeFilter }) => {
       <div className='header-actions'>
         <div className='left-actions'>
           <div className='field select-field-wrapper active'>
-            <select
+            {/* <select
               className='field-input'
               onChange={onChangeFilter}
             >
               <option value=''>All</option>
               <option value='sports'>Sports</option>
               <option value='teaching'>Teaching</option>
-            </select>
+            </select> */}
+            <Multiselect
+              className='field-input'
+              options={CATEGORIES_OPTIONS}
+              // hasSelectAll={hasSelectAll}
+              onSelect={selectedList => handleSelectCategory(selectedList)}
+              onRemove={selectedList => handleSelectCategory(selectedList)}
+              displayValue='name'
+              closeIcon='cancel'
+              // name={'ethinicity
+              placeholder='Filter by categories'
+              closeOnSelect={false}
+              showCheckbox={true}
+              autcomplete='false'
+              selectedValues={categories}
+            />
           </div>
-          <button className='favorites-btn'>
+          {/* <button className='favorites-btn'>
             Favorites
-          </button>
+          </button> */}
         </div>
         <div className='right-actions'>
           <div className='dateFilter'>
@@ -64,6 +97,13 @@ export default ({ onChangeFilter }) => {
               icon={faArrowUp}
             />
           </div>
+          <button className='favorites-btn'> {/* add active class if selected*/}
+            <FontAwesomeIcon
+              className='sort-icon'
+              icon={faHeart}
+            />
+            Favorites
+          </button>
           <div className='viewType'>
             <FontAwesomeIcon
               className='sort-icon active'

@@ -297,13 +297,16 @@ const COLOR_OPTIONS = ["Blue", "Red", "Green"];
 const FilterComponent = ({
   onFilter,
   onClassChange,
+  onGroupChange,
   onColorChange,
   onStatusChange,
   onClear,
   filterText,
-  classText,
+  gradeText,
   colorText,
-  statusText
+  statusText,
+  groupText,
+  appGroups = []
 }) => (
   <>
     <SelectWrapper>
@@ -329,9 +332,21 @@ const FilterComponent = ({
       <select
         name="class"
         className="form-control"
-        value={classText}
-        onChange={onClassChange}>
+        value={groupText}
+        onChange={onGroupChange}>
         <option value="">Select Class</option>
+        {appGroups.map((opt, i) => (
+          <option key={i} value={opt.app_grp_id}>
+            {opt.name}
+          </option>
+        ))}
+      </select>
+      <select
+        name="class"
+        className="form-control"
+        value={gradeText}
+        onChange={onClassChange}>
+        <option value="">Select Grade</option>
         {CLASS_OPTIONS.map((opt, i) => (
           <option key={i} value={opt}>
             {opt}
@@ -360,8 +375,12 @@ export default function index({
   handleSelectedApplication,
   listApplicationLoading = false,
   vendor = {},
-  appGroups = []
+  appGroups = [],
+  isCustomForm = false,
+  filename = ""
 }) {
+
+  console.log("appGroups select", appGroups);
   const getApplicationStatusVal = (student_status, verification, row) => {
     let studentStatusVal = "";
     let verificationVal = "";
@@ -380,6 +399,8 @@ export default function index({
       studentStatusVal = "No longer a Student";
     } else if (student_status == "missed_oppurtunity") {
       studentStatusVal = "Missed oppurtunity";
+    } else {
+      studentStatusVal = "In process";
     }
 
     if (verification == "verified") {
@@ -434,6 +455,18 @@ export default function index({
     );
   };
 
+  const getStudentName = row => {
+    if(row?.child?.firstname && row?.child?.lastname) {
+      return (
+        <a target="_blank" href={"menteeprofile/" + row.id}>
+          <span>{row?.child.firstname + " " + row?.child.lastname}</span>
+        </a>
+      )
+    } else {
+      return "";
+    }
+  }
+
   const columns = [
     {
       name: "Status",
@@ -446,11 +479,7 @@ export default function index({
       name: "Student Name",
       selector: "studentName",
       sortable: true,
-      cell: row => (
-        <a target="_blank" href={"menteeprofile/" + row.id}>
-          <span>{row.child?.firstname + " " + row.child?.lastname}</span>
-        </a>
-      )
+      cell: row => getStudentName(row)
     },
     {
       name: "Parent name",
@@ -589,9 +618,10 @@ export default function index({
   ];
 
   const [filterText, setFilterText] = useState("");
-  const [classText, setClassText] = useState("");
+  const [gradeText, setGradeText] = useState("");
   const [statusText, setStatusText] = useState("");
   const [colorText, setColorText] = useState("");
+  const [groupText, setGroupText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
 
   const dispatch = useDispatch();
@@ -607,6 +637,7 @@ export default function index({
     let class_match = true;
     let color_match = true;
     let status_match = true;
+    let group_match = true;
 
     if (filterText) {
       name_match =
@@ -618,18 +649,18 @@ export default function index({
           item.child?.lastname
             .toLowerCase()
             .includes(filterText.toLowerCase())) ||
-        (item.parents[0]?.firstname &&
-          item.parents[0]?.firstname
+        (item.parents && item.parents[0]?.firstname &&
+          item?.parents[0]?.firstname
             .toLowerCase()
             .includes(filterText.toLowerCase())) ||
-        (item.parents[0]?.lastname &&
-          item.parents[0]?.lastname
+        (item.parents && item.parents[0]?.lastname &&
+          item?.parents[0]?.lastname
             .toLowerCase()
             .includes(filterText.toLowerCase()));
     }
 
-    if (classText) {
-      class_match = item.child.grade_desc == classText;
+    if (gradeText) {
+      class_match = item?.child?.grade_desc == gradeText;
     }
 
     if (colorText) {
@@ -639,14 +670,17 @@ export default function index({
       else color_match = false;
     }
 
-    console.log("Status text", statusText);
-
     if (statusText) {
       status_match =
         item.student_status.toLowerCase() == statusText.toLowerCase();
     }
 
-    return name_match && class_match && color_match && status_match;
+    if (groupText) {
+      group_match = 
+        item.class_teacher == groupText;
+    }
+
+    return name_match && class_match && color_match && status_match && group_match;
   });
 
   console.log("data", data);
@@ -660,20 +694,23 @@ export default function index({
 
     return (
       <FilterComponent
-        onClassChange={e => setClassText(e.target.value)}
+        onClassChange={e => setGradeText(e.target.value)}
         onFilter={e => setFilterText(e.target.value)}
         onColorChange={e => setColorText(e.target.value)}
+        onGroupChange={e => setGroupText(e.target.value)}
         onStatusChange={e => {
           setStatusText(e.target.value);
         }}
         onClear={handleClear}
         filterText={filterText}
-        classText={classText}
+        gradeText={gradeText}
         colorText={colorText}
         statusText={statusText}
+        groupText={groupText}
+        appGroups={appGroups}
       />
     );
-  }, [filterText, resetPaginationToggle, classText, colorText, statusText]);
+  }, [filterText, resetPaginationToggle, gradeText, colorText, statusText, groupText, appGroups]);
 
   const noHeader = true;
   const striped = true;
@@ -722,8 +759,6 @@ export default function index({
   const handleExit = () => {
     setShowExportFilter(false);
   };
-
-  console.log("data", data);
 
   return (
     <ApplicationListStyled>
@@ -825,6 +860,8 @@ export default function index({
               ? vendor.location_sites
               : []
           }
+          isCustomForm={isCustomForm}
+          filename={filename}
         />
       )}
     </ApplicationListStyled>

@@ -9,6 +9,7 @@ import DataTable from 'react-data-table-component';
 import {
   faThList,
   faFile,
+  faFileAlt,
   faFileSignature,
   faCogs,
   faPrint,
@@ -25,13 +26,16 @@ import DaycareParentFormView from "./daycare/parent";
 import RelationshipToChildStyled from "../DaycareApplicationForm/RelationshipToChildForm";
 
 import TermsWaiverFormViewStyled from "./view/waiver";
-import { requestVendor } from "../../../redux/actions/Vendors";
+import { requestVendor, requestGetFormAppGroup } from "../../../redux/actions/Vendors";
 import {
   requestGetApplications,
   requestUpdateApplication,
   requestSaveApplication,
-  requestGetApplicationHistory
+  requestGetApplicationHistory,
+  requestGetCustomApplications,
+  requestGetCustomFormApplicantById
 } from "../../../redux/actions/Application";
+import { requestGetForms, requestUpdateSubmittedForm, requestGetCustomApplicationHistory } from '../../../redux/actions/FormBuilder'
 import { requestUserGroup } from "../../../redux/actions/Groups";
 import Loading from "../../../helpers/Loading.js";
 import ProfileImg from "../../../images/defaultprofile.png";
@@ -39,6 +43,8 @@ import ProfileImg from "../../../images/defaultprofile.png";
 import { format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
 import { parse } from "query-string";
+
+import Form from '../../Dashboard/Builders/Form'
 
 const ApplicationFormStyled = styled.form`
   @media all {
@@ -55,9 +61,10 @@ const ApplicationFormStyled = styled.form`
     .page-break {
       margin-top: 1rem;
       display: block;
-      page-break-before: auto;
       position: relative;
+      page-break-before: auto;
     }
+    
     #applicationForm .form-group {
       margin-top: 30px !important;
     }
@@ -66,13 +73,52 @@ const ApplicationFormStyled = styled.form`
       margin-bottom: 20px !important;
     }
 
+    #userApplicationForm {
+      margin-bottom: 4rem;
+    }
 
+    .printpage-break {
+      padding: 0;
+      page-break-after: always;
+    }
     
+    .printpage-break.parent-information #applicationForm >div {
+      page-break-after: always;
+    }
+
+    .printpage-break.waiver-information #applicationForm >br {
+      display: none;
+    }
+
+    .printpage-break.waiver-information #applicationForm >div {
+      page-break-inside: avoid;
+      margin-bottom: 4rem;
+    }
+
+    .child-info-wrapper,
+    .general-info-wrapper,
+    .medical-info-wrapper,
+    .emergency-contact-wrapper,
+    .waiver-wrapper,
+    .relationship-wrapper,
+    .parent-info-wrapper {
+      box-shadow: none;
+      padding: 0;
+      margin-top: 0;
+    }
+
+    .style-eight {
+      display: none;
+    }
+    
+    
+
     .child-info-wrapper .grid {
       display: grid;
       grid-template-columns: 31% 31% 31%;
       grid-gap: 3.33333333%;
-      
+
+      page-break-inside: avoid;
     }
 
     .general-info-wrapper {
@@ -80,6 +126,10 @@ const ApplicationFormStyled = styled.form`
       margin-top: 1rem;
       display: block;
       page-break-before: auto;
+    }
+
+    .general-info-wrapper >div {
+      page-break-inside: avoid;
     }
   
     .general-info-wrapper .grid-1 {
@@ -135,6 +185,9 @@ const ApplicationFormStyled = styled.form`
       }
     }
     
+    .parent-info-wrapper >div {
+      page-break-inside: avoid;
+    }
 
     .parent-info-wrapper .grid-1 {
       display: grid;
@@ -221,6 +274,10 @@ const ApplicationFormStyled = styled.form`
       visibility: visible;
       opacity: 1;
       display: grid;
+    }
+
+    .emergency-contact-wrapper {
+      margin-top: 30px;
     }
   
     @media (max-width: 768px) {
@@ -384,6 +441,8 @@ export default function index() {
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
+  const [selectedCustomFormHistory, setSelectedCustomFormHistory] = useState({});
+
   const [emergencyContacts, setEmergencyContacts] = useState([]);
 
   const [showApplication, setShowApplication] = useState(false);
@@ -393,6 +452,8 @@ export default function index() {
   const [view, setView] = useState("");
 
   const [selectedVendor, setSelectedVendor] = useState({});
+
+  const [selectedForm, setSelectedForm] = useState("default")
 
   const dispatch = useDispatch();
 
@@ -424,11 +485,17 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
-  const { groups, auth, vendors, applications, loading } = useSelector(
-    ({ groups, auth, vendors, applications, loading }) => {
-      return { groups, auth, vendors, applications, loading };
+  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups } } = useSelector(
+    ({ groups, auth, vendors, applications, loading, form }) => {
+      return { groups, auth, vendors, applications, loading, form };
     }
   );
+
+  console.log("form 123", formList);
+
+  if (updateSubmittedForm.message === 'successfully update your application form') {
+    window.location.reload()
+  }
 
   if (
     applications.updateapplication &&
@@ -451,12 +518,27 @@ export default function index() {
     window.location.reload()
   }
 
+  const [appGroups, setAppGroups] = useState([]);
+  const [exportFilename, setExportFilename] = useState("");
+  
+  console.log("form app group", formAppGroups);
+
   useEffect(() => {
     if (auth.user_id) {
       //dispatch(requestUserGroup(auth.email));
       dispatch(requestVendor(auth.user_id));
+
+      if(queryParams && queryParams.form) {
+        dispatch(requestGetCustomApplications(queryParams.form));
+      }
     }
   }, []);
+
+  useEffect(() => {
+    if (applications.selectedbuilderapplication) {
+      setSelectedApplication(applications.selectedbuilderapplication)
+    }
+  }, [applications.selectedbuilderapplication])
 
   useEffect(() => {
     console.log('Vendorssss', vendors)
@@ -468,16 +550,55 @@ export default function index() {
         });
 
         setSelectedVendor(newDefaultVendor[0]);
-        dispatch(requestGetApplications(newDefaultVendor[0].id));
+
+        if(queryParams && queryParams.form) {
+          dispatch(requestGetFormAppGroup(queryParams.form));
+        } else {
+          setAppGroups(newDefaultVendor[0].app_groups);
+        }
+
+        //dispatch(requestGetApplications(newDefaultVendor[0].id));
+        dispatch(requestGetForms({ vendor: newDefaultVendor[0].id, categories: [] }))
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
-        dispatch(requestGetApplications(vendors[0].id));
+        if(queryParams && queryParams.form) {
+          dispatch(requestGetFormAppGroup(queryParams.form));
+        } else {
+          setAppGroups(vendors[0].app_groups);
+        }
+        dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
+        //dispatch(requestGetApplications(vendors[0].id));
       }
-
-      
     }
   }, [vendors]);
+
+  useEffect(() => {
+    //dispatch(requestGetApplications(selectedVendor.id));
+
+    if(queryParams && queryParams.form) {
+      setSelectedForm(queryParams.form);
+
+      const tempForm = formList.filter((form) => {
+        return form.form_id == queryParams.form;
+      });
+      console.log("tempForm", tempForm);
+      if(tempForm && tempForm.length > 0) {
+        setExportFilename(tempForm[0]?.form_contents?.formTitle);
+      }
+      // dispatch(requestGetCustomApplications(queryParams.form));
+    } else {
+      setExportFilename(selectedVendor.name);
+      dispatch(requestGetApplications(selectedVendor.id));
+    }
+
+  }, [formList])
+
+  useEffect(() => {
+    console.log("Im here here formAppGroups");
+    console.log("formAppGroups, formAppGroups", formAppGroups);
+    setAppGroups(formAppGroups);
+  }, [formAppGroups])
 
   console.log("vendor", vendors);
 
@@ -507,6 +628,14 @@ export default function index() {
   };
 
   const handleSelectedApplication = (application, view) => {
+    if (view === 'builderForm') {
+      setView(view)
+      setSelectedApplication(application)
+      // dispatch(requestGetCustomFormApplicantById(application.app_id))
+      setShowApplication(true);
+      dispatch(requestGetCustomApplicationHistory(application.app_id))
+      return
+    }
     setSelectedApplication(application);
     setSelectNonMenuOption(true);
     setView(view);
@@ -879,7 +1008,7 @@ export default function index() {
         person_recommend: parent.profile.person_recommend,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
-          DATE_TIME_FORMAT),
+          DATE_FORMAT),
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getArrayValue(parent.profile.ethinicity),
@@ -891,6 +1020,20 @@ export default function index() {
   };
 
   const onSubmit = () => {
+    if (view === 'builderForm' && selectedApplication) {
+      dispatch(requestUpdateSubmittedForm({
+        updated_by: auth.email,
+        vendor: selectedApplication.vendor,
+        form: selectedApplication.form,
+        app_id: selectedApplication.app_id,
+        form_contents: selectedApplication.form_contents,
+        class_teacher: updateApplication.class_teacher || selectedApplication?.class_teacher,
+        color_designation: updateApplication.color_designation || selectedApplication?.color_designation,
+        verification: updateApplication.verification || selectedApplication?.verification,
+        student_status: updateApplication.student_status || selectedApplication?.student_status,
+        notes: updateApplication.notes || selectedApplication?.notes
+      }))
+    }
     dispatch(requestUpdateApplication(updateApplication));
   };
 
@@ -906,7 +1049,8 @@ export default function index() {
     reValidateMode: "onChange"
   });
 
-  const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+  const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
+  const DATE_FORMAT = "yyyy-MM-dd";
 
   const onSubmitSaveApplication = () => {
     console.log("Click Save Application");
@@ -919,7 +1063,7 @@ export default function index() {
         age: getAge(childInformation.profile.date_of_birth),
         birthdate: format(
           new Date(childInformation.profile.date_of_birth),
-          DATE_TIME_FORMAT
+          DATE_FORMAT
         ),
         gender: childInformation.profile.gender,
         phone_type: childInformation.profile.phone_type,
@@ -996,9 +1140,9 @@ export default function index() {
         prev_school_attended: childInformation.general_information.prev_school_attended,
         prev_school_state: childInformation.general_information.prev_school_state,
         prev_school_zip_code: childInformation.general_information.prev_school_zip_code,
-        preffered_start_date:format(
+        preffered_start_date: childInformation.preffered_start_date ? format(
           new Date(childInformation.profile.preffered_start_date),
-          DATE_TIME_FORMAT),
+          DATE_FORMAT) : null,
         current_classroom: childInformation.profile.current_classroom,
         primary_language: childInformation.profile.primary_language,
         needed_days: childInformation.profile.needed_days,
@@ -1141,6 +1285,28 @@ export default function index() {
   }
 
   const createHistoryViewButton = (row) => {
+    if (view === 'builderForm') {
+      const detailsObj = row.details ? JSON.parse(row.details) : {}
+      row = {
+        ...row,
+        ...detailsObj
+      }
+
+      return (
+        <a 
+          href=""
+          onClick={(e) => {
+            e.preventDefault()
+            setApplicationFormKey(new Date().toISOString());
+            setSelectedCustomFormHistory(row)
+            setIsReadonly(true)
+            setIsFormHistory(true)
+          }}
+        >
+          View Application
+        </a>
+      )
+    }
     return (
       <a 
         href=""
@@ -1470,7 +1636,6 @@ export default function index() {
                 "width": "100%",
                 "display": "block",
                 "background": "transparent",
-                "fontWeight": "bold",
                 "border": "0",
                 "padding": "0",
                 "lineHeight": "1",
@@ -1487,8 +1652,8 @@ export default function index() {
 
                 window.history.replaceState("","","?vendor=" + chosenVendor[0].id2);
 
-                dispatch(requestGetApplications(target.value));
-
+                //dispatch(requestGetApplications(target.value));
+                dispatch(requestGetForms({ vendor: target.value, categories: [] }))
                 if(chosenVendor && chosenVendor.length > 0) {
                   setSelectedVendor(chosenVendor[0]);
                 }
@@ -1503,12 +1668,67 @@ export default function index() {
             </select>
           </div>
         )}
+
+        {
+          vendors && vendors.length > 0 && (
+            <div>
+              <select
+                style={{ 
+                  "marginLeft": "20px",
+                  "fontSize": "1.5em",
+                  "borderRadius": "0",
+                  "cursor": "pointer",
+                  "width": "100%",
+                  "display": "block",
+                  "background": "transparent",
+                  "border": "0",
+                  "padding": "0",
+                  "lineHeight": "1",
+                  "color": "#000000"
+                }}
+                onChange={({ target }) => {
+
+                  console.log("target", target.value);
+                  if(target.value == "default") {
+                    console.log("selectedvendor", selectedVendor);
+                    setSelectedForm("default");
+                    setAppGroups(selectedVendor.app_groups);
+                    window.history.replaceState("","","?vendor=" + selectedVendor.id2);
+                    dispatch(requestGetApplications(selectedVendor.id));
+                  } else {
+                    setSelectedForm(target.value);
+                    if (view === 'builderForm') {
+                      setView('')
+                      setSelectedApplication({})
+                    }
+                    console.log("form form", target.value);
+                    window.history.replaceState("","","?form=" + target.value);
+                    setAppGroups([]);
+                    dispatch(requestGetFormAppGroup(target.value));
+                    dispatch(requestGetCustomApplications(target.value));
+                  }
+                }}
+              >
+                <option key={selectedVendor.id} selected={!(queryParams && queryParams.form)} value="default">
+                  {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
+                </option>
+                {
+                  formList.map(form => (
+                    <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
+                      {form?.form_contents?.formTitle}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+          )
+        }
       </div>
       <div id="application">
         <div>
           <div id="labels">
             {
-              selectedVendor && selectedVendor.id2 ? (
+              selectedVendor && selectedVendor.id2 && selectedForm == "default" ? (
                 <a
                   href={ selectedVendor.is_daycare ? `/application/${
                     selectedVendor.id2
@@ -1517,6 +1737,14 @@ export default function index() {
                   }`}
 
                   target="_blank">
+                  <FontAwesomeIcon icon={faFileSignature} />
+                  <span>Application</span>
+                </a>
+              ) : selectedForm && selectedForm != "default" ? (
+                <a
+                  href={`/form/${selectedForm}`}
+                  target="_blank"
+                >
                   <FontAwesomeIcon icon={faFileSignature} />
                   <span>Application</span>
                 </a>
@@ -1560,14 +1788,21 @@ export default function index() {
               <FontAwesomeIcon icon={faFile} />
               <span>My Application</span>
             </a>
+
+            <a href={`/dashboard/forms`}>
+              <FontAwesomeIcon icon={faFileAlt} />
+              <span>Forms</span>
+            </a>
           </div>
         </div>
         <div>
-          {selectedLabel === "Application Status" && !selectNonMenuOption && (
+          {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
             <ApplicationSummaryStyled
-              appGroups={selectedVendor.app_groups}
+              appGroups={appGroups}
               applications={applications.activeapplications}
               vendor={selectedVendor}
+              form={selectedForm}
+              isForm={selectedForm !== "default"}
             />
           )}
           {selectedLabel === "Form Settings" && !selectNonMenuOption && (
@@ -1576,11 +1811,11 @@ export default function index() {
               formSettingsLoading={loading.form_settings}
             />
           )}
-          {selectNonMenuOption && view == "application" && (
+          {(selectNonMenuOption && view == "application" || view === 'builderForm') && (
             <EditApplicationStyled
               application={selectedApplication}
               vendor={selectedVendor}
-              appGroups={selectedVendor.app_groups}
+              appGroups={appGroups}
               onSubmit={onSubmit}
               handleUpdateOnchange={handleUpdateOnchange}
               updateLoading={loading.application}
@@ -1588,17 +1823,19 @@ export default function index() {
           )}
         </div>
       </div>
-      {selectedLabel === "Application Status" && !selectNonMenuOption && (
+      {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
         <ApplicationListStyled
           applications={applications.activeapplications}
-          handleSelectedApplication={handleSelectedApplication}
+          handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" ? viewType : 'builderForm')}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
-          appGroups={selectedVendor.app_groups}
+          appGroups={appGroups}
+          isCustomForm={selectedForm !== "default"}
+          filename={exportFilename}
         />
       )}
       {
-        showApplication && view == "application" && (
+        (showApplication && (["application", "builderForm"].includes(view))) && (
           <div>
             <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
               <div id="dataTableContainer">
@@ -1606,7 +1843,7 @@ export default function index() {
                   (
                     <DataTable 
                       columns={columnsAppHistory}
-                      data={applications.applicationHistory}
+                      data={view === 'application' ? applications.applicationHistory : customApplicationHistory}
                       pagination
                       noHeader={true}
                       striped={true}
@@ -1621,13 +1858,56 @@ export default function index() {
           </div>
         )
       }
+      {
+        view === 'builderForm' && (
+          loading.updateForm ? (
+            <Loading />
+          ) : (
+            <Form
+              historyList={customApplicationHistory}
+              key={applicationFormKey}
+              { ...(isFormHistory ? selectedCustomFormHistory : selectedApplication) }
+              application_date={
+                isFormHistory
+                  ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")}`
+                  : 'Most Up to date Application'
+              }
+              isReadOnly={isReadonly}
+              isFormHistory={isFormHistory}
+              onChangeToEdit={handleChangeToEdit}
+              onGetUpdatedApplication={(form_contents) => setSelectedApplication({
+                ...selectedApplication,
+                form_contents
+              })}
+              onSubmitApplication={(form_contents) => {
+                dispatch(requestUpdateSubmittedForm({
+                  updated_by: auth.email,
+                  vendor: selectedApplication.vendor,
+                  form: selectedApplication.form,
+                  app_id: selectedApplication.app_id,
+                  form_contents,
+                  class_teacher: selectedApplication.class_teacher,
+                  color_designation: selectedApplication.color_designation,
+                  verification: selectedApplication.verification,
+                  student_status: selectedApplication.student_status,
+                  notes: selectedApplication.notes
+                }))
+              }}
+              onSelectLatest={() => {
+                setIsFormHistory(false)
+                setApplicationFormKey(new Date().toISOString())
+              }}
+            />
+          )
+        )
+      }
       {!loading.application && selectNonMenuOption && view == "application" && (
         <button type="button" className="print-button" onClick={handlePrint}>
           {" "}
           <FontAwesomeIcon icon={faPrint} />
         </button>
       )}
-      {loading.application ? (
+      {(loading.application) ? (
         <Loading />
       ) : (
         <>
@@ -1682,7 +1962,7 @@ export default function index() {
             {selectNonMenuOption && view == "application" && (
               <hr className="style-eight"></hr>
             )}
-            <br />
+
             {selectNonMenuOption && 
               view == "application" && 
               selectedApplication && 

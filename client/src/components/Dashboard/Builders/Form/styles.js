@@ -7,6 +7,66 @@ export default styled.div`
   background: #fffefe;
   min-height: calc(100vh - 3rem);
 
+  .highlights {
+    border: 1px solid rgb(242, 110, 33)!important;
+    padding: 5px;
+    background-color: rgb(242, 110, 33);
+    color: rgb(255, 255, 255)!important;
+  }
+
+  textarea.highlights {
+    background-color: rgb(242, 110, 33)!important;
+    border: 2px solid rgb(242, 110, 33)!important;
+    color: rgb(255, 255, 255)!important;
+  }
+
+  .highlights label,
+  .highlights span,
+  .highlights svg {
+    color: #fff!important;
+  }
+
+  .highlights .choiceRow {
+    background-color: unset!important;
+  }
+
+  .print-button {
+    top: 13px;
+  }
+
+  .edit-button {
+    border: 0;
+    position: absolute;
+    right: 85px;
+    cursor: pointer;
+    font-size: 2em;
+    color: #f26e21;
+    background: none;
+    z-index: 2;
+    top: 80px;
+  }
+
+  .edit-button.activeEdit {
+    color: #599600;
+  }
+
+  .app-date {
+    position: absolute;
+    font-size: 1.5em;
+    color: #f26e21;
+    width: 100%;
+    text-align: center;
+    bottom: 25px;
+  }
+
+  .view-latest {
+    position: absolute;
+    right: 80px;
+    cursor: pointer;
+    z-index: 2;
+    bottom: 35px;
+  }
+
   #form {
     min-height: 100vh;
     background-position: center;
@@ -32,6 +92,11 @@ export default styled.div`
     background: #fff;
     border-radius: 2px;
     box-shadow: 0 3px 6px #ddd;
+  }
+
+  #form .form-content.read-only {
+    max-width: unset;
+    top: unset;
   }
   #form > div {
     // padding: 1rem;
@@ -98,6 +163,13 @@ export default styled.div`
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
   }
+  #form .select-field-wrapper select >option {
+    color: #000 !important;
+  }
+
+  // #form .select-field-wrapper:after .highlights {
+  //   background: unset!important;
+  // }
 
   // wizzard
   #form .wizard-wrapper {
@@ -225,15 +297,46 @@ export default styled.div`
   }
 
   .formGroup-name {
-    color: #f26e21;
+    // color: #f26e21;
     margin: 1rem 0 -10px 0;
-    letter-spacing: 1.3px;
+    letter-spacing: 0.8px;
   }
+  .formGroup-name >span {
+    position: relative;
+  }
+  .formGroup-name >span .tooltip-wrapper {
+    position: absolute;
+    margin: unset;
+    top: 0;
+    right: -24px;
+    color: #bfbfbf;
+  }
+  .formGroup-name >span .tooltip-wrapper .tooltip {
+    left: 22px;
+    width: 100%;
+    min-width: 200px;
+  }
+  .formGroup-name >span .tooltip-wrapper:hover .tooltip {
+    transform: translateY(10px);
+  }
+
+  .formGroup-name-instruction {
+    color: gray;
+    font-size: 14px;
+    font-weight: 100;
+    margin-top: 2rem;
+    margin-bottom: -10px;
+  }
+  .formGroup-name-instruction svg {
+    margin-right: .5rem;
+  }
+
 
 
   .formGroup-row {
     display: grid;
-    align-items: center;
+    // align-items: center;
+    align-items: baseline;
     grid-column-gap: 2%;
     // grid-template-columns: repeat(1, 1fr);
   }
@@ -246,6 +349,15 @@ export default styled.div`
 
 
   // ********* Specific Group Fields  **********
+  // Name
+  .formGroup.name .formGroup-row {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .formGroup.name .formGroup-row .formGroup-column:nth-child(1) {
+    max-width: 130px;
+    grid-column: 1 / span 3 !important;
+  }
+
   // Section Break
   .formGroup.sectionBreak .formGroup-name {
     font-size: 20px;
@@ -348,8 +460,29 @@ export default styled.div`
     width: 200px;
     background: #f1f1f1;
   }
+  .uploadForm-value {
+    display: flex;
+    align-items: center;
 
-
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 15px;
+    background: #f1f1f1;
+    padding: .5rem 1rem .5rem 1rem;
+  }
+  .uploadForm-value .file-icon {
+    color: gray;
+    margin-right: .5rem;
+  }
+  .uploadForm-value .close-icon {
+    margin-right: 2rem;
+    margin-left: auto;
+    color: #f44336;
+  }
+  .uploadForm-value.highlights {
+    background: rgb(242,110,33)!important;
+  }
 
   // Linear Scale
   .formGroup.linearScale .scaleForm,
@@ -382,10 +515,13 @@ export default styled.div`
 
 
   // Matrix/Rating
+  .formGroup.matrix .formGroup-row {
+    display: block !important;
+  }
   .matrixRating-container .table-scroll-wrapper {
-    width: 100%;
+    // width: 100%;
     overflow-x: auto;
-    max-width: unset;
+    // max-width: calc(100% - 210rem);
   }
   .matrixRating-container .table-scroll-wrapper::-webkit-scrollbar {
     width: 8px;
@@ -511,13 +647,40 @@ export default styled.div`
   .formGroup.email .formGroup-column ,
   .formGroup.phone .formGroup-column {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     grid-gap: 4%;
   }
   .formGroup.email .formGroup-column .select-field-wrapper,
   .formGroup.phone .formGroup-column .select-field-wrapper {
-    width: 200px;
+    width: 110px;
   }
+
+  // Slider
+  .formGroup.slider .formGroup-column {
+    grid-column: span 2 / auto!important;
+  }
+  .formGroup.slider .formGroup-column .slider-field {
+    display: flex;
+    align-items: center;
+  }
+
+  .formGroup.slider .formGroup-column .slider-field div:nth-child(1) {
+    width: 50%;
+    margin-right: 25px;
+  }
+
+  .formGroup.slider .formGroup-column .slider-field div:nth-child(2) input {
+    line-height: 1!important;
+    border: 1px solid #ccc!important;
+    width: 30%!important;
+  }
+
+  .formGroup.email div:nth-child(2),
+  .formGroup.phone div:nth-child(2) {
+    // grid-column: 1 !important;
+    width: 400px;
+  }
+
 
   // Price
   .formGroup.price .formGroup-row  {
@@ -535,7 +698,37 @@ export default styled.div`
   // =============================================
 
 
- 
+ .thankyouPage {
+   text-align: center; 
+ }
+ .thankyouPage svg {
+  color: #18ab27;
+  font-size: 3rem;
+ }
+ .thankyouPage .message {
+  font-size: 2rem;
+  margin: 1rem 1rem 2rem;
+ }
+ .thankyouPage .message span {
+  display: block;
+  font-size: 1rem;
+ }
+ .thankyouPage .message .hasLogin {
+   text-align: left;
+ }
+ .thankyouPage button {
+  color: #f5812f;
+  font-weight: 600;
+  padding: 12px 2rem;
+  border-radius: 3px;
+  background: transparent;
+  border: 2px solid #f5812f;
+  transition: .15s ease-in-out;
+ }
+ .thankyouPage button:hover {
+  color: #fff;
+  background: #f5812f;
+ }
 
 
 
@@ -563,6 +756,7 @@ export default styled.div`
     background: rgb(87 84 84 / 92%);
 
     opacity: 0;
+    z-index: 9999;
     visibility: hidden;
     transform: translateY(32px);
     transition: transform .5s cubic-bezier(0,1.62,0.38,0.96),
@@ -823,11 +1017,19 @@ export default styled.div`
   // ********* MEDIA QUERIES *********
   // =================================
 
+  @media (max-width: 970px) {
+    // .matrixRating-container .table-scroll-wrapper {
+    //   //   max-width: 610px;
+    //   // max-width: calc(100vw - 5rem)
+    // }
+  }
+
   @media (max-width: 640px) {
     .formGroup-row {
       display: block;
     }
   }
+
   
   
 

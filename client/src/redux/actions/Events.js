@@ -19,7 +19,7 @@ const getEventsToDatabase = async email => {
         email
       }
     });
-
+    console.log('Data Get Events To Database', data)
     return data.getEvents;
   } catch (error) {
     console.log("getEventsToDatabase error", error);

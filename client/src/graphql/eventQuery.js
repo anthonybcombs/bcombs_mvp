@@ -18,6 +18,7 @@ export const GET_EVENT_QUERY = gql`
       recurring
       recurring_end_date
       group_ids
+      app_group_ids
       allowed_edit
       guests {
         email

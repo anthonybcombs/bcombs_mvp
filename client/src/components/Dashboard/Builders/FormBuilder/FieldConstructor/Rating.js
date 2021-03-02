@@ -1,7 +1,10 @@
 import cloneDeep from 'lodash.clonedeep'
 import React from 'react'
 
-export default ({ scale = {}, items = [], onChangeFieldSettings, isBuilder, id: fieldId, onChange, value = {} }) => {
+export default ({
+  isReadOnly = false, scale = {}, items = [], onChangeFieldSettings,
+  isBuilder, id: fieldId, onChange, value = {}, className
+}) => {
   const handleChangeValues = ({ target: { value: ratingValue } }, type, subType, index) => {
     if (type === 'scale') {
       ratingValue = ratingValue * 1
@@ -36,7 +39,7 @@ export default ({ scale = {}, items = [], onChangeFieldSettings, isBuilder, id: 
   const answerIndex = items.findIndex(e => e.rank === value.rank)
 
   return (
-    <>
+    <div className={className}>
       {
         isBuilder ? (
           <div className='rating-container'>
@@ -108,10 +111,11 @@ export default ({ scale = {}, items = [], onChangeFieldSettings, isBuilder, id: 
                       <input
                         id={`star-${index}`}
                         type='checkbox'
+                        readOnly={isReadOnly}
                         checked={answerIndex >= index}
-                        onChange={() => handleAnswer({ label, rank })}
+                        onChange={() => isReadOnly ? () => {} : handleAnswer({ label, rank })}
                       />
-                      <label for={`star-${index}`} />
+                      <label htmlFor={`star-${index}`} />
                     </div>
                   </div>
                 )
@@ -120,6 +124,6 @@ export default ({ scale = {}, items = [], onChangeFieldSettings, isBuilder, id: 
           </div>
         )
       }
-    </>
+    </div>
   )
 }

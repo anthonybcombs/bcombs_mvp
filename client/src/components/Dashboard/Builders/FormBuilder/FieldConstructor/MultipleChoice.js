@@ -4,10 +4,24 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-export default ({ options, column, onChangeFieldSettings, isBuilder, isMultiple, index, isActive, id: fieldId, onChange, value = {} }) => {
+export default ({
+  options, column, onChangeFieldSettings, isBuilder, isMultiple, index, isActive, id: fieldId, value = {},
+  onChange, onCheckError, isReadOnly = false, className
+}) => {
   const hasOthers = options.find(e => e.name === 'other')
+
+  const handleCheckError = (data) => {
+    const newErrors = !!data.find(e => e.label.replace(/\s/g, '') === '')
+      ? ['Option labels are required.']
+      : []
+
+    onCheckError(newErrors)
+  }
+
   const handleChangeOption = ({ target }, optionIndex) => {
-    onChangeFieldSettings({ options: update(options, { [optionIndex]: { $merge: { label: target.value } } }) })
+    const newOptions = update(options, { [optionIndex]: { $merge: { label: target.value } } })
+    onChangeFieldSettings({ options: newOptions })
+    handleCheckError(newOptions)
   }
 
   const handleAddOption = () => {
@@ -23,26 +37,50 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, isMultiple,
   }
 
   const handleAddOthers = () => {
-    const newOption =  { ...options[0], name: 'other', label: 'Other...' }
+    const newOption =  { ...options[0], name: 'other', label: 'Other:' }
     onChangeFieldSettings({ options: update(options, { $push: [newOption] }) })
   }
 
   const handleRemoveField = (optionIndex) => {
-    onChangeFieldSettings({ options: update(options, { $splice: [[optionIndex, 1]] }) })
+    const newOptions = update(options, { $splice: [[optionIndex, 1]] })
+    onChangeFieldSettings({ options: newOptions })
+    handleCheckError(newOptions)
   }
 
   const handleAnswer = ({ target: { value: optionValue, checked } }, id) => {
+    if (id === 'other') {
+      optionValue = ''
+    }
+
+    if (id === 'otherInput') {
+      const newValue = { ...value, other: optionValue }
+      onChange({ target: { id: fieldId, value: newValue } })  
+      return
+    }
+    if (!checked) {
+      let newValue = { ...value }
+      delete newValue[id]
+      onChange({ target: { id: fieldId, value: newValue } })  
+      return  
+    }
     onChange({ target: { id: fieldId, value: { ...(isMultiple ? value : {}), [id]: checked ? optionValue : '' } } })
   }
 
   const groupClassLabel = isBuilder ? 'sortableGroup' : 'formGroup'
 
   return (
-    <>
+    <div className={className}>
       {
         options.map((option, optionIndex) => {
+          const isOther = option.name === 'other'
+          const isSelected = Object.keys(value).includes(option.name)
+          let style = { gridColumn: `span ${column}` }
+          if (isOther && isSelected) {
+            style.display = 'flex'
+            style.alignItems = 'end'
+          }
           return (
-            <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={{ gridColumn: `span ${column}`}}>
+            <div key={`${index}-option-${optionIndex}`} className={`${groupClassLabel}-column`} style={style}>
               {
                 !isMultiple ? (
                   <div className='radiobuttonContainer'>
@@ -50,16 +88,17 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, isMultiple,
                       type='radio'
                       id={`${fieldId}_${option.name}`}
                       value={option.label}
-                      checked={!!value[`${option.name}`]}
+                      checked={isSelected}
                       onChange={(e) => {
-                        if (!isBuilder) {
+                        if (!isBuilder && !isReadOnly) {
                           handleAnswer(e, option.name)
                         }
                       }}
+                      readOnly={isReadOnly}
                       disabled={isBuilder}
                     />
                     {
-                      (isBuilder && option.name !== 'other')
+                      (isBuilder && !isOther)
                         ? (
                           <>
                             <label/>
@@ -80,17 +119,18 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, isMultiple,
                       type='checkbox'
                       id={`${fieldId}_${option.name}`}
                       value={option.label}
-                      checked={!!value[`${option.name}`]}
+                      checked={isSelected}
                       onChange={(e) => {
-                        if (!isBuilder) {
+                        if (!isBuilder && !isReadOnly) {
                           handleAnswer(e, option.name)
                         }
                       }}
+                      readOnly={isReadOnly}
                       disabled={isBuilder}
                     />
                     <span className='checkmark' />
                     {
-                      (isBuilder && option.name !== 'other')
+                      (isBuilder && !isOther)
                         ? <input
                             type='text'
                             className={`field-input`}
@@ -100,6 +140,17 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, isMultiple,
                         : <span className='labelName'> {option.label}</span>
                     }
                   </label>
+                )
+              }
+              {
+                (isOther && isSelected) && (
+                  <input
+                    className='field-input'
+                    placeholder='Enter other option'
+                    value={value?.other || ''}
+                    onChange={(e) => handleAnswer(e, 'otherInput')}
+                    style={{ marginLeft: '10px', position: 'relative', bottom: '5px' }}
+                  />
                 )
               }
               {
@@ -161,6 +212,6 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, isMultiple,
           }
         </div>
       )}
-    </>
+    </div>
   )
 }

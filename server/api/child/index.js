@@ -7,6 +7,7 @@ export const getChildInformation = async (id) => {
     const child = await db.query (
       `SELECT 
         BIN_TO_UUID(ch_id) as ch_id, 
+        new_childId,
         firstname,
         lastname,
         age,

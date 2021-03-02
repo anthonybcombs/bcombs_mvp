@@ -21,24 +21,28 @@ import {
 export default ({
   label, type, groupType, fields, previewStyle = {}, gridMax = 3, allowAddField = false,
   includeLogic = true, includeValidation = false, displayLabel, hasSettings = true,
-  supportMultiple = false, showLabel = false
+  supportMultiple = false, showLabel = true, format, getItem
 }) => {
+  if (!format.trim()) {
+    format = JSON.stringify({ presetColors: ['#ff007b','#8f5772','#a5a4b7','#1d13d2'] })
+  }
   const newFields = cloneDeep(fields) //avoid mutating the array of objects
   const settings = {}
-  const [{ opacity, background }, drag, preview] = useDrag({
+  const [{ opacity, background }, drag] = useDrag({
     item: { type },
     begin: () => ({
       label, type, fields: newFields, groupType, settings, id: uuid(), allowAddField,
-      includeLogic, includeValidation, gridMax, hasSettings, supportMultiple, showLabel
+      includeLogic, includeValidation, gridMax, hasSettings, supportMultiple, showLabel, format
     }),
+    end: (props, monitor) => {
+      const item = monitor.getItem()
+      const didDrop = monitor.didDrop()
+      getItem({ ...item, didDrop })
+    },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
     })
   })
-
-  // useEffect(() => {
-  //   preview(getEmptyImage(), { captureDraggingState: true });
-  // }, []);
 
   let primeIcon
   if (type === 'name') {

@@ -194,7 +194,10 @@ export default function AppGroupForm({
   handleGroupDetailsChange,
   action,
   vendorError,
-  vendors = []
+  formattedVendors = [],
+  currentAppGroup={},
+  selectedForms=[],
+  isEditMode={isEditMode}
 }) {
   const [vendorOptions, setVendorOptions] = useState([]);
   const [otherUserSelected, setOtherUserSelected] = useState([]);
@@ -202,33 +205,34 @@ export default function AppGroupForm({
   const [autoCompleteValue, setAutoCompleteValue] = useState("");
   const [isFetching, setFetching] = useState(false);
   const [userNotFound, setUserNotFound] = useState(false);
+  const [sForms, setForms] = useState();
+
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange"
   });
+
   const hasSelectAll = false;
 
   const theme = useContext(ThemeContext);
 
   const handleSelectChange = value => {
     console.log("value", value);
+    console.log("sample 123456")
     handleGroupDetailsChange("vendors", value);
   };
-  console.log("groupDetails", groupDetails);
-  useEffect(() => {
-    if (vendors) {
-      let fomattedVendors = vendors.map(item => {
-        return {
-          id: item.id,
-          name: item.name,
-          label: item.name
-        };
-      });
 
-      console.log("formatted vendors", fomattedVendors);
-      setVendorOptions(fomattedVendors);
-    }
-  }, [vendors]);
+  useEffect(() => {
+    // if(selectedForms.length > 0) {
+    //   currentAppGroup = {...currentAppGroup, ["vendors"]: selectedForms};
+    // }
+    console.log("Im here 12345");
+    console.log("currentAppGroup3", currentAppGroup);
+    console.log("selectedForms selectedForms", selectedForms);
+    handleGroupDetailsChange("vendors", selectedForms);
+  }, [formattedVendors, selectedForms])
+
+  console.log("groupDetails", groupDetails);
 
   return (
     <ContactFormStyled
@@ -285,31 +289,38 @@ export default function AppGroupForm({
             message="Total No. of Seats is required."
           />
         </div>
-
-        <div className="form-group">
-          <div className="field">
-            <CustomMultiSelect
-              className="field-input"
-              options={vendorOptions}
-              hasSelectAll={hasSelectAll}
-              selectedValues={vendorOptions.filter(
-                item => item.id === groupDetails.vendor
+        {
+          formattedVendors.length > 0 ? (
+            <div className="form-group">
+              <div className="field">
+                <CustomMultiSelect
+                  className="field-input"
+                  options={formattedVendors}
+                  hasSelectAll={hasSelectAll}
+                  // selectedValues={vendorOptions.filter(
+                  //   item => item.id === groupDetails.vendor
+                  // )}
+                  selectedValues={selectedForms}
+                  onSelect={handleSelectChange}
+                  onRemove={handleSelectChange}
+                  placeholder="Choose Form"
+                  displayValue="name"
+                  closeIcon="cancel"
+                />
+              </div>
+              {vendorError !== "" && (
+                <span style={{ color: "red" }}>{vendorError}</span>
               )}
-              onSelect={handleSelectChange}
-              placeholder="Choose Application"
-              displayValue="name"
-              closeIcon="cancel"
-            />
-          </div>
-          {vendorError !== "" && (
-            <span style={{ color: "red" }}>{vendorError}</span>
-          )}
-        </div>
+            </div>
+          ): ""
+        }
+
       </div>
       <div className="group-btn">
-        <button type="submit">Save</button>
+        <button type="submit" disabled={!formattedVendors.length > 0}>Save</button>
         {action !== "create" && (
           <button
+            type="button"
             className="delete-group"
             style={{ backgroundColor: "#e02500", marginLeft: 20 }}
             data-testid="app-dashboard-my-group-new-group-button-save"
