@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
+import isEqual from 'lodash.isequal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
@@ -23,7 +24,7 @@ export default ({ form_id, type, history }) => {
       schoolType: 'Middle School',
       gradeLevel: '6th',
       gpa: '3.2(2.6)',
-      attendanceSummary: '85%(34/40)',
+      attendanceSummary: '85% (34/40)',
       math: 'A',
       science: 'B',
       english: 'C',
@@ -37,7 +38,7 @@ export default ({ form_id, type, history }) => {
       schoolType: 'Middle School',
       gradeLevel: '5th',
       gpa: '3.3(3.6)',
-      attendanceSummary: '95%(35/40)',
+      attendanceSummary: '95% (35/40)',
       math: 'B',
       science: 'B',
       english: 'A',
@@ -51,7 +52,7 @@ export default ({ form_id, type, history }) => {
       schoolType: 'High School',
       gradeLevel: '8th',
       gpa: '1.2(1.6)',
-      attendanceSummary: '95%(30/40)',
+      attendanceSummary: '95% (30/40)',
       math: 'A',
       science: 'A',
       english: 'A',
@@ -65,7 +66,7 @@ export default ({ form_id, type, history }) => {
       schoolType: 'Middle School',
       gradeLevel: '4th',
       gpa: '3.1(2.1)',
-      attendanceSummary: '75%(31/40)',
+      attendanceSummary: '75% (31/40)',
       math: 'C',
       science: 'C',
       english: 'B',
@@ -79,7 +80,7 @@ export default ({ form_id, type, history }) => {
       schoolType: 'High School',
       gradeLevel: '9th',
       gpa: '2.5(1.6)',
-      attendanceSummary: '89%(20/40)',
+      attendanceSummary: '89% (20/40)',
       math: 'A',
       science: 'B',
       english: 'A',
@@ -93,7 +94,7 @@ export default ({ form_id, type, history }) => {
       schoolType: 'High School',
       gradeLevel: '10th',
       gpa: '1.1(1.1)',
-      attendanceSummary: '98%(31/40)',
+      attendanceSummary: '98% (31/40)',
       math: 'A',
       science: 'A',
       english: 'A',
@@ -124,17 +125,40 @@ export default ({ form_id, type, history }) => {
   const [rows, setRows] = useState(data)
   const [subjectCounter, setSubjectCounter] = useState(subjectDisplayCount)
   const [filterFromHeaders, setFilterFromHeaders] = useState({})
-  const [activeTableFilterColumn, setActiveTableFilterColumn] = useState('')
-  const [tableFilters, setTableFilters] = useState({})
-  const [previousTableFilter, savePreviousTableFilter] = useState(null)
-  const [firstTableFilterColumn, setFirstTableFilterColumn] = useState('')
+  const [activeColumnKey, setActiveColumnKey] = useState('')
+
+  const generateColumnFilters = (newRows = null, filters = null) => {
+    let newColumnFilters = {}
+    Object.keys(columns).forEach(key => {
+      newColumnFilters[key] = (newRows || rows)
+
+      if (filters) {
+        newColumnFilters[key] = newColumnFilters[key].filter(e => filters.includes(e[activeColumnKey]))
+      }
+      newColumnFilters[key] = newColumnFilters[key]
+        .map(e => e[key])
+        .sort()
+        .reduce((acc, curr) => {
+          if (!acc.find(e => e.value === curr)) {
+            acc.push({ value: curr, checked: true })
+          }
+          return acc
+        }, [])
+    })
+    return newColumnFilters
+  }
+
+  const [columnFilters, setColumnFilters] = useState(generateColumnFilters())
+  const [previousColumnFilters, setPreviousColumnFilters] = useState(null)
+  const [firstColumnFilter, setFirstColumnFilter] = useState('')
+  const [columnFilterHistory, setColumnFilterHistory] = useState([generateColumnFilters()])
   
   let activeSubjectColumns = subjectColumns.slice(subjectCounter - subjectDisplayCount, subjectCounter)
   if (activeSubjectColumns.length < subjectDisplayCount) {
     activeSubjectColumns = subjectColumns.slice(subjectColumns.length - subjectDisplayCount, subjectColumns.length)
   }
   const activeColumns = ['name', 'address', 'grade', ...activeSubjectColumns, 'date']
-
+  
   const handleApplyFilter = (filters, columnFilters = null) => {
     const { sort, search = '' } = cloneDeep(filters)
 
@@ -158,27 +182,46 @@ export default ({ form_id, type, history }) => {
     }
 
     // Sort per table column
-    const newTableColumnFilters = columnFilters || tableFilters
-    const tableColumnFiltersArr = Object.entries(newTableColumnFilters)
+    if (columnFilters) {
+      // Set column filter history
+      const columnIndex = columnFilterHistory.findIndex(e => isEqual(e[activeColumnKey], columnFilters[activeColumnKey]))
+      let newColumnFilters = {}
+      if (columnIndex !== -1) {
+        newColumnFilters = cloneDeep(columnFilterHistory[columnIndex])
+      } else {
+        newColumnFilters = generateColumnFilters(newRows, columnFilters[activeColumnKey].filter(e => e.checked).map(e => e.value))
+      }
 
-    if (tableColumnFiltersArr.length) {
-      tableColumnFiltersArr.forEach(([key, value]) => {
-        newRows = newRows.filter(e => value.includes(e[key]))
+      console.log('achay baya', { columnIndex, columnFilterHistory, newColumnFilters, newRows })
+      newRows = newRows.filter(e => {
+        const rowArr = Object.entries(e)
+        return rowArr.filter(([key, value]) => !!newColumnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
       })
+
+      // {
+      //   name: 'John Doe',
+      //   schoolType: 'High School',
+      //   gradeLevel: '10th',
+      //   gpa: '1.1(1.1)',
+      //   attendanceSummary: '98% (31/40)',
+      //   math: 'A',
+      //   science: 'A',
+      //   english: 'A',
+      //   history: 'A',
+      //   act1: 0,
+      //   act2: 1,
+      //   sat: 1
+      // }
+
+      if (columnIndex === -1) {
+        let newAdjustedColumnFilters = generateColumnFilters(newRows)
+        newAdjustedColumnFilters[activeColumnKey] = columnFilters[activeColumnKey]
+        setColumnFilters(cloneDeep(newAdjustedColumnFilters))
+        setColumnFilterHistory([cloneDeep(newAdjustedColumnFilters), ...columnFilterHistory])
+      } else {
+        setColumnFilters(cloneDeep(columnFilterHistory[columnIndex]))
+      }
     }
-    // if (Object.keys(newTableColumnFilters).length) {
-    //   newRows = newRows.reduce((acc, curr) => {
-    //     const currEntries = Object.entries(curr)
-    //     const currSearch = currEntries.filter(([key, value]) => newTableColumnFilters[key] && newTableColumnFilters[key].includes(value))
-    //     if (currSearch.length) {
-    //       acc = [
-    //         ...acc,
-    //         curr
-    //       ]
-    //     }
-    //     return acc
-    //   }, [])
-    // }
 
     setRows(newRows)
 
@@ -245,7 +288,7 @@ export default ({ form_id, type, history }) => {
   }
 
   const getColumnValues = (key) => {
-    return (key === firstTableFilterColumn ? data : rows)
+    return (key === firstColumnFilter ? data : rows)
       .reduce((acc, curr) => {
         if (!acc.includes(curr[key])) {
           acc.push(curr[key])
@@ -255,57 +298,51 @@ export default ({ form_id, type, history }) => {
       .sort()
   }
 
-  const handlePrepareTableFilter = ({ target: { checked, value } }, key) => {
-    const existingFilter = tableFilters[key] || []
-    let newFilters = [...existingFilter]
-    if (checked) {
-      newFilters.push(value)
-    } else {
-      newFilters = newFilters.filter(ne => ne !== value)
-    }
+  const handlePrepareColumnFilter = ({ target: { checked, value } }, key) => {
+    const newFilters = (columnFilters[key] || [])
+      .map(e => ({ ...e, checked: e.value === value ? checked : e.checked }))
 
-    setTableFilters({
-      ...tableFilters,
+    setColumnFilters({
+      ...columnFilters,
       [key]: newFilters
     })
   }
 
-  const handleChangeTableFIlterColumn = (key) =>{
-    savePreviousTableFilter(tableFilters) // saves the previous table filter
-    setTableFilters({
-      ...tableFilters,
-      [key]: rows.map(e => e[key])
-    })
-    setActiveTableFilterColumn(key)
+  const handleChangeTableFilterColumn = (key) =>{
+    setPreviousColumnFilters(cloneDeep(columnFilters)) // saves the previous table filter
+    // setColumnFilters({
+    //   ...columnFilters,
+    //   [key]: rows.map(e => e[key])
+    // })
+    setActiveColumnKey(key)
     
     //Set first table filter if table filter is empty
-    if (!Object.keys(tableFilters).length) {
-      setFirstTableFilterColumn(key)
-    }
+    // if (!Object.keys(columnFilters).length) {
+    //   setFirstColumnFilter(key)
+    // }
   }
 
   const renderTableFilter = (key) => {
-    if (activeTableFilterColumn && activeTableFilterColumn === key) {
+    if (activeColumnKey && activeColumnKey === key) {
       return (
         <div
           style={{ position: 'absolute', backgroundColor: '#fff' }}
           onClick={e => e.stopPropagation()}
         >
           {
-            getColumnValues(key).map((e, index) => {
-              const existingFilter = tableFilters[key] || []
+            columnFilters[key].map(({ value, checked }, index) => {
               return (
-                <div id={`${key}_${e}_${index}`}>
-                  <label htmlFor={`${key}_${e}_${index}`} className='checkboxContainer'>
+                <div id={`${key}_${value}_${index}`}>
+                  <label htmlFor={`${key}_${value}_${index}`} className='checkboxContainer'>
                     <input
                       type='checkbox'
-                      id={`${key}_${e}_${index}`}
-                      value={e}
-                      checked={existingFilter.includes(e)}
-                      onChange={(e) => handlePrepareTableFilter(e, key)}
+                      id={`${key}_${value}_${index}`}
+                      value={value}
+                      checked={checked}
+                      onChange={(e) => handlePrepareColumnFilter(e, key)}
                     />
                     <span className='checkmark' />
-                    <span className='labelName'>{e}</span>
+                    <span className='labelName'>{value}</span>
                   </label>
                 </div>
               )
@@ -313,18 +350,18 @@ export default ({ form_id, type, history }) => {
           }
           <button
             onClick={() => {
-              setTableFilters(previousTableFilter)
-              setActiveTableFilterColumn('')
+              setColumnFilters(previousColumnFilters)
+              setActiveColumnKey('')
             }}
           >
             Cancel
           </button>
           <button
-            disabled={tableFilters[key].length === 0}
+            disabled={columnFilters[key].filter(e => e.checked).length === 0}
             onClick={() => {
-              if (tableFilters[key].length > 0) {
-                handleApplyFilter(filterFromHeaders, tableFilters)
-                setActiveTableFilterColumn('')
+              if (columnFilters[key].filter(e => e.checked).length > 0) {
+                handleApplyFilter(filterFromHeaders, columnFilters)
+                setActiveColumnKey('')
               }
             }}
           >
@@ -335,14 +372,14 @@ export default ({ form_id, type, history }) => {
     }
     return null
   }
-  // console.log('toinks', { tableFilters })
+  console.log('sharooow', { columnFilters, columnFilterHistory })
   return (
     <GradesStyled>
       <h2>Grade List Views</h2>
       <div
         id='gradeListView'
         onClick={() => {
-          setActiveTableFilterColumn('')
+          setActiveColumnKey('')
         }}
       >
         <div className='gradeListFilter'>
@@ -380,7 +417,7 @@ export default ({ form_id, type, history }) => {
                           icon={faCaretDown}
                           onClick={(e) => {
                             e.stopPropagation()
-                            handleChangeTableFIlterColumn('name')
+                            handleChangeTableFilterColumn('name')
                           }}
                         />
                         {renderTableFilter('name')}
@@ -391,22 +428,43 @@ export default ({ form_id, type, history }) => {
                           icon={faCaretDown}
                           onClick={(e) => {
                             e.stopPropagation()
-                            handleChangeTableFIlterColumn('schoolType')
+                            handleChangeTableFilterColumn('schoolType')
                           }}
                         />
                         {renderTableFilter('schoolType')}
                       </td>
                       <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
                         Grade Level
-                        <FontAwesomeIcon icon={faCaretDown}/>
+                        <FontAwesomeIcon
+                          icon={faCaretDown}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleChangeTableFilterColumn('gradeLevel')
+                          }}
+                        />
+                        {renderTableFilter('gradeLevel')}
                       </td>
                       <td style={{ minWidth: '50px', whiteSpace: 'initial' }}>
                         GPA Cum (Semester)
-                        <FontAwesomeIcon icon={faCaretDown}/>
+                        <FontAwesomeIcon
+                          icon={faCaretDown}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleChangeTableFilterColumn('gpa')
+                          }}
+                        />
+                        {renderTableFilter('gpa')}
                       </td>
                       <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
                         Attendance Summary
-                        <FontAwesomeIcon icon={faCaretDown}/>
+                        <FontAwesomeIcon
+                          icon={faCaretDown}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleChangeTableFilterColumn('attendanceSummary')
+                          }}
+                        />
+                        {renderTableFilter('attendanceSummary')}
                       </td>
                     </tr>
                   </table>

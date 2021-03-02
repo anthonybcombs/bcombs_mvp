@@ -44,6 +44,7 @@
     "immutability-helper": "^3.1.1",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
+    "lodash.isequal": "^4.5.0",
     "lodash.orderby": "^4.6.0",
     "moment": "^2.26.0",
     "multiselect-react-dropdown": "^1.4.8",
