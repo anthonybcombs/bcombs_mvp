@@ -26,7 +26,7 @@ export const getChildEventAttendance = async applicationGroupId => {
       ev.group_type = 'application'
     INNER JOIN events evnt 
     ON evnt.id=ev.event_id  AND evnt.id=ec.event_id
-    ${applicationGroupId === 'all' ? 'WHERE ucg.group_id=UUID_TO_BIN(?)' : ''};
+    WHERE ucg.group_id=UUID_TO_BIN(?) ;
     `,
 
     

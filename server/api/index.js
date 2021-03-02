@@ -46,7 +46,7 @@ export const getUserFromDatabase = async email => {
   let result;
   try {
     const rows = await db.query(
-      `SELECT BIN_TO_UUID(id) as id,email,is_profile_filled,BIN_TO_UUID(type),profile_img,attendance_filter_config from users where email=?`,
+      `SELECT BIN_TO_UUID(id) as id,email,is_profile_filled,BIN_TO_UUID(type),profile_img from users where email=?`,
       [email]
     );
     result = rows[0];
