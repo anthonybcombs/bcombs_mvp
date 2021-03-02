@@ -105,7 +105,7 @@ export default ({ form_id, type, history }) => {
     },
   ])
 
-  const columns = {
+  const initialColumns = {
     name: { type: 'string', label: 'Name' },
     schoolType: { type: 'string', label: 'School Type' },
     gradeLevel: { type: 'string', label: 'Grade Level' },
@@ -122,6 +122,7 @@ export default ({ form_id, type, history }) => {
   const subjectColumns = ['math', 'science', 'english', 'history']
   const subjectDisplayCount = 3
 
+  const [columns, setColumns] = useState(cloneDeep(initialColumns))
   const [rows, setRows] = useState(data)
   const [subjectCounter, setSubjectCounter] = useState(subjectDisplayCount)
   const [filterFromHeaders, setFilterFromHeaders] = useState({})
@@ -146,6 +147,8 @@ export default ({ form_id, type, history }) => {
   const [columnFilters, setColumnFilters] = useState(generateColumnFilters())
   const [previousColumnFilters, setPreviousColumnFilters] = useState(null)
   const [columnFilterSearch, setColumnFilterSearch] = useState(null)
+  const [showGradeOptions, setShowGradeOptions] = useState(false)
+  const [gradeType, setGradeType] = useState('string')
   
   let activeSubjectColumns = subjectColumns.slice(subjectCounter - subjectDisplayCount, subjectCounter)
   if (activeSubjectColumns.length < subjectDisplayCount) {
@@ -209,8 +212,8 @@ export default ({ form_id, type, history }) => {
 
       return (
         <tr key={`grades-list-${index}`}>
-          <td className="subHeader">
-            <table className="subTable student">
+          <td className='subHeader'>
+            <table className='subTable student'>
               <tr>
                 <td style={{ ...highLight(name, 'name'), minWidth: '100px', wordBreak: 'break-word'}}>{name}</td>
                 <td style={{ ...highLight(schoolType, 'schoolType'), minWidth: '100px', wordBreak: 'break-word'}}>{schoolType}</td>
@@ -220,19 +223,20 @@ export default ({ form_id, type, history }) => {
               </tr>
             </table>
           </td>
-          <td className="subHeader">
-            <table className="subTable">
+          <td className='subHeader'>
+            <table className='subTable'>
               <tr>
                 {
-                  activeSubjectColumns.map(e => (
-                    <td style={{ ...highLight(row[e], e), width: '25%' }}>{row[e]}</td>
-                  ))
+                  activeSubjectColumns.map(e => {
+                    // const gradeValue = 
+                    return <td style={{ ...highLight(row[e], e), width: '25%' }}>{row[e]}</td>
+                  })
                 }
               </tr>
             </table>
           </td>
-          <td className="subHeader">
-            <table className="subTable">
+          <td className='subHeader'>
+            <table className='subTable'>
               <tr>
                 <td style={highLight(act1, 'act1')}>{act1}</td>
                 <td style={highLight(act2, 'act2')}>{act2}</td>
@@ -270,6 +274,20 @@ export default ({ form_id, type, history }) => {
       ...columnFilters,
       [key]: columnFilters[key].map(e => ({ ...e, checked }))
     })
+  }
+
+  const handleSetGradeType = (type) => {
+    setGradeType(type)
+
+    let newColumns = Object.entries(columns)
+      .reduce((acc, [key, value]) => {
+        const newValue = { ...value }
+        if (subjectColumns.includes(key)) {
+          newValue.type = type
+        }
+        acc[key] = newValue
+      }, {})
+    setColumns(newColumns)
   }
 
   const renderTableFilter = (key) => {
@@ -349,6 +367,7 @@ export default ({ form_id, type, history }) => {
         id='gradeListView'
         onClick={() => {
           handleSetActiveColumnKey()
+          setShowGradeOptions(false)
         }}
       >
         <div className='gradeListFilter'>
@@ -372,13 +391,41 @@ export default ({ form_id, type, history }) => {
             <tbody>
               <tr>
                 <th>Student</th>
-                <th>Grades</th>
+                <th>
+                  Grades
+                  <FontAwesomeIcon
+                    icon={faCaretDown}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setShowGradeOptions(!showGradeOptions)
+                    }}
+                  />
+                  {
+                    showGradeOptions && (
+                      <div>
+                        <div>Select grade type</div>
+                        <input
+                          type='radio'
+                          checked={gradeType === 'string'}
+                          onChange={() => handleSetGradeType('string')}
+                          onClick={(e) => e.stopPropagation()}
+                        /> Letters
+                        <input
+                          type='radio'
+                          checked={gradeType === 'number'}
+                          onChange={() => handleSetGradeType('number')}
+                          onClick={(e) => e.stopPropagation()}
+                        /> Numbers
+                      </div>
+                    )
+                  }
+                </th>
                 <th>Standard Test</th>
               </tr>
 
               <tr>
-                <td className="subHeader">
-                  <table className="subTable student">
+                <td className='subHeader'>
+                  <table className='subTable student'>
                     <tr>
                       <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
                         <span>Name</span>
@@ -439,8 +486,8 @@ export default ({ form_id, type, history }) => {
                   </table>
                 </td>
 
-                <td className="subHeader">
-                  <table className="subTable">
+                <td className='subHeader'>
+                  <table className='subTable'>
                     <tr>
                       {/* <td style={{ width: '25%' }}>Grade</td> */}
                       {
@@ -459,6 +506,14 @@ export default ({ form_id, type, history }) => {
                                 )
                               }
                               {columns[e]?.label || e}
+                              <FontAwesomeIcon
+                                icon={faCaretDown}
+                                onClick={(event) => {
+                                  event.stopPropagation()
+                                  handleChangeTableFilterColumn(e)
+                                }}
+                              />
+                              {renderTableFilter(e)}
                               {
                                 showLast && (
                                   <span style={{ cursor: 'pointer', marginLeft: '1rem' }} onClick={() => setSubjectCounter(subjectCounter + subjectDisplayCount)} >
@@ -474,8 +529,8 @@ export default ({ form_id, type, history }) => {
                   </table>
                 </td>
 
-                <td className="subHeader">
-                  <table className="subTable">
+                <td className='subHeader'>
+                  <table className='subTable'>
                     <tr>
                       <td>
                         Act 1

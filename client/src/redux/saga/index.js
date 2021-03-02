@@ -6,7 +6,8 @@ import {
   authenticated,
   gotUserInfo,
   loggedOut,
-  requestedPasswordChange
+  requestedPasswordChange,
+  updateUserAttendanceFilterConfig
 } from "../actions/Auth";
 import {
   addCalendar,
@@ -286,7 +287,8 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_ATTENDANCE, getAttendance);
   yield takeLatest(actionType.REQUEST_EVENT_ATTENDANCE, getEventAttendance);
   yield takeLatest(actionType.REQUEST_VENDOR_APP_GROUPS,getVendorAppGroups)
-  yield takeLatest(actionType.REQUEST_CUSTOM_APPLICATION_BY_VENDOR,getCustomApplicationByVendors)
+  yield takeLatest(actionType.REQUEST_CUSTOM_APPLICATION_BY_VENDOR,getCustomApplicationByVendors);
+  yield takeEvery(actionType.REQUEST_USER_ATTENDANCE_FILTER_CONFIG,updateUserAttendanceFilterConfig);
 }
 const sagaMiddleware = createSagaMiddleware();
 

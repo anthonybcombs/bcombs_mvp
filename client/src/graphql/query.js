@@ -36,6 +36,7 @@ export const USER_INFO_QUERY = gql`
       picture
       name
       profile_img
+      attendance_filter_config
     }
   }
 `;
