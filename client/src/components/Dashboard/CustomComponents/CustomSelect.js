@@ -32,7 +32,7 @@ const CustomSelectStyled = styled.div`
     cursor: text;
     color: #555;
     width: 100%;
-    width: 200px;
+    min-width: 200px;
     padding: 5px 0;
     font-size: 16px;
     line-height: 1.8;

@@ -78,16 +78,18 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
                         />
                       </td>
                       <td className='actions'>
-                        {
-                          sortFilters.length > 1 && (
-                            <FontAwesomeIcon icon={faMinusCircle} className='minusIcon' onClick={() => handleRemoveFilter('sort', fi)} />
-                          )
-                        }
-                        {
-                          fi === (sortFilters.length - 1) && (
-                            <FontAwesomeIcon icon={faPlusCircle} className='addIcon' onClick={() => handleAddFilter('sort', { column: '', value: 'asc' })} />
-                          )
-                        }
+                        <div className='actions-container'>
+                          {
+                            sortFilters.length > 1 && (
+                              <FontAwesomeIcon icon={faMinusCircle} className='minusIcon' onClick={() => handleRemoveFilter('sort', fi)} />
+                            )
+                          }
+                          {
+                            fi === (sortFilters.length - 1) && (
+                              <FontAwesomeIcon icon={faPlusCircle} className='addIcon' onClick={() => handleAddFilter('sort', { column: '', value: 'asc' })} />
+                            )
+                          }
+                        </div>
                       </td>
                     </tr>
                   )
@@ -117,7 +119,7 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
       return (
         <div className='filter-highlight'>
           <div style={{ padding: '5px 5px 12px 10px', fontWeight: 'bolder' }}>Highlight cells that matches below conditions</div>
-          <table id='filterTable'>
+          <table id='filterTable' className='highlight'>
             <thead>
               <tr>
                 <th align='left'>Column</th>
@@ -151,20 +153,22 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
                         />
                       </td>
                       <td align='left'>
-                        <input
-                          className='field-input'
-                          value={value[0] || ''}
-                          onChange={(e) => handleChangeFilter([e.target.value, value[1]], fi, 'value', 'highlight')}
-                        />
-                        {
-                          condition === 'bt' && (
-                            <input
-                              className='field-input'
-                              value={value[1] || ''}
-                              onChange={(e) => handleChangeFilter([value[0], e.target.value], fi, 'value', 'highlight')}
-                            />
-                          )
-                        }
+                        <div className='value'>
+                          <input
+                            className='field-input'
+                            value={value[0] || ''}
+                            onChange={(e) => handleChangeFilter([e.target.value, value[1]], fi, 'value', 'highlight')}
+                          />
+                          {
+                            condition === 'bt' && (
+                              <input
+                                className='field-input'
+                                value={value[1] || ''}
+                                onChange={(e) => handleChangeFilter([value[0], e.target.value], fi, 'value', 'highlight')}
+                              />
+                            )
+                          }
+                        </div>
                       </td>
                       <td align='left'>
                         <CustomSelect
@@ -175,16 +179,18 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
                         />
                       </td>
                       <td className='actions'>
-                        {
-                          highlightFilters.length > 1 && (
-                            <FontAwesomeIcon icon={faMinusCircle} className='minusIcon' onClick={() => handleRemoveFilter('highlight', fi)} />
-                          )
-                        }
-                        {
-                          fi === (highlightFilters.length - 1) && (
-                            <FontAwesomeIcon icon={faPlusCircle} className='addIcon' onClick={() => handleAddFilter('highlight', { column: [], condition: 'gt', value: [], format: JSON.stringify({ backgroundColor: '#000000', color: '#ffffff' }) })} />
-                          )
-                        }
+                        <div className='actions-container'>
+                          {
+                            highlightFilters.length > 1 && (
+                              <FontAwesomeIcon icon={faMinusCircle} className='minusIcon' onClick={() => handleRemoveFilter('highlight', fi)} />
+                            )
+                          }
+                          {
+                            fi === (highlightFilters.length - 1) && (
+                              <FontAwesomeIcon icon={faPlusCircle} className='addIcon' onClick={() => handleAddFilter('highlight', { column: [], condition: 'gt', value: [], format: JSON.stringify({ backgroundColor: '#000000', color: '#ffffff' }) })} />
+                            )
+                          }
+                        </div>
                       </td>
                     </tr>
                   )
