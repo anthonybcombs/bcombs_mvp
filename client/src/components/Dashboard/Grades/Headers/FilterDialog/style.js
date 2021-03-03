@@ -5,7 +5,8 @@ export default styled.div`
     position: relative;
     top: 100px;
     width: auto;
-    max-width: 830px;
+    // max-width: 830px;
+    max-width: 940px;
     padding: 0;
   }
   .close {
@@ -126,25 +127,61 @@ export default styled.div`
   #filterTable td >div {
     margin: 0 .5rem .5rem;
   }
-  #filterTable td.actions {
-    display: flex;
+  #filterTable td >div .select-field-wrapper {
+    width: 100%;
   }
-  #filterTable td.actions >svg {
+  #filterTable td.actions {
+    max-width: 32px;
+  }
+  #filterTable td.actions .actions-container {
+    display: flex;
+    max-width: 32px;
+  }
+  #filterTable td.actions .actions-container svg {
     padding: .5rem;
     // margin-left 1rem;
     cursor: pointer;
     border-radius: 100px;
     transition: .25s ease-in-out;
   }
-  #filterTable td.actions >svg:hover {
+  #filterTable td.actions .actions-container svg:hover {
     background: #dddddd3d;
   }
-  #filterTable td.actions >svg.addIcon {
+  #filterTable td.actions .actions-container svg.addIcon {
     color: #f26e21;
   }
-  #filterTable td.actions >svg.minusIcon {
+  #filterTable td.actions .actions-container svg.minusIcon {
     color: #f44336;
   }
+
+  #filterTable.highlight tr {
+    vertical-align: bottom;
+  }
+  #filterTable.highlight tr td {
+    max-width: 100px;
+  }
+  #filterTable.highlight tr td {
+    margin: 0;
+  }
+  #filterTable.highlight tr td .value {
+    display: flex;
+  }
+  #filterTable.highlight tr td.actions {
+    max-width: 32px;
+  }
+  #filterTable.highlight tr td .value input:nth-child(2) {
+    margin-left: .5rem;
+  }
+  #filterTable.highlight tr td .select-field-wrapper select {
+    min-width: unset;
+  }
+  #filterTable.highlight #multiselectContainerReact div:first-child {
+    border: none;
+  }
+
+
+
+
 
 
   @media (max-width: 500px) {
