@@ -136,13 +136,13 @@ export default ({ form_id, type, history }) => {
     gpa: { type: 'string', label: 'GPA Cum(semester)' },
     attendanceSummary: { type: 'string', label: 'Attendance Summary' },
     math: { type: 'string', label: 'Math' },
-    mathNumber: { type: 'number', label: 'Math' },
+    mathNumber: { type: 'number', label: 'Math (%)' },
     science: { type: 'string', label: 'Science' },
-    scienceNumber: { type: 'number', label: 'Science' },
+    scienceNumber: { type: 'number', label: 'Science (%)' },
     english: { type: 'string', label: 'English' },
-    englishNumber: { type: 'number', label: 'English' },
+    englishNumber: { type: 'number', label: 'English (%)' },
     history: { type: 'string', label: 'History' },
-    historyNumber: { type: 'number', label: 'History' },
+    historyNumber: { type: 'number', label: 'History (%)' },
     act1: { type: 'number', label: 'Act 1' },
     act2: { type: 'number', label: 'Act 2' },
     sat: { type: 'number', label: 'SAT' },
@@ -165,7 +165,7 @@ export default ({ form_id, type, history }) => {
 
   const generateColumnFilters = () => {
     let newColumnFilters = {}
-    Object.keys(columns).forEach(key => {
+    Object.keys(initialColumns).forEach(key => {
       newColumnFilters[key] = data
         .map(e => e[key])
         .sort()
@@ -187,6 +187,28 @@ export default ({ form_id, type, history }) => {
   if (activeGradeColumns.length < gradeDisplayCount) {
     activeGradeColumns = gradeColumns[gradeType].slice(gradeColumns[gradeType].length - gradeDisplayCount, gradeColumns[gradeType].length)
   }
+
+  const activeColumns = (type) => ['name', 'schoolType', 'gradeLevel', 'gpa', 'attendanceSummary', ...gradeColumns[type], 'act1', 'act2', 'sat']
+  
+  const handleSetRowAndColumn = (type) => {
+    const newRows = cloneDeep(data)
+      .reduce((acc, curr) => {
+        const newType = type === 'number' ? 'string' : 'number'
+        gradeColumns[newType].forEach(e => {
+          delete curr[e]
+        })
+        acc.push(curr)
+        return acc
+      }, [])
+    const newColumns = activeColumns(type)
+      .reduce((acc, curr) => {
+        acc[curr] = initialColumns[curr]
+        return acc
+      }, {})
+    setRows(newRows)
+
+    setColumns(newColumns)
+  }
   
   const handleApplyFilter = (filters) => {
     const { sort, search = '' } = cloneDeep(filters)
@@ -195,7 +217,7 @@ export default ({ form_id, type, history }) => {
     let newRows = cloneDeep(data).filter(({ id, ...rest }) => {
       const itemEntries = Object.entries(rest)
       return itemEntries.find(([key, val]) => {
-        const isDate = columns[key].type === 'date'
+        const isDate = columns[key]?.type === 'date'
         if (isDate) {
           return moment(val).format('ll').toString().toLowerCase().includes(search.toLowerCase())
         }
@@ -261,7 +283,7 @@ export default ({ form_id, type, history }) => {
                 {
                   activeGradeColumns.map(e => {
                     // const gradeValue = 
-                    return <td style={{ ...highLight(row[e], e), width: '25%' }}>{row[e]}</td>
+                    return <td style={{ ...highLight(row[e], e), width: '25%' }}>{gradeType === 'number' ? `${row[e]}%` : row[e]}</td>
                   })
                 }
               </tr>
@@ -284,7 +306,7 @@ export default ({ form_id, type, history }) => {
   const handlePrepareColumnFilter = ({ target: { checked, value } }, key, isGrade) => {
     const newFilters = (columnFilters[key] || [])
       .map(e => {
-        return { ...e, checked: e.value === value ? checked : e.checked }
+        return { ...e, checked: e.value == value ? checked : e.checked }
       })
 
     setColumnFilters({
@@ -296,6 +318,7 @@ export default ({ form_id, type, history }) => {
   const handleSetActiveColumnKey = (key = '') => {
     setActiveColumnKey(key)
     setColumnFilterSearch('')
+    setShowGradeOptions(false)
   }
 
   const handleChangeTableFilterColumn = (key) =>{
@@ -312,6 +335,7 @@ export default ({ form_id, type, history }) => {
 
   const handleSetGradeType = (type) => {
     setGradeType(type)
+    handleSetRowAndColumn(type)
 
     // let newColumns = Object.entries(columns)
     //   .reduce((acc, [key, value]) => {
@@ -356,7 +380,7 @@ export default ({ form_id, type, history }) => {
           {
             (columnFilterSearch ? currColumnFilter.filter(e => e.value.toLowerCase().includes(columnFilterSearch.toLowerCase())) : currColumnFilter)
               .map(({ value, checked }, index) => {
-                const valueID = value.replace(/\s/g, '')
+                const valueID = (value.toString()).replace(/\s/g, '')
                 return (
                   <div id={`${index}`} className='filter-option'>
                     <label htmlFor={`${key}_${valueID}_${index}`} className='checkboxContainer'>
@@ -402,7 +426,12 @@ export default ({ form_id, type, history }) => {
     }
     return null
   }
-  console.log('sharooow', { columnFilters })
+
+  useEffect(() => {
+    handleSetRowAndColumn(gradeType)
+  }, [])
+
+  console.log('data', { columns, rows })
   return (
     <GradesStyled>
       <h2>Grade List Views</h2>
@@ -441,6 +470,7 @@ export default ({ form_id, type, history }) => {
                     onClick={(e) => {
                       e.stopPropagation()
                       setShowGradeOptions(!showGradeOptions)
+                      setActiveColumnKey('')
                     }}
                   />
                   {
