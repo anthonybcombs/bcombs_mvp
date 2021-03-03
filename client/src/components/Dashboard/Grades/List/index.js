@@ -26,9 +26,13 @@ export default ({ form_id, type, history }) => {
       gpa: '3.2(2.6)',
       attendanceSummary: '85% (34/40)',
       math: 'A',
+      mathNumber: 99,
       science: 'B',
+      scienceNumber: 90,
       english: 'C',
+      englishNumber: 80,
       history: 'B',
+      historyNumber: 90,
       act1: 0,
       act2: 2,
       sat: 12
@@ -40,9 +44,13 @@ export default ({ form_id, type, history }) => {
       gpa: '3.3(3.6)',
       attendanceSummary: '95% (35/40)',
       math: 'B',
+      mathNumber: 90,
       science: 'B',
+      scienceNumber: 90,
       english: 'A',
+      englishNumber: 99,
       history: 'A',
+      historyNumber: 99,
       act1: 0,
       act2: 3,
       sat: 10
@@ -54,9 +62,13 @@ export default ({ form_id, type, history }) => {
       gpa: '1.2(1.6)',
       attendanceSummary: '95% (30/40)',
       math: 'A',
+      mathNumber: 99,
       science: 'A',
+      scienceNumber: 99,
       english: 'A',
+      englishNumber: 99,
       history: 'A',
+      historyNumber: 99,
       act1: 0,
       act2: 4,
       sat: 20
@@ -68,9 +80,13 @@ export default ({ form_id, type, history }) => {
       gpa: '3.1(2.1)',
       attendanceSummary: '75% (31/40)',
       math: 'C',
+      mathNumber: 80,
       science: 'C',
+      scienceNumber: 80,
       english: 'B',
+      englishNumber: 90,
       history: 'C',
+      historyNumber: 80,
       act1: 0,
       act2: 1,
       sat: 15
@@ -82,9 +98,13 @@ export default ({ form_id, type, history }) => {
       gpa: '2.5(1.6)',
       attendanceSummary: '89% (20/40)',
       math: 'A',
+      mathNumber: 99,
       science: 'B',
+      scienceNumber: 90,
       english: 'A',
+      englishNumber: 99,
       history: 'B',
+      historyNumber: 90,
       act1: 0,
       act2: 1,
       sat: 9
@@ -96,9 +116,13 @@ export default ({ form_id, type, history }) => {
       gpa: '1.1(1.1)',
       attendanceSummary: '98% (31/40)',
       math: 'A',
+      mathNumber: 99,
       science: 'A',
+      scienceNumber: 99,
       english: 'A',
+      englishNumber: 99,
       history: 'A',
+      historyNumber: 99,
       act1: 0,
       act2: 1,
       sat: 1
@@ -112,21 +136,32 @@ export default ({ form_id, type, history }) => {
     gpa: { type: 'string', label: 'GPA Cum(semester)' },
     attendanceSummary: { type: 'string', label: 'Attendance Summary' },
     math: { type: 'string', label: 'Math' },
+    mathNumber: { type: 'number', label: 'Math' },
     science: { type: 'string', label: 'Science' },
+    scienceNumber: { type: 'number', label: 'Science' },
     english: { type: 'string', label: 'English' },
+    englishNumber: { type: 'number', label: 'English' },
     history: { type: 'string', label: 'History' },
+    historyNumber: { type: 'number', label: 'History' },
     act1: { type: 'number', label: 'Act 1' },
     act2: { type: 'number', label: 'Act 2' },
     sat: { type: 'number', label: 'SAT' },
   }
-  const subjectColumns = ['math', 'science', 'english', 'history']
-  const subjectDisplayCount = 3
+
+  const gradeDisplayCount = 3
 
   const [columns, setColumns] = useState(cloneDeep(initialColumns))
   const [rows, setRows] = useState(data)
-  const [subjectCounter, setSubjectCounter] = useState(subjectDisplayCount)
+  const [gradeCounter, setGradeCounter] = useState(gradeDisplayCount)
   const [filterFromHeaders, setFilterFromHeaders] = useState({})
   const [activeColumnKey, setActiveColumnKey] = useState('')
+  const [showGradeOptions, setShowGradeOptions] = useState(false)
+  const [gradeType, setGradeType] = useState('string')
+
+  const gradeColumns = {
+    string: ['math', 'science', 'english', 'history'],
+    number: ['mathNumber', 'scienceNumber', 'englishNumber', 'historyNumber']
+  }
 
   const generateColumnFilters = () => {
     let newColumnFilters = {}
@@ -147,14 +182,11 @@ export default ({ form_id, type, history }) => {
   const [columnFilters, setColumnFilters] = useState(generateColumnFilters())
   const [previousColumnFilters, setPreviousColumnFilters] = useState(null)
   const [columnFilterSearch, setColumnFilterSearch] = useState(null)
-  const [showGradeOptions, setShowGradeOptions] = useState(false)
-  const [gradeType, setGradeType] = useState('string')
   
-  let activeSubjectColumns = subjectColumns.slice(subjectCounter - subjectDisplayCount, subjectCounter)
-  if (activeSubjectColumns.length < subjectDisplayCount) {
-    activeSubjectColumns = subjectColumns.slice(subjectColumns.length - subjectDisplayCount, subjectColumns.length)
+  let activeGradeColumns = gradeColumns[gradeType].slice(gradeCounter - gradeDisplayCount, gradeCounter)
+  if (activeGradeColumns.length < gradeDisplayCount) {
+    activeGradeColumns = gradeColumns[gradeType].slice(gradeColumns[gradeType].length - gradeDisplayCount, gradeColumns[gradeType].length)
   }
-  const activeColumns = ['name', 'address', 'grade', ...activeSubjectColumns, 'date']
   
   const handleApplyFilter = (filters) => {
     const { sort, search = '' } = cloneDeep(filters)
@@ -227,7 +259,7 @@ export default ({ form_id, type, history }) => {
             <table className='subTable'>
               <tr>
                 {
-                  activeSubjectColumns.map(e => {
+                  activeGradeColumns.map(e => {
                     // const gradeValue = 
                     return <td style={{ ...highLight(row[e], e), width: '25%' }}>{row[e]}</td>
                   })
@@ -249,9 +281,11 @@ export default ({ form_id, type, history }) => {
     })
   }
 
-  const handlePrepareColumnFilter = ({ target: { checked, value } }, key) => {
+  const handlePrepareColumnFilter = ({ target: { checked, value } }, key, isGrade) => {
     const newFilters = (columnFilters[key] || [])
-      .map(e => ({ ...e, checked: e.value === value ? checked : e.checked }))
+      .map(e => {
+        return { ...e, checked: e.value === value ? checked : e.checked }
+      })
 
     setColumnFilters({
       ...columnFilters,
@@ -279,54 +313,59 @@ export default ({ form_id, type, history }) => {
   const handleSetGradeType = (type) => {
     setGradeType(type)
 
-    let newColumns = Object.entries(columns)
-      .reduce((acc, [key, value]) => {
-        const newValue = { ...value }
-        if (subjectColumns.includes(key)) {
-          newValue.type = type
-        }
-        acc[key] = newValue
-      }, {})
-    setColumns(newColumns)
+    // let newColumns = Object.entries(columns)
+    //   .reduce((acc, [key, value]) => {
+    //     const newValue = { ...value }
+    //     if (gradeColumns[gradeType].includes(key)) {
+    //       newValue.type = type
+    //     }
+    //     acc[key] = newValue
+    //   }, {})
+    // setColumns(newColumns)
   }
 
-  const renderTableFilter = (key) => {
+  const renderTableFilter = (key, isGrade = false) => {
     if (activeColumnKey && activeColumnKey === key) {
       const currColumnFilter = columnFilters[key]
       return (
         <div
           style={{ position: 'absolute', backgroundColor: '#fff' }}
+          className='filterDropdwon'
           onClick={e => e.stopPropagation()}
         >
-          <div>
+          <div className='filter-search'>
             <input
               placeholder='Search'
+              className='field-input'
               value={columnFilterSearch}
               onChange={(e) => setColumnFilterSearch(e.target.value)}
             />
           </div>
-          <label htmlFor={`${key}_selectAll`} className='checkboxContainer'>
-            <input
-              type='checkbox'
-              id={`${key}_selectAll`}
-              checked={currColumnFilter.length === currColumnFilter.filter(e => e.checked).length}
-              onChange={(e) => handleSelectAllColumFilter(e, key)}
-            />
-            <span className='checkmark' />
-            <span className='labelName'>Select All</span>
-          </label>
+          <div className='filter-option'>
+            <label htmlFor={`${key}_selectAll`} className='checkboxContainer'>
+              <input
+                type='checkbox'
+                id={`${key}_selectAll`}
+                checked={currColumnFilter.length === currColumnFilter.filter(e => e.checked).length}
+                onChange={(e) => handleSelectAllColumFilter(e, key)}
+              />
+              <span className='checkmark' />
+              <span className='labelName'>Select All</span>
+            </label>
+          </div>
           {
             (columnFilterSearch ? currColumnFilter.filter(e => e.value.toLowerCase().includes(columnFilterSearch.toLowerCase())) : currColumnFilter)
               .map(({ value, checked }, index) => {
+                const valueID = value.replace(/\s/g, '')
                 return (
-                  <div id={`${key}_${value}_${index}`}>
-                    <label htmlFor={`${key}_${value}_${index}`} className='checkboxContainer'>
+                  <div id={`${index}`} className='filter-option'>
+                    <label htmlFor={`${key}_${valueID}_${index}`} className='checkboxContainer'>
                       <input
                         type='checkbox'
-                        id={`${key}_${value}_${index}`}
+                        id={`${key}_${valueID}_${index}`}
                         value={value}
                         checked={checked}
-                        onChange={(e) => handlePrepareColumnFilter(e, key)}
+                        onChange={(e) => handlePrepareColumnFilter(e, key, isGrade)}
                       />
                       <span className='checkmark' />
                       <span className='labelName'>{value}</span>
@@ -335,31 +374,35 @@ export default ({ form_id, type, history }) => {
                 )
               })
           }
-          <button
-            onClick={() => {
-              setColumnFilters(previousColumnFilters)
-              handleSetActiveColumnKey()
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            disabled={columnFilters[key].filter(e => e.checked).length === 0}
-            onClick={() => {
-              if (columnFilters[key].filter(e => e.checked).length > 0) {
-                handleApplyFilter(filterFromHeaders)
+          <div className='actions'>
+            <button
+              className='cancel'
+              onClick={() => {
+                setColumnFilters(previousColumnFilters)
                 handleSetActiveColumnKey()
-              }
-            }}
-          >
-            Apply
-          </button>
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              className='apply'
+              disabled={columnFilters[key].filter(e => e.checked).length === 0}
+              onClick={() => {
+                if (columnFilters[key].filter(e => e.checked).length > 0) {
+                  handleApplyFilter(filterFromHeaders)
+                  handleSetActiveColumnKey()
+                }
+              }}
+            >
+              Apply
+            </button>
+          </div>
         </div>
       )
     }
     return null
   }
-  // console.log('sharooow', { columnFilters })
+  console.log('sharooow', { columnFilters })
   return (
     <GradesStyled>
       <h2>Grade List Views</h2>
@@ -391,7 +434,7 @@ export default ({ form_id, type, history }) => {
             <tbody>
               <tr>
                 <th>Student</th>
-                <th>
+                <th className='th-grades'>
                   Grades
                   <FontAwesomeIcon
                     icon={faCaretDown}
@@ -402,20 +445,29 @@ export default ({ form_id, type, history }) => {
                   />
                   {
                     showGradeOptions && (
-                      <div>
-                        <div>Select grade type</div>
-                        <input
-                          type='radio'
-                          checked={gradeType === 'string'}
-                          onChange={() => handleSetGradeType('string')}
-                          onClick={(e) => e.stopPropagation()}
-                        /> Letters
-                        <input
-                          type='radio'
-                          checked={gradeType === 'number'}
-                          onChange={() => handleSetGradeType('number')}
-                          onClick={(e) => e.stopPropagation()}
-                        /> Numbers
+                      <div className='gradesFilter'>
+                        <div className='header'>Select grade type</div>
+                        <label htmlFor='letters' className='radioButtonContainer'>
+                          <input
+                            type='radio'
+                            id='letters'
+                            checked={gradeType === 'string'}
+                            onChange={() => handleSetGradeType('string')}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <span className='labelName'>Letters</span>
+                        </label>
+                        
+                        <label htmlFor='numbers' className='radioButtonContainer'>
+                          <input
+                            type='radio'
+                            id='numbers'
+                            checked={gradeType === 'number'}
+                            onChange={() => handleSetGradeType('number')}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <span className='labelName'>Numbers</span>
+                        </label>
                       </div>
                     )
                   }
@@ -491,16 +543,16 @@ export default ({ form_id, type, history }) => {
                     <tr>
                       {/* <td style={{ width: '25%' }}>Grade</td> */}
                       {
-                        activeSubjectColumns.map((e, index) => {
+                        activeGradeColumns.map((e, index) => {
                           const isFirst = index === 0
-                          const isLast = index === (subjectDisplayCount - 1)
-                          const showFirst = isFirst && subjectCounter > activeSubjectColumns.length
-                          const showLast = isLast && subjectColumns.length > subjectCounter
+                          const isLast = index === (gradeDisplayCount - 1)
+                          const showFirst = isFirst && gradeCounter > activeGradeColumns.length
+                          const showLast = isLast && gradeColumns[gradeType].length > gradeCounter
                           return (
                             <td style={{ width: '25%' }} key={`subjectCol-${index}`}>
                               {
                                 showFirst && (
-                                  <span style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => setSubjectCounter(subjectCounter - subjectDisplayCount)} >
+                                  <span style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => setGradeCounter(gradeCounter - gradeDisplayCount)} >
                                     <FontAwesomeIcon icon={faAngleLeft}/>
                                   </span>
                                 )
@@ -513,10 +565,10 @@ export default ({ form_id, type, history }) => {
                                   handleChangeTableFilterColumn(e)
                                 }}
                               />
-                              {renderTableFilter(e)}
+                              {renderTableFilter(e, true)}
                               {
                                 showLast && (
-                                  <span style={{ cursor: 'pointer', marginLeft: '1rem' }} onClick={() => setSubjectCounter(subjectCounter + subjectDisplayCount)} >
+                                  <span style={{ cursor: 'pointer', marginLeft: '1rem' }} onClick={() => setGradeCounter(gradeCounter + gradeDisplayCount)} >
                                     <FontAwesomeIcon icon={faAngleRight} />
                                   </span>
                                 )
