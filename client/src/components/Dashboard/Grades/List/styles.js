@@ -116,6 +116,9 @@ export default styled.div`
 	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply:hover {
 		background: #e47120;
 	}
+	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply[disabled] {
+		background-color: #eee;
+	}
 	#gradeListView-table tbody tr .subHeader .subTable tr td {
 		width: 200px;
 	}

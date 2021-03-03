@@ -329,7 +329,7 @@ export default ({ form_id, type, history }) => {
       const currColumnFilter = columnFilters[key]
       return (
         <div
-          style={{ position: 'absolute', backgroundColor: '#fff' }}
+          style={{ position: 'absolute', backgroundColor: '#fff', zIndex: 2 }}
           className='filterDropdwon'
           onClick={e => e.stopPropagation()}
         >
