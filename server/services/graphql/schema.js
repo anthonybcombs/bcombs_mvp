@@ -1598,7 +1598,7 @@ const queries = `
         getAllFormAppGroupsByVendor(vendor: String): [VendorAppGroup]
         getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
         getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
-        getStudentCumulativeGradeByAppGroup(app_group_id: String): [StudentCumulativeGrade]
+        getStudentCumulativeGradeByVendor(vendor_id: String): [StudentCumulativeGrade]
         getStudentCumulativeGradeByUser(child_id: String): [StudentCumulativeGrade]
         getStudentTest(child_id: String): [StudentStandardizedTest]
         getStudentRecords(child_id: String): StudentRecords

@@ -43,7 +43,7 @@ import {
 import { getFamilyMembers } from "../../api/familymembers";
 import { 
   addUpdateStudentCumulativeGrades,
-  getStudentCumulativeGradeByGroup,
+  getStudentCumulativeGradeVendor,
   getStudentCumulativeGrade,
   getGrades ,
   addUpdateStudentTest,
@@ -443,9 +443,9 @@ const resolvers = {
       });
       return response;
     },
-    async getStudentCumulativeGradeByAppGroup(root,{ app_group_id }, context) {
-      const response = await getStudentCumulativeGradeByGroup({
-        app_group_id
+    async getStudentCumulativeGradeByVendor(root,{ vendor_id }, context) {
+      const response = await getStudentCumulativeGradeVendor({
+        vendor_id
       });
       return response;
     },

@@ -121,40 +121,54 @@ export const getStudentCumulativeByChildId = async (childId) => {
 	}
 }
 
-export const getStudentCumulativeGradeByGroup = async ({ app_id }) => {
+export const getStudentCumulativeGradeVendor = async ({ vendor_id }) => {
 	const db = makeDb();
 	let studentCumulative = [];
 	let studentGrades = [];
 	try {
-		const response = await db.query(
-			`SELECT  BIN_TO_UUID(child_id) as child_id,
-        BIN_TO_UUID(app_id) as app_id,
-        student_grade_cumulative_id,
-        type,
-        year_level,
-        school_type,
-        school_name,
-        school_year_start,
-        school_year_end,
-        school_year_frame,
-        class_name,
-        class_type,
-        class_teacher,
-        attachment,
-        date_added
-      FROM student_grade_cumulative
-      WHERE app_id=UUID_TO_BIN(?)`,
-			[app_id]
+		// const response = await db.query(
+		// 	`SELECT  BIN_TO_UUID(child_id) as child_id,
+    //     BIN_TO_UUID(app_id) as app_id,
+    //     student_grade_cumulative_id,
+    //     type,
+    //     year_level,
+    //     school_type,
+    //     school_name,
+    //     school_year_start,
+    //     school_year_end,
+    //     school_year_frame,
+    //     class_name,
+    //     class_type,
+    //     class_teacher,
+    //     attachment,
+    //     date_added
+    //   FROM student_grade_cumulative
+    //   WHERE app_id=UUID_TO_BIN(?)`,
+		// 	[app_id]
+		// );
+		console.log('Vendor ID', vendor_id)
+		let response = await db.query(
+			`SELECT child.firstname,child.lastname,
+					sgc.student_grade_cumulative_id,
+					sgc.year_level,
+					BIN_TO_UUID(app.child) as child_id,
+					BIN_TO_UUID(app.vendor) as vendor
+				FROM child
+				INNER JOIN application app ON app.child=child.ch_id
+				LEFT JOIN student_grade_cumulative sgc ON sgc.child_id=child.ch_id
+				WHERE app.vendor=UUID_TO_BIN(?)`,
+			[vendor_id]
 		);
+
 		if (response) {
 			studentCumulative = [...(response || [])];
-			const studentGradeCumulativeIds = response.map(item => item.student_grade_cumulative_id);
+			const studentGradeCumulativeIds = response.map(item => item.student_grade_cumulative_id)
+				.filter(item => item);
 
 			if (studentGradeCumulativeIds.length > 0) {
 				let subjects = await db.query(`
           SELECT * FROM student_grades 
           WHERE student_grade_cumulative_id IN (${studentGradeCumulativeIds.join(',')})`);
-
 				studentCumulative = studentCumulative.map(item => {
 					const studentCumulativeGrade = subjects.filter(
 						grade => item.student_grade_cumulative_id === grade.student_grade_cumulative_id
@@ -166,7 +180,6 @@ export const getStudentCumulativeGradeByGroup = async ({ app_id }) => {
 				});
 			}
 		}
-
 		for (const sc of studentCumulative) {
 			sc.grades = getAverage(sc.grades, sc.school_year_frame);
 		}
