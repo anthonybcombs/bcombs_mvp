@@ -306,6 +306,9 @@ const AttendanceSummaryStyled = styled.div`
 	.react-datepicker__day--highlighted{
 		background-color: #f26e21 !important;
 	}
+	.react-datepicker__day--disabled {
+		color: #ccc !important;
+	}
 
 	.filter-container > div.search {
 		margin: auto !important;
@@ -467,9 +470,21 @@ const DateCustomInput = ({ value, onClick, name, className, placeholder, label }
 	</div>
 );
 
-const CustomRangePicker = ({ onChange, placeholder, selected, customInput = null ,highlightDates = [] }) => {
+const CustomRangePicker = ({ 
+	onChange, 
+	placeholder, 
+	selected, 
+	customInput = null ,
+	highlightDates = [],
+	minDate = null,
+	maxDate = null
+	}) => {
+		console.log('CustomRangePicker111111 minDate',minDate)
+		console.log('CustomRangePicker111111 maxDate',minDate)
 	return (
 		<DatePicker
+			minDate={minDate ? new Date(minDate) : null}
+			maxDate={maxDate ? new Date(maxDate) : null}
 			dateFormat={DISPLAY_DATE_FORMAT}
 			readOnly={false}
 			style={{ marginTop: 24 }}
@@ -772,8 +787,8 @@ export default function index(props) {
 				 })
 
 				 customFormName = currentFormName ? currentFormName[0]?.fields[0]?.value : ''
-			}
-
+			}	
+			console.log('attendanceSummary',attendanceSummary)
 			return (
 				<tr key={index}>
 					<td className="subHeader">
@@ -882,8 +897,11 @@ export default function index(props) {
 					<td className="subHeader">
 						<table className="subTable">
 							<tr>
-								<td style={{ width: '100px' }}> {Math.round(att.total_volunteer_hours)}</td>
-								<td style={{ width: '100px' }}> {Math.round(att.total_mentoring_hours)}</td>
+								{/* <td style={{ width: '100px' }}> {Math.round(att.total_volunteer_hours)}</td>
+								<td style={{ width: '100px' }}> {Math.round(att.total_mentoring_hours)}</td> */}
+
+								<td style={{ width: '100px' }}> {attendanceSummary[att.child_id] && Math.round(attendanceSummary[att.child_id].total_volunteer_hours)}</td>
+								<td style={{ width: '100px' }}> {attendanceSummary[att.child_id] && Math.round(attendanceSummary[att.child_id].total_mentoring_hours)}</td>
 							</tr>
 						</table>
 					</td>
@@ -1019,13 +1037,29 @@ export default function index(props) {
 
 					totalAttendance =  Object.keys(defaultAtt.attendance).filter(dateKey => {
 						let dashedDate = dateKey.replaceAll('_', '-');
-
 						return isWithinInterval(parseDate(dashedDate), {
 							start: subDays(new Date(date.start), 1),
 							end: addDays(new Date(date.end), 1),
 						});
 					}).length || 0;
 
+					const totalHours = Object.keys(defaultAtt.attendance).filter(dateKey => {
+						let dashedDate = dateKey.replaceAll('_', '-');
+						return isWithinInterval(parseDate(dashedDate), {
+							start: subDays(new Date(date.start), 1),
+							end: addDays(new Date(date.end), 1),
+						});
+					}).reduce(
+						(attAccum, dateKey) => {
+						//	let dashedDate = dateKey.replaceAll('_', '-');
+							return {
+								total_volunteer_hours: attAccum.total_volunteer_hours + defaultAtt.attendance[dateKey].volunteer_hours || 0,
+								total_mentoring_hours: attAccum.total_mentoring_hours + defaultAtt.attendance[dateKey].mentoring_hours || 0,
+							};
+						},
+						{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
+					);
+					console.log('totalHourssssssss', totalHours)
 					let totalPresent =
 						Object.keys(defaultAtt.attendance).filter(key => {
 							let dashedDate = key.replaceAll('_', '-');
@@ -1048,10 +1082,11 @@ export default function index(props) {
 									? accum[defaultAtt.child_id].total_present + totalPresent
 									: totalPresent,
 							total_attendance: totalAttendance,
+							...(totalHours || {})
 						},
 					};
 				}, {});
-
+				console.log('childEventAttendance',childEventAttendance)
 				setAttendanceSummary(childEventAttendance);
 
 			} else {
@@ -1210,6 +1245,7 @@ export default function index(props) {
 							onChange={value => {
 								handleLeftCustomRangeDatePickerChange('start', value);
 							}}
+
 							placeholder="From"
 							selected={selectedSummaryRangeDate.start}
 						/>
@@ -1313,6 +1349,8 @@ export default function index(props) {
 									Attendance Status{' '}
 								
 									<CustomRangePicker
+										minDate={selectedSummaryRangeDate.start}
+										maxDate={selectedSummaryRangeDate.end}
 										highlightDates={displayDays}
 										onChange={value => {
 											handleRightCustomRangeDatePickerChange('start', value);
