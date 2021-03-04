@@ -1100,7 +1100,18 @@ export default function index(props) {
 
 		//setSelectedSummaryRangeDate([new Date(date[0]), new Date(date[1])]);
 		//console.log('selectedSummaryRangeDate',selectedSummaryRangeDate)
-		setSelectedSummaryRangeDate(date);
+
+		const isDateWithin = displayDays.some((currentDate) => {
+			return isWithinInterval(new Date(currentDate), {
+				start: subDays(new Date(date.start), 1),
+				end: addDays(new Date(date.end), 1),
+			})
+		})
+
+		if(isDateWithin) {
+			setSelectedSummaryRangeDate(date);
+		}
+	
 	};
 
 	const attendanceSummyByAttendance = date => {
