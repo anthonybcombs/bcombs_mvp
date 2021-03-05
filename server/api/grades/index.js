@@ -128,14 +128,13 @@ export const getStudentCumulativeByChildId = async childId => {
 	}
 };
 
-export const getStudentCumulativeGradeByAppGroupId = async app_group_id => {
+export const getStudentCumulativeGradeByAppGroupId = async (app_group_id) => {
 	const db = makeDb();
 	let studentCumulative = [];
 	let studentGrades = [];
 	try {
 		let response = await db.query(
-			`
-      SELECT app.class_teacher as app_group_id,
+			`SELECT app.class_teacher as app_group_id,
         BIN_TO_UUID(ch.ch_id) as child_id,
         ch.firstname,
         ch.lastname,
@@ -350,7 +349,6 @@ export const addUpdateStudentCumulativeGrades = async ({
 		let cumulativeId = student_grade_cumulative_id;
 		let currentSubjectGrades = [];
 
-		console.log('cumulativeId', cumulativeId);
 		const isUserExist = cumulativeId
 			? await db.query(
 					`SELECT student_grade_cumulative_id 
@@ -359,7 +357,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 					[cumulativeId]
 			  )
 			: [];
-		console.log('Is USer Exist', isUserExist);
+
 		if (isUserExist.length === 0) {
 			const studentCumulativeResult = await db.query(
 				`INSERT INTO student_grade_cumulative(
@@ -456,27 +454,37 @@ export const addUpdateStudentCumulativeGrades = async ({
               (
                 student_grade_cumulative_id,
                 class,
-                subject,
+								subject,
+								designation,
                 grade_quarter_1,
                 grade_quarter_2,
                 grade_quarter_3,
 								grade_quarter_4,
+								letter_grade_quarter_1,
+                letter_grade_quarter_2,
+                letter_grade_quarter_3,
+								letter_grade_quarter_4,
 								attendance_quarter_1,
                 attendance_quarter_2,
                 attendance_quarter_3,
                 attendance_quarter_4,
                 date_created
               )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW())
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `,
 						[
 							cumulativeId,
 							grade.class,
 							grade.subject,
+							grade.designation,
 							grade.grade_quarter_1 || 0,
 							grade.grade_quarter_2 || 0,
 							grade.grade_quarter_3 || 0,
 							grade.grade_quarter_4 || 0,
+							grade.letter_grade_quarter_1 || '',
+							grade.letter_grade_quarter_2 || '',
+							grade.letter_grade_quarter_3 || '',
+							grade.letter_grade_quarter_4 || '',
 							grade.attendance_quarter_1 || 0,
 							grade.attendance_quarter_2 || 0,
 							grade.attendance_quarter_3 || 0,
@@ -490,7 +498,11 @@ export const addUpdateStudentCumulativeGrades = async ({
 						  grade_quarter_1=?,
 						  grade_quarter_2=?,
 						  grade_quarter_3=?,
-						  grade_quarter_4=?,
+							grade_quarter_4=?,
+							letter_grade_quarter_1=?,
+						  letter_grade_quarter_2=?,
+						  letter_grade_quarter_3=?,
+						  letter_grade_quarter_4=?,
 							attendance_quarter_1=?,
               attendance_quarter_2=?,
               attendance_quarter_3=?,
@@ -502,6 +514,10 @@ export const addUpdateStudentCumulativeGrades = async ({
 							grade.grade_quarter_2 || 0,
 							grade.grade_quarter_3 || 0,
 							grade.grade_quarter_4 || 0,
+							grade.letter_grade_quarter_1 || '',
+							grade.letter_grade_quarter_2 || '',
+							grade.letter_grade_quarter_3 || '',
+							grade.letter_grade_quarter_4 || '',
 							grade.attendance_quarter_1 || 0,
 							grade.attendance_quarter_2 || 0,
 							grade.attendance_quarter_3 || 0,
@@ -578,7 +594,6 @@ export const getStudentStandardizedTest = async child_id => {
 		studentStandardizedTest = await db.query(
 			`SELECT student_test_id,
         BIN_TO_UUID(child_id) as child_id,
-        BIN_TO_UUID(app_id) as app_id,
         test_name,
         attempt,
         grade_taken,
@@ -607,6 +622,7 @@ export const addUpdateStudentTest = async (studentTest = []) => {
 	let studentTestList = [];
 
 	try {
+		console.log('Student Test', studentTest)
 		for (const test of studentTest) {
 			let studentTestId = test.student_test_id || null;
 			let studentChildId = test.child_id;
@@ -624,7 +640,6 @@ export const addUpdateStudentTest = async (studentTest = []) => {
 				const studentStardizedTestResult = await db.query(
 					`INSERT INTO student_standardized_test(
             child_id,
-            app_id,
             test_name,
             attempt,
             grade_taken,
@@ -639,7 +654,6 @@ export const addUpdateStudentTest = async (studentTest = []) => {
             date_added
           )
           VALUES (
-            UUID_TO_BIN(?),
             UUID_TO_BIN(?),
             ?,
             ?,
@@ -657,7 +671,6 @@ export const addUpdateStudentTest = async (studentTest = []) => {
         `,
 					[
 						test.child_id,
-						test.app_id,
 						test.test_name,
 						test.attempt,
 						test.grade_taken,
@@ -705,7 +718,6 @@ export const addUpdateStudentTest = async (studentTest = []) => {
 				`SELECT  
           student_test_id,
           BIN_TO_UUID(child_id) as child_id,
-          BIN_TO_UUID(app_id) as app_id,
           test_name,
           attempt,
           grade_taken,
@@ -746,7 +758,6 @@ export const removeStudentTest = async (studentTestIds = [], childId) => {
 			`SELECT  
         student_test_id,
         BIN_TO_UUID(child_id) as child_id,
-        BIN_TO_UUID(app_id) as app_id,
         test_name,
         attempt,
         grade_taken,

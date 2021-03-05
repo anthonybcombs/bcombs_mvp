@@ -700,10 +700,15 @@ const inputs = `
         student_grade_cumulative_id: Int
         class: String
         subject: String
+        designation: String
         grade_quarter_1: Float
         grade_quarter_2: Float
         grade_quarter_3: Float
         grade_quarter_4: Float
+        letter_grade_quarter_1: String
+        letter_grade_quarter_2: String
+        letter_grade_quarter_3: String
+        letter_grade_quarter_4: String
         attendance_quarter_1: Int
         attendance_quarter_2: Int
         attendance_quarter_3: Int
@@ -734,7 +739,6 @@ const inputs = `
     input StudentStandardizedTestInput {
         student_test_id: Int
         child_id: String
-        app_id: String
         test_name: String
         attempt: Int
         grade_taken: Int
@@ -1465,10 +1469,15 @@ const queryTypes = `
         student_grade_cumulative_id: Int
         class: String
         subject: String
+        designation: String
         grade_quarter_1: Float
         grade_quarter_2: Float
         grade_quarter_3: Float
         grade_quarter_4: Float
+        letter_grade_quarter_1: String
+        letter_grade_quarter_2: String
+        letter_grade_quarter_3: String
+        letter_grade_quarter_4: String
         attendance_quarter_1: Int
         attendance_quarter_2: Int
         attendance_quarter_3: Int
@@ -1487,7 +1496,6 @@ const queryTypes = `
     type StudentStandardizedTest {
         student_test_id: Int
         child_id: String
-        app_id: String
         test_name: String
         attempt: Int
         grade_taken: Int
