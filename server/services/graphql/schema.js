@@ -714,6 +714,7 @@ const inputs = `
         student_grade_cumulative_id: Int
         child_id: String
         app_id: String
+        app_group_id: String
         type: String
         year_level: Int
         school_type: String
@@ -1441,6 +1442,7 @@ const queryTypes = `
     type StudentCumulativeGrade {
         student_grade_cumulative_id: Int
         app_id: String
+        app_group_id: String
         child_id: String
         year_level: Int
         designation: String
@@ -1505,6 +1507,14 @@ const queryTypes = `
         cumulative_grades: [StudentCumulativeGrade]
     }
  
+    type StudentByGroupSummary {
+        child_id: String
+        firstname: String
+        lastname: String
+        app_group_id: String
+        app_id: String
+        cumulative_grades: [StudentCumulativeGrade]
+    }
 `;
 
 const mutations = `
@@ -1598,6 +1608,7 @@ const queries = `
         getAllFormAppGroupsByVendor(vendor: String): [VendorAppGroup]
         getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
         getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
+        getStudentCumulativeGradeByAppGroup(app_group_id: String): [StudentByGroupSummary]
         getStudentCumulativeGradeByVendor(vendor_id: String): [StudentCumulativeGrade]
         getStudentCumulativeGradeByUser(child_id: String): [StudentCumulativeGrade]
         getStudentTest(child_id: String): [StudentStandardizedTest]
