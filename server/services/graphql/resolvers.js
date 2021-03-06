@@ -459,8 +459,8 @@ const resolvers = {
     async getStudentRecords(root, { child_id }, context) {
       return await getStudentRecordById(child_id)
     },
-    async getStudentCumulativeGradeByAppGroup(root, { app_group_id }, context) {
-      return await getStudentCumulativeGradeByAppGroupId(app_group_id)
+    async getStudentCumulativeGradeByAppGroup(root, { app_group_id, app_group_type }, context) {
+      return await getStudentCumulativeGradeByAppGroupId(app_group_id, app_group_type)
     }
   },
   RootMutation: {

@@ -699,6 +699,7 @@ const inputs = `
     input StudentGradeInput {
         student_grade_cumulative_id: Int
         class: String
+        teacher_name: String
         subject: String
         designation: String
         grade_quarter_1: Float
@@ -720,6 +721,7 @@ const inputs = `
         child_id: String
         app_id: String
         app_group_id: String
+        application_type: String
         type: String
         year_level: Int
         school_type: String
@@ -729,7 +731,6 @@ const inputs = `
         school_year_frame: String
         class_name: String
         class_type: String
-        class_teacher: String
         attachment: String
         grades: [StudentGradeInput]
         deleted_grades: [Int]
@@ -1447,7 +1448,10 @@ const queryTypes = `
         student_grade_cumulative_id: Int
         app_id: String
         app_group_id: String
+        app_group_name: String
+        application_type: String
         child_id: String
+        form_contents: String
         year_level: Int
         designation: String
         school_type: String
@@ -1469,6 +1473,7 @@ const queryTypes = `
         student_grade_cumulative_id: Int
         class: String
         subject: String
+        teacher_name: String
         designation: String
         grade_quarter_1: Float
         grade_quarter_2: Float
@@ -1520,7 +1525,9 @@ const queryTypes = `
         firstname: String
         lastname: String
         app_group_id: String
+        app_group_name: String
         app_id: String
+        form_contents: String
         cumulative_grades: [StudentCumulativeGrade]
     }
 `;
@@ -1616,7 +1623,7 @@ const queries = `
         getAllFormAppGroupsByVendor(vendor: String): [VendorAppGroup]
         getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
         getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
-        getStudentCumulativeGradeByAppGroup(app_group_id: String): [StudentByGroupSummary]
+        getStudentCumulativeGradeByAppGroup(app_group_id: String, app_group_type: String): [StudentByGroupSummary]
         getStudentCumulativeGradeByVendor(vendor_id: String): [StudentCumulativeGrade]
         getStudentCumulativeGradeByUser(child_id: String): [StudentCumulativeGrade]
         getStudentTest(child_id: String): [StudentStandardizedTest]
