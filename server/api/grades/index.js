@@ -148,7 +148,7 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
 			`SELECT app.class_teacher as app_group_id,
 				vag.name as app_group_name,
 				CONVERT(form_contents USING utf8) as form_contents,
-				BIN_TO_UUID(app.app_id) as app_id
+				BIN_TO_UUID(app.app_id) as child_id
 			FROM custom_application app
 			INNER JOIN vendor_app_groups vag
 			ON vag.app_grp_id=UUID_TO_BIN(app.class_teacher)
@@ -156,8 +156,9 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
 			`SELECT app.class_teacher as app_group_id,
 				vag.name as app_group_name,
         BIN_TO_UUID(ch.ch_id) as child_id,
-				app.form_content
-        BIN_TO_UUID(app.app_id) as app_id
+				BIN_TO_UUID(app.app_id) as app_id,
+				ch.firstname,
+				ch.lastname
       FROM application app
       INNER JOIN child ch
 			ON ch.ch_id=app.child
@@ -179,11 +180,12 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
 			const childIds = response.map(item => item.child_id).filter(id => id);
 
 			if (childIds.length > 0) {
+				console.log('childIds',childIds)
 				let cumulativeGrade = await db.query(`
             SELECT   
               BIN_TO_UUID(sgc.app_group_id) as app_group_id,
 							BIN_TO_UUID(sgc.child_id) as child_id,
-							vag.name as app_group_name,
+
               sgc.student_grade_cumulative_id,
               sgc.application_type,
               sgc.year_level,
@@ -196,18 +198,19 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
               sgc.class_type,
               sgc.attachment,
               sgc.class_name 
-            FROM student_grade_cumulative sgc, vendor_app_groups vag
+            FROM student_grade_cumulative sgc
 						WHERE sgc.child_id IN (${childIds.map(id => `UUID_TO_BIN('${id}')`).join(',')})
 						`);
 
 				studentCumulative = studentCumulative.map(item => {
-					const currentStudentCumulative = cumulativeGrade.filter(cg => cg.child_id === item.child_id);
-
+					let currentStudentCumulative = cumulativeGrade.filter(cg => cg.child_id === item.child_id);
+					//currentStudentCumulative = currentStudentCumulative.sort((a,b) => a.year_level < b.year_level)
+			
 					return {
 						...item,
 						cumulative_grades: [...(currentStudentCumulative || [])],
 					};
-				});
+				}).sort((a,b) => a.year_level < b.year_level)
 
 				for (let sc of studentCumulative) {
 					const studentGradeCumulativeIds = sc.cumulative_grades
@@ -325,7 +328,7 @@ export const getStudentCumulativeGradeVendor = async ({ vendor_id }) => {
 	}
 };
 
-export const getStudentCumulativeGrade = async ({ app_id, child_id }) => {
+export const getStudentCumulativeGrade = async ({ app_group_id, child_id }) => {
 	const db = makeDb();
 	let studentCumulative = null;
 	let studentGrades = [];
@@ -333,7 +336,6 @@ export const getStudentCumulativeGrade = async ({ app_id, child_id }) => {
 	try {
 		const response = await db.query(
 			`SELECT  BIN_TO_UUID(child_id) as child_id,
-        BIN_TO_UUID(app_id) as app_id,
         student_grade_cumulative_id,
         application_type,
         year_level,
@@ -347,8 +349,8 @@ export const getStudentCumulativeGrade = async ({ app_id, child_id }) => {
         attachment,
         date_added
       FROM student_grade_cumulative
-      WHERE app_id=UUID_TO_BIN(?) AND child_id=UUID_TO_BIN(?)`,
-			[app_id, child_id]
+      WHERE app_group_id=UUID_TO_BIN(?) AND child_id=UUID_TO_BIN(?)`,
+			[app_group_id, child_id]
 		);
 		if (response && response[0]) {
 			studentCumulative = {
@@ -379,7 +381,6 @@ export const getStudentCumulativeGrade = async ({ app_id, child_id }) => {
 export const addUpdateStudentCumulativeGrades = async ({
 	student_grade_cumulative_id = null,
 	application_type = 'bcombs',
-	app_id,
 	app_group_id,
 	child_id,
 	year_level,
@@ -416,7 +417,6 @@ export const addUpdateStudentCumulativeGrades = async ({
 			const studentCumulativeResult = await db.query(
 				`INSERT INTO student_grade_cumulative(
           child_id,
-          app_id,
 					app_group_id,
 					application_type,
           year_level,
@@ -431,7 +431,6 @@ export const addUpdateStudentCumulativeGrades = async ({
           date_added
         )
         VALUES (
-          UUID_TO_BIN(?),
           UUID_TO_BIN(?),
           UUID_TO_BIN(?),
 					?,
@@ -449,7 +448,6 @@ export const addUpdateStudentCumulativeGrades = async ({
         `,
 				[
 					child_id,
-					app_id,
 					app_group_id,
 					application_type,
 					year_level,
@@ -598,25 +596,49 @@ export const addUpdateStudentCumulativeGrades = async ({
 			);
 		}
 
-		studentCumulative = await db.query(
-			`SELECT  BIN_TO_UUID(child_id) as child_id,
-        BIN_TO_UUID(app_id) as app_id,
-				student_grade_cumulative_id,
-				application_type,
-        year_level,
-        school_type,
-        school_name,
-        school_year_start,
-        school_year_end,
-        school_year_frame,
-        class_name,
-        class_type,
-        attachment,
-        date_added
-      FROM student_grade_cumulative
-      WHERE student_grade_cumulative_id=?`,
+		studentCumulative = await db.query(application_type === 'forms' ?
+			`SELECT BIN_TO_UUID(sgc.child_id) as child_id,
+				sgc.student_grade_cumulative_id,
+				sgc.application_type,
+				sgc.year_level,
+				sgc.school_type,
+				sgc.school_name,
+				sgc.school_year_start,
+				sgc.school_year_end,
+				sgc.school_year_frame,
+				sgc.class_name,
+				sgc.class_type,
+				sgc.attachment,
+				sgc.date_added,
+				CONVERT(form_contents USING utf8) as form_contents
+			FROM student_grade_cumulative sgc, custom_application ca
+			WHERE sgc.student_grade_cumulative_id=? AND
+				ca.app_id=sgc.child_id` :
+			`SELECT BIN_TO_UUID(sgc.child_id) as child_id,
+				sgc.student_grade_cumulative_id,
+				sgc.application_type,
+				sgc.year_level,
+				sgc.school_type,
+				sgc.school_name,
+				sgc.school_year_start,
+				sgc.school_year_end,
+				sgc.school_year_frame,
+				sgc.class_name,
+				sgc.class_type,
+				sgc.attachment,
+				sgc.date_added,				
+				ch.firstname,
+				ch.lastname
+			FROM student_grade_cumulative sgc, child ch
+			WHERE sgc.student_grade_cumulative_id=? AND
+				ch.ch_id=sgc.child_id`
+			,
 			[cumulativeId]
 		);
+
+		if(application_type === 'forms') {
+			studentCumulative = formatFormContents(studentCumulative);
+		}
 
 		if (studentCumulative && studentCumulative[0]) {
 			studentCumulative = {
