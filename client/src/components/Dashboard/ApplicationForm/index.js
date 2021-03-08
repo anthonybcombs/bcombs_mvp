@@ -216,6 +216,7 @@ export default function index() {
   }
 
   const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
+  const DB_DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
   const DATE_FORMAT = "yyyy-MM-dd";
   
   const [selectedStep, setSelectedStep] = useState(1);
@@ -945,11 +946,11 @@ export default function index() {
         },
         parents: setupParentsList(childsInformation[i].profile),
         section1_signature: termsWaiver.section1.signature,
-        section1_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
+        section1_date_signed: format(new Date(termsWaiver.date), DB_DATE_TIME_FORMAT),
         section2_signature: termsWaiver.section2.signature,
-        section2_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
+        section2_date_signed: format(new Date(termsWaiver.date), DB_DATE_TIME_FORMAT),
         section3_signature: termsWaiver.section3.signature,
-        section3_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
+        section3_date_signed: format(new Date(termsWaiver.date), DB_DATE_TIME_FORMAT),
         section1_text: vendor.section1_text,
         section2_text: vendor.section2_text,
         section3_text: vendor.section3_text,
