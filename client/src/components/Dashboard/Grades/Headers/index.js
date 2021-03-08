@@ -15,6 +15,14 @@ export default ({
   columns, rows // Table props
 }) => {
 
+  const newColumns = Object.entries(columns)
+    .reduce((acc, [key, value]) => {
+      if (value.filterable === undefined && value.sortable === undefined) {
+        acc[key] = value
+      }
+      return acc
+    }, {})
+
   const defaultFilters = {
     sort: [{ column: '', value: 'asc' }],
     highlight: [{ column: [], condition: 'gt', value: [], format: JSON.stringify({ backgroundColor: '#000000', color: '#ffffff' }) }],
@@ -38,15 +46,6 @@ export default ({
     setFilterValue(target.value)
     setPreviousFilter(cloneDeep(filters))
     setFilterDialogOpen(true)
-  }
-
-  const debounceSearch = (...args) => {
-    const debouncedSearch = useCallback(debounce(...args), [])
-    return e => {
-      handleChangeFilter('search', e.target.value)
-      e.persist()
-      return debouncedSearch(e)
-    }
   }
 
   const handleApplyFilter = ({ target }, isSearch = false) => {
@@ -136,7 +135,7 @@ export default ({
             filterOptions={filterOptions.map(e => ({ ...FilterOptionsObj[e], key: e }))}
             filterErrors={filterErrors}
             
-            columns={columns}
+            columns={newColumns}
             rows={rows}
             actions={renderActions}
 
