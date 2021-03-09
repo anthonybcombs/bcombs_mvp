@@ -7,7 +7,8 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
     ) {
       getStudentCumulativeGradeByAppGroup(
         app_group_id: $app_group_id,
-        app_group_type: $app_group_type) {
+        app_group_type: $app_group_type
+      ) {
         app_group_id
         app_group_name
         app_id
@@ -69,8 +70,7 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
 `;
 
 export const GET_STUDENT_CUMULATIVE_BY_CHILD = gql`
-query {
-  getStudentRecords(
+query getStudentRecords(
     $child_id: String
   ) {
     getStudentRecords(child_id: $child_id) {
@@ -130,7 +130,7 @@ query {
           attendance
         }
       }
-      standardized_test:{
+      standardized_test {
         student_test_id
         child_id
         test_name
@@ -147,7 +147,6 @@ query {
       }
     }
   }
-}
 
 `;
 

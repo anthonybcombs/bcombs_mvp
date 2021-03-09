@@ -15,10 +15,11 @@ const getStudentCumulativeGradeByAppGroupFromDatabse = variables => {
   console.log('variables', variables)
   return new Promise(async (resolve, reject) => {
     try {
-      const { data } = await graphqlClient.mutate({
-        mutation: GET_STUDENT_CUMULATIVE_BY_APP_GROUP,
+      const { data } = await graphqlClient.query({
+        query: GET_STUDENT_CUMULATIVE_BY_APP_GROUP,
         variables
       })
+    
       return resolve(data.getStudentCumulativeGradeByAppGroup)
     } catch (error) {
       console.log('error', { error, variables })

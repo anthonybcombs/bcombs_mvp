@@ -442,7 +442,7 @@ export default () => {
     handleSetRowAndColumn(gradeType)
     dispatch(requestGetStudentCumulativeGradeByAppGroup({
       app_group_id: 'bade0202-f2ce-11ea-8212-dafd2d0ae3ff',
-      app_group_type: 'forms'
+      app_group_type: 'bcombs'
     }))
   }, [])
 
