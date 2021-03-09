@@ -1,5 +1,12 @@
 import { makeDb } from '../../helpers/database';
 
+import {
+  currentS3BucketName,
+  s3Bucket,
+  s3BucketRootPath,
+  uploadFile
+} from "../../helpers/aws";
+
 const getAverage = (grades, type) => {
 	return grades.map(grade => {
 		if (type === 'semestral') {
@@ -72,6 +79,27 @@ export const getGrades = async () => {
 		await db.close();
 	}
 };
+
+const formatFile = async (attachment, id) => {
+	const file = {...(attachment || {})};
+	if(file && file.data) {
+		const buf = Buffer.from(
+			file?.data.replace(/^data:image\/\w+;base64,/, ""),
+			"base64"
+		);
+		const s3Payload = {
+			Bucket: currentS3BucketName,
+			Key: `grades/${id}/${file.filename}`,
+			Body: buf,
+			ContentEncoding: "base64",
+			ContentType: file.contentType,
+			ACL: "public-read"
+		};
+		await uploadFile(s3Payload);
+		return s3Payload;
+	}
+	return null;
+}
 
 export const getStudentCumulativeByChildId = async childId => {
 	const db = makeDb();
@@ -180,7 +208,7 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
 			const childIds = response.map(item => item.child_id).filter(id => id);
 
 			if (childIds.length > 0) {
-				console.log('childIds',childIds)
+		
 				let cumulativeGrade = await db.query(`
             SELECT   
               BIN_TO_UUID(sgc.app_group_id) as app_group_id,
@@ -381,6 +409,7 @@ export const getStudentCumulativeGrade = async ({ app_group_id, child_id }) => {
 export const addUpdateStudentCumulativeGrades = async ({
 	student_grade_cumulative_id = null,
 	application_type = 'bcombs',
+	attachment = null,
 	app_group_id,
 	child_id,
 	year_level,
@@ -391,7 +420,6 @@ export const addUpdateStudentCumulativeGrades = async ({
 	school_year_frame,
 	class_name,
 	class_type,
-	attachment,
 	grades = [],
 	standardized_test = [],
 	deleted_grades = [],
@@ -399,20 +427,20 @@ export const addUpdateStudentCumulativeGrades = async ({
 }) => {
 	const db = makeDb();
 	let studentCumulative = {};
-
 	try {
 		let cumulativeId = student_grade_cumulative_id;
 		let currentSubjectGrades = [];
 
 		const isUserExist = cumulativeId
 			? await db.query(
-				`SELECT student_grade_cumulative_id 
+				`SELECT student_grade_cumulative_id,attachment
       	FROM student_grade_cumulative 
       	WHERE  student_grade_cumulative_id=?`,
 					[cumulativeId]
 			  )
 			: [];
 
+			
 		if (isUserExist.length === 0) {
 			const studentCumulativeResult = await db.query(
 				`INSERT INTO student_grade_cumulative(
@@ -427,7 +455,6 @@ export const addUpdateStudentCumulativeGrades = async ({
           school_year_frame,
           class_name,
           class_type,
-          attachment,
           date_added
         )
         VALUES (
@@ -435,7 +462,6 @@ export const addUpdateStudentCumulativeGrades = async ({
           UUID_TO_BIN(?),
 					?,
 					?,
-          ?,
           ?,
           ?,
           ?,
@@ -457,24 +483,44 @@ export const addUpdateStudentCumulativeGrades = async ({
 					school_year_end,
 					school_year_frame,
 					class_name,
-					class_type,
-					attachment,
+					class_type
 				]
 			);
 
 			cumulativeId = studentCumulativeResult.insertId;
+
+				const s3Payload = await formatFile(attachment,cumulativeId);
+
+				if(s3Payload){
+					await db.query(
+						`UPDATE student_grade_cumulative
+						 SET attachment=?, date_updated=NOW() 
+						 WHERE student_grade_cumulative_id=?
+						`,
+						[
+							s3Payload.Key,
+							cumulativeId
+						]
+					);
+	
+				}
+
+	
 		} else {
+			const s3Payload = await formatFile(attachment,cumulativeId);
 			const studentCumulativeResult = await db.query(
 				`UPDATE student_grade_cumulative
          SET year_level=?,
-         school_type=?,school_name=?,
-         school_year_start=?,
-				 school_year_end=?,
-				 school_year_frame=?,
-				 class_name=?,
-				 class_type=?,
-         attachment=?,date_updated=NOW() WHERE child_id=UUID_TO_BIN(?) AND student_grade_cumulative_id=?
-        
+         	school_type=?,school_name=?,
+         	school_year_start=?,
+				 	school_year_end=?,
+				 	school_year_frame=?,
+				 	class_name=?,
+				 	class_type=?,
+				 	attachment=?,
+					date_updated=NOW() 
+				 WHERE child_id=UUID_TO_BIN(?) AND 
+				 	student_grade_cumulative_id=?
         `,
 				[
 					year_level,
@@ -485,15 +531,14 @@ export const addUpdateStudentCumulativeGrades = async ({
 					school_year_frame,
 					class_name,
 					class_type,
-					attachment,
+					s3Payload ? s3Payload.Key : isUserExist[0] && isUserExist[0].attachment,
 					child_id,
-					student_grade_cumulative_id,
+					cumulativeId,
 				]
 			);
 
 			currentSubjectGrades = await db.query(
-				`
-        SELECT student_grades_id,subject FROM student_grades 
+				`SELECT student_grades_id,subject FROM student_grades 
         WHERE student_grade_cumulative_id=? `,
 				[cumulativeId]
 			);

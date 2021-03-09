@@ -731,7 +731,7 @@ const inputs = `
         school_year_frame: String
         class_name: String
         class_type: String
-        attachment: String
+        attachment: FileContentInput
         grades: [StudentGradeInput]
         deleted_grades: [Int]
         date_created: String
