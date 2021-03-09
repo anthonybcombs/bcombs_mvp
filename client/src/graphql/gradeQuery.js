@@ -1,12 +1,13 @@
 import gql from "graphql-tag";
 
 export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
-  query {
-    getStudentCumulativeGradeByAppGroup(
+  query getStudentCumulativeGradeByAppGroup(
       $app_group_id: String,
       $app_group_type: String
     ) {
-      getStudentCumulativeGradeByAppGroup(app_group_id: $app_group_id,app_group_type: $app_group_type) {
+      getStudentCumulativeGradeByAppGroup(
+        app_group_id: $app_group_id,
+        app_group_type: $app_group_type) {
         app_group_id
         app_group_name
         app_id
@@ -65,7 +66,6 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
         }
       }
     }
-  }
 `;
 
 export const GET_STUDENT_CUMULATIVE_BY_CHILD = gql`
@@ -154,8 +154,7 @@ query {
 
 
 export const GET_STUDENT_CUMULATIVE_BY_VENDOR = gql`
-query {
-  getStudentCumulativeGradeByVendor(
+query getStudentCumulativeGradeByVendor(
     $vendor_id: String
   ) {
     getStudentCumulativeGradeByVendor(vendor_id: $vendor_id) {
@@ -208,5 +207,4 @@ query {
         }
       }
     }
-  }
 `

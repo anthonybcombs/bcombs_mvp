@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from '@reach/router'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
-import { Link } from '@reach/router'
+import isEqual from 'lodash.isequal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
@@ -15,14 +16,31 @@ import Loading from '../../../../helpers/Loading.js'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { requestVendor } from '../../../../redux/actions/Vendors'
-import { requestGetStudentCumulativeGradeByAppGroup  } from "../../../../redux/actions/Grades"
+import { getStudentCumulativeGradeByAppGroup  } from '../../../../redux/actions/Grades'
 
-export default () => {
-  const dispatch = useDispatch()
+export default ({ student_id }) => {
+  const selectedStudent = {
+    id: '1',
+    name: 'John Doe',
+    schoolType: 'Middle School',
+    gradeLevel: '6th',
+    gpa: '3.2 (2.6)',
+    attendanceSummary: '85% (34/40)',
+    math: 'A',
+    mathNumber: 99,
+    science: 'B',
+    scienceNumber: 90,
+    english: 'C',
+    englishNumber: 80,
+    history: 'B',
+    historyNumber: 90,
+    act1: 0,
+    act2: 2,
+    sat: 12
+  }
+
   const data = cloneDeep([
     {
-      id: '1',
-      name: 'John Doe',
       schoolType: 'Middle School',
       gradeLevel: '6th',
       gpa: '3.2 (2.6)',
@@ -40,8 +58,6 @@ export default () => {
       sat: 12
     },
     {
-      id: '2',
-      name: 'John Smith',
       schoolType: 'Middle School',
       gradeLevel: '5th',
       gpa: '3.3 (3.6)',
@@ -59,8 +75,6 @@ export default () => {
       sat: 10
     },
     {
-      id: '3',
-      name: 'Smith Legend',
       schoolType: 'High School',
       gradeLevel: '8th',
       gpa: '1.2 (1.6)',
@@ -78,8 +92,6 @@ export default () => {
       sat: 20
     },
     {
-      id: '4',
-      name: 'John Legend',
       schoolType: 'Middle School',
       gradeLevel: '4th',
       gpa: '3.1 (2.1)',
@@ -97,8 +109,6 @@ export default () => {
       sat: 15
     },
     {
-      id: '5',
-      name: 'Legend Doe',
       schoolType: 'High School',
       gradeLevel: '9th',
       gpa: '2.5 (1.6)',
@@ -116,8 +126,6 @@ export default () => {
       sat: 9
     },
     {
-      id: '6',
-      name: 'John Doe',
       schoolType: 'High School',
       gradeLevel: '10th',
       gpa: '1.1 (1.1)',
@@ -137,7 +145,7 @@ export default () => {
   ])
 
   const initialColumns = {
-    name: { type: 'string', label: 'Name' },
+    name: { type: 'string', label: 'Name', sortable: false, filterable: false },
     schoolType: { type: 'string', label: 'School Type' },
     gradeLevel: { type: 'string', label: 'Grade Level' },
     gpa: { type: 'string', label: 'GPA Cum(semester)' },
@@ -276,11 +284,7 @@ export default () => {
           <td className='subHeader'>
             <table className='subTable student'>
               <tr>
-                <td style={{ ...highLight(name, 'name'), minWidth: '100px', wordBreak: 'break-word'}}>
-                  <Link to={`/dashboard/grades/${row.id}`}>
-                    {name}
-                  </Link>
-                </td>
+                <td style={{ minWidth: '100px', wordBreak: 'break-word'}}>{index === 0 ? selectedStudent.name : ''}</td>
                 <td style={{ ...highLight(schoolType, 'schoolType'), minWidth: '100px', wordBreak: 'break-word'}}>{schoolType}</td>
                 <td style={{ ...highLight(gradeLevel, 'gradeLevel'), minWidth: '100px', wordBreak: 'break-word'}}>{gradeLevel}</td>
                 <td style={{ ...highLight(gpa, 'gpa'), minWidth: '50px', wordBreak: 'break-word'}}>{gpa}</td>
@@ -440,16 +444,12 @@ export default () => {
 
   useEffect(() => {
     handleSetRowAndColumn(gradeType)
-    dispatch(requestGetStudentCumulativeGradeByAppGroup({
-      app_group_id: 'bade0202-f2ce-11ea-8212-dafd2d0ae3ff',
-      app_group_type: 'forms'
-    }))
   }, [])
 
   console.log('data', { columns, rows })
   return (
     <GradesStyled>
-      <h2>Grade List Views</h2>
+      <h2>Grade Individual View</h2>
       <div
         id='gradeListView'
         onClick={() => {
@@ -457,6 +457,10 @@ export default () => {
           setShowGradeOptions(false)
         }}
       >
+        <Link to={'/dashboard/grades'} className='back-btn'>
+					<FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
+					Back
+				</Link>
         <div className='gradeListFilter'>
           <Headers
             enableClearFilter
@@ -466,12 +470,6 @@ export default () => {
 
             onApplyFilter={handleApplyFilter}
           />
-          <button
-            className='applyFilterBtn'
-            onClick={() => {}}
-          >
-            {`Grades & Test Input`}
-          </button>
         </div>
         <div id='gradeListTableWrapper'>
           <table id='gradeListView-table'>
@@ -526,14 +524,14 @@ export default () => {
                     <tr>
                       <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
                         <span>Name</span>
-                        <FontAwesomeIcon
+                        {/* <FontAwesomeIcon
                           icon={faCaretDown}
                           onClick={(e) => {
                             e.stopPropagation()
                             handleChangeTableFilterColumn('name')
                           }}
                         />
-                        {renderTableFilter('name')}
+                        {renderTableFilter('name')} */}
                       </td>
                       <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
                         School Type

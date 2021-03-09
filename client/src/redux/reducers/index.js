@@ -19,6 +19,7 @@ import applications from "./Applications";
 import admins from "./Admins";
 import form from "./Forms";
 import vendorForms from "./VendorForms";
+import gradeInput from "./GradeInput";
 
 const reducer = combineReducers({
   auth,
@@ -40,6 +41,7 @@ const reducer = combineReducers({
   applications,
   admins,
   form,
-  vendorForms
+  vendorForms,
+  gradeInput
 });
 export default reducer;
