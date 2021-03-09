@@ -1529,6 +1529,7 @@ const queryTypes = `
         app_id: String
         form_contents: String
         cumulative_grades: [StudentCumulativeGrade]
+        standardized_test: [StudentStandardizedTest]
     }
 `;
 

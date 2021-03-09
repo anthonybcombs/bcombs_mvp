@@ -228,15 +228,35 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
               sgc.class_name 
             FROM student_grade_cumulative sgc
 						WHERE sgc.child_id IN (${childIds.map(id => `UUID_TO_BIN('${id}')`).join(',')})
-						`);
+				`);
+
+				let standardizedTest = await db.query(`
+					SELECT   
+						student_test_id,
+						BIN_TO_UUID(child_id) as child_id,
+						test_name,
+						attempt,
+						grade_taken,
+						month_taken,
+						score,
+						ach_level,
+						school_percentage,
+						nationality_percentage,
+						district_percentage,
+						state_percentage,
+						attachment
+					FROM student_standardized_test
+					WHERE child_id IN (${childIds.map(id => `UUID_TO_BIN('${id}')`).join(',')})
+				`);
 
 				studentCumulative = studentCumulative.map(item => {
 					let currentStudentCumulative = cumulativeGrade.filter(cg => cg.child_id === item.child_id);
 					//currentStudentCumulative = currentStudentCumulative.sort((a,b) => a.year_level < b.year_level)
-			
+					let studentTest = standardizedTest.filter(st => st.child_id === item.child_id)
 					return {
 						...item,
 						cumulative_grades: [...(currentStudentCumulative || [])],
+						standardized_test:[...(studentTest || [])]
 					};
 				}).sort((a,b) => a.year_level < b.year_level)
 
