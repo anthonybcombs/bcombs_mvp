@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
-import isEqual from 'lodash.isequal'
+import { Link } from '@reach/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
@@ -15,15 +15,16 @@ import Loading from '../../../../helpers/Loading.js'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { requestVendor } from '../../../../redux/actions/Vendors'
-// import { getStudentCumulativeGradeByAppGroup  } from "../../../../redux/actions/Grades"
+import { getStudentCumulativeGradeByAppGroup  } from "../../../../redux/actions/Grades"
 
-export default ({ form_id, type, history }) => {
+export default () => {
   const data = cloneDeep([
     {
+      id: '1',
       name: 'John Doe',
       schoolType: 'Middle School',
       gradeLevel: '6th',
-      gpa: '3.2(2.6)',
+      gpa: '3.2 (2.6)',
       attendanceSummary: '85% (34/40)',
       math: 'A',
       mathNumber: 99,
@@ -38,10 +39,11 @@ export default ({ form_id, type, history }) => {
       sat: 12
     },
     {
+      id: '2',
       name: 'John Smith',
       schoolType: 'Middle School',
       gradeLevel: '5th',
-      gpa: '3.3(3.6)',
+      gpa: '3.3 (3.6)',
       attendanceSummary: '95% (35/40)',
       math: 'B',
       mathNumber: 90,
@@ -56,10 +58,11 @@ export default ({ form_id, type, history }) => {
       sat: 10
     },
     {
+      id: '3',
       name: 'Smith Legend',
       schoolType: 'High School',
       gradeLevel: '8th',
-      gpa: '1.2(1.6)',
+      gpa: '1.2 (1.6)',
       attendanceSummary: '95% (30/40)',
       math: 'A',
       mathNumber: 99,
@@ -74,10 +77,11 @@ export default ({ form_id, type, history }) => {
       sat: 20
     },
     {
+      id: '4',
       name: 'John Legend',
       schoolType: 'Middle School',
       gradeLevel: '4th',
-      gpa: '3.1(2.1)',
+      gpa: '3.1 (2.1)',
       attendanceSummary: '75% (31/40)',
       math: 'C',
       mathNumber: 80,
@@ -92,10 +96,11 @@ export default ({ form_id, type, history }) => {
       sat: 15
     },
     {
+      id: '5',
       name: 'Legend Doe',
       schoolType: 'High School',
       gradeLevel: '9th',
-      gpa: '2.5(1.6)',
+      gpa: '2.5 (1.6)',
       attendanceSummary: '89% (20/40)',
       math: 'A',
       mathNumber: 99,
@@ -110,10 +115,11 @@ export default ({ form_id, type, history }) => {
       sat: 9
     },
     {
+      id: '6',
       name: 'John Doe',
       schoolType: 'High School',
       gradeLevel: '10th',
-      gpa: '1.1(1.1)',
+      gpa: '1.1 (1.1)',
       attendanceSummary: '98% (31/40)',
       math: 'A',
       mathNumber: 99,
@@ -269,7 +275,11 @@ export default ({ form_id, type, history }) => {
           <td className='subHeader'>
             <table className='subTable student'>
               <tr>
-                <td style={{ ...highLight(name, 'name'), minWidth: '100px', wordBreak: 'break-word'}}>{name}</td>
+                <td style={{ ...highLight(name, 'name'), minWidth: '100px', wordBreak: 'break-word'}}>
+                  <Link to={`/dashboard/grades/${row.id}`}>
+                    {name}
+                  </Link>
+                </td>
                 <td style={{ ...highLight(schoolType, 'schoolType'), minWidth: '100px', wordBreak: 'break-word'}}>{schoolType}</td>
                 <td style={{ ...highLight(gradeLevel, 'gradeLevel'), minWidth: '100px', wordBreak: 'break-word'}}>{gradeLevel}</td>
                 <td style={{ ...highLight(gpa, 'gpa'), minWidth: '50px', wordBreak: 'break-word'}}>{gpa}</td>
