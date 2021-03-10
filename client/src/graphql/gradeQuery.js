@@ -51,10 +51,20 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
             letter_grade_quarter_2
             letter_grade_quarter_3
             letter_grade_quarter_4
-            attendance_quarter_1
-            attendance_quarter_2
-            attendance_quarter_3
-            attendance_quarter_4
+            attendance_quarter_1_total
+            attendance_quarter_2_total
+            attendance_quarter_3_total
+            attendance_quarter_4_total
+            attendance_quarter_1_absent
+            attendance_quarter_2_absent
+            attendance_quarter_3_absent
+            attendance_quarter_4_absent
+            attendance_quarter_1_tardy
+            attendance_quarter_2_tardy
+            attendance_quarter_3_tardy
+            attendance_quarter_4_tardy
+            final_grade
+            year_final_grade
             quarter_average
             semestral_1_average
             semestral_2_average
@@ -64,6 +74,21 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
             final_quarter_attendance
             attendance
           }
+        }
+        standardized_test{
+          student_test_id
+          child_id
+          test_name
+          attempt
+          grade_taken
+          month_taken
+          score
+          ach_level
+          school_percentage
+          nationality_percentage
+          district_percentage
+          state_percentage
+          attachment
         }
       }
     }
@@ -116,10 +141,20 @@ query getStudentRecords(
           letter_grade_quarter_2
           letter_grade_quarter_3
           letter_grade_quarter_4
-          attendance_quarter_1
-          attendance_quarter_2
-          attendance_quarter_3
-          attendance_quarter_4
+          attendance_quarter_1_total
+          attendance_quarter_2_total
+          attendance_quarter_3_total
+          attendance_quarter_4_total
+          attendance_quarter_1_absent
+          attendance_quarter_2_absent
+          attendance_quarter_3_absent
+          attendance_quarter_4_absent
+          attendance_quarter_1_tardy
+          attendance_quarter_2_tardy
+          attendance_quarter_3_tardy
+          attendance_quarter_4_tardy
+          final_grade
+          year_final_grade
           quarter_average
           semestral_1_average
           semestral_2_average
@@ -191,10 +226,20 @@ query getStudentCumulativeGradeByVendor(
           letter_grade_quarter_2
           letter_grade_quarter_3
           letter_grade_quarter_4
-          attendance_quarter_1
-          attendance_quarter_2
-          attendance_quarter_3
-          attendance_quarter_4
+          attendance_quarter_1_total
+          attendance_quarter_2_total
+          attendance_quarter_3_total
+          attendance_quarter_4_total
+          attendance_quarter_1_absent
+          attendance_quarter_2_absent
+          attendance_quarter_3_absent
+          attendance_quarter_4_absent
+          attendance_quarter_1_tardy
+          attendance_quarter_2_tardy
+          attendance_quarter_3_tardy
+          attendance_quarter_4_tardy
+          final_grade
+          year_final_grade
           quarter_average
           semestral_1_average
           semestral_2_average

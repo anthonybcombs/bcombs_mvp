@@ -710,10 +710,20 @@ const inputs = `
         letter_grade_quarter_2: String
         letter_grade_quarter_3: String
         letter_grade_quarter_4: String
-        attendance_quarter_1: Int
-        attendance_quarter_2: Int
-        attendance_quarter_3: Int
-        attendance_quarter_4: Int
+        attendance_quarter_1_total: Int
+        attendance_quarter_2_total: Int
+        attendance_quarter_3_total: Int
+        attendance_quarter_4_total: Int
+        attendance_quarter_1_absent: Int
+        attendance_quarter_2_absent: Int
+        attendance_quarter_3_absent: Int
+        attendance_quarter_4_absent: Int
+        attendance_quarter_1_tardy: Int
+        attendance_quarter_2_tardy: Int
+        attendance_quarter_3_tardy: Int
+        attendance_quarter_4_tardy: Int
+        final_grade: Float
+        year_final_grade: Float
     }
 
     input StudentGradeCumulativeInput {
@@ -1483,10 +1493,18 @@ const queryTypes = `
         letter_grade_quarter_2: String
         letter_grade_quarter_3: String
         letter_grade_quarter_4: String
-        attendance_quarter_1: Int
-        attendance_quarter_2: Int
-        attendance_quarter_3: Int
-        attendance_quarter_4: Int
+        attendance_quarter_1_total: Int
+        attendance_quarter_2_total: Int
+        attendance_quarter_3_total: Int
+        attendance_quarter_4_total: Int
+        attendance_quarter_1_absent: Int
+        attendance_quarter_2_absent: Int
+        attendance_quarter_3_absent: Int
+        attendance_quarter_4_absent: Int
+        attendance_quarter_1_tardy: Int
+        attendance_quarter_2_tardy: Int
+        attendance_quarter_3_tardy: Int
+        attendance_quarter_4_tardy: Int
         quarter_average: Float
         semestral_1_average: Float
         semestral_2_average: Float
@@ -1494,6 +1512,8 @@ const queryTypes = `
         semestral_1_attendance: Int
         semestral_2_attendance: Int
         final_quarter_attendance: Int
+        final_grade: Float
+        year_final_grade: Float
         attendance: Int
         date_created: String
     }

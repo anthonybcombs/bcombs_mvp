@@ -21,8 +21,8 @@ const getAverage = (grades, type) => {
 						(grade.grade_quarter_4 || 0)) /
 						4
 				),
-				semestral_1_attendance: (grade.attendance_quarter_1 || 0) + (grade.attendance_quarter_2 || 0),
-				semestral_2_attendance: (grade.attendance_quarter_3 || 0) + (grade.attendance_quarter_4 || 0),
+				semestral_1_attendance: (grade.attendance_quarter_1_total || 0) + (grade.attendance_quarter_2_total || 0),
+				semestral_2_attendance: (grade.attendance_quarter_3_total || 0) + (grade.attendance_quarter_4_total || 0),
 			};
 		} else if (type === 'quarter') {
 			return {
@@ -35,10 +35,10 @@ const getAverage = (grades, type) => {
 						4
 				),
 				final_quarter_attendance:
-					(grade.attendance_quarter_1 || 0) +
-					(grade.attendance_quarter_2 || 0) +
-					(grade.attendance_quarter_3 || 0) +
-					(grade.attendance_quarter_4 || 0),
+					(grade.attendance_quarter_1_total || 0) +
+					(grade.attendance_quarter_2_total || 0) +
+					(grade.attendance_quarter_3_total || 0) +
+					(grade.attendance_quarter_4_total || 0),
 			};
 		}
 		return {
@@ -583,13 +583,23 @@ export const addUpdateStudentCumulativeGrades = async ({
                 letter_grade_quarter_2,
                 letter_grade_quarter_3,
 								letter_grade_quarter_4,
-								attendance_quarter_1,
-                attendance_quarter_2,
-                attendance_quarter_3,
-                attendance_quarter_4,
+								attendance_quarter_1_total,
+								attendance_quarter_2_total,
+								attendance_quarter_3_total,
+								attendance_quarter_4_total,
+								attendance_quarter_1_absent,
+								attendance_quarter_2_absent,
+								attendance_quarter_3_absent,
+								attendance_quarter_4_absent,
+								attendance_quarter_1_tardy,
+								attendance_quarter_2_tardy,
+								attendance_quarter_3_tardy,
+								attendance_quarter_4_tardy,
+								final_grade,
+								year_final_grade,
                 date_created
               )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `,
 						[
 							cumulativeId,
@@ -605,10 +615,20 @@ export const addUpdateStudentCumulativeGrades = async ({
 							grade.letter_grade_quarter_2 || '',
 							grade.letter_grade_quarter_3 || '',
 							grade.letter_grade_quarter_4 || '',
-							grade.attendance_quarter_1 || 0,
-							grade.attendance_quarter_2 || 0,
-							grade.attendance_quarter_3 || 0,
-							grade.attendance_quarter_4 || 0,
+							grade.attendance_quarter_1_total || 0,
+							grade.attendance_quarter_2_total || 0,
+							grade.attendance_quarter_3_total || 0,
+							grade.attendance_quarter_4_total || 0,
+							grade.attendance_quarter_1_absent || 0,
+							grade.attendance_quarter_2_absent || 0,
+							grade.attendance_quarter_3_absent || 0,
+							grade.attendance_quarter_4_absent || 0,
+							grade.attendance_quarter_1_tardy || 0,
+							grade.attendance_quarter_2_tardy || 0,
+							grade.attendance_quarter_3_tardy || 0,
+							grade.attendance_quarter_4_tardy || 0,
+							grade.final_grade || 0,
+							grade.year_final_grade || 0,
 						]
 					);
 				} else {
@@ -623,10 +643,21 @@ export const addUpdateStudentCumulativeGrades = async ({
 						  letter_grade_quarter_2=?,
 						  letter_grade_quarter_3=?,
 						  letter_grade_quarter_4=?,
-							attendance_quarter_1=?,
-              attendance_quarter_2=?,
-              attendance_quarter_3=?,
-              attendance_quarter_4=?
+							attendance_quarter_1_total=?,
+              attendance_quarter_2_totalattendance_quarter_2_total=?,
+              attendance_quarter_3_total=?,
+							attendance_quarter_4_total=?,
+							attendance_quarter_1_absent=?,
+              attendance_quarter_2_absent=?,
+              attendance_quarter_3_absent=?,
+							attendance_quarter_4_absent=?,
+							attendance_quarter_1_tardy=?,
+              attendance_quarter_2_tardy=?,
+              attendance_quarter_3_tardy=?,
+							attendance_quarter_4_tardy=?,
+							final_grade=?,
+							year_final_grade=?
+							
             WHERE student_grade_cumulative_id=? AND subject=? AND class=?
             `,
 						[
@@ -638,10 +669,20 @@ export const addUpdateStudentCumulativeGrades = async ({
 							grade.letter_grade_quarter_2 || '',
 							grade.letter_grade_quarter_3 || '',
 							grade.letter_grade_quarter_4 || '',
-							grade.attendance_quarter_1 || 0,
-							grade.attendance_quarter_2 || 0,
-							grade.attendance_quarter_3 || 0,
-							grade.attendance_quarter_4 || 0,
+							grade.attendance_quarter_1_total || 0,
+							grade.attendance_quarter_2_total || 0,
+							grade.attendance_quarter_3_total || 0,
+							grade.attendance_quarter_4_total || 0,
+							grade.attendance_quarter_1_absent || 0,
+							grade.attendance_quarter_2_absent || 0,
+							grade.attendance_quarter_3_absent || 0,
+							grade.attendance_quarter_4_absent || 0,
+							grade.attendance_quarter_1_tardy || 0,
+							grade.attendance_quarter_2_tardy || 0,
+							grade.attendance_quarter_3_tardy || 0,
+							grade.attendance_quarter_4_tardy || 0,
+							grade.final_grade || 0,
+							grade.year_final_grade || 0,
 							cumulativeId,
 							grade.subject,
 							grade.class,

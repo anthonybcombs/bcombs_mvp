@@ -37,10 +37,20 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
         letter_grade_quarter_2
         letter_grade_quarter_3
         letter_grade_quarter_4
-        attendance_quarter_1
-        attendance_quarter_2
-        attendance_quarter_3
-        attendance_quarter_4
+        attendance_quarter_1_total
+        attendance_quarter_2_total
+        attendance_quarter_3_total
+        attendance_quarter_4_total
+        attendance_quarter_1_absent
+        attendance_quarter_2_absent
+        attendance_quarter_3_absent
+        attendance_quarter_4_absent
+        attendance_quarter_1_tardy
+        attendance_quarter_2_tardy
+        attendance_quarter_3_tardy
+        attendance_quarter_4_tardy
+        final_grade
+        year_final_grade
         quarter_average
         semestral_1_average
         semestral_2_average
