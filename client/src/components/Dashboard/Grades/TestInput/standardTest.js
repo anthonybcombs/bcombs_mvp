@@ -65,10 +65,10 @@ export default () => {
   const [activeColumnKey, setActiveColumnKey] = useState('')
   const [selected, setSelected] = useState([])
 
-  const generateColumnFilters = () => {
+  const generateColumnFilters = (passedRows) => {
     let newColumnFilters = {}
     Object.keys(initialColumns).forEach(key => {
-      newColumnFilters[key] = rows
+      newColumnFilters[key] = (passedRows || rows)
         .map(e => e[key])
         .sort()
         .reduce((acc, curr) => {
@@ -249,6 +249,7 @@ export default () => {
       }, { id: uuid() })
     setRows([...newRows, newRow])
     setFilteredRows([...newRows, newRow])
+    setColumnFilters(generateColumnFilters([...newRows, newRow]))
   }
 
   const handleCopy = () => {
@@ -259,12 +260,14 @@ export default () => {
 
     setRows([...newRows, ...copiedRows])
     setFilteredRows([...newRows, ...copiedRows])
+    setColumnFilters(generateColumnFilters([...newRows, ...copiedRows]))
   }
 
   const handleDelete = () => {
     const newRows = cloneDeep(rows).filter(e => !selected.includes(e.id))
     setRows(newRows)
     setFilteredRows(newRows)
+    setColumnFilters(generateColumnFilters(newRows))
   }
 
   const renderTableFilter = (key) => {
@@ -454,7 +457,7 @@ export default () => {
             <div>No records.</div>
           )
         }
-        <div className='actions'>
+        <div className='actions' style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex' }}>
             <button
               onClick={handleAdd}

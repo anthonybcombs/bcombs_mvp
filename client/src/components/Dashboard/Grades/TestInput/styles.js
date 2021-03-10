@@ -120,7 +120,7 @@ export default styled.div`
 		background-color: #eee;
 	}
 	#gradeListView-table tbody tr .subHeader .subTable tr td {
-		width: 200px;
+		// width: 200px;
 	}
 
 	#gradeListView-table td,
