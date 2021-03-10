@@ -1505,12 +1505,16 @@ const queryTypes = `
         attendance_quarter_2_tardy: Int
         attendance_quarter_3_tardy: Int
         attendance_quarter_4_tardy: Int
+        attendance_quarter_1_present: Int
+        attendance_quarter_2_present: Int
+        attendance_quarter_3_present: Int
+        attendance_quarter_4_present: Int
         quarter_average: Float
         semestral_1_average: Float
         semestral_2_average: Float
         semestral_final: Float
-        semestral_1_attendance: Int
-        semestral_2_attendance: Int
+        final_semestral_1_attendance: Int
+        final_semestral_2_attendance: Int
         final_quarter_attendance: Int
         final_grade: Float
         year_final_grade: Float

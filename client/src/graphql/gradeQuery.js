@@ -63,6 +63,10 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
             attendance_quarter_2_tardy
             attendance_quarter_3_tardy
             attendance_quarter_4_tardy
+            attendance_quarter_1_present
+            attendance_quarter_2_present
+            attendance_quarter_3_present
+            attendance_quarter_4_present
             final_grade
             year_final_grade
             quarter_average
@@ -153,6 +157,10 @@ query getStudentRecords(
           attendance_quarter_2_tardy
           attendance_quarter_3_tardy
           attendance_quarter_4_tardy
+          attendance_quarter_1_present
+          attendance_quarter_2_present
+          attendance_quarter_3_present
+          attendance_quarter_4_present
           final_grade
           year_final_grade
           quarter_average

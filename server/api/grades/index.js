@@ -21,8 +21,9 @@ const getAverage = (grades, type) => {
 						(grade.grade_quarter_4 || 0)) /
 						4
 				),
-				semestral_1_attendance: (grade.attendance_quarter_1_total || 0) + (grade.attendance_quarter_2_total || 0),
-				semestral_2_attendance: (grade.attendance_quarter_3_total || 0) + (grade.attendance_quarter_4_total || 0),
+				final_semestral_1_attendance: (grade.attendance_quarter_1_total || 0) + (grade.attendance_quarter_2_total || 0),
+				final_semestral_2_attendance: (grade.attendance_quarter_3_total || 0) + (grade.attendance_quarter_4_total || 0),
+			
 			};
 		} else if (type === 'quarter') {
 			return {
@@ -39,6 +40,10 @@ const getAverage = (grades, type) => {
 					(grade.attendance_quarter_2_total || 0) +
 					(grade.attendance_quarter_3_total || 0) +
 					(grade.attendance_quarter_4_total || 0),
+					attendance_quarter_1_present: grade.attendance_quarter_1_total - (grade.attendance_quarter_1_tardy + grade.attendance_quarter_1_absent),
+					attendance_quarter_2_present: grade.attendance_quarter_2_total - (grade.attendance_quarter_2_tardy + grade.attendance_quarter_2_absent),
+					attendance_quarter_3_present: grade.attendance_quarter_3_total - (grade.attendance_quarter_3_tardy + grade.attendance_quarter_3_absent),
+					attendance_quarter_4_present: grade.attendance_quarter_4_total - (grade.attendance_quarter_4_tardy + grade.attendance_quarter_4_absent)
 			};
 		}
 		return {
