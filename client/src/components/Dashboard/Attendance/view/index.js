@@ -1070,7 +1070,7 @@ export default function index(props) {
 								start: subDays(new Date(date.start), 1),
 								end: addDays(new Date(date.end), 1),
 							}) && defaultAtt.attendance[key] 
-							&&  (defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].is_excused === 1);
+							&&  (defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].status === 'Tardy' || defaultAtt.attendance[key].is_excused === 1);
 						}).length || 0;
 
 					return {
