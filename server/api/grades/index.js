@@ -1,11 +1,6 @@
 import { makeDb } from '../../helpers/database';
 
-import {
-  currentS3BucketName,
-  s3Bucket,
-  s3BucketRootPath,
-  uploadFile
-} from "../../helpers/aws";
+import { currentS3BucketName, s3Bucket, s3BucketRootPath, uploadFile } from '../../helpers/aws';
 
 const getAverage = (grades, type) => {
 	return grades.map(grade => {
@@ -23,7 +18,6 @@ const getAverage = (grades, type) => {
 				),
 				final_semestral_1_attendance: (grade.attendance_quarter_1_total || 0) + (grade.attendance_quarter_2_total || 0),
 				final_semestral_2_attendance: (grade.attendance_quarter_3_total || 0) + (grade.attendance_quarter_4_total || 0),
-			
 			};
 		} else if (type === 'quarter') {
 			return {
@@ -40,10 +34,14 @@ const getAverage = (grades, type) => {
 					(grade.attendance_quarter_2_total || 0) +
 					(grade.attendance_quarter_3_total || 0) +
 					(grade.attendance_quarter_4_total || 0),
-					attendance_quarter_1_present: grade.attendance_quarter_1_total - (grade.attendance_quarter_1_tardy + grade.attendance_quarter_1_absent),
-					attendance_quarter_2_present: grade.attendance_quarter_2_total - (grade.attendance_quarter_2_tardy + grade.attendance_quarter_2_absent),
-					attendance_quarter_3_present: grade.attendance_quarter_3_total - (grade.attendance_quarter_3_tardy + grade.attendance_quarter_3_absent),
-					attendance_quarter_4_present: grade.attendance_quarter_4_total - (grade.attendance_quarter_4_tardy + grade.attendance_quarter_4_absent)
+				attendance_quarter_1_present:
+					grade.attendance_quarter_1_total - (grade.attendance_quarter_1_tardy + grade.attendance_quarter_1_absent),
+				attendance_quarter_2_present:
+					grade.attendance_quarter_2_total - (grade.attendance_quarter_2_tardy + grade.attendance_quarter_2_absent),
+				attendance_quarter_3_present:
+					grade.attendance_quarter_3_total - (grade.attendance_quarter_3_tardy + grade.attendance_quarter_3_absent),
+				attendance_quarter_4_present:
+					grade.attendance_quarter_4_total - (grade.attendance_quarter_4_tardy + grade.attendance_quarter_4_absent),
 			};
 		}
 		return {
@@ -53,13 +51,15 @@ const getAverage = (grades, type) => {
 };
 
 const formatFormContents = applications => {
-	for(let application of applications) {
-		application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-		application.form_contents =   application.form_contents
+	for (let application of applications) {
+		application.form_contents = application.form_contents
+			? Buffer.from(application.form_contents, 'base64').toString('utf-8')
+			: '{}';
+		application.form_contents = application.form_contents;
 	}
 
 	return applications;
-}
+};
 
 const getTotalAttendance = (cumulativeGrade, type) => {
 	cumulativeGrade.map(cumulative => {
@@ -85,26 +85,23 @@ export const getGrades = async () => {
 	}
 };
 
-const formatFile = async (attachment, id) => {
-	const file = {...(attachment || {})};
-	if(file && file.data) {
-		const buf = Buffer.from(
-			file?.data.replace(/^data:image\/\w+;base64,/, ""),
-			"base64"
-		);
+const formatFile = async (attachment, id, path = 'grades') => {
+	const file = { ...(attachment || {}) };
+	if (file && file.data) {
+		const buf = Buffer.from(file?.data.replace(/^data:image\/\w+;base64,/, ''), 'base64');
 		const s3Payload = {
 			Bucket: currentS3BucketName,
-			Key: `grades/${id}/${file.filename}`,
+			Key: `${path}/${id}/${file.filename}`,
 			Body: buf,
-			ContentEncoding: "base64",
+			ContentEncoding: 'base64',
 			ContentType: file.contentType,
-			ACL: "public-read"
+			ACL: 'public-read',
 		};
 		await uploadFile(s3Payload);
 		return s3Payload;
 	}
 	return null;
-}
+};
 
 export const getStudentCumulativeByChildId = async childId => {
 	const db = makeDb();
@@ -175,18 +172,17 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
 	let studentCumulative = [];
 	let studentGrades = [];
 	try {
-
 		let response = await db.query(
-			app_group_type === 'forms' ?
-			`SELECT app.class_teacher as app_group_id,
+			app_group_type === 'forms'
+				? `SELECT app.class_teacher as app_group_id,
 				vag.name as app_group_name,
 				CONVERT(form_contents USING utf8) as form_contents,
 				BIN_TO_UUID(app.app_id) as child_id
 			FROM custom_application app
 			INNER JOIN vendor_app_groups vag
 			ON vag.app_grp_id=UUID_TO_BIN(app.class_teacher)
-			WHERE app.class_teacher=?` :
-			`SELECT app.class_teacher as app_group_id,
+			WHERE app.class_teacher=?`
+				: `SELECT app.class_teacher as app_group_id,
 				vag.name as app_group_name,
         BIN_TO_UUID(ch.ch_id) as child_id,
 				BIN_TO_UUID(app.app_id) as app_id,
@@ -197,23 +193,19 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
 			ON ch.ch_id=app.child
 			INNER JOIN vendor_app_groups vag
       ON vag.app_grp_id=UUID_TO_BIN(app.class_teacher)
-			WHERE app.class_teacher=?`
-			,
+			WHERE app.class_teacher=?`,
 			[app_group_id]
 		);
 
-
 		if (response) {
-
-			if(app_group_type === 'forms') {
-				response = formatFormContents(response)
+			if (app_group_type === 'forms') {
+				response = formatFormContents(response);
 			}
 
 			studentCumulative = [...(response || [])];
 			const childIds = response.map(item => item.child_id).filter(id => id);
 
 			if (childIds.length > 0) {
-		
 				let cumulativeGrade = await db.query(`
             SELECT   
               BIN_TO_UUID(sgc.app_group_id) as app_group_id,
@@ -254,16 +246,18 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
 					WHERE child_id IN (${childIds.map(id => `UUID_TO_BIN('${id}')`).join(',')})
 				`);
 
-				studentCumulative = studentCumulative.map(item => {
-					let currentStudentCumulative = cumulativeGrade.filter(cg => cg.child_id === item.child_id);
-					//currentStudentCumulative = currentStudentCumulative.sort((a,b) => a.year_level < b.year_level)
-					let studentTest = standardizedTest.filter(st => st.child_id === item.child_id)
-					return {
-						...item,
-						cumulative_grades: [...(currentStudentCumulative || [])],
-						standardized_test:[...(studentTest || [])]
-					};
-				}).sort((a,b) => a.year_level < b.year_level)
+				studentCumulative = studentCumulative
+					.map(item => {
+						let currentStudentCumulative = cumulativeGrade.filter(cg => cg.child_id === item.child_id);
+						//currentStudentCumulative = currentStudentCumulative.sort((a,b) => a.year_level < b.year_level)
+						let studentTest = standardizedTest.filter(st => st.child_id === item.child_id);
+						return {
+							...item,
+							cumulative_grades: [...(currentStudentCumulative || [])],
+							standardized_test: [...(studentTest || [])],
+						};
+					})
+					.sort((a, b) => a.year_level < b.year_level);
 
 				for (let sc of studentCumulative) {
 					const studentGradeCumulativeIds = sc.cumulative_grades
@@ -344,12 +338,11 @@ export const getStudentCumulativeGradeVendor = async ({ vendor_id }) => {
 			[vendor_id]
 		);
 
-		if(customApplicationStudent && customApplicationStudent.length > 0) {
-			customApplicationStudent  = formatFormContents(customApplicationStudent);
+		if (customApplicationStudent && customApplicationStudent.length > 0) {
+			customApplicationStudent = formatFormContents(customApplicationStudent);
 		}
 
-		let response = [...(applicationStudent || []),...(customApplicationStudent || [])];
-
+		let response = [...(applicationStudent || []), ...(customApplicationStudent || [])];
 
 		if (response) {
 			studentCumulative = [...(response || [])];
@@ -458,14 +451,13 @@ export const addUpdateStudentCumulativeGrades = async ({
 
 		const isUserExist = cumulativeId
 			? await db.query(
-				`SELECT student_grade_cumulative_id,attachment
+					`SELECT student_grade_cumulative_id,attachment
       	FROM student_grade_cumulative 
       	WHERE  student_grade_cumulative_id=?`,
 					[cumulativeId]
 			  )
 			: [];
 
-			
 		if (isUserExist.length === 0) {
 			const studentCumulativeResult = await db.query(
 				`INSERT INTO student_grade_cumulative(
@@ -508,31 +500,25 @@ export const addUpdateStudentCumulativeGrades = async ({
 					school_year_end,
 					school_year_frame,
 					class_name,
-					class_type
+					class_type,
 				]
 			);
 
 			cumulativeId = studentCumulativeResult.insertId;
 
-				const s3Payload = await formatFile(attachment,cumulativeId);
+			const s3Payload = await formatFile(attachment, cumulativeId);
 
-				if(s3Payload){
-					await db.query(
-						`UPDATE student_grade_cumulative
+			if (s3Payload) {
+				await db.query(
+					`UPDATE student_grade_cumulative
 						 SET attachment=?, date_updated=NOW() 
 						 WHERE student_grade_cumulative_id=?
 						`,
-						[
-							s3Payload.Key,
-							cumulativeId
-						]
-					);
-	
-				}
-
-	
+					[s3Payload.Key, cumulativeId]
+				);
+			}
 		} else {
-			const s3Payload = await formatFile(attachment,cumulativeId);
+			const s3Payload = await formatFile(attachment, cumulativeId);
 			const studentCumulativeResult = await db.query(
 				`UPDATE student_grade_cumulative
          SET year_level=?,
@@ -707,8 +693,9 @@ export const addUpdateStudentCumulativeGrades = async ({
 			);
 		}
 
-		studentCumulative = await db.query(application_type === 'forms' ?
-			`SELECT BIN_TO_UUID(sgc.child_id) as child_id,
+		studentCumulative = await db.query(
+			application_type === 'forms'
+				? `SELECT BIN_TO_UUID(sgc.child_id) as child_id,
 				sgc.student_grade_cumulative_id,
 				sgc.application_type,
 				sgc.year_level,
@@ -724,8 +711,8 @@ export const addUpdateStudentCumulativeGrades = async ({
 				CONVERT(form_contents USING utf8) as form_contents
 			FROM student_grade_cumulative sgc, custom_application ca
 			WHERE sgc.student_grade_cumulative_id=? AND
-				ca.app_id=sgc.child_id` :
-			`SELECT BIN_TO_UUID(sgc.child_id) as child_id,
+				ca.app_id=sgc.child_id`
+				: `SELECT BIN_TO_UUID(sgc.child_id) as child_id,
 				sgc.student_grade_cumulative_id,
 				sgc.application_type,
 				sgc.year_level,
@@ -742,12 +729,11 @@ export const addUpdateStudentCumulativeGrades = async ({
 				ch.lastname
 			FROM student_grade_cumulative sgc, child ch
 			WHERE sgc.student_grade_cumulative_id=? AND
-				ch.ch_id=sgc.child_id`
-			,
+				ch.ch_id=sgc.child_id`,
 			[cumulativeId]
 		);
 
-		if(application_type === 'forms') {
+		if (application_type === 'forms') {
 			studentCumulative = formatFormContents(studentCumulative);
 		}
 
@@ -812,20 +798,19 @@ export const addUpdateStudentTest = async (studentTest = []) => {
 	let studentTestList = [];
 
 	try {
-		console.log('Student Test', studentTest)
+
 		for (const test of studentTest) {
 			let studentTestId = test.student_test_id || null;
 			let studentChildId = test.child_id;
 			let currentSubjectGrades = [];
 			const isTestExist = studentTestId
 				? await db.query(
-						`SELECT student_test_id 
+						`SELECT student_test_id,attachment
           FROM student_standardized_test 
           WHERE student_test_id=?`,
-						[studentTestId]
+					[studentTestId]
 				  )
 				: null;
-
 			if (!isTestExist && !studentTestId) {
 				const studentStardizedTestResult = await db.query(
 					`INSERT INTO student_standardized_test(
@@ -840,12 +825,10 @@ export const addUpdateStudentTest = async (studentTest = []) => {
             nationality_percentage,
             district_percentage,
             state_percentage,
-            attachment,
             date_added
           )
           VALUES (
             UUID_TO_BIN(?),
-            ?,
             ?,
             ?,
             ?,
@@ -870,13 +853,25 @@ export const addUpdateStudentTest = async (studentTest = []) => {
 						test.school_percentage,
 						test.nationality_percentage,
 						test.district_percentage,
-						test.state_percentage,
-						test.attachment,
+						test.state_percentage
 					]
 				);
 
 				studentTestId = studentStardizedTestResult.insertId;
+
+				const s3Payload = await formatFile(test.attachment, studentTestId,'student_test');
+				if (s3Payload) {
+					await db.query(
+						`UPDATE student_standardized_test
+							SET attachment=?, date_updated=NOW() 
+							WHERE student_test_id=?
+						`,
+						[s3Payload.Key, studentTestId]
+					);
+				}
 			} else {
+
+				const s3Payload = await formatFile(test.attachment, studentTestId,'student_test');
 				const studentStardizedTestResult = await db.query(
 					`UPDATE student_standardized_test
           SET test_name=?,attempt=?,
@@ -898,7 +893,7 @@ export const addUpdateStudentTest = async (studentTest = []) => {
 						test.nationality_percentage,
 						test.district_percentage,
 						test.state_percentage,
-						test.attachment,
+						s3Payload ? s3Payload.Key : isTestExist[0] && isTestExist[0].attachment,
 						studentTestId,
 					]
 				);

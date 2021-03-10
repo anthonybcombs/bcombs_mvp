@@ -760,7 +760,7 @@ const inputs = `
         nationality_percentage: Float
         district_percentage: Float
         state_percentage: Float
-        attachment: String
+        attachment: FileContentInput
         date_created: String
     }
 
