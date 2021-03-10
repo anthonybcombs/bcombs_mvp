@@ -248,8 +248,8 @@ export default ({ student_id }) => {
     }
 
     // Column filter
-    newRows = newRows.filter(e => {
-      const rowArr = Object.entries(e)
+    newRows = newRows.filter(({ id, ...rest}) => {
+      const rowArr = Object.entries(rest)
       return rowArr.filter(([key, value]) => !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
     })
 
@@ -446,7 +446,6 @@ export default ({ student_id }) => {
     handleSetRowAndColumn(gradeType)
   }, [])
 
-  console.log('data', { columns, rows })
   return (
     <GradesStyled>
       <h2>Grade Individual View</h2>

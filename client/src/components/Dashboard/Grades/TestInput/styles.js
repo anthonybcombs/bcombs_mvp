@@ -54,7 +54,7 @@ export default styled.div`
     position: relative;
 		white-space: nowrap;
     height: 42px;
-    min-width: 100px;
+    // min-width: 100px;
     white-space: initial;
 	}
 	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td >svg {
@@ -214,13 +214,23 @@ export default styled.div`
     font-weight: normal;
     background: #f5812f;
     transition: all .3s ease-in-out;
-		text-decoration: none;
   }
 
   .gradeListFilter .applyFilterBtn:hover {
     background: #e47120;
   }
 
+	.back-btn {
+		width: 50px;
+		color: #3e89fe;
+		display: flex;
+		align-items: center;
+		padding-bottom: 1rem;
+		text-decoration: none;
+	}
+	.back-btn svg {
+		padding-right: 5px;
+	}
 
 
 
