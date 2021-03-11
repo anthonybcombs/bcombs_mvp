@@ -483,10 +483,8 @@ const CustomRangePicker = ({
 	minDate = null,
 	maxDate = null
 	}) => {
-		console.log('CustomRangePicker111111 minDate',minDate)
-		console.log('CustomRangePicker111111 maxDate',maxDate)
-		console.log('CustomRangePicker111111 highlightDates',highlightDates)
 
+	console.log('Selectedddd', selected)
 	return (
 		<DatePicker
 			minDate={minDate ? minDate : null}
@@ -973,6 +971,7 @@ export default function index(props) {
 			isEqual(new Date(payload.start), new Date(payload.end)) ||
 			isAfter(new Date(payload.end), new Date(payload.start))
 		) {
+
 			handleChangeDateFilter(payload);
 		}
 	};
@@ -1115,18 +1114,22 @@ export default function index(props) {
 
 		//setSelectedSummaryRangeDate([new Date(date[0]), new Date(date[1])]);
 		//console.log('selectedSummaryRangeDate',selectedSummaryRangeDate)
-
+			console.log('setSelectedSummaryRangeDate dateeeee',date)
+			console.log('setSelectedSummaryRangeDate displayDays',displayDays)
 		const isDateWithin = displayDays.some((currentDate) => {
-			return isWithinInterval(new Date(currentDate), {
-				start: subDays(new Date(date.start), 1),
-				end: addDays(new Date(date.end), 1),
+
+			return isWithinInterval(typeof currentDate === 'string' ? parseDate(currentDate) : currentDate, {
+				start: subDays(typeof date.start === 'string' ? new Date(date.start) : date.start, 1),
+				end: addDays(typeof date.end === 'string' ? new Date(date.end) :  date.end, 1),
 			})
 		})
 
-
-		if(isDateWithin) {
-			setSelectedSummaryRangeDate(date);
-		}
+		console.log('setSelectedSummaryRangeDate isDateWithin',isDateWithin)
+		// if(isDateWithin) {
+		// 	console.log('setSelectedSummaryRangeDate date',date)
+		// 	setSelectedSummaryRangeDate(date);
+		// }
+		setSelectedSummaryRangeDate(date);
 	
 	};
 
@@ -1255,7 +1258,7 @@ export default function index(props) {
 	// 	setIsRightCalendarVisible(!isRightCalendarVisible);
 	// };
 
-	console.log('currentDisplayDays', currentDisplayDays);
+	console.log('selectedSummaryRangeDate', selectedSummaryRangeDate);
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Attendance Summary</h2>
