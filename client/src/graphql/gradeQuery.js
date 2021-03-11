@@ -73,8 +73,8 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
             semestral_1_average
             semestral_2_average
             semestral_final
-            semestral_1_attendance
-            semestral_2_attendance
+            final_semestral_1_attendance
+            final_semestral_2_attendance
             final_quarter_attendance
             attendance
           }
@@ -167,8 +167,8 @@ query getStudentRecords(
           semestral_1_average
           semestral_2_average
           semestral_final
-          semestral_1_attendance
-          semestral_2_attendance
+          final_semestral_1_attendance
+          final_semestral_2_attendance
           final_quarter_attendance
           attendance
         }
@@ -252,8 +252,8 @@ query getStudentCumulativeGradeByVendor(
           semestral_1_average
           semestral_2_average
           semestral_final
-          semestral_1_attendance
-          semestral_2_attendance
+          final_semestral_1_attendance
+          final_semestral_2_attendance
           final_quarter_attendance
           attendance
         }
