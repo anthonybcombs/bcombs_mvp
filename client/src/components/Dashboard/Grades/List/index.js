@@ -9,16 +9,33 @@ import moment from 'moment'
 import GradesStyled from './styles'
 import Headers from '../Headers'
 import { FilterOptionsObj } from '../Headers/options'
-
-import Loading from '../../../../helpers/Loading.js'
-
 import { useSelector, useDispatch } from 'react-redux'
 
+import Loading from '../../../../helpers/Loading.js'
+import { getGpaCum } from '../utils'
+
 import { requestVendor } from '../../../../redux/actions/Vendors'
-import { requestGetStudentCumulativeGradeByAppGroup  } from "../../../../redux/actions/Grades"
+import { requestGetStudentCumulativeGradeByAppGroup  } from '../../../../redux/actions/Grades'
 
 export default () => {
   const dispatch = useDispatch()
+  const { gradeInput } = useSelector(({ gradeInput }) => ({
+    gradeInput
+  }))
+  console.log('galdkfjasdf', gradeInput)
+  const gradeList = (gradeInput?.gradeList || [])
+    .map(grade => {
+      const { firstName, lastName, cumulative_grades } = grade
+      const hasCumGrades = !!cumulative_grades.length
+      return {
+        ...grade,
+        name: `${firstName} ${lastName}`,
+        school_type: hasCumGrades ? cumulative_grades[0].school_type : '', //string
+        grade_level: hasCumGrades ? cumulative_grades[0].year_level : '', //number
+        
+      }
+    })
+
   const data = cloneDeep([
     {
       id: '1',
@@ -240,8 +257,8 @@ export default () => {
     }
 
     // Column filter
-    newRows = newRows.filter(e => {
-      const rowArr = Object.entries(e)
+    newRows = newRows.filter(({ id, ...rest}) => {
+      const rowArr = Object.entries(rest)
       return rowArr.filter(([key, value]) => !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
     })
 
@@ -347,16 +364,6 @@ export default () => {
   const handleSetGradeType = (type) => {
     setGradeType(type)
     handleSetRowAndColumn(type)
-
-    // let newColumns = Object.entries(columns)
-    //   .reduce((acc, [key, value]) => {
-    //     const newValue = { ...value }
-    //     if (gradeColumns[gradeType].includes(key)) {
-    //       newValue.type = type
-    //     }
-    //     acc[key] = newValue
-    //   }, {})
-    // setColumns(newColumns)
   }
 
   const renderTableFilter = (key, isGrade = false) => {
@@ -441,12 +448,11 @@ export default () => {
   useEffect(() => {
     handleSetRowAndColumn(gradeType)
     dispatch(requestGetStudentCumulativeGradeByAppGroup({
-      app_group_id: 'bade0202-f2ce-11ea-8212-dafd2d0ae3ff',
+      app_group_id: '0edbc431-eeef-11ea-8212-dafd2d0ae3ff',
       app_group_type: 'bcombs'
     }))
   }, [])
 
-  console.log('data', { columns, rows })
   return (
     <GradesStyled>
       <h2>Grade List Views</h2>
@@ -466,12 +472,18 @@ export default () => {
 
             onApplyFilter={handleApplyFilter}
           />
-          <button
+          <Link
             className='applyFilterBtn'
-            onClick={() => {}}
+            to={`/dashboard/grades/input`}
           >
             {`Grades & Test Input`}
-          </button>
+          </Link>
+          {/* <button
+            className='applyFilterBtn'
+            onClick={() => window.history.push()}
+          >
+            {`Grades & Test Input`}
+          </button> */}
         </div>
         <div id='gradeListTableWrapper'>
           <table id='gradeListView-table'>
