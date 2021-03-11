@@ -452,6 +452,10 @@ const months = [
 	'December',
 ];
 
+const isDateInstance = () => {
+	return Object.prototype.toString.call(date) === "[object Date]"
+}
+
 const DateCustomInput = ({ value, onClick, name, className, placeholder, label }) => (
 	<div className="field">
 		<input
@@ -480,15 +484,19 @@ const CustomRangePicker = ({
 	maxDate = null
 	}) => {
 		console.log('CustomRangePicker111111 minDate',minDate)
-		console.log('CustomRangePicker111111 maxDate',minDate)
+		console.log('CustomRangePicker111111 maxDate',maxDate)
+		console.log('CustomRangePicker111111 highlightDates',highlightDates)
+
 	return (
 		<DatePicker
-			minDate={minDate ? new Date(minDate) : null}
-			maxDate={maxDate ? new Date(maxDate) : null}
+			minDate={minDate ? minDate : null}
+			maxDate={maxDate ? maxDate : null}
 			dateFormat={DISPLAY_DATE_FORMAT}
 			readOnly={false}
 			style={{ marginTop: 24 }}
-			highlightDates={highlightDates.length ? highlightDates.map(date => new Date(date)) : []}
+			highlightDates={highlightDates.length ? highlightDates.map(date => {
+				return typeof date === 'string' ? parseDate(date) : date
+			}) : []}
 			renderCustomHeader={({
 				date,
 				changeYear,
@@ -731,8 +739,15 @@ export default function index(props) {
 						...totalHours,
 					};
 				});
-			let displayDayList = attendance.list.map(att => format(new Date(parseInt(att.attendance_date)), DATE_FORMAT));
+			//let displayDayList = [];
+			// THERE ERROR IS HERE
+			console.log('attendance.list123123123',attendance.list)
+			let displayDayList = attendance.list.map(att => {
+				console.log('333333333123123123',new Date(parseInt(att.attendance_date)))
+				return format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)
+			});
 			displayDayList = [...new Set(displayDayList)].sort();
+			console.log('displayDayLiszzzzt',displayDayList)
 			setDisplayDays(displayDayList);
 			console.log("currentAttendance",currentAttendance)
 			setAttendanceDisplay([...(currentAttendance || [])]);
@@ -1107,6 +1122,7 @@ export default function index(props) {
 				end: addDays(new Date(date.end), 1),
 			})
 		})
+
 
 		if(isDateWithin) {
 			setSelectedSummaryRangeDate(date);
