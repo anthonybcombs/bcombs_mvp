@@ -7,14 +7,14 @@ export default styled.div`
   padding: 0rem 3em 2rem;
   
   
-  #gradeListView {
+  #gradeInputView {
     padding: 1rem;
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
     min-height: calc(100vh - 220px);
   }
 
-	#gradeListView .field-input {
+	#gradeInputView .field-input {
 		border: 0;
     cursor: text;
     color: #555;
@@ -32,7 +32,7 @@ export default styled.div`
     overflow-x: auto;
   }
 
-  #gradeListView-table {
+  #gradeInputView-table {
 		text-align: center;
 		font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
 		border-collapse: collapse;
@@ -40,33 +40,36 @@ export default styled.div`
 		border: 0;
 	}
 
-	#gradeListView-table tbody tr:nth-child(2) {
-		background: rgb(128 128 128 / 20%);
+	#gradeInputView-table tbody tr:nth-child(2) {
+		// background: rgb(128 128 128 / 20%);
+    color: #fff;
+		background: rgb(75 104 197);
+    border-top: 1px solid #c0caec;
 	}
 
-	#gradeListView-table th:not(:last-child),
-	#gradeListView-table tbody tr:nth-child(2) .subHeader:not(:last-child),
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td:not(:last-child) {
+	#gradeInputView-table th:not(:last-child),
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader:not(:last-child),
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td:not(:last-child) {
 		border-right: 1px solid rgb(255 255 255 / 65%);
 	}
 
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td {
     position: relative;
 		white-space: nowrap;
-    height: 42px;
-    // min-width: 100px;
+    // height: 42px;
+    min-width: 100px;
     white-space: initial;
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td >svg {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td >svg {
 		position: relative;
     right: -5px;
     cursor: pointer;
     transition: .15s ease-in-out;
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td >svg:hover {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td >svg:hover {
 		color: grey;
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon {
 		position: absolute;
     left: 0;
     width: 180px;
@@ -74,25 +77,25 @@ export default styled.div`
     box-shadow: 0 3px 6px #ddd;
     background-color: rgb(255, 255, 255);
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .filter-search {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .filter-search {
 		padding-bottom: 1rem;
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .filter-option {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .filter-option {
     display: flex;
 		width: 100%;
 		padding 3px 0;
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .filter-option label {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .filter-option label {
 		cursor: pointer;
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions {
 		margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid #ddd;
 		display: flex;
 		justify-content: flex-end;
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button {
 		border: 0;
     padding: 8px 10px;
     color: white;
@@ -102,55 +105,64 @@ export default styled.div`
     background-color: #f26e21;
 		transition: all .3s ease-in-out;
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.cancel {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.cancel {
     color: #f26e21;
 		background: #fff;
 		border: 1px solid #f26e21;
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.cancel:hover {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.cancel:hover {
 		background: rgb(242 110 33 / 5%);
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply {
 		margin-left: .5rem
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply:hover {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply:hover {
 		background: #e47120;
 	}
-	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply[disabled] {
+	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply[disabled] {
 		background-color: #eee;
 	}
-	#gradeListView-table tbody tr .subHeader .subTable tr td {
+	#gradeInputView-table tbody tr .subHeader .subTable tr td {
 		// width: 200px;
 	}
 
-	#gradeListView-table td,
-	#gradeListView-table th {
+	#gradeInputView-table td,
+	#gradeInputView-table th {
 		border: 0;
 		padding: 15px;
 	}
 
-	#gradeListView-table tr:nth-child(even) {
+	#gradeInputView-table tr:nth-child(even) {
 		background-color: #f9f9f9;
 	}
 
-	#gradeListView-table th {
-		text-align: center;
-		background-color: #f26e21;
+	#gradeInputView-table th {
 		color: white;
+    padding-top: 0;
+		padding-left: 0;
+		text-align: center;
+		background-color: #4B68C5;
 	}
-	#gradeListView-table th.th-grades {
+	#gradeInputView-table th.standard {
+    color: #000;
+		text-align: left;
+    font-weight: normal;
+		background: transparent;
+	}
+	#gradeInputView-table th
+	#gradeInputView-table th.th-grades {
 		position: relative;
 	}
-	#gradeListView-table th.th-grades >svg {
+	#gradeInputView-table th.th-grades >svg {
 		position: relative;
     right: -5px;
 		cursor: pointer;
     transition: .15s ease-in-out;
 	}
-	#gradeListView-table th.th-grades >svg:hover {
+	#gradeInputView-table th.th-grades >svg:hover {
 		opacity: 0.5;
 	}
-	#gradeListView-table th.th-grades .gradesFilter {
+	#gradeInputView-table th.th-grades .gradesFilter {
 		position: absolute;
     right: calc(100% - 80%);
     
@@ -168,33 +180,110 @@ export default styled.div`
     flex-direction: column;
     box-shadow: 0 3px 6px #ddd;
 	}
-	#gradeListView-table th.th-grades .gradesFilter .header,
-	#gradeListView-table th.th-grades .gradesFilter label {
+	#gradeInputView-table th.th-grades .gradesFilter .header,
+	#gradeInputView-table th.th-grades .gradesFilter label {
 		font-weight: normal;
 		padding: 3px 0;
 	}
 
-	#gradeListView-table td.subHeader {
+	#gradeInputView-table td.subHeader {
 		padding: 0;
 	}
 
-	#gradeListView-table td.subHeader table.subTable {
+	#gradeInputView-table td.subHeader table.subTable {
 		width: 100%;
 	}
-	#gradeListView-table td.subHeader table.subTable tr {
+	#gradeInputView-table td.subHeader table.subTable tr {
 		background: transparent;
   }
-  #gradeListView-table td.subHeader table.subTable td span >svg {
+  #gradeInputView-table td.subHeader table.subTable td span >svg {
     color: grey;
     transition: 0.15s ease-in-out;
   }
-  #gradeListView-table td.subHeader table.subTable td span >svg:hover {
+  #gradeInputView-table td.subHeader table.subTable td span >svg:hover {
     color: #000;
   }
+	#gradeInputView-table td.subHeader table.standardCheckbox td:first-child {
+		min-width: 30px !important;
+	}
+	#gradeInputView-table td.subHeader table.standard tr td:first-child {
+		min-width: 52px;
+	}
 
-	#gradeListView-table a {
+	#gradeInputView-table a {
 		color: #3e89fe;
 		text-decoration: none;
+	}
+
+	.gradeInputView-table-actions {
+		padding-top: 1rem;
+		display: flex;
+		justify-content: space-between
+	}
+	.gradeInputView-table-actions button {
+		border: 0;
+    color: white;
+    box-shadow: none;
+    max-width: 200px;
+    // padding: 8px 10px;
+    border-radius: 3px;
+    background-color: #f26e21;
+		transition: all .3s ease-in-out;
+	}
+	.gradeInputView-table-actions button.disabled {
+		opacity: .35;
+		cursor: auto;
+	}
+	.gradeInputView-table-actions button span {
+		padding-left: .5rem;
+	}
+	.gradeInputView-table-actions .left {
+		display: grid;
+		grid-gap: 1rem;
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+	.gradeInputView-table-actions .right {
+		display: grid;
+		grid-gap: 1rem;
+		grid-template-columns: 1fr 1fr;
+	}
+	.gradeInputView-table-actions button.btn-add {
+		color: #2097f3;
+		background: transparent;
+    border: 1px solid #2097f3;
+	}
+	.gradeInputView-table-actions button.btn-add:hover {
+		background: rgb(32 151 243 / 10%);
+	}
+
+	.gradeInputView-table-actions button.btn-copy {
+		color: orange;
+    border: 1px solid;
+		background: transparent;
+	}
+	.gradeInputView-table-actions button.btn-copy:hover {
+		background: rgb(255 165 0 / 10%);
+	}
+
+	.gradeInputView-table-actions button.btn-delete {
+		color: #f44336;
+		background: transparent;
+    border: 1px solid #f44336;
+	}
+	.gradeInputView-table-actions button.btn-delete:hover {
+		background: rgb(244 67 54 / 10%);
+	}
+
+	.gradeInputView-table-actions button.btn-save {
+    color: #f26e21;
+		background: transparent;
+    border: 1px solid #f26e21;
+	}
+	.gradeInputView-table-actions button.btn-save:hover {
+		background: rgb(242 110 33 / 10%);
+	}
+	.gradeInputView-table-actions button.btn-review:hover {
+		background: #e47120;
 	}
 
 
@@ -203,6 +292,10 @@ export default styled.div`
     align-items: flex-end;
     margin-bottom: 1rem;
   }
+
+	.gradeListFilter .search-input {
+		margin-right: 0;
+	}
 
   .gradeListFilter .applyFilterBtn {
     color: #fff;
