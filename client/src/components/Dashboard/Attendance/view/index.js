@@ -484,7 +484,8 @@ const CustomRangePicker = ({
 	maxDate = null
 	}) => {
 
-	console.log('Selectedddd', selected)
+
+		
 	return (
 		<DatePicker
 			minDate={minDate ? minDate : null}
@@ -565,7 +566,7 @@ const CustomRangePicker = ({
 function parseDate(input) {
 	if (!input) return new Date();
 	let parts = input.split('-');
-	console.log('partssss', parts);
+
 	// new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
 	return new Date(parts[2], parts[0] - 1, parts[1]); // Note: months are 0-based
 }
@@ -643,7 +644,6 @@ export default function index(props) {
 	const queryLocation = useLocation();
 	const searchParams = parse(queryLocation.search); // => {init: "true"}
 
-	//console.log('authhhhhhhhhhhhhhhhhh user', user)
 	useEffect(() => {
 		if (searchParams && searchParams.type === 'custom' && searchParams.formId) {
 			dispatch(requestGetCustomApplications(searchParams.formId));
@@ -655,17 +655,15 @@ export default function index(props) {
 		}
 	}, []);
 
-	useEffect(() => {
-		if (vendors && vendors.length > 0) {
-			console.log('REQUEST GET APPLICATIONSSS', vendors);
-			//dispatch(requestGetApplications(vendors[0].id));
-		}
-	}, [vendors]);
+	// useEffect(() => {
+	// 	if (vendors && vendors.length > 0) {
+	// 	}
+	// }, [vendors]);
 
 	useEffect(() => {
-		console.log('useEffect app_group_id', app_group_id);
+
 		if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
-			console.log('Search Params Type', searchParams.type === 'all' ? 'all' : app_group_id)
+	
 			dispatch(requestAttendance( searchParams.type === 'all' ? 'all' : app_group_id, 'bcombs'));
 			dispatch(requestEventAttendance(app_group_id));
 		} else if (searchParams.formId) {
@@ -674,7 +672,7 @@ export default function index(props) {
 	}, []);
 	useEffect(() => {
 		if (attendance.list) {
-			console.log('ATTENDANCE LISTTTT', attendance.list)
+	
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 
@@ -719,7 +717,7 @@ export default function index(props) {
 							end: new Date('2021-07-31'),
 						});
 					});
-					console.log('Total Hourssss filteredDate', filteredDate);
+
 					const totalHours = filteredDate.reduce(
 						(accum, key) => {
 							return {
@@ -739,15 +737,15 @@ export default function index(props) {
 				});
 			//let displayDayList = [];
 			// THERE ERROR IS HERE
-			console.log('attendance.list123123123',attendance.list)
+
 			let displayDayList = attendance.list.map(att => {
-				console.log('333333333123123123',new Date(parseInt(att.attendance_date)))
+				
 				return format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)
 			});
 			displayDayList = [...new Set(displayDayList)].sort();
-			console.log('displayDayLiszzzzt',displayDayList)
+		
 			setDisplayDays(displayDayList);
-			console.log("currentAttendance",currentAttendance)
+
 			setAttendanceDisplay([...(currentAttendance || [])]);
 			setDefaultAttendanceDisplay([...(currentAttendance || [])]);
 
@@ -780,7 +778,7 @@ export default function index(props) {
 	const renderTableData = () => {
 
 		let formattedDateKeys = currentDisplayDays.map(key => format(parseDate(key), DATE_KEY_FORMAT));
-		console.log('attendanceDisplay',attendanceDisplay)
+
 		return attendanceDisplay.map((att, index) => {
 
 			let summaryTotal = 0;
@@ -801,7 +799,7 @@ export default function index(props) {
 
 				 customFormName = currentFormName ? currentFormName[0]?.fields[0]?.value : ''
 			}	
-			console.log('attendanceSummary',attendanceSummary)
+
 			return (
 				<tr key={index}>
 					<td className="subHeader">
@@ -966,7 +964,7 @@ export default function index(props) {
 			[name]: value,
 		};
 
-		console.log('handleLeftCustomRangeDatePickerChange isAfter', payload);
+
 		if (
 			isEqual(new Date(payload.start), new Date(payload.end)) ||
 			isAfter(new Date(payload.end), new Date(payload.start))
@@ -1012,8 +1010,6 @@ export default function index(props) {
 
 	const handleChangeDateFilter = date => {
 
-		console.log('handleChangeDateFilter defaultAttendanceDisplay',defaultAttendanceDisplay)
-		console.log('handleChangeDateFilter date',date)
 	
 		if (Object.keys(date).length === 0) {
 			setAttendanceDisplay([...(defaultAttendanceDisplay || [])]);
@@ -1035,8 +1031,8 @@ export default function index(props) {
 		if (defaultEvents.length > 0) {
 			let filteredEvents = defaultEvents.filter(event => {
 				return isWithinInterval(parseDate(event.start_of_event), {
-					start: subDays(new Date(date.start), 1),
-					end: addDays(new Date(date.end), 1),
+					start: subDays(date.start, 1),
+					end: addDays(date.end, 1),
 				});
 				//return event
 			});
@@ -1044,6 +1040,7 @@ export default function index(props) {
 
 			let totalPresent = null;
 			let totalAttendance = null;
+
 			if (filteredEvents.length > 0) {
 				// filteredEvents.length +
 			
@@ -1073,7 +1070,6 @@ export default function index(props) {
 						},
 						{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
 					);
-					console.log('totalHourssssssss', totalHours)
 					let totalPresent =
 						Object.keys(defaultAtt.attendance).filter(key => {
 							let dashedDate = key.replaceAll('_', '-');
@@ -1100,7 +1096,7 @@ export default function index(props) {
 						},
 					};
 				}, {});
-				console.log('childEventAttendance',childEventAttendance)
+
 				setAttendanceSummary(childEventAttendance);
 
 			} else {
@@ -1113,9 +1109,7 @@ export default function index(props) {
 		}
 
 		//setSelectedSummaryRangeDate([new Date(date[0]), new Date(date[1])]);
-		//console.log('selectedSummaryRangeDate',selectedSummaryRangeDate)
-			console.log('setSelectedSummaryRangeDate dateeeee',date)
-			console.log('setSelectedSummaryRangeDate displayDays',displayDays)
+	
 		const isDateWithin = displayDays.some((currentDate) => {
 
 			return isWithinInterval(typeof currentDate === 'string' ? parseDate(currentDate) : currentDate, {
@@ -1124,9 +1118,8 @@ export default function index(props) {
 			})
 		})
 
-		console.log('setSelectedSummaryRangeDate isDateWithin',isDateWithin)
 		// if(isDateWithin) {
-		// 	console.log('setSelectedSummaryRangeDate date',date)
+
 		// 	setSelectedSummaryRangeDate(date);
 		// }
 		setSelectedSummaryRangeDate(date);
@@ -1134,10 +1127,11 @@ export default function index(props) {
 	};
 
 	const attendanceSummyByAttendance = date => {
+
 		const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
 			const dateKeys = Object.keys(att.attendance);
 			const filteredDate = dateKeys.filter(key => {
-				return isWithinInterval(new Date(key.replaceAll('_', '-')), {
+				return isWithinInterval(new Date(parseDate(key.replaceAll('_', '-'))), {
 					start: subDays(new Date(date.start), 1),
 					end: addDays(new Date(date.end), 1),
 				});
@@ -1166,10 +1160,9 @@ export default function index(props) {
 			};
 		});
 
-		console.log('updatedAttendanceDisplazzzzy', updatedAttendanceDisplay);
 
 		let childEventAttendance = updatedAttendanceDisplay.reduce((accum, att) => {
-			console.log('ACCUMMM', accum);
+
 			let totalAttendance = Object.keys(att.attendance).length || 0;
 			let totalPresent =
 				Object.keys(att.attendance).filter(key => {
@@ -1193,7 +1186,6 @@ export default function index(props) {
 			};
 		}, {});
 
-		console.log('childEventAttendance123123123123123', childEventAttendance);
 		setAttendanceSummary(childEventAttendance);
 	};
 
@@ -1216,7 +1208,6 @@ export default function index(props) {
 					end: addDays(date.end, 1),
 				});
 			});
-			console.log('filteredDatezxczxczxczxc', filteredDate);
 			const totalHours = filteredDate.reduce(
 				(accum, key) => {
 					return {
@@ -1241,10 +1232,9 @@ export default function index(props) {
 				}, {}),
 			};
 		});
-		console.log('updatedAttendanceDisplay',updatedAttendanceDisplay)
+
 		setAttendanceDisplay([...(updatedAttendanceDisplay || [])]);
-		// console.log('Dayzzzzzzz', currentDisplayDays)
-		// console.log('Dayzzzzzzz 222', displayDays)
+
 		// setCurrentDisplayDays([
 		// 	new Date(date[0]),
 		// 	addDays(new Date(new Date(date[0])), 1),
@@ -1258,7 +1248,7 @@ export default function index(props) {
 	// 	setIsRightCalendarVisible(!isRightCalendarVisible);
 	// };
 
-	console.log('selectedSummaryRangeDate', selectedSummaryRangeDate);
+
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Attendance Summary</h2>
@@ -1344,7 +1334,7 @@ export default function index(props) {
 						style={{ cursor: 'pointer', color: '#3e89fe', position: 'relative', left: 180 }}
 						onClick={() => {
 							//handleChangeDateFilter(DEFAULT_DATE);
-							console.log('selectedSummaryRangeDate', selectedSummaryRangeDate);
+		
 							if (selectedSummaryRangeDate) {
 							//	localStorage.setItem('summaryFilterRange', JSON.stringify(selectedSummaryRangeDate));
 								if(!isDefaultDateSetLabel) {
@@ -1357,7 +1347,7 @@ export default function index(props) {
 											default_summary_filter_range: selectedSummaryRangeDate
 										})
 									}
-									console.log('requestUpdateUserAttendanceFilterConfig payload ', payload)
+					
 									dispatch(requestUpdateUserAttendanceFilterConfig(payload))
 									setTimeout(() => {
 										setIsDefaultDateSetLabel(false)
@@ -1414,8 +1404,7 @@ export default function index(props) {
 											<td style={{ width: '380px', padding: '0' }}>
 												<div className="attendance-status-container">
 													{currentDisplayDays.map((date, index) => {
-														// console.log('Current  Display Dayzzzzz', date)
-														// console.log('Current  Display Dayzzzzz 2', format(parseDate(date), DISPLAY_DATE_FORMAT))
+													
 														return (
 															<div className="date">
 																{index === 0 && (
