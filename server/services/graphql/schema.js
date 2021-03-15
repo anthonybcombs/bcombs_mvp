@@ -706,6 +706,9 @@ const inputs = `
         grade_quarter_2: Float
         grade_quarter_3: Float
         grade_quarter_4: Float
+        summer_grade_1: Float
+        summer_grade_2: Float
+        summer_grade_3: Float
         letter_grade_quarter_1: String
         letter_grade_quarter_2: String
         letter_grade_quarter_3: String
@@ -1509,6 +1512,9 @@ const queryTypes = `
         attendance_quarter_2_present: Int
         attendance_quarter_3_present: Int
         attendance_quarter_4_present: Int
+        summer_grade_1: Float
+        summer_grade_2: Float
+        summer_grade_3: Float
         quarter_average: Float
         semestral_1_average: Float
         semestral_2_average: Float

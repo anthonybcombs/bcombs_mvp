@@ -574,6 +574,9 @@ export const addUpdateStudentCumulativeGrades = async ({
                 letter_grade_quarter_2,
                 letter_grade_quarter_3,
 								letter_grade_quarter_4,
+								summer_grade_1,
+                summer_grade_2,
+								summer_grade_3,
 								attendance_quarter_1_total,
 								attendance_quarter_2_total,
 								attendance_quarter_3_total,
@@ -590,7 +593,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 								year_final_grade,
                 date_created
               )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `,
 						[
 							cumulativeId,
@@ -606,6 +609,9 @@ export const addUpdateStudentCumulativeGrades = async ({
 							grade.letter_grade_quarter_2 || '',
 							grade.letter_grade_quarter_3 || '',
 							grade.letter_grade_quarter_4 || '',
+							grade.summer_grade_1 || 0,
+							grade.summer_grade_2 || 0,
+							grade.summer_grade_3 || 0,
 							grade.attendance_quarter_1_total || 0,
 							grade.attendance_quarter_2_total || 0,
 							grade.attendance_quarter_3_total || 0,
@@ -633,9 +639,12 @@ export const addUpdateStudentCumulativeGrades = async ({
 							letter_grade_quarter_1=?,
 						  letter_grade_quarter_2=?,
 						  letter_grade_quarter_3=?,
-						  letter_grade_quarter_4=?,
+							letter_grade_quarter_4=?,
+							summer_grade_1=?,
+						  summer_grade_2=?,
+							summer_grade_3=?,
 							attendance_quarter_1_total=?,
-              attendance_quarter_2_totalattendance_quarter_2_total=?,
+              attendance_quarter_2_total=?,
               attendance_quarter_3_total=?,
 							attendance_quarter_4_total=?,
 							attendance_quarter_1_absent=?,
@@ -660,6 +669,9 @@ export const addUpdateStudentCumulativeGrades = async ({
 							grade.letter_grade_quarter_2 || '',
 							grade.letter_grade_quarter_3 || '',
 							grade.letter_grade_quarter_4 || '',
+							grade.summer_grade_1 || 0,
+							grade.summer_grade_2 || 0,
+							grade.summer_grade_3 || 0,
 							grade.attendance_quarter_1_total || 0,
 							grade.attendance_quarter_2_total || 0,
 							grade.attendance_quarter_3_total || 0,
