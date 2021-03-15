@@ -152,9 +152,9 @@ export default () => {
       }
 
       return (
-        <tr key={`grades-list-${index}`}>
+        <tr key={`grades-list-${index}`} className='tr-data'>
           <td className='subHeader'>
-            <table className='subTable student'>
+            <table className='subTable standard'>
               <tr>
                 <td>
                   <input
@@ -383,10 +383,10 @@ export default () => {
         />
       </div>
       <div id='gradeListTableWrapper'>
-        <table id='gradeListView-table'>
+        <table id='gradeInputView-table'>
           <tbody>
             <tr>
-              <th>Standard Test</th>
+              <th className='standard'>Standard Test</th>
               <th className='th-grades'>
                 Standardized Test (SAT, ACT, End of Grade)
               </th>
@@ -394,7 +394,7 @@ export default () => {
 
             <tr>
               <td className='subHeader'>
-                <table className='subTable student'>
+                <table className='subTable standardCheckbox'>
                   <tr>
                     <td style={{ whiteSpace: 'initial' }}>
                       <input
@@ -457,44 +457,49 @@ export default () => {
             <div>No records.</div>
           )
         }
-        <div className='actions' style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex' }}>
-            <button
-              onClick={handleAdd}
-            >
-              <FontAwesomeIcon icon={faPlusCircle} />
-              <span>Add</span>
-            </button>
-            <button
-              disabled={selected.length === 0}
-              onClick={handleCopy}
-            >
-              <FontAwesomeIcon icon={faCopy} />
-              <span>Copy</span>
-            </button>
-            <button
-              disabled={selected.length === 0}
-              onClick={handleDelete}
-            >
-              <FontAwesomeIcon icon={faTrashAlt} />
-              <span>Delete</span>
-            </button>
-          </div>
+      </div>
+      <div className='gradeInputView-table-actions'>
+        <div className='action left'>
+          <button
+            className='btn-add'
+            onClick={handleAdd}
+          >
+            <FontAwesomeIcon icon={faPlusCircle} />
+            <span>Add</span>
+          </button>
+          <button
+            className={`btn-copy ${selected.length === 0 ? 'disabled' : ''}`}
+            disabled={selected.length === 0}
+            onClick={handleCopy}
+          >
+            <FontAwesomeIcon icon={faCopy} />
+            <span>Copy</span>
+          </button>
+          <button
+            className={`btn-delete ${selected.length === 0 ? 'disabled' : ''}`}
+            disabled={selected.length === 0}
+            onClick={handleDelete}
+          >
+            <FontAwesomeIcon icon={faTrashAlt} />
+            <span>Delete</span>
+          </button>
+        </div>
 
-          <div style={{ display: 'flex' }}>
-            <button
-              onClick={() => {}}
-            >
-              <FontAwesomeIcon icon={faCheck} />
-              <span>Save</span>
-            </button>
-            <button
-              onClick={() => {}}
-            >
-              <FontAwesomeIcon icon={faCheck} />
-              <span>Review</span>
-            </button>
-          </div>
+        <div className='action right'>
+          <button
+            className='btn-save'
+            onClick={() => {}}
+          >
+            <FontAwesomeIcon icon={faCheck} />
+            <span>Save</span>
+          </button>
+          <button
+            className='btn-review'
+            onClick={() => {}}
+          >
+            <FontAwesomeIcon icon={faCheck} />
+            <span>Review</span>
+          </button>
         </div>
       </div>
     </div>
