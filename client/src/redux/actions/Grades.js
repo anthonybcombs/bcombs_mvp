@@ -1,7 +1,11 @@
-import { call, take, put } from "redux-saga/effects";
+import { call, take, put, all } from "redux-saga/effects";
 import graphqlClient from "../../graphql";
 import { GET_STUDENT_CUMULATIVE_BY_APP_GROUP, GET_STUDENT_CUMULATIVE_BY_CHILD } from "../../graphql/gradeQuery";
 import * as actionType from "./Constant";
+
+import {
+  setGradeLoading,
+} from './Loading'
 
 // From DB
 const getGradesFromDatabase = async () => {
@@ -76,30 +80,44 @@ export function* getGrades() {
 }
 export function* getStudentCumulativeGradeByAppGroup({ data }) {
   try {
+    yield put(setGradeLoading(true))
     const response = yield call(getStudentCumulativeGradeByAppGroupFromDatabse, data)
-    yield put({
-      type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
-      payload: response
-    })
+    yield all([
+      put(setGradeLoading(false)),
+      put({
+        type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
+        payload: response
+      })
+    ])
   } catch (err) {
-    yield put({
-      type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
-      payload: []
-    })
+    yield all([
+      put(setGradeLoading(false)),
+      put({
+        type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
+        payload: []
+      })
+    ])
   }
 }
 export function* getStudentCumulativeGradeByUser({ child_id }) {
   try {
+    yield put(setGradeLoading(true))
     const response = yield call(getStudentCumulativeGradeByUserFromDatabse, child_id)
-    yield put({
-      type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
-      payload: response
-    })
+    yield all([
+      put(setGradeLoading(false)),
+      put({
+        type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
+        payload: response
+      })
+    ])
   } catch (err) {
-    yield put({
-      type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
-      payload: []
-    })
+    yield all([
+      put(setGradeLoading(false)),
+      put({
+        type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
+        payload: []
+      })
+    ])
   }
 }
 

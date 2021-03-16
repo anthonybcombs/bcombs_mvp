@@ -12,133 +12,13 @@ import { FilterOptionsObj } from '../Headers/options'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Loading from '../../../../helpers/Loading.js'
-import { getGpaCum } from '../utils'
-
-import { requestVendor } from '../../../../redux/actions/Vendors'
 import { requestGetStudentCumulativeGradeByAppGroup  } from '../../../../redux/actions/Grades'
 
 export default () => {
   const dispatch = useDispatch()
-  const { gradeInput } = useSelector(({ gradeInput }) => ({
-    gradeInput
+  const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => ({
+    gradeInput, loading
   }))
-
-  // const data = cloneDeep([
-  //   {
-  //     id: '1',
-  //     name: 'John Doe',
-  //     schoolType: 'Middle School',
-  //     gradeLevel: '6th',
-  //     gpa: '3.2 (2.6)',
-  //     attendanceSummary: '85% (34/40)',
-  //     math: 'A',
-  //     mathNumber: 99,
-  //     science: 'B',
-  //     scienceNumber: 90,
-  //     english: 'C',
-  //     englishNumber: 80,
-  //     history: 'B',
-  //     historyNumber: 90,
-  //     act1: 0,
-  //     act2: 2,
-  //     sat: 12
-  //   },
-  //   {
-  //     id: '2',
-  //     name: 'John Smith',
-  //     schoolType: 'Middle School',
-  //     gradeLevel: '5th',
-  //     gpa: '3.3 (3.6)',
-  //     attendanceSummary: '95% (35/40)',
-  //     math: 'B',
-  //     mathNumber: 90,
-  //     science: 'B',
-  //     scienceNumber: 90,
-  //     english: 'A',
-  //     englishNumber: 99,
-  //     history: 'A',
-  //     historyNumber: 99,
-  //     act1: 0,
-  //     act2: 3,
-  //     sat: 10
-  //   },
-  //   {
-  //     id: '3',
-  //     name: 'Smith Legend',
-  //     schoolType: 'High School',
-  //     gradeLevel: '8th',
-  //     gpa: '1.2 (1.6)',
-  //     attendanceSummary: '95% (30/40)',
-  //     math: 'A',
-  //     mathNumber: 99,
-  //     science: 'A',
-  //     scienceNumber: 99,
-  //     english: 'A',
-  //     englishNumber: 99,
-  //     history: 'A',
-  //     historyNumber: 99,
-  //     act1: 0,
-  //     act2: 4,
-  //     sat: 20
-  //   },
-  //   {
-  //     id: '4',
-  //     name: 'John Legend',
-  //     schoolType: 'Middle School',
-  //     gradeLevel: '4th',
-  //     gpa: '3.1 (2.1)',
-  //     attendanceSummary: '75% (31/40)',
-  //     math: 'C',
-  //     mathNumber: 80,
-  //     science: 'C',
-  //     scienceNumber: 80,
-  //     english: 'B',
-  //     englishNumber: 90,
-  //     history: 'C',
-  //     historyNumber: 80,
-  //     act1: 0,
-  //     act2: 1,
-  //     sat: 15
-  //   },
-  //   {
-  //     id: '5',
-  //     name: 'Legend Doe',
-  //     schoolType: 'High School',
-  //     gradeLevel: '9th',
-  //     gpa: '2.5 (1.6)',
-  //     attendanceSummary: '89% (20/40)',
-  //     math: 'A',
-  //     mathNumber: 99,
-  //     science: 'B',
-  //     scienceNumber: 90,
-  //     english: 'A',
-  //     englishNumber: 99,
-  //     history: 'B',
-  //     historyNumber: 90,
-  //     act1: 0,
-  //     act2: 1,
-  //     sat: 9
-  //   },
-  //   {
-  //     id: '6',
-  //     name: 'John Doe',
-  //     schoolType: 'High School',
-  //     gradeLevel: '10th',
-  //     gpa: '1.1 (1.1)',
-  //     attendanceSummary: '98% (31/40)',
-  //     math: 'A',
-  //     mathNumber: 99,
-  //     science: 'A',
-  //     scienceNumber: 99,
-  //     english: 'A',
-  //     englishNumber: 99,
-  //     history: 'A',
-  //     historyNumber: 99,
-  //     act1: 0,
-  //     act2: 1,
-  //     sat: 1
-  //   },
-  // ])
 
   const initialColumns = {
     name: { type: 'string', label: 'Name' },
@@ -518,217 +398,225 @@ export default () => {
   return (
     <GradesStyled>
       <h2>Grade List Views</h2>
-      <div
-        id='gradeListView'
-        onClick={() => {
-          handleSetActiveColumnKey()
-          setShowGradeOptions(false)
-        }}
-      >
-        <div className='gradeListFilter'>
-          <Headers
-            enableClearFilter
-            filterOptions={['sort', 'highlight', 'date']}
-            columns={columns}
-            rows={rows}
+        <div
+          id='gradeListView'
+          onClick={() => {
+            handleSetActiveColumnKey()
+            setShowGradeOptions(false)
+          }}
+        >
+          {
+            gradeLoading ? (
+              <Loading />
+            ) : (
+              <>
+                <div className='gradeListFilter'>
+                  <Headers
+                    enableClearFilter
+                    filterOptions={['sort', 'highlight', 'date']}
+                    columns={columns}
+                    rows={rows}
 
-            onApplyFilter={handleApplyFilter}
-          />
-          <Link
-            className='applyFilterBtn'
-            to={`/dashboard/grades/input`}
-          >
-            {`Grades & Test Input`}
-          </Link>
-          {/* <button
-            className='applyFilterBtn'
-            onClick={() => window.history.push()}
-          >
-            {`Grades & Test Input`}
-          </button> */}
-        </div>
-        <div id='gradeListTableWrapper'>
-          <table id='gradeListView-table'>
-            <tbody>
-              <tr>
-                <th>Student</th>
-                <th className='th-grades'>
-                  Grades
-                  <FontAwesomeIcon
-                    icon={faCaretDown}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setShowGradeOptions(!showGradeOptions)
-                      setActiveColumnKey('')
-                    }}
+                    onApplyFilter={handleApplyFilter}
                   />
+                  <Link
+                    className='applyFilterBtn'
+                    to={`/dashboard/grades/input`}
+                  >
+                    {`Grades & Test Input`}
+                  </Link>
+                  {/* <button
+                    className='applyFilterBtn'
+                    onClick={() => window.history.push()}
+                  >
+                    {`Grades & Test Input`}
+                  </button> */}
+                </div>
+                <div id='gradeListTableWrapper'>
+                  <table id='gradeListView-table'>
+                    <tbody>
+                      <tr>
+                        <th>Student</th>
+                        <th className='th-grades'>
+                          Grades
+                          <FontAwesomeIcon
+                            icon={faCaretDown}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setShowGradeOptions(!showGradeOptions)
+                              setActiveColumnKey('')
+                            }}
+                          />
+                          {
+                            showGradeOptions && (
+                              <div className='gradesFilter'>
+                                <div className='header'>Select grade type</div>
+                                <label htmlFor='letters' className='radioButtonContainer'>
+                                  <input
+                                    type='radio'
+                                    id='letters'
+                                    checked={gradeType === 'string'}
+                                    onChange={() => handleSetGradeType('string')}
+                                    onClick={(e) => e.stopPropagation()}
+                                  />
+                                  <span className='labelName'>Letters</span>
+                                </label>
+                                
+                                <label htmlFor='numbers' className='radioButtonContainer'>
+                                  <input
+                                    type='radio'
+                                    id='numbers'
+                                    checked={gradeType === 'number'}
+                                    onChange={() => handleSetGradeType('number')}
+                                    onClick={(e) => e.stopPropagation()}
+                                  />
+                                  <span className='labelName'>Numbers</span>
+                                </label>
+                              </div>
+                            )
+                          }
+                        </th>
+                        <th>Standard Test</th>
+                      </tr>
+
+                      <tr>
+                        <td className='subHeader'>
+                          <table className='subTable student'>
+                            <tr>
+                              <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
+                                <span>Name</span>
+                                <FontAwesomeIcon
+                                  icon={faCaretDown}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleChangeTableFilterColumn('name')
+                                  }}
+                                />
+                                {renderTableFilter('name')}
+                              </td>
+                              <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
+                                School Type
+                                <FontAwesomeIcon
+                                  icon={faCaretDown}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleChangeTableFilterColumn('schoolType')
+                                  }}
+                                />
+                                {renderTableFilter('schoolType')}
+                              </td>
+                              <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
+                                Grade Level
+                                <FontAwesomeIcon
+                                  icon={faCaretDown}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleChangeTableFilterColumn('gradeLevel')
+                                  }}
+                                />
+                                {renderTableFilter('gradeLevel')}
+                              </td>
+                              <td style={{ minWidth: '50px', whiteSpace: 'initial' }}>
+                                GPA Cum (Semester)
+                                <FontAwesomeIcon
+                                  icon={faCaretDown}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleChangeTableFilterColumn('gpa')
+                                  }}
+                                />
+                                {renderTableFilter('gpa')}
+                              </td>
+                              <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
+                                Attendance Summary
+                                <FontAwesomeIcon
+                                  icon={faCaretDown}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleChangeTableFilterColumn('attendanceSummary')
+                                  }}
+                                />
+                                {renderTableFilter('attendanceSummary')}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td className='subHeader'>
+                          <table className='subTable'>
+                            <tr>
+                              {
+                                activeGradeColumns.map((e, index) => {
+                                  const isFirst = index === 0
+                                  const isLast = index === (gradeDisplayCount - 1)
+                                  const showFirst = activeGradeColumns.length > 1 && isFirst && gradeCounter > activeGradeColumns.length
+                                  const showLast = activeGradeColumns.length > 1 && isLast && gradeColumns[gradeType].length > gradeCounter
+                                  return (
+                                    <td style={{ width: '25%' }} key={`subjectCol-${index}`}>
+                                      {
+                                        showFirst && (
+                                          <span style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => setGradeCounter(gradeCounter - gradeDisplayCount)} >
+                                            <FontAwesomeIcon icon={faAngleLeft}/>
+                                          </span>
+                                        )
+                                      }
+                                      {columns[e]?.label || e}
+                                      <FontAwesomeIcon
+                                        icon={faCaretDown}
+                                        onClick={(event) => {
+                                          event.stopPropagation()
+                                          handleChangeTableFilterColumn(e)
+                                        }}
+                                      />
+                                      {renderTableFilter(e, true)}
+                                      {
+                                        showLast && (
+                                          <span style={{ cursor: 'pointer', marginLeft: '1rem' }} onClick={() => setGradeCounter(gradeCounter + gradeDisplayCount)} >
+                                            <FontAwesomeIcon icon={faAngleRight} />
+                                          </span>
+                                        )
+                                      }
+                                    </td>
+                                  )
+                                })
+                              }
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td className='subHeader'>
+                          <table className='subTable'>
+                            <tr>
+                              <td>
+                                Act 1
+                                <FontAwesomeIcon icon={faCaretDown}/>
+                              </td>
+                              <td>
+                                Act 2
+                                <FontAwesomeIcon icon={faCaretDown}/>
+                              </td>
+                              <td>
+                                SAT
+                                <FontAwesomeIcon icon={faCaretDown}/>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+
+                      {renderTableData()}
+                    </tbody>
+                  </table>
                   {
-                    showGradeOptions && (
-                      <div className='gradesFilter'>
-                        <div className='header'>Select grade type</div>
-                        <label htmlFor='letters' className='radioButtonContainer'>
-                          <input
-                            type='radio'
-                            id='letters'
-                            checked={gradeType === 'string'}
-                            onChange={() => handleSetGradeType('string')}
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <span className='labelName'>Letters</span>
-                        </label>
-                        
-                        <label htmlFor='numbers' className='radioButtonContainer'>
-                          <input
-                            type='radio'
-                            id='numbers'
-                            checked={gradeType === 'number'}
-                            onChange={() => handleSetGradeType('number')}
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <span className='labelName'>Numbers</span>
-                        </label>
-                      </div>
+                    rows.length === 0 && (
+                      <div>No records.</div>
                     )
                   }
-                </th>
-                <th>Standard Test</th>
-              </tr>
-
-              <tr>
-                <td className='subHeader'>
-                  <table className='subTable student'>
-                    <tr>
-                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
-                        <span>Name</span>
-                        <FontAwesomeIcon
-                          icon={faCaretDown}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleChangeTableFilterColumn('name')
-                          }}
-                        />
-                        {renderTableFilter('name')}
-                      </td>
-                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
-                        School Type
-                        <FontAwesomeIcon
-                          icon={faCaretDown}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleChangeTableFilterColumn('schoolType')
-                          }}
-                        />
-                        {renderTableFilter('schoolType')}
-                      </td>
-                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
-                        Grade Level
-                        <FontAwesomeIcon
-                          icon={faCaretDown}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleChangeTableFilterColumn('gradeLevel')
-                          }}
-                        />
-                        {renderTableFilter('gradeLevel')}
-                      </td>
-                      <td style={{ minWidth: '50px', whiteSpace: 'initial' }}>
-                        GPA Cum (Semester)
-                        <FontAwesomeIcon
-                          icon={faCaretDown}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleChangeTableFilterColumn('gpa')
-                          }}
-                        />
-                        {renderTableFilter('gpa')}
-                      </td>
-                      <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
-                        Attendance Summary
-                        <FontAwesomeIcon
-                          icon={faCaretDown}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleChangeTableFilterColumn('attendanceSummary')
-                          }}
-                        />
-                        {renderTableFilter('attendanceSummary')}
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-
-                <td className='subHeader'>
-                  <table className='subTable'>
-                    <tr>
-                      {
-                        activeGradeColumns.map((e, index) => {
-                          const isFirst = index === 0
-                          const isLast = index === (gradeDisplayCount - 1)
-                          const showFirst = activeGradeColumns.length > 1 && isFirst && gradeCounter > activeGradeColumns.length
-                          const showLast = activeGradeColumns.length > 1 && isLast && gradeColumns[gradeType].length > gradeCounter
-                          return (
-                            <td style={{ width: '25%' }} key={`subjectCol-${index}`}>
-                              {
-                                showFirst && (
-                                  <span style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => setGradeCounter(gradeCounter - gradeDisplayCount)} >
-                                    <FontAwesomeIcon icon={faAngleLeft}/>
-                                  </span>
-                                )
-                              }
-                              {columns[e]?.label || e}
-                              <FontAwesomeIcon
-                                icon={faCaretDown}
-                                onClick={(event) => {
-                                  event.stopPropagation()
-                                  handleChangeTableFilterColumn(e)
-                                }}
-                              />
-                              {renderTableFilter(e, true)}
-                              {
-                                showLast && (
-                                  <span style={{ cursor: 'pointer', marginLeft: '1rem' }} onClick={() => setGradeCounter(gradeCounter + gradeDisplayCount)} >
-                                    <FontAwesomeIcon icon={faAngleRight} />
-                                  </span>
-                                )
-                              }
-                            </td>
-                          )
-                        })
-                      }
-                    </tr>
-                  </table>
-                </td>
-
-                <td className='subHeader'>
-                  <table className='subTable'>
-                    <tr>
-                      <td>
-                        Act 1
-                        <FontAwesomeIcon icon={faCaretDown}/>
-                      </td>
-                      <td>
-                        Act 2
-                        <FontAwesomeIcon icon={faCaretDown}/>
-                      </td>
-                      <td>
-                        SAT
-                        <FontAwesomeIcon icon={faCaretDown}/>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-
-              {renderTableData()}
-            </tbody>
-          </table>
-          {
-            rows.length === 0 && (
-              <div>No records.</div>
+                </div>
+              </>
             )
           }
         </div>
-      </div>
     </GradesStyled>
   )
 }
