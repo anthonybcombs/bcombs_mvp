@@ -110,7 +110,7 @@ export default () => {
     // Column filter
     newRows = newRows.filter(({ id, ...rest}) => {
       const rowArr = Object.entries(rest)
-      return rowArr.filter(([key, value]) => !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
+      return rowArr.filter(([key, value]) => columnFilters[key] && !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
     })
 
     setFilteredRows(newRows)

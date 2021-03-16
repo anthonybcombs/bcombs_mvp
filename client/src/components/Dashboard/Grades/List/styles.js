@@ -81,6 +81,7 @@ export default styled.div`
     display: flex;
 		width: 100%;
 		padding 3px 0;
+		text-align: left;
 	}
 	#gradeListView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .filter-option label {
 		cursor: pointer;
