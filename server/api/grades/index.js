@@ -120,6 +120,7 @@ export const getStudentCumulativeByChildId = async childId => {
 				student_grade_cumulative.school_year_frame,
 				student_grade_cumulative.class_name,
 				student_grade_cumulative.class_type,
+				student_grade_cumulative.scale,
 				student_grade_cumulative.attachment,
 				student_grade_cumulative.date_added,
 				child.firstname,
@@ -208,7 +209,6 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
             SELECT   
               BIN_TO_UUID(sgc.app_group_id) as app_group_id,
 							BIN_TO_UUID(sgc.child_id) as child_id,
-
               sgc.student_grade_cumulative_id,
               sgc.application_type,
               sgc.year_level,
@@ -218,7 +218,8 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
               sgc.school_year_end,
               sgc.school_year_frame,
               sgc.class_name,
-              sgc.class_type,
+							sgc.class_type,
+							sgc.scale,
               sgc.attachment,
               sgc.class_name 
             FROM student_grade_cumulative sgc
@@ -389,7 +390,8 @@ export const getStudentCumulativeGrade = async ({ app_group_id, child_id }) => {
         school_year_end,
         school_year_frame,
         class_name,
-        class_type,
+				class_type,
+				scale,
         attachment,
         date_added
       FROM student_grade_cumulative
@@ -436,6 +438,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 	school_year_frame,
 	class_name,
 	class_type,
+	scale,
 	grades = [],
 	standardized_test = [],
 	deleted_grades = [],
@@ -469,7 +472,8 @@ export const addUpdateStudentCumulativeGrades = async ({
           school_year_end,
           school_year_frame,
           class_name,
-          class_type,
+					class_type,
+					scale,
           date_added
         )
         VALUES (
@@ -483,7 +487,8 @@ export const addUpdateStudentCumulativeGrades = async ({
           ?,
           ?,
           ?,
-          ?,
+					?,
+					?,
           NOW()
         )
         `,
@@ -499,6 +504,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 					school_year_frame,
 					class_name,
 					class_type,
+					scale
 				]
 			);
 
@@ -517,6 +523,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 			}
 		} else {
 			const s3Payload = await formatFile(attachment, cumulativeId);
+			console.log('sgc.scale,', scale)
 			const studentCumulativeResult = await db.query(
 				`UPDATE student_grade_cumulative
          SET year_level=?,
@@ -525,7 +532,8 @@ export const addUpdateStudentCumulativeGrades = async ({
 				 	school_year_end=?,
 				 	school_year_frame=?,
 				 	class_name=?,
-				 	class_type=?,
+					class_type=?,
+					scale=?,
 				 	attachment=?,
 					date_updated=NOW() 
 				 WHERE child_id=UUID_TO_BIN(?) AND 
@@ -540,6 +548,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 					school_year_frame,
 					class_name,
 					class_type,
+					scale,
 					s3Payload ? s3Payload.Key : isUserExist[0] && isUserExist[0].attachment,
 					child_id,
 					cumulativeId,
@@ -716,6 +725,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 				sgc.school_year_frame,
 				sgc.class_name,
 				sgc.class_type,
+				sgc.scale,
 				sgc.attachment,
 				sgc.date_added,
 				CONVERT(form_contents USING utf8) as form_contents
@@ -733,6 +743,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 				sgc.school_year_frame,
 				sgc.class_name,
 				sgc.class_type,
+				sgc.scale,
 				sgc.attachment,
 				sgc.date_added,				
 				ch.firstname,
