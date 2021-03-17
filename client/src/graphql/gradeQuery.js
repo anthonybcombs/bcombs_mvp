@@ -103,16 +103,8 @@ query getStudentRecords(
     $child_id: String
   ) {
     getStudentRecords(child_id: $child_id) {
-      app_group_id
-      app_group_name
-      app_id
-      child_id
-      firstname
-      lastname
-      form_contents
       cumulative_grades{
         student_grade_cumulative_id
-        app_id
         app_group_id
         app_group_name
         application_type

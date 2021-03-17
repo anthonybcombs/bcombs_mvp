@@ -110,10 +110,8 @@ export const getStudentCumulativeByChildId = async childId => {
 	try {
 		const response = await db.query(
 			`SELECT  BIN_TO_UUID(child_id) as child_id,
-				BIN_TO_UUID(app_id) as app_id,
 				student_grade_cumulative.application_type,
 				student_grade_cumulative.student_grade_cumulative_id,
-				student_grade_cumulative.type,
 				student_grade_cumulative.year_level,
 				student_grade_cumulative.school_type,
 				student_grade_cumulative.school_name,
