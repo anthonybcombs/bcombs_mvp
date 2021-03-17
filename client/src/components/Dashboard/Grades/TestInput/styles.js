@@ -30,7 +30,34 @@ export default styled.div`
 
   #gradeListTableWrapper {
     overflow-x: auto;
+		height: 100%;
+    min-height: calc(100vh - 400px);
   }
+	#gradeListTableWrapper::-webkit-scrollbar {
+		width: 8px;
+		height: 6px;
+		opacity: 0;
+		visibility: hidden;
+	}
+	#gradeListTableWrapper::-webkit-scrollbar-track {
+		border-radius: 10px;
+		transition: 0.5s ease-in-out;
+		background: rgb(243 110 34 / 20%);
+		opacity: 0;
+		visibility: hidden;
+	}
+	#gradeListTableWrapper::-webkit-scrollbar-thumb {
+		background: #f36e22;
+		border-radius: 10px;
+		opacity: 0;
+		visibility: hidden;
+	}
+	#gradeListTableWrapper:hover ::-webkit-scrollbar,
+	#gradeListTableWrapper:hover ::-webkit-scrollbar-track,
+	#gradeListTableWrapper:hover ::-webkit-scrollbar-thumb {
+		opacity: 1;
+		visibility: visible;
+	}
 
   #gradeInputView-table {
 		text-align: center;
@@ -129,7 +156,7 @@ export default styled.div`
 	#gradeInputView-table td,
 	#gradeInputView-table th {
 		border: 0;
-		padding: 15px;
+		padding: 12px 3px;
 	}
 
 	#gradeInputView-table tr:nth-child(even) {
@@ -204,11 +231,26 @@ export default styled.div`
     color: #000;
   }
 	#gradeInputView-table td.subHeader table.standardCheckbox td:first-child {
+		padding: 0;
 		min-width: 30px !important;
 	}
 	#gradeInputView-table td.subHeader table.standard tr td:first-child {
-		min-width: 52px;
+    padding: 0;
+		min-width: 44px;
 	}
+
+	#gradeInputView-table td input {
+		padding: 3px 4px;
+    border-radius: 3px;
+		border: 1.65px solid #ccc;
+		transition: .15s ease-in-out;
+	}
+	#gradeInputView-table td input.focus-visible {
+		border-color: #4B68C5;
+		background: rgb(75 104 197 / 10%);
+	}
+	
+
 
 	#gradeInputView-table a {
 		color: #3e89fe;
