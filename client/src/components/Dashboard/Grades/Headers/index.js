@@ -17,7 +17,7 @@ export default ({
 
   const newColumns = Object.entries(columns)
     .reduce((acc, [key, value]) => {
-      if (value.filterable === undefined && value.sortable === undefined) {
+      if (value?.filterable === undefined && value?.sortable === undefined) {
         acc[key] = value
       }
       return acc
@@ -72,10 +72,6 @@ export default ({
 
     if (newErrors.length === 0) {
       onApplyFilter({
-        ...filters,
-        search: isSearch ? target.value : filters.search
-      })
-      console.log('animala nimo oi', {
         ...filters,
         search: isSearch ? target.value : filters.search
       })
