@@ -19,7 +19,7 @@ export default () => {
   const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
   }))
-
+  console.log('@@@gradeINput', gradeInput?.gradeList)
   const initialColumns = {
     name: { type: 'string', label: 'Name' },
     schoolType: { type: 'string', label: 'School Type' },
@@ -41,11 +41,13 @@ export default () => {
   const [filterFromHeaders, setFilterFromHeaders] = useState({})
   const [activeColumnKey, setActiveColumnKey] = useState('')
   const [showGradeOptions, setShowGradeOptions] = useState(false)
-  const [gradeType, setGradeType] = useState('string')
+  const [gradeType, setGradeType] = useState('number')
   const [gradeColumns, setGradeColumns] = useState({ string: [], number: [] })
   const [columnFilters, setColumnFilters] = useState({})
   const [previousColumnFilters, setPreviousColumnFilters] = useState(null)
   const [columnFilterSearch, setColumnFilterSearch] = useState(null)
+  const [quarterValues, setQuarterValues] = useState({})
+  const [schoolYears, setSchoolYears] = useState([])
   
   let activeGradeColumns = gradeColumns[gradeType].slice(gradeCounter - gradeDisplayCount, gradeCounter)
   if (activeGradeColumns.length < gradeDisplayCount) {
@@ -54,9 +56,11 @@ export default () => {
   
   const getActiveColumns = (type, gCols) => ['name', 'schoolType', 'gradeLevel', 'gpa', 'attendanceSummary', ...(gCols || gradeColumns[type]), 'act1', 'act2', 'sat']
   
-  const generateColumnFilters = (rowData, cols) => {
-    let newColumnFilters = {}
-    Object.keys(({ ...initialColumns, ...(cols || {}) })).forEach(key => {
+  const generateColumnFilters = (rowData, cols, resetKeys = null) => {
+    let newColumnFilters = { ...columnFilters }
+    const keys = resetKeys || Object.keys(({ ...columns, ...(cols || {}) }))
+
+    keys.forEach(key => {
       newColumnFilters[key] = (rowData || data)
         .map(e => e[key])
         .sort()
@@ -81,7 +85,7 @@ export default () => {
       }, {})
   }
 
-  const handleSetRowAndColumn = (type, newData, colKeys, colKeysObj, cols) => {
+  const handleSetRowAndColumn = (type, colKeys, cols) => {
     const newColumns = (colKeys || getActiveColumns(type))
       .reduce((acc, curr) => {
         acc[curr] = (cols || baseColumns)[curr]
@@ -92,7 +96,7 @@ export default () => {
   }
   
   const handleApplyFilter = (filters) => {
-    const { sort, search = '' } = cloneDeep(filters)
+    const { sort, search = '', date } = cloneDeep(filters)
 
     // Search always executes for the data to reset even if search is empty
     let newRows = cloneDeep(data).filter(({ id, ...rest }) => {
@@ -113,7 +117,6 @@ export default () => {
       newRows = orderBy(newRows, sortColumns, sortOrder)
     }
 
-
     // Column filter
     const newColumnFilters = Object.entries(getColumnFiltersByActiveColumn())
     newRows = newRows.filter((row) => {
@@ -124,6 +127,41 @@ export default () => {
 
       return result.length === newColumnFilters.length
     })
+
+    //Grade Date Filter
+    if (date && date.year) {
+      const flattenGradeKeys = [...(gradeColumns.number || []), ...(gradeColumns.string || []), 'attendanceSummary']
+      const { year, quarter } = date
+      let newData = cloneDeep(data)
+      const formatRowData = (rowData, noFilter) => {
+        let newRowData = rowData
+        if (!noFilter) {
+          newRowData = newRowData.filter(e => e.schoolYear === year)
+        }
+
+        newRowData = newRowData.map(e => {
+          const newGrades = flattenGradeKeys.reduce((acc, curr) => {
+            const gradeKey = `${curr}_${e.studentGradeCumulativeId}${quarter ? '_' : ''}${quarter}`
+            return {
+              ...acc,
+              [curr]: quarterValues[gradeKey]
+            }
+          }, {})
+          return {
+            ...e,
+            ...newGrades
+          }
+        })
+
+        return newRowData
+      }
+      newRows = formatRowData(newRows)
+      newData = formatRowData(newData, true)
+
+      setData(newData)
+      setColumnFilters(generateColumnFilters(newData, null, flattenGradeKeys))
+      console.log('@@@@filtered===', { flattenGradeKeys, newRows, quarterValues })
+    }
   
     setRows(newRows)
 
@@ -310,49 +348,87 @@ export default () => {
 
   const getGradeList = (data) => {
     return data
-        .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades }) => {
-          const { data, labels } = accumulator
-          const { grades = [], school_type = '', year_level = '' } = cumulative_grades.length ? cumulative_grades[0] : {}
-          const { year_final_grade = '', final_quarter_attendance = '' } = grades.length ? grades[0] : []
-          const { values, keys } = grades.reduce((acc, { subject = '', final_grade = '', letter_final_grade = '' }) => {
-            const { values = {}, keys = {} } = acc
-            const subjectKey = subject.toLocaleLowerCase().replace(/ /g,"_")
-            return {
-              values: {
-                ...values,
-                [`${subjectKey}`]: letter_final_grade,
-                [`${subjectKey}Number`]: final_grade,
-              },
-              keys: {
-                ...keys,
-                [`${subjectKey}`]: { type: 'string', label: subject },
-                [`${subjectKey}Number`]: { type: 'number', label: subject },
-              }
-            }
-          }, {})
+      .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades }) => {
+        const { data, labels, quarterValues, schoolYears } = accumulator
+        const {
+          grades = [], school_type = '', year_level = '', school_year_start = '',
+          school_year_end = '', student_grade_cumulative_id
+        } = cumulative_grades.length ? cumulative_grades[0] : {}
+        const sy = school_year_start && school_year_end ? `${school_year_start}-${school_year_end}` : ''
+        const { year_final_grade = '', final_quarter_attendance = '' } = grades.length ? grades[0] : []
 
+        const { values, keys, quarters } = grades.reduce((acc, curr) => {
+          const {
+            subject = '', final_grade = '', letter_final_grade = '',
+            grade_quarter_1 = '', letter_grade_quarter_1 = '', grade_quarter_2 = '', letter_grade_quarter_2 = '',
+            grade_quarter_3 = '', letter_grade_quarter_3 = '', grade_quarter_4 = '', letter_grade_quarter_4 = '',
+            attendance_quarter_1_total = '', attendance_quarter_2_total = '', attendance_quarter_3_total = '',
+            attendance_quarter_4_total = ''
+          } = curr
+
+          const { values = {}, keys = {}, quarters } = acc
+          const subjectKey = subject.toLocaleLowerCase().replace(/ /g,"_")
           return {
-            ...accumulator,
-            data: [
-              ...data,
-              {
-                child_id,
-                name: `${firstname} ${lastname}`,
-                schoolType: school_type, //string
-                gradeLevel: year_level, //number
-                gpa: year_final_grade,
-                attendanceSummary: final_quarter_attendance,
-                ...values,
-                act1: '',
-                act2: ''
-              }
-            ],
-            labels: {
-              ...labels,
-              ...keys
+            values: {
+              ...values,
+              [`${subjectKey}`]: letter_final_grade,
+              [`${subjectKey}Number`]: final_grade,
+            },
+            keys: {
+              ...keys,
+              [`${subjectKey}`]: { type: 'string', label: subject },
+              [`${subjectKey}Number`]: { type: 'number', label: subject },
+            },
+            quarters: {
+              ...quarters,
+              [`${subjectKey}_${student_grade_cumulative_id}`]: letter_final_grade,
+              [`${subjectKey}Number_${student_grade_cumulative_id}`]: final_grade,
+              [`${subjectKey}_${student_grade_cumulative_id}_1`]: letter_grade_quarter_1,
+              [`${subjectKey}Number_${student_grade_cumulative_id}_1`]: grade_quarter_1,
+              [`${subjectKey}_${student_grade_cumulative_id}_2`]: letter_grade_quarter_2,
+              [`${subjectKey}Number_${student_grade_cumulative_id}_2`]: grade_quarter_2,
+              [`${subjectKey}_${student_grade_cumulative_id}_3`]: letter_grade_quarter_3,
+              [`${subjectKey}Number_${student_grade_cumulative_id}_3`]: grade_quarter_3,
+              [`${subjectKey}_${student_grade_cumulative_id}_4`]: letter_grade_quarter_4,
+              [`${subjectKey}Number_${student_grade_cumulative_id}_4`]: grade_quarter_4,
+              [`attendanceSummary_${student_grade_cumulative_id}`]: final_quarter_attendance,
+              [`attendanceSummary_${student_grade_cumulative_id}_1`]: attendance_quarter_1_total,
+              [`attendanceSummary_${student_grade_cumulative_id}_2`]: attendance_quarter_2_total,
+              [`attendanceSummary_${student_grade_cumulative_id}_3`]: attendance_quarter_3_total,
+              [`attendanceSummary_${student_grade_cumulative_id}_4`]: attendance_quarter_4_total,
             }
           }
-        }, { data: [], labels: {} })
+        }, {})
+
+        return {
+          ...accumulator,
+          data: [
+            ...data,
+            {
+              child_id,
+              name: `${firstname} ${lastname}`,
+              schoolType: school_type, //string
+              gradeLevel: year_level, //number
+              gpa: year_final_grade,
+              attendanceSummary: final_quarter_attendance,
+              ...values,
+              act1: '',
+              act2: '',
+              schoolYear: sy,
+              studentGradeCumulativeId: student_grade_cumulative_id
+            }
+          ],
+          labels: {
+            ...labels,
+            ...keys
+          },
+          quarterValues: {
+            ...quarterValues,
+            ...quarters
+          },
+          schoolYears: sy && !schoolYears.includes(sy) ? [...schoolYears, sy] : schoolYears
+        }
+      }, { data: [], labels: {}, quarterValues: {}, schoolYears: [] })
   }
 
   useEffect(() => {
@@ -365,7 +441,7 @@ export default () => {
 
   useEffect(() => {
     if (gradeInput?.gradeList) {
-      const { data, labels } = getGradeList((gradeInput.gradeList || []))
+      const { data, labels, quarterValues, schoolYears } = getGradeList((gradeInput.gradeList || []))
       const newGradeColumns = {
         string: Object.keys(labels).filter(e => !e.includes('Number')),
         number: Object.keys(labels).filter(e => e.includes('Number'))
@@ -379,16 +455,18 @@ export default () => {
       setBaseColumns(newColumns)
       setColumns(newColumns)
       setGradeColumns(newGradeColumns)
+      setQuarterValues(quarterValues)
+      setSchoolYears(schoolYears)
       setColumnFilters(generateColumnFilters(data, labels))
-      handleSetRowAndColumn(gradeType, data, getActiveColumns(gradeType, newGradeColumns[gradeType]), newGradeColumns, newColumns)
+      handleSetRowAndColumn(gradeType, getActiveColumns(gradeType, newGradeColumns[gradeType]), newColumns)
     }
   }, [gradeInput])
 
-  // console.log('zzzzz', { rows, data, columns, columnFilters, gradeColumns })
+  const { year = '' } = filterFromHeaders?.date || {}
 
   return (
     <GradesStyled>
-      <h2>Grade List Views</h2>
+      <h2>Grade List Views {year ? `(${year})` : ''}</h2>
         <div
           id='gradeListView'
           onClick={() => {
@@ -407,6 +485,7 @@ export default () => {
                     filterOptions={['sort', 'highlight', 'date']}
                     columns={columns}
                     rows={rows}
+                    schoolYears={schoolYears}
 
                     onApplyFilter={handleApplyFilter}
                   />

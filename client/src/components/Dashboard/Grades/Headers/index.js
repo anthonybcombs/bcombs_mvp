@@ -12,7 +12,8 @@ import cloneDeep from 'lodash.clonedeep'
 export default ({ 
   filterOptions, enableClearFilter, onApplyFilter, // Filter Props
   onSearch, // Search Props
-  columns, rows // Table props
+  columns, rows, // Table props
+  schoolYears = [] //For date filter
 }) => {
 
   const newColumns = Object.entries(columns)
@@ -27,7 +28,7 @@ export default ({
     sort: [{ column: '', value: 'asc' }],
     highlight: [{ column: [], condition: 'gt', value: [], format: JSON.stringify({ backgroundColor: '#000000', color: '#ffffff' }) }],
     search: '',
-    date: { years: [], quarters: [] }
+    date: { year: '', quarter: '' }
   }
 
   const [filterValue, setFilterValue] = useState(filterOptions[0])
@@ -134,6 +135,7 @@ export default ({
             
             columns={newColumns}
             rows={rows}
+            schoolYears={schoolYears}
             actions={renderActions}
 
             onChangeActiveFilter={(e) => setFilterValue(e)}

@@ -6,7 +6,7 @@ import Filters from './filters'
 
 export default function index({
   title, actions, activeFilter, filterOptions, enableClearFilter, filters, previousFilter, columns, rows, filterErrors,
-  onClose, onChangeActiveFilter, onChangeFilter
+  onClose, onChangeActiveFilter, onChangeFilter, schoolYears
 }) {
   return ReactDOM.createPortal(
     <FilterDialogStyled
@@ -38,6 +38,7 @@ export default function index({
             filters={filters}
             columns={columns}
             rows={rows}
+            schoolYears={schoolYears}
             onChangeFilter={onChangeFilter}
           />
           {
