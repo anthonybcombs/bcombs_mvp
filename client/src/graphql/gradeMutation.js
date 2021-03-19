@@ -23,6 +23,7 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
       attachment
       firstname
       lastname
+      scale
       grades{
         student_grade_cumulative_id
         class
