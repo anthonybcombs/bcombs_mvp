@@ -26,7 +26,8 @@ export default ({
   const defaultFilters = {
     sort: [{ column: '', value: 'asc' }],
     highlight: [{ column: [], condition: 'gt', value: [], format: JSON.stringify({ backgroundColor: '#000000', color: '#ffffff' }) }],
-    search: ''
+    search: '',
+    date: { years: [], quarters: [] }
   }
 
   const [filterValue, setFilterValue] = useState(filterOptions[0])

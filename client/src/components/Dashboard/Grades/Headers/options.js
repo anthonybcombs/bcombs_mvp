@@ -1,6 +1,6 @@
 export const FilterOptionsObj = {
   date: {
-    label: 'Date'
+    label: 'Grade Date'
   },
   sort: {
     label: 'Sort'

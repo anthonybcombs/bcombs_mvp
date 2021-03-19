@@ -30,7 +30,34 @@ export default styled.div`
 
   #gradeListTableWrapper {
     overflow-x: auto;
+		height: 100%;
+    min-height: calc(100vh - 400px);
   }
+	#gradeListTableWrapper::-webkit-scrollbar {
+		width: 8px;
+		height: 6px;
+		opacity: 0;
+		visibility: hidden;
+	}
+	#gradeListTableWrapper::-webkit-scrollbar-track {
+		border-radius: 10px;
+		transition: 0.5s ease-in-out;
+		background: rgb(243 110 34 / 20%);
+		opacity: 0;
+		visibility: hidden;
+	}
+	#gradeListTableWrapper::-webkit-scrollbar-thumb {
+		background: #f36e22;
+		border-radius: 10px;
+		opacity: 0;
+		visibility: hidden;
+	}
+	#gradeListTableWrapper:hover ::-webkit-scrollbar,
+	#gradeListTableWrapper:hover ::-webkit-scrollbar-track,
+	#gradeListTableWrapper:hover ::-webkit-scrollbar-thumb {
+		opacity: 1;
+		visibility: visible;
+	}
 
   #gradeListView-table {
 		text-align: center;

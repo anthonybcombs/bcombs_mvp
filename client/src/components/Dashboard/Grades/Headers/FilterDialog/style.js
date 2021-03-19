@@ -179,6 +179,14 @@ export default styled.div`
     border: none;
   }
 
+  .filter-date .dateSelectWrapper {
+    display: flex;
+    align-items: center
+  }
+  .filter-date .dateSelectWrapper label {
+    width: 120px;
+    margin-top: 10px
+  }
 
 
 

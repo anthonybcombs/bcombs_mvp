@@ -8,7 +8,6 @@ import CustomSelect from '../../../CustomComponents/CustomSelect'
 export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
 
   const handleChangeFilter = (value, index, key, filterKey) => {
-    console.log('zzz', { value, index, key, filterKey })
     const clonedFilters = cloneDeep(filters)
     const newFilters = clonedFilters[filterKey].map((nf, i) => {
       if (i === index) {
@@ -18,6 +17,16 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
     })
 
     onChangeFilter(filterKey, newFilters)
+  }
+
+  const handleChangeDateFilter = (value, key) => {
+    const clonedFilters = cloneDeep(filters)
+    const newFilters = {
+      ...clonedFilters.date,
+      [key]: value
+    }
+
+    onChangeFilter('date', newFilters)
   }
 
   const handleAddFilter = (filterKey, objData) => {
@@ -201,7 +210,52 @@ export default ({ activeFilter, filters, onChangeFilter, columns, rows }) => {
         </div>
       )
     case 'date': 
-      return 'Date'    
+      const { years, quarters } = clonedFilters?.date || {}
+      console.log('pisting yawa', { years, quarters })
+      const schoolYears = [
+        { value: '2017-2018', label: 'School Year 2017-2018' },
+        { value: '2018-2019', label: 'School Year 2018-2019' },
+        { value: '2019-2020', label: 'School Year 2019-2020' },
+        { value: '2020-2021', label: 'School Year 2020-2021' }
+      ]
+      const yearQuarters = [
+        { value: '1', label: 'First Quarter' },
+        { value: '2', label: 'Second Quarter' },
+        { value: '3', label: 'Third Quarter' },
+        { value: '4', label: 'Fourth Quarter' }
+      ]
+      return (
+        <div className='filter-date'>
+          <div className='dateSelectWrapper'>
+            <label>School Year:</label>
+            <CustomSelect
+              isMultiple
+              value={years.map(e => ({ value: e, label: schoolYears.find(y => y.value === e).label }))}
+              placeholder='Select School Year'
+              displayValue='label'
+              options={schoolYears}
+              onChange={(selected) => handleChangeDateFilter(selected.map(e => e.value), 'years')}
+              onRemove={(selected) => handleChangeDateFilter(selected.map(e => e.value), 'years')}
+            />
+          </div>
+          {
+            years.length > 0 && (
+              <div className='dateSelectWrapper'>
+                <label>Quarters:</label>
+                <CustomSelect
+                  isMultiple
+                  value={quarters.map(e => ({ value: e, label: yearQuarters.find(q => q.value === e).label }))}
+                  placeholder='Select Quarters'
+                  displayValue='label'
+                  options={yearQuarters}
+                  onChange={(selected) => handleChangeDateFilter(selected.map(e => e.value), 'quarters')}
+                  onRemove={(selected) => handleChangeDateFilter(selected.map(e => e.value), 'quarters')}
+                />
+              </div>
+            )
+          }
+        </div>
+      )    
     default: 
       return null
   }

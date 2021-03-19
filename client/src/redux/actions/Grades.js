@@ -32,7 +32,6 @@ const getStudentCumulativeGradeByAppGroupFromDatabse = variables => {
   })
 }
 const getStudentCumulativeGradeByUserFromDatabse = child_id => {
-  console.log('child_id', child_id)
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.query({
@@ -106,7 +105,7 @@ export function* getStudentCumulativeGradeByUser({ child_id }) {
     yield all([
       put(setGradeLoading(false)),
       put({
-        type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
+        type: actionType.CUMULATIVE_GRADE_BY_USER_COMPLETED,
         payload: response
       })
     ])
@@ -114,7 +113,7 @@ export function* getStudentCumulativeGradeByUser({ child_id }) {
     yield all([
       put(setGradeLoading(false)),
       put({
-        type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
+        type: actionType.CUMULATIVE_GRADE_BY_USER_COMPLETED,
         payload: []
       })
     ])

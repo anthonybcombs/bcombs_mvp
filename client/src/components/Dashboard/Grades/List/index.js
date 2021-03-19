@@ -34,6 +34,7 @@ export default () => {
   const gradeDisplayCount = 3
 
   const [data, setData] = useState([])
+  const [baseColumns, setBaseColumns] = useState(cloneDeep(initialColumns))
   const [columns, setColumns] = useState(cloneDeep(initialColumns))
   const [rows, setRows] = useState(data)
   const [gradeCounter, setGradeCounter] = useState(gradeDisplayCount)
@@ -81,23 +82,12 @@ export default () => {
   }
 
   const handleSetRowAndColumn = (type, newData, colKeys, colKeysObj, cols) => {
-    // const newRows = cloneDeep((newData || data))
-    //   .reduce((acc, curr) => {
-    //     const newType = type === 'number' ? 'string' : 'number'
-    //     colKeysObj[newType].forEach(e => {
-    //       delete curr[e]
-    //     })
-    //     acc.push(curr)
-    //     return acc
-    //   }, [])
-    
-    // setRows(newRows)
-
     const newColumns = (colKeys || getActiveColumns(type))
       .reduce((acc, curr) => {
-        acc[curr] = (cols || columns)[curr]
+        acc[curr] = (cols || baseColumns)[curr]
         return acc
       }, {})
+
     setColumns(newColumns)
   }
   
@@ -386,6 +376,7 @@ export default () => {
       }
       setData(data)
       setRows(data)
+      setBaseColumns(newColumns)
       setColumns(newColumns)
       setGradeColumns(newGradeColumns)
       setColumnFilters(generateColumnFilters(data, labels))

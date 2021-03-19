@@ -12,9 +12,7 @@ import { FilterOptionsObj } from '../Headers/options'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Loading from '../../../../helpers/Loading.js'
-import { getGpaCum } from '../utils'
 
-import { requestVendor } from '../../../../redux/actions/Vendors'
 import { requestGetStudentCumulativeGradeByUser, requestGetStudentCumulativeGradeByAppGroup  } from '../../../../redux/actions/Grades'
 
 export default ({ child_id }) => {
@@ -22,26 +20,6 @@ export default ({ child_id }) => {
   const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
   }))
-
-  const selectedStudent = {
-    id: '1',
-    name: 'John Doe',
-    schoolType: 'Middle School',
-    gradeLevel: '6th',
-    gpa: '3.2 (2.6)',
-    attendanceSummary: '85% (34/40)',
-    math: 'A',
-    mathNumber: 99,
-    science: 'B',
-    scienceNumber: 90,
-    english: 'C',
-    englishNumber: 80,
-    history: 'B',
-    historyNumber: 90,
-    act1: 0,
-    act2: 2,
-    sat: 12
-  }
 
   const initialColumns = {
     name: { type: 'string', label: 'Name', sortable: false, filterable: false },
@@ -57,6 +35,7 @@ export default ({ child_id }) => {
   const gradeDisplayCount = 3
 
   const [data, setData] = useState([])
+  const [baseColumns, setBaseColumns] = useState(cloneDeep(initialColumns))
   const [columns, setColumns] = useState(cloneDeep(initialColumns))
   const [rows, setRows] = useState(data)
   const [gradeCounter, setGradeCounter] = useState(gradeDisplayCount)
@@ -118,7 +97,7 @@ export default ({ child_id }) => {
 
     const newColumns = (colKeys || getActiveColumns(type))
       .reduce((acc, curr) => {
-        acc[curr] = (cols || columns)[curr]
+        acc[curr] = (cols || baseColumns)[curr]
         return acc
       }, {})
     setColumns(newColumns)
@@ -189,7 +168,7 @@ export default ({ child_id }) => {
           <td className='subHeader'>
             <table className='subTable student'>
               <tr>
-                <td style={{ minWidth: '100px', wordBreak: 'break-word'}}>{index === 0 ? selectedStudent.name : ''}</td>
+                <td style={{ minWidth: '100px', wordBreak: 'break-word'}}>{index === 0 ? name : ''}</td>
                 <td style={{ ...highLight(schoolType, 'schoolType'), minWidth: '100px', wordBreak: 'break-word'}}>{schoolType}</td>
                 <td style={{ ...highLight(gradeLevel, 'gradeLevel'), minWidth: '100px', wordBreak: 'break-word'}}>{gradeLevel}</td>
                 <td style={{ ...highLight(gpa, 'gpa'), minWidth: '50px', wordBreak: 'break-word'}}>{gpa}</td>
@@ -338,10 +317,10 @@ export default ({ child_id }) => {
   }
 
   const getGradeList = (data) => {
-    return data
-        .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades }) => {
+    return [data]
+        .reduce((accumulator, { cumulative_grades }) => {
           const { data, labels } = accumulator
-          const { grades = [], school_type = '', year_level = '' } = cumulative_grades.length ? cumulative_grades[0] : {}
+          const { child_id = '', firstname = '', lastname = '', grades = [], school_type = '', year_level = '' } = cumulative_grades.length ? cumulative_grades[0] : {}
           const { year_final_grade = '', final_quarter_attendance = '' } = grades.length ? grades[0] : []
           const { values, keys } = grades.reduce((acc, { subject = '', final_grade = '', letter_final_grade = '' }) => {
             const { values = {}, keys = {} } = acc
@@ -386,16 +365,12 @@ export default ({ child_id }) => {
 
   useEffect(() => {
     handleSetRowAndColumn(gradeType)
-    // dispatch(requestGetStudentCumulativeGradeByUser(child_id))
-    dispatch(requestGetStudentCumulativeGradeByAppGroup({
-      app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-      app_group_type: 'bcombs'
-    }))
+    dispatch(requestGetStudentCumulativeGradeByUser(child_id))
   }, [])
 
   useEffect(() => {
-    if (gradeInput?.gradeList) {
-      const { data, labels } = getGradeList((gradeInput.gradeList || []))
+    if (gradeInput?.individualList) {
+      const { data, labels } = getGradeList((gradeInput.individualList || []))
       const newGradeColumns = {
         string: Object.keys(labels).filter(e => !e.includes('Number')),
         number: Object.keys(labels).filter(e => e.includes('Number'))
@@ -406,6 +381,7 @@ export default ({ child_id }) => {
       }
       setData(data)
       setRows(data)
+      setBaseColumns(newColumns)
       setColumns(newColumns)
       setGradeColumns(newGradeColumns)
       setColumnFilters(generateColumnFilters(data, labels))

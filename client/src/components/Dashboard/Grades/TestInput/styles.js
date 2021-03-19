@@ -31,7 +31,7 @@ export default styled.div`
   #gradeListTableWrapper {
     overflow-x: auto;
 		height: 100%;
-    min-height: calc(100vh - 400px);
+    min-height: calc(100vh - 600px);
   }
 	#gradeListTableWrapper::-webkit-scrollbar {
 		width: 8px;
@@ -336,7 +336,7 @@ export default styled.div`
   }
 
 	.gradeListFilter .search-input {
-		margin-right: 0;
+		// margin-right: 0;
 	}
 
   .gradeListFilter .applyFilterBtn {
