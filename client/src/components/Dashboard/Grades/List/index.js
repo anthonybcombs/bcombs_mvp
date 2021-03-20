@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
+import isEqual from 'lodash.isequal'
 import { Link } from '@reach/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
@@ -129,7 +130,7 @@ export default () => {
     })
 
     //Grade Date Filter
-    if (date && date.year) {
+    if (date && date.year && !isEqual(date, filterFromHeaders.date)) {
       const flattenGradeKeys = [...(gradeColumns.number || []), ...(gradeColumns.string || []), 'attendanceSummary']
       const { year, quarter } = date
       let newData = cloneDeep(data)
@@ -355,11 +356,11 @@ export default () => {
           school_year_end = '', student_grade_cumulative_id
         } = cumulative_grades.length ? cumulative_grades[0] : {}
         const sy = school_year_start && school_year_end ? `${school_year_start}-${school_year_end}` : ''
-        const { year_final_grade = '', final_quarter_attendance = '' } = grades.length ? grades[0] : []
+        const { year_final_grade = '', final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades.length ? grades[0] : []
 
         const { values, keys, quarters } = grades.reduce((acc, curr) => {
           const {
-            subject = '', final_grade = '', letter_final_grade = '',
+            subject = '',
             grade_quarter_1 = '', letter_grade_quarter_1 = '', grade_quarter_2 = '', letter_grade_quarter_2 = '',
             grade_quarter_3 = '', letter_grade_quarter_3 = '', grade_quarter_4 = '', letter_grade_quarter_4 = '',
             attendance_quarter_1_total = '', attendance_quarter_2_total = '', attendance_quarter_3_total = '',
