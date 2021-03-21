@@ -136,7 +136,7 @@ export default function index() {
           <span className="img-container">
             <img src={ProfileImg} />
           </span>
-          <a target="_blank" href={"/dashboard/parentprofile/" + id}>
+          <a href={"/dashboard/parentprofile/" + id}>
             <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
           </a>
         </>
@@ -158,7 +158,7 @@ export default function index() {
           </span>
           {
             row && row.child && row.child.firstname && row.child.lastname ? (
-              <a target="_blank" href={"/dashboard/menteeprofile/" + row.id}>
+              <a href={"/dashboard/menteeprofile/" + row.id}>
               <span>{row?.child?.firstname + " " + row?.child?.lastname}</span>
             </a>
             ) : ""
