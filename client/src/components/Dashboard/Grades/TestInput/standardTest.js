@@ -4,21 +4,22 @@ import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
 import { uuid } from 'uuidv4'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretDown, faAngleLeft, faAngleRight, faPlusCircle, faCopy, faTrashAlt, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faCaretDown, faAngleLeft, faPlusCircle, faCopy, faTrashAlt, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
 import update from 'immutability-helper'
 
 import Headers from '../Headers'
+import Loading from '../../../../helpers/Loading.js'
 import { FilterOptionsObj } from '../Headers/options'
+import SelectStudentDialog from './SelectStudentDialog'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup  } from '../../../../redux/actions/Grades'
-import { isSelectionNode, UniqueDirectiveNamesRule } from 'graphql'
 
 export default () => {
   const dispatch = useDispatch()
-  const { gradeInput } = useSelector(({ gradeInput }) => ({
-    gradeInput
+  const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => ({
+    gradeInput, loading
   }))
 
   const data = cloneDeep([
@@ -58,12 +59,32 @@ export default () => {
     attachment: { type: 'string', label: 'Attachment', sortable: false, filterable: false }
   }
 
+  const goldenKeys = {
+    student_test_id: { type: 'int' },
+    child_id: { type: 'string' },
+    test_name: { type: 'string' },
+    attempt: { type: 'int' },
+    grade_taken: { type: 'int' },
+    month_taken: { type: 'string' },
+    score: { type: 'int' },
+    ach_level: { type: 'int' },
+    school_percentage: { type: 'float' },
+    nationality_percentage: { type: 'float' },
+    district_percentage: { type: 'float' },
+    state_percentage: { type: 'float' },
+    attachment: { type: 'obj' },
+    date_created: { type: 'string' }
+  }
+
   const [columns, setColumns] = useState(cloneDeep(initialColumns))
-  const [rows, setRows] = useState(data)
-  const [filteredRows, setFilteredRows] = useState(data)
+  const [rows, setRows] = useState([])
+  const [filteredRows, setFilteredRows] = useState([])
+  const [userLookup, setUserLookup] = useState([])
   const [filterFromHeaders, setFilterFromHeaders] = useState({})
   const [activeColumnKey, setActiveColumnKey] = useState('')
   const [selected, setSelected] = useState([])
+
+  const [selectStudentOpen, setSelectStudentOpen] = useState(false)
 
   const generateColumnFilters = (passedRows) => {
     let newColumnFilters = {}
@@ -119,11 +140,12 @@ export default () => {
   }
 
   const handleInputChange = ({ target: { value } }, index, id) => {
+    const mergeObj = { [id]: value }
     setRows(update(rows, {
-      [index]: { $merge: { [id]: value } }
+      [index]: { $merge: mergeObj }
     }))
     setFilteredRows(update(filteredRows, {
-      [index]: { $merge: { [id]: value } }
+      [index]: { $merge: mergeObj }
     }))
   }
 
@@ -167,11 +189,20 @@ export default () => {
                   colKeysArr.slice(0, 2).map(key => {
                     return (
                       <td style={{ ...highLight(row[key], key), wordBreak: 'break-word'}}>
-                        <input
-                          value={row[key]}
-                          onChange={(e) => handleInputChange(e, index, key)}
-                          onBlur={handleInputBlur}
-                        />
+                        {
+                          key === 'name' ? (
+                            <input
+                              readOnly
+                              value={row.name}
+                            />
+                          ) : (
+                            <input
+                              value={row[key]}
+                              onChange={(e) => handleInputChange(e, index, key)}
+                              onBlur={handleInputBlur}
+                            />
+                          )
+                        }
                       </td>
                     )
                   })
@@ -241,15 +272,16 @@ export default () => {
   }
 
   const handleAdd = () => {
-    const newRows = cloneDeep(rows)
-    const newRow = Object.keys(columns)
-      .reduce((acc, curr) => {
-        acc[curr] = ''
-        return acc
-      }, { id: uuid() })
-    setRows([...newRows, newRow])
-    setFilteredRows([...newRows, newRow])
-    setColumnFilters(generateColumnFilters([...newRows, newRow]))
+    setSelectStudentOpen(true)
+    // const newRows = cloneDeep(rows)
+    // const newRow = Object.keys(columns)
+    //   .reduce((acc, curr) => {
+    //     acc[curr] = ''
+    //     return acc
+    //   }, { id: uuid() })
+    // setRows([...newRows, newRow])
+    // setFilteredRows([...newRows, newRow])
+    // setColumnFilters(generateColumnFilters([...newRows, newRow]))
   }
 
   const handleCopy = () => {
@@ -268,6 +300,11 @@ export default () => {
     setRows(newRows)
     setFilteredRows(newRows)
     setColumnFilters(generateColumnFilters(newRows))
+    setSelected([])
+  }
+
+  const handleSelectStudent = (data) => {
+    console.log('@@studentData', data)
   }
 
   const renderTableFilter = (key) => {
@@ -359,8 +396,19 @@ export default () => {
     }))
   }, [])
 
+  useEffect(() => {
+    if (gradeInput?.gradeList) {
+      setUserLookup(gradeInput.gradeList.map(e => ({
+        value: e.child_id,
+        label: `${e.firstname} ${e.lastname}`
+      })))
+    }
+  }, [gradeInput])
+
 
   const colArr = Object.entries(columns)
+
+  console.log('atay jd oi', { gradeInput, rows, userLookup })
 
   return (
     <div
@@ -368,140 +416,158 @@ export default () => {
         handleSetActiveColumnKey()
       }}
     >
-      <Link to={'/dashboard/grades'} className='back-btn'>
-        <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
-        Back
-      </Link>
-      <div className='gradeListFilter'>
-        <Headers
-          enableClearFilter
-          filterOptions={['sort', 'highlight', 'date']}
-          columns={columns}
-          rows={rows}
+      {
+        gradeLoading ? (
+          <Loading />
+        ) : (
+          <>
+            <Link to={'/dashboard/grades'} className='back-btn'>
+              <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
+              Back
+            </Link>
+            <div className='gradeListFilter'>
+              <Headers
+                enableClearFilter
+                filterOptions={['sort', 'highlight']}
+                columns={columns}
+                rows={rows}
 
-          onApplyFilter={handleApplyFilter}
-        />
-      </div>
-      <div id='gradeListTableWrapper'>
-        <table id='gradeInputView-table'>
-          <tbody>
-            <tr>
-              <th className='standard'>Standard Test</th>
-              <th className='th-grades'>
-                Standardized Test (SAT, ACT, End of Grade)
-              </th>
-            </tr>
-
-            <tr>
-              <td className='subHeader'>
-                <table className='subTable standardCheckbox'>
+                onApplyFilter={handleApplyFilter}
+              />
+            </div>
+            <div id='gradeListTableWrapper'>
+              <table id='gradeInputView-table'>
+                <tbody>
                   <tr>
-                    <td style={{ whiteSpace: 'initial' }}>
-                      <input
-                        type='checkbox'
-                        checked={selected.length === rows.length}
-                        onChange={handleSelectAll}
-                      />
+                    <th className='standard'>Standard Test</th>
+                    <th className='th-grades'>
+                      Standardized Test (SAT, ACT, End of Grade)
+                    </th>
+                  </tr>
+
+                  <tr>
+                    <td className='subHeader'>
+                      <table className='subTable standardCheckbox'>
+                        <tr>
+                          <td style={{ whiteSpace: 'initial' }}>
+                            <input
+                              type='checkbox'
+                              checked={selected.length === rows.length && selected.length}
+                              onChange={handleSelectAll}
+                            />
+                          </td>
+                          {
+                            colArr.slice(0, 2).map(([key, { label }]) => {
+                              return (
+                                <td style={{ whiteSpace: 'initial' }}>
+                                  {label}
+                                  <FontAwesomeIcon
+                                    icon={faCaretDown}
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleChangeTableFilterColumn(key)
+                                    }}
+                                  />
+                                  {renderTableFilter(key)}
+                                </td>
+                              )
+                            })
+                          }
+                        </tr>
+                      </table>
                     </td>
-                    {
-                      colArr.slice(0, 2).map(([key, { label }]) => {
-                        return (
-                          <td style={{ whiteSpace: 'initial' }}>
-                            {label}
-                            <FontAwesomeIcon
-                              icon={faCaretDown}
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleChangeTableFilterColumn(key)
-                              }}
-                            />
-                            {renderTableFilter(key)}
-                          </td>
-                        )
-                      })
-                    }
+
+                    <td className='subHeader'>
+                      <table className='subTable'>
+                        <tr>
+                          {
+                            colArr.slice(2, colArr.length).map(([key, { label }]) => {
+                              return (
+                                <td style={{ whiteSpace: 'initial' }}>
+                                  {label}
+                                  <FontAwesomeIcon
+                                    icon={faCaretDown}
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleChangeTableFilterColumn(key)
+                                    }}
+                                  />
+                                  {renderTableFilter(key)}
+                                </td>
+                              )
+                            })
+                          }
+                        </tr>
+                      </table>
+                    </td>
                   </tr>
-                </table>
-              </td>
 
-              <td className='subHeader'>
-                <table className='subTable'>
-                  <tr>
-                    {
-                      colArr.slice(2, colArr.length).map(([key, { label }]) => {
-                        return (
-                          <td style={{ whiteSpace: 'initial' }}>
-                            {label}
-                            <FontAwesomeIcon
-                              icon={faCaretDown}
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleChangeTableFilterColumn(key)
-                              }}
-                            />
-                            {renderTableFilter(key)}
-                          </td>
-                        )
-                      })
-                    }
-                  </tr>
-                </table>
-              </td>
-            </tr>
+                  {renderTableData()}
+                </tbody>
+              </table>
+              {
+                rows.length === 0 && (
+                  <div>No records.</div>
+                )
+              }
+            </div>
+            <div className='gradeInputView-table-actions'>
+              <div className='action left'>
+                <button
+                  className='btn-add'
+                  onClick={handleAdd}
+                >
+                  <FontAwesomeIcon icon={faPlusCircle} />
+                  <span>Add</span>
+                </button>
+                <button
+                  className={`btn-copy ${selected.length === 0 ? 'disabled' : ''}`}
+                  disabled={selected.length === 0}
+                  onClick={handleCopy}
+                >
+                  <FontAwesomeIcon icon={faCopy} />
+                  <span>Copy</span>
+                </button>
+                <button
+                  className={`btn-delete ${selected.length === 0 ? 'disabled' : ''}`}
+                  disabled={selected.length === 0}
+                  onClick={handleDelete}
+                >
+                  <FontAwesomeIcon icon={faTrashAlt} />
+                  <span>Delete</span>
+                </button>
+              </div>
 
-            {renderTableData()}
-          </tbody>
-        </table>
-        {
-          rows.length === 0 && (
-            <div>No records.</div>
-          )
-        }
-      </div>
-      <div className='gradeInputView-table-actions'>
-        <div className='action left'>
-          <button
-            className='btn-add'
-            onClick={handleAdd}
-          >
-            <FontAwesomeIcon icon={faPlusCircle} />
-            <span>Add</span>
-          </button>
-          <button
-            className={`btn-copy ${selected.length === 0 ? 'disabled' : ''}`}
-            disabled={selected.length === 0}
-            onClick={handleCopy}
-          >
-            <FontAwesomeIcon icon={faCopy} />
-            <span>Copy</span>
-          </button>
-          <button
-            className={`btn-delete ${selected.length === 0 ? 'disabled' : ''}`}
-            disabled={selected.length === 0}
-            onClick={handleDelete}
-          >
-            <FontAwesomeIcon icon={faTrashAlt} />
-            <span>Delete</span>
-          </button>
-        </div>
-
-        <div className='action right'>
-          <button
-            className='btn-save'
-            onClick={() => {}}
-          >
-            <FontAwesomeIcon icon={faCheck} />
-            <span>Save</span>
-          </button>
-          <button
-            className='btn-review'
-            onClick={() => {}}
-          >
-            <FontAwesomeIcon icon={faCheck} />
-            <span>Review</span>
-          </button>
-        </div>
-      </div>
+              <div className='action right'>
+                <button
+                  className='btn-save'
+                  onClick={() => {}}
+                >
+                  <FontAwesomeIcon icon={faCheck} />
+                  <span>Save</span>
+                </button>
+                <button
+                  className='btn-review'
+                  onClick={() => {}}
+                >
+                  <FontAwesomeIcon icon={faCheck} />
+                  <span>Review</span>
+                </button>
+              </div>
+            </div>
+          </>
+        )
+      }
+      {
+        selectStudentOpen && (
+          <SelectStudentDialog
+            rows={gradeInput?.gradeList || []}
+            onClose={() => setSelectStudentOpen(false)}
+            keys={Object.keys(goldenKeys)}
+            onSelectStudent={(data) => handleSelectStudent(data)}
+          />
+        )
+      }
     </div>
   )
 }
