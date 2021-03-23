@@ -6,26 +6,28 @@ export default styled.div`
 	margin: auto;
   padding: 0rem 3em 2rem;
   
+  #viewWrapper {
+	padding: 1rem;
+	background-color: white;
+    box-shadow: 0 0 25px #eae9e9;
+  }
   
   #gradeInputView {
-    padding: 1rem;
-    background-color: white;
-    box-shadow: 0 0 25px #eae9e9;
-    min-height: calc(100vh - 220px);
+	min-height: calc(100vh - 220px);
   }
 
 	#gradeInputView .field-input {
 		border: 0;
-    cursor: text;
-    color: #555;
-    width: 100%;
-    padding: 5px 0;
-    font-size: 16px;
-    line-height: 1.8;
-    border-radius: 0;
-    text-indent: 5px;
-    font-family: inherit;
-    border-bottom: 1.65px solid #ccc;
+		cursor: text;
+		color: #555;
+		width: 100%;
+		padding: 5px 0;
+		font-size: 16px;
+		line-height: 1.8;
+		border-radius: 0;
+		text-indent: 5px;
+		font-family: inherit;
+		border-bottom: 1.65px solid #ccc;
 	}
 
   #gradeListTableWrapper {
@@ -241,9 +243,10 @@ export default styled.div`
 
 	#gradeInputView-table td input {
 		padding: 3px 4px;
-    border-radius: 3px;
+    	border-radius: 3px;
 		border: 1.65px solid #ccc;
 		transition: .15s ease-in-out;
+		width: 100%; // temporary para ma view tanan
 	}
 	#gradeInputView-table td input.focus-visible {
 		border-color: #4B68C5;

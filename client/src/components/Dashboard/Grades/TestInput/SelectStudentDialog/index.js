@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
+import { uuid } from 'uuidv4'
 
 import SelectStudentDialogStyled from './style'
 import CustomTable from '../../../CustomComponents/CustomTable'
 
 export default function index({
-  onClose, onselectStudent, rows
+  onClose, onSelectStudent, rows: propRows, keys
 }) {
   const columns = {
     child_id: { label: 'Child Id', type: 'string' },
@@ -14,10 +15,39 @@ export default function index({
   }
 
   const [populateExistingData, setPopulateExistingData] = useState(false)
+  const [selected, setSelected] = useState([])
+  const [rows, setRows] = useState(propRows)
 
-  const handleSelect = (selected) => {
-    console.log('witwew', selected)
+  const keysObj = keys.reduce((acc, curr) => ({ ...acc, [curr]: '' }), {})
+
+  const handleSave = () => {
+    const newData = selected.flatMap(eachId => {
+      const { firstname = '', lastname = '', standardized_test = [] } = rows.find(e => e.child_id === eachId) || {}
+      return standardized_test.length > 0 ? (
+        standardized_test.map(st => ({
+          ...(populateExistingData ? st : keysObj),
+          child_id: eachId,
+          name: `${firstname} ${lastname}`,
+          id: uuid()
+        }))
+      ) : [{
+        ...keysObj,
+        child_id: eachId,
+        name: `${firstname} ${lastname}`,
+        id: uuid()
+      }]
+    })
+
+    onSelectStudent(newData)
   }
+
+  // useEffect(() => {
+  //   setRows(
+  //     propRows.flatMap(row => {
+  //       const { firstname, lastname, standardized_test } = row
+  //     })
+  //   )
+  // }, [propRows])
 
   return ReactDOM.createPortal(
     <SelectStudentDialogStyled
@@ -36,7 +66,7 @@ export default function index({
             idKey='child_id'
 
             selectable
-            onSelect={handleSelect}
+            onSelect={(ids) => setSelected(ids)}
           />
           <div id='populate'>
             <label htmlFor='populate' className='checkboxContainer'>
@@ -61,7 +91,7 @@ export default function index({
           </button>
           <button
             className='modalBtn'
-            onClick={onselectStudent}
+            onClick={handleSave}
           >
             Select
           </button>

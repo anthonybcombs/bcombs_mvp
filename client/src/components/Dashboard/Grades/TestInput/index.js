@@ -14,11 +14,13 @@ export default () => {
   return (
     <GradeInputStyled>
       <h2>Grade and Test Input</h2>
+     <div id='viewWrapper'>
       <div id='gradeInputView'>
-        <StandardTest
-        
-        />
-      </div>
+          <StandardTest
+          
+          />
+        </div>
+     </div>
     </GradeInputStyled>
   )
 }
