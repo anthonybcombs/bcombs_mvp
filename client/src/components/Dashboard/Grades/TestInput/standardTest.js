@@ -510,7 +510,7 @@ export default () => {
                       />
                     </th>
                     {
-                      colArr.map(([key, { label, filterable }]) => {
+                      colArr.map(([key, { label, filterable = true }]) => {
                         return (
                           <th style={{ whiteSpace: 'initial' }}>
                             {label}
