@@ -25,7 +25,7 @@ export default () => {
 
   const initialColumns = {
     name: { type: 'string', label: 'Name' },
-    student_test_id: { type: 'string', label: 'ID' },
+    child_id: { type: 'string', label: 'ID' },
     test_name: { type: 'string', label: 'Test name' },
     attempt: { type: 'number', label: 'Attempt' },
     grade_taken: { type: 'number', label: 'Grade Taken' },
@@ -53,7 +53,7 @@ export default () => {
     nationality_percentage: { type: 'float' },
     district_percentage: { type: 'float' },
     state_percentage: { type: 'float' },
-    attachment: { type: 'obj' },
+    attachment: { type: 'attachment' },
     // date_created: { type: 'string' }
   }
 
@@ -355,15 +355,23 @@ export default () => {
               acc[key] = e[key] ? parseInt(e[key]) : ''
             } else if (type === 'float') {
               acc[key] = e[key] ? parseFloat(e[key]) : ''
+            } else if (type === 'attachment') {
+              acc[key] = e[key] ? parseFloat(e[key]) : ''
             } else {
-              acc[key] = e[key]
+              acc[key] = e[key] || { contentType: '', data: '', extension: '', filename: '', url: '' }
             }
             return acc
           }, {})
+          .map(e => {
+            if (!e.student_test_id) {
+              delete e.student_test_id
+            }
+            return e
+          })
 
         return newRow
       })
-    console.log('wewwewew', newRows)
+    console.log('zzzzz', newRows)
     // dispatch(requestAddUpdateStudentStandardizedTest(newRows))
   }
 

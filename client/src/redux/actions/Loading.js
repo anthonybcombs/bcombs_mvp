@@ -111,3 +111,10 @@ export const setGradeLoading = value => {
     value
   };
 }
+
+export const setGradeStandardLoading = value => {
+  return {
+    type: actionType.SET_GRADE_STANDARD_LOADING,
+    value
+  };
+}

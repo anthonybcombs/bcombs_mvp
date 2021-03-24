@@ -28,6 +28,7 @@ export default function index({
           ...(populateExistingData ? st : keysObj),
           child_id: eachId,
           name: `${firstname} ${lastname}`,
+          student_test_id: st.student_test_id || '',
           id: uuid()
         }))
       ) : [{
