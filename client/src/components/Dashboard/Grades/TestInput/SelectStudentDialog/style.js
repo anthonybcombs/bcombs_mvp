@@ -45,12 +45,20 @@ export default styled.div`
     -moz-appearance: none;
   }
 
-  #populate {
-    padding: 20px 0;
+  .populate {
+    padding: 8px 0;
     text-align: right;
   }
 
-  #populate .labelName {
+  .populate label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .populate label span.labelName {
+    padding: 0;
+    cursor: pointer;
     margin-left: 10px;
   }
 

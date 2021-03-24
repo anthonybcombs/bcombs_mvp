@@ -31,9 +31,10 @@ export default styled.div`
 	}
 
   #gradeListTableWrapper {
-    overflow-x: auto;
 		height: 100%;
-    min-height: calc(100vh - 600px);
+    overflow-x: auto;
+		overflow-y: unset;
+    min-height: calc(100vh - 400px);
   }
 	#gradeListTableWrapper::-webkit-scrollbar {
 		width: 8px;
@@ -69,90 +70,28 @@ export default styled.div`
 		border: 0;
 	}
 
-	#gradeInputView-table tbody tr:nth-child(2) {
-		// background: rgb(128 128 128 / 20%);
-    color: #fff;
-		background: rgb(75 104 197);
-    border-top: 1px solid #c0caec;
-	}
-
-	#gradeInputView-table th:not(:last-child),
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader:not(:last-child),
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td:not(:last-child) {
+	#gradeInputView-table th:not(:last-child) {
+		position: relative;
 		border-right: 1px solid rgb(255 255 255 / 65%);
 	}
 
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td {
-    position: relative;
-		white-space: nowrap;
-    // height: 42px;
-    min-width: 100px;
-    white-space: initial;
+	#gradeInputView-table thead tr:nth-child(2) {
+		border-top: 1px solid #c0caec;
 	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td >svg {
+
+	#gradeInputView-table thead tr:nth-child(2) th:nth-child(1) {
+		min-width: 35px;
+	}
+
+	#gradeInputView-table thead tr:nth-child(2) th >svg {
 		position: relative;
     right: -5px;
-    cursor: pointer;
+		cursor: pointer;
     transition: .15s ease-in-out;
 	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td >svg:hover {
-		color: grey;
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon {
-		position: absolute;
-    left: 0;
-    width: 180px;
-    padding: 1rem;
-    box-shadow: 0 3px 6px #ddd;
-    background-color: rgb(255, 255, 255);
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .filter-search {
-		padding-bottom: 1rem;
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .filter-option {
-    display: flex;
-		width: 100%;
-		padding 3px 0;
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .filter-option label {
-		cursor: pointer;
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions {
-		margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #ddd;
-		display: flex;
-		justify-content: flex-end;
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button {
-		border: 0;
-    padding: 8px 10px;
-    color: white;
-    max-width: 200px;
-    box-shadow: none;
-    border-radius: 0px;
-    background-color: #f26e21;
-		transition: all .3s ease-in-out;
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.cancel {
-    color: #f26e21;
-		background: #fff;
-		border: 1px solid #f26e21;
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.cancel:hover {
-		background: rgb(242 110 33 / 5%);
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply {
-		margin-left: .5rem
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply:hover {
-		background: #e47120;
-	}
-	#gradeInputView-table tbody tr:nth-child(2) .subHeader .subTable tr td .filterDropdwon .actions button.apply[disabled] {
-		background-color: #eee;
-	}
-	#gradeInputView-table tbody tr .subHeader .subTable tr td {
-		// width: 200px;
+
+	#gradeInputView-table thead tr:nth-child(2) th >svg:hover {
+		opacity: 0.5;
 	}
 
 	#gradeInputView-table td,
@@ -167,10 +106,9 @@ export default styled.div`
 
 	#gradeInputView-table th {
 		color: white;
-    padding-top: 0;
-		padding-left: 0;
 		text-align: center;
 		background-color: #4B68C5;
+		min-width: 120px;
 	}
 	#gradeInputView-table th.standard {
     color: #000;
@@ -182,15 +120,7 @@ export default styled.div`
 	#gradeInputView-table th.th-grades {
 		position: relative;
 	}
-	#gradeInputView-table th.th-grades >svg {
-		position: relative;
-    right: -5px;
-		cursor: pointer;
-    transition: .15s ease-in-out;
-	}
-	#gradeInputView-table th.th-grades >svg:hover {
-		opacity: 0.5;
-	}
+
 	#gradeInputView-table th.th-grades .gradesFilter {
 		position: absolute;
     right: calc(100% - 80%);
@@ -215,38 +145,11 @@ export default styled.div`
 		padding: 3px 0;
 	}
 
-	#gradeInputView-table td.subHeader {
-		padding: 0;
-	}
-
-	#gradeInputView-table td.subHeader table.subTable {
-		width: 100%;
-	}
-	#gradeInputView-table td.subHeader table.subTable tr {
-		background: transparent;
-  }
-  #gradeInputView-table td.subHeader table.subTable td span >svg {
-    color: grey;
-    transition: 0.15s ease-in-out;
-  }
-  #gradeInputView-table td.subHeader table.subTable td span >svg:hover {
-    color: #000;
-  }
-	#gradeInputView-table td.subHeader table.standardCheckbox td:first-child {
-		padding: 0;
-		min-width: 30px !important;
-	}
-	#gradeInputView-table td.subHeader table.standard tr td:first-child {
-    padding: 0;
-		min-width: 44px;
-	}
-
 	#gradeInputView-table td input {
-		padding: 3px 4px;
-    	border-radius: 3px;
+		padding: 4px;
+		border-radius: 3px;
 		border: 1.65px solid #ccc;
 		transition: .15s ease-in-out;
-		width: 100%; // temporary para ma view tanan
 	}
 	#gradeInputView-table td input.focus-visible {
 		border-color: #4B68C5;
@@ -339,7 +242,7 @@ export default styled.div`
   }
 
 	.gradeListFilter .search-input {
-		// margin-right: 0;
+		margin-right: 0;
 	}
 
   .gradeListFilter .applyFilterBtn {
@@ -371,6 +274,78 @@ export default styled.div`
 	}
 
 
+
+	.filterDropdwon {
+		position: absolute;
+    left: 0;
+    width: 180px;
+    padding: 1rem;
+    box-shadow: 0 3px 6px #ddd;
+    background-color: rgb(255, 255, 255);
+	}
+	.filterDropdwon .filter-search {
+		padding-bottom: 1rem;
+	}
+	.filterDropdwon .filter-option {
+    display: flex;
+		width: 100%;
+		padding 3px 0;
+	}
+	.filterDropdwon .filter-option label {
+		color: #000;
+		cursor: pointer;
+		font-weight: normal;
+	}
+	.filterDropdwon .filter-option label .labelName {
+		padding-left: .5rem;
+	}
+	.filterDropdwon .actions {
+		margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+		display: flex;
+		justify-content: flex-end;
+	}
+	.filterDropdwon .actions button {
+		border: 0;
+    padding: 8px 10px;
+    color: white;
+    max-width: 200px;
+    box-shadow: none;
+    border-radius: 0px;
+    background-color: #f26e21;
+		transition: all .3s ease-in-out;
+	}
+	.filterDropdwon .actions button.cancel {
+    color: #f26e21;
+		background: #fff;
+		border: 1px solid #f26e21;
+	}
+	.filterDropdwon .actions button.cancel:hover {
+		background: rgb(242 110 33 / 5%);
+	}
+	.filterDropdwon .actions button.apply {
+		margin-left: .5rem
+	}
+	.filterDropdwon .actions button.apply:hover {
+		background: #e47120;
+	}
+	.filterDropdwon .actions button.apply[disabled] {
+		background-color: #eee;
+	}
+
+
+	.react-datepicker-popper .react-datepicker__header {
+		padding: 6px;
+		color: #fff;
+    background: #f46d22;
+	}
+	.react-datepicker-popper .react-datepicker__navigation--previous {
+    border-right-color: #fff;
+	}
+	.react-datepicker-popper .react-datepicker__navigation--next {
+		border-left-color: #fff;
+	}
 
 
   @media (max-width: 840px) {

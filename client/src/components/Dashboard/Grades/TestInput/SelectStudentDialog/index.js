@@ -68,7 +68,7 @@ export default function index({
             selectable
             onSelect={(ids) => setSelected(ids)}
           />
-          <div id='populate'>
+          <div className='populate'>
             <label htmlFor='populate' className='checkboxContainer'>
               <input
                 type='checkbox'
@@ -77,7 +77,7 @@ export default function index({
                 onChange={({ target: { checked } }) => setPopulateExistingData(checked)}
               />
               <span className='checkmark' />
-              <span className='labelName'>Populate existing data</span>
+              <span id='populate' className='labelName'>Populate existing data</span>
             </label>
           </div>
         </div>

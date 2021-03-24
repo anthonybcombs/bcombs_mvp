@@ -39,8 +39,10 @@ const CustomTableStyled = styled.div`
   table {
 		border: 0;
 		width: 100%;
+    margin-top: 1rem;
+    box-shadow: none;
+    border: 1px solid #ddd;
 		border-collapse: collapse;
-		box-shadow: 0px 0px 10px #ccc;
 		font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
 	}
 

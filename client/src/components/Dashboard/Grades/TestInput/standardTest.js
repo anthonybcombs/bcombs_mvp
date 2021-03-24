@@ -295,7 +295,7 @@ export default () => {
 
   const handleMagicScroll = (hide = false) => {
     if (hide) {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: unset'
+      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
       document.getElementById('gradeInputView').style = 'overflow: hidden'
     } else {
       document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
@@ -541,7 +541,7 @@ export default () => {
               </table>
               {
                 rows.length === 0 && (
-                  <div>No records.</div>
+                  <div style={{ width: '100%'}}>No records.</div>
                 )
               }
             </div>
