@@ -207,8 +207,8 @@ if(applications &&
 
   if(isReadView) {
     tempChilds.push({
-      id: childs[0].id,
-      first_name: childs[0].profile.first_name
+      id: childs[0]?.id,
+      first_name: childs[0]?.profile?.first_name
     })
 
     for(const item of chRelationships) {

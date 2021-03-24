@@ -112,9 +112,9 @@ export default function index({
           <label className={
               isReadonly &&
               !isVendorView &&
-              pastChildInformation && childGeneralInformation.is_child_transferring === "Currently Enrolled" && 
+              pastChildInformation && childGeneralInformation?.is_child_transferring === "Currently Enrolled" && 
               (pastChildInformation.is_child_transferring || pastChildInformation.is_child_transferring == "") &&
-              pastChildInformation.is_child_transferring != childGeneralInformation.is_child_transferring ?
+              pastChildInformation.is_child_transferring != childGeneralInformation?.is_child_transferring ?
               "cus-select-container radio-highlights" : "cus-select-container"
               }>
             Currently Enrolled 
@@ -124,13 +124,13 @@ export default function index({
                 handleChildFormDetailsChange(counter - 1, "general_information", "is_child_transferring", "Currently Enrolled");
               }} 
               value={"Currently Enrolled"}
-              checked={childGeneralInformation.is_child_transferring == "Currently Enrolled"}
+              checked={childGeneralInformation?.is_child_transferring == "Currently Enrolled"}
               readOnly={isReadonly}
               disabled={isReadonly}
               ref={register({
                 validate: {
                   otherCBChecked: value => {
-                    if(childGeneralInformation.is_child_transferring) return true;
+                    if(childGeneralInformation?.is_child_transferring) return true;
                     return false;
                   }
                 }
@@ -141,9 +141,9 @@ export default function index({
           <label className={
               isReadonly &&
               !isVendorView &&
-              pastChildInformation && childGeneralInformation.is_child_transferring === "Yes" && 
+              pastChildInformation && childGeneralInformation?.is_child_transferring === "Yes" && 
               (pastChildInformation.is_child_transferring || pastChildInformation.is_child_transferring == "") &&
-              pastChildInformation.is_child_transferring != childGeneralInformation.is_child_transferring ?
+              pastChildInformation.is_child_transferring != childGeneralInformation?.is_child_transferring ?
               "cus-select-container radio-highlights" : "cus-select-container"
             }>
             Yes 
@@ -153,13 +153,13 @@ export default function index({
                 handleChildFormDetailsChange(counter - 1, "general_information", "is_child_transferring", "Yes");
               }} 
               value={"Yes"}
-              checked={childGeneralInformation.is_child_transferring == "Yes"}
+              checked={childGeneralInformation?.is_child_transferring == "Yes"}
               readOnly={isReadonly}
               disabled={isReadonly}
               ref={register({
                 validate: {
                   otherCBChecked: value => {
-                    if(childGeneralInformation.is_child_transferring) return true;
+                    if(childGeneralInformation?.is_child_transferring) return true;
                     return false;
                   }
                 }
@@ -170,9 +170,9 @@ export default function index({
           <label className={
               isReadonly &&
               !isVendorView &&
-              pastChildInformation && childGeneralInformation.is_child_transferring === "No" && 
+              pastChildInformation && childGeneralInformation?.is_child_transferring === "No" && 
               (pastChildInformation.is_child_transferring || pastChildInformation.is_child_transferring == "") &&
-              pastChildInformation.is_child_transferring != childGeneralInformation.is_child_transferring ?
+              pastChildInformation.is_child_transferring != childGeneralInformation?.is_child_transferring ?
               "cus-select-container radio-highlights" : "cus-select-container"
             }>
             No
@@ -182,13 +182,13 @@ export default function index({
                 handleChildFormDetailsChange(counter - 1, "general_information", "is_child_transferring", "No");
               }} 
               value={"No"}
-              checked={childGeneralInformation.is_child_transferring == "No"}
+              checked={childGeneralInformation?.is_child_transferring == "No"}
               readOnly={isReadonly}
               disabled={isReadonly}
               ref={register({
                 validate: {
                   otherCBChecked: value => {
-                    if(childGeneralInformation.is_child_transferring) return true;
+                    if(childGeneralInformation?.is_child_transferring) return true;
                     return false;
                   }
                 }
@@ -203,7 +203,7 @@ export default function index({
           />
         </div>
         {
-          childGeneralInformation.is_child_transferring == "Yes" && (
+          childGeneralInformation?.is_child_transferring == "Yes" && (
             <>
               <div className="grid-2">
                 <div className="form-group">
@@ -216,7 +216,7 @@ export default function index({
                         !isVendorView &&
                         pastChildInformation &&
                         (pastChildInformation.transfer_reason || pastChildInformation.transfer_reason == "") &&
-                        pastChildInformation.transfer_reason != childGeneralInformation.transfer_reason ?
+                        pastChildInformation.transfer_reason != childGeneralInformation?.transfer_reason ?
                         "field-input highlights" : "field-input"
                       }
                       onChange={({ target }) => {
@@ -224,7 +224,7 @@ export default function index({
                       }}
                       placeholder="Explain"
                       ref={register({required: true})}
-                      defaultValue={childGeneralInformation.transfer_reason}
+                      defaultValue={childGeneralInformation?.transfer_reason}
                       readOnly={isReadonly}
                     />
                     <label className="field-label" htmlFor={`ch_transfer_reason_${counter - 1}`}>
@@ -247,7 +247,7 @@ export default function index({
                         !isVendorView &&
                         pastChildInformation &&
                         (pastChildInformation.prev_school_attended || pastChildInformation.prev_school_attended == "") &&
-                        pastChildInformation.prev_school_attended != childGeneralInformation.prev_school_attended ?
+                        pastChildInformation.prev_school_attended != childGeneralInformation?.prev_school_attended ?
                         "field-input highlights" : "field-input"
                       }
                       onChange={({ target }) => {
@@ -255,7 +255,7 @@ export default function index({
                       }}
                       placeholder="Explain"
                       ref={register({required: true})}
-                      defaultValue={childGeneralInformation.prev_school_attended}
+                      defaultValue={childGeneralInformation?.prev_school_attended}
                       readOnly={isReadonly}
                     />
                     <label className="field-label" htmlFor={`ch_prev_school_attended${counter - 1}`}>
@@ -283,7 +283,7 @@ export default function index({
                         (pastChildInformation.prev_school_phone ||
                           pastChildInformation.prev_school_phone == "") &&
                         pastChildInformation.prev_school_phone !=
-                        childGeneralInformation.prev_school_phone
+                        childGeneralInformation?.prev_school_phone
                           ? "field-input highlights"
                           : "field-input"
                       }
@@ -333,7 +333,7 @@ export default function index({
                         pastChildInformation &&
                         (pastChildInformation.prev_school_state ||
                           pastChildInformation.prev_school_state == "") &&
-                        pastChildInformation.prev_school_state != childGeneralInformation.prev_school_state
+                        pastChildInformation.prev_school_state != childGeneralInformation?.prev_school_state
                           ? "field-input highlights"
                           : "field-input"
                       }
@@ -346,7 +346,7 @@ export default function index({
                         );
                       }}
                       readOnly={isReadonly}
-                      defaultValue={childGeneralInformation.prev_school_state}
+                      defaultValue={childGeneralInformation?.prev_school_state}
                       ref={register({ required: true })}>
                       <option value="">Select</option>
                       {STATES.map((opt, index) => (
@@ -378,7 +378,7 @@ export default function index({
                         !isVendorView &&
                         pastChildInformation &&
                         (pastChildInformation.prev_school_city || pastChildInformation.prev_school_city == "") &&
-                        pastChildInformation.prev_school_city != childGeneralInformation.prev_school_city ?
+                        pastChildInformation.prev_school_city != childGeneralInformation?.prev_school_city ?
                         "field-input highlights" : "field-input"
                       }
                       onChange={({ target }) => {
@@ -386,7 +386,7 @@ export default function index({
                       }}
                       placeholder="City"
                       ref={register({required: true})}
-                      defaultValue={childGeneralInformation.prev_school_city}
+                      defaultValue={childGeneralInformation?.prev_school_city}
                       readOnly={isReadonly}
                     />
                     <label className="field-label" htmlFor={`ch_school_city${counter - 1}`}>
@@ -409,7 +409,7 @@ export default function index({
                         !isVendorView &&
                         pastChildInformation &&
                         (pastChildInformation.prev_school_zip_code || pastChildInformation.prev_school_zip_code == "") &&
-                        pastChildInformation.prev_school_zip_code != childGeneralInformation.prev_school_zip_code ?
+                        pastChildInformation.prev_school_zip_code != childGeneralInformation?.prev_school_zip_code ?
                         "field-input highlights" : "field-input"
                       }
                       onChange={({ target }) => {
@@ -421,7 +421,7 @@ export default function index({
                       }}
                       placeholder="Zip Code"
                       ref={register({ minLength: 5, required: true })}
-                      defaultValue={childGeneralInformation.prev_school_zip_code}
+                      defaultValue={childGeneralInformation?.prev_school_zip_code}
                       readOnly={isReadonly}
                       maxLength="5"
                     />
@@ -448,7 +448,7 @@ export default function index({
                         !isVendorView &&
                         pastChildInformation &&
                         (pastChildInformation.prev_school_address || pastChildInformation.prev_school_address == "") &&
-                        pastChildInformation.prev_school_address != childGeneralInformation.prev_school_address ?
+                        pastChildInformation.prev_school_address != childGeneralInformation?.prev_school_address ?
                         "field-input highlights" : "field-input"
                       }
                       onChange={({ target }) => {
@@ -456,7 +456,7 @@ export default function index({
                       }}
                       placeholder="Address"
                       ref={register({required: true})}
-                      defaultValue={childGeneralInformation.prev_school_address}
+                      defaultValue={childGeneralInformation?.prev_school_address}
                       readOnly={isReadonly}
                     />
                     <label className="field-label" htmlFor={`ch_school_address${counter - 1}`}>
@@ -483,9 +483,9 @@ export default function index({
           <label  className={
               isReadonly &&
               !isVendorView &&
-              pastChildInformation && childGeneralInformation.does_child_require_physical_education_service === "Yes" && 
+              pastChildInformation && childGeneralInformation?.does_child_require_physical_education_service === "Yes" && 
               (pastChildInformation.does_child_require_physical_education_service || pastChildInformation.does_child_require_physical_education_service == "") &&
-              pastChildInformation.does_child_require_physical_education_service != childGeneralInformation.does_child_require_physical_education_service ?
+              pastChildInformation.does_child_require_physical_education_service != childGeneralInformation?.does_child_require_physical_education_service ?
               "cus-select-container radio-highlights" : "cus-select-container"
               }>
             Yes 
@@ -495,7 +495,7 @@ export default function index({
                 handleChildFormDetailsChange(counter - 1, "general_information", "does_child_require_physical_education_service", "Yes");
               }} 
               value={"Yes"}
-              checked={childGeneralInformation.does_child_require_physical_education_service == "Yes"}
+              checked={childGeneralInformation?.does_child_require_physical_education_service == "Yes"}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -504,9 +504,9 @@ export default function index({
           <label  className={
               isReadonly &&
               !isVendorView &&
-              pastChildInformation && childGeneralInformation.does_child_require_physical_education_service === "No" && 
+              pastChildInformation && childGeneralInformation?.does_child_require_physical_education_service === "No" && 
               (pastChildInformation.does_child_require_physical_education_service || pastChildInformation.does_child_require_physical_education_service == "") &&
-              pastChildInformation.does_child_require_physical_education_service != childGeneralInformation.does_child_require_physical_education_service ?
+              pastChildInformation.does_child_require_physical_education_service != childGeneralInformation?.does_child_require_physical_education_service ?
               "cus-select-container radio-highlights" : "cus-select-container"
               }>
             No
@@ -517,7 +517,7 @@ export default function index({
 
            
               value={"No"}
-              checked={childGeneralInformation.does_child_require_physical_education_service == "No"}
+              checked={childGeneralInformation?.does_child_require_physical_education_service == "No"}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -532,9 +532,9 @@ export default function index({
           <label className={
               isReadonly &&
               !isVendorView &&
-              pastChildInformation && (childGeneralInformation.has_suspended === "Yes" ||( childGeneralInformation.has_suspended === 1 || typeof  childGeneralInformation.has_suspended === 'boolean' &&  childGeneralInformation.has_suspended === true)) && 
+              pastChildInformation && (childGeneralInformation?.has_suspended === "Yes" ||( childGeneralInformation?.has_suspended === 1 || typeof  childGeneralInformation?.has_suspended === 'boolean' &&  childGeneralInformation?.has_suspended === true)) && 
               ( pastChildInformation.has_suspended == 0) &&
-              pastChildInformation.has_suspended != childGeneralInformation.has_suspended ?
+              pastChildInformation.has_suspended != childGeneralInformation?.has_suspended ?
               "cus-select-container radio-highlights" : "cus-select-container"
             }>
             Yes 
@@ -543,7 +543,7 @@ export default function index({
                 handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
               value={"Yes"}
-              checked={childGeneralInformation.has_suspended == "Yes" || childGeneralInformation.has_suspended == "1" || (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === true)}
+              checked={childGeneralInformation?.has_suspended == "Yes" || childGeneralInformation?.has_suspended == "1" || (typeof  childGeneralInformation?.has_suspended === 'boolean' && childGeneralInformation?.has_suspended  === true)}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -552,9 +552,9 @@ export default function index({
           <label className={
               isReadonly &&
               !isVendorView &&
-              pastChildInformation &&  (childGeneralInformation.has_suspended === "No" || childGeneralInformation.has_suspended === 0 ||  childGeneralInformation.has_suspended === "1" || typeof  childGeneralInformation.has_suspended === 'boolean' &&  childGeneralInformation.has_suspended === false) && 
+              pastChildInformation &&  (childGeneralInformation?.has_suspended === "No" || childGeneralInformation?.has_suspended === 0 ||  childGeneralInformation?.has_suspended === "1" || typeof  childGeneralInformation?.has_suspended === 'boolean' &&  childGeneralInformation?.has_suspended === false) && 
               ( pastChildInformation.has_suspended == 1 ) &&
-              pastChildInformation.has_suspended != childGeneralInformation.has_suspended ?
+              pastChildInformation.has_suspended != childGeneralInformation?.has_suspended ?
               "cus-select-container radio-highlights" : "cus-select-container"
             }>
             No
@@ -563,7 +563,7 @@ export default function index({
                 handleChildFormDetailsChange(counter - 1, "general_information", "has_suspended", target.value);
               }} 
               value={"No"}
-              checked={childGeneralInformation.has_suspended+"" == "No" || childGeneralInformation.has_suspended == "0" ||  (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === false)}
+              checked={childGeneralInformation?.has_suspended+"" == "No" || childGeneralInformation?.has_suspended == "0" ||  (typeof  childGeneralInformation?.has_suspended === 'boolean' && childGeneralInformation?.has_suspended  === false)}
               readOnly={isReadonly}
               disabled={isReadonly}
             />
@@ -571,7 +571,7 @@ export default function index({
           </label>
         </div>
         {
-         (childGeneralInformation.has_suspended == "Yes" || childGeneralInformation.has_suspended == "1" || (typeof  childGeneralInformation.has_suspended === 'boolean' && childGeneralInformation.has_suspended  === true)) &&
+         (childGeneralInformation?.has_suspended == "Yes" || childGeneralInformation?.has_suspended == "1" || (typeof  childGeneralInformation?.has_suspended === 'boolean' && childGeneralInformation?.has_suspended  === true)) &&
           <div className="form-group">
             <textarea 
               name="reasons_suspended"
@@ -580,7 +580,7 @@ export default function index({
                 !isVendorView &&
                 pastChildInformation &&
                 (pastChildInformation.reason_suspended || pastChildInformation.reason_suspended == "") &&
-                pastChildInformation.reason_suspended != childGeneralInformation.reason_suspended ?
+                pastChildInformation.reason_suspended != childGeneralInformation?.reason_suspended ?
                 "form-control ta-justice highlights-textarea" : "form-control ta-justice"
               }
               rows="4"
@@ -589,7 +589,7 @@ export default function index({
                 handleChildFormDetailsChange(counter - 1, "general_information", "reason_suspended", target.value);
               }}
               //defaultValue={childGeneralInformation.reason_suspended}
-              value={childGeneralInformation.reason_suspended}
+              value={childGeneralInformation?.reason_suspended}
               readOnly={isReadonly}
             >
             </textarea>
@@ -609,7 +609,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.history_prev_diseases || pastChildInformation.history_prev_diseases == "") &&
-                  pastChildInformation.history_prev_diseases != childGeneralInformation.history_prev_diseases ?
+                  pastChildInformation.history_prev_diseases != childGeneralInformation?.history_prev_diseases ?
                   "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
@@ -617,7 +617,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "history_prev_diseases", target.value);
                 }}
-                defaultValue={childGeneralInformation.history_prev_diseases}
+                defaultValue={childGeneralInformation?.history_prev_diseases}
                 readOnly={isReadonly}
               >
               </textarea>
@@ -637,7 +637,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.child_currently_doctors_care || pastChildInformation.child_currently_doctors_care == "") &&
-                  pastChildInformation.child_currently_doctors_care != childGeneralInformation.child_currently_doctors_care ?
+                  pastChildInformation.child_currently_doctors_care != childGeneralInformation?.child_currently_doctors_care ?
                   "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
@@ -645,7 +645,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "child_currently_doctors_care", target.value);
                 }}
-                defaultValue={childGeneralInformation.child_currently_doctors_care}
+                defaultValue={childGeneralInformation?.child_currently_doctors_care}
                 readOnly={isReadonly}
               >
               </textarea>
@@ -665,7 +665,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.reasons_previous_hospitalizations || pastChildInformation.reasons_previous_hospitalizations == "") &&
-                  pastChildInformation.reasons_previous_hospitalizations != childGeneralInformation.reasons_previous_hospitalizations ?
+                  pastChildInformation.reasons_previous_hospitalizations != childGeneralInformation?.reasons_previous_hospitalizations ?
                   "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
@@ -673,7 +673,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "reasons_previous_hospitalizations", target.value);
                 }}
-                defaultValue={childGeneralInformation.reasons_previous_hospitalizations}
+                defaultValue={childGeneralInformation?.reasons_previous_hospitalizations}
                 readOnly={isReadonly}
               >
               </textarea>
@@ -693,7 +693,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.comments_suggestion || pastChildInformation.comments_suggestion == "") &&
-                  pastChildInformation.comments_suggestion != childGeneralInformation.comments_suggestion ?
+                  pastChildInformation.comments_suggestion != childGeneralInformation?.comments_suggestion ?
                   "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
@@ -701,7 +701,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "comments_suggestion", target.value);
                 }}
-                defaultValue={childGeneralInformation.comments_suggestion}
+                defaultValue={childGeneralInformation?.comments_suggestion}
                 readOnly={isReadonly}
               >
               </textarea>
@@ -721,7 +721,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.list_special_dietary || pastChildInformation.list_special_dietary == "") &&
-                  pastChildInformation.list_special_dietary != childGeneralInformation.list_special_dietary ?
+                  pastChildInformation.list_special_dietary != childGeneralInformation?.list_special_dietary ?
                   "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
@@ -729,7 +729,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "list_special_dietary", target.value);
                 }}
-                defaultValue={childGeneralInformation.list_special_dietary}
+                defaultValue={childGeneralInformation?.list_special_dietary}
                 readOnly={isReadonly}
               >
               </textarea>
@@ -749,7 +749,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.list_any_allergies || pastChildInformation.list_any_allergies == "") &&
-                  pastChildInformation.list_any_allergies != childGeneralInformation.list_any_allergies ?
+                  pastChildInformation.list_any_allergies != childGeneralInformation?.list_any_allergies ?
                   "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
@@ -757,7 +757,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "list_any_allergies", target.value);
                 }}
-                defaultValue={childGeneralInformation.list_any_allergies}
+                defaultValue={childGeneralInformation?.list_any_allergies}
                 readOnly={isReadonly}
               >
               </textarea>
@@ -782,7 +782,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.mental_physical_disabilities || pastChildInformation.mental_physical_disabilities == "") &&
-                  pastChildInformation.mental_physical_disabilities != childGeneralInformation.mental_physical_disabilities ?
+                  pastChildInformation.mental_physical_disabilities != childGeneralInformation?.mental_physical_disabilities ?
                   "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
@@ -790,7 +790,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "mental_physical_disabilities", target.value);
                 }}
-                defaultValue={childGeneralInformation.mental_physical_disabilities}
+                defaultValue={childGeneralInformation?.mental_physical_disabilities}
                 readOnly={isReadonly}
               >
               </textarea>
@@ -810,7 +810,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.medical_action_plan || pastChildInformation.medical_action_plan == "") &&
-                  pastChildInformation.medical_action_plan != childGeneralInformation.medical_action_plan ?
+                  pastChildInformation.medical_action_plan != childGeneralInformation?.medical_action_plan ?
                   "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
@@ -818,7 +818,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "medical_action_plan", target.value);
                 }}
-                defaultValue={childGeneralInformation.medical_action_plan}
+                defaultValue={childGeneralInformation?.medical_action_plan}
                 readOnly={isReadonly}
               >
               </textarea>
@@ -838,7 +838,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.list_fears_unique_behavior || pastChildInformation.list_fears_unique_behavior == "") &&
-                  pastChildInformation.list_fears_unique_behavior != childGeneralInformation.list_fears_unique_behavior ?
+                  pastChildInformation.list_fears_unique_behavior != childGeneralInformation?.list_fears_unique_behavior ?
                   "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
@@ -846,7 +846,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "list_fears_unique_behavior", target.value);
                 }}
-                defaultValue={childGeneralInformation.list_fears_unique_behavior}
+                defaultValue={childGeneralInformation?.list_fears_unique_behavior}
                 readOnly={isReadonly}
               >
               </textarea>

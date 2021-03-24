@@ -661,191 +661,192 @@ export default function index() {
       profile: {
         image: "",
         application_date: 'Most Up to date Application',
-        first_name: application.child.firstname
+        first_name: application?.child?.firstname
           ? application.child.firstname
           : "",
-        last_name: application.child.lastname ? application.child.lastname : "",
-        nick_name: application.child.nickname ? application.child.nickname : "",
-        date_of_birth: new Date(application.child.birthdate),
-        gender: application.child.gender,
-        phone_type: application.child.phone_type
+        last_name: application?.child?.lastname ? application.child.lastname : "",
+        nick_name: application?.child?.nickname ? application.child.nickname : "",
+        date_of_birth: application?.child?.birthdate ? new Date(application?.child?.birthdate) : '',
+        gender: application?.child?.gender,
+        phone_type: application?.child?.phone_type
           ? application.child.phone_type
           : "",
-        phone_number: application.child.phone_number
+        phone_number: application?.child?.phone_number
           ? application.child.phone_number
           : "",
-        email_type: application.child.email_type
+        email_type: application?.child?.email_type
           ? application.child.email_type
           : "",
-        email_address: application.child.email_address
+        email_address: application?.child?.email_address
           ? application.child.email_address
           : "",
-        address: application.child.address
+        address: application?.child?.address
           ? application.child.address
           : isReadonly
           ? "-"
           : "",
-        city: application.child.city ? application.child.city : "",
-        state: application.child.state ? application.child.state : "",
-        zip_code: application.child.zip_code ? application.child.zip_code : "",
-        location_site: application.child.location_site
+        city: application?.child?.city ? application.child.city : "",
+        state: application?.child?.state ? application.child.state : "",
+        zip_code: application?.child?.zip_code ? application.child.zip_code : "",
+        location_site: application?.child?.location_site
           ? application.child.location_site
           : "",
-        child_lives_with: application.child.child_lives_with
+        child_lives_with: application?.child?.child_lives_with
           ? parseArrayFormat(application.child.child_lives_with.split(","))
           : [],
-        program: application.child.programs
+        program: application?.child?.programs
           ? parseArrayFormat(application.child.programs.split(","))
           : [],
-        ethinicity: application.child.ethnicities
+        ethinicity: application?.child?.ethnicities
           ? parseArrayFormat(application.child.ethnicities.split(","))
           : [],
-        preffered_start_date: new Date(application.child.preffered_start_date),
-        current_classroom: application.child.current_classroom ? application.child.current_classroom: "",
-        primary_language: application.child.primary_language ? application.child.primary_language : "",
-        needed_days: application.child.needed_days ? application.child.needed_days : "",
-        schedule_tour: application.child.schedule_tour ? application.child.schedule_tour : "",
-        voucher: application.child.voucher ? application.child.voucher : ""
+        preffered_start_date: application?.child?.preffered_start_date ?
+         new Date(application.child.preffered_start_date) : '',
+        current_classroom: application?.child?.current_classroom ? application.child.current_classroom: "",
+        primary_language: application?.child?.primary_language ? application.child.primary_language : "",
+        needed_days: application?.child?.needed_days ? application.child.needed_days : "",
+        schedule_tour: application?.child?.schedule_tour ? application.child.schedule_tour : "",
+        voucher: application?.child?.voucher ? application.child.voucher : ""
 
       },
       general_information: {
-        grade: application.child.grade_number
+        grade: application?.child?.grade_number
           ? application.child.grade_number
           : "",
-        class_rank: application.child.class_rank
+        class_rank: application?.child?.class_rank
           ? application.child.class_rank
           : "",
-        gpa_quarter_year: application.child.gpa_quarter_year
+        gpa_quarter_year: application?.child?.gpa_quarter_year
           ? application.child.gpa_quarter_year
           : "",
-        gpa_quarter_q1: application.child.gpa_quarter_q1
+        gpa_quarter_q1: application?.child?.gpa_quarter_q1
           ? application.child.gpa_quarter_q1
           : "",
-        gpa_quarter_q2: application.child.gpa_quarter_q2
+        gpa_quarter_q2: application?.child?.gpa_quarter_q2
           ? application.child.gpa_quarter_q2
           : "",
-        gpa_quarter_q3: application.child.gpa_quarter_q3
+        gpa_quarter_q3: application?.child?.gpa_quarter_q3
           ? application.child.gpa_quarter_q3
           : "",
-        gpa_quarter_q4: application.child.gpa_quarter_q4
+        gpa_quarter_q4: application?.child?.gpa_quarter_q4
           ? application.child.gpa_quarter_q4
           : "",
-        gpa_cumulative_year: application.child.gpa_cumulative_year
+        gpa_cumulative_year: application?.child?.gpa_cumulative_year
           ? application.child.gpa_cumulative_year
           : "",
-        gpa_cumulative_q1: application.child.gpa_cumulative_q1
+        gpa_cumulative_q1: application?.child?.gpa_cumulative_q1
           ? application.child.gpa_cumulative_q1
           : "",
-        gpa_cumulative_q2: application.child.gpa_cumulative_q2
+        gpa_cumulative_q2: application?.child?.gpa_cumulative_q2
           ? application.child.gpa_cumulative_q2
           : "",
-        gpa_cumulative_q3: application.child.gpa_cumulative_q3
+        gpa_cumulative_q3: application?.child?.gpa_cumulative_q3
           ? application.child.gpa_cumulative_q3
           : "",
-        gpa_cumulative_q4: application.child.gpa_cumulative_q4
+        gpa_cumulative_q4: application?.child?.gpa_cumulative_q4
           ? application.child.gpa_cumulative_q4
           : "",
         act_scores: [],
         sat_scores: [],
         psat_scores: [],
-        school_name: application.child.school_name
+        school_name: application?.child?.school_name
           ? application.child.school_name
           : "",
-        school_phone: application.child.school_phone
+        school_phone: application?.child?.school_phone
           ? application.child.school_phone
           : "",
-        has_suspended: !!application.child.has_suspended ? 1 : 0,
-        reason_suspended: application.child.reason_suspended,
-        mentee_start_year: application.child.year_taken,
-        hobbies: application.child.hobbies ? application.child.hobbies : "",
-        life_events: application.child.life_events
+        has_suspended: !!application?.child?.has_suspended ? 1 : 0,
+        reason_suspended: application?.child?.reason_suspended,
+        mentee_start_year: application?.child?.year_taken,
+        hobbies: application?.child?.hobbies ? application.child.hobbies : "",
+        life_events: application?.child?.life_events
           ? application.child.life_events
           : "",
-        career_goals: application.child.career_goals
+        career_goals: application?.child?.career_goals
           ? application.child.career_goals
           : "",
-        colleges: application.child.colleges ? application.child.colleges : "",
-        team_affiliations: application.child.affiliations
+        colleges: application?.child?.colleges ? application.child.colleges : "",
+        team_affiliations: application?.child?.affiliations
           ? application.child.affiliations
           : "",
-        awards: application.child.awards ? application.child.awards : "",
-        accomplishments: application.child.accomplishments
+        awards: application?.child?.awards ? application.child.awards : "",
+        accomplishments: application?.child?.accomplishments
           ? application.child.accomplishments
           : "",
-        mentee_gain: application.child.mentee_gain_program
+        mentee_gain: application?.child?.mentee_gain_program
           ? application.child.mentee_gain_program
           : "",
-        is_child_transferring: application.child.is_child_transferring 
+        is_child_transferring: application?.child?.is_child_transferring 
           ? application.child.is_child_transferring 
           : "",
-        does_child_require_physical_education_service: application.child.does_child_require_physical_education_service 
+        does_child_require_physical_education_service: application?.child?.does_child_require_physical_education_service 
           ? application.child.does_child_require_physical_education_service 
           : "",
-        history_prev_diseases: application.child.history_prev_diseases 
+        history_prev_diseases: application?.child?.history_prev_diseases 
           ? application.child.history_prev_diseases 
           : "", //start of questions
-        child_currently_doctors_care: application.child.child_currently_doctors_care 
+        child_currently_doctors_care: application?.child?.child_currently_doctors_care 
           ? application.child.child_currently_doctors_care 
           : "",
-        reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations 
+        reasons_previous_hospitalizations: application?.child?.reasons_previous_hospitalizations 
           ? application.child.reasons_previous_hospitalizations 
           : "",
-        comments_suggestion: application.child.comments_suggestion 
+        comments_suggestion: application?.child?.comments_suggestion 
           ? application.child.comments_suggestion 
           : "",
-        list_special_dietary: application.child.list_special_dietary 
+        list_special_dietary: application?.child?.list_special_dietary 
           ? application.child.list_special_dietary 
           : "",
-        list_any_allergies: application.child.list_any_allergies 
+        list_any_allergies: application?.child?.list_any_allergies 
         ? application.child.list_any_allergies 
         : "",
-        mental_physical_disabilities: application.child.mental_physical_disabilities 
+        mental_physical_disabilities: application?.child?.mental_physical_disabilities 
         ? application.child.mental_physical_disabilities 
         : "",
-        medical_action_plan: application.child.medical_action_plan 
+        medical_action_plan: application?.child?.medical_action_plan 
         ? application.child.medical_action_plan 
         : "",
-        list_fears_unique_behavior: application.child.list_fears_unique_behavior 
+        list_fears_unique_behavior: application?.child?.list_fears_unique_behavior 
         ? application.child.list_fears_unique_behavior 
         : "",
-        transfer_reason: application.child.transfer_reason 
+        transfer_reason: application?.child?.transfer_reason 
         ? application.child.transfer_reason 
         : "",
-        prev_school_phone: application.child.prev_school_phone 
+        prev_school_phone: application?.child?.prev_school_phone 
         ? application.child.prev_school_phone 
         : "",
-        prev_school_city: application.child.prev_school_city 
+        prev_school_city: application?.child?.prev_school_city 
         ? application.child.prev_school_city 
         : "",
-        prev_school_address: application.child.prev_school_address 
+        prev_school_address: application?.child?.prev_school_address 
         ? application.child.prev_school_address 
         : "",
-        prev_school_attended: application.child.prev_school_attended 
+        prev_school_attended: application?.child?.prev_school_attended 
         ? application.child.prev_school_attended 
         : "",
-        prev_school_state: application.child.prev_school_state 
+        prev_school_state: application?.child?.prev_school_state 
         ? application.child.prev_school_state 
         : "",
-        prev_school_zip_code: application.child.prev_school_zip_code 
+        prev_school_zip_code: application?.child?.prev_school_zip_code 
         ? application.child.prev_school_zip_code 
         : ""
       },
       emergency_care_information: {
-        doctor_name: application.child.doctor_name
+        doctor_name: application?.child?.doctor_name
           ? application.child.doctor_name
           : "",
-        doctor_phone: application.child.doctor_phone
+        doctor_phone: application?.child?.doctor_phone
           ? application.child.doctor_phone
           : "",
-        hospital_preference: application.child.hospital_preference
+        hospital_preference: application?.child?.hospital_preference
           ? application.child.hospital_preference
           : "",
-        hospital_phone: application.child.hospital_phone
+        hospital_phone: application?.child?.hospital_phone
           ? application.child.hospital_phone
           : ""
       },
-      ch_id: application.child.ch_id,
-      id: application.child.ch_id
+      ch_id: application?.child?.ch_id,
+      id: application?.child?.ch_id
     };
     console.log('APPLICATIONNNNN', application)
     const parents = application.parents;

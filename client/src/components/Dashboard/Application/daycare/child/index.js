@@ -149,7 +149,7 @@ export default function index({
         )}
         <div className="application-date">
           <div>
-            {childInformation.profile.application_date}
+            {childInformation?.profile?.application_date}
             {
               isFormHistory && handleSelectLatestApplication && (
                 <a 
@@ -173,7 +173,7 @@ export default function index({
           <ChildInformationFormStyled
             className="page-break"
             handleChildFormDetailsChange={handleChildFormDetailsChange}
-            childProfile={childInformation.profile}
+            childProfile={childInformation?.profile}
             counter={1}
             register={register}
             errors={errors}
@@ -188,7 +188,7 @@ export default function index({
           <GeneralInformationFormStyled
             className="page-break"
             handleChildFormDetailsChange={handleChildFormDetailsChange}
-            childGeneralInformation={childInformation.general_information}
+            childGeneralInformation={childInformation?.general_information}
             counter={1}
             handleScoresChange={handleScoresChange}
             register={register}
@@ -200,7 +200,7 @@ export default function index({
           <br />
           <MedicalCareInfoStyled
             className="page-break"
-            childEmergencyCare={childInformation.emergency_care_information}
+            childEmergencyCare={childInformation?.emergency_care_information}
             handleChildFormDetailsChange={handleChildFormDetailsChange}
             counter={1}
             register={register}
