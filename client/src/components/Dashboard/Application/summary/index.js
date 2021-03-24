@@ -178,7 +178,7 @@ export default function index({
                 </tr>
                 <tr>
                   <td>
-                  <a href={allLink} target="_blank">
+                  <a href={allLink}>
                     All
                   </a>
                   </td>
