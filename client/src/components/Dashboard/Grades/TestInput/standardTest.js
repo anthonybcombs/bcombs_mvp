@@ -196,7 +196,7 @@ export default () => {
           {
             colKeysArr.map(([key, { type }]) => {
               return (
-                <td style={{ ...highLight(row[key], key), wordBreak: 'break-word'}}>
+                <td style={{ ...highLight(row[key], key), wordBreak: 'break-word'}} className={`${key}`}>
                   {
                     ['name', 'student_test_id'].includes(key) && (
                       <input
@@ -210,7 +210,7 @@ export default () => {
                       !row[key] ? (
                         <>
                           <FontAwesomeIcon
-                            className='back-icon'
+                            className='attachment'
                             icon={faPaperclip}
                             onClick={() => {
                               document.getElementById(`attachement_${row.id}`).click()
