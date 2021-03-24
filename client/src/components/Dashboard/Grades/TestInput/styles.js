@@ -108,7 +108,8 @@ export default styled.div`
 		color: white;
 		text-align: center;
 		background-color: #4B68C5;
-		min-width: 120px;
+		// min-width: 120px;
+		min-width: 80px;
 	}
 	#gradeInputView-table th.standard {
     color: #000;
@@ -150,12 +151,45 @@ export default styled.div`
 		border-radius: 3px;
 		border: 1.65px solid #ccc;
 		transition: .15s ease-in-out;
+
+		max-width: 72px;
 	}
 	#gradeInputView-table td input.focus-visible {
 		border-color: #4B68C5;
 		background: rgb(75 104 197 / 10%);
 	}
 	
+	#gradeInputView-table td:nth-child(2) >input,
+	#gradeInputView-table td:nth-child(3) >input,
+	#gradeInputView-table td:nth-child(4) >input {
+		max-width: unset;
+	}
+
+	#gradeInputView-table td:last-child {
+		display: flex;
+    align-items: center;
+    justify-content: center;
+	}
+	#gradeInputView-table td:last-child >input {
+		max-width: 132px;
+    margin-right: .5rem;
+	}
+	#gradeInputView-table td:last-child >svg.attachment {
+		color: #3e89fe;
+		cursor: pointer;
+		transition: .05s ease-in-out;
+	}
+	#gradeInputView-table td:last-child >svg.attachment:hover {
+		color: #357be8;
+	}
+	#gradeInputView-table td:last-child >svg.close-icon {
+		color: #f44336;
+		cursor: pointer;
+		transition: .05s ease-in-out;
+	}
+	#gradeInputView-table td:last-child >svg.close-icon:hover {
+		color: #e2382b;
+	}
 
 
 	#gradeInputView-table a {
