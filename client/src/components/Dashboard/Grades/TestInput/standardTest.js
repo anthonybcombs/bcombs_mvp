@@ -206,7 +206,7 @@ export default () => {
               return (
                 <td style={{ ...highLight(row[key], key), wordBreak: 'break-word'}} className={`${key}`}>
                   {
-                    ['name', 'student_test_id'].includes(key) && (
+                    ['name', 'child_id'].includes(key) && (
                       <input
                         readOnly
                         value={row[key]}
@@ -258,7 +258,7 @@ export default () => {
                     )
                   }
                   {
-                    !['name', 'student_test_id', 'attachment', 'month_taken'].includes(key) && (
+                    !['name', 'child_id', 'attachment', 'month_taken'].includes(key) && (
                       <input
                         type={type === 'number' ? 'number' : 'text'}
                         value={row[key]}

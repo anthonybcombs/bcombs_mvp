@@ -154,6 +154,9 @@ export default styled.div`
 
 		max-width: 72px;
 	}
+	#gradeInputView-table td input:read-only {
+		border: 0px;
+	}
 	#gradeInputView-table td input.focus-visible {
 		border-color: #4B68C5;
 		background: rgb(75 104 197 / 10%);
