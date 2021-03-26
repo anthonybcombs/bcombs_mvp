@@ -150,7 +150,7 @@ export function* addUpdateStudentStandardizedTest({ data }) {
     yield all([
       put(setGradeStandardLoading(false)),
       put({
-        type: actionType.ADD_UPDATE_STUDENT_STANDARD_TEST,
+        type: actionType.ADD_UPDATE_STUDENT_STANDARD_TEST_COMPLETED,
         payload: response
       })
     ])
@@ -158,7 +158,7 @@ export function* addUpdateStudentStandardizedTest({ data }) {
     yield all([
       put(setGradeStandardLoading(false)),
       put({
-        type: actionType.ADD_UPDATE_STUDENT_STANDARD_TEST,
+        type: actionType.ADD_UPDATE_STUDENT_STANDARD_TEST_COMPLETED,
         payload: []
       })
     ])

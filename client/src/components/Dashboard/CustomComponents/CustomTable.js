@@ -72,10 +72,11 @@ export default ({
   columns, rows: propRows, hasSearch,
   idKey = 'id', onSelect, selectable
 }) => {
+
   const newColumns = Object.entries(columns)
   
   const [search, setSearch] = useState('')
-  const [rows, setRows] = useState(cloneDeep(propRows))
+  const [rows, setRows] = useState(cloneDeep([]))
   const [selected, setSelected] = useState([])
 
   const handleSearch = (searchKey = '') => {
@@ -108,6 +109,10 @@ export default ({
   useEffect(() => {
     onSelect(selected)
   }, [selected])
+
+  useEffect(() => {
+    setRows(cloneDeep(propRows))
+  }, [propRows])
   
   return (
     <CustomTableStyled>
@@ -169,9 +174,17 @@ export default ({
                       )
                     }
                     {
-                      newColumns.map(([key]) => {
+                      newColumns.map(([key, { func = null }]) => {
                         return (
-                          <td>{row[key]}</td>
+                          <td>
+                            {
+                              func ? (
+                                func(row, key)
+                              ) : (
+                                row[key]
+                              )
+                            }
+                          </td>
                         )
                       })
                     }

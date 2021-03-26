@@ -19,7 +19,7 @@ import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentStan
 
 export default () => {
   const dispatch = useDispatch()
-  const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => ({
+  const { gradeInput, loading: { gradeLoading, standardGradeLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
   }))
 
@@ -195,6 +195,14 @@ export default () => {
           </td>
           {
             colKeysArr.map(([key, { type }]) => {
+              const getFilename = (attachment) => {
+                console.log('pisting yawa', attachment)
+                if (!attachment) {
+                  return ''
+                }
+                const file = (typeof attachment === 'object' ? attachment.filename : attachment).split('/')
+                return file[file.length - 1]
+              }
               return (
                 <td style={{ ...highLight(row[key], key), wordBreak: 'break-word'}} className={`${key}`}>
                   {
@@ -227,7 +235,7 @@ export default () => {
                         <>
                           <input
                             readOnly
-                            value={row[key]?.filename || ''}
+                            value={getFilename(row[key])}
                           />
                           <FontAwesomeIcon
                             className='close-icon'
@@ -324,7 +332,7 @@ export default () => {
     const newRows = cloneDeep(rows)
     const copiedRows = newRows
       .filter(e => selected.includes(e.id))
-      .map(e => ({ ...e, id: uuid() }))
+      .map(e => ({ ...e, student_test_id: '', attachment: '', id: uuid() }))
 
     setRows([...newRows, ...copiedRows])
     setFilteredRows([...newRows, ...copiedRows])
@@ -349,30 +357,30 @@ export default () => {
   const handleSave = () => {
     const newRows = cloneDeep(rows)
       .map(e => {
-        const newRow = Object.entries(goldenKeys)
+        let newRow = Object.entries(goldenKeys)
           .reduce((acc, [key, { type }]) => {
             if (type === 'int') {
               acc[key] = e[key] ? parseInt(e[key]) : ''
             } else if (type === 'float') {
               acc[key] = e[key] ? parseFloat(e[key]) : ''
-            } else if (type === 'attachment') {
-              acc[key] = e[key] ? parseFloat(e[key]) : ''
+            // } else if (type === 'attachment') {
+            //   acc[key] = e[key] || { contentType: '', data: '', extension: '', filename: '', url: '' }
             } else {
-              acc[key] = e[key] || { contentType: '', data: '', extension: '', filename: '', url: '' }
+              acc[key] = e[key]
             }
             return acc
           }, {})
-          .map(e => {
-            if (!e.student_test_id) {
-              delete e.student_test_id
-            }
-            return e
-          })
-
+        
+        if (!newRow.student_test_id) {
+          delete newRow.student_test_id
+        }
+        if (!newRow.attachment || (newRow.attachment && typeof newRow.attachment === 'string')) {
+          delete newRow.attachment
+        }
         return newRow
       })
-    console.log('zzzzz', newRows)
-    // dispatch(requestAddUpdateStudentStandardizedTest(newRows))
+
+    dispatch(requestAddUpdateStudentStandardizedTest(newRows))
   }
 
   const renderTableFilter = (key) => {
@@ -459,7 +467,7 @@ export default () => {
 
   useEffect(() => {
     dispatch(requestGetStudentCumulativeGradeByAppGroup({
-      app_group_id: '0edbc431-eeef-11ea-8212-dafd2d0ae3ff',
+      app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
       app_group_type: 'bcombs'
     }))
   }, [])
@@ -482,7 +490,7 @@ export default () => {
       }}
     >
       {
-        gradeLoading ? (
+        (gradeLoading || standardGradeLoading) ? (
           <Loading />
         ) : (
           <>

@@ -12,7 +12,8 @@ export default function Loading(
     addAdmin: false,
     deleteAdmins: false,
     addForm: false,
-    gradeLoading: false
+    gradeLoading: false,
+    standardGradeLoading: false
   },
   action
 ) {
@@ -96,6 +97,11 @@ export default function Loading(
       return {
         ...state,
         gradeLoading: action.value
+      }
+    case actionType.SET_GRADE_STANDARD_LOADING:
+      return {
+        ...state,
+        standardGradeLoading: action.value
       }
     default:
       return state;
