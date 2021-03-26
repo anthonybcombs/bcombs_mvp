@@ -37,6 +37,9 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
           attachment
           firstname
           lastname
+          gpa_sem_1
+          gpa_sem_2
+          gpa_final
           scale
           grades{
             student_grade_cumulative_id
@@ -124,6 +127,9 @@ query getStudentRecords(
         attachment
         firstname
         lastname
+        gpa_sem_1
+        gpa_sem_2
+        gpa_final
         scale
         grades{
           student_grade_cumulative_id
@@ -212,6 +218,9 @@ query getStudentCumulativeGradeByVendor(
         attachment
         firstname
         lastname
+        gpa_sem_1
+        gpa_sem_2
+        gpa_final
         scale
         grades{
           student_grade_cumulative_id

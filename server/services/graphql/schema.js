@@ -745,6 +745,9 @@ const inputs = `
         class_name: String
         class_type: String
         scale: Float
+        gpa_sem_1: Float
+        gpa_sem_2: Float
+        gpa_final: Float
         attachment: FileContentInput
         grades: [StudentGradeInput]
         deleted_grades: [Int]
@@ -1477,6 +1480,9 @@ const queryTypes = `
         class_type: String
         class_teacher: String
         scale: Float
+        gpa_sem_1: Float
+        gpa_sem_2: Float
+        gpa_final: Float
         attachment: String
         grades: [StudentGrades]
         firstname: String
