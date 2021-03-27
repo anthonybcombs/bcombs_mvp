@@ -1495,10 +1495,9 @@ const resolvers = {
     async addUpdateStudentStandardizedTest(root, { studentStandardizedTest },context) {
         return await addUpdateStudentTest(studentStandardizedTest)
     },
-    async deleteStudentStandardizedTest(root,{ student_test_ids = [], child_id }, context) {
-      console.log('deleteStudentStandardizedTest student_test_ids',student_test_ids)
-      console.log('deleteStudentStandardizedTest child_id',child_id)
-      return await removeStudentTest(student_test_ids,child_id)
+    async deleteStudentStandardizedTest(root,{ studentTestIds = [] }, context) {
+      console.log('Student Test Ids', studentTestIds)
+      return await removeStudentTest(studentTestIds)
     }
   }
 };

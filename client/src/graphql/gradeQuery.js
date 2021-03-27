@@ -91,6 +91,7 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
           grade_taken
           month_taken
           score
+          score_percentage
           ach_level
           school_percentage
           nationality_percentage
@@ -181,6 +182,7 @@ query getStudentRecords(
         grade_taken
         month_taken
         score
+        score_percentage
         ach_level
         school_percentage
         nationality_percentage

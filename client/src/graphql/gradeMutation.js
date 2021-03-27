@@ -84,6 +84,7 @@ export const ADD_UPDATE_STANDARDIZED_TEST_MUTATION = gql`
       grade_taken
       month_taken
       score
+      score_percentage
       ach_level
       school_percentage
       nationality_percentage
@@ -92,5 +93,25 @@ export const ADD_UPDATE_STANDARDIZED_TEST_MUTATION = gql`
       attachment
   }
 }
+`;
 
+export const DELETE_STUDENT_STANDARDIZED_TEST_MUTATION = gql`
+  mutation deleteStudentStandardizedTest($studentTestIds: [Int]) {
+    deleteStudentStandardizedTest(studentTestIds: $studentTestIds) {
+      student_test_id
+      child_id
+      test_name
+      attempt
+      grade_taken
+      month_taken
+      score
+      score_percentage
+      ach_level
+      school_percentage
+      nationality_percentage
+      district_percentage
+      state_percentage
+      attachment
+  }
+}
 `;

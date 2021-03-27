@@ -985,16 +985,14 @@ export const addUpdateStudentTest = async (studentTest = []) => {
 	}
 };
 
-export const removeStudentTest = async (studentTestIds = [], childId) => {
+export const removeStudentTest = async (studentTestIds = []) => {
 	const db = makeDb();
 	let studentTestList = [];
 	try {
 		await db.query(
 			`DELETE FROM student_standardized_test
-       WHERE student_test_id IN (${studentTestIds.join(',')}) AND 
-       child_id=UUID_TO_BIN(?)
-      `,
-			[childId]
+       WHERE student_test_id IN (${studentTestIds.join(',')})
+      `
 		);
 
 		studentTestList = await db.query(
@@ -1013,9 +1011,7 @@ export const removeStudentTest = async (studentTestIds = [], childId) => {
         district_percentage,
         state_percentage,
         attachment
-      FROM student_standardized_test
-      WHERE child_id=UUID_TO_BIN(?)`,
-			[childId]
+      FROM student_standardized_test`
 		);
 	} catch (err) {
 		console.log('Error removeStudentTest', err);
