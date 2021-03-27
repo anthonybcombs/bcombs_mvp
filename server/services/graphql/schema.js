@@ -762,6 +762,7 @@ const inputs = `
         grade_taken: Int
         month_taken: String
         score: Int
+        score_percentage: Float
         ach_level: Int
         school_percentage: Float
         nationality_percentage: Float
@@ -1544,6 +1545,7 @@ const queryTypes = `
         grade_taken: Int
         month_taken: String
         score: Int
+        score_percentage: Float
         ach_level: Int
         school_percentage: Float
         nationality_percentage: Float
