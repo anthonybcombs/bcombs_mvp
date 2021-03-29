@@ -338,6 +338,7 @@ export default styled.div`
     display: flex;
 		width: 100%;
 		padding 3px 0;
+		text-align: left;
 	}
 	.filterDropdwon .filter-option label {
 		color: #000;

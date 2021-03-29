@@ -54,15 +54,16 @@ export default function index({
         .filter(e => (e.grade_taken == grade_taken && e.test_name === test_name))
         .map(e => ({ value: e.attempt, label: e.attempt }))
 
-      return options.length > 0 ? (
-          <CustomSelect
-            value={attempt}
-            options={options}
-            onChange={(e) => handleChangeSt(item.child_id, e.target.value, 'attempt')}
-          />
-        ) : (
-          <span>--</span>
-        )
+      return (
+        <CustomSelect
+          value={attempt}
+          options={[
+            { value: '', label: 'NEW TEST' },
+            ...options
+          ]}
+          onChange={(e) => handleChangeSt(item.child_id, e.target.value, 'attempt')}
+        />
+      )
     }
     if (key === 'latest_attempt') {
       const latestAttempt = getGradeTestAttempt(standardized_test, grade_taken, test_name, item.child_id)

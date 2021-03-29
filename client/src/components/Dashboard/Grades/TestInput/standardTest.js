@@ -95,7 +95,7 @@ export default () => {
   const [columnFilters, setColumnFilters] = useState(generateColumnFilters())
   const [previousColumnFilters, setPreviousColumnFilters] = useState(null)
   const [columnFilterSearch, setColumnFilterSearch] = useState(null)
-  
+
   const handleApplyFilter = (filters) => {
     const { sort, search = '' } = cloneDeep(filters)
 
@@ -119,13 +119,21 @@ export default () => {
     }
 
     // Column filter
-    newRows = newRows.filter(({ id, ...rest}) => {
-      const rowArr = Object.entries(rest)
-      return rowArr.filter(([key, value]) => columnFilters[key] && !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
+    // newRows = newRows.filter(({ id, ...rest}) => {
+    //   const rowArr = Object.entries(rest)
+    //   return rowArr.filter(([key, value]) => columnFilters[key] && !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
+    // })
+    const newColumnFilters = Object.entries(columnFilters)
+    newRows = newRows.filter((row) => {
+      const result = newColumnFilters.filter(([key, value]) => {
+        const comparer = value.filter(e => e.checked).map(e => e.value)
+        return !value.length || comparer.includes(row[key])
+      })
+
+      return result.length === newColumnFilters.length
     })
-
+    
     setFilteredRows(newRows)
-
     setFilterFromHeaders(cloneDeep(filters))
   }
 
@@ -195,8 +203,6 @@ export default () => {
     const { conditions } = FilterOptionsObj.highlight
     return filteredRows.map((row, index) => {
       const colKeysArr = Object.entries(columns)
-      // const { standardized_test = [] } = (gradeInput?.gradeList || []).find(e => e.child_id === row.child_id)
-      // const existingAttempts = standardized_test.filter(e => (e.grade_taken == row.grade_taken && e.test_name === row.test_name)).map(e => e.attempt)
       const highLight = (rowVal, columnName) => {
         const newFormat = highlightFilters.reduce((acc, { column, condition, value, format }) => {
           const isTrue = column.includes(columnName) && condition && conditions[condition](rowVal, value)
@@ -229,8 +235,10 @@ export default () => {
                 const file = (typeof attachment === 'object' ? attachment.filename : attachment).split('/')
                 return file[file.length - 1]
               }
+              const highlightStyle = key==='month_taken'? highLight(row[key] ? moment(row[key]).format('MM/yyyy') : '', key) : highLight(row[key], key)
+              // const inputStyles = highlightStyle.color ? { color: highlightStyle.color } : {}
               return (
-                <td key={`td-gl-${key}-${index}`} style={{ ...highLight(row[key], key), wordBreak: 'break-word'}} className={`${key}`}>
+                <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, wordBreak: 'break-word'}} className={`${key}`}>
                   {
                     (
                       ['name', 'child_id', 'attempt'].includes(key) ||
@@ -238,6 +246,7 @@ export default () => {
                     ) && (
                       <input
                         readOnly
+                        style={highlightStyle}
                         value={
                           key === 'test_name' 
                             ? testOptions.find(e => e.value === row.test_name).label
@@ -249,6 +258,7 @@ export default () => {
                   {
                     (key === 'test_name' && !row.student_test_id) && (
                       <CustomSelect
+                        selectStyle={highlightStyle}
                         value={row[key]}
                         options={testOptions}
                         onChange={(e) => handleInputChange(e, index, key)}
@@ -258,6 +268,7 @@ export default () => {
                   {
                     (key === 'grade_taken' && !row.student_test_id) && (
                       <CustomSelect
+                        selectStyle={highlightStyle}
                         value={row[key]}
                         options={gradeTakenOptions}
                         onChange={(e) => handleInputChange(e, index, key)}
@@ -294,6 +305,7 @@ export default () => {
                       ) : (
                         <>
                           <input
+                            style={highlightStyle}
                             readOnly
                             value={getFilename(row[key])}
                           />
@@ -320,6 +332,7 @@ export default () => {
                   {
                     !['name', 'child_id', 'attachment', 'month_taken', 'test_name', 'grade_taken', 'attempt'].includes(key) && (
                       <input
+                        style={highlightStyle}
                         type={type === 'number' ? 'number' : 'text'}
                         value={row[key]}
                         onChange={(e) => handleInputChange(e, index, key)}
@@ -438,9 +451,10 @@ export default () => {
   }
 
   const handleSelectStudent = (data) => {
-    setRows([ ...rows, ...data ])
-    setFilteredRows([...rows, ...data])
-    setColumnFilters(generateColumnFilters([...rows, ...data]))
+    const newRows = [...rows, ...data]
+    setRows(newRows)
+    setFilteredRows(newRows)
+    setColumnFilters(generateColumnFilters(newRows))
     setSelectStudentOpen(false)
   }
 
@@ -679,7 +693,7 @@ export default () => {
                 
               </table>
               {
-                rows.length === 0 && (
+                (rows.length === 0 || filteredRows.length === 0) && (
                   <div style={{ width: '100%'}}>No records.</div>
                 )
               }
