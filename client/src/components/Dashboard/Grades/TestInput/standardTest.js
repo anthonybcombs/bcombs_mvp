@@ -471,8 +471,6 @@ export default () => {
               acc[key] = e[key] ? parseInt(e[key]) : 0
             } else if (type === 'float') {
               acc[key] = e[key] ? parseFloat(e[key]) : 0
-            // } else if (type === 'attachment') {
-            //   acc[key] = e[key] || { contentType: '', data: '', extension: '', filename: '', url: '' }
             } else {
               acc[key] = e[key]
             }
@@ -688,15 +686,19 @@ export default () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {renderTableData()}
+                  {
+                    (rows.length === 0 || filteredRows.length === 0)
+                      ? (<tr><td colSpan={colArr.length}>No records.</td><td></td></tr>)
+                      : renderTableData()
+                  }
                 </tbody>
                 
               </table>
-              {
+              {/* {
                 (rows.length === 0 || filteredRows.length === 0) && (
                   <div style={{ width: '100%'}}>No records.</div>
                 )
-              }
+              } */}
             </div>
             <div className='gradeInputView-table-actions'>
               <div className='action left'>

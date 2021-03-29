@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
 import isEqual from 'lodash.isequal'
+import { groupBy, maxBy } from 'lodash'
 import { Link } from '@reach/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
@@ -20,25 +21,26 @@ export default () => {
   const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
   }))
-  console.log('@@@gradeINput', gradeInput?.gradeList)
+
+  const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
+  const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
+
   const initialColumns = {
     name: { type: 'string', label: 'Name' },
     schoolType: { type: 'string', label: 'School Type' },
     gradeLevel: { type: 'string', label: 'Grade Level' },
     attendanceSummary: { type: 'string', label: 'Attendance Summary' },
     gpa: { type: 'string', label: 'GPA Cum(semester)' },
-    act1: { type: 'number', label: 'Act 1' },
-    act2: { type: 'number', label: 'Act 2' },
-    sat: { type: 'number', label: 'SAT' },
+    ...(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: { type: 'number', label: curr.label }}), {}))
   }
 
-  const gradeDisplayCount = 3
+  const displayCount = 3
 
   const [data, setData] = useState([])
   const [baseColumns, setBaseColumns] = useState(cloneDeep(initialColumns))
   const [columns, setColumns] = useState(cloneDeep(initialColumns))
   const [rows, setRows] = useState(data)
-  const [gradeCounter, setGradeCounter] = useState(gradeDisplayCount)
+  const [gradeCounter, setGradeCounter] = useState(displayCount)
   const [filterFromHeaders, setFilterFromHeaders] = useState({})
   const [activeColumnKey, setActiveColumnKey] = useState('')
   const [showGradeOptions, setShowGradeOptions] = useState(false)
@@ -49,13 +51,21 @@ export default () => {
   const [columnFilterSearch, setColumnFilterSearch] = useState(null)
   const [quarterValues, setQuarterValues] = useState({})
   const [schoolYears, setSchoolYears] = useState([])
+  const [stYearValues, setStYearValues] = useState([])
+  const [stCounter, setStCounter] = useState(displayCount)
   
-  let activeGradeColumns = gradeColumns[gradeType].slice(gradeCounter - gradeDisplayCount, gradeCounter)
-  if (activeGradeColumns.length < gradeDisplayCount) {
-    activeGradeColumns = gradeColumns[gradeType].slice(gradeColumns[gradeType].length - gradeDisplayCount, gradeColumns[gradeType].length)
+  let activeGradeColumns = gradeColumns[gradeType].slice(gradeCounter - displayCount, gradeCounter)
+  if (activeGradeColumns.length < displayCount) {
+    activeGradeColumns = gradeColumns[gradeType].slice(gradeColumns[gradeType].length - displayCount, gradeColumns[gradeType].length)
+  }
+
+  const stColumns = testOptions.map(e => e.value)
+  let activeStColumns = stColumns.slice(stCounter - displayCount, stCounter)
+  if (activeStColumns.length < displayCount) {
+    activeStColumns = stColumns.slice(stColumns.length - displayCount, stColumns.length)
   }
   
-  const getActiveColumns = (type, gCols) => ['name', 'schoolType', 'gradeLevel', 'gpa', 'attendanceSummary', ...(gCols || gradeColumns[type]), 'act1', 'act2', 'sat']
+  const getActiveColumns = (type, gCols) => ['name', 'schoolType', 'gradeLevel', 'gpa', 'attendanceSummary', ...(gCols || gradeColumns[type]), ...stColumns]
   
   const generateColumnFilters = (rowData, cols, resetKeys = null) => {
     let newColumnFilters = { ...columnFilters }
@@ -70,7 +80,7 @@ export default () => {
             acc.push({ value: curr, checked: true })
           }
           return acc
-        }, [])
+        }, [{ value: '', checked: true, isBlank: true }])
     })
     return newColumnFilters
   }
@@ -120,23 +130,28 @@ export default () => {
 
     // Column filter
     const newColumnFilters = Object.entries(getColumnFiltersByActiveColumn())
-    newRows = newRows.filter((row) => {
-      const result = newColumnFilters.filter(([key, value]) => {
-        const comparer = value.filter(e => e.checked).map(e => e.value)
-        return !value.length || comparer.includes(row[key])
+    const hasUnChecked = !!newColumnFilters.filter(([key, value]) => value.find(e => !e.checked)).length
+    if (hasUnChecked) {
+      newRows = newRows.filter((row) => {
+        const result = newColumnFilters.filter(([key, value]) => {
+          const comparer = value.filter(e => e.checked).map(e => e.value)
+          const isBlankChecked = value.find(e => e.isBlank).checked || false
+          return (isBlankChecked && !row[key]) || !value.length || comparer.includes(row[key])
+        })
+        return result.length === newColumnFilters.length
       })
-
-      return result.length === newColumnFilters.length
-    })
+    }
 
     //Grade Date Filter
-    if (date && date.year && !isEqual(date, filterFromHeaders.date)) {
+    if (date && !isEqual(date, filterFromHeaders.date)) {
       const flattenGradeKeys = [...(gradeColumns.number || []), ...(gradeColumns.string || []), 'attendanceSummary']
       const { year, quarter } = date
-      let newData = cloneDeep(data)
-      const formatRowData = (rowData, noFilter) => {
+      const yearSplit = year.split('-')
+      // let newData = cloneDeep(data)
+
+      const formatRowData = (rowData, filter) => {
         let newRowData = rowData
-        if (!noFilter) {
+        if (filter && year) {
           newRowData = newRowData.filter(e => e.schoolYear === year)
         }
 
@@ -148,20 +163,25 @@ export default () => {
               [curr]: quarterValues[gradeKey]
             }
           }, {})
+
+          const newSt = year
+            ? stYearValues[`${yearSplit[1]}_${e.child_id}`] || stYearValues[`${yearSplit[0]}_${e.child_id}`] || testOptionsObj
+            : e.stFinalValues
+
           return {
             ...e,
-            ...newGrades
+            ...newGrades,
+            ...newSt
           }
         })
 
         return newRowData
       }
-      newRows = formatRowData(newRows)
-      newData = formatRowData(newData, true)
+      newRows = formatRowData(newRows, true)
+      const newData = formatRowData(cloneDeep(data))
 
       setData(newData)
       setColumnFilters(generateColumnFilters(newData, null, flattenGradeKeys))
-      console.log('@@@@filtered===', { flattenGradeKeys, newRows, quarterValues })
     }
   
     setRows(newRows)
@@ -174,7 +194,7 @@ export default () => {
     const { conditions } = FilterOptionsObj.highlight
     return rows.map((row, index) => {
       const { 
-        name, schoolType, gradeLevel, gpa, attendanceSummary, act1, act2, sat
+        name, schoolType, gradeLevel, gpa, attendanceSummary
       } = row
       const highLight = (rowVal, columnName) => {
         const newFormat = highlightFilters.reduce((acc, { column, condition, value, format }) => {
@@ -190,6 +210,8 @@ export default () => {
         return newFormat
       }
 
+      const formatValue = (val) => val || '--'
+
       return (
         <tr key={`grades-list-${index}`}>
           <td className='subHeader'>
@@ -200,10 +222,10 @@ export default () => {
                     {name}
                   </Link>
                 </td>
-                <td style={{ ...highLight(schoolType, 'schoolType'), minWidth: '100px', wordBreak: 'break-word'}}>{schoolType}</td>
-                <td style={{ ...highLight(gradeLevel, 'gradeLevel'), minWidth: '100px', wordBreak: 'break-word'}}>{gradeLevel}</td>
-                <td style={{ ...highLight(gpa, 'gpa'), minWidth: '50px', wordBreak: 'break-word'}}>{gpa}</td>
-                <td style={{ ...highLight(attendanceSummary, 'attendanceSummary'), minWidth: '100px', wordBreak: 'break-word'}}>{attendanceSummary}</td>
+                <td style={{ ...highLight(schoolType, 'schoolType'), minWidth: '100px', wordBreak: 'break-word'}}>{formatValue(schoolType)}</td>
+                <td style={{ ...highLight(gradeLevel, 'gradeLevel'), minWidth: '100px', wordBreak: 'break-word'}}>{formatValue(gradeLevel)}</td>
+                <td style={{ ...highLight(gpa, 'gpa'), minWidth: '50px', wordBreak: 'break-word'}}>{formatValue(gpa)}</td>
+                <td style={{ ...highLight(attendanceSummary, 'attendanceSummary'), minWidth: '100px', wordBreak: 'break-word'}}>{formatValue(attendanceSummary)}</td>
               </tr>
             </table>
           </td>
@@ -212,8 +234,7 @@ export default () => {
               <tr>
                 {
                   activeGradeColumns.map(e => {
-                    // const gradeValue = 
-                    return <td style={{ ...highLight(row[e], e), width: '25%' }}>{row[e]}</td>
+                    return <td style={{ ...highLight(row[e], e), width: '25%' }}>{formatValue(row[e])}</td>
                   })
                 }
               </tr>
@@ -222,9 +243,11 @@ export default () => {
           <td className='subHeader'>
             <table className='subTable'>
               <tr>
-                <td style={highLight(act1, 'act1')}>{act1}</td>
-                <td style={highLight(act2, 'act2')}>{act2}</td>
-                <td style={highLight(sat, 'sat')}>{sat}</td>
+                {
+                  activeStColumns.map(e => {
+                    return <td style={{ ...highLight(row[e], e), width: '25%' }}>{formatValue(row[e])}</td>
+                  })
+                }
               </tr>
             </table>
           </td>
@@ -312,7 +335,7 @@ export default () => {
                         onChange={(e) => handlePrepareColumnFilter(e, key, isGrade)}
                       />
                       <span className='checkmark' />
-                      <span className='labelName'>{value}</span>
+                      <span className='labelName'>{value || '--'}</span>
                     </label>
                   </div>
                 )
@@ -347,10 +370,10 @@ export default () => {
     return null
   }
 
-  const getGradeList = (data) => {
+  const getDataList = (data) => {
     return data
-      .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades }) => {
-        const { data, labels, quarterValues, schoolYears } = accumulator
+      .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades, standardized_test }) => {
+        const { data, labels, quarterValues, schoolYears, stYearValues } = accumulator
         const {
           grades = [], school_type = '', year_level = '', school_year_start = '',
           school_year_end = '', student_grade_cumulative_id
@@ -358,6 +381,7 @@ export default () => {
         const sy = school_year_start && school_year_end ? `${school_year_start}-${school_year_end}` : ''
         const { year_final_grade = '', final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades.length ? grades[0] : []
 
+        // Grades reduce
         const { values, keys, quarters } = grades.reduce((acc, curr) => {
           const {
             subject = '',
@@ -401,6 +425,43 @@ export default () => {
           }
         }, {})
 
+        //ST reduce
+        const stValues = Object.entries(
+          groupBy(
+            standardized_test,
+            'test_name'
+          )
+        ).reduce((acc, [key, val = []]) => {
+          let currScore = 0
+          if (val.length > 0) {
+            const maxGrade = maxBy(val, 'grade_taken').grade_taken || 1
+            const maxScore = maxBy(val.filter(e => e.grade_taken === maxGrade), 'attempt').score || 0
+            currScore = maxScore
+          }
+          return { ...acc, [key]: currScore }
+        }, testOptionsObj)
+
+        const yearValues = Object.entries(
+          groupBy(
+            standardized_test.filter(e => e.month_taken).map(e => ({ ...e, month_taken: moment(e.month_taken).format('yyyy') })),
+            'month_taken'
+          )
+        ).reduce((acc, [key, val]) => {
+          const stGroupObj = Object.entries(groupBy(val, 'test_name'))
+            .reduce((stAcc, [stKey, stVal = []]) => {
+              const maxGrade = maxBy(stVal, 'grade_taken').grade_taken || 1
+              const maxScore = maxBy(stVal.filter(e => e.grade_taken === maxGrade), 'attempt').score || 0
+              return {
+                ...stAcc,
+                [stKey]: maxScore
+              }
+            }, testOptionsObj)
+          return {
+            ...acc,
+            [`${key}_${child_id}`]: stGroupObj
+          }
+        }, {})
+
         return {
           ...accumulator,
           data: [
@@ -413,8 +474,8 @@ export default () => {
               gpa: year_final_grade,
               attendanceSummary: final_quarter_attendance,
               ...values,
-              act1: '',
-              act2: '',
+              ...stValues,
+              stFinalValues: stValues,
               schoolYear: sy,
               studentGradeCumulativeId: student_grade_cumulative_id
             }
@@ -427,9 +488,13 @@ export default () => {
             ...quarterValues,
             ...quarters
           },
-          schoolYears: sy && !schoolYears.includes(sy) ? [...schoolYears, sy] : schoolYears
+          schoolYears: sy && !schoolYears.includes(sy) ? [...schoolYears, sy] : schoolYears,
+          stYearValues: {
+            ...stYearValues,
+            ...yearValues
+          }
         }
-      }, { data: [], labels: {}, quarterValues: {}, schoolYears: [] })
+      }, { data: [], labels: {}, quarterValues: {}, stYearValues: {}, schoolYears: [] })
   }
 
   useEffect(() => {
@@ -442,7 +507,7 @@ export default () => {
 
   useEffect(() => {
     if (gradeInput?.gradeList) {
-      const { data, labels, quarterValues, schoolYears } = getGradeList((gradeInput.gradeList || []))
+      const { data, labels, quarterValues, schoolYears, stYearValues } = getDataList((gradeInput.gradeList || []))
       const newGradeColumns = {
         string: Object.keys(labels).filter(e => !e.includes('Number')),
         number: Object.keys(labels).filter(e => e.includes('Number'))
@@ -458,13 +523,14 @@ export default () => {
       setGradeColumns(newGradeColumns)
       setQuarterValues(quarterValues)
       setSchoolYears(schoolYears)
+      setStYearValues(stYearValues)
       setColumnFilters(generateColumnFilters(data, labels))
       handleSetRowAndColumn(gradeType, getActiveColumns(gradeType, newGradeColumns[gradeType]), newColumns)
     }
   }, [gradeInput])
 
   const { year = '' } = filterFromHeaders?.date || {}
-
+  console.log('@@@props', { gradeList: gradeInput?.gradeList, stYearValues, rows, columnFilters })
   return (
     <GradesStyled>
       <h2>Grade List Views {year ? `(${year})` : ''}</h2>
@@ -619,14 +685,14 @@ export default () => {
                               {
                                 activeGradeColumns.map((e, index) => {
                                   const isFirst = index === 0
-                                  const isLast = index === (gradeDisplayCount - 1)
+                                  const isLast = index === (displayCount - 1)
                                   const showFirst = activeGradeColumns.length > 1 && isFirst && gradeCounter > activeGradeColumns.length
                                   const showLast = activeGradeColumns.length > 1 && isLast && gradeColumns[gradeType].length > gradeCounter
                                   return (
                                     <td style={{ width: '25%' }} key={`subjectCol-${index}`}>
                                       {
                                         showFirst && (
-                                          <span style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => setGradeCounter(gradeCounter - gradeDisplayCount)} >
+                                          <span style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => setGradeCounter(gradeCounter - displayCount)} >
                                             <FontAwesomeIcon icon={faAngleLeft}/>
                                           </span>
                                         )
@@ -642,7 +708,7 @@ export default () => {
                                       {renderTableFilter(e, true)}
                                       {
                                         showLast && (
-                                          <span style={{ cursor: 'pointer', marginLeft: '1rem' }} onClick={() => setGradeCounter(gradeCounter + gradeDisplayCount)} >
+                                          <span style={{ cursor: 'pointer', marginLeft: '1rem' }} onClick={() => setGradeCounter(gradeCounter + displayCount)} >
                                             <FontAwesomeIcon icon={faAngleRight} />
                                           </span>
                                         )
@@ -657,19 +723,42 @@ export default () => {
 
                         <td className='subHeader'>
                           <table className='subTable'>
-                            <tr>
-                              <td>
-                                Act 1
-                                <FontAwesomeIcon icon={faCaretDown}/>
-                              </td>
-                              <td>
-                                Act 2
-                                <FontAwesomeIcon icon={faCaretDown}/>
-                              </td>
-                              <td>
-                                SAT
-                                <FontAwesomeIcon icon={faCaretDown}/>
-                              </td>
+                          <tr>
+                              {
+                                activeStColumns.map((e, index) => {
+                                  const isFirst = index === 0
+                                  const isLast = index === (displayCount - 1)
+                                  const showFirst = activeStColumns.length > 1 && isFirst && stCounter > activeStColumns.length
+                                  const showLast = activeStColumns.length > 1 && isLast && stColumns.length > stCounter
+                                  return (
+                                    <td style={{ width: '25%' }} key={`subjectCol-${index}`}>
+                                      {
+                                        showFirst && (
+                                          <span style={{ cursor: 'pointer', marginRight: '1rem' }} onClick={() => setStCounter(stCounter - displayCount)} >
+                                            <FontAwesomeIcon icon={faAngleLeft}/>
+                                          </span>
+                                        )
+                                      }
+                                      {columns[e]?.label || e}
+                                      <FontAwesomeIcon
+                                        icon={faCaretDown}
+                                        onClick={(event) => {
+                                          event.stopPropagation()
+                                          handleChangeTableFilterColumn(e)
+                                        }}
+                                      />
+                                      {renderTableFilter(e, true)}
+                                      {
+                                        showLast && (
+                                          <span style={{ cursor: 'pointer', marginLeft: '1rem' }} onClick={() => setStCounter(stCounter + displayCount)} >
+                                            <FontAwesomeIcon icon={faAngleRight} />
+                                          </span>
+                                        )
+                                      }
+                                    </td>
+                                  )
+                                })
+                              }
                             </tr>
                           </table>
                         </td>

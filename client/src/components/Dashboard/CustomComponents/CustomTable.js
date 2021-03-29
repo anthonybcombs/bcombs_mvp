@@ -79,7 +79,7 @@ const CustomTableStyled = styled.div`
 	}
 
   select {
-    min-width: 100px!important;
+    min-width: 120px!important;
     background-color: unset;
   }
 `;

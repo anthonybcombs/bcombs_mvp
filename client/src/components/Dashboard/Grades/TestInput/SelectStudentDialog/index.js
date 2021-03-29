@@ -58,7 +58,7 @@ export default function index({
         <CustomSelect
           value={attempt}
           options={[
-            { value: '', label: 'NEW TEST' },
+            { value: '', label: 'New attempt' },
             ...options
           ]}
           onChange={(e) => handleChangeSt(item.child_id, e.target.value, 'attempt')}

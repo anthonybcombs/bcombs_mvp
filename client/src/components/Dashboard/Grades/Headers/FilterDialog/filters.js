@@ -26,6 +26,10 @@ export default ({ activeFilter, filters, onChangeFilter, columns, schoolYears })
       [key]: value
     }
 
+    if (key === 'year' && value === '') {
+      newFilters.quarter = ''
+    }
+
     onChangeFilter('date', newFilters)
   }
 
