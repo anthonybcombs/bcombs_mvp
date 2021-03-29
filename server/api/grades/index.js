@@ -241,6 +241,7 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
 						grade_taken,
 						month_taken,
 						score,
+						score_percentage,
 						ach_level,
 						school_percentage,
 						nationality_percentage,
