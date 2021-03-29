@@ -2,9 +2,14 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
-import cloneDeep from 'lodash.clonedeep';
+import cloneDeep from 'lodash.clonedeep'
 
 const CustomTableStyled = styled.div`
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    aligh-items: center;
+  }
   .field {
     padding: 0;
     margin: 0;
@@ -13,8 +18,7 @@ const CustomTableStyled = styled.div`
   }
   .search-input {
     position: relative;
-    width: 100%;
-    margin: 0 auto;
+    min-width: 50%;
   }
   .search-input > input {
     text-indent: 2rem !important;
@@ -49,8 +53,15 @@ const CustomTableStyled = styled.div`
 	table td,
 	table th {
 		border: 0;
-		padding: 15px;
 	}
+
+  table th {
+    padding: 10px;
+  }
+
+  table td {
+    padding: 5px 10px;
+  }
 
 	table tr:nth-child(odd) {
 		background-color: #f9f9f9;
@@ -66,11 +77,16 @@ const CustomTableStyled = styled.div`
 		color: #3e89fe;
 		text-decoration: none;
 	}
+
+  select {
+    min-width: 100px!important;
+    background-color: unset;
+  }
 `;
 
 export default ({
   columns, rows: propRows, hasSearch,
-  idKey = 'id', onSelect, selectable
+  idKey = 'id', onSelect, selectable, headerRightActions
 }) => {
 
   const newColumns = Object.entries(columns)
@@ -103,7 +119,7 @@ export default ({
         return ['string', 'number'].includes(typeof val) && val.toString().toLowerCase().includes(search.toLowerCase())
       })
     }))
-    setSelected([])
+    // setSelected([])
   }, [search])
 
   useEffect(() => {
@@ -116,23 +132,28 @@ export default ({
   
   return (
     <CustomTableStyled>
-      {
-        hasSearch && (
-          <div className='field search-input'>
-            <FontAwesomeIcon className='search-icon' icon={faSearch} />
-            <input
-              id='search'
-              name='search'
-              placeholder='Search'
-              className='field-input'
-              value={search || ''}
-              onChange={(e) => {
-                handleSearch(e.target.value)
-              }}
-            />
-          </div>
-        )
-      }
+      <div className='actions'>
+        {
+          hasSearch && (
+            <div className='field search-input'>
+              <FontAwesomeIcon className='search-icon' icon={faSearch} />
+              <input
+                id='search'
+                name='search'
+                placeholder='Search'
+                className='field-input'
+                value={search || ''}
+                onChange={(e) => {
+                  handleSearch(e.target.value)
+                }}
+              />
+            </div>
+          )
+        }
+        {
+          headerRightActions && headerRightActions
+        }
+      </div>
       <table>
         <thead>
           <tr>
@@ -141,7 +162,7 @@ export default ({
                 <th className='checkboxTh'>
                   <input
                     type='checkbox'
-                    checked={selected.length === rows.length && selected.length}
+                    checked={selected.length && selected.length === propRows.length}
                     onChange={handleSelectAll}
                   />
                 </th>
@@ -150,7 +171,7 @@ export default ({
             {
               newColumns.map(([key, obj]) => {
                 return (
-                  <th>{obj.label}</th>
+                  <th key={`th-ct-${key}`}>{obj.label}</th>
                 )
               })
             }
@@ -159,9 +180,9 @@ export default ({
         <tbody>
           {
             rows.length > 0 ? (
-              rows.map(row => {
+              rows.map((row, index) => {
                 return (
-                  <tr>
+                  <tr key={`tr-ct-${index}`}>
                     {
                       selectable && (
                         <td>
@@ -176,7 +197,7 @@ export default ({
                     {
                       newColumns.map(([key, { func = null }]) => {
                         return (
-                          <td>
+                          <td key={`td-ct-${key}-${index}`}>
                             {
                               func ? (
                                 func(row, key)
@@ -193,7 +214,7 @@ export default ({
               })
             ) : (
                 <tr>
-                  <td colSpan={columns.length + (selectable ? 1 : 0)}>
+                  <td colSpan={newColumns.length + (selectable ? 1 : 0)}>
                     No Records
                   </td>
                 </tr>
