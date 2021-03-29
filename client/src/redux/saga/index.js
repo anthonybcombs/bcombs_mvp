@@ -51,7 +51,13 @@ import { gotUserTypes } from "../actions/UserTypes";
 
 import { gotFamilyMembers } from "../actions/FamilyMembers";
 
-import { getGrades, getStudentCumulativeGradeByAppGroup, getStudentCumulativeGradeByUser, addUpdateStudentStandardizedTest } from "../actions/Grades";
+import {
+  getGrades,
+  getStudentCumulativeGradeByAppGroup,
+  getStudentCumulativeGradeByUser,
+  addUpdateStudentStandardizedTest,
+  deleteStudentStandardizedTest
+} from "../actions/Grades";
 
 import { requestedStatus, removedStatus } from "../actions/Status";
 
@@ -290,6 +296,7 @@ function* rootSaga() {
   yield takeLatest(actionType.CUMULATIVE_GRADE_BY_APP_GROUP, getStudentCumulativeGradeByAppGroup)
   yield takeLatest(actionType.CUMULATIVE_GRADE_BY_USER, getStudentCumulativeGradeByUser)
   yield takeLatest(actionType.ADD_UPDATE_STUDENT_STANDARD_TEST, addUpdateStudentStandardizedTest)
+  yield takeLatest(actionType.DELETE_STUDENT_STANDARDIZED_TEST, deleteStudentStandardizedTest)
 }
 const sagaMiddleware = createSagaMiddleware();
 

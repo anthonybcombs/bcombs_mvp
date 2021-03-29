@@ -4,24 +4,31 @@ import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
 import { uuid } from 'uuidv4'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretDown, faAngleLeft, faPlusCircle, faCopy, faTrashAlt, faCheck, faTimes, faPaperclip, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCaretDown, faAngleLeft, faPlusCircle, faCopy, faTrashAlt, faCheck, faTimes, faPaperclip, faTimesCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
 import update from 'immutability-helper'
 import DatePicker from "react-datepicker";
+import CustomSelect from '../../CustomComponents/CustomSelect'
 
 import Headers from '../Headers'
 import Loading from '../../../../helpers/Loading.js'
 import { FilterOptionsObj } from '../Headers/options'
 import SelectStudentDialog from './SelectStudentDialog'
+import ConfirmDialog from './ConfirmDialog'
+import { getGradeTestAttempt } from '../utils'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentStandardizedTest  } from '../../../../redux/actions/Grades'
+import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
 export default () => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading, standardGradeLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
   }))
+
+  const attempOptions = Array(5).fill().map((e, i) => ({ value: i+1, label: `${i+1}` }))
+  const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
+  const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i+4, label: `${i + 4}th` }))]
 
   const initialColumns = {
     name: { type: 'string', label: 'Name' },
@@ -31,7 +38,7 @@ export default () => {
     grade_taken: { type: 'number', label: 'Grade Taken' },
     month_taken: { type: 'string', label: 'Month Taken' },
     score: { type: 'number', label: 'Score' },
-    percentage: { type: 'string', label: '%' },
+    score_percentage: { type: 'number', label: '%' },
     ach_level: { type: 'number', label: 'Ach level' },
     school_percentage: { type: 'number', label: '% school' },
     district_percentage: { type: 'number', label: '% district' },
@@ -48,13 +55,13 @@ export default () => {
     grade_taken: { type: 'int' },
     month_taken: { type: 'string' },
     score: { type: 'int' },
+    score_percentage: { type: 'float' },
     ach_level: { type: 'int' },
     school_percentage: { type: 'float' },
     nationality_percentage: { type: 'float' },
     district_percentage: { type: 'float' },
     state_percentage: { type: 'float' },
-    attachment: { type: 'attachment' },
-    // date_created: { type: 'string' }
+    attachment: { type: 'attachment' }
   }
 
   const [columns, setColumns] = useState(cloneDeep(initialColumns))
@@ -63,6 +70,9 @@ export default () => {
   const [filterFromHeaders, setFilterFromHeaders] = useState({})
   const [activeColumnKey, setActiveColumnKey] = useState('')
   const [selected, setSelected] = useState([])
+  const [deleteDialog, setDeleteDialog] = useState(false)
+  const [hasChanged, setHasChanged] = useState(false)
+  const [backDialog, setBackDialog] = useState(false)
 
   const [selectStudentOpen, setSelectStudentOpen] = useState(false)
 
@@ -85,7 +95,7 @@ export default () => {
   const [columnFilters, setColumnFilters] = useState(generateColumnFilters())
   const [previousColumnFilters, setPreviousColumnFilters] = useState(null)
   const [columnFilterSearch, setColumnFilterSearch] = useState(null)
-  
+
   const handleApplyFilter = (filters) => {
     const { sort, search = '' } = cloneDeep(filters)
 
@@ -109,18 +119,42 @@ export default () => {
     }
 
     // Column filter
-    newRows = newRows.filter(({ id, ...rest}) => {
-      const rowArr = Object.entries(rest)
-      return rowArr.filter(([key, value]) => columnFilters[key] && !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
+    // newRows = newRows.filter(({ id, ...rest}) => {
+    //   const rowArr = Object.entries(rest)
+    //   return rowArr.filter(([key, value]) => columnFilters[key] && !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
+    // })
+    const newColumnFilters = Object.entries(columnFilters)
+    newRows = newRows.filter((row) => {
+      const result = newColumnFilters.filter(([key, value]) => {
+        const comparer = value.filter(e => e.checked).map(e => e.value)
+        return !value.length || comparer.includes(row[key])
+      })
+
+      return result.length === newColumnFilters.length
     })
-
+    
     setFilteredRows(newRows)
-
     setFilterFromHeaders(cloneDeep(filters))
   }
 
   const handleInputChange = ({ target: { value } }, index, key) => {
     const mergeObj = { [key]: value }
+
+    if (['grade_taken', 'test_name'].includes(key)) {
+      let { child_id, test_name, grade_taken } = rows[index]
+      if (key === 'grade_taken') {
+        grade_taken = value
+      } else {
+        test_name = value
+      }
+
+      const { standardized_test = [] } = (gradeInput?.gradeList || []).find(e => e.child_id === child_id) || {}
+      const attempt = getGradeTestAttempt([...standardized_test, ...rows.filter(e => !e.student_test_id)], grade_taken, test_name, child_id)
+
+      mergeObj.attempt = attempt
+    }
+
+    setHasChanged(true)
     setRows(update(rows, {
       [index]: { $merge: mergeObj }
     }))
@@ -169,7 +203,6 @@ export default () => {
     const { conditions } = FilterOptionsObj.highlight
     return filteredRows.map((row, index) => {
       const colKeysArr = Object.entries(columns)
-
       const highLight = (rowVal, columnName) => {
         const newFormat = highlightFilters.reduce((acc, { column, condition, value, format }) => {
           const isTrue = column.includes(columnName) && condition && conditions[condition](rowVal, value)
@@ -185,34 +218,72 @@ export default () => {
       }
 
       return (
-        <tr key={`grades-list-${index}`} className='tr-data'>
+        <tr key={`grades-list-${index}`} className={`tr-data${row.student_test_id ? ' has-data' : ''}`}>
           <td>
             <input
               type='checkbox'
-              checked={selected.includes(row.id)}
-              onChange={e => handleSelect(e, row.id)}
+              checked={!!selected.find(e => e.id === row.id)}
+              onChange={e => handleSelect(e, row)}
             />
           </td>
           {
             colKeysArr.map(([key, { type }]) => {
               const getFilename = (attachment) => {
-                console.log('pisting yawa', attachment)
                 if (!attachment) {
                   return ''
                 }
                 const file = (typeof attachment === 'object' ? attachment.filename : attachment).split('/')
                 return file[file.length - 1]
               }
+              const highlightStyle = key==='month_taken'? highLight(row[key] ? moment(row[key]).format('MM/yyyy') : '', key) : highLight(row[key], key)
+              // const inputStyles = highlightStyle.color ? { color: highlightStyle.color } : {}
               return (
-                <td style={{ ...highLight(row[key], key), wordBreak: 'break-word'}} className={`${key}`}>
+                <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, wordBreak: 'break-word'}} className={`${key}`}>
                   {
-                    ['name', 'child_id'].includes(key) && (
+                    (
+                      ['name', 'child_id', 'attempt'].includes(key) ||
+                      (row.student_test_id && ['grade_taken', 'test_name'].includes(key))
+                    ) && (
                       <input
                         readOnly
-                        value={row[key]}
+                        style={highlightStyle}
+                        value={
+                          key === 'test_name' 
+                            ? testOptions.find(e => e.value === row.test_name).label
+                            : row[key]
+                        }
                       />
                     )
                   }
+                  {
+                    (key === 'test_name' && !row.student_test_id) && (
+                      <CustomSelect
+                        selectStyle={highlightStyle}
+                        value={row[key]}
+                        options={testOptions}
+                        onChange={(e) => handleInputChange(e, index, key)}
+                      />
+                    )
+                  }
+                  {
+                    (key === 'grade_taken' && !row.student_test_id) && (
+                      <CustomSelect
+                        selectStyle={highlightStyle}
+                        value={row[key]}
+                        options={gradeTakenOptions}
+                        onChange={(e) => handleInputChange(e, index, key)}
+                      />
+                    )
+                  }
+                  {/* {
+                    (key === 'attempt' && !row.student_test_id) && (
+                      <CustomSelect
+                        value={row[key]}
+                        options={attempOptions.filter(e => !existingAttempts.includes(e.value) )}
+                        onChange={(e) => handleInputChange(e, index, key)}
+                      />
+                    )
+                  } */}
                   {
                     key === 'attachment' && (
                       !row[key] ? (
@@ -234,6 +305,7 @@ export default () => {
                       ) : (
                         <>
                           <input
+                            style={highlightStyle}
                             readOnly
                             value={getFilename(row[key])}
                           />
@@ -258,8 +330,9 @@ export default () => {
                     )
                   }
                   {
-                    !['name', 'child_id', 'attachment', 'month_taken'].includes(key) && (
+                    !['name', 'child_id', 'attachment', 'month_taken', 'test_name', 'grade_taken', 'attempt'].includes(key) && (
                       <input
+                        style={highlightStyle}
                         type={type === 'number' ? 'number' : 'text'}
                         value={row[key]}
                         onChange={(e) => handleInputChange(e, index, key)}
@@ -317,41 +390,76 @@ export default () => {
   }
 
   const handleSelectAll = ({ target: { checked } }) => {
-    setSelected(checked ? filteredRows.map(e => e.id) : [])
+    setSelected(checked ? filteredRows.map(e => e) : [])
   }
 
-  const handleSelect = ({ target: { checked } }, id) => {
-    setSelected(checked ? [...selected, id] : selected.filter(e => e !== id))
+  const handleSelect = ({ target: { checked } }, row) => {
+    setSelected(checked ? [...selected, row] : selected.filter(e => e.id !== row.id))
   }
 
   const handleAdd = () => {
     setSelectStudentOpen(true)
   }
 
-  const handleCopy = () => {
-    const newRows = cloneDeep(rows)
-    const copiedRows = newRows
-      .filter(e => selected.includes(e.id))
-      .map(e => ({ ...e, student_test_id: '', attachment: '', id: uuid() }))
+  const remapSelectedRowsByAttemp = (data) => {
+    let newRows = []
+    let currMax = {}
+    data.forEach(e => {
+      const { standardized_test = [] } = gradeInput.gradeList.find(g => g.child_id === e.child_id) || {}
+      const attemptKey = `${e.child_id}_${e.grade_taken}_${e.test_name}`
+      const attempt = currMax[attemptKey] || getGradeTestAttempt(standardized_test, e.grade_taken, e.test_name, e.child_id)
+      newRows = [
+        ...newRows,
+        { ...e, attempt: e.student_test_id ? e.attempt : attempt }
+      ]
+      currMax[attemptKey] = attempt + (e.student_test_id ? 0 : 1)
+    })
 
-    setRows([...newRows, ...copiedRows])
-    setFilteredRows([...newRows, ...copiedRows])
-    setColumnFilters(generateColumnFilters([...newRows, ...copiedRows]))
+    return newRows
   }
 
-  const handleDelete = () => {
-    const newRows = cloneDeep(rows).filter(e => !selected.includes(e.id))
+  const handleCopy = () => {
+    const newRows = cloneDeep(rows)
+    const selectedIds = selected.map(e => e.id)
+    const copiedRows = newRows
+      .filter(e => selectedIds.includes(e.id))
+      .map(e => ({ ...e, student_test_id: '', attachment: '', id: uuid() }))
+    const mergedRows = remapSelectedRowsByAttemp([...newRows, ...copiedRows])
+
+    setHasChanged(true)
+    setRows(mergedRows)
+    setFilteredRows(mergedRows)
+    setColumnFilters(generateColumnFilters(mergedRows))
+  }
+
+  const handleDelete = (skipConfirm = false) => {
+    const selectedIds = selected.map(e => e.id)
+    const newRows = remapSelectedRowsByAttemp(cloneDeep(rows).filter(e => !selectedIds.includes(e.id)))
+    
+    setHasChanged(true)
     setRows(newRows)
     setFilteredRows(newRows)
     setColumnFilters(generateColumnFilters(newRows))
     setSelected([])
+
+    // dispatch remove from database
+    if (!skipConfirm) {
+      dispatch(requestDeleteStudentStandardizedTest(selected.filter(e => e.student_test_id).map(e => e.student_test_id)))
+    }
+
+    setDeleteDialog(false)
   }
 
   const handleSelectStudent = (data) => {
-    setRows([ ...rows, ...data ])
-    setFilteredRows([...rows, ...data])
-    setColumnFilters(generateColumnFilters([...rows, ...data]))
+    const newRows = [...rows, ...data]
+    setRows(newRows)
+    setFilteredRows(newRows)
+    setColumnFilters(generateColumnFilters(newRows))
     setSelectStudentOpen(false)
+  }
+
+  const handleBack = () => {
+    window.location.replace('/dashboard/grades')
   }
 
   const handleSave = () => {
@@ -360,9 +468,9 @@ export default () => {
         let newRow = Object.entries(goldenKeys)
           .reduce((acc, [key, { type }]) => {
             if (type === 'int') {
-              acc[key] = e[key] ? parseInt(e[key]) : ''
+              acc[key] = e[key] ? parseInt(e[key]) : 0
             } else if (type === 'float') {
-              acc[key] = e[key] ? parseFloat(e[key]) : ''
+              acc[key] = e[key] ? parseFloat(e[key]) : 0
             // } else if (type === 'attachment') {
             //   acc[key] = e[key] || { contentType: '', data: '', extension: '', filename: '', url: '' }
             } else {
@@ -379,7 +487,6 @@ export default () => {
         }
         return newRow
       })
-
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
   }
 
@@ -420,7 +527,7 @@ export default () => {
                   return null
                 }
                 return (
-                  <div id={`${index}`} className='filter-option'>
+                  <div key={`col-filter-option-${index}`} id={`${index}`} className='filter-option'>
                     <label htmlFor={`${key}_${valueID}_${index}`} className='checkboxContainer'>
                       <input
                         type='checkbox'
@@ -472,15 +579,35 @@ export default () => {
     }))
   }, [])
 
-  // useEffect(() => {
-  //   if (gradeInput?.gradeList) {
-  //     setUserLookup(gradeInput.gradeList.map(e => ({
-  //       value: e.child_id,
-  //       label: `${e.firstname} ${e.lastname}`
-  //     })))
-  //   }
-  // }, [gradeInput])
+  useEffect(() => {
+    if (gradeInput.stUpdated) {
+      dispatch(clearGrades())
+      dispatch(requestGetStudentCumulativeGradeByAppGroup({
+        app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
+        app_group_type: 'bcombs'
+      }))
+    }
+  }, [gradeInput])
 
+  useEffect(() => {
+    if (gradeInput.gradeList) {
+      const newGradeList = gradeInput.gradeList.flatMap(e => e.standardized_test)
+      const newRows = cloneDeep(rows).map(row => {
+        const { student_test_id } = newGradeList.find(e => (
+          e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
+        )) || {}
+        return { ...row, student_test_id: student_test_id || row.student_test_id }
+      })
+      setRows(newRows)
+      setFilteredRows(newRows)
+    }
+  }, [gradeInput.gradeList])
+
+  useEffect(() => {
+    if(!rows.length) {
+      setHasChanged(false)
+    }
+  }, [rows])
 
   const colArr = Object.entries(columns)
   return (
@@ -494,10 +621,20 @@ export default () => {
           <Loading />
         ) : (
           <>
-            <Link to={'/dashboard/grades'} className='back-btn'>
+            <a
+              className='back-btn'
+              onClick={(e) => {
+                e.preventDefault()
+                if (hasChanged) {
+                  setBackDialog(true)
+                } else {
+                  handleBack()
+                }
+              }}
+            >
               <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
               Back
-            </Link>
+            </a>
             <div className='gradeListFilter'>
               <Headers
                 enableClearFilter
@@ -521,14 +658,14 @@ export default () => {
                     <th style={{ whiteSpace: 'initial' }}>
                       <input
                         type='checkbox'
-                        checked={selected.length === rows.length && selected.length}
+                        checked={selected.length && selected.length === rows.length}
                         onChange={handleSelectAll}
                       />
                     </th>
                     {
                       colArr.map(([key, { label, filterable = true }]) => {
                         return (
-                          <th style={{ whiteSpace: 'initial' }}>
+                          <th key={`th-col-${key}`} style={{ whiteSpace: 'initial' }}>
                             {label}
                             {
                               filterable && (
@@ -556,7 +693,7 @@ export default () => {
                 
               </table>
               {
-                rows.length === 0 && (
+                (rows.length === 0 || filteredRows.length === 0) && (
                   <div style={{ width: '100%'}}>No records.</div>
                 )
               }
@@ -581,16 +718,31 @@ export default () => {
                 <button
                   className={`btn-delete ${selected.length === 0 ? 'disabled' : ''}`}
                   disabled={selected.length === 0}
-                  onClick={handleDelete}
+                  onClick={() => {
+                    if (selected.find(e => e.student_test_id)) {
+                      setDeleteDialog(true)
+                    } else {
+                      handleDelete(true)
+                    }
+                  }}
                 >
                   <FontAwesomeIcon icon={faTrashAlt} />
                   <span>Delete</span>
+                </button>
+                <button
+                  className={`btn-copy ${selected.length === 0 ? 'disabled' : ''}`}
+                  disabled={selected.length === 0}
+                  onClick={() => handleDelete(true)}
+                >
+                  <FontAwesomeIcon icon={faMinusCircle} />
+                  <span>Remove from table</span>
                 </button>
               </div>
 
               <div className='action right'>
                 <button
                   className='btn-save'
+                  disabled={rows.length === 0}
                   onClick={handleSave}
                 >
                   <FontAwesomeIcon icon={faCheck} />
@@ -598,6 +750,7 @@ export default () => {
                 </button>
                 <button
                   className='btn-review'
+                  disabled={rows.length === 0}
                   onClick={() => {}}
                 >
                   <FontAwesomeIcon icon={faCheck} />
@@ -612,9 +765,34 @@ export default () => {
         selectStudentOpen && (
           <SelectStudentDialog
             rows={gradeInput?.gradeList || []}
-            onClose={() => setSelectStudentOpen(false)}
+            existingRows={rows}
+            gradeTakenOptions={gradeTakenOptions}
+            testOptions={testOptions}
+            attempOptions={attempOptions}
             keys={Object.keys(goldenKeys)}
+
+            onClose={() => setSelectStudentOpen(false)}
             onSelectStudent={(data) => handleSelectStudent(data)}
+          />
+        )
+      }
+      {
+        deleteDialog && (
+          <ConfirmDialog
+            onClose={() => setDeleteDialog(false)}
+            onConfirm={() => handleDelete(false)}
+            title='Cofirm delete student test records'
+            content='Are you sure you want to remove the selected tests? These will remove them from the system.'
+          />
+        )
+      }
+      {
+        backDialog && (
+          <ConfirmDialog
+            onClose={() => setBackDialog(false)}
+            onConfirm={handleBack}
+            title='Confirm leaving page'
+            content='You have unsaved changes. Would you like to leave this page?'
           />
         )
       }

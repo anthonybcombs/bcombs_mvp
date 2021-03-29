@@ -70,6 +70,10 @@ export default styled.div`
 		border: 0;
 	}
 
+	#gradeInputView-table tr.has-data {
+		background-color: #f6d9d9!important;
+	}
+
 	#gradeInputView-table th:not(:last-child) {
 		position: relative;
 		border-right: 1px solid rgb(255 255 255 / 65%);
@@ -156,6 +160,7 @@ export default styled.div`
 	}
 	#gradeInputView-table td input:read-only {
 		border: 0px;
+		background-color: unset;
 	}
 	#gradeInputView-table td input.focus-visible {
 		border-color: #4B68C5;
@@ -194,6 +199,11 @@ export default styled.div`
 		color: #e2382b;
 	}
 
+	#gradeInputView-table select {
+    min-width: 100px!important;
+		background-color: unset;
+  }
+
 
 	#gradeInputView-table a {
 		color: #3e89fe;
@@ -225,7 +235,7 @@ export default styled.div`
 	.gradeInputView-table-actions .left {
 		display: grid;
 		grid-gap: 1rem;
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
 	}
 	.gradeInputView-table-actions .right {
 		display: grid;
@@ -305,6 +315,7 @@ export default styled.div`
 		align-items: center;
 		padding-bottom: 1rem;
 		text-decoration: none;
+		cursor: pointer;
 	}
 	.back-btn svg {
 		padding-right: 5px;
@@ -327,6 +338,7 @@ export default styled.div`
     display: flex;
 		width: 100%;
 		padding 3px 0;
+		text-align: left;
 	}
 	.filterDropdwon .filter-option label {
 		color: #000;
