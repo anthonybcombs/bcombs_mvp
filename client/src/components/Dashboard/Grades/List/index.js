@@ -376,7 +376,7 @@ export default () => {
         const { data, labels, quarterValues, schoolYears, stYearValues } = accumulator
         const {
           grades = [], school_type = '', year_level = '', school_year_start = '',
-          school_year_end = '', student_grade_cumulative_id
+          school_year_end = '', student_grade_cumulative_id, gpa_final, gpa_sem_2, gpa_sem_1
         } = cumulative_grades.length ? cumulative_grades[0] : {}
         const sy = school_year_start && school_year_end ? `${school_year_start}-${school_year_end}` : ''
         const { year_final_grade = '', final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades.length ? grades[0] : []
@@ -471,7 +471,7 @@ export default () => {
               name: `${firstname} ${lastname}`,
               schoolType: school_type, //string
               gradeLevel: year_level, //number
-              gpa: year_final_grade,
+              gpa: gpa_final || gpa_sem_2 || gpa_sem_1,
               attendanceSummary: final_quarter_attendance,
               ...values,
               ...stValues,
