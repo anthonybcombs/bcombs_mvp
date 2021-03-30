@@ -763,15 +763,13 @@ export default () => {
                           </table>
                         </td>
                       </tr>
-
-                      {renderTableData()}
+                        {
+                          (rows.length === 0)
+                            ? (<tr><td colSpan={getActiveColumns('number').length}>No records.</td><td></td></tr>)
+                            : renderTableData()
+                        }
                     </tbody>
                   </table>
-                  {
-                    rows.length === 0 && (
-                      <div>No records.</div>
-                    )
-                  }
                 </div>
               </>
             )

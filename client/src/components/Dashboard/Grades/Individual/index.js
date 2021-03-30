@@ -553,12 +553,12 @@ export default ({ child_id }) => {
 
                     onApplyFilter={handleApplyFilter}
                   />
-                  <Link
+                  {/* <Link
                     className='applyFilterBtn'
                     to={`/dashboard/grades/input`}
                   >
                     {`Grades & Test Input`}
-                  </Link>
+                  </Link> */}
                   {/* <button
                     className='applyFilterBtn'
                     onClick={() => window.history.push()}
@@ -752,15 +752,13 @@ export default ({ child_id }) => {
                           </table>
                         </td>
                       </tr>
-
-                      {renderTableData()}
+                        {
+                          (rows.length === 0)
+                            ? (<tr><td colSpan={getActiveColumns('number').length}>No records.</td><td></td></tr>)
+                            : renderTableData()
+                        }
                     </tbody>
                   </table>
-                  {
-                    rows.length === 0 && (
-                      <div>No records.</div>
-                    )
-                  }
                 </div>
               </>
             )
