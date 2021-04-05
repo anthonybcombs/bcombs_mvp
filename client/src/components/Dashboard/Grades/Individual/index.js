@@ -431,7 +431,7 @@ export default ({ child_id }) => {
           let currScore = 0
           if (val.length > 0) {
             const maxGrade = maxBy(val, 'grade_taken').grade_taken || 1
-            const maxScore = maxBy(val.filter(e => e.grade_taken === maxGrade), 'attempt').score || 0
+            const maxScore = maxBy(val.filter(e => e.grade_taken === maxGrade), 'attempt')?.score || 0
             currScore = maxScore
           }
           return { ...acc, [key]: currScore }
@@ -446,7 +446,7 @@ export default ({ child_id }) => {
           const stGroupObj = Object.entries(groupBy(val, 'test_name'))
             .reduce((stAcc, [stKey, stVal = []]) => {
               const maxGrade = maxBy(stVal, 'grade_taken').grade_taken || 1
-              const maxScore = maxBy(stVal.filter(e => e.grade_taken === maxGrade), 'attempt').score || 0
+              const maxScore = maxBy(stVal.filter(e => e.grade_taken === maxGrade), 'attempt')?.score || 0
               return {
                 ...stAcc,
                 [stKey]: maxScore
@@ -457,7 +457,7 @@ export default ({ child_id }) => {
             [`${key}_${child_id}`]: stGroupObj
           }
         }, {})
-        console.log('yatis', stValues)
+
         return {
           ...accumulator,
           data: [

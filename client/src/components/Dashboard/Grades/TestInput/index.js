@@ -5,6 +5,7 @@ import Loading from '../../../../helpers/Loading.js'
 import { useSelector, useDispatch } from 'react-redux'
 
 import StandardTest from './standardTest'
+import GradeInput from './gradeInput'
 
 import { requestVendor } from '../../../../redux/actions/Vendors'
 import { getStudentCumulativeGradeByAppGroup  } from '../../../../redux/actions/Grades'
@@ -16,9 +17,8 @@ export default () => {
       <h2>Grade and Test Input</h2>
      <div id='viewWrapper'>
       <div id='gradeInputView'>
-          <StandardTest
-          
-          />
+          {/* <StandardTest /> */}
+          <GradeInput />
         </div>
      </div>
     </GradeInputStyled>
