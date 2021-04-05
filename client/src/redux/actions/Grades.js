@@ -89,7 +89,7 @@ export const requestGrades = () => {
 };
 export const requestGetStudentCumulativeGradeByAppGroup = (data) => {
   return {
-    type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP,
+    type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED, // temporary for slow connection development
     data
   }
 }

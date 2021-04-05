@@ -8,19 +8,13 @@ import CustomSelect from '../../../CustomComponents/CustomSelect'
 import { getGradeTestAttempt } from '../../utils'
 
 export default function index({
-  onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, attempOptions
+  onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, columns, type = 'test_input'
 }) {
-
-  const existingRowsStId = existingRows.map(e => e.student_test_id)
+  console.log('zzzz', propRows)
   const [selectedGradeTest, setSelectedGradeTest] = useState({})
 
   const handleChangeSt = (child_id, value, key) => {
     const newObj = { ...selectedGradeTest[child_id], [key]: value }
-    // if (key === 'grade_taken' && !newObj.test_name) {
-    //   newObj.test_name = 'act'
-    // } else if (key === 'test_name' && !newObj.grade_taken) {
-    //   newObj.grade_taken = 1
-    // }
 
     setSelectedGradeTest({
       ...selectedGradeTest,
@@ -29,8 +23,8 @@ export default function index({
     
   }
   const formatValue = (item, key) => {
-    const { test_name = 'act', grade_taken = 1, attempt = '' } = selectedGradeTest[item.child_id] || {}
-    const { standardized_test = [] } = propRows.find(e => e.child_id === item.child_id) || {}
+    const { test_name = 'act', grade_taken = 1, attempt = '', level = '' } = selectedGradeTest[item.child_id] || {}
+    const { standardized_test = [], cumulative_grades = [] } = propRows.find(e => e.child_id === item.child_id) || {}
     if (key === 'standardized_test') {
       return (
         <CustomSelect
@@ -71,16 +65,35 @@ export default function index({
         <span>{(latestAttempt - 1) || '--'}</span>
       )
     }
+    if (key === 'level') {
+      return (
+        <CustomSelect
+          value={level}
+          options={gradeTakenOptions}
+          onChange={(e) => handleChangeSt(item.child_id, e.target.value, 'level')}
+        />
+      )
+    }
+    if (key === 'taken') {
+      const isTaken = cumulative_grades.find(e => e.year_level == level)
+      return <span>{isTaken ? 'Taken' : 'Not Taken'}</span>
+    }
   }
 
-  const columns = {
-    // child_id: { label: 'Child Id', type: 'string' },
-    name: { label: 'Name', type: 'string' },
-    grade_taken: { label: 'Grade Taken', type: 'number', func: formatValue },
-    standardized_test: { label: 'Test Name', type: 'string', func: formatValue },
-    attempt: { label: 'Attempts', type: 'number', func: formatValue },
-    latest_attempt: { label: 'Latest Attempt', type: 'number', func: formatValue },
-  }
+  const newColumns = Object.entries(columns).reduce((acc, [key, val]) => {
+    if (val.isFunc) {
+      return {
+        ...acc,
+        [key]: { ...val, func: formatValue }
+      }
+    }
+
+    return {
+      ...acc,
+      [key]: val
+    }
+    
+  }, {})
 
   const [populateExistingData, setPopulateExistingData] = useState(true)
   const [selected, setSelected] = useState([])
@@ -89,27 +102,30 @@ export default function index({
   const keysObj = keys.reduce((acc, curr) => ({ ...acc, [curr]: '' }), {})
 
   const handleSave = () => {
-    const newData = selected.map(eachId => {
-      const { child_id, name, standardized_test } = rows.find(e => e.child_id === eachId) || {}
-      const { test_name = 'act', grade_taken = 1, attempt = 1 } = selectedGradeTest[eachId] || {}
-      const existingTestIds = existingRows.filter(e => e.student_test_id).map(e => e.student_test_id)
-      const st = populateExistingData
-        ? (standardized_test.find(e => (!existingTestIds.includes(e.student_test_id) && e.grade_taken == grade_taken && e.test_name == test_name && e.attempt == attempt)) || keysObj)
-        : keysObj
-
-      const newAttempt = getGradeTestAttempt([...standardized_test, ...existingRows.filter(e => !e.student_test_id)], grade_taken, test_name, eachId)
-
-      return {
-        ...st,
-        attempt: st.attempt || newAttempt,
-        score_percentage: st.score_percentage || '',
-        grade_taken,
-        test_name,
-        child_id,
-        name,
-        id: uuid()
-      }
-    })
+    let newData = []
+    if (type === 'test_input') {
+      newData = selected.map(eachId => {
+        const { child_id, name, standardized_test } = rows.find(e => e.child_id === eachId) || {}
+        const { test_name = 'act', grade_taken = 1, attempt = 1 } = selectedGradeTest[eachId] || {}
+        const existingTestIds = existingRows.filter(e => e.student_test_id).map(e => e.student_test_id)
+        const st = populateExistingData
+          ? (standardized_test.find(e => (!existingTestIds.includes(e.student_test_id) && e.grade_taken == grade_taken && e.test_name == test_name && e.attempt == attempt)) || keysObj)
+          : keysObj
+  
+        const newAttempt = getGradeTestAttempt([...standardized_test, ...existingRows.filter(e => !e.student_test_id)], grade_taken, test_name, eachId)
+  
+        return {
+          ...st,
+          attempt: st.attempt || newAttempt,
+          score_percentage: st.score_percentage || '',
+          grade_taken,
+          test_name,
+          child_id,
+          name,
+          id: uuid()
+        }
+      })
+    }
   
     onSelectStudent(newData)
   }
@@ -140,7 +156,7 @@ export default function index({
           <CustomTable
             hasSearch
             rows={rows}
-            columns={columns}
+            columns={newColumns}
             idKey='child_id'
             headerRightActions={[(
               <div className='populate'>

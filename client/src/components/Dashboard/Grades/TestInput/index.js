@@ -17,7 +17,7 @@ export default () => {
       <h2>Grade and Test Input</h2>
      <div id='viewWrapper'>
       <div id='gradeInputView'>
-          {/* <StandardTest /> */}
+          <StandardTest />
           <GradeInput />
         </div>
      </div>

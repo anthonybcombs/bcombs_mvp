@@ -608,6 +608,14 @@ export default () => {
   }, [rows])
 
   const colArr = Object.entries(columns)
+  const stColumns = {
+    name: { label: 'Name', type: 'string' },
+    grade_taken: { label: 'Grade Taken', type: 'number', isFunc: true },
+    standardized_test: { label: 'Test Name', type: 'string', isFunc: true },
+    attempt: { label: 'Attempts', type: 'number', isFunc: true },
+    latest_attempt: { label: 'Latest Attempt', type: 'number', isFunc: true },
+  }
+
   return (
     <div
       onClick={() => {
@@ -767,6 +775,7 @@ export default () => {
         selectStudentOpen && (
           <SelectStudentDialog
             rows={gradeInput?.gradeList || []}
+            columns={stColumns}
             existingRows={rows}
             gradeTakenOptions={gradeTakenOptions}
             testOptions={testOptions}
