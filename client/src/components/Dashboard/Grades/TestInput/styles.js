@@ -396,6 +396,37 @@ export default styled.div`
 		border-left-color: #fff;
 	}
 
+  .gradeInputView-header {
+    padding-top: 1rem;
+		display: flex;
+		justify-content: space-between;
+    align-items: center;
+  }
+
+  .gradeInputView-header .left {
+
+  }
+
+  .gradeInputView-header .right {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .gradeInputView-header button {
+    border: 0;
+    color: white;
+    box-shadow: none;
+    max-width: 200px;
+    border-radius: 3px;
+    background-color: #f26e21;
+    -webkit-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+  }
+
+  .gradeInputView-header span {
+    padding-left: 0.5rem;
+  }
 
   @media (max-width: 840px) {
 		padding: 0rem 1rem 2rem;

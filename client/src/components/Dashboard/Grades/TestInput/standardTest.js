@@ -20,7 +20,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default () => {
+export default ({importData = []}) => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading, standardGradeLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
@@ -201,6 +201,9 @@ export default () => {
   const renderTableData = () => {
     const highlightFilters = filterFromHeaders?.highlight || []
     const { conditions } = FilterOptionsObj.highlight
+
+    console.log('filteredRows', filteredRows);
+
     return filteredRows.map((row, index) => {
       const colKeysArr = Object.entries(columns)
       const highLight = (rowVal, columnName) => {
@@ -606,6 +609,11 @@ export default () => {
       setHasChanged(false)
     }
   }, [rows])
+
+  useEffect(() => {
+    setRows(importData);
+    setFilteredRows(importData);
+  }, [importData]);
 
   const colArr = Object.entries(columns)
   const stColumns = {
