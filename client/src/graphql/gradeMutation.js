@@ -59,6 +59,8 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
         attendance_quarter_4_present
         final_grade
         year_final_grade
+        mid_quarter_remarks
+        final_quarter_remarks
         quarter_average
         semestral_1_average
         semestral_2_average

@@ -80,6 +80,8 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
             final_semestral_1_attendance
             final_semestral_2_attendance
             final_quarter_attendance
+            mid_quarter_remarks
+            final_quarter_remarks
             attendance
           }
         }
@@ -171,6 +173,8 @@ query getStudentRecords(
           final_semestral_1_attendance
           final_semestral_2_attendance
           final_quarter_attendance
+          mid_quarter_remarks
+          final_quarter_remarks
           attendance
         }
       }
@@ -259,6 +263,8 @@ query getStudentCumulativeGradeByVendor(
           final_semestral_1_attendance
           final_semestral_2_attendance
           final_quarter_attendance
+          mid_quarter_remarks
+          final_quarter_remarks
           attendance
         }
       }
