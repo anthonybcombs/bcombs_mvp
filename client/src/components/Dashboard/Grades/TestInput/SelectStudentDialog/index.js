@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { uuid } from 'uuidv4'
+import { maxBy } from 'lodash'
 
 import SelectStudentDialogStyled from './style'
 import CustomTable from '../../../CustomComponents/CustomTable'
@@ -11,6 +12,7 @@ export default function index({
   onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, columns, type = 'test_input'
 }) {
   console.log('zzzz', propRows)
+  const isTestInput = type === 'test_input'
   const [selectedGradeTest, setSelectedGradeTest] = useState({})
 
   const handleChangeSt = (child_id, value, key) => {
@@ -23,7 +25,7 @@ export default function index({
     
   }
   const formatValue = (item, key) => {
-    const { test_name = 'act', grade_taken = 1, attempt = '', level = '' } = selectedGradeTest[item.child_id] || {}
+    const { test_name = 'act', grade_taken = 1, attempt = '', year_level = '' } = selectedGradeTest[item.child_id] || {}
     const { standardized_test = [], cumulative_grades = [] } = propRows.find(e => e.child_id === item.child_id) || {}
     if (key === 'standardized_test') {
       return (
@@ -65,18 +67,18 @@ export default function index({
         <span>{(latestAttempt - 1) || '--'}</span>
       )
     }
-    if (key === 'level') {
+    if (key === 'year_level') {
       return (
         <CustomSelect
-          value={level}
+          value={year_level}
           options={gradeTakenOptions}
-          onChange={(e) => handleChangeSt(item.child_id, e.target.value, 'level')}
+          onChange={(e) => handleChangeSt(item.child_id, e.target.value, 'year_level')}
         />
       )
     }
-    if (key === 'taken') {
-      const isTaken = cumulative_grades.find(e => e.year_level == level)
-      return <span>{isTaken ? 'Taken' : 'Not Taken'}</span>
+    if (key === 'latest_grade') {
+      const { year_level: latest_grade } = maxBy(cumulative_grades, 'year_level') || {}
+      return <span>{latest_grade || '--'}</span>
     }
   }
 
@@ -103,7 +105,7 @@ export default function index({
 
   const handleSave = () => {
     let newData = []
-    if (type === 'test_input') {
+    if (isTestInput) {
       newData = selected.map(eachId => {
         const { child_id, name, standardized_test } = rows.find(e => e.child_id === eachId) || {}
         const { test_name = 'act', grade_taken = 1, attempt = 1 } = selectedGradeTest[eachId] || {}
@@ -125,6 +127,20 @@ export default function index({
           id: uuid()
         }
       })
+    } else {
+      newData = selected.map(eachId => {
+        const { child_id, name, cumulative_grades } = rows.find(e => e.child_id === eachId) || {}
+        const { year_level = 1 } = selectedGradeTest[eachId] || {}
+        const gradesObj = cumulative_grades.find(e => e.year_level == year_level) || keysObj
+
+        return {
+          ...gradesObj,
+          year_level,
+          child_id,
+          name,
+          id: uuid()
+        }
+      })
     }
   
     onSelectStudent(newData)
@@ -133,11 +149,12 @@ export default function index({
   useEffect(() => {
     setRows(
       propRows.flatMap(row => {
-        const { firstname = '', lastname = '', standardized_test = [], child_id } = row
+        const { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades } = row
         return {
           name: `${firstname} ${lastname}`,
           child_id,
-          standardized_test
+          standardized_test,
+          cumulative_grades
         }
       })
     )
@@ -158,20 +175,24 @@ export default function index({
             rows={rows}
             columns={newColumns}
             idKey='child_id'
-            headerRightActions={[(
-              <div className='populate'>
-                <label htmlFor='populate' className='checkboxContainer'>
-                  <input
-                    type='checkbox'
-                    id='populate'
-                    checked={populateExistingData}
-                    onChange={({ target: { checked } }) => setPopulateExistingData(checked)}
-                  />
-                  <span className='checkmark' />
-                  <span id='populate' className='labelName'>Populate existing record</span>
-                </label>
-              </div>
-            )]}
+            headerRightActions={
+              isTestInput
+                ? [(
+                    <div className='populate'>
+                      <label htmlFor='populate' className='checkboxContainer'>
+                        <input
+                          type='checkbox'
+                          id='populate'
+                          checked={populateExistingData}
+                          onChange={({ target: { checked } }) => setPopulateExistingData(checked)}
+                        />
+                        <span className='checkmark' />
+                        <span id='populate' className='labelName'>Populate existing record</span>
+                      </label>
+                    </div>
+                  )]
+                : null
+            }
 
             selectable
             onSelect={(ids) => setSelected(ids)}

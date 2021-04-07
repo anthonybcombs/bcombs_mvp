@@ -166,6 +166,10 @@ export default styled.div`
 		border-color: #4B68C5;
 		background: rgb(75 104 197 / 10%);
 	}
+
+	#gradeInputView-table td.child_id input {
+		font-size: 11px;
+	}
 	
 	#gradeInputView-table td:nth-child(2) >input,
 	#gradeInputView-table td:nth-child(3) >input,

@@ -14,6 +14,7 @@ import Headers from '../Headers'
 import Loading from '../../../../helpers/Loading.js'
 import { FilterOptionsObj } from '../Headers/options'
 import SelectStudentDialog from './SelectStudentDialog'
+import EditGradeDialog from './EditGradeDialog'
 import ConfirmDialog from './ConfirmDialog'
 import { getGradeTestAttempt } from '../utils'
 
@@ -40,28 +41,36 @@ export default () => {
     designation: { type: 'string', label: 'Designation' },
     school_year_start: { type: 'number', label: 'Start' },
     school_year_end: { type: 'number', label: 'End' },
-    school_frame: { type: 'string', label: 'Frame' },
+    school_year_frame: { type: 'string', label: 'Frame' },
     scale: { type: 'number', label: 'Scale' },
-    grade: { type: 'object', label: '', sortable: false, filterable: false },
+    grades: { type: 'object', label: '', sortable: false, filterable: false },
     help_needed: { type: 'string', label: 'Help Needed' },
     attachment: { type: 'obj', label: 'Attachment', sortable: false, filterable: false }
   }
 
   const goldenKeys = {
-    student_test_id: { type: 'int' },
+    student_grade_cumulative_id: { type: 'int' },
+    // app_id: { type: 'string' },
+    // app_group_id: { type: 'string' },
+    // app_group_name: { type: 'string' },
+    // application_type: { type: 'string' },
     child_id: { type: 'string' },
-    test_name: { type: 'string' },
-    attempt: { type: 'int' },
-    grade_taken: { type: 'int' },
-    month_taken: { type: 'string' },
-    score: { type: 'int' },
-    score_percentage: { type: 'float' },
-    ach_level: { type: 'int' },
-    school_percentage: { type: 'float' },
-    nationality_percentage: { type: 'float' },
-    district_percentage: { type: 'float' },
-    state_percentage: { type: 'float' },
-    attachment: { type: 'attachment' }
+    // form_contents: { type: 'string' },
+    year_level: { type: 'int' },
+    designation: { type: 'string' },
+    school_type: { type: 'string' },
+    school_name: { type: 'string' },
+    school_year_start: { type: 'int' },
+    school_year_end: { type: 'int' },
+    school_year_frame: { type: 'string' },
+    scale: { type: 'float' },
+    gpa_sem_1: { type: 'float' },
+    gpa_sem_2: { type: 'float' },
+    gpa_final: { type: 'float' },
+    attachment: { type: 'string' },
+    grades: { type: 'object' },
+    firstname: { type: 'string' },
+    lastname: { type: 'string' }
   }
 
   const [columns, setColumns] = useState(cloneDeep(initialColumns))
@@ -73,8 +82,9 @@ export default () => {
   const [deleteDialog, setDeleteDialog] = useState(false)
   const [hasChanged, setHasChanged] = useState(false)
   const [backDialog, setBackDialog] = useState(false)
-
   const [selectStudentOpen, setSelectStudentOpen] = useState(false)
+  const [editGradeOpen, setEditGradeOpen] = useState(false)
+  const [activeGrade, setActiveGrade] = useState('')
 
   const generateColumnFilters = (passedRows) => {
     let newColumnFilters = {}
@@ -163,6 +173,11 @@ export default () => {
     }))
   }
 
+  const handleEditGrades = (id) => {
+    setEditGradeOpen(true)
+    setActiveGrade(id)
+  }
+
   const handelUpload = (file, index, key) => {
     if (!file) {
       return
@@ -235,55 +250,21 @@ export default () => {
                 const file = (typeof attachment === 'object' ? attachment.filename : attachment).split('/')
                 return file[file.length - 1]
               }
-              const highlightStyle = key==='month_taken'? highLight(row[key] ? moment(row[key]).format('MM/yyyy') : '', key) : highLight(row[key], key)
-              // const inputStyles = highlightStyle.color ? { color: highlightStyle.color } : {}
+              const highlightStyle = ['school_year_start', 'school_year_end'].includes(key) ? highLight(row[key] ? moment(row[key]).format('MM/yyyy') : '', key) : highLight(row[key], key)
+
               return (
                 <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, wordBreak: 'break-word'}} className={`${key}`}>
                   {
                     (
-                      ['name', 'child_id', 'attempt'].includes(key) ||
-                      (row.student_test_id && ['grade_taken', 'test_name'].includes(key))
+                      ['name', 'child_id', 'year_level'].includes(key)
                     ) && (
                       <input
                         readOnly
                         style={highlightStyle}
-                        value={
-                          key === 'test_name' 
-                            ? testOptions.find(e => e.value === row.test_name).label
-                            : row[key]
-                        }
+                        value={row[key]}
                       />
                     )
                   }
-                  {
-                    (key === 'test_name' && !row.student_test_id) && (
-                      <CustomSelect
-                        selectStyle={highlightStyle}
-                        value={row[key]}
-                        options={testOptions}
-                        onChange={(e) => handleInputChange(e, index, key)}
-                      />
-                    )
-                  }
-                  {
-                    (key === 'grade_taken' && !row.student_test_id) && (
-                      <CustomSelect
-                        selectStyle={highlightStyle}
-                        value={row[key]}
-                        options={gradeTakenOptions}
-                        onChange={(e) => handleInputChange(e, index, key)}
-                      />
-                    )
-                  }
-                  {/* {
-                    (key === 'attempt' && !row.student_test_id) && (
-                      <CustomSelect
-                        value={row[key]}
-                        options={attempOptions.filter(e => !existingAttempts.includes(e.value) )}
-                        onChange={(e) => handleInputChange(e, index, key)}
-                      />
-                    )
-                  } */}
                   {
                     key === 'attachment' && (
                       !row[key] ? (
@@ -319,18 +300,41 @@ export default () => {
                     )
                   }
                   {
-                    key === 'month_taken' && (
+                    key === 'school_year_start' && (
                       <DatePicker
                         selected={row[key] ? new Date(row[key]) : ''}
                         onChange={date => handleInputChange({ target: { value: date.toISOString() } }, index, key)}
+                        maxDate={row.school_year_end ? new Date(new Date(row.school_year_end).setMonth(new Date(row.school_year_end).getMonth() - 1)) : ''}
                         dateFormat='MM/yyyy'
                         showMonthYearPicker
                         showFullMonthYearPicker
+                        showDisabledMonthNavigation
                       />
                     )
                   }
                   {
-                    !['name', 'child_id', 'attachment', 'month_taken', 'test_name', 'grade_taken', 'attempt'].includes(key) && (
+                    key === 'grades' && (
+                      <FontAwesomeIcon
+                        icon={faPlusCircle}
+                        onClick={() => handleEditGrades(row.id)}
+                      />
+                    )
+                  }
+                  {
+                    key === 'school_year_end' && (
+                      <DatePicker
+                        selected={row[key] ? new Date(row[key]) : ''}
+                        onChange={date => handleInputChange({ target: { value: date.toISOString() } }, index, key)}
+                        minDate={row.school_year_start ? new Date(new Date(row.school_year_start).setMonth(new Date(row.school_year_start).getMonth() + 1)) : ''}
+                        dateFormat='MM/yyyy'
+                        showMonthYearPicker
+                        showFullMonthYearPicker
+                        showDisabledMonthNavigation
+                      />
+                    )
+                  }
+                  {
+                    !['name', 'child_id', 'attachment', 'year_level', 'school_year_start', 'school_year_end', 'grades'].includes(key) && (
                       <input
                         style={highlightStyle}
                         type={type === 'number' ? 'number' : 'text'}
@@ -451,6 +455,7 @@ export default () => {
   }
 
   const handleSelectStudent = (data) => {
+    console.log('@@@data', data)
     const newRows = [...rows, ...data]
     setRows(newRows)
     setFilteredRows(newRows)
@@ -571,10 +576,10 @@ export default () => {
   }
 
   useEffect(() => {
-    dispatch(requestGetStudentCumulativeGradeByAppGroup({
-      app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-      app_group_type: 'bcombs'
-    }))
+    // dispatch(requestGetStudentCumulativeGradeByAppGroup({
+    //   app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
+    //   app_group_type: 'bcombs'
+    // }))
   }, [])
 
   useEffect(() => {
@@ -608,11 +613,11 @@ export default () => {
   }, [rows])
 
   const colArr = Object.entries(columns)
-  const stColumns = {
+  const gColumns = {
     name: { label: 'Name', type: 'string' },
-    child_id: { label: 'ID', type: 'string' },
-    level: { label: 'Level', type: 'number', isFunc: true },
-    taken: { label: '', type: 'boolean', isFunc: true },
+    // child_id: { label: 'ID', type: 'string' },
+    year_level: { label: 'Level', type: 'number', isFunc: true },
+    latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
   return (
     <div
@@ -759,10 +764,18 @@ export default () => {
         )
       }
       {
+        editGradeOpen && (
+          <EditGradeDialog
+            data={rows.find(e => e.id === activeGrade)}
+            onClose={() => setEditGradeOpen(false)}
+          />
+        )
+      }
+      {
         selectStudentOpen && (
           <SelectStudentDialog
             rows={gradeInput?.gradeList || []}
-            columns={stColumns}
+            columns={gColumns}
             existingRows={rows}
             gradeTakenOptions={gradeTakenOptions}
             testOptions={testOptions}
