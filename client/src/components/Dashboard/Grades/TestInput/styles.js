@@ -7,14 +7,25 @@ export default styled.div`
   padding: 0rem 3em 2rem;
   
   #viewWrapper {
-	padding: 1rem;
-	background-color: white;
-    box-shadow: 0 0 25px #eae9e9;
+		// padding: 1rem;
+		// background-color: white;
+		// box-shadow: 0 0 25px #eae9e9;
   }
-  
+
   #gradeInputView {
 	min-height: calc(100vh - 220px);
   }
+
+	#gradeInputView .standardTestTable,
+	#gradeInputView .gradesTable {
+		padding: 1rem;
+    background-color: white;
+    box-shadow: 0 0 25px #eae9e9;
+	}
+
+	#gradeInputView .gradesTable {
+		margin-top: 2rem;
+	}
 
 	#gradeInputView .field-input {
 		border: 0;
@@ -34,11 +45,13 @@ export default styled.div`
 		height: 100%;
     overflow-x: auto;
 		overflow-y: unset;
-    min-height: calc(100vh - 400px);
+    // min-height: calc(100vh - 400px);
+		min-height: calc(100vh - 500px);
+    max-height: 200px;
   }
 	#gradeListTableWrapper::-webkit-scrollbar {
-		width: 8px;
-		height: 6px;
+		width: 4px;
+		height: 4px;
 		opacity: 0;
 		visibility: hidden;
 	}

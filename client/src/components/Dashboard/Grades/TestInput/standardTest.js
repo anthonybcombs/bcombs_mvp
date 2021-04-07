@@ -626,6 +626,7 @@ export default ({importData = []}) => {
 
   return (
     <div
+      className = 'standardTestTable'
       onClick={() => {
         handleSetActiveColumnKey()
       }}
