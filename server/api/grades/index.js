@@ -610,6 +610,8 @@ export const addUpdateStudentCumulativeGrades = async ({
 								summer_grade_1,
                 summer_grade_2,
 								summer_grade_3,
+								mid_quarter_remarks,
+								final_quarter_remarks,
 								attendance_quarter_1_total,
 								attendance_quarter_2_total,
 								attendance_quarter_3_total,
@@ -626,7 +628,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 								year_final_grade,
                 date_created
               )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `,
 						[
 							cumulativeId,
@@ -645,6 +647,8 @@ export const addUpdateStudentCumulativeGrades = async ({
 							grade.summer_grade_1 || 0,
 							grade.summer_grade_2 || 0,
 							grade.summer_grade_3 || 0,
+							grade.mid_quarter_remarks || 0,
+							grade.final_quarter_remarks || 0,
 							grade.attendance_quarter_1_total || 0,
 							grade.attendance_quarter_2_total || 0,
 							grade.attendance_quarter_3_total || 0,
@@ -676,6 +680,8 @@ export const addUpdateStudentCumulativeGrades = async ({
 							summer_grade_1=?,
 						  summer_grade_2=?,
 							summer_grade_3=?,
+							mid_quarter_remarks=?,
+							final_quarter_remarks=?,
 							attendance_quarter_1_total=?,
               attendance_quarter_2_total=?,
               attendance_quarter_3_total=?,
@@ -705,6 +711,8 @@ export const addUpdateStudentCumulativeGrades = async ({
 							grade.summer_grade_1 || 0,
 							grade.summer_grade_2 || 0,
 							grade.summer_grade_3 || 0,
+							grade.mid_quarter_remarks || 0,
+							grade.final_quarter_remarks || 0,
 							grade.attendance_quarter_1_total || 0,
 							grade.attendance_quarter_2_total || 0,
 							grade.attendance_quarter_3_total || 0,
