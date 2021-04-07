@@ -621,7 +621,6 @@ export default () => {
   }
   return (
     <div
-      className='gradesTable'
       onClick={() => {
         handleSetActiveColumnKey()
       }}
