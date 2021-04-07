@@ -131,18 +131,53 @@ export default function index({
                 <tr>
                   <th colSpan='2'>GPA</th>
                   <th colSpan='9'></th>
-                  <th>Value here</th>
+                  <th>
+                    <input
+                      type='number'
+                      value={''}
+                      // onChange={(e) => handleInputChange(e, index, key)}
+                      // onBlur={handleInputBlur}
+                    />
+                  </th>
                   <th colSpan='7'></th>
-                  <th>Value here</th>
+                  <th>
+                    <input
+                      type='number'
+                      value={''}
+                      // onChange={(e) => handleInputChange(e, index, key)}
+                      // onBlur={handleInputBlur}
+                    />
+                  </th>
                   <th colSpan='1'></th>
-                  <th>Value here</th>
+                  <th>
+                    <input
+                      type='number'
+                      value={''}
+                      // onChange={(e) => handleInputChange(e, index, key)}
+                      // onBlur={handleInputBlur}
+                    />
+                  </th>
                 </tr>
                 <tr>
                   <th colSpan='2'>Rank</th>
                   <th colSpan='9'></th>
-                  <th>Value here</th>
+                  <th>
+                    <input
+                      type='number'
+                      value={''}
+                      // onChange={(e) => handleInputChange(e, index, key)}
+                      // onBlur={handleInputBlur}
+                    />
+                  </th>
                   <th colSpan='7'></th>
-                  <th>Value here</th>
+                  <th>
+                    <input
+                      type='number'
+                      value={''}
+                      // onChange={(e) => handleInputChange(e, index, key)}
+                      // onBlur={handleInputBlur}
+                    />
+                  </th>
                   <th colSpan='2'></th>
                 </tr>
                 <tr>
