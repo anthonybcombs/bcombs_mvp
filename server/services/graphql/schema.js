@@ -741,8 +741,8 @@ const inputs = `
         year_level: Int
         school_type: String
         school_name: String
-        school_year_start: Int
-        school_year_end: Int
+        school_year_start: String
+        school_year_end: String
         school_year_frame: String
         class_name: String
         class_type: String
@@ -1476,8 +1476,8 @@ const queryTypes = `
         designation: String
         school_type: String
         school_name: String
-        school_year_start: Int
-        school_year_end: Int
+        school_year_start: String
+        school_year_end: String
         school_year_frame: String
         class_name: String
         class_type: String
