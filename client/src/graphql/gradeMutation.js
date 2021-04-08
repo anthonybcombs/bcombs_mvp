@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
-  mutation addUpdateStudentCumulative($studentCumulative: StudentGradeCumulativeInput) {
+  mutation addUpdateStudentCumulative($studentCumulative: [StudentGradeCumulativeInput]) {
     addUpdateStudentCumulative(studentCumulative: $studentCumulative) {
       student_grade_cumulative_id
       app_id
