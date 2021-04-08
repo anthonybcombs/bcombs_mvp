@@ -27,6 +27,18 @@ export default styled.div`
 		margin-top: 2rem;
 	}
 
+	#gradeInputView .gradesTable thead tr:first-child th {
+		background-color: #c35311;
+	}
+
+	#gradeInputView .gradesTable thead tr:first-child th:first-child {
+		background-color: transparent;
+	}
+
+	#gradeInputView .gradesTable thead tr:last-child th {
+		background-color: #f26e21;
+	}
+
 	#gradeInputView .field-input {
 		border: 0;
 		cursor: text;
