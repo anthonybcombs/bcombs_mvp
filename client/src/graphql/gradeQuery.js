@@ -26,7 +26,6 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
           form_contents
           year_level
           designation,
-          student_rank
           school_type
           school_name
           school_year_start
@@ -42,6 +41,8 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
           gpa_sem_2
           gpa_final
           scale
+          mid_student_rank
+          final_student_rank
           grades{
             student_grade_cumulative_id
             class
@@ -75,6 +76,10 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
             final_grade
             year_final_grade
             help_needed
+            help_q1
+            help_q2
+            help_q3
+            help_q4
             quarter_average
             semestral_1_average
             semestral_2_average
@@ -137,7 +142,8 @@ query getStudentRecords(
         gpa_final
         scale
         designation
-        student_rank
+        mid_student_rank
+        final_student_rank
         grades{
           student_grade_cumulative_id
           class
@@ -172,6 +178,10 @@ query getStudentRecords(
           year_final_grade
           letter_final_grade
           help_needed
+          help_q1
+          help_q2
+          help_q3
+          help_q4
           quarter_average
           semestral_1_average
           semestral_2_average
@@ -234,7 +244,8 @@ query getStudentCumulativeGradeByVendor(
         gpa_final
         scale
         designation
-        student_rank
+        mid_student_rank
+        final_student_rank
         grades{
           student_grade_cumulative_id
           class
@@ -265,6 +276,10 @@ query getStudentCumulativeGradeByVendor(
           year_final_grade
           letter_final_grade
           help_needed
+          help_q1
+          help_q2
+          help_q3
+          help_q4
           quarter_average
           semestral_1_average
           semestral_2_average

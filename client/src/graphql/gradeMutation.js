@@ -27,7 +27,8 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
       gpa_final
       scale
       designation
-      student_rank
+      mid_student_rank
+      final_student_rank
       grades{
         student_grade_cumulative_id
         class
@@ -62,6 +63,10 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
         year_final_grade
         letter_final_grade
         help_needed
+        help_q1
+        help_q2
+        help_q3
+        help_q4
         mid_quarter_remarks
         final_quarter_remarks
         quarter_average

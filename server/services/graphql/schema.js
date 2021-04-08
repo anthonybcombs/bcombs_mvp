@@ -731,6 +731,10 @@ const inputs = `
         year_final_grade: Float
         letter_final_grade: String
         help_needed: String
+        help_q1: String
+        help_q2: String
+        help_q3: String
+        help_q4: String
     }
 
     input StudentGradeCumulativeInput {
@@ -754,7 +758,8 @@ const inputs = `
         gpa_final: Float
         attachment: FileContentInput
         grades: [StudentGradeInput]
-        student_rank: Int
+        mid_student_rank: Int
+        final_student_rank: Int
         designation: String
         deleted_grades: [Int]
         date_created: String
@@ -1493,7 +1498,8 @@ const queryTypes = `
         grades: [StudentGrades]
         firstname: String
         lastname: String
-        student_rank: Int
+        mid_student_rank: Int
+        final_student_rank: Int
         designation: String
         date_created: String
     }
@@ -1545,6 +1551,10 @@ const queryTypes = `
         letter_final_grade: String 
         attendance: Int
         help_needed: String
+        help_q1: String
+        help_q2: String
+        help_q3: String
+        help_q4: String
         date_created: String
     }
 
