@@ -35,13 +35,13 @@ export default function index({
             <input
               type='text'
               placeholder='A+'
-              value={item[`letter_grade_${key}`]}
+              value={item[`letter_grade_${key}`] || ''}
               onChange={(e) => handleInputChange(e, `letter_grade_${key}`, item.id)}
             />
             <input
               placeholder='99'
               type='number'
-              value={item[`grade_${key}`]}
+              value={item[`grade_${key}`] || ''}
               onChange={(e) => handleInputChange(e, `grade_${key}`, item.id)}
             />
           </div>
@@ -53,14 +53,14 @@ export default function index({
               id={`letter_final_grade`}
               type='text'
               placeholder='A+'
-              value={item[`letter_final_grade`]}
+              value={item[`letter_final_grade`] || ''}
               onChange={(e) => handleInputChange(e, 'letter_final_grade', item.id)}
             />
             <input
               id={`final_grade`}
               placeholder='99'
               type='number'
-              value={item[`final_grade`]}
+              value={item[`final_grade`] || ''}
               onChange={(e) => handleInputChange(e, 'final_grade', item.id)}
             />
           </div>
@@ -74,19 +74,19 @@ export default function index({
             <input
               type='number'
               placeholder='Absent'
-              value={item[`${key}_absent`]}
+              value={item[`${key}_absent`] || ''}
               onChange={(e) => handleInputChange(e, `${key}_absent`, item.id)}
             />
             <input
               type='number'
               placeholder='Tardy'
-              value={item[`${key}_tardy`]}
+              value={item[`${key}_tardy`] || ''}
               onChange={(e) => handleInputChange(e, `${key}_tardy`, item.id)}
             />
             <input
               type='number'
               placeholder='Present'
-              value={item[`${key}_present`]}
+              value={item[`${key}_present`] || ''}
               onChange={(e) => handleInputChange(e, `${key}_present`, item.id)}
             />
           </div>
@@ -447,7 +447,7 @@ export default function index({
                                   ) : (
                                     <input
                                       type={type === 'number' ? 'number' : 'text'}
-                                      value={row[key]}
+                                      value={row[key] || ''}
                                       onChange={(e) => handleInputChange(e, key, row.id)}
                                     />
                                   )

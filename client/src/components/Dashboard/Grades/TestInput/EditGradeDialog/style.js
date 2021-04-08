@@ -3,7 +3,7 @@ import styled from "styled-components";
 export default styled.div`
   .modal-content {
     position: relative;
-    top: 100px;
+    top: 10px;
     width: auto;
     max-width: 95%;
     padding: 0;
@@ -108,7 +108,7 @@ export default styled.div`
     overflow-x: auto;
 		overflow-y: unset;
     min-height: 300px;
-    max-height: calc(100vh - 350px);
+    max-height: calc(100vh - 286px);
   }
 	#gradeListTableWrapper::-webkit-scrollbar {
 		width: 8px;

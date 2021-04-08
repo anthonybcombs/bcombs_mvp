@@ -3,7 +3,7 @@ import styled from "styled-components";
 export default styled.div`
   .modal-content {
     position: relative;
-    top: 100px;
+    top: 10px;
     width: auto;
     // max-width: 830px;
     max-width: 940px;

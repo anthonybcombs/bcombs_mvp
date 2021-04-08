@@ -482,7 +482,7 @@ export default () => {
         return newRow
       })
 
-    dispatch(requestAddUpdateStudentCumulative(newRows[0]))
+    dispatch(requestAddUpdateStudentCumulative(newRows))
   }
 
   const handleSaveGrade = (grades, otherFields) => {
