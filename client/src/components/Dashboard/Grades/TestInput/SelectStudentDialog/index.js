@@ -129,18 +129,26 @@ export default function index({
       })
     } else {
       newData = selected.map(eachId => {
-        const { child_id, name, cumulative_grades } = rows.find(e => e.child_id === eachId) || {}
+        const { child_id, name, cumulative_grades, firstname, lastname, app_id, app_group_id, application_type, type, } = rows.find(e => e.child_id === eachId) || {}
         const { year_level = 1 } = selectedGradeTest[eachId] || {}
         const gradesObj = cumulative_grades.find(e => e.year_level == year_level) || keysObj
 
         return {
           ...gradesObj,
+          firstname,
+          lastname,
           year_level,
           child_id,
+          app_id,
+          app_group_id,
+          application_type,
+          type,
           name,
           id: uuid()
         }
       })
+      .filter(gr => !(existingRows.find(e => (e.child_id === gr.child_id && e.year_level == gr.year_level))))
+
     }
   
     onSelectStudent(newData)
@@ -149,10 +157,16 @@ export default function index({
   useEffect(() => {
     setRows(
       propRows.flatMap(row => {
-        const { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades } = row
+        const { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades, app_id, app_group_id, application_type, type } = row
         return {
           name: `${firstname} ${lastname}`,
+          firstname,
+          lastname,
           child_id,
+          app_id,
+          app_group_id,
+          application_type,
+          type,
           standardized_test,
           cumulative_grades
         }

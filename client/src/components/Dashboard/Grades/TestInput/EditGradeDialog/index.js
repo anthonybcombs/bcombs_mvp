@@ -3,14 +3,15 @@ import ReactDOM from 'react-dom'
 import update from 'immutability-helper'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle, faCopy, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import { uuid } from 'uuidv4'
+import { empty, uuid } from 'uuidv4'
+import cloneDeep from 'lodash.clonedeep'
 
 import EditGradeDialogStyled from './style'
 import CustomTable from '../../../CustomComponents/CustomTable'
 import CustomSelect from '../../../CustomComponents/CustomSelect'
 
 export default function index({
-  onClose, data
+  onClose, data, onSaveGrade
 }) {
   const formatValue = (item, key) => {
     switch(key) {
@@ -20,10 +21,9 @@ export default function index({
       case 'quarter_4_help':
         return (
           <input
-            id={key}
             type='checkbox'
             checked={!!item[key]}
-            onChange={(e) => handleInputChange(e, item.id, true)}
+            onChange={(e) => handleInputChange(e, key, item.id, true)}
           />
         )
       case 'quarter_1':
@@ -33,18 +33,35 @@ export default function index({
         return (
           <div>
             <input
-              id={`letter_grade_${key}`}
               type='text'
               placeholder='A+'
               value={item[`letter_grade_${key}`]}
-              onChange={(e) => handleInputChange(e, item.id)}
+              onChange={(e) => handleInputChange(e, `letter_grade_${key}`, item.id)}
             />
             <input
-              id={`grade_${key}`}
               placeholder='99'
               type='number'
               value={item[`grade_${key}`]}
-              onChange={(e) => handleInputChange(e, item.id)}
+              onChange={(e) => handleInputChange(e, `grade_${key}`, item.id)}
+            />
+          </div>
+        )
+      case 'final_grade':
+        return (
+          <div>
+            <input
+              id={`letter_final_grade`}
+              type='text'
+              placeholder='A+'
+              value={item[`letter_final_grade`]}
+              onChange={(e) => handleInputChange(e, 'letter_final_grade', item.id)}
+            />
+            <input
+              id={`final_grade`}
+              placeholder='99'
+              type='number'
+              value={item[`final_grade`]}
+              onChange={(e) => handleInputChange(e, 'final_grade', item.id)}
             />
           </div>
         )
@@ -55,25 +72,22 @@ export default function index({
         return (
           <div>
             <input
-              id={`${key}_absent`}
               type='number'
               placeholder='Absent'
               value={item[`${key}_absent`]}
-              onChange={(e) => handleInputChange(e, item.id)}
+              onChange={(e) => handleInputChange(e, `${key}_absent`, item.id)}
             />
             <input
-              id={`${key}_tardy`}
               type='number'
               placeholder='Tardy'
               value={item[`${key}_tardy`]}
-              onChange={(e) => handleInputChange(e, item.id)}
+              onChange={(e) => handleInputChange(e, `${key}_tardy`, item.id)}
             />
             <input
-              id={`${key}_present`}
               type='number'
               placeholder='Present'
               value={item[`${key}_present`]}
-              onChange={(e) => handleInputChange(e, item.id)}
+              onChange={(e) => handleInputChange(e, `${key}_present`, item.id)}
             />
           </div>
         )
@@ -103,7 +117,7 @@ export default function index({
     attendance_quarter_4: { label: 'Attendance', type: 'func', func: formatValue },
     semestral_2_average: { label: 'Final', type: 'number' },
     final_quarter_remarks: { label: 'Passed', type: 'string' },
-    final_grade: { label: 'Year Final', type: 'number' }
+    final_grade: { label: 'Year Final', type: 'number', func: formatValue }
   }
 
   const colArr = Object.entries(columns)
@@ -142,61 +156,30 @@ export default function index({
     semestral_1_average: { type: 'float' },
     semestral_2_average: { type: 'float' },
     final_grade: { type: 'float' },
+    letter_final_grade: { type: 'string' },
+    quarter_1_help: { type: 'boolean' },
+    quarter_2_help: { type: 'boolean' },
+    quarter_3_help: { type: 'boolean' },
+    quarter_4_help: { type: 'boolean' },
   }
-
-  const [grades, setGrades] = useState([
-    {
-      "id": '1',
-      "student_grade_cumulative_id": 2,
-      "class": "Basic Programming",
-      "subject": "Basic Programming",
-      "teacher_name": "Test",
-      "designation": "Test",
-      "grade_quarter_1": 99,
-      "grade_quarter_2": 99,
-      "grade_quarter_3": 99,
-      "grade_quarter_4": 88,
-      "letter_grade_quarter_1": "A",
-      "letter_grade_quarter_2": "B",
-      "letter_grade_quarter_3": "C",
-      "letter_grade_quarter_4": "B",
-      "attendance_quarter_1_total": 40,
-      "attendance_quarter_2_total": 40,
-      "attendance_quarter_3_total": 37,
-      "attendance_quarter_4_total": 38,
-      "attendance_quarter_1_absent": 2,
-      "attendance_quarter_2_absent": 3,
-      "attendance_quarter_3_absent": 4,
-      "attendance_quarter_4_absent": 1,
-      "attendance_quarter_1_tardy": 1,
-      "attendance_quarter_2_tardy": 2,
-      "attendance_quarter_3_tardy": 3,
-      "attendance_quarter_4_tardy": 2,
-      "attendance_quarter_1_present": 37,
-      "attendance_quarter_2_present": 35,
-      "attendance_quarter_3_present": 30,
-      "attendance_quarter_4_present": 35,
-      "final_grade": 90,
-      "year_final_grade": 87,
-      "quarter_average": 96.25,
-      "semestral_1_average": null,
-      "semestral_2_average": null,
-      "semestral_final": null,
-      "final_semestral_1_attendance": null,
-      "final_semestral_2_attendance": null,
-      "final_quarter_attendance": 155,
-      "mid_quarter_remarks": null,
-      "final_quarter_remarks": null,
-      "attendance": null
+  const otherFieldKeys = {
+    gpa_sem_1: { type: 'float' },
+    gpa_sem_2: { type: 'float' },
+    gpa_final: { type: 'float' },
+    rank_sem_1: { type: 'float' },
+    rank_sem_2: { type: 'float' }
   }
-  ])
-  const [otherFields, setOtherFields] = useState({ gpa_sem_1: '', gpa_sem_2: '', gpa_final: '', rank_sem_1: '', rank_sem_2: '' })
+  const emptyGrade = Object.keys(gradeKeys).reduce((acc, curr) => ({ ...acc, [curr]: '' }), {})
+  const [grades, setGrades] = useState([{ id: uuid(), ...emptyGrade }])
+  const [otherFields, setOtherFields] = useState(Object.keys(otherFieldKeys).reduce((acc, curr) => ({ ...acc, [curr]: '' }), {}))
   const [selected, setSelected] = useState([])
+  const [hasChanged, setHasChanged] = useState(false)
 
-  const handleInputChange = ({ target: { id, value, checked } }, gradeId, isCheckbox = false) => {
+  const handleInputChange = ({ target: { value, checked } }, key, gradeId, isCheckbox = false) => {
     setGrades(update(grades, {
-      [grades.findIndex(e => e.id === gradeId)]: { $merge: { [id]: isCheckbox ? checked : value } }
+      [grades.findIndex(e => e.id === gradeId)]: { $merge: { [key]: isCheckbox ? checked : value } }
     }))
+    setHasChanged(true)
   }
 
   const handleChangeOtherFields = ({ target: { id, value } }) => {
@@ -204,6 +187,7 @@ export default function index({
       ...otherFields,
       [id]: value
     })
+    setHasChanged(true)
   }
 
   const handleSelect = ({ target: { checked } }, id) => {
@@ -217,11 +201,9 @@ export default function index({
   const handleAdd = () => {
     setGrades([
       ...grades,
-      {
-        id: uuid(),
-        ...Object.keys(gradeKeys).reduce((acc, curr) => ({ ...acc, [curr]: '' }), {})
-      }
+      { id: uuid(), ...emptyGrade }
     ])
+    setHasChanged(true)
   }
 
   const handleCopy = () => {
@@ -236,18 +218,56 @@ export default function index({
         }
       })
     ])
+    setHasChanged(true)
   }
 
   const handleDelete = () => {
     setGrades(grades.filter(e => !selected.includes(e.id)))
   }
 
-  // useEffect(() => {
-  //   if (data) {
-  //     setGrades(data?.grades || [])
-  //   }
-  // }, [data])
-  console.log('zzzz', grades)
+  const handleSave = () => {
+    const newGrades = cloneDeep(grades)
+      .map(e => {
+        let newGrade = Object.entries(gradeKeys)
+          .reduce((acc, [key, { type }]) => {
+            if (type === 'int') {
+              acc[key] = e[key] ? parseInt(e[key]) : 0
+            } else if (type === 'float') {
+              acc[key] = e[key] ? parseFloat(e[key]) : 0
+            } else {
+              acc[key] = e[key]
+            }
+            return acc
+          }, {})
+
+        return newGrade
+      })
+    const newOtherFields = Object.entries(otherFieldKeys)
+      .reduce((acc, [key, { type }]) => {
+        if (type === 'int') {
+          acc[key] = otherFields[key] ? parseInt(otherFields[key]) : 0
+        } else if (type === 'float') {
+          acc[key] = otherFields[key] ? parseFloat(otherFields[key]) : 0
+        } else {
+          acc[key] = otherFields[key]
+        }
+        return acc
+      }, {})
+    onSaveGrade(newGrades, newOtherFields)
+  }
+
+  useEffect(() => {
+    if (data?.grades && data?.grades.length) {
+      setGrades((data?.grades || []).map(e => ({ ...e, id: uuid() })))
+    }
+  }, [data])
+
+  useEffect(() => {
+    if(!grades.length) {
+      setHasChanged(false)
+    }
+  }, [grades])
+
   return ReactDOM.createPortal(
     <EditGradeDialogStyled
       data-testid='app-big-calendar-create-modal'
@@ -365,10 +385,9 @@ export default function index({
                                     func(row, key)
                                   ) : (
                                     <input
-                                      id={key}
                                       type={type === 'number' ? 'number' : 'text'}
                                       value={row[key]}
-                                      onChange={(e) => handleInputChange(e, row.id)}
+                                      onChange={(e) => handleInputChange(e, key, row.id)}
                                     />
                                   )
                                 }
@@ -413,13 +432,13 @@ export default function index({
         <div className='modal-footer'>
           <button
             className='modalBtn cancelBtn'
-            onClick={onClose}
+            onClick={() => onClose(hasChanged)}
           >
             Cancel
           </button>
           <button
             className='modalBtn'
-            onClick={() => {}}
+            onClick={handleSave}
           >
             Save
           </button>

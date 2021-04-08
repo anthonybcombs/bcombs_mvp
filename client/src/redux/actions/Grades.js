@@ -1,12 +1,13 @@
 import { call, take, put, all } from "redux-saga/effects";
 import graphqlClient from "../../graphql";
 import { GET_STUDENT_CUMULATIVE_BY_APP_GROUP, GET_STUDENT_CUMULATIVE_BY_CHILD } from "../../graphql/gradeQuery";
-import { ADD_UPDATE_STANDARDIZED_TEST_MUTATION, DELETE_STUDENT_STANDARDIZED_TEST_MUTATION } from "../../graphql/gradeMutation";
+import { ADD_UPDATE_STANDARDIZED_TEST_MUTATION, DELETE_STUDENT_STANDARDIZED_TEST_MUTATION, ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION } from "../../graphql/gradeMutation";
 import * as actionType from "./Constant";
 
 import {
   setGradeLoading,
-  setGradeStandardLoading
+  setGradeStandardLoading,
+  setGradeEditLoading
 } from './Loading'
 
 // From DB
@@ -63,7 +64,6 @@ const addUpdateStudentStandardizedTestToDatabse = studentStandardizedTest => {
     }
   })
 }
-
 const deleteStudentStandardizedTestToDatabse = studentTestIds => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -73,6 +73,22 @@ const deleteStudentStandardizedTestToDatabse = studentTestIds => {
       })
     
       return resolve(data.deleteStudentStandardizedTest)
+    } catch (error) {
+      console.log('error', { error })
+      reject(error)
+    }
+  })
+}
+const addUpdateStudentCumulativeToDatabse = studentCumulative => {
+  console.log('studentCumulative', studentCumulative)
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION,
+        variables: { studentCumulative }
+      })
+    
+      return resolve(data.addUpdateStudentCumulative)
     } catch (error) {
       console.log('error', { error })
       reject(error)
@@ -89,7 +105,7 @@ export const requestGrades = () => {
 };
 export const requestGetStudentCumulativeGradeByAppGroup = (data) => {
   return {
-    type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED, // temporary for slow connection development
+    type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP, // temporary for slow connection development
     data
   }
 }
@@ -102,6 +118,12 @@ export const requestGetStudentCumulativeGradeByUser = (child_id) => {
 export const requestAddUpdateStudentStandardizedTest = (data) => {
   return {
     type: actionType.ADD_UPDATE_STUDENT_STANDARD_TEST,
+    data
+  }
+}
+export const requestAddUpdateStudentCumulative = (data) => {
+  return {
+    type: actionType.ADD_UPDATE_STUDENT_CUMULATIVE,
     data
   }
 }
@@ -209,6 +231,28 @@ export function* deleteStudentStandardizedTest({ data }) {
       put(setGradeStandardLoading(false)),
       put({
         type: actionType.DELETE_STUDENT_STANDARDIZED_TEST_COMPLETED,
+        payload: []
+      })
+    ])
+  }
+}
+
+export function* addUpdateStudentCumulative({ data }) {
+  try {
+    yield put(setGradeEditLoading(true))
+    const response = yield call(addUpdateStudentCumulativeToDatabse, data)
+    yield all([
+      put(setGradeEditLoading(false)),
+      put({
+        type: actionType.ADD_UPDATE_STUDENT_CUMULATIVE_COMPLETED,
+        payload: response
+      })
+    ])
+  } catch (err) {
+    yield all([
+      put(setGradeEditLoading(false)),
+      put({
+        type: actionType.ADD_UPDATE_STUDENT_CUMULATIVE_COMPLETED,
         payload: []
       })
     ])

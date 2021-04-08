@@ -19,7 +19,7 @@ import ConfirmDialog from './ConfirmDialog'
 import { getGradeTestAttempt } from '../utils'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
+import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
 export default () => {
   const dispatch = useDispatch()
@@ -50,10 +50,11 @@ export default () => {
 
   const goldenKeys = {
     student_grade_cumulative_id: { type: 'int' },
-    // app_id: { type: 'string' },
-    // app_group_id: { type: 'string' },
-    // app_group_name: { type: 'string' },
-    // application_type: { type: 'string' },
+    app_id: { type: 'string' },
+    app_group_id: { type: 'string' },
+    app_group_name: { type: 'string' },
+    application_type: { type: 'string' },
+    type: { type: 'string' },
     child_id: { type: 'string' },
     // form_contents: { type: 'string' },
     year_level: { type: 'int' },
@@ -85,6 +86,7 @@ export default () => {
   const [selectStudentOpen, setSelectStudentOpen] = useState(false)
   const [editGradeOpen, setEditGradeOpen] = useState(false)
   const [activeGrade, setActiveGrade] = useState('')
+  const [editGradeConfirmDialog, setEditGradeConfirmDialog] = useState(false)
 
   const generateColumnFilters = (passedRows) => {
     let newColumnFilters = {}
@@ -149,21 +151,6 @@ export default () => {
 
   const handleInputChange = ({ target: { value } }, index, key) => {
     const mergeObj = { [key]: value }
-
-    if (['grade_taken', 'test_name'].includes(key)) {
-      let { child_id, test_name, grade_taken } = rows[index]
-      if (key === 'grade_taken') {
-        grade_taken = value
-      } else {
-        test_name = value
-      }
-
-      const { standardized_test = [] } = (gradeInput?.gradeList || []).find(e => e.child_id === child_id) || {}
-      const attempt = getGradeTestAttempt([...standardized_test, ...rows.filter(e => !e.student_test_id)], grade_taken, test_name, child_id)
-
-      mergeObj.attempt = attempt
-    }
-
     setHasChanged(true)
     setRows(update(rows, {
       [index]: { $merge: mergeObj }
@@ -481,16 +468,41 @@ export default () => {
             }
             return acc
           }, {})
-        
-        if (!newRow.student_test_id) {
-          delete newRow.student_test_id
+
+        if (!newRow.student_grade_cumulative_id) {
+          delete newRow.student_grade_cumulative_id
         }
         if (!newRow.attachment || (newRow.attachment && typeof newRow.attachment === 'string')) {
           delete newRow.attachment
         }
+        if (!newRow.grades) {
+          newRow.grades = []
+        }
         return newRow
       })
-    dispatch(requestAddUpdateStudentStandardizedTest(newRows))
+
+    dispatch(requestAddUpdateStudentCumulative(newRows))
+  }
+
+  const handleSaveGrade = (grades, otherFields) => {
+    const gradesHelp = grades.filter(e => (e.quarter_1_help || e.quarter_2_help || e.quarter_3_help || e.quarter_4_help)).map(e => e.subject)
+    const mergeObject = { grades, ...otherFields, help_needed: `${gradesHelp}` }
+    setRows(update(rows, {
+      [rows.findIndex(e => e.id === activeGrade)]: { $merge: mergeObject }
+    }))
+    setFilteredRows(update(filteredRows, {
+      [filteredRows.findIndex(e => e.id === activeGrade)]: { $merge: mergeObject }
+    }))
+    setEditGradeOpen(false)
+  }
+
+  const handleCloseEditGradeDialog = (hasEdit) => {
+    if (hasEdit) {
+      setEditGradeConfirmDialog(true)
+    } else {
+      setEditGradeOpen(false)
+      setEditGradeConfirmDialog(false)
+    }
   }
 
   const renderTableFilter = (key) => {
@@ -576,10 +588,10 @@ export default () => {
   }
 
   useEffect(() => {
-    // dispatch(requestGetStudentCumulativeGradeByAppGroup({
-    //   app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-    //   app_group_type: 'bcombs'
-    // }))
+    dispatch(requestGetStudentCumulativeGradeByAppGroup({
+      app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
+      app_group_type: 'bcombs'
+    }))
   }, [])
 
   useEffect(() => {
@@ -619,6 +631,9 @@ export default () => {
     year_level: { label: 'Level', type: 'number', isFunc: true },
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
+
+  console.log('@RRRRRRRROWS', { rows, filteredRows })
+
   return (
     <div
       onClick={() => {
@@ -767,7 +782,8 @@ export default () => {
         editGradeOpen && (
           <EditGradeDialog
             data={rows.find(e => e.id === activeGrade)}
-            onClose={() => setEditGradeOpen(false)}
+            onClose={(hasEdit) => handleCloseEditGradeDialog(hasEdit)}
+            onSaveGrade={handleSaveGrade}
           />
         )
       }
@@ -795,6 +811,16 @@ export default () => {
             onConfirm={() => handleDelete(false)}
             title='Cofirm delete student test records'
             content='Are you sure you want to remove the selected tests? These will remove them from the system.'
+          />
+        )
+      }
+      {
+        editGradeConfirmDialog && (
+          <ConfirmDialog
+            onClose={() => setEditGradeConfirmDialog(false)}
+            onConfirm={() => handleCloseEditGradeDialog(false)}
+            title='Confirm closing dialog'
+            content='You have unsaved changes. Would you like to close this dialog?'
           />
         )
       }
