@@ -27,6 +27,18 @@ export default styled.div`
 		margin-top: 2rem;
 	}
 
+	#gradeInputView .gradesTable thead tr:first-child th {
+		background-color: #c35311;
+	}
+
+	#gradeInputView .gradesTable thead tr:first-child th:first-child {
+		background-color: transparent;
+	}
+
+	#gradeInputView .gradesTable thead tr:last-child th {
+		background-color: #f26e21;
+	}
+
 	#gradeInputView .field-input {
 		border: 0;
 		cursor: text;
@@ -81,6 +93,12 @@ export default styled.div`
 		border-collapse: collapse;
 		width: 100%;
 		border: 0;
+	}
+
+	#gradeInputView-table thead tr:last-child th {
+		position: sticky;
+		top: -1px;
+		z-index: 10;
 	}
 
 	#gradeInputView-table tr.has-data {
@@ -214,6 +232,15 @@ export default styled.div`
 	}
 	#gradeInputView-table td:last-child >svg.close-icon:hover {
 		color: #e2382b;
+	}
+
+	#gradeInputView-table td.grades svg {
+		color: #f26e21;
+		cursor: pointer;
+		transition: .05s ease-in-out;
+	}
+	#gradeInputView-table td.grades svg:hover {
+		color: #e47120;
 	}
 
 	#gradeInputView-table select {
