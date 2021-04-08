@@ -166,6 +166,7 @@ query getStudentRecords(
           attendance_quarter_4_present
           final_grade
           year_final_grade
+          letter_final_grade
           help_needed
           quarter_average
           semestral_1_average
@@ -256,6 +257,7 @@ query getStudentCumulativeGradeByVendor(
           attendance_quarter_4_tardy
           final_grade
           year_final_grade
+          letter_final_grade
           help_needed
           quarter_average
           semestral_1_average
