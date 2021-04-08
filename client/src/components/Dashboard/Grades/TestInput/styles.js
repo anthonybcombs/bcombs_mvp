@@ -102,7 +102,7 @@ export default styled.div`
 	}
 
 	#gradeInputView-table tr.has-data {
-		background-color: #f6d9d9!important;
+		background-color: #dadde6 !important;
 	}
 
 	#gradeInputView-table th:not(:last-child) {
@@ -233,6 +233,15 @@ export default styled.div`
 	#gradeInputView-table td:last-child >svg.close-icon:hover {
 		color: #e2382b;
 	}
+	#gradeInputView-table td.attempt input {
+		text-align: center;
+	}
+
+	#gradeInputView-table td.year_level input {
+		width: 50px;
+		text-align: center;
+	}
+
 
 	#gradeInputView-table td.grades svg {
 		color: #f26e21;
