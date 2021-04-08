@@ -85,9 +85,9 @@ export default function index({
             />
             <input
               type='number'
-              placeholder='Present'
-              value={item[`${key}_present`] || ''}
-              onChange={(e) => handleInputChange(e, `${key}_present`, item.id)}
+              placeholder='Total'
+              value={item[`${key}_total`] || ''}
+              onChange={(e) => handleInputChange(e, `${key}_total`, item.id)}
             />
           </div>
         )
@@ -135,10 +135,6 @@ export default function index({
     letter_grade_quarter_2: { type: 'string' },
     letter_grade_quarter_3: { type: 'string' },
     letter_grade_quarter_4: { type: 'string' },
-    // attendance_quarter_1_total: { type: 'int' },
-    // attendance_quarter_2_total: { type: 'int' },
-    // attendance_quarter_3_total: { type: 'int' },
-    // attendance_quarter_4_total: { type: 'int' },
     attendance_quarter_1_absent: { type: 'int' },
     attendance_quarter_2_absent: { type: 'int' },
     attendance_quarter_3_absent: { type: 'int' },
@@ -147,10 +143,10 @@ export default function index({
     attendance_quarter_2_tardy: { type: 'int' },
     attendance_quarter_3_tardy: { type: 'int' },
     attendance_quarter_4_tardy: { type: 'int' },
-    attendance_quarter_1_present: { type: 'int' },
-    attendance_quarter_2_present: { type: 'int' },
-    attendance_quarter_3_present: { type: 'int' },
-    attendance_quarter_4_present: { type: 'int' },
+    attendance_quarter_1_total: { type: 'int' },
+    attendance_quarter_2_total: { type: 'int' },
+    attendance_quarter_3_total: { type: 'int' },
+    attendance_quarter_4_total: { type: 'int' },
     mid_quarter_remarks: { type: 'string' },
     final_quarter_remarks: { type: 'string' },
     semestral_1_average: { type: 'float' },

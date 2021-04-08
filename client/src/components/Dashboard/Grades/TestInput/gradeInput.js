@@ -50,14 +50,15 @@ export default () => {
 
   const goldenKeys = {
     student_grade_cumulative_id: { type: 'int' },
-    app_id: { type: 'string' },
+    // app_id: { type: 'string' },
     app_group_id: { type: 'string' },
+    application_type: { type: 'string' },
     //app_group_name: { type: 'string' },
     application_type: { type: 'string' },
     child_id: { type: 'string' },
     // form_contents: { type: 'string' },
     year_level: { type: 'int' },
-    // designation: { type: 'string' },
+    designation: { type: 'string' },
     school_type: { type: 'string' },
     school_name: { type: 'string' },
     school_year_start: { type: 'string' },
@@ -69,7 +70,7 @@ export default () => {
     gpa_final: { type: 'float' },
     mid_student_rank: { type: 'int' },
     final_student_rank: { type: 'int' },
-    attachment: { type: 'string' },
+    attachment: { type: 'object' },
     grades: { type: 'object' },
    // firstname: { type: 'string' },
     //lastname: { type: 'string' }
@@ -465,7 +466,7 @@ export default () => {
             } else if (type === 'float') {
               acc[key] = e[key] ? parseFloat(e[key]) : 0
             } else {
-              acc[key] = e[key]
+              acc[key] = e[key] || ''
             }
             return acc
           }, {})
@@ -488,6 +489,7 @@ export default () => {
   const handleSaveGrade = (grades, otherFields) => {
     const gradesHelp = grades.filter(e => (e.help_q1 || e.help_q2 || e.help_q3 || e.help_q4)).map(e => e.subject)
     const mergeObject = { grades, ...otherFields, help_needed: `${gradesHelp}` }
+    console.log('pstigin hawalekfja;sdoifjsdf', grades)
     setRows(update(rows, {
       [rows.findIndex(e => e.id === activeGrade)]: { $merge: mergeObject }
     }))
