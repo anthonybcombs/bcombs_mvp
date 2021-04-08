@@ -52,7 +52,7 @@ export default () => {
     student_grade_cumulative_id: { type: 'int' },
     app_id: { type: 'string' },
     app_group_id: { type: 'string' },
-    app_group_name: { type: 'string' },
+    //app_group_name: { type: 'string' },
     application_type: { type: 'string' },
     child_id: { type: 'string' },
     // form_contents: { type: 'string' },
@@ -71,8 +71,8 @@ export default () => {
     final_student_rank: { type: 'int' },
     attachment: { type: 'string' },
     grades: { type: 'object' },
-    firstname: { type: 'string' },
-    lastname: { type: 'string' }
+   // firstname: { type: 'string' },
+    //lastname: { type: 'string' }
   }
 
   const [columns, setColumns] = useState(cloneDeep(initialColumns))

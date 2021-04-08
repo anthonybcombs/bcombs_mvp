@@ -80,17 +80,21 @@ const deleteStudentStandardizedTestToDatabse = studentTestIds => {
   })
 }
 const addUpdateStudentCumulativeToDatabse = studentCumulative => {
-  console.log('studentCumulative', studentCumulative)
+  console.log(' data.addUpdateStudentCumulative studentCumulative', studentCumulative)
   return new Promise(async (resolve, reject) => {
     try {
-      const { data } = await graphqlClient.query({
-        query: ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION,
+      const { data } = await graphqlClient.mutate({
+        mutation: ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION,
         variables: { studentCumulative }
       })
-    
+
+  
+      console.log('data.addUpdateStudentCumulative', data)
       return resolve(data.addUpdateStudentCumulative)
     } catch (error) {
-      console.log('error', { error })
+      console.log('addUpdateStudentCumulativeToDatabse error', error)
+      console.log('addUpdateStudentCumulativeToDatabse error 2',error instanceof Error);
+        console.log('addUpdateStudentCumulativeToDatabse error 3',error.networkError.result.errors); 
       reject(error)
     }
   })
