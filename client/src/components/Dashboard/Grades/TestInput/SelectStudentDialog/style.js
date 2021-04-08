@@ -24,6 +24,9 @@ export default styled.div`
   .modal-container {
     padding: 1.5rem;
   }
+  .modal-container table th:last-child {
+    max-width: 100px !important;
+  }
   
   
   .field-input {

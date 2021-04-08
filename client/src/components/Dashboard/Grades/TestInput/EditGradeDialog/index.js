@@ -283,23 +283,61 @@ export default function index({
               <thead>
                 <tr>
                   <th colSpan='2'>Input By</th>
-                  <th colSpan='3'></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
                   <th>Auto Value here</th>
-                  <th colSpan='2'></th>
+                  <th></th>
+                  <th></th>
                   <th>Auto Value here</th>
-                  <th colSpan='13'></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
                 </tr>
                 <tr>
                   <th colSpan='2'>Approved By</th>
-                  <th colSpan='3'></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
                   <th>Auto Value here</th>
-                  <th colSpan='2'></th>
+                  <th></th>
+                  <th></th>
                   <th>Auto Value here</th>
-                  <th colSpan='13'></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
                 </tr>
                 <tr>
                   <th colSpan='2'>GPA</th>
-                  <th colSpan='9'></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
                   <th>
                     <input
                       id='gpa_sem_1'
@@ -308,7 +346,13 @@ export default function index({
                       onChange={handleChangeOtherFields}
                     />
                   </th>
-                  <th colSpan='7'></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
                   <th>
                     <input
                       id='gpa_sem_2'
@@ -326,10 +370,18 @@ export default function index({
                       onChange={handleChangeOtherFields}
                     />
                   </th>
-                </tr>
+                </tr> 
                 <tr>
                   <th colSpan='2'>Rank</th>
-                  <th colSpan='9'></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
                   <th>
                     <input
                       id='rank_sem_1'
@@ -338,7 +390,13 @@ export default function index({
                       onChange={handleChangeOtherFields}
                     />
                   </th>
-                  <th colSpan='7'></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
                   <th>
                     <input
                       id='rank_sem_2'
@@ -347,14 +405,17 @@ export default function index({
                       onChange={handleChangeOtherFields}
                     />
                   </th>
-                  <th colSpan='2'></th>
+                  <th></th>
+                  <th></th>
                 </tr>
-                <tr>
-                  <input
-                    type='checkbox'
-                    checked={selected.length && selected.length === grades.length}
-                    onChange={handleSelectAll}
-                  />
+                <tr className='row-header'>
+                  <th>
+                    <input
+                      type='checkbox'
+                      checked={selected.length && selected.length === grades.length}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
                   {
                     colArr.map(([key, col], ci) => {
                       return (
@@ -402,7 +463,7 @@ export default function index({
               </tbody>
             </table>
           </div>
-          <div className='actions'>
+          <div className='gradeInputView-table-actions'>
             <button
               className='btn-add'
               onClick={handleAdd}
