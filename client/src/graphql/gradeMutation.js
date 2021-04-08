@@ -26,6 +26,8 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
       gpa_sem_2
       gpa_final
       scale
+      designation
+      student_rank
       grades{
         student_grade_cumulative_id
         class

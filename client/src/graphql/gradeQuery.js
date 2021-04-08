@@ -134,6 +134,8 @@ query getStudentRecords(
         gpa_sem_2
         gpa_final
         scale
+        designation
+        student_rank
         grades{
           student_grade_cumulative_id
           class
@@ -229,6 +231,8 @@ query getStudentCumulativeGradeByVendor(
         gpa_sem_2
         gpa_final
         scale
+        designation
+        student_rank
         grades{
           student_grade_cumulative_id
           class

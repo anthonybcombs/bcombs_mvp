@@ -754,6 +754,8 @@ const inputs = `
         gpa_final: Float
         attachment: FileContentInput
         grades: [StudentGradeInput]
+        student_rank: Int
+        designation: String
         deleted_grades: [Int]
         date_created: String
     }
@@ -1475,7 +1477,6 @@ const queryTypes = `
         child_id: String
         form_contents: String
         year_level: Int
-        designation: String
         school_type: String
         school_name: String
         school_year_start: String
@@ -1492,6 +1493,8 @@ const queryTypes = `
         grades: [StudentGrades]
         firstname: String
         lastname: String
+        student_rank: Int
+        designation: String
         date_created: String
     }
 
