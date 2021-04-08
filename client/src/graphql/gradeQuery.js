@@ -73,6 +73,7 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
             attendance_quarter_4_present
             final_grade
             year_final_grade
+            help_needed
             quarter_average
             semestral_1_average
             semestral_2_average
@@ -165,6 +166,7 @@ query getStudentRecords(
           attendance_quarter_4_present
           final_grade
           year_final_grade
+          help_needed
           quarter_average
           semestral_1_average
           semestral_2_average
@@ -254,6 +256,7 @@ query getStudentCumulativeGradeByVendor(
           attendance_quarter_4_tardy
           final_grade
           year_final_grade
+          help_needed
           quarter_average
           semestral_1_average
           semestral_2_average

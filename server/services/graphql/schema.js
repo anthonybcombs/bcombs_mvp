@@ -729,6 +729,7 @@ const inputs = `
         attendance_quarter_4_tardy: Int
         final_grade: Float
         year_final_grade: Float
+        help_needed: String
     }
 
     input StudentGradeCumulativeInput {
@@ -1538,6 +1539,7 @@ const queryTypes = `
         final_grade: Float
         year_final_grade: Float
         attendance: Int
+        help_needed: String
         date_created: String
     }
 

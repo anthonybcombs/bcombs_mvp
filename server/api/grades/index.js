@@ -626,9 +626,10 @@ export const addUpdateStudentCumulativeGrades = async ({
 								attendance_quarter_4_tardy,
 								final_grade,
 								year_final_grade,
+								help_needed,
                 date_created
               )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `,
 						[
 							cumulativeId,
@@ -663,6 +664,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 							grade.attendance_quarter_4_tardy || 0,
 							grade.final_grade || 0,
 							grade.year_final_grade || 0,
+							grade.help_needed || ''
 						]
 					);
 				} else {
@@ -695,7 +697,8 @@ export const addUpdateStudentCumulativeGrades = async ({
               attendance_quarter_3_tardy=?,
 							attendance_quarter_4_tardy=?,
 							final_grade=?,
-							year_final_grade=?
+							year_final_grade=?,
+							help_needed=?
 							
             WHERE student_grade_cumulative_id=? AND subject=? AND class=?
             `,
@@ -727,6 +730,7 @@ export const addUpdateStudentCumulativeGrades = async ({
 							grade.attendance_quarter_4_tardy || 0,
 							grade.final_grade || 0,
 							grade.year_final_grade || 0,
+							grade.help_needed || '',
 							cumulativeId,
 							grade.subject,
 							grade.class,
