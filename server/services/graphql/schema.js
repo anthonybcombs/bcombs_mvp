@@ -1634,7 +1634,7 @@ const mutations = `
         submitCustomApplicationForm(application: SubmitCustomApplicationInput): Status
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
         updateAttendance(attendance: AttendanceInput): [Attendance]
-        addUpdateStudentCumulative(studentCumulative: StudentGradeCumulativeInput): StudentCumulativeGrade
+        addUpdateStudentCumulative(studentCumulative: [StudentGradeCumulativeInput]): [StudentCumulativeGrade]
         addUpdateStudentStandardizedTest(studentStandardizedTest: [StudentStandardizedTestInput]): [StudentStandardizedTest]
         deleteStudentStandardizedTest(studentTestIds:[Int] ): [StudentStandardizedTest]
     }
