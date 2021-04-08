@@ -15,10 +15,10 @@ export default function index({
 }) {
   const formatValue = (item, key) => {
     switch(key) {
-      case 'quarter_1_help':
-      case 'quarter_2_help':
-      case 'quarter_3_help':
-      case 'quarter_4_help':
+      case 'help_q1':
+      case 'help_q2':
+      case 'help_q3':
+      case 'help_q4':
         return (
           <input
             type='checkbox'
@@ -102,18 +102,18 @@ export default function index({
     designation: { label: 'Designation (H, AP)', type: 'string' },
     teacher_name: { label: 'Teacher Name', type: 'string' },
     quarter_1: { label: 'Q1', type: 'func', func: formatValue },
-    quarter_1_help: { label: 'Help', type: 'func', func: formatValue },
+    help_q1: { label: 'Help', type: 'func', func: formatValue },
     attendance_quarter_1: { label: 'Attendance', type: 'func', func: formatValue },
     quarter_2: { label: 'Q2', type: 'number', func: formatValue },
-    quarter_2_help: { label: 'Help', type: 'func', func: formatValue },
+    help_q2: { label: 'Help', type: 'func', func: formatValue },
     attendance_quarter_2: { label: 'Attendance', type: 'func', func: formatValue },
     semestral_1_average: { label: 'Final', type: 'number' },
     mid_quarter_remarks: { label: 'Passed', type: 'string' },
     quarter_3: { label: 'Q3', type: 'number', func: formatValue },
-    quarter_3_help: { label: 'Help', type: 'func', func: formatValue },
+    help_q3: { label: 'Help', type: 'func', func: formatValue },
     attendance_quarter_3: { label: 'Attendance', type: 'func', func: formatValue },
     quarter_4: { label: 'Q4', type: 'number', func: formatValue },
-    quarter_4_help: { label: 'Help', type: 'func', func: formatValue },
+    help_q4: { label: 'Help', type: 'func', func: formatValue },
     attendance_quarter_4: { label: 'Attendance', type: 'func', func: formatValue },
     semestral_2_average: { label: 'Final', type: 'number' },
     final_quarter_remarks: { label: 'Passed', type: 'string' },
@@ -157,17 +157,17 @@ export default function index({
     semestral_2_average: { type: 'float' },
     final_grade: { type: 'float' },
     letter_final_grade: { type: 'string' },
-    quarter_1_help: { type: 'boolean' },
-    quarter_2_help: { type: 'boolean' },
-    quarter_3_help: { type: 'boolean' },
-    quarter_4_help: { type: 'boolean' },
+    help_q1: { type: 'string' },
+    help_q2: { type: 'string' },
+    help_q3: { type: 'string' },
+    help_q4: { type: 'string' },
   }
   const otherFieldKeys = {
     gpa_sem_1: { type: 'float' },
     gpa_sem_2: { type: 'float' },
     gpa_final: { type: 'float' },
-    rank_sem_1: { type: 'float' },
-    rank_sem_2: { type: 'float' }
+    mid_student_rank: { type: 'int' },
+    final_student_rank: { type: 'int' }
   }
   const emptyGrade = Object.keys(gradeKeys).reduce((acc, curr) => ({ ...acc, [curr]: '' }), {})
   const [grades, setGrades] = useState([{ id: uuid(), ...emptyGrade }])
@@ -177,7 +177,7 @@ export default function index({
 
   const handleInputChange = ({ target: { value, checked } }, key, gradeId, isCheckbox = false) => {
     setGrades(update(grades, {
-      [grades.findIndex(e => e.id === gradeId)]: { $merge: { [key]: isCheckbox ? checked : value } }
+      [grades.findIndex(e => e.id === gradeId)]: { $merge: { [key]: isCheckbox ? (checked ? 'help' : '') : value } }
     }))
     setHasChanged(true)
   }
@@ -332,18 +332,18 @@ export default function index({
                   <th colSpan='9'></th>
                   <th>
                     <input
-                      id='rank_sem_1'
+                      id='mid_student_rank'
                       type='number'
-                      value={otherFields.rank_sem_1}
+                      value={otherFields.mid_student_rank}
                       onChange={handleChangeOtherFields}
                     />
                   </th>
                   <th colSpan='7'></th>
                   <th>
                     <input
-                      id='rank_sem_2'
+                      id='final_student_rank'
                       type='number'
-                      value={otherFields.rank_sem_2}
+                      value={otherFields.final_student_rank}
                       onChange={handleChangeOtherFields}
                     />
                   </th>

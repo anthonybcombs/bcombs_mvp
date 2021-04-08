@@ -54,20 +54,21 @@ export default () => {
     app_group_id: { type: 'string' },
     app_group_name: { type: 'string' },
     application_type: { type: 'string' },
-    type: { type: 'string' },
     child_id: { type: 'string' },
     // form_contents: { type: 'string' },
     year_level: { type: 'int' },
-    designation: { type: 'string' },
+    // designation: { type: 'string' },
     school_type: { type: 'string' },
     school_name: { type: 'string' },
-    school_year_start: { type: 'int' },
-    school_year_end: { type: 'int' },
+    school_year_start: { type: 'string' },
+    school_year_end: { type: 'string' },
     school_year_frame: { type: 'string' },
     scale: { type: 'float' },
     gpa_sem_1: { type: 'float' },
     gpa_sem_2: { type: 'float' },
     gpa_final: { type: 'float' },
+    mid_student_rank: { type: 'int' },
+    final_student_rank: { type: 'int' },
     attachment: { type: 'string' },
     grades: { type: 'object' },
     firstname: { type: 'string' },
@@ -481,11 +482,11 @@ export default () => {
         return newRow
       })
 
-    dispatch(requestAddUpdateStudentCumulative(newRows))
+    dispatch(requestAddUpdateStudentCumulative(newRows[0]))
   }
 
   const handleSaveGrade = (grades, otherFields) => {
-    const gradesHelp = grades.filter(e => (e.quarter_1_help || e.quarter_2_help || e.quarter_3_help || e.quarter_4_help)).map(e => e.subject)
+    const gradesHelp = grades.filter(e => (e.help_q1 || e.help_q2 || e.help_q3 || e.help_q4)).map(e => e.subject)
     const mergeObject = { grades, ...otherFields, help_needed: `${gradesHelp}` }
     setRows(update(rows, {
       [rows.findIndex(e => e.id === activeGrade)]: { $merge: mergeObject }
