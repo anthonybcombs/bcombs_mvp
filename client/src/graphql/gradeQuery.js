@@ -74,7 +74,10 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
             attendance_quarter_4_present
             final_grade
             year_final_grade
-            help_needed
+            help_needed_q1
+            help_needed_q2
+            help_needed_q3
+            help_needed_q4
             quarter_average
             semestral_1_average
             semestral_2_average
@@ -137,7 +140,8 @@ query getStudentRecords(
         gpa_final
         scale
         designation
-        student_rank
+        mid_student_rank
+        final_student_rank
         grades{
           student_grade_cumulative_id
           class
@@ -171,7 +175,11 @@ query getStudentRecords(
           final_grade
           year_final_grade
           letter_final_grade
-          help_needed
+          help_needed: String
+          help_q1: String
+          help_q2 String
+          help_q3: String
+          help_q4: String
           quarter_average
           semestral_1_average
           semestral_2_average
@@ -234,7 +242,8 @@ query getStudentCumulativeGradeByVendor(
         gpa_final
         scale
         designation
-        student_rank
+        mid_student_rank
+        final_student_rank
         grades{
           student_grade_cumulative_id
           class
@@ -264,7 +273,10 @@ query getStudentCumulativeGradeByVendor(
           final_grade
           year_final_grade
           letter_final_grade
-          help_needed
+          help_needed_q1
+          help_needed_q2
+          help_needed_q3
+          help_needed_q4
           quarter_average
           semestral_1_average
           semestral_2_average
