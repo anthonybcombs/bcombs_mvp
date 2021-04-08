@@ -95,6 +95,12 @@ export default styled.div`
 		border: 0;
 	}
 
+	#gradeInputView-table thead tr:last-child th {
+		position: sticky;
+		top: -1px;
+		z-index: 10;
+	}
+
 	#gradeInputView-table tr.has-data {
 		background-color: #f6d9d9!important;
 	}
@@ -226,6 +232,15 @@ export default styled.div`
 	}
 	#gradeInputView-table td:last-child >svg.close-icon:hover {
 		color: #e2382b;
+	}
+
+	#gradeInputView-table td.grades svg {
+		color: #f26e21;
+		cursor: pointer;
+		transition: .05s ease-in-out;
+	}
+	#gradeInputView-table td.grades svg:hover {
+		color: #e47120;
 	}
 
 	#gradeInputView-table select {

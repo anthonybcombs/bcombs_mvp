@@ -108,6 +108,7 @@ export default styled.div`
     overflow-x: auto;
 		overflow-y: unset;
     min-height: 300px;
+    max-height: calc(100vh - 350px);
   }
 	#gradeListTableWrapper::-webkit-scrollbar {
 		width: 8px;
@@ -119,8 +120,6 @@ export default styled.div`
 		border-radius: 10px;
 		transition: 0.5s ease-in-out;
 		background: rgb(243 110 34 / 20%);
-		opacity: 0;
-		visibility: hidden;
 	}
 	#gradeListTableWrapper::-webkit-scrollbar-thumb {
 		background: #f36e22;
@@ -134,6 +133,126 @@ export default styled.div`
 		opacity: 1;
 		visibility: visible;
 	}
+
+  #gradeInputView-table {
+    border: 0;
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+  }
+
+  #gradeInputView-table input {
+    padding: 4px;
+    border-radius: 3px;
+    border: 1.65px solid #ccc;
+    -webkit-transition: .15s ease-in-out;
+    transition: .15s ease-in-out;
+    max-width: 72px;
+  }
+  #gradeInputView-table input.focus-visible {
+		border-color: #4B68C5;
+		background: rgb(75 104 197 / 10%);
+	}
+
+  #gradeInputView-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  #gradeInputView-table td,
+  #gradeInputView-table th {
+    border: 0;
+    padding: 12px 3px;
+  }
+
+  #gradeInputView-table thead tr th:not(:last-child) {
+    border-right: 1px solid rgb(255 255 255 / 50%);
+  }
+
+  #gradeInputView-table tr:not(.row-header) th {
+    background-color: #FFE391;
+    border-bottom: 1px solid rgb(255 255 255 / 50%);
+  }
+
+  #gradeInputView-table tr.row-header th {
+    position: sticky;
+    top: -1px;
+    background-color: #fbc00f;
+  }
+
+
+  #gradeInputView-table td >div {
+    display: grid;
+    grid-gap: 5px;
+  }
+
+  
+  
+  .gradeInputView-table-actions {
+		padding-top: 1rem;
+		display: flex;
+	}
+	.gradeInputView-table-actions button {
+		border: 0;
+    color: white;
+    box-shadow: none;
+    max-width: 200px;
+    min-width: 150px;
+    margin-right: 1rem;
+    border-radius: 3px;
+    background-color: #f26e21;
+		transition: all .3s ease-in-out;
+	}
+	.gradeInputView-table-actions button.disabled {
+		opacity: .35;
+		cursor: auto;
+	}
+	.gradeInputView-table-actions button span {
+		padding-left: .5rem;
+	}
+	.gradeInputView-table-actions button.btn-add {
+		color: #2097f3;
+		background: transparent;
+    border: 1px solid #2097f3;
+	}
+	.gradeInputView-table-actions button.btn-add:hover {
+		background: rgb(32 151 243 / 10%);
+	}
+
+	.gradeInputView-table-actions button.btn-copy {
+		color: orange;
+    border: 1px solid;
+		background: transparent;
+	}
+	.gradeInputView-table-actions button.btn-copy:hover {
+		background: rgb(255 165 0 / 10%);
+	}
+
+	.gradeInputView-table-actions button.btn-delete {
+		color: #f44336;
+		background: transparent;
+    border: 1px solid #f44336;
+	}
+	.gradeInputView-table-actions button.btn-delete:hover {
+		background: rgb(244 67 54 / 10%);
+	}
+
+	.gradeInputView-table-actions button.btn-save {
+    color: #f26e21;
+		background: transparent;
+    border: 1px solid #f26e21;
+	}
+	.gradeInputView-table-actions button.btn-save:hover {
+		background: rgb(242 110 33 / 10%);
+	}
+	.gradeInputView-table-actions button.btn-review:hover {
+		background: #e47120;
+	}
+
+
+
+
+
+
 
   @media (max-width: 500px) {
     .modal-content {
