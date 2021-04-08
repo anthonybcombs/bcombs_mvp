@@ -84,6 +84,7 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
             final_quarter_attendance
             mid_quarter_remarks
             final_quarter_remarks
+            letter_final_grade
             attendance
           }
         }
