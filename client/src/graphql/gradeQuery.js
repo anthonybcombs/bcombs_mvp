@@ -25,7 +25,7 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
           child_id
           form_contents
           year_level
-          designation
+  
           school_type
           school_name
           school_year_start
@@ -118,7 +118,6 @@ query getStudentRecords(
         child_id
         form_contents
         year_level
-        designation
         school_type
         school_name
         school_year_start
@@ -212,7 +211,6 @@ query getStudentCumulativeGradeByVendor(
         child_id
         form_contents
         year_level
-        designation
         school_type
         school_name
         school_year_start

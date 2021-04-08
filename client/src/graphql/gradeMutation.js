@@ -11,7 +11,6 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
       child_id
       form_contents
       year_level
-      designation
       school_type
       school_name
       school_year_start
