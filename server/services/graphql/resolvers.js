@@ -1490,6 +1490,7 @@ const resolvers = {
       return await updateChildAttendance(attendance)
     },
     async addUpdateStudentCumulative(root,{ studentCumulative },context){
+      console.log('ADDPDATE STUDENT CUMULATIVE',studentCumulative)
       return await addUpdateStudentCumulativeGrades(studentCumulative)
     },
     async addUpdateStudentStandardizedTest(root, { studentStandardizedTest },context) {

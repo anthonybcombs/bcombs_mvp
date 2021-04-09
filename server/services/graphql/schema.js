@@ -727,6 +727,7 @@ const inputs = `
         attendance_quarter_2_tardy: Int
         attendance_quarter_3_tardy: Int
         attendance_quarter_4_tardy: Int
+        mid_final_grade: Float
         final_grade: Float
         year_final_grade: Float
         letter_final_grade: String
@@ -760,7 +761,8 @@ const inputs = `
         grades: [StudentGradeInput]
         mid_student_rank: Int
         final_student_rank: Int
-        designation: String
+        child_designation: String
+        school_designation: String
         deleted_grades: [Int]
         date_created: String
     }
@@ -1500,7 +1502,8 @@ const queryTypes = `
         lastname: String
         mid_student_rank: Int
         final_student_rank: Int
-        designation: String
+        child_designation: String
+        school_designation: String
         date_created: String
     }
 
@@ -1546,6 +1549,7 @@ const queryTypes = `
         final_semestral_1_attendance: Int
         final_semestral_2_attendance: Int
         final_quarter_attendance: Int
+        mid_final_grade: Float
         final_grade: Float
         year_final_grade: Float
         letter_final_grade: String 

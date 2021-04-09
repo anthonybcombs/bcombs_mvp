@@ -25,7 +25,8 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
       gpa_sem_2
       gpa_final
       scale
-      designation
+      child_designation
+      school_designation
       mid_student_rank
       final_student_rank
       grades{
@@ -58,6 +59,7 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
         attendance_quarter_2_present
         attendance_quarter_3_present
         attendance_quarter_4_present
+        mid_final_grade
         final_grade
         year_final_grade
         letter_final_grade
@@ -69,9 +71,7 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
         mid_quarter_remarks
         final_quarter_remarks
         quarter_average
-        semestral_1_average
-        semestral_2_average
-        semestral_final
+     
         final_semestral_1_attendance
         final_semestral_2_attendance
         final_quarter_attendance

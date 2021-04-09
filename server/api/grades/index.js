@@ -115,7 +115,8 @@ export const getStudentCumulativeByChildId = async childId => {
 				student_grade_cumulative.year_level,
 				student_grade_cumulative.school_type,
 				student_grade_cumulative.school_name,
-				student_grade_cumulative.designation,
+				student_grade_cumulative.child_designation,
+				student_grade_cumulative.school_designation,
 				student_grade_cumulative.mid_student_rank,
 				student_grade_cumulative.final_student_rank,
 				student_grade_cumulative.school_year_start,
@@ -220,7 +221,8 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
               sgc.year_level,
               sgc.school_type,
 							sgc.school_name,
-							sgc.designation,
+							sgc.child_designation,
+							sgc.school_designation,
 							sgc.mid_student_rank,
 							sgc.final_student_rank,
               sgc.school_year_start,
@@ -399,7 +401,8 @@ export const getStudentCumulativeGrade = async ({ app_group_id, child_id }) => {
         year_level,
         school_type,
 				school_name,
-				designation,
+				child_designation,
+				school_designation,
 				mid_student_rank,
         final_student_rank,
         school_year_start,
@@ -440,6 +443,7 @@ export const getStudentCumulativeGrade = async ({ app_group_id, child_id }) => {
 	}
 };
 
+// semestral_1_average and semestral_2_average are no longer used
 export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = []) => {
 	const db = makeDb();
 	let studentCumulativeGradesResult = [];
@@ -454,7 +458,8 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 				year_level,
 				school_type,
 				school_name,
-				designation,
+				child_designation,
+				school_designation,
 				mid_student_rank,
 				final_student_rank,
 				school_year_start,
@@ -493,7 +498,8 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
           year_level,
           school_type,
 					school_name,
-					designation,
+					child_designation,
+					school_designation,
 					mid_student_rank,
 					final_student_rank,
           school_year_start,
@@ -510,6 +516,7 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
         VALUES (
           UUID_TO_BIN(?),
           UUID_TO_BIN(?),
+					?,
 					?,
 					?,
 					?,
@@ -536,7 +543,8 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 						year_level,
 						school_type,
 						school_name,
-						designation,
+						child_designation,
+						school_designation,
 						mid_student_rank,
 						final_student_rank,
 						school_year_start,
@@ -571,7 +579,8 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
          SET year_level=?,
 					 school_type=?,
 					 school_name=?,
-					 designation=?,
+					 child_designation=?,
+					 school_designation=?,
 					 mid_student_rank=?,
 					 final_student_rank=?,
          	school_year_start=?,
@@ -592,7 +601,8 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 						year_level,
 						school_type,
 						school_name,
-						designation,
+						child_designation,
+						school_designation,
 						mid_student_rank,
 						final_student_rank,
 						school_year_start,
@@ -654,6 +664,7 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 								attendance_quarter_2_tardy,
 								attendance_quarter_3_tardy,
 								attendance_quarter_4_tardy,
+								mid_final_grade,
 								final_grade,
 								year_final_grade,
 								letter_final_grade,
@@ -664,7 +675,7 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 								help_q4,
                 date_created
               )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `,
 							[
 								cumulativeId,
@@ -697,6 +708,7 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 								grade.attendance_quarter_2_tardy || 0,
 								grade.attendance_quarter_3_tardy || 0,
 								grade.attendance_quarter_4_tardy || 0,
+								grade.mid_final_grade || 0,
 								grade.final_grade || 0,
 								grade.year_final_grade || 0,
 								grade.letter_final_grade || '',
@@ -736,6 +748,7 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
               attendance_quarter_2_tardy=?,
               attendance_quarter_3_tardy=?,
 							attendance_quarter_4_tardy=?,
+							mid_final_grade=?,
 							final_grade=?,
 							year_final_grade=?,
 							letter_final_grade=?,
@@ -769,6 +782,7 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 								grade.attendance_quarter_2_tardy || 0,
 								grade.attendance_quarter_3_tardy || 0,
 								grade.attendance_quarter_4_tardy || 0,
+								grade.mid_final_grade || 0,
 								grade.final_grade || 0,
 								grade.year_final_grade || 0,
 								grade.letter_final_grade || 0,
@@ -798,7 +812,8 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 				sgc.student_grade_cumulative_id,
 				sgc.application_type,
 				sgc.year_level,
-				sgc.designation,
+				sgc.child_designation,
+				sgc.school_designation,
 				sgc.mid_student_rank,
 				sgc.final_student_rank,
 				sgc.school_type,
@@ -822,7 +837,8 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 				sgc.student_grade_cumulative_id,
 				sgc.application_type,
 				sgc.year_level,
-				sgc.designation,
+				sgc.child_designation,
+				sgc.school_designation,
 				sgc.mid_student_rank,
 				sgc.final_student_rank,
 				sgc.school_type,
@@ -874,6 +890,8 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 		console.log('Error', error);
 	} finally {
 		await db.close();
+		console.log('studentCumulativeGradesResult 111', studentCumulativeGradesResult)
+		console.log('studentCumulativeGradesResult 222')
 		return studentCumulativeGradesResult;
 	}
 };
