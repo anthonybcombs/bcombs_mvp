@@ -35,10 +35,10 @@ export default () => {
     name: { type: 'string', label: 'Name' },
     child_id: { type: 'string', label: 'ID' },
     year_level: { type: 'int', label: 'Level' },
-    designations: { type: 'string', label: 'Designations' },
+    child_designation: { type: 'string', label: 'Designations' },
     school_name: { type: 'string', label: 'Name' },
     school_type: { type: 'string', label: 'Type' },
-    designation: { type: 'string', label: 'Designation' },
+    school_designation: { type: 'string', label: 'Designation' },
     school_year_start: { type: 'number', label: 'Start' },
     school_year_end: { type: 'number', label: 'End' },
     school_year_frame: { type: 'string', label: 'Frame' },
@@ -58,7 +58,8 @@ export default () => {
     child_id: { type: 'string' },
     // form_contents: { type: 'string' },
     year_level: { type: 'int' },
-    designation: { type: 'string' },
+    child_designation: { type: 'string' },
+    school_designation: { type: 'string' },
     school_type: { type: 'string' },
     school_name: { type: 'string' },
     school_year_start: { type: 'string' },
@@ -74,6 +75,44 @@ export default () => {
     grades: { type: 'object' },
    // firstname: { type: 'string' },
     //lastname: { type: 'string' }
+  }
+
+  const gradeKeys = {
+    student_grade_cumulative_id: { type: 'int' },
+    class: { type: 'string' },
+    subject: { type: 'string' },
+    teacher_name: { type: 'string' },
+    designation: { type: 'string' },
+    grade_quarter_1: { type: 'float' },
+    grade_quarter_2: { type: 'float' },
+    grade_quarter_3: { type: 'float' },
+    grade_quarter_4: { type: 'float' },
+    letter_grade_quarter_1: { type: 'string' },
+    letter_grade_quarter_2: { type: 'string' },
+    letter_grade_quarter_3: { type: 'string' },
+    letter_grade_quarter_4: { type: 'string' },
+    attendance_quarter_1_absent: { type: 'int' },
+    attendance_quarter_2_absent: { type: 'int' },
+    attendance_quarter_3_absent: { type: 'int' },
+    attendance_quarter_4_absent: { type: 'int' },
+    attendance_quarter_1_tardy: { type: 'int' },
+    attendance_quarter_2_tardy: { type: 'int' },
+    attendance_quarter_3_tardy: { type: 'int' },
+    attendance_quarter_4_tardy: { type: 'int' },
+    attendance_quarter_1_total: { type: 'int' },
+    attendance_quarter_2_total: { type: 'int' },
+    attendance_quarter_3_total: { type: 'int' },
+    attendance_quarter_4_total: { type: 'int' },
+    mid_quarter_remarks: { type: 'string' },
+    final_quarter_remarks: { type: 'string' },
+    mid_final_grade: { type: 'float' },
+    final_grade: { type: 'float' },
+    year_final_grade: { type: 'float' },
+    letter_final_grade: { type: 'string' },
+    help_q1: { type: 'string' },
+    help_q2: { type: 'string' },
+    help_q3: { type: 'string' },
+    help_q4: { type: 'string' },
   }
 
   const [columns, setColumns] = useState(cloneDeep(initialColumns))
@@ -480,6 +519,24 @@ export default () => {
         if (!newRow.grades) {
           newRow.grades = []
         }
+
+        newRow.grades = e.grades
+          .map(e => {
+            let newGrade = Object.entries(gradeKeys)
+              .reduce((acc, [key, { type }]) => {
+                if (type === 'int') {
+                  acc[key] = e[key] ? parseInt(e[key]) : 0
+                } else if (type === 'float') {
+                  acc[key] = e[key] ? parseFloat(e[key]) : 0
+                } else {
+                  acc[key] = e[key]
+                }
+                return acc
+              }, {})
+    
+            return newGrade
+          })
+
         return newRow
       })
 
@@ -489,7 +546,7 @@ export default () => {
   const handleSaveGrade = (grades, otherFields) => {
     const gradesHelp = grades.filter(e => (e.help_q1 || e.help_q2 || e.help_q3 || e.help_q4)).map(e => e.subject)
     const mergeObject = { grades, ...otherFields, help_needed: `${gradesHelp}` }
-    console.log('pstigin hawalekfja;sdoifjsdf', grades)
+
     setRows(update(rows, {
       [rows.findIndex(e => e.id === activeGrade)]: { $merge: mergeObject }
     }))
@@ -786,6 +843,7 @@ export default () => {
         editGradeOpen && (
           <EditGradeDialog
             data={rows.find(e => e.id === activeGrade)}
+            gradeKeys={gradeKeys}
             onClose={(hasEdit) => handleCloseEditGradeDialog(hasEdit)}
             onSaveGrade={handleSaveGrade}
           />

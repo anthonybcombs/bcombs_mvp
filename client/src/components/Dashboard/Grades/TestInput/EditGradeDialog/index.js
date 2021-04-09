@@ -11,7 +11,7 @@ import CustomTable from '../../../CustomComponents/CustomTable'
 import CustomSelect from '../../../CustomComponents/CustomSelect'
 
 export default function index({
-  onClose, data, onSaveGrade
+  onClose, data, onSaveGrade, gradeKeys
 }) {
   const formatValue = (item, key) => {
     switch(key) {
@@ -46,22 +46,20 @@ export default function index({
             />
           </div>
         )
-      case 'final_grade':
+      case 'year_final_grade':
         return (
           <div>
             <input
-              id={`letter_final_grade`}
               type='text'
               placeholder='A+'
               value={item[`letter_final_grade`] || ''}
               onChange={(e) => handleInputChange(e, 'letter_final_grade', item.id)}
             />
             <input
-              id={`final_grade`}
               placeholder='99'
               type='number'
-              value={item[`final_grade`] || ''}
-              onChange={(e) => handleInputChange(e, 'final_grade', item.id)}
+              value={item[`year_final_grade`] || ''}
+              onChange={(e) => handleInputChange(e, 'year_final_grade', item.id)}
             />
           </div>
         )
@@ -107,7 +105,7 @@ export default function index({
     quarter_2: { label: 'Q2', type: 'number', func: formatValue },
     help_q2: { label: 'Help', type: 'func', func: formatValue },
     attendance_quarter_2: { label: 'Attendance', type: 'func', func: formatValue },
-    semestral_1_average: { label: 'Final', type: 'number' },
+    mid_final_grade: { label: 'Final', type: 'number' },
     mid_quarter_remarks: { label: 'Passed', type: 'string' },
     quarter_3: { label: 'Q3', type: 'number', func: formatValue },
     help_q3: { label: 'Help', type: 'func', func: formatValue },
@@ -115,49 +113,11 @@ export default function index({
     quarter_4: { label: 'Q4', type: 'number', func: formatValue },
     help_q4: { label: 'Help', type: 'func', func: formatValue },
     attendance_quarter_4: { label: 'Attendance', type: 'func', func: formatValue },
-    semestral_2_average: { label: 'Final', type: 'number' },
+    final_grade: { label: 'Final', type: 'number' },
     final_quarter_remarks: { label: 'Passed', type: 'string' },
-    final_grade: { label: 'Year Final', type: 'number', func: formatValue }
+    year_final_grade: { label: 'Year Final', type: 'number', func: formatValue }
   }
 
-  const colArr = Object.entries(columns)
-  const gradeKeys = {
-    student_grade_cumulative_id: { type: 'int' },
-    class: { type: 'string' },
-    subject: { type: 'string' },
-    teacher_name: { type: 'string' },
-    designation: { type: 'string' },
-    grade_quarter_1: { type: 'float' },
-    grade_quarter_2: { type: 'float' },
-    grade_quarter_3: { type: 'float' },
-    grade_quarter_4: { type: 'float' },
-    letter_grade_quarter_1: { type: 'string' },
-    letter_grade_quarter_2: { type: 'string' },
-    letter_grade_quarter_3: { type: 'string' },
-    letter_grade_quarter_4: { type: 'string' },
-    attendance_quarter_1_absent: { type: 'int' },
-    attendance_quarter_2_absent: { type: 'int' },
-    attendance_quarter_3_absent: { type: 'int' },
-    attendance_quarter_4_absent: { type: 'int' },
-    attendance_quarter_1_tardy: { type: 'int' },
-    attendance_quarter_2_tardy: { type: 'int' },
-    attendance_quarter_3_tardy: { type: 'int' },
-    attendance_quarter_4_tardy: { type: 'int' },
-    attendance_quarter_1_total: { type: 'int' },
-    attendance_quarter_2_total: { type: 'int' },
-    attendance_quarter_3_total: { type: 'int' },
-    attendance_quarter_4_total: { type: 'int' },
-    mid_quarter_remarks: { type: 'string' },
-    final_quarter_remarks: { type: 'string' },
-    semestral_1_average: { type: 'float' },
-    semestral_2_average: { type: 'float' },
-    final_grade: { type: 'float' },
-    letter_final_grade: { type: 'string' },
-    help_q1: { type: 'string' },
-    help_q2: { type: 'string' },
-    help_q3: { type: 'string' },
-    help_q4: { type: 'string' },
-  }
   const otherFieldKeys = {
     gpa_sem_1: { type: 'float' },
     gpa_sem_2: { type: 'float' },
@@ -165,6 +125,9 @@ export default function index({
     mid_student_rank: { type: 'int' },
     final_student_rank: { type: 'int' }
   }
+
+  const colArr = Object.entries(columns)
+
   const emptyGrade = Object.keys(gradeKeys).reduce((acc, curr) => ({ ...acc, [curr]: '' }), {})
   const [grades, setGrades] = useState([{ id: uuid(), ...emptyGrade }])
   const [otherFields, setOtherFields] = useState(Object.keys(otherFieldKeys).reduce((acc, curr) => ({ ...acc, [curr]: '' }), {}))
@@ -222,22 +185,6 @@ export default function index({
   }
 
   const handleSave = () => {
-    const newGrades = cloneDeep(grades)
-      .map(e => {
-        let newGrade = Object.entries(gradeKeys)
-          .reduce((acc, [key, { type }]) => {
-            if (type === 'int') {
-              acc[key] = e[key] ? parseInt(e[key]) : 0
-            } else if (type === 'float') {
-              acc[key] = e[key] ? parseFloat(e[key]) : 0
-            } else {
-              acc[key] = e[key]
-            }
-            return acc
-          }, {})
-
-        return newGrade
-      })
     const newOtherFields = Object.entries(otherFieldKeys)
       .reduce((acc, [key, { type }]) => {
         if (type === 'int') {
@@ -249,12 +196,15 @@ export default function index({
         }
         return acc
       }, {})
-    onSaveGrade(newGrades, newOtherFields)
+    onSaveGrade(grades, newOtherFields)
   }
 
   useEffect(() => {
     if (data?.grades && data?.grades.length) {
       setGrades((data?.grades || []).map(e => ({ ...e, id: uuid() })))
+    }
+    if (Object.keys(data).length) {
+      setOtherFields(Object.keys(otherFieldKeys).reduce((acc, curr) => ({ ...acc, [curr]: data[curr] }), {}))
     }
   }, [data])
 

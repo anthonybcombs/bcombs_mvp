@@ -68,9 +68,10 @@ export default function index({
       )
     }
     if (key === 'year_level') {
+      const { year_level: latest_grade } = maxBy(cumulative_grades, 'year_level') || {}
       return (
         <CustomSelect
-          value={year_level}
+          value={year_level || latest_grade}
           options={gradeTakenOptions}
           onChange={(e) => handleChangeSt(item.child_id, e.target.value, 'year_level')}
         />
@@ -130,14 +131,18 @@ export default function index({
     } else {
       newData = selected.map(eachId => {
         const { child_id, name, cumulative_grades, firstname, lastname, app_id, app_group_id, application_type, type, } = rows.find(e => e.child_id === eachId) || {}
-        const { year_level = 1 } = selectedGradeTest[eachId] || {}
-        const gradesObj = cumulative_grades.find(e => e.year_level == year_level) || keysObj
+        const { year_level: latest_grade } = maxBy(cumulative_grades, 'year_level') || {}
+        const { year_level } = selectedGradeTest[eachId] || {}
+        const yl = year_level || latest_grade
+        const gradesObj = cumulative_grades.find(e => e.year_level == yl) || keysObj
+        const help_needed = (gradesObj.grades || []).filter(e => (e.help_q1 || e.help_q2 || e.help_q3 || e.help_q4)).map(e => e.subject)
 
         return {
           ...gradesObj,
+          help_needed,
           firstname,
           lastname,
-          year_level,
+          year_level: yl || 1,
           child_id,
           app_id,
           app_group_id,
