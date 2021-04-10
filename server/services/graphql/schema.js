@@ -730,7 +730,9 @@ const inputs = `
         mid_final_grade: Float
         final_grade: Float
         year_final_grade: Float
+        letter_mid_final_grade: String
         letter_final_grade: String
+        letter_year_final_grade: String
         help_needed: String
         help_q1: String
         help_q2: String
@@ -1552,7 +1554,9 @@ const queryTypes = `
         mid_final_grade: Float
         final_grade: Float
         year_final_grade: Float
-        letter_final_grade: String 
+        letter_mid_final_grade: String
+        letter_final_grade: String
+        letter_year_final_grade: String
         attendance: Int
         help_needed: String
         help_q1: String

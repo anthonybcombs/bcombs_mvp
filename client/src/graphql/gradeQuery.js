@@ -91,7 +91,9 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
             final_quarter_attendance
             mid_quarter_remarks
             final_quarter_remarks
+            letter_mid_final_grade
             letter_final_grade
+            letter_year_final_grade
             attendance
           }
         }
@@ -180,7 +182,9 @@ query getStudentRecords(
           mid_final_grade
           final_grade
           year_final_grade
+          letter_mid_final_grade
           letter_final_grade
+          letter_year_final_grade
           help_needed
           help_q1
           help_q2
@@ -280,7 +284,9 @@ query getStudentCumulativeGradeByVendor(
           mid_final_grade
           final_grade
           year_final_grade
+          letter_mid_final_grade
           letter_final_grade
+          letter_year_final_grade
           help_needed
           help_q1
           help_q2

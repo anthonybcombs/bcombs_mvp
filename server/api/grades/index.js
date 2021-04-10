@@ -667,7 +667,9 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 								mid_final_grade,
 								final_grade,
 								year_final_grade,
+								letter_mid_final_grade,
 								letter_final_grade,
+								letter_year_final_grade,
 								help_needed,
 								help_q1,
                 help_q2,
@@ -675,7 +677,7 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 								help_q4,
                 date_created
               )
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `,
 							[
 								cumulativeId,
@@ -711,7 +713,9 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 								grade.mid_final_grade || 0,
 								grade.final_grade || 0,
 								grade.year_final_grade || 0,
+								grade.letter_mid_final_grade || '',
 								grade.letter_final_grade || '',
+								grade.letter_year_final_grade || '',
 								grade.help_needed || '',
 								grade.help_q1 || '',
 								grade.help_q2 || '',
@@ -751,7 +755,9 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 							mid_final_grade=?,
 							final_grade=?,
 							year_final_grade=?,
+							letter_mid_final_grade=?,
 							letter_final_grade=?,
+							letter_year_final_grade=?,
 							help_needed=?
 							
             WHERE student_grade_cumulative_id=? AND subject=? AND class=?
@@ -785,7 +791,9 @@ export const addUpdateStudentCumulativeGrades = async (studentCumulativeGrade = 
 								grade.mid_final_grade || 0,
 								grade.final_grade || 0,
 								grade.year_final_grade || 0,
-								grade.letter_final_grade || 0,
+								grade.letter_mid_final_grade || '',
+								grade.letter_final_grade || '',
+								grade.letter_year_final_grade || '',
 								grade.help_needed || '',
 								cumulativeId,
 								grade.subject,

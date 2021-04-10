@@ -62,7 +62,9 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
         mid_final_grade
         final_grade
         year_final_grade
+        letter_mid_final_grade
         letter_final_grade
+        letter_year_final_grade
         help_needed
         help_q1
         help_q2
