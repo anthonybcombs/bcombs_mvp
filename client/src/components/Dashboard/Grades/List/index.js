@@ -55,18 +55,17 @@ export default () => {
   const [stCounter, setStCounter] = useState(displayCount)
   
   let activeGradeColumns = gradeColumns[gradeType].slice(gradeCounter - displayCount, gradeCounter)
-  if (activeGradeColumns.length < displayCount) {
+  if (activeGradeColumns.length < displayCount && gradeColumns[gradeType].length > displayCount) {
     activeGradeColumns = gradeColumns[gradeType].slice(gradeColumns[gradeType].length - displayCount, gradeColumns[gradeType].length)
   }
 
   const stColumns = testOptions.map(e => e.value)
   let activeStColumns = stColumns.slice(stCounter - displayCount, stCounter)
-  if (activeStColumns.length < displayCount) {
+  if (activeStColumns.length < displayCount && stColumns.length > displayCount) {
     activeStColumns = stColumns.slice(stColumns.length - displayCount, stColumns.length)
   }
   
   const getActiveColumns = (type, gCols) => ['name', 'schoolType', 'gradeLevel', 'gpa', 'attendanceSummary', ...(gCols || gradeColumns[type]), ...stColumns]
-  
   const generateColumnFilters = (rowData, cols, resetKeys = null) => {
     let newColumnFilters = { ...columnFilters }
     const keys = resetKeys || Object.keys(({ ...columns, ...(cols || {}) }))
@@ -379,7 +378,7 @@ export default () => {
           school_year_end = '', student_grade_cumulative_id, gpa_final, gpa_sem_2, gpa_sem_1
         } = cumulative_grades.length ? cumulative_grades[0] : {}
         const sy = school_year_start && school_year_end ? `${school_year_start}-${school_year_end}` : ''
-        const { year_final_grade = '', final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades.length ? grades[0] : []
+        const { final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades.length ? grades[0] : []
 
         // Grades reduce
         const { values, keys, quarters } = grades.reduce((acc, curr) => {
@@ -388,7 +387,7 @@ export default () => {
             grade_quarter_1 = '', letter_grade_quarter_1 = '', grade_quarter_2 = '', letter_grade_quarter_2 = '',
             grade_quarter_3 = '', letter_grade_quarter_3 = '', grade_quarter_4 = '', letter_grade_quarter_4 = '',
             attendance_quarter_1_total = '', attendance_quarter_2_total = '', attendance_quarter_3_total = '',
-            attendance_quarter_4_total = ''
+            attendance_quarter_4_total = '', letter_year_final_grade, year_final_grade = ''
           } = curr
 
           const { values = {}, keys = {}, quarters } = acc
@@ -396,8 +395,8 @@ export default () => {
           return {
             values: {
               ...values,
-              [`${subjectKey}`]: letter_final_grade,
-              [`${subjectKey}Number`]: final_grade,
+              [`${subjectKey}`]: letter_year_final_grade || letter_grade_quarter_4 || letter_grade_quarter_3 ||letter_grade_quarter_2 || letter_grade_quarter_1,
+              [`${subjectKey}Number`]: year_final_grade || grade_quarter_4 || grade_quarter_3 || grade_quarter_2 || grade_quarter_1,
             },
             keys: {
               ...keys,
@@ -686,7 +685,7 @@ export default () => {
                                 activeGradeColumns.map((e, index) => {
                                   const isFirst = index === 0
                                   const isLast = index === (displayCount - 1)
-                                  const showFirst = activeGradeColumns.length > 1 && isFirst && gradeCounter > activeGradeColumns.length
+                                  const showFirst = activeGradeColumns.length > 1 && isFirst && gradeCounter > activeGradeColumns.length && gradeColumns[gradeType].length > displayCount
                                   const showLast = activeGradeColumns.length > 1 && isLast && gradeColumns[gradeType].length > gradeCounter
                                   return (
                                     <td style={{ width: '25%' }} key={`subjectCol-${index}`}>
@@ -728,7 +727,7 @@ export default () => {
                                 activeStColumns.map((e, index) => {
                                   const isFirst = index === 0
                                   const isLast = index === (displayCount - 1)
-                                  const showFirst = activeStColumns.length > 1 && isFirst && stCounter > activeStColumns.length
+                                  const showFirst = activeStColumns.length > 1 && isFirst && stCounter > activeStColumns.length && stColumns.length > displayCount
                                   const showLast = activeStColumns.length > 1 && isLast && stColumns.length > stCounter
                                   return (
                                     <td style={{ width: '25%' }} key={`subjectCol-${index}`}>

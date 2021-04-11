@@ -23,7 +23,7 @@ import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentCumu
 
 export default () => {
   const dispatch = useDispatch()
-  const { gradeInput, loading: { gradeLoading, standardGradeLoading } } = useSelector(({ gradeInput, loading }) => ({
+  const { gradeInput, loading: { gradeLoading, gradeEditLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
   }))
 
@@ -705,7 +705,7 @@ export default () => {
       }}
     >
       {
-        (gradeLoading || standardGradeLoading) ? (
+        (gradeLoading || gradeEditLoading) ? (
           <Loading />
         ) : (
           <>
