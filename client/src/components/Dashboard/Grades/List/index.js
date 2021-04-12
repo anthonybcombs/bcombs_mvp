@@ -377,7 +377,8 @@ export default () => {
           grades = [], school_type = '', year_level = '', school_year_start = '',
           school_year_end = '', student_grade_cumulative_id, gpa_final, gpa_sem_2, gpa_sem_1
         } = cumulative_grades.length ? cumulative_grades[0] : {}
-        const sy = school_year_start && school_year_end ? `${school_year_start}-${school_year_end}` : ''
+        const parseYear = (y) => typeof y === 'string' ? parseInt(y) : y
+        const sy = parseYear(school_year_start) && parseYear(school_year_end) ? `${parseYear(school_year_start)}-${parseYear(school_year_end)}` : ''
         const { final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades.length ? grades[0] : []
 
         // Grades reduce
