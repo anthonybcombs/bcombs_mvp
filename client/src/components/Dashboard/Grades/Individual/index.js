@@ -143,7 +143,7 @@ export default ({ child_id }) => {
     }
 
     //Grade Date Filter
-    if (date && !isEqual(date, filterFromHeaders.date)) {
+    if (date) { // !isEqual(date, filterFromHeaders.date)
       const flattenGradeKeys = [...(gradeColumns.number || []), ...(gradeColumns.string || []), 'attendanceSummary']
       const { year, quarter } = date
       const yearSplit = year.split('-')
@@ -374,8 +374,9 @@ export default ({ child_id }) => {
         school_year_end = '', student_grade_cumulative_id, gpa_final, gpa_sem_1, gpa_sem_2
       }) => {
         const { data, labels, quarterValues, schoolYears, stYearValues } = accumulator
-        const sy = school_year_start && school_year_end ? `${school_year_start}-${school_year_end}` : ''
-        const { year_final_grade = '', final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades.length ? grades[0] : []
+        const parseYear = (y) => typeof y === 'string' ? parseInt(y) : y
+        const sy = parseYear(school_year_start) && parseYear(school_year_end) ? `${parseYear(school_year_start)}-${parseYear(school_year_end)}` : ''
+        const { final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades.length ? grades[0] : []
 
         // Grades reduce
         const { values, keys, quarters } = grades.reduce((acc, curr) => {
@@ -384,7 +385,7 @@ export default ({ child_id }) => {
             grade_quarter_1 = '', letter_grade_quarter_1 = '', grade_quarter_2 = '', letter_grade_quarter_2 = '',
             grade_quarter_3 = '', letter_grade_quarter_3 = '', grade_quarter_4 = '', letter_grade_quarter_4 = '',
             attendance_quarter_1_total = '', attendance_quarter_2_total = '', attendance_quarter_3_total = '',
-            attendance_quarter_4_total = ''
+            attendance_quarter_4_total = '', letter_year_final_grade, year_final_grade = ''
           } = curr
 
           const { values = {}, keys = {}, quarters } = acc
@@ -392,8 +393,8 @@ export default ({ child_id }) => {
           return {
             values: {
               ...values,
-              [`${subjectKey}`]: letter_final_grade,
-              [`${subjectKey}Number`]: final_grade,
+              [`${subjectKey}`]: letter_year_final_grade || letter_grade_quarter_4 || letter_grade_quarter_3 ||letter_grade_quarter_2 || letter_grade_quarter_1,
+              [`${subjectKey}Number`]: year_final_grade || grade_quarter_4 || grade_quarter_3 || grade_quarter_2 || grade_quarter_1,
             },
             keys: {
               ...keys,

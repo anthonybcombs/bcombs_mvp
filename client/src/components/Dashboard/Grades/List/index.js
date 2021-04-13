@@ -142,7 +142,7 @@ export default () => {
     }
 
     //Grade Date Filter
-    if (date && !isEqual(date, filterFromHeaders.date)) {
+    if (date) {
       const flattenGradeKeys = [...(gradeColumns.number || []), ...(gradeColumns.string || []), 'attendanceSummary']
       const { year, quarter } = date
       const yearSplit = year.split('-')
