@@ -5,6 +5,7 @@ export default function Applications(
     gradeList: [],
     individualList: null,
     stUpdated: false,
+    gradeUpdated: false,
     addUpdate: null,
     addUpdateGrade: null
   },
@@ -35,12 +36,14 @@ export default function Applications(
     case actionType.ADD_UPDATE_STUDENT_CUMULATIVE_COMPLETED:
       return {
         ...state,
-        addUpdateGrade: action.payload
+        addUpdateGrade: action.payload,
+        gradeUpdated: true
       }
     case actionType.CLEAR_GRADES:
       return {
         ...state,
-        stUpdated: false
+        stUpdated: false,
+        gradeUpdated: false
       }
     default:
       return state;

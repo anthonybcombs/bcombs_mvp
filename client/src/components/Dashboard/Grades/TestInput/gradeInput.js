@@ -651,14 +651,7 @@ export default () => {
   }
 
   useEffect(() => {
-    dispatch(requestGetStudentCumulativeGradeByAppGroup({
-      app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-      app_group_type: 'bcombs'
-    }))
-  }, [])
-
-  useEffect(() => {
-    if (gradeInput.stUpdated) {
+    if (gradeInput.gradeUpdated) {
       dispatch(clearGrades())
       dispatch(requestGetStudentCumulativeGradeByAppGroup({
         app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
@@ -705,7 +698,7 @@ export default () => {
       }}
     >
       {
-        (gradeLoading || gradeEditLoading) ? (
+        (gradeEditLoading) ? (
           <Loading />
         ) : (
           <>

@@ -7,8 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import StandardTest from './standardTest'
 import GradeInput from './gradeInput'
 
-import { requestVendor } from '../../../../redux/actions/Vendors'
-import { getStudentCumulativeGradeByAppGroup  } from '../../../../redux/actions/Grades'
+import { requestGetStudentCumulativeGradeByAppGroup } from '../../../../redux/actions/Grades'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
 
@@ -22,6 +21,7 @@ export default () => {
   const { gradeInput: { gradeList } } = useSelector(({ gradeInput }) => ({
     gradeInput
   }));
+  const dispatch = useDispatch()
 
   const DATE_FORMAT = "MM/dd/yyyy";
 
@@ -92,6 +92,13 @@ export default () => {
     }
     setFormattedSt([...formattedSt]);
   }
+
+  useEffect(() => {
+    dispatch(requestGetStudentCumulativeGradeByAppGroup({
+      app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
+      app_group_type: 'bcombs'
+    }))
+  }, [])
 
   return (
     <GradeInputStyled>

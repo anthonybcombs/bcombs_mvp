@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from '@reach/router'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
 import { uuid } from 'uuidv4'
@@ -573,12 +572,12 @@ export default ({importData = []}) => {
     return null
   }
 
-  useEffect(() => {
-    dispatch(requestGetStudentCumulativeGradeByAppGroup({
-      app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-      app_group_type: 'bcombs'
-    }))
-  }, [])
+  // useEffect(() => {
+  //   dispatch(requestGetStudentCumulativeGradeByAppGroup({
+  //     app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
+  //     app_group_type: 'bcombs'
+  //   }))
+  // }, [])
 
   useEffect(() => {
     if (gradeInput.stUpdated) {
@@ -632,7 +631,7 @@ export default ({importData = []}) => {
       }}
     >
       {
-        (gradeLoading || standardGradeLoading) ? (
+        (standardGradeLoading) ? (
           <Loading />
         ) : (
           <>
