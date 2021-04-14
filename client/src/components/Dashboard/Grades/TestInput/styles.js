@@ -53,41 +53,41 @@ export default styled.div`
 		border-bottom: 1.65px solid #ccc;
 	}
 
-  #gradeListTableWrapper {
+  .gradeListTableWrapper {
 		height: 100%;
     overflow-x: auto;
 		overflow-y: unset;
     // min-height: calc(100vh - 400px);
 		min-height: calc(100vh - 500px);
-    max-height: 200px;
+    max-height: 400px;
   }
-	#gradeListTableWrapper::-webkit-scrollbar {
+	.gradeListTableWrapper::-webkit-scrollbar {
 		width: 4px;
 		height: 4px;
 		opacity: 0;
 		visibility: hidden;
 	}
-	#gradeListTableWrapper::-webkit-scrollbar-track {
+	.gradeListTableWrapper::-webkit-scrollbar-track {
 		border-radius: 10px;
 		transition: 0.5s ease-in-out;
 		background: rgb(243 110 34 / 20%);
 		opacity: 0;
 		visibility: hidden;
 	}
-	#gradeListTableWrapper::-webkit-scrollbar-thumb {
+	.gradeListTableWrapper::-webkit-scrollbar-thumb {
 		background: #f36e22;
 		border-radius: 10px;
 		opacity: 0;
 		visibility: hidden;
 	}
-	#gradeListTableWrapper:hover ::-webkit-scrollbar,
-	#gradeListTableWrapper:hover ::-webkit-scrollbar-track,
-	#gradeListTableWrapper:hover ::-webkit-scrollbar-thumb {
+	.gradeListTableWrapper:hover ::-webkit-scrollbar,
+	.gradeListTableWrapper:hover ::-webkit-scrollbar-track,
+	.gradeListTableWrapper:hover ::-webkit-scrollbar-thumb {
 		opacity: 1;
 		visibility: visible;
 	}
 
-  #gradeInputView-table {
+  .gradeInputView-table {
 		text-align: center;
 		font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
 		border-collapse: collapse;
@@ -95,69 +95,82 @@ export default styled.div`
 		border: 0;
 	}
 
-	#gradeInputView-table thead tr:last-child th {
+	.gradeInputView-table thead tr:last-child th {
 		position: sticky;
 		top: -1px;
 		z-index: 10;
 	}
 
-	#gradeInputView-table tr.has-data {
+	.gradeInputView-table tr.has-data {
 		background-color: #dadde6 !important;
 	}
 
-	#gradeInputView-table th:not(:last-child) {
+	.gradeInputView-table tr.has-data.edit-enabled {
+		background-color: #eff0f3 !important;
+	}
+
+	.gradeInputView-table tr.has-data td div.editCover {
+    z-index: 1;
+    width: 100%;
+    height: 89%;
+    position: absolute;
+    left: 0;
+    top: 0;
+	}
+
+	.gradeInputView-table th:not(:last-child) {
 		position: relative;
 		border-right: 1px solid rgb(255 255 255 / 65%);
 	}
 
-	#gradeInputView-table thead tr:nth-child(2) {
+	.gradeInputView-table thead tr:nth-child(2) {
 		border-top: 1px solid #c0caec;
 	}
 
-	#gradeInputView-table thead tr:nth-child(2) th:nth-child(1) {
+	.gradeInputView-table thead tr:nth-child(2) th:nth-child(1) {
 		min-width: 35px;
 	}
 
-	#gradeInputView-table thead tr:nth-child(2) th >svg {
+	.gradeInputView-table thead tr:nth-child(2) th >svg {
 		position: relative;
     right: -5px;
 		cursor: pointer;
     transition: .15s ease-in-out;
 	}
 
-	#gradeInputView-table thead tr:nth-child(2) th >svg:hover {
+	.gradeInputView-table thead tr:nth-child(2) th >svg:hover {
 		opacity: 0.5;
 	}
 
-	#gradeInputView-table td,
-	#gradeInputView-table th {
+	.gradeInputView-table td,
+	.gradeInputView-table th {
 		border: 0;
 		padding: 12px 3px;
 	}
 
-	#gradeInputView-table tr:nth-child(even) {
+	.gradeInputView-table tr:nth-child(even) {
 		background-color: #f9f9f9;
 	}
 
-	#gradeInputView-table th {
+	.gradeInputView-table th {
 		color: white;
 		text-align: center;
 		background-color: #4B68C5;
 		// min-width: 120px;
 		min-width: 80px;
 	}
-	#gradeInputView-table th.standard {
+	.gradeInputView-table th.standard {
     color: #000;
 		text-align: left;
     font-weight: normal;
 		background: transparent;
 	}
-	#gradeInputView-table th
-	#gradeInputView-table th.th-grades {
+	.gradeInputView-table th
+	.gradeInputView-table th.th-grades {
 		position: relative;
 	}
 
-	#gradeInputView-table th.th-grades .gradesFilter {
+	.gradeInputView-table th.th-grades .gradesFilter {
 		position: absolute;
     right: calc(100% - 80%);
     
@@ -175,13 +188,13 @@ export default styled.div`
     flex-direction: column;
     box-shadow: 0 3px 6px #ddd;
 	}
-	#gradeInputView-table th.th-grades .gradesFilter .header,
-	#gradeInputView-table th.th-grades .gradesFilter label {
+	.gradeInputView-table th.th-grades .gradesFilter .header,
+	.gradeInputView-table th.th-grades .gradesFilter label {
 		font-weight: normal;
 		padding: 3px 0;
 	}
 
-	#gradeInputView-table td input {
+	.gradeInputView-table td input {
 		padding: 4px;
 		border-radius: 3px;
 		border: 1.65px solid #ccc;
@@ -189,76 +202,76 @@ export default styled.div`
 
 		max-width: 72px;
 	}
-	#gradeInputView-table td input:read-only {
+	.gradeInputView-table td input:read-only {
 		border: 0px;
 		background-color: unset;
 	}
-	#gradeInputView-table td input.focus-visible {
+	.gradeInputView-table td input.focus-visible {
 		border-color: #4B68C5;
 		background: rgb(75 104 197 / 10%);
 	}
 
-	#gradeInputView-table td.child_id input {
+	.gradeInputView-table td.child_id input {
 		font-size: 11px;
 	}
 	
-	#gradeInputView-table td:nth-child(2) >input,
-	#gradeInputView-table td:nth-child(3) >input,
-	#gradeInputView-table td:nth-child(4) >input {
+	.gradeInputView-table td:nth-child(2) >input,
+	.gradeInputView-table td:nth-child(3) >input,
+	.gradeInputView-table td:nth-child(4) >input {
 		max-width: unset;
 	}
 
-	#gradeInputView-table td:last-child {
+	.gradeInputView-table td:last-child {
 		display: flex;
     align-items: center;
     justify-content: center;
 	}
-	#gradeInputView-table td:last-child >input {
+	.gradeInputView-table td:last-child >input {
 		max-width: 132px;
     margin-right: .5rem;
 	}
-	#gradeInputView-table td:last-child >svg.attachment {
+	.gradeInputView-table td:last-child >svg.attachment {
 		color: #3e89fe;
 		cursor: pointer;
 		transition: .05s ease-in-out;
 	}
-	#gradeInputView-table td:last-child >svg.attachment:hover {
+	.gradeInputView-table td:last-child >svg.attachment:hover {
 		color: #357be8;
 	}
-	#gradeInputView-table td:last-child >svg.close-icon {
+	.gradeInputView-table td:last-child >svg.close-icon {
 		color: #f44336;
 		cursor: pointer;
 		transition: .05s ease-in-out;
 	}
-	#gradeInputView-table td:last-child >svg.close-icon:hover {
+	.gradeInputView-table td:last-child >svg.close-icon:hover {
 		color: #e2382b;
 	}
-	#gradeInputView-table td.attempt input {
+	.gradeInputView-table td.attempt input {
 		text-align: center;
 	}
 
-	#gradeInputView-table td.year_level input {
+	.gradeInputView-table td.year_level input {
 		width: 50px;
 		text-align: center;
 	}
 
 
-	#gradeInputView-table td.grades svg {
+	.gradeInputView-table td.grades svg {
 		color: #f26e21;
 		cursor: pointer;
 		transition: .05s ease-in-out;
 	}
-	#gradeInputView-table td.grades svg:hover {
+	.gradeInputView-table td.grades svg:hover {
 		color: #e47120;
 	}
 
-	#gradeInputView-table select {
+	.gradeInputView-table select {
     min-width: 100px!important;
 		background-color: unset;
   }
 
 
-	#gradeInputView-table a {
+	.gradeInputView-table a {
 		color: #3e89fe;
 		text-decoration: none;
 	}
@@ -476,6 +489,10 @@ export default styled.div`
     -webkit-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
   }
+
+	.react-datepicker-popper {
+		z-index: 20!important;
+	}
 
   .gradeInputView-header span {
     padding-left: 0.5rem;

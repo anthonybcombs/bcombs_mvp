@@ -11,7 +11,7 @@ import cloneDeep from 'lodash.clonedeep'
 
 export default ({ 
   filterOptions, enableClearFilter, onApplyFilter, // Filter Props
-  onSearch, // Search Props
+  onSearch, searchId = 'search',// Search Props
   columns, rows, // Table props
   schoolYears = [] //For date filter
 }) => {
@@ -108,7 +108,7 @@ export default ({
       <div className='field search-input'>
         <FontAwesomeIcon className='search-icon' icon={faSearch} />
         <input
-          id='search'
+          id={searchId}
           name='search'
           placeholder='Search'
           className='field-input'
@@ -118,7 +118,7 @@ export default ({
             handleApplyFilter(e, true)
           }}
         />
-        <label className='field-label' htmlFor='search'>
+        <label className='field-label' htmlFor={searchId}>
           Search
         </label>
       </div>

@@ -39,12 +39,12 @@ export default () => {
     school_name: { type: 'string', label: 'Name' },
     school_type: { type: 'string', label: 'Type' },
     school_designation: { type: 'string', label: 'Designation' },
-    school_year_start: { type: 'number', label: 'Start' },
-    school_year_end: { type: 'number', label: 'End' },
+    school_year_start: { type: 'string', label: 'Start', isDate: true },
+    school_year_end: { type: 'string', label: 'End', isDate: true },
     school_year_frame: { type: 'string', label: 'Frame' },
     scale: { type: 'number', label: 'Scale' },
     grades: { type: 'object', label: '', sortable: false, filterable: false },
-    help_needed: { type: 'string', label: 'Help Needed' },
+    help_needed: { type: 'string', label: 'Help Needed', sortable: false, filterable: false },
     attachment: { type: 'obj', label: 'Attachment', sortable: false, filterable: false }
   }
 
@@ -131,19 +131,28 @@ export default () => {
   const [editGradeOpen, setEditGradeOpen] = useState(false)
   const [activeGrade, setActiveGrade] = useState('')
   const [editGradeConfirmDialog, setEditGradeConfirmDialog] = useState(false)
+  const [enableEditDialog, setEnableEditDialog] = useState(false)
+  const [selectedRowForEdit, setSelectedRowForEdit] = useState('')
 
   const generateColumnFilters = (passedRows) => {
     let newColumnFilters = {}
-    Object.keys(initialColumns).forEach(key => {
+    Object.entries(initialColumns).forEach(([key, { isDate = false, isArr, filterable = true }]) => {
       newColumnFilters[key] = (passedRows || rows)
         .map(e => e[key])
         .sort()
         .reduce((acc, curr) => {
-          if (!acc.find(e => e.value === curr)) {
-            acc.push({ value: curr, checked: true })
+          if (filterable) {
+            let fcurr = curr || ''
+            const pass = isArr && curr.length === 0
+            if (isDate && curr) {
+              fcurr = parseInt(curr).toString()
+            }
+            if (!acc.find(e => e.value === fcurr) && !pass) {
+              acc.push({ value: fcurr, checked: true })
+            }
           }
           return acc
-        }, [])
+        }, [{ value: '', checked: true, isBlank: true }])
     })
     return newColumnFilters
   }
@@ -175,20 +184,19 @@ export default () => {
     }
 
     // Column filter
-    // newRows = newRows.filter(({ id, ...rest}) => {
-    //   const rowArr = Object.entries(rest)
-    //   return rowArr.filter(([key, value]) => columnFilters[key] && !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
-    // })
     const newColumnFilters = Object.entries(columnFilters)
-    newRows = newRows.filter((row) => {
-      const result = newColumnFilters.filter(([key, value]) => {
-        const comparer = value.filter(e => e.checked).map(e => e.value)
-        return !value.length || comparer.includes(row[key])
+    console.log('depucha', {newColumnFilters, columnFilters})
+    const hasUnChecked = !!newColumnFilters.filter(([key, value]) => value.find(e => !e.checked)).length
+    if (hasUnChecked) {
+      newRows = newRows.filter((row) => {
+        const result = newColumnFilters.filter(([key, value]) => {
+          const comparer = value.filter(e => e.checked).map(e => e.value)
+          const isBlankChecked = value.find(e => e.isBlank).checked || false
+          return (isBlankChecked && !row[key]) || !value.length || comparer.includes(row[key])
+        })
+        return result.length === newColumnFilters.length
       })
-
-      return result.length === newColumnFilters.length
-    })
-    
+    }
     setFilteredRows(newRows)
     setFilterFromHeaders(cloneDeep(filters))
   }
@@ -207,6 +215,21 @@ export default () => {
   const handleEditGrades = (id) => {
     setEditGradeOpen(true)
     setActiveGrade(id)
+  }
+
+  const handleEnableEditDialog = (id) => {
+    setSelectedRowForEdit(id)
+    setEnableEditDialog(true)
+  }
+
+  const handleEnableEditConfirm = () => {
+    setRows(update(rows, {
+      [rows.findIndex(e => e.id === selectedRowForEdit)]: { $merge: { enableEdit: true } }
+    }))
+    setFilteredRows(update(filteredRows, {
+      [filteredRows.findIndex(e => e.id === selectedRowForEdit)]: { $merge: { enableEdit: true } }
+    }))
+    setEnableEditDialog(false)
   }
 
   const handelUpload = (file, index, key) => {
@@ -249,6 +272,7 @@ export default () => {
     const { conditions } = FilterOptionsObj.highlight
     return filteredRows.map((row, index) => {
       const colKeysArr = Object.entries(columns)
+      const enableEdit = row.enableEdit
       const highLight = (rowVal, columnName) => {
         const newFormat = highlightFilters.reduce((acc, { column, condition, value, format }) => {
           const isTrue = column.includes(columnName) && condition && conditions[condition](rowVal, value)
@@ -264,7 +288,11 @@ export default () => {
       }
 
       return (
-        <tr key={`grades-list-${index}`} className={`tr-data${row.student_test_id ? ' has-data' : ''}`}>
+        <tr
+          key={`grades-list-${index}`}
+          className={`tr-data${row.student_grade_cumulative_id ? ' has-data' : ''} ${enableEdit ? 'edit-enabled' : ''}`}
+          onClick={() => !enableEdit ? handleEnableEditDialog(row.id) : {}}
+        >
           <td>
             <input
               type='checkbox'
@@ -284,7 +312,10 @@ export default () => {
               const highlightStyle = ['school_year_start', 'school_year_end'].includes(key) ? highLight(row[key] ? moment(row[key]).format('MM/yyyy') : '', key) : highLight(row[key], key)
 
               return (
-                <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, wordBreak: 'break-word'}} className={`${key}`}>
+                <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, position: 'relative', wordBreak: 'break-word'}} className={`${key}`}>
+                  {
+                    !enableEdit && <div className='editCover' />
+                  }
                   {
                     (
                       ['name', 'child_id', 'year_level'].includes(key)
@@ -294,6 +325,11 @@ export default () => {
                         style={highlightStyle}
                         value={row[key]}
                       />
+                    )
+                  }
+                  {
+                    key === 'help_needed' && (
+                      <div>{`${row[key]}`}</div>
                     )
                   }
                   {
@@ -365,7 +401,7 @@ export default () => {
                     )
                   }
                   {
-                    !['name', 'child_id', 'attachment', 'year_level', 'school_year_start', 'school_year_end', 'grades'].includes(key) && (
+                    !['name', 'child_id', 'attachment', 'year_level', 'school_year_start', 'school_year_end', 'grades', 'help_needed'].includes(key) && (
                       <input
                         style={highlightStyle}
                         type={type === 'number' ? 'number' : 'text'}
@@ -486,7 +522,6 @@ export default () => {
   }
 
   const handleSelectStudent = (data) => {
-    console.log('@@@data', data)
     const newRows = [...rows, ...data]
     setRows(newRows)
     setFilteredRows(newRows)
@@ -523,7 +558,7 @@ export default () => {
           newRow.grades = []
         }
 
-        newRow.grades = e.grades
+        newRow.grades = (e?.grades || [])
           .map(e => {
             let newGrade = Object.entries(gradeKeys)
               .reduce((acc, [key, { type }]) => {
@@ -601,9 +636,9 @@ export default () => {
             (columnFilterSearch ? currColumnFilter.filter(e => e.value.toLowerCase().includes(columnFilterSearch.toLowerCase())) : currColumnFilter)
               .map(({ value, checked }, index) => {
                 const valueID = (value.toString()).replace(/\s/g, '')
-                if (!value) {
-                  return null
-                }
+                // if (!value) {
+                //   return null
+                // }
                 return (
                   <div key={`col-filter-option-${index}`} id={`${index}`} className='filter-option'>
                     <label htmlFor={`${key}_${valueID}_${index}`} className='checkboxContainer'>
@@ -615,7 +650,7 @@ export default () => {
                         onChange={(e) => handlePrepareColumnFilter(e, key)}
                       />
                       <span className='checkmark' />
-                      <span className='labelName'>{value}</span>
+                      <span className='labelName'>{value || '--'}</span>
                     </label>
                   </div>
                 )
@@ -708,12 +743,13 @@ export default () => {
                 filterOptions={['sort', 'highlight']}
                 columns={columns}
                 rows={rows}
+                searchId='gradeInputSearch'
 
                 onApplyFilter={handleApplyFilter}
               />
             </div>
-            <div id='gradeListTableWrapper'>
-              <table id='gradeInputView-table'>
+            <div className='gradeListTableWrapper'>
+              <table className='gradeInputView-table'>
                 <thead>
                   <tr>
                     <th colSpan={5} className='standard'>Grades</th>
@@ -889,6 +925,16 @@ export default () => {
             onConfirm={handleBack}
             title='Confirm leaving page'
             content='You have unsaved changes. Would you like to leave this page?'
+          />
+        )
+      }
+      {
+        enableEditDialog && (
+          <ConfirmDialog
+            onClose={() => setEnableEditDialog(false)}
+            onConfirm={handleEnableEditConfirm}
+            title='Confirm enable row edit'
+            content='Are you sure you want to enable edit for the row that you clicked?'
           />
         )
       }

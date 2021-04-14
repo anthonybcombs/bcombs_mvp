@@ -11,7 +11,6 @@ import { getGradeTestAttempt } from '../../utils'
 export default function index({
   onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, columns, type = 'test_input'
 }) {
-  console.log('zzzz', propRows)
   const isTestInput = type === 'test_input'
   const [selectedGradeTest, setSelectedGradeTest] = useState({})
 
@@ -25,7 +24,7 @@ export default function index({
     
   }
   const formatValue = (item, key) => {
-    const { test_name = 'act', grade_taken = 1, attempt = '', year_level = '' } = selectedGradeTest[item.child_id] || {}
+    const { test_name = 'act', grade_taken = 1, attempt, year_level = '' } = selectedGradeTest[item.child_id] || {}
     const { standardized_test = [], cumulative_grades = [] } = propRows.find(e => e.child_id === item.child_id) || {}
     if (key === 'standardized_test') {
       return (
@@ -49,10 +48,10 @@ export default function index({
       const options = (standardized_test || [])
         .filter(e => (e.grade_taken == grade_taken && e.test_name === test_name))
         .map(e => ({ value: e.attempt, label: e.attempt }))
-
+      const latestAttempt = getGradeTestAttempt(standardized_test, grade_taken, test_name, item.child_id)
       return (
         <CustomSelect
-          value={attempt}
+          value={attempt === undefined ? (latestAttempt - 1) : attempt }
           options={[
             { value: '', label: 'New attempt' },
             ...options
@@ -109,13 +108,13 @@ export default function index({
     if (isTestInput) {
       newData = selected.map(eachId => {
         const { child_id, name, standardized_test } = rows.find(e => e.child_id === eachId) || {}
-        const { test_name = 'act', grade_taken = 1, attempt = 1 } = selectedGradeTest[eachId] || {}
+        const { test_name = 'act', grade_taken = 1, attempt } = selectedGradeTest[eachId] || {}
+        const newAttempt = getGradeTestAttempt([...standardized_test, ...existingRows.filter(e => !e.student_test_id)], grade_taken, test_name, eachId)
+        const latestAttemp = attempt === undefined ? (newAttempt - 1) : attempt
         const existingTestIds = existingRows.filter(e => e.student_test_id).map(e => e.student_test_id)
         const st = populateExistingData
-          ? (standardized_test.find(e => (!existingTestIds.includes(e.student_test_id) && e.grade_taken == grade_taken && e.test_name == test_name && e.attempt == attempt)) || keysObj)
+          ? (standardized_test.find(e => (!existingTestIds.includes(e.student_test_id) && e.grade_taken == grade_taken && e.test_name == test_name && e.attempt == latestAttemp)) || keysObj)
           : keysObj
-  
-        const newAttempt = getGradeTestAttempt([...standardized_test, ...existingRows.filter(e => !e.student_test_id)], grade_taken, test_name, eachId)
   
         return {
           ...st,
@@ -125,6 +124,7 @@ export default function index({
           test_name,
           child_id,
           name,
+          enableEdit: st.student_test_id ? false : true,
           id: uuid()
         }
       })
@@ -149,6 +149,7 @@ export default function index({
           application_type,
           type,
           name,
+          enableEdit: gradesObj.student_grade_cumulative_id ? false : true,
           id: uuid()
         }
       })

@@ -18,6 +18,7 @@ import { getGradeTestAttempt } from '../utils'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
+import roundToNearestMinutesWithOptions from 'date-fns/fp/roundToNearestMinutesWithOptions'
 
 export default ({importData = []}) => {
   const dispatch = useDispatch()
@@ -72,6 +73,8 @@ export default ({importData = []}) => {
   const [deleteDialog, setDeleteDialog] = useState(false)
   const [hasChanged, setHasChanged] = useState(false)
   const [backDialog, setBackDialog] = useState(false)
+  const [enableEditDialog, setEnableEditDialog] = useState(false)
+  const [selectedRowForEdit, setSelectedRowForEdit] = useState('')
 
   const [selectStudentOpen, setSelectStudentOpen] = useState(false)
 
@@ -86,7 +89,7 @@ export default ({importData = []}) => {
             acc.push({ value: curr, checked: true })
           }
           return acc
-        }, [])
+        }, [{ value: '', checked: true, isBlank: true }])
     })
     return newColumnFilters
   }
@@ -118,19 +121,18 @@ export default ({importData = []}) => {
     }
 
     // Column filter
-    // newRows = newRows.filter(({ id, ...rest}) => {
-    //   const rowArr = Object.entries(rest)
-    //   return rowArr.filter(([key, value]) => columnFilters[key] && !!columnFilters[key].find(e => (e.checked && e.value === value))).length === rowArr.length
-    // })
     const newColumnFilters = Object.entries(columnFilters)
-    newRows = newRows.filter((row) => {
-      const result = newColumnFilters.filter(([key, value]) => {
-        const comparer = value.filter(e => e.checked).map(e => e.value)
-        return !value.length || comparer.includes(row[key])
-      })
+    const hasUnChecked = !!newColumnFilters.filter(([key, value]) => value.find(e => !e.checked)).length
+    if (hasUnChecked) {
+      newRows = newRows.filter((row) => {
+        const result = newColumnFilters.filter(([key, value]) => {
+          const comparer = value.filter(e => e.checked).map(e => e.value)
+          return !value.length || comparer.includes(row[key])
+        })
 
-      return result.length === newColumnFilters.length
-    })
+        return result.length === newColumnFilters.length
+      })
+    }
     
     setFilteredRows(newRows)
     setFilterFromHeaders(cloneDeep(filters))
@@ -160,6 +162,21 @@ export default ({importData = []}) => {
     setFilteredRows(update(filteredRows, {
       [index]: { $merge: mergeObj }
     }))
+  }
+
+  const handleEnableEditDialog = (id) => {
+    setSelectedRowForEdit(id)
+    setEnableEditDialog(true)
+  }
+
+  const handleEnableEditConfirm = () => {
+    setRows(update(rows, {
+      [rows.findIndex(e => e.id === selectedRowForEdit)]: { $merge: { enableEdit: true } }
+    }))
+    setFilteredRows(update(filteredRows, {
+      [filteredRows.findIndex(e => e.id === selectedRowForEdit)]: { $merge: { enableEdit: true } }
+    }))
+    setEnableEditDialog(false)
   }
 
   const handelUpload = (file, index, key) => {
@@ -205,6 +222,7 @@ export default ({importData = []}) => {
 
     return filteredRows.map((row, index) => {
       const colKeysArr = Object.entries(columns)
+      const enableEdit = row.enableEdit
       const highLight = (rowVal, columnName) => {
         const newFormat = highlightFilters.reduce((acc, { column, condition, value, format }) => {
           const isTrue = column.includes(columnName) && condition && conditions[condition](rowVal, value)
@@ -220,7 +238,11 @@ export default ({importData = []}) => {
       }
 
       return (
-        <tr key={`grades-list-${index}`} className={`tr-data${row.student_test_id ? ' has-data' : ''}`}>
+        <tr
+          key={`grades-list-${index}`}
+          className={`tr-data${row.student_test_id ? ' has-data' : ''} ${enableEdit ? 'edit-enabled' : ''}`}
+          onClick={() => !enableEdit ? handleEnableEditDialog(row.id) : {}}
+        >
           <td>
             <input
               type='checkbox'
@@ -240,7 +262,10 @@ export default ({importData = []}) => {
               const highlightStyle = key==='month_taken'? highLight(row[key] ? moment(row[key]).format('MM/yyyy') : '', key) : highLight(row[key], key)
               // const inputStyles = highlightStyle.color ? { color: highlightStyle.color } : {}
               return (
-                <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, wordBreak: 'break-word'}} className={`${key}`}>
+                <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, position: 'relative', wordBreak: 'break-word'}} className={`${key}`}>
+                  {
+                    !enableEdit && <div className='editCover' />
+                  }
                   {
                     (
                       ['name', 'child_id', 'attempt'].includes(key) ||
@@ -523,9 +548,9 @@ export default ({importData = []}) => {
             (columnFilterSearch ? currColumnFilter.filter(e => e.value.toLowerCase().includes(columnFilterSearch.toLowerCase())) : currColumnFilter)
               .map(({ value, checked }, index) => {
                 const valueID = (value.toString()).replace(/\s/g, '')
-                if (!value) {
-                  return null
-                }
+                // if (!value) {
+                //   return null
+                // }
                 return (
                   <div key={`col-filter-option-${index}`} id={`${index}`} className='filter-option'>
                     <label htmlFor={`${key}_${valueID}_${index}`} className='checkboxContainer'>
@@ -537,7 +562,7 @@ export default ({importData = []}) => {
                         onChange={(e) => handlePrepareColumnFilter(e, key)}
                       />
                       <span className='checkmark' />
-                      <span className='labelName'>{value}</span>
+                      <span className='labelName'>{value || '--'}</span>
                     </label>
                   </div>
                 )
@@ -655,12 +680,13 @@ export default ({importData = []}) => {
                 filterOptions={['sort', 'highlight']}
                 columns={columns}
                 rows={rows}
+                searchId='testInputSearch'
 
                 onApplyFilter={handleApplyFilter}
               />
             </div>
-            <div id='gradeListTableWrapper'>
-              <table id='gradeInputView-table'>
+            <div className='gradeListTableWrapper'>
+              <table className='gradeInputView-table'>
                 <thead>
                   <tr>
                     <th colSpan={3} className='standard'>Standard Test</th>
@@ -812,6 +838,16 @@ export default ({importData = []}) => {
             onConfirm={handleBack}
             title='Confirm leaving page'
             content='You have unsaved changes. Would you like to leave this page?'
+          />
+        )
+      }
+      {
+        enableEditDialog && (
+          <ConfirmDialog
+            onClose={() => setEnableEditDialog(false)}
+            onConfirm={handleEnableEditConfirm}
+            title='Confirm enable row edit'
+            content='Are you sure you want to enable edit for the row that you clicked?'
           />
         )
       }

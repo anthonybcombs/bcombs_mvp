@@ -379,10 +379,10 @@ export default () => {
         } = cumulative_grades.length ? cumulative_grades[0] : {}
         const parseYear = (y) => typeof y === 'string' ? parseInt(y) : y
         const sy = parseYear(school_year_start) && parseYear(school_year_end) ? `${parseYear(school_year_start)}-${parseYear(school_year_end)}` : ''
-        const { final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades.length ? grades[0] : []
+        const { final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades?.length ? grades[0] : []
 
         // Grades reduce
-        const { values, keys, quarters } = grades.reduce((acc, curr) => {
+        const { values, keys, quarters } = (grades || []).reduce((acc, curr) => {
           const {
             subject = '',
             grade_quarter_1 = '', letter_grade_quarter_1 = '', grade_quarter_2 = '', letter_grade_quarter_2 = '',
