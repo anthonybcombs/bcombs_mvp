@@ -217,7 +217,13 @@ export default ({ child_id }) => {
           <td className='subHeader'>
             <table className='subTable student'>
               <tr>
-                <td style={{ minWidth: '100px', wordBreak: 'break-word'}}>{index === 0 ? name : ''}</td>
+                <td style={{ minWidth: '100px', wordBreak: 'break-word'}}>{
+                  index === 0 ? (
+                    <Link to={`/dashboard/grades/profile/${row.child_id}`}>
+                      {name}
+                    </Link>
+                  ) : null
+                }</td>
                 <td style={{ ...highLight(schoolType, 'schoolType'), minWidth: '100px', wordBreak: 'break-word'}}>{formatValue(schoolType)}</td>
                 <td style={{ ...highLight(gradeLevel, 'gradeLevel'), minWidth: '100px', wordBreak: 'break-word'}}>{formatValue(gradeLevel)}</td>
                 <td style={{ ...highLight(gpa, 'gpa'), minWidth: '50px', wordBreak: 'break-word'}}>{formatValue(gpa)}</td>
@@ -527,7 +533,7 @@ export default ({ child_id }) => {
   console.log('@@@props', { gradeList: gradeInput?.individualList, stYearValues, rows, columnFilters })
   return (
     <GradesStyled>
-      <h2>Grade List Views {year ? `(${year})` : ''}</h2>
+      <h2>Grade Individual View {year ? `(${year})` : ''}</h2>
         <div
           id='gradeListView'
           onClick={() => {

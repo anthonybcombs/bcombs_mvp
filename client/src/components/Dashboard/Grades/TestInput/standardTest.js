@@ -43,7 +43,7 @@ export default ({importData = []}) => {
     school_percentage: { type: 'number', label: '% school' },
     district_percentage: { type: 'number', label: '% district' },
     state_percentage: { type: 'number', label: '% state' },
-    nationality_percentage: { type: 'number', label: '% nationality' },
+    nationality_percentage: { type: 'number', label: '% nationally' },
     attachment: { type: 'obj', label: 'Attachment', sortable: false, filterable: false }
   }
 

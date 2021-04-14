@@ -140,6 +140,11 @@ const AsyncGradeIndividual = Loadable({
   loading: Loading
 });
 
+const AsyncGradeIndividualProfile = Loadable({
+  loader: () => import("./components/Dashboard/Grades/Individual/Profile"),
+  loading: Loading
+});
+
 const AsyncGradeTestInput = Loadable({
   loader: () => import("./components/Dashboard/Grades/TestInput"),
   loading: Loading
@@ -182,6 +187,7 @@ export default function App() {
               <AsyncAttendance path="attendance" />
               <AsyncAttendanceList path="attendance/:vendor_id/:name" />
               <AsyncAttendanceSummary path="attendance/view/:app_group_id" />
+              <AsyncGradeIndividualProfile path="grades/profile/:child_id" />
               <AsyncGradeIndividual path="grades/:child_id" />
               <AsyncGradeTestInput path="grades/input" />
               <AsyncGradesList path="grades" />
