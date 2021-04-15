@@ -126,3 +126,19 @@ export const DELETE_STUDENT_STANDARDIZED_TEST_MUTATION = gql`
   }
 }
 `;
+
+export const UPDATE_STUDENT_INFO_MMUTATION = gql`
+  mutation updateChildInfo($child: StudentInfoInput) {
+    updateChildInfo(child: $child) {
+        firstname
+        lastname
+        age
+        birthdate
+        gender
+        career_goals
+        hobbies
+        accomplishments
+        ch_id
+  }
+}
+`;

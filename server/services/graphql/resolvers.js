@@ -51,7 +51,8 @@ import {
   removeStudentTest,
   getStudentCumulativeByChildId,
   getStudentRecordById,
-  getStudentCumulativeGradeByAppGroupId
+  getStudentCumulativeGradeByAppGroupId,
+  updateChildDetails
 } from "../../api/grades";
 import {
   getVendors,
@@ -1499,6 +1500,10 @@ const resolvers = {
     async deleteStudentStandardizedTest(root,{ studentTestIds = [] }, context) {
       console.log('Student Test Ids', studentTestIds)
       return await removeStudentTest(studentTestIds)
+    },
+    async updateChildInfo(root, { child }, context) {
+      console.log('child', child)
+      return await updateChildDetails(child)
     }
   }
 };

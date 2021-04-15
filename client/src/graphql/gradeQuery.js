@@ -122,6 +122,17 @@ query getStudentRecords(
     $child_id: String
   ) {
     getStudentRecords(child_id: $child_id) {
+      info{
+        firstname
+        lastname
+        age
+        birthdate
+        gender
+        career_goals
+        hobbies
+        accomplishments
+        ch_id
+      }
       cumulative_grades{
         student_grade_cumulative_id
         app_group_id
