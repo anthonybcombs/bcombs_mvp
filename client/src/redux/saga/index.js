@@ -52,7 +52,14 @@ import { gotUserTypes } from "../actions/UserTypes";
 
 import { gotFamilyMembers } from "../actions/FamilyMembers";
 
-import { getGrades } from "../actions/Grades";
+import {
+  getGrades,
+  getStudentCumulativeGradeByAppGroup,
+  getStudentCumulativeGradeByUser,
+  addUpdateStudentStandardizedTest,
+  deleteStudentStandardizedTest,
+  addUpdateStudentCumulative
+} from "../actions/Grades";
 
 import { requestedStatus, removedStatus } from "../actions/Status";
 
@@ -286,9 +293,14 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_UPDATE_ATTENDANCE, updateAttendance);
   yield takeLatest(actionType.REQUEST_ATTENDANCE, getAttendance);
   yield takeLatest(actionType.REQUEST_EVENT_ATTENDANCE, getEventAttendance);
-  yield takeLatest(actionType.REQUEST_VENDOR_APP_GROUPS,getVendorAppGroups)
-  yield takeLatest(actionType.REQUEST_CUSTOM_APPLICATION_BY_VENDOR,getCustomApplicationByVendors);
+  yield takeLatest(actionType.REQUEST_VENDOR_APP_GROUPS,getVendorAppGroups);
   yield takeEvery(actionType.REQUEST_USER_ATTENDANCE_FILTER_CONFIG,updateUserAttendanceFilterConfig);
+  yield takeLatest(actionType.REQUEST_CUSTOM_APPLICATION_BY_VENDOR,getCustomApplicationByVendors)
+  yield takeLatest(actionType.CUMULATIVE_GRADE_BY_APP_GROUP, getStudentCumulativeGradeByAppGroup)
+  yield takeLatest(actionType.CUMULATIVE_GRADE_BY_USER, getStudentCumulativeGradeByUser)
+  yield takeLatest(actionType.ADD_UPDATE_STUDENT_STANDARD_TEST, addUpdateStudentStandardizedTest)
+  yield takeLatest(actionType.DELETE_STUDENT_STANDARDIZED_TEST, deleteStudentStandardizedTest)
+  yield takeLatest(actionType.ADD_UPDATE_STUDENT_CUMULATIVE, addUpdateStudentCumulative)
 }
 const sagaMiddleware = createSagaMiddleware();
 

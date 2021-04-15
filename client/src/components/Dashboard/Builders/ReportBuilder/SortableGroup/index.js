@@ -278,7 +278,7 @@ export default DropTarget([...Object.values(Items.standard), ...Object.values(It
     let destination = props
 
     if (destination.hidden) {
-      destination.onShowHiddenGroup(destination.id)
+      // destination.onShowHiddenGroup(destination.id)
     }
     // if (source.groupType === 'standard' && destination.groupType === 'standard') {
     //   destination.onMergeStandardFields(destination, source)

@@ -5,7 +5,8 @@ export default styled.div`
     position: relative;
     top: 100px;
     width: auto;
-    max-width: 500px;
+    // max-width: 830px;
+    max-width: 940px;
     padding: 0;
   }
   .close {
@@ -21,22 +22,41 @@ export default styled.div`
   }
 
   .modal-container {
-    background-color: #fff;
-    padding: 20px 25px;
-    padding-top: 3rem;
+    padding: 1.5rem;
   }
   .modal-container .tabs {
     display: flex;
-    justify-content: left;
+    justify-content: space-around;
+
+    background: #F9F9F9;
+    padding: 1rem 0 0;
+    margin: -1.5rem -1.5rem 1rem;
+    border-bottom: 1px solid rgb(128 128 128 / 35%);
   }
   .modal-container .tabs div.filterTab {
-    padding: 5px;
-    border: 1px solid #000;
-    background-color: #eee;
+    width: 100%;
+    color: gray;
     cursor: pointer;
+    text-align: center;
+    padding: 5px 5px 12px;
+    transition: .25s ease-in-out;
+  }
+  .modal-container .tabs div.filterTab:hover {
+    color: #f26e21;;
   }
   .modal-container .tabs div.filterTab.active {
-    background-color: #fff;
+    position: relative;
+    color: #f26e21;
+    font-weight: bold;
+  }
+  .modal-container .tabs div.filterTab.active:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: -1px;
+    height: 2.5px;
+    background: #f26e21;
   }
  
   
@@ -84,46 +104,97 @@ export default styled.div`
   .discardAndPreviewBtn:hover {
     background-color: #e26218;
   }
-  .saveAndPreviewBtn {
-    color: #f26e21;
-    border: 1px solid #f26e21;
-    background-color: transparent;
-  }
-  .saveAndPreviewBtn:hover {
-    background-color: rgb(242 110 33 / 5%);
-  }
-  .closeBtn {
+  .cancelBtn {
     color: #f26e21;
     max-width: 80px;
     margin-right: auto;
     border: 1px solid #f26e21;
     background-color: transparent;
   }
-  .closeBtn:hover {
+  .cancelBtn:hover {
     background-color: rgb(242 110 33 / 5%);
   }
-  .cancelBtn {
+
+
+  #filterTable {
     width: 100%;
+  }
+  #filterTable th {
+    font-size: 14px;
+    color: gray;
+    text-indent: .5rem;
+  }
+  #filterTable td >div {
+    margin: 0 .5rem .5rem;
+  }
+  #filterTable td >div .select-field-wrapper {
+    width: 100%;
+  }
+  #filterTable td.actions {
+    max-width: 32px;
+  }
+  #filterTable td.actions .actions-container {
+    display: flex;
+    max-width: 32px;
+  }
+  #filterTable td.actions .actions-container svg {
+    padding: .5rem;
+    // margin-left 1rem;
+    cursor: pointer;
+    border-radius: 100px;
+    transition: .25s ease-in-out;
+  }
+  #filterTable td.actions .actions-container svg:hover {
+    background: #dddddd3d;
+  }
+  #filterTable td.actions .actions-container svg.addIcon {
     color: #f26e21;
-    padding: 10px;
-    max-width: 80px;
-    font-size: 0.8em !important;
-    border-radius: 0px !important;
-    border: 1px solid #eaedf1;
-    background: transparent;
-    transition: .15s ease-in-out;
   }
-  .cancelBtn:hover {
-    font-weight: bold;
-    background: #efefef;
+  #filterTable td.actions .actions-container svg.minusIcon {
+    color: #f44336;
   }
+
+  #filterTable.highlight tr {
+    vertical-align: bottom;
+  }
+  #filterTable.highlight tr td {
+    max-width: 100px;
+  }
+  #filterTable.highlight tr td {
+    margin: 0;
+  }
+  #filterTable.highlight tr td .value {
+    display: flex;
+  }
+  #filterTable.highlight tr td.actions {
+    max-width: 32px;
+  }
+  #filterTable.highlight tr td .value input:nth-child(2) {
+    margin-left: .5rem;
+  }
+  #filterTable.highlight tr td .select-field-wrapper select {
+    min-width: unset;
+  }
+  #filterTable.highlight #multiselectContainerReact div:first-child {
+    border: none;
+  }
+
+  .filter-date .dateSelectWrapper {
+    display: flex;
+    align-items: center
+  }
+  .filter-date .dateSelectWrapper label {
+    width: 120px;
+    margin-top: 10px
+  }
+
 
 
 
 
   @media (max-width: 500px) {
     .modal-content {
-      max-width: 300px;
+      max-width: 450px;
     }
   }
 `;

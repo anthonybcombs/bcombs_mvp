@@ -104,3 +104,24 @@ export const setSubmitFormLoading = value => {
     value
   };
 }
+
+export const setGradeLoading = value => {
+  return {
+    type: actionType.SET_GRADE_LOADING,
+    value
+  };
+}
+
+export const setGradeStandardLoading = value => {
+  return {
+    type: actionType.SET_GRADE_STANDARD_LOADING,
+    value
+  };
+}
+
+export const setGradeEditLoading = value => {
+  return {
+    type: actionType.SET_GRADE_EDIT_LOADING,
+    value
+  };
+}

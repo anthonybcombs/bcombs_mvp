@@ -42,7 +42,19 @@ import {
   removeEvents
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
-import { getGrades } from "../../api/grades";
+import { 
+  addUpdateStudentCumulativeGrades,
+  getStudentCumulativeGradeVendor,
+  getStudentCumulativeGrade,
+  getGrades ,
+  addUpdateStudentTest,
+  getStudentStandardizedTest,
+  removeStudentTest,
+  getStudentCumulativeByChildId,
+  getStudentRecordById,
+  getStudentCumulativeGradeByAppGroupId,
+  updateChildDetails
+} from "../../api/grades";
 import {
   getVendors,
   updateVendor,
@@ -426,6 +438,31 @@ const resolvers = {
       const response = await getCustomApplicationByVendorId(vendor);
       console.log('getCustomApplicationByVendor response', response)
       return response;
+    },
+    async getStudentCumulative(root,{ app_group_id,user_id }, context) {
+      const response = await getStudentCumulativeGrade({
+        app_group_id,
+        user_id
+      });
+      return response;
+    },
+    async getStudentCumulativeGradeByVendor(root,{ vendor_id }, context) {
+      const response = await getStudentCumulativeGradeVendor({
+        vendor_id
+      });
+      return response;
+    },
+    async getStudentCumulativeGradeByUser(root, { child_id }, context) {
+      return await getStudentCumulativeByChildId(child_id)
+    },
+    async getStudentTest(root, { child_id }, context ) {
+      return await getStudentStandardizedTest(child_id)
+    },
+    async getStudentRecords(root, { child_id }, context) {
+      return await getStudentRecordById(child_id)
+    },
+    async getStudentCumulativeGradeByAppGroup(root, { app_group_id, app_group_type }, context) {
+      return await getStudentCumulativeGradeByAppGroupId(app_group_id, app_group_type)
     }
   },
   RootMutation: {
@@ -1457,7 +1494,22 @@ const resolvers = {
 
     async updateUserAttendanceFilterConfig(root, { user_attendance_filter_config }, context) {
         console.log('user_attendance_filter_config',user_attendance_filter_config)
-        return executeUpdateUserAttendanceConfig(user_attendance_filter_config)
+        return executeUpdateUserAttendanceConfig(user_attendance_filter_config);
+    },
+    async addUpdateStudentCumulative(root,{ studentCumulative },context){
+      console.log('ADDPDATE STUDENT CUMULATIVE',studentCumulative)
+      return await addUpdateStudentCumulativeGrades(studentCumulative)
+    },
+    async addUpdateStudentStandardizedTest(root, { studentStandardizedTest },context) {
+        return await addUpdateStudentTest(studentStandardizedTest)
+    },
+    async deleteStudentStandardizedTest(root,{ studentTestIds = [] }, context) {
+      console.log('Student Test Ids', studentTestIds)
+      return await removeStudentTest(studentTestIds)
+    },
+    async updateChildInfo(root, { child }, context) {
+      console.log('child', child)
+      return await updateChildDetails(child)
     }
   }
 };

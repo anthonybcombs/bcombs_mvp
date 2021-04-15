@@ -702,6 +702,112 @@ const inputs = `
         user_id: String
         attendance_filter_config: String
     }
+    input StudentGradeInput {
+        student_grade_cumulative_id: Int
+        class: String
+        teacher_name: String
+        subject: String
+        designation: String
+        grade_quarter_1: Float
+        grade_quarter_2: Float
+        grade_quarter_3: Float
+        grade_quarter_4: Float
+        summer_grade_1: Float
+        summer_grade_2: Float
+        summer_grade_3: Float
+        mid_quarter_remarks: String
+        final_quarter_remarks: String
+        letter_grade_quarter_1: String
+        letter_grade_quarter_2: String
+        letter_grade_quarter_3: String
+        letter_grade_quarter_4: String
+        attendance_quarter_1_total: Int
+        attendance_quarter_2_total: Int
+        attendance_quarter_3_total: Int
+        attendance_quarter_4_total: Int
+        attendance_quarter_1_absent: Int
+        attendance_quarter_2_absent: Int
+        attendance_quarter_3_absent: Int
+        attendance_quarter_4_absent: Int
+        attendance_quarter_1_tardy: Int
+        attendance_quarter_2_tardy: Int
+        attendance_quarter_3_tardy: Int
+        attendance_quarter_4_tardy: Int
+        mid_final_grade: Float
+        final_grade: Float
+        year_final_grade: Float
+        letter_mid_final_grade: String
+        letter_final_grade: String
+        letter_year_final_grade: String
+        help_needed: String
+        help_q1: String
+        help_q2: String
+        help_q3: String
+        help_q4: String
+    }
+
+    input StudentGradeCumulativeInput {
+        student_grade_cumulative_id: Int
+        child_id: String
+        app_id: String
+        app_group_id: String
+        application_type: String
+        type: String
+        year_level: Int
+        school_type: String
+        school_name: String
+        school_year_start: String
+        school_year_end: String
+        school_year_frame: String
+        class_name: String
+        class_type: String
+        scale: Float
+        gpa_sem_1: Float
+        gpa_sem_2: Float
+        gpa_final: Float
+        attachment: FileContentInput
+        grades: [StudentGradeInput]
+        mid_student_rank: Int
+        final_student_rank: Int
+        child_designation: String
+        school_designation: String
+        deleted_grades: [Int]
+        date_created: String
+    }
+
+    input StudentStandardizedTestInput {
+        student_test_id: Int
+        child_id: String
+        test_name: String
+        attempt: Int
+        grade_taken: Int
+        month_taken: String
+        score: Int
+        score_percentage: Float
+        ach_level: Int
+        school_percentage: Float
+        nationality_percentage: Float
+        district_percentage: Float
+        state_percentage: Float
+        attachment: FileContentInput
+        date_created: String
+    }
+
+
+
+    
+    input StudentInfoInput {
+        firstname: String
+        lastname: String
+        gender: String
+        career_goals: String
+        hobbies: String
+        accomplishments: String
+        ch_id: String
+    }
+
+
+
 `;
 const queryTypes = `
     scalar Date
@@ -1392,8 +1498,142 @@ const queryTypes = `
         is_form: Boolean
     }
 
-    
-    
+    type StudentCumulativeGrade {
+        student_grade_cumulative_id: Int
+        app_id: String
+        app_group_id: String
+        app_group_name: String
+        application_type: String
+        child_id: String
+        form_contents: String
+        year_level: Int
+        school_type: String
+        school_name: String
+        school_year_start: String
+        school_year_end: String
+        school_year_frame: String
+        class_name: String
+        class_type: String
+        class_teacher: String
+        scale: Float
+        gpa_sem_1: Float
+        gpa_sem_2: Float
+        gpa_final: Float
+        attachment: String
+        grades: [StudentGrades]
+        firstname: String
+        lastname: String
+        mid_student_rank: Int
+        final_student_rank: Int
+        child_designation: String
+        school_designation: String
+        date_created: String
+    }
+
+    type StudentGrades {
+        student_grade_cumulative_id: Int
+        class: String
+        subject: String
+        teacher_name: String
+        designation: String
+        grade_quarter_1: Float
+        grade_quarter_2: Float
+        grade_quarter_3: Float
+        grade_quarter_4: Float
+        letter_grade_quarter_1: String
+        letter_grade_quarter_2: String
+        letter_grade_quarter_3: String
+        letter_grade_quarter_4: String
+        attendance_quarter_1_total: Int
+        attendance_quarter_2_total: Int
+        attendance_quarter_3_total: Int
+        attendance_quarter_4_total: Int
+        attendance_quarter_1_absent: Int
+        attendance_quarter_2_absent: Int
+        attendance_quarter_3_absent: Int
+        attendance_quarter_4_absent: Int
+        attendance_quarter_1_tardy: Int
+        attendance_quarter_2_tardy: Int
+        attendance_quarter_3_tardy: Int
+        attendance_quarter_4_tardy: Int
+        attendance_quarter_1_present: Int
+        attendance_quarter_2_present: Int
+        attendance_quarter_3_present: Int
+        attendance_quarter_4_present: Int
+        mid_quarter_remarks: String
+        final_quarter_remarks: String
+        summer_grade_1: Float
+        summer_grade_2: Float
+        summer_grade_3: Float
+        quarter_average: Float
+        semestral_1_average: Float
+        semestral_2_average: Float
+        semestral_final: Float
+        final_semestral_1_attendance: Int
+        final_semestral_2_attendance: Int
+        final_quarter_attendance: Int
+        mid_final_grade: Float
+        final_grade: Float
+        year_final_grade: Float
+        letter_mid_final_grade: String
+        letter_final_grade: String
+        letter_year_final_grade: String
+        attendance: Int
+        help_needed: String
+        help_q1: String
+        help_q2: String
+        help_q3: String
+        help_q4: String
+        date_created: String
+    }
+
+    type StudentStandardizedTest {
+        student_test_id: Int
+        child_id: String
+        test_name: String
+        attempt: Int
+        grade_taken: Int
+        month_taken: String
+        score: Int
+        score_percentage: Float
+        ach_level: Int
+        school_percentage: Float
+        nationality_percentage: Float
+        district_percentage: Float
+        state_percentage: Float
+        attachment: String
+        date_created: String
+    }
+
+    type StudentInfo {
+        firstname: String
+        lastname: String
+        age: Int
+        birthdate: Date
+        gender: String
+        career_goals: String
+        hobbies: String
+        accomplishments: String
+        ch_id: String
+    }
+
+    type StudentRecords {
+        standardized_test: [StudentStandardizedTest]
+        cumulative_grades: [StudentCumulativeGrade]
+        info: StudentInfo
+    }
+ 
+    type StudentByGroupSummary {
+        child_id: String
+        firstname: String
+        lastname: String
+        app_group_id: String
+        app_group_name: String
+        app_id: String
+        form_contents: String
+        cumulative_grades: [StudentCumulativeGrade]
+        standardized_test: [StudentStandardizedTest]
+    }
 `;
 
 const mutations = `
@@ -1437,6 +1677,10 @@ const mutations = `
         updateSubmitCustomApplication(application: UpdateCustomApplicationInput): Status
         updateAttendance(attendance: AttendanceInput): [Attendance]
         updateUserAttendanceFilterConfig(user_attendance_filter_config: UserAttendanceFilterConfigInput): User
+        addUpdateStudentCumulative(studentCumulative: [StudentGradeCumulativeInput]): [StudentCumulativeGrade]
+        addUpdateStudentStandardizedTest(studentStandardizedTest: [StudentStandardizedTestInput]): [StudentStandardizedTest]
+        deleteStudentStandardizedTest(studentTestIds:[Int]): [StudentStandardizedTest]
+        updateChildInfo (child: StudentInfoInput): StudentInfo
     }
 `;
 
@@ -1484,6 +1728,12 @@ const queries = `
         getFormAppGroup(form: String!): [VendorAppGroup]
         getAllFormAppGroupsByVendor(vendor: String): [VendorAppGroup]
         getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
+        getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
+        getStudentCumulativeGradeByAppGroup(app_group_id: String, app_group_type: String): [StudentByGroupSummary]
+        getStudentCumulativeGradeByVendor(vendor_id: String): [StudentCumulativeGrade]
+        getStudentCumulativeGradeByUser(child_id: String): [StudentCumulativeGrade]
+        getStudentTest(child_id: String): [StudentStandardizedTest]
+        getStudentRecords(child_id: String): StudentRecords
     }
 `;
 

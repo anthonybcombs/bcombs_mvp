@@ -11,7 +11,10 @@ export default function Loading(
     userAllApplications: false,
     addAdmin: false,
     deleteAdmins: false,
-    addForm: false
+    addForm: false,
+    gradeLoading: false,
+    standardGradeLoading: false,
+    gradeEditLoading: false
   },
   action
 ) {
@@ -90,6 +93,21 @@ export default function Loading(
       return {
         ...state,
         submitForm: action.value
+      }
+    case actionType.SET_GRADE_LOADING: 
+      return {
+        ...state,
+        gradeLoading: action.value
+      }
+    case actionType.SET_GRADE_STANDARD_LOADING:
+      return {
+        ...state,
+        standardGradeLoading: action.value
+      }
+    case actionType.SET_GRADE_EDIT_LOADING:
+      return {
+        ...state,
+        gradeEditLoading: action.value
       }
     default:
       return state;

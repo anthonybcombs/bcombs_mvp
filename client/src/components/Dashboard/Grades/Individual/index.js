@@ -14,9 +14,9 @@ import { FilterOptionsObj } from '../Headers/options'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Loading from '../../../../helpers/Loading.js'
-import { requestGetStudentCumulativeGradeByAppGroup  } from '../../../../redux/actions/Grades'
+import { requestGetStudentCumulativeGradeByUser  } from '../../../../redux/actions/Grades'
 
-export default () => {
+export default ({ child_id }) => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
@@ -26,7 +26,7 @@ export default () => {
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
 
   const initialColumns = {
-    name: { type: 'string', label: 'Name' },
+    name: { type: 'string', label: 'Name', sortable: false, filterable: false },
     schoolType: { type: 'string', label: 'School Type' },
     gradeLevel: { type: 'string', label: 'Grade Level' },
     attendanceSummary: { type: 'string', label: 'Attendance Summary' },
@@ -55,17 +55,18 @@ export default () => {
   const [stCounter, setStCounter] = useState(displayCount)
   
   let activeGradeColumns = gradeColumns[gradeType].slice(gradeCounter - displayCount, gradeCounter)
-  if (activeGradeColumns.length < displayCount && gradeColumns[gradeType].length > displayCount) {
+  if (activeGradeColumns.length < displayCount) {
     activeGradeColumns = gradeColumns[gradeType].slice(gradeColumns[gradeType].length - displayCount, gradeColumns[gradeType].length)
   }
 
   const stColumns = testOptions.map(e => e.value)
   let activeStColumns = stColumns.slice(stCounter - displayCount, stCounter)
-  if (activeStColumns.length < displayCount && stColumns.length > displayCount) {
+  if (activeStColumns.length < displayCount) {
     activeStColumns = stColumns.slice(stColumns.length - displayCount, stColumns.length)
   }
   
   const getActiveColumns = (type, gCols) => ['name', 'schoolType', 'gradeLevel', 'gpa', 'attendanceSummary', ...(gCols || gradeColumns[type]), ...stColumns]
+  
   const generateColumnFilters = (rowData, cols, resetKeys = null) => {
     let newColumnFilters = { ...columnFilters }
     const keys = resetKeys || Object.keys(({ ...columns, ...(cols || {}) }))
@@ -142,7 +143,7 @@ export default () => {
     }
 
     //Grade Date Filter
-    if (date) {
+    if (date) { // !isEqual(date, filterFromHeaders.date)
       const flattenGradeKeys = [...(gradeColumns.number || []), ...(gradeColumns.string || []), 'attendanceSummary']
       const { year, quarter } = date
       const yearSplit = year.split('-')
@@ -216,11 +217,13 @@ export default () => {
           <td className='subHeader'>
             <table className='subTable student'>
               <tr>
-                <td style={{ ...highLight(name, 'name'), minWidth: '100px', wordBreak: 'break-word'}}>
-                  <Link to={`/dashboard/grades/${row.child_id}`}>
-                    {name}
-                  </Link>
-                </td>
+                <td style={{ minWidth: '100px', wordBreak: 'break-word'}}>{
+                  index === 0 ? (
+                    <Link to={`/dashboard/grades/profile/${row.child_id}`}>
+                      {name}
+                    </Link>
+                  ) : null
+                }</td>
                 <td style={{ ...highLight(schoolType, 'schoolType'), minWidth: '100px', wordBreak: 'break-word'}}>{formatValue(schoolType)}</td>
                 <td style={{ ...highLight(gradeLevel, 'gradeLevel'), minWidth: '100px', wordBreak: 'break-word'}}>{formatValue(gradeLevel)}</td>
                 <td style={{ ...highLight(gpa, 'gpa'), minWidth: '50px', wordBreak: 'break-word'}}>{formatValue(gpa)}</td>
@@ -370,19 +373,19 @@ export default () => {
   }
 
   const getDataList = (data) => {
-    return data
-      .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades, standardized_test }) => {
+    const standardized_test = data?.standardized_test || []
+    return (data?.cumulative_grades || [])
+      .reduce((accumulator, { 
+        child_id, firstname, lastname, grades = [], school_type = '', year_level = '', school_year_start = '',
+        school_year_end = '', student_grade_cumulative_id, gpa_final, gpa_sem_1, gpa_sem_2
+      }) => {
         const { data, labels, quarterValues, schoolYears, stYearValues } = accumulator
-        const {
-          grades = [], school_type = '', year_level = '', school_year_start = '',
-          school_year_end = '', student_grade_cumulative_id, gpa_final, gpa_sem_2, gpa_sem_1
-        } = cumulative_grades.length ? cumulative_grades[0] : {}
         const parseYear = (y) => typeof y === 'string' ? parseInt(y) : y
         const sy = parseYear(school_year_start) && parseYear(school_year_end) ? `${parseYear(school_year_start)}-${parseYear(school_year_end)}` : ''
         const { final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades?.length ? grades[0] : []
 
         // Grades reduce
-        const { values, keys, quarters } = (grades || []).reduce((acc, curr) => {
+        const { values, keys, quarters } = grades.reduce((acc, curr) => {
           const {
             subject = '',
             grade_quarter_1 = '', letter_grade_quarter_1 = '', grade_quarter_2 = '', letter_grade_quarter_2 = '',
@@ -428,7 +431,7 @@ export default () => {
         //ST reduce
         const stValues = Object.entries(
           groupBy(
-            standardized_test,
+            standardized_test.filter(e => e.grade_taken === year_level),
             'test_name'
           )
         ).reduce((acc, [key, val = []]) => {
@@ -499,15 +502,12 @@ export default () => {
 
   useEffect(() => {
     handleSetRowAndColumn(gradeType)
-    dispatch(requestGetStudentCumulativeGradeByAppGroup({
-      app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-      app_group_type: 'bcombs'
-    }))
+    dispatch(requestGetStudentCumulativeGradeByUser(child_id))
   }, [])
 
   useEffect(() => {
-    if (gradeInput?.gradeList) {
-      const { data, labels, quarterValues, schoolYears, stYearValues } = getDataList((gradeInput.gradeList || []))
+    if (gradeInput?.individualList) {
+      const { data, labels, quarterValues, schoolYears, stYearValues } = getDataList((gradeInput.individualList || {}))
       const newGradeColumns = {
         string: Object.keys(labels).filter(e => !e.includes('Number')),
         number: Object.keys(labels).filter(e => e.includes('Number'))
@@ -530,10 +530,10 @@ export default () => {
   }, [gradeInput])
 
   const { year = '' } = filterFromHeaders?.date || {}
-  console.log('@@@props', { gradeList: gradeInput?.gradeList, stYearValues, rows, columnFilters })
+  console.log('@@@props', { gradeList: gradeInput?.individualList, stYearValues, rows, columnFilters })
   return (
     <GradesStyled>
-      <h2>Grade List Views {year ? `(${year})` : ''}</h2>
+      <h2>Grade Individual View {year ? `(${year})` : ''}</h2>
         <div
           id='gradeListView'
           onClick={() => {
@@ -546,6 +546,10 @@ export default () => {
               <Loading />
             ) : (
               <>
+                <Link to={'/dashboard/grades'} className='back-btn'>
+                  <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
+                  Back
+                </Link>
                 <div className='gradeListFilter'>
                   <Headers
                     enableClearFilter
@@ -556,12 +560,12 @@ export default () => {
 
                     onApplyFilter={handleApplyFilter}
                   />
-                  <Link
+                  {/* <Link
                     className='applyFilterBtn'
                     to={`/dashboard/grades/input`}
                   >
                     {`Grades & Test Input`}
-                  </Link>
+                  </Link> */}
                   {/* <button
                     className='applyFilterBtn'
                     onClick={() => window.history.push()}
@@ -622,14 +626,6 @@ export default () => {
                             <tr>
                               <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
                                 <span>Name</span>
-                                <FontAwesomeIcon
-                                  icon={faCaretDown}
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleChangeTableFilterColumn('name')
-                                  }}
-                                />
-                                {renderTableFilter('name')}
                               </td>
                               <td style={{ minWidth: '100px', whiteSpace: 'initial' }}>
                                 School Type
@@ -686,7 +682,7 @@ export default () => {
                                 activeGradeColumns.map((e, index) => {
                                   const isFirst = index === 0
                                   const isLast = index === (displayCount - 1)
-                                  const showFirst = activeGradeColumns.length > 1 && isFirst && gradeCounter > activeGradeColumns.length && gradeColumns[gradeType].length > displayCount
+                                  const showFirst = activeGradeColumns.length > 1 && isFirst && gradeCounter > activeGradeColumns.length
                                   const showLast = activeGradeColumns.length > 1 && isLast && gradeColumns[gradeType].length > gradeCounter
                                   return (
                                     <td style={{ width: '25%' }} key={`subjectCol-${index}`}>
@@ -728,7 +724,7 @@ export default () => {
                                 activeStColumns.map((e, index) => {
                                   const isFirst = index === 0
                                   const isLast = index === (displayCount - 1)
-                                  const showFirst = activeStColumns.length > 1 && isFirst && stCounter > activeStColumns.length && stColumns.length > displayCount
+                                  const showFirst = activeStColumns.length > 1 && isFirst && stCounter > activeStColumns.length
                                   const showLast = activeStColumns.length > 1 && isLast && stColumns.length > stCounter
                                   return (
                                     <td style={{ width: '25%' }} key={`subjectCol-${index}`}>

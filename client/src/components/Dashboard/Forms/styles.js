@@ -62,7 +62,7 @@ export default styled.div`
 	}
 
   #formManager {
-    padding: 2rem;
+    padding: 1rem;
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
   }
