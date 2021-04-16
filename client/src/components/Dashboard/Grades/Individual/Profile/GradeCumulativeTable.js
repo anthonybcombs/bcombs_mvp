@@ -4,48 +4,45 @@ import moment from 'moment'
 import update from 'immutability-helper'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
+import CustomSelect from '../../../CustomComponents/CustomSelect'
 
 export default ({ rows: propRows, testOptions }) => {
-  const [enableEdit, setEnableEdit] = useState(false)
+  const gradeTakenOptions = [
+    { value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' },
+    ...Array(9).fill().map((e, i) => ({ value: i+4, label: `${i + 4}th` }))
+  ]
+
+  const highSchoolOptions = [
+    { value: 9, label: 'Freshman' }, { value: 10, label: 'Sophomore' }, { value: 11, label: 'Junior' }, { value: 12, label: 'Senior' }
+  ]
+
   const [rows, setRows] = useState([])
+  const [enableEdit, setEnableEdit] = useState(false)
+  const [cumGradeOptions, setCumGradeOptions] = useState([])
 
   const formatValue = (row, key) => {
     switch(key) {
-      case 'test_name':
-        return (testOptions.find(e => e.value === row.test_name) || {}).label || '--'
-      case 'month_taken':
-        return row.month_taken ? moment(new Date(row.month_taken)).format('MMMM YYYY') : '--'
-      case 'score_percentage':
-      case 'school_percentage':
-      case 'district_percentage':
-      case 'state_percentage':
-      case 'nationality_percentage':
-        return enableEdit ? (
-            <input
-              type='number'
-              value={row[key] || ''}
-              onChange={(e) => handleInputChange(e, row.id, key)}
-            />
-          ) : (
-            row[key] ? `${row[key]}%` : '--'
-          )
+      case 'year_level':
+        if (row.year_level > 8) {
+          return (highSchoolOptions.find(e => e.value == row.year_level) || {}).label || '--'
+        }
+        return (gradeTakenOptions.find(g => g.value === row.year_level) || {}).label || '--'
       default:
         return ''
     }
   }
 
   const columns = {
-    test_name: { type: 'string', label: 'Test name', func: formatValue, editable: false },
-    month_taken: { type: 'string', label: 'Taken', func: formatValue, editable: false },
-    attempt: { type: 'number', label: 'Attempt', editable: false },
-    grade_taken: { type: 'number', label: 'Grades', editable: false },
-    score: { type: 'number', label: 'Score' },
-    ach_level: { type: 'number', label: 'Ach level' },
-    score_percentage: { type: 'number', label: '%', func: formatValue },
-    school_percentage: { type: 'number', label: '% school', func: formatValue },
-    district_percentage: { type: 'number', label: '% district', func: formatValue },
-    state_percentage: { type: 'number', label: '% state', func: formatValue },
-    nationality_percentage: { type: 'number', label: '% nationally', func: formatValue }
+    year_level: { type: 'string', label: 'Grade', func: formatValue, editable: false },
+    year: { type: 'string', label: 'Year', func: formatValue, editable: false },
+    gpa_final: { type: 'number', label: 'Beg Cum', editable: false },
+    gpa_sem_1: { type: 'number', label: 'Sem 1', editable: false },
+    mid_student_rank: { type: 'number', label: 'Rank' },
+    gpa_sem_2: { type: 'number', label: 'Sem 2' },
+    final_student_rank: { type: 'number', label: 'Rank' },
+    attendance: { type: 'number', label: 'Attendance', func: formatValue },
+    school_type: { type: 'number', label: 'School Type' },
+    school_name: { type: 'number', label: 'School' },
   }
 
   const handleInputChange = ({ target: { value } }, id, key) => {
@@ -54,31 +51,32 @@ export default ({ rows: propRows, testOptions }) => {
     }))
   }
 
+  const handleSelectCumGrade = ({ target: { value } }) => {
+    const row = propRows.find(e => e.student_grade_cumulative_id == value)
+    setRows(row ? [row] : [])
+  }
+
   useEffect(() => {
     if (propRows && propRows.length) {
-      setRows(propRows.map(e => ({ ...e, id: uuid() })))
+      setRows([propRows[0]])
+      setCumGradeOptions(propRows.map(e => {
+        const gradeNumth = (gradeTakenOptions.find(g => g.value === e.year_level) || {}).label || ''
+        return {
+          value: e.student_grade_cumulative_id, label: `${gradeNumth} Grade Cumulative`
+        }
+      }))
     }
   }, [propRows])
-
+  console.log('zzzzzzzzzz', { cumGradeOptions, rows })
   return (
     <div className='standardTestTable'>
       <div>
-        Standard Test
-        {/* {
-          !enableEdit ? (
-            <button
-              onClick={() => setEnableEdit(true)}
-            >
-              <FontAwesomeIcon className='back-icon' icon={faPencilAlt} />Edit
-            </button>
-          ) : (
-            <button
-              onClick={() => setEnableEdit(false)}
-            >
-              <FontAwesomeIcon className='back-icon' icon={faCheck} />Save
-            </button>
-          )
-        } */}
+        <CustomSelect
+          value={rows[0]?.student_grade_cumulative_id || ''}
+          options={cumGradeOptions}
+          placeholder='Select Grade Level'
+          onChange={handleSelectCumGrade}
+        />
       </div>
       <table>
         <thead>
