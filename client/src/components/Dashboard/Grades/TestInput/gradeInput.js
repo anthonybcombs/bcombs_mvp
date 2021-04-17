@@ -21,7 +21,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default () => {
+export default ({importData = []}) => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading, gradeEditLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
@@ -714,6 +714,12 @@ export default () => {
       setHasChanged(false)
     }
   }, [rows])
+
+  useEffect(() => {
+    console.log('importData', importData);
+    setRows(importData);
+    setFilteredRows(importData);
+  }, [importData]);
 
   const colArr = Object.entries(columns)
   const gColumns = {
