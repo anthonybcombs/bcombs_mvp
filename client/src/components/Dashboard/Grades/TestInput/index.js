@@ -337,7 +337,7 @@ export default () => {
         <div className='action right'>
           <CSVLink
             id="gradeExportBtn"
-            filename='StandartTest Export.csv'
+            filename='Standard Test Export.csv'
             data={exporTestData}
           >
             <button
