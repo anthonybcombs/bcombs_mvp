@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { maxBy } from 'lodash'
 import cloneDeep from 'lodash.clonedeep'
-import orderBy from 'lodash.orderby'
 import { Link } from '@reach/router'
 import Collapsible from 'react-collapsible'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faPencilAlt, faCheck, faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
-import moment from 'moment'
 
 import GradesStyled from './styles'
 import ProfileImg from '../../../../../images/defaultprofile.png'
 import Loading from '../../../../../helpers/Loading.js'
 import StandardTestTable from './StandardTestTable'
 import GradeCumulativeTable from './GradeCumulativeTable'
+import IndividualGrades from './IndividualGrades'
 
 import { requestGetStudentCumulativeGradeByUser  } from '../../../../../redux/actions/Grades'
 
@@ -30,9 +30,9 @@ export default ({ child_id }) => {
   const [personalPaneOpen, setPersonalPaneOpen] = useState(false)
   const [familylPaneOpen, setFamilyPaneOpen] = useState(false)
 
-//   useEffect(() => {
-//     dispatch(requestGetStudentCumulativeGradeByUser(child_id))
-//   }, [])
+  useEffect(() => {
+    dispatch(requestGetStudentCumulativeGradeByUser(child_id))
+  }, [])
 
   useEffect(() => {
     if (gradeInput?.individualList) {
@@ -40,8 +40,9 @@ export default ({ child_id }) => {
     }
   }, [gradeInput])
 
-  console.log('@DATA', data)
   const { firstname, lastname, hobbies, career_goals, accomplishments } = data?.info || {}
+  const { school_name, year_level, gpa_final, gpa_sem_1, gpa_sem_2, final_student_rank, mid_student_rank } = maxBy((data?.cumulative_grades || []), 'year_level') || {}
+  console.log('@DATA', {...data })
   return (
     <GradesStyled>
       <h2>Grades and Tracking</h2>
@@ -80,10 +81,10 @@ export default ({ child_id }) => {
                       open lazyRender
                     >
                       <div>
-                        <div>School: John Hopkins</div>
-                        <div>Grade: 11</div>
-                        <div>Cum GPA: 3.2</div>
-                        <div>Class Rank: 3/302</div>
+                        <div>School: {school_name || '--'}</div>
+                        <div>Grade: {year_level || '--'}</div>
+                        <div>Cum GPA: {gpa_final || gpa_sem_1 || gpa_sem_2 || '--'}</div>
+                        <div>Class Rank: {final_student_rank || mid_student_rank || '--'}</div>
                       </div>
                     </Collapsible>
                     {/* <Collapsible
@@ -112,7 +113,7 @@ export default ({ child_id }) => {
                         </div>
                       </div>
                     </Collapsible> */}
-                    <Collapsible
+                    {/* <Collapsible
                       trigger={(
                         <div>
                           <span>Family</span>
@@ -126,7 +127,7 @@ export default ({ child_id }) => {
                       <div>
                         --
                       </div>
-                    </Collapsible>
+                    </Collapsible> */}
                   </div>
                   <div className='right'>
                     <StandardTestTable
@@ -134,6 +135,9 @@ export default ({ child_id }) => {
                       testOptions={testOptions}
                     />
                     <GradeCumulativeTable
+                      rows={data?.cumulative_grades || []}
+                    />
+                    <IndividualGrades
                       rows={data?.cumulative_grades || []}
                     />
                   </div>

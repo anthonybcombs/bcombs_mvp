@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { uuid } from 'uuidv4'
 import moment from 'moment'
 import update from 'immutability-helper'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import CustomSelect from '../../../CustomComponents/CustomSelect'
 
 export default ({ rows: propRows, testOptions }) => {
@@ -27,6 +24,13 @@ export default ({ rows: propRows, testOptions }) => {
           return (highSchoolOptions.find(e => e.value == row.year_level) || {}).label || '--'
         }
         return (gradeTakenOptions.find(g => g.value === row.year_level) || {}).label || '--'
+      case 'year':
+        return `${moment(row.school_year_start).format('YY')}/${moment(row.school_year_end).format('YY')}`
+      case 'beg_cum':
+        const prevYL = row.year_level - 1
+        return (rows.find(e => e.year_level === prevYL) || {}).gpa_final || '--'
+      case 'attendance':
+        return (row?.grades || [])[0]?.final_quarter_attendance || '--'
       default:
         return ''
     }
@@ -35,7 +39,7 @@ export default ({ rows: propRows, testOptions }) => {
   const columns = {
     year_level: { type: 'string', label: 'Grade', func: formatValue, editable: false },
     year: { type: 'string', label: 'Year', func: formatValue, editable: false },
-    gpa_final: { type: 'number', label: 'Beg Cum', editable: false },
+    beg_cum: { type: 'number', label: 'Beg Cum', editable: false },
     gpa_sem_1: { type: 'number', label: 'Sem 1', editable: false },
     mid_student_rank: { type: 'number', label: 'Rank' },
     gpa_sem_2: { type: 'number', label: 'Sem 2' },
@@ -67,7 +71,7 @@ export default ({ rows: propRows, testOptions }) => {
       }))
     }
   }, [propRows])
-  console.log('zzzzzzzzzz', { cumGradeOptions, rows })
+
   return (
     <div className='standardTestTable'>
       <div>

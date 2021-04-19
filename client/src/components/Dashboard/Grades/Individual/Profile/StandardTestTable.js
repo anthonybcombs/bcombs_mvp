@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { uuid } from 'uuidv4'
 import moment from 'moment'
 import update from 'immutability-helper'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 
 export default ({ rows: propRows, testOptions }) => {
   const [enableEdit, setEnableEdit] = useState(false)

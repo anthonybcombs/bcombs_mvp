@@ -847,7 +847,7 @@ export default ({importData = []}) => {
             onClose={() => setEnableEditDialog(false)}
             onConfirm={handleEnableEditConfirm}
             title='Confirm enable row edit'
-            content='Are you sure you want to enable edit for the row that you clicked?'
+            content='Are you sure you want to edit this row?'
           />
         )
       }
