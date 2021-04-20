@@ -389,7 +389,6 @@ export default ({importData = []}) => {
   }
 
   const handleSetActiveColumnKey = (key = '') => {
-    handleMagicScroll(!!key)
     setActiveColumnKey(key)
     setColumnFilterSearch('')
   }
@@ -399,16 +398,6 @@ export default ({importData = []}) => {
       ...columnFilters,
       [key]: columnFilters[key].map(e => ({ ...e, checked }))
     })
-  }
-
-  const handleMagicScroll = (hide = false) => {
-    if (hide) {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
-      document.getElementById('gradeInputView').style = 'overflow: hidden'
-    } else {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
-      document.getElementById('gradeInputView').style = 'overflow: unset'
-    }
   }
 
   const handleChangeTableFilterColumn = (key) => {
@@ -513,6 +502,7 @@ export default ({importData = []}) => {
         return newRow
       })
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
+    setHasChanged(false)
   }
 
   const renderTableFilter = (key) => {

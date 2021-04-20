@@ -295,7 +295,7 @@ export default ({ child_id }) => {
 
   const renderTableFilter = (key, isGrade = false) => {
     if (activeColumnKey && activeColumnKey === key) {
-      const currColumnFilter = columnFilters[key]
+      const currColumnFilter = orderBy(columnFilters[key], ['value'], ['asc'])
       return (
         <div
           style={{ position: 'absolute', backgroundColor: '#fff', zIndex: 2 }}
