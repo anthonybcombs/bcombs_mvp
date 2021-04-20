@@ -52,7 +52,7 @@ export default ({ child_id }) => {
               <Loading />
             ) : (
               <>
-                <Link to={`/dashboard/grades/${child_id}`} className='back-btn'>
+                <Link to={`/dashboard/grades/individual/${child_id}`} className='back-btn'>
                   <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
                   Back
                 </Link>
@@ -65,7 +65,7 @@ export default ({ child_id }) => {
                     </div>
                     <Link
                       className='applyFilterBtn'
-                      to={`/dashboard/grades/input`}
+                      to={`/dashboard/grades/input/${child_id}`}
                     >
                         {`Grades & Test Input`}
                     </Link>

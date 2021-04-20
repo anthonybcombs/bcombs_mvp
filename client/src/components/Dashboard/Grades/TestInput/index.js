@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import StandardTest from './standardTest'
 import GradeInput from './gradeInput'
 
-import { requestGetStudentCumulativeGradeByAppGroup } from '../../../../redux/actions/Grades'
+import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByUser } from '../../../../redux/actions/Grades'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
 
@@ -17,8 +17,7 @@ import { format } from "date-fns";
 import ImportTestGradeDialog from './ImportTestGradeDialog';
 import { formatError } from 'graphql'
 
-export default () => {
-
+export default ({ child_id }) => {
   const { gradeInput: { gradeList } } = useSelector(({ gradeInput }) => ({
     gradeInput
   }));
@@ -360,6 +359,7 @@ export default () => {
       <div id='gradeInputView'>
         <StandardTest
           importData={formattedSt}
+          childId={child_id}
         />
         <div className='gradeInputView-header' style={{'marginTop': '1rem'}}>
           <div className='action left'></div>
@@ -387,6 +387,7 @@ export default () => {
         </div>
         <GradeInput 
           importData={formattedGrades}
+          childId={child_id}
         />
       </div>
      </div>

@@ -217,7 +217,7 @@ export default () => {
             <table className='subTable student'>
               <tr>
                 <td style={{ ...highLight(name, 'name'), minWidth: '100px', wordBreak: 'break-word'}}>
-                  <Link to={`/dashboard/grades/${row.child_id}`}>
+                  <Link to={`/dashboard/grades/individual/${row.child_id}`}>
                     {name}
                   </Link>
                 </td>

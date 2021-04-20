@@ -188,7 +188,8 @@ export default function App() {
               <AsyncAttendanceList path="attendance/:vendor_id/:name" />
               <AsyncAttendanceSummary path="attendance/view/:app_group_id" />
               <AsyncGradeIndividualProfile path="grades/profile/:child_id" />
-              <AsyncGradeIndividual path="grades/:child_id" />
+              <AsyncGradeIndividual path="grades/individual/:child_id" />
+              <AsyncGradeTestInput path="grades/input/:child_id" />
               <AsyncGradeTestInput path="grades/input" />
               <AsyncGradesList path="grades" />
             </AsycDashboard>

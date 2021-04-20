@@ -20,7 +20,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 import roundToNearestMinutesWithOptions from 'date-fns/fp/roundToNearestMinutesWithOptions'
 
-export default ({importData = []}) => {
+export default ({importData = [], childId}) => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading, standardGradeLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
@@ -475,7 +475,8 @@ export default ({importData = []}) => {
   }
 
   const handleBack = () => {
-    window.location.replace('/dashboard/grades')
+    const backUrl = childId ? `/dashboard/grades/individual/${childId}` : '/dashboard/grades'
+    window.location.replace(backUrl)
   }
 
   const handleSave = () => {
@@ -638,6 +639,8 @@ export default ({importData = []}) => {
     latest_attempt: { label: 'Latest Attempt', type: 'number', isFunc: true },
   }
 
+  const selectStudentRows = childId ? (gradeInput?.gradeList || []).filter(e => e.child_id === childId) : gradeInput?.gradeList
+
   return (
     <div
       className = 'standardTestTable'
@@ -798,7 +801,7 @@ export default ({importData = []}) => {
       {
         selectStudentOpen && (
           <SelectStudentDialog
-            rows={gradeInput?.gradeList || []}
+            rows={selectStudentRows}
             columns={stColumns}
             existingRows={rows}
             gradeTakenOptions={gradeTakenOptions}

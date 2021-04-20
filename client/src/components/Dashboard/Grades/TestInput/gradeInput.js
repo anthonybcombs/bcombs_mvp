@@ -21,7 +21,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({importData = []}) => {
+export default ({importData = [], childId}) => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading, gradeEditLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
@@ -718,7 +718,7 @@ export default ({importData = []}) => {
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
 
-  console.log('@RRRRRRRROWS', { rows, filteredRows })
+  const selectStudentRows = childId ? (gradeInput?.gradeList || []).filter(e => e.child_id === childId) : gradeInput?.gradeList
 
   return (
     <div
@@ -879,7 +879,7 @@ export default ({importData = []}) => {
       {
         selectStudentOpen && (
           <SelectStudentDialog
-            rows={gradeInput?.gradeList || []}
+            rows={selectStudentRows}
             columns={gColumns}
             existingRows={rows}
             gradeTakenOptions={gradeTakenOptions}
