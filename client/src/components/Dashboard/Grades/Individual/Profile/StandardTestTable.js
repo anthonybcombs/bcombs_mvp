@@ -59,9 +59,9 @@ export default ({ rows: propRows, testOptions }) => {
   }, [propRows])
 
   return (
-    <div className='standardTestTable'>
-      <div>
-        Standard Test
+    <div className='rightContainer'>
+      <div className='rightContainerHeader'>
+        <span className='header'>Standard Test</span>
         {/* {
           !enableEdit ? (
             <button
@@ -78,58 +78,62 @@ export default ({ rows: propRows, testOptions }) => {
           )
         } */}
       </div>
-      <table>
-        <thead>
-          <tr>
+
+      <div className='tableWrapper'>
+        <table className='profileTrackingTable standardTestTable'>
+          <thead>
+            <tr>
+              {
+                Object.values(columns).map(({ label }, index) => {
+                  return (<th key={`st-th-${index}`}>{label}</th>)
+                })
+              }
+            </tr>
+          </thead>
+          <tbody>
             {
-              Object.values(columns).map(({ label }, index) => {
-                return (<th key={`st-th-${index}`}>{label}</th>)
-              })
-            }
-          </tr>
-        </thead>
-        <tbody>
-          {
-            rows.length > 0 ? (
-              rows.map((row, index) => {
-                return (
-                  <tr key={`tr-ct-${index}`}>
-                    {
-                      Object.entries(columns).map(([key, { func = null, type, editable = true }]) => {
-                        return (
-                          <td key={`td-ct-${key}-${index}`}>
-                            {
-                              func ? (
-                                func(row, key)
-                              ) : (
-                                (enableEdit && editable) ? (
-                                  <input
-                                    type={type === 'number' ? 'number' : 'text'}
-                                    value={row[key]}
-                                    onChange={(e) => handleInputChange(e, row.id, key)}
-                                  />
+              rows.length > 0 ? (
+                rows.map((row, index) => {
+                  return (
+                    <tr key={`tr-ct-${index}`}>
+                      {
+                        Object.entries(columns).map(([key, { func = null, type, editable = true }]) => {
+                          return (
+                            <td key={`td-ct-${key}-${index}`}>
+                              {
+                                func ? (
+                                  func(row, key)
                                 ) : (
-                                  row[key] || '--'
+                                  (enableEdit && editable) ? (
+                                    <input
+                                      type={type === 'number' ? 'number' : 'text'}
+                                      value={row[key]}
+                                      onChange={(e) => handleInputChange(e, row.id, key)}
+                                    />
+                                  ) : (
+                                    row[key] || '--'
+                                  )
                                 )
-                              )
-                            }
-                          </td>
-                        )
-                      })
-                    }
+                              }
+                            </td>
+                          )
+                        })
+                      }
+                    </tr>
+                  )
+                })
+              ) : (
+                  <tr>
+                    <td colSpan={Object.keys(columns).length}>
+                      No Records
+                    </td>
                   </tr>
                 )
-              })
-            ) : (
-                <tr>
-                  <td colSpan={Object.keys(columns).length}>
-                    No Records
-                  </td>
-                </tr>
-              )
-          }
-        </tbody>
-      </table>
+            }
+          </tbody>
+        </table>
+      </div>
+      
     </div>
   )
 }

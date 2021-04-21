@@ -46,106 +46,108 @@ export default ({ child_id }) => {
   return (
     <GradesStyled>
       <h2>Grades and Tracking</h2>
-        <div id='gradesAndTracking'>
-          {
-            gradeLoading ? (
-              <Loading />
-            ) : (
-              <>
-                <Link to={`/dashboard/grades/individual/${child_id}`} className='back-btn'>
-                  <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
-                  Back
-                </Link>
 
-                <div className='content'>
-                  <div className='left'>
-                    <div className='profile'>
-                      <img src={ProfileImg} />
-                      <div>{firstname} {lastname}</div>
-                    </div>
+      <div id='gradesAndTracking'>
+        {
+          gradeLoading ? (
+            <Loading />
+          ) : (
+            <>
+              <Link to={`/dashboard/grades/individual/${child_id}`} className='back-btn'>
+                <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
+                Back
+              </Link>
+              <div className='content'>
+                <div className='left'>
+                  <div className='profile'>
+                    <img src={ProfileImg} />
+                    <div className='profile-name'>{firstname} {lastname}</div>
+                  </div>
+                  <div className='customLink'>
                     <Link
                       className='applyFilterBtn'
                       to={`/dashboard/grades/input/${child_id}`}
                     >
                         {`Grades & Test Input`}
                     </Link>
-                    <Collapsible
-                      trigger={(
-                        <div>
-                          <span>School</span>
-                          <FontAwesomeIcon className='back-icon' icon={schoolPaneOpen ? faCaretDown : faCaretUp} />
-                        </div>
-                      )}
-                      onOpen={() => setSchoolPaneOpen(false)}
-                      onClose={() => setSchoolPaneOpen(true)}
-                      open lazyRender
-                    >
-                      <div>
-                        <div>School: {school_name || '--'}</div>
-                        <div>Grade: {year_level || '--'}</div>
-                        <div>Cum GPA: {gpa_final || gpa_sem_1 || gpa_sem_2 || '--'}</div>
-                        <div>Class Rank: {final_student_rank || mid_student_rank || '--'}</div>
-                      </div>
-                    </Collapsible>
-                    {/* <Collapsible
-                      trigger={(
-                        <div>
-                          <span>Personal</span>
-                          <FontAwesomeIcon className='back-icon' icon={personalPaneOpen ? faCaretDown : faCaretUp} />
-                        </div>
-                      )}
-                      onOpen={() => setPersonalPaneOpen(false)}
-                      onClose={() => setPersonalPaneOpen(true)}
-                      open lazyRender
-                    >
-                      <div>
-                        <div>
-                          <div>Interests / hobbies:</div>
-                          <div>{hobbies || '--'}</div>
-                        </div>
-                        <div>
-                          <div>Career:</div>
-                          <div>{career_goals || '--'}</div>
-                        </div>
-                        <div>
-                          <div>Accomplishments:</div>
-                          <div>{accomplishments || '--'}</div>
-                        </div>
-                      </div>
-                    </Collapsible> */}
-                    {/* <Collapsible
-                      trigger={(
-                        <div>
-                          <span>Family</span>
-                          <FontAwesomeIcon className='back-icon' icon={familylPaneOpen ? faCaretDown : faCaretUp} />
-                        </div>
-                      )}
-                      onOpen={() => setFamilyPaneOpen(false)}
-                      onClose={() => setFamilyPaneOpen(true)}
-                      open lazyRender
-                    >
-                      <div>
-                        --
-                      </div>
-                    </Collapsible> */}
                   </div>
-                  <div className='right'>
-                    <StandardTestTable
-                      rows={data?.standardized_test || []}
-                      testOptions={testOptions}
-                    />
-                    <GradeCumulativeTable
-                      rows={data?.cumulative_grades || []}
-                    />
-                    <IndividualGrades
-                      rows={data?.cumulative_grades || []}
-                    />
-                  </div>
+                  <Collapsible
+                    trigger={(
+                      <div className='CollapsibleHeader'>
+                        <span>School</span>
+                        <FontAwesomeIcon className='back-icon' icon={schoolPaneOpen ? faCaretDown : faCaretUp} />
+                      </div>
+                    )}
+                    onOpen={() => setSchoolPaneOpen(false)}
+                    onClose={() => setSchoolPaneOpen(true)}
+                    open lazyRender
+                  >
+                    <div className='CollapsibleContent'>
+                      <div className='CollapsibleContentList'><p className='label'>School:</p> <p className='value'>{school_name || '--'}</p></div>
+                      <div className='CollapsibleContentList'><p className='label'>Grade:</p> <p className='value'>{year_level || '--'}</p></div>
+                      <div className='CollapsibleContentList'><p className='label'>Cum GPA:</p>  <p className='value'>{gpa_final || gpa_sem_1 || gpa_sem_2 || '--'}</p></div>
+                      <div className='CollapsibleContentList'><p className='label'>Class Rank:</p>  <p className='value'>{final_student_rank || mid_student_rank || '--'}</p></div>
+                    </div>
+                  </Collapsible>
+                  {/* <Collapsible
+                    trigger={(
+                      <div>
+                        <span>Personal</span>
+                        <FontAwesomeIcon className='back-icon' icon={personalPaneOpen ? faCaretDown : faCaretUp} />
+                      </div>
+                    )}
+                    onOpen={() => setPersonalPaneOpen(false)}
+                    onClose={() => setPersonalPaneOpen(true)}
+                    open lazyRender
+                  >
+                    <div>
+                      <div>
+                        <div>Interests / hobbies:</div>
+                        <div>{hobbies || '--'}</div>
+                      </div>
+                      <div>
+                        <div>Career:</div>
+                        <div>{career_goals || '--'}</div>
+                      </div>
+                      <div>
+                        <div>Accomplishments:</div>
+                        <div>{accomplishments || '--'}</div>
+                      </div>
+                    </div>
+                  </Collapsible> */}
+                  {/* <Collapsible
+                    trigger={(
+                      <div>
+                        <span>Family</span>
+                        <FontAwesomeIcon className='back-icon' icon={familylPaneOpen ? faCaretDown : faCaretUp} />
+                      </div>
+                    )}
+                    onOpen={() => setFamilyPaneOpen(false)}
+                    onClose={() => setFamilyPaneOpen(true)}
+                    open lazyRender
+                  >
+                    <div>
+                      --
+                    </div>
+                  </Collapsible> */}
                 </div>
-              </>
-            )
-          }
-        </div>
+                <div className='right'>
+                  <StandardTestTable
+                    rows={data?.standardized_test || []}
+                    testOptions={testOptions}
+                  />
+                  <GradeCumulativeTable
+                    rows={data?.cumulative_grades || []}
+                  />
+                  <IndividualGrades
+                    rows={data?.cumulative_grades || []}
+                  />
+                </div>
+              </div>
+            </>
+          )
+        }
+      </div>
     </GradesStyled>
   )
 }

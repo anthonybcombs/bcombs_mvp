@@ -5,74 +5,76 @@ import update from 'immutability-helper'
 const TABLE = (data) => {
   const { rows, columns, year_level, school_year_start, school_year_end, gradeTakenOptions, enableEdit, handleInputChange, attendanceColumns } = data
   return (
-    <table>
-      <thead>
-        <tr>
-          <th colSpan={Object.keys(columns).length}>
-            {(gradeTakenOptions.find(e => e.value === year_level) || {}).label}
-            Grade
-            ({moment(school_year_start).format('YY')}/{moment(school_year_end).format('YY')})
-          </th>
-        </tr>
-        <tr>
+    <div className='tableWrapper'>
+      <table className='profileTrackingTable individualGradesTable'>
+        <thead>
+          <tr>
+            <th colSpan={Object.keys(columns).length}>
+              {(gradeTakenOptions.find(e => e.value === year_level) || {}).label}
+              Grade
+              ({moment(school_year_start).format('YY')}/{moment(school_year_end).format('YY')})
+            </th>
+          </tr>
+          <tr>
+            {
+              Object.values(columns).map(({ label }, index) => {
+                return (<th key={`st-th-${index}`}>{label}</th>)
+              })
+            }
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Attendance</td>
+            <td></td>
+            {
+              attendanceColumns.map(e => (
+                <td>--</td>
+              ))
+            }
+          </tr>
           {
-            Object.values(columns).map(({ label }, index) => {
-              return (<th key={`st-th-${index}`}>{label}</th>)
-            })
-          }
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Attendance</td>
-          <td></td>
-          {
-            attendanceColumns.map(e => (
-              <td>--</td>
-            ))
-          }
-        </tr>
-        {
-          rows.length > 0 ? (
-            rows.map((row, index) => {
-              return (
-                <tr key={`tr-ct-${index}`}>
-                  {
-                    Object.entries(columns).map(([key, { func = null, type, editable = true }]) => {
-                      return (
-                        <td key={`td-ct-${key}-${index}`}>
-                          {
-                            func ? (
-                              func(row, key)
-                            ) : (
-                              (enableEdit && editable) ? (
-                                <input
-                                  type={type === 'number' ? 'number' : 'text'}
-                                  value={row[key]}
-                                  onChange={(e) => handleInputChange(e, row.id, key)}
-                                />
+            rows.length > 0 ? (
+              rows.map((row, index) => {
+                return (
+                  <tr key={`tr-ct-${index}`}>
+                    {
+                      Object.entries(columns).map(([key, { func = null, type, editable = true }]) => {
+                        return (
+                          <td key={`td-ct-${key}-${index}`}>
+                            {
+                              func ? (
+                                func(row, key)
                               ) : (
-                                row[key] || '--'
+                                (enableEdit && editable) ? (
+                                  <input
+                                    type={type === 'number' ? 'number' : 'text'}
+                                    value={row[key]}
+                                    onChange={(e) => handleInputChange(e, row.id, key)}
+                                  />
+                                ) : (
+                                  row[key] || '--'
+                                )
                               )
-                            )
-                          }
-                        </td>
-                      )
-                    })
-                  }
+                            }
+                          </td>
+                        )
+                      })
+                    }
+                  </tr>
+                )
+              })
+            ) : (
+                <tr>
+                  <td colSpan={Object.keys(columns).length}>
+                    No Records
+                  </td>
                 </tr>
               )
-            })
-          ) : (
-              <tr>
-                <td colSpan={Object.keys(columns).length}>
-                  No Records
-                </td>
-              </tr>
-            )
-        }
-      </tbody>
-    </table>
+          }
+        </tbody>
+      </table>
+    </div>
   )
 }
 
@@ -133,13 +135,15 @@ export default ({ rows: propRows, testOptions }) => {
   }, [propRows])
 
   return (
-    <div className='standardTestTable'>
+    <>
       {
         rows.map(({ grades, ...rest }, gi) => {
           return (
             <>
-              <div key={`individual-grades-${gi}`}>
-                <div>Individual Grades (Semester)</div>
+              <div key={`individual-grades-${gi}`} className='rightContainer'>
+                <div className='rightContainerHeader'>
+                  <span className='header'>Individual Grades (Semester)</span>
+                </div>
                 <TABLE
                   {...rest}
                   rows={grades}
@@ -151,8 +155,10 @@ export default ({ rows: propRows, testOptions }) => {
                 />
               </div>
 
-              <div>
-                <div>Individual Grades (Quarter)</div>
+              <div className='rightContainer'>
+                <div className='rightContainerHeader'>
+                  <span className='header'>Individual Grades (Quarter)</span>
+                </div>
                 <TABLE
                   {...rest}
                   rows={grades}
@@ -167,6 +173,6 @@ export default ({ rows: propRows, testOptions }) => {
           )
         })
       }
-    </div>
+    </>
   )
 }
