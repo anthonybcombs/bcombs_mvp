@@ -834,7 +834,7 @@ const AuditTrail = props => {
               gpa_cumulative_year: applicationDetails.child.gpa_cumulative_year ? applicationDetails.child.gpa_cumulative_year : "",
               gpa_cumulative_q1: applicationDetails.child.gpa_cumulative_q1 ? applicationDetails.child.gpa_cumulative_q1 : "",
               gpa_cumulative_q2: applicationDetails.child.gpa_cumulative_q2 ? applicationDetails.child.gpa_cumulative_q2 : "",
-              gpa_cumulative_q3: applicationDetails.child.gpa_cumulative_q3 ? appliapplicationDetailscation.child.gpa_cumulative_q3 : "",
+              gpa_cumulative_q3: applicationDetails.child.gpa_cumulative_q3 ? applicationDetails.child.gpa_cumulative_q3 : "",
               gpa_cumulative_q4: applicationDetails.child.gpa_cumulative_q4 ? applicationDetails.child.gpa_cumulative_q4 : "",
               act_scores: [],
               sat_scores: [],
