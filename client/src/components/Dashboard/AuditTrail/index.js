@@ -550,7 +550,6 @@ const AuditTrail = props => {
     return (
       <a 
         href=""
-        target="_blank" 
         onClick={(e) => {
           e.preventDefault();
 
@@ -738,7 +737,7 @@ const AuditTrail = props => {
       
         if (application) {
           return (
-            <a target="_blank" href={"menteeprofile/" + application.id}>
+            <a href={"menteeprofile/" + application.id}>
               <span>
                 {application.child?.firstname + " " + application.child?.lastname}
               </span>
@@ -791,7 +790,6 @@ const AuditTrail = props => {
     return (
       <a 
         href=""
-        target="_blank" 
         onClick={(e) => {
           e.preventDefault();
           const applicationDetails = application.details ? JSON.parse(application.details) : {};

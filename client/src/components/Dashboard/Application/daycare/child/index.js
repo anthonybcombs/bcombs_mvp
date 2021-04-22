@@ -154,7 +154,6 @@ export default function index({
               isFormHistory && handleSelectLatestApplication && (
                 <a 
                   href=""
-                  target="_blank" 
                   onClick={(e) => {
                     e.preventDefault();
                     handleSelectLatestApplication()

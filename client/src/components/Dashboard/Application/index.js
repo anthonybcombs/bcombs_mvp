@@ -1311,7 +1311,6 @@ export default function index() {
     return (
       <a 
         href=""
-        target="_blank" 
         onClick={(e) => {
           e.preventDefault();
           setApplicationFormKey(new Date().toISOString());
@@ -1735,23 +1734,20 @@ export default function index() {
                     selectedVendor.id2
                   }/daycare` : `/application/${
                     selectedVendor.id2
-                  }`}
-
-                  target="_blank">
+                  }`}>
                   <FontAwesomeIcon icon={faFileSignature} />
                   <span>Application</span>
                 </a>
               ) : selectedForm && selectedForm != "default" ? (
                 <a
                   href={`/form/${selectedForm}`}
-                  target="_blank"
                 >
                   <FontAwesomeIcon icon={faFileSignature} />
                   <span>Application</span>
                 </a>
               ) : (
                 <a
-                  target="_blank"
+                  
                 >
                   <FontAwesomeIcon icon={faFileSignature} />
                   <span>Application</span>
