@@ -28,7 +28,7 @@ export default ({ rows: propRows, testOptions }) => {
         return `${moment(row.school_year_start).format('YY')}/${moment(row.school_year_end).format('YY')}`
       case 'beg_cum':
         const prevYL = row.year_level - 1
-        return (rows.find(e => e.year_level === prevYL) || {}).gpa_final || '--'
+        return (propRows.find(e => e.year_level === prevYL) || {}).gpa_final || '--'
       case 'attendance':
         return (row?.grades || [])[0]?.final_quarter_attendance || '--'
       default:
@@ -39,7 +39,7 @@ export default ({ rows: propRows, testOptions }) => {
   const columns = {
     year_level: { type: 'string', label: 'Grade', func: formatValue, editable: false },
     year: { type: 'string', label: 'Year', func: formatValue, editable: false },
-    beg_cum: { type: 'number', label: 'Beg Cum', editable: false },
+    beg_cum: { type: 'number', label: 'Beg Cum', func: formatValue, editable: false },
     gpa_sem_1: { type: 'number', label: 'Sem 1', editable: false },
     mid_student_rank: { type: 'number', label: 'Rank' },
     gpa_sem_2: { type: 'number', label: 'Sem 2' },

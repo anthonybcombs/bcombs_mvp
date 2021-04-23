@@ -249,7 +249,17 @@ export default styled.div`
     background: #e47120;
   }
 
-
+	.back-btn {
+		width: 50px;
+		color: #3e89fe;
+		display: flex;
+		align-items: center;
+		padding-bottom: 1rem;
+		text-decoration: none;
+	}
+	.back-btn svg {
+		padding-right: 5px;
+	}
 
 
 

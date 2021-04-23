@@ -20,8 +20,9 @@ import { getGradeTestAttempt } from '../utils'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
+import { requestGetApplicationHistory } from '../../../../redux/actions/Application'
 
-export default ({importData = [], childId}) => {
+export default ({ importData = [], childId, requestList }) => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading, gradeEditLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
@@ -677,10 +678,7 @@ export default ({importData = [], childId}) => {
   useEffect(() => {
     if (gradeInput.gradeUpdated) {
       dispatch(clearGrades())
-      dispatch(requestGetStudentCumulativeGradeByAppGroup({
-        app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-        app_group_type: 'bcombs'
-      }))
+      requestList()
     }
   }, [gradeInput])
 
@@ -718,7 +716,7 @@ export default ({importData = [], childId}) => {
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
 
-  const selectStudentRows = childId ? (gradeInput?.gradeList || []).filter(e => e.child_id === childId) : gradeInput?.gradeList
+  const selectStudentRows = gradeInput?.gradeList
 
   return (
     <div
@@ -880,6 +878,7 @@ export default ({importData = [], childId}) => {
         selectStudentOpen && (
           <SelectStudentDialog
             rows={selectStudentRows}
+            childId={childId}
             columns={gColumns}
             existingRows={rows}
             gradeTakenOptions={gradeTakenOptions}

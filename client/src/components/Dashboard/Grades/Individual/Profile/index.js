@@ -6,6 +6,8 @@ import { Link } from '@reach/router'
 import Collapsible from 'react-collapsible'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faPencilAlt, faCheck, faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
+import { useLocation } from '@reach/router';
+import { parse } from 'query-string';
 
 import GradesStyled from './styles'
 import ProfileImg from '../../../../../images/defaultprofile.png'
@@ -22,6 +24,8 @@ export default ({ child_id }) => {
     gradeInput, loading
   }))
 
+  const queryLocation = useLocation();
+	const { group_id, group_type } = parse(queryLocation.search)
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
 
@@ -53,7 +57,7 @@ export default ({ child_id }) => {
             <Loading />
           ) : (
             <>
-              <Link to={`/dashboard/grades/individual/${child_id}`} className='back-btn'>
+              <Link to={`/dashboard/grades/individual/${child_id}?group_id=${group_id}&group_type=${group_type}`} className='back-btn'>
                 <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
                 Back
               </Link>
@@ -66,7 +70,7 @@ export default ({ child_id }) => {
                   <div className='customLink'>
                     <Link
                       className='applyFilterBtn'
-                      to={`/dashboard/grades/input/${child_id}`}
+                      to={`/dashboard/grades/input/${child_id}?group_id=${group_id}&group_type=${group_type}`}
                     >
                         {`Grades & Test Input`}
                     </Link>

@@ -184,7 +184,7 @@ export default function App() {
               <AsynBuilder path="builder/:form_id/:type" />
               <AsynBuilder path="builder" />
               <AsyncForms path="forms" />
-              <AsyncAttendance path="attendance" />
+              <AsyncAttendance path="studentdata" />
               <AsyncAttendanceList path="attendance/:vendor_id/:name" />
               <AsyncAttendanceSummary path="attendance/view/:app_group_id" />
               <AsyncGradeIndividualProfile path="grades/profile/:child_id" />

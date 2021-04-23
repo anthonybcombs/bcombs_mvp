@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import GradeInputStyled from './styles'
-import Loading from '../../../../helpers/Loading.js'
-
 import { useSelector, useDispatch } from 'react-redux'
+import { useLocation } from '@reach/router';
+import { parse } from 'query-string';
 
 import StandardTest from './standardTest'
 import GradeInput from './gradeInput'
@@ -22,7 +22,8 @@ export default ({ child_id }) => {
     gradeInput
   }));
   const dispatch = useDispatch()
-
+  const queryLocation = useLocation();
+	const { group_id, group_type, return_page } = parse(queryLocation.search)
   const DATE_FORMAT = "MM/dd/yyyy";
 
   let exporTestData = [];
@@ -212,11 +213,21 @@ export default ({ child_id }) => {
     setFormattedSt([...formattedSt]);
   }
 
+  const requestList = () => {
+    // dispatch(requestGetStudentCumulativeGradeByAppGroup({
+    //   app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
+    //   app_group_type: 'bcombs'
+    // }))
+    if (group_id && group_type) {
+      dispatch(requestGetStudentCumulativeGradeByAppGroup({
+        app_group_id: group_id,
+        app_group_type: group_type
+      }))
+    }
+  }
+
   useEffect(() => {
-    dispatch(requestGetStudentCumulativeGradeByAppGroup({
-      app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-      app_group_type: 'bcombs'
-    }))
+    requestList()
   }, [])
 
   const handleFormattedGrades = (fields, size) => {
@@ -360,6 +371,10 @@ export default ({ child_id }) => {
         <StandardTest
           importData={formattedSt}
           childId={child_id}
+          groupId={group_id}
+          groupType={group_type}
+          returnPage={return_page}
+          requestList={requestList}
         />
         <div className='gradeInputView-header' style={{'marginTop': '1rem'}}>
           <div className='action left'></div>
@@ -388,6 +403,7 @@ export default ({ child_id }) => {
         <GradeInput 
           importData={formattedGrades}
           childId={child_id}
+          requestList={requestList}
         />
       </div>
      </div>

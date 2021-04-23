@@ -7,6 +7,8 @@ import { Link } from '@reach/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
+import { useLocation } from '@reach/router';
+import { parse } from 'query-string';
 
 import GradesStyled from './styles'
 import Headers from '../Headers'
@@ -22,6 +24,8 @@ export default ({ child_id }) => {
     gradeInput, loading
   }))
 
+  const queryLocation = useLocation();
+	const { group_id, group_type } = parse(queryLocation.search)
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
 
@@ -219,7 +223,7 @@ export default ({ child_id }) => {
               <tr>
                 <td style={{ minWidth: '100px', wordBreak: 'break-word'}}>{
                   index === 0 ? (
-                    <Link to={`/dashboard/grades/profile/${row.child_id}`}>
+                    <Link to={`/dashboard/grades/profile/${row.child_id}?group_id=${group_id}&group_type=${group_type}`}>
                       {name}
                     </Link>
                   ) : null
@@ -531,6 +535,7 @@ export default ({ child_id }) => {
 
   const { year = '' } = filterFromHeaders?.date || {}
   console.log('@@@props', { gradeList: gradeInput?.individualList, stYearValues, rows, columnFilters })
+  const { firstname, lastname, ch_id } = gradeInput?.individualList?.info || {}
   return (
     <GradesStyled>
       <h2>Grade Individual View {year ? `(${year})` : ''}</h2>
@@ -546,7 +551,7 @@ export default ({ child_id }) => {
               <Loading />
             ) : (
               <>
-                <Link to={'/dashboard/grades'} className='back-btn'>
+                <Link to={`/dashboard/grades?group_id=${group_id}&group_type=${group_type}`} className='back-btn'>
                   <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
                   Back
                 </Link>
@@ -761,7 +766,21 @@ export default ({ child_id }) => {
                       </tr>
                         {
                           (rows.length === 0)
-                            ? (<tr><td colSpan={getActiveColumns('number').length}>No records.</td><td></td></tr>)
+                            ? (
+                              <table>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <Link to={`/dashboard/grades/profile/${ch_id}?group_id=${group_id}&group_type=${group_type}`}>
+                                        {firstname} {lastname}
+                                      </Link>
+                                    </td>
+                                    <td />
+                                    <td colSpan={2}>No records.</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            )
                             : renderTableData()
                         }
                     </tbody>

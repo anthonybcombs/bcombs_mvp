@@ -151,7 +151,6 @@ export default function index(props) {
 	
 		const currentForm = formList.find(form => form.vendor === vendors[0].id);
 	  const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
-
 		return filteredGroups.map((group, index) => {
 			let count = group.size;
 			const formGroup =  group.form &&  form.formList.find(formItem => formItem.form_id === group.form );
@@ -167,16 +166,25 @@ export default function index(props) {
 							: 'Bcombs Form'}
 					</td>
 					<td>
-						{formGroup && formGroup.form_contents 
-							? <Link to={`${formGroup.vendor}/custom?formId=${formGroup.form_id}`}>{group.name}</Link>
-							: 	<Link to={'' + selectedVendor?.id2 + '/' + group.name}>{group.name}</Link>
-						}
+						{group.name}
+						<div>{classCount} / {count}</div>
 					</td>
-					<td>{count}</td>
-					<td>{availableCount}</td>
-					<td>{classCount}</td>
 					<td>
-						<Link to={'view/' + group?.app_grp_id}>View</Link>
+						{formGroup && formGroup.form_contents 
+							? <Link to={`'/dashboard/attendance/${formGroup.vendor}/custom?formId=${formGroup.form_id}`}>Input</Link>
+							: <Link to={'/dashboard/attendance/' + selectedVendor?.id2 + '/' + group.name}>Input</Link>
+						} /
+						<Link to={'/dashboard/attendance/view/' + group?.app_grp_id}>View</Link>
+					</td>
+					<td>
+						{formGroup && formGroup.form_contents 
+							? <Link to={'/dashboard/grades/input?group_id=' + formGroup?.form_id + '&group_type=forms'}>Input</Link>
+							: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>Input</Link>
+						} /
+						{formGroup && formGroup.form_contents 
+							? <Link to={'/dashboard/grades?group_id=' + formGroup?.form_id + '&group_type=forms'}>View</Link>
+							: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>View</Link>
+						}
 					</td>
 				</tr>
 			);
@@ -308,49 +316,64 @@ export default function index(props) {
 		return totalClassCount;
 	};
 
-
 	return (
 		<AttendanceSummaryStyled>
-			<h2>Attendance</h2>
+			<h2>Student Data</h2>
 			<div id="attendance">
 				<table id="groups">
 					<tbody>
 						<tr>
-							{/* <th>Form</th> */}
 							<th>Form</th>
-							<th>Class</th>
-							<th>Count</th>
-							<th>Available</th>
-							<th>Class Count</th>
-							<th>Action</th>
+							<th>
+								<div>Class</div>
+								<div>Count / Total</div>
+							</th>
+							<th>Attendance</th>
+							<th>Grades</th>
 						</tr>
-						<tr>
+						{/* <tr>
 							<td></td>
 							<td>Total</td>
 							<td>{getTotalCount()}</td>
 							<td>{getTotalAvailable()}</td>
 							<td>{getTotalClassCount()}</td>
 							<td></td>
-						</tr>
+						</tr> */}
 
 						<tr>
 							<td>Bcombs Form</td>
-							<td><Link to={'' + selectedVendor?.id2 + '/all'}>All</Link></td>
-							<td>{getDefaultTotalCount()}</td>
-							<td>{getDefaultTotalAvailable()}</td>
-							<td>{getDefaultClassCount()}</td>
-							<td>{<Link to={`view/${ selectedVendor?.id2}?type=all`}>View</Link>}</td>
+							<td>
+								All
+								<div>{getDefaultClassCount()} / {getDefaultTotalCount()}</div>
+							</td>
+							{/* <td>{getDefaultTotalAvailable()}</td> */}
+							<td>
+								<Link to={'/dashboard/attendance/' + selectedVendor?.id2 + '/all'}>Input</Link> /
+								<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link>
+							</td>
+							<td>
+								--
+								{/* <Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>Input</Link> /
+								<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link> */}
+							</td>
 						</tr>
 						{form.formList.map(item => {
 						
 							return (
 								<tr>
 									<td>{item.form_contents?.formTitle}</td>
-									<td>{<Link to={`${item.vendor}/custom?formId=${item.form_id}`}>All</Link>}</td>
-									<td>{getTotalCountByForm(item.form_id)}</td>
-									<td>{getTotalAvailableByForm(item.form_id)}</td>
-									<td>{getTotalClassCountByForm(item.form_id)}</td>
-									<td>{<Link to={`view/${item.vendor}?type=custom&formId=${item.form_id}`}>View</Link>}</td>
+									<td>
+										All
+										<div>{getTotalClassCountByForm(item.form_id)} / {getTotalCountByForm(item.form_id)}</div>
+									</td>
+									<td>
+										<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}`}>Input</Link> /
+										<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}`}>View</Link>
+									</td>
+									<td>
+										<Link to={`/dashboard/grades/input?group_id=${item.form_id}&group_type=forms`}>Input</Link> /
+										<Link to={`/dashboard/grades?group_id=${item.form_id}&group_type=forms`}>View</Link>
+									</td>
 								</tr>
 							);
 						})}

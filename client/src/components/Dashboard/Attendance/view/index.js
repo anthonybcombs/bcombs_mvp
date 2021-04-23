@@ -999,7 +999,7 @@ export default function index(props) {
 		<AttendanceSummaryStyled>
 			<h2>Attendance Summary</h2>
 			<div id="attendance-summary">
-				<Link to={'/dashboard/attendance'} className="back-btn">
+				<Link to={'/dashboard/studentdata'} className="back-btn">
 					<FontAwesomeIcon className="back-icon" icon={faAngleLeft} />
 					Back
 				</Link>

@@ -20,7 +20,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 import roundToNearestMinutesWithOptions from 'date-fns/fp/roundToNearestMinutesWithOptions'
 
-export default ({importData = [], childId}) => {
+export default ({ importData = [], childId, groupId, groupType, returnPage, requestList }) => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading, standardGradeLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
@@ -475,7 +475,11 @@ export default ({importData = [], childId}) => {
   }
 
   const handleBack = () => {
-    const backUrl = childId ? `/dashboard/grades/individual/${childId}` : '/dashboard/grades'
+    const backUrl = childId
+      ? `/dashboard/grades/profile/${childId}?group_id=${groupId}&group_type=${groupType}`
+      : (!returnPage && (groupId || groupType))
+        ? `/dashboard/studentdata`
+        : `/dashboard/grades?group_id=${groupId}&group_type=${groupType}`
     window.location.replace(backUrl)
   }
 
@@ -588,20 +592,10 @@ export default ({importData = [], childId}) => {
     return null
   }
 
-  // useEffect(() => {
-  //   dispatch(requestGetStudentCumulativeGradeByAppGroup({
-  //     app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-  //     app_group_type: 'bcombs'
-  //   }))
-  // }, [])
-
   useEffect(() => {
     if (gradeInput.stUpdated) {
       dispatch(clearGrades())
-      dispatch(requestGetStudentCumulativeGradeByAppGroup({
-        app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-        app_group_type: 'bcombs'
-      }))
+      requestList()
     }
   }, [gradeInput])
 
@@ -639,7 +633,7 @@ export default ({importData = [], childId}) => {
     latest_attempt: { label: 'Latest Attempt', type: 'number', isFunc: true },
   }
 
-  const selectStudentRows = childId ? (gradeInput?.gradeList || []).filter(e => e.child_id === childId) : gradeInput?.gradeList
+  const selectStudentRows = gradeInput?.gradeList
 
   return (
     <div
@@ -804,6 +798,7 @@ export default ({importData = [], childId}) => {
             rows={selectStudentRows}
             columns={stColumns}
             existingRows={rows}
+            childId={childId}
             gradeTakenOptions={gradeTakenOptions}
             testOptions={testOptions}
             attempOptions={attempOptions}
