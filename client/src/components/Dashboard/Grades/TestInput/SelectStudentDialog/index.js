@@ -9,7 +9,7 @@ import CustomSelect from '../../../CustomComponents/CustomSelect'
 import { getGradeTestAttempt } from '../../utils'
 
 export default function index({
-  onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, columns, type = 'test_input'
+  onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, columns, type = 'test_input', childId
 }) {
   const isTestInput = type === 'test_input'
   const [selectedGradeTest, setSelectedGradeTest] = useState({})
@@ -161,25 +161,24 @@ export default function index({
   }
 
   useEffect(() => {
-    setRows(
-      propRows.flatMap(row => {
-        const { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades, app_id, app_group_id, application_type, type } = row
-        return {
-          name: `${firstname} ${lastname}`,
-          firstname,
-          lastname,
-          child_id,
-          app_id,
-          app_group_id,
-          application_type,
-          type,
-          standardized_test,
-          cumulative_grades
-        }
-      })
-    )
+    const newRows = propRows.flatMap(row => {
+      const { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades, app_id, app_group_id, application_type, type } = row
+      return {
+        name: `${firstname} ${lastname}`,
+        firstname,
+        lastname,
+        child_id,
+        app_id,
+        app_group_id,
+        application_type,
+        type,
+        standardized_test,
+        cumulative_grades
+      }
+    })
+    setRows(newRows)
   }, [propRows])
-
+  console.log('awit', selected)
   return ReactDOM.createPortal(
     <SelectStudentDialogStyled
       data-testid='app-big-calendar-create-modal'
@@ -215,6 +214,7 @@ export default function index({
             }
 
             selectable
+            defaultSelectedIds={childId ? [childId] : []}
             onSelect={(ids) => setSelected(ids)}
           />
         </div>

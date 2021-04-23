@@ -20,8 +20,9 @@ import { getGradeTestAttempt } from '../utils'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
+import { requestGetApplicationHistory } from '../../../../redux/actions/Application'
 
-export default () => {
+export default ({ importData = [], childId, requestList }) => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading, gradeEditLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
@@ -433,7 +434,6 @@ export default () => {
   }
 
   const handleSetActiveColumnKey = (key = '') => {
-    handleMagicScroll(!!key)
     setActiveColumnKey(key)
     setColumnFilterSearch('')
   }
@@ -443,16 +443,6 @@ export default () => {
       ...columnFilters,
       [key]: columnFilters[key].map(e => ({ ...e, checked }))
     })
-  }
-
-  const handleMagicScroll = (hide = false) => {
-    if (hide) {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
-      document.getElementById('gradeInputView').style = 'overflow: hidden'
-    } else {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
-      document.getElementById('gradeInputView').style = 'overflow: unset'
-    }
   }
 
   const handleChangeTableFilterColumn = (key) => {
@@ -688,10 +678,7 @@ export default () => {
   useEffect(() => {
     if (gradeInput.gradeUpdated) {
       dispatch(clearGrades())
-      dispatch(requestGetStudentCumulativeGradeByAppGroup({
-        app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-        app_group_type: 'bcombs'
-      }))
+      requestList()
     }
   }, [gradeInput])
 
@@ -715,6 +702,12 @@ export default () => {
     }
   }, [rows])
 
+  useEffect(() => {
+    console.log('importData', importData);
+    setRows(importData);
+    setFilteredRows(importData);
+  }, [importData]);
+
   const colArr = Object.entries(columns)
   const gColumns = {
     name: { label: 'Name', type: 'string' },
@@ -723,7 +716,7 @@ export default () => {
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
 
-  console.log('@RRRRRRRROWS', { rows, filteredRows })
+  const selectStudentRows = gradeInput?.gradeList
 
   return (
     <div
@@ -884,7 +877,8 @@ export default () => {
       {
         selectStudentOpen && (
           <SelectStudentDialog
-            rows={gradeInput?.gradeList || []}
+            rows={selectStudentRows}
+            childId={childId}
             columns={gColumns}
             existingRows={rows}
             gradeTakenOptions={gradeTakenOptions}
@@ -934,7 +928,7 @@ export default () => {
             onClose={() => setEnableEditDialog(false)}
             onConfirm={handleEnableEditConfirm}
             title='Confirm enable row edit'
-            content='Are you sure you want to enable edit for the row that you clicked?'
+            content='Are you sure you want to edit this row?'
           />
         )
       }

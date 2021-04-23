@@ -108,6 +108,15 @@ export default styled.div`
 	.gradeInputView-table tr.has-data.edit-enabled {
 		background-color: #eff0f3 !important;
 	}
+	
+	.gradeInputView-table tr.has-data.edit-enabled input {
+		background: #fff;
+	}
+
+	.gradeInputView-table tr.has-data td input,
+	.gradeInputView-table tr.has-data.edit-enabled input:read-only  {
+		background: transparent;
+	}
 
 	.gradeInputView-table tr.has-data td div.editCover {
     z-index: 1;
@@ -116,7 +125,9 @@ export default styled.div`
     position: absolute;
     left: 0;
     top: 0;
+		cursor: pointer;
 	}
+	
 
 	.gradeInputView-table th:not(:last-child) {
 		position: relative;
