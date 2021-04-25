@@ -264,8 +264,10 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
 
 				studentCumulative = studentCumulative
 					.map(item => {
-						let currentStudentCumulative = cumulativeGrade.filter(cg => cg.child_id === item.child_id);
-						//currentStudentCumulative = currentStudentCumulative.sort((a,b) => a.year_level < b.year_level)
+						let currentStudentCumulative = cumulativeGrade.filter(cg => cg.child_id === item.child_id)
+						.sort((a,b) => b.year_level - a.year_level)
+
+						console.log('currentStudentCumulative',currentStudentCumulative)
 						let studentTest = standardizedTest.filter(st => st.child_id === item.child_id);
 						return {
 							...item,
@@ -273,7 +275,7 @@ export const getStudentCumulativeGradeByAppGroupId = async (app_group_id, app_gr
 							standardized_test: [...(studentTest || [])],
 						};
 					})
-					.sort((a, b) => a.year_level < b.year_level);
+					.sort((a, b) => b.year_level > a.year_level);
 
 				for (let sc of studentCumulative) {
 					const studentGradeCumulativeIds = sc.cumulative_grades
