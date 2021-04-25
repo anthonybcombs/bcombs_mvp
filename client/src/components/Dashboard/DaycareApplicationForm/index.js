@@ -243,7 +243,7 @@ export default function index() {
     let childs = childsInformation;
     let profile = childs[index].profile;
     let general_information = childs[index].general_information;
-    let emergency_care_information = childs[index].emergency_care_information;
+    let emergency_care_information = childs[index]?.emergency_care_information;
 
     if(section === "profile") {
       profile = {...profile, [id]: value};
@@ -279,10 +279,10 @@ export default function index() {
       childInfoObject.profile.ethinicity = childsInformation[0].profile.ethinicity;
       childInfoObject.profile.program = childsInformation[0].profile.program;
       
-      childInfoObject.emergency_care_information.doctor_name = childsInformation[0].emergency_care_information.doctor_name;
-      childInfoObject.emergency_care_information.doctor_phone = childsInformation[0].emergency_care_information.doctor_phone;
-      childInfoObject.emergency_care_information.hospital_preference = childsInformation[0].emergency_care_information.hospital_preference;
-      childInfoObject.emergency_care_information.hospital_phone = childsInformation[0].emergency_care_information.hospital_phone;
+      childInfoObject.emergency_care_information.doctor_name = childsInformation[0]?.emergency_care_information?.doctor_name;
+      childInfoObject.emergency_care_information.doctor_phone = childsInformation[0]?.emergency_care_information?.doctor_phone;
+      childInfoObject.emergency_care_information.hospital_preference = childsInformation[0]?.emergency_care_information?.hospital_preference;
+      childInfoObject.emergency_care_information.hospital_phone = childsInformation[0]?.emergency_care_information?.hospital_phone;
       setChildsInformation([...childsInformation, childInfoObject]);
     }
   }

@@ -485,7 +485,6 @@ export default function index() {
     return (
       <a 
         href=""
-        target="_blank" 
         onClick={(e) => {
           e.preventDefault();
 
@@ -703,7 +702,6 @@ export default function index() {
     if (application.form_contents) {
      return (<a
         href=""
-        target="_blank" 
         onClick={(e) => {
           e.preventDefault();
           // setShowApplication(true);
@@ -718,7 +716,6 @@ export default function index() {
     return (
       <a 
         href=""
-        target="_blank" 
         onClick={(e) => {
           e.preventDefault();
 

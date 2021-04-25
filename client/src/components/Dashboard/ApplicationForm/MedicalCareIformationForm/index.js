@@ -68,7 +68,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.doctor_name || pastChildInformation.doctor_name == "") &&
-                  pastChildInformation.doctor_name != childEmergencyCare.doctor_name ?
+                  pastChildInformation.doctor_name != childEmergencyCare?.doctor_name ?
                   "field-input highlights" : "field-input"
                 }
                 id={`ch_doctorname_${counter - 1}`}
@@ -76,7 +76,7 @@ export default function index({
                   handleChildFormDetailsChange((counter - 1), "emergency_care_information", "doctor_name", target.value)
                 }}
                 placeholder="Doctor Name"
-                defaultValue={childEmergencyCare.doctor_name}
+                defaultValue={childEmergencyCare?.doctor_name}
                 readOnly={isReadonly}
               />
               <label className="field-label" htmlFor={`ch_doctorname_${counter - 1}`}>Doctor Name</label>
@@ -95,7 +95,7 @@ export default function index({
                   onChange={({ target }) => {
                     handleChildFormDetailsChange((counter - 1), "emergency_care_information", "doctor_phone", target.value)
                   }}
-                  defaultValue={childEmergencyCare.doctor_phone}
+                  defaultValue={childEmergencyCare?.doctor_phone}
                   placeholder="Phone"
                   format="(###) ###-####" mask="_"
                   getInputRef={register({
@@ -118,12 +118,12 @@ export default function index({
                     !isVendorView &&
                     pastChildInformation &&
                     (pastChildInformation.doctor_phone || pastChildInformation.doctor_phone == "") &&
-                    pastChildInformation.doctor_phone != childEmergencyCare.doctor_phone ?
+                    pastChildInformation.doctor_phone != childEmergencyCare?.doctor_phone ?
                     "field-input highlights" : "field-input"
                   }
                   placeholder="Phone"
                   id={`doctophone_${counter - 1}`}
-                  defaultValue={childEmergencyCare.doctor_phone}
+                  defaultValue={childEmergencyCare?.doctor_phone}
                   placeholder="Phone"
                   readOnly={isReadonly}
                 />
@@ -149,7 +149,7 @@ export default function index({
                   !isVendorView &&
                   pastChildInformation &&
                   (pastChildInformation.hospital_preference || pastChildInformation.hospital_preference == "") &&
-                  pastChildInformation.hospital_preference != childEmergencyCare.hospital_preference ?
+                  pastChildInformation.hospital_preference != childEmergencyCare?.hospital_preference ?
                   "field-input highlights" : "field-input"
                 }
                 id={`hospitalname_${counter - 1}`}
@@ -157,7 +157,7 @@ export default function index({
                 onChange={({ target }) => {
                   handleChildFormDetailsChange((counter - 1), "emergency_care_information", "hospital_preference", target.value)
                 }}
-                defaultValue={childEmergencyCare.hospital_preference}
+                defaultValue={childEmergencyCare?.hospital_preference}
                 placeholder="Hospital Preference"
                 readOnly={isReadonly}
               />
@@ -177,7 +177,7 @@ export default function index({
                   onChange={({ target }) => {
                     handleChildFormDetailsChange((counter - 1), "emergency_care_information", "hospital_phone", target.value)
                   }}
-                  defaultValue={childEmergencyCare.hospital_phone}
+                  defaultValue={childEmergencyCare?.hospital_phone}
                   placeholder="Phone"
                   format="(###) ###-####" mask="_"
                   getInputRef={register({
@@ -200,12 +200,12 @@ export default function index({
                     !isVendorView &&
                     pastChildInformation &&
                     (pastChildInformation.hospital_phone || pastChildInformation.hospital_phone == "") &&
-                    pastChildInformation.hospital_phone != childEmergencyCare.hospital_phone ?
+                    pastChildInformation.hospital_phone != childEmergencyCare?.hospital_phone ?
                     "field-input highlights" : "field-input"
                   }
                   placeholder="Phone"
                   id={`hospitalPhone_${counter - 1}`}
-                  defaultValue={childEmergencyCare.hospital_phone}
+                  defaultValue={childEmergencyCare?.hospital_phone}
                   placeholder="Phone"
                   readOnly={isReadonly}
                 />

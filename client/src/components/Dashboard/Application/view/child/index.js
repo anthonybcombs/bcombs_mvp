@@ -147,12 +147,11 @@ export default function index({
         )}
         <div className="application-date">
           <div>
-            {childInformation.profile.application_date}
+            {childInformation?.profile?.application_date}
             {
               isFormHistory && handleSelectLatestApplication && (
                 <a 
                   href=""
-                  target="_blank" 
                   onClick={(e) => {
                     e.preventDefault();
                     handleSelectLatestApplication()
@@ -171,7 +170,7 @@ export default function index({
           <ChildInformationFormStyled
             printPageClassname="printpage-break child-information"
             handleChildFormDetailsChange={handleChildFormDetailsChange}
-            childProfile={childInformation.profile}
+            childProfile={childInformation?.profile}
             counter={1}
             register={register}
             errors={errors}
@@ -186,7 +185,7 @@ export default function index({
           <GeneralInformationFormStyled
             printPageClassname="printpage-break general-information"
             handleChildFormDetailsChange={handleChildFormDetailsChange}
-            childGeneralInformation={childInformation.general_information}
+            childGeneralInformation={childInformation?.general_information}
             counter={1}
             handleScoresChange={handleScoresChange}
             register={register}
@@ -198,7 +197,7 @@ export default function index({
           <br />
           <MedicalCareInfoStyled
             printPageClassname="printpage-break medicalCare-information"
-            childEmergencyCare={childInformation.emergency_care_information}
+            childEmergencyCare={childInformation?.emergency_care_information}
             handleChildFormDetailsChange={handleChildFormDetailsChange}
             counter={1}
             register={register}

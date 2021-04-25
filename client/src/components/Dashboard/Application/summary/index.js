@@ -106,7 +106,7 @@ export default function index({
         return (
           <tr key={group.id}>
             <td>
-              <a href={classLink} target="_blank">
+              <a href={classLink}>
                 {group.name}
               </a>
             </td>
@@ -178,7 +178,7 @@ export default function index({
                 </tr>
                 <tr>
                   <td>
-                  <a href={allLink} target="_blank">
+                  <a href={allLink}>
                     All
                   </a>
                   </td>

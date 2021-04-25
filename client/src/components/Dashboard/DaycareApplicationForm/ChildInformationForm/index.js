@@ -212,12 +212,12 @@ export default function index({
   console.log("pastChildInformation", pastChildInformation);
 
   const [ neededDaysCheck, setNeededDaysCheck ] = useState({
-    option1: (childProfile.needed_days == "M,T,W,TH,F,"),
-    option2: childProfile.needed_days.includes('M,'),
-    option3: childProfile.needed_days.includes('T,'),
-    option4: childProfile.needed_days.includes('W,'),
-    option5: childProfile.needed_days.includes('TH,'),
-    option6: childProfile.needed_days.includes('F,')
+    option1: childProfile?.needed_days ? (childProfile.needed_days == "M,T,W,TH,F,") : false,
+    option2: childProfile?.needed_days ? childProfile.needed_days.includes('M,') : false,
+    option3: childProfile?.needed_days ? childProfile.needed_days.includes('T,') : false,
+    option4: childProfile?.needed_days ? childProfile.needed_days.includes('W,') : false,
+    option5: childProfile?.needed_days ? childProfile.needed_days.includes('TH,') : false,
+    option6: childProfile?.needed_days ? childProfile.needed_days.includes('F,') : false
   })
 
   const GENDER_OPTIONS = [
@@ -327,11 +327,11 @@ export default function index({
   let readOnlyChildLivesWith = "";
 
   if (
-    childProfile.child_lives_with &&
-    childProfile.child_lives_with.length > 0 &&
+    childProfile?.child_lives_with &&
+    childProfile?.child_lives_with.length > 0 &&
     isReadonly
   ) {
-    childProfile.child_lives_with.forEach(item => {
+    childProfile?.child_lives_with.forEach(item => {
       readOnlyChildLivesWith += item.name + "\n";
     });
 
@@ -340,8 +340,8 @@ export default function index({
 
   let readOnlyProgram = "";
 
-  if (childProfile.program && childProfile.program.length > 0 && isReadonly) {
-    childProfile.program.forEach(item => {
+  if (childProfile?.program && childProfile?.program?.length > 0 && isReadonly) {
+    childProfile?.program.forEach(item => {
       readOnlyProgram += item.name + "\n";
     });
 
@@ -351,11 +351,11 @@ export default function index({
   let readOnlyEthinicity = "";
 
   if (
-    childProfile.ethinicity &&
-    childProfile.ethinicity.length > 0 &&
+    childProfile?.ethinicity &&
+    childProfile?.ethinicity?.length > 0 &&
     isReadonly
   ) {
-    childProfile.ethinicity.forEach(item => {
+    childProfile?.ethinicity.forEach(item => {
       readOnlyEthinicity += item.name + "\n";
     });
 
@@ -492,7 +492,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.firstname ||
                     pastChildInformation.firstname == "") &&
-                  pastChildInformation.firstname != childProfile.first_name
+                  pastChildInformation.firstname != childProfile?.first_name
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -506,7 +506,7 @@ export default function index({
                   );
                 }}
                 ref={register({ required: true })}
-                defaultValue={childProfile.first_name}
+                defaultValue={childProfile?.first_name}
               />
               <label className="field-label" htmlFor={`ch_first_name_${counter - 1}`}>
                 <span className="required">*</span> First Name
@@ -530,7 +530,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.lastname ||
                     pastChildInformation.lastname == "") &&
-                  pastChildInformation.lastname != childProfile.last_name
+                  pastChildInformation.lastname != childProfile?.last_name
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -544,7 +544,7 @@ export default function index({
                   );
                 }}
                 ref={register({ required: true })}
-                defaultValue={childProfile.last_name}
+                defaultValue={childProfile?.last_name}
               />
               <label className="field-label" htmlFor={`ch_last_name_${counter - 1}`}>
                 <span className="required">*</span> Last Name
@@ -567,7 +567,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.nickname ||
                     pastChildInformation.nickname == "") &&
-                  pastChildInformation.nickname != childProfile.nick_name
+                  pastChildInformation.nickname != childProfile?.nick_name
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -582,7 +582,7 @@ export default function index({
                 }}
                 readOnly={isReadonly}
                 ref={register()}
-                defaultValue={childProfile.nick_name}
+                defaultValue={childProfile?.nick_name}
               />
               <label className="field-label" htmlFor={`ch_nick_name_${counter - 1}`}>Nick Name</label>
             </div>
@@ -657,7 +657,7 @@ export default function index({
                     </button>
                   </div>
                 )}
-                selected={childProfile.date_of_birth}
+                selected={childProfile?.date_of_birth}
                 disabled={isReadonly}
                 onChange={date => {
                   handleChildFormDetailsChange(
@@ -676,7 +676,7 @@ export default function index({
                       pastChildInformation &&
                       (pastChildInformation.birthdate ||
                         pastChildInformation.birthdate == "") &&
-                      childProfile.date_of_birth.toString() !=
+                      childProfile?.date_of_birth.toString() !=
                         new Date(pastChildInformation.birthdate).toString()
                         ? "field-input birthdate-field highlights"
                         : "field-input birthdate-field"
@@ -703,7 +703,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.gender ||
                     pastChildInformation.gender == "") &&
-                  pastChildInformation.gender != childProfile.gender
+                  pastChildInformation.gender != childProfile?.gender
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -716,7 +716,7 @@ export default function index({
                   );
                 }}
                 ref={register({ required: true })}
-                defaultValue={childProfile.gender}>
+                defaultValue={childProfile?.gender}>
                 <option value="">Select</option>
                 <optgroup label="Gender">
                   {GENDER_OPTIONS.map(opt => (
@@ -804,7 +804,7 @@ export default function index({
                   closeOnSelect={false}
                   showCheckbox={true}
                   autcomplete="false"
-                  selectedValues={childProfile.ethinicity}
+                  selectedValues={childProfile?.ethinicity}
                 />
               )}
               <label className="field-label">
@@ -883,7 +883,7 @@ export default function index({
                         </button>
                     </div>
                     )}
-                    selected={childProfile.preffered_start_date}
+                    selected={childProfile?.preffered_start_date}
                     disabled={isReadonly}
                     onChange={date => {
                     handleChildFormDetailsChange(
@@ -902,7 +902,7 @@ export default function index({
                         pastChildInformation &&
                         (pastChildInformation.preffered_start_date ||
                             pastChildInformation.preffered_start_date == "") &&
-                        childProfile.preffered_start_date.toString() !=
+                        childProfile?.preffered_start_date.toString() !=
                             new Date(pastChildInformation.preffered_start_date).toString()
                             ? "field-input birthdate-field highlights"
                             : "field-input birthdate-field"
@@ -930,7 +930,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.current_classroom ||
                     pastChildInformation.current_classroom == "") &&
-                  pastChildInformation.current_classroom != childProfile.current_classroom
+                  pastChildInformation.current_classroom != childProfile?.current_classroom
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -943,7 +943,7 @@ export default function index({
                   );
                 }}
                 ref={register({ required: true })}
-                defaultValue={childProfile.current_classroom}>
+                defaultValue={childProfile?.current_classroom}>
                 <option value="">Select</option>
                 {CLASSROOMS_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.value}>
@@ -974,7 +974,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.primary_language ||
                     pastChildInformation.primary_language == "") &&
-                  pastChildInformation.primary_language != childProfile.primary_language
+                  pastChildInformation.primary_language != childProfile?.primary_language
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -987,7 +987,7 @@ export default function index({
                   );
                 }}
                 ref={register({ required: true })}
-                defaultValue={childProfile.primary_language}>
+                defaultValue={childProfile?.primary_language}>
                 <option value="">Select</option>
                 {LANGUAGES_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.value}>
@@ -1024,7 +1024,7 @@ export default function index({
                 pastChildInformation &&
                 (pastChildInformation.needed_days || 
                   pastChildInformation.needed_days == "") &&
-                pastChildInformation.needed_days != childProfile.needed_days
+                pastChildInformation.needed_days != childProfile?.needed_days
                   ? "highlights" : ""
               }
             >
@@ -1097,14 +1097,14 @@ export default function index({
                         counter - 1,
                         "profile",
                         "needed_days",
-                        childProfile.needed_days+ "M,")
+                        childProfile?.needed_days+ "M,")
                       setNeededDaysCheck({...neededDaysCheck, ['option2']: true})
                     } else {
                       handleChildFormDetailsChange(
                         counter - 1,
                         "profile",
                         "needed_days",
-                        childProfile.needed_days.replace("M,", "")) 
+                        childProfile?.needed_days.replace("M,", "")) 
                       setNeededDaysCheck({...neededDaysCheck, ['option1']: false, ['option2']: false})
                     }
                   }}
@@ -1140,14 +1140,14 @@ export default function index({
                         counter - 1,
                         "profile",
                         "needed_days",
-                        childProfile.needed_days+ "T,")
+                        childProfile?.needed_days+ "T,")
                       setNeededDaysCheck({...neededDaysCheck, ['option3']: true})
                     } else {
                       handleChildFormDetailsChange(
                         counter - 1,
                         "profile",
                         "needed_days",
-                        childProfile.needed_days.replace("T,", "")) 
+                        childProfile?.needed_days.replace("T,", "")) 
                       setNeededDaysCheck({...neededDaysCheck, ['option1']: false, ['option3']: false})
                     }
                   }}
@@ -1183,14 +1183,14 @@ export default function index({
                         counter - 1,
                         "profile",
                         "needed_days",
-                        childProfile.needed_days+ "W,")
+                        childProfile?.needed_days+ "W,")
                       setNeededDaysCheck({...neededDaysCheck, ['option4']: true})
                     } else {
                       handleChildFormDetailsChange(
                         counter - 1,
                         "profile",
                         "needed_days",
-                        childProfile.needed_days.replace("W,", "")) 
+                        childProfile?.needed_days.replace("W,", "")) 
                       setNeededDaysCheck({...neededDaysCheck, ['option1']: false, ['option4']: false})
                     }
                   }}
@@ -1226,14 +1226,14 @@ export default function index({
                         counter - 1,
                         "profile",
                         "needed_days",
-                        childProfile.needed_days+ "TH,")
+                        childProfile?.needed_days+ "TH,")
                       setNeededDaysCheck({...neededDaysCheck, ['option5']: true})
                     } else {
                       handleChildFormDetailsChange(
                         counter - 1,
                         "profile",
                         "needed_days",
-                        childProfile.needed_days.replace("TH,", "")) 
+                        childProfile?.needed_days.replace("TH,", "")) 
                       setNeededDaysCheck({...neededDaysCheck, ['option1']: false, ['option5']: false})
                     }
                   }}
@@ -1269,14 +1269,14 @@ export default function index({
                         counter - 1,
                         "profile",
                         "needed_days",
-                        childProfile.needed_days + "F,")
+                        childProfile?.needed_days + "F,")
                       setNeededDaysCheck({...neededDaysCheck, ['option6']: true})
                     } else {
                       handleChildFormDetailsChange(
                         counter - 1,
                         "profile",
                         "needed_days",
-                        childProfile.needed_days.replace("F,", ""))
+                        childProfile?.needed_days.replace("F,", ""))
                       setNeededDaysCheck({...neededDaysCheck, ['option1']: false, ['option6']: false})
                     } 
                   }}
@@ -1319,7 +1319,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.schedule_tour ||
                     pastChildInformation.schedule_tour == "") &&
-                  pastChildInformation.schedule_tour != childProfile.schedule_tour
+                  pastChildInformation.schedule_tour != childProfile?.schedule_tour
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -1346,7 +1346,7 @@ export default function index({
                     }
                   }
                 })}
-                defaultValue={childProfile.schedule_tour}>
+                defaultValue={childProfile?.schedule_tour}>
                 <option value="">Select</option>
                 {SCHEDULE_TOUR_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.value}>
@@ -1372,7 +1372,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.voucher ||
                     pastChildInformation.voucher == "") &&
-                  pastChildInformation.voucher != childProfile.voucher
+                  pastChildInformation.voucher != childProfile?.voucher
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -1385,7 +1385,7 @@ export default function index({
                   );
                 }}
                 ref={register({required: true})}
-                defaultValue={childProfile.voucher}>
+                defaultValue={childProfile?.voucher}>
                 <option value="">Select</option>
                 {VOUCHER_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.value}>
@@ -1417,7 +1417,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.address ||
                     pastChildInformation.address == "") &&
-                  pastChildInformation.address != childProfile.address
+                  pastChildInformation.address != childProfile?.address
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -1432,7 +1432,7 @@ export default function index({
                 }}
                 readOnly={isReadonly}
                 ref={register({ required: true })}
-                defaultValue={childProfile.address}
+                defaultValue={childProfile?.address}
               />
               <label className="field-label" htmlFor={`ch_address_${counter - 1}`}>
                 <span className="required">*</span> Address
@@ -1455,7 +1455,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.city ||
                     pastChildInformation.city == "") &&
-                  pastChildInformation.city != childProfile.city
+                  pastChildInformation.city != childProfile?.city
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -1469,7 +1469,7 @@ export default function index({
                   );
                 }}
                 readOnly={isReadonly}
-                defaultValue={childProfile.city}
+                defaultValue={childProfile?.city}
                 ref={register({ required: true })}
               />
               <label className="field-label" htmlFor={`ch_city_${counter - 1}`}>
@@ -1496,7 +1496,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.state ||
                     pastChildInformation.state == "") &&
-                  pastChildInformation.state != childProfile.state
+                  pastChildInformation.state != childProfile?.state
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -1509,7 +1509,7 @@ export default function index({
                   );
                 }}
                 readOnly={isReadonly}
-                defaultValue={childProfile.state}
+                defaultValue={childProfile?.state}
                 ref={register({ required: true })}>
                 <option value="">Select</option>
                 {STATES.map((opt, index) => (
@@ -1541,7 +1541,7 @@ export default function index({
                   pastChildInformation &&
                   (pastChildInformation.zip_code ||
                     pastChildInformation.zip_code == "") &&
-                  pastChildInformation.zip_code != childProfile.zip_code
+                  pastChildInformation.zip_code != childProfile?.zip_code
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -1557,7 +1557,7 @@ export default function index({
                     target.value = target.value.slice(0, -1);
                   }
                 }}
-                defaultValue={childProfile.zip_code}
+                defaultValue={childProfile?.zip_code}
                 placeholder="Zip Code"
                 ref={register({ required: true, minLength: 5 })}
                 maxLength="5"
@@ -1608,7 +1608,7 @@ export default function index({
                 </p>
               ) : (
                 <Multiselect
-                  selectedValues={childProfile.program}
+                  selectedValues={childProfile?.program}
                   className="field-input"
                   options={PROGRAMS_OPTIONS}
                   hasSelectAll={hasSelectAll}
@@ -1670,7 +1670,7 @@ export default function index({
                 </p>
               ) : (
                 <Multiselect
-                  selectedValues={childProfile.child_lives_with}
+                  selectedValues={childProfile?.child_lives_with}
                   className="field-input"
                   options={CHILD_LIVES_OPTION}
                   hasSelectAll={hasSelectAll}
