@@ -334,7 +334,8 @@ export const getStudentCumulativeGradeVendor = async ({ vendor_id }) => {
 				INNER JOIN application app ON app.child=child.ch_id
 				LEFT JOIN student_grade_cumulative sgc ON sgc.child_id=child.ch_id
 				INNER JOIN vendor_app_groups vag ON vag.app_grp_id=sgc.app_group_id
-				WHERE app.vendor=UUID_TO_BIN(?)`,
+				INNER JOIN vendor vndr ON vndr.id=vag.vendor
+				WHERE vndr.id=UUID_TO_BIN(?)`,
 			[vendor_id]
 		);
 
@@ -349,7 +350,7 @@ export const getStudentCumulativeGradeVendor = async ({ vendor_id }) => {
 			FROM custom_application app
 			LEFT JOIN student_grade_cumulative sgc ON sgc.child_id=app.app_id
 			LEFT JOIN vendor_app_groups vag
-			ON vag.app_grp_id=UUID_TO_BIN(app.class_teacher)
+			ON vag.app_grp_id=app.class_teacher
 			WHERE app.vendor=UUID_TO_BIN(?)`,
 			[vendor_id]
 		);
