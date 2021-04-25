@@ -789,6 +789,19 @@ const inputs = `
 
 
 
+    
+    input StudentInfoInput {
+        firstname: String
+        lastname: String
+        gender: String
+        career_goals: String
+        hobbies: String
+        accomplishments: String
+        ch_id: String
+    }
+
+
+
 `;
 const queryTypes = `
     scalar Date
@@ -1584,9 +1597,22 @@ const queryTypes = `
         date_created: String
     }
 
+    type StudentInfo {
+        firstname: String
+        lastname: String
+        age: Int
+        birthdate: Date
+        gender: String
+        career_goals: String
+        hobbies: String
+        accomplishments: String
+        ch_id: String
+    }
+
     type StudentRecords {
         standardized_test: [StudentStandardizedTest]
         cumulative_grades: [StudentCumulativeGrade]
+        info: StudentInfo
     }
  
     type StudentByGroupSummary {
@@ -1644,7 +1670,8 @@ const mutations = `
         updateAttendance(attendance: AttendanceInput): [Attendance]
         addUpdateStudentCumulative(studentCumulative: [StudentGradeCumulativeInput]): [StudentCumulativeGrade]
         addUpdateStudentStandardizedTest(studentStandardizedTest: [StudentStandardizedTestInput]): [StudentStandardizedTest]
-        deleteStudentStandardizedTest(studentTestIds:[Int] ): [StudentStandardizedTest]
+        deleteStudentStandardizedTest(studentTestIds:[Int]): [StudentStandardizedTest]
+        updateChildInfo (child: StudentInfoInput): StudentInfo
     }
 `;
 

@@ -827,9 +827,9 @@ export default function index() {
 			setApplicationList(defaultApplicationList);
 			const redirect = () => {
 				setTimeout(() => {
-					window.location.replace(`/dashboard/attendance`);
+					window.location.replace(`/dashboard/studentdata`);
 				},2000);
-				//window.location.replace(`/dashboard/attendance`);
+				//window.location.replace(`/dashboard/studentdata`);
 			};
 			redirect();
 		}
@@ -1242,7 +1242,7 @@ export default function index() {
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
 			<div id="attendanceContainer" style={{ marginTop: 12 }}>
-				<Link to={'/dashboard/attendance'} className="back-btn">
+				<Link to={'/dashboard/studentdata'} className="back-btn">
 					<FontAwesomeIcon className="back-icon" icon={faAngleLeft} />
 					Back
 				</Link>

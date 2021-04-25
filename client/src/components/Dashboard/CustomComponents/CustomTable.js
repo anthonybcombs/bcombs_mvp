@@ -85,7 +85,7 @@ const CustomTableStyled = styled.div`
 `;
 
 export default ({
-  columns, rows: propRows, hasSearch,
+  columns, rows: propRows, hasSearch, defaultSelectedIds,
   idKey = 'id', onSelect, selectable, headerRightActions
 }) => {
 
@@ -93,7 +93,7 @@ export default ({
   
   const [search, setSearch] = useState('')
   const [rows, setRows] = useState(cloneDeep([]))
-  const [selected, setSelected] = useState([])
+  const [selected, setSelected] = useState(defaultSelectedIds)
 
   const handleSearch = (searchKey = '') => {
     setSearch(searchKey)

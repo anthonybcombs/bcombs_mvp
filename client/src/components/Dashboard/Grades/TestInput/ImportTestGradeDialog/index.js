@@ -49,10 +49,10 @@ export default function index({
           </div>
           <div style={{'paddingLeft': '30px'}}>
             {
-              inputType == 'test' && (
+              (inputType == 'test' || inputType == 'grades') && (
                 <CSVLink
                   id="gradeExportBtn"
-                  filename='Standart Test.csv'
+                  filename={inputType == 'test'? 'Standard Test Export.csv' : 'Grades Export.csv'}
                   data={data}
                 >
                   Download the template here.

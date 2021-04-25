@@ -3,7 +3,7 @@ import * as actionType from "../actions/Constant";
 export default function Applications(
   state = {
     gradeList: [],
-    individualList: null,
+    individualList:  null,
     stUpdated: false,
     gradeUpdated: false,
     addUpdate: null,

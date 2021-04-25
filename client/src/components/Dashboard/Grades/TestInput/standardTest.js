@@ -20,7 +20,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 import roundToNearestMinutesWithOptions from 'date-fns/fp/roundToNearestMinutesWithOptions'
 
-export default ({importData = []}) => {
+export default ({ importData = [], childId, groupId, groupType, returnPage, requestList }) => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading, standardGradeLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
@@ -389,7 +389,6 @@ export default ({importData = []}) => {
   }
 
   const handleSetActiveColumnKey = (key = '') => {
-    handleMagicScroll(!!key)
     setActiveColumnKey(key)
     setColumnFilterSearch('')
   }
@@ -399,16 +398,6 @@ export default ({importData = []}) => {
       ...columnFilters,
       [key]: columnFilters[key].map(e => ({ ...e, checked }))
     })
-  }
-
-  const handleMagicScroll = (hide = false) => {
-    if (hide) {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
-      document.getElementById('gradeInputView').style = 'overflow: hidden'
-    } else {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
-      document.getElementById('gradeInputView').style = 'overflow: unset'
-    }
   }
 
   const handleChangeTableFilterColumn = (key) => {
@@ -486,7 +475,12 @@ export default ({importData = []}) => {
   }
 
   const handleBack = () => {
-    window.location.replace('/dashboard/grades')
+    const backUrl = childId
+      ? `/dashboard/grades/profile/${childId}?group_id=${groupId}&group_type=${groupType}`
+      : (!returnPage && (groupId || groupType))
+        ? `/dashboard/studentdata`
+        : `/dashboard/grades?group_id=${groupId}&group_type=${groupType}`
+    window.location.replace(backUrl)
   }
 
   const handleSave = () => {
@@ -513,6 +507,7 @@ export default ({importData = []}) => {
         return newRow
       })
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
+    setHasChanged(false)
   }
 
   const renderTableFilter = (key) => {
@@ -597,20 +592,10 @@ export default ({importData = []}) => {
     return null
   }
 
-  // useEffect(() => {
-  //   dispatch(requestGetStudentCumulativeGradeByAppGroup({
-  //     app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-  //     app_group_type: 'bcombs'
-  //   }))
-  // }, [])
-
   useEffect(() => {
     if (gradeInput.stUpdated) {
       dispatch(clearGrades())
-      dispatch(requestGetStudentCumulativeGradeByAppGroup({
-        app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-        app_group_type: 'bcombs'
-      }))
+      requestList()
     }
   }, [gradeInput])
 
@@ -647,6 +632,8 @@ export default ({importData = []}) => {
     attempt: { label: 'Attempts', type: 'number', isFunc: true },
     latest_attempt: { label: 'Latest Attempt', type: 'number', isFunc: true },
   }
+
+  const selectStudentRows = gradeInput?.gradeList
 
   return (
     <div
@@ -808,9 +795,10 @@ export default ({importData = []}) => {
       {
         selectStudentOpen && (
           <SelectStudentDialog
-            rows={gradeInput?.gradeList || []}
+            rows={selectStudentRows}
             columns={stColumns}
             existingRows={rows}
+            childId={childId}
             gradeTakenOptions={gradeTakenOptions}
             testOptions={testOptions}
             attempOptions={attempOptions}
@@ -847,7 +835,7 @@ export default ({importData = []}) => {
             onClose={() => setEnableEditDialog(false)}
             onConfirm={handleEnableEditConfirm}
             title='Confirm enable row edit'
-            content='Are you sure you want to enable edit for the row that you clicked?'
+            content='Are you sure you want to edit this row?'
           />
         )
       }
