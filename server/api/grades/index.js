@@ -2,6 +2,8 @@ import { makeDb } from '../../helpers/database';
 
 import { currentS3BucketName, s3Bucket, s3BucketRootPath, uploadFile } from '../../helpers/aws';
 
+import { getChildInformation } from '../child';
+
 const getAverage = (grades, type) => {
 	return grades.map(grade => {
 		if (type === 'semestral') {
@@ -1118,9 +1120,11 @@ export const getStudentRecordById = async childId => {
 	try {
 		const cumulativeGrades = await getStudentCumulativeByChildId(childId);
 		const standardizedTest = await getStudentStandardizedTest(childId);
+		const childInfo = await getChildInformation(childId);
 		studentRecord = {
 			standardized_test: standardizedTest,
 			cumulative_grades: cumulativeGrades,
+			info: childInfo ? childInfo[0] : {}
 		};
 	} catch (err) {
 		console.log('Error getStudentRecordById', err);
@@ -1129,3 +1133,46 @@ export const getStudentRecordById = async childId => {
 		return studentRecord;
 	}
 };
+
+
+export const updateChildDetails = async ({
+  firstname,
+  lastname,
+	school_name,
+	hobbies,
+	career_goals,
+	accomplishments,
+  ch_id
+}) => {
+  const db = makeDb();
+  let result;
+  try {
+   	await db.query(
+      `UPDATE child SET 
+        firstname=?,
+        lastname=?,
+        school_name=?,
+        hobbies=?,
+				career_goals=?,
+				accomplishments=?
+        WHERE ch_id=UUID_TO_BIN(?)
+      `,
+      [
+        firstname,
+  			lastname,
+				school_name,
+				hobbies,
+				career_goals,
+				accomplishments,
+  			ch_id
+      ]
+    );
+		result = await getChildInformation(ch_id);
+		result = result ? result[0] : {};
+  } catch(error) {
+    console.log(error)
+  } finally {
+    await db.close();
+    return result;
+  }
+}
