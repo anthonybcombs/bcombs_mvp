@@ -178,7 +178,6 @@ export default function index({
     })
     setRows(newRows)
   }, [propRows])
-  console.log('awit', selected)
   return ReactDOM.createPortal(
     <SelectStudentDialogStyled
       data-testid='app-big-calendar-create-modal'

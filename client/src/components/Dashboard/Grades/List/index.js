@@ -15,7 +15,7 @@ import { FilterOptionsObj } from '../Headers/options'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Loading from '../../../../helpers/Loading.js'
-import { requestGetStudentCumulativeGradeByAppGroup  } from '../../../../redux/actions/Grades'
+import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByVendor } from '../../../../redux/actions/Grades'
 
 export default () => {
   const dispatch = useDispatch()
@@ -24,7 +24,9 @@ export default () => {
   }))
 
   const queryLocation = useLocation();
-	const { group_id, group_type } = parse(queryLocation.search)
+	const { group_id, group_type, request_type } = parse(queryLocation.search)
+  const isVendor = request_type === 'vendor'
+  const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
 
@@ -220,7 +222,7 @@ export default () => {
             <table className='subTable student'>
               <tr>
                 <td style={{ ...highLight(name, 'name'), minWidth: '100px', wordBreak: 'break-word'}}>
-                  <Link to={`/dashboard/grades/individual/${row.child_id}?group_id=${group_id}&group_type=${group_type}`}>
+                  <Link to={`/dashboard/grades/individual/${row.child_id}?${commonQueryStrings}`}>
                     {name}
                   </Link>
                 </td>
@@ -374,12 +376,18 @@ export default () => {
 
   const getDataList = (data) => {
     return data
-      .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades, standardized_test }) => {
+      .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades, standardized_test, form_contents }) => {
+        if (isVendor && form_contents) {
+          const { formData = {} } = JSON.parse(form_contents)
+          let [, fName = {}, , lName = {}] = (formData.find(e => e.type === 'name') || {}).fields || []
+          firstname = fName?.value ? JSON.parse(fName.value) : '--'
+          lastname = lName?.value ? JSON.parse(lName.value) : '--'
+        }
         const { data, labels, quarterValues, schoolYears, stYearValues } = accumulator
         const {
           grades = [], school_type = '', year_level = '', school_year_start = '',
           school_year_end = '', student_grade_cumulative_id, gpa_final, gpa_sem_2, gpa_sem_1
-        } = cumulative_grades.length ? cumulative_grades[0] : {}
+        } = cumulative_grades.length ? maxBy(cumulative_grades, 'year_level') : {}
         const parseYear = (y) => typeof y === 'string' ? parseInt(y) : y
         const sy = parseYear(school_year_start) && parseYear(school_year_end) ? `${parseYear(school_year_start)}-${parseYear(school_year_end)}` : ''
         const { final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades?.length ? grades[0] : []
@@ -503,16 +511,27 @@ export default () => {
   useEffect(() => {
     handleSetRowAndColumn(gradeType)
     if (group_id && group_type) {
-      dispatch(requestGetStudentCumulativeGradeByAppGroup({
-        app_group_id: group_id,
-        app_group_type: group_type
-      }))
+      if (isVendor) {
+        dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
+      } else {
+        dispatch(requestGetStudentCumulativeGradeByAppGroup({
+          app_group_id: group_id,
+          app_group_type: group_type
+        }))
+      }
     }
   }, [])
 
   useEffect(() => {
     if (gradeInput?.gradeList) {
-      const { data, labels, quarterValues, schoolYears, stYearValues } = getDataList((gradeInput.gradeList || []))
+      let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+      if (group_type === 'bcombs') {
+        newGradeList = newGradeList.filter(e => !e.form_contents)
+      } else {
+        newGradeList = newGradeList.filter(e => e.form_contents)
+      }
+      console.log('zzzzztoinksss', newGradeList)
+      const { data, labels, quarterValues, schoolYears, stYearValues } = getDataList(newGradeList)
       const newGradeColumns = {
         string: Object.keys(labels).filter(e => !e.includes('Number')),
         number: Object.keys(labels).filter(e => e.includes('Number'))
@@ -571,7 +590,7 @@ export default () => {
                   />
                   <Link
                     className='applyFilterBtn'
-                    to={`/dashboard/grades/input?group_id=${group_id}&group_type=${group_type}&return_page=grades`}
+                    to={`/dashboard/grades/input?${commonQueryStrings}&return_page=grades`}
                   >
                     {`Grades & Test Input`}
                   </Link>

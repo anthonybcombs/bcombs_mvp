@@ -39,6 +39,11 @@ export default function Applications(
         addUpdateGrade: action.payload,
         gradeUpdated: true
       }
+    case actionType.CUMULATIVE_GRADE_BY_VENDOR_COMPLETED:
+      return {
+        ...state,
+        gradeList: action.payload
+      }
     case actionType.CLEAR_GRADES:
       return {
         ...state,

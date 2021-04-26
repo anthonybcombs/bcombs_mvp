@@ -9,14 +9,14 @@ import GradeInput from './gradeInput'
 
 import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByUser } from '../../../../redux/actions/Grades'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faAngleLeft, faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
 
 import { CSVLink, CSVDownload } from "react-csv";
 import { format } from "date-fns";
 
 import ImportTestGradeDialog from './ImportTestGradeDialog';
 import ExportTestGradeDialogStyled from './ExpotTestGradeDialog';
-import { formatError } from 'graphql'
+import ConfirmDialog from './ConfirmDialog'
 
 export default ({ child_id }) => {
   const { gradeInput: { gradeList }, groups: {application_groups}, loading: {gradeLoading} } = useSelector(({ gradeInput, groups, loading }) => ({
@@ -24,7 +24,8 @@ export default ({ child_id }) => {
   }));
   const dispatch = useDispatch()
   const queryLocation = useLocation();
-	const { group_id, group_type, return_page } = parse(queryLocation.search)
+	const { group_id, group_type, return_page, request_type } = parse(queryLocation.search)
+  const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const DATE_FORMAT = "MM/dd/yyyy";
 
   let exportTestData = [];
@@ -36,6 +37,8 @@ export default ({ child_id }) => {
   const [formattedSt, setFormattedSt] = useState([]);
   const [formattedGrades, setFormattedGrades] = useState([]);
   const [selectedAppGroup, setSelectedAppGroup] = useState('');
+  const [hasChanged, setHasChanged] = useState(false)
+  const [backDialog, setBackDialog] = useState(false)
 
   const populateClass = (classes = []) => {
 
@@ -191,7 +194,7 @@ export default ({ child_id }) => {
           exportGradesData.push(row);
         });
       } else {
-        const pClass = populateClass(cg.grades);
+        const pClass = populateClass(cg?.grades || {});
     
         const row = {
           'Student Name': gr.lastname + ', ' + gr.firstname,
@@ -436,6 +439,15 @@ export default ({ child_id }) => {
     }
   }
 
+  const handleBack = () => {
+    const backUrl = child_id
+      ? `/dashboard/grades/profile/${child_id}?group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
+      : (!return_page && (group_id || group_type))
+        ? `/dashboard/studentdata`
+        : `/dashboard/grades?group_id=${group_id}&group_type=${group_type}`
+    window.location.replace(backUrl)
+  }
+
   return (
     <GradeInputStyled>
       <div className='gradeInputView-header'>
@@ -472,106 +484,129 @@ export default ({ child_id }) => {
           </button>
         </div>
       </div>
-     <div id='viewWrapper'>
-      <div id='gradeInputView'>
-        <StandardTest
-          importData={formattedSt}
-          childId={child_id}
-          groupId={group_id}
-          groupType={group_type}
-          returnPage={return_page}
-          requestList={requestList}
-        />
-        <div className='gradeInputView-header' style={{'marginTop': '1rem'}}>
-          <div className='action left'></div>
-          <div className='action right'>
-            {/* <CSVLink
-              id="gradeExportBtn"
-              filename='Grades Export.csv'
-              data={exportGradesData}
-            >
+      <div id='viewWrapper'>
+        <div id='gradeInputView'>
+          <a
+            className='back-btn'
+            onClick={(e) => {
+              e.preventDefault()
+              if (hasChanged) {
+                setBackDialog(true)
+              } else {
+                handleBack()
+              }
+            }}
+          >
+            <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
+            Back
+          </a>
+          <StandardTest
+            importData={formattedSt}
+            childId={child_id}
+            requestList={requestList}
+            onHasChanged={(bool) => setHasChanged(bool)}
+          />
+          <div className='gradeInputView-header' style={{'marginTop': '1rem'}}>
+            <div className='action left'></div>
+            <div className='action right'>
+              {/* <CSVLink
+                id="gradeExportBtn"
+                filename='Grades Export.csv'
+                data={exportGradesData}
+              >
+                <button
+                  className='btn-save'
+                >
+                  <FontAwesomeIcon icon={faDownload} />
+                  <span>Export</span>
+                </button>
+              </CSVLink> */}
               <button
                 className='btn-save'
+                onClick={() => {setSelecteExportType('grades-export')}}
               >
                 <FontAwesomeIcon icon={faDownload} />
                 <span>Export</span>
               </button>
-            </CSVLink> */}
-            <button
-              className='btn-save'
-              onClick={() => {setSelecteExportType('grades-export')}}
-            >
-              <FontAwesomeIcon icon={faDownload} />
-              <span>Export</span>
-            </button>
-            <button
-              className='btn-save'
-              onClick={handleGradesImport}
-            >
-              <FontAwesomeIcon icon={faUpload} />
-              <span>Import</span>
-            </button>
+              <button
+                className='btn-save'
+                onClick={handleGradesImport}
+              >
+                <FontAwesomeIcon icon={faUpload} />
+                <span>Import</span>
+              </button>
+            </div>
           </div>
+          <GradeInput 
+            importData={formattedGrades}
+            childId={child_id}
+            requestList={requestList}
+            onHasChanged={(bool) => setHasChanged(bool)}
+          />
         </div>
-        <GradeInput 
-          importData={formattedGrades}
-          childId={child_id}
-          requestList={requestList}
-        />
       </div>
-     </div>
-     {
-       selectImportType == 'standardtest-import'  && (
-         <ImportTestGradeDialog
-          inputType='test'
-          data={exportTestData}
-          onClose={() => setSelectImportType()}
-          onImport={(data) => {
-            setSelectImportType(); 
-            handleImportedTestData(data)
-          }}
-         />
-       )
-     }
-     {
-       selectImportType == 'grades-import'  && (
-         <ImportTestGradeDialog
-          inputType='grades'
-          data={exportGradesData}
-          onClose={() => setSelectImportType()}
-          onImport={(data) => {
-            setSelectImportType(); 
-            handleImportGradesData(data)
-          }}
-         />
-       )
-     }
-     {
-       selectExportType == 'standardtest-export' && (
-         <ExportTestGradeDialogStyled
-          inputType='test'
-          onClose={() => {setSelecteExportType()}}
-          appGroups={application_groups}
-          onGetGroupGradeTest={handleGetGroupGradeTest}
-          data={exportTestData}
-          loading={gradeLoading}
-         >
-         </ExportTestGradeDialogStyled>
-       )
-     }
-          {
-       selectExportType == 'grades-export' && (
-         <ExportTestGradeDialogStyled
-          inputType='grades'
-          onClose={() => {setSelecteExportType()}}
-          appGroups={application_groups}
-          onGetGroupGradeTest={handleGetGroupGradeTest}
-          data={exportGradesData}
-          loading={gradeLoading}
-         >
-         </ExportTestGradeDialogStyled>
-       )
-     }
+      {
+        selectImportType == 'standardtest-import'  && (
+          <ImportTestGradeDialog
+            inputType='test'
+            data={exportTestData}
+            onClose={() => setSelectImportType()}
+            onImport={(data) => {
+              setSelectImportType(); 
+              handleImportedTestData(data)
+            }}
+          />
+        )
+      }
+      {
+        selectImportType == 'grades-import'  && (
+          <ImportTestGradeDialog
+            inputType='grades'
+            data={exportGradesData}
+            onClose={() => setSelectImportType()}
+            onImport={(data) => {
+              setSelectImportType(); 
+              handleImportGradesData(data)
+            }}
+          />
+        )
+      }
+      {
+        selectExportType == 'standardtest-export' && (
+          <ExportTestGradeDialogStyled
+            inputType='test'
+            onClose={() => {setSelecteExportType()}}
+            appGroups={application_groups}
+            onGetGroupGradeTest={handleGetGroupGradeTest}
+            data={exportTestData}
+            loading={gradeLoading}
+          >
+          </ExportTestGradeDialogStyled>
+        )
+      }
+      {
+        selectExportType == 'grades-export' && (
+          <ExportTestGradeDialogStyled
+            inputType='grades'
+            onClose={() => {setSelecteExportType()}}
+            appGroups={application_groups}
+            onGetGroupGradeTest={handleGetGroupGradeTest}
+            data={exportGradesData}
+            loading={gradeLoading}
+          >
+          </ExportTestGradeDialogStyled>
+        )
+      }
+      {
+        backDialog && (
+          <ConfirmDialog
+            onClose={() => setBackDialog(false)}
+            onConfirm={handleBack}
+            title='Confirm leaving page'
+            content='You have unsaved changes. Would you like to leave this page?'
+          />
+        )
+      }
     </GradeInputStyled>
   )
 }

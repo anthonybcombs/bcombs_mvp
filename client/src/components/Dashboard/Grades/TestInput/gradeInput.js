@@ -22,7 +22,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 import { requestGetApplicationHistory } from '../../../../redux/actions/Application'
 
-export default ({ importData = [], childId, requestList }) => {
+export default ({ importData = [], childId, requestList, onHasChanged }) => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading, gradeEditLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
@@ -126,7 +126,6 @@ export default ({ importData = [], childId, requestList }) => {
   const [activeColumnKey, setActiveColumnKey] = useState('')
   const [selected, setSelected] = useState([])
   const [deleteDialog, setDeleteDialog] = useState(false)
-  const [hasChanged, setHasChanged] = useState(false)
   const [backDialog, setBackDialog] = useState(false)
   const [selectStudentOpen, setSelectStudentOpen] = useState(false)
   const [editGradeOpen, setEditGradeOpen] = useState(false)
@@ -204,7 +203,7 @@ export default ({ importData = [], childId, requestList }) => {
 
   const handleInputChange = ({ target: { value } }, index, key) => {
     const mergeObj = { [key]: value }
-    setHasChanged(true)
+    onHasChanged(true)
     setRows(update(rows, {
       [index]: { $merge: mergeObj }
     }))
@@ -487,7 +486,7 @@ export default ({ importData = [], childId, requestList }) => {
       .map(e => ({ ...e, student_test_id: '', attachment: '', id: uuid() }))
     const mergedRows = remapSelectedRowsByAttemp([...newRows, ...copiedRows])
 
-    setHasChanged(true)
+    onHasChanged(true)
     setRows(mergedRows)
     setFilteredRows(mergedRows)
     setColumnFilters(generateColumnFilters(mergedRows))
@@ -497,7 +496,7 @@ export default ({ importData = [], childId, requestList }) => {
     const selectedIds = selected.map(e => e.id)
     const newRows = remapSelectedRowsByAttemp(cloneDeep(rows).filter(e => !selectedIds.includes(e.id)))
     
-    setHasChanged(true)
+    onHasChanged(true)
     setRows(newRows)
     setFilteredRows(newRows)
     setColumnFilters(generateColumnFilters(newRows))
@@ -698,7 +697,7 @@ export default ({ importData = [], childId, requestList }) => {
 
   useEffect(() => {
     if(!rows.length) {
-      setHasChanged(false)
+      onHasChanged(false)
     }
   }, [rows])
 

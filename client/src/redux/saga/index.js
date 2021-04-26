@@ -57,7 +57,8 @@ import {
   getStudentCumulativeGradeByUser,
   addUpdateStudentStandardizedTest,
   deleteStudentStandardizedTest,
-  addUpdateStudentCumulative
+  addUpdateStudentCumulative,
+  getStudentCumulativeGradeByVendor
 } from "../actions/Grades";
 
 import { requestedStatus, removedStatus } from "../actions/Status";
@@ -295,6 +296,7 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_VENDOR_APP_GROUPS,getVendorAppGroups)
   yield takeLatest(actionType.REQUEST_CUSTOM_APPLICATION_BY_VENDOR,getCustomApplicationByVendors)
   yield takeLatest(actionType.CUMULATIVE_GRADE_BY_APP_GROUP, getStudentCumulativeGradeByAppGroup)
+  yield takeLatest(actionType.CUMULATIVE_GRADE_BY_VENDOR, getStudentCumulativeGradeByVendor)
   yield takeLatest(actionType.CUMULATIVE_GRADE_BY_USER, getStudentCumulativeGradeByUser)
   yield takeLatest(actionType.ADD_UPDATE_STUDENT_STANDARD_TEST, addUpdateStudentStandardizedTest)
   yield takeLatest(actionType.DELETE_STUDENT_STANDARDIZED_TEST, deleteStudentStandardizedTest)

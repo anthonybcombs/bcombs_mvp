@@ -25,7 +25,8 @@ export default ({ child_id }) => {
   }))
 
   const queryLocation = useLocation();
-	const { group_id, group_type } = parse(queryLocation.search)
+	const { group_id, group_type, request_type } = parse(queryLocation.search)
+  const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
 
@@ -57,7 +58,7 @@ export default ({ child_id }) => {
             <Loading />
           ) : (
             <>
-              <Link to={`/dashboard/grades/individual/${child_id}?group_id=${group_id}&group_type=${group_type}`} className='back-btn'>
+              <Link to={`/dashboard/grades/individual/${child_id}?${commonQueryStrings}`} className='back-btn'>
                 <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
                 Back
               </Link>
@@ -70,7 +71,7 @@ export default ({ child_id }) => {
                   <div className='customLink'>
                     <Link
                       className='applyFilterBtn'
-                      to={`/dashboard/grades/input/${child_id}?group_id=${group_id}&group_type=${group_type}`}
+                      to={`/dashboard/grades/input/${child_id}?${commonQueryStrings}`}
                     >
                         {`Grades & Test Input`}
                     </Link>

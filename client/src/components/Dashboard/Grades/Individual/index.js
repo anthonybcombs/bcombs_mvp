@@ -25,7 +25,8 @@ export default ({ child_id }) => {
   }))
 
   const queryLocation = useLocation();
-	const { group_id, group_type } = parse(queryLocation.search)
+	const { group_id, group_type, request_type } = parse(queryLocation.search)
+  const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
 
@@ -223,7 +224,7 @@ export default ({ child_id }) => {
               <tr>
                 <td style={{ minWidth: '100px', wordBreak: 'break-word'}}>{
                   index === 0 ? (
-                    <Link to={`/dashboard/grades/profile/${row.child_id}?group_id=${group_id}&group_type=${group_type}`}>
+                    <Link to={`/dashboard/grades/profile/${row.child_id}?${commonQueryStrings}`}>
                       {name}
                     </Link>
                   ) : null
@@ -551,7 +552,7 @@ export default ({ child_id }) => {
               <Loading />
             ) : (
               <>
-                <Link to={`/dashboard/grades?group_id=${group_id}&group_type=${group_type}`} className='back-btn'>
+                <Link to={`/dashboard/grades?${commonQueryStrings}`} className='back-btn'>
                   <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
                   Back
                 </Link>
@@ -771,7 +772,7 @@ export default ({ child_id }) => {
                                 <tbody>
                                   <tr>
                                     <td>
-                                      <Link to={`/dashboard/grades/profile/${ch_id}?group_id=${group_id}&group_type=${group_type}`}>
+                                      <Link to={`/dashboard/grades/profile/${ch_id}?${commonQueryStrings}`}>
                                         {firstname} {lastname}
                                       </Link>
                                     </td>

@@ -1,6 +1,6 @@
 import { call, take, put, all } from "redux-saga/effects";
 import graphqlClient from "../../graphql";
-import { GET_STUDENT_CUMULATIVE_BY_APP_GROUP, GET_STUDENT_CUMULATIVE_BY_CHILD } from "../../graphql/gradeQuery";
+import { GET_STUDENT_CUMULATIVE_BY_APP_GROUP, GET_STUDENT_CUMULATIVE_BY_CHILD, GET_STUDENT_CUMULATIVE_BY_VENDOR } from "../../graphql/gradeQuery";
 import { ADD_UPDATE_STANDARDIZED_TEST_MUTATION, DELETE_STUDENT_STANDARDIZED_TEST_MUTATION, ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION } from "../../graphql/gradeMutation";
 import * as actionType from "./Constant";
 
@@ -19,7 +19,6 @@ const getGradesFromDatabase = async () => {
   return data.grades;
 };
 const getStudentCumulativeGradeByAppGroupFromDatabse = variables => {
-  console.log('variables', variables)
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.query({
@@ -28,6 +27,21 @@ const getStudentCumulativeGradeByAppGroupFromDatabse = variables => {
       })
     
       return resolve(data.getStudentCumulativeGradeByAppGroup)
+    } catch (error) {
+      console.log('error', { error, variables })
+      reject(error)
+    }
+  })
+}
+const getStudentCumulativeGradeByVendorFromDatabse = vendor_id => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: GET_STUDENT_CUMULATIVE_BY_VENDOR,
+        variables: { vendor_id }
+      })
+    
+      return resolve(data.getStudentCumulativeGradeByVendor)
     } catch (error) {
       console.log('error', { error, variables })
       reject(error)
@@ -109,8 +123,14 @@ export const requestGrades = () => {
 };
 export const requestGetStudentCumulativeGradeByAppGroup = (data) => {
   return {
-    type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP, // temporary for slow connection development
+    type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP,
     data
+  }
+}
+export const requestGetStudentCumulativeGradeByVendor = (vendor_id) => {
+  return {
+    type: actionType.CUMULATIVE_GRADE_BY_VENDOR,
+    vendor_id
   }
 }
 export const requestGetStudentCumulativeGradeByUser = (child_id) => {
@@ -170,6 +190,27 @@ export function* getStudentCumulativeGradeByAppGroup({ data }) {
       put(setGradeLoading(false)),
       put({
         type: actionType.CUMULATIVE_GRADE_BY_APP_GROUP_COMPLETED,
+        payload: []
+      })
+    ])
+  }
+}
+export function* getStudentCumulativeGradeByVendor({ vendor_id }) {
+  try {
+    yield put(setGradeLoading(true))
+    const response = yield call(getStudentCumulativeGradeByVendorFromDatabse, vendor_id)
+    yield all([
+      put(setGradeLoading(false)),
+      put({
+        type: actionType.CUMULATIVE_GRADE_BY_VENDOR_COMPLETED,
+        payload: response
+      })
+    ])
+  } catch (err) {
+    yield all([
+      put(setGradeLoading(false)),
+      put({
+        type: actionType.CUMULATIVE_GRADE_BY_VENDOR_COMPLETED,
         payload: []
       })
     ])
