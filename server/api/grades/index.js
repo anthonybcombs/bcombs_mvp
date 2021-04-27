@@ -8,6 +8,7 @@ import {
 } from "../../helpers/aws";
 
 import { getChildInformation } from "../child";
+import { getCustomFormApplicantById } from '../applications';
 
 const getAverage = (grades, type) => {
   return grades.map((grade) => {
@@ -131,12 +132,12 @@ const formatFile = async (attachment, id, path = "grades") => {
   return null;
 };
 
-export const getStudentCumulativeByChildId = async (childId) => {
+export const getStudentCumulativeByChildId = async (childId, type = 'bcombs') => {
   const db = makeDb();
   let studentCumulative = [];
   let studentGrades = [];
   try {
-    const response = await db.query(
+    const response = type === 'bcombs' ? await db.query(
       `SELECT  BIN_TO_UUID(child_id) as child_id,
 				student_grade_cumulative.application_type,
 				student_grade_cumulative.student_grade_cumulative_id,
@@ -167,6 +168,35 @@ export const getStudentCumulativeByChildId = async (childId) => {
 				student_grade_cumulative.child_id=UUID_TO_BIN(?)
 			AND
 				child.ch_id=student_grade_cumulative.child_id`,
+      [childId]
+    ) :  await db.query(
+      `SELECT BIN_TO_UUID(child_id) as child_id,
+				student_grade_cumulative.application_type,
+				student_grade_cumulative.student_grade_cumulative_id,
+				student_grade_cumulative.year_level,
+				student_grade_cumulative.school_type,
+				student_grade_cumulative.school_name,
+				student_grade_cumulative.child_designation,
+				student_grade_cumulative.school_designation,
+				student_grade_cumulative.mid_student_rank,
+				student_grade_cumulative.final_student_rank,
+				student_grade_cumulative.school_year_start,
+				student_grade_cumulative.school_year_end,
+				student_grade_cumulative.school_year_frame,
+				student_grade_cumulative.class_name,
+				student_grade_cumulative.gpa_sem_1,
+				student_grade_cumulative.gpa_sem_2,
+				student_grade_cumulative.gpa_final,
+				student_grade_cumulative.class_type,
+				student_grade_cumulative.scale,
+				student_grade_cumulative.attachment,
+				student_grade_cumulative.date_added,
+	    	CONVERT(custom_application.form_contents USING utf8) as form_contents
+			FROM student_grade_cumulative,custom_application
+			WHERE 
+				student_grade_cumulative.child_id=UUID_TO_BIN(?)
+			AND
+				custom_application.app_id=student_grade_cumulative.child_id`,
       [childId]
     );
     if (response) {
@@ -1120,7 +1150,7 @@ export const getStudentStandardizedTest = async (child_id) => {
 export const addUpdateStudentTest = async (studentTest = []) => {
   const db = makeDb();
   let studentTestList = [];
-
+  console.log('Student Test', studentTest)
   try {
     for (const test of studentTest) {
       let studentTestId = test.student_test_id || null;
@@ -1304,17 +1334,29 @@ export const removeStudentTest = async (studentTestIds = []) => {
 /*
  	standardized_test: [StudentStandardizedTest]
 	cumulative_grades: [StudentCumulativeGrade]
+
+  if applicationType = 'bcombs' 
+    pass child id
+  if applicationType = 'forms' 
+    pass custom app id
 */
-export const getStudentRecordById = async (childId) => {
+
+export const getStudentRecordById = async (id, applicationType = 'bcombs') => {
   let studentRecord = {};
   try {
-    const cumulativeGrades = await getStudentCumulativeByChildId(childId);
-    const standardizedTest = await getStudentStandardizedTest(childId);
-    const childInfo = await getChildInformation(childId);
+    const cumulativeGrades = await getStudentCumulativeByChildId(id,applicationType);
+    const standardizedTest = await getStudentStandardizedTest(id);
+    let childInfo = applicationType === 'bcombs' ?  await getChildInformation(id) :  await getCustomFormApplicantById({ app_id:id });
+    
+    if( applicationType === 'forms' &&  childInfo && childInfo.form_contents) {
+
+      childInfo.form_contents = JSON.stringify(childInfo.form_contents);
+      childInfo.ch_id = childInfo.app_id;
+    }
     studentRecord = {
       standardized_test: standardizedTest,
       cumulative_grades: cumulativeGrades,
-      info: childInfo ? childInfo[0] : {},
+      info: childInfo ? childInfo : {},
     };
   } catch (err) {
     console.log("Error getStudentRecordById", err);
