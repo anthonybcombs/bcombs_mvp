@@ -530,7 +530,6 @@ export default () => {
       } else {
         newGradeList = newGradeList.filter(e => e.form_contents)
       }
-      console.log('zzzzztoinksss', newGradeList)
       const { data, labels, quarterValues, schoolYears, stYearValues } = getDataList(newGradeList)
       const newGradeColumns = {
         string: Object.keys(labels).filter(e => !e.includes('Number')),

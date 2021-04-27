@@ -275,7 +275,7 @@ export default ({ importData = [], childId, requestList, onHasChanged }) => {
                         value={
                           key === 'test_name' 
                             ? testOptions.find(e => e.value === row.test_name).label
-                            : row[key]
+                            : row[key] || '--'
                         }
                       />
                     )
@@ -615,7 +615,7 @@ export default ({ importData = [], childId, requestList, onHasChanged }) => {
 
   const colArr = Object.entries(columns)
   const stColumns = {
-    name: { label: 'Name', type: 'string' },
+    name: { label: 'Name', type: 'string', isFunc: true },
     grade_taken: { label: 'Grade Taken', type: 'number', isFunc: true },
     standardized_test: { label: 'Test Name', type: 'string', isFunc: true },
     attempt: { label: 'Attempts', type: 'number', isFunc: true },

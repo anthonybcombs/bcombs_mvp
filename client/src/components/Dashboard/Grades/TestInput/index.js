@@ -7,7 +7,7 @@ import { parse } from 'query-string';
 import StandardTest from './standardTest'
 import GradeInput from './gradeInput'
 
-import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByUser } from '../../../../redux/actions/Grades'
+import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByVendor } from '../../../../redux/actions/Grades'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
 
@@ -25,7 +25,7 @@ export default ({ child_id }) => {
   const dispatch = useDispatch()
   const queryLocation = useLocation();
 	const { group_id, group_type, return_page, request_type } = parse(queryLocation.search)
-  const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
+  const isVendor = request_type === 'vendor'
   const DATE_FORMAT = "MM/dd/yyyy";
 
   let exportTestData = [];
@@ -194,7 +194,8 @@ export default ({ child_id }) => {
           exportGradesData.push(row);
         });
       } else {
-        const pClass = populateClass(cg?.grades || {});
+        const cg = {} //Temporary fix for cg not defined
+        const pClass = populateClass(cg.grades || {});
     
         const row = {
           'Student Name': gr.lastname + ', ' + gr.firstname,
@@ -310,10 +311,14 @@ export default ({ child_id }) => {
     //   app_group_type: 'bcombs'
     // }))
     if (group_id && group_type) {
-      dispatch(requestGetStudentCumulativeGradeByAppGroup({
-        app_group_id: group_id,
-        app_group_type: group_type
-      }))
+      if (isVendor) {
+        dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
+      } else {
+        dispatch(requestGetStudentCumulativeGradeByAppGroup({
+          app_group_id: group_id,
+          app_group_type: group_type
+        }))
+      }
     }
   }
 

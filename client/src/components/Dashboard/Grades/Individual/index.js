@@ -507,7 +507,7 @@ export default ({ child_id }) => {
 
   useEffect(() => {
     handleSetRowAndColumn(gradeType)
-    dispatch(requestGetStudentCumulativeGradeByUser(child_id))
+    dispatch(requestGetStudentCumulativeGradeByUser({ child_id, application_type: group_type }))
   }, [])
 
   useEffect(() => {

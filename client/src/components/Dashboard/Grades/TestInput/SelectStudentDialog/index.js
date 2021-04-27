@@ -26,6 +26,10 @@ export default function index({
   const formatValue = (item, key) => {
     const { test_name = 'act', grade_taken = 1, attempt, year_level = '' } = selectedGradeTest[item.child_id] || {}
     const { standardized_test = [], cumulative_grades = [] } = propRows.find(e => e.child_id === item.child_id) || {}
+
+    if (key === 'name') {
+      return item.name || '--'
+    }
     if (key === 'standardized_test') {
       return (
         <CustomSelect
@@ -164,7 +168,7 @@ export default function index({
     const newRows = propRows.flatMap(row => {
       const { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades, app_id, app_group_id, application_type, type } = row
       return {
-        name: `${firstname} ${lastname}`,
+        name: (firstname || lastname) ? `${firstname} ${lastname}` : '',
         firstname,
         lastname,
         child_id,

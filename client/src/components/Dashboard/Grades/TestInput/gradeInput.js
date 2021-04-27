@@ -19,12 +19,11 @@ import ConfirmDialog from './ConfirmDialog'
 import { getGradeTestAttempt } from '../utils'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
-import { requestGetApplicationHistory } from '../../../../redux/actions/Application'
+import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
 export default ({ importData = [], childId, requestList, onHasChanged }) => {
   const dispatch = useDispatch()
-  const { gradeInput, loading: { gradeLoading, gradeEditLoading } } = useSelector(({ gradeInput, loading }) => ({
+  const { gradeInput, loading: { gradeEditLoading } } = useSelector(({ gradeInput, loading }) => ({
     gradeInput, loading
   }))
 
@@ -185,7 +184,6 @@ export default ({ importData = [], childId, requestList, onHasChanged }) => {
 
     // Column filter
     const newColumnFilters = Object.entries(columnFilters)
-    console.log('depucha', {newColumnFilters, columnFilters})
     const hasUnChecked = !!newColumnFilters.filter(([key, value]) => value.find(e => !e.checked)).length
     if (hasUnChecked) {
       newRows = newRows.filter((row) => {
@@ -323,7 +321,7 @@ export default ({ importData = [], childId, requestList, onHasChanged }) => {
                       <input
                         readOnly
                         style={highlightStyle}
-                        value={row[key]}
+                        value={row[key] || '--'}
                       />
                     )
                   }
@@ -709,7 +707,7 @@ export default ({ importData = [], childId, requestList, onHasChanged }) => {
 
   const colArr = Object.entries(columns)
   const gColumns = {
-    name: { label: 'Name', type: 'string' },
+    name: { label: 'Name', type: 'string', isFunc: true },
     // child_id: { label: 'ID', type: 'string' },
     year_level: { label: 'Level', type: 'number', isFunc: true },
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
