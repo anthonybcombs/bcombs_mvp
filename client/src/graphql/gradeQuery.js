@@ -119,7 +119,8 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
 
 export const GET_STUDENT_CUMULATIVE_BY_CHILD = gql`
 query getStudentRecords(
-    $child_id: String
+    $child_id: String,
+    $application_type: String
   ) {
     getStudentRecords(child_id: $child_id) {
       info{
@@ -132,6 +133,8 @@ query getStudentRecords(
         hobbies
         accomplishments
         ch_id
+        app_id
+        form_contents
       }
       cumulative_grades{
         student_grade_cumulative_id
