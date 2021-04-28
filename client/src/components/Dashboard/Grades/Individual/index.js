@@ -26,6 +26,7 @@ export default ({ child_id }) => {
 
   const queryLocation = useLocation();
 	const { group_id, group_type, request_type } = parse(queryLocation.search)
+  const isVendor = request_type === 'vendor'
   const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
@@ -379,11 +380,18 @@ export default ({ child_id }) => {
 
   const getDataList = (data) => {
     const standardized_test = data?.standardized_test || []
+    const { form_contents } = data?.info || {}
     return (data?.cumulative_grades || [])
       .reduce((accumulator, { 
         child_id, firstname, lastname, grades = [], school_type = '', year_level = '', school_year_start = '',
         school_year_end = '', student_grade_cumulative_id, gpa_final, gpa_sem_1, gpa_sem_2
       }) => {
+        if (isVendor && form_contents) {
+          const { formData = {} } = JSON.parse(form_contents)
+          let [, fName = {}, , lName = {}] = (formData.find(e => e.type === 'name') || {}).fields || []
+          firstname = fName?.value ? JSON.parse(fName.value) : '--'
+          lastname = lName?.value ? JSON.parse(lName.value) : '--'
+        }
         const { data, labels, quarterValues, schoolYears, stYearValues } = accumulator
         const parseYear = (y) => typeof y === 'string' ? parseInt(y) : y
         const sy = parseYear(school_year_start) && parseYear(school_year_end) ? `${parseYear(school_year_start)}-${parseYear(school_year_end)}` : ''
@@ -535,8 +543,14 @@ export default ({ child_id }) => {
   }, [gradeInput])
 
   const { year = '' } = filterFromHeaders?.date || {}
-  console.log('@@@props', { gradeList: gradeInput?.individualList, stYearValues, rows, columnFilters })
-  const { firstname, lastname, ch_id } = gradeInput?.individualList?.info || {}
+  let { firstname, lastname, ch_id, form_contents } = gradeInput?.individualList?.info || {}
+
+  if (isVendor && form_contents) {
+    const { formData = {} } = JSON.parse(form_contents)
+    let [, fName = {}, , lName = {}] = (formData.find(e => e.type === 'name') || {}).fields || []
+    firstname = fName?.value ? JSON.parse(fName.value) : '--'
+    lastname = lName?.value ? JSON.parse(lName.value) : '--'
+  }
   return (
     <GradesStyled>
       <h2>Grade Individual View {year ? `(${year})` : ''}</h2>

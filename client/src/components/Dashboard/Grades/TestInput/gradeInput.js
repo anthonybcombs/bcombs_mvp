@@ -21,10 +21,10 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ importData = [], childId, requestList, onHasChanged }) => {
+export default ({ importData = [], childId, requestList, groupType, loading, onHasChanged }) => {
   const dispatch = useDispatch()
-  const { gradeInput, loading: { gradeEditLoading } } = useSelector(({ gradeInput, loading }) => ({
-    gradeInput, loading
+  const { gradeInput } = useSelector(({ gradeInput }) => ({
+    gradeInput
   }))
 
   const attempOptions = Array(5).fill().map((e, i) => ({ value: i+1, label: `${i+1}` }))
@@ -681,7 +681,13 @@ export default ({ importData = [], childId, requestList, onHasChanged }) => {
 
   useEffect(() => {
     if (gradeInput.gradeList) {
-      const newGradeList = gradeInput.gradeList.flatMap(e => e.standardized_test)
+      let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+      if (groupType === 'bcombs') {
+        newGradeList = newGradeList.filter(e => !e.form_contents)
+      } else {
+        newGradeList = newGradeList.filter(e => e.form_contents)
+      }
+      newGradeList = newGradeList.flatMap(e => e.standardized_test)
       const newRows = cloneDeep(rows).map(row => {
         const { student_test_id } = newGradeList.find(e => (
           e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
@@ -713,7 +719,12 @@ export default ({ importData = [], childId, requestList, onHasChanged }) => {
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
 
-  const selectStudentRows = gradeInput?.gradeList
+  let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+  if (groupType === 'bcombs') {
+    selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
+  } else {
+    selectStudentRows = selectStudentRows.filter(e => e.form_contents)
+  }
 
   return (
     <div
@@ -723,7 +734,7 @@ export default ({ importData = [], childId, requestList, onHasChanged }) => {
       }}
     >
       {
-        (gradeEditLoading) ? (
+        (loading) ? (
           <Loading />
         ) : (
           <>

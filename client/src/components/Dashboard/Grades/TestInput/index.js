@@ -19,7 +19,7 @@ import ExportTestGradeDialogStyled from './ExpotTestGradeDialog';
 import ConfirmDialog from './ConfirmDialog'
 
 export default ({ child_id }) => {
-  const { gradeInput: { gradeList }, groups: {application_groups}, loading: {gradeLoading} } = useSelector(({ gradeInput, groups, loading }) => ({
+  const { gradeInput: { gradeList }, groups: {application_groups}, loading: { gradeLoading } } = useSelector(({ gradeInput, groups, loading }) => ({
     gradeInput, groups, loading
   }));
   const dispatch = useDispatch()
@@ -508,6 +508,8 @@ export default ({ child_id }) => {
           <StandardTest
             importData={formattedSt}
             childId={child_id}
+            groupType={group_type}
+            loading={gradeLoading}
             requestList={requestList}
             onHasChanged={(bool) => setHasChanged(bool)}
           />
@@ -545,6 +547,8 @@ export default ({ child_id }) => {
           <GradeInput 
             importData={formattedGrades}
             childId={child_id}
+            loading={gradeLoading}
+            groupType={group_type}
             requestList={requestList}
             onHasChanged={(bool) => setHasChanged(bool)}
           />

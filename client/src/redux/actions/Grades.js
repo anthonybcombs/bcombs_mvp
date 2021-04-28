@@ -129,7 +129,7 @@ export const requestGetStudentCumulativeGradeByAppGroup = (data) => {
 }
 export const requestGetStudentCumulativeGradeByVendor = (vendor_id) => {
   return {
-    type: actionType.CUMULATIVE_GRADE_BY_VENDOR_COMPLETED, // for development
+    type: actionType.CUMULATIVE_GRADE_BY_VENDOR, // for development
     vendor_id
   }
 }

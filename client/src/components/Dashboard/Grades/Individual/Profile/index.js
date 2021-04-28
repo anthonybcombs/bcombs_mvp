@@ -26,6 +26,7 @@ export default ({ child_id }) => {
 
   const queryLocation = useLocation();
 	const { group_id, group_type, request_type } = parse(queryLocation.search)
+  const isVendor = request_type === 'vendor'
   const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
@@ -36,7 +37,7 @@ export default ({ child_id }) => {
   const [familylPaneOpen, setFamilyPaneOpen] = useState(false)
 
   useEffect(() => {
-    dispatch(requestGetStudentCumulativeGradeByUser(child_id))
+    dispatch(requestGetStudentCumulativeGradeByUser({ child_id, application_type: group_type }))
   }, [])
 
   useEffect(() => {
@@ -45,9 +46,16 @@ export default ({ child_id }) => {
     }
   }, [gradeInput])
 
-  const { firstname, lastname, hobbies, career_goals, accomplishments } = data?.info || {}
+  let { firstname, lastname, form_contents } = data?.info || {}
   const { school_name, year_level, gpa_final, gpa_sem_1, gpa_sem_2, final_student_rank, mid_student_rank } = maxBy((data?.cumulative_grades || []), 'year_level') || {}
-  console.log('@DATA', {...data })
+
+  if (isVendor && form_contents) {
+    const { formData = {} } = JSON.parse(form_contents)
+    let [, fName = {}, , lName = {}] = (formData.find(e => e.type === 'name') || {}).fields || []
+    firstname = fName?.value ? JSON.parse(fName.value) : '--'
+    lastname = lName?.value ? JSON.parse(lName.value) : '--'
+  }
+
   return (
     <GradesStyled>
       <h2>Grades and Tracking</h2>
