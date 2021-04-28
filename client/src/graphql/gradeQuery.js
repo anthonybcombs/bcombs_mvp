@@ -122,7 +122,7 @@ query getStudentRecords(
     $child_id: String,
     $application_type: String
   ) {
-    getStudentRecords(child_id: $child_id) {
+    getStudentRecords(child_id: $child_id, application_type: $application_type) {
       info{
         firstname
         lastname
