@@ -146,6 +146,7 @@ export default styled.div`
 		position: relative;
     right: -5px;
 		cursor: pointer;
+		padding-right: .3rem;
     transition: .15s ease-in-out;
 	}
 
@@ -165,10 +166,11 @@ export default styled.div`
 
 	.gradeInputView-table th {
 		color: white;
+		min-width: 80px;
+		font-size: 14px;
 		text-align: center;
 		background-color: #4B68C5;
-		// min-width: 120px;
-		min-width: 80px;
+    white-space: nowrap !important;
 	}
 	.gradeInputView-table th.standard {
     color: #000;

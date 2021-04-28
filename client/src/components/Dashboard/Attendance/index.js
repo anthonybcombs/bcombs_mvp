@@ -30,7 +30,7 @@ const AttendanceSummaryStyled = styled.div`
 		width: 100%;
 		text-align: center;
 		border-collapse: collapse;
-		box-shadow: 0px 0px 10px #ccc;
+		// box-shadow: 0px 0px 10px #ccc;
 		font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
 	}
 
