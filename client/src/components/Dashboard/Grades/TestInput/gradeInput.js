@@ -893,6 +893,7 @@ export default ({ importData = [], childId, requestList, groupType, loading, onH
             testOptions={testOptions}
             attempOptions={attempOptions}
             keys={Object.keys(goldenKeys)}
+            isForm={groupType === 'forms'}
             type='grade_input'
 
             onClose={() => setSelectStudentOpen(false)}
