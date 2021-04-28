@@ -7,173 +7,265 @@ import { parse } from 'query-string';
 import StandardTest from './standardTest'
 import GradeInput from './gradeInput'
 
-import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByUser } from '../../../../redux/actions/Grades'
+import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByVendor } from '../../../../redux/actions/Grades'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faAngleLeft, faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
 
 import { CSVLink, CSVDownload } from "react-csv";
 import { format } from "date-fns";
 
 import ImportTestGradeDialog from './ImportTestGradeDialog';
-import { formatError } from 'graphql'
+import ExportTestGradeDialogStyled from './ExpotTestGradeDialog';
+import ConfirmDialog from './ConfirmDialog'
 
 export default ({ child_id }) => {
-  const { gradeInput: { gradeList } } = useSelector(({ gradeInput }) => ({
-    gradeInput
+  const { gradeInput: { gradeList }, groups: {application_groups}, loading: { gradeLoading } } = useSelector(({ gradeInput, groups, loading }) => ({
+    gradeInput, groups, loading
   }));
   const dispatch = useDispatch()
   const queryLocation = useLocation();
-	const { group_id, group_type, return_page } = parse(queryLocation.search)
+	const { group_id, group_type, return_page, request_type } = parse(queryLocation.search)
+  const isVendor = request_type === 'vendor'
   const DATE_FORMAT = "MM/dd/yyyy";
 
-  let exporTestData = [];
+  let exportTestData = [];
   let exportGradesData = [];
+  //let selectedAppGroup = '';
+
+  const [selectImportType, setSelectImportType] = useState();
+  const [selectExportType, setSelecteExportType] = useState();
+  const [formattedSt, setFormattedSt] = useState([]);
+  const [formattedGrades, setFormattedGrades] = useState([]);
+  const [selectedAppGroup, setSelectedAppGroup] = useState('');
+  const [hasChanged, setHasChanged] = useState(false)
+  const [backDialog, setBackDialog] = useState(false)
 
   const populateClass = (classes = []) => {
 
-    if(!classes) classes = [];
+    //if(!classes) classes = [];
 
     let grades = {}
 
-    classes.map((cl, index) => {
+    let index = 0;
 
-      const row = {
-        [`Class Type ${index + 1}`]: cl.class,
-        [`Class Name ${index + 1}`]: cl.subject,
-        [`Class Designation ${index + 1}`]: cl.designation,
-        [`Class Teacher Name ${index + 1}`]: cl.teacher_name,
-        [`Class Grade Q1 ${index + 1}`]: cl.grade_quarter_1,
-        [`Class Grade Q2 ${index + 1}`]: cl.grade_quarter_2,
-        [`Class Grade Q3 ${index + 1}`]: cl.grade_quarter_3,
-        [`Class Grade Q4 ${index + 1}`]: cl.grade_quarter_4,
-        [`Class Letter Q1 ${index + 1}`]: cl.letter_grade_quarter_1,
-        [`Class Letter Q2 ${index + 1}`]: cl.letter_grade_quarter_2,
-        [`Class Letter Q3 ${index + 1}`]: cl.letter_grade_quarter_3,
-        [`Class Letter Q4 ${index + 1}`]: cl.letter_grade_quarter_4,
-        [`Class Grade Mid Letter ${index + 1}`]: cl.letter_mid_final_grade,
-        [`Class Grade Mid Number ${index + 1}`]: cl.mid_final_grade,
-        [`Class Grade Final Letter ${index + 1}`]: cl.letter_final_grade,
-        [`Class Grade Final Number ${index + 1}`]: cl.final_grade,
-        [`Class Grade Year Final Letter ${index + 1}`]: cl.letter_year_final_grade,
-        [`Class Grade Year Final Number ${index + 1}`]: cl.year_final_grade,
-        [`Class Help Needed Q1 ${index + 1}`]: cl.help_q1,
-        [`Class Help Needed Q2 ${index + 1}`]: cl.help_q2,
-        [`Class Help Needed Q3 ${index + 1}`]: cl.help_q3,
-        [`Class Help Needed Q4 ${index + 1}`]: cl.help_q4,
-        [`Class Help Needed Overall ${index + 1}`]: cl.help_needed,
-        [`Class Attendance Absent Q1 ${index + 1}`]: cl.attendance_quarter_1_absent,
-        [`Class Attendance Absent Q2 ${index + 1}`]: cl.attendance_quarter_2_absent,
-        [`Class Attendance Absent Q3 ${index + 1}`]: cl.attendance_quarter_3_absent,
-        [`Class Attendance Absent Q4 ${index + 1}`]: cl.attendance_quarter_4_absent,
-        [`Class Attendance Tardy Q1 ${index + 1}`]: cl.attendance_quarter_1_tardy,
-        [`Class Attendance Tardy Q2 ${index + 1}`]: cl.attendance_quarter_2_tardy,
-        [`Class Attendance Tardy Q3 ${index + 1}`]: cl.attendance_quarter_3_tardy,
-        [`Class Attendance Tardy Q4 ${index + 1}`]: cl.attendance_quarter_4_tardy,
-        [`Class Attendance Present Q1 ${index + 1}`]: cl.attendance_quarter_1_present,
-        [`Class Attendance Present Q2 ${index + 1}`]: cl.attendance_quarter_2_present,
-        [`Class Attendance Present Q3 ${index + 1}`]: cl.attendance_quarter_3_present,
-        [`Class Attendance Present Q4 ${index + 1}`]: cl.attendance_quarter_4_present,
-        [`Class Attendance Total Q1 ${index + 1}`]: cl.attendance_quarter_1_total,
-        [`Class Attendance Total Q2 ${index + 1}`]: cl.attendance_quarter_2_total,
-        [`Class Attendance Total Q3 ${index + 1}`]: cl.attendance_quarter_3_total,
-        [`Class Attendance Total Q4 ${index + 1}`]: cl.attendance_quarter_4_total,
-        [`Class Attendance Overall Absent ${index + 1}`]: cl.attendance_quarter_1_absent + cl.attendance_quarter_2_absent + cl.attendance_quarter_3_absent + cl.attendance_quarter_4_absent,
-        [`Class Attendance Overall Tardy ${index + 1}`]: cl.attendance_quarter_1_tardy + cl.attendance_quarter_2_tardy + cl.attendance_quarter_3_tardy + cl.attendance_quarter_4_tardy,
-        [`Class Attendance Overall Present ${index + 1}`]: cl.attendance_quarter_1_present + cl.attendance_quarter_2_present + cl.attendance_quarter_3_present + cl.attendance_quarter_4_present,
-        [`Class Attendance Overall Total ${index + 1}`]: cl.attendance_quarter_1_total + cl.attendance_quarter_2_total + cl.attendance_quarter_3_total + cl.attendance_quarter_4_total
-      }
+    const row = {
+      [`Class Type ${index + 1}`]: '',
+      [`Class Name ${index + 1}`]: '',
+      [`Class Designation ${index + 1}`]: '',
+      [`Class Teacher Name ${index + 1}`]: '',
+      [`Class Grade Q1 ${index + 1}`]: '',
+      [`Class Grade Q2 ${index + 1}`]: '',
+      [`Class Grade Q4 ${index + 1}`]: '',
+      [`Class Letter Q1 ${index + 1}`]: '',
+      [`Class Letter Q2 ${index + 1}`]: '',
+      [`Class Letter Q3 ${index + 1}`]: '',
+      [`Class Letter Q4 ${index + 1}`]: '',
+      [`Class Grade Mid Letter ${index + 1}`]: '',
+      [`Class Grade Mid Number ${index + 1}`]: '',
+      [`Class Grade Final Letter ${index + 1}`]: '',
+      [`Class Grade Final Number ${index + 1}`]: '',
+      [`Class Grade Year Final Letter ${index + 1}`]: '',
+      [`Class Grade Year Final Number ${index + 1}`]: '',
+      [`Class Help Needed Q1 ${index + 1}`]: '',
+      [`Class Help Needed Q2 ${index + 1}`]: '',
+      [`Class Help Needed Q3 ${index + 1}`]: '',
+      [`Class Help Needed Q4 ${index + 1}`]: '',
+      [`Class Help Needed Overall ${index + 1}`]: '',
+      [`Class Attendance Absent Q1 ${index + 1}`]: '',
+      [`Class Attendance Absent Q2 ${index + 1}`]: '',
+      [`Class Attendance Absent Q3 ${index + 1}`]: '',
+      [`Class Attendance Absent Q4 ${index + 1}`]: '',
+      [`Class Attendance Tardy Q1 ${index + 1}`]: '',
+      [`Class Attendance Tardy Q2 ${index + 1}`]: '',
+      [`Class Attendance Tardy Q3 ${index + 1}`]: '',
+      [`Class Attendance Tardy Q4 ${index + 1}`]: '',
+      [`Class Attendance Present Q1 ${index + 1}`]: '',
+      [`Class Attendance Present Q2 ${index + 1}`]: '',
+      [`Class Attendance Present Q3 ${index + 1}`]: '',
+      [`Class Attendance Present Q4 ${index + 1}`]: '',
+      [`Class Attendance Total Q1 ${index + 1}`]: '',
+      [`Class Attendance Total Q2 ${index + 1}`]: '',
+      [`Class Attendance Total Q3 ${index + 1}`]: '',
+      [`Class Attendance Total Q4 ${index + 1}`]: '',
+      [`Class Attendance Overall Absent ${index + 1}`]: '',
+      [`Class Attendance Overall Tardy ${index + 1}`]: '',
+      [`Class Attendance Overall Present ${index + 1}`]: '',
+      [`Class Attendance Overall Total ${index + 1}`]: ''
+    }
 
-      grades = {...grades, ...row};
-    });
+    grades = {...grades, ...row};
 
     return grades;
   }
 
-  gradeList.map((gr) => {
+  console.log('gradeList', gradeList);
 
-    const stardarizedTestList = gr.standardized_test;
+  if(gradeList.length > 0) {
+    gradeList.map((gr) => {
 
-    if(stardarizedTestList.length > 0) {
-      stardarizedTestList.map((st) => {
+      const stardarizedTestList = gr.standardized_test;
+  
+      if(stardarizedTestList.length > 0) {
+        stardarizedTestList.map((st) => {
+          const row = {
+            // 'Student Name': gr.lastname + ', ' + gr.firstname,
+            // 'Student ID': gr.child_id,
+            // 'ST ID': st.student_test_id,
+            // 'ST Test Name': st.test_name,
+            // 'ST Attempt': st.attempt,
+            // 'ST Grade Taken': st.grade_taken,
+            // 'ST Month Taken': st.month_taken ? format(new Date(st.month_taken), DATE_FORMAT) : '',
+            // 'ST Score': st.score,
+            // 'ST %': st.score_percentage,
+            // 'ST Ach level': st.ach_level,
+            // 'ST % School': st.school_percentage,
+            // 'ST % District': st.district_percentage,
+            // 'ST % State': st.state_percentage,
+            // 'ST % Nationality': st.nationality_percentage
+  
+            'Student Name': gr.lastname + ', ' + gr.firstname,
+            'Student ID': gr.child_id,
+            'App Group ID': gr.app_group_id,
+            'ST ID': '',
+            'ST Test Name': '',
+            'ST Attempt': '',
+            'ST Grade Taken': '',
+            'ST Month Taken': '',
+            'ST Score': '',
+            'ST %': '',
+            'ST Ach level': '',
+            'ST % School': '',
+            'ST % District': '',
+            'ST % State': '',
+            'ST % Nationality': ''
+          }
+      
+          exportTestData.push(row);
+        });
+      } else {
         const row = {
           'Student Name': gr.lastname + ', ' + gr.firstname,
           'Student ID': gr.child_id,
-          'ST ID': st.student_test_id,
-          'ST Test Name': st.test_name,
-          'ST Attempt': st.attempt,
-          'ST Grade Taken': st.grade_taken,
-          'ST Month Taken': st.month_taken ? format(new Date(st.month_taken), DATE_FORMAT) : '',
-          'ST Score': st.score,
-          'ST %': st.score_percentage,
-          'ST Ach level': st.ach_level,
-          'ST % School': st.school_percentage,
-          'ST % District': st.district_percentage,
-          'ST % State': st.state_percentage,
-          'ST % Nationality': st.nationality_percentage
+          'App Group ID': gr.app_group_id,
+          'ST ID': '',
+          'ST Test Name': '',
+          'ST Attempt': '',
+          'ST Grade Taken': '',
+          'ST Month Taken': '',
+          'ST Score': '',
+          'ST %': '',
+          'ST Ach level': '',
+          'ST % School': '',
+          'ST % District': '',
+          'ST % State': '',
+          'ST % Nationality': ''
         }
+        exportTestData.push(row);
+      }
+  
+      const cumulativeGradesList = gr.cumulative_grades;
+  
+      if(cumulativeGradesList.length > 0) {
+        cumulativeGradesList.map((cg) => {
+  
+          const pClass = populateClass(cg.grades);
     
-        exporTestData.push(row);
-      });
-    } else {
-      const row = {
-        'Student Name': gr.lastname + ', ' + gr.firstname,
-        'Student ID': gr.child_id,
-        'ST ID': '',
-        'ST Test Name': '',
-        'ST Attempt': '',
-        'ST Grade Taken': '',
-        'ST Month Taken': '',
-        'ST Score': '',
-        'ST %': '',
-        'ST Ach level': '',
-        'ST % School': '',
-        'ST % District': '',
-        'ST % State': '',
-        'ST % Nationality': ''
+          const row = {
+            'Student Name': gr.lastname + ', ' + gr.firstname,
+            'Student ID': gr.child_id,
+            'App Group ID': gr.app_group_id,
+            'Cumulative Grade ID': '',
+            'Student Level': '',
+            'Student Designations': '',
+            'School Name': '',
+            'School Designation': '',
+            'School Year Start': '',
+            'School Year End': '',
+            'School Year Time Frame': '',
+            'GPA Scale': '',
+            'Semester 1 (GPA)': '',
+            'Semester 2 (GPA)': '',
+            'GPA Final': '',
+            'Class Rank (Sem 1)': '',
+            'Class Rank (Sem 2)': '',
+            ...pClass
+          }
+    
+          exportGradesData.push(row);
+        });
+      } else {
+        const cg = {} //Temporary fix for cg not defined
+        const pClass = populateClass(cg.grades || {});
+    
+        const row = {
+          'Student Name': gr.lastname + ', ' + gr.firstname,
+          'Student ID': gr.child_id,
+          'App Group ID': gr.app_group_id,
+          'Cumulative Grade ID': '',
+          'Student Level': '',
+          'Student Designations': '',
+          'School Name': '',
+          'School Designation': '',
+          'School Year Start': '',
+          'School Year End': '',
+          'School Year Time Frame': '',
+          'GPA Scale': '',
+          'Semester 1 (GPA)': '',
+          'Semester 2 (GPA)': '',
+          'GPA Final': '',
+          'Class Rank (Sem 1)': '',
+          'Class Rank (Sem 2)': '',
+          ...pClass
+        }
+  
+        exportGradesData.push(row);
       }
-      exporTestData.push(row);
-    }
-
-
-
-    const cumulativeGradesList = gr.cumulative_grades;
-
-    cumulativeGradesList.map((cg) => {
-
-      const pClass = populateClass(cg.grades);
-
-      const row = {
-        'Student Name': gr.lastname + ', ' + gr.firstname,
-        'Student ID': gr.child_id,
-        'App Group ID': gr.app_group_id,
-        'Cumulative Grade ID': cg.student_grade_cumulative_id,
-        'Student Level': cg.year_level,
-        'Student Designations': cg.school_designation,
-        'School Name': cg.school_name,
-        'School Designation': cg.school_designation,
-        'School Year Start': cg.school_year_start ? format(new Date(cg.school_year_start), DATE_FORMAT) : '',
-        'School Year End': cg.school_year_end ? format(new Date(cg.school_year_end), DATE_FORMAT) : '',
-        'School Year Time Frame': cg.school_year_frame,
-        'GPA Scale': cg.scale,
-        'Semester 1 (GPA)': cg.gpa_sem_1,
-        'Semester 2 (GPA)': cg.gpa_sem_2,
-        'GPA Final': cg.gpa_final,
-        'Class Rank (Sem 1)': cg.mid_student_rank,
-        'Class Rank (Sem 2)': cg.final_student_rank,
-        ...pClass
-      }
-
-      exportGradesData.push(row);
     });
+  } else {
 
-    console.log('exportGradesData', exportGradesData);
- 
-  });
+    console.log('selectedAppGroup', selectedAppGroup);
 
-  const [selectImportType, setSelectImportType] = useState();
+    exportTestData.push({
+      'Student Name': '',
+      'Student ID': '',
+      'App Group ID': selectedAppGroup,
+      'ST ID': '',
+      'ST Test Name': '',
+      'ST Attempt': '',
+      'ST Grade Taken': '',
+      'ST Month Taken': '',
+      'ST Score': '',
+      'ST %': '',
+      'ST Ach level': '',
+      'ST % School': '',
+      'ST % District': '',
+      'ST % State': '',
+      'ST % Nationality': ''
+    })
 
-  const [formattedSt, setFormattedSt] = useState([]);
-  const [formattedGrades, setFormattedGrades] = useState([]);
+    const pClass = populateClass([]);
+
+    exportGradesData.push({
+      'Student Name': '',
+      'Student ID': '',
+      'App Group ID': selectedAppGroup,
+      'Cumulative Grade ID': '',
+      'Student Level': '',
+      'Student Designations': '',
+      'School Name': '',
+      'School Designation': '',
+      'School Year Start': '',
+      'School Year End': '',
+      'School Year Time Frame': '',
+      'GPA Scale': '',
+      'Semester 1 (GPA)': '',
+      'Semester 2 (GPA)': '',
+      'GPA Final': '',
+      'Class Rank (Sem 1)': '',
+      'Class Rank (Sem 2)': '',
+      ...pClass
+    })
+  }
 
   const handleTestImport = () => {
     setSelectImportType('standardtest-import');
@@ -190,22 +282,22 @@ export default ({ child_id }) => {
       let fields = data[i].split('"').join('').split(',');
 
       if(fields.length == 15) {
-        console.log('fields', fields);
         const st = {
           name: fields[1].trim() + ' ' + fields[0].trim(),
           child_id: fields[2],
-          student_test_id: fields[3],
-          test_name: fields[4],
-          attempt: fields[5],
-          grade_token: fields[6],
-          month_taken: fields[7],
-          score: fields[8],
-          score_percentage: fields[9],
-          ach_level: fields[10],
-          school_percentage: fields[11],
-          district_percentage: fields[12],
-          state_percentage: fields[13],
-          nationality_percentage: fields[14]
+          app_group_id: fields[3],
+          student_test_id: fields[4],
+          test_name: fields[5],
+          attempt: fields[6],
+          grade_token: fields[7],
+          month_taken: fields[8],
+          score: fields[9],
+          score_percentage: fields[10],
+          ach_level: fields[11],
+          school_percentage: fields[12],
+          district_percentage: fields[13],
+          state_percentage: fields[14],
+          nationality_percentage: fields[15]
         }
         formattedSt.push(st);
       }
@@ -219,16 +311,28 @@ export default ({ child_id }) => {
     //   app_group_type: 'bcombs'
     // }))
     if (group_id && group_type) {
-      dispatch(requestGetStudentCumulativeGradeByAppGroup({
-        app_group_id: group_id,
-        app_group_type: group_type
-      }))
+      if (isVendor) {
+        dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
+      } else {
+        dispatch(requestGetStudentCumulativeGradeByAppGroup({
+          app_group_id: group_id,
+          app_group_type: group_type
+        }))
+      }
     }
   }
 
   useEffect(() => {
     requestList()
   }, [])
+
+
+  useEffect(() => {
+    console.log('grades list has been changed');
+  }, [gradeList]);
+
+  console.log('application_groups',application_groups);
+  console.log('loading', gradeLoading);
 
   const handleFormattedGrades = (fields, size) => {
     let formattedGrades = [];
@@ -279,8 +383,6 @@ export default ({ child_id }) => {
 
       start += 4;
 
-      console.log('start', start);
-
       formattedGrades.push(row);
     }
 
@@ -292,19 +394,13 @@ export default ({ child_id }) => {
 
     const colHeaders = data[0].split('"').join('').split(',');
 
-    console.log('col headers', colHeaders);
-    console.log('import grades', data);
-
     const importedGrades = colHeaders.filter((i) => {
       return i.includes('Class Type')
     });
 
-    console.log('total grades', importedGrades);
 
     for(let i = 1; i < data.length; i++) {
       let fields = data[i].split('"').join('').split(',');
-
-      console.log('fields', fields);
 
       if(fields.length >= 17) {
         const cg = {
@@ -333,9 +429,28 @@ export default ({ child_id }) => {
         formattedGrades.push(cg);
       }
     }
-
-    console.log('formattedGrades', formattedGrades);
     setFormattedGrades([...formattedGrades]);
+  }
+
+  const handleGetGroupGradeTest = (appGroupId = '') => {
+    console.log('call my api'); console.log('appGroupId', appGroupId);
+    if(appGroupId) {
+      setSelectedAppGroup(appGroupId);
+      //selectedAppGroup = appGroupId;
+      dispatch(requestGetStudentCumulativeGradeByAppGroup({
+        app_group_id: appGroupId,
+        app_group_type: 'bcombs'
+      }));
+    }
+  }
+
+  const handleBack = () => {
+    const backUrl = child_id
+      ? `/dashboard/grades/profile/${child_id}?group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
+      : (!return_page && (group_id || group_type))
+        ? `/dashboard/studentdata`
+        : `/dashboard/grades?group_id=${group_id}&group_type=${group_type}`
+    window.location.replace(backUrl)
   }
 
   return (
@@ -345,10 +460,11 @@ export default ({ child_id }) => {
           <h2>Grade and Test Input</h2>
         </div>
         <div className='action right'>
-          <CSVLink
+          {/* <CSVLink
             id="gradeExportBtn"
             filename='Standard Test Export.csv'
-            data={exporTestData}
+            data={exportTestData}
+            asyncOnClick={true}
           >
             <button
               className='btn-save'
@@ -356,7 +472,14 @@ export default ({ child_id }) => {
               <FontAwesomeIcon icon={faDownload} />
               <span>Export</span>
             </button>
-          </CSVLink>
+          </CSVLink> */}
+            <button
+              className='btn-save'
+              onClick={() => {setSelecteExportType('standardtest-export')}}
+            >
+              <FontAwesomeIcon icon={faDownload} />
+              <span>Export</span>
+            </button>
           <button
             className='btn-save'
             onClick={handleTestImport}
@@ -366,73 +489,133 @@ export default ({ child_id }) => {
           </button>
         </div>
       </div>
-     <div id='viewWrapper'>
-      <div id='gradeInputView'>
-        <StandardTest
-          importData={formattedSt}
-          childId={child_id}
-          groupId={group_id}
-          groupType={group_type}
-          returnPage={return_page}
-          requestList={requestList}
-        />
-        <div className='gradeInputView-header' style={{'marginTop': '1rem'}}>
-          <div className='action left'></div>
-          <div className='action right'>
-            <CSVLink
-              id="gradeExportBtn"
-              filename='Grades Export.csv'
-              data={exportGradesData}
-            >
+      <div id='viewWrapper'>
+        <div id='gradeInputView'>
+          <a
+            className='back-btn'
+            onClick={(e) => {
+              e.preventDefault()
+              if (hasChanged) {
+                setBackDialog(true)
+              } else {
+                handleBack()
+              }
+            }}
+          >
+            <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
+            Back
+          </a>
+          <StandardTest
+            importData={formattedSt}
+            childId={child_id}
+            groupType={group_type}
+            loading={gradeLoading}
+            requestList={requestList}
+            onHasChanged={(bool) => setHasChanged(bool)}
+          />
+          <div className='gradeInputView-header' style={{'marginTop': '1rem'}}>
+            <div className='action left'></div>
+            <div className='action right'>
+              {/* <CSVLink
+                id="gradeExportBtn"
+                filename='Grades Export.csv'
+                data={exportGradesData}
+              >
+                <button
+                  className='btn-save'
+                >
+                  <FontAwesomeIcon icon={faDownload} />
+                  <span>Export</span>
+                </button>
+              </CSVLink> */}
               <button
                 className='btn-save'
+                onClick={() => {setSelecteExportType('grades-export')}}
               >
                 <FontAwesomeIcon icon={faDownload} />
                 <span>Export</span>
               </button>
-            </CSVLink>
-            <button
-              className='btn-save'
-              onClick={handleGradesImport}
-            >
-              <FontAwesomeIcon icon={faUpload} />
-              <span>Import</span>
-            </button>
+              <button
+                className='btn-save'
+                onClick={handleGradesImport}
+              >
+                <FontAwesomeIcon icon={faUpload} />
+                <span>Import</span>
+              </button>
+            </div>
           </div>
+          <GradeInput 
+            importData={formattedGrades}
+            childId={child_id}
+            loading={gradeLoading}
+            groupType={group_type}
+            requestList={requestList}
+            onHasChanged={(bool) => setHasChanged(bool)}
+          />
         </div>
-        <GradeInput 
-          importData={formattedGrades}
-          childId={child_id}
-          requestList={requestList}
-        />
       </div>
-     </div>
-     {
-       selectImportType == 'standardtest-import'  && (
-         <ImportTestGradeDialog
-          inputType='test'
-          data={exporTestData}
-          onClose={() => setSelectImportType()}
-          onImport={(data) => {
-            setSelectImportType(); 
-            handleImportedTestData(data)
-          }}
-         />
-       )
-     }
-     {
-       selectImportType == 'grades-import'  && (
-         <ImportTestGradeDialog
-          inputType='grades'
-          data={exporTestData}
-          onClose={() => setSelectImportType()}
-          onImport={(data) => {
-            setSelectImportType(); 
-            handleImportGradesData(data)
-          }}
-         />
-       )
-     }
+      {
+        selectImportType == 'standardtest-import'  && (
+          <ImportTestGradeDialog
+            inputType='test'
+            data={exportTestData}
+            onClose={() => setSelectImportType()}
+            onImport={(data) => {
+              setSelectImportType(); 
+              handleImportedTestData(data)
+            }}
+          />
+        )
+      }
+      {
+        selectImportType == 'grades-import'  && (
+          <ImportTestGradeDialog
+            inputType='grades'
+            data={exportGradesData}
+            onClose={() => setSelectImportType()}
+            onImport={(data) => {
+              setSelectImportType(); 
+              handleImportGradesData(data)
+            }}
+          />
+        )
+      }
+      {
+        selectExportType == 'standardtest-export' && (
+          <ExportTestGradeDialogStyled
+            inputType='test'
+            onClose={() => {setSelecteExportType()}}
+            appGroups={application_groups}
+            onGetGroupGradeTest={handleGetGroupGradeTest}
+            data={exportTestData}
+            loading={gradeLoading}
+          >
+          </ExportTestGradeDialogStyled>
+        )
+      }
+      {
+        selectExportType == 'grades-export' && (
+          <ExportTestGradeDialogStyled
+            inputType='grades'
+            onClose={() => {setSelecteExportType()}}
+            appGroups={application_groups}
+            onGetGroupGradeTest={handleGetGroupGradeTest}
+            data={exportGradesData}
+            loading={gradeLoading}
+          >
+          </ExportTestGradeDialogStyled>
+        )
+      }
+      {
+        backDialog && (
+          <ConfirmDialog
+            onClose={() => setBackDialog(false)}
+            onConfirm={handleBack}
+            title='Confirm leaving page'
+            content='You have unsaved changes. Would you like to leave this page?'
+          />
+        )
+      }
     </GradeInputStyled>
   )
 }

@@ -30,7 +30,7 @@ const AttendanceSummaryStyled = styled.div`
 		width: 100%;
 		text-align: center;
 		border-collapse: collapse;
-		box-shadow: 0px 0px 10px #ccc;
+		// box-shadow: 0px 0px 10px #ccc;
 		font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
 	}
 
@@ -157,7 +157,7 @@ export default function index(props) {
 			let classCount = formGroup && formGroup.form_contents ? getFormClassCount(group) : getClassCount(group);
 			let availableCount = count - classCount;
 			availableCount = availableCount < 0 ? 0 : availableCount;
-		
+
 			return (
 				<tr key={group.id}>
 					<td>
@@ -178,11 +178,11 @@ export default function index(props) {
 					</td>
 					<td>
 						{formGroup && formGroup.form_contents 
-							? <Link to={'/dashboard/grades/input?group_id=' + formGroup?.form_id + '&group_type=forms'}>Input</Link>
+							? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms'}>Input</Link>
 							: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>Input</Link>
 						} /
 						{formGroup && formGroup.form_contents 
-							? <Link to={'/dashboard/grades?group_id=' + formGroup?.form_id + '&group_type=forms'}>View</Link>
+							? <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=forms'}>View</Link>
 							: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>View</Link>
 						}
 					</td>
@@ -258,8 +258,8 @@ export default function index(props) {
 		for (const group of appGroups) {
 			totalClassCount += getClassCount(group);
 		}
-		console.log('getTotalClassCount123123123 formGroups',formGroups)
-		console.log('getTotalClassCount123123123 appGroups',appGroups)
+		// console.log('getTotalClassCount123123123 formGroups',formGroups)
+		// console.log('getTotalClassCount123123123 appGroups',appGroups)
 		for (const group of formGroups) {
 			totalClassCount += getFormClassCount(group);
 		}
@@ -269,7 +269,7 @@ export default function index(props) {
 
 	// **************** */..
 	const getTotalCountByForm = id => {
-		console.log('form.formAppGroups',form.formAppGroups)
+		// console.log('form.formAppGroups',form.formAppGroups)
 
 		const formGroups = form && form.formAppGroups ? form.formAppGroups.filter(appGroup => appGroup.form === id) : []
 
@@ -305,17 +305,17 @@ export default function index(props) {
 	};
 
 	const getTotalClassCountByForm = id => {
-		console.log('form.formAppGroups', form.formAppGroups)
+		// console.log('form.formAppGroups', form.formAppGroups)
 		const formGroups = form && form.formAppGroups &&  form.formAppGroups.filter(appGroup => appGroup.form === id) ;
 		let totalClassCount = 0;
 		
 		for (const group of formGroups) {
 			totalClassCount += getFormClassCount(group);
 		}
-		console.log('getTotalClassCountByForm', totalClassCount)
+		// console.log('getTotalClassCountByForm', totalClassCount)
 		return totalClassCount;
 	};
-
+	console.log('@@@@', form.formList, selectedVendor)
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Student Data</h2>
@@ -352,13 +352,11 @@ export default function index(props) {
 								<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link>
 							</td>
 							<td>
-								--
-								{/* <Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>Input</Link> /
-								<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link> */}
+								<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor`}>Input</Link> /
+								<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor`}>View</Link>
 							</td>
 						</tr>
 						{form.formList.map(item => {
-						
 							return (
 								<tr>
 									<td>{item.form_contents?.formTitle}</td>
@@ -371,8 +369,8 @@ export default function index(props) {
 										<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}`}>View</Link>
 									</td>
 									<td>
-										<Link to={`/dashboard/grades/input?group_id=${item.form_id}&group_type=forms`}>Input</Link> /
-										<Link to={`/dashboard/grades?group_id=${item.form_id}&group_type=forms`}>View</Link>
+										<Link to={`/dashboard/grades/input?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>Input</Link> /
+										<Link to={`/dashboard/grades?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>View</Link>
 									</td>
 								</tr>
 							);

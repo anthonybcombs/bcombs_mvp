@@ -54,7 +54,7 @@ const AttendanceSummaryStyled = styled.div`
 	}
 
 	#attendance-summary-list {
-		box-shadow: 0px 0px 10px #ccc;
+		// box-shadow: 0px 0px 10px #ccc;
 		overflow-x: auto;
 	}
 

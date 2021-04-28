@@ -458,8 +458,8 @@ const resolvers = {
     async getStudentTest(root, { child_id }, context ) {
       return await getStudentStandardizedTest(child_id)
     },
-    async getStudentRecords(root, { child_id }, context) {
-      return await getStudentRecordById(child_id)
+    async getStudentRecords(root, { child_id, application_type = 'bcombs' }, context) {
+      return await getStudentRecordById(child_id, application_type)
     },
     async getStudentCumulativeGradeByAppGroup(root, { app_group_id, app_group_type }, context) {
       return await getStudentCumulativeGradeByAppGroupId(app_group_id, app_group_type)

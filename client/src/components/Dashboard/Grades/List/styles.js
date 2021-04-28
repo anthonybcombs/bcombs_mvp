@@ -154,7 +154,7 @@ export default styled.div`
 	#gradeListView-table td,
 	#gradeListView-table th {
 		border: 0;
-		padding: 15px;
+		padding: 12px 3px;
 	}
 
 	#gradeListView-table tr:nth-child(even) {
@@ -168,6 +168,7 @@ export default styled.div`
 	}
 	#gradeListView-table th.th-grades {
 		position: relative;
+		white-space: nowrap;
 	}
 	#gradeListView-table th.th-grades >svg {
 		position: relative;

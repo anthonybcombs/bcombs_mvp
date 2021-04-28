@@ -1615,6 +1615,8 @@ const queryTypes = `
         hobbies: String
         accomplishments: String
         ch_id: String
+        form_contents: String
+        app_id: String
     }
 
     type StudentRecords {
@@ -1730,10 +1732,10 @@ const queries = `
         getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
         getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
         getStudentCumulativeGradeByAppGroup(app_group_id: String, app_group_type: String): [StudentByGroupSummary]
-        getStudentCumulativeGradeByVendor(vendor_id: String): [StudentCumulativeGrade]
+        getStudentCumulativeGradeByVendor(vendor_id: String): [StudentByGroupSummary]
         getStudentCumulativeGradeByUser(child_id: String): [StudentCumulativeGrade]
         getStudentTest(child_id: String): [StudentStandardizedTest]
-        getStudentRecords(child_id: String): StudentRecords
+        getStudentRecords(child_id: String, application_type: String): StudentRecords
     }
 `;
 

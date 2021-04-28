@@ -486,7 +486,7 @@ const ClassListViewStyled = styled.div`
 	.listViewTableContainer {
 		overflow-x: auto;
 		margin-top: 3rem;
-		box-shadow: 0px 0px 10px #ccc;
+		// box-shadow: 0px 0px 10px #ccc;
 	}
 	.listViewTableContainer::-webkit-scrollbar {
 		width: 8px;

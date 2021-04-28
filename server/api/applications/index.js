@@ -1183,6 +1183,7 @@ export const getCustomFormApplicantById = async({app_id, is_archived = 0}) => {
         is_archived
       ]
     )
+    console.log('applicationsss', applications)
     for(const application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       application.form_contents = JSON.parse(application.form_contents);
