@@ -9,7 +9,7 @@ import CustomSelect from '../../../CustomComponents/CustomSelect'
 import { getGradeTestAttempt } from '../../utils'
 
 export default function index({
-  onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, columns, type = 'test_input', childId
+  onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, columns, type = 'test_input', childId, isForm
 }) {
   const isTestInput = type === 'test_input'
   const [selectedGradeTest, setSelectedGradeTest] = useState({})
@@ -166,7 +166,13 @@ export default function index({
 
   useEffect(() => {
     const newRows = propRows.flatMap(row => {
-      const { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades, app_id, app_group_id, application_type, type } = row
+      let { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades, app_id, app_group_id, application_type, type, form_contents } = row
+      if (isForm && form_contents) {
+        const { formData = {} } = JSON.parse(form_contents)
+        let [, fName = {}, , lName = {}] = (formData.find(e => e.type === 'name') || {}).fields || []
+        firstname = fName?.value ? JSON.parse(fName.value) : '--'
+        lastname = lName?.value ? JSON.parse(lName.value) : '--'
+      }
       return {
         name: (firstname || lastname) ? `${firstname} ${lastname}` : '',
         firstname,
