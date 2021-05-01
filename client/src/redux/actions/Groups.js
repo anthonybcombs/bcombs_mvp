@@ -12,8 +12,13 @@ import {
   GROUP_DELETE_MUTATION,
   GROUP_CREATE_MUTATION
 } from "../../graphql/groupMutation";
+import {
+  ADD_ARCHIVED_GROUP,
+  GET_ARCHIVED_GROUP,
+  DELETE_ARCHIVED_GROUP
+} from "../../graphql/vendorMutation";
 
-import { setGroupLoading, setGroupMemberLoadingLoading } from "./Loading";
+import { setGroupLoading, setGroupMemberLoadingLoading, setArchiveLoading } from "./Loading";
 
 // const addGroupToDatabase = ({ group }) => {
 //   return new Promise((resolve, reject) => {
@@ -71,12 +76,42 @@ const getMembersToDatabase = async id => {
     return data.getGroupMembers;
   } catch (err) {}
 };
+
+const getArchiveGroupFromDatabase = async vendor_id => {
+  try {
+    const { data } = await graphqlClient.query({
+      query: GET_ARCHIVED_GROUP,
+      variables: { vendor_id }
+    });
+    return data.getArchivedGroup;
+  } catch (err) {}
+};
+const addArchiveGroupToDatabase = async archivedGroup => {
+  try {
+    const { data } = await graphqlClient.query({
+      query: ADD_ARCHIVED_GROUP,
+      variables: { archivedGroup }
+    });
+    return data.addArchivedGroup;
+  } catch (err) {}
+};
+const removeGroupFromArchiveToDatabase = async variables => {
+  try {
+    const { data } = await graphqlClient.query({
+      query: DELETE_ARCHIVED_GROUP,
+      variables
+    });
+    return data.removeGroupFromArchive;
+  } catch (err) {}
+};
+
 export const addGroup = group => {
   return {
     type: actionType.REQUEST_ADD_GROUP,
     group
   };
 };
+
 export const updateGroup = group => {
   console.log("UpdateGroup", group);
   return {
@@ -84,6 +119,27 @@ export const updateGroup = group => {
     group
   };
 };
+
+//Added by Jeff
+export const requestArchiveGroup = (vendor_id) => {
+  return {
+    type: actionType.ARCHIVE_GROUP,
+    vendor_id
+  }
+}
+export const requestAddArchiveGroup = (data) => {
+  return {
+    type: actionType.ADD_ARCHIVE_GROUP,
+    data
+  }
+}
+export const requestRemoveGroupFromArchive = (data) => {
+  return {
+    type: actionType.REMOVE_GROUP_FROM_ARCHIVE,
+    data
+  }
+}
+
 export function* addedGroup({ group }) {
   try {
     const response = yield call(addGroupToDatabase, group);
@@ -240,5 +296,47 @@ export function* getMembers(action) {
     console.log("getMembers error", error);
     yield put(setMemberList([]));
     setGroupMemberLoadingLoading(false);
+  }
+}
+
+export function* getArchiveGroup({ vendor_id }) {
+  try {
+    yield put(setArchiveLoading(true));
+    const response = yield call(getArchiveGroupFromDatabase, vendor_id);
+    yield put({
+      type: actionType.ARCHIVE_GROUP_COMPLETED,
+      payload: response
+    });
+    yield put(setArchiveLoading(false));
+  } catch (error) {
+    setArchiveLoading(false);
+  }
+}
+
+export function* addArchiveGroup({ data }) {
+  try {
+    yield put(setArchiveLoading(true));
+    const response = yield call(addArchiveGroupToDatabase, data);
+    yield put({
+      type: actionType.ADD_ARCHIVE_GROUP_COMPLETED,
+      payload: response
+    });
+    yield put(setArchiveLoading(false));
+  } catch (error) {
+    setArchiveLoading(false);
+  }
+}
+
+export function* removeGroupFromArchive({ data }) {
+  try {
+    yield put(setArchiveLoading(true));
+    const response = yield call(removeGroupFromArchiveToDatabase, data);
+    yield put({
+      type: actionType.REMOVE_GROUP_FROM_ARCHIVE_COMPLETED,
+      payload: response
+    });
+    yield put(setArchiveLoading(false));
+  } catch (error) {
+    setArchiveLoading(false);
   }
 }
