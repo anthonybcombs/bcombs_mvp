@@ -353,7 +353,7 @@ export const GET_VENDOR_APP_GROUP = gql`
 
 
 export const GET_ARCHIVED_GROUP = gql`
-  mutation getArchivedGroup($vendor_id: String) {
+  query getArchivedGroup($vendor_id: String) {
     getArchivedGroup(vendor_id: $vendor_id) {
       vendor_id
       app_group_id
