@@ -111,7 +111,7 @@ export default function Loading(
         ...state,
         gradeEditLoading: action.value
       }
-    case action.SET_ARCHIVE_LOADING:
+    case actionType.SET_ARCHIVE_LOADING:
       return {
         ...state,
         archiveLoading: action.value

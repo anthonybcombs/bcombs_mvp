@@ -139,6 +139,11 @@ export const requestRemoveGroupFromArchive = (data) => {
     data
   }
 }
+export const clearGroupArchive = () => {
+  return {
+    type: actionType.CLEAR_GROUP_ARCHIVE
+  }
+}
 
 export function* addedGroup({ group }) {
   try {
