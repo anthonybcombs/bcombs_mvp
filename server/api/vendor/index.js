@@ -770,7 +770,8 @@ export const getArchivedGroupByVendor = async (vendor) => {
     result = await db.query(
       `SELECT BIN_TO_UUID(vendor_id) as vendor_id,
         BIN_TO_UUID(app_group_id) as app_group_id,
-        app_group_type
+        app_group_type,
+        archived_group_id
         FROM archived_groups
        WHERE vendor_id=UUID_TO_BIN(?)`,
       [vendor]
