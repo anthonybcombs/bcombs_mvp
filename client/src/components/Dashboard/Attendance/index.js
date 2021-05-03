@@ -495,7 +495,9 @@ export default function index(props) {
 	const handleHide = () => {
 		if (isShow) {
 			dispatch(requestRemoveGroupFromArchive({
-				archivedGroupIds: selected.map(s => s.app_group_id),
+				archivedGroupIds: selected
+					.map(s => (archivedGroups.find(a => a.app_group_id === s.app_group_id))?.archived_group_id)
+					.filter(e => e),
 				vendorId: auth.user_id
 			}))
 		} else {
@@ -512,7 +514,7 @@ export default function index(props) {
 						<Loading />
 					) : (
 						<>
-							<div className='field search-input'>
+							<div className='field search-input'> 
 								<FontAwesomeIcon className='search-icon' icon={faSearch} />
 								<input
 									id='search'
@@ -666,7 +668,7 @@ export default function index(props) {
 							</table>
 							<div>
 								{
-									archivedGroups.length > 0 && (
+									(archivedGroups && archivedGroups.length > 0) && (
 										<button
 											className={`btn-hide-show`}
 											onClick={() => setShowArchived(!showArchived)}

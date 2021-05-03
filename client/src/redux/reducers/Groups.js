@@ -31,6 +31,7 @@ export default function Groups(
         archivedGroups: action.payload
       }
     case actionType.ADD_ARCHIVE_GROUP_COMPLETED:
+    case actionType.REMOVE_GROUP_FROM_ARCHIVE_COMPLETED:
       return {
         ...state,
         archiveUpdated: true
