@@ -1636,7 +1636,7 @@ const queryTypes = `
     }
     
     type ArchivedGroup {
-        c: Int
+        archived_group_id: Int
         vendor_id: String
         app_group_id: String
         app_group_type: String
