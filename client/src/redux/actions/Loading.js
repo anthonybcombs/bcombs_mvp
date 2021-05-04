@@ -125,3 +125,10 @@ export const setGradeEditLoading = value => {
     value
   };
 }
+
+export const setArchiveLoading = value => {
+  return {
+    type: actionType.SET_ARCHIVE_LOADING,
+    value
+  }
+}

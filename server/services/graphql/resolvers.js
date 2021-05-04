@@ -75,7 +75,10 @@ import {
   getVendorAppGroupsByFormId,
   getAppGroupByPool,
   getVendorAppGroupsByVendorId,
-  getAppGroupById
+  getAppGroupById,
+  getArchivedGroupByVendor,
+  deleteArchivedGroup,
+  addArchivedGroupByVendor
 } from "../../api/vendor";
 import {
   createApplication,
@@ -463,6 +466,9 @@ const resolvers = {
     },
     async getStudentCumulativeGradeByAppGroup(root, { app_group_id, app_group_type }, context) {
       return await getStudentCumulativeGradeByAppGroupId(app_group_id, app_group_type)
+    },
+    async getArchivedGroup(root, { vendor_id }, context) {
+      return await getArchivedGroupByVendor(vendor_id)
     }
   },
   RootMutation: {
@@ -1510,6 +1516,12 @@ const resolvers = {
     async updateChildInfo(root, { child }, context) {
       console.log('child', child)
       return await updateChildDetails(child)
+    },
+    async addArchivedGroup(root, {  archivedGroup  }, context) {
+      return await addArchivedGroupByVendor( archivedGroup)
+    },
+    async removeGroupFromArchive(root, { archivedGroupIds = [],vendorId }, context) {
+      return await deleteArchivedGroup( archivedGroupIds,vendorId)
     }
   }
 };

@@ -1,3 +1,4 @@
+import { startOfYesterday } from "date-fns";
 import * as actionType from "../actions/Constant";
 export default function Loading(
   state = {
@@ -14,7 +15,8 @@ export default function Loading(
     addForm: false,
     gradeLoading: false,
     standardGradeLoading: false,
-    gradeEditLoading: false
+    gradeEditLoading: false,
+    archiveLoading: false
   },
   action
 ) {
@@ -108,6 +110,11 @@ export default function Loading(
       return {
         ...state,
         gradeEditLoading: action.value
+      }
+    case actionType.SET_ARCHIVE_LOADING:
+      return {
+        ...state,
+        archiveLoading: action.value
       }
     default:
       return state;
