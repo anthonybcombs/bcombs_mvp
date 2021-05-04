@@ -24,20 +24,43 @@ const AttendanceSummaryStyled = styled.div`
 		background-color: white;
 		box-shadow: 0 0 25px #eae9e9;
 		min-height: calc(100vh - 220px);
+
+		max-height: calc(100vh - 500px);
+    overflow: auto;
 	}
 
-	button.btn-hide {
+	#attendance .header {
+		display: flex;
+    padding: 0 0 1.5rem 0;
+    align-items: baseline;
+
+		position: sticky;
+    top: -16px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+	}
+
+	#attendance .header .search-input {
+		max-width: 450px;
+    margin-left: unset;
+	}
+
+	#attendance .header .hideBtn {
 		border: 0;
-    padding: 8px 10px;
     color: white;
-    max-width: 200px;
+    width: 100%;
+    max-width: 100px;
     box-shadow: none;
-    border-radius: 0px;
+    border-radius: 3px;
     background-color: #f26e21;
 		transition: all .3s ease-in-out;
 	}
 
-	button.btn-hide.disabled {
+	#attendance .header .hideBtn span {
+		padding-left: .5rem;
+	}
+
+	#attendance .header .hideBtn.disabled {
 		opacity: .35;
 		cursor: auto;
 	}
@@ -135,6 +158,7 @@ const AttendanceSummaryStyled = styled.div`
 	#groups th {
 		border: 0;
 		padding: 15px;
+		text-align: left;
 	}
 
 	#groups tr:nth-child(odd) {
@@ -144,7 +168,6 @@ const AttendanceSummaryStyled = styled.div`
 	// #groups tr:hover {background-color: #ddd;}
 
 	#groups th {
-		text-align: center;
 		background-color: #f26e21;
 		color: white;
 	}
@@ -159,8 +182,24 @@ const AttendanceSummaryStyled = styled.div`
 		background-color: #ccc!important;
 	}
 	.archived_show {
-		display: 'table-row';
-		background-color: #ccc!important;
+		background-color: #ddd !important;
+	}
+
+	.footer-action {
+		padding: 1rem 0 0;
+	}
+	.footer-action .hideShowGroupBtn {
+		color: #f26e21;
+    width: 100%;
+    max-width: 150px;
+    box-shadow: none;
+    border-radius: 3px;
+		border: 1px solid #f26e21;
+    background-color: transparent;
+		transition: all .3s ease-in-out;
+	}
+	.footer-action .hideShowGroupBtn:hover {
+		background: rgb(242 110 33 / 10%);
 	}
 
 	@media (max-width: 840px) {
@@ -514,28 +553,30 @@ export default function index(props) {
 						<Loading />
 					) : (
 						<>
-							<div className='field search-input'> 
-								<FontAwesomeIcon className='search-icon' icon={faSearch} />
-								<input
-									id='search'
-									name='search'
-									placeholder='Search'
-									className='field-input'
-									value={search || ''}
-									onChange={(e) => handleSearch(e.target.value)}
-								/>
-								<label className='field-label' htmlFor='search'>
-									Search
-								</label>
+							<div className='header'>
+								<div className='field search-input'> 
+									<FontAwesomeIcon className='search-icon' icon={faSearch} />
+									<input
+										id='search'
+										name='search'
+										placeholder='Search'
+										className='field-input'
+										value={search || ''}
+										onChange={(e) => handleSearch(e.target.value)}
+									/>
+									<label className='field-label' htmlFor='search'>
+										Search
+									</label>
+								</div>
+								<button
+									className={`hideBtn ${selected.length === 0 ? 'disabled' : ''}`}
+									disabled={selected.length === 0}
+									onClick={handleHide}
+								>
+									<FontAwesomeIcon icon={isShow ? faEye : faEyeSlash} />
+									<span>{isShow ? 'Show' : 'Hide'}</span>
+								</button>
 							</div>
-							<button
-								className={`btn-hide ${selected.length === 0 ? 'disabled' : ''}`}
-								disabled={selected.length === 0}
-								onClick={handleHide}
-							>
-								<FontAwesomeIcon icon={isShow ? faEye : faEyeSlash} />
-								<span>{isShow ? 'Show' : 'Hide'}</span>
-							</button>
 							<table id="groups">
 								<tbody>
 									<tr>
@@ -666,11 +707,11 @@ export default function index(props) {
 									{renderTableData(true)}
 								</tbody>
 							</table>
-							<div>
+							<div className='footer-action'>
 								{
 									(archivedGroups && archivedGroups.length > 0) && (
 										<button
-											className={`btn-hide-show`}
+											className={`hideShowGroupBtn`}
 											onClick={() => setShowArchived(!showArchived)}
 										>
 											<span>{showArchived ? 'Hide hidden groups' : 'Show hidden groups'}</span>
