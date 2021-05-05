@@ -17,6 +17,7 @@ import GradeCumulativeTable from './GradeCumulativeTable'
 import IndividualGrades from './IndividualGrades'
 
 import { requestGetStudentCumulativeGradeByUser  } from '../../../../../redux/actions/Grades'
+import { getNameFromCustomForm } from '../../utils'
 
 export default ({ child_id }) => {
   const dispatch = useDispatch()
@@ -49,11 +50,10 @@ export default ({ child_id }) => {
   let { firstname, lastname, form_contents } = data?.info || {}
   const { school_name, year_level, gpa_final, gpa_sem_1, gpa_sem_2, final_student_rank, mid_student_rank } = maxBy((data?.cumulative_grades || []), 'year_level') || {}
 
-  if (isVendor && form_contents) {
-    const { formData = {} } = JSON.parse(form_contents)
-    let [, fName = {}, , lName = {}] = (formData.find(e => e.type === 'name') || {}).fields || []
-    firstname = fName?.value ? JSON.parse(fName.value) : '--'
-    lastname = lName?.value ? JSON.parse(lName.value) : '--'
+  if (form_contents) {
+    const name = getNameFromCustomForm(form_contents)
+    firstname = name.firstname
+    lastname = name.lastname
   }
 
   return (

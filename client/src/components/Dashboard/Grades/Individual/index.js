@@ -16,6 +16,7 @@ import { FilterOptionsObj } from '../Headers/options'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Loading from '../../../../helpers/Loading.js'
+import { getNameFromCustomForm } from '../utils'
 import { requestGetStudentCumulativeGradeByUser  } from '../../../../redux/actions/Grades'
 
 export default ({ child_id }) => {
@@ -129,7 +130,7 @@ export default ({ child_id }) => {
 
     // Sort executes here
     if (sort && sort.length > 0) {
-      const sortColumns = sort.map(e => e.column)
+      const sortColumns = sort.map(e => (row) => row[e.column].toString().toLowerCase())
       const sortOrder = sort.map(e => e.value)
       newRows = orderBy(newRows, sortColumns, sortOrder)
     }
@@ -386,11 +387,10 @@ export default ({ child_id }) => {
         child_id, firstname, lastname, grades = [], school_type = '', year_level = '', school_year_start = '',
         school_year_end = '', student_grade_cumulative_id, gpa_final, gpa_sem_1, gpa_sem_2
       }) => {
-        if (isVendor && form_contents) {
-          const { formData = {} } = JSON.parse(form_contents)
-          let [, fName = {}, , lName = {}] = (formData.find(e => e.type === 'name') || {}).fields || []
-          firstname = fName?.value ? JSON.parse(fName.value) : '--'
-          lastname = lName?.value ? JSON.parse(lName.value) : '--'
+        if (form_contents) {
+          const name = getNameFromCustomForm(form_contents)
+          firstname = name.firstname
+          lastname = name.lastname
         }
         const { data, labels, quarterValues, schoolYears, stYearValues } = accumulator
         const parseYear = (y) => typeof y === 'string' ? parseInt(y) : y
@@ -545,11 +545,10 @@ export default ({ child_id }) => {
   const { year = '' } = filterFromHeaders?.date || {}
   let { firstname, lastname, ch_id, form_contents } = gradeInput?.individualList?.info || {}
 
-  if (isVendor && form_contents) {
-    const { formData = {} } = JSON.parse(form_contents)
-    let [, fName = {}, , lName = {}] = (formData.find(e => e.type === 'name') || {}).fields || []
-    firstname = fName?.value ? JSON.parse(fName.value) : '--'
-    lastname = lName?.value ? JSON.parse(lName.value) : '--'
+  if (form_contents) {
+    const name = getNameFromCustomForm(form_contents)
+    firstname = name.firstname
+    lastname = name.lastname
   }
   return (
     <GradesStyled>

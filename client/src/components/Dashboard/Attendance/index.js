@@ -339,7 +339,7 @@ export default function index(props) {
 
 	const renderTableData = (archived = false) => {
 	
-		const currentForm = formList.find(form => form.vendor === vendors[0].id);
+		const currentForm = formList.find(form => form.vendor === vendors[0]?.id);
 		let newFilteredGroups = [...filteredGroups]
 		if (archived) {
 			newFilteredGroups = newFilteredGroups.filter(g => archivedGroups.find(e => e.app_group_id === g?.app_grp_id))

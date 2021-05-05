@@ -15,6 +15,7 @@ import { FilterOptionsObj } from '../Headers/options'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Loading from '../../../../helpers/Loading.js'
+import { getNameFromCustomForm } from '../utils'
 import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByVendor } from '../../../../redux/actions/Grades'
 
 export default () => {
@@ -127,7 +128,7 @@ export default () => {
 
     // Sort executes here
     if (sort && sort.length > 0) {
-      const sortColumns = sort.map(e => e.column)
+      const sortColumns = sort.map(e => (row) => row[e.column].toString().toLowerCase())
       const sortOrder = sort.map(e => e.value)
       newRows = orderBy(newRows, sortColumns, sortOrder)
     }
@@ -377,11 +378,10 @@ export default () => {
   const getDataList = (data) => {
     return data
       .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades, standardized_test, form_contents }) => {
-        if (isVendor && form_contents) {
-          const { formData = {} } = JSON.parse(form_contents)
-          let [, fName = {}, , lName = {}] = (formData.find(e => e.type === 'name') || {}).fields || []
-          firstname = fName?.value ? JSON.parse(fName.value) : '--'
-          lastname = lName?.value ? JSON.parse(lName.value) : '--'
+        if (form_contents) {
+          const name = getNameFromCustomForm(form_contents)
+          firstname = name.firstname
+          lastname = name.lastname
         }
         const { data, labels, quarterValues, schoolYears, stYearValues } = accumulator
         const {
