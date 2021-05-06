@@ -713,21 +713,32 @@ export default function index() {
 	}, [vendors]);
 
 	useEffect(() => {
+			console.log('useEffect group',name)
+
+			console.log('useEffect searchParams',searchParams)
 		if (name === 'custom' && searchParams) {
 			let currentAppGroupId = '';
 			let currentAppGroupName = '';
 			if (groups && groups.application_groups) {
 				const applicationGroups = groups.application_groups;
-
+				console.log('applicationGroups',applicationGroups)
+				console.log('applicationGroups searchParams.formId',searchParams.formId)
+				const filteredGroup = applicationGroups.filter(item => item.form === searchParams.formId).map(item => item.app_grp_id)
+				console.log('applicationGroups filteredGroup',filteredGroup)
+				
 				for (const group of applicationGroups) {
 					if (group.form === searchParams.formId) {
+
 						currentAppGroupId = group.app_grp_id;
 						currentAppGroupName = group.name;
 						break;
 					}
 				}
+				console.log('currentAppGroupId',currentAppGroupId)
 				setAppGroupId(currentAppGroupId);
-				setAppGroupName(currentAppGroupName);
+
+				setAppGroupIds([...(filteredGroup || [])])
+				setAppGroupName(filteredGroup[0].name);
 			}
 		} else {
 			if (vendors.length > 0 && name !== 'all') {
@@ -790,7 +801,11 @@ export default function index() {
 			setApplicationList(filterApplications);
 		} else if (applications && applications.activeapplications.length > 0 && name === 'custom') {
 			let filterApplications = applications.activeapplications;
-			filterApplications = filterApplications.filter(item => item.class_teacher === appGroupId);
+			console.log(' applications.activeapplications1111', applications.activeapplications)
+			console.log(' applications.activeapplications1111 appGroupId', appGroupId)
+			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
+			filterApplications = filterApplications.filter(item => item.class_teacher === appGroupId || appGroupIds.includes(item.class_teacher
+			));
 			// filterApplications = filterApplications.map(item => {
 			// 	//let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
 			// 	// item.class_teacher = name;
@@ -903,6 +918,9 @@ export default function index() {
 		// 	attendance_status: attendanceType,
 		// 	excused: null,
 		// };
+
+
+		console.log('updatedFilteredApplication',updatedFilteredApplication)
 
 		setApplicationList(updatedApplication);
 		setFilteredApplicationList(updatedFilteredApplication);
