@@ -8,6 +8,33 @@ export default styled.div`
     // max-width: 830px;
     max-width: 940px;
     padding: 0;
+
+    &.export {
+      max-width: 500px;
+
+      .modal-container > div {
+        padding: 0;
+        margin-bottom: 25px;
+      }
+  
+      .form-control {
+        display: block;
+        width: 100%;
+        height: auto;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857;
+        color: rgb(85, 85, 85);
+        background-color: rgb(255, 255, 255);
+        background-image: none;
+        border: 1px solid rgb(204, 204, 204);
+        border-radius: 4px;
+        box-shadow: rgb(0 0 0 / 8%) 0px 1px 1px inset;
+        transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+        box-sizing: border-box;
+      }
+    }
+
   }
 
   .modal-header {

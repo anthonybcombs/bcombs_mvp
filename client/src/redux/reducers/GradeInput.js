@@ -3,7 +3,7 @@ import * as actionType from "../actions/Constant";
 export default function Applications(
   state = {
     gradeList: [],
-    individualList: null,
+    individualList:  null,
     stUpdated: false,
     gradeUpdated: false,
     addUpdate: null,
@@ -38,6 +38,11 @@ export default function Applications(
         ...state,
         addUpdateGrade: action.payload,
         gradeUpdated: true
+      }
+    case actionType.CUMULATIVE_GRADE_BY_VENDOR_COMPLETED:
+      return {
+        ...state,
+        gradeList: action.payload
       }
     case actionType.CLEAR_GRADES:
       return {

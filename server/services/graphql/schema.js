@@ -806,6 +806,12 @@ const inputs = `
         ch_id: String
     }
 
+    input ArchiveGroupInput {
+        vendor_id: String
+        app_group_id: String
+        app_group_type: String
+    }
+
 
 
 `;
@@ -1615,6 +1621,8 @@ const queryTypes = `
         hobbies: String
         accomplishments: String
         ch_id: String
+        form_contents: String
+        app_id: String
     }
 
     type StudentRecords {
@@ -1633,6 +1641,13 @@ const queryTypes = `
         form_contents: String
         cumulative_grades: [StudentCumulativeGrade]
         standardized_test: [StudentStandardizedTest]
+    }
+    
+    type ArchivedGroup {
+        archived_group_id: Int
+        vendor_id: String
+        app_group_id: String
+        app_group_type: String
     }
 `;
 
@@ -1681,6 +1696,8 @@ const mutations = `
         addUpdateStudentStandardizedTest(studentStandardizedTest: [StudentStandardizedTestInput]): [StudentStandardizedTest]
         deleteStudentStandardizedTest(studentTestIds:[Int]): [StudentStandardizedTest]
         updateChildInfo (child: StudentInfoInput): StudentInfo
+        addArchivedGroup(archivedGroup: [ArchiveGroupInput]): [ArchivedGroup]
+        removeGroupFromArchive(archivedGroupIds: [Int], vendorId: String): [ArchivedGroup]
     }
 `;
 
@@ -1730,10 +1747,11 @@ const queries = `
         getCustomApplicationByVendor(vendor: String): [CustomApplicationByVendor]
         getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
         getStudentCumulativeGradeByAppGroup(app_group_id: String, app_group_type: String): [StudentByGroupSummary]
-        getStudentCumulativeGradeByVendor(vendor_id: String): [StudentCumulativeGrade]
+        getStudentCumulativeGradeByVendor(vendor_id: String): [StudentByGroupSummary]
         getStudentCumulativeGradeByUser(child_id: String): [StudentCumulativeGrade]
         getStudentTest(child_id: String): [StudentStandardizedTest]
-        getStudentRecords(child_id: String): StudentRecords
+        getStudentRecords(child_id: String, application_type: String): StudentRecords
+        getArchivedGroup(vendor_id: String): [ArchivedGroup]
     }
 `;
 

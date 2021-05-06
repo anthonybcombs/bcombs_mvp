@@ -36,7 +36,10 @@ import {
   getUserGroup,
   removeGroup,
   getMembers,
-  getUserGroupProtectedRoute
+  getUserGroupProtectedRoute,
+  getArchiveGroup,
+  addArchiveGroup,
+  removeGroupFromArchive
 } from "../actions/Groups";
 import { addedRelative } from "../actions//Relatives";
 import {
@@ -58,7 +61,8 @@ import {
   getStudentCumulativeGradeByUser,
   addUpdateStudentStandardizedTest,
   deleteStudentStandardizedTest,
-  addUpdateStudentCumulative
+  addUpdateStudentCumulative,
+  getStudentCumulativeGradeByVendor
 } from "../actions/Grades";
 
 import { requestedStatus, removedStatus } from "../actions/Status";
@@ -297,10 +301,14 @@ function* rootSaga() {
   yield takeEvery(actionType.REQUEST_USER_ATTENDANCE_FILTER_CONFIG,updateUserAttendanceFilterConfig);
   yield takeLatest(actionType.REQUEST_CUSTOM_APPLICATION_BY_VENDOR,getCustomApplicationByVendors)
   yield takeLatest(actionType.CUMULATIVE_GRADE_BY_APP_GROUP, getStudentCumulativeGradeByAppGroup)
+  yield takeLatest(actionType.CUMULATIVE_GRADE_BY_VENDOR, getStudentCumulativeGradeByVendor)
   yield takeLatest(actionType.CUMULATIVE_GRADE_BY_USER, getStudentCumulativeGradeByUser)
   yield takeLatest(actionType.ADD_UPDATE_STUDENT_STANDARD_TEST, addUpdateStudentStandardizedTest)
   yield takeLatest(actionType.DELETE_STUDENT_STANDARDIZED_TEST, deleteStudentStandardizedTest)
   yield takeLatest(actionType.ADD_UPDATE_STUDENT_CUMULATIVE, addUpdateStudentCumulative)
+  yield takeLatest(actionType.ARCHIVE_GROUP, getArchiveGroup)
+  yield takeLatest(actionType.ADD_ARCHIVE_GROUP, addArchiveGroup)
+  yield takeLatest(actionType.REMOVE_GROUP_FROM_ARCHIVE, removeGroupFromArchive)
 }
 const sagaMiddleware = createSagaMiddleware();
 

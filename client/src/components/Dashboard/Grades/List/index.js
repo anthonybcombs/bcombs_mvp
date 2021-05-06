@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
-import isEqual from 'lodash.isequal'
 import { groupBy, maxBy } from 'lodash'
 import { Link } from '@reach/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
+import { useLocation } from '@reach/router';
+import { parse } from 'query-string';
 
 import GradesStyled from './styles'
 import Headers from '../Headers'
@@ -14,7 +15,8 @@ import { FilterOptionsObj } from '../Headers/options'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Loading from '../../../../helpers/Loading.js'
-import { requestGetStudentCumulativeGradeByAppGroup  } from '../../../../redux/actions/Grades'
+import { getNameFromCustomForm } from '../utils'
+import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByVendor } from '../../../../redux/actions/Grades'
 
 export default () => {
   const dispatch = useDispatch()
@@ -22,6 +24,10 @@ export default () => {
     gradeInput, loading
   }))
 
+  const queryLocation = useLocation();
+	const { group_id, group_type, request_type } = parse(queryLocation.search)
+  const isVendor = request_type === 'vendor'
+  const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
 
@@ -122,7 +128,7 @@ export default () => {
 
     // Sort executes here
     if (sort && sort.length > 0) {
-      const sortColumns = sort.map(e => e.column)
+      const sortColumns = sort.map(e => (row) => row[e.column].toString().toLowerCase())
       const sortOrder = sort.map(e => e.value)
       newRows = orderBy(newRows, sortColumns, sortOrder)
     }
@@ -217,7 +223,7 @@ export default () => {
             <table className='subTable student'>
               <tr>
                 <td style={{ ...highLight(name, 'name'), minWidth: '100px', wordBreak: 'break-word'}}>
-                  <Link to={`/dashboard/grades/${row.child_id}`}>
+                  <Link to={`/dashboard/grades/individual/${row.child_id}?${commonQueryStrings}`}>
                     {name}
                   </Link>
                 </td>
@@ -292,7 +298,7 @@ export default () => {
 
   const renderTableFilter = (key, isGrade = false) => {
     if (activeColumnKey && activeColumnKey === key) {
-      const currColumnFilter = columnFilters[key]
+      const currColumnFilter = orderBy(columnFilters[key], ['value'], ['asc'])
       return (
         <div
           style={{ position: 'absolute', backgroundColor: '#fff', zIndex: 2 }}
@@ -371,12 +377,17 @@ export default () => {
 
   const getDataList = (data) => {
     return data
-      .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades, standardized_test }) => {
+      .reduce((accumulator, { child_id, firstname, lastname, cumulative_grades, standardized_test, form_contents }) => {
+        if (form_contents) {
+          const name = getNameFromCustomForm(form_contents)
+          firstname = name.firstname
+          lastname = name.lastname
+        }
         const { data, labels, quarterValues, schoolYears, stYearValues } = accumulator
         const {
           grades = [], school_type = '', year_level = '', school_year_start = '',
           school_year_end = '', student_grade_cumulative_id, gpa_final, gpa_sem_2, gpa_sem_1
-        } = cumulative_grades.length ? cumulative_grades[0] : {}
+        } = cumulative_grades.length ? maxBy(cumulative_grades, 'year_level') : {}
         const parseYear = (y) => typeof y === 'string' ? parseInt(y) : y
         const sy = parseYear(school_year_start) && parseYear(school_year_end) ? `${parseYear(school_year_start)}-${parseYear(school_year_end)}` : ''
         const { final_quarter_attendance = '', final_grade = '', letter_final_grade = '' } = grades?.length ? grades[0] : []
@@ -499,15 +510,27 @@ export default () => {
 
   useEffect(() => {
     handleSetRowAndColumn(gradeType)
-    dispatch(requestGetStudentCumulativeGradeByAppGroup({
-      app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-      app_group_type: 'bcombs'
-    }))
+    if (group_id && group_type) {
+      if (isVendor) {
+        dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
+      } else {
+        dispatch(requestGetStudentCumulativeGradeByAppGroup({
+          app_group_id: group_id,
+          app_group_type: group_type
+        }))
+      }
+    }
   }, [])
 
   useEffect(() => {
     if (gradeInput?.gradeList) {
-      const { data, labels, quarterValues, schoolYears, stYearValues } = getDataList((gradeInput.gradeList || []))
+      let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+      if (group_type === 'bcombs') {
+        newGradeList = newGradeList.filter(e => !e.form_contents)
+      } else {
+        newGradeList = newGradeList.filter(e => e.form_contents)
+      }
+      const { data, labels, quarterValues, schoolYears, stYearValues } = getDataList(newGradeList)
       const newGradeColumns = {
         string: Object.keys(labels).filter(e => !e.includes('Number')),
         number: Object.keys(labels).filter(e => e.includes('Number'))
@@ -546,6 +569,14 @@ export default () => {
               <Loading />
             ) : (
               <>
+                {
+                  (group_id || group_type) && (
+                    <Link to={'/dashboard/studentdata'} className='back-btn'>
+                      <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
+                      Back
+                    </Link>
+                  )
+                }
                 <div className='gradeListFilter'>
                   <Headers
                     enableClearFilter
@@ -558,7 +589,7 @@ export default () => {
                   />
                   <Link
                     className='applyFilterBtn'
-                    to={`/dashboard/grades/input`}
+                    to={`/dashboard/grades/input?${commonQueryStrings}&return_page=grades`}
                   >
                     {`Grades & Test Input`}
                   </Link>

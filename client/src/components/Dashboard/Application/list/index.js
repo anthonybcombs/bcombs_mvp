@@ -433,7 +433,7 @@ export default function index({
   const getPrimaryParentName = (parents, id) => {
     if (parents && parents.length > 0) {
       return (
-        <a target="_blank" href={"parentprofile/" + id}>
+        <a href={"parentprofile/" + id}>
           <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
         </a>
       );
@@ -458,7 +458,7 @@ export default function index({
   const getStudentName = row => {
     if(row?.child?.firstname && row?.child?.lastname) {
       return (
-        <a target="_blank" href={"menteeprofile/" + row.id}>
+        <a href={"menteeprofile/" + row.id}>
           <span>{row?.child.firstname + " " + row?.child.lastname}</span>
         </a>
       )
@@ -799,7 +799,7 @@ export default function index({
               </ul>
             </div>
             <div id="actionButtonContainer">
-              <a href="/dashboard/archived" target="_blank">
+              <a href="/dashboard/archived">
                 Archived Applications
               </a>
               <a

@@ -17,13 +17,12 @@ import ConfirmDialog from './ConfirmDialog'
 import { getGradeTestAttempt } from '../utils'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
-import roundToNearestMinutesWithOptions from 'date-fns/fp/roundToNearestMinutesWithOptions'
+import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({importData = []}) => {
+export default ({ importData = [], childId, loading, groupType, requestList, onHasChanged }) => {
   const dispatch = useDispatch()
-  const { gradeInput, loading: { gradeLoading, standardGradeLoading } } = useSelector(({ gradeInput, loading }) => ({
-    gradeInput, loading
+  const { gradeInput } = useSelector(({ gradeInput }) => ({
+    gradeInput
   }))
 
   const attempOptions = Array(5).fill().map((e, i) => ({ value: i+1, label: `${i+1}` }))
@@ -71,8 +70,6 @@ export default ({importData = []}) => {
   const [activeColumnKey, setActiveColumnKey] = useState('')
   const [selected, setSelected] = useState([])
   const [deleteDialog, setDeleteDialog] = useState(false)
-  const [hasChanged, setHasChanged] = useState(false)
-  const [backDialog, setBackDialog] = useState(false)
   const [enableEditDialog, setEnableEditDialog] = useState(false)
   const [selectedRowForEdit, setSelectedRowForEdit] = useState('')
 
@@ -115,7 +112,7 @@ export default ({importData = []}) => {
 
     // Sort executes here
     if (sort && sort.length > 0) {
-      const sortColumns = sort.map(e => e.column)
+      const sortColumns = sort.map(e => (row) => row[e.column].toString().toLowerCase())
       const sortOrder = sort.map(e => e.value)
       newRows = orderBy(newRows, sortColumns, sortOrder)
     }
@@ -155,7 +152,7 @@ export default ({importData = []}) => {
       mergeObj.attempt = attempt
     }
 
-    setHasChanged(true)
+    onHasChanged(true)
     setRows(update(rows, {
       [index]: { $merge: mergeObj }
     }))
@@ -277,7 +274,7 @@ export default ({importData = []}) => {
                         value={
                           key === 'test_name' 
                             ? testOptions.find(e => e.value === row.test_name).label
-                            : row[key]
+                            : row[key] || '--'
                         }
                       />
                     )
@@ -389,7 +386,6 @@ export default ({importData = []}) => {
   }
 
   const handleSetActiveColumnKey = (key = '') => {
-    handleMagicScroll(!!key)
     setActiveColumnKey(key)
     setColumnFilterSearch('')
   }
@@ -399,16 +395,6 @@ export default ({importData = []}) => {
       ...columnFilters,
       [key]: columnFilters[key].map(e => ({ ...e, checked }))
     })
-  }
-
-  const handleMagicScroll = (hide = false) => {
-    if (hide) {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
-      document.getElementById('gradeInputView').style = 'overflow: hidden'
-    } else {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
-      document.getElementById('gradeInputView').style = 'overflow: unset'
-    }
   }
 
   const handleChangeTableFilterColumn = (key) => {
@@ -453,7 +439,7 @@ export default ({importData = []}) => {
       .map(e => ({ ...e, student_test_id: '', attachment: '', id: uuid() }))
     const mergedRows = remapSelectedRowsByAttemp([...newRows, ...copiedRows])
 
-    setHasChanged(true)
+    onHasChanged(true)
     setRows(mergedRows)
     setFilteredRows(mergedRows)
     setColumnFilters(generateColumnFilters(mergedRows))
@@ -463,7 +449,7 @@ export default ({importData = []}) => {
     const selectedIds = selected.map(e => e.id)
     const newRows = remapSelectedRowsByAttemp(cloneDeep(rows).filter(e => !selectedIds.includes(e.id)))
     
-    setHasChanged(true)
+    onHasChanged(true)
     setRows(newRows)
     setFilteredRows(newRows)
     setColumnFilters(generateColumnFilters(newRows))
@@ -483,10 +469,6 @@ export default ({importData = []}) => {
     setFilteredRows(newRows)
     setColumnFilters(generateColumnFilters(newRows))
     setSelectStudentOpen(false)
-  }
-
-  const handleBack = () => {
-    window.location.replace('/dashboard/grades')
   }
 
   const handleSave = () => {
@@ -513,6 +495,7 @@ export default ({importData = []}) => {
         return newRow
       })
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
+    onHasChanged(false)
   }
 
   const renderTableFilter = (key) => {
@@ -597,26 +580,22 @@ export default ({importData = []}) => {
     return null
   }
 
-  // useEffect(() => {
-  //   dispatch(requestGetStudentCumulativeGradeByAppGroup({
-  //     app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-  //     app_group_type: 'bcombs'
-  //   }))
-  // }, [])
-
   useEffect(() => {
     if (gradeInput.stUpdated) {
       dispatch(clearGrades())
-      dispatch(requestGetStudentCumulativeGradeByAppGroup({
-        app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-        app_group_type: 'bcombs'
-      }))
+      requestList()
     }
   }, [gradeInput])
 
   useEffect(() => {
     if (gradeInput.gradeList) {
-      const newGradeList = gradeInput.gradeList.flatMap(e => e.standardized_test)
+      let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+      if (groupType === 'bcombs') {
+        newGradeList = newGradeList.filter(e => !e.form_contents)
+      } else {
+        newGradeList = newGradeList.filter(e => e.form_contents)
+      }
+      newGradeList = newGradeList.flatMap(e => e.standardized_test)
       const newRows = cloneDeep(rows).map(row => {
         const { student_test_id } = newGradeList.find(e => (
           e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
@@ -630,7 +609,7 @@ export default ({importData = []}) => {
 
   useEffect(() => {
     if(!rows.length) {
-      setHasChanged(false)
+      onHasChanged(false)
     }
   }, [rows])
 
@@ -641,11 +620,18 @@ export default ({importData = []}) => {
 
   const colArr = Object.entries(columns)
   const stColumns = {
-    name: { label: 'Name', type: 'string' },
+    name: { label: 'Name', type: 'string', isFunc: true },
     grade_taken: { label: 'Grade Taken', type: 'number', isFunc: true },
     standardized_test: { label: 'Test Name', type: 'string', isFunc: true },
     attempt: { label: 'Attempts', type: 'number', isFunc: true },
     latest_attempt: { label: 'Latest Attempt', type: 'number', isFunc: true },
+  }
+  
+  let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+  if (groupType === 'bcombs') {
+    selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
+  } else {
+    selectStudentRows = selectStudentRows.filter(e => e.form_contents)
   }
 
   return (
@@ -656,24 +642,10 @@ export default ({importData = []}) => {
       }}
     >
       {
-        (standardGradeLoading) ? (
+        (loading) ? (
           <Loading />
         ) : (
           <>
-            <a
-              className='back-btn'
-              onClick={(e) => {
-                e.preventDefault()
-                if (hasChanged) {
-                  setBackDialog(true)
-                } else {
-                  handleBack()
-                }
-              }}
-            >
-              <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
-              Back
-            </a>
             <div className='gradeListFilter'>
               <Headers
                 enableClearFilter
@@ -808,12 +780,14 @@ export default ({importData = []}) => {
       {
         selectStudentOpen && (
           <SelectStudentDialog
-            rows={gradeInput?.gradeList || []}
+            rows={selectStudentRows}
             columns={stColumns}
             existingRows={rows}
+            childId={childId}
             gradeTakenOptions={gradeTakenOptions}
             testOptions={testOptions}
             attempOptions={attempOptions}
+            isForm={groupType === 'forms'}
             keys={Object.keys(goldenKeys)}
 
             onClose={() => setSelectStudentOpen(false)}
@@ -832,22 +806,12 @@ export default ({importData = []}) => {
         )
       }
       {
-        backDialog && (
-          <ConfirmDialog
-            onClose={() => setBackDialog(false)}
-            onConfirm={handleBack}
-            title='Confirm leaving page'
-            content='You have unsaved changes. Would you like to leave this page?'
-          />
-        )
-      }
-      {
         enableEditDialog && (
           <ConfirmDialog
             onClose={() => setEnableEditDialog(false)}
             onConfirm={handleEnableEditConfirm}
             title='Confirm enable row edit'
-            content='Are you sure you want to enable edit for the row that you clicked?'
+            content='Are you sure you want to edit this row?'
           />
         )
       }

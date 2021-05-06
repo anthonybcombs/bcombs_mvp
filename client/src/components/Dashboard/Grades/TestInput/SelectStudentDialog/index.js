@@ -6,10 +6,10 @@ import { maxBy } from 'lodash'
 import SelectStudentDialogStyled from './style'
 import CustomTable from '../../../CustomComponents/CustomTable'
 import CustomSelect from '../../../CustomComponents/CustomSelect'
-import { getGradeTestAttempt } from '../../utils'
+import { getGradeTestAttempt, getNameFromCustomForm } from '../../utils'
 
 export default function index({
-  onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, columns, type = 'test_input'
+  onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, columns, type = 'test_input', childId, isForm
 }) {
   const isTestInput = type === 'test_input'
   const [selectedGradeTest, setSelectedGradeTest] = useState({})
@@ -26,6 +26,10 @@ export default function index({
   const formatValue = (item, key) => {
     const { test_name = 'act', grade_taken = 1, attempt, year_level = '' } = selectedGradeTest[item.child_id] || {}
     const { standardized_test = [], cumulative_grades = [] } = propRows.find(e => e.child_id === item.child_id) || {}
+
+    if (key === 'name') {
+      return item.name || '--'
+    }
     if (key === 'standardized_test') {
       return (
         <CustomSelect
@@ -161,25 +165,28 @@ export default function index({
   }
 
   useEffect(() => {
-    setRows(
-      propRows.flatMap(row => {
-        const { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades, app_id, app_group_id, application_type, type } = row
-        return {
-          name: `${firstname} ${lastname}`,
-          firstname,
-          lastname,
-          child_id,
-          app_id,
-          app_group_id,
-          application_type,
-          type,
-          standardized_test,
-          cumulative_grades
-        }
-      })
-    )
+    const newRows = propRows.flatMap(row => {
+      let { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades, app_id, app_group_id, application_type, type, form_contents } = row
+      if (isForm && form_contents) {
+        const name = getNameFromCustomForm(form_contents)
+        firstname = name.firstname
+        lastname = name.lastname
+      }
+      return {
+        name: (firstname || lastname) ? `${firstname} ${lastname}` : '',
+        firstname,
+        lastname,
+        child_id,
+        app_id,
+        app_group_id,
+        application_type,
+        type,
+        standardized_test,
+        cumulative_grades
+      }
+    })
+    setRows(newRows)
   }, [propRows])
-
   return ReactDOM.createPortal(
     <SelectStudentDialogStyled
       data-testid='app-big-calendar-create-modal'
@@ -215,6 +222,7 @@ export default function index({
             }
 
             selectable
+            defaultSelectedIds={childId ? [childId] : []}
             onSelect={(ids) => setSelected(ids)}
           />
         </div>

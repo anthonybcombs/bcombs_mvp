@@ -108,6 +108,15 @@ export default styled.div`
 	.gradeInputView-table tr.has-data.edit-enabled {
 		background-color: #eff0f3 !important;
 	}
+	
+	.gradeInputView-table tr.has-data.edit-enabled input {
+		background: #fff;
+	}
+
+	.gradeInputView-table tr.has-data td input,
+	.gradeInputView-table tr.has-data.edit-enabled input:read-only  {
+		background: transparent;
+	}
 
 	.gradeInputView-table tr.has-data td div.editCover {
     z-index: 1;
@@ -116,7 +125,9 @@ export default styled.div`
     position: absolute;
     left: 0;
     top: 0;
+		cursor: pointer;
 	}
+	
 
 	.gradeInputView-table th:not(:last-child) {
 		position: relative;
@@ -135,6 +146,7 @@ export default styled.div`
 		position: relative;
     right: -5px;
 		cursor: pointer;
+		padding-right: .3rem;
     transition: .15s ease-in-out;
 	}
 
@@ -154,10 +166,11 @@ export default styled.div`
 
 	.gradeInputView-table th {
 		color: white;
+		min-width: 80px;
+		font-size: 14px;
 		text-align: center;
 		background-color: #4B68C5;
-		// min-width: 120px;
-		min-width: 80px;
+    white-space: nowrap !important;
 	}
 	.gradeInputView-table th.standard {
     color: #000;

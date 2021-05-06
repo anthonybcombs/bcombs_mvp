@@ -19,12 +19,12 @@ import ConfirmDialog from './ConfirmDialog'
 import { getGradeTestAttempt } from '../utils'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { requestGetStudentCumulativeGradeByAppGroup, requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
+import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default () => {
+export default ({ importData = [], childId, requestList, groupType, loading, onHasChanged }) => {
   const dispatch = useDispatch()
-  const { gradeInput, loading: { gradeLoading, gradeEditLoading } } = useSelector(({ gradeInput, loading }) => ({
-    gradeInput, loading
+  const { gradeInput } = useSelector(({ gradeInput }) => ({
+    gradeInput
   }))
 
   const attempOptions = Array(5).fill().map((e, i) => ({ value: i+1, label: `${i+1}` }))
@@ -125,7 +125,6 @@ export default () => {
   const [activeColumnKey, setActiveColumnKey] = useState('')
   const [selected, setSelected] = useState([])
   const [deleteDialog, setDeleteDialog] = useState(false)
-  const [hasChanged, setHasChanged] = useState(false)
   const [backDialog, setBackDialog] = useState(false)
   const [selectStudentOpen, setSelectStudentOpen] = useState(false)
   const [editGradeOpen, setEditGradeOpen] = useState(false)
@@ -178,14 +177,13 @@ export default () => {
 
     // Sort executes here
     if (sort && sort.length > 0) {
-      const sortColumns = sort.map(e => e.column)
+      const sortColumns = sort.map(e => (row) => row[e.column].toString().toLowerCase())
       const sortOrder = sort.map(e => e.value)
       newRows = orderBy(newRows, sortColumns, sortOrder)
     }
 
     // Column filter
     const newColumnFilters = Object.entries(columnFilters)
-    console.log('depucha', {newColumnFilters, columnFilters})
     const hasUnChecked = !!newColumnFilters.filter(([key, value]) => value.find(e => !e.checked)).length
     if (hasUnChecked) {
       newRows = newRows.filter((row) => {
@@ -203,7 +201,7 @@ export default () => {
 
   const handleInputChange = ({ target: { value } }, index, key) => {
     const mergeObj = { [key]: value }
-    setHasChanged(true)
+    onHasChanged(true)
     setRows(update(rows, {
       [index]: { $merge: mergeObj }
     }))
@@ -323,7 +321,7 @@ export default () => {
                       <input
                         readOnly
                         style={highlightStyle}
-                        value={row[key]}
+                        value={row[key] || '--'}
                       />
                     )
                   }
@@ -433,7 +431,6 @@ export default () => {
   }
 
   const handleSetActiveColumnKey = (key = '') => {
-    handleMagicScroll(!!key)
     setActiveColumnKey(key)
     setColumnFilterSearch('')
   }
@@ -443,16 +440,6 @@ export default () => {
       ...columnFilters,
       [key]: columnFilters[key].map(e => ({ ...e, checked }))
     })
-  }
-
-  const handleMagicScroll = (hide = false) => {
-    if (hide) {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
-      document.getElementById('gradeInputView').style = 'overflow: hidden'
-    } else {
-      document.getElementById('gradeListTableWrapper').style = 'overflow-x: auto'
-      document.getElementById('gradeInputView').style = 'overflow: unset'
-    }
   }
 
   const handleChangeTableFilterColumn = (key) => {
@@ -497,7 +484,7 @@ export default () => {
       .map(e => ({ ...e, student_test_id: '', attachment: '', id: uuid() }))
     const mergedRows = remapSelectedRowsByAttemp([...newRows, ...copiedRows])
 
-    setHasChanged(true)
+    onHasChanged(true)
     setRows(mergedRows)
     setFilteredRows(mergedRows)
     setColumnFilters(generateColumnFilters(mergedRows))
@@ -507,7 +494,7 @@ export default () => {
     const selectedIds = selected.map(e => e.id)
     const newRows = remapSelectedRowsByAttemp(cloneDeep(rows).filter(e => !selectedIds.includes(e.id)))
     
-    setHasChanged(true)
+    onHasChanged(true)
     setRows(newRows)
     setFilteredRows(newRows)
     setColumnFilters(generateColumnFilters(newRows))
@@ -688,16 +675,19 @@ export default () => {
   useEffect(() => {
     if (gradeInput.gradeUpdated) {
       dispatch(clearGrades())
-      dispatch(requestGetStudentCumulativeGradeByAppGroup({
-        app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-        app_group_type: 'bcombs'
-      }))
+      requestList()
     }
   }, [gradeInput])
 
   useEffect(() => {
     if (gradeInput.gradeList) {
-      const newGradeList = gradeInput.gradeList.flatMap(e => e.standardized_test)
+      let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+      if (groupType === 'bcombs') {
+        newGradeList = newGradeList.filter(e => !e.form_contents)
+      } else {
+        newGradeList = newGradeList.filter(e => e.form_contents)
+      }
+      newGradeList = newGradeList.flatMap(e => e.standardized_test)
       const newRows = cloneDeep(rows).map(row => {
         const { student_test_id } = newGradeList.find(e => (
           e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
@@ -711,19 +701,30 @@ export default () => {
 
   useEffect(() => {
     if(!rows.length) {
-      setHasChanged(false)
+      onHasChanged(false)
     }
   }, [rows])
 
+  useEffect(() => {
+    console.log('importData', importData);
+    setRows(importData);
+    setFilteredRows(importData);
+  }, [importData]);
+
   const colArr = Object.entries(columns)
   const gColumns = {
-    name: { label: 'Name', type: 'string' },
+    name: { label: 'Name', type: 'string', isFunc: true },
     // child_id: { label: 'ID', type: 'string' },
     year_level: { label: 'Level', type: 'number', isFunc: true },
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
 
-  console.log('@RRRRRRRROWS', { rows, filteredRows })
+  let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+  if (groupType === 'bcombs') {
+    selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
+  } else {
+    selectStudentRows = selectStudentRows.filter(e => e.form_contents)
+  }
 
   return (
     <div
@@ -733,7 +734,7 @@ export default () => {
       }}
     >
       {
-        (gradeEditLoading) ? (
+        (loading) ? (
           <Loading />
         ) : (
           <>
@@ -884,13 +885,15 @@ export default () => {
       {
         selectStudentOpen && (
           <SelectStudentDialog
-            rows={gradeInput?.gradeList || []}
+            rows={selectStudentRows}
+            childId={childId}
             columns={gColumns}
             existingRows={rows}
             gradeTakenOptions={gradeTakenOptions}
             testOptions={testOptions}
             attempOptions={attempOptions}
             keys={Object.keys(goldenKeys)}
+            isForm={groupType === 'forms'}
             type='grade_input'
 
             onClose={() => setSelectStudentOpen(false)}
@@ -934,7 +937,7 @@ export default () => {
             onClose={() => setEnableEditDialog(false)}
             onConfirm={handleEnableEditConfirm}
             title='Confirm enable row edit'
-            content='Are you sure you want to enable edit for the row that you clicked?'
+            content='Are you sure you want to edit this row?'
           />
         )
       }

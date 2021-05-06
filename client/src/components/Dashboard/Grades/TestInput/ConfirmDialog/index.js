@@ -24,13 +24,13 @@ export default function index({
             className='modalBtn cancelBtn'
             onClick={onClose}
           >
-            Cancel
+            No
           </button>
           <button
             className='modalBtn'
             onClick={onConfirm}
           >
-            Confirm
+            Yes
           </button>
         </div>
       </div>

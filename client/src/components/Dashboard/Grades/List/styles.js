@@ -154,7 +154,7 @@ export default styled.div`
 	#gradeListView-table td,
 	#gradeListView-table th {
 		border: 0;
-		padding: 15px;
+		padding: 12px 3px;
 	}
 
 	#gradeListView-table tr:nth-child(even) {
@@ -168,6 +168,7 @@ export default styled.div`
 	}
 	#gradeListView-table th.th-grades {
 		position: relative;
+		white-space: nowrap;
 	}
 	#gradeListView-table th.th-grades >svg {
 		position: relative;
@@ -249,7 +250,17 @@ export default styled.div`
     background: #e47120;
   }
 
-
+	.back-btn {
+		width: 50px;
+		color: #3e89fe;
+		display: flex;
+		align-items: center;
+		padding-bottom: 1rem;
+		text-decoration: none;
+	}
+	.back-btn svg {
+		padding-right: 5px;
+	}
 
 
 
