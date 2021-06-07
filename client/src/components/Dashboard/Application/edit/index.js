@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import Loading from "../../../../helpers/Loading.js";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+import { Multiselect } from "multiselect-react-dropdown";
 
 const EditApplicationStyled = styled.div`
   .edit-application-form {
@@ -45,7 +46,8 @@ const EditApplicationStyled = styled.div`
     padding-right: 20px;
   }
 
-  .form-control {
+  .form-control,
+  #multiselectContainerReact div:first-child {
     display: block;
     width: 100%;
     height: auto;
@@ -145,6 +147,14 @@ export default function index({
 
   console.log("MY application", application);
 
+
+  // let classTeachers = application.class_teacher ? application.class_teacher.split(',') : [];
+
+  // console.log('classTeachers', classTeachers);
+
+  const selectedClassTeacher = appGroups.filter(item => application.class_teacher.includes(item.app_grp_id));
+
+  console.log('selectedClassTeacher', selectedClassTeacher);
   return (
     <EditApplicationStyled>
       <div className="edit-application-form">
@@ -211,9 +221,30 @@ export default function index({
                 <div>
                   <label className="control-label">Class Teacher</label>
                   <div>
-                    <select
+                    <Multiselect
+                      selectedValues={selectedClassTeacher}
                       className="form-control"
-                      defaultValue={application.class_teacher ? application.class_teacher : application?.child?.grade_desc}
+                      options={appGroups}
+                      hasSelectAll={true}
+                      placeholder={"Choose Multiple"}
+                      displayValue="name"
+                      closeIcon="cancel"
+                      closeOnSelect={false}
+                      showCheckbox={true}
+                      onSelect={selectedList => {
+                        console.log('select list', selectedList)
+                        console.log('s selectedList', selectedList.map(item => item.app_grp_id).join(','));
+                        handleUpdateOnchange("class_teacher", selectedList.map(item => item.app_grp_id).join(','))
+                      }}
+                      onRemove={selectedList => {
+                        console.log("remove list", selectedList)
+                        console.log('r selectedList', selectedList.map(item => item.app_grp_id).join(','));
+                        handleUpdateOnchange("class_teacher", selectedList.map(item => item.app_grp_id).join(','))
+                      }}
+                    />
+                    {/* <select
+                      className="form-control"
+                      defaultValue={application.class_teacher ? application.class_teacher : null}
                       onChange={({ target }) => {
                         handleUpdateOnchange("class_teacher", target.value)
                       }}>
@@ -221,7 +252,7 @@ export default function index({
                       {appGroups.map(opt => (
                         <option key={opt.app_grp_id} value={opt.app_grp_id}>{opt.name}</option>
                       ))}
-                    </select>
+                    </select> */}
                   </div>
                 </div>
                 <div>
