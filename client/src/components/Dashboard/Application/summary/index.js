@@ -75,7 +75,7 @@ export default function index({
     if(applications.length > 0) {
       const size = applications.filter((app) => {
         if(app.class_teacher) {
-          return app.class_teacher == group.app_grp_id;
+          return app.class_teacher.includes(group.app_grp_id);
         }
       });
   
