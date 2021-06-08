@@ -7,7 +7,7 @@ import { parse } from "query-string";
 
 import DataTable from "react-data-table-component";
 
-import { requestVendor } from "../../../../redux/actions/Vendors";
+import { requestVendor, requestGetFormAppGroup } from "../../../../redux/actions/Vendors";
 import { requestGetApplications, requestGetCustomApplications } from "../../../../redux/actions/Application";
 import { requestUserGroup } from "../../../../redux/actions/Groups";
 
@@ -44,11 +44,13 @@ export default function index() {
   const location = useLocation();
   const queryParams = parse(location.search);
   
-  const { auth, vendors, groups, applications, loading } = useSelector(
-    ({ auth, vendors, applications, groups, loading }) => {
-      return { auth, vendors, applications, groups, loading };
+  const { auth, vendors, groups, applications, loading, form: { formAppGroups } } = useSelector(
+    ({ auth, vendors, applications, groups, loading, form }) => {
+      return { auth, vendors, applications, groups, loading, form };
     }
   );
+
+  const [appGroups, setAppGroups] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -68,31 +70,40 @@ export default function index() {
     if(form_type === "bcombs") {
       if (vendors && vendors.length > 0) {
         let vendorId;
+        let selectedVendor;
         for (const vendor of vendors) {
           if (vendor.id2 == form_id) {
             vendorId = vendor.id;
+            selectedVendor = vendor;
             break;
           }
         }
         console.log("type type type", form_type);
         console.log("id id id", form_id);
         console.log("vendorId", vendorId);
+        setAppGroups(selectedVendor.app_groups);
         dispatch(requestGetApplications(vendorId));
       }
     } else if(form_type === "custom") {
       dispatch(requestGetCustomApplications(form_id));
+      dispatch(requestGetFormAppGroup(form_id));
     }
   }, [vendors]);
+
+  useEffect(() => {
+    console.log("Im here here formAppGroups");
+    console.log("formAppGroups, formAppGroups", formAppGroups);
+    setAppGroups(formAppGroups);
+  }, [formAppGroups])
 
   if (applications && applications.activeapplications.length > 0) {
     let appGroupId = "";
     let appGroupName = ""
     if (
-      groups &&
-      groups.application_groups &&
-      groups.application_groups.length > 0
+      appGroups &&
+      appGroups.length > 0
     ) {
-      const applicationGroups = groups.application_groups;
+      const applicationGroups = appGroups;
 
       if(queryParams && queryParams.appgroup) {
         for (const group of applicationGroups) {
@@ -107,6 +118,7 @@ export default function index() {
           return application && application.class_teacher.includes(appGroupId);
         });
       } else {
+        console.log('not here');
         filterApplications = applications.activeapplications;
       }
 
@@ -117,7 +129,7 @@ export default function index() {
           console.log("applicationGroups", applicationGroups);
           console.log("application", item);
 
-          const getMatchAppGroup = applicationGroups.filter((a) => item.class_teacher == a.app_grp_id);
+          const getMatchAppGroup = applicationGroups.filter((a) => item.class_teacher.includes(a.app_grp_id));
           item.group_name = getMatchAppGroup.length > 0 ? getMatchAppGroup[0].name : "";
           console.log("getMatchAppGroup", getMatchAppGroup);
         } else {
@@ -126,6 +138,8 @@ export default function index() {
 
         return item;
       });
+
+      console.log('filterApplications', filterApplications);
     }
   }
 
