@@ -104,7 +104,7 @@ export default function index() {
         }
 
         filterApplications = applications.activeapplications.filter(application => {
-          return application && application.class_teacher == appGroupId;
+          return application && application.class_teacher.includes(appGroupId);
         });
       } else {
         filterApplications = applications.activeapplications;
