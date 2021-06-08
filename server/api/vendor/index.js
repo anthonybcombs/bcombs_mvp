@@ -527,6 +527,35 @@ export const updateVendor = async ({
   }
 };
 
+export const getAppGroupsByUserId = async (user) => {
+  const db = makeDb();
+  console.log("getAppGroupsByUserId user", user);
+  let appGroupsResult = [];
+  try {
+    appGroupsResult = await db.query(
+      `SELECT 
+        id, 
+        BIN_TO_UUID(app_grp_id) as app_grp_id, 
+        BIN_TO_UUID(user) as user, 
+        BIN_TO_UUID(vendor) as vendor,
+        BIN_TO_UUID(form) as form, 
+        size, 
+        name, 
+        pool_id,
+        created_at 
+      FROM vendor_app_groups 
+      WHERE user=UUID_TO_BIN(?)`,
+      [user]
+    );
+    console.log("getAppGroupsByUserId appGroupsResult", appGroupsResult);
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return appGroupsResult;
+  }
+};
+
 export const getAppGroupsByVendor = async (vendor) => {
   const db = makeDb();
   console.log("getAppGroupsByVendor vendor", vendor);

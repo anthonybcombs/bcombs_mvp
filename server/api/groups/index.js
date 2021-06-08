@@ -1,7 +1,7 @@
 import { makeDb } from "../../helpers/database";
 import { getUserFromDatabase } from "../index";
 
-import { getAppGroupsByVendor } from "../vendor/index";
+import { getAppGroupsByVendor, getAppGroupsByUserId } from "../vendor/index";
 import { s3BucketRootPath } from "../../helpers/aws";
 
 export const getGroup = async () => {
@@ -38,7 +38,7 @@ export const getUserGroups = async email => {
       [currentUser.id]
     );
 
-    applicationGroups = await getAppGroupsByVendor(currentUser.id);
+    applicationGroups = await getAppGroupsByUserId(currentUser.id);
 
     joinedResult = await formattedGroups(joinedGroups, db);
     createdResult = await formattedGroups(createdGroups, db);

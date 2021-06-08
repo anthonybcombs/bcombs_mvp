@@ -172,7 +172,8 @@ export const getApplicationsByVendor = async vendor => {
         is_daycare
         FROM application
         WHERE vendor=UUID_TO_BIN(?) and is_archived=0
-        ORDER BY id DESC`,
+        ORDER BY id DESC
+        LIMIT 5`,
       [vendor]
     );
     result = applications;
