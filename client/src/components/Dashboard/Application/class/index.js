@@ -130,7 +130,16 @@ export default function index() {
           console.log("application", item);
 
           const getMatchAppGroup = applicationGroups.filter((a) => item.class_teacher.includes(a.app_grp_id));
-          item.group_name = getMatchAppGroup.length > 0 ? getMatchAppGroup[0].name : "";
+          //item.group_name = getMatchAppGroup.length > 0 ? getMatchAppGroup[0].name : "";
+
+          if(getMatchAppGroup.length > 0) {
+            let displayGroupName = '';
+
+            getMatchAppGroup.map((e) => {
+              displayGroupName += e.name + ","
+            })
+            item.group_name = displayGroupName.slice(0, -1);
+          }
           console.log("getMatchAppGroup", getMatchAppGroup);
         } else {
           item.group_name = appGroupName

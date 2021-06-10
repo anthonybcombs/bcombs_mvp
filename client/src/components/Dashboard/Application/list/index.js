@@ -493,10 +493,25 @@ export default function index({
       sortable: true,
       cell: row => {
         if (row.class_teacher && appGroups && appGroups.length) {
-          return (
-            (appGroups.find(e => e.app_grp_id === row.class_teacher) || {})
-              .name || "-"
-          );
+
+          let displayGroups = '';
+          appGroups.map((e) => {
+            if(row.class_teacher.includes(e.app_grp_id))
+            displayGroups += e.name + ','
+          })
+          // return (
+          //   (appGroups.find(e => row.class_teacher.includes(e.app_grp_id)) || {})
+          //     .name || "-"
+          // );
+          displayGroups = displayGroups.slice(0, -1);
+          const arrGroups = displayGroups.split(',');
+          console.log('arrGroups', arrGroups);
+
+          if(arrGroups.length > 1) {
+            return displayGroups = arrGroups[0] + ',...'
+          } else {
+            return displayGroups = arrGroups[0];
+          }
         }
         return "-";
       }
