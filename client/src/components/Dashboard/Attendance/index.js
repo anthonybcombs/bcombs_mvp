@@ -275,7 +275,8 @@ export default function index(props) {
 	const getClassCount = group => {
 		const size = applications.activeapplications.filter(app => {
 			if (app.class_teacher) {
-				return group.app_grp_id && app.class_teacher == group.app_grp_id;
+				return group.app_grp_id && app.class_teacher.includes(group.app_grp_id);
+				//return group.app_grp_id && app.class_teacher == group.app_grp_id;
 			}
 		});
 
@@ -287,7 +288,7 @@ export default function index(props) {
 		console.log('Get Form Class Count applications', applications)
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher) {
-				return group.app_grp_id && app.class_teacher == group.app_grp_id;
+				return group.app_grp_id && app.class_teacher.includes(group.app_grp_id);
 			}
 		});
 		console.log('SIZEEEEEEEEEE', size)
