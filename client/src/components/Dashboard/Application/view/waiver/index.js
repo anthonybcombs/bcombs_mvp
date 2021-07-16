@@ -32,8 +32,8 @@ export default function index({
   console.log("application", application);
 
   const pDate = isReadonly ? 
-                moment(application.section1_date_signed).format("MM/dd/yyyy") :
-                moment().format("MM/dd/yyyy")
+                moment(application.section1_date_signed).format("MM/DD/yyyy") :
+                moment().format("MM/DD/yyyy")
                 
   return (
     <TermsWaiverFormViewStyled className="printpage-break waiver-information">
