@@ -150,6 +150,11 @@ const AsyncGradeTestInput = Loadable({
   loading: Loading
 });
 
+const AsyncMyMetrics = Loadable({
+  loader: () => import("./components/Dashboard/Metrics"),
+  loading: Loading
+});
+
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -192,7 +197,9 @@ export default function App() {
               <AsyncGradeTestInput path="grades/input/:child_id" />
               <AsyncGradeTestInput path="grades/input" />
               <AsyncGradesList path="grades" />
+              <AsyncMyMetrics path="metrics" />
             </AsycDashboard>
+           
             <SocialLoginLanding path="sociallanding" />
             <AsyncApplicationForm path="application/:vendor_id" />
             <AsyncForm path="form/:form_id" />
