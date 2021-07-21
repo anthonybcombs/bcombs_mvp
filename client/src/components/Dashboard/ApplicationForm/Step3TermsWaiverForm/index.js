@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Section1FormStyled from "../Section1Form";
 import Section2FormStyled from "../Section2Form";
 import Section3FormStyled from "../Section3Form";
+import moment from "moment";
 
 const TermsWaiverFormStyled = styled.div`
 
@@ -29,7 +30,11 @@ export default function index({
     return today;
   }
 
-  let pDate = parseDate(termsWaiver.date);
+  //let pDate = parseDate(termsWaiver.date);
+
+  let pDate = moment(termsWaiver.date).format("MM/DD/yyyy");
+  
+  console.log('pDate', pDate);
 
   return (
     <TermsWaiverFormStyled>

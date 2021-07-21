@@ -388,6 +388,17 @@ export default function Layout({ children }) {
                         <span>Application</span>
                       </Link>
                     )}
+                    {currentUserType === "VENDOR" && (
+                      <Link
+                        className={`${
+                          context.location.pathname === "/dashboard/metrics"
+                            ? "selected"
+                            : ""
+                        }`}
+                        to="/dashboard/metrics">
+                        <span>Metrics</span>
+                      </Link>
+                    )}
                     <div id="dashboard-setting">
                       <Link
                         className={`${

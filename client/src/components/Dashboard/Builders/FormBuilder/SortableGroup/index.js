@@ -119,7 +119,7 @@ const SortableGroup = React.forwardRef(
             onBlur={() => {
               handleEnableEditGroupName(false)
             }}
-            onChange={({ target }) => onChangeGroupName(target.value || 'Untitled', id)}
+            onChange={({ target }) => onChangeGroupName(target.value || '', id)}
             onKeyPress={(e) => console.log('e: ', e)}
           />
           {
