@@ -6,6 +6,7 @@ import compression from "compression";
 import "regenerator-runtime/runtime";
 
 import apiRouter from "./api/";
+import apiMetrics from "./api/metrics";
 import services from "./services";
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "/.env") });
@@ -43,6 +44,8 @@ console.log(require("dotenv").config());
 console.log("BUCKET", process.env.AWS_BUCKET);
 //routes
 app.use("/api", apiRouter);
+app.use("/api/metrics", apiMetrics);
+
 
 // app.get("/", (req, res) => {
 //   res.status(200).send("bon");
