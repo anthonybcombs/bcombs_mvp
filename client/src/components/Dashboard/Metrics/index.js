@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
+import MetricMenu from './components/Menu';
+import ComponentOne from "./components/ComponentOne";
+import ComponentTwo from "./components/ComponentTwo";
+
+
 const MetricStyled = styled.div`
 
   width: auto;
@@ -59,14 +64,6 @@ const MetricStyled = styled.div`
   }
 `;
 
-const ComponentOne = props => {
-  return <div style={{ padding:24 }}>Menu One</div>
-}
-
-
-const ComponentTwo = props => {
-  return <div style={{ padding:24 }}>Menu Two</div>
-}
 
 const Metrics = props => {
   const [selectedLabel, setSelectedLabel] = useState(null);
@@ -81,35 +78,10 @@ const Metrics = props => {
   return (
     <MetricStyled>
       <div id="contacts" >
-        {/* MENU */}
+        <MetricMenu handleSelectedLabel={handleSelectedLabel} selectedLabel={selectedLabel} />
         <div>
-          <div id="labels">
-            <h3>Labels</h3>
-            <div
-              className={`${selectedLabel === "Menu 1" ? "selected" : ""}`}
-              onClick={() => {
-                handleSelectedLabel("Menu 1");
-              }}
-            >
-              <span>Menu 1</span>
-            </div>
-            <div
-              className={`${selectedLabel === "Menu 2" ? "selected" : ""}`}
-              onClick={() => {
-
-                handleSelectedLabel("Menu 2");
-              }}
-            >
-              <span>Menu 2</span>
-            </div>
-
-          </div>
-        </div>
-         {/* MENU */}
-
-        <div>
-          {selectedLabel === 'Menu 1' && <ComponentOne/>}
-          {selectedLabel === 'Menu 2' && <ComponentTwo/>}
+          {selectedLabel === 'Menu 1' && <ComponentOne />}
+          {selectedLabel === 'Menu 2' && <ComponentTwo />}
         </div>
       </div>
     </MetricStyled>
