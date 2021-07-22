@@ -1,4 +1,4 @@
-import React from ''
+import React from 'react'
 const ComponentOne = props => {
     return <div style={{ padding: 24 }}>
         Menu One
