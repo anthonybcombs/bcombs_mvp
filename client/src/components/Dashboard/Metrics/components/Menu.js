@@ -3,24 +3,56 @@ import React from 'react';
 const MetricMenu = props => {
     const { handleSelectedLabel, selectedLabel } = props;
     return <div>
-        <div id="labels">
-            <h3>Labels</h3>
+        <div id="metrics-page-menu-wrapper">
+            <script src="https://code.highcharts.com/highcharts.js"></script>
+            <h3>Reports</h3>
             <div
-                className={`${selectedLabel === "Menu 1" ? "selected" : ""}`}
+                className={`${selectedLabel === "attendance" ? "selected" : ""}`}
                 onClick={() => {
-                    handleSelectedLabel("Menu 1");
+                    handleSelectedLabel("attendance");
                 }}
             >
-                <span>Menu 1</span>
-                <span>Value: </span>
+                <span>Attendance</span>
             </div>
             <div
-                className={`${selectedLabel === "Menu 2" ? "selected" : ""}`}
+                className={`${selectedLabel === "mentees" ? "selected" : ""}`}
                 onClick={() => {
-                    handleSelectedLabel("Menu 2");
+                    handleSelectedLabel("mentees");
                 }}
             >
-                <span>Menu 2</span>
+                <span>Mentee / Year</span>
+            </div>
+            <div
+                className={`${selectedLabel === "tests" ? "selected" : ""}`}
+                onClick={() => {
+                    handleSelectedLabel("tests");
+                }}
+            >
+                <span>ACT/SAT/PSAT</span>
+            </div>
+            <div
+                className={`${selectedLabel === "grades" ? "selected" : ""}`}
+                onClick={() => {
+                    handleSelectedLabel("grades");
+                }}
+            >
+                <span>GPA (Quarters)</span>
+            </div>
+            <div
+                className={`${selectedLabel === "mentoring" ? "selected" : ""}`}
+                onClick={() => {
+                    handleSelectedLabel("mentoring");
+                }}
+            >
+                <span>Mentoring</span>
+            </div>
+            <div
+                className={`${selectedLabel === "volunteer_hours" ? "selected" : ""}`}
+                onClick={() => {
+                    handleSelectedLabel("volunteer_hours");
+                }}
+            >
+                <span>Volunteer Hours</span>
             </div>
 
         </div>

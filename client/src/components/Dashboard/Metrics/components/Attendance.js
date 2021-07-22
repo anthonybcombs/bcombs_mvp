@@ -23,7 +23,7 @@ const apiCall = async (id) => {
 
 }
 
-const ComponentOne = props => {
+const Attendance = props => {
     const { auth } = props;
     const [currentUser, setCurrentUser] = useState(null);
     useEffect(() => {
@@ -32,7 +32,6 @@ const ComponentOne = props => {
                 const res = await apiCall(id);
                 console.log('apiCall rees', res)
                 if (res && res.user) {
-
                     setCurrentUser(res.user);
                 }
             } catch (err) {
@@ -46,9 +45,9 @@ const ComponentOne = props => {
     console.log('Current User', currentUser);
 
     return <div style={{ padding: 24 }}>
-        Menu One
-        <span>Value {currentUser && currentUser.id2}</span>
+        <div>Attendance</div>
+        <div><span>Value {currentUser && currentUser.id2}</span></div>
     </div>
 }
 
-export default ComponentOne;
+export default Attendance;

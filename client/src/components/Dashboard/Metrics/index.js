@@ -3,8 +3,12 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 
 import MetricMenu from './components/Menu';
-import ComponentOne from "./components/ComponentOne";
-import ComponentTwo from "./components/ComponentTwo";
+import Attendance from "./components/Attendance";
+import Mentees from "./components/Mentees";
+import Tests from "./components/Tests";
+import Grades from "./components/Grades";
+import Mentoring from "./components/Mentoring";
+import VolunteerHours from "./components/VolunteerHours";
 
 
 const MetricStyled = styled.div`
@@ -22,35 +26,19 @@ const MetricStyled = styled.div`
     border: none;
     box-shadow: none;
   }
-  #contacts {
+  #metrics-page {
     display: grid;
   }
-  #labels,
-  .groups {
-    padding: 1em;
-  }
-  #labels > div {
-    padding: 1em;
-    font-size: 1.2em;
-    cursor: pointer;
-  }
-  #labels > div.selected {
-    background: #f26e21;
-    color: white;
-  }
-  #labels > div > span {
-    margin-left: 1em;
-  }
-  #contacts > div {
+  #metrics-page > div {
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
   }
-  #contacts > div:nth-of-type(2) {
+  #metrics-page > div:nth-of-type(2) {
     margin-right: 0.5em;
   }
 
   @media (min-width: 600px) {
-    #contacts {
+    #metrics-page {
       grid-template-columns: 25% 75%;
       grid-gap: 1%;
     }
@@ -59,9 +47,25 @@ const MetricStyled = styled.div`
     padding: 0rem 1rem 2rem;
   }
   @media (min-width: 1500px) {
-    #contacts > div:nth-of-type(2) {
+    #metrics-page > div:nth-of-type(2) {
       margin-right: 1em;
     }
+  }
+  #metrics-page-menu-wrapper,
+  .groups {
+    padding: 1em;
+  }
+  #metrics-page-menu-wrapper > div {
+    padding: 1em;
+    font-size: 1.2em;
+    cursor: pointer;
+  }
+  #metrics-page-menu-wrapper > div.selected {
+    background: #f26e21;
+    color: white;
+  }
+  #metrics-page-menu-wrapper > div > span {
+    margin-left: 1em;
   }
 `;
 
@@ -98,15 +102,23 @@ const Metrics = props => {
 
   return (
     <MetricStyled>
-      <div id="contacts" >
+      <div id="metrics-page" >
         <MetricMenu handleSelectedLabel={handleSelectedLabel} selectedLabel={selectedLabel} />
         <div>
-          {selectedLabel === 'Menu 1' && <ComponentOne auth={auth} />}
-          {selectedLabel === 'Menu 2' && <ComponentTwo />}
+          {selectedLabel === 'attendance' && <Attendance auth={auth} />}
+          {selectedLabel === 'mentees' && <Mentees auth={auth} />}
+          {selectedLabel === 'tests' && <Tests auth={auth} />}
+          {selectedLabel === 'grades' && <Grades auth={auth} />}
+          {selectedLabel === 'mentoring' && <Mentoring auth={auth} />}
+          {selectedLabel === 'volunteer_hours' && <VolunteerHours auth={auth} />}
         </div>
       </div>
     </MetricStyled>
   );
 }
+
+//Metrics.defaultProps = {
+//  selectedLabel = 'attendance',
+//}
 
 export default Metrics;
