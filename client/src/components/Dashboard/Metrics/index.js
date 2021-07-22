@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 
 import MetricMenu from './components/Menu';
 import ComponentOne from "./components/ComponentOne";
@@ -65,8 +66,26 @@ const MetricStyled = styled.div`
 `;
 
 
+
 const Metrics = props => {
   const [selectedLabel, setSelectedLabel] = useState(null);
+
+  const {
+    auth,
+    user
+  } = useSelector(
+    ({
+      auth,
+      user
+    }) => {
+      return {
+        auth,
+        user
+      };
+    }
+  );
+
+
   // const sql_stat = "Select xyz form a, b";
   // rows = sql_run(sql_stat)
 
@@ -75,12 +94,14 @@ const Metrics = props => {
 
   };
 
+
+
   return (
     <MetricStyled>
       <div id="contacts" >
         <MetricMenu handleSelectedLabel={handleSelectedLabel} selectedLabel={selectedLabel} />
         <div>
-          {selectedLabel === 'Menu 1' && <ComponentOne />}
+          {selectedLabel === 'Menu 1' && <ComponentOne auth={auth} />}
           {selectedLabel === 'Menu 2' && <ComponentTwo />}
         </div>
       </div>

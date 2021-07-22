@@ -453,7 +453,7 @@ router.post("/auth/authorize", async (req, res) => {
       );
       return;
     }
-    res.send(JSON.stringify(authData));
+  c
   } catch (error) {
     res.send("error");
   }

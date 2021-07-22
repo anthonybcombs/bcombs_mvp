@@ -4,17 +4,16 @@ import { makeDb } from "../../helpers/database";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.post("/", async (req, res) => {
 
     try {
+        const { id } = req.body;
         const db = makeDb();
+        console.log('ID', id)
+        const response =  await db.query("SELECT id2,email FROM users where id=UUID_TO_BIN(?)", [id]);
 
-        // await db.query("UPDATE users SET profile_img=? where id=UUID_TO_BIN(?)", [
-        //     s3Payload.Key,
-        //     currentUser.id
-        //   ]);
-
-        res.status(200).json({ message: 'Welcome to metrics api' });
+        console.log('Responseee', response)
+        res.status(200).json({ user: response && response[0] });
     } catch (error) {
 
     }
