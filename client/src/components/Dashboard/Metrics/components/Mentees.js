@@ -18,6 +18,7 @@ const Mentees = props => {
             <div>{tempData}</div>
         </div>
         <script>
+            alert('hello');
             Highcharts.chart('chart-wrapper', {tempData});
         </script>
         </div>
