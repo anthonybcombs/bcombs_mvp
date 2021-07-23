@@ -72,7 +72,7 @@ const MetricStyled = styled.div`
 
 
 const Metrics = props => {
-  const [selectedLabel, setSelectedLabel] = useState(null);
+  const [selectedLabel, setSelectedLabel] = useState('attendance');
 
   const {
     auth,
