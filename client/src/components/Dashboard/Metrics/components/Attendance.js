@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 
 const apiCall = async (id) => {
 
-    // Default options are marked with *
-    const response = await fetch('http://localhost:3001/api/metrics', {
+    // Default options are marked with * 
+    const response = await fetch('http://localhost:3001/api/metrics/attendance', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -26,18 +26,20 @@ const apiCall = async (id) => {
 const Attendance = props => {
     const { auth } = props;
     const [currentUser, setCurrentUser] = useState(null);
-    useEffect(() => {
-        const triggerApi = async (id) => {
-            try {
-                const res = await apiCall(id);
-                console.log('apiCall rees', res)
-                if (res && res.user) {
-                    setCurrentUser(res.user);
-                }
-            } catch (err) {
-                console.log('Error', err)
+
+    const triggerApi = async (id) => {
+        try {
+            const res = await apiCall(id);
+            console.log('apiCall rees', res)
+            if (res && res.user) {
+                setCurrentUser(res.user);
             }
-        };
+        } catch (err) {
+            console.log('Error', err)
+        }
+    };
+
+    useEffect(() => {
         if (auth && auth.user_id) {
             triggerApi(auth.user_id)
         }

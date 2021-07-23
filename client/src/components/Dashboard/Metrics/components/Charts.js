@@ -5,33 +5,36 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 const Charts = props => {
-    const { data = [], chartType = 'bar', title = '' } = props;
-    const [ chartData, setChartData ] = useState([]);
+    const {
+        optionsData = {}
+    //    seriesData = [], chartType = 'bar', title = '', plotOptions = {} 
+    } = props;
+   // const [ chartSeriesData, setChartSeriesData ] = useState([]);
+   // const [ chartPlotOptions, setChartPlotOptions ] = useState([]);
+   const [ chartOptionsData, setChartOptionsData ] = useState([]);
 
     useEffect(() => {
-        if (data) {
-            setChartData(data);
+        if (optionsData) {
+            setChartOptionsData(optionsData);
         }
 
-    }, [data]);
+    }, [optionsData]);
+    
+    /*
+    useEffect(() => {
+        if (plotOptions) {
+            setChartPlotOptions(plotOptions)
+        }
 
+    }, [plotOptions]);
+*/
 
     return (
         <div>
 
             <HighchartsReact
                 highcharts={Highcharts}
-                options={{
-                    title: {
-                        text: title
-                    },
-                    chart: {
-                        type: chartType, // options: pie, bar, line
-                    },
-                    series: [{
-                        data: chartData
-                    }]
-                }}
+                options={ optionsData }
             />
         </div>
     )

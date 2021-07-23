@@ -7,6 +7,8 @@ import "regenerator-runtime/runtime";
 
 import apiRouter from "./api/";
 import apiMetrics from "./api/metrics";
+import apiMetricsAttendance from "./api/metrics/attendance";
+import apiMetricsMentee from "./api/metrics/mentee";
 import services from "./services";
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "/.env") });
@@ -45,6 +47,8 @@ console.log("BUCKET", process.env.AWS_BUCKET);
 //routes
 app.use("/api", apiRouter);
 app.use("/api/metrics", apiMetrics);
+app.use("/api/metrics/attendance", apiMetricsAttendance);
+app.use("/api/metrics/mentee", apiMetricsMentee);
 
 
 // app.get("/", (req, res) => {
