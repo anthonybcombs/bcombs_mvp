@@ -67,6 +67,16 @@ const MetricStyled = styled.div`
   #metrics-page-menu-wrapper > div > span {
     margin-left: 1em;
   }
+
+  #metrics-page .top-right button {
+    float: right;
+  }
+
+  .grid-2b {
+    grid-template-columns: 62% 31%;
+    gap: 6.66666%;
+  }
+
 `;
 
 
