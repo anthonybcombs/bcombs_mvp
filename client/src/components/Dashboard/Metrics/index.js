@@ -68,6 +68,16 @@ const MetricStyled = styled.div`
     margin-left: 1em;
   }
 
+  #metrics-page .top-left {
+    display: flex;
+  }
+
+  #metrics-page .top-left select {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+  }
+
   #metrics-page .top-right button {
     float: right;
   }

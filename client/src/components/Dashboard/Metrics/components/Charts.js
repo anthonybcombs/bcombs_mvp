@@ -31,7 +31,6 @@ const Charts = props => {
 
     return (
         <div>
-
             <HighchartsReact
                 highcharts={Highcharts}
                 options={ optionsData }
