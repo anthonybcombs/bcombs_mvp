@@ -4,14 +4,18 @@ import React, { useState, useEffect } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
+require('highcharts/modules/exporting')(Highcharts);
+require('highcharts/modules/export-data')(Highcharts);
+
 const Charts = props => {
     const {
-        optionsData = {}
-    //    seriesData = [], chartType = 'bar', title = '', plotOptions = {} 
+        optionsData = {},
+        customRef
+        //    seriesData = [], chartType = 'bar', title = '', plotOptions = {} 
     } = props;
-   // const [ chartSeriesData, setChartSeriesData ] = useState([]);
-   // const [ chartPlotOptions, setChartPlotOptions ] = useState([]);
-   const [ chartOptionsData, setChartOptionsData ] = useState([]);
+    // const [ chartSeriesData, setChartSeriesData ] = useState([]);
+    // const [ chartPlotOptions, setChartPlotOptions ] = useState([]);
+    const [chartOptionsData, setChartOptionsData] = useState([]);
 
     useEffect(() => {
         if (optionsData) {
@@ -19,7 +23,7 @@ const Charts = props => {
         }
 
     }, [optionsData]);
-    
+
     /*
     useEffect(() => {
         if (plotOptions) {
@@ -32,8 +36,9 @@ const Charts = props => {
     return (
         <div>
             <HighchartsReact
+                ref={customRef}
                 highcharts={Highcharts}
-                options={ optionsData }
+                options={optionsData}
             />
         </div>
     )

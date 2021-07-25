@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
 const apiCall2 = async (id, year) => {
-
+    
     // Default options are marked with *
     const response = await fetch('http://localhost:3001/api/metrics/mentee', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -24,10 +24,14 @@ const apiCall2 = async (id, year) => {
     return response.json(); // parses JSON response into native JavaScript objects
 }
 
+
+
+
 const Mentees = props => {
     const { auth } = props;
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [year, setYear] = useState('2021');
+    const chart = useRef();
 
     const triggerApi2 = async (id, year) => {
         try {
@@ -41,6 +45,13 @@ const Mentees = props => {
             console.log('Error', err)
         }
     };
+
+    const exportChart = () => {
+        console.log('chart',chart)
+        if (chart && chart.current && chart.current.chart) {
+            chart.current.chart.downloadCSV();
+        }
+      };
 
     const defineChart = (data) => {
         let chartOptions = {
@@ -126,9 +137,9 @@ const Mentees = props => {
             <option name="2020">2020</option>
             <option name="2019">2019</option>
             </select></div>
-        <div className="top-right"><button id="exportButton"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="download" className="svg-inline--fa fa-download fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"></path></svg><span>Export</span></button></div>
+        <div className="top-right"><button onClick={exportChart} id="exportButton"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="download" className="svg-inline--fa fa-download fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"></path></svg><span>Export</span></button></div>
         </div>
-        <Charts optionsData={tempOptionsData} />
+        <Charts customRef={chart} optionsData={tempOptionsData} />
     </div>
 }
 
