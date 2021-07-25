@@ -8,7 +8,7 @@ import { formatPhoneNumber } from '../../utils'
 export default ({ isReadOnly = false, format, showLabel, settings, label, fields, type: groupType, id: groupId, onChange, fieldError, onCheckError, historyFields }) => {
   const handleAnswer = ({ target: { id, value } }, type) => {
     if (type === 'text') {
-      if (!Number(value.replace(/[^0-9a-zA-Z]/gi, ''))) {
+      if (value && !Number(value.replace(/[^0-9a-zA-Z]/gi, ''))) {
         return
       }
       const lastChar = value.charAt(value.length - 1)
