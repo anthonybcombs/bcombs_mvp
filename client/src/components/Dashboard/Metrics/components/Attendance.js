@@ -47,7 +47,7 @@ const Attendance = props => {
     console.log('Current User', currentUser);
 
     return <div style={{ padding: 24 }}>
-        <div>Attendance</div>
+        <div>Attendance 2</div>
         <div><span>Value {currentUser && currentUser.id2}</span></div>
     </div>
 }
