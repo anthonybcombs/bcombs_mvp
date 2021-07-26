@@ -9,6 +9,7 @@ import apiRouter from "./api/";
 import apiMetrics from "./api/metrics";
 import apiMetricsAttendance from "./api/metrics/attendance";
 import apiMetricsMentee from "./api/metrics/mentee";
+import apiMetricsMentoring from "./api/metrics/mentoring";
 import services from "./services";
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "/.env") });
@@ -49,6 +50,7 @@ app.use("/api", apiRouter);
 app.use("/api/metrics", apiMetrics);
 app.use("/api/metrics/attendance", apiMetricsAttendance);
 app.use("/api/metrics/mentee", apiMetricsMentee);
+app.use("/api/metrics/mentoring", apiMetricsMentoring);
 
 
 // app.get("/", (req, res) => {

@@ -49,9 +49,13 @@ const Mentees = props => {
     const exportChart = () => {
         console.log('chart',chart)
         if (chart && chart.current && chart.current.chart) {
+            chart.current.chart.setTitle(
+                {text: 'Mentee / Year : ' + year
+                });
             chart.current.chart.exportChart({
                 type:'application/pdf'
             });
+            chart.current.chart.setTitle({text:''});
         }
       };
 
