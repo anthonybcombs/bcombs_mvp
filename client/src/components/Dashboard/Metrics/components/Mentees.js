@@ -49,7 +49,7 @@ const Mentees = props => {
     const exportChart = () => {
         console.log('chart',chart)
         if (chart && chart.current && chart.current.chart) {
-            chart.current.chart.downloadCSV();
+            chart.current.chart.exportChart();
         }
       };
 
