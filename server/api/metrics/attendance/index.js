@@ -34,6 +34,7 @@ router.post("/", async (req, res) => {
             dtEndQ2Txt, dtEndQ3Txt, 
             dtEndQ3Txt, 
             dtLastTxt, dtNextTxt];
+            /*
        let gradeQualifier = '';
        if (grade > 8) {
            gradeQualifier = "where b.grade_number = ? ";
@@ -42,12 +43,30 @@ router.post("/", async (req, res) => {
        else if (grade > 5) {
            gradeQualifier = "where b.grade_number in ( '6', '7', '8' )";
        }
+       */
 
        let query = 
-           "select SUM(a2.q1) as q1Total, " +
-                "SUM(a2.q2) as q2Total, " +
-                "SUM(a2.q3) as q3Total, " +
-                "SUM(a2.q4) as q4Total, " +
+           "select " + 
+                "SUM(IF(b.grade_number = '12', a2.q1, 0)) as q1Total12, " +
+                "SUM(IF(b.grade_number = '12', a2.q2, 0)) as q2Total12, " +
+                "SUM(IF(b.grade_number = '12', a2.q3, 0)) as q3Total12, " +
+                "SUM(IF(b.grade_number = '12', a2.q4, 0)) as q4Total12, " +
+                "SUM(IF(b.grade_number = '11', a2.q1, 0)) as q1Total11, " +
+                "SUM(IF(b.grade_number = '11', a2.q2, 0)) as q2Total11, " +
+                "SUM(IF(b.grade_number = '11', a2.q3, 0)) as q3Total11, " +
+                "SUM(IF(b.grade_number = '11', a2.q4, 0)) as q4Total11, " +
+                "SUM(IF(b.grade_number = '10', a2.q1, 0)) as q1Total10, " +
+                "SUM(IF(b.grade_number = '10', a2.q2, 0)) as q2Total10, " +
+                "SUM(IF(b.grade_number = '10', a2.q3, 0)) as q3Total10, " +
+                "SUM(IF(b.grade_number = '10', a2.q4, 0)) as q4Total10, " +
+                "SUM(IF(b.grade_number = '9', a2.q1, 0)) as q1Total9, " +
+                "SUM(IF(b.grade_number = '9', a2.q2, 0)) as q2Total9, " +
+                "SUM(IF(b.grade_number = '9', a2.q3, 0)) as q3Total9, " +
+                "SUM(IF(b.grade_number = '9', a2.q4, 0)) as q4Total9, " +
+                "SUM(IF(b.grade_number = '6' OR b.grade_number = '7' OR b.grade_number = '8', a2.q1, 0)) as q1TotalMS, " +
+                "SUM(IF(b.grade_number = '6' OR b.grade_number = '7' OR b.grade_number = '8', a2.q2, 0)) as q2TotalMS, " +
+                "SUM(IF(b.grade_number = '6' OR b.grade_number = '7' OR b.grade_number = '8', a2.q3, 0)) as q3TotalMS, " +
+                "SUM(IF(b.grade_number = '6' OR b.grade_number = '7' OR b.grade_number = '8', a2.q4, 0)) as q4TotalMS, " +
                "count(b.ch_id) as y " + 
            "from child b " + 
            "inner join ( " + 
@@ -59,7 +78,7 @@ router.post("/", async (req, res) => {
                "FROM attendance a " + 
               "where a.attendance_date >= ? and a.attendance_date < ? " +
                "Group by a.child_id " +
-           ") as a2 on b.ch_id = a2.child_id " + gradeQualifier;
+           ") as a2 on b.ch_id = a2.child_id ";
        console.log('Query ', query);
        const response =  await db.query(query, queryParam);
        console.log('Attendance', response);
@@ -67,10 +86,11 @@ router.post("/", async (req, res) => {
        let resultData = [];
        if (response.length > 0) {
            let row = response[0];
-           resultData.push({name: "Q1", y: row.q1Total });
-           resultData.push({name: "Q2", y: row.q2Total });
-           resultData.push({name: "Q3", y: row.q3Total });
-           resultData.push({name: "Q4", y: row.q4Total });
+           resultData.push({grade: "8", data: [row.q1TotalMS, row.q2TotalMS, row.q3TotalMS, row.q4TotalMS] });
+           resultData.push({grade: "9", data: [row.q1Total9, row.q2Total9, row.q3Total9, row.q4Total9] });
+           resultData.push({grade: "10", data: [row.q1Total10, row.q2Total10, row.q3Total10, row.q4Total10] });
+           resultData.push({grade: "11", data: [row.q1Total11, row.q2Total11, row.q3Total11, row.q4Total11] });
+           resultData.push({grade: "12", data: [row.q1Total12, row.q2Total12, row.q3Total12, row.q4Total12] });
        }
 
         res.status(200).json({ attendance: resultData });

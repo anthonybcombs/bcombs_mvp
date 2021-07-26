@@ -23,6 +23,14 @@ const MetricMenu = props => {
                 <span>Mentee / Year</span>
             </div>
             <div
+                className={`${selectedLabel === "classes" ? "selected" : ""}`}
+                onClick={() => {
+                    handleSelectedLabel("classes");
+                }}
+            >
+                <span>Class Engagement</span>
+            </div>
+            <div
                 className={`${selectedLabel === "tests" ? "selected" : ""}`}
                 onClick={() => {
                     handleSelectedLabel("tests");

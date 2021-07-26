@@ -65,12 +65,12 @@ const Attendance = props => {
             xAxis: {
                 categories: ['Q1', 'Q2', 'Q3', 'Q4']
                 },
-                series : [
-                    { type: 'column', name: 'Classes Attended by ' + gradeDisplay(newGrade, true), data: [] }
-                ]
+                series : [ ]
         }
         for (let i=0; i< data.length; i++) {
-            chartOptions.series[0].data.push(data[i].y);
+            chartOptions.series.push({ 
+                type: 'column', 
+                name: gradeDisplay(data[i].grade, true), data: data[i].data });
         }
         setTempOptionsData(chartOptions);
     }
@@ -117,14 +117,6 @@ return <div style={{ padding: 24 }}>
             <div className="top-left">
                 <h4>Attendance</h4>
             
-                <select id="child-grade" onChange={gradeChange} value={grade}>
-                    <option value="all">All</option>
-                    <option value="12" >Seniors</option>
-                    <option value="11">Juniors</option>
-                    <option value="10">Sophmores</option>
-                    <option value="9">Freshmen</option>
-                    <option value="8">Middle School</option>
-                    </select>
                 <select id="mentee-year" onChange={yearChange} value={year}>
                     <option value="2022">2022</option>
                     <option value="2021" >2021</option>
