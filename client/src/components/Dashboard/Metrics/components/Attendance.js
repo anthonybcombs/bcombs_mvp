@@ -57,6 +57,11 @@ const Attendance = props => {
             title : {
                 text: ''
             },
+            yAxis: {
+                title: {
+                    text: '# of Classes'
+                }
+            },
             xAxis: {
                 categories: ['Q1', 'Q2', 'Q3', 'Q4']
                 },
