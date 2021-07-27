@@ -7,6 +7,8 @@ export default function Vendor(state = {}, action) {
     case actionType.REQUEST_UPDATE_VENDOR_COMPLETED:
       window.location.reload(false);
       return action.payload
+    case actionType.REQUEST_CREATE_GROUP_REMINDER_COMPLETED:
+      return action.payload
     default:
       return state;
   }

@@ -176,8 +176,50 @@ export const getApplicationsByVendor = async vendor => {
       [vendor]
     );
     result = applications;
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+};
 
-    console.log("getApplicationsByVendor !!!!!!!!!!!!!!!", result);
+export const getApplicationsByAppGroup = async app_group => {
+  const db = makeDb();
+  let result = [];
+  try {
+    const applications = await db.query(
+      `SELECT 
+        id,
+        BIN_TO_UUID(app_id) as app_id, 
+        BIN_TO_UUID(vendor) as vendor, 
+        BIN_TO_UUID(child) as child,
+        section1_signature,
+        section1_date_signed,
+        section2_signature,
+        section2_date_signed,
+        section3_signature,
+        section3_date_signed,
+        verification,
+        student_status,
+        color_designation,
+        notes,
+        class_teacher,
+        application_date,
+        archived_date,
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name,
+        emergency_contacts,
+        is_daycare
+        FROM application
+        WHERE class_teacher LIKE '%${app_group}%' and is_archived=0
+        ORDER BY id DESC`
+    );
+    result = applications;
   } catch (error) {
     console.log("error", error);
   } finally {
@@ -693,7 +735,8 @@ export const getUserApplicationsByUserId = async user_id => {
       `
         SELECT 
           id,
-          BIN_TO_UUID(app_id) as app_id
+          BIN_TO_UUID(app_id) as app_id,
+          received_reminder
         FROM application_user
         WHERE user_id=UUID_TO_BIN(?)
         ORDER BY id DESC
@@ -702,7 +745,8 @@ export const getUserApplicationsByUserId = async user_id => {
     );
     for (const ua of userApplications) {
       if(ua.app_id) {
-        const application = await getApplicationByAppId(ua.app_id);
+        let application = await getApplicationByAppId(ua.app_id);
+        application.received_reminder = !!ua.received_reminder;
         applications.push(application);
       }
     }
@@ -1273,8 +1317,6 @@ export const getApplicationByAppGroup = async ({
   }
 }
 
-
-
 export const getCustomApplicationByVendorId = async (vendor) => {
   const db = makeDb();
   let applications;
@@ -1300,5 +1342,31 @@ export const getCustomApplicationByVendorId = async (vendor) => {
   } finally {
     await db.close();
     return applications;
+  }
+}
+
+export const updateApplicationUser = async ({
+  application,
+  received_reminder
+}) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `UPDATE application_user SET
+      received_reminder=?
+      WHERE app_id=UUID_TO_BIN(?)`,
+      [
+        received_reminder,
+        application
+      ]
+    );
+  } catch(err) {
+    console.log('err', err);
+    result = err;
+  } finally {
+    db.close();
+    return result;
   }
 }

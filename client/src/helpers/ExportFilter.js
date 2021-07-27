@@ -119,7 +119,8 @@ const ExportFilter = ({
     { name: "Current Student", value: "current_student" },
     { name: "Waiting List", value: "waiting_list" },
     { name: "No longer a Student", value: "no_longer_student" },
-    { name: "Missed opportunity", value: "missed_opportunity" }
+    { name: "Missed opportunity", value: "missed_opportunity" },
+    { name: "Pending Resubmission", value: "pending_resubmission"}
   ];
 
   const VERIFICATION_OPTIONS = [

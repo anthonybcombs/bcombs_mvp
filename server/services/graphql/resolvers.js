@@ -78,7 +78,8 @@ import {
   getAppGroupById,
   getArchivedGroupByVendor,
   deleteArchivedGroup,
-  addArchivedGroupByVendor
+  addArchivedGroupByVendor,
+  createGroupReminder
 } from "../../api/vendor";
 import {
   createApplication,
@@ -107,7 +108,8 @@ import {
   getCustomApplicationHistoryById,
   getUserCustomApplicationsByUserId,
   getApplicationByAppGroup,
-  getCustomApplicationByVendorId
+  getCustomApplicationByVendorId,
+  updateApplicationUser
 } from "../../api/applications";
 import { 
   addChild, 
@@ -973,13 +975,33 @@ const resolvers = {
         }
       }
 
-      if (isSaved) {
+      console.log('application.received_reminder', application.received_reminder);
+
+      if (isSaved && !application.received_reminder) {
         const params = {
           app_id: application.app_id,
           details: JSON.stringify(previousApplication),
           updated_by: application.updated_by
         };
         addApplicationHistory(params);
+      } else {
+
+        console.log('no app history added');
+        const col = {
+          application: application.app_id,
+          received_reminder: 0
+        };
+
+        updateApplicationUser(col);
+        
+        updateApplication({
+          verification: "waiting_for_verification",
+          student_status: "pending_resubmission",
+          color_designation: previousApplication.color_designation,
+          class_teacher: previousApplication.class_teacher,
+          notes: previousApplication.class_teacher,
+          app_id: previousApplication.app_id
+        })
       }
 
       return {
@@ -1522,6 +1544,44 @@ const resolvers = {
     },
     async removeGroupFromArchive(root, { archivedGroupIds = [],vendorId }, context) {
       return await deleteArchivedGroup( archivedGroupIds,vendorId)
+    },
+    async createGroupReminder(root, { groupReminder }, context) {
+
+      console.log('groupReminder', groupReminder);
+
+      const appGroups = groupReminder.app_groups;
+
+      console.log('appGroups', appGroups);
+
+      let resStatus = {}
+
+      for(const appGroup of appGroups) {
+        const reminderInput = {
+          vendor: groupReminder.vendor_id,
+          app_group: appGroup,
+          form: groupReminder.is_customForm ? groupReminder.form : null,
+          date_reminder: groupReminder.date,
+          is_customForm: groupReminder.is_customForm ? 1 : 0,
+          fields: JSON.stringify(groupReminder.form_fields)
+        }
+
+        const result = await createGroupReminder(reminderInput);
+
+        if(!result) {
+          resStatus = {
+            messageType: "error",
+            message: "failed to set reminder",
+          }
+          break;
+        } else {
+          resStatus = {
+            messageType: "info",
+            message: "successfully update your application form",
+          }
+        }
+      }
+
+      return resStatus
     }
   }
 };

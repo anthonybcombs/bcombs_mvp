@@ -440,6 +440,7 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
   query getUserApplicationsByUserId($user_id: String!) {
     getUserApplicationsByUserId(user_id: $user_id) {
       applications {
+        received_reminder
         id
         app_id
         vendor

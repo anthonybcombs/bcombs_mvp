@@ -31,6 +31,9 @@ app.use(
   bodyParser.json({ parameterLimit: 10000000, limit: "50mb", extended: true })
 );
 
+const cron = require('./cron-process');
+cron.setReminder();
+
 const serviceNames = Object.keys(services);
 for (let i = 0; i < serviceNames.length; i += 1) {
   const name = serviceNames[i];
