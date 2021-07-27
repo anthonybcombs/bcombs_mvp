@@ -129,6 +129,7 @@ export default function index({
     { name: "Waiting List", value: "waiting_list"},
     { name: "No longer a Student", value: "no_longer_student"},
     { name: "Missed opportunity", value: "missed_opportunity"},
+    { name: "Pending Resubmission", value: "pending_resubmission"},
   ]
 
   const CLASS_TEACHER_OPTIONS = [
