@@ -11,6 +11,8 @@ import Grades from "./components/Grades";
 import Mentoring from "./components/Mentoring";
 import VolunteerHours from "./components/VolunteerHours";
 
+import { requestVendor } from '../../../redux/actions/Vendors';
+
 
 const MetricStyled = styled.div`
 
@@ -94,22 +96,31 @@ const MetricStyled = styled.div`
 
 const Metrics = props => {
   const [selectedLabel, setSelectedLabel] = useState('attendance');
-
+  const dispatch = useDispatch();
   const {
     auth,
-    user
+    user,
+    vendors
   } = useSelector(
     ({
       auth,
-      user
+      user,
+      vendors
     }) => {
       return {
         auth,
-        user
+        user,
+        vendors
       };
     }
   );
 
+  useEffect(() => {
+    if(auth) {
+      dispatch(requestVendor(auth.user_id));
+    }
+    
+  },[])
 
   // const sql_stat = "Select xyz form a, b";
   // rows = sql_run(sql_stat)
@@ -120,14 +131,14 @@ const Metrics = props => {
   };
 
 
-
+  console.log('Vendorzzz', vendors)
   return (
     <MetricStyled>
       <div id="metrics-page" >
         <MetricMenu handleSelectedLabel={handleSelectedLabel} selectedLabel={selectedLabel} />
         <div>
           {selectedLabel === 'attendance' && <Attendance auth={auth} />}
-          {selectedLabel === 'mentees' && <Mentees auth={auth} />}
+          {selectedLabel === 'mentees' && <Mentees auth={auth} vendors={vendors} />}
           {selectedLabel === 'classes' && <ClassReport auth={auth} />}
           {selectedLabel === 'tests' && <Tests auth={auth} />}
           {selectedLabel === 'grades' && <Grades auth={auth} />}

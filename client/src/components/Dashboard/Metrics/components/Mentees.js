@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
+import { useDispatch, useSelector } from "react-redux";
 
 import Charts from './Charts';
 
 const apiCall2 = async (id, year) => {
     
     // Default options are marked with *
-    const response = await fetch('http://localhost:3001/api/metrics/mentee', {
+    const response = await fetch(`${process.env.API_HOST}/api/metrics/mentee`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -28,7 +29,8 @@ const apiCall2 = async (id, year) => {
 
 
 const Mentees = props => {
-    const { auth } = props;
+    const { auth, vendors } = props;
+
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [year, setYear] = useState('2021');
     const [hasData, setHasData] = useState(false);
@@ -136,7 +138,8 @@ const Mentees = props => {
         console.log("year2 ", event.target.value); // ;year);
         triggerApi2(auth.user_id, event.target.value);
     };
-
+    console.log('vendors',vendors)
+ 
     return <div style={{ padding: 24 }}>
         <div className="grid grid-2b">
         <div className="top-left"><h4>Mentee / Year</h4><select id="mentee-year" onChange={yearChange} value={year}>
