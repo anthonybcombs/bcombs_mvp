@@ -5,7 +5,7 @@ import Charts from './Charts';
 const apiCallVolunteering = async (id, year, grade) => {
     
     // Default options are marked with *
-    const response = await fetch('http://localhost:3001/api/metrics/volunteering', {
+    const response = await fetch(`${process.env.API_HOST}/api/metrics/volunteering`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
