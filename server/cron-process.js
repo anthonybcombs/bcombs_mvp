@@ -26,8 +26,6 @@ exports.setReminder = () => {
   let task1 = cron.schedule('* /5 * * *', async () => {
     console.log('trigger cron');
 
-    task1.stop();
-
     const group_reminders = await getGroupReminderByCurrentDate();
 
     for(const item of group_reminders) {
