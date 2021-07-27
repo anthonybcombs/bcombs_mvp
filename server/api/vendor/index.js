@@ -4,6 +4,8 @@ import { getUserGroups } from "../../api/groups";
 
 import { sort, distinct, sortByDate } from "../../helpers/array";
 
+import moment from 'moment';
+
 export const getVendors = async () => {
   const db = makeDb();
   try {
@@ -883,3 +885,103 @@ export const deleteArchivedGroup = async (archivedroupIds = [], vendorId) => {
     return results;
   }
 };
+
+export const createGroupReminder = async ({
+  vendor,
+  app_group,
+  form,
+  date_reminder,
+  is_customForm,
+  fields
+}) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    const addGroupReminder = await db.query(
+      `
+        INSERT INTO group_reminder(
+          group_reminder_id,
+          vendor,
+          app_group,
+          form,
+          date_reminder,
+          is_customform,
+          fields
+        ) VALUES (
+          UUID_TO_BIN(UUID()),
+          UUID_TO_BIN(?),
+          UUID_TO_BIN(?),
+          ?,?,?,?
+        )
+      `,
+      [
+        vendor,
+        app_group,
+        form,
+        date_reminder,
+        is_customForm,
+        fields
+      ]
+    )
+
+    result = addGroupReminder.insertId ? true : false
+  } catch(err) {
+    result = false;
+  } finally {
+    db.close();
+    return result;
+  }
+}
+
+export const getGroupReminderByCurrentDate = async () => {
+  const db = makeDb();
+  let result;
+  const currentDate = moment().format('YYYY-MM-DD');
+  console.log('currentDate', currentDate);
+  try {
+    result = await db.query(
+      `
+        SELECT
+          id,
+          BIN_TO_UUID(group_reminder_id) as group_reminder_id,
+          BIN_TO_UUID(vendor) as vendor,
+          BIN_TO_UUID(app_group) as app_group,
+          form,
+          date_reminder,
+          is_customform,
+          fields
+        FROM group_reminder 
+        WHERE date_reminder = ? AND active = 1
+      `,
+      [currentDate]
+    )
+  } catch(err) {
+    console.log('err', err);
+    result = [];
+  } finally {
+    db.close();
+    return result;
+  }
+}
+
+export const updateGroupReminderStatus = async ({
+  group_reminder_id,
+  active
+}) => {
+  const db = makeDb();
+  let result;
+  try {
+    result = await db.query(
+      `UPDATE group_reminder 
+      SET active=?
+      WHERE group_reminder_id=UUID_TO_BIN(?) `,
+      [active, group_reminder_id]
+    );
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    await db.close();
+    return result;
+  }
+}

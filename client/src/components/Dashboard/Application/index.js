@@ -17,6 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ApplicationSummaryStyled from "./summary";
 import ApplicationSettingsStyled from "./settings";
+import ReminderSettingsStyled from "./reminder_settings"
 import ApplicationListStyled from "./list";
 import EditApplicationStyled from "./edit";
 import ChildFormViewStyled from "./view/child";
@@ -26,7 +27,10 @@ import DaycareParentFormView from "./daycare/parent";
 import RelationshipToChildStyled from "../DaycareApplicationForm/RelationshipToChildForm";
 
 import TermsWaiverFormViewStyled from "./view/waiver";
-import { requestVendor, requestGetFormAppGroup } from "../../../redux/actions/Vendors";
+import { 
+  requestVendor, 
+  requestGetFormAppGroup,
+  requestCreateGroupReminder } from "../../../redux/actions/Vendors";
 import {
   requestGetApplications,
   requestUpdateApplication,
@@ -279,7 +283,7 @@ const ApplicationFormStyled = styled.form`
     .emergency-contact-wrapper {
       margin-top: 30px;
     }
-  
+
     @media (max-width: 768px) {
   
       #multiselectContainerReact {
@@ -375,6 +379,20 @@ const ApplicationStyled = styled.div`
   #application > div {
     background-color: white;
     box-shadow: 0 0 25px #eae9e9;
+  }
+
+  .a_settings {
+    display: block !important
+  }
+
+  .a_settings .Collapsible__trigger {
+    margin-left: 0 !important;
+  }
+
+  .a_settings .Collapsible__contentInner > div {
+    margin-top: 1em;
+    padding: 5px;
+    margin-left: 2em;
   }
 
   .selected {
@@ -531,6 +549,18 @@ export default function index() {
       if(queryParams && queryParams.form) {
         dispatch(requestGetCustomApplications(queryParams.form));
       }
+
+      if(queryParams && queryParams.opt) {
+        const opt = queryParams.opt;
+
+        if(opt === 'set-reminder') {
+          handleSelectedLabel({value: 'Set Reminder', opt:'set-reminder'})
+        } else if (opt === 'termsconditions') {
+          handleSelectedLabel({value: 'Form Settings', opt:'termsconditions'});
+        } else {
+          handleSelectedLabel({value: 'Application Status', opt:'applicationstatus'});
+        }
+      }
     }
   }, []);
 
@@ -602,10 +632,11 @@ export default function index() {
 
   console.log("vendor", vendors);
 
-  const handleSelectedLabel = value => {
+  const handleSelectedLabel = ({value, opt}) => {
     setSelectedLabel(value);
     setSelectNonMenuOption(false);
     setSelectedApplication({});
+    window.history.replaceState("","","?opt=" + opt);
     setView("");
   };
 
@@ -887,7 +918,7 @@ export default function index() {
         ? parseArrayFormat(parent.ethnicities.split(","))
         : [],
         gender: parent?.gender,
-        date_of_birth: new Date(parent?.birthdate)
+        date_of_birth: parent.birthdate ? new Date(parent.birthdate) : ''
       };
 
       items.push({ profile: profile, id: parent.parent_id, parent_id: parent.parent_id });
@@ -1621,6 +1652,10 @@ export default function index() {
 
   console.log('loading applications',applications)
   console.log('parentsInformation123123123123',parentsInformation)
+
+  const handleCreateGroupReminder = (payload) => {
+    dispatch(requestCreateGroupReminder(payload));
+  }
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -1759,22 +1794,57 @@ export default function index() {
                 selectedLabel === "Application Status" ? "selected" : ""
               }`}
               onClick={() => {
-                handleSelectedLabel("Application Status");
+                handleSelectedLabel({value: "Application Status", opt: 'applicationstatus'});
               }}>
               <FontAwesomeIcon icon={faThList} />
               <span>Application Status</span>
             </div>
+            <Collapsible
+              className="a_settings"
 
-            <div
-              className={`${
-                selectedLabel === "Form Settings" ? "selected" : ""
-              }`}
-              onClick={() => {
-                handleSelectedLabel("Form Settings");
-              }}>
-              <FontAwesomeIcon icon={faCogs} />
-              <span>Application Settings</span>
-            </div>
+              openedClassName="a_settings"
+
+              trigger={
+                <div>
+                  <FontAwesomeIcon icon={faCogs} />
+                  <span style={{"marginLeft": "1em"}}>Application Settings</span>
+                </div>
+              }
+              lazyRender
+              open
+            >
+              <div
+                className={`${
+                  selectedLabel === "Form Settings" ? "selected" : ""
+                }`}
+                onClick={() => {
+                  handleSelectedLabel({value: "Form Settings", opt: 'termsconditions'});
+                }}
+              >
+                Terms and Conditions
+              </div>
+              <div 
+                className={`${
+                  selectedLabel === "Set Reminder" ? "selected" : ""
+                }`}
+                onClick={() => {
+                  handleSelectedLabel({value: "Set Reminder", opt: 'set-reminder'});
+                }}
+              >
+                Set Reminder
+              </div>
+            </Collapsible>
+
+            {/* <div
+              // className={`${
+              //   selectedLabel === "Form Settings" ? "selected" : ""
+              // }`}
+              // onClick={() => {
+              //   handleSelectedLabel("Form Settings");
+              // }}
+              >
+   
+            </div> */}
 
             <a href={`/dashboard/audittrail`}>
               <FontAwesomeIcon icon={faHistory} />
@@ -1806,6 +1876,14 @@ export default function index() {
             <ApplicationSettingsStyled
               vendor={selectedVendor}
               formSettingsLoading={loading.form_settings}
+            />
+          )}
+          {selectedLabel === "Set Reminder" && !selectNonMenuOption && (
+            <ReminderSettingsStyled
+              vendor={selectedVendor}
+              appGroups={appGroups}
+              formList={formList}
+              handleCreateGroupReminder={handleCreateGroupReminder}
             />
           )}
           {(selectNonMenuOption && view == "application" || view === 'builderForm') && (

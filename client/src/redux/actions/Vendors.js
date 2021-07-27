@@ -9,7 +9,8 @@ import {
   ADD_VENDOR_ADMIN,
   DELETE_VENDOR_ADMIN,
   UPDATE_VENDOR_ADMIN,
-  GET_USER_VENDOR_FORMS
+  GET_USER_VENDOR_FORMS,
+  CREATE_GROUP_REMINDER
 } from "../../graphql/vendorMutation";
 
 import { GET_FORM_APP_GROUP } from "../../graphql/groupQuery";
@@ -23,6 +24,21 @@ import {
   setDeleteAdminLoading,
   setApplicationLoading
 } from "./Loading";
+
+const addReminderToDatabse = groupReminder => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: CREATE_GROUP_REMINDER,
+        variables: { groupReminder }
+      })
+
+      return resolve(data.createGroupReminder);
+    } catch(error) {
+      reject(error)
+    }
+  })
+}
 
 const addAdminToDatabase = admin => {
   return new Promise(async (resolve, reject) => {
@@ -197,6 +213,15 @@ const updateVendorToDatabase = vendor => {
   });
 };
 
+export const requestCreateGroupReminder = groupReminder => {
+  console.log('groupReminder12345', groupReminder);
+
+  return {
+    type: actionType.REQUEST_CREATE_GROUP_REMINDER,
+    groupReminder
+  };
+};
+
 export const requestVendorById2 = id2 => {
   return {
     type: actionType.REQUEST_VENDOR_BY_ID2,
@@ -367,6 +392,17 @@ export function* updateVendor({ vendor }) {
       payload: {}
     });
   }
+}
+
+export function* createGroupReminder({ groupReminder }) {
+  console.log('createGroupReminder', groupReminder);
+
+  const response = yield call(addReminderToDatabse, groupReminder );
+
+  yield put({
+    type: actionType.REQUEST_CREATE_GROUP_REMINDER_COMPLETED,
+    payload: response
+  })
 }
 
 export function* getVendorById({ id }) {

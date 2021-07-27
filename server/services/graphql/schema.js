@@ -473,6 +473,7 @@ const inputs = `
         section2_name: String
         section3_name: String,
         relationships: [ParentChildRelationshipInput]
+        received_reminder: Boolean
     }
 
     input AddAdminInput {
@@ -812,8 +813,19 @@ const inputs = `
         app_group_type: String
     }
 
+    input FormFields {
+      fields1: [String],
+      fields2: [String]
+    }
 
-
+    input SetReminderInput {
+      vendor_id: String!,
+      app_groups: [String!],
+      form: String,
+      date: String,
+      form_fields: FormFields,
+      is_customForm: Boolean
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -1020,11 +1032,11 @@ const queryTypes = `
     type Child {
         ch_id: String!
         new_childId: String
-        firstname: String!
-        lastname: String!
+        firstname: String
+        lastname: String
         age: Int!
-        birthdate: Date!
-        gender: String!
+        birthdate: Date
+        gender: String
         phone_type: String
         phone_number: String
         email_type: String
@@ -1033,10 +1045,10 @@ const queryTypes = `
         phone_number2: String
         email_type2: String
         email_address2: String
-        address: String!
-        city: String!
-        state: String!
-        zip_code: String!
+        address: String
+        city: String
+        state: String
+        zip_code: String
         location_site: String
         ethnicities: String
         programs: String
@@ -1101,17 +1113,17 @@ const queryTypes = `
     type Parent {
         parent_id: String!
         new_parentId: String
-        firstname: String!
-        lastname: String!
+        firstname: String
+        lastname: String
         phone_type: String
-        phone_number: String!
+        phone_number: String
         email_type: String
-        email_address: String!
+        email_address: String
         password: String
         occupation: String
         employers_name: String
-        parent_goals: String!
-        parent_child_goals: String!
+        parent_goals: String
+        parent_child_goals: String
         live_area: Int
         level_of_education: String
         child_hs_grad: String
@@ -1166,6 +1178,7 @@ const queryTypes = `
         is_daycare: Int
         relationships: [ParentChildRelationship]
         chRelationships: [ChildChildRelationship]
+        received_reminder: Boolean
     }
 
     type ParentUserApplication{
@@ -1649,6 +1662,7 @@ const queryTypes = `
         app_group_id: String
         app_group_type: String
     }
+
 `;
 
 const mutations = `
@@ -1698,6 +1712,7 @@ const mutations = `
         updateChildInfo (child: StudentInfoInput): StudentInfo
         addArchivedGroup(archivedGroup: [ArchiveGroupInput]): [ArchivedGroup]
         removeGroupFromArchive(archivedGroupIds: [Int], vendorId: String): [ArchivedGroup]
+        createGroupReminder(groupReminder: SetReminderInput): Status
     }
 `;
 

@@ -376,8 +376,6 @@ export const ADD_ARCHIVED_GROUP = gql`
   }
 `;
 
-
-
 export const DELETE_ARCHIVED_GROUP = gql`
   mutation removeGroupFromArchive($archivedGroupIds: [Int], $vendorId: String) {
     removeGroupFromArchive(archivedGroupIds: $archivedGroupIds, vendorId: $vendorId) {
@@ -385,6 +383,15 @@ export const DELETE_ARCHIVED_GROUP = gql`
       vendor_id
       app_group_id
       app_group_type
+    }
+  }
+`;
+
+export const CREATE_GROUP_REMINDER = gql`
+  mutation createGroupReminder($groupReminder: SetReminderInput) {
+    createGroupReminder(groupReminder: $groupReminder) {
+      messageType
+      message
     }
   }
 `;

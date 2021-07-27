@@ -79,6 +79,7 @@ import {
   updateAdmin,
   getFormAppGroup,
   getVendorAppGroups,
+  createGroupReminder
 } from "../actions/Vendors";
 
 import {
@@ -176,6 +177,10 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_MEMBERS, getMembers);
 
   //ADDED BY JEROME
+  yield takeLatest(
+    actionType.REQUEST_CREATE_GROUP_REMINDER, 
+    createGroupReminder
+  );
   yield takeLatest(actionType.REQUEST_GRADES, getGrades);
   yield takeLatest(actionType.REQUEST_VENDOR, getVendor);
   yield takeLatest(actionType.REQUEST_UPDATE_VENDOR, updateVendor);
