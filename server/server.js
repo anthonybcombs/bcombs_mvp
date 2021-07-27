@@ -16,6 +16,9 @@ const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "/.env") });
 const app = express();
 
+const cron = require('./cron-process');
+cron.setReminder();
+
 app.use(cors());
 app.use(helmet());
 app.use(compression());

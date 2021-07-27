@@ -2,6 +2,7 @@ import React, { useEffect, useRef,useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
+import { useLocation, useNavigate } from "@reach/router";
 import Collapsible from "react-collapsible";
 import DataTable from 'react-data-table-component';
 
@@ -11,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { format } from "date-fns";
+import { parse } from "query-string";
 
 import { useReactToPrint } from "react-to-print";
 import { 
@@ -35,6 +37,7 @@ import DaycareParentFormView from "../Application/daycare/parent";
 import TermsWaiverFormViewStyled from "../Application/view/waiver";
 import Loading from "../../../helpers/Loading.js";
 import SuccessUpdateModal from "./SuccessUpdateModal";
+import SetRemindersModal from "./SetRemindersModal";
 
 import Form from '../../Dashboard/Builders/Form'
 import { requestUpdateSubmittedForm, requestGetCustomApplicationHistory } from '../../../redux/actions/FormBuilder'
@@ -340,11 +343,66 @@ export default function index() {
 
   const [selectedVendor, setSelectedVendor] = useState({});
 
+  const location = useLocation();
+  const queryParams = parse(location.search);
+
+  useEffect(() => {
+    console.log('queryParams', queryParams);
+
+    if(auth.user_id) {
+      dispatch(requestGetApplicationByUserId(auth.user_id))
+    }
+
+    if(queryParams && queryParams.action && queryParams.action == 'update') {
+      console.log('this is update');
+      setIsReadonly(false);
+    }
+  }, [])
+
   useEffect(() => {
     if (vendors && vendors.length > 0) {
       setSelectedVendor(vendors[0]);
     }
   }, [vendors]);
+
+  const [userApplications, setuserApplications] = useState([])
+
+  useEffect(() => {
+    console.log('trigger userAllApplications');
+    setuserApplications(applications.userAllApplications);
+
+    let uApplications = applications.userAllApplications;
+
+    console.log('uApplications', uApplications);
+
+    if(queryParams && queryParams.appId && uApplications.length > 0) {
+      const qappId = queryParams.appId;
+      let sApplication = uApplications.filter((a) => {
+        return a.app_id == qappId
+      });
+
+      sApplication = sApplication?.length > 0 ? sApplication[0] : {};
+
+      console.log('sApplication', sApplication);
+
+      if(sApplication && sApplication.app_id);
+        initializeApplication(sApplication);
+    }
+
+    const hasSetReminders = uApplications.some(ua => ua.received_reminder);
+
+    console.log('hasSetReminders', hasSetReminders);
+
+    if(queryParams && queryParams?.action != 'update') {
+      setShowReminder(hasSetReminders);
+      setReminderApplications(uApplications.filter(ua => !!ua.received_reminder));
+    }
+
+  }, [applications.userAllApplications])
+
+  const [showReminder, setShowReminder] = useState(false);
+
+  const [reminderApplications, setReminderApplications] = useState([]);
 
   const [selectedApplication, setSelectedApplication] = useState({});
 
@@ -408,19 +466,6 @@ export default function index() {
     {...childEmergencyContact},
     {...childEmergencyContact}
   ]
-
-  useEffect(() => {
-    console.log('AUTHHHH MY APPLCIATION', auth)
-    if(auth.user_id) {
-      dispatch(requestGetApplicationByUserId(auth.user_id))
-    }
-  }, [])
-
-  let userApplications = [];
-
-  if(applications && applications.userAllApplications.length > 0) {
-    userApplications = applications.userAllApplications;
-  }
 
   if( applications.updateapplication 
     && applications.updateapplication.message == "application successfully updated" ) {
@@ -695,15 +740,255 @@ export default function index() {
     )
   }
 
+  const initializeApplication = (application) => {
+    setSelectedVendor({});
+    setView('bcombsform')
+    if(application && application.form) {
+
+    } else {
+
+      dispatch(requestGetApplicationHistory(application.app_id));
+      dispatch(requestVendorById(application.vendor));
+
+      const childInformationObj = {
+        profile: {
+          image: "",
+          application_date: 'Most Up to date Application',
+          first_name: application.child.firstname ? application.child.firstname: "",
+          last_name: application.child.lastname ? application.child.lastname:"",
+          nick_name: application.child.nickname ? application.child.nickname: "",
+          date_of_birth: application.child.birthdate ? new Date(application.child.birthdate) : "",
+          gender: application.child.gender,
+          phone_type: application.child.phone_type ? application.child.phone_type: "",
+          phone_number: application.child.phone_number ? application.child.phone_number:"",
+          email_type: application.child.email_type ? application.child.email_type:"",
+          email_address: application.child.email_address ? application.child.email_address: "",
+          address: application.child.address ? application.child.address: "",
+          city: application.child.city ? application.child.city: "",
+          state: application.child.state ? application.child.state: "",
+          zip_code: application.child.zip_code ? application.child.zip_code: "",
+          location_site: application.child.location_site ? application.child.location_site: "",
+          child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
+          program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
+          ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
+          nick_name: application.child.nickname ? application.child.nickname: "",
+          preffered_start_date: new Date(application.child.preffered_start_date),
+          current_classroom: application.child.current_classroom ? application.child.current_classroom: "",
+          primary_language: application.child.primary_language ? application.child.primary_language : "",
+          needed_days: application.child.needed_days ? application.child.needed_days : "",
+          schedule_tour: application.child.schedule_tour ? application.child.schedule_tour : "",
+          voucher: application.child.voucher ? application.child.voucher : ""
+        },
+        general_information: {
+          grade: application.child.grade_number ? application.child.grade_number: "",
+          class_rank: application.child.class_rank ? application.child.class_rank : "",
+          gpa_quarter_year: application.child.gpa_quarter_year ? application.child.gpa_quarter_year : "",
+          gpa_quarter_q1: application.child.gpa_quarter_q1 ? application.child.gpa_quarter_q1 : "",
+          gpa_quarter_q2: application.child.gpa_quarter_q2 ? application.child.gpa_quarter_q2 : "",
+          gpa_quarter_q3: application.child.gpa_quarter_q3 ? application.child.gpa_quarter_q3 : "",
+          gpa_quarter_q4: application.child.gpa_quarter_q4 ? application.child.gpa_quarter_q4 : "",
+          gpa_cumulative_year: application.child.gpa_cumulative_year ? application.child.gpa_cumulative_year : "",
+          gpa_cumulative_q1: application.child.gpa_cumulative_q1 ? application.child.gpa_cumulative_q1 : "",
+          gpa_cumulative_q2: application.child.gpa_cumulative_q2 ? application.child.gpa_cumulative_q2 : "",
+          gpa_cumulative_q3: application.child.gpa_cumulative_q3 ? application.child.gpa_cumulative_q3 : "",
+          gpa_cumulative_q4: application.child.gpa_cumulative_q4 ? application.child.gpa_cumulative_q4 : "",
+          act_scores: [],
+          sat_scores: [],
+          psat_scores: [],
+          school_name: application.child.school_name ? application.child.school_name : "",
+          school_phone: application.child.school_phone ? application.child.school_phone : "",
+          was_suspended: application.child.has_suspended + "",
+          reason_suspended: application.child.reason_suspended,
+          mentee_start_year: application.child.year_taken,
+          hobbies: application.child.hobbies ? application.child.hobbies : "",
+          life_events: application.child.life_events ? application.child.life_events : "",
+          career_goals: application.child.career_goals ? application.child.career_goals : "",
+          colleges: application.child.colleges ? application.child.colleges : "",
+          team_affiliations: application.child.affiliations ? application.child.affiliations : "",
+          awards: application.child.awards ? application.child.awards : "",
+          accomplishments: application.child.accomplishments ? application.child.accomplishments : "",
+          mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : "",
+          is_child_transferring: application.child.is_child_transferring 
+            ? application.child.is_child_transferring 
+            : "",
+          does_child_require_physical_education_service: application.child.does_child_require_physical_education_service 
+            ? application.child.does_child_require_physical_education_service 
+            : "",
+          history_prev_diseases: application.child.history_prev_diseases 
+            ? application.child.history_prev_diseases 
+            : "", //start of questions
+          child_currently_doctors_care: application.child.child_currently_doctors_care 
+            ? application.child.child_currently_doctors_care 
+            : "",
+          reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations 
+            ? application.child.reasons_previous_hospitalizations 
+            : "",
+          comments_suggestion: application.child.comments_suggestion 
+            ? application.child.comments_suggestion 
+            : "",
+          list_special_dietary: application.child.list_special_dietary 
+            ? application.child.list_special_dietary 
+            : "",
+          list_any_allergies: application.child.list_any_allergies 
+          ? application.child.list_any_allergies 
+          : "",
+          mental_physical_disabilities: application.child.mental_physical_disabilities 
+          ? application.child.mental_physical_disabilities 
+          : "",
+          medical_action_plan: application.child.medical_action_plan 
+          ? application.child.medical_action_plan 
+          : "",
+          list_fears_unique_behavior: application.child.list_fears_unique_behavior 
+          ? application.child.list_fears_unique_behavior 
+          : "",
+          transfer_reason: application.child.transfer_reason 
+          ? application.child.transfer_reason 
+          : "",
+          prev_school_phone: application.child.prev_school_phone 
+          ? application.child.prev_school_phone 
+          : "",
+          prev_school_city: application.child.prev_school_city 
+          ? application.child.prev_school_city 
+          : "",
+          prev_school_address: application.child.prev_school_address 
+          ? application.child.prev_school_address 
+          : "",
+          prev_school_attended: application.child.prev_school_attended 
+          ? application.child.prev_school_attended 
+          : "",
+          prev_school_state: application.child.prev_school_state 
+          ? application.child.prev_school_state 
+          : "",
+          prev_school_zip_code: application.child.prev_school_zip_code 
+          ? application.child.prev_school_zip_code 
+          : ""
+        },
+        emergency_care_information: {
+          doctor_name: application.child.doctor_name ? application.child.doctor_name : "",
+          doctor_phone: application.child.doctor_phone ? application.child.doctor_phone : "",
+          hospital_preference: application.child.hospital_preference ? application.child.hospital_preference : "",
+          hospital_phone: application.child.hospital_phone ? application.child.hospital_phone : ""
+        },
+        ch_id: application.child.ch_id,
+        id: application.child.ch_id
+      }
+
+      const parents = application.parents;
+
+      let items = []
+      for(const parent of parents) {
+        const profile = {
+          first_name: parent.firstname ? parent.firstname : "",
+          last_name: parent.lastname ? parent.lastname : "",
+          phone_type: parent.phont_type ? parent.phone_type : "",
+          phone_number: parent.phone_number ? parent.phone_number : "",
+          phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+          phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
+          email_type: parent.email_type ? parent.email_type : "",
+          email_address: parent.email_address ? parent.email_address : "",
+          email_type2: parent.email_type2 ? parent.email_type2 : "",
+          email_address2: parent.email_address2 ? parent.email_address2 : "",
+          address: parent.address ? parent.address : "",
+          city: parent.city ? parent.city : "",
+          state: parent.state ? parent.state : "",
+          zip_code: parent.zip_code ? parent.zip_code : "",
+          occupation: parent.occupation ? parent.occupation : "",
+          employer_name: parent.employers_name ? parent.employers_name : "",
+          goals_parent_program: parent.parent_goals ? parent.parent_goals : "",
+          goals_child_program: parent.parent_child_goals ? parent.parent_child_goals : "",
+          live_area: parent.live_area ? parent.live_area : 0, // 1: 1 - 5 year, 2: 5 - 10 year, 3: more than 10 year
+          level_education: parent.level_of_education ? parent.level_of_education : "",
+          child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
+          child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
+          person_recommend: parent.person_recommend ? parent.person_recommend: "",
+          ethinicity: parent.ethnicities
+            ? parseArrayFormat(parent.ethnicities.split(","))
+            : [],
+          gender: parent.gender,
+          date_of_birth: parent.birthdate ? new Date(parent.birthdate) : ""
+        }
+      
+        items.push({profile: profile, id: parent.parent_id, parent_id: parent.parent_id});
+      }
+
+      if(application && application.vendorPrograms && application.vendorPrograms.length > 0) {
+        let app_programs = []
+
+        for(const program of application.vendorPrograms) {
+          app_programs.push({
+            id: program.id,
+            name: program.name,
+            label: program.name
+          })
+        }
+
+        application.vendorPrograms = app_programs;
+      }
+
+      setSelectedApplication(application);
+
+      if(application.emergency_contacts) {
+        setEmergencyContacts(JSON.parse(application.emergency_contacts));
+      } else {
+        setEmergencyContacts(emergency_contacts);
+      }
+
+      setChildInformation(childInformationObj);
+      setParentsInformation(items);
+
+      setAppHistory(application.app_histories);
+
+      setVendorName(application.vendorName);
+      setShowApplication(true);
+
+      setTempHideForm(true);
+      setIsFormHistory(false);
+
+      // const relationshipObj = {
+      //   parent: items[0].parent_id,
+      //   child: childInformationObj.ch_id,
+      //   relationship: ""
+      // }
+
+      setRelationships(application.relationships);
+      setChRelationships(application.chRelationships);
+      
+      const termsWaiver = {
+        date: new Date().toString(),
+        section1: {
+          checked: !!application.section1_signature,
+          signature: application.section1_signature
+        },
+        section2: {
+          checked: !!application.section2_signature,
+          signature: application.section2_signature
+        },
+        section3: {
+          checked: !!application.section3_signature,
+          signature: application.section3_signature
+        }
+      }
+      
+      setTermsWaiver(termsWaiver);
+    }
+
+    setTimeout(() => {
+      setTempHideForm(false);
+      scrollToApplicationForm()
+    }, 200);
+  }
+
   const [relationships, setRelationships] = useState([]);
   const [chRelationships, setChRelationships] = useState([]);
   const [view, setView] = useState('')
   const createViewButton = (application) => {
+    console.log('selected application', application);
     if (application.form_contents) {
      return (<a
         href=""
         onClick={(e) => {
           e.preventDefault();
+          //window.history.replaceState("","","?appId=" + application.app_id);
           // setShowApplication(true);
           setView('builderForm')
           dispatch(requestGetCustomApplicationHistory(application.app_id))
@@ -719,246 +1004,9 @@ export default function index() {
         onClick={(e) => {
           e.preventDefault();
 
-          setSelectedVendor({});
-
-
-          console.log("selected application", application);
-
-          if(application && application.form) {
-
-          } else {
-
-            dispatch(requestGetApplicationHistory(application.app_id));
-            dispatch(requestVendorById(application.vendor));
-
-            const childInformationObj = {
-              profile: {
-                image: "",
-                application_date: 'Most Up to date Application',
-                first_name: application.child.firstname ? application.child.firstname: "",
-                last_name: application.child.lastname ? application.child.lastname:"",
-                nick_name: application.child.nickname ? application.child.nickname: "",
-                date_of_birth: new Date(application.child.birthdate),
-                gender: application.child.gender,
-                phone_type: application.child.phone_type ? application.child.phone_type: "",
-                phone_number: application.child.phone_number ? application.child.phone_number:"",
-                email_type: application.child.email_type ? application.child.email_type:"",
-                email_address: application.child.email_address ? application.child.email_address: "",
-                address: application.child.address ? application.child.address: "",
-                city: application.child.city ? application.child.city: "",
-                state: application.child.state ? application.child.state: "",
-                zip_code: application.child.zip_code ? application.child.zip_code: "",
-                location_site: application.child.location_site ? application.child.location_site: "",
-                child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
-                program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
-                ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
-                nick_name: application.child.nickname ? application.child.nickname: "",
-                preffered_start_date: new Date(application.child.preffered_start_date),
-                current_classroom: application.child.current_classroom ? application.child.current_classroom: "",
-                primary_language: application.child.primary_language ? application.child.primary_language : "",
-                needed_days: application.child.needed_days ? application.child.needed_days : "",
-                schedule_tour: application.child.schedule_tour ? application.child.schedule_tour : "",
-                voucher: application.child.voucher ? application.child.voucher : ""
-              },
-              general_information: {
-                grade: application.child.grade_number ? application.child.grade_number: "",
-                class_rank: application.child.class_rank ? application.child.class_rank : "",
-                gpa_quarter_year: application.child.gpa_quarter_year ? application.child.gpa_quarter_year : "",
-                gpa_quarter_q1: application.child.gpa_quarter_q1 ? application.child.gpa_quarter_q1 : "",
-                gpa_quarter_q2: application.child.gpa_quarter_q2 ? application.child.gpa_quarter_q2 : "",
-                gpa_quarter_q3: application.child.gpa_quarter_q3 ? application.child.gpa_quarter_q3 : "",
-                gpa_quarter_q4: application.child.gpa_quarter_q4 ? application.child.gpa_quarter_q4 : "",
-                gpa_cumulative_year: application.child.gpa_cumulative_year ? application.child.gpa_cumulative_year : "",
-                gpa_cumulative_q1: application.child.gpa_cumulative_q1 ? application.child.gpa_cumulative_q1 : "",
-                gpa_cumulative_q2: application.child.gpa_cumulative_q2 ? application.child.gpa_cumulative_q2 : "",
-                gpa_cumulative_q3: application.child.gpa_cumulative_q3 ? application.child.gpa_cumulative_q3 : "",
-                gpa_cumulative_q4: application.child.gpa_cumulative_q4 ? application.child.gpa_cumulative_q4 : "",
-                act_scores: [],
-                sat_scores: [],
-                psat_scores: [],
-                school_name: application.child.school_name ? application.child.school_name : "",
-                school_phone: application.child.school_phone ? application.child.school_phone : "",
-                was_suspended: application.child.has_suspended + "",
-                reason_suspended: application.child.reason_suspended,
-                mentee_start_year: application.child.year_taken,
-                hobbies: application.child.hobbies ? application.child.hobbies : "",
-                life_events: application.child.life_events ? application.child.life_events : "",
-                career_goals: application.child.career_goals ? application.child.career_goals : "",
-                colleges: application.child.colleges ? application.child.colleges : "",
-                team_affiliations: application.child.affiliations ? application.child.affiliations : "",
-                awards: application.child.awards ? application.child.awards : "",
-                accomplishments: application.child.accomplishments ? application.child.accomplishments : "",
-                mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : "",
-                is_child_transferring: application.child.is_child_transferring 
-                  ? application.child.is_child_transferring 
-                  : "",
-                does_child_require_physical_education_service: application.child.does_child_require_physical_education_service 
-                  ? application.child.does_child_require_physical_education_service 
-                  : "",
-                history_prev_diseases: application.child.history_prev_diseases 
-                  ? application.child.history_prev_diseases 
-                  : "", //start of questions
-                child_currently_doctors_care: application.child.child_currently_doctors_care 
-                  ? application.child.child_currently_doctors_care 
-                  : "",
-                reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations 
-                  ? application.child.reasons_previous_hospitalizations 
-                  : "",
-                comments_suggestion: application.child.comments_suggestion 
-                  ? application.child.comments_suggestion 
-                  : "",
-                list_special_dietary: application.child.list_special_dietary 
-                  ? application.child.list_special_dietary 
-                  : "",
-                list_any_allergies: application.child.list_any_allergies 
-                ? application.child.list_any_allergies 
-                : "",
-                mental_physical_disabilities: application.child.mental_physical_disabilities 
-                ? application.child.mental_physical_disabilities 
-                : "",
-                medical_action_plan: application.child.medical_action_plan 
-                ? application.child.medical_action_plan 
-                : "",
-                list_fears_unique_behavior: application.child.list_fears_unique_behavior 
-                ? application.child.list_fears_unique_behavior 
-                : "",
-                transfer_reason: application.child.transfer_reason 
-                ? application.child.transfer_reason 
-                : "",
-                prev_school_phone: application.child.prev_school_phone 
-                ? application.child.prev_school_phone 
-                : "",
-                prev_school_city: application.child.prev_school_city 
-                ? application.child.prev_school_city 
-                : "",
-                prev_school_address: application.child.prev_school_address 
-                ? application.child.prev_school_address 
-                : "",
-                prev_school_attended: application.child.prev_school_attended 
-                ? application.child.prev_school_attended 
-                : "",
-                prev_school_state: application.child.prev_school_state 
-                ? application.child.prev_school_state 
-                : "",
-                prev_school_zip_code: application.child.prev_school_zip_code 
-                ? application.child.prev_school_zip_code 
-                : ""
-              },
-              emergency_care_information: {
-                doctor_name: application.child.doctor_name ? application.child.doctor_name : "",
-                doctor_phone: application.child.doctor_phone ? application.child.doctor_phone : "",
-                hospital_preference: application.child.hospital_preference ? application.child.hospital_preference : "",
-                hospital_phone: application.child.hospital_phone ? application.child.hospital_phone : ""
-              },
-              ch_id: application.child.ch_id,
-              id: application.child.ch_id
-            }
-  
-            const parents = application.parents;
-  
-            let items = []
-            for(const parent of parents) {
-              const profile = {
-                first_name: parent.firstname ? parent.firstname : "",
-                last_name: parent.lastname ? parent.lastname : "",
-                phone_type: parent.phont_type ? parent.phone_type : "",
-                phone_number: parent.phone_number ? parent.phone_number : "",
-                phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
-                phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
-                email_type: parent.email_type ? parent.email_type : "",
-                email_address: parent.email_address ? parent.email_address : "",
-                email_type2: parent.email_type2 ? parent.email_type2 : "",
-                email_address2: parent.email_address2 ? parent.email_address2 : "",
-                address: parent.address ? parent.address : "",
-                city: parent.city ? parent.city : "",
-                state: parent.state ? parent.state : "",
-                zip_code: parent.zip_code ? parent.zip_code : "",
-                occupation: parent.occupation ? parent.occupation : "",
-                employer_name: parent.employers_name ? parent.employers_name : "",
-                goals_parent_program: parent.parent_goals ? parent.parent_goals : "",
-                goals_child_program: parent.parent_child_goals ? parent.parent_child_goals : "",
-                live_area: parent.live_area ? parent.live_area : 0, // 1: 1 - 5 year, 2: 5 - 10 year, 3: more than 10 year
-                level_education: parent.level_of_education ? parent.level_of_education : "",
-                child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
-                child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
-                person_recommend: parent.person_recommend ? parent.person_recommend: "",
-                ethinicity: parent.ethnicities
-                  ? parseArrayFormat(parent.ethnicities.split(","))
-                  : [],
-                gender: parent.gender,
-                date_of_birth: new Date(parent.birthdate)
-              }
-            
-              items.push({profile: profile, id: parent.parent_id, parent_id: parent.parent_id});
-            }
-  
-            if(application && application.vendorPrograms && application.vendorPrograms.length > 0) {
-              let app_programs = []
-  
-              for(const program of application.vendorPrograms) {
-                app_programs.push({
-                  id: program.id,
-                  name: program.name,
-                  label: program.name
-                })
-              }
-  
-              application.vendorPrograms = app_programs;
-            }
-  
-            setSelectedApplication(application);
-  
-            if(application.emergency_contacts) {
-              setEmergencyContacts(JSON.parse(application.emergency_contacts));
-            } else {
-              setEmergencyContacts(emergency_contacts);
-            }
-  
-            setChildInformation(childInformationObj);
-            setParentsInformation(items);
-  
-            setAppHistory(application.app_histories);
-  
-            setVendorName(application.vendorName);
-            setShowApplication(true);
-  
-            setTempHideForm(true);
-            setIsFormHistory(false);
-  
-            console.log("items", items);
-  
-            // const relationshipObj = {
-            //   parent: items[0].parent_id,
-            //   child: childInformationObj.ch_id,
-            //   relationship: ""
-            // }
-  
-            setRelationships(application.relationships);
-            setChRelationships(application.chRelationships);
-            
-            const termsWaiver = {
-              date: new Date().toString(),
-              section1: {
-                checked: !!application.section1_signature,
-                signature: application.section1_signature
-              },
-              section2: {
-                checked: !!application.section2_signature,
-                signature: application.section2_signature
-              },
-              section3: {
-                checked: !!application.section3_signature,
-                signature: application.section3_signature
-              }
-            }
-            
-            setTermsWaiver(termsWaiver);
-          }
-
-          setTimeout(() => {
-            setTempHideForm(false);
-            scrollToApplicationForm()
-          }, 200)    
+          window.history.replaceState("","","?appId=" + application.app_id);
+          
+          initializeApplication(application);
         }}
         
       >
@@ -982,8 +1030,6 @@ export default function index() {
         if (value == "0")
           general_information = {...general_information, ["reason_suspended"]: ""};
       }
-
-      console.log("value suspended", value);
 
       if(id.includes("act_scores")) {
         let x = id.split("-");
@@ -1161,6 +1207,10 @@ export default function index() {
   //   }, 500);
   // }
 
+  const closeReminderModal = () => {
+    setShowReminder(false);
+  }
+
   const setupParentsList = () => {
     let parents = [];
 
@@ -1230,7 +1280,7 @@ export default function index() {
     }
   }
 
-  const DATE_TIME_FORMAT2 = "MM/dd/yyyy hh:mm:ss";
+  const DATE_TIME_FORMAT2 = "yyyy-MM-dd";
 
   const onSubmitSaveApplication = () => {
 
@@ -1338,9 +1388,9 @@ export default function index() {
 
     payload = {
       ...payload,
-      relationships: relationships
+      relationships: relationships,
+      received_reminder: !!selectedApplication?.received_reminder
     };
-    console.log('PAYLOADDD', payload)
     dispatch(requestSaveApplication(payload));
   }
 
@@ -1382,8 +1432,6 @@ export default function index() {
 
     let exists = false;
 
-    console.log("relationships", relationships)
-
     for(const [index, item] of relationships.entries()) {
       if(item.parent == parent && item.child == child) {
         let tempRelationships = relationships;
@@ -1405,7 +1453,6 @@ export default function index() {
       }])
     }
   }
-  console.log('parentsInformation1123123123',parentsInformation)
   return (
     <MyApplicationStyled>
       {
@@ -1421,6 +1468,14 @@ export default function index() {
               />
             )
           } */}
+          {
+            showReminder && (
+              <SetRemindersModal
+                applications={reminderApplications}
+                closeReminderModal={closeReminderModal}
+              />
+            )
+          }
           <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
             <div id="dataTableContainer">
               {
