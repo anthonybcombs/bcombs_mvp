@@ -23,7 +23,7 @@ import {
 exports.setReminder = () => {
 
   //trigger evert 12:01 AM
-  let task1 = cron.schedule('* /5 * * *', async () => {
+  let task1 = cron.schedule('* */5 * * *', async () => {
     console.log('trigger cron');
 
     const group_reminders = await getGroupReminderByCurrentDate();
