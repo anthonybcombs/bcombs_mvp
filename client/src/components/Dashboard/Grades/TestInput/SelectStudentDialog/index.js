@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { uuid } from 'uuidv4'
-import { maxBy } from 'lodash'
+import { maxBy, merge, values, keyBy } from 'lodash'
 
 import SelectStudentDialogStyled from './style'
 import CustomTable from '../../../CustomComponents/CustomTable'
@@ -185,6 +185,11 @@ export default function index({
         cumulative_grades
       }
     })
+
+    newRows = merge(keyBy(newRows, 'child_id'), keyBy(newRows, 'child_id'));
+    newRows = values(newRows);
+
+
     setRows(newRows)
   }, [propRows])
   return ReactDOM.createPortal(
