@@ -23,12 +23,20 @@ const MetricMenu = props => {
                 <span>Mentee / Year</span>
             </div>
             <div
+                className={`${selectedLabel === "classes" ? "selected" : ""}`}
+                onClick={() => {
+                    handleSelectedLabel("classes");
+                }}
+            >
+                <span>Class Engagement</span>
+            </div>
+            <div
                 className={`${selectedLabel === "tests" ? "selected" : ""}`}
                 onClick={() => {
                     handleSelectedLabel("tests");
                 }}
             >
-                <span>ACT/SAT/PSAT</span>
+                <span>Standardized Tests</span>
             </div>
             <div
                 className={`${selectedLabel === "grades" ? "selected" : ""}`}
@@ -36,7 +44,7 @@ const MetricMenu = props => {
                     handleSelectedLabel("grades");
                 }}
             >
-                <span>GPA (Quarters)</span>
+                <span>On Track/ Off Track</span>
             </div>
             <div
                 className={`${selectedLabel === "mentoring" ? "selected" : ""}`}

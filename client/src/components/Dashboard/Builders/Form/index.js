@@ -399,8 +399,8 @@ export default (props) => {
   const { formData: historyfields } = historyContents || {}
   const hideStepper = hasWizard && !!actualFormFields.find(e => !e.showLabel)
   
-  console.log('@actualFormFields', { actualFormFields, nextPage, fieldError })
-  console.log('flattenFields ', flattenFields());
+  // console.log('@actualFormFields', { actualFormFields, nextPage, fieldError })
+  // console.log('flattenFields ', flattenFields());
 
   const hasLoginField = !!(flattenFields().find(e => e.type === 'login'))
 
