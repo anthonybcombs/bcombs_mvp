@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
-const apiCallAttendance = async (id, year, grade) => {
+const apiCallAttendance = async (vendorId, id, year, grade) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/attendance`, {
@@ -19,7 +19,8 @@ const apiCallAttendance = async (id, year, grade) => {
         body: JSON.stringify({
             'id': id,
             'year': year, 
-            'grade' : grade
+            'grade' : grade,
+            'vendorId' : vendorId
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
@@ -28,7 +29,7 @@ const apiCallAttendance = async (id, year, grade) => {
 
 
 const Attendance = props => {
-    const { auth } = props;
+    const { auth, vendors } = props;
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [year, setYear] = useState('2021');
     const [grade, setGrade] = useState('all');
@@ -38,11 +39,18 @@ const Attendance = props => {
         if (auth && auth.user_id) {
             triggerApiCallAttendance(auth.user_id, year, grade);
         }
-    }, [auth]);
+    }, [auth, vendors]);
+    console.log('vendors 2',vendors)
 
     const triggerApiCallAttendance = async (id, year, newGrade) => {
         try {
-            const res = await apiCallAttendance(id, year, newGrade);
+            if (!vendors ||!vendors.length) {
+                defineChart(null);
+                return;
+            }
+            const vendorId = vendors[0].id2; 
+            console.log("vendorId", vendorId)
+            const res = await apiCallAttendance(vendorId, id, year, newGrade);
             console.log('apiCall attendance ', res)
             if (res && res.attendance) {
                 defineChart(res.attendance, newGrade);
