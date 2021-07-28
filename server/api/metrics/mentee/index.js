@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
 
     try {
-        const { id, year } = req.body;
+        const { id, year, vendorId } = req.body;
         const db = makeDb();
         console.log('m ID', id);
         console.log('year ', year);
@@ -21,16 +21,17 @@ router.post("/", async (req, res) => {
                 "count(b.ch_id) as y " + 
             "from child b " + 
             "inner join ( " + 
-                "Select a.child_id from attendance a " + 
-               // "where YEAR(a.attendance_date) = ? " + 
+                "Select a.child_id " + 
+                "FROM attendance a, vendor b, vendor_app_groups c " + 
                "where a.attendance_date >= ? and a.attendance_date < ? " +
-                "Group by a.child_id " +
+               "and b.id2 = ? and c.vendor = b.id and a.app_group_id = c.app_grp_id " +
+               "Group by a.child_id " +
             ") as a2 on b.ch_id = a2.child_id " +
             "group by name order by name";
 //        const response =  await db.query("SELECT id2,email FROM users where id=UUID_TO_BIN(?)", [id]);
         console.log('Query ', query);
 //        const response =  await db.query(query, [year]);
-        const response =  await db.query(query, [dtLast, dtNext]);
+        const response =  await db.query(query, [dtLast, dtNext, vendorId]);
 
         console.log('Mentee', response);
         res.status(200).json({ menteePerYear: response });
