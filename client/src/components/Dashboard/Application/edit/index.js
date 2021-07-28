@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -47,7 +47,7 @@ const EditApplicationStyled = styled.div`
   }
 
   .form-control,
-  #multiselectContainerReact div:first-child {
+  #classTeacherMultiselect div:first-child {
     display: block;
     width: 100%;
     height: auto;
@@ -67,6 +67,14 @@ const EditApplicationStyled = styled.div`
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
     box-sizing: border-box;  
+  }
+
+  #classTeacherMultiselect .chip {
+    background: #f26e21;
+  }
+
+  #AppReminder #classTeacherMultiselect .chip {
+    background: #0096fb;
   }
 
   .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
@@ -106,7 +114,13 @@ export default function index({
   //   return group.vendor == vendor.id;
   // });
 
+  useEffect(() => {
+    setIsAppReminder(!!application.received_reminder);
+  }, [application])
+
   console.log("appgroups...", appGroups);
+
+  const [isAppReminder, setIsAppReminder] = useState(false);
 
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
@@ -221,8 +235,11 @@ export default function index({
                 </div>
                 <div>
                   <label className="control-label">Class Teacher</label>
-                  <div>
+                  <div
+                    id={isAppReminder ? "AppReminder" : ""}
+                  >
                     <Multiselect
+                      id="classTeacherMultiselect"
                       selectedValues={selectedClassTeacher}
                       className="form-control"
                       options={appGroups}
@@ -233,11 +250,13 @@ export default function index({
                       closeOnSelect={false}
                       showCheckbox={true}
                       onSelect={selectedList => {
+                        setIsAppReminder(false);
                         console.log('select list', selectedList)
                         console.log('s selectedList', selectedList.map(item => item.app_grp_id).join(','));
                         handleUpdateOnchange("class_teacher", selectedList.map(item => item.app_grp_id).join(','))
                       }}
                       onRemove={selectedList => {
+                        setIsAppReminder(false);
                         console.log("remove list", selectedList)
                         console.log('r selectedList', selectedList.map(item => item.app_grp_id).join(','));
                         handleUpdateOnchange("class_teacher", selectedList.map(item => item.app_grp_id).join(','))

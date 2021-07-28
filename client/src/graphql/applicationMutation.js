@@ -91,6 +91,7 @@ export const GET_USER_APPLICATION_HISTORY = gql`
 export const GET_APPLICATIONS_QUERY = gql`
   query applications($vendor_id: String!) {
     getVendorApplications(vendor_id: $vendor_id) {
+      received_reminder
       id
       app_id
       vendor
