@@ -100,7 +100,7 @@ const Mentoring = props => {
         chartOptions['series'] = [
             {
                 index: 0,
-                name: 'Below Grade (2.5)', //comes out on top
+                name: 'Below Grade (GPA < 2.5)', //comes out on top
                 //colorByPoint: true,
                 data: []
                 },
@@ -159,7 +159,7 @@ const Mentoring = props => {
 return <div style={{ padding: 24 }}>
         <div className="grid grid-2b">
             <div className="top-left">
-                <h4>Academic Progress (Quarters)</h4>
+                <h4>Academic Progress (Semesters)</h4>
             
                 <select id="child-grade" onChange={gradeChange} value={grade}>
                     <option value="all">All</option>
