@@ -174,7 +174,8 @@ exports.setReminder = () => {
 
           const col = {
             application: appl.app_id,
-            received_reminder: 1
+            received_reminder: 1,
+            received_update: 1
           };
 
           console.log('updateApplicationUser', col);
