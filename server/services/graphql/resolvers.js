@@ -281,8 +281,8 @@ const resolvers = {
 
         console.log("userApp", userApp);
 
-        application.received_update = userApp.received_update;
-        application.received_reminder = userApp.received_reminder;
+        application.received_update = !!userApp.received_update;
+        application.received_reminder = !!userApp.received_reminder;
 
         resapplications.push(Object.assign({}, application));
       }
@@ -999,7 +999,8 @@ const resolvers = {
         console.log('no app history added');
         const col = {
           application: application.app_id,
-          received_reminder: 0
+          received_reminder: 0,
+          received_update: application.received_update ? 1 : 0 
         };
 
         updateApplicationUser(col);
