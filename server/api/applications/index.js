@@ -773,6 +773,7 @@ export const getUserApplicationsByUserId = async user_id => {
       if(ua.app_id) {
         let application = await getApplicationByAppId(ua.app_id);
         application.received_reminder = !!ua.received_reminder;
+        application.received_update = !!ua.received_update;
         applications.push(application);
       }
     }

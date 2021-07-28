@@ -1389,7 +1389,8 @@ export default function index() {
     payload = {
       ...payload,
       relationships: relationships,
-      received_reminder: !!selectedApplication?.received_reminder
+      received_reminder: !!selectedApplication?.received_reminder,
+      received_update: !!selectedApplication?.received_update
     };
     dispatch(requestSaveApplication(payload));
   }
