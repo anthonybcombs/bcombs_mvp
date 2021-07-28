@@ -407,6 +407,7 @@ const inputs = `
         notes: String
         class_teacher: String
         is_form: Boolean
+        received_reminder: Boolean
     }
 
     input AppGroupVendorInput {
@@ -474,6 +475,7 @@ const inputs = `
         section3_name: String,
         relationships: [ParentChildRelationshipInput]
         received_reminder: Boolean
+        received_update: Boolean
     }
 
     input AddAdminInput {
@@ -1179,6 +1181,7 @@ const queryTypes = `
         relationships: [ParentChildRelationship]
         chRelationships: [ChildChildRelationship]
         received_reminder: Boolean
+        received_update: Boolean
     }
 
     type ParentUserApplication{

@@ -115,7 +115,7 @@ export default function index({
   // });
 
   useEffect(() => {
-    setIsAppReminder(!!application.received_reminder);
+    setIsAppReminder(!!application.received_update);
   }, [application])
 
   console.log("appgroups...", appGroups);

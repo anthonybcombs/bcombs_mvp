@@ -109,7 +109,8 @@ import {
   getUserCustomApplicationsByUserId,
   getApplicationByAppGroup,
   getCustomApplicationByVendorId,
-  updateApplicationUser
+  updateApplicationUser,
+  getAppReceivedReminder
 } from "../../api/applications";
 import { 
   addChild, 
@@ -263,8 +264,6 @@ const resolvers = {
         application.child = child.length > 0 ? child[0] : {};
 
         let relationships = [];
-
-        let chRelationships = [];
         
         for(const appParent of application.parents) {
           let tempRel = await getParentChildRelationship({
@@ -277,12 +276,16 @@ const resolvers = {
 
         application.relationships = relationships;
         application.chRelationships = await getChildChildRelationship(application.child.ch_id);
+        
+        const userApp = await getAppReceivedReminder(application.app_id);
+
+        console.log("userApp", userApp);
+
+        application.received_update = userApp.received_update;
+        application.received_reminder = userApp.received_reminder;
+
         resapplications.push(Object.assign({}, application));
       }
-      // if (resapplications.length > 0) {
-      //   resapplications = JSON.parse(JSON.stringify(resapplications));
-      //console.log("resapplications", resapplications);
-      // }
 
       console.log("Res Applications", resapplications);
       return resapplications;
@@ -773,6 +776,13 @@ const resolvers = {
             return response;
           }
         }
+
+        await updateApplicationUser({
+         application: application.app_id,
+         received_reminder: application.received_reminder ? 1 : 0,
+         received_update: 0 
+        })
+        
         response = await updateApplication(application);
         if (!response.error) {
           return {

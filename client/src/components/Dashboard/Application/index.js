@@ -1066,7 +1066,11 @@ export default function index() {
         notes: updateApplication.notes || selectedApplication?.notes
       }))
     }
-    dispatch(requestUpdateApplication(updateApplication));
+
+    let payload = {...updateApplication};
+    payload.received_reminder = selectedApplication.received_reminder;
+    
+    dispatch(requestUpdateApplication(payload));
   };
 
   const [isReadonly, setIsReadonly] = useState(true);
