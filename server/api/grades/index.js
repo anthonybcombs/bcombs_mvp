@@ -245,17 +245,19 @@ export const getStudentCumulativeGradeByAppGroupId = async (
   let studentCumulative = [];
   let studentGrades = [];
   try {
+    // LIKE %UUID_TO_BIN(app.class_teacher)%
+    console.log('App Group Id', app_group_id)
     let response = await db.query(
       app_group_type === "forms"
-        ? `SELECT app.class_teacher as app_group_id,
+        ? `SELECT BIN_TO_UUID(vag.app_grp_id) as app_group_id,
 				vag.name as app_group_name,
 				CONVERT(form_contents USING utf8) as form_contents,
 				BIN_TO_UUID(app.app_id) as child_id
 			FROM custom_application app
 			INNER JOIN vendor_app_groups vag
-			ON vag.app_grp_id=UUID_TO_BIN(app.class_teacher)
-			WHERE app.class_teacher=?`
-        : `SELECT app.class_teacher as app_group_id,
+			ON vag.app_grp_id=UUID_TO_BIN(?)
+			WHERE app.class_teacher LIKE ?`
+        : `SELECT BIN_TO_UUID(vag.app_grp_id) as app_group_id,
 				vag.name as app_group_name,
         BIN_TO_UUID(ch.ch_id) as child_id,
 				BIN_TO_UUID(app.app_id) as app_id,
@@ -265,16 +267,16 @@ export const getStudentCumulativeGradeByAppGroupId = async (
       INNER JOIN child ch
 			ON ch.ch_id=app.child
 			INNER JOIN vendor_app_groups vag
-      ON vag.app_grp_id=UUID_TO_BIN(app.class_teacher)
-			WHERE app.class_teacher=?`,
-      [app_group_id]
+      ON vag.app_grp_id=UUID_TO_BIN(?)
+			WHERE app.class_teacher LIKE ?`,
+      [app_group_id, `%${app_group_id}%`]
     );
-
+      console.log('app_group_idzzz',app_group_id)
     if (response) {
       if (app_group_type === "forms") {
         response = formatFormContents(response);
       }
-
+      console.log('response111111111111111111111111',response)
       studentCumulative = [...(response || [])];
       const childIds = response.map((item) => item.child_id).filter((id) => id);
 

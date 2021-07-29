@@ -284,14 +284,12 @@ export default function index(props) {
 	};
 
 	const getFormClassCount = group => {
-		console.log('Get Form Class Count', group)
-		console.log('Get Form Class Count applications', applications)
+	
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher) {
 				return group.app_grp_id && app.class_teacher.includes(group.app_grp_id);
 			}
 		});
-		console.log('SIZEEEEEEEEEE', size)
 		return size ? size.length : 0
 	};
 
@@ -299,8 +297,6 @@ export default function index(props) {
 	
 	const getDefaultClassCount = () => {
 		const appGroupIds = appGroups.map(item => item.app_grp_id);
-		console.log('appGroupIds',appGroupIds)
-		console.log('appGroupIds appGroups',appGroups)
 		const size = applications.activeapplications.filter(app => {
 			if (app.class_teacher) {
 				return appGroupIds && appGroupIds.includes(app.class_teacher)
@@ -510,7 +506,7 @@ export default function index(props) {
 			let classCount = getFormClassCount(group);
 			total += group.size - classCount;
 		}
-		console.log('Totalll', total)
+
 		total = total < 0 ? 0 : total;
 		return total;
 	};
@@ -519,7 +515,6 @@ export default function index(props) {
 		// console.log('form.formAppGroups', form.formAppGroups)
 		const formGroups = form && form.formAppGroups &&  form.formAppGroups.filter(appGroup => appGroup.form === id) ;
 		let totalClassCount = 0;
-		
 		for (const group of formGroups) {
 			totalClassCount += getFormClassCount(group);
 		}
@@ -544,7 +539,7 @@ export default function index(props) {
 			dispatch(requestAddArchiveGroup(selected))
 		}
 	}
-
+	console.log('filteredFormList',filteredFormList)
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Student Data</h2>
@@ -652,12 +647,12 @@ export default function index(props) {
 															<div>{getTotalClassCountByForm(item.form_id)} / {getTotalCountByForm(item.form_id)}</div>
 														</td>
 														<td>
-															<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}`}>Input</Link> /
-															<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}`}>View</Link>
+															<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}&type=all`}>Input</Link> /
+															<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}&type=all`}>View</Link>
 														</td>
 														<td>
-															<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms'}>Input</Link>/
-															<Link to={'/dashboard/grades?group_id=' + item?.form_id + '&group_type=forms'}>View</Link>
+															<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms&type=all'}>Input</Link>/
+															<Link to={'/dashboard/grades?group_id=' + item?.form_id + '&group_type=forms&type=all'}>View</Link>
 
 															{/* <Link to={`/dashboard/grades/input?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>Input</Link> /
 															<Link to={`/dashboard/grades?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>View</Link> */}

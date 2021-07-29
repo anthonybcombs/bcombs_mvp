@@ -20,7 +20,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { parse } from 'query-string';
 
-import DataTable from 'react-data-table-component';
 
 import { requestAttendance, requestUpdateAttendance } from '../../../../redux/actions/Attendance';
 import { requestVendor } from '../../../../redux/actions/Vendors';
@@ -683,7 +682,6 @@ export default function index() {
 	const dispatch = useDispatch();
 	const { formList = [] } = form;
 
-	console.log('APPPLICATIONZZZZZZZ', applications);
 	useEffect(() => {
 		if (name === 'custom' && vendor_id && auth.user_id) {
 			//dispatch(requestGetForms({ vendor: vendor_id, categories: [] }));
@@ -699,10 +697,10 @@ export default function index() {
 	}, [name, vendor_id]);
 
 	useEffect(() => {
-		if (vendors && vendors.length > 0 && (name !== 'custom' || name === 'all')) {
+		if (vendors && vendors.length > 0 /* && (name !== 'custom' ||  ) ) */) {
 			let vendorId;
 			for (const vendor of vendors) {
-				if ((name === 'custom' && vendor.id == vendor_id) || vendor.id2 == vendor_id) {
+				if (( name === 'custom' &&  vendor.id == vendor_id) || vendor.id2 == vendor_id) {
 					vendorId = vendor.id;
 					break;
 				}
@@ -734,11 +732,14 @@ export default function index() {
 						break;
 					}
 				}
-				console.log('currentAppGroupId',currentAppGroupId)
+
 				setAppGroupId(currentAppGroupId);
 
 				setAppGroupIds([...(filteredGroup || [])])
-				setAppGroupName(filteredGroup[0].name);
+				if(filteredGroup[0] && filteredGroup[0].name) {
+					setAppGroupName(filteredGroup[0].name);
+				}
+	
 			}
 		} else {
 			if (vendors.length > 0 && name !== 'all') {
@@ -761,8 +762,6 @@ export default function index() {
 				if (vendors[0] && vendors[0].app_groups) {
 					const applicationGroups = vendors[0].app_groups;
 					const ids = applicationGroups.map(item => item.app_grp_id);
-					console.log('AppGroupIdssss', ids);
-					console.log('AppGroupIdssss applicationGroups', applicationGroups);
 					setAppGroupIds(ids);
 					setAppGroupId('all');
 				}
@@ -798,14 +797,15 @@ export default function index() {
 				item.class_teacher = name;
 				return item;
 			});
+			console.log('filterApplications',filterApplications)
 			setApplicationList(filterApplications);
 		} else if (applications && applications.activeapplications.length > 0 && name === 'custom') {
 			let filterApplications = applications.activeapplications;
 			console.log(' applications.activeapplications1111', applications.activeapplications)
 			console.log(' applications.activeapplications1111 appGroupId', appGroupId)
+			console.log(' applications.activeapplications1111 filterApplications', filterApplications)
 			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
-			filterApplications = filterApplications.filter(item => item.class_teacher === appGroupId || appGroupIds.includes(item.class_teacher
-			));
+			filterApplications = filterApplications.filter(item => item.class_teacher && (item.class_teacher === appGroupId ||  item.class_teacher.includes(appGroupIds) || (searchParams && searchParams.type === 'all'  && item.form === searchParams.formId)));
 			// filterApplications = filterApplications.map(item => {
 			// 	//let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
 			// 	// item.class_teacher = name;
@@ -820,6 +820,7 @@ export default function index() {
 	useEffect(() => {
 		console.log('ATTENDANCEEEEE123123123123 applications', applications);
 		console.log('ATTENDANCEEEEE123123123123 applicationList', applicationList);
+		console.log('ATTENDANCEEEEE123123123123 attendance', attendance.list);
 		if (attendance.list) {
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(

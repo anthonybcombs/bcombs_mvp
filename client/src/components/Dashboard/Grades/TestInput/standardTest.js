@@ -19,11 +19,13 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ importData = [], childId, loading, groupType, requestList, onHasChanged }) => {
+export default ({ applications = [], importData = [], childId, loading, groupType, requestList, onHasChanged }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
-  }))
+  }));
+
+
 
   const attempOptions = Array(5).fill().map((e, i) => ({ value: i+1, label: `${i+1}` }))
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
@@ -74,7 +76,7 @@ export default ({ importData = [], childId, loading, groupType, requestList, onH
   const [selectedRowForEdit, setSelectedRowForEdit] = useState('')
 
   const [selectStudentOpen, setSelectStudentOpen] = useState(false)
-
+  console.log('ROWSSSSSSSSSSSSSSSSSS',rows)
   const generateColumnFilters = (passedRows) => {
     let newColumnFilters = {}
     Object.keys(initialColumns).forEach(key => {
@@ -151,7 +153,7 @@ export default ({ importData = [], childId, loading, groupType, requestList, onH
 
       mergeObj.attempt = attempt
     }
-
+    console.log('handleInputChange', mergeObj)
     onHasChanged(true)
     setRows(update(rows, {
       [index]: { $merge: mergeObj }
@@ -256,7 +258,13 @@ export default ({ importData = [], childId, loading, groupType, requestList, onH
                 const file = (typeof attachment === 'object' ? attachment.filename : attachment).split('/')
                 return file[file.length - 1]
               }
-              const highlightStyle = key==='month_taken'? highLight(row[key] ? moment(row[key]).format('MM/yyyy') : '', key) : highLight(row[key], key)
+              let currentMonthTaken = key ==='month_taken'? isNaN(row[key]) ? new Date(row[key]) :  parseInt(row[key]): null;
+                if(key==='month_taken') {
+                  console.log('currentMonthTaken',currentMonthTaken)
+              
+                }
+             
+              const highlightStyle = key==='month_taken'? highLight(row[key] && row[key] !== '' ? moment(currentMonthTaken).format('MM/yyyy') : '', key) : highLight(row[key], key)
               // const inputStyles = highlightStyle.color ? { color: highlightStyle.color } : {}
               return (
                 <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, position: 'relative', wordBreak: 'break-word'}} className={`${key}`}>
@@ -345,8 +353,13 @@ export default ({ importData = [], childId, loading, groupType, requestList, onH
                   {
                     key === 'month_taken' && (
                       <DatePicker
-                        selected={row[key] ? new Date(row[key]) : ''}
-                        onChange={date => handleInputChange({ target: { value: date.toISOString() } }, index, key)}
+                        selected={row[key] && row[key] !== '' ? isNaN(row[key])? new Date(row[key]) : parseInt(row[key]) : ''}
+                        onChange={date => {
+                         
+                          // const formattedDate =  new Date(isNaN(parseInt(parseInt(row[key]))) ? row[key] : parseInt(row[key]));
+                          console.log('datzze',date)
+                          handleInputChange({ target: { value: date.toISOString() } }, index, key)
+                        }}
                         dateFormat='MM/yyyy'
                         showMonthYearPicker
                         showFullMonthYearPicker
@@ -492,6 +505,10 @@ export default ({ importData = [], childId, loading, groupType, requestList, onH
         if (!newRow.attachment || (newRow.attachment && typeof newRow.attachment === 'string')) {
           delete newRow.attachment
         }
+        if(newRow.month_taken){
+          newRow.month_taken = moment(newRow.month_taken).format('YYYY-MM-DD')
+        }
+        console.log('newRow',newRow)
         return newRow
       })
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
@@ -595,6 +612,7 @@ export default ({ importData = [], childId, loading, groupType, requestList, onH
       } else {
         newGradeList = newGradeList.filter(e => e.form_contents)
       }
+  
       newGradeList = newGradeList.flatMap(e => e.standardized_test)
       const newRows = cloneDeep(rows).map(row => {
         const { student_test_id } = newGradeList.find(e => (
@@ -605,6 +623,9 @@ export default ({ importData = [], childId, loading, groupType, requestList, onH
       setRows(newRows)
       setFilteredRows(newRows)
     }
+    else {
+
+    }
   }, [gradeInput.gradeList])
 
   useEffect(() => {
@@ -612,6 +633,7 @@ export default ({ importData = [], childId, loading, groupType, requestList, onH
       onHasChanged(false)
     }
   }, [rows])
+
 
   useEffect(() => {
     setRows(importData);
