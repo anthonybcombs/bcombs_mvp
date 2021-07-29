@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
     }
 
     try {
-        const { id, year, grade } = req.body;
+        const { id, year, grade, vendorId } = req.body;
         const db = makeDb();
         console.log('m ID', id);
         console.log('grade ', grade);
@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
         let dtNextText = '' + year + '-08-01'; 
         let dtNext = new Date(dtNextText);
 
-        let queryParam = [dtLast, dtNext];
+        let queryParam = [dtLast, dtNext, vendorId];
         let gradeQualifier = '';
         if (grade > 8) {
             gradeQualifier = "where b.grade_number = ? ";
@@ -42,8 +42,9 @@ router.post("/", async (req, res) => {
             "from child b " + 
             "inner join ( " + 
                 "Select a.child_id, SUM(a.volunteer_hours) as sum_volunteer_hours " + 
-                "from attendance a " + 
+                "FROM attendance a, vendor b, vendor_app_groups c " + 
                "where a.attendance_date >= ? and a.attendance_date < ? " +
+               "and b.id2 = ? and c.vendor = b.id and a.app_group_id = c.app_grp_id " +
                 "Group by a.child_id " +
             ") as a2 on b.ch_id = a2.child_id " + gradeQualifier;
         console.log('Query ', query);

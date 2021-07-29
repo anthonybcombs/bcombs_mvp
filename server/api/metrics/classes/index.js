@@ -17,24 +17,16 @@ router.post("/", async (req, res) => {
     }
 
     try {
-        const { id, year, grade, vendorId } = req.body;
+        const { id, year, vendorId } = req.body;
         const db = makeDb();
         console.log('m ID', id);
-        console.log('grade ', grade);
+        console.log('vendor ', vendorId );
         let dtLastTxt = '' + (year - 1) + '-08-01';
         let dtLast = new Date(dtLastTxt);
         let dtNextText = '' + year + '-08-01'; 
         let dtNext = new Date(dtNextText);
 
-        let queryParam = [dtLast, dtNext, vendorId];
-        let gradeQualifier = '';
-        if (grade > 8) {
-            gradeQualifier = "where b.grade_number = ? ";
-            queryParam.push(grade);
-        }
-        else if (grade > 5) {
-            gradeQualifier = "where b.grade_number in ( '6', '7', '8' )";
-        }
+        let queryParam = [dtLast, dtNext];
 
         let query = 
             "select a2.sum_mentoring_hours as mentoring_hours, " + 
@@ -42,11 +34,10 @@ router.post("/", async (req, res) => {
             "from child b " + 
             "inner join ( " + 
                 "Select a.child_id, SUM(a.mentoring_hours) as sum_mentoring_hours " + 
-                "FROM attendance a, vendor b, vendor_app_groups c " + 
+                "from attendance a " + 
                "where a.attendance_date >= ? and a.attendance_date < ? " +
-               "and b.id2 = ? and c.vendor = b.id and a.app_group_id = c.app_grp_id " +
                 "Group by a.child_id " +
-            ") as a2 on b.ch_id = a2.child_id " + gradeQualifier;
+            ") as a2 on b.ch_id = a2.child_id ";
         console.log('Query ', query);
         const response =  await db.query(query, queryParam);
         console.log('Mentoring ', response);
@@ -76,7 +67,7 @@ router.post("/", async (req, res) => {
             if (series[buckets[j]]) returnData.push(series[buckets[j]]);
         }
 
-        res.status(200).json({ mentoringInYear: returnData });
+        res.status(200).json({ classData: returnData });
     } catch (error) {
 
     }

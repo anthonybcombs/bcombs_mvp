@@ -7,9 +7,9 @@ const router = express.Router();
 router.post("/", async (req, res) => {
 
     try {
-        const { id, year, grade } = req.body;
+        const { id, year, grade, vendorId } = req.body;
         const db = makeDb();
-       // console.log('a ID', id)
+        console.log('vendorID ', vendorId)
        // const response =  await db.query("SELECT id2,email FROM users where id=UUID_TO_BIN(?)", [id]);
         let dtLastTxt = '' + (year - 1) + '-08-01';
         //let dtLast = new Date(dtLastTxt);
@@ -33,7 +33,8 @@ router.post("/", async (req, res) => {
             dtEndQ1Txt, dtEndQ2Txt, 
             dtEndQ2Txt, dtEndQ3Txt, 
             dtEndQ3Txt, 
-            dtLastTxt, dtNextTxt];
+            dtLastTxt, dtNextTxt,
+            vendorId];
             /*
        let gradeQualifier = '';
        if (grade > 8) {
@@ -75,8 +76,9 @@ router.post("/", async (req, res) => {
                ", SUM(IF(a.attendance_date >= ? AND a.attendance_date < ?, 1, 0)) as q2 " + 
                ", SUM(IF(a.attendance_date >= ? AND a.attendance_date < ?, 1, 0)) as q3 " + 
                ", SUM(IF(a.attendance_date >= ?, 1, 0)) as q4 " + 
-               "FROM attendance a " + 
-              "where a.attendance_date >= ? and a.attendance_date < ? " +
+               "FROM attendance a, vendor b, vendor_app_groups c " + 
+              "where a.attendance_date >= ? and a.attendance_date < ? " + 
+              "and b.id2 = ? and c.vendor = b.id and a.app_group_id = c.app_grp_id " +
                "Group by a.child_id " +
            ") as a2 on b.ch_id = a2.child_id ";
        console.log('Query ', query);

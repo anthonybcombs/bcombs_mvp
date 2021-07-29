@@ -726,6 +726,32 @@ export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id =
   }
 };
 
+export const getAppReceivedReminder = async app_id => {
+  const db = makeDb();
+  let application = {};
+
+  try {
+    const queriedApps = await db.query(
+      `
+        SELECT 
+          id,
+          received_reminder,
+          received_update
+        FROM application_user
+        WHERE app_id=UUID_TO_BIN(?)
+      `,
+      [app_id]
+    );
+
+    application = queriedApps.length > 0 ? queriedApps[0] : {}
+  } catch (error) {
+    console.log("get user applications", error);
+  } finally {
+    await db.close();
+    return application
+  }
+}
+
 export const getUserApplicationsByUserId = async user_id => {
   const db = makeDb();
   let applications = [];
@@ -747,6 +773,7 @@ export const getUserApplicationsByUserId = async user_id => {
       if(ua.app_id) {
         let application = await getApplicationByAppId(ua.app_id);
         application.received_reminder = !!ua.received_reminder;
+        application.received_update = !!ua.received_update;
         applications.push(application);
       }
     }
@@ -1347,7 +1374,8 @@ export const getCustomApplicationByVendorId = async (vendor) => {
 
 export const updateApplicationUser = async ({
   application,
-  received_reminder
+  received_reminder,
+  received_update
 }) => {
   const db = makeDb();
   let result;
@@ -1355,10 +1383,12 @@ export const updateApplicationUser = async ({
   try {
     result = await db.query(
       `UPDATE application_user SET
-      received_reminder=?
+      received_reminder=?,
+      received_update=?
       WHERE app_id=UUID_TO_BIN(?)`,
       [
         received_reminder,
+        received_update,
         application
       ]
     );

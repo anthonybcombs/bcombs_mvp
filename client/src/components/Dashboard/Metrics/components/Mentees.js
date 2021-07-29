@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Charts from './Charts';
 
-const apiCall2 = async (id, year) => {
+const apiCall2 = async (vendorId, id, year) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/mentee`, {
@@ -18,15 +18,13 @@ const apiCall2 = async (id, year) => {
         redirect: 'follow', // manual, *follow, error
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify({
+            'vendorId' : vendorId,
             'id': id,
             'year': year
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
 }
-
-
-
 
 const Mentees = props => {
     const { auth, vendors } = props;
@@ -38,7 +36,12 @@ const Mentees = props => {
 
     const triggerApi2 = async (id, year) => {
         try {
-            const res = await apiCall2(id, year);
+            if (!vendors ||!vendors.length) {
+                defineChart(null);
+                return;
+            }
+            const vendorId = vendors[0].id2; //TODO: add support for user in multiple vendors
+            const res = await apiCall2(vendorId, id, year);
             console.log('apiCall mentee ', res)
             if (res && res.menteePerYear) {
                 //setCurrentUser(res.user);

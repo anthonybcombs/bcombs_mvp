@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
-const apiCallMentoring = async (id, year, grade) => {
+const apiCallMentoring = async (vendorId, id, year, grade) => {
     
     // Default options are marked with *
-    const response = await fetch('http://localhost:3001/api/metrics/mentoring', {
+    const response = await fetch(`${process.env.API_HOST}/api/metrics/mentoring`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -17,6 +17,7 @@ const apiCallMentoring = async (id, year, grade) => {
         redirect: 'follow', // manual, *follow, error
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify({
+            'vendorId' : vendorId,
             'id': id,
             'year': year, 
             'grade' : grade
@@ -28,7 +29,7 @@ const apiCallMentoring = async (id, year, grade) => {
 
 
 const Mentoring = props => {
-    const { auth } = props;
+    const { auth, vendors } = props;
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [year, setYear] = useState('2021');
     const [grade, setGrade] = useState('all');
@@ -42,7 +43,12 @@ const Mentoring = props => {
 
     const triggerApiCallMentoring = async (id, year, grade) => {
         try {
-            const res = await apiCallMentoring(id, year, grade);
+            if (!vendors ||!vendors.length) {
+                defineChart(null);
+                return;
+            }
+            const vendorId = vendors[0].id2; 
+            const res = await apiCallMentoring(vendorId, id, year, grade);
             console.log('apiCall mentoring ', res)
             if (res && res.mentoringInYear) {
                 defineChart(res.mentoringInYear);

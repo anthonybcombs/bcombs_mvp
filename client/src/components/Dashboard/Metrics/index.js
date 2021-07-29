@@ -137,13 +137,13 @@ const Metrics = props => {
       <div id="metrics-page" >
         <MetricMenu handleSelectedLabel={handleSelectedLabel} selectedLabel={selectedLabel} />
         <div>
-          {selectedLabel === 'attendance' && <Attendance auth={auth} />}
+          {selectedLabel === 'attendance' && <Attendance auth={auth} vendors={vendors} />}
           {selectedLabel === 'mentees' && <Mentees auth={auth} vendors={vendors} />}
-          {selectedLabel === 'classes' && <ClassReport auth={auth} />}
-          {selectedLabel === 'tests' && <Tests auth={auth} />}
-          {selectedLabel === 'grades' && <Grades auth={auth} />}
-          {selectedLabel === 'mentoring' && <Mentoring auth={auth} />}
-          {selectedLabel === 'volunteer_hours' && <VolunteerHours auth={auth} />}
+          {selectedLabel === 'classes' && <ClassReport auth={auth} vendors={vendors} />}
+          {selectedLabel === 'tests' && <Tests auth={auth} vendors={vendors} />}
+          {selectedLabel === 'grades' && <Grades auth={auth} vendors={vendors} />}
+          {selectedLabel === 'mentoring' && <Mentoring auth={auth} vendors={vendors} />}
+          {selectedLabel === 'volunteer_hours' && <VolunteerHours auth={auth} vendors={vendors} />}
         </div>
       </div>
     </MetricStyled>
