@@ -25,7 +25,8 @@ const getStudentCumulativeGradeByAppGroupFromDatabse = variables => {
         query: GET_STUDENT_CUMULATIVE_BY_APP_GROUP,
         variables
       })
-    
+      console.log('getStudentCumulativeGradeByAppGroupFromDatabse variables', variables)
+      console.log('getStudentCumulativeGradeByAppGroupFromDatabse data', data)
       return resolve(data.getStudentCumulativeGradeByAppGroup)
     } catch (error) {
       console.log('error', { error, variables })

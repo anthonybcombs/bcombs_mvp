@@ -106,7 +106,10 @@ export default function index({
   const [rows, setRows] = useState([])
 
   const keysObj = keys.reduce((acc, curr) => ({ ...acc, [curr]: '' }), {})
-
+ 
+  console.log('keysObj',keysObj)
+  console.log('keysObj keys',keys)
+  console.log('keysObj standardized_test',rows)
   const handleSave = () => {
     let newData = []
     if (isTestInput) {
@@ -119,7 +122,7 @@ export default function index({
         const st = populateExistingData
           ? (standardized_test.find(e => (!existingTestIds.includes(e.student_test_id) && e.grade_taken == grade_taken && e.test_name == test_name && e.attempt == latestAttemp)) || keysObj)
           : keysObj
-  
+        console.log(st.month_taken)
         return {
           ...st,
           attempt: st.attempt || newAttempt,
@@ -160,12 +163,12 @@ export default function index({
       .filter(gr => !(existingRows.find(e => (e.child_id === gr.child_id && e.year_level == gr.year_level))))
 
     }
-  
+    console.log('newDataaaa,',newData)
     onSelectStudent(newData)
   }
 
   useEffect(() => {
-    const newRows = propRows.flatMap(row => {
+    let newRows = propRows.flatMap(row => {
       let { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades, app_id, app_group_id, application_type, type, form_contents } = row
       if (isForm && form_contents) {
         const name = getNameFromCustomForm(form_contents)
@@ -192,6 +195,7 @@ export default function index({
 
     setRows(newRows)
   }, [propRows])
+
   return ReactDOM.createPortal(
     <SelectStudentDialogStyled
       data-testid='app-big-calendar-create-modal'

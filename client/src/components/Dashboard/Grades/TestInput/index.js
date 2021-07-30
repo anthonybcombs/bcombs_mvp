@@ -7,27 +7,39 @@ import { parse } from 'query-string';
 import StandardTest from './standardTest'
 import GradeInput from './gradeInput'
 
+
+import {
+  requestGetApplications,
+  requestGetCustomApplications,
+  //requestGetCustomApplicationByVendor,
+} from '../../../../redux/actions/Application';
+import { requestUserGroup } from '../../../../redux/actions/Groups';
+import { requestVendor } from '../../../../redux/actions/Vendors';
+
 import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByVendor } from '../../../../redux/actions/Grades'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
 
-import { CSVLink, CSVDownload } from "react-csv";
-import { format } from "date-fns";
+// import { CSVLink, CSVDownload } from "react-csv";
+// import { format } from "date-fns";
 
 import ImportTestGradeDialog from './ImportTestGradeDialog';
 import ExportTestGradeDialogStyled from './ExpotTestGradeDialog';
 import ConfirmDialog from './ConfirmDialog'
 
 export default ({ child_id }) => {
-  const { gradeInput: { gradeList }, groups: {application_groups}, loading: { gradeLoading } } = useSelector(({ gradeInput, groups, loading }) => ({
-    gradeInput, groups, loading
-  }));
+  const { auth, gradeInput: { gradeList }, groups: { application_groups }, loading: { gradeLoading }, vendors, applications } = useSelector(({ auth,gradeInput, groups, loading, vendors, applications }) => {
+ 
+    return {
+      auth, gradeInput, groups, loading, vendors, applications
+    }
+  });
   const dispatch = useDispatch()
   const queryLocation = useLocation();
-	const { group_id, group_type, return_page, request_type } = parse(queryLocation.search)
+  const { group_id, group_type, return_page, request_type, type } = parse(queryLocation.search)
   const isVendor = request_type === 'vendor'
   const DATE_FORMAT = "MM/dd/yyyy";
-
+  console.log('application_groups', application_groups)
   let exportTestData = [];
   let exportGradesData = [];
   //let selectedAppGroup = '';
@@ -93,19 +105,19 @@ export default ({ child_id }) => {
       [`Class Attendance Overall Total ${index + 1}`]: ''
     }
 
-    grades = {...grades, ...row};
+    grades = { ...grades, ...row };
 
     return grades;
   }
 
   console.log('gradeList', gradeList);
 
-  if(gradeList.length > 0) {
+  if (gradeList.length > 0) {
     gradeList.map((gr) => {
 
       const stardarizedTestList = gr.standardized_test;
-  
-      if(stardarizedTestList.length > 0) {
+
+      if (stardarizedTestList.length > 0) {
         stardarizedTestList.map((st) => {
           const row = {
             // 'Student Name': gr.lastname + ', ' + gr.firstname,
@@ -122,7 +134,7 @@ export default ({ child_id }) => {
             // 'ST % District': st.district_percentage,
             // 'ST % State': st.state_percentage,
             // 'ST % Nationality': st.nationality_percentage
-  
+
             'Student Name': gr.lastname + ', ' + gr.firstname,
             'Student ID': gr.child_id,
             'App Group ID': gr.app_group_id,
@@ -139,7 +151,7 @@ export default ({ child_id }) => {
             'ST % State': '',
             'ST % Nationality': ''
           }
-      
+
           exportTestData.push(row);
         });
       } else {
@@ -162,14 +174,14 @@ export default ({ child_id }) => {
         }
         exportTestData.push(row);
       }
-  
+
       const cumulativeGradesList = gr.cumulative_grades;
-  
-      if(cumulativeGradesList.length > 0) {
+
+      if (cumulativeGradesList.length > 0) {
         cumulativeGradesList.map((cg) => {
-  
+
           const pClass = populateClass(cg.grades);
-    
+
           const row = {
             'Student Name': gr.lastname + ', ' + gr.firstname,
             'Student ID': gr.child_id,
@@ -190,13 +202,13 @@ export default ({ child_id }) => {
             'Class Rank (Sem 2)': '',
             ...pClass
           }
-    
+
           exportGradesData.push(row);
         });
       } else {
         const cg = {} //Temporary fix for cg not defined
         const pClass = populateClass(cg.grades || {});
-    
+
         const row = {
           'Student Name': gr.lastname + ', ' + gr.firstname,
           'Student ID': gr.child_id,
@@ -217,7 +229,7 @@ export default ({ child_id }) => {
           'Class Rank (Sem 2)': '',
           ...pClass
         }
-  
+
         exportGradesData.push(row);
       }
     });
@@ -278,10 +290,10 @@ export default ({ child_id }) => {
   const handleImportedTestData = (data = []) => {
     let formattedSt = [];
 
-    for(let i = 1; i < data.length; i++) {
+    for (let i = 1; i < data.length; i++) {
       let fields = data[i].split('"').join('').split(',');
 
-      if(fields.length == 15) {
+      if (fields.length == 15) {
         const st = {
           name: fields[1].trim() + ' ' + fields[0].trim(),
           child_id: fields[2],
@@ -306,39 +318,61 @@ export default ({ child_id }) => {
   }
 
   const requestList = () => {
-    // dispatch(requestGetStudentCumulativeGradeByAppGroup({
-    //   app_group_id: '97754eb9-fc18-11ea-8212-dafd2d0ae3ff',
-    //   app_group_type: 'bcombs'
-    // }))
+
     if (group_id && group_type) {
+      console.log('IS VENDOR', group_id)
+
       if (isVendor) {
         dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
       } else {
-        dispatch(requestGetStudentCumulativeGradeByAppGroup({
-          app_group_id: group_id,
-          app_group_type: group_type
-        }))
+        if(type !== 'all') {
+          console.log('group_idzzzz',group_id)
+          console.log('group_idzzzz group_type',group_type)
+          dispatch(requestGetStudentCumulativeGradeByAppGroup({
+            app_group_id: group_id,
+            app_group_type: group_type
+          }))
+        }
+  
       }
     }
   }
 
   useEffect(() => {
-    requestList()
-  }, [])
+    requestList();
+    dispatch(requestGetCustomApplications(group_id));
+  }, []);
+
+
+  useEffect(() => {
+    if (auth && type && type === 'all') {
+      dispatch(requestVendor(auth.user_id));
+     // dispatch(requestUserGroup(auth.email));
+    }
+
+  }, [auth]);
+
+  useEffect(() => {
+		if (vendors && vendors.length > 0  && type && type === 'all') {
+      //dispatch(requestGetApplications(vendors[0].id));
+      dispatch(requestGetStudentCumulativeGradeByVendor(vendors[0].id))
+		}
+	}, [vendors]);
+
 
 
   useEffect(() => {
     console.log('grades list has been changed');
   }, [gradeList]);
 
-  console.log('application_groups',application_groups);
+  console.log('application_groups', application_groups);
   console.log('loading', gradeLoading);
 
   const handleFormattedGrades = (fields, size) => {
     let formattedGrades = [];
 
     let start = 18;
-    for(let i = 0; i < size; i++) {
+    for (let i = 0; i < size; i++) {
       const row = {
         class: fields[start++],
         subject: fields[start++],
@@ -399,10 +433,10 @@ export default ({ child_id }) => {
     });
 
 
-    for(let i = 1; i < data.length; i++) {
+    for (let i = 1; i < data.length; i++) {
       let fields = data[i].split('"').join('').split(',');
 
-      if(fields.length >= 17) {
+      if (fields.length >= 17) {
         const cg = {
           name: fields[1].trim() + ' ' + fields[0].trim(),
           child_id: fields[2],
@@ -434,7 +468,7 @@ export default ({ child_id }) => {
 
   const handleGetGroupGradeTest = (appGroupId = '') => {
     console.log('call my api'); console.log('appGroupId', appGroupId);
-    if(appGroupId) {
+    if (appGroupId) {
       setSelectedAppGroup(appGroupId);
       //selectedAppGroup = appGroupId;
       dispatch(requestGetStudentCumulativeGradeByAppGroup({
@@ -473,13 +507,13 @@ export default ({ child_id }) => {
               <span>Export</span>
             </button>
           </CSVLink> */}
-            <button
-              className='btn-save'
-              onClick={() => {setSelecteExportType('standardtest-export')}}
-            >
-              <FontAwesomeIcon icon={faDownload} />
-              <span>Export</span>
-            </button>
+          <button
+            className='btn-save'
+            onClick={() => { setSelecteExportType('standardtest-export') }}
+          >
+            <FontAwesomeIcon icon={faDownload} />
+            <span>Export</span>
+          </button>
           <button
             className='btn-save'
             onClick={handleTestImport}
@@ -505,7 +539,8 @@ export default ({ child_id }) => {
             <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
             Back
           </a>
-          <StandardTest
+          <StandardTest 
+            applications={applications.activeapplications}
             importData={formattedSt}
             childId={child_id}
             groupType={group_type}
@@ -513,7 +548,7 @@ export default ({ child_id }) => {
             requestList={requestList}
             onHasChanged={(bool) => setHasChanged(bool)}
           />
-          <div className='gradeInputView-header' style={{'marginTop': '1rem'}}>
+          <div className='gradeInputView-header' style={{ 'marginTop': '1rem' }}>
             <div className='action left'></div>
             <div className='action right'>
               {/* <CSVLink
@@ -530,7 +565,7 @@ export default ({ child_id }) => {
               </CSVLink> */}
               <button
                 className='btn-save'
-                onClick={() => {setSelecteExportType('grades-export')}}
+                onClick={() => { setSelecteExportType('grades-export') }}
               >
                 <FontAwesomeIcon icon={faDownload} />
                 <span>Export</span>
@@ -544,7 +579,7 @@ export default ({ child_id }) => {
               </button>
             </div>
           </div>
-          <GradeInput 
+          <GradeInput
             importData={formattedGrades}
             childId={child_id}
             loading={gradeLoading}
@@ -555,26 +590,26 @@ export default ({ child_id }) => {
         </div>
       </div>
       {
-        selectImportType == 'standardtest-import'  && (
+        selectImportType == 'standardtest-import' && (
           <ImportTestGradeDialog
             inputType='test'
             data={exportTestData}
             onClose={() => setSelectImportType()}
             onImport={(data) => {
-              setSelectImportType(); 
+              setSelectImportType();
               handleImportedTestData(data)
             }}
           />
         )
       }
       {
-        selectImportType == 'grades-import'  && (
+        selectImportType == 'grades-import' && (
           <ImportTestGradeDialog
             inputType='grades'
             data={exportGradesData}
             onClose={() => setSelectImportType()}
             onImport={(data) => {
-              setSelectImportType(); 
+              setSelectImportType();
               handleImportGradesData(data)
             }}
           />
@@ -584,7 +619,7 @@ export default ({ child_id }) => {
         selectExportType == 'standardtest-export' && (
           <ExportTestGradeDialogStyled
             inputType='test'
-            onClose={() => {setSelecteExportType()}}
+            onClose={() => { setSelecteExportType() }}
             appGroups={application_groups}
             onGetGroupGradeTest={handleGetGroupGradeTest}
             data={exportTestData}
@@ -597,7 +632,7 @@ export default ({ child_id }) => {
         selectExportType == 'grades-export' && (
           <ExportTestGradeDialogStyled
             inputType='grades'
-            onClose={() => {setSelecteExportType()}}
+            onClose={() => { setSelecteExportType() }}
             appGroups={application_groups}
             onGetGroupGradeTest={handleGetGroupGradeTest}
             data={exportGradesData}
