@@ -89,6 +89,11 @@ const AsyncAuditTrail = Loadable({
   loading: Loading
 });
 
+const AsyncBCCalendar = Loadable({
+  loader: () => import("./components/Dashboard/BCCalendar"),
+  loading: Loading
+});
+
 const AsyncManageAdmin = Loadable({
   loader: () => import("./components/Dashboard/Admin"),
   loading: Loading
@@ -185,6 +190,7 @@ export default function App() {
               <AsyncClassListInformationView path="class/:form_type/:form_id" />
               <AsyncMyApplication path="myapplication" />
               <AsyncAuditTrail path="audittrail" />
+              <AsyncBCCalendar path="bccalendar" />
               <AsyncManageAdmin path="admin" />
               <AsynBuilder path="builder/:form_id/:type" />
               <AsynBuilder path="builder" />

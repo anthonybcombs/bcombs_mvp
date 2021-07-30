@@ -99,36 +99,14 @@ const ClassReports = props => {
             }
         };
         chartOptions['series'] = [{
-            name: 'Mentees',
+            name: 'Students',
             colorByPoint: true,
             data: []
             }];
 
         setHasData(data && data.length > 0);
         if (data && data.length > 0) {
-            let data2 = [];
-            let rowMiddleSchool = {name: "Middle School", y: 0};
-            for (let i=0; i< data.length; i++) {
-                let row = data[i];
-                let gradeNum = parseInt(row.name, 10);
-                if (gradeNum < 6) {
-                    data2.push(row);
-                    continue;
-                }
-                if (gradeNum <= 8) {
-                    rowMiddleSchool.y += row.y;
-                    continue;
-                }
-                if (row.name == "12") row.name = "Senior";
-                if (row.name == "11") row.name = "Junior";
-                if (row.name == "10") row.name = "Sophmore";
-                if (row.name == "9")  row.name = "Freshman";
-                data2.push(row);
-            }
-            if (rowMiddleSchool.y > 0) {
-                data2.push(rowMiddleSchool);
-            }
-            chartOptions['series'][0]['data'] = data2;
+            chartOptions['series'][0]['data'] = data;
         }    
         setTempOptionsData(chartOptions);
     }
@@ -144,7 +122,7 @@ const ClassReports = props => {
     const yearChange =(event) => {
         setYear(event.target.value);
         console.log("event ", event);
-        console.log("year2 ", event.target.value); // ;year);
+        console.log("year3 ", event.target.value); // ;year);
         triggerApi2(auth.user_id, event.target.value, vendors);
     };
     console.log('vendors',vendors)

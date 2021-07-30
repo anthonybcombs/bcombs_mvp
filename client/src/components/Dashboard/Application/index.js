@@ -12,6 +12,7 @@ import {
   faFileAlt,
   faFileSignature,
   faCogs,
+  faCalendar,
   faPrint,
   faHistory
 } from "@fortawesome/free-solid-svg-icons";
@@ -1853,6 +1854,11 @@ export default function index() {
             <a href={`/dashboard/audittrail`}>
               <FontAwesomeIcon icon={faHistory} />
               <span>Audit Trail</span>
+            </a>
+
+            <a href={`/dashboard/bccalendar`}>
+              <FontAwesomeIcon icon={faCalendar} />
+              <span>Calendar</span>
             </a>
 
             <a href={`/dashboard/myapplication`}>

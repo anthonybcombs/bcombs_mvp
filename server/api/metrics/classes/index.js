@@ -6,16 +6,6 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
 
-    const addToSeries = (series, key) => {
-        let seriesKeyData = series[key];
-        if (!seriesKeyData) {
-            seriesKeyData = { name: key, y: 0};
-        }
-        seriesKeyData.y++;
-        series[key] = seriesKeyData;
-        return series;
-    }
-
     try {
         const { id, year, vendorId } = req.body;
         const db = makeDb();
@@ -26,45 +16,21 @@ router.post("/", async (req, res) => {
         let dtNextText = '' + year + '-08-01'; 
         let dtNext = new Date(dtNextText);
 
-        let queryParam = [dtLast, dtNext];
+        let queryParam = [vendorId];
 
-        let query = 
-            "select a2.sum_mentoring_hours as mentoring_hours, " + 
-                "b.ch_id " + 
-            "from child b " + 
-            "inner join ( " + 
-                "Select a.child_id, SUM(a.mentoring_hours) as sum_mentoring_hours " + 
-                "from attendance a " + 
-               "where a.attendance_date >= ? and a.attendance_date < ? " +
-                "Group by a.child_id " +
-            ") as a2 on b.ch_id = a2.child_id ";
+        let query = "SELECT count(a.child_id) as numStudents, b.name " + 
+            "FROM vendor_app_groups_to_student a, vendor_app_groups b, vendor c " +
+            "where a.app_grp_id = BIN_TO_UUID(b.app_grp_id) " + 
+            "and c.id2 = ? and b.vendor = c.id " +
+            "group by b.app_grp_id";
         console.log('Query ', query);
         const response =  await db.query(query, queryParam);
-        console.log('Mentoring ', response);
-
-        let buckets = [ "No Mentoring", "0-10 Hours", "10-40 Hours", "More than 40 Hours" ];
-
-        let series = [];
-        for (let i=0; i<response.length; i++) {
-            let row = response[i];
-            if (row.mentoring_hours == 0) {
-                series = addToSeries(series, buckets[0]);
-                continue;
-            }
-            if (row.mentoring_hours < 10) {
-                series = addToSeries(series, buckets[1]);
-                continue;
-            }
-            if (row.mentoring_hours < 40) {
-                series = addToSeries(series, buckets[2]);
-                continue;
-            }
-            series = addToSeries(series, buckets[3]);
-        }
+        console.log('student counts ', response);
 
         let returnData = [];
-        for (let j=0; j < buckets.length; j++) {
-            if (series[buckets[j]]) returnData.push(series[buckets[j]]);
+        for (let i=0; i<response.length; i++) {
+            let row = response[i];
+            returnData.push({ name: row.name, y: row.numStudents });
         }
 
         res.status(200).json({ classData: returnData });
