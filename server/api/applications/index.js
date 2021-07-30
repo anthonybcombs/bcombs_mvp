@@ -115,13 +115,13 @@ export const getApplicationByAppId = async (app_id, isHistory = false) => {
 
       let relationships = [];
 
-      for(const appParent of application.parents) {
+      for (const appParent of application.parents) {
         let tempRel = await getParentChildRelationship({
           parent: appParent.parent_id,
           child: application.child.ch_id
         });
 
-        if(tempRel.length > 0) relationships.push(tempRel[0]);
+        if (tempRel.length > 0) relationships.push(tempRel[0]);
       }
 
       application.app_histories = [];
@@ -352,6 +352,16 @@ export const createApplication = async ({
     );
 
     lastId = result.insertId;
+
+    await db.query(
+      "INSERT INTO vendor_app_groups_to_student (app_grp_id,child_id,type) values(?,?,?)",
+      [
+        class_teacher,
+        child,
+        'bcombs'
+      ]
+    );
+
     application = await db.query(
       "SELECT (BIN_TO_UUID(app_id)) as app_id FROM application WHERE id=?",
       [lastId]
@@ -367,6 +377,15 @@ export const createApplication = async ({
   }
 };
 
+// const isStudentExistInGroup = async (groupId, childId) => {
+//   try {
+//     const currentApplication = await db.query('SELECT app_grp_id,child_id FROM vendor_app_groups_to_student WHERE app_grp_id=? AND child_id=?', [groupId, childId]);
+//     return currentApplication && currentApplication[0] ? currentApplication[0] : null;
+//   } catch (err) {
+//     return null
+//   }
+// }
+
 export const updateApplication = async ({
   verification,
   student_status,
@@ -378,6 +397,8 @@ export const updateApplication = async ({
   const db = makeDb();
   let result = {};
   try {
+    console.log('Update Application Class Teacher', class_teacher)
+    const currentApplication = await db.query('SELECT BIN_TO_UUID(child) as child, class_teacher FROM application WHERE app_id=UUID_TO_BIN(?)', [app_id]);
     result = await db.query(
       `UPDATE application SET
       verification=?,
@@ -395,6 +416,34 @@ export const updateApplication = async ({
         app_id
       ]
     );
+    if (class_teacher && currentApplication && currentApplication[0]) {
+      let previousClassTeacher = currentApplication && currentApplication[0] && currentApplication[0].class_teacher;
+      previousClassTeacher = previousClassTeacher && previousClassTeacher.split(',');
+      const teacher = class_teacher && class_teacher.split(',');
+      for (let groupId of teacher) {
+        if(!previousClassTeacher.includes(groupId)) {
+          await db.query(
+            "INSERT INTO vendor_app_groups_to_student (app_grp_id,child_id,type) values(?,?,?)",
+            [
+              groupId,
+              currentApplication[0].child,
+              'bcombs'
+            ]);
+        }
+      }
+
+      for (let groupId of previousClassTeacher) {
+        if(!teacher.includes(groupId)) {
+          await db.query(
+            "DELELTE FROM vendor_app_groups_to_student WHERE app_grp_id=? AND child_id=?",
+            [
+              groupId,
+              currentApplication[0].child
+            ]);
+        }
+      }
+
+    }
   } catch (err) {
     console.log("Error", err);
     result.error = err;
@@ -639,7 +688,7 @@ export const addApplicationHistory = async ({
 
   try {
 
-    if(app_id) {
+    if (app_id) {
       result = await db.query(
         `
           INSERT INTO application_history(
@@ -686,7 +735,7 @@ export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id =
 
   let values = custom_app_id !== '' ? [app_id, custom_app_id, user_id] : [app_id, user_id]
   try {
-    if(app_id) {
+    if (app_id) {
       await db.query(
         `
           INSERT INTO application_user(
@@ -770,7 +819,7 @@ export const getUserApplicationsByUserId = async user_id => {
       [user_id]
     );
     for (const ua of userApplications) {
-      if(ua.app_id) {
+      if (ua.app_id) {
         let application = await getApplicationByAppId(ua.app_id);
         application.received_reminder = !!ua.received_reminder;
         application.received_update = !!ua.received_update;
@@ -883,7 +932,7 @@ export const createCustomApplication = async ({
       [lastId]
     );
 
-    if(application.length > 0) {
+    if (application.length > 0) {
       application = application[0];
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       console.log("get custom application string", application);
@@ -946,7 +995,7 @@ export const updateCustomApplicationForm = async ({
       [form_id]
     );
 
-    if(application.length > 0) {
+    if (application.length > 0) {
       application = application[0];
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       console.log("get custom application string", application);
@@ -955,7 +1004,7 @@ export const updateCustomApplicationForm = async ({
       application = ""
     }
 
-  } catch(err) {
+  } catch (err) {
     console.log("update custom application form error", error);
   } finally {
     await db.close();
@@ -981,7 +1030,7 @@ export const deleteCustomApplicationForm = async ({
       ]
     )
 
-  } catch(err) {
+  } catch (err) {
     console.log("delete custom application form error", error);
   } finally {
     await db.close();
@@ -1014,7 +1063,7 @@ export const getCustomApplicationFormByFormId = async form_id => {
       ]
     )
 
-    if(application.length > 0) {
+    if (application.length > 0) {
       application = application[0];
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       console.log("get custom application string", application);
@@ -1024,7 +1073,7 @@ export const getCustomApplicationFormByFormId = async form_id => {
     }
 
     console.log("get custom application", application);
-  } catch(err) {
+  } catch (err) {
     console.log("get custom application by form id", err);
   } finally {
     await db.close();
@@ -1032,12 +1081,12 @@ export const getCustomApplicationFormByFormId = async form_id => {
   }
 }
 
-export const getVendorCustomApplicationForms = async ({vendor, category = ""}) => {
+export const getVendorCustomApplicationForms = async ({ vendor, category = "" }) => {
   const db = makeDb();
   let applications;
   try {
 
-    if(category) {
+    if (category) {
       applications = await db.query(
         `
           SELECT
@@ -1081,14 +1130,14 @@ export const getVendorCustomApplicationForms = async ({vendor, category = ""}) =
         ]
       )
     }
-    
-    for(const application of applications) {
+
+    for (const application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
     }
 
-  } catch(err) {
+  } catch (err) {
     console.log("get custom application by form id", err);
   } finally {
     await db.close();
@@ -1141,14 +1190,14 @@ export const submitCustomApplication = async ({
   }
 }
 
-export const updateSubmitCustomApplication = async({
+export const updateSubmitCustomApplication = async ({
   app_id,
   form_contents,
-  class_teacher="",
-  color_designation="",
+  class_teacher = "",
+  color_designation = "",
   verification = "",
   student_status = "",
-  notes=""
+  notes = ""
 }) => {
   const db = makeDb();
   let result = {};
@@ -1172,7 +1221,7 @@ export const updateSubmitCustomApplication = async({
       notes,
       app_id
     ])
-  } catch(err) {
+  } catch (err) {
     console.log("update custom application error", error);
   } finally {
     await db.close();
@@ -1180,11 +1229,11 @@ export const updateSubmitCustomApplication = async({
   }
 }
 
-export const getCustomFormApplicants = async({form_id, is_archived = 0}) => {
+export const getCustomFormApplicants = async ({ form_id, is_archived = 0 }) => {
   const db = makeDb();
   let applications;
   try {
-    
+
     applications = await db.query(
       `
         SELECT
@@ -1212,13 +1261,13 @@ export const getCustomFormApplicants = async({form_id, is_archived = 0}) => {
 
     console.log("applications", applications);
 
-    for(const application of applications) {
+    for (const application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
     }
 
-  } catch(err) {
+  } catch (err) {
     console.log("get custom application by form id", err);
   } finally {
     await db.close();
@@ -1226,11 +1275,11 @@ export const getCustomFormApplicants = async({form_id, is_archived = 0}) => {
   }
 }
 
-export const getCustomFormApplicantById = async({app_id, is_archived = 0}) => {
+export const getCustomFormApplicantById = async ({ app_id, is_archived = 0 }) => {
   const db = makeDb();
   let applications;
   try {
-    
+
     applications = await db.query(
       `
         SELECT
@@ -1255,14 +1304,14 @@ export const getCustomFormApplicantById = async({app_id, is_archived = 0}) => {
       ]
     )
     console.log('applicationsss', applications)
-    for(const application of applications) {
+    for (const application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       application.form_contents = JSON.parse(application.form_contents);
     }
 
     applications = applications.length > 0 ? applications[0] : {};
 
-  } catch(err) {
+  } catch (err) {
     console.log("get custom application by form id", err);
   } finally {
     await db.close();
@@ -1288,8 +1337,8 @@ export const getUserCustomApplicationsByUserId = async user_id => {
     );
 
     for (const ua of userApplications) {
-      if(ua.custom_app_id) {
-        const application = await getCustomFormApplicantById({app_id: ua.custom_app_id});
+      if (ua.custom_app_id) {
+        const application = await getCustomFormApplicantById({ app_id: ua.custom_app_id });
         applications.push(application);
       }
     }
@@ -1303,12 +1352,12 @@ export const getUserCustomApplicationsByUserId = async user_id => {
 
 export const getApplicationByAppGroup = async ({
   app_grp_id,
-  is_form=false
+  is_form = false
 }) => {
   const db = makeDb();
   let applications;
   try {
-    if(is_form) {
+    if (is_form) {
       applications = await db.query(
         `
           SELECT
@@ -1335,8 +1384,8 @@ export const getApplicationByAppGroup = async ({
         ]
       )
     }
-  
-  } catch(err) {
+
+  } catch (err) {
     console.log("get custom application by form id", err);
   } finally {
     await db.close();
@@ -1363,8 +1412,8 @@ export const getCustomApplicationByVendorId = async (vendor) => {
       ]
     );
     console.log('getCustomApplicationByVendor vendor', applications)
-  
-  } catch(err) {
+
+  } catch (err) {
     console.log("get custom application by form id", err);
   } finally {
     await db.close();
@@ -1392,7 +1441,7 @@ export const updateApplicationUser = async ({
         application
       ]
     );
-  } catch(err) {
+  } catch (err) {
     console.log('err', err);
     result = err;
   } finally {
