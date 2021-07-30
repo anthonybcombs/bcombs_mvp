@@ -435,7 +435,7 @@ export const updateApplication = async ({
       for (let groupId of previousClassTeacher) {
         if(!teacher.includes(groupId)) {
           await db.query(
-            "DELELTE FROM vendor_app_groups_to_student WHERE app_grp_id=? AND child_id=?",
+            "DELETE FROM vendor_app_groups_to_student WHERE app_grp_id=? AND child_id=?",
             [
               groupId,
               currentApplication[0].child
