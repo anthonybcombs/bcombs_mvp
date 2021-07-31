@@ -354,7 +354,7 @@ export const createApplication = async ({
     lastId = result.insertId;
 
     await db.query(
-      "INSERT INTO vendor_app_groups_to_student (app_grp_id,child_id,type) values(?,?,?)",
+      "INSERT INTO vendor_app_groups_to_student (app_grp_id,child_id,type) values(UUID_TO_BIN(?),UUID_TO_BIN(?),?)",
       [
         class_teacher,
         child,
@@ -423,7 +423,7 @@ export const updateApplication = async ({
       for (let groupId of teacher) {
         if(!previousClassTeacher.includes(groupId)) {
           await db.query(
-            "INSERT INTO vendor_app_groups_to_student (app_grp_id,child_id,type) values(?,?,?)",
+            "INSERT INTO vendor_app_groups_to_student (app_grp_id,child_id,type) values(UUID_TO_BIN(?),UUID_TO_BIN(?),?)",
             [
               groupId,
               currentApplication[0].child,
@@ -435,7 +435,7 @@ export const updateApplication = async ({
       for (let groupId of previousClassTeacher) {
         if(!teacher.includes(groupId)) {
           await db.query(
-            "DELETE FROM vendor_app_groups_to_student WHERE app_grp_id=? AND child_id=?",
+            "DELETE FROM vendor_app_groups_to_student WHERE app_grp_id=UUID_TO_BIN(?) AND child_id=UUID_TO_BIN(?)",
             [
               groupId,
               currentApplication[0].child
