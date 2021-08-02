@@ -219,9 +219,9 @@ const resolvers = {
       for(let vendor of vendors) {
 
         console.log("current user", user);
-        console.log('vendor user', vendor.user);
+        console.log('vendor user', vendor.vendor_user);
 
-        vendor.forms = (user == vendor.user) ? vendor.forms
+        vendor.forms = (user == vendor.vendor_user) ? vendor.forms
         :
         vendor.forms.filter((f) => {
           const isExists = admins.some(x => x.form == f.form_id);
@@ -229,6 +229,12 @@ const resolvers = {
         })
       }
 
+      vendors = vendors.filter((vendor, index, self) => (
+        index === self.findIndex((a) => (
+          a.id === vendor.id
+        ))
+      ));
+      
       return vendors;
     },
     async getUserVendorForms(root, { user }, context) {

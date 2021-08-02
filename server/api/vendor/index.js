@@ -89,6 +89,7 @@ export const getVendorsByUserId = async (user) => {
       `SELECT 
         BIN_TO_UUID(v.id) as id, 
         BIN_TO_UUID(v.user) as user,
+        BIN_TO_UUID(v.user) as vendor_user,
         v.id2,
         v.name, 
         v.section1_text,
@@ -125,6 +126,7 @@ export const getVendorsByUserId = async (user) => {
         SELECT 
           BIN_TO_UUID(v.id) as id, 
           BIN_TO_UUID(va.user) as user,
+          BIN_TO_UUID(v.user) as vendor_user,
           v.id2,
           v.name, 
           v.section1_text,

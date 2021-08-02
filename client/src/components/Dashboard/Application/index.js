@@ -610,7 +610,7 @@ export default function index() {
     //dispatch(requestGetApplications(selectedVendor.id));
 
     console.log('selectedVendor 123', selectedVendor);
-
+    
     setRenderForms(selectedVendor.forms);
 
     if(queryParams && queryParams.form) {
