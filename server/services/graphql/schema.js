@@ -478,10 +478,16 @@ const inputs = `
         received_update: Boolean
     }
 
+    input AdminFormInput {
+      form_id: String!
+      isCustomForm: Boolean
+    }
+
     input AddAdminInput {
         name: String!
         email: String!
-        vendors: [String!]
+        vendor: String!
+        forms: [AdminFormInput]
         currentUser: String!
     }
 
@@ -494,9 +500,10 @@ const inputs = `
     input UpdateAdminInput{
         name: String!
         email: String!
-        vendors: [String!]
+        vendor: String!
         currentUser: String!
         user: String!
+        forms: [AdminFormInput]
     }
 
     input ParentChildRelationshipInput {
@@ -1003,6 +1010,7 @@ const queryTypes = `
         app_groups: [VendorAppGroup]
         created_at: Date
         is_daycare: Int
+        forms: [CustomApplicationOutput]
     }
 
     type LocationSite {
@@ -1242,12 +1250,15 @@ const queryTypes = `
     }
 
     type Admin{
+        id: String!
         user: String
         email: String
         name: String
         vendorName: String
         vendor: String
         isOwner: Boolean
+        formTitle: String
+        form: String
     }
 
     type IdFormat {
@@ -1303,7 +1314,6 @@ const queryTypes = `
         student_status: String
         notes: String
     }
-
 
     type CustomApplicationByVendor {
         id: String

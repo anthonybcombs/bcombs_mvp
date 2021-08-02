@@ -11,7 +11,8 @@ import {
   requestVendorAdmins,
   requestAddAdmin,
   requestDeleteAdmins,
-  requestUpdateAdmin } from "../../../redux/actions/Vendors";
+  requestUpdateAdmin, 
+  addAdmin} from "../../../redux/actions/Vendors";
 
 import {
   faTrash
@@ -22,6 +23,7 @@ import Loading from "../../../helpers/Loading.js";
 import { format } from "date-fns";
 
 import { Multiselect } from "multiselect-react-dropdown";
+import { defineLocale } from "moment";
 
 const AdminStyled = styled.div`
   width: auto;
@@ -158,31 +160,100 @@ export default function index() {
 
   useEffect(() => {
     if (vendors && vendors.length > 0) {
-      let fomattedVendors = vendors.map(item => {
+      let formattedVendors = vendors.map(item => {
+
+        let vForms = item?.forms ? item.forms : [];
+
+        let formattedForms = [];
+
+        formattedForms = vForms.map((form) => {
+          return {
+            id: form.form_id,
+            name: form?.form_contents?.formTitle,
+            label: form?.form_contents?.formTitle,
+            isCustomForm: true
+          }
+        })
+
+        formattedForms.unshift({
+          id: 'default',
+          name: 'Bcombs Form',
+          label: 'Bcombs Form',
+          isCustomForm: false
+        });
+
+        console.log('vForms', vForms);
+
         return {
           id: item.id,
           name: item.name,
-          label: item.name
+          label: item.name,
+          forms: formattedForms
         };
       });
-      setVendorOptions(fomattedVendors);
+
+      //setFormOptions(formattedVendors[0].forms);
+      setVendorOptions(formattedVendors);
     }
   }, [vendors]);
 
-  let getAdmins;
 
-  if(admins && admins.length > 0) {
-    getAdmins = admins.filter((admin, index, self) => (
-      index === self.findIndex((a) => (
-        a.email === admin.email && a.vendorName === admin.vendorName
-      ))
-    ))
-  }
+  useEffect(() => {
+
+    if(admins && admins.length > 0) {
+
+      let tempAdmins = admins.map(admin => {
+        admin.forms = admins.map((item) => {
+          if(item.email == admin.email && 
+            item.vendorName === admin.vendorName) {
+            return {
+              form: item.form,
+              formTitle: item.formTitle
+            }
+          } else {
+            return false;
+          }
+        })
+
+        admin.forms = admin.forms.filter((x) => !!x);
+
+        delete admin.form;
+        delete admin.formTitle;
+
+        return admin;
+      });
+
+      console.log("tempAdmins", tempAdmins);
+      const getAdmins = tempAdmins.filter((admin, index, self) => (
+        index === self.findIndex((a) => (
+          a.email === admin.email && a.vendorName === admin.vendorName
+        ))
+      ));
+
+      console.log('getAdmins', getAdmins);
+
+      setCurrentAdmins(getAdmins)
+    }
+  }, [admins])
+
+  // let getAdmins;
+
+  // if(admins && admins.length > 0) {
+  //   getAdmins = admins.filter((admin, index, self) => (
+  //     index === self.findIndex((a) => (
+  //       a.email === admin.email && a.vendorName === admin.vendorName
+  //     ))
+  //   ))
+  // }
+
+  const [ currentAdmins, setCurrentAdmins] = useState([])
 
   const [ addAdminFields, setAddAdminFields] 
-    = useState({ name: "", email: "", vendors: []})
+    = useState({ name: "", email: "", vendor: "", forms: []})
 
   const [ vendorOptions, setVendorOptions ] = useState([]);
+
+  const [ formOptions, setFormOptions ] = useState([]);
 
   const [ isVendorEmpty, setIsVendorEmpty ] = useState();
 
@@ -193,21 +264,51 @@ export default function index() {
   const [selectedRows, setSelectedRows] = useState([]);
 
   const handleAddAdminChange = (id, value) => {
-    setAddAdminFields({ ...addAdminFields, [id]: value });
+
+    console.log(id, value);
+    console.log("addAdminFields", addAdminFields);
+    if(id == 'vendor') {
+     
+      const adminFields = {
+        name: addAdminFields.name,
+        email: addAdminFields.email,
+        vendor: value,
+        forms: []
+      }
+
+      console.log("Hi Im here");
+      console.log(adminFields);
+      setAddAdminFields({...adminFields});
+    } else {
+      setAddAdminFields({ ...addAdminFields, [id]: value });
+    }
+    
   }
 
   const onSubmitAddAdmin = () => {
     console.log("addAdminFields", addAdminFields);
 
     if(addAdminFields && 
-      addAdminFields.vendors && 
-      addAdminFields.vendors.length > 0 ) {
+      addAdminFields.forms &&
+      addAdminFields.forms.length > 0) {
 
         let payload;
 
       if(isUpdate) {
+
+        console.log('addAdminFields', addAdminFields);
+
         payload = addAdminFields;
-        payload.vendors = payload.vendors.map(vendor => vendor.id);
+
+        payload.forms = payload.forms.map(form => {
+          return {
+            form_id: form.id,
+            isCustomForm: form.isCustomForm
+          }
+        });
+
+        //payload.vendors = payload.vendors.map(vendor => vendor.id);
+        
         payload.currentUser = auth.user_id;
         payload.user = selectedAdmin.user;
 
@@ -215,32 +316,38 @@ export default function index() {
 
         dispatch(requestUpdateAdmin(payload));
 
-        const checkVendorExists = payload.vendors.filter((vendor) => {
-          return vendor == selectedAdmin.vendor;
-        });
+        // const checkVendorExists = payload.vendors.filter((vendor) => {
+        //   return vendor == selectedAdmin.vendor;
+        // });
 
-        if(checkVendorExists && checkVendorExists.length <= 0) {
-          //do delete vendor;
-          let admins = [{
-            user: selectedAdmin.user,
-            vendor: selectedAdmin.vendor,
-            currentUser: auth.user_id
-          }]
-          dispatch(requestDeleteAdmins(admins));
-        }
+        // if(checkVendorExists && checkVendorExists.length <= 0) {
+        //   //do delete vendor;
+        //   let admins = [{
+        //     user: selectedAdmin.user,
+        //     vendor: selectedAdmin.vendor,
+        //     currentUser: auth.user_id
+        //   }]
+        //   //dispatch(requestDeleteAdmins(admins));
+        // }
 
       } else {
         payload = addAdminFields;
-        payload.vendors = payload.vendors.map(vendor => vendor.id);
+        payload.forms = payload.forms.map(form => {
+          return {
+            form_id: form.id,
+            isCustomForm: form.isCustomForm
+          }
+        });
+
         payload.currentUser = auth.user_id;
   
-        console.log("payload", payload);
+        console.log("add admin payload", payload);
   
         dispatch(requestAddAdmin(payload));
       }
 
       setIsUpdate(false);
-      setAddAdminFields({ name: "", email: "", vendors: []});
+      setAddAdminFields({ name: "", email: "", vendor: "", forms: []});
       setIsVendorEmpty(false);
     } else {
       setIsVendorEmpty(true);
@@ -253,11 +360,34 @@ export default function index() {
 
     console.log("sAdmin", sAdmin);
 
-    const selectedVendors = vendorOptions.filter((vendor) => {
-      return vendor.id == sAdmin.vendor;
+    let selectedVendor = vendorOptions.filter((v) => {
+      return v.id == sAdmin.vendor
     })
 
-    setAddAdminFields({name: sAdmin.name, email: sAdmin.email, vendors: selectedVendors});
+    selectedVendor = selectedVendor.length > 0 ? selectedVendor[0] : {};
+
+    const vendorForms = selectedVendor?.forms ? selectedVendor.forms : []
+
+    console.log('selectedVendor',selectedVendor);
+
+    let sAdminForms = sAdmin.forms;
+
+    const selectedForms = vendorForms.filter((form) => {
+      //return form.id == sAdmin.form;
+
+      const isExists = sAdminForms.filter((x) => {
+        if (x.form == form.id) return true;
+        else if (!x.form && form.id == 'default') return true;
+        else return false;
+      });
+
+      return isExists.length > 0;
+    });
+
+    console.log('selectedForms', selectedForms);
+    
+    setFormOptions([...vendorForms]);
+    setAddAdminFields({name: sAdmin.name, email: sAdmin.email, forms: selectedForms, vendor: sAdmin.vendor});
     setIsUpdate(true);
   }
 
@@ -288,6 +418,21 @@ export default function index() {
     reValidateMode: "onChange"
   });
 
+  const setupForms = (forms) => {
+
+    console.log('this is the forms', forms);
+
+    let formString = "";
+    forms.map((i) => {
+      if(i?.form) {
+        formString += `${i.formTitle},`;
+      } else {
+        formString += "Bcombs Form,";
+      }
+    })
+    return formString.slice(0, -1);
+  }
+
   const columns = [
     {
       name: 'Name',
@@ -306,6 +451,12 @@ export default function index() {
       selector: 'application',
       sortable: true,
       cell: row => row.vendorName
+    },
+    {
+      name: 'Form',
+      selector: 'form',
+      sortable: true,
+      cell: row => setupForms(row.forms)
     }
   ];
 
@@ -425,21 +576,57 @@ export default function index() {
             </div>
             <div>
               <label className="control-label">Application</label>
+              <select
+                type="text"
+                name="adminvendor"
+                className={
+                  errors && 
+                  errors.adminemail && 
+                  (errors.adminemail.type == "pattern" || errors.adminemail.type == "required") ? "form-control error" : "form-control"
+                }
+                onChange={({ target }) => {
+
+                  let selectedVendor = vendorOptions.filter((v) => {
+                    return v.id == target.value;
+                  })
+
+                  selectedVendor = selectedVendor.length > 0 ? selectedVendor[0] : {};
+
+                  setFormOptions(selectedVendor?.forms);
+                  
+                  handleAddAdminChange("vendor", target.value);
+                  
+                }}
+                ref={register({required: true})}
+                value={addAdminFields.vendor}
+              >
+                <option value="">Select</option>
+                {
+                  vendorOptions.map(opt => (
+                    <option key={opt.id} value={opt.id}>
+                      {opt.name}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+            <div>
+              <label className="control-label">Forms</label>
               <Multiselect
                 id={"vendors"}
                 className="error"
-                selectedValues={addAdminFields.vendors}
-                options={vendorOptions}
+                selectedValues={addAdminFields.forms}
+                options={formOptions}
                 hasSelectAll={false}
                 onSelect={selectedList => {
                   if(selectedList.length > 0) setIsVendorEmpty(false);
 
-                  handleAddAdminChange("vendors", selectedList);
+                  handleAddAdminChange("forms", selectedList);
                 }}
                 onRemove={selectedList => {
                   if(selectedList.length <= 0) setIsVendorEmpty(true);
 
-                  handleAddAdminChange("vendors", selectedList)
+                  handleAddAdminChange("forms", selectedList)
                 }}
                 placeholder="Select Application"
                 displayValue="name"
@@ -465,7 +652,7 @@ export default function index() {
           </button>
           <DataTable 
             columns={columns}
-            data={getAdmins}
+            data={currentAdmins}
             pagination
             noHeader={true}
             striped={true}

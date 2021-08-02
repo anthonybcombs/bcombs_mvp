@@ -389,7 +389,7 @@ const resolvers = {
         admins.push(...va);
       }
 
-      console.log("admins", admins);
+      console.log("this is the admins", admins);
       return admins;
     },
     async getFormAppGroup(root, {form}, contenxt) {
@@ -1040,36 +1040,59 @@ const resolvers = {
       return resAdmins;
     },
     async updateVendorAdmin(root, { admin }, context) {
-      for (const vendor of admin.vendors) {
-        const checkVendorExists = await checkIfAdminVendorExists({
-          user: admin.user,
-          vendor: vendor
-        });
 
-        if (checkVendorExists && checkVendorExists.is_exists) {
-          //Update
-          await updateVendorAdmins({
-            user: admin.user,
-            name: admin.name,
-            vendor: vendor
-          });
-        } else {
-          //add
-          await addVendorAdmins({
-            user: admin.user,
-            vendor: vendor,
-            name: admin.name
-          });
-        }
+      await deleteVendorAdmins(admin);
+
+      for (const form of admin.forms) {
+        await addVendorAdmins({
+          user: admin.user,
+          vendor: admin.vendor,
+          name: admin.name,
+          form: form.isCustomForm ? form.form_id : null
+        });
       }
+
+      // for (const vendor of admin.vendors) {
+      //   const checkVendorExists = await checkIfAdminVendorExists({
+      //     user: admin.user,
+      //     vendor: vendor
+      //   });
+
+      //   if (checkVendorExists && checkVendorExists.is_exists) {
+      //     //Update
+      //     await updateVendorAdmins({
+      //       user: admin.user,
+      //       name: admin.name,
+      //       vendor: vendor
+      //     });
+      //   } else {
+      //     //add
+      //     await addVendorAdmins({
+      //       user: admin.user,
+      //       vendor: vendor,
+      //       name: admin.name
+      //     });
+      //   }
+      // }
 
       const currentUser = admin.currentUser;
       const vendors = await getVendorsIdByUser(currentUser);
 
       let resAdmins = [];
+
       for (const vendor of vendors) {
         console.log("vendor", vendor);
         let va = await getVendorAdmins(vendor.id);
+
+        for(let x of va) {
+          if(x.form) {
+            let form = await getCustomApplicationFormByFormId(x.form);
+            console.log('formDetails', form.form_contents.formTitle);
+            if(form && form.form_contents && form.form_contents.formTitle)
+              x.formTitle = form.form_contents.formTitle;
+          }
+        }
+
         resAdmins.push(...va);
       }
 
@@ -1118,11 +1141,12 @@ const resolvers = {
         });
       }
 
-      for (const vendor of admin.vendors) {
+      for (const form of admin.forms) {
         await addVendorAdmins({
           user: user.id,
-          vendor: vendor,
-          name: admin.name
+          vendor: admin.vendor,
+          name: admin.name,
+          form: form.isCustomForm ? form.form_id : null
         });
       }
 
@@ -1132,6 +1156,16 @@ const resolvers = {
       for (const vendor of vendors) {
         console.log("vendor", vendor);
         let va = await getVendorAdmins(vendor.id);
+
+        for(let x of va) {
+          if(x.form) {
+            let form = await getCustomApplicationFormByFormId(x.form);
+            console.log('formDetails', form.form_contents.formTitle);
+            if(form && form.form_contents && form.form_contents.formTitle)
+              x.formTitle = form.form_contents.formTitle;
+          }
+        }
+
         admins.push(...va);
       }
 
