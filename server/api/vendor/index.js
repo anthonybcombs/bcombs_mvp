@@ -368,6 +368,31 @@ export const deleteVendorAdmins = async ({ user, vendor }) => {
   }
 };
 
+export const getVendorAdminsByUser = async (user) => {
+  let result = [];
+
+  const db = makeDb();
+
+  try {
+    result = await db.query(
+      `SELECT
+        BIN_TO_UUID(id) as id,
+        BIN_TO_UUID(vendor) as vendor,
+        BIN_TO_UUID(form) as form,
+        BIN_TO_UUID(user) as user
+      FROM vendor_admin
+      WHERE user=UUID_TO_BIN(?)
+      `,[user]
+    )
+  } catch(err) {
+    console.log('err', err);
+    result = []
+  } finally {
+    db.close();
+    return result
+  }
+}
+
 export const getVendorAdmins = async (vendor) => {
   const db = makeDb();
   let result;

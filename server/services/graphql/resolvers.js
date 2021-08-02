@@ -79,7 +79,8 @@ import {
   getArchivedGroupByVendor,
   deleteArchivedGroup,
   addArchivedGroupByVendor,
-  createGroupReminder
+  createGroupReminder,
+  getVendorAdminsByUser
 } from "../../api/vendor";
 import {
   createApplication,
@@ -212,6 +213,21 @@ const resolvers = {
     async vendorsByUser(root, { user }, context) {
 
       let vendors = await getVendorsByUserId(user);
+
+      const admins = await getVendorAdminsByUser(user);
+
+      for(let vendor of vendors) {
+
+        console.log("current user", user);
+        console.log('vendor user', vendor.user);
+
+        vendor.forms = (user == vendor.user) ? vendor.forms
+        :
+        vendor.forms.filter((f) => {
+          const isExists = admins.some(x => x.form == f.form_id);
+          return isExists;
+        })
+      }
 
       return vendors;
     },
