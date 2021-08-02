@@ -4,6 +4,10 @@ import { getUserGroups } from "../../api/groups";
 
 import { sort, distinct, sortByDate } from "../../helpers/array";
 
+import { 
+  getVendorCustomApplicationForms,
+  getCustomApplicationFormByFormId
+ } from "../applications";
 import moment from 'moment';
 
 export const getVendors = async () => {
@@ -85,6 +89,7 @@ export const getVendorsByUserId = async (user) => {
       `SELECT 
         BIN_TO_UUID(v.id) as id, 
         BIN_TO_UUID(v.user) as user,
+        BIN_TO_UUID(v.user) as vendor_user,
         v.id2,
         v.name, 
         v.section1_text,
@@ -109,6 +114,9 @@ export const getVendorsByUserId = async (user) => {
         result[i].app_programs = await getVendorAppProgram(result[i].id);
         result[i].location_sites = await getVendorAppLocationSite(result[i].id);
         result[i].app_groups = await getVendorAppGroupsByVendorId(result[i].id);
+
+        result[i].forms = await getVendorCustomApplicationForms({vendor: result[i].id});
+        
         vendors.push(result[i]);
       }
     }
@@ -118,6 +126,7 @@ export const getVendorsByUserId = async (user) => {
         SELECT 
           BIN_TO_UUID(v.id) as id, 
           BIN_TO_UUID(va.user) as user,
+          BIN_TO_UUID(v.user) as vendor_user,
           v.id2,
           v.name, 
           v.section1_text,
@@ -147,6 +156,9 @@ export const getVendorsByUserId = async (user) => {
         result2[i].app_groups = await getVendorAppGroupsByVendorId(
           result2[i].id
         );
+
+        result2[i].forms = await getVendorCustomApplicationForms({vendor: result2[i].id});
+
         vendors.push(result2[i]);
       }
     }
@@ -245,27 +257,49 @@ export const getVendorById = async (id) => {
   }
 };
 
-export const checkIfAdminVendorExists = async ({ user, vendor }) => {
+export const checkIfAdminVendorExists = async ({ user, vendor, form }) => {
   const db = makeDb();
 
   try {
-    const rows = await db.query(
-      `SELECT 
-        BIN_TO_UUID(vendor) as vendor 
-      FROM vendor_admin
-      WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
-      [user, vendor]
-    );
 
-    if (rows.length > 0) {
+    if(form && form != 'default') {
+      const rows = await db.query(
+        `SELECT 
+          BIN_TO_UUID(vendor) as vendor 
+        FROM vendor_admin
+        WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?) AND form=UUID_TO_BIN(?)`,
+        [user, vendor, form]
+      );
+  
+      if (rows.length > 0) {
+        return {
+          is_exists: true,
+        };
+      }
+  
       return {
-        is_exists: true,
+        is_exists: false,
+      };
+    } else {
+      const rows = await db.query(
+        `SELECT 
+          BIN_TO_UUID(vendor) as vendor 
+        FROM vendor_admin
+        WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
+        [user, vendor]
+      );
+  
+      if (rows.length > 0) {
+        return {
+          is_exists: true,
+        };
+      }
+  
+      return {
+        is_exists: false,
       };
     }
 
-    return {
-      is_exists: false,
-    };
   } catch (error) {
     console.log("error update admin", error);
   } finally {
@@ -290,15 +324,26 @@ export const updateVendorAdmins = async ({ user, vendor, name }) => {
   }
 };
 
-export const addVendorAdmins = async ({ user, vendor, name }) => {
+export const addVendorAdmins = async ({ 
+  user, 
+  vendor, 
+  name,
+  form 
+}) => {
   const db = makeDb();
   let result;
   try {
-    result = await db.query(
+
+    result = form ? await db.query(
+      `INSERT INTO vendor_admin(id, user, vendor, form, name)
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), UUID_TO_BIN(?), ?)`,
+      [user, vendor, form, name]) 
+      : 
+    await db.query(
       `INSERT INTO vendor_admin(id, user, vendor, name)
       VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?)`,
-      [user, vendor, name]
-    );
+      [user, vendor, name])
+
   } catch (error) {
     console.log("error", error);
   } finally {
@@ -312,7 +357,9 @@ export const deleteVendorAdmins = async ({ user, vendor }) => {
   let result;
   try {
     result = await db.query(
-      `DELETE FROM vendor_admin WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
+      `DELETE 
+      FROM vendor_admin 
+      WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
       [user, vendor]
     );
   } catch (error) {
@@ -323,43 +370,53 @@ export const deleteVendorAdmins = async ({ user, vendor }) => {
   }
 };
 
+export const getVendorAdminsByUser = async (user) => {
+  let result = [];
+
+  const db = makeDb();
+
+  try {
+    result = await db.query(
+      `SELECT
+        BIN_TO_UUID(id) as id,
+        BIN_TO_UUID(vendor) as vendor,
+        BIN_TO_UUID(form) as form,
+        BIN_TO_UUID(user) as user
+      FROM vendor_admin
+      WHERE user=UUID_TO_BIN(?)
+      `,[user]
+    )
+  } catch(err) {
+    console.log('err', err);
+    result = []
+  } finally {
+    db.close();
+    return result
+  }
+}
+
 export const getVendorAdmins = async (vendor) => {
   const db = makeDb();
   let result;
   let admins = [];
   try {
-    // result = await db.query(
-    //   `
-    //     SELECT
-    //       BIN_TO_UUID(v.id) as vendor,
-    //       BIN_TO_UUID(u.id) as user,
-    //       v.name as vendorName,
-    //       u.email
-    //     FROM vendor v, users u
-    //     WHERE v.id = UUID_TO_BIN(?) AND u.id = v.user
-    //     ORDER BY v.name ASC
-    //   `,
-    //   [vendor]
-    // );
-
-    // if(result.length > 0) {
-    //   for(let item of result) {
-    //     item.isOwner = true;
-    //     admins.push(item);
-    //   }
-    // }
 
     result = await db.query(
       `
         SELECT 
+          BIN_TO_UUID(va.id) as id,
           BIN_TO_UUID(v.id) as vendor, 
           BIN_TO_UUID(va.user) as user,
           va.name,
           v.name as vendorName,
-          u.email
+          u.email,
+          BIN_TO_UUID(va.form) as form
         FROM vendor v, users u, vendor_admin va
-        WHERE va.vendor = UUID_TO_BIN(?) AND v.id = UUID_TO_BIN(?) AND va.vendor = v.id AND va.user = u.id
-        ORDER BY va.name ASC
+        WHERE va.vendor = UUID_TO_BIN(?) AND 
+          v.id = UUID_TO_BIN(?) AND 
+          va.vendor = v.id AND 
+          va.user = u.id
+        ORDER BY va.created_at DESC
       `,
       [vendor, vendor]
     );
@@ -367,11 +424,16 @@ export const getVendorAdmins = async (vendor) => {
     if (result.length > 0) {
       for (let item of result) {
         item.isOwner = false;
+        let form = item.form ? await getCustomApplicationFormByFormId(item.form) : "";
+        
+        item.formTitle = item.form ? form.form_contents.formTitle : "";
+        item.form = item.form ? form.form_id : "";
+
         admins.push(item);
       }
     }
 
-    admins = sort(admins, "name");
+    //admins = sortByDate(admins, "name");
   } catch (error) {
     console.log("error", error);
   } finally {

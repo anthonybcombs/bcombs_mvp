@@ -472,7 +472,9 @@ export default function index() {
 
   const [selectedVendor, setSelectedVendor] = useState({});
 
-  const [selectedForm, setSelectedForm] = useState("default")
+  const [selectedForm, setSelectedForm] = useState("default");
+
+  const [renderForms, setRenderForms] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -607,6 +609,10 @@ export default function index() {
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
 
+    console.log('selectedVendor 123', selectedVendor);
+    
+    setRenderForms(selectedVendor.forms);
+
     if(queryParams && queryParams.form) {
       setSelectedForm(queryParams.form);
 
@@ -622,6 +628,7 @@ export default function index() {
       setExportFilename(selectedVendor.name);
       dispatch(requestGetApplications(selectedVendor.id));
     }
+
 
   }, [formList])
 
@@ -1753,11 +1760,13 @@ export default function index() {
                   {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
                 </option>
                 {
-                  formList.map(form => (
-                    <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
-                      {form?.form_contents?.formTitle}
-                    </option>
-                  ))
+                  renderForms && renderForms.length > 0 && (
+                    renderForms.map(form => (
+                      <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
+                        {form?.form_contents?.formTitle}
+                      </option>
+                    ))
+                  )
                 }
               </select>
             </div>
@@ -1892,7 +1901,7 @@ export default function index() {
             <ReminderSettingsStyled
               vendor={selectedVendor}
               appGroups={appGroups}
-              formList={formList}
+              formList={renderForms}
               handleCreateGroupReminder={handleCreateGroupReminder}
             />
           )}
