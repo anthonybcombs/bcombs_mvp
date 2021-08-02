@@ -1083,7 +1083,7 @@ export const getCustomApplicationFormByFormId = async form_id => {
 
 export const getVendorCustomApplicationForms = async ({ vendor, category = "" }) => {
   const db = makeDb();
-  let applications;
+  let applications = [];
   try {
 
     if (category) {
@@ -1139,6 +1139,7 @@ export const getVendorCustomApplicationForms = async ({ vendor, category = "" })
 
   } catch (err) {
     console.log("get custom application by form id", err);
+    applications = [];
   } finally {
     await db.close();
     return applications;

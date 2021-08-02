@@ -66,6 +66,13 @@ export const VENDOR_BY_USER_QUERY = gql`
         user
         app_grp_id
       }
+      forms {
+        id
+        form_id
+        form_contents {
+          formTitle
+        }
+      }
     }
   }
 `;
@@ -169,12 +176,15 @@ export const VENDOR_BY_ID_QUERY = gql`
 export const GET_VENDOR_ADMINS = gql`
   query getVendorAdminsByUser($user: String!) {
     getVendorAdminsByUser(user: $user) {
+      id
       user
       email
       vendorName
       vendor
       isOwner
       name
+      formTitle
+      form
     }
   }
 `;
@@ -194,12 +204,15 @@ export const GET_USER_VENDOR_FORMS = gql`
 export const ADD_VENDOR_ADMIN = gql`
   mutation addVendorAdmin($admin: AddAdminInput) {
     addVendorAdmin(admin: $admin) {
+      id
       user
       email
       vendorName
       vendor
       isOwner
       name
+      formTitle
+      form
     }
   }
 `;
@@ -207,12 +220,15 @@ export const ADD_VENDOR_ADMIN = gql`
 export const UPDATE_VENDOR_ADMIN = gql`
   mutation updateVendorAdmin($admin: UpdateAdminInput) {
     updateVendorAdmin(admin: $admin) {
+      id
       user
       email
       vendorName
       vendor
       isOwner
       name
+      formTitle
+      form
     }
   }
 `;
@@ -220,12 +236,15 @@ export const UPDATE_VENDOR_ADMIN = gql`
 export const DELETE_VENDOR_ADMIN = gql`
   mutation deleteVendorAdmin($admins: [DeleteAdminInput]) {
     deleteVendorAdmin(admins: $admins) {
+      id
       user
       email
       vendorName
       vendor
       isOwner
       name
+      formTitle
+      form
     }
   }
 `;
