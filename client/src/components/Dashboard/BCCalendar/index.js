@@ -4,12 +4,20 @@ import { useDispatch, useSelector } from "react-redux";
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
 import { 
   requestGetApplicationByUserId, 
   requestGetUserApplicationHistory
 } from "../../../redux/actions/Application";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
+
+import NewEventModal from "./events/NewEventModal/index.js";
 
 const CalendarStyled = styled.div`
 display: grid;
@@ -21,6 +29,35 @@ grid-template-columns: 1fr 4fr;
       background-color: white;
       box-shadow: 0 0 25px #eae9e9;
       padding: 5px;    
+    }
+
+    .control-block .btn-holder {
+      margin: 20px;
+    }
+
+    .control-block .fa-plus {
+      padding-right: 5px;
+    }
+
+    .control-block a {
+      margin: 5px;
+      width: 100%;
+      color: #fff;
+      background-color: #2cabe3;
+      border-color: #2cabe3;
+      box-shadow: 0 1px 0 rgb(255 255 255 / 15%);
+      font-weight: 400;
+      line-height: 1.5;
+      text-align: center;
+      text-decoration: none;
+      vertical-align: middle;
+      cursor: pointer;
+      user-select: none;
+      border: 1px solid transparent;
+      padding: .375rem .75rem;
+      font-size: .875rem;
+      border-radius: 4px;
+      transition: color .15s
     }
 
     `;
@@ -55,6 +92,7 @@ const BCCalendar = props => {
   const [filteredData, setFilteredData] = useState([]);
 
   const [isLoading,setIsLoading ] = useState(true)
+  const [isAddEventModalShown,setIsAddEventModalShown ] = useState(false)
 
   const componentRef = useRef();
   
@@ -70,6 +108,9 @@ const BCCalendar = props => {
       dispatch(requestGetUserApplicationHistory(auth.user_id));
     }
   }, []);
+
+  const showModal = () => setIsAddEventModalShown(true);
+  const hideModal = () => setIsAddEventModalShown(false);
 
   const DATE_TIME_FORMAT2 = "MM/dd/yyyy hh:mm:ss";
 
@@ -108,22 +149,58 @@ const BCCalendar = props => {
         }
    }
 
+   const handleDateClick = (info) => {
+     console.log("date click: ", info);
+     showModal();
+    //if(window.confirm("Are you sure you want to create an event?")){
+    //    console.log('change confirmed')
+    //} else {
+    //    console.log('change aborted')
+    //}
+}
+
   console.log('calendar auth',auth)
   return (
     <CalendarStyled>
-      <div id="calendarControls" className="control-block"> Hello </div>
+      <NewEventModal show={isAddEventModalShown} handleClose={hideModal}> </NewEventModal>
+      <div id="calendarControls" className="control-block"> 
+        <h3>Schedule Activities</h3>
+
+      <div className="btn-holder">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#add-new-event" 
+          className="btn mt-3 btn-info d-block w-100 waves-effect waves-light">
+            <FontAwesomeIcon icon={faPlus} />
+            Add New Event
+        </a> 
+        </div>
+        <div className="btn-holder">     
+        <a href="#" data-bs-toggle="modal" data-bs-target="#add-new-event" 
+          className="btn mt-3 btn-info d-block w-100 waves-effect waves-light">
+            <FontAwesomeIcon icon={faPlus} />
+            Add New Class
+        </a> 
+        </div>     
+      </div>
       <div id="calendarContainer" className="calendar-wrapper">
         {
           loading.application ? (
             <Loading />
           ) : (
             <FullCalendar 
+            headerToolbar={{left: 'prev,next,today', center: 'title', right: 'timeGridDay,timeGridWeek,dayGridMonth'}}
             defaultView="dayGridMonth" 
-            plugins={[dayGridPlugin, interactionPlugin]}
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             editable={true}
             eventDrop={handleEventDrop}
             eventClick={handleEventClick}
             events={formatEvents}
+            dateClick={handleDateClick}
+            allDaySlot={true}
+            scrollTime = {'08:00:00'}
+            axisFormat = {'HH:mm'}
+            timeFormat = {{
+                agenda: 'H:mm{ - h:mm}'
+            }}
         />
             )
         }
