@@ -1,0 +1,42 @@
+.bc-calendar-wrapper {
+    display: grid;
+    padding: 20px;
+    grid-template-columns: 1fr 4fr;
+        grid-gap: 1%;
+}
+
+.control-block, .calendar-wrapper {
+    background-color: white;
+    box-shadow: 0 0 25px #eae9e9;
+    padding: 5px;    
+  }
+
+  .control-block .btn-holder {
+    margin: 20px;
+  }
+
+  .control-block .fa-plus {
+    padding-right: 5px;
+  }
+
+  .control-block a {
+    margin: 5px;
+    width: 100%;
+    color: #fff;
+    background-color: #2cabe3;
+    border-color: #2cabe3;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 15%);
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: .875rem;
+    border-radius: 4px;
+    transition: color .15s
+  }
+

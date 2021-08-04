@@ -37,6 +37,7 @@
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;      
     align-items: center!important;
+    background-color: lightsalmon;
   }
   
     .modal-title {
@@ -139,4 +140,20 @@
   
   .display-none {
     display: none;
+  }
+
+  .modal-content .grid-2a {
+    display: grid;
+    grid-template-columns: 4.33% 92.33%;
+    grid-gap: 2.33333333%;
+  }
+
+  .modal-content .grid-2a .fa-clock {
+      padding-top: 8px;
+  }
+
+  .modal-content .date-time-row {
+      position: relative;
+      display: flex;
+      align-items: center;
   }

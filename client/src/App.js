@@ -6,6 +6,8 @@ import Loadable from "react-loadable";
 import Loading from "./helpers/Loading.js";
 import { requestUserTypes } from "./redux/actions/UserTypes";
 import SocialLoginLanding from "./helpers/SocialLogin.js";
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const AsycDashboard = Loadable({
   loader: () => import("./components/Dashboard/"),
@@ -169,7 +171,8 @@ export default function App() {
     <>
       <Layout>
         <div data-testid="app">
-          <Router>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <Router>
             <AyncDashboardMyContactsPublic path="/mycalendars/public/:id" />
             <AsyncAuth path="/">
               <AsyncLogin default />
@@ -211,6 +214,7 @@ export default function App() {
             <AsyncForm path="form/:form_id" />
             <AsyncDaycareApplicationForm path="application/:vendor_id/daycare" />
           </Router>
+          </MuiPickersUtilsProvider>
         </div>
       </Layout>
     </>

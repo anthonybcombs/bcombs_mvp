@@ -14,6 +14,12 @@ import apiMetricsVolunteering from "./api/metrics/volunteering";
 import apiMetricsClasses from "./api/metrics/classes";
 import apiMetricsGrades from "./api/metrics/grades";
 import apiMetricsTests from "./api/metrics/tests";
+
+import apiBCCallendarActivities from "./api/bccalendar/activities";
+import apiBCCallendarAddActivity from "./api/bccalendar/add_activity";
+import apiBCCallendarUpdateActivity from "./api/bccalendar/update_activity";
+import apiBCCallendarDeleteActivity from "./api/bccalendar/delete_activity";
+
 import services from "./services";
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "/.env") });
@@ -63,7 +69,10 @@ app.use("/api/metrics/classes", apiMetricsClasses);
 app.use("/api/metrics/grades", apiMetricsGrades);
 app.use("/api/metrics/tests", apiMetricsTests);
 
-
+app.use("/api/bccalendar/activities", apiBCCallendarActivities);
+app.use("/api/bccalendar/add_activity", apiBCCallendarAddActivity);
+app.use("/api/bccalendar/update_activity", apiBCCallendarUpdateActivity);
+app.use("/api/bccalendar/delete_activity", apiBCCallendarDeleteActivity);
 // app.get("/", (req, res) => {
 //   res.status(200).send("bon");
 // });
