@@ -52,10 +52,11 @@ const BCCalendar = props => {
 
   const [myEvents, setMyEvents] = useState([]);
 
+  const [classes, setClasses] = useState([]);
   const [activityData, setActivityData] = useState(new BC_CalendarActivity());
   const [vendorId, setVendorId] = useState();
 
-  const [defaultApplication,setDefaultApplication] = useState([])
+  //const [defaultApplication,setDefaultApplication] = useState([])
   const [filteredData, setFilteredData] = useState([]);
 
   const [isLoading,setIsLoading ] = useState(false)
@@ -94,12 +95,20 @@ const BCCalendar = props => {
         }
         const res = await BC_CalendarActivity.GetCalendarActivitiesFromDB(vendorId, auth.user_id);
         console.log('apiCall get calendar activities ', res)
+        let classList = []
+        if (res && res.app_groups && res.app_groups.length > 0) {
+          for (let i=0; i < res.app_groups.length; i++) {
+            const classData = res.app_groups[i];
+            classList[classData.id] = classData;
+          } 
+          setClasses(classList);
+        }
         if (res && res.activities && res.activities.length > 0) {
           let activityList = []
           for (let i=0; i < res.activities.length; i++) {
             const row = res.activities[i];
             let activityFromDB = new BC_CalendarActivity();
-            activityFromDB.loadFromDBRow(row);
+            activityFromDB.loadFromDBRow(row, classList);
             activityList.push(activityFromDB);
           } 
           setMyEvents(activityList);
@@ -210,6 +219,7 @@ const BCCalendar = props => {
   return (
     <CalendarStyled className="bc-calendar-wrapper">
       <ActivityDetailModal show={isAddEventModalShown} 
+        visibleClasses={classes}
         activityData={activityData}
         handleClose={hideModal} 
         handleDelete={handleDeleteActivity}

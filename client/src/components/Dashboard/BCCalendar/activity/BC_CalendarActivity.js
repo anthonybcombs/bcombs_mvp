@@ -47,7 +47,7 @@ class BC_CalendarActivity {
         this.idClass = activity.idClass;
     }
     
-    loadFromDBRow = (row) => {
+    loadFromDBRow = (row, classList) => {
         this.isNew = false;
         this.id = row.id;
         this.event_type = row.event_type;
@@ -55,6 +55,13 @@ class BC_CalendarActivity {
         this.title = row.title;
         this.start = new Date(row.start);
         this.end = new Date(row.end);
+        this.idClass = row.idClass;
+        if (classList && classList[row.idClass] && classList[row.idClass].event_color) {
+            this.color = classList[row.idClass].event_color;
+        }
+        else if (row.idClass) {
+            this.color = 'green';
+        }
     }
 
     //use activity as returned from full calendar

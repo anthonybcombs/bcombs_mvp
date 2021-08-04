@@ -12,6 +12,11 @@ router.post("/", async (req, res) => {
 
        let queryParam = [vendorId]; //, userId];
 
+       let result = {
+        activities: [],
+        app_groups: []
+       }
+
        let query = 
             "SELECT a.* " + 
             "FROM bc_calendar_event a " +
@@ -23,14 +28,23 @@ router.post("/", async (req, res) => {
         //    "where a.id2 = ? and b.vendor = a.id and c.vendor_app_group = b.app_grp_id ";
        console.log('Query ', query);
        const response =  await db.query(query, queryParam);
-       console.log('calendar activities', response);
-
-       let resultData = [];
+     //  console.log('calendar activities', response);
        if (response.length > 0) {
-           resultData = response;
+           result.activities = response;
        }
 
-        res.status(200).json({ activities: resultData });
+       let query2Param = [vendorId]; //, userId];
+       let query2 = 
+        "SELECT a.id, a.name, c.event_color FROM vendor b, " + 
+            "vendor_app_groups a left join bc_vendor_app_groups_ext c on a.app_grp_id = c.app_grp_id " + 
+            "WHERE a.vendor = b.id and b.id2 = ? ORDER BY a.name";
+        const response2 =  await db.query(query2, query2Param);
+       // console.log('calendar activities', response2);
+        if (response2.length > 0) {
+            result.app_groups = response2;
+        }
+ 
+        res.status(200).json(result);
         //res.status(200).json({ user: response && response[0] });
     } catch (error) {
 

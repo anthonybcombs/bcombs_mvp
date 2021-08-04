@@ -44,7 +44,7 @@ const BCDateRangePicker = props => {
 };
 
 const NewEventModal = props => {
-  const { handleClose, show, handleSave, activityData, handleDelete } = props;
+  const { handleClose, show, handleSave, activityData, handleDelete, visibleClasses } = props;
   //const [startDate, setStartDate] = useState();
   //const [endDate, setEndDate] = useState();
   const [localActivity, setLocalAcivity] = useState(new BC_CalendarActivity());
@@ -62,6 +62,10 @@ const NewEventModal = props => {
     setShowHideClassName(show ? "modal display-block" : "modal display-none");
     console.log("show class: ", showHideClassName);
   }, [show]);
+
+  useEffect(() => {
+    console.log("show visibleClasses: ", visibleClasses);
+  }, [visibleClasses]);
 
   useEffect(() => {
     let localActivityTemp = new BC_CalendarActivity(activityData);
@@ -133,15 +137,11 @@ const NewEventModal = props => {
                                   setEndDate={setEndDate}
                                 />
                                 <div className="col-md-6">
-                                <label className="control-label">Choose Category Color</label>
-                                <select className="form-select form-white" data-placeholder="Choose a color..." name="category-color">
-                                    <option value="success">Success</option>
-                                    <option value="danger">Danger</option>
-                                    <option value="info">Info</option>
-                                    <option value="primary">Primary</option>
-                                    <option value="warning">Warning</option>
-                                    <option value="inverse">Inverse</option>
-                                </select>
+                                <label className="control-label">Class</label>
+                                <select className="form-select form-white"
+                                   data-placeholder="Select Class Name..." name="category-color">
+                                <option value=""> -- Select a Class -- </option>
+{visibleClasses.map((elem) => <option key={elem.name} value={elem.id}>{elem.name}</option>)}                                </select>
                             </div>
                               </TabPanel>
                             </Tabs>
