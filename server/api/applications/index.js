@@ -812,23 +812,42 @@ export const addApplicationUser = async ({ user_id, app_id = "", custom_app_id =
   }
 };
 
-export const getAppReceivedReminder = async app_id => {
+export const getAppReceivedReminder = async ({
+  app_id,
+  is_customform = false
+}) => {
   const db = makeDb();
   let application = {};
 
   try {
-    const queriedApps = await db.query(
-      `
-        SELECT 
-          id,
-          received_reminder,
-          received_update
-        FROM application_user
-        WHERE app_id=UUID_TO_BIN(?)
-      `,
-      [app_id]
-    );
+    let queriedApps;
 
+    if(is_customform) {
+      queriedApps = await db.query(
+        `
+          SELECT 
+            id,
+            received_reminder,
+            received_update
+          FROM application_user
+          WHERE custom_app_id=UUID_TO_BIN(?)
+        `,
+        [app_id]
+      );
+  
+    } else {
+      queriedApps = await db.query(
+        `
+          SELECT 
+            id,
+            received_reminder,
+            received_update
+          FROM application_user
+          WHERE app_id=UUID_TO_BIN(?)
+        `,
+        [app_id]
+      );
+    }
     application = queriedApps.length > 0 ? queriedApps[0] : {}
   } catch (error) {
     console.log("get user applications", error);
