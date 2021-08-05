@@ -242,11 +242,4 @@ exports.setReminder = () => {
       await updateGroupReminderStatus(currItem);
     }
   })
-
-  //task1.stop();
-
-  setTimeout(() => {
-    console.log('task stop');
-    task1.stop();
-  }, 10000)
 }
