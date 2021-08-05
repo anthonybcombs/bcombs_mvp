@@ -99,7 +99,7 @@ const getVendorAdminsFromDatabase = user => {
         variables: { user }
       });
 
-      console.log("data data", data);
+      console.log("getVendorAdminsFromDatabase data", data);
 
       return resolve(data.getVendorAdminsByUser);
     } catch (error) {
@@ -138,14 +138,15 @@ const getFormAppGroupFromDatabase = form => {
   });
 }
 
-const getVendorFromDatabase = user => {
+const getVendorFromDatabase = (user, withApplications = true) => {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log('getVendorFromDatabase withApplications',withApplications)
       const { data } = await graphqlClient.query({
         query: VENDOR_BY_USER_QUERY,
-        variables: { user }
+        variables: { user, withApplications }
       });
-
+      console.log('getVendorFromDatabase ',data)
       return resolve(data.vendorsByUser);
     } catch (error) {
       reject(error);
@@ -236,10 +237,11 @@ export const requestVendorById = id => {
   };
 };
 
-export const requestVendor = user => {
+export const requestVendor = (user, withApplications = true) => {
   return {
     type: actionType.REQUEST_VENDOR,
-    user
+    user,
+    withApplications
   };
 };
 
@@ -355,12 +357,15 @@ export function* addAdmin({ admin }) {
 
 export function* getVendorAdmins({ user }) {
   try {
+    console.log('getVendorAdmins', user)
     const response = yield call(getVendorAdminsFromDatabase, user);
+    console.log('getVendorAdmins response', response)
     yield put({
       type: actionType.REQUEST_GET_VENDOR_ADMINS_COMPLETED,
       payload: response
     });
   } catch (err) {
+    console.log('getVendorAdmins err', err)
     yield put({
       type: actionType.REQUEST_GET_VENDOR_ADMINS_COMPLETED,
       payload: []
@@ -447,7 +452,7 @@ export function* getVendor(action) {
   console.log("ACTION", action);
   try {
     console.log("getVendor!!!!!!!! ser", action.user);
-    const vendors = yield call(getVendorFromDatabase, action.user);
+    const vendors = yield call(getVendorFromDatabase, action.user, action.withApplications);
 
     console.log("getVendor!!!!!!!!", vendors);
     yield put({

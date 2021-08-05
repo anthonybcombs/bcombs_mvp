@@ -23,8 +23,8 @@ export const VENDORS_QUERY = gql`
 `;
 
 export const VENDOR_BY_USER_QUERY = gql`
-  query getVendor($user: String) {
-    vendorsByUser(user: $user) {
+  query getVendor($user: String, $withApplications: Boolean) {
+    vendorsByUser(user: $user, withApplications: $withApplications) {
       id
       user
       id2

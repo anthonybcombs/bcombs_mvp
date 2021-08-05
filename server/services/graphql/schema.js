@@ -1749,7 +1749,7 @@ const queries = `
         getEventInvitedUser(email: String):[EventInvitation]  
         grades: [Grade]
         vendors: [Vendor]
-        vendorsByUser(user: String): [Vendor]
+        vendorsByUser(user: String, withApplications: Boolean): [Vendor]
         getVendorById2(id2: String): [Vendor]
         getVendorById(id: String): [Vendor]
         getApplications: [Application]

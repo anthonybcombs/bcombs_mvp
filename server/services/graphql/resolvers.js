@@ -210,31 +210,31 @@ const resolvers = {
       const vendors = await getVendors();
       return vendors;
     },
-    async vendorsByUser(root, { user }, context) {
+    async vendorsByUser(root, { user, withApplications = true }, context) {
 
-      let vendors = await getVendorsByUserId(user);
+      let vendors = await getVendorsByUserId(user, withApplications);
 
       const admins = await getVendorAdminsByUser(user);
 
       for(let vendor of vendors) {
 
-        console.log("current user", user);
-        console.log('vendor user', vendor.vendor_user);
+        console.log("current user 22" , user);
+        console.log('vendor user 22', vendor.vendor_user);
 
-        vendor.forms = (user == vendor.vendor_user) ? vendor.forms
+        vendor.forms = (user == vendor.vendor_user) ?  vendor.forms ? vendor.forms : []
         :
-        vendor.forms.filter((f) => {
+        vendor.forms ? vendor.forms.filter((f) => {
           const isExists = admins.some(x => x.form == f.form_id);
           return isExists;
-        })
+        }) : []
       }
-
+     
       vendors = vendors.filter((vendor, index, self) => (
         index === self.findIndex((a) => (
           a.id === vendor.id
         ))
       ));
-      
+     
       return vendors;
     },
     async getUserVendorForms(root, { user }, context) {
@@ -414,7 +414,7 @@ const resolvers = {
         admins.push(...va);
       }
 
-      console.log("this is the admins", admins);
+      console.log("this is the admins *********************" , admins);
       return admins;
     },
     async getFormAppGroup(root, {form}, contenxt) {

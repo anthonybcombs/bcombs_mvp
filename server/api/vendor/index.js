@@ -47,12 +47,15 @@ export const getVendorsIdByUser = async (user) => {
     result = await db.query(
       `
         SELECT 
-          DISTINCT BIN_TO_UUID(id) as id
+          DISTINCT BIN_TO_UUID(id) as id,
+          vendor.id2
         FROM vendor 
         WHERE user=UUID_TO_BIN(?)
       `,
       [user]
     );
+
+    console.log('RESULTTTTTTTTTTTTTTTTTTTTTT 1', result)
 
     if (result.length > 0) {
       vendors.push(...result);
@@ -79,7 +82,7 @@ export const getVendorsIdByUser = async (user) => {
   }
 };
 
-export const getVendorsByUserId = async (user) => {
+export const getVendorsByUserId = async (user, withApplications = true) => {
   const db = makeDb();
   let result;
 
@@ -107,19 +110,25 @@ export const getVendorsByUserId = async (user) => {
       WHERE v.user=UUID_TO_BIN(?)`,
       [user]
     );
-    console.log("Get Vendor By User ID", result);
 
     if (result && result.length > 0) {
-      for (let i = 0; i < result.length; i++) {
-        result[i].app_programs = await getVendorAppProgram(result[i].id);
-        result[i].location_sites = await getVendorAppLocationSite(result[i].id);
-        result[i].app_groups = await getVendorAppGroupsByVendorId(result[i].id);
-
-        result[i].forms = await getVendorCustomApplicationForms({vendor: result[i].id});
-        
-        vendors.push(result[i]);
+      if( withApplications) {
+        for (let i = 0; i < result.length; i++) {
+          result[i].app_programs = await getVendorAppProgram(result[i].id);
+          result[i].location_sites = await getVendorAppLocationSite(result[i].id);
+          result[i].app_groups = await getVendorAppGroupsByVendorId(result[i].id);
+  
+          result[i].forms = await getVendorCustomApplicationForms({vendor: result[i].id});
+          
+          vendors.push(result[i]);
+        }
       }
+      else {
+        vendors = [...result]
+      }
+   
     }
+  
 
     let result2 = await db.query(
       `
@@ -146,22 +155,30 @@ export const getVendorsByUserId = async (user) => {
       [user]
     );
     console.log("Resultttt 1", result2);
-    if (result2 && result2.length > 0) {
-      console.log("Resultttt 2", result2);
-      for (let i = 0; i < result2.length; i++) {
-        result2[i].app_programs = await getVendorAppProgram(result2[i].id);
-        result2[i].location_sites = await getVendorAppLocationSite(
-          result2[i].id
-        );
-        result2[i].app_groups = await getVendorAppGroupsByVendorId(
-          result2[i].id
-        );
+    if (result2 && result2.length > 0 ) {
+      
 
-        result2[i].forms = await getVendorCustomApplicationForms({vendor: result2[i].id});
-
-        vendors.push(result2[i]);
+      if(withApplications) {
+        for (let i = 0; i < result2.length; i++) {
+          result2[i].app_programs = await getVendorAppProgram(result2[i].id);
+          result2[i].location_sites = await getVendorAppLocationSite(
+            result2[i].id
+          );
+          result2[i].app_groups = await getVendorAppGroupsByVendorId(
+            result2[i].id
+          );
+  
+          result2[i].forms = await getVendorCustomApplicationForms({vendor: result2[i].id});
+  
+          vendors.push(result2[i]);
+        }
       }
+      else {
+        vendors = [...vendors,...result2]
+      }
+     
     }
+  
 
     // if (vendors.length > 0) {
     //   vendors = sortByDate(vendors);
