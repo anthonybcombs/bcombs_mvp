@@ -742,11 +742,14 @@ export default function index() {
 
   const initializeApplication = (application) => {
     setSelectedVendor({});
-    setView('bcombsform')
+ 
+
     if(application && application.form) {
-
+      setView('builderForm')
+      dispatch(requestGetCustomApplicationHistory(application.app_id));
+      setSelectedApplication(application);
     } else {
-
+      setView('bcombsform')
       dispatch(requestGetApplicationHistory(application.app_id));
       dispatch(requestVendorById(application.vendor));
 

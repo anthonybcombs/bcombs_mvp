@@ -974,7 +974,8 @@ export const createGroupReminder = async ({
           UUID_TO_BIN(UUID()),
           UUID_TO_BIN(?),
           UUID_TO_BIN(?),
-          ?,?,?,?
+          ${form ? `UUID_TO_BIN(?)` : `?`},
+          ?,?,?
         )
       `,
       [
@@ -989,6 +990,7 @@ export const createGroupReminder = async ({
 
     result = addGroupReminder.insertId ? true : false
   } catch(err) {
+    console.log('err', err);
     result = false;
   } finally {
     db.close();

@@ -833,7 +833,8 @@ const inputs = `
       form: String,
       date: String,
       form_fields: FormFields,
-      is_customForm: Boolean
+      is_customForm: Boolean,
+      custom_fields: String
     }
 `;
 const queryTypes = `
@@ -1313,6 +1314,8 @@ const queryTypes = `
         verification: String
         student_status: String
         notes: String
+        received_reminder: Boolean
+        received_update: Boolean
     }
 
     type CustomApplicationByVendor {

@@ -7,7 +7,8 @@ import {
 
 import {
   getApplicationsByAppGroup,
-  updateApplicationUser
+  updateApplicationUser,
+  updateSubmitCustomApplication
 } from "./api/applications";
 
 import {
@@ -23,23 +24,75 @@ import {
 exports.setReminder = () => {
 
   //trigger evert 12:01 AM
-  let task1 = cron.schedule('* */5 * * *', async () => {
+  let task1 = cron.schedule('*/5 * * * *', async () => {
     console.log('trigger cron');
+
+    task1.stop();
 
     const group_reminders = await getGroupReminderByCurrentDate();
 
+    //console.log('group_reminders', group_reminders);
     for(const item of group_reminders) {
-      const applications = await getApplicationsByAppGroup(item.app_group);
+
+      const applications = await getApplicationsByAppGroup({
+        app_group: item.app_group,
+        is_customform: !!item.is_customform
+      });
+
       const form_fields = JSON.parse(item.fields);
       
       console.log('applications', applications.length);
-      for(const appl of applications) {
-        const fields1 = form_fields?.fields1;
-        const fields2 = form_fields?.fields2;
+      for(let appl of applications) {
 
-        if(item.is_customform) {
+        console.log('item.is_customform', item.is_customform);
+
+        if(!!item.is_customform) {
+
+          const customFields  = JSON.parse(form_fields);
+
+          for(const formData of customFields) {
+            if(appl.form_contents &&
+              appl.form_contents.formData &&
+              appl.form_contents.formData.length > 0) {
+                for(let appFormData of appl.form_contents.formData) {
+                  if(formData.fdId == appFormData.id) {
+                    for(let appFormField of appFormData.fields) {
+                      if(formData.value == appFormField.id) {
+                        appFormField.value = '';
+                      }
+                    }
+                    break;
+                  }
+                }
+              }
+          }
+
+          // appl.form_contents.formData.map((fData) => {
+          //   console.log('fData', fData.id);
+          //   fData.fields.map((f) => {
+          //     console.log('new field', f);
+          //   })
+          // })
+
+          let formContentsString = appl.form_contents ? JSON.stringify(appl.form_contents) : "{}";
+          appl.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+          await updateSubmitCustomApplication(appl);
+
+          const col = {
+            custom_app_id: appl.app_id,
+            received_reminder: 1,
+            received_update: 1
+          };
+
+          console.log('updateApplicationUser', col);
+
+          await updateApplicationUser(col);
 
         } else {
+
+          const fields1 = form_fields?.fields1;
+          const fields2 = form_fields?.fields2;
 
           let child = await getChildInformation(appl.child);
           child = child.length > 0 ? child[0] : {};
@@ -184,9 +237,16 @@ exports.setReminder = () => {
         }
       }
 
-      let currItem = item;
+      currItem = item;
       currItem.active = 0;
       await updateGroupReminderStatus(currItem);
     }
   })
+
+  //task1.stop();
+
+  setTimeout(() => {
+    console.log('task stop');
+    task1.stop();
+  }, 10000)
 }
