@@ -610,8 +610,15 @@ export default function index() {
     //dispatch(requestGetApplications(selectedVendor.id));
 
     console.log('selectedVendor 123', selectedVendor);
-    
-    setRenderForms(selectedVendor.forms);
+
+    const vendorForms = selectedVendor.forms;
+
+    const matchForms = vendorForms?.length > 0 ? formList.filter((i) => {
+      return vendorForms.some((x) => x.form_id == i.form_id);
+    }) : [];
+
+    console.log('matchForms', matchForms);
+    setRenderForms(matchForms);
 
     if(queryParams && queryParams.form) {
       setSelectedForm(queryParams.form);

@@ -87,8 +87,14 @@ export default function index({
           <div className="links-container">
           {
             applications.map((a) => (
+              
               <a href={`/dashboard/myapplication?appId=${a.app_id}&action=update`}>
-                <span>{a.vendorName} Application Form</span>
+                {
+                  a?.form ? <span>{a.form_contents.formTitle} Application Form</span>
+                  :
+                  <span>{a.vendorName} Application Form</span>
+                }
+               
               </a>
             ))
           }

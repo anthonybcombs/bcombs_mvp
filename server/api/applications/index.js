@@ -184,42 +184,79 @@ export const getApplicationsByVendor = async vendor => {
   }
 };
 
-export const getApplicationsByAppGroup = async app_group => {
+export const getApplicationsByAppGroup = async ({
+  app_group,
+  is_customform
+}) => {
   const db = makeDb();
   let result = [];
   try {
-    const applications = await db.query(
-      `SELECT 
-        id,
-        BIN_TO_UUID(app_id) as app_id, 
-        BIN_TO_UUID(vendor) as vendor, 
-        BIN_TO_UUID(child) as child,
-        section1_signature,
-        section1_date_signed,
-        section2_signature,
-        section2_date_signed,
-        section3_signature,
-        section3_date_signed,
-        verification,
-        student_status,
-        color_designation,
-        notes,
-        class_teacher,
-        application_date,
-        archived_date,
-        section1_text,
-        section2_text,
-        section3_text,
-        section1_name,
-        section2_name,
-        section3_name,
-        emergency_contacts,
-        is_daycare
-        FROM application
-        WHERE class_teacher LIKE '%${app_group}%' and is_archived=0
-        ORDER BY id DESC`
-    );
-    result = applications;
+
+  
+    if(is_customform) {
+      let applications = await db.query(
+        `SELECT 
+          id,
+          BIN_TO_UUID(form) as form,
+          BIN_TO_UUID(vendor) as vendor,
+          BIN_TO_UUID(app_id) as app_id,
+          CONVERT(form_contents USING utf8) as form_contents,
+          application_date,
+          archived_date,
+          class_teacher,
+          color_designation,
+          verification,
+          student_status,
+          notes
+        FROM custom_application
+        WHERE ( class_teacher = ? OR 
+          class_teacher LIKE ? ) AND 
+          is_archived=0
+        ORDER BY id DESC`,
+        [app_group, `%${app_group}%`]
+      );
+
+      for (let application of applications) {
+        application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+        application.form_contents = JSON.parse(application.form_contents);
+      }
+
+      result = applications;
+    } else {
+      const applications = await db.query(
+        `SELECT 
+          id,
+          BIN_TO_UUID(app_id) as app_id, 
+          BIN_TO_UUID(vendor) as vendor, 
+          BIN_TO_UUID(child) as child,
+          section1_signature,
+          section1_date_signed,
+          section2_signature,
+          section2_date_signed,
+          section3_signature,
+          section3_date_signed,
+          verification,
+          student_status,
+          color_designation,
+          notes,
+          class_teacher,
+          application_date,
+          archived_date,
+          section1_text,
+          section2_text,
+          section3_text,
+          section1_name,
+          section2_name,
+          section3_name,
+          emergency_contacts,
+          is_daycare
+          FROM application
+          WHERE class_teacher LIKE '%${app_group}%' and is_archived=0
+          ORDER BY id DESC`
+      );
+      result = applications;
+    }
+
   } catch (error) {
     console.log("error", error);
   } finally {
@@ -811,7 +848,8 @@ export const getUserApplicationsByUserId = async user_id => {
         SELECT 
           id,
           BIN_TO_UUID(app_id) as app_id,
-          received_reminder
+          received_reminder,
+          received_update
         FROM application_user
         WHERE user_id=UUID_TO_BIN(?)
         ORDER BY id DESC
@@ -1225,6 +1263,7 @@ export const updateSubmitCustomApplication = async ({
   } catch (err) {
     console.log("update custom application error", error);
   } finally {
+    console.log('update success');
     await db.close();
     return result;
   }
@@ -1329,7 +1368,9 @@ export const getUserCustomApplicationsByUserId = async user_id => {
       `
         SELECT 
           id,
-          BIN_TO_UUID(custom_app_id) as custom_app_id
+          BIN_TO_UUID(custom_app_id) as custom_app_id,
+          received_reminder,
+          received_update
         FROM application_user
         WHERE user_id=UUID_TO_BIN(?)
         ORDER BY id DESC
@@ -1339,7 +1380,9 @@ export const getUserCustomApplicationsByUserId = async user_id => {
 
     for (const ua of userApplications) {
       if (ua.custom_app_id) {
-        const application = await getCustomFormApplicantById({ app_id: ua.custom_app_id });
+        let application = await getCustomFormApplicantById({ app_id: ua.custom_app_id });
+        application.received_reminder = !!ua.received_reminder;
+        application.received_update = !!ua.received_update;
         applications.push(application);
       }
     }
@@ -1424,6 +1467,7 @@ export const getCustomApplicationByVendorId = async (vendor) => {
 
 export const updateApplicationUser = async ({
   application,
+  custom_app_id,
   received_reminder,
   received_update
 }) => {
@@ -1431,17 +1475,35 @@ export const updateApplicationUser = async ({
   let result;
 
   try {
-    result = await db.query(
-      `UPDATE application_user SET
-      received_reminder=?,
-      received_update=?
-      WHERE app_id=UUID_TO_BIN(?)`,
-      [
-        received_reminder,
-        received_update,
-        application
-      ]
-    );
+
+    if(application) {
+      result = await db.query(
+        `UPDATE application_user SET
+        received_reminder=?,
+        received_update=?
+        WHERE app_id=UUID_TO_BIN(?)`,
+        [
+          received_reminder,
+          received_update,
+          application
+        ]
+      );
+    } else if(custom_app_id) {
+      result = await db.query(
+        `UPDATE application_user SET
+        received_reminder=?,
+        received_update=?
+        WHERE custom_app_id=UUID_TO_BIN(?)`,
+        [
+          received_reminder,
+          received_update,
+          custom_app_id
+        ]
+      );
+    } else {
+      console.log('no app id');
+    }
+
   } catch (err) {
     console.log('err', err);
     result = err;

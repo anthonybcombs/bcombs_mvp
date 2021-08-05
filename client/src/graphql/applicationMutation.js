@@ -629,6 +629,8 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
         }
       }
       customApplications {
+        received_reminder
+        received_update
         id
         vendor
         form

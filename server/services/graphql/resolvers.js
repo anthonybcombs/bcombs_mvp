@@ -799,11 +799,20 @@ const resolvers = {
           }
         }
 
-        await updateApplicationUser({
-         application: application.app_id,
-         received_reminder: application.received_reminder ? 1 : 0,
-         received_update: 0 
-        })
+        if(is_form) {
+          await updateApplicationUser({
+            custom_app_id: application.app_id,
+            received_reminder: application.received_reminder ? 1 : 0,
+            received_update: 0 
+           })
+        } else {
+          await updateApplicationUser({
+            application: application.app_id,
+            received_reminder: application.received_reminder ? 1 : 0,
+            received_update: 0 
+           })
+        }
+
         
         response = await updateApplication(application);
         if (!response.error) {
@@ -1576,6 +1585,23 @@ const resolvers = {
 
       addApplicationHistory(params)
 
+      const col = {
+        custom_app_id: application.app_id,
+        received_reminder: 0,
+        received_update: application.received_update ? 1 : 0 
+      };
+
+      updateApplicationUser(col);
+
+      updateApplication({
+        verification: "waiting_for_verification",
+        student_status: "pending_resubmission",
+        color_designation: previousApplication.color_designation,
+        class_teacher: previousApplication.class_teacher,
+        notes: previousApplication.class_teacher,
+        app_id: previousApplication.app_id
+      })
+
       return {
         messageType: "info",
         message: "successfully update your application form",
@@ -1629,7 +1655,10 @@ const resolvers = {
           form: groupReminder.is_customForm ? groupReminder.form : null,
           date_reminder: groupReminder.date,
           is_customForm: groupReminder.is_customForm ? 1 : 0,
-          fields: JSON.stringify(groupReminder.form_fields)
+          fields: groupReminder.is_customForm ? 
+          JSON.stringify(groupReminder.custom_fields)
+          :
+          JSON.stringify(groupReminder.form_fields)
         }
 
         const result = await createGroupReminder(reminderInput);

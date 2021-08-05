@@ -167,7 +167,10 @@ export default function index({
 
   // console.log('classTeachers', classTeachers);
 
-  const selectedClassTeacher = appGroups.filter(item => application.class_teacher.includes(item.app_grp_id));
+  const selectedClassTeacher = application.class_teacher ? 
+    appGroups.filter(item => application.class_teacher.includes(item.app_grp_id))
+    :
+    []
 
   console.log('selectedClassTeacher', selectedClassTeacher);
   return (

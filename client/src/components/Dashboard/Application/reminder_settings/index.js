@@ -349,6 +349,290 @@ export default function index({
   formList = [],
   handleCreateGroupReminder }) {
 
+  const cFields = [{
+    id: uuid(),
+    name: 'Firstname',
+    value: 'firstname',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Lastname',
+    value: 'lastname',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Nickname',
+    value: 'nickname',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Date of Birth',
+    value: 'dateofbirth',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Gender',
+    value: 'gender',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Ethinicity',
+    value: 'ethinicity',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Phone Type',
+    value: 'phonetype',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Phone Number',
+    value: 'phonenumber',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Email Type',
+    value: 'emailtype',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Email Address',
+    value: 'emailaddress',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Address',
+    value: 'address',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'City',
+    value: 'city',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'State',
+    value: 'state',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Zip Code',
+    value: 'zipcode',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Location Site',
+    value: 'locationsite',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Program',
+    value: 'program',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Child Lives With',
+    value: 'childliveswith',
+    cat: 'Child Information'
+  }, {
+    id: uuid(),
+    name: 'Grade',
+    value: 'grade',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'School Name',
+    value: 'schoolname',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'School Number',
+    value: 'schoolnumber',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'Are there currently any problems with your child either at home or at school?',
+    value: 'childproblems',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'Year Started as Mentee',
+    value: 'yearstartedmentee',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'Hobbies/Personal Interests',
+    value: 'hobbies',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'Life Events',
+    value: 'lifeevents',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'Career Goals',
+    value: 'careergoals',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'List of Colleges',
+    value: 'listcolleges',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'Group and Other Affiliations',
+    value: 'groupaffiliations',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'List of Awards',
+    value: 'listofawards',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'List of Accomplishments',
+    value: 'listofaccomplishments',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'What does the mentee hope to gain from the program?',
+    value: 'menteehopegain',
+    cat: 'General Information'
+  }, {
+    id: uuid(),
+    name: 'Doctor Name',
+    value: 'doctorname',
+    cat: 'Emergency Medical Care Information'
+  }, {
+    id: uuid(),
+    name: 'Doctor Phone',
+    value: 'doctorphone',
+    cat: 'Emergency Medical Care Information'
+  }, {
+    id: uuid(),
+    name: 'Hospital Preference',
+    value: 'hospitalpreference',
+    cat: 'Emergency Medical Care Information'
+  }, {
+    id: uuid(),
+    name: 'Hospitall Phone',
+    value: 'hospitalphone',
+    cat: 'Emergency Medical Care Information'
+  }];
+
+  const pFields = [{
+    id: uuid(),
+    name: 'Firstname',
+    value: 'firstname',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Lastname',
+    value: 'lastname',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Date of Birth',
+    value: 'dateofbirth',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Gender',
+    value: 'gender',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Ethinicity',
+    value: 'ethinicity',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Phone Type',
+    value: 'phonetype',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Phone Number',
+    value: 'phonenumber',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Email Type',
+    value: 'emailtype',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Email Address',
+    value: 'emailaddress',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Address',
+    value: 'address',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'City',
+    value: 'city',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'State',
+    value: 'state',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Zip Code',
+    value: 'zipcode',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Occupation',
+    value: 'occupation',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: "Employer's Name",
+    value: 'employersname',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'What are some of your expectations from the Mentoring Program?',
+    value: 'expectationsmentoringprogram',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'Why are you referring your child to our program?',
+    value: 'parentreason',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'How long have you lived in this area?',
+    value: 'livedinarea',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'What is your highest level of education?',
+    value: 'levelofeducation',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'How important is it to you that your child graduates from high school?',
+    value: 'childimportancetograduate',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'How important is it to you that your child attends college?',
+    value: 'childimportancetocollege',
+    cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'How did you find us?',
+    value: 'howdidyoufindus',
+    cat: 'Family Information'
+  }];
+
   useEffect(() => {
     let x = [];
     appGroups.map((ap) => {
@@ -367,289 +651,6 @@ export default function index({
   }, [appGroups])
 
   useEffect(() => {
-    const cFields = [{
-      id: uuid(),
-      name: 'Firstname',
-      value: 'firstname',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Lastname',
-      value: 'lastname',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Nickname',
-      value: 'nickname',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Date of Birth',
-      value: 'dateofbirth',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Gender',
-      value: 'gender',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Ethinicity',
-      value: 'ethinicity',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Phone Type',
-      value: 'phonetype',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Phone Number',
-      value: 'phonenumber',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Email Type',
-      value: 'emailtype',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Email Address',
-      value: 'emailaddress',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Address',
-      value: 'address',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'City',
-      value: 'city',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'State',
-      value: 'state',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Zip Code',
-      value: 'zipcode',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Location Site',
-      value: 'locationsite',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Program',
-      value: 'program',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Child Lives With',
-      value: 'childliveswith',
-      cat: 'Child Information'
-    }, {
-      id: uuid(),
-      name: 'Grade',
-      value: 'grade',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'School Name',
-      value: 'schoolname',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'School Number',
-      value: 'schoolnumber',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'Are there currently any problems with your child either at home or at school?',
-      value: 'childproblems',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'Year Started as Mentee',
-      value: 'yearstartedmentee',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'Hobbies/Personal Interests',
-      value: 'hobbies',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'Life Events',
-      value: 'lifeevents',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'Career Goals',
-      value: 'careergoals',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'List of Colleges',
-      value: 'listcolleges',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'Group and Other Affiliations',
-      value: 'groupaffiliations',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'List of Awards',
-      value: 'listofawards',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'List of Accomplishments',
-      value: 'listofaccomplishments',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'What does the mentee hope to gain from the program?',
-      value: 'menteehopegain',
-      cat: 'General Information'
-    }, {
-      id: uuid(),
-      name: 'Doctor Name',
-      value: 'doctorname',
-      cat: 'Emergency Medical Care Information'
-    }, {
-      id: uuid(),
-      name: 'Doctor Phone',
-      value: 'doctorphone',
-      cat: 'Emergency Medical Care Information'
-    }, {
-      id: uuid(),
-      name: 'Hospital Preference',
-      value: 'hospitalpreference',
-      cat: 'Emergency Medical Care Information'
-    }, {
-      id: uuid(),
-      name: 'Hospitall Phone',
-      value: 'hospitalphone',
-      cat: 'Emergency Medical Care Information'
-    }];
-
-    const pFields = [{
-      id: uuid(),
-      name: 'Firstname',
-      value: 'firstname',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Lastname',
-      value: 'lastname',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Date of Birth',
-      value: 'dateofbirth',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Gender',
-      value: 'gender',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Ethinicity',
-      value: 'ethinicity',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Phone Type',
-      value: 'phonetype',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Phone Number',
-      value: 'phonenumber',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Email Type',
-      value: 'emailtype',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Email Address',
-      value: 'emailaddress',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Address',
-      value: 'address',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'City',
-      value: 'city',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'State',
-      value: 'state',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Zip Code',
-      value: 'zipcode',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Occupation',
-      value: 'occupation',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: "Employer's Name",
-      value: 'employersname',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'What are some of your expectations from the Mentoring Program?',
-      value: 'expectationsmentoringprogram',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'Why are you referring your child to our program?',
-      value: 'parentreason',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'How long have you lived in this area?',
-      value: 'livedinarea',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'What is your highest level of education?',
-      value: 'levelofeducation',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'How important is it to you that your child graduates from high school?',
-      value: 'childimportancetograduate',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'How important is it to you that your child attends college?',
-      value: 'childimportancetocollege',
-      cat: 'Family Information'
-    }, {
-      id: uuid(),
-      name: 'How did you find us?',
-      value: 'howdidyoufindus',
-      cat: 'Family Information'
-    }];
 
     setChildFieldList([...cFields]);
     setParentFieldList([...pFields]);
@@ -681,19 +682,36 @@ export default function index({
 
     console.log('isAllSelected', isAllSelected);
 
-    const payload = {
-      date: format(
-        new Date(selectedDate),
-        DATE_FORMAT),
-      vendor_id: vendor.id,
-      app_groups: isAllSelected ? appGroups.map(x => x.app_grp_id) : selectedGroups.map(x => x.value),
-      form: selectedForm,
-      is_customForm: selectedForm !== 'default' ? true : false,
-      form_fields: {
-        fields1: selectedFields1.map(x => x.value),
-        fields2: selectedFields2.map(x => x.value)
-      } 
+    let payload;
+
+    if(selectedForm == 'default') {
+      payload = {
+        date: format(
+          new Date(selectedDate),
+          DATE_FORMAT),
+        vendor_id: vendor.id,
+        app_groups: isAllSelected ? appGroups.map(x => x.app_grp_id) : selectedGroups.map(x => x.value),
+        form: selectedForm,
+        is_customForm: false,
+        form_fields: {
+          fields1: selectedFields1.map(x => x.value),
+          fields2: selectedFields2.map(x => x.value)
+        } 
+      }
+    } else {
+      payload = {
+        date: format(
+          new Date(selectedDate),
+          DATE_FORMAT),
+        vendor_id: vendor.id,
+        app_groups: isAllSelected ? appGroups.map(x => x.app_grp_id) : selectedGroups.map(x => x.value),
+        form: selectedForm,
+        is_customForm: true,
+        custom_fields: JSON.stringify(selectedFields1)
+      }
     }
+
+    console.log('selectedFields1', selectedFields1);
 
     console.log('set reminder payload', payload);
 
@@ -702,6 +720,48 @@ export default function index({
     setTimeout(() => {
       setShowSuccessMessage(true);
     }, 3000)
+  }
+
+  console.log('formList', formList);
+
+  const getCustomFields = (formId) => {
+
+    const INVALID_TYPES = ['login', 'pageBreak', 'file', 'sectionBreak'];
+
+    const selectedForm = formList.filter((form) => {
+      return form.form_id === formId;
+    })[0];
+
+    let formData = selectedForm?.form_contents?.formData?.length > 0 ? 
+      selectedForm.form_contents.formData 
+      : 
+      [];
+
+    formData = formData.filter(x => {
+      return !INVALID_TYPES.includes(x.type);
+    });
+
+    console.log("formData", formData);
+
+    let formattedFields = [];
+
+    formData.map((fd) => {
+      if(fd?.fields.length > 0 ) {
+        const fields = fd.fields;
+        fields.map((f) => {
+          formattedFields.push({
+            cat: fields.length > 1 ? fd.label : '',
+            fdId: fd.id,
+            name: fields.length > 1 ? f.label : fd.label,
+            value: f.id
+          })
+        })
+      }
+    });
+
+    console.log('formattedFields', formattedFields);
+
+    return formattedFields;
   }
 
   return (
@@ -751,18 +811,30 @@ export default function index({
                 onChange={({ target }) => {
                   setSelectedForm(target.value);
                   console.log("target.value", target.value);
-                  
+
+                  if(target.value === 'default') {                    
+                    setChildFieldList([...cFields]);
+                    setParentFieldList([...pFields]);
+                  } else {
+                    const formattedFields = getCustomFields(target.value);
+
+                    setChildFieldList(formattedFields);
+                    setParentFieldList([]);
+                  }
+
+                  setSelectedFields1([]);
+                  setSelectedFields2([]);
                 }}
               >
                 <option key={vendor.id} value="default">
                   {vendor.is_daycare ? `Daycare ` : `Bcombs `}Form
                 </option>
                 {
-                  // formList.map(form => (
-                  //   <option key={form.form_id} value={form?.form_id}>
-                  //     {form?.form_contents?.formTitle}
-                  //   </option>
-                  // ))
+                  formList.map(form => (
+                    <option key={form.form_id} value={form?.form_id}>
+                      {form?.form_contents?.formTitle}
+                    </option>
+                  ))
                 }
               </select>
               <label className="field-label">
@@ -785,6 +857,7 @@ export default function index({
                     closeOnSelect={false}
                     showCheckbox={true}
                     groupBy="cat"
+                    selectedValues={selectedFields1}
                     onSelect={selectedList => {
                       setSelectedFields1(selectedList);
                     }}
@@ -808,6 +881,7 @@ export default function index({
                     closeOnSelect={false}
                     showCheckbox={true}
                     groupBy="cat"
+                    selectedValues={selectedFields2}
                     onSelect={selectedList => {
                       setSelectedFields2(selectedList);
                     }}
@@ -834,6 +908,7 @@ export default function index({
                     closeOnSelect={false}
                     showCheckbox={true}
                     groupBy="cat"
+                    selectedValues={selectedFields1}
                     onSelect={selectedList => {
                       setSelectedFields1(selectedList);
                     }}
@@ -846,9 +921,10 @@ export default function index({
                   </label>
                 </div>
               </div>
-              <div className="form-group">
+              {/* <div className="form-group">
                 <div className="field">
                   <Multiselect
+                    selectedValues={selectedFields2}
                     className="field-input"
                     options={parentFieldList}
                     placeholder="Choose Multiple"
@@ -868,7 +944,7 @@ export default function index({
                     Custom Fields 2
                   </label>
                 </div>
-              </div>
+              </div> */}
             </div>
           )
         }
