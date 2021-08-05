@@ -15,6 +15,7 @@ class BC_CalendarActivity {
             this.end = null; 
             this.isFullDay = false; 
             this.idClass = null;
+            this.color = null;
             return;
         }
         this.loadFromActivity(activityToCopy);
@@ -54,22 +55,31 @@ class BC_CalendarActivity {
         this.end = activity.end; 
         this.isFullDay = activity.isFullDay; 
         this.idClass = activity.idClass;
+        this.color = activity.color;
+        this.group_key = activity.group_key;
     }
     
     loadFromDBRow = (row, classList) => {
         this.isNew = false;
         this.id = row.id;
+        this.group_key = row.group_key;
         this.event_type = row.event_type;
         this.isFullDay = row.is_full_day;
         this.title = row.title;
         this.start = new Date(row.start);
         this.end = new Date(row.end);
         this.idClass = row.vendor_app_group;
-        if (classList && classList[row.idClass] && classList[row.idClass].event_color) {
-            this.color = classList[row.idClass].event_color;
-        }
-        else if (row.idClass) {
+        if (this.idClass) {
             this.color = 'green';
+            if (Array.isArray(classList)) {
+                let _this = this;
+                classList.some(function(listItem) { //some stops with first return of true
+                    if (listItem.id == _this.idClass) {
+                        _this.color = listItem.color;
+                        return true;
+                    }
+                });
+            }
         }
     }
 
@@ -83,6 +93,8 @@ class BC_CalendarActivity {
         this.idClass = fc_activity.extendedProps.idClass;
         this.start = fc_activity.start;
         this.end = fc_activity.end;
+        this.color = fc_activity.extendedProps.color;
+        this.group_key = fc_activity.extendedProps.group_key;
     }
   
     setWithNewClickInfo = (info) => {
@@ -121,8 +133,6 @@ class BC_CalendarActivity {
         });
         return response.json(); // parses JSON response into native JavaScript objects
       }
-      
-      
 
     addCalendarActivityToDB = async (vendorId, auth) => {
         try {

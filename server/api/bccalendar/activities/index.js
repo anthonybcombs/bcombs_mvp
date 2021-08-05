@@ -6,6 +6,66 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
 
+    let getGroupIdFromActivity = (activity) => {
+        if (activity.event_type == 'event') {
+            return 'E_' + activity.vendor_id2;
+        }
+        if (activity.event_type == 'class') {
+            return 'C_' + activity.vendor_app_group;
+        }
+        return 'global(' + activity.event_type + ')';
+    }
+
+    let getFilterGroup = (activity, app_groups) => {
+        const retObj = {
+            key: getGroupIdFromActivity(activity),
+            name: null,
+            event_type: activity.event_type,
+            group_id: 0,
+            color: null,
+            isChecked: true
+        }
+        if (activity.event_type == 'event') {
+            retObj.name = 'Events';
+            retObj.group_id = activity.vendor_id2;
+            retObj.color = 'blue';
+            return retObj;
+        }
+        if (activity.event_type == 'class') {
+            const groupDetails = getAppGroupDetails(activity.vendor_app_group, app_groups);
+            if (!groupDetails)
+                return null;
+            retObj.name = groupDetails.name;
+            retObj.group_id = activity.vendor_app_group;
+            retObj.color = groupDetails.color;
+            return retObj;
+        }
+        return null;
+    }
+
+    let getAppGroupDetails = (idGroup, app_groups) => {
+        for (let i=0; i< app_groups.length; i++) {
+            if (app_groups[i].id == idGroup) {
+                return app_groups[i];
+            }
+        }
+        return null;
+    }
+
+    let getAppGroupsWithColors = (app_groups) => {
+        let appGroupsWithColors = [];
+        for (let i=0; i< app_groups.length; i++) {
+            let group = app_groups[i];
+            if (!group.color) {
+                group.color = defaultColors[i % defaultColors.length];
+            }
+            appGroupsWithColors.push(group);
+        }
+        return appGroupsWithColors;
+    }
+
+    let defaultColors = ['aqua', 'brown', 'coral', 'cyan', 'green', 'orange', 'yellow', 'pink', 'gold'];
+
     try {
         const { vendorId, userId } = req.body;
         const db = makeDb();
@@ -14,7 +74,8 @@ router.post("/", async (req, res) => {
 
        let result = {
         activities: [],
-        app_groups: []
+        app_groups: [],
+        filter_groups: []
        }
 
        let query = 
@@ -22,10 +83,6 @@ router.post("/", async (req, res) => {
             "FROM bc_calendar_event a " +
             "where a.vendor_id2 = ? and a.vendor_app_group is NULL ";
 
-        //    let query = 
-        //    "SELECT c.* " + 
-        //    "FROM vendor a, vendor_app_groups b, bc_calendar_events c " +
-        //    "where a.id2 = ? and b.vendor = a.id and c.vendor_app_group = b.app_grp_id ";
        console.log('Query ', query);
        const response =  await db.query(query, queryParam);
      //  console.log('calendar activities', response);
@@ -39,7 +96,7 @@ router.post("/", async (req, res) => {
             "FROM vendor a, vendor_app_groups b, bc_calendar_event c " +
             "where a.id2 = ? and b.vendor = a.id and c.vendor_app_group = b.id ";
        const response1b =  await db.query(query1b, query1bParam);
-       console.log('calendar activities 1b', response1b);
+       //console.log('calendar activities 1b', response1b);
        if (response1b.length > 0) {
            for (let i=0; i< response1b.length; i++) {
                result.activities.push(response1b[i]);
@@ -54,7 +111,21 @@ router.post("/", async (req, res) => {
         const response2 =  await db.query(query2, query2Param);
        // console.log('calendar activities', response2);
         if (response2.length > 0) {
-            result.app_groups = response2;
+            result.app_groups = getAppGroupsWithColors(response2);
+        }
+
+        let filterAddedTester = [];
+        for (let i=0; i < result.activities.length; i++) {
+            let activity = result.activities[i];
+            activity.group_key = getGroupIdFromActivity(activity); //sets group_key on each activity
+            if (filterAddedTester[activity.group_key]) {
+                continue;
+            }
+            const filterGroup = getFilterGroup(activity, result.app_groups);
+            if (filterGroup) {
+                result.filter_groups.push(filterGroup);
+            }
+            filterAddedTester[activity.group_key] = true; //keep from putting in twice
         }
  
         res.status(200).json(result);

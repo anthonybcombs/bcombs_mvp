@@ -10,6 +10,9 @@ import interactionPlugin from '@fullcalendar/interaction'
 import { requestVendor } from "../../../redux/actions/Vendors";
 import BC_CalendarActivity from "./activity/BC_CalendarActivity";
 
+import * as Icon from "react-icons/fi";
+import Checkbox from "react-custom-checkbox";
+
 //import { 
 //  requestGetApplicationByUserId, 
 //} from "../../../redux/actions/Application";
@@ -53,16 +56,18 @@ const BCCalendar = props => {
     }
   }, [])
 
+  const [unfilteredEvents, setUnfilteredEvents] = useState([]);
   const [myEvents, setMyEvents] = useState([]);
 
   const [classes, setClasses] = useState([]);
   const [activityData, setActivityData] = useState([]);
   const [vendorId, setVendorId] = useState();
+  const [filters, setFilters] = useState([]);
 
   //const [defaultApplication,setDefaultApplication] = useState([])
   const [filteredData, setFilteredData] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [isAddEventModalShown, setIsActivityDetailsModalShown] = useState(false)
 
   //const componentRef = useRef();
@@ -90,6 +95,31 @@ const BCCalendar = props => {
     }
   }, [vendors]);
 
+  useEffect(() => {
+    let activityList = [];
+    for (let i=0; i<unfilteredEvents.length; i++) {
+      let event = unfilteredEvents[i];
+      if (!event.group_key) { //only events added this session don't have key - they shouldn't be filtered
+        activityList.push(event);
+        continue;
+      }
+      let bSkipEvent = false;
+      for (let j=0; j<filters.length; j++) {
+        if (filters[j].key == event.group_key) {
+          if (!filters[j].isChecked) {
+            bSkipEvent = true;
+          }
+          break;
+        }
+      }
+      if (!bSkipEvent) {
+        activityList.push(event);
+      }
+    }
+    setMyEvents(activityList);
+
+  }, [filters])
+
   const triggerApiCallGetActivities = async (vendorId, auth) => {
     try {
       console.log('apiCall get calendar activities: vendor ', vendorId)
@@ -114,11 +144,16 @@ const BCCalendar = props => {
           activityFromDB.loadFromDBRow(row, classList);
           activityList.push(activityFromDB);
         }
-        setMyEvents(activityList);
+        setUnfilteredEvents(activityList);
+        //console.log("--------activityList: ", activityList);
+      }
+      if (res && res.filter_groups && res.filter_groups.length > 0) {
+        setFilters(res.filter_groups);
       }
     } catch (err) {
       console.log('Error', err)
     }
+    setIsLoading(false);
   };
 
 
@@ -148,9 +183,9 @@ const BCCalendar = props => {
 
   const updateActivityWithNewInfo = (info) => {
     const extendedProps = info.event.extendedProps;
-    console.log("extended props:", extendedProps);
-    console.log("id:", info.event.id);
-    console.log("start:", info.event.start);
+    //console.log("extended props:", extendedProps);
+    //console.log("id:", info.event.id);
+    //console.log("start:", info.event.start);
     let activityForEdit = new BC_CalendarActivity();
     activityForEdit.setToExistingActivity(info.event);
     activityForEdit.updateCalendarActivityInDB(vendorId, auth);
@@ -173,7 +208,7 @@ const BCCalendar = props => {
       activity.setEnd(activity.start);
     }
     setActivityData(activity);
-    publishActivity(activity, vendorId, auth, myEvents);
+    publishActivity(activity, vendorId, auth, myEvents, unfilteredEvents);
 
     console.log("activityData: ", activityData);
     console.log("events after publish in handler: ", myEvents);
@@ -195,12 +230,14 @@ const BCCalendar = props => {
     hideModal();
   }
 
-  const publishActivity = (activityIn, vendorIdIn, authIn, currentEventList) => {
+  const publishActivity = (activityIn, vendorIdIn, authIn, currentEventList, unfilteredEvents) => {
     console.log("current event list: ", currentEventList);
     if (activityIn.isNew) {
       const newList = currentEventList.concat(activityIn);
       setMyEvents(newList);
       console.log("newList: ", newList);
+      const newUnfilteredList = unfilteredEvents.concat(activityIn);
+      setUnfilteredEvents(newUnfilteredList);
       activityIn.addCalendarActivityToDB(vendorIdIn, authIn);
     }
     else {
@@ -218,6 +255,18 @@ const BCCalendar = props => {
     }
   }
 
+  const handleFilterChange = (value, key) => {
+    console.log("handleFilterChange: ", value, key);
+    let adjustedFilters = [];
+    for (let i=0; i< filters.length; i++) {
+      let filter = filters[i];
+      if (filter.key == key ) {
+        filter.isChecked = value;
+      }
+      adjustedFilters.push(filter);
+    }
+    setFilters(adjustedFilters);
+  }
 
   return (
     <CalendarStyled className="bc-calendar-wrapper">
@@ -230,22 +279,21 @@ const BCCalendar = props => {
       </ActivityDetailModal>
 
       <div id="calendarControls" className="control-block">
-        <h3>Schedule Activities</h3>
+        <h3>My Calandars</h3>
 
-        <div className="btn-holder">
-          <a href="#" data-bs-toggle="modal" data-bs-target="#add-new-event"
-            className="btn mt-3 btn-info d-block w-100 waves-effect waves-light">
-            <FontAwesomeIcon icon={faPlus} />
-            Add New Event
-          </a>
-        </div>
-        <div className="btn-holder">
-          <a href="#" data-bs-toggle="modal" data-bs-target="#add-new-event"
-            className="btn mt-3 btn-info d-block w-100 waves-effect waves-light">
-            <FontAwesomeIcon icon={faPlus} />
-            Add New Class
-          </a>
-        </div>
+          {isLoading ? (
+            <Loading />
+            ) : (
+              filters.map((elem) => 
+              <div className="btn-holder" key={elem.key}>
+                <Checkbox checked={elem.isChecked} label={elem.name} name={elem.key}
+                  icon={<Icon.FiCheck color={elem.color} size={14} />}
+                  borderColor={elem.color}
+                  onChange={(value) => handleFilterChange(value, elem.key)}
+                />
+              </div>
+            )) }
+
       </div>
       <div id="calendarContainer" className="calendar-wrapper">
         {

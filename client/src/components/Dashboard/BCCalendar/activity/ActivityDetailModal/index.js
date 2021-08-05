@@ -82,7 +82,6 @@ const NewEventModal = props => {
       setTabIndex(1);
     }
     setLocalClassId(localActivity.idClass ? localActivity.idClass: '');
-    console.log("setting localClassAcitivity to: ", localActivity.idClass);
   }, [localActivity]);
 
   const setStartDate = (start) => {
