@@ -390,6 +390,8 @@ export const GET_CUSTOM_APPLICATION_BY_ID = gql`
 export const GET_APPLICANTS_BY_FORM = gql`
   query getCustomFormApplicants($form_id:String){
     getCustomFormApplicants(form_id:$form_id){
+      received_reminder
+      received_update
       id
       vendor
       form
