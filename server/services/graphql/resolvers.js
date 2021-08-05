@@ -299,7 +299,10 @@ const resolvers = {
         application.relationships = relationships;
         application.chRelationships = await getChildChildRelationship(application.child.ch_id);
         
-        const userApp = await getAppReceivedReminder(application.app_id);
+        const userApp = await getAppReceivedReminder({
+          app_id: application.app_id,
+          is_customform: false
+        });
 
         console.log("userApp", userApp);
 
@@ -446,7 +449,18 @@ const resolvers = {
       return forms;
     },
     async getCustomFormApplicants(root, { form_id }, context) {
-      const applications = await getCustomFormApplicants({form_id: form_id});
+      let applications = await getCustomFormApplicants({form_id: form_id});
+    
+      for(let application of applications) {
+        const userApp = await getAppReceivedReminder({
+          app_id: application.app_id,
+          is_customform: true
+        });
+
+        application.received_update = !!userApp.received_update;
+        application.received_reminder = !!userApp.received_reminder;
+      }
+
       return applications;
     },
     async getCustomFormApplicantById(root, {app_id}, contenxt) {
