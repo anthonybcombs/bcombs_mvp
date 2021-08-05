@@ -2,10 +2,13 @@ import moment from 'moment';
 import { uuid } from "uuidv4";
 
 class BC_CalendarActivity {
+    static TYPE_EVENT = 'event';
+    static TYPE_CLASS = 'class';
+
      constructor(activityToCopy) {
         if (activityToCopy===undefined) {
             this.id = null;
-            this.event_type = 'event';
+            this.event_type = BC_CalendarActivity.TYPE_EVENT;
             this.isNew = false;
             this.title = ''; 
             this.start = null; 
@@ -23,11 +26,17 @@ class BC_CalendarActivity {
     setTitle = (title) => { 
         this.title = title; 
     }
+    setEventType = (eventType) => { 
+        this.event_type = eventType; 
+    }
     setStart = (startDate) => { 
         this.start = startDate; 
     }
     setEnd = (endDate) => { 
         this.end = endDate; 
+    }
+    setClassId = (classId) => { 
+        this.idClass = classId; 
     }
     getStartForDisplay = (format) => { 
         if (!this.start) {
@@ -55,7 +64,7 @@ class BC_CalendarActivity {
         this.title = row.title;
         this.start = new Date(row.start);
         this.end = new Date(row.end);
-        this.idClass = row.idClass;
+        this.idClass = row.vendor_app_group;
         if (classList && classList[row.idClass] && classList[row.idClass].event_color) {
             this.color = classList[row.idClass].event_color;
         }
@@ -70,11 +79,14 @@ class BC_CalendarActivity {
         this.id = fc_activity.id;
         this.isFullDay = fc_activity.extendedProps.isFullday;
         this.title = fc_activity.title;
+        this.event_type = fc_activity.extendedProps.event_type;
+        this.idClass = fc_activity.extendedProps.idClass;
         this.start = fc_activity.start;
         this.end = fc_activity.end;
     }
   
     setWithNewClickInfo = (info) => {
+        //console.log("INFO --->", info);
         let dateStart = info.date;
         if (info.allDay) {
           dateStart = new Date(dateStart.getFullYear(), 
@@ -82,7 +94,7 @@ class BC_CalendarActivity {
         }
         let dateEnd = moment(dateStart).add(1, 'hour').toDate();
         this.isNew = true;
-        this.isFullDay = info.allDay;
+        this.isFullDay = false; //info.allDay; - can set to allDay else where
         this.title = '';
         this.start = dateStart;
         this.end = dateEnd;

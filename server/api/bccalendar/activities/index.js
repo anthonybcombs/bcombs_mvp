@@ -33,6 +33,19 @@ router.post("/", async (req, res) => {
            result.activities = response;
        }
 
+       let query1bParam = [vendorId]; //, userId];
+        let query1b = 
+            "SELECT c.* " + 
+            "FROM vendor a, vendor_app_groups b, bc_calendar_event c " +
+            "where a.id2 = ? and b.vendor = a.id and c.vendor_app_group = b.id ";
+       const response1b =  await db.query(query1b, query1bParam);
+       console.log('calendar activities 1b', response1b);
+       if (response1b.length > 0) {
+           for (let i=0; i< response1b.length; i++) {
+               result.activities.push(response1b[i]);
+           }
+       }
+
        let query2Param = [vendorId]; //, userId];
        let query2 = 
         "SELECT a.id, a.name, c.event_color FROM vendor b, " + 

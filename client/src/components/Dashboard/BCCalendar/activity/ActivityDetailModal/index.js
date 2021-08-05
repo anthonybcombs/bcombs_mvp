@@ -50,6 +50,8 @@ const NewEventModal = props => {
   const [localActivity, setLocalAcivity] = useState(new BC_CalendarActivity());
  // const [dayDisplay, setDayDisplay] = useState();
   const [showHideClassName, setShowHideClassName] = useState("modal display-none");
+  const [tabIndex, setTabIndex] = useState(0);
+  const [localClassId, setLocalClassId] = useState('');
 
   //let tempActivityData = null;
 
@@ -72,12 +74,33 @@ const NewEventModal = props => {
     setLocalAcivity(localActivityTemp);
   }, [activityData]);
 
+  useEffect(() => {
+    if (localActivity.event_type == BC_CalendarActivity.TYPE_EVENT) {
+      setTabIndex(0);
+    }
+    else if (localActivity.event_type == BC_CalendarActivity.TYPE_CLASS) {
+      setTabIndex(1);
+    }
+    setLocalClassId(localActivity.idClass ? localActivity.idClass: '');
+    console.log("setting localClassAcitivity to: ", localActivity.idClass);
+  }, [localActivity]);
+
   const setStartDate = (start) => {
     localActivity.setStart(start);
     setLocalAcivity(new BC_CalendarActivity(localActivity));
   }
   const setEndDate = (end) => {
     localActivity.setEnd(end);
+    setLocalAcivity(new BC_CalendarActivity(localActivity));
+  }
+
+  const handleClassSelectChange = (event) => {
+    const classId = event.target.value;
+    localActivity.setClassId(classId);
+    //console.log("=======> ", classId);
+    if (!localActivity.title && visibleClasses && visibleClasses[classId]) {
+      localActivity.setTitle(visibleClasses[classId].name + " Session");
+    }
     setLocalAcivity(new BC_CalendarActivity(localActivity));
   }
 
@@ -92,6 +115,17 @@ const NewEventModal = props => {
     } else {
         console.log('delete aborted');
     }
+  }
+
+  const handleTabSelect = (index) => {
+    let localActivityTemp = new BC_CalendarActivity(activityData);
+    if (index == 0) {
+      localActivityTemp.setEventType(BC_CalendarActivity.TYPE_EVENT);
+    }
+    else if (index == 1) {
+      localActivityTemp.setEventType(BC_CalendarActivity.TYPE_CLASS);
+    }
+    setLocalAcivity(localActivityTemp);
   }
 
   return (
@@ -114,7 +148,8 @@ const NewEventModal = props => {
                                   onChange={handleTitleChange} value={localActivity.title}
                                     type="text" name="title2"></input>
                             </div>
-                            <Tabs defaultIndex={0} onSelect={index => console.log(index)}>
+                            <Tabs selectedIndex={tabIndex} 
+                              onSelect={handleTabSelect}>
                               <TabList>
                                 <Tab>Event</Tab>
                                 <Tab>Class</Tab>
@@ -129,20 +164,25 @@ const NewEventModal = props => {
                                 />
                               </TabPanel>
                               <TabPanel>
-                                <h2>Class Details Form</h2>
+                              <div className="col-md-6">
+                                <label className="control-label">Class Name: </label>
+                                <select className="form-select form-white"
+                                  value={localClassId}
+                                  onChange={handleClassSelectChange}
+                                   data-placeholder="Select Class Name..." name="category-color">
+                                <option value=""> -- Select a Class -- </option>
+{visibleClasses.map((elem) => 
+  <option key={elem.name} value={elem.id}>{elem.name}</option>)
+}
+                                  
+                                </select>
+                            </div>
                                 <BCDateRangePicker 
                                   startDate={localActivity.start}
                                   setStartDate={setStartDate}
                                   endDate={localActivity.end}
                                   setEndDate={setEndDate}
                                 />
-                                <div className="col-md-6">
-                                <label className="control-label">Class</label>
-                                <select className="form-select form-white"
-                                   data-placeholder="Select Class Name..." name="category-color">
-                                <option value=""> -- Select a Class -- </option>
-{visibleClasses.map((elem) => <option key={elem.name} value={elem.id}>{elem.name}</option>)}                                </select>
-                            </div>
                               </TabPanel>
                             </Tabs>
                         </div>
