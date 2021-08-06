@@ -280,6 +280,16 @@ export default function Layout({ children }) {
                         <Link
                           className={`${
                             context.location.pathname ===
+                            "/dashboard/bcdisplaycalendar"
+                              ? "selected"
+                              : ""
+                          }`}
+                          to="/dashboard/bcdisplaycalendar">
+                          <span>Calendar</span>
+                        </Link>
+                        <Link
+                          className={`${
+                            context.location.pathname ===
                             "/dashboard/studentdata"
                               ? "selected"
                               : ""
@@ -366,17 +376,29 @@ export default function Layout({ children }) {
                       </>
                     )}
                     {currentUserType === "USER" && (
+                      <>
                       <Link
                         className={`${
                           context.location.pathname ===
-                          "/dashboard/myapplication"
+                          "/dashboard/bcdisplaycalendar"
                             ? "selected"
                             : ""
                         }`}
-                        to="/dashboard/myapplication">
-                        <span>My Application</span>
+                        to="/dashboard/bcdisplaycalendar">
+                        <span>Calendar</span>
                       </Link>
-                    )}
+                      <Link
+                      className={`${
+                        context.location.pathname ===
+                        "/dashboard/myapplication"
+                          ? "selected"
+                          : ""
+                      }`}
+                      to="/dashboard/myapplication">
+                      <span>My Application</span>
+                    </Link>
+                    </>
+                  )}
                     {currentUserType === "VENDOR" && (
                       <Link
                         className={`${

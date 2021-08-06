@@ -162,6 +162,12 @@ const AsyncMyMetrics = Loadable({
   loading: Loading
 });
 
+const AsyncDisplayCalendar = Loadable({
+  loader: () => import("./components/Dashboard/BCDisplayCalendar"),
+  loading: Loading
+});
+
+
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -207,6 +213,7 @@ export default function App() {
               <AsyncGradeTestInput path="grades/input" />
               <AsyncGradesList path="grades" />
               <AsyncMyMetrics path="metrics" />
+              <AsyncDisplayCalendar path="bcdisplaycalendar" />
             </AsycDashboard>
            
             <SocialLoginLanding path="sociallanding" />
