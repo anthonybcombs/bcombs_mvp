@@ -117,7 +117,7 @@ const Metrics = props => {
 
   useEffect(() => {
     if(auth) {
-      dispatch(requestVendor(auth.user_id));
+      dispatch(requestVendor(auth.user_id, false));
     }
     
   },[])
