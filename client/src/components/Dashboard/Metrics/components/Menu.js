@@ -12,7 +12,15 @@ const MetricMenu = props => {
                     handleSelectedLabel("attendance");
                 }}
             >
-                <span>Attendance</span>
+                <span>Attendance By Grade</span>
+            </div>
+            <div
+                className={`${selectedLabel === "class_attendance" ? "selected" : ""}`}
+                onClick={() => {
+                    handleSelectedLabel("class_attendance");
+                }}
+            >
+                <span>Attendance By Class</span>
             </div>
             <div
                 className={`${selectedLabel === "mentees" ? "selected" : ""}`}

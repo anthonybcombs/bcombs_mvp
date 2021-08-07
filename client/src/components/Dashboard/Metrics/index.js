@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import MetricMenu from './components/Menu';
 import Attendance from "./components/Attendance";
+import ClassAttendance from "./components/ClassAttendance";
 import ClassReport from "./components/ClassReport";
 import Mentees from "./components/Mentees";
 import Tests from "./components/Tests";
@@ -138,6 +139,7 @@ const Metrics = props => {
         <MetricMenu handleSelectedLabel={handleSelectedLabel} selectedLabel={selectedLabel} />
         <div>
           {selectedLabel === 'attendance' && <Attendance auth={auth} vendors={vendors} />}
+          {selectedLabel === 'class_attendance' && <ClassAttendance auth={auth} vendors={vendors} />}
           {selectedLabel === 'mentees' && <Mentees auth={auth} vendors={vendors} />}
           {selectedLabel === 'classes' && <ClassReport auth={auth} vendors={vendors} />}
           {selectedLabel === 'tests' && <Tests auth={auth} vendors={vendors} />}

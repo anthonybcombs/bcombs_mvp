@@ -5,7 +5,7 @@ import Charts from './Charts';
 const apiCallAttendance = async (vendorId, id, year, grade) => {
     
     // Default options are marked with *
-    const response = await fetch(`${process.env.API_HOST}/api/metrics/class_attendance`, {
+    const response = await fetch(`${process.env.API_HOST}/api/metrics/attendance`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -26,7 +26,9 @@ const apiCallAttendance = async (vendorId, id, year, grade) => {
     return response.json(); // parses JSON response into native JavaScript objects
 }
 
-const Attendance = props => {
+
+
+const ClassAttendance = props => {
     const { auth, vendors } = props;
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [year, setYear] = useState('2021');
@@ -121,7 +123,7 @@ const Attendance = props => {
 return <div style={{ padding: 24 }}>
         <div className="grid grid-2b">
             <div className="top-left">
-                <h4>Attendance By Grade</h4>
+                <h4>Attendance By Class</h4>
             
                 <select id="mentee-year" onChange={yearChange} value={year}>
                     <option value="2022">2022</option>
@@ -136,4 +138,4 @@ return <div style={{ padding: 24 }}>
     </div>
 }
 
-export default Attendance;
+export default ClassAttendance;

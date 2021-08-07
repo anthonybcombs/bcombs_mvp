@@ -8,6 +8,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { requestVendor } from "../../../redux/actions/Vendors";
+import BC_CalendarActivities from "../BCCalendar/BC_CalendarActivities";
 import BC_CalendarActivity from "../BCCalendar/activity/BC_CalendarActivity";
 import ActivityDisplaylModal from "./ActivityDisplayModal/index.js";
 
@@ -46,7 +47,6 @@ const BCDisplayCalendar = props => {
     }
   }, [])
 
-  const [unfilteredEvents, setUnfilteredEvents] = useState([]);
   const [myEvents, setMyEvents] = useState([]);
 
   const [classes, setClasses] = useState([]);
@@ -54,12 +54,12 @@ const BCDisplayCalendar = props => {
   const [vendorId, setVendorId] = useState();
   const [filters, setFilters] = useState([]);
 
-  //const [defaultApplication,setDefaultApplication] = useState([])
-  const [filteredData, setFilteredData] = useState([]);
+  const [calendarActivities, setCalendarActivies] = useState();
 
   const [isLoading, setIsLoading] = useState(true)
   const [isAddEventModalShown, setIsActivityDetailsModalShown] = useState(false)
-
+  const [searchTerm, setSearchTerm] = React.useState("");
+  
   //const componentRef = useRef();
   console.log('vendorszxczxc',vendors)
   useEffect(() => {
@@ -81,71 +81,36 @@ const BCDisplayCalendar = props => {
     console.log("vendorId", localVendorId);
     if (localVendorId) {
       setVendorId(localVendorId);
-      triggerApiCallGetActivities(localVendorId, auth);
+      BC_CalendarActivities.LoadActivities(localVendorId, auth, handleCalendarActiviesReturned);
     }
   }, [vendors]);
 
-  useEffect(() => {
-    let activityList = [];
-    for (let i=0; i<unfilteredEvents.length; i++) {
-      let event = unfilteredEvents[i];
-      if (!event.group_key) { //only events added this session don't have key - they shouldn't be filtered
-        activityList.push(event);
-        continue;
-      }
-      let bSkipEvent = false;
-      for (let j=0; j<filters.length; j++) {
-        if (filters[j].key == event.group_key) {
-          if (!filters[j].isChecked) {
-            bSkipEvent = true;
-          }
-          break;
-        }
-      }
-      if (!bSkipEvent) {
-        activityList.push(event);
-      }
-    }
-    setMyEvents(activityList);
+  const handleCalendarActiviesReturned = (calendarActivities) => {
+    setCalendarActivies(calendarActivities);
+    setIsLoading(false);
+  }
 
+  useEffect(() => {
+    if (calendarActivities) {
+      setClasses(calendarActivities.classList);
+      setFilters(calendarActivities.filters);
+    }
+  }, [calendarActivities])
+
+  useEffect(() => {
+    if (calendarActivities) {
+      let activityList = calendarActivities.getFilteredActivityList();
+      setMyEvents(activityList);
+    }
   }, [filters])
 
-  const triggerApiCallGetActivities = async (vendorId, auth) => {
-    try {
-      console.log('apiCall get calendar activities: vendor ', vendorId)
-      if (!vendorId) {
-        return;
-      }
-      const res = await BC_CalendarActivity.GetCalendarActivitiesFromDB(vendorId, auth.user_id);
-      console.log('apiCall get calendar activities ', res)
-      let classList = []
-      if (res && res.app_groups && res.app_groups.length > 0) {
-        for (let i = 0; i < res.app_groups.length; i++) {
-          const classData = res.app_groups[i];
-          classList[classData.id] = classData;
-        }
-        setClasses(classList);
-      }
-      if (res && res.activities && res.activities.length > 0) {
-        let activityList = []
-        for (let i = 0; i < res.activities.length; i++) {
-          const row = res.activities[i];
-          let activityFromDB = new BC_CalendarActivity();
-          activityFromDB.loadFromDBRow(row, classList);
-          activityList.push(activityFromDB);
-        }
-        setUnfilteredEvents(activityList);
-        //console.log("--------activityList: ", activityList);
-      }
-      if (res && res.filter_groups && res.filter_groups.length > 0) {
-        setFilters(res.filter_groups);
-      }
-    } catch (err) {
-      console.log('Error', err)
+  useEffect(() => {
+    if (calendarActivities) {
+        calendarActivities.setSearchTerm(searchTerm);
+        let activityList = calendarActivities.getFilteredActivityList();
+        setMyEvents(activityList);
     }
-    setIsLoading(false);
-  };
-
+  }, [searchTerm])
 
   const handleClickOnActivity = ({ event }) => {
     console.log('click info: ', event);
@@ -157,16 +122,13 @@ const BCDisplayCalendar = props => {
 
   const handleFilterChange = (value, key) => {
     console.log("handleFilterChange: ", value, key);
-    let adjustedFilters = [];
-    for (let i=0; i< filters.length; i++) {
-      let filter = filters[i];
-      if (filter.key == key ) {
-        filter.isChecked = value;
-      }
-      adjustedFilters.push(filter);
-    }
-    setFilters(adjustedFilters);
+    calendarActivities.adjustFilters(value, key);
+    setFilters(calendarActivities.filters);
   }
+
+  const handleSearchTermChange = event => {
+    setSearchTerm(event.target.value);
+  };
 
   return (
     <CalendarStyled className="bc-calendar-wrapper">
@@ -180,17 +142,31 @@ const BCDisplayCalendar = props => {
       <div id="calendarControls" className="control-block">
         <h3>My Calandars</h3>
 
+        {isLoading ? (
+            <div />
+            ) : (
+                <div>
+                 <input
+                    type="text"
+                    placeholder="Search"
+                    value={searchTerm}
+                    onChange={handleSearchTermChange}
+                />
+              </div>
+        )
+        }
           {isLoading ? (
             <Loading />
             ) : (
-              filters.map((elem) => 
-              <div className="btn-holder" key={elem.key}>
-                <Checkbox checked={elem.isChecked} label={elem.name} name={elem.key}
-                  icon={<Icon.FiCheck color={elem.color} size={14} />}
-                  borderColor={elem.color}
-                  onChange={(value) => handleFilterChange(value, elem.key)}
-                />
-              </div>
+
+                filters.map((elem) => 
+                <div className="btn-holder" key={elem.key}>
+                    <Checkbox checked={elem.isChecked} label={elem.name} name={elem.key}
+                    icon={<Icon.FiCheck color={elem.color} size={14} />}
+                    borderColor={elem.color}
+                    onChange={(value) => handleFilterChange(value, elem.key)}
+                    />
+                </div>
             )) }
 
       </div>
