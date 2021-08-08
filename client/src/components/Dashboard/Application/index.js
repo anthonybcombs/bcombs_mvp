@@ -509,9 +509,12 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
-  const { groups, auth, vendors, applications, loading, form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups } } = useSelector(
-    ({ groups, auth, vendors, applications, loading, form }) => {
-      return { groups, auth, vendors, applications, loading, form };
+  const { groups, auth, vendors, 
+    applications, loading, 
+    form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups },
+    appReminders: { reminders = [] } } = useSelector(
+    ({ groups, auth, vendors, applications, loading, form, appReminders }) => {
+      return { groups, auth, vendors, applications, loading, form, appReminders };
     }
   );
 
@@ -1713,8 +1716,15 @@ export default function index() {
 
   const getAppGroupNames = (reminder) => {
     if(reminder && reminder.app_groups) {
-      let names = reminder.app_groups.map(r => r.name);
-      return names.toString();
+      let formattedNames = '';
+
+      reminder.app_groups.map((r) => {
+        formattedNames += r.name + ' , ';
+      });
+
+      formattedNames = formattedNames.slice(0, -1);
+
+      return formattedNames.slice(0, -1);
     } else {
       return '';
     }
@@ -1954,7 +1964,7 @@ export default function index() {
               vendor={selectedVendor}
               appGroups={appGroups}
               formList={renderForms}
-              reminderList={vendors.reminders}
+              reminderList={reminders}
               handleCreateGroupReminder={handleCreateGroupReminder}
             />
           )}
@@ -1985,7 +1995,7 @@ export default function index() {
         selectedLabel === "Set Reminder" && (
           <DataTable
             columns={reminderCols}
-            data={vendors.reminders}
+            data={reminders}
             pagination
             selectableRows={false}
             noHeader={true}
