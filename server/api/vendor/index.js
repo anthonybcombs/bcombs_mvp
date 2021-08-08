@@ -950,11 +950,11 @@ export const deleteArchivedGroup = async (archivedroupIds = [], vendorId) => {
 
 export const createGroupReminder = async ({
   vendor,
-  app_group,
   form,
   date_reminder,
   is_customForm,
-  fields
+  fields,
+  form_name
 }) => {
   const db = makeDb();
   let result;
@@ -962,33 +962,42 @@ export const createGroupReminder = async ({
   try {
     const addGroupReminder = await db.query(
       `
-        INSERT INTO group_reminder(
-          group_reminder_id,
+        INSERT INTO vendor_reminder(
+          vendor_reminder_id,
           vendor,
-          app_group,
           form,
           date_reminder,
           is_customform,
-          fields
+          fields,
+          form_name
         ) VALUES (
           UUID_TO_BIN(UUID()),
           UUID_TO_BIN(?),
-          UUID_TO_BIN(?),
           ${form ? `UUID_TO_BIN(?)` : `?`},
-          ?,?,?
+          ?,?,?,?
         )
       `,
       [
         vendor,
-        app_group,
         form,
         date_reminder,
         is_customForm,
-        fields
+        fields,
+        form_name
       ]
     )
 
-    result = addGroupReminder.insertId ? true : false
+    const lastId = addGroupReminder.insertId;
+
+    let reminder = await db.query(
+      `SELECT (BIN_TO_UUID(vendor_reminder_id)) as vendor_reminder_id 
+        FROM vendor_reminder
+        WHERE id=?`,
+      [lastId]
+    );
+
+    result = reminder.length > 0 ? reminder[0] : "";
+
   } catch(err) {
     console.log('err', err);
     result = false;
@@ -1004,22 +1013,28 @@ export const getGroupReminderByCurrentDate = async () => {
   const currentDate = moment().format('YYYY-MM-DD');
   console.log('currentDate', currentDate);
   try {
-    result = await db.query(
+    let vendorReminders = await db.query(
       `
         SELECT
           id,
-          BIN_TO_UUID(group_reminder_id) as group_reminder_id,
+          BIN_TO_UUID(vendor_reminder_id) as vendor_reminder_id,
           BIN_TO_UUID(vendor) as vendor,
-          BIN_TO_UUID(app_group) as app_group,
-          form,
+          BIN_TO_UUID(form) as form,
           date_reminder,
           is_customform,
           fields
-        FROM group_reminder 
+        FROM vendor_reminder 
         WHERE date_reminder = ? AND active = 1
       `,
       [currentDate]
     )
+
+    for(let vr of vendorReminders) {
+      vr.app_groups = await getAppGroupReminderByVendorReminder(vr.vendor_reminder_id);
+    }
+
+    result = vendorReminders;
+
   } catch(err) {
     console.log('err', err);
     result = [];
@@ -1030,17 +1045,17 @@ export const getGroupReminderByCurrentDate = async () => {
 }
 
 export const updateGroupReminderStatus = async ({
-  group_reminder_id,
+  vendor_reminder_id,
   active
 }) => {
   const db = makeDb();
   let result;
   try {
     result = await db.query(
-      `UPDATE group_reminder 
+      `UPDATE vendor_reminder 
       SET active=?
-      WHERE group_reminder_id=UUID_TO_BIN(?) `,
-      [active, group_reminder_id]
+      WHERE vendor_reminder_id=UUID_TO_BIN(?) `,
+      [active, vendor_reminder_id]
     );
   } catch (error) {
     console.log("error", error);
@@ -1049,3 +1064,127 @@ export const updateGroupReminderStatus = async ({
     return result;
   }
 }
+
+export const getVendorApplicationReminder = async vendor => {
+  const db = makeDb();
+  let result;
+
+  try {
+    let vendorReminders = await db.query(
+      `
+        SELECT
+          id,
+          BIN_TO_UUID(vendor_reminder_id) as vendor_reminder_id,
+          BIN_TO_UUID(vendor) as vendor,
+          BIN_TO_UUID(form) as form,
+          form_name,
+          date_reminder,
+          is_customform,
+          fields,
+          active
+        FROM vendor_reminder 
+        WHERE vendor=UUID_TO_BIN(?)
+      `,
+      [vendor]
+    )
+
+    for(let vr of vendorReminders) {
+      vr.app_groups = await getAppGroupReminderByVendorReminder(vr.vendor_reminder_id);
+    }
+    
+    result = vendorReminders;
+  } catch(err) {
+    console.log('getVendorApplicationReminder err', err);
+    result = [];
+  } finally {
+    db.close();
+    return result;
+  }
+}
+
+export const getAppGroupReminderByVendorReminder = async vendor_reminder => {
+  const db = makeDb();
+  let result;
+  try {
+
+    let appGroups = [];
+    let grs = await db.query(
+      `
+        SELECT
+          id,
+          BIN_TO_UUID(group_vendor_reminder_id) as group_vendor_reminder_id,
+          BIN_TO_UUID(app_group) as app_group,
+          BIN_TO_UUID(vendor_reminder) as vendor_reminder
+        FROM group_vendor_reminder 
+        WHERE vendor_reminder=UUID_TO_BIN(?)
+      `,
+      [vendor_reminder]
+    )
+
+    for(let gr of grs) {
+
+      let appGroup = await db.query(
+        `
+          SELECT
+            BIN_TO_UUID(app_grp_id) as app_grp_id,
+            name
+          FROM vendor_app_groups
+          WHERE app_grp_id=UUID_TO_BIN(?)
+        `,
+        [gr.app_group]
+      )
+
+      console.log('appGroup', appGroup);
+
+      appGroup = appGroup.length > 0 ? appGroup[0] : {};
+
+      if(appGroup && appGroup.app_grp_id)
+        appGroups.push(appGroup);
+    }
+
+    result = appGroups;
+  } catch(err) {
+    console.log('getAppGroupReminderByVendorReminder err', err);
+    result = [];
+  } finally {
+    db.close();
+    console.log('result', result);
+    return result;
+  }
+}
+
+export const createAppGroupReminder = async ({
+  app_group,
+  vendor_reminder
+}) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `
+        INSERT INTO group_vendor_reminder(
+          group_vendor_reminder_id,
+          app_group,
+          vendor_reminder
+        ) VALUES (
+          UUID_TO_BIN(UUID()),
+          UUID_TO_BIN(?),
+          UUID_TO_BIN(?)
+        )
+      `,
+      [
+        app_group,
+        vendor_reminder
+      ]
+    )
+
+  } catch(err) {
+    console.log('err', err);
+    result = {};
+  } finally {
+    db.close();
+    return result;
+  }
+}
+
