@@ -1188,10 +1188,26 @@ export const getVendorCustomApplicationForms = async ({ vendor, category = "" })
       )
     }
 
-    for (const application of applications) {
+    for (let application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
+
+      let appGroups = await db.query(
+        `
+          SELECT
+            id,
+            BIN_TO_UUID(app_grp_id) as app_grp_id,
+            BIN_TO_UUID(form) as form,
+            BIN_TO_UUID(vendor) as vendor,
+            name
+          FROM vendor_app_groups
+          WHERE form=UUID_TO_BIN(?)
+        `,
+        [application.form_id]
+      )
+
+      application.app_groups = appGroups;
     }
 
   } catch (err) {

@@ -79,7 +79,8 @@ import {
   updateAdmin,
   getFormAppGroup,
   getVendorAppGroups,
-  createGroupReminder
+  createGroupReminder,
+  getVendorReminders
 } from "../actions/Vendors";
 
 import {
@@ -181,6 +182,12 @@ function* rootSaga() {
     actionType.REQUEST_CREATE_GROUP_REMINDER, 
     createGroupReminder
   );
+
+  yield takeLatest(
+    actionType.REQUEST_GET_VENDOR_REMINDER,
+    getVendorReminders
+  );
+
   yield takeLatest(actionType.REQUEST_GRADES, getGrades);
   yield takeLatest(actionType.REQUEST_VENDOR, getVendor);
   yield takeLatest(actionType.REQUEST_UPDATE_VENDOR, updateVendor);

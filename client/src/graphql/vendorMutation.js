@@ -199,6 +199,24 @@ export const GET_USER_VENDOR_FORMS = gql`
   }
 `;
 
+export const GET_VENDOR_REMINDER = gql`
+  query getVendorApplicationReminder($vendor_id: String) {
+    getVendorApplicationReminder(vendor_id: $vendor_id) {
+        id
+        vendor_reminder_id
+        vendor
+        app_groups {
+          name
+          app_grp_id
+        }
+        form
+        form_name
+        date_reminder
+        active
+    }
+  }
+`
+
 //mutation
 
 export const ADD_VENDOR_ADMIN = gql`
@@ -409,8 +427,17 @@ export const DELETE_ARCHIVED_GROUP = gql`
 export const CREATE_GROUP_REMINDER = gql`
   mutation createGroupReminder($groupReminder: SetReminderInput) {
     createGroupReminder(groupReminder: $groupReminder) {
-      messageType
-      message
+      id
+      vendor_reminder_id
+      vendor
+      app_groups {
+        name
+        app_grp_id
+      }
+      form
+      form_name
+      date_reminder
+      active
     }
   }
 `;

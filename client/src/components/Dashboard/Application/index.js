@@ -31,7 +31,10 @@ import TermsWaiverFormViewStyled from "./view/waiver";
 import { 
   requestVendor, 
   requestGetFormAppGroup,
-  requestCreateGroupReminder } from "../../../redux/actions/Vendors";
+  requestCreateGroupReminder,
+  requestGetVendorReminders 
+} from "../../../redux/actions/Vendors";
+
 import {
   requestGetApplications,
   requestUpdateApplication,
@@ -603,6 +606,11 @@ export default function index() {
         dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
+
+
+      //get vendors reminders
+
+      dispatch(requestGetVendorReminders({vendor: vendors[0].id}));
     }
   }, [vendors]);
 
@@ -1675,6 +1683,43 @@ export default function index() {
   const handleCreateGroupReminder = (payload) => {
     dispatch(requestCreateGroupReminder(payload));
   }
+
+  const reminderCols = [
+    {
+      name: "Form",
+      selector: "Form",
+      sortable: false,
+      cell: row => row.form_name
+    },
+    {
+      name: "Class",
+      selector: "Class",
+      sortable: false,
+      cell: row => getAppGroupNames(row)
+    },
+    {
+      name: "Date to be send",
+      selector: "Date",
+      sortable: false,
+      cell: row => format(new Date(row.date_reminder), "LLL dd, yyyy")
+    },
+    {
+      name: "Status",
+      selector: "Status",
+      sortable: false,
+      cell: row => row.active ? 'Active' : 'Inactive'
+    }
+  ]
+
+  const getAppGroupNames = (reminder) => {
+    if(reminder && reminder.app_groups) {
+      let names = reminder.app_groups.map(r => r.name);
+      return names.toString();
+    } else {
+      return '';
+    }
+  }
+
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -1909,6 +1954,7 @@ export default function index() {
               vendor={selectedVendor}
               appGroups={appGroups}
               formList={renderForms}
+              reminderList={vendors.reminders}
               handleCreateGroupReminder={handleCreateGroupReminder}
             />
           )}
@@ -1936,6 +1982,23 @@ export default function index() {
         />
       )}
       {
+        selectedLabel === "Set Reminder" && (
+          <DataTable
+            columns={reminderCols}
+            data={vendors.reminders}
+            pagination
+            selectableRows={false}
+            noHeader={true}
+            striped={true}
+            customStyles={customStyles}
+            subHeader
+            paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+            paginationComponentOptions={paginationComponentOptions}
+            onSelectedRowsChange={() => {}}
+          />
+        )
+      }
+      {
         (showApplication && (["application", "builderForm"].includes(view))) && (
           <div>
             <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
@@ -1959,6 +2022,7 @@ export default function index() {
           </div>
         )
       }
+
       {
         view === 'builderForm' && (
           loading.updateForm ? (

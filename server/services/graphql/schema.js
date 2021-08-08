@@ -803,9 +803,6 @@ const inputs = `
         date_created: String
     }
 
-
-
-    
     input StudentInfoInput {
         firstname: String
         lastname: String
@@ -823,17 +820,18 @@ const inputs = `
     }
 
     input FormFields {
-      fields1: [String],
+      fields1: [String]
       fields2: [String]
     }
 
     input SetReminderInput {
-      vendor_id: String!,
-      app_groups: [String!],
-      form: String,
-      date: String,
-      form_fields: FormFields,
-      is_customForm: Boolean,
+      vendor_id: String!
+      app_groups: [String!]
+      form: String
+      form_name: String
+      date: String
+      form_fields: FormFields
+      is_customForm: Boolean
       custom_fields: String
     }
 `;
@@ -1220,7 +1218,7 @@ const queryTypes = `
     type VendorAppGroup{
         id: Int
         app_grp_id: String!
-        user: String!
+        user: String
         vendor: String
         form: String
         size: Int
@@ -1295,6 +1293,7 @@ const queryTypes = `
         user: String
         form_id: String
         form_contents: CustomForm
+        app_groups: [VendorAppGroup]
         category: String
         status: String
         created_at: Date
@@ -1679,6 +1678,17 @@ const queryTypes = `
         app_group_type: String
     }
 
+    type ApplicationReminder {
+      id: Int
+      vendor_reminder_id: String
+      vendor: String
+      app_groups: [VendorAppGroup!]
+      form: String
+      form_name: String
+      date_reminder: Date
+      active: Boolean
+    }
+
 `;
 
 const mutations = `
@@ -1728,7 +1738,7 @@ const mutations = `
         updateChildInfo (child: StudentInfoInput): StudentInfo
         addArchivedGroup(archivedGroup: [ArchiveGroupInput]): [ArchivedGroup]
         removeGroupFromArchive(archivedGroupIds: [Int], vendorId: String): [ArchivedGroup]
-        createGroupReminder(groupReminder: SetReminderInput): Status
+        createGroupReminder(groupReminder: SetReminderInput): [ApplicationReminder]
     }
 `;
 
@@ -1783,7 +1793,9 @@ const queries = `
         getStudentTest(child_id: String): [StudentStandardizedTest]
         getStudentRecords(child_id: String, application_type: String): StudentRecords
         getArchivedGroup(vendor_id: String): [ArchivedGroup]
-    }
+        getVendorApplicationReminder(vendor_id: String): [ApplicationReminder]
+        triggerCronSetReminder: String
+      }
 `;
 
 
