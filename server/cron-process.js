@@ -7,7 +7,7 @@ import {
 exports.setReminder = () => {
 
   //trigger evert 12:01 AM
-  let task1 = cron.schedule('1 0 * * *', () => {
+  let task1 = cron.schedule('* */10 * * *', () => {
     console.log('trigger cron');
 
     task1.stop();
