@@ -53,6 +53,7 @@ const BCDisplayCalendar = props => {
   const [activityData, setActivityData] = useState([]);
   const [vendorId, setVendorId] = useState();
   const [filters, setFilters] = useState([]);
+  const [tagFilters, setTagFilters] = useState([]);
 
   const [calendarActivities, setCalendarActivies] = useState();
 
@@ -102,7 +103,7 @@ const BCDisplayCalendar = props => {
       let activityList = calendarActivities.getFilteredActivityList();
       setMyEvents(activityList);
     }
-  }, [filters])
+  }, [filters, tagFilters])
 
   useEffect(() => {
     if (calendarActivities) {
@@ -126,6 +127,13 @@ const BCDisplayCalendar = props => {
     setFilters(calendarActivities.filters);
   }
 
+  const handleTagChange = (value, key) => {
+    console.log("handleTagChange: ", value, key);
+    calendarActivities.adjustTagFilters(value, key);
+    setTagFilters(calendarActivities.tagList);
+  }
+
+
   const handleSearchTermChange = event => {
     setSearchTerm(event.target.value);
   };
@@ -140,7 +148,7 @@ const BCDisplayCalendar = props => {
       </ActivityDisplaylModal>
 
       <div id="calendarControls" className="control-block">
-        <h3>My Calandars</h3>
+        <h3>My Calandar</h3>
 
         {isLoading ? (
             <div />
@@ -153,7 +161,7 @@ const BCDisplayCalendar = props => {
                     onChange={handleSearchTermChange}
                 />
               </div>
-        )
+          )
         }
           {isLoading ? (
             <Loading />
@@ -168,6 +176,26 @@ const BCDisplayCalendar = props => {
                     />
                 </div>
             )) }
+
+{isLoading || calendarActivities.tagList.length < 1 ? (
+            <div />
+            ) : (
+                <div>
+        <h3>Tags</h3> 
+        {
+                calendarActivities.tagList.map((elem) => 
+                <div className="btn-holder" key={elem.key}>
+                    <Checkbox checked={elem.isChecked} label={elem.name} name={elem.key}
+                    borderColor={'grey'}
+                    icon={<Icon.FiCheck size={14} />}
+                    onChange={(value) => handleTagChange(value, elem.key)}
+                    />
+                </div>)
+        }
+              </div>
+          )
+        }
+
 
       </div>
       <div id="calendarContainer" className="calendar-wrapper">

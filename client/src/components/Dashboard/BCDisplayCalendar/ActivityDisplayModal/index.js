@@ -39,8 +39,14 @@ const DisplayEventModal = props => {
                             }
                             <div>
                                 From: {moment(activityData.start).format('dddd, MMMM Do hh:mm a')} to {moment(activityData.end).format('hh:mm a')}
-                                </div>
+                            </div>
                         </div>
+                        { (activityData.tags) &&  
+                            <div>
+                                Tags: {activityData.tags}
+                                </div>
+                        
+                            }
                     </form>
                 </div>
                 <div className="modal-footer">

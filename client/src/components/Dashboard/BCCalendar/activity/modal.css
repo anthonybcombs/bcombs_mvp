@@ -157,3 +157,19 @@
       display: flex;
       align-items: center;
   }
+
+.modal-content .control-wrapper {
+    margin-top: 10px;
+}
+
+.modal-content .react-tabs {
+    margin-top: 10px;
+}
+
+.modal-content label.control-label {
+    padding-right: 10px;
+}
+
+  .modal-content .tags-input {
+      width: 200px;
+  }

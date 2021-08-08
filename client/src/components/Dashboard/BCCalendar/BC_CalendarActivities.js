@@ -5,6 +5,7 @@ class BC_CalendarActivities {
         this.unfilteredEvents = [];
         this.classList = [];
         this.filters = [];
+        this.tagList = [];
         this.searchTerm = '';
     }
 
@@ -69,9 +70,14 @@ class BC_CalendarActivities {
 
     setUnfilteredEvents(unfilteredEventsIn) {
         this.unfilteredEvents = unfilteredEventsIn;
+        this.setTagListFromActivities();
     }
+
     setClassList(classListIn) {
         this.classList = classListIn;
+    }
+    setTagList(tagListIn) {
+        this.tagList = tagListIn;
     }
     setFilters(filtersIn) {
         this.filters = filtersIn;
@@ -90,11 +96,53 @@ class BC_CalendarActivities {
         }
         this.setFilters(adjustedFilters);
     }
+    adjustTagFilters(value, key) {
+        let adjustedTagFilters = [];
+        for (let i=0; i< this.tagList.length; i++) {
+          let tagFilter = this.tagList[i];
+          if (tagFilter.key == key ) {
+            tagFilter.isChecked = value;
+          }
+          adjustedTagFilters.push(tagFilter);
+        }
+        this.setTagList(adjustedTagFilters);
+    }
+
+    setTagListFromActivities() {
+        let tagList = [];
+        for (let i=0; i< this.unfilteredEvents.length; i++) {
+            let event = this.unfilteredEvents[i];
+            if (event.tags) {
+                let elemTags = event.tags.split(",");
+                for (let j=0; j < elemTags.length; j++) {
+                    let elemTag = elemTags[j].trim();
+                    let bAddTag = true;
+                    for (let k=0; k<tagList.length; k++) {
+                        if (tagList[k].key == elemTag) {
+                            bAddTag = false;
+                            break;
+                        }
+                    }
+                    if (bAddTag) {
+                        tagList.push({key: elemTag, name: elemTag, isChecked: false });
+                    }
+                }
+            }
+        }
+        this.setTagList(tagList);
+    }
 
     getFilteredActivityList() {
+        let checkedTags = this.getCheckedTags();
         let activityList = [];
         for (let i=0; i< this.unfilteredEvents.length; i++) {
-          let event = this.unfilteredEvents[i];
+            let event = this.unfilteredEvents[i];
+            if (checkedTags.length > 0) {
+                if (!this.doesActivityHaveTag(event, checkedTags)) {
+                    continue;
+                }
+            }
+
           if (this.searchTerm && this.searchTerm.length > 2) {
             if (event.title.toUpperCase().indexOf(this.searchTerm.toUpperCase())< 0) {
                 continue;
@@ -118,6 +166,30 @@ class BC_CalendarActivities {
           }
         }
         return activityList;
+    }
+
+    doesActivityHaveTag(activity, checkedTags) {
+        if (!activity.tags)
+            return false;
+        let activityTagArray = activity.tags.split(",");
+        for (let i=0; i<activityTagArray.length; i++ ) {
+            let elemTags = activityTagArray[i].trim();
+            for (let j=0; j < checkedTags.length; j++ ) {
+                if (checkedTags[j].name == elemTags)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    getCheckedTags() {
+        let checkedTags = [];
+        for (let i=0; i< this.tagList.length; i++) {
+            if (!this.tagList[i].isChecked)
+                continue;
+            checkedTags.push(this.tagList[i]);
+        }
+        return checkedTags;
     }
 }
 

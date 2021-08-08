@@ -12,14 +12,15 @@ router.post("/", async (req, res) => {
         const db = makeDb();
 
        let queryParam = [eventData.id, vendorId, eventData.event_type, userId, eventData.title,
-            new Date(eventData.start), new Date(eventData.end), eventData.isFullDay, eventData.idClass];
+            new Date(eventData.start), new Date(eventData.end), eventData.isFullDay, eventData.idClass,
+            eventData.tags];
 
        let query = 
             "INSERT INTO bc_calendar_event " +
                 "(id, vendor_id2, event_type, creator_auth_id, title, " + 
-                    "start, end, is_full_day, vendor_app_group) " +
+                    "start, end, is_full_day, vendor_app_group, tags) " +
                 "VALUES (?, ?, ?, ?, ?, " + 
-                    "?, ?, ?, ?);";
+                    "?, ?, ?, ?, ?);";
        console.log('Query ', query);
        const response =  await db.query(query, queryParam);
        console.log('calendar add activity', response);

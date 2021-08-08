@@ -16,6 +16,7 @@ class BC_CalendarActivity {
             this.isFullDay = false; 
             this.idClass = null;
             this.color = null;
+            this.tags = '';
             return;
         }
         this.loadFromActivity(activityToCopy);
@@ -26,6 +27,9 @@ class BC_CalendarActivity {
 
     setTitle = (title) => { 
         this.title = title; 
+    }
+    setTags = (tags) => { 
+        this.tags = tags; 
     }
     setEventType = (eventType) => { 
         this.event_type = eventType; 
@@ -57,6 +61,7 @@ class BC_CalendarActivity {
         this.idClass = activity.idClass;
         this.color = activity.color;
         this.group_key = activity.group_key;
+        this.tags = activity.tags;
     }
     
     loadFromDBRow = (row, classList) => {
@@ -66,6 +71,7 @@ class BC_CalendarActivity {
         this.event_type = row.event_type;
         this.isFullDay = row.is_full_day;
         this.title = row.title;
+        this.tags = (row.tags) ? row.tags: '';
         this.start = new Date(row.start);
         this.end = new Date(row.end);
         this.idClass = row.vendor_app_group;
@@ -95,6 +101,7 @@ class BC_CalendarActivity {
         this.end = fc_activity.end;
         this.color = fc_activity.extendedProps.color;
         this.group_key = fc_activity.extendedProps.group_key;
+        this.tags = fc_activity.extendedProps.tags;
     }
   
     setWithNewClickInfo = (info) => {
@@ -108,6 +115,7 @@ class BC_CalendarActivity {
         this.isNew = true;
         this.isFullDay = false; //info.allDay; - can set to allDay else where
         this.title = '';
+        this.tags = '';
         this.start = dateStart;
         this.end = dateEnd;
     }

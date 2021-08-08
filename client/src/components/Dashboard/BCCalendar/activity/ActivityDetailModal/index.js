@@ -60,6 +60,11 @@ const NewEventModal = props => {
     setLocalAcivity(new BC_CalendarActivity(localActivity));
   }
 
+  const handleTagsChange = (e) => {
+    localActivity.setTags(e.target.value);
+    setLocalAcivity(new BC_CalendarActivity(localActivity));
+  }
+
   useEffect(() => {
     setShowHideClassName(show ? "modal display-block" : "modal display-none");
     console.log("show class: ", showHideClassName);
@@ -117,7 +122,7 @@ const NewEventModal = props => {
   }
 
   const handleTabSelect = (index) => {
-    let localActivityTemp = new BC_CalendarActivity(activityData);
+    let localActivityTemp = new BC_CalendarActivity(localActivity);
     if (index == 0) {
       localActivityTemp.setEventType(BC_CalendarActivity.TYPE_EVENT);
     }
@@ -161,9 +166,16 @@ const NewEventModal = props => {
                                   endDate={localActivity.end}
                                   setEndDate={setEndDate}
                                 />
+                                                            <div className="col-md-6 control-wrapper">
+                                <label className="control-label">Tags</label>
+                                <input className="form-control form-white tags-input" placeholder="Enter tags (comma separate)" 
+                                  onChange={handleTagsChange} value={localActivity.tags}
+                                    type="text" name="tags"></input>
+                            </div>
+
                               </TabPanel>
                               <TabPanel>
-                              <div className="col-md-6">
+                              <div className="col-md-6 control-wrapper">
                                 <label className="control-label">Class Name: </label>
                                 <select className="form-select form-white"
                                   value={localClassId}
@@ -182,6 +194,12 @@ const NewEventModal = props => {
                                   endDate={localActivity.end}
                                   setEndDate={setEndDate}
                                 />
+                              <div className="col-md-6 control-wrapper">
+                                <label className="control-label">Tags</label>
+                                <input className="form-control form-white tags-input" placeholder="Enter tags (comma separate)" 
+                                  onChange={handleTagsChange} value={localActivity.tags}
+                                    type="text" name="tags2"></input>
+                                    </div>
                               </TabPanel>
                             </Tabs>
                         </div>

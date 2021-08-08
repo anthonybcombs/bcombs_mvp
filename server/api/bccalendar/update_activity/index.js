@@ -10,20 +10,20 @@ router.post("/", async (req, res) => {
         const { vendorId, userId, eventData } = req.body;
         const db = makeDb();
 
-        let queryParam = [vendorId, eventData.event_type, userId, eventData.title,
+        let queryParam = [vendorId, eventData.event_type, userId, eventData.title, eventData.tags,
             new Date(eventData.start), new Date(eventData.end), eventData.isFullDay, eventData.idClass, 
             eventData.id ];
 
-            let queryTemp = 
-            "UPDATE bc_calendar_event " +
-             "SET vendor_id2 = '"+vendorId+"', event_type = '"+eventData.event_type+"', creator_auth_id = '"+userId+"', title = '"+eventData.title+"', " + 
-                 "start = '"+eventData.start+"', end = '"+eventData.end+"', is_full_day = "+(eventData.isFullDay ? 'true' : 'false')+", vendor_app_group = "+eventData.idClass+" " +
-            "WHERE id = '"+eventData.id+"'"; 
+           // let queryTemp = 
+           // "UPDATE bc_calendar_event " +
+           //  "SET vendor_id2 = '"+vendorId+"', event_type = '"+eventData.event_type+"', creator_auth_id = '"+userId+"', title = '"+eventData.title+"', " + 
+           //      "start = '"+eventData.start+"', end = '"+eventData.end+"', is_full_day = "+(eventData.isFullDay ? 'true' : 'false')+", vendor_app_group = "+eventData.idClass+" " +
+           // "WHERE id = '"+eventData.id+"'"; 
      
 
        let query = 
        "UPDATE bc_calendar_event " +
-        "SET vendor_id2 = ?, event_type = ?, creator_auth_id = ?, title = ?, " + 
+        "SET vendor_id2 = ?, event_type = ?, creator_auth_id = ?, title = ?, tags = ?, " + 
             "start = ?, end = ?, is_full_day = ?, vendor_app_group = ? " +
        "WHERE id = ?"; 
         console.log('Query ', query);
