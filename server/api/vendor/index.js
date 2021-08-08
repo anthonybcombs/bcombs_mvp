@@ -1084,6 +1084,7 @@ export const getVendorApplicationReminder = async vendor => {
           active
         FROM vendor_reminder 
         WHERE vendor=UUID_TO_BIN(?)
+        ORDER BY id DESC
       `,
       [vendor]
     )
