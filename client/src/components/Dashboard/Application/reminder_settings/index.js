@@ -352,17 +352,17 @@ export default function index({
 
   const cFields = [{
     id: uuid(),
-    name: 'First name',
+    name: 'First Name',
     value: 'firstname',
     cat: 'Child Information'
   }, {
     id: uuid(),
-    name: 'Last name',
+    name: 'Last Name',
     value: 'lastname',
     cat: 'Child Information'
   }, {
     id: uuid(),
-    name: 'Nick name',
+    name: 'Nick Name',
     value: 'nickname',
     cat: 'Child Information'
   }, {
@@ -524,12 +524,12 @@ export default function index({
 
   const pFields = [{
     id: uuid(),
-    name: 'First name',
+    name: 'First Name',
     value: 'firstname',
     cat: 'Family Information'
   }, {
     id: uuid(),
-    name: 'Last name',
+    name: 'Last Name',
     value: 'lastname',
     cat: 'Family Information'
   }, {
@@ -779,13 +779,7 @@ export default function index({
 
   console.log('reminderList', reminderList);
 
-  const getAppGroupNames = (reminder) => {
 
-    let names = reminder.map(r => r.name);
-
-    return names.toString();
-  }
-  
   return (
     <ReminderSettingsStyled>
       <div className="reminder-settings">
