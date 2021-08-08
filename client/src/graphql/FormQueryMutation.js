@@ -619,6 +619,13 @@ export const GET_FORMS_BY_VENDOR = gql`
   query getVendorCustomApplicationForms($filter:CustomApplicationFormFilterInput){
     getVendorCustomApplicationForms(filter:$filter){
       id
+      app_groups {
+        id
+        name
+        app_grp_id
+        form
+        vendor
+      }
       vendor
       user
       category

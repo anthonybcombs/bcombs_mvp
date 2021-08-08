@@ -530,7 +530,7 @@ export default function index() {
             loading && loading.addAdmin ? "add-admin-content disabled" : "add-admin-content"
           } >
             <div>
-              <label className="control-label">Fullname</label>
+              <label className="control-label">Full name</label>
               <div>
                 <input
                   type="text"

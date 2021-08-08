@@ -10,7 +10,8 @@ import {
   DELETE_VENDOR_ADMIN,
   UPDATE_VENDOR_ADMIN,
   GET_USER_VENDOR_FORMS,
-  CREATE_GROUP_REMINDER
+  CREATE_GROUP_REMINDER,
+  GET_VENDOR_REMINDER
 } from "../../graphql/vendorMutation";
 
 import { GET_FORM_APP_GROUP } from "../../graphql/groupQuery";
@@ -25,7 +26,24 @@ import {
   setApplicationLoading
 } from "./Loading";
 
-const addReminderToDatabse = groupReminder => {
+const getVendorReminderFromDatabase = args => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.query({
+        query: GET_VENDOR_REMINDER,
+        variables: { vendor_id: args.vendor }
+      });
+
+      console.log("data data", data);
+
+      return resolve(data.getVendorApplicationReminder);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+const addReminderToDatabase = groupReminder => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.mutate({
@@ -301,6 +319,28 @@ export const requestDeleteAdmins = admins => {
   };
 };
 
+export const requestGetVendorReminders = vendor => {
+  return {
+    type: actionType.REQUEST_GET_VENDOR_REMINDER,
+    vendor
+  };
+}
+
+export function* getVendorReminders({ vendor }) {
+  try {
+    const response = yield call(getVendorReminderFromDatabase, vendor );
+    yield put({
+      type: actionType.REQUEST_GET_VENDOR_REMINDER_COMPLETED,
+      payload: response
+    })
+  } catch(err) {
+    yield put({
+      type: actionType.REQUEST_GET_VENDOR_REMINDER_COMPLETED,
+      payload: []
+    })
+  }
+}
+
 export function* updateAdmin({ admin }) {
   try {
     yield put(setAddAdminLoading(true));
@@ -402,7 +442,7 @@ export function* updateVendor({ vendor }) {
 export function* createGroupReminder({ groupReminder }) {
   console.log('createGroupReminder', groupReminder);
 
-  const response = yield call(addReminderToDatabse, groupReminder );
+  const response = yield call(addReminderToDatabase, groupReminder );
 
   yield put({
     type: actionType.REQUEST_CREATE_GROUP_REMINDER_COMPLETED,
@@ -499,8 +539,6 @@ export function* getFormAppGroup(action) {
     });
   }
 }
-
-
 
 export function* getVendorAppGroups(action) {
   try {

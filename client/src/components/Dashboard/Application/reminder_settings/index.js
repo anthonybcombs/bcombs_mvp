@@ -347,21 +347,22 @@ export default function index({
   vendor, 
   appGroups = [],
   formList = [],
+  reminderList = [],
   handleCreateGroupReminder }) {
 
   const cFields = [{
     id: uuid(),
-    name: 'Firstname',
+    name: 'First name',
     value: 'firstname',
     cat: 'Child Information'
   }, {
     id: uuid(),
-    name: 'Lastname',
+    name: 'Last name',
     value: 'lastname',
     cat: 'Child Information'
   }, {
     id: uuid(),
-    name: 'Nickname',
+    name: 'Nick name',
     value: 'nickname',
     cat: 'Child Information'
   }, {
@@ -523,12 +524,12 @@ export default function index({
 
   const pFields = [{
     id: uuid(),
-    name: 'Firstname',
+    name: 'First name',
     value: 'firstname',
     cat: 'Family Information'
   }, {
     id: uuid(),
-    name: 'Lastname',
+    name: 'Last name',
     value: 'lastname',
     cat: 'Family Information'
   }, {
@@ -634,6 +635,20 @@ export default function index({
   }];
 
   useEffect(() => {
+
+    setFAppGroups(setAppGroupSelect(appGroups));
+  }, [appGroups])
+
+  useEffect(() => {
+
+    setChildFieldList([...cFields]);
+    setParentFieldList([...pFields]);
+
+
+    console.log('new vendor', vendor);
+  }, [vendor])
+
+  const setAppGroupSelect = (appGroups) => {
     let x = [];
     appGroups.map((ap) => {
       x.push({
@@ -647,17 +662,13 @@ export default function index({
       name: 'All',
       value: 'all'
     })
-    setFAppGroups(x);
-  }, [appGroups])
 
-  useEffect(() => {
-
-    setChildFieldList([...cFields]);
-    setParentFieldList([...pFields]);
-  }, [vendor])
+    return x;
+  }
 
   const [fAppGroups, setFAppGroups] = useState([])
   const [selectedForm, setSelectedForm] = useState("default");
+  const [selectedFormName, setSelectedFormName] = useState("Bcombs Form");
   const [childFieldList, setChildFieldList] = useState([]);
   const [parentFieldList, setParentFieldList] = useState([]);
 
@@ -696,7 +707,8 @@ export default function index({
         form_fields: {
           fields1: selectedFields1.map(x => x.value),
           fields2: selectedFields2.map(x => x.value)
-        } 
+        },
+        form_name: selectedFormName
       }
     } else {
       payload = {
@@ -707,7 +719,8 @@ export default function index({
         app_groups: isAllSelected ? appGroups.map(x => x.app_grp_id) : selectedGroups.map(x => x.value),
         form: selectedForm,
         is_customForm: true,
-        custom_fields: JSON.stringify(selectedFields1)
+        custom_fields: JSON.stringify(selectedFields1),
+        form_name: selectedFormName
       }
     }
 
@@ -719,7 +732,7 @@ export default function index({
 
     setTimeout(() => {
       setShowSuccessMessage(true);
-    }, 3000)
+    }, 7000)
   }
 
   console.log('formList', formList);
@@ -764,6 +777,15 @@ export default function index({
     return formattedFields;
   }
 
+  console.log('reminderList', reminderList);
+
+  const getAppGroupNames = (reminder) => {
+
+    let names = reminder.map(r => r.name);
+
+    return names.toString();
+  }
+  
   return (
     <ReminderSettingsStyled>
       <div className="reminder-settings">
@@ -784,42 +806,29 @@ export default function index({
             </div>
           </div>
           <div className="form-group">
-            <div className="field">
-              <Multiselect
-                className="field-input"
-                options={fAppGroups}
-                placeholder="Choose Multiple"
-                displayValue="name"
-                closeIcon="cancel"
-                closeOnSelect={false}
-                showCheckbox={true}
-                onSelect={selectedList => {
-                  setSelectedGroups(selectedList);
-                }}
-                onRemove={selectedList => {
-                  setSelectedGroups(selectedList);
-                }}
-              />
-              <label className="field-label">
-                Class
-              </label>
-            </div>
-          </div>
-          <div className="form-group">
             <div className="field select-field-wrapper">
               <select className="field-input"
                 onChange={({ target }) => {
                   setSelectedForm(target.value);
-                  console.log("target.value", target.value);
-
+                  console.log("target.innerText", target.innerText);
+                  
                   if(target.value === 'default') {                    
                     setChildFieldList([...cFields]);
                     setParentFieldList([...pFields]);
+
+                    setSelectedFormName('Bcombs Form');
+                    setFAppGroups(setAppGroupSelect(appGroups));
                   } else {
                     const formattedFields = getCustomFields(target.value);
-
                     setChildFieldList(formattedFields);
                     setParentFieldList([]);
+
+                    let form = formList.filter(f => f.form_id == target.value);
+
+                    form = form.length > 0 ? form[0] : {};
+
+                    setFAppGroups(setAppGroupSelect(form.app_groups));
+                    setSelectedFormName(form?.form_contents?.formTitle);
                   }
 
                   setSelectedFields1([]);
@@ -921,33 +930,31 @@ export default function index({
                   </label>
                 </div>
               </div>
-              {/* <div className="form-group">
-                <div className="field">
-                  <Multiselect
-                    selectedValues={selectedFields2}
-                    className="field-input"
-                    options={parentFieldList}
-                    placeholder="Choose Multiple"
-                    displayValue="name"
-                    closeIcon="cancel"
-                    closeOnSelect={false}
-                    showCheckbox={true}
-                    groupBy="cat"
-                    onSelect={selectedList => {
-                      setSelectedFields2(selectedList);
-                    }}
-                    onRemove={selectedList => {
-                      setSelectedFields2(selectedList);
-                    }}
-                  />
-                  <label className="field-label">
-                    Custom Fields 2
-                  </label>
-                </div>
-              </div> */}
             </div>
           )
         }
+        <div className="form-group">
+            <div className="field">
+              <Multiselect
+                className="field-input"
+                options={fAppGroups}
+                placeholder="Choose Multiple"
+                displayValue="name"
+                closeIcon="cancel"
+                closeOnSelect={false}
+                showCheckbox={true}
+                onSelect={selectedList => {
+                  setSelectedGroups(selectedList);
+                }}
+                onRemove={selectedList => {
+                  setSelectedGroups(selectedList);
+                }}
+              />
+              <label className="field-label">
+                Class
+              </label>
+            </div>
+          </div>
         <div className="form-fields-list">
           {
             showSucessMessage ? (
