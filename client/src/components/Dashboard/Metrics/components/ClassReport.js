@@ -125,7 +125,7 @@ const ClassReports = props => {
         console.log("year3 ", event.target.value); // ;year);
         triggerApi2(auth.user_id, event.target.value, vendors);
     };
-    console.log('vendors',vendors)
+    //console.log('vendors',vendors)
  
     return <div style={{ padding: 24 }}>
         <div className="grid grid-2b">

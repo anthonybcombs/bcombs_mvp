@@ -5,7 +5,7 @@ import Charts from './Charts';
 const apiCallAttendance = async (vendorId, id, year, grade) => {
     
     // Default options are marked with *
-    const response = await fetch(`${process.env.API_HOST}/api/metrics/class_attendance`, {
+    const response = await fetch(`${process.env.API_HOST}/api/metrics/attendance`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

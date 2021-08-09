@@ -4,117 +4,206 @@ import { makeDb } from "../../../helpers/database";
 
 const router = express.Router();
 
+
 router.post("/", async (req, res) => {
 
+    const addSessionToResults = (sessionData, results) => {
+        let currentClassData = results['id_' + sessionData.class_id];
+        if (!currentClassData)
+            return results;
+        if (!currentClassData.numSessions) {
+            currentClassData.numSessions = 0;
+            currentClassData.avgAttendance = 0;
+        }
+        let totalAttendance = 
+            currentClassData.numSessions * currentClassData.numStudentsInClass * currentClassData.avgAttendance + 
+            sessionData.numAttended;
+        currentClassData.numSessions++;
+        currentClassData.avgAttendance = totalAttendance / (currentClassData.numSessions * currentClassData.numStudentsInClass);
+        results['id_' + sessionData.class_id] = currentClassData;
+        return results;
+    }
+    const addStudentDataToResults = (studentData, results) => {
+        let currentClassData = results['id_' + studentData.class_id];
+        if (!currentClassData)
+            return results;
+        if (!currentClassData.attendanceBuckets) {
+            currentClassData.attendanceBuckets = [
+                { name: '0-50% of time', y: currentClassData.numStudentsInClass},
+                { name: '51-75% of time', y: 0},
+                { name: '76-85% of time', y: 0},
+                { name: '86-100% of time', y: 0}
+            ];
+        }
+        const studentAttendanceRate = studentData.numAttended / currentClassData.numSessions;
+        if ( studentAttendanceRate <= 0.5) {
+            return results;
+        }
+        currentClassData.attendanceBuckets[0].y--;
+        if ( studentAttendanceRate <= 0.75) {
+            currentClassData.attendanceBuckets[1].y++;
+        }
+        else if (studentAttendanceRate <= 0.85) {
+            currentClassData.attendanceBuckets[2].y++;
+        }
+        else {
+            currentClassData.attendanceBuckets[3].y++;
+        }
+        results['id_' + studentData.class_id] = currentClassData;
+        return results;
+    }
+    
     try {
-        const { id, year, grade, vendorId } = req.body;
+        const { id, year, vendorId } = req.body;
         const db = makeDb();
-        console.log('vendorID ', vendorId)
+        console.log('year ', year)
 
-       // const response =  await db.query("SELECT id2,email FROM users where id=UUID_TO_BIN(?)", [id]);
         let dtLastTxt = '' + (year - 1) + '-08-01';
-        //let dtLast = new Date(dtLastTxt);
+        let dtNextTxt = '' + year + '-08-01'; 
 
-        let dtEndQ1Txt = '' + (year - 1) + '-11-01';
-        let dtEndQ2Txt = '' + year + '-02-01';
-        let dtEndQ3Txt = '' + year + '-05-01';
+        let queryStudentPerClassParam = [dtLastTxt, dtNextTxt, vendorId];
+        let queryStudentsPerClass = 
+         "SELECT count(c.app_grp_id) as numStudentsInClass, a.class_id, a.class_name " + 
+         "FROM vendor_app_groups_to_student c " +
+             "inner join ( " +
+                 "Select distinct(c2.app_grp_id) as app_group_id, c2.id as class_id, c2.name as class_name " +
+                 "From attendance a2, vendor b2, vendor_app_groups c2 " +
+                 "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
+                     "b2.id2 = ? and c2.vendor = b2.id and " + 
+                     "a2.app_group_id = c2.app_grp_id " +
+                 "group by c2.app_grp_id, c2.id " +
+             ") as a " +
+            "on a.app_group_id = c.app_grp_id " +
+         "where c.app_grp_id = a.app_group_id group by c.app_grp_id";
+ 
+        // console.log('Query ', queryStudentsPerClass);
+         const response =  await db.query(queryStudentsPerClass, queryStudentPerClassParam);
+         //console.log('Students per class: ', response);
+         if (!response || response.length == 0) {
+             res.status(200).json({ classStats: [] });
+             return;
+         }
+  
+         let resultData = {};
+         for (let i=0; i < response.length; i++) {
+            let row = response[i];
+            resultData['id_' + row.class_id] = row;
+        }
+ 
+        let queryStudentsPerSessionParam = [dtLastTxt, dtNextTxt, vendorId];
+        let queryStudentsPerSession = 
+            "Select count(*) as numAttended, c2.id as class_id, c2.name as class_name " +
+            "From attendance a2, vendor b2, vendor_app_groups c2 " +
+            "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
+                "a2.attendance_status <> 'Absent' and " +
+                "b2.id2 = ? and c2.vendor = b2.id and " + 
+                "a2.app_group_id = c2.app_grp_id " +
+            "group by c2.id, c2.name, a2.attendance_date, a2.attendance_start_time " +
+            "order by c2.id";
+
+       // console.log('Query ', queryStudentsPerSession);
+        const response2 =  await db.query(queryStudentsPerSession, queryStudentsPerSessionParam);
+        //console.log('Students per session: ', response);
+        if (!response2 || response2.length == 0) {
+            res.status(200).json({ classStats: [] });
+            return;
+        }
+    
+        for (let i=0; i < response2.length; i++) {
+            let row = response2[i];
+            resultData = addSessionToResults(row, resultData);
+        }
+     
+     //get how many sessions each student attended
+        let querySessionsPerStudentParam = [dtLastTxt, dtNextTxt, vendorId];
+        let querySessionsPerStudent = 
+            "Select c2.id as class_id, c2.name as class_name, COUNT(child_id) as numAttended  " +
+            "From attendance a2, vendor b2, vendor_app_groups c2 " +
+            "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
+                "a2.attendance_status <> 'Absent' and " +
+                "b2.id2 = ? and c2.vendor = b2.id and " + 
+                "a2.app_group_id = c2.app_grp_id " +
+            "group by c2.id, a2.child_id";
+
+        console.log('Query ', querySessionsPerStudent);
+        const response3 =  await db.query(querySessionsPerStudent, querySessionsPerStudentParam);
+        //console.log('Sessions per student: ', response);
+        if (!response3 || response3.length == 0) {
+            res.status(200).json({ classStats: [] });
+            return;
+        }
+    
+        for (let i=0; i < response3.length; i++) {
+            let row = response3[i];
+            resultData = addStudentDataToResults(row, resultData);
+        }
+
+        //get how many sessions each student attended
         /*
-        var dtEndQ1 = new Date(dtLast.getTime());
-        var dtEndQ1 = dtEndQ1.setMonth(dtEndQ1.getMonth()+3);
-        var dtEndQ2 = new Date(dtLast.getTime());
-        var dtEndQ2 = dtEndQ2.setMonth(dtEndQ2.getMonth()+6);
-        var dtEndQ3 = new Date(dtLast.getTime());
-        var dtEndQ3 = dtEndQ3.setMonth(dtEndQ3.getMonth()+9);
+        let queryTotalStudentsParam = [dtLastTxt, dtNextTxt, vendorId];
+        let queryTotalStudents = 
+            "Select COUNT(child_id) as numStudents  " +
+            "From attendance a2, vendor b2, vendor_app_groups c2 " +
+            "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
+                "a2.attendance_status <> 'Absent' and " +
+                "b2.id2 = ? and c2.vendor = b2.id and " + 
+                "a2.app_group_id = c2.app_grp_id " +
+            "group by a2.child_id";
+
+       // console.log('Query ', queryTotalStudents);
+        const response4 =  await db.query(queryTotalStudents, queryTotalStudentsParam);
+        //console.log('Total students: ', response4);
+        if (!response4 || response4.length == 0) {
+            res.status(200).json({ classStats: [] });
+        }
         */
 
-       let dtNextTxt = '' + year + '-08-01'; 
-       //let dtNext = new Date(dtNextText);
+        let allClassRow = {
+            class_id: 0,
+            class_name: 'All Classes',
+            numStudentsInClass: 0, //response4[0].numStudents,
+            numSessions: 0,
+            avgAttendance: 0,
+            attendanceBuckets: [
+                { name: '0-50% of time', y: 0},
+                { name: '51-75% of time', y: 0},
+                { name: '76-85% of time', y: 0},
+                { name: '86-100% of time', y: 0}
+            ]
+        }
+        let totalAvgAttendance = 0;
+        let classList = [];
+        for (let key in resultData) {
+            if (key.indexOf('id_') < 0)
+                continue;
+            let row = resultData[key];
+            allClassRow.numSessions += row.numSessions;
+            totalAvgAttendance += (row.avgAttendance * row.numSessions);
+            for (let j=0; j < allClassRow.attendanceBuckets.length; j++) {
+                let bucketCnt = row.attendanceBuckets[j].y;
+                if (!bucketCnt)
+                    continue;
+                allClassRow.attendanceBuckets[j].y += bucketCnt;
+            }
+            classList.push({key: 'id_' + row.class_id, name: row.class_name});
+        }
+        for (let i=0; i<allClassRow.attendanceBuckets.length; i++) {
+            allClassRow.numStudentsInClass += allClassRow.attendanceBuckets[i].y;
+        }
+        allClassRow.avgAttendance = totalAvgAttendance / allClassRow.numSessions;
+        resultData['id_' + 0] = allClassRow;
 
-       let queryClassesParam = [dtLastTxt, dtNextTxt, vendorId];
-
-       let queryClasses = 
-        "SELECT count(c.app_grp_id), a.class_id, a.class_name FROM vendor_app_groups_to_student c " +
-            "inner join ( " +
-                "Select distinct(c2.app_grp_id) as app_group_id, c2.id as class_id, c2.name as class_name " +
-                "From attendance a2, vendor b2, vendor_app_groups c2 " +
-                "where a.attendance_date >= ? and a.attendance_date < ? and " + 
-                    "b2.id2 = ? and c2.vendor = b2.id and " + 
-                    "a2.app_group_id = c2.app_grp_id " +
-                "group by c2.app_grp_id, c2.id " +
-            ") as a " +
-           "on a.app_group_id = c.app_grp_id " +
-        "where c.app_grp_id = a.app_group_id group by c.app_grp_id"
-
-       let queryParam = [dtEndQ1Txt, 
-            dtEndQ1Txt, dtEndQ2Txt, 
-            dtEndQ2Txt, dtEndQ3Txt, 
-            dtEndQ3Txt, 
-            dtLastTxt, dtNextTxt,
-            vendorId];
-            /*
-       let gradeQualifier = '';
-       if (grade > 8) {
-           gradeQualifier = "where b.grade_number = ? ";
-           queryParam.push(grade);
-       }
-       else if (grade > 5) {
-           gradeQualifier = "where b.grade_number in ( '6', '7', '8' )";
-       }
-       */
-
-       let query = 
-           "select " + 
-                "SUM(IF(b.grade_number = '12', a2.q1, 0)) as q1Total12, " +
-                "SUM(IF(b.grade_number = '12', a2.q2, 0)) as q2Total12, " +
-                "SUM(IF(b.grade_number = '12', a2.q3, 0)) as q3Total12, " +
-                "SUM(IF(b.grade_number = '12', a2.q4, 0)) as q4Total12, " +
-                "SUM(IF(b.grade_number = '11', a2.q1, 0)) as q1Total11, " +
-                "SUM(IF(b.grade_number = '11', a2.q2, 0)) as q2Total11, " +
-                "SUM(IF(b.grade_number = '11', a2.q3, 0)) as q3Total11, " +
-                "SUM(IF(b.grade_number = '11', a2.q4, 0)) as q4Total11, " +
-                "SUM(IF(b.grade_number = '10', a2.q1, 0)) as q1Total10, " +
-                "SUM(IF(b.grade_number = '10', a2.q2, 0)) as q2Total10, " +
-                "SUM(IF(b.grade_number = '10', a2.q3, 0)) as q3Total10, " +
-                "SUM(IF(b.grade_number = '10', a2.q4, 0)) as q4Total10, " +
-                "SUM(IF(b.grade_number = '9', a2.q1, 0)) as q1Total9, " +
-                "SUM(IF(b.grade_number = '9', a2.q2, 0)) as q2Total9, " +
-                "SUM(IF(b.grade_number = '9', a2.q3, 0)) as q3Total9, " +
-                "SUM(IF(b.grade_number = '9', a2.q4, 0)) as q4Total9, " +
-                "SUM(IF(b.grade_number = '6' OR b.grade_number = '7' OR b.grade_number = '8', a2.q1, 0)) as q1TotalMS, " +
-                "SUM(IF(b.grade_number = '6' OR b.grade_number = '7' OR b.grade_number = '8', a2.q2, 0)) as q2TotalMS, " +
-                "SUM(IF(b.grade_number = '6' OR b.grade_number = '7' OR b.grade_number = '8', a2.q3, 0)) as q3TotalMS, " +
-                "SUM(IF(b.grade_number = '6' OR b.grade_number = '7' OR b.grade_number = '8', a2.q4, 0)) as q4TotalMS, " +
-               "count(b.ch_id) as y " + 
-           "from child b " + 
-           "inner join ( " + 
-               "Select a.child_id " + 
-               ", SUM(IF(a.attendance_date < ?, 1, 0)) as q1 " + 
-               ", SUM(IF(a.attendance_date >= ? AND a.attendance_date < ?, 1, 0)) as q2 " + 
-               ", SUM(IF(a.attendance_date >= ? AND a.attendance_date < ?, 1, 0)) as q3 " + 
-               ", SUM(IF(a.attendance_date >= ?, 1, 0)) as q4 " + 
-               "FROM attendance a, vendor b, vendor_app_groups c " + 
-              "where a.attendance_date >= ? and a.attendance_date < ? " + 
-              "and b.id2 = ? and c.vendor = b.id and a.app_group_id = c.app_grp_id " +
-               "Group by a.child_id " +
-           ") as a2 on b.ch_id = a2.child_id ";
-       console.log('Query ', query);
-       const response =  await db.query(query, queryParam);
-       console.log('Attendance', response);
-
-       let resultData = [];
-       if (response.length > 0) {
-           let row = response[0];
-           resultData.push({grade: "8", data: [row.q1TotalMS, row.q2TotalMS, row.q3TotalMS, row.q4TotalMS] });
-           resultData.push({grade: "9", data: [row.q1Total9, row.q2Total9, row.q3Total9, row.q4Total9] });
-           resultData.push({grade: "10", data: [row.q1Total10, row.q2Total10, row.q3Total10, row.q4Total10] });
-           resultData.push({grade: "11", data: [row.q1Total11, row.q2Total11, row.q3Total11, row.q4Total11] });
-           resultData.push({grade: "12", data: [row.q1Total12, row.q2Total12, row.q3Total12, row.q4Total12] });
-       }
-
-        res.status(200).json({ attendance: resultData });
+        classList.sort((a, b) => {
+            (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
+        });
+        //put all entry at top of list
+        classList.unshift({key:'id_' + allClassRow.class_id, name: allClassRow.class_name});
+        
+        res.status(200).json({ classStats: resultData, classList: classList });
         //res.status(200).json({ user: response && response[0] });
     } catch (error) {
-
+        console.log("ERROR-----> ", error);
+        res.status(200).json({ classStats: [] });
     }
 });
 
