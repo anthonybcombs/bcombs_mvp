@@ -36,17 +36,15 @@ const ClassAttendance = props => {
     const [isLoading, setIsLoading] = useState(true)
     const [subHeaderText, setSubHeaderText] = useState('');
     const chart = useRef();
-    //hack because of weird bug
-    const [allAttendanceBuckets, setAllAttendanceBuckets] = useState([]);
 
     useEffect(() => {
         if (auth && auth.user_id) {
-            triggerApiCallAttendance(auth.user_id, year);
+            triggerApiCallAttendance(auth.user_id, year, 'id_0');
         }
     }, [auth, vendors]);
     console.log('vendors 2',vendors)
 
-    const triggerApiCallAttendance = async (id, year) => {
+    const triggerApiCallAttendance = async (id, year, class_id) => {
         try {
             setSubHeaderText('');
             if (!vendors ||!vendors.length) {
@@ -60,9 +58,8 @@ const ClassAttendance = props => {
             const res = await apiCallClassAttendance(vendorId, id, year);
             console.log('apiCall attendance ', res);
             if (res && res.classStats && res.classStats['id_0']) {
-                let classIdLocal = classId;
-                if (!res.classStats[classId]) {
-                    setClassId('id_0');
+                let classIdLocal = class_id;
+                if (!res.classStats[classIdLocal]) {
                     classIdLocal = 'id_0';
                 }
                 if (!res.classList) {
@@ -71,12 +68,10 @@ const ClassAttendance = props => {
                 else {
                     setClassList(res.classList);
                 }
+                setClassId('id_0');
                 console.log("classStats aaaaa: ", res.classStats);
                 setClassStatsData(res.classStats);
-                if (res.classStats["id_0"]) { //hack
-                    setAllAttendanceBuckets([...res.classStats["id_0"].attendanceBuckets]);
-                }
-                setClassIdToValue(classIdLocal, res.classStats, res.classStats[classIdLocal].attendanceBuckets) 
+                setClassIdToValue(classIdLocal, res.classStats[classIdLocal]) 
             }
             else {
                 defineChart(null);
@@ -141,29 +136,27 @@ const ClassAttendance = props => {
     const yearChange =(event) => {
         setYear(event.target.value);
         console.log("year2 ", event.target.value); // ;year);
-        triggerApiCallAttendance(auth.user_id, event.target.value);
+        triggerApiCallAttendance(auth.user_id, event.target.value, classId);
     };
 
     const classChange =(event) => {
         console.log("----- Class Data: ", classStatsData);
         let classIdIn = event.target.value;
-        let attendanceBucketsLocal = classStatsData[classIdIn].attendanceBuckets;
+        console.log("=========== class_id: ", classIdIn);
         if (classIdIn == "id_0") { //hack to fix weird bug
-            console.log("---- hack value: ", allAttendanceBuckets);
-            attendanceBucketsLocal = allAttendanceBuckets;
+            triggerApiCallAttendance(auth.user_id, year, classIdIn);
+            return;
         }
-        setClassIdToValue(classIdIn, classStatsData, attendanceBucketsLocal);
+        setClassIdToValue(classIdIn, classStatsData[classIdIn]);
     };
 
-    const setClassIdToValue = (classIdIn, classDataLocal, attendanceBucketsLocal) => {
-        console.log("---- classStats local: ", classDataLocal, classIdIn);
-        let classElem = classDataLocal[classIdIn]
+    const setClassIdToValue = (classIdIn, classElem) => {
+        console.log("----- Class Elem: ", classElem);
         setSubHeaderText(
             ' Students: ' + classElem.numStudentsInClass +
             ' Sessions: ' + classElem.numSessions +
             ' Attendance Average: ' + parseFloat(classElem.avgAttendance * 100).toFixed(2)+'%');
-        let attendanceCopy = [...attendanceBucketsLocal];
-        defineChart(attendanceCopy);
+        defineChart(classElem.attendanceBuckets);
         setClassId(classIdIn);
     }
 
