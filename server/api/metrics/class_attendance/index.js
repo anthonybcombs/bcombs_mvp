@@ -194,7 +194,7 @@ router.post("/", async (req, res) => {
         resultData['id_' + 0] = allClassRow;
 
         classList.sort((a, b) => {
-            (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
+            return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
         });
         //put all entry at top of list
         classList.unshift({key:'id_' + allClassRow.class_id, name: allClassRow.class_name});

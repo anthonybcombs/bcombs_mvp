@@ -129,6 +129,13 @@ class BC_CalendarActivities {
                 }
             }
         }
+        //console.log("tag list in", tagList);
+        tagList = tagList.sort((a, b) => {
+            //console.log("a-->", a);
+            return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
+        });
+        //console.log("tag list out", tagList);
+
         this.setTagList(tagList);
     }
 
