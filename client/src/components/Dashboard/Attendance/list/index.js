@@ -789,7 +789,7 @@ export default function index() {
 				// });
 			} else {
 				filterApplications = applications.activeapplications.filter(application => {
-					return application && application.class_teacher == appGroupId;
+					return application && (application.class_teacher === appGroupId || application.class_teacher.includes(appGroupId));
 				});
 			}
 			filterApplications = filterApplications.map(item => {
@@ -805,7 +805,7 @@ export default function index() {
 			console.log(' applications.activeapplications1111 appGroupId', appGroupId)
 			console.log(' applications.activeapplications1111 filterApplications', filterApplications)
 			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
-			filterApplications = filterApplications.filter(item => item.class_teacher && (item.class_teacher === appGroupId ||  item.class_teacher.includes(appGroupIds) || (searchParams && searchParams.type === 'all'  && item.form === searchParams.formId)));
+			filterApplications = filterApplications.filter(item => item.class_teacher && ((item.class_teacher === appGroupId ||  item.class_teacher.includes(appGroupIds)) || (searchParams && searchParams.type === 'all'  && item.form === searchParams.formId)));
 			// filterApplications = filterApplications.map(item => {
 			// 	//let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
 			// 	// item.class_teacher = name;
