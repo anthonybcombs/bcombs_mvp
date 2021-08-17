@@ -14,8 +14,70 @@ import ActivityDisplaylModal from "./ActivityDisplayModal/index.js";
 
 import * as Icon from "react-icons/fi";
 import Checkbox from "react-custom-checkbox";
+//import Accordion from 'react-bootstrap/Accordion';
+//import Card from 'react-bootstrap/Card';
+//import "bootstrap/dist/css/bootstrap.min.css";
+import Collapsible from 'react-collapsible';
+import { Button } from "react-bootstrap";
 
 const CalendarStyled = styled.div`
+
+.Collapsible {
+  background-color: white; }
+
+.Collapsible__contentInner {
+  padding: 10px;
+  border: 1px solid #ebebeb;
+  border-top: 0; }
+  .Collapsible__contentInner p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 20px; }
+    .Collapsible__contentInner p:last-child {
+      margin-bottom: 0; }
+
+.Collapsible__trigger {
+  display: block;
+  font-weight: 400;
+  text-decoration: none;
+  color: #333333;
+  position: relative;
+  border: 1px solid white;
+  padding: 10px;
+  background:  #f26e21; /*#00ac9d;*/
+  color: white; }
+  .Collapsible__trigger:after {
+    font-family: 'FontAwesome';
+    content: '\f107';
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: block;
+    transition: transform 300ms; }
+  .Collapsible__trigger.is-open:after {
+    transform: rotateZ(180deg); }
+  .Collapsible__trigger.is-disabled {
+    opacity: 0.5;
+    background-color: grey; }
+
+.CustomTriggerCSS {
+  background-color: lightcoral;
+  transition: background-color 200ms ease; }
+
+.CustomTriggerCSS--open {
+  background-color: darkslateblue; }
+
+.Collapsible__custom-sibling {
+  padding: 5px;
+  font-size: 12px;
+  background-color: #CBB700;
+  color: black; }
+
+  .fc-icon.fc-icon-fa { font-family: "FontAwesome" !important; }   
+
+  .w-100 {
+    width:100%
+  }
     `;
 
 import Loading from "../../../helpers/Loading.js";
@@ -138,6 +200,21 @@ const BCDisplayCalendar = props => {
     setSearchTerm(event.target.value);
   };
 
+  /*
+  const myCustomButtons = {
+    settings: {
+      icon: 'fa fas fa-bars',
+      click: function() {
+        alert('clicked');
+      }
+    }
+  }
+
+  const calendarHeaderButtonsRight = 'timeGridDay,timeGridWeek,dayGridMonth, settings';
+  */
+  const myCustomButtons = null;
+  const calendarHeaderButtonsRight = 'timeGridDay,timeGridWeek,dayGridMonth';
+
   return (
     <CalendarStyled className="bc-calendar-wrapper">
       <ActivityDisplaylModal show={isAddEventModalShown}
@@ -181,8 +258,8 @@ const BCDisplayCalendar = props => {
             <div />
             ) : (
                 <div>
-        <h3>Tags</h3> 
-        {
+                  <Collapsible trigger="Tags" open={true} id="accordion" >
+                  {
                 calendarActivities.tagList.map((elem) => 
                 <div className="btn-holder" key={elem.key}>
                     <Checkbox checked={elem.isChecked} label={elem.name} name={elem.key}
@@ -192,6 +269,11 @@ const BCDisplayCalendar = props => {
                     />
                 </div>)
         }
+                    </Collapsible>
+                    <Collapsible trigger="Export Links" >
+                      <p>Provides a URL that you can add to the calendar you use (e.g. Google Calendar) so that it displays these events</p>
+                      <Button id="GetExportLink">Get Link URL</Button>
+                      </Collapsible>
               </div>
           )
         }
@@ -204,7 +286,9 @@ const BCDisplayCalendar = props => {
             <Loading />
           ) : (
             <FullCalendar
-              headerToolbar={{ left: 'prev,next,today', center: 'title', right: 'timeGridDay,timeGridWeek,dayGridMonth' }}
+              customButtons={myCustomButtons}
+              headerToolbar={{ left: 'prev,next,today', center: 'title', 
+                right: calendarHeaderButtonsRight }}
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
               editable={false}
               eventClick={handleClickOnActivity}
