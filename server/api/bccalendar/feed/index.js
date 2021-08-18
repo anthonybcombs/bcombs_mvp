@@ -1,13 +1,18 @@
 import express from "express";
 
-import { makeDb } from "../../../helpers/database";
+//import { makeDb } from "../../../helpers/database";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+const fs  = require('fs')
+const ics = require('ics')
+
+
+const { createWriteStream, writeFileSync } = fs;
+
+router.get("/", async (req, res) => {
 //    const { writeFileSync } = require('fs')
-    const { createWriteStream } = require('fs')
-    const ics = require('ics')
+
 
     ics.createEvent({
         title: 'Dinner',
@@ -21,15 +26,23 @@ router.post("/", async (req, res) => {
                 console.log(error)
             }
 
-            res.writeHead(200, {
-                'Content-Type': 'text/calendar',
-                'Content-Length': value.length, // stat.size,
-                'Content-Disposition': 'attachment; filename=calendar_feed.ics'
-            });
+            res.setHeader('Content-Type', 'text/calendar');
+            res.setHeader('Content-Length', value.length);
+            res.setHeader('Content-Disposition', 'attachment; filename=calendar_feed.ics');
 
-            //writeFileSync(`${__dirname}/event.ics`, value)
-            var outStream = createWriteStream(value);
-            res.pipe(outStream);
+       
+            const currentPath = `${__dirname}/event.ics`;
+            console.log('currentPath',currentPath)
+            writeFileSync(currentPath, value)
+
+
+            return res.download(currentPath, 'event.ics', function(err) {
+                fs.unlink(currentPath, function(){
+                    console.log("Temp File was deleted");
+                });        
+            });
+    
+
         }
     )
 });
