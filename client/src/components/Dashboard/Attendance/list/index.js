@@ -796,7 +796,7 @@ export default function index() {
 				// });
 			} else {
 				filterApplications = applications.activeapplications.filter(application => {
-					return application && (application.class_teacher === appGroupId || application.class_teacher.includes(appGroupId));
+					return application && application.class_teacher &&  (application.class_teacher === appGroupId || application.class_teacher.includes(appGroupId));
 				});
 			}
 			filterApplications = filterApplications.map(item => {
