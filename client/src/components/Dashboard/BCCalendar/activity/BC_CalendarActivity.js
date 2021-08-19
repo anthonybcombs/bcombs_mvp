@@ -11,6 +11,7 @@ class BC_CalendarActivity {
             this.event_type = BC_CalendarActivity.TYPE_EVENT;
             this.isNew = false;
             this.title = ''; 
+            this.description = '';
             this.start = null; 
             this.end = null; 
             this.isFullDay = false; 
@@ -30,6 +31,10 @@ class BC_CalendarActivity {
     }
     setTags = (tags) => { 
         this.tags = tags; 
+    }
+    setDescription = (description) => { 
+        this.description = description; 
+        console.log("setDescription with: " + description);
     }
     setEventType = (eventType) => { 
         this.event_type = eventType; 
@@ -55,6 +60,7 @@ class BC_CalendarActivity {
         this.event_type = activity.event_type;
         this.isNew = activity.isNew;
         this.title = activity.title; 
+        this.description = activity.description;
         this.start = activity.start; 
         this.end = activity.end; 
         this.isFullDay = activity.isFullDay; 
@@ -71,6 +77,7 @@ class BC_CalendarActivity {
         this.event_type = row.event_type;
         this.isFullDay = row.is_full_day;
         this.title = row.title;
+        this.description = (row.description) ? row.description: '';
         this.tags = (row.tags) ? row.tags: '';
         this.start = new Date(row.start);
         this.end = new Date(row.end);
@@ -101,6 +108,7 @@ class BC_CalendarActivity {
         this.end = fc_activity.end;
         this.color = fc_activity.extendedProps.color;
         this.group_key = fc_activity.extendedProps.group_key;
+        this.description = fc_activity.extendedProps.description;
         this.tags = fc_activity.extendedProps.tags;
     }
   
@@ -115,6 +123,7 @@ class BC_CalendarActivity {
         this.isNew = true;
         this.isFullDay = false; //info.allDay; - can set to allDay else where
         this.title = '';
+        this.description = '';
         this.tags = '';
         this.start = dateStart;
         this.end = dateEnd;

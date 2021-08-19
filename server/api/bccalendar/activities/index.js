@@ -1,11 +1,14 @@
 import express from "express";
 
-import { makeDb } from "../../../helpers/database";
+import { getAllCalendarActivities } from "./activity_functions"
+
+//import { makeDb } from "../../../helpers/database";
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
 
+    /*
     let getGroupIdFromActivity = (activity) => {
         if (activity.event_type == 'event') {
             return 'E_' + activity.vendor_id2;
@@ -65,9 +68,22 @@ router.post("/", async (req, res) => {
     }
 
     let defaultColors = ['aqua', 'brown', 'coral', 'cyan', 'green', 'orange', 'yellow', 'pink', 'gold'];
+*/
 
-    try {
+    //try {
         const { vendorId, userId } = req.body;
+
+
+        getAllCalendarActivities(vendorId, userId, (error, retValue) => {
+            if (error) {
+                res.status(500).error({error:true, Message: error});
+                return;
+            }
+            res.status(200).json(retValue);
+
+        });
+
+/*
         const db = makeDb();
 
        let queryParam = [vendorId]; //, userId];
@@ -133,6 +149,7 @@ router.post("/", async (req, res) => {
     } catch (error) {
 
     }
+    */
 });
 
 export default router;

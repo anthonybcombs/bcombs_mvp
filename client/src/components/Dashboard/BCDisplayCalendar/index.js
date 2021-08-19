@@ -11,6 +11,7 @@ import { requestVendor } from "../../../redux/actions/Vendors";
 import BC_CalendarActivities from "../BCCalendar/BC_CalendarActivities";
 import BC_CalendarActivity from "../BCCalendar/activity/BC_CalendarActivity";
 import ActivityDisplaylModal from "./ActivityDisplayModal/index.js";
+import CalendarFeedModal from "./CalendarFeedModal/index.js";
 
 import * as Icon from "react-icons/fi";
 import Checkbox from "react-custom-checkbox";
@@ -120,7 +121,8 @@ const BCDisplayCalendar = props => {
   const [calendarActivities, setCalendarActivies] = useState();
 
   const [isLoading, setIsLoading] = useState(true)
-  const [isAddEventModalShown, setIsActivityDetailsModalShown] = useState(false)
+  const [isAddEventModalShown, setIsActivityDetailsModalShown] = useState(false);
+  const [isFeedModalShown, setIsFeedModalShown] = useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
   
   //const componentRef = useRef();
@@ -131,6 +133,9 @@ const BCDisplayCalendar = props => {
 
   const showModal = () => setIsActivityDetailsModalShown(true);
   const hideModal = () => setIsActivityDetailsModalShown(false);
+
+  const showFeedModal = () => setIsFeedModalShown(true);
+  const hideFeedModal = () => setIsFeedModalShown(false);
 
   useEffect(() => {
     console.log('AUTHHHH MY APPLCIATION - vendors loaded', auth)
@@ -200,6 +205,11 @@ const BCDisplayCalendar = props => {
     setSearchTerm(event.target.value);
   };
 
+  const handleAddFeedButtonClick = event => {
+    setCalendarActivies(Object.assign(new BC_CalendarActivities(), calendarActivities));
+    showFeedModal();
+  };
+
   /*
   const myCustomButtons = {
     settings: {
@@ -223,6 +233,11 @@ const BCDisplayCalendar = props => {
         handleClose={hideModal}
         >
       </ActivityDisplaylModal>
+      <CalendarFeedModal show={isFeedModalShown}
+        handleClose={hideFeedModal}
+        calendarActivities={calendarActivities}
+        >
+      </CalendarFeedModal>
 
       <div id="calendarControls" className="control-block">
         <h3>My Calandar</h3>
@@ -272,7 +287,7 @@ const BCDisplayCalendar = props => {
                     </Collapsible>
                     <Collapsible trigger="Export Links" >
                       <p>Provides a URL that you can add to the calendar you use (e.g. Google Calendar) so that it displays these events</p>
-                      <Button id="GetExportLink">Get Link URL</Button>
+                      <Button id="GetExportLink" onClick={handleAddFeedButtonClick}>Get Link URL</Button>
                       </Collapsible>
               </div>
           )

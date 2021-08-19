@@ -32,6 +32,8 @@ class BC_CalendarActivities {
 
     static async LoadActivities(vendorId, auth, handleCalendarActiviesReturned) {
         let activiesToReturn = new BC_CalendarActivities();
+        activiesToReturn.vendor = vendorId;
+        activiesToReturn.user_id = auth.user_id;
         try {
             console.log('apiCall get calendar activities: vendor ', vendorId)
             if (!vendorId) {

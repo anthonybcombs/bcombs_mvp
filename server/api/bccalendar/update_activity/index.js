@@ -10,7 +10,7 @@ router.post("/", async (req, res) => {
         const { vendorId, userId, eventData } = req.body;
         const db = makeDb();
 
-        let queryParam = [vendorId, eventData.event_type, userId, eventData.title, eventData.tags,
+        let queryParam = [vendorId, eventData.event_type, userId, eventData.title, eventData.tags, eventData.description,
             new Date(eventData.start), new Date(eventData.end), eventData.isFullDay, eventData.idClass, 
             eventData.id ];
 
@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
 
        let query = 
        "UPDATE bc_calendar_event " +
-        "SET vendor_id2 = ?, event_type = ?, creator_auth_id = ?, title = ?, tags = ?, " + 
+        "SET vendor_id2 = ?, event_type = ?, creator_auth_id = ?, title = ?, tags = ?, description = ?, " + 
             "start = ?, end = ?, is_full_day = ?, vendor_app_group = ? " +
        "WHERE id = ?"; 
         console.log('Query ', query);

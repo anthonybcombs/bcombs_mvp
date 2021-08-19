@@ -21,6 +21,7 @@ import apiBCCallendarAddActivity from "./api/bccalendar/add_activity";
 import apiBCCallendarUpdateActivity from "./api/bccalendar/update_activity";
 import apiBCCallendarDeleteActivity from "./api/bccalendar/delete_activity";
 import apiBCCallendarFeed from "./api/bccalendar/feed";
+import apiBCCallendarFeedAdd from "./api/bccalendar/feed_add";
 
 import services from "./services";
 const path = require("path");
@@ -77,6 +78,7 @@ app.use("/api/bccalendar/add_activity", apiBCCallendarAddActivity);
 app.use("/api/bccalendar/update_activity", apiBCCallendarUpdateActivity);
 app.use("/api/bccalendar/delete_activity", apiBCCallendarDeleteActivity);
 app.use("/api/bccalendar/feed", apiBCCallendarFeed);
+app.use("/api/bccalendar/add_feed", apiBCCallendarFeedAdd);
 // app.get("/", (req, res) => {
 //   res.status(200).send("bon");
 // });

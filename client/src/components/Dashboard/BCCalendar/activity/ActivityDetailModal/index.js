@@ -52,6 +52,7 @@ const NewEventModal = props => {
   const [showHideClassName, setShowHideClassName] = useState("modal display-none");
   const [tabIndex, setTabIndex] = useState(0);
   const [localClassId, setLocalClassId] = useState('');
+  const [localDescription, setLocalDescription] = useState(activityData.description ? activityData.description : '');
 
   //let tempActivityData = null;
 
@@ -62,6 +63,12 @@ const NewEventModal = props => {
 
   const handleTagsChange = (e) => {
     localActivity.setTags(e.target.value);
+    setLocalAcivity(new BC_CalendarActivity(localActivity));
+  }
+
+  const handleDescriptionChange = (e) => {
+    console.log("description changed to: "+e.target.value);
+    localActivity.setDescription(e.target.value);
     setLocalAcivity(new BC_CalendarActivity(localActivity));
   }
 
@@ -87,6 +94,8 @@ const NewEventModal = props => {
       setTabIndex(1);
     }
     setLocalClassId(localActivity.idClass ? localActivity.idClass: '');
+    console.log('setting local description to: ' + localActivity.description);
+    setLocalDescription(localActivity.description ? localActivity.description: '');
   }, [localActivity]);
 
   const setStartDate = (start) => {
@@ -167,6 +176,12 @@ const NewEventModal = props => {
                                   setEndDate={setEndDate}
                                 />
                                                             <div className="col-md-6 control-wrapper">
+                                <label className="control-label">Details</label>
+                                <textarea className="form-control form-white details-input" 
+                                  onChange={handleDescriptionChange} value={localDescription}
+                                     name="description"></textarea>
+                            </div>
+                                                            <div className="col-md-6 control-wrapper">
                                 <label className="control-label">Tags</label>
                                 <input className="form-control form-white tags-input" placeholder="Enter tags (comma separate)" 
                                   onChange={handleTagsChange} value={localActivity.tags}
@@ -194,6 +209,12 @@ const NewEventModal = props => {
                                   endDate={localActivity.end}
                                   setEndDate={setEndDate}
                                 />
+                                                            <div className="col-md-6 control-wrapper">
+                                <label className="control-label">Details</label>
+                                <textarea className="form-control form-white details-input" 
+                                  onChange={handleDescriptionChange} value={localDescription}
+                                     name="description"></textarea>
+                            </div>
                               <div className="col-md-6 control-wrapper">
                                 <label className="control-label">Tags</label>
                                 <input className="form-control form-white tags-input" placeholder="Enter tags (comma separate)" 

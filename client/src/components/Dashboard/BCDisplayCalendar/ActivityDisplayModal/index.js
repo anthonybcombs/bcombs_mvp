@@ -42,6 +42,12 @@ const DisplayEventModal = props => {
                                 From: {moment(activityData.start).format('dddd, MMMM Do hh:mm a')} to {moment(activityData.end).format('hh:mm a')}
                             </div>
                         </div>
+                        { (activityData.description) &&  
+                            <div>
+                                Details: {activityData.description}
+                                </div>
+                        
+                            }
                         { (activityData.tags) &&  
                             <div>
                                 Tags: {activityData.tags}
