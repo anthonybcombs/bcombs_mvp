@@ -824,7 +824,7 @@ export default function index() {
 			// }
 	
 			
-			console.log('filterApplications123123123', filterApplications);
+			console.log(' applications.activeapplications1111 FILTERED APPLICATIONS', filterApplications)
 			setApplicationList(filterApplications);
 		}
 	}, [applications, appGroupId, appGroupIds]);
