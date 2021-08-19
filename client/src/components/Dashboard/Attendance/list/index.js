@@ -705,8 +705,15 @@ export default function index() {
 					break;
 				}
 			}
-			console.log('requestGetApplications', vendorId);
-			dispatch(requestGetApplications(vendorId));
+			// console.log('requestGetApplications', vendorId);
+			// if(name !== 'custom') {
+			// 	dispatch(requestGetApplications(vendorId));
+			// }
+			if(name !== 'custom') {
+				dispatch(requestGetApplications(vendorId));
+			}
+			
+			
 		}
 	}, [vendors]);
 
