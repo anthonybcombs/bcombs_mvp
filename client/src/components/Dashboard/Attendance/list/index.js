@@ -806,12 +806,24 @@ export default function index() {
 			console.log(' applications.activeapplications1111 filterApplications', filterApplications)
 			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
 			filterApplications = filterApplications.filter(item => item.class_teacher && ((item.class_teacher === appGroupId ||  item.class_teacher.includes(appGroupIds)) || (searchParams && searchParams.type === 'all'  && item.form === searchParams.formId)));
-			// filterApplications = filterApplications.map(item => {
-			// 	//let currentAttendance = attendance.list.find(att => item.child && (att.child_id === item.child.ch_id));
-			// 	// item.class_teacher = name;
-			// 	return item;
-			// });
-
+	
+			// if(searchParams.type === 'all'){
+			// 	filterApplications = filterApplications.map(item => {
+			// 		const classTeacher = item.class_teacher.split(',');
+			// 		if(classTeacher.length > 0) {
+			// 			return classTeacher.map(item2 => {
+			// 				return {
+			// 					...item,
+			// 					class_teacher:item2
+			// 				}
+			// 			})
+			// 		}
+			// 		return item
+			// 	}).flat()
+			// 	console.log('filterApplications',filterApplications)
+			// }
+	
+			
 			console.log('filterApplications123123123', filterApplications);
 			setApplicationList(filterApplications);
 		}
