@@ -826,7 +826,7 @@ const resolvers = {
           }
         }
 
-        if(is_form) {
+        if(application && application.is_form) {
           await updateApplicationUser({
             custom_app_id: application.app_id,
             received_reminder: application.received_reminder ? 1 : 0,
