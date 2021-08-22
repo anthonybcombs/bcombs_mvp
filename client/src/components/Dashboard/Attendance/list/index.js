@@ -812,7 +812,7 @@ export default function index() {
 			console.log(' applications.activeapplications1111 appGroupId', appGroupId)
 			console.log(' applications.activeapplications1111 filterApplications', filterApplications)
 			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
-			filterApplications = filterApplications.filter(item => item.class_teacher && ((item.class_teacher === appGroupId ||  item.class_teacher.includes(appGroupIds)) || (searchParams && searchParams.type === 'all'  && item.form === searchParams.formId)));
+			filterApplications = filterApplications.filter(item => (item.class_teacher && (appGroupId && (item.class_teacher === appGroupId) ||  item.class_teacher.includes(appGroupIds))) || (searchParams && searchParams.type === 'all'  && item.form === searchParams.formId));
 	
 			// if(searchParams.type === 'all'){
 			// 	filterApplications = filterApplications.map(item => {
@@ -833,6 +833,7 @@ export default function index() {
 			
 			console.log(' applications.activeapplications1111 FILTERED APPLICATIONS', filterApplications)
 			setApplicationList(filterApplications);
+			setFilteredApplicationList(filterApplications);
 		}
 	}, [applications, appGroupId, appGroupIds]);
 
