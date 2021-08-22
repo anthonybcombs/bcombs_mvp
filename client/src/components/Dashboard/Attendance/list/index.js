@@ -712,9 +712,9 @@ export default function index() {
 			if(name !== 'custom') {
 				dispatch(requestGetApplications(vendorId));
 			}
-			else {
-				dispatch(requestGetCustomApplicationByVendor(vendorId))
-			}
+			// else {
+			// 	dispatch(requestGetCustomApplicationByVendor(vendorId))
+			// }
 			
 			
 		}
@@ -810,15 +810,15 @@ export default function index() {
 			console.log('filterApplications',filterApplications)
 			setApplicationList(filterApplications);
 		} else if (applications && applications.customActiveApplications.length > 0 && name === 'custom') {
-			let filterApplications = applications.customActiveApplications;
+			let filterApplications = applications.activeapplications;
 			console.log(' applications.activeapplications1111', applications.activeapplications)
 			console.log(' applications.activeapplications1111 applications', applications)
 			console.log(' applications.activeapplications1111 appGroupId', appGroupId)
 			console.log(' applications.activeapplications1111 filterApplications', filterApplications)
 			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
-			filterApplications = filterApplications.filter(item =>  item.form === searchParams.formId && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  item.class_teacher.includes(appGroupIds))) /* || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId) */ );
-			const test123 = applications.customActiveApplications.filter(item =>  item.form === searchParams.formId && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  item.class_teacher.includes(appGroupIds))) /* || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId) */ );
-			console.log('test1233333',test123)
+			filterApplications = filterApplications.filter(item => ( item.form === searchParams.formId && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  item.class_teacher.includes(appGroupIds))))  || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId));
+			// const test123 = applications.customActiveApplications.filter(item =>  item.form === searchParams.formId && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  item.class_teacher.includes(appGroupIds)))  || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)  );
+			// console.log('test1233333',test123)
 			// if(searchParams.type === 'all'){
 			// 	filterApplications = filterApplications.map(item => {
 			// 		const classTeacher = item.class_teacher.split(',');
