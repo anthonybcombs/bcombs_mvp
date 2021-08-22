@@ -828,7 +828,7 @@ export default function index() {
 					return item.class_teacher.includes(appGroupId)
 				}
 
-				return searchParams && searchParams.type === 'all' && item.form === searchParams.formId && item.class_teacher
+				return searchParams && searchParams.type === 'all' && item.form === searchParams.formId;
 				// ( item.form === searchParams.formId  && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  ))) || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)
 			});
 			// const test123 = applications.customActiveApplications.filter(item =>  item.form === searchParams.formId && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  item.class_teacher.includes(appGroupIds)))  || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)  );
