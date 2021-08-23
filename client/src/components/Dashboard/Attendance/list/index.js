@@ -739,10 +739,10 @@ export default function index() {
 
 						currentAppGroupId = group.app_grp_id;
 						currentAppGroupName = group.name;
-						break;
+						// break;
 					}
 				}
-
+				console.log('applicationGroups currentAppGroupId',currentAppGroupId)
 				setAppGroupId(currentAppGroupId);
 
 				setAppGroupIds([...(filteredGroup || [])])
@@ -810,7 +810,7 @@ export default function index() {
 			console.log('filterApplications',filterApplications)
 			setApplicationList(filterApplications);
 		} else if (applications && applications.customActiveApplications.length > 0 && name === 'custom') {
-			let filterApplications = applications.activeapplications;
+			let filterApplications = applications.customActiveApplications;
 			console.log(' applications.activeapplications1111', applications.activeapplications)
 			console.log(' applications.activeapplications1111 applications', applications)
 			console.log(' applications.activeapplications1111 appGroupId', appGroupId)
@@ -820,12 +820,13 @@ export default function index() {
 			// let appGroupIdStrings = appGroupIds ? appGroupIds.join(',')
 			filterApplications = filterApplications.filter(item => {
 			
-				if(  item.form === searchParams.formId && appGroupIds && item.class_teacher && item.class_teacher !== '') {
+				
+				 if(item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '' && appGroupIds.length === 0) {
+					return item.class_teacher.includes(appGroupId)
+				}
+				else if(  item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '' && appGroupIds) {
 					let classTeacherArr = item.class_teacher.split(',');
 					return classTeacherArr.some(appGrpId => appGroupIds.includes(appGrpId))
-				}
-				else if(item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '') {
-					return item.class_teacher.includes(appGroupId)
 				}
 
 				return searchParams && searchParams.type === 'all' && item.form === searchParams.formId;
