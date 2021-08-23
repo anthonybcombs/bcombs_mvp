@@ -21,7 +21,7 @@ export default function index({
       ...selectedGradeTest,
       [child_id]: newObj
     })
-    
+
   }
   const formatValue = (item, key) => {
     const { test_name = 'act', grade_taken = 1, attempt, year_level = '' } = selectedGradeTest[item.child_id] || {}
@@ -55,7 +55,7 @@ export default function index({
       const latestAttempt = getGradeTestAttempt(standardized_test, grade_taken, test_name, item.child_id)
       return (
         <CustomSelect
-          value={attempt === undefined ? (latestAttempt - 1) : attempt }
+          value={attempt === undefined ? (latestAttempt - 1) : attempt}
           options={[
             { value: '', label: 'New attempt' },
             ...options
@@ -98,7 +98,7 @@ export default function index({
       ...acc,
       [key]: val
     }
-    
+
   }, {})
 
   const [populateExistingData, setPopulateExistingData] = useState(true)
@@ -106,10 +106,10 @@ export default function index({
   const [rows, setRows] = useState([])
 
   const keysObj = keys.reduce((acc, curr) => ({ ...acc, [curr]: '' }), {})
- 
-  console.log('keysObj',keysObj)
-  console.log('keysObj keys',keys)
-  console.log('keysObj standardized_test',rows)
+
+  console.log('keysObj', keysObj)
+  console.log('keysObj keys', keys)
+  console.log('keysObj standardized_test', rows)
   const handleSave = () => {
     let newData = []
     if (isTestInput) {
@@ -160,10 +160,10 @@ export default function index({
           id: uuid()
         }
       })
-      .filter(gr => !(existingRows.find(e => (e.child_id === gr.child_id && e.year_level == gr.year_level))))
+        .filter(gr => !(existingRows.find(e => (e.child_id === gr.child_id && e.year_level == gr.year_level))))
 
     }
-    console.log('newDataaaa,',newData)
+    console.log('newDataaaa,', newData)
     onSelectStudent(newData)
   }
 
@@ -200,7 +200,7 @@ export default function index({
     <SelectStudentDialogStyled
       data-testid='app-big-calendar-create-modal'
       className='modal'>
-      <div className='modal-content'>
+      <div className='modal-content' style={{ margin: 0 }}>
         <div className='modal-header'>
           Select student
         </div>
@@ -214,19 +214,19 @@ export default function index({
             headerRightActions={
               isTestInput
                 ? [(
-                    <div className='populate'>
-                      <label htmlFor='populate' className='checkboxContainer'>
-                        <input
-                          type='checkbox'
-                          id='populate'
-                          checked={populateExistingData}
-                          onChange={({ target: { checked } }) => setPopulateExistingData(checked)}
-                        />
-                        <span className='checkmark' />
-                        <span id='populate' className='labelName'>Populate existing record</span>
-                      </label>
-                    </div>
-                  )]
+                  <div className='populate'>
+                    <label htmlFor='populate' className='checkboxContainer'>
+                      <input
+                        type='checkbox'
+                        id='populate'
+                        checked={populateExistingData}
+                        onChange={({ target: { checked } }) => setPopulateExistingData(checked)}
+                      />
+                      <span className='checkmark' />
+                      <span id='populate' className='labelName'>Populate existing record</span>
+                    </label>
+                  </div>
+                )]
                 : null
             }
 
