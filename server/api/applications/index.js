@@ -952,23 +952,26 @@ export const createCustomApplication = async ({
   let application;
 
   try {
+    console.log('form_contents createCustomApplication',form_contents)
     result = await db.query(
       `INSERT INTO vendor_custom_application(
         form_id,
         user,
         vendor,
         form_contents,
-        category
+        category,
+        form_name
       ) VALUES (
         UUID_TO_BIN(UUID()),
         UUID_TO_BIN(?),
         UUID_TO_BIN(?),
-        ?, ?)`,
+        ?, ?, ?)`,
       [
         user,
         vendor,
         form_contents,
-        category
+        category,
+        form_contents.formTitle
       ]
     );
 
@@ -1228,8 +1231,8 @@ export const submitCustomApplication = async ({
   let result = {};
   let lastId = "";
   let application;
-
   try {
+    console.log('submitCustomApplication',form_contents)
     result = await db.query(
       `INSERT INTO custom_application(
         app_id,
