@@ -286,8 +286,9 @@ export default function index(props) {
 	const getFormClassCount = group => {
 	
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
-			if (app.class_teacher) {
-				return group.app_grp_id && app.class_teacher.includes(group.app_grp_id);
+			if (app.class_teacher && group.form === app.form) {
+				const classTeacher = app.class_teacher.split(',');
+				return group.app_grp_id && classTeacher.includes(group.app_grp_id);
 			}
 		});
 		return size ? size.length : 0
