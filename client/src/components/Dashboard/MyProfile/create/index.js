@@ -11,6 +11,7 @@ const CreateRelativeModalStyled = styled.div`
   }
   .modal-content {
     width: 40%;
+    top:40%;
   }
   @media (min-width: 600px) {
   }

@@ -30,6 +30,8 @@ const EditProfileModal = styled.form`
   }
   .modal-content {
     width: 40%;
+    position:absolute;
+    top:70%;
   }
   @media screen and (max-width: 1024px) {
     .modal-content {
