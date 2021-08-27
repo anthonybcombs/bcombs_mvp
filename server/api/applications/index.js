@@ -870,7 +870,7 @@ export const getUserApplicationsByUserId = async user_id => {
           received_reminder,
           received_update
         FROM application_user
-        WHERE user_id=UUID_TO_BIN(?)
+        WHERE user_id=UUID_TO_BIN(?) AND is_archived=0
         ORDER BY id DESC
       `,
       [user_id]
@@ -1410,7 +1410,7 @@ export const getUserCustomApplicationsByUserId = async user_id => {
           received_reminder,
           received_update
         FROM application_user
-        WHERE user_id=UUID_TO_BIN(?)
+        WHERE user_id=UUID_TO_BIN(?) AND is_archived=0
         ORDER BY id DESC
       `,
       [user_id]
@@ -1446,11 +1446,8 @@ export const getApplicationByAppGroup = async ({
           id,
           BIN_TO_UUID(app_id) as app_id
           FROM custom_application
-          WHERE class_teacher=?
-        `,
-        [
-          app_grp_id
-        ]
+          WHERE class_teacher LIKE '%${app_grp_id}%' and is_archived=0
+        `
       )
     } else {
       applications = await db.query(
@@ -1459,11 +1456,8 @@ export const getApplicationByAppGroup = async ({
           id,
           BIN_TO_UUID(app_id) as app_id
           FROM application
-          WHERE class_teacher=?
-        `,
-        [
-          app_grp_id
-        ]
+          WHERE class_teacher LIKE '%${app_grp_id}%' AND is_archived=0
+        `
       )
     }
 

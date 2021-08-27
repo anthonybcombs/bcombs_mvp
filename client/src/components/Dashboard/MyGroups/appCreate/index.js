@@ -14,6 +14,7 @@ const NewContactModal = styled.div`
     text-align: center;
   }
   .modal-content {
+    top: 45%;
     width: 30%;
   }
   @media (min-width: 600px) {
