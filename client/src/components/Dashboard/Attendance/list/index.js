@@ -793,13 +793,15 @@ export default function index() {
 		) {
 			let filterApplications = [];
 			if (appGroupId === 'all') {
-				filterApplications = applications.activeapplications;
-				// filterApplications = applications.activeapplications.filter(application => {
-				// 	return appGroupIds.includes(application.class_teacher)
-				// });
+				///filterApplications = applications.activeapplications;
+				filterApplications = applications.activeapplications.filter(application => {
+					const classTeachers = application.class_teacher && application.class_teacher.split(',')
+					return appGroupIds && appGroupIds.some(grpId => classTeachers && classTeachers.includes(grpId))
+					//return appGroupIds.includes(application.class_teacher)
+				});
 			} else {
 				filterApplications = applications.activeapplications.filter(application => {
-					return application && application.class_teacher &&  (application.class_teacher === appGroupId || application.class_teacher.includes(appGroupId));
+					return application &&  application.class_teacher &&  application.class_teacher.includes(appGroupId);
 				});
 			}
 			filterApplications = filterApplications.map(item => {
