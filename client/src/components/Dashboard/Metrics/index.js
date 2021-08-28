@@ -87,7 +87,7 @@ const MetricStyled = styled.div`
   }
 
   .grid-2b {
-    grid-template-columns: 62% 31%;
+    grid-template-columns: 72% 21%;
     gap: 6.66666%;
   }
 
