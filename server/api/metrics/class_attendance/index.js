@@ -54,33 +54,63 @@ router.post("/", async (req, res) => {
     }
     
     try {
-        const { id, year, vendorId } = req.body;
+        const { id, year, vendorId, formId } = req.body;
         const db = makeDb();
-        console.log('year ', year)
+        console.log('year ', year);
 
+        let queryFormFormIds =
+            "select BIN_TO_UUID(vca.form_id) as formId, vca.form_name from vendor_custom_application as vca, vendor v " +
+            "where vca.vendor=v.id AND v.id2=? and vca.status <> 'deleted' " + 
+            "order by vca.form_name;";
+        let queryFormFormIdsParam = [vendorId];
+        const response0 =  await db.query(queryFormFormIds, queryFormFormIdsParam);
+        //console.log('Students per session: ', response);
+        if (!response0 || response0.length == 0) {
+            res.status(200).json({ classStats: [], formArray: [] });
+            return;
+        }
+
+        let formArray = [{key: 'fid_0', name: 'BCombs Form'}];
+        for (let r0 = 0; r0 < response0.length; r0++) {
+            formArray.push({key: response0[r0].formId, name: response0[r0].form_name });
+        }
+
+        let getClassesTableQuery =
+            "From attendance a2, vendor b2, vendor_app_groups c2 " +
+            "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
+                "b2.id2 = ? and c2.vendor = b2.id and " + 
+                "a2.app_group_id = c2.app_grp_id ";
+        
         let dtLastTxt = '' + (year - 1) + '-08-01';
         let dtNextTxt = '' + year + '-08-01'; 
+        let queryParamForClassesQuery = [dtLastTxt, dtNextTxt, vendorId];
 
-        let queryStudentPerClassParam = [dtLastTxt, dtNextTxt, vendorId];
+        if (formId != 'fid_0') {
+            getClassesTableQuery =
+                "From attendance a2, vendor_app_groups c2 " +
+                "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
+                    "c2.form = UUID_TO_BIN(?) and " +
+                    "a2.app_group_id = c2.app_grp_id ";
+            queryParamForClassesQuery = [dtLastTxt, dtNextTxt, formId];
+        }
+
+        //let queryStudentPerClassParam = [dtLastTxt, dtNextTxt, vendorId];
         let queryStudentsPerClass = 
          "SELECT count(c.app_grp_id) as numStudentsInClass, a.class_id, a.class_name " + 
          "FROM vendor_app_groups_to_student c " +
              "inner join ( " +
                  "Select distinct(c2.app_grp_id) as app_group_id, c2.id as class_id, c2.name as class_name " +
-                 "From attendance a2, vendor b2, vendor_app_groups c2 " +
-                 "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
-                     "b2.id2 = ? and c2.vendor = b2.id and " + 
-                     "a2.app_group_id = c2.app_grp_id " +
+                 getClassesTableQuery +
                  "group by c2.app_grp_id, c2.id " +
              ") as a " +
             "on a.app_group_id = c.app_grp_id " +
          "where c.app_grp_id = a.app_group_id group by c.app_grp_id";
  
         // console.log('Query ', queryStudentsPerClass);
-         const response =  await db.query(queryStudentsPerClass, queryStudentPerClassParam);
-         //console.log('Students per class: ', response);
+         const response =  await db.query(queryStudentsPerClass, queryParamForClassesQuery);
+         console.log('Students per class: ', response);
          if (!response || response.length == 0) {
-             res.status(200).json({ classStats: [] });
+             res.status(200).json({ classStats: [], classList: [{key: 'id_none', name: 'No classes For Form'}], formArray: formArray });
              return;
          }
   
@@ -90,22 +120,19 @@ router.post("/", async (req, res) => {
             resultData['id_' + row.class_id] = row;
         }
  
-        let queryStudentsPerSessionParam = [dtLastTxt, dtNextTxt, vendorId];
+        //let queryStudentsPerSessionParam = [dtLastTxt, dtNextTxt, vendorId];
         let queryStudentsPerSession = 
             "Select count(*) as numAttended, c2.id as class_id, c2.name as class_name " +
-            "From attendance a2, vendor b2, vendor_app_groups c2 " +
-            "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
-                "a2.attendance_status <> 'Absent' and " +
-                "b2.id2 = ? and c2.vendor = b2.id and " + 
-                "a2.app_group_id = c2.app_grp_id " +
+            getClassesTableQuery +
+                 "and a2.attendance_status <> 'Absent' " +
             "group by c2.id, c2.name, a2.attendance_date, a2.attendance_start_time " +
             "order by c2.id";
 
        // console.log('Query ', queryStudentsPerSession);
-        const response2 =  await db.query(queryStudentsPerSession, queryStudentsPerSessionParam);
+        const response2 =  await db.query(queryStudentsPerSession, queryParamForClassesQuery);
         //console.log('Students per session: ', response);
         if (!response2 || response2.length == 0) {
-            res.status(200).json({ classStats: [] });
+            res.status(200).json({ classStats: [], formArray: formArray });
             return;
         }
     
@@ -115,21 +142,18 @@ router.post("/", async (req, res) => {
         }
      
      //get how many sessions each student attended
-        let querySessionsPerStudentParam = [dtLastTxt, dtNextTxt, vendorId];
+        //let querySessionsPerStudentParam = [dtLastTxt, dtNextTxt, vendorId];
         let querySessionsPerStudent = 
             "Select c2.id as class_id, c2.name as class_name, COUNT(child_id) as numAttended  " +
-            "From attendance a2, vendor b2, vendor_app_groups c2 " +
-            "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
-                "a2.attendance_status <> 'Absent' and " +
-                "b2.id2 = ? and c2.vendor = b2.id and " + 
-                "a2.app_group_id = c2.app_grp_id " +
+            getClassesTableQuery +
+                "and a2.attendance_status <> 'Absent' " +
             "group by c2.id, a2.child_id";
 
         console.log('Query ', querySessionsPerStudent);
-        const response3 =  await db.query(querySessionsPerStudent, querySessionsPerStudentParam);
+        const response3 =  await db.query(querySessionsPerStudent, queryParamForClassesQuery);
         //console.log('Sessions per student: ', response);
         if (!response3 || response3.length == 0) {
-            res.status(200).json({ classStats: [] });
+            res.status(200).json({ classStats: [], formArray: formArray });
             return;
         }
     
@@ -199,7 +223,10 @@ router.post("/", async (req, res) => {
         //put all entry at top of list
         classList.unshift({key:'id_' + allClassRow.class_id, name: allClassRow.class_name});
         
-        res.status(200).json({ classStats: resultData, classList: classList });
+        console.log("**result data: ", resultData);
+        console.log("classList: ", classList);
+
+        res.status(200).json({ classStats: resultData, classList: classList, formArray: formArray });
         //res.status(200).json({ user: response && response[0] });
     } catch (error) {
         console.log("ERROR-----> ", error);
