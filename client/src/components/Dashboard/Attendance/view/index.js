@@ -676,17 +676,16 @@ export default function index(props) {
 	useEffect(() => {
 
 		if (attendance.list) {
-	
+			console.log('attendance.list',attendance.list)
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 
 				attDate = attDate.replaceAll('-', '_');
 
 				let formApplication = {};
-
+	
 				if (searchParams && searchParams.type === 'custom') {
 					formApplication = applications.activeapplications.find(item => (item.class_teacher && item.class_teacher.includes(app_group_id)) && (item.app_id === att.child_id) && (item.form === searchParams.formId));
-			
 				}
 				
 				return {
@@ -744,6 +743,11 @@ export default function index(props) {
 				if (searchParams && searchParams.type === 'custom') {
 					currentAttendance = currentAttendance.filter(item => item.custom && item.custom.id)
 				}
+				else {
+					currentAttendance = currentAttendance.filter(item => item.firstname && item.lastname)
+				}
+
+				console.log('currentAttendance',currentAttendance)
 			//let displayDayList = [];
 			// THERE ERROR IS HERE
 			
