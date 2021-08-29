@@ -21,7 +21,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ importData = [], childId, requestList, groupType, loading, onHasChanged }) => {
+export default ({ applications,importData = [], childId, requestList, groupId, groupType, loading, onHasChanged }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -458,7 +458,6 @@ export default ({ importData = [], childId, requestList, groupType, loading, onH
   const handleAdd = () => {
     setSelectStudentOpen(true)
   }
-
   const remapSelectedRowsByAttemp = (data) => {
     let newRows = []
     let currMax = {}
@@ -681,12 +680,15 @@ export default ({ importData = [], childId, requestList, groupType, loading, onH
 
   useEffect(() => {
     if (gradeInput.gradeList) {
-      let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+      let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id && e.app_group_id.includes(groupId))
+      console.log('newGradeList',newGradeList)
+      console.log('newGradeList groupType',groupType)
       if (groupType === 'bcombs') {
         newGradeList = newGradeList.filter(e => !e.form_contents)
       } else {
         newGradeList = newGradeList.filter(e => e.form_contents)
       }
+      console.log('newGradeList 2222',newGradeList)
       newGradeList = newGradeList.flatMap(e => e.standardized_test)
       const newRows = cloneDeep(rows).map(row => {
         const { student_test_id } = newGradeList.find(e => (
@@ -719,12 +721,22 @@ export default ({ importData = [], childId, requestList, groupType, loading, onH
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
 
-  let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+  let selectStudentRows =  (gradeInput.gradeList || []).filter(e => e.app_group_id)
+
+
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
-    selectStudentRows = selectStudentRows.filter(e => e.form_contents)
+    if(selectStudentRows.length > 0) {
+      selectStudentRows = selectStudentRows.filter(e => e.form_contents)
+    }
+    else {
+      selectStudentRows =  applications && applications.customActiveApplications.filter(e => e.form === groupId)
+    }
+
   }
+  console.log('selectStudentRows',selectStudentRows)
+
 
   return (
     <div

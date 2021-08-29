@@ -486,7 +486,7 @@ export default ({ child_id }) => {
         : `/dashboard/grades?group_id=${group_id}&group_type=${group_type}`
     window.location.replace(backUrl)
   }
-
+  console.log('applicationszzzz',applications)
   return (
     <GradeInputStyled>
       <div className='gradeInputView-header'>
@@ -540,7 +540,7 @@ export default ({ child_id }) => {
             Back
           </a>
           <StandardTest 
-            applications={applications.activeapplications}
+            applications={applications}
             importData={formattedSt}
             childId={child_id}
             groupType={group_type}
@@ -580,10 +580,12 @@ export default ({ child_id }) => {
             </div>
           </div>
           <GradeInput
+           applications={applications.activeapplications}
             importData={formattedGrades}
             childId={child_id}
             loading={gradeLoading}
             groupType={group_type}
+            groupId={group_id}
             requestList={requestList}
             onHasChanged={(bool) => setHasChanged(bool)}
           />
