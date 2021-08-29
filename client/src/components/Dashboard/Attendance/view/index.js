@@ -662,15 +662,19 @@ export default function index(props) {
 
 	useEffect(() => {
 
-		if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
+
+		if (searchParams.formId) {
+			
+			dispatch(requestAttendance(searchParams.formId, 'forms'));
+		}
+		else if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
 	
 			dispatch(requestAttendance( searchParams.type === 'all' ? 'all' : app_group_id, 'bcombs'));
 			dispatch(requestEventAttendance(app_group_id));
-		} else if (searchParams.formId) {
-			dispatch(requestAttendance(searchParams.formId, 'forms'));
-		}
+		} 
 	}, []);
 	useEffect(() => {
+
 		if (attendance.list) {
 	
 			let currentAttendance = attendance.list.reduce((accum, att) => {
@@ -681,9 +685,10 @@ export default function index(props) {
 				let formApplication = {};
 
 				if (searchParams && searchParams.type === 'custom') {
-					formApplication = applications.activeapplications.find(item => item.app_id === att.child_id);
+					formApplication = applications.activeapplications.find(item => (item.class_teacher && item.class_teacher.includes(app_group_id)) && (item.app_id === att.child_id) && (item.form === searchParams.formId));
+			
 				}
-
+				
 				return {
 					...accum,
 					[att.child_id]: {
@@ -728,16 +733,20 @@ export default function index(props) {
 						{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
 					);
 
-					console.log('Total Hourssss', totalHours);
+		
 
 					return {
 						...att,
 						...totalHours,
 					};
 				});
+
+				if (searchParams && searchParams.type === 'custom') {
+					currentAttendance = currentAttendance.filter(item => item.custom && item.custom.id)
+				}
 			//let displayDayList = [];
 			// THERE ERROR IS HERE
-
+			
 			let displayDayList = attendance.list.map(att => {
 				
 				return format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)

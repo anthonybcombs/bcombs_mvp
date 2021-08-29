@@ -10,7 +10,7 @@ import { getHours, max } from 'date-fns';
 import { requestGetApplications, requestGetCustomApplicationByVendor } from '../../../redux/actions/Application';
 import { requestGetForms } from '../../../redux/actions/FormBuilder';
 import { requestUserGroup, requestArchiveGroup, requestAddArchiveGroup, requestRemoveGroupFromArchive, clearGroupArchive } from '../../../redux/actions/Groups';
-import { requestVendor,requestVendorAppGroups } from '../../../redux/actions/Vendors';
+import { requestVendor, requestVendorAppGroups } from '../../../redux/actions/Vendors';
 import Loading from '../../../helpers/Loading.js'
 
 const AttendanceSummaryStyled = styled.div`
@@ -215,7 +215,7 @@ export default function index(props) {
 		}
 	);
 
-	const { formAppGroups = [],formList = [] } = form;
+	const { formAppGroups = [], formList = [] } = form;
 	const [formIds, setFormIds] = useState([]);
 	const [appGroups, setAppGroups] = useState([]);
 	const [selectedVendor, setSelectedVendor] = useState({});
@@ -237,7 +237,7 @@ export default function index(props) {
 		}
 	}, []);
 
-	console.log('applicationszxczxczxczxc',applications)
+	console.log('applicationszxczxczxczxc', applications)
 	useEffect(() => {
 		if (vendors && vendors[0]) {
 			setSelectedVendor(vendors[0]);
@@ -250,16 +250,16 @@ export default function index(props) {
 	}, [vendors]);
 
 	useEffect(() => {
-		if(form.formList) {
+		if (form.formList) {
 			const ids = formList && formList.map(form => form.form_id);
 			setFormIds(ids)
 		}
-	},[form.formList])
+	}, [form.formList])
 	// dispatch(requestVendorAppGroups(vendors[0].id))
 
 	// useEffect(() => {
 	// 	if (groups && groups.appplication_groups ) {
-		
+
 	// 		setAppGroups(groups.application_groups);
 	// 	}
 	// }, [groups]);
@@ -284,7 +284,7 @@ export default function index(props) {
 	};
 
 	const getFormClassCount = group => {
-	
+
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher && group.form === app.form) {
 				const classTeacher = app.class_teacher.split(',');
@@ -295,7 +295,7 @@ export default function index(props) {
 	};
 
 
-	
+
 	const getDefaultClassCount = () => {
 		const appGroupIds = appGroups.map(item => item.app_grp_id);
 		const size = applications.activeapplications.filter(app => {
@@ -310,11 +310,11 @@ export default function index(props) {
 		let newSelected = []
 		if (checked) {
 			const allGroups = filteredGroups.map(group => {
-				const formGroup =  group.form &&  filteredFormList.find(formItem => formItem.form_id === group.form)
+				const formGroup = group.form && filteredFormList.find(formItem => formItem.form_id === group.form)
 				return {
 					vendor_id: auth.user_id,
 					app_group_id: group?.app_grp_id,
-					app_group_type: formGroup && formGroup.form_contents ? 'forms' : 'bcombs' 
+					app_group_type: formGroup && formGroup.form_contents ? 'forms' : 'bcombs'
 				}
 			})
 			const allForms = filteredFormList.map(item => ({
@@ -324,19 +324,19 @@ export default function index(props) {
 			}))
 			newSelected = [...allGroups, ...allForms]
 		}
-    setSelected(newSelected)
-  }
+		setSelected(newSelected)
+	}
 
 	const handleSelect = ({ target: { checked } }, data) => {
-    setSelected(checked ? [...selected, data] : selected.filter(e => e.app_group_id !== data.app_group_id))
-  }
+		setSelected(checked ? [...selected, data] : selected.filter(e => e.app_group_id !== data.app_group_id))
+	}
 
 	const searched = (strArr = []) => {
 		return !search || !![...strArr, 'input', 'view'].find(str => str.toLowerCase().includes(search.toLowerCase()))
 	}
 
 	const renderTableData = (archived = false) => {
-	
+
 		const currentForm = formList.find(form => form.vendor === vendors[0]?.id);
 		let newFilteredGroups = [...filteredGroups]
 		if (archived) {
@@ -347,7 +347,7 @@ export default function index(props) {
 		return newFilteredGroups
 			.map((group, index) => {
 				let count = group.size;
-				const formGroup =  group.form &&  form.formList.find(formItem => formItem.form_id === group.form );
+				const formGroup = group.form && form.formList.find(formItem => formItem.form_id === group.form);
 				let classCount = formGroup && formGroup.form_contents ? getFormClassCount(group) : getClassCount(group);
 				let availableCount = count - classCount;
 				availableCount = availableCount < 0 ? 0 : availableCount;
@@ -356,46 +356,50 @@ export default function index(props) {
 					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : 'Bcombs Form',
 					classCount.toString(), count.toString()
 				]) ? (
-						<tr key={group.id} className={`${archived ? 'archived' : ''}_${showArchived ? 'show' : 'hide'}`}>
-							<td>
-								<input
-									type='checkbox'
-									checked={selected.find(e => e.app_group_id === group?.app_grp_id)}
-									onChange={e => handleSelect(e, {
-										vendor_id: auth.user_id,
-										app_group_id: group?.app_grp_id,
-										app_group_type: formGroup && formGroup.form_contents ? 'forms' : 'bcombs' })
-									}
-								/>
-							</td>
-							<td>
-								{formGroup && formGroup.form_contents
-									? formGroup.form_contents?.formTitle
-									: 'Bcombs Form'}
-							</td>
-							<td>
-								{group.name}
-								<div>{classCount} / {count}</div>
-							</td>
-							<td>
-								{formGroup && formGroup.form_contents 
-									? <Link to={`/dashboard/attendance/${formGroup.vendor}/custom?formId=${formGroup.form_id}`}>Input</Link>
-									: <Link to={'/dashboard/attendance/' + selectedVendor?.id2 + '/' + group.name}>Input</Link>
-								} /
-								<Link to={'/dashboard/attendance/view/' + group?.app_grp_id}>View</Link>
-							</td>
-							<td>
-								{formGroup && formGroup.form_contents 
-									? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms'}>Input</Link>
-									: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>Input</Link>
-								} /
-								{formGroup && formGroup.form_contents 
-									? <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=forms'}>View</Link>
-									: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>View</Link>
+					<tr key={group.id} className={`${archived ? 'archived' : ''}_${showArchived ? 'show' : 'hide'}`}>
+						<td>
+							<input
+								type='checkbox'
+								checked={selected.find(e => e.app_group_id === group?.app_grp_id)}
+								onChange={e => handleSelect(e, {
+									vendor_id: auth.user_id,
+									app_group_id: group?.app_grp_id,
+									app_group_type: formGroup && formGroup.form_contents ? 'forms' : 'bcombs'
+								})
 								}
-							</td>
-						</tr>
-					) : null
+							/>
+						</td>
+						<td>
+							{formGroup && formGroup.form_contents
+								? formGroup.form_contents?.formTitle
+								: 'Bcombs Form'}
+						</td>
+						<td>
+							{group.name}
+							<div>{classCount} / {count}</div>
+						</td>
+						<td>
+							{formGroup && formGroup.form_contents
+								? <Link to={`/dashboard/attendance/${formGroup.vendor}/custom?formId=${formGroup.form_id}`}>Input</Link>
+								: <Link to={'/dashboard/attendance/' + selectedVendor?.id2 + '/' + group.name}>Input</Link>
+							} /
+							{formGroup && formGroup.form_contents
+								? <Link to={'/dashboard/attendance/view/' + group?.app_grp_id + '?type=custom&formId=' + formGroup.form_id}>View</Link>
+								: <Link to={'/dashboard/attendance/view/' + group?.app_grp_id}>View</Link>
+							}
+						</td>
+						<td>
+							{formGroup && formGroup.form_contents
+								? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms'}>Input</Link>
+								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>Input</Link>
+							} /
+							{formGroup && formGroup.form_contents
+								? <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=forms'}>View</Link>
+								: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>View</Link>
+							}
+						</td>
+					</tr>
+				) : null
 			});
 	};
 
@@ -429,7 +433,7 @@ export default function index(props) {
 	const getTotalAvailable = () => {
 		let totalAvailable = 0;
 		// const totalCount = getTotalCount();
-	  const totalClassCount = getTotalClassCount();
+		const totalClassCount = getTotalClassCount();
 		// const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
 
 		for (const group of filteredGroups) {
@@ -514,7 +518,7 @@ export default function index(props) {
 
 	const getTotalClassCountByForm = id => {
 		// console.log('form.formAppGroups', form.formAppGroups)
-		const formGroups = form && form.formAppGroups &&  form.formAppGroups.filter(appGroup => appGroup.form === id) ;
+		const formGroups = form && form.formAppGroups && form.formAppGroups.filter(appGroup => appGroup.form === id);
 		let totalClassCount = 0;
 		for (const group of formGroups) {
 			totalClassCount += getFormClassCount(group);
@@ -540,7 +544,7 @@ export default function index(props) {
 			dispatch(requestAddArchiveGroup(selected))
 		}
 	}
-	console.log('filteredFormList',filteredFormList)
+	console.log('filteredFormList', filteredFormList)
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Student Data</h2>
@@ -551,7 +555,7 @@ export default function index(props) {
 					) : (
 						<>
 							<div className='header'>
-								<div className='field search-input'> 
+								<div className='field search-input'>
 									<FontAwesomeIcon className='search-icon' icon={faSearch} />
 									<input
 										id='search'
@@ -578,12 +582,12 @@ export default function index(props) {
 								<tbody>
 									<tr>
 										<th className='checkboxTh'>
-												<input
-													type='checkbox'
-													checked={selected.length && selected.length === (filteredGroups.length + filteredFormList.length)}
-													onChange={handleSelectAll}
-												/>
-											</th>
+											<input
+												type='checkbox'
+												checked={selected.length && selected.length === (filteredGroups.length + filteredFormList.length)}
+												onChange={handleSelectAll}
+											/>
+										</th>
 										<th>Form</th>
 										<th>
 											<div>Class</div>
@@ -604,7 +608,7 @@ export default function index(props) {
 									{
 										searched(['Bcombs Form', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
 											<tr>
-												<td/>
+												<td />
 												<td>Bcombs Form</td>
 												<td>
 													All
@@ -630,36 +634,37 @@ export default function index(props) {
 												getTotalClassCountByForm(item.form_id).toString(),
 												getTotalCountByForm(item.form_id).toString()
 											]) ? (
-													<tr>
-														<td>
-															<input
-																type='checkbox'
-																checked={selected.find(e => e.app_group_id === item?.form_id)}
-																onChange={e => handleSelect(e, {
-																	vendor_id: auth.user_id,
-																	app_group_id: item?.form_id,
-																	app_group_type: 'forms' })
-																}
-															/>
-														</td>
-														<td>{item.form_contents?.formTitle}</td>
-														<td>
-															All
-															<div>{getTotalClassCountByForm(item.form_id)} / {getTotalCountByForm(item.form_id)}</div>
-														</td>
-														<td>
-															<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}&type=all`}>Input</Link> /
-															<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}&type=all`}>View</Link>
-														</td>
-														<td>
-															<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms&type=all'}>Input</Link>/
-															<Link to={'/dashboard/grades?group_id=' + item?.form_id + '&group_type=forms&type=all'}>View</Link>
+												<tr>
+													<td>
+														<input
+															type='checkbox'
+															checked={selected.find(e => e.app_group_id === item?.form_id)}
+															onChange={e => handleSelect(e, {
+																vendor_id: auth.user_id,
+																app_group_id: item?.form_id,
+																app_group_type: 'forms'
+															})
+															}
+														/>
+													</td>
+													<td>{item.form_contents?.formTitle}</td>
+													<td>
+														All
+														<div>{getTotalClassCountByForm(item.form_id)} / {getTotalCountByForm(item.form_id)}</div>
+													</td>
+													<td>
+														<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}&type=all`}>Input</Link> /
+														<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}&type=all`}>View</Link>
+													</td>
+													<td>
+														<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms&type=all'}>Input</Link>/
+														<Link to={'/dashboard/grades?group_id=' + item?.form_id + '&group_type=forms&type=all'}>View</Link>
 
-															{/* <Link to={`/dashboard/grades/input?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>Input</Link> /
+														{/* <Link to={`/dashboard/grades/input?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>Input</Link> /
 															<Link to={`/dashboard/grades?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>View</Link> */}
-														</td>
-													</tr>
-												) : null
+													</td>
+												</tr>
+											) : null
 										})}
 									{renderTableData()}
 									{filteredFormList
@@ -670,36 +675,37 @@ export default function index(props) {
 												getTotalClassCountByForm(item.form_id).toString(),
 												getTotalCountByForm(item.form_id).toString()
 											]) ? (
-													<tr className={`archived_${showArchived ? 'show' : 'hide'}`}>
-														<td>
-															<input
-																type='checkbox'
-																checked={selected.find(e => e.app_group_id === item?.form_id)}
-																onChange={e => handleSelect(e, {
-																	vendor_id: auth.user_id,
-																	app_group_id: item?.form_id,
-																	app_group_type: 'forms' })
-																}
-															/>
-														</td>
-														<td>{item.form_contents?.formTitle}</td>
-														<td>
-															All
-															<div>{getTotalClassCountByForm(item.form_id)} / {getTotalCountByForm(item.form_id)}</div>
-														</td>
-														<td>
-															<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}`}>Input</Link> /
-															<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}`}>View</Link>
-														</td>
-														<td>
-															<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms'}>Input</Link>/
-															<Link to={'/dashboard/grades?group_id=' + item?.form_id + '&group_type=forms'}>View</Link>
+												<tr className={`archived_${showArchived ? 'show' : 'hide'}`}>
+													<td>
+														<input
+															type='checkbox'
+															checked={selected.find(e => e.app_group_id === item?.form_id)}
+															onChange={e => handleSelect(e, {
+																vendor_id: auth.user_id,
+																app_group_id: item?.form_id,
+																app_group_type: 'forms'
+															})
+															}
+														/>
+													</td>
+													<td>{item.form_contents?.formTitle}</td>
+													<td>
+														All
+														<div>{getTotalClassCountByForm(item.form_id)} / {getTotalCountByForm(item.form_id)}</div>
+													</td>
+													<td>
+														<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}`}>Input</Link> /
+														<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}`}>View</Link>
+													</td>
+													<td>
+														<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms'}>Input</Link>/
+														<Link to={'/dashboard/grades?group_id=' + item?.form_id + '&group_type=forms'}>View</Link>
 
-															{/* <Link to={`/dashboard/grades/input?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>Input</Link> /
+														{/* <Link to={`/dashboard/grades/input?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>Input</Link> /
 															<Link to={`/dashboard/grades?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>View</Link> */}
-														</td>
-													</tr>
-												) : null
+													</td>
+												</tr>
+											) : null
 										})}
 									{renderTableData(true)}
 								</tbody>
