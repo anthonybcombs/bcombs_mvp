@@ -110,6 +110,7 @@ export default function index({
   console.log('keysObj', keysObj)
   console.log('keysObj keys', keys)
   console.log('keysObj standardized_test', rows)
+  console.log('keysObj propRows', propRows)
   const handleSave = () => {
     let newData = []
     if (isTestInput) {
@@ -168,6 +169,7 @@ export default function index({
   }
 
   useEffect(() => {
+
     let newRows = propRows.flatMap(row => {
       let { firstname = '', lastname = '', standardized_test = [], child_id, cumulative_grades, app_id, app_group_id, application_type, type, form_contents } = row
       if (isForm && form_contents) {
@@ -179,7 +181,7 @@ export default function index({
         name: (firstname || lastname) ? `${firstname} ${lastname}` : '',
         firstname,
         lastname,
-        child_id,
+        child_id: child_id || app_id,
         app_id,
         app_group_id,
         application_type,

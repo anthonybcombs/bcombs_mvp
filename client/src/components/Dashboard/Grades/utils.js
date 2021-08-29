@@ -7,7 +7,7 @@ export const getGradeTestAttempt = (tests = [], grade_taken = 1, test_name, chil
 export const getNameFromCustomForm = (form_contents) => {
   let firstname = '--'
   let lastname = '--'
-  const { formData = {} } = JSON.parse(form_contents)
+  const { formData = {} } = typeof form_contents === 'string' ? JSON.parse(form_contents) : form_contents
   const nameField = formData.find(e => e.type === 'name')
   const loginField = formData.find(e => e.type === 'login')
   if (nameField) {

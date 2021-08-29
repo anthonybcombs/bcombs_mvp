@@ -21,15 +21,15 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ applications,importData = [], childId, requestList, groupId, groupType, loading, onHasChanged }) => {
+export default ({ applications, importData = [], childId, requestList, groupId, groupType, loading, onHasChanged }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
   }))
 
-  const attempOptions = Array(5).fill().map((e, i) => ({ value: i+1, label: `${i+1}` }))
+  const attempOptions = Array(5).fill().map((e, i) => ({ value: i + 1, label: `${i + 1}` }))
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
-  const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i+4, label: `${i + 4}th` }))]
+  const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))]
 
   const initialColumns = {
     name: { type: 'string', label: 'Name' },
@@ -73,7 +73,7 @@ export default ({ applications,importData = [], childId, requestList, groupId, g
     final_student_rank: { type: 'int' },
     attachment: { type: 'object' },
     grades: { type: 'object' },
-   // firstname: { type: 'string' },
+    // firstname: { type: 'string' },
     //lastname: { type: 'string' }
   }
 
@@ -247,7 +247,7 @@ export default ({ applications,importData = [], childId, requestList, groupId, g
     // }
 
     var reader = new FileReader()
-    reader.onloadend = function() {
+    reader.onloadend = function () {
       handleInputChange(
         {
           target: {
@@ -310,7 +310,7 @@ export default ({ applications,importData = [], childId, requestList, groupId, g
               const highlightStyle = ['school_year_start', 'school_year_end'].includes(key) ? highLight(row[key] ? moment(row[key]).format('MM/yyyy') : '', key) : highLight(row[key], key)
 
               return (
-                <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, position: 'relative', wordBreak: 'break-word'}} className={`${key}`}>
+                <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, position: 'relative', wordBreak: 'break-word' }} className={`${key}`}>
                   {
                     !enableEdit && <div className='editCover' />
                   }
@@ -492,7 +492,7 @@ export default ({ applications,importData = [], childId, requestList, groupId, g
   const handleDelete = (skipConfirm = false) => {
     const selectedIds = selected.map(e => e.id)
     const newRows = remapSelectedRowsByAttemp(cloneDeep(rows).filter(e => !selectedIds.includes(e.id)))
-    
+
     onHasChanged(true)
     setRows(newRows)
     setFilteredRows(newRows)
@@ -557,7 +557,7 @@ export default ({ applications,importData = [], childId, requestList, groupId, g
                 }
                 return acc
               }, {})
-    
+
             return newGrade
           })
 
@@ -681,28 +681,58 @@ export default ({ applications,importData = [], childId, requestList, groupId, g
   useEffect(() => {
     if (gradeInput.gradeList) {
       let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id && e.app_group_id.includes(groupId))
-      console.log('newGradeList',newGradeList)
-      console.log('newGradeList groupType',groupType)
+      console.log('newGradeList', newGradeList)
+      console.log('newGradeList groupType', groupType)
       if (groupType === 'bcombs') {
         newGradeList = newGradeList.filter(e => !e.form_contents)
       } else {
-        newGradeList = newGradeList.filter(e => e.form_contents)
+        //newGradeList = newGradeList.filter(e => e.form_contents)
+
+        // if (newGradeList.length > 0) {
+        //   newGradeList = newGradeList.filter(e => e.form_contents)
+        // }
+        // else {
+        //   newGradeList = applications && applications.filter(e => e.form === groupId)
+        // }
+
+        newGradeList = newGradeList.filter(e => e.form_contents && e.form === groupId)
+      
+        if (newGradeList.length === 0) {
+          newGradeList = applications && applications.map(item => {
+            return {
+              ...item,
+              standardized_test:[]
+            }
+          })
+    
+        }
       }
-      console.log('newGradeList 2222',newGradeList)
-      newGradeList = newGradeList.flatMap(e => e.standardized_test)
-      const newRows = cloneDeep(rows).map(row => {
-        const { student_test_id } = newGradeList.find(e => (
-          e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
-        )) || {}
-        return { ...row, student_test_id: student_test_id || row.student_test_id }
-      })
-      setRows(newRows)
-      setFilteredRows(newRows)
+      console.log('newGradeListzzzzzzzzzzz',newGradeList)
+      let updatedGradeList = newGradeList.filter(e => e.standardized_test).flatMap(e => e.standardized_test )
+ 
+      if(updatedGradeList.length > 0) {
+        const newRows = cloneDeep(rows).map(row => {
+          const { student_test_id } = updatedGradeList.find(e => (
+            e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
+          )) || {}
+          return { ...row, student_test_id: student_test_id || row.student_test_id }
+        })
+        console.log('NEW ROWSSSSSSSSSS', newRows)
+        setRows(newRows)
+        setFilteredRows(newRows)
+      }
+      else {
+        setRows(newGradeList)
+        setFilteredRows(newGradeList)
+      }
+   
     }
+ 
+
   }, [gradeInput.gradeList])
 
   useEffect(() => {
-    if(!rows.length) {
+    if (!rows.length) {
       onHasChanged(false)
     }
   }, [rows])
@@ -721,22 +751,24 @@ export default ({ applications,importData = [], childId, requestList, groupId, g
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
 
-  let selectStudentRows =  (gradeInput.gradeList || []).filter(e => e.app_group_id)
+  let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
 
-
+  console.log('gradeInput 123123123123', gradeInput)
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
-    if(selectStudentRows.length > 0) {
-      selectStudentRows = selectStudentRows.filter(e => e.form_contents)
+    console.log('selectStudentRows 1111', selectStudentRows)
+    selectStudentRows = selectStudentRows.filter(e => e.form_contents && e.form === groupId)
+    if (selectStudentRows.length === 0) {
+      selectStudentRows = applications && applications.filter(e => e.form === groupId)
     }
-    else {
-      selectStudentRows =  applications && applications.customActiveApplications.filter(e => e.form === groupId)
-    }
+
+
 
   }
-  console.log('selectStudentRows',selectStudentRows)
-
+  console.log('selectStudentRows 2222', selectStudentRows)
+  console.log('selectStudentRows rowsss', rows)
+  console.log('selectStudentRows applications', applications)
 
   return (
     <div
@@ -813,7 +845,7 @@ export default ({ applications,importData = [], childId, requestList, groupId, g
                       : renderTableData()
                   }
                 </tbody>
-                
+
               </table>
               {/* {
                 (rows.length === 0 || filteredRows.length === 0) && (
@@ -874,7 +906,7 @@ export default ({ applications,importData = [], childId, requestList, groupId, g
                 <button
                   className='btn-review'
                   disabled={rows.length === 0}
-                  onClick={() => {}}
+                  onClick={() => { }}
                 >
                   <FontAwesomeIcon icon={faCheck} />
                   <span>Review</span>

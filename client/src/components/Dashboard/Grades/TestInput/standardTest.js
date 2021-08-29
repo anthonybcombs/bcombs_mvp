@@ -19,7 +19,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ applications = [], importData = [], childId, loading, groupType, requestList, onHasChanged }) => {
+export default ({ applications = [], importData = [], childId, groupId , loading, groupType, requestList, onHasChanged }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -610,18 +610,46 @@ export default ({ applications = [], importData = [], childId, loading, groupTyp
       if (groupType === 'bcombs') {
         newGradeList = newGradeList.filter(e => !e.form_contents)
       } else {
-        newGradeList = newGradeList.filter(e => e.form_contents)
+        newGradeList = newGradeList.filter(e => e.form_contents  && e.form === groupId)
+
+
+      
+        if (newGradeList.length === 0) {
+          newGradeList = applications && applications.map(item => {
+            return {
+              ...item,
+              standardized_test:[]
+            }
+          })
+        }
       }
-  
-      newGradeList = newGradeList.flatMap(e => e.standardized_test)
-      const newRows = cloneDeep(rows).map(row => {
-        const { student_test_id } = newGradeList.find(e => (
-          e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
-        )) || {}
-        return { ...row, student_test_id: student_test_id || row.student_test_id }
-      })
-      setRows(newRows)
-      setFilteredRows(newRows)
+      
+    
+      // newGradeList = newGradeList.flatMap(e => e.standardized_test)
+      // const newRows = cloneDeep(rows).map(row => {
+      //   const { student_test_id } = newGradeList.find(e => (
+      //     e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
+      //   )) || {}
+      //   return { ...row, student_test_id: student_test_id || row.student_test_id }
+      // })
+      // setRows(newRows)
+      // setFilteredRows(newRows)
+      let updatedGradeList = newGradeList.filter(e => e.standardized_test).flatMap(e => e.standardized_test )
+      if(updatedGradeList.length > 0) {
+        const newRows = cloneDeep(rows).map(row => {
+          const { student_test_id } = updatedGradeList.find(e => (
+            e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
+          )) || {}
+          return { ...row, student_test_id: student_test_id || row.student_test_id }
+        })
+        console.log('NEW ROWSSSSSSSSSS', newRows)
+        setRows(newRows)
+        setFilteredRows(newRows)
+      }
+      else {
+        setRows(newGradeList)
+        setFilteredRows(newGradeList)
+      }
     }
     else {
 
@@ -653,9 +681,15 @@ export default ({ applications = [], importData = [], childId, loading, groupTyp
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
-    selectStudentRows = selectStudentRows.filter(e => e.form_contents)
+    selectStudentRows = selectStudentRows.filter(e => e.form_contents && e.form === groupId )
+
+    if (selectStudentRows.length === 0) {
+      selectStudentRows = applications && applications.filter(e => e.form === groupId)
+    }
   }
 
+  console.log('ROWSSSSSSSSSSSS', rows)
+  console.log('ROWSSSSSSSSSSSS selectStudentRows', selectStudentRows)
   return (
     <div
       className = 'standardTestTable'
