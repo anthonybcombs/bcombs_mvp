@@ -540,7 +540,7 @@ export default ({ child_id }) => {
             Back
           </a>
           <StandardTest 
-            applications={applications}
+            applications={applications.activeapplications}
             importData={formattedSt}
             childId={child_id}
             groupType={group_type}
@@ -580,7 +580,7 @@ export default ({ child_id }) => {
             </div>
           </div>
           <GradeInput
-           applications={applications.activeapplications}
+           applications={applications}
             importData={formattedGrades}
             childId={child_id}
             loading={gradeLoading}
