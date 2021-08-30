@@ -115,7 +115,7 @@ export default function index({
     let newData = []
     if (isTestInput) {
       newData = selected.map(eachId => {
-        const { child_id, name, standardized_test } = rows.find(e => e.child_id === eachId) || {}
+        const { child_id, name, standardized_test  = [] } = rows.find(e => e.child_id === eachId) || {}
         const { test_name = 'act', grade_taken = 1, attempt } = selectedGradeTest[eachId] || {}
         const newAttempt = getGradeTestAttempt([...standardized_test, ...existingRows.filter(e => !e.student_test_id)], grade_taken, test_name, eachId)
         const latestAttemp = attempt === undefined ? (newAttempt - 1) : attempt
@@ -138,7 +138,7 @@ export default function index({
       })
     } else {
       newData = selected.map(eachId => {
-        const { child_id, name, cumulative_grades, firstname, lastname, app_id, app_group_id, application_type, type, } = rows.find(e => e.child_id === eachId) || {}
+        const { child_id, name, cumulative_grades = [], firstname, lastname, app_id, app_group_id, application_type, type, } = rows.find(e => e.child_id === eachId) || {}
         const { year_level: latest_grade } = maxBy(cumulative_grades, 'year_level') || {}
         const { year_level } = selectedGradeTest[eachId] || {}
         const yl = year_level || latest_grade
