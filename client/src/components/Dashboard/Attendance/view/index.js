@@ -672,11 +672,15 @@ export default function index(props) {
 			dispatch(requestAttendance( searchParams.type === 'all' ? 'all' : app_group_id, 'bcombs'));
 			dispatch(requestEventAttendance(app_group_id));
 		} 
+		else if (searchParams && searchParams.type === 'custom' && searchParams.appGroupIds && !attendance.isLoading) {
+			dispatch(requestAttendance( 'all' , 'forms'));
+			dispatch(requestEventAttendance(app_group_id));
+		} 
 	}, []);
 	useEffect(() => {
 
 		if (attendance.list) {
-			console.log('attendance.list',attendance.list)
+	
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 
@@ -684,7 +688,19 @@ export default function index(props) {
 
 				let formApplication = {};
 	
-				if (searchParams && searchParams.type === 'custom') {
+				
+				if (searchParams && searchParams.type === 'custom' && searchParams.appGroupIds) {
+					const appGroupIDList = searchParams.appGroupIds.split(',')
+					formApplication = applications.activeapplications.find(item => {
+						if( (item.app_id === att.child_id) && (item.form === searchParams.formId)) {
+							const classTeacher = item.class_teacher && item.class_teacher.split(',');
+							return appGroupIDList.some(appGrpId => classTeacher.includes(appGrpId))
+						}
+			
+					});
+
+				}
+				else if (searchParams && searchParams.type === 'custom' && !searchParams.appGroupIds)   {
 					formApplication = applications.activeapplications.find(item => (item.class_teacher && item.class_teacher.includes(app_group_id)) && (item.app_id === att.child_id) && (item.form === searchParams.formId));
 				}
 				

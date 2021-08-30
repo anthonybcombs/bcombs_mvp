@@ -686,8 +686,8 @@ export default function index() {
 		if (name === 'custom' && vendor_id && auth.user_id) {
 			//dispatch(requestGetForms({ vendor: vendor_id, categories: [] }));
 
-			dispatch(requestGetCustomApplications(searchParams.formId));
-			///dispatch(requestGetCustomApplicationByVendor(vendor_id));
+			//dispatch(requestGetCustomApplications(searchParams.formId));
+			dispatch(requestGetCustomApplicationByVendor(vendor_id));
 			dispatch(requestVendor(auth.user_id));
 			dispatch(requestUserGroup(auth.email));
 		} else if ((name !== 'custom' || name === 'all') && vendor_id && auth.user_id) {
@@ -725,13 +725,13 @@ export default function index() {
 
 			console.log('useEffect searchParams',searchParams)
 		if (name === 'custom' && searchParams) {
-			let currentAppGroupId = '';
+			//let currentAppGroupId = '';
 			let currentAppGroupName = '';
 			if (groups && groups.application_groups) {
 				const applicationGroups = groups.application_groups;
 				console.log('applicationGroups',applicationGroups)
 				console.log('applicationGroups searchParams.formId',searchParams.formId)
-				const filteredGroup = applicationGroups.filter(item => item.app_grp_id === searchParams.appGroupId).map(item => item.app_grp_id)
+				const filteredGroup = applicationGroups.filter(item => ( searchParams && searchParams.appGroupId && (item.app_grp_id === searchParams.appGroupId)) || (searchParams && searchParams.type === 'all' && searchParams && searchParams.formId === item.form) ).map(item => item.app_grp_id)
 				console.log('applicationGroups filteredGroup',filteredGroup)
 				
 				for (const group of applicationGroups) {
@@ -744,8 +744,9 @@ export default function index() {
 				}
 				// console.log('applicationGroups currentAppGroupId',currentAppGroupId)
 				setAppGroupId(searchParams.appGroupId);
-
-				setAppGroupIds([...(filteredGroup || [])])
+				const ids = searchParams && searchParams.appGroupIds ? searchParams.appGroupIds.split(',') : [];
+		
+				setAppGroupIds([...(ids || [])])
 				if(filteredGroup[0] && filteredGroup[0].name) {
 					setAppGroupName(filteredGroup[0].name);
 				}
@@ -772,6 +773,8 @@ export default function index() {
 				if (vendors[0] && vendors[0].app_groups) {
 					const applicationGroups = vendors[0].app_groups;
 					const ids = applicationGroups.map(item => item.app_grp_id);
+					// console.log('idsssssssssssss',ids)
+				
 					setAppGroupIds(ids);
 					setAppGroupId('all');
 				}
@@ -780,6 +783,8 @@ export default function index() {
 	}, [groups, vendors]);
 
 	useEffect(() => {
+		console.log('applicationszxczxc',applications)
+		console.log('applicationszxczxc name',name)
 		if (appGroupId && appGroupId !== '') {
 			dispatch(
 				requestAttendance(name === 'custom' ? searchParams.appGroupId : appGroupId, name === 'custom' ? 'custom' : 'bcombs')
@@ -812,26 +817,29 @@ export default function index() {
 			console.log('filterApplications',filterApplications)
 			setApplicationList(filterApplications);
 		} else if (applications && applications.customActiveApplications.length > 0 && name === 'custom') {
-			let filterApplications = applications.customActiveApplications;
-			console.log(' applications.activeapplications1111', applications.activeapplications)
+			let filterApplications = applications.customActiveApplications.filter(item => item.class_teacher &&  item.form === searchParams.formId);
+			//console.log('2222applications.activeapplications1111', applications.customActiveApplications.filter(item => item.class_teacher))
 			console.log(' applications.activeapplications1111 applications', applications)
 			console.log(' applications.activeapplications1111 appGroupId', appGroupId)
 			console.log(' applications.activeapplications1111 filterApplications', filterApplications)
 			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
-			console.log('appGroupIdszzzzzzzz',appGroupIds)
+			console.log('applications.activeapplications1111 FILTERED APPLICATIONS IDISSSSSSSSSSSSSSSS',appGroupIds)
 			// let appGroupIdStrings = appGroupIds ? appGroupIds.join(',')
 			filterApplications = filterApplications.filter(item => {
 			
 				
-				 if(item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '' && appGroupIds.length === 0) {
+				 if(item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '' && searchParams && searchParams.type !== 'all') {
 					return item.class_teacher.includes(appGroupId)
 				}
-				else if(  item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '' && appGroupIds) {
-					let classTeacherArr = item.class_teacher.split(',');
-					return classTeacherArr.some(appGrpId => appGroupIds.includes(appGrpId))
+				else if(   item.class_teacher  && appGroupIds &&  searchParams && searchParams.type === 'all' && item.form === searchParams.formId ) {
+				//	let classTeacherArr = item.class_teacher.split(',');
+					let resp =  appGroupIds.some(appId => item.class_teacher.includes(appId))
+					console.log('RESPPPP', resp)
+					return resp;
+					//return classTeacherArr.some(appGrpId => appGroupIds.includes(appGrpId))
 				}
 
-				return searchParams && searchParams.type === 'all' && item.form === searchParams.formId;
+				//return searchParams && searchParams.type === 'all' && item.class_teacher && item.form === searchParams.formId; 
 				// ( item.form === searchParams.formId  && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  ))) || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)
 			});
 			// const test123 = applications.customActiveApplications.filter(item =>  item.form === searchParams.formId && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  item.class_teacher.includes(appGroupIds)))  || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)  );
@@ -857,7 +865,7 @@ export default function index() {
 			setApplicationList(filterApplications);
 			setFilteredApplicationList(filterApplications);
 		}
-	}, [applications, appGroupId, appGroupIds]);
+	}, [applications, appGroupId, appGroupIds  ]);
 
 	useEffect(() => {
 		console.log('ATTENDANCEEEEE123123123123 applications', applications);
@@ -897,8 +905,9 @@ export default function index() {
 		let updatedApplication = [...(applicationList || [])];
 		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
+		let currentApplication = updatedApplication.find(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
-
+		console.log('currentApplication',currentApplication)
 		if (
 			updatedApplication[currentIndex] &&
 			updatedApplication[currentIndex].attendance_status === attendanceType &&
@@ -1013,7 +1022,8 @@ export default function index() {
 	};
 
 	const handleAttendanceSave = () => {
-		reset();
+		//reset();
+		console.log('applicationList',applicationList)
 		const attendanceList = applicationList.map(app => {
 			return {
 				app_id: app.app_id,
@@ -1023,11 +1033,13 @@ export default function index() {
 				volunteer_hours: app.volunteer_hours ? parseFloat(app.volunteer_hours) : 0,
 				mentoring_hours: app.mentoring_hours ? parseFloat(app.mentoring_hours) : 0,
 				is_excused: app.excused ? 1 : 0,
+			
 			};
 		});
+		const isAll = searchParams && searchParams.type === 'all'
 		const payload = {
 			attendance_list: attendanceList,
-			app_group_id: name === 'custom' ? searchParams && searchParams.appGroupId : appGroupId,
+			app_group_id: name === 'custom' ? isAll ? appGroupIds[0] : searchParams && searchParams.appGroupId : appGroupId,
 			attendance_type: name === 'custom' ? 'forms' : 'bcombs',
 			...attendanceDetails,
 			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),

@@ -288,6 +288,8 @@ export default function index(props) {
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher && group.form === app.form) {
 				const classTeacher = app.class_teacher.split(',');
+				console.log('group.app_grp_id123123123',group.app_grp_id)
+				console.log('group.app_grp_id123123123 classTeacher',classTeacher)
 				return group.app_grp_id && classTeacher.includes(group.app_grp_id);
 			}
 		});
@@ -631,6 +633,8 @@ export default function index(props) {
 									{filteredFormList
 										.filter(g => !archivedGroups.find(e => e.app_group_id === g?.form_id))
 										.map(item => {
+											let appGroupIdList = item.app_groups.map(itm => itm.app_grp_id);
+											appGroupIdList = appGroupIdList.join(',')
 											return searched([
 												item.form_contents?.formTitle || '',
 												getTotalClassCountByForm(item.form_id).toString(),
@@ -655,8 +659,8 @@ export default function index(props) {
 														<div>{getTotalClassCountByForm(item.form_id)} / {getTotalCountByForm(item.form_id)}</div>
 													</td>
 													<td>
-														<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}&type=all`}>Input</Link> /
-														<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}&type=all`}>View</Link>
+														<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}&type=all&appGroupIds=${appGroupIdList}`}>Input</Link> /
+														<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}&appGroupIds=${appGroupIdList}`}>View</Link>
 													</td>
 													<td>
 														<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms&type=all'}>Input</Link>/
