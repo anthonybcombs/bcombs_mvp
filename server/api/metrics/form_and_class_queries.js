@@ -66,3 +66,14 @@ export function getSQLClauseForAttendanceAndClassData(year, vendorId, formId) {
     }
 
 }
+
+export function addToSeries(series, key) {
+    let seriesKeyData = series[key];
+    if (!seriesKeyData) {
+        seriesKeyData = { name: key, y: 0};
+    }
+    seriesKeyData.y++;
+    series[key] = seriesKeyData;
+    return series;
+}
+

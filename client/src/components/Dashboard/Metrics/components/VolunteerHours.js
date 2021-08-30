@@ -71,7 +71,7 @@ const VolunteerHours = props => {
             else {
                 setFormList(res.formArray);
             }
-        if (res && res.volunteeringInYear) {
+            if (res && res.volunteeringInYear) {
                 defineChart(res.volunteeringInYear);
             }
             setIsLoading(false);

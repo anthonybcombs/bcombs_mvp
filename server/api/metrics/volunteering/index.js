@@ -1,22 +1,14 @@
 import express from "express";
 
 import { makeDb } from "../../../helpers/database";
-import { getFormsByVendorId, getClassesWithAttendanceByYearAndVendorAndFormId,
-    getSQLClauseForAttendanceAndClassData } from "../form_and_class_queries";
+import { getFormsByVendorId, 
+    getClassesWithAttendanceByYearAndVendorAndFormId,
+    getSQLClauseForAttendanceAndClassData,
+    addToSeries } from "../form_and_class_queries";
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-
-    const addToSeries = (series, key) => {
-        let seriesKeyData = series[key];
-        if (!seriesKeyData) {
-            seriesKeyData = { name: key, y: 0};
-        }
-        seriesKeyData.y++;
-        series[key] = seriesKeyData;
-        return series;
-    }
 
     try {
         const { id, year, grade, vendorId, formId, classId } = req.body;
