@@ -106,7 +106,8 @@ router.post("/", async (req, res) => {
             "on a.app_group_id = c.app_grp_id " +
          "where c.app_grp_id = a.app_group_id group by c.app_grp_id";
  
-        // console.log('Query ', queryStudentsPerClass);
+         console.log('Query ****> ', queryStudentsPerClass);
+         console.log('Q Param -> ', queryParamForClassesQuery);
          const response =  await db.query(queryStudentsPerClass, queryParamForClassesQuery);
          console.log('Students per class: ', response);
          if (!response || response.length == 0) {
