@@ -49,7 +49,7 @@ export default ({
   value, options = [], placeholder = '', icon, onChange,
   isMultiple = false, onRemove, closeOnSelect = false,
   showCheckbox = true, autcomplete = false, displayValue, isObject = true,
-  selectStyle = {}
+  selectStyle = {}, disabled = false
 }) => {
   return (
     <CustomSelectStyled>
@@ -60,6 +60,7 @@ export default ({
         {
           !isMultiple ? (
             <select
+            disabled={disabled}
               style={selectStyle}
               value={value}
               onChange={onChange}

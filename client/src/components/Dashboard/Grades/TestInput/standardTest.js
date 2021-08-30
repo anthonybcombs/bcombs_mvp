@@ -76,7 +76,9 @@ export default ({ applications = [], importData = [], childId, groupId , loading
   const [selectedRowForEdit, setSelectedRowForEdit] = useState('')
 
   const [selectStudentOpen, setSelectStudentOpen] = useState(false)
-  console.log('ROWSSSSSSSSSSSSSSSSSS',rows)
+
+  const [isReview, setIsReview] = useState(false)
+
   const generateColumnFilters = (passedRows) => {
     let newColumnFilters = {}
     Object.keys(initialColumns).forEach(key => {
@@ -240,7 +242,12 @@ export default ({ applications = [], importData = [], childId, groupId , loading
         <tr
           key={`grades-list-${index}`}
           className={`tr-data${row.student_test_id ? ' has-data' : ''} ${enableEdit ? 'edit-enabled' : ''}`}
-          onClick={() => !enableEdit ? handleEnableEditDialog(row.id) : {}}
+          onClick={() =>  {
+            if(!isReview) {
+              return !enableEdit ? handleEnableEditDialog(row.id) : {}
+            }
+           
+          }}
         >
           <td>
             <input
@@ -290,6 +297,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                   {
                     (key === 'test_name' && !row.student_test_id) && (
                       <CustomSelect
+                        disabled={isReview}
                         selectStyle={highlightStyle}
                         value={row[key]}
                         options={testOptions}
@@ -300,6 +308,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                   {
                     (key === 'grade_taken' && !row.student_test_id) && (
                       <CustomSelect
+                      disabled={isReview}
                         selectStyle={highlightStyle}
                         value={row[key]}
                         options={gradeTakenOptions}
@@ -324,10 +333,15 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                             className='attachment'
                             icon={faPaperclip}
                             onClick={() => {
-                              document.getElementById(`attachement_${row.id}`).click()
+                              if(!isReview) {
+
+                                document.getElementById(`attachement_${row.id}`).click()
+                              }
+                              
                             }}
                           />
                           <input
+                             disabled={isReview}
                             id={`attachement_${row.id}`}
                             style={{ display: 'none' }}
                             type='file'
@@ -337,6 +351,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                       ) : (
                         <>
                           <input
+                           disabled={isReview}
                             style={highlightStyle}
                             readOnly
                             value={getFilename(row[key])}
@@ -353,11 +368,11 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                   {
                     key === 'month_taken' && (
                       <DatePicker
+                      disabled={isReview}
                         selected={row[key] && row[key] !== '' ? isNaN(row[key])? new Date(row[key]) : parseInt(row[key]) : ''}
                         onChange={date => {
                          
                           // const formattedDate =  new Date(isNaN(parseInt(parseInt(row[key]))) ? row[key] : parseInt(row[key]));
-                          console.log('datzze',date)
                           handleInputChange({ target: { value: date.toISOString() } }, index, key)
                         }}
                         dateFormat='MM/yyyy'
@@ -369,6 +384,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                   {
                     !['name', 'child_id', 'attachment', 'month_taken', 'test_name', 'grade_taken', 'attempt'].includes(key) && (
                       <input
+                       disabled={isReview}
                         style={highlightStyle}
                         type={type === 'number' ? 'number' : 'text'}
                         value={row[key]}
@@ -583,7 +599,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
               disabled={columnFilters[key].filter(e => e.checked).length === 0}
               onClick={() => {
                 if (columnFilters[key].filter(e => e.checked).length > 0) {
-                  handleApplyFilter(filterFromHeaders)
+                  handleApplyFilter(filterFromHeaders)-
                   handleSetActiveColumnKey()
                 }
               }}
@@ -688,8 +704,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
     }
   }
 
-  console.log('ROWSSSSSSSSSSSS', rows)
-  console.log('ROWSSSSSSSSSSSS selectStudentRows', selectStudentRows)
+
   return (
     <div
       className = 'standardTestTable'
@@ -823,7 +838,9 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                 <button
                   className='btn-review'
                   disabled={rows.length === 0}
-                  onClick={() => {}}
+                  onClick={() => {
+                    setIsReview(!isReview)
+                  }}
                 >
                   <FontAwesomeIcon icon={faCheck} />
                   <span>Review</span>
