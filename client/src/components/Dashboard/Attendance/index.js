@@ -344,6 +344,7 @@ export default function index(props) {
 		} else {
 			newFilteredGroups = newFilteredGroups.filter(g => !archivedGroups.find(e => e.app_group_id === g?.app_grp_id))
 		}
+		console.log('newFilteredGroups',newFilteredGroups)
 		return newFilteredGroups
 			.map((group, index) => {
 				let count = group.size;
@@ -351,7 +352,8 @@ export default function index(props) {
 				let classCount = formGroup && formGroup.form_contents ? getFormClassCount(group) : getClassCount(group);
 				let availableCount = count - classCount;
 				availableCount = availableCount < 0 ? 0 : availableCount;
-
+				console.log('formGroupxxxx',formGroup)
+				console.log('formGroupxxxx group',group)
 				return searched([
 					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : 'Bcombs Form',
 					classCount.toString(), count.toString()
@@ -380,11 +382,11 @@ export default function index(props) {
 						</td>
 						<td>
 							{formGroup && formGroup.form_contents
-								? <Link to={`/dashboard/attendance/${formGroup.vendor}/custom?formId=${formGroup.form_id}`}>Input</Link>
+								? <Link to={`/dashboard/attendance/${formGroup.vendor}/custom?formId=${formGroup.form_id}&appGroupId=${group.app_grp_id}`}>Input</Link>
 								: <Link to={'/dashboard/attendance/' + selectedVendor?.id2 + '/' + group.name}>Input</Link>
 							} /
 							{formGroup && formGroup.form_contents
-								? <Link to={'/dashboard/attendance/view/' + group?.app_grp_id + '?type=custom&formId=' + formGroup.form_id}>View</Link>
+								? <Link to={'/dashboard/attendance/view/' + group?.app_grp_id + '?type=custom&formId=' + formGroup.form_id + `&appGroupId=${group.app_grp_id}`}>View</Link>
 								: <Link to={'/dashboard/attendance/view/' + group?.app_grp_id}>View</Link>
 							}
 						</td>

@@ -731,19 +731,19 @@ export default function index() {
 				const applicationGroups = groups.application_groups;
 				console.log('applicationGroups',applicationGroups)
 				console.log('applicationGroups searchParams.formId',searchParams.formId)
-				const filteredGroup = applicationGroups.filter(item => item.form === searchParams.formId).map(item => item.app_grp_id)
+				const filteredGroup = applicationGroups.filter(item => item.app_grp_id === searchParams.appGroupId).map(item => item.app_grp_id)
 				console.log('applicationGroups filteredGroup',filteredGroup)
 				
 				for (const group of applicationGroups) {
-					if (group.form === searchParams.formId) {
+					if (group.app_grp_id === searchParams.appGroupId) {
 
-						currentAppGroupId = group.app_grp_id;
+						//currentAppGroupId = group.app_grp_id;
 						currentAppGroupName = group.name;
 						// break;
 					}
 				}
-				console.log('applicationGroups currentAppGroupId',currentAppGroupId)
-				setAppGroupId(currentAppGroupId);
+				// console.log('applicationGroups currentAppGroupId',currentAppGroupId)
+				setAppGroupId(searchParams.appGroupId);
 
 				setAppGroupIds([...(filteredGroup || [])])
 				if(filteredGroup[0] && filteredGroup[0].name) {
@@ -782,7 +782,7 @@ export default function index() {
 	useEffect(() => {
 		if (appGroupId && appGroupId !== '') {
 			dispatch(
-				requestAttendance(name === 'custom' ? searchParams.formId : appGroupId, name === 'custom' ? 'custom' : 'bcombs')
+				requestAttendance(name === 'custom' ? searchParams.appGroupId : appGroupId, name === 'custom' ? 'custom' : 'bcombs')
 			);
 		}
 		if (
@@ -1027,13 +1027,12 @@ export default function index() {
 		});
 		const payload = {
 			attendance_list: attendanceList,
-			app_group_id: name === 'custom' ? searchParams && searchParams.formId : appGroupId,
+			app_group_id: name === 'custom' ? searchParams && searchParams.appGroupId : appGroupId,
 			attendance_type: name === 'custom' ? 'forms' : 'bcombs',
 			...attendanceDetails,
 			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
 		};
 
-		console.log('PAYLOADDDDD', payload)
 		dispatch(requestUpdateAttendance(payload));
 		setIsConfirmationVisible(false);
 
@@ -1299,6 +1298,7 @@ export default function index() {
 	};
 	console.log('Appp Group name', appGroupName);
 	console.log("attendanceDetailsssssssssssssss", attendanceDetails)
+	console.log('appGroupId',appGroupId)
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>

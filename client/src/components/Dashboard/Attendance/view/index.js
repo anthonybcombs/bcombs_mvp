@@ -663,9 +663,9 @@ export default function index(props) {
 	useEffect(() => {
 
 
-		if (searchParams.formId) {
+		if (searchParams.appGroupId) {
 			
-			dispatch(requestAttendance(searchParams.formId, 'forms'));
+			dispatch(requestAttendance(searchParams.appGroupId, 'forms'));
 		}
 		else if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
 	
