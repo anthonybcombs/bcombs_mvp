@@ -148,7 +148,9 @@ const ClassAttendance = props => {
     const yearChange =(event) => {
         setYear(event.target.value);
         console.log("year2 ", event.target.value); // ;year);
-        triggerApiCallAttendance(auth.user_id, event.target.value, classId);
+        triggerApiCallAttendance(auth.user_id, event.target.value, 'fid_0', 'id_0');
+        setFormId('fid_0');
+        setClassId('id_0');
     };
 
     const formChange =(event) => {
