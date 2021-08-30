@@ -131,7 +131,8 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
   const [activeGrade, setActiveGrade] = useState('')
   const [editGradeConfirmDialog, setEditGradeConfirmDialog] = useState(false)
   const [enableEditDialog, setEnableEditDialog] = useState(false)
-  const [selectedRowForEdit, setSelectedRowForEdit] = useState('')
+  const [selectedRowForEdit, setSelectedRowForEdit] = useState('');
+  const [isReview, setIsReview] = useState(false)
 
   const generateColumnFilters = (passedRows) => {
     let newColumnFilters = {}
@@ -289,7 +290,12 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
         <tr
           key={`grades-list-${index}`}
           className={`tr-data${row.student_grade_cumulative_id ? ' has-data' : ''} ${enableEdit ? 'edit-enabled' : ''}`}
-          onClick={() => !enableEdit ? handleEnableEditDialog(row.id) : {}}
+          onClick={() =>  {
+            if(!isReview) {
+              return !enableEdit ? handleEnableEditDialog(row.id) : {}
+            }
+           
+          }}
         >
           <td>
             <input
@@ -338,10 +344,14 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                             className='attachment'
                             icon={faPaperclip}
                             onClick={() => {
-                              document.getElementById(`attachement_${row.id}`).click()
+                              if(!isReview) {
+                                document.getElementById(`attachement_${row.id}`).click()
+                              }
+                              
                             }}
                           />
                           <input
+                            disabled={isReview}
                             id={`attachement_${row.id}`}
                             style={{ display: 'none' }}
                             type='file'
@@ -351,6 +361,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                       ) : (
                         <>
                           <input
+                            disabled={isReview}
                             style={highlightStyle}
                             readOnly
                             value={getFilename(row[key])}
@@ -367,6 +378,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                   {
                     key === 'school_year_start' && (
                       <DatePicker
+                      disabled={isReview}
                         selected={row[key] ? new Date(row[key]) : ''}
                         onChange={date => handleInputChange({ target: { value: date.toISOString() } }, index, key)}
                         maxDate={row.school_year_end ? new Date(new Date(row.school_year_end).setMonth(new Date(row.school_year_end).getMonth() - 1)) : ''}
@@ -388,6 +400,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                   {
                     key === 'school_year_end' && (
                       <DatePicker
+                      disabled={isReview}
                         selected={row[key] ? new Date(row[key]) : ''}
                         onChange={date => handleInputChange({ target: { value: date.toISOString() } }, index, key)}
                         minDate={row.school_year_start ? new Date(new Date(row.school_year_start).setMonth(new Date(row.school_year_start).getMonth() + 1)) : ''}
@@ -401,6 +414,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                   {
                     !['name', 'child_id', 'attachment', 'year_level', 'school_year_start', 'school_year_end', 'grades', 'help_needed'].includes(key) && (
                       <input
+                      disabled={isReview}
                         style={highlightStyle}
                         type={type === 'number' ? 'number' : 'text'}
                         value={row[key]}
@@ -906,7 +920,9 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                 <button
                   className='btn-review'
                   disabled={rows.length === 0}
-                  onClick={() => { }}
+                  onClick={() => { 
+                    setIsReview(!isReview)
+                  }}
                 >
                   <FontAwesomeIcon icon={faCheck} />
                   <span>Review</span>
