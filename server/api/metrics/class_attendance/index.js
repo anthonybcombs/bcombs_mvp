@@ -1,6 +1,7 @@
 import express from "express";
 
 import { makeDb } from "../../../helpers/database";
+import { getFormsByVendorId, getSQLClauseForAttendanceAndClassData } from "../form_and_class_queries";
 
 const router = express.Router();
 
@@ -58,6 +59,12 @@ router.post("/", async (req, res) => {
         const db = makeDb();
         console.log('year ', year);
 
+        let formArray = await getFormsByVendorId(db, vendorId);
+        if (!formArray.length) {
+            res.status(200).json({ classStats: [], formArray: [] });
+            return;
+        }
+        /*
         let queryFormFormIds =
             "select BIN_TO_UUID(vca.form_id) as formId, vca.form_name from vendor_custom_application as vca, vendor v " +
             "where vca.vendor=v.id AND v.id2=? and vca.status <> 'deleted' " + 
@@ -74,7 +81,13 @@ router.post("/", async (req, res) => {
         for (let r0 = 0; r0 < response0.length; r0++) {
             formArray.push({key: response0[r0].formId, name: response0[r0].form_name });
         }
+        */
 
+        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId);
+        let getClassesTableQuery = queryGroup.query;
+        let queryParamForClassesQuery = queryGroup.param;
+
+        /*
         let getClassesTableQuery =
             "From attendance a2, vendor b2, vendor_app_groups c2 " +
             "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
@@ -93,6 +106,7 @@ router.post("/", async (req, res) => {
                     "a2.app_group_id = c2.app_grp_id ";
             queryParamForClassesQuery = [dtLastTxt, dtNextTxt, formId];
         }
+        */
 
         //let queryStudentPerClassParam = [dtLastTxt, dtNextTxt, vendorId];
         let queryStudentsPerClass = 
@@ -106,8 +120,8 @@ router.post("/", async (req, res) => {
             "on a.app_group_id = c.app_grp_id " +
          "where c.app_grp_id = a.app_group_id group by c.app_grp_id";
  
-         console.log('Query ****> ', queryStudentsPerClass);
-         console.log('Q Param -> ', queryParamForClassesQuery);
+         //console.log('Query ****> ', queryStudentsPerClass);
+         //console.log('Q Param -> ', queryParamForClassesQuery);
          const response =  await db.query(queryStudentsPerClass, queryParamForClassesQuery);
          console.log('Students per class: ', response);
          if (!response || response.length == 0) {
@@ -224,8 +238,8 @@ router.post("/", async (req, res) => {
         //put all entry at top of list
         classList.unshift({key:'id_' + allClassRow.class_id, name: allClassRow.class_name});
         
-        console.log("**result data: ", resultData);
-        console.log("classList: ", classList);
+        //console.log("**result data: ", resultData);
+        //console.log("classList: ", classList);
 
         res.status(200).json({ classStats: resultData, classList: classList, formArray: formArray });
         //res.status(200).json({ user: response && response[0] });
