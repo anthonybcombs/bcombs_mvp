@@ -41,28 +41,37 @@ export async function getClassesWithAttendanceByYearAndVendorAndFormId(db, year,
 }
 
 export function getSQLClauseForAttendanceAndClassData(year, vendorId, formId) {
+    let yearClause = '';
+    let queryParamForClassesQuery = [];
+    if (year && !isNaN(year)) { //allows 'tests' to span any year
+        yearClause = "a2.attendance_date >= ? and a2.attendance_date < ? and ";
+        let dtLastTxt = '' + (year - 1) + '-08-01';
+        let dtNextTxt = '' + year + '-08-01'; 
+        queryParamForClassesQuery = [dtLastTxt, dtNextTxt];
+    }
+
     let getClassesTableQuery =
     "From attendance a2, vendor b2, vendor_app_groups c2 " +
-    "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
+    "where " + yearClause + 
         "b2.id2 = ? and c2.vendor = b2.id and " + 
         "a2.app_group_id = c2.app_grp_id ";
 
-    let dtLastTxt = '' + (year - 1) + '-08-01';
-    let dtNextTxt = '' + year + '-08-01'; 
-    let queryParamForClassesQuery = [dtLastTxt, dtNextTxt, vendorId];
+    let queryParamForClassesQuery2 = [...queryParamForClassesQuery];
+    queryParamForClassesQuery2.push(vendorId);
 
     if (formId && formId != 'fid_0') {
         getClassesTableQuery =
             "From attendance a2, vendor_app_groups c2 " +
-            "where a2.attendance_date >= ? and a2.attendance_date < ? and " + 
+            "where " + yearClause + 
                 "c2.form = UUID_TO_BIN(?) and " +
                 "a2.app_group_id = c2.app_grp_id ";
-        queryParamForClassesQuery = [dtLastTxt, dtNextTxt, formId];
+            queryParamForClassesQuery2 = [...queryParamForClassesQuery];
+            queryParamForClassesQuery2.push(formId);
     }
 
     return {
         query: getClassesTableQuery,
-        param: queryParamForClassesQuery
+        param: queryParamForClassesQuery2
     }
 
 }

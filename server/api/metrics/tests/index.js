@@ -1,20 +1,39 @@
 import express from "express";
 
 import { makeDb } from "../../../helpers/database";
+import { 
+    getFormsByVendorId, 
+    getClassesWithAttendanceByYearAndVendorAndFormId 
+} from "../form_and_class_queries";
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
 
-    const loadDataForYear = async (db, vendorId, grade, testName, year) => {
+    const loadDataForYear = async (db, vendorId, grade, testName, year, formId, classId) => {
         let response = null
         try {
             let dtLastTxt = '' + (year - 1) + '-08-01';
             let dtNextTxt = '' + year + '-08-01'; 
      
-            let queryParam = [vendorId, testName, dtLastTxt, dtNextTxt];
             console.log('param: ', queryParam);
      
+            let fromClause = "FROM vendor a, vendor_app_groups a2, vendor_app_groups_to_student b, student_standardized_test c ";
+            let whereClause = "WHERE a.id2 = ? and a2.vendor = a.id and b.app_grp_id = a2.app_grp_id and c.child_id = b.child_id ";
+            let queryParam = [vendorId, testName, dtLastTxt, dtNextTxt];
+    
+            if (formId && formId != 'fid_0') {
+                fromClause = "From vendor_app_groups a2, vendor_app_groups_to_student b, student_standardized_test c ";
+                whereClause = "where a2.form = UUID_TO_BIN(?) and b.app_grp_id = a2.app_grp_id and c.child_id = b.child_id ";
+                queryParam = [formId, testName, dtLastTxt, dtNextTxt];
+            }
+    
+            if (classId && classId != 'id_0') {
+                fromClause = "From vendor_app_groups_to_student b, student_standardized_test c ";
+                whereClause = "where b.app_grp_id = UUID_TO_BIN(?) and c.child_id = b.child_id ";
+                queryParam = [classId, testName, dtLastTxt, dtNextTxt];
+            }
+    
              let gradeTable = '';
              let gradeQualifier = '';
              if (grade > 8) {
@@ -29,8 +48,10 @@ router.post("/", async (req, res) => {
      
             let query = 
                  "SELECT AVG(score) as avgScore " + 
-                 "FROM vendor a, application b, student_standardized_test c " + gradeTable +
-                 "where a.id2 = ? and b.vendor = a.id and c.child_id = b.child " +
+                 //"FROM vendor a, application b, student_standardized_test c " 
+                 fromClause + gradeTable +
+                 //"where a.id2 = ? and b.vendor = a.id and c.child_id = b.child " +
+                 whereClause +
                      "and c.test_name = ? " +
                      "and c.month_taken >= ? and c.month_taken < ? " + gradeQualifier; 
             console.log('Average Standardized Test Query ', query);
@@ -45,20 +66,35 @@ router.post("/", async (req, res) => {
 
 
     try {
-        const { id, grade, vendorId, testName } = req.body;
+        const { id, grade, vendorId, testName, formId, classId } = req.body;
         const db = makeDb();
+
+        let formArray = await getFormsByVendorId(db, vendorId);
+        if (!formArray.length) {
+            res.status(200).json({ avgTestResults: [], classList: [], formArray: [] });
+            return;
+        }
+        console.log('getting class list');
+
+        let classList = await getClassesWithAttendanceByYearAndVendorAndFormId(db, 'any', vendorId, formId);
+        if (!classList.length) {
+            res.status(200).json({ avgTestResults: [], classList: [], formArray: formArray });
+            return;
+        }
+        console.log('got class list');
+
 
         let returnData = [];
         for (let year=2020; year < 2023; year++) {
-            let averageScore = await loadDataForYear(db, vendorId, grade, testName, year);
+            let averageScore = await loadDataForYear(db, vendorId, grade, testName, year, formId, classId );
             returnData.push(averageScore ? averageScore : 0);
         }
 
         console.log('tests', returnData);
-        res.status(200).json({ avgTestResults: returnData });
+        res.status(200).json({ avgTestResults: returnData, classList: classList, formArray: formArray });
         //res.status(200).json({ user: response && response[0] });
     } catch (error) {
-
+        console.log(error);
     }
 });
 

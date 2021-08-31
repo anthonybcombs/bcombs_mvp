@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
-const apiCallTests = async (vendorId, id, testName, grade) => {
+const apiCallTests = async (vendorId, id, testName, grade, formId, classId) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/tests`, {
@@ -20,8 +20,9 @@ const apiCallTests = async (vendorId, id, testName, grade) => {
             'id': id,
             'testName': testName, 
             'grade' : grade,
-            'vendorId' : vendorId
-
+            'vendorId' : vendorId,
+            'formId' : formId,
+            'classId' : classId
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
@@ -29,30 +30,51 @@ const apiCallTests = async (vendorId, id, testName, grade) => {
 
 const Tests = props => {
     const { auth, vendors } = props;
+    const [isLoading, setIsLoading] = useState(true);
+    const [classList, setClassList] = useState([]);
+    const [formList, setFormList] = useState([]);
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [testName, setTestName] = useState('sat');
     const [grade, setGrade] = useState('all');
+    const [formIdLocal, setFormIdLocal] = useState('fid_0');
+    const [classIdLocal, setClassIdLocal] = useState('id_0');
     const chart = useRef();
 
     useEffect(() => {
         if (auth && auth.user_id) {
-            triggerApiCallTests(auth.user_id, testName, grade);
+            triggerApiCallTests(auth.user_id, testName, grade, 'fid_0', 'id_0');
         }
     }, [auth]);
 
-    const triggerApiCallTests = async (id, testName, grade) => {
+    const triggerApiCallTests = async (id, testName, grade, formId, classId) => {
         console.log('triggerApiCallTests', testName, grade);
         try {
             if (!vendors ||!vendors.length) {
+                setIsLoading(false);
                 defineChart(null, null);
                 return;
             }
-            const vendorId = vendors[0].id2; //TODO: add support for user in multiple vendors
-            const res = await apiCallTests(vendorId, id, testName, grade);
+            setIsLoading(true);
+            const vendorId = vendors[0].id2; 
+            const res = await apiCallTests(vendorId, id, testName, grade, formId, classId);
             console.log('apiCall tests ', res)
+            if (!res.classList) {
+                setClassList([]);
+            }
+            else {
+                setClassList(res.classList);
+            }
+            if (!res.formArray) {
+                setFormList([]);
+            }
+            else {
+                setFormList(res.formArray);
+            }
             if ('avgTestResults' in res) {
                 defineChart(res.avgTestResults, grade);
             }
+            setIsLoading(false);
+
         } catch (err) {
             console.log('Error', err)
         }
@@ -132,27 +154,60 @@ const Tests = props => {
         setTestName(event.target.value);
         console.log("event ", event);
         console.log("test ", event.target.value); // ;year);
-        triggerApiCallTests(auth.user_id, event.target.value, grade);
+        triggerApiCallTests(auth.user_id, event.target.value, grade, formIdLocal, classIdLocal);
     };
 
     const gradeChange =(event) => {
         setGrade(event.target.value);
         console.log("event ", event);
         console.log("grade ", event.target.value); // ;grade);
-        triggerApiCallTests(auth.user_id, testName, event.target.value);
+        triggerApiCallTests(auth.user_id, testName, event.target.value, formIdLocal, classIdLocal);
     };
+
+    const formChange =(event) => {
+        let formIdIn = event.target.value;
+        setFormIdLocal(formIdIn);
+        console.log("=========== form_id: ", formIdIn);
+        triggerApiCallTests(auth.user_id, testName, grade, formIdIn, 'id_0');
+        setClassIdLocal('id_0');
+    };
+
+    const classChange =(event) => {
+        let classIdIn = event.target.value;
+        setClassIdLocal(classIdIn);
+        console.log("=========== class_id: ", classIdIn);
+        triggerApiCallTests(auth.user_id, testName, grade, formIdLocal, classIdIn);
+    };
+
 
 return <div style={{ padding: 24 }}>
         <div className="grid grid-2b">
             <div className="top-left">
                 <h4>Average Test Reuslts </h4>
             
+                { isLoading ? ( <></>) : (
+                        <>
+                    <select id="vendor-form" onChange={formChange} value={formIdLocal}>
+                        { formList && formList.length > 0 && formList.map((elem) => 
+                                <option value={elem.key} key={elem.key}>{elem.name}</option> 
+                            )
+                        }
+                        </select>
+                    <select id="mentee-class" onChange={classChange} value={classIdLocal}>
+                        { classList && classList.length > 0 && classList.map((elem) => 
+                                <option value={elem.key} key={elem.key}>{elem.name}</option> 
+                            )
+                        }
+                        </select>
+                        </>
+                    )}
                 <select id="mentee-test-taken" onChange={testChange} value={testName}>
                     <option value="sat">SAT</option>
                     <option value="act" >ACT</option>
                     <option value="psat">PSAT</option>
                     <option value="eog">End of Grade</option>
                     </select>
+                    {/*
                 <select id="child-grade" onChange={gradeChange} value={grade}>
                     <option value="all">All</option>
                     <option value="12" >Seniors</option>
@@ -160,7 +215,7 @@ return <div style={{ padding: 24 }}>
                     <option value="10">Sophmores</option>
                     <option value="9">Freshmen</option>
                     <option value="8">Middle School</option>
-                    </select>
+                    </select> */}
             </div>
             <div className="top-right"><button onClick={exportChart} id="exportButton"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="download" className="svg-inline--fa fa-download fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"></path></svg><span>Export</span></button></div>
         </div>
