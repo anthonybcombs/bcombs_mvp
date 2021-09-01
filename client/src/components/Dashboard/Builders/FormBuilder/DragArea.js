@@ -36,23 +36,23 @@ export default ({ handleBuilderDrawerOpen, form_id, getItem }) => {
         </h3> */}
       </div>
 
-      <h4 className='sub-header'>Standard</h4>
-      <div className='draggble-container standard-items'>    
-        {
-          standardFields.map(({ label, type, ...rest }) => {
-            return (
-              <DraggableField getItem={getItem} key={type} label={label} type={type} {...rest} groupType='standard' />
-            )
-          })
-        }
-      </div> 
-
       <h4 className='sub-header'>Prime</h4>
       <div className='draggble-container prime-items'>    
         {
           primeFields.map(({ label, type, ...rest }) => {
             return (
               <DraggableField getItem={getItem} key={type} label={label} type={type} {...rest} groupType='prime' />
+            )
+          })
+        }
+      </div>
+
+      <h4 className='sub-header'>Standard</h4>
+      <div className='draggble-container standard-items'>    
+        {
+          standardFields.map(({ label, type, ...rest }) => {
+            return (
+              <DraggableField getItem={getItem} key={type} label={label} type={type} {...rest} groupType='standard' />
             )
           })
         }

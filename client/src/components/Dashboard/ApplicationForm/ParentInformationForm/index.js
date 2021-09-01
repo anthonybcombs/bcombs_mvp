@@ -17,7 +17,8 @@ import DatePicker from "react-datepicker";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
 import STATES from "../states.json";
 import NumberFormat from "react-number-format";
- //  margin-top: 12px !important;
+import UploadPhotoForm from "../../MyProfile/forms/UploadPhotoForm";
+
 const ParentInformationStyled = styled.div`
   position: relative;
   margin-top: 12px !important;
@@ -52,6 +53,14 @@ const ParentInformationStyled = styled.div`
   .parent-info-wrapper .img-profile-wrapper {
     width: 17%;
     margin-bottom: 30px;
+  }
+
+  .img-profile-wrapper img {
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    box-shadow: 0 0 5px #716464;
+    cursor: pointer;
   }
 
   .parent-info-wrapper .address-wrapper {
@@ -345,6 +354,26 @@ export default function index({
     return arr;
   };
 
+
+  const [imagePreview, setImagePreview] = useState(ProfileImg);
+  const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
+
+  const handleFileChange = event => {
+    let reader = new FileReader();
+
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+      handleParentFormDetailsChange(
+        counter - 1,
+        "profile",
+        "image",
+        reader.result
+      )
+    };
+
+    reader.readAsDataURL(event.target.files[0]);
+  };
+
   const years = range(1900, new Date().getFullYear());
   const months = [
     "January",
@@ -410,10 +439,25 @@ export default function index({
         Family Information {counter > 1 ? `(${counter})` : ""}
       </h3>
       <div className="parent-info-wrapper">
-        {/* <div className="img-profile-wrapper">
-          <img src={ProfileImg} width="80" height="80" />
-          {!isReadonly && <input name={"ch_img" + (counter - 1)} type="file" />}
-        </div> */}
+        <div className="img-profile-wrapper">
+        <img src={imagePreview} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
+          {!isReadonly && (
+            <UploadPhotoForm
+              isVisible={isUploadPhotoVisible}
+              toggleProfilePhotoVisible={setUploadPhotoVisible}
+              onSubmit={(image) => {
+                setUploadPhotoVisible(false)
+                setImagePreview(image);
+                handleChildFormDetailsChange(
+                  counter - 1,
+                  "profile",
+                  "image",
+                  image
+                )
+              }}
+            />
+          )}
+        </div>
         <div className="grid-2">
           <div className="form-group">
             <div className="field">

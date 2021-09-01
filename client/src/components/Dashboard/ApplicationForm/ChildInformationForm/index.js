@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTimesCircle,
@@ -17,6 +16,7 @@ import "../../ArchivedApplication/SearchDate.css";
 import "font-awesome/css/font-awesome.min.css";
 import STATES from "../states.json";
 import NumberFormat from "react-number-format";
+import UploadPhotoForm from "../../MyProfile/forms/UploadPhotoForm";
 
 const ChildInfomationFormStyled = styled.div`
   position: relative;
@@ -32,6 +32,10 @@ const ChildInfomationFormStyled = styled.div`
 
   .img-profile-wrapper img {
     border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    box-shadow: 0 0 5px #716464;
+    cursor: pointer;
   }
 
   .child-info-wrapper {
@@ -345,17 +349,6 @@ export default function index({
   };
 
   const [imagePreview, setImagePreview] = useState(ProfileImg);
-
-  const handleFileChange = event => {
-    let reader = new FileReader();
-
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-
-    reader.readAsDataURL(event.target.files[0]);
-  };
-
   const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
 
   const years = range(1900, new Date().getFullYear());
@@ -420,14 +413,23 @@ export default function index({
       </h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">
-          {/* <img src={imagePreview} width="80" height="80" />
+          <img src={imagePreview} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
           {!isReadonly && (
-            <input
-              name={"ch_img" + (counter - 1)}
-              onChange={handleFileChange}
-              type="file"
+            <UploadPhotoForm
+              isVisible={isUploadPhotoVisible}
+              toggleProfilePhotoVisible={setUploadPhotoVisible}
+              onSubmit={(image) => {
+                setUploadPhotoVisible(false)
+                setImagePreview(image);
+                handleChildFormDetailsChange(
+                  counter - 1,
+                  "profile",
+                  "image",
+                  image
+                )
+              }}
             />
-          )} */}
+          )}
         </div>
         <div className="grid">
           <div className="form-group">

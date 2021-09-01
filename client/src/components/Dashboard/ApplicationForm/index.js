@@ -861,6 +861,7 @@ export default function index() {
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getAppEtnicities(parent.profile.ethinicity),
+        image: parent.profile.image,
       })
     });
 
@@ -910,6 +911,7 @@ export default function index() {
           state: childsInformation[i].profile.state,
           zip_code: childsInformation[i].profile.zip_code,
           location_site: childsInformation[i].profile.location_site,
+          image: childsInformation[i].profile.image,
           child_lives_with: getChildLivesWith(childsInformation[i].profile.child_lives_with),
           school_name: childsInformation[i].general_information.school_name,
           school_phone: childsInformation[i].general_information.school_phone,

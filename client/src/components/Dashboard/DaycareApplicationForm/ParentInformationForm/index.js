@@ -406,10 +406,10 @@ export default function index({
         Family Information {counter > 1 ? `(${counter})` : ""}
       </h3>
       <div className="parent-info-wrapper">
-        {/* <div className="img-profile-wrapper">
+        <div className="img-profile-wrapper">
           <img src={ProfileImg} width="80" height="80" />
           {!isReadonly && <input name={"ch_img" + (counter - 1)} type="file" />}
-        </div> */}
+        </div>
         <div className="grid-2">
           <div className="form-group">
             <div className="field">

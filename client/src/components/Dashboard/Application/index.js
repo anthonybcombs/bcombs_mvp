@@ -41,10 +41,8 @@ import {
   requestSaveApplication,
   requestGetApplicationHistory,
   requestGetCustomApplications,
-  requestGetCustomFormApplicantById
 } from "../../../redux/actions/Application";
 import { requestGetForms, requestUpdateSubmittedForm, requestGetCustomApplicationHistory } from '../../../redux/actions/FormBuilder'
-import { requestUserGroup } from "../../../redux/actions/Groups";
 import Loading from "../../../helpers/Loading.js";
 import ProfileImg from "../../../images/defaultprofile.png";
 
