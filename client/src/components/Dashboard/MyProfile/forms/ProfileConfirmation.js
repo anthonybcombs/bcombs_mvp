@@ -24,6 +24,7 @@ const ProfileConfirmationModal = styled.div`
     border: none !important;
     height: auto;
     position:absolute;
+    top:70%;
   }
   .profile-confirmation {
     margin-top: 50px;
