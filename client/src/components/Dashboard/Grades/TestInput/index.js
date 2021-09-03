@@ -322,19 +322,22 @@ export default ({ child_id }) => {
   const requestList = () => {
 
     if (group_id && group_type) {
-      console.log('IS VENDOR', group_id)
 
       if (isVendor) {
         dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
       } else {
-        if(type !== 'all') {
-          console.log('group_idzzzz',group_id)
-          console.log('group_idzzzz group_type',group_type)
-          dispatch(requestGetStudentCumulativeGradeByAppGroup({
-            app_group_id: group_id,
-            app_group_type: group_type
-          }))
-        }
+        // if(type !== 'all') {
+        //   console.log('group_idzzzz',group_id)
+        //   console.log('group_idzzzz group_type',group_type)
+        //   dispatch(requestGetStudentCumulativeGradeByAppGroup({
+        //     app_group_id: group_id,
+        //     app_group_type: group_type
+        //   }))
+        // }
+        dispatch(requestGetStudentCumulativeGradeByAppGroup({
+          app_group_id: group_id,
+          app_group_type: group_type
+        }))
   
       }
     }
@@ -375,7 +378,7 @@ export default ({ child_id }) => {
   }, [gradeList]);
 
   console.log('application_groups', application_groups);
-  console.log('loading', gradeLoading);
+  console.log('loadinggggggggggg', gradeLoading);
 
   const handleFormattedGrades = (fields, size) => {
     let formattedGrades = [];
@@ -480,6 +483,7 @@ export default ({ child_id }) => {
     if (appGroupId) {
       setSelectedAppGroup(appGroupId);
       //selectedAppGroup = appGroupId;
+      console.log('appGroupIddddddd',appGroupId)
       dispatch(requestGetStudentCumulativeGradeByAppGroup({
         app_group_id: appGroupId,
         app_group_type: 'bcombs'

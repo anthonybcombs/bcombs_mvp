@@ -587,8 +587,10 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
           application_type: 'forms'
         }
       })
-    console.log('newRowsssssssss grade', newRows)
+
     dispatch(requestAddUpdateStudentCumulative(newRows))
+    requestList()
+ 
   }
 
   const handleSaveGrade = (grades, otherFields) => {
@@ -694,6 +696,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
     }
     return null
   }
+  console.log('gradeInputtttttttttttttttt', gradeInput)
 
   useEffect(() => {
     if (gradeInput.gradeUpdated) {
@@ -842,6 +845,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
   console.log('selectStudentRows 2222', selectStudentRows)
   console.log('selectStudentRows rowsss', rows)
   console.log('selectStudentRows applications', applications)
+  console.log('selectStudentRows loading', loading)
 
   return (
     <div
