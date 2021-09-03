@@ -2,11 +2,12 @@ import styled from "styled-components";
 
 export default styled.div`
   .modal-content {
-    position: relative;
-    top: 100px;
+    position: absolute;
+    top: 20%
     width: auto;
     max-width: 500px;
     padding: 0;
+    margin:0;
   }
   .close {
     position: absolute;
