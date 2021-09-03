@@ -19,17 +19,16 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ applications = [], importData = [], childId, groupId , loading, groupType, requestList, onHasChanged }) => {
+export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
   }));
 
-
-
-  const attempOptions = Array(5).fill().map((e, i) => ({ value: i+1, label: `${i+1}` }))
+  console.log('appGroupIdsv', appGroupIds)
+  const attempOptions = Array(5).fill().map((e, i) => ({ value: i + 1, label: `${i + 1}` }))
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
-  const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i+4, label: `${i + 4}th` }))]
+  const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))]
 
   const initialColumns = {
     name: { type: 'string', label: 'Name' },
@@ -134,7 +133,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
         return result.length === newColumnFilters.length
       })
     }
-    
+
     setFilteredRows(newRows)
     setFilterFromHeaders(cloneDeep(filters))
   }
@@ -197,7 +196,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
     // }
 
     var reader = new FileReader()
-    reader.onloadend = function() {
+    reader.onloadend = function () {
       handleInputChange(
         {
           target: {
@@ -242,11 +241,11 @@ export default ({ applications = [], importData = [], childId, groupId , loading
         <tr
           key={`grades-list-${index}`}
           className={`tr-data${row.student_test_id ? ' has-data' : ''} ${enableEdit ? 'edit-enabled' : ''}`}
-          onClick={() =>  {
-            if(!isReview) {
+          onClick={() => {
+            if (!isReview) {
               return !enableEdit ? handleEnableEditDialog(row.id) : {}
             }
-           
+
           }}
         >
           <td>
@@ -265,16 +264,16 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                 const file = (typeof attachment === 'object' ? attachment.filename : attachment).split('/')
                 return file[file.length - 1]
               }
-              let currentMonthTaken = key ==='month_taken'? isNaN(row[key]) ? new Date(row[key]) :  parseInt(row[key]): null;
-                if(key==='month_taken') {
-                  console.log('currentMonthTaken',currentMonthTaken)
-              
-                }
-             
-              const highlightStyle = key==='month_taken'? highLight(row[key] && row[key] !== '' ? moment(currentMonthTaken).format('MM/yyyy') : '', key) : highLight(row[key], key)
+              let currentMonthTaken = key === 'month_taken' ? isNaN(row[key]) ? new Date(row[key]) : parseInt(row[key]) : null;
+              if (key === 'month_taken') {
+                console.log('currentMonthTaken', currentMonthTaken)
+
+              }
+
+              const highlightStyle = key === 'month_taken' ? highLight(row[key] && row[key] !== '' ? moment(currentMonthTaken).format('MM/yyyy') : '', key) : highLight(row[key], key)
               // const inputStyles = highlightStyle.color ? { color: highlightStyle.color } : {}
               return (
-                <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, position: 'relative', wordBreak: 'break-word'}} className={`${key}`}>
+                <td key={`td-gl-${key}-${index}`} style={{ ...highlightStyle, position: 'relative', wordBreak: 'break-word' }} className={`${key}`}>
                   {
                     !enableEdit && <div className='editCover' />
                   }
@@ -287,7 +286,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                         readOnly
                         style={highlightStyle}
                         value={
-                          key === 'test_name' 
+                          key === 'test_name'
                             ? testOptions.find(e => e.value === row.test_name).label
                             : row[key] || '--'
                         }
@@ -308,7 +307,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                   {
                     (key === 'grade_taken' && !row.student_test_id) && (
                       <CustomSelect
-                      disabled={isReview}
+                        disabled={isReview}
                         selectStyle={highlightStyle}
                         value={row[key]}
                         options={gradeTakenOptions}
@@ -333,15 +332,15 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                             className='attachment'
                             icon={faPaperclip}
                             onClick={() => {
-                              if(!isReview) {
+                              if (!isReview) {
 
                                 document.getElementById(`attachement_${row.id}`).click()
                               }
-                              
+
                             }}
                           />
                           <input
-                             disabled={isReview}
+                            disabled={isReview}
                             id={`attachement_${row.id}`}
                             style={{ display: 'none' }}
                             type='file'
@@ -351,7 +350,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                       ) : (
                         <>
                           <input
-                           disabled={isReview}
+                            disabled={isReview}
                             style={highlightStyle}
                             readOnly
                             value={getFilename(row[key])}
@@ -368,10 +367,10 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                   {
                     key === 'month_taken' && (
                       <DatePicker
-                      disabled={isReview}
-                        selected={row[key] && row[key] !== '' ? isNaN(row[key])? new Date(row[key]) : parseInt(row[key]) : ''}
+                        disabled={isReview}
+                        selected={row[key] && row[key] !== '' ? isNaN(row[key]) ? new Date(row[key]) : parseInt(row[key]) : ''}
                         onChange={date => {
-                         
+
                           // const formattedDate =  new Date(isNaN(parseInt(parseInt(row[key]))) ? row[key] : parseInt(row[key]));
                           handleInputChange({ target: { value: date.toISOString() } }, index, key)
                         }}
@@ -384,7 +383,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                   {
                     !['name', 'child_id', 'attachment', 'month_taken', 'test_name', 'grade_taken', 'attempt'].includes(key) && (
                       <input
-                       disabled={isReview}
+                        disabled={isReview}
                         style={highlightStyle}
                         type={type === 'number' ? 'number' : 'text'}
                         value={row[key]}
@@ -477,7 +476,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
   const handleDelete = (skipConfirm = false) => {
     const selectedIds = selected.map(e => e.id)
     const newRows = remapSelectedRowsByAttemp(cloneDeep(rows).filter(e => !selectedIds.includes(e.id)))
-    
+
     onHasChanged(true)
     setRows(newRows)
     setFilteredRows(newRows)
@@ -514,17 +513,17 @@ export default ({ applications = [], importData = [], childId, groupId , loading
             }
             return acc
           }, {})
-        
+
         if (!newRow.student_test_id) {
           delete newRow.student_test_id
         }
         if (!newRow.attachment || (newRow.attachment && typeof newRow.attachment === 'string')) {
           delete newRow.attachment
         }
-        if(newRow.month_taken){
+        if (newRow.month_taken) {
           newRow.month_taken = moment(newRow.month_taken).format('YYYY-MM-DD')
         }
-        console.log('newRow',newRow)
+        console.log('newRow', newRow)
         return newRow
       })
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
@@ -599,8 +598,8 @@ export default ({ applications = [], importData = [], childId, groupId , loading
               disabled={columnFilters[key].filter(e => e.checked).length === 0}
               onClick={() => {
                 if (columnFilters[key].filter(e => e.checked).length > 0) {
-                  handleApplyFilter(filterFromHeaders)-
-                  handleSetActiveColumnKey()
+                  handleApplyFilter(filterFromHeaders) -
+                    handleSetActiveColumnKey()
                 }
               }}
             >
@@ -626,21 +625,21 @@ export default ({ applications = [], importData = [], childId, groupId , loading
       if (groupType === 'bcombs') {
         newGradeList = newGradeList.filter(e => !e.form_contents)
       } else {
-        newGradeList = newGradeList.filter(e => e.form_contents  && e.form === groupId)
+        newGradeList = newGradeList.filter(e => e.form_contents && e.form === groupId)
 
 
-      
+
         if (newGradeList.length === 0) {
           newGradeList = applications && applications.map(item => {
             return {
               ...item,
-              standardized_test:[]
+              standardized_test: []
             }
           })
         }
       }
-      
-    
+
+
       // newGradeList = newGradeList.flatMap(e => e.standardized_test)
       // const newRows = cloneDeep(rows).map(row => {
       //   const { student_test_id } = newGradeList.find(e => (
@@ -650,21 +649,20 @@ export default ({ applications = [], importData = [], childId, groupId , loading
       // })
       // setRows(newRows)
       // setFilteredRows(newRows)
-      let updatedGradeList = newGradeList.filter(e => e.standardized_test).flatMap(e => e.standardized_test )
-      if(updatedGradeList.length > 0) {
+      let updatedGradeList = newGradeList.filter(e => e.standardized_test).flatMap(e => e.standardized_test)
+      if (updatedGradeList.length > 0) {
         const newRows = cloneDeep(rows).map(row => {
           const { student_test_id } = updatedGradeList.find(e => (
             e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
           )) || {}
           return { ...row, student_test_id: student_test_id || row.student_test_id }
         })
-        console.log('NEW ROWSSSSSSSSSS', newRows)
-        setRows(newRows)
-        setFilteredRows(newRows)
+        setRows([])
+        setFilteredRows([])
       }
       else {
-        setRows(newGradeList)
-        setFilteredRows(newGradeList)
+        setRows([])
+        setFilteredRows([])
       }
     }
     else {
@@ -673,7 +671,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
   }, [gradeInput.gradeList])
 
   useEffect(() => {
-    if(!rows.length) {
+    if (!rows.length) {
       onHasChanged(false)
     }
   }, [rows])
@@ -692,22 +690,50 @@ export default ({ applications = [], importData = [], childId, groupId , loading
     attempt: { label: 'Attempts', type: 'number', isFunc: true },
     latest_attempt: { label: 'Latest Attempt', type: 'number', isFunc: true },
   }
-  
+
   let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+  console.log('selectStudentRows student test 1111', selectStudentRows)
+  console.log('selectStudentRows student test applications', applications)
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
-    selectStudentRows = selectStudentRows.filter(e => e.form_contents && e.form === groupId )
+    selectStudentRows = selectStudentRows.filter(e => {
+      //e.form_contents && e.form === groupId
+      const groupIds = e.app_group_id.split(',');
 
-    if (selectStudentRows.length === 0) {
-      selectStudentRows = applications && applications.filter(e => e.form === groupId)
-    }
+      return e.form_contents && e.form_contents && e.form === groupId /*&& groupIds.some(id => appGroupIds.includes(id)) **/
+    })
+      selectStudentRows = applications && applications.map(e => {
+  
+        const currentApplication = selectStudentRows.find(item => {
+          const currentAppGroup = item.app_group_id ? item.app_group_id.split(',') : [];
+
+          return currentAppGroup.find(id => appGroupIds.includes(id));
+     
+        });
+
+        if(currentApplication) {
+          return {
+            ...currentApplication
+          }
+        }
+        return {
+          app_group_id: e.class_teacher,
+          child_id: e.app_id,
+          standardized_test: [],
+          cumulative_grades: [],
+          form_contents: e.form_contents,
+          firstname: null,
+          lastname: null
+        }
+      })
+
   }
 
-
+  console.log('selectStudentRows student test 222', selectStudentRows)
   return (
     <div
-      className = 'standardTestTable'
+      className='standardTestTable'
       onClick={() => {
         handleSetActiveColumnKey()
       }}
@@ -777,7 +803,7 @@ export default ({ applications = [], importData = [], childId, groupId , loading
                       : renderTableData()
                   }
                 </tbody>
-                
+
               </table>
               {/* {
                 (rows.length === 0 || filteredRows.length === 0) && (

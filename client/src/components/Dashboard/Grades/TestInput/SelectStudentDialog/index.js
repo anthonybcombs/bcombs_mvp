@@ -139,6 +139,9 @@ export default function index({
     } else {
       newData = selected.map(eachId => {
         const { child_id, name, cumulative_grades = [], firstname, lastname, app_id, app_group_id, application_type, type, } = rows.find(e => e.child_id === eachId) || {}
+
+        const test =  rows.find(e => e.child_id === eachId);
+
         const { year_level: latest_grade } = maxBy(cumulative_grades, 'year_level') || {}
         const { year_level } = selectedGradeTest[eachId] || {}
         const yl = year_level || latest_grade
@@ -197,7 +200,7 @@ export default function index({
 
     setRows(newRows)
   }, [propRows])
-
+  console.log('rowssssssss123123',rows)
   return ReactDOM.createPortal(
     <SelectStudentDialogStyled
       data-testid='app-big-calendar-create-modal'

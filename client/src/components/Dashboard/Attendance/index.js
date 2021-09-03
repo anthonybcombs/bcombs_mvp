@@ -394,7 +394,7 @@ export default function index(props) {
 						</td>
 						<td>
 							{formGroup && formGroup.form_contents
-								? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms'}>Input</Link>
+								? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms' + `&appGroupId=${group.app_grp_id}`}>Input</Link>
 								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>Input</Link>
 							} /
 							{formGroup && formGroup.form_contents
@@ -424,6 +424,7 @@ export default function index(props) {
 		// });
 		return totalCount;
 	};
+	console.log('FORMMMMMMMMM', form)
 
 	const getDefaultTotalCount = () => {
 		let totalCount = 0;
@@ -663,7 +664,7 @@ export default function index(props) {
 														<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}&appGroupIds=${appGroupIdList}`}>View</Link>
 													</td>
 													<td>
-														<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms&type=all'}>Input</Link>/
+														<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms&type=all' + `&appGroupIds=${appGroupIdList}`}>Input</Link>/
 														<Link to={'/dashboard/grades?group_id=' + item?.form_id + '&group_type=forms&type=all'}>View</Link>
 
 														{/* <Link to={`/dashboard/grades/input?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>Input</Link> /

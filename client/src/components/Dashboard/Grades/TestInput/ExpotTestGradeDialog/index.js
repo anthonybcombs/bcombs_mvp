@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
+import unionBy from 'lodash.unionby'
 
 import { CSVLink, CSVDownload } from "react-csv";
 
@@ -9,12 +10,13 @@ export default function index({
   inputType,
   onClose,
   appGroups = [],
+  formAppGroups = [],
   onGetGroupGradeTest,
   data = [],
   loading
 }) {
   const [appGroupText, setAppGroupText] = useState("");
-
+  const updatedGroups =  unionBy(appGroups, formAppGroups, "app_grp_id");// [...(appGroups || []),...(formAppGroups || [])]
   // useEffect(() => {
   //   if(appGroups.length > 0)
   //     setAppGroupText(appGroups[0].app_grp_id);
@@ -46,7 +48,7 @@ export default function index({
                     onGetGroupGradeTest(e.target.value);
                 }}>
                 <option value="" disabled>Select Application Group</option>
-                {appGroups.map((opt, i) => (
+                {updatedGroups.map((opt, i) => (
                   <option key={i} value={opt.app_grp_id}>
                     {opt.name}
                   </option>
