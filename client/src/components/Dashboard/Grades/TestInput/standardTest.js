@@ -521,11 +521,11 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
           delete newRow.attachment
         }
         if (newRow.month_taken) {
-          newRow.month_taken = moment(newRow.month_taken).format('YYYY-MM-DD')
+          newRow.month_taken =  moment(new Date(newRow.month_taken)).format('yyyy-MM-DD')
         }
-        console.log('newRow', newRow)
         return newRow
       })
+
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
     onHasChanged(false)
   }
