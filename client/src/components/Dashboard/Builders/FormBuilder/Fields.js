@@ -428,4 +428,22 @@ export const PrimeFields = [
     format: '',
     includeLogic: false
   },
+  {
+    fields: [
+      {
+        label: 'Profile Image',
+        tag: 'profileImage',
+        limit: 1,
+        errorMessage: 'Only PNG, JPG, JPEG files are supported.',
+        allowTypes: [
+          { label: 'PNG', ext: ['.png'], selected: true },
+          { label: 'JPG, JPEG', ext: ['.jpg', '.jpeg'], selected: true },
+        ]
+      }
+    ],
+    label: 'Profile Image',
+    type: 'primeFile',
+    includeLogic: false,
+    format: ''
+  },
 ]

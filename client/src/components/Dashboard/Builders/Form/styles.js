@@ -1011,7 +1011,14 @@ export default styled.div`
   .react-datepicker__day--outside-month {
     color: rgb(0 0 0 / 35%);
   }
-
+  
+  .profile-image-wrapper img {
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    box-shadow: 0 0 5px #716464;
+    cursor: pointer;
+  }
 
   // =================================
   // ********* MEDIA QUERIES *********
@@ -1029,8 +1036,6 @@ export default styled.div`
       display: block;
     }
   }
-
-  
   
 
 `;

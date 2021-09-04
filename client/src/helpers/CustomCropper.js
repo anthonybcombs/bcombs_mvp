@@ -5,7 +5,7 @@ import "cropperjs/dist/cropper.css";
 const CustomCropper = props => {
   const {
     cropend,
-    image = "https://live.staticflickr.com/2912/13981352255_fc59cfdba2_b.jpg"
+    image = "https://live.staticflickr.com/2912/13981352255_fc59cfdba2_b.jpg",
   } = props;
   const cropper = useRef(null);
 
@@ -14,6 +14,9 @@ const CustomCropper = props => {
   }, []);
 
   const onCrop = () => {
+    // cropper.current.getCroppedCanvas().toBlob((blob) => {
+    //   getCropAsBlob(blob)
+    // })
     cropend(cropper.current.getCroppedCanvas().toDataURL("image/jpeg"));
   };
   return (

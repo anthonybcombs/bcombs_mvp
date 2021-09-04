@@ -126,7 +126,8 @@ export default function index({
   isVisible = true,
   auth,
   onSubmit,
-  toggleProfilePhotoVisible
+  toggleProfilePhotoVisible,
+  getImgObject = null
 }) {
   const theme = useContext(ThemeContext);
   const [imagePreview, setImagePreview] = useState("");
@@ -161,7 +162,6 @@ export default function index({
     return <></>;
   }
 
-  console.log("imagePreviewww", imagePreview);
   return ReactDOM.createPortal(
     <UploadPhotoModal
       data-testid="app-dashboard-my-events-new-event"
@@ -171,6 +171,7 @@ export default function index({
         <UploadImage
           displayImage={imagePreview}
           handleImageChange={handleFileChange}
+          getImgObject={getImgObject}
         />
 
         <div id="buttons-control">

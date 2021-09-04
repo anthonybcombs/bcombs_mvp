@@ -10,6 +10,7 @@ import Linear from './Linear'
 import Slider from './Slider'
 import Ranking from './Ranking'
 import FileUpload from './FileUpload'
+import ProfileImage from './ProfileImage'
 import SectionBreak from './SectionBreak'
 import PageBreak from './PageBreak'
 import Rating from './Rating'
@@ -20,7 +21,6 @@ import Phone from './Phone'
 import Price from './Price'
 import Login from './Login'
 import Website from './Website'
-import Address from './Address'
 
 
 import STATES from '../../../ApplicationForm/states.json'
@@ -154,21 +154,6 @@ export default {
   },
   dropdown: (props) => {
     return <DropDown {...props} />
-    // return (
-    //   <div className='option'>
-    //     <span>{index + 1}.</span>
-    //     {
-    //       isBuilder
-    //         ? <input
-    //             type='text'
-    //             className={`field-input`}
-    //             value={label}
-    //             onChange={onChange}
-    //           />
-    //         : <span className='labelName'> {label}</span>
-    //     }
-    //   </div>
-    // )
   },
   select: ({ options, type, className = '', isBuilder = false, onChange = () => {}, value = '', id = '', placeholder = '', isReadOnly = false }) => {
     return (
@@ -218,6 +203,9 @@ export default {
   },
   file: (props) => {
     return <FileUpload {...props} />
+  },
+  profileImage: (props) => {
+    return <ProfileImage {...props} />
   },
   matrix: (props) => {
     return <Matrix {...props} />
