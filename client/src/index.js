@@ -14,6 +14,30 @@ const GlobalStyle = createGlobalStyle`
   .error{
     color:red;
   }
+  // .modal {
+  //   position: fixed; 
+  //   z-index:1000;
+  //   left: 0;
+  //   top: 0;
+  //   width: 100%; 
+  //   height: 100%; 
+  //   overflow: auto; 
+  //   background-color: rgb(0,0,0); 
+  //   background-color: rgba(0,0,0,0.4); 
+  // }
+  
+  // .modal-content {
+  //   background-color: white;
+  //   margin: 1em auto; 
+  //   padding: 20px;
+  //   border: 1px solid #888;
+  //   width: 30%; 
+  // }
+
+
+  /* common modal styles */
+
+/* common modal styles */
   .modal {
     position: fixed; 
     z-index:1000;
@@ -22,32 +46,66 @@ const GlobalStyle = createGlobalStyle`
     width: 100%; 
     height: 100%; 
     overflow: auto; 
-    background-color: rgb(0,0,0); 
     background-color: rgba(0,0,0,0.4); 
   }
   
   .modal-content {
+    border: none;
+    width: 100%;
+    max-width: 500px;
+    margin: 2rem auto;
     background-color: white;
-    margin: 1em auto; 
-    padding: 20px;
-    border: 1px solid #888;
-    width: 30%; 
+    box-shadow: 0 3px 6px rgb(0 0 0 / 25%);
   }
-  
-  /* The Close Button */
-  .close {
-    color: #aaa;
-    float: right;
+
+  .modal-header {
+    position: relative;
+    padding: 1em;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    background-color: #f26e21;
+  }
+  .modal-header h2 {
+    margin: 0;
+    font-size: 16px;
+  }
+  .modal-header .close {
+    position: absolute;
+    color: #fff;
+    right: 1rem;
     font-size: 28px;
     font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
     cursor: pointer;
-  }  
+    transition: all .3s ease-in-out;
+  }
+  .modal-header .close:hover {
+    opacity: 0.8;
+  }
+
+  .modal-body {
+    padding: 20px 25px;
+  }
+
+
+
+
+
+  
+  /* The Close Button */
+  // .close {
+  //   color: #aaa;
+  //   float: right;
+  //   font-size: 28px;
+  //   font-weight: bold;
+  // }
+  
+  // .close:hover,
+  // .close:focus {
+  //   color: black;
+  //   text-decoration: none;
+  //   cursor: pointer;
+  // }  
   button{
     padding: 10px;    
     cursor: pointer;    

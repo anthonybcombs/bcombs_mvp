@@ -2,25 +2,32 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 const ProfileModal = styled.div`
-  text-align: center;
   .modal-content {
-    width: 30%;
-    margin-top: 20vh;
+    max-width: 420px;
+    text-align: center;
   }
-  img {
-    border-radius: 50%;
+  .profile-image > img {
     height: 100px;
     width: 100px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    border-radius: 100px;
+    object-fit: cover;
+    box-shadow: 0 3px 6px #ddd;
+    border: 1px solid #ec6e33;
   }
-  p,
-  h3 {
+  h3, p {
     padding: 0;
-    margin: 0.3em;
+    margin: .5rem;
   }
-  @media (min-width: 600px) {
+  .profile-details {
+    text-align: left;
+  }
+  .profile-details h3 {
+    color: #ec6e33;
+    text-align: center;
+    margin-bottom: 1.3rem;
+  }
+  .profile-details label {
+    color: grey;
   }
 `;
 export default function index({
@@ -44,24 +51,29 @@ export default function index({
   return ReactDOM.createPortal(
     <ProfileModal className="modal">
       <div className="modal-content">
-        <span
-          className="close"
-          onClick={() => {
-            toggleProfileModal(false);
-          }}>
-          &times;
-        </span>
-        <h2>My Profile</h2>
-        <div>
-          <img src={contactDetails.profile_img} />
+        <div className="modal-header">
+          <h2>My Profile</h2>
+          <span
+            className="close"
+            onClick={() => {
+              toggleProfileModal(false);
+            }}>
+            &times;
+          </span>
         </div>
-        <div>
-          <h3>
-            {contactDetails.first_name} {contactDetails.last_name}
-          </h3>
-          <p>Email: {contactDetails.email}</p>
-          <p>Phone Number: {contactDetails.phone_number}</p>
-          <p>Relation: {contactDetails.relation}</p>
+        
+        <div className="modal-body">
+          <div className="profile-image">
+            <img src={contactDetails.profile_img} />
+          </div>
+          <div className="profile-details">
+            <h3>
+              {contactDetails.first_name} {contactDetails.last_name}
+            </h3>
+            <p><label>Email:</label> {contactDetails.email}</p>
+            <p><label>Phone Number:</label> {contactDetails.phone_number}</p>
+            <p><label>Relation:</label> {contactDetails.relation}</p>
+          </div>
         </div>
       </div>
     </ProfileModal>,

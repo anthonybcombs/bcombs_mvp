@@ -11,14 +11,7 @@ import graphqlClient from "../../../../graphql";
 import { CHECK_USER_EMAIL_QUERY } from "../../../../graphql/query";
 
 const NewContactModal = styled.div`
-  h2 {
-    text-align: center;
-  }
-  .modal-content {
-    width: 40%;
-  }
-  @media (min-width: 600px) {
-  }
+
 `;
 export default function index({
   isVisible = true,
@@ -124,16 +117,18 @@ export default function index({
   return ReactDOM.createPortal(
     <NewContactModal className="modal">
       <div id="applicationForm" className="modal-content">
-        <span
-          className="close"
-          onClick={() => {
-            toggleCreateContactModal(false);
-          }}
-        >
-          &times;
-        </span>
-        <div>
+        <div class="modal-header">
           <h2>Create a Contact</h2>
+          <span
+            className="close"
+            onClick={() => {
+              toggleCreateContactModal(false);
+            }}
+          >
+            &times;
+          </span>
+        </div>
+        <div class="modal-body">
           <ContactForm
             isLoading={isLoading}
             groups={groups}
