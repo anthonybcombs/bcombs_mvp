@@ -48,16 +48,17 @@ const RelativeFormStyled = styled.form`
     margin: 10px auto;
     width: 100%;
     border: none;
-    margin-top: 15em;
+    margin-top: 1.5rem;
   }
   @media (min-width: 600px) {
     button[type="submit"] {
       width: ${({ theme }) => theme.button.width.primary};
     }
-    input,
+    input {
+      margin: 1.5rem auto 0 auto;
+    }
     p.error {
-      width: 50%;
-      margin: 2.5em auto 2.5em auto;
+      margin: 0;
     }
     div {
       width: 50%;

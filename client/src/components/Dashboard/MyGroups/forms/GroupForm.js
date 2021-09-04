@@ -45,8 +45,11 @@ const ContactFormStyled = styled.form`
     display: block;
     width: 100%;
     border: none;
-    margin-top: 15em;
+    max-width: 150px;
+    margin: 1.5rem auto .5rem;
   }
+
+
 
   #multiselectContainerReact .optionContainer li:hover,
   #multiselectContainerReact .optionContainer li.highlight {
@@ -155,8 +158,7 @@ const ContactFormStyled = styled.form`
   }
 
   .group-btn {
-    display: flex;
-    margin-top: -32%;
+    margin-top: 1.5rem;
   }
 
   .form-group .form-control {

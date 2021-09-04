@@ -25,13 +25,15 @@ const ContactFormStyled = styled.form`
     margin: 10px auto;
     width: 100%;
     border: none;
-    margin-top: 15em;
   }
   @media (min-width: 600px) {
     button[type="submit"] {
       width: ${({ theme }) => theme.button.width.primary};
     }
   }
+
+
+
   .disabled {
     background-color: gray !important;
   }
@@ -382,8 +384,7 @@ export default function ContactForm({
       </div>
       <button
         className={isLoading ? "disabled" : ""}
-        type="submit"
-        style={{ marginTop: 50 }}>
+        type="submit">
         {isLoading ? "Saving..." : "Save"}
       </button>
     </ContactFormStyled>

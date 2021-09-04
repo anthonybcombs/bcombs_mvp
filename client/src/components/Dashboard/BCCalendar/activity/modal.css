@@ -1,4 +1,4 @@
-.modal {
+/* .modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -134,13 +134,6 @@
     opacity: .5;
 }
 
-  .display-block {
-    display: block;
-  }
-  
-  .display-none {
-    display: none;
-  }
 
   .modal-content .grid-2a {
     display: grid;
@@ -178,4 +171,80 @@
 }
   .modal-content .tags-input {
       width: 200px;
-  }
+  } */
+
+
+
+.display-block {
+  display: block;
+}
+
+.display-none {
+  display: none;
+}  
+/* .modal-content .react-draggable {
+    pointer-events: auto;
+} */
+.modal-content.react-draggable h4 {
+  margin: 0;
+  font-size: 16px;
+}
+.modal-content.react-draggable .btn-close {
+  position: relative;
+  border: 0;
+  height: 1em;
+  color: #fff;
+  padding: 0;
+  font-size: 18px;
+  margin-left: auto;
+  background: transparent;
+  transition: all .3s ease-in-out;
+}
+.modal-content.react-draggable .btn-close::after {
+  content: '\0058';
+}
+.modal-content.react-draggable .btn-close:hover {
+  opacity: 0.8;
+}
+
+.modal-content.react-draggable .modal-body div.row,
+.modal-content.react-draggable .modal-body div.row form,
+.modal-content.react-draggable .modal-body div.row form input {
+  width: 100% !important;
+}
+.modal-content.react-draggable .modal-body div.row {
+  margin-top: 1rem;
+  background: #dcdcdc24;
+  border: 1px solid gainsboro;
+}
+.modal-content.react-draggable .modal-body div.row form {
+  padding: .5rem;
+}
+.modal-content.react-draggable .modal-body div.row form input {
+  border: none !important;
+  height: unset !important; 
+  background: transparent !important;
+}
+.modal-content.react-draggable .modal-body div.row #copyButton {
+  border: none;
+  width: 38px;
+  color: #fff;
+  background: #3788d8;
+}
+
+
+.modal-content.react-draggable .modal-footer {
+  padding: 1rem;
+}
+.modal-content.react-draggable .modal-footer button {
+  color: white;
+  font-size: 0.8em !important;
+  border: none;
+  background-color: #f26e21;
+  padding: 10px;
+  display: block;
+  width: 150px;
+  margin: 10px auto;
+  box-shadow: 0px 3px 6px #908e8e;
+  border-radius: 40px !important;
+}

@@ -61,19 +61,17 @@ const ContactFormStyled = styled.form`
     margin: 10px auto;
     width: 100%;
     border: none;
-    margin-top: 15em;
   }
   > div {
     display: grid;
   }
-  > #contact-header > div:first-child > div > img {
-    border-radius: 50%;
+  > #contact-header .contact-image img {
     height: 100px;
     width: 100px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 200px;
+    border-radius: 100px;
+    object-fit: cover;
+    box-shadow: 0 3px 6px #ddd;
+    border: 1px solid #ec6e33;
   }
   > #contact-header > div:first-child > div > button {
     background: none;
@@ -84,6 +82,9 @@ const ContactFormStyled = styled.form`
   > #contact-header {
     text-align: center;
   }
+  > #contact-header h3 {
+    color: #ec6e33;
+  }
   > #contact-header p,
   > #contact-header h3 {
     padding: 0;
@@ -91,9 +92,6 @@ const ContactFormStyled = styled.form`
   }
   > #contact-header p:nth-of-type(3) {
     color: lightgrey;
-  }
-  .contact-body {
-    padding: 1em;
   }
   @media (min-width: 600px) {
     button[type="submit"] {
@@ -104,7 +102,9 @@ const ContactFormStyled = styled.form`
       width: 80%;
     }
     > #contact-header {
-      grid-template-columns: repeat(2, 1fr);
+      margin: 1rem 0;
+      grid-gap: 1rem;
+      grid-template-columns: 100px 1fr;
     }
     > .contact-body {
     }
@@ -251,12 +251,10 @@ export default function ContactForm({
       onSubmit={handleSubmit(onSubmit)}
       theme={theme}>
       <div id="contact-header">
-        <div>
-          <div>
-            <img src={contact.profile_img} />
-          </div>
+        <div className="contact-image">
+          <img src={contact.profile_img} />
         </div>
-        <div>
+        <div className="contact-details">
           <h3>
             {contact.first_name} {contact.last_name}
           </h3>
@@ -469,7 +467,7 @@ export default function ContactForm({
           /> */}
         </div>
       </div>
-      <button type="submit" style={{ marginTop: 50 }}>
+      <button type="submit">
         Save
       </button>
     </ContactFormStyled>

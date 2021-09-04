@@ -6,14 +6,8 @@ import { useDispatch } from "react-redux";
 import RelativeForm from "../forms/RelativeForm";
 import { addRelative } from "../../../../redux/actions/Relatives";
 const CreateRelativeModalStyled = styled.div`
-  h2 {
-    text-align: center;
-  }
   .modal-content {
-    width: 40%;
-    top:40%;
-  }
-  @media (min-width: 600px) {
+    max-width: 420px;
   }
 `;
 export default function index({
@@ -47,16 +41,19 @@ export default function index({
   return ReactDOM.createPortal(
     <CreateRelativeModalStyled className="modal">
       <div className="modal-content">
-        <span
-          className="close"
-          onClick={() => {
-            toggleCreateRelativeModal(false);
-          }}
-        >
-          &times;
-        </span>
-        <div>
+        <diiv className="modal-header">
           <h2>Create a Relative</h2>
+          <span
+            className="close"
+            onClick={() => {
+              toggleCreateRelativeModal(false);
+            }}
+          >
+            &times;
+          </span>
+        </diiv>
+        
+        <div className="modal-body">
           <RelativeForm
             relativeDetails={relativeDetails}
             onSubmit={handleSubmit}

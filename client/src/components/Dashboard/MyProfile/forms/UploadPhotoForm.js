@@ -29,6 +29,25 @@ const UploadPhotoModal = styled.div`
     margin: 1em auto;
     width: 20%;
   }
+  .modal-content .modal-body >div >div {
+    margin: 0 !important;
+    cursor: pointer !important;
+    min-height: unset !important;
+    max-height: 300px !important;
+    border: 2px dashed #ddd !important;
+    transition: .5s ease-in-out;
+  }
+  .modal-content .modal-body >div >div >img {
+    object-fit: cover !important;
+    transition: .5s ease-in-out;
+  }
+
+  .modal-content .modal-body >div >div:hover {
+    border: 2px dashed #ec6e33 !important;
+  }
+  .modal-content .modal-body >div >div:hover img {
+    opacity: .8;
+  }
   @media screen and (max-width: 1920px) {
     .modal-content {
       margin: 1.5em auto;
@@ -80,9 +99,9 @@ const UploadPhotoModal = styled.div`
   }
   @media screen and (max-width: 768px) {
     #buttons-control button {
-      width: 20%;
+      width: 100%;
       display: inline-block;
-      margin: 1em;
+      margin: .5rem 0;
     }
   }
   @media (min-width: 600px) {
@@ -106,6 +125,7 @@ const UploadPhotoModal = styled.div`
     #buttons-control button {
       display: inline-block;
       margin: 1em;
+      width: 120px;
     }
   }
 `;
@@ -168,26 +188,28 @@ export default function index({
       className="modal"
       theme={theme}>
       <div className="modal-content">
-        <UploadImage
-          displayImage={imagePreview}
-          handleImageChange={handleFileChange}
-          getImgObject={getImgObject}
-        />
+        <div className="modal-body">
+          <UploadImage
+            displayImage={imagePreview}
+            handleImageChange={handleFileChange}
+            getImgObject={getImgObject}
+          />
 
-        <div id="buttons-control">
-          <button
-            data-testid="app-big-calendar-new-cancel-button"
-            type="button"
-            onClick={() => toggleProfilePhotoVisible(false)}>
-            Cancel
-          </button>
-          <button
-            className="save-image"
-            data-testid="app-big-calendar-new-save-button"
-            onClick={showCroppedImage}
-            type="submit">
-            Save
-          </button>
+          <div id="buttons-control">
+            <button
+              data-testid="app-big-calendar-new-cancel-button"
+              type="button"
+              onClick={() => toggleProfilePhotoVisible(false)}>
+              Cancel
+            </button>
+            <button
+              className="save-image"
+              data-testid="app-big-calendar-new-save-button"
+              onClick={showCroppedImage}
+              type="submit">
+              Save
+            </button>
+          </div>
         </div>
       </div>
     </UploadPhotoModal>,

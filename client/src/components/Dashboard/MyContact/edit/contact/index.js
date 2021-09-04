@@ -7,22 +7,6 @@ import { updateGroup } from "../../../../../redux/actions/Groups";
 import EditContactForm from "../../forms/EditContactForm";
 import AddToGroupForm from "../../forms/AddToGroupForm";
 const EditContactModal = styled.div`
-  h2 {
-    text-align: center;
-  }
-  .modal-content {
-    width: 40%;
-    margin-top: ${({ theme }) => theme.modalMarginTop};
-  }
-
-  @media (min-width: 600px) {
-    #content {
-      grid-template-columns: 50% 50%;
-      grid-gap: 1%;
-    }
-    button[type="submit"] {
-      width: 30%;
-    }
 `;
 // width: ${({ theme }) => theme.modalWidth};
 export default function index({
@@ -128,34 +112,39 @@ export default function index({
         modalMarginTop: typeOfForm === "Edit Contact" ? "initial" : "20vh"
       }}>
       <div className="modal-content">
-        <span
-          className="close"
-          onClick={() => {
-            toggleEditContactModal(false);
-          }}>
-          &times;
-        </span>
-        <div>
+        <div className="modal-header">
           <h2>
             {typeOfForm === "Edit Contact" ? "Edit Contact" : "Add to group"}
           </h2>
-          {typeOfForm === "Edit Contact" ? (
-            <EditContactForm
-              contact={contact}
-              groups={groups}
-              isVisible={isVisible}
-              contactDetails={contactDetails}
-              onSubmit={handleSubmit}
-              handleContactDetailsChange={handleContactDetailsChange}
-            />
-          ) : (
-            <AddToGroupForm
-              groups={groups}
-              contactDetails={contactDetails}
-              onSubmit={handleSubmit}
-              handleContactDetailsChange={handleContactDetailsChange}
-            />
-          )}
+          <span
+            className="close"
+            onClick={() => {
+              toggleEditContactModal(false);
+            }}>
+            &times;
+          </span>
+        </div>
+        
+        <div className="modal-body">
+          <div>
+            {typeOfForm === "Edit Contact" ? (
+              <EditContactForm
+                contact={contact}
+                groups={groups}
+                isVisible={isVisible}
+                contactDetails={contactDetails}
+                onSubmit={handleSubmit}
+                handleContactDetailsChange={handleContactDetailsChange}
+              />
+            ) : (
+              <AddToGroupForm
+                groups={groups}
+                contactDetails={contactDetails}
+                onSubmit={handleSubmit}
+                handleContactDetailsChange={handleContactDetailsChange}
+              />
+            )}
+          </div>
         </div>
       </div>
     </EditContactModal>,
