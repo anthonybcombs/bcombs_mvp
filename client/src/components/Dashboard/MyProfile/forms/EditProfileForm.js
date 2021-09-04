@@ -28,16 +28,6 @@ const EditProfileModal = styled.form`
     width: 100%;
     border: none;
   }
-  .modal-content {
-    width: 40%;
-    position:absolute;
-    top:100%;
-  }
-  @media screen and (max-width: 1024px) {
-    .modal-content {
-      width: 58%;
-    }
-  }
   @media (min-width: 600px) {
     button[type="submit"] {
       width: ${({ theme }) => theme.button.width.primary};
