@@ -223,7 +223,8 @@ export const addParent = async ({
   age,
   birthdate,
   gender,
-  ethnicities
+  ethnicities,
+  image
 }) => {
   const db = makeDb();
   let result = {};
@@ -260,11 +261,12 @@ export const addParent = async ({
         age,
         birthdate,
         gender,
-        ethnicities
+        ethnicities,
+        image
       ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?),
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?, ?, ?)`,
+        ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         application,
         firstname,
@@ -293,7 +295,8 @@ export const addParent = async ({
         age,
         birthdate,
         gender,
-        ethnicities
+        ethnicities,
+        image
       ]
     )
 
@@ -337,7 +340,8 @@ export const updateParent = async ({
   birthdate,
   gender,
   ethnicities,
-  parent_id
+  parent_id,
+  image
 }) => {
 
   const db = makeDb();
@@ -374,7 +378,8 @@ export const updateParent = async ({
         age=?,
         birthdate=?,
         gender=?,
-        ethnicities=?
+        ethnicities=?,
+        image=?
         WHERE parent_id=UUID_TO_BIN(?)
       `,
       [
@@ -405,6 +410,7 @@ export const updateParent = async ({
         birthdate,
         gender,
         ethnicities,
+        image,
         parent_id
       ]
     )

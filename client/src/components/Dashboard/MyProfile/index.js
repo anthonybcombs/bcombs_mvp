@@ -246,8 +246,6 @@ export default function index() {
     }
   }, []);
 
-  console.log("applications11", applications);
-
   useEffect(() => {
     if (user.profile || (!isEditProfileVisible && user.profile)) {
       setPersonalInfo({
@@ -298,15 +296,22 @@ export default function index() {
   };
 
   const handleUpdateSelectedVendor = payload => {
-    dispatch(
+
+   dispatch(
       requestUpdateUserProfile({
         ...updatedPayload,
+        personalInfo:{
+          ...updatedPayload.personalInfo,
+          dateofbirth: format(new Date(updatedPayload.personalInfo.dateofbirth), "yyyy-MM-dd")
+        },
         otherInfo: payload
       })
     );
 
     setConfirmationVisible(false);
-    dispatch(requestUserApplication(auth.email));
+    setTimeout(() => {
+      dispatch(requestUserApplication(auth.email));
+    }, 1500)
     // if (sel
   };
 
@@ -316,7 +321,6 @@ export default function index() {
       image: file
     };
 
-    console.log("PAYLOADDDDDDDDDD", payload);
     dispatch(requestUpdateUserPhoto(payload));
     setUploadPhotoVisible(false);
   };
@@ -325,7 +329,6 @@ export default function index() {
     setPersonalInfo({ ...personalInfo, [id]: value });
   };
 
-  console.log("USERRRRRRRRRRRR", user);
   return (
     <ProfileSyled>
       <CreateRelative

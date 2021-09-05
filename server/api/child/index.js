@@ -313,7 +313,8 @@ export const addChild = async ({
   hospital_preference,
   hospital_phone,
   child_lives_with,
-  nickname
+  nickname,
+  image
 }) => {
   const db = makeDb();
   let result = {};
@@ -375,13 +376,15 @@ export const addChild = async ({
         hospital_preference,
         hospital_phone,
         child_lives_with,
-        nickname
+        nickname,
+        image
       ) VALUES (UUID_TO_BIN(UUID()), 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
+        ?, ?, ?)`,
       [
         firstname,
         lastname,
@@ -434,7 +437,8 @@ export const addChild = async ({
         hospital_preference,
         hospital_phone,
         child_lives_with,
-        nickname
+        nickname,
+        image
       ]
     )
 
@@ -529,7 +533,8 @@ export const updateChild = async ({
   needed_days,
   schedule_tour,
   voucher,
-  ch_id
+  ch_id,
+  image
 }) => {
 
   const db = makeDb();
@@ -614,7 +619,8 @@ export const updateChild = async ({
         primary_language=?,
         needed_days=?,
         schedule_tour=?,
-        voucher=?
+        voucher=?,
+        image=?
         WHERE ch_id=UUID_TO_BIN(?)
       `,
       [
@@ -694,6 +700,7 @@ export const updateChild = async ({
         needed_days,
         schedule_tour,
         voucher,
+        image,
         ch_id
       ]
     );

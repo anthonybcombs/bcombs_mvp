@@ -5,6 +5,7 @@ import styled, { ThemeContext } from "styled-components";
 import Cropper from "react-easy-crop";
 import { getCroppedImg } from "./images";
 import CustomCropper from "./CustomCropper";
+import cloneDeep from 'lodash.clonedeep'
 
 const UploadImageStyled = styled.div`
   text-align: center;
@@ -25,7 +26,7 @@ const UploadImageStyled = styled.div`
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 const ALLOWED_FILE_SIZE = 5000000;
 
-export default function UploadImage({ displayImage = "", handleImageChange }) {
+export default function UploadImage({ displayImage = "", handleImageChange, getImgObject }) {
   const [imageView, setImageView] = useState(
     displayImage.length > 0 ? displayImage : ""
   );
@@ -61,7 +62,11 @@ export default function UploadImage({ displayImage = "", handleImageChange }) {
                       setCropper(false);
                     }}
                     onSave={image => {
-                      console.log("ON SAVEEEEEE", image);
+                      if (getImgObject) {
+                        const newImage = cloneDeep(imageView)
+                        newImage.src.base64 = image
+                        getImgObject(newImage)
+                      }
                       setImageView(image);
                       setCropper(false);
                       handleImageChange(image);
@@ -147,10 +152,10 @@ const CropperImageStyled = styled.div`
 const CroppedImage = ({ imageFile, imageBase64, onCancel, onSave }) => {
   const [cropImage, setCropImage] = useState("");
 
-  const cropend = value => {
-    console.log("Croppeddddddddddddddddd", value);
+  const cropend = (value) => {
     setCropImage(value);
   };
+
   return (
     <CropperImageStyled>
       <CustomCropper image={imageBase64} cropend={cropend} />

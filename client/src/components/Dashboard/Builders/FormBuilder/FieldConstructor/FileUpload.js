@@ -4,11 +4,11 @@ import { faTimes, faFileImage, faFilePdf, faFileWord } from '@fortawesome/free-s
 import cloneDeep from 'lodash.clonedeep'
 
 const getExtensionIcon = (ext) => {
-  switch(ext.toLowerCase()) {
+  switch (ext.toLowerCase()) {
     case 'png':
     case 'jpg':
     case 'jpeg':
-    case 'gif':      
+    case 'gif':
       return faFileImage
     case 'pdf':
       return faFilePdf
@@ -27,7 +27,7 @@ export default ({
   const handleChangeValues = ({ target: { value: fileValue } }, type) => {
     onChangeFieldSettings({ [type]: fileValue })
   }
-  
+
   const handleChangeTypes = ({ target: { checked } }, index) => {
     let newTypes = cloneDeep(allowTypes)
     newTypes[index].selected = checked
@@ -47,6 +47,7 @@ export default ({
   }
 
   const encodeImageFileAsURL = (file) => {
+    console.log('witwerwe', file)
     if (!file) {
       return
     }
@@ -63,8 +64,7 @@ export default ({
     }
 
     var reader = new FileReader()
-    reader.onloadend = function() {
-      console.log('ssssss', reader)
+    reader.onloadend = function () {
       onChange({ target: { id: fieldId, value: { url: '', data: reader.result, filename: file.name, contentType: file.type, extension: `.${ext}` } } })
     }
     reader.readAsDataURL(file)
