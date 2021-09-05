@@ -691,6 +691,22 @@ export default styled.div`
     color: grey;
   }
 
+  //TERMS
+  .formGroup.terms .title {
+    margin-top: 30px;
+  }
+  .formGroup.terms .content {
+    margin-top: 20px;
+  }
+  .formGroup.terms .signature {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .formGroup.terms .signature input {
+    width: 48%!important;
+  }
+
 
 
   // =============================================

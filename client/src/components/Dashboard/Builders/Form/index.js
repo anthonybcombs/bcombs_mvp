@@ -235,7 +235,7 @@ export default (props) => {
     const fields = hasWizard 
       ? actualFormFields[currentStep].formFields
       : actualFormFields
-    
+
     fields.reduce((acc, curr) => {
       acc = [
         ...acc,
@@ -243,7 +243,7 @@ export default (props) => {
       ]
       return acc
     }, [])
-    .forEach(({ required, value, id, placeholder, label, tag }) => {
+    .forEach(({ required, value, id, placeholder, label, tag, type }) => {
       const newVal = value ? JSON.parse(value) : ''
       if (required && !newVal && tag !== 'icon') {
         const requiredError = `${placeholder || label || 'This'} is required.`
@@ -253,6 +253,10 @@ export default (props) => {
             requiredError
           ]
         }
+      }
+      if (type === 'terms' && tag === 'input') {
+        const parsedValue = newVal ? JSON.parse(newVal) : {}
+        newFielderrors[id] = parsedValue?.value ? [] : ['Electronic Signature is required']
       }
       if (newFielderrors[id] && !newFielderrors[id].length) {
         delete newFielderrors[id]

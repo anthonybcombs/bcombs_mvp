@@ -314,13 +314,13 @@ export default ({
           }
 
           <div className='settings-content'>
-            <label htmlFor='required'  className={`checkboxContainer ${!hasSelectedField ? 'disabled' : ''}`} >
+            <label htmlFor='required' className={`checkboxContainer ${(!hasSelectedField || fieldGroupType === 'terms') ? 'disabled' : ''}`} >
               <input
                 type='checkbox'
                 id='required'
                 name='required'
-                disabled={!hasSelectedField}
-                checked={required}
+                disabled={!hasSelectedField || fieldGroupType === 'terms'}
+                checked={required || fieldGroupType === 'terms'}
                 onChange={e => {
                   e.stopPropagation()
                   handleChangeFieldSettings({ required: e.target.checked })

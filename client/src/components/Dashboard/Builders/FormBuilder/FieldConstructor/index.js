@@ -21,6 +21,7 @@ import Phone from './Phone'
 import Price from './Price'
 import Login from './Login'
 import Website from './Website'
+import Terms from './Terms'
 
 
 import STATES from '../../../ApplicationForm/states.json'
@@ -236,6 +237,9 @@ export default {
   },
   login: (props) => {
     return <Login {...props} />
+  },
+  terms: (props) => {
+    return <Terms {...props} />
   },
   // address: (props) => {
   //   return <Address {...props} />

@@ -6,7 +6,7 @@ import FieldConstructor from '../FieldConstructor'
 
 export default ({
   id, index, field, fieldsCount, isActive, isActiveField, columnInt, isStandard, gridColRepeat, errors, hasPageBreak, pageBreaks, label, isLastPageBreak,
-  format, setActiveFieldIndex, onActive, onChangeFieldSettings, onRemoveGroupField, onCheckError,
+  format, setActiveFieldIndex, onActive, onChangeFieldSettings, onRemoveGroupField, onCheckError, type
 }) => {
   const { tag, column, placeholder, fixedWidth = false } = field
 

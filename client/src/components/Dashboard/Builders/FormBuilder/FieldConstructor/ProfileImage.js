@@ -5,14 +5,19 @@ import cloneDeep from 'lodash.clonedeep'
 
 import UploadPhotoForm from "../../../MyProfile/forms/UploadPhotoForm";
 
-export default ({
-  isReadOnly = false, allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings,
-  isBuilder, onChange, onCheckError, value, className
-}) => {
-  console.log('Profile Image', value)
-  const [imagePreview, setImagePreview] = useState(value?.url || '/defaultprofile.7ccad8ff.png');
+export default (props) => {
+  const {
+    isReadOnly = false, allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings,
+    isBuilder, onChange, onCheckError, value, className
+  } = props
+  
+  // console.log('Profile Image', props)
+  const actualImage = value?.url ? 'https://bcombs.s3.amazonaws.com/' + value.url : ''
+
+  const [imagePreview, setImagePreview] = useState('');
   const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
   const [imgObject, setImgObject] = useState('')
+  const [auth, setAuth] = useState({ profile_img: actualImage })
 
   const handleChangeValues = ({ target: { value: fileValue } }, type) => {
     const isTypeLimit = type === 'limit'
@@ -42,7 +47,7 @@ export default ({
   }
 
   const resetImgPreview = (img) => {
-    img = img || value.data || '/defaultprofile.7ccad8ff.png'
+    img = img || value.data || ''
     setImagePreview(img)
   }
 
@@ -70,15 +75,17 @@ export default ({
     // }
 
     resetImgPreview(file?.src?.base64 || '')
-    var reader = new FileReader()
-    reader.onloadend = function() {
-      onChange({ target: { id: fieldId, value: { url: '', data: reader.result, filename: newFile.name, contentType: newFile.type, extension: `.${ext}` } } })
-    }
-    reader.readAsDataURL(newFile)
+    onChange({ target: { id: fieldId, value: { url: '', data: file?.src?.base64, filename: newFile.name, contentType: newFile.type, extension: `.${ext}` } } })
+    // var reader = new FileReader()
+    // reader.onloadend = function() {
+      
+    // }
+    // reader.readAsDataURL(newFile)
   }
 
   const { data, filename = '' } = value || {}
   const [, ext] = filename.split('.')
+  const imgSrc = imagePreview || actualImage || '/defaultprofile.7ccad8ff.png'
 
   return (
     <>
@@ -86,19 +93,21 @@ export default ({
         className="profile-image-wrapper"
         onClick={(e) => (!isBuilder && !isReadOnly) && setUploadPhotoVisible(true)}
       >
-        <img src={imagePreview} width="80" height="80" alt='' />
+        <img src={imgSrc} width="80" height="80" alt='' />
       </div>
       <UploadPhotoForm
+        auth={auth}
         isVisible={isUploadPhotoVisible}
         toggleProfilePhotoVisible={setUploadPhotoVisible}
-        getImgObject={setImgObject}
-        onSubmit={(image) => {
+        getImgObject={(image) => {
+          if (actualImage) {
+            resetImgPreview(image.src.base64)
+          }
+          setImgObject(image)
+        }}
+        onSubmit={() => {
           setUploadPhotoVisible(false)
           encodeImageFileAsURL(imgObject)
-          // setImagePreview(image)
-          // if (!isReadOnly) {
-            // encodeImageFileAsURL(e.target.files[0],)
-          // }
         }}
       />
     </>

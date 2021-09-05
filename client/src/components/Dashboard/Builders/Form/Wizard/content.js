@@ -25,7 +25,7 @@ export default ({
     <div className='wizard-content' id={`page_${pageId}`}>
       {
         fields.map((fieldProps, index) => {
-          const specialComps = ['date', 'email', 'time', 'phone', 'login', 'price', 'website']
+          const specialComps = ['date', 'email', 'time', 'phone', 'login', 'price', 'website', 'terms']
           const newHistoryFields = historyFields.find(e => e.id === fieldProps.id)?.fields || []
           return specialComps.includes(fieldProps.type) ?
             FieldConstructor[fieldProps.type]({
