@@ -862,7 +862,6 @@ export default function index() {
         image: parent.profile.image,
       })
     });
-    console.log('way ayo oi', {parents, childProfile})
     return parents;
   }
 
