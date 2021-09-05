@@ -16,8 +16,8 @@ const BCDateRangePicker = props => {
   const { startDate, setStartDate, endDate, setEndDate } = props;
 
   return (
-    <div className="grid-2a">
-      <div className="col">
+    <div className="grid-2a field-calendar">
+      <div className="col icon-clock">
         <FontAwesomeIcon icon={faClock} />
       </div>
       <div className="col date-time-row">
@@ -146,16 +146,17 @@ const NewEventModal = props => {
       <section className="modal-main">
       <div className="modal-dialog">
       <Draggable handle=".modal-header">
-            <div className="modal-content" style={{transform: 'initial'}}>
+            <div className="modal-content calendar-edit-activity" style={{transform: 'initial'}}>
                 <div className="modal-header d-flex align-items-center">
-                    <h4 className="modal-title"><strong>Add</strong> an activity</h4>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" 
-                      onClick={handleClose}></button>
+                  <h2 className="modal-title">Add an activity</h2>
+                  <span className="close" onClick={handleClose}>
+                    &times;
+                  </span>
                 </div>
                 <div className="modal-body">
                     <form>
                         <div className="row">
-                            <div className="col-md-6">
+                            <div className="col-md-12 field">
                                 <label className="control-label">Title Name</label>
                                 <input className="form-control form-white" placeholder="Enter title" 
                                   onChange={handleTitleChange} value={localActivity.title}
@@ -169,58 +170,57 @@ const NewEventModal = props => {
                               </TabList>
 
                               <TabPanel>
-                              <BCDateRangePicker 
-                                  startDate={localActivity.start}
-                                  setStartDate={setStartDate}
-                                  endDate={localActivity.end}
-                                  setEndDate={setEndDate}
-                                />
-                                                            <div className="col-md-6 control-wrapper">
-                                <label className="control-label">Details</label>
-                                <textarea className="form-control form-white details-input" 
-                                  onChange={handleDescriptionChange} value={localDescription}
-                                     name="description"></textarea>
-                            </div>
-                                                            <div className="col-md-6 control-wrapper">
-                                <label className="control-label">Tags</label>
-                                <input className="form-control form-white tags-input" placeholder="Enter tags (comma separate)" 
-                                  onChange={handleTagsChange} value={localActivity.tags}
-                                    type="text" name="tags"></input>
-                            </div>
-
-                              </TabPanel>
-                              <TabPanel>
-                              <div className="col-md-6 control-wrapper">
-                                <label className="control-label">Class Name: </label>
-                                <select className="form-select form-white"
-                                  value={localClassId}
-                                  onChange={handleClassSelectChange}
-                                   data-placeholder="Select Class Name..." name="category-color">
-                                <option value=""> -- Select a Class -- </option>
-{visibleClasses.map((elem) => 
-  <option key={elem.name} value={elem.id}>{elem.name}</option>)
-}
-                                  
-                                </select>
-                            </div>
                                 <BCDateRangePicker 
                                   startDate={localActivity.start}
                                   setStartDate={setStartDate}
                                   endDate={localActivity.end}
                                   setEndDate={setEndDate}
                                 />
-                                                            <div className="col-md-6 control-wrapper">
-                                <label className="control-label">Details</label>
-                                <textarea className="form-control form-white details-input" 
-                                  onChange={handleDescriptionChange} value={localDescription}
-                                     name="description"></textarea>
-                            </div>
-                              <div className="col-md-6 control-wrapper">
-                                <label className="control-label">Tags</label>
-                                <input className="form-control form-white tags-input" placeholder="Enter tags (comma separate)" 
-                                  onChange={handleTagsChange} value={localActivity.tags}
-                                    type="text" name="tags2"></input>
-                                    </div>
+                                  <div className="col-md-6 control-wrapper field">
+                                    <label className="control-label">Details</label>
+                                    <textarea className="form-control form-white details-input" 
+                                      onChange={handleDescriptionChange} value={localDescription}
+                                        name="description"></textarea>
+                                  </div>
+                                  <div className="col-md-6 control-wrapper field">
+                                    <label className="control-label">Tags</label>
+                                    <input className="form-control form-white tags-input" placeholder="Enter tags (comma separate)" 
+                                      onChange={handleTagsChange} value={localActivity.tags}
+                                        type="text" name="tags"></input>
+                                  </div>
+
+                              </TabPanel>
+                              <TabPanel>
+                                <div className="col-md-6 control-wrapper field select-wrapper">
+                                  <label className="control-label">Class Name: </label>
+                                  <select className="form-select form-white"
+                                    value={localClassId}
+                                    onChange={handleClassSelectChange}
+                                    data-placeholder="Select Class Name..." name="category-color">
+                                      <option value=""> -- Select a Class -- </option>
+                                        {visibleClasses.map((elem) => 
+                                          <option key={elem.name} value={elem.id}>{elem.name}</option>)
+                                        }                              
+                                  </select>
+                                </div>
+                                <BCDateRangePicker 
+                                  startDate={localActivity.start}
+                                  setStartDate={setStartDate}
+                                  endDate={localActivity.end}
+                                  setEndDate={setEndDate}
+                                />
+                                <div className="col-md-6 control-wrapper field">
+                                  <label className="control-label">Details</label>
+                                  <textarea rows="2" className="form-control form-white details-input" 
+                                    onChange={handleDescriptionChange} value={localDescription}
+                                      name="description"></textarea>
+                                </div>
+                                <div className="col-md-6 control-wrapper field">
+                                  <label className="control-label">Tags</label>
+                                  <input className="form-control form-white tags-input" placeholder="Enter tags (comma separate)" 
+                                    onChange={handleTagsChange} value={localActivity.tags}
+                                      type="text" name="tags2"></input>
+                                </div>
                               </TabPanel>
                             </Tabs>
                         </div>
@@ -229,7 +229,7 @@ const NewEventModal = props => {
                 <div className="modal-footer">
                     { !localActivity.isNew && <button type="button" className="btn waves-effect waves-light btn-delete" onClick={handleDeleteLocal}>Delete</button> }
                     <button type="button" className="btn btn-primary waves-effect waves-light save-category" data-bs-dismiss="modal" onClick={handleSaveLocal}>Save</button>
-                    <button type="button" className="btn btn-secondary waves-effect" data-bs-dismiss="modal" onClick={handleClose}>Close</button>
+                    {/* <button type="button" className="btn btn-secondary waves-effect" data-bs-dismiss="modal" onClick={handleClose}>Close</button> */}
                 </div>
             </div>
             </Draggable>

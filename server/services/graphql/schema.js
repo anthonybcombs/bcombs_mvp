@@ -164,6 +164,7 @@ const inputs = `
         lastname: String!
         age: Int!
         birthdate: String!
+        image: String
         gender: String!
         phone_type: String
         phone_number: String
@@ -242,6 +243,7 @@ const inputs = `
     input ParentInfoInput {
         firstname: String!
         lastname: String!
+        image: String
         phone_type: String
         phone_number: String!
         email_type: String
@@ -1043,6 +1045,7 @@ const queryTypes = `
         new_childId: String
         firstname: String
         lastname: String
+        image: String
         age: Int!
         birthdate: Date
         gender: String
@@ -1124,6 +1127,7 @@ const queryTypes = `
         new_parentId: String
         firstname: String
         lastname: String
+        image: String
         phone_type: String
         phone_number: String
         email_type: String

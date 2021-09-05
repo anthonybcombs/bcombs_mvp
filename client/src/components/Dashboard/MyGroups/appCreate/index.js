@@ -10,14 +10,12 @@ import {
   requestDeleteVendorAppGroup
 } from "../../../../redux/actions/VendorAppGroups";
 const NewContactModal = styled.div`
-  h2 {
-    text-align: center;
+  .group-btn {
+    margin: 0;
   }
-  .modal-content {
-    top: 45%;
-    width: 30%;
-  }
-  @media (min-width: 600px) {
+  .group-btn button {
+    max-width: 150px;
+    margin: 0 auto;
   }
 `;
 export default function index({
@@ -193,57 +191,64 @@ export default function index({
 
   return ReactDOM.createPortal(
     <NewContactModal className="modal">
-      <div id="applicationForm" className="modal-content">
-        <span
-          className="close"
-          onClick={() => {
-            setGroupDetails({
-              name: "",
-              size: "",
-              vendors: []
-            });
-            handleCloseModal()
-            toggleCreateAppGroupModal(false);
-          }}>
-          &times;
-        </span>
-        <div>
+      <div className="modal-content">
+        <div className="modal-header">
           <h2>{isEditMode ? "Edit" : "Create"} a Group</h2>
-          {
-            status == "failed" && errorMessage ? (
-              <p style={{"color": "red"}}>
-                {errorMessage}
-              </p>
-            ) : ""
-          }
-          {
-            status == "success" ? (
-              <p style={{"color": "#f26e21"}}>
-                Application Group successfully updated.
-              </p>
-            ) : ""
-          }
-          <AppGroupForm
-            formattedVendors={formattedVendors}
-            groupDetails={groupDetails}
-            onSubmit={handleSubmit}
-            handleGroupDetailsChange={handleGroupDetailsChange}
-            action={action}
-            handleDelete={handleDelete}
-            vendorError={vendorError}
-            currentAppGroup={currentAppGroup}
-            selectedForms={selectedForms}
-            isEditMode={isEditMode}
-          />
-          {
-            isEditMode && (
-              <p>
-                Single form edit is not supported with groups created for multiple forms. If you want to edit the existing group in single form, deselect/remove it from this group and create a new one.
-              </p>
-            )
-          }
+          <span
+            className="close"
+            onClick={() => {
+              setGroupDetails({
+                name: "",
+                size: "",
+                vendors: []
+              });
+              handleCloseModal()
+              toggleCreateAppGroupModal(false);
+            }}>
+            &times;
+          </span>
         </div>
-      </div>
+
+        <div className="modal-body">
+          <div id="applicationForm">
+            <div>
+              {
+                status == "failed" && errorMessage ? (
+                  <p style={{"color": "red"}}>
+                    {errorMessage}
+                  </p>
+                ) : ""
+              }
+              {
+                status == "success" ? (
+                  <p style={{"color": "#f26e21"}}>
+                    Application Group successfully updated.
+                  </p>
+                ) : ""
+              }
+              <AppGroupForm
+                formattedVendors={formattedVendors}
+                groupDetails={groupDetails}
+                onSubmit={handleSubmit}
+                handleGroupDetailsChange={handleGroupDetailsChange}
+                action={action}
+                handleDelete={handleDelete}
+                vendorError={vendorError}
+                currentAppGroup={currentAppGroup}
+                selectedForms={selectedForms}
+                isEditMode={isEditMode}
+              />
+              {
+                isEditMode && (
+                  <p>
+                    Single form edit is not supported with groups created for multiple forms. If you want to edit the existing group in single form, deselect/remove it from this group and create a new one.
+                  </p>
+                )
+              }
+            </div>
+          </div>
+        </div>
+      </div>    
     </NewContactModal>,
     document.getElementById("modal")
   );

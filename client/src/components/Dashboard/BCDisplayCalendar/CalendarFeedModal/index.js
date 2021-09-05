@@ -73,11 +73,12 @@ const CalendarFeedModal = props => {
       <section className="modal-main">
       <div className="modal-dialog">
       <Draggable handle=".modal-header">
-            <div className="modal-content" style={{transform: 'initial'}}>
+            <div className="modal-content calendar-url" style={{transform: 'initial'}}>
                 <div className="modal-header d-flex align-items-center">
-                    <h4 className="modal-title">Calandar Feed URL</h4>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" 
-                      onClick={handleClose}></button>
+                  <h2 className="modal-title">Calandar Feed URL</h2>
+                  <span className="close" onClick={handleClose}>
+                    &times;
+                  </span>
                 </div>
                 <div className="modal-body">
                         <div className="row" style={{display: 'inline-flex'}}>
@@ -94,9 +95,9 @@ const CalendarFeedModal = props => {
                             </button>
                             </div>
                 </div>
-                <div className="modal-footer">
+                {/* <div className="modal-footer">
                     <button type="button" className="btn btn-secondary waves-effect" data-bs-dismiss="modal" onClick={handleClose}>Close</button>
-                </div>
+                </div> */}
             </div>
             </Draggable>
         </div>

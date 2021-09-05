@@ -32,7 +32,7 @@ const UploadPhotoModal = styled.div`
   .modal-content .modal-body >div >div {
     margin: 0 !important;
     cursor: pointer !important;
-    min-height: unset !important;
+    min-height: 200px !important;
     max-height: 300px !important;
     border: 2px dashed #ddd !important;
     transition: .5s ease-in-out;

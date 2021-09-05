@@ -24,11 +24,12 @@ const DisplayEventModal = props => {
       <section className="modal-main">
       <div className="modal-dialog">
       <Draggable handle=".modal-header">
-            <div className="modal-content" style={{transform: 'initial'}}>
+            <div className="modal-content calendar-event-schedule" style={{transform: 'initial'}}>
                 <div className="modal-header d-flex align-items-center">
-                    <h4 className="modal-title">{activityData.title}</h4>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" 
-                      onClick={handleClose}></button>
+                  <h2 className="modal-title">{activityData.title}</h2>
+                  <span className="close" onClick={handleClose}>
+                    &times;
+                  </span>
                 </div>
                 <div className="modal-body">
                     <form>
@@ -39,18 +40,18 @@ const DisplayEventModal = props => {
                                 </div>
                             }
                             <div>
-                                From: {moment(activityData.start).format('dddd, MMMM Do hh:mm a')} to {moment(activityData.end).format('hh:mm a')}
+                                <label>From:</label> {moment(activityData.start).format('dddd, MMMM Do hh:mm a')} <label>to</label> {moment(activityData.end).format('hh:mm a')}
                             </div>
                         </div>
                         { (activityData.description) &&  
-                            <div>
-                                Details: {activityData.description}
+                            <div  className="row">
+                                <label>Details:</label> {activityData.description}
                                 </div>
                         
                             }
                         { (activityData.tags) &&  
-                            <div>
-                                Tags: {activityData.tags}
+                            <div className="row">
+                                <label>Tags:</label> {activityData.tags}
                                 </div>
                         
                             }
