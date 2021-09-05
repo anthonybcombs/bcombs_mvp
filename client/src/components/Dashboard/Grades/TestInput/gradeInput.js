@@ -580,16 +580,19 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
             ...newRow
           }
         }
-        const appGroupIdList = e.app_group_id && e.app_group_id.split(',');
+        const appGroupIdList = e.app_group_id ? e.app_group_id.split(',') : appGroupIds ;
+
+        if(type === 'all') {
+
+        }
         return {
           ...newRow,
           app_group_id: appGroupIdList && appGroupIdList[0],
           application_type: 'forms'
         }
       })
-
-    dispatch(requestAddUpdateStudentCumulative(newRows))
-    requestList()
+      console.log('NEW ROWSSSSSSSSSSSS', newRows)
+      dispatch(requestAddUpdateStudentCumulative(newRows))
  
   }
 
@@ -696,7 +699,6 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
     }
     return null
   }
-  console.log('gradeInputtttttttttttttttt', gradeInput)
 
   useEffect(() => {
     if (gradeInput.gradeUpdated) {
@@ -707,61 +709,49 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
 
   useEffect(() => {
     if (gradeInput.gradeList) {
-      console.log('gradeInputtttt',gradeInput)
-      let newGradeList = (gradeInput.gradeList || []).filter(e => {
-        if(groupType === 'forms' && type === 'all') {
-          const ids = e.app_group_id ? e.app_group_id.split(',') : [];
-          console.log('idssss', ids)
-          console.log('idssss appGroupIds', appGroupIds)
-          return ids && ids.some(id => appGroupIds && appGroupIds.includes(id))
-        }
-        return e.app_group_id && e.app_group_id.includes(groupId)
-      })
-      console.log('newGradeListzxczxczxczxc',newGradeList)
+
+      // let newGradeList = (gradeInput.gradeList || []).filter(e => {
+      //   if(groupType === 'forms' && type === 'all') {
+      //     const ids = e.app_group_id ? e.app_group_id.split(',') : [];
+      //     console.log('idssss', ids)
+      //     console.log('idssss appGroupIds', appGroupIds)
+      //     return ids && ids.some(id => appGroupIds && appGroupIds.includes(id))
+      //   }
+      //   return e.app_group_id && e.app_group_id.includes(groupId)
+      // })
+      let newGradeList = (gradeInput.gradeList || []) //.filter(e => e.app_group_id)
       if (groupType === 'bcombs') {
         newGradeList = newGradeList.filter(e => !e.form_contents)
       } else {
-        //newGradeList = newGradeList.filter(e => e.form_contents)
+        newGradeList = newGradeList.filter(e => e.form_contents)
+        console.log('newGradeListzxczxczxc',newGradeList)
+        if (newGradeList.length === 0) {
+          newGradeList = applications && applications.map(item => {
+            return {
+              ...item,
+              standardized_test: []
+            }
+          })
 
-        // if (newGradeList.length > 0) {
-        //   newGradeList = newGradeList.filter(e => e.form_contents)
-        // }
-        // else {
-        //   newGradeList = applications && applications.filter(e => e.form === groupId)
-        // }
-        console.log('newGradeListasdasd',newGradeList)
-        newGradeList = newGradeList.filter(e => e.form_contents )
-
-        // if (newGradeList.length === 0) {
-        //   newGradeList = applications && applications.map(item => {
-        //     return {
-        //       ...item,
-        //       standardized_test: []
-        //     }
-        //   })
-
-        // }
+        }
       }
-      console.log('newGradeListzzzzzzzzzzz', newGradeList)
-      let updatedGradeList = newGradeList.filter(e => e.standardized_test).flatMap(e => e.standardized_test)
-      console.log('newGradeListzzzzzzzzzzz updatedGradeList', updatedGradeList)
-      if (updatedGradeList.length > 0) {
-        const newRows = cloneDeep(rows).map(row => {
-          const { student_test_id } = updatedGradeList.find(e => (
-            e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
-          )) || {}
-          return { ...row, student_test_id: student_test_id || row.student_test_id }
-        })
-        console.log('NEW ROWSSSSSSSSSS', newRows)
-        setRows(newRows)
-        setFilteredRows(newRows)
-      }
-      else {
-        setRows(newGradeList)
-        setFilteredRows(newGradeList)
-      }
+      // let updatedGradeList = newGradeList.filter(e => e.standardized_test).flatMap(e => e.standardized_test)
+      // console.log('newGradeListzzzzzzzzzzz updatedGradeList', updatedGradeList)
+      // if (updatedGradeList.length > 0) {
+      //   const newRows = cloneDeep(rows).map(row => {
+      //     const { student_test_id } = updatedGradeList.find(e => (
+      //       e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
+      //     )) || {}
+      //     return { ...row, student_test_id: student_test_id || row.student_test_id }
+      //   })
 
-    }
+        setRows([])
+        setFilteredRows([])
+      }
+      // else {
+      //   setRows(newGradeList)
+      //   setFilteredRows(newGradeList)
+      // }
 
 
   }, [gradeInput.gradeList])
@@ -794,59 +784,45 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
     }
     return e.app_group_id;
   })
-  console.log('selectStudentRowszxczxczxczxxc', selectStudentRows)
 
-  console.log('gradeInput 123123123123', gradeInput)
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
-    // console.log('selectStudentRows 1111', selectStudentRows)
-    // selectStudentRows = selectStudentRows.filter(e => e.form_contents && e.form === groupId)
-    // if (selectStudentRows.length === 0) {
-    //   selectStudentRows = applications && applications.filter(e => e.form === groupId)
-    // }
+   
 
     selectStudentRows = selectStudentRows.filter(e => {
-      //e.form_contents && e.form === groupId
-      const groupIds = e.app_group_id.split(',');
+      return e.form_contents 
+    })  
+      selectStudentRows = applications && applications.map((e) => {
 
-      return e.form_contents && e.form === groupId && groupIds.some(id => appGroupIds.includes(id)) 
-    })
-    console.log('selectStudentRowszxczxczxc123123', selectStudentRows)
-    selectStudentRows = applications && applications.filter(e => e.class_teacher && e.class_teacher !== '').map(e => {
+        const currentApplication = selectStudentRows.find(item => {
 
-      const currentStudent = selectStudentRows.find(item => {
-        const currentAppGroup = item.app_group_id ? item.app_group_id.split(',') : [];
+          return e.app_id === item.child_id
 
-        return currentAppGroup.find(id => appGroupIds.includes(id));
+        });
 
-      });
-      console.log('currentApplicationzxczxc', currentStudent)
-      console.log('currentApplicationzxczxc e', e)
-      if (currentStudent) {
-        return {
-          ...currentStudent
+        if(currentApplication) {
+          return {
+            ...currentApplication
+          }
         }
-      }
-      return {
-        app_group_id: e.class_teacher,
-        child_id: e.app_id,
-        standardized_test: [],
-        cumulative_grades: [],
-        form_contents: e.form_contents,
-        firstname: null,
-        lastname: null
-      }
-    })
+        return {
+          app_group_id: e.class_teacher,
+          child_id: e.app_id,
+          standardized_test: [],
+          cumulative_grades: [],
+          form_contents: e.form_contents,
+          firstname: null,
+          lastname: null
+        }
+      })
 
 
+      console.log('selectStudentRows1231231231123123 applications',applications)
+      console.log('selectStudentRows1231231231123123',selectStudentRows)
 
   }
-  console.log('selectStudentRows 2222', selectStudentRows)
-  console.log('selectStudentRows rowsss', rows)
-  console.log('selectStudentRows applications', applications)
-  console.log('selectStudentRows loading', loading)
-
+  console.log('selectStudentRows1231231231123123 2',selectStudentRows)
   return (
     <div
       className='gradesTable'

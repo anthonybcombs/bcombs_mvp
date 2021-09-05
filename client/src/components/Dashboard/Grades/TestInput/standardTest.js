@@ -154,7 +154,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
       mergeObj.attempt = attempt
     }
-    console.log('handleInputChange', mergeObj)
+  
     onHasChanged(true)
     setRows(update(rows, {
       [index]: { $merge: mergeObj }
@@ -445,8 +445,12 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   const remapSelectedRowsByAttemp = (data) => {
     let newRows = []
     let currMax = {}
+
     data.forEach(e => {
-      const { standardized_test = [] } = gradeInput.gradeList.find(g => g.child_id === e.child_id) || {}
+      const { standardized_test = [] } = gradeInput.gradeList.find(g => g.child_id === e.child_id) || {};
+      console.log('standardized_test',standardized_test)
+
+
       const attemptKey = `${e.child_id}_${e.grade_taken}_${e.test_name}`
       const attempt = currMax[attemptKey] || getGradeTestAttempt(standardized_test, e.grade_taken, e.test_name, e.child_id)
       newRows = [
@@ -498,6 +502,8 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     setColumnFilters(generateColumnFilters(newRows))
     setSelectStudentOpen(false)
   }
+
+  
 
   const handleSave = () => {
     const newRows = cloneDeep(rows)
@@ -621,14 +627,12 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
   useEffect(() => {
     if (gradeInput.gradeList) {
-      let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+      let newGradeList = (gradeInput.gradeList || []) .filter(e => e.app_group_id)
       if (groupType === 'bcombs') {
         newGradeList = newGradeList.filter(e => !e.form_contents)
       } else {
-        newGradeList = newGradeList.filter(e => e.form_contents && e.form === groupId)
-
-
-
+        newGradeList = newGradeList.filter(e => e.form_contents);
+        
         if (newGradeList.length === 0) {
           newGradeList = applications && applications.map(item => {
             return {
@@ -639,7 +643,6 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
         }
       }
 
-
       // newGradeList = newGradeList.flatMap(e => e.standardized_test)
       // const newRows = cloneDeep(rows).map(row => {
       //   const { student_test_id } = newGradeList.find(e => (
@@ -649,25 +652,27 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
       // })
       // setRows(newRows)
       // setFilteredRows(newRows)
-      let updatedGradeList = newGradeList.filter(e => e.standardized_test).flatMap(e => e.standardized_test)
-      if (updatedGradeList.length > 0) {
-        const newRows = cloneDeep(rows).map(row => {
-          const { student_test_id } = updatedGradeList.find(e => (
-            e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
-          )) || {}
-          return { ...row, student_test_id: student_test_id || row.student_test_id }
-        })
-        setRows([])
-        setFilteredRows([])
-      }
-      else {
-        setRows([])
-        setFilteredRows([])
-      }
-    }
-    else {
+      //let updatedGradeList = newGradeList.flatMap(e => e.standardized_test)
+      //console.log('ROWSSSSSSSSSSSSSSS updatedGradeList', updatedGradeList)
 
+      //if (updatedGradeList.length > 0) {
+        // const newRows = cloneDeep(updatedGradeList).map(row => {
+        //   const { student_test_id } = updatedGradeList.find(e => (
+        //     e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
+        //   )) || {}
+        //   return { ...row, student_test_id: student_test_id || row.student_test_id }
+        // })
+        // console.log('ROWSSSSSSSSSSSSSSS2', rows)
+        // console.log('ROWSSSSSSSSSSSSSSS2 newRows', newRows.filter(item => item.child_id === 'dd783691-67cd-11eb-8212-dafd2d0ae3ff'))
+        setRows([])
+        setFilteredRows([])
+      //}
+      // else {
+      //   setRows([])
+      //   setFilteredRows([])
+      // }
     }
+
   }, [gradeInput.gradeList])
 
   useEffect(() => {
@@ -691,27 +696,25 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     latest_attempt: { label: 'Latest Attempt', type: 'number', isFunc: true },
   }
 
-  let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
-  console.log('selectStudentRows student test 1111', selectStudentRows)
-  console.log('selectStudentRows student test applications', applications)
+  let selectStudentRows = (gradeInput.gradeList || [])//.filter(e => e.app_group_id)
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
     selectStudentRows = selectStudentRows.filter(e => {
       //e.form_contents && e.form === groupId
-      const groupIds = e.app_group_id.split(',');
+      //const groupIds = e.app_group_id.split(',');
 
-      return e.form_contents && e.form_contents && e.form === groupId /*&& groupIds.some(id => appGroupIds.includes(id)) **/
+      return e.form_contents && e.form_contents /*&& e.form === groupId */ /*&& groupIds.some(id => appGroupIds.includes(id)) **/
     })
-      selectStudentRows = applications && applications.map(e => {
-  
+      selectStudentRows = applications && applications.map((e, index) => {
+        //const classTeacher = e.class_teacher ? e.class_teacher.split(',') : [];
         const currentApplication = selectStudentRows.find(item => {
-          const currentAppGroup = item.app_group_id ? item.app_group_id.split(',') : [];
+          // const currentAppGroup = item.app_group_id ? item.app_group_id.split(',') : [];
+          // return currentAppGroup.find(id => classTeacher.includes(id));
+          return e.app_id === item.child_id
 
-          return currentAppGroup.find(id => appGroupIds.includes(id));
-     
         });
-
+        console.log('currentApplication',currentApplication)
         if(currentApplication) {
           return {
             ...currentApplication
@@ -728,9 +731,9 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
         }
       })
 
+
   }
 
-  console.log('selectStudentRows student test 222', selectStudentRows)
   return (
     <div
       className='standardTestTable'

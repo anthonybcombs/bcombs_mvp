@@ -499,8 +499,6 @@ export default ({ child_id }) => {
         : `/dashboard/grades?group_id=${group_id}&group_type=${group_type}`
     window.location.replace(backUrl)
   }
-  console.log('Groupsp 1111',applications)
-  console.log('Groupsp 2222',form)
   return (
     <GradeInputStyled>
       <div className='gradeInputView-header'>

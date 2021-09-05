@@ -11,6 +11,9 @@ import { getGradeTestAttempt, getNameFromCustomForm } from '../../utils'
 export default function index({
   onClose, onSelectStudent, rows: propRows, existingRows, keys, gradeTakenOptions, testOptions, columns, type = 'test_input', childId, isForm
 }) {
+  
+  console.log('rows modal',rows)
+  console.log('rows modal  propRows',propRows)
   const isTestInput = type === 'test_input'
   const [selectedGradeTest, setSelectedGradeTest] = useState({})
 
@@ -137,11 +140,13 @@ export default function index({
         }
       })
     } else {
+      console.log('123123rows ',rows)
+      console.log('123123rows selected',selected)
       newData = selected.map(eachId => {
         const { child_id, name, cumulative_grades = [], firstname, lastname, app_id, app_group_id, application_type, type, } = rows.find(e => e.child_id === eachId) || {}
 
         const test =  rows.find(e => e.child_id === eachId);
-
+        console.log('1111test',test)
         const { year_level: latest_grade } = maxBy(cumulative_grades, 'year_level') || {}
         const { year_level } = selectedGradeTest[eachId] || {}
         const yl = year_level || latest_grade
@@ -199,8 +204,8 @@ export default function index({
 
 
     setRows(newRows)
-  }, [propRows])
-  console.log('rowssssssss123123',rows)
+  }, [propRows]);
+
   return ReactDOM.createPortal(
     <SelectStudentDialogStyled
       data-testid='app-big-calendar-create-modal'
