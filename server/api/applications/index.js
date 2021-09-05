@@ -1348,7 +1348,8 @@ export const getCustomFormApplicants = async ({ form_id, is_archived = 0 }) => {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
-      application.child = await getChildInformation(application.child);
+      const child = await getChildInformation(application.child);
+      application.child = child.length > 0 ? child[0] : {};
     }
 
   } catch (err) {
