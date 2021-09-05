@@ -1323,6 +1323,7 @@ export const getCustomFormApplicants = async ({ form_id, is_archived = 0 }) => {
         BIN_TO_UUID(form) as form,
         BIN_TO_UUID(vendor) as vendor,
         BIN_TO_UUID(app_id) as app_id,
+        BIN_TO_UUID(child) as child,
         CONVERT(form_contents USING utf8) as form_contents,
         application_date,
         archived_date,
