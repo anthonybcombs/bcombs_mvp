@@ -1305,6 +1305,7 @@ const queryTypes = `
         app_id: String
         vendor: String
         form: String
+        child: String
         form_contents: CustomForm
         application_date: Date
         archived_date: Date

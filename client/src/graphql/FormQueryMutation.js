@@ -396,6 +396,7 @@ export const GET_APPLICANTS_BY_FORM = gql`
       vendor
       form
       app_id
+      child
       application_date
       archived_date
       class_teacher
