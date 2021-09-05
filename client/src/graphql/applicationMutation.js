@@ -102,6 +102,7 @@ export const GET_APPLICATIONS_QUERY = gql`
         new_childId   
         firstname
         lastname
+        image
         age
         birthdate
         gender
@@ -182,6 +183,7 @@ export const GET_APPLICATIONS_QUERY = gql`
         new_parentId
         firstname
         lastname
+        image
         phone_type
         phone_number
         email_type
