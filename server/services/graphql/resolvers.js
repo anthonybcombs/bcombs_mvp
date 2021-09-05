@@ -1375,11 +1375,11 @@ const resolvers = {
           return item.label == "First Name"
         });
 
-        lastname = nameType?.fields.filter((item) => {
+        middlename = nameType?.fields.filter((item) => {
           return item.label == "Middle Name"
         });
 
-        middlename = nameType?.fields.filter((item) => {
+        lastname = nameType?.fields.filter((item) => {
           return item.label == "Last Name"
         });
 
