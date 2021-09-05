@@ -722,8 +722,34 @@ const resolvers = {
       let newParents = [];
 
       for (let application of applications) {
-        const child = await addChild(application.child);
+
         const tempChildId = application.child?.ch_id
+
+        //save first child image
+        if(application && 
+          application.child && 
+          application.child.image) {
+
+          const buf = Buffer.from(
+            application.child.image.replace(/^data:image\/\w+;base64,/, ""),
+            "base64"
+          )
+          
+          const s3Payload = {
+            Bucket: currentS3BucketName,
+            Key: `file/${tempChildId}.jpg`,
+            Body: buf,
+            ContentEncoding: "base64",
+            ContentType: "image/jpeg",
+            ACL: "public-read"
+          };
+
+          uploadFile(s3Payload);
+
+          application.child.image = s3Payload.Key;
+        }
+
+        const child = await addChild(application.child);
         const parents = application.parents;
 
         application.class_teacher = "";
@@ -737,9 +763,33 @@ const resolvers = {
         application = await createApplication(application);
 
         for (let parent of parents) {
+          
+          const tempParentId = parent?.parent_id;
+
+          if(parent &&  
+            parent.image) {
+  
+            const buf = Buffer.from(
+              parent.image.replace(/^data:image\/\w+;base64,/, ""),
+              "base64"
+            )
+            
+            const s3Payload = {
+              Bucket: currentS3BucketName,
+              Key: `file/${tempParentId}.jpg`,
+              Body: buf,
+              ContentEncoding: "base64",
+              ContentType: "image/jpeg",
+              ACL: "public-read"
+            };
+  
+            uploadFile(s3Payload);
+  
+            parent.image = s3Payload.Key;
+          }
+
           parent.application = application.app_id;
 
-          const tempParentId = parent?.parent_id;
           const newParent = await addParent(parent);
 
           let checkEmail = await checkUserEmail(parent.email_address);
