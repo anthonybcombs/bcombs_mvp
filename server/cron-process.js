@@ -1,7 +1,8 @@
 const cron = require('node-cron');
 
 import {
-  triggerCronSetReminder
+  triggerCronSetReminder,
+  triggerCronUpdateChildIds
 } from "./api/cron";
 
 exports.setReminder = () => {
@@ -13,5 +14,15 @@ exports.setReminder = () => {
     task1.stop();
 
     triggerCronSetReminder();
+  })
+}
+
+exports.updateIds = () => {
+  let task1 = cron.schedule('* */10 * * *', () => {
+    console.log('trigger cron');
+
+    task1.stop();
+
+    triggerCronUpdateChildIds();
   })
 }

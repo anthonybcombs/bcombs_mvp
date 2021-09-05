@@ -1225,6 +1225,7 @@ export const getVendorCustomApplicationForms = async ({ vendor, category = "" })
 export const submitCustomApplication = async ({
   vendor,
   form,
+  child = null,
   form_contents
 }) => {
   const db = makeDb();
@@ -1238,15 +1239,18 @@ export const submitCustomApplication = async ({
         app_id,
         vendor,
         form,
+        child,
         form_contents
       ) VALUES (
         UUID_TO_BIN(UUID()), 
         UUID_TO_BIN(?), 
         UUID_TO_BIN(?),
+        UUID_TO_BIN(?),
         ?)`,
       [
         vendor,
         form,
+        child,
         form_contents
       ]
     );

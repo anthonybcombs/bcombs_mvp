@@ -11,13 +11,45 @@ import {
 
 import {
   getChildInformation,
-  updateChild
+  updateChild,
+  getChilds
 } from "../child";
 
 import {
   getParentByApplication,
   updateParent
 } from "../parents";
+
+import {
+  updateChildNewId
+} from "../index";
+
+export const updateChildIds = async () => {
+  let childs = await getChilds();
+  const defaultSize = 4;
+
+  childs = childs.filter(ch => {
+    return !ch.new_childId
+  })
+  
+  for(let child of childs) {
+
+    if(child.newChildId) continue;
+
+    let addZero = 0;
+    if(child.id > 9999) {
+      addZero = 1;
+    }
+
+    const id2 = child.id + "";
+    const padId = id2.padStart(defaultSize + addZero, '0');
+    const newChildId = 'C11' + padId;
+    child.newChildId = newChildId;
+
+    
+    updateChildNewId(child);
+  }
+}
 
 export const triggerCronSetReminder = async () => {
   const group_reminders = await getGroupReminderByCurrentDate();

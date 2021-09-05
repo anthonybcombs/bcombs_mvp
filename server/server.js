@@ -45,6 +45,7 @@ app.use(
 
 const cron = require('./cron-process');
 cron.setReminder();
+cron.updateIds();
 
 const serviceNames = Object.keys(services);
 for (let i = 0; i < serviceNames.length; i += 1) {
