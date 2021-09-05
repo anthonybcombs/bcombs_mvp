@@ -1255,6 +1255,25 @@ const resolvers = {
     },
     async createCustomApplicationForm(root, { application }, context) {
 
+      let nameType;
+      let formData = application?.form_contents?.formData;
+
+      nameType = formData.filter((item) => {
+        return item.type == "name"
+      });
+
+      const hasNameField = !!(nameType.length > 0);
+
+      if(!hasNameField) {
+
+        const res = {
+          messageType: "error",
+          message: "prime field name is required",
+        } 
+
+        return res
+      }
+
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
@@ -1369,6 +1388,11 @@ const resolvers = {
         firstname = firstname.length > 0 ? firstname[0] : "";
         lastname = lastname.length > 0 ? lastname[0] : "";
         middlename = middlename.length > 0 ? middlename[0] : "";
+      } else {
+        return {
+          messageType: "error",
+          message: "Prime field name is required"
+        } 
       }
 
       //check if there is file
