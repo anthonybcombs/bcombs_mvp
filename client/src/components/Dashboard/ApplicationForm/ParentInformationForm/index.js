@@ -448,7 +448,7 @@ export default function index({
               onSubmit={(image) => {
                 setUploadPhotoVisible(false)
                 setImagePreview(image);
-                handleChildFormDetailsChange(
+                handleParentFormDetailsChange(
                   counter - 1,
                   "profile",
                   "image",

@@ -565,7 +565,7 @@ export default function index() {
 
   const [emergencyContacts, setEmergencyContacts] = useState([...emergency_contacts]);
   const handleParentFormDetailsChange = (index, section, id, value) => {
-  
+    
     if(section === "profile") {
       let parents = parentsInformation;
       let profile = parents[index].profile;
@@ -581,8 +581,6 @@ export default function index() {
 
       console.log("emergencyContacts", emergencyContacts);
     }
-
-    
   }
 
   const handleAddParent = () => {
@@ -864,7 +862,7 @@ export default function index() {
         image: parent.profile.image,
       })
     });
-
+    console.log('way ayo oi', {parents, childProfile})
     return parents;
   }
 
