@@ -25,7 +25,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     gradeInput
   }));
 
-  console.log('appGroupIdsv', appGroupIds)
+  console.log('appGroupIds', appGroupIds)
   const attempOptions = Array(5).fill().map((e, i) => ({ value: i + 1, label: `${i + 1}` }))
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))]
@@ -265,10 +265,10 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
                 return file[file.length - 1]
               }
               let currentMonthTaken = key === 'month_taken' ? isNaN(row[key]) ? new Date(row[key]) : parseInt(row[key]) : null;
-              if (key === 'month_taken') {
-                console.log('currentMonthTaken', currentMonthTaken)
+              // if (key === 'month_taken') {
+    
 
-              }
+              // }
 
               const highlightStyle = key === 'month_taken' ? highLight(row[key] && row[key] !== '' ? moment(currentMonthTaken).format('MM/yyyy') : '', key) : highLight(row[key], key)
               // const inputStyles = highlightStyle.color ? { color: highlightStyle.color } : {}
@@ -448,8 +448,6 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
     data.forEach(e => {
       const { standardized_test = [] } = gradeInput.gradeList.find(g => g.child_id === e.child_id) || {};
-      console.log('standardized_test',standardized_test)
-
 
       const attemptKey = `${e.child_id}_${e.grade_taken}_${e.test_name}`
       const attempt = currMax[attemptKey] || getGradeTestAttempt(standardized_test, e.grade_taken, e.test_name, e.child_id)
@@ -700,12 +698,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
-    selectStudentRows = selectStudentRows.filter(e => {
-      //e.form_contents && e.form === groupId
-      //const groupIds = e.app_group_id.split(',');
-
-      return e.form_contents && e.form_contents /*&& e.form === groupId */ /*&& groupIds.some(id => appGroupIds.includes(id)) **/
-    })
+    selectStudentRows = selectStudentRows.filter(e => e.form_contents)
       selectStudentRows = applications && applications.map((e, index) => {
         //const classTeacher = e.class_teacher ? e.class_teacher.split(',') : [];
         const currentApplication = selectStudentRows.find(item => {
@@ -714,7 +707,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
           return e.app_id === item.child_id
 
         });
-        console.log('currentApplication',currentApplication)
+
         if(currentApplication) {
           return {
             ...currentApplication

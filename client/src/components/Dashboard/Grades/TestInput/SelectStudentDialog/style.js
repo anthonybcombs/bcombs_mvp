@@ -4,7 +4,7 @@ export default styled.div`
   .modal-content {
     position: relative;
     width: auto;
-    top: 60%;
+    top: 100%;
     // max-width: 830px;
     max-width: 940px;
     padding: 0;

@@ -583,7 +583,11 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
         const appGroupIdList = e.app_group_id ? e.app_group_id.split(',') : appGroupIds ;
 
         if(type === 'all') {
-
+          return {
+            ...newRow,
+            app_group_id: groupId,
+            application_type: 'forms'
+          }
         }
         return {
           ...newRow,
@@ -591,8 +595,11 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
           application_type: 'forms'
         }
       })
-      console.log('NEW ROWSSSSSSSSSSSS', newRows)
-      dispatch(requestAddUpdateStudentCumulative(newRows))
+      dispatch(requestAddUpdateStudentCumulative(newRows));
+
+      setTimeout(() => {
+        onHasChanged(false)
+      },1000)
  
   }
 
@@ -703,7 +710,9 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
   useEffect(() => {
     if (gradeInput.gradeUpdated) {
       dispatch(clearGrades())
-      requestList()
+      setTimeout(() => {
+        requestList()
+      },1500)
     }
   }, [gradeInput])
 
@@ -724,7 +733,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
         newGradeList = newGradeList.filter(e => !e.form_contents)
       } else {
         newGradeList = newGradeList.filter(e => e.form_contents)
-        console.log('newGradeListzxczxczxc',newGradeList)
+
         if (newGradeList.length === 0) {
           newGradeList = applications && applications.map(item => {
             return {
@@ -796,9 +805,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
       selectStudentRows = applications && applications.map((e) => {
 
         const currentApplication = selectStudentRows.find(item => {
-
           return e.app_id === item.child_id
-
         });
 
         if(currentApplication) {
@@ -817,12 +824,8 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
         }
       })
 
-
-      console.log('selectStudentRows1231231231123123 applications',applications)
-      console.log('selectStudentRows1231231231123123',selectStudentRows)
-
   }
-  console.log('selectStudentRows1231231231123123 2',selectStudentRows)
+
   return (
     <div
       className='gradesTable'

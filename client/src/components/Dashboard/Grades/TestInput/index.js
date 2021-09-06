@@ -323,8 +323,15 @@ export default ({ child_id }) => {
 
     if (group_id && group_type) {
 
-      if (isVendor) {
-        dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
+      if ((isVendor || type === 'all') ) {
+        if(vendors && (Array.isArray(vendors) && vendors[0])) {
+          dispatch(requestGetStudentCumulativeGradeByVendor(vendors[0].id))
+        }
+        else {
+          dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
+        }
+      
+
       } else {
         // if(type !== 'all') {
         //   console.log('group_idzzzz',group_id)
@@ -376,7 +383,7 @@ export default ({ child_id }) => {
   useEffect(() => {
     console.log('grades list has been changed');
   }, [gradeList]);
-
+  console.log('gradeListzxczxczxczxc',gradeList)
   console.log('application_groups', application_groups);
   console.log('loadinggggggggggg', gradeLoading);
 
