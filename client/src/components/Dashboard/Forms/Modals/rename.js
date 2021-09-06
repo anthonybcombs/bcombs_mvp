@@ -86,13 +86,15 @@ export default function index({ onCancel, onSubmit, title = '', loading }) {
       data-testid='app-big-calendar-create-modal'
       className='modal'>
       <div className='modal-content'>
-        <span
-          className="close"
-          onClick={onCancel}
-        >
-          &times;
-        </span>
-        <div className='modal-header'>Rename form</div>
+        <div className='modal-header'>
+          <h2>Rename form</h2>
+          <span
+            className="close"
+            onClick={onCancel}
+          >
+            &times;
+          </span>
+        </div>
         <div className='modal-container'>
           <input
             id='title'

@@ -592,10 +592,13 @@ const ExportFilter = ({
     <ExportFilterModal>
       <div className="modal">
         <div className="modal-content">
-          <span onClick={handleExit} className="close">
-            ×
-          </span>
-          <div className="modal-header">Export Applications</div>
+          
+          <div className="modal-header">
+            <h2>Export Applications</h2>
+            <span onClick={handleExit} className="close">
+              &times;
+            </span>
+          </div>
           <div className="modal-container">
             <p>Filter:</p>
             <div>
