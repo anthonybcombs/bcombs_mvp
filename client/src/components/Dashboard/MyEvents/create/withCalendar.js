@@ -12,9 +12,6 @@ import EventForm from "../forms/EventForm";
 import { getUTCDate } from "../../../../helpers/datetime";
 
 const NewEventModal = styled.div`
-  h2 {
-    font-size: 2em;
-  }
   input:required {
     box-shadow: none;
   }
@@ -55,7 +52,8 @@ const NewEventModal = styled.div`
   button[type="submit"] {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     padding: 10px;
-    width: 30%;
+    width: 100%;
+    max-width: 120px;
     display: block;
     margin: 20px auto;
     border: none;
@@ -69,43 +67,13 @@ const NewEventModal = styled.div`
   #content > div:first-child {
     margin-bottom: 20px;
   }
-  .modal-content {
-    margin: 1.5em auto;
-    width: 30%;
+  .modal-body #content {
+    padding: 0;
+    margin: 0;
   }
-  @media screen and (max-width: 1920px) {
-    .modal-content{
-      margin: 1.5em auto;
-      width: 38%;
-    }
-    #content {
-      justify-content: center;
-      display: grid;
-      grid-gap: 1%;
-      margin: 0 50px
-    }
-    button[type="submit"] {
-      width: 30%;
-    }
-  }
-  @media screen and (max-width: 1024px) {
-    .modal-content{
-      margin: 1.5em auto;
-      width: 50%;
-    }
-  }
-  @media screen and (max-width: 768px) {
-    .modal-content{
-      margin: 1.5em auto;
-      width: 58%;
-    }
-  }
-  @media screen and (max-width: 425px) {
-    .modal-content {
-      margin: 1.5em auto;
-      max-width: 90%;
-      width: auto !important;
-    }
+  .modal-body #content >div {
+    margin: 0;
+    padding: 0;
   }
 `;
 const initialEventDetails = selectedDate => {
@@ -299,41 +267,43 @@ export default function index({
       className="modal"
       theme={theme}>
       <div className="modal-content">
-        <span
-          className="close"
-          onClick={() => {
-            toggleCreateEventModal(false);
-          }}>
-          &times;
-        </span>
-        <div id="content">
-          <h2 style={{ textAlign: "center", marginBottom: 50, marginTop: -50 }}>
-            Create New Event
-          </h2>
-          <MicroCalendar
-            removeSubHeader={true}
-            events={[]}
-            selectedDate={selectedDate}
-            setSelectedDate={handleSetSelectedDate}
-            selectedEvent={null}
-            setSelectedEvent={() => {}}
-          />
-          <EventForm
-            calendars={calendarOptions}
-            contactOptions={contactOptions}
-            eventDetails={eventDetails}
-            groups={groupOptions}
-            isEventSection={isEventSection}
-            handleGroupSelect={handleGroupSelect}
-            handleGroupRemove={handleGroupRemove}
-            handleCalendarSelect={handleCalendarSelect}
-            handleCalendarRemove={handleCalendarRemove}
-            handleEventDetailsChange={handleEventDetailsChange}
-            onSubmit={handleSubmit}
-            header={`Create New ${eventDetails.eventType}`}
-            selectedCalendar={selectedCalendar}
-            selectedGroup={selectedGroup}
-          />
+        <div className="modal-header">
+          <h2>Create New Event</h2>
+          <span
+            className="close"
+            onClick={() => {
+              toggleCreateEventModal(false);
+            }}>
+            &times;
+          </span>
+        </div>
+        <div className="modal-body">
+          <div id="content">
+            <MicroCalendar
+              removeSubHeader={true}
+              events={[]}
+              selectedDate={selectedDate}
+              setSelectedDate={handleSetSelectedDate}
+              selectedEvent={null}
+              setSelectedEvent={() => {}}
+            />
+            <EventForm
+              calendars={calendarOptions}
+              contactOptions={contactOptions}
+              eventDetails={eventDetails}
+              groups={groupOptions}
+              isEventSection={isEventSection}
+              handleGroupSelect={handleGroupSelect}
+              handleGroupRemove={handleGroupRemove}
+              handleCalendarSelect={handleCalendarSelect}
+              handleCalendarRemove={handleCalendarRemove}
+              handleEventDetailsChange={handleEventDetailsChange}
+              onSubmit={handleSubmit}
+              header={`Create New ${eventDetails.eventType}`}
+              selectedCalendar={selectedCalendar}
+              selectedGroup={selectedGroup}
+            />
+          </div>
         </div>
       </div>
     </NewEventModal>,

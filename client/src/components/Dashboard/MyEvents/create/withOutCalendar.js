@@ -10,9 +10,6 @@ import EventForm from "../forms/EventForm";
 import { getUTCDate } from "../../../../helpers/datetime";
 
 const NewEventModal = styled.div`
-  h2 {
-    text-align: center;
-  }
   input:required {
     box-shadow: none;
   }
@@ -39,6 +36,9 @@ const NewEventModal = styled.div`
     border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
+  .timepicker {
+    transition: none !important;
+  }
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;
@@ -50,7 +50,8 @@ const NewEventModal = styled.div`
   button[type="submit"] {
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     padding: 10px;
-    width: 30%;
+    width: 100%;
+    max-width: 120px;
     display: block;
     margin: 20px auto;
     border: none;
@@ -59,51 +60,18 @@ const NewEventModal = styled.div`
     justify-content: center
     display: grid;
     background-color: white;
-    padding: 4em;
+    padding: 7em;
   }
   #content > div:first-child {
-    margin-top: 5em;
+    margin-bottom: 20px;
   }
-  ..modal-content {
-    margin: 1.5em auto;
-    width: 30%;
+  .modal-body #content {
+    padding: 0;
+    margin: 0;
   }
-  @media screen and (max-width: 1920px) {
-    .modal-content{
-      margin: 1.5em auto;
-      width: 45%;
-    }
-    #content {
-      justify-content: center;
-      display: grid;
-      grid-gap: 1%;
-      margin: 0 50px
-    }
-    button[type="submit"] {
-      width: 30%;
-    }
-  }
-  @media screen and (max-width: 1024px) {
-    .modal-content{
-      margin: 1.5em auto;
-      width: 50%;
-    }
-  }
-  @media screen and (max-width: 768px) {
-    .modal-content{
-      margin: 1.5em auto;
-      width: 62%;
-    }
-  }
-  @media screen and (max-width: 425px) {
-    .modal-content {
-      margin: 1.5em auto;
-      max-width: 100%;
-      width: auto !important;
-    }
-    button[type="submit"] {
-      width: 30%;
-    }
+  .modal-body #content >div {
+    margin: 0;
+    padding: 0;
   }
 `;
 
@@ -290,36 +258,32 @@ export default function index({
       className="modal"
       theme={theme}>
       <div className="modal-content">
-        <span
-          className="close"
-          onClick={() => {
-            toggleCreateEventModal(false);
-          }}>
-          &times;
-        </span>
-        <div id="content">
-          <h2
-            style={{
-              textAlign: "center",
-              marginBottom: 50,
-              marginTop: -10,
-              fontSize: "2em"
+        <h2>Create New Event</h2> 
+        <div className="modal-header">
+          <span
+            className="close"
+            onClick={() => {
+              toggleCreateEventModal(false);
             }}>
-            Create New Event
-          </h2>
-          <EventForm
-            calendars={calendars && calendars[0]}
-            eventDetails={eventDetails}
-            handleGroupSelect={handleGroupSelect}
-            handleGroupRemove={handleGroupRemove}
-            handleAppGroupSelect={handleAppGroupSelect}
-            handleAppGroupRemove={handleAppGroupRemove}
-            groups={groupOptions}
-            handleEventDetailsChange={handleEventDetailsChange}
-            onSubmit={handleSubmit}
-            selectedGroup={selectedGroup}
-            vendors={vendors}
-          />
+            &times;
+          </span>
+        </div>
+        <div className="modal-body">
+          <div id="content">
+            <EventForm
+              calendars={calendars && calendars[0]}
+              eventDetails={eventDetails}
+              handleGroupSelect={handleGroupSelect}
+              handleGroupRemove={handleGroupRemove}
+              handleAppGroupSelect={handleAppGroupSelect}
+              handleAppGroupRemove={handleAppGroupRemove}
+              groups={groupOptions}
+              handleEventDetailsChange={handleEventDetailsChange}
+              onSubmit={handleSubmit}
+              selectedGroup={selectedGroup}
+              vendors={vendors}
+            />
+          </div>
         </div>
       </div>
     </NewEventModal>,

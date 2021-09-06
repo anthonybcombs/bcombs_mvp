@@ -780,8 +780,7 @@ export default function createEventForm({
       />
       <button
         data-testid="app-dashboard-my-events-new-event-button-save"
-        type="submit"
-        style={{ marginTop: 50, marginBottom: -50 }}>
+        type="submit">
         Save
       </button>
     </EventFormStyled>

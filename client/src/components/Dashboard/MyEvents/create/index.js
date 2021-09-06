@@ -7,16 +7,14 @@ import { addEvent } from "../../../../redux/actions/Events";
 import MicroCalendar from "../../../Calendar/micro-calendar";
 import EventForm from "../forms/EventForm";
 const NewEventModal = styled.div`
-  h2 {
-    font-size: 2em;
-  }
   input:required {
     box-shadow: none;
   }
   input:invalid {
     box-shadow: none;
   }
-  input {
+  input,
+  textarea {
     background: none;
     width: 100%;
     color: black;
@@ -35,6 +33,9 @@ const NewEventModal = styled.div`
     border-color: ${({ theme }) => theme.input.focus.border.color};
     transition: 3s;
   }
+  .timepicker {
+    transition: none !important;
+  }
   button {
     color: ${({ theme }) => theme.button.textColor.primary};
     font-size: ${({ theme }) => theme.button.fontSize} !important;
@@ -47,6 +48,7 @@ const NewEventModal = styled.div`
     background-color: ${({ theme }) => theme.button.backgroundColor.primary};
     padding: 10px;
     width: 100%;
+    max-width: 120px;
     display: block;
     margin: 20px auto;
     border: none;
@@ -55,30 +57,20 @@ const NewEventModal = styled.div`
     justify-content: center
     display: grid;
     background-color: white;
-    padding: 10em;
+    padding: 7em;
   }
   #content > div:first-child {
-    margin-top: 5em;
+    margin-bottom: 20px;
   }
-  .modal-content {
-    margin: 1.5em auto;
-    width: 80%;
+  .modal-body #content {
+    padding: 0;
+    margin: 0;
   }
-  @media (min-width: 600px) {
-    .modal-content{
-      margin: 1.5em auto;
-      width: 40%;
-    }
-    #content {
-      justify-content: center;
-      display: grid;
-      grid-gap: 1%;
-      margin: 0 50px
-    }
-    button[type="submit"] {
-      width: 30%;
-    }
+  .modal-body #content >div {
+    margin: 0;
+    padding: 0;
   }
+
 `;
 const initialEventDetails = selectedDate => {
   return {
@@ -157,31 +149,33 @@ export default function index({
       className="modal"
       theme={theme}>
       <div className="modal-content">
-        <span
-          className="close"
-          onClick={() => {
-            toggleCreateEventModal(false);
-          }}>
-          &times;
-        </span>
-        <div id="content">
-          <h2 style={{ textAlign: "center", marginBottom: 50, marginTop: -50 }}>
-            Create New Event
-          </h2>
-          <MicroCalendar
-            removeSubHeader={true}
-            events={[]}
-            selectedDate={selectedDate}
-            setSelectedDate={handleSetSelectedDate}
-            selectedEvent={null}
-            setSelectedEvent={() => {}}
-          />
-          <EventForm
-            familyMembers={familyMembers}
-            eventDetails={eventDetails}
-            handleEventDetailsChange={handleEventDetailsChange}
-            onSubmit={handleSubmit}
-          />
+        <div className="modal-header">
+          <h2>Create New Event</h2>
+          <span
+            className="close"
+            onClick={() => {
+              toggleCreateEventModal(false);
+            }}>
+            &times;
+          </span>
+        </div>
+        <div className="modal-body">
+          <div id="content">
+            <MicroCalendar
+              removeSubHeader={true}
+              events={[]}
+              selectedDate={selectedDate}
+              setSelectedDate={handleSetSelectedDate}
+              selectedEvent={null}
+              setSelectedEvent={() => {}}
+            />
+            <EventForm
+              familyMembers={familyMembers}
+              eventDetails={eventDetails}
+              handleEventDetailsChange={handleEventDetailsChange}
+              onSubmit={handleSubmit}
+            />
+          </div>
         </div>
       </div>
     </NewEventModal>,
