@@ -2,9 +2,9 @@ import styled from "styled-components";
 //  top: 10px;
 export default styled.div`
   .modal-content {
-    position: relative;
+    position: absolute;
     width: auto;
-    top: 100%;
+    top: 60%;
     // max-width: 830px;
     max-width: 940px;
     padding: 0;
