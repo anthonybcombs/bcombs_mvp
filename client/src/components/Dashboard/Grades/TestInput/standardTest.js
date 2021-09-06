@@ -525,11 +525,11 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
           delete newRow.attachment
         }
         if (newRow.month_taken) {
-          newRow.month_taken =  moment(new Date(newRow.month_taken)).format('yyyy-MM-DD')
+          newRow.month_taken = newRow.month_taken && !isNaN(newRow.month_taken) ?  moment(new Date(parseInt(newRow.month_taken))).format('yyyy-MM-DD'): moment(new Date(newRow.month_taken)).format('yyyy-MM-DD')
         }
         return newRow
       })
-
+  
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
     onHasChanged(false)
   }
@@ -699,13 +699,9 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
     selectStudentRows = selectStudentRows.filter(e => e.form_contents)
-      selectStudentRows = applications && applications.map((e, index) => {
-        //const classTeacher = e.class_teacher ? e.class_teacher.split(',') : [];
+      selectStudentRows = applications && applications.map((e) => {
         const currentApplication = selectStudentRows.find(item => {
-          // const currentAppGroup = item.app_group_id ? item.app_group_id.split(',') : [];
-          // return currentAppGroup.find(id => classTeacher.includes(id));
           return e.app_id === item.child_id
-
         });
 
         if(currentApplication) {
