@@ -40,14 +40,17 @@ export default function index({
     >
       <div className='modal-content'>
         <div className='modal-header'>
-          Import Student {inputType == 'test' ? 'Standard Test' : inputType == 'grades' ? 'Grades' : '' } Data
+          <h2>Import Student {inputType == 'test' ? 'Standard Test' : inputType == 'grades' ? 'Grades' : '' } Data</h2>
+          <span className="close" onClick={onClose}>
+            &times;
+          </span>
         </div>
         
-        <div className='modal-container'>
+        <div className='modal-body'>
           <div>
             Please upload the template file
           </div>
-          <div style={{'paddingLeft': '30px'}}>
+          <div>
             {
               (inputType == 'test' || inputType == 'grades') && (
                 <CSVLink

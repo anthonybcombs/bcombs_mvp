@@ -202,12 +202,15 @@ export default function index({
     <SelectStudentDialogStyled
       data-testid='app-big-calendar-create-modal'
       className='modal'>
-      <div className='modal-content' style={{ margin: 0 }}>
+      <div className='modal-content'>
         <div className='modal-header'>
-          Select student
+          <h2>Select student</h2>
+          <span className="close" onClick={onClose}>
+            &times;
+          </span>
         </div>
 
-        <div className='modal-container'>
+        <div className='modal-body'>
           <CustomTable
             hasSearch
             rows={rows}

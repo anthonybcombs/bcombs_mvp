@@ -12,10 +12,13 @@ export default function index({
       className='modal'>
       <div className='modal-content'>
         <div className='modal-header'>
-          {title}
+          <h2>{title}</h2>
+          <span className="close" onClick={onClose}>
+            &times;
+          </span>
         </div>
 
-        <div className='modal-container'>
+        <div className='modal-body'>
           {content}
         </div>
 

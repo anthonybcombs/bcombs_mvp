@@ -2,29 +2,19 @@ import styled from "styled-components";
 
 export default styled.div`
   .modal-content {
-    position: relative;
-    top: 100px;
-    width: auto;
-    // max-width: 830px;
     max-width: 940px;
-    padding: 0;
   }
-  .close {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    color: #fff;
-  }
+ 
   .modal-header {
     padding: 1em;
     background-color: #f26e21;
     color: #fff;
   }
 
-  .modal-container {
+  .modal-body {
     padding: 1.5rem;
   }
-  .modal-container .tabs {
+  .modal-body .tabs {
     display: flex;
     justify-content: space-around;
 
@@ -33,7 +23,7 @@ export default styled.div`
     margin: -1.5rem -1.5rem 1rem;
     border-bottom: 1px solid rgb(128 128 128 / 35%);
   }
-  .modal-container .tabs div.filterTab {
+  .modal-body .tabs div.filterTab {
     width: 100%;
     color: gray;
     cursor: pointer;
@@ -41,15 +31,15 @@ export default styled.div`
     padding: 5px 5px 12px;
     transition: .25s ease-in-out;
   }
-  .modal-container .tabs div.filterTab:hover {
+  .modal-body .tabs div.filterTab:hover {
     color: #f26e21;;
   }
-  .modal-container .tabs div.filterTab.active {
+  .modal-body .tabs div.filterTab.active {
     position: relative;
     color: #f26e21;
     font-weight: bold;
   }
-  .modal-container .tabs div.filterTab.active:after {
+  .modal-body .tabs div.filterTab.active:after {
     content: '';
     position: absolute;
     left: 0;

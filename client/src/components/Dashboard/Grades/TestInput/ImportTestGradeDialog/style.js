@@ -2,17 +2,12 @@ import styled from 'styled-components'
 
 export default styled.div`
   .modal-content {
-    position: relative;
-    top: 100px;
-    width: auto;
-    // max-width: 830px;
     max-width: 940px;
-    padding: 0;
 
     &.export {
       max-width: 500px;
 
-      .modal-container > div {
+      .modal-body > div {
         padding: 0;
         margin-bottom: 25px;
       }
@@ -43,15 +38,13 @@ export default styled.div`
     color: #fff;
   }
 
-  .modal-container {
-    padding: 1.5rem;
-  }
 
-  .modal-container > div {
+
+  .modal-body > div {
     padding: 10px 20px;
   }
 
-  .modal-container li {
+  .modal-body li {
     margin: 0 0 3px 0;
   }
 

@@ -2,29 +2,11 @@ import styled from "styled-components";
 //  top: 10px;
 export default styled.div`
   .modal-content {
-    position: relative;
-    width: auto;
-    top: 70%;
-    // max-width: 830px;
     max-width: 940px;
-    padding: 0;
-  }
-  .close {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    color: #fff;
-  }
-  .modal-header {
-    padding: 1em;
-    background-color: #f26e21;
-    color: #fff;
   }
 
-  .modal-container {
-    padding: 1.5rem;
-  }
-  .modal-container table th:last-child {
+
+  .modal-body table th:last-child {
     max-width: 100px !important;
   }
   
@@ -70,7 +52,7 @@ export default styled.div`
     align-items: center;
     justify-content: flex-end;
 
-    padding: 1.5rem;
+    padding: 1rem;
   }
   .modalBtn {
     width: 100%;

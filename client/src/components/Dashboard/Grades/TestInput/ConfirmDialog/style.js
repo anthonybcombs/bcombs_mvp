@@ -1,27 +1,8 @@
 import styled from "styled-components";
 
 export default styled.div`
-  .modal-content {
-    position: relative;
-    top: 100px;
-    width: auto;
-    max-width: 500px;
-    padding: 0;
-  }
-  .close {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    color: #fff;
-  }
   .modal-header {
-    padding: 1em;
     background-color: #f72121;
-    color: #fff;
-  }
-
-  .modal-container {
-    padding: 1.5rem;
   }
 
   .modal-footer {
@@ -29,7 +10,7 @@ export default styled.div`
     align-items: center;
     justify-content: flex-end;
 
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   .modalBtn {

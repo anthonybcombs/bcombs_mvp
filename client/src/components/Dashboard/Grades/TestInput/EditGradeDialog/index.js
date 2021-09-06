@@ -222,7 +222,10 @@ export default function index({
       className='modal'>
       <div className='modal-content'>
         <div className='modal-header'>
-          Edit Grades
+          <h2>Edit Grades</h2>
+          <span className="close" onClick={() => onClose(hasChanged)}>
+            &times;
+          </span>
         </div>
 
         <div className='modal-container'>
