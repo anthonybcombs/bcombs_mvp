@@ -273,8 +273,13 @@ router.get("/updateParentNewId", async (req, res) => {
 });
 
 router.get("/updateChildNewId", async (req, res) => {
-  const childs = await getChilds();
+  let childs = await getChilds();
   const defaultSize = 4;
+
+  childs = childs.filter(ch => {
+    return !ch.new_childId
+  })
+
   for(let child of childs) {
     let addZero = 0;
     if(child.id > 9999) {
@@ -287,7 +292,7 @@ router.get("/updateChildNewId", async (req, res) => {
     child.newChildId = newChildId;
 
     if(!child.new_childId) {
-      updateChildNewId(child);
+      updateChildNewId(child);  
     }
   }
   res.send(childs);

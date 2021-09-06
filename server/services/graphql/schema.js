@@ -1045,8 +1045,7 @@ const queryTypes = `
         new_childId: String
         firstname: String
         lastname: String
-        image: String
-        age: Int!
+        age: Int
         birthdate: Date
         gender: String
         phone_type: String
@@ -1309,6 +1308,7 @@ const queryTypes = `
         app_id: String
         vendor: String
         form: String
+        child: Child
         form_contents: CustomForm
         application_date: Date
         archived_date: Date

@@ -1225,6 +1225,7 @@ export const getVendorCustomApplicationForms = async ({ vendor, category = "" })
 export const submitCustomApplication = async ({
   vendor,
   form,
+  child = null,
   form_contents
 }) => {
   const db = makeDb();
@@ -1238,15 +1239,18 @@ export const submitCustomApplication = async ({
         app_id,
         vendor,
         form,
+        child,
         form_contents
       ) VALUES (
         UUID_TO_BIN(UUID()), 
         UUID_TO_BIN(?), 
         UUID_TO_BIN(?),
+        UUID_TO_BIN(?),
         ?)`,
       [
         vendor,
         form,
+        child,
         form_contents
       ]
     );
@@ -1319,6 +1323,7 @@ export const getCustomFormApplicants = async ({ form_id, is_archived = 0 }) => {
         BIN_TO_UUID(form) as form,
         BIN_TO_UUID(vendor) as vendor,
         BIN_TO_UUID(app_id) as app_id,
+        BIN_TO_UUID(child) as child,
         CONVERT(form_contents USING utf8) as form_contents,
         application_date,
         archived_date,
@@ -1343,6 +1348,8 @@ export const getCustomFormApplicants = async ({ form_id, is_archived = 0 }) => {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
+      const child = await getChildInformation(application.child);
+      application.child = child.length > 0 ? child[0] : {};
     }
 
   } catch (err) {

@@ -264,6 +264,7 @@ export const addDaycareChild = async ({
 export const addChild = async ({
   firstname,
   lastname,
+<<<<<<< HEAD
   age,
   birthdate,
   gender,
@@ -315,6 +316,59 @@ export const addChild = async ({
   child_lives_with,
   nickname,
   image
+=======
+  age = null,
+  birthdate = null,
+  gender = null,
+  phone_type = null,
+  phone_number = null,
+  email_type = null,
+  email_address = null,
+  phone_type2 = null,
+  phone_number2 = null,
+  email_type2 = null,
+  email_address2 = null,
+  address = null,
+  city = null,
+  state = null,
+  zip_code = null,
+  location_site = null,
+  ethnicities = null,
+  programs = null,
+  school_name = null,
+  school_phone = null,
+  has_suspended = null,
+  reason_suspended = null,
+  year_taken = null,
+  hobbies = null,
+  life_events = null, 
+  career_goals = null,
+  colleges = null,
+  affiliations = null,
+  awards = null,
+  accomplishments = null,
+  mentee_gain_program = null,
+  grade_number = null,
+  grade_desc = null,
+  class_rank = null,
+  gpa_quarter_year = null,
+  gpa_quarter_q1 = null,
+  gpa_quarter_q2 = null,
+  gpa_quarter_q3 = null,
+  gpa_quarter_q4 = null,
+  gpa_cumulative_year = null,
+  gpa_cumulative_q1 = null,
+  gpa_cumulative_q2 = null,
+  gpa_cumulative_q3 = null,
+  gpa_cumulative_q4 = null,
+  doctor_name = null,
+  doctor_phone = null,
+  hospital_preference = null,
+  hospital_phone = null,
+  child_lives_with = null,
+  nickname = null,
+  middlename = null
+>>>>>>> b25627648a9aa499ba45a841053c6d4481162a17
 }) => {
   const db = makeDb();
   let result = {};
@@ -377,14 +431,22 @@ export const addChild = async ({
         hospital_phone,
         child_lives_with,
         nickname,
+<<<<<<< HEAD
         image
+=======
+        middlename
+>>>>>>> b25627648a9aa499ba45a841053c6d4481162a17
       ) VALUES (UUID_TO_BIN(UUID()), 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+<<<<<<< HEAD
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?)`,
+=======
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+>>>>>>> b25627648a9aa499ba45a841053c6d4481162a17
       [
         firstname,
         lastname,
@@ -438,7 +500,11 @@ export const addChild = async ({
         hospital_phone,
         child_lives_with,
         nickname,
+<<<<<<< HEAD
         image
+=======
+        middlename
+>>>>>>> b25627648a9aa499ba45a841053c6d4481162a17
       ]
     )
 

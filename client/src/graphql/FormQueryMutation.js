@@ -278,6 +278,14 @@ export const GET_CUSTOM_APPLICATION_BY_ID = gql`
       id
       vendor
       form
+      child {
+        ch_id
+        new_childId
+        firstname
+        lastname
+        age
+        birthdate
+      }
       app_id
       application_date
       archived_date
@@ -396,6 +404,14 @@ export const GET_APPLICANTS_BY_FORM = gql`
       vendor
       form
       app_id
+      child {
+        ch_id
+        new_childId
+        firstname
+        lastname
+        age
+        birthdate
+      }
       application_date
       archived_date
       class_teacher

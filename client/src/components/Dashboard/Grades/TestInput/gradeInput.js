@@ -21,7 +21,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ applications, importData = [], childId, requestList, groupId, groupType, loading, onHasChanged }) => {
+export default ({ applications, importData = [], childId, requestList, groupId, groupType, loading, onHasChanged, appGroupIds, type }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -290,11 +290,11 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
         <tr
           key={`grades-list-${index}`}
           className={`tr-data${row.student_grade_cumulative_id ? ' has-data' : ''} ${enableEdit ? 'edit-enabled' : ''}`}
-          onClick={() =>  {
-            if(!isReview) {
+          onClick={() => {
+            if (!isReview) {
               return !enableEdit ? handleEnableEditDialog(row.id) : {}
             }
-           
+
           }}
         >
           <td>
@@ -344,10 +344,10 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                             className='attachment'
                             icon={faPaperclip}
                             onClick={() => {
-                              if(!isReview) {
+                              if (!isReview) {
                                 document.getElementById(`attachement_${row.id}`).click()
                               }
-                              
+
                             }}
                           />
                           <input
@@ -378,7 +378,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                   {
                     key === 'school_year_start' && (
                       <DatePicker
-                      disabled={isReview}
+                        disabled={isReview}
                         selected={row[key] ? new Date(row[key]) : ''}
                         onChange={date => handleInputChange({ target: { value: date.toISOString() } }, index, key)}
                         maxDate={row.school_year_end ? new Date(new Date(row.school_year_end).setMonth(new Date(row.school_year_end).getMonth() - 1)) : ''}
@@ -400,7 +400,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                   {
                     key === 'school_year_end' && (
                       <DatePicker
-                      disabled={isReview}
+                        disabled={isReview}
                         selected={row[key] ? new Date(row[key]) : ''}
                         onChange={date => handleInputChange({ target: { value: date.toISOString() } }, index, key)}
                         minDate={row.school_year_start ? new Date(new Date(row.school_year_start).setMonth(new Date(row.school_year_start).getMonth() + 1)) : ''}
@@ -414,7 +414,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                   {
                     !['name', 'child_id', 'attachment', 'year_level', 'school_year_start', 'school_year_end', 'grades', 'help_needed'].includes(key) && (
                       <input
-                      disabled={isReview}
+                        disabled={isReview}
                         style={highlightStyle}
                         type={type === 'number' ? 'number' : 'text'}
                         value={row[key]}
@@ -575,10 +575,32 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
             return newGrade
           })
 
-        return newRow
-      })
+        if (groupType === 'bcombs') {
+          return {
+            ...newRow
+          }
+        }
+        const appGroupIdList = e.app_group_id ? e.app_group_id.split(',') : appGroupIds ;
 
-    dispatch(requestAddUpdateStudentCumulative(newRows))
+        if(type === 'all') {
+          return {
+            ...newRow,
+            app_group_id: groupId,
+            application_type: 'forms'
+          }
+        }
+        return {
+          ...newRow,
+          app_group_id: appGroupIdList && appGroupIdList[0],
+          application_type: 'forms'
+        }
+      })
+      dispatch(requestAddUpdateStudentCumulative(newRows));
+
+      setTimeout(() => {
+        onHasChanged(false)
+      },1000)
+ 
   }
 
   const handleSaveGrade = (grades, otherFields) => {
@@ -688,60 +710,58 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
   useEffect(() => {
     if (gradeInput.gradeUpdated) {
       dispatch(clearGrades())
-      requestList()
+      setTimeout(() => {
+        requestList()
+      },1500)
     }
   }, [gradeInput])
 
   useEffect(() => {
     if (gradeInput.gradeList) {
-      let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id && e.app_group_id.includes(groupId))
-      console.log('newGradeList', newGradeList)
-      console.log('newGradeList groupType', groupType)
+
+      // let newGradeList = (gradeInput.gradeList || []).filter(e => {
+      //   if(groupType === 'forms' && type === 'all') {
+      //     const ids = e.app_group_id ? e.app_group_id.split(',') : [];
+      //     console.log('idssss', ids)
+      //     console.log('idssss appGroupIds', appGroupIds)
+      //     return ids && ids.some(id => appGroupIds && appGroupIds.includes(id))
+      //   }
+      //   return e.app_group_id && e.app_group_id.includes(groupId)
+      // })
+      let newGradeList = (gradeInput.gradeList || []) //.filter(e => e.app_group_id)
       if (groupType === 'bcombs') {
         newGradeList = newGradeList.filter(e => !e.form_contents)
       } else {
-        //newGradeList = newGradeList.filter(e => e.form_contents)
+        newGradeList = newGradeList.filter(e => e.form_contents)
 
-        // if (newGradeList.length > 0) {
-        //   newGradeList = newGradeList.filter(e => e.form_contents)
-        // }
-        // else {
-        //   newGradeList = applications && applications.filter(e => e.form === groupId)
-        // }
-
-        newGradeList = newGradeList.filter(e => e.form_contents && e.form === groupId)
-      
         if (newGradeList.length === 0) {
           newGradeList = applications && applications.map(item => {
             return {
               ...item,
-              standardized_test:[]
+              standardized_test: []
             }
           })
-    
+
         }
       }
-      console.log('newGradeListzzzzzzzzzzz',newGradeList)
-      let updatedGradeList = newGradeList.filter(e => e.standardized_test).flatMap(e => e.standardized_test )
- 
-      if(updatedGradeList.length > 0) {
-        const newRows = cloneDeep(rows).map(row => {
-          const { student_test_id } = updatedGradeList.find(e => (
-            e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
-          )) || {}
-          return { ...row, student_test_id: student_test_id || row.student_test_id }
-        })
-        console.log('NEW ROWSSSSSSSSSS', newRows)
-        setRows(newRows)
-        setFilteredRows(newRows)
+      // let updatedGradeList = newGradeList.filter(e => e.standardized_test).flatMap(e => e.standardized_test)
+      // console.log('newGradeListzzzzzzzzzzz updatedGradeList', updatedGradeList)
+      // if (updatedGradeList.length > 0) {
+      //   const newRows = cloneDeep(rows).map(row => {
+      //     const { student_test_id } = updatedGradeList.find(e => (
+      //       e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
+      //     )) || {}
+      //     return { ...row, student_test_id: student_test_id || row.student_test_id }
+      //   })
+
+        setRows([])
+        setFilteredRows([])
       }
-      else {
-        setRows(newGradeList)
-        setFilteredRows(newGradeList)
-      }
-   
-    }
- 
+      // else {
+      //   setRows(newGradeList)
+      //   setFilteredRows(newGradeList)
+      // }
+
 
   }, [gradeInput.gradeList])
 
@@ -765,24 +785,46 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
 
-  let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+  let selectStudentRows = (gradeInput.gradeList || []).filter(e => {
 
-  console.log('gradeInput 123123123123', gradeInput)
+    if (appGroupIds && appGroupIds.length > 0) {
+      const ids = e.app_group_id && e.app_group_id.split(',');
+      return ids && ids.some(id => appGroupIds.includes(id))
+    }
+    return e.app_group_id;
+  })
+
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
-    console.log('selectStudentRows 1111', selectStudentRows)
-    selectStudentRows = selectStudentRows.filter(e => e.form_contents && e.form === groupId)
-    if (selectStudentRows.length === 0) {
-      selectStudentRows = applications && applications.filter(e => e.form === groupId)
-    }
+   
 
+    selectStudentRows = selectStudentRows.filter(e => {
+      return e.form_contents 
+    })  
+      selectStudentRows = applications && applications.map((e) => {
 
+        const currentApplication = selectStudentRows.find(item => {
+          return e.app_id === item.child_id
+        });
+
+        if(currentApplication) {
+          return {
+            ...currentApplication
+          }
+        }
+        return {
+          app_group_id: e.class_teacher,
+          child_id: e.app_id,
+          standardized_test: [],
+          cumulative_grades: [],
+          form_contents: e.form_contents,
+          firstname: null,
+          lastname: null
+        }
+      })
 
   }
-  console.log('selectStudentRows 2222', selectStudentRows)
-  console.log('selectStudentRows rowsss', rows)
-  console.log('selectStudentRows applications', applications)
 
   return (
     <div
@@ -920,7 +962,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
                 <button
                   className='btn-review'
                   disabled={rows.length === 0}
-                  onClick={() => { 
+                  onClick={() => {
                     setIsReview(!isReview)
                   }}
                 >
