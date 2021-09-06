@@ -8,12 +8,6 @@ export default styled.div`
     max-width: 95%;
     padding: 0;
   }
-  .close {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    color: #fff;
-  }
   .modal-header {
     padding: 1em;
     background-color: #f26e21;
