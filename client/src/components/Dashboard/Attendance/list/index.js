@@ -1571,8 +1571,16 @@ export default function index() {
 									lastname: app.child?.lastname,
 									firstname: app.child?.firstname
 								}
-								let profile = app.child.image || ''
-								if (profile) {
+								let profile = app?.child?.image || ''
+								if (app.form_contents) {
+									const { formData = [] } = typeof app.form_contents === 'string' ? JSON.parse(app.form_contents) : app.form_contents
+									const { fields = [] } = formData.find(e => e.fields[0].tag === 'profileImage') || {}
+									if (fields.length) {
+										const { value } = fields[0]
+										const { url } = value ? JSON.parse(value) : {}
+										profile = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
+									}
+								} else if (!app.form_contents && profile) {
 									profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
 								} else {
 									profile = ProfileImg
