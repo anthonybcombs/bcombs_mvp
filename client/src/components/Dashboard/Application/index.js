@@ -493,6 +493,8 @@ export default function index() {
 
   const [isCopyApplicationLinkModal, setCopyApplicationLinkModal] = useState(false);
 
+  const [currentCopyLink, setCurrentCopyLink] = useState(null);
+
   const dispatch = useDispatch();
 
   const componentRef = useRef();
@@ -1868,7 +1870,14 @@ export default function index() {
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
-                  <FontAwesomeIcon icon={faLink} onClick={() => setCopyApplicationLinkModal(true)}/>
+                  <FontAwesomeIcon icon={faLink} onClick={() => {
+                    setCopyApplicationLinkModal(true)
+                    setCurrentCopyLink( selectedVendor.is_daycare ? `/application/${
+                      selectedVendor.id2
+                    }/daycare` : `/application/${
+                      selectedVendor.id2
+                    }`)
+                  }}/>
                 </div>
               ) : selectedForm && selectedForm != "default" ? (
                   <div className="copy-application-link">
@@ -1878,7 +1887,11 @@ export default function index() {
                       <FontAwesomeIcon icon={faFileSignature} />
                       <span>Application</span>
                     </a>
-                    <FontAwesomeIcon icon={faLink} onClick={() => setCopyApplicationLinkModal(true)}/>
+                  
+                    <FontAwesomeIcon icon={faLink} onClick={() => {
+                      setCopyApplicationLinkModal(true)
+                      setCurrentCopyLink( `/form/${selectedForm}`)
+                    }}/>
                   </div>
               ) : (
                 <div className="copy-application-link">
@@ -1888,13 +1901,16 @@ export default function index() {
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
-                  <FontAwesomeIcon icon={faLink} onClick={() => setCopyApplicationLinkModal(true)}/>
+                  <FontAwesomeIcon icon={faLink} onClick={() => {
+                    setCopyApplicationLinkModal(true)
+                  }}/>
                 </div>
               )
             }
             <CopyApplicationLinkModal
               isVisible={isCopyApplicationLinkModal}
               toggleCopyApplicationLinkModal={setCopyApplicationLinkModal}
+              currentCopyLink={currentCopyLink}
             />
             <div
               className={`${
