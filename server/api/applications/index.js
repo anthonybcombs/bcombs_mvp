@@ -1486,6 +1486,7 @@ export const getCustomApplicationByVendorId = async (vendor) => {
         id,
         BIN_TO_UUID(app_id) as app_id,
         BIN_TO_UUID(form) as form,
+        CONVERT(form_contents USING utf8) as form_contents,
         class_teacher
         FROM custom_application
         WHERE vendor=UUID_TO_BIN(?)
@@ -1495,6 +1496,9 @@ export const getCustomApplicationByVendorId = async (vendor) => {
       ]
     );
     console.log('getCustomApplicationByVendor vendor', applications)
+    for(let app of applications) {
+      app.form_contents = app.form_contents ? Buffer.from(app.form_contents, "base64").toString("utf-8") : "{}";
+    }
 
   } catch (err) {
     console.log("get custom application by form id", err);

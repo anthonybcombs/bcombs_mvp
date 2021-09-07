@@ -1327,6 +1327,7 @@ const queryTypes = `
         app_id: String
         form: String
         class_teacher: String
+        form_contents: String
     }
 
     type CustomForm {

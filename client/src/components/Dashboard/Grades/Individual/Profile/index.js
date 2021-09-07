@@ -51,7 +51,7 @@ export default ({ child_id }) => {
   let profile = ''
 
   const { school_name, year_level, gpa_final, gpa_sem_1, gpa_sem_2, final_student_rank, mid_student_rank } = maxBy((data?.cumulative_grades || []), 'year_level') || {}
-
+  
   if (form_contents) {
     const name = getNameFromCustomForm(form_contents)
     firstname = name.firstname
@@ -62,11 +62,17 @@ export default ({ child_id }) => {
   if (!form_contents && data?.info?.image) {
     profile = data?.info?.image.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + data?.info?.image : profile;
   } else if (form_contents) {
-    
+    const { formData = [] } = typeof form_contents === 'string' ? JSON.parse(form_contents) : form_contents
+    const { fields = [] } = formData.find(e => e.fields[0].tag === 'profileImage') || {}
+    if (fields.length) {
+      const { value } = fields[0]
+      const { url } = value ? JSON.parse(value) : {}
+      profile = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
+    }
   } else {
     profile = ProfileImg
   }
-
+  
   return (
     <GradesStyled>
       <h2>Grades and Tracking</h2>

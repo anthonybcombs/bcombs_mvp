@@ -568,6 +568,7 @@ export default ({ child_id }) => {
             loading={gradeLoading}
             requestList={requestList}
             onHasChanged={(bool) => setHasChanged(bool)}
+            type={type}
           />
           <div className='gradeInputView-header' style={{ 'marginTop': '1rem' }}>
             <div className='action left'></div>
@@ -601,8 +602,8 @@ export default ({ child_id }) => {
             </div>
           </div>
           <GradeInput
-           appGroupIds={appGroupIdList}
-           applications={applications.activeapplications}
+             appGroupIds={appGroupIdList}
+            applications={applications.activeapplications}
             importData={formattedGrades}
             childId={child_id}
             loading={gradeLoading}

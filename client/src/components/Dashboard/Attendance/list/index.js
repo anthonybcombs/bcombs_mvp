@@ -36,7 +36,8 @@ import ProfileImg from '../../../../images/defaultprofile.png';
 import CustomDatePicker from '../../../../helpers/CustomDatePicker';
 import Confirmation from '../../../../helpers/Confirmation';
 
-import { isObject } from 'util';
+
+import { getNameFromCustomForm } from '../../Grades/utils'
 
 //const DATE_FORMAT = 'MM/dd/yyyy';
 const DATE_FORMAT = 'MMM d, yyyy';
@@ -576,10 +577,10 @@ const timeCompare = (time1, time2) => {
 	// if (t1.getTime() < t2.getTime()) return -1;
 	// return 0;
 
-	if(time1 && time2) {
+	if (time1 && time2) {
 		let arrTime1 = time1.split(':');
 		let arrTime2 = time2.split(':');
-	
+
 		if (parseInt(arrTime1[0]) > parseInt(arrTime2[0])) return 1;
 		if (parseInt(arrTime1[0]) < parseInt(arrTime2[0])) return -1;
 	}
@@ -618,7 +619,7 @@ const TimeCustomInput = ({ value, onClick, name, className, placeholder, registe
 				readOnly={true}
 				id={`attendance_time`}
 				style={{
-					width:'100%'
+					width: '100%'
 				}}
 			/>
 			<label className="field-label" for={`attendance_date`}>
@@ -702,7 +703,7 @@ export default function index() {
 		if (vendors && vendors.length > 0 /* && (name !== 'custom' ||  ) ) */) {
 			let vendorId;
 			for (const vendor of vendors) {
-				if (( name === 'custom' &&  vendor.id == vendor_id) || vendor.id2 == vendor_id) {
+				if ((name === 'custom' && vendor.id == vendor_id) || vendor.id2 == vendor_id) {
 					vendorId = vendor.id;
 					break;
 				}
@@ -711,31 +712,31 @@ export default function index() {
 			// if(name !== 'custom') {
 			// 	dispatch(requestGetApplications(vendorId));
 			// }
-			if(name !== 'custom') {
+			if (name !== 'custom') {
 				dispatch(requestGetApplications(vendorId));
 			}
 			// else {
 			// 	dispatch(requestGetCustomApplicationByVendor(vendorId))
 			// }
-			
-			
+
+
 		}
 	}, [vendors]);
 
 	useEffect(() => {
-			console.log('useEffect group',name)
+		console.log('useEffect group', name)
 
-			console.log('useEffect searchParams',searchParams)
+		console.log('useEffect searchParams', searchParams)
 		if (name === 'custom' && searchParams) {
 			//let currentAppGroupId = '';
 			let currentAppGroupName = '';
 			if (groups && groups.application_groups) {
 				const applicationGroups = groups.application_groups;
-				console.log('applicationGroups',applicationGroups)
-				console.log('applicationGroups searchParams.formId',searchParams.formId)
-				const filteredGroup = applicationGroups.filter(item => ( searchParams && searchParams.appGroupId && (item.app_grp_id === searchParams.appGroupId)) || (searchParams && searchParams.type === 'all' && searchParams && searchParams.formId === item.form) ).map(item => item.app_grp_id)
-				console.log('applicationGroups filteredGroup',filteredGroup)
-				
+				console.log('applicationGroups', applicationGroups)
+				console.log('applicationGroups searchParams.formId', searchParams.formId)
+				const filteredGroup = applicationGroups.filter(item => (searchParams && searchParams.appGroupId && (item.app_grp_id === searchParams.appGroupId)) || (searchParams && searchParams.type === 'all' && searchParams && searchParams.formId === item.form)).map(item => item.app_grp_id)
+				console.log('applicationGroups filteredGroup', filteredGroup)
+
 				for (const group of applicationGroups) {
 					if (group.app_grp_id === searchParams.appGroupId) {
 
@@ -747,12 +748,12 @@ export default function index() {
 				// console.log('applicationGroups currentAppGroupId',currentAppGroupId)
 				setAppGroupId(searchParams.appGroupId);
 				const ids = searchParams && searchParams.appGroupIds ? searchParams.appGroupIds.split(',') : [];
-		
+
 				setAppGroupIds([...(ids || [])])
-				if(filteredGroup[0] && filteredGroup[0].name) {
+				if (filteredGroup[0] && filteredGroup[0].name) {
 					setAppGroupName(filteredGroup[0].name);
 				}
-	
+
 			}
 		} else {
 			if (vendors.length > 0 && name !== 'all') {
@@ -776,7 +777,7 @@ export default function index() {
 					const applicationGroups = vendors[0].app_groups;
 					const ids = applicationGroups.map(item => item.app_grp_id);
 					// console.log('idsssssssssssss',ids)
-				
+
 					setAppGroupIds(ids);
 					setAppGroupId('all');
 				}
@@ -785,8 +786,8 @@ export default function index() {
 	}, [groups, vendors]);
 
 	useEffect(() => {
-		console.log('applicationszxczxc',applications)
-		console.log('applicationszxczxc name',name)
+		console.log('applicationszxczxc', applications)
+		console.log('applicationszxczxc name', name)
 		if (appGroupId && appGroupId !== '') {
 			dispatch(
 				requestAttendance(name === 'custom' ? searchParams.appGroupId : appGroupId, name === 'custom' ? 'custom' : 'bcombs')
@@ -808,7 +809,7 @@ export default function index() {
 				});
 			} else {
 				filterApplications = applications.activeapplications.filter(application => {
-					return application &&  application.class_teacher &&  application.class_teacher.includes(appGroupId);
+					return application && application.class_teacher && application.class_teacher.includes(appGroupId);
 				});
 			}
 			filterApplications = filterApplications.map(item => {
@@ -816,27 +817,27 @@ export default function index() {
 				item.class_teacher = name;
 				return item;
 			});
-			console.log('filterApplications',filterApplications)
+			console.log('filterApplications', filterApplications)
 			setApplicationList(filterApplications);
 		} else if (applications && applications.customActiveApplications.length > 0 && name === 'custom') {
-			let filterApplications = applications.customActiveApplications.filter(item => item.class_teacher &&  item.form === searchParams.formId);
+			let filterApplications = applications.customActiveApplications.filter(item => item.class_teacher && item.form === searchParams.formId);
 			//console.log('2222applications.activeapplications1111', applications.customActiveApplications.filter(item => item.class_teacher))
 			console.log(' applications.activeapplications1111 applications', applications)
 			console.log(' applications.activeapplications1111 appGroupId', appGroupId)
 			console.log(' applications.activeapplications1111 filterApplications', filterApplications)
 			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
-			console.log('applications.activeapplications1111 FILTERED APPLICATIONS IDISSSSSSSSSSSSSSSS',appGroupIds)
+			console.log('applications.activeapplications1111 FILTERED APPLICATIONS IDISSSSSSSSSSSSSSSS', appGroupIds)
 			// let appGroupIdStrings = appGroupIds ? appGroupIds.join(',')
 			filterApplications = filterApplications.filter(item => {
-			
-				
-				 if(item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '' && searchParams && searchParams.type !== 'all') {
+
+
+				if (item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '' && searchParams && searchParams.type !== 'all') {
 					return item.class_teacher.includes(appGroupId)
 				}
-				else if(   item.class_teacher  && appGroupIds &&  searchParams && searchParams.type === 'all' && item.form === searchParams.formId ) {
-				//	let classTeacherArr = item.class_teacher.split(',');
-					let resp =  appGroupIds.some(appId => item.class_teacher.includes(appId))
-					console.log('RESPPPP', resp)
+				else if (item.class_teacher && appGroupIds && searchParams && searchParams.type === 'all' && item.form === searchParams.formId) {
+					//	let classTeacherArr = item.class_teacher.split(',');
+					let resp = appGroupIds.some(appId => item.class_teacher.includes(appId))
+
 					return resp;
 					//return classTeacherArr.some(appGrpId => appGroupIds.includes(appGrpId))
 				}
@@ -861,13 +862,13 @@ export default function index() {
 			// 	}).flat()
 			// 	console.log('filterApplications',filterApplications)
 			// }
-	
-			
+
+
 			console.log(' applications.activeapplications1111 FILTERED APPLICATIONS', filterApplications)
 			setApplicationList(filterApplications);
 			setFilteredApplicationList(filterApplications);
 		}
-	}, [applications, appGroupId, appGroupIds  ]);
+	}, [applications, appGroupId, appGroupIds]);
 
 	useEffect(() => {
 		console.log('ATTENDANCEEEEE123123123123 applications', applications);
@@ -896,7 +897,7 @@ export default function index() {
 			const redirect = () => {
 				setTimeout(() => {
 					window.location.replace(`/dashboard/studentdata`);
-				},2000);
+				}, 2000);
 				//window.location.replace(`/dashboard/studentdata`);
 			};
 			redirect();
@@ -909,7 +910,7 @@ export default function index() {
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
 		let currentApplication = updatedApplication.find(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
-		console.log('currentApplication',currentApplication)
+		console.log('currentApplication', currentApplication)
 		if (
 			updatedApplication[currentIndex] &&
 			updatedApplication[currentIndex].attendance_status === attendanceType &&
@@ -974,7 +975,7 @@ export default function index() {
 		// };
 
 
-		console.log('updatedFilteredApplication',updatedFilteredApplication)
+		console.log('updatedFilteredApplication', updatedFilteredApplication)
 
 		setApplicationList(updatedApplication);
 		setFilteredApplicationList(updatedFilteredApplication);
@@ -1025,7 +1026,7 @@ export default function index() {
 
 	const handleAttendanceSave = () => {
 		//reset();
-		console.log('applicationList',applicationList)
+		console.log('applicationList', applicationList)
 		const attendanceList = applicationList.map(app => {
 			return {
 				app_id: app.app_id,
@@ -1035,7 +1036,7 @@ export default function index() {
 				volunteer_hours: app.volunteer_hours ? parseFloat(app.volunteer_hours) : 0,
 				mentoring_hours: app.mentoring_hours ? parseFloat(app.mentoring_hours) : 0,
 				is_excused: app.excused ? 1 : 0,
-			
+
 			};
 		});
 		const isAll = searchParams && searchParams.type === 'all'
@@ -1085,9 +1086,9 @@ export default function index() {
 		});
 	};
 
-	const handleTimeChange =  name => value => {
-	
-		const formattedValue = format(new Date(value),'HH:mm');
+	const handleTimeChange = name => value => {
+
+		const formattedValue = format(new Date(value), 'HH:mm');
 		let payload = {
 			...(attendanceDetails || {}),
 			[name]: formattedValue
@@ -1098,7 +1099,7 @@ export default function index() {
 		console.log('handleAttedanceDetailChange value', formattedValue)
 		console.log('handleAttedanceDetailChange payload', payload)
 
-		if(name === 'attendance_start_time' || name === 'attendance_end_time') {
+		if (name === 'attendance_start_time' || name === 'attendance_end_time') {
 			if (name === 'attendance_start_time') {
 				payload = {
 					...(attendanceDetails || {}),
@@ -1173,13 +1174,19 @@ export default function index() {
 	const renderTableData = () => {
 		console.log('Render Table Data', filteredApplicationList);
 		return filteredApplicationList.map((app, index) => {
+			const currentChild = app.form_contents ? getNameFromCustomForm(app.form_contents) : {
+				lastname: app.child?.lastname,
+				firstname: app.child?.firstname
+			}
+
 			return (
 				<tr key={index}>
 					<td>
 						<div className="name">
-							{app.child
+							{/* {app.child
 								? app.child?.firstname + ' ' + app.child?.lastname
-								: app.form_contents?.formData[0]?.fields[0]?.value}
+								: app.form_contents?.formData[0]?.fields[0]?.value} */}
+							{`${currentChild.firstname} ${currentChild.lastname}`}
 						</div>
 					</td>
 					<td>
@@ -1211,7 +1218,7 @@ export default function index() {
 											backgroundColor: app.attendance_status === 'Present' ? '#14e414' : 'gray',
 										}}
 									/>
-									<div>Present</div>
+									<div>Present 1</div>
 									{/* {app.attendance_status === 'Present' ? <div className="exclude-icon"></div> : <span />} */}
 								</div>
 							</div>
@@ -1312,8 +1319,7 @@ export default function index() {
 	};
 	console.log('Appp Group name', appGroupName);
 	console.log("attendanceDetailsssssssssssssss", attendanceDetails)
-	console.log('appGroupId',appGroupId)
-
+	console.log('appGroupId', appGroupId)
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
@@ -1422,7 +1428,7 @@ export default function index() {
 								showTimeSelectOnly
 								timeIntervals={15}
 								timeCaption="Time"
-							  dateFormat="h:mm aa"
+								dateFormat="h:mm aa"
 								//selected={attendanceDetails.attendance_start_time && new Date(attendanceDetails.attendance_start_time)}
 								disabled={false}
 								name={'attendance_start_time'}
@@ -1452,7 +1458,7 @@ export default function index() {
 								showTimeSelectOnly
 								timeIntervals={30}
 								timeCaption="Time"
-							  dateFormat="h:mm aa"
+								dateFormat="h:mm aa"
 								//selected={attendanceDetails.attendance_end_time}
 								disabled={false}
 								name={'attendance_end_time'}
@@ -1522,7 +1528,7 @@ export default function index() {
 							<FontAwesomeIcon className="search-icon" icon={faSearch} />
 						</div>
 
-			
+
 
 						{/* <div className="field select-field-wrapper">
 							<select onChange={handleViewChange} className={'field-input'}>
@@ -1551,7 +1557,7 @@ export default function index() {
 					</div>
 
 					<div>
-					{(appGroupName && viewMode === 'grid') && (
+						{(appGroupName && viewMode === 'grid') && (
 							<div className="field">
 								<h4>{appGroupName}</h4>
 							</div>
@@ -1561,13 +1567,16 @@ export default function index() {
 					{viewMode === 'grid' ? (
 						<div className="gridView">
 							{filteredApplicationList.map(app => {
+								const currentChild = app.form_contents ? getNameFromCustomForm(app.form_contents) : {
+									lastname: app.child?.lastname,
+									firstname: app.child?.firstname
+								}
 								let profile = app.child.image || ''
 								if (profile) {
 									profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
 								} else {
 									profile = ProfileImg
 								}
-
 								return (
 									<div className="block">
 										<div className="extra_activitybox">
@@ -1578,9 +1587,10 @@ export default function index() {
 											<div className="attendance-name">
 												<a target="_blank" href={'/dashboard/menteeprofile/' + app.id}>
 													<span>
-														{app.child
+														{/* {app.child
 															? app.child?.firstname + ' ' + app.child?.lastname
-															: app.form_contents?.formData[0]?.fields[0]?.value}
+															: app.form_contents?.formData[0]?.fields[0]?.value} */}
+														{`${currentChild.firstname} ${currentChild.lastname}`}
 													</span>
 												</a>
 											</div>
