@@ -262,7 +262,8 @@ export const getStudentCumulativeGradeByAppGroupId = async (
         BIN_TO_UUID(ch.ch_id) as child_id,
 				BIN_TO_UUID(app.app_id) as app_id,
 				ch.firstname,
-				ch.lastname
+				ch.lastname,
+        ch.image
       FROM application app
       INNER JOIN child ch
 			ON ch.ch_id=app.child
@@ -341,6 +342,7 @@ export const getStudentCumulativeGradeByAppGroupId = async (
             let studentTest = standardizedTest.filter(
               (st) => st.child_id === item.child_id
             );
+
             return {
               ...item,
               cumulative_grades: [...(currentStudentCumulative || [])],
@@ -1355,12 +1357,16 @@ export const getStudentRecordById = async (id, applicationType = 'bcombs') => {
 
       childInfo.form_contents = JSON.stringify(childInfo.form_contents);
       childInfo.ch_id = childInfo.app_id;
+    } else {
+      childInfo = childInfo.length > 0 ? childInfo[0] : {};
     }
     studentRecord = {
       standardized_test: standardizedTest,
       cumulative_grades: cumulativeGrades,
       info: childInfo ? childInfo : {},
     };
+
+    console.log('studentRecord', studentRecord);
   } catch (err) {
     console.log("Error getStudentRecordById", err);
     return [];

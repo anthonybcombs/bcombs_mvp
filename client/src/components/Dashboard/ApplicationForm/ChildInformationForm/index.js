@@ -348,7 +348,7 @@ export default function index({
     return arr;
   };
 
-  const [imagePreview, setImagePreview] = useState(ProfileImg);
+  const [imagePreview, setImagePreview] = useState('');
   const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
 
   const years = range(1900, new Date().getFullYear());
@@ -404,8 +404,12 @@ export default function index({
     </div>
   );
 
+  console.log('@@@@@@@applicationdata', { pastChildInformation, childProfile })
+  let profile = pastChildInformation?.image || childProfile?.image || ''
+  if (profile) {
+    profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
+  }
 
-  console.log("pastChildInformation", pastChildInformation);
   return (
     <ChildInfomationFormStyled className={printPageClassname}>
       <h3 className="heading">
@@ -413,9 +417,10 @@ export default function index({
       </h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">
-          <img src={imagePreview} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
+          <img src={imagePreview || profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
           {!isReadonly && (
             <UploadPhotoForm
+              auth={profile ? { profile_img: profile } : ''}
               isVisible={isUploadPhotoVisible}
               toggleProfilePhotoVisible={setUploadPhotoVisible}
               onSubmit={(image) => {

@@ -10,6 +10,7 @@ export const getChildInformation = async (id) => {
         new_childId,
         firstname,
         lastname,
+        image,
         age,
         birthdate,
         gender,
@@ -384,7 +385,7 @@ export const addChild = async ({
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
-        ?, ?, ?)`,
+        ?, ?, ?, ?)`,
       [
         firstname,
         lastname,

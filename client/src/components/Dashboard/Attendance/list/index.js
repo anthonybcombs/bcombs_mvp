@@ -372,8 +372,10 @@ const ClassListViewStyled = styled.div`
 		padding: 1rem;
 	}
 	.gridView .block .extra_activitybox .img-container img {
-		max-width: 92px;
-		width: 100%;
+		border-radius: 50%;
+		height: 100px;
+		width: 100px;
+		box-shadow: 0 0 5px #716464;
 	}
 	.gridView .block .extra_activitybox .attendance-name {
 		padding-bottom: 1rem;
@@ -1569,11 +1571,17 @@ export default function index() {
 									lastname: app.child?.lastname,
 									firstname: app.child?.firstname
 								}
+								let profile = app.child.image || ''
+								if (profile) {
+									profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
+								} else {
+									profile = ProfileImg
+								}
 								return (
 									<div className="block">
 										<div className="extra_activitybox">
 											<div className="img-container" style={{ margin: '0 auto' }}>
-												<img src={ProfileImg} />
+												<img src={profile} />
 											</div>
 
 											<div className="attendance-name">

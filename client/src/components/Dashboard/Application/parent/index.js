@@ -47,8 +47,11 @@ const ParentInformationViewStyled = styled.div`
   }
 
   .mentee-info .profile-image img {
-    width: 100px;
+    border-radius: 50%;
     height: 100px;
+    width: 100px;
+    box-shadow: 0 0 5px #716464;
+    cursor: pointer;
   }
 
   .mentee-info .profile-info {
@@ -204,7 +207,12 @@ export default function index() {
 
   console.log("selected application", application);
   console.log("PARENT", parent);
-
+  let profile = parent?.image || ''
+  if (profile) {
+    profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
+  } else {
+    profile = ProfileImg
+  }
   return (
     <ParentInformationViewStyled>
       <div>
@@ -214,7 +222,7 @@ export default function index() {
           </div>
           <div className="mentee-info">
             <div className="profile-image">
-              <img src={ProfileImg} />
+              <img src={profile} />
             </div>
             <div className="profile-info">
               {

@@ -47,8 +47,11 @@ const ChildInformationViewStyled = styled.div`
   }
 
   .mentee-info .profile-image img {
-    width: 100px;
+    border-radius: 50%;
     height: 100px;
+    width: 100px;
+    box-shadow: 0 0 5px #716464;
+    cursor: pointer;
   }
 
   .mentee-info .profile-info {
@@ -223,6 +226,12 @@ export default function index() {
   }
 
   console.log("selected application", application)
+  let profile = application?.child?.image || ''
+  if (profile) {
+    profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
+  } else {
+    profile = ProfileImg
+  }
 
   return (
     <ChildInformationViewStyled>
@@ -233,7 +242,7 @@ export default function index() {
           </div>
           <div className="mentee-info">
             <div className="profile-image">
-              <img src={ProfileImg} />
+              <img src={profile} />
             </div>
             <div className="profile-info">
               {

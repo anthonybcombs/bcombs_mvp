@@ -10,6 +10,7 @@ export const getParentByApplication = async (id) => {
         new_parentId,
         firstname,
         lastname,
+        image,
         phone_type,
         phone_number,
         email_type,
@@ -58,6 +59,7 @@ export const getParentInformation = async (id) => {
         new_parentId,
         firstname,
         lastname,
+        image,
         phone_type,
         phone_number,
         email_type,
@@ -119,7 +121,8 @@ export  const addDaycareParent = async({
   age,
   birthdate,
   gender,
-  ethnicities
+  ethnicities,
+  image,
 }) => {
   const db = makeDb();
   let result = {};
@@ -151,11 +154,12 @@ export  const addDaycareParent = async({
         age,
         birthdate,
         gender,
-        ethnicities
+        ethnicities,
+        image
       ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?),
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?)`,
+        ?, ?, ?)`,
       [
         application,
         firstname,
@@ -179,7 +183,8 @@ export  const addDaycareParent = async({
         age,
         birthdate,
         gender,
-        ethnicities
+        ethnicities,
+        image
       ]
     )
 

@@ -391,9 +391,9 @@ export const createApplication = async ({
     lastId = result.insertId;
 
     await db.query(
-      "INSERT INTO vendor_app_groups_to_student (app_grp_id,child_id,type) values(UUID_TO_BIN(?),UUID_TO_BIN(?),?)",
+      "INSERT INTO vendor_app_groups_to_student (app_grp_id,child_id,type) values(?,UUID_TO_BIN(?),?)",
       [
-        class_teacher,
+        class_teacher ? `UUID_TO_BIN(${class_teacher})` : null,
         child,
         'bcombs'
       ]
