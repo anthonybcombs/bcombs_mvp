@@ -1045,6 +1045,7 @@ const queryTypes = `
         new_childId: String
         firstname: String
         lastname: String
+        image: String
         age: Int
         birthdate: Date
         gender: String
