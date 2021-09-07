@@ -16,6 +16,7 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
         firstname
         lastname
         form_contents
+        image
         cumulative_grades{
           student_grade_cumulative_id
           app_id
@@ -135,6 +136,7 @@ query getStudentRecords(
         ch_id
         app_id
         form_contents
+        image
       }
       cumulative_grades{
         student_grade_cumulative_id

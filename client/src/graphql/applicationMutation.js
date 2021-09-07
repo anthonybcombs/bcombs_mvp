@@ -279,6 +279,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
         firstname
         lastname
         age
+        image
         birthdate
         gender
         phone_type
@@ -357,6 +358,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
         parent_id
         firstname
         lastname
+        image
         phone_type
         phone_number
         email_type
@@ -463,6 +465,7 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
           ch_id        
           firstname
           lastname
+          image
           age
           birthdate
           gender
@@ -542,6 +545,7 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
           parent_id
           firstname
           lastname
+          image
           phone_type
           phone_number
           email_type
@@ -756,6 +760,7 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         ch_id        
         firstname
         lastname
+        image
         age
         birthdate
         gender
@@ -835,6 +840,7 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         parent_id
         firstname
         lastname
+        image
         phone_type
         phone_number
         email_type
@@ -912,6 +918,7 @@ export const USER_APPLICATION_QUERY = gql`
         email_address
         firstname
         lastname
+        image
         phone_number
         address
         city
@@ -925,6 +932,7 @@ export const USER_APPLICATION_QUERY = gql`
         email_address
         firstname
         lastname
+        image
         phone_number
         address
         city

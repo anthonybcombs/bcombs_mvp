@@ -262,7 +262,8 @@ export const getStudentCumulativeGradeByAppGroupId = async (
         BIN_TO_UUID(ch.ch_id) as child_id,
 				BIN_TO_UUID(app.app_id) as app_id,
 				ch.firstname,
-				ch.lastname
+				ch.lastname,
+        ch.image
       FROM application app
       INNER JOIN child ch
 			ON ch.ch_id=app.child
@@ -341,6 +342,7 @@ export const getStudentCumulativeGradeByAppGroupId = async (
             let studentTest = standardizedTest.filter(
               (st) => st.child_id === item.child_id
             );
+
             return {
               ...item,
               cumulative_grades: [...(currentStudentCumulative || [])],

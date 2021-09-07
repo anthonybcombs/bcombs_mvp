@@ -1041,7 +1041,7 @@ const queryTypes = `
     }
 
     type Child {
-        ch_id: String!
+        ch_id: String
         new_childId: String
         firstname: String
         lastname: String
@@ -1648,6 +1648,7 @@ const queryTypes = `
         firstname: String
         lastname: String
         age: Int
+        image: String
         birthdate: Date
         gender: String
         career_goals: String
@@ -1672,6 +1673,7 @@ const queryTypes = `
         app_group_name: String
         app_id: String
         form_contents: String
+        image: String
         cumulative_grades: [StudentCumulativeGrade]
         standardized_test: [StudentStandardizedTest]
     }
