@@ -10,6 +10,7 @@ export const getChildInformation = async (id) => {
         new_childId,
         firstname,
         lastname,
+        image,
         age,
         birthdate,
         gender,
