@@ -19,7 +19,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged }) => {
+export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -694,31 +694,38 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     latest_attempt: { label: 'Latest Attempt', type: 'number', isFunc: true },
   }
 
-  let selectStudentRows = (gradeInput.gradeList || [])//.filter(e => e.app_group_id)
+  let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
+
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
-    selectStudentRows = selectStudentRows.filter(e => e.form_contents)
-      selectStudentRows = applications && applications.map((e) => {
-        const currentApplication = selectStudentRows.find(item => {
-          return e.app_id === item.child_id
-        });
+    selectStudentRows = selectStudentRows.filter(e =>  {
+      if(type === 'all') {
+          const ids = e.app_group_id.split(',');
+          return e.form_contents && ids.some(id => appGroupIds.includes(id))
+      }
+      return e.form_contents
+    });
+      // selectStudentRows = applications && applications.map((e) => {
+      //   const currentApplication = selectStudentRows.find(item => {
+      //     return e.app_id === item.child_id && item.app_group_id
+      //   });
 
-        if(currentApplication) {
-          return {
-            ...currentApplication
-          }
-        }
-        return {
-          app_group_id: e.class_teacher,
-          child_id: e.app_id,
-          standardized_test: [],
-          cumulative_grades: [],
-          form_contents: e.form_contents,
-          firstname: null,
-          lastname: null
-        }
-      })
+      //   if(currentApplication) {
+      //     return {
+      //       ...currentApplication
+      //     }
+      //   }
+      //   return {
+      //     app_group_id: e.class_teacher,
+      //     child_id: e.app_id,
+      //     standardized_test: [],
+      //     cumulative_grades: [],
+      //     form_contents: e.form_contents,
+      //     firstname: null,
+      //     lastname: null
+      //   }
+      // })
 
 
   }
