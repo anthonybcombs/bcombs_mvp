@@ -944,6 +944,7 @@ export const GET_CUSTOM_APPLICATION_BY_VENDOR = gql`
       app_id
       form
       class_teacher
+      form_contents
     }
   }
 `;
