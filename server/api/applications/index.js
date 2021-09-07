@@ -1496,6 +1496,9 @@ export const getCustomApplicationByVendorId = async (vendor) => {
       ]
     );
     console.log('getCustomApplicationByVendor vendor', applications)
+    for(let app of applications) {
+      app.form_contents = app.form_contents ? Buffer.from(app.form_contents, "base64").toString("utf-8") : "{}";
+    }
 
   } catch (err) {
     console.log("get custom application by form id", err);
