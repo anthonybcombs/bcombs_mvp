@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 
@@ -32,25 +32,32 @@ const CopyApplicationLinkModal = styled.div`
 
 export default function index({
   isVisible = true,
-  toggleCopyApplicationLinkModal
+  toggleCopyApplicationLinkModal,
+  currentCopyLink
 }) {
   const [isCopyURL, setCopyURL] = useState('');
   const inputElRef = useRef(null);
 
 
-  setTimeout(() => {
-    const url = window.location.href;
-    setCopyURL(url);
-  }, 500)
+  // setTimeout(() => {
+  //   const url = window.location.href;
+  //   setCopyURL(url);
+  // }, 500)
+  useEffect(() => {
+    let updatedPath = window.location.hostname === 'localhost' ? `http://${window.location.hostname}:1234` :   `https://${window.location.hostname}`
+    setCopyURL(`${updatedPath}${currentCopyLink ? currentCopyLink : null}`)
+  }, [currentCopyLink])
 
+
+  console.log('currentCopyLink', currentCopyLink)
   const handleCopyLink = () => {
-    const url = window.location.href;
+    const url = currentCopyLink//window.location.href;
     const val = inputElRef.current.select()
     document.execCommand('copy');
     console.log('val: ', val);
   }
 
-  
+
 
 
   if (!isVisible) {
