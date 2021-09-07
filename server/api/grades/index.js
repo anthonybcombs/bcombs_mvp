@@ -1357,12 +1357,16 @@ export const getStudentRecordById = async (id, applicationType = 'bcombs') => {
 
       childInfo.form_contents = JSON.stringify(childInfo.form_contents);
       childInfo.ch_id = childInfo.app_id;
+    } else {
+      childInfo = childInfo.length > 0 ? childInfo[0] : {};
     }
     studentRecord = {
       standardized_test: standardizedTest,
       cumulative_grades: cumulativeGrades,
       info: childInfo ? childInfo : {},
     };
+
+    console.log('studentRecord', studentRecord);
   } catch (err) {
     console.log("Error getStudentRecordById", err);
     return [];
