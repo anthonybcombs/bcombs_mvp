@@ -1486,6 +1486,7 @@ export const getCustomApplicationByVendorId = async (vendor) => {
         id,
         BIN_TO_UUID(app_id) as app_id,
         BIN_TO_UUID(form) as form,
+        CONVERT(form_contents USING utf8) as form_contents,
         class_teacher
         FROM custom_application
         WHERE vendor=UUID_TO_BIN(?)
