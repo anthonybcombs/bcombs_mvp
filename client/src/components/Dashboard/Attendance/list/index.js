@@ -1593,7 +1593,7 @@ export default function index() {
 											</div>
 
 											<div className="attendance-name">
-												<a target="_blank" href={'/dashboard/menteeprofile/' + app.id}>
+												<a  href={'/dashboard/menteeprofile/' + app.id}>
 													<span>
 														{/* {app.child
 															? app.child?.firstname + ' ' + app.child?.lastname
