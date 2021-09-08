@@ -229,8 +229,6 @@ export default function index() {
   let profile = application?.child?.image || ''
   if (profile) {
     profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
-  } else {
-    profile = ProfileImg
   }
 
   return (
@@ -242,7 +240,7 @@ export default function index() {
           </div>
           <div className="mentee-info">
             <div className="profile-image">
-              <img src={profile} />
+              <img src={profile || ProfileImg} />
             </div>
             <div className="profile-info">
               {

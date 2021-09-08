@@ -463,7 +463,7 @@ export default function index({
       </h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">
-          <img src={profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
+          <img src={imagePreview || profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
           {!isReadonly && (
             <UploadPhotoForm
               auth={profile ? { profile_img: profile } : ''}

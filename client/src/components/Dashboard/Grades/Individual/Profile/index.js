@@ -69,10 +69,8 @@ export default ({ child_id }) => {
       const { url } = value ? JSON.parse(value) : {}
       profile = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
     }
-  } else {
-    profile = ProfileImg
   }
-  
+
   return (
     <GradesStyled>
       <h2>Grades and Tracking</h2>
@@ -90,7 +88,7 @@ export default ({ child_id }) => {
               <div className='content'>
                 <div className='left'>
                   <div className='profile'>
-                    <img src={profile} />
+                    <img src={profile || ProfileImg} />
                     <div className='profile-name'>{firstname} {lastname}</div>
                   </div>
                   <div className='customLink'>

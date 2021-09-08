@@ -1582,14 +1582,12 @@ export default function index() {
 									}
 								} else if (!app.form_contents && profile) {
 									profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
-								} else {
-									profile = ProfileImg
 								}
 								return (
 									<div className="block">
 										<div className="extra_activitybox">
 											<div className="img-container" style={{ margin: '0 auto' }}>
-												<img src={profile} />
+												<img src={profile || ProfileImg} />
 											</div>
 
 											<div className="attendance-name">
