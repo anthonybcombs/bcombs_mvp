@@ -5,12 +5,13 @@ import { uuid } from 'uuidv4'
 import update from 'immutability-helper'
 import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faCheck, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faCheck, faBars, faLink } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from '../Fields'
 import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
 import PreviewWarningModal from '../PreviewWarningModal'
+import CopyLinkModal from '../CopyLinkModal'
 
 import { requestAddForm, requestUpdateForm, setViewMode } from "../../../../../redux/actions/FormBuilder"
 import Loading from '../../../../../helpers/Loading'
@@ -26,6 +27,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const [lastField, getLastField] = useState({})
   const [fieldHasChanged, setFieldHasChanged] = useState(!form_id)
   const [previewWarning, setPreviewWarning] = useState(false)
+  const [isCopyLink, setCopyLink] = useState(false)
   const [previewLabel, setPreviewLabel] = useState('You have unsaved changes.')
   const [errors, setErrors] = useState({})
 
@@ -402,7 +404,26 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       </div>
       <CustomDragLayer />
       <div className='drop-area-wrapper-actions'>
-      {
+        <button
+          type='button'
+          className='btn preview'
+          onClick={() => setCopyLink(true)}
+          >
+          <FontAwesomeIcon
+            className='preview-icon'
+            icon={faLink}
+          />
+          <span>Copy Link</span>
+        </button>
+        { 
+          isCopyLink && (
+            <CopyLinkModal
+              isVisible={isCopyLink}
+              toggleCopyLinkModal={setCopyLink}
+            />
+          )
+        }
+        {
           form_id && (
             <>
               <a
