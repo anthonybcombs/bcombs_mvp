@@ -28,6 +28,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const [fieldHasChanged, setFieldHasChanged] = useState(!form_id)
   const [previewWarning, setPreviewWarning] = useState(false)
   const [isCopyLink, setCopyLink] = useState(false)
+  const [currentCopyLink, setCurrentCopyLink] = useState(null)
   const [previewLabel, setPreviewLabel] = useState('You have unsaved changes.')
   const [errors, setErrors] = useState({})
 
@@ -407,7 +408,10 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
         <button
           type='button'
           className='btn preview'
-          onClick={() => setCopyLink(true)}
+          onClick={() =>{
+            setCopyLink(true)
+            setCurrentCopyLink(`/builder/${form_id}`)
+          }}
           >
           <FontAwesomeIcon
             className='preview-icon'
@@ -420,6 +424,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
             <CopyLinkModal
               isVisible={isCopyLink}
               toggleCopyLinkModal={setCopyLink}
+              currentCopyLink={currentCopyLink}
             />
           )
         }
