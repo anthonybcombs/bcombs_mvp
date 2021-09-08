@@ -529,6 +529,7 @@ export default function index() {
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getAppEtnicities(parent.profile.ethinicity),
+        image: parent.profile.image,
       })
     });
 
@@ -572,6 +573,7 @@ export default function index() {
           birthdate: format(
             new Date(childsInformation[i].profile.date_of_birth),
             DATE_TIME_FORMAT),
+          image: childsInformation[i].profile.image,
           gender: childsInformation[i].profile.gender,
           address: childsInformation[i].profile.address,
           city: childsInformation[i].profile.city,

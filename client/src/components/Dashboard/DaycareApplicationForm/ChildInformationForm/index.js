@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faTimesCircle,
-  faPlusCircle,
-  faMinusCircle,
   faAngleRight,
   faAngleLeft
 } from "@fortawesome/free-solid-svg-icons";
@@ -16,8 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../../ArchivedApplication/SearchDate.css";
 import "font-awesome/css/font-awesome.min.css";
 import STATES from "../../ApplicationForm/states.json";
-
-import NumberFormat from "react-number-format";
+import UploadPhotoForm from "../../MyProfile/forms/UploadPhotoForm";
 
 const ChildInformationFormStyled = styled.div`
   position: relative;
@@ -33,6 +28,10 @@ const ChildInformationFormStyled = styled.div`
 
   .img-profile-wrapper img {
     border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    box-shadow: 0 0 5px #716464;
+    cursor: pointer;
   }
 
   .child-info-wrapper {
@@ -372,18 +371,7 @@ export default function index({
     return arr;
   };
 
-  const [imagePreview, setImagePreview] = useState(ProfileImg);
-
-  const handleFileChange = event => {
-    let reader = new FileReader();
-
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-
-    reader.readAsDataURL(event.target.files[0]);
-  };
-
+  const [imagePreview, setImagePreview] = useState('');
   const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
 
   const years = range(1900, new Date().getFullYear());
@@ -463,6 +451,11 @@ export default function index({
     </div>
   );
 
+  let profile = pastChildInformation?.image || childProfile?.image || ''
+  if (profile) {
+    profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
+  }
+
   return (
     <ChildInformationFormStyled>
       <h3 className="heading">
@@ -470,12 +463,22 @@ export default function index({
       </h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">
-          <img src={imagePreview} width="80" height="80" />
+          <img src={profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
           {!isReadonly && (
-            <input
-              name={"ch_img" + (counter - 1)}
-              onChange={handleFileChange}
-              type="file"
+            <UploadPhotoForm
+              auth={profile ? { profile_img: profile } : ''}
+              isVisible={isUploadPhotoVisible}
+              toggleProfilePhotoVisible={setUploadPhotoVisible}
+              onSubmit={(image) => {
+                setUploadPhotoVisible(false)
+                setImagePreview(image);
+                handleChildFormDetailsChange(
+                  counter - 1,
+                  "profile",
+                  "image",
+                  image
+                )
+              }}
             />
           )}
         </div>
