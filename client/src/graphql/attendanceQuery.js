@@ -19,6 +19,7 @@ export const GET_ATTENDANCE_QUERY = gql`
       volunteer_hours
       is_excused
       is_following
+      image
     }
   }
 `;

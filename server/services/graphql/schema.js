@@ -1513,6 +1513,7 @@ const queryTypes = `
         lastname: String
         attendance_status: String   
         child_id: String   
+        image: String
         mentoring_hours: Float
         volunteer_hours: Float
         is_excused: Int

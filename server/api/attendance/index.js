@@ -65,6 +65,7 @@ export const getChildAttendance = async (applicationGroupId,attendanceType = 'bc
         ch.firstname,
         ch.lastname,
         ch.gender,
+        ch.image,
         vag.name as app_group_name,
         ucf.is_following
       FROM  attendance att

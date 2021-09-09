@@ -415,7 +415,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
           className='btn preview'
           onClick={() =>{
             setCopyLink(true)
-            setCurrentCopyLink(`/builder/${form_id}`)
+            setCurrentCopyLink(`/form/${form_id}`)
           }}
           >
           <FontAwesomeIcon
