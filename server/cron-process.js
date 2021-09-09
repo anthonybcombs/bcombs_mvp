@@ -19,7 +19,7 @@ exports.setReminder = () => {
 
 exports.updateIds = () => {
   let task1 = cron.schedule('* */10 * * *', () => {
-    console.log('trigger cron');
+    console.log('trigger cron update child ids');
 
     task1.stop();
 

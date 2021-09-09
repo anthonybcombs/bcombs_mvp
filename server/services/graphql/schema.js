@@ -345,6 +345,7 @@ const inputs = `
         birthdate: String
         gender: String
         ethnicities: String
+        image: String
     }
 
     input DaycareApplicationInput {
