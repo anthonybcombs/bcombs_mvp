@@ -156,6 +156,10 @@ export default function index() {
 
   const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
 
+  const BIRTHDATE_FORMAT = "yyyy-MM-dd";
+
+  const DB_DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+
   const { vendor_id } = useParams();
 
   useEffect(() => {
@@ -525,7 +529,7 @@ export default function index() {
         zip_code: parent.profile.zip_code !== '' ? parent.profile.zip_code : childProfile.zip_code,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
-          DATE_TIME_FORMAT),
+          BIRTHDATE_FORMAT),
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getAppEtnicities(parent.profile.ethinicity),
@@ -572,7 +576,7 @@ export default function index() {
           age: getAge(childsInformation[i].profile.date_of_birth),
           birthdate: format(
             new Date(childsInformation[i].profile.date_of_birth),
-            DATE_TIME_FORMAT),
+            BIRTHDATE_FORMAT),
           image: childsInformation[i].profile.image,
           gender: childsInformation[i].profile.gender,
           address: childsInformation[i].profile.address,
@@ -582,7 +586,7 @@ export default function index() {
           child_lives_with: getChildLivesWith(childsInformation[i].profile.child_lives_with),
           preffered_start_date:format(
             new Date(childsInformation[i].profile.preffered_start_date),
-            DATE_TIME_FORMAT),
+            BIRTHDATE_FORMAT),
           current_classroom: childsInformation[i].profile.current_classroom,
           primary_language: childsInformation[i].profile.primary_language,
           needed_days: childsInformation[i].profile.needed_days,
@@ -617,11 +621,11 @@ export default function index() {
         },
         parents: setupParentsList( childsInformation[i].profile),
         section1_signature: termsWaiver.section1.signature,
-        section1_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
+        section1_date_signed: format(new Date(termsWaiver.date), DB_DATE_TIME_FORMAT),
         section2_signature: termsWaiver.section2.signature,
-        section2_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
+        section2_date_signed: format(new Date(termsWaiver.date), DB_DATE_TIME_FORMAT),
         section3_signature: termsWaiver.section3.signature,
-        section3_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT),
+        section3_date_signed: format(new Date(termsWaiver.date), DB_DATE_TIME_FORMAT),
         section1_text: vendor.section1_text,
         section2_text: vendor.section2_text,
         section3_text: vendor.section3_text,
