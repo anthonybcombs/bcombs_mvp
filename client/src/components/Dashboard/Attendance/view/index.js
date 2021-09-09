@@ -28,6 +28,7 @@ import { requestVendor } from '../../../../redux/actions/Vendors';
 import { requestUpdateUserAttendanceFilterConfig } from '../../../../redux/actions/Auth';
 
 import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
+import ProfileImg from "../../../../images/defaultprofile.png";
 
 import { getNameFromCustomForm } from '../../Grades/utils'
 const AttendanceSummaryStyled = styled.div`
@@ -117,6 +118,19 @@ const AttendanceSummaryStyled = styled.div`
 	}
 	#attendance-table tbody tr .subHeader .subTable tr td {
 		width: 200px;
+	}
+	#attendance-table tbody tr .subHeader .subTable tr td .name{
+		display: flex;
+		align-items: center;
+	}
+	#attendance-table tbody tr .subHeader .subTable tr td .name .profile-image {
+		margin-right: 5px;
+	}
+
+	#attendance-table tbody tr .subHeader .subTable tr td .name .profile-image img {
+		border-radius: 50%;
+		height: 30px;
+		width: 30px;
 	}
 	#attendance-table tbody tr .subHeader .subTable tr td .name,
 	#attendance-table tbody tr .subHeader .subTable tr td .class {
@@ -723,6 +737,7 @@ export default function index(props) {
 						custom: {
 							...(formApplication || {}),
 						},
+						image: accum[att.child_id]?.image || att?.image || ''
 					},
 				};
 			}, {});
@@ -830,10 +845,23 @@ export default function index(props) {
 
 				customFormName = currentFormName ? currentFormName[0]?.fields[0]?.value : ''
 			}
-
-			const currentChild = att.custom?.form_contents ? getNameFromCustomForm(att.custom?.form_contents) : {
+			const form_contents = att.custom?.form_contents
+			const currentChild = form_contents ? getNameFromCustomForm(form_contents) : {
 				lastname: att.lastname,
 				firstname: att.firstname
+			}
+
+			const profile = att?.image || ''
+			if (!form_contents && profile) {
+				profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
+			} else if (form_contents) {
+				const { formData = [] } = typeof form_contents === 'string' ? JSON.parse(form_contents) : form_contents
+				const { fields = [] } = formData.find(e => e.fields[0].tag === 'profileImage') || {}
+				if (fields.length) {
+					const { value } = fields[0]
+					const { url } = value ? JSON.parse(value) : {}
+					profile = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
+				}
 			}
 
 			return (
@@ -843,6 +871,9 @@ export default function index(props) {
 							<tr>
 								<td style={{ width: 250 }}>
 									<div className="name">
+										<div className="profile-image">
+											<img src={profile || ProfileImg} />
+										</div>
 										<a href={'#'}>
 											{/* {`${
 											searchParams && searchParams.type !== 'custom' && att.firstname && att.lastname
