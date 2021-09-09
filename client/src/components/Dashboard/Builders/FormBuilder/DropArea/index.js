@@ -31,6 +31,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const [currentCopyLink, setCurrentCopyLink] = useState(null)
   const [previewLabel, setPreviewLabel] = useState('You have unsaved changes.')
   const [errors, setErrors] = useState({})
+  const [noNameWarning, setNoNameWarning] = useState(false)
 
   const reMapFields = (fields, id) => {
     return fields.map((e, i) => ({ ...e, id: `${e.tag}${i}_${id}`, value: '' }))
@@ -249,6 +250,10 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   }
 
   const handleSubmitForm = () => {
+    if (!droppedFields.find(e => e.type === 'name')) {
+      setNoNameWarning(true)
+      return
+    }
     if (Object.keys(errors).length) {
       setPreviewLabel('Please clear all fields/options label errors.') 
       setPreviewWarning(true)
@@ -479,6 +484,19 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
           <span>Save</span>
         </button>
       </div>
+      {
+        noNameWarning  && (
+          <PreviewWarningModal
+            title={'Prime Field Name is required for this form.'}
+            onClose={(e) => {
+              e.stopPropagation()
+              setNoNameWarning(false)
+            }}
+            isError={true}
+            actions={() => {}}
+          />
+        )
+      }
       {
         previewWarning && (
           <PreviewWarningModal

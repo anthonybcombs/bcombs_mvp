@@ -3,28 +3,8 @@ import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
 const RenameModalStyled = styled.div`
-  .modal-content {
-    position: relative;
-    top: 100px;
-    width: auto;
-    max-width: 500px;
-    padding: 0;
-  }
-  .close {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    color: #fff;
-  }
-  .modal-header {
-    padding: 1em;
-    background-color: #f26e21;
-    color: #fff;
-  }
-  .modal-container {
-    background-color: #fff;
-    padding: 20px 25px;
-    padding-top: 3rem;
+  .modal-body {
+    padding: 2rem 25px 2rem;
   }
   .field-input {
     position: relative;
@@ -50,7 +30,7 @@ const RenameModalStyled = styled.div`
     align-items: center;
     justify-content: flex-end;
 
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
   }
   .modalBtn {
     width: 100%;
@@ -79,14 +59,14 @@ const RenameModalStyled = styled.div`
     background-color: rgb(242 110 33 / 5%);
   }
   .closeBtn {
-    color: #f26e21;
+    color: #ffffff;
     max-width: 80px;
     margin-right: auto;
-    border: 1px solid #f26e21;
-    background-color: transparent;
+    border: 1px solid #bfbfbf;
+    background-color: #bfbfbf;
   }
   .closeBtn:hover {
-    background-color: rgb(242 110 33 / 5%);
+    // background-color: rgb(242 110 33 / 5%);
   }
   .cancelBtn {
     width: 100%;
@@ -113,14 +93,23 @@ const RenameModalStyled = styled.div`
     }
   }
 `;
-export default function index({ title, onClose, actions }) {
+export default function index({ title, onClose, actions, isError = false }) {
 
   return ReactDOM.createPortal(
     <RenameModalStyled
       data-testid='app-big-calendar-create-modal'
       className='modal'>
       <div className='modal-content'>
-        <div className='modal-container'>
+        <div className={`modal-header${isError ? ' error' : ''}`}>
+          <h2>{isError ? 'Error' : 'Warning'}</h2>
+          <span
+            className="close"
+            onClick={onClose}
+          >
+            &times;
+          </span>
+        </div>
+        <div className='modal-body'>
           {title}
         </div>
 
