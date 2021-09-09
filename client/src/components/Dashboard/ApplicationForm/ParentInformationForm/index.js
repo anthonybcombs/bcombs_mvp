@@ -355,24 +355,8 @@ export default function index({
   };
 
 
-  const [imagePreview, setImagePreview] = useState(ProfileImg);
+  const [imagePreview, setImagePreview] = useState('');
   const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
-
-  const handleFileChange = event => {
-    let reader = new FileReader();
-
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-      handleParentFormDetailsChange(
-        counter - 1,
-        "profile",
-        "image",
-        reader.result
-      )
-    };
-
-    reader.readAsDataURL(event.target.files[0]);
-  };
 
   const years = range(1900, new Date().getFullYear());
   const months = [
@@ -431,8 +415,15 @@ export default function index({
   }
 
   const hasSelectAll = false;
+
   console.log('parentProfile55555',parentProfile)
   console.log('parentProfile55555 pastParentInformation',pastParentInformation)
+
+  let profile = pastParentInformation?.image || parentProfile?.image || ''
+  if (profile) {
+    profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
+  }
+
   return (
     <ParentInformationStyled>
       <h3 className="heading">
@@ -440,9 +431,10 @@ export default function index({
       </h3>
       <div className="parent-info-wrapper">
         <div className="img-profile-wrapper">
-        <img src={imagePreview} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
+        <img src={imagePreview || profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
           {!isReadonly && (
             <UploadPhotoForm
+              auth={profile ? { profile_img: profile } : ''}
               isVisible={isUploadPhotoVisible}
               toggleProfilePhotoVisible={setUploadPhotoVisible}
               onSubmit={(image) => {

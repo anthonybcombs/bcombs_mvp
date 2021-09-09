@@ -575,24 +575,27 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
             return newGrade
           })
 
-        if (groupType === 'bcombs') {
-          return {
-            ...newRow
-          }
-        }
-        const appGroupIdList = e.app_group_id ? e.app_group_id.split(',') : appGroupIds ;
+        // if (groupType === 'bcombs') {
+        //   return {
+        //     ...newRow
+        //   }
+        // } 
+        // const appGroupIdList = e.app_group_id && e.app_group_id !== '' ? e.app_group_id.split(',') :  appGroupIds ;
 
-        if(type === 'all') {
-          return {
-            ...newRow,
-            app_group_id: groupId,
-            application_type: 'forms'
-          }
-        }
+        // if(type === 'all') {
+        //   return {
+        //     ...newRow,
+        //     app_group_id: groupId,
+        //     application_type: 'forms'
+        //   }
+        // }
+        // return {
+        //   ...newRow,
+        //   app_group_id: appGroupIdList && appGroupIdList[0],
+        //   application_type: 'forms'
+        // }
         return {
-          ...newRow,
-          app_group_id: appGroupIdList && appGroupIdList[0],
-          application_type: 'forms'
+          ...newRow
         }
       })
       dispatch(requestAddUpdateStudentCumulative(newRows));
@@ -797,32 +800,35 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
   } else {
-   
+  
+    selectStudentRows = selectStudentRows.filter(e => e.form_contents)
+    //   selectStudentRows = applications && applications.map((e) => {
+    //     const currentApplication = selectStudentRows.find(item => {
+    //       return e.app_id === item.child_id
+    //     });
 
-    selectStudentRows = selectStudentRows.filter(e => {
-      return e.form_contents 
-    })  
-      selectStudentRows = applications && applications.map((e) => {
-
-        const currentApplication = selectStudentRows.find(item => {
-          return e.app_id === item.child_id
-        });
-
-        if(currentApplication) {
-          return {
-            ...currentApplication
-          }
-        }
-        return {
-          app_group_id: e.class_teacher,
-          child_id: e.app_id,
-          standardized_test: [],
-          cumulative_grades: [],
-          form_contents: e.form_contents,
-          firstname: null,
-          lastname: null
-        }
-      })
+    //     if(currentApplication) {
+    //       return {
+    //         ...currentApplication
+    //       }
+    //     }
+    //     return {
+    //       app_group_id: e.class_teacher,
+    //       child_id: e.app_id,
+    //       standardized_test: [],
+    //       cumulative_grades: [],
+    //       form_contents: e.form_contents,
+    //       firstname: null,
+    //       lastname: null
+    //     }
+    //   })
+    selectStudentRows = selectStudentRows.filter(e =>  {
+      if(type === 'all') {
+          const ids = e.app_group_id.split(',');
+          return e.form_contents && ids.some(id => appGroupIds.includes(id))
+      }
+      return e.form_contents
+    });
 
   }
 

@@ -5,12 +5,13 @@ import { uuid } from 'uuidv4'
 import update from 'immutability-helper'
 import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faCheck, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faCheck, faBars, faLink } from '@fortawesome/free-solid-svg-icons'
 
 import { Items } from '../Fields'
 import SortableGroup from '../SortableGroup'
 import CustomDragLayer from '../CustomDragLayer'
 import PreviewWarningModal from '../PreviewWarningModal'
+import CopyLinkModal from '../CopyLinkModal'
 
 import { requestAddForm, requestUpdateForm, setViewMode } from "../../../../../redux/actions/FormBuilder"
 import Loading from '../../../../../helpers/Loading'
@@ -26,8 +27,11 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   const [lastField, getLastField] = useState({})
   const [fieldHasChanged, setFieldHasChanged] = useState(!form_id)
   const [previewWarning, setPreviewWarning] = useState(false)
+  const [isCopyLink, setCopyLink] = useState(false)
+  const [currentCopyLink, setCurrentCopyLink] = useState(null)
   const [previewLabel, setPreviewLabel] = useState('You have unsaved changes.')
   const [errors, setErrors] = useState({})
+  const [noNameWarning, setNoNameWarning] = useState(false)
 
   const reMapFields = (fields, id) => {
     return fields.map((e, i) => ({ ...e, id: `${e.tag}${i}_${id}`, value: '' }))
@@ -246,6 +250,10 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
   }
 
   const handleSubmitForm = () => {
+    if (!droppedFields.find(e => e.type === 'name')) {
+      setNoNameWarning(true)
+      return
+    }
     if (Object.keys(errors).length) {
       setPreviewLabel('Please clear all fields/options label errors.') 
       setPreviewWarning(true)
@@ -402,7 +410,30 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       </div>
       <CustomDragLayer />
       <div className='drop-area-wrapper-actions'>
-      {
+        <button
+          type='button'
+          className='btn preview'
+          onClick={() =>{
+            setCopyLink(true)
+            setCurrentCopyLink(`/builder/${form_id}`)
+          }}
+          >
+          <FontAwesomeIcon
+            className='preview-icon'
+            icon={faLink}
+          />
+          <span>Copy Link</span>
+        </button>
+        { 
+          isCopyLink && (
+            <CopyLinkModal
+              isVisible={isCopyLink}
+              toggleCopyLinkModal={setCopyLink}
+              currentCopyLink={currentCopyLink}
+            />
+          )
+        }
+        {
           form_id && (
             <>
               <a
@@ -453,6 +484,19 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
           <span>Save</span>
         </button>
       </div>
+      {
+        noNameWarning && (
+          <PreviewWarningModal
+            title={'Prime Field Name is required for this form.'}
+            onClose={(e) => {
+              e.stopPropagation()
+              setNoNameWarning(false)
+            }}
+            isError={true}
+            actions={() => {}}
+          />
+        )
+      }
       {
         previewWarning && (
           <PreviewWarningModal

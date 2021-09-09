@@ -56,13 +56,21 @@ export default styled.div`
 		background-position: center bottom;
 		background-image: url("${ProfileBackground}");
 	}
+	// .profile img {
+    // display: flex;
+    // margin: auto;
+	// 	width: 100%;
+    // max-width: 130px;
+    // border-radius: 100px;
+    // box-shadow: 0 3px 6px rgb(0 0 0 / 25%);
+	// }
+
 	.profile img {
-    display: flex;
-    margin: auto;
-		width: 100%;
-    max-width: 130px;
-    border-radius: 100px;
-    box-shadow: 0 3px 6px rgb(0 0 0 / 25%);
+		border-radius: 50%;
+		height: 150px;
+		width: 150px;
+		margin: auto;
+		box-shadow: 0 3px 6px rgb(0 0 0 / 25%);
 	}
 
 	.profile .profile-name {

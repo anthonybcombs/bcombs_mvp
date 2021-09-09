@@ -21,6 +21,10 @@ const RenameModalStyled = styled.div`
     background-color: #f26e21;
     color: #fff;
   }
+  .modal-header.error {
+    background-color: red;
+  }
+
   .modal-container {
     background-color: #fff;
     padding: 20px 25px;
@@ -79,14 +83,14 @@ const RenameModalStyled = styled.div`
     background-color: rgb(242 110 33 / 5%);
   }
   .closeBtn {
-    color: #f26e21;
+    color: #ffffff;
     max-width: 80px;
     margin-right: auto;
-    border: 1px solid #f26e21;
-    background-color: transparent;
+    border: 1px solid #bfbfbf;
+    background-color: #bfbfbf;
   }
   .closeBtn:hover {
-    background-color: rgb(242 110 33 / 5%);
+    // background-color: rgb(242 110 33 / 5%);
   }
   .cancelBtn {
     width: 100%;
@@ -113,13 +117,20 @@ const RenameModalStyled = styled.div`
     }
   }
 `;
-export default function index({ title, onClose, actions }) {
+export default function index({ title, onClose, actions, isError = false }) {
 
   return ReactDOM.createPortal(
     <RenameModalStyled
       data-testid='app-big-calendar-create-modal'
       className='modal'>
       <div className='modal-content'>
+        <span
+          className="close"
+          onClick={onClose}
+        >
+          &times;
+        </span>
+        <div className={`modal-header${isError ? ' error' : ''}`}>{isError ? 'Error' : 'Warning'}</div>
         <div className='modal-container'>
           {title}
         </div>

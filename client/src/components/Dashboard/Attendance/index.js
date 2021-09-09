@@ -282,19 +282,40 @@ export default function index(props) {
 
 		return size.length;
 	};
-
+	let testArray = [];
 	const getFormClassCount = group => {
-
+		
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
-			if (app.class_teacher && group.form === app.form) {
+			if (app.class_teacher && app.class_teacher !== '' && group.form === app.form) {
 				const classTeacher = app.class_teacher.split(',');
-				console.log('group.app_grp_id123123123',group.app_grp_id)
-				console.log('group.app_grp_id123123123 classTeacher',classTeacher)
-				return group.app_grp_id && classTeacher.includes(group.app_grp_id);
+				// console.log('group.app_grp_id123123123',group.app_grp_id)
+				// console.log('group.app_grp_id123123123 app',app)
+				// console.log('group.app_grp_id123123123 classTeacher',classTeacher)
+				return  classTeacher.includes(group.app_grp_id);
 			}
 		});
+		// if(group.form === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
+		// 	//6838fda0-5407-11eb-8212-dafd2d0ae3ff
+		// 	console.log('SIZEEEEEEEEEEEEEE11', size)
+		// 	console.log('SIZEEEEEEEEEEEEEE11 applications', applications)
+		// 	console.log('SIZEEEEEEEEEEEEEE11 group', group)
+	
+		// }
+
+		// if(applications && applications.customActiveApplications && applications.customActiveApplications && group.form === '6838fda0-5407-11eb-8212-dafd2d0ae3ff') {
+		// 	const defaultIds = ['afd248f1-5b2a-11eb-8212-dafd2d0ae3ff','c577ef23-5f01-11eb-8212-dafd2d0ae3ff','849eb0b8-af53-11eb-8212-dafd2d0ae3ff','734333e5-af54-11eb-8212-dafd2d0ae3ff']
+		// 	const applicationszzz = applications.customActiveApplications.filter(item => {
+		// 		const classTeacher = item.class_teacher ? item.class_teacher.split(',') : [];
+		// 		return (item.form === group.form ) && classTeacher.some(id => defaultIds.includes(id));
+		// 	});
+		// 	console.log('applicationszzz123123',applicationszzz)
+		// 	console.log('applicationszzz123123 applications',applications)
+		// }
+	
 		return size ? size.length : 0
 	};
+
+
 
 
 
@@ -524,12 +545,36 @@ export default function index(props) {
 	const getTotalClassCountByForm = id => {
 		// console.log('form.formAppGroups', form.formAppGroups)
 		const formGroups = form && form.formAppGroups && form.formAppGroups.filter(appGroup => appGroup.form === id);
-		let totalClassCount = 0;
-		for (const group of formGroups) {
-			totalClassCount += getFormClassCount(group);
-		}
+		//let totalClassCount = 0;
+		// if(id === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
+
+		// }
+		const appGrpIds = formGroups.map(item => item.app_grp_id).filter(item => item)
+
+			
+		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
+			if (app.class_teacher && app.class_teacher !== '' && id === app.form) {
+				const classTeacher = app.class_teacher.split(',');
+				// console.log('group.app_grp_id123123123',group.app_grp_id)
+				// console.log('group.app_grp_id123123123 app',app)
+				// console.log('group.app_grp_id123123123 classTeacher',classTeacher)
+				
+				return classTeacher.some(id => appGrpIds.includes(id) ) //classTeacher.includes(group.app_grp_id)
+			}
+		});
+
+		return size ? size.length : 0
+		// for (const group of formGroups) {
+		// 	totalClassCount += getFormClassCount(group);
+		// 	if(group.form === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
+		// 		//6838fda0-5407-11eb-8212-dafd2d0ae3ff
+		// 		console.log('SIZEEEEEEEEEEEEEE totalClassCount', totalClassCount)
+		// 		console.log('SIZEEEEEEEEEEEEEE totalClassCount group', group)
+		// 	}
+		
+		// }
 		// console.log('getTotalClassCountByForm', totalClassCount)
-		return totalClassCount;
+		//return totalClassCount;
 	};
 
 	const handleSearch = (value) => {

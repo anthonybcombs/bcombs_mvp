@@ -28,6 +28,8 @@ import { requestVendor } from '../../../../redux/actions/Vendors';
 import { requestUpdateUserAttendanceFilterConfig } from '../../../../redux/actions/Auth';
 
 import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
+
+import { getNameFromCustomForm } from '../../Grades/utils'
 const AttendanceSummaryStyled = styled.div`
 	width: auto;
 	max-width: 1920px;
@@ -474,18 +476,18 @@ const DateCustomInput = ({ value, onClick, name, className, placeholder, label }
 	</div>
 );
 
-const CustomRangePicker = ({ 
-	onChange, 
-	placeholder, 
-	selected, 
-	customInput = null ,
+const CustomRangePicker = ({
+	onChange,
+	placeholder,
+	selected,
+	customInput = null,
 	highlightDates = [],
 	minDate = null,
 	maxDate = null
-	}) => {
+}) => {
 
 
-		
+
 	return (
 		<DatePicker
 			minDate={minDate ? minDate : null}
@@ -508,7 +510,7 @@ const CustomRangePicker = ({
 				<div
 					style={{
 						margin: 0,
-						display:'none',
+						display: 'none',
 						display: 'flex',
 						alignCenter: 'center',
 						justifyContent: 'center',
@@ -581,13 +583,13 @@ export default function index(props) {
 		: null;
 
 	const DEFAULT_ATTENDANCE_FILTER_RANGE = {
-		start:  new Date('2020-08-01'),
-		end:  new Date('2021-07-31'),
+		start: new Date('2020-08-01'),
+		end: new Date('2021-07-31'),
 	};
 
 	const DEFAULT_SUMMARY_FILTER_RANGE = {
-		start:  new Date('2020-08-01'),
-		end:  new Date('2021-07-31'),
+		start: new Date('2020-08-01'),
+		end: new Date('2021-07-31'),
 	};
 
 
@@ -598,27 +600,27 @@ export default function index(props) {
 		}
 	);
 	let dateAttendanceConfigFilter = {};
-	if(auth && auth.attendance_filter_config && auth.attendance_filter_config !== '') {
-		dateAttendanceConfigFilter = JSON.parse( auth.attendance_filter_config);
+	if (auth && auth.attendance_filter_config && auth.attendance_filter_config !== '') {
+		dateAttendanceConfigFilter = JSON.parse(auth.attendance_filter_config);
 
-		if(dateAttendanceConfigFilter.default_attendance_filter_range) {
+		if (dateAttendanceConfigFilter.default_attendance_filter_range) {
 			dateAttendanceConfigFilter = {
 				...dateAttendanceConfigFilter,
-				default_attendance_filter_range:{
-					start:new Date(dateAttendanceConfigFilter.default_attendance_filter_range.start),
-					end:new Date(dateAttendanceConfigFilter.default_attendance_filter_range.end)
+				default_attendance_filter_range: {
+					start: new Date(dateAttendanceConfigFilter.default_attendance_filter_range.start),
+					end: new Date(dateAttendanceConfigFilter.default_attendance_filter_range.end)
 				}
-			
+
 			}
 		}
-		if(dateAttendanceConfigFilter.default_summary_filter_range) {
+		if (dateAttendanceConfigFilter.default_summary_filter_range) {
 			dateAttendanceConfigFilter = {
 				...dateAttendanceConfigFilter,
-				default_summary_filter_range:{
-					start:new Date(dateAttendanceConfigFilter.default_summary_filter_range.start),
-					end:new Date(dateAttendanceConfigFilter.default_summary_filter_range.end)
+				default_summary_filter_range: {
+					start: new Date(dateAttendanceConfigFilter.default_summary_filter_range.start),
+					end: new Date(dateAttendanceConfigFilter.default_summary_filter_range.end)
 				}
-			
+
 			}
 		}
 
@@ -633,11 +635,11 @@ export default function index(props) {
 	const [attendanceSummary, setAttendanceSummary] = useState({});
 	const [attendanceDates, setAttendanceDates] = useState([]);
 	const [defaultAttendanceDisplay, setDefaultAttendanceDisplay] = useState([]);
-	const [selectedAttendanceDate,setSelectedAttendanceDate] = useState(new Date())
+	const [selectedAttendanceDate, setSelectedAttendanceDate] = useState(new Date())
 	const [events, setEvents] = useState([]);
 	const [defaultEvents, setDefaultEvents] = useState([]);
-	const [selectedRangeDate, setSelectedRangeDate] = useState( DEFAULT_ATTENDANCE_FILTER_RANGE);
-	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState(dateAttendanceConfigFilter &&  dateAttendanceConfigFilter.default_summary_filter_range ? dateAttendanceConfigFilter.default_summary_filter_range : DEFAULT_SUMMARY_FILTER_RANGE);
+	const [selectedRangeDate, setSelectedRangeDate] = useState(DEFAULT_ATTENDANCE_FILTER_RANGE);
+	const [selectedSummaryRangeDate, setSelectedSummaryRangeDate] = useState(dateAttendanceConfigFilter && dateAttendanceConfigFilter.default_summary_filter_range ? dateAttendanceConfigFilter.default_summary_filter_range : DEFAULT_SUMMARY_FILTER_RANGE);
 	const [isRightCalendarVisible, setIsRightCalendarVisible] = useState(false);
 	const [isDefaultDateSetLabel, setIsDefaultDateSetLabel] = useState(false);
 	const { app_group_id } = useParams();
@@ -664,46 +666,46 @@ export default function index(props) {
 
 
 		if (searchParams.appGroupId) {
-			
+
 			dispatch(requestAttendance(searchParams.appGroupId, 'forms'));
 		}
 		else if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
-	
-			dispatch(requestAttendance( searchParams.type === 'all' ? 'all' : app_group_id, 'bcombs'));
+
+			dispatch(requestAttendance(searchParams.type === 'all' ? 'all' : app_group_id, 'bcombs'));
 			dispatch(requestEventAttendance(app_group_id));
-		} 
+		}
 		else if (searchParams && searchParams.type === 'custom' && searchParams.appGroupIds && !attendance.isLoading) {
-			dispatch(requestAttendance( 'all' , 'forms'));
+			dispatch(requestAttendance('all', 'forms'));
 			dispatch(requestEventAttendance(app_group_id));
-		} 
+		}
 	}, []);
 	useEffect(() => {
 
 		if (attendance.list) {
-	
+
 			let currentAttendance = attendance.list.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 
 				attDate = attDate.replaceAll('-', '_');
 
 				let formApplication = {};
-	
-				
+
+
 				if (searchParams && searchParams.type === 'custom' && searchParams.appGroupIds) {
 					const appGroupIDList = searchParams.appGroupIds.split(',')
 					formApplication = applications.activeapplications.find(item => {
-						if( (item.app_id === att.child_id) && (item.form === searchParams.formId)) {
+						if ((item.app_id === att.child_id) && (item.form === searchParams.formId)) {
 							const classTeacher = item.class_teacher && item.class_teacher.split(',');
 							return appGroupIDList.some(appGrpId => classTeacher.includes(appGrpId))
 						}
-			
+
 					});
 
 				}
-				else if (searchParams && searchParams.type === 'custom' && !searchParams.appGroupIds)   {
+				else if (searchParams && searchParams.type === 'custom' && !searchParams.appGroupIds) {
 					formApplication = applications.activeapplications.find(item => (item.class_teacher && item.class_teacher.includes(app_group_id)) && (item.app_id === att.child_id) && (item.form === searchParams.formId));
 				}
-				
+
 				return {
 					...accum,
 					[att.child_id]: {
@@ -748,7 +750,7 @@ export default function index(props) {
 						{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
 					);
 
-		
+
 
 					return {
 						...att,
@@ -756,23 +758,23 @@ export default function index(props) {
 					};
 				});
 
-				if (searchParams && searchParams.type === 'custom') {
-					currentAttendance = currentAttendance.filter(item => item.custom && item.custom.id)
-				}
-				else {
-					currentAttendance = currentAttendance.filter(item => item.firstname && item.lastname)
-				}
+			if (searchParams && searchParams.type === 'custom') {
+				currentAttendance = currentAttendance.filter(item => item.custom && item.custom.id)
+			}
+			else {
+				currentAttendance = currentAttendance.filter(item => item.firstname && item.lastname)
+			}
 
-				console.log('currentAttendance',currentAttendance)
+			console.log('currentAttendance', currentAttendance)
 			//let displayDayList = [];
 			// THERE ERROR IS HERE
-			
+
 			let displayDayList = attendance.list.map(att => {
-				
+
 				return format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)
 			});
 			displayDayList = [...new Set(displayDayList)].sort();
-		
+
 			setDisplayDays(displayDayList);
 
 			setAttendanceDisplay([...(currentAttendance || [])]);
@@ -785,7 +787,7 @@ export default function index(props) {
 			}
 		}
 	}, [attendance.list, applications]);
-	
+
 	useEffect(() => {
 		if (attendance.eventAttendanceList) {
 			const updatedEvents = attendance.eventAttendanceList.map(event => {
@@ -820,14 +822,19 @@ export default function index(props) {
 				summaryTotal = !isNaN(summaryTotal) ? summaryTotal : 0;
 			}
 
-			if(att.custom && att.custom.form_contents && att.custom.form_contents.formData ) {
-				 let currentFormName = att.custom.form_contents.formData.filter(item => {
-					 let fieldLabel = item.label.toLowerCase();
-					 return fieldLabel.includes('name')
-				 })
+			if (att.custom && att.custom.form_contents && att.custom.form_contents.formData) {
+				let currentFormName = att.custom.form_contents.formData.filter(item => {
+					let fieldLabel = item.label.toLowerCase();
+					return fieldLabel.includes('name')
+				})
 
-				 customFormName = currentFormName ? currentFormName[0]?.fields[0]?.value : ''
-			}	
+				customFormName = currentFormName ? currentFormName[0]?.fields[0]?.value : ''
+			}
+
+			const currentChild = att.custom?.form_contents ? getNameFromCustomForm(att.custom?.form_contents) : {
+				lastname: att.lastname,
+				firstname: att.firstname
+			}
 
 			return (
 				<tr key={index}>
@@ -836,15 +843,18 @@ export default function index(props) {
 							<tr>
 								<td style={{ width: 250 }}>
 									<div className="name">
-										<a href={'#'}>{`${
+										<a href={'#'}>
+											{/* {`${
 											searchParams && searchParams.type !== 'custom' && att.firstname && att.lastname
 												? `${att.firstname} ${att.lastname}`
 												: att.custom?.form_contents?.formData[0]?.fields[0]?.value || customFormName
-										}`}</a>
+										}`} */}
+											{`${currentChild.firstname} ${currentChild.lastname}`}
+										</a>
 									</div>
 								</td>
 								<td>
-									<div className="class">{att.app_group_name || att?.custom?.form_contents?.formTitle }</div>
+									<div className="class">{att.app_group_name || att?.custom?.form_contents?.formTitle}</div>
 								</td>
 							</tr>
 						</table>
@@ -876,7 +886,7 @@ export default function index(props) {
 
 																{(att.attendance[formattedDateKeys[0]].status === 'Absent' ||
 																	att.attendance[formattedDateKeys[0]].status === 'Tardy') &&
-																att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
+																	att.attendance[formattedDateKeys[0]].is_excused === 1 ? (
 																	<div className="exclude-icon"></div>
 																) : (
 																	<span />
@@ -897,7 +907,7 @@ export default function index(props) {
 
 															{(att.attendance[formattedDateKeys[1]].status === 'Absent' ||
 																att.attendance[formattedDateKeys[1]].status === 'Tardy') &&
-															att.attendance[formattedDateKeys[1]].is_excused === 1 ? (
+																att.attendance[formattedDateKeys[1]].is_excused === 1 ? (
 																<div className="exclude-icon"></div>
 															) : (
 																<span />
@@ -918,7 +928,7 @@ export default function index(props) {
 
 															{(att.attendance[formattedDateKeys[2]].status === 'Absent' ||
 																att.attendance[formattedDateKeys[2]].status === 'Tardy') &&
-															att.attendance[formattedDateKeys[2]].is_excused === 1 ? (
+																att.attendance[formattedDateKeys[2]].is_excused === 1 ? (
 																<div className="exclude-icon"></div>
 															) : (
 																<span />
@@ -1008,27 +1018,27 @@ export default function index(props) {
 			[name]: value,
 		};
 		const dateIndex = displayDays.findIndex(date => date === format(new Date(value), DATE_FORMAT))
-		if(dateIndex > -1 && displayDays.length > 3) {
-			if(dateIndex <  displayDays.length - 1 && dateIndex > 0) {
+		if (dateIndex > -1 && displayDays.length > 3) {
+			if (dateIndex < displayDays.length - 1 && dateIndex > 0) {
 				let first = dateIndex - 1;
 				let second = dateIndex;
-				let third =dateIndex + 1;
+				let third = dateIndex + 1;
 				setCurrentDisplayDays([displayDays[first], displayDays[second], displayDays[third]]);
-				setDisplayDayIndex([first, second, third ]);
+				setDisplayDayIndex([first, second, third]);
 			}
-			else if(dateIndex === 0) {
-				let first = dateIndex ;
+			else if (dateIndex === 0) {
+				let first = dateIndex;
 				let second = dateIndex + 1;
-				let third =dateIndex + 2;
+				let third = dateIndex + 2;
 				setCurrentDisplayDays([displayDays[first], displayDays[second], displayDays[third]]);
-				setDisplayDayIndex([first, second, third ]);
+				setDisplayDayIndex([first, second, third]);
 			}
-			else if(dateIndex === displayDays.length - 1) {
+			else if (dateIndex === displayDays.length - 1) {
 				let first = dateIndex - 2;
 				let second = dateIndex - 1;
-				let third = dateIndex ;
+				let third = dateIndex;
 				setCurrentDisplayDays([displayDays[first], displayDays[second], displayDays[third]]);
-				setDisplayDayIndex([first, second, third ]);
+				setDisplayDayIndex([first, second, third]);
 			}
 		}
 		setSelectedAttendanceDate(value)
@@ -1039,7 +1049,7 @@ export default function index(props) {
 
 	const handleChangeDateFilter = date => {
 
-	
+
 		if (Object.keys(date).length === 0) {
 			setAttendanceDisplay([...(defaultAttendanceDisplay || [])]);
 			setSelectedSummaryRangeDate({
@@ -1072,10 +1082,10 @@ export default function index(props) {
 
 			if (filteredEvents.length > 0) {
 				// filteredEvents.length +
-			
+
 				let childEventAttendance = defaultAttendanceDisplay.reduce((accum, defaultAtt) => {
 
-					totalAttendance =  Object.keys(defaultAtt.attendance).filter(dateKey => {
+					totalAttendance = Object.keys(defaultAtt.attendance).filter(dateKey => {
 						let dashedDate = dateKey.replaceAll('_', '-');
 						return isWithinInterval(parseDate(dashedDate), {
 							start: subDays(new Date(date.start), 1),
@@ -1091,7 +1101,7 @@ export default function index(props) {
 						});
 					}).reduce(
 						(attAccum, dateKey) => {
-						//	let dashedDate = dateKey.replaceAll('_', '-');
+							//	let dashedDate = dateKey.replaceAll('_', '-');
 							return {
 								total_volunteer_hours: attAccum.total_volunteer_hours + defaultAtt.attendance[dateKey].volunteer_hours || 0,
 								total_mentoring_hours: attAccum.total_mentoring_hours + defaultAtt.attendance[dateKey].mentoring_hours || 0,
@@ -1102,14 +1112,14 @@ export default function index(props) {
 					let totalPresent =
 						Object.keys(defaultAtt.attendance).filter(key => {
 							let dashedDate = key.replaceAll('_', '-');
-							
+
 							//const hasEvent = filteredEvents.find(event => dashedDate === event.start_of_event);
 
 							return isWithinInterval(parseDate(dashedDate), {
 								start: subDays(new Date(date.start), 1),
 								end: addDays(new Date(date.end), 1),
-							}) && defaultAtt.attendance[key] 
-							&&  (defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].status === 'Tardy' || defaultAtt.attendance[key].is_excused === 1);
+							}) && defaultAtt.attendance[key]
+								&& (defaultAtt.attendance[key].status === 'Present' || defaultAtt.attendance[key].status === 'Tardy' || defaultAtt.attendance[key].is_excused === 1);
 						}).length || 0;
 
 					return {
@@ -1138,12 +1148,12 @@ export default function index(props) {
 		}
 
 		//setSelectedSummaryRangeDate([new Date(date[0]), new Date(date[1])]);
-	
+
 		const isDateWithin = displayDays.some((currentDate) => {
 
 			return isWithinInterval(typeof currentDate === 'string' ? parseDate(currentDate) : currentDate, {
 				start: subDays(typeof date.start === 'string' ? new Date(date.start) : date.start, 1),
-				end: addDays(typeof date.end === 'string' ? new Date(date.end) :  date.end, 1),
+				end: addDays(typeof date.end === 'string' ? new Date(date.end) : date.end, 1),
 			})
 		})
 
@@ -1152,7 +1162,7 @@ export default function index(props) {
 		// 	setSelectedSummaryRangeDate(date);
 		// }
 		setSelectedSummaryRangeDate(date);
-	
+
 	};
 
 	const attendanceSummyByAttendance = date => {
@@ -1228,7 +1238,7 @@ export default function index(props) {
 		// 	}
 		// 	return;
 		// }
-		
+
 		const updatedAttendanceDisplay = defaultAttendanceDisplay.map(att => {
 			const dateKeys = Object.keys(att.attendance);
 			const filteredDate = dateKeys.filter(key => {
@@ -1246,7 +1256,7 @@ export default function index(props) {
 				},
 				{ total_volunteer_hours: 0, total_mentoring_hours: 0 }
 			);
-		
+
 
 			return {
 				...att,
@@ -1363,26 +1373,26 @@ export default function index(props) {
 						style={{ cursor: 'pointer', color: '#3e89fe', position: 'relative', left: 180 }}
 						onClick={() => {
 							//handleChangeDateFilter(DEFAULT_DATE);
-		
+
 							if (selectedSummaryRangeDate) {
-							//	localStorage.setItem('summaryFilterRange', JSON.stringify(selectedSummaryRangeDate));
-								if(!isDefaultDateSetLabel) {
+								//	localStorage.setItem('summaryFilterRange', JSON.stringify(selectedSummaryRangeDate));
+								if (!isDefaultDateSetLabel) {
 									setIsDefaultDateSetLabel(true);
 									const payload = {
 										user_id: auth.user_id,
 										attendance_filter_config: JSON.stringify({
 											//...(auth && auth.attendance_filter_config && auth.attendance_filter_config !== '' && JSON.parse(auth.attendance_filter_config) ||  {}),
-											default_attendance_filter_range:selectedRangeDate,
+											default_attendance_filter_range: selectedRangeDate,
 											default_summary_filter_range: selectedSummaryRangeDate
 										})
 									}
-					
+
 									dispatch(requestUpdateUserAttendanceFilterConfig(payload))
 									setTimeout(() => {
 										setIsDefaultDateSetLabel(false)
-									},5000)
+									}, 5000)
 								}
-							
+
 							}
 						}}>
 						Set Default Date
@@ -1396,7 +1406,7 @@ export default function index(props) {
 								<th>Student</th>
 								<th>
 									Attendance Status{' '}
-								
+
 									<CustomRangePicker
 										minDate={selectedSummaryRangeDate.start}
 										maxDate={selectedSummaryRangeDate.end}
@@ -1433,7 +1443,7 @@ export default function index(props) {
 											<td style={{ width: '380px', padding: '0' }}>
 												<div className="attendance-status-container">
 													{currentDisplayDays.map((date, index) => {
-													
+
 														return (
 															<div className="date">
 																{index === 0 && (

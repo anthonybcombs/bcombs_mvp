@@ -493,6 +493,8 @@ export default function index() {
 
   const [isCopyApplicationLinkModal, setCopyApplicationLinkModal] = useState(false);
 
+  const [currentCopyLink, setCurrentCopyLink] = useState(null);
+
   const dispatch = useDispatch();
 
   const componentRef = useRef();
@@ -726,11 +728,11 @@ export default function index() {
         : application?.child?.grade_desc
     };
 
-    console.log("application", application);
+    console.log("@@@@@@@@handleSelectedApplication", { application, temp });
 
     const childInformationObj = {
       profile: {
-        image: "",
+        image: application?.child?.image ? application.child.image : "",
         application_date: 'Most Up to date Application',
         first_name: application?.child?.firstname
           ? application.child.firstname
@@ -925,6 +927,7 @@ export default function index() {
     let items = [];
     for (const parent of parents) {
       const profile = {
+        image: parent.image ? parent.image : "",
         first_name: parent.firstname ? parent.firstname : "",
         last_name: parent.lastname ? parent.lastname : "",
         phone_type: parent.phone_type ? parent.phone_type : "",
@@ -1084,7 +1087,8 @@ export default function index() {
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getArrayValue(parent.profile.ethinicity),
-        parent_id: parent.parent_id
+        parent_id: parent.parent_id,
+        image: parent.profile.image || '',
       });
     });
 
@@ -1141,6 +1145,7 @@ export default function index() {
           new Date(childInformation.profile.date_of_birth),
           DATE_FORMAT
         ),
+        image: childInformation.profile.image || '',
         gender: childInformation.profile.gender,
         phone_type: childInformation.profile.phone_type,
         phone_number: childInformation.profile.phone_number,
@@ -1392,7 +1397,7 @@ export default function index() {
           const application = JSON.parse(row.details);
           const childInformationObj = {
             profile: {
-              image: "",
+              image: application.child.image ? application.child.image : "",
               application_date: `History Update: ${format(new Date(row.updated_at ? row.updated_at: ""), "LLL dd, yyyy p")}`,
               first_name: application.child.firstname ? application.child.firstname: "",
               last_name: application.child.lastname ? application.child.lastname:"",
@@ -1522,6 +1527,7 @@ export default function index() {
           let items = []
           for(const parent of parents) {
             const profile = {
+              image: parent.image ? parent.image : "",
               first_name: parent.firstname ? parent.firstname : "",
               last_name: parent.lastname ? parent.lastname : "",
               phone_type: parent.phone_type ? parent.phone_type : "",
@@ -1747,7 +1753,7 @@ export default function index() {
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
-        <h2>Applicationss</h2>
+        <h2>Applications</h2>
         {vendors && vendors.length > 0 && (
           <div>
             <select className="form-control" 
@@ -1864,7 +1870,14 @@ export default function index() {
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
-                  <FontAwesomeIcon icon={faLink} onClick={() => setCopyApplicationLinkModal(true)}/>
+                  <FontAwesomeIcon icon={faLink} onClick={() => {
+                    setCopyApplicationLinkModal(true)
+                    setCurrentCopyLink( selectedVendor.is_daycare ? `/application/${
+                      selectedVendor.id2
+                    }/daycare` : `/application/${
+                      selectedVendor.id2
+                    }`)
+                  }}/>
                 </div>
               ) : selectedForm && selectedForm != "default" ? (
                   <div className="copy-application-link">
@@ -1874,7 +1887,11 @@ export default function index() {
                       <FontAwesomeIcon icon={faFileSignature} />
                       <span>Application</span>
                     </a>
-                    <FontAwesomeIcon icon={faLink} onClick={() => setCopyApplicationLinkModal(true)}/>
+                  
+                    <FontAwesomeIcon icon={faLink} onClick={() => {
+                      setCopyApplicationLinkModal(true)
+                      setCurrentCopyLink( `/form/${selectedForm}`)
+                    }}/>
                   </div>
               ) : (
                 <div className="copy-application-link">
@@ -1884,13 +1901,16 @@ export default function index() {
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
-                  <FontAwesomeIcon icon={faLink} onClick={() => setCopyApplicationLinkModal(true)}/>
+                  <FontAwesomeIcon icon={faLink} onClick={() => {
+                    setCopyApplicationLinkModal(true)
+                  }}/>
                 </div>
               )
             }
             <CopyApplicationLinkModal
               isVisible={isCopyApplicationLinkModal}
               toggleCopyApplicationLinkModal={setCopyApplicationLinkModal}
+              currentCopyLink={currentCopyLink}
             />
             <div
               className={`${

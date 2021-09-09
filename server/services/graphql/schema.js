@@ -318,6 +318,7 @@ const inputs = `
         doctor_phone: String
         hospital_preference: String
         hospital_phone: String
+        image: String
     }
 
     input DaycareParentInfoInput {
@@ -345,6 +346,7 @@ const inputs = `
         birthdate: String
         gender: String
         ethnicities: String
+        image: String
     }
 
     input DaycareApplicationInput {
@@ -1327,6 +1329,7 @@ const queryTypes = `
         app_id: String
         form: String
         class_teacher: String
+        form_contents: String
     }
 
     type CustomForm {

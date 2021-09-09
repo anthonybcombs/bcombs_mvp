@@ -7,7 +7,7 @@ import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 
 
-const CopyApplicationLinkModal = styled.div`
+const CopyLinkModal = styled.div`
   #copyApplication .modal-body div.row {
     display: flex;
     align-items: center;
@@ -32,7 +32,7 @@ const CopyApplicationLinkModal = styled.div`
 
 export default function index({
   isVisible = true,
-  toggleCopyApplicationLinkModal,
+  toggleCopyLinkModal,
   currentCopyLink
 }) {
   const [isCopyURL, setCopyURL] = useState('');
@@ -42,36 +42,36 @@ export default function index({
   // setTimeout(() => {
   //   const url = window.location.href;
   //   setCopyURL(url);
-  // }, 500)
+  // }, 100)
+
   useEffect(() => {
     let updatedPath = window.location.hostname === 'localhost' ? `http://${window.location.hostname}:1234` :   `https://${window.location.hostname}`
     setCopyURL(`${updatedPath}${currentCopyLink ? currentCopyLink : null}`)
   }, [currentCopyLink])
-
-
-  console.log('currentCopyLink', currentCopyLink)
+  
   const handleCopyLink = () => {
-    const url = currentCopyLink//window.location.href;
+    // const url = window.location.href;
+    const url = currentCopyLink;
     const val = inputElRef.current.select()
     document.execCommand('copy');
     console.log('val: ', val);
   }
 
-
+  
 
 
   if (!isVisible) {
     return <></>;
   }
   return ReactDOM.createPortal(
-    <CopyApplicationLinkModal className="modal">
+    <CopyLinkModal className="modal">
       <div id="copyApplication" className="modal-content">
         <div class="modal-header">
-          <h2>Copy Application Link</h2>
+          <h2>Copy Form Link</h2>
           <span
             className="close"
             onClick={() => {
-              toggleCopyApplicationLinkModal(false);
+              toggleCopyLinkModal(false);
             }}
           >
             &times;
@@ -86,7 +86,7 @@ export default function index({
           </div>
         </div>
       </div>
-    </CopyApplicationLinkModal>,
+    </CopyLinkModal>,
     document.getElementById("modal")
   );
 }
