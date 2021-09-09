@@ -11,8 +11,7 @@ import {
 
 import {
   getChildInformation,
-  updateChild,
-  getChilds
+  updateChild
 } from "../child";
 
 import {
@@ -21,10 +20,11 @@ import {
 } from "../parents";
 
 import {
-  updateChildNewId
+  updateChildNewId,
+  getChilds
 } from "../index";
 
-export const updateChildIds = async () => {
+export const triggerCronUpdateChildIds = async () => {
   let childs = await getChilds();
   const defaultSize = 4;
 

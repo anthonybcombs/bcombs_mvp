@@ -602,8 +602,35 @@ const resolvers = {
       let saveChilds = [];
 
       for (let application of applications) {
-        const child = await addDaycareChild(application.child);
+
+        
         const tempChildId = application.child?.ch_id
+
+        //save first child image
+        if(application && 
+          application.child && 
+          application.child.image) {
+
+          const buf = Buffer.from(
+            application.child.image.replace(/^data:image\/\w+;base64,/, ""),
+            "base64"
+          )
+          
+          const s3Payload = {
+            Bucket: currentS3BucketName,
+            Key: `file/${tempChildId}.jpg`,
+            Body: buf,
+            ContentEncoding: "base64",
+            ContentType: "image/jpeg",
+            ACL: "public-read"
+          };
+
+          uploadFile(s3Payload);
+
+          application.child.image = s3Payload.Key;
+        }
+        
+        const child = await addDaycareChild(application.child);
         const parents = application.parents;
 
         application.class_teacher = "";
@@ -622,6 +649,30 @@ const resolvers = {
           parent.application = application.app_id;
 
           const tempParentId = parent?.parent_id;
+
+          
+          if(parent &&  
+            parent.image) {
+  
+            const buf = Buffer.from(
+              parent.image.replace(/^data:image\/\w+;base64,/, ""),
+              "base64"
+            )
+            
+            const s3Payload = {
+              Bucket: currentS3BucketName,
+              Key: `file/${tempParentId}.jpg`,
+              Body: buf,
+              ContentEncoding: "base64",
+              ContentType: "image/jpeg",
+              ACL: "public-read"
+            };
+  
+            uploadFile(s3Payload);
+  
+            parent.image = s3Payload.Key;
+          }
+          
           const newParent = await addDaycareParent(parent);
 
           console.log("newParent", newParent);
@@ -1344,6 +1395,25 @@ const resolvers = {
       return res;
     },
     async updateCustomApplicationForm(root, { application }, context) {
+      let nameType;
+      let formData = application?.form_contents?.formData;
+
+      nameType = formData.filter((item) => {
+        return item.type == "name"
+      });
+      
+      const hasNameField = !!(nameType.length > 0);
+
+      if(!hasNameField) {
+
+        const res = {
+          messageType: "error",
+          message: "prime field name is required",
+        } 
+
+        return res
+      }
+      
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
