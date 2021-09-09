@@ -253,6 +253,7 @@ query getStudentCumulativeGradeByVendor(
         firstname
         lastname
         form_contents
+        image
         cumulative_grades{
           student_grade_cumulative_id
           app_id
