@@ -60,7 +60,7 @@ export default ({ child_id }) => {
 
 
   if (!form_contents && data?.info?.image) {
-    profile = data?.info?.image.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + data?.info?.image : profile;
+    profile = data?.info?.image.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + data?.info?.image : data?.info?.image;
   } else if (form_contents) {
     const { formData = [] } = typeof form_contents === 'string' ? JSON.parse(form_contents) : form_contents
     const { fields = [] } = formData.find(e => e.fields[0].tag === 'profileImage') || {}
