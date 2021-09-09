@@ -403,6 +403,7 @@ export const getStudentCumulativeGradeVendor = async ({ vendor_id }) => {
     let applicationStudent = await db.query(
       `SELECT child.firstname,
 					child.lastname,
+          child.image,
 					sgc.student_grade_cumulative_id,
 					sgc.year_level,
 					sgc.application_type,
