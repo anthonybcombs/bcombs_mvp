@@ -846,6 +846,11 @@ export default function index({
             </div>
           </div>
         </div>
+        <div className="form-group">
+          <div className="field">
+            Select a field to be reset and updated
+          </div>
+        </div>
         {
           selectedForm == 'default' ? (
             <div className="form-fields-list">
