@@ -318,6 +318,7 @@ const inputs = `
         doctor_phone: String
         hospital_preference: String
         hospital_phone: String
+        image: String
     }
 
     input DaycareParentInfoInput {
