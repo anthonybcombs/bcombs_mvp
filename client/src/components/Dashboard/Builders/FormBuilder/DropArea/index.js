@@ -485,7 +485,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
         </button>
       </div>
       {
-        noNameWarning && (
+        noNameWarning  && (
           <PreviewWarningModal
             title={'Prime Field Name is required for this form.'}
             onClose={(e) => {

@@ -3,32 +3,8 @@ import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
 const RenameModalStyled = styled.div`
-  .modal-content {
-    position: relative;
-    top: 100px;
-    width: auto;
-    max-width: 500px;
-    padding: 0;
-  }
-  .close {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    color: #fff;
-  }
-  .modal-header {
-    padding: 1em;
-    background-color: #f26e21;
-    color: #fff;
-  }
-  .modal-header.error {
-    background-color: red;
-  }
-
-  .modal-container {
-    background-color: #fff;
-    padding: 20px 25px;
-    padding-top: 3rem;
+  .modal-body {
+    padding: 2rem 25px 2rem;
   }
   .field-input {
     position: relative;
@@ -54,7 +30,7 @@ const RenameModalStyled = styled.div`
     align-items: center;
     justify-content: flex-end;
 
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
   }
   .modalBtn {
     width: 100%;
@@ -124,14 +100,16 @@ export default function index({ title, onClose, actions, isError = false }) {
       data-testid='app-big-calendar-create-modal'
       className='modal'>
       <div className='modal-content'>
-        <span
-          className="close"
-          onClick={onClose}
-        >
-          &times;
-        </span>
-        <div className={`modal-header${isError ? ' error' : ''}`}>{isError ? 'Error' : 'Warning'}</div>
-        <div className='modal-container'>
+        <div className={`modal-header${isError ? ' error' : ''}`}>
+          <h2>{isError ? 'Error' : 'Warning'}</h2>
+          <span
+            className="close"
+            onClick={onClose}
+          >
+            &times;
+          </span>
+        </div>
+        <div className='modal-body'>
           {title}
         </div>
 
