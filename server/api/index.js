@@ -170,7 +170,7 @@ export const updateUserNewId = async ({ newUserId, id }) => {
   }
 } 
 
-const getChilds = async () => {
+export const getChilds = async () => {
   const db = makeDb();
   let result;
   try {

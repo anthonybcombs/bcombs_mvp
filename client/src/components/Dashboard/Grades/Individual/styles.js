@@ -6,6 +6,15 @@ export default styled.div`
 	margin: auto;
   padding: 0rem 3em 2rem;
   
+  .profile-image {
+	margin-right: 5px;
+  }
+
+  .profile-image img {
+	border-radius: 50%;
+    height: 30px;
+    width: 30px;
+  }
   
   #gradeListView {
     padding: 1rem;

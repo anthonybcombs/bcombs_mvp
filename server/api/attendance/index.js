@@ -65,6 +65,7 @@ export const getChildAttendance = async (applicationGroupId,attendanceType = 'bc
         ch.firstname,
         ch.lastname,
         ch.gender,
+        ch.image,
         vag.name as app_group_name,
         ucf.is_following
       FROM  attendance att
@@ -166,7 +167,7 @@ export const updateChildAttendance = async (attendance) => {
         FROM attendance WHERE app_group_id=UUID_TO_BIN(?) 
         AND child_id=UUID_TO_BIN(?) 
         AND attendance_date=?`,[
-          attendance.app_group_id,
+          att.app_group_id || attendance.app_group_id,
           att.child_id,
           attendance.attendance_date,
         ]);
@@ -204,7 +205,7 @@ export const updateChildAttendance = async (attendance) => {
               )
             `,
             [
-              attendance.app_group_id,
+              att.app_group_id || attendance.app_group_id,
               att.child_id,
               att.attendance_status,
               attendance.attendance_type,
@@ -247,7 +248,7 @@ export const updateChildAttendance = async (attendance) => {
             att.volunteer_hours || 0,
             att.mentoring_hours || 0,
             att.is_excused || 0,
-            attendance.app_group_id,
+            att.app_group_id || attendance.app_group_id,
             att.child_id,
             attendance.attendance_date,
             ]

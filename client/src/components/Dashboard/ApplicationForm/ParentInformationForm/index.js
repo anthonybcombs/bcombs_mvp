@@ -358,22 +358,6 @@ export default function index({
   const [imagePreview, setImagePreview] = useState('');
   const [isUploadPhotoVisible, setUploadPhotoVisible] = useState(false);
 
-  const handleFileChange = event => {
-    let reader = new FileReader();
-
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-      handleParentFormDetailsChange(
-        counter - 1,
-        "profile",
-        "image",
-        reader.result
-      )
-    };
-
-    reader.readAsDataURL(event.target.files[0]);
-  };
-
   const years = range(1900, new Date().getFullYear());
   const months = [
     "January",

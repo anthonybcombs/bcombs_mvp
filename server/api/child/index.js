@@ -141,7 +141,8 @@ export const addDaycareChild = async ({
   doctor_name,
   doctor_phone,
   hospital_preference,
-  hospital_phone
+  hospital_phone,
+  image
 }) => {
   const db = makeDb();
   let result = {};
@@ -194,13 +195,14 @@ export const addDaycareChild = async ({
         doctor_name,
         doctor_phone,
         hospital_preference,
-        hospital_phone
+        hospital_phone,
+        image
       ) VALUES (UUID_TO_BIN(UUID()), 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?)`,
+        ?, ?, ?, ?)`,
       [
         firstname,
         lastname,
@@ -244,7 +246,8 @@ export const addDaycareChild = async ({
         doctor_name,
         doctor_phone,
         hospital_preference,
-        hospital_phone
+        hospital_phone,
+        image
       ]
     )
 
@@ -385,7 +388,7 @@ export const addChild = async ({
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
-        ?, ?, ?, ?)`,
+        ?, ?, ?)`,
       [
         firstname,
         lastname,

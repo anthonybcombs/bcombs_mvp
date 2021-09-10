@@ -318,6 +318,7 @@ const inputs = `
         doctor_phone: String
         hospital_preference: String
         hospital_phone: String
+        image: String
     }
 
     input DaycareParentInfoInput {
@@ -345,6 +346,7 @@ const inputs = `
         birthdate: String
         gender: String
         ethnicities: String
+        image: String
     }
 
     input DaycareApplicationInput {
@@ -689,6 +691,7 @@ const inputs = `
 
     input AttendanceChildInput {
         app_id: String   
+        app_group_id: String   
         attendance_status: String   
         volunteer_hours: Float
         mentoring_hours: Float
@@ -1511,6 +1514,7 @@ const queryTypes = `
         lastname: String
         attendance_status: String   
         child_id: String   
+        image: String
         mentoring_hours: Float
         volunteer_hours: Float
         is_excused: Int

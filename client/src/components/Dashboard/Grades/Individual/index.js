@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import Loading from '../../../../helpers/Loading.js'
 import { getNameFromCustomForm } from '../utils'
+import ProfileImg from "../../../../images/defaultprofile.png";
 import { requestGetStudentCumulativeGradeByUser  } from '../../../../redux/actions/Grades'
 
 export default ({ child_id }) => {
@@ -218,17 +219,26 @@ export default ({ child_id }) => {
       }
 
       const formatValue = (val) => val || '--'
+      let profile = row.image || ''
+      if (profile) {
+        profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
+      }
 
       return (
         <tr key={`grades-list-${index}`}>
           <td className='subHeader'>
             <table className='subTable student'>
               <tr>
-                <td style={{ minWidth: '100px', wordBreak: 'break-word'}}>{
+                <td style={{ minWidth: '100px', wordBreak: 'break-word', display: 'flex', alignItems: 'center'}}>{
                   index === 0 ? (
-                    <Link to={`/dashboard/grades/profile/${row.child_id}?${commonQueryStrings}`}>
-                      {name}
-                    </Link>
+                    <>
+                      <div className="profile-image">
+                        <img src={profile || ProfileImg} />
+                      </div>
+                      <Link to={`/dashboard/grades/profile/${row.child_id}?${commonQueryStrings}`}>
+                        {name}
+                      </Link>
+                    </>
                   ) : null
                 }</td>
                 <td style={{ ...highLight(schoolType, 'schoolType'), minWidth: '100px', wordBreak: 'break-word'}}>{formatValue(schoolType)}</td>
@@ -381,7 +391,7 @@ export default ({ child_id }) => {
 
   const getDataList = (data) => {
     const standardized_test = data?.standardized_test || []
-    const { form_contents } = data?.info || {}
+    const { form_contents, image = '' } = data?.info || {}
     return (data?.cumulative_grades || [])
       .reduce((accumulator, { 
         child_id, firstname, lastname, grades = [], school_type = '', year_level = '', school_year_start = '',
@@ -391,6 +401,13 @@ export default ({ child_id }) => {
           const name = getNameFromCustomForm(form_contents)
           firstname = name.firstname
           lastname = name.lastname
+          const { formData = [] } = typeof form_contents === 'string' ? JSON.parse(form_contents) : form_contents
+          const { fields = [] } = formData.find(e => e.fields[0].tag === 'profileImage') || {}
+          if (fields.length) {
+            const { value } = fields[0]
+            const { url } = value ? JSON.parse(value) : {}
+            image = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
+          }
         }
         const { data, labels, quarterValues, schoolYears, stYearValues } = accumulator
         const parseYear = (y) => typeof y === 'string' ? parseInt(y) : y
@@ -493,7 +510,8 @@ export default ({ child_id }) => {
               ...stValues,
               stFinalValues: stValues,
               schoolYear: sy,
-              studentGradeCumulativeId: student_grade_cumulative_id
+              studentGradeCumulativeId: student_grade_cumulative_id,
+              image
             }
           ],
           labels: {

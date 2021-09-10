@@ -19,7 +19,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type }) => {
+export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -154,7 +154,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
       mergeObj.attempt = attempt
     }
-  
+
     onHasChanged(true)
     setRows(update(rows, {
       [index]: { $merge: mergeObj }
@@ -266,7 +266,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
               }
               let currentMonthTaken = key === 'month_taken' ? isNaN(row[key]) ? new Date(row[key]) : parseInt(row[key]) : null;
               // if (key === 'month_taken') {
-    
+
 
               // }
 
@@ -501,7 +501,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     setSelectStudentOpen(false)
   }
 
-  
+
 
   const handleSave = () => {
     const newRows = cloneDeep(rows)
@@ -525,11 +525,11 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
           delete newRow.attachment
         }
         if (newRow.month_taken) {
-          newRow.month_taken = newRow.month_taken && !isNaN(newRow.month_taken) ?  moment(new Date(parseInt(newRow.month_taken))).format('yyyy-MM-DD'): moment(new Date(newRow.month_taken)).format('yyyy-MM-DD')
+          newRow.month_taken = newRow.month_taken && !isNaN(newRow.month_taken) ? moment(new Date(parseInt(newRow.month_taken))).format('yyyy-MM-DD') : moment(new Date(newRow.month_taken)).format('yyyy-MM-DD')
         }
         return newRow
       })
-  
+      console.log('newRowszzzzzzzzz',newRows)
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
     onHasChanged(false)
   }
@@ -625,12 +625,20 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
   useEffect(() => {
     if (gradeInput.gradeList) {
-      let newGradeList = (gradeInput.gradeList || []) .filter(e => e.app_group_id)
+      let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
       if (groupType === 'bcombs') {
-        newGradeList = newGradeList.filter(e => !e.form_contents)
+        newGradeList = newGradeList.filter(e => !e.form_contents);
+
+        if (type === 'all') {
+          if (vendors && vendors[0] && vendors[0].app_groups) {
+            const grpIds = vendors[0].app_groups.map(item => item.app_group_id);
+            newGradeList = newGradeList.filter(item => grpIds.includes(item.app_group_id));
+          }
+
+        }
       } else {
         newGradeList = newGradeList.filter(e => e.form_contents);
-        
+
         if (newGradeList.length === 0) {
           newGradeList = applications && applications.map(item => {
             return {
@@ -654,16 +662,16 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
       //console.log('ROWSSSSSSSSSSSSSSS updatedGradeList', updatedGradeList)
 
       //if (updatedGradeList.length > 0) {
-        // const newRows = cloneDeep(updatedGradeList).map(row => {
-        //   const { student_test_id } = updatedGradeList.find(e => (
-        //     e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
-        //   )) || {}
-        //   return { ...row, student_test_id: student_test_id || row.student_test_id }
-        // })
-        // console.log('ROWSSSSSSSSSSSSSSS2', rows)
-        // console.log('ROWSSSSSSSSSSSSSSS2 newRows', newRows.filter(item => item.child_id === 'dd783691-67cd-11eb-8212-dafd2d0ae3ff'))
-        setRows([])
-        setFilteredRows([])
+      // const newRows = cloneDeep(updatedGradeList).map(row => {
+      //   const { student_test_id } = updatedGradeList.find(e => (
+      //     e.child_id === row.child_id && e.grade_taken == row.grade_taken && e.test_name === row.test_name && e.attempt == row.attempt
+      //   )) || {}
+      //   return { ...row, student_test_id: student_test_id || row.student_test_id }
+      // })
+      // console.log('ROWSSSSSSSSSSSSSSS2', rows)
+      // console.log('ROWSSSSSSSSSSSSSSS2 newRows', newRows.filter(item => item.child_id === 'dd783691-67cd-11eb-8212-dafd2d0ae3ff'))
+      setRows([])
+      setFilteredRows([])
       //}
       // else {
       //   setRows([])
@@ -695,41 +703,77 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   }
 
   let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
-
+  console.log('gradeInput.gradeList',gradeInput.gradeList.filter(item => item.child_id === 'd92cbfa9-1196-11ec-8726-8e38912fb756'))
   if (groupType === 'bcombs') {
-    selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
+    selectStudentRows = selectStudentRows.filter(e => !e.form_contents);
+
+    if (type === 'all') {
+      if (vendors && vendors[0] && vendors[0].app_groups) {
+
+        const grpIds = vendors[0].app_groups.map(item => item.app_grp_id);
+
+        selectStudentRows = applications.filter(application => {
+          const classTeachers = application.class_teacher && application.class_teacher.split(',');
+          return classTeachers && classTeachers.some(grpId => grpIds.includes(grpId))
+          //return appGroupIds.includes(application.class_teacher)
+        }).map(application => {
+          const classTeachers = application.class_teacher && application.class_teacher.split(',');
+          const currentStudent = selectStudentRows.find(item => {
+            return item.child_id === application.child.ch_id
+          });
+
+          if (currentStudent) {
+            return {
+              ...currentStudent
+            }
+          }
+
+          return {
+            app_group_id: classTeachers && classTeachers[0],
+            child_id: application.child.ch_id,
+            standardized_test: [],
+            cumulative_grades: [],
+            form_contents:null,
+            firstname: application.child.firstname,
+            lastname:  application.child.lastname
+          }
+
+        })
+      }
+
+    }
   } else {
-    selectStudentRows = selectStudentRows.filter(e =>  {
-      if(type === 'all') {
-          const ids = e.app_group_id.split(',');
-          return e.form_contents && ids.some(id => appGroupIds.includes(id))
+    selectStudentRows = selectStudentRows.filter(e => {
+      if (type === 'all') {
+        const ids = e.app_group_id.split(',');
+        return e.form_contents && ids.some(id => appGroupIds.includes(id))
       }
       return e.form_contents
     });
-      // selectStudentRows = applications && applications.map((e) => {
-      //   const currentApplication = selectStudentRows.find(item => {
-      //     return e.app_id === item.child_id && item.app_group_id
-      //   });
+    // selectStudentRows = applications && applications.map((e) => {
+    // const currentApplication = selectStudentRows.find(item => {
+    //   return e.app_id === item.child_id && item.app_group_id
+    // });
 
-      //   if(currentApplication) {
-      //     return {
-      //       ...currentApplication
-      //     }
-      //   }
-      //   return {
-      //     app_group_id: e.class_teacher,
-      //     child_id: e.app_id,
-      //     standardized_test: [],
-      //     cumulative_grades: [],
-      //     form_contents: e.form_contents,
-      //     firstname: null,
-      //     lastname: null
-      //   }
-      // })
+    // if(currentApplication) {
+    //   return {
+    //     ...currentApplication
+    //   }
+    // }
+    // return {
+    //   app_group_id: e.class_teacher,
+    //   child_id: e.app_id,
+    //   standardized_test: [],
+    //   cumulative_grades: [],
+    //   form_contents: e.form_contents,
+    //   firstname: null,
+    //   lastname: null
+    // }
+    // })
 
 
   }
-
+  console.log('SELECETED STUDENT ROWSSSSSSSSSS', selectStudentRows)
   return (
     <div
       className='standardTestTable'
