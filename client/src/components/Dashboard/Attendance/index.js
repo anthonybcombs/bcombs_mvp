@@ -321,9 +321,11 @@ export default function index(props) {
 
 	const getDefaultClassCount = () => {
 		const appGroupIds = appGroups.map(item => item.app_grp_id);
+		
 		const size = applications.activeapplications.filter(app => {
 			if (app.class_teacher) {
-				return appGroupIds && appGroupIds.includes(app.class_teacher)
+				const classTeacher = app.class_teacher.split(',');
+				return classTeacher.some(id => appGroupIds.includes(id) );
 			}
 		});
 		return size.length;
@@ -670,8 +672,8 @@ export default function index(props) {
 													<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link>
 												</td>
 												<td>
-													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor`}>Input</Link> /
-													<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor`}>View</Link>
+													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all`}>Input</Link> /
+													<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all`}>View</Link>
 												</td>
 											</tr>
 										)

@@ -712,6 +712,7 @@ export default function index() {
 			// if(name !== 'custom') {
 			// 	dispatch(requestGetApplications(vendorId));
 			// }
+			console.log('vendorIdrrrrrrrrr',vendorId)
 			if (name !== 'custom') {
 				dispatch(requestGetApplications(vendorId));
 			}
@@ -777,7 +778,7 @@ export default function index() {
 					const applicationGroups = vendors[0].app_groups;
 					const ids = applicationGroups.map(item => item.app_grp_id);
 					// console.log('idsssssssssssss',ids)
-
+					console.log('all ids',ids)
 					setAppGroupIds(ids);
 					setAppGroupId('all');
 				}
@@ -803,8 +804,8 @@ export default function index() {
 			if (appGroupId === 'all') {
 				///filterApplications = applications.activeapplications;
 				filterApplications = applications.activeapplications.filter(application => {
-					const classTeachers = application.class_teacher && application.class_teacher.split(',')
-					return appGroupIds && appGroupIds.some(grpId => classTeachers && classTeachers.includes(grpId))
+					const classTeachers = application.class_teacher && application.class_teacher.split(',');
+					return  classTeachers && classTeachers.some(grpId => appGroupIds.includes(grpId))
 					//return appGroupIds.includes(application.class_teacher)
 				});
 			} else {
@@ -813,8 +814,10 @@ export default function index() {
 				});
 			}
 			filterApplications = filterApplications.map(item => {
-				let currentAttendance = attendance.list.find(att => item.child && att.child_id === item.child.ch_id);
-				item.class_teacher = name;
+				//let currentAttendance = attendance.list.find(att => item.child && att.child_id === item.child.ch_id);
+				const classTeacher = item.class_teacher && item.class_teacher.split(',');
+				item.class_teacher = name === 'all' ? classTeacher && classTeacher[0] : appGroupId
+				item.app_group_id = name === 'all' ? classTeacher && classTeacher[0] : appGroupId
 				return item;
 			});
 			console.log('filterApplications', filterApplications)
@@ -1026,10 +1029,12 @@ export default function index() {
 
 	const handleAttendanceSave = () => {
 		//reset();
-		console.log('applicationList', applicationList)
+
 		const attendanceList = applicationList.map(app => {
+	
 			return {
 				app_id: app.app_id,
+				app_group_id: app.class_teacher,
 				attendance_status: app.attendance_status || '',
 				child_id: name === 'custom' ? app.app_id : app.child && app.child.ch_id,
 				vendor: app.vendor,

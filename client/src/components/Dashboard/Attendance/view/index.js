@@ -643,11 +643,11 @@ export default function index(props) {
 
 	const [currentDisplayDays, setCurrentDisplayDays] = useState([]);
 	const [displayDays, setDisplayDays] = useState(DEFAULT_DISPLAY_DAYS);
-	const [defaultDisplayDays, setDefaultDisplayDays] = useState(DEFAULT_DISPLAY_DAYS);
+	//const [defaultDisplayDays, setDefaultDisplayDays] = useState(DEFAULT_DISPLAY_DAYS);
 	const [displayDayIndex, setDisplayDayIndex] = useState([0, 1, 2]);
 	const [attendanceDisplay, setAttendanceDisplay] = useState([]);
 	const [attendanceSummary, setAttendanceSummary] = useState({});
-	const [attendanceDates, setAttendanceDates] = useState([]);
+	//const [attendanceDates, setAttendanceDates] = useState([]);
 	const [defaultAttendanceDisplay, setDefaultAttendanceDisplay] = useState([]);
 	const [selectedAttendanceDate, setSelectedAttendanceDate] = useState(new Date())
 	const [events, setEvents] = useState([]);
@@ -671,10 +671,12 @@ export default function index(props) {
 		}
 	}, []);
 
-	// useEffect(() => {
-	// 	if (vendors && vendors.length > 0) {
-	// 	}
-	// }, [vendors]);
+	useEffect(() => {
+		if (vendors && vendors.length > 0) {
+			console.log('requestGetApplications')
+			dispatch(requestGetApplications(vendors[0].id))
+		}
+	}, [vendors]);
 
 	useEffect(() => {
 
@@ -694,10 +696,19 @@ export default function index(props) {
 		}
 	}, []);
 	useEffect(() => {
-
+		console.log('ATTENDACEEEEEEEE', attendance)
+		console.log('ATTENDACEEEEEEEE applications', applications)
 		if (attendance.list) {
-
-			let currentAttendance = attendance.list.reduce((accum, att) => {
+			
+			let filteredAttendance = [...( attendance.list || [])]
+			if(searchParams && searchParams.type === 'all') {
+				filteredAttendance = filteredAttendance.filter(att => {
+					const isBcombs = applications.activeapplications.some(item => item.child.ch_id === att.child_id)
+					return isBcombs;
+				});
+				console.log('ATTENDACEEEEEEEE filteredAttendance',filteredAttendance)
+			}
+			let currentAttendance = filteredAttendance.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 
 				attDate = attDate.replaceAll('-', '_');

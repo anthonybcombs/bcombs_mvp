@@ -21,7 +21,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ applications, importData = [], childId, requestList, groupId, groupType, loading, onHasChanged, appGroupIds, type }) => {
+export default ({ applications, importData = [], childId, requestList, groupId, groupType, loading, onHasChanged, appGroupIds, type, vendors }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -798,7 +798,43 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
   })
 
   if (groupType === 'bcombs') {
-    selectStudentRows = selectStudentRows.filter(e => !e.form_contents)
+    selectStudentRows = selectStudentRows.filter(e => !e.form_contents);
+
+    if (type === 'all') {
+      if (vendors && vendors[0] && vendors[0].app_groups) {
+
+        const grpIds = vendors[0].app_groups.map(item => item.app_grp_id);
+
+        selectStudentRows = applications.filter(application => {
+          const classTeachers = application.class_teacher && application.class_teacher.split(',');
+          return classTeachers && classTeachers.some(grpId => grpIds.includes(grpId))
+          //return appGroupIds.includes(application.class_teacher)
+        }).map(application => {
+          const classTeachers = application.class_teacher && application.class_teacher.split(',');
+          const currentStudent = selectStudentRows.find(item => {
+            return item.child_id === application.child.ch_id
+          });
+
+          if (currentStudent) {
+            return {
+              ...currentStudent
+            }
+          }
+
+          return {
+            app_group_id: classTeachers && classTeachers[0],
+            child_id: application.child.ch_id,
+            standardized_test: [],
+            cumulative_grades: [],
+            form_contents:null,
+            firstname: application.child.firstname,
+            lastname:  application.child.lastname
+          }
+
+        })
+      }
+
+    }
   } else {
   
     selectStudentRows = selectStudentRows.filter(e => e.form_contents)

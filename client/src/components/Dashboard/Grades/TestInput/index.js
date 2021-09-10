@@ -322,7 +322,7 @@ export default ({ child_id }) => {
   const requestList = () => {
 
     if (group_id && group_type) {
-
+      
       if ((isVendor || type === 'all') ) {
         if(vendors && (Array.isArray(vendors) && vendors[0])) {
           dispatch(requestGetStudentCumulativeGradeByVendor(vendors[0].id))
@@ -352,7 +352,10 @@ export default ({ child_id }) => {
 
   useEffect(() => {
     requestList();
-    dispatch(requestGetCustomApplications(group_id));
+    if(request_type === 'forms')  {
+      dispatch(requestGetCustomApplications(group_id));
+    }
+
   }, []);
 
 
@@ -369,7 +372,9 @@ export default ({ child_id }) => {
 		if (vendors && vendors.length > 0  ) {
       //dispatch(requestGetApplications(vendors[0].id));
       if( type && type === 'all') {
-        dispatch(requestGetStudentCumulativeGradeByVendor(vendors[0].id))
+        console.log("TRIGGEREDDDDDDDDDDD")
+        dispatch(requestGetStudentCumulativeGradeByVendor(vendors[0].id));
+        dispatch(requestGetApplications(vendors[0].id));
       }
       console.log('VENDORRRRRRRRRRR', vendors)
      
@@ -506,6 +511,7 @@ export default ({ child_id }) => {
         : `/dashboard/grades?group_id=${group_id}&group_type=${group_type}`
     window.location.replace(backUrl)
   }
+  console.log('vendorsssssssss',vendors)
   return (
     <GradeInputStyled>
       <div className='gradeInputView-header'>
@@ -569,6 +575,7 @@ export default ({ child_id }) => {
             requestList={requestList}
             onHasChanged={(bool) => setHasChanged(bool)}
             type={type}
+            vendors={vendors}
           />
           <div className='gradeInputView-header' style={{ 'marginTop': '1rem' }}>
             <div className='action left'></div>
@@ -612,6 +619,7 @@ export default ({ child_id }) => {
             requestList={requestList}
             onHasChanged={(bool) => setHasChanged(bool)}
             type={type}
+            vendors={vendors}
           />
         </div>
       </div>
