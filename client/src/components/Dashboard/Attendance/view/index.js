@@ -851,7 +851,7 @@ export default function index(props) {
 				firstname: att.firstname
 			}
 
-			const profile = att?.image || ''
+			let profile = att?.image || ''
 			if (!form_contents && profile) {
 				profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
 			} else if (form_contents) {
