@@ -691,6 +691,7 @@ const inputs = `
 
     input AttendanceChildInput {
         app_id: String   
+        app_group_id: String   
         attendance_status: String   
         volunteer_hours: Float
         mentoring_hours: Float
