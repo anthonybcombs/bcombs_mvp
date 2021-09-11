@@ -530,11 +530,7 @@ export default function index() {
         zip_code: parent.profile.zip_code !== '' ? parent.profile.zip_code : childProfile.zip_code,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
-<<<<<<< HEAD
-          SAVE_DATE_FORMAT),
-=======
           BIRTHDATE_FORMAT),
->>>>>>> stage
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getAppEtnicities(parent.profile.ethinicity),
@@ -581,12 +577,8 @@ export default function index() {
           age: getAge(childsInformation[i].profile.date_of_birth),
           birthdate: format(
             new Date(childsInformation[i].profile.date_of_birth),
-<<<<<<< HEAD
-            SAVE_DATE_FORMAT),
-=======
             BIRTHDATE_FORMAT),
           image: childsInformation[i].profile.image,
->>>>>>> stage
           gender: childsInformation[i].profile.gender,
           address: childsInformation[i].profile.address,
           city: childsInformation[i].profile.city,
@@ -595,11 +587,7 @@ export default function index() {
           child_lives_with: getChildLivesWith(childsInformation[i].profile.child_lives_with),
           preffered_start_date:format(
             new Date(childsInformation[i].profile.preffered_start_date),
-<<<<<<< HEAD
-            SAVE_DATE_FORMAT),
-=======
             BIRTHDATE_FORMAT),
->>>>>>> stage
           current_classroom: childsInformation[i].profile.current_classroom,
           primary_language: childsInformation[i].profile.primary_language,
           needed_days: childsInformation[i].profile.needed_days,
