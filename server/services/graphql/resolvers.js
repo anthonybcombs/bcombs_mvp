@@ -1299,7 +1299,7 @@ const resolvers = {
           name: admin.name
         });
       }
-
+      
       for (const form of admin.forms) {
         await addVendorAdmins({
           user: user.id,
@@ -1313,13 +1313,11 @@ const resolvers = {
 
       let admins = [];
       for (const vendor of vendors) {
-        console.log("vendor", vendor);
         let va = await getVendorAdmins(vendor.id);
 
         for(let x of va) {
           if(x.form) {
             let form = await getCustomApplicationFormByFormId(x.form);
-            console.log('formDetails', form.form_contents.formTitle);
             if(form && form.form_contents && form.form_contents.formTitle)
               x.formTitle = form.form_contents.formTitle;
           }
@@ -1328,7 +1326,6 @@ const resolvers = {
         admins.push(...va);
       }
 
-      console.log("admins", admins);
       return admins;
 
       // const response = await getVendorAdmins(admin.currentUser);
