@@ -1470,11 +1470,13 @@ const resolvers = {
 
       const hasLoginField = !!(loginType.length > 0);
 
-      const hasNameField = !!(nameType.length > 0);
+      // const hasNameField = !!(nameType.length > 0);
+      const hasNameField = !!(nameType);
 
       loginType = loginType.length > 0 ? loginType[0] : {};
 
-      nameType = nameType.length > 0 ? nameType[0] : {};
+      // nameType = nameType.length > 0 ? nameType[0] : {};
+      nameType = nameType ? nameType : {};
       
       if(hasLoginField) {
         email = loginType?.fields.filter((item) => {
