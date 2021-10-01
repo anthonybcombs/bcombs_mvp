@@ -1440,6 +1440,7 @@ const resolvers = {
     },
     async submitCustomApplicationForm(root, { application }, context) {
 
+     try{
       let loginType;
       let nameType;
       let email;
@@ -1468,16 +1469,24 @@ const resolvers = {
         return item.type == "primeFile"
       });
 
-      const hasLoginField = !!(loginType.length > 0);
+      console.log('nameType loginType',loginType)
+      console.log('nameType loginType',loginType)
+
+      //const hasLoginField = !!(loginType.length > 0);
+      const hasLoginField = loginType
 
       // const hasNameField = !!(nameType.length > 0);
-      const hasNameField = !!(nameType);
+      const hasNameField = nameType
 
-      loginType = loginType.length > 0 ? loginType[0] : {};
+      //loginType = loginType.length > 0 ? loginType[0] : {};
+      loginType = loginType ? loginType[0] : {};
 
       // nameType = nameType.length > 0 ? nameType[0] : {};
-      nameType = nameType ? nameType : {};
+      nameType = nameType ? nameType[0] : {};
       
+      console.log('nameType hasLoginField',hasLoginField)
+      console.log('nameType loginType',loginType)
+
       if(hasLoginField) {
         email = loginType?.fields.filter((item) => {
           return item.type == "email"
@@ -1489,7 +1498,9 @@ const resolvers = {
   
         email = email.length > 0 ? email[0] : "";
         password = password.length > 0 ? password[0] : "";
-      } else if (hasNameField) {
+      } 
+      
+      if (hasNameField) {
         firstname = nameType?.fields.filter((item) => {
           return item.label == "First Name"
         });
@@ -1504,12 +1515,16 @@ const resolvers = {
 
         console.log('nameType', nameType);
 
+        console.log('nameType firstname', firstname);
+        console.log('nameType middlename', middlename);
+        console.log('nameType lastname', lastname);
+
         // firstname = firstname.length > 0 ? firstname[0] : "";
         // lastname = lastname.length > 0 ? lastname[0] : "";
         // middlename = middlename.length > 0 ? middlename[0] : "";
-        firstname = firstname ? firstname : "";
-        lastname = lastname ? lastname : "";
-        middlename = middlename ? middlename : "";
+        // firstname = firstname ? firstname : "";
+        // lastname = lastname ? lastname : "";
+        // middlename = middlename ? middlename : "";
       } else {
         return {
           messageType: "error",
@@ -1524,59 +1539,61 @@ const resolvers = {
         if(primeFile?.fields.length > 0) {
           console.log("why i'm not here");
           let fileContent = primeFile.fields[0]?.value;
+          if(fileContent) {
+            fileContent = fileContent ? JSON.parse(fileContent): {};
 
-          fileContent = fileContent ? JSON.parse(fileContent): {};
-
-          console.log("fileContent", fileContent);
-          if(fileContent && fileContent.data) {
-
-            console.log("why i'm not here2");
-            const buf = Buffer.from(
-              fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
-              "base64"
-            );
-
-            const s3Payload = {
-              Bucket: currentS3BucketName,
-              Key: `file/${primeFile.id}/${fileContent.filename}`,
-              Body: buf,
-              ContentEncoding: "base64",
-              ContentType: fileContent.contentType,
-              ACL: "public-read"
-            };
-
-            await uploadFile(s3Payload);
-
-            fileContent.url = s3Payload.Key;
-            fileContent.data = "";
-
-            console.log("fileContent url", fileContent.url);
-
-            primeFile.fields[0].value = JSON.stringify(fileContent);
-
-            console.log("update primefile", util.inspect(primeFile, false, null, true));
-
-            formData = formData.map((item) => {
-              if(item.id == primeFile.id) {
-                item = primeFile
+            console.log("fileContent", fileContent);
+            if(fileContent && fileContent.data) {
+  
+              console.log("why i'm not here2");
+              const buf = Buffer.from(
+                fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
+                "base64"
+              );
+  
+              const s3Payload = {
+                Bucket: currentS3BucketName,
+                Key: `file/${primeFile.id}/${fileContent.filename}`,
+                Body: buf,
+                ContentEncoding: "base64",
+                ContentType: fileContent.contentType,
+                ACL: "public-read"
+              };
+  
+              await uploadFile(s3Payload);
+  
+              fileContent.url = s3Payload.Key;
+              fileContent.data = "";
+  
+              console.log("fileContent url", fileContent.url);
+  
+              primeFile.fields[0].value = JSON.stringify(fileContent);
+  
+              console.log("update primefile", util.inspect(primeFile, false, null, true));
+  
+              formData = formData.map((item) => {
+                if(item.id == primeFile.id) {
+                  item = primeFile
+                }
+                return item;
+              });
+              
+              const formContents = {
+                formTitle: formTitle,
+                formData: formData
               }
-              return item;
-            });
-            
-            const formContents = {
-              formTitle: formTitle,
-              formData: formData
+  
+              application.form_contents = formContents;
+  
+              console.log("formContents", util.inspect(formContents, false, null, true));
+  
+              // let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
+              // formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
+  
+              // await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
             }
-
-            application.form_contents = formContents;
-
-            console.log("formContents", util.inspect(formContents, false, null, true));
-
-            // let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
-            // formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
-
-            // await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
           }
+
         }
       }
 
@@ -1584,10 +1601,12 @@ const resolvers = {
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
       if(hasNameField) {
-
-        // firstname.value = firstname.value.slice(1, -1);
-        // lastname.value = lastname.value.slice(1, -1);
-        // middlename.value = middlename.value.slice(1, -1);
+        console.log('firstname',firstname)
+        console.log('lastname',firstname)
+        console.log('middlename',firstname)
+        firstname.value = firstname && firstname[0]?.value.slice(1, -1);
+        lastname.value = lastname && lastname[0]?.value.slice(1, -1);
+        middlename.value = middlename && middlename[0]?.value.slice(1, -1);
 
         const chObj = {
           firstname: firstname.value,
@@ -1705,6 +1724,11 @@ const resolvers = {
         messageType: "info",
         message: "successfully submitted your application form"
       } 
+
+     }
+     catch(err) {
+       console.log('Error', err)
+     }
     },
     async updateSubmitCustomApplication(root, {application}, context) {
 
