@@ -1502,9 +1502,12 @@ const resolvers = {
 
         console.log('nameType', nameType);
 
-        firstname = firstname.length > 0 ? firstname[0] : "";
-        lastname = lastname.length > 0 ? lastname[0] : "";
-        middlename = middlename.length > 0 ? middlename[0] : "";
+        // firstname = firstname.length > 0 ? firstname[0] : "";
+        // lastname = lastname.length > 0 ? lastname[0] : "";
+        // middlename = middlename.length > 0 ? middlename[0] : "";
+        firstname = firstname ? firstname : "";
+        lastname = lastname ? lastname : "";
+        middlename = middlename ? middlename : "";
       } else {
         return {
           messageType: "error",
