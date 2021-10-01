@@ -1583,9 +1583,9 @@ const resolvers = {
 
       if(hasNameField) {
 
-        firstname.value = firstname.value.slice(1, -1);
-        lastname.value = lastname.value.slice(1, -1);
-        middlename.value = middlename.value.slice(1, -1);
+        // firstname.value = firstname.value.slice(1, -1);
+        // lastname.value = lastname.value.slice(1, -1);
+        // middlename.value = middlename.value.slice(1, -1);
 
         const chObj = {
           firstname: firstname.value,
