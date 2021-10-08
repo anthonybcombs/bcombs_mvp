@@ -320,7 +320,7 @@ export default function index(props) {
 
 
 	const getDefaultClassCount = () => {
-		const appGroupIds = appGroups.map(item => item.app_grp_id);
+		const appGroupIds = appGroups && appGroups.map(item => item.app_grp_id);
 		
 		const size = applications.activeapplications.filter(app => {
 			if (app.class_teacher) {
@@ -430,28 +430,28 @@ export default function index(props) {
 			});
 	};
 
-	const getTotalCount = () => {
-		let totalCount = 0;
+	// const getTotalCount = () => {
+	// 	let totalCount = 0;
 
-		// const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
+	// 	// const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
 
-		// for (const group of appGroups) {
-		// 	totalCount += group.size;
-		// }
+	// 	// for (const group of appGroups) {
+	// 	// 	totalCount += group.size;
+	// 	// }
 
-		for (const group of filteredGroups) {
-			totalCount += group.size;
-		}
-		// filteredGroups.map(group => {
-		// 	totalCount += group.size;
-		// });
-		return totalCount;
-	};
+	// 	for (const group of filteredGroups) {
+	// 		totalCount += group.size;
+	// 	}
+	// 	// filteredGroups.map(group => {
+	// 	// 	totalCount += group.size;
+	// 	// });
+	// 	return totalCount;
+	// };
 	console.log('FORMMMMMMMMM', form)
 
 	const getDefaultTotalCount = () => {
 		let totalCount = 0;
-		appGroups.map(group => {
+		appGroups && appGroups.map(group => {
 			totalCount += group.size;
 		});
 		return totalCount;
@@ -522,27 +522,27 @@ export default function index(props) {
 		return total > 0 ? total : 0;
 	};
 
-	const getTotalAvailableByForm = id => {
-		const formGroups = form && form.formAppGroups ? form.formAppGroups.filter(appGroup => appGroup.form === id) : [];
-		// let total = 0;
-		// console.log('Get Toital AVailable formGroups', formGroups)
-		// if(formGroups) {
-		// 	total = formGroups && formGroups.reduce((accum, item) => {
-		// 		let classCount = item.group ? getFormClassCount(item) : 0;
-		// 		return accum + item.size - classCount;
-		// 	}, 0);
-		// }
+	// const getTotalAvailableByForm = id => {
+	// 	const formGroups = form && form.formAppGroups ? form.formAppGroups.filter(appGroup => appGroup.form === id) : [];
+	// 	// let total = 0;
+	// 	// console.log('Get Toital AVailable formGroups', formGroups)
+	// 	// if(formGroups) {
+	// 	// 	total = formGroups && formGroups.reduce((accum, item) => {
+	// 	// 		let classCount = item.group ? getFormClassCount(item) : 0;
+	// 	// 		return accum + item.size - classCount;
+	// 	// 	}, 0);
+	// 	// }
 
 
-		let total = 0;
-		for (const group of formGroups) {
-			let classCount = getFormClassCount(group);
-			total += group.size - classCount;
-		}
+	// 	let total = 0;
+	// 	for (const group of formGroups) {
+	// 		let classCount = getFormClassCount(group);
+	// 		total += group.size - classCount;
+	// 	}
 
-		total = total < 0 ? 0 : total;
-		return total;
-	};
+	// 	total = total < 0 ? 0 : total;
+	// 	return total;
+	// };
 
 	const getTotalClassCountByForm = id => {
 		// console.log('form.formAppGroups', form.formAppGroups)
