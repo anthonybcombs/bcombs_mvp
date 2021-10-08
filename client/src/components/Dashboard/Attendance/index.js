@@ -320,7 +320,7 @@ export default function index(props) {
 
 
 	const getDefaultClassCount = () => {
-		const appGroupIds = appGroups && appGroups.map(item => item.app_grp_id);
+		const appGroupIds = appGroups ? appGroups.map(item => item.app_grp_id) : [];
 		
 		const size = applications.activeapplications.filter(app => {
 			if (app.class_teacher) {
