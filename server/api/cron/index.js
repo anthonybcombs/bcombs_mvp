@@ -6,7 +6,8 @@ import {
 import {
   getApplicationsByAppGroup,
   updateApplicationUser,
-  updateSubmitCustomApplication
+  updateSubmitCustomApplication,
+  updateEmergencyConctacts
 } from "../applications";
 
 import {
@@ -121,6 +122,14 @@ export const triggerCronSetReminder = async () => {
         child = child.length > 0 ? child[0] : {};
 
         let parents = await getParentByApplication(appl.app_id);
+
+        let emergencyContacts;
+
+        try {
+          emergencyContacts = appl.emergency_contacts ? JSON.parse(appl.emergency_contacts) : '';
+        } catch(e) {
+          emergencyContacts = '';
+        }
 
         for(const f of fields1) {
           if(f == 'firstname')
@@ -241,6 +250,29 @@ export const triggerCronSetReminder = async () => {
               parent.person_recommend = null
           }
         }
+
+        if(emergencyContacts) {
+          emergencyContacts.map((ec) => {
+            if(fields2.includes('ecfirstname')) {
+              ec.firstname = ''
+            } else if(fields2.includes('eclastname')) {
+              ec.last_name = ''
+            } else if(fields2.includes('ecgender')) {
+              ec.gender = ''
+            } else if(fields2.includes('ecmobilephone')) {
+              ec.mobile_phone = ''
+            } else if(fields2.includes('ecworkphone')) {
+              ec.work_phone = ''
+            } else if(fields2.includes('ecrelationshiptochild')) {
+              ec.relationship_to_child = ''
+            } 
+          })
+  
+          appl.emergency_contacts = JSON.stringify(emergencyContacts);
+
+          await updateEmergencyConctacts(appl.app_id, appl.emergency_contacts);
+        }
+
 
         await updateChild(child);
 
