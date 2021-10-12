@@ -194,6 +194,26 @@ export default function index() {
 
       //setFormOptions(formattedVendors[0].forms);
       setVendorOptions(formattedVendors);
+
+      const defaultVendor = formattedVendors.length > 0 ? formattedVendors[0] : '';
+
+      console.log('defaultVendor', defaultVendor);
+      let defaultForm = ""
+
+      if(defaultVendor.forms && 
+        defaultVendor.forms.length > 0 ) {
+          defaultForm = defaultVendor.forms[0];
+          setFormOptions(defaultVendor.forms);
+        }
+
+      setAddAdminFields({
+        name: '',
+        email: '',
+        vendor: defaultVendor.id,
+        forms: [{...defaultForm}]
+      })
+
+      
     }
   }, [vendors]);
 
@@ -233,6 +253,7 @@ export default function index() {
       console.log('getAdmins', getAdmins);
 
       setCurrentAdmins(getAdmins)
+
     }
   }, [admins])
 

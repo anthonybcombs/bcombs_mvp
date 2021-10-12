@@ -632,6 +632,36 @@ export default function index({
     name: 'How did you find us?',
     value: 'howdidyoufindus',
     cat: 'Family Information'
+  }, {
+    id: uuid(),
+    name: 'First Name',
+    value: 'ecfirstname',
+    cat: 'Emergency Contact'
+  }, {
+    id: uuid(),
+    name: 'Last Name',
+    value: 'eclastname',
+    cat: 'Emergency Contact'
+  }, {
+    id: uuid(),
+    name: 'Gender',
+    value: 'ecgender',
+    cat: 'Emergency Contact'
+  }, {
+    id: uuid(),
+    name: 'Mobile Phone',
+    value: 'ecmobilephone',
+    cat: 'Emergency Contact'
+  }, {
+    id: uuid(),
+    name: 'Work Phone',
+    value: 'ecworkphone',
+    cat: 'Emergency Contact'
+  }, {
+    id: uuid(),
+    name: 'Relationship To Child',
+    value: 'ecrelationshiptochild',
+    cat: 'Emergency Contact'
   }];
 
   useEffect(() => {
