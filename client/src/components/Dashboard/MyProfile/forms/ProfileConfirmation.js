@@ -23,7 +23,7 @@ const ProfileConfirmationModal = styled.div`
     width: 20%;
     border: none !important;
     height: auto;
-    position:absolute;
+    padding: 12px;
     top:70%;
   }
   .profile-confirmation {
@@ -119,6 +119,7 @@ export default function index({
       child_ids: selectedChild,
       parent_ids: selectedParent,
     };
+    console.log('PAYLOADDDD', payload)
     onSubmit(payload);
   };
 
@@ -151,9 +152,9 @@ export default function index({
               style={{ marginBottom: 20, color: "#F36F21" }}
             />
             <h3>Update Profile Confirmation</h3>
-            {applications &&
-            (applications.child.length > 0 ||
-              applications.parent.length > 0) ? (
+            {applications && 
+            ((applications.child && applications.child.length > 0) ||
+              (applications.parent && applications.parent.length > 0)) ? (
               <>
                 <p>
                   Would you like to reflect these changes to your application

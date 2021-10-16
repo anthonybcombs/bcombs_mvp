@@ -1203,6 +1203,7 @@ const queryTypes = `
         email_address:String
         firstname:String
         lastname:String 
+        image: String
         phone_number:String
         address: String
         city:String
