@@ -211,6 +211,8 @@ export default function index() {
       const gender = auth.user.gender + "";
       newParentsInformation[0].profile.gender = auth.user.gender ? 
         gender.charAt(0).toUpperCase() + gender.slice(1) : newParentsInformation[0].profile.gender;
+
+      setParentsInformation(...[newParentsInformation]);
     }
   }, [auth])
 
