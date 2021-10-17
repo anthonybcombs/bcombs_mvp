@@ -8,6 +8,18 @@ export const SIGN_IN_MUTATION = gql`
         token_type
         id_token
         email_verified
+        email
+        address
+        birth_date
+        custom_gender
+        ethnicity
+        family_relationship
+        first_name
+        gender
+        grade
+        last_name
+        school
+        zip_code
       }
       status {
         messageType

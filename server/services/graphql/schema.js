@@ -897,6 +897,17 @@ const queryTypes = `
         name: String   
         profile_img: String     
         attendance_filter_config: String
+        address: String
+        birth_date: String
+        custom_gender: String
+        ethnicity: String
+        family_relationship: String
+        first_name: String
+        gender: String
+        grade: String
+        last_name: String
+        school: String
+        zip_code: String
         
     }
     type UserType {

@@ -7,6 +7,7 @@ import cloneDeep from 'lodash.clonedeep'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPrint, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { useReactToPrint } from 'react-to-print'
+import { format } from "date-fns";
 
 import FormStyled from './styles'
 import FORM_DATA from './sample.json'
@@ -91,6 +92,122 @@ export default (props) => {
       setForm(true)
     }
   }, [formData])
+
+  useEffect(() => {
+
+    let newFormFields = actualFormFields
+
+    if(auth.status == "SIGNED_IN") {
+      if(auth.user && 
+        auth.user.address) {
+          for(let f of newFormFields) {
+            if(f.type == 'address') {
+              for(let x of f.fields) {
+                if(x.label == 'Street Address') {
+                  x.value = JSON.stringify(auth.user.address);
+                  break;
+                }
+              }
+              break;
+            }
+          }
+      }
+
+      if(auth.user && 
+        auth.user.zip_code) {
+          for(let f of newFormFields) {
+            if(f.type == 'address') {
+              for(let x of f.fields) {
+                if(x.label == 'Postal / Zip Code') {
+                  x.value = JSON.stringify(auth.user.zip_code);
+                  break;
+                }
+              }
+              break;
+            }
+          }
+      }
+
+      if(auth.user && 
+        auth.user.email) {
+          for(let f of newFormFields) {
+            if(f.type == 'login') {
+              for(let x of f.fields) {
+                if(x.label == 'Email Address') {
+                  x.value = JSON.stringify(auth.user.email);
+                  break;
+                }
+              }
+              break;
+            }
+          }
+
+          for(let f of newFormFields) {
+            if(f.type == 'email') {
+              for(let x of f.fields) {
+                if(x.label == 'Email') {
+                  x.value = JSON.stringify(auth.user.email);
+                  break;
+                }
+              }
+              break;
+            }
+          }
+      }
+
+      if(auth.user && 
+        auth.user.first_name) {
+          for(let f of newFormFields) {
+            if(f.type == 'name') {
+              for(let x of f.fields) {
+                if(x.label == 'First Name') {
+                  x.value = JSON.stringify(auth.user.first_name);
+                  break;
+                }
+              }
+              break;
+            }
+          }
+      }
+
+      if(auth.user && 
+        auth.user.last_name) {
+          for(let f of newFormFields) {
+            if(f.type == 'name') {
+              for(let x of f.fields) {
+                if(x.label == 'Last Name') {
+                  x.value = JSON.stringify(auth.user.last_name);
+                  break;
+                }
+              }
+              break;
+            }
+          }
+      }
+
+      if(auth.user && 
+        auth.user.birth_date) {
+          const bdate = format(new Date(parseInt(auth.user.birth_date)), "MM/dd/yyyy");
+          const splitDate = bdate.split('/');
+
+          console.log('splitDate', splitDate);
+          for(let f of newFormFields) {
+            if(f.type == 'date') {
+              for(let x of f.fields) {
+                if(x.label == "MM")
+                  x.value = splitDate[0] ? JSON.stringify(splitDate[0]) : "";
+                else if(x.label == "DD")
+                  x.value = splitDate[1] ? JSON.stringify(splitDate[1]) : "";
+                else if(x.label == "YYYY")
+                  x.value = splitDate[2] ? JSON.stringify(splitDate[2]) : "";
+
+              }
+              break;
+            }
+          }
+      }
+    }
+  }, [auth])
 
   const dispatch = useDispatch()
 

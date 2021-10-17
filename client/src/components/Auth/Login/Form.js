@@ -111,7 +111,8 @@ export default function Form({
   onSubmit,
   handleInputChange,
   handleGoogleSignIn,
-  handleFacebookSignIn
+  handleFacebookSignIn,
+  hideForgotPassword = false
 }) {
   const theme = useContext(ThemeContext);
   const { register, handleSubmit, errors, setValue } = useForm({
@@ -212,9 +213,14 @@ export default function Form({
         {/* <p>
           New Member! <Link to="/auth/create">Sign Up</Link>
         </p> */}
-        <p>
-          <Link to="/auth/forgot-password">Forgot Password</Link>
-        </p>
+        {
+          hideForgotPassword ? "" : (
+            <p>
+              <Link to="/auth/forgot-password">Forgot Password</Link>
+            </p>
+          )
+        }
+
       </div>
     </LoginFormStyled>
   );
