@@ -57,7 +57,7 @@ export const getUserFromDatabase = async email => {
   }
 };
 
-const getUserProfileFromDatabase = async userId => {
+export const getUserProfileFromDatabase = async userId => {
   const db = makeDb();
   let result;
   try {

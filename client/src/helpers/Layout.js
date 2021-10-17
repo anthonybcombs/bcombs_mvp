@@ -22,6 +22,8 @@ import Logo from "../images/logo1.png";
 import { requestLogout } from "../redux/actions/Auth";
 import { requestUserTypes } from "../redux/actions/UserTypes";
 
+import LoginBox from "./LoginBox";
+
 const HeaderStyled = styled.header`
   display: grid;
   text-align: center;
@@ -76,6 +78,14 @@ const HeaderStyled = styled.header`
   .vendor-welcome-message .name {
     color: #f47b2c;
     font-weight: 400;
+  }
+
+  .header-login {
+    display: flex;
+    align-items: center;
+    color: #f47b2c;
+    font-weight: 400;
+    cursor: pointer;
   }
 
   @media (max-width: 599px) {
@@ -161,6 +171,8 @@ export default function Layout({ children }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  console.log('auth12345', auth)
+
   useEffect(() => {
     if (auth) {
       setCurrentUserProfilePhoto(auth.profile_img || auth.picture);
@@ -178,7 +190,27 @@ export default function Layout({ children }) {
     }
   }, [auth, vendors]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setShowLoginBox(true);
+    }, 5000)
+  }, [])
+
   const location = useLocation();
+
+  const [showLoginBox, setShowLoginBox] = useState(false);
+
+  const handleLoginBoxClose = () => {
+    setShowLoginBox(false);
+  }
+
+  const applicationUrl = location.origin + "/application/";
+  const customFormUrl = location.origin + "/form/";
+
+  console.log('location.href', location.href);
+  console.log('applicationUrl.href', applicationUrl);
+
+  console.log('location.href.includes(applicationUrl)', location.href.includes(applicationUrl));
 
   return (
     <LayoutStyled data-testid="app-layout" theme={theme}>
@@ -187,7 +219,7 @@ export default function Layout({ children }) {
           <Link to="/">
             <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
           </Link>
-          {location.href.includes(location.origin + "/application/") &&
+          {location.href.includes(applicationUrl) &&
             vendors &&
             vendors.length > 0 && (
               <p className="vendor-welcome-message">
@@ -217,6 +249,19 @@ export default function Layout({ children }) {
           />
         </div>
         <div id="app-header-left">
+          {location.href.includes(applicationUrl) || location.href.includes(customFormUrl) ?
+            auth.status == "SIGNED_IN" ? "" 
+            :
+            (
+              <div className="header-login"
+                onClick={() => {setShowLoginBox(true)}}
+              >
+                Login  
+              </div>
+            )
+            :
+            ""
+          }
           <Location
             children={context => {
               if (
@@ -571,6 +616,17 @@ export default function Layout({ children }) {
       </HeaderStyled>
       {children}
       <footer data-testid="app-footer"></footer>
+      {location.href.includes(applicationUrl) || location.href.includes(customFormUrl) ?
+        auth.status == "SIGNED_IN" ? "" 
+        : showLoginBox ? (
+          <LoginBox
+            handleClose={handleLoginBoxClose}
+          >
+          </LoginBox>
+        ) 
+        : ""
+        : ""
+      }
     </LayoutStyled>
   );
 }
