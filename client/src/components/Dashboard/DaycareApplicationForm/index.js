@@ -188,6 +188,9 @@ export default function index() {
 
       newParentsInformation[0].profile.address = auth.user.address ? 
         auth.user.address : newParentsInformation[0].profile.address;
+
+      newParentsInformation[0].profile.zip_code = auth.user.zip_code ? 
+        auth.user.zip_code : newParentsInformation[0].profile.zip_code;
       
       newParentsInformation[0].profile.date_of_birth = auth.user.birth_date ? 
         new Date(parseInt(auth.user.birth_date)) : newParentsInformation[0].profile.date_of_birth;
