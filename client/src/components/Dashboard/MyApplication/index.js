@@ -800,6 +800,7 @@ export default function index() {
           psat_scores: [],
           school_name: application.child.school_name ? application.child.school_name : "",
           school_phone: application.child.school_phone ? application.child.school_phone : "",
+          has_suspended: application.child.has_suspended ? 1 : 0,
           was_suspended: application.child.has_suspended + "",
           reason_suspended: application.child.reason_suspended,
           mentee_start_year: application.child.year_taken,

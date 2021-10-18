@@ -777,7 +777,9 @@ export default function index({
                   }}>
                   <option value="">Select Type</option>
                   {PHONE_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.name}>
+                    <option key={opt.id} value={opt.name}
+                      selected={opt.name == parentProfile?.phone_type}
+                    >
                       {opt.name}
                     </option>
                   ))}
@@ -901,7 +903,9 @@ export default function index({
                     }}>
                     <option value="">Select Type</option>
                     {PHONE_OPTIONS.map(opt => (
-                      <option key={opt.id} value={opt.name}>
+                      <option key={opt.id} value={opt.name}
+                        selected={opt.name == parentProfile?.phone_type2}
+                      >
                         {opt.name}
                       </option>
                     ))}
