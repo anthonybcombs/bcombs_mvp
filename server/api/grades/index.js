@@ -1417,3 +1417,174 @@ export const updateChildDetails = async ({
     return result;
   }
 };
+
+
+export const getStudentCumulativeGradeParent = async ({ parent_id = [] }) => {
+  const db = makeDb();
+  let studentCumulative = [];
+  let studentGrades = [];
+  const parentIds = parent_id.map(id => `UUID_TO_BIN('${id}')`).join(',')
+  try {
+    let applicationStudent = await db.query(
+      `SELECT child.firstname,
+					child.lastname,
+          child.image,
+					sgc.student_grade_cumulative_id,
+					sgc.year_level,
+					sgc.application_type,
+					SUBSTRING_INDEX(app.class_teacher,',',1) as app_group_id,
+					BIN_TO_UUID(app.child) as child_id,
+					BIN_TO_UUID(app.vendor) as vendor
+				FROM child
+				INNER JOIN application app ON app.child=child.ch_id
+				LEFT JOIN student_grade_cumulative sgc ON sgc.child_id=child.ch_id
+				INNER JOIN parent pr ON pr.application=app.app_id
+				WHERE pr.parent_id IN (${parentIds})`
+    );
+
+  
+
+    let customApplicationStudent = await db.query(
+      `SELECT 
+        SUBSTRING_INDEX(app.class_teacher,',',1) as app_group_id,
+				sgc.student_grade_cumulative_id,
+				sgc.year_level,
+				sgc.application_type,
+				CONVERT(form_contents USING utf8) as form_contents,
+				BIN_TO_UUID(app.app_id) as child_id
+			FROM custom_application app
+			LEFT JOIN student_grade_cumulative sgc ON sgc.child_id=app.app_id
+			LEFT JOIN parent pr
+			ON pr.application=app.app_id
+			WHERE pr.parent_id IN (${parentIds})`
+		);
+		
+
+    if (customApplicationStudent && customApplicationStudent.length > 0) {
+      customApplicationStudent = formatFormContents(customApplicationStudent);
+    }
+
+    let response = [
+      ...(applicationStudent || []),
+      ...(customApplicationStudent || []),
+    ];
+
+
+    if (response) {
+   
+
+      studentCumulative = [...(response || [])];
+      const childIds = response.map((item) => item.child_id).filter((id) => id);
+	
+      if (childIds.length > 0) {
+        let cumulativeGrade = await db.query(`
+            SELECT   
+              BIN_TO_UUID(sgc.app_group_id) as app_group_id,
+							BIN_TO_UUID(sgc.child_id) as child_id,
+              sgc.student_grade_cumulative_id,
+              sgc.application_type,
+              sgc.year_level,
+              sgc.school_type,
+							sgc.school_name,
+							sgc.child_designation,
+							sgc.school_designation,
+							sgc.mid_student_rank,
+							sgc.final_student_rank,
+              sgc.school_year_start,
+              sgc.school_year_end,
+              sgc.school_year_frame,
+              sgc.class_name,
+							sgc.class_type,
+							sgc.gpa_sem_1,
+							sgc.gpa_sem_2,
+							sgc.gpa_final,
+							sgc.scale,
+              sgc.attachment,
+              sgc.class_name 
+            FROM student_grade_cumulative sgc
+						WHERE sgc.child_id IN (${childIds
+              .map((id) => `UUID_TO_BIN('${id}')`)
+              .join(",")})
+				`);
+
+        let standardizedTest = await db.query(`
+					SELECT   
+						student_test_id,
+						BIN_TO_UUID(child_id) as child_id,
+						test_name,
+						attempt,
+						grade_taken,
+						month_taken,
+						score,
+						score_percentage,
+						ach_level,
+						school_percentage,
+						nationality_percentage,
+						district_percentage,
+						state_percentage,
+						attachment
+					FROM student_standardized_test
+					WHERE child_id IN (${childIds.map((id) => `UUID_TO_BIN('${id}')`).join(",")})
+				`);
+
+        studentCumulative = studentCumulative
+          .map((item) => {
+            let currentStudentCumulative = cumulativeGrade
+              .filter((cg) => cg.child_id === item.child_id)
+              .sort((a, b) => b.year_level - a.year_level);
+
+            console.log("currentStudentCumulative", currentStudentCumulative);
+            let studentTest = standardizedTest.filter(
+              (st) => st.child_id === item.child_id
+            );
+            return {
+              ...item,
+              cumulative_grades: [...(currentStudentCumulative || [])],
+              standardized_test: [...(studentTest || [])],
+            };
+          })
+          .sort((a, b) => b.year_level > a.year_level);
+
+        for (let sc of studentCumulative) {
+          const studentGradeCumulativeIds = sc.cumulative_grades
+            .map((item) => item.student_grade_cumulative_id)
+            .filter((item) => item);
+
+          if (studentGradeCumulativeIds.length > 0) {
+            let subjects = await db.query(`
+                SELECT * FROM student_grades 
+                WHERE student_grade_cumulative_id IN (${studentGradeCumulativeIds.join(
+                  ","
+                )})`);
+
+            if (subjects && subjects.length > 0) {
+              sc.cumulative_grades = sc.cumulative_grades.map((item) => {
+                const studentGrade = subjects.filter(
+                  (grade) =>
+                    item.student_grade_cumulative_id ===
+                    grade.student_grade_cumulative_id
+                );
+                return {
+                  ...item,
+                  grades: [...(studentGrade || [])],
+                };
+              });
+
+              for (const scg of sc.cumulative_grades) {
+                if (scg.grades && scg.grades.length > 0) {
+                  scg.grades = getAverage(scg.grades, scg.school_year_frame);
+                }
+              }
+            }
+          }
+        }
+        console.log("studentCumulative", studentCumulative);
+      }
+    }
+  } catch (error) {
+    console.log("Error", error);
+  } finally {
+    await db.close();
+    return studentCumulative;
+  }
+};

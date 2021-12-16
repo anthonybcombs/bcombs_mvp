@@ -45,6 +45,7 @@ import { getFamilyMembers } from "../../api/familymembers";
 import { 
   addUpdateStudentCumulativeGrades,
   getStudentCumulativeGradeVendor,
+  getStudentCumulativeGradeParent,
   getStudentCumulativeGrade,
   getGrades ,
   addUpdateStudentTest,
@@ -499,6 +500,12 @@ const resolvers = {
     async getStudentCumulativeGradeByVendor(root,{ vendor_id }, context) {
       const response = await getStudentCumulativeGradeVendor({
         vendor_id
+      });
+      return response;
+    },
+    async getStudentCumulativeGradeByParent(root,{ parent_id }, context) {
+      const response = await getStudentCumulativeGradeParent({
+        parent_id
       });
       return response;
     },

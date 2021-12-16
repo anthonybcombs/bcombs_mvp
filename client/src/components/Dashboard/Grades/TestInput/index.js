@@ -11,12 +11,13 @@ import GradeInput from './gradeInput'
 import {
   requestGetApplications,
   requestGetCustomApplications,
+  requestGetApplicationByUserId 
   //requestGetCustomApplicationByVendor,
 } from '../../../../redux/actions/Application';
 //import { requestUserGroup } from '../../../../redux/actions/Groups';
 import { requestVendor, requestVendorAppGroups } from '../../../../redux/actions/Vendors';
 
-import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByVendor } from '../../../../redux/actions/Grades'
+import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByVendor, requestGetStudentCumulativeGradeByParent } from '../../../../redux/actions/Grades'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
 
@@ -26,24 +27,27 @@ import { faAngleLeft, faDownload, faUpload } from '@fortawesome/free-solid-svg-i
 import ImportTestGradeDialog from './ImportTestGradeDialog';
 import ExportTestGradeDialogStyled from './ExpotTestGradeDialog';
 import ConfirmDialog from './ConfirmDialog'
-import { REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED } from '../../../../redux/actions/Constant';
+// import { REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED } from '../../../../redux/actions/Constant';
 
 export default ({ child_id }) => {
-  const { auth, gradeInput: { gradeList }, groups: { application_groups }, loading: { gradeLoading }, vendors, applications, form } = useSelector(({ auth,gradeInput, groups, loading, vendors, applications, form }) => {
- 
+  const { auth, gradeInput: { gradeList }, groups: { application_groups }, loading: { gradeLoading }, vendors, applications, form } = useSelector(({ auth, gradeInput, groups, loading, vendors, applications, form }) => {
+
     return {
       auth, gradeInput, groups, loading, vendors, applications, form
     }
   });
   const dispatch = useDispatch()
   const queryLocation = useLocation();
-  const { group_id, group_type, return_page, request_type, type, appGroupIds = null } = parse(queryLocation.search)
+  const { group_id, group_type, return_page, request_type, type, appGroupIds = null, is_parent = null, parent_ids = null, selected_child = null } = parse(queryLocation.search)
   const isVendor = request_type === 'vendor'
   const DATE_FORMAT = "MM/dd/yyyy";
+  console.log('applications gradeList',gradeList)
+  console.log('applications',applications)
 
   let exportTestData = [];
   let exportGradesData = [];
-  const appGroupIdList = appGroupIds && type === 'all' ? appGroupIds.split(',') : []
+  const appGroupIdList = appGroupIds && (type === 'all' || is_parent) ? appGroupIds.split(',') : []
+  const parentIds = parent_ids && (type === 'all' || is_parent) ? parent_ids.split(',') : []
   //let selectedAppGroup = '';
 
   const [selectImportType, setSelectImportType] = useState();
@@ -322,15 +326,17 @@ export default ({ child_id }) => {
   const requestList = () => {
 
     if (group_id && group_type) {
-      
-      if ((isVendor || type === 'all') ) {
-        if(vendors && (Array.isArray(vendors) && vendors[0])) {
+
+      if ((isVendor || type === 'all')) {
+        if (vendors && (Array.isArray(vendors) && vendors[0])) {
           dispatch(requestGetStudentCumulativeGradeByVendor(vendors[0].id))
         }
+
+   
         else {
           dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
         }
-      
+
 
       } else {
         // if(type !== 'all') {
@@ -345,14 +351,17 @@ export default ({ child_id }) => {
           app_group_id: group_id,
           app_group_type: group_type
         }))
-  
+
       }
+    }
+    else if(is_parent) {
+      dispatch(requestGetStudentCumulativeGradeByParent(parentIds))
     }
   }
 
   useEffect(() => {
     requestList();
-    if(request_type === 'forms')  {
+    if (request_type === 'forms' ) {
       dispatch(requestGetCustomApplications(group_id));
     }
 
@@ -360,37 +369,40 @@ export default ({ child_id }) => {
 
 
   useEffect(() => {
-    if (auth ) {
+    if (auth) {
       //  type && type === 'all'
       dispatch(requestVendor(auth.user_id));
-     // dispatch(requestUserGroup(auth.email));
+      // dispatch(requestUserGroup(auth.email));
     }
 
   }, [auth]);
 
   useEffect(() => {
-		if (vendors && vendors.length > 0  ) {
+    if (vendors && vendors.length > 0) {
       //dispatch(requestGetApplications(vendors[0].id));
-      if( type && type === 'all') {
+      if (type && type === 'all' && !is_parent) {
         console.log("TRIGGEREDDDDDDDDDDD")
         dispatch(requestGetStudentCumulativeGradeByVendor(vendors[0].id));
         dispatch(requestGetApplications(vendors[0].id));
       }
       console.log('VENDORRRRRRRRRRR', vendors)
-     
+
       dispatch(requestVendorAppGroups(vendors[0].id))
-		}
-    
-	}, [vendors]);
+    }
+    else if(is_parent && auth) {
+      if(auth.user_id) {
+        dispatch(requestGetApplicationByUserId(auth.user_id))
+      }
+    }
+
+  }, [vendors]);
 
 
 
   useEffect(() => {
     console.log('grades list has been changed');
   }, [gradeList]);
-  console.log('gradeListzxczxczxczxc',gradeList)
-  console.log('application_groups', application_groups);
-  console.log('loadinggggggggggg', gradeLoading);
+
 
   const handleFormattedGrades = (fields, size) => {
     let formattedGrades = [];
@@ -495,7 +507,7 @@ export default ({ child_id }) => {
     if (appGroupId) {
       setSelectedAppGroup(appGroupId);
       //selectedAppGroup = appGroupId;
-      console.log('appGroupIddddddd',appGroupId)
+      console.log('appGroupIddddddd', appGroupId)
       dispatch(requestGetStudentCumulativeGradeByAppGroup({
         app_group_id: appGroupId,
         app_group_type: 'bcombs'
@@ -504,14 +516,20 @@ export default ({ child_id }) => {
   }
 
   const handleBack = () => {
-    const backUrl = child_id
-      ? `/dashboard/grades/profile/${child_id}?group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
-      : (!return_page && (group_id || group_type))
-        ? `/dashboard/studentdata`
-        : `/dashboard/grades?group_id=${group_id}&group_type=${group_type}`
-    window.location.replace(backUrl)
+    if (is_parent) {
+      window.location.replace(`/dashboard/myapplication`)
+    }
+    else {
+      const backUrl = child_id
+        ? `/dashboard/grades/profile/${child_id}?group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
+        : (!return_page && (group_id || group_type))
+          ? `/dashboard/studentdata`
+          : `/dashboard/grades?group_id=${group_id}&group_type=${group_type}`
+      window.location.replace(backUrl)
+    }
+
   }
-  console.log('vendorsssssssss',vendors)
+  console.log('vendorsssssssss', vendors)
   return (
     <GradeInputStyled>
       <div className='gradeInputView-header'>
@@ -532,20 +550,23 @@ export default ({ child_id }) => {
               <span>Export</span>
             </button>
           </CSVLink> */}
-          <button
-            className='btn-save'
-            onClick={() => { setSelecteExportType('standardtest-export') }}
-          >
-            <FontAwesomeIcon icon={faDownload} />
-            <span>Export</span>
-          </button>
-          <button
-            className='btn-save'
-            onClick={handleTestImport}
-          >
-            <FontAwesomeIcon icon={faUpload} />
-            <span>Import</span>
-          </button>
+          {!is_parent && <>
+            <button
+              className='btn-save'
+              onClick={() => { setSelecteExportType('standardtest-export') }}
+            >
+              <FontAwesomeIcon icon={faDownload} />
+              <span>Export</span>
+            </button>
+            <button
+              className='btn-save'
+              onClick={handleTestImport}
+            >
+              <FontAwesomeIcon icon={faUpload} />
+              <span>Import</span>
+            </button>
+          </>}
+
         </div>
       </div>
       <div id='viewWrapper'>
@@ -564,9 +585,9 @@ export default ({ child_id }) => {
             <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
             Back
           </a>
-          <StandardTest 
+          <StandardTest
             appGroupIds={appGroupIdList}
-            applications={applications.activeapplications}
+            applications={is_parent ? applications.userAllApplications : applications.activeapplications}
             importData={formattedSt}
             childId={child_id}
             groupId={group_id}
@@ -576,6 +597,7 @@ export default ({ child_id }) => {
             onHasChanged={(bool) => setHasChanged(bool)}
             type={type}
             vendors={vendors}
+            selectedChild={selected_child}
           />
           <div className='gradeInputView-header' style={{ 'marginTop': '1rem' }}>
             <div className='action left'></div>
@@ -592,25 +614,28 @@ export default ({ child_id }) => {
                   <span>Export</span>
                 </button>
               </CSVLink> */}
-              <button
+              {!is_parent && <>  <button
                 className='btn-save'
                 onClick={() => { setSelecteExportType('grades-export') }}
               >
                 <FontAwesomeIcon icon={faDownload} />
                 <span>Export</span>
               </button>
-              <button
-                className='btn-save'
-                onClick={handleGradesImport}
-              >
-                <FontAwesomeIcon icon={faUpload} />
-                <span>Import</span>
-              </button>
+                <button
+                  className='btn-save'
+                  onClick={handleGradesImport}
+                >
+                  <FontAwesomeIcon icon={faUpload} />
+                  <span>Import</span>
+                </button>
+              </>}
+
+
             </div>
           </div>
           <GradeInput
-             appGroupIds={appGroupIdList}
-            applications={applications.activeapplications}
+            appGroupIds={appGroupIdList}
+            applications={is_parent ? applications.userAllApplications : applications.activeapplications}
             importData={formattedGrades}
             childId={child_id}
             loading={gradeLoading}
@@ -620,6 +645,7 @@ export default ({ child_id }) => {
             onHasChanged={(bool) => setHasChanged(bool)}
             type={type}
             vendors={vendors}
+            selectedChild={selected_child}
           />
         </div>
       </div>

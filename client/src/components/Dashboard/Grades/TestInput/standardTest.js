@@ -19,7 +19,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors }) => {
+export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors, selectedChild }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -529,7 +529,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
         }
         return newRow
       })
-      console.log('newRowszzzzzzzzz',newRows)
+    console.log('newRowszzzzzzzzz', newRows)
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
     onHasChanged(false)
   }
@@ -624,6 +624,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   }, [gradeInput])
 
   useEffect(() => {
+   
     if (gradeInput.gradeList) {
       let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
       if (groupType === 'bcombs') {
@@ -636,7 +637,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
           }
 
         }
-      } else {
+      } else if(groupType === 'forms') {
         newGradeList = newGradeList.filter(e => e.form_contents);
 
         if (newGradeList.length === 0) {
@@ -648,6 +649,10 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
           })
         }
       }
+      // else {
+      //   newGradeList = newGradeList.filter(item => appGroupIds.includes(item.app_group_id));
+  
+      // }
 
       // newGradeList = newGradeList.flatMap(e => e.standardized_test)
       // const newRows = cloneDeep(rows).map(row => {
@@ -701,11 +706,12 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     attempt: { label: 'Attempts', type: 'number', isFunc: true },
     latest_attempt: { label: 'Latest Attempt', type: 'number', isFunc: true },
   }
-
   let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
-  console.log('gradeInput.gradeList',gradeInput.gradeList.filter(item => item.child_id === 'd92cbfa9-1196-11ec-8726-8e38912fb756'))
+
+  
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents);
+
 
     if (type === 'all') {
       if (vendors && vendors[0] && vendors[0].app_groups) {
@@ -733,16 +739,16 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
             child_id: application.child.ch_id,
             standardized_test: [],
             cumulative_grades: [],
-            form_contents:null,
+            form_contents: null,
             firstname: application.child.firstname,
-            lastname:  application.child.lastname
+            lastname: application.child.lastname
           }
 
         })
       }
 
     }
-  } else {
+  } else if(groupType === 'forms') {
     selectStudentRows = selectStudentRows.filter(e => {
       if (type === 'all') {
         const ids = e.app_group_id.split(',');
@@ -750,6 +756,11 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
       }
       return e.form_contents
     });
+
+    // if (selectedChild) {
+    //   selectStudentRows = selectStudentRows.filter(e => e.child_id === selectedChild)
+    // }
+
     // selectStudentRows = applications && applications.map((e) => {
     // const currentApplication = selectStudentRows.find(item => {
     //   return e.app_id === item.child_id && item.app_group_id
@@ -773,7 +784,10 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
 
   }
-  console.log('SELECETED STUDENT ROWSSSSSSSSSS', selectStudentRows)
+  else {
+    selectStudentRows = selectStudentRows
+  }
+
   return (
     <div
       className='standardTestTable'

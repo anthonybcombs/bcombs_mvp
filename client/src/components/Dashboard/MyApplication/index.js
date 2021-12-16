@@ -271,7 +271,15 @@ const ApplicationFormStyled = styled.form`
 const MyApplicationStyled = styled.div`
   padding: 1em;
 
-
+  .view-grades {
+    float: right;
+    color: white;
+    background-color: ${({ theme }) => theme.button.backgroundColor.primary};
+    padding: 10px;
+    display: block;
+    border: none;
+ 
+  }
   .print-button {
     border: 0;
     position: absolute;
@@ -1001,7 +1009,10 @@ export default function index() {
         View Application
       </a>)
     }
+    let classTeacher  = application.class_teacher ? application.class_teacher.split(',') :  application.class_teacher;
+    classTeacher = Array.isArray(classTeacher) ? classTeacher[0] : classTeacher;
     return (
+      <>
       <a 
         href=""
         onClick={(e) => {
@@ -1011,10 +1022,23 @@ export default function index() {
           
           initializeApplication(application);
         }}
-        
+        style={{ marginLeft:5, marginRight:5 }}
       >
         View Application
       </a>
+      {/* <a 
+        href=""
+        onClick={(e) => {
+          e.preventDefault();
+
+          window.location.href= `/dashboard/grades/input?group_id=${classTeacher}&group_type=bcombs&selected_child=${application.child.ch_id}&is_parent=true`
+       
+        }}
+        style={{ marginLeft:5, marginRight:5 }}
+      >
+        View Grade
+      </a> */}
+      </>
     )
   }
 
@@ -1457,6 +1481,8 @@ export default function index() {
       }])
     }
   }
+
+  console.log('userApplications',userApplications)
   return (
     <MyApplicationStyled>
       {
@@ -1480,6 +1506,20 @@ export default function index() {
               />
             )
           }
+
+          <button className="view-grades" onClick={e => {
+            e.preventDefault();
+            const currentParent = userApplications && userApplications[0] && userApplications
+            const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
+            const groupIds = userApplications.map(item =>  {
+              const ids = item.class_teacher.split(',').filter(id => id && id !== '');
+              return ids;
+            }).flat().join(',');
+          
+
+           window.location.href= `/dashboard/grades/input?appGroupIds=${groupIds}&parent_ids=${parentIds}&is_parent=true`
+
+          }} type="button">View Grades</button>
           <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
             <div id="dataTableContainer">
               {

@@ -21,7 +21,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ applications, importData = [], childId, requestList, groupId, groupType, loading, onHasChanged, appGroupIds, type, vendors }) => {
+export default ({ applications, importData = [], childId, requestList, groupId, groupType, loading, onHasChanged, appGroupIds, type, vendors, selectedChild = null }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -598,12 +598,12 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
           ...newRow
         }
       })
-      dispatch(requestAddUpdateStudentCumulative(newRows));
+    dispatch(requestAddUpdateStudentCumulative(newRows));
 
-      setTimeout(() => {
-        onHasChanged(false)
-      },1000)
- 
+    setTimeout(() => {
+      onHasChanged(false)
+    }, 1000)
+
   }
 
   const handleSaveGrade = (grades, otherFields) => {
@@ -715,11 +715,12 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
       dispatch(clearGrades())
       setTimeout(() => {
         requestList()
-      },1500)
+      }, 1500)
     }
   }, [gradeInput])
 
   useEffect(() => {
+    console.log('applicationzzzs', applications)
     if (gradeInput.gradeList) {
 
       // let newGradeList = (gradeInput.gradeList || []).filter(e => {
@@ -734,7 +735,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
       let newGradeList = (gradeInput.gradeList || []) //.filter(e => e.app_group_id)
       if (groupType === 'bcombs') {
         newGradeList = newGradeList.filter(e => !e.form_contents)
-      } else {
+      } else if (groupType === 'forms') {
         newGradeList = newGradeList.filter(e => e.form_contents)
 
         if (newGradeList.length === 0) {
@@ -747,6 +748,9 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
 
         }
       }
+      else {
+        newGradeList = newGradeList.filter(item => appGroupIds.includes(item.app_group_id));
+      }
       // let updatedGradeList = newGradeList.filter(e => e.standardized_test).flatMap(e => e.standardized_test)
       // console.log('newGradeListzzzzzzzzzzz updatedGradeList', updatedGradeList)
       // if (updatedGradeList.length > 0) {
@@ -757,13 +761,13 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
       //     return { ...row, student_test_id: student_test_id || row.student_test_id }
       //   })
 
-        setRows([])
-        setFilteredRows([])
-      }
-      // else {
-      //   setRows(newGradeList)
-      //   setFilteredRows(newGradeList)
-      // }
+      setRows([])
+      setFilteredRows([])
+    }
+    // else {
+    //   setRows(newGradeList)
+    //   setFilteredRows(newGradeList)
+    // }
 
 
   }, [gradeInput.gradeList])
@@ -799,6 +803,11 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
 
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents);
+    if (selectedChild) {
+      selectStudentRows = selectStudentRows.filter(e => e.child_id === selectedChild)
+    }
+
+    console.log('selectStudentRows', selectStudentRows)
 
     if (type === 'all') {
       if (vendors && vendors[0] && vendors[0].app_groups) {
@@ -826,17 +835,17 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
             child_id: application.child.ch_id,
             standardized_test: [],
             cumulative_grades: [],
-            form_contents:null,
+            form_contents: null,
             firstname: application.child.firstname,
-            lastname:  application.child.lastname
+            lastname: application.child.lastname
           }
 
         })
       }
 
     }
-  } else {
-  
+  } else if (groupType === 'forms') {
+
     selectStudentRows = selectStudentRows.filter(e => e.form_contents)
     //   selectStudentRows = applications && applications.map((e) => {
     //     const currentApplication = selectStudentRows.find(item => {
@@ -858,14 +867,20 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
     //       lastname: null
     //     }
     //   })
-    selectStudentRows = selectStudentRows.filter(e =>  {
-      if(type === 'all') {
-          const ids = e.app_group_id.split(',');
-          return e.form_contents && ids.some(id => appGroupIds.includes(id))
+    selectStudentRows = selectStudentRows.filter(e => {
+      if (type === 'all') {
+        const ids = e.app_group_id.split(',');
+        return e.form_contents && ids.some(id => appGroupIds.includes(id))
       }
       return e.form_contents
     });
 
+
+
+
+  }
+  else {
+    selectStudentRows = selectStudentRows.filter(e => appGroupIds.includes(e.app_group_id))
   }
 
   return (

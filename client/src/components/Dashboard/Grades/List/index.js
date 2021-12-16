@@ -525,7 +525,7 @@ export default () => {
   }
 
   useEffect(() => {
-    handleSetRowAndColumn(gradeType)
+    handleSetRowAndColumn(gradeType);
     if (group_id && group_type) {
       if (isVendor) {
         dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
