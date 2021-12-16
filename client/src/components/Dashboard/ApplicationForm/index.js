@@ -160,9 +160,9 @@ export default function index() {
 
   const dispatch = useDispatch();
 
-  const { vendors, loading, applications } = useSelector(
-    ({ vendors, loading, applications }) => {
-      return { vendors, loading, applications };
+  const { vendors, loading, applications, auth } = useSelector(
+    ({ vendors, loading, applications, auth }) => {
+      return { vendors, loading, applications, auth };
     }
   );
 
@@ -179,6 +179,45 @@ export default function index() {
       //dispatch(requestVendor(vendor_id));
     }
   }, []);
+
+  useEffect(() => {
+    console.log('form auth', auth);
+
+    if(auth.status == 'SIGNED_IN') {
+      console.log('parentsInformation', parentsInformation);
+
+      let newParentsInformation = [...parentsInformation];
+
+      console.log('new Date(auth.user.birth_date)', auth.user.birth_date);
+
+      newParentsInformation[0].profile.address = auth.user.address ? 
+        auth.user.address : newParentsInformation[0].profile.address;
+
+      newParentsInformation[0].profile.zip_code = auth.user.zip_code ? 
+        auth.user.zip_code : newParentsInformation[0].profile.zip_code;
+      
+      newParentsInformation[0].profile.date_of_birth = auth.user.birth_date ? 
+        new Date(parseInt(auth.user.birth_date)) : newParentsInformation[0].profile.date_of_birth;
+
+      newParentsInformation[0].profile.email_address = auth.user.email ? 
+        auth.user.email : newParentsInformation[0].profile.email_address;
+
+      newParentsInformation[0].profile.first_name = auth.user.first_name ? 
+        auth.user.first_name : newParentsInformation[0].profile.first_name;
+
+      newParentsInformation[0].profile.last_name = auth.user.last_name ? 
+        auth.user.last_name : newParentsInformation[0].profile.last_name;
+
+      newParentsInformation[0].profile.gender = auth.user.gender ? 
+        auth.user.gender : newParentsInformation[0].profile.gender;
+
+      const gender = auth.user.gender + "";
+      newParentsInformation[0].profile.gender = auth.user.gender ? 
+        gender.charAt(0).toUpperCase() + gender.slice(1) : newParentsInformation[0].profile.gender;
+
+      setParentsInformation(...[newParentsInformation]);
+    }
+  }, [auth])
 
   useEffect(() => {
     if (vendors && vendors.length > 0) {
