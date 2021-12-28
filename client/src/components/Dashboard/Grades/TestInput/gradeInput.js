@@ -21,7 +21,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ applications, importData = [], childId, requestList, groupId, groupType, loading, onHasChanged, appGroupIds, type, vendors, selectedChild = null }) => {
+export default ({ applications, importData = [], childId, requestList, groupId, groupType, loading, onHasChanged, appGroupIds, type, vendors, isParent = false,selectedChild = null }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -31,7 +31,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))]
 
-  const initialColumns = {
+  let initialColumns = {
     name: { type: 'string', label: 'Name' },
     child_id: { type: 'string', label: 'ID' },
     year_level: { type: 'int', label: 'Level' },
@@ -47,6 +47,21 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
     help_needed: { type: 'string', label: 'Help Needed', sortable: false, filterable: false },
     attachment: { type: 'obj', label: 'Attachment', sortable: false, filterable: false }
   }
+
+  // if(isParent) {
+  //   initialColumns = Object.keys(initialColumns).reduce((accum, key) => {
+  //     if(!key.includes('percentage')) {
+  //       return  {
+  //         ...accum,
+  //         [key]: {
+  //           ...initialColumns[key]
+  //         }
+  //       }
+  //     }
+  //     return accum;
+  //   },{});
+
+  // }
 
   const goldenKeys = {
     student_grade_cumulative_id: { type: 'int' },
@@ -1038,6 +1053,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
             gradeKeys={gradeKeys}
             onClose={(hasEdit) => handleCloseEditGradeDialog(hasEdit)}
             onSaveGrade={handleSaveGrade}
+            isParent={isParent}
           />
         )
       }

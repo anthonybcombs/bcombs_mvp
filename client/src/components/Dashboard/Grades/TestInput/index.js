@@ -598,6 +598,8 @@ export default ({ child_id }) => {
             type={type}
             vendors={vendors}
             selectedChild={selected_child}
+            isParent={is_parent}
+            
           />
           <div className='gradeInputView-header' style={{ 'marginTop': '1rem' }}>
             <div className='action left'></div>
@@ -646,6 +648,7 @@ export default ({ child_id }) => {
             type={type}
             vendors={vendors}
             selectedChild={selected_child}
+            isParent={is_parent}
           />
         </div>
       </div>

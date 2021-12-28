@@ -11,10 +11,10 @@ import CustomTable from '../../../CustomComponents/CustomTable'
 import CustomSelect from '../../../CustomComponents/CustomSelect'
 
 export default function index({
-  onClose, data, onSaveGrade, gradeKeys
+  onClose, data, onSaveGrade, gradeKeys, isParent = false
 }) {
   const formatValue = (item, key) => {
-    switch(key) {
+    switch (key) {
       case 'help_q1':
       case 'help_q2':
       case 'help_q3':
@@ -211,7 +211,7 @@ export default function index({
   }, [data])
 
   useEffect(() => {
-    if(!grades.length) {
+    if (!grades.length) {
       setHasChanged(false)
     }
   }, [grades])
@@ -291,6 +291,7 @@ export default function index({
                   <th></th>
                   <th>
                     <input
+                      disabled={isParent}
                       id='gpa_sem_1'
                       type='number'
                       value={otherFields.gpa_sem_1}
@@ -306,6 +307,7 @@ export default function index({
                   <th></th>
                   <th>
                     <input
+                      disabled={isParent}
                       id='gpa_sem_2'
                       type='number'
                       value={otherFields.gpa_sem_2}
@@ -315,13 +317,14 @@ export default function index({
                   <th colSpan='1'></th>
                   <th>
                     <input
+                      disabled={isParent}
                       id='gpa_final'
                       type='number'
                       value={otherFields.gpa_final}
                       onChange={handleChangeOtherFields}
                     />
                   </th>
-                </tr> 
+                </tr>
                 <tr>
                   <th colSpan='2'>Rank</th>
                   <th></th>
@@ -335,6 +338,7 @@ export default function index({
                   <th></th>
                   <th>
                     <input
+                      disabled={isParent}
                       id='mid_student_rank'
                       type='number'
                       value={otherFields.mid_student_rank}
@@ -350,6 +354,7 @@ export default function index({
                   <th></th>
                   <th>
                     <input
+                      disabled={isParent}
                       id='final_student_rank'
                       type='number'
                       value={otherFields.final_student_rank}

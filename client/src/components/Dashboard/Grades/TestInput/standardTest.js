@@ -18,8 +18,9 @@ import { getGradeTestAttempt } from '../utils'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
+import { initial } from 'lodash'
 
-export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors, selectedChild }) => {
+export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors, selectedChild, isParent = false }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -30,7 +31,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))]
 
-  const initialColumns = {
+  let initialColumns = {
     name: { type: 'string', label: 'Name' },
     child_id: { type: 'string', label: 'ID' },
     test_name: { type: 'string', label: 'Test name' },
@@ -46,6 +47,22 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     nationality_percentage: { type: 'number', label: '% nationally' },
     attachment: { type: 'obj', label: 'Attachment', sortable: false, filterable: false }
   }
+
+  if(isParent) {
+    initialColumns = Object.keys(initialColumns).reduce((accum, key) => {
+      if(!key.includes('percentage')) {
+        return  {
+          ...accum,
+          [key]: {
+            ...initialColumns[key]
+          }
+        }
+      }
+      return accum;
+    },{});
+
+  }
+
 
   const goldenKeys = {
     student_test_id: { type: 'int' },
@@ -90,7 +107,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
           }
           return acc
         }, [{ value: '', checked: true, isBlank: true }])
-    })
+    });
     return newColumnFilters
   }
 
@@ -221,7 +238,9 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     console.log('filteredRows', filteredRows);
 
     return filteredRows.map((row, index) => {
+      console.log('columnssssssssss',columns)
       const colKeysArr = Object.entries(columns)
+      console.log('colKeysArr',colKeysArr)
       const enableEdit = row.enableEdit
       const highLight = (rowVal, columnName) => {
         const newFormat = highlightFilters.reduce((acc, { column, condition, value, format }) => {
