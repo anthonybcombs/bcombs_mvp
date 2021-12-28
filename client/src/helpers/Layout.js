@@ -340,7 +340,7 @@ export default function Layout({ children }) {
                               : ""
                           }`}
                           to="/dashboard/studentdata">
-                          <span>Student Data</span>
+                          <span>Data</span>
                         </Link>
                         <Link
                           className={`${

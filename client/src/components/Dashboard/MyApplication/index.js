@@ -1520,7 +1520,7 @@ export default function index() {
 
            window.location.href= `/dashboard/grades/input?appGroupIds=${groupIds}&parent_ids=${parentIds}&is_parent=true`
 
-          }} type="button">View Grades</button>
+          }} type="button">Grades</button>
           <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
             <div id="dataTableContainer">
               {

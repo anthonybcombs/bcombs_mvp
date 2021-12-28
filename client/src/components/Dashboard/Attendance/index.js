@@ -599,7 +599,7 @@ export default function index(props) {
 	console.log('filteredFormList', filteredFormList)
 	return (
 		<AttendanceSummaryStyled>
-			<h2>Student Data</h2>
+			<h2>Data</h2>
 			<div id="attendance">
 				{
 					loading.archiveLoading ? (
