@@ -355,14 +355,12 @@ export default function index() {
   const queryParams = parse(location.search);
 
   useEffect(() => {
-    console.log('queryParams', queryParams);
 
     if(auth.user_id) {
       dispatch(requestGetApplicationByUserId(auth.user_id))
     }
 
     if(queryParams && queryParams.action && queryParams.action == 'update') {
-      console.log('this is update');
       setIsReadonly(false);
     }
   }, [])
@@ -376,12 +374,10 @@ export default function index() {
   const [userApplications, setuserApplications] = useState([])
 
   useEffect(() => {
-    console.log('trigger userAllApplications');
     setuserApplications(applications.userAllApplications);
 
     let uApplications = applications.userAllApplications;
 
-    console.log('uApplications', uApplications);
 
     if(queryParams && queryParams.appId && uApplications.length > 0) {
       const qappId = queryParams.appId;
@@ -391,7 +387,6 @@ export default function index() {
 
       sApplication = sApplication?.length > 0 ? sApplication[0] : {};
 
-      console.log('sApplication', sApplication);
 
       if(sApplication && sApplication.app_id);
         initializeApplication(sApplication);
@@ -399,7 +394,6 @@ export default function index() {
 
     const hasSetReminders = uApplications.some(ua => ua.received_reminder);
 
-    console.log('hasSetReminders', hasSetReminders);
 
     if(queryParams && queryParams?.action != 'update') {
       setShowReminder(hasSetReminders);
@@ -994,7 +988,6 @@ export default function index() {
   const [chRelationships, setChRelationships] = useState([]);
   const [view, setView] = useState('')
   const createViewButton = (application) => {
-    console.log('selected application', application);
     if (application.form_contents) {
      return (<a
         href=""
@@ -1144,7 +1137,11 @@ export default function index() {
       selector: 'studentName',
       sortable: true,
       // cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>
-      cell: row => (row.child?.firstname && row.child?.lastname) ? row.child?.firstname + " " + row.child?.lastname : ""
+      cell: row => {
+        return  <a href="#" onClick={() => {
+         window.location.href= `/dashboard/grades/profile/${row.child?.ch_id}?group_id=${row.class_teacher}&group_type=bcombs&request_type=undefined`
+        }}>{(row.child?.firstname && row.child?.lastname) ? row.child?.firstname + " " + row.child?.lastname : ""}</a>
+      }
     },
     {
       name: 'Form',
@@ -1483,7 +1480,7 @@ export default function index() {
     }
   }
 
-  console.log('userApplications',userApplications)
+
   return (
     <MyApplicationStyled>
       {
