@@ -489,7 +489,7 @@ export default function index({
       cell: row => getPrimaryParentName(row.parents, row.id)
     },
     {
-      name: "Class",
+      name: "Group(s)",
       selector: "classGroup",
       sortable: true,
       cell: row => {

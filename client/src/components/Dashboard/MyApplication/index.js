@@ -1147,7 +1147,7 @@ export default function index() {
       name: 'Form',
       selector: 'vendor',
       sortable: true,
-      cell: row => row.vendorName ? row.vendorName + " Bcombs Form" : row?.form_contents?.formTitle ? row?.form_contents?.formTitle : ""
+      cell: row => row.vendorName ? row.vendorName + " Mentoring Applications" : row?.form_contents?.formTitle ? row?.form_contents?.formTitle : ""
     },
     {
       selector: 'class',

@@ -1839,7 +1839,7 @@ export default function index() {
                 }}
               >
                 <option key={selectedVendor.id} selected={!(queryParams && queryParams.form)} value="default">
-                  {selectedVendor.is_daycare ? `Daycare ` : `Bcombs `}Form
+                  {selectedVendor.is_daycare ? `Daycare Form` : `Mentoring Application`}
                 </option>
                 {
                   renderForms && renderForms.length > 0 && (
