@@ -335,7 +335,7 @@ const FilterComponent = ({
         className="form-control"
         value={groupText}
         onChange={onGroupChange}>
-        <option value="">Select Class</option>
+        <option value="">Select Group</option>
         {appGroups.map((opt, i) => (
           <option key={i} value={opt.app_grp_id}>
             {opt.name}

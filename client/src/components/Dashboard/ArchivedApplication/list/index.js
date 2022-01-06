@@ -197,7 +197,7 @@ const SearchDateComponent = ({
           className="form-control"
           defaultValue={classText}
           onChange={onClassChange}>
-          <option value="">Select Class</option>
+          <option value="">Select Group</option>
           {CLASS_OPTIONS.map((opt, i) => (
             <option key={i} value={opt}>
               {opt}

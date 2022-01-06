@@ -192,12 +192,12 @@ const NewEventModal = props => {
                               </TabPanel>
                               <TabPanel>
                                 <div className="col-md-6 control-wrapper field select-wrapper">
-                                  <label className="control-label">Class Name: </label>
+                                  <label className="control-label">Group: </label>
                                   <select className="form-select form-white"
                                     value={localClassId}
                                     onChange={handleClassSelectChange}
                                     data-placeholder="Select Class Name..." name="category-color">
-                                      <option value=""> -- Select a Class -- </option>
+                                      <option value=""> -- Select a Group -- </option>
                                         {visibleClasses.map((elem) => 
                                           <option key={elem.name} value={elem.id}>{elem.name}</option>)
                                         }                              
