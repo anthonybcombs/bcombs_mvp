@@ -20,7 +20,7 @@ const MetricMenu = props => {
                     handleSelectedLabel("class_attendance");
                 }}
             >
-                <span>Attendance By Class</span>
+                <span>Attendance By Group</span>
             </div>
             <div
                 className={`${selectedLabel === "mentees" ? "selected" : ""}`}
@@ -36,7 +36,7 @@ const MetricMenu = props => {
                     handleSelectedLabel("classes");
                 }}
             >
-                <span>Class Engagement</span>
+                <span>Group Engagement</span>
             </div>
             <div
                 className={`${selectedLabel === "tests" ? "selected" : ""}`}

@@ -980,7 +980,7 @@ export default function index({
                 }}
               />
               <label className="field-label">
-                Class
+                Group
               </label>
             </div>
           </div>

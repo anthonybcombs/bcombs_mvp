@@ -185,7 +185,7 @@ const ClassAttendance = props => {
     return <div style={{ padding: 24 }}>                
             <div className="grid grid-2b">
                 <div className="top-left">
-                    <h4>Attendance By Class</h4>
+                    <h4>Attendance By Group</h4>
             
                     <select id="mentee-year" onChange={yearChange} value={year}>
                         <option value="2022">2022</option>

@@ -114,7 +114,7 @@ export default ({ child_id }) => {
                       <div className='CollapsibleContentList'><p className='label'>School:</p> <p className='value'>{school_name || '--'}</p></div>
                       <div className='CollapsibleContentList'><p className='label'>Grade:</p> <p className='value'>{year_level || '--'}</p></div>
                       <div className='CollapsibleContentList'><p className='label'>Cum GPA:</p>  <p className='value'>{gpa_final || gpa_sem_1 || gpa_sem_2 || '--'}</p></div>
-                      <div className='CollapsibleContentList'><p className='label'>Class Rank:</p>  <p className='value'>{final_student_rank || mid_student_rank || '--'}</p></div>
+                      <div className='CollapsibleContentList'><p className='label'>Group Rank:</p>  <p className='value'>{final_student_rank || mid_student_rank || '--'}</p></div>
                     </div>
                   </Collapsible>
                   {/* <Collapsible

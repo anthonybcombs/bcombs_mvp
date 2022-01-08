@@ -568,14 +568,14 @@ export default function index({
                     "field-input highlights" : "field-input"
                   }
                   id={`ch_class_rank_${counter - 1}`}
-                  placeholder="Enter Class Rank as a #"
+                  placeholder="Enter Group Rank as a #"
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(counter - 1, "general_information", "class_rank", target.value);
                   }}
                   readOnly={isReadonly}
                   defaultValue={childGeneralInformation.class_rank}
                 />
-                <label className="field-label" for={`ch_class_rank_${counter - 1}`}>Class Rank</label>
+                <label className="field-label" for={`ch_class_rank_${counter - 1}`}>Group Rank</label>
               </div>
             </div>
             <div className="form-group">

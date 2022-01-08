@@ -1715,7 +1715,7 @@ export default function index() {
       cell: row => row.form_name
     },
     {
-      name: "Class",
+      name: "Group",
       selector: "Class",
       sortable: false,
       cell: row => getAppGroupNames(row)

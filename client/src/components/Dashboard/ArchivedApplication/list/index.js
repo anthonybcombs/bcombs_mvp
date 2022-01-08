@@ -288,7 +288,7 @@ export default function index({ archivedapplications, handleUnarchived }) {
       cell: row => getPrimaryParentName(row.parents)
     },
     {
-      name: "Class",
+      name: "Group",
       selector: "class",
       sortable: false,
       cell: row =>

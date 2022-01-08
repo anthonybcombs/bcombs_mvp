@@ -172,10 +172,10 @@ export default function index({
             <table id="groups">
               <tbody>
                 <tr>
-                  <th>Class</th>
+                  <th>Group</th>
                   <th>Count</th>
                   <th>Available</th>
-                  <th>Class Count</th>
+                  <th>Group Count</th>
                 </tr>
                 <tr>
                   <td>

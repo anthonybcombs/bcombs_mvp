@@ -1743,7 +1743,7 @@ export default function index() {
 								<tbody>
 									<tr>
 										<th>Name</th>
-										<th>Class</th>
+										<th>Group</th>
 										<th>Calendar Invite</th>
 										<th>Attendance Status</th>
 										<th>Total Volunteer Hours</th>

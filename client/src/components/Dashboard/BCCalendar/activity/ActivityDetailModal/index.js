@@ -166,7 +166,7 @@ const NewEventModal = props => {
                               onSelect={handleTabSelect}>
                               <TabList>
                                 <Tab>Event</Tab>
-                                <Tab>Class</Tab>
+                                <Tab>Group</Tab>
                               </TabList>
 
                               <TabPanel>
