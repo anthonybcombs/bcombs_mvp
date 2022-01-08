@@ -82,7 +82,7 @@ const gradeKeys = {
 
 
 const TABLE = (data) => {
-  const { rows, columns, year_level, school_year_start, school_year_end, gradeTakenOptions, enableEdit , handleInputChange, attendanceColumns } = data
+  const { rows, columns, year_level = 0, school_year_start, school_year_end, gradeTakenOptions, enableEdit , handleInputChange, attendanceColumns } = data
  
   return (
     <div className='tableWrapper'>
@@ -174,7 +174,7 @@ export default ({ appGroupId ,rows: propRows, testOptions }) => {
       case 'year':
         return `${moment(row.school_year_start).format('YY')}/${moment(row.school_year_end).format('YY')}`
       case 'beg_cum':
-        const prevYL = row.year_level - 1
+        const prevYL = row.year_level && row.year_level - 1
         return (rows.find(e => e.year_level === prevYL) || {}).gpa_final || '--'
       case 'attendance':
         return (row?.grades || [])[0]?.final_quarter_attendance || '--'
@@ -310,7 +310,8 @@ export default ({ appGroupId ,rows: propRows, testOptions }) => {
     <>
      <div style={{ paddingTop: 12, paddingLeft: 12, paddingBottom: 12 }}>
         {
-          !enableEdit ? (
+          !enableEdit  ? (
+            rows.length > 0 && 
             <button
               onClick={() => setEnableEdit(true)}
             >

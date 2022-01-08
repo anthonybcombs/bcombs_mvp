@@ -138,6 +138,7 @@ export default ({ rows: propRows, testOptions }) => {
         <div style={{ paddingTop: 12 }}>
           {
             !enableEdit ? (
+              rows.length > 0 && 
               <button
                 onClick={() => setEnableEdit(true)}
 
