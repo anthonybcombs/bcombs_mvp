@@ -1,11 +1,92 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux';
+import cloneDeep from 'lodash.clonedeep'
 import moment from 'moment'
-import update from 'immutability-helper'
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt, faCheck } from '@fortawesome/free-solid-svg-icons'
+
+import { requestAddUpdateStudentCumulative, clearGrades } from '../../../../../redux/actions/Grades'
+
+
+const goldenKeys = {
+  student_grade_cumulative_id: { type: 'int' },
+  // app_id: { type: 'string' },
+  app_group_id: { type: 'string' },
+  application_type: { type: 'string' },
+  //app_group_name: { type: 'string' },
+  application_type: { type: 'string' },
+  child_id: { type: 'string' },
+  // form_contents: { type: 'string' },
+  year_level: { type: 'int' },
+  child_designation: { type: 'string' },
+  school_designation: { type: 'string' },
+  school_type: { type: 'string' },
+  school_name: { type: 'string' },
+  school_year_start: { type: 'string' },
+  school_year_end: { type: 'string' },
+  school_year_frame: { type: 'string' },
+  scale: { type: 'float' },
+  gpa_sem_1: { type: 'float' },
+  gpa_sem_2: { type: 'float' },
+  gpa_final: { type: 'float' },
+  mid_student_rank: { type: 'int' },
+  final_student_rank: { type: 'int' },
+  // attachment: { type: 'object' },
+  grades: { type: 'object' },
+  // firstname: { type: 'string' },
+  //lastname: { type: 'string' }
+}
+
+const gradeKeys = {
+  student_grade_cumulative_id: { type: 'int' },
+  class: { type: 'string' },
+  subject: { type: 'string' },
+  teacher_name: { type: 'string' },
+  designation: { type: 'string' },
+  grade_quarter_1: { type: 'float' },
+  grade_quarter_2: { type: 'float' },
+  grade_quarter_3: { type: 'float' },
+  grade_quarter_4: { type: 'float' },
+  letter_grade_quarter_1: { type: 'string' },
+  letter_grade_quarter_2: { type: 'string' },
+  letter_grade_quarter_3: { type: 'string' },
+  letter_grade_quarter_4: { type: 'string' },
+  attendance_quarter_1_absent: { type: 'int' },
+  attendance_quarter_2_absent: { type: 'int' },
+  attendance_quarter_3_absent: { type: 'int' },
+  attendance_quarter_4_absent: { type: 'int' },
+  attendance_quarter_1_tardy: { type: 'int' },
+  attendance_quarter_2_tardy: { type: 'int' },
+  attendance_quarter_3_tardy: { type: 'int' },
+  attendance_quarter_4_tardy: { type: 'int' },
+  attendance_quarter_1_total: { type: 'int' },
+  attendance_quarter_2_total: { type: 'int' },
+  attendance_quarter_3_total: { type: 'int' },
+  attendance_quarter_4_total: { type: 'int' },
+  mid_quarter_remarks: { type: 'string' },
+  final_quarter_remarks: { type: 'string' },
+  letter_mid_final_grade: { type: 'string' },
+  mid_final_grade: { type: 'float' },
+  letter_final_grade: { type: 'string' },
+  final_grade: { type: 'float' },
+  letter_year_final_grade: { type: 'string' },
+  year_final_grade: { type: 'float' },
+  letter_final_grade: { type: 'string' },
+  help_q1: { type: 'string' },
+  help_q2: { type: 'string' },
+  help_q3: { type: 'string' },
+  help_q4: { type: 'string' },
+}
+
+
 
 const TABLE = (data) => {
-  const { rows, columns, year_level, school_year_start, school_year_end, gradeTakenOptions, enableEdit, handleInputChange, attendanceColumns } = data
+  const { rows, columns, year_level, school_year_start, school_year_end, gradeTakenOptions, enableEdit , handleInputChange, attendanceColumns } = data
+ 
   return (
     <div className='tableWrapper'>
+     
       <table className='profileTrackingTable individualGradesTable'>
         <thead>
           <tr>
@@ -50,7 +131,7 @@ const TABLE = (data) => {
                                   <input
                                     type={type === 'number' ? 'number' : 'text'}
                                     value={row[key]}
-                                    onChange={(e) => handleInputChange(e, row.id, key)}
+                                    onChange={(e) => handleInputChange(e, key, index, row.student_grade_cumulative_id)}
                                   />
                                 ) : (
                                   row[key] || '--'
@@ -65,12 +146,12 @@ const TABLE = (data) => {
                 )
               })
             ) : (
-                <tr>
-                  <td colSpan={Object.keys(columns).length}>
-                    No Records
-                  </td>
-                </tr>
-              )
+              <tr>
+                <td colSpan={Object.keys(columns).length}>
+                  No Records
+                </td>
+              </tr>
+            )
           }
         </tbody>
       </table>
@@ -78,17 +159,18 @@ const TABLE = (data) => {
   )
 }
 
-export default ({ rows: propRows, testOptions }) => {
+export default ({ appGroupId ,rows: propRows, testOptions }) => {
+  const dispatch = useDispatch();
   const gradeTakenOptions = [
     { value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' },
-    ...Array(9).fill().map((e, i) => ({ value: i+4, label: `${i + 4}th` }))
+    ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))
   ]
 
   const [rows, setRows] = useState([])
   const [enableEdit, setEnableEdit] = useState(false)
 
   const formatValue = (row, key) => {
-    switch(key) {
+    switch (key) {
       case 'year':
         return `${moment(row.school_year_start).format('YY')}/${moment(row.school_year_end).format('YY')}`
       case 'beg_cum':
@@ -103,29 +185,35 @@ export default ({ rows: propRows, testOptions }) => {
 
   const semColumns = {
     class: { type: 'string', label: 'Class', editable: false },
-    subject: { type: 'string', label: 'Subject', editable: false },
-    letter_grade_quarter_1: { type: 'number', label: 'Q1', editable: false },
-    letter_grade_quarter_2: { type: 'number', label: 'Q2', editable: false },
+    subject: { type: 'string', label: 'Subject'  , editable: false},
+    letter_grade_quarter_1: { type: 'number', label: 'Q1' },
+    letter_grade_quarter_2: { type: 'number', label: 'Q2' },
     letter_mid_final_grade: { type: 'number', label: 'Final' },
-    letter_grade_quarter_3: { type: 'number', label: 'Q1', editable: false },
-    letter_grade_quarter_4: { type: 'number', label: 'Q2', editable: false },
+    letter_grade_quarter_3: { type: 'number', label: 'Q1' },
+    letter_grade_quarter_4: { type: 'number', label: 'Q2' },
     letter_final_grade: { type: 'number', label: 'Final' },
     letter_year_final_grade: { type: 'number', label: 'Year Final' },
   }
 
   const quarterColumns = {
-    class: { type: 'string', label: 'Class', editable: false },
-    subject: { type: 'string', label: 'Subject', editable: false },
-    letter_grade_quarter_1: { type: 'number', label: 'Q1', editable: false },
-    letter_grade_quarter_2: { type: 'number', label: 'Q2', editable: false },
-    letter_grade_quarter_3: { type: 'number', label: 'Q1', editable: false },
+    class: { type: 'string', label: 'Class', editable: false  },
+    subject: { type: 'string', label: 'Subject' , editable: false},
+    letter_grade_quarter_1: { type: 'number', label: 'Q1' },
+    letter_grade_quarter_2: { type: 'number', label: 'Q2' },
+    letter_grade_quarter_3: { type: 'number', label: 'Q1' },
     letter_year_final_grade: { type: 'number', label: 'Year Final' },
   }
 
-  const handleInputChange = ({ target: { value } }, id, key) => {
-    setRows(update(rows, {
-      [rows.findIndex(e => e.id === id)]: { $merge: { [key]: value } }
-    }))
+  const handleInputChange = ({ target: { value } }, key, gradeIndex, cumulativeId) => {
+    let updatedRows = [...(rows || [])]
+    const currentRowIndex = rows.findIndex(item => item.student_grade_cumulative_id === cumulativeId);
+    updatedRows[currentRowIndex].grades[gradeIndex] = {
+      ...(updatedRows[currentRowIndex].grades[gradeIndex] || {}),
+      [key]: value
+    }
+
+    setRows(updatedRows)
+   
   }
 
   useEffect(() => {
@@ -134,8 +222,118 @@ export default ({ rows: propRows, testOptions }) => {
     }
   }, [propRows])
 
+
+  const handleSave = () => {
+    const newRows = cloneDeep(rows)
+      .map(e => {
+        let newRow = Object.entries(goldenKeys)
+          .reduce((acc, [key, { type }]) => {
+            if (type === 'int') {
+              acc[key] = e[key] ? parseInt(e[key]) : 0
+            } else if (type === 'float') {
+              acc[key] = e[key] ? parseFloat(e[key]) : 0
+            } else {
+              acc[key] = e[key] || ''
+            }
+            return acc
+          }, {})
+
+        delete e.class_teacher;
+        delete e.class_name;
+        delete e.class_type;
+        delete e.app_group_name;
+        delete e.lastname;
+        delete e.firstname;
+        delete e.attachment;
+        delete e.form_contents;
+
+        if (!e.student_grade_cumulative_id) {
+          delete e.student_grade_cumulative_id
+        }
+        if (!e.attachment || (e.attachment && typeof e.attachment === 'string')) {
+          delete e.attachment
+        }
+        if (!e.grades) {
+          e.grades = []
+        }
+
+        newRow.grades = (newRow?.grades || [])
+          .map(e => {
+            delete e.attendance;
+            delete e.final_semestral_1_attendance;
+            delete e.final_semestral_2_attendance;
+            delete e.help_needed;
+            delete e.quarter_average;
+
+            delete e.semestral_1_average;
+            delete e.semestral_2_average;
+            delete e.semestral_final;
+
+            delete e.final_quarter_attendance;
+            // delete e.final_quarter_remarks;
+
+            delete e.attendance_quarter_1_present;
+            delete e.attendance_quarter_2_present;
+            delete e.attendance_quarter_3_present;
+            delete e.attendance_quarter_4_present;
+            delete e.grades;
+            let newGrade = Object.entries(gradeKeys)
+              .reduce((acc, [key, { type }]) => {
+                if (type === 'int') {
+                  acc[key] = e[key] ? parseInt(e[key]) : 0
+                } else if (type === 'float') {
+                  acc[key] = e[key] ? parseFloat(e[key]) : 0
+                } else {
+                  acc[key] = e[key]
+                }
+                return acc
+              }, {})
+
+            return newGrade
+          })
+
+
+        return {
+          ...newRow,
+          app_group_id: appGroupId,
+          application_type: 'bcombs'
+        }
+      })
+
+
+    dispatch(requestAddUpdateStudentCumulative(newRows));
+    setEnableEdit(false);
+
+  }
+
   return (
     <>
+     <div style={{ paddingTop: 12, paddingLeft: 12, paddingBottom: 12 }}>
+        {
+          !enableEdit ? (
+            <button
+              onClick={() => setEnableEdit(true)}
+            >
+              <FontAwesomeIcon className='back-icon' icon={faPencilAlt} />Edit
+            </button>
+          ) : (
+            <>
+
+              <button
+                onClick={() => setEnableEdit(false)}
+              >
+                Cancel
+              </button>
+              {`  `}
+              <button
+                onClick={handleSave}
+              >
+                <FontAwesomeIcon className='back-icon' icon={faCheck} />Save
+              </button>
+            </>
+          )
+        }
+      </div>
       {
         rows.map(({ grades, ...rest }, gi) => {
           return (
@@ -151,6 +349,7 @@ export default ({ rows: propRows, testOptions }) => {
                   gradeTakenOptions={gradeTakenOptions}
                   enableEdit={enableEdit}
                   handleInputChange={handleInputChange}
+                  handleSave={handleSave}
                   attendanceColumns={['attendance_quarter_1_total', 'attendance_quarter_2_total', 'mid_final_attendance', 'attendance_quarter_3_total', 'attendance_quarter_4_total', 'final_attendance', 'final_quarter_attendance']}
                 />
               </div>
@@ -166,6 +365,7 @@ export default ({ rows: propRows, testOptions }) => {
                   gradeTakenOptions={gradeTakenOptions}
                   enableEdit={enableEdit}
                   handleInputChange={handleInputChange}
+                  handleSave={handleSave}
                   attendanceColumns={['attendance_quarter_1_total', 'attendance_quarter_2_total', 'attendance_quarter_3_total', 'final_quarter_attendance']}
                 />
               </div>

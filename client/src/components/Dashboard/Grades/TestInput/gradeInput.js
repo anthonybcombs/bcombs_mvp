@@ -613,7 +613,10 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
           ...newRow
         }
       })
-    dispatch(requestAddUpdateStudentCumulative(newRows));
+
+
+      // console.log('NEWROIWSSSSSSSSSSSSSSSS', newRows)
+    dispatch(requestAddUpdateStudentCumulative(propRows ));
 
     setTimeout(() => {
       onHasChanged(false)
