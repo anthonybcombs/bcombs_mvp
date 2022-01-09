@@ -122,7 +122,7 @@ export default ({ appGroupId, rows: propRows, testOptions }) => {
     year_level: { type: 'string', label: 'Grade', func: formatValue, editable: false },
     year: { type: 'string', label: 'Year', func: formatValue, editable: false },
     beg_cum: { type: 'number', label: 'Beg Cum', func: formatValue, editable: false },
-    gpa_sem_1: { type: 'number', label: 'Sem 1', editable: false },
+    gpa_sem_1: { type: 'number', label: 'Sem 1' },
     mid_student_rank: { type: 'number', label: 'Rank' },
     gpa_sem_2: { type: 'number', label: 'Sem 2' },
     final_student_rank: { type: 'number', label: 'Rank' },

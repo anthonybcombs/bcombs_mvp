@@ -82,11 +82,11 @@ const gradeKeys = {
 
 
 const TABLE = (data) => {
-  const { rows, columns, year_level = 0, school_year_start, school_year_end, gradeTakenOptions, enableEdit , handleInputChange, attendanceColumns } = data
- 
+  const { rows, columns, year_level = 0, school_year_start, school_year_end, gradeTakenOptions, enableEdit, handleInputChange, attendanceColumns } = data
+
   return (
     <div className='tableWrapper'>
-     
+
       <table className='profileTrackingTable individualGradesTable'>
         <thead>
           <tr>
@@ -159,7 +159,7 @@ const TABLE = (data) => {
   )
 }
 
-export default ({ appGroupId ,rows: propRows, testOptions }) => {
+export default ({ appGroupId, rows: propRows, testOptions }) => {
   const dispatch = useDispatch();
   const gradeTakenOptions = [
     { value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' },
@@ -185,7 +185,7 @@ export default ({ appGroupId ,rows: propRows, testOptions }) => {
 
   const semColumns = {
     class: { type: 'string', label: 'Class', editable: false },
-    subject: { type: 'string', label: 'Subject'  , editable: false},
+    subject: { type: 'string', label: 'Subject', editable: false },
     letter_grade_quarter_1: { type: 'number', label: 'Q1' },
     letter_grade_quarter_2: { type: 'number', label: 'Q2' },
     letter_mid_final_grade: { type: 'number', label: 'Final' },
@@ -196,11 +196,11 @@ export default ({ appGroupId ,rows: propRows, testOptions }) => {
   }
 
   const quarterColumns = {
-    class: { type: 'string', label: 'Class', editable: false  },
-    subject: { type: 'string', label: 'Subject' , editable: false},
+    class: { type: 'string', label: 'Class', editable: false },
+    subject: { type: 'string', label: 'Subject', editable: false },
     letter_grade_quarter_1: { type: 'number', label: 'Q1' },
     letter_grade_quarter_2: { type: 'number', label: 'Q2' },
-    letter_grade_quarter_3: { type: 'number', label: 'Q1' },
+    letter_grade_quarter_3: { type: 'number', label: 'Q3' },
     letter_year_final_grade: { type: 'number', label: 'Year Final' },
   }
 
@@ -213,7 +213,7 @@ export default ({ appGroupId ,rows: propRows, testOptions }) => {
     }
 
     setRows(updatedRows)
-   
+
   }
 
   useEffect(() => {
@@ -305,19 +305,20 @@ export default ({ appGroupId ,rows: propRows, testOptions }) => {
     setEnableEdit(false);
 
   }
-
+  const isNoGrades = rows.every(item => item.grades.length === 0);
   return (
     <>
-     <div style={{ paddingTop: 12, paddingLeft: 12, paddingBottom: 12 }}>
+      <div style={{ paddingTop: 12, paddingLeft: 12, paddingBottom: 12 }}>
         {
-          !enableEdit  ? (
-            rows.length > 0 && 
+          !isNoGrades &&  (  !enableEdit ? (
+            rows.length > 0 &&
             <button
               onClick={() => setEnableEdit(true)}
             >
               <FontAwesomeIcon className='back-icon' icon={faPencilAlt} />Edit
             </button>
           ) : (
+            
             <>
 
               <button
@@ -332,14 +333,14 @@ export default ({ appGroupId ,rows: propRows, testOptions }) => {
                 <FontAwesomeIcon className='back-icon' icon={faCheck} />Save
               </button>
             </>
-          )
+          ))
         }
       </div>
       {
-        rows.map(({ grades, ...rest }, gi) => {
+        rows.map(({ grades, school_year_frame, ...rest }, gi) => {
           return (
             <>
-              <div key={`individual-grades-${gi}`} className='rightContainer'>
+              {school_year_frame === 'semestral' ? <div key={`individual-grades-${gi}`} className='rightContainer'>
                 <div className='rightContainerHeader'>
                   <span className='header'>Individual Grades (Semester)</span>
                 </div>
@@ -353,23 +354,24 @@ export default ({ appGroupId ,rows: propRows, testOptions }) => {
                   handleSave={handleSave}
                   attendanceColumns={['attendance_quarter_1_total', 'attendance_quarter_2_total', 'mid_final_attendance', 'attendance_quarter_3_total', 'attendance_quarter_4_total', 'final_attendance', 'final_quarter_attendance']}
                 />
-              </div>
+              </div> :
 
-              <div className='rightContainer'>
-                <div className='rightContainerHeader'>
-                  <span className='header'>Individual Grades (Quarter)</span>
-                </div>
-                <TABLE
-                  {...rest}
-                  rows={grades}
-                  columns={quarterColumns}
-                  gradeTakenOptions={gradeTakenOptions}
-                  enableEdit={enableEdit}
-                  handleInputChange={handleInputChange}
-                  handleSave={handleSave}
-                  attendanceColumns={['attendance_quarter_1_total', 'attendance_quarter_2_total', 'attendance_quarter_3_total', 'final_quarter_attendance']}
-                />
-              </div>
+                <div className='rightContainer'>
+                  <div className='rightContainerHeader'>
+                    <span className='header'>Individual Grades (Quarter)</span>
+                  </div>
+                  <TABLE
+                    {...rest}
+                    rows={grades}
+                    columns={quarterColumns}
+                    gradeTakenOptions={gradeTakenOptions}
+                    enableEdit={enableEdit}
+                    handleInputChange={handleInputChange}
+                    handleSave={handleSave}
+                    attendanceColumns={['attendance_quarter_1_total', 'attendance_quarter_2_total', 'attendance_quarter_3_total', 'final_quarter_attendance']}
+                  />
+                </div>}
+
             </>
           )
         })

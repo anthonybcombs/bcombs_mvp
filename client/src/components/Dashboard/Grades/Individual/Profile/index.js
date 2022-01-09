@@ -70,8 +70,6 @@ export default ({ child_id }) => {
       profile = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
     }
   }
-
-
   return (
     <GradesStyled>
       <h2>Grades and Tracking</h2>
