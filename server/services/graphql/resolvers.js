@@ -1469,7 +1469,7 @@ const resolvers = {
         return item.type == "primeFile"
       });
 
-      console.log('nameType loginType',loginType)
+      console.log('nameType loginType 1111',loginType)
       console.log('nameType loginType',loginType)
 
       //const hasLoginField = !!(loginType.length > 0);
@@ -1626,10 +1626,10 @@ const resolvers = {
 
       const newApplication = await submitCustomApplication(application);
 
-      if(newApplication && newApplication.app_id && hasLoginField) {
-
-        email.value = email && email.value.slice(1, -1);
-        password.value = password && password.value.slice(1, -1);
+      if(newApplication && newApplication.app_id && hasLoginField && hasLoginField.length > 0) {
+        console.log("hasLoginFielddddddd",hasLoginField)
+        email.value = email &&  email.value && typeof email.value === 'string' &&  email.value.slice(1, -1);
+        password.value = password && password.value && typeof password.value === 'string' && password.value.slice(1, -1);
         
         const checkEmail = await checkUserEmail(email.value);
 
