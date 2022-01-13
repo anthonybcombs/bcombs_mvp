@@ -400,6 +400,8 @@ export default function index({
       studentStatusVal = "No longer a Student";
     } else if (student_status == "missed_oppurtunity") {
       studentStatusVal = "Missed oppurtunity";
+    } else if (student_status == "pending_resubmission") {
+      studentStatusVal = "Pending Resubmission";
     } else {
       studentStatusVal = "In process";
     }
