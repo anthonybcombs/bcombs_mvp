@@ -1496,8 +1496,8 @@ const resolvers = {
           return item.type == "password"
         });
   
-        email = email.length > 0 ? email[0] : "";
-        password = password.length > 0 ? password[0] : "";
+        email = email && email.length > 0 ? email[0] : "";
+        password = password && password.length > 0 ? password[0] : "";
       } 
       
       if (hasNameField) {
