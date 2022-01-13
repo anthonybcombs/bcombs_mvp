@@ -1628,8 +1628,8 @@ const resolvers = {
 
       if(newApplication && newApplication.app_id && hasLoginField) {
 
-        email.value = email.value.slice(1, -1);
-        password.value = password.value.slice(1, -1);
+        email.value = email && email.value.slice(1, -1);
+        password.value = password && password.value.slice(1, -1);
         
         const checkEmail = await checkUserEmail(email.value);
 
