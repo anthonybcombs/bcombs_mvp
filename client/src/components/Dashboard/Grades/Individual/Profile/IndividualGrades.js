@@ -4,7 +4,7 @@ import cloneDeep from 'lodash.clonedeep'
 import moment from 'moment'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencilAlt, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faSave, faWindowClose } from '@fortawesome/free-solid-svg-icons'
 
 import { requestAddUpdateStudentCumulative, clearGrades } from '../../../../../redux/actions/Grades'
 
@@ -310,28 +310,24 @@ export default ({ appGroupId, rows: propRows, testOptions }) => {
     <>
       <div style={{ paddingTop: 12, paddingLeft: 12, paddingBottom: 12 }}>
         {
-          !isNoGrades &&  (  !enableEdit ? (
+          !isNoGrades && (!enableEdit ? (
             rows.length > 0 &&
-            <button
-              onClick={() => setEnableEdit(true)}
-            >
-              <FontAwesomeIcon className='back-icon' icon={faPencilAlt} />Edit
-            </button>
+            <FontAwesomeIcon className="edit-icon" onClick={() => setEnableEdit(true)} icon={faEdit} style={{
+              color: '#f26e21',
+              fontSize: 24
+            }} />
           ) : (
-            
-            <>
 
-              <button
-                onClick={() => setEnableEdit(false)}
-              >
-                Cancel
-              </button>
+            <>
+              <FontAwesomeIcon className="edit-icon" onClick={() => setEnableEdit(false)} icon={faWindowClose} style={{
+                color: '#f26e21',
+                fontSize: 24
+              }} />
               {`  `}
-              <button
-                onClick={handleSave}
-              >
-                <FontAwesomeIcon className='back-icon' icon={faCheck} />Save
-              </button>
+              <FontAwesomeIcon className="edit-icon" onClick={handleSave} icon={faSave} style={{
+                color: '#f26e21',
+                fontSize: 24
+              }} />
             </>
           ))
         }

@@ -5,7 +5,7 @@ import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import update from 'immutability-helper'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faPencilAlt, faCheck, faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
+import {  faEdit, faSave, faWindowClose } from '@fortawesome/free-solid-svg-icons'
 import DatePicker from "react-datepicker";
 
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../../redux/actions/Grades'
@@ -139,25 +139,21 @@ export default ({ rows: propRows, testOptions }) => {
           {
             !enableEdit ? (
               rows.length > 0 && 
-              <button
-                onClick={() => setEnableEdit(true)}
-
-              >
-                <FontAwesomeIcon className='back-icon' icon={faPencilAlt} />Edit
-              </button>
+              <FontAwesomeIcon  className="edit-icon"  onClick={() => setEnableEdit(true)}  icon={faEdit} style={{
+                color:'#f26e21',
+                fontSize: 24
+             }} />
             ) : (
               <>
-              <button
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
+                         <FontAwesomeIcon  className="edit-icon"  onClick={handleCancel}  icon={faWindowClose} style={{
+               color:'#f26e21',
+               fontSize: 24
+               }} />
                 {`  `}
-                <button
-                onClick={handleSave}
-              >
-                <FontAwesomeIcon className='back-icon' icon={faCheck} />Save
-              </button>
+                <FontAwesomeIcon  className="edit-icon"  onClick={handleSave}  icon={faSave} style={{
+                 color:'#f26e21',
+                 fontSize: 24
+               }} />
                 </>
             
             )

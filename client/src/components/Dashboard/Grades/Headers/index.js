@@ -13,7 +13,8 @@ export default ({
   filterOptions, enableClearFilter, onApplyFilter, // Filter Props
   onSearch, searchId = 'search',// Search Props
   columns, rows, // Table props
-  schoolYears = [] //For date filter
+  schoolYears = [], //For date filter
+  centerSearch = false
 }) => {
 
   const newColumns = Object.entries(columns)
@@ -95,7 +96,9 @@ export default ({
   }
 
   return (
-    <HeaderStyled>
+    <HeaderStyled
+      centerSearch={centerSearch}
+    >
       <CustomSelect
         value={''}
         options={filterOptions.map(e => ({

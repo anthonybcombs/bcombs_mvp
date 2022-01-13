@@ -602,6 +602,7 @@ export default () => {
                     schoolYears={schoolYears}
 
                     onApplyFilter={handleApplyFilter}
+                    centerSearch={true}
                   />
                   <Link
                     className='applyFilterBtn'

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export default styled.div`
   display: flex;
-  align-items: flex-end;
+  justify-content:  ${props => (props.centerSearch ? ' flex-end;' : 'space-between;')}
   flex: 1;
 
   .field {
@@ -63,7 +63,7 @@ export default styled.div`
     position: relative;
     max-width: 300px;
     width: 100%;
-    margin: 0 auto;
+    margin: ${props => (props.centerSearch ? ' 0 auto;' : '')}
   }
   .search-input > input {
     text-indent: 2rem !important;

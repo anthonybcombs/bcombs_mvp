@@ -1139,7 +1139,16 @@ export default function index() {
       // cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>
       cell: row => {
         return  <a href="#" onClick={() => {
-         window.location.href= `/dashboard/grades/profile/${row.child?.ch_id}?group_id=${row.class_teacher}&group_type=bcombs&request_type=undefined`
+          const currentParent = userApplications && userApplications[0] && userApplications
+          const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
+          // const groupIds = userApplications.map(item =>  {
+          //   const ids = item.class_teacher.split(',').filter(id => id && id !== '');
+          //   return ids;
+          // }).flat().join(',');
+          console.log('currentParent' , currentParent)
+          console.log('currentParent parentIds' , parentIds)
+           window.location.href= `/dashboard/grades/profile/${row.child?.ch_id}?group_id=${row.class_teacher}&group_type=bcombs&parent_ids=${parentIds}&is_parent=true`
+        
         }}>{(row.child?.firstname && row.child?.lastname) ? row.child?.firstname + " " + row.child?.lastname : ""}</a>
       }
     },

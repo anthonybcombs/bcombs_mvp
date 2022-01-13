@@ -7,7 +7,7 @@ import CustomSelect from '../../../CustomComponents/CustomSelect'
 
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencilAlt, faCheck } from '@fortawesome/free-solid-svg-icons'
+import {  faEdit, faSave, faWindowClose } from '@fortawesome/free-solid-svg-icons'
 
 import { requestAddUpdateStudentCumulative } from '../../../../../redux/actions/Grades'
 
@@ -257,25 +257,23 @@ export default ({ appGroupId, rows: propRows, testOptions }) => {
           {
             !enableEdit ? (
               rows.length > 0 && 
-              <button
-                onClick={() => setEnableEdit(true)}
-              >
-                <FontAwesomeIcon className='back-icon' icon={faPencilAlt} />Edit
-              </button>
-            ) : (
+   
+               <FontAwesomeIcon  className="edit-icon"  onClick={() => setEnableEdit(true)}  icon={faEdit} style={{
+                  color:'#f26e21',
+                  fontSize: 24
+               }} />
+              ) : (
               <>
 
-                <button
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
+                <FontAwesomeIcon  className="edit-icon"  onClick={handleCancel}  icon={faWindowClose} style={{
+               color:'#f26e21',
+               fontSize: 24
+               }} />
                 {`  `}
-                <button
-                  onClick={handleSave}
-                >
-                  <FontAwesomeIcon className='back-icon' icon={faCheck} />Save
-                </button>
+                <FontAwesomeIcon  className="edit-icon"  onClick={handleSave}  icon={faSave} style={{
+                 color:'#f26e21',
+                 fontSize: 24
+               }} />
               </>
             )
           }

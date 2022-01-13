@@ -25,8 +25,9 @@ export default ({ child_id }) => {
     gradeInput, loading
   }))
 
+
   const queryLocation = useLocation();
-	const { group_id, group_type, request_type } = parse(queryLocation.search)
+	const { group_id, parent_ids, group_type, request_type, is_parent } = parse(queryLocation.search)
   //const isVendor = request_type === 'vendor'
   const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
@@ -93,7 +94,7 @@ export default ({ child_id }) => {
                   <div className='customLink'>
                     <Link
                       className='applyFilterBtn'
-                      to={`/dashboard/grades/input/${child_id}?${commonQueryStrings}`}
+                      to={is_parent ? `/dashboard/grades/input?appGroupIds=${group_id}&parent_ids=${parent_ids}&is_parent=true` : `/dashboard/grades/input/${child_id}?${commonQueryStrings}`}
                     >
                         {`Grades & Test Input`}
                     </Link>
