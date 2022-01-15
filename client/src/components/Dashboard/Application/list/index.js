@@ -398,7 +398,7 @@ export default function index({
       studentStatusVal = "Waiting List";
     } else if (student_status == "no_longer_student") {
       studentStatusVal = "No longer a Student";
-    } else if (student_status == "missed_oppurtunity") {
+    } else if (student_status == "missed_opportunity") {
       studentStatusVal = "Missed oppurtunity";
     } else if (student_status == "pending_resubmission") {
       studentStatusVal = "Pending Resubmission";
