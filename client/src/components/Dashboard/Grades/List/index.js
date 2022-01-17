@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
-import uniqBy from 'lodash.uniqBy'
+import uniqBy from 'lodash.uniqby'
 import { groupBy, maxBy } from 'lodash'
 import { Link } from '@reach/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
