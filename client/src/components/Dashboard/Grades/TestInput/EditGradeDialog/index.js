@@ -132,6 +132,7 @@ export default function index({
 
   const emptyGrade = Object.keys(gradeKeys).reduce((acc, curr) => ({ ...acc, [curr]: '' }), {})
   const [grades, setGrades] = useState([{ id: uuid(), ...emptyGrade }])
+  const [deletedGrades, setDeletedGrades] = useState([])
   const [otherFields, setOtherFields] = useState(Object.keys(otherFieldKeys).reduce((acc, curr) => ({ ...acc, [curr]: '' }), {}))
   const [selected, setSelected] = useState([])
   const [hasChanged, setHasChanged] = useState(false)
@@ -159,10 +160,11 @@ export default function index({
     setSelected(checked ? grades.map(e => e.id) : [])
   }
 
+
   const handleAdd = () => {
     setGrades([
       ...grades,
-      { id: uuid(), ...emptyGrade }
+    { id: uuid(), ...emptyGrade, student_grade_cumulative_id: data.student_grade_cumulative_id }
     ])
     setHasChanged(true)
   }
@@ -181,8 +183,13 @@ export default function index({
     ])
     setHasChanged(true)
   }
-
+  console.log('gradessssssssssss',grades)
   const handleDelete = () => {
+    const deletedGradeIds =  grades.filter(e => selected.includes(e.id)).map(e => e.student_grades_id);
+
+    console.log('deletedGradeIds',deletedGradeIds)
+    setDeletedGrades([...(deletedGradeIds || [])]);
+
     setGrades(grades.filter(e => !selected.includes(e.id)))
   }
 
@@ -197,8 +204,11 @@ export default function index({
           acc[key] = otherFields[key]
         }
         return acc
-      }, {})
-    onSaveGrade(grades, newOtherFields)
+      }, {});
+
+    const defaultGradeIds = data.grades.map(item => item.student_grades_id)
+    onSaveGrade(grades, newOtherFields, defaultGradeIds);
+
   }
 
   useEffect(() => {

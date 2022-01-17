@@ -31,6 +31,7 @@ export const ADD_UPDATE_STUDENT_CUMULATIVE_MUTATION = gql`
       final_student_rank
       grades{
         student_grade_cumulative_id
+        student_grades_id
         class
         subject
         teacher_name

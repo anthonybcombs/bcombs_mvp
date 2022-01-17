@@ -47,6 +47,7 @@ export const GET_STUDENT_CUMULATIVE_BY_APP_GROUP = gql`
           final_student_rank
           grades{
             student_grade_cumulative_id
+            student_grades_id
             class
             subject
             teacher_name
@@ -167,6 +168,7 @@ query getStudentRecords(
         final_student_rank
         grades{
           student_grade_cumulative_id
+          student_grades_id
           class
           subject
           teacher_name
@@ -284,6 +286,7 @@ query getStudentCumulativeGradeByVendor(
           final_student_rank
           grades{
             student_grade_cumulative_id
+            student_grades_id
             class
             subject
             teacher_name
@@ -398,6 +401,7 @@ query getStudentCumulativeGradeByParent(
           final_student_rank
           grades{
             student_grade_cumulative_id
+            student_grades_id
             class
             subject
             teacher_name

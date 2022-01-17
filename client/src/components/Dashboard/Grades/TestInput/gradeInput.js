@@ -26,7 +26,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
   }))
-
+  console.log('gradeInput',gradeInput)
   const attempOptions = Array(5).fill().map((e, i) => ({ value: i + 1, label: `${i + 1}` }))
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))]
@@ -148,6 +148,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
   const [enableEditDialog, setEnableEditDialog] = useState(false)
   const [selectedRowForEdit, setSelectedRowForEdit] = useState('');
   const [isReview, setIsReview] = useState(false)
+  const [deletedGrades, setDeletedGrades] = useState([])
 
   const generateColumnFilters = (passedRows) => {
     let newColumnFilters = {}
@@ -550,7 +551,7 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
 
   const handleSave = () => {
     const newRows = cloneDeep(rows)
-      .map(e => {
+      .map((e,index) => {
         let newRow = Object.entries(goldenKeys)
           .reduce((acc, [key, { type }]) => {
             if (type === 'int') {
@@ -573,6 +574,9 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
           newRow.grades = []
         }
 
+        if(rows[index].deleted_grades) {
+          newRow.deleted_grades = rows[index].deleted_grades;
+        }
         newRow.grades = (e?.grades || [])
           .map(e => {
             let newGrade = Object.entries(gradeKeys)
@@ -614,8 +618,9 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
         }
       })
 
+      dispatch(requestAddUpdateStudentCumulative(newRows));
 
-    dispatch(requestAddUpdateStudentCumulative(newRows));
+
 
     setTimeout(() => {
       onHasChanged(false)
@@ -623,16 +628,24 @@ export default ({ applications, importData = [], childId, requestList, groupId, 
 
   }
 
-  const handleSaveGrade = (grades, otherFields) => {
+  const handleSaveGrade = (grades, otherFields, defaultGrades = []) => {
     const gradesHelp = grades.filter(e => (e.help_q1 || e.help_q2 || e.help_q3 || e.help_q4)).map(e => e.subject)
-    const mergeObject = { grades, ...otherFields, help_needed: `${gradesHelp}` }
+  
+    const currentGradeIds = grades.map(item => item.student_grades_id);
+    const deletedGrades = defaultGrades.filter(id => !currentGradeIds.includes(id))
 
+    const mergeObject = { grades, ...otherFields, help_needed: `${gradesHelp}`, deleted_grades: deletedGrades}
+ 
+    
+    console.log('mergeObject',mergeObject)
+    // setDeletedGrades(deletedGrades);
     setRows(update(rows, {
       [rows.findIndex(e => e.id === activeGrade)]: { $merge: mergeObject }
     }))
     setFilteredRows(update(filteredRows, {
       [filteredRows.findIndex(e => e.id === activeGrade)]: { $merge: mergeObject }
     }))
+   
     setEditGradeOpen(false)
   }
 
