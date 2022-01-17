@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
+import uniqBy from 'lodash.uniqBy'
 import { groupBy, maxBy } from 'lodash'
 import { Link } from '@reach/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -198,7 +199,8 @@ export default () => {
   const renderTableData = () => {
     const highlightFilters = filterFromHeaders?.highlight || []
     const { conditions } = FilterOptionsObj.highlight
-    return rows.map((row, index) => {
+    const updatedRows = uniqBy(rows, 'child_id');
+    return updatedRows.map((row, index) => {
       const { 
         name, schoolType, gradeLevel, gpa, attendanceSummary
       } = row

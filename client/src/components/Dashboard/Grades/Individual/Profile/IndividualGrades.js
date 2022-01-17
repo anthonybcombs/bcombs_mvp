@@ -83,7 +83,30 @@ const gradeKeys = {
 
 const TABLE = (data) => {
   const { rows, columns, year_level = 0, school_year_start, school_year_end, gradeTakenOptions, enableEdit, handleInputChange, attendanceColumns } = data
-
+  
+  const attendanceRows = rows.map(item => {
+    return attendanceColumns.reduce((accum, key) => {
+      return {
+        ...accum,
+        [key]: item[key]
+      }
+    },{})
+    
+  }).reduce((accum, item) => {
+    return {
+      attendance_quarter_1_total: accum.attendance_quarter_1_total + item.attendance_quarter_1_total,
+      attendance_quarter_2_total: accum.attendance_quarter_2_total + item.attendance_quarter_2_total,
+      attendance_quarter_3_total: accum.attendance_quarter_3_total + item.attendance_quarter_3_total,
+      final_quarter_attendance: accum.final_quarter_attendance + item.final_quarter_attendance
+    }
+  },{
+    attendance_quarter_1_total: 0,
+    attendance_quarter_2_total: 0,
+    attendance_quarter_3_total: 0,
+    final_quarter_attendance: 0
+  })
+  
+  console.log('attendanceRows',attendanceRows)
   return (
     <div className='tableWrapper'>
 
@@ -108,11 +131,12 @@ const TABLE = (data) => {
           <tr>
             <td>Attendance</td>
             <td></td>
-            {
-              attendanceColumns.map(e => (
-                <td>--</td>
-              ))
-            }
+            <td>{attendanceRows.attendance_quarter_1_total}</td>
+            <td>{attendanceRows.attendance_quarter_2_total}</td>
+            <td>{attendanceRows.attendance_quarter_3_total}</td>
+            <td>{attendanceRows.final_quarter_attendance}</td>
+      
+    
           </tr>
           {
             rows.length > 0 ? (
@@ -306,6 +330,7 @@ export default ({ appGroupId, rows: propRows, testOptions }) => {
 
   }
   const isNoGrades = rows.every(item => item.grades.length === 0);
+  console.log('rowsssssssssssssssssss',rows)
   return (
     <>
       <div style={{ paddingTop: 12, paddingLeft: 12, paddingBottom: 12 }}>
