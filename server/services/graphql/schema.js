@@ -1588,6 +1588,7 @@ const queryTypes = `
 
     type StudentGrades {
         student_grade_cumulative_id: Int
+        student_grades_id: Int
         class: String
         subject: String
         teacher_name: String
