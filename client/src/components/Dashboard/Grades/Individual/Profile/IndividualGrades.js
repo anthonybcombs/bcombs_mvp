@@ -4,7 +4,7 @@ import cloneDeep from 'lodash.clonedeep'
 import moment from 'moment'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faSave, faWindowClose, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faSave, faWindowClose, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import { requestAddUpdateStudentCumulative, clearGrades } from '../../../../../redux/actions/Grades'
 import { uuid } from 'uuidv4';
@@ -107,7 +107,7 @@ const TABLE = (data) => {
     final_quarter_attendance: 0
   })
 
-  console.log('attendanceRows', attendanceRows)
+ 
   return (
     <div className='tableWrapper'>
 
@@ -192,6 +192,8 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
   ]
 
   const [rows, setRows] = useState([])
+  const [defaultRows, setDefaultRows] = useState([])
+  const [deletedGradeIds, setDeletedGradeIds] = useState([])
   const [enableEdit, setEnableEdit] = useState(false)
 
   const formatValue = (row, key) => {
@@ -203,6 +205,19 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
         return (rows.find(e => e.year_level === prevYL) || {}).gpa_final || '--'
       case 'attendance':
         return (row?.grades || [])[0]?.final_quarter_attendance || '--'
+      case 'delete':
+          return enableEdit && <FontAwesomeIcon className="edit-icon" onClick={() => {
+            if(row.is_new) {
+              handleDelete(row.student_grade_cumulative_id, 'id', row.id)
+            }
+            else{
+              handleDelete(row.student_grade_cumulative_id, 'student_grades_id',row.student_grades_id)
+            }
+          }} icon={faTrash} style={{
+            color: '#f26e21',
+            fontSize: 24,
+            cursor:'pointer'
+          }} />
       default:
         return ''
     }
@@ -218,6 +233,7 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
     letter_grade_quarter_4: { type: 'number', label: 'Q2' },
     letter_final_grade: { type: 'number', label: 'Final' },
     letter_year_final_grade: { type: 'number', label: 'Year Final', editable: false },
+    delete: { type: 'string', label: 'Delete', editable: false, func: formatValue}
   }
 
   const quarterColumns = {
@@ -228,6 +244,7 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
     letter_grade_quarter_3: { type: 'number', label: 'Q3' },
     letter_grade_quarter_4: { type: 'number', label: 'Q4' },
     letter_year_final_grade: { type: 'number', label: 'Year Final', editable: false },
+    delete: { type: 'string', label: 'Delete', editable: false, func: formatValue}
   }
 
   const handleInputChange = ({ target: { value } }, key, gradeIndex, cumulativeId) => {
@@ -244,7 +261,8 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
 
   useEffect(() => {
     if (propRows && propRows.length) {
-      setRows(propRows)
+      setRows(cloneDeep(propRows))
+      setDefaultRows(cloneDeep(propRows))
     }
   }, [propRows])
 
@@ -321,21 +339,37 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
 
         return {
           ...newRow,
+          deleted_grades: deletedGradeIds,
           app_group_id: appGroupId,
-          application_type: 'bcombs'
+          application_type: 'bcombs',
+          
         }
       })
-
-
+    
+   
     dispatch(requestAddUpdateStudentCumulative(newRows));
     setEnableEdit(false);
 
     setTimeout(() => {
       refreshGrades();
+      setDeletedGradeIds([]);
     },1500);
 
   }
 
+  
+  const handleDelete = (cumulativeId,field, value) =>  { 
+   let updatedRows = cloneDeep(rows);
+   updatedRows = updatedRows.map((item, index) => {
+      if(item.student_grade_cumulative_id === cumulativeId) {
+        item.grades = item.grades.filter(item => item[field] !== value)
+      }
+      return item;
+    });
+  
+    setDeletedGradeIds([...deletedGradeIds,value])
+    setRows(updatedRows);
+  }
   const handleAdd = id => {
     const grade = {
       attendance: null,
@@ -406,6 +440,13 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
     setRows(updateRows);
   };
 
+
+  const handleCancel = () => {
+    setDeletedGradeIds([]);
+    setRows(defaultRows);
+    setEnableEdit(false);
+  }
+
   const isNoGrades = rows.every(item => item.grades.length === 0);
 
   return (
@@ -422,7 +463,7 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
           ) : (
 
             <>
-              <FontAwesomeIcon className="edit-icon" onClick={() => setEnableEdit(false)} icon={faWindowClose} style={{
+              <FontAwesomeIcon className="edit-icon" onClick={handleCancel} icon={faWindowClose} style={{
                 color: '#f26e21',
                 fontSize: 24,
                 cursor:'pointer'

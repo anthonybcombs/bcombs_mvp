@@ -141,7 +141,7 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
         return ''
     }
   }
-  console.log('propRowsasdasd',propRows)
+
   const columns = {
     year_level: { type: 'string', label: 'Grade', editable: false },
     year: { type: 'date', label: 'Year', func: formatValue, editable: false },
@@ -162,6 +162,7 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
       [rows.findIndex(e => e.id === id)]: { $merge: { [key]: value } }
     }))
   }
+
 
 
   const handleSelectCumGrade = ({ target: { value } }) => {
@@ -213,7 +214,7 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
 
 
   }
-  console.log('propRows', propRows)
+
   const handleCancel = () => {
     setRows([propRows[0]]);
     setEnableEdit(false);

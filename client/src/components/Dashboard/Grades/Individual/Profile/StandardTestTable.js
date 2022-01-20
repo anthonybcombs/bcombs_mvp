@@ -5,7 +5,7 @@ import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import update from 'immutability-helper'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {  faEdit, faSave, faWindowClose, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import {  faEdit, faSave, faWindowClose, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 import DatePicker from "react-datepicker";
 
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../../redux/actions/Grades'
@@ -22,7 +22,10 @@ export default ({ rows: propRows, testOptions, refreshGrades }) => {
 
   const [enableEdit, setEnableEdit] = useState(false)
   const [rows, setRows] = useState([])
-  console.log('testOptions',testOptions)
+  const [defaultRows, setDefaultRows] = useState([])
+  const [deletedStudentTestIds, setDeletedTestStudentIds] = useState([])
+
+ 
   const formatValue = (row, key) => {
   
     switch (key) {
@@ -44,6 +47,19 @@ export default ({ rows: propRows, testOptions, refreshGrades }) => {
         ) : (
           row[key] ? `${row[key]}%` : '--'
         )
+        case 'delete':
+          return enableEdit && <FontAwesomeIcon className="edit-icon" onClick={() => {
+            if(row.is_new) {
+              handleDelete( 'id', row.id)
+            }
+            else{
+              handleDelete('student_test_id',row.student_test_id)
+            }
+          }} icon={faTrash} style={{
+            color: '#f26e21',
+            fontSize: 24,
+            cursor:'pointer'
+          }} />
       default:
         return ''
     }
@@ -78,7 +94,8 @@ export default ({ rows: propRows, testOptions, refreshGrades }) => {
     school_percentage: { type: 'number', label: '% school', func: formatValue },
     district_percentage: { type: 'number', label: '% district', func: formatValue },
     state_percentage: { type: 'number', label: '% state', func: formatValue },
-    nationality_percentage: { type: 'number', label: '% nationally', func: formatValue }
+    nationality_percentage: { type: 'number', label: '% nationally', func: formatValue },
+    delete: { type: 'string', label: 'Delete', editable: false, func: formatValue}
   }
 
   const handleInputChange = ({ target: { value } }, id, key) => {
@@ -88,19 +105,31 @@ export default ({ rows: propRows, testOptions, refreshGrades }) => {
   }
 
   useEffect(() => {
-    console.log('propRows123123123123123',propRows)
+
     if (propRows && propRows.length) {
-      setRows(propRows.map(e => ({ ...e, id: uuid() })))
+      const currentRows = propRows.map(e => ({ ...e, id: uuid() }));
+      setRows(cloneDeep(currentRows));
+      setDefaultRows(cloneDeep(currentRows))
     }
   }, [propRows]);
 
 
   const handleCancel = () => {
     if (propRows && propRows.length) {
-      setRows(propRows.map(e => ({ ...e, id: uuid() })))
+      setRows(defaultRows);
     }
     setEnableEdit(false);
   }
+
+  const handleDelete = (field, value) =>  { 
+    let updatedRows = cloneDeep(rows);
+      updatedRows = updatedRows.filter((item, index) => {
+      return item[field] !== value
+     });
+   
+     setDeletedTestStudentIds([...deletedStudentTestIds,value])
+     setRows(updatedRows);
+   }
 
   const handleAdd = () => {
     let currentRows = cloneDeep(rows);
@@ -159,12 +188,18 @@ export default ({ rows: propRows, testOptions, refreshGrades }) => {
         return newRow
       })
 
-      // setRows(newRows);
+  
         dispatch(requestAddUpdateStudentStandardizedTest(newRows))
         setEnableEdit(false);
 
+        if(deletedStudentTestIds.length > 0) {
+    
+          dispatch(requestDeleteStudentStandardizedTest(deletedStudentTestIds));
+        }
+
         setTimeout(() => {
           refreshGrades();
+          setDeletedTestStudentIds([]);
         },1500)
        
   }
