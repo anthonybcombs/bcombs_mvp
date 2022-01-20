@@ -171,6 +171,7 @@ export default ({ child_id }) => {
                     Note: Delete action requires to click the save button in order to delete a data successfully.
                   </div>
                   <StandardTestTable
+                    childId={child_id}
                     rows={data?.standardized_test || []}
                     testOptions={testOptions}
                     refreshGrades={refreshGrades}

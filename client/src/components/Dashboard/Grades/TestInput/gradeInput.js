@@ -876,26 +876,7 @@ export default ({ applications, importData = [], childId, requestList, groupType
   } else if (groupType === 'forms') {
 
     selectStudentRows = selectStudentRows.filter(e => e.form_contents)
-    //   selectStudentRows = applications && applications.map((e) => {
-    //     const currentApplication = selectStudentRows.find(item => {
-    //       return e.app_id === item.child_id
-    //     });
 
-    //     if(currentApplication) {
-    //       return {
-    //         ...currentApplication
-    //       }
-    //     }
-    //     return {
-    //       app_group_id: e.class_teacher,
-    //       child_id: e.app_id,
-    //       standardized_test: [],
-    //       cumulative_grades: [],
-    //       form_contents: e.form_contents,
-    //       firstname: null,
-    //       lastname: null
-    //     }
-    //   })
     selectStudentRows = selectStudentRows.filter(e => {
       if (type === 'all') {
         const ids = e.app_group_id.split(',');
@@ -903,9 +884,6 @@ export default ({ applications, importData = [], childId, requestList, groupType
       }
       return e.form_contents
     });
-
-
-
 
   }
   else {

@@ -11,7 +11,7 @@ import DatePicker from "react-datepicker";
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../../redux/actions/Grades'
 
 
-export default ({ rows: propRows, testOptions, refreshGrades }) => {
+export default ({ rows: propRows, testOptions, refreshGrades, childId }) => {
   const dispatch = useDispatch();
   const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => {
     return {
@@ -137,7 +137,7 @@ export default ({ rows: propRows, testOptions, refreshGrades }) => {
     
     //      student_test_id: newRows.student_test_id + 1,
     currentRows.push({
-        child_id: newRows.child_id,
+        child_id: childId,
         attempt: 0,
         ach_level: 0,
         district_percentage: 0,
@@ -211,7 +211,7 @@ export default ({ rows: propRows, testOptions, refreshGrades }) => {
         <div style={{ paddingTop: 12 }}>
           {
             !enableEdit ? (
-              rows.length > 0 && 
+              
               <FontAwesomeIcon  className="edit-icon"  onClick={() => setEnableEdit(true)}  icon={faEdit} style={{
                 color:'#f26e21',
                 fontSize: 24,
