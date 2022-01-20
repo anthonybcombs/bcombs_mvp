@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from '@reach/router'
 import cloneDeep from 'lodash.clonedeep'
 import orderBy from 'lodash.orderby'
 import { uuid } from 'uuidv4'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretDown, faAngleLeft, faPlusCircle, faCopy, faTrashAlt, faCheck, faTimes, faPaperclip, faTimesCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCaretDown, faPlusCircle, faCopy, faTrashAlt, faCheck, faPaperclip, faTimesCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
 import update from 'immutability-helper'
 import DatePicker from "react-datepicker";
-import CustomSelect from '../../CustomComponents/CustomSelect'
+// import CustomSelect from '../../CustomComponents/CustomSelect'
 
 import Headers from '../Headers'
 import Loading from '../../../../helpers/Loading.js'
@@ -21,7 +20,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ applications, importData = [], childId, requestList, groupId, groupType, loading, onHasChanged, appGroupIds, type, vendors, isParent = false,selectedChild = null }) => {
+export default ({ applications, importData = [], childId, requestList, groupType, loading, onHasChanged, appGroupIds, type, vendors, isParent = false,selectedChild = null }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput

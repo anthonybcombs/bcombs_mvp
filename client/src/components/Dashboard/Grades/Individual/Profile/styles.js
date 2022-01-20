@@ -16,7 +16,7 @@ export default styled.div`
     min-height: calc(100vh - 220px);
   }
 
-  .profileTrackingTable tr td input {
+  .profileTrackingTable tr td input,  .profileTrackingTable tr td select {
 	padding: 4px;
 	border-radius: 3px;
 	border: 1.65px solid #ccc;

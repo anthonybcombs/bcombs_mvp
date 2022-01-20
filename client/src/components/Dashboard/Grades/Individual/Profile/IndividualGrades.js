@@ -4,9 +4,10 @@ import cloneDeep from 'lodash.clonedeep'
 import moment from 'moment'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faSave, faWindowClose } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faSave, faWindowClose, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 
 import { requestAddUpdateStudentCumulative, clearGrades } from '../../../../../redux/actions/Grades'
+import { uuid } from 'uuidv4';
 
 
 const goldenKeys = {
@@ -83,15 +84,15 @@ const gradeKeys = {
 
 const TABLE = (data) => {
   const { rows, columns, year_level = 0, school_year_start, school_year_end, gradeTakenOptions, enableEdit, handleInputChange, attendanceColumns } = data
-  
+
   const attendanceRows = rows.map(item => {
     return attendanceColumns.reduce((accum, key) => {
       return {
         ...accum,
         [key]: item[key]
       }
-    },{})
-    
+    }, {})
+
   }).reduce((accum, item) => {
     return {
       attendance_quarter_1_total: accum.attendance_quarter_1_total + item.attendance_quarter_1_total,
@@ -99,14 +100,14 @@ const TABLE = (data) => {
       attendance_quarter_3_total: accum.attendance_quarter_3_total + item.attendance_quarter_3_total,
       final_quarter_attendance: accum.final_quarter_attendance + item.final_quarter_attendance
     }
-  },{
+  }, {
     attendance_quarter_1_total: 0,
     attendance_quarter_2_total: 0,
     attendance_quarter_3_total: 0,
     final_quarter_attendance: 0
   })
-  
-  console.log('attendanceRows',attendanceRows)
+
+  console.log('attendanceRows', attendanceRows)
   return (
     <div className='tableWrapper'>
 
@@ -135,8 +136,8 @@ const TABLE = (data) => {
             <td>{attendanceRows.attendance_quarter_2_total}</td>
             <td>{attendanceRows.attendance_quarter_3_total}</td>
             <td>{attendanceRows.final_quarter_attendance}</td>
-      
-    
+
+
           </tr>
           {
             rows.length > 0 ? (
@@ -151,7 +152,7 @@ const TABLE = (data) => {
                               func ? (
                                 func(row, key)
                               ) : (
-                                (enableEdit && editable) ? (
+                                (enableEdit && ( editable || row.is_new)) ? (
                                   <input
                                     type={type === 'number' ? 'number' : 'text'}
                                     value={row[key]}
@@ -183,7 +184,7 @@ const TABLE = (data) => {
   )
 }
 
-export default ({ appGroupId, rows: propRows, testOptions }) => {
+export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
   const dispatch = useDispatch();
   const gradeTakenOptions = [
     { value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' },
@@ -208,15 +209,15 @@ export default ({ appGroupId, rows: propRows, testOptions }) => {
   }
 
   const semColumns = {
-    class: { type: 'string', label: 'Class', editable: false },
-    subject: { type: 'string', label: 'Subject', editable: false },
+    class: { type: 'string', label: 'Class' },
+    subject: { type: 'string', label: 'Subject'},
     letter_grade_quarter_1: { type: 'number', label: 'Q1' },
     letter_grade_quarter_2: { type: 'number', label: 'Q2' },
     letter_mid_final_grade: { type: 'number', label: 'Final' },
     letter_grade_quarter_3: { type: 'number', label: 'Q1' },
     letter_grade_quarter_4: { type: 'number', label: 'Q2' },
     letter_final_grade: { type: 'number', label: 'Final' },
-    letter_year_final_grade: { type: 'number', label: 'Year Final' },
+    letter_year_final_grade: { type: 'number', label: 'Year Final', editable: false },
   }
 
   const quarterColumns = {
@@ -225,7 +226,8 @@ export default ({ appGroupId, rows: propRows, testOptions }) => {
     letter_grade_quarter_1: { type: 'number', label: 'Q1' },
     letter_grade_quarter_2: { type: 'number', label: 'Q2' },
     letter_grade_quarter_3: { type: 'number', label: 'Q3' },
-    letter_year_final_grade: { type: 'number', label: 'Year Final' },
+    letter_grade_quarter_4: { type: 'number', label: 'Q4' },
+    letter_year_final_grade: { type: 'number', label: 'Year Final', editable: false },
   }
 
   const handleInputChange = ({ target: { value } }, key, gradeIndex, cumulativeId) => {
@@ -328,9 +330,84 @@ export default ({ appGroupId, rows: propRows, testOptions }) => {
     dispatch(requestAddUpdateStudentCumulative(newRows));
     setEnableEdit(false);
 
+    setTimeout(() => {
+      refreshGrades();
+    },1500);
+
   }
+
+  const handleAdd = id => {
+    const grade = {
+      attendance: null,
+      attendance_quarter_1_absent: 0,
+      attendance_quarter_1_present: 0,
+      attendance_quarter_1_tardy: 0,
+      attendance_quarter_1_total: 0,
+      attendance_quarter_2_absent: 0,
+      attendance_quarter_2_present: 0,
+      attendance_quarter_2_tardy: 0,
+      attendance_quarter_2_total: 0,
+      attendance_quarter_3_absent: 0,
+      attendance_quarter_3_present: 0,
+      attendance_quarter_3_tardy: 0,
+      attendance_quarter_3_total: 0,
+      attendance_quarter_4_absent: 0,
+      attendance_quarter_4_present: 0,
+      attendance_quarter_4_tardy: 0,
+      attendance_quarter_4_total: 0,
+      class: "",
+      designation: "",
+      final_grade: 0,
+      final_quarter_attendance: 0,
+      final_quarter_remarks: "0",
+      final_semestral_1_attendance: null,
+      final_semestral_2_attendance: null,
+      grade_quarter_1: 0,
+      grade_quarter_2: 0,
+      grade_quarter_3: 0,
+      grade_quarter_4: 0,
+      help_needed: "",
+      help_q1: "",
+      help_q2: "",
+      help_q3: "",
+      help_q4: "",
+      letter_final_grade: "55",
+      letter_grade_quarter_1: "55",
+      letter_grade_quarter_2: "77",
+      letter_grade_quarter_3: "88",
+      letter_grade_quarter_4: "2",
+      letter_mid_final_grade: "4",
+      letter_year_final_grade: "77",
+      mid_final_grade: 0,
+      mid_quarter_remarks: "0",
+      quarter_average: 0,
+      semestral_1_average: null,
+      semestral_2_average: null,
+      semestral_final: null,
+      student_grade_cumulative_id: id,
+      subject: "",
+      teacher_name: "",
+      year_final_grade: 0,
+      id: uuid(),
+      is_new: true
+    }
+    const updateRows = rows.map((item, index) => {
+      if(item.student_grade_cumulative_id === id) {
+        return {
+          ...item,
+          grades: [...(item.grades || []), grade]
+        }
+      }
+      return {
+        ...item
+      }
+    });
+
+    setRows(updateRows);
+  };
+
   const isNoGrades = rows.every(item => item.grades.length === 0);
-  console.log('rowsssssssssssssssssss',rows)
+
   return (
     <>
       <div style={{ paddingTop: 12, paddingLeft: 12, paddingBottom: 12 }}>
@@ -339,28 +416,44 @@ export default ({ appGroupId, rows: propRows, testOptions }) => {
             rows.length > 0 &&
             <FontAwesomeIcon className="edit-icon" onClick={() => setEnableEdit(true)} icon={faEdit} style={{
               color: '#f26e21',
-              fontSize: 24
+              fontSize: 24,
+              cursor:'pointer'
             }} />
           ) : (
 
             <>
               <FontAwesomeIcon className="edit-icon" onClick={() => setEnableEdit(false)} icon={faWindowClose} style={{
                 color: '#f26e21',
-                fontSize: 24
+                fontSize: 24,
+                cursor:'pointer'
               }} />
               {`  `}
               <FontAwesomeIcon className="edit-icon" onClick={handleSave} icon={faSave} style={{
                 color: '#f26e21',
-                fontSize: 24
+                fontSize: 24,
+                cursor:'pointer'
               }} />
             </>
           ))
         }
       </div>
       {
-        rows.map(({ grades, school_year_frame, ...rest }, gi) => {
+        rows.map(({ grades, school_year_frame, student_grade_cumulative_id, ...rest }, gi) => {
+
+        
           return (
             <>
+              <div style={{ paddingTop: 12, paddingLeft: 12, paddingBottom: 12 }}>
+                {enableEdit && <FontAwesomeIcon className="plus-icon" onClick={() => {
+                  handleAdd(student_grade_cumulative_id);
+                }} icon={faPlusCircle} style={{
+                  color: '#f26e21',
+                  fontSize: 24,
+                  cursor:'pointer'
+                }} /> }
+               
+              </div>
+
               {school_year_frame === 'semestral' ? <div key={`individual-grades-${gi}`} className='rightContainer'>
                 <div className='rightContainerHeader'>
                   <span className='header'>Individual Grades (Semester)</span>

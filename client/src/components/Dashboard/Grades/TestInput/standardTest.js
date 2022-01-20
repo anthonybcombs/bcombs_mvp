@@ -549,8 +549,8 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
         return newRow
       })
     console.log('newRowszzzzzzzzz', newRows)
-    dispatch(requestAddUpdateStudentStandardizedTest(newRows))
-    onHasChanged(false)
+    // dispatch(requestAddUpdateStudentStandardizedTest(newRows))
+    // onHasChanged(false)
   }
 
   const renderTableFilter = (key) => {

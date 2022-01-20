@@ -5,13 +5,13 @@ import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import update from 'immutability-helper'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {  faEdit, faSave, faWindowClose } from '@fortawesome/free-solid-svg-icons'
+import {  faEdit, faSave, faWindowClose, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import DatePicker from "react-datepicker";
 
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../../redux/actions/Grades'
 
 
-export default ({ rows: propRows, testOptions }) => {
+export default ({ rows: propRows, testOptions, refreshGrades }) => {
   const dispatch = useDispatch();
   const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => {
     return {
@@ -22,12 +22,12 @@ export default ({ rows: propRows, testOptions }) => {
 
   const [enableEdit, setEnableEdit] = useState(false)
   const [rows, setRows] = useState([])
-
+  console.log('testOptions',testOptions)
   const formatValue = (row, key) => {
   
     switch (key) {
       case 'test_name':
-        return (testOptions.find(e => e.value === row.test_name) || {}).label || '--'
+        return enableEdit ?  <select  onChange={(e) => handleInputChange(e, row.id, key)} onChange={(e) => handleInputChange(e, row.id, key)} value={row.test_name}>{testOptions.map(item => <option value={item.value}>{item.label}</option>)}</select>:  (testOptions.find(e => e.value === row.test_name) || {}).label || '--'
       case 'month_taken':
         return row.month_taken ? moment(new Date(row.month_taken)).format('MMMM YYYY') : null
       case 'score_percentage':
@@ -88,6 +88,7 @@ export default ({ rows: propRows, testOptions }) => {
   }
 
   useEffect(() => {
+    console.log('propRows123123123123123',propRows)
     if (propRows && propRows.length) {
       setRows(propRows.map(e => ({ ...e, id: uuid() })))
     }
@@ -99,6 +100,33 @@ export default ({ rows: propRows, testOptions }) => {
       setRows(propRows.map(e => ({ ...e, id: uuid() })))
     }
     setEnableEdit(false);
+  }
+
+  const handleAdd = () => {
+    let currentRows = cloneDeep(rows);
+    let newRows =   cloneDeep(currentRows[currentRows.length - 1]);
+    
+    //      student_test_id: newRows.student_test_id + 1,
+    currentRows.push({
+        child_id: newRows.child_id,
+        attempt: 0,
+        ach_level: 0,
+        district_percentage: 0,
+        grade_taken: 0,
+        month_taken: null,
+        nationality_percentage: 0,
+        school_percentage: 0,
+        score: 0,
+        score_percentage: 0,
+        state_percentage: 0,
+        test_name: "",
+
+        id: uuid(),
+        is_new: true
+    })
+ 
+    setRows(currentRows);
+
   }
 
   const handleSave = () => {
@@ -125,10 +153,20 @@ export default ({ rows: propRows, testOptions }) => {
         if (newRow.month_taken) {
           newRow.month_taken = newRow.month_taken && !isNaN(newRow.month_taken) ? moment(new Date(parseInt(newRow.month_taken))).format('yyyy-MM-DD') : moment(new Date(newRow.month_taken)).format('yyyy-MM-DD')
         }
+        if(newRow.is_new) {
+          delete newRow.is_new;
+        }
         return newRow
       })
-    dispatch(requestAddUpdateStudentStandardizedTest(newRows))
-    setEnableEdit(false);
+
+      // setRows(newRows);
+        dispatch(requestAddUpdateStudentStandardizedTest(newRows))
+        setEnableEdit(false);
+
+        setTimeout(() => {
+          refreshGrades();
+        },1500)
+       
   }
 
   return (
@@ -141,18 +179,27 @@ export default ({ rows: propRows, testOptions }) => {
               rows.length > 0 && 
               <FontAwesomeIcon  className="edit-icon"  onClick={() => setEnableEdit(true)}  icon={faEdit} style={{
                 color:'#f26e21',
-                fontSize: 24
+                fontSize: 24,
+                cursor:'pointer'
              }} />
             ) : (
               <>
-                         <FontAwesomeIcon  className="edit-icon"  onClick={handleCancel}  icon={faWindowClose} style={{
-               color:'#f26e21',
-               fontSize: 24
+              <FontAwesomeIcon  className="edit-icon"  onClick={handleCancel}  icon={faWindowClose} style={{
+                 color:'#f26e21',
+                fontSize: 24,
+                cursor:'pointer'
                }} />
                 {`  `}
                 <FontAwesomeIcon  className="edit-icon"  onClick={handleSave}  icon={faSave} style={{
                  color:'#f26e21',
-                 fontSize: 24
+                 fontSize: 24,
+                 cursor:'pointer'
+               }} />
+                {`  `}
+               <FontAwesomeIcon  className="plus-icon"  onClick={handleAdd}  icon={faPlusCircle} style={{
+                 color:'#f26e21',
+                 fontSize: 24,
+                 cursor:'pointer'
                }} />
                 </>
             
@@ -182,7 +229,7 @@ export default ({ rows: propRows, testOptions }) => {
                       {
                         Object.entries(columns).map(([key, { func = null, type, editable = true }]) => {
                           
-
+                          editable = row.is_new;
                           return (
                             <td key={`td-ct-${key}-${index}`}>
                               {

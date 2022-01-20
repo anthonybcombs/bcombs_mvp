@@ -38,15 +38,22 @@ export default ({ child_id }) => {
   const [personalPaneOpen, setPersonalPaneOpen] = useState(false)
   const [familylPaneOpen, setFamilyPaneOpen] = useState(false)
 
-  useEffect(() => {
+  const refreshGrades = () => {
     dispatch(requestGetStudentCumulativeGradeByUser({ child_id, application_type: group_type }))
+  }
+
+  useEffect(() => {
+    refreshGrades();
   }, [])
 
   useEffect(() => {
     if (gradeInput?.individualList) {
       setData(gradeInput.individualList)
     }
-  }, [gradeInput])
+  }, [gradeInput]);
+
+
+
 
   let { firstname, lastname, form_contents } = data?.info || {}
   let profile = ''
@@ -81,7 +88,7 @@ export default ({ child_id }) => {
             <Loading />
           ) : (
             <>
-              <Link to={`/dashboard/grades/individual/${child_id}?${commonQueryStrings}`} className='back-btn'>
+              <Link to={is_parent ? `/dashboard/myapplication` : `/dashboard/grades/individual/${child_id}?${commonQueryStrings}`} className='back-btn'>
                 <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
                 Back
               </Link>
@@ -163,16 +170,20 @@ export default ({ child_id }) => {
                   <StandardTestTable
                     rows={data?.standardized_test || []}
                     testOptions={testOptions}
+                    refreshGrades={refreshGrades}
                   />
                   <GradeCumulativeTable
                     appGroupId={group_id}
                     childId={child_id}
                     rows={data?.cumulative_grades || []}
+                    refreshGrades={refreshGrades}
+                    groupType={group_type}
                   />
                   <IndividualGrades
                     appGroupId={group_id}
                     childId={child_id}
                     rows={data?.cumulative_grades || []}
+                    refreshGrades={refreshGrades}
                   />
                 </div>
               </div>
