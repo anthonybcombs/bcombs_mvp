@@ -167,6 +167,9 @@ export default ({ child_id }) => {
                   </Collapsible> */}
                 </div>
                 <div className='right'>
+                  <div className='rightContainer'>
+                    Note: Delete action requires to click the save button in order to delete a data successfully.
+                  </div>
                   <StandardTestTable
                     rows={data?.standardized_test || []}
                     testOptions={testOptions}
