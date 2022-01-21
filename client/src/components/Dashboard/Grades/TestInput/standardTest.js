@@ -18,7 +18,7 @@ import { getGradeTestAttempt } from '../utils'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
-import { initial } from 'lodash'
+
 
 export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors, selectedChild, isParent = false }) => {
   const dispatch = useDispatch()
@@ -33,7 +33,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
   let initialColumns = {
     name: { type: 'string', label: 'Name' },
-    child_id: { type: 'string', label: 'ID' },
+    // child_id: { type: 'string', label: 'ID' },
     test_name: { type: 'string', label: 'Test name' },
     attempt: { type: 'number', label: 'Attempt' },
     grade_taken: { type: 'number', label: 'Grade Taken' },
@@ -548,9 +548,9 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
         }
         return newRow
       })
-    console.log('newRowszzzzzzzzz', newRows)
-    // dispatch(requestAddUpdateStudentStandardizedTest(newRows))
-    // onHasChanged(false)
+
+    dispatch(requestAddUpdateStudentStandardizedTest(newRows))
+    onHasChanged(false)
   }
 
   const renderTableFilter = (key) => {

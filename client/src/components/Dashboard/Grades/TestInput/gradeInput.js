@@ -563,9 +563,7 @@ export default ({ applications, importData = [], childId, requestList, groupType
             return acc
           }, {})
 
-        if (!newRow.student_grade_cumulative_id) {
-          delete newRow.student_grade_cumulative_id
-        }
+
         if (!newRow.attachment || (newRow.attachment && typeof newRow.attachment === 'string')) {
           delete newRow.attachment
         }
@@ -619,15 +617,14 @@ export default ({ applications, importData = [], childId, requestList, groupType
 
       dispatch(requestAddUpdateStudentCumulative(newRows));
 
-
-
-    setTimeout(() => {
-      onHasChanged(false)
-    }, 1000)
+      setTimeout(() => {
+        onHasChanged(false)
+      }, 1000)
 
   }
 
   const handleSaveGrade = (grades, otherFields, defaultGrades = []) => {
+
     const gradesHelp = grades.filter(e => (e.help_q1 || e.help_q2 || e.help_q3 || e.help_q4)).map(e => e.subject)
   
     const currentGradeIds = grades.map(item => item.student_grades_id);
@@ -636,7 +633,6 @@ export default ({ applications, importData = [], childId, requestList, groupType
     const mergeObject = { grades, ...otherFields, help_needed: `${gradesHelp}`, deleted_grades: deletedGrades}
  
     
-    console.log('mergeObject',mergeObject)
     // setDeletedGrades(deletedGrades);
     setRows(update(rows, {
       [rows.findIndex(e => e.id === activeGrade)]: { $merge: mergeObject }
@@ -644,6 +640,8 @@ export default ({ applications, importData = [], childId, requestList, groupType
     setFilteredRows(update(filteredRows, {
       [filteredRows.findIndex(e => e.id === activeGrade)]: { $merge: mergeObject }
     }))
+
+    console.log('Grade Input New Rows currentGradeIds', currentGradeIds)
    
     setEditGradeOpen(false)
   }

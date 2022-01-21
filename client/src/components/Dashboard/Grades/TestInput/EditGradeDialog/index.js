@@ -183,11 +183,10 @@ export default function index({
     ])
     setHasChanged(true)
   }
-  console.log('gradessssssssssss',grades)
+
   const handleDelete = () => {
     const deletedGradeIds =  grades.filter(e => selected.includes(e.id)).map(e => e.student_grades_id);
 
-    console.log('deletedGradeIds',deletedGradeIds)
     setDeletedGrades([...(deletedGradeIds || [])]);
 
     setGrades(grades.filter(e => !selected.includes(e.id)))
@@ -206,8 +205,15 @@ export default function index({
         return acc
       }, {});
 
-    const defaultGradeIds = data.grades.map(item => item.student_grades_id)
-    onSaveGrade(grades, newOtherFields, defaultGradeIds);
+   
+    const defaultGradeIds = data.grades ? data.grades.map(item => item.student_grades_id).filter(id => id) : [];
+    const updatedGrades = grades.map(item => {
+      return {
+        ...item,
+        student_grade_cumulative_id: data.student_grade_cumulative_id
+      }
+    });
+    onSaveGrade(updatedGrades, newOtherFields, defaultGradeIds);
 
   }
 

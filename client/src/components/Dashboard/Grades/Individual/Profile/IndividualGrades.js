@@ -226,24 +226,24 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
   const semColumns = {
     class: { type: 'string', label: 'Class' },
     subject: { type: 'string', label: 'Subject'},
-    letter_grade_quarter_1: { type: 'number', label: 'Q1' },
-    letter_grade_quarter_2: { type: 'number', label: 'Q2' },
-    letter_mid_final_grade: { type: 'number', label: 'Final' },
-    letter_grade_quarter_3: { type: 'number', label: 'Q1' },
-    letter_grade_quarter_4: { type: 'number', label: 'Q2' },
-    letter_final_grade: { type: 'number', label: 'Final' },
-    letter_year_final_grade: { type: 'number', label: 'Year Final', editable: false },
+    grade_quarter_1: { type: 'number', label: 'Q1' },
+    grade_quarter_2: { type: 'number', label: 'Q2' },
+    semestral_1_average: { type: 'number', label: 'Final' },
+    grade_quarter_3: { type: 'number', label: 'Q1' },
+    grade_quarter_4: { type: 'number', label: 'Q2' },
+    semestral_2_average: { type: 'number', label: 'Final' },
+    semestral_final: { type: 'number', label: 'Year Final', editable: false },
     delete: { type: 'string', label: 'Delete', editable: false, func: formatValue}
   }
 
   const quarterColumns = {
     class: { type: 'string', label: 'Class', editable: false },
     subject: { type: 'string', label: 'Subject', editable: false },
-    letter_grade_quarter_1: { type: 'number', label: 'Q1' },
-    letter_grade_quarter_2: { type: 'number', label: 'Q2' },
-    letter_grade_quarter_3: { type: 'number', label: 'Q3' },
-    letter_grade_quarter_4: { type: 'number', label: 'Q4' },
-    letter_year_final_grade: { type: 'number', label: 'Year Final', editable: false },
+    grade_quarter_1: { type: 'number', label: 'Q1' },
+    grade_quarter_2: { type: 'number', label: 'Q2' },
+    grade_quarter_3: { type: 'number', label: 'Q3' },
+    grade_quarter_4: { type: 'number', label: 'Q4' },
+    quarter_average: { type: 'number', label: 'Year Final', editable: false },
     delete: { type: 'string', label: 'Delete', editable: false, func: formatValue}
   }
 
@@ -453,8 +453,8 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
     <>
       <div style={{ paddingTop: 12, paddingLeft: 12, paddingBottom: 12 }}>
         {
-          !isNoGrades && (!enableEdit ? (
-            rows.length > 0 &&
+          (!enableEdit ? (
+    
             <FontAwesomeIcon className="edit-icon" onClick={() => setEnableEdit(true)} icon={faEdit} style={{
               color: '#f26e21',
               fontSize: 24,
