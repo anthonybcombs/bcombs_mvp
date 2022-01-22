@@ -160,10 +160,13 @@ export default function Layout({ children }) {
   const [isAdminPopOverVisible, setIsAdminPopOverVisible] = useState(false);
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
   const [currentUserType, setCurrentUserType] = useState("");
+  const [userApplications, setuserApplications] = useState([])
+  const [currentParent, setCurrentParent] = useState(null);
 
-  const { auth, status, userTypes, vendors } = useSelector(
-    ({ auth, status, userTypes, vendors }) => {
-      return { auth, status, userTypes, vendors };
+
+  const { auth, status, userTypes, vendors, applications } = useSelector(
+    ({ auth, status, userTypes, vendors, applications }) => {
+      return { auth, status, userTypes, vendors, applications};
     }
   );
 
@@ -189,6 +192,17 @@ export default function Layout({ children }) {
       }
     }
   }, [auth, vendors]);
+
+
+  
+  useEffect(() => {
+    if(currentUserType === "USER" ) {
+      setuserApplications(applications.userAllApplications);
+    }
+    
+  }, [applications.userAllApplications]);
+
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -422,16 +436,25 @@ export default function Layout({ children }) {
                     )}
                     {currentUserType === "USER" && (
                       <>
-                      <Link
+                      <a
+                        href="#"
+                        onClick={() => {
+                          const currentParent = userApplications && userApplications[0] && userApplications
+                          const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
+                          const groupIds = userApplications.map(item =>  {
+                            const ids = item.class_teacher.split(',').filter(id => id && id !== '');
+                            return ids;
+                          }).flat().join(',');
+                          window.location.href= `/dashboard/grades/input?appGroupIds=${groupIds}&parent_ids=${parentIds}&is_parent=true`
+                        }}
                         className={`${
-                          context.location.pathname ===
-                          "/dashboard/bcdisplaycalendar"
+                          context.location.pathname.includes('dashboard/grades/input')
                             ? "selected"
                             : ""
                         }`}
                         to="/dashboard/bcdisplaycalendar">
-                        <span>Calendar</span>
-                      </Link>
+                        <span>Data</span>
+                      </a>
                       <Link
                       className={`${
                         context.location.pathname ===

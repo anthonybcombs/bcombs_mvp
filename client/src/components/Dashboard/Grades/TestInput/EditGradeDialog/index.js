@@ -307,7 +307,6 @@ export default function index({
                   <th></th>
                   <th>
                     <input
-                      disabled={isParent}
                       id='gpa_sem_1'
                       type='number'
                       value={otherFields.gpa_sem_1}
@@ -323,7 +322,6 @@ export default function index({
                   <th></th>
                   <th>
                     <input
-                      disabled={isParent}
                       id='gpa_sem_2'
                       type='number'
                       value={otherFields.gpa_sem_2}
@@ -333,7 +331,6 @@ export default function index({
                   <th colSpan='1'></th>
                   <th>
                     <input
-                      disabled={isParent}
                       id='gpa_final'
                       type='number'
                       value={otherFields.gpa_final}
@@ -354,7 +351,6 @@ export default function index({
                   <th></th>
                   <th>
                     <input
-                      disabled={isParent}
                       id='mid_student_rank'
                       type='number'
                       value={otherFields.mid_student_rank}

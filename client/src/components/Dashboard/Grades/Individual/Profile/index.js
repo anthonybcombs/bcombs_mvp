@@ -78,6 +78,7 @@ export default ({ child_id }) => {
       profile = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
     }
   }
+  console.log('TESTTTTTTTTTTTTTTTTTTTTTTT', data)
   return (
     <GradesStyled>
       <h2>Grades and Tracking</h2>
@@ -175,6 +176,7 @@ export default ({ child_id }) => {
                     rows={data?.standardized_test || []}
                     testOptions={testOptions}
                     refreshGrades={refreshGrades}
+                    groupType={group_type}
                   />
                   <GradeCumulativeTable
                     appGroupId={group_id}

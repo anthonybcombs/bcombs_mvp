@@ -47,7 +47,7 @@ const gradeKeys = {
   class: { type: 'string' },
   subject: { type: 'string' },
   teacher_name: { type: 'string' },
-  designation: { type: 'string' },
+  child_designation: { type: 'string' },
   grade_quarter_1: { type: 'float' },
   grade_quarter_2: { type: 'float' },
   grade_quarter_3: { type: 'float' },
@@ -154,7 +154,7 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
     attendance: { type: 'number', label: 'Attendance', func: formatValue },
     school_type: { type: 'text', label: 'School Type' },
     school_name: { type: 'text', label: 'School' },
-    designation:  { type: 'text', label: 'Designation' }
+    child_designation:  { type: 'text', label: 'Designation' }
   }
 
   const handleInputChange = ({ target: { value } }, id, key) => {

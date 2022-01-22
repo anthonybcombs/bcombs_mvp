@@ -26,7 +26,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     gradeInput
   }));
 
-  console.log('appGroupIds', appGroupIds)
+ 
   const attempOptions = Array(5).fill().map((e, i) => ({ value: i + 1, label: `${i + 1}` }))
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))]
@@ -50,14 +50,14 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
   if(isParent) {
     initialColumns = Object.keys(initialColumns).reduce((accum, key) => {
-      if(!key.includes('percentage')) {
+      //if(!key.includes('percentage')) {
         return  {
           ...accum,
           [key]: {
             ...initialColumns[key]
           }
         }
-      }
+      //}
       return accum;
     },{});
 
@@ -235,12 +235,12 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     const highlightFilters = filterFromHeaders?.highlight || []
     const { conditions } = FilterOptionsObj.highlight
 
-    console.log('filteredRows', filteredRows);
+ 
 
     return filteredRows.map((row, index) => {
-      console.log('columnssssssssss',columns)
+
       const colKeysArr = Object.entries(columns)
-      console.log('colKeysArr',colKeysArr)
+
       const enableEdit = row.enableEdit
       const highLight = (rowVal, columnName) => {
         const newFormat = highlightFilters.reduce((acc, { column, condition, value, format }) => {
@@ -315,6 +315,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
                   {
                     (key === 'test_name' && !row.student_test_id) && (
                       <CustomSelect
+                        isCenter={true}
                         disabled={isReview}
                         selectStyle={highlightStyle}
                         value={row[key]}
@@ -326,11 +327,13 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
                   {
                     (key === 'grade_taken' && !row.student_test_id) && (
                       <CustomSelect
+                        isCenter={true}
                         disabled={isReview}
                         selectStyle={highlightStyle}
                         value={row[key]}
                         options={gradeTakenOptions}
                         onChange={(e) => handleInputChange(e, index, key)}
+                        style={{margin: '0 auto'}}
                       />
                     )
                   }

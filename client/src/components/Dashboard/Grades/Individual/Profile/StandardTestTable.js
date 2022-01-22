@@ -11,7 +11,7 @@ import DatePicker from "react-datepicker";
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../../redux/actions/Grades'
 
 
-export default ({ rows: propRows, testOptions, refreshGrades, childId }) => {
+export default ({ rows: propRows, testOptions, refreshGrades, childId, groupType }) => {
   const dispatch = useDispatch();
   const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => {
     return {
@@ -25,8 +25,10 @@ export default ({ rows: propRows, testOptions, refreshGrades, childId }) => {
   const [defaultRows, setDefaultRows] = useState([])
   const [deletedStudentTestIds, setDeletedTestStudentIds] = useState([])
 
- 
+  
   const formatValue = (row, key) => {
+    console.log('Format Value', row)
+    console.log('Format Value testOptions', testOptions)
   
     switch (key) {
       case 'test_name':
@@ -105,8 +107,7 @@ export default ({ rows: propRows, testOptions, refreshGrades, childId }) => {
   }
 
   useEffect(() => {
-
-    if (propRows && propRows.length) {
+    if (propRows) {
       const currentRows = propRows.map(e => ({ ...e, id: uuid() }));
       setRows(cloneDeep(currentRows));
       setDefaultRows(cloneDeep(currentRows))
@@ -148,8 +149,7 @@ export default ({ rows: propRows, testOptions, refreshGrades, childId }) => {
         score: 0,
         score_percentage: 0,
         state_percentage: 0,
-        test_name: "",
-
+        test_name: "act",
         id: uuid(),
         is_new: true
     })
@@ -187,20 +187,21 @@ export default ({ rows: propRows, testOptions, refreshGrades, childId }) => {
         }
         return newRow
       })
-
+      console.log('deletedStudentTestIdsv',deletedStudentTestIds)
   
         dispatch(requestAddUpdateStudentStandardizedTest(newRows))
         setEnableEdit(false);
 
         if(deletedStudentTestIds.length > 0) {
-    
-          dispatch(requestDeleteStudentStandardizedTest(deletedStudentTestIds));
+          dispatch(requestDeleteStudentStandardizedTest(deletedStudentTestIds, { child_id: childId, application_type: groupType }));
         }
 
         setTimeout(() => {
-          refreshGrades();
+          if(refreshGrades.length === 0) {
+            refreshGrades();
+          }
           setDeletedTestStudentIds([]);
-        },1500)
+        },2000)
        
   }
 

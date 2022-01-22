@@ -1133,7 +1133,7 @@ export default function index() {
       cell: row => format(new Date(row.application_date), DATE_TIME_FORMAT)
     },
     {
-      name: 'Student Name',
+      name: 'Data',
       selector: 'studentName',
       sortable: true,
       // cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>

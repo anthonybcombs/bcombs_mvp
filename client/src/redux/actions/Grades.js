@@ -181,10 +181,11 @@ export const clearGrades = () => {
   }
 }
 
-export const requestDeleteStudentStandardizedTest = (data) => {
+export const requestDeleteStudentStandardizedTest = (data, childPayload = null) => {
   return {
     type: actionType.DELETE_STUDENT_STANDARDIZED_TEST,
-    data
+    data,
+    childPayload
   }
 }
 
@@ -307,7 +308,7 @@ export function* addUpdateStudentStandardizedTest({ data }) {
   }
 }
 
-export function* deleteStudentStandardizedTest({ data }) {
+export function* deleteStudentStandardizedTest({ data, childPayload = null}) {
   try {
     yield put(setGradeStandardLoading(true))
     const response = yield call(deleteStudentStandardizedTestToDatabse, data)
@@ -317,7 +318,13 @@ export function* deleteStudentStandardizedTest({ data }) {
         type: actionType.DELETE_STUDENT_STANDARDIZED_TEST_COMPLETED,
         payload: response
       })
-    ])
+    ]);
+
+    if(childPayload) {
+      console.log('childPayload',childPayload)
+      yield put(requestGetStudentCumulativeGradeByUser(childPayload));
+    }
+
   } catch (err) {
     yield all([
       put(setGradeStandardLoading(false)),

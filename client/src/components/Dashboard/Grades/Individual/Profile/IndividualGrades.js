@@ -98,12 +98,14 @@ const TABLE = (data) => {
       attendance_quarter_1_total: accum.attendance_quarter_1_total + item.attendance_quarter_1_total,
       attendance_quarter_2_total: accum.attendance_quarter_2_total + item.attendance_quarter_2_total,
       attendance_quarter_3_total: accum.attendance_quarter_3_total + item.attendance_quarter_3_total,
+      attendance_quarter_4_total: accum.attendance_quarter_4_total + item.attendance_quarter_4_total,
       final_quarter_attendance: accum.final_quarter_attendance + item.final_quarter_attendance
     }
   }, {
     attendance_quarter_1_total: 0,
     attendance_quarter_2_total: 0,
     attendance_quarter_3_total: 0,
+    attendance_quarter_4_total: 0,
     final_quarter_attendance: 0
   })
 
@@ -135,6 +137,7 @@ const TABLE = (data) => {
             <td>{attendanceRows.attendance_quarter_1_total}</td>
             <td>{attendanceRows.attendance_quarter_2_total}</td>
             <td>{attendanceRows.attendance_quarter_3_total}</td>
+            <td>{attendanceRows.attendance_quarter_4_total}</td>
             <td>{attendanceRows.final_quarter_attendance}</td>
 
 
@@ -346,6 +349,7 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
         }
       })
     
+
    
     dispatch(requestAddUpdateStudentCumulative(newRows));
     setEnableEdit(false);
@@ -353,7 +357,7 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
     setTimeout(() => {
       refreshGrades();
       setDeletedGradeIds([]);
-    },1500);
+    },3000);
 
   }
 
@@ -447,8 +451,7 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
     setEnableEdit(false);
   }
 
-  const isNoGrades = rows.every(item => item.grades.length === 0);
-
+  // const isNoGrades = rows.every(item => item.grades.length === 0);
   return (
     <>
       <div style={{ paddingTop: 12, paddingLeft: 12, paddingBottom: 12 }}>
@@ -523,7 +526,7 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
                     enableEdit={enableEdit}
                     handleInputChange={handleInputChange}
                     handleSave={handleSave}
-                    attendanceColumns={['attendance_quarter_1_total', 'attendance_quarter_2_total', 'attendance_quarter_3_total', 'final_quarter_attendance']}
+                    attendanceColumns={['attendance_quarter_1_total', 'attendance_quarter_2_total', 'attendance_quarter_3_total', 'attendance_quarter_4_total','final_quarter_attendance']}
                   />
                 </div>}
 
