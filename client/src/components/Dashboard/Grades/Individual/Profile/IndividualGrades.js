@@ -235,7 +235,7 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
     grade_quarter_3: { type: 'number', label: 'Q1' },
     grade_quarter_4: { type: 'number', label: 'Q2' },
     semestral_2_average: { type: 'number', label: 'Final' },
-    semestral_final: { type: 'number', label: 'Year Final', editable: false },
+    year_final_grade: { type: 'number', label: 'Year Final' },
     delete: { type: 'string', label: 'Delete', editable: false, func: formatValue}
   }
 
@@ -246,7 +246,7 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
     grade_quarter_2: { type: 'number', label: 'Q2' },
     grade_quarter_3: { type: 'number', label: 'Q3' },
     grade_quarter_4: { type: 'number', label: 'Q4' },
-    quarter_average: { type: 'number', label: 'Year Final', editable: false },
+    year_final_grade: { type: 'number', label: 'Year Final' },
     delete: { type: 'string', label: 'Delete', editable: false, func: formatValue}
   }
 
