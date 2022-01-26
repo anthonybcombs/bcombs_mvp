@@ -107,7 +107,7 @@ export default function index({
     quarter_2: { label: 'Q2', type: 'number', func: formatValue },
     help_q2: { label: 'Help', type: 'func', func: formatValue },
     attendance_quarter_2: { label: 'Attendance', type: 'func', func: formatValue },
-    mid_final_grade: { label: 'Final', type: 'number', func: formatValue },
+    mid_final_grade: { label: 'Semester 1 Final', type: 'number', func: formatValue },
     mid_quarter_remarks: { label: 'Passed', type: 'string' },
     quarter_3: { label: 'Q3', type: 'number', func: formatValue },
     help_q3: { label: 'Help', type: 'func', func: formatValue },
@@ -115,7 +115,7 @@ export default function index({
     quarter_4: { label: 'Q4', type: 'number', func: formatValue },
     help_q4: { label: 'Help', type: 'func', func: formatValue },
     attendance_quarter_4: { label: 'Attendance', type: 'func', func: formatValue },
-    final_grade: { label: 'Final', type: 'number', func: formatValue },
+    final_grade: { label: 'Semester 2 Final', type: 'number', func: formatValue },
     final_quarter_remarks: { label: 'Passed', type: 'string' },
     year_final_grade: { label: 'Year Final', type: 'number', func: formatValue }
   }
