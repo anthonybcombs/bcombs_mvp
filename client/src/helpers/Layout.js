@@ -22,6 +22,8 @@ import Logo from "../images/logo1.png";
 import { requestLogout } from "../redux/actions/Auth";
 import { requestUserTypes } from "../redux/actions/UserTypes";
 
+import LoginBox from "./LoginBox";
+
 const HeaderStyled = styled.header`
   display: grid;
   text-align: center;
@@ -76,6 +78,14 @@ const HeaderStyled = styled.header`
   .vendor-welcome-message .name {
     color: #f47b2c;
     font-weight: 400;
+  }
+
+  .header-login {
+    display: flex;
+    align-items: center;
+    color: #f47b2c;
+    font-weight: 400;
+    cursor: pointer;
   }
 
   @media (max-width: 599px) {
@@ -150,16 +160,21 @@ export default function Layout({ children }) {
   const [isAdminPopOverVisible, setIsAdminPopOverVisible] = useState(false);
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
   const [currentUserType, setCurrentUserType] = useState("");
+  const [userApplications, setuserApplications] = useState([])
+  const [currentParent, setCurrentParent] = useState(null);
 
-  const { auth, status, userTypes, vendors } = useSelector(
-    ({ auth, status, userTypes, vendors }) => {
-      return { auth, status, userTypes, vendors };
+
+  const { auth, status, userTypes, vendors, applications } = useSelector(
+    ({ auth, status, userTypes, vendors, applications }) => {
+      return { auth, status, userTypes, vendors, applications};
     }
   );
 
   const theme = useContext(ThemeContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  console.log('auth12345', auth)
 
   useEffect(() => {
     if (auth) {
@@ -178,7 +193,38 @@ export default function Layout({ children }) {
     }
   }, [auth, vendors]);
 
+
+  
+  useEffect(() => {
+    if(currentUserType === "USER" ) {
+      setuserApplications(applications.userAllApplications);
+    }
+    
+  }, [applications.userAllApplications]);
+
+
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowLoginBox(true);
+    }, 5000)
+  }, [])
+
   const location = useLocation();
+
+  const [showLoginBox, setShowLoginBox] = useState(false);
+
+  const handleLoginBoxClose = () => {
+    setShowLoginBox(false);
+  }
+
+  const applicationUrl = location.origin + "/application/";
+  const customFormUrl = location.origin + "/form/";
+
+  console.log('location.href', location.href);
+  console.log('applicationUrl.href', applicationUrl);
+
+  console.log('location.href.includes(applicationUrl)', location.href.includes(applicationUrl));
 
   return (
     <LayoutStyled data-testid="app-layout" theme={theme}>
@@ -187,7 +233,7 @@ export default function Layout({ children }) {
           <Link to="/">
             <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
           </Link>
-          {location.href.includes(location.origin + "/application/") &&
+          {location.href.includes(applicationUrl) &&
             vendors &&
             vendors.length > 0 && (
               <p className="vendor-welcome-message">
@@ -217,6 +263,19 @@ export default function Layout({ children }) {
           />
         </div>
         <div id="app-header-left">
+          {location.href.includes(applicationUrl) || location.href.includes(customFormUrl) ?
+            auth.status == "SIGNED_IN" ? "" 
+            :
+            (
+              <div className="header-login"
+                onClick={() => {setShowLoginBox(true)}}
+              >
+                Login  
+              </div>
+            )
+            :
+            ""
+          }
           <Location
             children={context => {
               if (
@@ -295,7 +354,7 @@ export default function Layout({ children }) {
                               : ""
                           }`}
                           to="/dashboard/studentdata">
-                          <span>Student Data</span>
+                          <span>Data</span>
                         </Link>
                         <Link
                           className={`${
@@ -377,16 +436,25 @@ export default function Layout({ children }) {
                     )}
                     {currentUserType === "USER" && (
                       <>
-                      <Link
+                      <a
+                        href="#"
+                        onClick={() => {
+                          const currentParent = userApplications && userApplications[0] && userApplications
+                          const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
+                          const groupIds = userApplications.map(item =>  {
+                            const ids = item.class_teacher.split(',').filter(id => id && id !== '');
+                            return ids;
+                          }).flat().join(',');
+                          window.location.href= `/dashboard/grades/input?appGroupIds=${groupIds}&parent_ids=${parentIds}&is_parent=true`
+                        }}
                         className={`${
-                          context.location.pathname ===
-                          "/dashboard/bcdisplaycalendar"
+                          context.location.pathname.includes('dashboard/grades/input')
                             ? "selected"
                             : ""
                         }`}
                         to="/dashboard/bcdisplaycalendar">
-                        <span>Calendar</span>
-                      </Link>
+                        <span>Data</span>
+                      </a>
                       <Link
                       className={`${
                         context.location.pathname ===
@@ -571,6 +639,17 @@ export default function Layout({ children }) {
       </HeaderStyled>
       {children}
       <footer data-testid="app-footer"></footer>
+      {location.href.includes(applicationUrl) || location.href.includes(customFormUrl) ?
+        auth.status == "SIGNED_IN" ? "" 
+        : showLoginBox ? (
+          <LoginBox
+            handleClose={handleLoginBoxClose}
+          >
+          </LoginBox>
+        ) 
+        : ""
+        : ""
+      }
     </LayoutStyled>
   );
 }

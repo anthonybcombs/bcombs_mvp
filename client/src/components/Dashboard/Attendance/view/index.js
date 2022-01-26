@@ -1473,7 +1473,7 @@ export default function index(props) {
 									<table className="subTable">
 										<tr>
 											<td>Name</td>
-											<td>Class</td>
+											<td>Group</td>
 										</tr>
 									</table>
 								</td>

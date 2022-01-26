@@ -199,7 +199,7 @@ router.post("/", async (req, res) => {
 
         let allClassRow = {
             class_id: 0,
-            class_name: 'All Classes',
+            class_name: 'All Groups',
             numStudentsInClass: 0, //response4[0].numStudents,
             numSessions: 0,
             avgAttendance: 0,

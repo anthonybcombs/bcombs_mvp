@@ -335,7 +335,7 @@ const FilterComponent = ({
         className="form-control"
         value={groupText}
         onChange={onGroupChange}>
-        <option value="">Select Class</option>
+        <option value="">Select Group</option>
         {appGroups.map((opt, i) => (
           <option key={i} value={opt.app_grp_id}>
             {opt.name}
@@ -405,7 +405,7 @@ export default function index({
     } else {
       studentStatusVal = "In process";
     }
-
+    
     if (verification == "verified") {
       verificationVal = faCheck;
     } else if (verification == "rejected") {
@@ -491,7 +491,7 @@ export default function index({
       cell: row => getPrimaryParentName(row.parents, row.id)
     },
     {
-      name: "Class",
+      name: "Group(s)",
       selector: "classGroup",
       sortable: true,
       cell: row => {
@@ -658,23 +658,38 @@ export default function index({
     let group_match = true;
 
     if (filterText) {
-      name_match =
-        (item.child?.firstname &&
-          item.child?.firstname
-            .toLowerCase()
-            .includes(filterText.toLowerCase())) ||
-        (item.child?.lastname &&
-          item.child?.lastname
-            .toLowerCase()
-            .includes(filterText.toLowerCase())) ||
-        (item.parents && item.parents[0]?.firstname &&
-          item?.parents[0]?.firstname
-            .toLowerCase()
-            .includes(filterText.toLowerCase())) ||
-        (item.parents && item.parents[0]?.lastname &&
-          item?.parents[0]?.lastname
-            .toLowerCase()
-            .includes(filterText.toLowerCase()));
+
+      const childFirstname = !!item.child?.firstname ? item.child.firstname.trim() : "";
+      const childLastname = !!item.child?.lastname ? item.child.lastname.trim() : "";
+      const childFullname = childFirstname + " " + childLastname;
+
+      const parentFirstname = !!item.parents[0]?.firstname ? item.parents[0]?.firstname.trim() : ""; 
+      const parentLastname = !!item.parents[0]?.lastname ? item.parents[0]?.lastname.trim() : "";
+      const parentFullname = parentFirstname + " " + parentLastname;
+
+      // name_match =
+      //   (item.child?.firstname &&
+      //     item.child?.firstname
+      //       .toLowerCase()
+      //       .includes(filterText.toLowerCase())) ||
+      //   (item.child?.lastname &&
+      //     item.child?.lastname
+      //       .toLowerCase()
+      //       .includes(filterText.toLowerCase())) ||
+      //   (item.parents && item.parents[0]?.firstname &&
+      //     item?.parents[0]?.firstname
+      //       .toLowerCase()
+      //       .includes(filterText.toLowerCase())) ||
+      //   (item.parents && item.parents[0]?.lastname &&
+      //     item?.parents[0]?.lastname
+      //       .toLowerCase()
+      //       .includes(filterText.toLowerCase()));
+
+      console.log('childFullname', childFullname);
+      console.log('parentFullname', parentFullname);
+
+      name_match = (childFullname.toLowerCase().includes(filterText.toLowerCase())) ||
+        (parentFullname.toLowerCase().includes(filterText.toLowerCase()))
     }
 
     if (gradeText) {

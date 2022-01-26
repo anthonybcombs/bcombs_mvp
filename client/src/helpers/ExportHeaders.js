@@ -1,7 +1,7 @@
 
 
 export const exportHeaders = {
-    class_teacher: 'Class Teacher',
+    class_teacher: 'Group(s)',
     application_date: 'Application Date',
     archived_date: 'Archived Date',
     id: 'Id',

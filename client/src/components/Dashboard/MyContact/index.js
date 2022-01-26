@@ -437,7 +437,7 @@ export default function index() {
       <h2>Contacts </h2>
       <div id="contacts">
         <div>
-          <div id="labels">
+          {/* <div id="labels">
             <h3>Labels</h3>
             <div
               className={`${selectedLabel === "Contacts" ? "selected" : ""}`}
@@ -468,8 +468,8 @@ export default function index() {
               <FontAwesomeIcon icon={faUserFriends} />
               <span>Duplicates {getDuplicateContacts().length || 0}</span>
             </div>
-          </div>
-          <div className="groups">
+          </div> */}
+          {/* <div className="groups">
             <Collapsible trigger={<h3>Groups</h3>} open lazyRender>
               <hr />
               {groups &&
@@ -496,9 +496,9 @@ export default function index() {
               <FontAwesomeIcon icon={faPlus} />
               <span> ADD NEW GROUP</span>
             </button>
-          </div>
+          </div> */}
 
-          <div className="groups">
+          {/* <div className="groups">
             {groups && groups.joined_groups && groups.joined_groups.length > 0 && (
               <>
                 <Collapsible trigger={<h3>Joined Groups</h3>} open lazyRender>
@@ -521,7 +521,7 @@ export default function index() {
                 <hr />
               </>
             )}
-          </div>
+          </div> */}
 
           {isVendor() && (
             <div className="groups">

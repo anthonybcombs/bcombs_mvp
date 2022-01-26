@@ -16,6 +16,8 @@ const CustomSelectStyled = styled.div`
 
   .select-field-wrapper {
     position: relative;
+    ${props => props.isCenter ? 'margin: 0 auto' : ''}
+
   }
   .select-field-wrapper:after {
     content: '\f078';
@@ -49,10 +51,10 @@ export default ({
   value, options = [], placeholder = '', icon, onChange,
   isMultiple = false, onRemove, closeOnSelect = false,
   showCheckbox = true, autcomplete = false, displayValue, isObject = true,
-  selectStyle = {}, disabled = false
+  selectStyle = {}, disabled = false, isCenter = false
 }) => {
   return (
-    <CustomSelectStyled>
+    <CustomSelectStyled isCenter={isCenter}>
       {
         icon && icon
       }

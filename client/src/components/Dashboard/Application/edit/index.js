@@ -238,7 +238,7 @@ export default function index({
                   </div>
                 </div>
                 <div>
-                  <label className="control-label">Class Teacher</label>
+                  <label className="control-label">Group(s)</label>
                   <div
                     id={isAppReminder ? "AppReminder" : ""}
                   >

@@ -11,7 +11,7 @@ export async function getFormsByVendorId(db, vendorId) {
         return [];
     }
 
-    let formArray = [{key: 'fid_0', name: 'BCombs Form'}];
+    let formArray = [{key: 'fid_0', name: 'Mentoring Application'}];
     for (let r0 = 0; r0 < response0.length; r0++) {
         formArray.push({key: response0[r0].formId, name: response0[r0].form_name });
     }
@@ -32,7 +32,7 @@ export async function getClassesWithAttendanceByYearAndVendorAndFormId(db, year,
         return [];
     }
 
-    let classList = [{key: 'id_0', name: 'All Classes'}];
+    let classList = [{key: 'id_0', name: 'All Groups'}];
     for (let i =0; i< response0.length; i++) {
         let row = response0[i];
         classList.push({key: row.class_id, name: row.class_name});

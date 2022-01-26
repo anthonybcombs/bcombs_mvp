@@ -749,7 +749,7 @@ const AuditTrail = props => {
       }
     },
     {
-      name: "Class",
+      name: "Group",
       selector: "class",
       sortable: true,
       cell: row => {

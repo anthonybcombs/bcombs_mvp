@@ -9,6 +9,7 @@ import {
 import client, { getRedisKey } from "../../services/redis";
 import { getUserFromDatabase } from "../index";
 import { addVendor } from "../vendor"
+import { getUserProfileFromDatabase } from "../index.js";
 
 export const getUsers = async () => {
   const db = makeDb();
@@ -97,6 +98,10 @@ export const getUserInfo = async creds => {
     return error;
   }
 };
+
+export const executeSignInApplication = async user => {
+  
+}
 export const executeSignIn = async user => {
   try {
     const params = new URLSearchParams();
@@ -114,6 +119,7 @@ export const executeSignIn = async user => {
       body: params
     });
     const authData = await AuthResponse.json();
+    console.log('authData', authData);
     if (authData.hasOwnProperty("access_token")) {
       const userInfoResponse = await fetch(`${process.env.AUTH_API}/userinfo`, {
         method: "POST",
@@ -123,12 +129,18 @@ export const executeSignIn = async user => {
         }
       });
       const userInfo = await userInfoResponse.json();
+
+      const u = await getUserFromDatabase(user.email);
+      const userProfile = await getUserProfileFromDatabase(u.id);
+
+
       if (authData.hasOwnProperty("error")) {
         console.log("auth data", authData);
         return {
           user: {
             ...authData,
-            ...userInfo
+            ...userInfo,
+            ...userProfile
           },
           status: {
             messageType: "error",
@@ -139,7 +151,8 @@ export const executeSignIn = async user => {
       return {
         user: {
           ...authData,
-          ...userInfo
+          ...userInfo,
+          ...userProfile
         },
         status: {
           messageType: "Info",

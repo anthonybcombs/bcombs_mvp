@@ -654,14 +654,18 @@ export default function index({
                 <option value="">Select</option>
                 <optgroup label="Gender">
                   {GENDER_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.value}>
+                    <option key={opt.id} value={opt.value}
+                      selected={opt.value == parentProfile.gender}
+                    >
                       {opt.name}
                     </option>
                   ))}
                 </optgroup>
                 <optgroup label="Custom">
                   {CUSTOM_GENDER_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.value}>
+                    <option key={opt.id} value={opt.value}
+                      selected={opt.value == parentProfile.gender}
+                    >
                       {opt.name}
                     </option>
                   ))}

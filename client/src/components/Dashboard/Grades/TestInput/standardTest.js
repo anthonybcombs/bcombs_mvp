@@ -19,20 +19,21 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors }) => {
+
+export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors, selectedChild, isParent = false }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
   }));
 
-  console.log('appGroupIds', appGroupIds)
+ 
   const attempOptions = Array(5).fill().map((e, i) => ({ value: i + 1, label: `${i + 1}` }))
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))]
 
-  const initialColumns = {
+  let initialColumns = {
     name: { type: 'string', label: 'Name' },
-    child_id: { type: 'string', label: 'ID' },
+    // child_id: { type: 'string', label: 'ID' },
     test_name: { type: 'string', label: 'Test name' },
     attempt: { type: 'number', label: 'Attempt' },
     grade_taken: { type: 'number', label: 'Grade Taken' },
@@ -46,6 +47,22 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     nationality_percentage: { type: 'number', label: '% nationally' },
     attachment: { type: 'obj', label: 'Attachment', sortable: false, filterable: false }
   }
+
+  if(isParent) {
+    initialColumns = Object.keys(initialColumns).reduce((accum, key) => {
+      //if(!key.includes('percentage')) {
+        return  {
+          ...accum,
+          [key]: {
+            ...initialColumns[key]
+          }
+        }
+      //}
+      return accum;
+    },{});
+
+  }
+
 
   const goldenKeys = {
     student_test_id: { type: 'int' },
@@ -90,7 +107,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
           }
           return acc
         }, [{ value: '', checked: true, isBlank: true }])
-    })
+    });
     return newColumnFilters
   }
 
@@ -218,10 +235,12 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     const highlightFilters = filterFromHeaders?.highlight || []
     const { conditions } = FilterOptionsObj.highlight
 
-    console.log('filteredRows', filteredRows);
+ 
 
     return filteredRows.map((row, index) => {
+
       const colKeysArr = Object.entries(columns)
+
       const enableEdit = row.enableEdit
       const highLight = (rowVal, columnName) => {
         const newFormat = highlightFilters.reduce((acc, { column, condition, value, format }) => {
@@ -296,6 +315,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
                   {
                     (key === 'test_name' && !row.student_test_id) && (
                       <CustomSelect
+                        isCenter={true}
                         disabled={isReview}
                         selectStyle={highlightStyle}
                         value={row[key]}
@@ -307,11 +327,13 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
                   {
                     (key === 'grade_taken' && !row.student_test_id) && (
                       <CustomSelect
+                        isCenter={true}
                         disabled={isReview}
                         selectStyle={highlightStyle}
                         value={row[key]}
                         options={gradeTakenOptions}
                         onChange={(e) => handleInputChange(e, index, key)}
+                        style={{margin: '0 auto'}}
                       />
                     )
                   }
@@ -529,7 +551,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
         }
         return newRow
       })
-      console.log('newRowszzzzzzzzz',newRows)
+
     dispatch(requestAddUpdateStudentStandardizedTest(newRows))
     onHasChanged(false)
   }
@@ -624,6 +646,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   }, [gradeInput])
 
   useEffect(() => {
+   
     if (gradeInput.gradeList) {
       let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
       if (groupType === 'bcombs') {
@@ -636,7 +659,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
           }
 
         }
-      } else {
+      } else if(groupType === 'forms') {
         newGradeList = newGradeList.filter(e => e.form_contents);
 
         if (newGradeList.length === 0) {
@@ -648,6 +671,10 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
           })
         }
       }
+      // else {
+      //   newGradeList = newGradeList.filter(item => appGroupIds.includes(item.app_group_id));
+  
+      // }
 
       // newGradeList = newGradeList.flatMap(e => e.standardized_test)
       // const newRows = cloneDeep(rows).map(row => {
@@ -701,11 +728,12 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     attempt: { label: 'Attempts', type: 'number', isFunc: true },
     latest_attempt: { label: 'Latest Attempt', type: 'number', isFunc: true },
   }
-
   let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
-  console.log('gradeInput.gradeList',gradeInput.gradeList.filter(item => item.child_id === 'd92cbfa9-1196-11ec-8726-8e38912fb756'))
+
+  
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents);
+
 
     if (type === 'all') {
       if (vendors && vendors[0] && vendors[0].app_groups) {
@@ -733,16 +761,16 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
             child_id: application.child.ch_id,
             standardized_test: [],
             cumulative_grades: [],
-            form_contents:null,
+            form_contents: null,
             firstname: application.child.firstname,
-            lastname:  application.child.lastname
+            lastname: application.child.lastname
           }
 
         })
       }
 
     }
-  } else {
+  } else if(groupType === 'forms') {
     selectStudentRows = selectStudentRows.filter(e => {
       if (type === 'all') {
         const ids = e.app_group_id.split(',');
@@ -750,6 +778,11 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
       }
       return e.form_contents
     });
+
+    // if (selectedChild) {
+    //   selectStudentRows = selectStudentRows.filter(e => e.child_id === selectedChild)
+    // }
+
     // selectStudentRows = applications && applications.map((e) => {
     // const currentApplication = selectStudentRows.find(item => {
     //   return e.app_id === item.child_id && item.app_group_id
@@ -773,7 +806,10 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
 
   }
-  console.log('SELECETED STUDENT ROWSSSSSSSSSS', selectStudentRows)
+  else {
+    selectStudentRows = selectStudentRows
+  }
+
   return (
     <div
       className='standardTestTable'

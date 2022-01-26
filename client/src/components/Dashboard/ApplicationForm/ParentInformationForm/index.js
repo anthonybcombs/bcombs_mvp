@@ -661,14 +661,18 @@ export default function index({
                 <option value="">Select</option>
                 <optgroup label="Gender">
                   {GENDER_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.value}>
+                    <option key={opt.id} value={opt.value}
+                      selected={opt.value == parentProfile.gender}
+                    >
                       {opt.name}
                     </option>
                   ))}
                 </optgroup>
                 <optgroup label="Custom">
                   {CUSTOM_GENDER_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.value}>
+                    <option key={opt.id} value={opt.value}
+                      selected={opt.value == parentProfile.gender}
+                    >
                       {opt.name}
                     </option>
                   ))}
@@ -773,7 +777,9 @@ export default function index({
                   }}>
                   <option value="">Select Type</option>
                   {PHONE_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.name}>
+                    <option key={opt.id} value={opt.name}
+                      selected={opt.name == parentProfile?.phone_type}
+                    >
                       {opt.name}
                     </option>
                   ))}
@@ -897,7 +903,9 @@ export default function index({
                     }}>
                     <option value="">Select Type</option>
                     {PHONE_OPTIONS.map(opt => (
-                      <option key={opt.id} value={opt.name}>
+                      <option key={opt.id} value={opt.name}
+                        selected={opt.name == parentProfile?.phone_type2}
+                      >
                         {opt.name}
                       </option>
                     ))}

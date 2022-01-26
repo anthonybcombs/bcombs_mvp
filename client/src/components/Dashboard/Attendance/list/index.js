@@ -708,11 +708,11 @@ export default function index() {
 					break;
 				}
 			}
-			// console.log('requestGetApplications', vendorId);
+
 			// if(name !== 'custom') {
 			// 	dispatch(requestGetApplications(vendorId));
 			// }
-			console.log('vendorIdrrrrrrrrr',vendorId)
+
 			if (name !== 'custom') {
 				dispatch(requestGetApplications(vendorId));
 			}
@@ -725,18 +725,16 @@ export default function index() {
 	}, [vendors]);
 
 	useEffect(() => {
-		console.log('useEffect group', name)
 
-		console.log('useEffect searchParams', searchParams)
+
 		if (name === 'custom' && searchParams) {
 			//let currentAppGroupId = '';
 			let currentAppGroupName = '';
 			if (groups && groups.application_groups) {
 				const applicationGroups = groups.application_groups;
-				console.log('applicationGroups', applicationGroups)
-				console.log('applicationGroups searchParams.formId', searchParams.formId)
+	
 				const filteredGroup = applicationGroups.filter(item => (searchParams && searchParams.appGroupId && (item.app_grp_id === searchParams.appGroupId)) || (searchParams && searchParams.type === 'all' && searchParams && searchParams.formId === item.form)).map(item => item.app_grp_id)
-				console.log('applicationGroups filteredGroup', filteredGroup)
+
 
 				for (const group of applicationGroups) {
 					if (group.app_grp_id === searchParams.appGroupId) {
@@ -777,8 +775,6 @@ export default function index() {
 				if (vendors[0] && vendors[0].app_groups) {
 					const applicationGroups = vendors[0].app_groups;
 					const ids = applicationGroups.map(item => item.app_grp_id);
-					// console.log('idsssssssssssss',ids)
-					console.log('all ids',ids)
 					setAppGroupIds(ids);
 					setAppGroupId('all');
 				}
@@ -787,8 +783,7 @@ export default function index() {
 	}, [groups, vendors]);
 
 	useEffect(() => {
-		console.log('applicationszxczxc', applications)
-		console.log('applicationszxczxc name', name)
+
 		if (appGroupId && appGroupId !== '') {
 			dispatch(
 				requestAttendance(name === 'custom' ? searchParams.appGroupId : appGroupId, name === 'custom' ? 'custom' : 'bcombs')
@@ -805,7 +800,7 @@ export default function index() {
 				///filterApplications = applications.activeapplications;
 				filterApplications = applications.activeapplications.filter(application => {
 					const classTeachers = application.class_teacher && application.class_teacher.split(',');
-					return  classTeachers && classTeachers.some(grpId => appGroupIds.includes(grpId))
+					return classTeachers && classTeachers.some(grpId => appGroupIds.includes(grpId))
 					//return appGroupIds.includes(application.class_teacher)
 				});
 			} else {
@@ -820,16 +815,14 @@ export default function index() {
 				item.app_group_id = name === 'all' ? classTeacher && classTeacher[0] : appGroupId
 				return item;
 			});
-			console.log('filterApplications', filterApplications)
+
 			setApplicationList(filterApplications);
 		} else if (applications && applications.customActiveApplications.length > 0 && name === 'custom') {
 			let filterApplications = applications.customActiveApplications.filter(item => item.class_teacher && item.form === searchParams.formId);
 			//console.log('2222applications.activeapplications1111', applications.customActiveApplications.filter(item => item.class_teacher))
-			console.log(' applications.activeapplications1111 applications', applications)
-			console.log(' applications.activeapplications1111 appGroupId', appGroupId)
-			console.log(' applications.activeapplications1111 filterApplications', filterApplications)
+		
 			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
-			console.log('applications.activeapplications1111 FILTERED APPLICATIONS IDISSSSSSSSSSSSSSSS', appGroupIds)
+	
 			// let appGroupIdStrings = appGroupIds ? appGroupIds.join(',')
 			filterApplications = filterApplications.filter(item => {
 
@@ -849,7 +842,7 @@ export default function index() {
 				// ( item.form === searchParams.formId  && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  ))) || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)
 			});
 			// const test123 = applications.customActiveApplications.filter(item =>  item.form === searchParams.formId && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  item.class_teacher.includes(appGroupIds)))  || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)  );
-			// console.log('test1233333',test123)
+
 			// if(searchParams.type === 'all'){
 			// 	filterApplications = filterApplications.map(item => {
 			// 		const classTeacher = item.class_teacher.split(',');
@@ -863,7 +856,7 @@ export default function index() {
 			// 		}
 			// 		return item
 			// 	}).flat()
-			// 	console.log('filterApplications',filterApplications)
+
 			// }
 
 
@@ -874,9 +867,7 @@ export default function index() {
 	}, [applications, appGroupId, appGroupIds]);
 
 	useEffect(() => {
-		console.log('ATTENDANCEEEEE123123123123 applications', applications);
-		console.log('ATTENDANCEEEEE123123123123 applicationList', applicationList);
-		console.log('ATTENDANCEEEEE123123123123 attendance', attendance.list);
+
 		if (attendance.list) {
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(
@@ -913,13 +904,13 @@ export default function index() {
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
 		let currentApplication = updatedApplication.find(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
-		console.log('currentApplication', currentApplication)
+
 		if (
 			updatedApplication[currentIndex] &&
 			updatedApplication[currentIndex].attendance_status === attendanceType &&
 			!updatedApplication[currentIndex].excused
 		) {
-			// console.log('Triggered Excused')
+		
 			//  handleExcused(payload,attendanceType.toLowerCase());
 
 			if (attendanceType !== 'Present') {
@@ -978,7 +969,6 @@ export default function index() {
 		// };
 
 
-		console.log('updatedFilteredApplication', updatedFilteredApplication)
 
 		setApplicationList(updatedApplication);
 		setFilteredApplicationList(updatedFilteredApplication);
@@ -1031,7 +1021,7 @@ export default function index() {
 		//reset();
 
 		const attendanceList = applicationList.map(app => {
-	
+
 			return {
 				app_id: app.app_id,
 				app_group_id: app.class_teacher,
@@ -1085,7 +1075,7 @@ export default function index() {
 			}
 		}
 
-		console.log('PAYLAODDDD', payload)
+
 		setAttendanceDetails({
 			...payload,
 		});
@@ -1098,11 +1088,7 @@ export default function index() {
 			...(attendanceDetails || {}),
 			[name]: formattedValue
 		};
-		console.log('handleAttedanceDetailChange Formatted Valueeeee', formattedValue)
-		console.log('handleAttedanceDetailChange Handle Time Change', formattedValue)
-		console.log('handleAttedanceDetailChange name', name)
-		console.log('handleAttedanceDetailChange value', formattedValue)
-		console.log('handleAttedanceDetailChange payload', payload)
+
 
 		if (name === 'attendance_start_time' || name === 'attendance_end_time') {
 			if (name === 'attendance_start_time') {
@@ -1127,7 +1113,7 @@ export default function index() {
 			}
 		}
 
-		console.log('PAYLOADDDD', payload)
+	
 		setAttendanceDetails({
 			...payload,
 		});
@@ -1184,6 +1170,22 @@ export default function index() {
 				firstname: app.child?.firstname
 			}
 
+			// app_grp_id
+
+			let currentGroup = groups && groups.application_groups.find(item => {
+				const classTeacher = item.class_teacher && item.class_teacher.split(',');
+				return classTeacher && classTeacher.includes(item.app_grp_id)
+			});
+
+			if (!currentGroup && vendors && vendors[0]) {
+				currentGroup = vendors[0].app_groups && vendors[0].app_groups.find(appGrp => {
+					const classTeacher = app.class_teacher && app.class_teacher.split(',');
+					return classTeacher && classTeacher.includes(appGrp.app_grp_id)
+				});
+
+			}
+
+
 			return (
 				<tr key={index}>
 					<td>
@@ -1195,7 +1197,7 @@ export default function index() {
 						</div>
 					</td>
 					<td>
-						<div className="class">{app.class_teacher}</div>
+						<div className="class">{currentGroup?.name || app.class_teacher}</div>
 					</td>
 					<td>
 						<span>
@@ -1322,9 +1324,7 @@ export default function index() {
 			);
 		});
 	};
-	console.log('Appp Group name', appGroupName);
-	console.log("attendanceDetailsssssssssssssss", attendanceDetails)
-	console.log('appGroupId', appGroupId)
+
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
@@ -1596,7 +1596,7 @@ export default function index() {
 											</div>
 
 											<div className="attendance-name">
-												<a  href={'/dashboard/menteeprofile/' + app.id}>
+												<a href={'/dashboard/menteeprofile/' + app.id}>
 													<span>
 														{/* {app.child
 															? app.child?.firstname + ' ' + app.child?.lastname
@@ -1743,7 +1743,7 @@ export default function index() {
 								<tbody>
 									<tr>
 										<th>Name</th>
-										<th>Class</th>
+										<th>Group</th>
 										<th>Calendar Invite</th>
 										<th>Attendance Status</th>
 										<th>Total Volunteer Hours</th>

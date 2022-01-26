@@ -380,7 +380,7 @@ export default function index(props) {
 				console.log('formGroupxxxx',formGroup)
 				console.log('formGroupxxxx group',group)
 				return searched([
-					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : 'Bcombs Form',
+					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : 'Mentoring Application',
 					classCount.toString(), count.toString()
 				]) ? (
 					<tr key={group.id} className={`${archived ? 'archived' : ''}_${showArchived ? 'show' : 'hide'}`}>
@@ -399,7 +399,7 @@ export default function index(props) {
 						<td>
 							{formGroup && formGroup.form_contents
 								? formGroup.form_contents?.formTitle
-								: 'Bcombs Form'}
+								: 'Mentoring Application'}
 						</td>
 						<td>
 							{group.name}
@@ -599,7 +599,7 @@ export default function index(props) {
 	console.log('filteredFormList', filteredFormList)
 	return (
 		<AttendanceSummaryStyled>
-			<h2>Student Data</h2>
+			<h2>Data</h2>
 			<div id="attendance">
 				{
 					loading.archiveLoading ? (
@@ -658,10 +658,10 @@ export default function index(props) {
 									</tr> */}
 
 									{
-										searched(['Bcombs Form', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
+										searched(['Mentoring Application', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
 											<tr>
 												<td />
-												<td>Bcombs Form</td>
+												<td>Mentoring Application</td>
 												<td>
 													All
 													<div>{getDefaultClassCount()} / {getDefaultTotalCount()}</div>

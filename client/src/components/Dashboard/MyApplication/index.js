@@ -271,7 +271,15 @@ const ApplicationFormStyled = styled.form`
 const MyApplicationStyled = styled.div`
   padding: 1em;
 
-
+  .view-grades {
+    float: right;
+    color: white;
+    background-color: ${({ theme }) => theme.button.backgroundColor.primary};
+    padding: 10px;
+    display: block;
+    border: none;
+ 
+  }
   .print-button {
     border: 0;
     position: absolute;
@@ -347,14 +355,12 @@ export default function index() {
   const queryParams = parse(location.search);
 
   useEffect(() => {
-    console.log('queryParams', queryParams);
 
     if(auth.user_id) {
       dispatch(requestGetApplicationByUserId(auth.user_id))
     }
 
     if(queryParams && queryParams.action && queryParams.action == 'update') {
-      console.log('this is update');
       setIsReadonly(false);
     }
   }, [])
@@ -368,12 +374,10 @@ export default function index() {
   const [userApplications, setuserApplications] = useState([])
 
   useEffect(() => {
-    console.log('trigger userAllApplications');
     setuserApplications(applications.userAllApplications);
 
     let uApplications = applications.userAllApplications;
 
-    console.log('uApplications', uApplications);
 
     if(queryParams && queryParams.appId && uApplications.length > 0) {
       const qappId = queryParams.appId;
@@ -383,7 +387,6 @@ export default function index() {
 
       sApplication = sApplication?.length > 0 ? sApplication[0] : {};
 
-      console.log('sApplication', sApplication);
 
       if(sApplication && sApplication.app_id);
         initializeApplication(sApplication);
@@ -391,7 +394,6 @@ export default function index() {
 
     const hasSetReminders = uApplications.some(ua => ua.received_reminder);
 
-    console.log('hasSetReminders', hasSetReminders);
 
     if(queryParams && queryParams?.action != 'update') {
       setShowReminder(hasSetReminders);
@@ -800,6 +802,7 @@ export default function index() {
           psat_scores: [],
           school_name: application.child.school_name ? application.child.school_name : "",
           school_phone: application.child.school_phone ? application.child.school_phone : "",
+          has_suspended: application.child.has_suspended ? 1 : 0,
           was_suspended: application.child.has_suspended + "",
           reason_suspended: application.child.reason_suspended,
           mentee_start_year: application.child.year_taken,
@@ -883,9 +886,9 @@ export default function index() {
         const profile = {
           first_name: parent.firstname ? parent.firstname : "",
           last_name: parent.lastname ? parent.lastname : "",
-          phone_type: parent.phont_type ? parent.phone_type : "",
+          phone_type: parent.phone_type ? parent.phone_type : "",
           phone_number: parent.phone_number ? parent.phone_number : "",
-          phone_type2: parent.phont_type2 ? parent.phone_type2 : "",
+          phone_type2: parent.phone_type2 ? parent.phone_type2 : "",
           phone_number2: parent.phone_number2 ? parent.phone_number2 : "",
           email_type: parent.email_type ? parent.email_type : "",
           email_address: parent.email_address ? parent.email_address : "",
@@ -985,7 +988,6 @@ export default function index() {
   const [chRelationships, setChRelationships] = useState([]);
   const [view, setView] = useState('')
   const createViewButton = (application) => {
-    console.log('selected application', application);
     if (application.form_contents) {
      return (<a
         href=""
@@ -1001,7 +1003,10 @@ export default function index() {
         View Application
       </a>)
     }
+    let classTeacher  = application.class_teacher ? application.class_teacher.split(',') :  application.class_teacher;
+    classTeacher = Array.isArray(classTeacher) ? classTeacher[0] : classTeacher;
     return (
+      <>
       <a 
         href=""
         onClick={(e) => {
@@ -1011,10 +1016,23 @@ export default function index() {
           
           initializeApplication(application);
         }}
-        
+        style={{ marginLeft:5, marginRight:5 }}
       >
         View Application
       </a>
+      {/* <a 
+        href=""
+        onClick={(e) => {
+          e.preventDefault();
+
+          window.location.href= `/dashboard/grades/input?group_id=${classTeacher}&group_type=bcombs&selected_child=${application.child.ch_id}&is_parent=true`
+       
+        }}
+        style={{ marginLeft:5, marginRight:5 }}
+      >
+        View Grade
+      </a> */}
+      </>
     )
   }
 
@@ -1115,17 +1133,30 @@ export default function index() {
       cell: row => format(new Date(row.application_date), DATE_TIME_FORMAT)
     },
     {
-      name: 'Student Name',
+      name: 'Name',
       selector: 'studentName',
       sortable: true,
       // cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>
-      cell: row => (row.child?.firstname && row.child?.lastname) ? row.child?.firstname + " " + row.child?.lastname : ""
+      cell: row => {
+        return  <a href="#" onClick={() => {
+          const currentParent = userApplications && userApplications[0] && userApplications
+          const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
+          // const groupIds = userApplications.map(item =>  {
+          //   const ids = item.class_teacher.split(',').filter(id => id && id !== '');
+          //   return ids;
+          // }).flat().join(',');
+          console.log('currentParent' , currentParent)
+          console.log('currentParent parentIds' , parentIds)
+           window.location.href= `/dashboard/grades/profile/${row.child?.ch_id}?group_id=${row.class_teacher}&group_type=bcombs&parent_ids=${parentIds}&is_parent=true`
+        
+        }}>{(row.child?.firstname && row.child?.lastname) ? row.child?.firstname + " " + row.child?.lastname : ""}</a>
+      }
     },
     {
       name: 'Form',
       selector: 'vendor',
       sortable: true,
-      cell: row => row.vendorName ? row.vendorName + " Bcombs Form" : row?.form_contents?.formTitle ? row?.form_contents?.formTitle : ""
+      cell: row => row.vendorName ? row.vendorName + " Mentoring Applications" : row?.form_contents?.formTitle ? row?.form_contents?.formTitle : ""
     },
     {
       selector: 'class',
@@ -1457,6 +1488,8 @@ export default function index() {
       }])
     }
   }
+
+
   return (
     <MyApplicationStyled>
       {
@@ -1480,6 +1513,20 @@ export default function index() {
               />
             )
           }
+
+          <button className="view-grades" onClick={e => {
+            e.preventDefault();
+            const currentParent = userApplications && userApplications[0] && userApplications
+            const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
+            const groupIds = userApplications.map(item =>  {
+              const ids = item.class_teacher.split(',').filter(id => id && id !== '');
+              return ids;
+            }).flat().join(',');
+          
+
+           window.location.href= `/dashboard/grades/input?appGroupIds=${groupIds}&parent_ids=${parentIds}&is_parent=true`
+
+          }} type="button">Grades</button>
           <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
             <div id="dataTableContainer">
               {

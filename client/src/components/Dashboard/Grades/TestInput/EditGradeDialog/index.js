@@ -11,10 +11,10 @@ import CustomTable from '../../../CustomComponents/CustomTable'
 import CustomSelect from '../../../CustomComponents/CustomSelect'
 
 export default function index({
-  onClose, data, onSaveGrade, gradeKeys
+  onClose, data, onSaveGrade, gradeKeys, isParent = false
 }) {
   const formatValue = (item, key) => {
-    switch(key) {
+    switch (key) {
       case 'help_q1':
       case 'help_q2':
       case 'help_q3':
@@ -107,7 +107,7 @@ export default function index({
     quarter_2: { label: 'Q2', type: 'number', func: formatValue },
     help_q2: { label: 'Help', type: 'func', func: formatValue },
     attendance_quarter_2: { label: 'Attendance', type: 'func', func: formatValue },
-    mid_final_grade: { label: 'Final', type: 'number', func: formatValue },
+    mid_final_grade: { label: 'Semester 1 Final', type: 'number', func: formatValue },
     mid_quarter_remarks: { label: 'Passed', type: 'string' },
     quarter_3: { label: 'Q3', type: 'number', func: formatValue },
     help_q3: { label: 'Help', type: 'func', func: formatValue },
@@ -115,7 +115,7 @@ export default function index({
     quarter_4: { label: 'Q4', type: 'number', func: formatValue },
     help_q4: { label: 'Help', type: 'func', func: formatValue },
     attendance_quarter_4: { label: 'Attendance', type: 'func', func: formatValue },
-    final_grade: { label: 'Final', type: 'number', func: formatValue },
+    final_grade: { label: 'Semester 2 Final', type: 'number', func: formatValue },
     final_quarter_remarks: { label: 'Passed', type: 'string' },
     year_final_grade: { label: 'Year Final', type: 'number', func: formatValue }
   }
@@ -132,6 +132,7 @@ export default function index({
 
   const emptyGrade = Object.keys(gradeKeys).reduce((acc, curr) => ({ ...acc, [curr]: '' }), {})
   const [grades, setGrades] = useState([{ id: uuid(), ...emptyGrade }])
+  const [deletedGrades, setDeletedGrades] = useState([])
   const [otherFields, setOtherFields] = useState(Object.keys(otherFieldKeys).reduce((acc, curr) => ({ ...acc, [curr]: '' }), {}))
   const [selected, setSelected] = useState([])
   const [hasChanged, setHasChanged] = useState(false)
@@ -159,10 +160,11 @@ export default function index({
     setSelected(checked ? grades.map(e => e.id) : [])
   }
 
+
   const handleAdd = () => {
     setGrades([
       ...grades,
-      { id: uuid(), ...emptyGrade }
+    { id: uuid(), ...emptyGrade, student_grade_cumulative_id: data.student_grade_cumulative_id }
     ])
     setHasChanged(true)
   }
@@ -183,6 +185,10 @@ export default function index({
   }
 
   const handleDelete = () => {
+    const deletedGradeIds =  grades.filter(e => selected.includes(e.id)).map(e => e.student_grades_id);
+
+    setDeletedGrades([...(deletedGradeIds || [])]);
+
     setGrades(grades.filter(e => !selected.includes(e.id)))
   }
 
@@ -197,8 +203,18 @@ export default function index({
           acc[key] = otherFields[key]
         }
         return acc
-      }, {})
-    onSaveGrade(grades, newOtherFields)
+      }, {});
+
+   
+    const defaultGradeIds = data.grades ? data.grades.map(item => item.student_grades_id).filter(id => id) : [];
+    const updatedGrades = grades.map(item => {
+      return {
+        ...item,
+        student_grade_cumulative_id: data.student_grade_cumulative_id
+      }
+    });
+    onSaveGrade(updatedGrades, newOtherFields, defaultGradeIds);
+
   }
 
   useEffect(() => {
@@ -211,7 +227,7 @@ export default function index({
   }, [data])
 
   useEffect(() => {
-    if(!grades.length) {
+    if (!grades.length) {
       setHasChanged(false)
     }
   }, [grades])
@@ -321,7 +337,7 @@ export default function index({
                       onChange={handleChangeOtherFields}
                     />
                   </th>
-                </tr> 
+                </tr>
                 <tr>
                   <th colSpan='2'>Rank</th>
                   <th></th>
@@ -350,6 +366,7 @@ export default function index({
                   <th></th>
                   <th>
                     <input
+                      disabled={isParent}
                       id='final_student_rank'
                       type='number'
                       value={otherFields.final_student_rank}

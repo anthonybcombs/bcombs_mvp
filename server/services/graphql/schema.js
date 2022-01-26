@@ -897,6 +897,17 @@ const queryTypes = `
         name: String   
         profile_img: String     
         attendance_filter_config: String
+        address: String
+        birth_date: String
+        custom_gender: String
+        ethnicity: String
+        family_relationship: String
+        first_name: String
+        gender: String
+        grade: String
+        last_name: String
+        school: String
+        zip_code: String
         
     }
     type UserType {
@@ -1577,6 +1588,7 @@ const queryTypes = `
 
     type StudentGrades {
         student_grade_cumulative_id: Int
+        student_grades_id: Int
         class: String
         subject: String
         teacher_name: String
@@ -1802,6 +1814,7 @@ const queries = `
         getStudentCumulative(app_group_id: String,user_id: String): StudentCumulativeGrade
         getStudentCumulativeGradeByAppGroup(app_group_id: String, app_group_type: String): [StudentByGroupSummary]
         getStudentCumulativeGradeByVendor(vendor_id: String): [StudentByGroupSummary]
+        getStudentCumulativeGradeByParent(parent_id: [String]): [StudentByGroupSummary]
         getStudentCumulativeGradeByUser(child_id: String): [StudentCumulativeGrade]
         getStudentTest(child_id: String): [StudentStandardizedTest]
         getStudentRecords(child_id: String, application_type: String): StudentRecords

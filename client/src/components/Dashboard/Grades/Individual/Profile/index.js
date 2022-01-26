@@ -25,9 +25,10 @@ export default ({ child_id }) => {
     gradeInput, loading
   }))
 
+
   const queryLocation = useLocation();
-	const { group_id, group_type, request_type } = parse(queryLocation.search)
-  const isVendor = request_type === 'vendor'
+	const { group_id, parent_ids, group_type, request_type, is_parent } = parse(queryLocation.search)
+  //const isVendor = request_type === 'vendor'
   const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
@@ -37,15 +38,22 @@ export default ({ child_id }) => {
   const [personalPaneOpen, setPersonalPaneOpen] = useState(false)
   const [familylPaneOpen, setFamilyPaneOpen] = useState(false)
 
-  useEffect(() => {
+  const refreshGrades = () => {
     dispatch(requestGetStudentCumulativeGradeByUser({ child_id, application_type: group_type }))
+  }
+
+  useEffect(() => {
+    refreshGrades();
   }, [])
 
   useEffect(() => {
     if (gradeInput?.individualList) {
       setData(gradeInput.individualList)
     }
-  }, [gradeInput])
+  }, [gradeInput]);
+
+
+
 
   let { firstname, lastname, form_contents } = data?.info || {}
   let profile = ''
@@ -70,7 +78,7 @@ export default ({ child_id }) => {
       profile = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
     }
   }
-
+  console.log('TESTTTTTTTTTTTTTTTTTTTTTTT', data)
   return (
     <GradesStyled>
       <h2>Grades and Tracking</h2>
@@ -81,7 +89,7 @@ export default ({ child_id }) => {
             <Loading />
           ) : (
             <>
-              <Link to={`/dashboard/grades/individual/${child_id}?${commonQueryStrings}`} className='back-btn'>
+              <Link to={is_parent ? `/dashboard/myapplication` : `/dashboard/grades/individual/${child_id}?${commonQueryStrings}`} className='back-btn'>
                 <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
                 Back
               </Link>
@@ -94,7 +102,7 @@ export default ({ child_id }) => {
                   <div className='customLink'>
                     <Link
                       className='applyFilterBtn'
-                      to={`/dashboard/grades/input/${child_id}?${commonQueryStrings}`}
+                      to={is_parent ? `/dashboard/grades/input?appGroupIds=${group_id}&parent_ids=${parent_ids}&is_parent=true` : `/dashboard/grades/input/${child_id}?${commonQueryStrings}`}
                     >
                         {`Grades & Test Input`}
                     </Link>
@@ -114,7 +122,7 @@ export default ({ child_id }) => {
                       <div className='CollapsibleContentList'><p className='label'>School:</p> <p className='value'>{school_name || '--'}</p></div>
                       <div className='CollapsibleContentList'><p className='label'>Grade:</p> <p className='value'>{year_level || '--'}</p></div>
                       <div className='CollapsibleContentList'><p className='label'>Cum GPA:</p>  <p className='value'>{gpa_final || gpa_sem_1 || gpa_sem_2 || '--'}</p></div>
-                      <div className='CollapsibleContentList'><p className='label'>Class Rank:</p>  <p className='value'>{final_student_rank || mid_student_rank || '--'}</p></div>
+                      <div className='CollapsibleContentList'><p className='label'>Group Rank:</p>  <p className='value'>{final_student_rank || mid_student_rank || '--'}</p></div>
                     </div>
                   </Collapsible>
                   {/* <Collapsible
@@ -160,15 +168,28 @@ export default ({ child_id }) => {
                   </Collapsible> */}
                 </div>
                 <div className='right'>
+                  <div className='rightContainer'>
+                    Note: Delete action requires to click the save button in order to delete a data successfully.
+                  </div>
                   <StandardTestTable
+                    childId={child_id}
                     rows={data?.standardized_test || []}
                     testOptions={testOptions}
+                    refreshGrades={refreshGrades}
+                    groupType={group_type}
                   />
                   <GradeCumulativeTable
+                    appGroupId={group_id}
+                    childId={child_id}
                     rows={data?.cumulative_grades || []}
+                    refreshGrades={refreshGrades}
+                    groupType={group_type}
                   />
                   <IndividualGrades
+                    appGroupId={group_id}
+                    childId={child_id}
                     rows={data?.cumulative_grades || []}
+                    refreshGrades={refreshGrades}
                   />
                 </div>
               </div>

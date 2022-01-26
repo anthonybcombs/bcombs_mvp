@@ -177,8 +177,8 @@ export default function index() {
 
         formattedForms.unshift({
           id: 'default',
-          name: 'Bcombs Form',
-          label: 'Bcombs Form',
+          name: 'Mentoring Application',
+          label: 'Mentoring Application',
           isCustomForm: false
         });
 
@@ -448,7 +448,7 @@ export default function index() {
       if(i?.form) {
         formString += `${i.formTitle},`;
       } else {
-        formString += "Bcombs Form,";
+        formString += "Mentoring Applications,";
       }
     })
     return formString.slice(0, -1);
