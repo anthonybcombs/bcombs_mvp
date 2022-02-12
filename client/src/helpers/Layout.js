@@ -195,12 +195,12 @@ export default function Layout({ children }) {
 
 
   
-  useEffect(() => {
-    if(currentUserType === "USER" ) {
-      setuserApplications(applications.userAllApplications);
-    }
+  // useEffect(() => {
+  //   if(currentUserType === "USER" ) {
+  //     setuserApplications(applications.userAllApplications);
+  //   }
     
-  }, [applications.userAllApplications]);
+  // }, [applications.userAllApplications]);
 
 
 
@@ -436,7 +436,7 @@ export default function Layout({ children }) {
                     )}
                     {currentUserType === "USER" && (
                       <>
-                      <a
+                      {/* <a
                         href="#"
                         onClick={() => {
                           const currentParent = userApplications && userApplications[0] && userApplications
@@ -454,7 +454,7 @@ export default function Layout({ children }) {
                         }`}
                         to="/dashboard/bcdisplaycalendar">
                         <span>Data</span>
-                      </a>
+                      </a> */}
                       <Link
                       className={`${
                         context.location.pathname ===

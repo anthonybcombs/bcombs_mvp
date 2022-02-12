@@ -1,4 +1,4 @@
-import React, { useEffect, useRef,useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -15,9 +15,9 @@ import { format } from "date-fns";
 import { parse } from "query-string";
 
 import { useReactToPrint } from "react-to-print";
-import { 
-  requestGetApplicationByUserId, 
-  requestSaveApplication ,
+import {
+  requestGetApplicationByUserId,
+  requestSaveApplication,
   requestGetApplicationHistory
 } from "../../../redux/actions/Application";
 
@@ -335,17 +335,17 @@ export default function index() {
   const dispatch = useDispatch();
 
   const { auth, applications, loading, vendors, form: { updateSubmittedForm, customApplicationHistory } } = useSelector(
-    ({auth, applications, loading, vendors, form}) => {
-      return {auth, applications, loading, vendors, form}
+    ({ auth, applications, loading, vendors, form }) => {
+      return { auth, applications, loading, vendors, form }
     }
   );
 
-  
+
   if (updateSubmittedForm.message === 'successfully update your application form') {
     window.location.reload()
   }
 
-  if(applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
+  if (applications.updateapplication && applications.updateapplication.message == "application successfully updated") {
     window.location.reload(false);
   }
 
@@ -356,11 +356,11 @@ export default function index() {
 
   useEffect(() => {
 
-    if(auth.user_id) {
+    if (auth.user_id) {
       dispatch(requestGetApplicationByUserId(auth.user_id))
     }
 
-    if(queryParams && queryParams.action && queryParams.action == 'update') {
+    if (queryParams && queryParams.action && queryParams.action == 'update') {
       setIsReadonly(false);
     }
   }, [])
@@ -379,7 +379,7 @@ export default function index() {
     let uApplications = applications.userAllApplications;
 
 
-    if(queryParams && queryParams.appId && uApplications.length > 0) {
+    if (queryParams && queryParams.appId && uApplications.length > 0) {
       const qappId = queryParams.appId;
       let sApplication = uApplications.filter((a) => {
         return a.app_id == qappId
@@ -388,14 +388,14 @@ export default function index() {
       sApplication = sApplication?.length > 0 ? sApplication[0] : {};
 
 
-      if(sApplication && sApplication.app_id);
-        initializeApplication(sApplication);
+      if (sApplication && sApplication.app_id);
+      initializeApplication(sApplication);
     }
 
     const hasSetReminders = uApplications.some(ua => ua.received_reminder);
 
 
-    if(queryParams && queryParams?.action != 'update') {
+    if (queryParams && queryParams?.action != 'update') {
       setShowReminder(hasSetReminders);
       setReminderApplications(uApplications.filter(ua => !!ua.received_reminder));
     }
@@ -428,12 +428,12 @@ export default function index() {
 
   const [applicationFormKey, setApplicationFormKey] = useState(new Date().toISOString());
   const [selectedCustomFormHistory, setSelectedCustomFormHistory] = useState({});
-  
+
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     copyStyles: true,
-    pageStyle:`
+    pageStyle: `
     #applicationForm  .highlights{
 
       border-top: none !important;
@@ -463,14 +463,14 @@ export default function index() {
   }
 
   const emergency_contacts = [
-    {...childEmergencyContact},
-    {...childEmergencyContact},
-    {...childEmergencyContact},
-    {...childEmergencyContact}
+    { ...childEmergencyContact },
+    { ...childEmergencyContact },
+    { ...childEmergencyContact },
+    { ...childEmergencyContact }
   ]
 
-  if( applications.updateapplication 
-    && applications.updateapplication.message == "application successfully updated" ) {
+  if (applications.updateapplication
+    && applications.updateapplication.message == "application successfully updated") {
     //window.location.replace(window.location.origin);
     window.location.reload();
   }
@@ -481,7 +481,7 @@ export default function index() {
 
   const parseArrayFormat = (items) => {
     let newItems = []
-    if(!Array.isArray(items)) return [];
+    if (!Array.isArray(items)) return [];
 
     items.forEach((item, index) => {
       const newItem = {
@@ -515,7 +515,7 @@ export default function index() {
       }
 
       return (
-        <a 
+        <a
           href=""
           onClick={(e) => {
             e.preventDefault()
@@ -530,7 +530,7 @@ export default function index() {
       )
     }
     return (
-      <a 
+      <a
         href=""
         onClick={(e) => {
           e.preventDefault();
@@ -539,37 +539,37 @@ export default function index() {
           const childInformationObj = {
             profile: {
               image: "",
-              application_date: `History Update: ${format(new Date(row.updated_at ? row.updated_at: ""), "LLL dd, yyyy p")}`,
-              first_name: application.child.firstname ? application.child.firstname: "",
-              last_name: application.child.lastname ? application.child.lastname:"",
-              nick_name: application.child.nickname ? application.child.nickname: "",
+              application_date: `History Update: ${format(new Date(row.updated_at ? row.updated_at : ""), "LLL dd, yyyy p")}`,
+              first_name: application.child.firstname ? application.child.firstname : "",
+              last_name: application.child.lastname ? application.child.lastname : "",
+              nick_name: application.child.nickname ? application.child.nickname : "",
               date_of_birth: new Date(application.child.birthdate),
               gender: application.child.gender,
-              phone_type: application.child.phone_type ? application.child.phone_type: "",
-              phone_number: application.child.phone_number ? application.child.phone_number:"",
-              email_type: application.child.email_type ? application.child.email_type:"",
-              email_address: application.child.email_address ? application.child.email_address: "",
-              phone_type2: application.child.phone_type2 ? application.child.phone_type2: "",
-              phone_number2: application.child.phone_number2 ? application.child.phone_number2:"",
-              email_type2: application.child.email_type2 ? application.child.email_type2:"",
-              email_address2: application.child.email_address2 ? application.child.email_address2: "",
-              address: application.child.address ? application.child.address: "",
-              city: application.child.city ? application.child.city: "",
-              state: application.child.state ? application.child.state: "",
-              zip_code: application.child.zip_code ? application.child.zip_code: "",
-              location_site: application.child.location_site ? application.child.location_site: "",
+              phone_type: application.child.phone_type ? application.child.phone_type : "",
+              phone_number: application.child.phone_number ? application.child.phone_number : "",
+              email_type: application.child.email_type ? application.child.email_type : "",
+              email_address: application.child.email_address ? application.child.email_address : "",
+              phone_type2: application.child.phone_type2 ? application.child.phone_type2 : "",
+              phone_number2: application.child.phone_number2 ? application.child.phone_number2 : "",
+              email_type2: application.child.email_type2 ? application.child.email_type2 : "",
+              email_address2: application.child.email_address2 ? application.child.email_address2 : "",
+              address: application.child.address ? application.child.address : "",
+              city: application.child.city ? application.child.city : "",
+              state: application.child.state ? application.child.state : "",
+              zip_code: application.child.zip_code ? application.child.zip_code : "",
+              location_site: application.child.location_site ? application.child.location_site : "",
               child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
               program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
               ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
               preffered_start_date: new Date(application.child.preffered_start_date),
-              current_classroom: application.child.current_classroom ? application.child.current_classroom: "",
+              current_classroom: application.child.current_classroom ? application.child.current_classroom : "",
               primary_language: application.child.primary_language ? application.child.primary_language : "",
               needed_days: application.child.needed_days ? application.child.needed_days : "",
               schedule_tour: application.child.schedule_tour ? application.child.schedule_tour : "",
               voucher: application.child.voucher ? application.child.voucher : ""
             },
             general_information: {
-              grade: application.child.grade_number ? application.child.grade_number: "",
+              grade: application.child.grade_number ? application.child.grade_number : "",
               class_rank: application.child.class_rank ? application.child.class_rank : "",
               gpa_quarter_year: application.child.gpa_quarter_year ? application.child.gpa_quarter_year : "",
               gpa_quarter_q1: application.child.gpa_quarter_q1 ? application.child.gpa_quarter_q1 : "",
@@ -597,60 +597,60 @@ export default function index() {
               awards: application.child.awards ? application.child.awards : "",
               accomplishments: application.child.accomplishments ? application.child.accomplishments : "",
               mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : "",
-              is_child_transferring: application.child.is_child_transferring 
-                ? application.child.is_child_transferring 
+              is_child_transferring: application.child.is_child_transferring
+                ? application.child.is_child_transferring
                 : "",
-              does_child_require_physical_education_service: application.child.does_child_require_physical_education_service 
-                ? application.child.does_child_require_physical_education_service 
+              does_child_require_physical_education_service: application.child.does_child_require_physical_education_service
+                ? application.child.does_child_require_physical_education_service
                 : "",
-              history_prev_diseases: application.child.history_prev_diseases 
-                ? application.child.history_prev_diseases 
+              history_prev_diseases: application.child.history_prev_diseases
+                ? application.child.history_prev_diseases
                 : "", //start of questions
-              child_currently_doctors_care: application.child.child_currently_doctors_care 
-                ? application.child.child_currently_doctors_care 
+              child_currently_doctors_care: application.child.child_currently_doctors_care
+                ? application.child.child_currently_doctors_care
                 : "",
-              reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations 
-                ? application.child.reasons_previous_hospitalizations 
+              reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations
+                ? application.child.reasons_previous_hospitalizations
                 : "",
-              comments_suggestion: application.child.comments_suggestion 
-                ? application.child.comments_suggestion 
+              comments_suggestion: application.child.comments_suggestion
+                ? application.child.comments_suggestion
                 : "",
-              list_special_dietary: application.child.list_special_dietary 
-                ? application.child.list_special_dietary 
+              list_special_dietary: application.child.list_special_dietary
+                ? application.child.list_special_dietary
                 : "",
-              list_any_allergies: application.child.list_any_allergies 
-              ? application.child.list_any_allergies 
-              : "",
-              mental_physical_disabilities: application.child.mental_physical_disabilities 
-              ? application.child.mental_physical_disabilities 
-              : "",
-              medical_action_plan: application.child.medical_action_plan 
-              ? application.child.medical_action_plan 
-              : "",
-              list_fears_unique_behavior: application.child.list_fears_unique_behavior 
-              ? application.child.list_fears_unique_behavior 
-              : "",
-              transfer_reason: application.child.transfer_reason 
-              ? application.child.transfer_reason 
-              : "",
-              prev_school_phone: application.child.prev_school_phone 
-              ? application.child.prev_school_phone 
-              : "",
-              prev_school_city: application.child.prev_school_city 
-              ? application.child.prev_school_city 
-              : "",
-              prev_school_address: application.child.prev_school_address 
-              ? application.child.prev_school_address 
-              : "",
-              prev_school_attended: application.child.prev_school_attended 
-              ? application.child.prev_school_attended 
-              : "",
-              prev_school_state: application.child.prev_school_state 
-              ? application.child.prev_school_state 
-              : "",
-              prev_school_zip_code: application.child.prev_school_zip_code 
-              ? application.child.prev_school_zip_code 
-              : ""
+              list_any_allergies: application.child.list_any_allergies
+                ? application.child.list_any_allergies
+                : "",
+              mental_physical_disabilities: application.child.mental_physical_disabilities
+                ? application.child.mental_physical_disabilities
+                : "",
+              medical_action_plan: application.child.medical_action_plan
+                ? application.child.medical_action_plan
+                : "",
+              list_fears_unique_behavior: application.child.list_fears_unique_behavior
+                ? application.child.list_fears_unique_behavior
+                : "",
+              transfer_reason: application.child.transfer_reason
+                ? application.child.transfer_reason
+                : "",
+              prev_school_phone: application.child.prev_school_phone
+                ? application.child.prev_school_phone
+                : "",
+              prev_school_city: application.child.prev_school_city
+                ? application.child.prev_school_city
+                : "",
+              prev_school_address: application.child.prev_school_address
+                ? application.child.prev_school_address
+                : "",
+              prev_school_attended: application.child.prev_school_attended
+                ? application.child.prev_school_attended
+                : "",
+              prev_school_state: application.child.prev_school_state
+                ? application.child.prev_school_state
+                : "",
+              prev_school_zip_code: application.child.prev_school_zip_code
+                ? application.child.prev_school_zip_code
+                : ""
             },
             emergency_care_information: {
               doctor_name: application.child.doctor_name ? application.child.doctor_name : "",
@@ -665,7 +665,7 @@ export default function index() {
           const parents = application.parents;
 
           let items = []
-          for(const parent of parents) {
+          for (const parent of parents) {
             const profile = {
               first_name: parent.firstname ? parent.firstname : "",
               last_name: parent.lastname ? parent.lastname : "",
@@ -689,7 +689,7 @@ export default function index() {
               level_education: parent.level_of_education ? parent.level_of_education : "",
               child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
               child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
-              person_recommend: parent.person_recommend ? parent.person_recommend: "",
+              person_recommend: parent.person_recommend ? parent.person_recommend : "",
               ethinicity: parent.ethnicities
                 ? parseArrayFormat(parent.ethnicities.split(","))
                 : [],
@@ -697,8 +697,8 @@ export default function index() {
               date_of_birth: new Date(parent.birthdate)
             }
 
-            items.push({profile: profile, id: parent.parent_id, parent_id: parent.parent_id});
-            
+            items.push({ profile: profile, id: parent.parent_id, parent_id: parent.parent_id });
+
           }
 
           setTempHideForm(true);
@@ -712,7 +712,7 @@ export default function index() {
           setIsFormHistory(true);
           setIsReadonly(true);
 
-          if(application.emergency_contacts) {
+          if (application.emergency_contacts) {
             setEmergencyContacts(JSON.parse(application.emergency_contacts));
           } else {
             setEmergencyContacts(emergency_contacts);
@@ -733,7 +733,7 @@ export default function index() {
               signature: application.section3_signature
             }
           }
-          
+
           setTermsWaiver(termsWaiver);
         }}
       >
@@ -744,9 +744,9 @@ export default function index() {
 
   const initializeApplication = (application) => {
     setSelectedVendor({});
- 
 
-    if(application && application.form) {
+
+    if (application && application.form) {
       setView('builderForm')
       dispatch(requestGetCustomApplicationHistory(application.app_id));
       setSelectedApplication(application);
@@ -759,33 +759,33 @@ export default function index() {
         profile: {
           image: "",
           application_date: 'Most Up to date Application',
-          first_name: application.child.firstname ? application.child.firstname: "",
-          last_name: application.child.lastname ? application.child.lastname:"",
-          nick_name: application.child.nickname ? application.child.nickname: "",
+          first_name: application.child.firstname ? application.child.firstname : "",
+          last_name: application.child.lastname ? application.child.lastname : "",
+          nick_name: application.child.nickname ? application.child.nickname : "",
           date_of_birth: application.child.birthdate ? new Date(application.child.birthdate) : "",
           gender: application.child.gender,
-          phone_type: application.child.phone_type ? application.child.phone_type: "",
-          phone_number: application.child.phone_number ? application.child.phone_number:"",
-          email_type: application.child.email_type ? application.child.email_type:"",
-          email_address: application.child.email_address ? application.child.email_address: "",
-          address: application.child.address ? application.child.address: "",
-          city: application.child.city ? application.child.city: "",
-          state: application.child.state ? application.child.state: "",
-          zip_code: application.child.zip_code ? application.child.zip_code: "",
-          location_site: application.child.location_site ? application.child.location_site: "",
+          phone_type: application.child.phone_type ? application.child.phone_type : "",
+          phone_number: application.child.phone_number ? application.child.phone_number : "",
+          email_type: application.child.email_type ? application.child.email_type : "",
+          email_address: application.child.email_address ? application.child.email_address : "",
+          address: application.child.address ? application.child.address : "",
+          city: application.child.city ? application.child.city : "",
+          state: application.child.state ? application.child.state : "",
+          zip_code: application.child.zip_code ? application.child.zip_code : "",
+          location_site: application.child.location_site ? application.child.location_site : "",
           child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
           program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
           ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
-          nick_name: application.child.nickname ? application.child.nickname: "",
+          nick_name: application.child.nickname ? application.child.nickname : "",
           preffered_start_date: new Date(application.child.preffered_start_date),
-          current_classroom: application.child.current_classroom ? application.child.current_classroom: "",
+          current_classroom: application.child.current_classroom ? application.child.current_classroom : "",
           primary_language: application.child.primary_language ? application.child.primary_language : "",
           needed_days: application.child.needed_days ? application.child.needed_days : "",
           schedule_tour: application.child.schedule_tour ? application.child.schedule_tour : "",
           voucher: application.child.voucher ? application.child.voucher : ""
         },
         general_information: {
-          grade: application.child.grade_number ? application.child.grade_number: "",
+          grade: application.child.grade_number ? application.child.grade_number : "",
           class_rank: application.child.class_rank ? application.child.class_rank : "",
           gpa_quarter_year: application.child.gpa_quarter_year ? application.child.gpa_quarter_year : "",
           gpa_quarter_q1: application.child.gpa_quarter_q1 ? application.child.gpa_quarter_q1 : "",
@@ -814,60 +814,60 @@ export default function index() {
           awards: application.child.awards ? application.child.awards : "",
           accomplishments: application.child.accomplishments ? application.child.accomplishments : "",
           mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : "",
-          is_child_transferring: application.child.is_child_transferring 
-            ? application.child.is_child_transferring 
+          is_child_transferring: application.child.is_child_transferring
+            ? application.child.is_child_transferring
             : "",
-          does_child_require_physical_education_service: application.child.does_child_require_physical_education_service 
-            ? application.child.does_child_require_physical_education_service 
+          does_child_require_physical_education_service: application.child.does_child_require_physical_education_service
+            ? application.child.does_child_require_physical_education_service
             : "",
-          history_prev_diseases: application.child.history_prev_diseases 
-            ? application.child.history_prev_diseases 
+          history_prev_diseases: application.child.history_prev_diseases
+            ? application.child.history_prev_diseases
             : "", //start of questions
-          child_currently_doctors_care: application.child.child_currently_doctors_care 
-            ? application.child.child_currently_doctors_care 
+          child_currently_doctors_care: application.child.child_currently_doctors_care
+            ? application.child.child_currently_doctors_care
             : "",
-          reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations 
-            ? application.child.reasons_previous_hospitalizations 
+          reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations
+            ? application.child.reasons_previous_hospitalizations
             : "",
-          comments_suggestion: application.child.comments_suggestion 
-            ? application.child.comments_suggestion 
+          comments_suggestion: application.child.comments_suggestion
+            ? application.child.comments_suggestion
             : "",
-          list_special_dietary: application.child.list_special_dietary 
-            ? application.child.list_special_dietary 
+          list_special_dietary: application.child.list_special_dietary
+            ? application.child.list_special_dietary
             : "",
-          list_any_allergies: application.child.list_any_allergies 
-          ? application.child.list_any_allergies 
-          : "",
-          mental_physical_disabilities: application.child.mental_physical_disabilities 
-          ? application.child.mental_physical_disabilities 
-          : "",
-          medical_action_plan: application.child.medical_action_plan 
-          ? application.child.medical_action_plan 
-          : "",
-          list_fears_unique_behavior: application.child.list_fears_unique_behavior 
-          ? application.child.list_fears_unique_behavior 
-          : "",
-          transfer_reason: application.child.transfer_reason 
-          ? application.child.transfer_reason 
-          : "",
-          prev_school_phone: application.child.prev_school_phone 
-          ? application.child.prev_school_phone 
-          : "",
-          prev_school_city: application.child.prev_school_city 
-          ? application.child.prev_school_city 
-          : "",
-          prev_school_address: application.child.prev_school_address 
-          ? application.child.prev_school_address 
-          : "",
-          prev_school_attended: application.child.prev_school_attended 
-          ? application.child.prev_school_attended 
-          : "",
-          prev_school_state: application.child.prev_school_state 
-          ? application.child.prev_school_state 
-          : "",
-          prev_school_zip_code: application.child.prev_school_zip_code 
-          ? application.child.prev_school_zip_code 
-          : ""
+          list_any_allergies: application.child.list_any_allergies
+            ? application.child.list_any_allergies
+            : "",
+          mental_physical_disabilities: application.child.mental_physical_disabilities
+            ? application.child.mental_physical_disabilities
+            : "",
+          medical_action_plan: application.child.medical_action_plan
+            ? application.child.medical_action_plan
+            : "",
+          list_fears_unique_behavior: application.child.list_fears_unique_behavior
+            ? application.child.list_fears_unique_behavior
+            : "",
+          transfer_reason: application.child.transfer_reason
+            ? application.child.transfer_reason
+            : "",
+          prev_school_phone: application.child.prev_school_phone
+            ? application.child.prev_school_phone
+            : "",
+          prev_school_city: application.child.prev_school_city
+            ? application.child.prev_school_city
+            : "",
+          prev_school_address: application.child.prev_school_address
+            ? application.child.prev_school_address
+            : "",
+          prev_school_attended: application.child.prev_school_attended
+            ? application.child.prev_school_attended
+            : "",
+          prev_school_state: application.child.prev_school_state
+            ? application.child.prev_school_state
+            : "",
+          prev_school_zip_code: application.child.prev_school_zip_code
+            ? application.child.prev_school_zip_code
+            : ""
         },
         emergency_care_information: {
           doctor_name: application.child.doctor_name ? application.child.doctor_name : "",
@@ -882,7 +882,7 @@ export default function index() {
       const parents = application.parents;
 
       let items = []
-      for(const parent of parents) {
+      for (const parent of parents) {
         const profile = {
           first_name: parent.firstname ? parent.firstname : "",
           last_name: parent.lastname ? parent.lastname : "",
@@ -906,21 +906,21 @@ export default function index() {
           level_education: parent.level_of_education ? parent.level_of_education : "",
           child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
           child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
-          person_recommend: parent.person_recommend ? parent.person_recommend: "",
+          person_recommend: parent.person_recommend ? parent.person_recommend : "",
           ethinicity: parent.ethnicities
             ? parseArrayFormat(parent.ethnicities.split(","))
             : [],
           gender: parent.gender,
           date_of_birth: parent.birthdate ? new Date(parent.birthdate) : ""
         }
-      
-        items.push({profile: profile, id: parent.parent_id, parent_id: parent.parent_id});
+
+        items.push({ profile: profile, id: parent.parent_id, parent_id: parent.parent_id });
       }
 
-      if(application && application.vendorPrograms && application.vendorPrograms.length > 0) {
+      if (application && application.vendorPrograms && application.vendorPrograms.length > 0) {
         let app_programs = []
 
-        for(const program of application.vendorPrograms) {
+        for (const program of application.vendorPrograms) {
           app_programs.push({
             id: program.id,
             name: program.name,
@@ -933,7 +933,7 @@ export default function index() {
 
       setSelectedApplication(application);
 
-      if(application.emergency_contacts) {
+      if (application.emergency_contacts) {
         setEmergencyContacts(JSON.parse(application.emergency_contacts));
       } else {
         setEmergencyContacts(emergency_contacts);
@@ -958,7 +958,7 @@ export default function index() {
 
       setRelationships(application.relationships);
       setChRelationships(application.chRelationships);
-      
+
       const termsWaiver = {
         date: new Date().toString(),
         section1: {
@@ -974,7 +974,7 @@ export default function index() {
           signature: application.section3_signature
         }
       }
-      
+
       setTermsWaiver(termsWaiver);
     }
 
@@ -989,7 +989,7 @@ export default function index() {
   const [view, setView] = useState('')
   const createViewButton = (application) => {
     if (application.form_contents) {
-     return (<a
+      return (<><a
         href=""
         onClick={(e) => {
           e.preventDefault();
@@ -1001,37 +1001,42 @@ export default function index() {
         }}
       >
         View Application
-      </a>)
+      </a>
+      <span style={{marginLeft: 4, marginRight: 4}}>/</span>  
+        <a href="#" onClick={() => {
+          const currentParent = userApplications && userApplications[0] && userApplications
+          const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
+
+          window.location.href = `/dashboard/grades/profile/${application.child?.ch_id}?group_id=${application.class_teacher}&group_type=bcombs&parent_ids=${parentIds}&is_parent=true`
+
+        }}> View Grade</a>
+      
+      </>)
     }
-    let classTeacher  = application.class_teacher ? application.class_teacher.split(',') :  application.class_teacher;
+    let classTeacher = application.class_teacher ? application.class_teacher.split(',') : application.class_teacher;
     classTeacher = Array.isArray(classTeacher) ? classTeacher[0] : classTeacher;
     return (
       <>
-      <a 
-        href=""
-        onClick={(e) => {
-          e.preventDefault();
+        <a
+          href=""
+          onClick={(e) => {
+            e.preventDefault();
 
-          window.history.replaceState("","","?appId=" + application.app_id);
-          
-          initializeApplication(application);
-        }}
-        style={{ marginLeft:5, marginRight:5 }}
-      >
-        View Application
-      </a>
-      {/* <a 
-        href=""
-        onClick={(e) => {
-          e.preventDefault();
+            window.history.replaceState("", "", "?appId=" + application.app_id);
 
-          window.location.href= `/dashboard/grades/input?group_id=${classTeacher}&group_type=bcombs&selected_child=${application.child.ch_id}&is_parent=true`
-       
-        }}
-        style={{ marginLeft:5, marginRight:5 }}
-      >
-        View Grade
-      </a> */}
+            initializeApplication(application);
+          }}
+          style={{ marginLeft: 5, marginRight: 5 }}
+        >
+          View Application
+        </a>
+        <span style={{marginLeft: 4, marginRight: 4}}>/</span>  
+        <a href="#" onClick={() => {
+          const currentParent = userApplications && userApplications[0] && userApplications
+          const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
+          window.location.href = `/dashboard/grades/profile/${application.child?.ch_id}?group_id=${application.class_teacher}&group_type=bcombs&parent_ids=${parentIds}&is_parent=true`
+
+        }}> View Grade</a>
       </>
     )
   }
@@ -1043,46 +1048,46 @@ export default function index() {
     let general_information = child.general_information;
     let emergency_care_information = child.emergency_care_information;
 
-    if(section === "profile") {
-      profile = {...profile, [id]: value}
+    if (section === "profile") {
+      profile = { ...profile, [id]: value }
       child.profile = profile;
     } else if (section === "general_information") {
-      if(id === "has_suspended") {
+      if (id === "has_suspended") {
         if (value == "0")
-          general_information = {...general_information, ["reason_suspended"]: ""};
+          general_information = { ...general_information, ["reason_suspended"]: "" };
       }
 
-      if(id.includes("act_scores")) {
+      if (id.includes("act_scores")) {
         let x = id.split("-");
         general_information.act_scores[x[1]][x[2]] = value;
       } else if (id.includes("sat_scores")) {
         let x = id.split("-");
-        if(x[0] === "psat_scores") {
+        if (x[0] === "psat_scores") {
           general_information.psat_scores[x[1]][x[2]] = value;
         } else {
           general_information.sat_scores[x[1]][x[2]] = value;
         }
       } else {
-        general_information = {...general_information, [id]: value};
+        general_information = { ...general_information, [id]: value };
       }
       child.general_information = general_information
     } else {
-      emergency_care_information = {...emergency_care_information, [id]: value};
+      emergency_care_information = { ...emergency_care_information, [id]: value };
       child.emergency_care_information = emergency_care_information;
     }
-    setChildInformation({...child})
+    setChildInformation({ ...child })
   }
 
   const handleParentFormDetailsChange = (index, section, id, value) => {
-      
-    if(section === "profile") {
+
+    if (section === "profile") {
       let parents = parentsInformation;
       let profile = parents[index].profile;
 
-      profile = {...profile, [id]: value};
+      profile = { ...profile, [id]: value };
       parents[index].profile = profile;
       setParentsInformation([...parents]);
-    } else if(section === "emergency_contacts") {
+    } else if (section === "emergency_contacts") {
       let emergency_contacts = emergencyContacts;
       let x = id.split("-");
       emergency_contacts[index][id] = value;
@@ -1106,13 +1111,13 @@ export default function index() {
     }
   }
 
-  const [termsWaiver, setTermsWaiver] = useState({...termsWaiverObj});
+  const [termsWaiver, setTermsWaiver] = useState({ ...termsWaiverObj });
 
   const handleWaiverFormDetailsChange = (section, id, value) => {
 
     let subTermsWaiver = termsWaiver;
 
-    if(section === "section1") {
+    if (section === "section1") {
       subTermsWaiver.section1[id] = value;
     } else if (section === "section2") {
       subTermsWaiver.section2[id] = value;
@@ -1122,7 +1127,7 @@ export default function index() {
       console.log("Invalid Section");
     }
 
-    setTermsWaiver({...subTermsWaiver});
+    setTermsWaiver({ ...subTermsWaiver });
   }
 
   const columns = [
@@ -1136,21 +1141,21 @@ export default function index() {
       name: 'Name',
       selector: 'studentName',
       sortable: true,
-      // cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>
-      cell: row => {
-        return  <a href="#" onClick={() => {
-          const currentParent = userApplications && userApplications[0] && userApplications
-          const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
-          // const groupIds = userApplications.map(item =>  {
-          //   const ids = item.class_teacher.split(',').filter(id => id && id !== '');
-          //   return ids;
-          // }).flat().join(',');
-          console.log('currentParent' , currentParent)
-          console.log('currentParent parentIds' , parentIds)
-           window.location.href= `/dashboard/grades/profile/${row.child?.ch_id}?group_id=${row.class_teacher}&group_type=bcombs&parent_ids=${parentIds}&is_parent=true`
-        
-        }}>{(row.child?.firstname && row.child?.lastname) ? row.child?.firstname + " " + row.child?.lastname : ""}</a>
-      }
+      cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>
+      // cell: row => {
+      //   return  <a href="#" onClick={() => {
+      //     const currentParent = userApplications && userApplications[0] && userApplications
+      //     const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
+      //     // const groupIds = userApplications.map(item =>  {
+      //     //   const ids = item.class_teacher.split(',').filter(id => id && id !== '');
+      //     //   return ids;
+      //     // }).flat().join(',');
+      //     console.log('currentParent' , currentParent)
+      //     console.log('currentParent parentIds' , parentIds)
+      //      window.location.href= `/dashboard/grades/profile/${row.child?.ch_id}?group_id=${row.class_teacher}&group_type=bcombs&parent_ids=${parentIds}&is_parent=true`
+
+      //   }}>{(row.child?.firstname && row.child?.lastname) ? row.child?.firstname + " " + row.child?.lastname : ""}</a>
+      // }
     },
     {
       name: 'Form',
@@ -1162,12 +1167,16 @@ export default function index() {
       selector: 'class',
       sortable: true,
       cell: row => createViewButton(row)
-    }
+    },
+    // {
+    //   selector: 'class',
+    //   sortable: true,
+    // }
   ];
 
   const columnsAppHistory = [
     {
-      name: 'Updated At',
+      name: 'Updated At (Signature Date)',
       selector: 'status',
       sortable: true,
       cell: row => format(new Date(row.updated_at), DATE_TIME_FORMAT)
@@ -1187,10 +1196,10 @@ export default function index() {
 
   const paginationRowsPerPageOptions = [10, 25, 50, 100];
   const paginationComponentOptions = {
-    rowsPerPageText: 'Rows per page:', 
-    rangeSeparatorText: 'of', 
+    rowsPerPageText: 'Rows per page:',
+    rangeSeparatorText: 'of',
     noRowsPerPage: false,
-    selectAllRowsItem: true, 
+    selectAllRowsItem: true,
     selectAllRowsItemText: 'All'
   }
 
@@ -1263,7 +1272,7 @@ export default function index() {
         password: parent.profile.password,
         occupation: parent.profile.occupation,
         employers_name: parent.profile.employer_name,
-        parent_goals: parent.profile.goals_parent_program, 
+        parent_goals: parent.profile.goals_parent_program,
         parent_child_goals: parent.profile.goals_child_program,
         live_area: parseInt(parent.profile.live_area),
         level_of_education: parent.profile.level_education,
@@ -1299,7 +1308,7 @@ export default function index() {
   }
 
   const getGradeDesc = (grade) => {
-    if(grade == 12) {
+    if (grade == 12) {
       return "Seniors";
     } else if (grade == 11) {
       return "Juniors";
@@ -1393,7 +1402,7 @@ export default function index() {
         prev_school_attended: childInformation.general_information.prev_school_attended,
         prev_school_state: childInformation.general_information.prev_school_state,
         prev_school_zip_code: childInformation.general_information.prev_school_zip_code,
-        preffered_start_date:format(
+        preffered_start_date: format(
           new Date(childInformation.profile.preffered_start_date),
           DATE_TIME_FORMAT2),
         current_classroom: childInformation.profile.current_classroom,
@@ -1438,7 +1447,7 @@ export default function index() {
     e.preventDefault();
 
     let tempTermsWaiver = termsWaiver
-    if(isReadonly) {
+    if (isReadonly) {
       tempTermsWaiver.section1.signature = "";
       tempTermsWaiver.section2.signature = "";
       tempTermsWaiver.section3.signature = "";
@@ -1467,8 +1476,8 @@ export default function index() {
 
     let exists = false;
 
-    for(const [index, item] of relationships.entries()) {
-      if(item.parent == parent && item.child == child) {
+    for (const [index, item] of relationships.entries()) {
+      if (item.parent == parent && item.child == child) {
         let tempRelationships = relationships;
         tempRelationships[index].parent = parent;
         tempRelationships[index].child = child;
@@ -1480,7 +1489,7 @@ export default function index() {
       }
     }
 
-    if(!exists) {
+    if (!exists) {
       setRelationships([...relationships, {
         parent: parent,
         child: child,
@@ -1488,16 +1497,16 @@ export default function index() {
       }])
     }
   }
-
+  console.log('selectedApplication', selectedApplication)
 
   return (
     <MyApplicationStyled>
       {
         /* userApplications.length > 0 */
-        !loading.userAllApplications && userApplications?
-        (
-          <>
-          {/* {
+        !loading.userAllApplications && userApplications ?
+          (
+            <>
+              {/* {
             applications.updateapplication && 
             applications.updateapplication.message == "application successfully updated" && (
               <SuccessUpdateModal
@@ -1505,261 +1514,261 @@ export default function index() {
               />
             )
           } */}
-          {
-            showReminder && (
-              <SetRemindersModal
-                applications={reminderApplications}
-                closeReminderModal={closeReminderModal}
-              />
-            )
-          }
-
-          <button className="view-grades" onClick={e => {
-            e.preventDefault();
-            const currentParent = userApplications && userApplications[0] && userApplications
-            const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
-            const groupIds = userApplications.map(item =>  {
-              const ids = item.class_teacher.split(',').filter(id => id && id !== '');
-              return ids;
-            }).flat().join(',');
-          
-
-           window.location.href= `/dashboard/grades/input?appGroupIds=${groupIds}&parent_ids=${parentIds}&is_parent=true`
-
-          }} type="button">Grades</button>
-          <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
-            <div id="dataTableContainer">
               {
-                (
-                  <DataTable 
-                    columns={columns}
-                    data={userApplications}
-                    pagination
-                    noHeader={true}
-                    striped={true}
-                    customStyles={customStyles}
-                    paginationRowsPerPageOptions={paginationRowsPerPageOptions}
-                    paginationComponentOptions={paginationComponentOptions}
+                showReminder && (
+                  <SetRemindersModal
+                    applications={reminderApplications}
+                    closeReminderModal={closeReminderModal}
                   />
                 )
               }
-            </div>
-          </Collapsible>
-          {
-            (showApplication && view !== 'builderForm') && (
-              <div>
-                <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
-                  <div id="dataTableContainer">
+
+              <button className="view-grades" onClick={e => {
+                e.preventDefault();
+                const currentParent = userApplications && userApplications[0] && userApplications
+                const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
+                const groupIds = userApplications.map(item => {
+                  const ids = item.class_teacher.split(',').filter(id => id && id !== '');
+                  return ids;
+                }).flat().join(',');
+
+
+                window.location.href = `/dashboard/grades/input?appGroupIds=${groupIds}&parent_ids=${parentIds}&is_parent=true`
+
+              }} type="button">Grades</button>
+              <Collapsible trigger={<h3>Applications</h3>} open lazyRender>
+                <div id="dataTableContainer">
+                  {
+                    (
+                      <DataTable
+                        columns={columns}
+                        data={userApplications}
+                        pagination
+                        noHeader={true}
+                        striped={true}
+                        customStyles={customStyles}
+                        paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+                        paginationComponentOptions={paginationComponentOptions}
+                      />
+                    )
+                  }
+                </div>
+              </Collapsible>
+              {
+                (showApplication && view !== 'builderForm') && (
+                  <div>
+                    <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
+                      <div id="dataTableContainer">
+                        {
+                          (
+                            <DataTable
+                              columns={columnsAppHistory}
+                              data={applications.applicationHistory}
+                              pagination
+                              noHeader={true}
+                              striped={true}
+                              customStyles={customStyles}
+                              paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+                              paginationComponentOptions={paginationComponentOptions}
+                            />
+                          )
+                        }
+                      </div>
+                    </Collapsible>
                     {
-                      (
-                        <DataTable 
-                          columns={columnsAppHistory}
-                          data={applications.applicationHistory}
-                          pagination
-                          noHeader={true}
-                          striped={true}
-                          customStyles={customStyles}
-                          paginationRowsPerPageOptions={paginationRowsPerPageOptions}
-                          paginationComponentOptions={paginationComponentOptions}
-                        />
+                      loading.application ? (
+                        <Loading />
+                      ) : (
+                        !tempHideForm && (
+                          <>
+                            <button className="print-button" onClick={handlePrint}>
+                              {" "}
+                              <FontAwesomeIcon icon={faPrint} />
+                            </button>
+                            <ApplicationFormStyled
+                              ref={componentRef}
+                              autoComplete="off"
+                              onSubmit={handleSubmit(onSubmitSaveApplication)}
+                            >
+                              {
+                                selectedApplication &&
+                                  selectedApplication.is_daycare ? (
+                                  <>
+                                    <DaycareChildFormView
+                                      childInformation={childInformation}
+                                      vendor={selectedVendor}
+                                      ProfileImg={ProfileImg}
+                                      isReadonly={isReadonly}
+                                      handleChangeToEdit={handleChangeToEdit}
+                                      errors={errors}
+                                      register={register}
+                                      handleChildFormDetailsChange={handleChildFormDetailsChange}
+                                      isFormHistory={isFormHistory}
+                                    />
+                                    <hr className="style-eight"></hr>
+                                    <DaycareParentFormView
+                                      parents={parentsInformation}
+                                      vendor={selectedVendor}
+                                      ProfileImg={ProfileImg}
+                                      handleParentFormDetailsChange={handleParentFormDetailsChange}
+                                      isReadonly={isReadonly}
+                                      isUpdate={true}
+                                      emergencyContacts={emergencyContacts}
+                                      selectedApplication={selectedApplication?.child}
+                                      childProfile={childInformation?.profile}
+                                    />
+                                    <hr className="style-eight"></hr>
+                                    <RelationshipToChildStyled
+                                      selectedApplication={selectedApplication}
+                                      handleParentChildRelationship={handleParentChildRelationship}
+                                      parents={parentsInformation}
+                                      childs={[{ ...childInformation }]}
+                                      errors={errors}
+                                      register={register}
+                                      isReadonly={isReadonly}
+                                      relationships={relationships}
+                                      chRelationships={chRelationships}
+                                      isReadView={true}
+                                    />
+                                    <hr className="style-eight"></hr>
+                                    <TermsWaiverFormViewStyled
+                                      application={selectedApplication}
+                                      isReadonly={isReadonly}
+                                      register={register}
+                                      errors={errors}
+                                      handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+                                      termsWaiver={termsWaiver}
+                                      vendor={selectedVendor}
+                                    />
+                                  </>
+                                ) : (
+                                  <>
+                                    <ChildFormViewStyled
+                                      childInformation={childInformation}
+                                      vendor={selectedVendor}
+                                      ProfileImg={ProfileImg}
+                                      isReadonly={isReadonly}
+                                      handleChangeToEdit={handleChangeToEdit}
+                                      errors={errors}
+                                      register={register}
+                                      handleChildFormDetailsChange={handleChildFormDetailsChange}
+                                      isFormHistory={isFormHistory}
+                                      location_sites={
+                                        vendors && vendors.length > 0 ? vendors[0].location_sites : []
+                                      }
+                                      app_programs={
+                                        vendors && vendors.length > 0 ? vendors[0].app_programs : []
+                                      }
+                                    />
+                                    <hr className="style-eight"></hr>
+                                    <ParentFormViewStyled
+                                      parents={parentsInformation}
+                                      vendor={selectedVendor}
+                                      ProfileImg={ProfileImg}
+                                      handleParentFormDetailsChange={handleParentFormDetailsChange}
+                                      isReadonly={isReadonly}
+                                      isUpdate={true}
+                                      emergencyContacts={emergencyContacts}
+                                      errors={errors}
+                                      selectedApplication={selectedApplication}
+                                      childProfile={childInformation}
+                                    />
+                                    <hr className="style-eight"></hr>
+                                    <TermsWaiverFormViewStyled
+                                      application={selectedApplication}
+                                      isReadonly={isReadonly}
+                                      register={register}
+                                      errors={errors}
+                                      handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+                                      termsWaiver={termsWaiver}
+                                      vendor={selectedVendor}
+                                    />
+                                  </>
+                                )
+                              }
+
+                              {
+                                !isReadonly && (
+                                  <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                                    <button className="save-button" type="Submit">Save</button>
+                                  </div>
+                                )
+                              }
+                            </ApplicationFormStyled>
+                          </>
+                        )
                       )
                     }
                   </div>
-                </Collapsible>
-                {
-                  loading.application ? (
+                )
+              }
+              {
+                view === 'builderForm' && (
+                  loading.updateForm ? (
                     <Loading />
                   ) : (
-                    !tempHideForm && (
-                      <>
-                      <button className="print-button" onClick={handlePrint}>
-                        {" "}
-                        <FontAwesomeIcon icon={faPrint} />
-                      </button>
-                      <ApplicationFormStyled
-                       ref={componentRef}
-                        autoComplete="off"
-                        onSubmit={handleSubmit(onSubmitSaveApplication)}
-                      >
-                        {
-                          selectedApplication &&
-                          selectedApplication.is_daycare ? (
-                            <>
-                              <DaycareChildFormView
-                                childInformation={childInformation}
-                                vendor={selectedVendor}
-                                ProfileImg={ProfileImg}
-                                isReadonly={isReadonly}
-                                handleChangeToEdit={handleChangeToEdit}
-                                errors={errors}
-                                register={register}
-                                handleChildFormDetailsChange={handleChildFormDetailsChange}
-                                isFormHistory={isFormHistory}
+                    <>
+                      <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
+                        <div id="dataTableContainer">
+                          {
+                            (
+                              <DataTable
+                                columns={columnsAppHistory}
+                                data={customApplicationHistory}
+                                pagination
+                                noHeader={true}
+                                striped={true}
+                                customStyles={customStyles}
+                                paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+                                paginationComponentOptions={paginationComponentOptions}
                               />
-                              <hr className="style-eight"></hr>
-                              <DaycareParentFormView
-                                parents={parentsInformation}
-                                vendor={selectedVendor}
-                                ProfileImg={ProfileImg}
-                                handleParentFormDetailsChange={handleParentFormDetailsChange}
-                                isReadonly={isReadonly}
-                                isUpdate={true}
-                                emergencyContacts={emergencyContacts}
-                                selectedApplication={selectedApplication?.child}
-                                childProfile={childInformation?.profile}
-                              />
-                              <hr className="style-eight"></hr>
-                              <RelationshipToChildStyled
-                                selectedApplication={selectedApplication}
-                                handleParentChildRelationship={handleParentChildRelationship}
-                                parents={parentsInformation}
-                                childs={[{...childInformation}]}
-                                errors={errors}
-                                register={register}
-                                isReadonly={isReadonly}
-                                relationships={relationships}
-                                chRelationships={chRelationships}
-                                isReadView={true}
-                              />
-                              <hr className="style-eight"></hr>
-                              <TermsWaiverFormViewStyled
-                                application={selectedApplication}
-                                isReadonly={isReadonly}
-                                register={register}
-                                errors={errors}
-                                handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
-                                termsWaiver={termsWaiver}
-                                vendor={selectedVendor}
-                              />
-                            </>
-                          ) : (
-                            <>
-                            <ChildFormViewStyled
-                              childInformation={childInformation}
-                              vendor={selectedVendor}
-                              ProfileImg={ProfileImg}
-                              isReadonly={isReadonly}
-                              handleChangeToEdit={handleChangeToEdit}
-                              errors={errors}
-                              register={register}
-                              handleChildFormDetailsChange={handleChildFormDetailsChange}
-                              isFormHistory={isFormHistory}
-                              location_sites={
-                                vendors && vendors.length > 0 ? vendors[0].location_sites : []
-                              }
-                              app_programs={
-                                vendors && vendors.length > 0 ? vendors[0].app_programs : []
-                              }
-                            />
-                            <hr className="style-eight"></hr>
-                            <ParentFormViewStyled
-                              parents={parentsInformation}
-                              vendor={selectedVendor}
-                              ProfileImg={ProfileImg}
-                              handleParentFormDetailsChange={handleParentFormDetailsChange}
-                              isReadonly={isReadonly}
-                              isUpdate={true}
-                              emergencyContacts={emergencyContacts}
-                              errors={errors}
-                              selectedApplication={selectedApplication}
-                              childProfile={childInformation}
-                            />
-                            <hr className="style-eight"></hr>
-                            <TermsWaiverFormViewStyled
-                              application={selectedApplication}
-                              isReadonly={isReadonly}
-                              register={register}
-                              errors={errors}
-                              handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
-                              termsWaiver={termsWaiver}
-                              vendor={selectedVendor}
-                            />
-                            </>
-                          )
+                            )
+                          }
+                        </div>
+                      </Collapsible>
+                      <Form
+                        historyList={customApplicationHistory}
+                        key={applicationFormKey}
+                        {...(isFormHistory ? selectedCustomFormHistory : selectedApplication)}
+                        application_date={
+                          isFormHistory
+                            ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at : ""), "LLL dd, yyyy p")}`
+                            : 'Most Up to date Application'
                         }
-
-                        {
-                          !isReadonly && (
-                            <div style={{textAlign: "center", marginBottom: "20px"}}>
-                              <button className="save-button" type="Submit">Save</button>
-                            </div>
-                          )
-                        }
-                      </ApplicationFormStyled>
-                      </>
-                    )
+                        isReadOnly={isReadonly}
+                        isFormHistory={isFormHistory}
+                        onChangeToEdit={handleChangeToEdit}
+                        onGetUpdatedApplication={(form_contents) => setSelectedApplication({
+                          ...selectedApplication,
+                          form_contents
+                        })}
+                        onSubmitApplication={(form_contents) => {
+                          dispatch(requestUpdateSubmittedForm({
+                            updated_by: auth.email,
+                            vendor: selectedApplication.vendor,
+                            form: selectedApplication.form,
+                            app_id: selectedApplication.app_id,
+                            form_contents,
+                            class_teacher: selectedApplication.class_teacher,
+                            color_designation: selectedApplication.color_designation,
+                            verification: selectedApplication.verification,
+                            student_status: selectedApplication.student_status,
+                            notes: selectedApplication.notes
+                          }))
+                        }}
+                        onSelectLatest={() => {
+                          setIsFormHistory(false)
+                          setApplicationFormKey(new Date().toISOString())
+                        }}
+                      />
+                    </>
                   )
-                }
-              </div>
-            )
-          }
-          {
-            view === 'builderForm' && (
-              loading.updateForm ? (
-                <Loading />
-              ) : (
-                <>
-                  <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
-                    <div id="dataTableContainer">
-                      {
-                        (
-                          <DataTable 
-                            columns={columnsAppHistory}
-                            data={customApplicationHistory}
-                            pagination
-                            noHeader={true}
-                            striped={true}
-                            customStyles={customStyles}
-                            paginationRowsPerPageOptions={paginationRowsPerPageOptions}
-                            paginationComponentOptions={paginationComponentOptions}
-                          />
-                        )
-                      }
-                    </div>
-                  </Collapsible>
-                  <Form
-                    historyList={customApplicationHistory}
-                    key={applicationFormKey}
-                    { ...(isFormHistory ? selectedCustomFormHistory : selectedApplication) }
-                    application_date={
-                      isFormHistory
-                        ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")}`
-                        : 'Most Up to date Application'
-                    }
-                    isReadOnly={isReadonly}
-                    isFormHistory={isFormHistory}
-                    onChangeToEdit={handleChangeToEdit}
-                    onGetUpdatedApplication={(form_contents) => setSelectedApplication({
-                      ...selectedApplication,
-                      form_contents
-                    })}
-                    onSubmitApplication={(form_contents) => {
-                      dispatch(requestUpdateSubmittedForm({
-                        updated_by: auth.email,
-                        vendor: selectedApplication.vendor,
-                        form: selectedApplication.form,
-                        app_id: selectedApplication.app_id,
-                        form_contents,
-                        class_teacher: selectedApplication.class_teacher,
-                        color_designation: selectedApplication.color_designation,
-                        verification: selectedApplication.verification,
-                        student_status: selectedApplication.student_status,
-                        notes: selectedApplication.notes
-                      }))
-                    }}
-                    onSelectLatest={() => {
-                      setIsFormHistory(false)
-                      setApplicationFormKey(new Date().toISOString())
-                    }}
-                  />
-                </>
-              )
-            )
-          }
-          </>
-        ) : (
-          <Loading />
-        )
+                )
+              }
+            </>
+          ) : (
+            <Loading />
+          )
       }
     </MyApplicationStyled>
   );
