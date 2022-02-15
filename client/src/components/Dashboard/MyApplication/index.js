@@ -1141,7 +1141,7 @@ export default function index() {
       name: 'Name',
       selector: 'studentName',
       sortable: true,
-      cell: row => <a target="_blank" href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>
+      cell: row => <a href={"menteeprofile/" + row.id}><span>{row.child?.firstname + " " + row.child?.lastname}</span></a>
       // cell: row => {
       //   return  <a href="#" onClick={() => {
       //     const currentParent = userApplications && userApplications[0] && userApplications
