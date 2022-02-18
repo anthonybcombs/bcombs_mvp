@@ -79,9 +79,9 @@ export default function index({
 
   const handleGroupDetailsChange = (id, value) => {
     if (id == "vendors") {
-      let ids = value.map((vendor) => { return {id: vendor.id, is_form: vendor.is_form}});
+      let ids = value.map((vendor) => { return vendor });
 
-      console.log("value", value);
+      console.log("value2222222", value);
       console.log("ids", ids);
       setGroupDetails({
         ...groupDetails,

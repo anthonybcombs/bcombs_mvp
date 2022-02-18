@@ -755,6 +755,30 @@ export default function index({
                 Ethinicity (select all choices that apply)
               </label>
             </div>
+            <input
+              type="checkbox"
+              name="ethnicity_select_all"
+              onChange={e => {
+
+                if (e.target.checked) {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "ethinicity",
+                    ETHINICITY_OPTIONS
+                  );
+                }
+                else {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "ethinicity",
+                    []
+                  );
+                }
+              }}
+
+            /> Select All
             <br />
           </div>
         </div>

@@ -11,9 +11,9 @@ import { uuid } from "uuidv4";
 import { Multiselect } from "multiselect-react-dropdown";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-	faAngleLeft,
-	faAngleRight,
-	faCalendar,
+  faAngleLeft,
+  faAngleRight,
+  faCalendar,
 } from '@fortawesome/free-solid-svg-icons';
 
 import moment from 'moment';
@@ -208,134 +208,134 @@ const ReminderSettingsStyled = styled.div`
 `;
 
 const range = (start, end) => {
-	let arr = [];
+  let arr = [];
 
-	for (let i = start; i <= end; i++) {
-		arr.push(i);
-	}
+  for (let i = start; i <= end; i++) {
+    arr.push(i);
+  }
 
-	return arr;
+  return arr;
 };
 
 const years = range(1900, new Date().getFullYear());
 const months = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 const DateCustomInput = ({ value, onClick, name, className, placeholder, label }) => (
-	<div className="field">
-		<input
-			value={value}
-			onClick={onClick}
-			name={name}
-			className={className}
-			placeholder={DISPLAY_DATE_FORMAT}
-			readOnly={true}
-			id={`attendance_date`}
-		/>
-		<label className="field-label" for={`attendance_date`}>
-		  {label}
-		</label>
-		<FontAwesomeIcon icon={faCalendar} className="calendar-icon" />
-	</div>
+  <div className="field">
+    <input
+      value={value}
+      onClick={onClick}
+      name={name}
+      className={className}
+      placeholder={DISPLAY_DATE_FORMAT}
+      readOnly={true}
+      id={`attendance_date`}
+    />
+    <label className="field-label" for={`attendance_date`}>
+      {label}
+    </label>
+    <FontAwesomeIcon icon={faCalendar} className="calendar-icon" />
+  </div>
 );
 
-const CustomRangePicker = ({ 
-	onChange, 
-	placeholder, 
-	selected, 
-	customInput = null ,
-	highlightDates = [],
-	minDate = null,
-	maxDate = null
-	}) => {
+const CustomRangePicker = ({
+  onChange,
+  placeholder,
+  selected,
+  customInput = null,
+  highlightDates = [],
+  minDate = null,
+  maxDate = null
+}) => {
 
-	return (
-		<DatePicker
-			minDate={minDate ? minDate : null}
-			maxDate={maxDate ? maxDate : null}
-			dateFormat={DISPLAY_DATE_FORMAT}
-			readOnly={false}
-			style={{ marginTop: 24 }}
-			highlightDates={highlightDates.length ? highlightDates.map(date => {
-				return typeof date === 'string' ? parseDate(date) : date
-			}) : []}
-			renderCustomHeader={({
-				date,
-				changeYear,
-				changeMonth,
-				decreaseMonth,
-				increaseMonth,
-				prevMonthButtonDisabled,
-				nextMonthButtonDisabled,
-			}) => (
-				<div
-					style={{
-						margin: 0,
-						display:'none',
-						display: 'flex',
-						alignCenter: 'center',
-						justifyContent: 'center',
-						background: '#f36e22',
-						padding: '5px 3px',
-					}}>
-					<button
-						className="datepicker-btn"
-						onClick={e => {
-							e.preventDefault();
-						}}>
-						<FontAwesomeIcon icon={faAngleLeft} onClick={decreaseMonth} disabled={prevMonthButtonDisabled} />
-					</button>
-					<select
-						value={new Date(date).getFullYear()}
-						onChange={({ target: { value } }) => {
-							if (value) {
-								return changeYear(value);
-							}
-						}}>
-						{years.map(option => (
-							<option key={option} value={option}>
-								{option}
-							</option>
-						))}
-					</select>
+  return (
+    <DatePicker
+      minDate={minDate ? minDate : null}
+      maxDate={maxDate ? maxDate : null}
+      dateFormat={DISPLAY_DATE_FORMAT}
+      readOnly={false}
+      style={{ marginTop: 24 }}
+      highlightDates={highlightDates.length ? highlightDates.map(date => {
+        return typeof date === 'string' ? parseDate(date) : date
+      }) : []}
+      renderCustomHeader={({
+        date,
+        changeYear,
+        changeMonth,
+        decreaseMonth,
+        increaseMonth,
+        prevMonthButtonDisabled,
+        nextMonthButtonDisabled,
+      }) => (
+        <div
+          style={{
+            margin: 0,
+            display: 'none',
+            display: 'flex',
+            alignCenter: 'center',
+            justifyContent: 'center',
+            background: '#f36e22',
+            padding: '5px 3px',
+          }}>
+          <button
+            className="datepicker-btn"
+            onClick={e => {
+              e.preventDefault();
+            }}>
+            <FontAwesomeIcon icon={faAngleLeft} onClick={decreaseMonth} disabled={prevMonthButtonDisabled} />
+          </button>
+          <select
+            value={new Date(date).getFullYear()}
+            onChange={({ target: { value } }) => {
+              if (value) {
+                return changeYear(value);
+              }
+            }}>
+            {years.map(option => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
 
-					<select
-						value={months[date.getMonth()]}
-						onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}>
-						{months.map(option => (
-							<option key={option} value={option}>
-								{option}
-							</option>
-						))}
-					</select>
-					<button
-						className="datepicker-btn"
-						onClick={e => {
-							e.preventDefault();
-						}}>
-						<FontAwesomeIcon icon={faAngleRight} onClick={increaseMonth} disabled={nextMonthButtonDisabled} />
-					</button>
-				</div>
-			)}
-			disabled={false}
-			onChange={onChange}
-			name={'attendance_date'}
-			customInput={customInput ? customInput : <DateCustomInput label={placeholder} className={'field-input date-field'} />}
-			selected={selected}
-		/>
-	);
+          <select
+            value={months[date.getMonth()]}
+            onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}>
+            {months.map(option => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          <button
+            className="datepicker-btn"
+            onClick={e => {
+              e.preventDefault();
+            }}>
+            <FontAwesomeIcon icon={faAngleRight} onClick={increaseMonth} disabled={nextMonthButtonDisabled} />
+          </button>
+        </div>
+      )}
+      disabled={false}
+      onChange={onChange}
+      name={'attendance_date'}
+      customInput={customInput ? customInput : <DateCustomInput label={placeholder} className={'field-input date-field'} />}
+      selected={selected}
+    />
+  );
 };
 
 const DATE_FORMAT = "yyyy-MM-dd";
@@ -343,8 +343,8 @@ const DATE_KEY_FORMAT = 'MM_dd_yyyy';
 //const DATE_KEY_FORMAT = 'yyyy-MM-dd';
 const DISPLAY_DATE_FORMAT = 'MM/dd/yyyy';
 
-export default function index({ 
-  vendor, 
+export default function index({
+  vendor,
   appGroups = [],
   formList = [],
   reminderList = [],
@@ -725,7 +725,7 @@ export default function index({
 
     let payload;
 
-    if(selectedForm == 'default') {
+    if (selectedForm == 'default') {
       payload = {
         date: format(
           new Date(selectedDate),
@@ -775,9 +775,9 @@ export default function index({
       return form.form_id === formId;
     })[0];
 
-    let formData = selectedForm?.form_contents?.formData?.length > 0 ? 
-      selectedForm.form_contents.formData 
-      : 
+    let formData = selectedForm?.form_contents?.formData?.length > 0 ?
+      selectedForm.form_contents.formData
+      :
       [];
 
     formData = formData.filter(x => {
@@ -789,7 +789,7 @@ export default function index({
     let formattedFields = [];
 
     formData.map((fd) => {
-      if(fd?.fields.length > 0 ) {
+      if (fd?.fields.length > 0) {
         const fields = fd.fields;
         fields.map((f) => {
           formattedFields.push({
@@ -835,8 +835,8 @@ export default function index({
                 onChange={({ target }) => {
                   setSelectedForm(target.value);
                   console.log("target.innerText", target.innerText);
-                  
-                  if(target.value === 'default') {                    
+
+                  if (target.value === 'default') {
                     setChildFieldList([...cFields]);
                     setParentFieldList([...pFields]);
 
@@ -907,6 +907,22 @@ export default function index({
                     Child Fields
                   </label>
                 </div>
+                <div style={{ paddingLeft: 10 }}>
+                  <input
+                    type="checkbox"
+                    name="child_field_select_all"
+                    onChange={e => {
+
+                      if (e.target.checked) {
+                        setSelectedFields1(childFieldList)
+                      }
+                      else {
+                        setSelectedFields1([])
+                      }
+                    }}
+
+                  /> Select All
+                </div>
               </div>
               <div className="form-group">
                 <div className="field">
@@ -930,6 +946,22 @@ export default function index({
                   <label className="field-label">
                     Parent Fields
                   </label>
+                </div>
+                <div style={{ paddingLeft: 10 }}>
+                  <input
+                    type="checkbox"
+                    name="parent_field_select_all"
+                    onChange={e => {
+
+                      if (e.target.checked) {
+                        setSelectedFields2(parentFieldList)
+                      }
+                      else {
+                        setSelectedFields2([])
+                      }
+                    }}
+
+                  /> Select All
                 </div>
               </div>
             </div>
@@ -958,32 +990,65 @@ export default function index({
                     Custom Fields 1
                   </label>
                 </div>
+                <div style={{ paddingLeft: 10 }}>
+                  <input
+                    type="checkbox"
+                    name="custom_field_select_all"
+                    onChange={e => {
+
+                      if (e.target.checked) {
+                        setSelectedFields1(childFieldList)
+                      }
+                      else {
+                        setSelectedFields1([])
+                      }
+                    }}
+
+                  /> Select All
+                </div>
               </div>
             </div>
           )
         }
         <div className="form-group">
-            <div className="field">
-              <Multiselect
-                className="field-input"
-                options={fAppGroups}
-                placeholder="Choose Multiple"
-                displayValue="name"
-                closeIcon="cancel"
-                closeOnSelect={false}
-                showCheckbox={true}
-                onSelect={selectedList => {
-                  setSelectedGroups(selectedList);
-                }}
-                onRemove={selectedList => {
-                  setSelectedGroups(selectedList);
-                }}
-              />
-              <label className="field-label">
-                Group
-              </label>
-            </div>
+          <div className="field">
+            <Multiselect
+              className="field-input"
+              options={fAppGroups}
+              placeholder="Choose Multiple"
+              displayValue="name"
+              closeIcon="cancel"
+              closeOnSelect={false}
+              showCheckbox={true}
+              selectedValues={selectedGroups}
+              onSelect={selectedList => {
+                setSelectedGroups(selectedList);
+              }}
+              onRemove={selectedList => {
+                setSelectedGroups(selectedList);
+              }}
+            />
+            <label className="field-label">
+              Group
+            </label>
           </div>
+          <div style={{ paddingLeft: 10 }}>
+            <input
+              type="checkbox"
+              name="group_field_select_all"
+              onChange={e => {
+                console.log('fAppGroups',fAppGroups)
+                if (e.target.checked) {
+                  setSelectedGroups(fAppGroups);
+                }
+                else {
+                  setSelectedGroups([])
+                }
+              }}
+
+            /> Select All
+          </div>
+        </div>
         <div className="form-fields-list">
           {
             showSucessMessage ? (
@@ -1001,9 +1066,9 @@ export default function index({
           }
 
           <div className="formsettings-btn-container">
-            <button 
+            <button
               type="submit"
-              onClick={handleSave}  
+              onClick={handleSave}
             >Save</button>
           </div>
         </div>

@@ -814,6 +814,30 @@ export default function index({
                 Ethinicity (select all choices that apply)
               </label>
             </div>
+            <input
+              type="checkbox"
+              name="ethnicity_select_all"
+              onChange={e => {
+
+                if (e.target.checked) {
+                  handleChildFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "ethinicity",
+                    ETHINICITY_OPTIONS
+                  );
+                }
+                else {
+                  handleChildFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "ethinicity",
+                    []
+                  );
+                }
+              }}
+
+            /> Select All
             <br />
           </div>
         </div>
@@ -1644,6 +1668,30 @@ export default function index({
                 Program (select all choices that apply)
               </label>
             </div>
+            <input
+              type="checkbox"
+              name="programm_select_all"
+              onChange={e => {
+
+                if (e.target.checked) {
+                  handleChildFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "program",
+                    PROGRAMS_OPTIONS
+                  );
+                }
+                else {
+                  handleChildFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "program",
+                    []
+                  );
+                }
+              }}
+
+            /> Select All
           </div>
           <div className="form-group">
             <div className="field customMultiselect">
@@ -1707,6 +1755,29 @@ export default function index({
                 <span className="required">*</span> Child lives with
               </label>
             </div>
+            <input
+              type="checkbox"
+              name="child_lives_with_select_all"
+              onChange={e => {
+                if (e.target.checked) {
+                  handleChildFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "child_lives_with",
+                    CHILD_LIVES_OPTION
+                  );
+                }
+                else {
+                  handleChildFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "child_lives_with",
+                    []
+                  );
+                }
+              }}
+
+            /> Select All
             <ErrorMessage
               field={errors["ch_lives_with" + (counter - 1)]}
               errorType="required"
