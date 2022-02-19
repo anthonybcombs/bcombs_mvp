@@ -453,6 +453,23 @@ export default function ContactForm({
               />
             </div>
           </div>
+          <div style={{ display: 'block' }}>
+            <input
+              type="checkbox"
+              name="forms_select_all"
+              onChange={e => {
+                console.log('groupOptions', groupOptions)
+                if (e.target.checked) {
+                  handleContactDetailsChange("selectedGroups", groupOptions);
+                }
+                else {
+                  handleContactDetailsChange("selectedGroups", []);
+                }
+              }}
+
+            /> Select All
+          </div>
+
           {/* 
           <CustomMultiSelectOptions
             className="field-input"

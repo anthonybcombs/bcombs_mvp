@@ -120,13 +120,13 @@ const ExportFilter = ({
     { name: "Waiting List", value: "waiting_list" },
     { name: "No longer a Student", value: "no_longer_student" },
     { name: "Missed opportunity", value: "missed_opportunity" },
-    { name: "Pending Resubmission", value: "pending_resubmission"}
+    { name: "Pending Resubmission", value: "pending_resubmission" }
   ];
 
   const VERIFICATION_OPTIONS = [
-    { name: "Waiting for Verification", value: "waiting_for_verification"},
+    { name: "Waiting for Verification", value: "waiting_for_verification" },
     { name: "Verified", value: "verified" },
-    { name: "Rejected", value: "rejected"}
+    { name: "Rejected", value: "rejected" }
   ];
 
   const COLOR_OPTIONS = ["Blue", "Red", "Green"];
@@ -169,7 +169,7 @@ const ExportFilter = ({
     if (appGroupText) {
       group_match = false;
 
-      if(appGroupText == item.class_teacher) {
+      if (appGroupText == item.class_teacher) {
         group_match = true;
       }
       // for (const group of appGroups) {
@@ -235,7 +235,7 @@ const ExportFilter = ({
   const getVerificationStatus = (verification) => {
     let verificationVal = ""
     VERIFICATION_OPTIONS.map((item) => {
-      if(item.value == verification) {
+      if (item.value == verification) {
         verificationVal = item.name;
         return;
       }
@@ -248,7 +248,7 @@ const ExportFilter = ({
     let classTeacher = "";
 
     appGroups.map((ap) => {
-      if(ap.app_grp_id == id) {
+      if (ap.app_grp_id == id) {
         classTeacher = ap.name;
         return;
       }
@@ -313,48 +313,48 @@ const ExportFilter = ({
 
   let exportFilename;
 
-  if(isCustomForm) {
+  if (isCustomForm) {
     console.log("this is my custom form");
 
-    for(const application of filterApplications) {
+    for (const application of filterApplications) {
       let formattedApplication = {};
 
-      for(const key1 of Object.keys(application)) {
-        if(key1 === "form_contents") {
-          if(typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
+      for (const key1 of Object.keys(application)) {
+        if (key1 === "form_contents") {
+          if (typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
             const formContents = application.form_contents;
-            
+
             exportFilename = formContents.formTitle;
 
             const formData = formContents?.formData?.length > 0 ? formContents.formData : [];
 
-            for(const [i, k] of formData.entries()) {
-              if(k?.type === "sectionBreak") { continue }
+            for (const [i, k] of formData.entries()) {
+              if (k?.type === "sectionBreak") { continue }
               else {
                 console.log("kkkk", k);
                 const fields = k?.fields?.length > 0 ? k.fields : [];
 
                 let fieldValue = ""
-                for(const [x, field] of fields.entries() ) {
+                for (const [x, field] of fields.entries()) {
                   fieldValue = field.value;
 
-                  if(field.label == 'Password' || field.label == 'Confirm Password') {continue;}
+                  if (field.label == 'Password' || field.label == 'Confirm Password') { continue; }
 
                   fieldValue = fieldValue ? fieldValue.trim() : '';
                   const fieldLabel = field.label ? field.label.toLowerCase() : '';
                   console.log("fieldLabel", fieldLabel);
-                  if(fieldLabel) {
-                    formattedApplication = {...formattedApplication, [fieldLabel]: fieldValue}
+                  if (fieldLabel) {
+                    formattedApplication = { ...formattedApplication, [fieldLabel]: fieldValue }
                   } else {
-                    formattedApplication = {...formattedApplication, [k.label]: fieldValue}
+                    formattedApplication = { ...formattedApplication, [k.label]: fieldValue }
                   }
-                  
+
                 }
               }
             }
           }
         } else {
-          formattedApplication = {...formattedApplication, [key1]: application[key1] ? application[key1] : "" } 
+          formattedApplication = { ...formattedApplication, [key1]: application[key1] ? application[key1] : "" }
         }
       }
 
@@ -362,7 +362,7 @@ const ExportFilter = ({
       delete formattedApplication.form;
       formattedApplication.vendor = vendor?.name ? vendor.name : '';
       formattedApplication.verification = getVerificationStatus(formattedApplication.verification);
-      formattedApplication.application_date = format(new Date(formattedApplication.application_date), DATE_FORMAT) 
+      formattedApplication.application_date = format(new Date(formattedApplication.application_date), DATE_FORMAT)
       formattedApplication.class_teacher = getClassTeacher(formattedApplication.class_teacher);
       formattedApplication.student_status = getApplicationStatus(formattedApplication.student_status);
       console.log("formattedApplication", formattedApplication);
@@ -383,43 +383,43 @@ const ExportFilter = ({
     }
 
   } else {
-    for(const application of filterApplications) {
+    for (const application of filterApplications) {
       let formattedApplication = {};
 
-      for(const key1 of Object.keys(application)) {
-        if(key1 == "vendorPrograms" || 
-          key1 == "vendorLocationSites" || 
-          key1 == "app_id" || 
-          key1 == "is_daycare") {continue;};
+      for (const key1 of Object.keys(application)) {
+        if (key1 == "vendorPrograms" ||
+          key1 == "vendorLocationSites" ||
+          key1 == "app_id" ||
+          key1 == "is_daycare") { continue; };
 
-        if(typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
-          if(Array.isArray(application[key1])) {
+        if (typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
+          if (Array.isArray(application[key1])) {
             // parent
             console.log("key1", key1);
-            if(key1 == 'parents') {
+            if (key1 == 'parents') {
               const level1Arr = application[key1];
 
-              for(const [i, arrObj] of level1Arr.entries()) {
+              for (const [i, arrObj] of level1Arr.entries()) {
                 delete arrObj.password;
                 delete arrObj.emergency_contacts;
                 delete arrObj.parent_id;
-  
-                for(const key3 of Object.keys(arrObj)) {
-                  if(key3 != "password" || key3 !== 'parent_id') {
-                    if(key3 == 'birthdate') {
+
+                for (const key3 of Object.keys(arrObj)) {
+                  if (key3 != "password" || key3 !== 'parent_id') {
+                    if (key3 == 'birthdate') {
                       const newDate = arrObj[key3] ? format(new Date(arrObj[key3]), DATE_FORMAT) : "";
-                      formattedApplication = {...formattedApplication, ["(Parent " + (i+1) +") "+ exportHeaders.parent[key3]]: newDate}
+                      formattedApplication = { ...formattedApplication, ["(Parent " + (i + 1) + ") " + exportHeaders.parent[key3]]: newDate }
                     } else {
-                      formattedApplication = {...formattedApplication, ["(Parent " + (i+1) +") "+ exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3]: ""}
+                      formattedApplication = { ...formattedApplication, ["(Parent " + (i + 1) + ") " + exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3] : "" }
                     }
-                    
+
                   }
                 }
               }
-            } else if(key1 == 'relationships') {
+            } else if (key1 == 'relationships') {
 
             }
-    
+
           } else {
             // child 
             let level1 = application[key1];
@@ -427,7 +427,7 @@ const ExportFilter = ({
             console.log("export application", application);
 
             delete level1.ch_id;
-            if(!!application.is_daycare) {
+            if (!!application.is_daycare) {
               console.log("application is daycare");
               delete level1.phone_type;
               delete level1.phone_number;
@@ -489,64 +489,64 @@ const ExportFilter = ({
               delete level1.current_classroom;
             }
 
-            for(const key2 of Object.keys(level1)) {
-              if(key2 == 'ch_id') { continue; }
-              if(key2 == 'birthdate') {
+            for (const key2 of Object.keys(level1)) {
+              if (key2 == 'ch_id') { continue; }
+              if (key2 == 'birthdate') {
                 const newDate = level1[key2] ? format(new Date(level1[key2]), DATE_FORMAT) : "";
-                formattedApplication = {...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['birthdate'] : exportHeaders.child.main['birthdate'])]: newDate }
-              } else if(key2 == 'has_suspended') {
+                formattedApplication = { ...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['birthdate'] : exportHeaders.child.main['birthdate'])]: newDate }
+              } else if (key2 == 'has_suspended') {
                 const val = level1[key2] == 1 ? 'Yes' : level1[key2] == 0 ? 'No' : '';
-                formattedApplication = {...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['has_suspended'] : exportHeaders.child.main['has_suspended'])]: val}
+                formattedApplication = { ...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['has_suspended'] : exportHeaders.child.main['has_suspended'])]: val }
               } else {
-                if(!!application.is_daycare) {
-                  formattedApplication = {...formattedApplication, ['(Child) ' + exportHeaders.child.daycare[key2]]: level1[key2] ? level1[key2] : ""}
+                if (!!application.is_daycare) {
+                  formattedApplication = { ...formattedApplication, ['(Child) ' + exportHeaders.child.daycare[key2]]: level1[key2] ? level1[key2] : "" }
                 } else {
-                  formattedApplication = {...formattedApplication, ['(Child) ' + exportHeaders.child.main[key2]]: level1[key2] ? level1[key2] : ""}
+                  formattedApplication = { ...formattedApplication, ['(Child) ' + exportHeaders.child.main[key2]]: level1[key2] ? level1[key2] : "" }
                 }
-                
+
               }
             }
           }
         } else {
 
-          if(key1 == "emergency_contacts") {
+          if (key1 == "emergency_contacts") {
             try {
               const ecs = JSON.parse(application[key1]);
-              if(Array.isArray(ecs)) {
-                for(const [i, ec] of ecs.entries()) {
-                  for(const key4 of Object.keys(ec)) {
-                    formattedApplication = {...formattedApplication, ['Emergency Contacts' + "" + (i+1) + " " + exportHeaders.emergency_contacts[key4]]: ec[key4] ? ec[key4] : "" }
+              if (Array.isArray(ecs)) {
+                for (const [i, ec] of ecs.entries()) {
+                  for (const key4 of Object.keys(ec)) {
+                    formattedApplication = { ...formattedApplication, ['Emergency Contacts' + "" + (i + 1) + " " + exportHeaders.emergency_contacts[key4]]: ec[key4] ? ec[key4] : "" }
                   }
                 }
               } else {
-                formattedApplication = {...formattedApplication, [key1]: ""}
+                formattedApplication = { ...formattedApplication, [key1]: "" }
               }
             } catch (e) {
-              formattedApplication = {...formattedApplication, [key1]: ""}
+              formattedApplication = { ...formattedApplication, [key1]: "" }
             }
           } else {
-            if(key1 == 'vendor') {
-              formattedApplication = {...formattedApplication, [exportHeaders['vendor']]: vendor?.name ? vendor.name: ""}
-            } else if(key1 == 'application_date' || 
-              key1 == 'section1_date_signed' || 
-              key1 == 'section2_date_signed' || 
-              key1 == 'section3_date_signed' ) {
-                const newDate = application[key1] ? format(new Date(application[key1]), DATE_FORMAT) : "";
-                formattedApplication = {...formattedApplication, [exportHeaders[key1]]: newDate}
+            if (key1 == 'vendor') {
+              formattedApplication = { ...formattedApplication, [exportHeaders['vendor']]: vendor?.name ? vendor.name : "" }
+            } else if (key1 == 'application_date' ||
+              key1 == 'section1_date_signed' ||
+              key1 == 'section2_date_signed' ||
+              key1 == 'section3_date_signed') {
+              const newDate = application[key1] ? format(new Date(application[key1]), DATE_FORMAT) : "";
+              formattedApplication = { ...formattedApplication, [exportHeaders[key1]]: newDate }
             } else {
               let val;
-              if(key1 == 'student_status') {
+              if (key1 == 'student_status') {
                 val = getApplicationStatus(application[key1]);
-              } else if(key1 == 'verification') { 
+              } else if (key1 == 'verification') {
                 val = getVerificationStatus(application[key1]);
-              } else if(key1 == 'class_teacher') {
+              } else if (key1 == 'class_teacher') {
                 val = getClassTeacher(application[key1]);
               } else {
                 val = application[key1];
               }
-              formattedApplication = {...formattedApplication, [exportHeaders[key1]]: val ? val : ""}
+              formattedApplication = { ...formattedApplication, [exportHeaders[key1]]: val ? val : "" }
             }
-            
+
           }
         }
       }
@@ -576,23 +576,23 @@ const ExportFilter = ({
     app_programs.length > 0
       ? app_programs
       : [
-          { id: 1, name: "Saturday Academy", label: "Satuday Academy" },
-          { id: 2, name: "In school", label: "In school" }
-        ];
+        { id: 1, name: "Saturday Academy", label: "Satuday Academy" },
+        { id: 2, name: "In school", label: "In school" }
+      ];
 
   const LOCATION_SITE_OPTIONS =
     location_sites.length > 0
       ? location_sites
       : [
-          { name: "Raleigh", value: "Raleigh" },
-          { name: "Durham", value: "Durham" }
-        ];
+        { name: "Raleigh", value: "Raleigh" },
+        { name: "Durham", value: "Durham" }
+      ];
 
   return (
     <ExportFilterModal>
       <div className="modal">
         <div className="modal-content">
-          
+
           <div className="modal-header">
             <h2>Export Applications</h2>
             <span onClick={handleExit} className="close">
@@ -666,6 +666,7 @@ const ExportFilter = ({
                 closeOnSelect={true}
                 showCheckbox={true}
                 placeholder="Choose Programs"
+                selectedValues={appPrograms}
                 onSelect={selectedList => {
                   console.log("selectedList add", selectedList);
                   setAppPrograms([...selectedList]);
@@ -675,6 +676,20 @@ const ExportFilter = ({
                   setAppPrograms([...selectedList]);
                 }}
               />
+              <div style={{ display: 'block' }}>
+                <input
+                  type="checkbox"
+                  name="programs_select_all"
+                  onChange={e => {
+                    if (e.target.checked) {
+                      setAppPrograms([...PROGRAMS_OPTIONS]);
+                    }
+                    else {
+                      setAppPrograms([]);
+                    }
+                  }}
+                /> Select All
+              </div>
               <Multiselect
                 autcomplete="false"
                 className="field-input"
@@ -685,6 +700,7 @@ const ExportFilter = ({
                 closeOnSelect={false}
                 showCheckbox={true}
                 placeholder="Choose Location Sites"
+                selectedValues={locationSites}
                 onSelect={selectedList => {
                   console.log("selectedList location add", selectedList);
                   setLocationSites([...selectedList]);
@@ -694,6 +710,20 @@ const ExportFilter = ({
                   setLocationSites([...selectedList]);
                 }}
               />
+                <div style={{ display: 'block' }}>
+                <input
+                  type="checkbox"
+                  name="location_site_select_all"
+                  onChange={e => {
+                    if (e.target.checked) {
+                      setLocationSites([...LOCATION_SITE_OPTIONS]);
+                    }
+                    else {
+                      setLocationSites([]);
+                    }
+                  }}
+                /> Select All
+              </div>
             </div>
             <CSVLink
               id="filterExportButton"
