@@ -6,13 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Collapsible from "react-collapsible";
 import DataTable from 'react-data-table-component';
 
-import { 
-  requestVendor, 
+import {
+  requestVendor,
   requestVendorAdmins,
   requestAddAdmin,
   requestDeleteAdmins,
-  requestUpdateAdmin, 
-  addAdmin} from "../../../redux/actions/Vendors";
+  requestUpdateAdmin,
+  addAdmin
+} from "../../../redux/actions/Vendors";
 
 import {
   faTrash
@@ -144,8 +145,8 @@ const AdminStyled = styled.div`
 export default function index() {
 
   const { auth, vendors, loading, admins } = useSelector(
-    ({auth, vendors, loading, admins }) => {
-      return {auth, vendors, loading, admins };
+    ({ auth, vendors, loading, admins }) => {
+      return { auth, vendors, loading, admins };
     }
   );
 
@@ -200,31 +201,31 @@ export default function index() {
       console.log('defaultVendor', defaultVendor);
       let defaultForm = ""
 
-      if(defaultVendor.forms && 
-        defaultVendor.forms.length > 0 ) {
-          defaultForm = defaultVendor.forms[0];
-          setFormOptions(defaultVendor.forms);
-        }
+      if (defaultVendor.forms &&
+        defaultVendor.forms.length > 0) {
+        defaultForm = defaultVendor.forms[0];
+        setFormOptions(defaultVendor.forms);
+      }
 
       setAddAdminFields({
         name: '',
         email: '',
         vendor: defaultVendor.id,
-        forms: [{...defaultForm}]
+        forms: [{ ...defaultForm }]
       })
 
-      
+
     }
   }, [vendors]);
 
 
   useEffect(() => {
 
-    if(admins && admins.length > 0) {
+    if (admins && admins.length > 0) {
 
       let tempAdmins = admins.map(admin => {
         admin.forms = admins.map((item) => {
-          if(item.email == admin.email && 
+          if (item.email == admin.email &&
             item.vendorName === admin.vendorName) {
             return {
               form: item.form,
@@ -267,20 +268,20 @@ export default function index() {
   //   ))
   // }
 
-  const [ currentAdmins, setCurrentAdmins] = useState([])
+  const [currentAdmins, setCurrentAdmins] = useState([])
 
-  const [ addAdminFields, setAddAdminFields] 
-    = useState({ name: "", email: "", vendor: "", forms: []})
+  const [addAdminFields, setAddAdminFields]
+    = useState({ name: "", email: "", vendor: "", forms: [] })
 
-  const [ vendorOptions, setVendorOptions ] = useState([]);
+  const [vendorOptions, setVendorOptions] = useState([]);
 
-  const [ formOptions, setFormOptions ] = useState([]);
+  const [formOptions, setFormOptions] = useState([]);
 
-  const [ isVendorEmpty, setIsVendorEmpty ] = useState();
+  const [isVendorEmpty, setIsVendorEmpty] = useState();
 
-  const [ selectedAdmin, setSelectedAdmin ] = useState({});
+  const [selectedAdmin, setSelectedAdmin] = useState({});
 
-  const [ isUpdate, setIsUpdate ] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -288,8 +289,8 @@ export default function index() {
 
     console.log(id, value);
     console.log("addAdminFields", addAdminFields);
-    if(id == 'vendor') {
-     
+    if (id == 'vendor') {
+
       const adminFields = {
         name: addAdminFields.name,
         email: addAdminFields.email,
@@ -299,23 +300,23 @@ export default function index() {
 
       console.log("Hi Im here");
       console.log(adminFields);
-      setAddAdminFields({...adminFields});
+      setAddAdminFields({ ...adminFields });
     } else {
       setAddAdminFields({ ...addAdminFields, [id]: value });
     }
-    
+
   }
 
   const onSubmitAddAdmin = () => {
     console.log("addAdminFields", addAdminFields);
 
-    if(addAdminFields && 
+    if (addAdminFields &&
       addAdminFields.forms &&
       addAdminFields.forms.length > 0) {
 
-        let payload;
+      let payload;
 
-      if(isUpdate) {
+      if (isUpdate) {
 
         console.log('addAdminFields', addAdminFields);
 
@@ -329,7 +330,7 @@ export default function index() {
         });
 
         //payload.vendors = payload.vendors.map(vendor => vendor.id);
-        
+
         payload.currentUser = auth.user_id;
         payload.user = selectedAdmin.user;
 
@@ -361,14 +362,14 @@ export default function index() {
         });
 
         payload.currentUser = auth.user_id;
-  
+
         console.log("add admin payload", payload);
-  
+
         dispatch(requestAddAdmin(payload));
       }
 
       setIsUpdate(false);
-      setAddAdminFields({ name: "", email: "", vendor: "", forms: []});
+      setAddAdminFields({ name: "", email: "", vendor: "", forms: [] });
       setIsVendorEmpty(false);
     } else {
       setIsVendorEmpty(true);
@@ -389,7 +390,7 @@ export default function index() {
 
     const vendorForms = selectedVendor?.forms ? selectedVendor.forms : []
 
-    console.log('selectedVendor',selectedVendor);
+    console.log('selectedVendor', selectedVendor);
 
     let sAdminForms = sAdmin.forms;
 
@@ -406,16 +407,16 @@ export default function index() {
     });
 
     console.log('selectedForms', selectedForms);
-    
+
     setFormOptions([...vendorForms]);
-    setAddAdminFields({name: sAdmin.name, email: sAdmin.email, forms: selectedForms, vendor: sAdmin.vendor});
+    setAddAdminFields({ name: sAdmin.name, email: sAdmin.email, forms: selectedForms, vendor: sAdmin.vendor });
     setIsUpdate(true);
   }
 
   const handleDeleteBulkAdmin = () => {
     console.log("selectedRows", selectedRows);
 
-    if(selectedRows.length > 0) {
+    if (selectedRows.length > 0) {
       let payload = selectedRows.map((item) => {
         return {
           user: item.user,
@@ -445,7 +446,7 @@ export default function index() {
 
     let formString = "";
     forms.map((i) => {
-      if(i?.form) {
+      if (i?.form) {
         formString += `${i.formTitle},`;
       } else {
         formString += "Mentoring Applications,";
@@ -459,7 +460,7 @@ export default function index() {
       name: 'Name',
       selector: 'name',
       sortable: true,
-      cell: row => <a href="#" onClick={(e) => {handleSelectedAdmin(e, row)}}>{row.name}</a>
+      cell: row => <a href="#" onClick={(e) => { handleSelectedAdmin(e, row) }}>{row.name}</a>
     },
     {
       name: 'Email',
@@ -483,10 +484,10 @@ export default function index() {
 
   const paginationRowsPerPageOptions = [10, 25, 50, 100];
   const paginationComponentOptions = {
-    rowsPerPageText: 'Rows per page:', 
-    rangeSeparatorText: 'of', 
+    rowsPerPageText: 'Rows per page:',
+    rangeSeparatorText: 'of',
     noRowsPerPage: false,
-    selectAllRowsItem: true, 
+    selectAllRowsItem: true,
     selectAllRowsItemText: 'All'
   }
 
@@ -537,9 +538,9 @@ export default function index() {
           Manage Admin
         </h2>
       </div>
-      <div style={{backgroundColor: "#ffffff"}}>
+      <div style={{ backgroundColor: "#ffffff" }}>
         <div className="add-admin-header">
-          <div style={{textAlign: "center"}}>              
+          <div style={{ textAlign: "center" }}>
             <span>Add Sub-Admin</span>
           </div>
         </div>
@@ -556,16 +557,16 @@ export default function index() {
                 <input
                   type="text"
                   className={
-                    errors && 
-                    errors.adminname && 
-                    errors.adminname.type == "required" ? "form-control error" : "form-control"
+                    errors &&
+                      errors.adminname &&
+                      errors.adminname.type == "required" ? "form-control error" : "form-control"
                   }
                   name="adminname"
                   onChange={({ target }) => {
                     handleAddAdminChange("name", target.value);
-                  }} 
+                  }}
                   value={addAdminFields.name}
-                  ref={register({required: true})}
+                  ref={register({ required: true })}
                 />
               </div>
             </div>
@@ -575,9 +576,9 @@ export default function index() {
                 <input
                   type="text"
                   className={
-                    errors && 
-                    errors.adminemail && 
-                    (errors.adminemail.type == "pattern" || errors.adminemail.type == "required") ? "form-control error" : "form-control"
+                    errors &&
+                      errors.adminemail &&
+                      (errors.adminemail.type == "pattern" || errors.adminemail.type == "required") ? "form-control error" : "form-control"
                   }
                   name="adminemail"
                   onChange={({ target }) => {
@@ -601,9 +602,9 @@ export default function index() {
                 type="text"
                 name="adminvendor"
                 className={
-                  errors && 
-                  errors.adminemail && 
-                  (errors.adminemail.type == "pattern" || errors.adminemail.type == "required") ? "form-control error" : "form-control"
+                  errors &&
+                    errors.adminemail &&
+                    (errors.adminemail.type == "pattern" || errors.adminemail.type == "required") ? "form-control error" : "form-control"
                 }
                 onChange={({ target }) => {
 
@@ -614,11 +615,11 @@ export default function index() {
                   selectedVendor = selectedVendor.length > 0 ? selectedVendor[0] : {};
 
                   setFormOptions(selectedVendor?.forms);
-                  
+
                   handleAddAdminChange("vendor", target.value);
-                  
+
                 }}
-                ref={register({required: true})}
+                ref={register({ required: true })}
                 value={addAdminFields.vendor}
               >
                 <option value="">Select</option>
@@ -632,6 +633,7 @@ export default function index() {
               </select>
             </div>
             <div>
+              
               <label className="control-label">Forms</label>
               <Multiselect
                 id={"vendors"}
@@ -640,12 +642,12 @@ export default function index() {
                 options={formOptions}
                 hasSelectAll={false}
                 onSelect={selectedList => {
-                  if(selectedList.length > 0) setIsVendorEmpty(false);
+                  if (selectedList.length > 0) setIsVendorEmpty(false);
 
                   handleAddAdminChange("forms", selectedList);
                 }}
                 onRemove={selectedList => {
-                  if(selectedList.length <= 0) setIsVendorEmpty(true);
+                  if (selectedList.length <= 0) setIsVendorEmpty(true);
 
                   handleAddAdminChange("forms", selectedList)
                 }}
@@ -655,10 +657,26 @@ export default function index() {
                 closeOnSelect={false}
                 showCheckbox={true}
                 autocomplete="false"
-                style={{ searchBox: { border: isVendorEmpty ? "1px solid red": "1px solid #ccc" }}}
+                style={{ searchBox: { border: isVendorEmpty ? "1px solid red" : "1px solid #ccc" } }}
               />
+              <div style={{ display: 'block' }}>
+                <input
+                  type="checkbox"
+                  name="forms_select_all"
+                  onChange={e => {
+                    if (e.target.checked) {
+                      handleAddAdminChange("forms", formOptions);
+                    }
+                    else {
+                      handleAddAdminChange("forms", []);
+                    }
+                  }}
+
+                /> Select All
+              </div>
             </div>
-            <div style={{display:"flex", justifyContent:"center"}}>
+
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <button className="submit-btn" type="submit">Submit</button>
             </div>
           </div>
@@ -671,7 +689,7 @@ export default function index() {
           <button className="delete" onClick={handleDeleteBulkAdmin}>
             <FontAwesomeIcon icon={faTrash} />
           </button>
-          <DataTable 
+          <DataTable
             columns={columns}
             data={currentAdmins}
             pagination
