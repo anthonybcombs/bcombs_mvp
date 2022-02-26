@@ -58,7 +58,7 @@ export default ({ options, column, onChangeFieldSettings, isBuilder, id: fieldId
                 />
                 <span className='checkmark' />
                 {
-                  (isBuilder && option.name !== 'other')
+                  (isBuilder && (option.name !== 'other' || option.name === undefined))
                     ? <input
                         type='text'
                         className={`field-input`}

@@ -704,8 +704,12 @@ export default styled.div`
     justify-content: space-between;
   }
   .formGroup.terms .signature input {
-    width: 48%!important;
+    width: 48%;
   }
+  .formGroup.terms .signature input[type='checkbox'] {
+    width: 10%!important;
+  }
+
 
 
 

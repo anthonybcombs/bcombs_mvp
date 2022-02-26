@@ -267,11 +267,12 @@ export default function Layout({ children }) {
             auth.status == "SIGNED_IN" ? "" 
             :
             (
-              <div className="header-login"
-                onClick={() => {setShowLoginBox(true)}}
-              >
-                Login  
-              </div>
+              // <div className="header-login"
+              //   onClick={() => {setShowLoginBox(true)}}
+              // >
+              //   Login  
+              // </div>
+              <div/>
             )
             :
             ""

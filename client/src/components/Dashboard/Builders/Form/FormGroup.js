@@ -44,6 +44,7 @@ export default ({
       errors = []
     }
 
+      console.log('errorsvss',errors)
     onChange(id, JSON.stringify(value))
     onCheckError(id, errors)
   }
@@ -73,7 +74,7 @@ export default ({
     : label
   const formatObj = format ? JSON.parse(format) : {}
   const color = formatObj?.color || '#000'
-
+  console.log('fieldsvssss', fields)
   return (
     <div
       className={`formGroup ${itemGroup}`}
@@ -106,7 +107,9 @@ export default ({
         {
           cloneDeep(fields).map((field, index) => {
             const { type = '', tag, options, column = 1, id: fieldId, placeholder, required } = field
+     
             const errors = fieldError[fieldId] || []
+   
             const hasError = errors.length ? !!errors.find(e => e) : false
             const historyValue = historyFields.find(e => e.id === field.id)?.value
             const className = historyFields.length && historyValue !== field.value ? 'highlights' : ''
@@ -121,6 +124,7 @@ export default ({
                   FieldConstructor[tag]({
                     key: `field-${index}`,
                     ...field,
+                    ...( tag === 'checkbox' ? { checked: field.value  } : {}),
                     placeholder: `${placeholder} ${required ? '*' : ''}`,
                     value: field.value ? JSON.parse(field.value) : '',
                     onChange: (e) => handleChange(e, field),
