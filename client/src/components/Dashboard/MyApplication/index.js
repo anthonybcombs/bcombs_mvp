@@ -1152,7 +1152,7 @@ export default function index() {
       //     // }).flat().join(',');
       //     console.log('currentParent' , currentParent)
       //     console.log('currentParent parentIds' , parentIds)
-      //      window.location.href= `/dashboard/grades/profile/${row.child?.ch_id}?group_id=${row.class_teacher}&group_type=bcombs&parent_ids=${parentIds}&is_parent=true`
+      //      window.location.href= `/dashboard/gradesqwec/profile/${row.child?.ch_id}?group_id=${row.class_teacher}&group_type=bcombs&parent_ids=${parentIds}&is_parent=true`
 
       //   }}>{(row.child?.firstname && row.child?.lastname) ? row.child?.firstname + " " + row.child?.lastname : ""}</a>
       // }

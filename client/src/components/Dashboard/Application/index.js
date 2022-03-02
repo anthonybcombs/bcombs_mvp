@@ -19,6 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ApplicationSummaryStyled from "./summary";
 import ApplicationSettingsStyled from "./settings";
+import Logo from "./logo"
 import ReminderSettingsStyled from "./reminder_settings"
 import ApplicationListStyled from "./list";
 import EditApplicationStyled from "./edit";
@@ -569,6 +570,7 @@ export default function index() {
   useEffect(() => {
     if (auth.user_id) {
       //dispatch(requestUserGroup(auth.email));
+
       dispatch(requestVendor(auth.user_id));
 
       if(queryParams && queryParams.form) {
@@ -582,7 +584,11 @@ export default function index() {
           handleSelectedLabel({value: 'Set Reminder', opt:'set-reminder'})
         } else if (opt === 'termsconditions') {
           handleSelectedLabel({value: 'Form Settings', opt:'termsconditions'});
-        } else {
+        } 
+        else if (opt === 'logo') {
+          handleSelectedLabel({value: 'Logo', opt:'logo'});
+        }
+        else {
           handleSelectedLabel({value: 'Application Status', opt:'applicationstatus'});
         }
       }
@@ -613,7 +619,7 @@ export default function index() {
         }
 
         //dispatch(requestGetApplications(newDefaultVendor[0].id));
-        dispatch(requestGetForms({ vendor: newDefaultVendor[0].id, categories: [] }))
+        dispatch(requestGetForms({ vendor: newDefaultVendor[0].id || '', categories: [] }))
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
@@ -622,7 +628,7 @@ export default function index() {
         } else {
           setAppGroups(vendors[0].app_groups);
         }
-        dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }))
+        dispatch(requestGetForms({ vendor: vendors[0].id || '', categories: [] }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
 
@@ -660,7 +666,7 @@ export default function index() {
       // dispatch(requestGetCustomApplications(queryParams.form));
     } else {
       setExportFilename(selectedVendor.name);
-      dispatch(requestGetApplications(selectedVendor.id));
+      dispatch(requestGetApplications(selectedVendor?.id || ''));
     }
 
 
@@ -1750,6 +1756,8 @@ export default function index() {
     }
   }
 
+  console.log('selectedVendor',selectedVendor)
+
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -1956,6 +1964,15 @@ export default function index() {
               >
                 Set Reminder
               </div>
+              <div
+                className={`${selectedLabel === "Logo" ? "selected" : ""
+                  }`}
+                onClick={() => {
+                  handleSelectedLabel({ value: "Logo", opt: 'logo' });
+                }}
+              >
+                Logo
+              </div>
             </Collapsible>
 
             {/* <div
@@ -2013,6 +2030,12 @@ export default function index() {
               formList={renderForms}
               reminderList={reminders}
               handleCreateGroupReminder={handleCreateGroupReminder}
+            />
+          )}
+           {selectedLabel === "Logo" && !selectNonMenuOption && (
+            <Logo
+              formSettingsLoading={loading.form_settings}
+              vendor={selectedVendor}
             />
           )}
           {(selectNonMenuOption && view == "application" || view === 'builderForm') && (

@@ -18,6 +18,7 @@ export const VENDORS_QUERY = gql`
       section2_show
       section3_show
       is_daycare
+      logo
     }
   }
 `;
@@ -40,6 +41,7 @@ export const VENDOR_BY_USER_QUERY = gql`
       section3_show
       created_at
       is_daycare
+      logo
       app_programs {
         id
         vendor_program_id
@@ -95,6 +97,7 @@ export const VENDOR_BY_ID2_QUERY = gql`
       section3_show
       created_at
       is_daycare
+      logo
       app_programs {
         id
         vendor_program_id
@@ -143,6 +146,7 @@ export const VENDOR_BY_ID_QUERY = gql`
       section3_show
       created_at
       is_daycare
+      logo
       app_programs {
         id
         vendor_program_id
@@ -283,6 +287,7 @@ export const VENDOR_UPDATE_MUTATION = gql`
       section1_show
       section2_show
       section3_show
+      logo
     }
   }
 `;
@@ -441,3 +446,28 @@ export const CREATE_GROUP_REMINDER = gql`
     }
   }
 `;
+
+
+
+export const UPDATE_VENDOR_LOGO = gql`
+  mutation updateVendorLogo($vendorLogo: VendorLogoInput) {
+    updateVendorLogo(vendorLogo: $vendorLogo) {
+      id
+      user
+      id2
+      name
+      section1_text
+      section2_text
+      section3_text
+      section1_name
+      section2_name
+      section3_name
+      section1_show
+      section2_show
+      section3_show
+      logo
+    }
+  }
+`;
+
+

@@ -11,7 +11,8 @@ import {
   UPDATE_VENDOR_ADMIN,
   GET_USER_VENDOR_FORMS,
   CREATE_GROUP_REMINDER,
-  GET_VENDOR_REMINDER
+  GET_VENDOR_REMINDER,
+  UPDATE_VENDOR_LOGO
 } from "../../graphql/vendorMutation";
 
 import { GET_FORM_APP_GROUP } from "../../graphql/groupQuery";
@@ -202,6 +203,23 @@ const getVendorByIdFromDatabase = id => {
   });
 };
 
+const updateVendorLogoToDatabase = payload => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: UPDATE_VENDOR_LOGO,
+        variables: { vendorLogo: {...payload}  }
+      });
+
+      console.log("data data", data);
+
+      return resolve(data.updateVendorLogo);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const updateVendorToDatabase = vendor => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -288,6 +306,13 @@ export const requestUpdateVendor = vendor => {
   return {
     type: actionType.REQUEST_UPDATE_VENDOR,
     vendor
+  };
+};
+
+export const requestUpdateVendorLogo = data => {
+  return {
+    type: actionType.REQUEST_UPDATE_VENDOR_LOGO,
+    data
   };
 };
 
@@ -555,5 +580,16 @@ export function* getVendorAppGroups(action) {
       type: actionType.REQUEST_GET_FORM_APP_GROUP_COMPLETED,
       payload: []
     });
+  }
+}
+
+export function* updateVendorLogo({ data }) {
+  try {
+    yield put(setFormSettingsLoading(true));
+    yield call(updateVendorLogoToDatabase, data);
+    yield put(setFormSettingsLoading(false));
+  } catch (err) {
+    yield put(setFormSettingsLoading(false));
+  
   }
 }

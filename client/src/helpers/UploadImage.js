@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ReactDOM from "react-dom";
 import Files from "react-butterfiles";
 import styled, { ThemeContext } from "styled-components";
@@ -32,6 +32,12 @@ export default function UploadImage({ displayImage = "", handleImageChange, getI
   );
   const [errors, setErrors] = useState([]);
   const [cropper, setCropper] = useState(false);
+
+  useEffect(() => {
+    if(displayImage) {
+      setImageView(displayImage);
+    }
+  },[displayImage])
 
   return (
     <UploadImageStyled>

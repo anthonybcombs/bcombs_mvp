@@ -301,7 +301,7 @@ export default function AppGroupForm({
                   // selectedValues={vendorOptions.filter(
                   //   item => item.id === groupDetails.vendor
                   // )}
-                  selectedValues={groupDetails.vendors}
+                  selectedValues={selectedForms}
                   onSelect={handleSelectChange}
                   onRemove={handleSelectChange}
                   placeholder="Choose Form"
