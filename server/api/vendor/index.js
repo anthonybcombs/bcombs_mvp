@@ -1,8 +1,12 @@
 import { makeDb } from "../../helpers/database";
 
-import { getUserGroups } from "../../api/groups";
+// import { getUserGroups } from "../../api/groups";
 
-import { sort, distinct, sortByDate } from "../../helpers/array";
+// import { sort, distinct, sortByDate } from "../../helpers/array";
+import {
+  currentS3BucketName,
+  uploadFile
+} from "../../helpers/aws";
 
 import { 
   getVendorCustomApplicationForms,
@@ -27,7 +31,8 @@ export const getVendors = async () => {
         section3_name,
         section1_show,
         section2_show,
-        section3_show
+        section3_show,
+        logo
         FROM vendor`
     );
     return result;
@@ -1205,4 +1210,56 @@ export const createAppGroupReminder = async ({
     return result;
   }
 }
+
+export const updateLogo = async ({
+  vendor_id,
+  logo
+}) => {
+  console.log('Update  Logoooooo', vendor_id)
+
+  const db = makeDb();
+
+  try {
+    const buf = Buffer.from(
+      logo.replace(/^data:image\/\w+;base64,/, ""),
+      "base64"
+    );
+    const s3Payload = {
+      Bucket: currentS3BucketName,
+      Key: `logo/${vendor_id}/logo-${vendor_id}.jpg`,
+      Body: buf,
+      ContentEncoding: "base64",
+      ContentType: "image/jpeg",
+      ACL: "public-read"
+    };
+
+    console.log('Update  Logoooooo  s3Payload',s3Payload)
+
+    await uploadFile(s3Payload);
+    await db.query(
+      `UPDATE vendor SET 
+      logo=?
+      WHERE id=UUID_TO_BIN(?)`,
+      [
+        s3Payload?.Key || '',
+        vendor_id
+      ]
+    );
+
+    let vendors = await getVendors();
+    vendors = vendors.find((vendor) => {
+      return vendor_id == vendor.id;
+    });
+
+    const vendor = vendors ? vendors : null;
+
+    return vendor;
+    
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await db.close();
+  }
+};
+
 

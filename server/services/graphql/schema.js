@@ -839,6 +839,11 @@ const inputs = `
       is_customForm: Boolean
       custom_fields: String
     }
+
+    input VendorLogoInput {
+        logo: String!
+        vendor_id: String!
+    }
 `;
 const queryTypes = `
     scalar Date
@@ -1026,6 +1031,7 @@ const queryTypes = `
         created_at: Date
         is_daycare: Int
         forms: [CustomApplicationOutput]
+        logo: String
     }
 
     type LocationSite {
@@ -1764,6 +1770,7 @@ const mutations = `
         addArchivedGroup(archivedGroup: [ArchiveGroupInput]): [ArchivedGroup]
         removeGroupFromArchive(archivedGroupIds: [Int], vendorId: String): [ArchivedGroup]
         createGroupReminder(groupReminder: SetReminderInput): [ApplicationReminder]
+        updateVendorLogo(vendorLogo: VendorLogoInput): Vendor
     }
 `;
 
