@@ -5,6 +5,7 @@ import { makeDb } from "../../helpers/database";
 // import { sort, distinct, sortByDate } from "../../helpers/array";
 import {
   currentS3BucketName,
+  s3BucketRootPath,
   uploadFile
 } from "../../helpers/aws";
 
@@ -1255,8 +1256,10 @@ export const updateLogo = async ({
       return vendor_id == vendor.id;
     });
 
-    const vendor = vendors ? vendors : null;
-
+    let vendor = vendors ? vendors : null;
+    vendor.logo =  vendor.logo
+    ? `${s3BucketRootPath}${vendor.logo}`
+    : null;
     return vendor;
     
   } catch (err) {
