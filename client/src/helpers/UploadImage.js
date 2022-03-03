@@ -37,6 +37,9 @@ export default function UploadImage({ displayImage = "", handleImageChange, getI
     if(displayImage) {
       setImageView(displayImage);
     }
+    else {
+      setImageView('');
+    }
   },[displayImage])
 
   return (

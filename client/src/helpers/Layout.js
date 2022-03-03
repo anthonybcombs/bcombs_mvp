@@ -232,7 +232,7 @@ export default function Layout({ children }) {
         <div id="app-header-right">
           <Link to="/">
             {(location.href.includes(applicationUrl) || location.href.includes(customFormUrl))  ? (vendors &&
-              vendors.length > 0) ? <img src={`${s3BucketRootPath}/${vendors[0]?.logo}`} style={{ width: 80, height: 80 }} /> : <DefaultLogo/> : <DefaultLogo/>}
+              vendors.length > 0 && vendors[0]?.logo) ? <img src={`${s3BucketRootPath}/${vendors[0]?.logo}`} style={{ width: 80, height: 80 }} /> : <DefaultLogo/> : <DefaultLogo/>}
 
           </Link>
           {location.href.includes(applicationUrl) &&
