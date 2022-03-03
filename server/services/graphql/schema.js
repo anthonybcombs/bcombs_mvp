@@ -841,7 +841,7 @@ const inputs = `
     }
 
     input VendorLogoInput {
-        logo: String!
+        logo: String
         vendor_id: String!
     }
 `;

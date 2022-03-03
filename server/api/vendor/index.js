@@ -1218,26 +1218,30 @@ export const createAppGroupReminder = async ({
 
 export const updateLogo = async ({
   vendor_id,
-  logo
+  logo = ''
 }) => {
-  console.log('Update  Logoooooo', vendor_id)
+  
 
   const db = makeDb();
 
   try {
-    const buf = Buffer.from(
+    const buf = logo && logo!== '' ? Buffer.from(
       logo.replace(/^data:image\/\w+;base64,/, ""),
       "base64"
-    );
-    const s3Payload = {
+    ) : null;
+    const s3Payload =   logo && logo!== ''  ? {
       Bucket: currentS3BucketName,
       Key: `logo/${vendor_id}/logo-${vendor_id}.png`,
       Body: buf,
       ContentEncoding: "base64",
       ContentType: "image/png",
       ACL: "public-read"
-    };
-    await uploadFile(s3Payload);
+    } : {};
+
+    if( logo && logo!== '' ) {
+      await uploadFile(s3Payload);
+    }
+
     await db.query(
       `UPDATE vendor SET 
       logo=?

@@ -1931,8 +1931,7 @@ const resolvers = {
       return await getVendorApplicationReminder(groupReminder.vendor_id);
     },
     async updateVendorLogo(root, { vendorLogo }, context) {
-      console.log('Vendor Logoooooo',vendorLogo)
-      return await updateLogo({logo: vendorLogo.logo, vendor_id: vendorLogo.vendor_id})
+      return await updateLogo({logo: vendorLogo.logo, vendor_id: vendorLogo.vendor_id || ''})
     },
   }
 };
