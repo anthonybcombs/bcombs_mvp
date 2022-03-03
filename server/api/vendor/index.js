@@ -1231,15 +1231,12 @@ export const updateLogo = async ({
     );
     const s3Payload = {
       Bucket: currentS3BucketName,
-      Key: `logo/${vendor_id}/logo-${vendor_id}.jpg`,
+      Key: `logo/${vendor_id}/logo-${vendor_id}.png`,
       Body: buf,
       ContentEncoding: "base64",
-      ContentType: "image/jpeg",
+      ContentType: "image/png",
       ACL: "public-read"
     };
-
-    console.log('Update  Logoooooo  s3Payload',s3Payload)
-
     await uploadFile(s3Payload);
     await db.query(
       `UPDATE vendor SET 
