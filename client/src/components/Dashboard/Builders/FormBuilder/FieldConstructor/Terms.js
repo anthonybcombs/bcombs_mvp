@@ -65,6 +65,9 @@ export default (props) => {
         <div className='content'>
           {fields[1].placeholder}
         </div>
+        <div className='content'>
+          {fields[2].placeholder}
+        </div>
         <div className='signature'>
        
             <input
