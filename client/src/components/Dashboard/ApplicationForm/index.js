@@ -253,7 +253,7 @@ export default function index() {
     marginTop: 0,
     right: "15px"
   }
-
+  console.log('vendorrrr',vendor)
   const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
   const DB_DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
   const DATE_FORMAT = "yyyy-MM-dd";

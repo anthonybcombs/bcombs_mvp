@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import Files from "react-butterfiles";
+// import Files from "react-butterfiles";
 import { useDispatch } from "react-redux";
 
 import { requestUpdateVendor, requestUpdateVendorLogo} from "../../../../redux/actions/Vendors";
-import ErrorMessage from "../../../../helpers/ErrorMessage";
+// import ErrorMessage from "../../../../helpers/ErrorMessage";
 import Loading from "../../../../helpers/Loading.js";
 import UploadImage from "../../../../helpers/UploadImage";
 

@@ -13,6 +13,7 @@ import FormStyled from './styles'
 import FORM_DATA from './sample.json'
 import { groupFieldsByPageBreak } from '../utils'
 import { requestGetFormById, requestSubmitForm } from '../../../../redux/actions/FormBuilder'
+import { requestVendorById } from "../../../../redux/actions/Vendors";
 import Loading from '../../../../helpers/Loading.js'
 
 import Stepper from './Wizard/stepper'
@@ -43,6 +44,9 @@ export default (props) => {
       return { auth, loading, form }
     }
   )
+  console.log('vvvvevndorrrrrrrrr form', form)
+  console.log('vvvvevndorrrrrrrrr form_contents', form_contents)
+  console.log('vvvvevndorrrrrrrrr vendor', vendor)
 
   const isSuccessfulSubmit = submitForm.message === 'successfully submitted your application form'
 
@@ -82,6 +86,8 @@ export default (props) => {
   const [fieldError, setFieldError] = useState({})
   const [nextPage, setNextPage] = useState('')
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (formData.length && !formIsSet) {
       const newAddresses = formData.filter(e => e.type === 'address')
@@ -92,6 +98,13 @@ export default (props) => {
       setForm(true)
     }
   }, [formData])
+
+  useEffect(() => {
+    if(vendor){
+
+      dispatch(requestVendorById(vendor));
+    }
+  },[vendor])
   
   useEffect(() => {
 
@@ -209,7 +222,7 @@ export default (props) => {
     }
   }, [auth])
 
-  const dispatch = useDispatch()
+
 
   useEffect(() => {
     // if (auth.user_id) {
@@ -536,7 +549,7 @@ export default (props) => {
   // console.log('flattenFields ', flattenFields());
 
   const hasLoginField = !!(flattenFields().find(e => e.type === 'login'))
-
+  
   return (
     <FormStyled ref={componentRef}>
       <div id='form' >

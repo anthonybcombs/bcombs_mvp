@@ -569,7 +569,6 @@ export function* getVendorAppGroups(action) {
   try {
     console.log('getVendorAppGroups  action.vendor',  action.vendor)
     const appGroups = yield call(getVendorApplicationGroupFromDatabase, action.vendor);
-    console.log('getVendorAppGroups appGroups', appGroups)
     yield put({
       type: actionType.REQUEST_GET_FORM_APP_GROUP_COMPLETED,
       payload: appGroups
