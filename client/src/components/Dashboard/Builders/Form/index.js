@@ -377,7 +377,7 @@ export default (props) => {
     .forEach(({ required, value, id, placeholder, label, tag, type }) => {
       const newVal = value  ? typeof value === 'boolean' ? value : JSON.parse(value) : ''
  
-      if (required && !newVal && tag !== 'icon' && tag !== 'checkbox') {
+      if (required && !newVal && newVal === '' && tag !== 'icon' && tag !== 'checkbox') {
         const requiredError = `${placeholder || label || 'This'} is required.`
         if (!newFielderrors[id] || !newFielderrors[id].find(e => e === requiredError)) {
           newFielderrors[id] = [
@@ -390,6 +390,7 @@ export default (props) => {
         let parsedValue = null;
     
         if(typeof newVal === 'object') {
+          console.log('newValv',newVal)
           parsedValue = newVal ? JSON.parse(newVal) : {};
           newFielderrors[id] = parsedValue?.value ? [] : ['Electronic Signature is required']
         }
@@ -472,8 +473,8 @@ export default (props) => {
             })
           }
         })
-
       // Submit for update custom application form
+
       if (isApplication) {
         onSubmitApplication({
           formTitle,

@@ -14,9 +14,10 @@ export default (props) => {
 
   const handleAnswer = ({ target: { value } }) => {
     
-
-    onChange(fields[1].id, JSON.stringify({ value, date }))
-    onCheckError(fields[1].id, !value ? ['Electronic Signature is required'] : '')
+      console.log('fields[1].id',fields[1].id)
+      console.log('fields[1].id value',value)
+    onChange(fields[1].id, !value ? null : JSON.stringify({ value, date }))
+    onCheckError(fields[1].id, !value || value === '' ? ['Electronic Signature is required'] : '')
   }
 
   const handleChecked = (e) => {
@@ -30,7 +31,7 @@ export default (props) => {
   const { include, value: instructionValue } = settings.instruction || {}
   const formatObj = format ? JSON.parse(format) : {}
   const color = formatObj?.color || '#000'
-
+    console.log('parsedValue',parsedValue)
   return (
     <div
       className={`formGroup ${type}`}
@@ -84,9 +85,10 @@ export default (props) => {
       
 
           <input
+            required={true}
             readOnly={isReadOnly}
             className={`field-input`}
-            value={parsedValue.value || ''}
+            value={parsedValue?.value || null }
             placeholder={'Electronic Signature *'}
             onChange={handleAnswer}
           />
