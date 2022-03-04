@@ -301,7 +301,7 @@ export default function AppGroupForm({
                   // selectedValues={vendorOptions.filter(
                   //   item => item.id === groupDetails.vendor
                   // )}
-                  selectedValues={selectedForms}
+                  selectedValues={groupDetails?.vendors || []}
                   onSelect={handleSelectChange}
                   onRemove={handleSelectChange}
                   placeholder="Choose Form"
@@ -313,9 +313,7 @@ export default function AppGroupForm({
                 type="checkbox"
                 name="form_select_all"
                 onChange={e => {
-                  console.log('e.target.checked', e.target.checked)
                   if (e.target.checked) {
-                    console.log('formattedVendors', formattedVendors)
                     handleGroupDetailsChange("vendors", formattedVendors);
                   }
                   else {

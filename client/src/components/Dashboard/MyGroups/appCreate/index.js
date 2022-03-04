@@ -81,8 +81,6 @@ export default function index({
     if (id == "vendors") {
       let ids = value.map((vendor) => { return vendor });
 
-      console.log("value2222222", value);
-      console.log("ids", ids);
       setGroupDetails({
         ...groupDetails,
         [id]: ids
