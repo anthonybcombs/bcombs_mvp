@@ -1029,6 +1029,7 @@ export default function index() {
   ];
 
   const handleUpdateOnchange = (id, value) => {
+    console.log('vvavlueeeee', value)
     setUpdateApplication({ ...updateApplication, [id]: value });
   };
 
@@ -2041,6 +2042,7 @@ export default function index() {
           {(selectNonMenuOption && view == "application" || view === 'builderForm') && (
             <EditApplicationStyled
               application={selectedApplication}
+              updateApplication={updateApplication}
               vendor={selectedVendor}
               appGroups={appGroups}
               onSubmit={onSubmit}

@@ -103,6 +103,7 @@ const EditApplicationStyled = styled.div`
 export default function index({
   vendor,
   application,
+  updateApplication,
   onSubmit,
   handleUpdateOnchange,
   updateLoading = false,
@@ -130,33 +131,33 @@ export default function index({
   const dispatch = useDispatch();
 
   const VERIFICATION_OPTIONS = [
-    { name: "Waiting for Verification", value: "waiting_for_verification"},
+    { name: "Waiting for Verification", value: "waiting_for_verification" },
     { name: "Verified", value: "verified" },
-    { name: "Rejected", value: "rejected"}
+    { name: "Rejected", value: "rejected" }
   ];
 
   const STUDENT_CLASS_OPTIONS = [
-    { name: "New Application - In process", value: "new_applicant_in_process"},
+    { name: "New Application - In process", value: "new_applicant_in_process" },
     { name: "New Application - Accepted", value: "new_applicant_accepted" },
-    { name: "New Application - Rejected", value: "new_applicant_rejected"},
+    { name: "New Application - Rejected", value: "new_applicant_rejected" },
     { name: "Current Student", value: "current_student" },
-    { name: "Waiting List", value: "waiting_list"},
-    { name: "No longer a Student", value: "no_longer_student"},
-    { name: "Missed opportunity", value: "missed_opportunity"},
-    { name: "Pending Resubmission", value: "pending_resubmission"},
+    { name: "Waiting List", value: "waiting_list" },
+    { name: "No longer a Student", value: "no_longer_student" },
+    { name: "Missed opportunity", value: "missed_opportunity" },
+    { name: "Pending Resubmission", value: "pending_resubmission" },
   ]
 
   const CLASS_TEACHER_OPTIONS = [
-    { name: "Middle School", value: "Middle School"},
+    { name: "Middle School", value: "Middle School" },
     { name: "Freshmen", value: "Freshmen" },
-    { name: "Sophomores", value: "Sophomores"},
+    { name: "Sophomores", value: "Sophomores" },
     { name: "Juniors", value: "Juniors" },
-    { name: "Seniors", value: "Seniors"}
+    { name: "Seniors", value: "Seniors" }
   ]
 
   const COLOR_DESIGNATION_OPTIONS = [
     { name: "Leaving in the room (Red)", value: "red" },
-    { name: "Coming into the room (Blue)", value: "blue"},
+    { name: "Coming into the room (Blue)", value: "blue" },
     { name: "Potentials for leaving the room (Green)", value: "green" }
   ]
 
@@ -167,106 +168,106 @@ export default function index({
 
   // console.log('classTeachers', classTeachers);
 
-  const selectedClassTeacher = application.class_teacher ? 
-    appGroups.filter(item => application.class_teacher.includes(item.app_grp_id))
+  const selectedClassTeacher = updateApplication.class_teacher ?
+    appGroups.filter(item => updateApplication.class_teacher.includes(item.app_grp_id))
     :
     []
 
-  console.log('selectedClassTeacher', selectedClassTeacher);
+  console.log(' application?.class_teacher',  application?.class_teacher);
   return (
     <EditApplicationStyled>
-      
+
       <div className="edit-application-form">
         {
           updateLoading ? (
             <Loading />
           ) :
-          (
-            <div>
-              <div className="edit-application-header">
-              <div>              
-                <span>Application Status</span>
-              </div>
-            </div>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <div className="edit-application-content">
-                <div>
-                  <label className="control-label">Verification</label>
+            (
+              <div>
+                <div className="edit-application-header">
                   <div>
-                    <select
-                      className="form-control"
-                      defaultValue={application.verification}
-                      onChange={({ target }) => {
-                        handleUpdateOnchange("verification", target.value)
-                      }}>
-                      <option value="">Select</option>
-                      {VERIFICATION_OPTIONS.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.name}</option>
-                      ))}
-                    </select>
+                    <span>Application Status</span>
                   </div>
                 </div>
-                <div>
-                  <label className="control-label">Student Status</label>
-                  <div>
-                    <select
-                      className="form-control"
-                      defaultValue={application.student_status}
-                      onChange={({ target }) => {
-                        handleUpdateOnchange("student_status", target.value)
-                      }}>
-                      <option value="">Select</option>
-                      {STUDENT_CLASS_OPTIONS.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label className="control-label">Age</label>
-                  <div>
-                    <input
-                      type="text"
-                      className="form-control"
-                      defaultValue={application?.child?.age}
-                      readOnly
-                      onChange={({ target }) => {
-                      }} 
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="control-label">Group(s)</label>
-                  <div
-                    id={isAppReminder ? "AppReminder" : ""}
-                  >
-                    <Multiselect
-                      id="classTeacherMultiselect"
-                      selectedValues={selectedClassTeacher}
-                      className="form-control"
-                      options={appGroups}
-                      hasSelectAll={true}
-                      placeholder={"Choose Multiple"}
-                      displayValue="name"
-                      closeIcon="cancel"
-                      closeOnSelect={false}
-                      showCheckbox={true}
-                      onSelect={selectedList => {
-                        setIsAppReminder(false);
-                        console.log('select list', selectedList)
-                        console.log('s selectedList', selectedList.map(item => item.app_grp_id).join(','));
-                        handleUpdateOnchange("class_teacher", selectedList.map(item => item.app_grp_id).join(','))
-                      }}
-                      onRemove={selectedList => {
-                        setIsAppReminder(false);
-                        console.log("remove list", selectedList)
-                        console.log('r selectedList', selectedList.map(item => item.app_grp_id).join(','));
-                        handleUpdateOnchange("class_teacher", selectedList.map(item => item.app_grp_id).join(','))
-                      }}
-                    />
-                    {/* <select
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                >
+                  <div className="edit-application-content">
+                    <div>
+                      <label className="control-label">Verification</label>
+                      <div>
+                        <select
+                          className="form-control"
+                          defaultValue={application.verification}
+                          onChange={({ target }) => {
+                            handleUpdateOnchange("verification", target.value)
+                          }}>
+                          <option value="">Select</option>
+                          {VERIFICATION_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="control-label">Student Status</label>
+                      <div>
+                        <select
+                          className="form-control"
+                          defaultValue={application.student_status}
+                          onChange={({ target }) => {
+                            handleUpdateOnchange("student_status", target.value)
+                          }}>
+                          <option value="">Select</option>
+                          {STUDENT_CLASS_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="control-label">Age</label>
+                      <div>
+                        <input
+                          type="text"
+                          className="form-control"
+                          defaultValue={application?.child?.age}
+                          readOnly
+                          onChange={({ target }) => {
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="control-label">Group(s)</label>
+                      <div
+                        id={isAppReminder ? "AppReminder" : ""}
+                      >
+                        <Multiselect
+                          id="classTeacherMultiselect"
+                          selectedValues={selectedClassTeacher}
+                          className="form-control"
+                          options={appGroups}
+                          hasSelectAll={true}
+                          placeholder={"Choose Multiple"}
+                          displayValue="name"
+                          closeIcon="cancel"
+                          closeOnSelect={false}
+                          showCheckbox={true}
+                          onSelect={selectedList => {
+                            setIsAppReminder(false);
+                            console.log('select list', selectedList)
+                            console.log('s selectedList', selectedList.map(item => item.app_grp_id).join(','));
+                            handleUpdateOnchange("class_teacher", selectedList.map(item => item.app_grp_id).join(','))
+                          }}
+                          onRemove={selectedList => {
+                            setIsAppReminder(false);
+                            console.log("remove list", selectedList)
+                            console.log('r selectedList', selectedList.map(item => item.app_grp_id).join(','));
+                            handleUpdateOnchange("class_teacher", selectedList.map(item => item.app_grp_id).join(','))
+                          }}
+                        />
+                        {/* <select
                       className="form-control"
                       defaultValue={application.class_teacher ? application.class_teacher : null}
                       onChange={({ target }) => {
@@ -277,59 +278,80 @@ export default function index({
                         <option key={opt.app_grp_id} value={opt.app_grp_id}>{opt.name}</option>
                       ))}
                     </select> */}
-                  </div>
-                </div>
-                <div>
-                  <label className="control-label">Color Designation</label>
-                  <div>
-                    <select
-                      className="form-control"
-                      defaultValue={application.color_designation}
-                      onChange={({ target }) => {
-                        handleUpdateOnchange("color_designation", target.value)
-                      }}>
-                      <option value="">Select</option>
-                      {COLOR_DESIGNATION_OPTIONS.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label className="control-label">Recommended Class</label>
-                  <div>
-                  </div>
-                </div>
-                <div>
-                  <label className="control-label">Notes</label>
-                  <div>
-                    <textarea
-                      className="form-control"
-                      rows="3"
-                      placeholder="Notes"
-                      defaultValue={application.notes}
-                      onChange={({ target }) => {
-                        handleUpdateOnchange("notes", target.value)
-                      }}>
-                    </textarea>
-                  </div>
-                </div>
-                {
-                  updateError ? (
-                    <div>
-                      <div></div>
-                      <div style={{color: "red", textAlign: "center"}}> {updateError} </div>
-                      <div></div>
+
+                        <div>
+                          <input
+                            type="checkbox"
+                            name="form_select_all"
+                            onChange={e => {
+                              if (e.target.checked) {
+                                setIsAppReminder(false);
+                                // handleGroupDetailsChange("vendors", formattedVendors);
+                                console.log('appGroupssss',appGroups)
+                                handleUpdateOnchange("class_teacher", appGroups.map(item => item.app_grp_id).join(','))
+                              }
+                              else {
+                                // handleGroupDetailsChange("vendors", []);
+                                handleUpdateOnchange("class_teacher", '')
+                              }
+                            }}
+
+                          /> Select All
+                        </div>
+                      </div>
+
                     </div>
-                  ) : ""
-                }
-                <div>
-                  <button className="update-btn" type="submit">Update Status</button>
-                </div>
+                    <div>
+                      <label className="control-label">Color Designation</label>
+                      <div>
+                        <select
+                          className="form-control"
+                          defaultValue={application.color_designation}
+                          onChange={({ target }) => {
+                            handleUpdateOnchange("color_designation", target.value)
+                          }}>
+                          <option value="">Select</option>
+                          {COLOR_DESIGNATION_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="control-label">Recommended Class</label>
+                      <div>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="control-label">Notes</label>
+                      <div>
+                        <textarea
+                          className="form-control"
+                          rows="3"
+                          placeholder="Notes"
+                          defaultValue={application.notes}
+                          onChange={({ target }) => {
+                            handleUpdateOnchange("notes", target.value)
+                          }}>
+                        </textarea>
+                      </div>
+                    </div>
+                    {
+                      updateError ? (
+                        <div>
+                          <div></div>
+                          <div style={{ color: "red", textAlign: "center" }}> {updateError} </div>
+                          <div></div>
+                        </div>
+                      ) : ""
+                    }
+                    <div>
+                      <button className="update-btn" type="submit">Update Status</button>
+                    </div>
+                  </div>
+                </form>
               </div>
-            </form>
-            </div>
-          )
+            )
         }
       </div>
     </EditApplicationStyled>
