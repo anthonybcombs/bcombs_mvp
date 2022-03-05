@@ -535,7 +535,7 @@ export default function index() {
     }
   );
 
-  console.log("form 123", formList);
+
 
   if (updateSubmittedForm.message === 'successfully update your application form') {
     window.location.reload()
@@ -644,14 +644,15 @@ export default function index() {
 
     console.log('selectedVendor 123', selectedVendor);
 
-    const vendorForms = selectedVendor.forms;
+    // const vendorForms = selectedVendor.forms;
 
-    const matchForms = vendorForms?.length > 0 ? formList.filter((i) => {
-      return vendorForms.some((x) => x.form_id == i.form_id);
-    }) : [];
+    // const matchForms = vendorForms?.length > 0 ? formList.filter((i) => {
+    //   return vendorForms.some((x) => x.form_id == i.form_id);
+    // }) : [];
 
-    console.log('matchForms', matchForms);
-    setRenderForms(matchForms);
+    // console.log('matchForms formList', formList);
+    // console.log('matchForms', matchForms);
+    setRenderForms(formList);
 
     if(queryParams && queryParams.form) {
       setSelectedForm(queryParams.form);
@@ -1758,7 +1759,7 @@ export default function index() {
   }
 
   console.log('selectedVendor',selectedVendor)
-
+  console.log('renderForms',renderForms)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -1786,7 +1787,6 @@ export default function index() {
                   return vendor.id == target.value
                 });
 
-                console.log("chosenVendor", chosenVendor);
 
                 window.history.replaceState("","","?vendor=" + chosenVendor[0].id2);
 
@@ -1826,7 +1826,7 @@ export default function index() {
                 }}
                 onChange={({ target }) => {
 
-                  console.log("target", target.value);
+       
                   if(target.value == "default") {
                     console.log("selectedvendor", selectedVendor);
                     setSelectedForm("default");
