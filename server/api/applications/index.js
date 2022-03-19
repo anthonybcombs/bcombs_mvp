@@ -59,7 +59,7 @@ export const getApplicationByAppId = async (app_id, isHistory = false) => {
   const db = makeDb();
   let application;
   try {
-    const applications = await db.query(
+    const applications = app_id ? await db.query(
       `SELECT 
         id,
         BIN_TO_UUID(app_id) as app_id, 
@@ -90,7 +90,7 @@ export const getApplicationByAppId = async (app_id, isHistory = false) => {
         WHERE app_id=UUID_TO_BIN(?)
       `,
       [app_id]
-    );
+    ) : [];
 
     if (applications.length > 0) {
       application = applications[0];
@@ -143,7 +143,7 @@ export const getApplicationsByVendor = async vendor => {
   let result = [];
   try {
     console.log("getApplicationsByVendor vendor !!!!!!!!!!!!!!! ", vendor);
-    const applications = await db.query(
+    const applications = vendor ? await db.query(
       `SELECT 
         id,
         BIN_TO_UUID(app_id) as app_id, 
@@ -174,7 +174,7 @@ export const getApplicationsByVendor = async vendor => {
         WHERE vendor=UUID_TO_BIN(?) and is_archived=0
         ORDER BY id DESC`,
       [vendor]
-    );
+    ) : [];
     result = applications;
   } catch (error) {
     console.log("error", error);

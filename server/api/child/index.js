@@ -604,7 +604,24 @@ export const updateChild = async ({
   schedule_tour,
   voucher,
   ch_id,
-  image
+  image,
+
+  is_entrepreneur = 0,
+  include_in_directory = '',
+  business_name = '',
+  business_website = '',
+  business_phone = '',
+  business_email = '',
+  business_industry = '',
+  business_address = '',
+  business_description = '',
+  employment_status = '',
+  allergies_to_medicine = '',
+  food_allergies = '',
+  insect_allergies = '',
+  other_allergies = '',
+  current_medications = '',
+  health_insurance_information = ''
 }) => {
 
   const db = makeDb();
@@ -691,6 +708,24 @@ export const updateChild = async ({
         schedule_tour=?,
         voucher=?,
         image=?
+
+        is_entrepreneur=?,
+        include_in_directory=?,
+        business_name=?,
+        business_website=?,
+        business_phone=?,
+        business_email=?,
+        business_industry=?,
+        business_address=?,
+        business_description=?,
+        employment_status=?,
+        allergies_to_medicine=?,
+        food_allergies=?,
+        insect_allergies=?,
+        other_allergies=?,
+        current_medications=?,
+        health_insurance_information=?,
+
         WHERE ch_id=UUID_TO_BIN(?)
       `,
       [
@@ -771,6 +806,22 @@ export const updateChild = async ({
         schedule_tour,
         voucher,
         image,
+        is_entrepreneur,
+        include_in_directory,
+        business_name,
+        business_website,
+        business_phone,
+        business_email,
+        business_industry,
+        business_address,
+        business_description,
+        employment_status,
+        allergies_to_medicine,
+        food_allergies,
+        insect_allergies,
+        other_allergies,
+        current_medications,
+        health_insurance_information,
         ch_id
       ]
     );
