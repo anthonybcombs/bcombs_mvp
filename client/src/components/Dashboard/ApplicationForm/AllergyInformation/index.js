@@ -258,7 +258,7 @@ export default function index({
                                         pastChildInformation.health_insurance_informationhealth_insurance_information != childGeneralInformation.health_insurance_information ?
                                         "field-input highlights" : "field-input"
                                 }
-                                placeholder="Health Insurance Information (Policy NName, Policy #, Policy Holder's Name)"
+                                placeholder="Health Insurance Information (Policy Name, Policy #, Policy Holder's Name)"
                                 id={`ch_health_insurance_information_${counter - 1}`}
                                 onChange={({ target }) => {
                                     handleChildFormDetailsChange(counter - 1, "general_information", "health_insurance_information", target.value);
