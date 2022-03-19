@@ -707,7 +707,7 @@ export const updateChild = async ({
         needed_days=?,
         schedule_tour=?,
         voucher=?,
-        image=?
+        image=?,
 
         is_entrepreneur=?,
         include_in_directory=?,
