@@ -97,6 +97,7 @@ export const GET_APPLICATIONS_QUERY = gql`
       app_id
       vendor
       is_daycare
+  
       child {
         ch_id     
         new_childId   
@@ -177,6 +178,23 @@ export const GET_APPLICATIONS_QUERY = gql`
         needed_days
         schedule_tour
         voucher
+
+        is_entrepreneur
+        include_in_directory
+        business_name
+        business_website
+        business_phone
+        business_email
+        business_industry
+        business_address
+        business_description
+        employment_status
+        allergies_to_medicine
+        food_allergies
+        insect_allergies
+        other_allergies
+        current_medications
+        health_insurance_information
       }
       parents {
         parent_id
@@ -274,6 +292,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
       app_id
       vendor
       is_daycare
+ 
       child {
         ch_id        
         firstname
@@ -353,6 +372,22 @@ export const GET_APPLICATION_ID_QUERY = gql`
         needed_days
         schedule_tour
         voucher
+        is_entrepreneur
+        include_in_directory
+        business_name
+        business_website
+        business_phone
+        business_email
+        business_industry
+        business_address
+        business_description
+        employment_status
+        allergies_to_medicine
+        food_allergies
+        insect_allergies
+        other_allergies
+        current_medications
+        health_insurance_information
       }
       parents {
         parent_id
@@ -461,6 +496,7 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
           app_grp_id
         }
         is_daycare
+
         child {
           ch_id        
           firstname
@@ -540,6 +576,22 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
           needed_days
           schedule_tour
           voucher
+          is_entrepreneur
+          include_in_directory
+          business_name
+          business_website
+          business_phone
+          business_email
+          business_industry
+          business_address
+          business_description
+          employment_status
+          allergies_to_medicine
+          food_allergies
+          insect_allergies
+          other_allergies
+          current_medications
+          health_insurance_information
         }
         parents {
           parent_id
@@ -835,6 +887,22 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
         needed_days
         schedule_tour
         voucher
+        is_entrepreneur
+        include_in_directory
+        business_name
+        business_website
+        business_phone
+        business_email
+        business_industry
+        business_address
+        business_description
+        employment_status
+        allergies_to_medicine
+        food_allergies
+        insect_allergies
+        other_allergies
+        current_medications
+        health_insurance_information
       }
       parents {
         parent_id

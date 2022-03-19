@@ -7,6 +7,7 @@ import { faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import ChildInformationFormStyled from "../ChildInformationForm";
 import GeneralInformationFormStyled from "../GeneralInformationForm";
 import MedicalCareInfoStyled from '../MedicalCareIformationForm'
+import AllergyInformation from '../AllergyInformation'
 
 const ChildFormStyled = styled.div`
   @media (max-width: 480px) {
@@ -52,10 +53,10 @@ export default function index({
   app_programs = [],
   location_sites = []
 }) {
-
+  console.log('childInformatiozxzczcxcxn',childInformation)
   return (
     <ChildFormStyled>
-      <ChildInformationFormStyled 
+      <ChildInformationFormStyled
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         childProfile={childInformation.profile}
         counter={counter}
@@ -63,10 +64,11 @@ export default function index({
         errors={errors}
         ProfileImg={ProfileImg}
         app_programs={app_programs}
-        location_sites={location_sites}/>
-        <br/>
-        <br/>
-      <GeneralInformationFormStyled 
+        location_sites={location_sites} />
+      <br />
+      <br />
+      
+      <GeneralInformationFormStyled
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         childGeneralInformation={childInformation.general_information}
         counter={counter}
@@ -75,17 +77,31 @@ export default function index({
         satCount={satCount}
         psatCount={psatCount}
         register={register}
-        errors={errors} />
-        <br/>
-        <br/>
-      <MedicalCareInfoStyled 
+        errors={errors} 
+      />
+      <br />
+      <br />
+      <AllergyInformation
+        handleChildFormDetailsChange={handleChildFormDetailsChange}
+        childGeneralInformation={childInformation.general_information}
+        counter={counter}
+        handleScoresChange={handleScoresChange}
+        actCount={actCount}
+        satCount={satCount}
+        psatCount={psatCount}
+        register={register}
+        errors={errors}
+      />
+      <br />
+      <br />
+      <MedicalCareInfoStyled
         childEmergencyCare={childInformation.emergency_care_information}
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         counter={counter}
         register={register}
         errors={errors} />
-        <br/>
-        <br/>
+      <br />
+      <br />
       <div className="application-btn-container">
         {
           current < maxChild && counter == current &&

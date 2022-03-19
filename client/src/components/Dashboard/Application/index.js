@@ -31,11 +31,11 @@ import RelationshipToChildStyled from "../DaycareApplicationForm/RelationshipToC
 import CopyApplicationLinkModal from "./copylink";
 
 import TermsWaiverFormViewStyled from "./view/waiver";
-import { 
-  requestVendor, 
+import {
+  requestVendor,
   requestGetFormAppGroup,
   requestCreateGroupReminder,
-  requestGetVendorReminders 
+  requestGetVendorReminders
 } from "../../../redux/actions/Vendors";
 
 import {
@@ -502,7 +502,7 @@ export default function index() {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     copyStyles: true,
-    pageStyle:`
+    pageStyle: `
     #applicationForm  .highlights{
 
       border-top: none !important;
@@ -526,14 +526,14 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
-  const { groups, auth, vendors, 
-    applications, loading, 
+  const { groups, auth, vendors,
+    applications, loading,
     form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups },
     appReminders: { reminders = [] } } = useSelector(
-    ({ groups, auth, vendors, applications, loading, form, appReminders }) => {
-      return { groups, auth, vendors, applications, loading, form, appReminders };
-    }
-  );
+      ({ groups, auth, vendors, applications, loading, form, appReminders }) => {
+        return { groups, auth, vendors, applications, loading, form, appReminders };
+      }
+    );
 
 
 
@@ -564,7 +564,7 @@ export default function index() {
 
   const [appGroups, setAppGroups] = useState([]);
   const [exportFilename, setExportFilename] = useState("");
-  
+
   console.log("form app group", formAppGroups);
 
   useEffect(() => {
@@ -573,23 +573,23 @@ export default function index() {
 
       dispatch(requestVendor(auth.user_id));
 
-      if(queryParams && queryParams.form) {
+      if (queryParams && queryParams.form) {
         dispatch(requestGetCustomApplications(queryParams.form));
       }
 
-      if(queryParams && queryParams.opt) {
+      if (queryParams && queryParams.opt) {
         const opt = queryParams.opt;
 
-        if(opt === 'set-reminder') {
-          handleSelectedLabel({value: 'Set Reminder', opt:'set-reminder'})
+        if (opt === 'set-reminder') {
+          handleSelectedLabel({ value: 'Set Reminder', opt: 'set-reminder' })
         } else if (opt === 'termsconditions') {
-          handleSelectedLabel({value: 'Form Settings', opt:'termsconditions'});
-        } 
+          handleSelectedLabel({ value: 'Form Settings', opt: 'termsconditions' });
+        }
         else if (opt === 'logo') {
-          handleSelectedLabel({value: 'Logo', opt:'logo'});
+          handleSelectedLabel({ value: 'Logo', opt: 'logo' });
         }
         else {
-          handleSelectedLabel({value: 'Application Status', opt:'applicationstatus'});
+          handleSelectedLabel({ value: 'Application Status', opt: 'applicationstatus' });
         }
       }
     }
@@ -605,14 +605,14 @@ export default function index() {
     console.log('Vendorssss', vendors)
     if (vendors && vendors.length > 0 && vendors[0].id) {
 
-      if(queryParams && queryParams.vendor) {
+      if (queryParams && queryParams.vendor) {
         const newDefaultVendor = vendors.filter((vendor) => {
           return vendor.id2 == queryParams.vendor
         });
 
         setSelectedVendor(newDefaultVendor[0]);
 
-        if(queryParams && queryParams.form) {
+        if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
         } else {
           setAppGroups(newDefaultVendor[0].app_groups);
@@ -623,7 +623,7 @@ export default function index() {
       } else {
         console.log('Vendorrrzz', vendors[0])
         setSelectedVendor(vendors[0]);
-        if(queryParams && queryParams.form) {
+        if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
         } else {
           setAppGroups(vendors[0].app_groups);
@@ -635,7 +635,7 @@ export default function index() {
 
       //get vendors reminders
 
-      dispatch(requestGetVendorReminders({vendor: vendors[0].id}));
+      dispatch(requestGetVendorReminders({ vendor: vendors[0].id }));
     }
   }, [vendors]);
 
@@ -654,14 +654,14 @@ export default function index() {
     // console.log('matchForms', matchForms);
     setRenderForms(formList);
 
-    if(queryParams && queryParams.form) {
+    if (queryParams && queryParams.form) {
       setSelectedForm(queryParams.form);
 
       const tempForm = formList.filter((form) => {
         return form.form_id == queryParams.form;
       });
       console.log("tempForm", tempForm);
-      if(tempForm && tempForm.length > 0) {
+      if (tempForm && tempForm.length > 0) {
         setExportFilename(tempForm[0]?.form_contents?.formTitle);
       }
       // dispatch(requestGetCustomApplications(queryParams.form));
@@ -681,11 +681,11 @@ export default function index() {
 
   console.log("vendor", vendors);
 
-  const handleSelectedLabel = ({value, opt}) => {
+  const handleSelectedLabel = ({ value, opt }) => {
     setSelectedLabel(value);
     setSelectNonMenuOption(false);
     setSelectedApplication({});
-    window.history.replaceState("","","?opt=" + opt);
+    window.history.replaceState("", "", "?opt=" + opt);
     setView("");
   };
 
@@ -721,7 +721,7 @@ export default function index() {
     setView(view);
     setShowApplication(true);
     dispatch(requestGetApplicationHistory(application.app_id));
-    
+
     const temp = {
       app_id: application.app_id,
       verification: application.verification,
@@ -763,8 +763,8 @@ export default function index() {
         address: application?.child?.address
           ? application.child.address
           : isReadonly
-          ? "-"
-          : "",
+            ? "-"
+            : "",
         city: application?.child?.city ? application.child.city : "",
         state: application?.child?.state ? application.child.state : "",
         zip_code: application?.child?.zip_code ? application.child.zip_code : "",
@@ -781,8 +781,8 @@ export default function index() {
           ? parseArrayFormat(application.child.ethnicities.split(","))
           : [],
         preffered_start_date: application?.child?.preffered_start_date ?
-         new Date(application.child.preffered_start_date) : '',
-        current_classroom: application?.child?.current_classroom ? application.child.current_classroom: "",
+          new Date(application.child.preffered_start_date) : '',
+        current_classroom: application?.child?.current_classroom ? application.child.current_classroom : "",
         primary_language: application?.child?.primary_language ? application.child.primary_language : "",
         needed_days: application?.child?.needed_days ? application.child.needed_days : "",
         schedule_tour: application?.child?.schedule_tour ? application.child.schedule_tour : "",
@@ -856,60 +856,108 @@ export default function index() {
         mentee_gain: application?.child?.mentee_gain_program
           ? application.child.mentee_gain_program
           : "",
-        is_child_transferring: application?.child?.is_child_transferring 
-          ? application.child.is_child_transferring 
+        is_child_transferring: application?.child?.is_child_transferring
+          ? application.child.is_child_transferring
           : "",
-        does_child_require_physical_education_service: application?.child?.does_child_require_physical_education_service 
-          ? application.child.does_child_require_physical_education_service 
+        does_child_require_physical_education_service: application?.child?.does_child_require_physical_education_service
+          ? application.child.does_child_require_physical_education_service
           : "",
-        history_prev_diseases: application?.child?.history_prev_diseases 
-          ? application.child.history_prev_diseases 
+        history_prev_diseases: application?.child?.history_prev_diseases
+          ? application.child.history_prev_diseases
           : "", //start of questions
-        child_currently_doctors_care: application?.child?.child_currently_doctors_care 
-          ? application.child.child_currently_doctors_care 
+        child_currently_doctors_care: application?.child?.child_currently_doctors_care
+          ? application.child.child_currently_doctors_care
           : "",
-        reasons_previous_hospitalizations: application?.child?.reasons_previous_hospitalizations 
-          ? application.child.reasons_previous_hospitalizations 
+        reasons_previous_hospitalizations: application?.child?.reasons_previous_hospitalizations
+          ? application.child.reasons_previous_hospitalizations
           : "",
-        comments_suggestion: application?.child?.comments_suggestion 
-          ? application.child.comments_suggestion 
+        comments_suggestion: application?.child?.comments_suggestion
+          ? application.child.comments_suggestion
           : "",
-        list_special_dietary: application?.child?.list_special_dietary 
-          ? application.child.list_special_dietary 
+        list_special_dietary: application?.child?.list_special_dietary
+          ? application.child.list_special_dietary
           : "",
-        list_any_allergies: application?.child?.list_any_allergies 
-        ? application.child.list_any_allergies 
-        : "",
-        mental_physical_disabilities: application?.child?.mental_physical_disabilities 
-        ? application.child.mental_physical_disabilities 
-        : "",
-        medical_action_plan: application?.child?.medical_action_plan 
-        ? application.child.medical_action_plan 
-        : "",
-        list_fears_unique_behavior: application?.child?.list_fears_unique_behavior 
-        ? application.child.list_fears_unique_behavior 
-        : "",
-        transfer_reason: application?.child?.transfer_reason 
-        ? application.child.transfer_reason 
-        : "",
-        prev_school_phone: application?.child?.prev_school_phone 
-        ? application.child.prev_school_phone 
-        : "",
-        prev_school_city: application?.child?.prev_school_city 
-        ? application.child.prev_school_city 
-        : "",
-        prev_school_address: application?.child?.prev_school_address 
-        ? application.child.prev_school_address 
-        : "",
-        prev_school_attended: application?.child?.prev_school_attended 
-        ? application.child.prev_school_attended 
-        : "",
-        prev_school_state: application?.child?.prev_school_state 
-        ? application.child.prev_school_state 
-        : "",
-        prev_school_zip_code: application?.child?.prev_school_zip_code 
-        ? application.child.prev_school_zip_code 
-        : ""
+        list_any_allergies: application?.child?.list_any_allergies
+          ? application.child.list_any_allergies
+          : "",
+        mental_physical_disabilities: application?.child?.mental_physical_disabilities
+          ? application.child.mental_physical_disabilities
+          : "",
+        medical_action_plan: application?.child?.medical_action_plan
+          ? application.child.medical_action_plan
+          : "",
+        list_fears_unique_behavior: application?.child?.list_fears_unique_behavior
+          ? application.child.list_fears_unique_behavior
+          : "",
+        transfer_reason: application?.child?.transfer_reason
+          ? application.child.transfer_reason
+          : "",
+        prev_school_phone: application?.child?.prev_school_phone
+          ? application.child.prev_school_phone
+          : "",
+        prev_school_city: application?.child?.prev_school_city
+          ? application.child.prev_school_city
+          : "",
+        prev_school_address: application?.child?.prev_school_address
+          ? application.child.prev_school_address
+          : "",
+        prev_school_attended: application?.child?.prev_school_attended
+          ? application.child.prev_school_attended
+          : "",
+        prev_school_state: application?.child?.prev_school_state
+          ? application.child.prev_school_state
+          : "",
+        prev_school_zip_code: application?.child?.prev_school_zip_code
+          ? application.child.prev_school_zip_code
+          : "",
+        is_entrepreneur: application?.child?.is_entrepreneur
+          ? application.child.is_entrepreneur
+          : 0,
+        include_in_directory: application?.child?.include_in_directory
+          ? application.child.include_in_directory
+          : "",
+        business_name: application?.child?.business_name
+          ? application.child.business_name
+          : "",
+        business_website: application?.child?.business_website
+          ? application.child.business_website
+          : "",
+        business_phone: application?.child?.business_phone
+          ? application.child.business_phone
+          : "",
+        business_email: application?.child?.business_email
+          ? application.child.business_email
+          : "",
+        business_industry: application?.child?.business_industry
+          ? application.child.business_industry
+          : "",
+        business_address: application?.child?.business_address
+          ? application.child.business_address
+          : "",
+        business_description: application?.child?.business_description
+          ? application.child.business_description
+          : "",
+        employment_status: application?.child?.employment_status
+          ? application.child.employment_status
+          : "",
+        allergies_to_medicine: application?.child?.allergies_to_medicine
+          ? application.child.allergies_to_medicine
+          : "",
+        food_allergies: application?.child?.food_allergies
+          ? application.child.food_allergies
+          : "",
+        insect_allergies: application?.child?.insect_allergies
+          ? application.child.insect_allergies
+          : "",
+        other_allergies: application?.child?.other_allergies
+          ? application.child.other_allergies
+          : "",
+        current_medications: application?.child?.current_medications
+          ? application.child.current_medications
+          : "",
+        health_insurance_information: application?.child?.health_insurance_information
+          ? application.child.health_insurance_information
+          : "",
       },
       emergency_care_information: {
         doctor_name: application?.child?.doctor_name
@@ -930,7 +978,7 @@ export default function index() {
     };
     console.log('APPLICATIONNNNN', application)
     const parents = application.parents;
-    
+
     let items = [];
     for (const parent of parents) {
       const profile = {
@@ -965,14 +1013,14 @@ export default function index() {
           : "",
         person_recommend: parent.person_recommend ? parent.person_recommend : "",
         ethinicity: parent?.ethnicities
-        ? parseArrayFormat(parent.ethnicities.split(","))
-        : [],
+          ? parseArrayFormat(parent.ethnicities.split(","))
+          : [],
         gender: parent?.gender,
         date_of_birth: parent.birthdate ? new Date(parent.birthdate) : ''
       };
 
       items.push({ profile: profile, id: parent.parent_id, parent_id: parent.parent_id });
-      
+
     }
 
     if (application.emergency_contacts) {
@@ -1119,9 +1167,9 @@ export default function index() {
       }))
     }
 
-    let payload = {...updateApplication};
+    let payload = { ...updateApplication };
     payload.received_reminder = selectedApplication.received_reminder;
-    
+
     dispatch(requestUpdateApplication(payload));
   };
 
@@ -1173,7 +1221,7 @@ export default function index() {
         ),
         school_name: childInformation.general_information.school_name,
         school_phone: childInformation.general_information.school_phone,
-        has_suspended:   childInformation.general_information.has_suspended == "Yes" || childInformation.general_information.has_suspended == 1 ? 1 : 0,
+        has_suspended: childInformation.general_information.has_suspended == "Yes" || childInformation.general_information.has_suspended == 1 ? 1 : 0,
         reason_suspended: childInformation.general_information.reason_suspended,
         year_taken: childInformation.general_information.mentee_start_year,
         hobbies: childInformation.general_information.hobbies,
@@ -1237,14 +1285,30 @@ export default function index() {
         needed_days: childInformation.profile.needed_days,
         schedule_tour: childInformation.profile.schedule_tour,
         voucher: childInformation.profile.voucher,
-        ch_id: childInformation.ch_id
+        ch_id: childInformation.ch_id,
+        is_entrepreneur: childInformation.general_information.is_entrepreneur,
+        include_in_directory: childInformation.general_information.include_in_directory,
+        business_name: childInformation.general_information.business_name,
+        business_website: childInformation.general_information.business_website,
+        business_phone: childInformation.general_information.business_phone,
+        business_email: childInformation.general_information.business_email,
+        business_industry: childInformation.general_information.business_industry,
+        business_address: childInformation.general_information.business_address,
+        business_description: childInformation.general_information.business_description,
+        employment_status: childInformation.general_information.employment_status,
+        allergies_to_medicine: childInformation.general_information.allergies_to_medicine,
+        food_allergies: childInformation.general_information.food_allergies,
+        insect_allergies: childInformation.general_information.insect_allergies,
+        other_allergies: childInformation.general_information.other_allergies,
+        current_medications: childInformation.general_information.current_medications,
+        health_insurance_information: childInformation.general_information.health_insurance_information,
       },
       parents: setupParentsList(),
       emergency_contacts: JSON.stringify(emergencyContacts),
       section1_signature: selectedApplication.section1_signature,
       section1_date_signed: selectedApplication.section1_date_signed,
       section2_signature: selectedApplication.section2_signature,
-      section2_date_signed:  selectedApplication.section2_date_signed,
+      section2_date_signed: selectedApplication.section2_date_signed,
       section3_signature: selectedApplication.section3_signature,
       section3_date_signed: selectedApplication.section3_date_signed,
       section1_text: selectedApplication.section1_text,
@@ -1309,8 +1373,8 @@ export default function index() {
       child.profile = profile;
     } else if (section === "general_information") {
       if (id === "has_suspended") {
-        console.log('Has Suspended Value',value)
-        if (value == "0" ){
+        console.log('Has Suspended Value', value)
+        if (value == "0") {
           general_information = {
             ...general_information,
             ["reason_suspended"]: "",
@@ -1320,7 +1384,7 @@ export default function index() {
         //   ...general_information,
         //   has_suspended: value == "Yes" || value == "1" ? 1 : 0,
         // };
-         
+
       }
 
       if (id.includes("act_scores")) {
@@ -1382,7 +1446,7 @@ export default function index() {
       }
 
       return (
-        <a 
+        <a
           href=""
           onClick={(e) => {
             e.preventDefault()
@@ -1397,7 +1461,7 @@ export default function index() {
       )
     }
     return (
-      <a 
+      <a
         href=""
         onClick={(e) => {
           e.preventDefault();
@@ -1406,38 +1470,38 @@ export default function index() {
           const childInformationObj = {
             profile: {
               image: application.child.image ? application.child.image : "",
-              application_date: `History Update: ${format(new Date(row.updated_at ? row.updated_at: ""), "LLL dd, yyyy p")}`,
-              first_name: application.child.firstname ? application.child.firstname: "",
-              last_name: application.child.lastname ? application.child.lastname:"",
-              nick_name: application.child.nickname ? application.child.nickname: "",
+              application_date: `History Update: ${format(new Date(row.updated_at ? row.updated_at : ""), "LLL dd, yyyy p")}`,
+              first_name: application.child.firstname ? application.child.firstname : "",
+              last_name: application.child.lastname ? application.child.lastname : "",
+              nick_name: application.child.nickname ? application.child.nickname : "",
               date_of_birth: new Date(application.child.birthdate),
               gender: application.child.gender,
-              phone_type: application.child.phone_type ? application.child.phone_type: "",
-              phone_number: application.child.phone_number ? application.child.phone_number:"",
-              email_type: application.child.email_type ? application.child.email_type:"",
-              email_address: application.child.email_address ? application.child.email_address: "",
-              phone_type2: application.child.phone_type2 ? application.child.phone_type2: "",
-              phone_number2: application.child.phone_number2 ? application.child.phone_number2:"",
-              email_type2: application.child.email_type2 ? application.child.email_type2:"",
-              email_address2: application.child.email_address2 ? application.child.email_address2: "",
-              address: application.child.address ? application.child.address: "",
-              city: application.child.city ? application.child.city: "",
-              state: application.child.state ? application.child.state: "",
-              zip_code: application.child.zip_code ? application.child.zip_code: "",
-              location_site: application.child.location_site ? application.child.location_site: "",
+              phone_type: application.child.phone_type ? application.child.phone_type : "",
+              phone_number: application.child.phone_number ? application.child.phone_number : "",
+              email_type: application.child.email_type ? application.child.email_type : "",
+              email_address: application.child.email_address ? application.child.email_address : "",
+              phone_type2: application.child.phone_type2 ? application.child.phone_type2 : "",
+              phone_number2: application.child.phone_number2 ? application.child.phone_number2 : "",
+              email_type2: application.child.email_type2 ? application.child.email_type2 : "",
+              email_address2: application.child.email_address2 ? application.child.email_address2 : "",
+              address: application.child.address ? application.child.address : "",
+              city: application.child.city ? application.child.city : "",
+              state: application.child.state ? application.child.state : "",
+              zip_code: application.child.zip_code ? application.child.zip_code : "",
+              location_site: application.child.location_site ? application.child.location_site : "",
               child_lives_with: application.child.child_lives_with ? parseArrayFormat(application.child.child_lives_with.split(",")) : [],
               program: application.child.programs ? parseArrayFormat(application.child.programs.split(",")) : [],
               ethinicity: application.child.ethnicities ? parseArrayFormat(application.child.ethnicities.split(",")) : [],
-              nick_name: application.child.nickname ? application.child.nickname: "",
+              nick_name: application.child.nickname ? application.child.nickname : "",
               preffered_start_date: new Date(application.child.preffered_start_date),
-              current_classroom: application.child.current_classroom ? application.child.current_classroom: "",
+              current_classroom: application.child.current_classroom ? application.child.current_classroom : "",
               primary_language: application.child.primary_language ? application.child.primary_language : "",
               needed_days: application.child.needed_days ? application.child.needed_days : "",
               schedule_tour: application.child.schedule_tour ? application.child.schedule_tour : "",
               voucher: application.child.voucher ? application.child.voucher : ""
             },
             general_information: {
-              grade: application.child.grade_number ? application.child.grade_number: "",
+              grade: application.child.grade_number ? application.child.grade_number : "",
               class_rank: application.child.class_rank ? application.child.class_rank : "",
               gpa_quarter_year: application.child.gpa_quarter_year ? application.child.gpa_quarter_year : "",
               gpa_quarter_q1: application.child.gpa_quarter_q1 ? application.child.gpa_quarter_q1 : "",
@@ -1454,8 +1518,8 @@ export default function index() {
               psat_scores: [],
               school_name: application.child.school_name ? application.child.school_name : "",
               school_phone: application.child.school_phone ? application.child.school_phone : "",
-            //  has_suspended: application.child.has_suspended + "",
-              has_suspended: application.child.has_suspended ,
+              //  has_suspended: application.child.has_suspended + "",
+              has_suspended: application.child.has_suspended,
               reason_suspended: application.child.reason_suspended,
               mentee_start_year: application.child.year_taken,
               hobbies: application.child.hobbies ? application.child.hobbies : "",
@@ -1466,60 +1530,108 @@ export default function index() {
               awards: application.child.awards ? application.child.awards : "",
               accomplishments: application.child.accomplishments ? application.child.accomplishments : "",
               mentee_gain: application.child.mentee_gain_program ? application.child.mentee_gain_program : "",
-              is_child_transferring: application.child.is_child_transferring 
-                ? application.child.is_child_transferring 
+              is_child_transferring: application.child.is_child_transferring
+                ? application.child.is_child_transferring
                 : "",
-              does_child_require_physical_education_service: application.child.does_child_require_physical_education_service 
-                ? application.child.does_child_require_physical_education_service 
+              does_child_require_physical_education_service: application.child.does_child_require_physical_education_service
+                ? application.child.does_child_require_physical_education_service
                 : "",
-              history_prev_diseases: application.child.history_prev_diseases 
-                ? application.child.history_prev_diseases 
+              history_prev_diseases: application.child.history_prev_diseases
+                ? application.child.history_prev_diseases
                 : "", //start of questions
-              child_currently_doctors_care: application.child.child_currently_doctors_care 
-                ? application.child.child_currently_doctors_care 
+              child_currently_doctors_care: application.child.child_currently_doctors_care
+                ? application.child.child_currently_doctors_care
                 : "",
-              reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations 
-                ? application.child.reasons_previous_hospitalizations 
+              reasons_previous_hospitalizations: application.child.reasons_previous_hospitalizations
+                ? application.child.reasons_previous_hospitalizations
                 : "",
-              comments_suggestion: application.child.comments_suggestion 
-                ? application.child.comments_suggestion 
+              comments_suggestion: application.child.comments_suggestion
+                ? application.child.comments_suggestion
                 : "",
-              list_special_dietary: application.child.list_special_dietary 
-                ? application.child.list_special_dietary 
+              list_special_dietary: application.child.list_special_dietary
+                ? application.child.list_special_dietary
                 : "",
-              list_any_allergies: application.child.list_any_allergies 
-              ? application.child.list_any_allergies 
-              : "",
-              mental_physical_disabilities: application.child.mental_physical_disabilities 
-              ? application.child.mental_physical_disabilities 
-              : "",
-              medical_action_plan: application.child.medical_action_plan 
-              ? application.child.medical_action_plan 
-              : "",
-              list_fears_unique_behavior: application.child.list_fears_unique_behavior 
-              ? application.child.list_fears_unique_behavior 
-              : "",
-              transfer_reason: application.child.transfer_reason 
-              ? application.child.transfer_reason 
-              : "",
-              prev_school_phone: application.child.prev_school_phone 
-              ? application.child.prev_school_phone 
-              : "",
-              prev_school_city: application.child.prev_school_city 
-              ? application.child.prev_school_city 
-              : "",
-              prev_school_address: application.child.prev_school_address 
-              ? application.child.prev_school_address 
-              : "",
-              prev_school_attended: application.child.prev_school_attended 
-              ? application.child.prev_school_attended 
-              : "",
-              prev_school_state: application.child.prev_school_state 
-              ? application.child.prev_school_state 
-              : "",
-              prev_school_zip_code: application.child.prev_school_zip_code 
-              ? application.child.prev_school_zip_code 
-              : ""
+              list_any_allergies: application.child.list_any_allergies
+                ? application.child.list_any_allergies
+                : "",
+              mental_physical_disabilities: application.child.mental_physical_disabilities
+                ? application.child.mental_physical_disabilities
+                : "",
+              medical_action_plan: application.child.medical_action_plan
+                ? application.child.medical_action_plan
+                : "",
+              list_fears_unique_behavior: application.child.list_fears_unique_behavior
+                ? application.child.list_fears_unique_behavior
+                : "",
+              transfer_reason: application.child.transfer_reason
+                ? application.child.transfer_reason
+                : "",
+              prev_school_phone: application.child.prev_school_phone
+                ? application.child.prev_school_phone
+                : "",
+              prev_school_city: application.child.prev_school_city
+                ? application.child.prev_school_city
+                : "",
+              prev_school_address: application.child.prev_school_address
+                ? application.child.prev_school_address
+                : "",
+              prev_school_attended: application.child.prev_school_attended
+                ? application.child.prev_school_attended
+                : "",
+              prev_school_state: application.child.prev_school_state
+                ? application.child.prev_school_state
+                : "",
+              prev_school_zip_code: application.child.prev_school_zip_code
+                ? application.child.prev_school_zip_code
+                : "",
+              is_entrepreneur: application?.child?.is_entrepreneur
+                ? application.child.is_entrepreneur
+                : 0,
+              include_in_directory: application?.child?.include_in_directory
+                ? application.child.include_in_directory
+                : "",
+              business_name: application?.child?.business_name
+                ? application.child.business_name
+                : "",
+              business_website: application?.child?.business_website
+                ? application.child.business_website
+                : "",
+              business_phone: application?.child?.business_phone
+                ? application.child.business_phone
+                : "",
+              business_email: application?.child?.business_email
+                ? application.child.business_email
+                : "",
+              business_industry: application?.child?.business_industry
+                ? application.child.business_industry
+                : "",
+              business_address: application?.child?.business_address
+                ? application.child.business_address
+                : "",
+              business_description: application?.child?.business_description
+                ? application.child.business_description
+                : "",
+              employment_status: application?.child?.employment_status
+                ? application.child.employment_status
+                : "",
+              allergies_to_medicine: application?.child?.allergies_to_medicine
+                ? application.child.allergies_to_medicine
+                : "",
+              food_allergies: application?.child?.food_allergies
+                ? application.child.food_allergies
+                : "",
+              insect_allergies: application?.child?.insect_allergies
+                ? application.child.insect_allergies
+                : "",
+              other_allergies: application?.child?.other_allergies
+                ? application.child.other_allergies
+                : "",
+              current_medications: application?.child?.current_medications
+                ? application.child.current_medications
+                : "",
+              health_insurance_information: application?.child?.health_insurance_information
+                ? application.child.health_insurance_information
+                : "",
             },
             emergency_care_information: {
               doctor_name: application.child.doctor_name ? application.child.doctor_name : "",
@@ -1533,7 +1645,7 @@ export default function index() {
           const parents = application.parents;
 
           let items = []
-          for(const parent of parents) {
+          for (const parent of parents) {
             const profile = {
               image: parent.image ? parent.image : "",
               first_name: parent.firstname ? parent.firstname : "",
@@ -1558,15 +1670,15 @@ export default function index() {
               level_education: parent.level_of_education ? parent.level_of_education : "",
               child_importance_hs: parent.child_hs_grad ? parent.child_hs_grad : "",
               child_importance_col: parent.child_col_grad ? parent.child_col_grad : "",
-              person_recommend: parent.person_recommend ? parent.person_recommend: "",
+              person_recommend: parent.person_recommend ? parent.person_recommend : "",
               ethinicity: parent?.ethnicities
-              ? parseArrayFormat(parent.ethnicities.split(","))
-              : [],
+                ? parseArrayFormat(parent.ethnicities.split(","))
+                : [],
               gender: parent?.gender,
               date_of_birth: new Date(parent?.birthdate)
             }
 
-            items.push({profile: profile, parent_id: parent.parent_id});
+            items.push({ profile: profile, parent_id: parent.parent_id });
           }
 
           setChildInformation(childInformationObj);
@@ -1574,7 +1686,7 @@ export default function index() {
           setIsFormHistory(true);
           setIsReadonly(true);
 
-          if(application.emergency_contacts) {
+          if (application.emergency_contacts) {
             setEmergencyContacts(JSON.parse(application.emergency_contacts));
           } else {
             setEmergencyContacts(emergency_contacts);
@@ -1595,7 +1707,7 @@ export default function index() {
               signature: application.section3_signature
             }
           }
-          
+
           setTermsWaiver(termsWaiver);
         }}
       >
@@ -1606,10 +1718,10 @@ export default function index() {
 
   const paginationRowsPerPageOptions = [10, 25, 50, 100];
   const paginationComponentOptions = {
-    rowsPerPageText: 'Rows per page:', 
-    rangeSeparatorText: 'of', 
+    rowsPerPageText: 'Rows per page:',
+    rangeSeparatorText: 'of',
     noRowsPerPage: false,
-    selectAllRowsItem: true, 
+    selectAllRowsItem: true,
     selectAllRowsItemText: 'All'
   }
 
@@ -1673,29 +1785,29 @@ export default function index() {
     }
   }
 
-  
+
   const handleParentChildRelationship = (parent, child, relationship) => {
 
     let exists = false;
 
     console.log("relationships", relationships)
 
-    for(const [index, item] of relationships.entries()) {
-      if(item.parent == parent && item.child == child) {
+    for (const [index, item] of relationships.entries()) {
+      if (item.parent == parent && item.child == child) {
         let tempRelationships = relationships;
         tempRelationships[index].parent = parent;
         tempRelationships[index].child = child;
         tempRelationships[index].relationship = relationship;
 
         exists = true;
-        console.log('Temp Relationships 1',tempRelationships)
+        console.log('Temp Relationships 1', tempRelationships)
         setRelationships([...tempRelationships]);
         break;
       }
     }
 
-    if(!exists) {
-      console.log('Temp Relationships 2',...relationships, {
+    if (!exists) {
+      console.log('Temp Relationships 2', ...relationships, {
         parent: parent,
         child: child,
         relationship: relationship
@@ -1708,8 +1820,8 @@ export default function index() {
     }
   }
 
-  console.log('loading applications',applications)
-  console.log('parentsInformation123123123123',parentsInformation)
+  console.log('loading applications', applications)
+  console.log('parentsInformation123123123123', parentsInformation)
 
   const handleCreateGroupReminder = (payload) => {
     dispatch(requestCreateGroupReminder(payload));
@@ -1743,7 +1855,7 @@ export default function index() {
   ]
 
   const getAppGroupNames = (reminder) => {
-    if(reminder && reminder.app_groups) {
+    if (reminder && reminder.app_groups) {
       let formattedNames = '';
 
       reminder.app_groups.map((r) => {
@@ -1758,16 +1870,16 @@ export default function index() {
     }
   }
 
-  console.log('selectedVendor',selectedVendor)
-  console.log('renderForms',renderForms)
+  console.log('selectedVendor', selectedVendor)
+  console.log('renderForms', renderForms)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
         <h2>Applications</h2>
         {vendors && vendors.length > 0 && (
           <div>
-            <select className="form-control" 
-              style={{ 
+            <select className="form-control"
+              style={{
                 "marginLeft": "20px",
                 "fontSize": "1.5em",
                 "borderRadius": "0",
@@ -1788,11 +1900,11 @@ export default function index() {
                 });
 
 
-                window.history.replaceState("","","?vendor=" + chosenVendor[0].id2);
+                window.history.replaceState("", "", "?vendor=" + chosenVendor[0].id2);
 
                 //dispatch(requestGetApplications(target.value));
                 dispatch(requestGetForms({ vendor: target.value, categories: [] }))
-                if(chosenVendor && chosenVendor.length > 0) {
+                if (chosenVendor && chosenVendor.length > 0) {
                   setSelectedVendor(chosenVendor[0]);
                 }
               }}
@@ -1811,7 +1923,7 @@ export default function index() {
           vendors && vendors.length > 0 && (
             <div>
               <select
-                style={{ 
+                style={{
                   "marginLeft": "20px",
                   "fontSize": "1.5em",
                   "borderRadius": "0",
@@ -1826,12 +1938,12 @@ export default function index() {
                 }}
                 onChange={({ target }) => {
 
-       
-                  if(target.value == "default") {
+
+                  if (target.value == "default") {
                     console.log("selectedvendor", selectedVendor);
                     setSelectedForm("default");
                     setAppGroups(selectedVendor.app_groups);
-                    window.history.replaceState("","","?vendor=" + selectedVendor.id2);
+                    window.history.replaceState("", "", "?vendor=" + selectedVendor.id2);
                     dispatch(requestGetApplications(selectedVendor.id));
                   } else {
                     setSelectedForm(target.value);
@@ -1840,7 +1952,7 @@ export default function index() {
                       setSelectedApplication({})
                     }
                     console.log("form form", target.value);
-                    window.history.replaceState("","","?form=" + target.value);
+                    window.history.replaceState("", "", "?form=" + target.value);
                     setAppGroups([]);
                     dispatch(requestGetFormAppGroup(target.value));
                     dispatch(requestGetCustomApplications(target.value));
@@ -1871,48 +1983,44 @@ export default function index() {
               selectedVendor && selectedVendor.id2 && selectedForm == "default" ? (
                 <div className="copy-application-link">
                   <a
-                    href={ selectedVendor.is_daycare ? `/application/${
-                      selectedVendor.id2
-                    }/daycare` : `/application/${
-                      selectedVendor.id2
-                    }`}>
+                    href={selectedVendor.is_daycare ? `/application/${selectedVendor.id2
+                      }/daycare` : `/application/${selectedVendor.id2
+                      }`}>
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
                   <FontAwesomeIcon icon={faLink} onClick={() => {
                     setCopyApplicationLinkModal(true)
-                    setCurrentCopyLink( selectedVendor.is_daycare ? `/application/${
-                      selectedVendor.id2
-                    }/daycare` : `/application/${
-                      selectedVendor.id2
-                    }`)
-                  }}/>
+                    setCurrentCopyLink(selectedVendor.is_daycare ? `/application/${selectedVendor.id2
+                      }/daycare` : `/application/${selectedVendor.id2
+                      }`)
+                  }} />
                 </div>
               ) : selectedForm && selectedForm != "default" ? (
-                  <div className="copy-application-link">
-                    <a
-                      href={`/form/${selectedForm}`}
-                    >
-                      <FontAwesomeIcon icon={faFileSignature} />
-                      <span>Application</span>
-                    </a>
-                  
-                    <FontAwesomeIcon icon={faLink} onClick={() => {
-                      setCopyApplicationLinkModal(true)
-                      setCurrentCopyLink( `/form/${selectedForm}`)
-                    }}/>
-                  </div>
+                <div className="copy-application-link">
+                  <a
+                    href={`/form/${selectedForm}`}
+                  >
+                    <FontAwesomeIcon icon={faFileSignature} />
+                    <span>Application</span>
+                  </a>
+
+                  <FontAwesomeIcon icon={faLink} onClick={() => {
+                    setCopyApplicationLinkModal(true)
+                    setCurrentCopyLink(`/form/${selectedForm}`)
+                  }} />
+                </div>
               ) : (
                 <div className="copy-application-link">
                   <a
-                    
+
                   >
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
                   <FontAwesomeIcon icon={faLink} onClick={() => {
                     setCopyApplicationLinkModal(true)
-                  }}/>
+                  }} />
                 </div>
               )
             }
@@ -1922,11 +2030,10 @@ export default function index() {
               currentCopyLink={currentCopyLink}
             />
             <div
-              className={`${
-                selectedLabel === "Application Status" ? "selected" : ""
-              }`}
+              className={`${selectedLabel === "Application Status" ? "selected" : ""
+                }`}
               onClick={() => {
-                handleSelectedLabel({value: "Application Status", opt: 'applicationstatus'});
+                handleSelectedLabel({ value: "Application Status", opt: 'applicationstatus' });
               }}>
               <FontAwesomeIcon icon={faThList} />
               <span>Application Status</span>
@@ -1939,28 +2046,26 @@ export default function index() {
               trigger={
                 <div>
                   <FontAwesomeIcon icon={faCogs} />
-                  <span style={{"marginLeft": "1em"}}>Application Settings</span>
+                  <span style={{ "marginLeft": "1em" }}>Application Settings</span>
                 </div>
               }
               lazyRender
               open
             >
               <div
-                className={`${
-                  selectedLabel === "Form Settings" ? "selected" : ""
-                }`}
+                className={`${selectedLabel === "Form Settings" ? "selected" : ""
+                  }`}
                 onClick={() => {
-                  handleSelectedLabel({value: "Form Settings", opt: 'termsconditions'});
+                  handleSelectedLabel({ value: "Form Settings", opt: 'termsconditions' });
                 }}
               >
                 Terms and Conditions
               </div>
-              <div 
-                className={`${
-                  selectedLabel === "Set Reminder" ? "selected" : ""
-                }`}
+              <div
+                className={`${selectedLabel === "Set Reminder" ? "selected" : ""
+                  }`}
                 onClick={() => {
-                  handleSelectedLabel({value: "Set Reminder", opt: 'set-reminder'});
+                  handleSelectedLabel({ value: "Set Reminder", opt: 'set-reminder' });
                 }}
               >
                 Set Reminder
@@ -2033,7 +2138,7 @@ export default function index() {
               handleCreateGroupReminder={handleCreateGroupReminder}
             />
           )}
-           {selectedLabel === "Logo" && !selectNonMenuOption && (
+          {selectedLabel === "Logo" && !selectNonMenuOption && (
             <Logo
               formSettingsLoading={loading.form_settings}
               vendor={selectedVendor}
@@ -2076,7 +2181,7 @@ export default function index() {
             subHeader
             paginationRowsPerPageOptions={paginationRowsPerPageOptions}
             paginationComponentOptions={paginationComponentOptions}
-            onSelectedRowsChange={() => {}}
+            onSelectedRowsChange={() => { }}
           />
         )
       }
@@ -2087,7 +2192,7 @@ export default function index() {
               <div id="dataTableContainer">
                 {
                   (
-                    <DataTable 
+                    <DataTable
                       columns={columnsAppHistory}
                       data={view === 'application' ? applications.applicationHistory : customApplicationHistory}
                       pagination
@@ -2113,10 +2218,10 @@ export default function index() {
             <Form
               historyList={customApplicationHistory}
               key={applicationFormKey}
-              { ...(isFormHistory ? selectedCustomFormHistory : selectedApplication) }
+              {...(isFormHistory ? selectedCustomFormHistory : selectedApplication)}
               application_date={
                 isFormHistory
-                  ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at: ""), "LLL dd, yyyy p")}`
+                  ? `History Update: ${format(new Date(selectedCustomFormHistory.updated_at ? selectedCustomFormHistory.updated_at : ""), "LLL dd, yyyy p")}`
                   : 'Most Up to date Application'
               }
               isReadOnly={isReadonly}
@@ -2164,9 +2269,9 @@ export default function index() {
             ref={componentRef}
             autoComplete="off"
             onSubmit={handleSubmit(onSubmitSaveApplication)}>
-            {selectNonMenuOption && 
-              view == "application" && 
-              selectedApplication && 
+            {selectNonMenuOption &&
+              view == "application" &&
+              selectedApplication &&
               !selectedApplication.is_daycare ? (
               <ChildFormViewStyled
                 childInformation={childInformation}
@@ -2188,9 +2293,9 @@ export default function index() {
               />
             ) : ""}
 
-            {selectNonMenuOption && 
-              view == "application" && 
-              selectedApplication && 
+            {selectNonMenuOption &&
+              view == "application" &&
+              selectedApplication &&
               selectedApplication.is_daycare ? (
               <DaycareChildFormView
                 childInformation={childInformation}
@@ -2210,9 +2315,9 @@ export default function index() {
               <hr className="style-eight"></hr>
             )}
 
-            {selectNonMenuOption && 
-              view == "application" && 
-              selectedApplication && 
+            {selectNonMenuOption &&
+              view == "application" &&
+              selectedApplication &&
               !selectedApplication.is_daycare ? (
               <ParentFormViewStyled
                 parents={parentsInformation}
@@ -2227,9 +2332,9 @@ export default function index() {
               />
             ) : ""}
 
-            {selectNonMenuOption && 
-              view == "application" && 
-              selectedApplication && 
+            {selectNonMenuOption &&
+              view == "application" &&
+              selectedApplication &&
               selectedApplication.is_daycare ? (
               <DaycareParentFormView
                 parents={parentsInformation}
@@ -2243,24 +2348,24 @@ export default function index() {
               />
             ) : ""}
             {
-              selectNonMenuOption && 
-              view == "application" && 
-              selectedApplication && 
-              selectedApplication.is_daycare ? (
+              selectNonMenuOption &&
+                view == "application" &&
+                selectedApplication &&
+                selectedApplication.is_daycare ? (
                 <>
-                <hr className="style-eight"></hr>
-                <RelationshipToChildStyled
-                  selectedApplication={selectedApplication}
-                  handleParentChildRelationship={handleParentChildRelationship}
-                  parents={parentsInformation}
-                  childs={[{...childInformation}]}
-                  errors={errors}
-                  register={register}
-                  isReadonly={isReadonly}
-                  relationships={relationships}
-                  chRelationships={chRelationships}
-                  isReadView={true}
-                />
+                  <hr className="style-eight"></hr>
+                  <RelationshipToChildStyled
+                    selectedApplication={selectedApplication}
+                    handleParentChildRelationship={handleParentChildRelationship}
+                    parents={parentsInformation}
+                    childs={[{ ...childInformation }]}
+                    errors={errors}
+                    register={register}
+                    isReadonly={isReadonly}
+                    relationships={relationships}
+                    chRelationships={chRelationships}
+                    isReadView={true}
+                  />
                 </>
               ) : ""
             }

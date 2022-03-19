@@ -9,6 +9,8 @@ import { faEdit, faPrint } from "@fortawesome/free-solid-svg-icons";
 import ChildInformationFormStyled from "../../../ApplicationForm/ChildInformationForm";
 import GeneralInformationFormStyled from "../../../ApplicationForm/GeneralInformationForm";
 import MedicalCareInfoStyled from "../../../ApplicationForm/MedicalCareIformationForm";
+import AllergyInformation from '../../../ApplicationForm/AllergyInformation'
+
 
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 
@@ -195,6 +197,19 @@ export default function index({
             isVendorView={isVendorView}
           />
           <br />
+          <AllergyInformation
+             printPageClassname="printpage-break general-information"
+             handleChildFormDetailsChange={handleChildFormDetailsChange}
+             childGeneralInformation={childInformation?.general_information}
+             counter={1}
+             handleScoresChange={handleScoresChange}
+             register={register}
+             errors={errors}
+             isReadonly={isReadonly}
+             pastChildInformation={pastChildInformation}
+             isVendorView={isVendorView}
+            /> 
+              <br />
           <MedicalCareInfoStyled
             printPageClassname="printpage-break medicalCare-information"
             childEmergencyCare={childInformation?.emergency_care_information}

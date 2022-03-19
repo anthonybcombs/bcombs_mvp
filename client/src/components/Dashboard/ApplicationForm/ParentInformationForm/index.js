@@ -1077,7 +1077,7 @@ export default function index({
                 type="text"
                 id={`parent_emailaddress_${counter - 1}`}
                 defaultValue={parentProfile.email_address}
-                defaultValue={parentProfile?.email_address}
+
                 readOnly={isReadonly}
                 name={"parent_emailaddress" + (counter - 1)}
                 className={

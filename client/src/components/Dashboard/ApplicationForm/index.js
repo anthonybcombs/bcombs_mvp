@@ -140,8 +140,26 @@ const ApplicationFormStyled = styled.div`
 `;
 
 
+const customApplicationField = {
+  is_entrepreneur: 0,
+  include_in_directory: '',
+  business_name: '',
+  business_website: '',
+  business_phone: '',
+  business_email: '',
+  business_industry: '',
+  business_address: '',
+  business_description: '',
+  employment_status: '',
+  allergies_to_medicine: '',
+  food_allergies: '',
+  insect_allergies: '',
+  other_allergies: '',
+  current_medications: '',
+  health_insurance_information: ''
+}
 function isEmailAddress(str) {
-  var pattern =/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  var pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   return pattern.test(str);  // returns a boolean 
 }
 
@@ -166,6 +184,8 @@ export default function index() {
     }
   );
 
+  console.log('vendorssssssss',vendor)
+
   // if(applications.addapplication && applications.addapplication.message == "application created") {
   //   scrollToTop("auto");
   //   setTimeout(() => {
@@ -174,7 +194,7 @@ export default function index() {
   // }
 
   useEffect(() => {
-    if(vendor_id) {
+    if (vendor_id) {
       dispatch(requestVendorById2(vendor_id));
       //dispatch(requestVendor(vendor_id));
     }
@@ -183,36 +203,36 @@ export default function index() {
   useEffect(() => {
     console.log('form auth', auth);
 
-    if(auth.status == 'SIGNED_IN') {
+    if (auth.status == 'SIGNED_IN') {
       console.log('parentsInformation', parentsInformation);
 
       let newParentsInformation = [...parentsInformation];
 
       console.log('new Date(auth.user.birth_date)', auth.user.birth_date);
 
-      newParentsInformation[0].profile.address = auth.user.address ? 
+      newParentsInformation[0].profile.address = auth.user.address ?
         auth.user.address : newParentsInformation[0].profile.address;
 
-      newParentsInformation[0].profile.zip_code = auth.user.zip_code ? 
+      newParentsInformation[0].profile.zip_code = auth.user.zip_code ?
         auth.user.zip_code : newParentsInformation[0].profile.zip_code;
-      
-      newParentsInformation[0].profile.date_of_birth = auth.user.birth_date ? 
+
+      newParentsInformation[0].profile.date_of_birth = auth.user.birth_date ?
         new Date(parseInt(auth.user.birth_date)) : newParentsInformation[0].profile.date_of_birth;
 
-      newParentsInformation[0].profile.email_address = auth.user.email ? 
+      newParentsInformation[0].profile.email_address = auth.user.email ?
         auth.user.email : newParentsInformation[0].profile.email_address;
 
-      newParentsInformation[0].profile.first_name = auth.user.first_name ? 
+      newParentsInformation[0].profile.first_name = auth.user.first_name ?
         auth.user.first_name : newParentsInformation[0].profile.first_name;
 
-      newParentsInformation[0].profile.last_name = auth.user.last_name ? 
+      newParentsInformation[0].profile.last_name = auth.user.last_name ?
         auth.user.last_name : newParentsInformation[0].profile.last_name;
 
-      newParentsInformation[0].profile.gender = auth.user.gender ? 
+      newParentsInformation[0].profile.gender = auth.user.gender ?
         auth.user.gender : newParentsInformation[0].profile.gender;
 
       const gender = auth.user.gender + "";
-      newParentsInformation[0].profile.gender = auth.user.gender ? 
+      newParentsInformation[0].profile.gender = auth.user.gender ?
         gender.charAt(0).toUpperCase() + gender.slice(1) : newParentsInformation[0].profile.gender;
 
       setParentsInformation(...[newParentsInformation]);
@@ -225,15 +245,16 @@ export default function index() {
     }
   }, [vendors]);
 
-  if(vendor && vendor.id) {
+  if (vendor && vendor.id) {
 
     console.log("vendor", vendor);
 
     let app_programs = []
 
-    for(const program of vendor.app_programs) {
+    for (const program of vendor.app_programs) {
       app_programs.push({
         id: program.id,
+        value: program.id,
         name: program.name,
         label: program.name
       })
@@ -241,7 +262,7 @@ export default function index() {
 
     vendor.app_programs = app_programs;
 
-    if(vendor.is_daycare) {
+    if (vendor.is_daycare) {
       window.location.replace(`/application/${vendor_id}/daycare`);
     }
   }
@@ -253,11 +274,11 @@ export default function index() {
     marginTop: 0,
     right: "15px"
   }
-  console.log('vendorrrr',vendor)
+  console.log('vendorrrr', vendor)
   const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
   const DB_DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
   const DATE_FORMAT = "yyyy-MM-dd";
-  
+
   const [selectedStep, setSelectedStep] = useState(1);
 
   const [numChild, setNumChild] = useState(1);
@@ -268,9 +289,9 @@ export default function index() {
 
   const [psatCount, setPsatCount] = useState(1);
 
-  const [showRelationshipView, setShowRelationshipView ] = useState(false);
+  const [showRelationshipView, setShowRelationshipView] = useState(false);
 
-  const [isParentAddressRequired,setIsParentAddressRequired] = useState(false)
+  const [isParentAddressRequired, setIsParentAddressRequired] = useState(false)
 
   const handleWizardSelection = (index) => {
     setSelectedStep(index);
@@ -292,47 +313,47 @@ export default function index() {
 
     let psatScores = general_information.psat_scores;
 
-    if(section === "ACT") {
-      if(action === "add") {
+    if (section === "ACT") {
+      if (action === "add") {
         let newVal = actCount + 1;
-        if(newVal <= 3) {
+        if (newVal <= 3) {
           setActCount(newVal);
           actScores.push(scoreObj);
         }
       } else {
         let newVal = actCount - 1;
-        if(newVal > 0) {
+        if (newVal > 0) {
           setActCount(newVal);
           actScores.pop();
-          
+
         }
       }
       general_information.act_scores = actScores;
     } else if (section === "SAT") {
-      if(action === "add") {
+      if (action === "add") {
         let newVal = satCount + 1;
-        if(newVal <= 3) {
+        if (newVal <= 3) {
           setSatCount(newVal);
           satScores.push(scoreObj)
         }
       } else {
         let newVal = satCount - 1;
-        if(newVal > 0) {
+        if (newVal > 0) {
           setSatCount(newVal);
           satScores.pop();
         }
       }
       general_information.sat_scores = satScores;
     } else if (section === "PSAT") {
-      if(action === "add") {
+      if (action === "add") {
         let newVal = psatCount + 1;
-        if(newVal <= 3) {
+        if (newVal <= 3) {
           setPsatCount(newVal);
           psatScores.push(scoreObj);
         }
       } else {
         let newVal = psatCount - 1;
-        if(newVal > 0) {
+        if (newVal > 0) {
           setPsatCount(newVal);
           psatScores.pop();
         }
@@ -394,9 +415,9 @@ export default function index() {
       gpa_cumulative_q2: "",
       gpa_cumulative_q3: "",
       gpa_cumulative_q4: "",
-      act_scores: [{...scoreObj}],
-      sat_scores: [{...scoreObj}],
-      psat_scores: [{...scoreObj}],
+      act_scores: [{ ...scoreObj }],
+      sat_scores: [{ ...scoreObj }],
+      psat_scores: [{ ...scoreObj }],
       school_name: "",
       school_phone: "",
       has_suspended: null,
@@ -409,7 +430,8 @@ export default function index() {
       team_affiliations: "",
       awards: "",
       accomplishments: "",
-      mentee_gain: ""
+      mentee_gain: "",
+      ...customApplicationField
     },
     emergency_care_information: {
       doctor_name: "",
@@ -418,8 +440,8 @@ export default function index() {
       hospital_phone: ""
     }
   };
-
-  const [childsInformation, setChildsInformation] = useState([{...childInfoObject}]);
+  console.log('childInfoObjecttttttttt',childInfoObject)
+  const [childsInformation, setChildsInformation] = useState([{ ...childInfoObject }]);
 
   const handleChildFormDetailsChange = (index, section, id, value) => {
 
@@ -428,32 +450,32 @@ export default function index() {
     let general_information = childs[index].general_information;
     let emergency_care_information = childs[index].emergency_care_information;
 
-    if(section === "profile") {
-      profile = {...profile, [id]: value};
+    if (section === "profile") {
+      profile = { ...profile, [id]: value };
       childs[index].profile = profile;
-    } else if(section === "general_information") {
+    } else if (section === "general_information") {
 
-      if(id === "has_suspended") {
+      if (id === "has_suspended") {
         if (value == "0")
-          general_information = {...general_information, ["reason_suspended"]: ""};
+          general_information = { ...general_information, ["reason_suspended"]: "" };
       }
 
-      if(id.includes("act_scores")) {
+      if (id.includes("act_scores")) {
         let x = id.split("-");
         general_information.act_scores[x[1]][x[2]] = value;
       } else if (id.includes("sat_scores")) {
         let x = id.split("-");
-        if(x[0] === "psat_scores") {
+        if (x[0] === "psat_scores") {
           general_information.psat_scores[x[1]][x[2]] = value;
         } else {
           general_information.sat_scores[x[1]][x[2]] = value;
         }
       } else {
-        general_information = {...general_information, [id]: value};
+        general_information = { ...general_information, [id]: value };
       }
       childs[index].general_information = general_information;
-    } else if(section === "emergency_care_information") {
-      emergency_care_information = {...emergency_care_information, [id]: value};
+    } else if (section === "emergency_care_information") {
+      emergency_care_information = { ...emergency_care_information, [id]: value };
       childs[index].emergency_care_information = emergency_care_information;
     }
 
@@ -461,7 +483,7 @@ export default function index() {
   }
 
   const handleAddNumChild = () => {
-    if(childsInformation.length < maxChild) {
+    if (childsInformation.length < maxChild) {
       childInfoObject.profile.address = childsInformation[0].profile.address;
       childInfoObject.profile.city = childsInformation[0].profile.city;
       childInfoObject.profile.state = childsInformation[0].profile.state;
@@ -470,7 +492,7 @@ export default function index() {
 
       childInfoObject.profile.ethinicity = childsInformation[0].profile.ethinicity;
       childInfoObject.profile.program = childsInformation[0].profile.program;
-      
+
       childInfoObject.emergency_care_information.doctor_name = childsInformation[0].emergency_care_information.doctor_name;
       childInfoObject.emergency_care_information.doctor_phone = childsInformation[0].emergency_care_information.doctor_phone;
       childInfoObject.emergency_care_information.hospital_preference = childsInformation[0].emergency_care_information.hospital_preference;
@@ -480,22 +502,22 @@ export default function index() {
   }
 
   const handleRemoveNumChild = (index) => {
-    if(childsInformation.length > 1) {
+    if (childsInformation.length > 1) {
       let tempChildsInformation = childsInformation;
-      tempChildsInformation.splice( index, 1 )
+      tempChildsInformation.splice(index, 1)
       setChildsInformation([...tempChildsInformation]);
     }
   }
 
   const renderChildform = () => {
     let items = [];
-    
-    for(let i = 1; i <= childsInformation.length; i++) {
-      if(i == childsInformation.length) {
+
+    for (let i = 1; i <= childsInformation.length; i++) {
+      if (i == childsInformation.length) {
         items.push(
-          <ChildFormStyled 
+          <ChildFormStyled
             handleChildFormDetailsChange={handleChildFormDetailsChange}
-            childInformation={childsInformation[i - 1]} 
+            childInformation={childsInformation[i - 1]}
             counter={i} key={i}
             handleScoresChange={handleScoresChange}
             actCount={actCount}
@@ -515,9 +537,9 @@ export default function index() {
       } else {
         items.push(
           <div key={i}>
-            <ChildFormStyled 
+            <ChildFormStyled
               handleChildFormDetailsChange={handleChildFormDetailsChange}
-              childInformation={childsInformation[i - 1]} 
+              childInformation={childsInformation[i - 1]}
               counter={i} key={i}
               handleScoresChange={handleScoresChange}
               actCount={actCount}
@@ -558,10 +580,10 @@ export default function index() {
   }
 
   const emergency_contacts = [
-    {...childEmergencyContact},
-    {...childEmergencyContact},
-    {...childEmergencyContact},
-    {...childEmergencyContact}
+    { ...childEmergencyContact },
+    { ...childEmergencyContact },
+    { ...childEmergencyContact },
+    { ...childEmergencyContact }
   ]
 
   const parentInfoObject = {
@@ -599,20 +621,20 @@ export default function index() {
       date_of_birth: ""
     }
   };
-  
-  const [parentsInformation, setParentsInformation] = useState([{...parentInfoObject}]);
+
+  const [parentsInformation, setParentsInformation] = useState([{ ...parentInfoObject }]);
 
   const [emergencyContacts, setEmergencyContacts] = useState([...emergency_contacts]);
   const handleParentFormDetailsChange = (index, section, id, value) => {
-    
-    if(section === "profile") {
+
+    if (section === "profile") {
       let parents = parentsInformation;
       let profile = parents[index].profile;
 
-      profile = {...profile, [id]: value};
+      profile = { ...profile, [id]: value };
       parents[index].profile = profile;
       setParentsInformation([...parents]);
-    } else if(section === "emergency_contacts") {
+    } else if (section === "emergency_contacts") {
       let emergency_contacts = emergencyContacts;
       let x = id.split("-");
       emergency_contacts[index][id] = value;
@@ -623,17 +645,17 @@ export default function index() {
   }
 
   const handleAddParent = () => {
-    if(parentsInformation.length < maxParent) {
+    if (parentsInformation.length < maxParent) {
       setParentsInformation([...parentsInformation, parentInfoObject]);
     }
   }
 
   const handleRemoveParent = (index) => {
-    if(parentsInformation.length > 1) {
+    if (parentsInformation.length > 1) {
       let tempParentsInformation = parentsInformation;
 
       console.log("parentsInformation", parentsInformation);
-      tempParentsInformation.splice( index, 1 )
+      tempParentsInformation.splice(index, 1)
       setParentsInformation([...tempParentsInformation]);
     }
   }
@@ -656,13 +678,13 @@ export default function index() {
     }
   }
 
-  const [termsWaiver, setTermsWaiver] = useState({...termsWaiverObj});
+  const [termsWaiver, setTermsWaiver] = useState({ ...termsWaiverObj });
 
   const handleWaiverFormDetailsChange = (section, id, value) => {
 
     let subTermsWaiver = termsWaiver;
 
-    if(section === "section1") {
+    if (section === "section1") {
       subTermsWaiver.section1[id] = value;
     } else if (section === "section2") {
       subTermsWaiver.section2[id] = value;
@@ -672,7 +694,7 @@ export default function index() {
       console.log("Invalid Section");
     }
 
-    setTermsWaiver({...subTermsWaiver});
+    setTermsWaiver({ ...subTermsWaiver });
   }
 
   const { register, handleSubmit, errors, clearError, setError } = useForm({
@@ -682,73 +704,74 @@ export default function index() {
 
   const isFormValid = (section) => {
 
-    if(selectedStep == 4) return true;
+    if (selectedStep == 4) return true;
 
     let isValid = true
 
-    if(section == "1") {
+    if (section == "1") {
 
       let childs = childsInformation;
 
-      for(let i = 0; i < childsInformation.length; i++) {
+      for (let i = 0; i < childsInformation.length; i++) {
         let child = childs[i];
         let profile = child.profile;
         let gi = child.general_information;
 
-        console.log("isEmailAddress(profile.email_address2)",isEmailAddress(profile.email_address))
-        console.log("isEmailAddress(profile.email_address2)",profile)
-        if( (profile.email_address !== ''  && !isEmailAddress(profile.email_address))) {
+        console.log("isEmailAddress(profile.email_address2)", isEmailAddress(profile.email_address))
+        console.log("isEmailAddress(profile.email_address2)", profile)
+        if ((profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
           isValid = false;
           break;
         }
 
-        if(!profile.first_name ||
+        if (!profile.first_name ||
           !profile.last_name ||
           !profile.date_of_birth ||
           !profile.gender ||
           !profile.address ||
           !profile.city ||
-          ( profile.phone_number !== '' && profile.phone_number.includes('_')) || 
+          (profile.phone_number !== '' && profile.phone_number.includes('_')) ||
           !profile.state ||
           !profile.zip_code ||
-          profile.zip_code.length < 5  || 
+          profile.zip_code.length < 5 ||
           !profile.location_site ||
           !profile.child_lives_with ||
-          !gi.grade ||
-          !gi.school_name ||
-          !gi.mentee_gain ||
-          ( gi.school_phone && gi.school_phone.includes('_')) ||
-          (childsInformation[i].emergency_care_information !== '' &&  childsInformation[i].emergency_care_information.doctor_phone.includes('_')) || 
-          (childsInformation[i].emergency_care_information  !== '' &&  childsInformation[i].emergency_care_information.hospital_phone.includes('_')) 
+          (!gi.grade ||
+            !gi.school_name ||
+            !gi.mentee_gain) ||  
+          (gi.school_phone && gi.school_phone.includes('_')) ||
+          (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.doctor_phone.includes('_')) ||
+          (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.hospital_phone.includes('_')) || 
+          (gi.business_email !== '' &&  !isEmailAddress(gi.business_email))
           ) {
-            isValid = false;
-            break;
-          }
+          isValid = false;
+          break;
+        }
       }
-    } else if(section == "2") {
+    } else if (section == "2") {
 
       let parents = parentsInformation;
 
-      for(let i = 0; i < parentsInformation.length; i++) {
+      for (let i = 0; i < parentsInformation.length; i++) {
         let parent = parents[i];
         let profile = parent.profile;
-        
-  
-        if(profile.first_name  === '' || profile.last_name  === '') {
+
+
+        if (profile.first_name === '' || profile.last_name === '') {
           isValid = false;
           break;
         }
-        if( (profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
+        if ((profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
           isValid = false;
           break;
         }
-        if( (profile.phone_number !== '' && profile.phone_number.includes('_'))){
+        if ((profile.phone_number !== '' && profile.phone_number.includes('_'))) {
           isValid = false;
           break;
 
         }
-        if( !profile.first_name   ||
-          !profile.last_name   ||
+        if (!profile.first_name ||
+          !profile.last_name ||
           !profile.password ||
           !profile.confirmed_password ||
           !(profile.password == profile.confirmed_password) ||
@@ -758,34 +781,34 @@ export default function index() {
           !profile.goals_child_program ||
           !profile.person_recommend,
           !profile.gender ||
-          !profile.date_of_birth  ||  
+          !profile.date_of_birth ||
           (isParentAddressRequired && (!profile.address || !profile.zip_code || profile.zip_code.length < 5 || !profile.state || !profile.city))
-          ) {
-            isValid = false;
-            break;
-          }
+        ) {
+          isValid = false;
+          break;
+        }
       }
 
-      for(let i = 0; i < 2; i++) {
-        if(!emergencyContacts[i].first_name ||
+      for (let i = 0; i < 2; i++) {
+        if (!emergencyContacts[i].first_name ||
           !emergencyContacts[i].last_name ||
           !emergencyContacts[i].gender ||
           !emergencyContacts[i].mobile_phone ||
           (emergencyContacts[i].mobile_phone && emergencyContacts[i].mobile_phone.includes('_')) ||
-          (emergencyContacts[i].work_phone && emergencyContacts[i].work_phone.includes('_')  )||
+          (emergencyContacts[i].work_phone && emergencyContacts[i].work_phone.includes('_')) ||
           !emergencyContacts[i].relationship_to_child) {
-            isValid = false;
-            break;
-          }
+          isValid = false;
+          break;
+        }
       }
 
-    } else if(section == "3") {
+    } else if (section == "3") {
 
-      if((!termsWaiver.section1.checked || !termsWaiver.section1.signature) && vendor.section1_show > 0 ||
+      if ((!termsWaiver.section1.checked || !termsWaiver.section1.signature) && vendor.section1_show > 0 ||
         (!termsWaiver.section2.checked || !termsWaiver.section1.signature) && vendor.section2_show > 0 ||
         (!termsWaiver.section3.checked || !termsWaiver.section3.signature) && vendor.section3_show > 0) {
-          isValid = false;
-        }
+        isValid = false;
+      }
 
       // if(!termsWaiver.section1.checked || 
       //   !termsWaiver.section1.signature ||
@@ -804,13 +827,13 @@ export default function index() {
 
     let tempClass = "";
 
-    tempClass += (step == selectedStep) ? "active": "";
+    tempClass += (step == selectedStep) ? "active" : "";
 
     tempClass += " ";
 
-    if(step > 1)  {
-      for(let i = 1; i < step; i++) {
-        if(!isFormValid(i)) {
+    if (step > 1) {
+      for (let i = 1; i < step; i++) {
+        if (!isFormValid(i)) {
           tempClass += "disabled";
           break;
         }
@@ -833,7 +856,7 @@ export default function index() {
 
   const getDatetime = (datetime) => {
     let today = new Date(datetime);
-    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     let dateTime = date + ' ' + time;
 
@@ -847,7 +870,7 @@ export default function index() {
   }
 
   const getGradeDesc = (grade) => {
-    if(grade == 12) {
+    if (grade == 12) {
       return "Seniors";
     } else if (grade == 11) {
       return "Juniors";
@@ -881,7 +904,7 @@ export default function index() {
         password: parent.profile.password,
         occupation: parent.profile.occupation,
         employers_name: parent.profile.employer_name,
-        parent_goals: parent.profile.goals_parent_program, 
+        parent_goals: parent.profile.goals_parent_program,
         parent_child_goals: parent.profile.goals_child_program,
         live_area: parseInt(parent.profile.live_area),
         level_of_education: parent.profile.level_education,
@@ -890,7 +913,7 @@ export default function index() {
         address: parent.profile.address,
         city: parent.profile.city,
         state: parent.profile.state,
-        zip_code: parent.profile.zip_code !== '' ?  parent.profile.zip_code : childProfile.zip_code,
+        zip_code: parent.profile.zip_code !== '' ? parent.profile.zip_code : childProfile.zip_code,
         person_recommend: parent.profile.person_recommend,
         birthdate: format(
           new Date(parent.profile.date_of_birth),
@@ -920,7 +943,7 @@ export default function index() {
   const onSubmit = () => {
 
     let payload = []
-    for(let i = 0; i < childsInformation.length; i++) {
+    for (let i = 0; i < childsInformation.length; i++) {
       //setup Application Object
       let request_params = {
         vendor: vendor.id,
@@ -980,7 +1003,23 @@ export default function index() {
           doctor_name: childsInformation[i].emergency_care_information.doctor_name,
           doctor_phone: childsInformation[i].emergency_care_information.doctor_phone,
           hospital_preference: childsInformation[i].emergency_care_information.hospital_preference,
-          hospital_phone: childsInformation[i].emergency_care_information.hospital_phone
+          hospital_phone: childsInformation[i].emergency_care_information.hospital_phone,
+          is_entrepreneur: childsInformation[i].general_information.is_entrepreneur,
+            include_in_directory: childsInformation[i].general_information.include_in_directory,
+            business_name: childsInformation[i].general_information.business_name,
+            business_website: childsInformation[i].general_information.business_website,
+            business_phone: childsInformation[i].general_information.business_phone,
+            business_email: childsInformation[i].general_information.business_email,
+            business_industry: childsInformation[i].general_information.business_industry,
+            business_address: childsInformation[i].general_information.business_address,
+            business_description: childsInformation[i].general_information.business_description,
+            employment_status: childsInformation[i].general_information.employment_status,
+            allergies_to_medicine: childsInformation[i].general_information.allergies_to_medicine,
+            food_allergies: childsInformation[i].general_information.food_allergies,
+            insect_allergies: childsInformation[i].general_information.insect_allergies,
+            other_allergies: childsInformation[i].general_information.other_allergies,
+            current_medications: childsInformation[i].general_information.current_medications,
+            health_insurance_information: childsInformation[i].general_information.health_insurance_information,
         },
         parents: setupParentsList(childsInformation[i].profile),
         section1_signature: termsWaiver.section1.signature,
@@ -1000,7 +1039,7 @@ export default function index() {
 
       payload.push(request_params);
     }
-    console.log('Request Add Application Payload',payload)
+    console.log('Request Add Application Payload', payload)
     dispatch(requestAddApplication(payload));
   }
 
@@ -1015,14 +1054,14 @@ export default function index() {
   }
 
   const RELATION_TO_CHILD_OPTIONS = [
-    { id: 1, value: "Mother", name: "Mother"},
-    { id: 2, value: "Father", name: "Father"},
-    { id: 3, value: "Grandparent", name: "Grandparent"},
-    { id: 4, value: "Aunt / Uncle", name: "Aunt / Uncle"},
-    { id: 5, value: "Sibling", name: "Sibling"},
-    { id: 6, value: "Other Relative", name: "Other Relative"},
-    { id: 7, value: "Family Friend", name: "Family Friend"},
-    { id: 8, value: "Other", name: "Other"}
+    { id: 1, value: "Mother", name: "Mother" },
+    { id: 2, value: "Father", name: "Father" },
+    { id: 3, value: "Grandparent", name: "Grandparent" },
+    { id: 4, value: "Aunt / Uncle", name: "Aunt / Uncle" },
+    { id: 5, value: "Sibling", name: "Sibling" },
+    { id: 6, value: "Other Relative", name: "Other Relative" },
+    { id: 7, value: "Family Friend", name: "Family Friend" },
+    { id: 8, value: "Other", name: "Other" }
   ];
 
   const handleParentChildRelationship = () => {
@@ -1036,48 +1075,48 @@ export default function index() {
   return (
     <ApplicationFormStyled
       id="applicationForm">
-        {
-          loading.application ? (
-            <Loading />
-          ) : showRelationshipView ? (
-            <div className="container">
-              {
-                applications.addapplication && applications.addapplication.message == "application created" && (
-                  <SuccessApplicationModal
-                    onRedirect={handleRedirectToOrigin}
-                  />
-                )
-              }
-              <form
-                autoComplete="off"
-                onSubmit={handleSubmit(onSubmit)}
-                ref = {formRef}
-              >
-                <div className="pc-relationship-wrapper">
-                  <p className="header">
-                    RELATIONSHIP QUESTIONNAIRE
-                  </p>
-                  <div className="content">
-                    {
-                      parentsInformation.map((parent, i) => (
-                        <div key={i} className="question-box">
-                          <p>What is the relation of <strong>{parent.profile.first_name}</strong> to</p>
-                          {
-                            <ul>
+      {
+        loading.application ? (
+          <Loading />
+        ) : showRelationshipView ? (
+          <div className="container">
+            {
+              applications.addapplication && applications.addapplication.message == "application created" && (
+                <SuccessApplicationModal
+                  onRedirect={handleRedirectToOrigin}
+                />
+              )
+            }
+            <form
+              autoComplete="off"
+              onSubmit={handleSubmit(onSubmit)}
+              ref={formRef}
+            >
+              <div className="pc-relationship-wrapper">
+                <p className="header">
+                  RELATIONSHIP QUESTIONNAIRE
+                </p>
+                <div className="content">
+                  {
+                    parentsInformation.map((parent, i) => (
+                      <div key={i} className="question-box">
+                        <p>What is the relation of <strong>{parent.profile.first_name}</strong> to</p>
+                        {
+                          <ul>
                             {
                               parentsInformation.map((otherParent, k) => (
                                 parent.id != otherParent.id && (
                                   <li key={k}>
                                     <span>
                                       {otherParent.profile.first_name}
-                                      <small style={{fontSize: "50%"}}>(Parent)</small>
+                                      <small style={{ fontSize: "50%" }}>(Parent)</small>
                                     </span>
-                                    
+
                                     <div className='select-field-wrapper'>
                                       <select
                                         name={"parent_parent" + i + "" + k}
                                         className="input-field"
-                                        onChange={({target}) => {
+                                        onChange={({ target }) => {
                                           handleParentChildRelationship()
                                         }}
                                       >
@@ -1100,13 +1139,13 @@ export default function index() {
                                 <li key={j}>
                                   <span>
                                     {child.profile.first_name}
-                                    <small style={{fontSize: "50%"}}>(Child)</small>  
+                                    <small style={{ fontSize: "50%" }}>(Child)</small>
                                   </span>
                                   <div className='select-field-wrapper'>
                                     <select
                                       name={"ch_parent" + i + "" + j}
                                       className="input-field"
-                                      onChange={({target}) => {
+                                      onChange={({ target }) => {
                                         handleParentChildRelationship()
                                       }}
                                     >
@@ -1123,36 +1162,36 @@ export default function index() {
                                 </li>
                               ))
                             }
-                            </ul>
-                          }
-                        </div>
-                      ))
-                    }
-                  </div>
-                  <p className="header">
-                    CHILD TO CHILD RELATIONSHIP QUESTIONNAIRE
-                  </p>
-                  <div className="content">
-                    {
-                      childsInformation.length > 1 && (
-                        childsInformation.map((child, i) => (
-                          <div key={i} className="question-box">
-                            <p>What is the relation of <strong>{child.profile.first_name}</strong> to</p>
-                            {
-                              <ul>
+                          </ul>
+                        }
+                      </div>
+                    ))
+                  }
+                </div>
+                <p className="header">
+                  CHILD TO CHILD RELATIONSHIP QUESTIONNAIRE
+                </p>
+                <div className="content">
+                  {
+                    childsInformation.length > 1 && (
+                      childsInformation.map((child, i) => (
+                        <div key={i} className="question-box">
+                          <p>What is the relation of <strong>{child.profile.first_name}</strong> to</p>
+                          {
+                            <ul>
                               {
                                 childsInformation.map((otherChild, j) => (
                                   child.id != otherChild.id && (
                                     <li key={j}>
                                       <span>
                                         {otherChild.profile.first_name}
-                                        <small style={{fontSize: "50%"}}>(Child)</small>  
+                                        <small style={{ fontSize: "50%" }}>(Child)</small>
                                       </span>
                                       <div className="select-field-wrapper">
                                         <select
                                           name={"ch_ch" + i + "" + j}
                                           className="input-field"
-                                          onChange={({target}) => {
+                                          onChange={({ target }) => {
                                             handleParentChildRelationship()
                                           }}
                                         >
@@ -1170,20 +1209,20 @@ export default function index() {
                                   )
                                 ))
                               }
-                              </ul>
-                            }
-                          </div>
-                        ))
-                      )
-                    }
-                  </div>
-                  <div className="application-btn-container">
-                    <button type="submit">Submit</button>
-                  </div>
+                            </ul>
+                          }
+                        </div>
+                      ))
+                    )
+                  }
                 </div>
-              </form>
-            </div>
-          ) : (
+                <div className="application-btn-container">
+                  <button type="submit">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        ) : (
           <div className="wizard-wrapper">
             {
               vendor && vendor.id ? (
@@ -1191,7 +1230,7 @@ export default function index() {
                   <div className="wizard-inner">
                     <div className="connecting-line"></div>
                     <ul className="nav-tabs">
-                      <li className={selectedStep == 1 ? "active": ""}>
+                      <li className={selectedStep == 1 ? "active" : ""}>
                         <a href="#" value="1" onClick={(e) => {
                           e.preventDefault();
                           handleWizardSelection(1)
@@ -1200,14 +1239,14 @@ export default function index() {
                           <span className="round-tab-title">Child</span>
                         </a>
                       </li>
-                      <li 
+                      <li
                         className={getNavItemClass(2)}
                       >
                         <a href="#" onClick={(e) => {
                           e.preventDefault();
-      
-                          if(getNavItemClass(2).includes("disabled")) return;
-      
+
+                          if (getNavItemClass(2).includes("disabled")) return;
+
                           handleWizardSelection(2)
                         }}>
                           <span className="round-tab">2</span>
@@ -1219,8 +1258,8 @@ export default function index() {
                       >
                         <a href="#" onClick={(e) => {
                           e.preventDefault();
-      
-                          if(getNavItemClass(3).includes("disabled")) return;
+
+                          if (getNavItemClass(3).includes("disabled")) return;
                           handleWizardSelection(3)
                         }}>
                           <span className="round-tab">3</span>
@@ -1232,8 +1271,8 @@ export default function index() {
                       >
                         <a href="#" onClick={(e) => {
                           e.preventDefault();
-      
-                          if(getNavItemClass(4).includes("disabled")) return;
+
+                          if (getNavItemClass(4).includes("disabled")) return;
                           handleWizardSelection(4)
                         }}>
                           <span className="round-tab">4</span>
@@ -1246,7 +1285,7 @@ export default function index() {
                     <form
                       autoComplete="off"
                       onSubmit={handleSubmit(onSubmit)}
-                      ref = {formRef}
+                      ref={formRef}
                     >
                       <div className={(selectedStep == 1 || selectedStep == 4) ? "" : "hide"}>
                         {
@@ -1270,7 +1309,7 @@ export default function index() {
                         />
                       </div>
                       {selectedStep == 4 && <hr className="style-eight"></hr>}
-                      <div className={(selectedStep == 3 || selectedStep == 4 ) ? "" : "hide"}>
+                      <div className={(selectedStep == 3 || selectedStep == 4) ? "" : "hide"}>
                         <TermsWaiverFormStyled
                           handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
                           termsWaiver={termsWaiver}
@@ -1279,7 +1318,7 @@ export default function index() {
                           vendor={vendor}
                         />
                       </div>
-                      <div className="application-btn-container" style={(selectedStep == 1) ? section1BtnContainerStyle: {}}>
+                      <div className="application-btn-container" style={(selectedStep == 1) ? section1BtnContainerStyle : {}}>
                         {
                           selectedStep < 4 &&
                           <button
@@ -1287,45 +1326,45 @@ export default function index() {
                             className="right"
                             onClick={(e) => {
                               e.preventDefault();
-      
-                              if(!isFormValid(selectedStep)) {
+                              console.log('isFormValid(selectedStep)', isFormValid(selectedStep))
+                              if (!isFormValid(selectedStep)) {
                                 formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
                                 e.preventDefault();
                                 return;
                               };
                               clearError();
-                              if(selectedStep == 1) handleWizardSelection(2);
-                              else if(selectedStep == 2) handleWizardSelection(3)
+                              if (selectedStep == 1) handleWizardSelection(2);
+                              else if (selectedStep == 2) handleWizardSelection(3)
                               else if (selectedStep == 3) handleWizardSelection(4)
-                
+
                               //scrollToTop("smooth");
-      
+
                               window.scrollTo(0, 0)
-      
+
                             }}
                           >
                             Next
                           </button>
                         }
                         { //
-                          (selectedStep > 1 && selectedStep != 4 ) &&
+                          (selectedStep > 1 && selectedStep != 4) &&
                           <a href="#" className="left" onClick={(e) => {
                             e.preventDefault();
                             console.log('Selected Step', selectedStep)
-                            if(selectedStep == 3) handleWizardSelection(2);
-                            else if(selectedStep == 2) handleWizardSelection(1)
+                            if (selectedStep == 3) handleWizardSelection(2);
+                            else if (selectedStep == 2) handleWizardSelection(1)
                             //else if(selectedStep == 4) handleWizardSelection(3)
-              
+
                             scrollToTop("smooth");
-      
+
                           }}>
                             Previous1
                           </a>
                         }
                         {
-                          (selectedStep == 4 ) &&
+                          (selectedStep == 4) &&
                           <button onClick={handleRelationshipEvent}>Submit</button>
-                        }  
+                        }
                       </div>
                     </form>
                   </div>
@@ -1335,9 +1374,9 @@ export default function index() {
               )
             }
           </div>
-          )
-        } 
-   
+        )
+      }
+
       <a href="#" className="to-top"></a>
     </ApplicationFormStyled>
   );
