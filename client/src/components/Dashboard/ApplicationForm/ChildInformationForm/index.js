@@ -780,6 +780,8 @@ export default function index({
                 Ethinicity (select all choices that apply)
               </label>
             </div>
+            <br/>
+            <br/>
             <input
               type="checkbox"
               name="ethnicity_select_all"
@@ -804,6 +806,7 @@ export default function index({
               }}
 
             /> Select All
+         
             <br />
           </div>
         </div>
