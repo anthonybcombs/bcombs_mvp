@@ -238,6 +238,22 @@ const inputs = `
         schedule_tour: String
         voucher: String
         ch_id: String
+        is_entrepreneur: Int
+        include_in_directory: String
+        business_name: String
+        business_website: String
+        business_phone: String
+        business_email: String
+        business_industry: String
+        business_address: String
+        business_description: String
+        employment_status: String
+        allergies_to_medicine: String
+        food_allergies: String
+        insect_allergies: String
+        other_allergies: String
+        current_medications: String
+        health_insurance_information: String
     }
 
     input ParentInfoInput {
@@ -319,6 +335,7 @@ const inputs = `
         hospital_preference: String
         hospital_phone: String
         image: String
+
     }
 
     input DaycareParentInfoInput {
@@ -1140,6 +1157,22 @@ const queryTypes = `
         needed_days: String
         schedule_tour: String
         voucher: String
+        is_entrepreneur: Int
+        include_in_directory: String
+        business_name: String
+        business_website: String
+        business_phone: String
+        business_email: String
+        business_industry: String
+        business_address: String
+        business_description: String
+        employment_status: String
+        allergies_to_medicine: String
+        food_allergies: String
+        insect_allergies: String
+        other_allergies: String
+        current_medications: String
+        health_insurance_information: String
     }
 
     type Parent {
