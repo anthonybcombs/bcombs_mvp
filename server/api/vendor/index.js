@@ -148,7 +148,7 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
       `
         SELECT 
           BIN_TO_UUID(v.id) as id, 
-          BIN_TO_UUID(va.user) as user,
+          BIN_TO_UUID(v.user) as user,
           BIN_TO_UUID(v.user) as vendor_user,
           v.id2,
           v.name, 
@@ -586,7 +586,8 @@ export const createVendor = async ({
   section1_show,
   section2_show,
   section3_show,
-  logo
+  logo,
+  is_daycare
 }) => {
   const db = makeDb();
   let result;
@@ -608,9 +609,10 @@ export const createVendor = async ({
         section1_show,
         section2_show,
         section3_show,
-        logo)
+        logo,
+        is_daycare)
       VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), 
-      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       [ 
         user,
@@ -624,7 +626,8 @@ export const createVendor = async ({
         section1_show,
         section2_show,
         section3_show,
-        logo
+        logo,
+        is_daycare
       ]
     );
 

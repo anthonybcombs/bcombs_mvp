@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 
+import { Multiselect } from "multiselect-react-dropdown";
 
 import {
   requestAddAdmin,
@@ -151,7 +152,7 @@ export default function index({
 
   if(selectedForm.form_id == 'default' || selectedForm.form_id == 'lot') {
     vendorName = newVendor.name;
-    formName = selectedForm.form_id == 'default' ? 'Mentoring Application' : 'Lot Form'
+    formName = selectedForm.form_id == 'default' ? `${newVendor.is_daycare ? 'Daycare' : 'Mentoring'} Application` : 'Lot Form'
   } else {
     vendorName = selectedVendor.name;
     formName = selectedForm?.form_contents?.formTitle;
@@ -166,18 +167,18 @@ export default function index({
 
   const [vendorOptions, setVendorOptions] = useState([]);
 
-  const [formOptions, setFormOptions] = useState([]);
-
   const [isVendorEmpty, setIsVendorEmpty] = useState();
 
   const [selectedAdmin, setSelectedAdmin] = useState({});
 
   const [isUpdate, setIsUpdate] = useState(false);
 
-  useState(() => {
-    console.log('addAdmin is done', loading);
-  }, loading.addAdmin)
+  const [formOptions, setFormOptions] = useState([]);
 
+  useEffect(() => {
+    console.log('addAdmin is done', loading);
+  }, [loading.addAdmin])
+  
   const handleAddAdminChange = (id, value) => {
 
     console.log(id, value);
@@ -309,6 +310,47 @@ export default function index({
                     {
                       <label disabled className="form-control"> {formName}</label>
                     }
+
+                    {/* <label className="control-label">Forms</label>
+                    <Multiselect
+                      id={"vendors"}
+                      className="error"
+                      selectedValues={addAdminFields.forms}
+                      options={formOptions}
+                      hasSelectAll={false}
+                      onSelect={selectedList => {
+                        if (selectedList.length > 0) setIsVendorEmpty(false);
+
+                        //handleAddAdminChange("forms", selectedList);
+                      }}
+                      onRemove={selectedList => {
+                        if (selectedList.length <= 0) setIsVendorEmpty(true);
+
+                        //handleAddAdminChange("forms", selectedList)
+                      }}
+                      placeholder="Select Application"
+                      displayValue="name"
+                      closeIcon="cancel"
+                      closeOnSelect={false}
+                      showCheckbox={true}
+                      autocomplete="false"
+                      style={{ searchBox: { border: isVendorEmpty ? "1px solid red" : "1px solid #ccc" } }}
+                    />
+                    <div style={{ display: 'block' }}>
+                      <input
+                        type="checkbox"
+                        name="forms_select_all"
+                        onChange={e => {
+                          if (e.target.checked) {
+                            handleAddAdminChange("forms", formOptions);
+                          }
+                          else {
+                            handleAddAdminChange("forms", []);
+                          }
+                        }}
+
+                      /> Select All
+                    </div> */}
                   </div>
                   <div style={{ display: "flex", justifyContent: "center" }}>
                     <button className="submit-btn" type="submit">Submit</button>

@@ -365,7 +365,7 @@ export default function index() {
           }
         });
         payload.vendor2 = selectedVendor?.vendor2;
-        
+
         payload.currentUser = auth.user_id;
 
         console.log("add admin payload", payload);
