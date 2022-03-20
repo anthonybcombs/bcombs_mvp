@@ -1299,7 +1299,7 @@ const resolvers = {
         sendAdminInvite({
           email: admin.email,
           name: admin.name,
-          vendor: admin.vendor2,
+          vendorId: admin.vendor2,
           isExist: true
         });
       } else {
@@ -1320,7 +1320,7 @@ const resolvers = {
           email: admin.email,
           password: newPassword,
           name: admin.name,
-          vendor: admin.vendor2
+          vendorId: admin.vendor2
         });
       }
 

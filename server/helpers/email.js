@@ -264,7 +264,13 @@ export const sendMigratedAccount = async ({ email, password, firstname }) => {
   }
 };
 
-export const sendAdminInvite = async ({ email, password = "", name, vendor, isExist = false }) => {
+export const sendAdminInvite = async ({ 
+  email, 
+  password = "", 
+  name, 
+  vendorId, 
+  isExist = false
+}) => {
   try {
     if(isExist) {
       sendEmail({
@@ -284,7 +290,7 @@ export const sendAdminInvite = async ({ email, password = "", name, vendor, isEx
               Thanks
             </p>
             <p>
-              To access the application, plese go to this site: https://stg20.bcombs.com/dashboard/application?vendor=${vendor}
+              To access the application, plese go to this site: https://stg20.bcombs.com/dashboard/application?vendor=${vendorId}
             </p<
           </div>
         ` // html body
