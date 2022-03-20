@@ -149,6 +149,7 @@ const inputs = `
         section1_show: Int
         section2_show: Int
         section3_show: Int
+        logo: String
     }
 
     input ScoreInfoInput {
@@ -509,6 +510,7 @@ const inputs = `
         name: String!
         email: String!
         vendor: String!
+        vendor2: Int
         forms: [AdminFormInput]
         currentUser: String!
     }
@@ -1051,6 +1053,25 @@ const queryTypes = `
         forms: [CustomApplicationOutput]
         logo: String
     }
+
+    type Vendor2 {
+      id: String!
+      user: String!
+      name: String
+      section1_text: String
+      section2_text: String
+      section3_text: String
+      section1_name: String
+      section2_name: String
+      section3_name: String
+      section1_show: Int
+      section2_show: Int
+      section3_show: Int
+      id2: Int
+      created_at: Date
+      is_daycare: Int
+      logo: String
+  }
 
     type LocationSite {
         id: String!
@@ -1780,6 +1801,7 @@ const mutations = `
         updateApplication(application: UpdateApplicationInput!): Status
         archivedApplications(app_ids: [String]): Status
         unarchivedApplications(app_ids: [String]): Status
+        createVendor(vendor: VendorInput!): Vendor2
         updateVendor(vendor: VendorInput!): Vendor
         addVendorAppGroup(appGroup: AppGroupInput!): EditAllGroups
         editVendorAppGroup(appGroup: AppGroupInput!): EditAllGroups

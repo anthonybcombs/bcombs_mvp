@@ -131,6 +131,13 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
         }
       }
       else {
+        for (let i = 0; i < result.length; i++) {
+          result[i].app_programs = []
+          result[i].location_sites = []
+          result[i].app_groups = []
+  
+          result[i].forms = []
+        }
         vendors = [...result]
       }
    
@@ -182,6 +189,14 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
         }
       }
       else {
+        for (let i = 0; i < result2.length; i++) {
+          result2[i].app_programs = []
+          result2[i].location_sites = []
+          result2[i].app_groups = []
+  
+          result2[i].forms = []
+        }
+        vendors = [...result]
         vendors = [...vendors,...result2]
       }
      
@@ -558,6 +573,91 @@ export const addVendor = async ({ user, name = "" }) => {
     return vendor;
   }
 };
+
+export const createVendor = async ({
+  user,
+  name,
+  section1_text,
+  section2_text,
+  section3_text,
+  section1_name,
+  section2_name,
+  section3_name,
+  section1_show,
+  section2_show,
+  section3_show,
+  logo
+}) => {
+  const db = makeDb();
+  let result;
+  let vendor;
+  let lastId;
+  try {
+    console.log("ADD VENDORRR");
+    result = await db.query(
+      `INSERT INTO vendor(
+        id, 
+        user, 
+        name, 
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name,
+        section1_show,
+        section2_show,
+        section3_show,
+        logo)
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), 
+      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [ 
+        user,
+        name,
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name,
+        section1_show,
+        section2_show,
+        section3_show,
+        logo
+      ]
+    );
+
+    lastId = result.insertId;
+
+    vendor = await db.query(
+      `SELECT 
+        BIN_TO_UUID(id) as id, 
+        BIN_TO_UUID(user) as user,
+        id2,
+        name, 
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name,
+        section1_show,
+        section2_show,
+        section3_show,
+        logo      
+        FROM vendor WHERE id2=?`,
+      [lastId]
+    );
+    vendor = vendor.length > 0 ? vendor[0] : {};
+  } catch(err) {
+    console.log(err);
+  } finally {
+    console.log('new vendor 1', vendor);
+    await db.close();
+    return vendor;
+  }
+}
 
 export const updateVendor = async ({
   id,

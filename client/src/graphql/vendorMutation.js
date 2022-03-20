@@ -271,6 +271,27 @@ export const DELETE_VENDOR_ADMIN = gql`
   }
 `;
 
+export const CREATE_VENDOR = gql`
+  mutation createVendor($vendor: VendorInput!) {
+    createVendor(vendor: $vendor) {
+      id
+      user
+      id2
+      name
+      section1_text
+      section2_text
+      section3_text
+      section1_name
+      section2_name
+      section3_name
+      section1_show
+      section2_show
+      section3_show
+      logo
+    }
+  }
+`
+
 export const VENDOR_UPDATE_MUTATION = gql`
   mutation vendor($vendor: VendorInput!) {
     updateVendor(vendor: $vendor) {
