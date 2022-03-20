@@ -222,7 +222,6 @@ export default function index({
     }, 1000)
   }
 
-
   const { register, handleSubmit, errors, clearError, setError } = useForm({
     mode: "onBlur",
     reValidateMode: "onChange"
