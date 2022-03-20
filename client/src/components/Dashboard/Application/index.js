@@ -15,7 +15,8 @@ import {
   faCalendar,
   faPrint,
   faHistory,
-  faLink
+  faLink,
+  faCopy
 } from "@fortawesome/free-solid-svg-icons";
 import ApplicationSummaryStyled from "./summary";
 import ApplicationSettingsStyled from "./settings";
@@ -35,7 +36,9 @@ import {
   requestVendor,
   requestGetFormAppGroup,
   requestCreateGroupReminder,
-  requestGetVendorReminders
+  requestGetVendorReminders,
+  requestCreateVendor,
+  requestSelectedVendor
 } from "../../../redux/actions/Vendors";
 
 import {
@@ -45,15 +48,23 @@ import {
   requestGetApplicationHistory,
   requestGetCustomApplications,
 } from "../../../redux/actions/Application";
-import { requestGetForms, requestUpdateSubmittedForm, requestGetCustomApplicationHistory } from '../../../redux/actions/FormBuilder'
+import { 
+  requestGetForms, 
+  requestUpdateSubmittedForm, 
+  requestGetCustomApplicationHistory,
+  requestAddForm
+} from '../../../redux/actions/FormBuilder'
+
 import Loading from "../../../helpers/Loading.js";
 import ProfileImg from "../../../images/defaultprofile.png";
 
-import { format } from "date-fns";
+import { add, format } from "date-fns";
 import { useReactToPrint } from "react-to-print";
 import { parse } from "query-string";
 
 import Form from '../../Dashboard/Builders/Form'
+
+import AdminFormStyled from '../Admin/form/index';
 
 const ApplicationFormStyled = styled.form`
   @media all {
@@ -320,6 +331,29 @@ const ApplicationStyled = styled.div`
   margin: auto;
   padding: 0rem 3em 2rem;
 
+  .copy-vendor-btn {
+    margin-left: 20px;
+  }
+
+  .copy-vendor-btn svg {
+    color: gray;
+    padding: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 100px;
+  }
+
+  .copy-vendor-btn svg:hover {
+    background: rgb(239 239 239 / 55%);
+    transition: all .25s ease-in-out
+  }
+  .copy-vendor-btn svg.copy-icon:hover {
+    color: #ffffff;
+    background: #f5812f;
+    box-shadow: 0 3px 6px #ddd;
+    transition: all .15s ease-in-out
+  }
+
   .print-button {
     border: 0;
     position: absolute;
@@ -496,6 +530,8 @@ export default function index() {
 
   const [currentCopyLink, setCurrentCopyLink] = useState(null);
 
+  const [showAdminForm, setShowAdminForm] = useState(false);
+
   const dispatch = useDispatch();
 
   const componentRef = useRef();
@@ -527,15 +563,13 @@ export default function index() {
   const queryParams = parse(location.search);
 
   const { groups, auth, vendors,
-    applications, loading,
-    form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups },
+    applications, loading, vendor,
+    form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups, addForm },
     appReminders: { reminders = [] } } = useSelector(
-      ({ groups, auth, vendors, applications, loading, form, appReminders }) => {
-        return { groups, auth, vendors, applications, loading, form, appReminders };
+      ({ groups, auth, vendors, vendor, applications, loading, form, appReminders }) => {
+        return { groups, auth, vendors, vendor, applications, loading, form, appReminders };
       }
     );
-
-
 
   if (updateSubmittedForm.message === 'successfully update your application form') {
     window.location.reload()
@@ -602,7 +636,25 @@ export default function index() {
   }, [applications.selectedbuilderapplication])
 
   useEffect(() => {
+    console.log('newly created vendor', vendor.newVendor);
+
+    if(vendor.newVendor?.id) {
+      setShowAdminForm(true);
+    }
+
+  }, [vendor.newVendor]);
+
+  useEffect(() => {
+    console.log('newly created form', addForm.form);
+
+    if(addForm.form?.id) {
+      setShowAdminForm(true);
+    }
+
+  }, [addForm])
+  useEffect(() => {
     console.log('Vendorssss', vendors)
+
     if (vendors && vendors.length > 0 && vendors[0].id) {
 
       if (queryParams && queryParams.vendor) {
@@ -1870,6 +1922,48 @@ export default function index() {
     }
   }
 
+  const handleDuplicateVendor = () => {
+
+    if(selectedForm == "default") {
+      const payload = {
+        user: selectedVendor.user,
+        name: selectedVendor.name,
+        section1_text: selectedVendor.section1_text,
+        section2_text: selectedVendor.section2_text,
+        section3_text: selectedVendor.section3_text,
+        section1_name: selectedVendor.section1_name,
+        section2_name: selectedVendor.section2_name,
+        section3_name: selectedVendor.section3_name,
+        section1_show: selectedVendor.section1_show,
+        section2_show: selectedVendor.section2_show,
+        section3_show: selectedVendor.section3_show,
+        logo: selectedVendor.logo,
+        isDuplicate: true
+      }
+  
+      console.log('create vendor payload', payload);
+  
+      dispatch(requestCreateVendor(payload));
+    } else {
+      let selectedFormDetails = renderForms.filter(f => f.form_id == selectedForm)[0];
+
+      if(!!selectedFormDetails) {
+        const payload = {
+          category: selectedFormDetails.category,
+          form_contents: {...selectedFormDetails.form_contents, ['formTitle']: selectedFormDetails.form_contents.formTitle + ' (Copy) '},
+          user: selectedFormDetails.user,
+          vendor: selectedFormDetails.vendor
+        }
+
+        console.log('create form payload', payload);
+
+        dispatch(requestAddForm(payload));
+      }
+
+    }
+
+  }
+
   console.log('selectedVendor', selectedVendor)
   console.log('renderForms', renderForms)
   return (
@@ -1906,6 +2000,7 @@ export default function index() {
                 dispatch(requestGetForms({ vendor: target.value, categories: [] }))
                 if (chosenVendor && chosenVendor.length > 0) {
                   setSelectedVendor(chosenVendor[0]);
+                  requestSelectedVendor(chosenVendor[0]);
                 }
               }}
               value={selectedVendor.id}
@@ -1974,6 +2069,21 @@ export default function index() {
               </select>
             </div>
           )
+        }
+        {
+          vendors && vendors.length > 0 ? (
+            <div className="copy-vendor-btn">
+              <FontAwesomeIcon
+                className="copy-icon"
+                icon={faCopy}
+                onClick={e => {
+                  e.stopPropagation()
+                  console.log('selectedVendor', selectedVendor);
+                  handleDuplicateVendor();
+                }}
+              />
+            </div>
+          ) : null
         }
       </div>
       <div id="application">
@@ -2107,7 +2217,7 @@ export default function index() {
               <span>My Application</span>
             </a>
 
-            <a href={`/dashboard/forms`}>
+            <a href={`/dashboard/forms?vendor=${selectedVendor.id2}`}>
               <FontAwesomeIcon icon={faFileAlt} />
               <span>Forms</span>
             </a>
@@ -2396,6 +2506,23 @@ export default function index() {
           </ApplicationFormStyled>
         </>
       )}
+      {
+        showAdminForm && (
+          <AdminFormStyled
+            selectedVendor={selectedVendor}
+            selectedForm={
+              selectedForm == 'default' ? 
+              { form_id: 'default',name: 'Mentoring Application' } 
+              : 
+              addForm.form
+            }
+            newVendor={vendor.newVendor}
+            handleExit={() => {
+              setShowAdminForm(false);
+            }}
+          />
+        )
+      }
     </ApplicationStyled>
   );
 }

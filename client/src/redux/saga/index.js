@@ -82,7 +82,9 @@ import {
   getVendorAppGroups,
   createGroupReminder,
   getVendorReminders,
-  updateVendorLogo
+  updateVendorLogo,
+  createVendor,
+  setSelectedVendor
 } from "../actions/Vendors";
 
 import {
@@ -325,6 +327,9 @@ function* rootSaga() {
   yield takeLatest(actionType.ADD_ARCHIVE_GROUP, addArchiveGroup)
   yield takeLatest(actionType.REMOVE_GROUP_FROM_ARCHIVE, removeGroupFromArchive),
   yield takeLatest(actionType.REQUEST_UPDATE_VENDOR_LOGO, updateVendorLogo)
+
+  yield takeLatest(actionType.REQUEST_CREATE_VENDOR, createVendor)
+  yield takeLatest(actionType.REQUEST_SELECTED_VENDOR, setSelectedVendor)
 }
 const sagaMiddleware = createSagaMiddleware();
 

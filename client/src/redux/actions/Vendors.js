@@ -12,7 +12,8 @@ import {
   GET_USER_VENDOR_FORMS,
   CREATE_GROUP_REMINDER,
   GET_VENDOR_REMINDER,
-  UPDATE_VENDOR_LOGO
+  UPDATE_VENDOR_LOGO,
+  CREATE_VENDOR
 } from "../../graphql/vendorMutation";
 
 import { GET_FORM_APP_GROUP } from "../../graphql/groupQuery";
@@ -26,6 +27,25 @@ import {
   setDeleteAdminLoading,
   setApplicationLoading
 } from "./Loading";
+
+const createVendorToDatabase = vendor => {
+  delete vendor.isDuplicate;
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: CREATE_VENDOR,
+        variables: { vendor }
+      })
+
+      console.log('new data', data);
+
+      return resolve(data.createVendor);
+    } catch(error) {
+      console.log('create vendor err', error);
+      reject(error)
+    }
+  })
+}
 
 const getVendorReminderFromDatabase = args => {
   return new Promise(async (resolve, reject) => {
@@ -249,6 +269,20 @@ const updateVendorToDatabase = vendor => {
     }
   });
 };
+
+export const requestSelectedVendor = vendor => {
+  return {
+    type: actionType.REQUEST_SELECTED_VENDOR,
+    vendor
+  }
+}
+
+export const requestCreateVendor = vendor => {
+  return {
+    type: actionType.REQUEST_CREATE_VENDOR,
+    vendor
+  }
+}
 
 export const requestCreateGroupReminder = groupReminder => {
   console.log('groupReminder12345', groupReminder);
@@ -591,4 +625,31 @@ export function* updateVendorLogo({ data }) {
     yield put(setFormSettingsLoading(false));
   
   }
+}
+
+export function* createVendor({ vendor }) {
+  try {
+    console.log('new vendor',vendor);
+    const response = yield call(createVendorToDatabase, vendor)
+    console.log('new response', response);
+
+    yield put({
+      type: actionType.REQUEST_DUPLICATE_VENDOR_COMPLETED,
+      payload: response
+    });
+
+  } catch (err) {
+    yield put({
+      type: actionType.REQUEST_DUPLICATE_VENDOR_COMPLETED,
+      payload: {}
+    });
+  }
+}
+
+export function* setSelectedVendor({vendor}) {
+
+  yield put({
+    type: actionType.REQUEST_SELECTED_VENDOR_COMPLETED,
+    payload: vendor
+  });
 }

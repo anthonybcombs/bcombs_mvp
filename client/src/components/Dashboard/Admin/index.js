@@ -353,6 +353,10 @@ export default function index() {
         // }
 
       } else {
+        let selectedVendor = vendorOptions.filter((v) => {
+          return v.id == addAdminFields.vendor;
+        })[0];
+
         payload = addAdminFields;
         payload.forms = payload.forms.map(form => {
           return {
@@ -360,7 +364,8 @@ export default function index() {
             isCustomForm: form.isCustomForm
           }
         });
-
+        payload.vendor2 = selectedVendor?.vendor2;
+        
         payload.currentUser = auth.user_id;
 
         console.log("add admin payload", payload);

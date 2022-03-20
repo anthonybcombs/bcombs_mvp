@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import update from 'immutability-helper';
 import cloneDeep from 'lodash.clonedeep';
+import { parse } from "query-string";
 
 import FormStyled from './styles';
 import Loading from '../../../helpers/Loading.js';
@@ -14,6 +15,8 @@ import {
 	requestDeleteForm,
 } from '../../../redux/actions/FormBuilder';
 
+import AdminFormStyled from '../Admin/form/index';
+
 import Headers from './headers';
 import List from './list';
 
@@ -22,11 +25,13 @@ export default props => {
 		auth,
 		vendors,
 		loading,
+    vendor,
 		form: { formList = [], updateForm, addForm, deleteForm },
-	} = useSelector(({ auth, vendors, loading, form }) => {
-		return { auth, vendors, loading, form };
+	} = useSelector(({ auth, vendors, vendor, loading, form }) => {
+		return { auth, vendors, vendor, loading, form };
 	});
 	const dispatch = useDispatch();
+  const queryParams = parse(location.search);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [list, setList] = useState(formList);
@@ -34,9 +39,27 @@ export default props => {
 	const [renameModal, setRenameModal] = useState(false);
 	const [cloneModal, setCloneModal] = useState(false);
 	const [deleteModal, setDeleteModal] = useState(false);
+  const [showAdminForm, setShowAdminForm] = useState(false);
+
+  const [selectedVendor, setSelectedVendor] = useState();
+  const [selectedForm, setSelectedForm] = useState();
 
 	const GetRequestFormList = value => {
-		dispatch(requestGetForms({ vendor: vendors[0].id, categories: value || [] }));
+    console.log('queryParams?.vendor', queryParams?.vendor);
+    
+    if(queryParams?.vendor) {
+      const selectedVendor = vendors.filter(i => queryParams.vendor == i.id2)[0];
+      if(selectedVendor?.id) {
+        setSelectedVendor(selectedVendor)
+        dispatch(requestGetForms({ vendor: selectedVendor?.id, categories: value || [] }));
+      } else {
+        setSelectedVendor(vendors[0].id)
+        dispatch(requestGetForms({ vendor: vendors[0].id, categories: value || [] }));
+      }
+    } else {
+      setSelectedVendor(vendors[0].id)
+      dispatch(requestGetForms({ vendor: vendors[0].id, categories: value || [] }));
+    }
 		setIsLoading(true);
 	};
 
@@ -80,6 +103,9 @@ export default props => {
 		if (addForm && addForm.message == 'successfully created your application form') {
 			GetRequestFormList();
 			setCloneModal(false);
+
+      setShowAdminForm(true);
+      setSelectedForm(addForm.form);
 		}
 	}, [addForm]);
 
@@ -133,6 +159,18 @@ export default props => {
 					/>
 				)}
 			</div>
+      {
+        showAdminForm && (
+          <AdminFormStyled
+            selectedVendor={selectedVendor}
+            selectedForm={selectedForm}
+            newVendor={null}
+            handleExit={() => {
+              setShowAdminForm(false);
+            }}
+          />
+        )
+      }
 		</FormStyled>
 	);
 };

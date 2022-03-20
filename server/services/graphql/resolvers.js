@@ -58,6 +58,7 @@ import {
 } from "../../api/grades";
 import {
   getVendors,
+  createVendor,
   updateVendor,
   addVendor,
   deleteAppGroup,
@@ -598,6 +599,13 @@ const resolvers = {
       return await removeEvents(id, email);
     },
     //ADDED BY JEROME
+    async createVendor(root, { vendor }, context) {
+      let newVendor = await createVendor(vendor);
+
+      console.log('newVendor', newVendor);
+
+      return newVendor;
+    },
     async updateVendor(root, { vendor }, context) {
       return await updateVendor(vendor);
     },
@@ -1287,6 +1295,13 @@ const resolvers = {
           console.log("update user type to vendor", user);
           await updateUserType(user);
         }
+
+        sendAdminInvite({
+          email: admin.email,
+          name: admin.name,
+          vendor: admin.vendor2,
+          isExist: true
+        });
       } else {
         const newPassword = generatePassword();
 
@@ -1304,10 +1319,11 @@ const resolvers = {
         sendAdminInvite({
           email: admin.email,
           password: newPassword,
-          name: admin.name
+          name: admin.name,
+          vendor: admin.vendor2
         });
       }
-      
+
       for (const form of admin.forms) {
         await addVendorAdmins({
           user: user.id,
