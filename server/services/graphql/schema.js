@@ -150,6 +150,7 @@ const inputs = `
         section2_show: Int
         section3_show: Int
         logo: String
+        is_daycare: Int
     }
 
     input ScoreInfoInput {
@@ -707,6 +708,8 @@ const inputs = `
     input CustomApplicationFormFilterInput {
         vendor: String!
         categories: [String]
+        currentUser: String
+        isOwner: Boolean
     }
 
     input AttendanceChildInput {

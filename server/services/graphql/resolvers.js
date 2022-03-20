@@ -446,6 +446,7 @@ const resolvers = {
       return application;
     },
     async getVendorCustomApplicationForms(root, { filter }, context) {
+      console.log('form filter', filter);
       let forms = [];
       if(filter?.categories.length > 0) {
         for(const category of filter.categories) {
@@ -454,6 +455,25 @@ const resolvers = {
         }
       } else {
         forms = await getVendorCustomApplicationForms({vendor: filter.vendor});
+      }
+
+      const admins = await getVendorAdminsByUser(filter.currentUser);
+
+      if(!filter.isOwner) {
+        let formIds = [];
+        admins.map(a => {
+          formIds.push(a.form);
+        })
+
+        let selectedForms = [];
+        forms.map(f => {
+          if(formIds.includes(f.form_id)) {
+            selectedForms.push(f);
+          }
+        })
+        forms = selectedForms;
+
+        console.log('connected forms', forms);
       }
       return forms;
     },

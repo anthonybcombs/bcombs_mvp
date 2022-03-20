@@ -639,6 +639,7 @@ export default function index() {
     console.log('newly created vendor', vendor.newVendor);
 
     if(vendor.newVendor?.id) {
+      console.log('renderForms', renderForms);
       setShowAdminForm(true);
     }
 
@@ -672,17 +673,26 @@ export default function index() {
         }
 
         //dispatch(requestGetApplications(newDefaultVendor[0].id));
-        dispatch(requestGetForms({ vendor: newDefaultVendor[0].id || '', categories: [] }))
+        dispatch(requestGetForms({ 
+          vendor: newDefaultVendor[0].id || '', 
+          currentUser: auth.user_id, 
+          isOwner: !!(auth.user_id == newDefaultVendor[0].user), 
+          categories: [] 
+        }))
       } else {
    
-        
         setSelectedVendor(vendors[0]);
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
         } else {
           setAppGroups(vendors[0].app_groups);
         }
-        dispatch(requestGetForms({ vendor: vendors[0].id || '', categories: [] }))
+        dispatch(requestGetForms({ 
+          vendor: vendors[0].id || '', 
+          currentUser: auth.user_id, 
+          isOwner: !!(auth.user_id == vendors[0].user), 
+          categories: [] 
+        }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
 
@@ -1913,7 +1923,7 @@ export default function index() {
 
   const handleDuplicateVendor = () => {
 
-    if(selectedForm == "default") {
+    if(selectedForm == "default" || selectedForm == "lot") {
       const payload = {
         user: selectedVendor.user,
         name: selectedVendor.name,
@@ -1927,8 +1937,7 @@ export default function index() {
         section2_show: selectedVendor.section2_show,
         section3_show: selectedVendor.section3_show,
         logo: selectedVendor.logo,
-        
-        isDuplicate: true
+        is_daycare: selectedVendor.is_daycare
       }
   
       console.log('create vendor payload', payload);
@@ -1987,7 +1996,12 @@ export default function index() {
                 window.history.replaceState("", "", "?vendor=" + chosenVendor[0].id2);
 
                 //dispatch(requestGetApplications(target.value));
-                dispatch(requestGetForms({ vendor: target.value, categories: [] }))
+                dispatch(requestGetForms({ 
+                  vendor: target.value, 
+                  currentUser: auth.user_id, 
+                  isOwner: !!(auth.user_id == chosenVendor[0].user), 
+                  categories: [] 
+                }))
                 if (chosenVendor && chosenVendor.length > 0) {
                   setSelectedVendor(chosenVendor[0]);
                   requestSelectedVendor(chosenVendor[0]);
