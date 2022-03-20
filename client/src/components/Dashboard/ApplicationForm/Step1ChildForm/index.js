@@ -65,7 +65,9 @@ export default function index({
         errors={errors}
         ProfileImg={ProfileImg}
         app_programs={app_programs}
-        location_sites={location_sites} />
+        location_sites={location_sites} 
+        isLot={isLot}
+      />
       <br />
       <br />
 

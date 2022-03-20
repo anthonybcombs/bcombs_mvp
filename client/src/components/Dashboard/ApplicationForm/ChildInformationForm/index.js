@@ -210,6 +210,7 @@ export default function index({
   location_sites = [],
   pastChildInformation = {},
   isVendorView = false,
+  isLot = 0,
   printPageClassname
 }) {
   const hasSelectAll = false;
@@ -413,7 +414,7 @@ export default function index({
   return (
     <ChildInfomationFormStyled className={printPageClassname}>
       <h3 className="heading">
-        Child Information {counter > 1 ? `(${counter})` : ``}
+        {isLot ? 'Leader of Tomorrow (LOT) Information' : 'Child Information'} {counter > 1 ? `(${counter})` : ``}
       </h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">

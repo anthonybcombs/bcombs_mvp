@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
+// import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +12,7 @@ import MedicalCareInfoStyled from "../../../ApplicationForm/MedicalCareIformatio
 import AllergyInformation from '../../../ApplicationForm/AllergyInformation'
 
 
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+// import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import "../../../ApplicationForm/ApplicationForm.css";
 
@@ -183,6 +183,7 @@ export default function index({
             app_programs={app_programs}
             pastChildInformation={pastChildInformation}
             isVendorView={isVendorView}
+            isLot={isLot}
           />
           <br />
           <GeneralInformationFormStyled
