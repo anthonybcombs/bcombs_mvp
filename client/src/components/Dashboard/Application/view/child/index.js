@@ -111,13 +111,14 @@ export default function index({
   location_sites = [],
   app_programs = [],
   isVendorView = false,
-  handleSelectLatestApplication = null
+  handleSelectLatestApplication = null,
+  isLot = 0
 }) {
   const { applications } = useSelector(({ applications }) => {
     return { applications };
   });
 
-  const handleScoresChange = () => {};
+  const handleScoresChange = () => { };
 
   let pastChildInformation = {};
 
@@ -133,7 +134,7 @@ export default function index({
     }
   }
 
-  console.log('childInformation555',childInformation)
+  console.log('childInformation555', childInformation)
   return (
     <>
       <ChildFormHeader id="userApplicationForm">
@@ -152,7 +153,7 @@ export default function index({
             {childInformation?.profile?.application_date}
             {
               isFormHistory && handleSelectLatestApplication && (
-                <a 
+                <a
                   href=""
                   onClick={(e) => {
                     e.preventDefault();
@@ -195,21 +196,23 @@ export default function index({
             isReadonly={isReadonly}
             pastChildInformation={pastChildInformation}
             isVendorView={isVendorView}
+            isLot={isLot}
           />
           <br />
-          <AllergyInformation
-             printPageClassname="printpage-break general-information"
-             handleChildFormDetailsChange={handleChildFormDetailsChange}
-             childGeneralInformation={childInformation?.general_information}
-             counter={1}
-             handleScoresChange={handleScoresChange}
-             register={register}
-             errors={errors}
-             isReadonly={isReadonly}
-             pastChildInformation={pastChildInformation}
-             isVendorView={isVendorView}
-            /> 
-              <br />
+          {isLot && <AllergyInformation
+            printPageClassname="printpage-break general-information"
+            handleChildFormDetailsChange={handleChildFormDetailsChange}
+            childGeneralInformation={childInformation?.general_information}
+            counter={1}
+            handleScoresChange={handleScoresChange}
+            register={register}
+            errors={errors}
+            isReadonly={isReadonly}
+            pastChildInformation={pastChildInformation}
+            isVendorView={isVendorView}
+          />}
+
+          <br />
           <MedicalCareInfoStyled
             printPageClassname="printpage-break medicalCare-information"
             childEmergencyCare={childInformation?.emergency_care_information}

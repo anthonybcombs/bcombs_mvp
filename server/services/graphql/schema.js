@@ -419,6 +419,7 @@ const inputs = `
         section2_name: String
         section3_name: String
         is_daycare: Int
+        is_lot: Int
     }
 
     input UpdateApplicationInput {
@@ -1263,6 +1264,7 @@ const queryTypes = `
         vendorPrograms: [VendorProgram]
         vendorLocationSites: [LocationSite]
         is_daycare: Int
+        is_lot: Int
         relationships: [ParentChildRelationship]
         chRelationships: [ChildChildRelationship]
         received_reminder: Boolean

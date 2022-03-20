@@ -244,7 +244,8 @@ const addApplicationToDatabase = applications => {
         section2_name: application.section2_name,
         section3_name: application.section3_name,
         emergency_contacts: application.emergency_contacts,
-        is_daycare: 0
+        is_daycare: 0,
+        is_lot: application.is_lot
       };
 
       applications_obj.push(temp);

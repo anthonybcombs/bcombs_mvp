@@ -562,6 +562,7 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
+
   const { groups, auth, vendors,
     applications, loading, vendor,
     form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups, addForm },
@@ -599,7 +600,6 @@ export default function index() {
   const [appGroups, setAppGroups] = useState([]);
   const [exportFilename, setExportFilename] = useState("");
 
-  console.log("form app group", formAppGroups);
 
   useEffect(() => {
     if (auth.user_id) {
@@ -652,6 +652,7 @@ export default function index() {
     }
 
   }, [addForm])
+
   useEffect(() => {
     console.log('Vendorssss', vendors)
 
@@ -673,7 +674,8 @@ export default function index() {
         //dispatch(requestGetApplications(newDefaultVendor[0].id));
         dispatch(requestGetForms({ vendor: newDefaultVendor[0].id || '', categories: [] }))
       } else {
-        console.log('Vendorrrzz', vendors[0])
+   
+        
         setSelectedVendor(vendors[0]);
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
@@ -694,16 +696,8 @@ export default function index() {
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
 
-    console.log('selectedVendor 123', selectedVendor);
+  
 
-    // const vendorForms = selectedVendor.forms;
-
-    // const matchForms = vendorForms?.length > 0 ? formList.filter((i) => {
-    //   return vendorForms.some((x) => x.form_id == i.form_id);
-    // }) : [];
-
-    // console.log('matchForms formList', formList);
-    // console.log('matchForms', matchForms);
     setRenderForms(formList);
 
     if (queryParams && queryParams.form) {
@@ -712,7 +706,8 @@ export default function index() {
       const tempForm = formList.filter((form) => {
         return form.form_id == queryParams.form;
       });
-      console.log("tempForm", tempForm);
+
+    
       if (tempForm && tempForm.length > 0) {
         setExportFilename(tempForm[0]?.form_contents?.formTitle);
       }
@@ -731,7 +726,6 @@ export default function index() {
     setAppGroups(formAppGroups);
   }, [formAppGroups])
 
-  console.log("vendor", vendors);
 
   const handleSelectedLabel = ({ value, opt }) => {
     setSelectedLabel(value);
@@ -787,7 +781,7 @@ export default function index() {
         : application?.child?.grade_desc
     };
 
-    console.log("@@@@@@@@handleSelectedApplication", { application, temp });
+
 
     const childInformationObj = {
       profile: {
@@ -1028,7 +1022,7 @@ export default function index() {
       ch_id: application?.child?.ch_id,
       id: application?.child?.ch_id
     };
-    console.log('APPLICATIONNNNN', application)
+
     const parents = application.parents;
 
     let items = [];
@@ -1130,7 +1124,7 @@ export default function index() {
   ];
 
   const handleUpdateOnchange = (id, value) => {
-    console.log('vvavlueeeee', value)
+
     setUpdateApplication({ ...updateApplication, [id]: value });
   };
 
@@ -1411,12 +1405,9 @@ export default function index() {
     let general_information = child.general_information;
     let emergency_care_information = child.emergency_care_information;
 
-    console.log("profile", profile);
-
     if (section === "profile") {
       if (id == "child_lives_with") {
-        console.log("value", value);
-        console.log("id", id);
+ 
         profile.child_lives_with = value;
       } else {
         profile = { ...profile, [id]: value };
@@ -1425,7 +1416,7 @@ export default function index() {
       child.profile = profile;
     } else if (section === "general_information") {
       if (id === "has_suspended") {
-        console.log('Has Suspended Value', value)
+    
         if (value == "0") {
           general_information = {
             ...general_information,
@@ -1480,7 +1471,7 @@ export default function index() {
       setEmergencyContacts([...emergencyContacts]);
     }
 
-    console.log("parentsInformation update", parentsInformation);
+  
   };
 
   const handleSelectLatest = () => {
@@ -1842,7 +1833,6 @@ export default function index() {
 
     let exists = false;
 
-    console.log("relationships", relationships)
 
     for (const [index, item] of relationships.entries()) {
       if (item.parent == parent && item.child == child) {
@@ -1872,8 +1862,7 @@ export default function index() {
     }
   }
 
-  console.log('loading applications', applications)
-  console.log('parentsInformation123123123123', parentsInformation)
+
 
   const handleCreateGroupReminder = (payload) => {
     dispatch(requestCreateGroupReminder(payload));
@@ -1965,7 +1954,7 @@ export default function index() {
   }
 
   console.log('selectedVendor', selectedVendor)
-  console.log('renderForms', renderForms)
+
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2034,19 +2023,22 @@ export default function index() {
                 onChange={({ target }) => {
 
 
-                  if (target.value == "default") {
-                    console.log("selectedvendor", selectedVendor);
-                    setSelectedForm("default");
+                  if (target.value == "default" || target.value === 'lot') {
+               
+                    setSelectedForm(target.value);
                     setAppGroups(selectedVendor.app_groups);
                     window.history.replaceState("", "", "?vendor=" + selectedVendor.id2);
-                    dispatch(requestGetApplications(selectedVendor.id));
+                    if(applications.activeapplications.length === 0) {
+                      dispatch(requestGetApplications(selectedVendor.id));
+                    }
+                   
                   } else {
                     setSelectedForm(target.value);
                     if (view === 'builderForm') {
                       setView('')
                       setSelectedApplication({})
                     }
-                    console.log("form form", target.value);
+        
                     window.history.replaceState("", "", "?form=" + target.value);
                     setAppGroups([]);
                     dispatch(requestGetFormAppGroup(target.value));
@@ -2054,8 +2046,11 @@ export default function index() {
                   }
                 }}
               >
-                <option key={selectedVendor.id} selected={!(queryParams && queryParams.form)} value="default">
+                <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare ? `Daycare Form` : `Mentoring Application`}
+                </option>
+                <option key={`${selectedVendor.id}-2`} value="lot">
+                    Lot Form
                 </option>
                 {
                   renderForms && renderForms.length > 0 && (
@@ -2090,12 +2085,12 @@ export default function index() {
         <div>
           <div id="labels">
             {
-              selectedVendor && selectedVendor.id2 && selectedForm == "default" ? (
+              selectedVendor && selectedVendor.id2 && (selectedForm == "default"   || selectedForm == "lot") ? (
                 <div className="copy-application-link">
                   <a
                     href={selectedVendor.is_daycare ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
-                      }`}>
+                      }${selectedForm === 'lot' ? '/lot'  : ''}`}>
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
@@ -2103,10 +2098,10 @@ export default function index() {
                     setCopyApplicationLinkModal(true)
                     setCurrentCopyLink(selectedVendor.is_daycare ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
-                      }`)
+                      }${selectedForm === 'lot' ? '/lot'  : ''}`)
                   }} />
                 </div>
-              ) : selectedForm && selectedForm != "default" ? (
+              ) : selectedForm && selectedForm != "default" && selectedForm != "lot" ? (
                 <div className="copy-application-link">
                   <a
                     href={`/form/${selectedForm}`}
@@ -2269,12 +2264,15 @@ export default function index() {
       </div>
       {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
         <ApplicationListStyled
-          applications={applications.activeapplications}
-          handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" ? viewType : 'builderForm')}
+          // applications={applications.activeapplications}
+          applications={applications.activeapplications.filter(item => {
+            return selectedForm === "lot" ? item.is_lot : !item.is_lot
+          })}
+          handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" || selectedForm === "lot" ? viewType : 'builderForm')}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
           appGroups={appGroups}
-          isCustomForm={selectedForm !== "default"}
+          isCustomForm={selectedForm !== "default" && selectedForm !== "lot"}
           filename={exportFilename}
         />
       )}
@@ -2400,6 +2398,7 @@ export default function index() {
                   vendors && vendors.length > 0 ? vendors[0].app_programs : []
                 }
                 handleSelectLatestApplication={handleSelectLatest}
+                isLot={selectedApplication.is_lot}
               />
             ) : ""}
 

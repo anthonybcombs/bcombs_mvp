@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, redirectTo } from "@reach/router";
+import { useParams, useLocation, redirectTo } from "@reach/router";
 
 import ChildFormStyled from "./Step1ChildForm";
 import ParentFormStyled from "./Step2ParentForm";
@@ -175,8 +175,10 @@ export default function index() {
   }
 
   const { vendor_id } = useParams();
-
+  const { pathname } = useLocation();
   const dispatch = useDispatch();
+
+  const isLot = pathname.includes('/lot') ? 1 : 0;
 
   const { vendors, loading, applications, auth } = useSelector(
     ({ vendors, loading, applications, auth }) => {
@@ -184,7 +186,8 @@ export default function index() {
     }
   );
 
-  console.log('vendorssssssss',vendor)
+  
+
 
   // if(applications.addapplication && applications.addapplication.message == "application created") {
   //   scrollToTop("auto");
@@ -201,14 +204,13 @@ export default function index() {
   }, []);
 
   useEffect(() => {
-    console.log('form auth', auth);
+
 
     if (auth.status == 'SIGNED_IN') {
       console.log('parentsInformation', parentsInformation);
 
       let newParentsInformation = [...parentsInformation];
 
-      console.log('new Date(auth.user.birth_date)', auth.user.birth_date);
 
       newParentsInformation[0].profile.address = auth.user.address ?
         auth.user.address : newParentsInformation[0].profile.address;
@@ -247,8 +249,7 @@ export default function index() {
 
   if (vendor && vendor.id) {
 
-    console.log("vendor", vendor);
-
+ 
     let app_programs = []
 
     for (const program of vendor.app_programs) {
@@ -274,7 +275,7 @@ export default function index() {
     marginTop: 0,
     right: "15px"
   }
-  console.log('vendorrrr', vendor)
+
   const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
   const DB_DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
   const DATE_FORMAT = "yyyy-MM-dd";
@@ -440,7 +441,7 @@ export default function index() {
       hospital_phone: ""
     }
   };
-  console.log('childInfoObjecttttttttt',childInfoObject)
+
   const [childsInformation, setChildsInformation] = useState([{ ...childInfoObject }]);
 
   const handleChildFormDetailsChange = (index, section, id, value) => {
@@ -528,6 +529,7 @@ export default function index() {
             handleAddNumChild={handleAddNumChild}
             handleRemoveNumChild={handleRemoveNumChild}
             maxChild={maxChild}
+            isLot={isLot}
             current={childsInformation.length}
             ProfileImg={ProfileImg}
             app_programs={vendor.app_programs}
@@ -550,6 +552,7 @@ export default function index() {
               handleAddNumChild={handleAddNumChild}
               handleRemoveNumChild={handleRemoveNumChild}
               maxChild={maxChild}
+              isLot={isLot}
               current={childsInformation.length}
               ProfileImg={ProfileImg}
               app_programs={vendor.app_programs}
@@ -640,7 +643,7 @@ export default function index() {
       emergency_contacts[index][id] = value;
       setEmergencyContacts([...emergencyContacts]);
 
-      console.log("emergencyContacts", emergencyContacts);
+   
     }
   }
 
@@ -654,7 +657,7 @@ export default function index() {
     if (parentsInformation.length > 1) {
       let tempParentsInformation = parentsInformation;
 
-      console.log("parentsInformation", parentsInformation);
+ 
       tempParentsInformation.splice(index, 1)
       setParentsInformation([...tempParentsInformation]);
     }
@@ -717,8 +720,7 @@ export default function index() {
         let profile = child.profile;
         let gi = child.general_information;
 
-        console.log("isEmailAddress(profile.email_address2)", isEmailAddress(profile.email_address))
-        console.log("isEmailAddress(profile.email_address2)", profile)
+    
         if ((profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
           isValid = false;
           break;
@@ -736,9 +738,9 @@ export default function index() {
           profile.zip_code.length < 5 ||
           !profile.location_site ||
           !profile.child_lives_with ||
-          (!gi.grade ||
+          (!isLot && (!gi.grade ||
             !gi.school_name ||
-            !gi.mentee_gain) ||  
+            !gi.mentee_gain)) ||  
           (gi.school_phone && gi.school_phone.includes('_')) ||
           (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.doctor_phone.includes('_')) ||
           (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.hospital_phone.includes('_')) || 
@@ -1034,7 +1036,8 @@ export default function index() {
         section1_name: vendor.section1_name,
         section2_name: vendor.section2_name,
         section3_name: vendor.section3_name,
-        emergency_contacts: JSON.stringify(emergencyContacts)
+        emergency_contacts: JSON.stringify(emergencyContacts),
+        is_lot: isLot
       }
 
       payload.push(request_params);
@@ -1326,7 +1329,7 @@ export default function index() {
                             className="right"
                             onClick={(e) => {
                               e.preventDefault();
-                              console.log('isFormValid(selectedStep)', isFormValid(selectedStep))
+                        
                               if (!isFormValid(selectedStep)) {
                                 formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
                                 e.preventDefault();

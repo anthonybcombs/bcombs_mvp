@@ -50,10 +50,11 @@ export default function index({
   maxChild,
   current,
   ProfileImg,
+  isLot = 0,
   app_programs = [],
   location_sites = []
 }) {
-  console.log('childInformatiozxzczcxcxn',childInformation)
+  console.log('childInformatiozxzczcxcxn', childInformation)
   return (
     <ChildFormStyled>
       <ChildInformationFormStyled
@@ -67,7 +68,7 @@ export default function index({
         location_sites={location_sites} />
       <br />
       <br />
-      
+
       <GeneralInformationFormStyled
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         childGeneralInformation={childInformation.general_information}
@@ -77,11 +78,12 @@ export default function index({
         satCount={satCount}
         psatCount={psatCount}
         register={register}
-        errors={errors} 
+        errors={errors}
+        isLot={isLot}
       />
       <br />
       <br />
-      <AllergyInformation
+      {isLot ? <AllergyInformation
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         childGeneralInformation={childInformation.general_information}
         counter={counter}
@@ -91,7 +93,8 @@ export default function index({
         psatCount={psatCount}
         register={register}
         errors={errors}
-      />
+      /> : <div/>}
+
       <br />
       <br />
       <MedicalCareInfoStyled

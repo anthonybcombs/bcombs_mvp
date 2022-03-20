@@ -220,6 +220,7 @@ export default function App() {
             <AsyncApplicationForm path="application/:vendor_id" />
             <AsyncForm path="form/:form_id" />
             <AsyncDaycareApplicationForm path="application/:vendor_id/daycare" />
+            <AsyncApplicationForm path="application/:vendor_id/lot" />
           </Router>
           </MuiPickersUtilsProvider>
         </div>

@@ -85,7 +85,8 @@ export const getApplicationByAppId = async (app_id, isHistory = false) => {
         section2_name,
         section3_name,
         emergency_contacts,
-        is_daycare
+        is_daycare,
+        is_lot
         FROM application
         WHERE app_id=UUID_TO_BIN(?)
       `,
@@ -169,7 +170,8 @@ export const getApplicationsByVendor = async vendor => {
         section2_name,
         section3_name,
         emergency_contacts,
-        is_daycare
+        is_daycare,
+        is_lot
         FROM application
         WHERE vendor=UUID_TO_BIN(?) and is_archived=0
         ORDER BY id DESC`,
@@ -249,7 +251,8 @@ export const getApplicationsByAppGroup = async ({
           section2_name,
           section3_name,
           emergency_contacts,
-          is_daycare
+          is_daycare,
+          is_lot
           FROM application
           WHERE class_teacher LIKE '%${app_group}%' and is_archived=0
           ORDER BY id DESC`
@@ -328,7 +331,8 @@ export const createApplication = async ({
   section3_name,
   class_teacher,
   emergency_contacts,
-  is_daycare
+  is_daycare,
+  is_lot
 }) => {
   const db = makeDb();
   let result = {};
@@ -357,14 +361,15 @@ export const createApplication = async ({
         section3_name,
         class_teacher,
         emergency_contacts,
-        is_daycare
+        is_daycare,
+        is_lot
       ) VALUES (
         UUID_TO_BIN(UUID()), 
         UUID_TO_BIN(?), 
         UUID_TO_BIN(?), 
         ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, 
-        ?, ?, ?, ?, ?)`,
+        ?, ?, ?, ?, ?, ?)`,
       [
         vendor,
         child,
@@ -384,7 +389,8 @@ export const createApplication = async ({
         section3_name,
         class_teacher,
         emergency_contacts,
-        is_daycare
+        is_daycare,
+        is_lot
       ]
     );
 
