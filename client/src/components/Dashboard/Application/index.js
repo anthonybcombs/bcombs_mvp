@@ -1927,6 +1927,7 @@ export default function index() {
         section2_show: selectedVendor.section2_show,
         section3_show: selectedVendor.section3_show,
         logo: selectedVendor.logo,
+        
         isDuplicate: true
       }
   
@@ -2512,7 +2513,10 @@ export default function index() {
             selectedForm={
               selectedForm == 'default' ? 
               { form_id: 'default',name: 'Mentoring Application' } 
-              : 
+              :
+              selectedForm == 'lot' ? 
+              { form_id: 'lot',name: 'Lot Form' }
+              :
               addForm.form
             }
             newVendor={vendor.newVendor}

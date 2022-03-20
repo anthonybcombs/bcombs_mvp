@@ -148,9 +148,10 @@ export default function index({
   let formName;
 
   console.log('admin selectedForm', selectedForm);
-  if(selectedForm.form_id == 'default') {
+
+  if(selectedForm.form_id == 'default' || selectedForm.form_id == 'lot') {
     vendorName = newVendor.name;
-    formName = 'Mentoring Application'
+    formName = selectedForm.form_id == 'default' ? 'Mentoring Application' : 'Lot Form'
   } else {
     vendorName = selectedVendor.name;
     formName = selectedForm?.form_contents?.formTitle;
@@ -208,7 +209,7 @@ export default function index({
 
     payload.forms = [{
       form_id: selectedForm.form_id,
-      isCustomForm: !(selectedForm.form_id == 'default')
+      isCustomForm: !(selectedForm.form_id == 'default' || selectedForm.form_id == 'lot')
     }];
 
     console.log('create admin payload', payload);
