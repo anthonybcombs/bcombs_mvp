@@ -566,7 +566,6 @@ export default function index() {
   const [appGroups, setAppGroups] = useState([]);
   const [exportFilename, setExportFilename] = useState("");
 
-  console.log("form app group", formAppGroups);
 
   useEffect(() => {
     if (auth.user_id) {
@@ -603,7 +602,8 @@ export default function index() {
   }, [applications.selectedbuilderapplication])
 
   useEffect(() => {
-    console.log('Vendorssss', vendors)
+    
+    
     if (vendors && vendors.length > 0 && vendors[0].id) {
 
       if (queryParams && queryParams.vendor) {
@@ -622,7 +622,8 @@ export default function index() {
         //dispatch(requestGetApplications(newDefaultVendor[0].id));
         dispatch(requestGetForms({ vendor: newDefaultVendor[0].id || '', categories: [] }))
       } else {
-        console.log('Vendorrrzz', vendors[0])
+   
+        
         setSelectedVendor(vendors[0]);
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
@@ -643,16 +644,8 @@ export default function index() {
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
 
-    console.log('selectedVendor 123', selectedVendor);
+  
 
-    // const vendorForms = selectedVendor.forms;
-
-    // const matchForms = vendorForms?.length > 0 ? formList.filter((i) => {
-    //   return vendorForms.some((x) => x.form_id == i.form_id);
-    // }) : [];
-
-    // console.log('matchForms formList', formList);
-    // console.log('matchForms', matchForms);
     setRenderForms(formList);
 
     if (queryParams && queryParams.form) {
@@ -661,7 +654,8 @@ export default function index() {
       const tempForm = formList.filter((form) => {
         return form.form_id == queryParams.form;
       });
-      console.log("tempForm", tempForm);
+
+    
       if (tempForm && tempForm.length > 0) {
         setExportFilename(tempForm[0]?.form_contents?.formTitle);
       }
@@ -680,7 +674,6 @@ export default function index() {
     setAppGroups(formAppGroups);
   }, [formAppGroups])
 
-  console.log("vendor", vendors);
 
   const handleSelectedLabel = ({ value, opt }) => {
     setSelectedLabel(value);
@@ -736,7 +729,7 @@ export default function index() {
         : application?.child?.grade_desc
     };
 
-    console.log("@@@@@@@@handleSelectedApplication", { application, temp });
+
 
     const childInformationObj = {
       profile: {
@@ -977,7 +970,7 @@ export default function index() {
       ch_id: application?.child?.ch_id,
       id: application?.child?.ch_id
     };
-    console.log('APPLICATIONNNNN', application)
+
     const parents = application.parents;
 
     let items = [];
@@ -1079,7 +1072,7 @@ export default function index() {
   ];
 
   const handleUpdateOnchange = (id, value) => {
-    console.log('vvavlueeeee', value)
+
     setUpdateApplication({ ...updateApplication, [id]: value });
   };
 
@@ -1360,12 +1353,9 @@ export default function index() {
     let general_information = child.general_information;
     let emergency_care_information = child.emergency_care_information;
 
-    console.log("profile", profile);
-
     if (section === "profile") {
       if (id == "child_lives_with") {
-        console.log("value", value);
-        console.log("id", id);
+ 
         profile.child_lives_with = value;
       } else {
         profile = { ...profile, [id]: value };
@@ -1374,7 +1364,7 @@ export default function index() {
       child.profile = profile;
     } else if (section === "general_information") {
       if (id === "has_suspended") {
-        console.log('Has Suspended Value', value)
+    
         if (value == "0") {
           general_information = {
             ...general_information,
@@ -1429,7 +1419,7 @@ export default function index() {
       setEmergencyContacts([...emergencyContacts]);
     }
 
-    console.log("parentsInformation update", parentsInformation);
+  
   };
 
   const handleSelectLatest = () => {
@@ -1791,7 +1781,6 @@ export default function index() {
 
     let exists = false;
 
-    console.log("relationships", relationships)
 
     for (const [index, item] of relationships.entries()) {
       if (item.parent == parent && item.child == child) {
@@ -1821,8 +1810,7 @@ export default function index() {
     }
   }
 
-  console.log('loading applications', applications)
-  console.log('parentsInformation123123123123', parentsInformation)
+
 
   const handleCreateGroupReminder = (payload) => {
     dispatch(requestCreateGroupReminder(payload));
@@ -1871,11 +1859,7 @@ export default function index() {
     }
   }
 
-  console.log('selectedVendor', selectedVendor)
-  console.log('applicationsssszzssss  applications.activeapplications',  applications.activeapplications)
-  console.log('applicationsssszzssss', applications.activeapplications.filter(item => {
-    return selectedForm === "lot" ? item.is_lot : !item.is_lot
-  }))
+
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -1958,7 +1942,7 @@ export default function index() {
                       setView('')
                       setSelectedApplication({})
                     }
-                    console.log("form form", target.value);
+        
                     window.history.replaceState("", "", "?form=" + target.value);
                     setAppGroups([]);
                     dispatch(requestGetFormAppGroup(target.value));

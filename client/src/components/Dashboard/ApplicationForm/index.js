@@ -204,14 +204,13 @@ export default function index() {
   }, []);
 
   useEffect(() => {
-    console.log('form auth', auth);
+
 
     if (auth.status == 'SIGNED_IN') {
       console.log('parentsInformation', parentsInformation);
 
       let newParentsInformation = [...parentsInformation];
 
-      console.log('new Date(auth.user.birth_date)', auth.user.birth_date);
 
       newParentsInformation[0].profile.address = auth.user.address ?
         auth.user.address : newParentsInformation[0].profile.address;
@@ -250,8 +249,7 @@ export default function index() {
 
   if (vendor && vendor.id) {
 
-    console.log("vendor", vendor);
-
+ 
     let app_programs = []
 
     for (const program of vendor.app_programs) {
@@ -277,7 +275,7 @@ export default function index() {
     marginTop: 0,
     right: "15px"
   }
-  console.log('vendorrrr', vendor)
+
   const DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm:ss";
   const DB_DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
   const DATE_FORMAT = "yyyy-MM-dd";
@@ -443,7 +441,7 @@ export default function index() {
       hospital_phone: ""
     }
   };
-  console.log('childInfoObjecttttttttt',childInfoObject)
+
   const [childsInformation, setChildsInformation] = useState([{ ...childInfoObject }]);
 
   const handleChildFormDetailsChange = (index, section, id, value) => {
@@ -645,7 +643,7 @@ export default function index() {
       emergency_contacts[index][id] = value;
       setEmergencyContacts([...emergencyContacts]);
 
-      console.log("emergencyContacts", emergencyContacts);
+   
     }
   }
 
@@ -659,7 +657,7 @@ export default function index() {
     if (parentsInformation.length > 1) {
       let tempParentsInformation = parentsInformation;
 
-      console.log("parentsInformation", parentsInformation);
+ 
       tempParentsInformation.splice(index, 1)
       setParentsInformation([...tempParentsInformation]);
     }
@@ -722,8 +720,7 @@ export default function index() {
         let profile = child.profile;
         let gi = child.general_information;
 
-        console.log("isEmailAddress(profile.email_address2)", isEmailAddress(profile.email_address))
-        console.log("isEmailAddress(profile.email_address2)", profile)
+    
         if ((profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
           isValid = false;
           break;
@@ -1332,7 +1329,7 @@ export default function index() {
                             className="right"
                             onClick={(e) => {
                               e.preventDefault();
-                              console.log('isFormValid(selectedStep)', isFormValid(selectedStep))
+                        
                               if (!isFormValid(selectedStep)) {
                                 formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
                                 e.preventDefault();
