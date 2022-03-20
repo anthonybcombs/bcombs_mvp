@@ -178,7 +178,7 @@ export default function Layout({ children }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
+  console.log('vendorsrrrr',vendors)
 
   useEffect(() => {
     if (auth) {

@@ -526,6 +526,7 @@ export default function index() {
   const navigate = useNavigate();
   const queryParams = parse(location.search);
 
+
   const { groups, auth, vendors,
     applications, loading,
     form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups },
@@ -1871,7 +1872,10 @@ export default function index() {
   }
 
   console.log('selectedVendor', selectedVendor)
-  console.log('renderForms', renderForms)
+  console.log('applicationsssszzssss  applications.activeapplications',  applications.activeapplications)
+  console.log('applicationsssszzssss', applications.activeapplications.filter(item => {
+    return selectedForm === "lot" ? item.is_lot : !item.is_lot
+  }))
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -1939,12 +1943,15 @@ export default function index() {
                 onChange={({ target }) => {
 
 
-                  if (target.value == "default") {
-                    console.log("selectedvendor", selectedVendor);
-                    setSelectedForm("default");
+                  if (target.value == "default" || target.value === 'lot') {
+               
+                    setSelectedForm(target.value);
                     setAppGroups(selectedVendor.app_groups);
                     window.history.replaceState("", "", "?vendor=" + selectedVendor.id2);
-                    dispatch(requestGetApplications(selectedVendor.id));
+                    if(applications.activeapplications.length === 0) {
+                      dispatch(requestGetApplications(selectedVendor.id));
+                    }
+                   
                   } else {
                     setSelectedForm(target.value);
                     if (view === 'builderForm') {
@@ -1959,8 +1966,11 @@ export default function index() {
                   }
                 }}
               >
-                <option key={selectedVendor.id} selected={!(queryParams && queryParams.form)} value="default">
+                <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare ? `Daycare Form` : `Mentoring Application`}
+                </option>
+                <option key={`${selectedVendor.id}-2`} value="lot">
+                    Lot Form
                 </option>
                 {
                   renderForms && renderForms.length > 0 && (
@@ -1980,12 +1990,12 @@ export default function index() {
         <div>
           <div id="labels">
             {
-              selectedVendor && selectedVendor.id2 && selectedForm == "default" ? (
+              selectedVendor && selectedVendor.id2 && (selectedForm == "default"   || selectedForm == "lot") ? (
                 <div className="copy-application-link">
                   <a
                     href={selectedVendor.is_daycare ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
-                      }`}>
+                      }${selectedForm === 'lot' ? '/lot'  : ''}`}>
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
@@ -1993,10 +2003,10 @@ export default function index() {
                     setCopyApplicationLinkModal(true)
                     setCurrentCopyLink(selectedVendor.is_daycare ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
-                      }`)
+                      }${selectedForm === 'lot' ? '/lot'  : ''}`)
                   }} />
                 </div>
-              ) : selectedForm && selectedForm != "default" ? (
+              ) : selectedForm && selectedForm != "default" && selectedForm != "lot" ? (
                 <div className="copy-application-link">
                   <a
                     href={`/form/${selectedForm}`}
@@ -2159,12 +2169,15 @@ export default function index() {
       </div>
       {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
         <ApplicationListStyled
-          applications={applications.activeapplications}
-          handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" ? viewType : 'builderForm')}
+          // applications={applications.activeapplications}
+          applications={applications.activeapplications.filter(item => {
+            return selectedForm === "lot" ? item.is_lot : !item.is_lot
+          })}
+          handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" || selectedForm === "lot" ? viewType : 'builderForm')}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
           appGroups={appGroups}
-          isCustomForm={selectedForm !== "default"}
+          isCustomForm={selectedForm !== "default" && selectedForm !== "lot"}
           filename={exportFilename}
         />
       )}
@@ -2290,6 +2303,7 @@ export default function index() {
                   vendors && vendors.length > 0 ? vendors[0].app_programs : []
                 }
                 handleSelectLatestApplication={handleSelectLatest}
+                isLot={selectedApplication.is_lot}
               />
             ) : ""}
 

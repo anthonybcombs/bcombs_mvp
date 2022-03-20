@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, redirectTo } from "@reach/router";
+import { useParams, useLocation, redirectTo } from "@reach/router";
 
 import ChildFormStyled from "./Step1ChildForm";
 import ParentFormStyled from "./Step2ParentForm";
@@ -175,8 +175,10 @@ export default function index() {
   }
 
   const { vendor_id } = useParams();
-
+  const { pathname } = useLocation();
   const dispatch = useDispatch();
+
+  const isLot = pathname.includes('/lot') ? 1 : 0;
 
   const { vendors, loading, applications, auth } = useSelector(
     ({ vendors, loading, applications, auth }) => {
@@ -184,7 +186,8 @@ export default function index() {
     }
   );
 
-  console.log('vendorssssssss',vendor)
+  
+
 
   // if(applications.addapplication && applications.addapplication.message == "application created") {
   //   scrollToTop("auto");
@@ -528,6 +531,7 @@ export default function index() {
             handleAddNumChild={handleAddNumChild}
             handleRemoveNumChild={handleRemoveNumChild}
             maxChild={maxChild}
+            isLot={isLot}
             current={childsInformation.length}
             ProfileImg={ProfileImg}
             app_programs={vendor.app_programs}
@@ -550,6 +554,7 @@ export default function index() {
               handleAddNumChild={handleAddNumChild}
               handleRemoveNumChild={handleRemoveNumChild}
               maxChild={maxChild}
+              isLot={isLot}
               current={childsInformation.length}
               ProfileImg={ProfileImg}
               app_programs={vendor.app_programs}
@@ -736,9 +741,9 @@ export default function index() {
           profile.zip_code.length < 5 ||
           !profile.location_site ||
           !profile.child_lives_with ||
-          (!gi.grade ||
+          (!isLot && (!gi.grade ||
             !gi.school_name ||
-            !gi.mentee_gain) ||  
+            !gi.mentee_gain)) ||  
           (gi.school_phone && gi.school_phone.includes('_')) ||
           (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.doctor_phone.includes('_')) ||
           (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.hospital_phone.includes('_')) || 
@@ -1034,7 +1039,8 @@ export default function index() {
         section1_name: vendor.section1_name,
         section2_name: vendor.section2_name,
         section3_name: vendor.section3_name,
-        emergency_contacts: JSON.stringify(emergencyContacts)
+        emergency_contacts: JSON.stringify(emergencyContacts),
+        is_lot: isLot
       }
 
       payload.push(request_params);

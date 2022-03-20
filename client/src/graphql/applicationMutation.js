@@ -97,7 +97,7 @@ export const GET_APPLICATIONS_QUERY = gql`
       app_id
       vendor
       is_daycare
-  
+      is_lot
       child {
         ch_id     
         new_childId   
@@ -292,7 +292,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
       app_id
       vendor
       is_daycare
- 
+      is_lot
       child {
         ch_id        
         firstname
@@ -496,7 +496,7 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
           app_grp_id
         }
         is_daycare
-
+        is_lot
         child {
           ch_id        
           firstname
@@ -808,6 +808,7 @@ export const GET_ARCHIVED_APPLICATIONS_QUERY = gql`
       app_id
       vendor
       is_daycare
+      is_lot
       child {
         ch_id        
         firstname
