@@ -18,6 +18,7 @@ import {
 } from "@reach/router";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 import Logo from "../images/logo1.png";
+import LotLogo from "../images/lot.jpg";
 import { requestLogout } from "../redux/actions/Auth";
 import { requestUserTypes } from "../redux/actions/UserTypes";
 
@@ -157,6 +158,7 @@ const PopoverStyled = styled.div`
 `;
 
 const DefaultLogo = () => <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
+const DefaultLotLogo = () => <img data-testid="app-logo" src={LotLogo} alt="Bcombs Lot Logo"  style={{ width: 80, height: 80 }}  />
 
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
@@ -224,6 +226,7 @@ export default function Layout({ children }) {
 
   const applicationUrl = location.origin + "/application/";
   const customFormUrl = location.origin + "/form/";
+  const isLotUrl = location.href.includes('/lot') 
 
 
   return (
@@ -231,8 +234,8 @@ export default function Layout({ children }) {
       <HeaderStyled data-testid="app-title" theme={theme.header}>
         <div id="app-header-right">
           <Link to="/">
-            {(location.href.includes(applicationUrl) || location.href.includes(customFormUrl))  ? (vendors &&
-              vendors.length > 0 && vendors[0]?.logo) ? <img src={`${s3BucketRootPath}/${vendors[0]?.logo}`} style={{ width: 80, height: 80 }} /> : <DefaultLogo/> : <DefaultLogo/>}
+            {(location.href.includes(applicationUrl) || location.href.includes(customFormUrl)) && !isLotUrl  ? (vendors &&
+              vendors.length > 0 && vendors[0]?.logo) ? <img src={`${s3BucketRootPath}/${vendors[0]?.logo}`} style={{ width: 80, height: 80 }} /> : <DefaultLogo/> : isLotUrl ?  <DefaultLotLogo/> : <DefaultLogo/>}
 
           </Link>
           {location.href.includes(applicationUrl) &&
