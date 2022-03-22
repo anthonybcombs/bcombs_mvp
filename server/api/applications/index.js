@@ -144,7 +144,7 @@ export const getApplicationsByVendor = async vendor => {
   let result = [];
   try {
     console.log("getApplicationsByVendor vendor !!!!!!!!!!!!!!! ", vendor);
-    const applications = await db.query(
+    const applications = vendor ?  await db.query(
       `SELECT 
         id,
         BIN_TO_UUID(app_id) as app_id, 
@@ -176,7 +176,7 @@ export const getApplicationsByVendor = async vendor => {
         WHERE vendor=UUID_TO_BIN(?) and is_archived=0
         ORDER BY id DESC`,
       [vendor]
-    );
+    ) : [];
     result = applications;
   } catch (error) {
     console.log("error", error);
