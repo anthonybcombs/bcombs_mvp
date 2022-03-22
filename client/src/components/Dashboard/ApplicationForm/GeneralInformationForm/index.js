@@ -742,7 +742,7 @@ export default function index({
                 message="Grade is required."
               />
             </div>
-            {
+            {/* {
               childGeneralInformation.grade > 8 &&
               <div className="form-group">
                 <div className="field select-field-wrapper">
@@ -784,8 +784,8 @@ export default function index({
                   <label className="field-label">GPA (Quarter)</label>
                 </div>
               </div>
-            }
-            {
+            } */}
+            {/* {
               childGeneralInformation.grade > 8 &&
               <div className="grid-5">
                 <div className="form-group">
@@ -885,9 +885,9 @@ export default function index({
                   </div>
                 </div>
               </div>
-            }
+            } */}
           </div>
-          {
+          {/* {
             childGeneralInformation.grade > 8 &&
             <div className="grid-4">
               <div className="form-group">
@@ -1036,8 +1036,8 @@ export default function index({
                 </div>
               </div>
             </div>
-          }
-          {
+          } */}
+          {/* {
             childGeneralInformation.grade > 8 &&
             createACTFormn()
           }
@@ -1048,7 +1048,7 @@ export default function index({
           {
             childGeneralInformation.grade > 8 &&
             createPsatForm()
-          }
+          } */}
           <div className="grid-2">
             <div className="form-group">
               <div className="field">
