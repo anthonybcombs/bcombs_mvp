@@ -370,21 +370,22 @@ export const addVendorAdmins = async ({
   user, 
   vendor, 
   name,
-  form 
+  form,
+  isLotForm = 0
 }) => {
   const db = makeDb();
   let result;
   try {
 
     result = form ? await db.query(
-      `INSERT INTO vendor_admin(id, user, vendor, form, name)
-      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), UUID_TO_BIN(?), ?)`,
-      [user, vendor, form, name]) 
+      `INSERT INTO vendor_admin(id, user, vendor, form, name, is_lotform)
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?)`,
+      [user, vendor, form, name, isLotForm]) 
       : 
     await db.query(
-      `INSERT INTO vendor_admin(id, user, vendor, name)
-      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?)`,
-      [user, vendor, name])
+      `INSERT INTO vendor_admin(id, user, vendor, name, is_lotform)
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?)`,
+      [user, vendor, name, isLotForm])
 
   } catch (error) {
     console.log("error", error);
@@ -404,6 +405,8 @@ export const deleteVendorAdmins = async ({ user, vendor }) => {
       WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
       [user, vendor]
     );
+
+    console.log("delete admin success");
   } catch (error) {
     console.log("delete admin error", error);
   } finally {
@@ -423,7 +426,8 @@ export const getVendorAdminsByUser = async (user) => {
         BIN_TO_UUID(id) as id,
         BIN_TO_UUID(vendor) as vendor,
         BIN_TO_UUID(form) as form,
-        BIN_TO_UUID(user) as user
+        BIN_TO_UUID(user) as user,
+        is_lotform
       FROM vendor_admin
       WHERE user=UUID_TO_BIN(?)
       `,[user]
@@ -452,7 +456,8 @@ export const getVendorAdmins = async (vendor) => {
           va.name,
           v.name as vendorName,
           u.email,
-          BIN_TO_UUID(va.form) as form
+          BIN_TO_UUID(va.form) as form,
+          va.is_lotform
         FROM vendor v, users u, vendor_admin va
         WHERE va.vendor = UUID_TO_BIN(?) AND 
           v.id = UUID_TO_BIN(?) AND 
