@@ -177,6 +177,13 @@ export default function index() {
         })
 
         formattedForms.unshift({
+          id: 'lot',
+          name: 'Lot Form',
+          label: 'Lot Form',
+          isCustomForm: false
+        });
+
+        formattedForms.unshift({
           id: 'default',
           name: 'Mentoring Application',
           label: 'Mentoring Application',
@@ -250,6 +257,10 @@ export default function index() {
           a.email === admin.email && a.vendorName === admin.vendorName
         ))
       ));
+
+      getAdmins.map(a => {
+        a.isLotForm = tempAdmins.filter(x => x?.vendor == a.vendor).some(y => y?.isLotForm);
+      })
 
       console.log('getAdmins', getAdmins);
 
@@ -404,7 +415,15 @@ export default function index() {
 
       const isExists = sAdminForms.filter((x) => {
         if (x.form == form.id) return true;
-        else if (!x.form && form.id == 'default') return true;
+        else if (!x.form) {
+          if(form.id == 'default') {
+            return true;
+          } else if(form.id == 'lot' && !!sAdmin.isLotForm) {
+            return true
+          } else {
+            return false;
+          }
+        }
         else return false;
       });
 
@@ -445,19 +464,36 @@ export default function index() {
     reValidateMode: "onChange"
   });
 
-  const setupForms = (forms) => {
+  const setupForms = (forms, isLotForm = false) => {
 
     console.log('this is the forms', forms);
+    console.log('isLotForm', isLotForm);
 
     let formString = "";
+
+    const subForms = forms.filter((f, index, self) => (
+      index === self.findIndex((a) => (
+        a.form === f.form && a.formTitle === f.formTitle
+      ))
+    ));
+
+    forms = [...subForms];
+
     forms.map((i) => {
       if (i?.form) {
-        formString += `${i.formTitle},`;
+        formString += `${i.formTitle}, `;
       } else {
-        formString += "Mentoring Applications,";
+        formString += "Mentoring Applications, ";
+      }
+
+      if (!(i?.form) && isLotForm) {
+        formString += "Lot Form, ";
       }
     })
-    return formString.slice(0, -1);
+    formString = formString.slice(0, -1);
+    formString = formString.slice(0, -1);
+
+    return formString;
   }
 
   const columns = [
@@ -483,7 +519,7 @@ export default function index() {
       name: 'Form',
       selector: 'form',
       sortable: true,
-      cell: row => setupForms(row.forms)
+      cell: row => setupForms(row.forms, row.isLotForm)
     }
   ];
 

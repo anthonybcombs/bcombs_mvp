@@ -1342,6 +1342,7 @@ const queryTypes = `
         isOwner: Boolean
         formTitle: String
         form: String
+        isLotForm: Boolean
     }
 
     type IdFormat {

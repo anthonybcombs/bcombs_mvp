@@ -65,6 +65,7 @@ import { parse } from "query-string";
 import Form from '../../Dashboard/Builders/Form'
 
 import AdminFormStyled from '../Admin/form/index';
+import AdminFormModal from '../Admin/modal/index';
 
 const ApplicationFormStyled = styled.form`
   @media all {
@@ -2522,18 +2523,23 @@ export default function index() {
       )}
       {
         showAdminForm && (
-          <AdminFormStyled
-            selectedVendor={selectedVendor}
-            selectedForm={
-              selectedForm == 'default' ? 
-              { form_id: 'default',name: 'Mentoring Application' } 
-              :
-              selectedForm == 'lot' ? 
-              { form_id: 'lot',name: 'Lot Form' }
-              :
-              addForm.form
-            }
-            newVendor={vendor.newVendor}
+          // <AdminFormStyled
+          //   selectedVendor={selectedVendor}
+          //   selectedForm={
+          //     selectedForm == 'default' ? 
+          //     { form_id: 'default',name: 'Mentoring Application' } 
+          //     :
+          //     selectedForm == 'lot' ? 
+          //     { form_id: 'lot',name: 'Lot Form' }
+          //     :
+          //     addForm.form
+          //   }
+          //   newVendor={vendor.newVendor}
+          //   handleExit={() => {
+          //     setShowAdminForm(false);
+          //   }}
+          // />
+          <AdminFormModal
             handleExit={() => {
               setShowAdminForm(false);
             }}

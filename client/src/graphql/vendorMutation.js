@@ -189,6 +189,7 @@ export const GET_VENDOR_ADMINS = gql`
       name
       formTitle
       form
+      isLotForm
     }
   }
 `;
@@ -235,6 +236,7 @@ export const ADD_VENDOR_ADMIN = gql`
       name
       formTitle
       form
+      isLotForm
     }
   }
 `;
@@ -251,6 +253,7 @@ export const UPDATE_VENDOR_ADMIN = gql`
       name
       formTitle
       form
+      isLotForm
     }
   }
 `;

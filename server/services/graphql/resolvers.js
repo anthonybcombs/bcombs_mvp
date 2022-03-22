@@ -420,6 +420,15 @@ const resolvers = {
       for (const vendor of vendors) {
         console.log("vendor", vendor);
         let va = await getVendorAdmins(vendor.id);
+        va = va.map(v => {
+          v = {
+            ...v,
+            "isLotForm": !!v.is_lotform
+          }
+          delete v.is_lotform;
+          return v;
+        });
+        console.log('update admins va', va);
         admins.push(...va);
       }
 
@@ -1243,7 +1252,8 @@ const resolvers = {
           user: admin.user,
           vendor: admin.vendor,
           name: admin.name,
-          form: form.isCustomForm ? form.form_id : null
+          form: form.isCustomForm ? form.form_id : null,
+          isLotForm: !!(form.form_id ==  'lot') ? 1 : 0
         });
       }
 
@@ -1286,6 +1296,7 @@ const resolvers = {
             if(form && form.form_contents && form.form_contents.formTitle)
               x.formTitle = form.form_contents.formTitle;
           }
+          x.isLotForm = !!x.is_lotform;
         }
 
         resAdmins.push(...va);
@@ -1349,7 +1360,8 @@ const resolvers = {
           user: user.id,
           vendor: admin.vendor,
           name: admin.name,
-          form: form.isCustomForm ? form.form_id : null
+          form: form.isCustomForm ? form.form_id : null,
+          isLotForm: !!(form.form_id ==  'lot') ? 1 : 0
         });
       }
 
