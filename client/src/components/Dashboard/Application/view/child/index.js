@@ -214,7 +214,7 @@ export default function index({
           />}
 
           <br />
-          <MedicalCareInfoStyled
+          {/* <MedicalCareInfoStyled
             printPageClassname="printpage-break medicalCare-information"
             childEmergencyCare={childInformation?.emergency_care_information}
             handleChildFormDetailsChange={handleChildFormDetailsChange}
@@ -224,7 +224,7 @@ export default function index({
             isReadonly={isReadonly}
             pastChildInformation={pastChildInformation}
             isVendorView={isVendorView}
-          />
+          /> */}
         </div>
       </ChildFormViewStyled>
     </>

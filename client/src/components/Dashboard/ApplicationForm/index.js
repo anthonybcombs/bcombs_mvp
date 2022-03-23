@@ -737,7 +737,7 @@ export default function index() {
           !profile.zip_code ||
           profile.zip_code.length < 5 ||
           !profile.location_site ||
-          !profile.child_lives_with ||
+          // !profile.child_lives_with ||
           (!isLot && (!gi.grade ||
             !gi.school_name ||
             !gi.mentee_gain)) ||  
@@ -973,7 +973,7 @@ export default function index() {
           zip_code: childsInformation[i].profile.zip_code,
           location_site: childsInformation[i].profile.location_site,
           image: childsInformation[i].profile.image,
-          child_lives_with: getChildLivesWith(childsInformation[i].profile.child_lives_with),
+          child_lives_with: getChildLivesWith(childsInformation[i].profile.child_lives_with || []),
           school_name: childsInformation[i].general_information.school_name,
           school_phone: childsInformation[i].general_information.school_phone,
           has_suspended: childsInformation[i].general_information.has_suspended ? 1 : 0,

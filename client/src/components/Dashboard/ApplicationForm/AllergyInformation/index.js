@@ -1,11 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
-import ErrorMessage from "../../../../helpers/ErrorMessage";
-import NumberFormat from 'react-number-format';
 const GeneralInformationFormStyled = styled.div`
   position: relative; 
   margin-top:12px;
@@ -88,16 +82,16 @@ export default function index({
     childGeneralInformation,
     handleChildFormDetailsChange,
     counter,
-   
+
     isReadonly = false,
     pastChildInformation = {},
     isVendorView,
     printPageClassname
 }) {
 
-   
 
-  
+
+
     return (
         <GeneralInformationFormStyled className={printPageClassname}>
             <h3 className="heading">Allergy Information</h3>
@@ -105,7 +99,11 @@ export default function index({
             <div className="general-info-wrapper">
 
 
+              
                 <div className="grid">
+                <label className="field-label-simple" style={{ padding: 4 }}>  
+                    Please complete this information and list any known allergies.  This will allow us to safely engage with students during meetings, outings and other experiences when they are under our supervision.
+                </label>
                     <div className="form-group">
                         <div className="field">
                             <input
@@ -127,7 +125,7 @@ export default function index({
                                 readOnly={isReadonly}
                                 defaultValue={childGeneralInformation.allergies_to_medicine}
                             />
-                            
+
                             <label className="field-label" for={`ch_allergies_to_medicine_${counter - 1}`}>Allergies to Medicine</label>
                         </div>
                     </div>
@@ -187,7 +185,7 @@ export default function index({
                         </div>
                     </div>
                 </div>
-    
+
                 <div className="grid">
                     <div className="form-group">
                         <div className="field">
@@ -215,7 +213,7 @@ export default function index({
                     </div>
                 </div>
 
-           
+
 
                 <div className="grid">
                     <div className="form-group">

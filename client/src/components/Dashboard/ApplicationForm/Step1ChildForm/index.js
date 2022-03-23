@@ -99,14 +99,14 @@ export default function index({
 
       <br />
       <br />
-      <MedicalCareInfoStyled
+      {/* <MedicalCareInfoStyled
         childEmergencyCare={childInformation.emergency_care_information}
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         counter={counter}
         register={register}
         errors={errors} />
       <br />
-      <br />
+      <br /> */}
       <div className="application-btn-container">
         {
           current < maxChild && counter == current &&

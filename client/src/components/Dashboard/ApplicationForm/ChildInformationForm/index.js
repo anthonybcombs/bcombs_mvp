@@ -414,7 +414,7 @@ export default function index({
   return (
     <ChildInfomationFormStyled className={printPageClassname}>
       <h3 className="heading">
-        {isLot ? 'Leader of Tomorrow (LOT) Information' : 'Child Information'} {counter > 1 ? `(${counter})` : ``}
+        {isLot ? 'Leaders of Tomorrow (LOT) Information' : 'Child Information'} {counter > 1 ? `(${counter})` : ``}
       </h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">
@@ -1543,7 +1543,7 @@ export default function index({
             /> Select All
           </div>
         </div>
-        <div className="grid">
+        {/* <div className="grid">
           <div className="form-group">
             <div className="field customMultiselect">
               {isReadonly ? (
@@ -1638,7 +1638,7 @@ export default function index({
               message="Child lives with is required"
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </ChildInfomationFormStyled>
   );
