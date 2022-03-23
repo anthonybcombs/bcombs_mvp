@@ -50,15 +50,18 @@ export default props => {
     if(queryParams?.vendor) {
       const selectedVendor = vendors.filter(i => queryParams.vendor == i.id2)[0];
       if(selectedVendor?.id) {
+        const isOwner = !!(auth.user_id == selectedVendor.user_id);
         setSelectedVendor(selectedVendor)
-        dispatch(requestGetForms({ vendor: selectedVendor?.id, categories: value || [] }));
+        dispatch(requestGetForms({ vendor: selectedVendor?.id, currentUser: auth.user_id, isOwner, categories: value || [] }));
       } else {
+        const isOwner = !!(auth.user_id == vendors[0].user_id);
         setSelectedVendor(vendors[0].id)
-        dispatch(requestGetForms({ vendor: vendors[0].id, categories: value || [] }));
+        dispatch(requestGetForms({ vendor: vendors[0].id, currentUser: auth.user_id, isOwner, categories: value || [] }));
       }
     } else {
+      const isOwner = !!(auth.user_id == vendors[0].user_id);
       setSelectedVendor(vendors[0].id)
-      dispatch(requestGetForms({ vendor: vendors[0].id, categories: value || [] }));
+      dispatch(requestGetForms({ vendor: vendors[0].id, currentUser: auth.user_id, isOwner, categories: value || [] }));
     }
 		setIsLoading(true);
 	};
