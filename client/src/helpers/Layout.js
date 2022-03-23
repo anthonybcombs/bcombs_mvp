@@ -5,11 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCog,
   faBell,
-  faSearch,
-  faSignOutAlt,
-  faFile
+  faSearch
 } from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
 import {
   Link,
   Location,
@@ -20,7 +17,6 @@ import Popover, { ArrowContainer } from "react-tiny-popover";
 import Logo from "../images/logo1.png";
 import LotLogo from "../images/lot.jpg";
 import { requestLogout } from "../redux/actions/Auth";
-import { requestUserTypes } from "../redux/actions/UserTypes";
 
 import { s3BucketRootPath } from '../constants/aws';
 
