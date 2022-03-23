@@ -158,16 +158,14 @@ const PopoverStyled = styled.div`
 `;
 
 const DefaultLogo = () => <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
-const DefaultLotLogo = () => <img data-testid="app-logo" src={LotLogo} alt="Bcombs Lot Logo"  style={{ width: 80, height: 80 }}  />
+const DefaultLotLogo = () => <img data-testid="app-logo" src={LotLogo} alt="Bcombs Lot Logo"  style={{ width: 180, height: 'auto' }}  />
 
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
   const [isPopOverSettingsVisible, setIsPopOverSettingsVisible] = useState(false);
-  const [isAdminPopOverVisible, setIsAdminPopOverVisible] = useState(false);
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
   const [currentUserType, setCurrentUserType] = useState("");
-  const [userApplications, setuserApplications] = useState([])
-  const [currentParent, setCurrentParent] = useState(null);
+
 
 
   const { auth, status, userTypes, vendors, applications } = useSelector(
