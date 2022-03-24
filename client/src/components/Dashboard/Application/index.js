@@ -651,6 +651,7 @@ export default function index() {
 
     if(addForm.form?.id) {
       setShowAdminForm(true);
+      setRenderForms([...renderForms, {...addForm}]);
     }
 
   }, [addForm])
@@ -707,9 +708,9 @@ export default function index() {
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
 
-  
-
     setRenderForms(formList);
+
+    console.log('new form list', formList);
 
     if (queryParams && queryParams.form) {
       setSelectedForm(queryParams.form);
@@ -1926,7 +1927,7 @@ export default function index() {
 
     if(selectedForm == "default" || selectedForm == "lot") {
       const payload = {
-        user: selectedVendor.user,
+        user: auth.user_id,
         name: selectedVendor.name,
         section1_text: selectedVendor.section1_text,
         section2_text: selectedVendor.section2_text,
@@ -1951,7 +1952,7 @@ export default function index() {
         const payload = {
           category: selectedFormDetails.category,
           form_contents: {...selectedFormDetails.form_contents, ['formTitle']: selectedFormDetails.form_contents.formTitle + ' (Copy) '},
-          user: selectedFormDetails.user,
+          user: auth.user_id,
           vendor: selectedFormDetails.vendor
         }
 
