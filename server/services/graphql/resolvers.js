@@ -478,6 +478,8 @@ const resolvers = {
         forms.map(f => {
           if(formIds.includes(f.form_id)) {
             selectedForms.push(f);
+          } else if(filter.currentUser && (filter.currentUser == f.user)) {
+            selectedForms.push(f)
           }
         })
         forms = selectedForms;
