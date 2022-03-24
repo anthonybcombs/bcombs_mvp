@@ -1377,7 +1377,7 @@ export default function index({
                 defaultValue={childGeneralInformation.awards}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for={`ch_awards_${counter - 1}`}>Please List of Awards</label>
+              <label className="field-label" for={`ch_awards_${counter - 1}`}>List of Awards</label>
             </div>
           </div>
 
@@ -1401,7 +1401,7 @@ export default function index({
                 defaultValue={childGeneralInformation.accomplishments}
                 readOnly={isReadonly}
               />
-              <label className="field-label" for={`ch_accomplishments_${counter - 1}`}>Please List of Accomplishments</label>
+              <label className="field-label" for={`ch_accomplishments_${counter - 1}`}>List of Accomplishments</label>
             </div>
           </div>
         </div>
@@ -1410,7 +1410,7 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                <span className="required">*</span> What does the mentee hope to gain from the program?
+                <span className="required">*</span> What does the {isLot ? 'lot' : 'mentee'} hope to gain from the program?
               </label>
               <textarea
                 name={"mentee_gain" + (counter - 1)}

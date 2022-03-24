@@ -242,7 +242,7 @@ export default function index({
                     </div>
                 </div>
 
-                <div className="grid">
+                {/* <div className="grid">
                     <div className="form-group">
                         <div className="field">
                             <input
@@ -267,7 +267,7 @@ export default function index({
                             <label className="field-label" for={`ch_health_insurance_information_${counter - 1}`}>Health Insurance Information (Policy NName, Policy #, Policy Holder's Name)</label>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
 
