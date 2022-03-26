@@ -1554,7 +1554,7 @@ export default function index({
                 />
               )}
               <label className="field-label">
-                Program Leaders of Tomorrow®
+                Program Leaders of Tomorrow® LOT®
               </label>
             </div>
             <input
