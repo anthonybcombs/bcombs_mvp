@@ -454,7 +454,7 @@ export default function index({
   return (
     <ChildInfomationFormStyled className={printPageClassname}>
       <h3 className="heading">
-        {isLot ? 'Leaders of Tomorrow (LOT) Information' : 'Child Information'} {counter > 1 ? `(${counter})` : ``}
+        {isLot ? 'Leaders of Tomorrow (LOT®) Information' : 'Child Information'} {counter > 1 ? `(${counter})` : ``}
       </h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">

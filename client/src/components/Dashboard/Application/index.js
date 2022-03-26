@@ -2061,7 +2061,7 @@ export default function index() {
                   {selectedVendor.is_daycare ? `Daycare Form` : `Mentoring Application`}
                 </option>
                 <option key={`${selectedVendor.id}-2`} value="lot">
-                    Lot Form
+                    LOT® Form
                 </option>
                 {
                   renderForms && renderForms.length > 0 && (
