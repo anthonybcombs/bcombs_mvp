@@ -150,6 +150,7 @@ import {
 import {
   triggerCronSetReminder
 } from "../../api/cron";
+import { exists } from "fs";
 
 const util = require('util');
 
@@ -233,8 +234,14 @@ const resolvers = {
         vendor.forms = (user == vendor.vendor_user) ?  vendor.forms ? vendor.forms : []
         :
         vendor.forms ? vendor.forms.filter((f) => {
-          const isExists = admins.some(x => x.form == f.form_id);
-          return isExists;
+          let isExists = admins.some(x => x.form == f.form_id);
+
+          if(isExists) {
+            return isExists;
+          } else {
+            isExists = (f.user == user);          
+            return isExists;
+          }
         }) : []
       }
      
