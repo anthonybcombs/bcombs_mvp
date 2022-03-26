@@ -570,7 +570,7 @@ export default function index() {
       </div>
     )
   }
-
+    console.log('errorszzzz',errors)
   // parent section
 
   const childEmergencyContact = {
@@ -738,6 +738,7 @@ export default function index() {
           profile.zip_code.length < 5 ||
           !profile.location_site ||
           // !profile.child_lives_with ||
+          (isLot &&(!gi.allergies_to_medicine || !gi.food_allergies || !gi.insect_allergies || !gi.other_allergies || !gi.current_medications)) ||
           (!isLot && (!gi.grade ||
             !gi.school_name ||
             !gi.mentee_gain)) ||  
@@ -1239,7 +1240,7 @@ export default function index() {
                           handleWizardSelection(1)
                         }}>
                           <span className="round-tab">1</span>
-                          <span className="round-tab-title">Child</span>
+                          <span className="round-tab-title">Student</span>
                         </a>
                       </li>
                       <li
@@ -1309,6 +1310,7 @@ export default function index() {
                           emergencyContacts={emergencyContacts}
                           ProfileImg={ProfileImg}
                           setIsParentAddressRequired={setIsParentAddressRequired}
+                          isLot={isLot}
                         />
                       </div>
                       {selectedStep == 4 && <hr className="style-eight"></hr>}
@@ -1329,7 +1331,7 @@ export default function index() {
                             className="right"
                             onClick={(e) => {
                               e.preventDefault();
-                        
+                                console.log('isFormValid(selectedStep)',isFormValid(selectedStep))
                               if (!isFormValid(selectedStep)) {
                                 formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
                                 e.preventDefault();
@@ -1361,7 +1363,7 @@ export default function index() {
                             scrollToTop("smooth");
 
                           }}>
-                            Previous1
+                            Previous
                           </a>
                         }
                         {

@@ -27,6 +27,8 @@ const CustomSelectStyled = styled.div`
     font-size: 10px;
     color: #555;
     font-family: 'fontawesome';
+    pointer-events: none;
+    
   }
   .select-field-wrapper select {
     position: relative;

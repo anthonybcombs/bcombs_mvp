@@ -637,17 +637,17 @@ export default function index() {
   }, [applications.selectedbuilderapplication])
 
   useEffect(() => {
-    console.log('newly created vendor', vendor.newVendor);
+  
 
     if(vendor.newVendor?.id) {
-      console.log('renderForms', renderForms);
+ 
       setShowAdminForm(true);
     }
 
   }, [vendor.newVendor]);
 
   useEffect(() => {
-    console.log('newly created form', addForm.form);
+
 
     if(addForm.form?.id) {
       setShowAdminForm(true);
@@ -656,7 +656,7 @@ export default function index() {
   }, [addForm])
 
   useEffect(() => {
-    console.log('Vendorssss', vendors)
+
 
     if (vendors && vendors.length > 0 && vendors[0].id) {
 
@@ -732,8 +732,6 @@ export default function index() {
   }, [formList])
 
   useEffect(() => {
-    console.log("Im here here formAppGroups");
-    console.log("formAppGroups, formAppGroups", formAppGroups);
     setAppGroups(formAppGroups);
   }, [formAppGroups])
 
@@ -751,8 +749,8 @@ export default function index() {
     if (!Array.isArray(items)) return [];
 
     items.forEach((item, index) => {
-      console.log(item);
-      console.log(index);
+ 
+    
       const newItem = {
         id: index,
         label: item,
@@ -1246,7 +1244,6 @@ export default function index() {
   const DATE_FORMAT = "yyyy-MM-dd";
 
   const onSubmitSaveApplication = () => {
-    console.log("Click Save Application");
 
     let payload = {
       app_id: selectedApplication.app_id,
@@ -1463,7 +1460,7 @@ export default function index() {
       child.emergency_care_information = emergency_care_information;
     }
 
-    console.log("Child profile", child.profile);
+    
     setChildInformation({ ...child });
   };
 
@@ -1853,18 +1850,14 @@ export default function index() {
         tempRelationships[index].relationship = relationship;
 
         exists = true;
-        console.log('Temp Relationships 1', tempRelationships)
+       
         setRelationships([...tempRelationships]);
         break;
       }
     }
 
     if (!exists) {
-      console.log('Temp Relationships 2', ...relationships, {
-        parent: parent,
-        child: child,
-        relationship: relationship
-      })
+    
       setRelationships([...relationships, {
         parent: parent,
         child: child,
@@ -1941,7 +1934,7 @@ export default function index() {
         is_daycare: selectedVendor.is_daycare
       }
   
-      console.log('create vendor payload', payload);
+    
   
       dispatch(requestCreateVendor(payload));
     } else {
@@ -1955,7 +1948,6 @@ export default function index() {
           vendor: selectedFormDetails.vendor
         }
 
-        console.log('create form payload', payload);
 
         dispatch(requestAddForm(payload));
       }
@@ -1964,7 +1956,6 @@ export default function index() {
 
   }
 
-  console.log('selectedVendor', selectedVendor)
 
   return (
     <ApplicationStyled>
@@ -1972,7 +1963,7 @@ export default function index() {
         <h2>Applications</h2>
         {vendors && vendors.length > 0 && (
           <div>
-            <select className="form-control"
+            <select
               style={{
                 "marginLeft": "20px",
                 "fontSize": "1.5em",
@@ -1987,7 +1978,7 @@ export default function index() {
                 "color": "#000000"
               }}
               onChange={({ target }) => {
-                console.log("target", target.value);
+              
 
                 const chosenVendor = vendors.filter((vendor) => {
                   return vendor.id == target.value
@@ -2018,10 +2009,12 @@ export default function index() {
             </select>
           </div>
         )}
-
+     
         {
           vendors && vendors.length > 0 && (
-            <div>
+            <div style={{
+              marginLeft: 12
+            }}>
               <select
                 style={{
                   "marginLeft": "20px",
@@ -2034,7 +2027,8 @@ export default function index() {
                   "border": "0",
                   "padding": "0",
                   "lineHeight": "1",
-                  "color": "#000000"
+                  "color": "#000000",
+           
                 }}
                 onChange={({ target }) => {
 
@@ -2089,7 +2083,7 @@ export default function index() {
                 icon={faCopy}
                 onClick={e => {
                   e.stopPropagation()
-                  console.log('selectedVendor', selectedVendor);
+           
                   handleDuplicateVendor();
                 }}
               />

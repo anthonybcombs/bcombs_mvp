@@ -269,10 +269,50 @@ export default function index({
     location_sites.length > 0
       ? location_sites
       : [
-        { name: "Raleigh", value: "Raleigh" },
-        { name: "Durham", value: "Durham" }
+        { name: "Atlanta", value: "Atlanta" },
+        { name: "Austin", value: "Austin" },
+        { name: "Boston", value: "Bostonnnn" },
+        { name: "Central Florida ", value: "Central Florida " },
+        { name: "Charlotte", value: "Charlotte " },
+        { name: "Chicago", value: "Chicago " },
+        { name: "Cincinnati", value: "Cincinnati" },
+        { name: "Cleveland", value: "Cleveland" },
+        { name: "Columbus", value: "Columbus" },
+        { name: "Dallas", value: "Dallas" },
+        { name: "Dayton", value: "Dayton " },
+        { name: "Detroit", value: "Detroit " },
+        { name: "Greater Hartford", value: "Greater Hartford" },
+        { name: "Houston", value: "Houston" }, 
+        { name: "Indianapolis", value: "Indianapolis" },
+        { name: "Kansas City", value: "Kansas City" },
+        { name: "Kentucky", value: "Kentucky" },
+        { name: "Los Angeles", value: "Los Angeles" },
+        { name: "Greater Maryland", value: "Greater Maryland  " },
+        { name: "Memphis", value: "Memphis" },
+        { name: "Milwaukee", value: "Milwaukee" },
+        { name: "New Jersey", value: "New Jersey" },
+        { name: "New Orleans", value: "New Orleans" },
+        { name: "New York", value: "New York" }, 
+        { name: "Northwest Arkansas", value: "Northwest Arkansas" }, 
+        { name: "Philadelphia ", value: "Philadelphia " }, 
+        { name: "Phoenix ", value: "Phoenix " }, 
+        { name: "Pittsburgh ", value: "Pittsburgh" }, 
+        { name: "Raleigh Durham", value: "Raleigh Durham" }, 
+        { name: "Saint Louis ", value: "Saint Louis" }, 
+        { name: "San Francisco ", value: "San Francisco" }, 
+        { name: "Seattle", value: "Seattle" }, 
+        { name: "South Florida", value: "South Florida" }, 
+        { name: "Tampa Bay", value: "Tampa Bay" }, 
+        { name: "Twin Cities", value: "Twin Cities" }, 
+        { name: "Washington DC", value: "Washington DC" }, 
+        { name: "Western New York", value: "Western New York" }, 
+
+
       ];
 
+
+
+    
   const EMAIL_OPTIONS = [
     { id: 1, value: "Personal", name: "Personal" },
     { id: 2, value: "Work", name: "Work" }
@@ -1437,13 +1477,13 @@ export default function index({
               )}
 
               <label className="field-label">
-                <span className="required">*</span> Location Site
+                <span className="required">*</span> Location
               </label>
             </div>
             <ErrorMessage
               field={errors["ch_location_site" + (counter - 1)]}
               errorType="required"
-              message="Location Site is required"
+              message="Location is required"
             />
           </div>
           <div className="form-group">
@@ -1514,7 +1554,7 @@ export default function index({
                 />
               )}
               <label className="field-label">
-                Program (select all choices that apply)
+                Program Leaders of Tomorrow®
               </label>
             </div>
             <input

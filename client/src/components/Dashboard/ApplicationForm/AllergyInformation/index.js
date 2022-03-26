@@ -1,5 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+
+import ErrorMessage from "../../../../helpers/ErrorMessage";
+
 const GeneralInformationFormStyled = styled.div`
   position: relative; 
   margin-top:12px;
@@ -86,7 +89,8 @@ export default function index({
     isReadonly = false,
     pastChildInformation = {},
     isVendorView,
-    printPageClassname
+    printPageClassname,
+    errors
 }) {
 
 
@@ -99,11 +103,11 @@ export default function index({
             <div className="general-info-wrapper">
 
 
-              
+
                 <div className="grid">
-                <label className="field-label-simple" style={{ padding: 4 }}>  
-                    Please complete this information and list any known allergies.  This will allow us to safely engage with students during meetings, outings and other experiences when they are under our supervision.
-                </label>
+                    <label className="field-label-simple" style={{ padding: 4 }}>
+                        Please complete this information and list any known allergies.  This will allow us to safely engage with students during meetings, outings and other experiences when they are under our supervision. If no known allergies, please put "n/a".
+                    </label>
                     <div className="form-group">
                         <div className="field">
                             <input
@@ -126,8 +130,13 @@ export default function index({
                                 defaultValue={childGeneralInformation.allergies_to_medicine}
                             />
 
-                            <label className="field-label" for={`ch_allergies_to_medicine_${counter - 1}`}>Allergies to Medicine</label>
+                            <label className="field-label" for={`ch_allergies_to_medicine_${counter - 1}`}>Allergies to Medicine <span className="required">*</span> </label>
                         </div>
+                        <ErrorMessage
+                            field={errors["ch_allergies_to_medicine"]}
+                            errorType="required"
+                            message="Allergies to Medicine is required."
+                        />
                     </div>
                 </div>
 
@@ -137,6 +146,7 @@ export default function index({
                             <input
                                 name="ch_food_allergies"
                                 // className="field-input"
+                                required={true}
                                 className={
                                     isReadonly &&
                                         !isVendorView &&
@@ -153,8 +163,13 @@ export default function index({
                                 readOnly={isReadonly}
                                 defaultValue={childGeneralInformation.food_allergies}
                             />
-                            <label className="field-label" for={`ch_food_allergies_${counter - 1}`}>Food Allergies</label>
+                            <label className="field-label" for={`ch_food_allergies`}>Food Allergies <span className="required">*</span> </label>
                         </div>
+                        <ErrorMessage
+                            field={errors["ch_food_allergies"]}
+                            errorType="required"
+                            message="Food Allergies is required."
+                        />
                     </div>
                 </div>
 
@@ -165,6 +180,7 @@ export default function index({
                             <input
                                 name="ch_insect_allergies"
                                 // className="field-input"
+                                required={true}
                                 className={
                                     isReadonly &&
                                         !isVendorView &&
@@ -181,8 +197,13 @@ export default function index({
                                 readOnly={isReadonly}
                                 defaultValue={childGeneralInformation.insect_allergies}
                             />
-                            <label className="field-label" for={`ch_insect_allergies_${counter - 1}`}>Insect Allergies</label>
+                            <label className="field-label" for={`ch_insect_allergies_${counter - 1}`}>Insect Allergies <span className="required">*</span> </label>
                         </div>
+                        <ErrorMessage
+                            field={errors["ch_insect_allergies"]}
+                            errorType="required"
+                            message="Insect Allergies is required."
+                        />
                     </div>
                 </div>
 
@@ -192,6 +213,7 @@ export default function index({
                             <input
                                 name="ch_other_allergies"
                                 // className="field-input"
+                                required={true}
                                 className={
                                     isReadonly &&
                                         !isVendorView &&
@@ -208,8 +230,13 @@ export default function index({
                                 readOnly={isReadonly}
                                 defaultValue={childGeneralInformation.other_allergies}
                             />
-                            <label className="field-label" for={`ch_other_allergies_${counter - 1}`}>Other Allergies</label>
+                            <label className="field-label" for={`ch_other_allergies_${counter - 1}`}>Other Allergies <span className="required">*</span> </label>
                         </div>
+                        <ErrorMessage
+                            field={errors["ch_other_allergies"]}
+                            errorType="required"
+                            message="Other Allergies is required."
+                        />
                     </div>
                 </div>
 
@@ -221,6 +248,7 @@ export default function index({
                             <input
                                 name="ch_current_medications"
                                 // className="field-input"
+                                required={true}
                                 className={
                                     isReadonly &&
                                         !isVendorView &&
@@ -237,8 +265,13 @@ export default function index({
                                 readOnly={isReadonly}
                                 defaultValue={childGeneralInformation.current_medications}
                             />
-                            <label className="field-label" for={`ch_current_medications_${counter - 1}`}>Current Medication</label>
+                            <label className="field-label" for={`ch_current_medications_${counter - 1}`}>Current Medication <span className="required">*</span></label>
                         </div>
+                        <ErrorMessage
+                            field={errors["ch_current_medications"]}
+                            errorType="required"
+                            message="Current Medication is required."
+                        />
                     </div>
                 </div>
 
