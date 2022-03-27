@@ -105,6 +105,7 @@ export default function index({
 
     let currentYear = new Date().getFullYear();
     let options = [];
+    options.push(<option key="new" value="new">New</option>)
     for (let i = 0; i < 5; i++) {
       options.push(<option key={i} value={currentYear - i}>{currentYear - i}</option>)
     }
@@ -358,7 +359,7 @@ export default function index({
                 <option value="">Year</option>
                 {createYearTakenSelect()}
               </select>
-              <label className="field-label">Year Started as Mentee`</label>
+              <label className="field-label">Year Started as Mentee</label>
             </div>
           </div>
           <div className="form-group">
@@ -738,7 +739,7 @@ export default function index({
                 readOnly={isReadonly}
               />
 
-              <label className="field-label" for={`ch_team_affiliations_${counter - 1}`}>Clubs and other Affiliations</label>
+              <label className="field-label" for={`ch_team_affiliations_${counter - 1}`}>Clubs and other Organization Affiliations</label>
             </div>
           </div>
         </div>

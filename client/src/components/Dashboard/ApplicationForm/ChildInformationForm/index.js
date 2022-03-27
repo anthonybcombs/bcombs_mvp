@@ -260,10 +260,14 @@ export default function index({
   const PROGRAMS_OPTIONS =
     app_programs.length > 0
       ? app_programs
-      : [
-        { id: 1, name: "Saturday Academy", label: "Satuday Academy" },
-        { id: 2, name: "In school", label: "In school" }
-      ];
+      : isLot ? [
+        { id: 3, name: "Program Leaders of Tomorrow® LOT®", label: "Program Leaders of Tomorrow® LOT®" }
+      ] :
+        [
+          { id: 1, name: "Saturday Academy", label: "Satuday Academy" },
+          { id: 2, name: "In school", label: "In school" }
+        ];
+
 
   const LOCATION_SITE_OPTIONS =
     location_sites.length > 0
@@ -282,7 +286,7 @@ export default function index({
         { name: "Dayton", value: "Dayton " },
         { name: "Detroit", value: "Detroit " },
         { name: "Greater Hartford", value: "Greater Hartford" },
-        { name: "Houston", value: "Houston" }, 
+        { name: "Houston", value: "Houston" },
         { name: "Indianapolis", value: "Indianapolis" },
         { name: "Kansas City", value: "Kansas City" },
         { name: "Kentucky", value: "Kentucky" },
@@ -292,27 +296,27 @@ export default function index({
         { name: "Milwaukee", value: "Milwaukee" },
         { name: "New Jersey", value: "New Jersey" },
         { name: "New Orleans", value: "New Orleans" },
-        { name: "New York", value: "New York" }, 
-        { name: "Northwest Arkansas", value: "Northwest Arkansas" }, 
-        { name: "Philadelphia ", value: "Philadelphia " }, 
-        { name: "Phoenix ", value: "Phoenix " }, 
-        { name: "Pittsburgh ", value: "Pittsburgh" }, 
-        { name: "Raleigh Durham", value: "Raleigh Durham" }, 
-        { name: "Saint Louis ", value: "Saint Louis" }, 
-        { name: "San Francisco ", value: "San Francisco" }, 
-        { name: "Seattle", value: "Seattle" }, 
-        { name: "South Florida", value: "South Florida" }, 
-        { name: "Tampa Bay", value: "Tampa Bay" }, 
-        { name: "Twin Cities", value: "Twin Cities" }, 
-        { name: "Washington DC", value: "Washington DC" }, 
-        { name: "Western New York", value: "Western New York" }, 
+        { name: "New York", value: "New York" },
+        { name: "Northwest Arkansas", value: "Northwest Arkansas" },
+        { name: "Philadelphia ", value: "Philadelphia " },
+        { name: "Phoenix ", value: "Phoenix " },
+        { name: "Pittsburgh ", value: "Pittsburgh" },
+        { name: "Raleigh Durham", value: "Raleigh Durham" },
+        { name: "Saint Louis ", value: "Saint Louis" },
+        { name: "San Francisco ", value: "San Francisco" },
+        { name: "Seattle", value: "Seattle" },
+        { name: "South Florida", value: "South Florida" },
+        { name: "Tampa Bay", value: "Tampa Bay" },
+        { name: "Twin Cities", value: "Twin Cities" },
+        { name: "Washington DC", value: "Washington DC" },
+        { name: "Western New York", value: "Western New York" },
 
 
       ];
 
 
 
-    
+
   const EMAIL_OPTIONS = [
     { id: 1, value: "Personal", name: "Personal" },
     { id: 2, value: "Work", name: "Work" }
@@ -821,8 +825,8 @@ export default function index({
                 Ethinicity (select all choices that apply)
               </label>
             </div>
-            <br/>
-            <br/>
+            <br />
+            <br />
             <input
               type="checkbox"
               name="ethnicity_select_all"
@@ -847,7 +851,7 @@ export default function index({
               }}
 
             /> Select All
-         
+
             <br />
           </div>
         </div>
@@ -1410,7 +1414,7 @@ export default function index({
                 <span className="required">*</span> Zip Code
               </label>
             </div>
-            
+
             <ErrorMessage
               field={errors["ch_zip_code" + (counter - 1)]}
               errorType="required"
@@ -1554,7 +1558,7 @@ export default function index({
                 />
               )}
               <label className="field-label">
-                Program Leaders of Tomorrow® LOT®
+                Program
               </label>
             </div>
             <input

@@ -106,6 +106,7 @@ const ReminderSettingsStyled = styled.div`
     font-size: 12px;
     color: #555 !important;
     font-family: "fontawesome";
+    pointer-events: none;
   }
 
   .select-field-wrapper select {
