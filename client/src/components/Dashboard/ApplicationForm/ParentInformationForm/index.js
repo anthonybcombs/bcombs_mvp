@@ -1699,7 +1699,7 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                <span className="required">*</span> What are some of your(Parent/Guardian)
+                <span className="required">*</span> What are some of your (Parent/Guardian)
                 expectations from the {isLot ? 'LOT®' : 'Mentoring'} Program?
               </label>
               <textarea

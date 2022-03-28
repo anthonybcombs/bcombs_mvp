@@ -335,6 +335,11 @@ const GlobalStyle = createGlobalStyle`
   #multiselectContainerReact .chip {
     background: #f26e21;
   }
+
+  .custom-default-select{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
 `;
 let history = createHistory(window);
 ReactDOM.render(

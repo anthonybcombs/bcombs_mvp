@@ -570,7 +570,6 @@ export default function index() {
       </div>
     )
   }
-    console.log('errorszzzz',errors)
   // parent section
 
   const childEmergencyContact = {

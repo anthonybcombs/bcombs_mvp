@@ -261,7 +261,7 @@ export default function index({
     app_programs.length > 0
       ? app_programs
       : isLot ? [
-        { id: 3, name: "Program Leaders of Tomorrow® LOT®", label: "Program Leaders of Tomorrow® LOT®" }
+        { id: 3, name: "Leaders of Tomorrow® LOT®", label: "Leaders of Tomorrow® LOT®" }
       ] :
         [
           { id: 1, name: "Saturday Academy", label: "Satuday Academy" },

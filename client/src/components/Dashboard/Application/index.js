@@ -1965,6 +1965,7 @@ export default function index() {
         {vendors && vendors.length > 0 && (
           <div>
             <select
+              className="custom-default-select"
               style={{
                 "marginLeft": "20px",
                 "fontSize": "1.5em",
