@@ -142,11 +142,12 @@ const AdminStyled = styled.div`
   }
 `
 
-export default function index() {
-
-  const { auth, vendors, loading, admins } = useSelector(
-    ({ auth, vendors, loading, admins }) => {
-      return { auth, vendors, loading, admins };
+export default function index({
+  isLot
+}) {
+  const { auth, vendors, loading, admins, vendor } = useSelector(
+    ({ auth, vendors, loading, admins, vendor }) => {
+      return { auth, vendors, loading, admins, vendor };
     }
   );
 
@@ -196,7 +197,8 @@ export default function index() {
           id: item.id,
           name: item.name,
           label: item.name,
-          forms: formattedForms
+          forms: formattedForms,
+          is_daycare: item.is_daycare
         };
       });
 
@@ -205,19 +207,19 @@ export default function index() {
 
       const defaultVendor = formattedVendors.length > 0 ? formattedVendors[0] : '';
 
-      console.log('defaultVendor', defaultVendor);
       let defaultForm = ""
 
-      if (defaultVendor.forms &&
+      if (defaultVendor && defaultVendor.forms &&
         defaultVendor.forms.length > 0) {
-        defaultForm = defaultVendor.forms[0];
+        defaultForm = defaultVendor.forms[isLot ? 1 : 0];
+     
         setFormOptions(defaultVendor.forms);
       }
-
+  
       setAddAdminFields({
         name: '',
         email: '',
-        vendor: defaultVendor.id,
+        vendor: defaultVendor?.id,
         forms: [{ ...defaultForm }]
       })
 
@@ -482,7 +484,7 @@ export default function index() {
     forms.map((i) => {
       if (i?.form) {
         formString += `${i.formTitle}, `;
-      } else {
+      } else if(!isLotForm) {
         formString += "Mentoring Applications, ";
       }
 
@@ -572,6 +574,7 @@ export default function index() {
     }
   }
 
+  
   return (
     <AdminStyled>
       <div>
@@ -684,7 +687,7 @@ export default function index() {
                 hasSelectAll={false}
                 onSelect={selectedList => {
                   if (selectedList.length > 0) setIsVendorEmpty(false);
-
+                  
                   handleAddAdminChange("forms", selectedList);
                 }}
                 onRemove={selectedList => {

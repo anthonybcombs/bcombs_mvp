@@ -66,6 +66,7 @@ import Form from '../../Dashboard/Builders/Form'
 
 import AdminFormStyled from '../Admin/form/index';
 import AdminFormModal from '../Admin/modal/index';
+import { REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED } from "../../../redux/actions/Constant";
 
 const ApplicationFormStyled = styled.form`
   @media all {
@@ -1932,12 +1933,11 @@ export default function index() {
         section2_show: selectedVendor.section2_show,
         section3_show: selectedVendor.section3_show,
         logo: selectedVendor.logo,
-        is_daycare: selectedVendor.is_daycare
+        is_daycare: selectedForm == "lot" ? 2 : selectedVendor.is_daycare,
       }
   
     
-  
-      dispatch(requestCreateVendor(payload));
+        dispatch(requestCreateVendor(payload));
     } else {
       let selectedFormDetails = renderForms.filter(f => f.form_id == selectedForm)[0];
 
@@ -2086,7 +2086,7 @@ export default function index() {
                 icon={faCopy}
                 onClick={e => {
                   e.stopPropagation()
-           
+                  
                   handleDuplicateVendor();
                 }}
               />
@@ -2537,6 +2537,7 @@ export default function index() {
           //   }}
           // />
           <AdminFormModal
+            isLot={selectedForm === 'lot'}
             handleExit={() => {
               setShowAdminForm(false);
             }}
