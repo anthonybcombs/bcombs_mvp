@@ -13,7 +13,8 @@ const AdminFormModal = styled.div`
 
 export default function index({
   handleExit,
-  isLot
+  isCustomForm = false,
+  isLot = false
 }) {
 
   return (
@@ -28,6 +29,7 @@ export default function index({
           <div className="modal-container">
             <AdminStyled
               isLot={isLot}
+              isCustomForm={isCustomForm}
             />
           </div>
         </div>

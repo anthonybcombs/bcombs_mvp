@@ -143,7 +143,8 @@ const AdminStyled = styled.div`
 `
 
 export default function index({
-  isLot
+  isLot = false,
+  isCustomForm = false
 }) {
   const { auth, vendors, loading, admins, vendor } = useSelector(
     ({ auth, vendors, loading, admins, vendor }) => {
@@ -211,7 +212,14 @@ export default function index({
 
       if (defaultVendor && defaultVendor.forms &&
         defaultVendor.forms.length > 0) {
-        defaultForm = defaultVendor.forms[isLot ? 1 : 0];
+   
+        if(defaultVendor.forms.length > 2 && isCustomForm) {
+          defaultForm = defaultVendor.forms[2];
+        }
+        else {
+          defaultForm = defaultVendor.forms[isLot ? 1 : 0];
+
+        }
      
         setFormOptions(defaultVendor.forms);
       }

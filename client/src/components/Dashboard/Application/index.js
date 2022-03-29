@@ -2538,6 +2538,7 @@ export default function index() {
           // />
           <AdminFormModal
             isLot={selectedForm === 'lot'}
+            isCustomForm={selectedForm !== "default" && selectedForm !== "lot"}
             handleExit={() => {
               setShowAdminForm(false);
             }}
