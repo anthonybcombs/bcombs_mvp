@@ -1305,7 +1305,8 @@ const resolvers = {
             if(form && form.form_contents && form.form_contents.formTitle)
               x.formTitle = form.form_contents.formTitle;
           }
-          x.isLotForm = !!x.is_lotform;
+          console.log('x.is_lotform',x.is_lotform)
+          x.isLotForm = x.is_lotform;
         }
 
         resAdmins.push(...va);
