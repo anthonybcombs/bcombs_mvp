@@ -261,7 +261,7 @@ export default function index({
     app_programs.length > 0
       ? app_programs
       : isLot ? [
-        { id: 3, name: "Leaders of Tomorrow® LOT®", label: "Leaders of Tomorrow® LOT®" }
+        { id: 3, name: "Leaders of Tomorrow® (LOT®)", label: `Leaders of Tomorrow® (LOT®)` }
       ] :
         [
           { id: 1, name: "Saturday Academy", label: "Satuday Academy" },
@@ -449,7 +449,10 @@ export default function index({
     </div>
   );
 
-  console.log('@@@@@@@applicationdata', { pastChildInformation, childProfile })
+  const registeredIcon = () => {
+    return <span style={{ fontSize: 14, position: 'relative', top: -10 }}>®</span>
+  }
+ 
   let profile = pastChildInformation?.image || childProfile?.image || ''
   if (profile) {
     profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
@@ -458,7 +461,8 @@ export default function index({
   return (
     <ChildInfomationFormStyled className={printPageClassname}>
       <h3 className="heading">
-        {isLot ? 'Leaders of Tomorrow (LOT®) Information' : 'Child Information'} {counter > 1 ? `(${counter})` : ``}
+        {isLot ? <div>
+          Leaders of Tomorrow{registeredIcon()} (LOT{registeredIcon()}) Information</div> : 'Child Information'} {counter > 1 ? `(${counter})` : ``}
       </h3>
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">

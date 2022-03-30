@@ -2018,7 +2018,7 @@ export default function index() {
               marginLeft: 12
             }}>
               <select
-                className="custom-default-select"
+  
                 style={{
                   "marginLeft": "20px",
                   "fontSize": "1.5em",
