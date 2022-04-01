@@ -108,6 +108,7 @@ export default {
         {
           (isBuilder && name !== 'other')
             ? <input
+                disabled={name === undefined}
                 type='text'
                 className={`field-input`}
                 value={label}

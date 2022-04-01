@@ -254,6 +254,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       setNoNameWarning(true)
       return
     }
+    console.log('droppedFields',droppedFields)
     if (Object.keys(errors).length) {
       setPreviewLabel('Please clear all fields/options label errors.') 
       setPreviewWarning(true)

@@ -449,7 +449,8 @@ export const PrimeFields = [
   },
   {
     fields: [
-      { label: 'Title', type: 'terms', tag: 'input', placeholder: 'Title', column: '4', fixedWidth: true},
+      { label: '',  type: 'terms', tag: 'checkbox',  column: '1' ,  required: true},
+      { label: 'Title', type: 'terms', tag: 'input', placeholder: 'Title', column: '4', fixedWidth: true, required: true},
       { label: 'Context', type: 'terms', tag: 'textarea', placeholder: 'Context', column: '4', fixedWidth: true}
     ],
     label: 'Terms and Conditions',

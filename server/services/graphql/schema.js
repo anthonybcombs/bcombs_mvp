@@ -149,6 +149,8 @@ const inputs = `
         section1_show: Int
         section2_show: Int
         section3_show: Int
+        logo: String
+        is_daycare: Int
     }
 
     input ScoreInfoInput {
@@ -238,6 +240,22 @@ const inputs = `
         schedule_tour: String
         voucher: String
         ch_id: String
+        is_entrepreneur: Int
+        include_in_directory: String
+        business_name: String
+        business_website: String
+        business_phone: String
+        business_email: String
+        business_industry: String
+        business_address: String
+        business_description: String
+        employment_status: String
+        allergies_to_medicine: String
+        food_allergies: String
+        insect_allergies: String
+        other_allergies: String
+        current_medications: String
+        health_insurance_information: String
     }
 
     input ParentInfoInput {
@@ -319,6 +337,7 @@ const inputs = `
         hospital_preference: String
         hospital_phone: String
         image: String
+
     }
 
     input DaycareParentInfoInput {
@@ -401,6 +420,7 @@ const inputs = `
         section2_name: String
         section3_name: String
         is_daycare: Int
+        is_lot: Int
     }
 
     input UpdateApplicationInput {
@@ -491,6 +511,7 @@ const inputs = `
         name: String!
         email: String!
         vendor: String!
+        vendor2: Int
         forms: [AdminFormInput]
         currentUser: String!
     }
@@ -687,6 +708,8 @@ const inputs = `
     input CustomApplicationFormFilterInput {
         vendor: String!
         categories: [String]
+        currentUser: String
+        isOwner: Boolean
     }
 
     input AttendanceChildInput {
@@ -838,6 +861,11 @@ const inputs = `
       form_fields: FormFields
       is_customForm: Boolean
       custom_fields: String
+    }
+
+    input VendorLogoInput {
+        logo: String
+        vendor_id: String!
     }
 `;
 const queryTypes = `
@@ -1026,7 +1054,27 @@ const queryTypes = `
         created_at: Date
         is_daycare: Int
         forms: [CustomApplicationOutput]
+        logo: String
     }
+
+    type Vendor2 {
+      id: String!
+      user: String!
+      name: String
+      section1_text: String
+      section2_text: String
+      section3_text: String
+      section1_name: String
+      section2_name: String
+      section3_name: String
+      section1_show: Int
+      section2_show: Int
+      section3_show: Int
+      id2: Int
+      created_at: Date
+      is_daycare: Int
+      logo: String
+  }
 
     type LocationSite {
         id: String!
@@ -1134,6 +1182,22 @@ const queryTypes = `
         needed_days: String
         schedule_tour: String
         voucher: String
+        is_entrepreneur: Int
+        include_in_directory: String
+        business_name: String
+        business_website: String
+        business_phone: String
+        business_email: String
+        business_industry: String
+        business_address: String
+        business_description: String
+        employment_status: String
+        allergies_to_medicine: String
+        food_allergies: String
+        insect_allergies: String
+        other_allergies: String
+        current_medications: String
+        health_insurance_information: String
     }
 
     type Parent {
@@ -1203,6 +1267,7 @@ const queryTypes = `
         vendorPrograms: [VendorProgram]
         vendorLocationSites: [LocationSite]
         is_daycare: Int
+        is_lot: Int
         relationships: [ParentChildRelationship]
         chRelationships: [ChildChildRelationship]
         received_reminder: Boolean
@@ -1277,6 +1342,7 @@ const queryTypes = `
         isOwner: Boolean
         formTitle: String
         form: String
+        isLotForm: Boolean
     }
 
     type IdFormat {
@@ -1739,6 +1805,7 @@ const mutations = `
         updateApplication(application: UpdateApplicationInput!): Status
         archivedApplications(app_ids: [String]): Status
         unarchivedApplications(app_ids: [String]): Status
+        createVendor(vendor: VendorInput!): Vendor2
         updateVendor(vendor: VendorInput!): Vendor
         addVendorAppGroup(appGroup: AppGroupInput!): EditAllGroups
         editVendorAppGroup(appGroup: AppGroupInput!): EditAllGroups
@@ -1764,6 +1831,7 @@ const mutations = `
         addArchivedGroup(archivedGroup: [ArchiveGroupInput]): [ArchivedGroup]
         removeGroupFromArchive(archivedGroupIds: [Int], vendorId: String): [ArchivedGroup]
         createGroupReminder(groupReminder: SetReminderInput): [ApplicationReminder]
+        updateVendorLogo(vendorLogo: VendorLogoInput): Vendor
     }
 `;
 

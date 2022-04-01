@@ -3,10 +3,8 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
 import Collapsible from "react-collapsible";
+import uniqBy from 'lodash.uniqby'
 import {
-  faUserTie,
-  faHistory,
-  faUserFriends,
   faUsers,
   faPlus
 } from "@fortawesome/free-solid-svg-icons";
@@ -237,7 +235,7 @@ export default function index() {
     const formList = vendorForms.formList;
 
     console.log("vendors.formList", vendorForms.formList);
-
+    console.log('formList',formList)
     const formattedVendors = getFormattedVendors(formList);
 
     setFormattedVendors(formattedVendors);
@@ -245,7 +243,8 @@ export default function index() {
   }, [vendorForms.formList])
 
   const getFormattedVendors = (formList) => {
-    const formattedVendors = formList.map(item => {
+     const updatedForms = uniqBy(formList, 'id');
+    const formattedVendors = updatedForms.map(item => {
       return {
         id: item.id,
         name: item.name,

@@ -220,8 +220,9 @@ export default function index({
   ProfileImg,
   pastParentInformation = null,
   isVendorView,
-  selectedApplication={},
-  setIsParentAddressRequired
+  selectedApplication = {},
+  setIsParentAddressRequired,
+  isLot = false
 }) {
   let confirmed_passwords = [];
 
@@ -320,7 +321,7 @@ export default function index({
   ];
 
   const ETHINICITY_OPTIONS = !isReadonly
-  ? [
+    ? [
       { id: 1, name: "Asian", label: "Asian" },
       {
         id: 2,
@@ -342,7 +343,7 @@ export default function index({
       { id: 7, name: "Other", label: "Other" },
       { id: 8, name: "Prefer not to answer", label: "Prefer not to answer" }
     ]
-  : [];
+    : [];
 
   const range = (start, end) => {
     let arr = [];
@@ -390,7 +391,7 @@ export default function index({
         placeholder="MM/dd/yyyy"
         readOnly={true}
         id={`parent_date_of_birth_${counter - 1}`}
-        ref={register({required: true})}
+        ref={register({ required: true })}
       />
       <label className="field-label" htmlFor={`parent_date_of_birth_${counter - 1}`}>
         <span className="required">*</span> Date of Birth
@@ -398,7 +399,7 @@ export default function index({
     </div>
   );
 
-  
+
 
   let readOnlyEthinicity = "";
 
@@ -416,8 +417,8 @@ export default function index({
 
   const hasSelectAll = false;
 
-  console.log('parentProfile55555',parentProfile)
-  console.log('parentProfile55555 pastParentInformation',pastParentInformation)
+  console.log('parentProfile55555', parentProfile)
+  console.log('parentProfile55555 pastParentInformation', pastParentInformation)
 
   let profile = pastParentInformation?.image || parentProfile?.image || ''
   if (profile) {
@@ -427,11 +428,11 @@ export default function index({
   return (
     <ParentInformationStyled>
       <h3 className="heading">
-        Family Information {counter > 1 ? `(${counter})` : ""}
+        Parent/Guardian Information {counter > 1 ? `(${counter})` : ""}
       </h3>
       <div className="parent-info-wrapper">
         <div className="img-profile-wrapper">
-        <img src={imagePreview || profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
+          <img src={imagePreview || profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
           {!isReadonly && (
             <UploadPhotoForm
               auth={profile ? { profile_img: profile } : ''}
@@ -458,11 +459,11 @@ export default function index({
                 name={"parent_firstname" + (counter - 1)}
                 className={
                   isReadonly &&
-                  !isVendorView &&
-                  pastParentInformation && 
-                  (pastParentInformation.firstname || pastParentInformation.firstname == "") &&
-                  pastParentInformation.firstname != parentProfile.first_name ?
-                  "field-input highlights" : "field-input"
+                    !isVendorView &&
+                    pastParentInformation &&
+                    (pastParentInformation.firstname || pastParentInformation.firstname == "") &&
+                    pastParentInformation.firstname != parentProfile.first_name ?
+                    "field-input highlights" : "field-input"
                 }
                 placeholder="First Name"
                 onChange={({ target }) => {
@@ -497,11 +498,11 @@ export default function index({
                 name={"parent_lastname" + (counter - 1)}
                 className={
                   isReadonly &&
-                  pastParentInformation && 
-                  !isVendorView &&
-                  (pastParentInformation.lastname || pastParentInformation.lastname == "") &&
-                  pastParentInformation.lastname != parentProfile.last_name ?
-                  "field-input highlights" : "field-input"
+                    pastParentInformation &&
+                    !isVendorView &&
+                    (pastParentInformation.lastname || pastParentInformation.lastname == "") &&
+                    pastParentInformation.lastname != parentProfile.last_name ?
+                    "field-input highlights" : "field-input"
                 }
                 placeholder="Last Name"
                 onChange={({ target }) => {
@@ -613,11 +614,11 @@ export default function index({
                   <BirthdateCustomInput
                     className={
                       isReadonly &&
-                      !isVendorView &&
-                      pastParentInformation &&
-                      (pastParentInformation.birthdate ||
-                        pastParentInformation.birthdate == "") &&
-                      parentProfile.date_of_birth.toString() !=
+                        !isVendorView &&
+                        pastParentInformation &&
+                        (pastParentInformation.birthdate ||
+                          pastParentInformation.birthdate == "") &&
+                        parentProfile.date_of_birth.toString() !=
                         new Date(pastParentInformation.birthdate).toString()
                         ? "field-input birthdate-field highlights"
                         : "field-input birthdate-field"
@@ -640,11 +641,11 @@ export default function index({
                 name={"parent_gender" + (counter - 1)}
                 className={
                   isReadonly &&
-                  !isVendorView &&
-                  pastParentInformation &&
-                  (pastParentInformation.gender ||
-                    pastParentInformation.gender == "") &&
-                  pastParentInformation.gender != parentProfile.gender
+                    !isVendorView &&
+                    pastParentInformation &&
+                    (pastParentInformation.gender ||
+                      pastParentInformation.gender == "") &&
+                    pastParentInformation.gender != parentProfile.gender
                     ? "field-input highlights"
                     : "field-input"
                 }
@@ -693,17 +694,16 @@ export default function index({
               {isReadonly ? (
                 <>
                   <p
-                    className={`${
-                      isReadonly &&
+                    className={`${isReadonly &&
                       !isVendorView &&
                       pastParentInformation &&
                       (pastParentInformation.ethnicities ||
                         pastParentInformation.ethnicities == "") &&
                       pastParentInformation.ethnicities !=
-                        readOnlyEthinicity.split("\n").join(",")
-                        ? "field-input readonly ethnicity-labels  highlights"
-                        : "field-input ethnicity-labels readonly"
-                    } `}
+                      readOnlyEthinicity.split("\n").join(",")
+                      ? "field-input readonly ethnicity-labels  highlights"
+                      : "field-input ethnicity-labels readonly"
+                      } `}
                     name={"ethinicity_" + (counter - 1)}
                     style={{
                       //background: "white",
@@ -755,6 +755,30 @@ export default function index({
                 Ethinicity (select all choices that apply)
               </label>
             </div>
+            <input
+              type="checkbox"
+              name="ethnicity_select_all"
+              onChange={e => {
+
+                if (e.target.checked) {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "ethinicity",
+                    ETHINICITY_OPTIONS
+                  );
+                }
+                else {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "ethinicity",
+                    []
+                  );
+                }
+              }}
+
+            /> Select All
             <br />
           </div>
         </div>
@@ -789,11 +813,11 @@ export default function index({
                   name="parent_phonetype"
                   className={
                     isReadonly &&
-                    pastParentInformation && 
-                    !isVendorView &&
-                    (pastParentInformation.phone_type || pastParentInformation.phone_type == "") &&
-                    pastParentInformation.phone_type != parentProfile.phone_type ?
-                    "field-input highlights" : "field-input"
+                      pastParentInformation &&
+                      !isVendorView &&
+                      (pastParentInformation.phone_type || pastParentInformation.phone_type == "") &&
+                      pastParentInformation.phone_type != parentProfile.phone_type ?
+                      "field-input highlights" : "field-input"
                   }
                   placeholder="Type"
                   defaultValue={parentProfile?.phone_type}
@@ -856,11 +880,11 @@ export default function index({
                   name={"parent_phonenumber" + (counter - 1)}
                   className={
                     isReadonly &&
-                    pastParentInformation && 
-                    !isVendorView &&
-                    (pastParentInformation.phone_number || pastParentInformation.phone_number == "") &&
-                    pastParentInformation.phone_number != parentProfile.phone_number ?
-                    "field-input highlights" : "field-input"
+                      pastParentInformation &&
+                      !isVendorView &&
+                      (pastParentInformation.phone_number || pastParentInformation.phone_number == "") &&
+                      pastParentInformation.phone_number != parentProfile.phone_number ?
+                      "field-input highlights" : "field-input"
                   }
                   placeholder="Phone Number"
                 />
@@ -915,11 +939,11 @@ export default function index({
                     name="parent_phonetype"
                     className={
                       isReadonly &&
-                      pastParentInformation && 
-                      !isVendorView &&
-                      (pastParentInformation.phone_type2 || pastParentInformation.phone_type2 == "") &&
-                      pastParentInformation.phone_type2 != parentProfile.phone_type2 ?
-                      "field-input highlights" : "field-input"
+                        pastParentInformation &&
+                        !isVendorView &&
+                        (pastParentInformation.phone_type2 || pastParentInformation.phone_type2 == "") &&
+                        pastParentInformation.phone_type2 != parentProfile.phone_type2 ?
+                        "field-input highlights" : "field-input"
                     }
                     placeholder="Type"
                     defaultValue={parentProfile?.phone_type2}
@@ -969,11 +993,11 @@ export default function index({
                     name={"parent_phonenumber2" + (counter - 1)}
                     className={
                       isReadonly &&
-                      pastParentInformation && 
-                      !isVendorView &&
-                      (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
-                      pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
-                      "field-input highlights" : "field-input"
+                        pastParentInformation &&
+                        !isVendorView &&
+                        (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
+                        pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
+                        "field-input highlights" : "field-input"
                     }
                     placeholder="Phone Number"
                   />
@@ -1022,11 +1046,11 @@ export default function index({
                   name="parent_emailtype"
                   className={
                     isReadonly &&
-                    pastParentInformation && 
-                    !isVendorView &&
-                    (pastParentInformation.email_type || pastParentInformation.email_type == "") &&
-                    pastParentInformation.email_type != parentProfile.email_type ?
-                    "field-input highlights" : "field-input"
+                      pastParentInformation &&
+                      !isVendorView &&
+                      (pastParentInformation.email_type || pastParentInformation.email_type == "") &&
+                      pastParentInformation.email_type != parentProfile.email_type ?
+                      "field-input highlights" : "field-input"
                   }
                   placeholder="Type"
                   type="text"
@@ -1053,16 +1077,16 @@ export default function index({
                 type="text"
                 id={`parent_emailaddress_${counter - 1}`}
                 defaultValue={parentProfile.email_address}
-                defaultValue={parentProfile?.email_address}
+
                 readOnly={isReadonly}
                 name={"parent_emailaddress" + (counter - 1)}
                 className={
                   isReadonly &&
-                  pastParentInformation && 
-                  !isVendorView &&
-                  (pastParentInformation.email_address || pastParentInformation.email_address == "") &&
-                  pastParentInformation.email_address != parentProfile.email_address ?
-                  "field-input highlights" : "field-input"
+                    pastParentInformation &&
+                    !isVendorView &&
+                    (pastParentInformation.email_address || pastParentInformation.email_address == "") &&
+                    pastParentInformation.email_address != parentProfile.email_address ?
+                    "field-input highlights" : "field-input"
                 }
                 placeholder="Email Address"
                 onChange={({ target }) => {
@@ -1130,11 +1154,11 @@ export default function index({
                     name="parent_emailtype"
                     className={
                       isReadonly &&
-                      pastParentInformation && 
-                      !isVendorView &&
-                      (pastParentInformation.email_type2 || pastParentInformation.email_type2 == "") &&
-                      pastParentInformation.email_type2 != parentProfile.email_type2 ?
-                      "field-input highlights" : "field-input"
+                        pastParentInformation &&
+                        !isVendorView &&
+                        (pastParentInformation.email_type2 || pastParentInformation.email_type2 == "") &&
+                        pastParentInformation.email_type2 != parentProfile.email_type2 ?
+                        "field-input highlights" : "field-input"
                     }
                     placeholder="Type"
                     type="text"
@@ -1154,11 +1178,11 @@ export default function index({
                   name={"parent_emailaddress2" + (counter - 1)}
                   className={
                     isReadonly &&
-                    pastParentInformation && 
-                    !isVendorView &&
-                    (pastParentInformation.email_address2 || pastParentInformation.email_address2 == "") &&
-                    pastParentInformation.email_address2 != parentProfile.email_address2 ?
-                    "field-input highlights" : "field-input"
+                      pastParentInformation &&
+                      !isVendorView &&
+                      (pastParentInformation.email_address2 || pastParentInformation.email_address2 == "") &&
+                      pastParentInformation.email_address2 != parentProfile.email_address2 ?
+                      "field-input highlights" : "field-input"
                   }
                   placeholder="Email Address"
                   onChange={({ target }) => {
@@ -1343,29 +1367,29 @@ export default function index({
             <div className="field">
               {
                 parentProfile.address ? (
-                <input
-                  name="parentAddress"
-                  className={
-                    isReadonly &&
-                    pastParentInformation && 
-                    !isVendorView &&
-                    (pastParentInformation.address || pastParentInformation.address == "") &&
-                    pastParentInformation.address != parentProfile.address ?
-                    "field-input highlights" : "field-input"
-                  }
-                  placeholder="Address"
-                  id={`parentAddress_${counter - 1}`}
-                  onChange={({ target }) => {
-                    handleParentFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "address",
-                      target.value
-                    );
-                  }}
-                  readOnly={isReadonly}
-                  defaultValue={parentProfile?.address}
-                />
+                  <input
+                    name="parentAddress"
+                    className={
+                      isReadonly &&
+                        pastParentInformation &&
+                        !isVendorView &&
+                        (pastParentInformation.address || pastParentInformation.address == "") &&
+                        pastParentInformation.address != parentProfile.address ?
+                        "field-input highlights" : "field-input"
+                    }
+                    placeholder="Address"
+                    id={`parentAddress_${counter - 1}`}
+                    onChange={({ target }) => {
+                      handleParentFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "address",
+                        target.value
+                      );
+                    }}
+                    readOnly={isReadonly}
+                    defaultValue={parentProfile?.address}
+                  />
                 ) : (
                   <input
                     name="parentAddress"
@@ -1382,12 +1406,12 @@ export default function index({
                     }}
                     readOnly={isReadonly}
                     defaultValue={isReadonly ? selectedApplication?.child?.address : ""}
-                    
+
                     //defaultValue={isReadonly ? parentProfile?.address : ''}
                     ref={register({
                       required: showAddress
                     })}
-                 />
+                  />
                 )
               }
 
@@ -1399,10 +1423,10 @@ export default function index({
             </div>
 
             <ErrorMessage
-                field={errors[`parentAddress`]}
-                errorType="required"
-                message="Address is required."
-              />
+              field={errors[`parentAddress`]}
+              errorType="required"
+              message="Address is required."
+            />
           </div>
 
           <div className="form-group">
@@ -1413,11 +1437,11 @@ export default function index({
                     name="parentCity"
                     className={
                       isReadonly &&
-                      pastParentInformation && 
-                      !isVendorView &&
-                      (pastParentInformation.city || pastParentInformation.city == "") &&
-                      pastParentInformation.city != parentProfile.city ?
-                      "field-input highlights" : "field-input"
+                        pastParentInformation &&
+                        !isVendorView &&
+                        (pastParentInformation.city || pastParentInformation.city == "") &&
+                        pastParentInformation.city != parentProfile.city ?
+                        "field-input highlights" : "field-input"
                     }
                     placeholder="City"
                     id={`parentCity_${counter - 1}`}
@@ -1460,11 +1484,11 @@ export default function index({
                 City
               </label>
             </div>
-              <ErrorMessage
-                field={errors["parentCity"]}
-                errorType="required"
-                message="City is Required"
-              />
+            <ErrorMessage
+              field={errors["parentCity"]}
+              errorType="required"
+              message="City is Required"
+            />
           </div>
         </div>
 
@@ -1501,11 +1525,11 @@ export default function index({
                   type="text"
                   className={
                     isReadonly &&
-                    pastParentInformation && 
-                    !isVendorView &&
-                    (pastParentInformation.state || pastParentInformation.state == "") &&
-                    pastParentInformation.state != parentProfile.state ?
-                    "field-input highlights" : "field-input"
+                      pastParentInformation &&
+                      !isVendorView &&
+                      (pastParentInformation.state || pastParentInformation.state == "") &&
+                      pastParentInformation.state != parentProfile.state ?
+                      "field-input highlights" : "field-input"
                   }
                   defaultValue={parentProfile?.state}
                   readOnly={isReadonly}
@@ -1539,11 +1563,11 @@ export default function index({
                     name="parentzipcode"
                     className={
                       isReadonly &&
-                      !isVendorView &&
-                      pastParentInformation && 
-                      (pastParentInformation.zip_code || pastParentInformation.zip_code == "") &&
-                      pastParentInformation.zip_code != parentProfile.zip_code ?
-                      "field-input highlights" : "field-input"
+                        !isVendorView &&
+                        pastParentInformation &&
+                        (pastParentInformation.zip_code || pastParentInformation.zip_code == "") &&
+                        pastParentInformation.zip_code != parentProfile.zip_code ?
+                        "field-input highlights" : "field-input"
                     }
                     placeholder="Zip Code"
                     id={`parentzipcode_${counter - 1}`}
@@ -1559,7 +1583,7 @@ export default function index({
                         target.value = target.value.slice(0, -1);
                       }
                     }}
-                    ref={register({ maxLength: 5 ,required: showAddress })}
+                    ref={register({ maxLength: 5, required: showAddress })}
                     readOnly={isReadonly}
                     defaultValue={parentProfile?.zip_code}
                     maxLength="5"
@@ -1582,7 +1606,7 @@ export default function index({
                         target.value = target.value.slice(0, -1);
                       }
                     }}
-                    ref={register({ maxLength: 5,required: showAddress })}
+                    ref={register({ maxLength: 5, required: showAddress })}
                     readOnly={isReadonly}
                     //defaultValue={isReadonly ? parentProfile?.zip_code : ''}
                     defaultValue={isReadonly ? selectedApplication?.child?.zip_code : ""}
@@ -1596,11 +1620,11 @@ export default function index({
                 Zip Code
               </label>
             </div>
-              <ErrorMessage
-                field={errors["parentzipcode"]}
-                errorType="required"
-                message="Zip Code is Required"
-              />
+            <ErrorMessage
+              field={errors["parentzipcode"]}
+              errorType="required"
+              message="Zip Code is Required"
+            />
           </div>
         </div>
 
@@ -1611,10 +1635,10 @@ export default function index({
                 name="parentoccupation"
                 className={
                   isReadonly &&
-                  pastParentInformation && 
-                  (pastParentInformation.occupation || pastParentInformation.occupation == "") &&
-                  pastParentInformation.occupation != parentProfile.occupation ?
-                  "field-input highlights" : "field-input"
+                    pastParentInformation &&
+                    (pastParentInformation.occupation || pastParentInformation.occupation == "") &&
+                    pastParentInformation.occupation != parentProfile.occupation ?
+                    "field-input highlights" : "field-input"
                 }
                 placeholder="Occupation"
                 id={`parentoccupation_${counter - 1}`}
@@ -1639,15 +1663,15 @@ export default function index({
 
           <div className="form-group">
             <div className="field">
-              <input 
+              <input
                 name="parentemployer"
                 className={
                   isReadonly &&
-                  !isVendorView &&
-                  pastParentInformation && 
-                  (pastParentInformation.employers_name || pastParentInformation.employers_name == "") &&
-                  pastParentInformation.employers_name != parentProfile.employer_name ?
-                  "field-input highlights" : "field-input"
+                    !isVendorView &&
+                    pastParentInformation &&
+                    (pastParentInformation.employers_name || pastParentInformation.employers_name == "") &&
+                    pastParentInformation.employers_name != parentProfile.employer_name ?
+                    "field-input highlights" : "field-input"
                 }
                 placeholder="Employer's Name"
                 id={`parentemployer_${counter - 1}`}
@@ -1675,18 +1699,18 @@ export default function index({
           <div className="form-group">
             <div>
               <label className="field-label-simple">
-                <span className="required">*</span> What are some of your
-                expectations from the Mentoring Program?
+                <span className="required">*</span> What are some of your (Parent/Guardian)
+                expectations from the {isLot ? 'LOT®' : 'Mentoring'} Program?
               </label>
               <textarea
                 name={`parent_goals${counter - 1}`}
                 className={
                   isReadonly &&
-                  !isVendorView &&
-                  pastParentInformation && 
-                  (pastParentInformation.parent_goals || pastParentInformation.parent_goals == "") &&
-                  pastParentInformation.parent_goals != parentProfile.goals_parent_program ?
-                  "form-control highlights-textarea" : "form-control"
+                    !isVendorView &&
+                    pastParentInformation &&
+                    (pastParentInformation.parent_goals || pastParentInformation.parent_goals == "") &&
+                    pastParentInformation.parent_goals != parentProfile.goals_parent_program ?
+                    "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
                 placeholder="Explain"
@@ -1720,11 +1744,11 @@ export default function index({
                 name={`parent_child_goals${counter - 1}`}
                 className={
                   isReadonly &&
-                  !isVendorView &&
-                  pastParentInformation && 
-                  (pastParentInformation.parent_child_goals || pastParentInformation.parent_child_goals == "") &&
-                  pastParentInformation.parent_child_goals != parentProfile.goals_child_program ?
-                  "form-control highlights-textarea" : "form-control"
+                    !isVendorView &&
+                    pastParentInformation &&
+                    (pastParentInformation.parent_child_goals || pastParentInformation.parent_child_goals == "") &&
+                    pastParentInformation.parent_child_goals != parentProfile.goals_child_program ?
+                    "form-control highlights-textarea" : "form-control"
                 }
                 rows="4"
                 placeholder="Explain"
@@ -1748,88 +1772,90 @@ export default function index({
           </div>
         </div>
 
-        <div className="agree-text">How long have you lived in this area?</div>
+        {!isLot && <><div className="agree-text">How long have you lived in this area?</div>
 
-        <div className="form-group">
-          <label  className={
+          <div className="form-group">
+            <label className={
               isReadonly &&
-              !isVendorView &&
-              pastParentInformation && (parentProfile.live_area == 1) && 
-              ( pastParentInformation.live_area != 1) &&
-              pastParentInformation.live_area != parentProfile.live_area ?
-              "cus-select-container radio-highlights" : "cus-select-container"
+                !isVendorView &&
+                pastParentInformation && (parentProfile.live_area == 1) &&
+                (pastParentInformation.live_area != 1) &&
+                pastParentInformation.live_area != parentProfile.live_area ?
+                "cus-select-container radio-highlights" : "cus-select-container"
             }>
-            1 - 5 Years
-            <input
-              type="radio"
-              onChange={({ target }) => {
-                handleParentFormDetailsChange(
-                  counter - 1,
-                  "profile",
-                  "live_area",
-                  target.value
-                );
-              }}
-              value="1"
-              checked={parentProfile?.live_area == 1}
-              readOnly={isReadonly}
-              disabled={isReadonly}
-            />
-            <span className="checkmark"></span>
-          </label>
-          <label className={
+              1 - 5 Years
+              <input
+                type="radio"
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "live_area",
+                    target.value
+                  );
+                }}
+                value="1"
+                checked={parentProfile?.live_area == 1}
+                readOnly={isReadonly}
+                disabled={isReadonly}
+              />
+              <span className="checkmark"></span>
+            </label>
+            <label className={
               isReadonly &&
-              !isVendorView &&
-              pastParentInformation && (parentProfile.live_area == 2 ) && 
-              ( pastParentInformation.live_area != 2) &&
-              pastParentInformation.live_area != parentProfile.live_area ?
-              "cus-select-container radio-highlights" : "cus-select-container"
+                !isVendorView &&
+                pastParentInformation && (parentProfile.live_area == 2) &&
+                (pastParentInformation.live_area != 2) &&
+                pastParentInformation.live_area != parentProfile.live_area ?
+                "cus-select-container radio-highlights" : "cus-select-container"
             }>
-            5 - 10 Years
-            <input
-              type="radio"
-              onChange={({ target }) => {
-                handleParentFormDetailsChange(
-                  counter - 1,
-                  "profile",
-                  "live_area",
-                  target.value
-                );
-              }}
-              value="2"
-              checked={parentProfile?.live_area == 2}
-              readOnly={isReadonly}
-              disabled={isReadonly}
-            />
-            <span className="checkmark"></span>
-          </label>
-          <label className={
+              5 - 10 Years
+              <input
+                type="radio"
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "live_area",
+                    target.value
+                  );
+                }}
+                value="2"
+                checked={parentProfile?.live_area == 2}
+                readOnly={isReadonly}
+                disabled={isReadonly}
+              />
+              <span className="checkmark"></span>
+            </label>
+            <label className={
               isReadonly &&
-              !isVendorView &&
-              pastParentInformation && (parentProfile.live_area == 3 ) && 
-              ( pastParentInformation.live_area != 3) &&
-              pastParentInformation.live_area != parentProfile.live_area ?
-              "cus-select-container radio-highlights" : "cus-select-container"
+                !isVendorView &&
+                pastParentInformation && (parentProfile.live_area == 3) &&
+                (pastParentInformation.live_area != 3) &&
+                pastParentInformation.live_area != parentProfile.live_area ?
+                "cus-select-container radio-highlights" : "cus-select-container"
             }>
-            More than 10 Years
-            <input
-              type="radio"
-              onChange={({ target }) => {
-                handleParentFormDetailsChange(
-                  counter - 1,
-                  "profile",
-                  "live_area",
-                  target.value
-                );
-              }}
-              value="3"
-              checked={parentProfile?.live_area == 3}
-              readOnly={isReadonly}
-              disabled={isReadonly}
-            />
-            <span className="checkmark"></span>
-          </label>
-        </div>
+              More than 10 Years
+              <input
+                type="radio"
+                onChange={({ target }) => {
+                  handleParentFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "live_area",
+                    target.value
+                  );
+                }}
+                value="3"
+                checked={parentProfile?.live_area == 3}
+                readOnly={isReadonly}
+                disabled={isReadonly}
+              />
+              <span className="checkmark"></span>
+            </label>
+          </div>
+        </>
+        }
 
         <div className="agree-text">
           What is your highest level of education?
@@ -1844,11 +1870,11 @@ export default function index({
                   name="parent_educationlevel"
                   className={
                     isReadonly &&
-                    !isVendorView &&
-                    pastParentInformation && 
-                    (pastParentInformation.level_of_education || pastParentInformation.level_of_education == "") &&
-                    pastParentInformation.level_of_education != parentProfile.level_education ?
-                    "field-input highlights" : "field-input"
+                      !isVendorView &&
+                      pastParentInformation &&
+                      (pastParentInformation.level_of_education || pastParentInformation.level_of_education == "") &&
+                      pastParentInformation.level_of_education != parentProfile.level_education ?
+                      "field-input highlights" : "field-input"
                   }
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
@@ -1870,11 +1896,11 @@ export default function index({
                   name="parent_educationlevel"
                   className={
                     isReadonly &&
-                    !isVendorView &&
-                    pastParentInformation && 
-                    (pastParentInformation.level_of_education || pastParentInformation.level_of_education == "") &&
-                    pastParentInformation.level_of_education != parentProfile.level_education ?
-                    "field-input highlights" : "field-input"
+                      !isVendorView &&
+                      pastParentInformation &&
+                      (pastParentInformation.level_of_education || pastParentInformation.level_of_education == "") &&
+                      pastParentInformation.level_of_education != parentProfile.level_education ?
+                      "field-input highlights" : "field-input"
                   }
                   defaultValue={parentProfile?.level_education}
                   readOnly={isReadonly}
@@ -1886,107 +1912,108 @@ export default function index({
           </div>
         </div>
 
-        <div className="agree-text">
+        {!isLot && <><div className="agree-text">
           How important is it to you that your child graduates from high school?
         </div>
 
-        <div>
-          <div className="form-group">
-            <div className="field select-field-wrapper">
-              {!isReadonly ? (
-                <select
-                  defaultValue={parentProfile?.child_importance_hs}
-                  name="child_importance_hs"
-                  className={
-                    isReadonly &&
-                    !isVendorView &&
-                    pastParentInformation && 
-                    (pastParentInformation.child_importance_hs || pastParentInformation.child_importance_hs == "") &&
-                    pastParentInformation.child_importance_hs != parentProfile.child_importance_hs ?
-                    "field-input highlights" : "field-input"
-                  }
-                  onChange={({ target }) => {
-                    handleParentFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "child_importance_hs",
-                      target.value
-                    );
-                  }}>
-                  <option value="">Select Type</option>
-                  {IMPORTANCE_OPTIONS.map((opt, index) => (
-                    <option key={index + 1} value={opt.name}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  type="text"
-                  name="child_importance_hs"
-                  className={
-                    isReadonly &&
-                    !isVendorView &&
-                    pastParentInformation && 
-                    (pastParentInformation.child_hs_grad || pastParentInformation.child_hs_grad == "") &&
-                    pastParentInformation.child_hs_grad != parentProfile.child_importance_hs ?
-                    "field-input highlights" : "field-input"
-                  }
-                  defaultValue={parentProfile?.child_importance_hs}
-                  readOnly={isReadonly}
-                  placeholder="Explain"
-                />
-              )}
+          <div>
+            <div className="form-group">
+              <div className="field select-field-wrapper">
+                {!isReadonly ? (
+                  <select
+                    defaultValue={parentProfile?.child_importance_hs}
+                    name="child_importance_hs"
+                    className={
+                      isReadonly &&
+                        !isVendorView &&
+                        pastParentInformation &&
+                        (pastParentInformation.child_importance_hs || pastParentInformation.child_importance_hs == "") &&
+                        pastParentInformation.child_importance_hs != parentProfile.child_importance_hs ?
+                        "field-input highlights" : "field-input"
+                    }
+                    onChange={({ target }) => {
+                      handleParentFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "child_importance_hs",
+                        target.value
+                      );
+                    }}>
+                    <option value="">Select Type</option>
+                    {IMPORTANCE_OPTIONS.map((opt, index) => (
+                      <option key={index + 1} value={opt.name}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    name="child_importance_hs"
+                    className={
+                      isReadonly &&
+                        !isVendorView &&
+                        pastParentInformation &&
+                        (pastParentInformation.child_hs_grad || pastParentInformation.child_hs_grad == "") &&
+                        pastParentInformation.child_hs_grad != parentProfile.child_importance_hs ?
+                        "field-input highlights" : "field-input"
+                    }
+                    defaultValue={parentProfile?.child_importance_hs}
+                    readOnly={isReadonly}
+                    placeholder="Explain"
+                  />
+                )}
+              </div>
             </div>
+          </div></>}
+
+        {!isLot && <>
+          <div className="agree-text">
+            How important is it to you that your child attends college?
           </div>
-        </div>
 
-        <div className="agree-text">
-          How important is it to you that your child attends college?
-        </div>
-
-        <div>
-          <div className="form-group">
-            <div className="field select-field-wrapper">
-              {!isReadonly ? (
-                <select
-                  name="childattendscollege"
-                  className="field-input"
-                  onChange={({ target }) => {
-                    handleParentFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "child_importance_col",
-                      target.value
-                    );
-                  }}
-                  defaultValue={parentProfile?.child_importance_col}>
-                  <option value="">Select Type</option>
-                  {IMPORTANCE_OPTIONS.map((opt, index) => (
-                    <option key={index + 1} value={opt.name}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  type="text"
-                  className={
-                    isReadonly &&
-                    !isVendorView &&
-                    pastParentInformation && 
-                    (pastParentInformation.child_col_grad || pastParentInformation.child_col_grad == "") &&
-                    pastParentInformation.child_col_grad != parentProfile.child_importance_col ?
-                    "field-input highlights" : "field-input"
-                  }
-                  defaultValue={parentProfile?.child_importance_col}
-                  readOnly={isReadonly}
-                  placeholder="Explain"
-                />
-              )}
+          <div>
+            <div className="form-group">
+              <div className="field select-field-wrapper">
+                {!isReadonly ? (
+                  <select
+                    name="childattendscollege"
+                    className="field-input"
+                    onChange={({ target }) => {
+                      handleParentFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "child_importance_col",
+                        target.value
+                      );
+                    }}
+                    defaultValue={parentProfile?.child_importance_col}>
+                    <option value="">Select Type</option>
+                    {IMPORTANCE_OPTIONS.map((opt, index) => (
+                      <option key={index + 1} value={opt.name}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    className={
+                      isReadonly &&
+                        !isVendorView &&
+                        pastParentInformation &&
+                        (pastParentInformation.child_col_grad || pastParentInformation.child_col_grad == "") &&
+                        pastParentInformation.child_col_grad != parentProfile.child_importance_col ?
+                        "field-input highlights" : "field-input"
+                    }
+                    defaultValue={parentProfile?.child_importance_col}
+                    readOnly={isReadonly}
+                    placeholder="Explain"
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        </div>
+          </div></>}
 
         <div>
           <div className="form-group">
@@ -2002,11 +2029,11 @@ export default function index({
                 name={"parent_person_recommend" + (counter - 1)}
                 className={
                   isReadonly &&
-                  !isVendorView &&
-                  pastParentInformation && 
-                  (pastParentInformation.person_recommend || pastParentInformation.person_recommend == "") &&
-                  pastParentInformation.person_recommend != parentProfile.person_recommend ?
-                  "field-input highlights" : "field-input"
+                    !isVendorView &&
+                    pastParentInformation &&
+                    (pastParentInformation.person_recommend || pastParentInformation.person_recommend == "") &&
+                    pastParentInformation.person_recommend != parentProfile.person_recommend ?
+                    "field-input highlights" : "field-input"
                 }
                 onChange={({ target }) => {
                   if (target.value === "Others") {
@@ -2032,6 +2059,6 @@ export default function index({
           </div>
         </div>
       </div>
-    </ParentInformationStyled>
+    </ParentInformationStyled >
   );
 }

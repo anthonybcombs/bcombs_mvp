@@ -264,30 +264,65 @@ export const sendMigratedAccount = async ({ email, password, firstname }) => {
   }
 };
 
-export const sendAdminInvite = async ({ email, password, name }) => {
+export const sendAdminInvite = async ({ 
+  email, 
+  password = "", 
+  name, 
+  vendorId, 
+  isExist = false
+}) => {
   try {
-    sendEmail({
-      ...defaultMailConfig,
-      subject: `Bcombs: Admin Invitation`,
-      to: email,
-      html: `
-        <div>
-          <p>Hi ${name}!</p>
-          <p>
-            This is your account for the bcombs site.
-            <br/>
-            Email: ${email}
-            <br/>
-            Password: ${password}
-            <br/>
-            Please change your password after signing in.
-            <br/>
-            Thanks
-          </p>
-        </div>
-      ` // html body
-    });
+    if(isExist) {
+      sendEmail({
+        ...defaultMailConfig,
+        subject: `Bcombs: Admin Invitation`,
+        to: email,
+        html: `
+          <div>
+            <p>Hi ${name}!</p>
+            <p>
+              This is your account for the bcombs site.
+              <br/>
+              Email: ${email}
+              <br/>
+              Please change your password after signing in.
+              <br/>
+              Thanks
+            </p>
+            <p>
+              To access the application, plese go to this site: https://stg20.bcombs.com/dashboard/application?vendor=${vendorId}
+            </p<
+          </div>
+        ` // html body
+      });
+    } else {
+      sendEmail({
+        ...defaultMailConfig,
+        subject: `Bcombs: Admin Invitation`,
+        to: email,
+        html: `
+          <div>
+            <p>Hi ${name}!</p>
+            <p>
+              This is your account for the bcombs site.
+              <br/>
+              Email: ${email}
+              <br/>
+              Password: ${password}
+              <br/>
+              Please change your password after signing in.
+              <br/>
+              Thanks
+            </p>
+            <p>
+              To access the application, plese go to this site: https://stg20.bcombs.com/dashboard/application?vendor=${vendor}
+            </p<
+          </div>
+        ` // html body
+      });
+    }
+
   } catch (error) {
-    console.log("Error", error);
+    console.log("invite error", error);
   }
 };

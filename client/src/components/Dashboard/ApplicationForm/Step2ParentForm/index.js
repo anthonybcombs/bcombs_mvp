@@ -23,7 +23,8 @@ export default function index({
   register,
   errors,
   ProfileImg,
-  setIsParentAddressRequired
+  setIsParentAddressRequired,
+  isLot
 }) {
   const renderParentForm = () => {
 
@@ -41,6 +42,7 @@ export default function index({
               errors={errors}
               ProfileImg={ProfileImg}
               setIsParentAddressRequired={setIsParentAddressRequired}
+              isLot={isLot}
             />
             <div className="application-btn-container">
               {
@@ -80,6 +82,7 @@ export default function index({
               errors={errors}
               ProfileImg={ProfileImg}
               setIsParentAddressRequired={setIsParentAddressRequired}
+              isLot={isLot}
             />
             <div className="application-btn-container">
               {

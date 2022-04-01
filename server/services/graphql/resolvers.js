@@ -58,6 +58,7 @@ import {
 } from "../../api/grades";
 import {
   getVendors,
+  createVendor,
   updateVendor,
   addVendor,
   deleteAppGroup,
@@ -83,7 +84,8 @@ import {
   createGroupReminder,
   getVendorAdminsByUser,
   getVendorApplicationReminder,
-  createAppGroupReminder
+  createAppGroupReminder,
+  updateLogo
 } from "../../api/vendor";
 import {
   createApplication,
@@ -148,6 +150,7 @@ import {
 import {
   triggerCronSetReminder
 } from "../../api/cron";
+import { exists } from "fs";
 
 const util = require('util');
 
@@ -231,8 +234,14 @@ const resolvers = {
         vendor.forms = (user == vendor.vendor_user) ?  vendor.forms ? vendor.forms : []
         :
         vendor.forms ? vendor.forms.filter((f) => {
-          const isExists = admins.some(x => x.form == f.form_id);
-          return isExists;
+          let isExists = admins.some(x => x.form == f.form_id);
+
+          if(isExists) {
+            return isExists;
+          } else {
+            isExists = (f.user == user);          
+            return isExists;
+          }
         }) : []
       }
      
@@ -418,6 +427,15 @@ const resolvers = {
       for (const vendor of vendors) {
         console.log("vendor", vendor);
         let va = await getVendorAdmins(vendor.id);
+        va = va.map(v => {
+          v = {
+            ...v,
+            "isLotForm": !!v.is_lotform
+          }
+          delete v.is_lotform;
+          return v;
+        });
+        console.log('update admins va', va);
         admins.push(...va);
       }
 
@@ -444,6 +462,7 @@ const resolvers = {
       return application;
     },
     async getVendorCustomApplicationForms(root, { filter }, context) {
+      console.log('form filter', filter);
       let forms = [];
       if(filter?.categories.length > 0) {
         for(const category of filter.categories) {
@@ -452,6 +471,27 @@ const resolvers = {
         }
       } else {
         forms = await getVendorCustomApplicationForms({vendor: filter.vendor});
+      }
+
+      const admins = await getVendorAdminsByUser(filter.currentUser);
+
+      if(!filter.isOwner) {
+        let formIds = [];
+        admins.map(a => {
+          formIds.push(a.form);
+        })
+
+        let selectedForms = [];
+        forms.map(f => {
+          if(formIds.includes(f.form_id)) {
+            selectedForms.push(f);
+          } else if(filter.currentUser && (filter.currentUser == f.user)) {
+            selectedForms.push(f)
+          }
+        })
+        forms = selectedForms;
+
+        console.log('connected forms', forms);
       }
       return forms;
     },
@@ -597,6 +637,13 @@ const resolvers = {
       return await removeEvents(id, email);
     },
     //ADDED BY JEROME
+    async createVendor(root, { vendor }, context) {
+      let newVendor = await createVendor(vendor);
+
+      console.log('newVendor', newVendor);
+
+      return newVendor;
+    },
     async updateVendor(root, { vendor }, context) {
       return await updateVendor(vendor);
     },
@@ -1214,7 +1261,8 @@ const resolvers = {
           user: admin.user,
           vendor: admin.vendor,
           name: admin.name,
-          form: form.isCustomForm ? form.form_id : null
+          form: form.isCustomForm ? form.form_id : null,
+          isLotForm: !!(form.form_id ==  'lot') ? 1 : 0
         });
       }
 
@@ -1257,6 +1305,8 @@ const resolvers = {
             if(form && form.form_contents && form.form_contents.formTitle)
               x.formTitle = form.form_contents.formTitle;
           }
+          console.log('x.is_lotform',x.is_lotform)
+          x.isLotForm = x.is_lotform;
         }
 
         resAdmins.push(...va);
@@ -1286,6 +1336,13 @@ const resolvers = {
           console.log("update user type to vendor", user);
           await updateUserType(user);
         }
+
+        sendAdminInvite({
+          email: admin.email,
+          name: admin.name,
+          vendorId: admin.vendor2,
+          isExist: true
+        });
       } else {
         const newPassword = generatePassword();
 
@@ -1303,16 +1360,18 @@ const resolvers = {
         sendAdminInvite({
           email: admin.email,
           password: newPassword,
-          name: admin.name
+          name: admin.name,
+          vendorId: admin.vendor2
         });
       }
-      
+
       for (const form of admin.forms) {
         await addVendorAdmins({
           user: user.id,
           vendor: admin.vendor,
           name: admin.name,
-          form: form.isCustomForm ? form.form_id : null
+          form: form.isCustomForm ? form.form_id : null,
+          isLotForm: !!(form.form_id ==  'lot') ? 1 : 0
         });
       }
 
@@ -1928,7 +1987,10 @@ const resolvers = {
       }
 
       return await getVendorApplicationReminder(groupReminder.vendor_id);
-    }
+    },
+    async updateVendorLogo(root, { vendorLogo }, context) {
+      return await updateLogo({logo: vendorLogo.logo, vendor_id: vendorLogo.vendor_id || ''})
+    },
   }
 };
 

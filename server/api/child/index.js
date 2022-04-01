@@ -4,7 +4,7 @@ export const getChildInformation = async (id) => {
   const db = makeDb();
   let result = [];
   try {
-    const child = await db.query (
+    const child = await db.query(
       `SELECT 
         BIN_TO_UUID(ch_id) as ch_id, 
         new_childId,
@@ -84,10 +84,26 @@ export const getChildInformation = async (id) => {
         primary_language,
         needed_days,
         schedule_tour,
-        voucher
+        voucher,
+        is_entrepreneur,
+        include_in_directory,
+        business_name,
+        business_website,
+        business_phone,
+        business_email,
+        business_industry,
+        business_address,
+        business_description,
+        employment_status,
+        allergies_to_medicine,
+        food_allergies,
+        insect_allergies,
+        other_allergies,
+        current_medications,
+        health_insurance_information
         FROM child 
         WHERE ch_id=UUID_TO_BIN(?)`,
-        [id]
+      [id]
     )
     result = child;
   } catch (error) {
@@ -253,9 +269,9 @@ export const addDaycareChild = async ({
 
     lastId = result.insertId;
     child = await db.query(`SELECT (BIN_TO_UUID(ch_id)) as ch_id FROM child WHERE id=?`, [lastId]);
-    child = child.length > 0 ? child[0]: "";
+    child = child.length > 0 ? child[0] : "";
 
-  } catch(err) {
+  } catch (err) {
     console.log("add child error", err);
   } finally {
     await db.close();
@@ -292,7 +308,7 @@ export const addChild = async ({
   reason_suspended,
   year_taken,
   hobbies,
-  life_events, 
+  life_events,
   career_goals,
   colleges,
   affiliations,
@@ -318,7 +334,23 @@ export const addChild = async ({
   hospital_phone,
   child_lives_with,
   nickname,
-  image
+  image,
+  is_entrepreneur = 0,
+  include_in_directory = 0,
+  business_name = '',
+  business_website = '',
+  business_phone = '',
+  business_email = '',
+  business_industry = '',
+  business_address = '',
+  business_description = '',
+  employment_status = '',
+  allergies_to_medicine = '',
+  food_allergies = '',
+  insect_allergies = '',
+  other_allergies = '',
+  current_medications = '',
+  health_insurance_information = ''
 }) => {
   const db = makeDb();
   let result = {};
@@ -381,14 +413,31 @@ export const addChild = async ({
         hospital_phone,
         child_lives_with,
         nickname,
-        image
+        image,
+        is_entrepreneur,
+        include_in_directory,
+        business_name,
+        business_website,
+        business_phone,
+        business_email,
+        business_industry,
+        business_address,
+        business_description,
+        employment_status,
+        allergies_to_medicine,
+        food_allergies,
+        insect_allergies,
+        other_allergies,
+        current_medications,
+        health_insurance_information
       ) VALUES (UUID_TO_BIN(UUID()), 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
-        ?, ?, ?)`,
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         firstname,
         lastname,
@@ -416,7 +465,7 @@ export const addChild = async ({
         reason_suspended,
         year_taken,
         hobbies,
-        life_events, 
+        life_events,
         career_goals,
         colleges,
         affiliations,
@@ -442,15 +491,32 @@ export const addChild = async ({
         hospital_phone,
         child_lives_with,
         nickname,
-        image
+        image,
+
+        is_entrepreneur,
+        include_in_directory,
+        business_name,
+        business_website,
+        business_phone,
+        business_email,
+        business_industry,
+        business_address,
+        business_description,
+        employment_status,
+        allergies_to_medicine,
+        food_allergies,
+        insect_allergies,
+        other_allergies,
+        current_medications,
+        health_insurance_information
       ]
     )
 
     lastId = result.insertId;
     child = await db.query(`SELECT (BIN_TO_UUID(ch_id)) as ch_id FROM child WHERE id=?`, [lastId]);
-    child = child.length > 0 ? child[0]: "";
+    child = child.length > 0 ? child[0] : "";
 
-  } catch(err) {
+  } catch (err) {
     console.log("add child error", err);
   } finally {
     await db.close();
@@ -487,7 +553,7 @@ export const updateChild = async ({
   reason_suspended,
   year_taken,
   hobbies,
-  life_events, 
+  life_events,
   career_goals,
   colleges,
   affiliations,
@@ -538,7 +604,24 @@ export const updateChild = async ({
   schedule_tour,
   voucher,
   ch_id,
-  image
+  image,
+
+  is_entrepreneur = 0,
+  include_in_directory = '',
+  business_name = '',
+  business_website = '',
+  business_phone = '',
+  business_email = '',
+  business_industry = '',
+  business_address = '',
+  business_description = '',
+  employment_status = '',
+  allergies_to_medicine = '',
+  food_allergies = '',
+  insect_allergies = '',
+  other_allergies = '',
+  current_medications = '',
+  health_insurance_information = ''
 }) => {
 
   const db = makeDb();
@@ -624,7 +707,25 @@ export const updateChild = async ({
         needed_days=?,
         schedule_tour=?,
         voucher=?,
-        image=?
+        image=?,
+
+        is_entrepreneur=?,
+        include_in_directory=?,
+        business_name=?,
+        business_website=?,
+        business_phone=?,
+        business_email=?,
+        business_industry=?,
+        business_address=?,
+        business_description=?,
+        employment_status=?,
+        allergies_to_medicine=?,
+        food_allergies=?,
+        insect_allergies=?,
+        other_allergies=?,
+        current_medications=?,
+        health_insurance_information=?
+
         WHERE ch_id=UUID_TO_BIN(?)
       `,
       [
@@ -654,7 +755,7 @@ export const updateChild = async ({
         reason_suspended,
         year_taken,
         hobbies,
-        life_events, 
+        life_events,
         career_goals,
         colleges,
         affiliations,
@@ -705,10 +806,26 @@ export const updateChild = async ({
         schedule_tour,
         voucher,
         image,
+        is_entrepreneur,
+        include_in_directory,
+        business_name,
+        business_website,
+        business_phone,
+        business_email,
+        business_industry,
+        business_address,
+        business_description,
+        employment_status,
+        allergies_to_medicine,
+        food_allergies,
+        insect_allergies,
+        other_allergies,
+        current_medications,
+        health_insurance_information,
         ch_id
       ]
     );
-  } catch(error) {
+  } catch (error) {
     console.log(error)
   } finally {
     await db.close();
@@ -716,7 +833,7 @@ export const updateChild = async ({
   }
 }
 
-export const addChildChildRelationship = async({
+export const addChildChildRelationship = async ({
   child,
   child2,
   relationship
@@ -738,7 +855,7 @@ export const addChildChildRelationship = async({
         relationship
       ]
     )
-  } catch(err) {
+  } catch (err) {
     console.log("add parent error", err)
   } finally {
     await db.close();
@@ -746,7 +863,7 @@ export const addChildChildRelationship = async({
   }
 }
 
-export const updateParentChildRelationship = async({
+export const updateParentChildRelationship = async ({
   id,
   relationship
 }) => {
@@ -765,7 +882,7 @@ export const updateParentChildRelationship = async({
         id
       ]
     )
-  } catch(err) {
+  } catch (err) {
     console.log("add parent error", err)
   } finally {
     await db.close();
@@ -773,7 +890,7 @@ export const updateParentChildRelationship = async({
   }
 }
 
-export const getChildName = async(child) => {
+export const getChildName = async (child) => {
   const db = makeDb();
   let result;
 
@@ -789,14 +906,14 @@ export const getChildName = async(child) => {
         child
       ]
     );
-  } catch(error) {
+  } catch (error) {
     console.log("error getchildname", error)
   } finally {
     await db.close();
     return result;
   }
 }
-export const getChildChildRelationship = async(child) => {
+export const getChildChildRelationship = async (child) => {
   const db = makeDb();
   let result = {};
   let childs = [];
@@ -816,9 +933,9 @@ export const getChildChildRelationship = async(child) => {
       ]
     )
 
-    for(const item of result) {
+    for (const item of result) {
       const temp = await getChildName(item.child2);
-      if(temp && temp.length > 0) {
+      if (temp && temp.length > 0) {
         childs.push({
           id: item.id,
           child: item.child,
@@ -828,7 +945,7 @@ export const getChildChildRelationship = async(child) => {
         })
       }
     }
-  } catch(err) {
+  } catch (err) {
     console.log("add parent error", err)
   } finally {
     await db.close();

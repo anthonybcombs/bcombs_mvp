@@ -1541,4 +1541,59 @@ export default styled.div`
     margin: 6px 6px 8px 6px;
   }
 
+
+  .cus-checkbox-container {
+    position: relative !important;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin: 30px auto 0 auto;
+    margin-bottom: 0px;
+    padding-left: 20px;
+    font-size: 22px;
+    cursor: pointer;
+  }
+  
+  .cus-checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  .cus-checkbox-container .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: white;
+    border-color: black;
+    border-radius: 0px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+  }
+  
+  .cus-checkbox-container .checkmark:after {
+    left: 8px;
+    top: 5px;
+    width: 7px;
+    height: 10px;
+    border: solid black;
+    border-width: 0 3px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  .cus-checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+  }
+
 `;

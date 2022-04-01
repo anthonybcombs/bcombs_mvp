@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
+// import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,8 +9,10 @@ import { faEdit, faPrint } from "@fortawesome/free-solid-svg-icons";
 import ChildInformationFormStyled from "../../../ApplicationForm/ChildInformationForm";
 import GeneralInformationFormStyled from "../../../ApplicationForm/GeneralInformationForm";
 import MedicalCareInfoStyled from "../../../ApplicationForm/MedicalCareIformationForm";
+import AllergyInformation from '../../../ApplicationForm/AllergyInformation'
 
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+
+// import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import "../../../ApplicationForm/ApplicationForm.css";
 
@@ -109,13 +111,14 @@ export default function index({
   location_sites = [],
   app_programs = [],
   isVendorView = false,
-  handleSelectLatestApplication = null
+  handleSelectLatestApplication = null,
+  isLot = 0
 }) {
   const { applications } = useSelector(({ applications }) => {
     return { applications };
   });
 
-  const handleScoresChange = () => {};
+  const handleScoresChange = () => { };
 
   let pastChildInformation = {};
 
@@ -131,7 +134,7 @@ export default function index({
     }
   }
 
-  console.log('childInformation555',childInformation)
+  console.log('childInformation555', childInformation)
   return (
     <>
       <ChildFormHeader id="userApplicationForm">
@@ -150,7 +153,7 @@ export default function index({
             {childInformation?.profile?.application_date}
             {
               isFormHistory && handleSelectLatestApplication && (
-                <a 
+                <a
                   href=""
                   onClick={(e) => {
                     e.preventDefault();
@@ -180,6 +183,7 @@ export default function index({
             app_programs={app_programs}
             pastChildInformation={pastChildInformation}
             isVendorView={isVendorView}
+            isLot={isLot}
           />
           <br />
           <GeneralInformationFormStyled
@@ -193,9 +197,24 @@ export default function index({
             isReadonly={isReadonly}
             pastChildInformation={pastChildInformation}
             isVendorView={isVendorView}
+            isLot={isLot}
           />
           <br />
-          <MedicalCareInfoStyled
+          {isLot && <AllergyInformation
+            printPageClassname="printpage-break general-information"
+            handleChildFormDetailsChange={handleChildFormDetailsChange}
+            childGeneralInformation={childInformation?.general_information}
+            counter={1}
+            handleScoresChange={handleScoresChange}
+            register={register}
+            errors={errors}
+            isReadonly={isReadonly}
+            pastChildInformation={pastChildInformation}
+            isVendorView={isVendorView}
+          />}
+
+          <br />
+          {/* <MedicalCareInfoStyled
             printPageClassname="printpage-break medicalCare-information"
             childEmergencyCare={childInformation?.emergency_care_information}
             handleChildFormDetailsChange={handleChildFormDetailsChange}
@@ -205,7 +224,7 @@ export default function index({
             isReadonly={isReadonly}
             pastChildInformation={pastChildInformation}
             isVendorView={isVendorView}
-          />
+          /> */}
         </div>
       </ChildFormViewStyled>
     </>

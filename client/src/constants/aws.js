@@ -1,0 +1,1 @@
+export const s3BucketRootPath = "https://bcombs.s3.amazonaws.com";

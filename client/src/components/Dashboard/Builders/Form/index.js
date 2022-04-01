@@ -13,6 +13,7 @@ import FormStyled from './styles'
 import FORM_DATA from './sample.json'
 import { groupFieldsByPageBreak } from '../utils'
 import { requestGetFormById, requestSubmitForm } from '../../../../redux/actions/FormBuilder'
+import { requestVendorById } from "../../../../redux/actions/Vendors";
 import Loading from '../../../../helpers/Loading.js'
 
 import Stepper from './Wizard/stepper'
@@ -43,6 +44,9 @@ export default (props) => {
       return { auth, loading, form }
     }
   )
+  console.log('vvvvevndorrrrrrrrr form', form)
+  console.log('vvvvevndorrrrrrrrr form_contents', form_contents)
+  console.log('vvvvevndorrrrrrrrr vendor', vendor)
 
   const isSuccessfulSubmit = submitForm.message === 'successfully submitted your application form'
 
@@ -82,6 +86,8 @@ export default (props) => {
   const [fieldError, setFieldError] = useState({})
   const [nextPage, setNextPage] = useState('')
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (formData.length && !formIsSet) {
       const newAddresses = formData.filter(e => e.type === 'address')
@@ -93,6 +99,13 @@ export default (props) => {
     }
   }, [formData])
 
+  useEffect(() => {
+    if(vendor){
+
+      dispatch(requestVendorById(vendor));
+    }
+  },[vendor])
+  
   useEffect(() => {
 
     let newFormFields = actualFormFields
@@ -209,7 +222,7 @@ export default (props) => {
     }
   }, [auth])
 
-  const dispatch = useDispatch()
+
 
   useEffect(() => {
     // if (auth.user_id) {
@@ -328,12 +341,13 @@ export default (props) => {
 
   const handleCheckError = (id, errors, isMultiple = false) => {
     let newErrors = { ...fieldError }
+
     if (!isMultiple) {
       newErrors[id] = errors
     } else {
       newErrors = {
         ...newErrors,
-        ...errors
+        ...(errors || {})
       }
     }
     setFieldError(
@@ -352,7 +366,7 @@ export default (props) => {
     const fields = hasWizard 
       ? actualFormFields[currentStep].formFields
       : actualFormFields
-
+ 
     fields.reduce((acc, curr) => {
       acc = [
         ...acc,
@@ -361,8 +375,9 @@ export default (props) => {
       return acc
     }, [])
     .forEach(({ required, value, id, placeholder, label, tag, type }) => {
-      const newVal = value ? JSON.parse(value) : ''
-      if (required && !newVal && tag !== 'icon') {
+      const newVal = value  ? typeof value === 'boolean' ? value : JSON.parse(value) : ''
+ 
+      if (required && !newVal && newVal === '' && tag !== 'icon' && tag !== 'checkbox') {
         const requiredError = `${placeholder || label || 'This'} is required.`
         if (!newFielderrors[id] || !newFielderrors[id].find(e => e === requiredError)) {
           newFielderrors[id] = [
@@ -371,9 +386,21 @@ export default (props) => {
           ]
         }
       }
-      if (type === 'terms' && tag === 'input') {
-        const parsedValue = newVal ? JSON.parse(newVal) : {}
-        newFielderrors[id] = parsedValue?.value ? [] : ['Electronic Signature is required']
+      if (type === 'terms' && (tag === 'input' || tag === 'checkbox')) {
+        let parsedValue = null;
+    
+        if(typeof newVal === 'object') {
+          console.log('newValv',newVal)
+          parsedValue = newVal ? JSON.parse(newVal) : {};
+          newFielderrors[id] = parsedValue?.value ? [] : ['Electronic Signature is required']
+        }
+        else if(tag === 'checkbox'){
+          parsedValue = newVal && newVal !== '' ? newVal : null;
+
+          newFielderrors[id] = parsedValue ? [] : ['Checkbox is required']
+        }
+       
+       
       }
       if (newFielderrors[id] && !newFielderrors[id].length) {
         delete newFielderrors[id]
@@ -428,7 +455,6 @@ export default (props) => {
 
   const handleSubmit = (forceSubmit = false) => {
     const { formHasError, errors } = handleCheckRequired()
-
     if (!formHasError || forceSubmit) {
       const newFormContents = (hasWizard ? actualFormFields.reduce((acc, curr) => [...acc, ...curr.formFields], []) : actualFormFields)
         .map(e => {
@@ -447,8 +473,8 @@ export default (props) => {
             })
           }
         })
-
       // Submit for update custom application form
+
       if (isApplication) {
         onSubmitApplication({
           formTitle,
@@ -524,7 +550,7 @@ export default (props) => {
   // console.log('flattenFields ', flattenFields());
 
   const hasLoginField = !!(flattenFields().find(e => e.type === 'login'))
-
+  
   return (
     <FormStyled ref={componentRef}>
       <div id='form' >

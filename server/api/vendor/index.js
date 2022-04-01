@@ -1,8 +1,13 @@
 import { makeDb } from "../../helpers/database";
 
-import { getUserGroups } from "../../api/groups";
+// import { getUserGroups } from "../../api/groups";
 
-import { sort, distinct, sortByDate } from "../../helpers/array";
+// import { sort, distinct, sortByDate } from "../../helpers/array";
+import {
+  currentS3BucketName,
+  s3BucketRootPath,
+  uploadFile
+} from "../../helpers/aws";
 
 import { 
   getVendorCustomApplicationForms,
@@ -27,7 +32,8 @@ export const getVendors = async () => {
         section3_name,
         section1_show,
         section2_show,
-        section3_show
+        section3_show,
+        logo
         FROM vendor`
     );
     return result;
@@ -105,7 +111,8 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
         v.section2_show,
         v.section3_show,
         v.created_at as created_at,
-        v.is_daycare
+        v.is_daycare,
+        v.logo
       FROM vendor v
       WHERE v.user=UUID_TO_BIN(?)`,
       [user]
@@ -124,6 +131,13 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
         }
       }
       else {
+        for (let i = 0; i < result.length; i++) {
+          result[i].app_programs = []
+          result[i].location_sites = []
+          result[i].app_groups = []
+  
+          result[i].forms = []
+        }
         vendors = [...result]
       }
    
@@ -134,7 +148,7 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
       `
         SELECT 
           BIN_TO_UUID(v.id) as id, 
-          BIN_TO_UUID(va.user) as user,
+          BIN_TO_UUID(v.user) as user,
           BIN_TO_UUID(v.user) as vendor_user,
           v.id2,
           v.name, 
@@ -148,6 +162,7 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
           v.section2_show,
           v.section3_show,
           v.is_daycare,
+          v.logo,
           va.created_at as created_at
         FROM vendor v, vendor_admin va
         WHERE va.user = UUID_TO_BIN(?) AND va.vendor = v.id
@@ -174,6 +189,14 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
         }
       }
       else {
+        for (let i = 0; i < result2.length; i++) {
+          result2[i].app_programs = []
+          result2[i].location_sites = []
+          result2[i].app_groups = []
+  
+          result2[i].forms = []
+        }
+        vendors = [...result]
         vendors = [...vendors,...result2]
       }
      
@@ -212,7 +235,8 @@ export const getVendorById2 = async (id2) => {
         v.section1_show,
         v.section2_show,
         v.section3_show,
-        v.is_daycare
+        v.is_daycare,
+        v.logo
       FROM vendor v
       WHERE v.id2=?`,
       [id2]
@@ -251,7 +275,8 @@ export const getVendorById = async (id) => {
         v.section1_show,
         v.section2_show,
         v.section3_show,
-        v.is_daycare
+        v.is_daycare,
+        v.logo
       FROM vendor v
       WHERE v.id=UUID_TO_BIN(?)`,
       [id]
@@ -345,21 +370,22 @@ export const addVendorAdmins = async ({
   user, 
   vendor, 
   name,
-  form 
+  form,
+  isLotForm = 0
 }) => {
   const db = makeDb();
   let result;
   try {
 
     result = form ? await db.query(
-      `INSERT INTO vendor_admin(id, user, vendor, form, name)
-      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), UUID_TO_BIN(?), ?)`,
-      [user, vendor, form, name]) 
+      `INSERT INTO vendor_admin(id, user, vendor, form, name, is_lotform)
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?)`,
+      [user, vendor, form, name, isLotForm]) 
       : 
     await db.query(
-      `INSERT INTO vendor_admin(id, user, vendor, name)
-      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?)`,
-      [user, vendor, name])
+      `INSERT INTO vendor_admin(id, user, vendor, name, is_lotform)
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?)`,
+      [user, vendor, name, isLotForm])
 
   } catch (error) {
     console.log("error", error);
@@ -379,6 +405,8 @@ export const deleteVendorAdmins = async ({ user, vendor }) => {
       WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
       [user, vendor]
     );
+
+    console.log("delete admin success");
   } catch (error) {
     console.log("delete admin error", error);
   } finally {
@@ -398,7 +426,8 @@ export const getVendorAdminsByUser = async (user) => {
         BIN_TO_UUID(id) as id,
         BIN_TO_UUID(vendor) as vendor,
         BIN_TO_UUID(form) as form,
-        BIN_TO_UUID(user) as user
+        BIN_TO_UUID(user) as user,
+        is_lotform
       FROM vendor_admin
       WHERE user=UUID_TO_BIN(?)
       `,[user]
@@ -427,7 +456,8 @@ export const getVendorAdmins = async (vendor) => {
           va.name,
           v.name as vendorName,
           u.email,
-          BIN_TO_UUID(va.form) as form
+          BIN_TO_UUID(va.form) as form,
+          va.is_lotform
         FROM vendor v, users u, vendor_admin va
         WHERE va.vendor = UUID_TO_BIN(?) AND 
           v.id = UUID_TO_BIN(?) AND 
@@ -548,6 +578,94 @@ export const addVendor = async ({ user, name = "" }) => {
     return vendor;
   }
 };
+
+export const createVendor = async ({
+  user,
+  name,
+  section1_text,
+  section2_text,
+  section3_text,
+  section1_name,
+  section2_name,
+  section3_name,
+  section1_show,
+  section2_show,
+  section3_show,
+  logo,
+  is_daycare
+}) => {
+  const db = makeDb();
+  let result;
+  let vendor;
+  let lastId;
+  try {
+    console.log("ADD VENDORRR");
+    result = await db.query(
+      `INSERT INTO vendor(
+        id, 
+        user, 
+        name, 
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name,
+        section1_show,
+        section2_show,
+        section3_show,
+        logo,
+        is_daycare)
+      VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), 
+      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [ 
+        user,
+        name,
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name,
+        section1_show,
+        section2_show,
+        section3_show,
+        logo,
+        is_daycare
+      ]
+    );
+
+    lastId = result.insertId;
+
+    vendor = await db.query(
+      `SELECT 
+        BIN_TO_UUID(id) as id, 
+        BIN_TO_UUID(user) as user,
+        id2,
+        name, 
+        section1_text,
+        section2_text,
+        section3_text,
+        section1_name,
+        section2_name,
+        section3_name,
+        section1_show,
+        section2_show,
+        section3_show,
+        logo      
+        FROM vendor WHERE id2=?`,
+      [lastId]
+    );
+    vendor = vendor.length > 0 ? vendor[0] : {};
+  } catch(err) {
+    console.log(err);
+  } finally {
+    console.log('new vendor 1', vendor);
+    await db.close();
+    return vendor;
+  }
+}
 
 export const updateVendor = async ({
   id,
@@ -1205,4 +1323,59 @@ export const createAppGroupReminder = async ({
     return result;
   }
 }
+
+export const updateLogo = async ({
+  vendor_id,
+  logo = ''
+}) => {
+  
+
+  const db = makeDb();
+
+  try {
+    const buf = logo && logo!== '' ? Buffer.from(
+      logo.replace(/^data:image\/\w+;base64,/, ""),
+      "base64"
+    ) : null;
+    const s3Payload =   logo && logo!== ''  ? {
+      Bucket: currentS3BucketName,
+      Key: `logo/${vendor_id}/logo-${vendor_id}.png`,
+      Body: buf,
+      ContentEncoding: "base64",
+      ContentType: "image/png",
+      ACL: "public-read"
+    } : {};
+
+    if( logo && logo!== '' ) {
+      await uploadFile(s3Payload);
+    }
+
+    await db.query(
+      `UPDATE vendor SET 
+      logo=?
+      WHERE id=UUID_TO_BIN(?)`,
+      [
+        s3Payload?.Key || '',
+        vendor_id
+      ]
+    );
+
+    let vendors = await getVendors();
+    vendors = vendors.find((vendor) => {
+      return vendor_id == vendor.id;
+    });
+
+    let vendor = vendors ? vendors : null;
+    vendor.logo =  vendor.logo
+    ? `${s3BucketRootPath}${vendor.logo}`
+    : null;
+    return vendor;
+    
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await db.close();
+  }
+};
+
 

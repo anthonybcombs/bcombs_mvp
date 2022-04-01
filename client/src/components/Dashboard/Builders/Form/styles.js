@@ -143,25 +143,14 @@ export default styled.div`
 
   #form .select-field-wrapper {
     position: relative;
-  }
-  #form .select-field-wrapper:after {
-    content: "\f078";
-    position: absolute;
-    right: 0;
-    bottom: 1px;
-    font-size: 10px;
-    color: #555 !important;
-    font-family: "fontawesome";
 
-    width: 20px;
-    height: 25px;
-    padding-top: 10px;
-    padding-left: 9px;
-    background: #fff;
   }
+
   #form .select-field-wrapper select {
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
+    -webkit-appearance: auto !important;
+    -moz-appearance: auto !important;
+    background-color: white;
+    height:39px !important;
   }
   #form .select-field-wrapper select >option {
     color: #000 !important;
@@ -704,8 +693,12 @@ export default styled.div`
     justify-content: space-between;
   }
   .formGroup.terms .signature input {
-    width: 48%!important;
+    width: 48%;
   }
+  .formGroup.terms .signature input[type='checkbox'] {
+    width: 10%!important;
+  }
+
 
 
 

@@ -195,9 +195,9 @@ export default function AppGroupForm({
   action,
   vendorError,
   formattedVendors = [],
-  currentAppGroup={},
-  selectedForms=[],
-  isEditMode={isEditMode}
+  currentAppGroup = {},
+  selectedForms = [],
+  isEditMode = { isEditMode }
 }) {
   const [vendorOptions, setVendorOptions] = useState([]);
   const [otherUserSelected, setOtherUserSelected] = useState([]);
@@ -217,7 +217,8 @@ export default function AppGroupForm({
   const theme = useContext(ThemeContext);
 
   const handleSelectChange = value => {
-    console.log("value", value);
+    console.log("handleSelectChange value", value);
+    console.log('handleSelectChange options', formattedVendors)
     console.log("sample 123456")
     handleGroupDetailsChange("vendors", value);
   };
@@ -233,7 +234,7 @@ export default function AppGroupForm({
   }, [formattedVendors, selectedForms])
 
   console.log("groupDetails", groupDetails);
-
+  console.log(';selectedForms',selectedForms)
   return (
     <ContactFormStyled
       method="POST"
@@ -300,7 +301,7 @@ export default function AppGroupForm({
                   // selectedValues={vendorOptions.filter(
                   //   item => item.id === groupDetails.vendor
                   // )}
-                  selectedValues={selectedForms}
+                  selectedValues={groupDetails?.vendors || []}
                   onSelect={handleSelectChange}
                   onRemove={handleSelectChange}
                   placeholder="Choose Form"
@@ -308,11 +309,24 @@ export default function AppGroupForm({
                   closeIcon="cancel"
                 />
               </div>
+              <input
+                type="checkbox"
+                name="form_select_all"
+                onChange={e => {
+                  if (e.target.checked) {
+                    handleGroupDetailsChange("vendors", formattedVendors);
+                  }
+                  else {
+                    handleGroupDetailsChange("vendors", []);
+                  }
+                }}
+
+              /> Select All
               {vendorError !== "" && (
                 <span style={{ color: "red" }}>{vendorError}</span>
               )}
             </div>
-          ): ""
+          ) : ""
         }
 
       </div>

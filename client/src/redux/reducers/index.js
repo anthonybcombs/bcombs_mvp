@@ -21,6 +21,7 @@ import form from "./Forms";
 import vendorForms from "./VendorForms";
 import gradeInput from "./GradeInput";
 import appReminders from "./AppReminders"
+import vendor from "./Vendor";
 
 const reducer = combineReducers({
   auth,
@@ -44,6 +45,7 @@ const reducer = combineReducers({
   form,
   vendorForms,
   gradeInput,
-  appReminders
+  appReminders,
+  vendor
 });
 export default reducer;

@@ -5,22 +5,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCog,
   faBell,
-  faSearch,
-  faSignOutAlt,
-  faFile
+  faSearch
 } from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
 import {
   Link,
   Location,
   useNavigate,
   useLocation,
-  useParams
 } from "@reach/router";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 import Logo from "../images/logo1.png";
+import LotLogo from "../images/lot.jpg";
 import { requestLogout } from "../redux/actions/Auth";
-import { requestUserTypes } from "../redux/actions/UserTypes";
+
+import { s3BucketRootPath } from '../constants/aws';
 
 import LoginBox from "./LoginBox";
 
@@ -154,19 +152,21 @@ const PopoverStyled = styled.div`
     margin-right: 1em;
   }
 `;
+
+const DefaultLogo = () => <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
+const DefaultLotLogo = () => <img data-testid="app-logo" src={LotLogo} alt="Bcombs Lot Logo"  style={{ width: 180, height: 'auto' }}  />
+
 export default function Layout({ children }) {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
   const [isPopOverSettingsVisible, setIsPopOverSettingsVisible] = useState(false);
-  const [isAdminPopOverVisible, setIsAdminPopOverVisible] = useState(false);
   const [currentUserProfilePhoto, setCurrentUserProfilePhoto] = useState(false);
   const [currentUserType, setCurrentUserType] = useState("");
-  const [userApplications, setuserApplications] = useState([])
-  const [currentParent, setCurrentParent] = useState(null);
+
 
 
   const { auth, status, userTypes, vendors, applications } = useSelector(
     ({ auth, status, userTypes, vendors, applications }) => {
-      return { auth, status, userTypes, vendors, applications};
+      return { auth, status, userTypes, vendors, applications };
     }
   );
 
@@ -174,7 +174,7 @@ export default function Layout({ children }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log('auth12345', auth)
+  console.log('vendorsrrrr',vendors)
 
   useEffect(() => {
     if (auth) {
@@ -194,13 +194,13 @@ export default function Layout({ children }) {
   }, [auth, vendors]);
 
 
-  
-  useEffect(() => {
-    if(currentUserType === "USER" ) {
-      setuserApplications(applications.userAllApplications);
-    }
-    
-  }, [applications.userAllApplications]);
+
+  // useEffect(() => {
+  //   if(currentUserType === "USER" ) {
+  //     setuserApplications(applications.userAllApplications);
+  //   }
+
+  // }, [applications.userAllApplications]);
 
 
 
@@ -220,25 +220,28 @@ export default function Layout({ children }) {
 
   const applicationUrl = location.origin + "/application/";
   const customFormUrl = location.origin + "/form/";
+  const isLotUrl = location.href.includes('/lot') 
 
-  console.log('location.href', location.href);
-  console.log('applicationUrl.href', applicationUrl);
-
-  console.log('location.href.includes(applicationUrl)', location.href.includes(applicationUrl));
 
   return (
     <LayoutStyled data-testid="app-layout" theme={theme}>
       <HeaderStyled data-testid="app-title" theme={theme.header}>
         <div id="app-header-right">
           <Link to="/">
-            <img data-testid="app-logo" src={Logo} alt="Bcombs Logo" />
+            {(location.href.includes(applicationUrl) || location.href.includes(customFormUrl)) && !isLotUrl  ? (vendors &&
+              vendors.length > 0 && vendors[0]?.logo) ? <img src={`${s3BucketRootPath}/${vendors[0]?.logo}`} style={{ width: 180, height: 'auto' }} /> : <DefaultLogo/> : isLotUrl ?  <DefaultLotLogo/> : <DefaultLogo/>}
+
           </Link>
           {location.href.includes(applicationUrl) &&
             vendors &&
             vendors.length > 0 && (
-              <p className="vendor-welcome-message">
-                Welcome to &nbsp;<span className="name">{vendors[0].name}</span>
-              </p>
+              <div>
+
+
+                <span className="vendor-welcome-message">
+                  Welcome to &nbsp;<span className="name">{vendors[0].name}</span>
+                </span>
+              </div>
             )}
           <Location
             children={context => {
@@ -264,15 +267,16 @@ export default function Layout({ children }) {
         </div>
         <div id="app-header-left">
           {location.href.includes(applicationUrl) || location.href.includes(customFormUrl) ?
-            auth.status == "SIGNED_IN" ? "" 
-            :
-            (
-              <div className="header-login"
-                onClick={() => {setShowLoginBox(true)}}
-              >
-                Login  
-              </div>
-            )
+            auth.status == "SIGNED_IN" ? ""
+              :
+              (
+                // <div className="header-login"
+                //   onClick={() => {setShowLoginBox(true)}}
+                // >
+                //   Login  
+                // </div>
+                <div />
+              )
             :
             ""
           }
@@ -304,10 +308,10 @@ export default function Layout({ children }) {
                 return (
                   <>
                     {// Temporary Fix
-                    // Trello card https://trello.com/c/BXEQaXbB/252-for-users-only-can-we-only-show-the-application-page-and-menu-hide-dashboard-calendar-events-and-contacts-pages-and-menu-items
-                    currentUserType === "VENDOR" && (
-                      <>
-                        {/* <Link
+                      // Trello card https://trello.com/c/BXEQaXbB/252-for-users-only-can-we-only-show-the-application-page-and-menu-hide-dashboard-calendar-events-and-contacts-pages-and-menu-items
+                      currentUserType === "VENDOR" && (
+                        <>
+                          {/* <Link
                           className={`${
                             context.location.pathname === "/dashboard"
                               ? "selected"
@@ -317,7 +321,7 @@ export default function Layout({ children }) {
                           state={{ calendarName: "" }}>
                           <span> Dashboard</span>
                         </Link> */}
-                        {/* <Link
+                          {/* <Link
                           className={`${
                             context.location.pathname ===
                             "/dashboard/mycalendars"
@@ -327,7 +331,7 @@ export default function Layout({ children }) {
                           to="/dashboard/mycalendars">
                           <span>Calendars</span>
                         </Link> */}
-                        {/* <Link
+                          {/* <Link
                           className={`${
                             context.location.pathname === "/dashboard/myevents"
                               ? "selected"
@@ -336,40 +340,37 @@ export default function Layout({ children }) {
                           to="/dashboard/myevents">
                           <span>Events</span>
                         </Link> */}
-                        <Link
-                          className={`${
-                            context.location.pathname ===
-                            "/dashboard/bcdisplaycalendar"
+                          <Link
+                            className={`${context.location.pathname ===
+                              "/dashboard/bcdisplaycalendar"
                               ? "selected"
                               : ""
-                          }`}
-                          to="/dashboard/bcdisplaycalendar">
-                          <span>Calendar</span>
-                        </Link>
-                        <Link
-                          className={`${
-                            context.location.pathname ===
-                            "/dashboard/studentdata"
+                              }`}
+                            to="/dashboard/bcdisplaycalendar">
+                            <span>Calendar</span>
+                          </Link>
+                          <Link
+                            className={`${context.location.pathname ===
+                              "/dashboard/studentdata"
                               ? "selected"
                               : ""
-                          }`}
-                          to="/dashboard/studentdata">
-                          <span>Data</span>
-                        </Link>
-                        <Link
-                          className={`${
-                            context.location.pathname ===
-                            "/dashboard/mycontacts"
+                              }`}
+                            to="/dashboard/studentdata">
+                            <span>Data</span>
+                          </Link>
+                          <Link
+                            className={`${context.location.pathname ===
+                              "/dashboard/mycontacts"
                               ? "selected"
                               : ""
-                          }`}
-                          to="/dashboard/mycontacts">
-                          <span>Contacts</span>
-                        </Link>
+                              }`}
+                            to="/dashboard/mycontacts">
+                            <span>Contacts</span>
+                          </Link>
 
-                  
 
-                        {/* <Popover
+
+                          {/* <Popover
                         containerStyle={{
                           position: "relative",
                           right: 25
@@ -422,7 +423,7 @@ export default function Layout({ children }) {
                           </a>
                       </Popover> */}
 
-                        {/* <Link
+                          {/* <Link
                           className={`${
                             context.location.pathname ===
                             "/dashboard/builder"
@@ -432,11 +433,11 @@ export default function Layout({ children }) {
                           to="/dashboard/builder">
                           <span>Admin</span>
                         </Link> */}
-                      </>
-                    )}
+                        </>
+                      )}
                     {currentUserType === "USER" && (
                       <>
-                      <a
+                        {/* <a
                         href="#"
                         onClick={() => {
                           const currentParent = userApplications && userApplications[0] && userApplications
@@ -454,49 +455,45 @@ export default function Layout({ children }) {
                         }`}
                         to="/dashboard/bcdisplaycalendar">
                         <span>Data</span>
-                      </a>
-                      <Link
-                      className={`${
-                        context.location.pathname ===
-                        "/dashboard/myapplication"
-                          ? "selected"
-                          : ""
-                      }`}
-                      to="/dashboard/myapplication">
-                      <span>My Application</span>
-                    </Link>
-                    </>
-                  )}
-                    {currentUserType === "VENDOR" && (
-                      <Link
-                        className={`${
-                          context.location.pathname === "/dashboard/application"
+                      </a> */}
+                        <Link
+                          className={`${context.location.pathname ===
+                            "/dashboard/myapplication"
                             ? "selected"
                             : ""
-                        }`}
+                            }`}
+                          to="/dashboard/myapplication">
+                          <span>My Application</span>
+                        </Link>
+                      </>
+                    )}
+                    {currentUserType === "VENDOR" && (
+                      <Link
+                        className={`${context.location.pathname === "/dashboard/application"
+                          ? "selected"
+                          : ""
+                          }`}
                         to="/dashboard/application">
                         <span>Application</span>
                       </Link>
                     )}
                     {currentUserType === "VENDOR" && (
                       <Link
-                        className={`${
-                          context.location.pathname === "/dashboard/metrics"
-                            ? "selected"
-                            : ""
-                        }`}
+                        className={`${context.location.pathname === "/dashboard/metrics"
+                          ? "selected"
+                          : ""
+                          }`}
                         to="/dashboard/metrics">
                         <span>Metrics</span>
                       </Link>
                     )}
                     <div id="dashboard-setting">
                       <Link
-                        className={`${
-                          context.location.pathname ===
+                        className={`${context.location.pathname ===
                           "/dashboard/notifications"
-                            ? "selected"
-                            : ""
-                        }`}
+                          ? "selected"
+                          : ""
+                          }`}
                         to="/dashboard/notifications">
                         <FontAwesomeIcon icon={faBell} />
                       </Link>
@@ -550,7 +547,7 @@ export default function Layout({ children }) {
                         }}>
                         <a
                           onClick={() => {
-                            console.log("pop over is visible")
+                 
                             setIsPopOverSettingsVisible(true);
                           }}>
                           <FontAwesomeIcon icon={faCog} />
@@ -640,14 +637,14 @@ export default function Layout({ children }) {
       {children}
       <footer data-testid="app-footer"></footer>
       {location.href.includes(applicationUrl) || location.href.includes(customFormUrl) ?
-        auth.status == "SIGNED_IN" ? "" 
-        : showLoginBox ? (
-          <LoginBox
-            handleClose={handleLoginBoxClose}
-          >
-          </LoginBox>
-        ) 
-        : ""
+        auth.status == "SIGNED_IN" ? ""
+          : showLoginBox ? (
+            <LoginBox
+              handleClose={handleLoginBoxClose}
+            >
+            </LoginBox>
+          )
+            : ""
         : ""
       }
     </LayoutStyled>

@@ -5,23 +5,37 @@ import moment from 'moment'
 
 export default (props) => {
   const { isReadOnly = false, showLabel, settings, label, fields, fieldError, type, id: fieldId, onChange, onCheckError, format } = props
-  const errors = fieldError[fields[0].id] || []
-  const parsedValue = fields[0].value ? JSON.parse(fields[0].value) : {}
+
+  const errors = fieldError[fields[1].id] || []
+  const checkBoxError = fieldError[fields[0].id] || []
+  // const parseCheckBoxValue = fields[0].checked ? JSON.parse(fields[0].value) : {};
+  const parsedValue = fields[1].value ? JSON.parse(fields[1].value) : {}
   const date = parsedValue.date || moment().format('L');
 
   const handleAnswer = ({ target: { value } }) => {
-    onChange(fields[0].id, JSON.stringify({ value, date }))
-    onCheckError(fields[0].id, !value ? ['Electronic Signature is required'] : '')
+    
+      console.log('fields[1].id',fields[1].id)
+      console.log('fields[1].id value',value)
+    onChange(fields[1].id, !value ? null : JSON.stringify({ value, date }))
+    onCheckError(fields[1].id, !value || value === '' ? ['Electronic Signature is required'] : '')
+  }
+
+  const handleChecked = (e) => {
+
+    onChange(fields[0].id, e.target.checked)
+    onCheckError(fields[0].id, !e.target.checked ? ['Please Tick Above the Terms & Condition'] : '')
+ 
+
   }
 
   const { include, value: instructionValue } = settings.instruction || {}
   const formatObj = format ? JSON.parse(format) : {}
   const color = formatObj?.color || '#000'
-
+    console.log('parsedValue',parsedValue)
   return (
     <div
       className={`formGroup ${type}`}
-    > 
+    >
       <p className='formGroup-name' style={{ color }}>
         {showLabel ? (
           <span>
@@ -29,7 +43,7 @@ export default (props) => {
             {
               (include && instructionValue) && (
                 <span className='tooltip-wrapper'>
-                  <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+                  <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle} />
                   <span className='tooltip'>{instructionValue}</span>
                 </span>
               )
@@ -40,7 +54,7 @@ export default (props) => {
       {
         (!showLabel && include) && (
           <div className='formGroup-name-instruction'>
-            <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle}/>
+            <FontAwesomeIcon className='exclude-global' icon={faQuestionCircle} />
             {instructionValue}
           </div>
         )
@@ -52,11 +66,29 @@ export default (props) => {
         <div className='content'>
           {fields[1].placeholder}
         </div>
+        <div className='content'>
+          {fields[2].placeholder}
+        </div>
         <div className='signature'>
+       
+            <input
+              required={true}
+           //   name="term_checkbox"
+              type="checkbox"
+              style={{ width: '12px' }}
+              checked={fields[0]?.value}
+              vvalue={fields[0]?.value}
+              onChange={handleChecked}
+              style={{ marginTop: 12 }}
+       
+            />
+      
+
           <input
+            required={true}
             readOnly={isReadOnly}
             className={`field-input`}
-            value={parsedValue.value || ''}
+            value={parsedValue?.value || null }
             placeholder={'Electronic Signature *'}
             onChange={handleAnswer}
           />
@@ -71,6 +103,12 @@ export default (props) => {
             (errors.length > 0) && (
               <div className='error'>Electronic Signature is required</div>
             )
+         
+          }
+          {
+               (checkBoxError.length > 0) && (
+                <div className='error'>Please Tick Above the Terms & Condition</div>
+              )
           }
         </div>
       </div>

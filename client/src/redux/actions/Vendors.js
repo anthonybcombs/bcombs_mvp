@@ -11,7 +11,9 @@ import {
   UPDATE_VENDOR_ADMIN,
   GET_USER_VENDOR_FORMS,
   CREATE_GROUP_REMINDER,
-  GET_VENDOR_REMINDER
+  GET_VENDOR_REMINDER,
+  UPDATE_VENDOR_LOGO,
+  CREATE_VENDOR
 } from "../../graphql/vendorMutation";
 
 import { GET_FORM_APP_GROUP } from "../../graphql/groupQuery";
@@ -25,6 +27,25 @@ import {
   setDeleteAdminLoading,
   setApplicationLoading
 } from "./Loading";
+
+const createVendorToDatabase = vendor => {
+  delete vendor.isDuplicate;
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: CREATE_VENDOR,
+        variables: { vendor }
+      })
+
+      console.log('new data', data);
+
+      return resolve(data.createVendor);
+    } catch(error) {
+      console.log('create vendor err', error);
+      reject(error)
+    }
+  })
+}
 
 const getVendorReminderFromDatabase = args => {
   return new Promise(async (resolve, reject) => {
@@ -202,6 +223,23 @@ const getVendorByIdFromDatabase = id => {
   });
 };
 
+const updateVendorLogoToDatabase = payload => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: UPDATE_VENDOR_LOGO,
+        variables: { vendorLogo: {...payload}  }
+      });
+
+      console.log("data data", data);
+
+      return resolve(data.updateVendorLogo);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const updateVendorToDatabase = vendor => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -231,6 +269,20 @@ const updateVendorToDatabase = vendor => {
     }
   });
 };
+
+export const requestSelectedVendor = vendor => {
+  return {
+    type: actionType.REQUEST_SELECTED_VENDOR,
+    vendor
+  }
+}
+
+export const requestCreateVendor = vendor => {
+  return {
+    type: actionType.REQUEST_CREATE_VENDOR,
+    vendor
+  }
+}
 
 export const requestCreateGroupReminder = groupReminder => {
   console.log('groupReminder12345', groupReminder);
@@ -288,6 +340,13 @@ export const requestUpdateVendor = vendor => {
   return {
     type: actionType.REQUEST_UPDATE_VENDOR,
     vendor
+  };
+};
+
+export const requestUpdateVendorLogo = data => {
+  return {
+    type: actionType.REQUEST_UPDATE_VENDOR_LOGO,
+    data
   };
 };
 
@@ -544,7 +603,6 @@ export function* getVendorAppGroups(action) {
   try {
     console.log('getVendorAppGroups  action.vendor',  action.vendor)
     const appGroups = yield call(getVendorApplicationGroupFromDatabase, action.vendor);
-    console.log('getVendorAppGroups appGroups', appGroups)
     yield put({
       type: actionType.REQUEST_GET_FORM_APP_GROUP_COMPLETED,
       payload: appGroups
@@ -556,4 +614,42 @@ export function* getVendorAppGroups(action) {
       payload: []
     });
   }
+}
+
+export function* updateVendorLogo({ data }) {
+  try {
+    yield put(setFormSettingsLoading(true));
+    yield call(updateVendorLogoToDatabase, data);
+    yield put(setFormSettingsLoading(false));
+  } catch (err) {
+    yield put(setFormSettingsLoading(false));
+  
+  }
+}
+
+export function* createVendor({ vendor }) {
+  try {
+    console.log('new vendor',vendor);
+    const response = yield call(createVendorToDatabase, vendor)
+    console.log('new response', response);
+
+    yield put({
+      type: actionType.REQUEST_DUPLICATE_VENDOR_COMPLETED,
+      payload: response
+    });
+
+  } catch (err) {
+    yield put({
+      type: actionType.REQUEST_DUPLICATE_VENDOR_COMPLETED,
+      payload: {}
+    });
+  }
+}
+
+export function* setSelectedVendor({vendor}) {
+
+  yield put({
+    type: actionType.REQUEST_SELECTED_VENDOR_COMPLETED,
+    payload: vendor
+  });
 }
