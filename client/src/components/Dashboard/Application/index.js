@@ -2101,15 +2101,15 @@ export default function index() {
               selectedVendor && selectedVendor.id2 && (selectedForm == "default"   || selectedForm == "lot") ? (
                 <div className="copy-application-link">
                   <a
-                    href={selectedVendor.is_daycare ? `/application/${selectedVendor.id2
+                    href={selectedVendor.is_daycare  && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
-                      }${selectedForm === 'lot' ? '/lot'  : ''}`}>
+                      }${ selectedForm=== 'lot' ? '/lot'  : ''}`}>
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
                   <FontAwesomeIcon icon={faLink} onClick={() => {
                     setCopyApplicationLinkModal(true)
-                    setCurrentCopyLink(selectedVendor.is_daycare ? `/application/${selectedVendor.id2
+                    setCurrentCopyLink(selectedVendor.is_daycare  && selectedForm !== 'lot'  ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
                       }${selectedForm === 'lot' ? '/lot'  : ''}`)
                   }} />
