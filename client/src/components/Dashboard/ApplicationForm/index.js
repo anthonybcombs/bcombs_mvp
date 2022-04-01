@@ -263,7 +263,7 @@ export default function index() {
 
     vendor.app_programs = app_programs;
 
-    if (vendor.is_daycare) {
+    if (vendor.is_daycare && !isLot) {
       window.location.replace(`/application/${vendor_id}/daycare`);
     }
   }
