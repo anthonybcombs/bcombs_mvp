@@ -325,7 +325,7 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
     <div className='rightContainer'>
       <div className='rightContainerHeader'>
         <CustomSelect
-          value={rows[0]?.student_grade_cumulative_id || ''}
+          value={currentCumGradeOpt === 'new' ? currentCumGradeOpt : rows[0]?.student_grade_cumulative_id || ''}
           options={[...(cumGradeOptions || []), { value: "new", label: "New Grade Level" }]}
           placeholder='Select Grade Level'
           onChange={handleSelectCumGrade}
