@@ -303,10 +303,11 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
             return newGrade
           })
 
-
-        return {
+        let formattedAppGroupId = appGroupId.split(',');
+          formattedAppGroupId = Array.isArray(formattedAppGroupId) ? formattedAppGroupId[0] : appGroupId;
+         return {
           ...newRow,
-          app_group_id: appGroupId,
+          app_group_id: formattedAppGroupId,
           application_type: 'bcombs'
         }
       })
