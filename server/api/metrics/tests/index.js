@@ -22,11 +22,17 @@ router.post("/", async (req, res) => {
             let whereClause = "WHERE a.id2 = ? and a2.vendor = a.id and b.app_grp_id = a2.app_grp_id and c.child_id = b.child_id ";
             let queryParam = [vendorId, testName, dtLastTxt, dtNextTxt];
     
-            if (formId && formId != 'fid_0') {
+            if (formId && formId != 'fid_0' && formId !== 'lotid_0') {
                 fromClause = "From vendor_app_groups a2, vendor_app_groups_to_student b, student_standardized_test c ";
                 whereClause = "where a2.form = UUID_TO_BIN(?) and b.app_grp_id = a2.app_grp_id and c.child_id = b.child_id ";
                 queryParam = [formId, testName, dtLastTxt, dtNextTxt];
             }
+            else if(formId === 'lotid_0') {
+                fromClause = "From  vendor a, vendor_app_groups a2, vendor_app_groups_to_student b, student_standardized_test c, child ch, application app ";
+                whereClause = "where a.id2 = ? AND  a2.vendor = a.id AND b.app_grp_id = a2.app_grp_id and c.child_id = ch.ch_id  AND ch.ch_id=app.child  AND app.is_lot=1  ";
+                queryParam = [ vendorId,testName, dtLastTxt, dtNextTxt];
+            }
+
     
             if (classId && classId != 'id_0') {
                 fromClause = "From vendor_app_groups_to_student b, student_standardized_test c ";
@@ -55,6 +61,11 @@ router.post("/", async (req, res) => {
                      "and c.test_name = ? " +
                      "and c.month_taken >= ? and c.month_taken < ? " + gradeQualifier; 
             console.log('Average Standardized Test Query ', query);
+            console.log('Average Standardized QueryParams ', queryParam);
+
+
+
+    
             response =  await db.query(query, queryParam);
      
         }

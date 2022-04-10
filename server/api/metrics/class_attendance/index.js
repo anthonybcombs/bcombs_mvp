@@ -164,7 +164,8 @@ router.post("/", async (req, res) => {
                 "and a2.attendance_status <> 'Absent' " +
             "group by c2.id, a2.child_id";
 
-        console.log('Query ', querySessionsPerStudent);
+        console.log('Query222 ', querySessionsPerStudent);
+        console.log('Query222 queryParamForClassesQuery', queryParamForClassesQuery);
         const response3 =  await db.query(querySessionsPerStudent, queryParamForClassesQuery);
         //console.log('Sessions per student: ', response);
         if (!response3 || response3.length == 0) {
@@ -212,17 +213,22 @@ router.post("/", async (req, res) => {
         }
         let totalAvgAttendance = 0;
         let classList = [];
+       
         for (let key in resultData) {
             if (key.indexOf('id_') < 0)
                 continue;
             let row = resultData[key];
+
             allClassRow.numSessions += row.numSessions;
             totalAvgAttendance += (row.avgAttendance * row.numSessions);
             for (let j=0; j < allClassRow.attendanceBuckets.length; j++) {
-                let bucketCnt = row.attendanceBuckets[j].y;
-                if (!bucketCnt)
-                    continue;
-                allClassRow.attendanceBuckets[j].y += bucketCnt;
+                if(row.attendanceBuckets) {
+                    let bucketCnt = row.attendanceBuckets[j].y;
+                    if (!bucketCnt)
+                        continue;
+                    allClassRow.attendanceBuckets[j].y += bucketCnt;
+                }
+         
             }
             classList.push({key: 'id_' + row.class_id, name: row.class_name});
         }
