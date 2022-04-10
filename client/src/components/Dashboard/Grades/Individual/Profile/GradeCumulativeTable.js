@@ -202,8 +202,8 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
         school_year_frame: 'quarter',
         school_year_start: 0,
         is_new: true,
-        id: uuid()
-        // student_grade_cumulative_id: 95,
+        id: uuid(),
+        student_grade_cumulative_id: null,
       };
 
       setCurrentCumulativeGrade(newCumulative);
