@@ -225,7 +225,11 @@ export default function index(props) {
 	// appGroups = appGroups.filter((group) => {
 	//   return group.vendor == vendor.id;
 	// })
-	const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
+	
+	const vendorIds = Array.isArray(vendors) && vendors.map(item => item.id);
+
+	const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form &&  ( /*formIds.includes(appGroup.form) || */ vendorIds.includes(appGroup.vendor)))|| appGroup.form === null);
+
 	const filteredFormList = form.formList
 	const isShow = !!selected.find(s => archivedGroups.find(a => a.app_group_id === s.app_group_id))
 
@@ -237,7 +241,6 @@ export default function index(props) {
 		}
 	}, []);
 
-	console.log('applicationszxczxczxczxc', applications)
 	useEffect(() => {
 		if (vendors && vendors[0]) {
 			setSelectedVendor(vendors[0]);
@@ -245,11 +248,13 @@ export default function index(props) {
 			dispatch(requestGetCustomApplicationByVendor(vendors[0].id));
 			dispatch(requestGetApplications(vendors[0].id));
 			dispatch(requestVendorAppGroups(vendors[0].id))
-			dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }));
+			dispatch(requestGetForms({ vendor: vendors[0].id, currentUser: auth.user_id, isOwner: !!(auth.user_id == vendors[0].user), categories: [] }));
+
 		}
 	}, [vendors]);
 
 	useEffect(() => {
+
 		if (form.formList) {
 			const ids = formList && formList.map(form => form.form_id);
 			setFormIds(ids)
@@ -288,18 +293,12 @@ export default function index(props) {
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher && app.class_teacher !== '' && group.form === app.form) {
 				const classTeacher = app.class_teacher.split(',');
-				// console.log('group.app_grp_id123123123',group.app_grp_id)
-				// console.log('group.app_grp_id123123123 app',app)
-				// console.log('group.app_grp_id123123123 classTeacher',classTeacher)
 				return  classTeacher.includes(group.app_grp_id);
 			}
 		});
 		// if(group.form === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
 		// 	//6838fda0-5407-11eb-8212-dafd2d0ae3ff
-		// 	console.log('SIZEEEEEEEEEEEEEE11', size)
-		// 	console.log('SIZEEEEEEEEEEEEEE11 applications', applications)
-		// 	console.log('SIZEEEEEEEEEEEEEE11 group', group)
-	
+
 		// }
 
 		// if(applications && applications.customActiveApplications && applications.customActiveApplications && group.form === '6838fda0-5407-11eb-8212-dafd2d0ae3ff') {
@@ -308,8 +307,6 @@ export default function index(props) {
 		// 		const classTeacher = item.class_teacher ? item.class_teacher.split(',') : [];
 		// 		return (item.form === group.form ) && classTeacher.some(id => defaultIds.includes(id));
 		// 	});
-		// 	console.log('applicationszzz123123',applicationszzz)
-		// 	console.log('applicationszzz123123 applications',applications)
 		// }
 	
 		return size ? size.length : 0
@@ -377,8 +374,7 @@ export default function index(props) {
 				let classCount = formGroup && formGroup.form_contents ? getFormClassCount(group) : getClassCount(group);
 				let availableCount = count - classCount;
 				availableCount = availableCount < 0 ? 0 : availableCount;
-				console.log('formGroupxxxx',formGroup)
-				console.log('formGroupxxxx group',group)
+				
 				return searched([
 					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : 'Mentoring Application',
 					classCount.toString(), count.toString()
@@ -447,7 +443,7 @@ export default function index(props) {
 	// 	// });
 	// 	return totalCount;
 	// };
-	console.log('FORMMMMMMMMM', form)
+
 
 	const getDefaultTotalCount = () => {
 		let totalCount = 0;
@@ -498,8 +494,7 @@ export default function index(props) {
 		for (const group of appGroups) {
 			totalClassCount += getClassCount(group);
 		}
-		// console.log('getTotalClassCount123123123 formGroups',formGroups)
-		// console.log('getTotalClassCount123123123 appGroups',appGroups)
+
 		for (const group of formGroups) {
 			totalClassCount += getFormClassCount(group);
 		}
@@ -509,7 +504,7 @@ export default function index(props) {
 
 	// **************** */..
 	const getTotalCountByForm = id => {
-		// console.log('form.formAppGroups',form.formAppGroups)
+
 
 		const formGroups = form && form.formAppGroups ? form.formAppGroups.filter(appGroup => appGroup.form === id) : []
 
@@ -525,7 +520,6 @@ export default function index(props) {
 	// const getTotalAvailableByForm = id => {
 	// 	const formGroups = form && form.formAppGroups ? form.formAppGroups.filter(appGroup => appGroup.form === id) : [];
 	// 	// let total = 0;
-	// 	// console.log('Get Toital AVailable formGroups', formGroups)
 	// 	// if(formGroups) {
 	// 	// 	total = formGroups && formGroups.reduce((accum, item) => {
 	// 	// 		let classCount = item.group ? getFormClassCount(item) : 0;
@@ -545,7 +539,7 @@ export default function index(props) {
 	// };
 
 	const getTotalClassCountByForm = id => {
-		// console.log('form.formAppGroups', form.formAppGroups)
+
 		const formGroups = form && form.formAppGroups && form.formAppGroups.filter(appGroup => appGroup.form === id);
 		//let totalClassCount = 0;
 		// if(id === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
@@ -557,10 +551,7 @@ export default function index(props) {
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher && app.class_teacher !== '' && id === app.form) {
 				const classTeacher = app.class_teacher.split(',');
-				// console.log('group.app_grp_id123123123',group.app_grp_id)
-				// console.log('group.app_grp_id123123123 app',app)
-				// console.log('group.app_grp_id123123123 classTeacher',classTeacher)
-				
+		
 				return classTeacher.some(id => appGrpIds.includes(id) ) //classTeacher.includes(group.app_grp_id)
 			}
 		});
@@ -570,8 +561,7 @@ export default function index(props) {
 		// 	totalClassCount += getFormClassCount(group);
 		// 	if(group.form === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
 		// 		//6838fda0-5407-11eb-8212-dafd2d0ae3ff
-		// 		console.log('SIZEEEEEEEEEEEEEE totalClassCount', totalClassCount)
-		// 		console.log('SIZEEEEEEEEEEEEEE totalClassCount group', group)
+
 		// 	}
 		
 		// }
@@ -722,7 +712,7 @@ export default function index(props) {
 										})}
 									{renderTableData()}
 									{filteredFormList
-										.filter(g => archivedGroups.find(e => e.app_group_id === g?.form_id))
+									///	.filter(g => archivedGroups.find(e => e.app_group_id === g?.form_id))
 										.map(item => {
 											return searched([
 												item.form_contents?.formTitle || '',
