@@ -1,12 +1,34 @@
 
 export async function getFormsByVendorId(db, vendorId) {
     let queryFormFormIds =
-        "select BIN_TO_UUID(vca.form_id) as formId, vca.form_name from vendor_custom_application as vca, vendor v " +
-        "where vca.vendor=v.id AND v.id2=? and vca.status <> 'deleted' " +
+        "select BIN_TO_UUID(vca.form_id) as formId, vca.form_name, CONVERT(vca.form_contents USING utf8) as form_contents from vendor_custom_application as vca, vendor v " +
+        "where vca.vendor=v.id AND v.id2=? and vca.status = 'active' " +
         "order by vca.form_name;";
     let queryFormFormIdsParam = [vendorId];
     const response0 = await db.query(queryFormFormIds, queryFormFormIdsParam);
-    console.log('%%%% form resp: ', response0);
+
+    
+    for (let application of response0) {
+        application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+        application.form_contents = JSON.parse(application.form_contents);
+        let appGroups = await db.query(
+          `
+            SELECT
+              id,
+              BIN_TO_UUID(app_grp_id) as app_grp_id,
+              BIN_TO_UUID(form) as form,
+              BIN_TO_UUID(vendor) as vendor,
+              name
+            FROM vendor_app_groups
+            WHERE form=UUID_TO_BIN(?)
+          `,
+          [application.form_id]
+        )
+        application.app_groups = appGroups;
+      }
+
+    
+
     if (!response0 || response0.length == 0) {
         return [];
     }
@@ -14,9 +36,15 @@ export async function getFormsByVendorId(db, vendorId) {
     let formArray = [{ key: 'fid_0', name: 'Mentoring Application' },
     { key: 'lotid_0', name: 'Lot Application' }];
     for (let r0 = 0; r0 < response0.length; r0++) {
-        formArray.push({ key: response0[r0].formId, name: response0[r0].form_name });
+        if(response0[r0].form_contents) {
+            formArray.push({ key: response0[r0].formId, name: response0[r0].form_contents.formTitle });
+        }
+        else {
+            formArray.push({ key: response0[r0].formId, name: response0[r0].form_name });
+        }
+     
     }
-    console.log('ret forms: ', formArray);
+
     return formArray;
 }
 
