@@ -119,7 +119,7 @@ export  const addDaycareParent = async({
   email_type2,
   email_address2,
   age,
-  birthdate,
+  birthdate = null,
   gender,
   ethnicities,
   image,
@@ -226,7 +226,7 @@ export const addParent = async ({
   child_col_grad,
   person_recommend,
   age,
-  birthdate,
+  birthdate = null,
   gender,
   ethnicities,
   image
@@ -298,7 +298,7 @@ export const addParent = async ({
         child_col_grad,
         person_recommend,
         age,
-        birthdate,
+        birthdate === '' ? null : birthdate,
         gender,
         ethnicities,
         image

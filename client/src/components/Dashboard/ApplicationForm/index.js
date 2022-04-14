@@ -735,9 +735,9 @@ export default function index() {
           !profile.state ||
           !profile.zip_code ||
           profile.zip_code.length < 5 ||
-          !profile.location_site ||
+          // !profile.location_site ||
           // !profile.child_lives_with ||
-          (isLot &&(!gi.allergies_to_medicine || !gi.food_allergies || !gi.insect_allergies || !gi.other_allergies || !gi.current_medications)) ||
+          (isLot &&(!gi.allergies_to_medicine || !gi.food_allergies || !gi.insect_allergies || !gi.other_allergies )) ||
           (!isLot && (!gi.grade ||
             !gi.school_name ||
             !gi.mentee_gain)) ||  
@@ -783,7 +783,7 @@ export default function index() {
           !profile.goals_child_program ||
           !profile.person_recommend,
           !profile.gender ||
-          !profile.date_of_birth ||
+          // !profile.date_of_birth ||
           (isParentAddressRequired && (!profile.address || !profile.zip_code || profile.zip_code.length < 5 || !profile.state || !profile.city))
         ) {
           isValid = false;
@@ -917,11 +917,11 @@ export default function index() {
         state: parent.profile.state,
         zip_code: parent.profile.zip_code !== '' ? parent.profile.zip_code : childProfile.zip_code,
         person_recommend: parent.profile.person_recommend,
-        birthdate: format(
+        birthdate: parent.profile.date_of_birth ? format(
           new Date(parent.profile.date_of_birth),
-          DATE_FORMAT),
+          DATE_FORMAT) : '',
         gender: parent.profile.gender,
-        age: getAge(parent.profile.date_of_birth),
+        age:  parent.profile.date_of_birth ? getAge(parent.profile.date_of_birth) : 0,
         ethnicities: getAppEtnicities(parent.profile.ethinicity),
         image: parent.profile.image,
       })

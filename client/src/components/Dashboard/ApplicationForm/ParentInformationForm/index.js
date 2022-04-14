@@ -531,8 +531,8 @@ export default function index({
           </div>
         </div>
 
-        <div className="grid-1">
-          <div className="form-group">
+        <div className="grid-2">
+          {/* <div className="form-group">
             <div className="field">
               <DatePicker
                 readOnly={isReadonly}
@@ -632,7 +632,7 @@ export default function index({
               errorType="required"
               message="Date of Birth is required."
             />
-          </div>
+          </div> */}
           <div className="form-group">
             <div className="field select-field-wrapper">
               <select
@@ -752,10 +752,10 @@ export default function index({
                 />
               )}
               <label className="field-label">
-                Ethinicity (select all choices that apply)
+                Ethnicity (select all choices that apply)
               </label>
             </div>
-            <input
+            {/* <input
               type="checkbox"
               name="ethnicity_select_all"
               onChange={e => {
@@ -778,7 +778,7 @@ export default function index({
                 }
               }}
 
-            /> Select All
+            /> Select All */}
             <br />
           </div>
         </div>
@@ -1661,7 +1661,7 @@ export default function index({
             </div>
           </div>
 
-          <div className="form-group">
+          {/* <div className="form-group">
             <div className="field">
               <input
                 name="parentemployer"
@@ -1692,7 +1692,7 @@ export default function index({
                 Employer's Name
               </label>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div>

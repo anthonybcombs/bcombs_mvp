@@ -930,10 +930,10 @@ const resolvers = {
 
             console.log("add user res:", addUser);
           }
-
+          console.log
           newParents.push({
             tempId: tempParentId,
-            newId: newParent.parent_id
+            newId: newParent?.parent_id
           })
 
           const parentUser = await getUserFromDatabase(parent.email_address);

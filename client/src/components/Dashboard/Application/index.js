@@ -646,10 +646,10 @@ export default function index() {
     }
 
   }, [vendor.newVendor]);
+  console.log('renderFormsssssssssssss',renderForms)
 
   useEffect(() => {
-
-
+ 
     if(addForm.form?.id) {
       setShowAdminForm(true);
       setRenderForms([...renderForms, {...addForm}]);
@@ -1073,7 +1073,7 @@ export default function index() {
           ? parseArrayFormat(parent.ethnicities.split(","))
           : [],
         gender: parent?.gender,
-        date_of_birth: parent.birthdate ? new Date(parent.birthdate) : ''
+        date_of_birth: parent.birthdate ? new Date(parent.birthdate) : null
       };
 
       items.push({ profile: profile, id: parent.parent_id, parent_id: parent.parent_id });
