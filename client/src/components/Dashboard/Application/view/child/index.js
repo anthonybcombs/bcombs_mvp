@@ -90,7 +90,7 @@ const ChildFormHeader = styled.div`
 const ChildFormViewStyled = styled.div`
   padding-left: 15px;
   padding-right: 15px;
-  margin-top: 30px;
+  margin-top: 110px;
   margin-bottom: 40px;
   h1 {
     color: #f26e21;
