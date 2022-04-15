@@ -450,7 +450,7 @@ const inputs = `
         vendors: [AppGroupVendorInput]
         size: Int!
         name: String!
-        is_lot_included: Int!
+        is_lot_included: Int
         pool_id: String!
         
     }
