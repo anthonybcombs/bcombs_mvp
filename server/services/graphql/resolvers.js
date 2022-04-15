@@ -262,10 +262,9 @@ const resolvers = {
       for(const vendor of vendors) {
 
         response.push({
-          name: vendor.name + " (Bcombs Form)",
+          name: `${vendor.name} ${vendor.name !== 'LOT® Form' ? '(Bcombs Form)' : ''}`, 
           id: vendor.id,
-          is_form: false,
-          is_lot_included: vendor.is_lot_included
+          is_form: false
         })
 
         const forms = await getVendorCustomApplicationForms({vendor: vendor.id});
