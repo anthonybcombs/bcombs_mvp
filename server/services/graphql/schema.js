@@ -1621,6 +1621,7 @@ const queryTypes = `
         name: String
         id: String
         is_form: Boolean
+        is_lot_included: Int
     }
 
     type StudentCumulativeGrade {
