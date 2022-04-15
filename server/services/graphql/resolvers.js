@@ -264,7 +264,8 @@ const resolvers = {
         response.push({
           name: vendor.name + " (Bcombs Form)",
           id: vendor.id,
-          is_form: false
+          is_form: false,
+          is_lot_included: vendor.is_lot_included
         })
 
         const forms = await getVendorCustomApplicationForms({vendor: vendor.id});

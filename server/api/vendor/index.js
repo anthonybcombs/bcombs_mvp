@@ -124,9 +124,9 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
           result[i].app_programs = await getVendorAppProgram(result[i].id);
           result[i].location_sites = await getVendorAppLocationSite(result[i].id);
           result[i].app_groups = await getVendorAppGroupsByVendorId(result[i].id);
-  
+          results[i].is_lot_included =  result[i].app_groups &&  result[i].app_groups[0] ?  result[i].app_groups[0].is_lot_included : false;
           result[i].forms = await getVendorCustomApplicationForms({vendor: result[i].id});
-          
+       
           vendors.push(result[i]);
         }
       }
@@ -808,7 +808,7 @@ export const getVendorAppGroupsByVendorId = async (vendor) => {
       [vendor]
     );
 
-    const isLotFormGroupExist = appGroupsResult.some(item => item.name === 'Lot Form');
+    // const isLotFormGroupExist = appGroupsResult.some(item => item.name === 'Lot Form');
 
     // if(!isLotFormGroupExist) {
     //   result = await db.query(
