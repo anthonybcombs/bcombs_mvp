@@ -930,7 +930,7 @@ export const addAppGroup = async ({
     if (vendor) {
       result = await db.query(
         `INSERT INTO vendor_app_groups(app_grp_id, user, vendor, size, name, pool_id)
-        VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?, ?, ?)`,
+        VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?, ?)`,
         [user_id, vendor, size, name, pool_id]
       );
     }
