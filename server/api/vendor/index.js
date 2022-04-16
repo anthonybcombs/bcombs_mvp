@@ -118,14 +118,14 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
 
     result = await db.query(getVendorByUserQuery,[user]);
 
-    const hasLotForm = result.find(item => item.name === 'LOT® Form');
+    const hasLotForm = result.find(item => result[0] && (item.name === `${result[0].name} LOT`));
 
-    if(!hasLotForm) {
+    if(!hasLotForm && result[0]) {
       await db.query(
         `INSERT INTO vendor(id, user, name)
         VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), ?)
         `,
-        [user, 'LOT® Form']
+        [user, `${result[0].name} LOT`]
       );
       result = await db.query(getVendorByUserQuery,[user]);
   
