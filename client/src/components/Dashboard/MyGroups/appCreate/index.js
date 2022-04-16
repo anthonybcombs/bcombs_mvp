@@ -151,7 +151,7 @@ export default function index({
           email: auth.email,
           pool_id: uuid()
         };
-        const isLotForm = payload.vendors.find(item => item.is_lot);
+        /// const isLotForm = payload.vendors.find(item => item.is_lot);
         payload = {
           ...payload,
           vendors: payload.vendors.map(item => {
@@ -159,8 +159,9 @@ export default function index({
               ...item
             }
  
-          }).filter(item => !item.is_lot)
+          })
         }
+        console.log('payloadddd', payload)
         payload.size = parseInt(payload.size);
 
         dispatch(requestAddVendorAppGroup(payload));
