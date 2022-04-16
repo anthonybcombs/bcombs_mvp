@@ -48,9 +48,9 @@ import {
   requestGetApplicationHistory,
   requestGetCustomApplications,
 } from "../../../redux/actions/Application";
-import { 
-  requestGetForms, 
-  requestUpdateSubmittedForm, 
+import {
+  requestGetForms,
+  requestUpdateSubmittedForm,
   requestGetCustomApplicationHistory,
   requestAddForm
 } from '../../../redux/actions/FormBuilder'
@@ -524,7 +524,10 @@ export default function index() {
 
   const [selectedVendor, setSelectedVendor] = useState({});
 
+  // const isLot = selectedVendor && selectedVendor.name === 'LOT® Form'
+
   const [selectedForm, setSelectedForm] = useState("default");
+  
 
   const [renderForms, setRenderForms] = useState([]);
 
@@ -533,6 +536,7 @@ export default function index() {
   const [currentCopyLink, setCurrentCopyLink] = useState(null);
 
   const [showAdminForm, setShowAdminForm] = useState(false);
+
 
   const dispatch = useDispatch();
 
@@ -638,34 +642,36 @@ export default function index() {
   }, [applications.selectedbuilderapplication])
 
   useEffect(() => {
-  
 
-    if(vendor.newVendor?.id) {
- 
+
+    if (vendor.newVendor?.id) {
+
       setShowAdminForm(true);
     }
 
   }, [vendor.newVendor]);
-  console.log('renderFormsssssssssssss',renderForms)
+  console.log('renderFormsssssssssssss', renderForms)
 
   useEffect(() => {
- 
-    if(addForm.form?.id) {
+
+    if (addForm.form?.id) {
       setShowAdminForm(true);
-      setRenderForms([...renderForms, {...addForm}]);
+      setRenderForms([...renderForms, { ...addForm }]);
     }
 
   }, [addForm])
 
+  console.log(' queryParams?.vendor', queryParams?.vendor)
   useEffect(() => {
 
-
+    
     if (vendors && vendors.length > 0 && vendors[0].id) {
 
       if (queryParams && queryParams.vendor) {
         const newDefaultVendor = vendors.filter((vendor) => {
           return vendor.id2 == queryParams.vendor
-        });
+        }); 
+        console.log('newDefaultVendor',newDefaultVendor)
 
         setSelectedVendor(newDefaultVendor[0]);
 
@@ -676,25 +682,25 @@ export default function index() {
         }
 
         //dispatch(requestGetApplications(newDefaultVendor[0].id));
-        dispatch(requestGetForms({ 
-          vendor: newDefaultVendor[0].id || '', 
-          currentUser: auth.user_id, 
-          isOwner: !!(auth.user_id == newDefaultVendor[0].user), 
-          categories: [] 
+        dispatch(requestGetForms({
+          vendor: newDefaultVendor[0].id || '',
+          currentUser: auth.user_id,
+          isOwner: !!(auth.user_id == newDefaultVendor[0].user),
+          categories: []
         }))
       } else {
-   
+
         setSelectedVendor(vendors[0]);
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
         } else {
           setAppGroups(vendors[0].app_groups);
         }
-        dispatch(requestGetForms({ 
-          vendor: vendors[0].id || '', 
-          currentUser: auth.user_id, 
-          isOwner: !!(auth.user_id == vendors[0].user), 
-          categories: [] 
+        dispatch(requestGetForms({
+          vendor: vendors[0].id || '',
+          currentUser: auth.user_id,
+          isOwner: !!(auth.user_id == vendors[0].user),
+          categories: []
         }))
         //dispatch(requestGetApplications(vendors[0].id));
       }
@@ -704,7 +710,8 @@ export default function index() {
 
       dispatch(requestGetVendorReminders({ vendor: vendors[0].id }));
     }
-  }, [vendors]);
+  }, [vendors, queryParams?.vendor]);
+  
 
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
@@ -720,7 +727,7 @@ export default function index() {
         return form.form_id == queryParams.form;
       });
 
-    
+
       if (tempForm && tempForm.length > 0) {
         setExportFilename(tempForm[0]?.form_contents?.formTitle);
       }
@@ -731,7 +738,17 @@ export default function index() {
     }
 
 
-  }, [formList])
+  }, [formList]);
+
+  useEffect(() =>  {
+
+    if(selectedVendor) {
+      const isLot = selectedVendor && selectedVendor.name === 'LOT® Form'
+      setSelectedForm(isLot ? "lot" : "default");
+    }
+    
+  },[selectedVendor])
+  
 
   useEffect(() => {
     setAppGroups(formAppGroups);
@@ -751,8 +768,8 @@ export default function index() {
     if (!Array.isArray(items)) return [];
 
     items.forEach((item, index) => {
- 
-    
+
+
       const newItem = {
         id: index,
         label: item,
@@ -1417,7 +1434,7 @@ export default function index() {
 
     if (section === "profile") {
       if (id == "child_lives_with") {
- 
+
         profile.child_lives_with = value;
       } else {
         profile = { ...profile, [id]: value };
@@ -1426,7 +1443,7 @@ export default function index() {
       child.profile = profile;
     } else if (section === "general_information") {
       if (id === "has_suspended") {
-    
+
         if (value == "0") {
           general_information = {
             ...general_information,
@@ -1462,7 +1479,7 @@ export default function index() {
       child.emergency_care_information = emergency_care_information;
     }
 
-    
+
     setChildInformation({ ...child });
   };
 
@@ -1481,7 +1498,7 @@ export default function index() {
       setEmergencyContacts([...emergencyContacts]);
     }
 
-  
+
   };
 
   const handleSelectLatest = () => {
@@ -1852,14 +1869,14 @@ export default function index() {
         tempRelationships[index].relationship = relationship;
 
         exists = true;
-       
+
         setRelationships([...tempRelationships]);
         break;
       }
     }
 
     if (!exists) {
-    
+
       setRelationships([...relationships, {
         parent: parent,
         child: child,
@@ -1919,7 +1936,7 @@ export default function index() {
 
   const handleDuplicateVendor = () => {
 
-    if(selectedForm == "default" || selectedForm == "lot") {
+    if (selectedForm == "default" || selectedForm == "lot") {
       const payload = {
         user: auth.user_id,
         name: selectedVendor.name,
@@ -1935,16 +1952,16 @@ export default function index() {
         logo: selectedVendor.logo,
         is_daycare: selectedForm == "lot" ? 2 : selectedVendor.is_daycare,
       }
-  
-    
-        dispatch(requestCreateVendor(payload));
+
+
+      dispatch(requestCreateVendor(payload));
     } else {
       let selectedFormDetails = renderForms.filter(f => f.form_id == selectedForm)[0];
 
-      if(!!selectedFormDetails) {
+      if (!!selectedFormDetails) {
         const payload = {
           category: selectedFormDetails.category,
-          form_contents: {...selectedFormDetails.form_contents, ['formTitle']: selectedFormDetails.form_contents.formTitle + ' (Copy) '},
+          form_contents: { ...selectedFormDetails.form_contents, ['formTitle']: selectedFormDetails.form_contents.formTitle + ' (Copy) ' },
           user: auth.user_id,
           vendor: selectedFormDetails.vendor
         }
@@ -1957,7 +1974,7 @@ export default function index() {
 
   }
 
-
+  console.log('selectedForm',selectedForm)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -1980,7 +1997,7 @@ export default function index() {
                 "color": "#000000"
               }}
               onChange={({ target }) => {
-              
+
 
                 const chosenVendor = vendors.filter((vendor) => {
                   return vendor.id == target.value
@@ -1990,15 +2007,17 @@ export default function index() {
                 window.history.replaceState("", "", "?vendor=" + chosenVendor[0].id2);
 
                 //dispatch(requestGetApplications(target.value));
-                dispatch(requestGetForms({ 
-                  vendor: target.value, 
-                  currentUser: auth.user_id, 
-                  isOwner: !!(auth.user_id == chosenVendor[0].user), 
-                  categories: [] 
+                dispatch(requestGetForms({
+                  vendor: target.value,
+                  currentUser: auth.user_id,
+                  isOwner: !!(auth.user_id == chosenVendor[0].user),
+                  categories: []
                 }))
                 if (chosenVendor && chosenVendor.length > 0) {
                   setSelectedVendor(chosenVendor[0]);
+                  setAppGroups(chosenVendor[0].app_groups);
                   requestSelectedVendor(chosenVendor[0]);
+                  
                 }
               }}
               value={selectedVendor.id}
@@ -2011,14 +2030,14 @@ export default function index() {
             </select>
           </div>
         )}
-     
+
         {
           vendors && vendors.length > 0 && (
             <div style={{
               marginLeft: 12
             }}>
               <select
-  
+
                 style={{
                   "marginLeft": "20px",
                   "fontSize": "1.5em",
@@ -2031,27 +2050,27 @@ export default function index() {
                   "padding": "0",
                   "lineHeight": "1",
                   "color": "#000000",
-           
+
                 }}
                 onChange={({ target }) => {
 
 
                   if (target.value == "default" || target.value === 'lot') {
-               
+
                     setSelectedForm(target.value);
                     setAppGroups(selectedVendor.app_groups);
                     window.history.replaceState("", "", "?vendor=" + selectedVendor.id2);
-                    if(applications.activeapplications.length === 0) {
+                    if (applications.activeapplications.length === 0) {
                       dispatch(requestGetApplications(selectedVendor.id));
                     }
-                   
+
                   } else {
                     setSelectedForm(target.value);
                     if (view === 'builderForm') {
                       setView('')
                       setSelectedApplication({})
                     }
-        
+
                     window.history.replaceState("", "", "?form=" + target.value);
                     setAppGroups([]);
                     dispatch(requestGetFormAppGroup(target.value));
@@ -2059,14 +2078,15 @@ export default function index() {
                   }
                 }}
               >
-                <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
+                {(selectedVendor && selectedVendor.name !== 'LOT® Form') && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare ? `Daycare Form` : `Mentoring Application`}
-                </option>
+                </option>}
+
                 <option key={`${selectedVendor.id}-2`} value="lot">
-                    LOT® Form
+                  LOT® Form
                 </option>
                 {
-                  renderForms && renderForms.length > 0 && (
+                  ((selectedVendor && selectedVendor.name !== 'LOT® Form') && renderForms && renderForms.length > 0)  && (
                     renderForms.map(form => (
                       <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
                         {form?.form_contents?.formTitle}
@@ -2086,7 +2106,7 @@ export default function index() {
                 icon={faCopy}
                 onClick={e => {
                   e.stopPropagation()
-                  
+
                   handleDuplicateVendor();
                 }}
               />
@@ -2538,7 +2558,7 @@ export default function index() {
           // />
           <AdminFormModal
             isLot={selectedForm === 'lot'}
-            isCustomForm={selectedForm !== "default" && selectedForm !== "lot"}
+            isCustomForm={selectedForm !== "default" && selectedForm !== 'lot' }
             handleExit={() => {
               setShowAdminForm(false);
             }}

@@ -440,7 +440,6 @@ const inputs = `
         app_grp_id: String
         name: String
         label: String
-        is_lot_included: Int
     }
 
     input AppGroupInput {
@@ -450,7 +449,6 @@ const inputs = `
         vendors: [AppGroupVendorInput]
         size: Int!
         name: String!
-        is_lot_included: Int
         pool_id: String!
         
     }
@@ -1311,7 +1309,6 @@ const queryTypes = `
         name: String!
         created_at: Date
         pool_id: String
-        is_lot_included: Int
     }
 
     type AppGroupStatus{
@@ -1621,7 +1618,6 @@ const queryTypes = `
         name: String
         id: String
         is_form: Boolean
-        is_lot_included: Int
     }
 
     type StudentCumulativeGrade {

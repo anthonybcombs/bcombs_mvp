@@ -1080,8 +1080,7 @@ const resolvers = {
           size: appGroup.size,
           name: appGroup.name,
           email: appGroup.email,
-          pool_id: appGroup.pool_id,
-          is_lot_included: vendor.is_lot_included,
+          pool_id: appGroup.pool_id
         };
         await addAppGroup(fields);
       }

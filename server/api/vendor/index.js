@@ -140,7 +140,6 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
           result[i].location_sites = await getVendorAppLocationSite(result[i].id);
           result[i].app_groups = await getVendorAppGroupsByVendorId(result[i].id);
 
-          result[i].is_lot_included = result[i].app_groups && result[i].app_groups ? result[i].app_groups.some(item => item.is_lot_included) : false;
           result[i].forms = await getVendorCustomApplicationForms({ vendor: result[i].id });
 
           vendors.push(result[i]);
@@ -757,8 +756,7 @@ export const getAppGroupsByUserId = async (user) => {
         size, 
         name, 
         pool_id,
-        created_at ,
-        is_lot_included
+        created_at
       FROM vendor_app_groups 
       WHERE user=UUID_TO_BIN(?)`,
       [user]
@@ -787,8 +785,7 @@ export const getAppGroupsByVendor = async (vendor) => {
         size, 
         name, 
         pool_id,
-        created_at ,
-        is_lot_included
+        created_at
       FROM vendor_app_groups 
       WHERE vendor=UUID_TO_BIN(?) OR vendor IS NULL`,
       [vendor]
@@ -817,8 +814,7 @@ export const getVendorAppGroupsByVendorId = async (vendor) => {
         size, 
         name,
         pool_id,
-        created_at,
-        is_lot_included 
+        created_at
       FROM vendor_app_groups 
       WHERE vendor=UUID_TO_BIN(?) `,
       [vendor]
@@ -857,8 +853,7 @@ export const getVendorAppGroupsByFormId = async (form) => {
         size, 
         name,
         pool_id,
-        created_at ,
-        is_lot_included
+        created_at
       FROM vendor_app_groups 
       WHERE form=UUID_TO_BIN(?)`,
       [form]
@@ -906,8 +901,7 @@ export const getAppGroupById = async (app_grp_id) => {
         size, 
         name,
         pool_id,
-        created_at,
-        is_lot_included
+        created_at
       FROM vendor_app_groups 
       WHERE app_grp_id=UUID_TO_BIN(?)`,
       [app_grp_id]
@@ -927,8 +921,7 @@ export const addAppGroup = async ({
   size,
   name,
   email,
-  pool_id,
-  is_lot_included = 0
+  pool_id
 }) => {
   const db = makeDb();
 
@@ -936,9 +929,9 @@ export const addAppGroup = async ({
   try {
     if (vendor) {
       result = await db.query(
-        `INSERT INTO vendor_app_groups(app_grp_id, user, vendor, size, name, pool_id, is_lot_included)
+        `INSERT INTO vendor_app_groups(app_grp_id, user, vendor, size, name, pool_id)
         VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?, ?, ?)`,
-        [user_id, vendor, size, name, pool_id, is_lot_included]
+        [user_id, vendor, size, name, pool_id]
       );
     }
 
@@ -958,13 +951,13 @@ export const addAppGroup = async ({
 };
 
 //app_grp_id
-export const editAppGroup = async ({ app_grp_id, email, name, size, is_lot_included = 0 }) => {
+export const editAppGroup = async ({ app_grp_id, email, name, size }) => {
   const db = makeDb();
   let result;
   try {
     result = await db.query(
-      `UPDATE vendor_app_groups SET size=?,name=?, is_lot_included=? WHERE app_grp_id=UUID_TO_BIN(?) `,
-      [size, name, is_lot_included, app_grp_id]
+      `UPDATE vendor_app_groups SET size=?,name=? WHERE app_grp_id=UUID_TO_BIN(?) `,
+      [size, name, app_grp_id]
     );
   } catch (error) {
     console.log("error", error);

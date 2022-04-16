@@ -187,6 +187,9 @@ const ContactFormStyled = styled.form`
       margin: 2.5em auto 2.5em auto;
     }*/
 
+
+
+
 export default function AppGroupForm({
   groupDetails,
   onSubmit,
@@ -215,7 +218,7 @@ export default function AppGroupForm({
   const hasSelectAll = false;
 
   const theme = useContext(ThemeContext);
-
+  console.log('handleSelectChange options', formattedVendors)
   const handleSelectChange = value => {
     console.log("handleSelectChange value", value);
     console.log('handleSelectChange options', formattedVendors)
@@ -227,14 +230,17 @@ export default function AppGroupForm({
     // if(selectedForms.length > 0) {
     //   currentAppGroup = {...currentAppGroup, ["vendors"]: selectedForms};
     // }
-    console.log("Im here 12345");
-    console.log("currentAppGroup3", currentAppGroup);
-    console.log("selectedForms selectedForms", selectedForms);
+   
     handleGroupDetailsChange("vendors", selectedForms);
   }, [formattedVendors, selectedForms])
 
-  console.log("groupDetails", groupDetails);
-  console.log(';selectedForms',selectedForms)
+  const isLotIncluded = groupDetails?.vendors?.some(item => item.is_lot_included)
+
+  let formDefaultValue = [...(groupDetails?.vendors || [])];
+
+  if(isLotIncluded) {
+    formDefaultValue = [...(formDefaultValue || [])]
+  }
   return (
     <ContactFormStyled
       method="POST"
@@ -296,12 +302,20 @@ export default function AppGroupForm({
               <div className="field">
                 <CustomMultiSelect
                   className="field-input"
-                  options={formattedVendors}
+                  options={[
+                    {
+                      id: "lot_id",
+                      is_lot: true,
+                      label: "Lot Form",
+                      name: "Lot Form",
+                    },
+                    ...formattedVendors
+                  ]}
                   hasSelectAll={hasSelectAll}
                   // selectedValues={vendorOptions.filter(
                   //   item => item.id === groupDetails.vendor
                   // )}
-                  selectedValues={groupDetails?.vendors || []}
+                  selectedValues={formDefaultValue}
                   onSelect={handleSelectChange}
                   onRemove={handleSelectChange}
                   placeholder="Choose Form"

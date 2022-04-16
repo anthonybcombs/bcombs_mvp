@@ -243,7 +243,8 @@ export default function index() {
   }, [vendorForms.formList])
 
   const getFormattedVendors = (formList) => {
-     const updatedForms = uniqBy(formList, 'id');
+    let updatedForms =  uniqBy(formList, 'id');
+
     const formattedVendors = updatedForms.map(item => {
       return {
         id: item.id,
@@ -344,12 +345,14 @@ export default function index() {
   const handleAppGroupDetails = () => {
     
   }
-
+  console.log('vendorForms',vendorForms)
   const handleAppGroupModal = group => {
     if(vendorForms.formList.length > 0) {
       setCurrentAppGroup(group);
       setIsAppGroupEditMode(true);
       let sForms = getSelectedForms(group);
+
+      console.log('vendorForms',vendorForms)
       const formattedVendors = getFormattedVendors(vendorForms.formList);
       sForms = formattedVendors.filter((form) => {
         return sForms.includes(form.id)
@@ -384,6 +387,8 @@ export default function index() {
     return true;
   };
 
+  console.log('currentAppGroupsssssssss',currentAppGroup)
+  console.log('currentAppGroupsssssssss selectedForms',selectedForms)
   return (
     <MyContactsStyled>
       <NewContactModal
