@@ -234,13 +234,9 @@ export default function AppGroupForm({
     handleGroupDetailsChange("vendors", selectedForms);
   }, [formattedVendors, selectedForms])
 
-  const isLotIncluded = groupDetails?.vendors?.some(item => item.is_lot_included)
 
   let formDefaultValue = [...(groupDetails?.vendors || [])];
 
-  if(isLotIncluded) {
-    formDefaultValue = [...(formDefaultValue || [])]
-  }
   return (
     <ContactFormStyled
       method="POST"
@@ -303,12 +299,6 @@ export default function AppGroupForm({
                 <CustomMultiSelect
                   className="field-input"
                   options={[
-                    {
-                      id: "lot_id",
-                      is_lot: true,
-                      label: "Lot Form",
-                      name: "Lot Form",
-                    },
                     ...formattedVendors
                   ]}
                   hasSelectAll={hasSelectAll}
