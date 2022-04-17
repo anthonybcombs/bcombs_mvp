@@ -114,7 +114,9 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
       v.is_daycare,
       v.logo
     FROM vendor v
-    WHERE v.user=UUID_TO_BIN(?)`;
+    WHERE v.user=UUID_TO_BIN(?)
+    ORDER BY v.id2 ASC
+    `;
 
     result = await db.query(getVendorByUserQuery,[user]);
 
