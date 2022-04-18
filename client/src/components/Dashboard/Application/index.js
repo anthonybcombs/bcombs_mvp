@@ -1953,7 +1953,7 @@ export default function index() {
         section2_show: selectedVendor.section2_show,
         section3_show: selectedVendor.section3_show,
         logo: selectedVendor.logo,
-        is_daycare: selectedForm == "lot" ? 2 : selectedVendor.is_daycare,
+        is_daycare: selectedForm == "lot" ? 2 : selectedVendor.is_daycare, 
       }
 
 
@@ -1977,7 +1977,7 @@ export default function index() {
 
   }
 
-  console.log('selectedFormsssssssssss',vendors)
+  console.log('selectedVendorssssssss',selectedVendor)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2082,7 +2082,7 @@ export default function index() {
                 }}
               >
                 {(selectedVendor && selectedForm !== 'lot') && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
-                  {selectedVendor.is_daycare ? `Daycare Form` : `Mentoring Application`}
+                  {selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 ? `Daycare Form` : `Mentoring Application`}
                 </option>}
                 {selectedForm === 'lot' && <option key={`${selectedVendor.id}-2`} value="lot">
                   LOT® Form
@@ -2124,7 +2124,7 @@ export default function index() {
               selectedVendor && selectedVendor.id2 && (selectedForm == "default" || selectedForm == "lot") ? (
                 <div className="copy-application-link">
                   <a
-                    href={selectedVendor.is_daycare && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
+                    href={selectedVendor.is_daycare  && selectedVendor.is_daycare !== 2 && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
                       }${selectedForm === 'lot' ? '/lot' : ''}`}>
                     <FontAwesomeIcon icon={faFileSignature} />
@@ -2132,7 +2132,7 @@ export default function index() {
                   </a>
                   <FontAwesomeIcon icon={faLink} onClick={() => {
                     setCopyApplicationLinkModal(true)
-                    setCurrentCopyLink(selectedVendor.is_daycare && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
+                    setCurrentCopyLink(selectedVendor.is_daycare  && selectedVendor.is_daycare !== 2 && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
                       }${selectedForm === 'lot' ? '/lot' : ''}`)
                   }} />
@@ -2441,7 +2441,7 @@ export default function index() {
             {selectNonMenuOption &&
               view == "application" &&
               selectedApplication &&
-              selectedApplication.is_daycare ? (
+              selectedApplication.is_daycare &&  selectedApplication.is_daycare !== 2? (
               <DaycareChildFormView
                 childInformation={childInformation}
                 vendor={selectedVendor}
@@ -2480,7 +2480,7 @@ export default function index() {
             {selectNonMenuOption &&
               view == "application" &&
               selectedApplication &&
-              selectedApplication.is_daycare ? (
+              selectedApplication.is_daycare &&  selectedApplication.is_daycare !== 2 ? (
               <DaycareParentFormView
                 parents={parentsInformation}
                 vendor={selectedVendor}
@@ -2496,7 +2496,7 @@ export default function index() {
               selectNonMenuOption &&
                 view == "application" &&
                 selectedApplication &&
-                selectedApplication.is_daycare ? (
+                selectedApplication.is_daycare && selectedApplication.is_daycare !== 2 ? (
                 <>
                   <hr className="style-eight"></hr>
                   <RelationshipToChildStyled
