@@ -527,7 +527,7 @@ export default function index() {
   // const isLot = selectedVendor && selectedVendor.name === 'LOT® Form'
 
   const [selectedForm, setSelectedForm] = useState("default");
-  
+
 
   const [renderForms, setRenderForms] = useState([]);
 
@@ -665,14 +665,14 @@ export default function index() {
   console.log(' queryParams?.vendor', queryParams?.vendor)
   useEffect(() => {
 
-    
+
     if (vendors && vendors.length > 0 && vendors[0].id) {
 
       if (queryParams && queryParams.vendor) {
         const newDefaultVendor = vendors.filter((vendor) => {
           return vendor.id2 == queryParams.vendor
-        }); 
-        console.log('newDefaultVendor',newDefaultVendor)
+        });
+        console.log('newDefaultVendor', newDefaultVendor)
 
         setSelectedVendor(newDefaultVendor[0]);
 
@@ -712,7 +712,7 @@ export default function index() {
       dispatch(requestGetVendorReminders({ vendor: vendors[0].id }));
     }
   }, [vendors, queryParams?.vendor]);
-  
+
 
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
@@ -741,17 +741,17 @@ export default function index() {
 
   }, [formList]);
 
-  useEffect(() =>  {
+  useEffect(() => {
 
-    if(selectedVendor && defaultVendor) {
-      console.log('defaultVendor',defaultVendor)
-      console.log('defaultVendor selectedVendor',selectedVendor)
-      const isLot = selectedVendor &&  (selectedVendor.name === `${defaultVendor.name} LOT`)
+    if (selectedVendor) {
+      console.log('selectedVendor',selectedVendor)
+      const isLot = selectedVendor && selectedVendor.name &&  selectedVendor.name.includes('LOT');
+  
       setSelectedForm(isLot ? "lot" : "default");
     }
-    
-  },[selectedVendor])
-  
+
+  }, [selectedVendor])
+
 
   useEffect(() => {
     setAppGroups(formAppGroups);
@@ -2084,12 +2084,12 @@ export default function index() {
                 {(selectedVendor && selectedForm !== 'lot') && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare ? `Daycare Form` : `Mentoring Application`}
                 </option>}
-
-                <option key={`${selectedVendor.id}-2`} value="lot">
+                {selectedForm === 'lot' && <option key={`${selectedVendor.id}-2`} value="lot">
                   LOT® Form
-                </option>
+                </option>}
+
                 {
-                  ((selectedVendor && selectedForm !== 'lot') && renderForms && renderForms.length > 0)  && (
+                  ((selectedVendor && selectedForm !== 'lot') && renderForms && renderForms.length > 0) && (
                     renderForms.map(form => (
                       <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
                         {form?.form_contents?.formTitle}
@@ -2121,20 +2121,20 @@ export default function index() {
         <div>
           <div id="labels">
             {
-              selectedVendor && selectedVendor.id2 && (selectedForm == "default"   || selectedForm == "lot") ? (
+              selectedVendor && selectedVendor.id2 && (selectedForm == "default" || selectedForm == "lot") ? (
                 <div className="copy-application-link">
                   <a
-                    href={selectedVendor.is_daycare  && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
+                    href={selectedVendor.is_daycare && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
-                      }${ selectedForm=== 'lot' ? '/lot'  : ''}`}>
+                      }${selectedForm === 'lot' ? '/lot' : ''}`}>
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
                   <FontAwesomeIcon icon={faLink} onClick={() => {
                     setCopyApplicationLinkModal(true)
-                    setCurrentCopyLink(selectedVendor.is_daycare  && selectedForm !== 'lot'  ? `/application/${selectedVendor.id2
+                    setCurrentCopyLink(selectedVendor.is_daycare && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
-                      }${selectedForm === 'lot' ? '/lot'  : ''}`)
+                      }${selectedForm === 'lot' ? '/lot' : ''}`)
                   }} />
                 </div>
               ) : selectedForm && selectedForm != "default" && selectedForm != "lot" ? (
