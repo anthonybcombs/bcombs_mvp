@@ -552,11 +552,11 @@ export function* getVendor(action) {
   try {
     console.log("getVendor!!!!!!!! ser", action.user);
     const vendors = yield call(getVendorFromDatabase, action.user, action.withApplications);
+    const sortedVendors = vendors.sort((a,b) => a.id2 - b.id2);
 
-    console.log("getVendor!!!!!!!!", vendors);
     yield put({
       type: actionType.REQUEST_VENDOR_COMPLETED,
-      payload: vendors
+      payload: sortedVendors
     });
   } catch (err) {
     console.log("err", err);

@@ -606,6 +606,8 @@ export default function index() {
   const [appGroups, setAppGroups] = useState([]);
   const [exportFilename, setExportFilename] = useState("");
 
+  const defaultVendor = vendors && vendors[0];
+
 
   useEffect(() => {
     if (auth.user_id) {
@@ -650,7 +652,6 @@ export default function index() {
     }
 
   }, [vendor.newVendor]);
-  console.log('renderFormsssssssssssss', renderForms)
 
   useEffect(() => {
 
@@ -742,8 +743,10 @@ export default function index() {
 
   useEffect(() =>  {
 
-    if(selectedVendor) {
-      const isLot = selectedVendor && selectedVendor.name === 'LOT® Form'
+    if(selectedVendor && defaultVendor) {
+      console.log('defaultVendor',defaultVendor)
+      console.log('defaultVendor selectedVendor',selectedVendor)
+      const isLot = selectedVendor &&  (selectedVendor.name === `${defaultVendor.name} LOT`)
       setSelectedForm(isLot ? "lot" : "default");
     }
     
@@ -1974,7 +1977,7 @@ export default function index() {
 
   }
 
-  console.log('selectedForm',selectedForm)
+  console.log('selectedFormsssssssssss',vendors)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2078,7 +2081,7 @@ export default function index() {
                   }
                 }}
               >
-                {(selectedVendor && selectedVendor.name !== 'LOT® Form') && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
+                {(selectedVendor && selectedForm !== 'lot') && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare ? `Daycare Form` : `Mentoring Application`}
                 </option>}
 
@@ -2086,7 +2089,7 @@ export default function index() {
                   LOT® Form
                 </option>
                 {
-                  ((selectedVendor && selectedVendor.name !== 'LOT® Form') && renderForms && renderForms.length > 0)  && (
+                  ((selectedVendor && selectedForm !== 'lot') && renderForms && renderForms.length > 0)  && (
                     renderForms.map(form => (
                       <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
                         {form?.form_contents?.formTitle}
@@ -2562,6 +2565,7 @@ export default function index() {
             handleExit={() => {
               setShowAdminForm(false);
             }}
+            selectedVendor={selectedVendor}
           />
         )
       }
