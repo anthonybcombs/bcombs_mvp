@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
     }
     
     try {
-        const { id, year, vendorId, formId } = req.body;
+        const { id, year, vendorId, formId, lotVendorIds } = req.body;
         const db = makeDb();
         console.log('year ', year);
 
@@ -83,7 +83,7 @@ router.post("/", async (req, res) => {
         }
         */
 
-        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId);
+        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lotVendorIds);
         let getClassesTableQuery = queryGroup.query;
         let queryParamForClassesQuery = queryGroup.param;
 

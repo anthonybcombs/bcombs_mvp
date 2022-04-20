@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
-const apiCallGrades = async (vendorId, id, year, grade, formId, classId) => {
+const apiCallGrades = async (vendorId, id, year, grade, formId, classId, lotVendorId2s = []) => {
     console.log('entered apiCallGrades');
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/grades`, {
@@ -22,7 +22,8 @@ const apiCallGrades = async (vendorId, id, year, grade, formId, classId) => {
             'grade' : grade,
             'vendorId' : vendorId,
             'formId' : formId,
-            'classId' : classId
+            'classId' : classId,
+            'lotVendorIds': lotVendorId2s
 
         }) // body data type must match "Content-Type" header
     });
@@ -32,7 +33,7 @@ const apiCallGrades = async (vendorId, id, year, grade, formId, classId) => {
 
 
 const Mentoring = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, lotVendorId2s } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -48,7 +49,7 @@ const Mentoring = props => {
             triggerApiCallGrades(auth.user_id, year, grade, 'fid_0', 'id_0');
         }
     }, [auth]);
-
+  
     const triggerApiCallGrades = async (id, year, grade, formId, classId) => {
         try {
             if (!vendors ||!vendors.length) {
@@ -58,7 +59,7 @@ const Mentoring = props => {
             }
             setIsLoading(true);
             const vendorId = vendors[0].id2; 
-            const res = await apiCallGrades(vendorId, id, year, grade, formId, classId);
+            const res = await apiCallGrades(vendorId, id, year, grade, formId, classId, lotVendorId2s);
             console.log('apiCall grades ', res)
             if (!res.classList) {
                 setClassList([]);

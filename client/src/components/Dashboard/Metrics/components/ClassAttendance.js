@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Charts from './Charts';
 import Loading from "../../../../helpers/Loading.js";
 
-const apiCallClassAttendance = async (vendorId, id, year, formId) => {
+const apiCallClassAttendance = async (vendorId, id, year, formId, lotVendorId2s = []) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/class_attendance`, {
@@ -21,14 +21,15 @@ const apiCallClassAttendance = async (vendorId, id, year, formId) => {
             'id': id,
             'year': year, 
             'vendorId' : vendorId,
-            'formId' : formId
+            'formId' : formId,
+            'lotVendorIds': lotVendorId2s
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
 }
 
 const ClassAttendance = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, lotVendorId2s = [] } = props;
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -58,7 +59,7 @@ const ClassAttendance = props => {
             setIsLoading(true);
             const vendorId = vendors[0].id2; 
             console.log("vendorId", vendorId)
-            const res = await apiCallClassAttendance(vendorId, id, year, formId);
+            const res = await apiCallClassAttendance(vendorId, id, year, formId, lotVendorId2s);
             console.log('apiCall attendance ', res);
             if (res && res.classStats && res.classStats['id_0']) {
                 let classIdLocal = class_id;

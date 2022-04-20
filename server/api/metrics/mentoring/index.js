@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
 
     try {
-        const { id, year, grade, vendorId, formId, classId } = req.body;
+        const { id, year, grade, vendorId, formId, classId, lotVendorIds } = req.body;
         const db = makeDb();
         console.log('m ID', id);
         console.log('grade ', grade);
@@ -21,16 +21,16 @@ router.post("/", async (req, res) => {
             res.status(200).json({ volunteeringInYear: [], classList: [], formArray: [] });
             return;
         }
-        console.log('getting class list');
+        console.log('getting class listtttttttt', formArray);
 
-        let classList = await getClassesWithAttendanceByYearAndVendorAndFormId(db, year, vendorId, formId);
+        let classList = await getClassesWithAttendanceByYearAndVendorAndFormId(db, year, vendorId, formId, lotVendorIds);
         if (!classList.length) {
             res.status(200).json({ volunteeringInYear: [], classList: [], formArray: formArray });
             return;
         }
         console.log('got class list');
 
-        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId);
+        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lotVendorIds);
         let getClassesTableQuery = queryGroup.query;
         let queryParam = queryGroup.param;
 

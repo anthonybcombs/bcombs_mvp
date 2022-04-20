@@ -77,17 +77,17 @@ router.post("/", async (req, res) => {
 
 
     try {
-        const { id, grade, vendorId, testName, formId, classId } = req.body;
+        const { id, grade, vendorId, testName, formId, classId, lotVendorIds } = req.body;
         const db = makeDb();
 
-        let formArray = await getFormsByVendorId(db, vendorId);
+        let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds);
         if (!formArray.length) {
             res.status(200).json({ avgTestResults: [], classList: [], formArray: [] });
             return;
         }
         console.log('getting class list');
 
-        let classList = await getClassesWithAttendanceByYearAndVendorAndFormId(db, 'any', vendorId, formId);
+        let classList = await getClassesWithAttendanceByYearAndVendorAndFormId(db, 'any', vendorId, formId, lotVendorIds);
         if (!classList.length) {
             res.status(200).json({ avgTestResults: [], classList: [], formArray: formArray });
             return;

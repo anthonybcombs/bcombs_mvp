@@ -133,19 +133,23 @@ const Metrics = props => {
 
 
   console.log('Vendorzzz', vendors)
+
+  const lotVendorId2s = Array.isArray(vendors) && vendors.filter(item => item.name.includes('LOT')).map(item => item.id2)
+  /// const lotVendors =
+
   return (
     <MetricStyled>
       <div id="metrics-page" >
         <MetricMenu handleSelectedLabel={handleSelectedLabel} selectedLabel={selectedLabel} />
         <div>
           {selectedLabel === 'attendance' && <Attendance auth={auth} vendors={vendors} />}
-          {selectedLabel === 'class_attendance' && <ClassAttendance auth={auth} vendors={vendors} />}
+          {selectedLabel === 'class_attendance' && <ClassAttendance auth={auth} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
           {selectedLabel === 'mentees' && <Mentees auth={auth} vendors={vendors} />}
           {selectedLabel === 'classes' && <ClassReport auth={auth} vendors={vendors} />}
-          {selectedLabel === 'tests' && <Tests auth={auth} vendors={vendors} />}
-          {selectedLabel === 'grades' && <Grades auth={auth} vendors={vendors} />}
-          {selectedLabel === 'mentoring' && <Mentoring auth={auth} vendors={vendors} />}
-          {selectedLabel === 'volunteer_hours' && <VolunteerHours auth={auth} vendors={vendors} />}
+          {selectedLabel === 'tests' && <Tests auth={auth} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
+          {selectedLabel === 'grades' && <Grades auth={auth} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
+          {selectedLabel === 'mentoring' && <Mentoring auth={auth} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
+          {selectedLabel === 'volunteer_hours' && <VolunteerHours auth={auth} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
         </div>
       </div>
     </MetricStyled>

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
-const apiCallMentoring = async (vendorId, id, year, grade, formId, classId) => {
+const apiCallMentoring = async (vendorId, id, year, grade, formId, classId, lotVendorId2s = []) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/mentoring`, {
@@ -22,7 +22,8 @@ const apiCallMentoring = async (vendorId, id, year, grade, formId, classId) => {
             'year': year, 
             'grade' : grade,
             'formId' : formId,
-            'classId' : classId
+            'classId' : classId,
+            'lotVendorIds': lotVendorId2s
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
@@ -31,7 +32,7 @@ const apiCallMentoring = async (vendorId, id, year, grade, formId, classId) => {
 
 
 const Mentoring = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, lotVendorId2s } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -41,7 +42,7 @@ const Mentoring = props => {
     const [formIdLocal, setFormIdLocal] = useState('fid_0');
     const [classIdLocal, setClassIdLocal] = useState('id_0');
     const chart = useRef();
-
+ 
     useEffect(() => {
         if (auth && auth.user_id) {
             triggerApiCallMentoring(auth.user_id, year, grade, 'fid_0', 'id_0');
@@ -57,7 +58,7 @@ const Mentoring = props => {
             }
             setIsLoading(true);
             const vendorId = vendors[0].id2; 
-            const res = await apiCallMentoring(vendorId, id, year, grade, formId, classId);
+            const res = await apiCallMentoring(vendorId, id, year, grade, formId, classId, lotVendorId2s);
             console.log('apiCall mentoring ', res)
             if (!res.classList) {
                 setClassList([]);

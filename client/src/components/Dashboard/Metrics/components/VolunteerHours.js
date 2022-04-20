@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Charts from './Charts';
 import Loading from "../../../../helpers/Loading.js";
 
-const apiCallVolunteering = async (vendorId, id, year, grade, formId, classId) => {
+const apiCallVolunteering = async (vendorId, id, year, grade, formId, classId, lotVendorId2s) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/volunteering`, {
@@ -23,7 +23,8 @@ const apiCallVolunteering = async (vendorId, id, year, grade, formId, classId) =
             'year': year, 
             'grade' : grade,
             'formId' : formId,
-            'classId' : classId
+            'classId' : classId,
+            'lotVendorIds': lotVendorId2s
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
@@ -32,7 +33,7 @@ const apiCallVolunteering = async (vendorId, id, year, grade, formId, classId) =
 
 
 const VolunteerHours = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, lotVendorId2s } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -58,7 +59,7 @@ const VolunteerHours = props => {
             }
             setIsLoading(true);
             const vendorId = vendors[0].id2; 
-            const res = await apiCallVolunteering(vendorId, id, year, grade, formId, classId);
+            const res = await apiCallVolunteering(vendorId, id, year, grade, formId, classId, lotVendorId2s);
             console.log('apiCall volunteering ', res)
             if (!res.classList) {
                 setClassList([]);

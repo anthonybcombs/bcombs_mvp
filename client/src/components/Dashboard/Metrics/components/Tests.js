@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
-const apiCallTests = async (vendorId, id, testName, grade, formId, classId) => {
+const apiCallTests = async (vendorId, id, testName, grade, formId, classId, lotVendorId2s) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/tests`, {
@@ -22,14 +22,15 @@ const apiCallTests = async (vendorId, id, testName, grade, formId, classId) => {
             'grade' : grade,
             'vendorId' : vendorId,
             'formId' : formId,
-            'classId' : classId
+            'classId' : classId, 
+            'lotVendorIds': lotVendorId2s
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
 }
 
 const Tests = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, lotVendorId2s } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -56,7 +57,7 @@ const Tests = props => {
             }
             setIsLoading(true);
             const vendorId = vendors[0].id2; 
-            const res = await apiCallTests(vendorId, id, testName, grade, formId, classId);
+            const res = await apiCallTests(vendorId, id, testName, grade, formId, classId, lotVendorId2s);
             console.log('apiCall tests ', res)
             if (!res.classList) {
                 setClassList([]);
