@@ -662,7 +662,6 @@ export default function index() {
 
   }, [addForm])
 
-  console.log(' queryParams?.vendor', queryParams?.vendor)
   useEffect(() => {
 
 
@@ -675,6 +674,10 @@ export default function index() {
         console.log('newDefaultVendor', newDefaultVendor)
 
         setSelectedVendor(newDefaultVendor[0]);
+
+          if(newDefaultVendor[0] && newDefaultVendor[0].name.includes('LOT')) {
+            setSelectedForm('lot');
+          }
 
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
@@ -719,7 +722,6 @@ export default function index() {
 
     setRenderForms(formList);
 
-    console.log('new form list', formList);
 
     if (queryParams && queryParams.form) {
       setSelectedForm(queryParams.form);
@@ -744,7 +746,7 @@ export default function index() {
   useEffect(() => {
 
     if (selectedVendor) {
-      console.log('selectedVendor',selectedVendor)
+  
       const isLot = selectedVendor && selectedVendor.name &&  selectedVendor.name.includes('LOT');
   
       setSelectedForm(isLot ? "lot" : "default");
@@ -1977,7 +1979,6 @@ export default function index() {
 
   }
 
-  console.log('selectedVendorssssssss',selectedVendor)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2089,7 +2090,7 @@ export default function index() {
                 </option>}
 
                 {
-                  ((selectedVendor && selectedForm !== 'lot') && renderForms && renderForms.length > 0) && (
+                  ((selectedVendor /* && selectedForm !== 'lot' */) && renderForms && renderForms.length > 0) && (
                     renderForms.map(form => (
                       <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
                         {form?.form_contents?.formTitle}
