@@ -2088,7 +2088,7 @@ export default function index() {
                 {(selectedVendor /** &&  selectedForm !== 'lot' */) && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 ? `Daycare Form` : `Mentoring Application`}
                 </option>}
-                {selectedForm === 'lot' && <option key={`${selectedVendor.id}-2`} selected={selectedForm ==='lot'} value="lot">
+                { selectedVendor && selectedVendor.name && selectedVendor.name.includes('LOT') && <option key={`${selectedVendor.id}-2`} selected={selectedForm ==='lot'} value="lot">
                   LOT® Form
                 </option>}
 
