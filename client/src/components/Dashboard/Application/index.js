@@ -695,6 +695,9 @@ export default function index() {
       } else {
 
         setSelectedVendor(vendors[0]);
+        if(vendors[0] && vendors[0].name.includes('LOT')) {
+          setSelectedForm('lot');
+        }
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
         } else {
@@ -2082,10 +2085,10 @@ export default function index() {
                   }
                 }}
               >
-                {(selectedVendor && selectedForm !== 'lot') && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
+                {(selectedVendor /** &&  selectedForm !== 'lot' */) && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 ? `Daycare Form` : `Mentoring Application`}
                 </option>}
-                {selectedForm === 'lot' && <option key={`${selectedVendor.id}-2`} value="lot">
+                {selectedForm === 'lot' && <option key={`${selectedVendor.id}-2`} selected={selectedForm ==='lot'} value="lot">
                   LOT® Form
                 </option>}
 
