@@ -2038,7 +2038,7 @@ export default function index() {
                   "fontSize": "1.5em",
                   "borderRadius": "0",
                   "cursor": "pointer",
-                  "width": "200px",
+                  "width": "400px",
                   "display": "block",
                   "background": "transparent",
                   "border": "0",
