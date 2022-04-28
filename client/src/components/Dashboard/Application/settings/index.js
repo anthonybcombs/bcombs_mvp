@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -85,6 +85,24 @@ export default function index({ vendor, formSettingsLoading = false }) {
     section3_show: vendor && vendor.section3_show
   });
 
+
+  useEffect(() => {
+
+    setFormSettings({
+      name: vendor && vendor.name ? vendor.name : "",
+      section1_text: vendor && vendor.section1_text ? vendor.section1_text : "",
+      section2_text: vendor && vendor.section2_text ? vendor.section2_text : "",
+      section3_text: vendor && vendor.section3_text ? vendor.section3_text : "",
+      section1_name: vendor && vendor.section1_name ? vendor.section1_name : "",
+      section2_name: vendor && vendor.section2_name ? vendor.section2_name : "",
+      section3_name: vendor && vendor.section3_name ? vendor.section3_name : "",
+      section1_show: vendor && vendor.section1_show,
+      section2_show: vendor && vendor.section2_show,
+      section3_show: vendor && vendor.section3_show
+    })
+
+  }, [vendor])
+
   console.log("formSettings");
   console.log(formSettings);
 
@@ -159,7 +177,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     onChange={({ target }) =>
                       handleFormSettingsChange("section1_name", target.value)
                     }
-                    defaultValue={formSettings.section1_name}
+                    value={formSettings.section1_name}
                   />
                   <label className="field-label" for="section1_title">
                     Title{" "}
@@ -184,14 +202,13 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     required={formSettings.section1_show}
                     name="waiver_text"
                     className="form-control"
-                    placeholder={`Context ${
-                      formSettings.section1_show ? "*" : ""
-                    }`}
+                    placeholder={`Context ${formSettings.section1_show ? "*" : ""
+                      }`}
                     rows="15"
                     onChange={({ target }) =>
                       handleFormSettingsChange("section1_text", target.value)
                     }
-                    defaultValue={formSettings.section1_text}></textarea>
+                    value={formSettings.section1_text}></textarea>
                 </div>
               </div>
             </div>
@@ -207,7 +224,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     onChange={({ target }) =>
                       handleFormSettingsChange("section2_name", target.value)
                     }
-                    defaultValue={formSettings.section2_name}
+                    value={formSettings.section2_name}
                   />
                   <label className="field-label" for="section2_title">
                     Title{" "}
@@ -237,7 +254,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     onChange={({ target }) =>
                       handleFormSettingsChange("section2_text", target.value)
                     }
-                    defaultValue={formSettings.section2_text}></textarea>
+                    value={formSettings.section2_text}></textarea>
                 </div>
               </div>
             </div>
@@ -253,7 +270,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     onChange={({ target }) =>
                       handleFormSettingsChange("section3_name", target.value)
                     }
-                    defaultValue={formSettings.section3_name}
+                    value={formSettings.section3_name}
                   />
                   <label className="field-label" for="section3_title">
                     Title{" "}
@@ -283,7 +300,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     onChange={({ target }) =>
                       handleFormSettingsChange("section3_text", target.value)
                     }
-                    defaultValue={formSettings.section3_text}></textarea>
+                    value={formSettings.section3_text}></textarea>
                 </div>
               </div>
             </div>
