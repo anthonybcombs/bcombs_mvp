@@ -272,6 +272,10 @@ export const sendAdminInvite = async ({
   isExist = false
 }) => {
   try {
+    console.log('sendAdminInvite isExist',isExist)
+    console.log('sendAdminInvite email',email)
+    console.log('sendAdminInvite password',password)
+
     if(isExist) {
       sendEmail({
         ...defaultMailConfig,
@@ -290,7 +294,7 @@ export const sendAdminInvite = async ({
               Thanks
             </p>
             <p>
-              To access the application, plese go to this site: https://stg20.bcombs.com/dashboard/application?vendor=${vendorId}
+              To access the application, plese go to this site: https://bcombs.com/dashboard/application?vendor=${vendorId}
             </p<
           </div>
         ` // html body
@@ -315,7 +319,7 @@ export const sendAdminInvite = async ({
               Thanks
             </p>
             <p>
-              To access the application, plese go to this site: https://stg20.bcombs.com/dashboard/application?vendor=${vendor}
+              To access the application, plese go to this site: https://bcombs.com/dashboard/application?vendor=${vendorId}
             </p<
           </div>
         ` // html body
