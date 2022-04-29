@@ -750,7 +750,7 @@ export default function index() {
 
     if (selectedVendor) {
   
-      const isLot = selectedVendor && selectedVendor.name &&  selectedVendor.name.includes('LOT');
+      const isLot = (selectedVendor && selectedVendor.name &&  selectedVendor.name.includes('LOT')) || (auth && auth.nickname === 'lot');
   
       setSelectedForm(isLot ? "lot" : "default");
     }
@@ -1980,8 +1980,8 @@ export default function index() {
 
     }
 
-  }
-
+  } 
+  console.log('Authhhhhhhh', auth)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2050,7 +2050,7 @@ export default function index() {
                   "fontSize": "1.5em",
                   "borderRadius": "0",
                   "cursor": "pointer",
-                  "width": "200px",
+                  "width": "400px",
                   "display": "block",
                   "background": "transparent",
                   "border": "0",
@@ -2085,10 +2085,10 @@ export default function index() {
                   }
                 }}
               >
-                {(selectedVendor  && selectedVendor.name && !selectedVendor.name.includes('LOT') ) && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
+                {(((selectedVendor  && selectedVendor.name && !selectedVendor.name.includes('LOT'))  &&  (auth && auth.nickname !== 'lot') )) && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 ? `Daycare Form` : `Mentoring Application`}
                 </option>}
-                { selectedVendor && selectedVendor.name && selectedVendor.name.includes('LOT') && <option key={`${selectedVendor.id}-2`} selected={selectedForm ==='lot'} value="lot">
+                { ((selectedVendor && selectedVendor.name && selectedVendor.name.includes('LOT')) || (auth && auth.nickname === 'lot')) && <option key={`${selectedVendor.id}-2`} selected={selectedForm ==='lot'} value="lot">
                   LOT® Form
                 </option>}
 
