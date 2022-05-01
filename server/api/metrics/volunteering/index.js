@@ -11,12 +11,12 @@ const router = express.Router();
 router.post("/", async (req, res) => {
 
     try {
-        const { id, year, grade, vendorId, formId, classId, lotVendorIds } = req.body;
+        const { id, year, grade, vendorId, formId, classId, lotVendorIds, isLot } = req.body;
         const db = makeDb();
         console.log('m ID', id);
         console.log('grade ', grade);
 
-        let formArray = await getFormsByVendorId(db, vendorId);
+        let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds, isLot);
         if (!formArray.length) {
             res.status(200).json({ volunteeringInYear: [], classList: [], formArray: [] });
             return;
@@ -45,6 +45,9 @@ router.post("/", async (req, res) => {
         let classQualifier = '';
         if (classId && classId != 'id_0') {
             classQualifier = ' and c2.app_grp_id = UUID_TO_BIN(?) ';
+            if(isLot) {
+                classQualifier = `${classQualifier} and  app.class_teacher LIKE concat('%',BIN_TO_UUID(c2.app_grp_id,'%')) `;
+            }
             queryParam.push(classId);
         }
 
@@ -61,7 +64,7 @@ router.post("/", async (req, res) => {
         let query = 
             "select a.sum_volunteer_hours as volunteer_hours, " + 
                 "b.ch_id " + 
-            "from child b " + 
+            "from application app, vendor_app_groups vag, child b " + 
             "inner join ( " + 
                 "Select a2.child_id, SUM(a2.volunteer_hours) as sum_volunteer_hours " + 
                 getClassesTableQuery + classQualifier +
@@ -70,9 +73,19 @@ router.post("/", async (req, res) => {
              //  "and b.id2 = ? and c.vendor = b.id and a.app_group_id = c.app_grp_id " +
                 "Group by a2.child_id " +
             ") as a on b.ch_id = a.child_id " + gradeQualifier;
-        console.log('Query ', query);
-        console.log('Param ', queryParam);
+     
+        console.log('Volunterring Hours Query ', query);
+
+        console.log('Volunterring Hours queryParam ', queryParam);
+        if(isLot) { 
+            query = `${query} WHERE app.child=b.ch_id AND app.is_lot=1`
+
+        }
+    
         const response =  await db.query(query, queryParam);
+
+
+    
         console.log('Volunteering ', response);
 
         let buckets = [ "No Volunteering", "0-10 Hours", "10-40 Hours", "More than 40 Hours" ];

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
-const apiCallTests = async (vendorId, id, testName, grade, formId, classId, lotVendorId2s) => {
+const apiCallTests = async (vendor, id, testName, grade, formId, classId, lotVendorId2s) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/tests`, {
@@ -20,8 +20,9 @@ const apiCallTests = async (vendorId, id, testName, grade, formId, classId, lotV
             'id': id,
             'testName': testName, 
             'grade' : grade,
-            'vendorId' : vendorId,
-            'formId' : formId,
+            'vendorId' : vendor?.id2,
+            'isLot' : vendor?.is_lot,
+            'formId' :  vendor?.is_lot ? 'lotid_0' : formId,
             'classId' : classId, 
             'lotVendorIds': lotVendorId2s
         }) // body data type must match "Content-Type" header
@@ -30,7 +31,7 @@ const apiCallTests = async (vendorId, id, testName, grade, formId, classId, lotV
 }
 
 const Tests = props => {
-    const { auth, vendors, lotVendorId2s } = props;
+    const { auth, vendors, lotVendorId2s, selectedVendor } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -45,7 +46,9 @@ const Tests = props => {
         if (auth && auth.user_id) {
             triggerApiCallTests(auth.user_id, testName, grade, 'fid_0', 'id_0');
         }
-    }, [auth]);
+    }, [auth, selectedVendor]);
+
+    console.log('selectedVendor',selectedVendor)
 
     const triggerApiCallTests = async (id, testName, grade, formId, classId) => {
         console.log('triggerApiCallTests', testName, grade);
@@ -56,8 +59,8 @@ const Tests = props => {
                 return;
             }
             setIsLoading(true);
-            const vendorId = vendors[0].id2; 
-            const res = await apiCallTests(vendorId, id, testName, grade, formId, classId, lotVendorId2s);
+            // const vendorId = selectedVendor?.id2;/// vendors[0].id2; 
+            const res = await apiCallTests(selectedVendor, id, testName, grade, formId, classId, lotVendorId2s);
             console.log('apiCall tests ', res)
             if (!res.classList) {
                 setClassList([]);

@@ -550,13 +550,17 @@ export function* getVendorById2({ id2 }) {
 export function* getVendor(action) {
   console.log("ACTION", action);
   try {
-    console.log("getVendor!!!!!!!! ser", action.user);
     const vendors = yield call(getVendorFromDatabase, action.user, action.withApplications);
     // const sortedVendors = vendors.sort((a,b) => a.id2 - b.id2);
-
+    const formattedVendors = vendors.map(item => {
+      return {
+        ...item,
+        is_lot: item.name.includes('LOT')
+      }
+    })
     yield put({
       type: actionType.REQUEST_VENDOR_COMPLETED,
-      payload: vendors
+      payload: formattedVendors
     });
   } catch (err) {
     console.log("err", err);

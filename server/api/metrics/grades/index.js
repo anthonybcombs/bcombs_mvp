@@ -11,12 +11,13 @@ const router = express.Router();
 router.post("/", async (req, res) => {
 
     try {
-        const { id, year, grade, vendorId, formId, classId , lotVendorIds } = req.body;
+        const { id, year, grade, vendorId, formId, classId , lotVendorIds, isLot } = req.body;
         const db = makeDb();
 
-        console.log('vendorId ', vendorId);
+        console.log('vendorIdddd22 ', vendorId);
 
-        let formArray = await getFormsByVendorId(db, vendorId);
+        let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds, isLot);
+      
         if (!formArray.length) {
             res.status(200).json({ grades: [], classList: [], formArray: [] });
             return;
@@ -40,7 +41,7 @@ router.post("/", async (req, res) => {
 
         if (formId && formId === 'lotid_0') {
             fromClause = "FROM vendor a, vendor_app_groups b, student_grade_cumulative c, child ch, application app ";
-            whereClause = "WHERE a.id2 = ? and b.vendor = a.id and c.app_group_id = b.app_grp_id AND app.child=c.child_id AND  c.child_id = ch.ch_id AND app.is_lot=1  ";
+            whereClause = "WHERE a.id2 = ? and b.vendor = a.id and c.app_group_id = b.app_grp_id AND app.child=c.child_id  AND app.class_teacher LIKE concat('%',BIN_TO_UUID(b.app_grp_id,'%')) AND app.is_lot=1  ";
             queryParam = [vendorId, dtLastTxt, dtNextTxt];
         }
 
@@ -79,8 +80,8 @@ router.post("/", async (req, res) => {
             //"where a.id2 = ? and b.vendor = a.id and c.app_group_id = b.app_grp_id " +
             whereClause +
                 " and c.school_year_start >= ? and c.school_year_start < ? " + gradeQualifier; 
-       console.log('Query ', query);
-       console.log('Param ', queryParam);
+       console.log('GRADESS QUERYYYYYYYYYYYYYYYYYYYY ', query);
+       console.log('GRADESS QUERYYYYYYYYYYYYYYYYYYYY Param ', queryParam);
        const response =  await db.query(query, queryParam);
        console.log('gradesssss', response);
 

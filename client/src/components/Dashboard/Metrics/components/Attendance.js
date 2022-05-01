@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
-const apiCallAttendance = async (vendorId, id, year, grade) => {
+const apiCallAttendance = async (vendor, id, year, grade) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/attendance`, {
@@ -20,14 +20,15 @@ const apiCallAttendance = async (vendorId, id, year, grade) => {
             'id': id,
             'year': year, 
             'grade' : grade,
-            'vendorId' : vendorId
+            'vendorId' : vendor?.id2,
+            'isLot': vendor?.is_lot,
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
 }
 
 const Attendance = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, selectedVendor } = props;
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [year, setYear] = useState('2021');
     const [grade, setGrade] = useState('all');
@@ -37,7 +38,7 @@ const Attendance = props => {
         if (auth && auth.user_id) {
             triggerApiCallAttendance(auth.user_id, year, grade);
         }
-    }, [auth, vendors]);
+    }, [auth, vendors, selectedVendor]);
     console.log('vendors 2',vendors)
 
     const triggerApiCallAttendance = async (id, year, newGrade) => {
@@ -46,9 +47,9 @@ const Attendance = props => {
                 defineChart(null);
                 return;
             }
-            const vendorId = vendors[0].id2; 
-            console.log("vendorId", vendorId)
-            const res = await apiCallAttendance(vendorId, id, year, newGrade);
+            // const vendorId = selectedVendor;// vendors[0].id2; 
+         
+            const res = await apiCallAttendance(selectedVendor, id, year, newGrade);
             console.log('apiCall attendance ', res)
             if (res && res.attendance) {
                 defineChart(res.attendance, newGrade);

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Charts from './Charts';
 import Loading from "../../../../helpers/Loading.js";
 
-const apiCallClassReportData = async (id, year, vendorId, formId) => {
+const apiCallClassReportData = async (id, year, vendor, formId) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/classes`, {
@@ -21,8 +21,9 @@ const apiCallClassReportData = async (id, year, vendorId, formId) => {
         body: JSON.stringify({
             'id': id,
             'year': year,
-            'vendorId': vendorId,
-            'formId' : formId
+            'vendorId': vendor?.id2,
+            'isLot': vendor?.is_lot,
+            'formId' :  vendor?.is_lot ? 'lotid_0' : formId,
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
@@ -32,7 +33,7 @@ const apiCallClassReportData = async (id, year, vendorId, formId) => {
 
 
 const ClassReports = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, selectedVendor } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [formList, setFormList] = useState([]);
     const [tempOptionsData, setTempOptionsData] = useState([]);
@@ -49,8 +50,8 @@ const ClassReports = props => {
                 return;
             }
             setIsLoading(true);
-            const vendorId = vendorsIn[0].id2; 
-            const res = await apiCallClassReportData(id, year, vendorId, formId);
+            const vendorId = selectedVendor?.id2; // vendorsIn[0].id2; 
+            const res = await apiCallClassReportData(id, year, selectedVendor, formId);
             console.log('apiCall classes ', res)
             if (!res.formArray) {
                 setFormList([]);
@@ -130,7 +131,7 @@ const ClassReports = props => {
             setYear(2021);
             triggerApi2(auth.user_id, year, vendors);
         }
-    }, [auth, vendors]);
+    }, [auth, vendors, selectedVendor]);
 
     const yearChange =(event) => {
         setYear(event.target.value);

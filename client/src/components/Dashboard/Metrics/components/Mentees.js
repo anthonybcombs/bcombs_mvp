@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Charts from './Charts';
 
-const apiCall2 = async (vendorId, id, year) => {
+const apiCall2 = async (vendor, id, year) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/mentee`, {
@@ -18,7 +18,8 @@ const apiCall2 = async (vendorId, id, year) => {
         redirect: 'follow', // manual, *follow, error
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify({
-            'vendorId' : vendorId,
+            'vendorId' : vendor?.id2,
+            'isLot' : vendor?.is_lot,
             'id': id,
             'year': year
         }) // body data type must match "Content-Type" header
@@ -27,7 +28,7 @@ const apiCall2 = async (vendorId, id, year) => {
 }
 
 const Mentees = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, selectedVendor } = props;
 
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [year, setYear] = useState('2021');
@@ -40,8 +41,8 @@ const Mentees = props => {
                 defineChart(null);
                 return;
             }
-            const vendorId = vendors[0].id2; //TODO: add support for user in multiple vendors
-            const res = await apiCall2(vendorId, id, year);
+            // const vendorId = selectedVendor?.id2; // vendors[0].id2; //TODO: add support for user in multiple vendors
+            const res = await apiCall2(selectedVendor, id, year);
             console.log('apiCall mentee ', res)
             if (res && res.menteePerYear) {
                 //setCurrentUser(res.user);
@@ -133,7 +134,7 @@ const Mentees = props => {
             setYear(2021);
             triggerApi2(auth.user_id, year);
         }
-    }, [auth]);
+    }, [auth, selectedVendor]);
 
     const yearChange =(event) => {
         setYear(event.target.value);

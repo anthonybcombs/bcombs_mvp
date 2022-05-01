@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Charts from './Charts';
 import Loading from "../../../../helpers/Loading.js";
 
-const apiCallClassAttendance = async (vendorId, id, year, formId, lotVendorId2s = []) => {
+const apiCallClassAttendance = async (vendor, id, year, formId, lotVendorId2s = []) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/class_attendance`, {
@@ -20,8 +20,9 @@ const apiCallClassAttendance = async (vendorId, id, year, formId, lotVendorId2s 
         body: JSON.stringify({
             'id': id,
             'year': year, 
-            'vendorId' : vendorId,
-            'formId' : formId,
+            'vendorId' : vendor?.id2,
+            'isLot': vendor?.is_lot,
+            'formId' :  vendor?.is_lot ? 'lotid_0' : formId,
             'lotVendorIds': lotVendorId2s
         }) // body data type must match "Content-Type" header
     });
@@ -29,7 +30,7 @@ const apiCallClassAttendance = async (vendorId, id, year, formId, lotVendorId2s 
 }
 
 const ClassAttendance = props => {
-    const { auth, vendors, lotVendorId2s = [] } = props;
+    const { auth, selectedVendor, vendors, lotVendorId2s = [] } = props;
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -40,13 +41,13 @@ const ClassAttendance = props => {
     const [isLoading, setIsLoading] = useState(true)
     const [subHeaderText, setSubHeaderText] = useState('');
     const chart = useRef();
-
+ 
     useEffect(() => {
         if (auth && auth.user_id) {
             triggerApiCallAttendance(auth.user_id, year, 'fid_0', 'id_0');
         }
-    }, [auth, vendors]);
-    console.log('vendors 2',vendors)
+    }, [auth, vendors, selectedVendor]);
+   
 
     const triggerApiCallAttendance = async (id, year, formId, class_id) => {
         try {
@@ -57,25 +58,29 @@ const ClassAttendance = props => {
                 return;
             }
             setIsLoading(true);
-            const vendorId = vendors[0].id2; 
+            // const vendorId = selectedVendor?.id2;/// vendors[0].id2; 
             console.log("vendorId", vendorId)
-            const res = await apiCallClassAttendance(vendorId, id, year, formId, lotVendorId2s);
+            const res = await apiCallClassAttendance(selectedVendor, id, year, formId, lotVendorId2s);
             console.log('apiCall attendance ', res);
             if (res && res.classStats && res.classStats['id_0']) {
                 let classIdLocal = class_id;
                 if (!res.classStats[classIdLocal]) {
                     classIdLocal = 'id_0';
                 }
-                if (!res.classList) {
+                if (!res.classList || res.classList.length === 0) {
                     setClassList([]);
                 }
                 else {
                     setClassList(res.classList);
+                
                 }
-                if (!res.formArray) {
+
+                if (!res.formArray || res.formArray.length === 0) {
+                    console.log('apiCall attendance 2222');
                     setFormList([]);
                 }
                 else {
+                    console.log('apiCall attendance 3333', res.formArray);
                     setFormList(res.formArray);
                 }
                 setClassId('id_0');
@@ -84,9 +89,13 @@ const ClassAttendance = props => {
                 setClassIdToValue(classIdLocal, res.classStats[classIdLocal]) 
             }
             else {
-                if (res && res.classList) {
-                    setClassList(res.classList);
-                }
+                // if (res && res.classList) {
+                //     setClassList(res?.classList || []);
+                // }
+
+                setClassList(res?.classList || []);
+                setFormList(res?.formArray || []);
+            
                 defineChart(null);
             }
             setIsLoading(false);
@@ -183,6 +192,7 @@ const ClassAttendance = props => {
         setClassId(classIdIn);
     }
 
+    console.log('formListtttttttttttttt',formList)
     return <div style={{ padding: 24 }}>                
             <div className="grid grid-2b">
                 <div className="top-left">

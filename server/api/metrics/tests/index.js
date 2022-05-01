@@ -29,16 +29,21 @@ router.post("/", async (req, res) => {
             }
             else if(formId === 'lotid_0') {
                 fromClause = "From  vendor a, vendor_app_groups a2, vendor_app_groups_to_student b, student_standardized_test c, child ch, application app ";
-                whereClause = "where a.id2 = ? AND  a2.vendor = a.id AND b.app_grp_id = a2.app_grp_id and c.child_id = ch.ch_id  AND ch.ch_id=app.child  AND app.is_lot=1  ";
+                whereClause = "where a.id2 = ? AND  a2.vendor = a.id AND b.app_grp_id = a2.app_grp_id and c.child_id = ch.ch_id  AND ch.ch_id=app.child  AND app.class_teacher LIKE concat('%',BIN_TO_UUID(b.app_grp_id,'%'))  AND app.is_lot=1  ";
                 queryParam = [ vendorId,testName, dtLastTxt, dtNextTxt];
             }
 
-    
-            if (classId && classId != 'id_0') {
+
+            if ((classId &&   classId != 'id_0') && formId !== 'lotid_0') {
                 fromClause = "From vendor_app_groups_to_student b, student_standardized_test c ";
                 whereClause = "where b.app_grp_id = UUID_TO_BIN(?) and c.child_id = b.child_id ";
                 queryParam = [classId, testName, dtLastTxt, dtNextTxt];
             }
+            // else if((classId && classId != 'id_0') && formId === 'lotid_0' ) {
+            //     fromClause = "From vendor a, vendor_app_groups_to_student b, student_standardized_test c ";
+            //     whereClause = "where a.id2 = ? AND b.app_grp_id = UUID_TO_BIN(?) AND c.child_id = b.child_id ";
+            //     queryParam = [vendorId, classId];
+            // }
     
              let gradeTable = '';
              let gradeQualifier = '';
@@ -77,10 +82,10 @@ router.post("/", async (req, res) => {
 
 
     try {
-        const { id, grade, vendorId, testName, formId, classId, lotVendorIds } = req.body;
+        const { id, grade, vendorId, testName, formId, classId, lotVendorIds, isLot } = req.body;
         const db = makeDb();
 
-        let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds);
+        let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds, isLot);
         if (!formArray.length) {
             res.status(200).json({ avgTestResults: [], classList: [], formArray: [] });
             return;
@@ -92,7 +97,7 @@ router.post("/", async (req, res) => {
             res.status(200).json({ avgTestResults: [], classList: [], formArray: formArray });
             return;
         }
-        console.log('got class list');
+        console.log('got class list', classList);
 
 
         let returnData = [];

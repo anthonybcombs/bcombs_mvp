@@ -10,12 +10,12 @@ const router = express.Router();
 router.post("/", async (req, res) => {
 
     try {
-        const { id, year, vendorId, formId } = req.body;
+        const { id, year, vendorId, formId, lotVendorIds,isLot } = req.body;
         const db = makeDb();
         console.log('m ID', id);
         console.log('vendorrrrrrrrrrrrrrr ', vendorId);
 
-        let formArray = await getFormsByVendorId(db, vendorId);
+        let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds, isLot);
         if (!formArray.length) {
             res.status(200).json({ classData: [], formArray: [] });
             return;
@@ -45,6 +45,7 @@ router.post("/", async (req, res) => {
             AND app.child=a.child_id
             AND app.child=ch.ch_id
             AND app.is_lot=1
+            AND app.class_teacher LIKE concat('%',BIN_TO_UUID(b.app_grp_id,'%'))
             GROUP BY b.app_grp_id`
             queryParam = [vendorId];
         }
@@ -57,7 +58,8 @@ router.post("/", async (req, res) => {
             queryParam = [formId];
         }
 
-        console.log('Query ', query);
+        console.log('Classes Query ', query);
+        console.log('Classes Query queryParam', queryParam);
         const response = await db.query(query, queryParam);
         console.log('student counts ', response);
 

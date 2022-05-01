@@ -55,11 +55,11 @@ router.post("/", async (req, res) => {
     }
     
     try {
-        const { id, year, vendorId, formId, lotVendorIds } = req.body;
+        const { id, year, vendorId, formId, lotVendorIds, isLot } = req.body;
         const db = makeDb();
         console.log('year ', year);
 
-        let formArray = await getFormsByVendorId(db, vendorId);
+        let formArray = await getFormsByVendorId(db, vendorId, isLot);
         if (!formArray.length) {
             res.status(200).json({ classStats: [], formArray: [] });
             return;
