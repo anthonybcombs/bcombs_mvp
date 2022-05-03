@@ -189,9 +189,9 @@ const Metrics = props => {
 
   
           </div>
-          {selectedLabel === 'attendance' && <Attendance auth={auth} selectedVendor={selectedVendor}  vendors={vendors} />}
+          {selectedLabel === 'attendance' && <Attendance auth={auth} selectedVendor={selectedVendor}  vendors={vendors} lotVendorId2s={lotVendorId2s}  />}
           {selectedLabel === 'class_attendance' && <ClassAttendance auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
-          {selectedLabel === 'mentees' && <Mentees auth={auth} selectedVendor={selectedVendor} vendors={vendors} />}
+          {selectedLabel === 'mentees' && <Mentees auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
           {selectedLabel === 'classes' && <ClassReport auth={auth} selectedVendor={selectedVendor} vendors={vendors} />}
           {selectedLabel === 'tests' && <Tests auth={auth} selectedVendor={selectedVendor}  vendors={vendors} lotVendorId2s={lotVendorId2s} />}
           {selectedLabel === 'grades' && <Grades auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}

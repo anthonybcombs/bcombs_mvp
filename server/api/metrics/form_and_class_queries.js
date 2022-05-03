@@ -116,9 +116,9 @@ export function getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lo
         getClassesTableQuery = "From attendance a2, vendor b2, vendor_app_groups c2 , child ch, application app " +
             "where " + yearClause +
             "(b2.id2 IN (" + lotVendorIds.join(',') + ") OR b2.id2 = ?)  and c2.vendor = b2.id and " +
-             ///  "a2.app_group_id = c2.app_grp_id  and " +
-            //  "a2.child_id = ch.ch_id and " +
-            "ch.ch_id = app.child and " +
+            //    "a2.app_group_id = c2.app_grp_id  and " +
+            // " a2.child_id = ch.ch_id and " +
+            " ch.ch_id = app.child and " +
             "app.is_lot = 1 "
       
 

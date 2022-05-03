@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Charts from './Charts';
 import Loading from "../../../../helpers/Loading.js";
 
-const apiCallVolunteering = async (vendor, id, year, grade, formId, classId, lotVendorId2s) => {
+const apiCallVolunteering = async (vendor, id, year, grade, formId, classId, lotVendorIds = []) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/volunteering`, {
@@ -25,7 +25,7 @@ const apiCallVolunteering = async (vendor, id, year, grade, formId, classId, lot
             'grade' : grade,
             'formId' :  vendor?.is_lot ? 'lotid_0' : formId,
             'classId' : classId,
-            'lotVendorIds': lotVendorId2s
+            'lotVendorIds': lotVendorIds
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
@@ -59,7 +59,7 @@ const VolunteerHours = props => {
                 return;
             }
             setIsLoading(true);
-            const vendorId = selectedVendor;// vendors[0].id2; 
+          
             const res = await apiCallVolunteering(selectedVendor, id, year, grade, formId, classId, lotVendorId2s);
             console.log('apiCall volunteering ', res)
             if (!res.classList) {
