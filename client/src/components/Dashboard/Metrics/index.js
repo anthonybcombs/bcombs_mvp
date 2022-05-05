@@ -153,13 +153,13 @@ const Metrics = props => {
         <div>
           <div>
             <select
-              className="custom-default-select"
+          ///    className="custom-default-select"
               style={{
                 "marginLeft": "20px",
                 "fontSize": "1.5em",
                 "borderRadius": "0",
                 "cursor": "pointer",
-                "width": "100%",
+                "width": "60%",
                 "display": "block",
                 "background": "transparent",
                 "border": "0",
