@@ -20,7 +20,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
 
-export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors, selectedChild, isParent = false }) => {
+export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors, selectedChild, isParent = false, vendorId}) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -653,8 +653,12 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
         newGradeList = newGradeList.filter(e => !e.form_contents);
 
         if (type === 'all') {
-          if (vendors && vendors[0] && vendors[0].app_groups) {
-            const grpIds = vendors[0].app_groups.map(item => item.app_group_id);
+          const currentVendor = Array.isArray(vendors) && vendors.find(item => item.id === vendorId);
+          console.log('currentVendor222',currentVendor)
+          console.log('currentVendor222 vendorId',vendorId)
+          console.log('currentVendor222 newGradeList',newGradeList)
+          if (currentVendor && currentVendor.app_groups) {
+            const grpIds = currentVendor.app_groups.map(item => item.app_group_id);
             newGradeList = newGradeList.filter(item => grpIds.includes(item.app_group_id));
           }
 
@@ -736,9 +740,10 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
 
     if (type === 'all') {
-      if (vendors && vendors[0] && vendors[0].app_groups) {
+      const currentVendor = Array.isArray(vendors) && vendors.find(item => item.id === vendorId);
+      if (currentVendor  && currentVendor.app_groups) {
 
-        const grpIds = vendors[0].app_groups.map(item => item.app_grp_id);
+        const grpIds = currentVendor.app_groups.map(item => item.app_grp_id);
 
         selectStudentRows = applications.filter(application => {
           const classTeachers = application.class_teacher && application.class_teacher.split(',');

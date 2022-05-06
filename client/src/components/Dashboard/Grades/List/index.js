@@ -27,7 +27,7 @@ export default () => {
   }))
 
   const queryLocation = useLocation();
-	const { group_id, group_type, request_type } = parse(queryLocation.search)
+	const { group_id, group_type, request_type, vendor} = parse(queryLocation.search)
   const isVendor = request_type === 'vendor'
   const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
@@ -589,7 +589,7 @@ export default () => {
               <>
                 {
                   (group_id || group_type) && (
-                    <Link to={'/dashboard/studentdata'} className='back-btn'>
+                    <Link to={`/dashboard/studentdata${vendor ? `?vendor=${vendor}` : ''}`} className='back-btn'>
                       <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
                       Back
                     </Link>

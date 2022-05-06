@@ -25,15 +25,15 @@ import { requestAttendance, requestUpdateAttendance } from '../../../../redux/ac
 import { requestVendor } from '../../../../redux/actions/Vendors';
 import {
 	requestGetApplications,
-	requestGetCustomApplications,
+	// requestGetCustomApplications,
 	requestGetCustomApplicationByVendor,
 } from '../../../../redux/actions/Application';
 import { requestUserGroup } from '../../../../redux/actions/Groups';
-import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
+//// import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
 
 import ProfileImg from '../../../../images/defaultprofile.png';
 
-import CustomDatePicker from '../../../../helpers/CustomDatePicker';
+//// import CustomDatePicker from '../../../../helpers/CustomDatePicker';
 import Confirmation from '../../../../helpers/Confirmation';
 
 
@@ -757,9 +757,11 @@ export default function index() {
 		} else {
 			if (vendors.length > 0 && name !== 'all') {
 				let currentAppGroupId = '';
-				let currentAppGroupName = '';
-				if (vendors[0] && vendors[0].app_groups) {
-					const applicationGroups = vendors[0].app_groups;
+				let currentAppGroupName = ''
+				let vendorId = parseInt(vendor_id);
+				let currentVendor = vendors.find(item => item.id2 === vendorId)
+				if (currentVendor && currentVendor.app_groups) {
+					const applicationGroups = currentVendor.app_groups;
 					for (const group of applicationGroups) {
 						if (group.name.trim() === name.trim()) {
 							currentAppGroupId = group.app_grp_id;
@@ -772,8 +774,10 @@ export default function index() {
 					setAppGroupName(currentAppGroupName);
 				}
 			} else if (name === 'all') {
-				if (vendors[0] && vendors[0].app_groups) {
-					const applicationGroups = vendors[0].app_groups;
+				let vendorId = parseInt(vendor_id);
+				let currentVendor = vendors.find(item => item.id2 === vendorId)
+				if (currentVendor && currentVendor.app_groups) {
+					const applicationGroups = currentVendor.app_groups;
 					const ids = applicationGroups.map(item => item.app_grp_id);
 					setAppGroupIds(ids);
 					setAppGroupId('all');
@@ -890,7 +894,7 @@ export default function index() {
 			setApplicationList(defaultApplicationList);
 			const redirect = () => {
 				setTimeout(() => {
-					window.location.replace(`/dashboard/studentdata`);
+					window.location.replace(`/dashboard/studentdata${vendor_id ? `?vendor=${vendor_id}` : ''}`);
 				}, 2000);
 				//window.location.replace(`/dashboard/studentdata`);
 			};
@@ -1177,8 +1181,11 @@ export default function index() {
 				return classTeacher && classTeacher.includes(item.app_grp_id)
 			});
 
-			if (!currentGroup && vendors && vendors[0]) {
-				currentGroup = vendors[0].app_groups && vendors[0].app_groups.find(appGrp => {
+			let vendorId = parseInt(vendor_id);
+			let currentVendor = vendors.find(item => item.id2 === vendorId)
+
+			if (!currentGroup && currentVendor) {
+				currentGroup = currentVendor.app_groups && currentVendor.app_groups.find(appGrp => {
 					const classTeacher = app.class_teacher && app.class_teacher.split(',');
 					return classTeacher && classTeacher.includes(appGrp.app_grp_id)
 				});
@@ -1329,7 +1336,7 @@ export default function index() {
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
 			<div id="attendanceContainer" style={{ marginTop: 12 }}>
-				<Link to={'/dashboard/studentdata'} className="back-btn">
+				<Link to={`/dashboard/studentdata${vendor_id ? `?vendor=${vendor_id}` : ''}`} className="back-btn">
 					<FontAwesomeIcon className="back-icon" icon={faAngleLeft} />
 					Back
 				</Link>

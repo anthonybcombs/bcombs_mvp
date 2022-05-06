@@ -1941,28 +1941,28 @@ export default function index() {
       return '';
     }
   }
-
+  console.log('selectedVendorrrr',selectedVendor)
   const handleDuplicateVendor = () => {
 
     if (selectedForm == "default" || selectedForm == "lot") {
-      const payload = {
-        user: auth.user_id,
-        name: selectedVendor.name,
-        section1_text: selectedVendor.section1_text,
-        section2_text: selectedVendor.section2_text,
-        section3_text: selectedVendor.section3_text,
-        section1_name: selectedVendor.section1_name,
-        section2_name: selectedVendor.section2_name,
-        section3_name: selectedVendor.section3_name,
-        section1_show: selectedVendor.section1_show,
-        section2_show: selectedVendor.section2_show,
-        section3_show: selectedVendor.section3_show,
-        logo: selectedVendor.logo,
-        is_daycare: selectedForm == "lot" ? 2 : selectedVendor.is_daycare, 
-      }
+      // const payload = {
+      //   user: auth.user_id,
+      //   name: selectedVendor.name,
+      //   section1_text: selectedVendor.section1_text,
+      //   section2_text: selectedVendor.section2_text,
+      //   section3_text: selectedVendor.section3_text,
+      //   section1_name: selectedVendor.section1_name,
+      //   section2_name: selectedVendor.section2_name,
+      //   section3_name: selectedVendor.section3_name,
+      //   section1_show: selectedVendor.section1_show,
+      //   section2_show: selectedVendor.section2_show,
+      //   section3_show: selectedVendor.section3_show,
+      //   logo: selectedVendor.logo,
+      //   is_daycare: selectedForm == "lot" ? 2 : selectedVendor.is_daycare, 
+      // }
 
 
-      dispatch(requestCreateVendor(payload));
+      // dispatch(requestCreateVendor(payload));
     } else {
       let selectedFormDetails = renderForms.filter(f => f.form_id == selectedForm)[0];
 

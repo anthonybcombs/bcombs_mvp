@@ -4,8 +4,10 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faMinusCircle, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { uuid } from 'uuidv4';
-import { getHours, max } from 'date-fns';
+import { useLocation } from "@reach/router";
+// import { uuid } from 'uuidv4';
+// import { getHours, max } from 'date-fns';
+import { parse } from "query-string";
 
 import { requestGetApplications, requestGetCustomApplicationByVendor } from '../../../redux/actions/Application';
 import { requestGetForms } from '../../../redux/actions/FormBuilder';
@@ -214,6 +216,8 @@ export default function index(props) {
 			return { applications, groups, auth, vendors, loading, form };
 		}
 	);
+	const location = useLocation();
+	const queryParams = parse(location.search);
 
 	const { formAppGroups = [], formList = [] } = form;
 	const [formIds, setFormIds] = useState([]);
@@ -222,6 +226,7 @@ export default function index(props) {
 	const [search, setSearch] = useState('')
 	const [selected, setSelected] = useState([])
 	const [showArchived, setShowArchived] = useState(false)
+	const [isLot, setIsLot] = useState(false)
 	// appGroups = appGroups.filter((group) => {
 	//   return group.vendor == vendor.id;
 	// })
@@ -242,8 +247,27 @@ export default function index(props) {
 	}, []);
 
 	useEffect(() => {
-		if (vendors && vendors[0]) {
+	
+		if(queryParams.vendor && Array.isArray(vendors)) {
+			const vendorId =  parseInt(queryParams.vendor);
+			const currentVendor = vendors.find(item => item.id2 === vendorId);
+		
+	
+			if(currentVendor) {
+		
+				setSelectedVendor(currentVendor);
+				setIsLot(currentVendor.name.includes('LOT') ? true : false);
+				setAppGroups(currentVendor.app_groups);
+				dispatch(requestGetCustomApplicationByVendor(currentVendor.id));
+				dispatch(requestGetApplications(currentVendor.id));
+				dispatch(requestVendorAppGroups(currentVendor.id));
+				dispatch(requestGetForms({ vendor: currentVendor.id, currentUser: auth.user_id, isOwner: !!(auth.user_id == currentVendor.user), categories: [] }));
+			}
+		
+		}
+		else if (vendors && vendors[0]) {
 			setSelectedVendor(vendors[0]);
+			setIsLot( vendors[0].name.includes('LOT') ? true : false);
 			setAppGroups(vendors[0].app_groups);
 			dispatch(requestGetCustomApplicationByVendor(vendors[0].id));
 			dispatch(requestGetApplications(vendors[0].id));
@@ -376,7 +400,7 @@ export default function index(props) {
 				availableCount = availableCount < 0 ? 0 : availableCount;
 				
 				return searched([
-					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : 'Mentoring Application',
+					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : isLot ? 'LOT Form' :  'Mentoring Application',
 					classCount.toString(), count.toString()
 				]) ? (
 					<tr key={group.id} className={`${archived ? 'archived' : ''}_${showArchived ? 'show' : 'hide'}`}>
@@ -395,7 +419,7 @@ export default function index(props) {
 						<td>
 							{formGroup && formGroup.form_contents
 								? formGroup.form_contents?.formTitle
-								: 'Mentoring Application'}
+								: isLot ? 'LOT Form' : 'Mentoring Application'}
 						</td>
 						<td>
 							{group.name}
@@ -414,11 +438,11 @@ export default function index(props) {
 						<td>
 							{formGroup && formGroup.form_contents
 								? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms' + `&appGroupId=${group.app_grp_id}`}>Input</Link>
-								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>Input</Link>
+								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${queryParams.vendor}`}>Input</Link>
 							} /
 							{formGroup && formGroup.form_contents
 								? <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=forms'}>View</Link>
-								: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>View</Link>
+								: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${queryParams.vendor}`}>View</Link>
 							}
 						</td>
 					</tr>
@@ -648,10 +672,10 @@ export default function index(props) {
 									</tr> */}
 
 									{
-										searched(['Mentoring Application', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
+										searched([isLot ? 'LOT Form' : 'Mentoring Application', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
 											<tr>
 												<td />
-												<td>Mentoring Application</td>
+												<td>{isLot ? 'LOT Form' : 'Mentoring Application'}</td>
 												<td>
 													All
 													<div>{getDefaultClassCount()} / {getDefaultTotalCount()}</div>
@@ -662,8 +686,8 @@ export default function index(props) {
 													<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link>
 												</td>
 												<td>
-													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all`}>Input</Link> /
-													<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all`}>View</Link>
+													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${queryParams.vendor}`}>Input</Link> /
+													<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${queryParams.vendor}`}>View</Link>
 												</td>
 											</tr>
 										)
