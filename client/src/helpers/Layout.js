@@ -14,6 +14,8 @@ import {
   useLocation,
 } from "@reach/router";
 import Popover, { ArrowContainer } from "react-tiny-popover";
+import { parse } from "query-string";
+
 import Logo from "../images/logo1.png";
 import LotLogo from "../images/lot.jpg";
 import { requestLogout } from "../redux/actions/Auth";
@@ -210,7 +212,11 @@ export default function Layout({ children }) {
     }, 5000)
   }, [])
 
-  const location = useLocation();
+  // const location = useLocation();
+  // const queryParams = parse(location.search);
+  const urlParams = new URLSearchParams(window.location.search);
+  const vendorId = urlParams.get('vendor');
+
 
   const [showLoginBox, setShowLoginBox] = useState(false);
 
@@ -355,7 +361,7 @@ export default function Layout({ children }) {
                               ? "selected"
                               : ""
                               }`}
-                            to="/dashboard/studentdata">
+                            to={`/dashboard/studentdata${vendorId ? `?vendor=${vendorId}` : ''}`}>
                             <span>Data</span>
                           </Link>
                           <Link
@@ -473,7 +479,8 @@ export default function Layout({ children }) {
                           ? "selected"
                           : ""
                           }`}
-                        to="/dashboard/application">
+                          
+                        to={`/dashboard/application${vendorId ? `?vendor=${vendorId}` : ''}`}>
                         <span>Application</span>
                       </Link>
                     )}
