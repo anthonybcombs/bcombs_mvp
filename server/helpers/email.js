@@ -289,12 +289,12 @@ export const sendAdminInvite = async ({
               <br/>
               Email: ${email}
               <br/>
-              Please change your password after signing in.
+              Please use your existing password to sign in. If you cannot recall your existing password, please utilize the forget password process.
               <br/>
               Thanks
             </p>
             <p>
-              To access the application, plese go to this site: https://bcombs.com/dashboard/application?vendor=${vendorId}
+              To access the application, please use the following link: https://bcombs.com/dashboard/application?vendor=${vendorId}
             </p<
           </div>
         ` // html body
