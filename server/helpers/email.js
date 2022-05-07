@@ -319,7 +319,7 @@ export const sendAdminInvite = async ({
               Thanks
             </p>
             <p>
-              To access the application, plese go to this site: https://bcombs.com/dashboard/application?vendor=${vendorId}
+              To access the application, please go to this site: https://bcombs.com/dashboard/application?vendor=${vendorId}
             </p<
           </div>
         ` // html body
