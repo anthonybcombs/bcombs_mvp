@@ -400,7 +400,7 @@ export default function index(props) {
 				availableCount = availableCount < 0 ? 0 : availableCount;
 				
 				return searched([
-					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : isLot ? 'LOT Form' :  'Mentoring Application',
+					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : isLot ? 'LOT Form' : auth && auth.nickname === 'lot' ? 'LOT Form' : 'Mentoring Application',
 					classCount.toString(), count.toString()
 				]) ? (
 					<tr key={group.id} className={`${archived ? 'archived' : ''}_${showArchived ? 'show' : 'hide'}`}>
@@ -419,7 +419,7 @@ export default function index(props) {
 						<td>
 							{formGroup && formGroup.form_contents
 								? formGroup.form_contents?.formTitle
-								: isLot ? 'LOT Form' : 'Mentoring Application'}
+								: isLot ? 'LOT Form' :   auth && auth.nickname === 'lot' ? 'LOT Form' : 'Mentoring Application'}
 						</td>
 						<td>
 							{group.name}
@@ -672,10 +672,10 @@ export default function index(props) {
 									</tr> */}
 
 									{
-										searched([isLot ? 'LOT Form' : 'Mentoring Application', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
+										searched([isLot ? 'LOT Form' :   auth && auth.nickname === 'lot' ? 'LOT Form' :  'Mentoring Application', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
 											<tr>
 												<td />
-												<td>{isLot ? 'LOT Form' : 'Mentoring Application'}</td>
+												<td>{isLot ? 'LOT Form' : auth && auth.nickname === 'lot' ? 'LOT Form' : 'Mentoring Application'}</td>
 												<td>
 													All
 													<div>{getDefaultClassCount()} / {getDefaultTotalCount()}</div>
