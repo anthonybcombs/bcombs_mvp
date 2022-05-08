@@ -127,12 +127,12 @@ const Metrics = props => {
   // vendors[0].id2
 
   useEffect(() => {
-    if(vendors && Array.isArray(vendors)) {
+    if (vendors && Array.isArray(vendors)) {
       const defaultVendor = vendors.find(item => item.is_lot);
       console.log('defaultVendorrrrrrrrr', defaultVendor)
       setSelectedVendor(defaultVendor || vendors[0]);
     }
-  },[vendors])
+  }, [vendors])
 
   // const sql_stat = "Select xyz form a, b";
   // rows = sql_run(sql_stat)
@@ -145,7 +145,7 @@ const Metrics = props => {
 
   const lotVendorId2s = Array.isArray(vendors) && vendors.filter(item => item.name.includes('LOT')).map(item => item.id2)
   /// const lotVendors =
-  console.log('selectedVendor',selectedVendor)
+  console.log('selectedVendor', selectedVendor)
   return (
     <MetricStyled>
       <div id="metrics-page" >
@@ -153,7 +153,7 @@ const Metrics = props => {
         <div>
           <div>
             <select
-          ///    className="custom-default-select"
+              ///    className="custom-default-select"
               style={{
                 "marginLeft": "20px",
                 "fontSize": "1.5em",
@@ -168,14 +168,20 @@ const Metrics = props => {
                 "color": "#000000"
               }}
               onChange={({ target }) => {
-                if(target.value) {
+                if (target.value) {
                   const value = parseInt(target.value);
                   const currentVendor = vendors.find(item => {
                     return item.id2 === value
                   })
-                  setSelectedVendor(currentVendor);
+                  if (currentVendor && auth) {
+                    setSelectedVendor({
+                      ...currentVendor,
+                      is_lot:!currentVendor.is_lot ?  auth.nickname === 'lot' : currentVendor.is_lot
+                    });
+                  }
+
                 }
-                
+
 
               }}
               value={selectedVendor?.id2}
@@ -187,13 +193,13 @@ const Metrics = props => {
               ))}
             </select>
 
-  
+
           </div>
-          {selectedLabel === 'attendance' && <Attendance auth={auth} selectedVendor={selectedVendor}  vendors={vendors} lotVendorId2s={lotVendorId2s}  />}
+          {selectedLabel === 'attendance' && <Attendance auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
           {selectedLabel === 'class_attendance' && <ClassAttendance auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
           {selectedLabel === 'mentees' && <Mentees auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
           {selectedLabel === 'classes' && <ClassReport auth={auth} selectedVendor={selectedVendor} vendors={vendors} />}
-          {selectedLabel === 'tests' && <Tests auth={auth} selectedVendor={selectedVendor}  vendors={vendors} lotVendorId2s={lotVendorId2s} />}
+          {selectedLabel === 'tests' && <Tests auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
           {selectedLabel === 'grades' && <Grades auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
           {selectedLabel === 'mentoring' && <Mentoring auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
           {selectedLabel === 'volunteer_hours' && <VolunteerHours auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
