@@ -291,7 +291,6 @@ export const sendAdminInvite = async ({
               <br/>
               Please use your existing password to sign in. If you cannot recall your existing password, please utilize the forget password process.
               <br/>
-              Thanks
             </p>
             <p>
               To access the application, please use the following link: https://bcombs.com/dashboard/application?vendor=${vendorId}
