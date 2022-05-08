@@ -2,14 +2,31 @@ import express from "express";
 
 import { makeDb } from "../../../helpers/database";
 
+import { getFormsByVendorId, getClassesWithAttendanceByYearAndVendorAndFormId } from "../form_and_class_queries";
+
+
 const router = express.Router();
 
 router.post("/", async (req, res) => {
 
     try {
-        const { id, year, grade, vendorId } = req.body;
+        const { id, year, grade, formId, lotVendorIds = [], vendorId, isLot } = req.body;
         const db = makeDb();
         console.log('vendorID ', vendorId)
+        let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds, isLot);
+
+        if (!formArray.length) {
+            res.status(200).json({ classStats: [], formArray: [] });
+            return;
+        }
+
+        let classList = await getClassesWithAttendanceByYearAndVendorAndFormId(db, year, vendorId, formId, lotVendorIds);
+        
+        if (!classList.length) {
+            res.status(200).json({ classList: [], formArray: formArray });
+            return;
+        }
+
        // const response =  await db.query("SELECT id2,email FROM users where id=UUID_TO_BIN(?)", [id]);
         let dtLastTxt = '' + (year - 1) + '-08-01';
         //let dtLast = new Date(dtLastTxt);
@@ -45,7 +62,8 @@ router.post("/", async (req, res) => {
            gradeQualifier = "where b.grade_number in ( '6', '7', '8' )";
        }
        */
-
+      //  and app.class_teacher LIKE concat('%',BIN_TO_UUID(c.app_grp_id,'%'))
+       const isLotAdded = isLot && formId !== 'id_0' ? ` and app.is_lot=1 and app.class_teacher LIKE concat('%',BIN_TO_UUID(c.app_grp_id,'%')) ` : ' ';
        let query = 
            "select " + 
                 "SUM(IF(b.grade_number = '12', a2.q1, 0)) as q1Total12, " +
@@ -76,12 +94,13 @@ router.post("/", async (req, res) => {
                ", SUM(IF(a.attendance_date >= ? AND a.attendance_date < ?, 1, 0)) as q2 " + 
                ", SUM(IF(a.attendance_date >= ? AND a.attendance_date < ?, 1, 0)) as q3 " + 
                ", SUM(IF(a.attendance_date >= ?, 1, 0)) as q4 " + 
-               "FROM attendance a, vendor b, vendor_app_groups c " + 
+               "FROM attendance a, vendor b, vendor_app_groups c, application app " + 
               "where a.attendance_date >= ? and a.attendance_date < ? " + 
               "and b.id2 = ? and c.vendor = b.id and a.app_group_id = c.app_grp_id " +
+              isLotAdded + 
                "Group by a.child_id " +
            ") as a2 on b.ch_id = a2.child_id ";
-       console.log('Query ', query);
+       console.log('AttendanceQueryyyyy ', query);
        const response =  await db.query(query, queryParam);
        console.log('Attendance', response);
 
@@ -95,7 +114,7 @@ router.post("/", async (req, res) => {
            resultData.push({grade: "12", data: [row.q1Total12, row.q2Total12, row.q3Total12, row.q4Total12] });
        }
 
-        res.status(200).json({ attendance: resultData });
+        res.status(200).json({ attendance: resultData, classList, formArray });
         //res.status(200).json({ user: response && response[0] });
     } catch (error) {
 

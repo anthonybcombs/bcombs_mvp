@@ -685,7 +685,7 @@ export const addUpdateStudentCumulativeGrades = async (
       let cumulativeId = student_grade_cumulative_id;
       let currentSubjectGrades = [];
 
-      const isUserExist = cumulativeId
+      const isUserExist = cumulativeId > 0
         ? await db.query(
             `SELECT student_grade_cumulative_id,attachment
       	FROM student_grade_cumulative 

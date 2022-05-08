@@ -20,7 +20,7 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
-export default ({ applications, importData = [], childId, requestList, groupType, loading, onHasChanged, appGroupIds, type, vendors, isParent = false,selectedChild = null }) => {
+export default ({ applications, importData = [], childId, requestList, groupType, loading, onHasChanged, appGroupIds, type, vendors, isParent = false,selectedChild = null, groupId }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
@@ -837,9 +837,10 @@ export default ({ applications, importData = [], childId, requestList, groupType
     console.log('selectStudentRows', selectStudentRows)
 
     if (type === 'all') {
-      if (vendors && vendors[0] && vendors[0].app_groups) {
+      const currentVendor = Array.isArray(vendors) && vendors.find(item => item.id === groupId);
+      if (currentVendor &&  currentVendor && currentVendor.app_groups) {
 
-        const grpIds = vendors[0].app_groups.map(item => item.app_grp_id);
+        const grpIds = currentVendor.app_groups.map(item => item.app_grp_id);
 
         selectStudentRows = applications.filter(application => {
           const classTeachers = application.class_teacher && application.class_teacher.split(',');

@@ -452,7 +452,7 @@ export default function index({
   const registeredIcon = () => {
     return <span style={{ fontSize: 14, position: 'relative', top: -10 }}>®</span>
   }
- 
+
   let profile = pastChildInformation?.image || childProfile?.image || ''
   if (profile) {
     profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
@@ -826,12 +826,12 @@ export default function index({
                 </>
               )}
               <label className="field-label">
-                Ethinicity (select all choices that apply)
+                Ethnicity (select all choices that apply)
               </label>
             </div>
             <br />
             <br />
-            <input
+            {/* <input
               type="checkbox"
               name="ethnicity_select_all"
               onChange={e => {
@@ -856,7 +856,7 @@ export default function index({
 
             /> Select All
 
-            <br />
+            <br /> */}
           </div>
         </div>
 
@@ -1432,165 +1432,167 @@ export default function index({
           </div>
         </div>
 
-        <div className="grid">
-          <div className="form-group">
-            <div className="field select-field-wrapper">
-              {isReadonly ? (
-                <p
-                  className={
-                    isReadonly &&
-                      !isVendorView &&
-                      pastChildInformation &&
-                      (pastChildInformation.location_site ||
-                        pastChildInformation.location_site == "") &&
-                      pastChildInformation.location_site !=
-                      childProfile.location_site
-                      ? "field-input highlights"
-                      : "field-input"
-                  }
-                  name={"ch_location_site" + (counter - 1)}
-                  style={{
-                    // background: "white",
-                    borderBottom: "2px solid rgb(204, 204, 204) !important",
-                    resize: "none",
-                    whiteSpace: "pre-wrap",
-                    textIndent: "0",
-                    margin: "0"
-                  }}>
-                  {childProfile.location_site}
-                </p>
-              ) : (
-                <select
-                  readOnly={isReadonly}
-                  disabled={isReadonly}
-                  name={"ch_location_site" + (counter - 1)}
-                  className="field-input"
-                  onChange={({ target }) => {
-                    handleChildFormDetailsChange(
-                      counter - 1,
-                      "profile",
-                      "location_site",
-                      target.value
-                    );
-                  }}
-                  ref={register({ required: true, minLength: 5 })}
-                  defaultValue={childProfile.location_site}>
-                  <option value="">Select</option>
-                  {LOCATION_SITE_OPTIONS.map((opt, index) => (
-                    <option key={index + 1} value={opt.value}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </select>
-              )}
+        {!isLot ?
+          <div className="grid">
+            <div className="form-group">
+              <div className="field select-field-wrapper">
+                {isReadonly ? (
+                  <p
+                    className={
+                      isReadonly &&
+                        !isVendorView &&
+                        pastChildInformation &&
+                        (pastChildInformation.location_site ||
+                          pastChildInformation.location_site == "") &&
+                        pastChildInformation.location_site !=
+                        childProfile.location_site
+                        ? "field-input highlights"
+                        : "field-input"
+                    }
+                    name={"ch_location_site" + (counter - 1)}
+                    style={{
+                      // background: "white",
+                      borderBottom: "2px solid rgb(204, 204, 204) !important",
+                      resize: "none",
+                      whiteSpace: "pre-wrap",
+                      textIndent: "0",
+                      margin: "0"
+                    }}>
+                    {childProfile.location_site}
+                  </p>
+                ) : (
+                  <select
+                    readOnly={isReadonly}
+                    disabled={isReadonly}
+                    name={"ch_location_site" + (counter - 1)}
+                    className="field-input"
+                    onChange={({ target }) => {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "location_site",
+                        target.value
+                      );
+                    }}
+                    ref={register({ required: true, minLength: 5 })}
+                    defaultValue={childProfile.location_site}>
+                    <option value="">Select</option>
+                    {LOCATION_SITE_OPTIONS.map((opt, index) => (
+                      <option key={index + 1} value={opt.value}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
 
-              <label className="field-label">
-                <span className="required">*</span> Location
-              </label>
+                <label className="field-label">
+                  <span className="required">*</span> Location
+                </label>
+              </div>
+              <ErrorMessage
+                field={errors["ch_location_site" + (counter - 1)]}
+                errorType="required"
+                message="Location is required"
+              />
             </div>
-            <ErrorMessage
-              field={errors["ch_location_site" + (counter - 1)]}
-              errorType="required"
-              message="Location is required"
-            />
-          </div>
-          <div className="form-group">
-            <div className="field">
-              {isReadonly ? (
-                // <input
-                //   readOnly={isReadonly}
-                //   name={"program_" + (counter - 1)}
-                //   className="field-input"
-                //   placeholder="First Name"
-                //   onChange={({ target }) => {}}
-                //   ref={register({ required: true })}
-                //   defaultValue={readOnlyProgram}
-                // />
+            <div className="form-group">
+              <div className="field">
+                {isReadonly ? (
+                  // <input
+                  //   readOnly={isReadonly}
+                  //   name={"program_" + (counter - 1)}
+                  //   className="field-input"
+                  //   placeholder="First Name"
+                  //   onChange={({ target }) => {}}
+                  //   ref={register({ required: true })}
+                  //   defaultValue={readOnlyProgram}
+                  // />
 
-                <p
-                  className={
-                    isReadonly &&
-                      !isVendorView &&
-                      pastChildInformation &&
-                      (pastChildInformation.programs ||
-                        pastChildInformation.programs == "") &&
-                      pastChildInformation.programs !=
-                      readOnlyProgram.split("\n").join(",")
-                      ? "field-input readonly highlights"
-                      : "field-input readonly"
-                  }
-                  name={"program_" + (counter - 1)}
-                  style={{
-                    //background: "white",
-                    borderBottom: "2px solid rgb(204, 204, 204) !important",
-                    resize: "none",
-                    whiteSpace: "pre-wrap",
-                    textIndent: "0",
-                    margin: "0"
-                  }}>
-                  {readOnlyProgram}
-                </p>
-              ) : (
-                <Multiselect
-                  selectedValues={childProfile.program}
-                  className="field-input"
-                  options={PROGRAMS_OPTIONS}
-                  hasSelectAll={hasSelectAll}
-                  placeholder="Choose Multiple"
-                  displayValue="name"
-                  closeIcon="cancel"
-                  id={"program_" + (counter - 1)}
-                  name={"program_" + (counter - 1)}
-                  closeOnSelect={false}
-                  showCheckbox={true}
-                  onSelect={selectedList => {
+                  <p
+                    className={
+                      isReadonly &&
+                        !isVendorView &&
+                        pastChildInformation &&
+                        (pastChildInformation.programs ||
+                          pastChildInformation.programs == "") &&
+                        pastChildInformation.programs !=
+                        readOnlyProgram.split("\n").join(",")
+                        ? "field-input readonly highlights"
+                        : "field-input readonly"
+                    }
+                    name={"program_" + (counter - 1)}
+                    style={{
+                      //background: "white",
+                      borderBottom: "2px solid rgb(204, 204, 204) !important",
+                      resize: "none",
+                      whiteSpace: "pre-wrap",
+                      textIndent: "0",
+                      margin: "0"
+                    }}>
+                    {readOnlyProgram}
+                  </p>
+                ) : (
+                  <Multiselect
+                    selectedValues={childProfile.program}
+                    className="field-input"
+                    options={PROGRAMS_OPTIONS}
+                    hasSelectAll={hasSelectAll}
+                    placeholder="Choose Multiple"
+                    displayValue="name"
+                    closeIcon="cancel"
+                    id={"program_" + (counter - 1)}
+                    name={"program_" + (counter - 1)}
+                    closeOnSelect={false}
+                    showCheckbox={true}
+                    onSelect={selectedList => {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "program",
+                        selectedList
+                      );
+                    }}
+                    onRemove={selectedList => {
+                      handleChildFormDetailsChange(
+                        counter - 1,
+                        "profile",
+                        "program",
+                        selectedList
+                      );
+                    }}
+                  />
+                )}
+                <label className="field-label">
+                  Program
+                </label>
+              </div>
+              {/* <input
+               name="prrogram_select_all"
+                  type="checkbox"
+               onChange={e => {
+
+                  if (e.target.checked) {
                     handleChildFormDetailsChange(
                       counter - 1,
                       "profile",
                       "program",
-                      selectedList
+                      PROGRAMS_OPTIONS
                     );
-                  }}
-                  onRemove={selectedList => {
+                  }
+                  else {
                     handleChildFormDetailsChange(
                       counter - 1,
                       "profile",
                       "program",
-                      selectedList
+                      []
                     );
-                  }}
-                />
-              )}
-              <label className="field-label">
-                Program
-              </label>
+                  }
+                }}
+
+              /> Select All */}
             </div>
-            <input
-              type="checkbox"
-              name="prrogram_select_all"
-              onChange={e => {
-
-                if (e.target.checked) {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "program",
-                    PROGRAMS_OPTIONS
-                  );
-                }
-                else {
-                  handleChildFormDetailsChange(
-                    counter - 1,
-                    "profile",
-                    "program",
-                    []
-                  );
-                }
-              }}
-
-            /> Select All
           </div>
-        </div>
+          : <span />}
         {/* <div className="grid">
           <div className="form-group">
             <div className="field customMultiselect">

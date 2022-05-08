@@ -16,8 +16,8 @@ router.post("/", async (req, res) => {
             currentClassData.numSessions = 0;
             currentClassData.avgAttendance = 0;
         }
-        let totalAttendance = 
-            currentClassData.numSessions * currentClassData.numStudentsInClass * currentClassData.avgAttendance + 
+        let totalAttendance =
+            currentClassData.numSessions * currentClassData.numStudentsInClass * currentClassData.avgAttendance +
             sessionData.numAttended;
         currentClassData.numSessions++;
         currentClassData.avgAttendance = totalAttendance / (currentClassData.numSessions * currentClassData.numStudentsInClass);
@@ -30,18 +30,18 @@ router.post("/", async (req, res) => {
             return results;
         if (!currentClassData.attendanceBuckets) {
             currentClassData.attendanceBuckets = [
-                { name: '0-50% of time', y: currentClassData.numStudentsInClass},
-                { name: '51-75% of time', y: 0},
-                { name: '76-85% of time', y: 0},
-                { name: '86-100% of time', y: 0}
+                { name: '0-50% of time', y: currentClassData.numStudentsInClass },
+                { name: '51-75% of time', y: 0 },
+                { name: '76-85% of time', y: 0 },
+                { name: '86-100% of time', y: 0 }
             ];
         }
         const studentAttendanceRate = studentData.numAttended / currentClassData.numSessions;
-        if ( studentAttendanceRate <= 0.5) {
+        if (studentAttendanceRate <= 0.5) {
             return results;
         }
         currentClassData.attendanceBuckets[0].y--;
-        if ( studentAttendanceRate <= 0.75) {
+        if (studentAttendanceRate <= 0.75) {
             currentClassData.attendanceBuckets[1].y++;
         }
         else if (studentAttendanceRate <= 0.85) {
@@ -53,13 +53,13 @@ router.post("/", async (req, res) => {
         results['id_' + studentData.class_id] = currentClassData;
         return results;
     }
-    
+
     try {
-        const { id, year, vendorId, formId } = req.body;
+        const { id, year, vendorId, formId, lotVendorIds, isLot } = req.body;
         const db = makeDb();
         console.log('year ', year);
 
-        let formArray = await getFormsByVendorId(db, vendorId);
+        let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds, isLot);
         if (!formArray.length) {
             res.status(200).json({ classStats: [], formArray: [] });
             return;
@@ -83,7 +83,7 @@ router.post("/", async (req, res) => {
         }
         */
 
-        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId);
+        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lotVendorIds);
         let getClassesTableQuery = queryGroup.query;
         let queryParamForClassesQuery = queryGroup.param;
 
@@ -109,70 +109,75 @@ router.post("/", async (req, res) => {
         */
 
         //let queryStudentPerClassParam = [dtLastTxt, dtNextTxt, vendorId];
-        let queryStudentsPerClass = 
-         "SELECT count(c.app_grp_id) as numStudentsInClass, a.class_id, a.class_name " + 
-         "FROM vendor_app_groups_to_student c " +
-             "inner join ( " +
-                 "Select distinct(c2.app_grp_id) as app_group_id, c2.id as class_id, c2.name as class_name " +
-                 getClassesTableQuery +
-                 "group by c2.app_grp_id, c2.id " +
-             ") as a " +
+        const isLotAdded = isLot ? ` and app.class_teacher LIKE concat('%',BIN_TO_UUID(c2.app_grp_id,'%'))  ` : ' ';
+        let queryStudentsPerClass =
+            "SELECT count(c.app_grp_id) as numStudentsInClass, a.class_id, a.class_name " +
+            "FROM vendor_app_groups_to_student c " +
+            "inner join ( " +
+            "Select distinct(c2.app_grp_id) as app_group_id, c2.id as class_id, c2.name as class_name " +
+            getClassesTableQuery +
+            isLotAdded +
+            "  group by c2.app_grp_id, c2.id " +
+            ") as a " +
             "on a.app_group_id = c.app_grp_id " +
-         "where c.app_grp_id = a.app_group_id group by c.app_grp_id";
- 
-         //console.log('Query ****> ', queryStudentsPerClass);
-         //console.log('Q Param -> ', queryParamForClassesQuery);
-         const response =  await db.query(queryStudentsPerClass, queryParamForClassesQuery);
-         console.log('Students per class: ', response);
-         if (!response || response.length == 0) {
-             res.status(200).json({ classStats: [], classList: [{key: 'id_none', name: 'No classes For Form'}], formArray: formArray });
-             return;
-         }
-  
-         let resultData = {};
-         for (let i=0; i < response.length; i++) {
+            "where c.app_grp_id = a.app_group_id group by c.app_grp_id";
+
+        //console.log('Query ****> ', queryStudentsPerClass);
+        //console.log('Q Param -> ', queryParamForClassesQuery);
+
+
+        const response = await db.query(queryStudentsPerClass, queryParamForClassesQuery);
+        console.log('Students per class: ', response);
+        if (!response || response.length == 0) {
+            res.status(200).json({ classStats: [], classList: [{ key: 'id_none', name: 'No classes For Form' }], formArray: formArray });
+            return;
+        }
+
+        let resultData = {};
+        for (let i = 0; i < response.length; i++) {
             let row = response[i];
             resultData['id_' + row.class_id] = row;
         }
- 
+
+        const isLotAddedToSession = isLot ? ` and app.class_teacher LIKE concat('%',BIN_TO_UUID(c2.app_grp_id,'%'))  ` : ' ';
         //let queryStudentsPerSessionParam = [dtLastTxt, dtNextTxt, vendorId];
-        let queryStudentsPerSession = 
+        let queryStudentsPerSession =
             "Select count(*) as numAttended, c2.id as class_id, c2.name as class_name " +
             getClassesTableQuery +
-                 "and a2.attendance_status <> 'Absent' " +
+            ' ' + isLotAddedToSession + 
+            " and a2.attendance_status <> 'Absent' " +
             "group by c2.id, c2.name, a2.attendance_date, a2.attendance_start_time " +
             "order by c2.id";
-
-       // console.log('Query ', queryStudentsPerSession);
-        const response2 =  await db.query(queryStudentsPerSession, queryParamForClassesQuery);
+       
+        // console.log('Query ', queryStudentsPerSession);
+        const response2 = await db.query(queryStudentsPerSession, queryParamForClassesQuery);
         //console.log('Students per session: ', response);
         if (!response2 || response2.length == 0) {
             res.status(200).json({ classStats: [], formArray: formArray });
             return;
         }
-    
-        for (let i=0; i < response2.length; i++) {
+
+        for (let i = 0; i < response2.length; i++) {
             let row = response2[i];
             resultData = addSessionToResults(row, resultData);
         }
-     
-     //get how many sessions each student attended
+
+        //get how many sessions each student attended
         //let querySessionsPerStudentParam = [dtLastTxt, dtNextTxt, vendorId];
-        let querySessionsPerStudent = 
+        let querySessionsPerStudent =
             "Select c2.id as class_id, c2.name as class_name, COUNT(child_id) as numAttended  " +
             getClassesTableQuery +
-                "and a2.attendance_status <> 'Absent' " +
+            "and a2.attendance_status <> 'Absent' " +
             "group by c2.id, a2.child_id";
 
-        console.log('Query ', querySessionsPerStudent);
-        const response3 =  await db.query(querySessionsPerStudent, queryParamForClassesQuery);
+        const response3 = await db.query(querySessionsPerStudent, queryParamForClassesQuery);
         //console.log('Sessions per student: ', response);
         if (!response3 || response3.length == 0) {
             res.status(200).json({ classStats: [], formArray: formArray });
             return;
         }
-    
-        for (let i=0; i < response3.length; i++) {
+
+        for (let i = 0; i < response3.length; i++) {
             let row = response3[i];
             resultData = addStudentDataToResults(row, resultData);
         }
@@ -204,29 +209,34 @@ router.post("/", async (req, res) => {
             numSessions: 0,
             avgAttendance: 0,
             attendanceBuckets: [
-                { name: '0-50% of time', y: 0},
-                { name: '51-75% of time', y: 0},
-                { name: '76-85% of time', y: 0},
-                { name: '86-100% of time', y: 0}
+                { name: '0-50% of time', y: 0 },
+                { name: '51-75% of time', y: 0 },
+                { name: '76-85% of time', y: 0 },
+                { name: '86-100% of time', y: 0 }
             ]
         }
         let totalAvgAttendance = 0;
         let classList = [];
+
         for (let key in resultData) {
             if (key.indexOf('id_') < 0)
                 continue;
             let row = resultData[key];
+
             allClassRow.numSessions += row.numSessions;
             totalAvgAttendance += (row.avgAttendance * row.numSessions);
-            for (let j=0; j < allClassRow.attendanceBuckets.length; j++) {
-                let bucketCnt = row.attendanceBuckets[j].y;
-                if (!bucketCnt)
-                    continue;
-                allClassRow.attendanceBuckets[j].y += bucketCnt;
+            for (let j = 0; j < allClassRow.attendanceBuckets.length; j++) {
+                if (row.attendanceBuckets) {
+                    let bucketCnt = row.attendanceBuckets[j].y;
+                    if (!bucketCnt)
+                        continue;
+                    allClassRow.attendanceBuckets[j].y += bucketCnt;
+                }
+
             }
-            classList.push({key: 'id_' + row.class_id, name: row.class_name});
+            classList.push({ key: 'id_' + row.class_id, name: row.class_name });
         }
-        for (let i=0; i<allClassRow.attendanceBuckets.length; i++) {
+        for (let i = 0; i < allClassRow.attendanceBuckets.length; i++) {
             allClassRow.numStudentsInClass += allClassRow.attendanceBuckets[i].y;
         }
         allClassRow.avgAttendance = totalAvgAttendance / allClassRow.numSessions;
@@ -236,8 +246,8 @@ router.post("/", async (req, res) => {
             return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
         });
         //put all entry at top of list
-        classList.unshift({key:'id_' + allClassRow.class_id, name: allClassRow.class_name});
-        
+        classList.unshift({ key: 'id_' + allClassRow.class_id, name: allClassRow.class_name });
+
         //console.log("**result data: ", resultData);
         //console.log("classList: ", classList);
 

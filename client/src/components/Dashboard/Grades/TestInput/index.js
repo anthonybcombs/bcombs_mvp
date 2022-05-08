@@ -38,7 +38,7 @@ export default ({ child_id }) => {
   });
   const dispatch = useDispatch()
   const queryLocation = useLocation();
-  const { group_id, group_type, return_page, request_type, type, appGroupIds = null, is_parent = null, parent_ids = null, selected_child = null } = parse(queryLocation.search)
+  const { group_id, group_type, return_page, request_type, type, appGroupIds = null, is_parent = null, parent_ids = null, selected_child = null, vendor } = parse(queryLocation.search)
   const isVendor = request_type === 'vendor'
   const DATE_FORMAT = "MM/dd/yyyy";
   console.log('applications gradeList',gradeList)
@@ -328,8 +328,14 @@ export default ({ child_id }) => {
     if (group_id && group_type) {
 
       if ((isVendor || type === 'all')) {
-        if (vendors && (Array.isArray(vendors) && vendors[0])) {
-          dispatch(requestGetStudentCumulativeGradeByVendor(vendors[0].id))
+        if (vendors && (Array.isArray(vendors) )) {
+          const vendorId = parseInt(vendor);
+          const currentVendor = vendors.find(item => item.id2 === vendorId);
+          
+          if(currentVendor){
+            dispatch(requestGetStudentCumulativeGradeByVendor(currentVendor.id))
+          }
+         
         }
 
    
@@ -380,14 +386,17 @@ export default ({ child_id }) => {
   useEffect(() => {
     if (vendors && vendors.length > 0) {
       //dispatch(requestGetApplications(vendors[0].id));
+      const vendorId = parseInt(vendor);
+      const currentVendor = vendors.find(item => item.id2 === vendorId);
       if (type && type === 'all' && !is_parent) {
-        console.log("TRIGGEREDDDDDDDDDDD")
-        dispatch(requestGetStudentCumulativeGradeByVendor(vendors[0].id));
-        dispatch(requestGetApplications(vendors[0].id));
+
+        console.log('currentVendorzzz',currentVendor)
+        dispatch(requestGetStudentCumulativeGradeByVendor(currentVendor.id));
+        dispatch(requestGetApplications(currentVendor.id));
       }
       console.log('VENDORRRRRRRRRRR', vendors)
 
-      dispatch(requestVendorAppGroups(vendors[0].id))
+      dispatch(requestVendorAppGroups(currentVendor.id))
     }
     else if(is_parent && auth) {
       if(auth.user_id) {
@@ -519,11 +528,11 @@ export default ({ child_id }) => {
     if (is_parent) {
       window.location.replace(`/dashboard/myapplication`)
     }
-    else {
+    else { 
       const backUrl = child_id
-        ? `/dashboard/grades/profile/${child_id}?group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
+        ? `/dashboard/grades/profile/${child_id}?group_id=${group_id}&group_type=${group_type}&request_type=${request_type}${vendor ? `vendor=${vendor}` : ''}`
         : (!return_page && (group_id || group_type))
-          ? `/dashboard/studentdata`
+          ? `/dashboard/studentdata${vendor ? `?vendor=${vendor}` : ''}`
           : `/dashboard/grades?group_id=${group_id}&group_type=${group_type}`
       window.location.replace(backUrl)
     }
@@ -599,6 +608,7 @@ export default ({ child_id }) => {
             vendors={vendors}
             selectedChild={selected_child}
             isParent={is_parent}
+            vendorId={group_id}
             
           />
           <div className='gradeInputView-header' style={{ 'marginTop': '1rem' }}>
@@ -649,6 +659,7 @@ export default ({ child_id }) => {
             vendors={vendors}
             selectedChild={selected_child}
             isParent={is_parent}
+            vendorId={group_id}
           />
         </div>
       </div>

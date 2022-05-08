@@ -242,7 +242,7 @@ export default function index({
 
 
 
-                <div className="grid">
+                {/* <div className="grid">
                     <div className="form-group">
                         <div className="field">
                             <input
@@ -273,7 +273,7 @@ export default function index({
                             message="Current Medication is required."
                         />
                     </div>
-                </div>
+                </div> */}
 
                 {/* <div className="grid">
                     <div className="form-group">

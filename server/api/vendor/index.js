@@ -9,10 +9,10 @@ import {
   uploadFile
 } from "../../helpers/aws";
 
-import { 
+import {
   getVendorCustomApplicationForms,
   getCustomApplicationFormByFormId
- } from "../applications";
+} from "../applications";
 import moment from 'moment';
 
 export const getVendors = async () => {
@@ -94,39 +94,56 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
 
   let vendors = [];
   try {
-    result = await db.query(
-      `SELECT 
-        BIN_TO_UUID(v.id) as id, 
-        BIN_TO_UUID(v.user) as user,
-        BIN_TO_UUID(v.user) as vendor_user,
-        v.id2,
-        v.name, 
-        v.section1_text,
-        v.section2_text,
-        v.section3_text,
-        v.section1_name,
-        v.section2_name,
-        v.section3_name,
-        v.section1_show,
-        v.section2_show,
-        v.section3_show,
-        v.created_at as created_at,
-        v.is_daycare,
-        v.logo
-      FROM vendor v
-      WHERE v.user=UUID_TO_BIN(?)`,
-      [user]
-    );
+
+    const getVendorByUserQuery = `SELECT 
+      BIN_TO_UUID(v.id) as id, 
+      BIN_TO_UUID(v.user) as user,
+      BIN_TO_UUID(v.user) as vendor_user,
+      v.id2,
+      v.name, 
+      v.section1_text,
+      v.section2_text,
+      v.section3_text,
+      v.section1_name,
+      v.section2_name,
+      v.section3_name,
+      v.section1_show,
+      v.section2_show,
+      v.section3_show,
+      v.created_at as created_at,
+      v.is_daycare,
+      v.logo
+    FROM vendor v
+    WHERE v.user=UUID_TO_BIN(?)
+    ORDER BY v.id2 ASC
+    `;
+
+    result = await db.query(getVendorByUserQuery,[user]);
+
+    const hasLotForm = result.find(item => result[0] && (item.name === `${result[0].name} LOT`));
+
+    if(!hasLotForm && result[0]) {
+      await db.query(
+        `INSERT INTO vendor(id, user, name)
+        VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), ?)
+        `,
+        [user, `${result[0].name} LOT`]
+      );
+      result = await db.query(getVendorByUserQuery,[user]);
+  
+    }
+
+
 
     if (result && result.length > 0) {
-      if( withApplications) {
+      if (withApplications) {
         for (let i = 0; i < result.length; i++) {
           result[i].app_programs = await getVendorAppProgram(result[i].id);
           result[i].location_sites = await getVendorAppLocationSite(result[i].id);
           result[i].app_groups = await getVendorAppGroupsByVendorId(result[i].id);
-  
-          result[i].forms = await getVendorCustomApplicationForms({vendor: result[i].id});
-          
+
+          result[i].forms = await getVendorCustomApplicationForms({ vendor: result[i].id });
+
           vendors.push(result[i]);
         }
       }
@@ -135,14 +152,14 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
           result[i].app_programs = []
           result[i].location_sites = []
           result[i].app_groups = []
-  
+
           result[i].forms = []
         }
         vendors = [...result]
       }
-   
+
     }
-  
+
 
     let result2 = await db.query(
       `
@@ -170,10 +187,10 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
       [user]
     );
     console.log("Resultttt 1", result2);
-    if (result2 && result2.length > 0 ) {
-      
+    if (result2 && result2.length > 0) {
 
-      if(withApplications) {
+
+      if (withApplications) {
         for (let i = 0; i < result2.length; i++) {
           result2[i].app_programs = await getVendorAppProgram(result2[i].id);
           result2[i].location_sites = await getVendorAppLocationSite(
@@ -182,9 +199,9 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
           result2[i].app_groups = await getVendorAppGroupsByVendorId(
             result2[i].id
           );
-  
-          result2[i].forms = await getVendorCustomApplicationForms({vendor: result2[i].id});
-  
+
+          result2[i].forms = await getVendorCustomApplicationForms({ vendor: result2[i].id });
+
           vendors.push(result2[i]);
         }
       }
@@ -193,15 +210,15 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
           result2[i].app_programs = []
           result2[i].location_sites = []
           result2[i].app_groups = []
-  
+
           result2[i].forms = []
         }
         vendors = [...result]
-        vendors = [...vendors,...result2]
+        vendors = [...vendors, ...result2]
       }
-     
+
     }
-  
+
 
     // if (vendors.length > 0) {
     //   vendors = sortByDate(vendors);
@@ -304,7 +321,7 @@ export const checkIfAdminVendorExists = async ({ user, vendor, form }) => {
 
   try {
 
-    if(form && form != 'default') {
+    if (form && form != 'default') {
       const rows = await db.query(
         `SELECT 
           BIN_TO_UUID(vendor) as vendor 
@@ -312,13 +329,13 @@ export const checkIfAdminVendorExists = async ({ user, vendor, form }) => {
         WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?) AND form=UUID_TO_BIN(?)`,
         [user, vendor, form]
       );
-  
+
       if (rows.length > 0) {
         return {
           is_exists: true,
         };
       }
-  
+
       return {
         is_exists: false,
       };
@@ -330,13 +347,13 @@ export const checkIfAdminVendorExists = async ({ user, vendor, form }) => {
         WHERE user=UUID_TO_BIN(?) AND vendor=UUID_TO_BIN(?)`,
         [user, vendor]
       );
-  
+
       if (rows.length > 0) {
         return {
           is_exists: true,
         };
       }
-  
+
       return {
         is_exists: false,
       };
@@ -366,9 +383,9 @@ export const updateVendorAdmins = async ({ user, vendor, name }) => {
   }
 };
 
-export const addVendorAdmins = async ({ 
-  user, 
-  vendor, 
+export const addVendorAdmins = async ({
+  user,
+  vendor,
   name,
   form,
   isLotForm = 0
@@ -380,12 +397,12 @@ export const addVendorAdmins = async ({
     result = form ? await db.query(
       `INSERT INTO vendor_admin(id, user, vendor, form, name, is_lotform)
       VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?)`,
-      [user, vendor, form, name, isLotForm]) 
-      : 
-    await db.query(
-      `INSERT INTO vendor_admin(id, user, vendor, name, is_lotform)
+      [user, vendor, form, name, isLotForm])
+      :
+      await db.query(
+        `INSERT INTO vendor_admin(id, user, vendor, name, is_lotform)
       VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?)`,
-      [user, vendor, name, isLotForm])
+        [user, vendor, name, isLotForm])
 
   } catch (error) {
     console.log("error", error);
@@ -430,9 +447,9 @@ export const getVendorAdminsByUser = async (user) => {
         is_lotform
       FROM vendor_admin
       WHERE user=UUID_TO_BIN(?)
-      `,[user]
+      `, [user]
     )
-  } catch(err) {
+  } catch (err) {
     console.log('err', err);
     result = []
   } finally {
@@ -472,7 +489,7 @@ export const getVendorAdmins = async (vendor) => {
       for (let item of result) {
         item.isOwner = false;
         let form = item.form ? await getCustomApplicationFormByFormId(item.form) : "";
-        
+
         item.formTitle = item.form ? form.form_contents.formTitle : "";
         item.form = item.form ? form.form_id : "";
 
@@ -619,7 +636,7 @@ export const createVendor = async ({
       VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), 
       ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
-      [ 
+      [
         user,
         name,
         section1_text,
@@ -658,7 +675,7 @@ export const createVendor = async ({
       [lastId]
     );
     vendor = vendor.length > 0 ? vendor[0] : {};
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   } finally {
     console.log('new vendor 1', vendor);
@@ -741,7 +758,7 @@ export const getAppGroupsByUserId = async (user) => {
         size, 
         name, 
         pool_id,
-        created_at 
+        created_at
       FROM vendor_app_groups 
       WHERE user=UUID_TO_BIN(?)`,
       [user]
@@ -770,7 +787,7 @@ export const getAppGroupsByVendor = async (vendor) => {
         size, 
         name, 
         pool_id,
-        created_at 
+        created_at
       FROM vendor_app_groups 
       WHERE vendor=UUID_TO_BIN(?) OR vendor IS NULL`,
       [vendor]
@@ -799,11 +816,22 @@ export const getVendorAppGroupsByVendorId = async (vendor) => {
         size, 
         name,
         pool_id,
-        created_at 
+        created_at
       FROM vendor_app_groups 
       WHERE vendor=UUID_TO_BIN(?) `,
       [vendor]
     );
+
+    // const isLotFormGroupExist = appGroupsResult.some(item => item.name === 'Lot Form');
+
+    // if(!isLotFormGroupExist) {
+    //   result = await db.query(
+    //     `INSERT INTO vendor_app_groups(app_grp_id, user, vendor, size, name, pool_id)
+    //     VALUES(UUID_TO_BIN(UUID()), UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?, ?)`,
+    //     [user_id, vendor, size, name, pool_id]
+    //   );
+    // }
+
   } catch (error) {
     console.log("error", error);
   } finally {
@@ -827,7 +855,7 @@ export const getVendorAppGroupsByFormId = async (form) => {
         size, 
         name,
         pool_id,
-        created_at 
+        created_at
       FROM vendor_app_groups 
       WHERE form=UUID_TO_BIN(?)`,
       [form]
@@ -875,7 +903,7 @@ export const getAppGroupById = async (app_grp_id) => {
         size, 
         name,
         pool_id,
-        created_at 
+        created_at
       FROM vendor_app_groups 
       WHERE app_grp_id=UUID_TO_BIN(?)`,
       [app_grp_id]
@@ -895,7 +923,7 @@ export const addAppGroup = async ({
   size,
   name,
   email,
-  pool_id,
+  pool_id
 }) => {
   const db = makeDb();
 
@@ -1060,20 +1088,20 @@ export const addArchivedGroupByVendor = async (archivedGroup = []) => {
 export const deleteArchivedGroup = async (archivedroupIds = [], vendorId) => {
   const db = makeDb();
   let results = [];
-  console.log('deleteArchivedGroup archivedroupIds',archivedroupIds)
-  console.log('deleteArchivedGroup vendorId',vendorId)
+  console.log('deleteArchivedGroup archivedroupIds', archivedroupIds)
+  console.log('deleteArchivedGroup vendorId', vendorId)
   try {
     await db.query(
       `DELETE FROM archived_groups
        WHERE archived_group_id IN (${archivedroupIds.join(
-         ","
-       )}) AND vendor_id=UUID_TO_BIN(?)
+        ","
+      )}) AND vendor_id=UUID_TO_BIN(?)
       `,
       [vendorId]
     );
 
     results = await getArchivedGroupByVendor(vendorId);
-     console.log('deleteArchivedGroup results',results)
+    console.log('deleteArchivedGroup results', results)
   } catch (err) {
     console.log("Error deleteArchivedGroup", err);
     return [];
@@ -1133,7 +1161,7 @@ export const createGroupReminder = async ({
 
     result = reminder.length > 0 ? reminder[0] : "";
 
-  } catch(err) {
+  } catch (err) {
     console.log('err', err);
     result = false;
   } finally {
@@ -1164,13 +1192,13 @@ export const getGroupReminderByCurrentDate = async () => {
       [currentDate]
     )
 
-    for(let vr of vendorReminders) {
+    for (let vr of vendorReminders) {
       vr.app_groups = await getAppGroupReminderByVendorReminder(vr.vendor_reminder_id);
     }
 
     result = vendorReminders;
 
-  } catch(err) {
+  } catch (err) {
     console.log('err', err);
     result = [];
   } finally {
@@ -1224,12 +1252,12 @@ export const getVendorApplicationReminder = async vendor => {
       [vendor]
     )
 
-    for(let vr of vendorReminders) {
+    for (let vr of vendorReminders) {
       vr.app_groups = await getAppGroupReminderByVendorReminder(vr.vendor_reminder_id);
     }
-    
+
     result = vendorReminders;
-  } catch(err) {
+  } catch (err) {
     console.log('getVendorApplicationReminder err', err);
     result = [];
   } finally {
@@ -1257,7 +1285,7 @@ export const getAppGroupReminderByVendorReminder = async vendor_reminder => {
       [vendor_reminder]
     )
 
-    for(let gr of grs) {
+    for (let gr of grs) {
 
       let appGroup = await db.query(
         `
@@ -1274,12 +1302,12 @@ export const getAppGroupReminderByVendorReminder = async vendor_reminder => {
 
       appGroup = appGroup.length > 0 ? appGroup[0] : {};
 
-      if(appGroup && appGroup.app_grp_id)
+      if (appGroup && appGroup.app_grp_id)
         appGroups.push(appGroup);
     }
 
     result = appGroups;
-  } catch(err) {
+  } catch (err) {
     console.log('getAppGroupReminderByVendorReminder err', err);
     result = [];
   } finally {
@@ -1315,7 +1343,7 @@ export const createAppGroupReminder = async ({
       ]
     )
 
-  } catch(err) {
+  } catch (err) {
     console.log('err', err);
     result = {};
   } finally {
@@ -1328,16 +1356,16 @@ export const updateLogo = async ({
   vendor_id,
   logo = ''
 }) => {
-  
+
 
   const db = makeDb();
 
   try {
-    const buf = logo && logo!== '' ? Buffer.from(
+    const buf = logo && logo !== '' ? Buffer.from(
       logo.replace(/^data:image\/\w+;base64,/, ""),
       "base64"
     ) : null;
-    const s3Payload =   logo && logo!== ''  ? {
+    const s3Payload = logo && logo !== '' ? {
       Bucket: currentS3BucketName,
       Key: `logo/${vendor_id}/logo-${vendor_id}.png`,
       Body: buf,
@@ -1346,7 +1374,7 @@ export const updateLogo = async ({
       ACL: "public-read"
     } : {};
 
-    if( logo && logo!== '' ) {
+    if (logo && logo !== '') {
       await uploadFile(s3Payload);
     }
 
@@ -1366,11 +1394,11 @@ export const updateLogo = async ({
     });
 
     let vendor = vendors ? vendors : null;
-    vendor.logo =  vendor.logo
-    ? `${s3BucketRootPath}${vendor.logo}`
-    : null;
+    vendor.logo = vendor.logo
+      ? `${s3BucketRootPath}${vendor.logo}`
+      : null;
     return vendor;
-    
+
   } catch (err) {
     console.log(err);
   } finally {

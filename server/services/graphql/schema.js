@@ -180,7 +180,7 @@ const inputs = `
         city: String!
         state: String!
         zip_code: String!
-        location_site: String!
+        location_site: String
         school_name: String!
         school_phone: String
         has_suspended: Int

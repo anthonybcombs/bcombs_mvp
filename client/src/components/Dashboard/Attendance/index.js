@@ -4,8 +4,10 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faMinusCircle, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { uuid } from 'uuidv4';
-import { getHours, max } from 'date-fns';
+import { useLocation } from "@reach/router";
+// import { uuid } from 'uuidv4';
+// import { getHours, max } from 'date-fns';
+import { parse } from "query-string";
 
 import { requestGetApplications, requestGetCustomApplicationByVendor } from '../../../redux/actions/Application';
 import { requestGetForms } from '../../../redux/actions/FormBuilder';
@@ -214,6 +216,8 @@ export default function index(props) {
 			return { applications, groups, auth, vendors, loading, form };
 		}
 	);
+	const location = useLocation();
+	const queryParams = parse(location.search);
 
 	const { formAppGroups = [], formList = [] } = form;
 	const [formIds, setFormIds] = useState([]);
@@ -222,10 +226,15 @@ export default function index(props) {
 	const [search, setSearch] = useState('')
 	const [selected, setSelected] = useState([])
 	const [showArchived, setShowArchived] = useState(false)
+	const [isLot, setIsLot] = useState(false)
 	// appGroups = appGroups.filter((group) => {
 	//   return group.vendor == vendor.id;
 	// })
-	const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && formIds.includes(appGroup.form)) || appGroup.form === null);
+	
+	const vendorIds = Array.isArray(vendors) && vendors.map(item => item.id);
+
+	const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form &&  ( /*formIds.includes(appGroup.form) || */ vendorIds.includes(appGroup.vendor)))|| appGroup.form === null);
+
 	const filteredFormList = form.formList
 	const isShow = !!selected.find(s => archivedGroups.find(a => a.app_group_id === s.app_group_id))
 
@@ -237,19 +246,39 @@ export default function index(props) {
 		}
 	}, []);
 
-	console.log('applicationszxczxczxczxc', applications)
 	useEffect(() => {
-		if (vendors && vendors[0]) {
+	
+		if(queryParams.vendor && Array.isArray(vendors)) {
+			const vendorId =  parseInt(queryParams.vendor);
+			const currentVendor = vendors.find(item => item.id2 === vendorId);
+		
+	
+			if(currentVendor) {
+		
+				setSelectedVendor(currentVendor);
+				setIsLot(currentVendor.name.includes('LOT') ? true : false);
+				setAppGroups(currentVendor.app_groups);
+				dispatch(requestGetCustomApplicationByVendor(currentVendor.id));
+				dispatch(requestGetApplications(currentVendor.id));
+				dispatch(requestVendorAppGroups(currentVendor.id));
+				dispatch(requestGetForms({ vendor: currentVendor.id, currentUser: auth.user_id, isOwner: !!(auth.user_id == currentVendor.user), categories: [] }));
+			}
+		
+		}
+		else if (vendors && vendors[0]) {
 			setSelectedVendor(vendors[0]);
+			setIsLot( vendors[0].name.includes('LOT') ? true : false);
 			setAppGroups(vendors[0].app_groups);
 			dispatch(requestGetCustomApplicationByVendor(vendors[0].id));
 			dispatch(requestGetApplications(vendors[0].id));
 			dispatch(requestVendorAppGroups(vendors[0].id))
-			dispatch(requestGetForms({ vendor: vendors[0].id, categories: [] }));
+			dispatch(requestGetForms({ vendor: vendors[0].id, currentUser: auth.user_id, isOwner: !!(auth.user_id == vendors[0].user), categories: [] }));
+
 		}
 	}, [vendors]);
 
 	useEffect(() => {
+
 		if (form.formList) {
 			const ids = formList && formList.map(form => form.form_id);
 			setFormIds(ids)
@@ -288,18 +317,12 @@ export default function index(props) {
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher && app.class_teacher !== '' && group.form === app.form) {
 				const classTeacher = app.class_teacher.split(',');
-				// console.log('group.app_grp_id123123123',group.app_grp_id)
-				// console.log('group.app_grp_id123123123 app',app)
-				// console.log('group.app_grp_id123123123 classTeacher',classTeacher)
 				return  classTeacher.includes(group.app_grp_id);
 			}
 		});
 		// if(group.form === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
 		// 	//6838fda0-5407-11eb-8212-dafd2d0ae3ff
-		// 	console.log('SIZEEEEEEEEEEEEEE11', size)
-		// 	console.log('SIZEEEEEEEEEEEEEE11 applications', applications)
-		// 	console.log('SIZEEEEEEEEEEEEEE11 group', group)
-	
+
 		// }
 
 		// if(applications && applications.customActiveApplications && applications.customActiveApplications && group.form === '6838fda0-5407-11eb-8212-dafd2d0ae3ff') {
@@ -308,8 +331,6 @@ export default function index(props) {
 		// 		const classTeacher = item.class_teacher ? item.class_teacher.split(',') : [];
 		// 		return (item.form === group.form ) && classTeacher.some(id => defaultIds.includes(id));
 		// 	});
-		// 	console.log('applicationszzz123123',applicationszzz)
-		// 	console.log('applicationszzz123123 applications',applications)
 		// }
 	
 		return size ? size.length : 0
@@ -377,10 +398,9 @@ export default function index(props) {
 				let classCount = formGroup && formGroup.form_contents ? getFormClassCount(group) : getClassCount(group);
 				let availableCount = count - classCount;
 				availableCount = availableCount < 0 ? 0 : availableCount;
-				console.log('formGroupxxxx',formGroup)
-				console.log('formGroupxxxx group',group)
+				
 				return searched([
-					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : 'Mentoring Application',
+					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : isLot ? 'LOT Form' :  'Mentoring Application',
 					classCount.toString(), count.toString()
 				]) ? (
 					<tr key={group.id} className={`${archived ? 'archived' : ''}_${showArchived ? 'show' : 'hide'}`}>
@@ -399,7 +419,7 @@ export default function index(props) {
 						<td>
 							{formGroup && formGroup.form_contents
 								? formGroup.form_contents?.formTitle
-								: 'Mentoring Application'}
+								: isLot ? 'LOT Form' : 'Mentoring Application'}
 						</td>
 						<td>
 							{group.name}
@@ -418,11 +438,11 @@ export default function index(props) {
 						<td>
 							{formGroup && formGroup.form_contents
 								? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms' + `&appGroupId=${group.app_grp_id}`}>Input</Link>
-								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>Input</Link>
+								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${queryParams.vendor}`}>Input</Link>
 							} /
 							{formGroup && formGroup.form_contents
 								? <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=forms'}>View</Link>
-								: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs'}>View</Link>
+								: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${queryParams.vendor}`}>View</Link>
 							}
 						</td>
 					</tr>
@@ -447,7 +467,7 @@ export default function index(props) {
 	// 	// });
 	// 	return totalCount;
 	// };
-	console.log('FORMMMMMMMMM', form)
+
 
 	const getDefaultTotalCount = () => {
 		let totalCount = 0;
@@ -498,8 +518,7 @@ export default function index(props) {
 		for (const group of appGroups) {
 			totalClassCount += getClassCount(group);
 		}
-		// console.log('getTotalClassCount123123123 formGroups',formGroups)
-		// console.log('getTotalClassCount123123123 appGroups',appGroups)
+
 		for (const group of formGroups) {
 			totalClassCount += getFormClassCount(group);
 		}
@@ -509,7 +528,7 @@ export default function index(props) {
 
 	// **************** */..
 	const getTotalCountByForm = id => {
-		// console.log('form.formAppGroups',form.formAppGroups)
+
 
 		const formGroups = form && form.formAppGroups ? form.formAppGroups.filter(appGroup => appGroup.form === id) : []
 
@@ -525,7 +544,6 @@ export default function index(props) {
 	// const getTotalAvailableByForm = id => {
 	// 	const formGroups = form && form.formAppGroups ? form.formAppGroups.filter(appGroup => appGroup.form === id) : [];
 	// 	// let total = 0;
-	// 	// console.log('Get Toital AVailable formGroups', formGroups)
 	// 	// if(formGroups) {
 	// 	// 	total = formGroups && formGroups.reduce((accum, item) => {
 	// 	// 		let classCount = item.group ? getFormClassCount(item) : 0;
@@ -545,7 +563,7 @@ export default function index(props) {
 	// };
 
 	const getTotalClassCountByForm = id => {
-		// console.log('form.formAppGroups', form.formAppGroups)
+
 		const formGroups = form && form.formAppGroups && form.formAppGroups.filter(appGroup => appGroup.form === id);
 		//let totalClassCount = 0;
 		// if(id === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
@@ -557,10 +575,7 @@ export default function index(props) {
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher && app.class_teacher !== '' && id === app.form) {
 				const classTeacher = app.class_teacher.split(',');
-				// console.log('group.app_grp_id123123123',group.app_grp_id)
-				// console.log('group.app_grp_id123123123 app',app)
-				// console.log('group.app_grp_id123123123 classTeacher',classTeacher)
-				
+		
 				return classTeacher.some(id => appGrpIds.includes(id) ) //classTeacher.includes(group.app_grp_id)
 			}
 		});
@@ -570,8 +585,7 @@ export default function index(props) {
 		// 	totalClassCount += getFormClassCount(group);
 		// 	if(group.form === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
 		// 		//6838fda0-5407-11eb-8212-dafd2d0ae3ff
-		// 		console.log('SIZEEEEEEEEEEEEEE totalClassCount', totalClassCount)
-		// 		console.log('SIZEEEEEEEEEEEEEE totalClassCount group', group)
+
 		// 	}
 		
 		// }
@@ -658,10 +672,10 @@ export default function index(props) {
 									</tr> */}
 
 									{
-										searched(['Mentoring Application', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
+										searched([isLot ? 'LOT Form' : 'Mentoring Application', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
 											<tr>
 												<td />
-												<td>Mentoring Application</td>
+												<td>{isLot ? 'LOT Form' : 'Mentoring Application'}</td>
 												<td>
 													All
 													<div>{getDefaultClassCount()} / {getDefaultTotalCount()}</div>
@@ -672,8 +686,8 @@ export default function index(props) {
 													<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link>
 												</td>
 												<td>
-													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all`}>Input</Link> /
-													<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all`}>View</Link>
+													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${queryParams.vendor}`}>Input</Link> /
+													<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${queryParams.vendor}`}>View</Link>
 												</td>
 											</tr>
 										)
@@ -722,7 +736,7 @@ export default function index(props) {
 										})}
 									{renderTableData()}
 									{filteredFormList
-										.filter(g => archivedGroups.find(e => e.app_group_id === g?.form_id))
+									///	.filter(g => archivedGroups.find(e => e.app_group_id === g?.form_id))
 										.map(item => {
 											return searched([
 												item.form_contents?.formTitle || '',

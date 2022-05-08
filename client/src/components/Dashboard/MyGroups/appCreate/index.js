@@ -151,8 +151,19 @@ export default function index({
           email: auth.email,
           pool_id: uuid()
         };
+        /// const isLotForm = payload.vendors.find(item => item.is_lot);
+        payload = {
+          ...payload,
+          vendors: payload.vendors.map(item => {
+            return {
+              ...item
+            }
+ 
+          })
+        }
+        console.log('payloadddd', payload)
         payload.size = parseInt(payload.size);
-        console.log("PAYLOADDD CREATE", payload);
+
         dispatch(requestAddVendorAppGroup(payload));
         toggleCreateAppGroupModal(false);
         // setVendorError("");

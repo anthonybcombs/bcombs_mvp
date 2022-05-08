@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Charts from './Charts';
 import Loading from "../../../../helpers/Loading.js";
 
-const apiCallVolunteering = async (vendorId, id, year, grade, formId, classId) => {
+const apiCallVolunteering = async (vendor, id, year, grade, formId, classId, lotVendorIds = []) => {
     
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/volunteering`, {
@@ -18,12 +18,14 @@ const apiCallVolunteering = async (vendorId, id, year, grade, formId, classId) =
         redirect: 'follow', // manual, *follow, error
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify({
-            'vendorId' : vendorId,
+            'vendorId' : vendor?.id2,
+            'isLot': vendor?.is_lot,
             'id': id,
             'year': year, 
             'grade' : grade,
-            'formId' : formId,
-            'classId' : classId
+            'formId' :  vendor?.is_lot ? 'lotid_0' : formId,
+            'classId' : classId,
+            'lotVendorIds': lotVendorIds
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
@@ -32,7 +34,7 @@ const apiCallVolunteering = async (vendorId, id, year, grade, formId, classId) =
 
 
 const VolunteerHours = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, lotVendorId2s, selectedVendor } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -47,7 +49,7 @@ const VolunteerHours = props => {
         if (auth && auth.user_id) {
             triggerApiCallVolunteering(auth.user_id, year, grade, 'fid_0', 'id_0');
         }
-    }, [auth]);
+    }, [auth, selectedVendor]);
 
     const triggerApiCallVolunteering = async (id, year, grade, formId, classId) => {
         try {
@@ -57,8 +59,8 @@ const VolunteerHours = props => {
                 return;
             }
             setIsLoading(true);
-            const vendorId = vendors[0].id2; 
-            const res = await apiCallVolunteering(vendorId, id, year, grade, formId, classId);
+          
+            const res = await apiCallVolunteering(selectedVendor, id, year, grade, formId, classId, lotVendorId2s);
             console.log('apiCall volunteering ', res)
             if (!res.classList) {
                 setClassList([]);

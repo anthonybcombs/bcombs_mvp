@@ -144,7 +144,8 @@ const AdminStyled = styled.div`
 
 export default function index({
   isLot = false,
-  isCustomForm = false
+  isCustomForm = false,
+  selectedVendor = null
 }) {
   const { auth, vendors, loading, admins, vendor } = useSelector(
     ({ auth, vendors, loading, admins, vendor }) => {
@@ -227,13 +228,13 @@ export default function index({
       setAddAdminFields({
         name: '',
         email: '',
-        vendor: defaultVendor?.id,
+        vendor: selectedVendor?.id,
         forms: [{ ...defaultForm }]
       })
 
 
     }
-  }, [vendors]);
+  }, [selectedVendor, vendors]);
 
 
   useEffect(() => {

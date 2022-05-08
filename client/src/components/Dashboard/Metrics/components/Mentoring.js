@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
-const apiCallMentoring = async (vendorId, id, year, grade, formId, classId) => {
-    
+const apiCallMentoring = async (vendor, id, year, grade, formId, classId, lotVendorId2s = []) => {
+
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/mentoring`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -17,12 +17,14 @@ const apiCallMentoring = async (vendorId, id, year, grade, formId, classId) => {
         redirect: 'follow', // manual, *follow, error
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify({
-            'vendorId' : vendorId,
+            'vendorId' : vendor?.id2,
+            'isLot' : vendor?.is_lot,
             'id': id,
             'year': year, 
             'grade' : grade,
-            'formId' : formId,
-            'classId' : classId
+            'formId' :  vendor?.is_lot ? 'lotid_0' : formId,
+            'classId' : classId,
+            'lotVendorIds': lotVendorId2s
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
@@ -31,7 +33,7 @@ const apiCallMentoring = async (vendorId, id, year, grade, formId, classId) => {
 
 
 const Mentoring = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, lotVendorId2s, selectedVendor } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -41,13 +43,13 @@ const Mentoring = props => {
     const [formIdLocal, setFormIdLocal] = useState('fid_0');
     const [classIdLocal, setClassIdLocal] = useState('id_0');
     const chart = useRef();
-
+ 
     useEffect(() => {
         if (auth && auth.user_id) {
             triggerApiCallMentoring(auth.user_id, year, grade, 'fid_0', 'id_0');
         }
-    }, [auth]);
-
+    }, [auth, selectedVendor]);
+    console.log('selectedVendozzzzzr',selectedVendor)
     const triggerApiCallMentoring = async (id, year, grade, formId, classId) => {
         try {
             if (!vendors ||!vendors.length) {
@@ -56,8 +58,8 @@ const Mentoring = props => {
                 return;
             }
             setIsLoading(true);
-            const vendorId = vendors[0].id2; 
-            const res = await apiCallMentoring(vendorId, id, year, grade, formId, classId);
+            // const vendorId = selectedVendor?.id2; // vendors[0].id2; 
+            const res = await apiCallMentoring(selectedVendor, id, year, grade, formId, classId, lotVendorId2s);
             console.log('apiCall mentoring ', res)
             if (!res.classList) {
                 setClassList([]);

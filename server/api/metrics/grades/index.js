@@ -11,19 +11,20 @@ const router = express.Router();
 router.post("/", async (req, res) => {
 
     try {
-        const { id, year, grade, vendorId, formId, classId } = req.body;
+        const { id, year, grade, vendorId, formId, classId , lotVendorIds, isLot } = req.body;
         const db = makeDb();
 
-        console.log('vendorId ', vendorId);
+        console.log('vendorIdddd22 ', vendorId);
 
-        let formArray = await getFormsByVendorId(db, vendorId);
+        let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds, isLot);
+      
         if (!formArray.length) {
             res.status(200).json({ grades: [], classList: [], formArray: [] });
             return;
         }
         console.log('getting class list');
 
-        let classList = await getClassesWithAttendanceByYearAndVendorAndFormId(db, year, vendorId, formId);
+        let classList = await getClassesWithAttendanceByYearAndVendorAndFormId(db, year, vendorId, formId, lotVendorIds);
         if (!classList.length) {
             res.status(200).json({ grades: [], classList: [], formArray: formArray });
             return;
@@ -38,12 +39,20 @@ router.post("/", async (req, res) => {
         let whereClause = "WHERE a.id2 = ? and b.vendor = a.id and c.app_group_id = b.app_grp_id ";
         let queryParam = [vendorId, dtLastTxt, dtNextTxt];
 
-        if (formId && formId != 'fid_0') {
+        if (formId && formId === 'lotid_0') {
+            fromClause = "FROM vendor a, vendor_app_groups b, student_grade_cumulative c, child ch, application app ";
+            whereClause = "WHERE a.id2 = ? and b.vendor = a.id and c.app_group_id = b.app_grp_id AND app.child=c.child_id  AND app.class_teacher LIKE concat('%',BIN_TO_UUID(b.app_grp_id,'%')) AND app.is_lot=1  ";
+            queryParam = [vendorId, dtLastTxt, dtNextTxt];
+        }
+
+        else if (formId && formId != 'fid_0' && formId !== 'lotid_0') {
             fromClause = "From vendor_app_groups b, student_grade_cumulative c ";
             whereClause = "where b.form = UUID_TO_BIN(?) and c.app_group_id = b.app_grp_id";
             queryParam = [formId, dtLastTxt, dtNextTxt];
         }
 
+
+        
         if (classId && classId != 'id_0') {
             fromClause = "From student_grade_cumulative c ";
             whereClause = "where c.app_group_id = UUID_TO_BIN(?)";
@@ -71,10 +80,10 @@ router.post("/", async (req, res) => {
             //"where a.id2 = ? and b.vendor = a.id and c.app_group_id = b.app_grp_id " +
             whereClause +
                 " and c.school_year_start >= ? and c.school_year_start < ? " + gradeQualifier; 
-       console.log('Query ', query);
-       console.log('Param ', queryParam);
+       console.log('GRADESS QUERYYYYYYYYYYYYYYYYYYYY ', query);
+       console.log('GRADESS QUERYYYYYYYYYYYYYYYYYYYY Param ', queryParam);
        const response =  await db.query(query, queryParam);
-       console.log('grades', response);
+       console.log('gradesssss', response);
 
        let resultData = [];
        if (response.length > 0) {
@@ -82,7 +91,7 @@ router.post("/", async (req, res) => {
            resultData.push([row.goodSem1, row.goodSem2] );
            resultData.push([row.badSem1, row.badSem2] );
        }
-
+       console.log('resultDataaaaaaaaaaaaa', resultData)
         res.status(200).json({ grades: resultData, classList: classList, formArray: formArray });
         //res.status(200).json({ user: response && response[0] });
     } catch (error) {

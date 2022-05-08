@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 
-const apiCallGrades = async (vendorId, id, year, grade, formId, classId) => {
+const apiCallGrades = async (vendor, id, year, grade, formId, classId, lotVendorId2s = []) => {
     console.log('entered apiCallGrades');
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/grades`, {
@@ -20,9 +20,11 @@ const apiCallGrades = async (vendorId, id, year, grade, formId, classId) => {
             'id': id,
             'year': year, 
             'grade' : grade,
-            'vendorId' : vendorId,
-            'formId' : formId,
-            'classId' : classId
+            'vendorId' : vendor?.id2,
+            'isLot' : vendor?.is_lot,
+            'formId' :  vendor?.is_lot ? 'lotid_0' : formId,
+            'classId' : classId,
+            'lotVendorIds': lotVendorId2s
 
         }) // body data type must match "Content-Type" header
     });
@@ -32,7 +34,7 @@ const apiCallGrades = async (vendorId, id, year, grade, formId, classId) => {
 
 
 const Mentoring = props => {
-    const { auth, vendors } = props;
+    const { auth, vendors, lotVendorId2s, selectedVendor } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -47,8 +49,8 @@ const Mentoring = props => {
         if (auth && auth.user_id) {
             triggerApiCallGrades(auth.user_id, year, grade, 'fid_0', 'id_0');
         }
-    }, [auth]);
-
+    }, [auth, selectedVendor]);
+  
     const triggerApiCallGrades = async (id, year, grade, formId, classId) => {
         try {
             if (!vendors ||!vendors.length) {
@@ -57,8 +59,8 @@ const Mentoring = props => {
                 return;
             }
             setIsLoading(true);
-            const vendorId = vendors[0].id2; 
-            const res = await apiCallGrades(vendorId, id, year, grade, formId, classId);
+            // const vendorId = selectedVendor?.id2; //vendors[0].id2; 
+            const res = await apiCallGrades(selectedVendor, id, year, grade, formId, classId, lotVendorId2s);
             console.log('apiCall grades ', res)
             if (!res.classList) {
                 setClassList([]);

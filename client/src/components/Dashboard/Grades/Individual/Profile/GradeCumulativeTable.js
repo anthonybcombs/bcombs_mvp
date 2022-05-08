@@ -202,8 +202,8 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
         school_year_frame: 'quarter',
         school_year_start: 0,
         is_new: true,
-        id: uuid()
-        // student_grade_cumulative_id: 95,
+        id: uuid(),
+        student_grade_cumulative_id: null,
       };
 
       setCurrentCumulativeGrade(newCumulative);
@@ -303,10 +303,11 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
             return newGrade
           })
 
-
-        return {
+        let formattedAppGroupId = appGroupId.split(',');
+          formattedAppGroupId = Array.isArray(formattedAppGroupId) ? formattedAppGroupId[0] : appGroupId;
+         return {
           ...newRow,
-          app_group_id: appGroupId,
+          app_group_id: formattedAppGroupId,
           application_type: 'bcombs'
         }
       })
@@ -325,7 +326,7 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
     <div className='rightContainer'>
       <div className='rightContainerHeader'>
         <CustomSelect
-          value={rows[0]?.student_grade_cumulative_id || ''}
+          value={currentCumGradeOpt === 'new' ? currentCumGradeOpt : rows[0]?.student_grade_cumulative_id || ''}
           options={[...(cumGradeOptions || []), { value: "new", label: "New Grade Level" }]}
           placeholder='Select Grade Level'
           onChange={handleSelectCumGrade}

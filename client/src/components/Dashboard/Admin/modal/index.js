@@ -14,7 +14,8 @@ const AdminFormModal = styled.div`
 export default function index({
   handleExit,
   isCustomForm = false,
-  isLot = false
+  isLot = false,
+  selectedVendor = null
 }) {
 
   return (
@@ -30,6 +31,7 @@ export default function index({
             <AdminStyled
               isLot={isLot}
               isCustomForm={isCustomForm}
+              selectedVendor={selectedVendor}
             />
           </div>
         </div>

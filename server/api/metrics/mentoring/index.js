@@ -11,26 +11,26 @@ const router = express.Router();
 router.post("/", async (req, res) => {
 
     try {
-        const { id, year, grade, vendorId, formId, classId } = req.body;
+        const { id, year, grade, vendorId, formId, classId, lotVendorIds, isLot } = req.body;
         const db = makeDb();
         console.log('m ID', id);
         console.log('grade ', grade);
 
-        let formArray = await getFormsByVendorId(db, vendorId);
+        let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds, isLot);
         if (!formArray.length) {
             res.status(200).json({ volunteeringInYear: [], classList: [], formArray: [] });
             return;
         }
-        console.log('getting class list');
+        console.log('getting class listtttttttt', formArray);
 
-        let classList = await getClassesWithAttendanceByYearAndVendorAndFormId(db, year, vendorId, formId);
+        let classList = await getClassesWithAttendanceByYearAndVendorAndFormId(db, year, vendorId, formId, lotVendorIds);
         if (!classList.length) {
             res.status(200).json({ volunteeringInYear: [], classList: [], formArray: formArray });
             return;
         }
         console.log('got class list');
 
-        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId);
+        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lotVendorIds);
         let getClassesTableQuery = queryGroup.query;
         let queryParam = queryGroup.param;
 
@@ -43,6 +43,9 @@ router.post("/", async (req, res) => {
         let classQualifier = '';
         if (classId && classId != 'id_0') {
             classQualifier = ' and c2.app_grp_id = UUID_TO_BIN(?) ';
+            if(isLot) {
+                classQualifier = `${classQualifier} and  app.class_teacher LIKE concat('%',BIN_TO_UUID(c2.app_grp_id,'%')) `;
+            }
             queryParam.push(classId);
         }
 
@@ -58,13 +61,19 @@ router.post("/", async (req, res) => {
         let query = 
             "select a.sum_mentoring_hours as mentoring_hours, " + 
                 "b.ch_id " + 
-            "from child b " + 
+            "from application app, child b " + 
             "inner join ( " + 
                 "Select a2.child_id, SUM(a2.mentoring_hours) as sum_mentoring_hours " + 
                 getClassesTableQuery + classQualifier +
                 "Group by a2.child_id " +
             ") as a on b.ch_id = a.child_id " + gradeQualifier;
         console.log('Query ', query);
+
+        console.log('Param ', queryParam);
+        if(isLot) { 
+            query = `${query} WHERE app.child=b.ch_id AND app.is_lot=1 `
+        }
+
         const response =  await db.query(query, queryParam);
         console.log('Mentoring ', response);
 
