@@ -120,7 +120,7 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
 
     result = await db.query(getVendorByUserQuery,[user]);
 
-    const hasLotForm = result.find(item => result[0] && (item.name === `${result[0].name} LOT`));
+    const hasLotForm = result.find(item => result[0] && (item.name === `${result[0].name.includes('LOT')}`));
 
     if(!hasLotForm && result[0]) {
       await db.query(
