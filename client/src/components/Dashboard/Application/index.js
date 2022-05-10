@@ -767,7 +767,7 @@ export default function index() {
     setSelectedLabel(value);
     setSelectNonMenuOption(false);
     setSelectedApplication({});
-    window.history.replaceState("", "", "?opt=" + opt);
+    window.history.replaceState("", "", "?opt=" + opt `${queryParams.vendor ? '&vendor=' + queryParams.vendor : ''}`);
     setView("");
   };
 
