@@ -236,7 +236,7 @@ export default function AppGroupForm({
 
 
   let formDefaultValue = [...(groupDetails?.vendors || [])];
-
+  console.log('groupDetailszcxzc',groupDetails)
   return (
     <ContactFormStyled
       method="POST"
@@ -253,7 +253,7 @@ export default function AppGroupForm({
                 handleGroupDetailsChange("name", target.value);
               }}
               ref={register({ required: true })}
-              defaultValue={groupDetails.name}
+              value={groupDetails.name}
             />
             <label className="field-label">
               <span className="required">*</span> Group Name
@@ -280,7 +280,7 @@ export default function AppGroupForm({
                 }
               }}
               ref={register({ required: true })}
-              defaultValue={groupDetails.size}
+              value={groupDetails.size}
             />
             <label className="field-label">
               <span className="required">*</span> Total No. of Seats
