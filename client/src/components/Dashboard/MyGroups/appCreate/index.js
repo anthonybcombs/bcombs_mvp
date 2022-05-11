@@ -53,6 +53,9 @@ export default function index({
       }
       setGroupDetails(currentAppGroup);
     }
+    else {
+      setGroupDetails({});
+    }
   }, [isVisible]);
 
 
