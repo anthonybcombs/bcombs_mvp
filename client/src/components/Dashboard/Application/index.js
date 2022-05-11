@@ -1947,7 +1947,7 @@ export default function index() {
     if (selectedForm == "default" || selectedForm == "lot") {
       const payload = {
         user: auth.user_id,
-        name: `${selectedVendor.name} ${!selectedVendor.name.includes('Copy') ? 'Copy' : ''}`,
+        name: `${selectedVendor.name} Copy`,
         section1_text: selectedVendor.section1_text,
         section2_text: selectedVendor.section2_text,
         section3_text: selectedVendor.section3_text,
