@@ -157,7 +157,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     onChange={({ target }) =>
                       handleFormSettingsChange("name", target.value)
                     }
-                    defaultValue={formSettings.name}
+                    value={formSettings.name}
                   />
                   <label className="field-label" for="vendor_name">
                     Vendor Name <span style={{ color: "red" }}>{"*"}</span>
