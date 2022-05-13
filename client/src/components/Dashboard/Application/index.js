@@ -524,8 +524,6 @@ export default function index() {
 
   const [selectedVendor, setSelectedVendor] = useState({});
 
-  const [vendorLists, setVendorLists] = useState([]);
-
   // const isLot = selectedVendor && selectedVendor.name === 'LOT® Form'
 
   const [selectedForm, setSelectedForm] = useState("default");
@@ -649,7 +647,6 @@ export default function index() {
 
 
     if (vendor.newVendor?.id) {
-      setVendorLists([...vendorLists, vendor.newVendor]);
       setShowAdminForm(true);
     }
 
@@ -666,8 +663,6 @@ export default function index() {
 
   useEffect(() => {
     if (vendors && vendors.length > 0 && vendors[0].id) {
-
-      setVendorLists(vendors);
       if (queryParams && queryParams.vendor) {
         const newDefaultVendor = vendors.filter((vendor) => {
           return vendor.id2 == queryParams.vendor
@@ -1949,12 +1944,18 @@ export default function index() {
     const isExists = vendors.filter(v => v.name == name)[0];
 
     if(!!isExists) {
-      name = `${name} (${index})`
+      if(index > 2) {
+          let names = name.split(' ');
+          names[names.length - 1] = `(${index})`;
+          name = names.join(' ');
+      } else {
+          name = `${name} (${index})`   
+      }
       index++;
       return handleCheckVendorNameDuplicate(name);
     } else {
-      index = 2;
-      return name;
+        index = 2;
+        return name;
     }
   }
 
