@@ -524,6 +524,8 @@ export default function index() {
 
   const [selectedVendor, setSelectedVendor] = useState({});
 
+  const [vendorLists, setVendorLists] = useState([]);
+
   // const isLot = selectedVendor && selectedVendor.name === 'LOT® Form'
 
   const [selectedForm, setSelectedForm] = useState("default");
@@ -647,7 +649,7 @@ export default function index() {
 
 
     if (vendor.newVendor?.id) {
-
+      setVendorLists([...vendorLists, vendor.newVendor]);
       setShowAdminForm(true);
     }
 
@@ -663,10 +665,9 @@ export default function index() {
   }, [addForm])
 
   useEffect(() => {
-
-
     if (vendors && vendors.length > 0 && vendors[0].id) {
 
+      setVendorLists(vendors);
       if (queryParams && queryParams.vendor) {
         const newDefaultVendor = vendors.filter((vendor) => {
           return vendor.id2 == queryParams.vendor
@@ -1941,13 +1942,32 @@ export default function index() {
       return '';
     }
   }
+  let index = 2;
+
+  const handleCheckVendorNameDuplicate = (name) => {
+
+    const isExists = vendors.filter(v => v.name == name)[0];
+
+    if(!!isExists) {
+      name = `${name} (${index})`
+      index++;
+      return handleCheckVendorNameDuplicate(name);
+    } else {
+      index = 2;
+      return name;
+    }
+  }
+
   console.log('selectedVendorrrr',selectedVendor)
   const handleDuplicateVendor = () => {
 
     if (selectedForm == "default" || selectedForm == "lot") {
+
+      let newName = `${selectedVendor.name} Copy`;
+      newName = handleCheckVendorNameDuplicate(newName);
       const payload = {
         user: auth.user_id,
-        name: `${selectedVendor.name} Copy`,
+        name: newName,
         section1_text: selectedVendor.section1_text,
         section2_text: selectedVendor.section2_text,
         section3_text: selectedVendor.section3_text,
