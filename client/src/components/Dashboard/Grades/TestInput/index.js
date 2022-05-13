@@ -386,6 +386,8 @@ export default ({ child_id }) => {
   useEffect(() => {
     if (vendors && vendors.length > 0) {
       //dispatch(requestGetApplications(vendors[0].id));
+
+      console.log('vendors', vendors);
       const vendorId = parseInt(vendor);
       const currentVendor = vendors.find(item => item.id2 === vendorId);
       if (type && type === 'all' && !is_parent) {

@@ -266,6 +266,7 @@ export default function index(props) {
 		
 		}
 		else if (vendors && vendors[0]) {
+      console.log('my vendors', vendors[0]);
 			setSelectedVendor(vendors[0]);
 			setIsLot( vendors[0].name.includes('LOT') ? true : false);
 			setAppGroups(vendors[0].app_groups);
@@ -275,6 +276,7 @@ export default function index(props) {
 			dispatch(requestGetForms({ vendor: vendors[0].id, currentUser: auth.user_id, isOwner: !!(auth.user_id == vendors[0].user), categories: [] }));
 
 		}
+
 	}, [vendors]);
 
 	useEffect(() => {
@@ -399,6 +401,9 @@ export default function index(props) {
 				let availableCount = count - classCount;
 				availableCount = availableCount < 0 ? 0 : availableCount;
 				
+        const vendorDetails = vendors.filter(v => v.id == group.vendor)[0];
+
+        console.log('vendorDetails', vendorDetails);
 				return searched([
 					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : isLot ? 'LOT Form' : auth && auth.nickname === 'lot' ? 'LOT Form' : 'Mentoring Application',
 					classCount.toString(), count.toString()
@@ -438,11 +443,11 @@ export default function index(props) {
 						<td>
 							{formGroup && formGroup.form_contents
 								? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms' + `&appGroupId=${group.app_grp_id}`}>Input</Link>
-								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${queryParams.vendor}`}>Input</Link>
+								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${vendorDetails.id2}`}>Input</Link>
 							} /
 							{formGroup && formGroup.form_contents
 								? <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=forms'}>View</Link>
-								: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${queryParams.vendor}`}>View</Link>
+								: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${vendorDetails.id2}`}>View</Link>
 							}
 						</td>
 					</tr>
@@ -610,7 +615,8 @@ export default function index(props) {
 			dispatch(requestAddArchiveGroup(selected))
 		}
 	}
-	console.log('filteredFormList', filteredFormList)
+	console.log('filteredFormList', filteredFormList);
+  console.log('selectedVendor', selectedVendor);
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Data</h2>
@@ -686,8 +692,8 @@ export default function index(props) {
 													<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link>
 												</td>
 												<td>
-													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${queryParams.vendor}`}>Input</Link> /
-													<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${queryParams.vendor}`}>View</Link>
+													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${selectedVendor.id2}`}>Input</Link> /
+													<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${selectedVendor.id2}`}>View</Link>
 												</td>
 											</tr>
 										)
