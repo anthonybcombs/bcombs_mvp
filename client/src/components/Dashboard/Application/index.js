@@ -671,9 +671,9 @@ export default function index() {
 
         setSelectedVendor(newDefaultVendor[0]);
 
-          if(newDefaultVendor[0] && newDefaultVendor[0].name.includes('LOT')) {
-            setSelectedForm('lot');
-          }
+        if (newDefaultVendor[0] && newDefaultVendor[0].name.includes('LOT')) {
+          setSelectedForm('lot');
+        }
 
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
@@ -690,10 +690,20 @@ export default function index() {
         }))
       } else {
 
-        setSelectedVendor(vendors[0]);
-        if(vendors[0] && vendors[0].name.includes('LOT')) {
+        // setSelectedVendor(vendors[0]);
+        if (auth && auth?.nickname === 'lot') {
+          const defaultVndor = vendors.find(item => item.is_lot);
+          setSelectedVendor(defaultVndor);
           setSelectedForm('lot');
         }
+        else {
+          const defaultVndor = vendors.find(item => !item.is_lot);
+          setSelectedVendor(defaultVndor);
+        }
+
+        // if(vendors[0] && vendors[0].name.includes('LOT')) {
+        //   setSelectedForm('lot');
+        // }
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
         } else {
@@ -745,9 +755,9 @@ export default function index() {
   useEffect(() => {
 
     if (selectedVendor) {
-  
-      const isLot = (selectedVendor && selectedVendor.name &&  selectedVendor.name.includes('LOT')) || (auth && auth.nickname === 'lot');
-  
+
+      const isLot = (selectedVendor && selectedVendor.name && selectedVendor.name.includes('LOT')) || (auth && auth.nickname === 'lot');
+
       setSelectedForm(isLot ? "lot" : "default");
     }
 
@@ -763,7 +773,7 @@ export default function index() {
     setSelectedLabel(value);
     setSelectNonMenuOption(false);
     setSelectedApplication({});
-    window.history.replaceState("", "", "?opt=" + opt `${queryParams.vendor ? '&vendor=' + queryParams.vendor : ''}`);
+    window.history.replaceState("", "", "?opt=" + opt`${queryParams.vendor ? '&vendor=' + queryParams.vendor : ''}`);
     setView("");
   };
 
@@ -1943,23 +1953,23 @@ export default function index() {
 
     const isExists = vendors.filter(v => v.name == name)[0];
 
-    if(!!isExists) {
-      if(index > 2) {
-          let names = name.split(' ');
-          names[names.length - 1] = `(${index})`;
-          name = names.join(' ');
+    if (!!isExists) {
+      if (index > 2) {
+        let names = name.split(' ');
+        names[names.length - 1] = `(${index})`;
+        name = names.join(' ');
       } else {
-          name = `${name} (${index})`   
+        name = `${name} (${index})`
       }
       index++;
       return handleCheckVendorNameDuplicate(name);
     } else {
-        index = 2;
-        return name;
+      index = 2;
+      return name;
     }
   }
 
-  console.log('selectedVendorrrr',selectedVendor)
+  console.log('selectedVendorrrr', selectedVendor)
   const handleDuplicateVendor = () => {
 
     if (selectedForm == "default" || selectedForm == "lot") {
@@ -1979,7 +1989,7 @@ export default function index() {
         section2_show: selectedVendor.section2_show,
         section3_show: selectedVendor.section3_show,
         logo: selectedVendor.logo,
-        is_daycare: selectedForm == "lot" ? 2 : selectedVendor.is_daycare, 
+        is_daycare: selectedForm == "lot" ? 2 : selectedVendor.is_daycare,
       }
 
 
@@ -2001,8 +2011,9 @@ export default function index() {
 
     }
 
-  } 
+  }
   console.log('Authhhhhhhh', auth)
+  console.log('Authhhhhhhh vendors', vendors)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2045,7 +2056,7 @@ export default function index() {
                   setSelectedVendor(chosenVendor[0]);
                   setAppGroups(chosenVendor[0].app_groups);
                   requestSelectedVendor(chosenVendor[0]);
-                  
+
                 }
               }}
               value={selectedVendor.id}
@@ -2106,10 +2117,10 @@ export default function index() {
                   }
                 }}
               >
-                {(((selectedVendor  && selectedVendor.name && !selectedVendor.name.includes('LOT'))  &&  (auth && auth.nickname !== 'lot') )) && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
+                {(((selectedVendor && selectedVendor.name && !selectedVendor.name.includes('LOT')) && (auth && auth.nickname !== 'lot'))) && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
                   {selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 ? `Daycare Form` : `Mentoring Application`}
                 </option>}
-                { ((selectedVendor && selectedVendor.name && selectedVendor.name.includes('LOT')) || (auth && auth.nickname === 'lot')) && <option key={`${selectedVendor.id}-2`} selected={selectedForm ==='lot'} value="lot">
+                {((selectedVendor && selectedVendor.name && selectedVendor.name.includes('LOT')) || (auth && auth.nickname === 'lot')) && <option key={`${selectedVendor.id}-2`} selected={selectedForm === 'lot'} value="lot">
                   LOT® Form
                 </option>}
 
@@ -2149,7 +2160,7 @@ export default function index() {
               selectedVendor && selectedVendor.id2 && (selectedForm == "default" || selectedForm == "lot") ? (
                 <div className="copy-application-link">
                   <a
-                    href={selectedVendor.is_daycare  && selectedVendor.is_daycare !== 2 && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
+                    href={selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
                       }${selectedForm === 'lot' ? '/lot' : ''}`}>
                     <FontAwesomeIcon icon={faFileSignature} />
@@ -2157,7 +2168,7 @@ export default function index() {
                   </a>
                   <FontAwesomeIcon icon={faLink} onClick={() => {
                     setCopyApplicationLinkModal(true)
-                    setCurrentCopyLink(selectedVendor.is_daycare  && selectedVendor.is_daycare !== 2 && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
+                    setCurrentCopyLink(selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
                       }/daycare` : `/application/${selectedVendor.id2
                       }${selectedForm === 'lot' ? '/lot' : ''}`)
                   }} />
@@ -2466,7 +2477,7 @@ export default function index() {
             {selectNonMenuOption &&
               view == "application" &&
               selectedApplication &&
-              selectedApplication.is_daycare &&  selectedApplication.is_daycare !== 2? (
+              selectedApplication.is_daycare && selectedApplication.is_daycare !== 2 ? (
               <DaycareChildFormView
                 childInformation={childInformation}
                 vendor={selectedVendor}
@@ -2505,7 +2516,7 @@ export default function index() {
             {selectNonMenuOption &&
               view == "application" &&
               selectedApplication &&
-              selectedApplication.is_daycare &&  selectedApplication.is_daycare !== 2 ? (
+              selectedApplication.is_daycare && selectedApplication.is_daycare !== 2 ? (
               <DaycareParentFormView
                 parents={parentsInformation}
                 vendor={selectedVendor}
@@ -2586,7 +2597,7 @@ export default function index() {
           // />
           <AdminFormModal
             isLot={selectedForm === 'lot'}
-            isCustomForm={selectedForm !== "default" && selectedForm !== 'lot' }
+            isCustomForm={selectedForm !== "default" && selectedForm !== 'lot'}
             handleExit={() => {
               setShowAdminForm(false);
             }}
