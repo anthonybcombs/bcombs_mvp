@@ -606,7 +606,7 @@ export default function index() {
   const [appGroups, setAppGroups] = useState([]);
   const [exportFilename, setExportFilename] = useState("");
 
-  const defaultVendor = vendors && vendors[0];
+  // const defaultVendor = vendors && vendors[0];
 
 
   useEffect(() => {
@@ -688,17 +688,20 @@ export default function index() {
           isOwner: !!(auth.user_id == newDefaultVendor[0].user),
           categories: []
         }))
+
+        dispatch(requestGetVendorReminders({ vendor: newDefaultVendor[0]?.id }));
       } else {
 
         // setSelectedVendor(vendors[0]);
+        let defaultVendor = null;
         if (auth && auth?.nickname === 'lot') {
-          const defaultVndor = vendors.find(item => item.is_lot);
-          setSelectedVendor(defaultVndor);
+          defaultVendor = vendors.find(item => item.is_lot);
+          setSelectedVendor(defaultVendor);
           setSelectedForm('lot');
         }
         else {
-          const defaultVndor = vendors.find(item => !item.is_lot);
-          setSelectedVendor(defaultVndor);
+          defaultVendor = vendors.find(item => !item.is_lot);
+          setSelectedVendor(defaultVendor);
         }
 
         // if(vendors[0] && vendors[0].name.includes('LOT')) {
@@ -707,21 +710,24 @@ export default function index() {
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
         } else {
-          setAppGroups(vendors[0].app_groups);
+          console.log('defaultVendor',defaultVendor)
+          setAppGroups(defaultVendor?.app_groups);
+          
         }
         dispatch(requestGetForms({
-          vendor: vendors[0].id || '',
+          vendor: defaultVendor?.id || '',
           currentUser: auth.user_id,
-          isOwner: !!(auth.user_id == vendors[0].user),
+          isOwner: !!(auth.user_id == defaultVendor?.user),
           categories: []
         }))
         //dispatch(requestGetApplications(vendors[0].id));
+        dispatch(requestGetVendorReminders({ vendor: defaultVendor?.id }));
       }
 
 
       //get vendors reminders
 
-      dispatch(requestGetVendorReminders({ vendor: vendors[0].id }));
+    
     }
   }, [vendors, queryParams?.vendor]);
 
