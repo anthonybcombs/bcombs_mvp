@@ -436,9 +436,10 @@ export default function index({
   const getPrimaryParentName = (parents, id) => {
     if (parents && parents.length > 0) {
       return (
-        <a href={"parentprofile/" + id}>
-          <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
-        </a>
+        // <a href={"parentprofile/" + id}>
+        //   <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
+        // </a>
+        <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
       );
     } else {
       return "";
@@ -461,9 +462,10 @@ export default function index({
   const getStudentName = row => {
     if(row?.child?.firstname && row?.child?.lastname) {
       return (
-        <a href={"menteeprofile/" + row.id}>
-          <span>{row?.child.firstname + " " + row?.child.lastname}</span>
-        </a>
+        // <a href={"menteeprofile/" + row.id}>
+        //   <span>{row?.child.firstname + " " + row?.child.lastname}</span>
+        // </a>
+        <span>{row?.child.firstname + " " + row?.child.lastname}</span>
       )
     } else {
       return "";
