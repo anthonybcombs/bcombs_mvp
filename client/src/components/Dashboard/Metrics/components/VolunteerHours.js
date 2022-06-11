@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
 import Loading from "../../../../helpers/Loading.js";
+import { OPTION_SCHOOL_YEAR } from '../../../../constants/options';
 
 const apiCallVolunteering = async (vendor, id, year, grade, formId, classId, lotVendorIds = []) => {
     
@@ -194,10 +195,7 @@ return <div style={{ padding: 24 }}>
                     </select>
             */}
                 <select id="mentee-year" onChange={yearChange} value={year}>
-                    <option value="2022">2022</option>
-                    <option value="2021" >2021</option>
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
+                    {OPTION_SCHOOL_YEAR.map(item => <option value={item.value}>{label}</option>)}
                 </select>
                 { isLoading ? ( <></>) : (
                         <>

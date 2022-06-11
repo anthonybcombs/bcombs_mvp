@@ -3,6 +3,8 @@ import React, { useEffect, useState, useRef } from 'react'
 import Charts from './Charts';
 import Loading from "../../../../helpers/Loading.js";
 
+import { OPTION_SCHOOL_YEAR } from '../../../../constants/options';
+
 
 const apiCallAttendance = async (vendor, id, year, grade, lotVendorIds) => {
 
@@ -32,7 +34,7 @@ const apiCallAttendance = async (vendor, id, year, grade, lotVendorIds) => {
 }
 
 const Attendance = props => {
-    const { auth, vendors, selectedVendor , lotVendorId2s} = props;
+    const { auth, vendors, selectedVendor, lotVendorId2s } = props;
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [year, setYear] = useState('2021');
     const [grade, setGrade] = useState('all');
@@ -54,12 +56,12 @@ const Attendance = props => {
         try {
             setIsLoading(true);
             if (!vendors || !vendors.length) {
-     
+
                 defineChart(null);
                 return;
             }
             // const vendorId = selectedVendor;// vendors[0].id2; 
-         
+
             const res = await apiCallAttendance(selectedVendor, id, year, newGrade, lotVendorId2s);
             console.log('RESSSSSSSSSSSSSSSS', res)
             //console.log('apiCall attendance ', res)
@@ -150,8 +152,8 @@ const Attendance = props => {
         triggerApiCallAttendance(auth.user_id, year, event.target.value);
     };
 
-    
-    const formChange =(event) => {
+
+    const formChange = (event) => {
         let formIdIn = event.target.value;
         setFormIdLocal(formIdIn);
         console.log("=========== form_id: ", formIdIn);
@@ -159,14 +161,14 @@ const Attendance = props => {
         setClassIdLocal('id_0');
     };
 
-    const classChange =(event) => {
+    const classChange = (event) => {
         let classIdIn = event.target.value;
         setClassIdLocal(classIdIn);
         console.log("=========== class_id: ", classIdIn);
         // triggerApiCallVolunteering(auth.user_id, year, grade, formIdLocal, classIdIn);
     };
 
-    console.log('classList',classList)
+    console.log('classList', classList)
     return <div style={{ padding: 24 }}>
         <div className="grid grid-2b">
             <div className="top-left">
@@ -188,16 +190,13 @@ const Attendance = props => {
                 </>
 
                 <select id="mentee-year" onChange={yearChange} value={year}>
-                    <option value="2022">2022</option>
-                    <option value="2021" >2021</option>
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
+                    {OPTION_SCHOOL_YEAR.map(item => <option value={item.value}>{label}</option>)}
                 </select>
             </div>
             <div className="top-right"><button onClick={exportChart} id="exportButton"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="download" className="svg-inline--fa fa-download fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"></path></svg><span>Export</span></button></div>
         </div>
-        { isLoading ?  <Loading /> :   <Charts customRef={chart} optionsData={tempOptionsData} /> }
-      
+        {isLoading ? <Loading /> : <Charts customRef={chart} optionsData={tempOptionsData} />}
+
     </div>
 }
 

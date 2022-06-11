@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Charts from './Charts';
 
+import { OPTION_SCHOOL_YEAR } from '../../../../constants/options';
+
+
 const apiCall2 = async (vendor, id, year, formId, classId, lotVendorIds = []) => {
 
     // Default options are marked with *
@@ -184,10 +187,7 @@ const Mentees = props => {
     return <div style={{ padding: 24 }}>
         <div className="grid grid-2b">
             <div className="top-left"><h4>Mentee / Year</h4><select id="mentee-year" onChange={yearChange} value={year}>
-                <option name="2022">2022</option>
-                <option name="2021" >2021</option>
-                <option name="2020">2020</option>
-                <option name="2019">2019</option>
+                {OPTION_SCHOOL_YEAR.map(item => <option value={item.value}>{label}</option>)}
             </select>
 
                 <select id="vendor-form" onChange={formChange} value={formIdLocal}>
