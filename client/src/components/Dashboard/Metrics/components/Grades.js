@@ -213,7 +213,7 @@ return <div style={{ padding: 24 }}>
                     </select>
                 */}
                 <select id="mentee-year" onChange={yearChange} value={year}>
-                    {OPTION_SCHOOL_YEAR.map(item => <option value={item.value}>{label}</option>)}
+                    {OPTION_SCHOOL_YEAR.map(item => <option value={item.value}>{item.label}</option>)}
                 </select>
 
                     { isLoading ? ( <></>) : (

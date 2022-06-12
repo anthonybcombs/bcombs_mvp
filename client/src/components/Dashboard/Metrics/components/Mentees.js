@@ -187,7 +187,7 @@ const Mentees = props => {
     return <div style={{ padding: 24 }}>
         <div className="grid grid-2b">
             <div className="top-left"><h4>Mentee / Year</h4><select id="mentee-year" onChange={yearChange} value={year}>
-                {OPTION_SCHOOL_YEAR.map(item => <option value={item.value}>{label}</option>)}
+                {OPTION_SCHOOL_YEAR.map(item => <option value={item.value}>{item.label}</option>)}
             </select>
 
                 <select id="vendor-form" onChange={formChange} value={formIdLocal}>
