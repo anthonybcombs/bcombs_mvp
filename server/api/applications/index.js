@@ -1561,3 +1561,33 @@ export const updateApplicationUser = async ({
     return result;
   }
 }
+
+
+export const removeApplicationFromGroup = async ({
+  app_id,
+  app_group_ids,
+  is_customform
+}) => {
+  const db = makeDb();
+  try {
+
+    if(is_customform) {
+   
+      await db.query(`UPDATE custom_application SET class_teacher=? WHERE id=UUID_TO_BIN(?)`,[app_group_ids, app_id])
+
+    } else {
+      await db.query(`UPDATE application SET class_teacher=? WHERE id=UUID_TO_BIN(?)`,[app_group_ids, app_id])
+
+    }
+
+  } catch (error) {
+    console.log("removeApplicationFromGroup error", error);
+    
+
+  } finally {
+    await db.close();
+    return {
+      message:'Application has been removed to group successfully!'
+    }
+  }
+};

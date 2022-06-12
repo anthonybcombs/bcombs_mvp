@@ -5,6 +5,7 @@ import {
 
 import {
   getApplicationsByAppGroup,
+  removeApplicationFromGroup,
   updateApplicationUser,
   updateSubmitCustomApplication,
   updateEmergencyConctacts
@@ -290,6 +291,16 @@ export const triggerCronSetReminder = async () => {
 
         await updateApplicationUser(col);
       }
+      let appGroups = appl.class_teacher ? appl.class_teacher.split(',') : [];
+      appGroups = appGroups.filter(item => item !== appl.app_group);
+      appGroups = appGroups.join(',');
+      
+      await removeApplicationFromGroup({
+        app_id: appl.id,
+        app_group_ids: appGroups,
+        is_customform: !!item.is_customform
+      });
+
     }
 
     let currItem = item;
