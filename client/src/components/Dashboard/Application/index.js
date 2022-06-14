@@ -537,6 +537,9 @@ export default function index() {
 
   const [showAdminForm, setShowAdminForm] = useState(false);
 
+  const [isNbmbaa, setIsNbmbaa] = useState(false);
+
+
 
   const dispatch = useDispatch();
 
@@ -634,6 +637,10 @@ export default function index() {
           handleSelectedLabel({ value: 'Application Status', opt: 'applicationstatus' });
         }
       }
+
+
+      const isNbmbaa = auth && auth.name && auth.name.includes('nbmbaa');
+      setIsNbmbaa(isNbmbaa);
     }
   }, []);
 
@@ -710,7 +717,7 @@ export default function index() {
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
         } else {
-          console.log('defaultVendor',defaultVendor)
+  
           setAppGroups(defaultVendor?.app_groups);
           
         }
@@ -1975,7 +1982,7 @@ export default function index() {
     }
   }
 
-  console.log('selectedVendorrrr', selectedVendor)
+
   const handleDuplicateVendor = () => {
 
     if (selectedForm == "default" || selectedForm == "lot") {
@@ -2018,8 +2025,7 @@ export default function index() {
     }
 
   }
-  console.log('Authhhhhhhh', auth)
-  console.log('Authhhhhhhh vendors', vendors)
+
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2144,7 +2150,7 @@ export default function index() {
           )
         }
         {
-          vendors && vendors.length > 0 ? (
+          vendors && vendors.length > 0 && isNbmbaa  ? (
             <div className="copy-vendor-btn">
               <FontAwesomeIcon
                 className="copy-icon"

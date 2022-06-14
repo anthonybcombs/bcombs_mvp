@@ -3,6 +3,8 @@ import React, { useEffect, useState, useRef } from 'react'
 import Charts from './Charts';
 import Loading from "../../../../helpers/Loading.js";
 
+import { OPTION_SCHOOL_YEAR } from '../../../../constants/options';
+
 const apiCallClassAttendance = async (vendor, id, year, formId, lotVendorId2s = []) => {
     console.log('TESTTTTTTTTTTTTTTTTTTT')
     // Default options are marked with *
@@ -208,10 +210,7 @@ const ClassAttendance = props => {
            
 
                 <select id="mentee-year" onChange={yearChange} value={year}>
-                    <option value="2022">2022</option>
-                    <option value="2021" >2021</option>
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
+                {OPTION_SCHOOL_YEAR.map(item => <option value={item.value}>{item.label}</option>)}
                 </select>
                 {isLoading ? (<></>) : (
                     <>

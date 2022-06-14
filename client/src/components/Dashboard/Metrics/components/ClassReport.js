@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import Charts from './Charts';
 import Loading from "../../../../helpers/Loading.js";
 
+
+import { OPTION_SCHOOL_YEAR } from '../../../../constants/options';
+
 const apiCallClassReportData = async (id, year, vendor, formId) => {
     
     // Default options are marked with *
@@ -153,11 +156,8 @@ const ClassReports = props => {
         <div className="grid grid-2b">
         <div className="top-left"><h4>Group Student Counts</h4>
         <select id="mentee-year" onChange={yearChange} value={year}>
-            <option name="2022">2022</option>
-            <option name="2021" >2021</option>
-            <option name="2020">2020</option>
-            <option name="2019">2019</option>
-            </select>
+        {OPTION_SCHOOL_YEAR.map(item => <option value={item.value}>{item.label}</option>)}
+        </select>
         { isLoading ? ( <></>) : (
                         <>
                     <select id="vendor-form" onChange={formChange} value={formIdLocal}>

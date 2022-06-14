@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
+import { OPTION_SCHOOL_YEAR } from '../../../../constants/options';
 
 const apiCallTests = async (vendor, id, testName, grade, formId, classId, lotVendorId2s) => {
     
@@ -29,6 +30,8 @@ const apiCallTests = async (vendor, id, testName, grade, formId, classId, lotVen
     });
     return response.json(); // parses JSON response into native JavaScript objects
 }
+
+const years = OPTION_SCHOOL_YEAR.map(item => item.value);
 
 const Tests = props => {
     const { auth, vendors, lotVendorId2s, selectedVendor } = props;
@@ -99,7 +102,7 @@ const Tests = props => {
                 },
             },
             xAxis: {
-                categories: ['2020', '2021', '2022']
+                categories: years
             },
             plotOptions: {
                 spline: {

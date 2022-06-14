@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import ErrorMessage from "../../../../helpers/ErrorMessage";
+import { OPTION_SCHOOL_YEAR } from '../../../../constants/options';
 import NumberFormat from 'react-number-format';
 const GeneralInformationFormStyled = styled.div`
   position: relative; 
@@ -102,14 +103,14 @@ export default function index({
 }) {
 
   const createYearTakenSelect = () => {
-
-    let currentYear = new Date().getFullYear();
     let options = [];
-    options.push(<option key="new" value="new">New</option>)
-    for (let i = 0; i < 5; i++) {
-      options.push(<option key={i} value={currentYear - i}>{currentYear - i}</option>)
-    }
-
+  
+    // for (let i = 0; i < 7; i++) {
+    //   options.push(<option key={i} value={currentYear - i}>{currentYear - i}</option>)
+    // }
+    
+    options = OPTION_SCHOOL_YEAR.map(item => <option key={item.value} value={item.value}>{item.label}</option>)
+    options.unshift(<option key="new" value="new">New</option>)
     return options;
   }
 
