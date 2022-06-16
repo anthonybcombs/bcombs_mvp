@@ -811,7 +811,7 @@ export default function index({
 
   console.log('reminderList', reminderList);
 
-
+  console.log('vendorrrrrrrrrrr',vendor)
   return (
     <ReminderSettingsStyled>
       <div className="reminder-settings">
@@ -862,7 +862,7 @@ export default function index({
                 }}
               >
                 <option key={vendor.id} value="default">
-                  {vendor.is_daycare && !isLot ? `Daycare ` : isLot ? 'LOT® ' : `Bcombs `}Form
+                  {vendor.is_daycare === 1 && !isLot ? `Daycare ` : isLot ? 'LOT® ' : `Bcombs `}Form
                 </option>
                 {
                   formList.map(form => (
