@@ -241,11 +241,11 @@ export default function index({
                     <div>
                       <label className="control-label">Group(s)</label>
                       <div
-                        id={isAppReminder ? "AppReminder" : ""}
+                        // id={isAppReminder ? "AppReminder" : ""}
                       >
                         <Multiselect
                           id="classTeacherMultiselect"
-                          selectedValues={selectedClassTeacher}
+                          selectedValues={isAppReminder ? selectedClassTeacher : []}
                           className="form-control"
                           options={appGroups}
                           hasSelectAll={true}
