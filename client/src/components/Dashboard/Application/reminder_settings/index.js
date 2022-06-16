@@ -862,7 +862,7 @@ export default function index({
                 }}
               >
                 <option key={vendor.id} value="default">
-                  {vendor.is_daycare ? `Daycare ` : isLot ? 'LOT® ' : `Bcombs `}Form
+                  {vendor.is_daycare && !isLot ? `Daycare ` : isLot ? 'LOT® ' : `Bcombs `}Form
                 </option>
                 {
                   formList.map(form => (
