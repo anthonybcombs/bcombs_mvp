@@ -1,3 +1,5 @@
+// import express from "express";
+
 import {
   getGroupReminderByCurrentDate,
   updateGroupReminderStatus
@@ -25,6 +27,8 @@ import {
   updateChildNewId,
   getChilds
 } from "../index";
+
+// const router = express.Router();
 
 export const triggerCronUpdateChildIds = async () => {
   let childs = await getChilds();
@@ -57,11 +61,10 @@ export const triggerCronSetReminder = async () => {
   try {
     const group_reminders = await getGroupReminderByCurrentDate();
 
-    console.log('group_reminders', group_reminders);
 
     for (const item of group_reminders) {
       let applications = [];
-
+      const appGroupIds = item.app_groups ? item.app_groups.map(item => item.app_grp_id) : [];
       for (const app_group of item.app_groups) {
         console.log('app_group', app_group);
         const fetchApplications = await getApplicationsByAppGroup({
@@ -72,12 +75,14 @@ export const triggerCronSetReminder = async () => {
         applications.push(...fetchApplications);
       }
 
+
       const form_fields = JSON.parse(item.fields);
 
       console.log('applications', applications.length);
       for (let appl of applications) {
 
-        console.log('item.is_customform', item.is_customform);
+
+        // console.log('item.is_customform', item.is_customform);
 
         if (!!item.is_customform) {
 
@@ -272,7 +277,7 @@ export const triggerCronSetReminder = async () => {
 
             appl.emergency_contacts = JSON.stringify(emergencyContacts);
 
-            await updateEmergencyConctacts(appl.app_id, appl.emergency_contacts);
+           await updateEmergencyConctacts(appl.app_id, appl.emergency_contacts);
           }
 
 
@@ -282,10 +287,27 @@ export const triggerCronSetReminder = async () => {
             await updateParent(parent);
           }
 
+          if (appl.class_teacher) {
+            let appGroups = appl.class_teacher ? appl.class_teacher.split(',') : [];
+            appGroups = appGroups.filter(item => !appGroupIds.includes(item));
+  
+            appGroups = appGroups.join(',');
+            console.log('************************************************************')
+            console.log('App Groups', appGroups)
+            console.log('************************************************************')
+  
+            await removeApplicationFromGroup({
+              app_id: appl.app_id,
+              app_group_ids: appGroups,
+              is_customform: !!item.is_customform
+            });
+          }
+   
+
           const col = {
             application: appl.app_id,
-            received_reminder: 1,
-            received_update: 1
+            received_reminder: 0,
+            received_update: 0
           };
 
           console.log('updateApplicationUser', col);
@@ -293,27 +315,25 @@ export const triggerCronSetReminder = async () => {
           await updateApplicationUser(col);
         }
 
-        if (appl.app_group) {
-          let appGroups = appl.class_teacher ? appl.class_teacher.split(',') : [];
-          appGroups = appGroups.filter(item => item !== appl.app_group);
-          appGroups = appGroups.join(',');
 
-          await removeApplicationFromGroup({
-            app_id: appl.app_id,
-            app_group_ids: appGroups,
-            is_customform: !!item.is_customform
-          });
-        }
 
 
       }
 
       let currItem = item;
       currItem.active = 0;
-      await updateGroupReminderStatus(currItem);
+      // await updateGroupReminderStatus(currItem);
     }
   }
   catch (err) {
     console.log('triggerCronSetReminder err', err);
   }
 }
+
+
+// router.get("/", async (req, res) => {
+// await triggerCronSetReminder();
+//   res.status(200).json({ test: true });
+// });
+
+// export default router;
