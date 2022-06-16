@@ -349,7 +349,8 @@ export default function index({
   appGroups = [],
   formList = [],
   reminderList = [],
-  handleCreateGroupReminder }) {
+  handleCreateGroupReminder,
+  isLot = false }) {
 
   const cFields = [{
     id: uuid(),
@@ -699,7 +700,7 @@ export default function index({
 
   const [fAppGroups, setFAppGroups] = useState([])
   const [selectedForm, setSelectedForm] = useState("default");
-  const [selectedFormName, setSelectedFormName] = useState("Bcombs Form");
+  const [selectedFormName, setSelectedFormName] = useState(isLot ? "Lot Form" : "Bcombs Form");
   const [childFieldList, setChildFieldList] = useState([]);
   const [parentFieldList, setParentFieldList] = useState([]);
 
@@ -841,7 +842,7 @@ export default function index({
                     setChildFieldList([...cFields]);
                     setParentFieldList([...pFields]);
 
-                    setSelectedFormName('Bcombs Form');
+                    setSelectedFormName(isLot ? 'LOT Form' : 'Bcombs Form');
                     setFAppGroups(setAppGroupSelect(appGroups));
                   } else {
                     const formattedFields = getCustomFields(target.value);
@@ -861,7 +862,7 @@ export default function index({
                 }}
               >
                 <option key={vendor.id} value="default">
-                  {vendor.is_daycare ? `Daycare ` : `Bcombs `}Form
+                  {vendor.is_daycare ? `Daycare ` : isLot ? 'LOT ' : `Bcombs `}Form
                 </option>
                 {
                   formList.map(form => (

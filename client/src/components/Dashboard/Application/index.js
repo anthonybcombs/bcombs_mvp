@@ -738,7 +738,7 @@ export default function index() {
     }
   }, [vendors, queryParams?.vendor]);
 
-
+  
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
 
@@ -2025,7 +2025,7 @@ export default function index() {
     }
 
   }
-
+  console.log('selectedApplication',selectedApplication)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2325,6 +2325,7 @@ export default function index() {
               formList={renderForms}
               reminderList={reminders}
               handleCreateGroupReminder={handleCreateGroupReminder}
+              isLot={selectedForm === 'lot'}
             />
           )}
           {selectedLabel === "Logo" && !selectNonMenuOption && (
