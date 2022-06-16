@@ -115,13 +115,26 @@ export default function index({
   //   return group.vendor == vendor.id;
   // });
 
+
+  const [isAppReminder, setIsAppReminder] = useState(false);
+  const [selectedClassTeacher, setSelectedClassTeacher] = useState([]);
+
   useEffect(() => {
     setIsAppReminder(!!application.received_update);
+
+    if(!!application.received_update) {
+      setSelectedClassTeacher([]);
+    }
+    else {
+      setSelectedClassTeacher(updateApplication.class_teacher ?
+        appGroups.filter(item => updateApplication.class_teacher.includes(item.app_grp_id))
+        : []);
+    }
+    
   }, [application])
 
   console.log("appgroups...", appGroups);
 
-  const [isAppReminder, setIsAppReminder] = useState(false);
 
   const { register, handleSubmit, errors } = useForm({
     mode: "onSubmit",
@@ -168,10 +181,7 @@ export default function index({
 
   // console.log('classTeachers', classTeachers);
 
-  const selectedClassTeacher = updateApplication.class_teacher ?
-    appGroups.filter(item => updateApplication.class_teacher.includes(item.app_grp_id))
-    :
-    []
+
 
   console.log(' application?.class_teacher',  application?.class_teacher);
   return (
