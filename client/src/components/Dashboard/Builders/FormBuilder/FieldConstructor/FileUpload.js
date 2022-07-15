@@ -20,6 +20,8 @@ const getExtensionIcon = (ext) => {
   }
 }
 
+const rootPath = 'https://bcombs.s3.amazonaws.com/';
+
 export default ({
   isReadOnly = false, allowTypes, limit, errorMessage, id: fieldId, onChangeFieldSettings,
   isBuilder, onChange, onCheckError, value, className, fieldError
@@ -51,8 +53,8 @@ export default ({
     if (!file) {
       return
     }
-    if (file.size / 1048576 > 5) {
-      onCheckError(fieldId, ['Maximum size for file upload is 5MB.'])
+    if (file.size / 1048576 > 15) {
+      onCheckError(fieldId, ['Maximum size for file upload is 15MB.'])
       return
     }
     const [, ext] = file.name.split('.')
@@ -70,8 +72,10 @@ export default ({
     reader.readAsDataURL(file)
   }
 
-  const { data, filename = '' } = value || {}
+  const { data, filename = '', url = '' } = value || {}
   const [, ext] = filename.split('.')
+
+
   return (
     <>
       {
@@ -129,6 +133,8 @@ export default ({
                   />
                 )
               }
+
+
             </div>
           ) : (
             <div
@@ -151,6 +157,11 @@ export default ({
           )
         )
       }
+
+      {isReadOnly &&
+        <div style={{ display: 'block', marginTop: 4 }} >
+          <a href={`${rootPath}${url}`} download={true} target="_blank" >Click here to view the file </a>
+        </div>}
     </>
   )
 }
