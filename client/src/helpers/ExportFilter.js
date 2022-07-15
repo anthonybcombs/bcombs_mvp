@@ -91,6 +91,50 @@ const ExportFilterModal = styled.div`
   }
 `;
 
+const LOT_FIELDS = [
+  'is_entrepreneur',
+  'allergies_to_medicine',
+  'food_allergies',
+  'insect_allergies',
+  'other_allergies',
+  // 'current_medications',
+  // 'health_insurance_information',
+  'mentee_gain_program'
+];
+
+const LOT_QUESTIONS = {
+  mentee_gain_program: 'What does the LOT® hope to gain from the program?',
+  is_entrepreneur: 'Does the student have a part time job?',
+  allergies_to_medicine: 'Allergies to Medicine',
+  food_allergies: 'Food Allergies',
+  insect_allergies: 'Insect Allergies',
+  other_allergies: 'Other Alergies',
+}
+
+function isJsonString(jsonString) {
+  try {
+    let data = JSON.parse(jsonString);
+   
+    if(typeof data === 'string') {
+      data = JSON.parse(data);
+      console.log('dataaaaaaa',data)
+    }
+    // Handle non-exception-throwing cases:
+    // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
+    // but... JSON.parse(null) returns null, and typeof null === "object", 
+    // so we must check for that, too. Thankfully, null is falsey, so this suffices:
+    if (typeof data === "object") {
+      return true;
+    }
+  }
+  catch (e) {
+
+    return false;
+  }
+
+  return false;
+}
+
 const ExportFilter = ({
   applications = [],
   handleExit,
@@ -99,6 +143,7 @@ const ExportFilter = ({
   app_programs = [],
   location_sites = [],
   isCustomForm = false,
+  isLot = false,
   filename = ""
 }) => {
 
@@ -313,6 +358,7 @@ const ExportFilter = ({
 
   let exportFilename;
 
+  console.log('filterApplications', filterApplications)
   if (isCustomForm) {
     console.log("this is my custom form");
 
@@ -337,12 +383,35 @@ const ExportFilter = ({
                 let fieldValue = ""
                 for (const [x, field] of fields.entries()) {
                   fieldValue = field.value;
+                
+                  if (isJsonString(fieldValue)) {
+
+                    fieldValue = JSON.parse(fieldValue);
+
+                    if(typeof fieldValue === 'string') {
+                      fieldValue = JSON.parse(fieldValue);
+                    }
+                    
+                    if (typeof fieldValue === 'object') {
+                      fieldValue = fieldValue[Object.keys(fieldValue)];
+                    }
+                    fieldValue = fieldValue ? fieldValue.trim() : '';
+
+                    fieldValue = fieldValue ? fieldValue.replaceAll('""','') : '';
+
+                  }
+                  else {
+      
+                    fieldValue = fieldValue ? fieldValue.trim() : '';
+                    fieldValue = fieldValue ? fieldValue.replaceAll('""','') : '';
+                  }
 
                   if (field.label == 'Password' || field.label == 'Confirm Password') { continue; }
 
-                  fieldValue = fieldValue ? fieldValue.trim() : '';
+
                   const fieldLabel = field.label ? field.label.toLowerCase() : '';
-                  console.log("fieldLabel", fieldLabel);
+
+                  fieldValue = fieldValue ? fieldValue.replaceAll(/"/g, '') : '';
                   if (fieldLabel) {
                     formattedApplication = { ...formattedApplication, [fieldLabel]: fieldValue }
                   } else {
@@ -365,6 +434,12 @@ const ExportFilter = ({
       formattedApplication.application_date = format(new Date(formattedApplication.application_date), DATE_FORMAT)
       formattedApplication.class_teacher = getClassTeacher(formattedApplication.class_teacher);
       formattedApplication.student_status = getApplicationStatus(formattedApplication.student_status);
+
+      if (typeof formattedApplication.child === 'object') {
+        const currentChild = { ...formattedApplication.child };
+        formattedApplication.child = `${currentChild.firstname} ${currentChild.lastname}`
+
+      }
       console.log("formattedApplication", formattedApplication);
 
       // let initialApplication = {
@@ -385,7 +460,7 @@ const ExportFilter = ({
   } else {
     for (const application of filterApplications) {
       let formattedApplication = {};
-
+      console.log('applicationssssssssss', application)
       for (const key1 of Object.keys(application)) {
         if (key1 == "vendorPrograms" ||
           key1 == "vendorLocationSites" ||
@@ -395,7 +470,7 @@ const ExportFilter = ({
         if (typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
           if (Array.isArray(application[key1])) {
             // parent
-            console.log("key1", key1);
+
             if (key1 == 'parents') {
               const level1Arr = application[key1];
 
@@ -425,7 +500,7 @@ const ExportFilter = ({
             let level1 = application[key1];
 
             console.log("export application", application);
-
+            console.log("export application level1", level1);
             delete level1.ch_id;
             if (!!application.is_daycare) {
               console.log("application is daycare");
@@ -462,7 +537,9 @@ const ExportFilter = ({
               delete level1.mentee_gain_program;
               delete level1.class_rank;
               delete level1.location_site;
-            } else {
+            }
+
+            else {
               delete level1.child_currently_doctors_care;
               delete level1.comments_suggestion;
               delete level1.does_child_require_physical_education_service;
@@ -490,6 +567,7 @@ const ExportFilter = ({
             }
 
             for (const key2 of Object.keys(level1)) {
+              console.log('key2222', key2)
               if (key2 == 'ch_id') { continue; }
               if (key2 == 'birthdate') {
                 const newDate = level1[key2] ? format(new Date(level1[key2]), DATE_FORMAT) : "";
@@ -497,10 +575,19 @@ const ExportFilter = ({
               } else if (key2 == 'has_suspended') {
                 const val = level1[key2] == 1 ? 'Yes' : level1[key2] == 0 ? 'No' : '';
                 formattedApplication = { ...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['has_suspended'] : exportHeaders.child.main['has_suspended'])]: val }
-              } else {
+              }
+              else if (LOT_FIELDS.includes(key2)) {
+                formattedApplication = {
+                  ...formattedApplication,
+                  [`(Child) ${LOT_QUESTIONS[key2]}`]: level1[key2]
+                }
+              }
+              else {
                 if (!!application.is_daycare) {
                   formattedApplication = { ...formattedApplication, ['(Child) ' + exportHeaders.child.daycare[key2]]: level1[key2] ? level1[key2] : "" }
-                } else {
+                }
+
+                else {
                   formattedApplication = { ...formattedApplication, ['(Child) ' + exportHeaders.child.main[key2]]: level1[key2] ? level1[key2] : "" }
                 }
 
@@ -563,6 +650,13 @@ const ExportFilter = ({
         'Notes': formattedApplication['Notes'],
         ...formattedApplication
       }
+      if (isLot) {
+
+        initialApplication = {
+          ...initialApplication,
+
+        }
+      }
 
       console.log("initialApplication", initialApplication);
       exportApplications.push(initialApplication);
@@ -571,6 +665,9 @@ const ExportFilter = ({
 
   console.log("filterApplications", filterApplications);
   console.log("exportApplications", exportApplications);
+  console.log("applicationszzzzzz", applications);
+
+  console.log('isCustomFormmmm', isCustomForm)
 
   const PROGRAMS_OPTIONS =
     app_programs.length > 0
@@ -710,7 +807,7 @@ const ExportFilter = ({
                   setLocationSites([...selectedList]);
                 }}
               />
-                <div style={{ display: 'block' }}>
+              <div style={{ display: 'block' }}>
                 <input
                   type="checkbox"
                   name="location_site_select_all"

@@ -378,6 +378,7 @@ export default function index({
   vendor = {},
   appGroups = [],
   isCustomForm = false,
+  isLot = false,
   filename = ""
 }) {
 
@@ -896,6 +897,7 @@ export default function index({
               : []
           }
           isCustomForm={isCustomForm}
+          isLot={isLot}
           filename={filename}
         />
       )}

@@ -2358,6 +2358,7 @@ export default function index() {
           vendor={selectedVendor}
           appGroups={appGroups}
           isCustomForm={selectedForm !== "default" && selectedForm !== "lot"}
+          isLot={selectedForm === 'lot'}
           filename={exportFilename}
         />
       )}
