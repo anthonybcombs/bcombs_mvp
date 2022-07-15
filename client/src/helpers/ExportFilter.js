@@ -410,13 +410,15 @@ const ExportFilter = ({
 
 
                   const fieldLabel = field.label ? field.label.toLowerCase() : '';
+                  console.log('fieldLabel',fieldLabel)
 
                   fieldValue = fieldValue ? fieldValue.replaceAll(/"/g, '') : '';
-                  if (fieldLabel) {
-                    formattedApplication = { ...formattedApplication, [fieldLabel]: fieldValue }
-                  } else {
+                  if (k.label) {
                     formattedApplication = { ...formattedApplication, [k.label]: fieldValue }
                   }
+                  else if(fieldLabel) {
+                    formattedApplication = { ...formattedApplication, [fieldLabel]: fieldValue }
+                  } 
 
                 }
               }
