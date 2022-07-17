@@ -375,25 +375,35 @@ const ExportFilter = ({
             const formData = formContents?.formData?.length > 0 ? formContents.formData : [];
 
             for (const [i, k] of formData.entries()) {
-              if (k?.type === "sectionBreak") { continue }
+              if (k?.type === "sectionBreak" || k?.type === 'file') { continue }
               else {
                 console.log("kkkk", k);
                 const fields = k?.fields?.length > 0 ? k.fields : [];
 
                 let fieldValue = ""
+              
                 for (const [x, field] of fields.entries()) {
                   fieldValue = field.value;
                 
                   if (isJsonString(fieldValue)) {
 
                     fieldValue = JSON.parse(fieldValue);
-
+                   //  console.log("kkkk fieldValue", fieldValue);
                     if(typeof fieldValue === 'string') {
                       fieldValue = JSON.parse(fieldValue);
                     }
                     
                     if (typeof fieldValue === 'object') {
-                      fieldValue = fieldValue[Object.keys(fieldValue)];
+            
+                      if(Object.keys(fieldValue).length > 1) {
+                        fieldValue = Object.keys(fieldValue).map(key => fieldValue[key]).join(',') 
+                      }
+
+                      else {
+                        fieldValue = fieldValue[Object.keys(fieldValue)];
+                      }
+                     
+                      
                     }
                     fieldValue = fieldValue ? fieldValue.trim() : '';
 
@@ -462,7 +472,7 @@ const ExportFilter = ({
   } else {
     for (const application of filterApplications) {
       let formattedApplication = {};
-      console.log('applicationssssssssss', application)
+
       for (const key1 of Object.keys(application)) {
         if (key1 == "vendorPrograms" ||
           key1 == "vendorLocationSites" ||
@@ -569,7 +579,7 @@ const ExportFilter = ({
             }
 
             for (const key2 of Object.keys(level1)) {
-              console.log('key2222', key2)
+
               if (key2 == 'ch_id') { continue; }
               if (key2 == 'birthdate') {
                 const newDate = level1[key2] ? format(new Date(level1[key2]), DATE_FORMAT) : "";
