@@ -702,7 +702,7 @@ export default function index() {
         // setSelectedVendor(vendors[0]);
         let defaultVendor = null;
         if (auth && auth?.nickname === 'lot') {
-          defaultVendor = vendors.find(item => item.is_lot);
+          defaultVendor = vendors[vendors.length - 1]
           setSelectedVendor(defaultVendor);
           setSelectedForm('lot');
         }
@@ -2025,12 +2025,15 @@ export default function index() {
     }
 
   }
-  console.log('selectedApplication',selectedApplication)
+
+  let vendorOptions = vendors && vendors.length > 0 ? vendors.sort((a, b) => a.name.localeCompare(b.name)) : [];
+  let formOptions =  renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
+
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
         <h2>Applications</h2>
-        {vendors && vendors.length > 0 && (
+        {vendorOptions && vendorOptions.length > 0 && (
           <div>
             <select
               className="custom-default-select"
@@ -2073,7 +2076,7 @@ export default function index() {
               }}
               value={selectedVendor.id}
             >
-              {vendors.map(vendor => (
+              {vendorOptions.map(vendor => (
                 <option key={vendor.id} value={vendor.id}>
                   {vendor.name}
                 </option>
@@ -2137,8 +2140,8 @@ export default function index() {
                 </option>}
 
                 {
-                  ((selectedVendor /* && selectedForm !== 'lot' */) && renderForms && renderForms.length > 0) && (
-                    renderForms.map(form => (
+                  ((selectedVendor /* && selectedForm !== 'lot' */) && formOptions && formOptions.length > 0) && (
+                    formOptions.map(form => (
                       <option selected={queryParams && queryParams.form && queryParams.form == form.form_id} key={form.form_id} value={form?.form_id}>
                         {form?.form_contents?.formTitle}
                       </option>
