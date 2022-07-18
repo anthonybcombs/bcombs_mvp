@@ -160,7 +160,8 @@ export default ({
 
       {isReadOnly &&
         <div style={{ display: 'block', marginTop: 4 }} >
-          <a href={`${rootPath}${url}`} download={true} target="_blank" >Click here to view the file </a>
+          {/* <a href={`${rootPath}${url}`} download={true} target="_blank" >Click here to view the file </a> */}
+          <a href={data} download={true} target="_blank" >Click here to download the file </a>
         </div>}
     </>
   )
