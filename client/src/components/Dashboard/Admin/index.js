@@ -3,8 +3,14 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Collapsible from "react-collapsible";
 import DataTable from 'react-data-table-component';
+
+import {
+  requestGetApplications,
+  getActiveApplicationFromDatabase,
+  getCustomApplicationsFromDatabase,
+} from "../../../redux/actions/Application";
+
 
 import {
   requestVendor,
@@ -19,12 +25,15 @@ import {
   faTrash
 } from "@fortawesome/free-solid-svg-icons";
 
+import { getApplicationStatusVal } from "../../../helpers/Applications";
 import Loading from "../../../helpers/Loading.js";
 
 import { format } from "date-fns";
 
 import { Multiselect } from "multiselect-react-dropdown";
 import { defineLocale } from "moment";
+
+const DATE_FORMAT = "yyyy-MM-dd";
 
 const AdminStyled = styled.div`
   width: auto;
@@ -141,15 +150,215 @@ const AdminStyled = styled.div`
     margin-left: 0;
   }
 `
+const customStyles = {
+  header: {
+    style: {
+      minHeight: '70px'
+    }
+  },
+  subHeader: {
+    style: {
+      marginBottom: '12px',
+    }
+  },
+  headRow: {
+    style: {
+      background: '#f26e21',
+      minHeight: '39px',
+      borderColor: '#fff'
+    }
+  },
+  headCells: {
+    style: {
+      fontSize: '16px',
+      color: '#fff'
+    }
+  },
+  cells: {
+    style: {
+      fontSize: '16px',
+      padding: '10px'
+    }
+  },
+  rows: {
+    style: {
+      '&:not(:last-of-type)': {
+        borderColor: "#eaedf1"
+      },
+      minHeight: "35px"
+    }
+  }
+}
+
+const removeDuplicateObj = (data = [], key = 'id') => {
+  return data.filter((value, index, self) =>
+    index === self.findIndex((t) => (
+      t[key] === value[key]
+    ))
+  ).filter(item => item[key]);
+}
+
+const ExpandableRowForm = ({ data, vendors = [] }) => {
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [applications, setApplications] = useState([]);
+
+  useEffect(() => {
+
+    if (vendors && vendors.length > 0) {
+      const vendor = vendors.find(item => item.id === data.vendor);
+      const forms = removeDuplicateObj(data.forms,'form');
+
+
+      const triggerMentoringOrLotApi = async id => {
+        try {
+          setIsLoading(true);
+          const response = await getActiveApplicationFromDatabase(id);
+          setApplications(response || []);
+        } catch (e) {
+          console.log('REsponseeee error', e)
+        }
+        finally {
+          setIsLoading(false);
+        }
+      }
+
+
+      const triggerCustomFormApi = async currentForms => {
+        try {
+          setIsLoading(true);
+          // const response = await getCustomApplicationsFromDatabase(id);
+          let customApplications = [];
+ 
+
+          for(let currentForm of currentForms) {
+            const response = await getCustomApplicationsFromDatabase(currentForm.form);
+            customApplications = [...customApplications,...(response || [])];
+          }
+          setApplications(customApplications || []);
+        } catch (e) {
+          console.log('REsponseeee error', e)
+        }
+        finally {
+          setIsLoading(false);
+        }
+      }
+
+
+      if (forms && forms.length > 0) {
+
+        triggerCustomFormApi(forms);
+      }
+      else if (vendor) {
+        triggerMentoringOrLotApi(vendor.id);
+      }
+
+    }
+  }, [data, vendors]);
+
+  const columns = [
+    {
+      name: "Status",
+      selector: "status",
+      sortable: true,
+      cell: row =>
+        getApplicationStatusVal(row.student_status, row.verification, row)
+    },
+    {
+      name: 'Student Name',
+      sortable: true,
+      cell: row => {
+
+        return <span>{`${row?.child?.firstname} ${row?.child?.lastname}`}</span>
+      }
+    },
+    // {
+    //   name: 'Parent Name',
+    //   sortable: true,
+    //   cell: row => {
+
+    //     return <span>{`${row?.parents[0]?.firstname} ${row?.parents[0]?.lastname}`}</span>
+    //   }
+    // },
+    {
+      name: "Grade",
+      selector: "class",
+      sortable: true,
+      cell: row => row?.is_daycare ? "-" : row?.child?.grade_desc
+    },
+    {
+      name: "Group(s)",
+      selector: "classGroup",
+      sortable: true,
+      cell: row => {
+        if (row.class_teacher && data?.app_groups) {
+
+          let displayGroups = '';
+          data?.app_groups.map((e) => {
+            if (row.class_teacher.includes(e.app_grp_id))
+              displayGroups += e.name + ','
+          })
+
+          displayGroups = displayGroups.slice(0, -1);
+          const arrGroups = displayGroups.split(',');
+
+          if (arrGroups && arrGroups.length > 1) {
+            return displayGroups = arrGroups[0] + ',...'
+          } else {
+            return displayGroups = arrGroups[0];
+          }
+        }
+        return "-";
+      }
+    },
+    {
+      name: "Form",
+      selector: "form_contents",
+      sortable: true,
+      cell: row => {
+        if (row.form_contents) {
+          return row.form_contents.formTitle
+        }
+        else {
+          return data.isLotForm ? 'LOT Form' : 'Mentoring Form';
+        }
+      }
+    },
+    {
+      name: "Application Date",
+      selector: "application_date",
+      sortable: true,
+      cell: row => format(new Date(row.application_date), DATE_FORMAT)
+    },
+  ];
+
+
+
+  return (
+    <div style={{ padding: 12 }}>
+      {isLoading ? <Loading /> : <DataTable
+        columns={columns}
+        data={applications}
+        pagination
+        noHeader={true}
+        striped={true}
+        customStyles={customStyles}
+        selectableRows
+      />}
+
+    </div>
+  );
+};
+
 
 export default function index({
   isLot = false,
   isCustomForm = false,
   selectedVendor = null
 }) {
-  const { auth, vendors, loading, admins, vendor } = useSelector(
-    ({ auth, vendors, loading, admins, vendor }) => {
-      return { auth, vendors, loading, admins, vendor };
+  const { auth, applications, vendors, loading, admins, vendor } = useSelector(
+    ({ auth, applications, vendors, loading, admins, vendor }) => {
+      return { auth, applications, vendors, loading, admins, vendor };
     }
   );
 
@@ -164,6 +373,7 @@ export default function index({
 
   useEffect(() => {
     if (vendors && vendors.length > 0) {
+
       let formattedVendors = vendors.map(item => {
 
         let vForms = item?.forms ? item.forms : [];
@@ -196,6 +406,7 @@ export default function index({
         console.log('vForms', vForms);
 
         return {
+          ...item,
           id: item.id,
           name: item.name,
           label: item.name,
@@ -213,30 +424,35 @@ export default function index({
 
       if (defaultVendor && defaultVendor.forms &&
         defaultVendor.forms.length > 0) {
-   
-        if(defaultVendor.forms.length > 2 && isCustomForm) {
+
+        if (defaultVendor.forms.length > 2 && isCustomForm) {
           defaultForm = defaultVendor.forms[2];
         }
         else {
           defaultForm = defaultVendor.forms[isLot ? 1 : 0];
 
         }
-     
+
         setFormOptions(defaultVendor.forms);
       }
-  
+      // { ...defaultForm }
+
       setAddAdminFields({
         name: '',
         email: '',
         vendor: selectedVendor?.id,
-        forms: [{ ...defaultForm }]
+        forms: []
       })
-
-
+      console.log('APplicationssss selectedVendor', selectedVendor)
+      console.log('APplicationssss vendors', vendors)
+      if (applications && applications.activeapplications && (applications.activeapplications.length === 0) && selectedVendor) {
+        dispatch(requestGetApplications(selectedVendor?.id))
+      }
     }
   }, [selectedVendor, vendors]);
 
-
+  console.log('APplicationssss', applications)
+  console.log('APplicationssss adminFields', addAdminFields)
   useEffect(() => {
 
     if (admins && admins.length > 0) {
@@ -329,6 +545,8 @@ export default function index({
 
   }
 
+
+  console.log("addAdminFields 22222", addAdminFields);
   const onSubmitAddAdmin = () => {
     console.log("addAdminFields", addAdminFields);
 
@@ -427,9 +645,9 @@ export default function index({
       const isExists = sAdminForms.filter((x) => {
         if (x.form == form.id) return true;
         else if (!x.form) {
-          if(form.id == 'default') {
+          if (form.id == 'default') {
             return true;
-          } else if(form.id == 'lot' && !!sAdmin.isLotForm) {
+          } else if (form.id == 'lot' && !!sAdmin.isLotForm) {
             return true
           } else {
             return false;
@@ -493,7 +711,7 @@ export default function index({
     forms.map((i) => {
       if (i?.form) {
         formString += `${i.formTitle}, `;
-      } else if(!isLotForm) {
+      } else if (!isLotForm) {
         formString += "Mentoring Applications, ";
       }
 
@@ -508,6 +726,15 @@ export default function index({
   }
 
   const columns = [
+    {
+      name: 'ID',
+      selector: 'id',
+      sortable: true,
+      cell: row => {
+        const currentVendor = vendors && vendors.length > 0 && vendors.find(item => item.id === row.vendor);
+        return <span>{currentVendor?.id}</span>
+      }
+    },
     {
       name: 'Name',
       selector: 'name',
@@ -543,47 +770,9 @@ export default function index({
     selectAllRowsItemText: 'All'
   }
 
-  const customStyles = {
-    header: {
-      style: {
-        minHeight: '70px'
-      }
-    },
-    subHeader: {
-      style: {
-        marginBottom: '12px',
-      }
-    },
-    headRow: {
-      style: {
-        background: '#f26e21',
-        minHeight: '39px',
-        borderColor: '#fff'
-      }
-    },
-    headCells: {
-      style: {
-        fontSize: '16px',
-        color: '#fff'
-      }
-    },
-    cells: {
-      style: {
-        fontSize: '16px',
-        padding: '10px'
-      }
-    },
-    rows: {
-      style: {
-        '&:not(:last-of-type)': {
-          borderColor: "#eaedf1"
-        },
-        minHeight: "35px"
-      }
-    }
-  }
 
-  
+
+
   return (
     <AdminStyled>
       <div>
@@ -686,7 +875,7 @@ export default function index({
               </select>
             </div>
             <div>
-              
+
               <label className="control-label">Forms</label>
               <Multiselect
                 id={"vendors"}
@@ -696,7 +885,7 @@ export default function index({
                 hasSelectAll={false}
                 onSelect={selectedList => {
                   if (selectedList.length > 0) setIsVendorEmpty(false);
-                  
+
                   handleAddAdminChange("forms", selectedList);
                 }}
                 onRemove={selectedList => {
@@ -753,6 +942,9 @@ export default function index({
             paginationRowsPerPageOptions={paginationRowsPerPageOptions}
             paginationComponentOptions={paginationComponentOptions}
             onSelectedRowsChange={handleSelectedRowsChange}
+            expandableRows
+            expandableRowsComponent={<ExpandableRowForm vendors={vendors} />}
+          // expandableRowsComponentProps={{"someTitleProp": someTitleProp}}    
           />
         </div>
       </div>
