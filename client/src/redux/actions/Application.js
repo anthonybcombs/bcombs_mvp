@@ -21,7 +21,7 @@ import { GET_APPLICANTS_BY_FORM, GET_CUSTOM_APPLICATION_BY_ID } from "../../grap
 import * as actionType from "./Constant";
 import { setApplicationLoading, setUserApplicationLoading } from "./Loading";
 
-const getCustomApplicationsFromDatabase = form_id => {
+export const getCustomApplicationsFromDatabase = form_id => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await graphqlClient.query({
@@ -116,7 +116,7 @@ const getApplicationUserIdFromDatabase = user_id => {
   });
 };
 
-const getActiveApplicationFromDatabase = vendor_id => {
+export const getActiveApplicationFromDatabase = vendor_id => {
   return new Promise(async (resolve, reject) => {
     try {
       console.log("getActiveApplicationFromDatabase Get Active Application vendor_id", vendor_id);
