@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataTable from 'react-data-table-component';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+
 
 import {
   requestGetApplications,
@@ -187,7 +189,8 @@ const customStyles = {
       },
       minHeight: "35px"
     }
-  }
+  },
+  tab: { fontWeight: 'bolder', fontSize: 20 }
 }
 
 const removeDuplicateObj = (data = [], key = 'id') => {
@@ -207,7 +210,7 @@ const ExpandableRowForm = ({ data, vendors = [] }) => {
 
     if (vendors && vendors.length > 0) {
       const vendor = vendors.find(item => item.id === data.vendor);
-      const forms = removeDuplicateObj(data.forms,'form');
+      const forms = removeDuplicateObj(data.forms, 'form');
 
 
       const triggerMentoringOrLotApi = async id => {
@@ -229,11 +232,11 @@ const ExpandableRowForm = ({ data, vendors = [] }) => {
           setIsLoading(true);
           // const response = await getCustomApplicationsFromDatabase(id);
           let customApplications = [];
- 
 
-          for(let currentForm of currentForms) {
+
+          for (let currentForm of currentForms) {
             const response = await getCustomApplicationsFromDatabase(currentForm.form);
-            customApplications = [...customApplications,...(response || [])];
+            customApplications = [...customApplications, ...(response || [])];
           }
           setApplications(customApplications || []);
         } catch (e) {
@@ -765,6 +768,28 @@ export default function index({
     }
   ];
 
+  const assignedFormColumns = [
+
+    {
+      name: 'Vendor',
+      selector: 'vendor',
+      sortable: true,
+      cell: row => <span>{row?.vendor?.name}</span>
+    },
+    {
+      name: 'Form Title',
+      selector: 'form_title',
+      sortable: true,
+      cell: row => <span>{row?.form_title}</span>
+    },
+    {
+      name: 'Admins',
+      selector: 'adnins',
+      sortable: true,
+      cell: row => <span>{row?.admins.map(item => <div>{item.email}</div>)}</span>
+    },
+  ];
+
   const paginationRowsPerPageOptions = [10, 25, 50, 100];
   const paginationComponentOptions = {
     rowsPerPageText: 'Rows per page:',
@@ -775,8 +800,49 @@ export default function index({
   }
 
 
+  console.log('vendorszzzz', vendors)
+  console.log('vendorszzzz currentAdmins', currentAdmins)
+  const applicationForms = vendors && Array.isArray(vendors) && vendors.map(item => item.forms).flat();
+  console.log('vendorszzzz applicationForms', applicationForms)
+  let formWithVendorAndAdmins = [];
+  if (applicationForms) {
+    let assignedForms = applicationForms.map(applicationForm => {
+      const currentVendor = vendors.find(vendor => {
+        return vendor.forms.find(form => form.form_id === applicationForm.form_id)
+      });
+      const assignedAdmin = currentAdmins.filter(admin => {
+        return admin.forms.find(form => form.form === applicationForm.form_id)
+      });
+
+
+      return {
+        form_title: applicationForm?.form_contents?.formTitle,
+        vendor: currentVendor,
+        admins: assignedAdmin
+      }
+    });
+
+    let adminWithNoCustomForm = currentAdmins.filter(admin => admin.forms.every(form => !form.form) && !admin.isOwner)
+    adminWithNoCustomForm = adminWithNoCustomForm.map(admin => {
+      const currentVendor = vendors.find(vendor => {
+        return vendor.id === admin.vendor
+      });
+      const otherAdmins = adminWithNoCustomForm.filter(item => currentVendor && (currentVendor?.id === item.vendor) && (admin.id !== item.id))
+
+      return {
+        vendor: currentVendor,
+        admins: [admin,...(otherAdmins)],
+        form_title: admin.isLotForm ? 'LOT Form' : 'Mentoring Form',
+        vendorName: admin.vendorName
+      }
+    }).filter(admin => admin.vendor)
+
+    adminWithNoCustomForm = removeDuplicateObj(adminWithNoCustomForm,'vendorName');
+ 
+    // ...(adminWithNoCustomForm || []),
+    formWithVendorAndAdmins = [...(assignedForms || []), ...(adminWithNoCustomForm || [])]
+  };
   console.log('currentAdmins',currentAdmins)
-  console.log('currentAdmins vendors' ,vendors && Array.isArray(vendors) && vendors.map(item => item.forms).flat())
 
   return (
     <AdminStyled>
@@ -930,28 +996,61 @@ export default function index({
         </form>
       </div>
 
-      <div className="adminlist-section">
-        <h3>Admins</h3>
-        <div id="dataTableContainer" className={loading.deleteAdmins ? "disabled" : ""}>
-          <button className="delete" onClick={handleDeleteBulkAdmin}>
-            <FontAwesomeIcon icon={faTrash} />
-          </button>
-          <DataTable
-            columns={columns}
-            data={currentAdmins}
-            pagination
-            noHeader={true}
-            striped={true}
-            customStyles={customStyles}
-            selectableRows
-            paginationRowsPerPageOptions={paginationRowsPerPageOptions}
-            paginationComponentOptions={paginationComponentOptions}
-            onSelectedRowsChange={handleSelectedRowsChange}
+
+      <div style={{ marginTop: 12 }}>
+        <Tabs
+        >
+          <TabList>
+            <Tab style={customStyles.tab}>Admins</Tab>
+            <Tab style={customStyles.tab}>Admin Application Forms</Tab>
+          </TabList>
+
+          <TabPanel>
+            <div className="adminlist-section">
+              <h3>Admins</h3>
+              <div id="dataTableContainer" className={loading.deleteAdmins ? "disabled" : ""}>
+                <button className="delete" onClick={handleDeleteBulkAdmin}>
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+                <DataTable
+                  columns={columns}
+                  data={currentAdmins}
+                  pagination
+                  noHeader={true}
+                  striped={true}
+                  customStyles={customStyles}
+                  selectableRows
+                  paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+                  paginationComponentOptions={paginationComponentOptions}
+                  onSelectedRowsChange={handleSelectedRowsChange}
+                // expandableRows
+                // expandableRowsComponent={<ExpandableRowForm vendors={vendors} />}
+                // expandableRowsComponentProps={{"someTitleProp": someTitleProp}}    
+                />
+              </div>
+            </div>
+          </TabPanel>
+          <TabPanel>
+            <DataTable
+              columns={assignedFormColumns}
+              data={formWithVendorAndAdmins}
+              pagination
+              noHeader={true}
+              striped={true}
+              customStyles={customStyles}
+              selectableRows
+              paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+              paginationComponentOptions={paginationComponentOptions}
+              onSelectedRowsChange={handleSelectedRowsChange}
             // expandableRows
             // expandableRowsComponent={<ExpandableRowForm vendors={vendors} />}
-          // expandableRowsComponentProps={{"someTitleProp": someTitleProp}}    
-          />
-        </div>
+            // expandableRowsComponentProps={{"someTitleProp": someTitleProp}}    
+            />
+          </TabPanel>
+
+
+        </Tabs>
+
       </div>
     </AdminStyled>
   );
