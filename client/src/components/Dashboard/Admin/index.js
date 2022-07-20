@@ -457,7 +457,7 @@ export default function index({
 
     if (admins && admins.length > 0) {
 
-      let tempAdmins = admins.map(admin => {
+      let tempAdmins = admins.map((admin, index) => {
         admin.forms = admins.map((item) => {
           if (item.email == admin.email &&
             item.vendorName === admin.vendorName) {
@@ -475,7 +475,10 @@ export default function index({
         delete admin.form;
         delete admin.formTitle;
 
-        return admin;
+        return {
+          ...admin,
+          no: index + 1
+        };
       });
 
       console.log("tempAdmins", tempAdmins);
@@ -728,12 +731,12 @@ export default function index({
   const columns = [
     {
       name: 'ID',
-      selector: 'id',
+      selector: 'no',
       sortable: true,
       cell: row => {
         // console.log('Rowwww', row)
         // const currentVendor = vendors && vendors.length > 0 && vendors.find(item => item.id === row.vendor);
-        return <span>{row?.vendor}</span>
+        return <span>{row?.no}</span>
       }
     },
     {
