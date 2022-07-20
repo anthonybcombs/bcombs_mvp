@@ -731,8 +731,9 @@ export default function index({
       selector: 'id',
       sortable: true,
       cell: row => {
-        const currentVendor = vendors && vendors.length > 0 && vendors.find(item => item.id === row.vendor);
-        return <span>{currentVendor?.id}</span>
+        // console.log('Rowwww', row)
+        // const currentVendor = vendors && vendors.length > 0 && vendors.find(item => item.id === row.vendor);
+        return <span>{row?.vendor}</span>
       }
     },
     {
@@ -771,7 +772,8 @@ export default function index({
   }
 
 
-
+  console.log('currentAdmins',currentAdmins)
+  console.log('currentAdmins vendors' ,vendors && Array.isArray(vendors) && vendors.map(item => item.forms).flat())
 
   return (
     <AdminStyled>
@@ -942,8 +944,8 @@ export default function index({
             paginationRowsPerPageOptions={paginationRowsPerPageOptions}
             paginationComponentOptions={paginationComponentOptions}
             onSelectedRowsChange={handleSelectedRowsChange}
-            expandableRows
-            expandableRowsComponent={<ExpandableRowForm vendors={vendors} />}
+            // expandableRows
+            // expandableRowsComponent={<ExpandableRowForm vendors={vendors} />}
           // expandableRowsComponentProps={{"someTitleProp": someTitleProp}}    
           />
         </div>
