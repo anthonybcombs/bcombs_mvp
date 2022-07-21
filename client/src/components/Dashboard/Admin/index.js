@@ -736,11 +736,12 @@ export default function index({
       name: 'ID',
       selector: 'no',
       sortable: true,
+      width: "100px",
       cell: row => {
         // console.log('Vendorrrr', row)
         // console.log('Rowwww', row)
         // const currentVendor = vendors && vendors.length > 0 && vendors.find(item => item.id === row.vendor);
-        return <span>{row?.vendor && row?.vendor.substring(1,4)}</span>
+        return <span>{row?.vendor && row?.vendor.substring(1, 4)}</span>
       }
     },
     {
@@ -832,18 +833,18 @@ export default function index({
 
       return {
         vendor: currentVendor,
-        admins: [admin,...(otherAdmins)],
+        admins: [admin, ...(otherAdmins)],
         form_title: admin.isLotForm ? 'LOT Form' : 'Mentoring Form',
         vendorName: admin.vendorName
       }
     }).filter(admin => admin.vendor)
 
-    adminWithNoCustomForm = removeDuplicateObj(adminWithNoCustomForm,'vendorName');
- 
+    adminWithNoCustomForm = removeDuplicateObj(adminWithNoCustomForm, 'vendorName');
+
     // ...(adminWithNoCustomForm || []),
     formWithVendorAndAdmins = [...(assignedForms || []), ...(adminWithNoCustomForm || [])]
   };
-  console.log('formWithVendorAndAdmins',formWithVendorAndAdmins)
+  console.log('formWithVendorAndAdmins', formWithVendorAndAdmins)
 
   return (
     <AdminStyled>
