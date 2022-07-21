@@ -740,7 +740,7 @@ export default function index({
         // console.log('Vendorrrr', row)
         // console.log('Rowwww', row)
         // const currentVendor = vendors && vendors.length > 0 && vendors.find(item => item.id === row.vendor);
-        return <span>{row?.vendor.substring(1,3)}</span>
+        return <span>{row?.vendor && row?.vendor.substring(1,4)}</span>
       }
     },
     {
