@@ -651,9 +651,9 @@ export default function index({
       const isExists = sAdminForms.filter((x) => {
         if (x.form == form.id) return true;
         else if (!x.form) {
-          if (form.id == 'default') {
+          if (form.id == 'default' && !sAdmin.isLotForm) {
             return true;
-          } else if (form.id == 'lot' && !!sAdmin.isLotForm) {
+          } else if (form.id == 'lot' && sAdmin.isLotForm) {
             return true
           } else {
             return false;
@@ -736,10 +736,12 @@ export default function index({
       name: 'ID',
       selector: 'no',
       sortable: true,
+      width: "100px",
       cell: row => {
+        // console.log('Vendorrrr', row)
         // console.log('Rowwww', row)
         // const currentVendor = vendors && vendors.length > 0 && vendors.find(item => item.id === row.vendor);
-        return <span>{row?.no}</span>
+        return <span>{row?.vendor && row?.vendor.substring(1, 4)}</span>
       }
     },
     {
@@ -831,18 +833,18 @@ export default function index({
 
       return {
         vendor: currentVendor,
-        admins: [admin,...(otherAdmins)],
+        admins: [admin, ...(otherAdmins)],
         form_title: admin.isLotForm ? 'LOT Form' : 'Mentoring Form',
         vendorName: admin.vendorName
       }
     }).filter(admin => admin.vendor)
 
-    adminWithNoCustomForm = removeDuplicateObj(adminWithNoCustomForm,'vendorName');
- 
+    adminWithNoCustomForm = removeDuplicateObj(adminWithNoCustomForm, 'vendorName');
+
     // ...(adminWithNoCustomForm || []),
     formWithVendorAndAdmins = [...(assignedForms || []), ...(adminWithNoCustomForm || [])]
   };
-  console.log('currentAdmins',currentAdmins)
+  console.log('formWithVendorAndAdmins', formWithVendorAndAdmins)
 
   return (
     <AdminStyled>
@@ -1041,7 +1043,6 @@ export default function index({
               selectableRows
               paginationRowsPerPageOptions={paginationRowsPerPageOptions}
               paginationComponentOptions={paginationComponentOptions}
-              onSelectedRowsChange={handleSelectedRowsChange}
             // expandableRows
             // expandableRowsComponent={<ExpandableRowForm vendors={vendors} />}
             // expandableRowsComponentProps={{"someTitleProp": someTitleProp}}    
