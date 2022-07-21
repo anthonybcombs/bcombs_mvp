@@ -2047,7 +2047,7 @@ export default function index() {
                 "background": "transparent",
                 "border": "0",
                 "padding": "0",
-                "lineHeight": "1",
+                // "lineHeight": "0",
                 "color": "#000000"
               }}
               onChange={({ target }) => {
@@ -2102,7 +2102,7 @@ export default function index() {
                   "background": "transparent",
                   "border": "0",
                   "padding": "0",
-                  "lineHeight": "1",
+                  "lineHeight": "0",
                   "color": "#000000",
 
                 }}
