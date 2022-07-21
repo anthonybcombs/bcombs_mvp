@@ -758,7 +758,7 @@ export default function index({
     },
     {
       name: 'Application',
-      selector: 'application',
+      selector: 'vendorName',
       sortable: true,
       cell: row => row.vendorName
     },
@@ -766,7 +766,9 @@ export default function index({
       name: 'Form',
       selector: 'form',
       sortable: true,
-      cell: row => setupForms(row.forms, row.isLotForm)
+      cell: row => {
+        return setupForms(row.forms, row.isLotForm);
+      }
     }
   ];
 
@@ -786,7 +788,7 @@ export default function index({
     },
     {
       name: 'Admins',
-      selector: 'adnins',
+      selector: 'admins',
       sortable: true,
       cell: row => <span>{row?.admins.map(item => <div>{item.email}</div>)}</span>
     },
