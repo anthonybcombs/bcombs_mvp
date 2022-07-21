@@ -651,9 +651,9 @@ export default function index({
       const isExists = sAdminForms.filter((x) => {
         if (x.form == form.id) return true;
         else if (!x.form) {
-          if (form.id == 'default') {
+          if (form.id == 'default' && !sAdmin.isLotForm) {
             return true;
-          } else if (form.id == 'lot' && !!sAdmin.isLotForm) {
+          } else if (form.id == 'lot' && sAdmin.isLotForm) {
             return true
           } else {
             return false;
@@ -737,9 +737,10 @@ export default function index({
       selector: 'no',
       sortable: true,
       cell: row => {
+        // console.log('Vendorrrr', row)
         // console.log('Rowwww', row)
         // const currentVendor = vendors && vendors.length > 0 && vendors.find(item => item.id === row.vendor);
-        return <span>{row?.no}</span>
+        return <span>{row?.vendor.substring(1,3)}</span>
       }
     },
     {
@@ -842,7 +843,7 @@ export default function index({
     // ...(adminWithNoCustomForm || []),
     formWithVendorAndAdmins = [...(assignedForms || []), ...(adminWithNoCustomForm || [])]
   };
-  console.log('currentAdmins',currentAdmins)
+  console.log('formWithVendorAndAdmins',formWithVendorAndAdmins)
 
   return (
     <AdminStyled>
@@ -1041,7 +1042,6 @@ export default function index({
               selectableRows
               paginationRowsPerPageOptions={paginationRowsPerPageOptions}
               paginationComponentOptions={paginationComponentOptions}
-              onSelectedRowsChange={handleSelectedRowsChange}
             // expandableRows
             // expandableRowsComponent={<ExpandableRowForm vendors={vendors} />}
             // expandableRowsComponentProps={{"someTitleProp": someTitleProp}}    
