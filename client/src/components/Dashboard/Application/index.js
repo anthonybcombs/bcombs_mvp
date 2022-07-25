@@ -678,7 +678,7 @@ export default function index() {
 
         setSelectedVendor(newDefaultVendor[0]);
 
-        if (newDefaultVendor[0] && newDefaultVendor[0].name.includes('LOT')) {
+        if (newDefaultVendor[0] && newDefaultVendor[0]?.name.includes('LOT')) {
           setSelectedForm('lot');
         }
 
@@ -707,8 +707,15 @@ export default function index() {
           setSelectedForm('lot');
         }
         else {
-          defaultVendor = vendors.find(item => !item.is_lot);
-          setSelectedVendor(defaultVendor);
+          const hasLot = vendors.some(item => item.is_lot)
+          if (hasLot) {
+            defaultVendor = vendors.find(item => item.is_lot);
+            setSelectedVendor(defaultVendor);
+          }
+          else {
+            defaultVendor = vendors.find(item => !item.is_lot);
+            setSelectedVendor(defaultVendor);
+          }
         }
 
         // if(vendors[0] && vendors[0].name.includes('LOT')) {
@@ -717,9 +724,9 @@ export default function index() {
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
         } else {
-  
+
           setAppGroups(defaultVendor?.app_groups);
-          
+
         }
         dispatch(requestGetForms({
           vendor: defaultVendor?.id || '',
@@ -734,11 +741,11 @@ export default function index() {
 
       //get vendors reminders
 
-    
+
     }
   }, [vendors, queryParams?.vendor]);
 
-  
+
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
 
@@ -758,7 +765,7 @@ export default function index() {
       }
       // dispatch(requestGetCustomApplications(queryParams.form));
     } else {
-      setExportFilename(selectedVendor.name);
+      setExportFilename(selectedVendor?.name);
       dispatch(requestGetApplications(selectedVendor?.id || ''));
     }
 
@@ -769,7 +776,7 @@ export default function index() {
 
     if (selectedVendor) {
 
-      const isLot = (selectedVendor && selectedVendor.name && selectedVendor.name.includes('LOT')) || (auth && auth.nickname === 'lot');
+      const isLot = (selectedVendor && selectedVendor?.name && selectedVendor.name.includes('LOT')) || (auth && auth.nickname === 'lot');
 
       setSelectedForm(isLot ? "lot" : "default");
     }
@@ -1987,7 +1994,7 @@ export default function index() {
 
     if (selectedForm == "default" || selectedForm == "lot") {
 
-      let newName = `${selectedVendor.name} Copy`;
+      let newName = `${selectedVendor?.name} Copy`;
       newName = handleCheckVendorNameDuplicate(newName);
       const payload = {
         user: auth.user_id,
@@ -2027,8 +2034,8 @@ export default function index() {
   }
 
   let vendorOptions = vendors && vendors.length > 0 ? vendors.sort((a, b) => a.name.localeCompare(b.name)) : [];
-  let formOptions =  renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
-
+  let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
+  console.log('selectedVendor', selectedVendor)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2074,7 +2081,7 @@ export default function index() {
 
                 }
               }}
-              value={selectedVendor.id}
+              value={selectedVendor?.id}
             >
               {vendorOptions.map(vendor => (
                 <option key={vendor.id} value={vendor.id}>
@@ -2113,7 +2120,7 @@ export default function index() {
 
                     setSelectedForm(target.value);
                     setAppGroups(selectedVendor.app_groups);
-                    window.history.replaceState("", "", "?vendor=" + selectedVendor.id2);
+                    window.history.replaceState("", "", "?vendor=" + selectedVendor?.id2);
                     if (applications.activeapplications.length === 0) {
                       dispatch(requestGetApplications(selectedVendor.id));
                     }
@@ -2153,7 +2160,7 @@ export default function index() {
           )
         }
         {
-          vendors && vendors.length > 0 && isNbmbaa  ? (
+          vendors && vendors.length > 0 && isNbmbaa ? (
             <div className="copy-vendor-btn">
               <FontAwesomeIcon
                 className="copy-icon"
@@ -2175,16 +2182,16 @@ export default function index() {
               selectedVendor && selectedVendor.id2 && (selectedForm == "default" || selectedForm == "lot") ? (
                 <div className="copy-application-link">
                   <a
-                    href={selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
-                      }/daycare` : `/application/${selectedVendor.id2
+                    href={selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 && selectedForm !== 'lot' ? `/application/${selectedVendor?.id2
+                      }/daycare` : `/application/${selectedVendor?.id2
                       }${selectedForm === 'lot' ? '/lot' : ''}`}>
                     <FontAwesomeIcon icon={faFileSignature} />
                     <span>Application</span>
                   </a>
                   <FontAwesomeIcon icon={faLink} onClick={() => {
                     setCopyApplicationLinkModal(true)
-                    setCurrentCopyLink(selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 && selectedForm !== 'lot' ? `/application/${selectedVendor.id2
-                      }/daycare` : `/application/${selectedVendor.id2
+                    setCurrentCopyLink(selectedVendor.is_daycare && selectedVendor.is_daycare !== 2 && selectedForm !== 'lot' ? `/application/${selectedVendor?.id2
+                      }/daycare` : `/application/${selectedVendor?.id2
                       }${selectedForm === 'lot' ? '/lot' : ''}`)
                   }} />
                 </div>
@@ -2299,7 +2306,7 @@ export default function index() {
               <span>My Application</span>
             </a>
 
-            <a href={`/dashboard/forms?vendor=${selectedVendor.id2}`}>
+            <a href={`/dashboard/forms?vendor=${selectedVendor?.id2}`}>
               <FontAwesomeIcon icon={faFileAlt} />
               <span>Forms</span>
             </a>
