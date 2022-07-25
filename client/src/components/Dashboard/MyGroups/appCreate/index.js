@@ -10,6 +10,9 @@ import {
   requestDeleteVendorAppGroup
 } from "../../../../redux/actions/VendorAppGroups";
 const NewContactModal = styled.div`
+  .modal-content {
+    max-width: 1200px !important;
+  }
   .group-btn {
     margin: 0;
   }
@@ -36,7 +39,7 @@ export default function index({
   formattedVendors=[]
 }) {
 
-  console.log("currentAppGroup", currentAppGroup);
+
   const action = isEditMode ? "edit" : "create";
 
   const [groupDetails, setGroupDetails] = useState({
@@ -56,7 +59,7 @@ export default function index({
     else {
       setGroupDetails({});
     }
-  }, [isVisible]);
+  }, [isVisible, formattedVendors, selectedForms]);
 
 
   useEffect(() => {
@@ -136,7 +139,7 @@ export default function index({
         return v;
       });
 
-      console.log("groupDetails", groupDetails);
+
       payload.size = parseInt(payload.size);
       console.log("PAYLOADDD EDIT", payload);
       dispatch(requestEditVendorAppGroup(payload));
@@ -164,7 +167,7 @@ export default function index({
  
           })
         }
-        console.log('payloadddd', payload)
+
         payload.size = parseInt(payload.size);
 
         dispatch(requestAddVendorAppGroup(payload));
@@ -187,7 +190,6 @@ export default function index({
       pool_id: groupDetails.pool_id,
       email: auth.email
     };
-    console.log("payloadddd", payload);
     dispatch(requestDeleteVendorAppGroup(payload));
     setGroupDetails({
       name: "",
