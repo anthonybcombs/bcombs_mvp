@@ -322,7 +322,7 @@ export const triggerCronSetReminder = async () => {
 
       let currItem = item;
       currItem.active = 0;
-      // await updateGroupReminderStatus(currItem);
+      await updateGroupReminderStatus(currItem);
     }
   }
   catch (err) {
