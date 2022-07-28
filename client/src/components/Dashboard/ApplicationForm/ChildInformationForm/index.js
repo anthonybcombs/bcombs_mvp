@@ -1475,7 +1475,7 @@ export default function index({
                       );
                     }}
                     ref={register({ required: true, minLength: 5 })}
-                    defaultValue={childProfile.location_site}>
+                    value={childProfile.location_site}>
                     <option value="">Select</option>
                     {LOCATION_SITE_OPTIONS.map((opt, index) => (
                       <option key={index + 1} value={opt.value}>
