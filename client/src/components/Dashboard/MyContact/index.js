@@ -260,26 +260,26 @@ export default function index() {
   console.log("vendorForms", vendorForms);
 
   // const selectedGroup = groups.find(group => group.id === selectedGroupId);
-  const filteredContacts = contacts.filter(contact => {
-    if (selectedGroupId === 0) {
-      return true;
-    }
-    return (
-      selectedGroup &&
-      selectedGroup.contacts &&
-      selectedGroup.contacts.includes(contact.id)
-    );
-  });
+  // const filteredContacts = contacts.filter(contact => {
+  //   if (selectedGroupId === 0) {
+  //     return true;
+  //   }
+  //   return (
+  //     selectedGroup &&
+  //     selectedGroup.contacts &&
+  //     selectedGroup.contacts.includes(contact.id)
+  //   );
+  // });
 
-  const handleSelectedLabel = value => {
-    setSelectedLabel(value);
+  // const handleSelectedLabel = value => {
+  //   setSelectedLabel(value);
 
-    if (value === "Duplicates") {
-      setCurrentContacts(getDuplicateContacts());
-    } else {
-      setCurrentContacts(filteredContacts);
-    }
-  };
+  //   if (value === "Duplicates") {
+  //     setCurrentContacts(getDuplicateContacts());
+  //   } else {
+  //     setCurrentContacts(filteredContacts);
+  //   }
+  // };
 
   const getDuplicateContacts = () => {
     return contacts && contacts.length > 0
@@ -347,7 +347,7 @@ export default function index() {
   }
   console.log('vendorForms',vendorForms)
   const handleAppGroupModal = group => {
-    if(vendorForms.formList.length > 0) {
+    // if(vendorForms.formList.length > 0) {
       setCurrentAppGroup(group);
       setIsAppGroupEditMode(true);
       let sForms = getSelectedForms(group);
@@ -364,10 +364,12 @@ export default function index() {
       setSelectedForms(sForms);
       setAppGroupDetails({...appGroupDetails, ["vendors"]: sForms}); 
       setApiStatus("");
-      setTimeout(() => {
-        setIsNewAppGroupModalVisible(true);
-      }, 500);
-    }
+      setIsNewAppGroupModalVisible(true);
+      // setTimeout(() => {
+      //   setIsNewAppGroupModalVisible(true);
+      // }, 500);
+
+    // }
   };
 
   const handleCloseModal = () => {
@@ -387,7 +389,7 @@ export default function index() {
     return true;
   };
 
-  console.log('currentAppGroupsssssssss',currentAppGroup)
+  console.log('loadinggggggggggg',loading)
   console.log('currentAppGroupsssssssss selectedForms',selectedForms)
   return (
     <MyContactsStyled>
@@ -528,6 +530,7 @@ export default function index() {
           </div> */}
 
           {isVendor() && (
+            loading.groupMembers ? <Loading/>  : 
             <div className="groups">
               <Collapsible
                 trigger={<h3>Application Groups</h3>}
@@ -538,15 +541,16 @@ export default function index() {
                   appGroups &&
                   appGroups.map(group => (
                     <div
-                      style={{"color": vendorForms.formList.length > 0 ? "rgb(68, 68, 68)" : "darkgrey"}}
+                      // style={{"color": vendorForms.formList.length > 0 ? "rgb(68, 68, 68)" : "darkgrey"}}
                       className={`${
                         group.id === selectedGroupId ? "selected" : ""
                       }`}
                       key={group.app_grp_id}
                       onClick={() => {
-                        if(vendorForms.formList.length > 0) {
-                          handleAppGroupModal(group);
-                        }
+                        // if(vendorForms.formList.length > 0) {
+                        //   handleAppGroupModal(group);
+                        // }
+                        handleAppGroupModal(group);
                       }}>
                       <FontAwesomeIcon icon={faUsers} />
                       <span>{group.name}</span>

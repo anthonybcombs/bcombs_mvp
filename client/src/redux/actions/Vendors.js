@@ -25,7 +25,8 @@ import {
   setFormSettingsLoading,
   setAddAdminLoading,
   setDeleteAdminLoading,
-  setApplicationLoading
+  setApplicationLoading,
+  setGroupMemberLoadingLoading
 } from "./Loading";
 
 const createVendorToDatabase = vendor => {
@@ -578,6 +579,8 @@ export function* getUserVendorForms(action) {
       type: actionType.REQUEST_USER_VENDOR_FORMS_COMPLETED,
       payload: forms
     });
+
+    yield put(setGroupMemberLoadingLoading(false));
   } catch (err) {
     console.log("err", err);
     yield put({
