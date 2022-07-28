@@ -1002,7 +1002,7 @@ export default function index() {
       >
         View Application
       </a>
-      <span style={{marginLeft: 4, marginRight: 4}}>/</span>  
+        <span style={{ marginLeft: 4, marginRight: 4 }}>/</span>
         <a href="#" onClick={() => {
           const currentParent = userApplications && userApplications[0] && userApplications
           const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
@@ -1010,7 +1010,7 @@ export default function index() {
           window.location.href = `/dashboard/grades/profile/${application.child?.ch_id}?group_id=${application.class_teacher}&group_type=bcombs&parent_ids=${parentIds}&is_parent=true`
 
         }}> View Grade</a>
-      
+
       </>)
     }
     let classTeacher = application.class_teacher ? application.class_teacher.split(',') : application.class_teacher;
@@ -1030,7 +1030,7 @@ export default function index() {
         >
           View Application
         </a>
-        <span style={{marginLeft: 4, marginRight: 4}}>/</span>  
+        <span style={{ marginLeft: 4, marginRight: 4 }}>/</span>
         <a href="#" onClick={() => {
           const currentParent = userApplications && userApplications[0] && userApplications
           const parentIds = currentParent && currentParent.map(item => item.parents && item.parents[0] && item.parents[0].parent_id).join(',');
@@ -1283,9 +1283,9 @@ export default function index() {
         state: parent.profile.state,
         zip_code: parent.profile.zip_code,
         person_recommend: parent.profile.person_recommend,
-        birthdate: format(
-          new Date(parent.profile.date_of_birth),
-          DATE_TIME_FORMAT2),
+        // birthdate: format(
+        //   parent.profile.date_of_birth,
+        //   DATE_TIME_FORMAT2),
         gender: parent.profile.gender,
         age: getAge(parent.profile.date_of_birth),
         ethnicities: getArrayValue(parent.profile.ethinicity),
@@ -1326,116 +1326,125 @@ export default function index() {
   const DATE_TIME_FORMAT2 = "yyyy-MM-dd";
 
   const onSubmitSaveApplication = () => {
+    console.log('PAYLOADDDDDDDDD childInformation2222', format(
+      new Date(childInformation.profile.date_of_birth),
+      DATE_TIME_FORMAT2))
+    try {
+      let payload = {
+        app_id: selectedApplication.app_id,
+        child: {
+          firstname: childInformation.profile.first_name,
+          lastname: childInformation.profile.last_name,
+          age: getAge(childInformation.profile.date_of_birth),
+          birthdate: format(
+            new Date(childInformation.profile.date_of_birth),
+            DATE_TIME_FORMAT2),
+          gender: childInformation.profile.gender,
+          phone_type: childInformation.profile.phone_type,
+          phone_number: childInformation.profile.phone_number,
+          email_type: childInformation.profile.email_type,
+          email_address: childInformation.profile.email_address,
+          phone_type2: childInformation.profile.phone_type2,
+          phone_number2: childInformation.profile.phone_number2,
+          email_type2: childInformation.profile.email_type2,
+          email_address2: childInformation.profile.email_address2,
+          address: childInformation.profile.address,
+          city: childInformation.profile.city,
+          state: childInformation.profile.state,
+          zip_code: childInformation.profile.zip_code,
+          location_site: childInformation.profile.location_site,
+          child_lives_with: getArrayValue(childInformation.profile.child_lives_with),
+          school_name: childInformation.general_information.school_name,
+          school_phone: childInformation.general_information.school_phone,
+          has_suspended: childInformation.general_information.has_suspended == "Yes" || childInformation.general_information.has_suspended == 1 ? 1 : 0,
+          reason_suspended: childInformation.general_information.reason_suspended,
+          year_taken: childInformation.general_information.mentee_start_year,
+          hobbies: childInformation.general_information.hobbies,
+          life_events: childInformation.general_information.life_events,
+          career_goals: childInformation.general_information.career_goals,
+          colleges: childInformation.general_information.colleges,
+          affiliations: childInformation.general_information.team_affiliations,
+          awards: childInformation.general_information.awards,
+          accomplishments: childInformation.general_information.accomplishments,
+          mentee_gain_program: childInformation.general_information.mentee_gain,
+          grade_number: childInformation.general_information.grade,
+          grade_desc: getGradeDesc(childInformation.general_information.grade),
+          class_rank: childInformation.general_information.class_rank,
+          gpa_quarter_year: childInformation.general_information.gpa_quarter_year,
+          gpa_quarter_q1: childInformation.general_information.gpa_quarter_q1,
+          gpa_quarter_q2: childInformation.general_information.gpa_quarter_q2,
+          gpa_quarter_q3: childInformation.general_information.gpa_quarter_q3,
+          gpa_quarter_q4: childInformation.general_information.gpa_quarter_q4,
+          gpa_cumulative_year: childInformation.general_information.gpa_cumulative_year,
+          gpa_cumulative_q1: childInformation.general_information.gpa_cumulative_q1,
+          gpa_cumulative_q2: childInformation.general_information.gpa_cumulative_q2,
+          gpa_cumulative_q3: childInformation.general_information.gpa_cumulative_q3,
+          gpa_cumulative_q4: childInformation.general_information.gpa_cumulative_q4,
+          ethnicities: getArrayValue(childInformation.profile.ethinicity),
+          programs: getArrayValue(childInformation.profile.program),
+          doctor_name: childInformation.emergency_care_information.doctor_name,
+          doctor_phone: childInformation.emergency_care_information.doctor_phone,
+          hospital_preference: childInformation.emergency_care_information.hospital_preference,
+          hospital_phone: childInformation.emergency_care_information.hospital_phone,
+          nickname: childInformation.profile.nick_name,
+          is_child_transferring: childInformation.general_information.is_child_transferring,
+          does_child_require_physical_education_service: childInformation.general_information.does_child_require_physical_education_service,
+          history_prev_diseases: childInformation.general_information.history_prev_diseases,
+          child_currently_doctors_care: childInformation.general_information.child_currently_doctors_care,
+          reasons_previous_hospitalizations: childInformation.general_information.reasons_previous_hospitalizations,
+          comments_suggestion: childInformation.general_information.comments_suggestion,
+          list_special_dietary: childInformation.general_information.list_special_dietary,
+          list_any_allergies: childInformation.general_information.list_any_allergies,
+          mental_physical_disabilities: childInformation.general_information.mental_physical_disabilities,
+          medical_action_plan: childInformation.general_information.medical_action_plan,
+          list_fears_unique_behavior: childInformation.general_information.list_fears_unique_behavior,
+          transfer_reason: childInformation.general_information.transfer_reason,
+          prev_school_phone: childInformation.general_information.prev_school_phone,
+          prev_school_city: childInformation.general_information.prev_school_city,
+          prev_school_address: childInformation.general_information.prev_school_address,
+          prev_school_attended: childInformation.general_information.prev_school_attended,
+          prev_school_state: childInformation.general_information.prev_school_state,
+          prev_school_zip_code: childInformation.general_information.prev_school_zip_code,
+          preffered_start_date: format(
+            new Date(childInformation.profile.preffered_start_date),
+            DATE_TIME_FORMAT2),
+          current_classroom: childInformation.profile.current_classroom,
+          primary_language: childInformation.profile.primary_language,
+          needed_days: childInformation.profile.needed_days,
+          schedule_tour: childInformation.profile.schedule_tour,
+          voucher: childInformation.profile.voucher,
+          ch_id: childInformation.ch_id
+        },
+        parents: setupParentsList(),
+        emergency_contacts: JSON.stringify(emergencyContacts),
+        section1_signature: termsWaiver.section1.signature,
+        section1_date_signed: format(termsWaiver.date ? new Date(termsWaiver.date) : new Date(), DATE_TIME_FORMAT2),
+        section2_signature: termsWaiver.section2.signature,
+        section2_date_signed: format(termsWaiver.date ? new Date(termsWaiver.date) : new Date(), DATE_TIME_FORMAT2),
+        section3_signature: termsWaiver.section3.signature,
+        section3_date_signed: format(termsWaiver.date ? new Date(termsWaiver.date) : new Date(), DATE_TIME_FORMAT2),
+        section1_text: selectedApplication.section1_text,
+        section2_text: selectedApplication.section2_text,
+        section3_text: selectedApplication.section3_text,
+        section1_name: selectedApplication.section1_name,
+        section2_name: selectedApplication.section2_name,
+        section3_name: selectedApplication.section3_name,
+        updated_by: auth.name
+      }
 
-    let payload = {
-      app_id: selectedApplication.app_id,
-      child: {
-        firstname: childInformation.profile.first_name,
-        lastname: childInformation.profile.last_name,
-        age: getAge(childInformation.profile.date_of_birth),
-        birthdate: format(
-          new Date(childInformation.profile.date_of_birth),
-          DATE_TIME_FORMAT2),
-        gender: childInformation.profile.gender,
-        phone_type: childInformation.profile.phone_type,
-        phone_number: childInformation.profile.phone_number,
-        email_type: childInformation.profile.email_type,
-        email_address: childInformation.profile.email_address,
-        phone_type2: childInformation.profile.phone_type2,
-        phone_number2: childInformation.profile.phone_number2,
-        email_type2: childInformation.profile.email_type2,
-        email_address2: childInformation.profile.email_address2,
-        address: childInformation.profile.address,
-        city: childInformation.profile.city,
-        state: childInformation.profile.state,
-        zip_code: childInformation.profile.zip_code,
-        location_site: childInformation.profile.location_site,
-        child_lives_with: getArrayValue(childInformation.profile.child_lives_with),
-        school_name: childInformation.general_information.school_name,
-        school_phone: childInformation.general_information.school_phone,
-        has_suspended: childInformation.general_information.has_suspended == "Yes" || childInformation.general_information.has_suspended == 1 ? 1 : 0,
-        reason_suspended: childInformation.general_information.reason_suspended,
-        year_taken: childInformation.general_information.mentee_start_year,
-        hobbies: childInformation.general_information.hobbies,
-        life_events: childInformation.general_information.life_events,
-        career_goals: childInformation.general_information.career_goals,
-        colleges: childInformation.general_information.colleges,
-        affiliations: childInformation.general_information.team_affiliations,
-        awards: childInformation.general_information.awards,
-        accomplishments: childInformation.general_information.accomplishments,
-        mentee_gain_program: childInformation.general_information.mentee_gain,
-        grade_number: childInformation.general_information.grade,
-        grade_desc: getGradeDesc(childInformation.general_information.grade),
-        class_rank: childInformation.general_information.class_rank,
-        gpa_quarter_year: childInformation.general_information.gpa_quarter_year,
-        gpa_quarter_q1: childInformation.general_information.gpa_quarter_q1,
-        gpa_quarter_q2: childInformation.general_information.gpa_quarter_q2,
-        gpa_quarter_q3: childInformation.general_information.gpa_quarter_q3,
-        gpa_quarter_q4: childInformation.general_information.gpa_quarter_q4,
-        gpa_cumulative_year: childInformation.general_information.gpa_cumulative_year,
-        gpa_cumulative_q1: childInformation.general_information.gpa_cumulative_q1,
-        gpa_cumulative_q2: childInformation.general_information.gpa_cumulative_q2,
-        gpa_cumulative_q3: childInformation.general_information.gpa_cumulative_q3,
-        gpa_cumulative_q4: childInformation.general_information.gpa_cumulative_q4,
-        ethnicities: getArrayValue(childInformation.profile.ethinicity),
-        programs: getArrayValue(childInformation.profile.program),
-        doctor_name: childInformation.emergency_care_information.doctor_name,
-        doctor_phone: childInformation.emergency_care_information.doctor_phone,
-        hospital_preference: childInformation.emergency_care_information.hospital_preference,
-        hospital_phone: childInformation.emergency_care_information.hospital_phone,
-        nickname: childInformation.profile.nick_name,
-        is_child_transferring: childInformation.general_information.is_child_transferring,
-        does_child_require_physical_education_service: childInformation.general_information.does_child_require_physical_education_service,
-        history_prev_diseases: childInformation.general_information.history_prev_diseases,
-        child_currently_doctors_care: childInformation.general_information.child_currently_doctors_care,
-        reasons_previous_hospitalizations: childInformation.general_information.reasons_previous_hospitalizations,
-        comments_suggestion: childInformation.general_information.comments_suggestion,
-        list_special_dietary: childInformation.general_information.list_special_dietary,
-        list_any_allergies: childInformation.general_information.list_any_allergies,
-        mental_physical_disabilities: childInformation.general_information.mental_physical_disabilities,
-        medical_action_plan: childInformation.general_information.medical_action_plan,
-        list_fears_unique_behavior: childInformation.general_information.list_fears_unique_behavior,
-        transfer_reason: childInformation.general_information.transfer_reason,
-        prev_school_phone: childInformation.general_information.prev_school_phone,
-        prev_school_city: childInformation.general_information.prev_school_city,
-        prev_school_address: childInformation.general_information.prev_school_address,
-        prev_school_attended: childInformation.general_information.prev_school_attended,
-        prev_school_state: childInformation.general_information.prev_school_state,
-        prev_school_zip_code: childInformation.general_information.prev_school_zip_code,
-        preffered_start_date: format(
-          new Date(childInformation.profile.preffered_start_date),
-          DATE_TIME_FORMAT2),
-        current_classroom: childInformation.profile.current_classroom,
-        primary_language: childInformation.profile.primary_language,
-        needed_days: childInformation.profile.needed_days,
-        schedule_tour: childInformation.profile.schedule_tour,
-        voucher: childInformation.profile.voucher,
-        ch_id: childInformation.ch_id
-      },
-      parents: setupParentsList(),
-      emergency_contacts: JSON.stringify(emergencyContacts),
-      section1_signature: termsWaiver.section1.signature,
-      section1_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT2),
-      section2_signature: termsWaiver.section2.signature,
-      section2_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT2),
-      section3_signature: termsWaiver.section3.signature,
-      section3_date_signed: format(new Date(termsWaiver.date), DATE_TIME_FORMAT2),
-      section1_text: selectedApplication.section1_text,
-      section2_text: selectedApplication.section2_text,
-      section3_text: selectedApplication.section3_text,
-      section1_name: selectedApplication.section1_name,
-      section2_name: selectedApplication.section2_name,
-      section3_name: selectedApplication.section3_name,
-      updated_by: auth.name
+      payload = {
+        ...payload,
+        relationships: relationships,
+        received_reminder: !!selectedApplication?.received_reminder,
+        received_update: !!selectedApplication?.received_update
+      };
+      console.log('PAYLOADDDDDDDDD', payload)
+      dispatch(requestSaveApplication(payload));
     }
-
-    payload = {
-      ...payload,
-      relationships: relationships,
-      received_reminder: !!selectedApplication?.received_reminder,
-      received_update: !!selectedApplication?.received_update
-    };
-    dispatch(requestSaveApplication(payload));
+    catch (e) {
+      console.log('ERRORRRRRRRRRRRR', e)
+    }
+   
   }
 
   const { register, handleSubmit, errors, clearError, setError } = useForm({
@@ -1446,26 +1455,50 @@ export default function index() {
   const handleChangeToEdit = (e) => {
     e.preventDefault();
 
-    let tempTermsWaiver = termsWaiver
+    let tempTermsWaiver = { ...termsWaiver }
     if (isReadonly) {
-      tempTermsWaiver.section1.signature = "";
-      tempTermsWaiver.section2.signature = "";
-      tempTermsWaiver.section3.signature = "";
 
-      tempTermsWaiver.section1.checked = false;
-      tempTermsWaiver.section2.checked = false;
-      tempTermsWaiver.section3.checked = false;
+      tempTermsWaiver = {
+        ...tempTermsWaiver,
+        section1: {
+          ...tempTermsWaiver.section1,
+          signature: '',
+          checked: false
+        },
+        section2: {
+          ...tempTermsWaiver.section2,
+          signature: '',
+          checked: false
+        },
+        section3: {
+          ...tempTermsWaiver.section3,
+          signature: '',
+          checked: false
+        }
+      }
+      // tempTermsWaiver.section1.signature = "";
+      // tempTermsWaiver.section2.signature = "";
+      // tempTermsWaiver.section3.signature = "";
+
+      // tempTermsWaiver.section1.checked = false;
+      // tempTermsWaiver.section2.checked = false;
+      // tempTermsWaiver.section3.checked = false;
     } else {
+      console.log('selectedApplication2222', selectedApplication)
+      console.log('selectedApplication2222 tempTermsWaiver', tempTermsWaiver)
       tempTermsWaiver.section1.signature = selectedApplication.section1_signature;
       tempTermsWaiver.section2.signature = selectedApplication.section2_signature;
       tempTermsWaiver.section3.signature = selectedApplication.section3_signature;
+      console.log('selectedApplication2222', selectedApplication)
 
       tempTermsWaiver.section1.checked = !!selectedApplication.section1_signature;
       tempTermsWaiver.section2.checked = !!selectedApplication.section2_signature;
       tempTermsWaiver.section3.checked = !!selectedApplication.section3_signature;
     }
 
-    setTermsWaiver(tempTermsWaiver);
+    setTermsWaiver({
+      ...tempTermsWaiver
+    });
 
     setTimeout(() => {
       setIsReadonly(!isReadonly);
