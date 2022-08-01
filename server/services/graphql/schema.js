@@ -500,6 +500,7 @@ const inputs = `
         relationships: [ParentChildRelationshipInput]
         received_reminder: Boolean
         received_update: Boolean
+        student_status: String
     }
 
     input AdminFormInput {

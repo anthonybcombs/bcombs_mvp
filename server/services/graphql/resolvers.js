@@ -1189,8 +1189,19 @@ const resolvers = {
         emergency_contacts: application.emergency_contacts,
         tc_signatures: tc_signatures,
         child: application.child,
-        parents: application.parents
+        parents: application.parents,
+    
       });
+
+      await updateApplication({
+        verification: previousApplication.verification,
+        student_status: application.student_status,
+        color_designation: previousApplication.color_designation,
+        class_teacher: previousApplication.class_teacher,
+        notes: previousApplication.notes,
+        app_id: application.app_id
+      });
+
 
       if(application.relationships) {
         for(const relationship of application.relationships) {

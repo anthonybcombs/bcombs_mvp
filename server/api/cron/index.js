@@ -1,4 +1,4 @@
-// import express from "express";
+import express from "express";
 
 import {
   getGroupReminderByCurrentDate,
@@ -6,6 +6,7 @@ import {
 } from "../vendor";
 
 import {
+  updateApplication,
   getApplicationsByAppGroup,
   removeApplicationFromGroup,
   updateApplicationUser,
@@ -28,7 +29,7 @@ import {
   getChilds
 } from "../index";
 
-// const router = express.Router();
+const router = express.Router();
 
 export const triggerCronUpdateChildIds = async () => {
   let childs = await getChilds();
@@ -107,7 +108,7 @@ export const triggerCronSetReminder = async () => {
 
           let formContentsString = appl.form_contents ? JSON.stringify(appl.form_contents) : "{}";
           appl.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
-
+          appl.student_status = 'pending_resubmission';
           await updateSubmitCustomApplication(appl);
 
           const col = {
@@ -277,7 +278,7 @@ export const triggerCronSetReminder = async () => {
 
             appl.emergency_contacts = JSON.stringify(emergencyContacts);
 
-           await updateEmergencyConctacts(appl.app_id, appl.emergency_contacts);
+            await updateEmergencyConctacts(appl.app_id, appl.emergency_contacts);
           }
 
 
@@ -290,19 +291,30 @@ export const triggerCronSetReminder = async () => {
           if (appl.class_teacher) {
             let appGroups = appl.class_teacher ? appl.class_teacher.split(',') : [];
             appGroups = appGroups.filter(item => !appGroupIds.includes(item));
-  
+
             appGroups = appGroups.join(',');
             console.log('************************************************************')
             console.log('App Groups', appGroups)
             console.log('************************************************************')
-  
+
             await removeApplicationFromGroup({
               app_id: appl.app_id,
               app_group_ids: appGroups,
               is_customform: !!item.is_customform
             });
           }
-   
+
+
+          await updateApplication({
+            verification: appl.verification,
+            student_status: 'pending_resubmission',
+            color_designation: appl.color_designation,
+            class_teacher: appl.class_teacher,
+            notes: appl.notes,
+            app_id: appl.app_id
+          });
+
+
 
           const col = {
             application: appl.app_id,
@@ -331,9 +343,9 @@ export const triggerCronSetReminder = async () => {
 }
 
 
-// router.get("/", async (req, res) => {
-// await triggerCronSetReminder();
-//   res.status(200).json({ test: true });
-// });
+router.get("/", async (req, res) => {
+await triggerCronSetReminder();
+  res.status(200).json({ test: true });
+});
 
-// export default router;
+export default router;
