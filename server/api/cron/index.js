@@ -109,6 +109,8 @@ export const triggerCronSetReminder = async () => {
           let formContentsString = appl.form_contents ? JSON.stringify(appl.form_contents) : "{}";
           appl.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
           appl.student_status = 'pending_resubmission';
+          appl.student_status = 'waiting_for_verification';
+
           await updateSubmitCustomApplication(appl);
 
           const col = {
@@ -306,7 +308,7 @@ export const triggerCronSetReminder = async () => {
 
 
           await updateApplication({
-            verification: appl.verification,
+            verification: 'waiting_for_verification',
             student_status: 'pending_resubmission',
             color_designation: appl.color_designation,
             class_teacher: appl.class_teacher,
@@ -318,8 +320,8 @@ export const triggerCronSetReminder = async () => {
 
           const col = {
             application: appl.app_id,
-            received_reminder: 0,
-            received_update: 0
+            received_reminder: 1,
+            received_update: 1
           };
 
           console.log('updateApplicationUser', col);
