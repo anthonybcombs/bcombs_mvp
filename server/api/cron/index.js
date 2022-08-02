@@ -125,6 +125,17 @@ export const triggerCronSetReminder = async () => {
 
         } else {
 
+          
+          await updateApplication({
+            verification: 'waiting_for_verification',
+            student_status: 'pending_resubmission',
+            color_designation: appl.color_designation,
+            class_teacher: appl.class_teacher,
+            notes: appl.notes,
+            app_id: appl.app_id
+          });
+
+
           const fields1 = form_fields?.fields1;
           const fields2 = form_fields?.fields2;
 
@@ -305,18 +316,6 @@ export const triggerCronSetReminder = async () => {
               is_customform: !!item.is_customform
             });
           }
-
-
-          await updateApplication({
-            verification: 'waiting_for_verification',
-            student_status: 'pending_resubmission',
-            color_designation: appl.color_designation,
-            class_teacher: appl.class_teacher,
-            notes: appl.notes,
-            app_id: appl.app_id
-          });
-
-
 
           const col = {
             application: appl.app_id,
