@@ -92,7 +92,7 @@ export default function index({
                     handleWaiverFormDetailsChange("section1", "signature", target.value)
                   }}
                   ref={register({required: true })}
-                  value={section1.signature}
+                  // value={section1.signature}
                   readOnly={isReadonly}
                 />
                 <label className="field-label" htmlFor="section1_signature"><span className="required">*</span> Electronic Signature</label>
