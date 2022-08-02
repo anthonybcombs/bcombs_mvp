@@ -166,7 +166,7 @@ const ExportFilter = ({
     { name: "No longer a Student", value: "no_longer_student" },
     { name: "Missed opportunity", value: "missed_opportunity" },
     { name: "Pending Resubmission", value: "pending_resubmission" },
-    { name: "Resubmission", value: "resubmission"}
+    { name: "Resubmitted", value: "resubmitted"}
   ];
 
   const VERIFICATION_OPTIONS = [

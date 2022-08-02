@@ -1193,14 +1193,14 @@ const resolvers = {
     
       });
 
-      await updateApplication({
-        verification: previousApplication.verification,
-        student_status: application.student_status,
-        color_designation: previousApplication.color_designation,
-        class_teacher: previousApplication.class_teacher,
-        notes: previousApplication.notes,
-        app_id: application.app_id
-      });
+      // await updateApplication({
+      //   verification: previousApplication.verification,
+      //   student_status: application.student_status,
+      //   color_designation: previousApplication.color_designation,
+      //   class_teacher: previousApplication.class_teacher,
+      //   notes: previousApplication.notes,
+      //   app_id: application.app_id
+      // });
 
 
       if(application.relationships) {
@@ -1231,7 +1231,7 @@ const resolvers = {
         
         updateApplication({
           verification: "waiting_for_verification",
-          student_status: "pending_resubmission",
+          student_status: "resubmitted",
           color_designation: previousApplication.color_designation,
           class_teacher: previousApplication.class_teacher,
           notes: previousApplication.class_teacher,

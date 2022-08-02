@@ -21,8 +21,8 @@ export const getApplicationStatusVal = (student_status, verification) => {
     } else if (student_status == "pending_resubmission") {
       studentStatusVal = "Pending Resubmission";
     }
-    else if (student_status == "resubmission") {
-      studentStatusVal = "Resubmission";
+    else if (student_status == "resubmitted") {
+      studentStatusVal = "Resubmitted";
     }
     else {
       studentStatusVal = "In process";
