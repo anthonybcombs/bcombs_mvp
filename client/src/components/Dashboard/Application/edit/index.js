@@ -217,7 +217,7 @@ export default function index({
                       </div>
                     </div>
                     <div>
-                      <label className="control-label">Student Status 22</label>
+                      <label className="control-label">Student Status</label>
                       <div>
                         <select
                           className="form-control"

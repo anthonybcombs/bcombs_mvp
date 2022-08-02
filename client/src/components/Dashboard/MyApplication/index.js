@@ -1332,7 +1332,7 @@ export default function index() {
     try {
       let payload = {
         app_id: selectedApplication.app_id,
-        student_status: 'resubmission',
+        student_status: 'resubmitted',
         child: {
           firstname: childInformation.profile.first_name,
           lastname: childInformation.profile.last_name,
