@@ -1332,6 +1332,7 @@ export default function index() {
     try {
       let payload = {
         app_id: selectedApplication.app_id,
+        student_status: 'resubmitted',
         child: {
           firstname: childInformation.profile.first_name,
           lastname: childInformation.profile.last_name,
@@ -1438,7 +1439,7 @@ export default function index() {
         received_reminder: !!selectedApplication?.received_reminder,
         received_update: !!selectedApplication?.received_update
       };
-      console.log('PAYLOADDDDDDDDD', payload)
+      console.log('requestSaveApplication payload', payload)
       dispatch(requestSaveApplication(payload));
     }
     catch (e) {
@@ -1692,6 +1693,7 @@ export default function index() {
                                       app_programs={
                                         vendors && vendors.length > 0 ? vendors[0].app_programs : []
                                       }
+                                      isLot={selectedApplication.is_lot}
                                     />
                                     <hr className="style-eight"></hr>
                                     <ParentFormViewStyled

@@ -290,7 +290,8 @@ const STUDENT_CLASS_OPTIONS = [
   { name: "Waiting List", value: "waiting_list" },
   { name: "No longer a Student", value: "no_longer_student" },
   { name: "Missed opportunity", value: "missed_opportunity" },
-  { name: "Pending Resubmission", value: "pending_resubmission"}
+  { name: "Pending Resubmission", value: "pending_resubmission"},
+  { name: "Resubmitted", value: "resubmitted"}
 ];
 
 const COLOR_OPTIONS = ["Blue", "Red", "Green"];
@@ -403,7 +404,11 @@ export default function index({
       studentStatusVal = "Missed oppurtunity";
     } else if (student_status == "pending_resubmission") {
       studentStatusVal = "Pending Resubmission";
-    } else {
+    } 
+    else if (student_status == "resubmitted") {
+      studentStatusVal = "Resubmitted";
+    }
+    else {
       studentStatusVal = "In process";
     }
     

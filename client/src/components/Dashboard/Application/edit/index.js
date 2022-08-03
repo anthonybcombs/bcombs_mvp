@@ -158,6 +158,7 @@ export default function index({
     { name: "No longer a Student", value: "no_longer_student" },
     { name: "Missed opportunity", value: "missed_opportunity" },
     { name: "Pending Resubmission", value: "pending_resubmission" },
+      { name: "Resubmitted", value: "resubmitted" },
   ]
 
   const CLASS_TEACHER_OPTIONS = [
@@ -174,16 +175,12 @@ export default function index({
     { name: "Potentials for leaving the room (Green)", value: "green" }
   ]
 
-  console.log("MY application", application);
-
 
   // let classTeachers = application.class_teacher ? application.class_teacher.split(',') : [];
 
   // console.log('classTeachers', classTeachers);
 
 
-
-  console.log(' application?.class_teacher',  application?.class_teacher);
   return (
     <EditApplicationStyled>
 
