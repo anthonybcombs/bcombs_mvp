@@ -1439,7 +1439,7 @@ export default function index() {
         received_reminder: !!selectedApplication?.received_reminder,
         received_update: !!selectedApplication?.received_update
       };
-      console.log('PAYLOADDDDDDDDD', payload)
+      console.log('requestSaveApplication payload', payload)
       dispatch(requestSaveApplication(payload));
     }
     catch (e) {
@@ -1693,6 +1693,7 @@ export default function index() {
                                       app_programs={
                                         vendors && vendors.length > 0 ? vendors[0].app_programs : []
                                       }
+                                      isLot={selectedApplication.is_lot}
                                     />
                                     <hr className="style-eight"></hr>
                                     <ParentFormViewStyled

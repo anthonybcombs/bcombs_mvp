@@ -790,11 +790,12 @@ export default function index() {
 
 
   const handleSelectedLabel = ({ value, opt }) => {
+    setView("");
     setSelectedLabel(value);
     setSelectNonMenuOption(false);
     setSelectedApplication({});
     window.history.replaceState("", "", "?opt=" + opt`${queryParams.vendor ? '&vendor=' + queryParams.vendor : ''}`);
-    setView("");
+
   };
 
   const parseArrayFormat = items => {
@@ -2036,6 +2037,7 @@ export default function index() {
   let vendorOptions = vendors && vendors.length > 0 ? vendors.sort((a, b) => a.name.localeCompare(b.name)) : [];
   let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
   console.log('selectedVendor', selectedVendor)
+  console.log('viewwwwwwwww',view)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
