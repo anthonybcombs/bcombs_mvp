@@ -125,7 +125,8 @@ export const triggerCronSetReminder = async () => {
 
         } else {
 
-          
+          // let currentAppGroups = appl.class_teacher ? appl.class_teacher.split(',') : [];
+          // currentAppGroups = currentAppGroups.filter(item => !appGroupIds.includes(item));
           await updateApplication({
             verification: 'waiting_for_verification',
             student_status: 'pending_resubmission',
@@ -303,6 +304,8 @@ export const triggerCronSetReminder = async () => {
 
           if (appl.class_teacher) {
             let appGroups = appl.class_teacher ? appl.class_teacher.split(',') : [];
+            console.log('App Groups appGroups', appl)
+            console.log('App Groups appGroupIds', appGroupIds)
             appGroups = appGroups.filter(item => !appGroupIds.includes(item));
 
             appGroups = appGroups.join(',');
@@ -312,8 +315,8 @@ export const triggerCronSetReminder = async () => {
 
             await removeApplicationFromGroup({
               app_id: appl.app_id,
-              app_group_ids: appGroups,
-              is_customform: !!item.is_customform
+              app_group_ids: appGroups || '',
+              is_customform: false //!!item.is_customform
             });
           }
 
