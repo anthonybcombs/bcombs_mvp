@@ -3,7 +3,6 @@ import { Link } from '@reach/router';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-	faMinusCircle,
 	faAngleLeft,
 	faAngleRight,
 	faSearch,
@@ -13,8 +12,8 @@ import {
 import { useLocation, useParams } from '@reach/router';
 import { format, isRan } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
-import { uuid } from 'uuidv4';
-import { isAfter, isEqual, getHours, max, addDays, subDays, addYears, isWithinInterval, parseISO } from 'date-fns';
+// import { uuid } from 'uuidv4';
+import { isAfter, isEqual, addDays, subDays, isWithinInterval, parseISO } from 'date-fns';
 import { parse } from 'query-string';
 
 import DatePicker from 'react-datepicker';
@@ -22,12 +21,12 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import { requestAttendance, requestEventAttendance } from '../../../../redux/actions/Attendance';
 import { requestGetApplications, requestGetCustomApplications } from '../../../../redux/actions/Application';
-import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
+// import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
 import { requestUserGroup } from '../../../../redux/actions/Groups';
 import { requestVendor } from '../../../../redux/actions/Vendors';
 import { requestUpdateUserAttendanceFilterConfig } from '../../../../redux/actions/Auth';
 
-import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
+// import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
 import ProfileImg from "../../../../images/defaultprofile.png";
 
 import { getNameFromCustomForm } from '../../Grades/utils'
@@ -598,12 +597,12 @@ export default function index(props) {
 
 	const DEFAULT_ATTENDANCE_FILTER_RANGE = {
 		start: new Date('2020-08-01'),
-		end: new Date('2021-07-31'),
+		end: new Date('2023-07-31'),
 	};
 
 	const DEFAULT_SUMMARY_FILTER_RANGE = {
 		start: new Date('2020-08-01'),
-		end: new Date('2021-07-31'),
+		end: new Date('2023-07-31'),
 	};
 
 
@@ -672,8 +671,7 @@ export default function index(props) {
 	}, []);
 
 	useEffect(() => {
-		if (vendors && vendors.length > 0) {
-			console.log('requestGetApplications')
+		if (vendors && vendors.length > 0 && searchParams && searchParams.type !== 'custom') {
 			dispatch(requestGetApplications(vendors[0].id))
 		}
 	}, [vendors]);
@@ -696,8 +694,7 @@ export default function index(props) {
 		}
 	}, []);
 	useEffect(() => {
-		console.log('ATTENDACEEEEEEEE', attendance)
-		console.log('ATTENDACEEEEEEEE applications', applications)
+
 		if (attendance.list) {
 			
 			let filteredAttendance = [...( attendance.list || [])]
@@ -706,8 +703,9 @@ export default function index(props) {
 					const isBcombs = applications.activeapplications.some(item => item.child.ch_id === att.child_id)
 					return isBcombs;
 				});
-				console.log('ATTENDACEEEEEEEE filteredAttendance',filteredAttendance)
+
 			}
+
 			let currentAttendance = filteredAttendance.reduce((accum, att) => {
 				let attDate = format(new Date(parseInt(att.attendance_date)), DATE_FORMAT);
 
@@ -762,7 +760,7 @@ export default function index(props) {
 					const filteredDate = dateKeys.filter(key => {
 						return isWithinInterval(new Date(key.replaceAll('_', '-')), {
 							start: new Date('2020-08-01'),
-							end: new Date('2021-07-31'),
+							end: new Date('2023-07-31'),
 						});
 					});
 
@@ -788,10 +786,9 @@ export default function index(props) {
 				currentAttendance = currentAttendance.filter(item => item.custom && item.custom.id)
 			}
 			else {
-				currentAttendance = currentAttendance.filter(item => item.firstname && item.lastname)
+				// currentAttendance = currentAttendance.filter(item => (item.firstname && item.lastname) || item.fullname)
 			}
 
-			console.log('currentAttendance', currentAttendance)
 			//let displayDayList = [];
 			// THERE ERROR IS HERE
 
@@ -1096,7 +1093,7 @@ export default function index(props) {
 			setAttendanceDisplay([...(defaultAttendanceDisplay || [])]);
 			setSelectedSummaryRangeDate({
 				start: new Date('2020-08-01'),
-				end: new Date('2021-07-31'),
+				end: new Date('2023-07-31'),
 			});
 
 			//setDisplayDays(DEFAULT_DISPLAY_DAYS);
