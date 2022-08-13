@@ -144,7 +144,7 @@ export const getApplicationsByVendor = async vendor => {
   let result = [];
   try {
     console.log("getApplicationsByVendor vendor !!!!!!!!!!!!!!! ", vendor);
-    const applications = vendor ?  await db.query(
+    const applications = vendor ? await db.query(
       `SELECT 
         id,
         BIN_TO_UUID(app_id) as app_id, 
@@ -194,8 +194,8 @@ export const getApplicationsByAppGroup = async ({
   let result = [];
   try {
 
-  
-    if(is_customform) {
+
+    if (is_customform) {
       let applications = await db.query(
         `SELECT 
           id,
@@ -464,7 +464,7 @@ export const updateApplication = async ({
       previousClassTeacher = previousClassTeacher && previousClassTeacher.split(',');
       const teacher = class_teacher && class_teacher.split(',');
       for (let groupId of teacher) {
-        if(!previousClassTeacher.includes(groupId)) {
+        if (!previousClassTeacher.includes(groupId)) {
           await db.query(
             "INSERT INTO vendor_app_groups_to_student (app_grp_id,child_id,type) values(UUID_TO_BIN(?),UUID_TO_BIN(?),?)",
             [
@@ -476,7 +476,7 @@ export const updateApplication = async ({
       }
 
       for (let groupId of previousClassTeacher) {
-        if(!teacher.includes(groupId)) {
+        if (!teacher.includes(groupId)) {
           await db.query(
             "DELETE FROM vendor_app_groups_to_student WHERE app_grp_id=UUID_TO_BIN(?) AND child_id=UUID_TO_BIN(?)",
             [
@@ -828,7 +828,7 @@ export const getAppReceivedReminder = async ({
   try {
     let queriedApps;
 
-    if(is_customform) {
+    if (is_customform) {
       queriedApps = await db.query(
         `
           SELECT 
@@ -840,7 +840,7 @@ export const getAppReceivedReminder = async ({
         `,
         [app_id]
       );
-  
+
     } else {
       queriedApps = await db.query(
         `
@@ -958,7 +958,7 @@ export const createCustomApplication = async ({
   let application;
 
   try {
-    console.log('form_contents createCustomApplication',form_contents)
+    console.log('form_contents createCustomApplication', form_contents)
     result = await db.query(
       `INSERT INTO vendor_custom_application(
         form_id,
@@ -1239,7 +1239,7 @@ export const submitCustomApplication = async ({
   let lastId = "";
   let application;
   try {
-    console.log('submitCustomApplication',form_contents)
+    console.log('submitCustomApplication', form_contents)
     result = await db.query(
       `INSERT INTO custom_application(
         app_id,
@@ -1502,7 +1502,7 @@ export const getCustomApplicationByVendorId = async (vendor) => {
       ]
     );
     console.log('getCustomApplicationByVendor vendor', applications)
-    for(let app of applications) {
+    for (let app of applications) {
       app.form_contents = app.form_contents ? Buffer.from(app.form_contents, "base64").toString("utf-8") : "{}";
     }
 
@@ -1525,7 +1525,7 @@ export const updateApplicationUser = async ({
 
   try {
 
-    if(application) {
+    if (application) {
       result = await db.query(
         `UPDATE application_user SET
         received_reminder=?,
@@ -1537,7 +1537,7 @@ export const updateApplicationUser = async ({
           application
         ]
       );
-    } else if(custom_app_id) {
+    } else if (custom_app_id) {
       result = await db.query(
         `UPDATE application_user SET
         received_reminder=?,
@@ -1571,23 +1571,25 @@ export const removeApplicationFromGroup = async ({
   const db = makeDb();
   try {
 
-    if(is_customform) {
-   
-      await db.query(`UPDATE custom_application SET class_teacher=? WHERE id=UUID_TO_BIN(?)`,[app_group_ids, app_id])
+    if (is_customform) {
+
+      await db.query(`UPDATE custom_application SET class_teacher=? WHERE app_id=UUID_TO_BIN(?)`, [app_group_ids, app_id])
 
     } else {
-      await db.query(`UPDATE application SET class_teacher=? WHERE id=UUID_TO_BIN(?)`,[app_group_ids, app_id])
-
+      // console.log('removeApplicationFromGroup app_group_ids', app_group_ids)
+      // console.log('removeApplicationFromGroup app_id', app_id)
+      await db.query(`UPDATE application SET class_teacher=? WHERE app_id=UUID_TO_BIN(?)`, [app_group_ids || '', app_id])
+      // console.log('removeApplicationFromGroup response', response)
     }
 
   } catch (error) {
     console.log("removeApplicationFromGroup error", error);
-    
+
 
   } finally {
     await db.close();
     return {
-      message:'Application has been removed to group successfully!'
+      message: 'Application has been removed to group successfully!'
     }
   }
 };
