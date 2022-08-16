@@ -33,7 +33,8 @@ export const getVendors = async () => {
         section1_show,
         section2_show,
         section3_show,
-        logo
+        logo,
+        is_default
         FROM vendor`
     );
     return result;
@@ -112,7 +113,8 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
       v.section3_show,
       v.created_at as created_at,
       v.is_daycare,
-      v.logo
+      v.logo,
+      v.is_default
     FROM vendor v
     WHERE v.user=UUID_TO_BIN(?)
     ORDER BY v.id2 ASC
@@ -180,6 +182,7 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
           v.section3_show,
           v.is_daycare,
           v.logo,
+          v.is_default,
           va.created_at as created_at
         FROM vendor v, vendor_admin va
         WHERE va.user = UUID_TO_BIN(?) AND va.vendor = v.id
@@ -253,7 +256,8 @@ export const getVendorById2 = async (id2) => {
         v.section2_show,
         v.section3_show,
         v.is_daycare,
-        v.logo
+        v.logo,
+        v.is_default
       FROM vendor v
       WHERE v.id2=?`,
       [id2]
@@ -293,7 +297,8 @@ export const getVendorById = async (id) => {
         v.section2_show,
         v.section3_show,
         v.is_daycare,
-        v.logo
+        v.logo,
+        v.is_default
       FROM vendor v
       WHERE v.id=UUID_TO_BIN(?)`,
       [id]

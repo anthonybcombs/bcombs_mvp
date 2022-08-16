@@ -1056,6 +1056,7 @@ const queryTypes = `
         is_daycare: Int
         forms: [CustomApplicationOutput]
         logo: String
+        is_default: Int
     }
 
     type Vendor2 {
@@ -1075,6 +1076,7 @@ const queryTypes = `
       created_at: Date
       is_daycare: Int
       logo: String
+      is_default: Int
   }
 
     type LocationSite {
