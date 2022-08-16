@@ -182,6 +182,7 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
           v.section3_show,
           v.is_daycare,
           v.logo,
+          v.is_default,
           va.created_at as created_at
         FROM vendor v, vendor_admin va
         WHERE va.user = UUID_TO_BIN(?) AND va.vendor = v.id
