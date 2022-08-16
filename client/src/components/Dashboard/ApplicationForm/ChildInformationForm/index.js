@@ -306,6 +306,7 @@ export default function index({
         { name: "San Francisco ", value: "San Francisco" },
         { name: "Seattle", value: "Seattle" },
         { name: "South Florida", value: "South Florida" },
+        { name: "Syracuse, NY", value: "Syracuse, NY" },
         { name: "Tampa Bay", value: "Tampa Bay" },
         { name: "Twin Cities", value: "Twin Cities" },
         { name: "Washington DC", value: "Washington DC" },
