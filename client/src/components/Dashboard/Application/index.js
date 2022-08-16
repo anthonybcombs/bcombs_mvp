@@ -711,6 +711,7 @@ export default function index() {
         }
         else if(hasDefaultVendor) {
           setSelectedVendor(hasDefaultVendor);
+          setAppGroups(hasDefaultVendor?.app_groups);
         }
         else {
           const hasLot = vendors.some(item => item.is_lot)
@@ -2042,8 +2043,7 @@ export default function index() {
 
   let vendorOptions = vendors && vendors.length > 0 ? vendors.sort((a, b) => a.name.localeCompare(b.name)) : [];
   let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
-  console.log('render2222 vendor', vendors)
-  console.log('render2222 auth',auth)
+  
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
