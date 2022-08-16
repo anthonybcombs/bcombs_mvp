@@ -33,7 +33,8 @@ export const getVendors = async () => {
         section1_show,
         section2_show,
         section3_show,
-        logo
+        logo,
+        is_default
         FROM vendor`
     );
     return result;
@@ -112,7 +113,8 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
       v.section3_show,
       v.created_at as created_at,
       v.is_daycare,
-      v.logo
+      v.logo,
+      v.is_default
     FROM vendor v
     WHERE v.user=UUID_TO_BIN(?)
     ORDER BY v.id2 ASC
