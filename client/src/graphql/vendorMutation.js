@@ -19,6 +19,7 @@ export const VENDORS_QUERY = gql`
       section3_show
       is_daycare
       logo
+      is_default
     }
   }
 `;
@@ -42,6 +43,7 @@ export const VENDOR_BY_USER_QUERY = gql`
       created_at
       is_daycare
       logo
+      is_default
       app_programs {
         id
         vendor_program_id
@@ -98,6 +100,7 @@ export const VENDOR_BY_ID2_QUERY = gql`
       created_at
       is_daycare
       logo
+      is_default
       app_programs {
         id
         vendor_program_id
@@ -147,6 +150,7 @@ export const VENDOR_BY_ID_QUERY = gql`
       created_at
       is_daycare
       logo
+      is_default
       app_programs {
         id
         vendor_program_id

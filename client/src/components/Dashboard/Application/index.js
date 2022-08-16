@@ -700,11 +700,17 @@ export default function index() {
       } else {
 
         // setSelectedVendor(vendors[0]);
+
+        
         let defaultVendor = null;
+        const hasDefaultVendor = vendors.find(item => item.is_default);
         if (auth && auth?.nickname === 'lot') {
           defaultVendor = vendors[vendors.length - 1]
           setSelectedVendor(defaultVendor);
           setSelectedForm('lot');
+        }
+        else if(hasDefaultVendor) {
+          setSelectedVendor(hasDefaultVendor);
         }
         else {
           const hasLot = vendors.some(item => item.is_lot)
@@ -2036,8 +2042,8 @@ export default function index() {
 
   let vendorOptions = vendors && vendors.length > 0 ? vendors.sort((a, b) => a.name.localeCompare(b.name)) : [];
   let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
-  console.log('selectedVendor', selectedVendor)
-  console.log('viewwwwwwwww',view)
+  console.log('render2222 vendor', vendors)
+  console.log('render2222 auth',auth)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
