@@ -255,7 +255,8 @@ export const getVendorById2 = async (id2) => {
         v.section2_show,
         v.section3_show,
         v.is_daycare,
-        v.logo
+        v.logo,
+        v.is_default
       FROM vendor v
       WHERE v.id2=?`,
       [id2]
@@ -295,7 +296,8 @@ export const getVendorById = async (id) => {
         v.section2_show,
         v.section3_show,
         v.is_daycare,
-        v.logo
+        v.logo,
+        v.is_default
       FROM vendor v
       WHERE v.id=UUID_TO_BIN(?)`,
       [id]
