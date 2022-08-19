@@ -266,14 +266,19 @@ export default function index(props) {
 		
 		}
 		else if (vendors && vendors[0]) {
-      console.log('my vendors', vendors[0]);
-			setSelectedVendor(vendors[0]);
-			setIsLot( vendors[0].name.includes('LOT') ? true : false);
-			setAppGroups(vendors[0].app_groups);
-			dispatch(requestGetCustomApplicationByVendor(vendors[0].id));
-			dispatch(requestGetApplications(vendors[0].id));
-			dispatch(requestVendorAppGroups(vendors[0].id))
-			dispatch(requestGetForms({ vendor: vendors[0].id, currentUser: auth.user_id, isOwner: !!(auth.user_id == vendors[0].user), categories: [] }));
+			let defaultVendor = vendors.find(item => item.is_default);
+			defaultVendor = defaultVendor ? defaultVendor : vendors[0];
+			
+			if(defaultVendor) {
+				setSelectedVendor(defaultVendor);
+				setIsLot( defaultVendor.name.includes('LOT') ? true : false);
+				setAppGroups(defaultVendor.app_groups);
+				dispatch(requestGetCustomApplicationByVendor(defaultVendor.id));
+				dispatch(requestGetApplications(defaultVendor.id));
+				dispatch(requestVendorAppGroups(defaultVendor.id))
+				dispatch(requestGetForms({ vendor: defaultVendor.id, currentUser: auth.user_id, isOwner: !!(auth.user_id == defaultVendor.user), categories: [] }));
+			}
+		
 
 		}
 

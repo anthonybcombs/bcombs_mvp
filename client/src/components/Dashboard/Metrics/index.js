@@ -128,9 +128,16 @@ const Metrics = props => {
 
   useEffect(() => {
     if (vendors && Array.isArray(vendors)) {
-      const defaultVendor = vendors.find(item => item.is_lot);
-      console.log('defaultVendorrrrrrrrr', defaultVendor)
-      setSelectedVendor(defaultVendor || vendors[0]);
+      //const defaultVendor = vendors.find(item => item.is_lot);
+      const defaultVendor = vendors.find(item => item.is_default);
+
+      if(defaultVendor) {
+        setSelectedVendor(defaultVendor);
+      }
+      else {
+        setSelectedVendor(defaultVendor || vendors[0]);
+      }
+   
     }
   }, [vendors])
 
