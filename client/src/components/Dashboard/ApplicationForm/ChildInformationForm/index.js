@@ -281,6 +281,7 @@ export default function index({
         { name: "Chicago", value: "Chicago " },
         { name: "Cincinnati", value: "Cincinnati" },
         { name: "Cleveland", value: "Cleveland" },
+        { name: " Community College of Allegheny County", value: "Community College of Allegheny County" },
         { name: "Columbus", value: "Columbus" },
         { name: "Dallas", value: "Dallas" },
         { name: "Dayton", value: "Dayton " },
