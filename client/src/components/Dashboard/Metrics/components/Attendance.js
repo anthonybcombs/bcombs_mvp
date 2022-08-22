@@ -175,7 +175,7 @@ const Attendance = props => {
                 <h4>Attendance By Grade</h4>
 
                 <>
-                    <select id="vendor-form" onChange={formChange} value={formIdLocal}>
+                    <select id="vendor-form" onChange={formChange} value={formIdLocal} style={{ maxWidth: 300 }}>
                         {formList && formList.length > 0 && formList.map((elem) =>
                             <option value={elem.key} key={elem.key}>{elem.name}</option>
                         )

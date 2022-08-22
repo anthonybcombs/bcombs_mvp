@@ -152,7 +152,7 @@ const Metrics = props => {
 
   const lotVendorId2s = Array.isArray(vendors) && vendors.filter(item => item.name.includes('LOT')).map(item => item.id2)
   /// const lotVendors =
-  console.log('selectedVendor', selectedVendor)
+
   return (
     <MetricStyled>
       <div id="metrics-page" >

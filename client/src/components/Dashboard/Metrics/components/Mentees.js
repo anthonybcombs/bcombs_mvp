@@ -190,7 +190,7 @@ const Mentees = props => {
                 {OPTION_SCHOOL_YEAR.map(item => <option value={item.value}>{item.label}</option>)}
             </select>
 
-                <select id="vendor-form" onChange={formChange} value={formIdLocal}>
+                <select id="vendor-form" onChange={formChange} value={formIdLocal} style={{ maxWidth: 300 }}>
                     {formList && formList.length > 0 && formList.map((elem) =>
                         <option value={elem.key} key={elem.key}>{elem.name}</option>
                     )
