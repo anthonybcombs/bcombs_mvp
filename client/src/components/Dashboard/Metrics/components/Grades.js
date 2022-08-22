@@ -218,7 +218,7 @@ return <div style={{ padding: 24 }}>
 
                     { isLoading ? ( <></>) : (
                         <>
-                    <select id="vendor-form" onChange={formChange} value={formIdLocal}>
+                    <select id="vendor-form" onChange={formChange} value={formIdLocal} style={{ maxWidth: 300 }}>
                         { formList && formList.length > 0 && formList.map((elem) => 
                                 <option value={elem.key} key={elem.key}>{elem.name}</option> 
                             )
