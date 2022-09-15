@@ -24,7 +24,7 @@ import { requestGetApplications, requestGetCustomApplications } from '../../../.
 // import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
 import { requestUserGroup } from '../../../../redux/actions/Groups';
 import { requestVendor } from '../../../../redux/actions/Vendors';
-import { requestUpdateUserAttendanceFilterConfig } from '../../../../redux/actions/Auth';
+import { requestUpdateUserAttendanceFilterConfig, requestUserInfo } from '../../../../redux/actions/Auth';
 
 // import CustomRangeDatePicker from '../../../../helpers/CustomRangeDatePicker';
 import ProfileImg from "../../../../images/defaultprofile.png";
@@ -613,7 +613,7 @@ export default function index(props) {
 		}
 	);
 	let dateAttendanceConfigFilter = {};
-	if (auth && auth.attendance_filter_config && auth.attendance_filter_config !== '') {
+	if ( auth && auth.attendance_filter_config && auth.attendance_filter_config !== '') {
 		dateAttendanceConfigFilter = JSON.parse(auth.attendance_filter_config);
 
 		if (dateAttendanceConfigFilter.default_attendance_filter_range) {
@@ -1048,6 +1048,7 @@ export default function index(props) {
 			isAfter(new Date(payload.end), new Date(payload.start))
 		) {
 
+			localStorage.setItem('summaryFilterRange', JSON.stringify(payload));
 			handleChangeDateFilter(payload);
 		}
 	};
@@ -1412,9 +1413,10 @@ export default function index(props) {
 						style={{ cursor: 'pointer', color: '#3e89fe', position: 'relative', left: 180 }}
 						onClick={() => {
 							//handleChangeDateFilter(DEFAULT_DATE);
-
+							// localStorage.setItem('summaryFilterRange', JSON.stringify(selectedSummaryRangeDate));
+							// localStorage.setItem('attendanceFilterRange', JSON.stringify(selectedRangeDate));
 							if (selectedSummaryRangeDate) {
-								//	localStorage.setItem('summaryFilterRange', JSON.stringify(selectedSummaryRangeDate));
+							
 								if (!isDefaultDateSetLabel) {
 									setIsDefaultDateSetLabel(true);
 									const payload = {
@@ -1427,12 +1429,14 @@ export default function index(props) {
 									}
 
 									dispatch(requestUpdateUserAttendanceFilterConfig(payload))
+									dispatch(requestUserInfo());
 									setTimeout(() => {
 										setIsDefaultDateSetLabel(false)
 									}, 5000)
 								}
 
 							}
+							
 						}}>
 						Set Default Date
 					</span>
