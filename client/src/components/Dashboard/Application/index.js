@@ -704,6 +704,7 @@ export default function index() {
         
         let defaultVendor = null;
         const hasDefaultVendor = vendors.find(item => item.is_default);
+        console.log('hasDefaultVendor',hasDefaultVendor)
         if (auth && auth?.nickname === 'lot') {
           defaultVendor = vendors[vendors.length - 1]
           setSelectedVendor(defaultVendor);
@@ -730,8 +731,7 @@ export default function index() {
         // }
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
-        } else {
-
+        } else if(!hasDefaultVendor) {
           setAppGroups(defaultVendor?.app_groups);
 
         }
@@ -2043,7 +2043,9 @@ export default function index() {
 
   let vendorOptions = vendors && vendors.length > 0 ? vendors.sort((a, b) => a.name.localeCompare(b.name)) : [];
   let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
-  
+    console.log('selectedVendor',selectedVendor)
+
+    console.log('selectedVendor222222 appGroups',appGroups)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
