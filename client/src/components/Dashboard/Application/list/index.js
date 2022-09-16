@@ -455,9 +455,10 @@ export default function index({
   const DATE_FORMAT = "LLL dd, yyyy";
 
   const getAgeBdate = child => {
+    console.log('Childdddddddd', child)
     if (!child || (!child.age && child <= -1)) return "";
 
-    let birthdate = format(new Date(child.birthdate), DATE_FORMAT);
+    let birthdate = child.birthdate && format(new Date(child.birthdate), DATE_FORMAT);
     return (
       <div>
         {child.age}&nbsp; ({birthdate})
