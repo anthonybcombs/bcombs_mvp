@@ -1959,4 +1959,54 @@ router.get("/application/migrate", async (req, res) => {
   }
 });
 
+
+router.get("/vendor/default/summary", async (req, res) => {
+  const db = makeDb();
+
+  // 5791e581-900a-11ec-b327-c6999e2fbc8f
+  try {
+
+    const defaultUserId = '5791e581-900a-11ec-b327-c6999e2fbc8f';
+    const applications = await db.query(
+      `SELECT 
+        BIN_TO_UUID(app.app_id) as app_id, 
+        BIN_TO_UUID(app.vendor) as vendor, 
+        BIN_TO_UUID(app.child) as child,
+        app.section1_signature,
+        app.section1_date_signed,
+        app.section2_signature,
+        app.section2_date_signed,
+        app.section3_signature,
+        app.section3_date_signed,
+        app.verification,
+        app.student_status,
+        app.color_designation,
+        app.notes,
+        app.class_teacher,
+        app.application_date,
+        app.archived_date,
+        app.section3_text,
+        app.section1_name,
+        app.section2_name,
+        app.section3_name,
+        app.is_daycare,
+        app.is_lot 
+      FROM application app, vendor v WHERE app.vendor=v.id AND v.user=UUID_TO_BIN(?) `,
+      [defaultUserId]
+    );
+
+    console.log('applicationssssssss', applications)
+    return res.status(200).json({
+      data: applications
+    })
+  } catch (error) {
+
+    return res.status(400).json({
+      error
+    })
+  } finally {
+    await db.close();
+  }
+});
+
 export default router;

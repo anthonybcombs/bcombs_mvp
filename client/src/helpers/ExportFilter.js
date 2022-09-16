@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { Multiselect } from "multiselect-react-dropdown";
 
 import { exportHeaders } from "./ExportHeaders";
+import { initial } from "lodash";
 
 const ExportFilterModal = styled.div`
   .modal {
@@ -114,10 +115,10 @@ const LOT_QUESTIONS = {
 function isJsonString(jsonString) {
   try {
     let data = JSON.parse(jsonString);
-   
-    if(typeof data === 'string') {
+
+    if (typeof data === 'string') {
       data = JSON.parse(data);
-      console.log('dataaaaaaa',data)
+      console.log('dataaaaaaa', data)
     }
     // Handle non-exception-throwing cases:
     // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
@@ -166,7 +167,7 @@ const ExportFilter = ({
     { name: "No longer a Student", value: "no_longer_student" },
     { name: "Missed opportunity", value: "missed_opportunity" },
     { name: "Pending Resubmission", value: "pending_resubmission" },
-    { name: "Resubmitted", value: "resubmitted"}
+    { name: "Resubmitted", value: "resubmitted" }
   ];
 
   const VERIFICATION_OPTIONS = [
@@ -335,6 +336,7 @@ const ExportFilter = ({
   };
 
   let exportApplications = [];
+  let rowKeys = [];
 
   // for (const application of filterApplications) {
   //   const tempApplication = {
@@ -359,7 +361,7 @@ const ExportFilter = ({
 
   let exportFilename;
 
-  console.log('filterApplications', filterApplications)
+
   if (isCustomForm) {
     console.log("this is my custom form");
 
@@ -378,58 +380,58 @@ const ExportFilter = ({
             for (const [i, k] of formData.entries()) {
               if (k?.type === "sectionBreak" || k?.type === 'file') { continue }
               else {
-                console.log("kkkk", k);
+       
                 const fields = k?.fields?.length > 0 ? k.fields : [];
 
                 let fieldValue = ""
-              
+
                 for (const [x, field] of fields.entries()) {
                   fieldValue = field.value;
-                
+
                   if (isJsonString(fieldValue)) {
 
                     fieldValue = JSON.parse(fieldValue);
-                   //  console.log("kkkk fieldValue", fieldValue);
-                    if(typeof fieldValue === 'string') {
+                    //  console.log("kkkk fieldValue", fieldValue);
+                    if (typeof fieldValue === 'string') {
                       fieldValue = JSON.parse(fieldValue);
                     }
-                    
+
                     if (typeof fieldValue === 'object') {
-            
-                      if(Object.keys(fieldValue).length > 1) {
-                        fieldValue = Object.keys(fieldValue).map(key => fieldValue[key]).join(',') 
+
+                      if (Object.keys(fieldValue).length > 1) {
+                        fieldValue = Object.keys(fieldValue).map(key => fieldValue[key]).join(',')
                       }
 
                       else {
                         fieldValue = fieldValue[Object.keys(fieldValue)];
                       }
-                     
-                      
+
+
                     }
                     fieldValue = fieldValue ? fieldValue.trim() : '';
 
-                    fieldValue = fieldValue ? fieldValue.replaceAll('""','') : '';
+                    fieldValue = fieldValue ? fieldValue.replaceAll('""', '') : '';
 
                   }
                   else {
-      
+
                     fieldValue = fieldValue ? fieldValue.trim() : '';
-                    fieldValue = fieldValue ? fieldValue.replaceAll('""','') : '';
+                    fieldValue = fieldValue ? fieldValue.replaceAll('""', '') : '';
                   }
 
                   if (field.label == 'Password' || field.label == 'Confirm Password') { continue; }
 
 
                   const fieldLabel = field.label ? field.label.toLowerCase() : '';
-                  console.log('fieldLabel',fieldLabel)
+                  console.log('fieldLabel', fieldLabel)
 
                   fieldValue = fieldValue ? fieldValue.replaceAll(/"/g, '') : '';
                   if (k.label) {
                     formattedApplication = { ...formattedApplication, [k.label]: fieldValue }
                   }
-                  else if(fieldLabel) {
+                  else if (fieldLabel) {
                     formattedApplication = { ...formattedApplication, [fieldLabel]: fieldValue }
-                  } 
+                  }
 
                 }
               }
@@ -453,7 +455,6 @@ const ExportFilter = ({
         formattedApplication.child = `${currentChild.firstname} ${currentChild.lastname}`
 
       }
-      console.log("formattedApplication", formattedApplication);
 
       // let initialApplication = {
       //   'Id': formattedApplication['Id'],
@@ -485,8 +486,47 @@ const ExportFilter = ({
             // parent
 
             if (key1 == 'parents') {
-              const level1Arr = application[key1];
+              let level1Arr = application[key1].map(item => {
 
+                delete item.child_col_grad;
+                delete item.child_hs_grad;
+                delete item.email_address2;
+                delete item.email_type;
+                delete item.email_type2;
+
+                delete item.employers_name;
+                delete item.ethnicities;
+                delete item.gender;
+                delete item.image;
+                delete item.level_of_education;
+
+                delete item.live_area;
+                delete item.new_parentId;
+                delete item.occupation;
+                delete item.parent_child_goals;
+                delete item.parent_goals;
+
+                delete item.person_recommend;
+                delete item.phone_number2;
+                delete item.phone_type;
+                delete item.phone_type2;
+                delete item.state;
+                delete item.zip_code;
+
+                delete item.age;
+                delete item.birthdate;
+                delete item.city;
+
+                return {
+                  ...item
+                }
+              });
+
+
+
+              console.log('level1Arrssssss', level1Arr)
+
+              delete level1Arr.child_col_grad;
               for (const [i, arrObj] of level1Arr.entries()) {
                 delete arrObj.password;
                 delete arrObj.emergency_contacts;
@@ -496,9 +536,9 @@ const ExportFilter = ({
                   if (key3 != "password" || key3 !== 'parent_id') {
                     if (key3 == 'birthdate') {
                       const newDate = arrObj[key3] ? format(new Date(arrObj[key3]), DATE_FORMAT) : "";
-                      formattedApplication = { ...formattedApplication, ["(Parent " + (i + 1) + ") " + exportHeaders.parent[key3]]: newDate }
+                      formattedApplication = { ...formattedApplication, [ exportHeaders.parent[key3]]: newDate }
                     } else {
-                      formattedApplication = { ...formattedApplication, ["(Parent " + (i + 1) + ") " + exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3] : "" }
+                      formattedApplication = { ...formattedApplication, [exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3] : "" }
                     }
 
                   }
@@ -517,8 +557,81 @@ const ExportFilter = ({
             delete level1.ch_id;
             if (!!application.is_daycare) {
               console.log("application is daycare");
+
+              delete level1.phone_type2;
+              delete level1.phone_number2;
+              delete level1.email_type;
+              delete level1.email_address;
+              delete level1.email_type2;
+              delete level1.email_address2;
+              delete level1.gpa_cumulative_year;
+              delete level1.gpa_quarter_year;
+              delete level1.gpa_cumulative_q1;
+              delete level1.gpa_cumulative_q2;
+              delete level1.gpa_cumulative_q3;
+              delete level1.gpa_cumulative_q4;
+              delete level1.gpa_quarter_q1;
+              delete level1.gpa_quarter_q2;
+              delete level1.gpa_quarter_q3;
+              delete level1.gpa_quarter_q4;
+              delete level1.grade_desc;
+              // delete level1.grade_number;
+              delete level1.hobbies;
+              delete level1.school_name;
+              delete level1.school_phone;
+              delete level1.year_taken;
+              delete level1.life_events;
+              delete level1.career_goals;
+              delete level1.colleges;
+              delete level1.affiliations;
+              delete level1.awards;
+              delete level1.accomplishments;
+              delete level1.mentee_gain_program;
+              delete level1.class_rank;
+              delete level1.location_site;
+              delete level1.business_address
+              delete level1.business_description
+              delete level1.business_email
+              delete level1.business_industry
+              delete level1.business_name
+              delete level1.business_phone
+              delete level1.business_website
+
+              delete level1.zip_code;
+              delete level1.state;
+              delete level1.reason_suspended;
               delete level1.phone_type;
-              delete level1.phone_number;
+
+              delete level1.insect_allergies;
+              delete level1.is_entrepreneur;
+              delete level1.nickname;
+              delete level1.other_allergies;
+
+              delete level1.hospital_phone;
+              delete level1.hospital_preference;
+              delete level1.image;
+              delete level1.include_in_directory;
+
+
+              delete level1.ethnicities;
+              delete level1.food_allergies;
+              delete level1.has_suspended;
+              delete level1.health_insurance_information;
+
+
+              delete level1.current_medications;
+              delete level1.doctor_name;
+              delete level1.doctor_phone;
+              delete level1.employment_status;
+
+
+              delete level1.allergies_to_medicine;
+              delete level1.birthdate;
+              delete level1.child_lives_with;
+              delete level1.city;
+
+              delete level1.phone_type;
+              // delete level1.phone_number;
               delete level1.phone_type2;
               delete level1.phone_number2;
               delete level1.email_type;
@@ -553,6 +666,82 @@ const ExportFilter = ({
             }
 
             else {
+
+              delete level1.phone_type2;
+              delete level1.phone_number2;
+              delete level1.email_type;
+              delete level1.email_address;
+              delete level1.email_type2;
+              delete level1.email_address2;
+              delete level1.gpa_cumulative_year;
+              delete level1.gpa_quarter_year;
+              delete level1.gpa_cumulative_q1;
+              delete level1.gpa_cumulative_q2;
+              delete level1.gpa_cumulative_q3;
+              delete level1.gpa_cumulative_q4;
+              delete level1.gpa_quarter_q1;
+              delete level1.gpa_quarter_q2;
+              delete level1.gpa_quarter_q3;
+              delete level1.gpa_quarter_q4;
+              delete level1.grade_desc;
+              // delete level1.grade_number;
+              delete level1.hobbies;
+              delete level1.school_name;
+              delete level1.school_phone;
+              delete level1.year_taken;
+              delete level1.life_events;
+              delete level1.career_goals;
+              delete level1.colleges;
+              delete level1.affiliations;
+              delete level1.awards;
+              delete level1.accomplishments;
+              delete level1.mentee_gain_program;
+              delete level1.class_rank;
+              delete level1.location_site;
+              delete level1.business_address
+              delete level1.business_description
+              delete level1.business_email
+              delete level1.business_industry
+              delete level1.business_name
+              delete level1.business_phone
+              delete level1.business_website
+
+              delete level1.zip_code;
+              delete level1.state;
+              delete level1.reason_suspended;
+              delete level1.phone_type;
+
+              delete level1.insect_allergies;
+              delete level1.is_entrepreneur;
+              delete level1.nickname;
+              delete level1.other_allergies;
+
+              delete level1.hospital_phone;
+              delete level1.hospital_preference;
+              delete level1.image;
+              delete level1.include_in_directory;
+
+
+              delete level1.ethnicities;
+              delete level1.food_allergies;
+              delete level1.has_suspended;
+              delete level1.health_insurance_information;
+
+
+              delete level1.current_medications;
+              delete level1.doctor_name;
+              delete level1.doctor_phone;
+              delete level1.employment_status;
+
+
+              delete level1.allergies_to_medicine;
+              delete level1.birthdate;
+              delete level1.child_lives_with;
+              delete level1.city;
+
+              delete level1.programs;
+              delete level1.new_childId;
+
               delete level1.child_currently_doctors_care;
               delete level1.comments_suggestion;
               delete level1.does_child_require_physical_education_service;
@@ -578,7 +767,7 @@ const ExportFilter = ({
               delete level1.reasons_previous_hospitalizations;
               delete level1.current_classroom;
             }
-
+            console.log("export application level1 updated", level1);
             for (const key2 of Object.keys(level1)) {
 
               if (key2 == 'ch_id') { continue; }
@@ -587,7 +776,7 @@ const ExportFilter = ({
                 formattedApplication = { ...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['birthdate'] : exportHeaders.child.main['birthdate'])]: newDate }
               } else if (key2 == 'has_suspended') {
                 const val = level1[key2] == 1 ? 'Yes' : level1[key2] == 0 ? 'No' : '';
-                formattedApplication = { ...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['has_suspended'] : exportHeaders.child.main['has_suspended'])]: val }
+                formattedApplication = { ...formattedApplication, ['' + (application.is_daycare ? exportHeaders.child.daycare['has_suspended'] : exportHeaders.child.main['has_suspended'])]: val }
               }
               else if (LOT_FIELDS.includes(key2)) {
                 formattedApplication = {
@@ -609,58 +798,58 @@ const ExportFilter = ({
           }
         } else {
 
-          if (key1 == "emergency_contacts") {
-            try {
-              const ecs = JSON.parse(application[key1]);
-              if (Array.isArray(ecs)) {
-                for (const [i, ec] of ecs.entries()) {
-                  for (const key4 of Object.keys(ec)) {
-                    formattedApplication = { ...formattedApplication, ['Emergency Contacts' + "" + (i + 1) + " " + exportHeaders.emergency_contacts[key4]]: ec[key4] ? ec[key4] : "" }
-                  }
-                }
-              } else {
-                formattedApplication = { ...formattedApplication, [key1]: "" }
-              }
-            } catch (e) {
-              formattedApplication = { ...formattedApplication, [key1]: "" }
-            }
-          } else {
-            if (key1 == 'vendor') {
-              formattedApplication = { ...formattedApplication, [exportHeaders['vendor']]: vendor?.name ? vendor.name : "" }
-            } else if (key1 == 'application_date' ||
-              key1 == 'section1_date_signed' ||
-              key1 == 'section2_date_signed' ||
-              key1 == 'section3_date_signed') {
-              const newDate = application[key1] ? format(new Date(application[key1]), DATE_FORMAT) : "";
-              formattedApplication = { ...formattedApplication, [exportHeaders[key1]]: newDate }
-            } else {
-              let val;
-              if (key1 == 'student_status') {
-                val = getApplicationStatus(application[key1]);
-              } else if (key1 == 'verification') {
-                val = getVerificationStatus(application[key1]);
-              } else if (key1 == 'class_teacher') {
-                val = getClassTeacher(application[key1]);
-              } else {
-                val = application[key1];
-              }
-              formattedApplication = { ...formattedApplication, [exportHeaders[key1]]: val ? val : "" }
-            }
+          // if (key1 == "emergency_contacts") {
+          //   try {
+          //     const ecs = JSON.parse(application[key1]);
+          //     if (Array.isArray(ecs)) {
+          //       for (const [i, ec] of ecs.entries()) {
+          //         for (const key4 of Object.keys(ec)) {
+          //           formattedApplication = { ...formattedApplication, ['Emergency Contacts' + "" + (i + 1) + " " + exportHeaders.emergency_contacts[key4]]: ec[key4] ? ec[key4] : "" }
+          //         }
+          //       }
+          //     } else {
+          //       formattedApplication = { ...formattedApplication, [key1]: "" }
+          //     }
+          //   } catch (e) {
+          //     formattedApplication = { ...formattedApplication, [key1]: "" }
+          //   }
+          // } else {
+          //   if (key1 == 'vendor') {
+          //     formattedApplication = { ...formattedApplication, [exportHeaders['vendor']]: vendor?.name ? vendor.name : "" }
+          //   } else if (key1 == 'application_date' ||
+          //     key1 == 'section1_date_signed' ||
+          //     key1 == 'section2_date_signed' ||
+          //     key1 == 'section3_date_signed') {
+          //     const newDate = application[key1] ? format(new Date(application[key1]), DATE_FORMAT) : "";
+          //     formattedApplication = { ...formattedApplication, [exportHeaders[key1]]: newDate }
+          //   } else {
+          //     let val;
+          //     if (key1 == 'student_status') {
+          //       val = getApplicationStatus(application[key1]);
+          //     } else if (key1 == 'verification') {
+          //       val = getVerificationStatus(application[key1]);
+          //     } else if (key1 == 'class_teacher') {
+          //       val = getClassTeacher(application[key1]);
+          //     } else {
+          //       val = application[key1];
+          //     }
+          //     formattedApplication = { ...formattedApplication, [exportHeaders[key1]]: val ? val : "" }
+          //   }
 
-          }
+          // }
         }
       }
       delete formattedApplication.undefined;
       let initialApplication = {
-        'Id': formattedApplication['Id'],
-        'Vendor': formattedApplication['Vendor'],
-        'Verification': formattedApplication['Verification'],
-        'Student Status': formattedApplication['Student Status'],
-        '(Child) Age': formattedApplication['(Child) Age'],
-        'Class Teacher': formattedApplication['Class Teacher'],
-        'Color Designation': formattedApplication['Color Designation'],
-        'Recommended Class': '',
-        'Notes': formattedApplication['Notes'],
+        // 'Id': formattedApplication['Id'],
+        // 'Vendor': formattedApplication['Vendor'],
+        // 'Verification': formattedApplication['Verification'],
+        // 'Student Status': formattedApplication['Student Status'],
+        // '(Child) Age': formattedApplication['(Child) Age'],
+        // 'Class Teacher': formattedApplication['Class Teacher'],
+        // 'Color Designation': formattedApplication['Color Designation'],
+        // 'Recommended Class': '',
+        // 'Notes': formattedApplication['Notes'],
         ...formattedApplication
       }
       if (isLot) {
@@ -670,11 +859,17 @@ const ExportFilter = ({
 
         }
       }
+      rowKeys = Object.keys(initialApplication);
+      initialApplication = Object.values(initialApplication);
+      
+      // exportApplications.unshift(Object.values(rowKeys))
 
-      console.log("initialApplication", initialApplication);
       exportApplications.push(initialApplication);
+
     }
   }
+
+
 
   console.log("filterApplications", filterApplications);
   console.log("exportApplications", exportApplications);
@@ -698,6 +893,12 @@ const ExportFilter = ({
         { name: "Durham", value: "Durham" }
       ];
 
+  // const csvHeaders = [
+  //   { label: 'Child', key: '(Child) Address' },
+  //   { label: 'Parent', key: '(Child) Address'},
+  // ];
+
+  console.log('ExporedApplications', exportApplications)
   return (
     <ExportFilterModal>
       <div className="modal">
@@ -836,11 +1037,39 @@ const ExportFilter = ({
               </div>
             </div>
             <CSVLink
+              // headers={['test111','test2']}
               id="filterExportButton"
+              onClick={() => {
+
+                let rowKeys = Object.keys(exportApplications[0]).reduce((accum, key) => {
+                  return {
+                    ...accum,
+                    [key]: key
+                  }
+                }, {});
+
+   
+
+                exportApplications = exportApplications.map(item => {
+                  return Object.values(item);
+                });
+
+                exportApplications.unshift(Object.values(rowKeys))
+
+               //  exportApplications.unshift(['Child','','','','','','','Parent','','','',''])
+    
+
+                
+              }}
               style={{
                 marginTop: "25px"
               }}
-              data={exportApplications}
+              data={isCustomForm ? exportApplications : [
+                ['Child','','','','','','','Parent','','','',''],
+                rowKeys,
+                ...exportApplications
+              ]}
+
               filename={getVendorFilename()}>
               <span>Export</span>
             </CSVLink>

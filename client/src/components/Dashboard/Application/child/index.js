@@ -196,7 +196,7 @@ export default function index() {
   const getAgeBdate = (child) => {
     if(!child.age && child <= -1) return "";
 
-    let birthdate = format(new Date(child.birthdate), DATE_FORMAT);
+    let birthdate = child.birthdate && format(new Date(child.birthdate), DATE_FORMAT);
     return <span>{child.age}&nbsp; ({birthdate})</span>
   }
 
