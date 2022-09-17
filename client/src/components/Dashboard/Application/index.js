@@ -18,6 +18,7 @@ import {
   faLink,
   faCopy
 } from "@fortawesome/free-solid-svg-icons";
+import DefaultVendorSummaryStyled from "./default_vendor_summary";
 import ApplicationSummaryStyled from "./summary";
 import ApplicationSettingsStyled from "./settings";
 import Logo from "./logo"
@@ -67,6 +68,9 @@ import Form from '../../Dashboard/Builders/Form'
 import AdminFormStyled from '../Admin/form/index';
 import AdminFormModal from '../Admin/modal/index';
 import { REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED } from "../../../redux/actions/Constant";
+
+
+import { DEFAULT_VENDOR } from "../../../constants/vendors";
 
 const ApplicationFormStyled = styled.form`
   @media all {
@@ -581,6 +585,7 @@ export default function index() {
       }
     );
 
+    console.log('groups',groups)
   if (updateSubmittedForm.message === 'successfully update your application form') {
     window.location.reload()
   }
@@ -701,16 +706,16 @@ export default function index() {
 
         // setSelectedVendor(vendors[0]);
 
-        
+
         let defaultVendor = null;
         const hasDefaultVendor = vendors.find(item => item.is_default);
-        console.log('hasDefaultVendor',hasDefaultVendor)
+        console.log('hasDefaultVendor', hasDefaultVendor)
         if (auth && auth?.nickname === 'lot') {
           defaultVendor = vendors[vendors.length - 1]
           setSelectedVendor(defaultVendor);
           setSelectedForm('lot');
         }
-        else if(hasDefaultVendor) {
+        else if (hasDefaultVendor) {
           setSelectedVendor(hasDefaultVendor);
           setAppGroups(hasDefaultVendor?.app_groups);
         }
@@ -731,7 +736,7 @@ export default function index() {
         // }
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
-        } else if(!hasDefaultVendor) {
+        } else if (!hasDefaultVendor) {
           setAppGroups(defaultVendor?.app_groups);
 
         }
@@ -741,7 +746,8 @@ export default function index() {
           isOwner: !!(auth.user_id == defaultVendor?.user),
           categories: []
         }))
-        //dispatch(requestGetApplications(vendors[0].id));
+        console.log('defaultVendorrrrrrrrrrrrrrrr',defaultVendor)
+        // dispatch(requestGetApplications( defaultVendor?.id));
         dispatch(requestGetVendorReminders({ vendor: defaultVendor?.id }));
       }
 
@@ -752,7 +758,7 @@ export default function index() {
     }
   }, [vendors, queryParams?.vendor]);
 
-
+    console.log('Selected vendor12131112131211333', selectedVendor)
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
 
@@ -795,6 +801,7 @@ export default function index() {
     setAppGroups(formAppGroups);
   }, [formAppGroups])
 
+  
 
   const handleSelectedLabel = ({ value, opt }) => {
     setView("");
@@ -2043,9 +2050,11 @@ export default function index() {
 
   let vendorOptions = vendors && vendors.length > 0 ? vendors.sort((a, b) => a.name.localeCompare(b.name)) : [];
   let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
-    console.log('selectedVendor',selectedVendor)
+  console.log('selectedVendorrrrrrrrrr', selectedVendor)
+  console.log('vendorssssssss', vendors)
+  console.log('vendorssssssss appGroups', appGroups)
+  console.log('vendorssssssss applications', applications)
 
-    console.log('selectedVendor222222 appGroups',appGroups)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2324,13 +2333,20 @@ export default function index() {
         </div>
         <div>
           {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
-            <ApplicationSummaryStyled
-              appGroups={appGroups}
-              applications={applications.activeapplications}
+            selectedVendor && (selectedVendor.id === DEFAULT_VENDOR) ? <DefaultVendorSummaryStyled
+              appGroups={selectedVendor?.app_groups}
               vendor={selectedVendor}
               form={selectedForm}
               isForm={selectedForm !== "default"}
-            />
+              vendors={vendors}
+            /> :
+              <ApplicationSummaryStyled
+                appGroups={appGroups}
+                applications={applications.activeapplications}
+                vendor={selectedVendor}
+                form={selectedForm}
+                isForm={selectedForm !== "default"}
+              />
           )}
           {selectedLabel === "Form Settings" && !selectNonMenuOption && (
             <ApplicationSettingsStyled

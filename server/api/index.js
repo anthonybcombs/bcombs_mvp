@@ -129,7 +129,7 @@ export const updateVendorNewId = async ({ newVendorId, id }) => {
     await db.close();
     return result;
   }
-} 
+}
 
 export const getUsers = async () => {
   const db = makeDb();
@@ -168,7 +168,7 @@ export const updateUserNewId = async ({ newUserId, id }) => {
     await db.close();
     return result;
   }
-} 
+}
 
 export const getChilds = async () => {
   const db = makeDb();
@@ -207,7 +207,7 @@ export const updateChildNewId = async ({ newChildId, ch_id }) => {
     await db.close();
     return result;
   }
-} 
+}
 
 export const getParents = async () => {
   const db = makeDb();
@@ -246,15 +246,15 @@ export const updateNewParentId = async ({ newParentId, parent_id }) => {
     await db.close();
     return result;
   }
-} 
+}
 
 router.get("/updateParentNewId", async (req, res) => {
   const parents = await getParents();
   const defaultSize = 4;
 
-  for(let parent of parents) {
+  for (let parent of parents) {
     let addZero = 0;
-    if(parent.id > 9999) {
+    if (parent.id > 9999) {
       addZero = 1;
     }
 
@@ -263,7 +263,7 @@ router.get("/updateParentNewId", async (req, res) => {
     const newParentId = 'P11' + padId;
     parent.newParentId = newParentId;
 
-    if(!parent.new_parentId) {
+    if (!parent.new_parentId) {
       updateNewParentId(parent);
     }
 
@@ -280,9 +280,9 @@ router.get("/updateChildNewId", async (req, res) => {
     return !ch.new_childId
   })
 
-  for(let child of childs) {
+  for (let child of childs) {
     let addZero = 0;
-    if(child.id > 9999) {
+    if (child.id > 9999) {
       addZero = 1;
     }
 
@@ -291,8 +291,8 @@ router.get("/updateChildNewId", async (req, res) => {
     const newChildId = 'C11' + padId;
     child.newChildId = newChildId;
 
-    if(!child.new_childId) {
-      updateChildNewId(child);  
+    if (!child.new_childId) {
+      updateChildNewId(child);
     }
   }
   res.send(childs);
@@ -301,10 +301,10 @@ router.get("/updateChildNewId", async (req, res) => {
 router.get("/updateUserNewId", async (req, res) => {
   const users = await getUsers();
   const defaultSize = 4;
-  for(let user of users) {
+  for (let user of users) {
     let addZero = 0;
 
-    if(user.id2 > 9999) {
+    if (user.id2 > 9999) {
       addZero = 1;
     }
 
@@ -313,7 +313,7 @@ router.get("/updateUserNewId", async (req, res) => {
     const newUserId = 'U11' + padId;
     user.newUserId = newUserId;
 
-    if(!user.new_userId) {
+    if (!user.new_userId) {
       await updateUserNewId(user);
     }
   }
@@ -327,7 +327,7 @@ router.get("/updateVendorNewId", async (req, res) => {
     let addZero = 0;
     const defaultSize = 4;
 
-    if(vendor.id2 > 9999) {
+    if (vendor.id2 > 9999) {
       addZero = 1;
     }
 
@@ -336,7 +336,7 @@ router.get("/updateVendorNewId", async (req, res) => {
     const newVendorId = 'V11' + padId;
     vendor.newVendorId = newVendorId;
 
-    if(!vendor.new_vendorId) {
+    if (!vendor.new_vendorId) {
       await updateVendorNewId(vendor);
     }
   });
@@ -349,7 +349,7 @@ router.get("/userProfile", async (req, res) => {
     const user = await getUserFromDatabase(email);
     const userProfile = await getUserProfileFromDatabase(user.id);
     res.send(JSON.stringify(userProfile || {}));
-  } catch (error) {}
+  } catch (error) { }
 });
 
 router.get("/securityQuestions", async (req, res) => {
@@ -458,7 +458,7 @@ router.post("/auth/authorize", async (req, res) => {
       );
       return;
     }
-  c
+    c
   } catch (error) {
     res.send("error");
   }
@@ -473,7 +473,7 @@ router.post("/auth/changepassword", async (req, res) => {
       params.append("email", user.email);
       params.append("connection", "Username-Password-Authentication");
       await fetch(
-      `${process.env.AUTH_API}/dbconnections/change_password`, {
+        `${process.env.AUTH_API}/dbconnections/change_password`, {
         method: "POST",
         body: params
       });
@@ -506,7 +506,7 @@ router.post("/users/isuserexist", async (req, res) => {
       messageType: "info",
       message: "proced"
     });
-  } catch (error) {}
+  } catch (error) { }
 });
 
 // FOR REGISTRATION
@@ -805,10 +805,10 @@ router.post("/usergroups", async (req, res) => {
     let members =
       rowIds && rowIds.length > 0
         ? await db.query(
-            "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members` WHERE `group_id` IN (" +
-              rowIds.join(",") +
-              ")"
-          )
+          "SELECT BIN_TO_UUID(group_id) as `group_id`,BIN_TO_UUID(user_id) as `user_id` from `group_members` WHERE `group_id` IN (" +
+          rowIds.join(",") +
+          ")"
+        )
         : [];
     members = JSON.parse(JSON.stringify(members));
 
@@ -874,7 +874,7 @@ router.post("/contact", async (req, res) => {
 
         await db.query(
           "INSERT IGNORE INTO `group_members`(`group_id`,`user_id`) VALUES " +
-            groupValuesQuery
+          groupValuesQuery
         );
       }
 
@@ -894,7 +894,7 @@ router.post("/group/update", upload.single("file"), async (req, res) => {
   const db = makeDb();
   const file = req.file;
   const { id = '', email, selected_contacts } = req.body;
-  console.log('REQ BODYYY',req.body)
+  console.log('REQ BODYYY', req.body)
   const currentUser = await getUserFromDatabase(email);
 
   if (file) {
@@ -907,7 +907,7 @@ router.post("/group/update", upload.single("file"), async (req, res) => {
         ACL: "public-read"
       };
 
-      s3Bucket.upload(params, async function(err, data) {
+      s3Bucket.upload(params, async function (err, data) {
         if (err) {
           res.status(500).json({ error: true, Message: err });
         } else {
@@ -954,7 +954,7 @@ router.get("/invitation/calendar/:id/:status", async (req, res) => {
   try {
     await db.query(
       `UPDATE user_calendars_follow SET is_following=? WHERE calendar_id=UUID_TO_BIN(?) AND user_id=UUID_TO_BIN(?) AND group_id=UUID_TO_BIN(?)`,
-      [status,id, userId, groupId]
+      [status, id, userId, groupId]
     );
     res.redirect(`${process.env.APP_CLIENT_URL}/dashboard/mycalendars`);
   } catch (error) {
