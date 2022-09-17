@@ -1,0 +1,1 @@
+export const DEFAULT_VENDOR = '70eda5be-c670-11ec-b022-a63091e8234d';
