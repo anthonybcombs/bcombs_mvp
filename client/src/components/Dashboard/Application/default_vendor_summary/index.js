@@ -78,17 +78,8 @@ const getDefaultVendorSummary = async () => {
     return response.json(); // parses JSON response into native JavaScript objects
 }
 
-
-export default function index({
-    appGroups = [],
-    vendors = [],
-    form = {},
-    //   isForm = false
-}) {
-
-    const [chapters, setChapters] = useState([]);
-    const [applications, setApplications] = useState([]);
-    const formattedAppGroups = appGroups && appGroups.reduce((accum, item) => {
+const getFormattedAppGroups = appGroups => {
+    return appGroups && appGroups.reduce((accum, item) => {
         if (item.name.includes('Freshman')) {
             return {
                 ...accum,
@@ -112,8 +103,17 @@ export default function index({
             senior: item.app_grp_id
         }
     }, {});
+}
 
-    console.log('formattedAppGroups', formattedAppGroups)
+export default function index({
+    vendors = [],
+    form = {},
+    //   isForm = false
+}) {
+
+    const [chapters, setChapters] = useState([]);
+    // const [applications, setApplications] = useState([]);
+
 
     useEffect(() => {
         const triggerApi = async () => {
@@ -122,35 +122,37 @@ export default function index({
                 if (response?.data) {
                     const applications = response.data;
                     let chapterWithApplications = vendors.map(chapter => {
+                        const appGroups = getFormattedAppGroups(chapter?.app_groups || [])
                         const chapterApplications = applications.filter(app => app.vendor === chapter.id);
- 
+
+                        // console.log('testttttttttttt', chapterApplications.filter(item => item.class_teacher('b8ecfe20-09d4-11ed-9ebd-72ed28470cb')))
                         const counts = chapterApplications.reduce((accum, item) => {
                             if (item.class_teacher) {
-                                if (item.class_teacher.includes(formattedAppGroups.freshman)) {
+                                if (item.class_teacher.includes(appGroups.freshman)) {
                                     return {
                                         ...accum,
                                         freshman: accum.freshman + 1
                                     }
                                 }
-                                else if (item.class_teacher.includes(formattedAppGroups.sophomore)) {
+                                else if (item.class_teacher.includes(appGroups.sophomore)) {
                                     return {
                                         ...accum,
                                         sophomore: accum.sophomore + 1
                                     }
                                 }
-                                else if (item.class_teacher.includes(formattedAppGroups.junior)) {
+                                else if (item.class_teacher.includes(appGroups.junior)) {
                                     return {
                                         ...accum,
                                         junior: accum.junior + 1
                                     }
                                 }
-                                else if (item.class_teacher.includes(formattedAppGroups.senior)) {
+                                else if (item.class_teacher.includes(appGroups.senior)) {
                                     return {
                                         ...accum,
                                         senior: accum.senior + 1
                                     }
                                 }
-                       
+
                             }
                             return {
                                 ...accum,
