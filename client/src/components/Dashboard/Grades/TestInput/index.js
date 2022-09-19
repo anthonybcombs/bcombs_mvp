@@ -535,12 +535,12 @@ export default ({ child_id }) => {
         ? `/dashboard/grades/profile/${child_id}?group_id=${group_id}&group_type=${group_type}&request_type=${request_type}${vendor ? `vendor=${vendor}` : ''}`
         : (!return_page && (group_id || group_type))
           ? `/dashboard/studentdata${vendor ? `?vendor=${vendor}` : ''}`
-          : `/dashboard/grades?group_id=${group_id}&group_type=${group_type}`
+          : `/dashboard/grades?group_id=${group_id}&request_type=${request_type}&group_type=${group_type}&vendor=${vendor}`
       window.location.replace(backUrl)
     }
 
   }
-  console.log('vendorsssssssss', vendors)
+
   return (
     <GradeInputStyled>
       <div className='gradeInputView-header'>
