@@ -131,25 +131,29 @@ export default function index({
                                 if (item.class_teacher.includes(appGroups.freshman)) {
                                     return {
                                         ...accum,
-                                        freshman: accum.freshman + 1
+                                        freshman: accum.freshman + 1,
+                                        total: accum.total + 1
                                     }
                                 }
                                 else if (item.class_teacher.includes(appGroups.sophomore)) {
                                     return {
                                         ...accum,
-                                        sophomore: accum.sophomore + 1
+                                        sophomore: accum.sophomore + 1,
+                                        total: accum.total + 1
                                     }
                                 }
                                 else if (item.class_teacher.includes(appGroups.junior)) {
                                     return {
                                         ...accum,
-                                        junior: accum.junior + 1
+                                        junior: accum.junior + 1,
+                                        total: accum.total + 1
                                     }
                                 }
                                 else if (item.class_teacher.includes(appGroups.senior)) {
                                     return {
                                         ...accum,
-                                        senior: accum.senior + 1
+                                        senior: accum.senior + 1,
+                                        total: accum.total + 1
                                     }
                                 }
 
@@ -164,6 +168,7 @@ export default function index({
                             junior: 0,
                             senior: 0,
                             no_groups: 0,
+                            total:0
                         });
 
                         return {
@@ -174,8 +179,33 @@ export default function index({
 
                     }).filter(item => item.name.includes('LOT®'));
 
+                    console.log('chapterWithApplications chapterWithApplications',chapterWithApplications)
+                    const overallChapters = chapterWithApplications.reduce((accum,item) => {
+                        return {
+                            ...accum,
+                            counts:{
+                                freshman:  accum.counts.freshman + item.counts.freshman,
+                                sophomore:  accum.counts.sophomore + item.counts.sophomore,
+                                junior: accum.counts.junior + item.counts.junior,
+                                senior: accum.counts.senior + item.counts.senior,
+                                no_groups: accum.counts.no_groups + item.counts.no_groups,
+                                total: accum.counts.total + item.counts.total
+                            }
+                        }
+                    },{
+                        name: 'All',
+                        counts:{
+                            freshman: 0,
+                            sophomore: 0,
+                            junior: 0,
+                            senior: 0,
+                            no_groups: 0,
+                            total:0
+                        }
+                    })
+                    console.log('chapterWithApplications overallChapters',overallChapters)
 
-                    setChapters(chapterWithApplications)
+                    setChapters([overallChapters,...chapterWithApplications])
                 }
 
             } catch (e) {
@@ -198,6 +228,7 @@ export default function index({
                     <td>
                         {chapter.name}
                     </td>
+                    <td>{chapter?.counts?.total}</td>
                     <td>{chapter?.counts?.freshman}</td>
                     <td>{chapter?.counts?.sophomore}</td>
                     <td>{chapter?.counts?.junior}</td>
@@ -225,6 +256,7 @@ export default function index({
                         <tbody>
                             <tr>
                                 <th>Chapter</th>
+                                <th>Total</th>
                                 <th>Freshman</th>
                                 <th>Sophomore</th>
                                 <th>Junior</th>

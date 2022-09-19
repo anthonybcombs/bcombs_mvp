@@ -608,7 +608,7 @@ export default () => {
                   />
                   <Link
                     className='applyFilterBtn'
-                    to={`/dashboard/grades/input?${commonQueryStrings}&return_page=grades`}
+                    to={`/dashboard/grades/input?${commonQueryStrings}&return_page=grades&vendor=${vendor}`}
                   >
                     {`Grades & Test Input`}
                   </Link>
