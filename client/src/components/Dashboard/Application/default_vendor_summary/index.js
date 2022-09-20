@@ -160,7 +160,8 @@ export default function index({
                             }
                             return {
                                 ...accum,
-                                no_groups: accum.no_groups + 1
+                                no_groups: accum.no_groups + 1,
+                                total: accum.total + 1
                             }
                         }, {
                             freshman: 0,
@@ -228,7 +229,7 @@ export default function index({
                     <td>
                         {chapter.name}
                     </td>
-                    <td>{chapter?.counts?.total}</td>
+                    <td>{chapter?.counts?.total || '-'}</td>
                     <td>{chapter?.counts?.freshman}</td>
                     <td>{chapter?.counts?.sophomore}</td>
                     <td>{chapter?.counts?.junior}</td>
