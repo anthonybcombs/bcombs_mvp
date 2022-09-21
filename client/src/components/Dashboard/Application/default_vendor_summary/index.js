@@ -230,11 +230,11 @@ export default function index({
                         {chapter.name}
                     </td>
                     <td>{chapter?.counts?.total || '-'}</td>
-                    <td>{chapter?.counts?.freshman}</td>
-                    <td>{chapter?.counts?.sophomore}</td>
-                    <td>{chapter?.counts?.junior}</td>
-                    <td>{chapter?.counts?.senior}</td>
-                    <td>{chapter?.counts?.no_groups}</td>
+                    <td>{chapter?.counts?.freshman || '-'}</td>
+                    <td>{chapter?.counts?.sophomore || '-'}</td>
+                    <td>{chapter?.counts?.junior || '-'}</td>
+                    <td>{chapter?.counts?.senior || '-'}</td>
+                    <td>{chapter?.counts?.no_groups || '-'}</td>
                 </tr>
             })
         } else {
