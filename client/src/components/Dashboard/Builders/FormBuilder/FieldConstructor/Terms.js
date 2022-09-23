@@ -61,13 +61,13 @@ export default (props) => {
       }
       <div className='formGroup-row'>
         <div className='title'>
-          {fields[0].placeholder}
+          {fields[0]?.placeholder}
         </div>
         <div className='content'>
-          {fields[1].placeholder}
+          {fields[1]?.placeholder}
         </div>
         <div className='content'>
-          {fields[2].placeholder}
+          {fields[2]?.placeholder}
         </div>
         <div className='signature'>
        
@@ -77,7 +77,7 @@ export default (props) => {
               type="checkbox"
               style={{ width: '12px' }}
               checked={fields[0]?.value}
-              vvalue={fields[0]?.value}
+              value={fields[0]?.value}
               onChange={handleChecked}
               style={{ marginTop: 12 }}
        
