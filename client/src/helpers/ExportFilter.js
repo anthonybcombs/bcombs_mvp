@@ -429,7 +429,7 @@ const ExportFilter = ({
 
 
                   const fieldLabel = field.label ? field.label.toLowerCase() : '';
-      
+
 
                   fieldValue = fieldValue ? fieldValue.replaceAll(/"/g, '') : '';
                   if (k.label) {
@@ -461,13 +461,13 @@ const ExportFilter = ({
         formattedApplication.child = `${currentChild.firstname} ${currentChild.lastname}`
 
       }
-  
+
       if (reportType === 'biographical_data') {
 
         exportApplications.push(formattedApplication);
       }
       else {
-    
+
         let initialApplication = {
           'Id': formattedApplication['Id'],
           'Vendor': formattedApplication['Vendor'],
@@ -542,9 +542,9 @@ const ExportFilter = ({
                 delete arrObj.password;
                 delete arrObj.emergency_contacts;
                 delete arrObj.parent_id;
-                if( reportType === 'biographical_data') {
-               
-                  
+                if (reportType === 'biographical_data') {
+
+
                   for (const key3 of Object.keys(arrObj)) {
                     if (key3 != "password" || key3 !== 'parent_id') {
                       if (key3 == 'birthdate') {
@@ -553,7 +553,7 @@ const ExportFilter = ({
                       } else {
                         formattedApplication = { ...formattedApplication, [exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3] : "" }
                       }
-  
+
                     }
                   }
                 }
@@ -566,7 +566,7 @@ const ExportFilter = ({
                       } else {
                         formattedApplication = { ...formattedApplication, ["(Parent " + (i + 1) + ") " + exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3] : "" }
                       }
-  
+
                     }
                   }
                 }
@@ -920,7 +920,7 @@ const ExportFilter = ({
           }
         }
         rowKeys = Object.keys(initialApplication);
-     
+
         // initialApplication = Object.values(initialApplication);
 
         // exportApplications.unshift(Object.values(rowKeys))
@@ -1038,11 +1038,11 @@ const ExportFilter = ({
                 placeholder="Choose Programs"
                 selectedValues={appPrograms}
                 onSelect={selectedList => {
-     
+
                   setAppPrograms([...selectedList]);
                 }}
                 onRemove={selectedList => {
-       
+
                   setAppPrograms([...selectedList]);
                 }}
               />
@@ -1095,20 +1095,24 @@ const ExportFilter = ({
                 /> Select All
               </div>
               <br />
-              <select
-                className="form-control"
-                value={reportType}
-                onChange={e => {
-                  setReportType(e.target.value);
-                }}>
+              <p>Report:</p>
+              <div>
+                <select
+                  className="form-control"
+                  value={reportType}
+                  onChange={e => {
+                    setReportType(e.target.value);
+                  }}>
 
-                <option value="">Report</option>
-                {REPORT_OPTIONS.map((opt, i) => (
-                  <option key={i} value={opt.value}>
-                    {opt.name}
-                  </option>
-                ))}
-              </select>
+                  <option value="">Please Select</option>
+                  {REPORT_OPTIONS.map((opt, i) => (
+                    <option key={i} value={opt.value}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
             </div>
 
             {reportType === 'biographical_data' ? <CSVLink
@@ -1148,7 +1152,7 @@ const ExportFilter = ({
                 marginTop: "25px"
               }}
               onClick={() => {
-                console.log('exportApplications12312332',exportApplications)
+                console.log('exportApplications12312332', exportApplications)
               }}
               data={exportApplications}
               filename={getVendorFilename()}>
