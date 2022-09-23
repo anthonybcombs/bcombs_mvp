@@ -158,6 +158,11 @@ const ExportFilter = ({
     "Middle School"
   ];
 
+  const REPORT_OPTIONS = [
+    { name: "Biographical Data", value: "biographical_data" },
+  ];
+
+
   const STUDENT_CLASS_OPTIONS = [
     { name: "In process", value: "new_applicant_in_process" },
     { name: "Accepted", value: "new_applicant_accepted" },
@@ -188,6 +193,7 @@ const ExportFilter = ({
   const [appGroupText, setAppGroupText] = useState("");
   const [locationSites, setLocationSites] = useState([]);
   const [appPrograms, setAppPrograms] = useState([]);
+  const [reportType, setReportType] = useState('');
 
   const filterApplications = applications.filter(item => {
     let class_match = true;
@@ -380,7 +386,7 @@ const ExportFilter = ({
             for (const [i, k] of formData.entries()) {
               if (k?.type === "sectionBreak" || k?.type === 'file') { continue }
               else {
-       
+
                 const fields = k?.fields?.length > 0 ? k.fields : [];
 
                 let fieldValue = ""
@@ -423,7 +429,7 @@ const ExportFilter = ({
 
 
                   const fieldLabel = field.label ? field.label.toLowerCase() : '';
-                  console.log('fieldLabel', fieldLabel)
+      
 
                   fieldValue = fieldValue ? fieldValue.replaceAll(/"/g, '') : '';
                   if (k.label) {
@@ -455,20 +461,28 @@ const ExportFilter = ({
         formattedApplication.child = `${currentChild.firstname} ${currentChild.lastname}`
 
       }
+  
+      if (reportType === 'biographical_data') {
 
-      // let initialApplication = {
-      //   'Id': formattedApplication['Id'],
-      //   'Vendor': formattedApplication['Vendor'],
-      //   'Verification': formattedApplication['Verification'],
-      //   'Student Status': formattedApplication['Student Status'],
-      //   'Class Teacher': formattedApplication['Class Teacher'],
-      //   'Color Designation': formattedApplication['Color Designation'],
-      //   'Recommended Class': '',
-      //   'Notes': formattedApplication['Notes'],
-      //   ...formattedApplication
-      // }
+        exportApplications.push(formattedApplication);
+      }
+      else {
+    
+        let initialApplication = {
+          'Id': formattedApplication['Id'],
+          'Vendor': formattedApplication['Vendor'],
+          'Verification': formattedApplication['Verification'],
+          'Student Status': formattedApplication['Student Status'],
+          'Class Teacher': formattedApplication['Class Teacher'],
+          'Color Designation': formattedApplication['Color Designation'],
+          'Recommended Class': '',
+          'Notes': formattedApplication['Notes'],
+          ...formattedApplication
+        }
+        exportApplications.push(initialApplication);
+      }
 
-      exportApplications.push(formattedApplication);
+
     }
 
   } else {
@@ -486,7 +500,7 @@ const ExportFilter = ({
             // parent
 
             if (key1 == 'parents') {
-              let level1Arr = application[key1].map(item => {
+              let level1Arr = reportType === 'biographical_data' ? application[key1].map(item => {
 
                 delete item.child_col_grad;
                 delete item.child_hs_grad;
@@ -520,29 +534,43 @@ const ExportFilter = ({
                 return {
                   ...item
                 }
-              });
+              }) : application[key1];
 
-
-
-              console.log('level1Arrssssss', level1Arr)
 
               delete level1Arr.child_col_grad;
               for (const [i, arrObj] of level1Arr.entries()) {
                 delete arrObj.password;
                 delete arrObj.emergency_contacts;
                 delete arrObj.parent_id;
-
-                for (const key3 of Object.keys(arrObj)) {
-                  if (key3 != "password" || key3 !== 'parent_id') {
-                    if (key3 == 'birthdate') {
-                      const newDate = arrObj[key3] ? format(new Date(arrObj[key3]), DATE_FORMAT) : "";
-                      formattedApplication = { ...formattedApplication, [ exportHeaders.parent[key3]]: newDate }
-                    } else {
-                      formattedApplication = { ...formattedApplication, [exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3] : "" }
+                if( reportType === 'biographical_data') {
+               
+                  
+                  for (const key3 of Object.keys(arrObj)) {
+                    if (key3 != "password" || key3 !== 'parent_id') {
+                      if (key3 == 'birthdate') {
+                        const newDate = arrObj[key3] ? format(new Date(arrObj[key3]), DATE_FORMAT) : "";
+                        formattedApplication = { ...formattedApplication, [exportHeaders.parent[key3]]: newDate }
+                      } else {
+                        formattedApplication = { ...formattedApplication, [exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3] : "" }
+                      }
+  
                     }
-
                   }
                 }
+                else {
+                  for (const key3 of Object.keys(arrObj)) {
+                    if (key3 != "password" || key3 !== 'parent_id') {
+                      if (key3 == 'birthdate') {
+                        const newDate = arrObj[key3] ? format(new Date(arrObj[key3]), DATE_FORMAT) : "";
+                        formattedApplication = { ...formattedApplication, ["(Parent " + (i + 1) + ") " + exportHeaders.parent[key3]]: newDate }
+                      } else {
+                        formattedApplication = { ...formattedApplication, ["(Parent " + (i + 1) + ") " + exportHeaders.parent[key3]]: arrObj[key3] ? arrObj[key3] : "" }
+                      }
+  
+                    }
+                  }
+                }
+
               }
             } else if (key1 == 'relationships') {
 
@@ -798,84 +826,115 @@ const ExportFilter = ({
           }
         } else {
 
-          // if (key1 == "emergency_contacts") {
-          //   try {
-          //     const ecs = JSON.parse(application[key1]);
-          //     if (Array.isArray(ecs)) {
-          //       for (const [i, ec] of ecs.entries()) {
-          //         for (const key4 of Object.keys(ec)) {
-          //           formattedApplication = { ...formattedApplication, ['Emergency Contacts' + "" + (i + 1) + " " + exportHeaders.emergency_contacts[key4]]: ec[key4] ? ec[key4] : "" }
-          //         }
-          //       }
-          //     } else {
-          //       formattedApplication = { ...formattedApplication, [key1]: "" }
-          //     }
-          //   } catch (e) {
-          //     formattedApplication = { ...formattedApplication, [key1]: "" }
-          //   }
-          // } else {
-          //   if (key1 == 'vendor') {
-          //     formattedApplication = { ...formattedApplication, [exportHeaders['vendor']]: vendor?.name ? vendor.name : "" }
-          //   } else if (key1 == 'application_date' ||
-          //     key1 == 'section1_date_signed' ||
-          //     key1 == 'section2_date_signed' ||
-          //     key1 == 'section3_date_signed') {
-          //     const newDate = application[key1] ? format(new Date(application[key1]), DATE_FORMAT) : "";
-          //     formattedApplication = { ...formattedApplication, [exportHeaders[key1]]: newDate }
-          //   } else {
-          //     let val;
-          //     if (key1 == 'student_status') {
-          //       val = getApplicationStatus(application[key1]);
-          //     } else if (key1 == 'verification') {
-          //       val = getVerificationStatus(application[key1]);
-          //     } else if (key1 == 'class_teacher') {
-          //       val = getClassTeacher(application[key1]);
-          //     } else {
-          //       val = application[key1];
-          //     }
-          //     formattedApplication = { ...formattedApplication, [exportHeaders[key1]]: val ? val : "" }
-          //   }
+          if (reportType === '') {
+            if (key1 == "emergency_contacts") {
+              try {
+                const ecs = JSON.parse(application[key1]);
+                if (Array.isArray(ecs)) {
+                  for (const [i, ec] of ecs.entries()) {
+                    for (const key4 of Object.keys(ec)) {
+                      formattedApplication = { ...formattedApplication, ['Emergency Contacts' + "" + (i + 1) + " " + exportHeaders.emergency_contacts[key4]]: ec[key4] ? ec[key4] : "" }
+                    }
+                  }
+                } else {
+                  formattedApplication = { ...formattedApplication, [key1]: "" }
+                }
+              } catch (e) {
+                formattedApplication = { ...formattedApplication, [key1]: "" }
+              }
+            } else {
+              if (key1 == 'vendor') {
+                formattedApplication = { ...formattedApplication, [exportHeaders['vendor']]: vendor?.name ? vendor.name : "" }
+              } else if (key1 == 'application_date' ||
+                key1 == 'section1_date_signed' ||
+                key1 == 'section2_date_signed' ||
+                key1 == 'section3_date_signed') {
+                const newDate = application[key1] ? format(new Date(application[key1]), DATE_FORMAT) : "";
+                formattedApplication = { ...formattedApplication, [exportHeaders[key1]]: newDate }
+              } else {
+                let val;
+                if (key1 == 'student_status') {
+                  val = getApplicationStatus(application[key1]);
+                } else if (key1 == 'verification') {
+                  val = getVerificationStatus(application[key1]);
+                } else if (key1 == 'class_teacher') {
+                  val = getClassTeacher(application[key1]);
+                } else {
+                  val = application[key1];
+                }
+                formattedApplication = { ...formattedApplication, [exportHeaders[key1]]: val ? val : "" }
+              }
 
-          // }
+            }
+          }
+
         }
       }
       delete formattedApplication.undefined;
-      let initialApplication = {
-        // 'Id': formattedApplication['Id'],
-        // 'Vendor': formattedApplication['Vendor'],
-        // 'Verification': formattedApplication['Verification'],
-        // 'Student Status': formattedApplication['Student Status'],
-        // '(Child) Age': formattedApplication['(Child) Age'],
-        // 'Class Teacher': formattedApplication['Class Teacher'],
-        // 'Color Designation': formattedApplication['Color Designation'],
-        // 'Recommended Class': '',
-        // 'Notes': formattedApplication['Notes'],
-        ...formattedApplication
-      }
-      if (isLot) {
 
-        initialApplication = {
-          ...initialApplication,
-
+      if (reportType === 'biographical_data') {
+        let initialApplication = {
+          // 'Id': formattedApplication['Id'],
+          // 'Vendor': formattedApplication['Vendor'],
+          // 'Verification': formattedApplication['Verification'],
+          // 'Student Status': formattedApplication['Student Status'],
+          // '(Child) Age': formattedApplication['(Child) Age'],
+          // 'Class Teacher': formattedApplication['Class Teacher'],
+          // 'Color Designation': formattedApplication['Color Designation'],
+          // 'Recommended Class': '',
+          // 'Notes': formattedApplication['Notes'],
+          ...formattedApplication
         }
-      }
-      rowKeys = Object.keys(initialApplication);
-      initialApplication = Object.values(initialApplication);
-      
-      // exportApplications.unshift(Object.values(rowKeys))
+        if (isLot) {
 
-      exportApplications.push(initialApplication);
+          initialApplication = {
+            ...initialApplication,
+
+          }
+        }
+        rowKeys = Object.keys(initialApplication);
+        initialApplication = Object.values(initialApplication);
+
+        // exportApplications.unshift(Object.values(rowKeys))
+
+        exportApplications.push(initialApplication);
+      }
+      else {
+        let initialApplication = {
+          'Id': formattedApplication['Id'],
+          'Vendor': formattedApplication['Vendor'],
+          'Verification': formattedApplication['Verification'],
+          'Student Status': formattedApplication['Student Status'],
+          '(Child) Age': formattedApplication['(Child) Age'],
+          'Class Teacher': formattedApplication['Class Teacher'],
+          'Color Designation': formattedApplication['Color Designation'],
+          'Recommended Class': '',
+          'Notes': formattedApplication['Notes'],
+          ...formattedApplication
+        }
+        if (isLot) {
+
+          initialApplication = {
+            ...initialApplication,
+
+          }
+        }
+        rowKeys = Object.keys(initialApplication);
+     
+        // initialApplication = Object.values(initialApplication);
+
+        // exportApplications.unshift(Object.values(rowKeys))
+
+        exportApplications.push(initialApplication);
+
+      }
+
 
     }
   }
 
 
 
-  console.log("filterApplications", filterApplications);
-  console.log("exportApplications", exportApplications);
-  console.log("applicationszzzzzz", applications);
-
-  console.log('isCustomFormmmm', isCustomForm)
 
   const PROGRAMS_OPTIONS =
     app_programs.length > 0
@@ -898,7 +957,7 @@ const ExportFilter = ({
   //   { label: 'Parent', key: '(Child) Address'},
   // ];
 
-  console.log('ExporedApplications', exportApplications)
+
   return (
     <ExportFilterModal>
       <div className="modal">
@@ -979,11 +1038,11 @@ const ExportFilter = ({
                 placeholder="Choose Programs"
                 selectedValues={appPrograms}
                 onSelect={selectedList => {
-                  console.log("selectedList add", selectedList);
+     
                   setAppPrograms([...selectedList]);
                 }}
                 onRemove={selectedList => {
-                  console.log("selectedList Remove", selectedList);
+       
                   setAppPrograms([...selectedList]);
                 }}
               />
@@ -1035,9 +1094,25 @@ const ExportFilter = ({
                   }}
                 /> Select All
               </div>
+              <br />
+              <select
+                className="form-control"
+                value={reportType}
+                onChange={e => {
+                  setReportType(e.target.value);
+                }}>
+
+                <option value="">Report</option>
+                {REPORT_OPTIONS.map((opt, i) => (
+                  <option key={i} value={opt.value}>
+                    {opt.name}
+                  </option>
+                ))}
+              </select>
             </div>
-            <CSVLink
-              // headers={['test111','test2']}
+
+            {reportType === 'biographical_data' ? <CSVLink
+
               id="filterExportButton"
               onClick={() => {
 
@@ -1048,31 +1123,38 @@ const ExportFilter = ({
                   }
                 }, {});
 
-   
-
                 exportApplications = exportApplications.map(item => {
                   return Object.values(item);
                 });
 
                 exportApplications.unshift(Object.values(rowKeys))
 
-               //  exportApplications.unshift(['Child','','','','','','','Parent','','','',''])
-    
 
-                
               }}
               style={{
                 marginTop: "25px"
               }}
               data={isCustomForm ? exportApplications : [
-                ['Child','','','','','','','Parent','','','',''],
+                ['Child', '', '', '', '', '', '', 'Parent', '', '', '', ''],
                 rowKeys,
                 ...exportApplications
               ]}
 
               filename={getVendorFilename()}>
               <span>Export</span>
-            </CSVLink>
+            </CSVLink> : <CSVLink
+              id="filterExportButton"
+              style={{
+                marginTop: "25px"
+              }}
+              onClick={() => {
+                console.log('exportApplications12312332',exportApplications)
+              }}
+              data={exportApplications}
+              filename={getVendorFilename()}>
+              <span>Export</span>
+            </CSVLink>}
+
           </div>
         </div>
       </div>
