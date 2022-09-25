@@ -166,7 +166,7 @@ const customApplicationField = {
   insect_allergies: '',
   other_allergies: '',
   current_medications: '',
-  health_insurance_information: ''
+  health_insurance_information: '',
 }
 function isEmailAddress(str) {
   var pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -197,7 +197,8 @@ const REQUIRED_FIELD_NAME = {
   mentee_gain: 'Mentee Gain',
   school_name: 'School Name',
   grade: 'Grade',
-  emergency_contacts: 'Emergency Contacts'
+  emergency_contacts: 'Emergency Contacts',
+  location_site: 'Location'
 
 }
 export default function index() {
@@ -771,12 +772,12 @@ export default function index() {
         let child = childs[i];
         let profile = child.profile;
         let gi = child.general_information;
-        console.log('giiiiiiiiii', gi)
+
 
         if ((profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
 
           isValid = false;
-          console.log('isValidrrrrrrr 111111111', isValid)
+
           break;
         }
 
@@ -797,7 +798,8 @@ export default function index() {
           (isLot && (!gi.allergies_to_medicine || !gi.food_allergies || !gi.insect_allergies || !gi.other_allergies || !gi.mentee_gain)) ||
           (!isLot && (!gi.grade ||
             !gi.school_name ||
-            !gi.mentee_gain)) ||
+            !gi.mentee_gain ||
+            !profile.location_site )) ||
 
           (gi.school_phone && gi.school_phone.includes('_')) ||
           (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.doctor_phone.includes('_')) ||
@@ -806,8 +808,8 @@ export default function index() {
 
 
         ) {
+   
           isValid = false;
-
           errorFields = {
             first_name: profile.first_name === '',
             last_name: profile.last_name === '',
@@ -815,16 +817,16 @@ export default function index() {
             gender: profile.gender === '',
             address: profile.address === '',
             city: profile.city === '',
-
             state: profile.state === '',
             zip_code: profile.zip_code === '',
             school_name: profile.school_name === '',
             is_entrepreneur: profile.is_entrepreneur === '',
             school_name: gi.school_name === '',
             grade: gi.grade === '',
+            mentee_gain: gi.mentee_gain === ''
 
           }
-          console.log('profileprofileprofileprofile', profile)
+   
           if (isLot) {
             errorFields = {
               ...errorFields,
@@ -834,8 +836,16 @@ export default function index() {
               other_allergies: gi.other_allergies === '',
               // business_email: gi.business_email === '' || !isEmailAddress(gi.business_email),
               emergency_care_information: childsInformation[i].emergency_care_information === '',
-              mentee_gain: gi.mentee_gain === ''
+       
             };
+          }
+          else {
+            errorFields = {
+              ...errorFields,
+              location_site: profile.location_site === ''
+       
+            };
+   
           }
           break;
         }
@@ -1478,9 +1488,9 @@ export default function index() {
 
                               /// setEmptyFields({});
 
-                              console.log('isFormValid(selectedStep) --- ' + selectedStep, isFormValid(selectedStep))
+        
                               if (!isFormValid(selectedStep).isValid) {
-                                console.log('isFormValid(selectedStep) entered')
+             
                                 formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
                                 setEmptyFields(isFormValid(selectedStep).errors)
                                 setIsFormErrorModalVisible(true);

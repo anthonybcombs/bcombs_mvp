@@ -462,7 +462,10 @@ export default function index({
   if (profile) {
     profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
   }
-  console.log('childProfileeeee', childProfile)
+  
+  console.log('childProfileeeee22222 emptyFields', emptyFields)
+  console.log('childProfileeeee22222', childProfile)
+  
   return (
     <ChildInfomationFormStyled className={printPageClassname}>
       <h3 className="heading">
@@ -1558,7 +1561,9 @@ export default function index({
                     readOnly={isReadonly}
                     disabled={isReadonly}
                     name={"ch_location_site" + (counter - 1)}
-                    className="field-input"
+                 //   className="field-input"
+
+                  className={`${(emptyFields.location_site && !childProfile.location_site && !isLot) && 'dropdown-highlights'} field-input `}
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(
                         counter - 1,
