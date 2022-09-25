@@ -285,6 +285,13 @@ const GlobalStyle = createGlobalStyle`
     //border-color: #f26e21 !important;
   }
 
+  #applicationForm .dropdown-highlights {
+    border: 1px solid #f26e21;
+    padding: 5px;
+    background-color: #f26e21 ;
+    //border-color: #f26e21 !important;
+  }
+
   #applicationForm .highlights-textarea {
     background-color: #f26e21;
     border: 2px solid #f26e21;

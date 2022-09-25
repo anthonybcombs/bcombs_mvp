@@ -99,16 +99,17 @@ export default function index({
   pastChildInformation = {},
   isLot = 0,
   isVendorView,
-  printPageClassname
+  printPageClassname,
+  emptyFields = {}
 }) {
 
   const createYearTakenSelect = () => {
     let options = [];
-  
+
     // for (let i = 0; i < 7; i++) {
     //   options.push(<option key={i} value={currentYear - i}>{currentYear - i}</option>)
     // }
-    
+
     options = OPTION_SCHOOL_YEAR.map(item => <option key={item.value} value={item.value}>{item.label}</option>)
     options.unshift(<option key="new" value="new">New</option>)
     return options;
@@ -395,13 +396,22 @@ export default function index({
             <div className="field select-field-wrapper">
               <select
                 name={"ch_grade" + (counter - 1)}
-                className={
-                  isReadonly &&
+                // className={
+                // isReadonly &&
+                //   !isVendorView &&
+                //   pastChildInformation &&
+                //   (pastChildInformation.grade_number || pastChildInformation.grade_number == "") &&
+                //   pastChildInformation.grade_number != childGeneralInformation.grade ?
+                //   "field-input highlights" : "field-input"
+                // }
+                className={`${(emptyFields.grade && childGeneralInformation.grade === '') && 'dropdown-highlights'} 
+                ${isReadonly &&
                     !isVendorView &&
                     pastChildInformation &&
                     (pastChildInformation.grade_number || pastChildInformation.grade_number == "") &&
                     pastChildInformation.grade_number != childGeneralInformation.grade ?
-                    "field-input highlights" : "field-input"
+                    "field-input highlights" : "field-input"}
+                 `
                 }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "grade", target.value);
@@ -444,15 +454,27 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                required={true}
                 id={`ch_schoolname_${counter - 1}`}
                 name={"ch_schoolname" + (counter - 1)}
-                className={
-                  isReadonly &&
+                // className={
+                //   isReadonly &&
+                //     !isVendorView &&
+                //     pastChildInformation &&
+                //     (pastChildInformation.school_name || pastChildInformation.school_name == "") &&
+                //     pastChildInformation.school_name != childGeneralInformation.school_name ?
+                //     "field-input highlights" : "field-input"
+                // }
+                className={`${(emptyFields.school_name && childGeneralInformation.school_name === '') && 'highlights'} 
+                ${isReadonly &&
                     !isVendorView &&
                     pastChildInformation &&
-                    (pastChildInformation.school_name || pastChildInformation.school_name == "") &&
-                    pastChildInformation.school_name != childGeneralInformation.school_name ?
-                    "field-input highlights" : "field-input"
+                    (pastChildInformation.school_name ||
+                      pastChildInformation.school_name == "") &&
+                    pastChildInformation.school_name != childGeneralInformation.school_name
+                    ? "field-input highlights"
+                    : "field-input"}
+                 `
                 }
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(counter - 1, "general_information", "school_name", target.value);
@@ -618,7 +640,7 @@ export default function index({
                 <option value="">Select Year</option>
                 {createYearTakenSelect()}
               </select>
-              <label className="field-label">Year Started as {isLot ? 'Lot®' : 'Mentee' }</label>
+              <label className="field-label">Year Started as {isLot ? 'Lot®' : 'Mentee'}</label>
             </div>
           </div>
           <div className="form-group">
@@ -802,14 +824,26 @@ export default function index({
                 <span className="required">*</span> What does the {isLot ? 'LOT®' : 'mentee'} hope to gain from the program?
               </label>
               <textarea
+                required={true}
                 name={"mentee_gain" + (counter - 1)}
-                className={
+                // className={
+                  // isReadonly &&
+                  //   !isVendorView &&
+                  //   pastChildInformation &&
+                  //   (pastChildInformation.mentee_gain_program || pastChildInformation.mentee_gain_program == "") &&
+                  //   pastChildInformation.mentee_gain_program != childGeneralInformation.mentee_gain ?
+                  //   "form-control highlights-textarea" : "form-control"
+                // }
+                className={`${(emptyFields.mentee_gain && childGeneralInformation.mentee_gain === '') && 'highlights'} 
+                ${
                   isReadonly &&
-                    !isVendorView &&
-                    pastChildInformation &&
-                    (pastChildInformation.mentee_gain_program || pastChildInformation.mentee_gain_program == "") &&
-                    pastChildInformation.mentee_gain_program != childGeneralInformation.mentee_gain ?
-                    "form-control highlights-textarea" : "form-control"
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.mentee_gain_program || pastChildInformation.mentee_gain_program == "") &&
+                  pastChildInformation.mentee_gain_program != childGeneralInformation.mentee_gain ?
+                  "form-control highlights-textarea" : "form-control"
+                }
+                 `
                 }
                 rows="4"
                 placeholder="Explain"
@@ -842,14 +876,26 @@ export default function index({
             <div className="form-group">
               <div className="field select-field-wrapper">
                 <select
+                  required={true}
                   name={"ch_grade" + (counter - 1)}
-                  className={
-                    isReadonly &&
+                  // className={
+                  //   isReadonly &&
+                  //     !isVendorView &&
+                  //     pastChildInformation &&
+                  //     (pastChildInformation.is_entrepreneur || pastChildInformation.is_entrepreneur == "") &&
+                  //     pastChildInformation.is_entrepreneur != childGeneralInformation.is_entrepreneur ?
+                  //     "field-input highlights" : "field-input"
+                  // }
+                  className={`${(emptyFields.is_entrepreneur && childGeneralInformation.is_entrepreneur === '') && 'highlights'} 
+                  ${isReadonly &&
                       !isVendorView &&
                       pastChildInformation &&
-                      (pastChildInformation.is_entrepreneur || pastChildInformation.is_entrepreneur == "") &&
-                      pastChildInformation.is_entrepreneur != childGeneralInformation.is_entrepreneur ?
-                      "field-input highlights" : "field-input"
+                      (pastChildInformation.is_entrepreneur ||
+                        pastChildInformation.is_entrepreneur == "") &&
+                      pastChildInformation.is_entrepreneur != childGeneralInformation.is_entrepreneur
+                      ? "field-input highlights"
+                      : "field-input"}
+                   `
                   }
                   onChange={({ target }) => {
                     handleChildFormDetailsChange(counter - 1, "general_information", "is_entrepreneur", parseInt(target.value));
@@ -879,33 +925,42 @@ export default function index({
 
       {childGeneralInformation?.is_entrepreneur ? <>
         <div className="general-info-wrapper">
-        <div className="grid">
+          <div className="grid">
 
-          <div className="form-group">
-            <div className="field">
-              <input
-                name="ch_business_name"
-                // className="field-input"
-                className={
-                  isReadonly &&
-                    !isVendorView &&
-                    pastChildInformation &&
-                    (pastChildInformation.business_name || pastChildInformation.business_name == "") &&
-                    pastChildInformation.business_name != childGeneralInformation.business_name ?
-                    "field-input highlights" : "field-input"
-                }
-                placeholder="Please list company name and title"
-                id={`ch_business_name_${counter - 1}`}
-                onChange={({ target }) => {
-                  handleChildFormDetailsChange(counter - 1, "general_information", "business_name", target.value);
-                }}
-                readOnly={isReadonly}
-                defaultValue={childGeneralInformation.business_name}
-              />
-              <label className="field-label" for={`ch_business_name_${counter - 1}`}>Please list company name and title</label>
+            <div className="form-group">
+              <div className="field">
+                <input
+                  name="ch_business_name"
+                  // className="field-input"
+                  // className={
+                  // isReadonly &&
+                  //   !isVendorView &&
+                  //   pastChildInformation &&
+                  //   (pastChildInformation.business_name || pastChildInformation.business_name == "") &&
+                  //   pastChildInformation.business_name != childGeneralInformation.business_name ?
+                  //   "field-input highlights" : "field-input"
+                  // }
+                  className={`${(emptyFields.business_name && !childGeneralInformation.business_name) && 'highlights'} 
+                ${isReadonly &&
+                      !isVendorView &&
+                      pastChildInformation &&
+                      (pastChildInformation.business_name || pastChildInformation.business_name == "") &&
+                      pastChildInformation.business_name != childGeneralInformation.business_name ?
+                      "field-input highlights" : "field-input"}
+                 `
+                  }
+                  placeholder="Please list company name and title"
+                  id={`ch_business_name_${counter - 1}`}
+                  onChange={({ target }) => {
+                    handleChildFormDetailsChange(counter - 1, "general_information", "business_name", target.value);
+                  }}
+                  readOnly={isReadonly}
+                  defaultValue={childGeneralInformation.business_name}
+                />
+                <label className="field-label" for={`ch_business_name_${counter - 1}`}>Please list company name and title</label>
+              </div>
             </div>
           </div>
-        </div>
         </div>
 
       </> : <div />}

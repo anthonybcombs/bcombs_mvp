@@ -90,7 +90,8 @@ export default function index({
     pastChildInformation = {},
     isVendorView,
     printPageClassname,
-    errors
+    errors,
+    emptyFields = {}
 }) {
 
 
@@ -113,13 +114,24 @@ export default function index({
                             <input
                                 name="ch_allergies_to_medicine"
                                 // className="field-input"
-                                className={
+                                // className={
+                                //     isReadonly &&
+                                //         !isVendorView &&
+                                //         pastChildInformation &&
+                                //         (pastChildInformation.allergies_to_medicine || pastChildInformation.allergies_to_medicine == "") &&
+                                //         pastChildInformation.allergies_to_medicine != childGeneralInformation.allergies_to_medicine ?
+                                //         "field-input highlights" : "field-input"
+                                // }
+                                className={`${(emptyFields.allergies_to_medicine && childGeneralInformation.allergies_to_medicine === '') && 'highlights'} 
+                                ${
                                     isReadonly &&
-                                        !isVendorView &&
-                                        pastChildInformation &&
-                                        (pastChildInformation.allergies_to_medicine || pastChildInformation.allergies_to_medicine == "") &&
-                                        pastChildInformation.allergies_to_medicine != childGeneralInformation.allergies_to_medicine ?
-                                        "field-input highlights" : "field-input"
+                                    !isVendorView &&
+                                    pastChildInformation &&
+                                    (pastChildInformation.allergies_to_medicine || pastChildInformation.allergies_to_medicine == "") &&
+                                    pastChildInformation.allergies_to_medicine != childGeneralInformation.allergies_to_medicine ?
+                                    "field-input highlights" : "field-input"
+                                }
+                                 `
                                 }
                                 placeholder="Allergies to Medicine"
                                 id={`ch_allergies_to_medicine_${counter - 1}`}
@@ -146,14 +158,25 @@ export default function index({
                             <input
                                 name="ch_food_allergies"
                                 // className="field-input"
-                                required={true}
-                                className={
+                                // required={true}
+                                // className={
+                                //     isReadonly &&
+                                //         !isVendorView &&
+                                //         pastChildInformation &&
+                                //         (pastChildInformation.food_allergies || pastChildInformation.food_allergies == "") &&
+                                //         pastChildInformation.food_allergies != childGeneralInformation.food_allergies ?
+                                //         "field-input highlights" : "field-input"
+                                // }
+                                className={`${(emptyFields.food_allergies && childGeneralInformation.food_allergies === '') && 'highlights'} 
+                                ${
                                     isReadonly &&
-                                        !isVendorView &&
-                                        pastChildInformation &&
-                                        (pastChildInformation.food_allergies || pastChildInformation.food_allergies == "") &&
-                                        pastChildInformation.food_allergies != childGeneralInformation.food_allergies ?
-                                        "field-input highlights" : "field-input"
+                                    !isVendorView &&
+                                    pastChildInformation &&
+                                    (pastChildInformation.food_allergies || pastChildInformation.food_allergies == "") &&
+                                    pastChildInformation.food_allergies != childGeneralInformation.food_allergies ?
+                                    "field-input highlights" : "field-input"
+                                }
+                                 `
                                 }
                                 placeholder="Food Allergies"
                                 id={`ch_food_allergies_${counter - 1}`}
@@ -181,13 +204,24 @@ export default function index({
                                 name="ch_insect_allergies"
                                 // className="field-input"
                                 required={true}
-                                className={
+                                // className={
+                                //     isReadonly &&
+                                //         !isVendorView &&
+                                //         pastChildInformation &&
+                                //         (pastChildInformation.insect_allergies || pastChildInformation.insect_allergies == "") &&
+                                //         pastChildInformation.insect_allergies != childGeneralInformation.insect_allergies ?
+                                //         "field-input highlights" : "field-input"
+                                // }
+                                className={`${(emptyFields.insect_allergies && childGeneralInformation.insect_allergies === '') && 'highlights'} 
+                                ${
                                     isReadonly &&
-                                        !isVendorView &&
-                                        pastChildInformation &&
-                                        (pastChildInformation.insect_allergies || pastChildInformation.insect_allergies == "") &&
-                                        pastChildInformation.insect_allergies != childGeneralInformation.insect_allergies ?
-                                        "field-input highlights" : "field-input"
+                                    !isVendorView &&
+                                    pastChildInformation &&
+                                    (pastChildInformation.insect_allergies || pastChildInformation.insect_allergies == "") &&
+                                    pastChildInformation.insect_allergies != childGeneralInformation.insect_allergies ?
+                                    "field-input highlights" : "field-input"
+                                }
+                                 `
                                 }
                                 placeholder="Insect Allergies"
                                 id={`ch_insect_allergies_${counter - 1}`}
@@ -214,14 +248,25 @@ export default function index({
                                 name="ch_other_allergies"
                                 // className="field-input"
                                 required={true}
-                                className={
+                                className={`${(emptyFields.other_allergies && childGeneralInformation.other_allergies === '') && 'highlights'} 
+                                ${
                                     isReadonly &&
-                                        !isVendorView &&
-                                        pastChildInformation &&
-                                        (pastChildInformation.other_allergies || pastChildInformation.other_allergies == "") &&
-                                        pastChildInformation.other_allergies != childGeneralInformation.other_allergies ?
-                                        "field-input highlights" : "field-input"
+                                    !isVendorView &&
+                                    pastChildInformation &&
+                                    (pastChildInformation.other_allergies || pastChildInformation.other_allergies == "") &&
+                                    pastChildInformation.other_allergies != childGeneralInformation.other_allergies ?
+                                    "field-input highlights" : "field-input"
                                 }
+                                 `
+                                }
+                                // className={
+                                //     isReadonly &&
+                                //         !isVendorView &&
+                                //         pastChildInformation &&
+                                //         (pastChildInformation.other_allergies || pastChildInformation.other_allergies == "") &&
+                                //         pastChildInformation.other_allergies != childGeneralInformation.other_allergies ?
+                                //         "field-input highlights" : "field-input"
+                                // }
                                 placeholder="Other Allergies"
                                 id={`ch_other_allergies_${counter - 1}`}
                                 onChange={({ target }) => {

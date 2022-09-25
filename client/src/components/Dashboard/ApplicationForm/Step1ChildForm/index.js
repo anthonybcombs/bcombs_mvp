@@ -52,12 +52,14 @@ export default function index({
   ProfileImg,
   isLot = 0,
   app_programs = [],
-  location_sites = []
+  location_sites = [],
+  emptyFields = {}
 }) {
-  console.log('childInformatiozxzczcxcxn', childInformation)
+  console.log('emptyFields', emptyFields)
   return (
     <ChildFormStyled>
       <ChildInformationFormStyled
+        emptyFields={emptyFields}
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         childProfile={childInformation.profile}
         counter={counter}
@@ -72,6 +74,7 @@ export default function index({
       <br />
 
       <GeneralInformationFormStyled
+        emptyFields={emptyFields}
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         childGeneralInformation={childInformation.general_information}
         counter={counter}
@@ -86,6 +89,7 @@ export default function index({
       <br />
       <br />
       {isLot ? <AllergyInformation
+        emptyFields={emptyFields}
         handleChildFormDetailsChange={handleChildFormDetailsChange}
         childGeneralInformation={childInformation.general_information}
         counter={counter}

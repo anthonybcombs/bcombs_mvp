@@ -222,7 +222,9 @@ export default function index({
   isVendorView,
   selectedApplication = {},
   setIsParentAddressRequired,
-  isLot = false
+  isLot = false,
+  selectedStep = 2,
+  emptyFields = {}
 }) {
   let confirmed_passwords = [];
 
@@ -455,15 +457,26 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                required={selectedStep === 2}
                 id={`parent_firstname_${counter - 1}`}
                 name={"parent_firstname" + (counter - 1)}
-                className={
-                  isReadonly &&
+                // className={
+                // isReadonly &&
+                //   !isVendorView &&
+                //   pastParentInformation &&
+                //   (pastParentInformation.firstname || pastParentInformation.firstname == "") &&
+                //   pastParentInformation.firstname != parentProfile.first_name ?
+                //   "field-input highlights" : "field-input"
+                // }
+                className={`${(emptyFields.first_name && parentProfile.first_name === '') && 'highlights'} 
+                ${isReadonly &&
                     !isVendorView &&
                     pastParentInformation &&
                     (pastParentInformation.firstname || pastParentInformation.firstname == "") &&
                     pastParentInformation.firstname != parentProfile.first_name ?
                     "field-input highlights" : "field-input"
+                  }
+                 `
                 }
                 placeholder="First Name"
                 onChange={({ target }) => {
@@ -494,15 +507,26 @@ export default function index({
           <div className="form-group">
             <div className="field">
               <input
+                required={selectedStep === 2}
                 id={`parent_lastname+${counter - 1}`}
                 name={"parent_lastname" + (counter - 1)}
-                className={
-                  isReadonly &&
-                    pastParentInformation &&
+                // className={
+                //   isReadonly &&
+                //     pastParentInformation &&
+                //     !isVendorView &&
+                //     (pastParentInformation.lastname || pastParentInformation.lastname == "") &&
+                //     pastParentInformation.lastname != parentProfile.last_name ?
+                //     "field-input highlights" : "field-input"
+                // }
+                className={`${(emptyFields.last_name && parentProfile.last_name === '') && 'highlights'} 
+                ${isReadonly &&
                     !isVendorView &&
+                    pastParentInformation &&
                     (pastParentInformation.lastname || pastParentInformation.lastname == "") &&
-                    pastParentInformation.lastname != parentProfile.last_name ?
+                    pastParentInformation.lastname != parentProfile.lastname ?
                     "field-input highlights" : "field-input"
+                  }
+                 `
                 }
                 placeholder="Last Name"
                 onChange={({ target }) => {
@@ -639,15 +663,25 @@ export default function index({
                 disabled={isReadonly}
                 readOnly={isReadonly}
                 name={"parent_gender" + (counter - 1)}
-                className={
-                  isReadonly &&
+                // className={
+                //   isReadonly &&
+                //     !isVendorView &&
+                //     pastParentInformation &&
+                //     (pastParentInformation.gender ||
+                //       pastParentInformation.gender == "") &&
+                //     pastParentInformation.gender != parentProfile.gender
+                //     ? "field-input highlights"
+                //     : "field-input"
+                // }
+                className={`${(emptyFields.gender && parentProfile.gender === '') && 'dropdown-highlights'} 
+                ${isReadonly &&
                     !isVendorView &&
                     pastParentInformation &&
-                    (pastParentInformation.gender ||
-                      pastParentInformation.gender == "") &&
-                    pastParentInformation.gender != parentProfile.gender
-                    ? "field-input highlights"
-                    : "field-input"
+                    (pastParentInformation.gender || pastParentInformation.gender == "") &&
+                    pastParentInformation.gender != parentProfile.gender ?
+                    "field-input highlights" : "field-input"
+                  }
+                 `
                 }
                 onChange={({ target }) => {
                   handleParentFormDetailsChange(
@@ -843,9 +877,11 @@ export default function index({
             <div className="field">
               {!isReadonly ? (
                 <NumberFormat
+                  required={selectedStep === 2}
                   id={`parent_phonenumber_${counter - 1}`}
                   name={"parent_phonenumber" + (counter - 1)}
-                  className="field-input"
+                  // className="field-input"
+                  className={`${(emptyFields.phone_number && parentProfile.phone_number === '') && 'highlights'} field-input`} 
                   placeholder="Phone Number"
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
@@ -870,7 +906,7 @@ export default function index({
                       }
                     }
                   })}
-                  required
+
                 />
               ) : (
                 <input
@@ -878,13 +914,23 @@ export default function index({
                   defaultValue={parentProfile?.phone_number}
                   readOnly={isReadonly}
                   name={"parent_phonenumber" + (counter - 1)}
-                  className={
-                    isReadonly &&
+                  // className={
+                  // isReadonly &&
+                  //   pastParentInformation &&
+                  //   !isVendorView &&
+                  //   (pastParentInformation.phone_number || pastParentInformation.phone_number == "") &&
+                  //   pastParentInformation.phone_number != parentProfile.phone_number ?
+                  //   "field-input highlights" : "field-input"
+                  // }
+                  className={`${(emptyFields.phone_number && parentProfile.phone_number === '') && 'highlights'} 
+                  ${isReadonly &&
                       pastParentInformation &&
                       !isVendorView &&
                       (pastParentInformation.phone_number || pastParentInformation.phone_number == "") &&
                       pastParentInformation.phone_number != parentProfile.phone_number ?
                       "field-input highlights" : "field-input"
+                    }
+                   `
                   }
                   placeholder="Phone Number"
                 />
@@ -991,13 +1037,23 @@ export default function index({
                     defaultValue={parentProfile?.phone_number2}
                     readOnly={isReadonly}
                     name={"parent_phonenumber2" + (counter - 1)}
-                    className={
-                      isReadonly &&
-                        pastParentInformation &&
-                        !isVendorView &&
-                        (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
-                        pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
-                        "field-input highlights" : "field-input"
+                    // className={
+                      // isReadonly &&
+                      //   pastParentInformation &&
+                      //   !isVendorView &&
+                      //   (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
+                      //   pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
+                      //   "field-input highlights" : "field-input"
+                    // }
+                    className={`${(emptyFields.phone_number && parentProfile.phone_number === '') && 'highlights'} 
+                    ${     isReadonly &&
+                      pastParentInformation &&
+                      !isVendorView &&
+                      (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
+                      pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
+                      "field-input highlights" : "field-input"
+                      }
+                     `
                     }
                     placeholder="Phone Number"
                   />
@@ -1077,16 +1133,26 @@ export default function index({
                 type="text"
                 id={`parent_emailaddress_${counter - 1}`}
                 defaultValue={parentProfile.email_address}
-
+                required={selectedStep === 2}
                 readOnly={isReadonly}
                 name={"parent_emailaddress" + (counter - 1)}
-                className={
-                  isReadonly &&
+                // className={
+                //   isReadonly &&
+                //     pastParentInformation &&
+                //     !isVendorView &&
+                //     (pastParentInformation.email_address || pastParentInformation.email_address == "") &&
+                //     pastParentInformation.email_address != parentProfile.email_address ?
+                //     "field-input highlights" : "field-input"
+                // }
+                className={`${(emptyFields.email_address && parentProfile.email_address === '') && 'highlights'} 
+                ${isReadonly &&
                     pastParentInformation &&
                     !isVendorView &&
                     (pastParentInformation.email_address || pastParentInformation.email_address == "") &&
                     pastParentInformation.email_address != parentProfile.email_address ?
                     "field-input highlights" : "field-input"
+                  }
+                 `
                 }
                 placeholder="Email Address"
                 onChange={({ target }) => {
@@ -1221,12 +1287,14 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  required={selectedStep === 2}
                   type="password"
                   id={`password_${counter - 1}`}
                   name={"parent_password" + (counter - 1)}
-                  className="field-input"
+                  className={`field-input ${(emptyFields.password && parentProfile.password === '') && 'highlights'}`}
                   placeholder="Password"
                   autoComplete="new-password"
+
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
                       counter - 1,
@@ -1289,10 +1357,11 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  required={selectedStep === 2}
                   type="password"
                   id={`parent_confirmed_paswword_${counter - 1}`}
                   name={`parent_confirmed_paswword${counter - 1}`}
-                  className="field-input"
+                  className={`field-input ${(emptyFields.confirmed_password && parentProfile.confirmed_password === '') && 'highlights'}`}
                   placeholder="Confirmed Password"
                   autoComplete="new-password"
                   onChange={({ target }) => {
@@ -1704,13 +1773,25 @@ export default function index({
               </label>
               <textarea
                 name={`parent_goals${counter - 1}`}
-                className={
-                  isReadonly &&
+                required={selectedStep === 2}
+                // className={
+                //   isReadonly &&
+                //     !isVendorView &&
+                //     pastParentInformation &&
+                //     (pastParentInformation.parent_goals || pastParentInformation.parent_goals === "") &&
+                //     (pastParentInformation.parent_goals != parentProfile.goals_parent_program || !parentProfile.goals_parent_program )?
+                //     "form-control highlights-textarea" : "form-control"
+                // }
+
+                className={`${(emptyFields.goals_parent_program && parentProfile.goals_parent_program === '') && 'highlights'} 
+                ${isReadonly &&
                     !isVendorView &&
                     pastParentInformation &&
-                    (pastParentInformation.parent_goals || pastParentInformation.parent_goals == "") &&
-                    pastParentInformation.parent_goals != parentProfile.goals_parent_program ?
+                    (pastParentInformation.parent_goals || pastParentInformation.parent_goals === "") &&
+                    (pastParentInformation.parent_goals != parentProfile.goals_parent_program || !parentProfile.goals_parent_program) ?
                     "form-control highlights-textarea" : "form-control"
+                  }
+                 `
                 }
                 rows="4"
                 placeholder="Explain"
@@ -1741,14 +1822,25 @@ export default function index({
                 <span className="required">*</span> Why are you referring your child to our program?
               </label>
               <textarea
+                required={selectedStep === 2}
                 name={`parent_child_goals${counter - 1}`}
-                className={
-                  isReadonly &&
+                // className={
+                // isReadonly &&
+                //   !isVendorView &&
+                //   pastParentInformation &&
+                //   (pastParentInformation.parent_child_goals || pastParentInformation.parent_child_goals == "") &&
+                //   pastParentInformation.parent_child_goals != parentProfile.goals_child_program ?
+                //   "form-control highlights-textarea" : "form-control"
+                // }
+                className={`${(emptyFields.goals_child_program && parentProfile.goals_child_program === '') && 'highlights'} 
+                ${isReadonly &&
                     !isVendorView &&
                     pastParentInformation &&
                     (pastParentInformation.parent_child_goals || pastParentInformation.parent_child_goals == "") &&
                     pastParentInformation.parent_child_goals != parentProfile.goals_child_program ?
                     "form-control highlights-textarea" : "form-control"
+                  }
+                 `
                 }
                 rows="4"
                 placeholder="Explain"
@@ -1866,6 +1958,7 @@ export default function index({
             <div className="field select-field-wrapper">
               {!isReadonly ? (
                 <select
+                  required={selectedStep === 2}
                   defaultValue={parentProfile?.level_education}
                   name="parent_educationlevel"
                   className={
@@ -2024,17 +2117,27 @@ export default function index({
                 <span className="required">*</span> How did you find us?
               </label>
               <input
+                required={selectedStep === 2}
                 readOnly={isReadonly}
                 id={`parent_person_recommend_${counter - 1}`}
                 name={"parent_person_recommend" + (counter - 1)}
-                className={
-                  isReadonly &&
+                // className={
+                // isReadonly &&
+                //   !isVendorView &&
+                //   pastParentInformation &&
+                //   (pastParentInformation.person_recommend || pastParentInformation.person_recommend == "") &&
+                //   pastParentInformation.person_recommend != parentProfile.person_recommend ?
+                //   "field-input highlights" : "field-input"
+                // }
+                className={`${(emptyFields.person_recommend && parentProfile.person_recommend === '') && 'highlights'} 
+                ${isReadonly &&
                     !isVendorView &&
                     pastParentInformation &&
                     (pastParentInformation.person_recommend || pastParentInformation.person_recommend == "") &&
                     pastParentInformation.person_recommend != parentProfile.person_recommend ?
                     "field-input highlights" : "field-input"
-                }
+                  }`}
+
                 onChange={({ target }) => {
                   if (target.value === "Others") {
                     console.log("Show Text box");

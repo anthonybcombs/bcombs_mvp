@@ -24,8 +24,10 @@ export default function index({
   errors,
   ProfileImg,
   setIsParentAddressRequired,
-  isLot
+  isLot,
+  emptyFields = {}
 }) {
+  console.log('emptyFieldszzzzzzzz',emptyFields)
   const renderParentForm = () => {
 
     const items = []
@@ -43,6 +45,7 @@ export default function index({
               ProfileImg={ProfileImg}
               setIsParentAddressRequired={setIsParentAddressRequired}
               isLot={isLot}
+              emptyFields={emptyFields}
             />
             <div className="application-btn-container">
               {
@@ -83,6 +86,7 @@ export default function index({
               ProfileImg={ProfileImg}
               setIsParentAddressRequired={setIsParentAddressRequired}
               isLot={isLot}
+              emptyFields={emptyFields}
             />
             <div className="application-btn-container">
               {
@@ -122,6 +126,7 @@ export default function index({
         parentEmergencyContacts={emergencyContacts}
         register={register}
         errors={errors}
+        emptyFields={emptyFields}
       />
     </ParentFormStyled>
   )
