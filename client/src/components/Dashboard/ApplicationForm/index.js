@@ -1553,6 +1553,7 @@ export default function index() {
               </span>
             </div>
             <div className="modal-container">
+              <div><b>Please review the following field(s):</b></div>
               {console.log('Object.keys(emptyFields)', Object.keys(emptyFields))}
               {Object.keys(emptyFields).length > 0 && Object.keys(emptyFields).filter(key => emptyFields[key]).map((key, index) => {
                 return emptyFields[key] && <div style={{ marginTop: 12 }} key={index}><b>{REQUIRED_FIELD_NAME[key]}</b> is a required field</div>
