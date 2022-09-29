@@ -373,12 +373,12 @@ const ExportFilter = ({
 
     for (const application of filterApplications) {
       let formattedApplication = {};
-
+      console.log('filterApplications',filterApplications)
       for (const key1 of Object.keys(application)) {
         if (key1 === "form_contents") {
           if (typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
             const formContents = application.form_contents;
-
+            console.log('formContents',formContents)
             exportFilename = formContents.formTitle;
 
             const formData = formContents?.formData?.length > 0 ? formContents.formData : [];
@@ -393,8 +393,9 @@ const ExportFilter = ({
 
                 for (const [x, field] of fields.entries()) {
                   fieldValue = field.value;
+                  console.log('fieldValueeeeeee',fieldValue)
 
-                  if (isJsonString(fieldValue)) {
+                  if (fieldValue && isJsonString(fieldValue)) {
 
                     fieldValue = JSON.parse(fieldValue);
                     //  console.log("kkkk fieldValue", fieldValue);
@@ -402,9 +403,9 @@ const ExportFilter = ({
                       fieldValue = JSON.parse(fieldValue);
                     }
 
-                    if (typeof fieldValue === 'object') {
-
-                      if (Object.keys(fieldValue).length > 1) {
+                    if (typeof fieldValue === 'object' && fieldValue) {
+                      console.log('fieldValue',fieldValue)
+                      if (fieldValue && Object.keys(fieldValue).length > 1) {
                         fieldValue = Object.keys(fieldValue).map(key => fieldValue[key]).join(',')
                       }
 
