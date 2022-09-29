@@ -1364,7 +1364,7 @@ export default function index({
                   className={`field-input ${((emptyFields.confirmed_password && parentProfile.confirmed_password === '') || (emptyFields.password_not_match &&  parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
                   placeholder="Confirmed Password"
                   autoComplete="new-password"
-                  defaultValue={parentProfile?.password}
+                  defaultValue={parentProfile?.confirmed_password}
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
                       counter - 1,
