@@ -49,7 +49,8 @@ export default function index({
   errors,
   name,
   text,
-  isReadonly = false
+  isReadonly = false,
+  emptyFields = {}
 }) {
 
  
