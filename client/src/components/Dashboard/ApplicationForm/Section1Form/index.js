@@ -49,7 +49,8 @@ export default function index({
   errors,
   name,
   text,
-  isReadonly = false
+  isReadonly = false,
+  emptyFields = {}
 }) {
 
   return (
@@ -65,6 +66,7 @@ export default function index({
           <div>
             <label className="cus-checkbox-container">
               <input
+                className={`${emptyFields?.section_1_checked && 'highlights'} `}
                 name="section1_checkbox"
                 type="checkbox" 
                 checked={section1.checked}
@@ -75,7 +77,7 @@ export default function index({
                 disabled={isReadonly}
               />
               <span 
-                style={{"borderColor": (errors.section1_checkbox) ? "red": "" }} 
+                style={{"borderColor": (errors.section1_checkbox || emptyFields?.section_2_checked) ? "red": "" }} 
                 className="checkmark">  
               </span>
             </label>
@@ -86,7 +88,7 @@ export default function index({
                 <input
                   id="section1_signature"
                   name="section1_signature"
-                  className="field-input"
+                  className={`field-input ${emptyFields?.section_1_signature && 'highlights'} `}
                   placeholder="Electronic Signature"
                   onChange={({ target }) => {
                     handleWaiverFormDetailsChange("section1", "signature", target.value)

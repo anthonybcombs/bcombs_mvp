@@ -43,6 +43,7 @@ const Section2FormStyled = styled.div`
 
 export default function index({
   handleWaiverFormDetailsChange,
+  emptyFields,
   section2,
   pDate,
   register,
@@ -65,6 +66,7 @@ export default function index({
           <div>
             <label className="cus-checkbox-container">
               <input
+                className={`${emptyFields?.section_2_checked && 'highlights'} `}
                 type="checkbox"
                 name="section2_checkbox" 
                 checked={section2.checked}
@@ -75,7 +77,7 @@ export default function index({
                 readOnly={isReadonly}
               />
               <span 
-                style={{"borderColor": (errors.section2_checkbox) ? "red": "" }} 
+                style={{"borderColor": (errors.section2_checkbox || emptyFields?.section_2_checked) ? "red": "" }} 
                 className="checkmark">  
               </span>
             </label>
@@ -86,7 +88,7 @@ export default function index({
                 <input
                   id="section2_signature"
                   name="section2_signature"
-                  className="field-input"
+                  className={`field-input ${emptyFields?.section_2_signature && 'highlights'} `}
                   placeholder="Electronic Signature"
                   onChange={({ target }) => {
                     handleWaiverFormDetailsChange("section2", "signature", target.value)

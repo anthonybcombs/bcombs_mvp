@@ -176,8 +176,11 @@ function isEmailAddress(str) {
 const REQUIRED_FIELD_NAME = {
   first_name: 'Firstname',
   last_name: 'Lastname',
+  parent_last_name: 'Firstname',
+  parent_last_name: 'Lastname',
   date_of_birth: 'Birthdate',
   gender: 'Gender',
+  parent_gender: 'Gender',
   address: 'Address',
   city: 'City',
   phone_number: 'Phone No.',
@@ -188,18 +191,30 @@ const REQUIRED_FIELD_NAME = {
   other_allergies: 'Other Allergies',
   business_email: 'Business Email',
   email_address: 'Email',
+  email_invalid: 'Invalid Email Format',
+  phone_invalid: 'Invalid Phone Format',
+  child_email_invalid: 'Invalid Email Format',
+  child_phone_invalid: 'Invalid Phone Format',
   goals_parent_program: 'Goals Parent Program',
-  goals_child_program: 'Gols Child Program',
+  goals_child_program: 'Goals Child Program',
   person_recommend: 'Person Recommend',
   zip_code: 'Zip Code',
   password: 'Password',
   confirmed_password: 'Confirm Password',
+  password_not_match: 'Password not Match',
   mentee_gain: 'Mentee Gain',
   school_name: 'School Name',
   grade: 'Grade',
   emergency_contacts: 'Emergency Contacts',
-  location_site: 'Location'
+  location_site: 'Location',
+  section_1_checked: 'Signature 1 Checkbox',
+  section_2_checked: 'Signature 2 Checkbox',
+  section_3_checked: 'Signature 3 Checkbox',
+  section_1_signature: 'Signature 1 Field',
+  section_2_signature: 'Signature 2 Field',
+  section_3_signature: 'Signature 3 Field',
 
+  child_lives_with: 'Child Lives With',
 }
 export default function index() {
 
@@ -748,7 +763,7 @@ export default function index() {
     submitFocusError: true,
   });
 
-  console.log('errors1231123', errors)
+
   useEffect(() => {
 
 
@@ -758,7 +773,8 @@ export default function index() {
   // console.log('errosssssrs',setFocus)
 
   const isFormValid = (section) => {
-    console.log('Sectionnn', section)
+    console.log('Selected Step section', section)
+
     let errorFields = {};
     if (selectedStep == 4) return true;
 
@@ -775,10 +791,26 @@ export default function index() {
 
 
         if ((profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
-
+          errorFields = {
+            ...errorFields,
+            child_email_invalid: true
+          };
           isValid = false;
 
-          break;
+        }
+        if (profile.phone_number !== '' && profile.phone_number.includes('_')) {
+
+          errorFields = {
+            ...errorFields,
+            child_phone_invalid: true
+          };
+          isValid = false;
+        }
+        else {
+          errorFields = {
+            ...errorFields,
+            child_phone_invalid: false
+          };
         }
 
         if (!profile.first_name ||
@@ -791,15 +823,17 @@ export default function index() {
           /// (profile.phone_number !== '' && profile.phone_number.includes('_')) ||
           !profile.state ||
           !profile.zip_code ||
+          profile.zip_code === '' ||
+          (profile.zip_code && profile.zip_code.length < 5) ||
           // !profile.location_site ||
-          // !profile.child_lives_with ||
+          !profile.child_lives_with ||
           gi.school_name === '' ||
           gi.grade === '' ||
           (isLot && (!gi.allergies_to_medicine || !gi.food_allergies || !gi.insect_allergies || !gi.other_allergies || !gi.mentee_gain)) ||
           (!isLot && (!gi.grade ||
             !gi.school_name ||
             !gi.mentee_gain ||
-            !profile.location_site )) ||
+            !profile.location_site)) ||
 
           (gi.school_phone && gi.school_phone.includes('_')) ||
           (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.doctor_phone.includes('_')) ||
@@ -808,9 +842,10 @@ export default function index() {
 
 
         ) {
-   
+
           isValid = false;
           errorFields = {
+            ...errorFields,
             first_name: profile.first_name === '',
             last_name: profile.last_name === '',
             date_of_birth: profile.date_of_birth === '',
@@ -818,15 +853,16 @@ export default function index() {
             address: profile.address === '',
             city: profile.city === '',
             state: profile.state === '',
-            zip_code: profile.zip_code === '',
+            zip_code: profile.zip_code === '' || (profile.zip_code && profile.zip_code.length < 5),
             school_name: profile.school_name === '',
             is_entrepreneur: profile.is_entrepreneur === '',
             school_name: gi.school_name === '',
             grade: gi.grade === '',
-            mentee_gain: gi.mentee_gain === ''
+            mentee_gain: gi.mentee_gain === '',
+            child_lives_with:  profile.child_lives_with === '',
 
           }
-   
+
           if (isLot) {
             errorFields = {
               ...errorFields,
@@ -836,16 +872,16 @@ export default function index() {
               other_allergies: gi.other_allergies === '',
               // business_email: gi.business_email === '' || !isEmailAddress(gi.business_email),
               emergency_care_information: childsInformation[i].emergency_care_information === '',
-       
+
             };
           }
           else {
             errorFields = {
               ...errorFields,
               location_site: profile.location_site === ''
-       
+
             };
-   
+
           }
           break;
         }
@@ -870,46 +906,108 @@ export default function index() {
           isValid = false;
 
         }
+
+        if (profile.password === '' || profile.confirmed_password === '') {
+          isValid = false;
+
+        }
         if ((profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
           isValid = false;
+          errorFields = {
+            ...errorFields,
+            email_invalid: true
+          }
 
         }
+        else {
+          errorFields = {
+            ...errorFields,
+            email_invalid: false
+          }
+        }
+
+        if (profile.phone_number !== '' && profile.phone_number.includes('_')) {
+
+          errorFields = {
+            ...errorFields,
+            child_phone_invalid: true
+          };
+          isValid = false;
+        } else {
+          errorFields = {
+            ...errorFields,
+            child_phone_invalid: false
+          }
+        }
+
         if ((profile.phone_number !== '' && profile.phone_number.includes('_'))) {
           isValid = false;
-
-
+          errorFields = {
+            ...errorFields,
+            phone_invalid: true
+          }
         }
+        else {
+          errorFields = {
+            ...errorFields,
+            phone_invalid: false
+          }
+        }
+
+        if (profile.password !== '' && profile.password !== profile.confirmed_password) {
+          isValid = false;
+          errorFields = {
+            ...errorFields,
+            password_not_match: true
+          }
+        }
+        else {
+          errorFields = {
+            ...errorFields,
+            password_not_match: false
+          }
+        }
+
+        console.log('profileee !profile.goals_parent_program', !profile.goals_parent_program)
+        console.log('profileee profileeeee', profile)
         if (!profile.first_name ||
           !profile.last_name ||
           !profile.password ||
           !profile.confirmed_password ||
-          !(profile.password == profile.confirmed_password) ||
+
           !profile.phone_number ||
           !profile.email_address ||
-          !profile.goals_parent_program ||
-          !profile.goals_child_program ||
-          !profile.person_recommend,
+          profile.goals_parent_program === '' ||
+          profile.goals_child_program === '' ||
+          profile.person_recommend === '' ||
           !profile.gender // ||
           // !profile.date_of_birth ||
           //(isParentAddressRequired && (!profile.address || !profile.zip_code || profile.zip_code.length < 5 || !profile.state || !profile.city))
         ) {
+          console.log('profileee profileeeee invaliddddddddddd')
+
+
+          errorFields = {
+            ...errorFields,
+            parent_first_name: profile.first_name === '',
+            parent_last_name: profile.last_name === '',
+            password: profile.password === '' || !(profile.password == profile.confirmed_password) || (profile.password !== profile.confirmed_password),
+            confirmed_password: profile.confirmed_password === '',
+            phone_number: profile.phone_number === '',
+            email_address: profile.email_address === '',
+            goals_parent_program: profile.goals_parent_program === '',
+            goals_child_program: profile.goals_child_program === '',
+            person_recommend: profile.person_recommend === '',
+            parent_gender: profile.gender === ''
+          }
           isValid = false;
-
+          console.log('profileee profileeeee invaliddddddddddd', errorFields)
         }
 
-
-        errorFields = {
-          first_name: profile.first_name === '',
-          last_name: profile.last_name === '',
-          password: profile.password === '' || !(profile.password == profile.confirmed_password) || profile.password !== profile.confirmed_password,
-          confirmed_password: profile.confirmed_password === '',
-          phone_number: profile.phone_number === '',
-          email_address: profile.email_address === '',
-          goals_parent_program: profile.goals_parent_program === '',
-          goals_child_program: profile.goals_child_program === '',
-          person_recommend: profile.person_recommend === '',
-          gender: profile.gender === ''
+        if (!isValid) {
+          break;
         }
+
 
         // if(isParentAddressRequired) {
         //   errorFields = {
@@ -951,11 +1049,22 @@ export default function index() {
         errors: errorFields
       };
 
-    } else if (section == "3") {
-
+    } else if (section === 3) {
+      console.log('errorFields termsWaiver',termsWaiver)
       if ((!termsWaiver.section1.checked || !termsWaiver.section1.signature) && vendor.section1_show > 0 ||
         (!termsWaiver.section2.checked || !termsWaiver.section1.signature) && vendor.section2_show > 0 ||
         (!termsWaiver.section3.checked || !termsWaiver.section3.signature) && vendor.section3_show > 0) {
+
+        errorFields = {
+          ...errorFields,
+          section_1_checked: !termsWaiver.section1.checked && vendor.section1_show > 0,
+          section_2_checked: !termsWaiver.section2.checked && vendor.section1_show > 0,
+          section_3_checked: !termsWaiver.section2.checked && vendor.section3_show > 0,
+          section_1_signature: !termsWaiver.section1.signature && vendor.section2_show > 0,
+          section_2_signature: !termsWaiver.section2.signature && vendor.section2_show > 0,
+          section_3_signature: !termsWaiver.section2.signature && vendor.section3_show > 0,
+        }
+
         isValid = false;
       }
 
@@ -971,7 +1080,7 @@ export default function index() {
 
     return {
       isValid,
-      errors
+      errors: errorFields
     };
   }
 
@@ -1193,7 +1302,7 @@ export default function index() {
       payload.push(request_params);
     }
     console.log('Request Add Application Payload', payload)
-  
+
     dispatch(requestAddApplication(payload));
   }
 
@@ -1226,7 +1335,7 @@ export default function index() {
     window.location.replace(window.location.origin);
   }
 
-  console.log('emptyFields', emptyFields)
+  console.log('emptyFieldsssssssssss', emptyFields)
   return (
     <ApplicationFormStyled
       id="applicationForm">
@@ -1470,6 +1579,7 @@ export default function index() {
                       {selectedStep == 4 && <hr className="style-eight"></hr>}
                       <div className={(selectedStep == 3 || selectedStep == 4) ? "" : "hide"}>
                         <TermsWaiverFormStyled
+                          emptyFields={emptyFields}
                           handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
                           termsWaiver={termsWaiver}
                           register={register}
@@ -1484,13 +1594,13 @@ export default function index() {
                             type="submit"
                             className="right"
                             onClick={(e) => {
-                              //  e.preventDefault();
+                              e.preventDefault();
 
                               /// setEmptyFields({});
 
-        
+    
                               if (!isFormValid(selectedStep).isValid) {
-             
+
                                 formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
                                 setEmptyFields(isFormValid(selectedStep).errors)
                                 setIsFormErrorModalVisible(true);
@@ -1517,8 +1627,14 @@ export default function index() {
                           <a href="#" className="left" onClick={(e) => {
                             e.preventDefault();
                             console.log('Selected Step', selectedStep)
-                            if (selectedStep == 3) handleWizardSelection(2);
-                            else if (selectedStep == 2) handleWizardSelection(1)
+                            if (selectedStep === 3) {
+                              console.log('Selected Step 333', selectedStep)
+                              handleWizardSelection(2);
+                            }
+                            else if (selectedStep === 2) {
+                              console.log('Selected Step 222', selectedStep)
+                              handleWizardSelection(1)
+                            }
                             //else if(selectedStep == 4) handleWizardSelection(3)
 
                             scrollToTop("smooth");
@@ -1553,10 +1669,10 @@ export default function index() {
               </span>
             </div>
             <div className="modal-container">
-              <div><b>Please review the following field(s):</b></div>
+              <div><b style={{ color: 'red' }}>Error(s):</b> <b>Please review the following field(s):</b></div>
               {console.log('Object.keys(emptyFields)', Object.keys(emptyFields))}
               {Object.keys(emptyFields).length > 0 && Object.keys(emptyFields).filter(key => emptyFields[key]).map((key, index) => {
-                return emptyFields[key] && <div style={{ marginTop: 12 }} key={index}><b>{REQUIRED_FIELD_NAME[key]}</b> is a required field</div>
+                return REQUIRED_FIELD_NAME[key] && <div style={{ marginTop: 12 }} key={index}><b>{REQUIRED_FIELD_NAME[key]}</b></div>
               }).filter(item => item)}
             </div>
           </div>

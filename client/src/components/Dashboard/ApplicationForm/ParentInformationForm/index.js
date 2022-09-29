@@ -419,8 +419,7 @@ export default function index({
 
   const hasSelectAll = false;
 
-  console.log('parentProfile55555', parentProfile)
-  console.log('parentProfile55555 pastParentInformation', pastParentInformation)
+
 
   let profile = pastParentInformation?.image || parentProfile?.image || ''
   if (profile) {
@@ -468,7 +467,7 @@ export default function index({
                 //   pastParentInformation.firstname != parentProfile.first_name ?
                 //   "field-input highlights" : "field-input"
                 // }
-                className={`${(emptyFields.first_name && parentProfile.first_name === '') && 'highlights'} 
+                className={`${(emptyFields.parent_first_name && parentProfile.first_name === '') && 'highlights'} 
                 ${isReadonly &&
                     !isVendorView &&
                     pastParentInformation &&
@@ -518,7 +517,7 @@ export default function index({
                 //     pastParentInformation.lastname != parentProfile.last_name ?
                 //     "field-input highlights" : "field-input"
                 // }
-                className={`${(emptyFields.last_name && parentProfile.last_name === '') && 'highlights'} 
+                className={`${(emptyFields.parent_last_name && parentProfile.last_name === '') && 'highlights'} 
                 ${isReadonly &&
                     !isVendorView &&
                     pastParentInformation &&
@@ -673,7 +672,7 @@ export default function index({
                 //     ? "field-input highlights"
                 //     : "field-input"
                 // }
-                className={`${(emptyFields.gender && parentProfile.gender === '') && 'dropdown-highlights'} 
+                className={`${(emptyFields.parent_gender && parentProfile.gender === '') && 'dropdown-highlights'} 
                 ${isReadonly &&
                     !isVendorView &&
                     pastParentInformation &&
@@ -881,7 +880,7 @@ export default function index({
                   id={`parent_phonenumber_${counter - 1}`}
                   name={"parent_phonenumber" + (counter - 1)}
                   // className="field-input"
-                  className={`${(emptyFields.phone_number && parentProfile.phone_number === '') && 'highlights'} field-input`} 
+                  className={`${((emptyFields.phone_number && parentProfile.phone_number === '') || ( emptyFields.phone_invalid && parentProfile.phone_number.includes('_')) && 'highlights') && 'highlights'} field-input`} 
                   placeholder="Phone Number"
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
@@ -942,12 +941,12 @@ export default function index({
               </label>
             </div>
             <ErrorMessage
-              field={errors["parent_phonenumber" + (counter - 1)]}
+              field={true}
               errorType="required"
               message="Phone Number is required."
             />
             <ErrorMessage
-              field={errors["parent_phonenumber" + (counter - 1)]}
+              field={true}
               errorType="completed"
               message="Phone Number must be consist of 10 digits."
             />
@@ -1144,7 +1143,7 @@ export default function index({
                 //     pastParentInformation.email_address != parentProfile.email_address ?
                 //     "field-input highlights" : "field-input"
                 // }
-                className={`${(emptyFields.email_address && parentProfile.email_address === '') && 'highlights'} 
+                className={`${((emptyFields.email_address && parentProfile.email_address === '') || (emptyFields.email_invalid && parentProfile.email_address !== '')) && 'highlights'} 
                 ${isReadonly &&
                     pastParentInformation &&
                     !isVendorView &&
@@ -1291,10 +1290,10 @@ export default function index({
                   type="password"
                   id={`password_${counter - 1}`}
                   name={"parent_password" + (counter - 1)}
-                  className={`field-input ${(emptyFields.password && parentProfile.password === '') && 'highlights'}`}
+                  className={`field-input ${(emptyFields.password && parentProfile.password === '' || (emptyFields.password_not_match &&  parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
                   placeholder="Password"
                   autoComplete="new-password"
-
+                  defaultValue={parentProfile?.password}
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
                       counter - 1,
@@ -1324,6 +1323,7 @@ export default function index({
                         return oneSpecialCharacterRegex.test(value);
                       }
                     }
+                   
                   })}
                 />
                 <label className="field-label" for={`password_${counter - 1}`}>
@@ -1331,7 +1331,7 @@ export default function index({
                 </label>
               </div>
               <ErrorMessage
-                field={errors["parent_password" + (counter - 1)]}
+                field={errors["parent_password" + (counter - 1)] || (emptyFields.password && parentProfile.password === '' || (emptyFields.password_not_match &&  parentProfile.password !== parentProfile.confirmed_password))}
                 errorType="required"
                 message={
                   <>
@@ -1361,9 +1361,10 @@ export default function index({
                   type="password"
                   id={`parent_confirmed_paswword_${counter - 1}`}
                   name={`parent_confirmed_paswword${counter - 1}`}
-                  className={`field-input ${(emptyFields.confirmed_password && parentProfile.confirmed_password === '') && 'highlights'}`}
+                  className={`field-input ${((emptyFields.confirmed_password && parentProfile.confirmed_password === '') || (emptyFields.password_not_match &&  parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
                   placeholder="Confirmed Password"
                   autoComplete="new-password"
+                  defaultValue={parentProfile?.password}
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
                       counter - 1,
@@ -1391,17 +1392,17 @@ export default function index({
                 </label>
               </div>
               <ErrorMessage
-                field={errors[`parent_confirmed_paswword${counter - 1}`]}
+                field={errors[`parent_confirmed_paswword${counter - 1}`] || emptyFields.confirmed_password && parentProfile.confirmed_password === ''}  
                 errorType="required"
                 message="Confirm password is required."
               />
               <ErrorMessage
-                field={errors[`parent_confirmed_paswword${counter - 1}`]}
+                field={errors[`parent_confirmed_paswword${counter - 1}`] || emptyFields.confirmed_password && parentProfile.confirmed_password === ''}
                 errorType="minLength"
                 message="Confirm password minimum length must be at least 8 characters."
               />
               <ErrorMessage
-                field={errors[`parent_confirmed_paswword${counter - 1}`]}
+                field={errors[`parent_confirmed_paswword${counter - 1}`] || emptyFields.confirmed_password && parentProfile.confirmed_password === ''}
                 errorType="sameConfirmPassword"
                 message="The passwords do not match."
               />

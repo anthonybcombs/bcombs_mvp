@@ -16,7 +16,8 @@ export default function index({
   termsWaiver,
   register,
   errors,
-  vendor
+  vendor,
+  emptyFields = {}
 }) {
 
   const parseDate = (date) => {
@@ -35,7 +36,7 @@ export default function index({
   let pDate = moment(termsWaiver.date).format("MM/DD/yyyy");
   
   console.log('pDate', pDate);
-
+  console.log('emptyFieldssssssssssssss',emptyFields)
   return (
     <TermsWaiverFormStyled>
       {
@@ -48,6 +49,7 @@ export default function index({
           errors={errors}
           name={vendor.section1_name}
           text={vendor.section1_text}
+          emptyFields={emptyFields}
         />
         :
         ""
@@ -64,6 +66,7 @@ export default function index({
           errors={errors}
           name={vendor.section2_name}
           text={vendor.section2_text}
+          emptyFields={emptyFields}
         />
         :
         ""
@@ -80,6 +83,7 @@ export default function index({
           errors={errors}
           name={vendor.section3_name}
           text={vendor.section3_text}
+          emptyFields={emptyFields}
         />
         :
         ""

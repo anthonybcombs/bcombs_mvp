@@ -386,6 +386,7 @@ export default function index({
     readOnlyEthinicity = readOnlyEthinicity.slice(0, -1);
   }
 
+
   const range = (start, end) => {
     let arr = [];
 
@@ -462,10 +463,8 @@ export default function index({
   if (profile) {
     profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
   }
-  
-  console.log('childProfileeeee22222 emptyFields', emptyFields)
-  console.log('childProfileeeee22222', childProfile)
-  
+
+
   return (
     <ChildInfomationFormStyled className={printPageClassname}>
       <h3 className="heading">
@@ -961,14 +960,16 @@ export default function index({
                   id={`ch_phone_number_${counter - 1}`}
                   name={"ch_phone_number" + (counter - 1)}
                   className={
-                    isReadonly &&
+                    `${isReadonly &&
                       !isVendorView &&
                       pastChildInformation &&
                       pastChildInformation.phone_number &&
                       pastChildInformation.phone_number !=
                       childProfile.phone_number
                       ? "field-input highlights"
-                      : "field-input"
+                      : "field-input"}
+                    ${emptyFields.child_phone_invalid && childProfile.phone_number.includes('_') && 'highlights'}
+                    `
                   }
                   placeholder="Phone"
                   onChange={({ target }) => {
@@ -995,10 +996,10 @@ export default function index({
                   })}
                 />
               ) : (
+
                 <input
                   name="ch_phone_number"
-                  className={
-                    isReadonly &&
+                  className={`${isReadonly &&
                       !isVendorView &&
                       pastChildInformation &&
                       pastChildInformation.phone_number &&
@@ -1006,7 +1007,7 @@ export default function index({
                       childProfile.phone_number
                       ? "field-input highlights"
                       : "field-input"
-                  }
+                    } ${emptyFields.child_phone_invalid && childProfile.phone_number.includes('_') && 'highlights'}`}
                   placeholder="Phone"
                   readOnly={isReadonly}
                   id={`ch_phone_number_${counter - 1}`}
@@ -1106,7 +1107,7 @@ export default function index({
                 ) : (
                   <input
                     name="ch_phone_number2"
-                    className="field-input"
+                    className={`field-input  ${emptyFields.child_phone_invalid && childProfile.phone_number !== '' && 'highlights'}`}
                     placeholder="Phone"
                     id={`ch_phone_number2_${counter - 1}`}
                     defaultValue={childProfile.phone_number}
@@ -1178,8 +1179,7 @@ export default function index({
                 type="text"
                 id={`ch_email_address_${counter - 1}`}
                 name={"ch_email_address" + (counter - 1)}
-                className={
-                  isReadonly &&
+                className={`${isReadonly &&
                     !isVendorView &&
                     pastChildInformation &&
                     (pastChildInformation.email_address ||
@@ -1188,7 +1188,7 @@ export default function index({
                     childProfile.email_address
                     ? "field-input highlights"
                     : "field-input"
-                }
+                  } ${emptyFields.child_email_invalid && childProfile.email_address !== '' && 'highlights'}`}
                 placeholder="Email Address"
                 onChange={({ target }) => {
                   handleChildFormDetailsChange(
@@ -1212,7 +1212,7 @@ export default function index({
               </label>
             </div>
             <ErrorMessage
-              field={errors["ch_email_address" + (counter - 1)]}
+              field={errors["ch_email_address" + (counter - 1)] || (emptyFields.child_email_invalid && childProfile.email_address !== '')}
               errorType="pattern"
               message="Invalid email address"
             />
@@ -1482,7 +1482,7 @@ export default function index({
                 //   ? "field-input highlights"
                 //   : "field-input"
                 // }
-                className={`${(emptyFields.zip_code && !childProfile.zip_code) && 'highlights'} 
+                className={`${(emptyFields.zip_code && (!childProfile.zip_code || childProfile.zip_code.length < 5)) && 'highlights'} 
                 ${isReadonly &&
                     !isVendorView &&
                     pastChildInformation &&
@@ -1494,7 +1494,8 @@ export default function index({
                  `
                 }
                 onChange={({ target }) => {
-                  if (target.value.match(/^-{0,1}\d+$/)) {
+
+                  if (target.value && target.value.match(/^-{0,1}\d+$/)) {
                     handleChildFormDetailsChange(
                       counter - 1,
                       "profile",
@@ -1502,10 +1503,17 @@ export default function index({
                       target.value
                     );
                   } else {
-                    target.value = target.value.slice(0, -1);
+                    target.value = target.value ? target.value.slice(0, -1) : '';
+                    handleChildFormDetailsChange(
+                      counter - 1,
+                      "profile",
+                      "zip_code",
+                      target.value
+                    );
+
                   }
                 }}
-                defaultValue={childProfile.zip_code}
+                value={childProfile.zip_code}
                 placeholder="Zip Code"
                 ref={register({ required: true, minLength: 5 })}
                 maxLength="5"
@@ -1561,9 +1569,9 @@ export default function index({
                     readOnly={isReadonly}
                     disabled={isReadonly}
                     name={"ch_location_site" + (counter - 1)}
-                 //   className="field-input"
+                    //   className="field-input"
 
-                  className={`${(emptyFields.location_site && !childProfile.location_site && !isLot) && 'dropdown-highlights'} field-input `}
+                    className={`${(emptyFields.location_site && !childProfile.location_site && !isLot) && 'dropdown-highlights'} field-input `}
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(
                         counter - 1,
@@ -1691,12 +1699,13 @@ export default function index({
             </div>
           </div>
           : <span />}
-        {/* <div className="grid">
+        <div className="grid">
           <div className="form-group">
             <div className="field customMultiselect">
               {isReadonly ? (
                 <p
-                  className={
+                  className={`${
+                    
                     isReadonly &&
                       !isVendorView &&
                       pastChildInformation &&
@@ -1707,6 +1716,9 @@ export default function index({
                       ? "field-input readonly highlights"
                       : "field-input readonly"
                   }
+                  ${(emptyFields.child_lives_with && (!childProfile.child_lives_with)) && 'highlights'}
+                  
+                  `}
                   style={{
                     //background: "white",
                     borderBottom: "2px solid rgb(204, 204, 204) !important",
@@ -1721,11 +1733,17 @@ export default function index({
               ) : (
                 <Multiselect
                   selectedValues={childProfile.child_lives_with}
-                  className="field-input"
+                  className={`${(emptyFields.child_lives_with && (!childProfile.child_lives_with)) && 'highlights'} field-input`}
                   options={CHILD_LIVES_OPTION}
                   hasSelectAll={hasSelectAll}
                   placeholder="Choose Multiple"
                   displayValue="name"
+                  style={{
+                    multiselectContainer: {
+                      backgroundColor:emptyFields.child_lives_with && (!childProfile.child_lives_with) && '#f26e21'
+                    }
+                   
+                  }}
                   closeIcon="cancel"
                   id={"ch_lives_with" + (counter - 1)}
                   name={"ch_lives_with" + (counter - 1)}
@@ -1786,7 +1804,7 @@ export default function index({
               message="Child lives with is required"
             />
           </div>
-        </div> */}
+        </div>
       </div>
     </ChildInfomationFormStyled>
   );
