@@ -459,6 +459,7 @@ export default function index({
     return <span style={{ fontSize: 14, position: 'relative', top: -10 }}>®</span>
   }
 
+  console.log('childProfile',childProfile)
   let profile = pastChildInformation?.image || childProfile?.image || ''
   if (profile) {
     profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
@@ -1733,14 +1734,14 @@ export default function index({
               ) : (
                 <Multiselect
                   selectedValues={childProfile.child_lives_with}
-                  className={`${(emptyFields.child_lives_with && (!childProfile.child_lives_with)) && 'highlights'} field-input`}
+                  className={`${(emptyFields.child_lives_with && (!childProfile.child_lives_with )) && 'highlights'} field-input`}
                   options={CHILD_LIVES_OPTION}
                   hasSelectAll={hasSelectAll}
                   placeholder="Choose Multiple"
                   displayValue="name"
                   style={{
                     multiselectContainer: {
-                      backgroundColor:emptyFields.child_lives_with && (!childProfile.child_lives_with) && '#f26e21'
+                      backgroundColor:emptyFields.child_lives_with && (!childProfile.child_lives_with || (Array.isArray(childProfile.child_lives_with) && childProfile.child_lives_with.length === 0)) && '#f26e21'
                     }
                    
                   }}

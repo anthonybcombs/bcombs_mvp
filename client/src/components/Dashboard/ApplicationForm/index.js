@@ -827,6 +827,7 @@ export default function index() {
           (profile.zip_code && profile.zip_code.length < 5) ||
           // !profile.location_site ||
           !profile.child_lives_with ||
+          (Array.isArray(profile.child_lives_with) && profile.child_lives_with.length === 0)  ||
           gi.school_name === '' ||
           gi.grade === '' ||
           (isLot && (!gi.allergies_to_medicine || !gi.food_allergies || !gi.insect_allergies || !gi.other_allergies || !gi.mentee_gain)) ||
@@ -859,7 +860,7 @@ export default function index() {
             school_name: gi.school_name === '',
             grade: gi.grade === '',
             mentee_gain: gi.mentee_gain === '',
-            child_lives_with:  profile.child_lives_with === '',
+            child_lives_with: (Array.isArray(profile.child_lives_with) && profile.child_lives_with.length === 0) || profile.child_lives_with === '',
 
           }
 
