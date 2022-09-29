@@ -926,19 +926,19 @@ export default function index() {
           }
         }
 
-        if (profile.phone_number !== '' && profile.phone_number.includes('_')) {
+        // if (profile.phone_number !== '' && profile.phone_number.includes('_')) {
 
-          errorFields = {
-            ...errorFields,
-            child_phone_invalid: true
-          };
-          isValid = false;
-        } else {
-          errorFields = {
-            ...errorFields,
-            child_phone_invalid: false
-          }
-        }
+        //   errorFields = {
+        //     ...errorFields,
+        //     phone_invalid: true
+        //   };
+        //   isValid = false;
+        // } else {
+        //   errorFields = {
+        //     ...errorFields,
+        //     phone_invalid: false
+        //   }
+        // }
 
         if ((profile.phone_number !== '' && profile.phone_number.includes('_'))) {
           isValid = false;

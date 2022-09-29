@@ -88,7 +88,7 @@ export default function index({
                 <input
                   id="section1_signature"
                   name="section1_signature"
-                  className={`field-input ${emptyFields?.section_1_signature && 'highlights'} `}
+                  className={`field-input ${emptyFields?.section_1_signature && !isReadonly && 'highlights'} `}
                   placeholder="Electronic Signature"
                   onChange={({ target }) => {
                     handleWaiverFormDetailsChange("section1", "signature", target.value)
