@@ -716,6 +716,7 @@ export default function index() {
           setSelectedForm('lot');
         }
         else if (hasDefaultVendor) {
+          defaultVendor = hasDefaultVendor;
           setSelectedVendor(hasDefaultVendor);
           setAppGroups(hasDefaultVendor?.app_groups);
         }
@@ -747,8 +748,11 @@ export default function index() {
           categories: []
         }))
         console.log('defaultVendorrrrrrrrrrrrrrrr',defaultVendor)
-        // dispatch(requestGetApplications( defaultVendor?.id));
-        dispatch(requestGetVendorReminders({ vendor: defaultVendor?.id }));
+        if(defaultVendor) {
+          dispatch(requestGetApplications(defaultVendor?.id));
+          dispatch(requestGetVendorReminders({ vendor: defaultVendor?.id }));
+        }
+
       }
 
 

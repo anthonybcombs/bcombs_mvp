@@ -26,7 +26,7 @@ const apiCallAttendance = async (vendor, id, year, grade, lotVendorIds) => {
             'grade': grade,
             'vendorId': vendor?.id2,
             'isLot': vendor?.is_lot,
-            'formId': vendor?.is_lot ? 'lotid_0' : 'id_0',
+            'formId': vendor?.is_lot ? 'lotid_0' : 'fid_0',
             'lotVendorIds': lotVendorIds
         }) // body data type must match "Content-Type" header
     });
@@ -63,7 +63,7 @@ const Attendance = props => {
             // const vendorId = selectedVendor;// vendors[0].id2; 
 
             const res = await apiCallAttendance(selectedVendor, id, year, newGrade, lotVendorId2s);
-            console.log('RESSSSSSSSSSSSSSSS', res)
+   
             //console.log('apiCall attendance ', res)
 
             if (!res.classList) {
@@ -105,13 +105,16 @@ const Attendance = props => {
             },
             series: []
         }
-        for (let i = 0; i < data.length; i++) {
-            chartOptions.series.push({
-                type: 'column',
-                name: gradeDisplay(data[i].grade, true), data: data[i].data
-            });
+        if (data) {
+            for (let i = 0; i < data.length; i++) {
+                chartOptions.series.push({
+                    type: 'column',
+                    name: gradeDisplay(data[i].grade, true), data: data[i].data
+                });
+            }
+            setTempOptionsData(chartOptions);
         }
-        setTempOptionsData(chartOptions);
+
     }
 
     const gradeDisplay = (grade, bShowAll) => {
@@ -157,8 +160,8 @@ const Attendance = props => {
         let formIdIn = event.target.value;
         setFormIdLocal(formIdIn);
         console.log("=========== form_id: ", formIdIn);
-        // triggerApiCallVolunteering(auth.user_id, year, grade, formIdIn, 'id_0');
-        setClassIdLocal('id_0');
+        triggerApiCallVolunteering(auth.user_id, year, grade, formIdIn, 'fid_0');
+        setClassIdLocal('fid_0');
     };
 
     const classChange = (event) => {
