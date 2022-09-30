@@ -393,7 +393,7 @@ const ExportFilter = ({
 
                 for (const [x, field] of fields.entries()) {
                   fieldValue = field.value;
-                  console.log('fieldValueeeeeee',fieldValue)
+           
 
                   if (fieldValue && isJsonString(fieldValue)) {
 
@@ -441,6 +441,10 @@ const ExportFilter = ({
                   }
 
                 }
+
+
+             
+              
               }
             }
           }
@@ -457,27 +461,67 @@ const ExportFilter = ({
       formattedApplication.class_teacher = getClassTeacher(formattedApplication.class_teacher);
       formattedApplication.student_status = getApplicationStatus(formattedApplication.student_status);
 
+      
+
       if (typeof formattedApplication.child === 'object') {
         const currentChild = { ...formattedApplication.child };
         formattedApplication.child = `${currentChild.firstname} ${currentChild.lastname}`
 
       }
 
-      if (reportType === 'biographical_data') {
+      console.log('formattedApplication',formattedApplication)
 
-        exportApplications.push(formattedApplication);
+      if (reportType === 'biographical_data') {
+        const keys = Object.keys(formattedApplication);
+        const parentNameKey = keys.find(key => key.toLowerCase().includes('parent') && key.toLowerCase().includes('name'));
+        const parentPhoneKey = keys.find(key => key.toLowerCase().includes('parent') && key.toLowerCase().includes('phone'));
+        const emailKey = keys.find(key => key.toLowerCase().includes('parent') && key.toLowerCase().includes('email'));
+        const menteePhoneKey = keys.find(key => key.toLowerCase().includes('mentee') && key.toLowerCase().includes('phone'));
+        const addressKey = keys.find(key => key.toLowerCase().includes('mailing') || key.toLowerCase().includes('address'));
+      
+        const gradeKey = keys.find(key => key.toLowerCase().includes('grade'));
+        const childName = formattedApplication.child.split(' ');
+   
+        let updatedApplication = [
+          childName[0],
+          childName[1],
+          formattedApplication?.age,
+          formattedApplication?.gender,
+          formattedApplication[menteePhoneKey] || '',
+          formattedApplication[addressKey] || '',
+          formattedApplication[gradeKey] || '',
+          formattedApplication[parentNameKey] || '',
+          formattedApplication[parentPhoneKey] || '',
+          formattedApplication[emailKey] || '',
+          formattedApplication[addressKey] || '',
+        ]
+        rowKeys = [
+          '(Child) Firstname',
+          '(Child) Lastname',
+          '(Child) Age', 
+          '(Child) Gender',
+          '(Child) Phone',
+          '(Child) Address',
+          '(Child) Grade',
+          'Parent Name',
+          'Phone Number',
+          'Email Address',
+          'Address',
+        
+        ];
+        exportApplications.push(updatedApplication);
       }
       else {
 
         let initialApplication = {
-          'Id': formattedApplication['Id'],
-          'Vendor': formattedApplication['Vendor'],
-          'Verification': formattedApplication['Verification'],
-          'Student Status': formattedApplication['Student Status'],
-          'Class Teacher': formattedApplication['Class Teacher'],
-          'Color Designation': formattedApplication['Color Designation'],
-          'Recommended Class': '',
-          'Notes': formattedApplication['Notes'],
+          // 'Id': formattedApplication['Id'],
+          // 'Vendor': formattedApplication['Vendor'],
+          // 'Verification': formattedApplication['Verification'],
+          // 'Student Status': formattedApplication['Student Status'],
+          // 'Class Teacher': formattedApplication['Class Teacher'],
+          // 'Color Designation': formattedApplication['Color Designation'],
+          // 'Recommended Class': '',
+          // 'Notes': formattedApplication['Notes'],
           ...formattedApplication
         }
         exportApplications.push(initialApplication);
@@ -1139,7 +1183,11 @@ const ExportFilter = ({
               style={{
                 marginTop: "25px"
               }}
-              data={isCustomForm ? exportApplications : [
+              data={isCustomForm ? [
+                ['Child', '', '', '', '', '', '', 'Parent', '', '', '', ''],
+                rowKeys,
+                ...exportApplications
+              ] : [
                 ['Child', '', '', '', '', '', '', 'Parent', '', '', '', ''],
                 rowKeys,
                 ...exportApplications
