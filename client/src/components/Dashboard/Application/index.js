@@ -2140,9 +2140,10 @@ export default function index() {
                     setSelectedForm(target.value);
                     setAppGroups(selectedVendor.app_groups);
                     window.history.replaceState("", "", "?vendor=" + selectedVendor?.id2);
-                    if (applications.activeapplications.length === 0) {
-                      dispatch(requestGetApplications(selectedVendor.id));
-                    }
+                    // if (applications.activeapplications.length === 0) {
+                    //   dispatch(requestGetApplications(selectedVendor.id));
+                    // }
+                    dispatch(requestGetApplications(selectedVendor.id));
 
                   } else {
                     setSelectedForm(target.value);
