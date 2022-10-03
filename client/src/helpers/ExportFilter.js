@@ -194,6 +194,18 @@ const ExportFilter = ({
   const [locationSites, setLocationSites] = useState([]);
   const [appPrograms, setAppPrograms] = useState([]);
   const [reportType, setReportType] = useState('');
+  console.log('applicationszzzzzzzzzzz', applications)
+  const appGroupIds = appGroups.map(item => item.app_grp_id);
+  console.log('locationSiteszzzzzzzzzz appGroups', appGroups)
+  console.log('locationSiteszzzzzzzzzz locationSites', locationSites)
+  const locationSiteForms = isCustomForm ? locationSites.map(item => {
+    const currentAppGroups = appGroups.find(item2 => item2.name === item.name)
+
+    return {
+      ...item,
+      app_grp_id:currentAppGroups?.app_grp_id
+    }
+  }).map(item => item.app_grp_id) : [];
 
   const filterApplications = applications.filter(item => {
     let class_match = true;
@@ -235,7 +247,7 @@ const ExportFilter = ({
     if (appPrograms.length > 0) {
       program_match = false;
       for (const program of appPrograms) {
-        if (item.child.programs.includes(program.name)) {
+        if (item?.child?.programs?.includes(program.name)) {
           program_match = true;
           break;
         }
@@ -245,11 +257,26 @@ const ExportFilter = ({
     if (locationSites.length > 0) {
       location_match = false;
       for (const locationSite of locationSites) {
-        if (item.child.location_site.includes(locationSite.name)) {
-          location_match = true;
-          break;
+        console.log('locationSite', locationSite)
+        if (item?.child?.location_site) {
+
+          if (item?.child?.location_site?.includes(locationSite.name)) {
+
+            location_match = true;
+            break;
+          }
         }
       }
+      if (isCustomForm && locationSiteForms.length > 0) {
+        if (locationSiteForms.includes(item?.class_teacher)) {
+ 
+          location_match = true;
+
+
+        }
+      }
+
+
     }
 
     console.log("application", item);
@@ -262,6 +289,8 @@ const ExportFilter = ({
       location_match
     );
   });
+
+  console.log('filterApplications', filterApplications)
 
   const getApplicationStatus = (student_status) => {
     let studentStatusVal = "";
@@ -373,12 +402,12 @@ const ExportFilter = ({
 
     for (const application of filterApplications) {
       let formattedApplication = {};
-      console.log('filterApplications',filterApplications)
+      console.log('filterApplications', filterApplications)
       for (const key1 of Object.keys(application)) {
         if (key1 === "form_contents") {
           if (typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
             const formContents = application.form_contents;
-            console.log('formContents',formContents)
+            console.log('formContents', formContents)
             exportFilename = formContents.formTitle;
 
             const formData = formContents?.formData?.length > 0 ? formContents.formData : [];
@@ -393,7 +422,7 @@ const ExportFilter = ({
 
                 for (const [x, field] of fields.entries()) {
                   fieldValue = field.value;
-           
+
 
                   if (fieldValue && isJsonString(fieldValue)) {
 
@@ -404,7 +433,7 @@ const ExportFilter = ({
                     }
 
                     if (typeof fieldValue === 'object' && fieldValue) {
-                      console.log('fieldValue',fieldValue)
+                      console.log('fieldValue', fieldValue)
                       if (fieldValue && Object.keys(fieldValue).length > 1) {
                         fieldValue = Object.keys(fieldValue).map(key => fieldValue[key]).join(',')
                       }
@@ -443,8 +472,8 @@ const ExportFilter = ({
                 }
 
 
-             
-              
+
+
               }
             }
           }
@@ -461,7 +490,7 @@ const ExportFilter = ({
       formattedApplication.class_teacher = getClassTeacher(formattedApplication.class_teacher);
       formattedApplication.student_status = getApplicationStatus(formattedApplication.student_status);
 
-      
+
 
       if (typeof formattedApplication.child === 'object') {
         const currentChild = { ...formattedApplication.child };
@@ -469,7 +498,7 @@ const ExportFilter = ({
 
       }
 
-      console.log('formattedApplication',formattedApplication)
+      console.log('formattedApplication', formattedApplication)
 
       if (reportType === 'biographical_data') {
         const keys = Object.keys(formattedApplication);
@@ -478,10 +507,10 @@ const ExportFilter = ({
         const emailKey = keys.find(key => key.toLowerCase().includes('parent') && key.toLowerCase().includes('email'));
         const menteePhoneKey = keys.find(key => key.toLowerCase().includes('mentee') && key.toLowerCase().includes('phone'));
         const addressKey = keys.find(key => key.toLowerCase().includes('mailing') || key.toLowerCase().includes('address'));
-      
+
         const gradeKey = keys.find(key => key.toLowerCase().includes('grade'));
         const childName = formattedApplication.child.split(' ');
-   
+
         let updatedApplication = [
           childName[0],
           childName[1],
@@ -498,7 +527,7 @@ const ExportFilter = ({
         rowKeys = [
           '(Child) Firstname',
           '(Child) Lastname',
-          '(Child) Age', 
+          '(Child) Age',
           '(Child) Gender',
           '(Child) Phone',
           '(Child) Address',
@@ -507,7 +536,7 @@ const ExportFilter = ({
           'Phone Number',
           'Email Address',
           'Address',
-        
+
         ];
         exportApplications.push(updatedApplication);
       }

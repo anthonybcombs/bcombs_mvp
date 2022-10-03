@@ -674,6 +674,7 @@ export default function index() {
   }, [addForm])
 
   useEffect(() => {
+    console.log('vendorssssssssss',vendors)
     if (vendors && vendors.length > 0 && vendors[0].id) {
       if (queryParams && queryParams.vendor) {
         const newDefaultVendor = vendors.filter((vendor) => {
@@ -2054,7 +2055,7 @@ export default function index() {
   console.log('vendorssssssss', vendors)
   console.log('vendorssssssss appGroups', appGroups)
   console.log('vendorssssssss applications', applications)
-
+  console.log('vendorssssssss renderForms', renderForms)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
